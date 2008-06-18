@@ -30,14 +30,14 @@ PY-PSYCOPG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PSYCOPG_DESCRIPTION=psycopg is a PostgreSQL database adapter for the Python programming language.
 PY-PSYCOPG_SECTION=misc
 PY-PSYCOPG_PRIORITY=optional
-PY24-PSYCOPG_DEPENDS=python24, py-mx-base
+PY24-PSYCOPG_DEPENDS=python24, py24-mx-base
 PY25-PSYCOPG_DEPENDS=python25, py25-mx-base
 PY-PSYCOPG_CONFLICTS=
 
 #
 # PY-PSYCOPG_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG_IPK_VERSION=5
+PY-PSYCOPG_IPK_VERSION=6
 
 #
 # PY-PSYCOPG_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-PSYCOPG_LDFLAGS=
 PY-PSYCOPG_BUILD_DIR=$(BUILD_DIR)/py-psycopg
 PY-PSYCOPG_SOURCE_DIR=$(SOURCE_DIR)/py-psycopg
 
-PY24-PSYCOPG_IPK_DIR=$(BUILD_DIR)/py-psycopg-$(PY-PSYCOPG_VERSION)-ipk
-PY24-PSYCOPG_IPK=$(BUILD_DIR)/py-psycopg_$(PY-PSYCOPG_VERSION)-$(PY-PSYCOPG_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PSYCOPG_IPK_DIR=$(BUILD_DIR)/py24-psycopg-$(PY-PSYCOPG_VERSION)-ipk
+PY24-PSYCOPG_IPK=$(BUILD_DIR)/py24-psycopg_$(PY-PSYCOPG_VERSION)-$(PY-PSYCOPG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PSYCOPG_IPK_DIR=$(BUILD_DIR)/py25-psycopg-$(PY-PSYCOPG_VERSION)-ipk
 PY25-PSYCOPG_IPK=$(BUILD_DIR)/py25-psycopg_$(PY-PSYCOPG_VERSION)-$(PY-PSYCOPG_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -195,7 +195,7 @@ py-psycopg-stage: $(PY-PSYCOPG_BUILD_DIR)/.staged
 $(PY24-PSYCOPG_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-psycopg" >>$@
+	@echo "Package: py24-psycopg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-PSYCOPG_PRIORITY)" >>$@
 	@echo "Section: $(PY-PSYCOPG_SECTION)" >>$@
@@ -233,7 +233,8 @@ $(PY25-PSYCOPG_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-PSYCOPG_IPK): $(PY-PSYCOPG_BUILD_DIR)/.built
-	rm -rf $(PY24-PSYCOPG_IPK_DIR) $(BUILD_DIR)/py-psycopg_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-psycopg_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PSYCOPG_IPK_DIR) $(BUILD_DIR)/py24-psycopg_*_$(TARGET_ARCH).ipk
 	install -d $(PY24-PSYCOPG_IPK_DIR)/opt/lib/python2.4/site-packages
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 	$(MAKE) -C $(PY-PSYCOPG_BUILD_DIR)/2.4 \
@@ -243,8 +244,8 @@ $(PY24-PSYCOPG_IPK): $(PY-PSYCOPG_BUILD_DIR)/.built
 	for f in `find $(PY24-PSYCOPG_IPK_DIR)/opt/lib -name '*.so'`; do \
 		chmod u+w $$f; $(STRIP_COMMAND) $$f; chmod u-w $$f; \
 	done
-	install -d $(PY24-PSYCOPG_IPK_DIR)/opt/share/doc/
-	cp -rp $(PY-PSYCOPG_BUILD_DIR)/2.4/doc $(PY24-PSYCOPG_IPK_DIR)/opt/share/doc/py-psycopg
+#	install -d $(PY24-PSYCOPG_IPK_DIR)/opt/share/doc/
+#	cp -rp $(PY-PSYCOPG_BUILD_DIR)/2.4/doc $(PY24-PSYCOPG_IPK_DIR)/opt/share/doc/py-psycopg
 	$(MAKE) $(PY24-PSYCOPG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PSYCOPG_IPK_DIR)
 
@@ -260,7 +261,7 @@ $(PY25-PSYCOPG_IPK): $(PY-PSYCOPG_BUILD_DIR)/.built
 		chmod u+w $$f; $(STRIP_COMMAND) $$f; chmod u-w $$f; \
 	done
 	install -d $(PY25-PSYCOPG_IPK_DIR)/opt/share/doc/
-	cp -rp $(PY-PSYCOPG_BUILD_DIR)/2.5/doc $(PY24-PSYCOPG_IPK_DIR)/opt/share/doc/py-psycopg
+	cp -rp $(PY-PSYCOPG_BUILD_DIR)/2.5/doc $(PY25-PSYCOPG_IPK_DIR)/opt/share/doc/py-psycopg
 	$(MAKE) $(PY25-PSYCOPG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PSYCOPG_IPK_DIR)
 
