@@ -21,23 +21,23 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SERIAL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyserial
-PY-SERIAL_VERSION=2.2
-PY-SERIAL_SOURCE=pyserial-$(PY-SERIAL_VERSION).zip
+PY-SERIAL_SITE=http://pypi.python.org/packages/source/p/pyserial
+PY-SERIAL_VERSION=2.3
+PY-SERIAL_SOURCE=pyserial-$(PY-SERIAL_VERSION).tar.gz
 PY-SERIAL_DIR=pyserial-$(PY-SERIAL_VERSION)
-PY-SERIAL_UNZIP=unzip
+PY-SERIAL_UNZIP=zcat
 PY-SERIAL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SERIAL_DESCRIPTION=Python module encapsulating the access to serial port.
 PY-SERIAL_SECTION=misc
 PY-SERIAL_PRIORITY=optional
-PY24-SERIAL_DEPENDS=python24
-PY25-SERIAL_DEPENDS=python25
+PY24-SERIAL_DEPENDS=python24, py-serial-common
+PY25-SERIAL_DEPENDS=python25, py-serial-common
 PY-SERIAL_CONFLICTS=
 
 #
 # PY-SERIAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SERIAL_IPK_VERSION=5
+PY-SERIAL_IPK_VERSION=1
 
 #
 # PY-SERIAL_CONFFILES should be a list of user-editable files
@@ -84,7 +84,8 @@ PY25-SERIAL_IPK=$(BUILD_DIR)/py25-serial_$(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SERIAL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SERIAL_SITE)/$(PY-SERIAL_SOURCE)
+	$(WGET) -P $(@D) $(PY-SERIAL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,7 +115,7 @@ $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PA
 	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
-	cd $(BUILD_DIR) && $(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE)
+	$(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
@@ -123,7 +124,7 @@ $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PA
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
-	cd $(BUILD_DIR) && $(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE)
+	$(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -234,7 +235,7 @@ $(PY25-SERIAL_IPK) $(PY-SERIAL-COMMON_IPK): $(PY-SERIAL_BUILD_DIR)/.built
 	$(MAKE) $(PY25-SERIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SERIAL_IPK_DIR)
 	install -d $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples
-	install $(PY-SERIAL_BUILD_DIR)/2.5/README.txt $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/
+	install $(PY-SERIAL_BUILD_DIR)/2.5/[CLR]*.txt $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/
 	install $(PY-SERIAL_BUILD_DIR)/2.5/examples/* $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples/
 	$(MAKE) $(PY-SERIAL-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SERIAL-COMMON_IPK_DIR)
