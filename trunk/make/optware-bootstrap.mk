@@ -6,7 +6,7 @@
 #
 ###########################################################
 
-OPTWARE-BOOTSTRAP_VERSION=1.1
+OPTWARE-BOOTSTRAP_VERSION=1.2
 OPTWARE-BOOTSTRAP_IPK_VERSION=1
 
 OPTWARE-BOOTSTRAP_DIR=optware-bootstrap-$(OPTWARE-BOOTSTRAP_VERSION)
