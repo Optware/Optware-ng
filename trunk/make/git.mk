@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.5.5.4
+GIT_VERSION=1.5.6
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -94,10 +94,10 @@ GIT-MANPAGES_IPK=$(BUILD_DIR)/git-manpages_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(T
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GIT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GIT_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GIT_SITE)/$(@F)
 
 $(DL_DIR)/$(GIT-MANPAGES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GIT_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GIT_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
