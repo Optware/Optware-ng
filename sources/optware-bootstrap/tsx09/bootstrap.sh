@@ -30,7 +30,7 @@ echo "Installing optware-bootstrap package..."
 sh ./ipkg.sh install optware-bootstrap.ipk
 
 echo "Installing ipkg..."
-# Do it manually, so we don't get a complaint about md5sum missin
+# Do it manually, so we don't get a complaint about md5sum missing
 tar -xOzf ipkg-opt.ipk ./data.tar.gz | tar -C / -xzf -
 
 echo "Removing temporary ipkg repository..."

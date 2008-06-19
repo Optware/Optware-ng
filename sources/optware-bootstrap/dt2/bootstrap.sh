@@ -31,7 +31,9 @@ export IPKG_CONF_DIR=$BSDIR
 export IPKG_DIR_PREFIX=$BSDIR 
 
 echo "Installing optware-bootstrap package..."
+tar -xOzf optware-bootstrap.ipk ./control.tar.gz | tar -xOzf - ./preinst | sh
 tar -xOzf optware-bootstrap.ipk ./data.tar.gz | tar -C / -xzf -
+tar -xOzf optware-bootstrap.ipk ./control.tar.gz | tar -xOzf - ./postinst | sh
 
 echo "Installing ipkg..."
 tar -xOzf ipkg-opt.ipk ./data.tar.gz | tar -C / -xzf -
