@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-EACCELERATOR_VER=0.9.5.2
+EACCELERATOR_VER=0.9.5.3
 EACCELERATOR_VERSION:=$(EACCELERATOR_VER)-$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 EACCELERATOR_SITE=http://bart.eaccelerator.net/source/$(EACCELERATOR_VER)
 EACCELERATOR_SOURCE=eaccelerator-$(EACCELERATOR_VER).tar.bz2
@@ -78,8 +78,8 @@ EACCELERATOR_IPK=$(BUILD_DIR)/eaccelerator_$(EACCELERATOR_VERSION)-$(EACCELERATO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(EACCELERATOR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(EACCELERATOR_SITE)/$(EACCELERATOR_SOURCE)
-
+	$(WGET) -P $(@D) $(EACCELERATOR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -105,14 +105,14 @@ eaccelerator-source: $(DL_DIR)/$(EACCELERATOR_SOURCE) $(EACCELERATOR_PATCHES)
 $(EACCELERATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(EACCELERATOR_SOURCE) $(EACCELERATOR_PATCHES) \
 make/eaccelerator.mk make/php.mk
 	$(MAKE) php-stage
-	rm -rf $(BUILD_DIR)/$(EACCELERATOR_DIR) $(EACCELERATOR_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(EACCELERATOR_DIR) $(@D)
 	$(EACCELERATOR_UNZIP) $(DL_DIR)/$(EACCELERATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EACCELERATOR_PATCHES)" ; \
 		then cat $(EACCELERATOR_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(EACCELERATOR_DIR) -p1 ; \
 	fi
-	mv $(BUILD_DIR)/$(EACCELERATOR_DIR) $(EACCELERATOR_BUILD_DIR)
-	(cd $(EACCELERATOR_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(EACCELERATOR_DIR) $(@D)
+	(cd $(@D); \
 		WANT_AUTOMAKE=1.6 $(STAGING_DIR)/bin/phpize; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(EACCELERATOR_CPPFLAGS)" \
@@ -135,7 +135,7 @@ eaccelerator-unpack: $(EACCELERATOR_BUILD_DIR)/.configured
 #
 $(EACCELERATOR_BUILD_DIR)/.built: $(EACCELERATOR_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(EACCELERATOR_BUILD_DIR) INCLUDES=""
+	$(MAKE) -C $(@D) INCLUDES=""
 	touch $@
 
 #
@@ -148,7 +148,7 @@ eaccelerator: $(EACCELERATOR_BUILD_DIR)/.built
 #
 $(EACCELERATOR_BUILD_DIR)/.staged: $(EACCELERATOR_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(EACCELERATOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 eaccelerator-stage: $(EACCELERATOR_BUILD_DIR)/.staged
