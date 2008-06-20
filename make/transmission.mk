@@ -24,8 +24,8 @@
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.22
-TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=6196
+#TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
+#TRANSMISSION_SVN_REV=6196
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -46,9 +46,15 @@ TRANSMISSION_CONFLICTS=torrent
 #
 TRANSMISSION_IPK_VERSION=1
 
+#TRANSMISSION_WITH_CGI_DAEMON=
+
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
-TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_httpd
+TRANSMISSION_CONFFILES=/opt/etc/transmission.conf
+
+ifdef TRANSMISSION_WITH_CGI_DAEMON
+
+TRANSMISSION_CONFFILES += /opt/etc/init.d/S80busybox_httpd
 
 #
 # TRANSMISSION_PATCHES should list any patches, in the the order in
@@ -59,6 +65,8 @@ TRANSMISSION_PATCHES= \
 
 # Additional sources to enhance transmission (like this CGI daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c \
+
+endif
 
 #
 # If the compilation of the package requires additional
@@ -75,8 +83,6 @@ endif
 ifeq ($(GETTEXT_NLS), enable)
 TRANSMISSION_DEPENDS+=, gettext
 endif
-
-
 
 #
 # TRANSMISSION_BUILD_DIR is the directory in which the build is done.
@@ -183,8 +189,11 @@ endif
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR) ; \
 	fi
 	sed -i -e 's/-g / /' $(TRANSMISSION_BUILD_DIR)/configure.ac
+	if test -n "$(TRANSMISSION_SOURCES)"; then cp $(TRANSMISSION_SOURCES) $(@D)/cli; fi
 ifdef TRANSMISSION_SVN_REV
 	cd $(@D) && AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh
+else
+	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf $(@D)
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -227,8 +236,11 @@ endif
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(TRANSMISSION-DBG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION-DBG_BUILD_DIR) ; \
 	fi
+	if test -n "$(TRANSMISSION-DBG_SOURCES)"; then cp $(TRANSMISSION-DBG_SOURCES) $(@D)/cli; fi
 ifdef TRANSMISSION_SVN_REV
 	cd $(@D) && AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh
+else
+	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf $(@D)
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -258,20 +270,22 @@ transmission-unpack: $(TRANSMISSION_BUILD_DIR)/.configured $(TRANSMISSION-DBG_BU
 #
 $(TRANSMISSION_BUILD_DIR)/.built: $(TRANSMISSION_BUILD_DIR)/.configured $(TRANSMISSION_SOURCES)
 	rm -f $@
-	cp $(TRANSMISSION_SOURCES) $(@D)/cli
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
 $(TRANSMISSION-DBG_BUILD_DIR)/.built: $(TRANSMISSION-DBG_BUILD_DIR)/.configured $(TRANSMISSION-DBG_SOURCES)
 	rm -f $@
-	cp $(TRANSMISSION_SOURCES) $(@D)/cli
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
 #
 # This is the build convenience target.
 #
+ifdef TRANSMISSION_SVN_REV
 transmission: $(TRANSMISSION_BUILD_DIR)/.built $(TRANSMISSION-DBG_BUILD_DIR)/.built
+else
+transmission: $(TRANSMISSION_BUILD_DIR)/.built
+endif
 
 #
 # If you are building a library, then you need to stage it too.
@@ -317,12 +331,18 @@ endif
 #
 # You may need to patch your application to make it use these locations.
 #
+ifdef TRANSMISSION_SVN_REV
 $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built $(TRANSMISSION-DBG_BUILD_DIR)/.built
+else
+$(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
+endif
 	rm -rf $(TRANSMISSION_IPK_DIR) $(BUILD_DIR)/transmission_*_$(TARGET_ARCH).ipk
 	install -d $(TRANSMISSION_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) DESTDIR=$(TRANSMISSION_IPK_DIR) install-strip
 	install -d $(TRANSMISSION_IPK_DIR)/opt/etc
 	install -m 644 $(TRANSMISSION_SOURCE_DIR)/transmission.conf $(TRANSMISSION_IPK_DIR)/opt/etc/transmission.conf
+	install -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
+ifdef TRANSMISSION_WITH_CGI_DAEMON
 	install -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/S80busybox_httpd $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
 	install -d $(TRANSMISSION_IPK_DIR)/opt/share/www/cgi-bin
@@ -330,14 +350,16 @@ $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built $(TRANSMISSION-DBG_BUILD_D
 	install -m 755 $(TRANSMISSION-DBG_BUILD_DIR)/cli/transmissiond $(TRANSMISSION_IPK_DIR)/opt/bin/transmissiond-dbg
 	install -d $(TRANSMISSION_IPK_DIR)/opt/sbin
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission_watchdog $(TRANSMISSION_IPK_DIR)/opt/sbin
-	install -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	install -m 666 $(TRANSMISSION_SOURCE_DIR)/README.daemon $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
+endif
 	install -m 666 $(TRANSMISSION_BUILD_DIR)/NEWS $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	install -d $(TRANSMISSION_IPK_DIR)/opt/var/log
 	install -d $(TRANSMISSION_IPK_DIR)/opt/var/run
 	$(MAKE) $(TRANSMISSION_IPK_DIR)/CONTROL/control
+ifdef TRANSMISSION_WITH_CGI_DAEMON
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/postinst $(TRANSMISSION_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(TRANSMISSION_SOURCE_DIR)/prerm $(TRANSMISSION_IPK_DIR)/CONTROL/prerm
+endif
 	echo $(TRANSMISSION_CONFFILES) | sed -e 's/ /\n/g' > $(TRANSMISSION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSION_IPK_DIR)
 
