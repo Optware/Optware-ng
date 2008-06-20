@@ -7,7 +7,7 @@
 ###########################################################
 
 OPTWARE-BOOTSTRAP_VERSION=1.2
-OPTWARE-BOOTSTRAP_IPK_VERSION=1
+OPTWARE-BOOTSTRAP_IPK_VERSION=2
 
 OPTWARE-BOOTSTRAP_DIR=optware-bootstrap-$(OPTWARE-BOOTSTRAP_VERSION)
 OPTWARE-BOOTSTRAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -86,6 +86,10 @@ $(OPTWARE-BOOTSTRAP_XSH): $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.built $(OPTWARE-BOOTST
 	install -d -m 1755 $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/tmp
 	install -m 755 $(IPKG-OPT_SOURCE_DIR)/rc.optware $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc/
 	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/optware $(OPTWARE-BOOTSTRAP_IPK_DIR)$(OPTWARE-BOOTSTRAP_RC)
+	install -d $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc/init.d
+	if [ -e $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/S00optware ] ; then \
+		install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/S00optware $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc/init.d/ ; \
+	fi
 ifeq (, $(filter ipkg-opt, $(OPTWARE-BOOTSTRAP_CONTAINS)))
 	install -d $(OPTWARE-BOOTSTRAP_IPK_DIR)$(UPD-ALT_PREFIX)/bin
 	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/update-alternatives \

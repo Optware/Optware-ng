@@ -3,7 +3,7 @@
 # Replaced during packaging based on value in target-specific.mk
 REAL_OPT_DIR=/home/.optware
 
-if [ -e "$REAL_OPT_DIR" ] ; then
+if [ -e "$REAL_OPT_DIR/usr" ] ; then
     echo "Backup your configuration settings, then type:"
     echo "  rm -rf $REAL_OPT_DIR"
     echo "This will remove all existing optware packages."
