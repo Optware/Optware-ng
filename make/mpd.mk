@@ -23,7 +23,7 @@
 MPD_SITE=http://www.musicpd.org/uploads/files
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
-MPD_VERSION=0.13.1
+MPD_VERSION=0.13.2
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.bz2
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=bzcat
@@ -151,10 +151,9 @@ endif
 	if test "$(BUILD_DIR)/$(MPD_DIR)" != "$(MPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MPD_DIR) $(MPD_BUILD_DIR) ; \
 	fi
-	cd $(MPD_BUILD_DIR); \
-		ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -vif; \
-		sed -i -e '/LIBFLAC_LIBS="$$LIBFLAC_LIBS/s|-lFLAC|-lFLAC -logg|' configure
-	(cd $(MPD_BUILD_DIR); \
+#	ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
+#	sed -i -e '/LIBFLAC_LIBS="$$LIBFLAC_LIBS/s|-lFLAC|-lFLAC -logg|' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPD_LDFLAGS)" \
@@ -188,9 +187,9 @@ endif
 		--disable-static \
 	)
 	sed -i -e '/^MPD_CFLAGS/s| -I$${prefix}/include||g;' \
-		$(MPD_BUILD_DIR)/src/Makefile \
-		$(MPD_BUILD_DIR)/src/*/Makefile
-	$(PATCH_LIBTOOL) $(MPD_BUILD_DIR)/libtool
+		$(@D)/src/Makefile \
+		$(@D)/src/*/Makefile
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mpd-unpack: $(MPD_BUILD_DIR)/.configured
