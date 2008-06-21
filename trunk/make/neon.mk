@@ -108,6 +108,7 @@ neon-source: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES)
 $(NEON_BUILD_DIR)/.configured: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES) make/neon.mk
 	$(MAKE) openssl-stage
 	$(MAKE) zlib-stage
+	$(MAKE) expat-stage
 	$(MAKE) libxml2-stage
 	rm -rf $(BUILD_DIR)/$(NEON_DIR) $(@D)
 	$(NEON_UNZIP) $(DL_DIR)/$(NEON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
