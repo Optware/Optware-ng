@@ -95,11 +95,11 @@ expat-source: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES)
 #
 $(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES) make/expat.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(EXPAT_DIR) $(EXPAT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(EXPAT_DIR) $(@D)
 	$(EXPAT_UNZIP) $(DL_DIR)/$(EXPAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(EXPAT_PATCHES) | patch -d $(BUILD_DIR)/$(EXPAT_DIR) -p1
-	mv $(BUILD_DIR)/$(EXPAT_DIR) $(EXPAT_BUILD_DIR)
-	(cd $(EXPAT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(EXPAT_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(EXPAT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(EXPAT_LDFLAGS)" \
@@ -111,8 +111,8 @@ $(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES) make/
 		--prefix=/opt \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(EXPAT_BUILD_DIR)/libtool
-	touch $(EXPAT_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 
 expat-unpack: $(EXPAT_BUILD_DIR)/.configured
@@ -121,9 +121,9 @@ expat-unpack: $(EXPAT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(EXPAT_BUILD_DIR)/.built: $(EXPAT_BUILD_DIR)/.configured
-	rm -f $(EXPAT_BUILD_DIR)/.built
-	$(MAKE) -C $(EXPAT_BUILD_DIR)
-	touch $(EXPAT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -134,14 +134,14 @@ expat: $(EXPAT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
-	rm -f $(EXPAT_BUILD_DIR)/.staged
+	rm -f $@
 	mkdir -p $(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR)
-	(cd $(EXPAT_BUILD_DIR); \
+	(cd $(@D); \
 		./libtool --mode=install install -c libexpat.la $(STAGING_LIB_DIR)/libexpat.la ; \
 		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_INCLUDE_DIR) ; \
 	)
-	sed -i -e 's%$(STAGING_DIR)%%' $(STAGING_DIR)/opt/lib/libexpat.la
-	touch $(EXPAT_BUILD_DIR)/.staged
+	rm -f $(STAGING_DIR)/opt/lib/libexpat.la
+	touch $@
 
 expat-stage: $(EXPAT_BUILD_DIR)/.staged
 
@@ -150,7 +150,7 @@ expat-stage: $(EXPAT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/expat
 #
 $(EXPAT_IPK_DIR)/CONTROL/control:
-	@install -d $(EXPAT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: expat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
