@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ELINKS_SITE=http://elinks.or.cz/download
-ELINKS_VERSION=0.11.3
+ELINKS_VERSION=0.11.4
 ELINKS_SOURCE=elinks-$(ELINKS_VERSION).tar.gz
 ELINKS_DIR=elinks-$(ELINKS_VERSION)
 ELINKS_UNZIP=zcat
@@ -28,7 +28,7 @@ ELINKS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ELINKS_DESCRIPTION=Full-Featured Text WWW Browser
 ELINKS_SECTION=web
 ELINKS_PRIORITY=optional
-ELINKS_DEPENDS=openssl, zlib, bzip2, expat
+ELINKS_DEPENDS=openssl, zlib, bzip2, expat, libidn, ossp-js
 ELINKS_SUGGESTS=
 ELINKS_CONFLICTS=
 
@@ -48,7 +48,7 @@ ELINKS_PATCHES=$(ELINKS_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 ELINKS_CPPFLAGS=
-ELINKS_LDFLAGS=
+ELINKS_LDFLAGS=-lm
 
 # Clear the follwing variable if preaty-print is favorable
 ELINKS_VERBOSE="V=1"
@@ -72,7 +72,8 @@ ELINKS_IPK=$(BUILD_DIR)/elinks_$(ELINKS_VERSION)-$(ELINKS_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ELINKS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ELINKS_SITE)/$(ELINKS_SOURCE)
+	$(WGET) -P $(@D) $(ELINKS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -96,16 +97,16 @@ elinks-source: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ELINKS_BUILD_DIR)/.configured: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES)
-	$(MAKE) zlib-stage bzip2-stage expat-stage openssl-stage
-	rm -rf $(BUILD_DIR)/$(ELINKS_DIR) $(ELINKS_BUILD_DIR)
+$(ELINKS_BUILD_DIR)/.configured: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES) make/elinks.mk
+	$(MAKE) zlib-stage bzip2-stage expat-stage libidn-stage openssl-stage ossp-js-stage
+	rm -rf $(BUILD_DIR)/$(ELINKS_DIR) $(@D)
 	$(ELINKS_UNZIP) $(DL_DIR)/$(ELINKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ELINKS_PATCHES)" ; \
 		then cat $(ELINKS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ELINKS_DIR) -p1 ; \
 	fi
-	mv $(BUILD_DIR)/$(ELINKS_DIR) $(ELINKS_BUILD_DIR)
-	(cd $(ELINKS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(ELINKS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ELINKS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ELINKS_LDFLAGS)" \
@@ -116,9 +117,10 @@ $(ELINKS_BUILD_DIR)/.configured: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--enable-256-colors \
+		--with-spidermonkey=$(STAGING_PREFIX) \
 		--without-x \
 	)
-	touch $(ELINKS_BUILD_DIR)/.configured
+	touch $@
 
 elinks-unpack: $(ELINKS_BUILD_DIR)/.configured
 
@@ -126,11 +128,11 @@ elinks-unpack: $(ELINKS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ELINKS_BUILD_DIR)/.built: $(ELINKS_BUILD_DIR)/.configured
-	rm -f $(ELINKS_BUILD_DIR)/.built
+	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) \
-	$(MAKE) -C $(ELINKS_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		C_INCLUDE_PATH=$(STAGING_INCLUDE_DIR) $(ELINKS_VERBOSE) 
-	touch $(ELINKS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,11 +143,11 @@ elinks: $(ELINKS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ELINKS_BUILD_DIR)/.staged: $(ELINKS_BUILD_DIR)/.built
-	rm -f $(ELINKS_BUILD_DIR)/.staged
+	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) \
-	$(MAKE) -C $(ELINKS_BUILD_DIR) 
+	$(MAKE) -C $(@D) 
 		DESTDIR=$(STAGING_DIR) $(ELINKS_VERBOSE) install
-	touch $(ELINKS_BUILD_DIR)/.staged
+	touch $@
 
 elinks-stage: $(ELINKS_BUILD_DIR)/.staged
 
@@ -153,7 +155,7 @@ elinks-stage: $(ELINKS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/elinks
 #
 $(ELINKS_IPK_DIR)/CONTROL/control:
-	@install -d $(ELINKS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: elinks" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
