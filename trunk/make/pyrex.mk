@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PYREX_SITE=http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex
-PYREX_VERSION=0.9.5.1a
+PYREX_VERSION=0.9.8.4
 PYREX_SOURCE=Pyrex-$(PYREX_VERSION).tar.gz
 PYREX_DIR=Pyrex-$(PYREX_VERSION)
 PYREX_UNZIP=zcat
@@ -68,8 +68,8 @@ PYREX_LDFLAGS=
 PYREX_BUILD_DIR=$(BUILD_DIR)/pyrex
 PYREX_SOURCE_DIR=$(SOURCE_DIR)/pyrex
 
-PY24-PYREX_IPK_DIR=$(BUILD_DIR)/pyrex-$(PYREX_VERSION)-ipk
-PY24-PYREX_IPK=$(BUILD_DIR)/pyrex_$(PYREX_VERSION)-$(PYREX_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PYREX_IPK_DIR=$(BUILD_DIR)/py24-pyrex-$(PYREX_VERSION)-ipk
+PY24-PYREX_IPK=$(BUILD_DIR)/py24-pyrex_$(PYREX_VERSION)-$(PYREX_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PYREX_IPK_DIR=$(BUILD_DIR)/py25-pyrex-$(PYREX_VERSION)-ipk
 PY25-PYREX_IPK=$(BUILD_DIR)/py25-pyrex_$(PYREX_VERSION)-$(PYREX_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,8 +81,8 @@ PY25-PYREX_IPK=$(BUILD_DIR)/py25-pyrex_$(PYREX_VERSION)-$(PYREX_IPK_VERSION)_$(T
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYREX_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PYREX_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PYREX_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,8 +114,8 @@ $(PYREX_BUILD_DIR)/.configured: $(DL_DIR)/$(PYREX_SOURCE) $(PYREX_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PYREX_DIR)
 	$(PYREX_UNZIP) $(DL_DIR)/$(PYREX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PYREX_PATCHES) | patch -d $(BUILD_DIR)/$(PYREX_DIR) -p1
-	mv $(BUILD_DIR)/$(PYREX_DIR) $(PYREX_BUILD_DIR)/2.4
-	(cd $(PYREX_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PYREX_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -131,8 +131,8 @@ $(PYREX_BUILD_DIR)/.configured: $(DL_DIR)/$(PYREX_SOURCE) $(PYREX_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PYREX_DIR)
 	$(PYREX_UNZIP) $(DL_DIR)/$(PYREX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PYREX_PATCHES) | patch -d $(BUILD_DIR)/$(PYREX_DIR) -p1
-	mv $(BUILD_DIR)/$(PYREX_DIR) $(PYREX_BUILD_DIR)/2.5
-	(cd $(PYREX_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PYREX_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -153,10 +153,10 @@ pyrex-unpack: $(PYREX_BUILD_DIR)/.configured
 #
 $(PYREX_BUILD_DIR)/.built: $(PYREX_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PYREX_BUILD_DIR)/2.4; \
+	cd $(@D)/2.4; \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build;
-	cd $(PYREX_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build;
 	touch $@
@@ -170,15 +170,15 @@ pyrex: $(PYREX_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PYREX_BUILD_DIR)/.staged: $(PYREX_BUILD_DIR)/.built
-	rm -f $(PYREX_BUILD_DIR)/.staged
-	cd $(PYREX_BUILD_DIR)/2.4; \
+	rm -f $@
+	cd $(@D)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(STAGING_DIR) --prefix=/opt
 #	sed -i -e 's|#!/opt/bin/python|#!/usr/bin/env python2.4|' $(STAGING_PREFIX)/bin/pyrexc
-	cd $(PYREX_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(STAGING_DIR) --prefix=/opt
-	touch $(PYREX_BUILD_DIR)/.staged
+	touch $@
 
 pyrex-stage: $(PYREX_BUILD_DIR)/.staged
 
@@ -189,7 +189,7 @@ pyrex-stage: $(PYREX_BUILD_DIR)/.staged
 $(PY24-PYREX_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: pyrex" >>$@
+	@echo "Package: py24-pyrex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PYREX_PRIORITY)" >>$@
 	@echo "Section: $(PYREX_SECTION)" >>$@
@@ -227,10 +227,13 @@ $(PY25-PYREX_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-PYREX_IPK): $(PYREX_BUILD_DIR)/.built
-	rm -rf $(PY24-PYREX_IPK_DIR) $(BUILD_DIR)/pyrex_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/pyrex_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PYREX_IPK_DIR) $(BUILD_DIR)/py24-pyrex_*_$(TARGET_ARCH).ipk
 	cd $(PYREX_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-PYREX_IPK_DIR) --prefix=/opt
+	for f in $(PY24-PYREX_IPK_DIR)/opt/bin/*; \
+	    do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-PYREX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PYREX_IPK_DIR)
 
@@ -239,8 +242,6 @@ $(PY25-PYREX_IPK): $(PYREX_BUILD_DIR)/.built
 	cd $(PYREX_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-PYREX_IPK_DIR) --prefix=/opt
-	for f in $(PY25-PYREX_IPK_DIR)/opt/bin/*; \
-	    do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-PYREX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PYREX_IPK_DIR)
 
