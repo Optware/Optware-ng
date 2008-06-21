@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEON_SITE=http://www.webdav.org/neon
-NEON_VERSION=0.24.7
+NEON_VERSION=0.28.2
 NEON_SOURCE=neon-$(NEON_VERSION).tar.gz
 NEON_DIR=neon-$(NEON_VERSION)
 NEON_UNZIP=zcat
@@ -42,7 +42,7 @@ NEON_CONFLICTS=
 #
 # NEON_IPK_VERSION should be incremented when the ipk changes.
 #
-NEON_IPK_VERSION=2
+NEON_IPK_VERSION=1
 
 #
 # NEON_CONFFILES should be a list of user-editable files
@@ -80,7 +80,8 @@ NEON_IPK=$(BUILD_DIR)/neon_$(NEON_VERSION)-$(NEON_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NEON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NEON_SITE)/$(NEON_SOURCE)
+	$(WGET) -P $(@D) $(NEON_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,15 +105,15 @@ neon-source: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NEON_BUILD_DIR)/.configured: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES)
+$(NEON_BUILD_DIR)/.configured: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES) make/neon.mk
 	$(MAKE) openssl-stage
 	$(MAKE) zlib-stage
 	$(MAKE) libxml2-stage
-	rm -rf $(BUILD_DIR)/$(NEON_DIR) $(NEON_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NEON_DIR) $(@D)
 	$(NEON_UNZIP) $(DL_DIR)/$(NEON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(NEON_PATCHES) | patch -d $(BUILD_DIR)/$(NEON_DIR) -p1
-	mv $(BUILD_DIR)/$(NEON_DIR) $(NEON_BUILD_DIR)
-	(cd $(NEON_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(NEON_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NEON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NEON_LDFLAGS)" \
@@ -130,7 +131,8 @@ $(NEON_BUILD_DIR)/.configured: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES)
 		--enable-shared \
 		--with-ssl \
 	)
-	touch $(NEON_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 neon-unpack: $(NEON_BUILD_DIR)/.configured
 
@@ -138,9 +140,9 @@ neon-unpack: $(NEON_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NEON_BUILD_DIR)/.built: $(NEON_BUILD_DIR)/.configured
-	rm -f $(NEON_BUILD_DIR)/.built
-	$(MAKE) -C $(NEON_BUILD_DIR)
-	touch $(NEON_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,12 +153,12 @@ neon: $(NEON_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(NEON_BUILD_DIR)/.staged: $(NEON_BUILD_DIR)/.built
-	rm -f $(NEON_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(NEON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -e "s:echo \$${libdir}/libneon.la:echo $(STAGING_DIR)/\$${libdir}/libneon.la:" <$(NEON_BUILD_DIR)/neon-config >$(STAGING_DIR)/opt/bin/neon-config
-	sed -ie '/echo/s|-I$${includedir}/neon|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/neon-config
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/neon.pc
-	touch $(NEON_BUILD_DIR)/.staged
+	sed -i -e '/echo/s|-I$${includedir}/neon|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/neon-config
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/neon.pc
+	touch $@
 
 neon-stage: $(NEON_BUILD_DIR)/.staged
 
@@ -165,7 +167,7 @@ neon-stage: $(NEON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/neon
 #
 $(NEON_IPK_DIR)/CONTROL/control:
-	@install -d $(NEON_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: neon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
