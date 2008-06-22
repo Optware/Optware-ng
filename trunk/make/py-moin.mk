@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MOIN_SITE=http://static.moinmo.in/files
-PY-MOIN_VERSION=1.6.3
+PY-MOIN_VERSION=1.7.0
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)
 PY-MOIN_UNZIP=zcat
@@ -30,8 +30,8 @@ PY-MOIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MOIN_DESCRIPTION=MoinMoin is a nice and easy WikiEngine with advanced features, providing collaboration on easily editable web pages.
 PY-MOIN_SECTION=web
 PY-MOIN_PRIORITY=optional
-PY24-MOIN_DEPENDS=python24
-PY25-MOIN_DEPENDS=python25
+PY24-MOIN_DEPENDS=python24, coreutils, sed, tar
+PY25-MOIN_DEPENDS=python25, coreutils, sed, tar
 PY-MOIN_CONFLICTS=
 
 #
@@ -47,7 +47,9 @@ PY-MOIN_IPK_VERSION=1
 # PY-MOIN_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PY-MOIN_PATCHES=$(PY-MOIN_SOURCE_DIR)/setup.py.patch
+PY-MOIN_PATCHES=\
+$(PY-MOIN_SOURCE_DIR)/setup.py.patch \
+$(PY-MOIN_SOURCE_DIR)/wikiserverconfig.py.patch \
 
 #
 # If the compilation of the package requires additional
@@ -126,7 +128,7 @@ $(PY-MOIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MOIN_SOURCE) $(PY-MOIN_PATCHES)
 	cat $(PY-MOIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.5
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.5") >> $(@D)/2.4/setup.cfg
+         echo "executable=/opt/bin/python2.5") >> $(@D)/2.5/setup.cfg
 	touch $@
 
 py-moin-unpack: $(PY-MOIN_BUILD_DIR)/.configured
@@ -223,6 +225,9 @@ $(PY24-MOIN_IPK): $(PY-MOIN_BUILD_DIR)/.built
 	for f in $(PY24-MOIN_IPK_DIR)/opt/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	rm -rf $(PY24-MOIN_IPK_DIR)/opt/share/
+	sed -e 's|python2.[4-9]|python2.4|' $(PY-MOIN_SOURCE_DIR)/createinstance.sh \
+		> $(PY24-MOIN_IPK_DIR)/opt/bin/py24-moin-createinstance.sh
+	chmod 755 $(PY24-MOIN_IPK_DIR)/opt/bin/py24-moin-createinstance.sh
 	$(MAKE) $(PY24-MOIN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MOIN_IPK_DIR)
 
@@ -235,10 +240,16 @@ $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK): $(PY-MOIN_BUILD_DIR)/.built
 	cd $(PY25-MOIN_IPK_DIR)/opt/share/moin; \
 	    tar --remove-files -cvzf underlay.tar.gz underlay; \
 	    rm -rf underlay
+	sed -e 's|python2.[4-9]|python2.5|' $(PY-MOIN_SOURCE_DIR)/createinstance.sh \
+		> $(PY25-MOIN_IPK_DIR)/opt/bin/py25-moin-createinstance.sh
+	chmod 755 $(PY25-MOIN_IPK_DIR)/opt/bin/py25-moin-createinstance.sh
 	$(MAKE) $(PY25-MOIN_IPK_DIR)/CONTROL/control
 	$(MAKE) $(PY-MOIN-COMMON_IPK_DIR)/CONTROL/control
 	install -d $(PY-MOIN-COMMON_IPK_DIR)/opt/
 	mv $(PY25-MOIN_IPK_DIR)/opt/share $(PY-MOIN-COMMON_IPK_DIR)/opt/
+	chmod o+r $(PY-MOIN-COMMON_IPK_DIR)/opt/share/moin/data/*-log
+	for f in wikiserver.py wikiserverconfig.py wikiserverlogging.conf; \
+	do install $(PY-MOIN_BUILD_DIR)/2.5/$${f} $(PY-MOIN-COMMON_IPK_DIR)/opt/share/moin/$${f}; done
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-MOIN-COMMON_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MOIN_IPK_DIR)
 
