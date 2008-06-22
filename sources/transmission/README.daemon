@@ -463,6 +463,14 @@ where
 26. Is there any way to make log graph show more then two days?
 There is no such limitation. The range depends on the contents of the syslog file. So if you have small size of the syslog, try to increase it that it will hold a week of so for logs.
 
+27. I have been using transmission successfully according to the setup of wengi, everything works great with the newest firmware. However, when downloading a torrentof course this takes some (or sometimes considerably) bandwith, so then it is convenient to pause transmission. A shame when I find out the next day that I have forgotten to unpause it, so it has been standing still for the night. I think it should be possible for example, to let cron switch it on again, say at midnight. Has anyone any idea how to program this, what is the command that should be used? Or is there any other way to accomplish this?
+Try something like the following line in your crontab.
+# m h dom mon dow command
+12  23 * * * /bin/rm  /tmp/harddisk/torrent/work/.paused
+
+28. I (and several other users) have the problem that the transmission.cgi is hanging when listing the torrents. At this point it consumes 100% cpu.
+This looks like busybox /bin/sh problem. Install bash and replace first line of transmission.cgi with #!/opt/bin/bash
+
 
 oleo
 

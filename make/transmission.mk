@@ -22,10 +22,13 @@
 #
 #  TRAC: http://trac.transmissionbt.com/timeline
 #
+# It is known that SVN version does not configure with intltool 0.40
+# use intltool 0.35 or 0.37 (test with intltoolize  --version)
+#
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.22
-#TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-#TRANSMISSION_SVN_REV=6196
+TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
+TRANSMISSION_SVN_REV=6245
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -46,7 +49,7 @@ TRANSMISSION_CONFLICTS=torrent
 #
 TRANSMISSION_IPK_VERSION=1
 
-#TRANSMISSION_WITH_CGI_DAEMON=
+TRANSMISSION_WITH_CGI_DAEMON=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -270,11 +273,17 @@ transmission-unpack: $(TRANSMISSION_BUILD_DIR)/.configured $(TRANSMISSION-DBG_BU
 #
 $(TRANSMISSION_BUILD_DIR)/.built: $(TRANSMISSION_BUILD_DIR)/.configured $(TRANSMISSION_SOURCES)
 	rm -f $@
+ifdef TRANSMISSION_WITH_CGI_DAEMON
+	cp $(TRANSMISSION_SOURCES) $(@D)/cli
+endif
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
 $(TRANSMISSION-DBG_BUILD_DIR)/.built: $(TRANSMISSION-DBG_BUILD_DIR)/.configured $(TRANSMISSION-DBG_SOURCES)
 	rm -f $@
+ifdef TRANSMISSION_WITH_CGI_DAEMON
+	cp $(TRANSMISSION_SOURCES) $(@D)/cli
+endif
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
