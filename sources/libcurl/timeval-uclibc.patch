@@ -1,0 +1,11 @@
+--- curl-7.18.2/lib/timeval.c	2008-05-27 13:06:38.000000000 +0200
++++ libcurl/lib/timeval.c	2008-06-22 14:37:23.000000000 +0200
+@@ -39,7 +39,7 @@
+   return now;
+ }
+ 
+-#elif defined(HAVE_CLOCK_GETTIME_MONOTONIC)
++#elif defined(HAVE_CLOCK_GETTIME_MONOTONIC) && !defined(__UCLIBC__)
+ 
+ struct timeval curlx_tvnow(void)
+ {
