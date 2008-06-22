@@ -1,0 +1,11 @@
+--- moinmoin/wikiserverconfig.py.orig	2008-06-21 23:30:02.000000000 -0700
++++ moinmoin/wikiserverconfig.py	2008-06-21 23:30:23.000000000 -0700
+@@ -17,7 +17,7 @@
+     #interface = 'localhost'
+ 
+     # where the static data is served from:
+-    #docs = "/usr/share/moin/htdocs"
++    docs = "/opt/share/moin/htdocs"
+ 
+     # tuning options:
+     #serverClass = 'ThreadPoolServer'
