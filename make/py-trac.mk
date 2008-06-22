@@ -24,24 +24,24 @@
 #PY-TRAC_SVN_REPO=http://svn.edgewall.com/repos/trac/trunk
 #PY-TRAC_SVN_REV=4863
 #PY-TRAC_VERSION=0.10+svn$(PY-TRAC_SVN_REV)
-PY-TRAC_VERSION=0.10.4
-PY-TRAC_SITE=http://ftp.edgewall.com/pub/trac
-PY-TRAC_SOURCE=trac-$(PY-TRAC_VERSION).tar.gz
-PY-TRAC_DIR=trac-$(PY-TRAC_VERSION)
+PY-TRAC_VERSION=0.11
+PY-TRAC_SITE=http://pypi.python.org/packages/source/T/Trac
+PY-TRAC_SOURCE=Trac-$(PY-TRAC_VERSION).tar.gz
+PY-TRAC_DIR=Trac-$(PY-TRAC_VERSION)
 PY-TRAC_UNZIP=zcat
 PY-TRAC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TRAC_DESCRIPTION=An enhanced wiki and issue tracking system for software development projects.
 PY-TRAC_SECTION=misc
 PY-TRAC_PRIORITY=optional
-PY24-TRAC_DEPENDS=python24, py24-setuptools, clearsilver
-PY25-TRAC_DEPENDS=python25, py25-setuptools, clearsilver
+PY24-TRAC_DEPENDS=python24, py24-genshi
+PY25-TRAC_DEPENDS=python25, py25-genshi
 PY24-TRAC_CONFLICTS=py25-trac
 PY25-TRAC_CONFLICTS=py24-trac
 
 #
 # PY-TRAC_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TRAC_IPK_VERSION=2
+PY-TRAC_IPK_VERSION=1
 
 #
 # PY-TRAC_CONFFILES should be a list of user-editable files
