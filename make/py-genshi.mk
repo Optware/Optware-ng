@@ -37,7 +37,7 @@ PY-GENSHI_CONFLICTS=
 #
 # PY-GENSHI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GENSHI_IPK_VERSION=1
+PY-GENSHI_IPK_VERSION=2
 
 #
 # PY-GENSHI_CONFFILES should be a list of user-editable files
@@ -134,7 +134,7 @@ $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PA
 	(cd $(@D)/2.5; \
 	    ( \
 	    echo "[build_ext]"; \
-	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	    echo "rpath=/opt/lib"; \
 	    echo "[build_scripts]"; \
