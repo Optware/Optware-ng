@@ -55,6 +55,10 @@ CRYPTO++_IPK_VERSION=1
 CRYPTO++_CPPFLAGS=
 CRYPTO++_LDFLAGS=
 
+ifdef TARGET_GXX
+CRYPTO++_CXX_OPTS = CXX=$(TARGET_GXX)
+endif
+
 #
 # CRYPTO++_BUILD_DIR is the directory in which the build is done.
 # CRYPTO++_SOURCE_DIR is the directory which holds all the
@@ -104,7 +108,7 @@ crypto++-source: $(DL_DIR)/$(CRYPTO++_SOURCE) $(CRYPTO++_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(CRYPTO++_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTO++_SOURCE) $(CRYPTO++_PATCHES) # make/crypto++.mk
+$(CRYPTO++_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTO++_SOURCE) $(CRYPTO++_PATCHES) make/crypto++.mk
 	$(MAKE) libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(CRYPTO++_DIR) $(@D)
 	mkdir -p $(BUILD_DIR)/$(CRYPTO++_DIR)
@@ -140,6 +144,7 @@ $(CRYPTO++_BUILD_DIR)/.built: $(CRYPTO++_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
+		$(CRYPTO++_CXX_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CRYPTO++_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CRYPTO++_LDFLAGS)" \
 		;
