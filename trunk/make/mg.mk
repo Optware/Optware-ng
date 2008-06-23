@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MG_SITE=http://www.xs4all.nl/~hanb/software/mg
-MG_VERSION=20080322
+MG_VERSION=20080610
 MG_SOURCE=mg-$(MG_VERSION).tar.gz
 MG_DIR=mg-$(MG_VERSION)
 MG_UNZIP=zcat
@@ -167,12 +167,12 @@ mg: $(MG_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MG_BUILD_DIR)/.staged: $(MG_BUILD_DIR)/.built
-	rm -f $@
+#$(MG_BUILD_DIR)/.staged: $(MG_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(MG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-mg-stage: $(MG_BUILD_DIR)/.staged
+#	touch $@
+#
+#mg-stage: $(MG_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
