@@ -36,7 +36,7 @@ CRYPTO++_CONFLICTS=
 #
 # CRYPTO++_IPK_VERSION should be incremented when the ipk changes.
 #
-CRYPTO++_IPK_VERSION=1
+#CRYPTO++_IPK_VERSION=1
 
 #
 # CRYPTO++_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ CRYPTO++_IPK_VERSION=1
 # CRYPTO++_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CRYPTO++_PATCHES=$(CRYPTO++_SOURCE_DIR)/configure.patch
+CRYPTO++_PATCHES=$(CRYPTO++_SOURCE_DIR)/mipsel-endian.patch
 
 #
 # If the compilation of the package requires additional
