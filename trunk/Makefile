@@ -217,7 +217,7 @@ COMMON_CROSS_PACKAGES = \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
 	emacs22 endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
-	esound eggdrop eventlog expat extract-xiso \
+	esound eggdrop eventlog expat extract-xiso ez-ipupdate \
 	faad2 fann fcgi fconfig fetchmail ffmpeg \
 	ficy file finch findutils firedrill-httptunnel \
 	fis fish fixesext flac flex flip \
