@@ -137,7 +137,7 @@ torrentStateChanged( tr_torrent   * torrent UNUSED,
 }
 
 
-/* Dispose (Free) stopped torrents. Returns non-zero if still dirty */
+/* Dispose (Close) stopped torrents. Returns non-zero if still dirty */
 static int dispose()
 {
   int dirty = 0;
@@ -149,13 +149,13 @@ static int dispose()
     {
       if (tor->should_dispose)
         {
-          const struct tr_stat * st = tr_torrentStat( tor->torrent );
+          const tr_stat * st = tr_torrentStat( tor->torrent );
      
           if (st->status == TR_STATUS_STOPPED)
             {
               struct ACTIVE_TORRENTS *next;
               syslog( LOG_NOTICE, "Closing torrent %s", tor->filename );
-              tr_torrentFree( tor->torrent );
+              tr_torrentClose( tor->torrent );
               next = tor->next;
               if (active_torrents == tor)
                   active_torrents = prev = next;
@@ -245,7 +245,7 @@ static void start_torrent(const char * filename)
       
       tr_ctorSetMetainfoFromFile( ctor, filename);
       tr_ctorSetPaused( ctor, TR_FORCE, 0 ); 
-      tr_ctorSetDownloadDir( ctor, TR_FORCE, dirname(folder)); 
+      tr_ctorSetDestination( ctor, TR_FORCE, dirname(folder)); 
       tor = tr_torrentNew( h, ctor, &error ); 
       tr_ctorFree( ctor ); 
       if( tor == NULL ) 
@@ -275,7 +275,7 @@ static void start_torrent(const char * filename)
                   active_torrents = new_torrent;
                 }
               tr_torrentSetStatusCallback( tor, torrentStateChanged, NULL );
-              tr_torrentSetDownloadDir( tor, folder);
+              tr_torrentSetFolder( tor, folder);
               tr_torrentStart( tor );
               syslog( LOG_NOTICE, "Starting torrent %s", filename );
             }
@@ -355,7 +355,7 @@ static char * status(tr_torrent *tor)
   static char string[STATUS_WIDTH];
   int  chars = 0;
 
-  const struct tr_stat    * s = tr_torrentStat( tor );
+  const tr_stat    * s = tr_torrentStat( tor );
 
   if ( s->error && !(s->error & TR_ERROR_TC_WARNING))
     snprintf( string, STATUS_WIDTH, "Error: #%x %s", s->error, s->errorString );
@@ -409,7 +409,7 @@ static char * status(tr_torrent *tor)
 static int progress(tr_torrent *tor)
 {
 
-  const struct tr_stat    * s = tr_torrentStat( tor );
+  const tr_stat    * s = tr_torrentStat( tor );
 
   if( s->status & TR_STATUS_CHECK )
     return 100.0 * s->percentDone;
@@ -425,8 +425,8 @@ static void write_info(tr_torrent *tor, void * data UNUSED )
 {
   FILE *stream;
   char fn[MAX_PATH_LENGTH];
-  const struct tr_stat    * s = tr_torrentStat( tor );
-  snprintf(fn, MAX_PATH_LENGTH, "%s/.status", tr_torrentGetDownloadDir(tor));
+  const tr_stat    * s = tr_torrentStat( tor );
+  snprintf(fn, MAX_PATH_LENGTH, "%s/.status", tr_torrentGetFolder(tor));
   stream = fopen(fn, "w");
   if ( stream )
     {
@@ -626,32 +626,21 @@ int main( int argc, char ** argv )
   
   
   /* Initialize libtransmission */
-  h = tr_sessionInitFull(TR_DEFAULT_CONFIG_DIR,
-                         "cgi",                   /* tag */
-                         ".",		   /* where to download torrents */
-                         TR_DEFAULT_PEX_ENABLED,  /* pex enabled */
-                         natTraversal,            /* nat enabled */
-                         publicPort,              /* public port */
-                         encryptionMode, 	      /* encryption mode */
-                         uploadLimit >= 0,        /* use upload speed limit? */
-                         uploadLimit,             /* upload speed limit */
-                         downloadLimit >= 0,    /* use download speed limit? */
-                         downloadLimit,           /* download speed limit */
-                         TR_DEFAULT_GLOBAL_PEER_LIMIT,   /* globalPeerLimit */
-                         verboseLevel + 1,        /* messageLevel */
-                         1,           /* is message queueing enabled? */
-                         TR_DEFAULT_BLOCKLIST_ENABLED,  /* use the blocklist? */
-                         TR_DEFAULT_PEER_SOCKET_TOS,
-                         0, 			   /* TR_DEFAULT_RPC_ENABLED, */
-                         TR_DEFAULT_RPC_PORT,
-                         TR_DEFAULT_RPC_ACL,
-                         FALSE, "fnord", "potzrebie",
-			TR_DEFAULT_PROXY_ENABLED,
-			TR_DEFAULT_PROXY,
-			TR_DEFAULT_PROXY_TYPE,
-			TR_DEFAULT_PROXY_AUTH_ENABLED,
-			TR_DEFAULT_PROXY_USERNAME,
-			TR_DEFAULT_PROXY_PASSWORD  );
+  h = tr_initFull(TR_DEFAULT_CONFIG_DIR,
+                  "cgi",                   /* tag */
+                  1,                       /* pex enabled */
+                  natTraversal,            /* nat enabled */
+                  publicPort,              /* public port */
+                  encryptionMode, 	       /* encryption mode */
+                  uploadLimit >= 0,        /* use upload speed limit? */
+                  uploadLimit,             /* upload speed limit */
+                  downloadLimit >= 0,      /* use download speed limit? */
+                  downloadLimit,           /* download speed limit */
+                  512,                     /* globalPeerLimit */
+                  verboseLevel + 1,        /* messageLevel */
+                  1,                       /* is message queueing enabled? */
+                  0,                       /* use the blocklist? */
+		  TR_DEFAULT_PEER_SOCKET_TOS );
 
   /* Move  to writable directory to be able to save coredump there */
   if ( chdir( tr_getDefaultConfigDir())  < 0)
@@ -689,7 +678,7 @@ int main( int argc, char ** argv )
           reload_active();
           got_hup = 0;
         }
-      tr_sessionGetSpeed(h, &download, &upload);
+      tr_torrentRates(h, &download, &upload);
       dispose();
 
 #ifdef HAVE_SYSINFO
@@ -702,12 +691,12 @@ int main( int argc, char ** argv )
         struct sysinfo info;
         sysinfo(&info);
         syslog(LOG_INFO, "%ld %d dl %.2f ul %.2f ld %ld.%02ld", time(NULL),
-               tr_sessionCountTorrents( h ), download, upload,
+               tr_torrentCount( h ), download, upload,
                LOAD_INT(info.loads[1]), LOAD_FRAC(info.loads[1]));
       }
 #else
       syslog(LOG_INFO, "%ld %d dl %.2f ul %.2f ld 0.0", time(NULL),
-             tr_sessionCountTorrents( h ), download, upload);
+             tr_torrentCount( h ), download, upload);
 #endif
     }
   
@@ -732,7 +721,7 @@ int main( int argc, char ** argv )
         {
           const tr_info * info =  tr_torrentInfo( tor->torrent );
           syslog( LOG_NOTICE, "Unconditionally closing torrent %s", info->name );
-          tr_torrentFree(tor->torrent);
+          tr_torrentClose(tor->torrent);
           next = tor->next;
           free(tor);
           tor = next;
@@ -743,14 +732,18 @@ int main( int argc, char ** argv )
 
   if (natTraversal)
     {
-      /* try for 5 seconds to delete any port mappings for NAT traversal */
-      tr_sessionSetPortForwardingEnabled( h , 0);
-      for( i=0; i<10; ++i ) { 
-	const tr_port_forwarding f = tr_sessionGetPortForwarding( h ); 
-	if( f == TR_PORT_UNMAPPED ) 
-	  break; 
-	tr_wait( 500 ); 
-      }
+      /* Try for 5 seconds to delete any port mappings for NAT traversal */
+      tr_natTraversalEnable( h , 0);
+      for( i = 0; i < 5; i++ )
+        {
+          const tr_handle_status * hstat = tr_handleStatus( h );
+          if( TR_NAT_TRAVERSAL_UNMAPPED == hstat->natTraversalStatus )
+            {
+              /* Port mappings were deleted */
+              break;
+            }
+          sleep(1);
+        }
     }
   
   if (pidfile != NULL)
@@ -760,7 +753,7 @@ int main( int argc, char ** argv )
 
   closelog();
 
-  tr_sessionClose(h); /* seems like leaking when destroying handle */
+  tr_close(h); /* seems like leaking when destroying handle */
   
   return 0;
 }
