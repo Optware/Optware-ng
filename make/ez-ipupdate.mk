@@ -188,7 +188,8 @@ $(EZ-IPUPDATE_IPK_DIR)/CONTROL/control:
 #
 $(EZ-IPUPDATE_IPK): $(EZ-IPUPDATE_BUILD_DIR)/.built
 	rm -rf $(EZ-IPUPDATE_IPK_DIR) $(BUILD_DIR)/ez-ipupdate_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(EZ-IPUPDATE_BUILD_DIR) DESTDIR=$(EZ-IPUPDATE_IPK_DIR) install-strip
+	$(MAKE) -C $(EZ-IPUPDATE_BUILD_DIR) DESTDIR=$(EZ-IPUPDATE_IPK_DIR) install
+	$(STRIP_COMMAND) $(EZ-IPUPDATE_IPK_DIR)/opt/bin/ez-ipupdate
 	install -d $(EZ-IPUPDATE_IPK_DIR)/opt/share/doc/ez-ipupdate
 	install -m 644 $(EZ-IPUPDATE_BUILD_DIR)/[CR]* $(EZ-IPUPDATE_IPK_DIR)/opt/share/doc/ez-ipupdate
 #	install -d $(EZ-IPUPDATE_IPK_DIR)/opt/etc/init.d
