@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FREETYPE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/freetype
-FREETYPE_VERSION=2.1.10
+FREETYPE_VERSION=2.3.6
 FREETYPE_SOURCE=freetype-$(FREETYPE_VERSION).tar.bz2
 FREETYPE_DIR=freetype-$(FREETYPE_VERSION)
 FREETYPE_UNZIP=bzcat
@@ -33,7 +33,7 @@ FREETYPE_DEPENDS=zlib
 #
 # FREETYPE_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETYPE_IPK_VERSION=4
+FREETYPE_IPK_VERSION=1
 
 #
 # FREETYPE_CONFFILES should be a list of user-editable files
@@ -87,7 +87,8 @@ $(FREETYPE_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FREETYPE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FREETYPE_SITE)/$(FREETYPE_SOURCE)
+	$(WGET) -P $(@D) $(FREETYPE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -113,10 +114,10 @@ freetype-source: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
 #
 $(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
 	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(FREETYPE_DIR) $(FREETYPE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FREETYPE_DIR) $(@D)
 	$(FREETYPE_UNZIP) $(DL_DIR)/$(FREETYPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(FREETYPE_DIR) $(FREETYPE_BUILD_DIR)
-	(cd $(FREETYPE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(FREETYPE_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREETYPE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FREETYPE_LDFLAGS)" \
@@ -129,7 +130,7 @@ $(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCH
 		--prefix=/opt \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(FREETYPE_BUILD_DIR)/builds/unix/libtool
+	$(PATCH_LIBTOOL) $(@D)/builds/unix/libtool
 	touch $@
 
 freetype-unpack: $(FREETYPE_BUILD_DIR)/.configured
@@ -139,7 +140,7 @@ freetype-unpack: $(FREETYPE_BUILD_DIR)/.configured
 #
 $(FREETYPE_BUILD_DIR)/.built: $(FREETYPE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(FREETYPE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,12 +153,12 @@ freetype: $(FREETYPE_BUILD_DIR)/.built
 #
 $(FREETYPE_BUILD_DIR)/.staged: $(FREETYPE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(FREETYPE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' $(STAGING_PREFIX)/bin/freetype-config
 	install -d $(STAGING_DIR)/bin
 	cp $(STAGING_DIR)/opt/bin/freetype-config $(STAGING_DIR)/bin/freetype-config
 	rm -f $(STAGING_LIB_DIR)/libfreetype.la
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/freetype2.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/freetype2.pc
 	touch $@
 
 freetype-stage: $(FREETYPE_BUILD_DIR)/.staged
@@ -199,3 +200,9 @@ freetype-clean:
 #
 freetype-dirclean:
 	rm -rf $(BUILD_DIR)/$(FREETYPE_DIR) $(FREETYPE_BUILD_DIR) $(FREETYPE_IPK_DIR) $(FREETYPE_IPK)
+
+#
+# Some sanity check for the package.
+#
+freetype-check: $(FREETYPE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FREETYPE_IPK)
