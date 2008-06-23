@@ -1,0 +1,16 @@
+--- conf_file.c.orig	2008-06-23 09:51:03.000000000 -0700
++++ conf_file.c	2008-06-23 09:52:03.000000000 -0700
+@@ -38,11 +38,11 @@
+ #include <conf_file.h>
+ 
+ #if HAVE_STRERROR
+-extern int errno;
++#include <errno.h>
+ #  define error_string strerror(errno)
+ #elif HAVE_SYS_ERRLIST
+ extern const char *const sys_errlist[];
+-extern int errno;
++#include <errno.h>
+ #  define error_string (sys_errlist[errno])
+ #else
+ #  define error_string "error message not found"
