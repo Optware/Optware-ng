@@ -1,0 +1,11 @@
+--- config.h.orig	2007-09-25 00:30:34.000000000 +0000
++++ config.h	2008-06-23 22:07:32.000000000 +0000
+@@ -4,7 +4,7 @@
+ // ***************** Important Settings ********************
+ 
+ // define this if running on a big-endian CPU
+-#if !defined(IS_LITTLE_ENDIAN) && (defined(__BIG_ENDIAN__) || defined(__sparc) || defined(__sparc__) || defined(__hppa__) || defined(__mips__) || (defined(__MWERKS__) && !defined(__INTEL__)))
++#if !defined(IS_LITTLE_ENDIAN) && !defined(__MIPSEL__) && (defined(__BIG_ENDIAN__) || defined(__sparc) || defined(__sparc__) || defined(__hppa__) || defined(__mips__) || (defined(__MWERKS__) && !defined(__INTEL__)))
+ #	define IS_BIG_ENDIAN
+ #endif
+ 
