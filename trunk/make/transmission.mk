@@ -25,10 +25,12 @@
 # It is known that SVN version does not configure with intltool 0.40
 # use intltool 0.35 or 0.37 (test with intltoolize  --version)
 #
+# SVN releases also include transmissiond-dbg while official releases does not.
+#
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.22
-TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=6245
+#TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
+#TRANSMISSION_SVN_REV=6245
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -47,7 +49,7 @@ TRANSMISSION_CONFLICTS=torrent
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=1
+TRANSMISSION_IPK_VERSION=2
 
 TRANSMISSION_WITH_CGI_DAEMON=1
 
@@ -356,7 +358,9 @@ ifdef TRANSMISSION_WITH_CGI_DAEMON
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/S80busybox_httpd $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
 	install -d $(TRANSMISSION_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission.cgi $(TRANSMISSION_IPK_DIR)/opt/share/www/cgi-bin
+ifdef TRANSMISSION_SVN_REV
 	install -m 755 $(TRANSMISSION-DBG_BUILD_DIR)/cli/transmissiond $(TRANSMISSION_IPK_DIR)/opt/bin/transmissiond-dbg
+endif
 	install -d $(TRANSMISSION_IPK_DIR)/opt/sbin
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission_watchdog $(TRANSMISSION_IPK_DIR)/opt/sbin
 	install -m 666 $(TRANSMISSION_SOURCE_DIR)/README.daemon $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
