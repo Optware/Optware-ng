@@ -47,7 +47,8 @@ ERLANG_WITH_SAE=no
 #
 ERLANG_IPK_VERSION=1
 
-ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|' | sed 's/-linux$$/-linux-gnu/'))
+ERLANG_TARGET=$(shell $(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME))
+
 
 ERLANG_HIPE=$(strip \
 	$(if $(filter powerpc, $(TARGET_ARCH)), --enable-hipe, \
