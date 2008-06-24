@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RTPPROXY_SITE=http://b2bua.org/chrome/site
-RTPPROXY_VERSION=1.0.2
+RTPPROXY_VERSION=1.1
 RTPPROXY_SOURCE=rtpproxy-$(RTPPROXY_VERSION).tar.gz
 RTPPROXY_DIR=rtpproxy-$(RTPPROXY_VERSION)
 RTPPROXY_UNZIP=zcat
