@@ -58,7 +58,7 @@ SVN-PL_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=3
+SVN_IPK_VERSION=4
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -219,7 +219,8 @@ $(SVN_BUILD_DIR)/.pl-built: $(SVN_BUILD_DIR)/.built
 	sed -i \
 	    -e '/^INSTALL.*=.*staging-install/s|= *$(PERL_HOST_BUILD_DIR)/staging-install|= /opt|' \
 	    -e '/^\(EXTRALIBS\|LDLOADLIBS\)/s|$$| -lsvn_swig_perl-1|' \
-	    $(@D)/subversion/bindings/swig/perl/native/Makefile
+	    $(@D)/subversion/bindings/swig/perl/native/Makefile \
+	    $(@D)/subversion/bindings/swig/perl/native/Makefile.[a-z]*
 	$(MAKE) -C $(@D) swig-pl \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
