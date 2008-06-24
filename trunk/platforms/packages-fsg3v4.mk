@@ -29,6 +29,7 @@ BROKEN_PACKAGES = \
 	monotone \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
+	ppp \
 	qemu qemu-libc-i386 \
 	quagga \
 	\
