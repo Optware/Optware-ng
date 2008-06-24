@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
-ifneq ($(OPTWARE_TARGET), $(filter cs05q3armel fsg3v4 syno-x07 ts101, $(OPTWARE_TARGET)))
+ifneq ($(OPTWARE_TARGET), $(filter cs05q3armel fsg3v4 syno-x07 syno-e500 ts101, $(OPTWARE_TARGET)))
 E2FSPROGS_VERSION=1.40.11
 E2FSPROGS_IPK_VERSION=1
 else
