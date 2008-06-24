@@ -58,7 +58,7 @@ SVN-PL_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=2
+SVN_IPK_VERSION=3
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -116,7 +116,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SVN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SVN_SITE)/$(SVN_SOURCE)
+	$(WGET) -P $(@D) $(SVN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -215,7 +216,10 @@ $(SVN_BUILD_DIR)/.pl-built: $(SVN_BUILD_DIR)/.built
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		;
-	sed -i -e '/^INSTALL.*=.*staging-install/s|= *$(PERL_HOST_BUILD_DIR)/staging-install|= /opt|' $(@D)/subversion/bindings/swig/perl/native/Makefile
+	sed -i \
+	    -e '/^INSTALL.*=.*staging-install/s|= *$(PERL_HOST_BUILD_DIR)/staging-install|= /opt|' \
+	    -e '/^\(EXTRALIBS\|LDLOADLIBS\)/s|$$| -lsvn_swig_perl-1|' \
+	    $(@D)/subversion/bindings/swig/perl/native/Makefile
 	$(MAKE) -C $(@D) swig-pl \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
@@ -239,9 +243,9 @@ svn: $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.pl-bui
 # If you are building a library, then you need to stage it too.
 #
 $(SVN_BUILD_DIR)/.staged: $(SVN_BUILD_DIR)/.built
-	rm -f $(SVN_BUILD_DIR)/.staged
-	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SVN_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 svn-stage: $(SVN_BUILD_DIR)/.staged
 
