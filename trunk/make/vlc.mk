@@ -50,10 +50,12 @@ libupnp, \
 libvorbis, \
 libxml2, \
 ncurses, \
-speex, \
-x264
+speex
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 VLC_SUGGESTS+=, avahi
+endif
+ifeq (x264, $(filter x264, $(PACKAGES)))
+VLC_SUGGESTS+=, x264
 endif
 VLC_CONFLICTS=
 
@@ -74,10 +76,10 @@ VLC_CONFLICTS=
 VLC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 VLC_LDFLAGS=
 
-ifeq (avahi, $(filter avahi, $(PACKAGES)))
-VLC_CONFIG_BONJOUR=--enable-bonjour
-else
-VLC_CONFIG_BONJOUR=--disable-bonjour
+VLC_CONFIG_OPTS = $(if $(filter avahi, $(PACKAGES)),--enable-bonjour,--disable-bonjour)
+VLC_CONFIG_OPTS += $(if $(filter x264, $(PACKAGES)),--enable-x264,--disable-x264)
+ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
+VLC_CONFIG_OPTS += --disable-altivec
 endif
 
 #
@@ -153,7 +155,9 @@ endif
 	$(MAKE) libxml2-stage
 	$(MAKE) ncurses-stage
 	$(MAKE) speex-stage
+ifeq (x264, $(filter x264, $(PACKAGES)))
 	$(MAKE) x264-stage
+endif
 	rm -rf $(BUILD_DIR)/$(VLC_DIR) $(@D)
 	$(VLC_UNZIP) $(DL_DIR)/$(VLC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VLC_PATCHES)" ; \
@@ -176,7 +180,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-v4l \
-		$(VLC_CONFIG_BONJOUR) \
+		$(VLC_CONFIG_OPTS) \
 		--enable-a52 \
 		--enable-dvbpsi \
 		--enable-dvdnav \
@@ -191,7 +195,6 @@ endif
 		--enable-shout \
 		--enable-speex \
 		--enable-vorbis \
-		--enable-x264 \
 		--disable-alsa \
 		--disable-dts \
 		--disable-glx \
