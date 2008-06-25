@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UP-IMAPPROXY_SITE=http://www.imapproxy.org/downloads
-UP-IMAPPROXY_VERSION=1.2.5rc2
+UP-IMAPPROXY_VERSION=1.2.5
 UP-IMAPPROXY_SOURCE=up-imapproxy-$(UP-IMAPPROXY_VERSION).tar.gz
 UP-IMAPPROXY_DIR=up-imapproxy-$(UP-IMAPPROXY_VERSION)
 UP-IMAPPROXY_UNZIP=zcat
@@ -52,7 +52,9 @@ UP-IMAPPROXY_CONFFILES=/opt/etc/imapproxy.conf /opt/etc/init.d/S60imapproxy
 # UP-IMAPPROXY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-UP-IMAPPROXY_PATCHES=$(UP-IMAPPROXY_SOURCE_DIR)/Makefile.in.patch
+UP-IMAPPROXY_PATCHES=\
+$(UP-IMAPPROXY_SOURCE_DIR)/Makefile.in.patch \
+$(UP-IMAPPROXY_SOURCE_DIR)/md5.h.patch \
 
 #
 # If the compilation of the package requires additional
@@ -82,8 +84,8 @@ UP-IMAPPROXY_IPK=$(BUILD_DIR)/up-imapproxy_$(UP-IMAPPROXY_VERSION)-$(UP-IMAPPROX
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(UP-IMAPPROXY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(UP-IMAPPROXY_SITE)/$(UP-IMAPPROXY_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(UP-IMAPPROXY_SOURCE)
+	$(WGET) -P $(@D) $(UP-IMAPPROXY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,10 +120,10 @@ $(UP-IMAPPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(UP-IMAPPROXY_SOURCE) $(UP-IMA
 		then cat $(UP-IMAPPROXY_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(UP-IMAPPROXY_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(UP-IMAPPROXY_DIR)" != "$(UP-IMAPPROXY_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(UP-IMAPPROXY_DIR) $(UP-IMAPPROXY_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(UP-IMAPPROXY_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(UP-IMAPPROXY_DIR) $(@D) ; \
 	fi
-	(cd $(UP-IMAPPROXY_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UP-IMAPPROXY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UP-IMAPPROXY_LDFLAGS)" \
@@ -133,7 +135,7 @@ $(UP-IMAPPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(UP-IMAPPROXY_SOURCE) $(UP-IMA
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(UP-IMAPPROXY_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 up-imapproxy-unpack: $(UP-IMAPPROXY_BUILD_DIR)/.configured
@@ -143,7 +145,7 @@ up-imapproxy-unpack: $(UP-IMAPPROXY_BUILD_DIR)/.configured
 #
 $(UP-IMAPPROXY_BUILD_DIR)/.built: $(UP-IMAPPROXY_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(UP-IMAPPROXY_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -156,7 +158,7 @@ up-imapproxy: $(UP-IMAPPROXY_BUILD_DIR)/.built
 #
 $(UP-IMAPPROXY_BUILD_DIR)/.staged: $(UP-IMAPPROXY_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(UP-IMAPPROXY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 up-imapproxy-stage: $(UP-IMAPPROXY_BUILD_DIR)/.staged

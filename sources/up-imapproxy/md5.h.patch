@@ -1,0 +1,11 @@
+--- up-imapproxy/src/imapcommon.c.orig	2007-01-30 15:23:46.000000000 +0000
++++ up-imapproxy/src/imapcommon.c	2008-06-25 16:01:50.000000000 +0000
+@@ -150,6 +150,8 @@
+ #include <syslog.h>
+ #include <poll.h>
+ 
++#include <openssl/md5.h>
++
+ #include "common.h"
+ #include "imapproxy.h"
+ 
