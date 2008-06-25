@@ -67,17 +67,14 @@ $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $
 			shared no-zlib \
 			--openssldir=/opt/share/openssl \
 			--prefix=/opt \
-			linux-`uname -m | sed -e 's/i[5-9]86/pentium/'` \
+		linux-$(if $(filter 0.9.7,$(OPENSSL_LIB_VERSION)),`uname -m | sed -e 's/i[5-9]86/pentium/'`,elf) \
 	)
-	sed -i -e 's|$$(PERL) tools/c_rehash certs||' $(OPENSSL_HOST_BUILD_DIR)/apps/Makefile
-	$(MAKE) -C $(OPENSSL_HOST_BUILD_DIR) \
-		MANDIR=/opt/man \
-		DIRS="crypto ssl apps"
+	$(MAKE) -C $(@D)
 	touch $@
 
 $(OPENSSL_HOST_BUILD_DIR)/.staged: $(OPENSSL_HOST_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(OPENSSL_HOST_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		INSTALL_PREFIX=$(HOST_STAGING_DIR) install_sw
 	touch $@
 
