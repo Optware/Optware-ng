@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOJSON_VERSION=1.1.2
+PY-TURBOJSON_VERSION=1.2
 # PY-TURBOJSON_SVN_TAG=$(PY-TURBOJSON_VERSION)
 # PY-TURBOJSON_REPOSITORY=http://svn.turbogears.org/projects/TurboJson/tags/$(PY-TURBOJSON_SVN_TAG)
 PY-TURBOJSON_SITE=http://pypi.python.org/packages/source/T/TurboJson
@@ -39,7 +39,7 @@ PY-TURBOJSON_CONFLICTS=
 #
 # PY-TURBOJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOJSON_IPK_VERSION=2
+PY-TURBOJSON_IPK_VERSION=1
 
 #
 # PY-TURBOJSON_CONFFILES should be a list of user-editable files
@@ -84,8 +84,8 @@ PY25-TURBOJSON_IPK=$(BUILD_DIR)/py25-turbojson_$(PY-TURBOJSON_VERSION)-$(PY-TURB
 #
 ifndef PY-TURBOJSON_SVN_TAG
 $(DL_DIR)/$(PY-TURBOJSON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-TURBOJSON_SITE)/$(PY-TURBOJSON_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PY-TURBOJSON_SOURCE)
+	$(WGET) -P $(@D) $(PY-TURBOJSON_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -132,8 +132,8 @@ else
 	)
 endif
 #	cat $(PY-TURBOJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)/2.4
-	(cd $(PY-TURBOJSON_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
@@ -147,8 +147,8 @@ else
 	)
 endif
 #	cat $(PY-TURBOJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)/2.5
-	(cd $(PY-TURBOJSON_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
@@ -161,10 +161,10 @@ py-turbojson-unpack: $(PY-TURBOJSON_BUILD_DIR)/.configured
 #
 $(PY-TURBOJSON_BUILD_DIR)/.built: $(PY-TURBOJSON_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-TURBOJSON_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-TURBOJSON_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
@@ -177,10 +177,10 @@ py-turbojson: $(PY-TURBOJSON_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-TURBOJSON_BUILD_DIR)/.staged: $(PY-TURBOJSON_BUILD_DIR)/.built
-	rm -f $@
+#$(PY-TURBOJSON_BUILD_DIR)/.staged: $(PY-TURBOJSON_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(PY-TURBOJSON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
 py-turbojson-stage: $(PY-TURBOJSON_BUILD_DIR)/.staged
 
