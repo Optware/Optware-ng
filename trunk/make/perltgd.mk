@@ -42,7 +42,7 @@ PERLTGD_CONFLICTS=
 #
 # PERLTGD_IPK_VERSION should be incremented when the ipk changes.
 #
-PERLTGD_IPK_VERSION=4
+PERLTGD_IPK_VERSION=5
 
 #
 # PERLTGD_CONFFILES should be a list of user-editable files
