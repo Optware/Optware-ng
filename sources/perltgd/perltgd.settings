@@ -1,6 +1,6 @@
 tfdir::EPGdata
 favfile::favourites.ini
-datestamp::MM-DD
+datestamp::DD-MM
 startbuffer::-03
 endbuffer::+10
 join::+
