@@ -27,6 +27,11 @@ OPTWARE-BOOTSTRAP_CONTAINS=$(strip \
 	$(if $(filter fsg3 fsg3v4 dt2 vt4 tsx09, $(OPTWARE-BOOTSTRAP_TARGET)), coreutils diffutils) \
 	)
 
+OPTWARE-BOOTSTRAP_LIBS=$(strip \
+	$(if $(filter tsx09, $(OPTWARE-BOOTSTRAP_TARGET)), \
+		$(TARGET_LIBDIR)/libgcc_s.so.1 $(TARGET_LIBDIR)/libgcc_s.so ) \
+	)
+
 # Ideally the following stanza would work
 # unfortunately it has some conflict with optware/Makefile
 
