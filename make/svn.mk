@@ -209,6 +209,7 @@ $(SVN_BUILD_DIR)/.py-built: $(SVN_BUILD_DIR)/.built
 
 $(SVN_BUILD_DIR)/.pl-built: $(SVN_BUILD_DIR)/.built
 	rm -f $@
+	$(MAKE) -C $(@D) libsvn_swig_perl
 	cd $(@D)/subversion/bindings/swig/perl/native; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
@@ -218,9 +219,8 @@ $(SVN_BUILD_DIR)/.pl-built: $(SVN_BUILD_DIR)/.built
 		;
 	sed -i \
 	    -e '/^INSTALL.*=.*staging-install/s|= *$(PERL_HOST_BUILD_DIR)/staging-install|= /opt|' \
-	    -e '/^\(EXTRALIBS\|LDLOADLIBS\)/s|$$| -lsvn_swig_perl-1|' \
 	    $(@D)/subversion/bindings/swig/perl/native/Makefile \
-	    $(@D)/subversion/bindings/swig/perl/native/Makefile.[a-z]*
+	    ;
 	$(MAKE) -C $(@D) swig-pl \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
