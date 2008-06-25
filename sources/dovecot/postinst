@@ -2,9 +2,29 @@
 #
 # $Id$
 #
+
+root_user=root
+root_group=root
+nobody_group=nobody
+
+if grep -v root /etc/passwd > /dev/null ; then
+    root_user=admin
+    root_group=administrators
+    sed -i -e 's/ user = root/ user = admin/' /opt/etc/dovecot/dovecot.conf
+fi
+
+if grep -v nobody /etc/passwd > /dev/null ; then
+    nobody_group=guest
+    sed -i -e 's/login_user = nobody/login_user = guest/' /opt/etc/dovecot/dovecot.conf
+fi
+
+if [ -f /etc/shadow ] ; then
+    sed -i -e 's/passdb passwd/passdb shadow/' /opt/etc/dovecot/dovecot.conf
+fi
+
 mkdir -p /opt/var/run/dovecot/login
-chown root:root /opt/var/run/dovecot
+chown $root_user:$root_group /opt/var/run/dovecot
 chmod 700 /opt/var/run/dovecot
-chown root:nobody /opt/var/run/dovecot/login
+chown $root_user:$nobody_group /opt/var/run/dovecot/login
 chmod 750 /opt/var/run/dovecot/login
 /opt/etc/init.d/S90dovecot start
