@@ -3,8 +3,17 @@
 #
 
 OPENSSL_SITE=http://www.openssl.org/source
+
+ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
+OPENSSL_VERSION=0.9.8h
+OPENSSL_LIB_VERSION=0.9.8
+OPENSSL_IPK_VERSION=1
+else
 OPENSSL_VERSION=0.9.7m
 OPENSSL_LIB_VERSION=0.9.7
+OPENSSL_IPK_VERSION=4
+endif
+
 OPENSSL_SOURCE=openssl-$(OPENSSL_VERSION).tar.gz
 OPENSSL_DIR=openssl-$(OPENSSL_VERSION)
 OPENSSL_UNZIP=zcat
@@ -14,8 +23,6 @@ OPENSSL_SECTION=libs
 OPENSSL_PRIORITY=recommended
 OPENSSL_DEPENDS=
 OPENSSL_CONFLICTS=
-
-OPENSSL_IPK_VERSION=4
 
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
 OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
@@ -27,7 +34,7 @@ OPENSSL_IPK=$(BUILD_DIR)/openssl_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TAR
 OPENSSL_DEV_IPK_DIR=$(BUILD_DIR)/openssl-dev-$(OPENSSL_VERSION)-ipk
 OPENSSL_DEV_IPK=$(BUILD_DIR)/openssl-dev_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-OPENSSL_PATCHES=$(OPENSSL_SOURCE_DIR)/Configure.patch
+OPENSSL_PATCHES=$(if $(filter 0.9.7, $(OPENSSL_LIB_VERSION)),$(OPENSSL_SOURCE_DIR)/Configure.patch,)
 ifeq ($(OPTWARE_TARGET), dns323)
 OPENSSL_PATCHES+=$(OPENSSL_SOURCE_DIR)/Configure-O3-to-O2.patch
 endif
@@ -78,11 +85,13 @@ openssl-host: $(OPENSSL_HOST_BUILD_DIR)/.built
 openssl-host-stage: $(OPENSSL_HOST_BUILD_DIR)/.staged
 
 $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
-	rm -rf $(BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(OPENSSL_DIR) $(@D)
 	$(OPENSSL_UNZIP) $(DL_DIR)/$(OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf - 
-	cat $(OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(OPENSSL_DIR) -p1
-	mv $(BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_BUILD_DIR)
-	(cd $(OPENSSL_BUILD_DIR) && \
+	if test -n "$(OPENSSL_PATCHES)"; then \
+		cat $(OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(OPENSSL_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(OPENSSL_DIR) $(@D)
+	(cd $(@D) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		./Configure \
 			shared zlib-dynamic \
@@ -91,7 +100,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 			--prefix=/opt \
 			$(OPENSSL_ARCH) \
 	)
-	sed -i -e 's|$$(PERL) tools/c_rehash certs||' $(OPENSSL_BUILD_DIR)/apps/Makefile
+	sed -i -e 's|$$(PERL) tools/c_rehash certs||' $(@D)/apps/Makefile
 	touch $@
 
 openssl-unpack: $(OPENSSL_BUILD_DIR)/.configured
@@ -99,7 +108,7 @@ openssl-unpack: $(OPENSSL_BUILD_DIR)/.configured
 $(OPENSSL_BUILD_DIR)/.built: $(OPENSSL_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) zlib-stage
-	$(MAKE) -C $(OPENSSL_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		AR="${TARGET_AR} r" \
 		$(OPENSSL_ASFLAG) \
