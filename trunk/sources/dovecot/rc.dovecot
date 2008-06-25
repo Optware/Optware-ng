@@ -1,11 +1,28 @@
 #!/bin/sh
-#
-# $Id$
-#
 
-if [ -n "`pidof dovecot`" ] ; then
-    killall dovecot 2>/dev/null
-    sleep 2
+if [ -z "$1" ] ; then
+    case `echo "$0" | /bin/sed 's/^.*\/\(.*\)/\1/g'` in
+	S??*) rc="start" ;;
+	K??*) rc="stop" ;;
+	*) rc="usage" ;;
+    esac
+else
+    rc="$1"
 fi
 
-/opt/sbin/dovecot
+case "$rc" in
+    start)
+	/opt/sbin/dovecot
+	;;
+    stop)
+	killall dovecot > /dev/null 2>&1
+	;;
+    restart)
+	"$0" stop
+	sleep 1
+	"$0" start
+	;;
+    *)
+	echo "Usage: $0 (start|stop|restart|usage)"
+	;;
+esac

@@ -47,7 +47,7 @@ DOVECOT_CONFLICTS=cyrus-imapd, imap
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=3
+DOVECOT_IPK_VERSION=4
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -230,6 +230,7 @@ $(DOVECOT_IPK): $(DOVECOT_BUILD_DIR)/.built
 	install -m 755 $(DOVECOT_SOURCE_DIR)/rc.dovecot $(DOVECOT_IPK_DIR)/opt/etc/init.d/S90dovecot
 	$(MAKE) $(DOVECOT_IPK_DIR)/CONTROL/control
 	install -m 755 $(DOVECOT_SOURCE_DIR)/postinst $(DOVECOT_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(DOVECOT_SOURCE_DIR)/prerm $(DOVECOT_IPK_DIR)/CONTROL/prerm
 	echo $(DOVECOT_CONFFILES) | sed -e 's/ /\n/g' > $(DOVECOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOVECOT_IPK_DIR)
 
