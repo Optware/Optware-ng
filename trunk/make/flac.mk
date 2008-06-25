@@ -53,6 +53,7 @@ FLAC_CONFFILES=
 #
 FLAC_CPPFLAGS=
 FLAC_LDFLAGS=
+FLAC_CONFIG_OPTS=$(if $(filter syno-e500, $(OPTWARE_TARGET)),--disable-altivec,)
 
 #
 # FLAC_BUILD_DIR is the directory in which the build is done.
@@ -108,8 +109,11 @@ $(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES) make/fla
 		then cat $(FLAC_PATCHES) | patch -d $(BUILD_DIR)/$(FLAC_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(FLAC_DIR) $(@D)
+	sed -i -e '/LOCAL_EXTRA_LDFLAGS.*read_only_relocs/d' $(@D)/src/libFLAC/Makefile.in
+ifneq (, $(filter --disable-altivec, $(FLAC_CONFIG_OPTS)))
+	sed -i -e 's/-maltivec -mabi=altivec //' $(@D)/src/libFLAC/Makefile.in
+endif
 	(cd $(@D); \
-		sed -i -e '/LOCAL_EXTRA_LDFLAGS.*read_only_relocs/d' src/libFLAC/Makefile.in; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FLAC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FLAC_LDFLAGS)" \
@@ -121,6 +125,7 @@ $(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES) make/fla
 		--with-ogg=$(STAGING_PREFIX) \
 		--disable-xmms-plugin \
 		--disable-nls \
+		$(FLAC_CONFIG_OPTS) \
 	)
 	touch $@
 
