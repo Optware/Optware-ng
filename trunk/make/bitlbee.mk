@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION=1.2
+BITLBEE_VERSION=1.2.1
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
@@ -118,8 +118,8 @@ endif
 	if test -n "$(BITLBEE_PATCHES)"; \
 		then cat $(BITLBEE_PATCHES) | patch -d $(BUILD_DIR)/$(BITLBEE_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(BITLBEE_DIR) $(BITLBEE_BUILD_DIR)
-	(cd $(BITLBEE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(BITLBEE_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BITLBEE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BITLBEE_LDFLAGS)" \
