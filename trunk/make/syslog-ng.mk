@@ -34,7 +34,7 @@ SYSLOG-NG_CONFLICTS=
 #
 # SYSLOG-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSLOG-NG_IPK_VERSION=1
+SYSLOG-NG_IPK_VERSION=2
 
 #
 # SYSLOG-NG_CONFFILES should be a list of user-editable files
@@ -119,6 +119,7 @@ $(SYSLOG-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PA
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--sysconfdir=/opt/etc/syslog-ng \
 		--enable-dynamic-linking \
 		--disable-nls \
 		--disable-spoof-source \

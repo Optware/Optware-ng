@@ -1,8 +1,8 @@
 echo
-echo "To use syslog-ng, comment out both lines in /etc/inittab before"
-echo "you start syslog-ng for the first time."
+echo "To use syslog-ng, comment out any lines in /etc/inittab referring"
+echo "to syslogd or klogd before you start syslog-ng for the first time."
 echo "After commenting the lines, run /opt/etc/init.d/S01syslog-ng."
 echo "The program will be started automaticaly at the next reboot."
 echo
-echo "Log files will be created by default at /opt/var/log."
+echo "Log files will be created by default in /opt/var/log."
 exit 0
