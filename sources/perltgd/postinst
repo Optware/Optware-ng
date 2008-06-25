@@ -5,3 +5,8 @@ chmod 755 /opt/var/lib/perltgd
 
 mkdir -p /opt/var/log
 chmod 755 /opt/var/log
+
+# TSx09 devices have admin instead of root
+if grep -v root /etc/passwd > /dev/null ; then
+    sed -i -e 's/root/admin/' /opt/etc/cron.d/perltgd
+fi
