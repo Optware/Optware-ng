@@ -17,13 +17,16 @@ It uses ncurses. It was formerly called Gaim-text.
 FINCH_SECTION=net-im
 FINCH_PRIORITY=optional
 FINCH_DEPENDS=glib, gnutls, libxml2, ncursesw
+ifneq (, $(filter avahi, $(PACKAGES)))
+FINCH_DEPENDS+=, avahi
+endif
 FINCH_SUGGESTS=
 FINCH_CONFLICTS=
 
 #
 # FINCH_IPK_VERSION should be incremented when the ipk changes.
 #
-FINCH_IPK_VERSION=1
+FINCH_IPK_VERSION=2
 
 #
 # FINCH_CONFFILES should be a list of user-editable files
@@ -40,7 +43,7 @@ FINCH_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 FINCH_CPPFLAGS=
-FINCH_LDFLAGS=
+FINCH_LDFLAGS=-Wl,-rpath,/opt/lib/purple-2
 
 #
 # FINCH_BUILD_DIR is the directory in which the build is done.
@@ -93,6 +96,9 @@ finch-source: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES)
 #
 $(FINCH_BUILD_DIR)/.configured: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES) make/finch.mk
 	$(MAKE) glib-stage gnutls-stage libxml2-stage ncursesw-stage
+ifneq (, $(filter avahi, $(PACKAGES)))
+	$(MAKE) avahi-stage
+endif
 	rm -rf $(BUILD_DIR)/$(FINCH_DIR) $(FINCH_BUILD_DIR)
 	$(FINCH_UNZIP) $(DL_DIR)/$(FINCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FINCH_PATCHES)" ; \
