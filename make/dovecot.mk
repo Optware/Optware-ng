@@ -47,11 +47,14 @@ DOVECOT_CONFLICTS=cyrus-imapd, imap
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=2
+DOVECOT_IPK_VERSION=3
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
-DOVECOT_CONFFILES=/opt/etc/dovecot.conf /opt/etc/init.d/S90dovecot
+DOVECOT_CONFFILES= \
+	/opt/etc/dovecot/dovecot.conf \
+	/opt/etc/dovecot/dovecot-openssl.cnf \
+	/opt/etc/init.d/S90dovecot
 
 #
 # DOVECOT_PATCHES should list any patches, in the the order in
@@ -149,6 +152,9 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--sysconfdir=/opt/etc/dovecot \
+		--localstatedir=/opt/var \
+		--with-ssldir=/opt/etc/dovecot \
 		--disable-nls \
 		--disable-static \
 		--without-sql-drivers; \
@@ -215,9 +221,11 @@ $(DOVECOT_IPK_DIR)/CONTROL/control:
 $(DOVECOT_IPK): $(DOVECOT_BUILD_DIR)/.built
 	rm -rf $(DOVECOT_IPK_DIR) $(BUILD_DIR)/dovecot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DOVECOT_BUILD_DIR) DESTDIR=$(DOVECOT_IPK_DIR) install-strip
-	install -d $(DOVECOT_IPK_DIR)/opt/etc/
+	install -d $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
+	install -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
+	install -m 644 $(DOVECOT_BUILD_DIR)/doc/dovecot-openssl.cnf $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
+	install -m 755 $(DOVECOT_BUILD_DIR)/doc/mkcert.sh $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
 	install -m 700 -d $(DOVECOT_IPK_DIR)/opt/var/run/dovecot
-	install -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)/opt/etc/dovecot.conf
 	install -d $(DOVECOT_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(DOVECOT_SOURCE_DIR)/rc.dovecot $(DOVECOT_IPK_DIR)/opt/etc/init.d/S90dovecot
 	$(MAKE) $(DOVECOT_IPK_DIR)/CONTROL/control
