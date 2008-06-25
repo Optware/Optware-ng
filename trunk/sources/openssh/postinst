@@ -24,6 +24,11 @@ if [ ! -d /root -a -w / ];  then
     mkdir /root
 fi
 
+# Some devices do not have a nobody user for priviledge separation
+if grep -v nobody /etc/passwd > /dev/null ; then
+    sed -i -e 's/\#UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' /opt/etc/openssh/sshd_config
+fi
+
 echo Fixing permissions on the /tmp directory...
 chmod 1777 /tmp
 
