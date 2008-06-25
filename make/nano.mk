@@ -5,7 +5,7 @@
 ###########################################################
 
 NANO_SITE=http://www.nano-editor.org/dist/v2.1
-NANO_VERSION=2.1.1
+NANO_VERSION=2.1.2
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -45,8 +45,8 @@ $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nan
 	if test -n "$(NANO_PATCHES)"; \
 		then cat $(NANO_PATCHES) | patch -d $(BUILD_DIR)/$(NANO_DIR); \
 	fi
-	mv $(BUILD_DIR)/$(NANO_DIR) $(NANO_BUILD_DIR)
-	(cd $(NANO_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(NANO_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NANO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NANO_LDFLAGS)" \
@@ -67,14 +67,14 @@ nano-unpack: $(NANO_BUILD_DIR)/.configured
 
 $(NANO_BUILD_DIR)/.built: $(NANO_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NANO_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 nano: $(NANO_BUILD_DIR)/.built
 
 $(NANO_BUILD_DIR)/.staged: $(NANO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NANO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 nano-stage: $(NANO_BUILD_DIR)/.staged
