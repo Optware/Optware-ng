@@ -26,16 +26,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ifneq (, $(filter gcc, $(PACKAGES)))
-
 ifdef NATIVE_GCC_VERSION
 GCC_VERSION=$(NATIVE_GCC_VERSION)
 else
 GCC_VERSION:=$(shell $(TARGET_CC) -dumpversion)
 endif
-GCC_SITE=http://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)
-GCC_SOURCE=gcc-$(GCC_VERSION).tar.bz2
-GCC_DIR=gcc-$(GCC_VERSION)
+GCC_SITE?=http://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)
+GCC_SOURCE?=gcc-$(GCC_VERSION).tar.bz2
+GCC_DIR?=gcc-$(GCC_VERSION)
 GCC_UNZIP=bzcat
 GCC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GCC_DESCRIPTION=The GNU Compiler Collection.
@@ -82,8 +80,8 @@ $(GNU_TARGET_NAME)-uclibc, $(GNU_TARGET_NAME)))
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GCC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GCC_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GCC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -117,14 +115,12 @@ $(GCC_BUILD_DIR)/.configured: $(DL_DIR)/$(GCC_SOURCE) $(GCC_PATCHES) #make/gcc.m
 		then cat `echo $(GCC_PATCHES) | sort` | \
 		patch -d $(BUILD_DIR)/$(GCC_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(GCC_DIR)" != "$(@D)" ; \
-		then mv $(BUILD_DIR)/$(GCC_DIR) $(@D) ; \
-	fi
+	mkdir -p $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GCC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GCC_LDFLAGS)" \
-		./configure \
+		../$(GCC_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GCC_TARGET_NAME) \
 		--target=$(GCC_TARGET_NAME) \
@@ -236,5 +232,3 @@ gcc-dirclean:
 #
 gcc-check: $(GCC_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GCC_IPK)
-
-endif
