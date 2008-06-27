@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VITETRIS_SITE=http://robert.liquidham.se/vitetris
-VITETRIS_VERSION=0.41
+VITETRIS_VERSION=0.43
 VITETRIS_SOURCE=vitetris-$(VITETRIS_VERSION).tar.gz
 VITETRIS_DIR=vitetris-$(VITETRIS_VERSION)
 VITETRIS_UNZIP=zcat
