@@ -22,9 +22,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BINUTILS_SITE=http://ftp.gnu.org/gnu/binutils
-BINUTILS_VERSION:=2.17
+BINUTILS_VERSION ?= 2.17
 BINUTILS_SOURCE=binutils-$(BINUTILS_VERSION).tar.bz2
-BINUTILS_DIR=binutils-$(BINUTILS_VERSION)
+BINUTILS_DIR?=binutils-$(BINUTILS_VERSION)
 BINUTILS_UNZIP=bzcat
 BINUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BINUTILS_DESCRIPTION=The GNU assembler and linker and related tools
@@ -76,9 +76,11 @@ BINUTILS_IPK=$(BUILD_DIR)/binutils_$(BINUTILS_VERSION)-$(BINUTILS_IPK_VERSION)_$
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
+ifndef TOOLCHAIN-BINUTILS_VERSION
 $(DL_DIR)/$(BINUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BINUTILS_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(BINUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,14 +114,12 @@ $(BINUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BINUTILS_SOURCE) $(BINUTILS_PATCH
 		then cat $(BINUTILS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(BINUTILS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(BINUTILS_DIR)" != "$(@D)" ; \
-		then mv $(BUILD_DIR)/$(BINUTILS_DIR) $(@D) ; \
-	fi
+	mkdir -p $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BINUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BINUTILS_LDFLAGS)" \
-		./configure \
+		../$(BINUTILS_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
