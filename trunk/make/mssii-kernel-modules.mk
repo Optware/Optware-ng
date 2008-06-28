@@ -28,7 +28,7 @@ KERNEL-MODULES=`find $(KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-KERNEL-MODULES_IPK_VERSION=3
+KERNEL-MODULES_IPK_VERSION=4
 
 #
 # KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -63,8 +63,8 @@ KERNEL-IMAG_IPK=$(BUILD_DIR)/kernel-image_$(KERNEL_VERSION)-$(KERNEL-MODULES_IPK
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MSSII_GPL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MSSII_GPL_SOURCE_SITE)/$(MSSII_GPL_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MSSII_GPL_SOURCE)
+	$(WGET) -P $(@D) $(MSSII_GPL_SOURCE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
