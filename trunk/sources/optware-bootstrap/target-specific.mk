@@ -1,15 +1,16 @@
 OPTWARE-BOOTSTRAP_TARGETS=\
 	dt2 \
-	vt4 \
 	fsg3v4 \
 	hpmv2 \
 	lspro \
 	mssii \
+	syno-x07 \
 	teraprov2 \
 	tsx09 \
+	vt4 \
 
 OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
-	$(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), /volume1/opt, \
+	$(if $(filter ds101 ds101g syno-x07 syno-e500, $(OPTWARE_TARGET)), /volume1/opt, \
 	$(if $(filter fsg3 fsg3v4 dt2 vt4, $(OPTWARE_TARGET)), /home/.optware, \
 	$(if $(filter mssii, $(OPTWARE-BOOTSTRAP_TARGET)), /share/.optware, \
 	$(if $(filter hpmv2, $(OPTWARE-BOOTSTRAP_TARGET)), /share/1000/.optware, \
@@ -20,7 +21,8 @@ OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 
 OPTWARE-BOOTSTRAP_RC=$(strip \
 	$(if $(filter cs05q3armel mssii, $(OPTWARE_TARGET)), /etc/init.d/rc.optware, \
-	/etc/init.d/optware))
+	$(if $(filter syno-x07 syno-e500, $(OPTWARE_TARGET)), /etc/rc.optware, \
+	/etc/init.d/optware)))
 
 OPTWARE-BOOTSTRAP_CONTAINS=$(strip \
 	ipkg-opt wget \
@@ -69,6 +71,11 @@ mssii-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=mssii
 mssii-optware-bootstrap-dirclean:
 	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=mssii
+
+syno-x07-optware-bootstrap-ipk:
+	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=syno-x07
+syno-x07-optware-bootstrap-dirclean:
+	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=syno-x07
 
 teraprov2-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=teraprov2

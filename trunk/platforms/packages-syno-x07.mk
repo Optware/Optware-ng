@@ -1,5 +1,5 @@
 SPECIFIC_PACKAGES = \
-	ipkg-opt \
+	syno-x07-optware-bootstrap \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
