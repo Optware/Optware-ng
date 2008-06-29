@@ -74,7 +74,7 @@ kernel-modules-source: $(DL_DIR)/$(SYNO-X07-GPL-SOURCE) $(KERNEL-MODULES_PATCHES
 
 $(KERNEL-MODULES_BUILD_DIR)/.configured: \
 $(DL_DIR)/$(SYNO-X07-GPL-SOURCE) $(KERNEL-MODULES_PATCHES) \
-#$(KERNEL-MODULES_SOURCE_DIR)/defconfig make/syno-x07-kernel-modules.mk
+$(KERNEL-MODULES_SOURCE_DIR)/defconfig make/syno-x07-kernel-modules.mk
 	rm -rf $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(@D)
 	mkdir -p $(BUILD_DIR)/$(KERNEL-MODULES_DIR)
 	tar -C $(BUILD_DIR)/$(KERNEL-MODULES_DIR) -xvjf $(DL_DIR)/$(SYNO-X07-GPL-SOURCE) source/linux-2.6.15
