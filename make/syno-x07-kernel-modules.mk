@@ -101,8 +101,8 @@ $(KERNEL-MODULES_BUILD_DIR)/.built: $(KERNEL-MODULES_BUILD_DIR)/.configured
 	cp $(KERNEL-MODULES_SOURCE_DIR)/defconfig $(@D)/.config
 	mkdir -p $(@D)/drivers/synobios
 	cp $(KERNEL-MODULES_SOURCE_DIR)/drivers-synobios-Kconfig $(@D)/drivers/synobios/Kconfig
-#	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) oldconfig
-	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) menuconfig
+	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) oldconfig
+#	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) menuconfig
 #	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH
 	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) modules
 	touch $@
