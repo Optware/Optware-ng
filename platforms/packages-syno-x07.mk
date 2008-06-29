@@ -1,5 +1,6 @@
 SPECIFIC_PACKAGES = \
 	syno-x07-optware-bootstrap \
+	syno-x07-kernel-modules \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
