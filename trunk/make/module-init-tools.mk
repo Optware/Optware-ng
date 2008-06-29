@@ -36,7 +36,7 @@ MODULE_INIT_TOOLS_CONFLICTS=
 #
 # MODULE_INIT_TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-MODULE_INIT_TOOLS_IPK_VERSION=4
+MODULE_INIT_TOOLS_IPK_VERSION=5
 
 #
 # MODULE_INIT_TOOLS_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ MODULE_INIT_TOOLS_CPPFLAGS += -DCONFIG_NO_BACKWARDS_COMPAT
 endif
 MODULE_INIT_TOOLS_LDFLAGS=
 
-ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel syno-x07, $(OPTWARE_TARGET)))
 MODULE_INIT_TOOLS_CONFIGURE_OPTIONS=--with-moddir=/opt/lib/modules
 endif
 
