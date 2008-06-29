@@ -27,7 +27,7 @@ APR_DEPENDS=
 #
 # APR_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_IPK_VERSION=1
+APR_IPK_VERSION=2
 
 #
 # APR_LOCALES defines which locales get installed
@@ -140,6 +140,7 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) make/apr.mk
 		--disable-static \
 		--enable-layout=GNU \
 		--enable-lfs \
+		--with-devrandom=/dev/urandom \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
