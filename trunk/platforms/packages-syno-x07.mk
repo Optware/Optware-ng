@@ -1,7 +1,7 @@
 SPECIFIC_PACKAGES = \
 	syno-x07-optware-bootstrap \
 	syno-x07-kernel-modules \
-	binutils \
+	binutils gcc \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
