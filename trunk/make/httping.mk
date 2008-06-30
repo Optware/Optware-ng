@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTTPING_SITE=http://www.vanheusden.com/httping
-HTTPING_VERSION=1.2.6
+HTTPING_VERSION=1.2.8
 HTTPING_SOURCE=httping-$(HTTPING_VERSION).tgz
 HTTPING_DIR=httping-$(HTTPING_VERSION)
 HTTPING_UNZIP=zcat
