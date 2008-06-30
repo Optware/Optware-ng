@@ -28,7 +28,7 @@
 #ifneq ($(PY-PASTE_SVN_REV),)
 #PY-PASTE____VERSION=0.5dev_r4745
 #else
-PY-PASTE_VERSION=1.7
+PY-PASTE_VERSION=1.7.1
 PY-PASTE_SITE=http://cheeseshop.python.org/packages/source/P/Paste
 PY-PASTE_SOURCE=Paste-$(PY-PASTE_VERSION).tar.gz
 #endif
@@ -176,9 +176,16 @@ py-paste: $(PY-PASTE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-PASTE_BUILD_DIR)/.staged: $(PY-PASTE_BUILD_DIR)/.built
-#	rm -f $@
-#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-#	touch $@
+	rm -f $@
+	(cd $(@D)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(STAGING_DIR) --prefix=/opt)
+	touch $@
 
 py-paste-stage: $(PY-PASTE_BUILD_DIR)/.staged
 
