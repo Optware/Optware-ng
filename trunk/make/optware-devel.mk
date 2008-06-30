@@ -22,6 +22,7 @@ OPTWARE-DEVEL_DEPENDS=autoconf \
 , flex \
 , gawk \
 , groff \
+, gzip \
 , libstdc++ \
 , libtool \
 , make \
@@ -31,7 +32,7 @@ OPTWARE-DEVEL_DEPENDS=autoconf \
 , patch \
 , perl \
 , pkgconfig \
-, python \
+, python25 \
 , rsync \
 , sed \
 , svn \
@@ -55,7 +56,7 @@ endif
 OPTWARE-DEVEL_SUGGESTS=
 OPTWARE-DEVEL_CONFLICTS=
 
-OPTWARE-DEVEL_IPK_VERSION=8
+OPTWARE-DEVEL_IPK_VERSION=9
 
 OPTWARE-DEVEL_IPK_DIR=$(BUILD_DIR)/optware-devel-$(OPTWARE-DEVEL_VERSION)-ipk
 OPTWARE-DEVEL_IPK=$(BUILD_DIR)/optware-devel_$(OPTWARE-DEVEL_VERSION)-$(OPTWARE-DEVEL_IPK_VERSION)_$(TARGET_ARCH).ipk
