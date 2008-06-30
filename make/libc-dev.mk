@@ -120,7 +120,7 @@ $(LIBC-DEV_IPK_DIR)/CONTROL/control:
 $(LIBC-DEV_IPK): make/libc-dev.mk
 	rm -rf $(LIBC-DEV_IPK_DIR) $(BUILD_DIR)/libc-dev_*_$(TARGET_ARCH).ipk
 	install -d $(LIBC-DEV_IPK_DIR)/opt/
-	rsync -a --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
+	rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
 	install -d $(LIBC-DEV_IPK_DIR)/opt/$(GNU_TARGET_NAME)/lib
 	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/opt/$(GNU_TARGET_NAME)/lib
 	install -d $(LIBC-DEV_IPK_DIR)/opt/lib/
