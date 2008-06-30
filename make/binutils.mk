@@ -47,7 +47,10 @@ BINUTILS_IPK_VERSION=2
 # BINUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BINUTILS_PATCHES=$(BINUTILS_SOURCE_DIR)/configure.patch
+BINUTILS_PATCHES=
+ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
+BINUTILS_PATCHES += $(BINUTILS_SOURCE_DIR)/gas-vfp.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -112,7 +115,7 @@ $(BINUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BINUTILS_SOURCE) $(BINUTILS_PATCH
 	$(BINUTILS_UNZIP) $(DL_DIR)/$(BINUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BINUTILS_PATCHES)" ; \
 		then cat $(BINUTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BINUTILS_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(BINUTILS_DIR) -p1 ; \
 	fi
 	mkdir -p $(@D)
 	(cd $(@D); \
