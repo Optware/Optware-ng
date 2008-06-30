@@ -1,0 +1,11 @@
+--- binutils-2.17/gas/config/tc-arm.c.orig	2008-06-29 13:04:34.000000000 -0700
++++ binutils-2.17/gas/config/tc-arm.c	2008-06-29 13:05:36.000000000 -0700
+@@ -110,7 +110,7 @@
+ 
+ #ifndef FPU_DEFAULT
+ # ifdef TE_LINUX
+-#  define FPU_DEFAULT FPU_ARCH_FPA
++#  define FPU_DEFAULT FPU_ARCH_VFP
+ # elif defined (TE_NetBSD)
+ #  ifdef OBJ_ELF
+ #   define FPU_DEFAULT FPU_ARCH_VFP	/* Soft-float, but VFP order.  */
