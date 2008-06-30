@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SDPARM_SITE=http://sg.torque.net/sg/p
-SDPARM_VERSION=1.02
+SDPARM_VERSION=1.03
 SDPARM_SOURCE=sdparm-$(SDPARM_VERSION).tgz
 SDPARM_DIR=sdparm-$(SDPARM_VERSION)
 SDPARM_UNZIP=zcat
@@ -74,8 +74,8 @@ SDPARM_IPK=$(BUILD_DIR)/sdparm_$(SDPARM_VERSION)-$(SDPARM_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SDPARM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SDPARM_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(SDPARM_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,10 +110,10 @@ $(SDPARM_BUILD_DIR)/.configured: $(DL_DIR)/$(SDPARM_SOURCE) $(SDPARM_PATCHES) ma
 		then cat $(SDPARM_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SDPARM_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SDPARM_DIR)" != "$(SDPARM_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SDPARM_DIR) $(SDPARM_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SDPARM_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SDPARM_DIR) $(@D) ; \
 	fi
-	(cd $(SDPARM_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SDPARM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SDPARM_LDFLAGS)" \
@@ -135,7 +135,7 @@ sdparm-unpack: $(SDPARM_BUILD_DIR)/.configured
 #
 $(SDPARM_BUILD_DIR)/.built: $(SDPARM_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SDPARM_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -146,12 +146,12 @@ sdparm: $(SDPARM_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SDPARM_BUILD_DIR)/.staged: $(SDPARM_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(SDPARM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-sdparm-stage: $(SDPARM_BUILD_DIR)/.staged
+#$(SDPARM_BUILD_DIR)/.staged: $(SDPARM_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(SDPARM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#sdparm-stage: $(SDPARM_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
