@@ -24,7 +24,7 @@
 # PY-PASTESCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-PASTESCRIPT_SITE=http://cheeseshop.python.org/packages/source/P/PasteScript
-PY-PASTESCRIPT_VERSION=1.6.2
+PY-PASTESCRIPT_VERSION=1.6.3
 #PY-PASTESCRIPT_SVN_REV=
 PY-PASTESCRIPT_IPK_VERSION=1
 #ifneq ($(PY-PASTESCRIPT_SVN_REV),)
@@ -114,7 +114,7 @@ py-pastescript-source: $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) $(PY-PASTESCRIPT_PATCH
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-PASTESCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) $(PY-PASTESCRIPT_PATCHES)
-	$(MAKE) py-setuptools-stage
+	$(MAKE) py-setuptools-stage py-paste-stage py-pastedeploy-stage
 	rm -rf $(PY-PASTESCRIPT_BUILD_DIR)
 	mkdir -p $(PY-PASTESCRIPT_BUILD_DIR)
 	# 2.4
@@ -129,8 +129,8 @@ endif
 	if test -n "$(PY-PASTESCRIPT_PATCHES)" ; then \
 	    cat $(PY-PASTESCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(PY-PASTESCRIPT_BUILD_DIR)/2.4
-	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
@@ -145,8 +145,8 @@ endif
 	if test -n "$(PY-PASTESCRIPT_PATCHES)" ; then \
 	    cat $(PY-PASTESCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(PY-PASTESCRIPT_BUILD_DIR)/2.5
-	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
@@ -158,10 +158,10 @@ py-pastescript-unpack: $(PY-PASTESCRIPT_BUILD_DIR)/.configured
 #
 $(PY-PASTESCRIPT_BUILD_DIR)/.built: $(PY-PASTESCRIPT_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
@@ -232,6 +232,8 @@ $(PY24-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 		--root=$(PY24-PASTESCRIPT_IPK_DIR) --prefix=/opt)
+	for f in $(PY24-PASTESCRIPT_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-PASTESCRIPT_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTESCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PASTESCRIPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PASTESCRIPT_IPK_DIR)
@@ -242,8 +244,6 @@ $(PY25-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 		--root=$(PY25-PASTESCRIPT_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-PASTESCRIPT_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-PASTESCRIPT_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTESCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PASTESCRIPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PASTESCRIPT_IPK_DIR)
