@@ -24,9 +24,9 @@
 # PY-PASTEDEPLOY_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-PASTEDEPLOY_SITE=http://cheeseshop.python.org/packages/source/P/PasteDeploy
-PY-PASTEDEPLOY_VERSION=1.3.1
+PY-PASTEDEPLOY_VERSION=1.3.2
 #PY-PASTEDEPLOY_SVN_REV=
-PY-PASTEDEPLOY_IPK_VERSION=2
+PY-PASTEDEPLOY_IPK_VERSION=1
 #ifneq ($(PY-PASTEDEPLOY_SVN_REV),)
 #PY-PASTEDEPLOY_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
 #PY-PASTEDEPLOY_xxx_VERSION:=$(PY-PASTEDEPLOY_VERSION)dev_r$(PY-PASTEDEPLOY_SVN_REV)
@@ -130,8 +130,8 @@ endif
 	if test -n "$(PY-PASTEDEPLOY_PATCHES)" ; then \
 	    cat $(PY-PASTEDEPLOY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(PY-PASTEDEPLOY_BUILD_DIR)/2.4
-	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
@@ -146,8 +146,8 @@ endif
 	if test -n "$(PY-PASTEDEPLOY_PATCHES)" ; then \
 	    cat $(PY-PASTEDEPLOY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(PY-PASTEDEPLOY_BUILD_DIR)/2.5
-	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
@@ -159,10 +159,10 @@ py-pastedeploy-unpack: $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
 #
 $(PY-PASTEDEPLOY_BUILD_DIR)/.built: $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
@@ -176,9 +176,16 @@ py-pastedeploy: $(PY-PASTEDEPLOY_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-PASTEDEPLOY_BUILD_DIR)/.staged: $(PY-PASTEDEPLOY_BUILD_DIR)/.built
-#	rm -f $@
-#	$(MAKE) -C $(PY-PASTEDEPLOY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-#	touch $@
+	rm -f $@
+	(cd $(@D)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install\
+		--root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install\
+		--root=$(STAGING_DIR) --prefix=/opt)
+	touch $@
 
 py-pastedeploy-stage: $(PY-PASTEDEPLOY_BUILD_DIR)/.staged
 
