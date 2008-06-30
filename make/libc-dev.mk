@@ -38,7 +38,11 @@ LIBC-DEV_IPK_VERSION=3
 ifdef LIBNSL_VERSION
 LIBC-DEV_VERSION=$(LIBNSL_VERSION)
 else
-LIBC-DEV_VERSION ?= 0.9.28
+  ifdef CROSS_CONFIGURATION_UCLIBC_VERSION
+LIBC-DEV_VERSION = $(CROSS_CONFIGURATION_UCLIBC_VERSION)
+  else
+LIBC-DEV_VERSION = 0.9.28
+  endif
 endif
 
 ifdef TARGET_USRLIBDIR
@@ -90,7 +94,7 @@ LIBC-DEV_IPK=$(BUILD_DIR)/libc-dev_$(LIBC-DEV_VERSION)-$(LIBC-DEV_IPK_VERSION)_$
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/libc-dev
 #
-$(LIBC-DEV_IPK_DIR)/CONTROL/control:
+$(BUILD_DIR)/libc-dev-$(LIBC-DEV_VERSION)-ipk/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libc-dev" >>$@
