@@ -23,7 +23,7 @@
 #LIBC-DEV_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libc-dev
 LIBC-DEV_VERSION=$(LIBNSL_VERSION)
 #LIBC-DEV_SOURCE=libc-dev-$(LIBC-DEV_VERSION).tar.gz
-#LIBC-DEV_DIR=libc-dev-$(LIBC-DEV_VERSION)
+LIBC-DEV_DIR=libc-dev-$(LIBC-DEV_VERSION)
 #LIBC-DEV_UNZIP=zcat
 LIBC-DEV_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBC-DEV_DESCRIPTION=libc development files.
@@ -33,7 +33,7 @@ LIBC-DEV_DEPENDS=libnsl
 LIBC-DEV_SUGGESTS=
 LIBC-DEV_CONFLICTS=
 
-LIBC-DEV_IPK_VERSION=2
+LIBC-DEV_IPK_VERSION=3
 
 ifdef LIBNSL_VERSION
 LIBC-DEV_VERSION=$(LIBNSL_VERSION)
@@ -119,31 +119,36 @@ $(LIBC-DEV_IPK_DIR)/CONTROL/control:
 #
 $(LIBC-DEV_IPK): make/libc-dev.mk
 	rm -rf $(LIBC-DEV_IPK_DIR) $(BUILD_DIR)/libc-dev_*_$(TARGET_ARCH).ipk
+	install -d $(LIBC-DEV_IPK_DIR)/opt/
+	rsync -a --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
+	install -d $(LIBC-DEV_IPK_DIR)/opt/$(GNU_TARGET_NAME)/lib
+	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/opt/$(GNU_TARGET_NAME)/lib
 	install -d $(LIBC-DEV_IPK_DIR)/opt/lib/
-	cp -a $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
-	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/opt/lib/
+ifeq (uclibc, $(LIBC_STYLE))
 	rsync -l \
-		$(if $(filter uclibc, $(LIBC_STYLE)),$(TARGET_LIBDIR)/libuClibc-$(LIBC-DEV_VERSION).so,) \
+		$(TARGET_LIBDIR)/libuClibc-$(LIBC-DEV_VERSION).so \
 		$(LIBC-DEV_USRLIBDIR)/libc.so* \
 		$(LIBC-DEV_IPK_DIR)/opt/lib/
+else
+	for f in libc_nonshared.a libpthread_nonshared.a; \
+		do rsync -l $(TARGET_USRLIBDIR)/$${f} $(LIBC-DEV_IPK_DIR)/opt/lib/; done
+	rsync -l $(LIBC-DEV_USRLIBDIR)/libc.so $(LIBC-DEV_IPK_DIR)/opt/lib/
+	sed -i -e '/^GROUP/s|.*|GROUP ( /lib/libc.so.6 /opt/lib/libc_nonshared.a )|' \
+		$(LIBC-DEV_IPK_DIR)/opt/lib/libc.so
+endif
 	for f in libcrypt libdl libm libpthread libresolv librt libutil \
 		$(if $(filter uclibc, $(LIBC_STYLE)), ld-uClibc, ) \
 		; \
 	do \
 	    rsync -l \
-		$(LIBC-DEV_LIBDIR)/$${f}-$(LIBC-DEV_VERSION).so \
-		$(LIBC-DEV_LIBDIR)/$${f}.so* \
+		$(LIBC-DEV_LIBDIR)/$${f}-[\.0-9]*.so \
+		$(LIBC-DEV_LIBDIR)/$${f}.so[\.0-9]* \
 		$(LIBC-DEV_IPK_DIR)/opt/lib/; \
 	    cd $(LIBC-DEV_IPK_DIR)/opt/lib; \
 	    if test $${f} != ld-uClibc -a ! -e $${f}.so; then \
 		ln -sf $${f}.so.* $${f}.so; \
 	    fi; \
 	done
-ifneq (uclibc, $(LIBC_STYLE))
-	install -d $(LIBC-DEV_IPK_DIR)/usr/lib/
-	for f in libc_nonshared.a libpthread_nonshared.a; \
-	do rsync -l $(TARGET_USRLIBDIR)/$${f} $(LIBC-DEV_IPK_DIR)/usr/lib/; done
-endif
 	rm -rf $(LIBC-DEV_IPK_DIR)/opt/include/c++
 	$(MAKE) $(LIBC-DEV_IPK_DIR)/CONTROL/control
 	echo $(LIBC-DEV_CONFFILES) | sed -e 's/ /\n/g' > $(LIBC-DEV_IPK_DIR)/CONTROL/conffiles
