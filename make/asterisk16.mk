@@ -56,7 +56,6 @@ asterisk14-moh-freeplay-g729,\
 asterisk14-moh-freeplay-gsm,\
 asterisk14-moh-freeplay-ulaw,\
 asterisk14-gui\
-,freetds\
 ,libogg\
 ,net-snmp\
 ,radiusclient-ng\
@@ -82,7 +81,7 @@ ASTERISK16_CONFLICTS=asterisk,asterisk14,asterisk-sounds,asterisk-chan-capi,aste
 #
 # ASTERISK16_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK16_IPK_VERSION=1
+ASTERISK16_IPK_VERSION=2
 
 #
 # ASTERISK16_CONFFILES should be a list of user-editable files
@@ -281,7 +280,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 	$(MAKE) x11-stage
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
-	$(MAKE) sqlite2-stage freetds-stage libogg-stage
+	$(MAKE) sqlite2-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK16_DIR) $(ASTERISK16_BUILD_DIR)
 	$(ASTERISK16_UNZIP) $(DL_DIR)/$(ASTERISK16_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK16_PATCHES)" ; \
@@ -312,7 +311,7 @@ endif
 		--with-curl=$(STAGING_PREFIX) \
 		--with-ogg=$(STAGING_PREFIX) \
 		--with-popt=$(STAGING_PREFIX) \
-		--with-tds=$(STAGING_PREFIX) \
+		--without-tds \
 		--with-sqlite=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
