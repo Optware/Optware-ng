@@ -57,7 +57,6 @@ asterisk14-moh-freeplay-g729,\
 asterisk14-moh-freeplay-gsm,\
 asterisk14-moh-freeplay-ulaw,\
 asterisk14-gui\
-,freetds\
 ,libogg\
 ,radiusclient-ng\
 ,sqlite2\
@@ -79,7 +78,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk16,asterisk-sounds,asterisk-chan-capi
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=1
+ASTERISK14_IPK_VERSION=2
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -257,7 +256,7 @@ ifneq (, $(filter net-snmp, $(PACKAGES)))
 	$(MAKE) net-snmp-stage
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage
-	$(MAKE) sqlite2-stage freetds-stage libogg-stage
+	$(MAKE) sqlite2-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
@@ -289,7 +288,7 @@ endif
 		--with-curl=$(STAGING_PREFIX) \
 		--with-ogg=$(STAGING_PREFIX) \
 		--with-popt=$(STAGING_PREFIX) \
-		--with-tds=$(STAGING_PREFIX) \
+		--without-tds \
 		--with-sqlite=$(STAGING_PREFIX) \
 		--without-postgres \
 		--with-radius=$(STAGING_PREFIX) \
