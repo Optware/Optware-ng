@@ -125,6 +125,11 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		--with-logfile=/opt/var/log/snmpd.log \
 		--with-persistent-directory=/opt/var/net-snmp \
 	)
+ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
+	sed -i -e 's/#if HAVE_NETINET_IF_ETHER_H/#if 0/' \
+		$(@D)/agent/mibgroup/mibII/at.c \
+		$(@D)/agent/mibgroup/mibII/interfaces.c
+endif
 	touch $@
 
 net-snmp-unpack: $(NET_SNMP_BUILD_DIR)/.configured
