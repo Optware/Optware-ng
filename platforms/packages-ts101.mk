@@ -1,4 +1,5 @@
 SPECIFIC_PACKAGES = \
+	ipkg-opt \
 	libiconv \
 	py-ctypes \
 	ts101-kernel-modules \
