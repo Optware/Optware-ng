@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NLOAD_SITE=http://www.roland-riegel.de/nload
-NLOAD_VERSION=0.7.1
+NLOAD_VERSION=0.7.2
 NLOAD_SOURCE=nload-$(NLOAD_VERSION).tar.gz
 NLOAD_DIR=nload-$(NLOAD_VERSION)
 NLOAD_UNZIP=zcat
@@ -35,7 +35,7 @@ NLOAD_CONFLICTS=
 #
 # NLOAD_IPK_VERSION should be incremented when the ipk changes.
 #
-NLOAD_IPK_VERSION=3
+NLOAD_IPK_VERSION=1
 
 #
 # NLOAD_PATCHES should list any patches, in the the order in
@@ -75,8 +75,8 @@ NLOAD_IPK=$(BUILD_DIR)/nload_$(NLOAD_VERSION)-$(NLOAD_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NLOAD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NLOAD_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(NLOAD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,10 +107,10 @@ $(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 	if test -n "$(NLOAD_PATCHES)"; then \
 		cat $(NLOAD_PATCHES) | patch -d $(BUILD_DIR)/$(NLOAD_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(NLOAD_DIR) $(NLOAD_BUILD_DIR)
+	mv $(BUILD_DIR)/$(NLOAD_DIR) $(@D)
 	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
-                autoreconf --verbose $(NLOAD_BUILD_DIR)
-	(cd $(NLOAD_BUILD_DIR); \
+                autoreconf --verbose $(@D)
+	(cd $(@D); \
 		sed -i -e 's|/etc/nload.conf|/opt/etc/nload.conf|' \
 			docs/nload.1.in src/main.cpp ; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -134,7 +134,7 @@ nload-unpack: $(NLOAD_BUILD_DIR)/.configured
 #
 $(NLOAD_BUILD_DIR)/.built: $(NLOAD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NLOAD_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
