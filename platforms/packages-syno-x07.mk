@@ -12,8 +12,6 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule \
-	asterisk asterisk14-chan-capi \
-	asterisk16 asterisk16-addons \
 	busybox \
 	classpath \
 	freeradius \
@@ -22,8 +20,8 @@ BROKEN_PACKAGES = \
 	iptraf \
 	ldconfig libcapi20 libextractor \
 	monotone \
-	ncftp net-snmp ntop \
-	openser p7zip \
+	ncftp ntop \
+	p7zip \
 	player puppy \
 	qemu sablevm \
 	varnish \
