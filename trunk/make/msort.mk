@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSORT_SITE=http://billposer.org/Software/Downloads
-MSORT_VERSION=8.46
+MSORT_VERSION=8.47
 MSORT_SOURCE=msort-$(MSORT_VERSION).tar.bz2
 MSORT_DIR=msort-$(MSORT_VERSION)
 MSORT_UNZIP=bzcat
@@ -115,13 +115,13 @@ $(MSORT_BUILD_DIR)/.configured: $(DL_DIR)/$(MSORT_SOURCE) $(MSORT_PATCHES) make/
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
-	rm -rf $(BUILD_DIR)/$(MSORT_DIR) $(MSORT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MSORT_DIR) $(@D)
 	$(MSORT_UNZIP) $(DL_DIR)/$(MSORT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MSORT_PATCHES)" ; \
 		then cat $(MSORT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MSORT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MSORT_DIR)" != "$(MSORT_BUILD_DIR)" ; \
+	if test "$(BUILD_DIR)/$(MSORT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MSORT_DIR) $(MSORT_BUILD_DIR) ; \
 	fi
 	(cd $(@D); \
