@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PATCHUTILS_SITE=http://cyberelk.net/tim/data/patchutils/stable
-PATCHUTILS_VERSION=0.2.31
+PATCHUTILS_VERSION=0.3.0
 PATCHUTILS_SOURCE=patchutils-$(PATCHUTILS_VERSION).tar.bz2
 PATCHUTILS_DIR=patchutils-$(PATCHUTILS_VERSION)
 PATCHUTILS_UNZIP=bzcat
@@ -76,8 +76,8 @@ PATCHUTILS_IPK=$(BUILD_DIR)/patchutils_$(PATCHUTILS_VERSION)-$(PATCHUTILS_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PATCHUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PATCHUTILS_SITE)/$(PATCHUTILS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PATCHUTILS_SOURCE)
+	$(WGET) -P $(@D) $(PATCHUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ patchutils-source: $(DL_DIR)/$(PATCHUTILS_SOURCE) $(PATCHUTILS_PATCHES)
 #
 $(PATCHUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCHUTILS_SOURCE) $(PATCHUTILS_PATCHES) make/patchutils.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(PATCHUTILS_DIR) $(PATCHUTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PATCHUTILS_DIR) $(@D)
 	$(PATCHUTILS_UNZIP) $(DL_DIR)/$(PATCHUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PATCHUTILS_PATCHES)" ; \
 		then cat $(PATCHUTILS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(PATCHUTILS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(PATCHUTILS_DIR)" != "$(PATCHUTILS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(PATCHUTILS_DIR) $(PATCHUTILS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(PATCHUTILS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(PATCHUTILS_DIR) $(@D) ; \
 	fi
-	(cd $(PATCHUTILS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PATCHUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PATCHUTILS_LDFLAGS)" \
@@ -127,7 +127,7 @@ $(PATCHUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCHUTILS_SOURCE) $(PATCHUTILS
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(PATCHUTILS_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 patchutils-unpack: $(PATCHUTILS_BUILD_DIR)/.configured
@@ -137,7 +137,7 @@ patchutils-unpack: $(PATCHUTILS_BUILD_DIR)/.configured
 #
 $(PATCHUTILS_BUILD_DIR)/.built: $(PATCHUTILS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PATCHUTILS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -150,7 +150,7 @@ patchutils: $(PATCHUTILS_BUILD_DIR)/.built
 #
 $(PATCHUTILS_BUILD_DIR)/.staged: $(PATCHUTILS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PATCHUTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 patchutils-stage: $(PATCHUTILS_BUILD_DIR)/.staged
