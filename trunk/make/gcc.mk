@@ -46,7 +46,7 @@ GCC_CONFLICTS=
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION=3
+GCC_IPK_VERSION=4
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -54,9 +54,14 @@ GCC_IPK_VERSION=3
 
 GCC_BUILD_DIR=$(BUILD_DIR)/gcc
 GCC_SOURCE_DIR=$(SOURCE_DIR)/gcc
+
+ifeq (nothing, $(GCC_PATCHES))
+GCC_PATCHES=
+else
 GCC_PATCHES:=$(wildcard $(GCC_SOURCE_DIR)/$(GCC_VERSION)/*.patch)
-ifdef NATIVE_GCC_EXTRA_PATCHES
+  ifdef NATIVE_GCC_EXTRA_PATCHES
 GCC_PATCHES += $(NATIVE_GCC_EXTRA_PATCHES)
+  endif
 endif
 
 
@@ -82,9 +87,11 @@ $(GNU_TARGET_NAME)-uclibc, $(GNU_TARGET_NAME)))
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
+ifeq ($(GCC_DIR), gcc-$(GCC_VERSION))
 $(DL_DIR)/$(GCC_SOURCE):
 	$(WGET) -P $(@D) $(GCC_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -133,6 +140,7 @@ $(GCC_BUILD_DIR)/.configured: $(DL_DIR)/$(GCC_SOURCE) $(GCC_PATCHES) #make/gcc.m
 		--with-as=$(TARGET_AS) \
 		--with-ld=$(TARGET_LD) \
 		--enable-languages=c,c++ \
+		--disable-multilib \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
