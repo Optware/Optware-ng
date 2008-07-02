@@ -17,8 +17,8 @@ MLOCATE_IPK_VERSION=1
 MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.gz
 MLOCATE_UNZIP=zcat
 else
-MLOCATE_SITE=https://fedorahosted.org/mlocate/attachment/wiki/MlocateDownloads
-MLOCATE_VERSION=0.20
+MLOCATE_SITE=https://fedorahosted.org/releases/m/l/mlocate
+MLOCATE_VERSION=0.21
 MLOCATE_IPK_VERSION=1
 MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.bz2
 MLOCATE_UNZIP=bzcat
@@ -28,10 +28,10 @@ MLOCATE_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 MLOCATE_DESCRIPTION=A merginging locate program to find files fast
 MLOCATE_SECTION=admin
 MLOCATE_PRIORITY=optional
-ifeq ($(GETTEXT_NLS), enable)
-MLOCATE_DEPENDS=adduser, gettext
-else
 MLOCATE_DEPENDS=adduser
+ifeq ($(GETTEXT_NLS), enable)
+MLOCATE_DEPENDS+=, gettext
+else
 endif
 MLOCATE_SUGGESTS=
 MLOCATE_CONFLICTS=
@@ -53,7 +53,7 @@ MLOCATE_CONFFILES=/opt/etc/cron.d/updatedb-mlocate
 #
 MLOCATE_CPPFLAGS=
 ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
-MLOCATE_CPPFLAGS+=-DSSIZE_MAX=2147483647L
+MLOCATE_CPPFLAGS+=-DSSIZE_MAX=LONG_MAX
 endif
 
 MLOCATE_LDFLAGS=
@@ -82,7 +82,7 @@ MLOCATE_IPK=$(BUILD_DIR)/mlocate_$(MLOCATE_VERSION)-$(MLOCATE_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MLOCATE_SOURCE):
-	$(WGET) --no-check-certificate -O $@ $(MLOCATE_SITE)/$(@F)?format=raw || \
+	$(WGET) --no-check-certificate -P $(@D) $(MLOCATE_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
