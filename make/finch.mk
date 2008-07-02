@@ -7,7 +7,7 @@
 # when we have a second client also uses libpurple, we should separate it into its own ipk, and make sure stage works
 #
 FINCH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pidgin
-FINCH_VERSION=2.4.2
+FINCH_VERSION=2.4.3
 FINCH_SOURCE=pidgin-$(FINCH_VERSION).tar.bz2
 FINCH_DIR=pidgin-$(FINCH_VERSION)
 FINCH_UNZIP=bzcat
@@ -26,7 +26,7 @@ FINCH_CONFLICTS=
 #
 # FINCH_IPK_VERSION should be incremented when the ipk changes.
 #
-FINCH_IPK_VERSION=2
+FINCH_IPK_VERSION=1
 
 #
 # FINCH_CONFFILES should be a list of user-editable files
