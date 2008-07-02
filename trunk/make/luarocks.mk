@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LUAROCKS_SITE=http://luaforge.net/frs/download.php/3359
-LUAROCKS_VERSION=0.5.2
+LUAROCKS_SITE=http://luaforge.net/frs/download.php/3516
+LUAROCKS_VERSION=0.6.0.2
 LUAROCKS_SOURCE=luarocks-$(LUAROCKS_VERSION).tar.gz
 LUAROCKS_DIR=luarocks-$(LUAROCKS_VERSION)
 LUAROCKS_UNZIP=zcat
