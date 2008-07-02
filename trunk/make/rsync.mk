@@ -5,7 +5,7 @@
 ###########################################################
 
 RSYNC_SITE=http://www.samba.org/ftp/rsync
-RSYNC_VERSION=3.0.2
+RSYNC_VERSION=3.0.3
 RSYNC_SOURCE=rsync-$(RSYNC_VERSION).tar.gz
 RSYNC_DIR=rsync-$(RSYNC_VERSION)
 RSYNC_UNZIP=zcat
@@ -54,8 +54,8 @@ RSYNC_IPK_DIR=$(BUILD_DIR)/rsync-$(RSYNC_VERSION)-ipk
 RSYNC_IPK=$(BUILD_DIR)/rsync_$(RSYNC_VERSION)-$(RSYNC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(RSYNC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RSYNC_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(RSYNC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 rsync-source: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 
@@ -65,10 +65,10 @@ $(RSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 ifneq (, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(RSYNC_DIR) $(RSYNC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(RSYNC_DIR) $(@D)
 	$(RSYNC_UNZIP) $(DL_DIR)/$(RSYNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(RSYNC_PATCHES) | patch -d $(BUILD_DIR)/$(RSYNC_DIR) -p1
-	mv $(BUILD_DIR)/$(RSYNC_DIR) $(RSYNC_BUILD_DIR)
+	mv $(BUILD_DIR)/$(RSYNC_DIR) $(@D)
 	sed -i -e '/-o rounding/s|$$(CFLAGS) |&$$(CPPFLAGS) |' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
