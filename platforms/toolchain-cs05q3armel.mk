@@ -38,6 +38,11 @@ TOOLCHAIN_SITE=http://www.codesourcery.com/public/gnu_toolchain/arm-none-linux-g
 TOOLCHAIN_BINARY=arm-2005q3-2-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
 TOOLCHAIN_SOURCE=arm-2005q3-2-arm-none-linux-gnueabi.src.tar.bz2
 
+# following three are for building native gcc using cross toolchain
+GCC_SOURCE=gcc-2005q3-2.tar.bz2
+GCC_DIR=gcc-2005q3
+GCC_PATCHES=nothing
+
 toolchain: $(TARGET_CROSS_TOP)/.010patched
 
 $(DL_DIR)/$(TOOLCHAIN_BINARY):
@@ -47,6 +52,12 @@ $(DL_DIR)/$(TOOLCHAIN_BINARY):
 $(DL_DIR)/$(TOOLCHAIN_SOURCE):
 	$(WGET) -P $(@D) $(TOOLCHAIN_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+$(DL_DIR)/$(GCC_SOURCE): $(DL_DIR)/$(TOOLCHAIN_SOURCE)
+	tar -C $(@D) -xjf $(@D)/$(TOOLCHAIN_SOURCE) arm-2005q3-2-arm-none-linux-gnueabi/$(@F)
+	mv $(@D)/arm-2005q3-2-arm-none-linux-gnueabi/$(@F) $@
+	rmdir $(@D)/arm-2005q3-2-arm-none-linux-gnueabi
+	touch $@
 
 $(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP)
