@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.0.30
+SAMBA_VERSION=3.2.0
 SAMBA_IPK_VERSION=1
 else
 SAMBA_VERSION=3.0.14a
@@ -52,7 +52,7 @@ SAMBA_CONFFILES= \
 # which they should be applied to the source code.
 #
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in.patch $(SAMBA_SOURCE_DIR)/samba.patch
+SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in.patch
 else
 SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in-wl500g.patch
 endif
@@ -135,6 +135,7 @@ SAMBA_CROSS_ENVS=\
 		samba_cv_HAVE_BROKEN_FCNTL64_LOCKS=no \
 		samba_cv_REALPATH_TAKES_NULL=no \
 		samba_cv_HAVE_TRUNCATED_SALT=no \
+		samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
 		fu_cv_sys_stat_statvfs64=yes
 endif
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
@@ -148,7 +149,7 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SAMBA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SAMBA_SITE)/$(SAMBA_SOURCE)
+	$(WGET) -P $(@D) $(SAMBA_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -177,20 +178,15 @@ ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
 	$(MAKE) cups-stage gnutls-stage
-	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(@D)
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
-	mv $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR)
+	mv $(BUILD_DIR)/$(SAMBA_DIR) $(@D)
 ifeq (3.0.14a, $(SAMBA_VERSION))
-	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(SAMBA_BUILD_DIR)/source/aclocal.m4
+	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(@D)/source/aclocal.m4
 endif
-	(cd $(SAMBA_BUILD_DIR)/source; \
-		ACLOCAL=aclocal-1.9 \
-		AUTOMAKE=automake-1.9 \
-		M4PATH=$(SAMBA_BUILD_DIR)/source/lib/replace \
-		autoreconf -i -f -v; \
-	)
-	(cd $(SAMBA_BUILD_DIR); \
+	(cd $(@D)/source; ./autogen.sh )
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SAMBA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SAMBA_LDFLAGS)" \
@@ -229,8 +225,8 @@ endif
 		--disable-nls \
 	)
 #	Remove Kerberos libs produced by broken configure
-	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' $(SAMBA_BUILD_DIR)/Makefile
-	touch $(SAMBA_BUILD_DIR)/.configured
+	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' $(@D)/Makefile
+	touch $@
 
 samba-unpack: $(SAMBA_BUILD_DIR)/.configured
 
@@ -238,9 +234,9 @@ samba-unpack: $(SAMBA_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SAMBA_BUILD_DIR)/.built: $(SAMBA_BUILD_DIR)/.configured
-	rm -f $(SAMBA_BUILD_DIR)/.built
-	$(MAKE) -C $(SAMBA_BUILD_DIR)
-	touch $(SAMBA_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -251,9 +247,9 @@ samba: $(SAMBA_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SAMBA_BUILD_DIR)/.staged: $(SAMBA_BUILD_DIR)/.built
-	rm -f $(SAMBA_BUILD_DIR)/.staged
-	$(MAKE) -C $(SAMBA_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SAMBA_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 samba-stage: $(SAMBA_BUILD_DIR)/.staged
 
@@ -262,7 +258,7 @@ samba-stage: $(SAMBA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/samba
 #
 $(SAMBA_IPK_DIR)/CONTROL/control:
-	@install -d $(SAMBA_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: samba" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -294,6 +290,8 @@ $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	$(STRIP_COMMAND) `find $(SAMBA_IPK_DIR)/opt/lib -name '*.so'`
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
+	cd $(SAMBA_BUILD_DIR)/bin/; for f in lib*.so.[01]; \
+		do cp -a $$f $(SAMBA_IPK_DIR)/opt/lib/$$f; done
 	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S08samba
 	install -d $(SAMBA_IPK_DIR)/opt/etc/xinetd.d
