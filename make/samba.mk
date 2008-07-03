@@ -137,6 +137,12 @@ SAMBA_CROSS_ENVS=\
 		samba_cv_HAVE_TRUNCATED_SALT=no \
 		samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
 		fu_cv_sys_stat_statvfs64=yes
+  ifeq (no, $(IPV6))
+SAMBA_CROSS_ENVS += libreplace_cv_HAVE_IPV6=no
+  endif
+  ifeq ($(OPTWARE_TARGET), $(filter oleg, $(OPTWARE_TARGET)))
+SAMBA_CROSS_ENVS += ac_cv_header_linux_dqblk_xfs_h=no
+  endif
 endif
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA_CONFIG_ARGS=--with-ldap
