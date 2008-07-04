@@ -165,7 +165,7 @@ ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
 ASTERISK14_CPPFLAGS+= -DPATH_MAX=4096
 endif
 ASTERISK14_LDFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter angstrombe angstromle cs05q3armel, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter angstrombe angstromle cs05q3armel syno-e500, $(OPTWARE_TARGET)))
 ASTERISK14_LDFLAGS+=-lpthread -ldl -lresolv
 endif
 
