@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_UTIL_SITE=http://www.apache.org/dist/apr
-APR_UTIL_VERSION=1.3.0
+APR_UTIL_VERSION=1.3.2
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
 APR_UTIL_UNZIP=bzcat
@@ -22,7 +22,8 @@ APR_UTIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APR_UTIL_DESCRIPTION=Apache Portable Runtime utilities library
 APR_UTIL_SECTION=lib
 APR_UTIL_PRIORITY=optional
-APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), e2fsprogs, expat, gdbm, libdb
+APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), e2fslibs, expat, gdbm, libdb
+APR_UTIL_SUGGESTS=sqlite
 
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
@@ -39,7 +40,7 @@ APR_UTIL_CONFIGURE_TARGET_ARGS= \
 		--with-ldap-library=$(STAGING_LIB_DIR) \
 		--with-ldap-include=$(STAGING_INCLUDE_DIR) \
 		--with-ldap
-APR_UTIL_DEPENDS +=, openldap-libs
+APR_UTIL_SUGGESTS +=, openldap-libs
 else
 APR_UTIL_CONFIGURE_TARGET_ARGS=
 endif
@@ -93,6 +94,7 @@ $(APR_UTIL_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(APR_UTIL_SITE)/$(APR_UTIL_SOURCE)" >>$@
 	@echo "Description: $(APR_UTIL_DESCRIPTION)" >>$@
 	@echo "Depends: $(APR_UTIL_DEPENDS)" >>$@
+	@echo "Suggests: $(APR_UTIL_SUGGESTS)" >>$@
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -125,8 +127,7 @@ apr-util-source: $(DL_DIR)/$(APR_UTIL_SOURCE) $(APR_UTIL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) $(APR_UTIL_PATCHES) make/apr-util.mk
-	$(MAKE) gdbm-stage
-	$(MAKE) libdb-stage
+	$(MAKE) gdbm-stage libdb-stage sqlite-stage
 	$(MAKE) expat-stage
 	$(MAKE) e2fsprogs-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
@@ -138,7 +139,7 @@ endif
 	mv $(BUILD_DIR)/$(APR_UTIL_DIR) $(@D)
 	cat $(APR_UTIL_PATCHES) |patch -p0 -d$(@D)
 	(cd $(@D); \
-		autoconf; \
+		autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APR_UTIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APR_UTIL_LDFLAGS)" \
@@ -156,16 +157,14 @@ endif
 		--with-expat=$(STAGING_DIR)/opt \
 		--without-freetds \
 		--without-mysql \
+		--without-odbc \
 		--without-pgsql \
 		--without-sqlite2 \
-		--without-sqlite3 \
+		--with-sqlite3=$(STAGING_PREFIX) \
 		$(APR_UTIL_CONFIGURE_TARGET_ARGS) \
 	)
 	mkdir -p $(@D)/build
 	cp $(STAGING_PREFIX)/share/apache2/build-1/apr_rules.mk $(@D)/build/rules.mk
-	sed -i \
-	 -e '/^OBJECTS_all/{s/[^ \t]\{1,\}\(mysql\|sqlite.\|pgsql\).lo//g}' \
-		$(@D)/build-outputs.mk
 	touch $@
 
 apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured

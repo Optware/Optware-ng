@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_SITE=http://www.apache.org/dist/apr
-APR_VERSION=1.3.0
+APR_VERSION=1.3.2
 APR_SOURCE=apr-$(APR_VERSION).tar.bz2
 APR_DIR=apr-$(APR_VERSION)
 APR_UNZIP=bzcat
@@ -27,7 +27,7 @@ APR_DEPENDS=
 #
 # APR_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_IPK_VERSION=2
+APR_IPK_VERSION=1
 
 #
 # APR_LOCALES defines which locales get installed
