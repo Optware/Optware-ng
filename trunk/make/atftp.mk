@@ -20,10 +20,10 @@ ATFTP_IPK_VERSION=9
 
 ATFTP_CONFFILES=/opt/etc/xinetd.d/atftp
 
-ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle fsg3v4 cs05q3armel mssii, $(OPTWARE_TARGET)))
-ATFTP_PATCHES=$(ATFTP_SOURCE_DIR)/argz.h.patch
+ATFTP_PATCHES = $(ATFTP_SOURCE_DIR)/CLK_TCK.patch
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel fsg3v4 slugosbe slugosle syno-e500, $(OPTWARE_TARGET)))
+ATFTP_PATCHES += $(ATFTP_SOURCE_DIR)/argz.h.patch
 endif
-ATFTP_PATCHES+=$(ATFTP_SOURCE_DIR)/CLK_TCK.patch
 
 ATFTP_BUILD_DIR=$(BUILD_DIR)/atftp
 ATFTP_SOURCE_DIR=$(SOURCE_DIR)/atftp
