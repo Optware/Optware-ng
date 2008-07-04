@@ -340,6 +340,7 @@ PACKAGES_OBSOLETED = erl-escript libiconv metalog \
 ##############
 
 HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
+HOST_OS:=$(shell uname)
 
 # Directory location definitions
 

@@ -23,8 +23,14 @@ toolchain:
 else
 
 HOSTCC = gcc
+  ifneq (Darwin, $(HOST_OS))
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/$(GNU_TARGET_NAME)/gcc-2005q3-glibc-2.3.6
+  else
+GNU_HOST_NAME = i386-apple-darwin
+TARGET_CROSS_TOP = /opt/local
+  endif
+
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(GNU_TARGET_NAME)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/lib
 TARGET_USRLIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/libc/usr/lib
@@ -33,6 +39,8 @@ TARGET_INCDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/libc/usr/include
 TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
+
+  ifneq (Darwin, $(HOST_OS))
 
 TOOLCHAIN_SITE=http://www.codesourcery.com/public/gnu_toolchain/arm-none-linux-gnueabi
 TOOLCHAIN_BINARY=arm-2005q3-2-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
@@ -65,9 +73,14 @@ $(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/pl
 	tar -xj -C $(TARGET_CROSS_TOP) -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	touch $@
 
-
 $(TARGET_CROSS_TOP)/.010patched: $(TARGET_CROSS_TOP)/.unpacked
 	rm -f $@
 	patch -d $(TARGET_INCDIR) -p0 < $(SOURCE_DIR)/toolchain-cs05q3armel/kernel_ulong_t.patch
 	touch $@
+
+  else		# Mac OS X
+toolchain:
+
+  endif
+
 endif
