@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 AVAHI_SITE=http://avahi.org/download
-AVAHI_VERSION=0.6.22
+AVAHI_VERSION=0.6.23
 AVAHI_SOURCE=avahi-$(AVAHI_VERSION).tar.gz
 AVAHI_DIR=avahi-$(AVAHI_VERSION)
 AVAHI_UNZIP=zcat
@@ -80,8 +80,8 @@ AVAHI_IPK=$(BUILD_DIR)/avahi_$(AVAHI_VERSION)-$(AVAHI_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(AVAHI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(AVAHI_SITE)/$(AVAHI_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(AVAHI_SOURCE)
+	$(WGET) -P $(@D) $(AVAHI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,16 +114,16 @@ $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/
 	$(MAKE) gdbm-stage
 	$(MAKE) glib-stage
 	$(MAKE) libdaemon-stage
-	rm -rf $(BUILD_DIR)/$(AVAHI_DIR) $(AVAHI_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(AVAHI_DIR) $(@D)
 	$(AVAHI_UNZIP) $(DL_DIR)/$(AVAHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AVAHI_PATCHES)" ; \
 		then cat $(AVAHI_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(AVAHI_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(AVAHI_DIR)" != "$(AVAHI_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(AVAHI_DIR) $(AVAHI_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(AVAHI_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(AVAHI_DIR) $(@D) ; \
 	fi
-	(cd $(AVAHI_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AVAHI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AVAHI_LDFLAGS)" \
@@ -148,7 +148,7 @@ $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(AVAHI_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 avahi-unpack: $(AVAHI_BUILD_DIR)/.configured
@@ -158,7 +158,7 @@ avahi-unpack: $(AVAHI_BUILD_DIR)/.configured
 #
 $(AVAHI_BUILD_DIR)/.built: $(AVAHI_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(AVAHI_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -171,7 +171,7 @@ avahi: $(AVAHI_BUILD_DIR)/.built
 #
 $(AVAHI_BUILD_DIR)/.staged: $(AVAHI_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(AVAHI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libavahi*.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/avahi-*.pc
 	touch $@
