@@ -29,7 +29,7 @@
 ifdef NATIVE_GCC_VERSION
 GCC_VERSION=$(NATIVE_GCC_VERSION)
 else
-GCC_VERSION:=$(shell $(TARGET_CC) -dumpversion)
+GCC_VERSION:=$(shell test -x "$(TARGET_CC)" && $(TARGET_CC) -dumpversion)
 endif
 GCC_SITE?=http://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)
 GCC_SOURCE?=gcc-$(GCC_VERSION).tar.bz2
