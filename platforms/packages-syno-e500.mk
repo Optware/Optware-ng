@@ -6,10 +6,9 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
-	atftp \
+	asterisk14-chan-capi \
 	finch gconv-modules iptraf \
 	ldconfig libcapi20 mediatomb monotone openser \
-	pciutils procps puppy ser socat transcode \
+	pciutils procps puppy ser transcode \
 	vsftpd x264 lm-sensors \
 	slimserver \
