@@ -30,13 +30,16 @@ AVAHI_DESCRIPTION=A system for multicast DNS service discovery, an implementatio
 AVAHI_SECTION=net
 AVAHI_PRIORITY=optional
 AVAHI_DEPENDS=expat, libdaemon, dbus
+ifeq (enable, $(GETTEXT_NLS))
+AVAHI_DEPENDS += , gettext
+endif
 AVAHI_SUGGESTS=
 AVAHI_CONFLICTS=
 
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=1
+AVAHI_IPK_VERSION=2
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
@@ -109,11 +112,10 @@ avahi-source: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES)
 # shown below to make various patches to it.
 #
 $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/avahi.mk
-	$(MAKE) dbus-stage
-	$(MAKE) expat-stage
-	$(MAKE) gdbm-stage
-	$(MAKE) glib-stage
-	$(MAKE) libdaemon-stage
+	$(MAKE) dbus-stage expat-stage gdbm-stage glib-stage libdaemon-stage
+ifeq (enable, $(GETTEXT_NLS))
+	$(MAKE) gettext-stage
+endif
 	rm -rf $(BUILD_DIR)/$(AVAHI_DIR) $(@D)
 	$(AVAHI_UNZIP) $(DL_DIR)/$(AVAHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AVAHI_PATCHES)" ; \
