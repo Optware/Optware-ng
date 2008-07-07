@@ -2,6 +2,7 @@ SPECIFIC_PACKAGES = \
 	ipkg-opt \
 	libiconv \
 	$(PERL_PACKAGES) \
+	binutils gcc libc-dev \
 
 # iptraf: sys/types.h and linux/types.h conflicting
 BROKEN_PACKAGES = \
