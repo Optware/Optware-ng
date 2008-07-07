@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.6.31
+NGINX_VERSION=0.6.32
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -56,11 +56,10 @@ NGINX_PATCHES=
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/cross-configure.patch
-ifneq (,$(filter module-init-tools, $(PACKAGES)))
-NGINX_CONFIGURE_ENV=NGX_SYSTEM=Linux NGX_RELEASE=2.6 NGX_MACHINE=$(TARGET_ARCH)
-else
-NGINX_CONFIGURE_ENV=NGX_SYSTEM=Linux NGX_RELEASE=2.4 NGX_MACHINE=$(TARGET_ARCH)
-endif
+
+NGINX_CONFIGURE_ENV=NGX_SYSTEM=Linux NGX_MACHINE=$(TARGET_ARCH) \
+NGX_RELEASE=$(if $(filter module-init-tools, $(PACKAGES)),2.6,2.4) \
+
 NGINX_CONFIGURE_ENV+=\
 cross_compiling=yes \
 ngx_cache_NGX_HAVE_STRERROR_R=no \
@@ -179,7 +178,6 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	)
 	sed -i.orig \
                 -e 's#conf/conf/nginx.conf#conf#g' \
-                -e '/^install:/,$$s#/opt#$$(DESTDIR)/opt#g' \
                 -e '/^CFLAGS/{s| -Werror||;s|-I/opt/include||;}' \
                 $(NGINX_BUILD_DIR)/objs/Makefile
 ifneq (,$(filter nslu2 cs05q3armel, $(OPTWARE_TARGET)))
