@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SERIAL_SITE=http://pypi.python.org/packages/source/p/pyserial
-PY-SERIAL_VERSION=2.3
+PY-SERIAL_VERSION=2.4
 PY-SERIAL_SOURCE=pyserial-$(PY-SERIAL_VERSION).tar.gz
 PY-SERIAL_DIR=pyserial-$(PY-SERIAL_VERSION)
 PY-SERIAL_UNZIP=zcat
