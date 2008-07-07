@@ -57,6 +57,8 @@ else
 LIBC-DEV_LIBDIR=$(TARGET_LIBDIR)
 endif
 
+LIBC-DEV_CRT_DIR ?= /opt/$(GNU_TARGET_NAME)/lib
+
 #
 # LIBC-DEV_CONFFILES should be a list of user-editable files
 #LIBC-DEV_CONFFILES=/opt/etc/libc-dev.conf /opt/etc/init.d/SXXlibc-dev
@@ -125,8 +127,8 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	rm -rf $(LIBC-DEV_IPK_DIR) $(BUILD_DIR)/libc-dev_*_$(TARGET_ARCH).ipk
 	install -d $(LIBC-DEV_IPK_DIR)/opt/
 	rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
-	install -d $(LIBC-DEV_IPK_DIR)/opt/$(GNU_TARGET_NAME)/lib
-	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/opt/$(GNU_TARGET_NAME)/lib
+	install -d $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
+	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	install -d $(LIBC-DEV_IPK_DIR)/opt/lib/
 ifeq (uclibc, $(LIBC_STYLE))
 	rsync -l \
