@@ -141,6 +141,7 @@ $(GCC_BUILD_DIR)/.configured: $(DL_DIR)/$(GCC_SOURCE) $(GCC_PATCHES) #make/gcc.m
 		--with-ld=$(TARGET_LD) \
 		--enable-languages=c,c++ \
 		--disable-multilib \
+		$(NATIVE_GCC_EXTRA_CONFIG_ARGS) \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
