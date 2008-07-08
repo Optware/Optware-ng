@@ -35,7 +35,7 @@ SER_CONFLICTS=
 #
 # SER_IPK_VERSION should be incremented when the ipk changes.
 #
-SER_IPK_VERSION=3
+SER_IPK_VERSION=4
 
 #
 # SER_CONFFILES should be a list of user-editable files
@@ -56,11 +56,9 @@ SER_CPPFLAGS=-fsigned-char
 SER_LDFLAGS=
 
 SER_MAKEFLAGS=$(strip \
-        $(if $(filter ds101g, $(OPTWARE_TARGET)), ARCH=ppc OS=linux, \
-	$(if $(filter ts101, $(OPTWARE_TARGET)), ARCH=ppc OS=linux, \
-        $(if $(filter slugosbe, $(OPTWARE_TARGET)), ARCH=arm OS=linux, \
-        $(if $(filter mipsel, $(TARGET_ARCH)), ARCH=mips OS=linux OSREL=2.4.20, \
-        ARCH=arm OS=linux OSREL=2.4.22)))))
+        $(if $(filter powerpc, $(TARGET_ARCH)), ARCH=ppc, \
+        $(if $(filter mipsel mips, $(TARGET_ARCH)), ARCH=mips, \
+        ARCH=arm))) OS=linux
 
 #
 # SER_BUILD_DIR is the directory in which the build is done.
