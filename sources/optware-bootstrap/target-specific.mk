@@ -4,6 +4,7 @@ OPTWARE-BOOTSTRAP_TARGETS=\
 	hpmv2 \
 	lspro \
 	mssii \
+	syno-e500 \
 	syno-x07 \
 	teraprov2 \
 	tsx09 \
@@ -71,6 +72,11 @@ mssii-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=mssii
 mssii-optware-bootstrap-dirclean:
 	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=mssii
+
+syno-e500-optware-bootstrap-ipk:
+	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=syno-e500
+syno-e500-optware-bootstrap-dirclean:
+	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=syno-e500
 
 syno-x07-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=syno-x07
