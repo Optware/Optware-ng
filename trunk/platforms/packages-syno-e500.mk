@@ -3,6 +3,7 @@ SPECIFIC_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	py-ctypes \
 	$(PERL_PACKAGES) \
+	binutils gcc libc-dev \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
