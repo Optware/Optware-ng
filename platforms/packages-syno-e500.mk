@@ -1,8 +1,9 @@
 SPECIFIC_PACKAGES = \
-	ipkg-opt \
+	optware-bootstrap \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	py-ctypes \
-	$(PERL_PACKAGES) \
+
+#	$(PERL_PACKAGES) \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
