@@ -21,7 +21,6 @@ BROKEN_PACKAGES = \
 	\
 	asterisk \
 	atk \
-	gconv-modules \
 	gtk ipac-ng ivorbis-tools \
 	madplay mt-daapd nfs-utils \
 	pcapsipdump phoneme-advanced \
