@@ -33,7 +33,7 @@ RTORRENT_DESCRIPTION=rtorrent is a BitTorrent client for ncurses, using the libt
 RTORRENT_SECTION=net
 RTORRENT_PRIORITY=optional
 RTORRENT_NCURSES=$(strip \
-	$(if $(filter ds101g, $(OPTWARE_TARGET)), ncurses, \
+	$(if $(filter ds101g syno-e500, $(OPTWARE_TARGET)), ncurses, \
 	$(NCURSES_FOR_OPTWARE_TARGET)))
 RTORRENT_DEPENDS=libtorrent, $(RTORRENT_NCURSES), libcurl, xmlrpc-c, zlib
 RTORRENT_SUGGESTS=dtach, screen, adduser
