@@ -8,8 +8,8 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk14-chan-capi \
-	finch gconv-modules iptraf \
-	ldconfig libcapi20 mediatomb monotone openser \
+	gconv-modules iptraf \
+	ldconfig libcapi20 mediatomb monotone \
 	pciutils procps puppy ser transcode \
-	vsftpd x264 lm-sensors \
+	x264 lm-sensors \
 	slimserver \
