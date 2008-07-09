@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk14-chan-capi \
 	gconv-modules iptraf \
-	ldconfig libcapi20 mediatomb monotone \
-	pciutils procps puppy ser transcode \
+	ldconfig libcapi20 monotone \
+	pciutils procps puppy transcode \
 	x264 lm-sensors \
 	slimserver \
