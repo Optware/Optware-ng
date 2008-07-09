@@ -167,9 +167,9 @@ file: $(FILE_BUILD_DIR)/.built
 #
 $(FILE_BUILD_DIR)/.staged: $(FILE_BUILD_DIR)/.built
 	rm -f $@
-#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) SUBDIRS=src install
-#	$(MAKE) -C $(@D)/magic DESTDIR=$(STAGING_DIR) install
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) \
+		DESTDIR=$(STAGING_DIR) \
+		FILE_COMPILE=$(FILE_HOST_BUILD_DIR)/src/file
 	touch $@
 
 file-stage: $(FILE_BUILD_DIR)/.staged
