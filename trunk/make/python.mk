@@ -4,18 +4,17 @@
 #
 ###########################################################
 
-PYTHON_MAJOR=2.4
-PYTHON_VERSION=2.4.4
+PYTHON_VERSION=2.5
 PYTHON_DIR=python-$(PYTHON_VERSION)
 PYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PYTHON_DESCRIPTION=This is a package that sets up the default python.
 PYTHON_SECTION=devel
 PYTHON_PRIORITY=optional
-PYTHON_DEPENDS=python24
+PYTHON_DEPENDS=python25
 PYTHON_SUGGESTS=
 PYTHON_CONFLICTS=
 
-PYTHON_IPK_VERSION=3
+PYTHON_IPK_VERSION=1
 
 PYTHON_IPK_DIR=$(BUILD_DIR)/python-$(PYTHON_VERSION)-ipk
 PYTHON_IPK=$(BUILD_DIR)/python_$(PYTHON_VERSION)-$(PYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -48,10 +47,10 @@ $(PYTHON_IPK):
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
 	install -d $(PYTHON_IPK_DIR)/opt/bin
 	(cd $(PYTHON_IPK_DIR)/opt/bin; \
-		ln -s python2.4 python; \
-		ln -s idle2.4 idle; \
-		ln -s pydoc2.4 pydoc; \
-		ln -s smtpd2.4.py smtpd.py; \
+		ln -s python2.5 python; \
+		ln -s idle2.5 idle; \
+		ln -s pydoc2.5 pydoc; \
+		ln -s smtpd2.5.py smtpd.py; \
 	)
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 	install -d $(PYTHON_IPK_DIR)/usr/bin
