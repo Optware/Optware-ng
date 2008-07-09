@@ -21,12 +21,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SCGI_SITE=http://quixote.python.ca/releases
-PY-SCGI_VERSION=1.12
+PY-SCGI_SITE=http://python.ca/scgi/releases
+PY-SCGI_VERSION=1.13
 PY-SCGI_SOURCE=scgi-$(PY-SCGI_VERSION).tar.gz
 PY-SCGI_DIR=scgi-$(PY-SCGI_VERSION)
 PY-SCGI_UNZIP=zcat
-PY-SCGI_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-SCGI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SCGI_DESCRIPTION=Server-side implementation of the SCGI protocol.
 PY-SCGI_SECTION=misc
 PY-SCGI_PRIORITY=optional
@@ -37,7 +37,7 @@ PY-SCGI_CONFLICTS=
 #
 # PY-SCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SCGI_IPK_VERSION=3
+PY-SCGI_IPK_VERSION=1
 
 #
 # PY-SCGI_CONFFILES should be a list of user-editable files
