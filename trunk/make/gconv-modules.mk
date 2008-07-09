@@ -4,27 +4,44 @@
 #
 ###########################################################
 
+ifeq ($(OPTWARE_TARGET), nslu2)
 GCONV_MODULES_VERSION=2.2.5
+GCONV_MODULES_IPK_VERSION=7
+else
+  ifeq ($(LIBC_STYLE), uclibc)
+GCONV_MODULES_VERSION=2.2.5
+GCONV_MODULES_IPK_VERSION=7
+  else
+GCONV_MODULES_VERSION=$(LIBNSL_VERSION)
+GCONV_MODULES_IPK_VERSION=1
+  endif
+endif
+
 GCONV_MODULES_SOURCE=toolchain
 GCONV_MODULES_DIR=gconv-modules-$(GCONV_MODULES_VERSION)
 GCONV_MODULES_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
-GCONV_MODULES_DESCRIPTION=Provides gconv modules missing from the firmware.  These are used by glibc's iconv() implementation.
+GCONV_MODULES_DESCRIPTION=Provides gconv modules missing from the firmware.  These are used by glibc iconv() implementation.
 GCONV_MODULES_SECTION=lib
 GCONV_MODULES_PRIORITY=optional
 GCONV_MODULES_DEPENDS=
 GCONV_MODULES_CONFLICTS=
-
-GCONV_MODULES_IPK_VERSION=7
 
 GCONV_MODULES_BUILD_DIR=$(BUILD_DIR)/gconv-modules
 GCONV_MODULES_SOURCE_DIR=$(SOURCE_DIR)/gconv-modules
 GCONV_MODULES_IPK_DIR=$(BUILD_DIR)/gconv-modules-$(GCONV_MODULES_VERSION)-ipk
 GCONV_MODULES_IPK=$(BUILD_DIR)/gconv-modules_$(GCONV_MODULES_VERSION)-$(GCONV_MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+GCONV_MODULES_ICONV=$(strip \
+$(if $(filter syno-e500, $(OPTWARE_TARGET)), \
+	$(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/$(GNU_TARGET_NAME)/bin/iconv, \
+$(if $(filter syno-x07, $(OPTWARE_TARGET)), \
+	$(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/bin/iconv, \
+$(TARGET_USRLIBDIR)/../bin/iconv)))
+
 .PHONY: gconv-modules-source gconv-modules-unpack gconv-modules gconv-modules-stage gconv-modules-ipk gconv-modules-clean gconv-modules-dirclean gconv-modules-check
 
 $(GCONV_MODULES_BUILD_DIR)/.configured: $(GCONV_MODULES_PATCHES) make/gconv-modules.mk
-	rm -rf $(BUILD_DIR)/$(GCONV_MODULES_DIR) $(GCONV_MODULES_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GCONV_MODULES_DIR) $(@D)
 	mkdir -p $(GCONV_MODULES_BUILD_DIR)
 	touch $@
 
@@ -64,7 +81,7 @@ $(GCONV_MODULES_IPK): $(GCONV_MODULES_BUILD_DIR)/.built
 	rm -rf $(GCONV_MODULES_IPK_DIR) $(BUILD_DIR)/gconv-modules_*_$(TARGET_ARCH).ipk
 ifeq ($(LIBC_STYLE),uclibc)
 else
-    ifeq ($(OPTWARE_TARGET), slugosbe)
+    ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
     else
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
 	cp $(TARGET_USRLIBDIR)/gconv/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
@@ -75,7 +92,7 @@ else
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/*.so
     ifneq ($(OPTWARE_TARGET), fsg3v4)
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/bin
-	cp $(TARGET_USRLIBDIR)/../bin/iconv $(GCONV_MODULES_IPK_DIR)/opt/bin
+	cp $(GCONV_MODULES_ICONV) $(GCONV_MODULES_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/bin/*
     endif
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d

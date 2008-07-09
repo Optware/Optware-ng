@@ -8,7 +8,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk14-chan-capi \
-	gconv-modules iptraf \
+	iptraf \
 	ldconfig libcapi20 monotone \
 	pciutils procps puppy transcode \
 	x264 lm-sensors \

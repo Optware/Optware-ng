@@ -16,7 +16,7 @@ BROKEN_PACKAGES = \
 	busybox \
 	classpath \
 	freeradius \
-	gambit-c gconv-modules gnu-smalltalk \
+	gambit-c gnu-smalltalk \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	iptraf \
 	ldconfig libcapi20 libextractor \
