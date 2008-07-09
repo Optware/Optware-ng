@@ -130,6 +130,9 @@ endif
 		then cat $(FILE_PATCHES) | patch -d $(BUILD_DIR)/$(FILE_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(FILE_DIR) $(@D)
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		sed -i -e 's/ -Wextra//' $(@D)/src/Makefile.in; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FILE_CPPFLAGS)" \
