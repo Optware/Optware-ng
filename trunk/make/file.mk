@@ -167,7 +167,7 @@ file: $(FILE_BUILD_DIR)/.built
 #
 $(FILE_BUILD_DIR)/.staged: $(FILE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) \
+	$(MAKE) -C $(@D) install \
 		DESTDIR=$(STAGING_DIR) \
 		FILE_COMPILE=$(FILE_HOST_BUILD_DIR)/src/file
 	touch $@
