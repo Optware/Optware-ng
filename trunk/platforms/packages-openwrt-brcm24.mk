@@ -3,6 +3,7 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 	uclibcnotimpl libuclibc++ \
+	binutils gcc libc-dev \
 
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
@@ -14,7 +15,7 @@ BROKEN_PACKAGES = \
 	gtmess \
 	iptraf \
 	libdvb \
-	libnsl ltrace \
+	ltrace \
 	nget nickle \
 	player \
 	recordext renderext \
