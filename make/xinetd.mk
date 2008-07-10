@@ -37,7 +37,7 @@ XINETD_DEPENDS=
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=7
+XINETD_IPK_VERSION=8
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
@@ -84,7 +84,8 @@ XINETD_IPK=$(BUILD_DIR)/xinetd_$(XINETD_VERSION)-$(XINETD_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(XINETD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(XINETD_SITE)/$(XINETD_SOURCE)
+	$(WGET) -P $(@D) $(XINETD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,12 +111,12 @@ xinetd-source: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES)
 #
 $(XINETD_BUILD_DIR)/.configured: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES) make/xinetd.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(XINETD_DIR) $(XINETD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(XINETD_DIR) $(@D)
 	$(XINETD_UNZIP) $(DL_DIR)/$(XINETD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(XINETD_PATCHES) | patch -d $(BUILD_DIR)/$(XINETD_DIR) -p1
-	mv $(BUILD_DIR)/$(XINETD_DIR) $(XINETD_BUILD_DIR)
-	cp -f $(SOURCE_DIR)/common/config.* $(XINETD_BUILD_DIR)/
-	(cd $(XINETD_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(XINETD_DIR) $(@D)
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XINETD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XINETD_LDFLAGS)" \
@@ -126,7 +127,7 @@ $(XINETD_BUILD_DIR)/.configured: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES) ma
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(XINETD_BUILD_DIR)/.configured
+	touch $@
 
 xinetd-unpack: $(XINETD_BUILD_DIR)/.configured
 
@@ -135,9 +136,9 @@ xinetd-unpack: $(XINETD_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(XINETD_BUILD_DIR)/.built: $(XINETD_BUILD_DIR)/.configured
-	rm -f $(XINETD_BUILD_DIR)/.built
-	$(MAKE) -C $(XINETD_BUILD_DIR)
-	touch $(XINETD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -158,7 +159,7 @@ xinetd: $(XINETD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/xinetd
 #
 $(XINETD_IPK_DIR)/CONTROL/control:
-	@install -d $(XINETD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: $(XINETD_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -228,3 +229,9 @@ xinetd-clean:
 #
 xinetd-dirclean:
 	rm -rf $(BUILD_DIR)/$(XINETD_DIR) $(XINETD_BUILD_DIR) $(XINETD_IPK_DIR) $(XINETD_IPK)
+
+#
+# Some sanity check for the package.
+#
+xinetd-check: $(XINETD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(XINETD_IPK)
