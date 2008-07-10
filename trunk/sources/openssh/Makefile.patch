@@ -1,0 +1,11 @@
+--- openssh/Makefile.in.orig	2008-03-12 18:41:31.000000000 -0700
++++ openssh/Makefile.in	2008-07-10 10:39:59.000000000 -0700
+@@ -28,7 +28,7 @@
+ RAND_HELPER=$(libexecdir)/ssh-rand-helper
+ PRIVSEP_PATH=@PRIVSEP_PATH@
+ SSH_PRIVSEP_USER=@SSH_PRIVSEP_USER@
+-STRIP_OPT=@STRIP_OPT@
++STRIP_OPT=
+ 
+ PATHS= -DSSHDIR=\"$(sysconfdir)\" \
+ 	-D_PATH_SSH_PROGRAM=\"$(SSH_PROGRAM)\" \
