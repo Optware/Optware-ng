@@ -22,7 +22,7 @@
 #
 SNORT_SITE=http://www.snort.org/dl/current
 SNORT_SITE2=http://www.snort.org/dl/old
-SNORT_VERSION=2.7.0.1
+SNORT_VERSION=2.8.2.1
 SNORT_SOURCE=snort-$(SNORT_VERSION).tar.gz
 SNORT_DIR=snort-$(SNORT_VERSION)
 SNORT_UNZIP=zcat
@@ -47,7 +47,7 @@ SNORT_IPK_VERSION=1
 # SNORT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SNORT_PATCHES=$(SNORT_SOURCE_DIR)/configure.patch
+SNORT_PATCHES=$(SNORT_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -77,9 +77,9 @@ SNORT_IPK=$(BUILD_DIR)/snort_$(SNORT_VERSION)-$(SNORT_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SNORT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SNORT_SITE)/$(SNORT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SNORT_SITE2)/$(SNORT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SNORT_SOURCE)
+	$(WGET) -P $(@D) $(SNORT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SNORT_SITE2)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,18 +108,19 @@ snort-source: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES)
 #
 $(SNORT_BUILD_DIR)/.configured: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES) make/snort.mk
 	$(MAKE) libpcap-stage pcre-stage
-	rm -rf $(BUILD_DIR)/$(SNORT_DIR) $(SNORT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SNORT_DIR) $(@D)
 	$(SNORT_UNZIP) $(DL_DIR)/$(SNORT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SNORT_PATCHES)" ; \
 		then cat $(SNORT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SNORT_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(SNORT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SNORT_DIR)" != "$(SNORT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SNORT_DIR) $(SNORT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SNORT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SNORT_DIR) $(@D) ; \
 	fi
-	cp -f $(SOURCE_DIR)/common/config.* $(SNORT_BUILD_DIR)/
-	sed -i -e '/extra_incl/s|=-I/usr/include/pcap|=|' $(SNORT_BUILD_DIR)/configure
-	(cd $(SNORT_BUILD_DIR); \
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
+	sed -i -e '/extra_incl/s|=-I/usr/include/pcap|=|' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SNORT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SNORT_LDFLAGS)" \
@@ -135,7 +136,7 @@ $(SNORT_BUILD_DIR)/.configured: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(SNORT_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 snort-unpack: $(SNORT_BUILD_DIR)/.configured
@@ -145,7 +146,7 @@ snort-unpack: $(SNORT_BUILD_DIR)/.configured
 #
 $(SNORT_BUILD_DIR)/.built: $(SNORT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SNORT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -158,7 +159,7 @@ snort: $(SNORT_BUILD_DIR)/.built
 #
 $(SNORT_BUILD_DIR)/.staged: $(SNORT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SNORT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 snort-stage: $(SNORT_BUILD_DIR)/.staged
