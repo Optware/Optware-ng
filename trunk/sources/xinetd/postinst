@@ -7,6 +7,8 @@ echo "or other means of logging onto your system are enabled and working."
 echo
 fi
 
-echo "Note that only 192.168.1.0/24 has access in the default configuration"
+echo "Warning: the current only_from configuration in /opt/etc/xinetd.conf is"
+sed -n '/only_from/p' /opt/etc/xinetd.conf
+echo "change to your subnet accordingly and tighten security!"
 
 /opt/etc/init.d/S10xinetd
