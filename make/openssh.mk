@@ -27,7 +27,7 @@ OPENSSH_CONFFILES=\
 	/opt/etc/default/openssh \
 	/opt/etc/init.d/S40sshd
 
-#OPENSSH_PATCHES=
+OPENSSH_PATCHES=$(OPENSSH_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
