@@ -22,7 +22,7 @@ TS409-KERNEL-MODULES=`find $(TS409-KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # TS409-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-TS409-KERNEL-MODULES_IPK_VERSION=1
+TS409-KERNEL-MODULES_IPK_VERSION=2
 
 #
 # TS409-KERNEL-MODULES_CONFFILES should be a list of user-editable files
