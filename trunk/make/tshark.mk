@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TSHARK_SITE=http://www.wireshark.org/download/src
-TSHARK_VERSION=1.0.1
+TSHARK_VERSION=1.0.2
 TSHARK_SOURCE=wireshark-$(TSHARK_VERSION).tar.bz2
 TSHARK_DIR=wireshark-$(TSHARK_VERSION)
 TSHARK_UNZIP=bzcat
