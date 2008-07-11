@@ -7,7 +7,7 @@
 # $Header$
 #
 NMAP_SITE=http://download.insecure.org/nmap/dist
-NMAP_VERSION=4.65
+NMAP_VERSION=4.68
 NMAP_SOURCE=nmap-$(NMAP_VERSION).tar.bz2
 NMAP_DIR=nmap-$(NMAP_VERSION)
 NMAP_UNZIP=bzcat
@@ -96,7 +96,7 @@ nmap-source: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES)
 # shown below to make various patches to it.
 #
 $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nmap.mk
-	$(MAKE) openssl-stage pcre-stage libstdc++-stage
+	$(MAKE) openssl-stage pcre-stage libstdc++-stage lua-stage
 	rm -rf $(BUILD_DIR)/$(NMAP_DIR) $(NMAP_BUILD_DIR)
 	$(NMAP_UNZIP) $(DL_DIR)/$(NMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NMAP_PATCHES)" ; \
@@ -110,6 +110,7 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NMAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NMAP_LDFLAGS)" \
+		CXXFLAGS="$(STAGING_CPPFLAGS) $(NMAP_CPPFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -120,7 +121,6 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nma
 		--with-openssl=$(STAGING_DIR)/opt \
 		--with-pcap=linux \
 		--with-nmapfe=no \
-		--without-liblua \
 		--without-zenmap \
 		ac_cv_prog_CXXPROG=$(TARGET_CXX) \
 		ac_cv_linux_vers=2.4.22 \
@@ -138,6 +138,7 @@ $(NMAP_BUILD_DIR)/.built: $(NMAP_BUILD_DIR)/.configured
 	rm -f $@
 #	$(MAKE) -C $(NMAP_BUILD_DIR)/libpcre dftables CC=$(HOSTCC)
 	$(MAKE) -C $(@D)
+ 
 	touch $@
 
 #
