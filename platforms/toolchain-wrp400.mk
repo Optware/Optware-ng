@@ -4,7 +4,7 @@ LIBC_STYLE=uclibc
 
 GNU_TARGET_NAME = arm-linux-uclibc
 
-#LIBSTDC++_VERSION=6.0.3
+LIBSTDC++_VERSION=6.0.3
 LIBNSL_VERSION=0.9.28
 
 GETTEXT_NLS=enable
@@ -37,23 +37,27 @@ TARGET_OPTIMIZATION= -O2
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
-.PHONY: toolchain
-
-toolchain: $(TARGET_CROSS)-gcc
-
-$(TARGET_CROSS)-gcc: $(DL_DIR)/$(GPL_SOURCE_TARBALL)
-	rm -rf $(BASE_DIR)/toolchain/$(GPL_SOURCE_DIR)
+$(BASE_DIR)/toolchain/$(GPL_SOURCE_DIR)/.built: $(DL_DIR)/$(GPL_SOURCE_TARBALL)
+	rm -rf $(@D)
 	tar -xOzvf $(DL_DIR)/$(GPL_SOURCE_TARBALL) \
 	    wrp400_$(GPL_SOURCE_VERSION)_us_0701_1827/$(GPL_SOURCE_DIR).tgz \
 	    | tar -C $(BASE_DIR)/toolchain -xzvf -
-	sed -i -e '/make -C buildroot/s|$$| DL_DIR=$(DL_DIR)|' $(BASE_DIR)/toolchain/$(GPL_SOURCE_DIR)/Result/Makefile
-	cd $(BASE_DIR)/toolchain/$(GPL_SOURCE_DIR) && script -c 'make -C Result toolchain'
+	sed -i -e '/BR2_INSTALL_LIBSTDCPP/s|.*|BR2_INSTALL_LIBSTDCPP=y\n# BR2_INSTALL_LIBGCJ is not set|' \
+		$(@D)/toolchain_misc/_config
+	sed -i -e '/make -C buildroot/s|$$| DL_DIR=$(DL_DIR)|' $(@D)/Result/Makefile
+	$(MAKE) -C $(@D)/Result .toolchain
+	cp $(SOURCE_DIR)/toolchain/wrp400/302-c99-snprintf.patch \
+		$(@D)/Result/buildroot/toolchain/gcc/3.4.6/
+	sed -i -e '/LDSO_RUNPATH/s|.*|LDSO_RUNPATH=y|' \
+		$(@D)/Result/buildroot/toolchain/uClibc/uClibc-0.9.28.config
+	$(MAKE) -C $(@D)/Result toolchain
+	touch $@
+
+toolchain: $(BASE_DIR)/toolchain/$(GPL_SOURCE_DIR)/.built
 
 endif
 
 # TODO:
+#	* wchar ?
 #	* patch toolchain_build_arm/binutils-2.17/configure.in to use makeinfo 4.11
 #		http://gcc.gnu.org/ml/gcc-patches/2007-09/msg01271.html
-#	* BR2_INSTALL_LIBSTDCPP=y in buildroot/.config to enable C++
-#	* LD_RUNPATH in uclibc/.config to enable rpath
-#	* UCLIBC_HAS_RPC=y and UCLIBC_HAS_FULL_RPC=y in uclibc/.config
