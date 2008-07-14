@@ -8,7 +8,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(filter-out libstdc++, $(UCLIBC_BROKEN_PACKAGES)) \
-	amule ecl ficy \
+	amule cdrtools ecl ficy \
 	gift giftcurs \
 	gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \

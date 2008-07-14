@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 # rssh: rssh needs wordexp() to compile
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
+	cdrtools \
 	dansguardian \
 	dialog \
 	gambit-c \
