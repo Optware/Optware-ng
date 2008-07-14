@@ -253,7 +253,7 @@ COMMON_CROSS_PACKAGES = \
 	libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
-	lighttpd lirc littlesmalltalk \
+	lighttpd lirc linksys-tftp littlesmalltalk \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
 	lua luarocks \
 	lynx lzo \
