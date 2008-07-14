@@ -42,8 +42,7 @@ $(BASE_DIR)/toolchain/$(GPL_SOURCE_DIR)/.built: $(DL_DIR)/$(GPL_SOURCE_TARBALL)
 	tar -xOzvf $(DL_DIR)/$(GPL_SOURCE_TARBALL) \
 	    wrp400_$(GPL_SOURCE_VERSION)_us_0701_1827/$(GPL_SOURCE_DIR).tgz \
 	    | tar -C $(BASE_DIR)/toolchain -xzvf -
-	sed -i -e '/BR2_INSTALL_LIBSTDCPP/s|.*|BR2_INSTALL_LIBSTDCPP=y\n# BR2_INSTALL_LIBGCJ is not set|' \
-		$(@D)/toolchain_misc/_config
+	cp $(SOURCE_DIR)/toolchain/wrp400/buildroot-defconfig $(@D)/toolchain_misc/_config
 	sed -i -e '/make -C buildroot/s|$$| DL_DIR=$(DL_DIR)|' $(@D)/Result/Makefile
 	$(MAKE) -C $(@D)/Result .toolchain
 	cp $(SOURCE_DIR)/toolchain/wrp400/302-c99-snprintf.patch \
@@ -58,6 +57,5 @@ toolchain: $(BASE_DIR)/toolchain/$(GPL_SOURCE_DIR)/.built
 endif
 
 # TODO:
-#	* wchar ?
 #	* patch toolchain_build_arm/binutils-2.17/configure.in to use makeinfo 4.11
 #		http://gcc.gnu.org/ml/gcc-patches/2007-09/msg01271.html
