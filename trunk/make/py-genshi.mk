@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GENSHI_SITE=http://ftp.edgewall.com/pub/genshi
-PY-GENSHI_VERSION=0.5
+PY-GENSHI_VERSION=0.5.1
 PY-GENSHI_SOURCE=Genshi-$(PY-GENSHI_VERSION).tar.bz2
 PY-GENSHI_DIR=Genshi-$(PY-GENSHI_VERSION)
 PY-GENSHI_UNZIP=bzcat
@@ -37,7 +37,7 @@ PY-GENSHI_CONFLICTS=
 #
 # PY-GENSHI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GENSHI_IPK_VERSION=2
+PY-GENSHI_IPK_VERSION=1
 
 #
 # PY-GENSHI_CONFFILES should be a list of user-editable files
