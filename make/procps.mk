@@ -35,7 +35,8 @@ PROCPS_LDFLAGS="$(STAGING_LDFLAGS)"
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE):
-	$(WGET) -P $(DL_DIR) $(PROCPS_SITE)/$(PROCPS_SOURCE_ARCHIVE)
+	$(WGET) -P $(@D) $(PROCPS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -50,7 +51,8 @@ procps-source: $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE)
 $(PROCPS_BUILD_DIR)/.source: $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE)
 	$(PROCPS_UNZIP) $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/procps-$(PROCPS_VERSION) $(PROCPS_BUILD_DIR)
-	touch $(PROCPS_BUILD_DIR)/.source
+	sed -i -e '/ALL_CFLAGS += $$(m64)/s/^/#/' $(@D)/Makefile
+	touch $@
 
 #
 # This target configures the build within the build directory.
@@ -62,7 +64,7 @@ $(PROCPS_BUILD_DIR)/.source: $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE)
 #
 $(PROCPS_BUILD_DIR)/.configured: $(PROCPS_BUILD_DIR)/.source
 	$(MAKE) ncurses-stage
-	touch $(PROCPS_BUILD_DIR)/.configured
+	touch $@
 
 procps-unpack: $(PROCPS_BUILD_DIR)/.configured
 
