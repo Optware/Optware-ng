@@ -280,8 +280,14 @@ _fetch()
 {
     TORRENT=$(echo "${FETCH}" |sed 's/%/\\x/g')
     TORRENT=$(echo -e "${TORRENT}")
-    FILE=$(echo "${TORRENT}" |sed 's|^.*/||;s|?.*||')
-    echo "<p>Fetching ${TORRENT} as ${FILE}</p>"
+    if [ -z "${tname}" ] ; then 
+	FILE=$(echo "${TORRENT}" |sed 's|^.*/||;s|?.*||') 
+    else 
+	FILE=$(echo "${tname}" |sed 's/%/\\x/g')
+	FILE=$(echo -e "${FILE}")
+    fi 
+    FILE="${FILE%%.torrent}.torrent"
+    echo "Fetching ${TORRENT} as ${FILE}</p>"
     wget -q -O ${SOURCE}/${FILE} "${TORRENT}"  ||  echo "<p>wget ${TORRENT} failed</p>"
 }
 
@@ -740,6 +746,7 @@ Content-type: text/html
 </head>
 <body>
 <form action=transmission.cgi method=get>
+<input type="hidden" name="tname" value="">
 <input type=submit accesskey=u name=ACTION value=Update>
 <input type=submit accesskey=p name=ACTION value=Push>
 <input type=submit accesskey=l name=ACTION value=List>
@@ -757,7 +764,8 @@ Content-type: text/html
 <input type=submit accesskey=a name=ACTION value=Scrape>
 <input type=submit accesskey=b name=ACTION value=Best>
 <input type=submit accesskey=f name=FETCH value=Fetch
-onClick='value=prompt("Enter torrent link location for fetching")'>
+onClick='value=prompt("Enter torrent link location for fetching");
+ tname.value=prompt("Enter Torrent Name", this.value.replace(/.*\//g,""));'>
 <input type=submit accesskey=h name=ACTION value=Help>
 <! img align=top alt="" src=pingvin.gif>
 <br>
