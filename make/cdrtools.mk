@@ -29,7 +29,7 @@ CDRTOOLS_CONFLICTS=
 #
 # CDRTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-CDRTOOLS_IPK_VERSION=3
+CDRTOOLS_IPK_VERSION=4
 
 #
 # Force using gcc rather than cc
@@ -53,83 +53,19 @@ CDRTOOLS_PATCHES=$(CDRTOOLS_SOURCE_DIR)/cdrtools-$(CDRTOOLS_VERSION).patch
 CDRTOOLS_CPPFLAGS=
 CDRTOOLS_LDFLAGS=-Wl,--strip-all
 
-#
-# CDRTOOLS_BUILD_DIR is the directory in which the build is done.
-# CDRTOOLS_SOURCE_DIR is the directory which holds all the
-# patches and ipkg control files.
-# CDRTOOLS_IPK_DIR is the directory in which the ipk is built.
-# CDRTOOLS_IPK is the name of the resulting ipk files.
-#
-# You should not change any of these variables.
-#
-CDRTOOLS_BUILD_DIR=$(BUILD_DIR)/cdrtools
-CDRTOOLS_SOURCE_DIR=$(SOURCE_DIR)/cdrtools
-CDRTOOLS_IPK_DIR=$(BUILD_DIR)/cdrtools-$(CDRTOOLS_VERSION)-ipk
-CDRTOOLS_IPK=$(BUILD_DIR)/cdrtools_$(CDRTOOLS_VERSION)-$(CDRTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
-
-#
-# This is the dependency on the source code.  If the source is missing,
-# then it will be fetched from the site using wget.
-#
-$(DL_DIR)/$(CDRTOOLS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CDRTOOLS_SITE)/$(CDRTOOLS_SOURCE)
-
-#
-# The source code depends on it existing within the download directory.
-# This target will be called by the top level Makefile to download the
-# source code's archive (.tar.gz, .bz2, etc.)
-#
-cdrtools-source: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCHES)
-
-#
-# This target unpacks and patches the source code in the build directory.
-# It does not do any configuration, since that happens as part of the
-# first "make".
-#
-$(CDRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCHES)
-	rm -rf $(BUILD_DIR)/$(CDRTOOLS_DIR) $(CDRTOOLS_BUILD_DIR)
-	$(CDRTOOLS_UNZIP) $(DL_DIR)/$(CDRTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(CDRTOOLS_PATCHES)" ; \
-		then cat $(CDRTOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CDRTOOLS_DIR) -p0 ; \
-	fi
-	if test "$(BUILD_DIR)/$(CDRTOOLS_DIR)" != "$(CDRTOOLS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CDRTOOLS_DIR) $(CDRTOOLS_BUILD_DIR) ; \
-	fi
-	sed -i \
-	    -e 's|$$(_MACHCMD)|echo unknown|' \
-	    -e 's|$$(_ARCHCMD)|echo arch|' \
-	    -e '/^XK_ARCH:=	/s|uname -m *|echo arch |' \
-	    -e '/^OSNAME:=	/s|$$.*|linux|' \
-	    -e '/^OSREL:=	/s|$$.*|2.4.22-xfs|' \
-	    -e '/^__gmake_warn:=/s!$$(shell .*)$$!!' \
-	    $(CDRTOOLS_BUILD_DIR)/RULES/mk-*.id
-	sed -i \
-	    -e 's|$$(PTARGETC) > |cp $(CDRTOOLS_SOURCE_DIR)/`basename $$@` |' \
-	    $(CDRTOOLS_BUILD_DIR)/RULES/rules.inc
-	sed -i \
-	    -e 's|; gcc|; $(TARGET_CC)|' \
-	    $(CDRTOOLS_BUILD_DIR)/RULES/arch-linux-cc.rul \
-	    $(CDRTOOLS_BUILD_DIR)/RULES/arch-linux-gcc.rul
-	sed -i -e 's|$${CC-cc}|$(TARGET_CC)|g' $(CDRTOOLS_BUILD_DIR)/conf/configure
-	mkdir -p $(CDRTOOLS_BUILD_DIR)/incs/arch-linux-gcc/
-	[ -e "$(CDRTOOLS_SOURCE_DIR)/optware-$(OPTWARE_TARGET)-config.cache" ] && \
-		cp $(CDRTOOLS_SOURCE_DIR)/optware-$(OPTWARE_TARGET)-config.cache \
-			$(CDRTOOLS_BUILD_DIR)/incs/arch-linux-gcc/config.cache || \
-	[ -e "$(CDRTOOLS_SOURCE_DIR)/$(TARGET_ARCH)-config.cache" ] && \
-		cp $(CDRTOOLS_SOURCE_DIR)/$(TARGET_ARCH)-config.cache \
-			$(CDRTOOLS_BUILD_DIR)/incs/arch-linux-gcc/config.cache || \
-	true
-	touch $@
-
-cdrtools-unpack: $(CDRTOOLS_BUILD_DIR)/.configured
-
-#
-# This builds the actual binaries.
-#
-$(CDRTOOLS_BUILD_DIR)/.built: $(CDRTOOLS_BUILD_DIR)/.configured
-	rm -f $@
-	if test ! -f "$(CDRTOOLS_BUILD_DIR)/incs/arch-linux-gcc/config.cache"; then export \
+ifeq (uclibc, $(LIBC_STYLE))
+CDRTOOLS_CONFIG_ENVS=export \
+	ac_cv_prog_cc_cross=yes \
+	ac_cv_func_ecvt=no \
+	ac_cv_func_fcvt=no \
+	ac_cv_func_gcvt=no \
+	ac_cv_func_isinf=no \
+	ac_cv_func_isnan=no \
+	;
+else
+CDRTOOLS_CONFIG_ENVS=\
+	if test ! -f "$(CDRTOOLS_BUILD_DIR)/incs/arch-linux-gcc/config.cache"; \
+	    then export \
 	ac_cv_prog_cc_cross=yes \
 	ac_cv_dev_minor_bits=8 \
 	ac_cv_dev_minor_noncontig=no \
@@ -164,12 +100,93 @@ $(CDRTOOLS_BUILD_DIR)/.built: $(CDRTOOLS_BUILD_DIR)/.configured
 	ac_cv_func_wait3_rusage=yes \
 	ac_cv_func_smmap=yes \
 	ac_cv_type_char_unsigned=yes \
-	; fi; \
+	; fi;
+endif
+#
+# CDRTOOLS_BUILD_DIR is the directory in which the build is done.
+# CDRTOOLS_SOURCE_DIR is the directory which holds all the
+# patches and ipkg control files.
+# CDRTOOLS_IPK_DIR is the directory in which the ipk is built.
+# CDRTOOLS_IPK is the name of the resulting ipk files.
+#
+# You should not change any of these variables.
+#
+CDRTOOLS_BUILD_DIR=$(BUILD_DIR)/cdrtools
+CDRTOOLS_SOURCE_DIR=$(SOURCE_DIR)/cdrtools
+CDRTOOLS_IPK_DIR=$(BUILD_DIR)/cdrtools-$(CDRTOOLS_VERSION)-ipk
+CDRTOOLS_IPK=$(BUILD_DIR)/cdrtools_$(CDRTOOLS_VERSION)-$(CDRTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(CDRTOOLS_SOURCE):
+	$(WGET) -P $(@D) $(CDRTOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+#
+# The source code depends on it existing within the download directory.
+# This target will be called by the top level Makefile to download the
+# source code's archive (.tar.gz, .bz2, etc.)
+#
+cdrtools-source: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCHES)
+
+#
+# This target unpacks and patches the source code in the build directory.
+# It does not do any configuration, since that happens as part of the
+# first "make".
+#
+$(CDRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCHES)
+	rm -rf $(BUILD_DIR)/$(CDRTOOLS_DIR) $(@D)
+	$(CDRTOOLS_UNZIP) $(DL_DIR)/$(CDRTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(CDRTOOLS_PATCHES)" ; \
+		then cat $(CDRTOOLS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(CDRTOOLS_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(CDRTOOLS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CDRTOOLS_DIR) $(@D) ; \
+	fi
+	sed -i \
+	    -e 's|$$(_MACHCMD)|echo unknown|' \
+	    -e 's|$$(_ARCHCMD)|echo arch|' \
+	    -e '/^XK_ARCH:=	/s|uname -m *|echo arch |' \
+	    -e '/^OSNAME:=	/s|$$.*|linux|' \
+	    -e '/^OSREL:=	/s|$$.*|2.4.22-xfs|' \
+	    -e '/^__gmake_warn:=/s!$$(shell .*)$$!!' \
+	    $(@D)/RULES/mk-*.id
+	sed -i \
+	    -e 's|$$(PTARGETC) > |cp $(CDRTOOLS_SOURCE_DIR)/`basename $$@` |' \
+	    $(@D)/RULES/rules.inc
+	sed -i \
+	    -e 's|; gcc|; $(TARGET_CC)|' \
+	    $(@D)/RULES/arch-linux-cc.rul \
+	    $(@D)/RULES/arch-linux-gcc.rul
+	sed -i -e 's|$${CC-cc}|$(TARGET_CC)|g' $(@D)/conf/configure
+	mkdir -p $(@D)/incs/arch-linux-gcc/
+ifneq ($(HOSTCC), $(TARGET_CC))
+	[ -e "$(CDRTOOLS_SOURCE_DIR)/optware-$(OPTWARE_TARGET)-config.cache" ] && \
+		cp $(CDRTOOLS_SOURCE_DIR)/optware-$(OPTWARE_TARGET)-config.cache \
+			$(@D)/incs/arch-linux-gcc/config.cache || \
+	[ -e "$(CDRTOOLS_SOURCE_DIR)/$(TARGET_ARCH)-config.cache" ] && \
+		cp $(CDRTOOLS_SOURCE_DIR)/$(TARGET_ARCH)-config.cache \
+			$(@D)/incs/arch-linux-gcc/config.cache || \
+	true
+endif
+	touch $@
+
+cdrtools-unpack: $(CDRTOOLS_BUILD_DIR)/.configured
+
+#
+# This builds the actual binaries.
+#
+$(CDRTOOLS_BUILD_DIR)/.built: $(CDRTOOLS_BUILD_DIR)/.configured
+	rm -f $@
+	$(CDRTOOLS_CONFIG_ENVS) \
 	$(TARGET_CONFIGURE_OPTS) \
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(CDRTOOLS_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(CDRTOOLS_LDFLAGS)" \
 	CONFFLAGS="--build=$(GNU_HOST_NAME) --host=$(GNU_TARGET_NAME) --target=$(GNU_TARGET_NAME)" \
-	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS);
+	$(CDRTOOLS_MAKE) -C $(@D) LDOPTX=$(CDRTOOLS_LDFLAGS);
 	touch $@
 
 #

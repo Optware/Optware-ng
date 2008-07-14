@@ -13,7 +13,7 @@
 # --recheck option to rerun configure.
 #
 ac_cv_access_e_ok=${ac_cv_access_e_ok='no'}
-ac_cv_c_bigendian=${ac_cv_c_bigendian='no'}
+ac_cv_c_bigendian=${ac_cv_c_bigendian='yes'}
 ac_cv_c_bitfields_htol=${ac_cv_c_bitfields_htol='yes'}
 ac_cv_c_const=${ac_cv_c_const='yes'}
 ac_cv_cygwin=${ac_cv_cygwin='no'}
@@ -333,4 +333,4 @@ ac_cv_type_u_int=${ac_cv_type_u_int='yes'}
 ac_cv_type_u_long=${ac_cv_type_u_long='yes'}
 ac_cv_type_u_short=${ac_cv_type_u_short='yes'}
 ac_cv_type_uid_t=${ac_cv_type_uid_t='yes'}
-ac_cv_type_va_list_array=${ac_cv_type_va_list_array='no'}
+ac_cv_type_va_list_array=${ac_cv_type_va_list_array='yes'}
