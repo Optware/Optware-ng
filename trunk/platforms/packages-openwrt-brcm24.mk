@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	asterisk16-addons \
 	buildroot uclibc-opt \
 	aspell \
+	cdrtools \
 	ecl \
 	cairo fixesext \
 	gtmess \
