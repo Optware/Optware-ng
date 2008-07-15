@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 POUND_SITE=http://www.apsis.ch/pound
-POUND_VERSION=2.4.1
+POUND_VERSION=2.4.3
 POUND_SOURCE=Pound-$(POUND_VERSION).tgz
 POUND_DIR=Pound-$(POUND_VERSION)
 POUND_UNZIP=zcat
@@ -76,8 +76,8 @@ POUND_IPK=$(BUILD_DIR)/pound_$(POUND_VERSION)-$(POUND_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(POUND_SOURCE):
-	$(WGET) -P $(DL_DIR) $(POUND_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(POUND_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
