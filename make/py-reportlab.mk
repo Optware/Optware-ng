@@ -22,9 +22,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-REPORTLAB_SITE=http://www.reportlab.org/ftp
-PY-REPORTLAB_VERSION=2.0
-PY-REPORTLAB_SOURCE=ReportLab_2_0.tgz
-PY-REPORTLAB_DIR=reportlab_2_0
+PY-REPORTLAB_VERSION=2.1
+PY-REPORTLAB_SOURCE=ReportLab_2_1.tgz
+PY-REPORTLAB_DIR=reportlab_2_1
 PY-REPORTLAB_UNZIP=zcat
 PY-REPORTLAB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-REPORTLAB_DESCRIPTION=An Open Source Python library for generating PDFs and graphics.
@@ -37,7 +37,7 @@ PY-REPORTLAB_CONFLICTS=
 #
 # PY-REPORTLAB_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-REPORTLAB_IPK_VERSION=2
+PY-REPORTLAB_IPK_VERSION=1
 
 #
 # PY-REPORTLAB_CONFFILES should be a list of user-editable files
