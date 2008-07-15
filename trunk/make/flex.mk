@@ -5,7 +5,7 @@
 ###########################################################
 
 FLEX_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/flex
-FLEX_VERSION=2.5.34
+FLEX_VERSION=2.5.35
 FLEX_SOURCE=flex-$(FLEX_VERSION).tar.bz2
 FLEX_DIR=flex-$(FLEX_VERSION)
 FLEX_UNZIP=bzcat
