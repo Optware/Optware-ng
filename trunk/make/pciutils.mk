@@ -21,7 +21,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PCIUTILS_SITE=http://www.kernel.org/pub/software/utils/pciutils
+ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g fsg3 fsg3v4 nslu2 oleg, $(OPTWARE_TARGET)))
+PCIUTILS_VERSION=2.2.10
+else
 PCIUTILS_VERSION=3.0.0
+endif
 PCIUTILS_SOURCE=pciutils-$(PCIUTILS_VERSION).tar.bz2
 PCIUTILS_DIR=pciutils-$(PCIUTILS_VERSION)
 PCIUTILS_UNZIP=bzcat
