@@ -298,7 +298,7 @@ COMMON_CROSS_PACKAGES = \
 	sm smartmontools snort snownews \
 	socat softflowd spandsp speex spindown sqlite sqlite2 \
 	sqsh squeak squid srelay ssam sslwrap strace stunnel streamripper \
-	sudo surfraw swi-prolog svn syslog-ng sysstat syx \
+	stupid-ftpd sudo surfraw swi-prolog svn syslog-ng sysstat syx \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
 	tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
 	tig tin tinyscheme tmsnc tnef tnftp tnftpd toppyweb tor torrent \
@@ -436,7 +436,7 @@ TARGET_AR=$(TARGET_CROSS)ar
 TARGET_AS=$(TARGET_CROSS)as
 TARGET_NM=$(TARGET_CROSS)nm
 TARGET_RANLIB=$(TARGET_CROSS)ranlib
-TARGET_STRIP=$(TARGET_CROSS)strip
+TARGET_STRIP?=$(TARGET_CROSS)strip
 TARGET_CONFIGURE_OPTS= \
 	AR=$(TARGET_AR) \
 	AS=$(TARGET_AS) \
