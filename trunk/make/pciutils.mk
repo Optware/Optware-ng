@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PCIUTILS_SITE=http://www.kernel.org/pub/software/utils/pciutils
-PCIUTILS_VERSION=2.2.10
+PCIUTILS_VERSION=3.0.0
 PCIUTILS_SOURCE=pciutils-$(PCIUTILS_VERSION).tar.bz2
 PCIUTILS_DIR=pciutils-$(PCIUTILS_VERSION)
 PCIUTILS_UNZIP=bzcat
@@ -76,8 +76,8 @@ PCIUTILS_IPK=$(BUILD_DIR)/pciutils_$(PCIUTILS_VERSION)-$(PCIUTILS_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PCIUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PCIUTILS_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PCIUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -143,7 +143,7 @@ $(PCIUTILS_BUILD_DIR)/.built: $(PCIUTILS_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PCIUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PCIUTILS_LDFLAGS)" \
 		PREFIX=/opt \
-		HOST=$(GNU_TARGET_NAME) \
+		HOST=`$(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME)` \
 	;
 	touch $@
 
