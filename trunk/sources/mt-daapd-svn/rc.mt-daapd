@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -n "`pidof mt-daapd`" ] ; then
+    killall mt-daapd 2>/dev/null
+fi
+
+sleep 2
+/opt/sbin/mt-daapd -c /opt/etc/mt-daapd/mt-daapd.conf
