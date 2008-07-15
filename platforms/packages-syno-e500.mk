@@ -10,6 +10,6 @@ BROKEN_PACKAGES = \
 	asterisk14-chan-capi \
 	iptraf \
 	ldconfig libcapi20 monotone \
-	pciutils puppy transcode \
+	puppy transcode \
 	x264 lm-sensors \
 	slimserver \
