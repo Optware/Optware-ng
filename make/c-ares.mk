@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 C_ARES_SITE=http://daniel.haxx.se/projects/c-ares
-C_ARES_VERSION=1.3.2
+C_ARES_VERSION=1.5.2
 C_ARES_SOURCE=c-ares-$(C_ARES_VERSION).tar.gz
 C_ARES_DIR=c-ares-$(C_ARES_VERSION)
 C_ARES_UNZIP=zcat
@@ -76,7 +76,8 @@ C_ARES_IPK=$(BUILD_DIR)/c-ares_$(C_ARES_VERSION)-$(C_ARES_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(C_ARES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(C_ARES_SITE)/$(C_ARES_SOURCE)
+	$(WGET) -P $(@D) $(C_ARES_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,16 +106,16 @@ c-ares-source: $(DL_DIR)/$(C_ARES_SOURCE) $(C_ARES_PATCHES)
 #
 $(C_ARES_BUILD_DIR)/.configured: $(DL_DIR)/$(C_ARES_SOURCE) $(C_ARES_PATCHES) make/c-ares.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(C_ARES_DIR) $(C_ARES_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(C_ARES_DIR) $(@D)
 	$(C_ARES_UNZIP) $(DL_DIR)/$(C_ARES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(C_ARES_PATCHES)" ; \
 		then cat $(C_ARES_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(C_ARES_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(C_ARES_DIR)" != "$(C_ARES_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(C_ARES_DIR) $(C_ARES_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(C_ARES_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(C_ARES_DIR) $(@D) ; \
 	fi
-	(cd $(C_ARES_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(C_ARES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(C_ARES_LDFLAGS)" \
@@ -125,9 +126,10 @@ $(C_ARES_BUILD_DIR)/.configured: $(DL_DIR)/$(C_ARES_SOURCE) $(C_ARES_PATCHES) ma
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--enable-shared \
 	)
-	$(PATCH_LIBTOOL) $(C_ARES_BUILD_DIR)/libtool
-	touch $(C_ARES_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 c-ares-unpack: $(C_ARES_BUILD_DIR)/.configured
 
@@ -135,9 +137,9 @@ c-ares-unpack: $(C_ARES_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(C_ARES_BUILD_DIR)/.built: $(C_ARES_BUILD_DIR)/.configured
-	rm -f $(C_ARES_BUILD_DIR)/.built
-	$(MAKE) -C $(C_ARES_BUILD_DIR)
-	touch $(C_ARES_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,9 +150,10 @@ c-ares: $(C_ARES_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(C_ARES_BUILD_DIR)/.staged: $(C_ARES_BUILD_DIR)/.built
-	rm -f $(C_ARES_BUILD_DIR)/.staged
-	$(MAKE) -C $(C_ARES_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(C_ARES_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcares.pc
+	touch $@
 
 c-ares-stage: $(C_ARES_BUILD_DIR)/.staged
 
