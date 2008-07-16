@@ -35,13 +35,13 @@ LIBCURL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBCURL_DESCRIPTION=Curl is a command line tool for transferring files with URL syntax, supporting FTP, FTPS, HTTP, HTTPS, GOPHER, TELNET, DICT, FILE and LDAP. Curl supports HTTPS certificates, HTTP POST, HTTP PUT, FTP uploading, kerberos, HTTP form based upload, proxies, cookies, user+password authentication, file transfer resume, http proxy tunneling and a busload of other useful tricks.
 LIBCURL_SECTION=libs
 LIBCURL_PRIORITY=optional
-LIBCURL_DEPENDS=openssl, zlib
+LIBCURL_DEPENDS=c-ares, openssl, zlib
 LIBCURL_CONFLICTS=
 
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=2
+LIBCURL_IPK_VERSION=3
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ libcurl-source: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBCURL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES) make/libcurl.mk
-	$(MAKE) openssl-stage zlib-stage
+	$(MAKE) c-ares-stage openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIBCURL_DIR) $(@D)
 	$(LIBCURL_UNZIP) $(DL_DIR)/$(LIBCURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBCURL_PATCHES)"; then \
@@ -131,6 +131,9 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-thread \
+		--enable-shared \
+		--disable-static \
+		--enable-ares \
 		--enable-cookies \
 		--enable-crypto-auth \
 		--enable-nonblocking \
@@ -140,7 +143,6 @@ endif
 		--enable-ipv6 \
 		--enable-tftp \
 		--disable-nls \
-		--disable-ares \
 		--disable-dict \
 		--disable-debug \
 		--disable-gopher \
@@ -156,6 +158,7 @@ endif
 		--with-zlib="$(STAGING_DIR)" \
 		--with-ca-bundle=/opt/share/curl/curl-ca-bundle.crt \
 	)
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libcurl-unpack: $(LIBCURL_BUILD_DIR)/.configured
