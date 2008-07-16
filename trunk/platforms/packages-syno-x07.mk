@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	amule \
 	asterisk14-chan-capi \
 	busybox \
-	classpath \
 	freeradius \
 	gambit-c gnu-smalltalk \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
