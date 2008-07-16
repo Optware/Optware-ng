@@ -203,7 +203,7 @@ COMMON_CROSS_PACKAGES = \
 	btpd busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	bluez2-libs bluez2-utils \
-	cabextract cairo calc calcurse castget \
+	c-ares cabextract cairo calc calcurse castget \
 	catdoc ccollect ccxstream cdargs cdrtools \
 	cherokee chicken chillispot chrpath cksfv \
 	classpath clamav clearsilver clips clutch cmdftp \
