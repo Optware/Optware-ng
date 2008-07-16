@@ -4,7 +4,7 @@
 
 OPENSSL_SITE=http://www.openssl.org/source
 
-ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter syno-e500 cs08q1armel, $(OPTWARE_TARGET)))
 OPENSSL_VERSION=0.9.8h
 OPENSSL_LIB_VERSION=0.9.8
 OPENSSL_IPK_VERSION=1
@@ -34,7 +34,10 @@ OPENSSL_IPK=$(BUILD_DIR)/openssl_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TAR
 OPENSSL_DEV_IPK_DIR=$(BUILD_DIR)/openssl-dev-$(OPENSSL_VERSION)-ipk
 OPENSSL_DEV_IPK=$(BUILD_DIR)/openssl-dev_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-OPENSSL_PATCHES=$(if $(filter 0.9.7, $(OPENSSL_LIB_VERSION)),$(OPENSSL_SOURCE_DIR)/Configure.patch,)
+OPENSSL_PATCHES=$(strip \
+$(if $(filter 0.9.7, $(OPENSSL_LIB_VERSION)), $(OPENSSL_SOURCE_DIR)/Configure.patch, \
+$(OPENSSL_SOURCE_DIR)/0.9.8-configure-targets.patch))
+
 ifeq ($(OPTWARE_TARGET), dns323)
 OPENSSL_PATCHES+=$(OPENSSL_SOURCE_DIR)/Configure-O3-to-O2.patch
 endif
@@ -47,16 +50,12 @@ $(DL_DIR)/$(OPENSSL_SOURCE):
 
 openssl-source: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 
-ifeq ($(TARGET_ARCH),mipsel)
-OPENSSL_ARCH=linux-$(TARGET_ARCH)
-else
-ifeq ($(TARGET_ARCH),powerpc)
-OPENSSL_ARCH=linux-ppc
-OPENSSL_ASFLAG=ASFLAG=""
-else
-OPENSSL_ARCH=linux-elf-$(TARGET_ARCH)
-endif
-endif
+OPENSSL_ASFLAG=$(strip $(if $(filter powerpc, $(TARGET_ARCH)), ASFLAG="",))
+
+OPENSSL_ARCH=$(strip \
+	$(if $(filter mipsel, $(TARGET_ARCH)), linux-$(TARGET_ARCH), \
+	$(if $(filter powerpc, $(TARGET_ARCH)), linux-ppc, \
+	linux-elf-$(TARGET_ARCH))))
 
 $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
 	rm -rf $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_HOST_BUILD_DIR)
