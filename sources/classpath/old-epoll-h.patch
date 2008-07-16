@@ -1,0 +1,10 @@
+--- native/jni/java-nio/gnu_java_nio_EpollSelectorImpl.c.orig	2008-03-03 01:32:14.000000000 -0800
++++ native/jni/java-nio/gnu_java_nio_EpollSelectorImpl.c	2008-07-15 20:40:01.000000000 -0700
+@@ -41,6 +41,7 @@
+ #endif /* HAVE_CONFIG_H */
+ 
+ #ifdef HAVE_SYS_EPOLL_H
++#include <stdint.h>
+ #include <sys/epoll.h>
+ #endif /* HAVE_SYS_EPOLL_H */
+ 

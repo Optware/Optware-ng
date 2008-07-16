@@ -45,6 +45,9 @@ CLASSPATH_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 CLASSPATH_PATCHES=$(CLASSPATH_SOURCE_DIR)/EnumSet.java.patch
+ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
+CLASSPATH_PATCHES += $(CLASSPATH_SOURCE_DIR)/old-epoll-h.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -150,13 +153,7 @@ classpath: $(CLASSPATH_BUILD_DIR)/.built
 #
 $(CLASSPATH_BUILD_DIR)/.staged: $(CLASSPATH_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(@D)/classpath.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(@D)/libclasspath.a $(STAGING_LIB_DIR)
-	install -m 644 $(@D)/libclasspath.so.$(CLASSPATH_VERSION) $(STAGING_LIB_DIR)
-	cd $(STAGING_LIB_DIR) && ln -fs libclasspath.so.$(CLASSPATH_VERSION) libclasspath.so.1
-	cd $(STAGING_LIB_DIR) && ln -fs libclasspath.so.$(CLASSPATH_VERSION) libclasspath.so
+	$(MAKE) -C $(@D) install transform="" prefix=$(STAGING_PREFIX)
 	touch $@
 
 classpath-stage: $(CLASSPATH_BUILD_DIR)/.staged
