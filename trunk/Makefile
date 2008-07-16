@@ -193,7 +193,8 @@ COMMON_CROSS_PACKAGES = \
 	9base \
 	abook adduser adns alac-decoder amule analog antinat \
 	apcupsd appweb \
-	apache apr apr-util arc arping arpwatch aspell \
+	apache apr apr-util \
+	arc aria2 arping arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
 	at atftp atk atop audiofile autoconf automake autossh avahi \
 	bash bc bftpd bind bip bison bitchx bitlbee bogofilter \
