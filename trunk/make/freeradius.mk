@@ -21,9 +21,9 @@
 #
 FREERADIUS_SITE=ftp://ftp.freeradius.org/pub/radius
 FREERADIUS_SITE2=$(FREERADIUS_SITE)/old
-FREERADIUS_VERSION=1.1.7
-FREERADIUS_SOURCE=freeradius-$(FREERADIUS_VERSION).tar.bz2
-FREERADIUS_DIR=freeradius-$(FREERADIUS_VERSION)
+FREERADIUS_VERSION=2.0.5
+FREERADIUS_DIR=freeradius-server-$(FREERADIUS_VERSION)
+FREERADIUS_SOURCE=$(FREERADIUS_DIR).tar.bz2
 FREERADIUS_UNZIP=bzcat
 FREERADIUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FREERADIUS_DESCRIPTION=An open source RADIUS server.
@@ -36,7 +36,7 @@ FREERADIUS_CONFLICTS=
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=2
+FREERADIUS_IPK_VERSION=1
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
@@ -81,9 +81,9 @@ FREERADIUS_DOC_IPK=$(BUILD_DIR)/freeradius-doc_$(FREERADIUS_VERSION)-$(FREERADIU
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FREERADIUS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FREERADIUS_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(FREERADIUS_SITE2)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(FREERADIUS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREERADIUS_SITE2)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -142,6 +142,7 @@ endif
 		--with-rlm-sql-postgresql-include-dir=$(STAGING_INCLUDE_DIR) \
 		--with-rlm-sql-postgresql-lib-dir=$(STAGING_LIB_DIR) \
 	)
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 freeradius-unpack: $(FREERADIUS_BUILD_DIR)/.configured
@@ -233,10 +234,10 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/.built
 	cp -f $(FREERADIUS_SOURCE_DIR)/radiusd.conf $(FREERADIUS_IPK_DIR)/opt/doc/.radius/raddb/radiusd.conf
 	install -d $(FREERADIUS_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/sbin/radiusd
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radrelay
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radclient
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radeapclient $(FREERADIUS_IPK_DIR)/opt/bin/radwho
+	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radsniff $(FREERADIUS_IPK_DIR)/opt/bin/rlm_*
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/lib/lib*.so $(FREERADIUS_IPK_DIR)/opt/lib/rlm_*.so
 	install -m 755 $(FREERADIUS_SOURCE_DIR)/rc.freeradius $(FREERADIUS_IPK_DIR)/opt/etc/init.d/S55freeradius
 	$(MAKE) $(FREERADIUS_IPK_DIR)/CONTROL/control
