@@ -266,7 +266,7 @@ COMMON_CROSS_PACKAGES = \
 	mod-fastcgi moe monotone mp3blaster mpack mpage \
 	mpc mpd mpdscribble \
 	mpg123 mpop mrtg msmtp \
-	msort msynctool mt-daapd mtools \
+	msort msynctool mt-daapd mt-daapd-svn mtools \
 	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
