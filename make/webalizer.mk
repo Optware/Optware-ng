@@ -27,10 +27,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WEBALIZER_SITE=ftp://ftp.mrunix.net/pub/webalizer
-WEBALIZER_VERSION=2.01-10
-WEBALIZER_SOURCE=webalizer-$(WEBALIZER_VERSION)-src.tgz
+WEBALIZER_VERSION=2.20-01
+WEBALIZER_SOURCE=webalizer-$(WEBALIZER_VERSION)-src.tar.bz2
 WEBALIZER_DIR=webalizer-$(WEBALIZER_VERSION)
-WEBALIZER_UNZIP=zcat
+WEBALIZER_UNZIP=bzcat
 WEBALIZER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WEBALIZER_DESCRIPTION=Webalizer is a webserver stats program. 
 WEBALIZER_SECTION=web
@@ -42,7 +42,7 @@ WEBALIZER_CONFLICTS=
 #
 # WEBALIZER_IPK_VERSION should be incremented when the ipk changes.
 #
-WEBALIZER_IPK_VERSION=2
+WEBALIZER_IPK_VERSION=1
 
 #
 # WEBALIZER_CONFFILES should be a list of user-editable files
@@ -80,7 +80,8 @@ WEBALIZER_IPK=$(BUILD_DIR)/webalizer_$(WEBALIZER_VERSION)-$(WEBALIZER_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WEBALIZER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WEBALIZER_SITE)/$(WEBALIZER_SOURCE)
+	$(WGET) -P $(@D) $(WEBALIZER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,13 +105,13 @@ webalizer-source: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(WEBALIZER_BUILD_DIR)/.configured: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PATCHES)
+$(WEBALIZER_BUILD_DIR)/.configured: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PATCHES) make/webalizer.mk
 	$(MAKE) libgd-stage
-	rm -rf $(BUILD_DIR)/$(WEBALIZER_DIR) $(WEBALIZER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(WEBALIZER_DIR) $(@D)
 	$(WEBALIZER_UNZIP) $(DL_DIR)/$(WEBALIZER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WEBALIZER_PATCHES) | patch -d $(BUILD_DIR)/$(WEBALIZER_DIR) -p1
-	mv $(BUILD_DIR)/$(WEBALIZER_DIR) $(WEBALIZER_BUILD_DIR)
-	(cd $(WEBALIZER_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(WEBALIZER_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WEBALIZER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WEBALIZER_LDFLAGS)" \
@@ -123,7 +124,7 @@ $(WEBALIZER_BUILD_DIR)/.configured: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PA
 		--with-gd=$(STAGING_DIR)/opt/include \
 		--with-gdlib=$(STAGING_DIR)/opt/lib \
 	)
-	touch $(WEBALIZER_BUILD_DIR)/.configured
+	touch $@
 
 webalizer-unpack: $(WEBALIZER_BUILD_DIR)/.configured
 
@@ -131,9 +132,9 @@ webalizer-unpack: $(WEBALIZER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(WEBALIZER_BUILD_DIR)/.built: $(WEBALIZER_BUILD_DIR)/.configured
-	rm -f $(WEBALIZER_BUILD_DIR)/.built
-	$(MAKE) -C $(WEBALIZER_BUILD_DIR)
-	touch $(WEBALIZER_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,9 +145,9 @@ webalizer: $(WEBALIZER_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(WEBALIZER_BUILD_DIR)/.staged: $(WEBALIZER_BUILD_DIR)/.built
-	rm -f $(WEBALIZER_BUILD_DIR)/.staged
-	$(MAKE) -C $(WEBALIZER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(WEBALIZER_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 webalizer-stage: $(WEBALIZER_BUILD_DIR)/.staged
 
@@ -155,7 +156,7 @@ webalizer-stage: $(WEBALIZER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/webalizer
 #
 $(WEBALIZER_IPK_DIR)/CONTROL/control:
-	@install -d $(WEBALIZER_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: webalizer" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,6 +188,7 @@ $(WEBALIZER_IPK): $(WEBALIZER_BUILD_DIR)/.built
 	install -d $(WEBALIZER_IPK_DIR)/opt/bin/
 	install -m 644 $(WEBALIZER_BUILD_DIR)/sample.conf $(WEBALIZER_IPK_DIR)/opt/etc/webalizer.conf.sample
 	install -m 755 $(WEBALIZER_BUILD_DIR)/webalizer $(WEBALIZER_IPK_DIR)/opt/bin/webalizer
+	$(STRIP_COMMAND) $(WEBALIZER_IPK_DIR)/opt/bin/webalizer
 	ln -s ./webalizer $(WEBALIZER_IPK_DIR)/opt/bin/webazolver
 	$(MAKE) $(WEBALIZER_IPK_DIR)/CONTROL/control
 	install -m 755 $(WEBALIZER_SOURCE_DIR)/postinst $(WEBALIZER_IPK_DIR)/CONTROL/postinst
@@ -210,3 +212,9 @@ webalizer-clean:
 #
 webalizer-dirclean:
 	rm -rf $(BUILD_DIR)/$(WEBALIZER_DIR) $(WEBALIZER_BUILD_DIR) $(WEBALIZER_IPK_DIR) $(WEBALIZER_IPK)
+
+#
+# Some sanity check for the package.
+#
+webalizer-check: $(WEBALIZER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WEBALIZER_IPK)
