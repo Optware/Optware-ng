@@ -13,6 +13,16 @@ if [ -e "$REAL_OPT_DIR" ] ; then
     exit 1
 fi
 
+if [ ! -e `dirname $REAL_OPT_DIR` ]; then
+    echo "Error: `dirname $REAL_OPT_DIR` does not exist"
+    exit 2
+fi
+
+if ! grep e500v2 /proc/cpuinfo >/dev/null 2>&1; then
+    echo "Error: CPU not e500v2, probably wrong bootstrap.xsh"
+    exit 3
+fi
+
 BS_DIR="$REAL_OPT_DIR/ipkg-bootstrap"
 
 echo "Creating temporary ipkg repository..."

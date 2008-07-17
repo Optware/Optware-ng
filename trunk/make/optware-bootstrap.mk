@@ -7,7 +7,7 @@
 ###########################################################
 
 OPTWARE-BOOTSTRAP_VERSION=1.2
-OPTWARE-BOOTSTRAP_IPK_VERSION=3
+OPTWARE-BOOTSTRAP_IPK_VERSION=4
 
 OPTWARE-BOOTSTRAP_DIR=optware-bootstrap-$(OPTWARE-BOOTSTRAP_VERSION)
 OPTWARE-BOOTSTRAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
