@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-URWID_SITE=http://excess.org/urwid
-PY-URWID_VERSION=0.9.8.2
+PY-URWID_VERSION=0.9.8.3
 PY-URWID_SOURCE=urwid-$(PY-URWID_VERSION).tar.gz
 PY-URWID_DIR=urwid-$(PY-URWID_VERSION)
 PY-URWID_UNZIP=zcat
