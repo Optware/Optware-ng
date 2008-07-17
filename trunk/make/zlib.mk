@@ -17,7 +17,7 @@ ZLIB_PRIORITY=optional
 ZLIB_DEPENDS=
 ZLIB_CONFLICTS=
 
-ZLIB_IPK_VERSION=2
+ZLIB_IPK_VERSION=3
 
 ZLIB_CFLAGS= $(TARGET_CFLAGS) -fPIC
 ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
@@ -25,9 +25,8 @@ ZLIB_CFLAGS+= -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 endif
 
 ifneq (darwin,$(TARGET_OS))
-ifneq ($(OPTWARE_TARGET), $(filter dns323 syno-x07, $(OPTWARE_TARGET)))
-ZLIB_MAKE_FLAGS=LDSHARED="$(TARGET_LD) -shared -soname,libz.so.1"
-endif
+ZLIB_LDFLAGS=-Wl,-soname,libz.so.1
+ZLIB_MAKE_FLAGS=LDSHARED="$(TARGET_CC) -shared $(STAGING_LDFLAGS) $(ZLIB_LDFLAGS)"
 endif
 
 ZLIB_BUILD_DIR=$(BUILD_DIR)/zlib
@@ -38,7 +37,8 @@ ZLIB_IPK_DIR=$(BUILD_DIR)/zlib-$(ZLIB_VERSION)-ipk
 ZLIB_IPK=$(BUILD_DIR)/zlib_$(ZLIB_VERSION)-$(ZLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(ZLIB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ZLIB_SITE)/$(ZLIB_SOURCE)
+	$(WGET) -P $(@D) $(ZLIB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 zlib-source: $(DL_DIR)/$(ZLIB_SOURCE)
 
@@ -59,8 +59,10 @@ $(ZLIB_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(ZLIB_SOURCE) make/z
 
 zlib-host-stage: $(ZLIB_HOST_BUILD_DIR)/.staged
 
-$(ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ZLIB_SOURCE)
+$(ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ZLIB_SOURCE) make/zlib.mk
 	rm -rf $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR)
+	rm -f $(STAGING_INCLUDE_DIR)/zconf.h $(STAGING_INCLUDE_DIR)/zlib.h
+	rm -f $(STAGING_LIB_DIR)/libz.a $(STAGING_LIB_DIR)/libz.so*
 	$(ZLIB_UNZIP) $(DL_DIR)/$(ZLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR)
 ifeq (darwin,$(TARGET_OS))
@@ -143,3 +145,9 @@ zlib-clean:
 
 zlib-dirclean:
 	rm -rf $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR) $(ZLIB_IPK_DIR) $(ZLIB_IPK)
+
+#
+# Some sanity check for the package.
+#
+zlib-check: $(ZLIB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ZLIB_IPK)
