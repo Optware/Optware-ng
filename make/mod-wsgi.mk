@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOD_WSGI_SITE=http://modwsgi.googlecode.com/files
-MOD_WSGI_VERSION=2.0
+MOD_WSGI_VERSION=2.1
 MOD_WSGI_SOURCE=mod_wsgi-$(MOD_WSGI_VERSION).tar.gz
 MOD_WSGI_DIR=mod_wsgi-$(MOD_WSGI_VERSION)
 MOD_WSGI_UNZIP=zcat
@@ -76,8 +76,8 @@ MOD_WSGI_IPK=$(BUILD_DIR)/mod-wsgi_$(MOD_WSGI_VERSION)-$(MOD_WSGI_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MOD_WSGI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MOD_WSGI_SITE)/$(MOD_WSGI_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MOD_WSGI_SOURCE)
+	$(WGET) -P $(@D) $(MOD_WSGI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,17 +106,17 @@ mod-wsgi-source: $(DL_DIR)/$(MOD_WSGI_SOURCE) $(MOD_WSGI_PATCHES)
 #
 $(MOD_WSGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_WSGI_SOURCE) $(MOD_WSGI_PATCHES) make/mod-wsgi.mk
 	$(MAKE) python25-stage apache-stage
-	rm -rf $(BUILD_DIR)/$(MOD_WSGI_DIR) $(MOD_WSGI_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MOD_WSGI_DIR) $(@D)
 	$(MOD_WSGI_UNZIP) $(DL_DIR)/$(MOD_WSGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOD_WSGI_PATCHES)" ; \
 		then cat $(MOD_WSGI_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MOD_WSGI_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MOD_WSGI_DIR)" != "$(MOD_WSGI_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MOD_WSGI_DIR) $(MOD_WSGI_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MOD_WSGI_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MOD_WSGI_DIR) $(@D) ; \
 	fi
-	sed -i -e '/^HTTPD_VERSION=/s/=.*/=$(APACHE_VERSION)/' $(MOD_WSGI_BUILD_DIR)/configure
-	(cd $(MOD_WSGI_BUILD_DIR); \
+	sed -i -e '/^HTTPD_VERSION=/s/=.*/=$(APACHE_VERSION)/' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOD_WSGI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MOD_WSGI_LDFLAGS)" \
@@ -130,7 +130,7 @@ $(MOD_WSGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_WSGI_SOURCE) $(MOD_WSGI_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MOD_WSGI_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mod-wsgi-unpack: $(MOD_WSGI_BUILD_DIR)/.configured
@@ -140,7 +140,7 @@ mod-wsgi-unpack: $(MOD_WSGI_BUILD_DIR)/.configured
 #
 $(MOD_WSGI_BUILD_DIR)/.built: $(MOD_WSGI_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MOD_WSGI_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		CPPFLAGS="$(MOD_WSGI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MOD_WSGI_LDFLAGS)" \
 		;
@@ -156,7 +156,7 @@ mod-wsgi: $(MOD_WSGI_BUILD_DIR)/.built
 #
 $(MOD_WSGI_BUILD_DIR)/.staged: $(MOD_WSGI_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MOD_WSGI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 mod-wsgi-stage: $(MOD_WSGI_BUILD_DIR)/.staged
