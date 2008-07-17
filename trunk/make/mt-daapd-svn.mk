@@ -110,6 +110,7 @@ $(MT-DAAPD-SVN_IPK): $(MT-DAAPD-SVN_BUILD_DIR)/.built
 	$(MAKE) $(MT-DAAPD-SVN_IPK_DIR)/CONTROL/control
 	install -d $(MT-DAAPD-SVN_IPK_DIR)/opt/var/log
 	install -d $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/init.d
+	install -d $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/mt-daapd
 	install -m 644 $(MT-DAAPD-SVN_BUILD_DIR)/contrib/mt-daapd.conf $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/mt-daapd/mt-daapd.conf
 	sed -i -e '/^db_type/s/=.*/= sqlite3/' $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/mt-daapd/mt-daapd.conf
 	install -d $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/init.d
