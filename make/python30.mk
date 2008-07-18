@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON30_VERSION=3.0b1
+PYTHON30_VERSION=3.0b2
 PYTHON30_VERSION_MAJOR=3.0
 PYTHON30_SITE=http://www.python.org/ftp/python/$(PYTHON30_VERSION_MAJOR)/
 PYTHON30_SOURCE=Python-$(PYTHON30_VERSION).tgz
