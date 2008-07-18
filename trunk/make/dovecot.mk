@@ -32,7 +32,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOVECOT_SITE=http://www.dovecot.org/releases/1.0
-DOVECOT_VERSION=1.0.3
+DOVECOT_VERSION=1.0.15
 DOVECOT_SOURCE=dovecot-$(DOVECOT_VERSION).tar.gz
 DOVECOT_DIR=dovecot-$(DOVECOT_VERSION)
 DOVECOT_UNZIP=zcat
@@ -44,10 +44,17 @@ DOVECOT_DEPENDS=openssl
 DOVECOT_SUGGESTS=
 DOVECOT_CONFLICTS=cyrus-imapd, imap
 
+DOVECOT_DOC_DESCRIPTION=Dovecot documentation
+DOVECOT_DOC_SECTION=net
+DOVECOT_DOC_PRIORITY=optional
+DOVECOT_DOC_DEPENDS=
+DOVECOT_DOC_SUGGESTS=dovecot
+DOVECOT_DOC_CONFLICTS=
+
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=4
+DOVECOT_IPK_VERSION=1
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -90,6 +97,9 @@ DOVECOT_BUILD_DIR=$(BUILD_DIR)/dovecot
 DOVECOT_SOURCE_DIR=$(SOURCE_DIR)/dovecot
 DOVECOT_IPK_DIR=$(BUILD_DIR)/dovecot-$(DOVECOT_VERSION)-ipk
 DOVECOT_IPK=$(BUILD_DIR)/dovecot_$(DOVECOT_VERSION)-$(DOVECOT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+DOVECOT_DOC_IPK_DIR=$(BUILD_DIR)/dovecot-doc-$(DOVECOT_VERSION)-ipk
+DOVECOT_DOC_IPK=$(BUILD_DIR)/dovecot-doc_$(DOVECOT_VERSION)-$(DOVECOT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -206,6 +216,21 @@ $(DOVECOT_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(DOVECOT_SUGGESTS)" >>$@
 	@echo "Conflicts: $(DOVECOT_CONFLICTS)" >>$@
 
+$(DOVECOT_DOC_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: dovecot-doc" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(DOVECOT_PRIORITY)" >>$@
+	@echo "Section: $(DOVECOT_DOC_SECTION)" >>$@
+	@echo "Version: $(DOVECOT_VERSION)-$(DOVECOT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(DOVECOT_MAINTAINER)" >>$@
+	@echo "Source: $(DOVECOT_SITE)/$(DOVECOT_SOURCE)" >>$@
+	@echo "Description: $(DOVECOT_DOC_DESCRIPTION)" >>$@
+	@echo "Depends: $(DOVECOT_DOC_DEPENDS)" >>$@
+	@echo "Suggests: $(DOVECOT_DOC_SUGGESTS)" >>$@
+	@echo "Conflicts: $(DOVECOT_DOC_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -232,12 +257,20 @@ $(DOVECOT_IPK): $(DOVECOT_BUILD_DIR)/.built
 	install -m 755 $(DOVECOT_SOURCE_DIR)/postinst $(DOVECOT_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(DOVECOT_SOURCE_DIR)/prerm $(DOVECOT_IPK_DIR)/CONTROL/prerm
 	echo $(DOVECOT_CONFFILES) | sed -e 's/ /\n/g' > $(DOVECOT_IPK_DIR)/CONTROL/conffiles
+	rm -rf $(DOVECOT_IPK_DIR)/opt/share/doc/dovecot
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOVECOT_IPK_DIR)
+
+$(DOVECOT_DOC_IPK): $(DOVECOT_BUILD_DIR)/.built
+	rm -rf $(DOVECOT_DOC_IPK_DIR) $(BUILD_DIR)/dovecot-doc_*_$(TARGET_ARCH).ipk
+	mkdir -p $(DOVECOT_DOC_IPK_DIR)/opt/share/doc/dovecot
+	$(MAKE) $(DOVECOT_DOC_IPK_DIR)/CONTROL/control
+	cp -r $(DOVECOT_BUILD_DIR)/doc/ $(DOVECOT_DOC_IPK_DIR)/opt/share/doc/dovecot
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOVECOT_DOC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-dovecot-ipk: $(DOVECOT_IPK)
+dovecot-ipk: $(DOVECOT_IPK) $(DOVECOT_DOC_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
