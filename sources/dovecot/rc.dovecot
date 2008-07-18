@@ -1,7 +1,9 @@
 #!/bin/sh
+#
+# $Id$
 
 if [ -z "$1" ] ; then
-    case `echo "$0" | /bin/sed 's/^.*\/\(.*\)/\1/g'` in
+    case "${0##*/}" in
 	S??*) rc="start" ;;
 	K??*) rc="stop" ;;
 	*) rc="usage" ;;
