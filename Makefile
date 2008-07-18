@@ -124,7 +124,7 @@ PYTHON_PACKAGES = \
 	mod-python mod-wsgi \
 	putmail \
 	pyrex \
-	sabnzbd \
+	sabnzbd sabnzbdplus \
 	scons \
 	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
