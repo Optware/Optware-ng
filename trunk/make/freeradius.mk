@@ -107,7 +107,7 @@ freeradius-source: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
+$(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES) make/freeradius.mk
 	$(MAKE) openssl-stage
 	$(MAKE) libtool-stage
 ifeq (, $(filter --without-rlm-sql-mysql, $(FREERADIUS_CONFIG_ARGS)))
@@ -120,7 +120,7 @@ endif
 		then cat $(FREERADIUS_PATCHES) | patch -d $(BUILD_DIR)/$(FREERADIUS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
-	sed -i.orig -e '/rlm_perl/d' $(@D)/src/modules/stable
+	sed -i.orig -e '/rlm_perl\|rlm_pam/d' $(@D)/src/modules/stable
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREERADIUS_CPPFLAGS)" \
