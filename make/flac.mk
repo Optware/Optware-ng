@@ -53,7 +53,10 @@ FLAC_CONFFILES=
 #
 FLAC_CPPFLAGS=
 FLAC_LDFLAGS=
-FLAC_CONFIG_OPTS=$(if $(filter syno-e500, $(OPTWARE_TARGET)),--disable-altivec,)
+FLAC_CONFIG_OPTS=$(strip \
+$(if $(filter syno-e500, $(OPTWARE_TARGET)), --disable-altivec, \
+$(if $(filter vt4, $(OPTWARE_TARGET)), --disable-cpplibs, \
+)))
 
 #
 # FLAC_BUILD_DIR is the directory in which the build is done.
