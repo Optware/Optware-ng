@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GIFTGNUTELLA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gift
-GIFTGNUTELLA_VERSION=0.0.10.1
+GIFTGNUTELLA_VERSION=0.0.11
 GIFTGNUTELLA_SOURCE=gift-gnutella-$(GIFTGNUTELLA_VERSION).tar.bz2
 GIFTGNUTELLA_DIR=gift-gnutella-$(GIFTGNUTELLA_VERSION)
 GIFTGNUTELLA_UNZIP=bzcat
@@ -71,7 +71,8 @@ GIFTGNUTELLA_IPK=$(BUILD_DIR)/gift-gnutella_$(GIFTGNUTELLA_VERSION)-$(GIFTGNUTEL
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GIFTGNUTELLA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GIFTGNUTELLA_SITE)/$(GIFTGNUTELLA_SOURCE)
+	$(WGET) -P $(@D) $(GIFTGNUTELLA_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -97,11 +98,11 @@ gift-gnutella-source: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGNUTELLA_PATCHES)
 #
 $(GIFTGNUTELLA_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGNUTELLA_PATCHES)
 	$(MAKE) gift-stage
-	rm -rf $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) $(GIFTGNUTELLA_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) $(@D)
 	$(GIFTGNUTELLA_UNZIP) $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFTGNUTELLA_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) -p1
-	mv $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) $(GIFTGNUTELLA_BUILD_DIR)
-	(cd $(GIFTGNUTELLA_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) $(@D)
+	(cd $(@D); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTGNUTELLA_CPPFLAGS)" \
@@ -114,7 +115,7 @@ $(GIFTGNUTELLA_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGN
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(GIFTGNUTELLA_BUILD_DIR)/.configured
+	touch $@
 
 gift-gnutella-unpack: $(GIFTGNUTELLA_BUILD_DIR)/.configured
 
@@ -123,9 +124,9 @@ gift-gnutella-unpack: $(GIFTGNUTELLA_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(GIFTGNUTELLA_BUILD_DIR)/.built: $(GIFTGNUTELLA_BUILD_DIR)/.configured
-	rm -f $(GIFTGNUTELLA_BUILD_DIR)/.built
-	$(MAKE) -C $(GIFTGNUTELLA_BUILD_DIR)
-	touch $(GIFTGNUTELLA_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -136,7 +137,8 @@ gift-gnutella: $(GIFTGNUTELLA_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION): $(GIFTGNUTELLA_BUILD_DIR)/.built
+$(GIFTGNUTELLA_BUILD_DIR).staged: $(GIFTGNUTELLA_BUILD_DIR)/.built
+	rm -f $@
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/gift-gnutella.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
@@ -144,15 +146,16 @@ $(STAGING_DIR)/opt/lib/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION): $(GIFTGNUTEL
 	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) $(STAGING_DIR)/opt/lib
 	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) libgift-gnutella.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) libgift-gnutella.so
+	touch $@
 
-gift-gnutella-stage: $(STAGING_DIR)/opt/lib/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION)
+gift-gnutella-stage: $(GIFTGNUTELLA_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/gift-gnutella
 #
 $(GIFTGNUTELLA_IPK_DIR)/CONTROL/control:
-	@install -d $(GIFTGNUTELLA_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: gift-gnutella" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,3 +209,9 @@ gift-gnutella-clean:
 #
 gift-gnutella-dirclean:
 	rm -rf $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) $(GIFTGNUTELLA_BUILD_DIR) $(GIFTGNUTELLA_IPK_DIR) $(GIFTGNUTELLA_IPK)
+
+#
+# Some sanity check for the package.
+#
+gift-gnutella-check: $(GIFTGNUTELLA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GIFTGNUTELLA_IPK)
