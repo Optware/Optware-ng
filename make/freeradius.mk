@@ -36,7 +36,7 @@ FREERADIUS_CONFLICTS=
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=1
+FREERADIUS_IPK_VERSION=2
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
@@ -126,7 +126,8 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREERADIUS_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(FREERADIUS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FREERADIUS_LDFLAGS)" \
-		MYSQL_CONFIG=$(STAGING_PREFIX)/bin/mysql_config \
+		MYSQL_CONFIG=yes \
+		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
