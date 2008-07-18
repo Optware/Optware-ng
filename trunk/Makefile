@@ -131,7 +131,7 @@ PYTHON_PACKAGES = \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate py-cjson \
 	py-clips py-codeville py-configobj py-constraint py-crypto py-curl \
 	py-decorator py-decoratortools py-django py-docutils py-duplicity \
-	py-elementtree py-flup py-formencode \
+	py-elementtree py-feedparser py-flup py-formencode \
 	py-gdchart2 py-gd py-genshi py-gnosis-utils \
 	py-hgsvn py-kid py-lxml \
 	py-mako py-markdown py-mercurial \
