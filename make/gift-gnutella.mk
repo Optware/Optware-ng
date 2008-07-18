@@ -27,7 +27,7 @@ GIFTGNUTELLA_UNZIP=bzcat
 GIFTGNUTELLA_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 GIFTGNUTELLA_SECTION=net
 GIFTGNUTELLA_PRIORITY=optional
-GIFTGNUTELLA_DEPENDS=
+GIFTGNUTELLA_DEPENDS=gift, zlib
 GIFTGNUTELLA_DESCRIPTION=gIFt Gnutella plugin
 
 #
@@ -97,7 +97,7 @@ gift-gnutella-source: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGNUTELLA_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GIFTGNUTELLA_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGNUTELLA_PATCHES)
-	$(MAKE) gift-stage
+	$(MAKE) gift-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) $(@D)
 	$(GIFTGNUTELLA_UNZIP) $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFTGNUTELLA_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) -p1
