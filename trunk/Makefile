@@ -229,7 +229,7 @@ COMMON_CROSS_PACKAGES = \
 	ggrab ghostscript git glib gnet gnokii \
 	gnu-httptunnel gnu-smalltalk gnugo gnupg gnuplot gnutls \
 	gpsd \
-	grep groff gsasl gsnmp gtmess gtk gutenprint gzip  \
+	grep groff gsasl gsnmp gtmess gtk gtypist gutenprint gzip  \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
