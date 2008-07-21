@@ -20,7 +20,7 @@ USBUTILS_SOURCE=usbutils-$(USBUTILS_VERSION).tar.gz
 USBUTILS_DIR=usbutils-$(USBUTILS_VERSION)
 USBUTILS_UNZIP=zcat
 USBUTILS_PRIORITY=optional
-USBUTILS_DEPENDS=libusb
+USBUTILS_DEPENDS=libusb zlib
 USBUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 USBUTILS_SECTION=utility
 USBUTILS_DESCRIPTION=USB enumeration utilities
@@ -29,7 +29,7 @@ USBUTILS_DESCRIPTION=USB enumeration utilities
 #
 # USBUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-USBUTILS_IPK_VERSION=1
+USBUTILS_IPK_VERSION=2
 
 #
 # USBUTILS_CONFFILES should be a list of user-editable files
@@ -93,7 +93,7 @@ usbutils-source: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCHES) make/usbutils.mk
-	$(MAKE) libusb-stage
+	$(MAKE) libusb-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(USBUTILS_DIR) $(@D)
 	$(USBUTILS_UNZIP) $(DL_DIR)/$(USBUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(USBUTILS_PATCHES)"; then \
