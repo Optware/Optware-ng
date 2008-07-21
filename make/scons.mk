@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SCONS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/scons
-SCONS_VERSION=0.98.4
+SCONS_VERSION=0.98.5
 SCONS_SOURCE=scons-$(SCONS_VERSION).tar.gz
 SCONS_DIR=scons-$(SCONS_VERSION)
 SCONS_UNZIP=zcat
@@ -113,16 +113,16 @@ scons-source: $(DL_DIR)/$(SCONS_SOURCE) $(SCONS_PATCHES)
 #
 $(SCONS_BUILD_DIR)/.configured: $(DL_DIR)/$(SCONS_SOURCE) $(SCONS_PATCHES) make/scons.mk
 	$(MAKE) python-stage
-	rm -rf $(BUILD_DIR)/$(SCONS_DIR) $(SCONS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SCONS_DIR) $(@D)
 	$(SCONS_UNZIP) $(DL_DIR)/$(SCONS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCONS_PATCHES)" ; \
 		then cat $(SCONS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SCONS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SCONS_DIR)" != "$(SCONS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SCONS_DIR) $(SCONS_BUILD_DIR) ; \
+		then mv $(BUILD_DIR)/$(SCONS_DIR) $(@D) ; \
 	fi
-	(cd $(SCONS_BUILD_DIR); \
+	(cd $(@D); \
 	    chmod +w setup.cfg ; \
 	    ( \
 		echo ; \
@@ -143,7 +143,7 @@ scons-unpack: $(SCONS_BUILD_DIR)/.configured
 #
 $(SCONS_BUILD_DIR)/.built: $(SCONS_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(SCONS_BUILD_DIR); \
+	(cd $(@D); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
         )
@@ -159,7 +159,7 @@ scons: $(SCONS_BUILD_DIR)/.built
 #
 $(SCONS_BUILD_DIR)/.staged: $(SCONS_BUILD_DIR)/.built
 	rm -f $@
-	(cd $(SCONS_BUILD_DIR); \
+	(cd $(@D); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 			--root=$(STAGING_DIR) --prefix=/opt; \
@@ -173,12 +173,12 @@ $(SCONS_HOST_BUILD_DIR)/.staged: host/.configured make/scons.mk
 	rm -rf $(HOST_STAGING_PREFIX)/bin/scons* \
 		$(HOST_STAGING_LIB_DIR)/scons-*
 	$(MAKE) python-stage
-	rm -rf $(HOST_BUILD_DIR)/$(SCONS_DIR) $(SCONS_HOST_BUILD_DIR)
+	rm -rf $(HOST_BUILD_DIR)/$(SCONS_DIR) $(@D)
 	$(SCONS_UNZIP) $(DL_DIR)/$(SCONS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	if test "$(HOST_BUILD_DIR)/$(SCONS_DIR)" != "$(SCONS_HOST_BUILD_DIR)" ; \
-		then mv $(HOST_BUILD_DIR)/$(SCONS_DIR) $(SCONS_HOST_BUILD_DIR) ; \
+	if test "$(HOST_BUILD_DIR)/$(SCONS_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(SCONS_DIR) $(@D) ; \
 	fi
-	(cd $(SCONS_HOST_BUILD_DIR); \
+	(cd $(@D); \
 	    chmod +w setup.cfg ; \
 	    ( \
 		echo ; \
@@ -188,7 +188,7 @@ $(SCONS_HOST_BUILD_DIR)/.staged: host/.configured make/scons.mk
 		echo "rpath=/opt/lib"; \
 	    ) >> setup.cfg; \
 	)
-	(cd $(SCONS_HOST_BUILD_DIR); \
+	(cd $(@D); \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 			--root=$(HOST_STAGING_DIR) --prefix=/opt; \
         )
