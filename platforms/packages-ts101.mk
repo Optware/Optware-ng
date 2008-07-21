@@ -21,4 +21,4 @@ BROKEN_PACKAGES = \
 	\
 	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
 	taged \
-	ts101-kernel-modules slimserver
+	ts101-kernel-modules

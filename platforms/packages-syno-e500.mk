@@ -12,4 +12,3 @@ BROKEN_PACKAGES = \
 	ldconfig libcapi20 monotone \
 	puppy transcode \
 	x264 lm-sensors \
-	slimserver \
