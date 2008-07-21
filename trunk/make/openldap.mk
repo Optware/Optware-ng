@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 OPENLDAP_SITE=ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release
-OPENLDAP_VERSION=2.3.38
+OPENLDAP_VERSION=2.3.43
 OPENLDAP_SOURCE=openldap-$(OPENLDAP_VERSION).tgz
 OPENLDAP_DIR=openldap-$(OPENLDAP_VERSION)
 OPENLDAP_UNZIP=zcat
@@ -44,7 +44,7 @@ OPENLDAP_IPK_VERSION=1
 # OPENLDAP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-OPENLDAP_PATCHES=$(OPENLDAP_SOURCE_DIR)/hostcc.patch 
+OPENLDAP_PATCHES=$(OPENLDAP_SOURCE_DIR)/hostcc.patch
 #$(OPENLDAP_SOURCE_DIR)/install.patch
 
 #
@@ -84,7 +84,8 @@ OPENLDAP_LIBS_IPK=$(BUILD_DIR)/openldap-libs_$(OPENLDAP_VERSION)-$(OPENLDAP_IPK_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(OPENLDAP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(OPENLDAP_SITE)/$(OPENLDAP_SOURCE)
+	$(WGET) -P $(@D) $(OPENLDAP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,13 +109,13 @@ openldap-source: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCHES)
+$(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCHES) make/openldap.mk
 	$(MAKE) libdb-stage openssl-stage gdbm-stage cyrus-sasl-stage
-	rm -rf $(BUILD_DIR)/$(OPENLDAP_DIR) $(OPENLDAP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(OPENLDAP_DIR) $(@D)
 	$(OPENLDAP_UNZIP) $(DL_DIR)/$(OPENLDAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(OPENLDAP_PATCHES) | patch -d $(BUILD_DIR)/$(OPENLDAP_DIR) -p1
-	mv $(BUILD_DIR)/$(OPENLDAP_DIR) $(OPENLDAP_BUILD_DIR)
-	(cd $(OPENLDAP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(OPENLDAP_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OPENLDAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OPENLDAP_LDFLAGS)" \
@@ -127,7 +128,7 @@ $(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCH
 		$(OPENLDAP_CONFIGURE_OPTIONS) \
 		--disable-nls \
 	)
-	touch $(OPENLDAP_BUILD_DIR)/.configured
+	touch $@
 
 openldap-unpack: $(OPENLDAP_BUILD_DIR)/.configured
 
@@ -135,9 +136,9 @@ openldap-unpack: $(OPENLDAP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(OPENLDAP_BUILD_DIR)/.built: $(OPENLDAP_BUILD_DIR)/.configured
-	rm -f $(OPENLDAP_BUILD_DIR)/.built
-	$(MAKE) -C $(OPENLDAP_BUILD_DIR) HOSTCC=$(HOSTCC)
-	touch $(OPENLDAP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) HOSTCC=$(HOSTCC)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,13 +149,13 @@ openldap: $(OPENLDAP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(OPENLDAP_BUILD_DIR)/.staged: $(OPENLDAP_BUILD_DIR)/.built
-	rm -f $(OPENLDAP_BUILD_DIR)/.staged
-	$(MAKE) -C $(OPENLDAP_BUILD_DIR)/libraries DESTDIR=$(STAGING_DIR) install
-	$(MAKE) -C $(OPENLDAP_BUILD_DIR)/include DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D)/libraries DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/include DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libldap.la
 	rm -f $(STAGING_LIB_DIR)/libldap_r.la
 	rm -f $(STAGING_LIB_DIR)/liblber.la
-	touch $(OPENLDAP_BUILD_DIR)/.staged
+	touch $@
 
 openldap-stage: $(OPENLDAP_BUILD_DIR)/.staged
 
@@ -163,7 +164,7 @@ openldap-stage: $(OPENLDAP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/openldap
 #
 $(OPENLDAP_IPK_DIR)/CONTROL/control:
-	@install -d $(OPENLDAP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: openldap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -177,7 +178,7 @@ $(OPENLDAP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(OPENLDAP_CONFLICTS)" >>$@
 
 $(OPENLDAP_LIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(OPENLDAP_LIBS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: openldap-libs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
