@@ -46,7 +46,7 @@ endif
 #
 # SLIMSERVER_IPK_VERSION should be incremented when the ipk changes.
 #
-SLIMSERVER_IPK_VERSION=10
+SLIMSERVER_IPK_VERSION=11
 
 #
 # SLIMSERVER_CONFFILES should be a list of user-editable files
@@ -90,7 +90,8 @@ SLIMSERVER_IPK=$(BUILD_DIR)/slimserver_$(SLIMSERVER_VERSION)-$(SLIMSERVER_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SLIMSERVER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SLIMSERVER_SITE)/$(SLIMSERVER_SOURCE)
+	$(WGET) -P $(@D) $(SLIMSERVER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -121,33 +122,34 @@ slimserver-source: $(DL_DIR)/$(SLIMSERVER_SOURCE)
 #
 $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER_PATCHES)  make/slimserver.mk
 	$(MAKE) perl-stage expat-stage mysql-stage
-	rm -rf $(BUILD_DIR)/$(SLIMSERVER_DIR) $(SLIMSERVER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SLIMSERVER_DIR) $(@D)
 	$(SLIMSERVER_UNZIP) $(DL_DIR)/$(SLIMSERVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -	
 	if test -n "$(SLIMSERVER_PATCHES)" ; \
 		then cat $(SLIMSERVER_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SLIMSERVER_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SLIMSERVER_DIR)" != "$(SLIMSERVER_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SLIMSERVER_DIR) $(SLIMSERVER_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SLIMSERVER_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SLIMSERVER_DIR) $(@D) ; \
 	fi
-	cp $(SLIMSERVER_SOURCE_DIR)/DBD-mysql-Makefile.PL $(SLIMSERVER_BUILD_DIR)/
-	sed -i  -e "s|^DBI_INSTARCH_DIR=.*|DBI_INSTARCH_DIR=$(SLIMSERVER_BUILD_DIR)/temp/DBI-1.50/blib/arch/auto/DBI|" \
-		-e "s|^DBI_DRIVER_XST=.*|DBI_DRIVER_XST=$(SLIMSERVER_BUILD_DIR)/temp/DBI-1.50/blib/arch/auto/DBI/Driver.xst|" \
-		$(SLIMSERVER_BUILD_DIR)/DBD-mysql-Makefile.PL
-	cp $(SLIMSERVER_SOURCE_DIR)/Time-HiRes-Makefile.PL $(SLIMSERVER_BUILD_DIR)/
+	cp $(SLIMSERVER_SOURCE_DIR)/DBD-mysql-Makefile.PL $(@D)/
+	sed -i  -e "s|^DBI_INSTARCH_DIR=.*|DBI_INSTARCH_DIR=$(@D)/temp/DBI-1.50/blib/arch/auto/DBI|" \
+		-e "s|^DBI_DRIVER_XST=.*|DBI_DRIVER_XST=$(@D)/temp/DBI-1.50/blib/arch/auto/DBI/Driver.xst|" \
+		$(@D)/DBD-mysql-Makefile.PL
+	cp $(SLIMSERVER_SOURCE_DIR)/Time-HiRes-Makefile.PL $(@D)/
 	sed -i -e "s|\$$Config{'ccflags'}|'$(STAGING_CPPFLAGS)'|" \
 		-e "s|\$$Config{'cc'}|$(TARGET_CC)|" \
-		$(SLIMSERVER_BUILD_DIR)/Time-HiRes-Makefile.PL
+		$(@D)/Time-HiRes-Makefile.PL
 	sed -i  -e "s|perlBinary = <STDIN>|perlBinary = \"$(PERL_HOSTPERL)\"|" \
-		-e "s|slimServerPath = <STDIN>|slimServerPath = \"$(SLIMSERVER_BUILD_DIR)\"|" \
-		-e "s|downloadPath = <STDIN>|downloadPath = \"$(SLIMSERVER_BUILD_DIR)\/temp\"|" \
-		-e "s|downloadPath = <STDIN>|downloadPath = \"$(SLIMSERVER_BUILD_DIR)\/temp\"|" \
+		-e "s|slimServerPath = <STDIN>|slimServerPath = \"$(@D)\"|" \
+		-e "s|downloadPath = <STDIN>|downloadPath = \"$(@D)\/temp\"|" \
+		-e "s|downloadPath = <STDIN>|downloadPath = \"$(@D)\/temp\"|" \
 		-e "/EXPAT.*PATH=/s|=/opt|$$ENV{STAGING_DIR}&|" \
 		-e '/archname = $$2/a         $$archname =~ s|-uclibc||;' \
-		$(SLIMSERVER_BUILD_DIR)/Bin/build-perl-modules.pl
+		-e 's/?view=auto/?view=co/g' \
+		$(@D)/Bin/build-perl-modules.pl
 	sed -i -e 's/^innodb_fast_shutdown/#innodb_fast_shutdown/' \
-		$(SLIMSERVER_BUILD_DIR)/MySQL/my.tt
-	touch $(SLIMSERVER_BUILD_DIR)/.configured
+		$(@D)/MySQL/my.tt
+	touch $@
 
 slimserver-unpack: $(SLIMSERVER_BUILD_DIR)/.configured
 #		-e "s|DBI-1.50|DBI-$(PERL-DBI_VERSION)|g" \
@@ -156,8 +158,8 @@ slimserver-unpack: $(SLIMSERVER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SLIMSERVER_BUILD_DIR)/.built: $(SLIMSERVER_BUILD_DIR)/.configured
-	rm -f $(SLIMSERVER_BUILD_DIR)/.built
-	( mkdir $(SLIMSERVER_BUILD_DIR)/temp; cd $(SLIMSERVER_BUILD_DIR)/Bin; \
+	rm -f $@
+	( mkdir $(@D)/temp; cd $(@D)/Bin; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -167,25 +169,25 @@ $(SLIMSERVER_BUILD_DIR)/.built: $(SLIMSERVER_BUILD_DIR)/.configured
 		$(PERL_HOSTPERL) build-perl-modules.pl \
 		PREFIX=/opt \
 	)
-	touch $(SLIMSERVER_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
 #
 .PHONY: slimserver
 slimserver: $(SLIMSERVER_BUILD_DIR)/.built
-	touch $(SLIMSERVER_BUILD_DIR)/.built
+	touch $(@D)/.built
 
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SLIMSERVER_BUILD_DIR)/.staged: $(SLIMSERVER_BUILD_DIR)/.built
-	rm -f $(SLIMSERVER_BUILD_DIR)/.staged
+#$(SLIMSERVER_BUILD_DIR)/.staged: $(SLIMSERVER_BUILD_DIR)/.built
+#	rm -f $(SLIMSERVER_BUILD_DIR)/.staged
 #	$(MAKE) -C $(SLIMSERVER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SLIMSERVER_BUILD_DIR)/.staged
-
-slimserver-stage: $(SLIMSERVER_BUILD_DIR)/.staged
+#	touch $(SLIMSERVER_BUILD_DIR)/.staged
+#
+#slimserver-stage: $(SLIMSERVER_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
