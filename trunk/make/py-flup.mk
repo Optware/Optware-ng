@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-FLUP_SITE=http://www.saddi.com/software/flup/dist
-PY-FLUP_VERSION=1.0
-PY-FLUP_DIR=flup-1.0
+PY-FLUP_VERSION=1.0.1
+PY-FLUP_DIR=flup-$(PY-FLUP_VERSION)
 PY-FLUP_SOURCE=$(PY-FLUP_DIR).tar.gz
 PY-FLUP_UNZIP=zcat
 PY-FLUP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -37,7 +37,7 @@ PY-FLUP_CONFLICTS=
 #
 # PY-FLUP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-FLUP_IPK_VERSION=2
+PY-FLUP_IPK_VERSION=1
 
 #
 # PY-FLUP_CONFFILES should be a list of user-editable files
@@ -81,7 +81,8 @@ PY25-FLUP_IPK=$(BUILD_DIR)/py25-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-FLUP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-FLUP_SITE)/$(PY-FLUP_SOURCE)
+	$(WGET) -P $(@D) $(PY-FLUP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,16 +108,16 @@ py-flup-source: $(DL_DIR)/$(PY-FLUP_SOURCE) $(PY-FLUP_PATCHES)
 #
 $(PY-FLUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FLUP_SOURCE) $(PY-FLUP_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-FLUP_BUILD_DIR)
-	mkdir -p $(PY-FLUP_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR)
 	$(PY-FLUP_UNZIP) $(DL_DIR)/$(PY-FLUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-FLUP_PATCHES)"; then \
 	    cat $(PY-FLUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(PY-FLUP_BUILD_DIR)/2.4
-	(cd $(PY-FLUP_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4"; \
@@ -130,8 +131,8 @@ $(PY-FLUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FLUP_SOURCE) $(PY-FLUP_PATCHES)
 	if test -n "$(PY-FLUP_PATCHES)"; then \
 	    cat $(PY-FLUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(PY-FLUP_BUILD_DIR)/2.5
-	(cd $(PY-FLUP_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5"; \
@@ -148,10 +149,10 @@ py-flup-unpack: $(PY-FLUP_BUILD_DIR)/.configured
 #
 $(PY-FLUP_BUILD_DIR)/.built: $(PY-FLUP_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PY-FLUP_BUILD_DIR)/2.4; \
+	cd $(@D)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
-	cd $(PY-FLUP_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
 	touch $@
