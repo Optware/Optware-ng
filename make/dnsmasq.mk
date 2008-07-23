@@ -16,12 +16,15 @@ DNSMASQ_PRIORITY=optional
 DNSMASQ_DEPENDS=
 DNSMASQ_CONFLICTS=
 
-DNSMASQ_IPK_VERSION=1
+DNSMASQ_IPK_VERSION=2
 
 # DNSMASQ_CONFFILES should be a list of user-editable files
 DNSMASQ_CONFFILES=/opt/etc/dnsmasq.conf
 
 DNSMASQ_PATCHES=$(DNSMASQ_SOURCE_DIR)/conffile.patch $(DNSMASQ_SOURCE_DIR)/src-dnsmasq.h.patch
+
+DNSMASQ_MAKE_FLAGS=$(strip \
+$(if $(or $(filter no, $(IPV6)), $(filter oleg, $(OPTWARE_TARGET))), COPTS=-DNO_IPV6, ))
 
 DNSMASQ_BUILD_DIR=$(BUILD_DIR)/dnsmasq
 DNSMASQ_SOURCE_DIR=$(SOURCE_DIR)/dnsmasq
@@ -47,7 +50,7 @@ dnsmasq-unpack: $(DNSMASQ_BUILD_DIR)/.configured
 
 $(DNSMASQ_BUILD_DIR)/.built: $(DNSMASQ_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS)
+	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS) $(DNSMASQ_MAKE_FLAGS)
 	touch $@
 
 dnsmasq: $(DNSMASQ_BUILD_DIR)/.built
