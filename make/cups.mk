@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.3.7
+CUPS_VERSION=1.3.8
 CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -110,8 +110,8 @@ CUPS_DOC_IPK=$(BUILD_DIR)/cups-doc_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CUPS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CUPS_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(CUPS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -214,7 +214,7 @@ cups-unpack: $(CUPS_BUILD_DIR)/.configured
 $(CUPS_BUILD_DIR)/.built: $(CUPS_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)
-	$(MAKE) install -C $(CUPS_BUILD_DIR) \
+	$(MAKE) install -C $(@D) \
 		BUILDROOT=$(CUPS_BUILD_DIR)/install/ \
 		datarootdir='$${prefix}' \
 		INSTALL_BIN="install -m 755"
