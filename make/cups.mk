@@ -84,6 +84,10 @@ ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
 CUPS_LDFLAGS+=-lm
 endif
 
+ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
+CUPS_CONFIG_OPTS=--disable-pam
+endif
+
 #
 # CUPS_BUILD_DIR is the directory in which the build is done.
 # CUPS_SOURCE_DIR is the directory which holds all the
@@ -194,6 +198,7 @@ endif
 		--libdir=/opt/lib \
 		--disable-nls \
 		--disable-dbus \
+		$(CUPS_CONFIG_OPTS) \
 		--with-openssl-libs=$(STAGING_DIR)/opt/lib \
 		--with-openssl-includes=$(STAGING_DIR)/opt/include \
 		--without-java \
