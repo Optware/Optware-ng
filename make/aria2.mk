@@ -29,7 +29,7 @@ ARIA2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ARIA2_DESCRIPTION=A utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent  (DHT, PEX, MSE/PE), and Metalink.
 ARIA2_SECTION=net
 ARIA2_PRIORITY=optional
-ARIA2_DEPENDS=c-ares, libstdc++, libxml2, openssl
+ARIA2_DEPENDS=c-ares, libstdc++, libxml2, openssl, zlib
 ifneq (, $(filter libiconv, $(PACKAGES)))
 ARIA2_DEPENDS += , libiconv
 endif
@@ -120,7 +120,7 @@ aria2-source: $(DL_DIR)/$(ARIA2_SOURCE) $(ARIA2_PATCHES)
 # shown below to make various patches to it.
 #
 $(ARIA2_BUILD_DIR)/.configured: $(DL_DIR)/$(ARIA2_SOURCE) $(ARIA2_PATCHES) make/aria2.mk
-	$(MAKE) c-ares-stage libstdc++-stage libxml2-stage openssl-stage
+	$(MAKE) c-ares-stage libstdc++-stage libxml2-stage openssl-stage zlib-stage
 ifneq (, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -153,6 +153,7 @@ endif
 		--with-libxml2-prefix=$(STAGING_PREFIX) \
 		--with-libcares \
 		--with-libcares-prefix=$(STAGING_PREFIX) \
+		--with-libz-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
