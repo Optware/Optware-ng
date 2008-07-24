@@ -45,6 +45,12 @@ endif
 
 LIBSTDC++_IPK_VERSION=6
 
+LIBSTDC++_TARGET_LIBDIR=$(strip \
+	$(if $(filter cs08q1armel ts509, $(OPTWARE_TARGET)), $(TARGET_USRLIBDIR), \
+	$(if $(filter fsg3v4, $(OPTWARE_TARGET)), $(TARGET_LIBDIR)/../../lib, \
+	$(if $(filter vt4, $(OPTWARE_TARGET)), $(TARGET_CROSS_TOP)/tmp, \
+	$(TARGET_LIBDIR)))))
+
 LIBSTDC++_BUILD_DIR=$(BUILD_DIR)/libstdc++
 LIBSTDC++_SOURCE_DIR=$(SOURCE_DIR)/libstdc++
 LIBSTDC++_IPK_DIR=$(BUILD_DIR)/libstdc++-$(LIBSTDC++_VERSION)-ipk
@@ -53,41 +59,37 @@ LIBSTDC++_IPK=$(BUILD_DIR)/libstdc++_$(LIBSTDC++_VERSION)-$(LIBSTDC++_IPK_VERSIO
 .PHONY: libstdc++-unpack libstdc++ libstdc++-stage libstdc++-ipk libstdc++-clean libstdc++-dirclean
 
 $(LIBSTDC++_BUILD_DIR)/.configured: $(LIBSTDC++_PATCHES)
-	rm -rf $(BUILD_DIR)/$(LIBSTDC++_DIR) $(LIBSTDC++_BUILD_DIR)
-	mkdir -p $(LIBSTDC++_BUILD_DIR)
-	touch $(LIBSTDC++_BUILD_DIR)/.configured
+	rm -rf $(BUILD_DIR)/$(LIBSTDC++_DIR) $(@D)
+	mkdir -p $(@D)
+	touch $@
 
 libstdc++-unpack: $(LIBSTDC++_BUILD_DIR)/.configured
 
 $(LIBSTDC++_BUILD_DIR)/.built: $(LIBSTDC++_BUILD_DIR)/.configured make/libstdc++.mk
-	rm -f $(LIBSTDC++_BUILD_DIR)/.built
+	rm -f $@
 ifdef LIBSTDC++_USED
-ifeq ($(OPTWARE_TARGET),fsg3v4)
-	cp $(TARGET_LIBDIR)/../../lib/$(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_BUILD_DIR)/
-else
-	cp $(TARGET_LIBDIR)/$(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_BUILD_DIR)/
+	cp $(LIBSTDC++_TARGET_LIBDIR)/$(LIBSTDC++_LIBNAME_FULL) $(@D)/
 endif
-endif
-	touch $(LIBSTDC++_BUILD_DIR)/.built
+	touch $@
 
 libstdc++: $(LIBSTDC++_BUILD_DIR)/.built
 
 $(LIBSTDC++_BUILD_DIR)/.staged: $(LIBSTDC++_BUILD_DIR)/.built
-	rm -f $(LIBSTDC++_BUILD_DIR)/.staged
+	rm -f $@
 ifdef LIBSTDC++_USED
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME_FULL) $(STAGING_DIR)/opt/lib
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(@D)/$(LIBSTDC++_LIBNAME_FULL) $(STAGING_LIB_DIR)
 	(cd $(STAGING_DIR)/opt/lib; \
 	 ln -sf $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME); \
 	 ln -sf $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME_MAJOR) \
 	)
 endif
-	touch $(LIBSTDC++_BUILD_DIR)/.staged
+	touch $@
 
 libstdc++-stage: $(LIBSTDC++_BUILD_DIR)/.staged
 
 $(LIBSTDC++_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBSTDC++_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libstdc++" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
