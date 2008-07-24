@@ -4,7 +4,7 @@
 
 OPENSSL_SITE=http://www.openssl.org/source
 
-ifeq ($(OPTWARE_TARGET), $(filter syno-e500 cs08q1armel, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter syno-e500 cs08q1armel ts509, $(OPTWARE_TARGET)))
 OPENSSL_VERSION=0.9.8h
 OPENSSL_LIB_VERSION=0.9.8
 OPENSSL_IPK_VERSION=1
@@ -55,7 +55,8 @@ OPENSSL_ASFLAG=$(strip $(if $(filter powerpc, $(TARGET_ARCH)), ASFLAG="",))
 OPENSSL_ARCH=$(strip \
 	$(if $(filter mipsel, $(TARGET_ARCH)), linux-$(TARGET_ARCH), \
 	$(if $(filter powerpc, $(TARGET_ARCH)), linux-ppc, \
-	linux-elf-$(TARGET_ARCH))))
+	$(if $(filter 0.9.8, $(OPENSSL_LIB_VERSION)), linux-generic32, \
+	linux-elf-$(TARGET_ARCH)))))
 
 $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
 	rm -rf $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_HOST_BUILD_DIR)
