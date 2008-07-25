@@ -36,7 +36,7 @@ C_ARES_CONFLICTS=
 #
 # C_ARES_IPK_VERSION should be incremented when the ipk changes.
 #
-C_ARES_IPK_VERSION=1
+C_ARES_IPK_VERSION=2
 
 #
 # C_ARES_CONFFILES should be a list of user-editable files
@@ -195,12 +195,12 @@ $(C_ARES_IPK): $(C_ARES_BUILD_DIR)/.built
 #	install -m 644 $(C_ARES_SOURCE_DIR)/c-ares.conf $(C_ARES_IPK_DIR)/opt/etc/c-ares.conf
 #	install -d $(C_ARES_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(C_ARES_SOURCE_DIR)/rc.c-ares $(C_ARES_IPK_DIR)/opt/etc/init.d/SXXc-ares
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXc-ares
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(C_ARES_IPK_DIR)/opt/etc/init.d/SXXc-ares
 	$(MAKE) $(C_ARES_IPK_DIR)/CONTROL/control
 #	install -m 755 $(C_ARES_SOURCE_DIR)/postinst $(C_ARES_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(C_ARES_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(C_ARES_SOURCE_DIR)/prerm $(C_ARES_IPK_DIR)/CONTROL/prerm
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(C_ARES_IPK_DIR)/CONTROL/prerm
 #	echo $(C_ARES_CONFFILES) | sed -e 's/ /\n/g' > $(C_ARES_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(C_ARES_IPK_DIR)
 
