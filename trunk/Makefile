@@ -247,8 +247,8 @@ COMMON_CROSS_PACKAGES = \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libesmtp libevent libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
-	libid3tag libidn libijs \
-	libjpeg liblcms libmad libmemcache libmpcdec libmpeg2 libmrss libmtp \
+	libid3tag libidn libijs libjpeg libksba \
+	liblcms libmad libmemcache libmpcdec libmpeg2 libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libpar2 libpcap libpng libpth librsync \
 	libshout libsigc++ libsoup libsndfile libstdc++ \
