@@ -147,6 +147,8 @@ libpth: $(LIBPTH_BUILD_DIR)/.built
 $(LIBPTH_BUILD_DIR)/.staged: $(LIBPTH_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
+	rm -f $(STAGING_LIB_DIR)/libpth.la
+	sed -i -e '/^pth_includedir/s|=.*|=$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/pth-config
 	touch $@
 
 libpth-stage: $(LIBPTH_BUILD_DIR)/.staged
