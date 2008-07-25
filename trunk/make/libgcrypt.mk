@@ -52,7 +52,7 @@ LIBGCRYPT_CONFFILES=#/opt/etc/libgcrypt.conf /opt/etc/init.d/SXXlibgcrypt
 # LIBGCRYPT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(TARGET_ARCH),powerpc)
+ifeq ($(TARGET_ARCH), $(filter powerpc i386 i686, $(TARGET_ARCH)))
 LIBGCRYPT_PATCHES= $(LIBGCRYPT_SOURCE_DIR)/symbol-underscore.patch
 endif
 #
@@ -83,8 +83,8 @@ LIBGCRYPT_IPK=$(BUILD_DIR)/libgcrypt_$(LIBGCRYPT_VERSION)-$(LIBGCRYPT_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBGCRYPT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBGCRYPT_SITE)/$(LIBGCRYPT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBGCRYPT_SOURCE)
+	$(WGET) -P $(@D) $(LIBGCRYPT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,14 +110,14 @@ libgcrypt-source: $(DL_DIR)/$(LIBGCRYPT_SOURCE) $(LIBGCRYPT_PATCHES)
 #
 $(LIBGCRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGCRYPT_SOURCE) $(LIBGCRYPT_PATCHES)
 	$(MAKE) libgpg-error-stage
-	rm -rf $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(LIBGCRYPT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(@D)
 	$(LIBGCRYPT_UNZIP) $(DL_DIR)/$(LIBGCRYPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGCRYPT_PATCHES)" ; then \
 		cat $(LIBGCRYPT_PATCHES) | \
         	 patch -d $(BUILD_DIR)/$(LIBGCRYPT_DIR) -p1 ; \
 	fi
-	mv $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(LIBGCRYPT_BUILD_DIR)
-	(cd $(LIBGCRYPT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGCRYPT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGCRYPT_LDFLAGS)" \
@@ -127,12 +127,12 @@ $(LIBGCRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGCRYPT_SOURCE) $(LIBGCRYPT_PA
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-gpg-error-prefix=$(STAGING_DIR)/opt \
+		--with-gpg-error-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBGCRYPT_BUILD_DIR)/libtool
-	touch $(LIBGCRYPT_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libgcrypt-unpack: $(LIBGCRYPT_BUILD_DIR)/.configured
 
@@ -140,9 +140,9 @@ libgcrypt-unpack: $(LIBGCRYPT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBGCRYPT_BUILD_DIR)/.built: $(LIBGCRYPT_BUILD_DIR)/.configured
-	rm -f $(LIBGCRYPT_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR)
-	touch $(LIBGCRYPT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,14 +153,14 @@ libgcrypt: $(LIBGCRYPT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBGCRYPT_BUILD_DIR)/.staged: $(LIBGCRYPT_BUILD_DIR)/.built
-	rm -f $(LIBGCRYPT_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) transform='' install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) transform='' install
 	sed -i -e '/_cflags=/s|-I/opt/include||g' \
 	       -e '/_cflags=/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' \
 	       -e 's|I$$includedir|I$(STAGING_INCLUDE_DIR)|' \
 		$(STAGING_PREFIX)/bin/*libgcrypt-config
-	rm -f $(STAGING_DIR)/opt/lib/libgcrypt.la
-	touch $(LIBGCRYPT_BUILD_DIR)/.staged
+	rm -f $(STAGING_LIB_DIR)/libgcrypt.la
+	touch $@
 
 libgcrypt-stage: $(LIBGCRYPT_BUILD_DIR)/.staged
 
@@ -169,7 +169,7 @@ libgcrypt-stage: $(LIBGCRYPT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libgcrypt
 #
 $(LIBGCRYPT_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBGCRYPT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libgcrypt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
