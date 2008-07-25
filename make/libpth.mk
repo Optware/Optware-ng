@@ -42,7 +42,7 @@ LIBPTH_CONFLICTS=
 #
 # LIBPTH_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPTH_IPK_VERSION=1
+LIBPTH_IPK_VERSION=2
 
 #
 # LIBPTH_CONFFILES should be a list of user-editable files
@@ -81,7 +81,8 @@ LIBPTH_IPK=$(BUILD_DIR)/libpth_$(LIBPTH_VERSION)-$(LIBPTH_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBPTH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBPTH_SITE)/$(LIBPTH_SOURCE)
+	$(WGET) -P $(@D) $(LIBPTH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,11 +108,11 @@ libpth-source: $(DL_DIR)/$(LIBPTH_SOURCE) $(LIBPTH_PATCHES)
 #
 $(LIBPTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPTH_SOURCE) $(LIBPTH_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBPTH_DIR) $(LIBPTH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBPTH_DIR) $(@D)
 	$(LIBPTH_UNZIP) $(DL_DIR)/$(LIBPTH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBPTH_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPTH_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBPTH_DIR) $(LIBPTH_BUILD_DIR)
-	(cd $(LIBPTH_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBPTH_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPTH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBPTH_LDFLAGS)" \
@@ -122,8 +123,8 @@ $(LIBPTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPTH_SOURCE) $(LIBPTH_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(LIBIDN_BUILD_DIR)/libtool
-	touch $(LIBPTH_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libpth-unpack: $(LIBPTH_BUILD_DIR)/.configured
 
@@ -131,9 +132,9 @@ libpth-unpack: $(LIBPTH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBPTH_BUILD_DIR)/.built: $(LIBPTH_BUILD_DIR)/.configured
-	rm -f $(LIBPTH_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBPTH_BUILD_DIR)
-	touch $(LIBPTH_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,9 +145,9 @@ libpth: $(LIBPTH_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBPTH_BUILD_DIR)/.staged: $(LIBPTH_BUILD_DIR)/.built
-	rm -f $(LIBPTH_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBPTH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-	touch $(LIBPTH_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
+	touch $@
 
 libpth-stage: $(LIBPTH_BUILD_DIR)/.staged
 
