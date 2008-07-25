@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CURL_SITE=http://pycurl.sourceforge.net/download
-PY-CURL_VERSION=7.18.1
+PY-CURL_VERSION=7.18.2
 PY-CURL_SOURCE=pycurl-$(PY-CURL_VERSION).tar.gz
 PY-CURL_DIR=pycurl-$(PY-CURL_VERSION)
 PY-CURL_UNZIP=zcat
@@ -30,14 +30,14 @@ PY-CURL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CURL_DESCRIPTION=PycURL is a Python interface to libcurl.
 PY-CURL_SECTION=misc
 PY-CURL_PRIORITY=optional
-PY24-CURL_DEPENDS=python24, libcurl (>=7.18.1)
-PY24-CURL_DEPENDS=python25, libcurl (>=7.18.1)
+PY24-CURL_DEPENDS=python24, libcurl (>=7.18.2), openssl
+PY24-CURL_DEPENDS=python25, libcurl (>=7.18.2), openssl
 PY-CURL_CONFLICTS=
 
 #
 # PY-CURL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CURL_IPK_VERSION=2
+PY-CURL_IPK_VERSION=1
 
 #
 # PY-CURL_CONFFILES should be a list of user-editable files
@@ -109,8 +109,8 @@ py-curl-source: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
-	$(MAKE) py-setuptools-stage libcurl-stage
+$(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES) make/py-curl.mk
+	$(MAKE) py-setuptools-stage openssl-stage libcurl-stage
 	rm -rf $(PY-CURL_BUILD_DIR)
 	mkdir -p $(PY-CURL_BUILD_DIR)
 	# 2.4
@@ -118,6 +118,7 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
 	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/2.4
+	sed -i.orig -e '/static-libs/s|.*|"")|' $(@D)/2.4/setup.py
 	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
@@ -133,6 +134,7 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
 	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/2.5
+	sed -i.orig -e '/static-libs/s|.*|"")|' $(@D)/2.5/setup.py
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
