@@ -7,4 +7,4 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk bitchx bzflag iptables ivorbis-tools lcd4linux \
 	ldconfig ltrace nget openser phoneme-advanced puppy \
-	mod-python py-curl py-reportlab qemu ser taged transcode \
+	mod-python py-reportlab qemu ser taged transcode \
