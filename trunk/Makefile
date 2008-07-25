@@ -227,7 +227,7 @@ COMMON_CROSS_PACKAGES = \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
 	geoip gettext \
 	ggrab ghostscript git glib gnet gnokii \
-	gnu-httptunnel gnu-smalltalk gnugo gnupg gnuplot gnutls \
+	gnu-httptunnel gnu-smalltalk gnugo gnupg gnuplot gnutls gpgme \
 	gpsd \
 	grep groff gsasl gsnmp gtmess gtk gtypist gutenprint gzip  \
 	gphoto2 libgphoto2 \
