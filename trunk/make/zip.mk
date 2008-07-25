@@ -130,6 +130,7 @@ $(ZIP_BUILD_DIR)/.built: $(ZIP_BUILD_DIR)/.configured
 	rm -f $(ZIP_BUILD_DIR)/.built
 	$(MAKE) -C $(ZIP_BUILD_DIR) -f unix/Makefile generic	\
 		$(TARGET_CONFIGURE_OPTS) 			\
+		AS="$(TARGET_CC) -c" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZIP_CPPFLAGS)"	\
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZIP_LDFLAGS)"
 		
