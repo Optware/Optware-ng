@@ -32,7 +32,7 @@ PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.3.tar.gz
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=3
+PROFTPD_IPK_VERSION=4
 
 #
 # Control file info
@@ -52,7 +52,10 @@ PROFTPD_CONFFILES=/opt/etc/proftpd.conf /opt/etc/xinetd.d/proftpd
 # PROFTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PROFTPD_PATCHES=$(PROFTPD_SOURCE_DIR)/libcap-makefile.patch $(PROFTPD_SOURCE_DIR)/default_paths.patch
+PROFTPD_PATCHES=\
+$(PROFTPD_SOURCE_DIR)/libcap-makefile.patch \
+$(PROFTPD_SOURCE_DIR)/default_paths.patch \
+$(PROFTPD_SOURCE_DIR)/umode.patch
 
 #
 # If the compilation of the package requires additional
