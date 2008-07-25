@@ -74,7 +74,7 @@ GNUPG_IPK=$(BUILD_DIR)/gnupg_$(GNUPG_VERSION)-$(GNUPG_IPK_VERSION)_$(TARGET_ARCH
 ifeq ($(LIBC_STYLE), uclibc)
 GNUPG_CFG_OPTS= --disable-dns-pka --disable-dns-cert --disable-dns-srv
 endif
-ifeq ($(TARGET_ARCH), powerpc)
+ifeq ($(TARGET_ARCH), $(filter powerpc i386 i686, $(TARGET_ARCH)))
 GNUPG_CFG_ENV=ac_cv_sys_symbol_underscore=no
 endif
 
