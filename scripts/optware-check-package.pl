@@ -78,6 +78,7 @@ GetOptions("tmp-dir=s" => \$tmp_dir,
         "oleg" => "MIPS",
         "openwrt-brcm24" => "MIPS",
         "ts101" => "PowerPC or cisco 4500",
+        "ts509" => "32-bit LSB .* Intel 80386",
         "ts72xx" => "LSB .* ARM"
 );
 
