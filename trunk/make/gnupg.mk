@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPG_SITE=ftp://ftp.gnupg.org/gcrypt/gnupg
-GNUPG_VERSION=1.4.9
+GNUPG_VERSION=2.0.9
 GNUPG_SOURCE=gnupg-$(GNUPG_VERSION).tar.bz2
 GNUPG_DIR=gnupg-$(GNUPG_VERSION)
 GNUPG_UNZIP=bzcat
@@ -30,7 +30,7 @@ GNUPG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUPG_DESCRIPTION=GNU privacy guard - a free PGP replacement.
 GNUPG_SECTION=misc
 GNUPG_PRIORITY=optional
-GNUPG_DEPENDS=libusb, zlib, bzip2, readline, libcurl, openldap-libs
+GNUPG_DEPENDS=libusb, zlib, bzip2, readline, libcurl, openldap-libs, libgcrypt, libpth, libksba
 GNUPG_SUGGESTS=
 GNUPG_CONFLICTS=
 
@@ -112,6 +112,7 @@ gnupg-source: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
 #
 $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES) make/gnupg.mk
 	$(MAKE) libusb-stage bzip2-stage zlib-stage readline-stage libcurl-stage openldap-stage
+	$(MAKE) libassuan-stage libgpg-error-stage libgcrypt-stage libpth-stage libksba-stage
 	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR)
 	$(GNUPG_UNZIP) $(DL_DIR)/$(GNUPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GNUPG_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
@@ -125,12 +126,17 @@ $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-libusb=$(STAGING_DIR)/opt \
-		--with-zlib=$(STAGING_DIR)/opt \
-		--with-readline=$(STAGING_DIR)/opt \
-		--with-libcurl=$(STAGING_DIR)/opt \
-		--with-ldap=$(STAGING_DIR)/opt \
+		--with-libusb=$(STAGING_PREFIX) \
+		--with-zlib=$(STAGING_PREFIX) \
+		--with-readline=$(STAGING_PREFIX) \
+		--with-libcurl=$(STAGING_PREFIX) \
+		--with-ldap=$(STAGING_PREFIX) \
 		--prefix=/opt \
+		--with-gpg-error-prefix=$(STAGING_PREFIX) \
+		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
+		--with-pth-prefix=$(STAGING_PREFIX) \
+		--with-ksba-prefix=$(STAGING_PREFIX) \
+		--with-libassuan-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		$(GNUPG_CFG_OPTS) \
 	)
