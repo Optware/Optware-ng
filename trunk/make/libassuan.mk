@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBASSUAN_SITE=ftp://ftp.gnupg.org/gcrypt/libassuan/libassuan-1.0.5.tar.bz2
+LIBASSUAN_SITE=ftp://ftp.gnupg.org/gcrypt/libassuan
 LIBASSUAN_VERSION=1.0.5
 LIBASSUAN_SOURCE=libassuan-$(LIBASSUAN_VERSION).tar.bz2
 LIBASSUAN_DIR=libassuan-$(LIBASSUAN_VERSION)
