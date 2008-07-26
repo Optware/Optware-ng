@@ -204,7 +204,7 @@ COMMON_CROSS_PACKAGES = \
 	bluez-libs bluez-utils bluez-hcidump \
 	bluez2-libs bluez2-utils \
 	c-ares cabextract cairo calc calcurse castget \
-	catdoc ccollect ccxstream cdargs cdrtools \
+	catdoc ccollect ccxstream cdargs cdrtools centerim \
 	cherokee chicken chillispot chrpath cksfv \
 	classpath clamav clearsilver clips clutch cmdftp \
 	cogito confuse connect coreutils corkscrew cpio cron \
