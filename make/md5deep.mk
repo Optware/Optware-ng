@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MD5DEEP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/md5deep
-MD5DEEP_VERSION=3.0
+MD5DEEP_VERSION=3.1
 MD5DEEP_SOURCE=md5deep-$(MD5DEEP_VERSION).tar.gz
 MD5DEEP_DIR=md5deep-$(MD5DEEP_VERSION)
 MD5DEEP_UNZIP=zcat
