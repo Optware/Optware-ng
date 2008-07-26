@@ -12,6 +12,7 @@ BROKEN_PACKAGES = \
 	asterisk16 asterisk16-addons \
 	atftp avahi \
 	bitlbee bsdgames btpd bzflag \
+	centerim \
 	castget cdargs cherokee clamav ctorrent ctrlproxy cups \
 	dansguardian dspam \
 	emacs22 enhanced-ctorrent esniper erlang erl-yaws \
