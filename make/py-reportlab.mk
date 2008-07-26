@@ -34,10 +34,14 @@ PY24-REPORTLAB_DEPENDS=python24, py-reportlab-common
 PY25-REPORTLAB_DEPENDS=python25, py-reportlab-common
 PY-REPORTLAB_CONFLICTS=
 
+PY-REPORTLAB-ACCEL_SITE=http://www.reportlab.org/daily
+PY-REPORTLAB-ACCEL_SOURCE=rl_accel-0.60-daily-unix.tgz
+PY-REPORTLAB-ACCEL_DIR=rl_accel-0.60-20070606
+
 #
 # PY-REPORTLAB_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-REPORTLAB_IPK_VERSION=1
+PY-REPORTLAB_IPK_VERSION=2
 
 #
 # PY-REPORTLAB_CONFFILES should be a list of user-editable files
@@ -84,7 +88,12 @@ PY25-REPORTLAB_IPK=$(BUILD_DIR)/py25-reportlab_$(PY-REPORTLAB_VERSION)-$(PY-REPO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-REPORTLAB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-REPORTLAB_SITE)/$(PY-REPORTLAB_SOURCE)
+	$(WGET) -P $(@D) $(PY-REPORTLAB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+$(DL_DIR)/$(PY-REPORTLAB-ACCEL_SOURCE):
+	$(WGET) -P $(@D) $(PY-REPORTLAB-ACCEL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,8 +127,8 @@ $(PY-REPORTLAB_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-REPORTLAB_SOURCE) $(PY-REP
 	if test -n "$(PY-REPORTLAB_PATCHES)"; then \
 	    cat $(PY-REPORTLAB_PATCHES) | patch -d $(BUILD_DIR)/$(PY-REPORTLAB_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-REPORTLAB_DIR) $(PY-REPORTLAB_BUILD_DIR)/2.4
-	(cd $(PY-REPORTLAB_BUILD_DIR)/2.4/reportlab; \
+	mv $(BUILD_DIR)/$(PY-REPORTLAB_DIR) $(@D)/2.4
+	(cd $(@D)/2.4/reportlab; \
 	    ( \
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -130,18 +139,20 @@ $(PY-REPORTLAB_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-REPORTLAB_SOURCE) $(PY-REP
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg; \
-	    sed -ie 's|^package_path.*|package_path = pjoin("/opt/share", "reportlab")|' setup.py; \
-	    svn -r2926 co http://www.reportlab.co.uk/svn/public/reportlab/trunk/rl_addons/rl_accel/ rl_addons/rl_accel; \
-	    cp setup.cfg rl_addons/rl_accel/; \
+	    sed -i -e 's|^package_path.*|package_path = pjoin("/opt/share", "reportlab")|' setup.py; \
 	)
+	cd $(@D)/2.4/reportlab; \
+		tar -xvzf $(DL_DIR)/$(PY-REPORTLAB-ACCEL_SOURCE); \
+		mv $(PY-REPORTLAB-ACCEL_DIR) rl_addons; \
+		cp setup.cfg rl_addons/rl_accel/
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-REPORTLAB_DIR)
 	$(PY-REPORTLAB_UNZIP) $(DL_DIR)/$(PY-REPORTLAB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-REPORTLAB_PATCHES)"; then \
 	    cat $(PY-REPORTLAB_PATCHES) | patch -d $(BUILD_DIR)/$(PY-REPORTLAB_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-REPORTLAB_DIR) $(PY-REPORTLAB_BUILD_DIR)/2.5
-	(cd $(PY-REPORTLAB_BUILD_DIR)/2.5/reportlab; \
+	mv $(BUILD_DIR)/$(PY-REPORTLAB_DIR) $(@D)/2.5
+	(cd $(@D)/2.5/reportlab; \
 	    ( \
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -152,11 +163,13 @@ $(PY-REPORTLAB_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-REPORTLAB_SOURCE) $(PY-REP
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg; \
-	    sed -ie 's|^package_path.*|package_path = pjoin("/opt/share", "reportlab")|' setup.py; \
-	    svn -r2926 co http://www.reportlab.co.uk/svn/public/reportlab/trunk/rl_addons/rl_accel/ rl_addons/rl_accel; \
-	    cp setup.cfg rl_addons/rl_accel/; \
+	    sed -i -e 's|^package_path.*|package_path = pjoin("/opt/share", "reportlab")|' setup.py; \
 	)
-	touch $(PY-REPORTLAB_BUILD_DIR)/.configured
+	cd $(@D)/2.5/reportlab; \
+		tar -xvzf $(DL_DIR)/$(PY-REPORTLAB-ACCEL_SOURCE); \
+		mv $(PY-REPORTLAB-ACCEL_DIR) rl_addons; \
+		cp setup.cfg rl_addons/rl_accel/
+	touch $@
 
 py-reportlab-unpack: $(PY-REPORTLAB_BUILD_DIR)/.configured
 
@@ -165,11 +178,11 @@ py-reportlab-unpack: $(PY-REPORTLAB_BUILD_DIR)/.configured
 #
 $(PY-REPORTLAB_BUILD_DIR)/.built: $(PY-REPORTLAB_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-REPORTLAB_BUILD_DIR)/2.4/reportlab; \
+	(cd $(@D)/2.4/reportlab; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-REPORTLAB_BUILD_DIR)/2.5/reportlab; \
+	(cd $(@D)/2.5/reportlab; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
@@ -183,12 +196,12 @@ py-reportlab: $(PY-REPORTLAB_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-REPORTLAB_BUILD_DIR)/.staged: $(PY-REPORTLAB_BUILD_DIR)/.built
-	rm -f $(PY-REPORTLAB_BUILD_DIR)/.staged
+#$(PY-REPORTLAB_BUILD_DIR)/.staged: $(PY-REPORTLAB_BUILD_DIR)/.built
+#	rm -f $(PY-REPORTLAB_BUILD_DIR)/.staged
 #	$(MAKE) -C $(PY-REPORTLAB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-REPORTLAB_BUILD_DIR)/.staged
-
-py-reportlab-stage: $(PY-REPORTLAB_BUILD_DIR)/.staged
+#	touch $(PY-REPORTLAB_BUILD_DIR)/.staged
+#
+#py-reportlab-stage: $(PY-REPORTLAB_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
