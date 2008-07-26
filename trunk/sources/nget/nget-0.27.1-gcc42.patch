@@ -1,0 +1,39 @@
+http://bugs.gentoo.org/show_bug.cgi?id=199587
+
+Index: nget/auto_map.h
+===================================================================
+--- nget.orig/auto_map.h	2007-05-29 20:11:08.000000000 +0200
++++ nget/auto_map.h	2007-05-29 20:11:26.000000000 +0200
+@@ -53,11 +53,14 @@
+ 		auto_map_base& operator= (const auto_map_base &m); //private operator= to disallow assignment
+ };
+ 
++template <class K, class T>
++class default_map : public std::map<K, T> {
++};
+ 
+ template <class K, class T>
+-class auto_map : public auto_map_base<K, T, std::map> {
++class auto_map : public auto_map_base<K, T, default_map> {
+ 	public:
+-		typedef typename auto_map_base<K, T, std::map>::super super;
++		typedef typename auto_map_base<K, T, default_map>::super super;
+ 		typedef typename super::iterator iterator;
+ 		typedef typename super::value_type value_type;
+ 		/*super::value_type value_type(const K &k, T*p) {
+@@ -74,9 +77,13 @@
+ };
+ 
+ template <class K, class T>
+-class auto_multimap : public auto_map_base<K, T, std::multimap> {
++class default_multimap : public std::multimap<K, T> {
++};
++
++template <class K, class T>
++class auto_multimap : public auto_map_base<K, T, default_multimap> {
+ 	public:
+-		typedef typename auto_map_base<K, T, std::multimap>::super super;
++		typedef typename auto_map_base<K, T, default_multimap>::super super;
+ 		typedef typename super::iterator iterator;
+ 		typedef typename super::value_type value_type;
+ 		iterator insert_value(const K &k, T* p) { //we can't really use the normal insert funcs, but we don't want to just name it insert since it would be easy to confuse with all the normal map insert funcs

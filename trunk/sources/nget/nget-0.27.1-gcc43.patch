@@ -1,0 +1,88 @@
+http://bugs.gentoo.org/show_bug.cgi?id=199587
+
+Index: nget/status.cc
+===================================================================
+--- nget.orig/status.cc	2008-02-02 23:12:00.000000000 +0100
++++ nget/status.cc	2008-02-02 23:12:02.000000000 +0100
+@@ -20,6 +20,7 @@
+ #include "server.h"
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <string.h>
+ 
+ static int errorflags=0, warnflags=0, okflags=0;
+ 
+Index: nget/stlhelp.h
+===================================================================
+--- nget.orig/stlhelp.h	2008-02-02 23:12:00.000000000 +0100
++++ nget/stlhelp.h	2008-02-02 23:12:02.000000000 +0100
+@@ -19,6 +19,8 @@
+ #ifndef _STLHELP_H_
+ #define _STLHELP_H_
+ 
++#include <string.h>
++
+ struct eqstr
+ {
+ 	bool operator()(const char* s1, const char* s2) const
+Index: nget/dupe_file.cc
+===================================================================
+--- nget.orig/dupe_file.cc	2008-02-02 23:12:00.000000000 +0100
++++ nget/dupe_file.cc	2008-02-02 23:12:02.000000000 +0100
+@@ -25,6 +25,7 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <errno.h>
++#include <string.h>
+ 
+ void dupe_file_checker::add(const char *filename, ulong size){
+ 	file_match *fm;
+Index: nget/path.cc
+===================================================================
+--- nget.orig/path.cc	2008-02-02 23:12:00.000000000 +0100
++++ nget/path.cc	2008-02-02 23:12:02.000000000 +0100
+@@ -21,6 +21,7 @@
+ #include <unistd.h>
+ #include "log.h"
+ #include "_fileconf.h"
++#include <string.h>
+ 
+ #ifdef WIN32
+ #include <ctype.h>
+Index: nget/myregex.cc
+===================================================================
+--- nget.orig/myregex.cc	2008-02-02 23:12:00.000000000 +0100
++++ nget/myregex.cc	2008-02-02 23:12:02.000000000 +0100
+@@ -21,6 +21,7 @@
+ #endif
+ #include <stdlib.h>
+ #include "myregex.h"
++#include <string.h>
+ 
+ 
+ static string regex_match_word_beginning_safe_str;
+Index: nget/nrange.h
+===================================================================
+--- nget.orig/nrange.h	2008-02-02 23:12:00.000000000 +0100
++++ nget/nrange.h	2008-02-02 23:12:02.000000000 +0100
+@@ -25,6 +25,7 @@
+ #include <sys/types.h>
+ #include <map>
+ #include <stdexcept>
++#include <limits.h>
+ 
+ 
+ typedef map<ulong, ulong> t_rlist;//we are going to use high as the key, and low as the value
+Index: nget/lite.h
+===================================================================
+--- nget.orig/lite.h	2008-02-02 23:13:24.000000000 +0100
++++ nget/lite.h	2008-02-02 23:13:34.000000000 +0100
+@@ -24,6 +24,8 @@
+ #endif
+ 
+ #include <stdlib.h>
++#include <string.h>
++
+ char * newstrcpy(char *&dest, const char *src);
+ inline void safefree(char *&p){
+     if (p){free(p);p=NULL;}
