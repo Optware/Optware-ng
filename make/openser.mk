@@ -96,7 +96,8 @@ OPENSER_MAKEFLAGS=$(strip \
         $(if $(filter ts101, $(OPTWARE_TARGET)), ARCH=ppc OS=linux, \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), ARCH=arm OS=linux OSREL=2.6.16, \
         $(if $(filter mipsel, $(TARGET_ARCH)), ARCH=mips OS=linux OSREL=2.4.20, \
-        ARCH=arm OS=linux OSREL=2.4.22)))))
+        $(if $(filter i386 i686, $(TARGET_ARCH)), ARCH=i386 OS=linux, \
+        ARCH=arm OS=linux OSREL=2.4.22))))))
 
 #
 # Excluded modules:
