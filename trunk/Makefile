@@ -250,7 +250,8 @@ COMMON_CROSS_PACKAGES = \
 	libid3tag libidn libijs libjpeg libksba \
 	liblcms libmad libmemcache libmpcdec libmpeg2 libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
-	libol libogg libosip2 libopensync libpar2 libpcap libpng libpth librsync \
+	libol libogg libosip2 libopensync libotr \
+	libpar2 libpcap libpng libpth librsync \
 	libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
