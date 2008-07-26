@@ -11,8 +11,8 @@ BROKEN_PACKAGES = \
 	amule \
 	asterisk14-chan-capi \
 	busybox \
+	centerim \
 	gambit-c gnu-smalltalk \
-	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	iptraf \
 	ldconfig libcapi20 libextractor \
 	monotone \
