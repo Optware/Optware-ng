@@ -37,7 +37,7 @@ NGET_CONFLICTS=
 #
 # NGET_IPK_VERSION should be incremented when the ipk changes.
 #
-NGET_IPK_VERSION=3
+NGET_IPK_VERSION=4
 
 #
 # NGET_CONFFILES should be a list of user-editable files
@@ -75,7 +75,8 @@ NGET_IPK=$(BUILD_DIR)/nget_$(NGET_VERSION)-$(NGET_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NGET_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NGET_SITE)/$(NGET_SOURCE)
+	$(WGET) -P $(@D) $(NGET_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -99,13 +100,18 @@ nget-source: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES)
+$(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nget.mk
 	$(MAKE) pcre-stage popt-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(NGET_DIR) $(NGET_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NGET_DIR) $(@D)
 	$(NGET_UNZIP) $(DL_DIR)/$(NGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(NGET_PATCHES) | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1
-	mv $(BUILD_DIR)/$(NGET_DIR) $(NGET_BUILD_DIR)
-	(cd $(NGET_BUILD_DIR)/uulib; \
+	case `$(TARGET_CC) -dumpversion` in \
+	  4.2.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch \
+	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
+	  4.3.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch \
+	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
+	esac
+	mv $(BUILD_DIR)/$(NGET_DIR) $(@D)
+	(cd $(@D)/uulib; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NGET_LDFLAGS)" \
@@ -116,7 +122,7 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	(cd $(NGET_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NGET_LDFLAGS)" \
@@ -131,7 +137,7 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES)
 		--with-zlib \
 		--disable-nls \
 	)
-	touch $(NGET_BUILD_DIR)/.configured
+	touch $@
 
 nget-unpack: $(NGET_BUILD_DIR)/.configured
 
@@ -139,9 +145,9 @@ nget-unpack: $(NGET_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NGET_BUILD_DIR)/.built: $(NGET_BUILD_DIR)/.configured
-	rm -f $(NGET_BUILD_DIR)/.built
-	$(MAKE) -C $(NGET_BUILD_DIR)
-	touch $(NGET_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,19 +157,19 @@ nget: $(NGET_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(NGET_BUILD_DIR)/.staged: $(NGET_BUILD_DIR)/.built
-	rm -f $(NGET_BUILD_DIR)/.staged
-	$(MAKE) -C $(NGET_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NGET_BUILD_DIR)/.staged
-
-nget-stage: $(NGET_BUILD_DIR)/.staged
+#$(NGET_BUILD_DIR)/.staged: $(NGET_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#nget-stage: $(NGET_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/nget
 #
 $(NGET_IPK_DIR)/CONTROL/control:
-	@install -d $(NGET_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: nget" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -218,3 +224,9 @@ nget-clean:
 #
 nget-dirclean:
 	rm -rf $(BUILD_DIR)/$(NGET_DIR) $(NGET_BUILD_DIR) $(NGET_IPK_DIR) $(NGET_IPK)
+
+#
+# Some sanity check for the package.
+#
+nget-check: $(NGET_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NGET_IPK)

@@ -11,6 +11,6 @@ BROKEN_PACKAGES = \
 	atftp bitchx bzflag \
 	gconv-modules ipac-ng \
 	iptables iptraf ivorbis-tools ldconfig madplay monotone mt-daapd \
-	netatalk nfs-utils nget phoneme-advanced player puppy \
+	netatalk nfs-utils phoneme-advanced player puppy \
 	qemu squeak \
 	atk gtk vte xchat
