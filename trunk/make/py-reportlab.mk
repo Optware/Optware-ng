@@ -100,7 +100,10 @@ $(DL_DIR)/$(PY-REPORTLAB-ACCEL_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-reportlab-source: $(DL_DIR)/$(PY-REPORTLAB_SOURCE) $(PY-REPORTLAB_PATCHES)
+py-reportlab-source: \
+$(DL_DIR)/$(PY-REPORTLAB_SOURCE) \
+$(DL_DIR)/$(PY-REPORTLAB-ACCEL_SOURCE) \
+$(PY-REPORTLAB_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -117,7 +120,10 @@ py-reportlab-source: $(DL_DIR)/$(PY-REPORTLAB_SOURCE) $(PY-REPORTLAB_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-REPORTLAB_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-REPORTLAB_SOURCE) $(PY-REPORTLAB_PATCHES)
+$(PY-REPORTLAB_BUILD_DIR)/.configured: \
+$(DL_DIR)/$(PY-REPORTLAB_SOURCE) \
+$(DL_DIR)/$(PY-REPORTLAB-ACCEL_SOURCE) \
+$(PY-REPORTLAB_PATCHES)
 	$(MAKE) py-setuptools-stage
 	rm -rf $(PY-REPORTLAB_BUILD_DIR)
 	mkdir -p $(PY-REPORTLAB_BUILD_DIR)
