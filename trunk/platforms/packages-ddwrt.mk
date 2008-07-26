@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	cdrtools \
+	centerim \
 	dansguardian \
 	dialog \
 	gambit-c \
