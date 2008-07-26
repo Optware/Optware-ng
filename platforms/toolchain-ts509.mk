@@ -7,9 +7,12 @@ LIBNSL_VERSION=2.6.1
 
 GNU_TARGET_NAME = i686-unknown-linux-gnu
 
+TARGET_CC_PROBE := $(shell test -x "/opt/bin/ipkg" \
+&& test -x "/opt/bin/$(GNU_TARGET_NAME)-gcc" \
+&& echo yes)
 #STAGING_CPPFLAGS+= -DPATH_MAX=4096 -DLINE_MAX=2048 -DMB_LEN_MAX=16
 
-ifeq (i686_on_ts509, $(HOST_MACHINE))
+ifeq (yes, $(TARGET_CC_PROBE))
 
 HOSTCC = $(TARGET_CC)
 GNU_HOST_NAME = $(GNU_TARGET_NAME)
