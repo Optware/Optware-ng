@@ -58,7 +58,8 @@ SER_LDFLAGS=
 SER_MAKEFLAGS=$(strip \
         $(if $(filter powerpc, $(TARGET_ARCH)), ARCH=ppc, \
         $(if $(filter mipsel mips, $(TARGET_ARCH)), ARCH=mips, \
-        ARCH=arm))) OS=linux
+        $(if $(filter i386 i686, $(TARGET_ARCH)), ARCH=i386, \
+        ARCH=arm)))) OS=linux
 
 #
 # SER_BUILD_DIR is the directory in which the build is done.
