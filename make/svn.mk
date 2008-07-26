@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.5.0
+SVN_VERSION=1.5.1
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -58,7 +58,7 @@ SVN-PL_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=4
+SVN_IPK_VERSION=1
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -157,11 +157,11 @@ endif
 ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
-	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(@D)
 	$(SVN_UNZIP) $(DL_DIR)/$(SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p1
-	mv $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
-	(cd $(SVN_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(SVN_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SVN_LDFLAGS)" \
@@ -186,10 +186,10 @@ endif
 	    -e '/^SWIG_PY/s|= *gcc|= $(TARGET_CC)|' \
 	    -e '/^SWIG_PY_INCLUDES/s|/host||' \
 	    -e '/^SWIG_PY_LIBS/s|$$| $(STAGING_LDFLAGS) $(SVN_LDFLAGS)|' \
-	    $(SVN_BUILD_DIR)/Makefile
-	$(PATCH_LIBTOOL) $(SVN_BUILD_DIR)/libtool
+	    $(@D)/Makefile
+	$(PATCH_LIBTOOL) $(@D)/libtool
 #	sed -i -e '/^runpath_var=/s/LD_RUN_PATH//' $(SVN_BUILD_DIR)/libtool
-	sed -i -e '/export $$runpath_var/'"s|'.*'|'/opt/lib'|" $(SVN_BUILD_DIR)/libtool
+	sed -i -e '/export $$runpath_var/'"s|'.*'|'/opt/lib'|" $(@D)/libtool
 	touch $@
 
 svn-unpack: $(SVN_BUILD_DIR)/.configured
@@ -199,7 +199,7 @@ svn-unpack: $(SVN_BUILD_DIR)/.configured
 #
 $(SVN_BUILD_DIR)/.built: $(SVN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SVN_BUILD_DIR) NEON_LIBS=-lneon
+	$(MAKE) -C $(@D) NEON_LIBS=-lneon
 	touch $@
 
 $(SVN_BUILD_DIR)/.py-built: $(SVN_BUILD_DIR)/.built
