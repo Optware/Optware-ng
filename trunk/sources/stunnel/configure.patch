@@ -1,6 +1,6 @@
---- stunnel/configure.orig	2005-01-07 16:58:55.000000000 +0100
-+++ stunnel/configure	2005-01-07 17:02:13.000000000 +0100
-@@ -20818,16 +20818,8 @@
+--- stunnel/configure.orig	2008-05-22 15:08:14.000000000 +0930
++++ stunnel/configure	2008-07-26 23:38:49.000000000 +0930
+@@ -20906,16 +20906,8 @@
  if test "${ac_cv_file___dev_ptmx_+set}" = set; then
    echo $ECHO_N "(cached) $ECHO_C" >&6
  else
@@ -14,10 +14,10 @@
    ac_cv_file___dev_ptmx_=no
  fi
 -fi
- echo "$as_me:$LINENO: result: $ac_cv_file___dev_ptmx_" >&5
- echo "${ECHO_T}$ac_cv_file___dev_ptmx_" >&6
+ { echo "$as_me:$LINENO: result: $ac_cv_file___dev_ptmx_" >&5
+ echo "${ECHO_T}$ac_cv_file___dev_ptmx_" >&6; }
  if test $ac_cv_file___dev_ptmx_ = yes; then
-@@ -20842,16 +20834,8 @@
+@@ -20930,16 +20922,8 @@
  if test "${ac_cv_file___dev_ptc_+set}" = set; then
    echo $ECHO_N "(cached) $ECHO_C" >&6
  else
@@ -31,10 +31,10 @@
    ac_cv_file___dev_ptc_=no
  fi
 -fi
- echo "$as_me:$LINENO: result: $ac_cv_file___dev_ptc_" >&5
- echo "${ECHO_T}$ac_cv_file___dev_ptc_" >&6
+ { echo "$as_me:$LINENO: result: $ac_cv_file___dev_ptc_" >&5
+ echo "${ECHO_T}$ac_cv_file___dev_ptc_" >&6; }
  if test $ac_cv_file___dev_ptc_ = yes; then
-@@ -21096,15 +21080,7 @@
+@@ -20980,15 +20964,7 @@
  if test "${ac_cv_file___dev_urandom_+set}" = set; then
    echo $ECHO_N "(cached) $ECHO_C" >&6
  else
@@ -48,5 +48,5 @@
 -  ac_cv_file___dev_urandom_=no
 -fi
  fi
- echo "$as_me:$LINENO: result: $ac_cv_file___dev_urandom_" >&5
- echo "${ECHO_T}$ac_cv_file___dev_urandom_" >&6
+ { echo "$as_me:$LINENO: result: $ac_cv_file___dev_urandom_" >&5
+ echo "${ECHO_T}$ac_cv_file___dev_urandom_" >&6; }

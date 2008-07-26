@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 STUNNEL_SITE=http://www.stunnel.org/download/stunnel/src
-STUNNEL_VERSION=4.20
+STUNNEL_VERSION=4.25
 STUNNEL_SOURCE=stunnel-$(STUNNEL_VERSION).tar.gz
 STUNNEL_DIR=stunnel-$(STUNNEL_VERSION)
 STUNNEL_UNZIP=zcat
@@ -48,8 +48,7 @@ STUNNEL_CONFFILES=/opt/etc/stunnel/stunnel.conf \
 # which they should be applied to the source code.
 #
 STUNNEL_PATCHES= \
-	$(STUNNEL_SOURCE_DIR)/configure.patch \
-	$(STUNNEL_SOURCE_DIR)/client-ca-list.patch
+	$(STUNNEL_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -107,7 +106,10 @@ $(STUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
 	$(MAKE) openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(STUNNEL_DIR) $(STUNNEL_BUILD_DIR)
 	$(STUNNEL_UNZIP) $(DL_DIR)/$(STUNNEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(STUNNEL_PATCHES) | patch -d $(BUILD_DIR)/$(STUNNEL_DIR) -p1
+	if test -n "$(STUNNEL_PATCHES)" ; \
+		then cat $(STUNNEL_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(STUNNEL_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(STUNNEL_DIR) $(STUNNEL_BUILD_DIR)
 	(cd $(STUNNEL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
