@@ -58,7 +58,8 @@ LTRACE_LDFLAGS=
 LTRACE_ARCH=$(strip \
 	$(if $(filter armeb arm, $(TARGET_ARCH)), arm, \
 	$(if $(filter powerpc, $(TARGET_ARCH)), ppc, \
-	$(TARGET_ARCH))))
+	$(if $(filter i686, $(TARGET_ARCH)), i386, \
+	$(TARGET_ARCH)))))
 
 #
 # LTRACE_BUILD_DIR is the directory in which the build is done.
@@ -81,8 +82,8 @@ LTRACE_IPK=$(BUILD_DIR)/ltrace_$(LTRACE_VERSION)-$(LTRACE_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LTRACE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LTRACE_SITE)/$(LTRACE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LTRACE_SOURCE)
+	$(WGET) -P $(@D) $(LTRACE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,16 +112,16 @@ ltrace-source: $(DL_DIR)/$(LTRACE_SOURCE) $(LTRACE_PATCHES)
 #
 $(LTRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(LTRACE_SOURCE) $(LTRACE_PATCHES) make/ltrace.mk
 	$(MAKE) libelf-stage
-	rm -rf $(BUILD_DIR)/$(LTRACE_DIR) $(LTRACE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LTRACE_DIR) $(@D)
 	$(LTRACE_UNZIP) $(DL_DIR)/$(LTRACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LTRACE_PATCHES)" ; \
 		then cat $(LTRACE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LTRACE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LTRACE_DIR)" != "$(LTRACE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LTRACE_DIR) $(LTRACE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LTRACE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LTRACE_DIR) $(@D) ; \
 	fi
-	(cd $(LTRACE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LTRACE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LTRACE_LDFLAGS)" \
@@ -133,8 +134,8 @@ $(LTRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(LTRACE_SOURCE) $(LTRACE_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e 's/-o root -g root //' $(LTRACE_BUILD_DIR)/Makefile
-#	$(PATCH_LIBTOOL) $(LTRACE_BUILD_DIR)/libtool
+	sed -i -e 's/-o root -g root //' $(@D)/Makefile
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 ltrace-unpack: $(LTRACE_BUILD_DIR)/.configured
@@ -144,7 +145,7 @@ ltrace-unpack: $(LTRACE_BUILD_DIR)/.configured
 #
 $(LTRACE_BUILD_DIR)/.built: $(LTRACE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LTRACE_BUILD_DIR) ARCH=$(LTRACE_ARCH) OS=linux-gnu
+	$(MAKE) -C $(@D) ARCH=$(LTRACE_ARCH) OS=linux-gnu
 	touch $@
 
 #
@@ -157,7 +158,7 @@ ltrace: $(LTRACE_BUILD_DIR)/.built
 #
 $(LTRACE_BUILD_DIR)/.staged: $(LTRACE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LTRACE_BUILD_DIR) OS=linux-gnu DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) OS=linux-gnu DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 ltrace-stage: $(LTRACE_BUILD_DIR)/.staged
