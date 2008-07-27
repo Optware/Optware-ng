@@ -58,7 +58,7 @@ MODULE_INIT_TOOLS_CPPFLAGS += -DCONFIG_NO_BACKWARDS_COMPAT
 endif
 MODULE_INIT_TOOLS_LDFLAGS=
 
-ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel syno-x07, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel syno-x07 syno-e500, $(OPTWARE_TARGET)))
 MODULE_INIT_TOOLS_CONFIGURE_OPTIONS=--with-moddir=/opt/lib/modules
 endif
 
