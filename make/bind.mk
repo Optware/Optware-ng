@@ -4,7 +4,7 @@
 #
 #############################################################
 
-BIND_VERSION=9.4.2-P1
+BIND_VERSION=9.5.0-P1
 BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_VERSION)
 BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_VERSION)
@@ -34,13 +34,13 @@ bind-source: $(DL_DIR)/$(BIND_SOURCE) $(BIND_PATCHES)
 
 $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE) make/bind.mk
 	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(BIND_DIR) $(BIND_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BIND_DIR) $(@D)
 	$(BIND_UNZIP) $(DL_DIR)/$(BIND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BIND_PATCHES)"; then \
 		cat $(BIND_PATCHES) | patch -d $(BUILD_DIR)/$(BIND_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(BIND_DIR) $(BIND_BUILD_DIR)
-	{ cd $(BIND_BUILD_DIR) && \
+	mv $(BUILD_DIR)/$(BIND_DIR) $(@D)
+	{ cd $(@D) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -62,7 +62,7 @@ bind-unpack: $(BIND_BUILD_DIR)/.configured
 
 $(BIND_BUILD_DIR)/.built: $(BIND_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(BIND_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) BUILD_CC=$(HOSTCC)
+	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS) BUILD_CC=$(HOSTCC)
 	touch $@
 
 bind: $(BIND_BUILD_DIR)/.built
@@ -95,7 +95,7 @@ $(BIND_IPK): $(BIND_BUILD_DIR)/.built
 		$(BIND_IPK_DIR)/opt/sbin/*
 	# cp -p $(BIND_IPK_DIR)/opt/sbin/named $(BIND_IPK_DIR)/opt/sbin/named.exe
 	rm -rf $(BIND_IPK_DIR)/opt/{man,include}
-	rm -f $(BIND_IPK_DIR)/opt/lib/*.{la,a}
+	rm -f $(BIND_IPK_DIR)/opt/lib/*.la $(BIND_IPK_DIR)/opt/lib/*.a
 	install -d $(BIND_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(BIND_SOURCE_DIR)/S09named $(BIND_IPK_DIR)/opt/etc/init.d/S09named
 	$(MAKE) $(BIND_IPK_DIR)/CONTROL/control
