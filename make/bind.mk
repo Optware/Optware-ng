@@ -19,6 +19,10 @@ BIND_IPK_VERSION=1
 
 # BIND_PATCHES=$(BIND_SOURCE_DIR)/bind_configure_patch
 
+ifeq ($(OPTWARE_TARGET), $(filter vt4, $(OPTWARE_TARGET)))
+BIND_LDFLAGS=-ldl
+endif
+
 BIND_BUILD_DIR=$(BUILD_DIR)/bind
 BIND_SOURCE_DIR=$(SOURCE_DIR)/bind
 BIND_IPK_DIR:=$(BUILD_DIR)/bind-$(BIND_VERSION)-ipk
@@ -43,7 +47,7 @@ $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE) make/bind.mk
 	{ cd $(@D) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(BIND_LDFLAGS)" \
 		BUILD_CC=$(HOSTCC) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
