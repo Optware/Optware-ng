@@ -1,9 +1,0 @@
-config SYNOBIOS_407
-	tristate "Syno BIOS module for DS407"
-	---help---
-	  Choosing this option will generate a kernel module
-
-config SYNOBIOS_107_MV
-	tristate "Syno BIOS module for DS107+"
-	---help---
-	  Choosing this option will generate a kernel module
