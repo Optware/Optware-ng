@@ -6,11 +6,10 @@
 
 ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
 
-SYNO-X07-GPL-SOURCE_SITE=http://gpl.nas-central.org/SYNOLOGY/x07-series
-SYNO-X07-GPL-SOURCE=synogpl-514_for_x07_only.tbz
+include sources/kernel-modules/syno-gpl-download.mk
 
 KERNEL_VERSION=2.6.15
-KERNEL-MODULES_DIR=synogpl-514
+KERNEL-MODULES_DIR=synogpl-$(SYNO-FW_VERSION)
 KERNEL-MODULES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 
 #KERNEL-IMAGE_DESCRIPTION=Synology x07 (Marvell mv5281) kernel
@@ -27,7 +26,7 @@ KERNEL-MODULES=`find $(KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-KERNEL-MODULES_IPK_VERSION=1
+KERNEL-MODULES_IPK_VERSION=2
 
 #
 # KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -58,27 +57,22 @@ KERNEL-IMAGE_IPK_DIR=$(BUILD_DIR)/kernel-image-$(KERNEL_VERSION)-ipk
 KERNEL-IMAG_IPK=$(BUILD_DIR)/kernel-image_$(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
-# This is the dependency on the source code.  If the source is missing,
-# then it will be fetched from the site using wget.
-#
-$(DL_DIR)/$(SYNO-X07-GPL-SOURCE):
-	$(WGET) -P $(@D) $(SYNO-X07-GPL-SOURCE_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
-
-#
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-kernel-modules-source: $(DL_DIR)/$(SYNO-X07-GPL-SOURCE) $(KERNEL-MODULES_PATCHES)
+kernel-modules-source: $(DL_DIR)/$(SYNO-GPL_SOURCE) $(KERNEL-MODULES_PATCHES)
+
+KERNEL-MODULES-FLAGS = ARCH=arm ROOTDIR=$(KERNEL-MODULES_BUILD_DIR) CROSS_COMPILE=$(TARGET_CROSS)
+KERNEL-MODULES_CONFIG_METHOD=oldconfig
 
 $(KERNEL-MODULES_BUILD_DIR)/.configured: \
-$(DL_DIR)/$(SYNO-X07-GPL-SOURCE) $(KERNEL-MODULES_PATCHES) \
+$(DL_DIR)/$(SYNO-GPL_SOURCE) $(KERNEL-MODULES_PATCHES) \
 $(KERNEL-MODULES_SOURCE_DIR)/defconfig make/syno-x07-kernel-modules.mk
 	rm -rf $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(@D)
 	mkdir -p $(BUILD_DIR)/$(KERNEL-MODULES_DIR)
-	tar -C $(BUILD_DIR)/$(KERNEL-MODULES_DIR) -xvjf $(DL_DIR)/$(SYNO-X07-GPL-SOURCE) source/linux-2.6.15
-	mv $(BUILD_DIR)/$(KERNEL-MODULES_DIR)/source/linux-2.6.15 $(@D)
+	tar -C $(BUILD_DIR)/$(KERNEL-MODULES_DIR) -xvjf $(DL_DIR)/$(SYNO-GPL_SOURCE) source/linux-$(KERNEL_VERSION)
+	mv $(BUILD_DIR)/$(KERNEL-MODULES_DIR)/source/linux-$(KERNEL_VERSION) $(@D)
 	rm -rf $(BUILD_DIR)/$(KERNEL-MODULES_DIR)
 	if test -n "$(KERNEL-MODULES_PATCHES)" ; \
 		then cat $(KERNEL-MODULES_PATCHES) | patch -d $(@D) -p1 ; \
@@ -86,25 +80,20 @@ $(KERNEL-MODULES_SOURCE_DIR)/defconfig make/syno-x07-kernel-modules.mk
 #	if test "$(BUILD_DIR)/$(KERNEL-MODULES_DIR)" != "$(KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(KERNEL-MODULES_BUILD_DIR) ; \
 	fi
+#	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) clean
+	cp $(KERNEL-MODULES_SOURCE_DIR)/defconfig $(@D)/.config
+	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) $(KERNEL-MODULES_CONFIG_METHOD)
 	touch $@
 
 kernel-modules-unpack: $(KERNEL-MODULES_BUILD_DIR)/.configured
-
-KERNEL-MODULES-FLAGS = ARCH=arm ROOTDIR=$(KERNEL-MODULES_BUILD_DIR) CROSS_COMPILE=$(TARGET_CROSS)
 
 #
 # This builds the actual binary.
 #
 $(KERNEL-MODULES_BUILD_DIR)/.built: $(KERNEL-MODULES_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) clean
-	cp $(KERNEL-MODULES_SOURCE_DIR)/defconfig $(@D)/.config
-	mkdir -p $(@D)/drivers/synobios
-	cp $(KERNEL-MODULES_SOURCE_DIR)/drivers-synobios-Kconfig $(@D)/drivers/synobios/Kconfig
-	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) oldconfig
-#	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) menuconfig
 #	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH
-	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) modules
+	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) zImage modules
 	touch $@
 
 kernel-modules: $(KERNEL-MODULES_BUILD_DIR)/.built
@@ -132,7 +121,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	  echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	  echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
-	  echo "Source: $(SYNO-X07-GPL-SOURCE_SITE)/$(SYNO-X07-GPL-SOURCE)"; \
+	  echo "Source: $(SYNO-GPL_SOURCE_SITE)/$(SYNO-GPL_SOURCE)"; \
 	  echo "Description: $(KERNEL-MODULES_DESCRIPTION)"; \
 	  echo -n "Depends: kernel-image"; \
 	) >> $@
@@ -149,11 +138,11 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	    echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	    echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
-	    echo "Source: $(SYNO-X07-GPL-SOURCE_SITE)/$(SYNO-X07-GPL-SOURCE)"; \
-	    echo "Description: $(KERNEL-MODULE_DESCRIPTION) $$m"; \
+	    echo "Source: $(SYNO-GPL_SOURCE_SITE)/$(SYNO-GPL_SOURCE)"; \
+	    echo "Description: $(KERNEL-MODULE_DESCRIPTION): $$m"; \
 	    echo -n "Depends: "; \
             DEPS="$(KERNEL-MODULES_DEPENDS)"; \
-	    for i in `grep "$$m.ko:" $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules/$(KERNEL_VERSION)/modules.dep|cut -d ":" -f 2`; do \
+	    for i in `grep "/$$m.ko:" $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules/$(KERNEL_VERSION)/modules.dep|cut -d ":" -f 2`; do \
 	      if test -n "$$DEPS"; then DEPS="$$DEPS,"; fi; \
 	      j=`basename $$i .ko | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
 	      DEPS="$$DEPS kernel-module-$$j"; \
@@ -175,7 +164,7 @@ $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 	  echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	  echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	  echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
-	  echo "Source: $(SYNO-X07-GPL-SOURCE_SITE)/$(SYNO-X07-GPL-SOURCE)"; \
+	  echo "Source: $(SYNO-GPL_SOURCE_SITE)/$(SYNO-GPL_SOURCE)"; \
 	  echo "Description: $(KERNEL-IMAGE_DESCRIPTION)"; \
 	) >> $@
 
