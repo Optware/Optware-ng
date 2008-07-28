@@ -5,7 +5,7 @@
 ###########################################################
 
 ACK_SITE=http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE
-ACK_VERSION=1.84
+ACK_VERSION=1.86
 ACK_SOURCE=ack-$(ACK_VERSION).tar.gz
 ACK_DIR=ack-$(ACK_VERSION)
 ACK_UNZIP=zcat
@@ -102,3 +102,6 @@ ack-clean:
 
 ack-dirclean:
 	rm -rf $(BUILD_DIR)/$(ACK_DIR) $(ACK_BUILD_DIR) $(ACK_IPK_DIR) $(ACK_IPK)
+
+ack-check: $(ACK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ACK_IPK)
