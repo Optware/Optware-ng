@@ -49,6 +49,7 @@ PERL_PACKAGES = \
 	perl-algorithm-diff \
 	perl-appconfig perl-assp \
 	perl-archive-tar perl-archive-zip \
+	perl-b-keywords \
 	perl-berkeleydb \
 	perl-bit-vector \
 	perl-bsd-resource \
