@@ -13,11 +13,11 @@ PERLCONSOLE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERLCONSOLE_DESCRIPTION=Perl Console is a small program that implements a Read-eval-print loop: it lets you evaluate Perl code interactively.
 PERLCONSOLE_SECTION=util
 PERLCONSOLE_PRIORITY=optional
-PERLCONSOLE_DEPENDS=perl-module-refresh, perl-lexical-persistence
+PERLCONSOLE_DEPENDS=perl-module-refresh, perl-lexical-persistence, perl-b-keywords
 PERLCONSOLE_SUGGESTS=perl-term-readline-gnu
 PERLCONSOLE_CONFLICTS=
 
-PERLCONSOLE_IPK_VERSION=1
+PERLCONSOLE_IPK_VERSION=2
 
 PERLCONSOLE_CONFFILES=
 
