@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SNOWNEWS_SITE=http://kiza.kcore.de/software/snownews/download
-SNOWNEWS_VERSION=1.5.9
+SNOWNEWS_VERSION=1.5.10
 SNOWNEWS_SOURCE=snownews-$(SNOWNEWS_VERSION).tar.gz
 SNOWNEWS_DIR=snownews-$(SNOWNEWS_VERSION)
 SNOWNEWS_UNZIP=zcat
@@ -91,7 +91,8 @@ SNOWNEWS_IPK=$(BUILD_DIR)/snownews_$(SNOWNEWS_VERSION)-$(SNOWNEWS_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SNOWNEWS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SNOWNEWS_SITE)/$(SNOWNEWS_SOURCE)
+	$(WGET) -P $(@D) $(SNOWNEWS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
