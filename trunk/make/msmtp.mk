@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSMTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/msmtp
-MSMTP_VERSION=1.4.15
+MSMTP_VERSION=1.4.16
 MSMTP_SOURCE=msmtp-$(MSMTP_VERSION).tar.bz2
 MSMTP_DIR=msmtp-$(MSMTP_VERSION)
 MSMTP_UNZIP=bzcat
@@ -85,8 +85,8 @@ MSMTP_IPK=$(BUILD_DIR)/msmtp_$(MSMTP_VERSION)-$(MSMTP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MSMTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MSMTP_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(MSMTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -119,16 +119,16 @@ $(MSMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(MSMTP_SOURCE) $(MSMTP_PATCHES) make/
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 	$(MAKE) libidn-stage
 endif
-	rm -rf $(BUILD_DIR)/$(MSMTP_DIR) $(MSMTP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MSMTP_DIR) $(@D)
 	$(MSMTP_UNZIP) $(DL_DIR)/$(MSMTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MSMTP_PATCHES)" ; \
 		then cat $(MSMTP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MSMTP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MSMTP_DIR)" != "$(MSMTP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MSMTP_DIR) $(MSMTP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MSMTP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MSMTP_DIR) $(@D) ; \
 	fi
-	(cd $(MSMTP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MSMTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MSMTP_LDFLAGS)" \
@@ -151,7 +151,7 @@ msmtp-unpack: $(MSMTP_BUILD_DIR)/.configured
 #
 $(MSMTP_BUILD_DIR)/.built: $(MSMTP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MSMTP_BUILD_DIR) LIBS=""
+	$(MAKE) -C $(@D) LIBS=""
 	touch $@
 
 #
@@ -164,7 +164,7 @@ msmtp: $(MSMTP_BUILD_DIR)/.built
 #
 $(MSMTP_BUILD_DIR)/.staged: $(MSMTP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MSMTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 msmtp-stage: $(MSMTP_BUILD_DIR)/.staged
