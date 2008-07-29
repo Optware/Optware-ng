@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLALCHEMY_VERSION=0.4.6
+PY-SQLALCHEMY_VERSION=0.4.7
 PY-SQLALCHEMY_IPK_VERSION=1
 
 PY-SQLALCHEMY_SVN_REV=
@@ -94,8 +94,8 @@ PY25-SQLALCHEMY_IPK=$(BUILD_DIR)/py25-sqlalchemy_$(PY-SQLALCHEMY_VERSION)-$(PY-S
 #
 ifeq ($(PY-SQLALCHEMY_SVN),)
 $(DL_DIR)/$(PY-SQLALCHEMY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SQLALCHEMY_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-SQLALCHEMY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
