@@ -8,4 +8,5 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for fsg3.
 BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
+	perl-encode-detect \
 
