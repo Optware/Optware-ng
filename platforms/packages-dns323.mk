@@ -13,7 +13,6 @@ BROKEN_PACKAGES = \
 	mtr mysql-connector-odbc \
 	newsbeuter nfs-server nfs-utils \
 	ntop openser pango pcapsipdump \
-	perl-encode-detect \
 	py-mysql \
 	qemu quagga \
 	rssh sablevm sm \
