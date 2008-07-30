@@ -26,7 +26,7 @@ BROKEN_PACKAGES = \
 	launchtool ldconfig lftp liba52 libbt libcapi20 libcdio \
 	libdvb libextractor libmrss libnxml libopensync \
 	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff libtorrent \
-	loudmouth \
+	llink loudmouth \
 	mediatomb mimms moc motion mod-fastcgi moe \
 	monotone mp3blaster mpd mpdscribble mpop msmtp msynctool \
 	mod-python mod-wsgi \
