@@ -1,0 +1,9 @@
+--- Detector.xs 2006-10-27 16:48:59.000000000 -0400
++++ Detector.xs.old     2008-04-29 15:59:43.000000000 -0400
+@@ -38,6 +38,7 @@
+ #define PERL_NO_GET_CONTEXT     /* we want efficiency */
+ #include "EXTERN.h"
+ #include "perl.h"
++#undef HASATTRIBUTE_UNUSED
+ #include "XSUB.h"
+ }
