@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBDVDREAD_SITE=http://www.dtek.chalmers.se/groups/dvd/dist
-LIBDVDREAD_VERSION=0.9.4
+LIBDVDREAD_VERSION=0.9.7
 LIBDVDREAD_SOURCE=libdvdread-$(LIBDVDREAD_VERSION).tar.gz
 LIBDVDREAD_DIR=libdvdread-$(LIBDVDREAD_VERSION)
 LIBDVDREAD_UNZIP=zcat
@@ -35,7 +35,7 @@ LIBDVDREAD_CONFLICTS=
 #
 # LIBDVDREAD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDVDREAD_IPK_VERSION=2
+LIBDVDREAD_IPK_VERSION=1
 
 #
 # LIBDVDREAD_CONFFILES should be a list of user-editable files
@@ -73,7 +73,8 @@ LIBDVDREAD_IPK=$(BUILD_DIR)/libdvdread_$(LIBDVDREAD_VERSION)-$(LIBDVDREAD_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBDVDREAD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBDVDREAD_SITE)/$(LIBDVDREAD_SOURCE)
+	$(WGET) -P $(@D) $(LIBDVDREAD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -97,13 +98,13 @@ $(DL_DIR)/$(LIBDVDREAD_SOURCE):
 # If the compilation of the package requires other packages to be staged
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBDVDREAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVDREAD_SOURCE) $(LIBDVDREAD_PATCHES)
+$(LIBDVDREAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVDREAD_SOURCE) $(LIBDVDREAD_PATCHES) make/libdvdread.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBDVDREAD_DIR) $(LIBDVDREAD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBDVDREAD_DIR) $(@D)
 	$(LIBDVDREAD_UNZIP) $(DL_DIR)/$(LIBDVDREAD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBDVDREAD_PATCHES) | patch -d $(BUILD_DIR)/$(LIBDVDREAD_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBDVDREAD_DIR) $(LIBDVDREAD_BUILD_DIR)
-	(cd $(LIBDVDREAD_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBDVDREAD_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBDVDREAD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBDVDREAD_LDFLAGS)" \
@@ -114,7 +115,7 @@ $(LIBDVDREAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVDREAD_SOURCE) $(LIBDVDREAD
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(LIBDVDREAD_BUILD_DIR)/.configured
+	touch $@
 
 libdvdread-unpack: $(LIBDVDREAD_BUILD_DIR)/.configured
 
@@ -122,9 +123,9 @@ libdvdread-unpack: $(LIBDVDREAD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBDVDREAD_BUILD_DIR)/.built: $(LIBDVDREAD_BUILD_DIR)/.configured
-	rm -f $(LIBDVDREAD_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBDVDREAD_BUILD_DIR)
-	touch $(LIBDVDREAD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -135,9 +136,9 @@ libdvdread: $(LIBDVDREAD_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBDVDREAD_BUILD_DIR)/.staged: $(LIBDVDREAD_BUILD_DIR)/.built
-	rm -f $(LIBDVDREAD_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBDVDREAD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LIBDVDREAD_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 libdvdread-stage: $(LIBDVDREAD_BUILD_DIR)/.staged
 
@@ -146,7 +147,7 @@ libdvdread-stage: $(LIBDVDREAD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdvdread
 #
 $(LIBDVDREAD_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBDVDREAD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libdvdread" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
