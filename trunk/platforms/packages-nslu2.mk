@@ -5,5 +5,4 @@ SPECIFIC_PACKAGES = unslung-feeds unslung-devel crosstool-native \
 # Packages that do not work for nslu2.
 # lftp - runtime segfaults
 BROKEN_PACKAGES = \
-	perl-encode-detect \
 

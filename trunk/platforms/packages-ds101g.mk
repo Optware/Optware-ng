@@ -12,4 +12,3 @@ BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
 	ecl \
 	ldconfig \
-	perl-encode-detect \
