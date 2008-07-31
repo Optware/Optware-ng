@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-HTML-PARSER_SITE=http://search.cpan.org/CPAN/authors/id/G/GA/GAAS
-PERL-HTML-PARSER_VERSION=3.55
+PERL-HTML-PARSER_VERSION=3.56
 PERL-HTML-PARSER_SOURCE=HTML-Parser-$(PERL-HTML-PARSER_VERSION).tar.gz
 PERL-HTML-PARSER_DIR=HTML-Parser-$(PERL-HTML-PARSER_VERSION)
 PERL-HTML-PARSER_UNZIP=zcat
@@ -17,7 +17,7 @@ PERL-HTML-PARSER_DEPENDS=perl, perl-html-tagset
 PERL-HTML-PARSER_SUGGESTS=
 PERL-HTML-PARSER_CONFLICTS=
 
-PERL-HTML-PARSER_IPK_VERSION=2
+PERL-HTML-PARSER_IPK_VERSION=1
 
 PERL-HTML-PARSER_CONFFILES=
 
@@ -27,49 +27,50 @@ PERL-HTML-PARSER_IPK_DIR=$(BUILD_DIR)/perl-html-parser-$(PERL-HTML-PARSER_VERSIO
 PERL-HTML-PARSER_IPK=$(BUILD_DIR)/perl-html-parser_$(PERL-HTML-PARSER_VERSION)-$(PERL-HTML-PARSER_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-HTML-PARSER_SITE)/$(PERL-HTML-PARSER_SOURCE)
+	$(WGET) -P $(@D) $(PERL-HTML-PARSER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-html-parser-source: $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) $(PERL-HTML-PARSER_PATCHES)
 
 $(PERL-HTML-PARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) $(PERL-HTML-PARSER_PATCHES)
 	$(MAKE) perl-html-tagset-stage
-	rm -rf $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) $(PERL-HTML-PARSER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) $(@D)
 	$(PERL-HTML-PARSER_UNZIP) $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-HTML-PARSER_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) -p1
-	mv $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) $(PERL-HTML-PARSER_BUILD_DIR)
-	(cd $(PERL-HTML-PARSER_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERL-HTML-PARSER_BUILD_DIR)/.configured
+	touch $@
 
 perl-html-parser-unpack: $(PERL-HTML-PARSER_BUILD_DIR)/.configured
 
 $(PERL-HTML-PARSER_BUILD_DIR)/.built: $(PERL-HTML-PARSER_BUILD_DIR)/.configured
-	rm -f $(PERL-HTML-PARSER_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-HTML-PARSER_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-HTML-PARSER_BUILD_DIR)/.built
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
+	touch $@
 
 perl-html-parser: $(PERL-HTML-PARSER_BUILD_DIR)/.built
 
 $(PERL-HTML-PARSER_BUILD_DIR)/.staged: $(PERL-HTML-PARSER_BUILD_DIR)/.built
-	rm -f $(PERL-HTML-PARSER_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-HTML-PARSER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-HTML-PARSER_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-html-parser-stage: $(PERL-HTML-PARSER_BUILD_DIR)/.staged
 
 $(PERL-HTML-PARSER_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-HTML-PARSER_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-html-parser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -104,3 +105,6 @@ perl-html-parser-clean:
 
 perl-html-parser-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) $(PERL-HTML-PARSER_BUILD_DIR) $(PERL-HTML-PARSER_IPK_DIR) $(PERL-HTML-PARSER_IPK)
+
+perl-html-parser-check: $(PERL-HTML-PARSER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PERL-HTML-PARSER_IPK)
