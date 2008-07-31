@@ -101,7 +101,7 @@ PERL_PACKAGES = \
 	perl-version \
 	perl-wakeonlan \
 	perl-xml-parser \
-	perl-yaml \
+	perl-yaml-syck \
 	ack \
 	amavisd-new \
 	colordiff \
