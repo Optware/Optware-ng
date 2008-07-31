@@ -77,6 +77,7 @@ PERL_PACKAGES = \
 	perl-ima-dbi \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
 	perl-ip-country \
+	perl-json-xs \
 	perl-lexical-persistence \
 	perl-libnet perl-libwww \
 	perl-mail-spf-query perl-mailtools \
