@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-VLC_VERSION=0.8.6h
+VLC_VERSION=0.8.6i
 VLC_IPK_VERSION=1
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
@@ -167,6 +167,7 @@ endif
 	if test "$(BUILD_DIR)/$(VLC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(VLC_DIR) $(@D) ; \
 	fi
+	sed -i -e '/LIBEXT=/s/=.*/=".so"/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VLC_CPPFLAGS)" \
