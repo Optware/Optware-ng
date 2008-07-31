@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-STORABLE_SITE=http://search.cpan.org/CPAN/authors/id/A/AM/AMS
-PERL-STORABLE_VERSION=2.15
+PERL-STORABLE_VERSION=2.18
 PERL-STORABLE_SOURCE=Storable-$(PERL-STORABLE_VERSION).tar.gz
 PERL-STORABLE_DIR=Storable-$(PERL-STORABLE_VERSION)
 PERL-STORABLE_UNZIP=zcat
@@ -17,7 +17,7 @@ PERL-STORABLE_DEPENDS=perl
 PERL-STORABLE_SUGGESTS=
 PERL-STORABLE_CONFLICTS=
 
-PERL-STORABLE_IPK_VERSION=4
+PERL-STORABLE_IPK_VERSION=1
 
 PERL-STORABLE_CONFFILES=
 
@@ -27,16 +27,17 @@ PERL-STORABLE_IPK_DIR=$(BUILD_DIR)/perl-storable-$(PERL-STORABLE_VERSION)-ipk
 PERL-STORABLE_IPK=$(BUILD_DIR)/perl-storable_$(PERL-STORABLE_VERSION)-$(PERL-STORABLE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-STORABLE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-STORABLE_SITE)/$(PERL-STORABLE_SOURCE)
+	$(WGET) -P $(@D) $(PERL-STORABLE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-storable-source: $(DL_DIR)/$(PERL-STORABLE_SOURCE) $(PERL-STORABLE_PATCHES)
 
-$(PERL-STORABLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-STORABLE_SOURCE) $(PERL-STORABLE_PATCHES)
+$(PERL-STORABLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-STORABLE_SOURCE) $(PERL-STORABLE_PATCHES) make/perl-storable.mk
 	make perl-stage
-	rm -rf $(BUILD_DIR)/$(PERL-STORABLE_DIR) $(PERL-STORABLE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL-STORABLE_DIR) $(@D)
 	$(PERL-STORABLE_UNZIP) $(DL_DIR)/$(PERL-STORABLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(PERL-STORABLE_DIR) $(PERL-STORABLE_BUILD_DIR)
-	(cd $(PERL-STORABLE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL-STORABLE_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -44,31 +45,31 @@ $(PERL-STORABLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-STORABLE_SOURCE) $(PERL
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERL-STORABLE_BUILD_DIR)/.configured
+	touch $@
 
 perl-storable-unpack: $(PERL-STORABLE_BUILD_DIR)/.configured
 
 $(PERL-STORABLE_BUILD_DIR)/.built: $(PERL-STORABLE_BUILD_DIR)/.configured
-	rm -f $(PERL-STORABLE_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-STORABLE_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-STORABLE_BUILD_DIR)/.built
+	touch $@
 
 perl-storable: $(PERL-STORABLE_BUILD_DIR)/.built
 
 $(PERL-STORABLE_BUILD_DIR)/.staged: $(PERL-STORABLE_BUILD_DIR)/.built
-	rm -f $(PERL-STORABLE_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-STORABLE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-STORABLE_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-storable-stage: $(PERL-STORABLE_BUILD_DIR)/.staged
 
 $(PERL-STORABLE_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-STORABLE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-storable" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -103,3 +104,6 @@ perl-storable-clean:
 
 perl-storable-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL-STORABLE_DIR) $(PERL-STORABLE_BUILD_DIR) $(PERL-STORABLE_IPK_DIR) $(PERL-STORABLE_IPK)
+
+perl-storable-check: $(PERL-STORABLE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PERL-STORABLE_IPK)
