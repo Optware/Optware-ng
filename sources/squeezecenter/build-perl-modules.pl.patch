@@ -1,0 +1,167 @@
+--- Bin/build-perl-modules.pl.orig	2008-07-28 12:32:04.000000000 -0700
++++ Bin/build-perl-modules.pl	2008-07-31 19:04:57.000000000 -0700
+@@ -10,14 +10,13 @@
+ # A compiler is obviously needed too.
+ 
+ use strict;
+-use lib qw(/usr/local/slimserver/CPAN /usr/share/squeezecenter/CPAN CPAN);
++use lib qw(CPAN);
+ use Config;
+ use Cwd;
+ use File::Basename qw(dirname basename);
+ use File::Copy;
+ use File::Find;
+ use File::Path;
+-use File::Which;
+ 
+ # NOTE: If you change this in a future version of SC, create a new
+ # versioned directory under vendor/src for all files for that version
+@@ -26,17 +25,7 @@
+ 
+ # The list of all the packages needed.
+ my %packages = (
+-	'Compress::Zlib'     => 'Compress-Zlib-1.41.tar.gz',
+-	'DBI'                => 'DBI-1.50.tar.gz',
+-	'DBD::mysql'         => 'DBD-mysql-3.0002.tar.gz',
+-	'Digest::SHA1'       => 'Digest-SHA1-2.11.tar.gz',
+-	'Encode::Detect'     => 'Encode-Detect-1.00.tar.gz',
+ 	'JSON::XS'           => 'JSON-XS-1.5.tar.gz',
+-	'HTML::Parser'       => 'HTML-Parser-3.48.tar.gz',
+-	'Template'           => 'Template-Toolkit-2.15.tar.gz',
+-	'Time::HiRes'        => 'Time-HiRes-1.86.tar.gz',
+-	'XML::Parser::Expat' => 'XML-Parser-2.34.tar.gz',
+-	'YAML::Syck'         => 'YAML-Syck-0.64.tar.gz',
+ );
+ 
+ # Options for specific packages
+@@ -60,13 +49,15 @@
+ 	'DBD-mysql-3.0002' => {
+ 
+ 		'env' => [qw(DBI-1.50/blib/lib: DBI-1.50/blib/arch)],
++		'Makefile.PL' => "--mysql_config=$ENV{STAGING_PREFIX}/bin/mysql_config",
+ 	},
+ );
+ 
+ sub main {
+ 	my ($squeezeCenterPath, $downloadPath, $perlBinary, @libList, $downloadUsing);
++	my $dbipackagedir;
+ 
+-	my $archname = $Config{'archname'};
++	my $archname = $ENV{'PERL_ARCH_NAME'};
+ 	my $version  = $Config{'version'};
+ 
+ 	print "Welcome to the Slim Devices perl module installer.\n\n";
+@@ -139,7 +130,10 @@
+ 
+ 		for my $cmd (qw(curl wget)) {
+ 
+-			if ($downloadUsing = which($cmd)) {
++			system("which $cmd >/dev/null 2>&1");
++
++			unless ($? >> 8) {
++				$downloadUsing = $cmd;
+ 				last;
+ 			}
+ 		}
+@@ -158,20 +152,7 @@
+ 	# Only download the packages that were passsed.
+ 	my @packages = ();
+ 
+-	if (scalar @ARGV) {
+-
+-		for my $package (@ARGV) {
+-
+-			if (grep { /$package/ } keys %packages) {
+-
+-				push @packages, $packages{$package};
+-			}
+-		}
+-
+-	} else {
+-
+-		@packages = sort values %packages;
+-	}
++	@packages = sort values %packages;
+ 
+ 	# DBI needs to be first.
+ 	if ((grep { /DBI/ } @packages) && (grep { /DBD/ } @packages)) {
+@@ -191,6 +172,9 @@
+ 
+ 	for my $package (@packages) {
+ 
++		my ($targetconfigureopts,$pasthruinc, $ldopts);
++		$targetconfigureopts = "AR=$ENV{AR} AS=$ENV{AS} LD=$ENV{LD} NM=$ENV{NM} CC=$ENV{CC} CPP=\"$ENV{CPP}\" GCC=$ENV{GCC} CXX=$ENV{CXX} RANLIB=$ENV{RANLIB} STRIP=$ENV{STRIP} CPPFLAGS=\"$ENV{CPPFLAGS}\" LDFLAGS=\"$ENV{LDFLAGS}\"";
++
+ 		chdir($pwd) or die "Couldn't change to $pwd : $!";
+ 
+ 		print "\nDownloading $package to: $pwd\n";
+@@ -200,15 +184,15 @@
+ 
+ 		if ($downloadUsing eq 'lwp') {
+ 
+-			LWP::Simple::getstore("$SOURCE/$package?view=auto", $package);
++			LWP::Simple::getstore("$SOURCE/$package?view=co", $package);
+ 
+ 		} elsif ($downloadUsing =~ /curl$/) {
+ 
+-			`$downloadUsing --silent -o $package $SOURCE/$package?view=auto`;
++			`$downloadUsing --silent -o $package $SOURCE/$package?view=co`;
+ 
+ 		} else {
+ 
+-			`$downloadUsing -q -O $package $SOURCE/$package?view=auto`;
++			`$downloadUsing -q -O $package $SOURCE/$package?view=co`;
+ 		}
+ 
+ 		unless (-r $package) {
+@@ -234,15 +218,47 @@
+ 		}
+ 
+ 		print "Configuring..\n";
+-		print "$env $perlBinary Makefile.PL $options\n";
+-		`$env $perlBinary Makefile.PL $options`;
++
++		if ($package eq  "DBD-mysql-3.0002.tar.gz") {
++			`cp ../../DBD-mysql-Makefile.PL Makefile.PL`;
++		}
++		elsif ($package eq  "Time-HiRes-1.86.tar.gz") {
++			`cp ../../Time-HiRes-Makefile.PL Makefile.PL`;
++		}
++
++		print "$env $targetconfigureopts $perlBinary Makefile.PL $options PREFIX=/opt\n";
++		`$env $targetconfigureopts $perlBinary Makefile.PL $options PREFIX=/opt`;
+ 
+ 		unless (-f 'Makefile') {
+ 			die "There was a problem creating Makefile - exiting!\n";
+ 		}
+ 
++		if ($package eq "DBI-1.50.tar.gz") {
++			$dbipackagedir = "$downloadPath/$packageDir/blib/arch/auto/DBI";
++		}
++
++		if ($package eq "DBD-mysql-3.0002.tar.gz") {
++# This code relies on DBI being processed before DBD-mysql
++			`sed -e "s/~DRIVER~/mysql/g" $dbipackagedir/Driver.xst > mysql.xsi`;
++			$pasthruinc = "\"$ENV{CPPFLAGS} -I$dbipackagedir -I$ENV{STAGING_PREFIX}/include/mysql -L$ENV{STAGING_PREFIX}/lib/mysql\"";
++		}
++		else {
++			$pasthruinc = "\"$ENV{CPPFLAGS}\"";
++		}
++
++		$ldopts = "PASTHRU_INC=$pasthruinc";
++		if ($package eq "XML-Parser-2.34.tar.gz") {
++			$ldopts .= " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS}\"";
++		}
++		elsif ($package eq "DBD-mysql-3.0002.tar.gz") {
++			$ldopts .= " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS} -Wl,-rpath,/opt/lib/mysql\"";
++		}
++		$ldopts .= " LD_RUN_PATH=/opt/lib";
++		if (defined($ENV{PERL_INC}) && $ENV{PERL_INC} ne "") { $ldopts .= " PERL_INC=$ENV{PERL_INC}"; }
++
+ 		print "Building..\n";
+-		`make`;	
++		print "make $targetconfigureopts $ldopts\n\n";
++		`make $targetconfigureopts $ldopts`;	
+ 
+ 		#print "Testing..\n";
+ 		#`make test`;

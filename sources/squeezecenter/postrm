@@ -1,0 +1,12 @@
+#!/bin/sh 
+
+. /opt/etc/squeezecenterrm.conf
+
+rm -rf /opt/etc/squeezecenterrm.conf 2>/dev/null
+rm -rf ${SQUEEZECENTER_PREFSDIR} 2>/dev/null
+rm -rf ${SQUEEZECENTER_LOG} 2>/dev/null 
+rm -rf ${SQUEEZECENTER_PIDFILE} 2>/dev/null
+grep -s "^${SQUEEZECENTER_USER}" /etc/passwd >/dev/null && deluser ${SQUEEZECENTER_USER} 2>/dev/null
+rm -rf /opt/share/squeezecenter
+
+exit 0
