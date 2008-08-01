@@ -1,0 +1,56 @@
+#!/bin/sh
+
+PATH=/opt/bin:/opt/sbin:/opt/libexec:/bin:/usr/sbin:/usr/bin:/usr/local/bin:
+export PATH
+
+. /opt/etc/squeezecenter.conf
+
+#
+#  Check if user/group slimserver exists
+#
+        if test `grep -c "^${SQUEEZECENTER_USER}" /etc/passwd` -eq 0 ; then 
+            test `grep -c "^${SQUEEZECENTER_GROUP}" /etc/group` -eq 0  &&  addgroup ${SQUEEZECENTER_GROUP}
+            echo -n "Enter SQUEEZECENTER_HOME location [${SQUEEZECENTER_HOME}]: "
+            read answer
+            test  "$answer" != "" && SQUEEZECENTER_HOME=$answer
+            if test ! -d SQUEEZECENTER_HOME ; then
+	        adduser -D -s /dev/null -h ${SQUEEZECENTER_HOME} -G ${SQUEEZECENTER_GROUP} ${SQUEEZECENTER_USER} 2>/dev/null
+	        sleep 1 # wait for user creation
+                sed -i -e "s|^SQUEEZECENTER_HOME=.*|SQUEEZECENTER_HOME=${SQUEEZECENTER_HOME}|" \
+                    -e "s|^SQUEEZECENTER_LOG=.*|SQUEEZECENTER_LOG=${SQUEEZECENTER_HOME}/squeezecenter.log|" \
+                    -e "s|^SQUEEZECENTER_PREFSDIR=.*|SQUEEZECENTER_PREFSDIR=${SQUEEZECENTER_HOME}/prefs|" \
+                    -e "s|^SQUEEZECENTER_PIDFILE=.*|SQUEEZECENTER_PIDFILE=${SQUEEZECENTER_HOME}/squeezecenter.pid|" \
+                    -e "s|^SQUEEZECENTER_CACHEDIR=.*|SQUEEZECENTER_CACHEDIR=${SQUEEZECENTER_HOME}/cache|" \
+                    /opt/etc/squeezecenter.conf
+                . /opt/etc/squeezecenter.conf
+            fi
+	fi
+	mkdir -p ${SQUEEZECENTER_HOME}/prefs/plugin 2>/dev/null
+	chown $VERBOSE -R ${SQUEEZECENTER_USER}:${SQUEEZECENTER_GROUP} ${SQUEEZECENTER_PREFSDIR}
+
+	touch  ${SQUEEZECENTER_LOG}
+	chown $VERBOSE ${SQUEEZECENTER_USER}:${SQUEEZECENTER_GROUP} ${SQUEEZECENTER_LOG}
+
+	mkdir -p ${SQUEEZECENTER_HOME}/cache 2>/dev/null
+	chown $VERBOSE -R ${SQUEEZECENTER_USER}:${SQUEEZECENTER_GROUP} ${SQUEEZECENTER_HOME} 
+
+# Slimserver expects an mysqld in its Bin directory - on fsg3 mysqld is pre-installed.
+# on other systems copy or link from another directory.
+	if test -e /usr/local/mysql/bin/mysqld ; then
+		ln -sf /usr/local/mysql/bin/mysqld /opt/share/squeezecenter/Bin/mysqld
+	fi
+	if test -e /opt/libexec/mysqld ; then
+		ln -sf /opt/libexec/mysqld /opt/share/squeezecenter/Bin/mysqld
+	fi
+
+        
+	mkdir -p /opt/share/squeezecenter/Logs
+	chown $VERBOSE -R ${SQUEEZECENTER_USER}:${SQUEEZECENTER_GROUP} /opt/share/squeezecenter/Logs
+
+
+# The firmware bin files cannot be distributed and will be downloadd by slimserver
+# on first startup so user slimserver has to be able to write files into Firmware directory
+
+	chmod a+rw /opt/share/squeezecenter/Firmware
+
+exit 0
