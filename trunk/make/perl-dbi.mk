@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DBI_SITE=http://search.cpan.org/CPAN/authors/id/T/TI/TIMB
-PERL-DBI_VERSION=1.53
+PERL-DBI_VERSION=1.607
 PERL-DBI_SOURCE=DBI-$(PERL-DBI_VERSION).tar.gz
 PERL-DBI_DIR=DBI-$(PERL-DBI_VERSION)
 PERL-DBI_UNZIP=zcat
@@ -27,17 +27,18 @@ PERL-DBI_IPK_DIR=$(BUILD_DIR)/perl-dbi-$(PERL-DBI_VERSION)-ipk
 PERL-DBI_IPK=$(BUILD_DIR)/perl-dbi_$(PERL-DBI_VERSION)-$(PERL-DBI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-DBI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-DBI_SITE)/$(PERL-DBI_SOURCE)
+	$(WGET) -P $(@D) $(PERL-DBI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-dbi-source: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCHES)
 
 $(PERL-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCHES)
 	$(MAKE) perl-stage
-	rm -rf $(BUILD_DIR)/$(PERL-DBI_DIR) $(PERL-DBI_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL-DBI_DIR) $(@D)
 	$(PERL-DBI_UNZIP) $(DL_DIR)/$(PERL-DBI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-DBI_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DBI_DIR) -p1
-	mv $(BUILD_DIR)/$(PERL-DBI_DIR) $(PERL-DBI_BUILD_DIR)
-	(cd $(PERL-DBI_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL-DBI_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -45,31 +46,31 @@ $(PERL-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCH
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERL-DBI_BUILD_DIR)/.configured
+	touch $@
 
 perl-dbi-unpack: $(PERL-DBI_BUILD_DIR)/.configured
 
 $(PERL-DBI_BUILD_DIR)/.built: $(PERL-DBI_BUILD_DIR)/.configured
-	rm -f $(PERL-DBI_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-DBI_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-DBI_BUILD_DIR)/.built
+	touch $@
 
 perl-dbi: $(PERL-DBI_BUILD_DIR)/.built
 
 $(PERL-DBI_BUILD_DIR)/.staged: $(PERL-DBI_BUILD_DIR)/.built
-	rm -f $(PERL-DBI_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-DBI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-DBI_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-dbi-stage: $(PERL-DBI_BUILD_DIR)/.staged
 
 $(PERL-DBI_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-DBI_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-dbi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -104,3 +105,6 @@ perl-dbi-clean:
 
 perl-dbi-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL-DBI_DIR) $(PERL-DBI_BUILD_DIR) $(PERL-DBI_IPK_DIR) $(PERL-DBI_IPK)
+
+perl-dbi-check: $(PERL-DBI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PERL-DBI_IPK)
