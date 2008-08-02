@@ -24,7 +24,7 @@
 # PY-WEBHELPERS_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-WEBHELPERS_SITE=http://pypi.python.org/packages/source/W/WebHelpers
-PY-WEBHELPERS_VERSION=0.3.4
+PY-WEBHELPERS_VERSION=0.6.1
 PY-WEBHELPERS_IPK_VERSION=1
 PY-WEBHELPERS_SOURCE=WebHelpers-$(PY-WEBHELPERS_VERSION).tar.gz
 PY-WEBHELPERS_DIR=WebHelpers-$(PY-WEBHELPERS_VERSION)
@@ -108,7 +108,7 @@ py-webhelpers-source: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-WEBHELPERS_PATCHES)
 #
 $(PY-WEBHELPERS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-WEBHELPERS_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-WEBHELPERS_BUILD_DIR)
+	rm -rf $(@D)
 	mkdir -p $(PY-WEBHELPERS_BUILD_DIR)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-WEBHELPERS_DIR)
@@ -116,8 +116,8 @@ $(PY-WEBHELPERS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-W
 	if test -n "$(PY-WEBHELPERS_PATCHES)" ; then \
 	    cat $(PY-WEBHELPERS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(PY-WEBHELPERS_BUILD_DIR)/2.4
-	(cd $(PY-WEBHELPERS_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
@@ -126,8 +126,8 @@ $(PY-WEBHELPERS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-W
 	if test -n "$(PY-WEBHELPERS_PATCHES)" ; then \
 	    cat $(PY-WEBHELPERS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(PY-WEBHELPERS_BUILD_DIR)/2.5
-	(cd $(PY-WEBHELPERS_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
@@ -139,7 +139,7 @@ py-webhelpers-unpack: $(PY-WEBHELPERS_BUILD_DIR)/.configured
 #
 $(PY-WEBHELPERS_BUILD_DIR)/.built: $(PY-WEBHELPERS_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(PY-WEBHELPERS_BUILD_DIR)
+#	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +152,7 @@ py-webhelpers: $(PY-WEBHELPERS_BUILD_DIR)/.built
 #
 $(PY-WEBHELPERS_BUILD_DIR)/.staged: $(PY-WEBHELPERS_BUILD_DIR)/.built
 #	rm -f $@
-#	$(MAKE) -C $(PY-WEBHELPERS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
 
 py-webhelpers-stage: $(PY-WEBHELPERS_BUILD_DIR)/.staged
