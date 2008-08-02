@@ -24,8 +24,8 @@
 # PY-DECORATOR_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-DECORATOR_SITE=http://www.phyast.pitt.edu/~micheles/python
-PY-DECORATOR_VERSION=2.2.0
-PY-DECORATOR_IPK_VERSION=2
+PY-DECORATOR_VERSION=2.3.0
+PY-DECORATOR_IPK_VERSION=1
 PY-DECORATOR_SOURCE=decorator-$(PY-DECORATOR_VERSION).zip
 PY-DECORATOR_DIR=decorator-$(PY-DECORATOR_VERSION)
 PY-DECORATOR_UNZIP=unzip
@@ -81,8 +81,8 @@ PY25-DECORATOR_IPK=$(BUILD_DIR)/py25-decorator_$(PY-DECORATOR_VERSION)-$(PY-DECO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-DECORATOR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-DECORATOR_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-DECORATOR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,8 +108,8 @@ py-decorator-source: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DECORATOR_PATCHES)
 #
 $(PY-DECORATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DECORATOR_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-DECORATOR_BUILD_DIR)
-	mkdir -p $(PY-DECORATOR_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-DECORATOR_DIR)
 	mkdir -p $(BUILD_DIR)/$(PY-DECORATOR_DIR)
@@ -117,8 +117,8 @@ $(PY-DECORATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DEC
 	if test -n "$(PY-DECORATOR_PATCHES)" ; then \
 	    cat $(PY-DECORATOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-DECORATOR_DIR) $(PY-DECORATOR_BUILD_DIR)/2.4
-	(cd $(PY-DECORATOR_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-DECORATOR_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
@@ -128,8 +128,8 @@ $(PY-DECORATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DEC
 	if test -n "$(PY-DECORATOR_PATCHES)" ; then \
 	    cat $(PY-DECORATOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-DECORATOR_DIR) $(PY-DECORATOR_BUILD_DIR)/2.5
-	(cd $(PY-DECORATOR_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-DECORATOR_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
@@ -141,7 +141,7 @@ py-decorator-unpack: $(PY-DECORATOR_BUILD_DIR)/.configured
 #
 $(PY-DECORATOR_BUILD_DIR)/.built: $(PY-DECORATOR_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(PY-DECORATOR_BUILD_DIR)
+#	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -154,7 +154,7 @@ py-decorator: $(PY-DECORATOR_BUILD_DIR)/.built
 #
 $(PY-DECORATOR_BUILD_DIR)/.staged: $(PY-DECORATOR_BUILD_DIR)/.built
 	rm -f $@
-#	$(MAKE) -C $(PY-DECORATOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 py-decorator-stage: $(PY-DECORATOR_BUILD_DIR)/.staged
