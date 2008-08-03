@@ -22,7 +22,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UNISON_VERSION=2.13.16
+UNISON_VERSION=2.30.4
 UNISON_DIR=unison-$(UNISON_VERSION)
 UNISON_SITE=http://www.cis.upenn.edu/~bcpierce/unison/download/releases/$(UNISON_DIR)
 UNISON_SOURCE=$(UNISON_DIR).tar.gz
@@ -77,7 +77,7 @@ UNISON_IPK=$(BUILD_DIR)/unison_$(UNISON_VERSION)-$(UNISON_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(UNISON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(UNISON_SITE)/$(UNISON_SOURCE)
+	$(WGET) -P $(@D) $(UNISON_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,11 +106,11 @@ unison-source: $(DL_DIR)/$(UNISON_SOURCE) $(UNISON_PATCHES)
 #
 $(UNISON_BUILD_DIR)/.configured: $(DL_DIR)/$(UNISON_SOURCE) $(UNISON_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(UNISON_DIR) $(UNISON_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(UNISON_DIR) $(@D)
 	$(UNISON_UNZIP) $(DL_DIR)/$(UNISON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(UNISON_PATCHES) | patch -d $(BUILD_DIR)/$(UNISON_DIR) -p1
-	mv $(BUILD_DIR)/$(UNISON_DIR) $(UNISON_BUILD_DIR)
-	touch $(UNISON_BUILD_DIR)/.configured
+	mv $(BUILD_DIR)/$(UNISON_DIR) $(@D)
+	touch $@
 
 unison-unpack: $(UNISON_BUILD_DIR)/.configured
 
@@ -118,11 +118,11 @@ unison-unpack: $(UNISON_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(UNISON_BUILD_DIR)/.built: $(UNISON_BUILD_DIR)/.configured
-	rm -f $(UNISON_BUILD_DIR)/.built
+	rm -f $@
 # natively compiled unison segfaults for some reason
-#	$(MAKE) -C $(UNISON_BUILD_DIR) UISTYLE=text NATIVE=true strings.ml buildexecutable
-	$(MAKE) -C $(UNISON_BUILD_DIR) UISTYLE=text NATIVE=false THREADS=true strings.ml buildexecutable
-	touch $(UNISON_BUILD_DIR)/.built
+#	$(MAKE) -C $(@D) UISTYLE=text NATIVE=true strings.ml buildexecutable
+	$(MAKE) -C $(@D) UISTYLE=text NATIVE=false THREADS=true strings.ml buildexecutable
+	touch $@
 
 #
 # This is the build convenience target.
@@ -133,9 +133,9 @@ unison: $(UNISON_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(UNISON_BUILD_DIR)/.staged: $(UNISON_BUILD_DIR)/.built
-	rm -f $(UNISON_BUILD_DIR)/.staged
-	$(MAKE) -C $(UNISON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(UNISON_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 unison-stage: $(UNISON_BUILD_DIR)/.staged
 
@@ -144,7 +144,7 @@ unison-stage: $(UNISON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/unison
 #
 $(UNISON_IPK_DIR)/CONTROL/control:
-	@install -d $(UNISON_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: unison" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
