@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPG123_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpg123
-MPG123_VERSION=1.4.3
+MPG123_VERSION=1.5.0
 MPG123_SOURCE=mpg123-$(MPG123_VERSION).tar.bz2
 MPG123_DIR=mpg123-$(MPG123_VERSION)
 MPG123_UNZIP=bzcat
@@ -29,7 +29,7 @@ MPG123_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPG123_DESCRIPTION=Fast console MPEG Audio Player.
 MPG123_SECTION=audio
 MPG123_PRIORITY=optional
-MPG123_DEPENDS=
+MPG123_DEPENDS=libtool
 MPG123_SUGGESTS=
 MPG123_CONFLICTS=
 
@@ -55,7 +55,13 @@ MPG123_IPK_VERSION=1
 MPG123_CPPFLAGS=
 MPG123_LDFLAGS=
 
-MPG123_CONFIG_ARG=--with-cpu=generic_nofpu --with-audio=oss
+MPG123_CONFIG_ARG=--with-audio=oss
+
+MPG123_CONFIG_ARG += $(strip \
+$(if $(filter i686, $(TARGET_ARCH)), --with-cpu=sse, \
+$(if $(filter syno-e500, $(OPTWARE_TARGET)), --with-cpu=generic_nofpu, \
+$(if $(filter powerpc, $(TARGET_ARCH)), --with-cpu=altivec, \
+--with-cpu=generic_nofpu))))
 
 #
 # MPG123_BUILD_DIR is the directory in which the build is done.
@@ -107,7 +113,7 @@ mpg123-source: $(DL_DIR)/$(MPG123_SOURCE) $(MPG123_PATCHES)
 # shown below to make various patches to it.
 #
 $(MPG123_BUILD_DIR)/.configured: $(DL_DIR)/$(MPG123_SOURCE) $(MPG123_PATCHES) make/mpg123.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libtool-stage
 	rm -rf $(BUILD_DIR)/$(MPG123_DIR) $(@D)
 	$(MPG123_UNZIP) $(DL_DIR)/$(MPG123_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPG123_PATCHES)" ; \
@@ -130,7 +136,7 @@ $(MPG123_BUILD_DIR)/.configured: $(DL_DIR)/$(MPG123_SOURCE) $(MPG123_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mpg123-unpack: $(MPG123_BUILD_DIR)/.configured
