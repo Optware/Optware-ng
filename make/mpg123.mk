@@ -59,9 +59,7 @@ MPG123_CONFIG_ARG=--with-audio=oss
 
 MPG123_CONFIG_ARG += $(strip \
 $(if $(filter i686, $(TARGET_ARCH)), --with-cpu=sse, \
-$(if $(filter syno-e500, $(OPTWARE_TARGET)), --with-cpu=generic_nofpu, \
-$(if $(filter powerpc, $(TARGET_ARCH)), --with-cpu=altivec, \
---with-cpu=generic_nofpu))))
+--with-cpu=generic_nofpu))
 
 #
 # MPG123_BUILD_DIR is the directory in which the build is done.
