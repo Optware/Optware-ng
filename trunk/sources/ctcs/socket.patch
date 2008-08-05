@@ -1,7 +1,7 @@
 diff -u ctcs.old/ctcs ctcs/ctcs
---- ctcs.old/ctcs	2007-06-27 10:13:13.000000000 -0300
-+++ ctcs/ctcs	2007-06-27 10:14:23.000000000 -0300
-@@ -119,8 +119,6 @@
+--- ctcs.old/ctcs	2008-04-26 17:18:06.000000000 -0300
++++ ctcs/ctcs	2008-08-05 15:13:19.000000000 -0300
+@@ -131,8 +131,6 @@
  }
  
  socket(Server, PF_INET, SOCK_STREAM, $proto)	|| die "socket: $!";

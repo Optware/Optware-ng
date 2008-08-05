@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 CTCS_SITE=http://www.rahul.net/dholmes/ctorrent
-CTCS_VERSION=1.4
+CTCS_VERSION=1.4.1
 CTCS_SOURCE=ctcs-$(CTCS_VERSION).tar.gz
 CTCS_DIR=ctcs-$(CTCS_VERSION)
 CTCS_UNZIP=zcat
