@@ -56,7 +56,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=4
+LIGHTTPD_IPK_VERSION=5
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -139,7 +139,7 @@ lighttpd-source: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
+$(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES) make/lighttpd.mk
 	$(MAKE) bzip2-stage libmemcache-stage libxml2-stage lua-stage memcached-stage
 	$(MAKE) openssl-stage pcre-stage sqlite-stage zlib-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
