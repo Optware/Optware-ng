@@ -23,9 +23,10 @@
           + [13]Stopping CTorrent
 
    Options Index
-   [14]-a [15]-A [16]-b [17]-c [18]-C [19]-d [20]-D [21]-e [22]-E [23]-f
-   [24]-i [25]-l [26]-m [27]-M [28]-n [29]-p [30]-P [31]-s [32]-s [33]-S
-   [34]-t [35]-T [36]-u [37]-U [38]-v [39]-x [40]-X [41]-z
+   [14]-a [15]-A [16]-b [17]-c [18]-c [19]-C [20]-d [21]-D [22]-e [23]-E
+   [24]-f [25]-i [26]-I [27]-l [28]-m [29]-M [30]-n [31]-p [32]-p [33]-P
+   [34]-s [35]-s [36]-S [37]-t [38]-T [39]-u [40]-u [41]-U [42]-v [43]-x
+   [44]-X [45]-z
      _________________________________________________________________
 
    Options
@@ -34,23 +35,24 @@
   General Options
 
 
--x          Decode metainfo (torrent) file only, don't download.
+-x          Decode metainfo (torrent) file only, don't download
 
           Displays the torrent information and contents from the metainfo
           (.torrent) file. No piece checking or downloading is performed.
           This option is normally used alone.
 
 
--c          Check pieces only, don't download.
+-c          Check pieces only, don't download
 
           Hash-checks all pieces of the torrent to verify completion
           status and exits. Use this when you want to verify that you've
           successfully downloaded the complete torrent, or to make sure
           the files are intact after a system crash. This option is
-          normally used alone.
+          normally used alone, but can be used with -X for an automated
+          completion check.
 
 
--v          Verbose output (for debugging).
+-v          Verbose output (for debugging)
 
           Generates [a lot of] extra output while CTorrrent is running.
    ___________________________________
@@ -58,7 +60,7 @@
   Downloading Options
 
 
--e int      Exit while seed <int> hours later. (default 72 hours)
+-e int      Exit while seed <int> hours later (default 72 hours)
 
           Indicate how long (in hours) you want to "seed" (continue
           uploading) after download has completed. It is considered
@@ -66,7 +68,7 @@
           for some time after downloading.
 
 
--E num      Exit after seeding to <num> ratio (UL:DL).
+-E num      Exit after seeding to <num> ratio (UL:DL)
 
           Specify a desired "seed ratio". After downloading completes,
           the client will continue seeding (uploading) until your total
@@ -76,7 +78,7 @@
           to seed until your ratio is at least 1:1.
 
 
--i ip       Listen for connections on ip. (default all IP's)
+-i ip       Listen for connections on specific IP address (default all/any)
 
           Specify the IP address on which you want to listen for incoming
           connections. This is only useful if your system has multiple
@@ -84,7 +86,7 @@
           multiple clients on different interfaces.
 
 
--p port     Listen port. (default 2706 -> 2106)
+-p port     Listen port (default 2706 -> 2106)
 
           Specify the TCP port number on which to listen for incoming
           connections. By default, CTorrent starts at 2706 and searches
@@ -93,13 +95,28 @@
           option is similar, but starting at the specified port number.
 
 
--s filename     Download ("save as") to a different file or directory.
+-I ip       Specify public/external IP address for peer connections
+
+          Specify the IP address which the tracker should give out to
+          peer clients in order to connect to you. This is normally
+          needed only if you are behind a NAT and on the tracker's local
+          network.
+
+
+-u num or URL   Alternate announce (tracker) URL
+
+          Specify an alternate tracker announce URL. The parameter can be
+          the actual URL or the number from the list of alternates
+          printed when starting the client or using -x.
+
+
+-s filename     Download ("save as") to a different file or directory
 
           Download to a different filename or top-level directory name
           than what is given in the metainfo file.
 
 
--C cache_size   Cache size, unit MB. (default 16MB)
+-C cache_size   Cache size, unit MB (default 16MB)
 
           Specify the maximum amount of memory to use for caching
           downloaded slices. The program may use less than this; the
@@ -110,7 +127,7 @@
           process will be more disk-intensive.
 
 
--f              Force saved bitfield or seed mode (skip hash check at startup).
+-f              Force saved bitfield or seed mode (skip hash check at startup)
 
           Perform a fast startup by skipping the initial (or background)
           hash verification of the files. This option is not generally
@@ -133,7 +150,7 @@
           needed.
 
 
--M max_peers    Max peers count. (default 100)
+-M max_peers    Max peers count (default 100)
 
           Set the maximum allowable number of peer connections. If this
           number is reached, no new connections will be initiated or
@@ -141,14 +158,14 @@
           may want to use this option to specify a lower value.
 
 
--m min_peers    Min peers count. (default 1)
+-m min_peers    Min peers count (default 1)
 
           Set the desired minimum number of peer connections. If the
           number falls below this value, the client will contact the
           tracker to request more peers.
 
 
--z slice_size   Download slice/block size, unit KB. (default 16, max 128).
+-z slice_size   Download slice/block size, unit KB (default 16, max 128)
 
           Sets the size of the basic unit of download. For greatest
           compatibility with other peer clients, use the default. This
@@ -156,7 +173,7 @@
           managed.
 
 
--n file_list    Specify file number(s) to download.
+-n file_list    Specify file number(s) to download
 
           Specify a priority order for downloading files in the torrent.
           A comma-separated list of file numbers and groups can be
@@ -226,7 +243,7 @@
           recognizes.
 
 
--S host:port    Use CTCS server at host:port.
+-S host:port    Use CTCS server at host:port
 
           Maintain a connection to CTCS for status reporting, bandwidth
           control, and client management. Using a colon at the end of the
@@ -281,37 +298,58 @@
           advised to use this feature as a trigger mechanism to update a
           file or run a short script that kicks off a background task
           rather than for executing a longer task directly.
+          This option can also be used together with -c as an automated
+          completion check. Normally the completion command will be run
+          only if data has been downloaded; this case is the exception.
 
 
 -d              Daemon mode (fork to background)
 
           The client will detach itself from the terminal session and
-          become a background process.
+          become a background process, closing stdin, stdout, and stderr.
+          There is no way to bring it back into the foreground of a
+          session later; if you want to monitor or manage the client then
+          either use the CTCS option (-S) as well or run the client under
+          [46]screen instead of using -d.
+          If this option is specified twice (-dd) then redirected
+          standard I/O descriptors will not be closed.
    ___________________________________
 
   Options for Creating a New Torrent
 
 
--t              Create a new torrent file.
+-t              Create a new torrent file
 
-          Indicates that you want to create a new torrent.
+          Indicates that you want to create a new torrent. This must be
+          the first option specified when creating a torrent.
 
 
--s filename     Specify metainfo file name.
+-s filename     Specify metainfo file name
 
           (Required) Give the name of the file to be created.
 
 
--u url          Tracker's url.
+-u URL          Tracker's URL
 
           (Required) Specify the tracker's announce URL. This usually
           looks similar to "http://tracker.example.com:port/announce".
 
 
--l piece_len    Piece length. (default 262144)
+-l piece_len    Piece length (default 262144)
 
           Specify the piece size for your torrent. This will also
           determine the number of pieces in the torrent.
+
+
+-p              Private (disable peer exchange)
+
+          Disable the use of DHT, PEX, or other trackerless peer-exchange
+          methods by other clients when sharing this torrent.
+
+
+-c comment      Include a comment/description
+
+          Include a comment field in the torrent file.
      _________________________________________________________________
 
    Examples
@@ -339,8 +377,10 @@ ctorrent -t -u "http://tracker.example.com:6969/announce" -s example.torrent fi
 le_or_dir_to_upload
      _________________________________________________________________
 
-   Runtime Commands Several commands are available during
-   upload/download; a list is available by pressing ? or h:
+   Runtime Commands
+
+   Several commands are available during upload/download; a list is
+   available by pressing ? or h:
 Available commands:
  [Esc/0]  Operator menu                  m[+/-]   Adjust min peers count
  d[+/-]   Adjust download limit          M[+/-]   Adjust max peers count
@@ -385,6 +425,8 @@ Operator Menu
   8) View detailed status
   9) Pause (suspend upload/download)
  10) Become daemon (fork to background)
+ 11) Update tracker stats & get peers
+ 12) Restart (recover) the tracker session
 Enter selection:
 
    The first set of options allow redirection of the client's various
@@ -399,13 +441,19 @@ Enter selection:
    status information. An asterisk (*) indicates the currently selected
    format.
 
-   The other options provide a means to view more detailed current status
-   or to pause uploading and downloading (more or less immediately,
-   unlike the previous CTCS pause function).
+   The next two options provide a means to view more detailed current
+   status and statistics or to pause uploading and downloading (more or
+   less immediately, unlike the previous CTCS pause function).
 
-   Note that there is no "recovery" from daemon mode. Use CTCS or screen
-   if you want the client to run in the background but need to manage or
-   monitor it.
+   Note that there is no "recovery" from daemon mode. Use CTCS (with
+   daemon mode) and/or "screen" if you want the client to run in the
+   background but need to manage or monitor it.
+
+   The next two options are the same as the corresponding actions in
+   CTCS. The first performs an early tracker update. The second restarts
+   the tracker session as if you had exited and restarted the client.
+   This can be used to recover if the tracker appears to have suffered a
+   failure and does not recognize your client session.
      _________________________________________________________________
 
    Usage Notes
@@ -549,27 +597,32 @@ References
   15. http://www.rahul.net/dholmes/ctorrent/userguide.html#-A
   16. http://www.rahul.net/dholmes/ctorrent/userguide.html#-b
   17. http://www.rahul.net/dholmes/ctorrent/userguide.html#-c
-  18. http://www.rahul.net/dholmes/ctorrent/userguide.html#-C
-  19. http://www.rahul.net/dholmes/ctorrent/userguide.html#-d
-  20. http://www.rahul.net/dholmes/ctorrent/userguide.html#-D
-  21. http://www.rahul.net/dholmes/ctorrent/userguide.html#-e
-  22. http://www.rahul.net/dholmes/ctorrent/userguide.html#-E
-  23. http://www.rahul.net/dholmes/ctorrent/userguide.html#-f
-  24. http://www.rahul.net/dholmes/ctorrent/userguide.html#-i
-  25. http://www.rahul.net/dholmes/ctorrent/userguide.html#-l
-  26. http://www.rahul.net/dholmes/ctorrent/userguide.html#-m
-  27. http://www.rahul.net/dholmes/ctorrent/userguide.html#-M
-  28. http://www.rahul.net/dholmes/ctorrent/userguide.html#-n
-  29. http://www.rahul.net/dholmes/ctorrent/userguide.html#-p
-  30. http://www.rahul.net/dholmes/ctorrent/userguide.html#-P
-  31. http://www.rahul.net/dholmes/ctorrent/userguide.html#-s
-  32. http://www.rahul.net/dholmes/ctorrent/userguide.html#-s2
-  33. http://www.rahul.net/dholmes/ctorrent/userguide.html#-S
-  34. http://www.rahul.net/dholmes/ctorrent/userguide.html#-t
-  35. http://www.rahul.net/dholmes/ctorrent/userguide.html#-T
-  36. http://www.rahul.net/dholmes/ctorrent/userguide.html#-u
-  37. http://www.rahul.net/dholmes/ctorrent/userguide.html#-U
-  38. http://www.rahul.net/dholmes/ctorrent/userguide.html#-v
-  39. http://www.rahul.net/dholmes/ctorrent/userguide.html#-x
-  40. http://www.rahul.net/dholmes/ctorrent/userguide.html#-X
-  41. http://www.rahul.net/dholmes/ctorrent/userguide.html#-z
+  18. http://www.rahul.net/dholmes/ctorrent/userguide.html#-c2
+  19. http://www.rahul.net/dholmes/ctorrent/userguide.html#-C
+  20. http://www.rahul.net/dholmes/ctorrent/userguide.html#-d
+  21. http://www.rahul.net/dholmes/ctorrent/userguide.html#-D
+  22. http://www.rahul.net/dholmes/ctorrent/userguide.html#-e
+  23. http://www.rahul.net/dholmes/ctorrent/userguide.html#-E
+  24. http://www.rahul.net/dholmes/ctorrent/userguide.html#-f
+  25. http://www.rahul.net/dholmes/ctorrent/userguide.html#-i
+  26. http://www.rahul.net/dholmes/ctorrent/userguide.html#-I
+  27. http://www.rahul.net/dholmes/ctorrent/userguide.html#-l
+  28. http://www.rahul.net/dholmes/ctorrent/userguide.html#-m
+  29. http://www.rahul.net/dholmes/ctorrent/userguide.html#-M
+  30. http://www.rahul.net/dholmes/ctorrent/userguide.html#-n
+  31. http://www.rahul.net/dholmes/ctorrent/userguide.html#-p
+  32. http://www.rahul.net/dholmes/ctorrent/userguide.html#-p2
+  33. http://www.rahul.net/dholmes/ctorrent/userguide.html#-P
+  34. http://www.rahul.net/dholmes/ctorrent/userguide.html#-s
+  35. http://www.rahul.net/dholmes/ctorrent/userguide.html#-s2
+  36. http://www.rahul.net/dholmes/ctorrent/userguide.html#-S
+  37. http://www.rahul.net/dholmes/ctorrent/userguide.html#-t
+  38. http://www.rahul.net/dholmes/ctorrent/userguide.html#-T
+  39. http://www.rahul.net/dholmes/ctorrent/userguide.html#-u2
+  40. http://www.rahul.net/dholmes/ctorrent/userguide.html#-u
+  41. http://www.rahul.net/dholmes/ctorrent/userguide.html#-U
+  42. http://www.rahul.net/dholmes/ctorrent/userguide.html#-v
+  43. http://www.rahul.net/dholmes/ctorrent/userguide.html#-x
+  44. http://www.rahul.net/dholmes/ctorrent/userguide.html#-X
+  45. http://www.rahul.net/dholmes/ctorrent/userguide.html#-z
+  46. http://www.gnu.org/software/screen/
