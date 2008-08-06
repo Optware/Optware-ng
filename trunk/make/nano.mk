@@ -5,7 +5,7 @@
 ###########################################################
 
 NANO_SITE=http://www.nano-editor.org/dist/v2.1
-NANO_VERSION=2.1.2
+NANO_VERSION=2.1.3
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -22,7 +22,7 @@ NANO_IPK_VERSION=1
 
 #NANO_PATCHES=$(NANO_SOURCE_DIR)/broken_regex.patch
 
-NANO_CPPFLAGS=-I$(STAGING_PREFIX)/include/ncurses
+NANO_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 NANO_LDFLAGS=
 
 NANO_BUILD_DIR=$(BUILD_DIR)/nano
