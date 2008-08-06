@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.2.0
+SAMBA_VERSION=3.2.1
 SAMBA_IPK_VERSION=1
 else
 SAMBA_VERSION=3.0.14a
@@ -155,7 +155,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SAMBA_SOURCE):
-	$(WGET) -P $(@D) $(SAMBA_SITE)/$(@F)
+	$(WGET) -P $(@D) $(SAMBA_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
