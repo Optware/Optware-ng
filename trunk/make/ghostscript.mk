@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GHOSTSCRIPT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ghostscript
-GHOSTSCRIPT_VERSION=8.62
+GHOSTSCRIPT_VERSION=8.63
 GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)
 GHOSTSCRIPT_UNZIP=bzcat
@@ -76,8 +76,8 @@ GHOSTSCRIPT_IPK=$(BUILD_DIR)/ghostscript_$(GHOSTSCRIPT_VERSION)-$(GHOSTSCRIPT_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GHOSTSCRIPT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GHOSTSCRIPT_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GHOSTSCRIPT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -87,11 +87,11 @@ $(DL_DIR)/$(GHOSTSCRIPT_SOURCE):
 ghostscript-source: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE)
 
 $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) make/ghostscript.mk
-	rm -rf $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_HOST_BUILD_DIR)
+	rm -rf $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	mv $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_HOST_BUILD_DIR)
-#	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(GHOSTSCRIPT_HOST_BUILD_DIR)/Makefile.in
-	(cd $(GHOSTSCRIPT_HOST_BUILD_DIR); \
+	mv $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
+#	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(@D)/Makefile.in
+	(cd $(@D); \
 		./configure \
 		--prefix=/opt \
 		--without-x \
@@ -129,17 +129,17 @@ $(GHOSTSCRIPT_BUILD_DIR)/.configured: $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built $(GHO
 endif
 	$(MAKE) cups-stage fontconfig-stage openssl-stage
 	$(MAKE) libjpeg-stage libpng-stage libtiff-stage
-	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GHOSTSCRIPT_PATCHES)"; then \
 		cat $(GHOSTSCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_BUILD_DIR)
-	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(GHOSTSCRIPT_BUILD_DIR)/Makefile.in
+	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
+	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(@D)/Makefile.in
 	sed -i -e 's|$$(EXP)$$(MKROMFS_XE)|$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/mkromfs|' \
-		$(GHOSTSCRIPT_BUILD_DIR)/src/lib.mak \
-		$(GHOSTSCRIPT_BUILD_DIR)/src/int.mak
-	(cd $(GHOSTSCRIPT_BUILD_DIR); \
+		$(@D)/src/lib.mak \
+		$(@D)/src/int.mak
+	(cd $(@D); \
 		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" \
@@ -159,7 +159,7 @@ endif
 		--disable-static \
 		; \
 	)
-	sed -i -e 's|-I/opt/include ||' $(GHOSTSCRIPT_BUILD_DIR)/Makefile
+	sed -i -e 's|-I/opt/include ||' $(@D)/Makefile
 	touch $@
 
 ghostscript-unpack: $(GHOSTSCRIPT_BUILD_DIR)/.configured
@@ -200,7 +200,7 @@ ghostscript: $(GHOSTSCRIPT_BUILD_DIR)/.built
 #
 $(GHOSTSCRIPT_BUILD_DIR)/.staged: $(GHOSTSCRIPT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
