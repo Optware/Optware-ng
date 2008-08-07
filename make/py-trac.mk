@@ -24,7 +24,7 @@
 #PY-TRAC_SVN_REPO=http://svn.edgewall.com/repos/trac/trunk
 #PY-TRAC_SVN_REV=4863
 #PY-TRAC_VERSION=0.10+svn$(PY-TRAC_SVN_REV)
-PY-TRAC_VERSION=0.11
+PY-TRAC_VERSION=0.11.1
 PY-TRAC_SITE=http://pypi.python.org/packages/source/T/Trac
 PY-TRAC_SOURCE=Trac-$(PY-TRAC_VERSION).tar.gz
 PY-TRAC_DIR=Trac-$(PY-TRAC_VERSION)
