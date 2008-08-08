@@ -1,0 +1,20 @@
+diff -ur torrentflux.old/html/config.php torrentflux/html/config.php
+--- torrentflux.old/html/config.php	2008-06-04 01:57:14.000000000 -0300
++++ torrentflux/html/config.php	2008-08-05 15:50:52.000000000 -0300
+@@ -28,11 +28,11 @@
+ /**************************************************************************/
+ // Check the adodb/drivers/ directory for support for your database
+ // you may choose from many (mysql is the default)
+-$cfg["db_type"] = "mysql";       // mysql, postgres7, postgres8 view adodb/drivers/
+-$cfg["db_host"] = "localhost";   // DB host computer name or IP
+-$cfg["db_name"] = "torrentflux"; // Name of the Database
+-$cfg["db_user"] = "root";        // username for your MySQL database
+-$cfg["db_pass"] = "";            // password for database
++$cfg["db_type"] = "sqlite";     // mysql, postgres7, postgres8 view adodb/drivers/
++$cfg["db_host"] = "/opt/var/torrentflux/db/torrentflux.db"; // DB file, when using sqlite
++$cfg["db_name"] = ""; 		// Name of the Database
++$cfg["db_user"] = "";           // username for your MySQL database
++$cfg["db_pass"] = "";           // password for database
+ /**************************************************************************/
+ 
+ 

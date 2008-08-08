@@ -1,0 +1,21 @@
+diff -u -r torrentflux.old/html/functions.php torrentflux/html/functions.php
+--- torrentflux.old/html/functions.php	2008-06-12 18:13:34.000000000 -0300
++++ torrentflux/html/functions.php	2008-08-07 17:23:55.000000000 -0300
+@@ -42,7 +42,7 @@
+ loadSettings();
+ 
+ // Free space in MB
+-$cfg["free_space"] = @disk_free_space($cfg["path"])/(1024*1024);
++$cfg["free_space"] = round(@disk_free_space($cfg["path"])/(1024*1024));
+ 
+ // Path to where the torrent meta files will be stored... usually a sub of $cfg["path"]
+ // also, not the '.' to make this a hidden directory
+@@ -1558,7 +1558,7 @@
+             $html = FetchHTML( $url );
+ 
+             // This usually gets triggered if the original URL was /get/ instead of /tor/
+-            if( strlen( $cfg["save_torrent_name"] ) == 0 )
++            if( ( ! array_key_exists("save_torrent_name",$cfg)) || strlen( $cfg["save_torrent_name"] ) == 0 )
+             {
+                 // Get the name of the torrent, and make it the filename
+                 if( preg_match( "/name([0-9][^:]):(.[^:]+)/i", $html, $html_preg_match ) )

@@ -1,0 +1,63 @@
+diff -ur torrentflux.old/html/searchEngines/isoHuntEngine.php torrentflux/html/searchEngines/isoHuntEngine.php
+--- torrentflux.old/html/searchEngines/isoHuntEngine.php	2008-05-28 20:50:04.000000000 -0300
++++ torrentflux/html/searchEngines/isoHuntEngine.php	2008-08-07 16:55:48.000000000 -0300
+@@ -22,6 +22,7 @@
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+ /*
++    v 1.05a- Aug 07, 08 - updated parsing - by Fernando Carolo (carolo@gmail.com)
+     v 1.05 - Oct 07, 06 - updated parseing
+     v 1.04 - Sep 20, 06 - updated by batmark
+     v 1.03 - Aug 23, 06 - fix ISOHunt fixed search results to display externals.
+@@ -39,8 +40,8 @@
+         $this->mainTitle = "isoHunt";
+         $this->engineName = "isoHunt";
+ 
+-        $this->author = "kboy";
+-        $this->version = "1.05";
++        $this->author = "kboy (with patches from Fernando Carolo)";
++        $this->version = "1.05a";
+         $this->updateURL = "http://www.torrentflux.com/forum/index.php/topic,878.0.html";
+ 
+         $this->Initialize($cfg);
+@@ -132,7 +133,7 @@
+             $end = strrpos($thing, "»");
+         }
+ 
+-        $thing = substr($thing, 0, $end);
++        //$thing = substr($thing, 0, $end);
+         $tmpList = $thing;
+         //echo $tmpList;
+ 
+@@ -333,15 +334,15 @@
+                     else
+                     {
+ 
+-                        $tmpStr = $tmpListArr["0"];  // Download ID and Type
+-                        $this->CatName = $this->cleanLine($tmpStr); // Download ID and Type
++                        $tmpStr = $tmpListArr["1"];  // Download ID and Type
++                        $this->CatName = $this->cleanLine($tmpListArr["0"]); // Category
+                         $tmpStr = substr($tmpStr,strpos($tmpStr,"torrent_details/")+strlen("torrent_details/"));
+ 
+                         $this->torrentFile = "http://isohunt.com/download/".substr($tmpStr,0,strpos($tmpStr,",")-1);
+ 
+                         //$tmpListArr["1"] = $this->cleanLine($tmpListArr["1"]);  // Age
+-
+-                        $this->torrentName = $this->cleanLine($tmpListArr["2"]);
++                        
++                        $this->torrentName = $this->cleanLine($this->cleanCommentsLink($tmpListArr["2"]));
+ 
+                     }
+ 
+@@ -371,6 +372,11 @@
+         }
+     }
+ 
++    function cleanCommentsLink($stringIn)
++    {
++        return substr($stringIn, strpos($stringIn,"</a>") + 4);
++    }
++
+     function cleanLine($stringIn,$tags='')
+     {
+         if(empty($tags))

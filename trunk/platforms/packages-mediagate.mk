@@ -71,7 +71,7 @@ BROKEN_PACKAGES = bluez-hcidump xinetd libdb\
 	 srelay sslwrap strace stunnel streamripper swi-prolog svn \
 	 syslog-ng syx taged tcl tcpwrappers tcpdump tcpflow \
 	 tcsh texinfo tig tin tinyscheme tmsnc tnftpd \
-	 tor transcode transmission tree trickle tshark tsocks \
+	 tor torrentflux transcode transmission tree trickle tshark tsocks \
 	 tz uemacs unfs3 unixodbc unrar unzip up-imapproxy \
 	 updatedd upslug2 upx usbutils ushare utf8proc util-linux \
 	 util-linux-ng vblade vdr-mediamvp vim vlc vnstat vorbis-tools \

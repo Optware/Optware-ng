@@ -1,0 +1,77 @@
+TorrentFlux for Optware README
+----------------------------------------------------------------------
+
+1. Introduction
+2. Differences from original TorrentFlux distribution
+3. Web server
+4. PHP settings
+5. Database creation
+6. Wiki page
+
+----------------------------------------------------------------------
+1. Introduction
+
+This is a port of TorrentFlux (www.torrentflux.com) for the platforms
+support by Optware (www.nslu2-linux.org/wiki/Optware/HomePage).
+
+----------------------------------------------------------------------
+2. Differences from original Torrentflux distribution
+
+Since Optware is aimed towards small machines with limited amounts of
+RAM, this port uses SQLite as a database engine instead of a MySQL
+database originally used by TorrentFlux. All functions that depend on
+the database, such as settings and event log, work flawlessly with
+SQLite, so the overall functionality remains the same.
+
+In order to follow the standard guidelines for Optware packages and
+also to be compatible with some web server packages, the TorrentFlux
+web application is installed at /opt/share/www/torrentflux, while the
+database and the downloaded files are kept at /opt/var/torrentflux.
+
+----------------------------------------------------------------------
+3. Web server
+
+TorrentFlux is a web application written in PHP, so you will need a
+web server that supports PHP installed in your machine. I have tested
+the program with lighttpd, a simple, fast web server well suited for
+small appliances like the NSLU2 and other Optware targets. If you have
+lighttpd installed, you can access TorrentFlux at 
+http://nas_address:8083/torrentflux. Otherwise, you will need to
+configure your web server to serve pages from the directory at
+/opt/share/www/torrentflux.
+
+----------------------------------------------------------------------
+4. PHP settings
+
+TorrentFlux may require some changes in PHP settings. Check your
+/opt/etc/php.ini file to make sure that these settings are in place:
+
+  safe_mode = Off
+  allow_url_fopen = On
+  cgi.fix_pathinfo = 1
+
+After your make these changes, you should restart your web server.
+
+----------------------------------------------------------------------
+5. Manual database creation
+
+When TorrentFlux is installed via ipkg it will automatically create a
+new database with its initial settings. If you try to upgrade or
+reinstall it, the database creation will be skipped and a warning
+message will be shown. If you are upgrading from the same base version
+(currently 2.4), the existing database should work and no further
+action is needed. If your previous installation was somehow damaged,
+or if you are in doubt, you can backup the existing database and
+create a new one with the following commands:
+
+  cd /opt/var/torrentflux/db
+  cp torrentflux.db backup.db
+  sqlite torrentflux.db < /opt/doc/torrentflux/sqlite_torrentflux.sql
+
+----------------------------------------------------------------------
+6. Wiki page
+
+For more information, please see the wiki page for TorrentFlux under
+Optware at www.nslu2-linux.org/wiki/Optware/TorrentFlux.
+
+
