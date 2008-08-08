@@ -1,0 +1,19 @@
+diff -ur torrentflux.old/html/profile.php torrentflux/html/profile.php
+--- torrentflux.old/html/profile.php	2008-05-28 20:50:04.000000000 -0300
++++ torrentflux/html/profile.php	2008-08-07 16:58:31.000000000 -0300
+@@ -387,11 +387,11 @@
+ ?>
+                     <tr>
+                         <td>
+-                            <a href="?op=deleteCookie&cid=<?php echo $cookie["cid"];?>"><img src="images/delete_on.gif" width=16 height=16 border=0 title="<?php echo _DELETE . " " . $cookie["host"]; ?>" align="absmiddle"></a>
+-                            <a href="?op=editCookies&cid=<?php echo $cookie["cid"];?>"><img src="images/properties.png" width=18 height=13 border=0 title="<?php echo _EDIT . " " . $cookie["host"]; ?>" align="absmiddle"></a>
++                            <a href="?op=deleteCookie&cid=<?php echo $cookie[0];?>"><img src="images/delete_on.gif" width=16 height=16 border=0 title="<?php echo _DELETE . " " . $cookie[1]; ?>" align="absmiddle"></a>
++                            <a href="?op=editCookies&cid=<?php echo $cookie[0];?>"><img src="images/properties.png" width=18 height=13 border=0 title="<?php echo _EDIT . " " . $cookie[1]; ?>" align="absmiddle"></a>
+                         </td>
+-                        <td><?php echo $cookie["host"];?></td>
+-                        <td><?php echo $cookie["data"];?></td>
++                        <td><?php echo $cookie[1];?></td>
++                        <td><?php echo $cookie[2];?></td>
+                     </tr>
+ <?php
+             }

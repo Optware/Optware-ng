@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -f /opt/var/torrentflux/db/torrentflux.db ] ; then
+  echo "Old TorrentFlux database found, you will need to manually"
+  echo "create a new database or upgrade the current one."
+  echo "Please read /opt/doc/torrentflux/README.Optware."
+else
+  echo "Creating TorrentFlux database with sqlite"
+  sqlite /opt/var/torrentflux/db/torrentflux.db < /opt/doc/torrentflux/sqlite_torrentflux.sql
+fi
