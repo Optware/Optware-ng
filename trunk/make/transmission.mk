@@ -28,7 +28,7 @@
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.31
+TRANSMISSION_VERSION=1.32
 #TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
 #TRANSMISSION_SVN_REV=6245
 ifdef TRANSMISSION_SVN_REV
@@ -119,7 +119,7 @@ endif
 #	$(WGET) -P $(DL_DIR) $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE)
 
 $(DL_DIR)/$(TRANSMISSION_SOURCE):
-	rm -fv	$(DL_DIR)/transmission*.tar.bz2
+#	rm -fv	$(DL_DIR)/transmission*.tar.bz2
 ifdef TRANSMISSION_SVN_REV
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(TRANSMISSION_DIR) && \
