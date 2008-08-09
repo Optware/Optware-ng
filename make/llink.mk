@@ -24,7 +24,7 @@
 # default to no, not sure about the licensing
 LLINK_WITH_LIBDVDCSS=no
 
-LLINK_VERSION=2.0.9
+LLINK_VERSION=2.1.1
 LLINK_SITE=http://www.lundman.net/ftp/llink
 LLINK_SOURCE=llink-$(LLINK_VERSION).tar.gz
 LLINK_DIR=llink-$(LLINK_VERSION)
