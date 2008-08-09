@@ -4,7 +4,7 @@
 #
 #############################################################
 
-BIND_VERSION=9.5.0-P1
+BIND_VERSION=9.5.0-P2
 BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_VERSION)
 BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_VERSION)
