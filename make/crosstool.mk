@@ -83,22 +83,22 @@ crosstool-source: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CROSSTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PATCHES)
-	rm -rf $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) $(CROSSTOOL_BUILD_DIR)
+	rm -rf $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) $(@D)
 	$(CROSSTOOL_UNZIP) $(DL_DIR)/$(CROSSTOOL_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
 #	cat $(CROSSTOOL_PATCHES) | patch -d $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) -p1
-	mv $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) $(CROSSTOOL_BUILD_DIR)
-	cp $(CROSSTOOL_SOURCE_DIR)/$(CROSSTOOL_SCRIPT) $(CROSSTOOL_BUILD_DIR)/$(CROSSTOOL_SCRIPT)
-	cp $(CROSSTOOL_SOURCE_DIR)/*.dat $(CROSSTOOL_BUILD_DIR)
-	cp $(CROSSTOOL_SOURCE_DIR)/powerpc-603e.config $(CROSSTOOL_BUILD_DIR)
-	mkdir -p $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC)
+	mv $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) $(@D)
+	cp $(CROSSTOOL_SOURCE_DIR)/$(CROSSTOOL_SCRIPT) $(@D)/$(CROSSTOOL_SCRIPT)
+	cp $(CROSSTOOL_SOURCE_DIR)/*.dat $(@D)
+	cp $(CROSSTOOL_SOURCE_DIR)/powerpc-603e.config $(@D)
+	mkdir -p $(@D)/patches/$(CROSS_CONFIGURATION_GCC)
 	# gcc 4.1.1 patch: https://trac.nslu2-linux.org/optware/ticket/1
-	sed -i '/+/s/4.0\*/4.0\*\|4.1\*/' $(CROSSTOOL_BUILD_DIR)/patches/glibc-2.2.5/glibc-2.2.5-allow-gcc-4.0-configure.patch
+	sed -i '/+/s/4.0\*/4.[0-9]\*/' $(@D)/patches/glibc-2.2.5/glibc-2.2.5-allow-gcc-4.0-configure.patch
 	# these patches are required for gcc-3.3.5 to work with optware/unslung
-	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.5
-	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.4
-	cp $(CROSSTOOL_BUILD_DIR)/patches/glibc-2.3.2/glibc-2.3.2-arm-fix-strlen.patch $(CROSSTOOL_BUILD_DIR)/patches/glibc-2.2.5
-	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.4/gcc-3.3.4-arm-bigendian.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.5
-	touch $(CROSSTOOL_BUILD_DIR)/.configured
+	cp $(@D)/patches/gcc-3.4.3/fix-fixincl.patch $(@D)/patches/gcc-3.3.5
+	cp $(@D)/patches/gcc-3.4.3/fix-fixincl.patch $(@D)/patches/gcc-3.3.4
+	cp $(@D)/patches/glibc-2.3.2/glibc-2.3.2-arm-fix-strlen.patch $(@D)/patches/glibc-2.2.5
+	cp $(@D)/patches/gcc-3.3.4/gcc-3.3.4-arm-bigendian.patch $(@D)/patches/gcc-3.3.5
+	touch $@
 
 crosstool-unpack: $(CROSSTOOL_BUILD_DIR)/.configured
 
