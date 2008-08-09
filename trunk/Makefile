@@ -265,7 +265,7 @@ COMMON_CROSS_PACKAGES = \
 	lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
-	mg miau microcom microperl mimms \
+	mg miau microcom microdc2 microperl mimms \
 	minicom mini-sendmail minihttpd miscfiles \
 	mktemp mlocate moblock moc modutils monit most motion \
 	mod-fastcgi moe monotone mp3blaster mpack mpage \
