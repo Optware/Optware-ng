@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-DISTCC_SITE=http://distcc.samba.org/ftp/distcc
-DISTCC_VERSION=2.18.3
+DISTCC_SITE=http://distcc.googlecode.com/files
+DISTCC_VERSION=3.0
 DISTCC_SOURCE=distcc-$(DISTCC_VERSION).tar.bz2
 DISTCC_DIR=distcc-$(DISTCC_VERSION)
 DISTCC_UNZIP=bzcat
@@ -34,13 +34,14 @@ DISTCC_CONFLICTS=
 #
 # DISTCC_IPK_VERSION should be incremented when the ipk changes.
 #
-DISTCC_IPK_VERSION=3
+DISTCC_IPK_VERSION=1
 
 #
 # DISTCC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#DISTCC_PATCHES=$(DISTCC_SOURCE_DIR)/configure.patch
+DISTCC_PATCHES=$(DISTCC_SOURCE_DIR)/src-snprintf.patch \
+$(DISTCC_SOURCE_DIR)/lzo-minilzo.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -68,7 +69,8 @@ DISTCC_IPK=$(BUILD_DIR)/distcc_$(DISTCC_VERSION)-$(DISTCC_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DISTCC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DISTCC_SITE)/$(DISTCC_SOURCE)
+	$(WGET) -P $(@D) $(DISTCC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -92,23 +94,27 @@ distcc-source: $(DL_DIR)/$(DISTCC_SOURCE) $(DISTCC_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(DISTCC_BUILD_DIR)/.configured: $(DL_DIR)/$(DISTCC_SOURCE) $(DISTCC_PATCHES)
-	$(MAKE) popt-stage
-	rm -rf $(BUILD_DIR)/$(DISTCC_DIR) $(DISTCC_BUILD_DIR)
+$(DISTCC_BUILD_DIR)/.configured: $(DL_DIR)/$(DISTCC_SOURCE) $(DISTCC_PATCHES) make/distcc.mk
+	$(MAKE) popt-stage py-setuptools-stage
+	rm -rf $(BUILD_DIR)/$(DISTCC_DIR) $(@D)
 	$(DISTCC_UNZIP) $(DL_DIR)/$(DISTCC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(DISTCC_PATCHES) | patch -d $(BUILD_DIR)/$(DISTCC_DIR) -p1
-	mv $(BUILD_DIR)/$(DISTCC_DIR) $(DISTCC_BUILD_DIR)
-	(cd $(DISTCC_BUILD_DIR); \
+	if test -n "$(DISTCC_PATCHES)"; then \
+		cat $(DISTCC_PATCHES) | patch -d $(BUILD_DIR)/$(DISTCC_DIR) -p0; \
+	fi
+	mv $(BUILD_DIR)/$(DISTCC_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DISTCC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DISTCC_LDFLAGS)" \
+		PYTHON=/opt/bin/python2.5 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--without-avahi \
 	)
-	touch $(DISTCC_BUILD_DIR)/.configured
+	touch $@
 
 distcc-unpack: $(DISTCC_BUILD_DIR)/.configured
 
@@ -117,7 +123,10 @@ distcc-unpack: $(DISTCC_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(DISTCC_BUILD_DIR)/distcc: $(DISTCC_BUILD_DIR)/.configured
-	$(MAKE) -C $(DISTCC_BUILD_DIR)
+	$(MAKE) -C $(@D) \
+		INCLUDESERVER_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 \
+		$(TARGET_CONFIGURE_OPTS) \
+		LDSHARED='$(TARGET_CC) -shared'
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -157,10 +166,11 @@ $(DISTCC_IPK_DIR)/CONTROL/control:
 #
 $(DISTCC_IPK): $(DISTCC_BUILD_DIR)/distcc
 	rm -rf $(DISTCC_IPK_DIR) $(DISTCC_IPK)
-	install -d $(DISTCC_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(DISTCC_BUILD_DIR)/distcc -o $(DISTCC_IPK_DIR)/opt/bin/distcc
-	$(STRIP_COMMAND) $(DISTCC_BUILD_DIR)/distccd -o $(DISTCC_IPK_DIR)/opt/bin/distccd
-	$(STRIP_COMMAND) $(DISTCC_BUILD_DIR)/distccmon-text -o $(DISTCC_IPK_DIR)/opt/bin/distccmon-text
+	$(MAKE) -C $(DISTCC_BUILD_DIR) install \
+		DESTDIR=$(DISTCC_IPK_DIR) \
+		INCLUDESERVER_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5
+	$(STRIP_COMMAND) $(DISTCC_IPK_DIR)/opt/bin/*distcc*
+	$(STRIP_COMMAND) $(DISTCC_IPK_DIR)/opt/lib/python2.5/site-packages/include_server/*.so
 #	install -d $(DISTCC_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(DISTCC_SOURCE_DIR)/rc.distcc $(DISTCC_IPK_DIR)/opt/etc/init.d/SXXdistcc
 	$(MAKE) $(DISTCC_IPK_DIR)/CONTROL/control
