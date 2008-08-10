@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MX-BASE_SITE=http://www.egenix.com/files/python
-PY-MX-BASE_VERSION=3.1.0
+PY-MX-BASE_VERSION=3.1.1
 PY-MX-BASE_SOURCE=egenix-mx-base-$(PY-MX-BASE_VERSION).tar.gz
 PY-MX-BASE_DIR=egenix-mx-base-$(PY-MX-BASE_VERSION)
 PY-MX-BASE_UNZIP=zcat
