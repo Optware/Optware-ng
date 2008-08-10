@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NICKLE_SITE=http://nickle.org/release
-NICKLE_VERSION=2.58
+NICKLE_VERSION=2.68
 NICKLE_SOURCE=nickle-$(NICKLE_VERSION).tar.gz
 NICKLE_DIR=nickle-$(NICKLE_VERSION)
 NICKLE_UNZIP=zcat
@@ -76,8 +76,8 @@ NICKLE_IPK=$(BUILD_DIR)/nickle_$(NICKLE_VERSION)-$(NICKLE_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NICKLE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NICKLE_SITE)/$(NICKLE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NICKLE_SOURCE)
+	$(WGET) -P $(@D) $(NICKLE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,19 +106,19 @@ nickle-source: $(DL_DIR)/$(NICKLE_SOURCE) $(NICKLE_PATCHES)
 #
 $(NICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(NICKLE_SOURCE) $(NICKLE_PATCHES) make/nickle.mk
 	$(MAKE) ncurses-stage readline-stage
-	rm -rf $(BUILD_DIR)/$(NICKLE_DIR) $(NICKLE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NICKLE_DIR) $(@D)
 	$(NICKLE_UNZIP) $(DL_DIR)/$(NICKLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NICKLE_PATCHES)" ; \
 		then cat $(NICKLE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NICKLE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NICKLE_DIR)" != "$(NICKLE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NICKLE_DIR) $(NICKLE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NICKLE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NICKLE_DIR) $(@D) ; \
 	fi
 	if test `$(TARGET_CC) -dumpversion | sed 's/\..*//'` -lt 4; then \
-		sed -i -e 's/ -fwrapv//' $(NICKLE_BUILD_DIR)/Makefile.in; \
+		sed -i -e 's/ -fwrapv//' $(@D)/Makefile.in; \
 	fi
-	(cd $(NICKLE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NICKLE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NICKLE_LDFLAGS)" \
@@ -130,7 +130,7 @@ $(NICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(NICKLE_SOURCE) $(NICKLE_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(NICKLE_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 nickle-unpack: $(NICKLE_BUILD_DIR)/.configured
@@ -140,7 +140,7 @@ nickle-unpack: $(NICKLE_BUILD_DIR)/.configured
 #
 $(NICKLE_BUILD_DIR)/.built: $(NICKLE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NICKLE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -153,7 +153,7 @@ nickle: $(NICKLE_BUILD_DIR)/.built
 #
 $(NICKLE_BUILD_DIR)/.staged: $(NICKLE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NICKLE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 nickle-stage: $(NICKLE_BUILD_DIR)/.staged
@@ -192,11 +192,6 @@ $(NICKLE_IPK_DIR)/CONTROL/control:
 $(NICKLE_IPK): $(NICKLE_BUILD_DIR)/.built
 	rm -rf $(NICKLE_IPK_DIR) $(BUILD_DIR)/nickle_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NICKLE_BUILD_DIR) DESTDIR=$(NICKLE_IPK_DIR) install-strip
-#	install -d $(NICKLE_IPK_DIR)/opt/etc/
-#	install -m 644 $(NICKLE_SOURCE_DIR)/nickle.conf $(NICKLE_IPK_DIR)/opt/etc/nickle.conf
-#	install -d $(NICKLE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NICKLE_SOURCE_DIR)/rc.nickle $(NICKLE_IPK_DIR)/opt/etc/init.d/SXXnickle
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NICKLE_IPK_DIR)/opt/etc/init.d/SXXnickle
 	$(MAKE) $(NICKLE_IPK_DIR)/CONTROL/control
 #	install -m 755 $(NICKLE_SOURCE_DIR)/postinst $(NICKLE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NICKLE_IPK_DIR)/CONTROL/postinst
