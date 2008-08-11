@@ -1,0 +1,26 @@
+diff -ur torrentflux.old/html/searchEngines/TorrentBoxEngine.php torrentflux/html/searchEngines/TorrentBoxEngine.php
+--- torrentflux.old/html/searchEngines/TorrentBoxEngine.php	2008-05-28 20:50:04.000000000 -0300
++++ torrentflux/html/searchEngines/TorrentBoxEngine.php	2008-08-08 14:35:15.000000000 -0300
+@@ -289,7 +289,7 @@
+             {
+                 $pages = str_replace("/torrents-browse.php?",$this->searchURL()."&",$pages);
+             }
+-            $output = "<div align=center>".$pages."</div>";
++            $output .= "<div align=center>".$pages."</div>";
+         }
+ 
+         return $output;
+@@ -346,9 +346,10 @@
+ 
+                 $this->dateAdded = $this->cleanLine($tmpListArr["4"]);  // Date Added
+                 $this->torrentSize = $this->cleanLine($tmpListArr["5"]);  // Size of File
+-                $this->dwnldCount = $this->cleanLine($tmpListArr["6"]);  // Download Count
+-                $this->Seeds = $this->cleanLine($tmpListArr["7"]);  // Seeds
+-                $this->Peers = $this->cleanLine($tmpListArr["8"]);  // Peers
++                //$this->dwnldCount = $this->cleanLine($tmpListArr["6"]);  // Download Count
++                $this->dwnldCount = 0;
++                $this->Seeds = $this->cleanLine($tmpListArr["6"]);  // Seeds
++                $this->Peers = $this->cleanLine($tmpListArr["7"]);  // Peers
+                 //$tmpListArr["9"] = $this->cleanLine($tmpListArr["9"]);  // Person who Uploaded it.
+ 
+                 if ($this->Peers == '')
