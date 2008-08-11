@@ -29,14 +29,14 @@ CLUTCH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CLUTCH_DESCRIPTION=WebUI for the Transmission BitTorrent client
 CLUTCH_SECTION=web
 CLUTCH_PRIORITY=optional
-CLUTCH_DEPENDS=transmission, php, php-fcgi
+CLUTCH_DEPENDS=transmissiond, php, php-fcgi
 CLUTCH_SUGGESTS=lighttpd
 CLUTCH_CONFLICTS=
 
 #
 # CLUTCH_IPK_VERSION should be incremented when the ipk changes.
 #
-CLUTCH_IPK_VERSION=3
+CLUTCH_IPK_VERSION=4
 
 #
 # CLUTCH_CONFFILES should be a list of user-editable files

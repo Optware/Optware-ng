@@ -22,9 +22,6 @@
 #
 #  TRAC: http://trac.transmissionbt.com/timeline
 #
-# It is known that SVN version does not configure with intltool 0.40
-# use intltool 0.35 or 0.37 (test with intltoolize  --version)
-#
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
@@ -39,13 +36,13 @@ endif
 TRANSMISSION_DIR=transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=bzcat
 TRANSMISSION_MAINTAINER=oleo@email.si
-TRANSMISSION_DESCRIPTION=lightweight BitTorrent client and daemon with WWW interface
+TRANSMISSION_DESCRIPTION=lightweight BitTorrent client and daemon
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl, libcurl
 TRANSMISSION_SUGGESTS=
 # gnuplot, logrotate, thttpd, mini-sendmail
-TRANSMISSION_CONFLICTS=torrent
+TRANSMISSION_CONFLICTS=torrent, transmisisond
 
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
