@@ -85,7 +85,7 @@ INSERT INTO tf_settings VALUES ('maxUserThreads', '2');
 INSERT INTO tf_settings VALUES ('sleepInterval', '10');
 INSERT INTO tf_settings VALUES ('debugTorrents', '0');
 INSERT INTO tf_settings VALUES ('pythonCmd', '/opt/bin/python');
-INSERT INTO tf_settings VALUES ('searchEngine', 'TorrentSpy');
+INSERT INTO tf_settings VALUES ('searchEngine', 'isoHunt');
 INSERT INTO tf_settings VALUES ('TorrentSpyGenreFilter', 'a:3:{i:0;s:2:"11";i:1;s:1:"6";i:2;s:1:"7";}');
 INSERT INTO tf_settings VALUES ('TorrentBoxGenreFilter', 'a:3:{i:0;s:1:"0";i:1;s:1:"9";i:2;s:2:"10";}');
 INSERT INTO tf_settings VALUES ('TorrentPortalGenreFilter', 'a:3:{i:0;s:1:"0";i:1;s:1:"6";i:2;s:2:"10";}');
