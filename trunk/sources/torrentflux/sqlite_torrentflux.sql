@@ -122,6 +122,8 @@ CREATE TABLE tf_cookies (
   data          VARCHAR  default NULL
 );
 
+INSERT INTO tf_cookies VALUES(1,1,'thepiratebay.org','language=en_EN');
+
 -- --------------------------------------------------------
 
 COMMIT;
