@@ -22,7 +22,7 @@ DT2-KERNEL-MODULES=`find $(DT2-KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # DT2-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-DT2-KERNEL-MODULES_IPK_VERSION=1
+DT2-KERNEL-MODULES_IPK_VERSION=2
 
 #
 # DT2-KERNEL-MODULES_CONFFILES should be a list of user-editable files
