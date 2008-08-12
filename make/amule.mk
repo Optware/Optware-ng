@@ -22,7 +22,7 @@
 # http://developer.berlios.de/projects/amule/
 
 AMULE_SITE=http://download.berlios.de/amule
-AMULE_VERSION=2.2.1
+AMULE_VERSION=2.2.2
 AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
 AMULE_DIR=aMule-$(AMULE_VERSION)
 AMULE_UNZIP=bzcat
@@ -37,7 +37,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=3
+AMULE_IPK_VERSION=1
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -47,7 +47,7 @@ AMULE_IPK_VERSION=3
 # AMULE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-AMULE_PATCHES=$(AMULE_SOURCE_DIR)/regex-check.patch
+AMULE_PATCHES=
 
 ifeq ($(OPTWARE_TARGET), ts101)
 AMULE_PATCHES+=$(AMULE_SOURCE_DIR)/cmath.patch
