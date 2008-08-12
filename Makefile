@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	torrentflux
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -307,7 +306,8 @@ COMMON_CROSS_PACKAGES = \
 	stupid-ftpd sudo surfraw swi-prolog svn syslog-ng sysstat syx \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
 	tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
-	tig tin tinyscheme tmsnc tnef tnftp tnftpd toppyweb tor torrent \
+	tig tin tinyscheme tmsnc tnef tnftp tnftpd \
+	toppyweb tor torrent torrentflux \
 	transcode transmission transmissiond tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar unrtf \
