@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NCFTP_SITE=ftp://ftp.ncftp.com/ncftp
-NCFTP_VERSION=3.2.1
+NCFTP_VERSION=3.2.2
 NCFTP_SOURCE=ncftp-$(NCFTP_VERSION)-src.tar.gz
 NCFTP_DIR=ncftp-$(NCFTP_VERSION)
 NCFTP_UNZIP=zcat
@@ -78,9 +78,9 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NCFTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NCFTP_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(NCFTP_SITE)/older_versions/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(NCFTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(NCFTP_SITE)/older_versions/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,7 +104,7 @@ ncftp-source: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
+$(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES) make/ncftp.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(NCFTP_DIR) $(@D)
 	$(NCFTP_UNZIP) $(DL_DIR)/$(NCFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -179,8 +179,6 @@ $(NCFTP_IPK): $(NCFTP_BUILD_DIR)/.built
 	rm -rf $(NCFTP_IPK_DIR) $(BUILD_DIR)/ncftp_*_$(TARGET_ARCH).ipk
 	install -d $(NCFTP_IPK_DIR)/opt/bin
 	$(MAKE) -C $(NCFTP_BUILD_DIR) DESTDIR=$(NCFTP_IPK_DIR) prefix=/opt install
-	install -d $(NCFTP_IPK_DIR)/opt/etc/init.d
-	install -d $(NCFTP_IPK_DIR)/CONTROL
 	$(MAKE) $(NCFTP_IPK_DIR)/CONTROL/control
 #	install -m 644 $(NCFTP_SOURCE_DIR)/postinst $(NCFTP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCFTP_IPK_DIR)
