@@ -16,7 +16,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	ldconfig libcapi20 libextractor \
 	monotone \
-	ncftp ntop \
+	ntop \
 	p7zip \
 	player puppy \
 	qemu sablevm \
