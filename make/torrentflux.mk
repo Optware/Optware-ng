@@ -35,7 +35,7 @@ TORRENTFLUX_INSTALL_DIR=/opt/share/www/torrentflux
 #
 # TORRENTFLUX_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENTFLUX_IPK_VERSION=2
+TORRENTFLUX_IPK_VERSION=3
 
 #
 # TORRENTFLUX_CONFFILES should be a list of user-editable files
@@ -168,6 +168,8 @@ $(TORRENTFLUX_IPK): $(TORRENTFLUX_BUILD_DIR)/.built
 	rm -rf $(TORRENTFLUX_IPK_DIR) $(BUILD_DIR)/torrentflux_*_$(TARGET_ARCH).ipk
 	install -d $(TORRENTFLUX_IPK_DIR)$(TORRENTFLUX_INSTALL_DIR)
 	cp -a $(TORRENTFLUX_BUILD_DIR)/html/* $(TORRENTFLUX_IPK_DIR)$(TORRENTFLUX_INSTALL_DIR)
+	# fixes permissions, leaves execute bits only for .php files
+	find $(TORRENTFLUX_IPK_DIR)$(TORRENTFLUX_INSTALL_DIR) -type f ! -name \*php -exec chmod -x {} \;
 	install -d $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
 	install -m 755 $(TORRENTFLUX_BUILD_DIR)/README $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
 	install -m 755 $(TORRENTFLUX_BUILD_DIR)/COPYING $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
