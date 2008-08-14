@@ -285,7 +285,7 @@ COMMON_CROSS_PACKAGES = \
 	opencdk openldap openser openssh openssl openvpn \
 	optware-devel ossp-js oww \
 	pal p7zip palantir pango par2cmdline patch patchutils \
-	pcapsipdump pciutils pcre pen perltgd \
+	pcapsipdump pciutils pcre pen perltgd pinentry \
 	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
 	picocom picolisp pkgconfig player polipo \
