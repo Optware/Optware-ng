@@ -1,4 +1,4 @@
 #!/bin/sh
 
-echo "If you're upgrading from pre 0.7, the configuration format has changed"
+echo "If you're upgrading from pre 0.8, the configuration format has changed"
 echo "Please use the new configuration files."
