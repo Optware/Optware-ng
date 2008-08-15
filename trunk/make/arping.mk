@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ARPING_SITE=ftp://ftp.habets.pp.se/pub/synscan
-ARPING_VERSION=2.07
+ARPING_VERSION=2.08
 ARPING_SOURCE=arping-$(ARPING_VERSION).tar.gz
 ARPING_DIR=arping-$(ARPING_VERSION)
 ARPING_UNZIP=zcat
