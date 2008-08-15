@@ -29,14 +29,14 @@ HPING_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HPING_DESCRIPTION=A command-line oriented TCP/IP packet assembler/analyzer.
 HPING_SECTION=net
 HPING_PRIORITY=optional
-HPING_DEPENDS=
+HPING_DEPENDS=libpcap
 HPING_SUGGESTS=
 HPING_CONFLICTS=
 
 #
 # HPING_IPK_VERSION should be incremented when the ipk changes.
 #
-HPING_IPK_VERSION=2
+HPING_IPK_VERSION=3
 
 #
 # HPING_CONFFILES should be a list of user-editable files
@@ -78,7 +78,8 @@ HPING_IPK=$(BUILD_DIR)/hping_$(HPING_VERSION)-$(HPING_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HPING_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HPING_SITE)/$(HPING_SOURCE)
+	$(WGET) -P $(@D) $(HPING_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.

@@ -12,16 +12,17 @@ KNOCK_UNZIP=zcat
 KNOCK_MAINTAINER=Don Lubinski <nlsu2@shine-hs.com>
 KNOCK_DESCRIPTION=knockd is a port-knock server. It listens to all traffic on an ethernet (or PPP) interface, looking for special "knock" sequences of port-hits. A client makes these port-hits by sending a TCP (or UDP) packet to a port on the server. This port need not be open -- since knockd listens at the link-layer level, it sees all traffic even if it's destined for a closed port. When the server detects a specific sequence of port-hits, it runs a command defined in its configuration file. This can be used to open up holes in a firewall for quick access.
 KNOCK_SECTION= Security
+KNOCK_DEPENDS=libpcap
 KNOCK_PRIORITY=optional
 
 #
 # KNOCK_IPK_VERSION should be incremented when the ipk changes.
 #
-KNOCK_IPK_VERSION=2
+KNOCK_IPK_VERSION=3
 
 #
 # KNOCK_CONFFILES should be a list of user-editable files
-KNOCK_CONFFILES=/etc/knockd.conf /opt/etc/init.d/S05knockd
+KNOCK_CONFFILES=/opt/etc/knockd.conf /opt/etc/init.d/S05knockd
 
 
 #
@@ -52,7 +53,8 @@ KNOCK_IPK=$(BUILD_DIR)/knock_$(KNOCK_VERSION)-$(KNOCK_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(KNOCK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(KNOCK_SITE)/$(KNOCK_SOURCE)
+	$(WGET) -P $(@D) $(KNOCK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -79,14 +81,15 @@ knock-source: $(DL_DIR)/$(KNOCK_SOURCE)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(KNOCK_BUILD_DIR)/.configured: $(DL_DIR)/$(KNOCK_SOURCE) 
+$(KNOCK_BUILD_DIR)/.configured: $(DL_DIR)/$(KNOCK_SOURCE) make/knock.mk
 	$(MAKE) libpcap-stage
-	rm -rf $(BUILD_DIR)/$(KNOCK_DIR) $(KNOCK_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(KNOCK_DIR) $(@D)
 	$(KNOCK_UNZIP) $(DL_DIR)/$(KNOCK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test "$(BUILD_DIR)/$(KNOCK_DIR)" != "$(KNOCK_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(KNOCK_DIR) $(KNOCK_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(KNOCK_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(KNOCK_DIR) $(@D) ; \
 	fi
-	(cd $(KNOCK_BUILD_DIR); \
+	sed -i -e 's|/etc/knockd.conf|/opt&|' $(@D)/src/knockd.c
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(KNOCK_CPPFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KNOCK_CPPFLAGS)" \
@@ -96,10 +99,11 @@ $(KNOCK_BUILD_DIR)/.configured: $(DL_DIR)/$(KNOCK_SOURCE)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--sysconfdir=/opt/etc \
 		--disable-nls \
 		--disable-static \
 	)
-	touch $(KNOCK_BUILD_DIR)/.configured
+	touch $@
 
 knock-unpack: $(KNOCK_BUILD_DIR)/.configured
 
@@ -107,9 +111,9 @@ knock-unpack: $(KNOCK_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(KNOCK_BUILD_DIR)/.built: $(KNOCK_BUILD_DIR)/.configured
-	rm -f $(KNOCK_BUILD_DIR)/.built
-	$(MAKE) -C $(KNOCK_BUILD_DIR)
-	touch $(KNOCK_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -120,9 +124,9 @@ knock: $(KNOCK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(KNOCK_BUILD_DIR)/.staged: $(KNOCK_BUILD_DIR)/.built
-	rm -f $(KNOCK_BUILD_DIR)/.staged
-	$(MAKE) -C $(KNOCK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(KNOCK_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 knock-stage: $(KNOCK_BUILD_DIR)/.staged
 
@@ -131,7 +135,7 @@ knock-stage: $(KNOCK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/knock
 #
 $(KNOCK_IPK_DIR)/CONTROL/control:
-	@install -d $(KNOCK_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: knock" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -141,6 +145,7 @@ $(KNOCK_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(KNOCK_MAINTAINER)" >>$@
 	@echo "Source: $(KNOCK_SITE)/$(KNOCK_SOURCE)" >>$@
 	@echo "Description: $(KNOCK_DESCRIPTION)" >>$@
+	@echo "Depends: $(KNOCK_DEPENDS)" >>$@
 #
 #
 # This builds the IPK file.
@@ -156,17 +161,14 @@ $(KNOCK_IPK_DIR)/CONTROL/control:
 #
 $(KNOCK_IPK): $(KNOCK_BUILD_DIR)/.built
 	rm -rf $(KNOCK_IPK_DIR) $(BUILD_DIR)/knock_*_$(TARGET_ARCH).ipk
-	install -d $(KNOCK_IPK_DIR)/etc/
-	install -m 644 $(KNOCK_BUILD_DIR)/knockd.conf $(KNOCK_IPK_DIR)/etc/knockd.conf
+	$(MAKE) -C $(KNOCK_BUILD_DIR) DESTDIR=$(KNOCK_IPK_DIR) install
+	$(STRIP_COMMAND) $(KNOCK_IPK_DIR)/opt/*bin/*
+	mv $(KNOCK_IPK_DIR)/etc $(KNOCK_IPK_DIR)/opt/
 	install -d $(KNOCK_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(KNOCK_SOURCE_DIR)/rc.knockd $(KNOCK_IPK_DIR)/opt/etc/init.d/S05knockd
-	install -d $(KNOCK_IPK_DIR)/opt/bin
-	install -m 755 $(KNOCK_BUILD_DIR)/knockd $(KNOCK_IPK_DIR)/opt/bin
-	install -m 755 $(KNOCK_BUILD_DIR)/knock $(KNOCK_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(KNOCK_IPK_DIR)/opt/bin/*
-	install -d $(KNOCK_IPK_DIR)/opt/man/man1
-	install -m 644 $(KNOCK_BUILD_DIR)/doc/knock.1 $(KNOCK_IPK_DIR)/opt/man/man1
-	install -m 644 $(KNOCK_BUILD_DIR)/doc/knockd.1 $(KNOCK_IPK_DIR)/opt/man/man1
+ifneq (nslu2, $(OPTWARE_TARGET))
+	sed -i -e 's/ -i ixp0//' $(KNOCK_IPK_DIR)/opt/etc/init.d/S05knockd
+endif
 	$(MAKE) $(KNOCK_IPK_DIR)/CONTROL/control
 	echo $(KNOCK_CONFFILES) | sed -e 's/ /\n/g' > $(KNOCK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KNOCK_IPK_DIR)

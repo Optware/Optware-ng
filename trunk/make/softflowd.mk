@@ -29,14 +29,14 @@ SOFTFLOWD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SOFTFLOWD_DESCRIPTION=Softflowd is flow-based network traffic analyser capable of Cisco NetFlow(tm) data export.
 SOFTFLOWD_SECTION=net
 SOFTFLOWD_PRIORITY=optional
-SOFTFLOWD_DEPENDS=
+SOFTFLOWD_DEPENDS=libpcap
 SOFTFLOWD_SUGGESTS=
 SOFTFLOWD_CONFLICTS=
 
 #
 # SOFTFLOWD_IPK_VERSION should be incremented when the ipk changes.
 #
-SOFTFLOWD_IPK_VERSION=1
+SOFTFLOWD_IPK_VERSION=2
 
 #
 # SOFTFLOWD_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ SOFTFLOWD_IPK=$(BUILD_DIR)/softflowd_$(SOFTFLOWD_VERSION)-$(SOFTFLOWD_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SOFTFLOWD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SOFTFLOWD_SITE)/$(SOFTFLOWD_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SOFTFLOWD_SOURCE)
+	$(WGET) -P $(@D) $(SOFTFLOWD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,17 +106,17 @@ softflowd-source: $(DL_DIR)/$(SOFTFLOWD_SOURCE) $(SOFTFLOWD_PATCHES)
 #
 $(SOFTFLOWD_BUILD_DIR)/.configured: $(DL_DIR)/$(SOFTFLOWD_SOURCE) $(SOFTFLOWD_PATCHES) make/softflowd.mk
 	$(MAKE) libpcap-stage
-	rm -rf $(BUILD_DIR)/$(SOFTFLOWD_DIR) $(SOFTFLOWD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SOFTFLOWD_DIR) $(@D)
 	$(SOFTFLOWD_UNZIP) $(DL_DIR)/$(SOFTFLOWD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SOFTFLOWD_PATCHES)" ; \
 		then cat $(SOFTFLOWD_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SOFTFLOWD_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SOFTFLOWD_DIR)" != "$(SOFTFLOWD_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SOFTFLOWD_DIR) $(SOFTFLOWD_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SOFTFLOWD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SOFTFLOWD_DIR) $(@D) ; \
 	fi
 	sed -i -e '/$$(INSTALL)/s/-s //' $(@D)/Makefile.in
-	(cd $(SOFTFLOWD_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SOFTFLOWD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SOFTFLOWD_LDFLAGS)" \
@@ -128,7 +128,7 @@ $(SOFTFLOWD_BUILD_DIR)/.configured: $(DL_DIR)/$(SOFTFLOWD_SOURCE) $(SOFTFLOWD_PA
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(SOFTFLOWD_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 softflowd-unpack: $(SOFTFLOWD_BUILD_DIR)/.configured
@@ -138,7 +138,7 @@ softflowd-unpack: $(SOFTFLOWD_BUILD_DIR)/.configured
 #
 $(SOFTFLOWD_BUILD_DIR)/.built: $(SOFTFLOWD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SOFTFLOWD_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +151,7 @@ softflowd: $(SOFTFLOWD_BUILD_DIR)/.built
 #
 $(SOFTFLOWD_BUILD_DIR)/.staged: $(SOFTFLOWD_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SOFTFLOWD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 softflowd-stage: $(SOFTFLOWD_BUILD_DIR)/.staged

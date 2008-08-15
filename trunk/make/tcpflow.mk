@@ -29,14 +29,14 @@ TCPFLOW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TCPFLOW_DESCRIPTION=tcpflow is a program that captures data transmitted as part of TCP connections (flows), and stores the data in a way that is convenient for protocol analysis or debugging.
 TCPFLOW_SECTION=net
 TCPFLOW_PRIORITY=optional
-TCPFLOW_DEPENDS=
+TCPFLOW_DEPENDS=libpcap
 TCPFLOW_SUGGESTS=
 TCPFLOW_CONFLICTS=
 
 #
 # TCPFLOW_IPK_VERSION should be incremented when the ipk changes.
 #
-TCPFLOW_IPK_VERSION=1
+TCPFLOW_IPK_VERSION=2
 
 #
 # TCPFLOW_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ TCPFLOW_IPK=$(BUILD_DIR)/tcpflow_$(TCPFLOW_VERSION)-$(TCPFLOW_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TCPFLOW_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TCPFLOW_SITE)/$(TCPFLOW_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TCPFLOW_SOURCE)
+	$(WGET) -P $(@D) $(TCPFLOW_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,17 +106,17 @@ tcpflow-source: $(DL_DIR)/$(TCPFLOW_SOURCE) $(TCPFLOW_PATCHES)
 #
 $(TCPFLOW_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPFLOW_SOURCE) $(TCPFLOW_PATCHES) make/tcpflow.mk
 	$(MAKE) libpcap-stage
-	rm -rf $(BUILD_DIR)/$(TCPFLOW_DIR) $(TCPFLOW_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TCPFLOW_DIR) $(@D)
 	$(TCPFLOW_UNZIP) $(DL_DIR)/$(TCPFLOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TCPFLOW_PATCHES)" ; \
 		then cat $(TCPFLOW_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TCPFLOW_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TCPFLOW_DIR)" != "$(TCPFLOW_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TCPFLOW_DIR) $(TCPFLOW_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TCPFLOW_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TCPFLOW_DIR) $(@D) ; \
 	fi
-	cp $(SOURCE_DIR)/common/config.* $(TCPFLOW_BUILD_DIR)/
-	(cd $(TCPFLOW_BUILD_DIR); \
+	cp $(SOURCE_DIR)/common/config.* $(@D)/
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TCPFLOW_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TCPFLOW_LDFLAGS)" \
@@ -128,7 +128,7 @@ $(TCPFLOW_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPFLOW_SOURCE) $(TCPFLOW_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(TCPFLOW_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 tcpflow-unpack: $(TCPFLOW_BUILD_DIR)/.configured
@@ -138,7 +138,7 @@ tcpflow-unpack: $(TCPFLOW_BUILD_DIR)/.configured
 #
 $(TCPFLOW_BUILD_DIR)/.built: $(TCPFLOW_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(TCPFLOW_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +151,7 @@ tcpflow: $(TCPFLOW_BUILD_DIR)/.built
 #
 $(TCPFLOW_BUILD_DIR)/.staged: $(TCPFLOW_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(TCPFLOW_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 tcpflow-stage: $(TCPFLOW_BUILD_DIR)/.staged

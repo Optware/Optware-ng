@@ -29,14 +29,14 @@ KISMET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 KISMET_DESCRIPTION=An 802.11 layer2 wireless network detector, sniffer, and intrusion detection system.
 KISMET_SECTION=net
 KISMET_PRIORITY=optional
-KISMET_DEPENDS=ncurses, libstdc++
+KISMET_DEPENDS=ncurses, libstdc++, libpcap
 KISMET_SUGGESTS=
 KISMET_CONFLICTS=
 
 #
 # KISMET_IPK_VERSION should be incremented when the ipk changes.
 #
-KISMET_IPK_VERSION=2
+KISMET_IPK_VERSION=3
 
 #
 # KISMET_CONFFILES should be a list of user-editable files

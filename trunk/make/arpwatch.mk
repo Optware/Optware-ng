@@ -29,14 +29,14 @@ ARPWATCH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ARPWATCH_DESCRIPTION=The ethernet monitor program; for keeping track of ethernet/ip address pairings.
 ARPWATCH_SECTION=net
 ARPWATCH_PRIORITY=optional
-ARPWATCH_DEPENDS=
+ARPWATCH_DEPENDS=libpcap
 ARPWATCH_SUGGESTS=
 ARPWATCH_CONFLICTS=
 
 #
 # ARPWATCH_IPK_VERSION should be incremented when the ipk changes.
 #
-ARPWATCH_IPK_VERSION=1
+ARPWATCH_IPK_VERSION=2
 
 #
 # ARPWATCH_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ ARPWATCH_IPK=$(BUILD_DIR)/arpwatch_$(ARPWATCH_VERSION)-$(ARPWATCH_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ARPWATCH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ARPWATCH_SITE)/$(ARPWATCH_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(ARPWATCH_SOURCE)
+	$(WGET) -P $(@D) $(ARPWATCH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ arpwatch-source: $(DL_DIR)/$(ARPWATCH_SOURCE) $(ARPWATCH_PATCHES)
 #
 $(ARPWATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(ARPWATCH_SOURCE) $(ARPWATCH_PATCHES) make/arpwatch.mk
 	$(MAKE) libpcap-stage
-	rm -rf $(BUILD_DIR)/$(ARPWATCH_DIR) $(ARPWATCH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ARPWATCH_DIR) $(@D)
 	$(ARPWATCH_UNZIP) $(DL_DIR)/$(ARPWATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ARPWATCH_PATCHES)" ; \
 		then cat $(ARPWATCH_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ARPWATCH_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(ARPWATCH_DIR)" != "$(ARPWATCH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(ARPWATCH_DIR) $(ARPWATCH_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(ARPWATCH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(ARPWATCH_DIR) $(@D) ; \
 	fi
-	(cd $(ARPWATCH_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ARPWATCH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ARPWATCH_LDFLAGS)" \
@@ -129,7 +129,9 @@ $(ARPWATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(ARPWATCH_SOURCE) $(ARPWATCH_PATCH
 	)
 	sed -i	-e 's|-o bin -g bin | |' \
 		-e '/CFLAGS.*LIBS/s|$$(CFLAGS)|$$(LDFLAGS) $$(CFLAGS)|' \
-		$(ARPWATCH_BUILD_DIR)/Makefile
+		-e '/^LIBS/s| ../libpcap/libpcap.a| -lpcap|' \
+		-e '/^arpwatch:/s| ../libpcap/libpcap.a||' \
+		$(@D)/Makefile
 #	$(PATCH_LIBTOOL) $(ARPWATCH_BUILD_DIR)/libtool
 	touch $@
 
@@ -140,7 +142,7 @@ arpwatch-unpack: $(ARPWATCH_BUILD_DIR)/.configured
 #
 $(ARPWATCH_BUILD_DIR)/.built: $(ARPWATCH_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(ARPWATCH_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ARPWATCH_LDFLAGS)"
 	touch $@
 
@@ -154,7 +156,7 @@ arpwatch: $(ARPWATCH_BUILD_DIR)/.built
 #
 $(ARPWATCH_BUILD_DIR)/.staged: $(ARPWATCH_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(ARPWATCH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 arpwatch-stage: $(ARPWATCH_BUILD_DIR)/.staged

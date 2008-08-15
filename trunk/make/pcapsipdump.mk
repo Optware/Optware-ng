@@ -29,14 +29,14 @@ PCAPSIPDUMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PCAPSIPDUMP_DESCRIPTION=tool for dumping SIP sessions (+RTP traffic, if available)
 PCAPSIPDUMP_SECTION=util
 PCAPSIPDUMP_PRIORITY=optional
-PCAPSIPDUMP_DEPENDS=libstdc++
+PCAPSIPDUMP_DEPENDS=libstdc++, libpcap
 PCAPSIPDUMP_SUGGESTS=
 PCAPSIPDUMP_CONFLICTS=
 
 #
 # PCAPSIPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-PCAPSIPDUMP_IPK_VERSION=1
+PCAPSIPDUMP_IPK_VERSION=2
 
 #
 # PCAPSIPDUMP_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ PCAPSIPDUMP_IPK=$(BUILD_DIR)/pcapsipdump_$(PCAPSIPDUMP_VERSION)-$(PCAPSIPDUMP_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PCAPSIPDUMP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PCAPSIPDUMP_SITE)/$(PCAPSIPDUMP_SOURCE)
+	$(WGET) -P $(@D) $(PCAPSIPDUMP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,16 +106,16 @@ pcapsipdump-source: $(DL_DIR)/$(PCAPSIPDUMP_SOURCE) $(PCAPSIPDUMP_PATCHES)
 #
 $(PCAPSIPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(PCAPSIPDUMP_SOURCE) $(PCAPSIPDUMP_PATCHES) make/pcapsipdump.mk
 	$(MAKE) libpcap-stage libstdc++-stage
-	rm -rf $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) $(PCAPSIPDUMP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) $(@D)
 	$(PCAPSIPDUMP_UNZIP) $(DL_DIR)/$(PCAPSIPDUMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PCAPSIPDUMP_PATCHES)" ; \
 		then cat $(PCAPSIPDUMP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(PCAPSIPDUMP_DIR)" != "$(PCAPSIPDUMP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) $(PCAPSIPDUMP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(PCAPSIPDUMP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) $(@D) ; \
 	fi
-	touch $(PCAPSIPDUMP_BUILD_DIR)/.configured
+	touch $@
 
 pcapsipdump-unpack: $(PCAPSIPDUMP_BUILD_DIR)/.configured
 
@@ -122,11 +123,11 @@ pcapsipdump-unpack: $(PCAPSIPDUMP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PCAPSIPDUMP_BUILD_DIR)/.built: $(PCAPSIPDUMP_BUILD_DIR)/.configured
-	rm -f $(PCAPSIPDUMP_BUILD_DIR)/.built
+	rm -f $@
 	CC="$(TARGET_CC)" CPPFLAGS="$(STAGING_CPPFLAGS) $(PCAPSIPDUMP_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(PCAPSIPDUMP_LDFLAGS)" \
-	$(MAKE) -C $(PCAPSIPDUMP_BUILD_DIR)
-	touch $(PCAPSIPDUMP_BUILD_DIR)/.built
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -137,8 +138,8 @@ pcapsipdump: $(PCAPSIPDUMP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PCAPSIPDUMP_BUILD_DIR)/.staged: $(PCAPSIPDUMP_BUILD_DIR)/.built
-	rm -f $(PCAPSIPDUMP_BUILD_DIR)/.staged
-	touch $(PCAPSIPDUMP_BUILD_DIR)/.staged
+	rm -f $@
+	touch $@
 
 pcapsipdump-stage: $(PCAPSIPDUMP_BUILD_DIR)/.staged
 

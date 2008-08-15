@@ -37,7 +37,7 @@ SIMH_CONFLICTS=
 #
 # SIMH_IPK_VERSION should be incremented when the ipk changes.
 #
-SIMH_IPK_VERSION=1
+SIMH_IPK_VERSION=2
 
 #
 # SIMH_CONFFILES should be a list of user-editable files
@@ -80,7 +80,8 @@ SIMH_IPK=$(BUILD_DIR)/simh_$(SIMH_VERSION)-$(SIMH_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SIMH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SIMH_SITE)/$(SIMH_SOURCE)
+	$(WGET) -P $(@D) $(SIMH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,17 +110,17 @@ simh-source: $(DL_DIR)/$(SIMH_SOURCE) $(SIMH_PATCHES)
 #
 $(SIMH_BUILD_DIR)/.configured: $(DL_DIR)/$(SIMH_SOURCE) $(SIMH_PATCHES) make/simh.mk
 	$(MAKE) libpcap-stage
-	rm -rf $(BUILD_DIR)/$(SIMH_DIR) $(SIMH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SIMH_DIR) $(@D)
 	mkdir -p $(BUILD_DIR)/$(SIMH_DIR)/BIN && \
 	cd $(BUILD_DIR)/$(SIMH_DIR) && \
 	$(SIMH_UNZIP) -a $(DL_DIR)/$(SIMH_SOURCE)
 	if test -n "$(SIMH_PATCHES)" ; \
 		then cat $(SIMH_PATCHES) | patch -bd $(BUILD_DIR)/$(SIMH_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SIMH_DIR)" != "$(SIMH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SIMH_DIR) $(SIMH_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SIMH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SIMH_DIR) $(@D) ; \
 	fi
-#	(cd $(SIMH_BUILD_DIR); \
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SIMH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SIMH_LDFLAGS)" \
@@ -131,12 +132,12 @@ $(SIMH_BUILD_DIR)/.configured: $(DL_DIR)/$(SIMH_SOURCE) $(SIMH_PATCHES) make/sim
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(SIMH_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 ifeq ($(OPTWARE_TARGET), $(filter ts101 wl500g, $(OPTWARE_TARGET)))
-	sed -i -e 's/-lrt//' $(SIMH_BUILD_DIR)/makefile
-	sed -i -e 's/#if defined (_POSIX_SOURCE)/#if 0/' $(SIMH_BUILD_DIR)/sim_timer.c
+	sed -i -e 's/-lrt//' $(@D)/makefile
+	sed -i -e 's/#if defined (_POSIX_SOURCE)/#if 0/' $(@D)/sim_timer.c
 endif
-	touch $(SIMH_BUILD_DIR)/.configured
+	touch $@
 
 simh-unpack: $(SIMH_BUILD_DIR)/.configured
 
@@ -144,13 +145,13 @@ simh-unpack: $(SIMH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SIMH_BUILD_DIR)/.built: $(SIMH_BUILD_DIR)/.configured
-	rm -f $(SIMH_BUILD_DIR)/.built
-	$(MAKE) -C $(SIMH_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		USE_NETWORK=1 \
 		TARGET_CC=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SIMH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SIMH_LDFLAGS)"
-	touch $(SIMH_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -160,12 +161,12 @@ simh: $(SIMH_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SIMH_BUILD_DIR)/.staged: $(SIMH_BUILD_DIR)/.built
-	rm -f $(SIMH_BUILD_DIR)/.staged
+#$(SIMH_BUILD_DIR)/.staged: $(SIMH_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(SIMH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SIMH_BUILD_DIR)/.staged
-
-simh-stage: $(SIMH_BUILD_DIR)/.staged
+#	touch $@
+#
+#simh-stage: $(SIMH_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer

@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ARPING_SITE=ftp://ftp.habets.pp.se/pub/synscan
-ARPING_VERSION=2.06
+ARPING_VERSION=2.07
 ARPING_SOURCE=arping-$(ARPING_VERSION).tar.gz
 ARPING_DIR=arping-$(ARPING_VERSION)
 ARPING_UNZIP=zcat
@@ -29,7 +29,7 @@ ARPING_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ARPING_DESCRIPTION=Arping is an ARP level ping utility.
 ARPING_SECTION=net
 ARPING_PRIORITY=optional
-ARPING_DEPENDS=
+ARPING_DEPENDS=libpcap
 ARPING_SUGGESTS=
 ARPING_CONFLICTS=
 
@@ -76,8 +76,8 @@ ARPING_IPK=$(BUILD_DIR)/arping_$(ARPING_VERSION)-$(ARPING_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ARPING_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ARPING_SITE)/$(ARPING_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(ARPING_SOURCE)
+	$(WGET) -P $(@D) $(ARPING_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ arping-source: $(DL_DIR)/$(ARPING_SOURCE) $(ARPING_PATCHES)
 #
 $(ARPING_BUILD_DIR)/.configured: $(DL_DIR)/$(ARPING_SOURCE) $(ARPING_PATCHES) make/arping.mk
 	$(MAKE) libnet11-stage libpcap-stage
-	rm -rf $(BUILD_DIR)/$(ARPING_DIR) $(ARPING_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ARPING_DIR) $(@D)
 	$(ARPING_UNZIP) $(DL_DIR)/$(ARPING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ARPING_PATCHES)" ; \
 		then cat $(ARPING_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ARPING_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(ARPING_DIR)" != "$(ARPING_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(ARPING_DIR) $(ARPING_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(ARPING_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(ARPING_DIR) $(@D) ; \
 	fi
-#	(cd $(ARPING_BUILD_DIR); \
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ARPING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ARPING_LDFLAGS)" \
@@ -127,7 +127,7 @@ $(ARPING_BUILD_DIR)/.configured: $(DL_DIR)/$(ARPING_SOURCE) $(ARPING_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(ARPING_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 arping-unpack: $(ARPING_BUILD_DIR)/.configured
@@ -137,7 +137,7 @@ arping-unpack: $(ARPING_BUILD_DIR)/.configured
 #
 $(ARPING_BUILD_DIR)/.built: $(ARPING_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(ARPING_BUILD_DIR) arping2 \
+	$(MAKE) -C $(@D) arping2 \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS2="$(ARPING_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 		LDFLAGS2="$(ARPING_LDFLAGS) $(STAGING_LDFLAGS)" \
@@ -154,7 +154,7 @@ arping: $(ARPING_BUILD_DIR)/.built
 #
 $(ARPING_BUILD_DIR)/.staged: $(ARPING_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(ARPING_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 arping-stage: $(ARPING_BUILD_DIR)/.staged
