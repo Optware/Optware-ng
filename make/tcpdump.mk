@@ -29,14 +29,14 @@ TCPDUMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TCPDUMP_DESCRIPTION=tcpdump dumps the traffic on a network
 TCPDUMP_SECTION=net
 TCPDUMP_PRIORITY=optional
-TCPDUMP_DEPENDS=
+TCPDUMP_DEPENDS=libpcap
 TCPDUMP_SUGGESTS=
 TCPDUMP_CONFLICTS=
 
 #
 # TCPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-TCPDUMP_IPK_VERSION=1
+TCPDUMP_IPK_VERSION=2
 
 #
 # TCPDUMP_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ TCPDUMP_IPK=$(BUILD_DIR)/tcpdump_$(TCPDUMP_VERSION)-$(TCPDUMP_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TCPDUMP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TCPDUMP_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(TCPDUMP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -115,6 +115,7 @@ $(TCPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES)
 	if test "$(BUILD_DIR)/$(TCPDUMP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TCPDUMP_DIR) $(@D) ; \
 	fi
+	sed -i -e 's/ @V_\(PCAPDEP\|INCLS\)@//' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TCPDUMP_CPPFLAGS)" \
@@ -140,7 +141,7 @@ tcpdump-unpack: $(TCPDUMP_BUILD_DIR)/.configured
 #
 $(TCPDUMP_BUILD_DIR)/.built: $(TCPDUMP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) LIBS=-lpcap INCLS=-I.
 	touch $@
 
 #

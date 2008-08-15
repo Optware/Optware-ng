@@ -33,7 +33,7 @@ NTOP_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 NTOP_DESCRIPTION=Network monitoring software
 NTOP_SECTION=net
 NTOP_PRIORITY=optional
-NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool, pcre
+NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool, pcre, libpcap
 ifneq (, $(filter mysql, $(PACKAGES)))
 NTOP_DEPENDS+=, mysql
 endif
@@ -48,7 +48,7 @@ endif
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=3
+NTOP_IPK_VERSION=4
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
@@ -68,7 +68,7 @@ NTOP_PATCHES=
 # compilation or linking flags, then list them here.
 #
 NTOP_CPPFLAGS=
-NTOP_LDFLAGS=-ljpeg -lfreetype -lfontconfig -lexpat -lpng12 -lz
+NTOP_LDFLAGS=-ljpeg -lfreetype -lfontconfig -lexpat -lpng12 -lz -lpcap
 
 ifneq (, $(filter mysql, $(PACKAGES)))
 NTOP_CONFIGURE_OPTS +=--enable-mysql
@@ -116,8 +116,8 @@ $(NTOP_IPK_DIR)/CONTROL/control:
 # directly to the builddir with CVS
 #
 $(DL_DIR)/$(NTOP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NTOP_SITE)/$(NTOP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NTOP_SOURCE)
+	$(WGET) -P $(@D) $(NTOP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 
 #
@@ -167,9 +167,9 @@ endif
 		sed -i -e 's/config="y"/config="n"/' autogen.sh; \
 		./autogen.sh; \
 	)
+	sed -i -e '/FLAGS=.*FLAGS.*-I\/usr\//d' $(@D)/configure.in
+	autoreconf -vif $(@D)
 	(cd $(@D); \
-		sed -i -e '/FLAGS=.*FLAGS.*-I\/usr\//d' configure.in; \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTOP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NTOP_LDFLAGS)" \

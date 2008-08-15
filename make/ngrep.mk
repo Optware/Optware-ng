@@ -29,14 +29,14 @@ NGREP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NGREP_DESCRIPTION=network grep.
 NGREP_SECTION=net
 NGREP_PRIORITY=optional
-NGREP_DEPENDS=
+NGREP_DEPENDS=libpcap
 NGREP_SUGGESTS=
 NGREP_CONFLICTS=
 
 #
 # NGREP_IPK_VERSION should be incremented when the ipk changes.
 #
-NGREP_IPK_VERSION=2
+NGREP_IPK_VERSION=3
 
 #
 # NGREP_CONFFILES should be a list of user-editable files
@@ -79,8 +79,8 @@ NGREP_IPK=$(BUILD_DIR)/ngrep_$(NGREP_VERSION)-$(NGREP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NGREP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NGREP_SITE)/$(NGREP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NGREP_SOURCE)
+	$(WGET) -P $(@D) $(NGREP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,16 +109,16 @@ ngrep-source: $(DL_DIR)/$(NGREP_SOURCE) $(NGREP_PATCHES)
 #
 $(NGREP_BUILD_DIR)/.configured: $(DL_DIR)/$(NGREP_SOURCE) $(NGREP_PATCHES) make/ngrep.mk
 	$(MAKE) libpcap-stage
-	rm -rf $(BUILD_DIR)/$(NGREP_DIR) $(NGREP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NGREP_DIR) $(@D)
 	$(NGREP_UNZIP) $(DL_DIR)/$(NGREP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NGREP_PATCHES)" ; \
 		then cat $(NGREP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NGREP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NGREP_DIR)" != "$(NGREP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NGREP_DIR) $(NGREP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NGREP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NGREP_DIR) $(@D) ; \
 	fi
-	(cd $(NGREP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NGREP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NGREP_LDFLAGS)" \
@@ -132,7 +132,7 @@ $(NGREP_BUILD_DIR)/.configured: $(DL_DIR)/$(NGREP_SOURCE) $(NGREP_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(NGREP_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 ngrep-unpack: $(NGREP_BUILD_DIR)/.configured
@@ -142,7 +142,7 @@ ngrep-unpack: $(NGREP_BUILD_DIR)/.configured
 #
 $(NGREP_BUILD_DIR)/.built: $(NGREP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NGREP_BUILD_DIR) MAKEFLAGS=""
+	$(MAKE) -C $(@D) MAKEFLAGS=""
 	touch $@
 
 #
@@ -155,7 +155,7 @@ ngrep: $(NGREP_BUILD_DIR)/.built
 #
 $(NGREP_BUILD_DIR)/.staged: $(NGREP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NGREP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 ngrep-stage: $(NGREP_BUILD_DIR)/.staged

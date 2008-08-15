@@ -29,14 +29,14 @@ IFTOP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IFTOP_DESCRIPTION=Display bandwidth usage on an interface by host
 IFTOP_SECTION=net
 IFTOP_PRIORITY=optional
-IFTOP_DEPENDS=ncurses
+IFTOP_DEPENDS=ncurses, libpcap
 IFTOP_SUGGESTS=
 IFTOP_CONFLICTS=
 
 #
 # IFTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-IFTOP_IPK_VERSION=2
+IFTOP_IPK_VERSION=3
 
 #
 # IFTOP_CONFFILES should be a list of user-editable files
@@ -78,8 +78,8 @@ IFTOP_IPK=$(BUILD_DIR)/iftop_$(IFTOP_VERSION)-$(IFTOP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IFTOP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IFTOP_SITE)/$(IFTOP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(IFTOP_SOURCE)
+	$(WGET) -P $(@D) $(IFTOP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,17 +108,17 @@ iftop-source: $(DL_DIR)/$(IFTOP_SOURCE) $(IFTOP_PATCHES)
 #
 $(IFTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(IFTOP_SOURCE) $(IFTOP_PATCHES) make/iftop.mk
 	$(MAKE) libpcap-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(IFTOP_DIR) $(IFTOP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(IFTOP_DIR) $(@D)
 	$(IFTOP_UNZIP) $(DL_DIR)/$(IFTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IFTOP_PATCHES)" ; \
 		then cat $(IFTOP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(IFTOP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(IFTOP_DIR)" != "$(IFTOP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(IFTOP_DIR) $(IFTOP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(IFTOP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(IFTOP_DIR) $(@D) ; \
 	fi
-	sed -i -e 's/curses ncurses/ncurses/' $(IFTOP_BUILD_DIR)/configure
-	(cd $(IFTOP_BUILD_DIR); \
+	sed -i -e 's/curses ncurses/ncurses/' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IFTOP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IFTOP_LDFLAGS)" \
@@ -140,7 +140,7 @@ iftop-unpack: $(IFTOP_BUILD_DIR)/.configured
 #
 $(IFTOP_BUILD_DIR)/.built: $(IFTOP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(IFTOP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -153,7 +153,7 @@ iftop: $(IFTOP_BUILD_DIR)/.built
 #
 $(IFTOP_BUILD_DIR)/.staged: $(IFTOP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(IFTOP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 iftop-stage: $(IFTOP_BUILD_DIR)/.staged

@@ -35,14 +35,14 @@ TSHARK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TSHARK_DESCRIPTION=Terminal based wireshark to dump and analyze network traffic
 TSHARK_SECTION=net
 TSHARK_PRIORITY=optional
-TSHARK_DEPENDS=adns, glib, pcre, zlib
+TSHARK_DEPENDS=adns, glib, libpcap, pcre, zlib
 TSHARK_SUGGESTS=
 TSHARK_CONFLICTS=
 
 #
 # TSHARK_IPK_VERSION should be incremented when the ipk changes.
 #
-TSHARK_IPK_VERSION=1
+TSHARK_IPK_VERSION=2
 
 #
 # TSHARK_CONFFILES should be a list of user-editable files
@@ -122,6 +122,7 @@ $(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES)
 	if test "$(BUILD_DIR)/$(TSHARK_DIR)" != "$(TSHARK_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TSHARK_DIR) $(TSHARK_BUILD_DIR) ; \
 	fi
+	sed -i -e '/^INCLUDES/s|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(@D)/plugins/*/Makefile.am
 	(cd $(@D); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -140,7 +141,6 @@ $(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e '/^INCLUDES/s|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(@D)/plugins/*/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -207,9 +207,13 @@ $(TSHARK_IPK): $(TSHARK_BUILD_DIR)/.built
 	$(MAKE) -C $(TSHARK_BUILD_DIR) \
 		DESTDIR=$(TSHARK_IPK_DIR) \
 		program_transform_name="" \
-		install-strip
+		install
 	rm -f $(TSHARK_IPK_DIR)/opt/lib/*.la
 	rm -f $(TSHARK_IPK_DIR)/opt/lib/wireshark/plugins/*/*.la
+	$(STRIP_COMMAND) \
+		$(TSHARK_IPK_DIR)/opt/bin/[a-em-z]* \
+		$(TSHARK_IPK_DIR)/opt/lib/lib* \
+		$(TSHARK_IPK_DIR)/opt/lib/wireshark/plugins/*/*.so
 	install -d $(TSHARK_IPK_DIR)/opt/etc/
 #	install -m 644 $(TSHARK_SOURCE_DIR)/tshark.conf $(TSHARK_IPK_DIR)/opt/etc/tshark.conf
 #	install -d $(TSHARK_IPK_DIR)/opt/etc/init.d

@@ -30,14 +30,14 @@ SNORT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SNORT_DESCRIPTION=A lightweight network intrusion detection system.
 SNORT_SECTION=net
 SNORT_PRIORITY=optional
-SNORT_DEPENDS=pcre
+SNORT_DEPENDS=libpcap, pcre
 SNORT_SUGGESTS=
 SNORT_CONFLICTS=
 
 #
 # SNORT_IPK_VERSION should be incremented when the ipk changes.
 #
-SNORT_IPK_VERSION=1
+SNORT_IPK_VERSION=2
 
 #
 # SNORT_CONFFILES should be a list of user-editable files
@@ -118,7 +118,7 @@ $(SNORT_BUILD_DIR)/.configured: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES) make/
 		then mv $(BUILD_DIR)/$(SNORT_DIR) $(@D) ; \
 	fi
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
-	ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
+	ACLOCAL="aclocal -Im4" autoreconf -vif $(@D)
 	sed -i -e '/extra_incl/s|=-I/usr/include/pcap|=|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
