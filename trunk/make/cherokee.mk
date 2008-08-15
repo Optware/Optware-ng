@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.7.2
-CHEROKEE_SITE=http://www.0x50.org/download/0.7/$(CHEROKEE_VERSION)
+CHEROKEE_VERSION=0.8.0
+CHEROKEE_SITE=http://www.0x50.org/download/0.8/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
 CHEROKEE_UNZIP=zcat
@@ -124,7 +124,7 @@ cherokee-source: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
+$(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES) make/cherokee.mk
 	$(MAKE) openssl-stage pcre-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
@@ -268,7 +268,9 @@ $(CHEROKEE_IPK) $(CHEROKEE-ADMIN_IPK) $(CHEROKEE-DEV_IPK) $(CHEROKEE-DOC_IPK): $
 	$(MAKE) -C $(CHEROKEE_BUILD_DIR) DESTDIR=$(CHEROKEE_IPK_DIR) install-strip
 	rm $(CHEROKEE_IPK_DIR)/opt/lib/*.la $(CHEROKEE_IPK_DIR)/opt/lib/cherokee/*.la
 	install -d $(CHEROKEE_IPK_DIR)/opt/share/cherokee/cgi-bin
-	sed -i -e '/server.port/s|=.*|= 8008|' -e 's|= php-cgi |= /opt/bin/php-fcgi |' \
+	sed -i \
+		-e '/server.port *=/s|=.*|= 8008|'\
+		-e 's|= php-cgi |= /opt/bin/php-fcgi |' \
 		$(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
 	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/S80cherokee
