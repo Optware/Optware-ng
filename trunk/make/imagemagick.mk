@@ -21,8 +21,8 @@
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VER=6.4.1
-IMAGEMAGICK_REV=8
+IMAGEMAGICK_VER=6.4.2
+IMAGEMAGICK_REV=7
 IMAGEMAGICK_IPK_VERSION=1
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.bz2
 IMAGEMAGICK_UNZIP=bzcat
@@ -104,16 +104,16 @@ imagemagick-source: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
 #
 $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES) make/imagemagick.mk
 	make zlib-stage freetype-stage libjpeg-stage libpng-stage bzip2-stage libtiff-stage
-	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(@D)
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IMAGEMAGICK_PATCHES)" ; \
 		then cat $(IMAGEMAGICK_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(IMAGEMAGICK_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(IMAGEMAGICK_DIR)" != "$(IMAGEMAGICK_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(IMAGEMAGICK_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(@D) ; \
 	fi
-	(cd $(IMAGEMAGICK_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IMAGEMAGICK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IMAGEMAGICK_LDFLAGS)" \
@@ -131,7 +131,7 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 		--with-freetype \
 		--without-gslib \
 	)
-	$(PATCH_LIBTOOL) $(IMAGEMAGICK_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 imagemagick-unpack: $(IMAGEMAGICK_BUILD_DIR)/.configured
@@ -156,7 +156,7 @@ imagemagick-unpack: $(IMAGEMAGICK_BUILD_DIR)/.configured
 #
 $(IMAGEMAGICK_BUILD_DIR)/.built: $(IMAGEMAGICK_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 
