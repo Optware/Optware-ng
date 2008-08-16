@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.6.32
+NGINX_VERSION=0.7.10
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -134,14 +134,14 @@ nginx-source: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
 #
 $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/nginx.mk
 	$(MAKE) openssl-stage pcre-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(NGINX_DIR) $(NGINX_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NGINX_DIR) $(@D)
 	$(NGINX_UNZIP) $(DL_DIR)/$(NGINX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NGINX_PATCHES)" ; \
 		then cat $(NGINX_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(NGINX_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NGINX_DIR)" != "$(NGINX_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NGINX_DIR) $(NGINX_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NGINX_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NGINX_DIR) $(@D) ; \
 	fi
 #		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -150,7 +150,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
                 --with-threads \
 		--disable-nls \
 		--disable-static
-	sed -i -e 's|/usr/include/|$(TARGET_INCDIR)/|' $(NGINX_BUILD_DIR)/auto/os/linux
+	sed -i -e 's|/usr/include/|$(TARGET_INCDIR)/|' $(@D)/auto/os/linux
 	(cd $(@D); \
 	    if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*LITTLE_ENDIAN; \
 		then export ngx_cache_ENDIAN=LITTLE; \
