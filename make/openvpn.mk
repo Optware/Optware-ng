@@ -26,7 +26,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OPENVPN_SITE=http://openvpn.net/release
-OPENVPN_VERSION=2.1_rc7
+OPENVPN_VERSION=2.1_rc9
 OPENVPN_SOURCE=openvpn-$(OPENVPN_VERSION).tar.gz
 OPENVPN_DIR=openvpn-$(OPENVPN_VERSION)
 OPENVPN_UNZIP=zcat
@@ -41,7 +41,7 @@ OPENVPN_CONFLICTS=
 #
 # OPENVPN_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENVPN_IPK_VERSION=2
+OPENVPN_IPK_VERSION=1
 
 #
 # OPENVPN_CONFFILES should be a list of user-editable files
