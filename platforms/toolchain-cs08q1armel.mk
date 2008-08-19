@@ -7,6 +7,21 @@ LIBC_STYLE=glibc
 LIBSTDC++_VERSION=6.0.9
 LIBNSL_VERSION=2.5
 
+ifeq ($(HOST_MACHINE), $(filter armv5tel, $(HOST_MACHINE)))
+
+HOSTCC = $(TARGET_CC)
+GNU_HOST_NAME = $(GNU_TARGET_NAME)
+TARGET_CROSS = /usr/bin/
+TARGET_LIBDIR = /usr/lib
+TARGET_INCDIR = /usr/include
+TARGET_LDFLAGS =
+TARGET_CUSTOM_FLAGS=
+TARGET_CFLAGS= $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
+
+toolchain:
+
+else
+
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = arm-none-linux-gnueabi
@@ -38,3 +53,5 @@ $(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/pl
 	mkdir -p $(BASE_DIR)/toolchain
 	tar -xj -C $(BASE_DIR)/toolchain -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	touch $@
+
+endif
