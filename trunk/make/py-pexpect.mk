@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-PEXPECT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pexpect
-PY-PEXPECT_VERSION=2.3
+PY-PEXPECT_SITE=http://pypi.python.org/packages/source/p/pexpect
+PY-PEXPECT_VERSION=2.4
 PY-PEXPECT_SOURCE=pexpect-$(PY-PEXPECT_VERSION).tar.gz
 PY-PEXPECT_DIR=pexpect-$(PY-PEXPECT_VERSION)
 PY-PEXPECT_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-PEXPECT_CONFLICTS=
 #
 # PY-PEXPECT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PEXPECT_IPK_VERSION=2
+PY-PEXPECT_IPK_VERSION=1
 
 #
 # PY-PEXPECT_CONFFILES should be a list of user-editable files
