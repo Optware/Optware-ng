@@ -998,7 +998,7 @@ CONFIG_USB_UHCI_HCD=y
 #
 # USB Bluetooth TTY can only be used with disabled Bluetooth subsystem
 #
-# CONFIG_USB_ACM is not set
+CONFIG_USB_ACM=m
 CONFIG_USB_PRINTER=y
 
 #
