@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://pypi.python.org/packages/source/r/roundup
-PY-ROUNDUP_VERSION=1.4.4
+PY-ROUNDUP_VERSION=1.4.5.1
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
@@ -84,8 +84,8 @@ PY25-ROUNDUP_IPK=$(BUILD_DIR)/py25-roundup_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-ROUNDUP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-ROUNDUP_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-ROUNDUP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
