@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NEWSBEUTER_SITE=http://synflood.at/newsbeuter
-NEWSBEUTER_VERSION=0.9.1
+NEWSBEUTER_SITE=http://www.newsbeuter.org/downloads
+NEWSBEUTER_VERSION=1.0
 NEWSBEUTER_SOURCE=newsbeuter-$(NEWSBEUTER_VERSION).tar.gz
 NEWSBEUTER_DIR=newsbeuter-$(NEWSBEUTER_VERSION)
 NEWSBEUTER_UNZIP=zcat
@@ -152,7 +152,10 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e '/DEFINES=/s/$$/ $$(CPPFLAGS)/' $(@D)/Makefile
+	sed -i -e '/DEFINES=/s/$$/ $$(CPPFLAGS)/' \
+	       -e '/^CXXFLAGS/s| -I/sw/include||' \
+	       -e '/^LDFLAGS/s| -L/sw/lib||' \
+		$(@D)/Makefile
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
 		sed -i -e 's/ -Wextra//' $(@D)/Makefile; \
 	fi
