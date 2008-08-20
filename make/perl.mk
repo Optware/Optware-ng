@@ -16,6 +16,7 @@
 #
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
 PERL_VERSION=5.10.0
+PERL_MAJOR_VER=5.10
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz
 PERL_DIR=perl-$(PERL_VERSION)
 PERL_UNZIP=zcat
@@ -79,8 +80,12 @@ PERL_HOSTPERL=perl
 PERL_INC=
 endif
 PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
+
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
 PERL_IPK=$(BUILD_DIR)/perl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PERL-DOC_IPK_DIR=$(BUILD_DIR)/perl-doc-$(PERL_VERSION)-ipk
+PERL-DOC_IPK=$(BUILD_DIR)/perl-doc_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: perl-source perl-unpack perl perl-stage perl-ipk perl-clean perl-dirclean perl-check perl-hostperl
 
@@ -171,18 +176,18 @@ else
 ifneq (, $(filter -fPIC, $(STAGING_CPPFLAGS)))
 	echo "CFLAGS = -fPIC" >> $(@D)/Cross/config
 endif
-	(cd $(PERL_BUILD_DIR)/Cross; \
-		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(OPTWARE_TARGET) ] && \
-		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-$(OPTWARE_TARGET) config.sh-$(GNU_TARGET_NAME) ) || \
-		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) ] && \
-		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) . ) ; \
+	(cd $(@D)/Cross; \
+		( [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) ] && \
+		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) config.sh-$(GNU_TARGET_NAME) ) || \
+		( [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(GNU_TARGET_NAME) ] && \
+		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(GNU_TARGET_NAME) . ) ; \
 	)
 ifdef PERL_LDFLAGS_EXTRA
 	sed -i -e 's|-shared|& $(PERL_LDFLAGS_EXTRA)|' $(@D)/Cross/config.sh-$(GNU_TARGET_NAME)
 endif
 	(cd $(@D)/Cross; \
-		cp -f $(PERL_SOURCE_DIR)/Cross/Makefile . ; \
-		cp -f $(PERL_SOURCE_DIR)/Cross/Makefile.SH.patch . ; \
+		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Makefile . ; \
+		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Makefile.SH.patch . ; \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
 		PATH="`dirname $(TARGET_CC)`:$$PATH" \
@@ -259,6 +264,21 @@ $(PERL_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(PERL_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
 
+$(PERL-DOC_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: perl-doc" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL_PRIORITY)" >>$@
+	@echo "Section: $(PERL_SECTION)" >>$@
+	@echo "Version: $(PERL_VERSION)-$(PERL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL_MAINTAINER)" >>$@
+	@echo "Source: $(PERL_SITE)/$(PERL_SOURCE)" >>$@
+	@echo "Description: Documentation for perl" >>$@
+	@echo "Depends: " >>$@
+	@echo "Suggests: " >>$@
+	@echo "Conflicts: " >>$@
+
 #
 # This builds the IPK file.
 #
@@ -271,8 +291,9 @@ $(PERL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PERL_IPK): $(PERL_BUILD_DIR)/.built
+$(PERL_IPK) $(PERL-DOC_IPK): $(PERL_BUILD_DIR)/.built
 	rm -rf $(PERL_IPK_DIR) $(BUILD_DIR)/perl_*_$(TARGET_ARCH).ipk
+	rm -rf $(PERL-DOC_IPK_DIR) $(BUILD_DIR)/perl-doc_*_$(TARGET_ARCH).ipk
 ifeq ($(HOSTCC), $(TARGET_CC))
 	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) install.perl
 else
@@ -295,12 +316,19 @@ ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 endif
 	$(MAKE) $(PERL_IPK_DIR)/CONTROL/control
 	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
+	$(MAKE) $(PERL-DOC_IPK_DIR)/CONTROL/control
+	install -d $(PERL-DOC_IPK_DIR)/opt/bin
+	mv $(PERL_IPK_DIR)/opt/bin/perldoc $(PERL-DOC_IPK_DIR)/opt/bin
+	install -d $(PERL-DOC_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)
+	mv $(PERL_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/pod $(PERL-DOC_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/
+	cp -rp $(PERL_HOST_BUILD_DIR)/staging-install/man $(PERL-DOC_IPK_DIR)/opt/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-DOC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-perl-ipk: $(PERL_IPK)
+perl-ipk: $(PERL_IPK) $(PERL-DOC_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
