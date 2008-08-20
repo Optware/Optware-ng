@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.5.6.5
+GIT_VERSION=1.6.0
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -53,7 +53,6 @@ GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 # which they should be applied to the source code.
 #
 GIT_PATCHES=$(GIT_SOURCE_DIR)/Makefile.patch \
-	$(GIT_SOURCE_DIR)/templates-Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -244,7 +243,6 @@ $(GIT_IPK): $(GIT_BUILD_DIR)/.built
 		NO_TCLTK=true \
 		prefix=/opt \
 		install
-	-$(STRIP_COMMAND) $(GIT_IPK_DIR)/opt/bin/git-daemon
 ifneq (,$(filter perl, $(PACKAGES)))
 	mv $(GIT_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod \
 	   $(GIT_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.git 
