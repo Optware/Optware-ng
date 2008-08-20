@@ -31,6 +31,8 @@ perl-source: $(DL_DIR)/$(PERL_SOURCE)
 include $(SOURCE_DIR)/perl/$(PERL_MAJOR_VER)/perl.mk
 
 
+# the following two targets are here to not confuse autoclean
+
 $(PERL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
