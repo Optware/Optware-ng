@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
-PERL_VERSION=5.8.8
+PERL_VERSION=5.10.0
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz
 PERL_DIR=perl-$(PERL_VERSION)
 PERL_UNZIP=zcat
@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=18
+PERL_IPK_VERSION=1
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -40,10 +40,7 @@ PERL_IPK_VERSION=18
 # PERL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PERL_PATCHES=\
-$(PERL_SOURCE_DIR)/Cross/Configure.patch \
-$(PERL_SOURCE_DIR)/Cross/gcc42.patch \
-$(PERL_SOURCE_DIR)/perl-5.8.8-asm-page-h-compile-failure.patch
+PERL_PATCHES=
 
 PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 
@@ -76,7 +73,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
 PERL_HOST_MINIPERL=$(PERL_HOST_BUILD_DIR)/miniperl
 PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/perl
-PERL_INC=PERL_INC=$(STAGING_LIB_DIR)/perl5/5.8.8/$(PERL_ARCH)/CORE
+PERL_INC=PERL_INC=$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
 else
 PERL_HOSTPERL=perl
 PERL_INC=
@@ -92,7 +89,8 @@ PERL_IPK=$(BUILD_DIR)/perl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PERL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL_SITE)/$(PERL_SOURCE)
+	$(WGET) -P $(@D) $(PERL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,22 +101,22 @@ perl-source: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
-	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \
 		cat $(PERL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
 	fi
-	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR) ; \
-	(cd $(PERL_HOST_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL_DIR) $(@D) ; \
+	(cd $(@D); \
 		rm -f config.sh Policy.sh; \
 		sh ./Configure -des \
 			-Dinstallstyle='lib/perl5' \
 			-Darchname=$(PERL_ARCH) \
 			-Dstartperl='#!/opt/bin/perl' \
-			-Dprefix=$(PERL_HOST_BUILD_DIR)/staging-install; \
+			-Dprefix=$(@D)/staging-install; \
 		make install.perl; \
 	)
-	touch $(PERL_HOST_BUILD_DIR)/.hostbuilt
+	touch $@
 
 perl-hostperl: $(PERL_HOST_BUILD_DIR)/.hostbuilt
 endif
@@ -144,21 +142,21 @@ else
 $(PERL_BUILD_DIR)/.configured: $(PERL_HOST_BUILD_DIR)/.hostbuilt
 endif
 	$(MAKE) libdb-stage gdbm-stage
-	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \
 		cat $(PERL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
 	fi
-	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
-	sed -i -e '/LIBS/s|-L/usr/local/lib|-L$(STAGING_LIB_DIR)|' $(PERL_BUILD_DIR)/ext/*/Makefile.PL
+	mv $(BUILD_DIR)/$(PERL_DIR) $(@D)
+	sed -i -e '/LIBS/s|-L/usr/local/lib|-L$(STAGING_LIB_DIR)|' $(@D)/ext/*/Makefile.PL
 	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
 	sed -i.orig \
 		-e 's:/usr/include/errno.h:$(TARGET_INCDIR)/errno.h:g' \
 		-e '/^# *warn/s:^#::' \
 		-e 's:= $$Config{cppstdin}:= $(TARGET_CPP):' \
-		$(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
+		$(@D)/ext/Errno/Errno_pm.PL
 ifeq ($(HOSTCC), $(TARGET_CC))
-	(cd $(PERL_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
@@ -169,8 +167,8 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		-A clear:ignore_versioned_solibs \
 	)
 else
-	ln -s $(PERL_HOST_MINIPERL) $(PERL_BUILD_DIR)/hostperl
-	(cd $(PERL_BUILD_DIR)/Cross; \
+	ln -s $(PERL_HOST_MINIPERL) $(@D)/hostperl
+	(cd $(@D)/Cross; \
 		rm -f config; \
 		printf "### Target Arch\nARCH = `echo $(GNU_TARGET_NAME) | sed s/-linux.*//`\n" > config; \
 		printf "### Target OS\nOS = `echo $(GNU_TARGET_NAME) | sed s/.*-linux/linux/`\n" >> config; \
@@ -197,7 +195,7 @@ endif
 	)
 endif
 	if test -n "$(PERL_POST_CONFIGURE_PATCHES)" ; then \
-		cat $(PERL_POST_CONFIGURE_PATCHES) | patch -d $(PERL_BUILD_DIR) -p0 ; \
+		cat $(PERL_POST_CONFIGURE_PATCHES) | patch -d $(@D) -p0 ; \
 	fi
 	touch $@
 
@@ -207,20 +205,21 @@ perl-unpack: $(PERL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PERL_BUILD_DIR)/.built: $(PERL_BUILD_DIR)/.configured
-	rm -f $(PERL_BUILD_DIR)/.built
+	rm -f $@
 ifeq ($(HOSTCC), $(TARGET_CC))
-	$(MAKE) -C $(PERL_BUILD_DIR)
+	$(MAKE) -C $(@D)
 else
 	$(TARGET_CONFIGURE_OPTS) \
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
-	PATH="`dirname $(TARGET_CC)`:$(PERL_BUILD_DIR):$$PATH" \
-		$(MAKE) -C $(PERL_BUILD_DIR)/Cross perl \
+	PATH="`dirname $(TARGET_CC)`:$(@D):$$PATH" \
+		$(MAKE) -C $(@D)/Cross perl \
 	PASTHRU_INC="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
 	OTHERLDFLAGS="-L$(STAGING_LIB_DIR) -rpath /opt/lib" \
-
+	GEN_UUDMAP_DIR=$(PERL_HOST_BUILD_DIR) \
+	;
 endif
-	touch $(PERL_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -231,12 +230,12 @@ perl: $(PERL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PERL_BUILD_DIR)/.staged: $(PERL_BUILD_DIR)/.built
-	rm -f $(PERL_BUILD_DIR)/.staged
+	rm -f $@
 ifeq ($(HOSTCC), $(TARGET_CC))
-	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install.perl
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install.perl
 else
-	PATH="`dirname $(TARGET_CC)`:$(PERL_BUILD_DIR):$$PATH" \
-		$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(STAGING_DIR) INSTALL_DEPENDENCE="" install-strip
+	PATH="`dirname $(TARGET_CC)`:$(@D):$$PATH" \
+		$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) INSTALL_DEPENDENCE="" install-strip
 	for so in `find $(STAGING_DIR)/opt/lib/perl5/ -name '*.so'`; do \
 		chmod u+w $$so; $(STRIP_COMMAND) $$so; done
 endif
@@ -244,7 +243,7 @@ endif
 		rm -f perl; \
 		ln -s perl$(PERL_VERSION) perl; \
 	)
-	touch $(PERL_BUILD_DIR)/.staged
+	touch $@
 
 perl-stage: $(PERL_BUILD_DIR)/.staged
 
@@ -253,7 +252,7 @@ perl-stage: $(PERL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/perl
 #
 $(PERL_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
