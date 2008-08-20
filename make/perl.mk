@@ -158,6 +158,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		-Dcc=gcc \
 		-Dprefix=/opt \
 		-Duseshrplib \
+		-Dd_dlopen \
 		-de \
 	)
 else
