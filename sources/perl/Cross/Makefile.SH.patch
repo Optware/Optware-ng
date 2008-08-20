@@ -1,5 +1,5 @@
---- perl-5.8.8/Makefile.SH.orig	2006-08-15 10:12:45.000000000 +0200
-+++ perl-5.8.8/Makefile.SH	2006-08-15 10:16:58.000000000 +0200
+--- perl/Makefile.SH.orig	2007-12-18 02:47:07.000000000 -0800
++++ perl/Makefile.SH	2008-08-17 13:34:26.000000000 -0700
 @@ -129,18 +129,7 @@
  	    # INSTALL file, under "Building a shared perl library".
  	    # If there is no pre-existing $libperl, we don't need
@@ -20,7 +20,7 @@
  	    ;;
  	os390)	test -f /bin/env && ldlibpth="/bin/env $ldlibpth"
  		;;
-@@ -401,9 +390,22 @@
+@@ -441,16 +430,29 @@
  .c.s:
  	$(CCCMDSRC) -S $*.c
  
@@ -44,11 +44,7 @@
 +
 +more4: extras.make
  
- .PHONY: all compile translators utilities
- 
-@@ -413,10 +415,10 @@
- 	cd x2p; $(MAKE) compile;
- 	cd pod; $(MAKE) compile;
+ .PHONY: all translators utilities
  
 -translators:	miniperl$(EXE_EXT) $(CONFIGPM) FORCE
 +translators:	$(CONFIGPM) FORCE
@@ -59,43 +55,18 @@
  	@echo " "; echo "	Making utilities"; cd utils; $(LDLIBPTH) $(MAKE) all
  
  
-@@ -591,7 +593,7 @@
- 	$(CC) -o miniperl $(CLDFLAGS) \
- 	    `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-+#	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
- !NO!SUBS!
- 		;;
- 	next4*)
-@@ -599,7 +601,7 @@
- miniperl: $& miniperlmain$(OBJ_EXT) $(LIBPERL) opmini$(OBJ_EXT)
- 	$(CC) -o miniperl `echo $(obj) | sed 's/ op$(OBJ_EXT) / /'` \
- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) perl$(OBJ_EXT) $(libs)
--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-+#	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
- !NO!SUBS!
- 		;;
- 	darwin*)
-@@ -620,7 +622,7 @@
- 	-@rm -f miniperl.xok
- 	$(CC) $(CLDFLAGS) $(NAMESPACEFLAGS) -o miniperl \
- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(LLIBPERL) $(libs)
--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-+#	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
- !NO!SUBS!
- 		;;
- 	*)
-@@ -629,7 +631,7 @@
- 	-@rm -f miniperl.xok
- 	$(LDLIBPTH) $(CC) $(CLDFLAGS) -o miniperl \
- 	    miniperlmain$(OBJ_EXT) opmini$(OBJ_EXT) $(LLIBPERL) $(libs)
--	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
-+#	$(LDLIBPTH) ./miniperl -w -Ilib -MExporter -e '<?>' || $(MAKE) minitest
- !NO!SUBS!
- 		;;
- 	esac
-@@ -766,7 +768,7 @@
+@@ -478,8 +480,9 @@
+
+ globals\$(OBJ_EXT): uudmap.h
+
++GEN_UUDMAP_DIR=.
+ uudmap.h: generate_uudmap\$(EXE_EXT)
+-	\$(RUN) ./generate_uudmap\$(EXE_EXT) >uudmap.h
++	\$(RUN) \$(GEN_UUDMAP_DIR)/generate_uudmap\$(EXE_EXT) >uudmap.h
+
+ generate_uudmap\$(EXE_EXT): generate_uudmap\$(OBJ_EXT)
+	\$(CC) -o generate_uudmap \$(LDFLAGS) generate_uudmap\$(OBJ_EXT) \$(libs)
+@@ -834,7 +837,7 @@
  # We need to autosplit in two steps because VOS can't handle so many args
  #
  .PHONY: preplibrary
@@ -103,93 +74,25 @@
 +preplibrary: $(CONFIGPM) lib/lib.pm $(PREPLIBRARY_LIBPERL)
  	@sh ./makedir lib/auto
  	@echo "	AutoSplitting perl library"
- 	$(LDLIBPTH) ./miniperl -Ilib -e 'use AutoSplit; \
-@@ -775,35 +777,35 @@
- 		autosplit_lib_modules(@ARGV)' lib/*/*.pm
- 	$(MAKE) lib/re.pm
+	$(LDLIBPTH) $(RUN) ./miniperl -Ilib -e 'use AutoSplit; \
+@@ -886,13 +889,13 @@
+	-@test -f pod/perl5100delta.pod && cd pod && $(LNS) perl5100delta.pod perldelta.pod && cd .. && echo "pod/perldelta.pod" >> extra.pods # See buildtoc
  
--lib/Config.pod: config.sh miniperl$(EXE_EXT) configpm Porting/Glossary
-+lib/Config.pod: config.sh configpm Porting/Glossary
- 	$(LDLIBPTH) ./miniperl -Ilib configpm --heavy=lib/Config_heavy.pl lib/Config.pm
+ extras.make: perl$(EXE_EXT)
+-	-@test ! -s extras.lst || PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) $(RUN) ./perl -Ilib -MCPAN -e '@ARGV&&make(@ARGV)' `cat extras.lst`
++	-@test ! -s extras.lst || PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) $(RUN) ./hostperl -Ilib -MCPAN -e '@ARGV&&make(@ARGV)' `cat extras.lst`
  
- $(CONFIGPM): lib/Config.pod
+ extras.test: perl$(EXE_EXT)
+-	-@test ! -s extras.lst || PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) $(RUN) ./perl -Ilib -MCPAN -e '@ARGV&&test(@ARGV)' `cat extras.lst`
++	-@test ! -s extras.lst || PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) $(RUN) ./hostperl -Ilib -MCPAN -e '@ARGV&&test(@ARGV)' `cat extras.lst`
  
--lib/ExtUtils/Miniperl.pm: miniperlmain.c miniperl$(EXE_EXT) minimod.pl $(CONFIGPM)
-+lib/ExtUtils/Miniperl.pm: miniperlmain.c minimod.pl $(CONFIGPM)
- 	$(LDLIBPTH) ./miniperl minimod.pl > lib/ExtUtils/Miniperl.pm
+ extras.install: perl$(EXE_EXT)
+-	-@test ! -s extras.lst || PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) $(RUN) ./perl -Ilib -MCPAN -e '@ARGV&&install(@ARGV)' `cat extras.lst`
++	-@test ! -s extras.lst || PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) $(RUN) ./hostperl -Ilib -MCPAN -e '@ARGV&&install(@ARGV)' `cat extras.lst`
  
- lib/re.pm: ext/re/re.pm
- 	cp ext/re/re.pm lib/re.pm
- 
--$(plextract):	miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p
-+$(plextract):	$(CONFIGPM) x2p/s2p
- 	@-rm -f $@
- 	$(LDLIBPTH) ./miniperl -I`pwd`/lib $@.PL
- 
--x2p/s2p: miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p.PL
-+x2p/s2p: $(CONFIGPM) x2p/s2p.PL
- 	cd x2p; $(LDLIBPTH) $(MAKE) s2p
- 
--lib/lib.pm:	miniperl$(EXE_EXT) $(CONFIGPM)
-+lib/lib.pm:	$(CONFIGPM)
- 	@-rm -f $@
- 	$(LDLIBPTH) ./miniperl -Ilib lib/lib_pm.PL
- 
- unidatafiles $(unidatafiles): uni.data
- 
--uni.data: miniperl$(EXE_EXT) $(CONFIGPM) lib/unicore/mktables
-+uni.data: $(CONFIGPM) lib/unicore/mktables
- 	cd lib/unicore && $(LDLIBPTH) ../../miniperl -I../../lib mktables -w
- 	touch uni.data
- 
--extra.pods: miniperl$(EXE_EXT)
-+extra.pods: 
- 	-@test -f extra.pods && rm -f `cat extra.pods`
- 	-@rm -f extra.pods
- 	-@for x in `grep -l '^=[a-z]' README.* | grep -v README.vms` ; do \
-@@ -850,18 +852,8 @@
- INSTALL_DEPENDENCE = all
- 
- install.perl:	$(INSTALL_DEPENDENCE) installperl
--	if [ -n "$(COMPILE)" ]; \
--	then \
--		cd utils; $(MAKE) compile; \
--		cd ../x2p; $(MAKE) compile; \
--		cd ../pod; $(MAKE) compile; \
--	else :; \
--	fi
--	$(LDLIBPTH) ./perl installperl --destdir=$(DESTDIR) $(INSTALLFLAGS) $(STRIPFLAGS)
--	$(MAKE) extras.install
--
--install.man:	all installman
--	$(LDLIBPTH) ./perl installman --destdir=$(DESTDIR) $(INSTALLFLAGS)
-+	cp lib/Config.pm lib/Config_heavy.pl .
-+	./hostperl -I. installperl --destdir=$(DESTDIR) $(INSTALLFLAGS) $(STRIPFLAGS)
- 
- # XXX Experimental. Hardwired values, but useful for testing.
- # Eventually Configure could ask for some of these values.
-@@ -978,16 +970,16 @@
- #
- # DynaLoader may be needed for extensions that use Makefile.PL.
- 
--$(DYNALOADER):	miniperl$(EXE_EXT) preplibrary FORCE
-+$(DYNALOADER):	preplibrary FORCE
- 	@$(LDLIBPTH) sh ext/util/make_ext $(STATIC) $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
- 
--d_dummy $(dynamic_ext):	miniperl$(EXE_EXT) preplibrary $(DYNALOADER) FORCE
-+d_dummy $(dynamic_ext):	preplibrary $(DYNALOADER) FORCE
- 	@$(LDLIBPTH) sh ext/util/make_ext dynamic $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
- 
--s_dummy $(static_ext):	miniperl$(EXE_EXT) preplibrary $(DYNALOADER) FORCE
-+s_dummy $(static_ext):	preplibrary $(DYNALOADER) FORCE
- 	@$(LDLIBPTH) sh ext/util/make_ext $(STATIC) $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
- 
--n_dummy $(nonxs_ext):	miniperl$(EXE_EXT) preplibrary $(DYNALOADER) FORCE
-+n_dummy $(nonxs_ext):	preplibrary $(DYNALOADER) FORCE
- 	@$(LDLIBPTH) sh ext/util/make_ext nonxs $@ MAKE=$(MAKE) LIBPERL_A=$(LIBPERL)
- 
- .PHONY: clean _tidy _mopup _cleaner1 _cleaner2 \
-@@ -1125,7 +1117,7 @@
+ .PHONY: install install-strip install-all install-verbose install-silent \
+	no-install install.perl install.man install.html
+@@ -1194,7 +1197,7 @@
  
  test_prep_pre: preplibrary utilities $(nonxs_ext)
  
@@ -198,31 +101,12 @@
  	PERL=./perl $(MAKE) _test_prep
  
  _test_tty:
-@@ -1238,7 +1230,7 @@
+@@ -1308,7 +1311,7 @@
  
  # Can't depend on lib/Config.pm because that might be where miniperl
  # is crashing.
 -minitest: miniperl$(EXE_EXT) lib/re.pm minitest.prep
 +minitest: lib/re.pm minitest.prep
  	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
- 		&& $(LDLIBPTH) ./perl TEST -minitest base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t </dev/tty
+		&& $(LDLIBPTH) $(RUN) ./perl TEST -minitest base/*.t comp/*.t cmd/*.t run/*.t io/*.t op/*.t uni/*.t mro/*.t </dev/tty
  
---- perl/Makefile.SH.orig	2006-08-26 18:54:26.000000000 +0200
-+++ perl/Makefile.SH	2006-08-26 18:56:14.000000000 +0200
-@@ -819,13 +819,13 @@
- 	-@test -f pod/perl588delta.pod && cd pod && $(LNS) perl588delta.pod perldelta.pod && cd .. && echo "pod/perldelta.pod" >> extra.pods # See buildtoc
- 
- extras.make: perl$(EXE_EXT)
--	-@test -s extras.lst && PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) ./perl -Ilib -MCPAN -e '@ARGV&&make(@ARGV)' `cat extras.lst`
-+	-@test -s extras.lst && PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) ./hostperl -Ilib -MCPAN -e '@ARGV&&make(@ARGV)' `cat extras.lst`
- 
- extras.test: perl$(EXE_EXT)
--	-@test -s extras.lst && PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) ./perl -Ilib -MCPAN -e '@ARGV&&test(@ARGV)' `cat extras.lst`
-+	-@test -s extras.lst && PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) ./hostperl -Ilib -MCPAN -e '@ARGV&&test(@ARGV)' `cat extras.lst`
- 
- extras.install: perl$(EXE_EXT)
--	-@test -s extras.lst && PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) ./perl -Ilib -MCPAN -e '@ARGV&&install(@ARGV)' `cat extras.lst`
-+	-@test -s extras.lst && PATH="`pwd`:${PATH}" PERL5LIB="`pwd`/lib" $(LDLIBPTH) ./hostperl -Ilib -MCPAN -e '@ARGV&&install(@ARGV)' `cat extras.lst`
- 
- .PHONY: install install-strip install-all install-verbose install-silent \
- 	no-install install.perl install.man install.html
