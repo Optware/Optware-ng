@@ -1,6 +1,6 @@
 ## Toplevel Makefile for cross-compilation of perl
 #
-## $Id$
+## $Id: Makefile 3776 2006-08-12 22:28:36Z gda $
 
 export TOPDIR=${shell pwd}
 include $(TOPDIR)/config
@@ -62,7 +62,7 @@ perl_Configure:
 
 perl:
 	cd $(TOPDIR)/.. ; make depend ; make ; make more
-	cd $(TOPDIR)/.. ; mkdir -p fake_config_library ; cp lib/Config.pm lib/Config_heavy.pl fake_config_library
+	cd $(TOPDIR)/.. ; mkdir -p fake_config_library ; cp lib/Config.pm fake_config_library
 	cd $(TOPDIR)/.. ; $(MAKE) more2 "PERLRUN=hostperl -I$(TOPDIR)/../fake_config_library -MConfig"
 	cd $(TOPDIR)/.. ; $(MAKE) more3 "PERLRUN=hostperl -I$(TOPDIR)/../fake_config_library -MConfig"
 	cd $(TOPDIR)/.. ; $(MAKE) more4 "PERLRUN=hostperl -I$(TOPDIR)/../fake_config_library -MConfig"
