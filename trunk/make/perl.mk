@@ -70,7 +70,7 @@ endif
 #
 PERL_BUILD_DIR=$(BUILD_DIR)/perl
 ifneq ($(HOSTCC), $(TARGET_CC))
-PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
+PERL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/perl
 PERL_HOST_MINIPERL=$(PERL_HOST_BUILD_DIR)/miniperl
 PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/perl
 PERL_INC=PERL_INC=$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
@@ -99,27 +99,21 @@ $(DL_DIR)/$(PERL_SOURCE):
 #
 perl-source: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 
-ifneq ($(HOSTCC), $(TARGET_CC))
-$(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
-	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(@D)
-	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(PERL_PATCHES)" ; then \
-		cat $(PERL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
-	fi
-	mv $(BUILD_DIR)/$(PERL_DIR) $(@D) ; \
+$(PERL_HOST_BUILD_DIR)/.hostbuilt: host/.configured $(DL_DIR)/$(PERL_SOURCE) # make/perl.mk
+	rm -rf $(HOST_BUILD_DIR)/$(PERL_DIR) $(@D)
+	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PERL_DIR) $(@D) ; \
 	(cd $(@D); \
 		rm -f config.sh Policy.sh; \
 		sh ./Configure -des \
 			-Dinstallstyle='lib/perl5' \
-			-Darchname=$(PERL_ARCH) \
 			-Dstartperl='#!/opt/bin/perl' \
 			-Dprefix=$(@D)/staging-install; \
-		make install.perl; \
 	)
+	$(MAKE) -C $(@D) install
 	touch $@
 
 perl-hostperl: $(PERL_HOST_BUILD_DIR)/.hostbuilt
-endif
 
 #
 # This target unpacks the source code in the build directory.
@@ -163,8 +157,8 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		./Configure \
 		-Dcc=gcc \
 		-Dprefix=/opt \
+		-Duseshrplib \
 		-de \
-		-A clear:ignore_versioned_solibs \
 	)
 else
 	ln -s $(PERL_HOST_MINIPERL) $(@D)/hostperl
@@ -235,9 +229,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install.perl
 else
 	PATH="`dirname $(TARGET_CC)`:$(@D):$$PATH" \
-		$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) INSTALL_DEPENDENCE="" install-strip
-	for so in `find $(STAGING_DIR)/opt/lib/perl5/ -name '*.so'`; do \
-		chmod u+w $$so; $(STRIP_COMMAND) $$so; done
+		$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) INSTALL_DEPENDENCE="" install.perl
 endif
 	(cd $(STAGING_DIR)/opt/bin; \
 		rm -f perl; \
@@ -284,9 +276,13 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) install.perl
 else
 	PATH="`dirname $(TARGET_CC)`:$(PERL_BUILD_DIR):$$PATH" \
-		$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) INSTALL_DEPENDENCE="" install-strip
-	for so in `find $(PERL_IPK_DIR)/opt/lib/perl5/ -name '*.so'`; do \
-		chmod u+w $$so; $(STRIP_COMMAND) $$so; done
+		$(MAKE) -C $(PERL_BUILD_DIR) install.perl \
+		DESTDIR=$(PERL_IPK_DIR) INSTALL_DEPENDENCE="" \
+		;
+	for f in $(PERL_IPK_DIR)/opt/bin/perl$(PERL_VERSION) \
+		$(PERL_IPK_DIR)/opt/bin/a2p \
+		`find $(PERL_IPK_DIR)/opt/lib/perl5/ -name '*.so'`; \
+		do chmod u+w $$f; $(STRIP_COMMAND) $$f; done
 endif
 	(cd $(PERL_IPK_DIR)/opt/bin; \
 		rm -f perl; \
@@ -317,11 +313,7 @@ perl-clean:
 # directories.
 #
 perl-dirclean:
-ifeq ($(HOSTCC), $(TARGET_CC))
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
-else
-	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_HOST_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
-endif
 
 #
 #
