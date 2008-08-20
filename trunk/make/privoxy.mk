@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PRIVOXY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ijbswa
-PRIVOXY_VERSION=3.0.8
+PRIVOXY_VERSION=3.0.10
 PRIVOXY_SOURCE=privoxy-$(PRIVOXY_VERSION)-stable-src.tar.gz
 PRIVOXY_DIR=privoxy-$(PRIVOXY_VERSION)-stable
 PRIVOXY_UNZIP=zcat
@@ -80,7 +80,8 @@ PRIVOXY_IPK=$(BUILD_DIR)/privoxy_$(PRIVOXY_VERSION)-$(PRIVOXY_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PRIVOXY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PRIVOXY_SITE)/$(PRIVOXY_SOURCE)
+	$(WGET) -P $(@D) $(PRIVOXY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,17 +110,19 @@ privoxy-source: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES)
 #
 $(PRIVOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES) make/privoxy.mk
 #	$(MAKE) pcre-stage
-	rm -rf $(BUILD_DIR)/$(PRIVOXY_DIR) $(PRIVOXY_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PRIVOXY_DIR) $(@D)
 	$(PRIVOXY_UNZIP) $(DL_DIR)/$(PRIVOXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PRIVOXY_PATCHES)" ; \
 		then cat $(PRIVOXY_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(PRIVOXY_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(PRIVOXY_DIR)" != "$(PRIVOXY_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(PRIVOXY_DIR) $(PRIVOXY_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(PRIVOXY_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(PRIVOXY_DIR) $(@D) ; \
 	fi
-	(cd $(PRIVOXY_BUILD_DIR); \
+	(cd $(@D); \
 		autoheader; autoconf; \
+	)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PRIVOXY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PRIVOXY_LDFLAGS)" \
@@ -135,6 +138,8 @@ $(PRIVOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES)
 		--disable-dynamic-pcre \
 		--disable-dynamic-pcrs \
 		; \
+	)
+	(cd $(@D); \
 		sed -i \
 		    -e '/SED.*config/s|$$(CONF_DEST)|/opt/etc/privoxy|' \
 		    -e '/SED.*config/s|$$(LOG_DEST)|/opt/var/log/privoxy|' \
@@ -142,7 +147,7 @@ $(PRIVOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES)
 		    -e '/SED.*config/s|$$(prefix)|/opt|' \
 		    GNUmakefile; \
 	)
-#	$(PATCH_LIBTOOL) $(PRIVOXY_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 privoxy-unpack: $(PRIVOXY_BUILD_DIR)/.configured
@@ -152,8 +157,8 @@ privoxy-unpack: $(PRIVOXY_BUILD_DIR)/.configured
 #
 $(PRIVOXY_BUILD_DIR)/.built: $(PRIVOXY_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PRIVOXY_BUILD_DIR)/pcre dftables CC=$(HOSTCC)
-	$(MAKE) -C $(PRIVOXY_BUILD_DIR) \
+	$(MAKE) -C $(@D)/pcre dftables CC=$(HOSTCC)
+	$(MAKE) -C $(@D) \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PRIVOXY_LDFLAGS)"
 	touch $@
 
@@ -167,7 +172,7 @@ privoxy: $(PRIVOXY_BUILD_DIR)/.built
 #
 $(PRIVOXY_BUILD_DIR)/.staged: $(PRIVOXY_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PRIVOXY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 privoxy-stage: $(PRIVOXY_BUILD_DIR)/.staged
