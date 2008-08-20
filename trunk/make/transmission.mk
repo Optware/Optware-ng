@@ -25,7 +25,7 @@
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.32
+TRANSMISSION_VERSION=1.33b1
 #TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
 #TRANSMISSION_SVN_REV=6245
 ifdef TRANSMISSION_SVN_REV
@@ -41,7 +41,6 @@ TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl, libcurl
 TRANSMISSION_SUGGESTS=
-# gnuplot, logrotate, thttpd, mini-sendmail
 TRANSMISSION_CONFLICTS=torrent, transmisisond
 
 #
