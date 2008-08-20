@@ -71,7 +71,7 @@ endif
 #
 PERL_BUILD_DIR=$(BUILD_DIR)/perl
 ifneq ($(HOSTCC), $(TARGET_CC))
-PERL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/perl
+PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
 PERL_HOST_MINIPERL=$(PERL_HOST_BUILD_DIR)/miniperl
 PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/perl
 PERL_INC=PERL_INC=$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
@@ -112,6 +112,7 @@ $(PERL_HOST_BUILD_DIR)/.hostbuilt: host/.configured $(DL_DIR)/$(PERL_SOURCE) # m
 		rm -f config.sh Policy.sh; \
 		sh ./Configure -des \
 			-Dinstallstyle='lib/perl5' \
+			-Darchname=$(PERL_ARCH) \
 			-Dstartperl='#!/opt/bin/perl' \
 			-Dprefix=$(@D)/staging-install; \
 	)
@@ -342,7 +343,11 @@ perl-clean:
 # directories.
 #
 perl-dirclean:
+ifeq ($(HOSTCC), $(TARGET_CC))
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
+else
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK) $(PERL_HOST_BUILD_DIR)
+endif
 
 #
 #
