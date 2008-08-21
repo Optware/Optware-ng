@@ -20,6 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+# Version 0.4 only works with transmission-daemon 1.22
+# Newer versions of clutch are now included in transmission package!
+# 
 CLUTCH_SITE=http://clutchbt.com/Files
 CLUTCH_VERSION=0.4
 CLUTCH_SOURCE=Clutch-$(CLUTCH_VERSION).tar.gz
@@ -31,7 +34,7 @@ CLUTCH_SECTION=web
 CLUTCH_PRIORITY=optional
 CLUTCH_DEPENDS=transmissiond, php, php-fcgi
 CLUTCH_SUGGESTS=lighttpd
-CLUTCH_CONFLICTS=
+CLUTCH_CONFLICTS=transmission
 
 #
 # CLUTCH_IPK_VERSION should be incremented when the ipk changes.
