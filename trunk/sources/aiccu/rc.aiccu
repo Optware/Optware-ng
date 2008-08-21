@@ -1,0 +1,46 @@
+#!/bin/sh
+
+prefix="/opt"
+
+[ -e ${prefix}/etc/default/aiccu ] && . ${prefix}/etc/default/aiccu
+
+if [ "$AICCU_ENABLE" != "yes" ]; then
+    exit
+fi
+
+DAEMON=${prefix}/sbin/aiccu
+
+test -x $DAEMON || exit 0
+
+if [ -z "$1" ] ; then
+    case `echo "$0" | sed 's:^.*/\(.*\):\1:g'` in
+        S??*) rc="start" ;;
+        K??*) rc="stop" ;;
+        *) rc="usage" ;;
+    esac
+else
+    rc="$1"
+fi
+
+case "$rc" in
+    start)
+	echo "Starting: aiccu"
+	$DAEMON
+        ;;
+    stop)
+        if [ -n "`pidof aiccu`" ]; then
+            echo "Stopping: aiccu"
+            killall aiccu 2> /dev/null
+        fi
+        ;;
+    restart)
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
+    *)
+        echo "Usage: $0 (start|stop|restart|usage)"
+        ;;
+esac
+
+exit 0
