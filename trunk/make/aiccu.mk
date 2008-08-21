@@ -29,7 +29,10 @@ AICCU_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AICCU_DESCRIPTION=Automatic IPv6 Connectivity Client Utility.
 AICCU_SECTION=net
 AICCU_PRIORITY=optional
-AICCU_DEPENDS=gnutls
+ifneq (, $(filter gnutls, $(PACKAGES)))
+AICCU_WITH_GNUTLS=HAVE_GNUTLS=yes
+endif
+AICCU_DEPENDS=$(if $(AICCU_WITH_GNUTLS),gnutls,)
 AICCU_SUGGESTS=
 AICCU_CONFLICTS=
 
@@ -107,7 +110,9 @@ aiccu-source: $(DL_DIR)/$(AICCU_SOURCE) $(AICCU_PATCHES)
 # shown below to make various patches to it.
 #
 $(AICCU_BUILD_DIR)/.configured: $(DL_DIR)/$(AICCU_SOURCE) $(AICCU_PATCHES) make/aiccu.mk
+ifneq (,$(AICCU_WITH_GNUTLS))
 	$(MAKE) gnutls-stage
+endif
 	rm -rf $(BUILD_DIR)/$(AICCU_DIR) $(@D)
 	$(AICCU_UNZIP) $(DL_DIR)/$(AICCU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AICCU_PATCHES)" ; \
@@ -149,7 +154,8 @@ $(AICCU_BUILD_DIR)/.built: $(AICCU_BUILD_DIR)/.configured
 		dirbin=/opt/bin/ \
 		diretc=/opt/etc/ \
 		dirdoc=/opt/share/doc/aiccu/ \
-		HAVE_GNUTLS=yes \
+		$(AICCU_WITH_GNUTLS) \
+		STRIP="$(STRIP_COMMAND)" \
 		;
 	touch $@
 
