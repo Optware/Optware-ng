@@ -25,7 +25,7 @@
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.33b1
+TRANSMISSION_VERSION=1.33
 #TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
 #TRANSMISSION_SVN_REV=6245
 ifdef TRANSMISSION_SVN_REV
@@ -46,7 +46,7 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=2
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
