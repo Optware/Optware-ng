@@ -26,8 +26,8 @@
 #
 TRANSMISSIOND_SITE=http://download.transmissionbt.com/transmissiond/files
 TRANSMISSIOND_VERSION=1.22
-#TRANSMISSIOND_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-#TRANSMISSIOND_SVN_REV=6245
+TRANSMISSIOND_SVN=svn://svn.transmissionbt.com/Transmission/trunk
+TRANSMISSIOND_SVN_REV=6300
 ifdef TRANSMISSIOND_SVN_REV
 TRANSMISSIOND_SOURCE=transmissiond-svn-$(TRANSMISSIOND_SVN_REV).tar.bz2
 else
@@ -36,12 +36,12 @@ endif
 TRANSMISSIOND_DIR=transmission-$(TRANSMISSIOND_VERSION)
 TRANSMISSIOND_UNZIP=bzcat
 TRANSMISSIOND_MAINTAINER=oleo@email.si
-TRANSMISSIOND_DESCRIPTION=lightweight BitTorrent client and daemon with CGI interface
+TRANSMISSIOND_DESCRIPTION=lightweight BitTorrent daemon with CGI WWW interface
 TRANSMISSIOND_SECTION=net
 TRANSMISSIOND_PRIORITY=optional
 TRANSMISSIOND_DEPENDS=openssl, libcurl
 TRANSMISSIOND_SUGGESTS=gnuplot, logrotate, thttpd, mini-sendmail
-TRANSMISSIOND_CONFLICTS=torrent, transmission
+TRANSMISSIOND_CONFLICTS=torrent
 
 #
 # TRANSMISSIOND_IPK_VERSION should be incremented when the ipk changes.
@@ -207,6 +207,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-daemon \
 		--disable-gtk \
 		--disable-wx \
 		--disable-nls \
@@ -254,6 +255,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-daemon \
 		--disable-gtk \
 		--disable-wx \
 		--disable-nls \
@@ -346,6 +348,8 @@ endif
 	rm -rf $(TRANSMISSIOND_IPK_DIR) $(BUILD_DIR)/transmissiond_*_$(TARGET_ARCH).ipk
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSIOND_BUILD_DIR) DESTDIR=$(TRANSMISSIOND_IPK_DIR) install-strip
+	rm -f $(TRANSMISSIOND_IPK_DIR)/opt/bin/*cli
+	rm -rf $(TRANSMISSIOND_IPK_DIR)/opt/share/man
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/etc
 	install -m 644 $(TRANSMISSIOND_SOURCE_DIR)/transmission.conf $(TRANSMISSIOND_IPK_DIR)/opt/etc/transmission.conf
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
