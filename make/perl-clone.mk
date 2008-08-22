@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-CLONE_SITE=http://search.cpan.org/CPAN/authors/id/R/RD/RDF
-PERL-CLONE_VERSION=0.20
+PERL-CLONE_VERSION=0.29
 PERL-CLONE_SOURCE=Clone-$(PERL-CLONE_VERSION).tar.gz
 PERL-CLONE_DIR=Clone-$(PERL-CLONE_VERSION)
 PERL-CLONE_UNZIP=zcat
@@ -17,7 +17,7 @@ PERL-CLONE_DEPENDS=perl
 PERL-CLONE_SUGGESTS=
 PERL-CLONE_CONFLICTS=
 
-PERL-CLONE_IPK_VERSION=2
+PERL-CLONE_IPK_VERSION=1
 
 PERL-CLONE_CONFFILES=
 
@@ -27,17 +27,18 @@ PERL-CLONE_IPK_DIR=$(BUILD_DIR)/perl-clone-$(PERL-CLONE_VERSION)-ipk
 PERL-CLONE_IPK=$(BUILD_DIR)/perl-clone_$(PERL-CLONE_VERSION)-$(PERL-CLONE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-CLONE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-CLONE_SITE)/$(PERL-CLONE_SOURCE)
+	$(WGET) -P $(@D) $(PERL-CLONE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-clone-source: $(DL_DIR)/$(PERL-CLONE_SOURCE) $(PERL-CLONE_PATCHES)
 
 $(PERL-CLONE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLONE_SOURCE) $(PERL-CLONE_PATCHES)
 	$(MAKE) perl-stage
-	rm -rf $(BUILD_DIR)/$(PERL-CLONE_DIR) $(PERL-CLONE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL-CLONE_DIR) $(@D)
 	$(PERL-CLONE_UNZIP) $(DL_DIR)/$(PERL-CLONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-CLONE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-CLONE_DIR) -p1
-	mv $(BUILD_DIR)/$(PERL-CLONE_DIR) $(PERL-CLONE_BUILD_DIR)
-	(cd $(PERL-CLONE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL-CLONE_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -45,31 +46,31 @@ $(PERL-CLONE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLONE_SOURCE) $(PERL-CLONE
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERL-CLONE_BUILD_DIR)/.configured
+	touch $@
 
 perl-clone-unpack: $(PERL-CLONE_BUILD_DIR)/.configured
 
 $(PERL-CLONE_BUILD_DIR)/.built: $(PERL-CLONE_BUILD_DIR)/.configured
-	rm -f $(PERL-CLONE_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-CLONE_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-CLONE_BUILD_DIR)/.built
+	touch $@
 
 perl-clone: $(PERL-CLONE_BUILD_DIR)/.built
 
 $(PERL-CLONE_BUILD_DIR)/.staged: $(PERL-CLONE_BUILD_DIR)/.built
-	rm -f $(PERL-CLONE_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-CLONE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-CLONE_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-clone-stage: $(PERL-CLONE_BUILD_DIR)/.staged
 
 $(PERL-CLONE_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-CLONE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-clone" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
