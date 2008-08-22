@@ -193,7 +193,8 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install.perl
 else
 	PATH="`dirname $(TARGET_CC)`:$(@D):$$PATH" \
-		$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) INSTALL_DEPENDENCE="" install.perl
+		$(MAKE) -C $(@D) install.perl \
+		DESTDIR=$(STAGING_DIR) INSTALL_DEPENDENCE="" INSTALLFLAGS=-f
 endif
 	(cd $(STAGING_DIR)/opt/bin; \
 		rm -f perl; \
