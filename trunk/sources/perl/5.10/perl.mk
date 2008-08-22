@@ -26,7 +26,8 @@ PERL_ARCH=$(strip \
     $(if $(filter armeb, $(TARGET_ARCH)), armv5b-linux, \
     $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
     $(TARGET_ARCH)-linux))))
-PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE"
+PERL_LIB_CORE_DIR=perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
+PERL_LDFLAGS="-Wl,-rpath,/opt/lib/$(PERL_LIB_CORE_DIR)"
 ifeq (vt4, $(OPTWARE_TARGET))
 PERL_LDFLAGS_EXTRA=-L$(TARGET_CROSS_TOP)/920t_le/lib/gcc/arm-linux/3.4.4
 endif
@@ -45,7 +46,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
 PERL_HOST_MINIPERL=$(PERL_HOST_BUILD_DIR)/miniperl
 PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/perl
-PERL_INC=PERL_INC=$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
+PERL_INC=PERL_INC=$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR)
 else
 PERL_HOSTPERL=perl
 PERL_INC=
