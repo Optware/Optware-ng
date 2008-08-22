@@ -62,9 +62,9 @@ PERL-DOC_IPK=$(BUILD_DIR)/perl-doc_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_
 .PHONY: perl-source perl-unpack perl perl-stage perl-ipk perl-clean perl-dirclean perl-check perl-hostperl
 
 $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE) # make/perl.mk
-	rm -rf $(HOST_BUILD_DIR)/$(PERL_DIR) $(@D)
-	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	mv $(HOST_BUILD_DIR)/$(PERL_DIR) $(@D) ; \
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(@D)
+	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	mv $(BUILD_DIR)/$(PERL_DIR) $(@D) ; \
 	(cd $(@D); \
 		rm -f config.sh Policy.sh; \
 		sh ./Configure -des \
