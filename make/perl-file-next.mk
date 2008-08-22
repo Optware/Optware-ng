@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-FILE-NEXT_SITE=http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE
-PERL-FILE-NEXT_VERSION=1.00
+PERL-FILE-NEXT_VERSION=1.02
 PERL-FILE-NEXT_SOURCE=File-Next-$(PERL-FILE-NEXT_VERSION).tar.gz
 PERL-FILE-NEXT_DIR=File-Next-$(PERL-FILE-NEXT_VERSION)
 PERL-FILE-NEXT_UNZIP=zcat
@@ -27,7 +27,8 @@ PERL-FILE-NEXT_IPK_DIR=$(BUILD_DIR)/perl-file-next-$(PERL-FILE-NEXT_VERSION)-ipk
 PERL-FILE-NEXT_IPK=$(BUILD_DIR)/perl-file-next_$(PERL-FILE-NEXT_VERSION)-$(PERL-FILE-NEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-FILE-NEXT_SITE)/$(PERL-FILE-NEXT_SOURCE)
+	$(WGET) -P $(@D) $(PERL-FILE-NEXT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-file-next-source: $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE) $(PERL-FILE-NEXT_PATCHES)
 
@@ -35,8 +36,8 @@ $(PERL-FILE-NEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE) $(PE
 	rm -rf $(BUILD_DIR)/$(PERL-FILE-NEXT_DIR) $(PERL-FILE-NEXT_BUILD_DIR)
 	$(PERL-FILE-NEXT_UNZIP) $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-FILE-NEXT_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-FILE-NEXT_DIR) -p1
-	mv $(BUILD_DIR)/$(PERL-FILE-NEXT_DIR) $(PERL-FILE-NEXT_BUILD_DIR)
-	(cd $(PERL-FILE-NEXT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL-FILE-NEXT_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -44,27 +45,27 @@ $(PERL-FILE-NEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE) $(PE
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERL-FILE-NEXT_BUILD_DIR)/.configured
+	touch $@
 
 perl-file-next-unpack: $(PERL-FILE-NEXT_BUILD_DIR)/.configured
 
 $(PERL-FILE-NEXT_BUILD_DIR)/.built: $(PERL-FILE-NEXT_BUILD_DIR)/.configured
-	rm -f $(PERL-FILE-NEXT_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-FILE-NEXT_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-FILE-NEXT_BUILD_DIR)/.built
+	touch $@
 
 perl-file-next: $(PERL-FILE-NEXT_BUILD_DIR)/.built
 
 $(PERL-FILE-NEXT_BUILD_DIR)/.staged: $(PERL-FILE-NEXT_BUILD_DIR)/.built
-	rm -f $(PERL-FILE-NEXT_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-FILE-NEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-FILE-NEXT_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-file-next-stage: $(PERL-FILE-NEXT_BUILD_DIR)/.staged
 
 $(PERL-FILE-NEXT_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-FILE-NEXT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-file-next" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
