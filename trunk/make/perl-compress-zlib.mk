@@ -17,7 +17,7 @@ PERL-COMPRESS-ZLIB_DEPENDS=zlib, perl
 PERL-COMPRESS-ZLIB_SUGGESTS=
 PERL-COMPRESS-ZLIB_CONFLICTS=
 
-PERL-COMPRESS-ZLIB_IPK_VERSION=2
+PERL-COMPRESS-ZLIB_IPK_VERSION=3
 
 PERL-COMPRESS-ZLIB_CONFFILES=
 
@@ -27,7 +27,8 @@ PERL-COMPRESS-ZLIB_IPK_DIR=$(BUILD_DIR)/perl-compress-zlib-$(PERL-COMPRESS-ZLIB_
 PERL-COMPRESS-ZLIB_IPK=$(BUILD_DIR)/perl-compress-zlib_$(PERL-COMPRESS-ZLIB_VERSION)-$(PERL-COMPRESS-ZLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-COMPRESS-ZLIB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-COMPRESS-ZLIB_SITE)/$(PERL-COMPRESS-ZLIB_SOURCE)
+	$(WGET) -P $(@D) $(PERL-COMPRESS-ZLIB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-compress-zlib-source: $(DL_DIR)/$(PERL-COMPRESS-ZLIB_SOURCE) $(PERL-COMPRESS-ZLIB_PATCHES)
 
@@ -45,31 +46,31 @@ $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-COMPRESS-ZLIB_SOUR
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.configured
+	touch $@
 
 perl-compress-zlib-unpack: $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.configured
 
 $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.built: $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.configured
-	rm -f $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(PERL-COMPRESS-ZLIB_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.built
+	touch $@
 
 perl-compress-zlib: $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.built
 
 $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.staged: $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.built
-	rm -f $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(PERL-COMPRESS-ZLIB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.staged
+	touch $@
 
 perl-compress-zlib-stage: $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.staged
 
 $(PERL-COMPRESS-ZLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-COMPRESS-ZLIB_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-compress-zlib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -86,6 +87,9 @@ $(PERL-COMPRESS-ZLIB_IPK_DIR)/CONTROL/control:
 $(PERL-COMPRESS-ZLIB_IPK): $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.built
 	rm -rf $(PERL-COMPRESS-ZLIB_IPK_DIR) $(BUILD_DIR)/perl-compress-zlib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-COMPRESS-ZLIB_BUILD_DIR) DESTDIR=$(PERL-COMPRESS-ZLIB_IPK_DIR) install
+ifeq (5.10, $(PERL_MAJOR_VER))
+	rm -f $(PERL-COMPRESS-ZLIB_IPK_DIR)/opt/man/man3/Compress::Zlib.3
+endif
 	find $(PERL-COMPRESS-ZLIB_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-COMPRESS-ZLIB_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
