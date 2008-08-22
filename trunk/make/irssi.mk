@@ -73,9 +73,8 @@ IRSSI_PERL_LDFLAGS=-Wl,-rpath,/opt/lib/$(PERL_LIB_CORE_DIR) \
 	-L/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
 	-lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s \
 
-ifeq (5.8, $(PERL_MAJOR_VER))
-IRSSI_PERL_LDFLAGS += $(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/auto/DynaLoader/DynaLoader.a
-endif
+IRSSI_PERL_LDFLAGS += $(if $(filter 5.8, $(PERL_MAJOR_VER)), \
+$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/auto/DynaLoader/DynaLoader.a,)
 
 #
 # IRSSI_BUILD_DIR is the directory in which the build is done.
