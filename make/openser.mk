@@ -55,7 +55,7 @@ OPENSER_CONFLICTS=
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
-OPENSER_IPK_VERSION=2
+OPENSER_IPK_VERSION=3
 else
 OPENSER_IPK_VERSION=1
 endif
@@ -111,18 +111,12 @@ OPENSER_MAKEFLAGS=$(strip \
 # pua       - issues on mss, ddwrt, oleg (uclibc issues)
 #
 OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres carrierroute
-ifeq ($(OPTWARE_TARGET),slugosbe)
-OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE
-OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
+
+ifneq (, $(filter perl, $(PACKAGES)))
+OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer $(PERL_LDFLAGS) -L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
+OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR)
+OPENSER_TYPEMAP=$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/ExtUtils/typemap
 OPENSER_INCLUDE_BASE_MODULES+= perl pua
-else
-ifeq ($(OPTWARE_TARGET),ddwrt)
-OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/mipsel-linux/CORE -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/mipsel-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer  -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/mipsel-linux/CORE
-OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
-OPENSER_INCLUDE_BASE_MODULES+= perl pua
-endif
 endif
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
@@ -156,7 +150,8 @@ OPENSER_IPK=$(BUILD_DIR)/openser_$(OPENSER_VERSION)-$(OPENSER_IPK_VERSION)_$(TAR
 #
 $(DL_DIR)/$(OPENSER_SOURCE):
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
-	$(WGET) -P $(DL_DIR) $(OPENSER_SITE)/$(OPENSER_SOURCE)
+	$(WGET) -P $(@D) $(OPENSER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 else
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(OPENSER_DIR) && \
@@ -216,7 +211,7 @@ else
 		then mv $(BUILD_DIR)/$(OPENSER_DIR) $(OPENSER_BUILD_DIR) ; \
 	fi
 endif
-	touch $(OPENSER_BUILD_DIR)/.configured
+	touch $@
 
 openser-unpack: $(OPENSER_BUILD_DIR)/.configured
 
@@ -224,7 +219,7 @@ openser-unpack: $(OPENSER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(OPENSER_BUILD_DIR)/.built: $(OPENSER_BUILD_DIR)/.configured
-	rm -f $(OPENSER_BUILD_DIR)/.built
+	rm -f $@
 
 	CC_EXTRA_OPTS="$(OPENSER_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
@@ -233,7 +228,7 @@ $(OPENSER_BUILD_DIR)/.built: $(OPENSER_BUILD_DIR)/.configured
 	TLS=1 LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) $(OPENSER_DEBUG_MODE) \
 	include_modules="$(OPENSER_INCLUDE_MODULES)" $(OPENSER_EXCLUDE_MODULES) prefix=/opt all
-	touch $(OPENSER_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -244,8 +239,8 @@ openser: $(OPENSER_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(OPENSER_BUILD_DIR)/.staged: $(OPENSER_BUILD_DIR)/.built
-	rm -f $(OPENSER_BUILD_DIR)/.staged
-	touch $(OPENSER_BUILD_DIR)/.staged
+	rm -f $@
+	touch $@
 
 openser-stage: $(OPENSER_BUILD_DIR)/.staged
 
