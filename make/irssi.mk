@@ -48,7 +48,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=3
+IRSSI_IPK_VERSION=4
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
@@ -67,12 +67,15 @@ IRSSI_PATCHES=$(IRSSI_SOURCE_DIR)/configure.in.patch \
 #
 IRSSI_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
 IRSSI_LDFLAGS=
-IRSSI_PERL_CFLAGS=-fomit-frame-pointer  -I$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
-IRSSI_PERL_LDFLAGS=-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
-	-L$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
-	$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/auto/DynaLoader/DynaLoader.a \
+IRSSI_PERL_CFLAGS=-fomit-frame-pointer  -I$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR)
+IRSSI_PERL_LDFLAGS=-Wl,-rpath,/opt/lib/$(PERL_LIB_CORE_DIR) \
+	-L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) \
 	-L/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
 	-lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s \
+
+ifeq (5.8, $(PERL_MAJOR_VER))
+IRSSI_PERL_LDFLAGS += $(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/auto/DynaLoader/DynaLoader.a
+endif
 
 #
 # IRSSI_BUILD_DIR is the directory in which the build is done.
