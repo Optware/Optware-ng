@@ -4,14 +4,17 @@
 #
 ###########################################################
 
-MICROPERL_DESCRIPTION=Microperl.
+ifeq (5.10, $(PERL_MAJOR_VER))
+MICROPERL_VERSION=5.10.0
+MICROPERL_IPK_VERSION=1
+else
 MICROPERL_VERSION=5.8.8
+MICROPERL_IPK_VERSION=11
+endif
+
+MICROPERL_DESCRIPTION=Microperl.
 MICROPERL_SOURCE=perl-$(MICROPERL_VERSION).tar.gz
 
-#
-# MICROPERL_IPK_VERSION should be incremented when the ipk changes.
-#
-MICROPERL_IPK_VERSION=11
 
 MICROPERL_BUILD_DIR=$(BUILD_DIR)/microperl
 MICROPERL_SOURCE_DIR=$(SOURCE_DIR)/microperl
@@ -21,17 +24,28 @@ MICROPERL_IPK=$(BUILD_DIR)/microperl_$(MICROPERL_VERSION)-$(MICROPERL_IPK_VERSIO
 .PHONY: microperl-unpack microperl microperl-ipk microperl-clean microperl-dirclean microperl-check
 
 $(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(MICROPERL_SOURCE) $(MICROPERL_PATCHES)
-	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
-	touch $(MICROPERL_BUILD_DIR)/.configured
+	if test -n "$(MICROPERL_PATCHES)"; then \
+		cat $(MICROPERL_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(MICROPERL_DIR) -p0 ; \
+	fi
+	mv $(BUILD_DIR)/$(PERL_DIR) $(@D)
+	touch $@
 
 microperl-unpack: $(MICROPERL_BUILD_DIR)/.configured
 
 $(MICROPERL_BUILD_DIR)/.built: $(MICROPERL_BUILD_DIR)/.configured
-	rm -f $(MICROPERL_BUILD_DIR)/.built
-	$(MAKE) -C $(MICROPERL_BUILD_DIR) -f Makefile.micro CC=$(TARGET_CC) OPTIMIZE="$(TARGET_CFLAGS)"
-	touch $(MICROPERL_BUILD_DIR)/.built
+	rm -f $@
+ifeq (5.10, $(PERL_MAJOR_VER))
+	$(MAKE) -C $(@D) -f Makefile.micro generate_uudmap \
+		CC=$(HOSTCC) \
+		;
+endif
+	$(MAKE) -C $(@D) -f Makefile.micro \
+		CC=$(TARGET_CC) OPTIMIZE="$(TARGET_CFLAGS)" \
+		;
+	touch $@
 
 #
 # This is the build convenience target.
@@ -39,7 +53,7 @@ $(MICROPERL_BUILD_DIR)/.built: $(MICROPERL_BUILD_DIR)/.configured
 microperl: $(MICROPERL_BUILD_DIR)/.built
 
 $(MICROPERL_IPK_DIR)/CONTROL/control:
-	@install -d $(MICROPERL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: microperl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

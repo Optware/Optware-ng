@@ -13,6 +13,6 @@ BROKEN_PACKAGES = \
 	bzflag \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	icecast iptables iptraf ldconfig libextractor \
-	microperl monotone \
+	monotone \
 	nfs-utils phoneme-advanced puppy mod-python qemu \
 	taged transcode \
