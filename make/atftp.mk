@@ -21,7 +21,7 @@ ATFTP_IPK_VERSION=9
 ATFTP_CONFFILES=/opt/etc/xinetd.d/atftp
 
 ATFTP_PATCHES = $(ATFTP_SOURCE_DIR)/CLK_TCK.patch
-ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel fsg3v4 slugosbe slugosle syno-e500 ts509, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel cs08q1armel fsg3v4 slugosbe slugosle syno-e500 ts509, $(OPTWARE_TARGET)))
 ATFTP_PATCHES += $(ATFTP_SOURCE_DIR)/argz.h.patch
 endif
 
@@ -31,7 +31,8 @@ ATFTP_IPK_DIR=$(BUILD_DIR)/atftp-$(ATFTP_VERSION)-ipk
 ATFTP_IPK=$(BUILD_DIR)/atftp_$(ATFTP_VERSION)-$(ATFTP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(ATFTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ATFTP_SITE)/$(ATFTP_SOURCE)
+	$(WGET) -P $(@D) $(ATFTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 atftp-source: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES)
 
@@ -53,7 +54,7 @@ $(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES) make/
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	)
-	touch $(ATFTP_BUILD_DIR)/.configured
+	touch $@
 
 atftp-unpack: $(ATFTP_BUILD_DIR)/.configured
 
