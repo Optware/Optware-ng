@@ -29,8 +29,7 @@ LFTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LFTP_DESCRIPTION=Sophisticated ftp/http client, file transfer program supporting a number of network protocols.
 LFTP_SECTION=net
 LFTP_PRIORITY=optional
-LFTP_DEPENDS=readline, ncurses, expat (>=2), libstdc++
-# LFTP_DEPENDS=readline, ncurses, expat, libstdc++, gnutls, libtasn1, zlib
+LFTP_DEPENDS=readline, ncurses, expat, libstdc++, gnutls
 LFTP_SUGGESTS=
 LFTP_CONFLICTS=
 
@@ -55,6 +54,15 @@ LFTP_IPK_VERSION=1
 #
 LFTP_CPPFLAGS=
 LFTP_LDFLAGS=
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+LFTP_CONFIG_ENV = \
+	ac_cv_need_trio=no \
+	lftp_cv_va_copy=yes \
+	enable_wcwidth_replacement=yes \
+	ac_cv_func_malloc_0_nonnull=yes \
+	gl_cv_func_gettimeofday_clobber=no
+endif
 
 #
 # LFTP_BUILD_DIR is the directory in which the build is done.
@@ -107,7 +115,7 @@ lftp-source: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 #
 $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES) make/lftp.mk
 	$(MAKE) readline-stage ncurses-stage expat-stage libstdc++-stage
-#	$(MAKE) gnutls-stage libtasn1-stage zlib-stage
+	$(MAKE) libgcrypt-stage libgpg-error-stage libtasn1-stage gnutls-stage
 	rm -rf $(BUILD_DIR)/$(LFTP_DIR) $(@D)
 	$(LFTP_UNZIP) $(DL_DIR)/$(LFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LFTP_PATCHES)" ; \
@@ -117,16 +125,12 @@ $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES) make/lft
 	if test "$(BUILD_DIR)/$(LFTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LFTP_DIR) $(@D) ; \
 	fi
-#		LIBGNUTLS_CONFIG=$(STAGING_PREFIX)/bin/$(GNU_TARGET_NAME)-libgnutls-config
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LFTP_LDFLAGS)" \
-		ac_cv_need_trio=no \
-		lftp_cv_va_copy=yes \
-		enable_wcwidth_replacement=yes \
-		ac_cv_func_malloc_0_nonnull=yes \
-		gl_cv_func_gettimeofday_clobber=no \
+		LIBGNUTLS_CONFIG=$(STAGING_PREFIX)/bin/libgnutls-config \
+		$(LFTP_CONFIG_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
