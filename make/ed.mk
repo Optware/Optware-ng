@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ED_SITE=http://ftp.gnu.org/gnu/ed
-ED_VERSION=0.9
+ED_VERSION=1.0
 ED_SOURCE=ed-$(ED_VERSION).tar.bz2
 ED_DIR=ed-$(ED_VERSION)
 ED_UNZIP=bzcat
@@ -69,8 +69,8 @@ ED_IPK=$(BUILD_DIR)/ed_$(ED_VERSION)-$(ED_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ED_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ED_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(ED_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
