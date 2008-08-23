@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-EPSILON_VERSION=0.5.8
+PY-EPSILON_VERSION=0.5.9
 PY-EPSILON_SOURCE=Epsilon-$(PY-EPSILON_VERSION).tar.gz
 PY-EPSILON_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-EPSILON_SOURCE)?format=raw
 PY-EPSILON_DIR=Epsilon-$(PY-EPSILON_VERSION)
@@ -81,7 +81,8 @@ PY25-EPSILON_IPK=$(BUILD_DIR)/py25-epsilon_$(PY-EPSILON_VERSION)-$(PY-EPSILON_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-EPSILON_SOURCE):
-	$(WGET) -O $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON_SITE)
+	$(WGET) -O $@ $(PY-EPSILON_SITE) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,14 +108,14 @@ py-epsilon-source: $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON_PATCHES)
 #
 $(PY-EPSILON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON_PATCHES)
 	$(MAKE) py-twisted-stage
-	rm -rf $(PY-EPSILON_BUILD_DIR)
-	mkdir -p $(PY-EPSILON_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-EPSILON_DIR)
 	$(PY-EPSILON_UNZIP) $(DL_DIR)/$(PY-EPSILON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-EPSILON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-EPSILON_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-EPSILON_DIR) $(PY-EPSILON_BUILD_DIR)/2.4
-	(cd $(PY-EPSILON_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-EPSILON_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4"; \
@@ -126,8 +127,8 @@ $(PY-EPSILON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON
 	rm -rf $(BUILD_DIR)/$(PY-EPSILON_DIR)
 	$(PY-EPSILON_UNZIP) $(DL_DIR)/$(PY-EPSILON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-EPSILON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-EPSILON_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-EPSILON_DIR) $(PY-EPSILON_BUILD_DIR)/2.5
-	(cd $(PY-EPSILON_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-EPSILON_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5"; \
@@ -144,10 +145,10 @@ py-epsilon-unpack: $(PY-EPSILON_BUILD_DIR)/.configured
 #
 $(PY-EPSILON_BUILD_DIR)/.built: $(PY-EPSILON_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PY-EPSILON_BUILD_DIR)/2.4; \
+	cd $(@D)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
-	cd $(PY-EPSILON_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
 	touch $@
@@ -162,11 +163,11 @@ py-epsilon: $(PY-EPSILON_BUILD_DIR)/.built
 #
 $(PY-EPSILON_BUILD_DIR)/.staged: $(PY-EPSILON_BUILD_DIR)/.built
 	rm -f $@
-	(cd $(PY-EPSILON_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 		--root=$(STAGING_DIR) --prefix=/opt)
-	(cd $(PY-EPSILON_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 		--root=$(STAGING_DIR) --prefix=/opt)
@@ -225,6 +226,7 @@ $(PY24-EPSILON_IPK): $(PY-EPSILON_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 		--root=$(PY24-EPSILON_IPK_DIR) --prefix=/opt)
+	mv $(PY24-EPSILON_IPK_DIR)/opt/bin/benchmark $(PY24-EPSILON_IPK_DIR)/opt/bin/py24-epsilon-benchmark
 	$(MAKE) $(PY24-EPSILON_IPK_DIR)/CONTROL/control
 	echo $(PY-EPSILON_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-EPSILON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-EPSILON_IPK_DIR)
@@ -235,6 +237,7 @@ $(PY25-EPSILON_IPK): $(PY-EPSILON_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 		--root=$(PY25-EPSILON_IPK_DIR) --prefix=/opt)
+	mv $(PY25-EPSILON_IPK_DIR)/opt/bin/benchmark $(PY25-EPSILON_IPK_DIR)/opt/bin/py25-epsilon-benchmark
 	$(MAKE) $(PY25-EPSILON_IPK_DIR)/CONTROL/control
 	echo $(PY-EPSILON_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-EPSILON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-EPSILON_IPK_DIR)
