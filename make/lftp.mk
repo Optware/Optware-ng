@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
-LFTP_VERSION=3.7.3
+LFTP_VERSION=3.7.4
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -108,14 +108,14 @@ lftp-source: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES) make/lftp.mk
 	$(MAKE) readline-stage ncurses-stage expat-stage libstdc++-stage
 #	$(MAKE) gnutls-stage libtasn1-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(LFTP_DIR) $(LFTP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LFTP_DIR) $(@D)
 	$(LFTP_UNZIP) $(DL_DIR)/$(LFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LFTP_PATCHES)" ; \
 		then cat $(LFTP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LFTP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LFTP_DIR)" != "$(LFTP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LFTP_DIR) $(LFTP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LFTP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LFTP_DIR) $(@D) ; \
 	fi
 #		LIBGNUTLS_CONFIG=$(STAGING_PREFIX)/bin/$(GNU_TARGET_NAME)-libgnutls-config
 	(cd $(@D); \
@@ -126,6 +126,7 @@ $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES) make/lft
 		lftp_cv_va_copy=yes \
 		enable_wcwidth_replacement=yes \
 		ac_cv_func_malloc_0_nonnull=yes \
+		gl_cv_func_gettimeofday_clobber=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
