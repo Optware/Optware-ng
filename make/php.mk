@@ -98,11 +98,17 @@ PHP_LDAP_IPK=$(BUILD_DIR)/php-ldap_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_AR
 PHP_MBSTRING_IPK_DIR=$(BUILD_DIR)/php-mbstring-$(PHP_VERSION)-ipk
 PHP_MBSTRING_IPK=$(BUILD_DIR)/php-mbstring_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PHP_MSSQL_IPK_DIR=$(BUILD_DIR)/php-mssql-$(PHP_VERSION)-ipk
+PHP_MSSQL_IPK=$(BUILD_DIR)/php-mssql_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 PHP_MYSQL_IPK_DIR=$(BUILD_DIR)/php-mysql-$(PHP_VERSION)-ipk
 PHP_MYSQL_IPK=$(BUILD_DIR)/php-mysql_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PHP_PGSQL_IPK_DIR=$(BUILD_DIR)/php-pgsql-$(PHP_VERSION)-ipk
 PHP_PGSQL_IPK=$(BUILD_DIR)/php-pgsql_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PHP_ODBC_IPK_DIR=$(BUILD_DIR)/php-odbc-$(PHP_VERSION)-ipk
+PHP_ODBC_IPK=$(BUILD_DIR)/php-odbc_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PHP_PEAR_IPK_DIR=$(BUILD_DIR)/php-pear-$(PHP_VERSION)-ipk
 PHP_PEAR_IPK=$(BUILD_DIR)/php-pear_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -282,6 +288,19 @@ $(PHP_MSSQL_IPK_DIR)/CONTROL/control:
 	@echo "Description: mssql extension for php" >>$@
 	@echo "Depends: php, freetds" >>$@
 
+$(PHP_ODBC_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: php-odbc" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: odbc extension for php" >>$@
+	@echo "Depends: php, odbc" >>$@
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -323,6 +342,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES) make/php.mk
 	$(MAKE) mysql-stage
 	$(MAKE) postgresql-stage
 	$(MAKE) freetds-stage
+	$(MAKE) unixodbc-stage
 	$(MAKE) imap-stage
 	$(MAKE) libpng-stage
 	$(MAKE) libjpeg-stage
@@ -343,8 +363,8 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	    -e 's|`$$PG_CONFIG --libdir`|$(STAGING_LIB_DIR)|' \
 	    $(@D)/ext/*pgsql/*.m4
 endif
+	autoreconf $(@D)
 	(cd $(@D); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
@@ -394,6 +414,7 @@ endif
 		--with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
 		--with-pgsql=shared,$(STAGING_PREFIX) \
 		--with-mssql=shared,$(STAGING_PREFIX) \
+		--with-unixODBC=shared,$(STAGING_PREFIX) \
 		--with-openssl=shared,$(STAGING_PREFIX) \
 		--with-sqlite=shared \
 		--with-pdo-mysql=shared,$(STAGING_PREFIX) \
@@ -558,6 +579,14 @@ endif
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mssql.so $(PHP_MSSQL_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=mssql.so >$(PHP_MSSQL_IPK_DIR)/opt/etc/php.d/mssql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MSSQL_IPK_DIR)
+	### now make php-odbc
+	rm -rf $(PHP_ODBC_IPK_DIR) $(BUILD_DIR)/php-odbc_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_ODBC_IPK_DIR)/CONTROL/control
+	install -d $(PHP_ODBC_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_ODBC_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/odbc.so $(PHP_ODBC_IPK_DIR)/opt/lib/php/extensions/
+	echo extension=odbc.so >$(PHP_ODBC_IPK_DIR)/opt/etc/php.d/odbc.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_ODBC_IPK_DIR)
 	### finally the main ipkg
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
 	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
@@ -610,8 +639,10 @@ php-dirclean:
 	$(PHP_GD_IPK_DIR) $(PHP_GD_IPK) \
 	$(PHP_IMAP_IPK_DIR) $(PHP_IMAP_IPK) \
 	$(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) \
+	$(PHP_MSSQL_IPK_DIR) $(PHP_MSSQL_IPK) \
 	$(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) \
 	$(PHP_PGSQL_IPK_DIR) $(PHP_PGSQL_IPK) \
+	$(PHP_ODBC_IPK_DIR) $(PHP_ODBC_IPK) \
 	$(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	rm -rf $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK)
@@ -629,8 +660,10 @@ php-check: php-ipk
 	$(PHP_GD_IPK) \
 	$(PHP_IMAP_IPK) \
 	$(PHP_MBSTRING_IPK) \
+	$(PHP_MSSQL_IPK) \
 	$(PHP_MYSQL_IPK) \
 	$(PHP_PGSQL_IPK) \
+	$(PHP_ODBC_IPK) \
 	$(PHP_PEAR_IPK)
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PHP_LDAP_IPK)
