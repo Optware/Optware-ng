@@ -43,11 +43,11 @@ LLINK_CONFLICTS=
 #
 # LLINK_IPK_VERSION should be incremented when the ipk changes.
 #
-LLINK_IPK_VERSION=1
+LLINK_IPK_VERSION=2
 
 #
 # LLINK_CONFFILES should be a list of user-editable files
-#LLINK_CONFFILES=/opt/etc/llink.conf /opt/etc/init.d/SXXllink
+LLINK_CONFFILES=/opt/etc/llink/llink.conf /opt/etc/llink/jukebox.conf
 
 #
 # LLINK_PATCHES should list any patches, in the the order in
@@ -226,8 +226,17 @@ $(LLINK-DEV_IPK_DIR)/CONTROL/control:
 #
 $(LLINK_IPK) $(LLINK-DEV_IPK): $(LLINK_BUILD_DIR)/.built
 	rm -rf $(LLINK_IPK_DIR) $(BUILD_DIR)/llink_*_$(TARGET_ARCH).ipk
-	rm -rf $(LLINK_IPK-DEV_DIR) $(BUILD_DIR)/llink-dev_*_$(TARGET_ARCH).ipk
+	rm -rf $(LLINK-DEV_IPK_DIR) $(BUILD_DIR)/llink-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LLINK_BUILD_DIR) DESTDIR=$(LLINK_IPK_DIR) install-strip
+	install -d $(LLINK_IPK_DIR)/opt/etc/llink
+	cp -a $(LLINK_BUILD_DIR)/src/skin $(LLINK_IPK_DIR)/opt/etc/llink/
+	cp -p $(LLINK_BUILD_DIR)/src/*.conf $(LLINK_IPK_DIR)/opt/etc/llink/
+	install -d $(LLINK_IPK_DIR)/opt/share/doc/llink
+	install \
+		$(LLINK_BUILD_DIR)/LICENSE \
+		$(LLINK_BUILD_DIR)/README.txt \
+		$(LLINK_BUILD_DIR)/Example* \
+		$(LLINK_IPK_DIR)/opt/share/doc/llink/
 	rm -f $(LLINK_IPK_DIR)/opt/bin/unrar
 	install -d $(LLINK-DEV_IPK_DIR)/opt
 	mv $(LLINK_IPK_DIR)/opt/include $(LLINK-DEV_IPK_DIR)/opt
