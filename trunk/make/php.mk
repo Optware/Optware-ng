@@ -29,7 +29,7 @@ endif
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=1
+PHP_IPK_VERSION=2
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -268,6 +268,19 @@ $(PHP_PGSQL_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: pgsql extension for php" >>$@
 	@echo "Depends: php, postgresql" >>$@
+
+$(PHP_MSSQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: php-mssql" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: mssql extension for php" >>$@
+	@echo "Depends: php, freetds" >>$@
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -537,6 +550,14 @@ endif
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/*pgsql*.so $(PHP_PGSQL_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=pgsql.so >$(PHP_PGSQL_IPK_DIR)/opt/etc/php.d/pgsql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_PGSQL_IPK_DIR)
+	### now make php-mssql
+	rm -rf $(PHP_MSSQL_IPK_DIR) $(BUILD_DIR)/php-mssql_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_MSSQL_IPK_DIR)/CONTROL/control
+	install -d $(PHP_MSSQL_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_MSSQL_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mssql.so $(PHP_MSSQL_IPK_DIR)/opt/lib/php/extensions/
+	echo extension=mssql.so >$(PHP_MSSQL_IPK_DIR)/opt/etc/php.d/mssql.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MSSQL_IPK_DIR)
 	### finally the main ipkg
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
 	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
