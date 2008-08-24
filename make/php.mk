@@ -309,6 +309,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES) make/php.mk
 	$(MAKE) openssl-stage 
 	$(MAKE) mysql-stage
 	$(MAKE) postgresql-stage
+	$(MAKE) freetds-stage
 	$(MAKE) imap-stage
 	$(MAKE) libpng-stage
 	$(MAKE) libjpeg-stage
@@ -379,6 +380,7 @@ endif
 		--with-mysql-sock=/tmp/mysql.sock \
 		--with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
 		--with-pgsql=shared,$(STAGING_PREFIX) \
+		--with-mssql=shared,$(STAGING_PREFIX) \
 		--with-openssl=shared,$(STAGING_PREFIX) \
 		--with-sqlite=shared \
 		--with-pdo-mysql=shared,$(STAGING_PREFIX) \

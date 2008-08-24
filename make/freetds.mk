@@ -37,7 +37,7 @@ FREETDS_CONFLICTS=
 #
 # FREETDS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETDS_IPK_VERSION=1
+FREETDS_IPK_VERSION=2
 
 #
 # FREETDS_CONFFILES should be a list of user-editable files
@@ -153,6 +153,8 @@ $(FREETDS_BUILD_DIR)/.staged: $(FREETDS_BUILD_DIR)/.built
 	rm -f $(STAGING_LIB_DIR)/libsybdb.la
 	rm -f $(STAGING_LIB_DIR)/libtds.la
 	rm -f $(STAGING_LIB_DIR)/libtdssrv.la
+	touch $(STAGING_INCLUDE_DIR)/tds.h
+	touch $(STAGING_LIB_DIR)/libtds.a
 	touch $@
 
 freetds-stage: $(FREETDS_BUILD_DIR)/.staged
