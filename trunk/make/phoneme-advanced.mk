@@ -150,8 +150,8 @@ $(PHONEME_ADVANCED_PATCHES)
 ifeq ($(PHONEME_ADVANCED_ARCH), $(filter mips powerpc, $(PHONEME_ADVANCED_ARCH)))
 	tar -C $(PHONEME_ADVANCED_BUILD_DIR)/cdc -xvzf $(PHONEME_ADVANCED_SOURCE_DIR)/linux-$(PHONEME_ADVANCED_ARCH).tar.gz
 endif
-ifeq ($(OPTWARE_TARGET),slugosbe)
-	tar -C $(PHONEME_ADVANCED_BUILD_DIR)/cdc/src/linux-arm -xvzf $(PHONEME_ADVANCED_SOURCE_DIR)/slugosbe-missing-asm-ucontext-h.tar.gz
+ifneq (, $(filter cs08q1armel slugosbe slugosle, $(OPTWARE_TARGET)))
+	tar -C $(PHONEME_ADVANCED_BUILD_DIR)/cdc/src/linux-arm -xvzf $(PHONEME_ADVANCED_SOURCE_DIR)/missing-asm-ucontext-h.tar.gz
 endif
 	( [ -e $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(OPTWARE_TARGET) ] && \
 	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(OPTWARE_TARGET) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile ) || \

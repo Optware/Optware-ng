@@ -14,5 +14,5 @@ BROKEN_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	icecast iptables iptraf ldconfig libextractor \
 	monotone \
-	nfs-utils phoneme-advanced puppy mod-python qemu \
+	nfs-utils puppy mod-python qemu \
 	taged transcode \
