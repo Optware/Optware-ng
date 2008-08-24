@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOJSON_VERSION=1.2
+PY-TURBOJSON_VERSION=1.2.1
 # PY-TURBOJSON_SVN_TAG=$(PY-TURBOJSON_VERSION)
 # PY-TURBOJSON_REPOSITORY=http://svn.turbogears.org/projects/TurboJson/tags/$(PY-TURBOJSON_SVN_TAG)
 PY-TURBOJSON_SITE=http://pypi.python.org/packages/source/T/TurboJson
