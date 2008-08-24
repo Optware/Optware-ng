@@ -27,13 +27,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MAILMAN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mailman
-MAILMAN_VERSION=2.1.9
+MAILMAN_VERSION=2.1.11
 MAILMAN_SOURCE=mailman-$(MAILMAN_VERSION).tgz
 MAILMAN_DIR=mailman-$(MAILMAN_VERSION)
 MAILMAN_UNZIP=zcat
 MAILMAN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MAILMAN_DESCRIPTION=the GNU Mailing List Manager.
-MAILMAN_SECTION=misc
+MAILMAN_SECTION=mail
 MAILMAN_PRIORITY=optional
 MAILMAN_DEPENDS=python
 MAILMAN_CONFLICTS=
@@ -41,7 +41,7 @@ MAILMAN_CONFLICTS=
 #
 # MAILMAN_IPK_VERSION should be incremented when the ipk changes.
 #
-MAILMAN_IPK_VERSION=2
+MAILMAN_IPK_VERSION=1
 
 #
 # MAILMAN_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ MAILMAN_PATCHES=$(MAILMAN_SOURCE_DIR)/src-configure.in.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MAILMAN_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.4
+MAILMAN_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.5
 MAILMAN_LDFLAGS=
 
 #
@@ -82,7 +82,8 @@ MAILMAN_IPK=$(BUILD_DIR)/mailman_$(MAILMAN_VERSION)-$(MAILMAN_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MAILMAN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MAILMAN_SITE)/$(MAILMAN_SOURCE)
+	$(WGET) -P $(@D) $(MAILMAN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,30 +109,32 @@ mailman-source: $(DL_DIR)/$(MAILMAN_SOURCE) $(MAILMAN_PATCHES)
 #
 $(MAILMAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAILMAN_SOURCE) $(MAILMAN_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(MAILMAN_DIR) $(MAILMAN_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MAILMAN_DIR) $(@D)
 	$(MAILMAN_UNZIP) $(DL_DIR)/$(MAILMAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MAILMAN_PATCHES) | patch -d $(BUILD_DIR)/$(MAILMAN_DIR) -p1
-	mv $(BUILD_DIR)/$(MAILMAN_DIR) $(MAILMAN_BUILD_DIR)
-	(cd $(MAILMAN_BUILD_DIR); \
-		autoconf configure.in > configure; \
+	mv $(BUILD_DIR)/$(MAILMAN_DIR) $(@D)
+	sed -i -e '/isfile.*Python\.h/s|if .*|if True:|' $(@D)/configure.in
+	cd $(@D); autoconf configure.in > configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MAILMAN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MAILMAN_LDFLAGS)" \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt/lib/mailman \
 		--with-var-prefix=/opt/var/mailman \
-		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.4 \
+		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.5 \
 		--with-username=root \
 		--with-groupname=root \
 		--without-permcheck \
 		--disable-nls \
 		; \
-		find build -type f | xargs sed -i -e 's:^#!.*:#! /opt/bin/python:' \
 	)
-	touch $(MAILMAN_BUILD_DIR)/.configured
+	find $(@D)/build -type f | xargs sed -i -e 's:^#!.*:#! /opt/bin/python:'
+	touch $@
 
 mailman-unpack: $(MAILMAN_BUILD_DIR)/.configured
 
@@ -139,13 +142,13 @@ mailman-unpack: $(MAILMAN_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MAILMAN_BUILD_DIR)/.built: $(MAILMAN_BUILD_DIR)/.configured
-	rm -f $(MAILMAN_BUILD_DIR)/.built
+	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) \
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(MAILMAN_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(MAILMAN_LDFLAGS)" \
 	LDSHARED='$(TARGET_CC) -shared' \
-	$(MAKE) -C $(MAILMAN_BUILD_DIR)
-	touch $(MAILMAN_BUILD_DIR)/.built
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -156,13 +159,13 @@ mailman: $(MAILMAN_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MAILMAN_BUILD_DIR)/.staged: $(MAILMAN_BUILD_DIR)/.built
-	rm -f $(MAILMAN_BUILD_DIR)/.staged
+	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) \
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(MAILMAN_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(MAILMAN_LDFLAGS)" \
 	LDSHARED='$(TARGET_CC) -shared' \
-	$(MAKE) -C $(MAILMAN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MAILMAN_BUILD_DIR)/.staged
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 mailman-stage: $(MAILMAN_BUILD_DIR)/.staged
 
@@ -171,7 +174,7 @@ mailman-stage: $(MAILMAN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mailman
 #
 $(MAILMAN_IPK_DIR)/CONTROL/control:
-	@install -d $(MAILMAN_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: mailman" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
