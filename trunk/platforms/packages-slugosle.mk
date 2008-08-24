@@ -23,7 +23,7 @@ BROKEN_PACKAGES = \
 	atk \
 	gtk ipac-ng ivorbis-tools \
 	madplay mt-daapd nfs-utils \
-	pcapsipdump phoneme-advanced \
+	pcapsipdump \
 	player rhtvision \
 	squeak transcode \
 	vte xchat
