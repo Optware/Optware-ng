@@ -47,7 +47,8 @@ PHONEME_ADVANCED_IPK_VERSION=1
 PHONEME_ADVANCED_ARCH=$(strip \
 	$(if $(filter armeb, $(TARGET_ARCH)), arm, \
 	$(if $(filter mipsel, $(TARGET_ARCH)), mips, \
-	$(TARGET_ARCH))))
+	$(if $(filter i386 i686, $(TARGET_ARCH)), x86, \
+	$(TARGET_ARCH)))))
 
 #
 # PHONEME_ADVANCED_PATCHES should list any patches, in the the order in
