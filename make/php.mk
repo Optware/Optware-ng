@@ -299,7 +299,7 @@ $(PHP_ODBC_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: odbc extension for php" >>$@
-	@echo "Depends: php, odbc" >>$@
+	@echo "Depends: php, unixodbc" >>$@
 
 #
 # This is the dependency on the source code.  If the source is missing,
