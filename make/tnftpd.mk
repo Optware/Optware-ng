@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TNFTPD_SITE=ftp://ftp.netbsd.org/pub/NetBSD/misc/tnftp
-TNFTPD_VERSION=20061217
+TNFTPD_VERSION=20080609
 TNFTPD_SOURCE=tnftpd-$(TNFTPD_VERSION).tar.gz
 TNFTPD_DIR=tnftpd-$(TNFTPD_VERSION)
 TNFTPD_UNZIP=zcat
@@ -36,7 +36,7 @@ TNFTPD_CONFLICTS=
 #
 # TNFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-TNFTPD_IPK_VERSION=2
+TNFTPD_IPK_VERSION=1
 
 #
 # TNFTPD_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ TNFTPD_IPK=$(BUILD_DIR)/tnftpd_$(TNFTPD_VERSION)-$(TNFTPD_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TNFTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TNFTPD_SITE)/$(TNFTPD_SOURCE)
+	$(WGET) -P $(@D) $(TNFTPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,16 +106,16 @@ tnftpd-source: $(DL_DIR)/$(TNFTPD_SOURCE) $(TNFTPD_PATCHES)
 #
 $(TNFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTPD_SOURCE) $(TNFTPD_PATCHES) make/tnftpd.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(TNFTPD_DIR) $(TNFTPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TNFTPD_DIR) $(@D)
 	$(TNFTPD_UNZIP) $(DL_DIR)/$(TNFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TNFTPD_PATCHES)" ; \
 		then cat $(TNFTPD_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TNFTPD_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TNFTPD_DIR)" != "$(TNFTPD_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TNFTPD_DIR) $(TNFTPD_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TNFTPD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TNFTPD_DIR) $(@D) ; \
 	fi
-	(cd $(TNFTPD_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TNFTPD_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(TNFTPD_CPPFLAGS)" \
@@ -128,7 +129,7 @@ $(TNFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTPD_SOURCE) $(TNFTPD_PATCHES) ma
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(TNFTPD_BUILD_DIR)/libtool
-	touch $(TNFTPD_BUILD_DIR)/.configured
+	touch $@
 
 tnftpd-unpack: $(TNFTPD_BUILD_DIR)/.configured
 
@@ -136,9 +137,9 @@ tnftpd-unpack: $(TNFTPD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TNFTPD_BUILD_DIR)/.built: $(TNFTPD_BUILD_DIR)/.configured
-	rm -f $(TNFTPD_BUILD_DIR)/.built
-	$(MAKE) -C $(TNFTPD_BUILD_DIR)
-	touch $(TNFTPD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -149,9 +150,9 @@ tnftpd: $(TNFTPD_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(TNFTPD_BUILD_DIR)/.staged: $(TNFTPD_BUILD_DIR)/.built
-	rm -f $(TNFTPD_BUILD_DIR)/.staged
-	$(MAKE) -C $(TNFTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(TNFTPD_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 tnftpd-stage: $(TNFTPD_BUILD_DIR)/.staged
 
@@ -194,6 +195,8 @@ $(TNFTPD_IPK): $(TNFTPD_BUILD_DIR)/.built
 	chmod -w $(TNFTPD_IPK_DIR)/opt/sbin/tnftpd
 	install -d $(TNFTPD_IPK_DIR)/opt/share/doc/tnftpd/examples/
 	install $(TNFTPD_BUILD_DIR)/examples/ftpd.conf $(TNFTPD_IPK_DIR)/opt/share/doc/tnftpd/examples/
+	mv $(TNFTPD_IPK_DIR)/opt/share/man/cat5 $(TNFTPD_IPK_DIR)/opt/share/man/man5
+	mv $(TNFTPD_IPK_DIR)/opt/share/man/cat8 $(TNFTPD_IPK_DIR)/opt/share/man/man8
 #	install -d $(TNFTPD_IPK_DIR)/opt/etc/
 #	install -m 644 $(TNFTPD_SOURCE_DIR)/tnftpd.conf $(TNFTPD_IPK_DIR)/opt/etc/tnftpd.conf
 #	install -d $(TNFTPD_IPK_DIR)/opt/etc/init.d
