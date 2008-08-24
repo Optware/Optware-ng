@@ -127,8 +127,9 @@ $(TNFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTPD_SOURCE) $(TNFTPD_PATCHES) ma
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--without-pam \
 	)
-#	$(PATCH_LIBTOOL) $(TNFTPD_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 tnftpd-unpack: $(TNFTPD_BUILD_DIR)/.configured
