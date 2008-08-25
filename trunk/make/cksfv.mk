@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CKSFV_SITE=http://zakalwe.fi/~shd/foss/cksfv/files
-CKSFV_VERSION=1.3.12
+CKSFV_VERSION=1.3.13
 CKSFV_SOURCE=cksfv-$(CKSFV_VERSION).tar.bz2
 CKSFV_DIR=cksfv-$(CKSFV_VERSION)
 CKSFV_UNZIP=bzcat
@@ -76,8 +76,8 @@ CKSFV_IPK=$(BUILD_DIR)/cksfv_$(CKSFV_VERSION)-$(CKSFV_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CKSFV_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CKSFV_SITE)/$(CKSFV_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(CKSFV_SOURCE)
+	$(WGET) -P $(@D) $(CKSFV_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ cksfv-source: $(DL_DIR)/$(CKSFV_SOURCE) $(CKSFV_PATCHES)
 #
 $(CKSFV_BUILD_DIR)/.configured: $(DL_DIR)/$(CKSFV_SOURCE) $(CKSFV_PATCHES) make/cksfv.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(CKSFV_DIR) $(CKSFV_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CKSFV_DIR) $(@D)
 	$(CKSFV_UNZIP) $(DL_DIR)/$(CKSFV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CKSFV_PATCHES)" ; \
 		then cat $(CKSFV_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(CKSFV_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(CKSFV_DIR)" != "$(CKSFV_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CKSFV_DIR) $(CKSFV_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(CKSFV_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CKSFV_DIR) $(@D) ; \
 	fi
-	(cd $(CKSFV_BUILD_DIR); \
+	(cd $(@D); \
 		./configure \
 		--prefix=/opt \
 		--package-prefix=$(CKSFV_IPK_DIR) \
@@ -130,7 +130,7 @@ cksfv-unpack: $(CKSFV_BUILD_DIR)/.configured
 #
 $(CKSFV_BUILD_DIR)/.built: $(CKSFV_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(CKSFV_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CKSFV_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CKSFV_LDFLAGS)" \
@@ -145,12 +145,12 @@ cksfv: $(CKSFV_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(CKSFV_BUILD_DIR)/.staged: $(CKSFV_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(CKSFV_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-cksfv-stage: $(CKSFV_BUILD_DIR)/.staged
+#$(CKSFV_BUILD_DIR)/.staged: $(CKSFV_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#cksfv-stage: $(CKSFV_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
