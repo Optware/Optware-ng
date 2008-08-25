@@ -101,7 +101,7 @@ ASTERISK_SYSCONF_SAMPLE_DIR=$(ASTERISK_INST_DIR)/etc/asterisk/sample
 
 ASTERISK_TARGET=CROSS_ARCH=Linux $(strip \
 	$(if $(filter ts72xx, $(OPTWARE_TARGET)), CROSS_PROC=arm SUB_PROC=maverick, \
-	$(if $(filter cs04q3armel cs05q3armel dns323 mssii syno-x07, $(OPTWARE_TARGET)), CROSS_PROC=arm SUB_PROC=, \
+	$(if $(filter cs04q3armel cs05q3armel cs08q1armel dns323 mssii syno-x07, $(OPTWARE_TARGET)), CROSS_PROC=arm SUB_PROC=, \
 	$(if $(filter powerpc, $(TARGET_ARCH)), CROSS_PROC=ppc SUB_PROC=, \
 	$(if $(filter mss, $(OPTWARE_TARGET)), CROSS_PROC=mips SUB_PROC=, \
 	$(if $(filter mipsel, $(TARGET_ARCH)), CROSS_PROC=mips1 SUB_PROC=, \
