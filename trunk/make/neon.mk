@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEON_SITE=http://www.webdav.org/neon
-NEON_VERSION=0.28.2
+NEON_VERSION=0.28.3
 NEON_SOURCE=neon-$(NEON_VERSION).tar.gz
 NEON_DIR=neon-$(NEON_VERSION)
 NEON_UNZIP=zcat
@@ -219,3 +219,9 @@ neon-clean:
 #
 neon-dirclean:
 	rm -rf $(BUILD_DIR)/$(NEON_DIR) $(NEON_BUILD_DIR) $(NEON_IPK_DIR) $(NEON_IPK)
+
+#
+# Some sanity check for the package.
+#
+neon-check: $(NEON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NEON_IPK)
