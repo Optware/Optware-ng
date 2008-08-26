@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BAZAAR-NG_VERSION=1.5
+PY-BAZAAR-NG_VERSION=1.6
 PY-BAZAAR-NG_SITE=https://launchpad.net/bzr/$(PY-BAZAAR-NG_VERSION)/$(PY-BAZAAR-NG_VERSION)/+download
 PY-BAZAAR-NG_SOURCE=bzr-$(PY-BAZAAR-NG_VERSION).tar.gz
 PY-BAZAAR-NG_DIR=bzr-$(PY-BAZAAR-NG_VERSION)
