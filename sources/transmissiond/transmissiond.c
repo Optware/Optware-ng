@@ -86,7 +86,7 @@ static int          downloadLimit = -1;
 static char         * active_torrents_path = NULL;
 static int          watchdogInterval = 600;
 static int          natTraversal  = 0;
-static int	        encryptionMode = TR_PLAINTEXT_PREFERRED;
+static int	        encryptionMode = TR_CLEAR_PREFERRED;
 static sig_atomic_t mustDie       = 0;
 static sig_atomic_t got_hup       = 0;
 static sig_atomic_t got_usr1      = 0;
@@ -344,7 +344,7 @@ char * getStringRatio( float ratio )
     static char string[20];
     if( ratio == TR_RATIO_NA )
         return "n/a";
-    snprintf( string, sizeof string, "%.3f", ratio );
+    tr_snprintf( string, sizeof string, "%.3f", ratio );
     return string;
 }
 
@@ -358,29 +358,29 @@ static char * status(tr_torrent *tor)
   const struct tr_stat    * s = tr_torrentStat( tor );
 
   if ( s->error && !(s->error & TR_ERROR_TC_WARNING))
-    snprintf( string, STATUS_WIDTH, "Error: #%x %s", s->error, s->errorString );
+    tr_snprintf( string, STATUS_WIDTH, "Error: #%x %s", s->error, s->errorString );
   else if( s->status & TR_STATUS_CHECK_WAIT ) 
     { 
-      chars = snprintf( string, sizeof string, 
+      chars = tr_snprintf( string, sizeof string, 
                         "Waiting to check files... %.2f %%",
                         100.0 * s->percentDone ); 
     }
   else if( s->status & TR_STATUS_CHECK )
     {
-      chars = snprintf( string, STATUS_WIDTH,
+      chars = tr_snprintf( string, STATUS_WIDTH,
                         "Checking files... %.2f %%", 100.0 * s->percentDone );
     }
   else if( s->status & TR_STATUS_DOWNLOAD )
     {
       if (s->eta < 0 ) /* Without eta */
-        snprintf( string, STATUS_WIDTH,
+        tr_snprintf( string, STATUS_WIDTH,
                   "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
                   "ul to %d (%.2f KB/s)", 100.0 * s->percentDone,
                   s->peersConnected, ( s->peersConnected == 1 ) ? "" : "s",
                   s->peersSendingToUs, s->rateDownload,
                   s->peersGettingFromUs, s->rateUpload );
       else
-        snprintf( string, STATUS_WIDTH,
+        tr_snprintf( string, STATUS_WIDTH,
                   "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
                   "ul to %d (%.2f KB/s) %d:%02d remaining",
                   100.0 * s->percentDone,
@@ -392,13 +392,14 @@ static char * status(tr_torrent *tor)
     }
   else if( s->status & TR_STATUS_SEED )
     {
-      chars = snprintf( string, STATUS_WIDTH,
+      chars = tr_snprintf( string, STATUS_WIDTH,
               "Seeding, uploading to %d of %d peer(s), %.2f KB/s [%s]",
                         s->peersGettingFromUs, s->peersConnected,
                         s->rateUpload, getStringRatio(s->ratio));
     }
   else if (s->status & TR_STATUS_STOPPED )
-    snprintf( string, STATUS_WIDTH, "Stopped (%.2f %%)", 100 * s->percentDone);
+    tr_snprintf( string, STATUS_WIDTH, "Stopped (%.2f %%)",
+                 100 * s->percentDone);
   else
     string[0] = '\0';
 
@@ -426,7 +427,7 @@ static void write_info(tr_torrent *tor, void * data UNUSED )
   FILE *stream;
   char fn[MAX_PATH_LENGTH];
   const struct tr_stat    * s = tr_torrentStat( tor );
-  snprintf(fn, MAX_PATH_LENGTH, "%s/.status", tr_torrentGetDownloadDir(tor));
+  tr_snprintf(fn, MAX_PATH_LENGTH, "%s/.status", tr_torrentGetDownloadDir(tor));
   stream = fopen(fn, "w");
   if ( stream )
     {
@@ -633,6 +634,7 @@ int main( int argc, char ** argv )
                          natTraversal,            /* nat enabled */
                          publicPort,              /* public port */
                          encryptionMode, 	      /* encryption mode */
+                         TR_DEFAULT_LAZY_BITFIELD_ENABLED,
                          uploadLimit >= 0,        /* use upload speed limit? */
                          uploadLimit,             /* upload speed limit */
                          downloadLimit >= 0,    /* use download speed limit? */
@@ -646,12 +648,13 @@ int main( int argc, char ** argv )
                          TR_DEFAULT_RPC_PORT,
                          TR_DEFAULT_RPC_ACL,
                          FALSE, "fnord", "potzrebie",
-			TR_DEFAULT_PROXY_ENABLED,
-			TR_DEFAULT_PROXY,
-			TR_DEFAULT_PROXY_TYPE,
-			TR_DEFAULT_PROXY_AUTH_ENABLED,
-			TR_DEFAULT_PROXY_USERNAME,
-			TR_DEFAULT_PROXY_PASSWORD  );
+                         TR_DEFAULT_PROXY_ENABLED,
+                         TR_DEFAULT_PROXY,
+                         TR_DEFAULT_PROXY_PORT,
+                         TR_DEFAULT_PROXY_TYPE,
+                         TR_DEFAULT_PROXY_AUTH_ENABLED,
+                         TR_DEFAULT_PROXY_USERNAME,
+                         TR_DEFAULT_PROXY_PASSWORD  );
 
   /* Move  to writable directory to be able to save coredump there */
   if ( chdir( tr_getDefaultConfigDir())  < 0)
@@ -820,7 +823,7 @@ static int parseCommandLine( int argc, char ** argv )
             natTraversal = 1;
             break;
 	  case 'e':
-	    encryptionMode = encryptionMode == TR_PLAINTEXT_PREFERRED ?
+	    encryptionMode = encryptionMode == TR_CLEAR_PREFERRED ?
 	    	TR_ENCRYPTION_PREFERRED : TR_ENCRYPTION_REQUIRED;
 	    break;
           default:
