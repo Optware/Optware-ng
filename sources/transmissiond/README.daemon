@@ -471,6 +471,8 @@ Try something like the following line in your crontab.
 28. I (and several other users) have the problem that the transmission.cgi is hanging when listing the torrents. At this point it consumes 100% cpu.
 This looks like busybox /bin/sh problem. Install bash and replace first line of transmission.cgi with #!/opt/bin/bash
 
+29. Where is transmission.conf? CGI interface with its daemon is now shipped as separate pakage.
+   You need to install package transmissiond to get it back. 
 
 oleo
 

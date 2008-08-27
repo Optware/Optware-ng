@@ -27,9 +27,9 @@
 TRANSMISSIOND_SITE=http://download.transmissionbt.com/transmissiond/files
 TRANSMISSIOND_VERSION=1.33
 TRANSMISSIOND_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSIOND_SVN_REV=6639
+#TRANSMISSIOND_SVN_REV=6401
 ifdef TRANSMISSIOND_SVN_REV
-TRANSMISSIOND_SOURCE=transmissiond-svn-$(TRANSMISSIOND_SVN_REV).tar.bz2
+TRANSMISSIOND_SOURCE=transmission-svn-$(TRANSMISSIOND_SVN_REV).tar.bz2
 else
 TRANSMISSIOND_SOURCE=transmission-$(TRANSMISSIOND_VERSION).tar.bz2
 endif
@@ -40,7 +40,7 @@ TRANSMISSIOND_DESCRIPTION=lightweight BitTorrent daemon with CGI WWW interface
 TRANSMISSIOND_SECTION=net
 TRANSMISSIOND_PRIORITY=optional
 TRANSMISSIOND_DEPENDS=openssl, libcurl
-TRANSMISSIOND_SUGGESTS=gnuplot, logrotate, thttpd, mini-sendmail
+TRANSMISSIOND_SUGGESTS=gnuplot, logrotate, thttpd, mini-sendmail, transmission
 TRANSMISSIOND_CONFLICTS=torrent
 
 #
@@ -48,13 +48,11 @@ TRANSMISSIOND_CONFLICTS=torrent
 #
 TRANSMISSIOND_IPK_VERSION=1
 
-TRANSMISSIOND_WITH_CGI_DAEMON=1
+# TRANSMISSIOND-DBG_INCLUDED=1
 
 #
 # TRANSMISSIOND_CONFFILES should be a list of user-editable files
 TRANSMISSIOND_CONFFILES=/opt/etc/transmission.conf
-
-ifdef TRANSMISSIOND_WITH_CGI_DAEMON
 
 TRANSMISSIOND_CONFFILES += /opt/etc/init.d/S80busybox_httpd
 
@@ -68,7 +66,6 @@ TRANSMISSIOND_PATCHES= \
 # Additional sources to enhance transmissiond (like this CGI daemon)
 TRANSMISSIOND_SOURCES=$(TRANSMISSIOND_SOURCE_DIR)/transmissiond.c \
 
-endif
 
 #
 # If the compilation of the package requires additional
@@ -116,7 +113,7 @@ endif
 TRANSMISSIOND-DBG_BUILD_DIR=$(BUILD_DIR)/transmissiond-dbg
 TRANSMISSIOND-DBG_SOURCE_DIR=$(SOURCE_DIR)/transmissiond
 TRANSMISSIOND-DBG_IPK_DIR=$(BUILD_DIR)/transmissiond-dbg-$(TRANSMISSIOND_VERSION)-ipk
-ifdef TRANSMISSIOND_SVN_REV
+ifdef TRANSMISSIOND-DBG_INCLUDED
 TRANSMISSIOND-DBG_IPK=$(BUILD_DIR)/transmissiond-dbg_$(TRANSMISSIOND_VERSION)+r$(TRANSMISSIOND_SVN_REV)-$(TRANSMISSIOND_IPK_VERSION)_$(TARGET_ARCH).ipk
 else
 TRANSMISSIOND-DBG_IPK=$(BUILD_DIR)/transmissiond-dbg_$(TRANSMISSIOND_VERSION)-$(TRANSMISSIOND_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -273,24 +270,20 @@ transmissiond-unpack: $(TRANSMISSIOND_BUILD_DIR)/.configured $(TRANSMISSIOND-DBG
 #
 $(TRANSMISSIOND_BUILD_DIR)/.built: $(TRANSMISSIOND_BUILD_DIR)/.configured $(TRANSMISSIOND_SOURCES)
 	rm -f $@
-ifdef TRANSMISSIOND_WITH_CGI_DAEMON
 	cp $(TRANSMISSIOND_SOURCES) $(@D)/cli
-endif
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
 $(TRANSMISSIOND-DBG_BUILD_DIR)/.built: $(TRANSMISSIOND-DBG_BUILD_DIR)/.configured $(TRANSMISSIOND-DBG_SOURCES)
 	rm -f $@
-ifdef TRANSMISSIOND_WITH_CGI_DAEMON
 	cp $(TRANSMISSIOND_SOURCES) $(@D)/cli
-endif
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
 #
 # This is the build convenience target.
 #
-ifdef TRANSMISSIOND_SVN_REV
+ifdef TRANSMISSIOND-DBG_INCLUDED
 transmissiond: $(TRANSMISSIOND_BUILD_DIR)/.built $(TRANSMISSIOND-DBG_BUILD_DIR)/.built
 else
 transmissiond: $(TRANSMISSIOND_BUILD_DIR)/.built
@@ -340,7 +333,7 @@ endif
 #
 # You may need to patch your application to make it use these locations.
 #
-ifdef TRANSMISSIOND_SVN_REV
+ifdef TRANSMISSIOND-DBG_INCLUDED
 $(TRANSMISSIOND_IPK): $(TRANSMISSIOND_BUILD_DIR)/.built $(TRANSMISSIOND-DBG_BUILD_DIR)/.built
 else
 $(TRANSMISSIOND_IPK): $(TRANSMISSIOND_BUILD_DIR)/.built
@@ -350,29 +343,26 @@ endif
 	$(MAKE) -C $(TRANSMISSIOND_BUILD_DIR) DESTDIR=$(TRANSMISSIOND_IPK_DIR) install-strip
 	rm -f $(TRANSMISSIOND_IPK_DIR)/opt/bin/*cli
 	rm -rf $(TRANSMISSIOND_IPK_DIR)/opt/share/man
+	rm -rf $(TRANSMISSIOND_IPK_DIR)/opt/share/transmission
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/etc
 	install -m 644 $(TRANSMISSIOND_SOURCE_DIR)/transmission.conf $(TRANSMISSIOND_IPK_DIR)/opt/etc/transmission.conf
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
-ifdef TRANSMISSIOND_WITH_CGI_DAEMON
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/S80busybox_httpd $(TRANSMISSIOND_IPK_DIR)/opt/etc/init.d
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/transmission.cgi $(TRANSMISSIOND_IPK_DIR)/opt/share/www/cgi-bin
-ifdef TRANSMISSIOND_SVN_REV
+ifdef TRANSMISSIOND-DBG_INCLUDED
 	install -m 755 $(TRANSMISSIOND-DBG_BUILD_DIR)/cli/transmissiond $(TRANSMISSIOND_IPK_DIR)/opt/bin/transmissiond-dbg
 endif
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/sbin
 	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/transmission_watchdog $(TRANSMISSIOND_IPK_DIR)/opt/sbin
 	install -m 666 $(TRANSMISSIOND_SOURCE_DIR)/README.daemon $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
-endif
 	install -m 666 $(TRANSMISSIOND_BUILD_DIR)/NEWS $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/var/log
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/var/run
 	$(MAKE) $(TRANSMISSIOND_IPK_DIR)/CONTROL/control
-ifdef TRANSMISSIOND_WITH_CGI_DAEMON
 	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/postinst $(TRANSMISSIOND_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/prerm $(TRANSMISSIOND_IPK_DIR)/CONTROL/prerm
-endif
 	echo $(TRANSMISSIOND_CONFFILES) | sed -e 's/ /\n/g' > $(TRANSMISSIOND_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSIOND_IPK_DIR)
 
