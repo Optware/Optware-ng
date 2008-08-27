@@ -86,7 +86,7 @@ static int          downloadLimit = -1;
 static char         * active_torrents_path = NULL;
 static int          watchdogInterval = 600;
 static int          natTraversal  = 0;
-static int	        encryptionMode = TR_CLEAR_PREFERRED;
+static int	        encryptionMode = TR_PLAINTEXT_PREFERRED;
 static sig_atomic_t mustDie       = 0;
 static sig_atomic_t got_hup       = 0;
 static sig_atomic_t got_usr1      = 0;
@@ -634,7 +634,6 @@ int main( int argc, char ** argv )
                          natTraversal,            /* nat enabled */
                          publicPort,              /* public port */
                          encryptionMode, 	      /* encryption mode */
-                         TR_DEFAULT_LAZY_BITFIELD_ENABLED,
                          uploadLimit >= 0,        /* use upload speed limit? */
                          uploadLimit,             /* upload speed limit */
                          downloadLimit >= 0,    /* use download speed limit? */
@@ -823,7 +822,7 @@ static int parseCommandLine( int argc, char ** argv )
             natTraversal = 1;
             break;
 	  case 'e':
-	    encryptionMode = encryptionMode == TR_CLEAR_PREFERRED ?
+	    encryptionMode = encryptionMode == TR_PLAINTEXT_PREFERRED ?
 	    	TR_ENCRYPTION_PREFERRED : TR_ENCRYPTION_REQUIRED;
 	    break;
           default:
