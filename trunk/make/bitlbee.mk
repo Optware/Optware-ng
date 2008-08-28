@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION=1.2.1
+BITLBEE_VERSION=1.2.2
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
