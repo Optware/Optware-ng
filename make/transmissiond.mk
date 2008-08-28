@@ -120,10 +120,17 @@ TRANSMISSIOND-DBG_IPK=$(BUILD_DIR)/transmissiond-dbg_$(TRANSMISSIOND_VERSION)-$(
 endif
 
 
+ifdef TRANSMISSION_VERSION
+ifeq ($(TRANSMISSION_VERSION), $(TRANSMISSIOND_VERSION))
+TRANSMISSIOND_SKIP_FETCH=1
+endif
+endif
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
+ifndef TRANSMISSIOND_SKIP_FETCH
 $(DL_DIR)/$(TRANSMISSIOND_SOURCE):
 ifdef TRANSMISSIOND_SVN_REV
 	( cd $(BUILD_DIR) ; \
@@ -136,6 +143,7 @@ ifdef TRANSMISSIOND_SVN_REV
 else
 	$(WGET) -P $(@D) $(TRANSMISSIOND_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 endif
 
 #
