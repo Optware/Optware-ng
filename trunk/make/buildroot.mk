@@ -131,7 +131,8 @@ ifeq ($(OPTWARE_TARGET), ts101)
 BUILDROOT_PATCHES=
 else
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk.patch \
-		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch
+		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch \
+		$(BUILDROOT_SOURCE_DIR)/binutils-makeinfo-check.patch
 endif
 
 #
