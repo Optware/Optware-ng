@@ -36,7 +36,7 @@ endif
 TRANSMISSION_DIR=transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=bzcat
 TRANSMISSION_MAINTAINER=oleo@email.si
-TRANSMISSION_DESCRIPTION=lightweight BitTorrent client and daemon
+TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with "Clutch" web interface bundled.
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl, libcurl
@@ -46,7 +46,7 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=1
+TRANSMISSION_IPK_VERSION=2
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -111,9 +111,7 @@ endif
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-#$(DL_DIR)/$(TRANSMISSION_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE)
-
+ifneq ($(TRANSMISSION_SOURCE), $(TRANSMISSIOND_SOURCE))
 $(DL_DIR)/$(TRANSMISSION_SOURCE):
 #	rm -fv	$(DL_DIR)/transmission*.tar.bz2
 ifdef TRANSMISSION_SVN_REV
@@ -127,6 +125,7 @@ ifdef TRANSMISSION_SVN_REV
 else
 	$(WGET) -P $(@D) $(TRANSMISSION_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 endif
 
 #

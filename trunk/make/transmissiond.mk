@@ -124,9 +124,6 @@ endif
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-#$(DL_DIR)/$(TRANSMISSIOND_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(TRANSMISSIOND_SITE)/$(TRANSMISSIOND_SOURCE)
-
 $(DL_DIR)/$(TRANSMISSIOND_SOURCE):
 ifdef TRANSMISSIOND_SVN_REV
 	( cd $(BUILD_DIR) ; \
