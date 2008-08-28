@@ -308,7 +308,7 @@ COMMON_CROSS_PACKAGES = \
 	tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
 	tig tin tinyscheme tmsnc tnef tnftp tnftpd \
 	toppyweb tor torrent torrentflux \
-	transcode transmission tre tree trickle \
+	transcode transmission transmissiond tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
