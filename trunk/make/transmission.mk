@@ -106,12 +106,17 @@ else
 TRANSMISSION-DBG_IPK=$(BUILD_DIR)/transmission-dbg_$(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)_$(TARGET_ARCH).ipk
 endif
 
+ifdef TRANSMISSIOND_VERSION
+ifeq ($(TRANSMISSION_VERSION), $(TRANSMISSIOND_VERSION))
+TRANSMISSION_SKIP_FETCH=1
+endif
+endif
 
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-ifneq ($(TRANSMISSION_SOURCE), $(TRANSMISSIOND_SOURCE))
+ifndef TRANSMISSION_SKIP_FETCH
 $(DL_DIR)/$(TRANSMISSION_SOURCE):
 #	rm -fv	$(DL_DIR)/transmission*.tar.bz2
 ifdef TRANSMISSION_SVN_REV
