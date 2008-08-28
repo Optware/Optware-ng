@@ -39,12 +39,10 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
-# transmissiond - invalid -Wdeclaration-after-statement option for gcc3
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
-	transmissiond \
 
 PERL_PACKAGES = \
 	perl \
