@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SABNZBDPLUS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/sabnzbdplus
-SABNZBDPLUS_VERSION=0.4.2
-SABNZBDPLUS_SOURCE=sabnzbd-$(SABNZBDPLUS_VERSION)-src.tar.gz
+SABNZBDPLUS_VERSION=0.4.3
+SABNZBDPLUS_SOURCE=SABnzbd-$(SABNZBDPLUS_VERSION)-src.tar.gz
 SABNZBDPLUS_DIR=SABnzbd-$(SABNZBDPLUS_VERSION)
 SABNZBDPLUS_UNZIP=zcat
 SABNZBDPLUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -128,8 +128,7 @@ $(SABNZBDPLUS_BUILD_DIR)/.configured: $(DL_DIR)/$(SABNZBDPLUS_SOURCE) $(SABNZBDP
 	        echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
-	sed -i -e 's|/usr/bin/python|/opt/bin/python2.5|g' \
-		$(@D)/2.5/SABnzbd.py
+	sed -i -e 's|/usr/bin/python|/opt/bin/python2.5|g' $(@D)/2.5/SABnzbd.py
 	touch $@
 
 sabnzbdplus-unpack: $(SABNZBDPLUS_BUILD_DIR)/.configured
