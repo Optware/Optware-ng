@@ -222,11 +222,11 @@ COMMON_CROSS_PACKAGES = \
 	emacs22 endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop eventlog expat extract-xiso ez-ipupdate \
-	faad2 fann fcgi fconfig fetchmail ffmpeg \
+	faad2 fann fcgi fconfig fdupes fetchmail ffmpeg \
 	ficy file finch findutils firedrill-httptunnel \
 	fis fish fixesext flac flex flip \
 	fontconfig freecell freeradius freetds freetype freeze \
-	ftpcopy ftpd-topfield fuppes \
+	ftpcopy fslint ftpd-topfield fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
 	geoip gettext \
 	ggrab ghostscript git glib gnet gnokii \
