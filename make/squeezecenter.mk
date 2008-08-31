@@ -4,9 +4,9 @@
 #
 ###########################################################
 
-SQUEEZECENTER_VERSION=7.0.1
-SQUEEZECENTER_SITE=http://www.slimdevices.com/downloads/SqueezeCenter_v7.0.1
-SQUEEZECENTER_DIR=squeezecenter-$(SQUEEZECENTER_VERSION)-noCPAN
+SQUEEZECENTER_VERSION=7.1.0
+SQUEEZECENTER_SITE=http://www.slimdevices.com/downloads/SqueezeCenter_v$(SQUEEZECENTER_VERSION)
+SQUEEZECENTER_DIR=squeezecenter-7.1-noCPAN
 SQUEEZECENTER_SOURCE=$(SQUEEZECENTER_DIR).tgz
 SQUEEZECENTER_UNZIP=zcat
 SQUEEZECENTER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
