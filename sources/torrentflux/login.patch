@@ -1,0 +1,21 @@
+diff -ur torrentflux.old/html/login.php torrentflux/html/login.php
+--- torrentflux.old/html/login.php	2008-05-28 20:50:04.000000000 -0300
++++ torrentflux/html/login.php	2008-09-01 10:34:12.000000000 -0300
+@@ -207,7 +207,6 @@
+         $tfQManager = getcwd() . "/TF_BitTornado/tfQManager.py";
+         $maketorrent = getcwd() . "/TF_BitTornado/btmakemetafile.py";
+         $btshowmetainfo = getcwd() . "/TF_BitTornado/btshowmetainfo.py";
+-        $tfPath = getcwd() . "/downloads/";
+ 
+         if (!isFile($cfg["pythonCmd"]))
+         {
+@@ -223,8 +222,7 @@
+                             "btphpbin" => $btphpbin,
+                             "tfQManager" => $tfQManager,
+                             "btmakemetafile" => $maketorrent,
+-                            "btshowmetainfo" => $btshowmetainfo,
+-                            "path" => $tfPath
++                            "btshowmetainfo" => $btshowmetainfo
+                         );
+ 
+         saveSettings($settings);

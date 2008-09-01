@@ -94,8 +94,8 @@ INSERT INTO tf_settings VALUES ('btmakemetafile','/opt/share/www/torrentflux/TF_
 INSERT INTO tf_settings VALUES ('enable_torrent_download','1');
 INSERT INTO tf_settings VALUES ('enable_file_priority','1');
 INSERT INTO tf_settings VALUES ('security_code','0');
-INSERT INTO tf_settings VALUES ('crypto_allowed', '1');
-INSERT INTO tf_settings VALUES ('crypto_only', '1');
+INSERT INTO tf_settings VALUES ('crypto_allowed', '0');
+INSERT INTO tf_settings VALUES ('crypto_only', '0');
 INSERT INTO tf_settings VALUES ('crypto_stealth', '0');
 
 -- --------------------------------------------------------
