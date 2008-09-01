@@ -26,7 +26,7 @@ TORRENTFLUX_MAINTAINER=Fernando Carolo <carolo@gmail.com>
 TORRENTFLUX_DESCRIPTION=TorrentFlux is an web-based system for managing bit torrent file transfers.
 TORRENTFLUX_SECTION=net
 TORRENTFLUX_PRIORITY=optional
-TORRENTFLUX_DEPENDS=php, php-fcgi, python, py-crypto, sqlite2
+TORRENTFLUX_DEPENDS=php, php-fcgi, python, sqlite2, coreutils, procps
 TORRENTFLUX_SUGGESTS=
 TORRENTFLUX_CONFLICTS=
 
@@ -35,7 +35,7 @@ TORRENTFLUX_INSTALL_DIR=/opt/share/www/torrentflux
 #
 # TORRENTFLUX_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENTFLUX_IPK_VERSION=3
+TORRENTFLUX_IPK_VERSION=4
 
 #
 # TORRENTFLUX_CONFFILES should be a list of user-editable files
@@ -49,6 +49,7 @@ TORRENTFLUX_PATCHES= \
 	$(TORRENTFLUX_SOURCE_DIR)/config.patch \
 	$(TORRENTFLUX_SOURCE_DIR)/functions.patch \
 	$(TORRENTFLUX_SOURCE_DIR)/isohunt.patch \
+	$(TORRENTFLUX_SOURCE_DIR)/login.patch \
 	$(TORRENTFLUX_SOURCE_DIR)/profile.patch \
 	$(TORRENTFLUX_SOURCE_DIR)/torrentbox.patch \
 
