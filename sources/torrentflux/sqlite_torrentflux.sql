@@ -52,7 +52,7 @@ CREATE TABLE tf_settings (
   tf_value      TEXT     NOT NULL
 );
 
-INSERT INTO tf_settings VALUES ('path', '/opt/var/torrentflux/downloads');
+INSERT INTO tf_settings VALUES ('path', '/opt/var/torrentflux/downloads/');
 INSERT INTO tf_settings VALUES ('btphpbin', '/opt/share/www/torrentflux/TF_BitTornado/btphptornado.py');
 INSERT INTO tf_settings VALUES ('btshowmetainfo', '/opt/share/www/torrentflux/TF_BitTornado/btshowmetainfo.py');
 INSERT INTO tf_settings VALUES ('advanced_start', '1');
