@@ -35,7 +35,7 @@ TORRENTFLUX_INSTALL_DIR=/opt/share/www/torrentflux
 #
 # TORRENTFLUX_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENTFLUX_IPK_VERSION=4
+TORRENTFLUX_IPK_VERSION=5
 
 #
 # TORRENTFLUX_CONFFILES should be a list of user-editable files
