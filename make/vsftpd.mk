@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 VSFTPD_SITE=ftp://vsftpd.beasts.org/users/cevans
-VSFTPD_VERSION=2.0.6
+VSFTPD_VERSION=2.0.7
 VSFTPD_SOURCE=vsftpd-$(VSFTPD_VERSION).tar.gz
 VSFTPD_DIR=vsftpd-$(VSFTPD_VERSION)
 VSFTPD_UNZIP=zcat
@@ -28,7 +28,7 @@ VSFTPD_UNZIP=zcat
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=2
+VSFTPD_IPK_VERSION=1
 
 
 # VSFTPD_CONFFILES should be a list of user-editable files
@@ -71,8 +71,8 @@ VSFTPD_IPK=$(BUILD_DIR)/vsftpd_$(VSFTPD_VERSION)-$(VSFTPD_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VSFTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VSFTPD_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(VSFTPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -95,12 +95,13 @@ vsftpd-source: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
+$(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES) make/vsftpd.mk
 #	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(VSFTPD_DIR) $(VSFTPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
 	$(VSFTPD_UNZIP) $(DL_DIR)/$(VSFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(VSFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(VSFTPD_DIR) -p1
-	mv $(BUILD_DIR)/$(VSFTPD_DIR) $(VSFTPD_BUILD_DIR)
+	mv $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
+	sed -i -e '/VSFTP_DEFAULT_CONFIG/s|/etc/vsftpd.conf|/opt&|' $(@D)/defs.h
 ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
 	sed -i -e '/pam_start/s/.*/if false; then/' $(@D)/vsf_findlibs.sh
 	sed -i -e '/VSF_BUILD_PAM/s/#define/#undef/' $(@D)/builddefs.h
