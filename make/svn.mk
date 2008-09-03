@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.5.1
+SVN_VERSION=1.5.2
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -230,6 +230,7 @@ $(SVN_BUILD_DIR)/.pl-built: $(SVN_BUILD_DIR)/.built
 		OTHERLDFLAGS="-L$(SVN_BUILD_DIR)/subversion/bindings/swig/perl/libsvn_swig_perl/.libs" \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		SWIG_LDFLAGS="" \
 		;
 	touch $@
 
