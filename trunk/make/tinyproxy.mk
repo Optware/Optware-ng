@@ -29,7 +29,7 @@ TINYPROXY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TINYPROXY_DESCRIPTION=Tinyproxy is a fast light-weight HTTP proxy.
 TINYPROXY_SECTION=net
 TINYPROXY_PRIORITY=optional
-ifeq ($(GETTEXT_NLS), enable)
+ifeq (uclibc, $(LIBC_STYLE))
 TINYPROXY_DEPENDS=gettext
 else
 TINYPROXY_DEPENDS=
@@ -40,7 +40,7 @@ TINYPROXY_CONFLICTS=
 #
 # TINYPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-TINYPROXY_IPK_VERSION=1
+TINYPROXY_IPK_VERSION=2
 
 #
 # TINYPROXY_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ TINYPROXY_CONFFILES=/opt/etc/tinyproxy/tinyproxy.conf
 #
 TINYPROXY_CPPFLAGS=
 TINYPROXY_LDFLAGS=
-ifeq ($(GETTEXT_NLS), enable)
+ifeq (uclibc, $(LIBC_STYLE))
 TINYPROXY_LDFLAGS += -lintl
 endif
 
@@ -112,7 +112,7 @@ tinyproxy-source: $(DL_DIR)/$(TINYPROXY_SOURCE) $(TINYPROXY_PATCHES)
 # shown below to make various patches to it.
 #
 $(TINYPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(TINYPROXY_SOURCE) $(TINYPROXY_PATCHES) make/tinyproxy.mk
-ifeq ($(GETTEXT_NLS), enable)
+ifeq (uclibc, $(LIBC_STYLE))
 	$(MAKE) gettext-stage
 endif
 	rm -rf $(BUILD_DIR)/$(TINYPROXY_DIR) $(@D)
