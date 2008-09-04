@@ -24,7 +24,7 @@ ASTERISK16_SOURCE_TYPE=tarball
 #ASTERISK16_SOURCE_TYPE=svn
 
 ASTERISK16_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK16_BASE_VERSION=1.6.0-beta9
+ASTERISK16_BASE_VERSION=1.6.0-rc4
 
 ifeq ($(ASTERISK16_SOURCE_TYPE), svn)
 ASTERISK16_SVN=http://svn.digium.com/svn/asterisk/branches/1.6
@@ -103,6 +103,8 @@ ASTERISK16_CONFFILES=\
 /opt/etc/asterisk/cdr_pgsql.conf \
 /opt/etc/asterisk/cdr_sqlite3_custom.conf \
 /opt/etc/asterisk/cdr_tds.conf \
+/opt/etc/asterisk/chan_dahdi.conf \
+/opt/etc/asterisk/cli.conf \
 /opt/etc/asterisk/codecs.conf \
 /opt/etc/asterisk/console.conf \
 /opt/etc/asterisk/dnsmgr.conf \
@@ -140,6 +142,7 @@ ASTERISK16_CONFFILES=\
 /opt/etc/asterisk/phoneprov.conf \
 /opt/etc/asterisk/queuerules.conf \
 /opt/etc/asterisk/queues.conf \
+/opt/etc/asterisk/res_ldap.conf \
 /opt/etc/asterisk/res_odbc.conf \
 /opt/etc/asterisk/res_pgsql.conf \
 /opt/etc/asterisk/res_snmp.conf \
@@ -157,8 +160,7 @@ ASTERISK16_CONFFILES=\
 /opt/etc/asterisk/usbradio.conf \
 /opt/etc/asterisk/users.conf \
 /opt/etc/asterisk/voicemail.conf \
-/opt/etc/asterisk/vpb.conf \
-/opt/etc/asterisk/zapata.conf
+/opt/etc/asterisk/vpb.conf
 
 #
 # ASTERISK16_PATCHES should list any patches, in the the order in
