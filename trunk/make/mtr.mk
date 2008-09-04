@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MTR_SITE=ftp://ftp.bitwizard.nl/mtr
-MTR_VERSION=0.72
+MTR_VERSION=0.74
 MTR_SOURCE=mtr-$(MTR_VERSION).tar.gz
 MTR_DIR=mtr-$(MTR_VERSION)
 MTR_UNZIP=zcat
@@ -76,7 +76,8 @@ MTR_IPK=$(BUILD_DIR)/mtr_$(MTR_VERSION)-$(MTR_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MTR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MTR_SITE)/$(MTR_SOURCE)
+	$(WGET) -P $(@D) $(MTR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,16 +106,16 @@ mtr-source: $(DL_DIR)/$(MTR_SOURCE) $(MTR_PATCHES)
 #
 $(MTR_BUILD_DIR)/.configured: $(DL_DIR)/$(MTR_SOURCE) $(MTR_PATCHES) make/mtr.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(MTR_DIR) $(MTR_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MTR_DIR) $(@D)
 	$(MTR_UNZIP) $(DL_DIR)/$(MTR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MTR_PATCHES)" ; \
 		then cat $(MTR_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MTR_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MTR_DIR)" != "$(MTR_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MTR_DIR) $(MTR_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MTR_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MTR_DIR) $(@D) ; \
 	fi
-	(cd $(MTR_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MTR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MTR_LDFLAGS)" \
@@ -127,8 +128,8 @@ $(MTR_BUILD_DIR)/.configured: $(DL_DIR)/$(MTR_SOURCE) $(MTR_PATCHES) make/mtr.mk
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MTR_BUILD_DIR)/libtool
-	touch $(MTR_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 mtr-unpack: $(MTR_BUILD_DIR)/.configured
 
@@ -136,12 +137,12 @@ mtr-unpack: $(MTR_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MTR_BUILD_DIR)/.built: $(MTR_BUILD_DIR)/.configured
-	rm -f $(MTR_BUILD_DIR)/.built
-	$(MAKE) -C $(MTR_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MTR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MTR_LDFLAGS)"
-	touch $(MTR_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,12 +152,12 @@ mtr: $(MTR_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MTR_BUILD_DIR)/.staged: $(MTR_BUILD_DIR)/.built
-	rm -f $(MTR_BUILD_DIR)/.staged
-	$(MAKE) -C $(MTR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MTR_BUILD_DIR)/.staged
-
-mtr-stage: $(MTR_BUILD_DIR)/.staged
+#$(MTR_BUILD_DIR)/.staged: $(MTR_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#mtr-stage: $(MTR_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -225,5 +226,5 @@ mtr-dirclean:
 #
 # Some sanity check for the package.
 #
-mtr-check:
+mtr-check: $(MTR_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MTR_IPK)
