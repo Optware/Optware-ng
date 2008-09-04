@@ -1,0 +1,11 @@
+--- ext/IO/lib/IO/Socket/INET.pm	2007-12-18 02:47:07.000000000 -0800
++++ ext/IO/lib/IO/Socket/INET.pm	2008-09-03 21:06:58.000000000 -0700
+@@ -27,7 +27,7 @@
+ 		  );
+ my %proto_number;
+ $proto_number{tcp}  = Socket::IPPROTO_TCP()  if defined &Socket::IPPROTO_TCP;
+-$proto_number{upd}  = Socket::IPPROTO_UDP()  if defined &Socket::IPPROTO_UDP;
++$proto_number{udp}  = Socket::IPPROTO_UDP()  if defined &Socket::IPPROTO_UDP;
+ $proto_number{icmp} = Socket::IPPROTO_ICMP() if defined &Socket::IPPROTO_ICMP;
+ my %proto_name = reverse %proto_number;
+ 
