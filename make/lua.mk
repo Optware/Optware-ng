@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LUA_SITE=http://www.lua.org/ftp
-LUA_VERSION=5.1.3
+LUA_VERSION=5.1.4
 LUA_SOURCE=lua-$(LUA_VERSION).tar.gz
 LUA_DIR=lua-$(LUA_VERSION)
 LUA_UNZIP=zcat
@@ -40,7 +40,7 @@ LUA_DEPENDS=readline, ncurses
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=2
+LUA_IPK_VERSION=1
 
 #
 # LUA_CONFFILES should be a list of user-editable files
@@ -79,8 +79,8 @@ LUA_HOST_BUILD_DIR=$(BUILD_DIR)/lua-host
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LUA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LUA_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(LUA_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
