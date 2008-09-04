@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK16_ADDONS_SITE=http://downloads.digium.com/pub/asterisk
-ASTERISK16_ADDONS_VERSION=1.6.0-beta4
+ASTERISK16_ADDONS_VERSION=1.6.0-rc1
 ASTERISK16_ADDONS_SOURCE=asterisk-addons-$(ASTERISK16_ADDONS_VERSION).tar.gz
 ASTERISK16_ADDONS_DIR=asterisk-addons-$(ASTERISK16_ADDONS_VERSION)
 ASTERISK16_ADDONS_UNZIP=zcat
