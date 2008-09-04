@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PEN_SITE=http://siag.nu/pub/pen
-PEN_VERSION=0.17.3
+PEN_VERSION=0.18.0
 PEN_SOURCE=pen-$(PEN_VERSION).tar.gz
 PEN_DIR=pen-$(PEN_VERSION)
 PEN_UNZIP=zcat
