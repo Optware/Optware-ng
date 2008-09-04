@@ -239,7 +239,7 @@ COMMON_CROSS_PACKAGES = \
 	haproxy haserl hd2u hdparm hello hexcurse heyu \
 	hiawatha hnb hpijs hping htop httping \
 	ice icecast id3lib iftop ii iksemel imagemagick imap \
-	inadyn indent inetutils ipac-ng \
+	inadyn indent inetutils ink ipac-ng \
 	iperf ipkg-web iptables iptraf iputils-arping \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \
@@ -250,7 +250,7 @@ COMMON_CROSS_PACKAGES = \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libesmtp libevent libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
-	libid3tag libidn libijs libjpeg libksba \
+	libid3tag libidn libieee1284 libijs libinklevel libjpeg libksba \
 	liblcms libmad libmemcache libmpcdec libmpeg2 libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libotr \
