@@ -128,6 +128,9 @@ $(MTR_BUILD_DIR)/.configured: $(DL_DIR)/$(MTR_SOURCE) $(MTR_PATCHES) make/mtr.mk
 		--disable-nls \
 		--disable-static \
 	)
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		sed -i -e 's|-Wno-pointer-sign||' $(@D)/Makefile; \
+	fi
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
