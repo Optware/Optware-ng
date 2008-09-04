@@ -15,7 +15,8 @@
 PERL_PATCHES=\
 $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Configure.patch \
 $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/gcc42.patch \
-$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/asm-page-h-compile-failure.patch
+$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/asm-page-h-compile-failure.patch \
+$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/INET.pm.patch \
 
 PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 

@@ -12,7 +12,8 @@
 # PERL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PERL_PATCHES=
+PERL_PATCHES=\
+$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/INET.pm.patch \
 
 PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 
