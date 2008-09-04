@@ -5,10 +5,10 @@
 ###########################################################
 
 DT2-KERNEL-MODULES_SITE=http://sources.nslu2-linux.org/sources
-DT2-KERNEL-MODULES_SOURCE=dt2kern-2.3.tar.bz2
+DT2-KERNEL-MODULES_SOURCE=dt2kern-2.4.tar.gz
 DT2-KERNEL-MODULES_VERSION=2.6.12.6-arm1
-DT2-KERNEL-MODULES_DIR=linux-88fxx81
-DT2-KERNEL-MODULES_UNZIP=bzcat
+DT2-KERNEL-MODULES_DIR=dt2kern-2.4/linux-88fxx81
+DT2-KERNEL-MODULES_UNZIP=zcat
 DT2-KERNEL-MODULES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DT2-KERNEL-MODULES_DESCRIPTION=DataTank2 kernel modules
 DT2-KERNEL-IMAGE_DESCRIPTION=DataTank2 kernel
@@ -22,7 +22,7 @@ DT2-KERNEL-MODULES=`find $(DT2-KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # DT2-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-DT2-KERNEL-MODULES_IPK_VERSION=3
+DT2-KERNEL-MODULES_IPK_VERSION=4
 
 #
 # DT2-KERNEL-MODULES_CONFFILES should be a list of user-editable files
