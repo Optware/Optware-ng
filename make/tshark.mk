@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TSHARK_SITE=http://www.wireshark.org/download/src
-TSHARK_VERSION=1.0.2
+TSHARK_VERSION=1.0.3
 TSHARK_SOURCE=wireshark-$(TSHARK_VERSION).tar.bz2
 TSHARK_DIR=wireshark-$(TSHARK_VERSION)
 TSHARK_UNZIP=bzcat
@@ -42,7 +42,7 @@ TSHARK_CONFLICTS=
 #
 # TSHARK_IPK_VERSION should be incremented when the ipk changes.
 #
-TSHARK_IPK_VERSION=2
+TSHARK_IPK_VERSION=1
 
 #
 # TSHARK_CONFFILES should be a list of user-editable files
