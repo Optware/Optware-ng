@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBTASN1_SITE=http://josefsson.org/gnutls/releases/libtasn1
-LIBTASN1_VERSION=0.3.10
+LIBTASN1_SITE=http://ftp.gnu.org/gnu/gnutls
+LIBTASN1_VERSION=1.5
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
 LIBTASN1_UNZIP=zcat
@@ -82,7 +82,8 @@ LIBTASN1_IPK=$(BUILD_DIR)/libtasn1_$(LIBTASN1_VERSION)-$(LIBTASN1_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBTASN1_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBTASN1_SITE)/$(LIBTASN1_SOURCE)
+	$(WGET) -P $(@D) $(LIBTASN1_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,13 +107,13 @@ libtasn1-source: $(DL_DIR)/$(LIBTASN1_SOURCE) $(LIBTASN1_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBTASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTASN1_SOURCE) $(LIBTASN1_PATCHES)
+$(LIBTASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTASN1_SOURCE) $(LIBTASN1_PATCHES) make/libtasn1.mk
 	#$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBTASN1_DIR) $(LIBTASN1_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBTASN1_DIR) $(@D)
 	$(LIBTASN1_UNZIP) $(DL_DIR)/$(LIBTASN1_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(LIBTASN1_PATCHES) | patch -d $(BUILD_DIR)/$(LIBTASN1_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBTASN1_DIR) $(LIBTASN1_BUILD_DIR)
-	(cd $(LIBTASN1_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBTASN1_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTASN1_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTASN1_LDFLAGS)" \
@@ -121,10 +122,9 @@ $(LIBTASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTASN1_SOURCE) $(LIBTASN1_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBTASN1_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libtasn1-unpack: $(LIBTASN1_BUILD_DIR)/.configured
@@ -134,7 +134,7 @@ libtasn1-unpack: $(LIBTASN1_BUILD_DIR)/.configured
 #
 $(LIBTASN1_BUILD_DIR)/.built: $(LIBTASN1_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBTASN1_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
