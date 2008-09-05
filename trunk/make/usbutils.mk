@@ -20,7 +20,7 @@ USBUTILS_SOURCE=usbutils-$(USBUTILS_VERSION).tar.gz
 USBUTILS_DIR=usbutils-$(USBUTILS_VERSION)
 USBUTILS_UNZIP=zcat
 USBUTILS_PRIORITY=optional
-USBUTILS_DEPENDS=libusb zlib
+USBUTILS_DEPENDS=libusb,zlib
 USBUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 USBUTILS_SECTION=utility
 USBUTILS_DESCRIPTION=USB enumeration utilities
@@ -29,7 +29,7 @@ USBUTILS_DESCRIPTION=USB enumeration utilities
 #
 # USBUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-USBUTILS_IPK_VERSION=2
+USBUTILS_IPK_VERSION=3
 
 #
 # USBUTILS_CONFFILES should be a list of user-editable files
