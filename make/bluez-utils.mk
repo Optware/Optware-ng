@@ -73,7 +73,7 @@ endif
 endif
 BLUEZ-UTILS_LDFLAGS=
 
-ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter syno-x07 vt4, $(OPTWARE_TARGET)))
 BLUEZ-UTILS_CONFIG_ARGS= --disable-alsa --disable-pie
 endif
 
