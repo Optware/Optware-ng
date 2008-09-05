@@ -9,12 +9,11 @@ export PATH
 #  Check if user/group slimserver exists
 #
         if test `grep -c "^${SQUEEZECENTER_USER}" /etc/passwd` -eq 0 ; then 
-            test `grep -c "^${SQUEEZECENTER_GROUP}" /etc/group` -eq 0  &&  addgroup ${SQUEEZECENTER_GROUP}
             echo -n "Enter SQUEEZECENTER_HOME location [${SQUEEZECENTER_HOME}]: "
             read answer
             test  "$answer" != "" && SQUEEZECENTER_HOME=$answer
             if test ! -d SQUEEZECENTER_HOME ; then
-	        adduser -D -s /dev/null -h ${SQUEEZECENTER_HOME} -G ${SQUEEZECENTER_GROUP} ${SQUEEZECENTER_USER} 2>/dev/null
+	        adduser -S -D -s /dev/null -h ${SQUEEZECENTER_HOME} ${SQUEEZECENTER_USER} 2>/dev/null
 	        sleep 1 # wait for user creation
                 sed -i -e "s|^SQUEEZECENTER_HOME=.*|SQUEEZECENTER_HOME=${SQUEEZECENTER_HOME}|" \
                     -e "s|^SQUEEZECENTER_LOG=.*|SQUEEZECENTER_LOG=${SQUEEZECENTER_HOME}/squeezecenter.log|" \
