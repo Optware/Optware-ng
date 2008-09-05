@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 MUTT_SITE=ftp://ftp.mutt.org/mutt/devel
-MUTT_VERSION=1.5.16
+MUTT_VERSION=1.5.17
 MUTT_SOURCE=mutt-$(MUTT_VERSION).tar.gz
 MUTT_DIR=mutt-$(MUTT_VERSION)
 MUTT_UNZIP=zcat
@@ -46,7 +46,9 @@ MUTT_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MUTT_CPPFLAGS=
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
+MUTT_CPPFLAGS=-D_POSIX_PATH_MAX=4096
+endif
 MUTT_LDFLAGS=-lsasl2 -ldl
 
 #
@@ -95,7 +97,7 @@ mutt-source: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
+$(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES) make/mutt.mk
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage openssl-stage cyrus-sasl-stage libdb-stage
 	$(MAKE) libidn-stage
 	rm -rf $(BUILD_DIR)/$(MUTT_DIR) $(@D)
@@ -122,7 +124,7 @@ $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 		--with-sasl2 \
 		--with-bdb \
 	)
-	sed -i -e 's|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(@D)/Makefile
+	sed -i -e 's|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(@D)/Makefile $(@D)/*/Makefile
 	touch $@
 
 mutt-unpack: $(MUTT_BUILD_DIR)/.configured
