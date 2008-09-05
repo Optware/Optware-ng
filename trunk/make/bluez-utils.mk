@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BLUEZ-UTILS_SITE=http://bluez.sf.net/download
-BLUEZ-UTILS_VERSION=3.17
+BLUEZ-UTILS_VERSION=3.36
 BLUEZ-UTILS_SOURCE=bluez-utils-$(BLUEZ-UTILS_VERSION).tar.gz
 BLUEZ-UTILS_DIR=bluez-utils-$(BLUEZ-UTILS_VERSION)
 BLUEZ-UTILS_UNZIP=zcat
@@ -139,6 +139,7 @@ $(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UT
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-all \
+		--disable-glib \
 		--disable-nls \
 	)
 	$(PATCH_LIBTOOL) $(BLUEZ-UTILS_BUILD_DIR)/libtool
