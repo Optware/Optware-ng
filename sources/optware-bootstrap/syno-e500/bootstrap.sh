@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Replaced during packaging based on value in target-specific.mk
-REAL_OPT_DIR=/volume1/.optware
+REAL_OPT_DIR=/volume1/@optware
 
 if [ -e "$REAL_OPT_DIR" ] ; then
     echo "Backup your configuration settings, then type:"
