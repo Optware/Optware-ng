@@ -1,5 +1,5 @@
 SPECIFIC_PACKAGES = \
-	optware-bootstrap \
+	optware-bootstrap kernel-modules \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	py-ctypes \
 	$(PERL_PACKAGES) \
