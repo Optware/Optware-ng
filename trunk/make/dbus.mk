@@ -36,7 +36,7 @@ DBUS_CONFLICTS=
 #
 # DBUS_IPK_VERSION should be incremented when the ipk changes.
 #
-DBUS_IPK_VERSION=2
+DBUS_IPK_VERSION=3
 
 #
 # DBUS_CONFFILES should be a list of user-editable files
