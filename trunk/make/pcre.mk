@@ -22,7 +22,7 @@
 #
 
 PCRE_SITE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
-PCRE_VERSION=7.7
+PCRE_VERSION=7.8
 PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
 PCRE_UNZIP=bzcat
@@ -74,8 +74,11 @@ endif
 #
 PCRE_BUILD_DIR=$(BUILD_DIR)/pcre
 PCRE_SOURCE_DIR=$(SOURCE_DIR)/pcre
+
 PCRE_IPK_DIR=$(BUILD_DIR)/pcre-$(PCRE_VERSION)-ipk
 PCRE_IPK=$(BUILD_DIR)/pcre_$(PCRE_VERSION)-$(PCRE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PCRE-DEV_IPK_DIR=$(BUILD_DIR)/pcre-dev-$(PCRE_VERSION)-ipk
+PCRE-DEV_IPK=$(BUILD_DIR)/pcre-dev_$(PCRE_VERSION)-$(PCRE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: pcre-source pcre-unpack pcre pcre-stage pcre-ipk pcre-clean pcre-dirclean pcre-check
 #
@@ -83,8 +86,8 @@ PCRE_IPK=$(BUILD_DIR)/pcre_$(PCRE_VERSION)-$(PCRE_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PCRE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PCRE_SITE)/$(PCRE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PCRE_SOURCE)
+	$(WGET) -P $(@D) $(PCRE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -184,6 +187,20 @@ $(PCRE_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PCRE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PCRE_CONFLICTS)" >>$@
 
+$(PCRE-DEV_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: pcre-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PCRE_PRIORITY)" >>$@
+	@echo "Section: $(PCRE_SECTION)" >>$@
+	@echo "Version: $(PCRE_VERSION)-$(PCRE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PCRE_MAINTAINER)" >>$@
+	@echo "Source: $(PCRE_SITE)/$(PCRE_SOURCE)" >>$@
+	@echo "Description: $(PCRE_DESCRIPTION), files for development" >>$@
+	@echo "Depends: $(PCRE_DEPENDS)" >>$@
+	@echo "Conflicts: $(PCRE_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -196,21 +213,33 @@ $(PCRE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PCRE_IPK): $(PCRE_BUILD_DIR)/.built
+$(PCRE_IPK) $(PCRE-DEV_IPK): $(PCRE_BUILD_DIR)/.built
 	rm -rf $(PCRE_IPK_DIR) $(BUILD_DIR)/pcre_*_$(TARGET_ARCH).ipk
+	rm -rf $(PCRE-DEV_IPK_DIR) $(BUILD_DIR)/pcre-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PCRE_BUILD_DIR) DESTDIR=$(PCRE_IPK_DIR) install
 	find $(PCRE_IPK_DIR) -type d -exec chmod go+rx {} \;
 	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/bin/pcregrep
 	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/bin/pcretest
 	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/lib/*.so
 	rm -f $(PCRE_IPK_DIR)/opt/lib/*.la
+	install -d $(PCRE-DEV_IPK_DIR)/opt/bin
+	mv $(PCRE_IPK_DIR)/opt/bin/pcre-config $(PCRE-DEV_IPK_DIR)/opt/bin/
+	install -d $(PCRE-DEV_IPK_DIR)/opt/lib
+	mv $(PCRE_IPK_DIR)/opt/share $(PCRE_IPK_DIR)/opt/include $(PCRE-DEV_IPK_DIR)/opt/
+	mv $(PCRE_IPK_DIR)/opt/lib/pkgconfig $(PCRE-DEV_IPK_DIR)/opt/lib/
+	install -d $(PCRE_IPK_DIR)/opt/share/doc/pcre
+	mv $(PCRE-DEV_IPK_DIR)/opt/share/doc/pcre/[ACLNR]* $(PCRE_IPK_DIR)/opt/share/doc/pcre/
+	install -d $(PCRE_IPK_DIR)/opt/share/man/man1
+	mv $(PCRE-DEV_IPK_DIR)/opt/share/man/man1/pcre[gt]* $(PCRE_IPK_DIR)/opt/share/man/man1/
 	$(MAKE) $(PCRE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCRE_IPK_DIR)
+	$(MAKE) $(PCRE-DEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCRE-DEV_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-pcre-ipk: $(PCRE_IPK)
+pcre-ipk: $(PCRE_IPK) $(PCRE-DEV_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -223,11 +252,13 @@ pcre-clean:
 # directories.
 #
 pcre-dirclean:
-	rm -rf $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR) $(PCRE_IPK_DIR) $(PCRE_IPK)
+	rm -rf $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR)
+	rm -rf $(PCRE_IPK_DIR) $(PCRE_IPK)
+	rm -rf $(PCRE-DEV_IPK_DIR) $(PCRE-DEV_IPK)
 
 #
 #
 # Some sanity check for the package.
 #
 pcre-check: $(PCRE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PCRE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PCRE_IPK) $(PCRE-DEV_IPK)
