@@ -1,8 +1,6 @@
 #!/bin/sh
 
-addgroup clamav
-
-adduser -s /dev/null -H -h /opt/share/clamav -D -G clamav clamav
+adduser -S -s /dev/null -H -h /opt/share/clamav -D clamav
 
 chown clamav:clamav /opt/share/clamav
 chown clamav:clamav /opt/share/clamav/*
