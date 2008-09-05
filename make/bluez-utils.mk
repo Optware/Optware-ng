@@ -37,7 +37,7 @@ BLUEZ-UTILS_CONFLICTS=
 #
 # BLUEZ-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BLUEZ-UTILS_IPK_VERSION=2
+BLUEZ-UTILS_IPK_VERSION=3
 
 #
 # BLUEZ-UTILS_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ BLUEZ-UTILS_CONFFILES=\
 # BLUEZ-UTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BLUEZ-UTILS_PATCHES=$(BLUEZ-UTILS_SOURCE_DIR)/configure.patch
+BLUEZ-UTILS_PATCHES=$(BLUEZ-UTILS_SOURCE_DIR)/bridge_ioctls.patch
 
 #
 # If the compilation of the package requires additional
@@ -94,7 +94,8 @@ BLUEZ-UTILS_IPK=$(BUILD_DIR)/bluez-utils_$(BLUEZ-UTILS_VERSION)-$(BLUEZ-UTILS_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BLUEZ-UTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BLUEZ-UTILS_SITE)/$(BLUEZ-UTILS_SOURCE)
+	$(WGET) -P $(@D) $(BLUEZ-UTILS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -124,11 +125,13 @@ $(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UT
 	$(MAKE) expat-stage
 	$(MAKE) libusb-stage
 	$(MAKE) openobex-stage
-	rm -rf $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) $(BLUEZ-UTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) $(@D)
 	$(BLUEZ-UTILS_UNZIP) $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(BLUEZ-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) -p1
-	mv $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) $(BLUEZ-UTILS_BUILD_DIR)
-	(cd $(BLUEZ-UTILS_BUILD_DIR); \
+	if test -n "$(BLUEZ-UTILS_PATCHES)"; then \
+		cat $(BLUEZ-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) -p0; \
+	fi
+	mv $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BLUEZ-UTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BLUEZ-UTILS_LDFLAGS)" \
@@ -142,8 +145,8 @@ $(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UT
 		--disable-glib \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(BLUEZ-UTILS_BUILD_DIR)/libtool
-	touch $(BLUEZ-UTILS_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 bluez-utils-unpack: $(BLUEZ-UTILS_BUILD_DIR)/.configured
 
@@ -151,9 +154,9 @@ bluez-utils-unpack: $(BLUEZ-UTILS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BLUEZ-UTILS_BUILD_DIR)/.built: $(BLUEZ-UTILS_BUILD_DIR)/.configured
-	rm -f $(BLUEZ-UTILS_BUILD_DIR)/.built
-	$(MAKE) -C $(BLUEZ-UTILS_BUILD_DIR)
-	touch $(BLUEZ-UTILS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -164,9 +167,9 @@ bluez-utils: $(BLUEZ-UTILS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BLUEZ-UTILS_BUILD_DIR)/.staged: $(BLUEZ-UTILS_BUILD_DIR)/.built
-	rm -f $(BLUEZ-UTILS_BUILD_DIR)/.staged
-	$(MAKE) -C $(BLUEZ-UTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-	touch $(BLUEZ-UTILS_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 bluez-utils-stage: $(BLUEZ-UTILS_BUILD_DIR)/.staged
 
@@ -175,7 +178,7 @@ bluez-utils-stage: $(BLUEZ-UTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bluez-utils
 #
 $(BLUEZ-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(BLUEZ-UTILS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bluez-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

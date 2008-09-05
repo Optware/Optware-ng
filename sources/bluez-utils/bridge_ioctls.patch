@@ -1,0 +1,16 @@
+--- network/bridge.c.orig	2008-05-20 16:14:32.000000000 +0000
++++ network/bridge.c	2008-09-05 02:45:04.603689964 +0000
+@@ -42,6 +42,13 @@
+ #include "bridge.h"
+ #include "common.h"
+ 
++#ifndef SIOCBRADDBR
++#define SIOCBRADDBR     0x89a0          /* create new bridge device     */
++#define SIOCBRDELBR     0x89a1          /* remove bridge device         */
++#define SIOCBRADDIF     0x89a2          /* add interface to bridge      */
++#define SIOCBRDELIF     0x89a3          /* remove interface from bridge */
++#endif
++
+ static int bridge_socket = -1;
+ static const char *gn_bridge = NULL;
+ static const char *nap_bridge = NULL;
