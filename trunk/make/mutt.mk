@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 MUTT_SITE=ftp://ftp.mutt.org/mutt/devel
-MUTT_VERSION=1.5.17
+MUTT_VERSION=1.5.18
 MUTT_SOURCE=mutt-$(MUTT_VERSION).tar.gz
 MUTT_DIR=mutt-$(MUTT_VERSION)
 MUTT_UNZIP=zcat
@@ -23,7 +23,7 @@ MUTT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MUTT_DESCRIPTION=text mode mail client
 MUTT_SECTION=mail
 MUTT_PRIORITY=optional
-MUTT_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET), openssl, cyrus-sasl, libdb, libidn
+MUTT_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET), openssl, cyrus-sasl, libdb, libidn, gpgme
 MUTT_SUGGESTS=
 MUTT_CONFLICTS=
 
@@ -99,7 +99,7 @@ mutt-source: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 #
 $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES) make/mutt.mk
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage openssl-stage cyrus-sasl-stage libdb-stage
-	$(MAKE) libidn-stage
+	$(MAKE) libidn-stage gpgme-stage
 	rm -rf $(BUILD_DIR)/$(MUTT_DIR) $(@D)
 	$(MUTT_UNZIP) $(DL_DIR)/$(MUTT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MUTT_PATCHES) | patch -d $(BUILD_DIR)/$(MUTT_DIR) -p1
@@ -120,8 +120,11 @@ $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES) make/mut
 		--disable-nls \
 		--with-mailpath=/opt/var/spool/mail \
 		--enable-imap \
-		--with-ssl \
-		--with-sasl2 \
+		--enable-gpgme \
+		--with-idn=$(STAGING_PREFIX) \
+		--with-gpgme-prefix=$(STAGING_PREFIX) \
+		--with-sasl=$(STAGING_PREFIX) \
+		--with-ssl=$(STAGING_PREFIX) \
 		--with-bdb \
 	)
 	sed -i -e 's|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(@D)/Makefile $(@D)/*/Makefile
@@ -134,7 +137,7 @@ mutt-unpack: $(MUTT_BUILD_DIR)/.configured
 #
 $(MUTT_BUILD_DIR)/.built: $(MUTT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) makedoc CC=$(HOSTCC) LDFLAGS="" LIBS=""
+	$(MAKE) -C $(@D)/doc makedoc CC=$(HOSTCC) LDFLAGS="" LIBS=""
 	$(MAKE) -C $(@D)
 	touch $@
 
