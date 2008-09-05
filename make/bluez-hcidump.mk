@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BLUEZ-HCIDUMP_SITE=http://bluez.sf.net/download
-BLUEZ-HCIDUMP_VERSION=1.40
+BLUEZ-HCIDUMP_VERSION=1.42
 BLUEZ-HCIDUMP_SOURCE=bluez-hcidump-$(BLUEZ-HCIDUMP_VERSION).tar.gz
 BLUEZ-HCIDUMP_DIR=bluez-hcidump-$(BLUEZ-HCIDUMP_VERSION)
 BLUEZ-HCIDUMP_UNZIP=zcat
