@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 MUTT_SITE=ftp://ftp.mutt.org/mutt/devel
-MUTT_VERSION=1.5.15
+MUTT_VERSION=1.5.16
 MUTT_SOURCE=mutt-$(MUTT_VERSION).tar.gz
 MUTT_DIR=mutt-$(MUTT_VERSION)
 MUTT_UNZIP=zcat
@@ -23,7 +23,7 @@ MUTT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MUTT_DESCRIPTION=text mode mail client
 MUTT_SECTION=mail
 MUTT_PRIORITY=optional
-MUTT_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET), openssl, cyrus-sasl, libdb
+MUTT_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET), openssl, cyrus-sasl, libdb, libidn
 MUTT_SUGGESTS=
 MUTT_CONFLICTS=
 
@@ -68,7 +68,8 @@ MUTT_IPK=$(BUILD_DIR)/mutt_$(MUTT_VERSION)-$(MUTT_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MUTT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MUTT_SITE)/$(MUTT_SOURCE)
+	$(WGET) -P $(@D) $(MUTT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 .PHONY: mutt-source mutt-unpack mutt mutt-stage mutt-ipk mutt-clean mutt-dirclean mutt-check
 
@@ -96,14 +97,15 @@ mutt-source: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 #
 $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage openssl-stage cyrus-sasl-stage libdb-stage
-	rm -rf $(BUILD_DIR)/$(MUTT_DIR) $(MUTT_BUILD_DIR)
+	$(MAKE) libidn-stage
+	rm -rf $(BUILD_DIR)/$(MUTT_DIR) $(@D)
 	$(MUTT_UNZIP) $(DL_DIR)/$(MUTT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MUTT_PATCHES) | patch -d $(BUILD_DIR)/$(MUTT_DIR) -p1
-	mv $(BUILD_DIR)/$(MUTT_DIR) $(MUTT_BUILD_DIR)
+	mv $(BUILD_DIR)/$(MUTT_DIR) $(@D)
 	# change mutt.h and lib.h to find posix1_lim.h in <bits/...>
-	sed -i -e 's:posix1_lim.h:bits/posix1_lim.h:g' $(MUTT_BUILD_DIR)/mutt.h
-	sed -i -e 's:posix1_lim.h:bits/posix1_lim.h:g' $(MUTT_BUILD_DIR)/lib.h
-	(cd $(MUTT_BUILD_DIR); \
+	sed -i -e 's:posix1_lim.h:bits/posix1_lim.h:g' $(@D)/mutt.h
+	sed -i -e 's:posix1_lim.h:bits/posix1_lim.h:g' $(@D)/lib.h
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MUTT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MUTT_LDFLAGS)" \
@@ -120,8 +122,8 @@ $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 		--with-sasl2 \
 		--with-bdb \
 	)
-	sed -i -e 's|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(MUTT_BUILD_DIR)/Makefile
-	touch $(MUTT_BUILD_DIR)/.configured
+	sed -i -e 's|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(@D)/Makefile
+	touch $@
 
 mutt-unpack: $(MUTT_BUILD_DIR)/.configured
 
@@ -129,10 +131,10 @@ mutt-unpack: $(MUTT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MUTT_BUILD_DIR)/.built: $(MUTT_BUILD_DIR)/.configured
-	rm -f $(MUTT_BUILD_DIR)/.built
-	$(MAKE) -C $(MUTT_BUILD_DIR) makedoc CC=$(HOSTCC) LDFLAGS="" LIBS=""
-	$(MAKE) -C $(MUTT_BUILD_DIR)
-	touch $(MUTT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) makedoc CC=$(HOSTCC) LDFLAGS="" LIBS=""
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,19 +144,19 @@ mutt: $(MUTT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MUTT_BUILD_DIR)/.staged: $(MUTT_BUILD_DIR)/.built
-	rm -f $(MUTT_BUILD_DIR)/.staged
-	$(MAKE) -C $(MUTT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MUTT_BUILD_DIR)/.staged
-
-mutt-stage: $(MUTT_BUILD_DIR)/.staged
+#$(MUTT_BUILD_DIR)/.staged: $(MUTT_BUILD_DIR)/.built
+#	rm -f $(MUTT_BUILD_DIR)/.staged
+#	$(MAKE) -C $(MUTT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $(MUTT_BUILD_DIR)/.staged
+#
+#mutt-stage: $(MUTT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/mutt
 #
 $(MUTT_IPK_DIR)/CONTROL/control:
-	@install -d $(MUTT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: mutt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
