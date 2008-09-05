@@ -37,7 +37,7 @@ BLUEZ-UTILS_CONFLICTS=
 #
 # BLUEZ-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BLUEZ-UTILS_IPK_VERSION=1
+BLUEZ-UTILS_IPK_VERSION=2
 
 #
 # BLUEZ-UTILS_CONFFILES should be a list of user-editable files
@@ -204,7 +204,7 @@ $(BLUEZ-UTILS_IPK_DIR)/CONTROL/control:
 $(BLUEZ-UTILS_IPK): $(BLUEZ-UTILS_BUILD_DIR)/.built
 	rm -rf $(BLUEZ-UTILS_IPK_DIR) $(BUILD_DIR)/bluez-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BLUEZ-UTILS_BUILD_DIR) DESTDIR=$(BLUEZ-UTILS_IPK_DIR) install-strip
-	sed -i -e 's|"/etc|"/opt/etc|' $(BLUEZ-UTILS_IPK_DIR)/opt/etc/*/bluetooth
+#	sed -i -e 's|"/etc|"/opt/etc|' $(BLUEZ-UTILS_IPK_DIR)/opt/etc/*/bluetooth
 	$(MAKE) $(BLUEZ-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BLUEZ-UTILS_IPK_DIR)
 
