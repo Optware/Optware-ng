@@ -10,7 +10,6 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule \
 	asterisk14-chan-capi \
-	bluez-hcidump bluez-utils \
 	busybox \
 	centerim \
 	gambit-c gnu-smalltalk \

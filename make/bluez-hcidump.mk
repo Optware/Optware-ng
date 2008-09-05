@@ -56,6 +56,10 @@ BLUEZ-HCIDUMP_PATCHES=$(BLUEZ-HCIDUMP_SOURCE_DIR)/AI_ADDRCONFIG.patch
 BLUEZ-HCIDUMP_CPPFLAGS=
 BLUEZ-HCIDUMP_LDFLAGS=
 
+ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
+BLUEZ-HCIDUMP_CONFIG_ARGS = --disable-pie
+endif
+
 #
 # BLUEZ-HCIDUMP_BUILD_DIR is the directory in which the build is done.
 # BLUEZ-HCIDUMP_SOURCE_DIR is the directory which holds all the
@@ -77,7 +81,8 @@ BLUEZ-HCIDUMP_IPK=$(BUILD_DIR)/bluez-hcidump_$(BLUEZ-HCIDUMP_VERSION)-$(BLUEZ-HC
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BLUEZ-HCIDUMP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BLUEZ-HCIDUMP_SITE)/$(BLUEZ-HCIDUMP_SOURCE)
+	$(WGET) -P $(@D) $(BLUEZ-HCIDUMP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,13 +108,13 @@ bluez-hcidump-source: $(DL_DIR)/$(BLUEZ-HCIDUMP_SOURCE) $(BLUEZ-HCIDUMP_PATCHES)
 #
 $(BLUEZ-HCIDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-HCIDUMP_SOURCE) $(BLUEZ-HCIDUMP_PATCHES)
 	$(MAKE) bluez-libs-stage
-	rm -rf $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) $(BLUEZ-HCIDUMP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) $(@D)
 	$(BLUEZ-HCIDUMP_UNZIP) $(DL_DIR)/$(BLUEZ-HCIDUMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BLUEZ-HCIDUMP_PATCHES)"; then \
 		cat $(BLUEZ-HCIDUMP_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) $(BLUEZ-HCIDUMP_BUILD_DIR)
-	(cd $(BLUEZ-HCIDUMP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BLUEZ-HCIDUMP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BLUEZ-HCIDUMP_LDFLAGS)" \
@@ -119,9 +124,10 @@ $(BLUEZ-HCIDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-HCIDUMP_SOURCE) $(BLUE
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		$(BLUEZ-HCIDUMP_CONFIG_ARGS) \
 		--disable-nls \
 	)
-	touch $(BLUEZ-HCIDUMP_BUILD_DIR)/.configured
+	touch $@
 
 bluez-hcidump-unpack: $(BLUEZ-HCIDUMP_BUILD_DIR)/.configured
 
@@ -129,9 +135,9 @@ bluez-hcidump-unpack: $(BLUEZ-HCIDUMP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BLUEZ-HCIDUMP_BUILD_DIR)/.built: $(BLUEZ-HCIDUMP_BUILD_DIR)/.configured
-	rm -f $(BLUEZ-HCIDUMP_BUILD_DIR)/.built
-	$(MAKE) -C $(BLUEZ-HCIDUMP_BUILD_DIR)
-	touch $(BLUEZ-HCIDUMP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,19 +147,19 @@ bluez-hcidump: $(BLUEZ-HCIDUMP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(BLUEZ-HCIDUMP_BUILD_DIR)/.staged: $(BLUEZ-HCIDUMP_BUILD_DIR)/.built
-	rm -f $(BLUEZ-HCIDUMP_BUILD_DIR)/.staged
-	$(MAKE) -C $(BLUEZ-HCIDUMP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-	touch $(BLUEZ-HCIDUMP_BUILD_DIR)/.staged
-
-bluez-hcidump-stage: $(BLUEZ-HCIDUMP_BUILD_DIR)/.staged
+#$(BLUEZ-HCIDUMP_BUILD_DIR)/.staged: $(BLUEZ-HCIDUMP_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
+#	touch $@
+#
+#bluez-hcidump-stage: $(BLUEZ-HCIDUMP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/bluez-hcidump
 #
 $(BLUEZ-HCIDUMP_IPK_DIR)/CONTROL/control:
-	@install -d $(BLUEZ-HCIDUMP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bluez-hcidump" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

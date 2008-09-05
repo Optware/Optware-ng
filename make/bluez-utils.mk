@@ -73,6 +73,10 @@ endif
 endif
 BLUEZ-UTILS_LDFLAGS=
 
+ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
+BLUEZ-UTILS_CONFIG_ARGS= --disable-alsa --disable-pie
+endif
+
 #
 # BLUEZ-UTILS_BUILD_DIR is the directory in which the build is done.
 # BLUEZ-UTILS_SOURCE_DIR is the directory which holds all the
@@ -119,7 +123,7 @@ bluez-utils-source: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UTILS_PATCHES)
+$(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UTILS_PATCHES) make/bluez-utils.mk
 	$(MAKE) bluez-libs-stage
 	$(MAKE) dbus-stage
 	$(MAKE) expat-stage
@@ -142,6 +146,7 @@ $(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UT
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-all \
+		$(BLUEZ-UTILS_CONFIG_ARGS) \
 		--disable-glib \
 		--disable-nls \
 	)
@@ -166,12 +171,12 @@ bluez-utils: $(BLUEZ-UTILS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(BLUEZ-UTILS_BUILD_DIR)/.staged: $(BLUEZ-UTILS_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-bluez-utils-stage: $(BLUEZ-UTILS_BUILD_DIR)/.staged
+#$(BLUEZ-UTILS_BUILD_DIR)/.staged: $(BLUEZ-UTILS_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#bluez-utils-stage: $(BLUEZ-UTILS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
