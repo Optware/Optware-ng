@@ -310,7 +310,7 @@ COMMON_CROSS_PACKAGES = \
 	toppyweb tor torrent torrentflux \
 	transcode transmission transmissiond tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
-	ucl uemacs ufsd unarj unfs3 units unixodbc unrar unrtf \
+	ucl uemacs unarj unfs3 units unixodbc unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utf8proc util-linux util-linux-ng \
 	vblade vdr-mediamvp vim vitetris vlc \
