@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEWSBEUTER_SITE=http://www.newsbeuter.org/downloads
-NEWSBEUTER_VERSION=1.1
+NEWSBEUTER_VERSION=1.2
 NEWSBEUTER_SOURCE=newsbeuter-$(NEWSBEUTER_VERSION).tar.gz
 NEWSBEUTER_DIR=newsbeuter-$(NEWSBEUTER_VERSION)
 NEWSBEUTER_UNZIP=zcat
