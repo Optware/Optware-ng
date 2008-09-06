@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.8.0
+CHEROKEE_VERSION=0.8.1
 CHEROKEE_SITE=http://www.0x50.org/download/0.8/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
@@ -59,7 +59,7 @@ CHEROKEE_PATCHES=$(CHEROKEE_SOURCE_DIR)/conf.py.patch
 # compilation or linking flags, then list them here.
 #
 CHEROKEE_CPPFLAGS=
-CHEROKEE_LDFLAGS=
+CHEROKEE_LDFLAGS=-Wl,-rpath-link -Wl,$(CHEROKEE_BUILD_DIR)/cherokee/.libs
 
 ifeq (no, $(IPV6))
 CHEROKEE_CONFIGURE_OPTIONS+=--disable-ipv6
