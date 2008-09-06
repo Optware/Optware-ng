@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.2.1
+SAMBA_VERSION=3.2.3
 SAMBA_IPK_VERSION=1
 else
 SAMBA_VERSION=3.0.14a
@@ -294,11 +294,11 @@ $(SAMBA_IPK_DIR)/CONTROL/control:
 $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	rm -rf $(SAMBA_IPK_DIR) $(BUILD_DIR)/samba_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SAMBA_BUILD_DIR) DESTDIR=$(SAMBA_IPK_DIR) install
-	$(STRIP_COMMAND) `find $(SAMBA_IPK_DIR)/opt/lib -name '*.so'`
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
 	cd $(SAMBA_BUILD_DIR)/bin/; for f in lib*.so.[01]; \
 		do cp -a $$f $(SAMBA_IPK_DIR)/opt/lib/$$f; done
+	$(STRIP_COMMAND) `find $(SAMBA_IPK_DIR)/opt/lib -name '*.so'`
 	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S08samba
 	install -d $(SAMBA_IPK_DIR)/opt/etc/xinetd.d
