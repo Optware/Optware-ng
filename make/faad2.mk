@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FAAD2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/faac
-FAAD2_VERSION=2.5
+FAAD2_VERSION=2.6
 FAAD2_SOURCE=faad2-$(FAAD2_VERSION).tar.gz
 FAAD2_DIR=faad2
 FAAD2_UNZIP=zcat
@@ -36,7 +36,7 @@ FAAD2_CONFLICTS=
 #
 # FAAD2_IPK_VERSION should be incremented when the ipk changes.
 #
-FAAD2_IPK_VERSION=3
+FAAD2_IPK_VERSION=1
 
 #
 # FAAD2_CONFFILES should be a list of user-editable files
@@ -73,12 +73,6 @@ FAAD2_SOURCE_DIR=$(SOURCE_DIR)/faad2
 FAAD2_IPK_DIR=$(BUILD_DIR)/faad2-$(FAAD2_VERSION)-ipk
 FAAD2_IPK=$(BUILD_DIR)/faad2_$(FAAD2_VERSION)-$(FAAD2_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-ifeq ($(HOSTCC), $(TARGET_CC))
-FAAD2_AUTOTOOLS=ACLOCAL=aclocal-$(AUTOMAKE_VERSION) AUTOMAKE=automake-$(AUTOMAKE_VERSION)
-else
-FAAD2_AUTOTOOLS=
-endif
-
 .PHONY: faad2-source faad2-unpack faad2 faad2-stage faad2-ipk faad2-clean faad2-dirclean faad2-check
 
 #
@@ -86,7 +80,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FAAD2_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FAAD2_SITE)/$(FAAD2_SOURCE)
+	$(WGET) -P $(@D) $(FAAD2_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -113,23 +108,19 @@ faad2-source: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(FAAD2_BUILD_DIR)/.configured: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES) # make/faad2.mk
+$(FAAD2_BUILD_DIR)/.configured: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES) make/faad2.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(FAAD2_DIR) $(FAAD2_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FAAD2_DIR) $(@D)
 	$(FAAD2_UNZIP) $(DL_DIR)/$(FAAD2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FAAD2_PATCHES)" ; \
 		then cat $(FAAD2_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(FAAD2_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(FAAD2_DIR)" != "$(FAAD2_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(FAAD2_DIR) $(FAAD2_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(FAAD2_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(FAAD2_DIR) $(@D) ; \
 	fi
-	find $(FAAD2_BUILD_DIR) -name \*.am -or -name \*.in | xargs sed -i -e 's/$$//'
-	(cd $(FAAD2_BUILD_DIR); \
-        	echo > plugins/Makefile.am && \
-        	echo > plugins/xmms/src/Makefile.am && \
-                sed -i -e '/E_B/d' configure.in && \
-                $(FAAD2_AUTOTOOLS) autoreconf -vif; \
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FAAD2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FAAD2_LDFLAGS)" \
@@ -145,8 +136,7 @@ $(FAAD2_BUILD_DIR)/.configured: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES) # mak
 		--without-mpeg4ip \
 		--without-xmms \
 	)
-	$(PATCH_LIBTOOL) $(FAAD2_BUILD_DIR)/libtool
-	sed -ie '/^SUBDIRS/s/ frontend / /' $(FAAD2_BUILD_DIR)/Makefile
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 faad2-unpack: $(FAAD2_BUILD_DIR)/.configured
@@ -156,7 +146,7 @@ faad2-unpack: $(FAAD2_BUILD_DIR)/.configured
 #
 $(FAAD2_BUILD_DIR)/.built: $(FAAD2_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(FAAD2_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -169,7 +159,7 @@ faad2: $(FAAD2_BUILD_DIR)/.built
 #
 $(FAAD2_BUILD_DIR)/.staged: $(FAAD2_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(FAAD2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 faad2-stage: $(FAAD2_BUILD_DIR)/.staged
