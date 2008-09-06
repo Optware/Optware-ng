@@ -5,7 +5,7 @@
 ###########################################################
 
 RSNAPSHOT_SITE=http://www.rsnapshot.org/downloads
-RSNAPSHOT_VERSION=1.3.0
+RSNAPSHOT_VERSION=1.3.1
 RSNAPSHOT_SOURCE=rsnapshot-$(RSNAPSHOT_VERSION).tar.gz
 RSNAPSHOT_DIR=rsnapshot-$(RSNAPSHOT_VERSION)
 RSNAPSHOT_UNZIP=zcat
@@ -44,13 +44,14 @@ $(RSNAPSHOT_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(RSNAPSHOT_DEPENDS)" >>$@
 
 $(DL_DIR)/$(RSNAPSHOT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RSNAPSHOT_SITE)/$(RSNAPSHOT_SOURCE)
+	$(WGET) -P $(@D) $(RSNAPSHOT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 rsnapshot-source: $(DL_DIR)/$(RSNAPSHOT_SOURCE) $(RSNAPSHOT_PATCHES)
 
 $(RSNAPSHOT_BUILD_DIR)/.configured: $(DL_DIR)/$(RSNAPSHOT_SOURCE) $(RSNAPSHOT_PATCHES) make/rsnapshot.mk
 #	$(MAKE) rsync-stage
-	rm -rf $(BUILD_DIR)/$(RSNAPSHOT_DIR) $(RSNAPSHOT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(RSNAPSHOT_DIR) $(@D)
 	$(RSNAPSHOT_UNZIP) $(DL_DIR)/$(RSNAPSHOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(RSNAPSHOT_PATCHES) | patch -d $(BUILD_DIR)/$(RSNAPSHOT_DIR) -p1
 	mv $(BUILD_DIR)/$(RSNAPSHOT_DIR) $(@D)
@@ -84,12 +85,12 @@ $(RSNAPSHOT_BUILD_DIR)/.built: $(RSNAPSHOT_BUILD_DIR)/.configured
 
 rsnapshot: $(RSNAPSHOT_BUILD_DIR)/.built
 
-$(RSNAPSHOT_BUILD_DIR)/.staged: $(RSNAPSHOT_BUILD_DIR)/.built
+#$(RSNAPSHOT_BUILD_DIR)/.staged: $(RSNAPSHOT_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(RSNAPSHOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-rsnapshot-stage: $(RSNAPSHOT_BUILD_DIR)/.staged
+#
+#rsnapshot-stage: $(RSNAPSHOT_BUILD_DIR)/.staged
 
 $(RSNAPSHOT_IPK): $(RSNAPSHOT_BUILD_DIR)/.built
 	rm -rf $(RSNAPSHOT_IPK_DIR) $(BUILD_DIR)/rsnapshot_*_$(TARGET_ARCH).ipk
