@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DJANGO_VERSION=0.96.2
+PY-DJANGO_VERSION=1.0
 PY-DJANGO_SITE=http://www.djangoproject.com/download/$(PY-DJANGO_VERSION)/tarball/
 PY-DJANGO_SOURCE=Django-$(PY-DJANGO_VERSION).tar.gz
 PY-DJANGO_DIR=Django-$(PY-DJANGO_VERSION)
@@ -106,14 +106,14 @@ py-django-source: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(PY-DJANGO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-DJANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(PY-DJANGO_PATCHES)
+$(PY-DJANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(PY-DJANGO_PATCHES) make/py-django.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-DJANGO_DIR) $(PY-DJANGO_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PY-DJANGO_DIR) $(@D)
 	mkdir -p $(PY-DJANGO_BUILD_DIR)
 	$(PY-DJANGO_UNZIP) $(DL_DIR)/$(PY-DJANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-DJANGO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DJANGO_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-DJANGO_DIR) $(PY-DJANGO_BUILD_DIR)/2.4
-	(cd $(PY-DJANGO_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-DJANGO_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4"; \
@@ -123,8 +123,8 @@ $(PY-DJANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(PY-DJANGO_PA
 	)
 	$(PY-DJANGO_UNZIP) $(DL_DIR)/$(PY-DJANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-DJANGO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DJANGO_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-DJANGO_DIR) $(PY-DJANGO_BUILD_DIR)/2.5
-	(cd $(PY-DJANGO_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-DJANGO_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5"; \
@@ -141,10 +141,10 @@ py-django-unpack: $(PY-DJANGO_BUILD_DIR)/.configured
 #
 $(PY-DJANGO_BUILD_DIR)/.built: $(PY-DJANGO_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-DJANGO_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-DJANGO_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
@@ -157,12 +157,12 @@ py-django: $(PY-DJANGO_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-DJANGO_BUILD_DIR)/.staged: $(PY-DJANGO_BUILD_DIR)/.built
+#$(PY-DJANGO_BUILD_DIR)/.staged: $(PY-DJANGO_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(PY-DJANGO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-py-django-stage: $(PY-DJANGO_BUILD_DIR)/.staged
+#
+#py-django-stage: $(PY-DJANGO_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
