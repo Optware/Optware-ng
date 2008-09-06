@@ -34,7 +34,7 @@ SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
-SAMBA_DEPENDS=popt, readline, gnutls, xinetd
+SAMBA_DEPENDS=popt, readline, gnutls
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA_DEPENDS +=, openldap-libs
 endif
@@ -43,9 +43,8 @@ SAMBA_CONFLICTS=samba2
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
-SAMBA_CONFFILES= \
-	/opt/etc/init.d/S08samba \
-	/opt/etc/xinetd.d/swat	
+SAMBA_CONFFILES=/opt/etc/init.d/S08samba
+SAMBA3-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
 
 #
 # SAMBA_PATCHES should list any patches, in the the order in
@@ -75,8 +74,13 @@ SAMBA_LDFLAGS=
 #
 SAMBA_BUILD_DIR=$(BUILD_DIR)/samba
 SAMBA_SOURCE_DIR=$(SOURCE_DIR)/samba
+
 SAMBA_IPK_DIR=$(BUILD_DIR)/samba-$(SAMBA_VERSION)-ipk
 SAMBA_IPK=$(BUILD_DIR)/samba_$(SAMBA_VERSION)-$(SAMBA_IPK_VERSION)_$(TARGET_ARCH).ipk
+SAMBA3-DEV_IPK_DIR=$(BUILD_DIR)/samba3-dev-$(SAMBA_VERSION)-ipk
+SAMBA3-DEV_IPK=$(BUILD_DIR)/samba3-dev_$(SAMBA_VERSION)-$(SAMBA_IPK_VERSION)_$(TARGET_ARCH).ipk
+SAMBA3-SWAT_IPK_DIR=$(BUILD_DIR)/samba3-swat-$(SAMBA_VERSION)-ipk
+SAMBA3-SWAT_IPK=$(BUILD_DIR)/samba3-swat_$(SAMBA_VERSION)-$(SAMBA_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 SAMBA_BUILD_DIR_SRC=$(SAMBA_BUILD_DIR)/source
 
@@ -279,6 +283,36 @@ $(SAMBA_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(SAMBA_SUGGESTS)" >>$@
 	@echo "Conflicts: $(SAMBA_CONFLICTS)" >>$@
 
+$(SAMBA3-DEV_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: samba3-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SAMBA_PRIORITY)" >>$@
+	@echo "Section: $(SAMBA_SECTION)" >>$@
+	@echo "Version: $(SAMBA_VERSION)-$(SAMBA_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SAMBA_MAINTAINER)" >>$@
+	@echo "Source: $(SAMBA_SITE)/$(SAMBA_SOURCE)" >>$@
+	@echo "Description: development files for samba3" >>$@
+	@echo "Depends: samba" >>$@
+	@echo "Suggests: " >>$@
+	@echo "Conflicts: " >>$@
+
+$(SAMBA3-SWAT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: samba3-swat" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SAMBA_PRIORITY)" >>$@
+	@echo "Section: $(SAMBA_SECTION)" >>$@
+	@echo "Version: $(SAMBA_VERSION)-$(SAMBA_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SAMBA_MAINTAINER)" >>$@
+	@echo "Source: $(SAMBA_SITE)/$(SAMBA_SOURCE)" >>$@
+	@echo "Description: the Samba Web Admin Tool for samba3" >>$@
+	@echo "Depends: samba, xinetd" >>$@
+	@echo "Suggests: " >>$@
+	@echo "Conflicts: " >>$@
+
 #
 # This builds the IPK file.
 #
@@ -291,8 +325,11 @@ $(SAMBA_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
+$(SAMBA_IPK) $(SAMBA3-DEV_IPK) $(SAMBA3-SWAT_IPK): $(SAMBA_BUILD_DIR)/.built
 	rm -rf $(SAMBA_IPK_DIR) $(BUILD_DIR)/samba_*_$(TARGET_ARCH).ipk
+	rm -rf $(SAMBA3-DEV_IPK_DIR) $(BUILD_DIR)/samba3-dev_*_$(TARGET_ARCH).ipk
+	rm -rf $(SAMBA3-SWAT_IPK_DIR) $(BUILD_DIR)/samba3-swat_*_$(TARGET_ARCH).ipk
+	# samba3
 	$(MAKE) -C $(SAMBA_BUILD_DIR) DESTDIR=$(SAMBA_IPK_DIR) install
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
@@ -301,8 +338,6 @@ $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	$(STRIP_COMMAND) `find $(SAMBA_IPK_DIR)/opt/lib -name '*.so'`
 	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S08samba
-	install -d $(SAMBA_IPK_DIR)/opt/etc/xinetd.d
-	install -m 755 $(SAMBA_SOURCE_DIR)/swat $(SAMBA_IPK_DIR)/opt/etc/xinetd.d/swat
 	$(MAKE) $(SAMBA_IPK_DIR)/CONTROL/control
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
@@ -311,12 +346,27 @@ ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g, $(OPTWARE_TARGET)))
 	install -m 644 $(SAMBA_SOURCE_DIR)/preinst.$(OPTWARE_TARGET) $(SAMBA_IPK_DIR)/CONTROL/preinst
 endif
 	echo $(SAMBA_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA_IPK_DIR)/CONTROL/conffiles
+	# samba3-dev
+	install -d $(SAMBA3-DEV_IPK_DIR)/opt
+	mv $(SAMBA_IPK_DIR)/opt/include $(SAMBA3-DEV_IPK_DIR)/opt/
+	# samba3-swat
+	install -d $(SAMBA3-SWAT_IPK_DIR)/opt/share $(SAMBA3-SWAT_IPK_DIR)/opt/sbin
+	mv $(SAMBA_IPK_DIR)/opt/share/swat $(SAMBA3-SWAT_IPK_DIR)/opt/share/
+	mv $(SAMBA_IPK_DIR)/opt/sbin/swat $(SAMBA3-SWAT_IPK_DIR)/opt/sbin/
+	install -d $(SAMBA3-SWAT_IPK_DIR)/opt/etc/xinetd.d
+	install -m 755 $(SAMBA_SOURCE_DIR)/swat $(SAMBA3-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
+	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA_IPK_DIR)
+	$(MAKE) $(SAMBA3-DEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA3-DEV_IPK_DIR)
+	$(MAKE) $(SAMBA3-SWAT_IPK_DIR)/CONTROL/control
+	echo $(SAMBA3-SWAT_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA3-SWAT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA3-SWAT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-samba-ipk: $(SAMBA_IPK)
+samba-ipk: $(SAMBA_IPK) $(SAMBA3-DEV_IPK) $(SAMBA3-SWAT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -334,5 +384,5 @@ samba-dirclean:
 #
 # Some sanity check for the package.
 #
-samba-check: $(SAMBA_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SAMBA_IPK)
+samba-check: $(SAMBA_IPK) $(SAMBA3-DEV_IPK) $(SAMBA3-SWAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SAMBA_IPK) $(SAMBA3-SWAT_IPK)
