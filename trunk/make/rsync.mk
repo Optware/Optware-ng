@@ -19,7 +19,7 @@ RSYNC_DEPENDS += libiconv
 endif
 RSYNC_CONFLICTS=
 
-RSYNC_IPK_VERSION=1
+RSYNC_IPK_VERSION=2
 
 RSYNC_CONFFILES= \
 	/opt/etc/rsyncd.conf \
