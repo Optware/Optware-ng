@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 P7ZIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/p7zip
-P7ZIP_VERSION=4.57
+P7ZIP_VERSION=4.58
 P7ZIP_SOURCE=p7zip_$(P7ZIP_VERSION)_src_all.tar.bz2
 P7ZIP_DIR=p7zip_$(P7ZIP_VERSION)
 P7ZIP_UNZIP=bzcat
@@ -76,8 +76,8 @@ P7ZIP_IPK=$(BUILD_DIR)/p7zip_$(P7ZIP_VERSION)-$(P7ZIP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(P7ZIP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(P7ZIP_SITE)/$(P7ZIP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(P7ZIP_SOURCE)
+	$(WGET) -P $(@D) $(P7ZIP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
