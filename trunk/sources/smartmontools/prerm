@@ -1,5 +1,5 @@
 #!/bin/sh
 
-/bin/killall smartd 2>&1
+killall smartd 2>&1
 
 exit 0
