@@ -42,7 +42,7 @@ XMAIL_CONFLICTS=
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=2
+XMAIL_IPK_VERSION=3
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
@@ -220,7 +220,11 @@ $(XMAIL_IPK): $(XMAIL_BUILD_DIR)/.built
 	install -d $(XMAIL_IPK_DIR)/opt/etc/init.d
 	install -m 644 $(XMAIL_SOURCE_DIR)/postinst $(XMAIL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(XMAIL_SOURCE_DIR)/prerm $(XMAIL_IPK_DIR)/CONTROL/prerm
-	#echo $(XMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(XMAIL_IPK_DIR)/CONTROL/conffiles
+	# conf
+	(cd $(XMAIL_BUILD_DIR)/MailRoot && \
+	 find . -type f | \
+	 grep -v xmailserver.test | \
+	 sed 's|^\.|/opt/var/MailRoot|') > $(XMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XMAIL_IPK_DIR)
 
 #
