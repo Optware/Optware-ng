@@ -110,7 +110,10 @@ xmail-source: $(DL_DIR)/$(XMAIL_SOURCE) $(XMAIL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(XMAIL_SOURCE) $(XMAIL_PATCHES) make/xmail.mk
-	$(MAKE) libstdc++-stage openssl-stage
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+	$(MAKE) libstdc++-stage
+endif
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(XMAIL_DIR) $(@D)
 	$(XMAIL_UNZIP) $(DL_DIR)/$(XMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(XMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(XMAIL_DIR) -p1
