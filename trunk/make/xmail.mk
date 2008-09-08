@@ -26,23 +26,23 @@
 #
 # You should change all these variables to suit your package.
 #
-XMAIL_SITE=http://www.xmailserver.org/
-XMAIL_VERSION=1.22
+XMAIL_SITE=http://www.xmailserver.org
+XMAIL_VERSION=1.25
 XMAIL_SOURCE=xmail-$(XMAIL_VERSION).tar.gz
 XMAIL_DIR=xmail-$(XMAIL_VERSION)
 XMAIL_UNZIP=zcat
 XMAIL_MAINTAINER=Paul Hargreaves <paulhar@harg.ath.cx>
 XMAIL_DESCRIPTION=A combined easy to configure SMTP, POP3 and Finger server.
-XMAIL_SECTION=net
+XMAIL_SECTION=mail
 XMAIL_PRIORITY=optional
-XMAIL_DEPENDS=libstdc++
+XMAIL_DEPENDS=libstdc++, openssl
 XMAIL_SUGGESTS=syslogd-ng
 XMAIL_CONFLICTS=
 
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=3
+XMAIL_IPK_VERSION=1
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
@@ -56,14 +56,14 @@ XMAIL_IPK_VERSION=3
 # 1. Lower the ulimit
 # 2. Reduce the number of threads xmail uses
 # 3. Change the hard-coded directory to MailRoot
-XMAIL_PATCHES=$(XMAIL_SOURCE_DIR)/Makefile.patch $(XMAIL_SOURCE_DIR)/xmail.patch
+XMAIL_PATCHES=$(XMAIL_SOURCE_DIR)/xmail.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 XMAIL_CPPFLAGS=
-XMAIL_LDFLAGS=-R /opt/lib
+XMAIL_LDFLAGS=
 
 #
 # XMAIL_BUILD_DIR is the directory in which the build is done.
@@ -84,8 +84,8 @@ XMAIL_IPK=$(BUILD_DIR)/xmail_$(XMAIL_VERSION)-$(XMAIL_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(XMAIL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(XMAIL_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(XMAIL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,15 +110,13 @@ xmail-source: $(DL_DIR)/$(XMAIL_SOURCE) $(XMAIL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(XMAIL_SOURCE) $(XMAIL_PATCHES) make/xmail.mk
-	# The dependency is already installed as part of the core installation
-	# but is here just in case. Uncomment if needed
-	# $(MAKE) libstdc++-stage
-	rm -rf $(BUILD_DIR)/$(XMAIL_DIR) $(XMAIL_BUILD_DIR)
+	$(MAKE) libstdc++-stage openssl-stage
+	rm -rf $(BUILD_DIR)/$(XMAIL_DIR) $(@D)
 	$(XMAIL_UNZIP) $(DL_DIR)/$(XMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(XMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(XMAIL_DIR) -p1
-	mv $(BUILD_DIR)/$(XMAIL_DIR) $(XMAIL_BUILD_DIR)
-	cp $(XMAIL_SOURCE_DIR)/SysMachine.h $(XMAIL_BUILD_DIR)
-	touch $(XMAIL_BUILD_DIR)/.configured
+	mv $(BUILD_DIR)/$(XMAIL_DIR) $(@D)
+	sed -i -e '/^LDFLAGS/s|$$(LDFLAGS) $$(SSLLIBS)|& $(STAGING_LDFLAGS) $(XMAIL_LDFLAGS)|' $(@D)/Makefile.lnx
+	touch $@
 
 xmail-unpack: $(XMAIL_BUILD_DIR)/.configured
 
@@ -126,10 +124,22 @@ xmail-unpack: $(XMAIL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XMAIL_BUILD_DIR)/.built: $(XMAIL_BUILD_DIR)/.configured
-	rm -f $(XMAIL_BUILD_DIR)/.built
-	#$(MAKE) -C $(XMAIL_BUILD_DIR)
-	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(XMAIL_BUILD_DIR) -f Makefile.lnx
-	touch $(XMAIL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) -f Makefile.lnx CC=$(HOSTCC) \
+		bin bin/MkMachDep SysMachine.h
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
+	then sed -i -e 's/.*MACH_BIG_ENDIAN/#define MACH_BIG_ENDIAN/' $(@D)/SysMachine.h; \
+	else sed -i -e 's/.*MACH_BIG_ENDIAN/#undef MACH_BIG_ENDIAN/' $(@D)/SysMachine.h; \
+	fi
+	$(MAKE) -C $(@D) -f Makefile.lnx \
+		$(TARGET_CONFIGURE_OPTS) \
+		CC=$(TARGET_CXX) \
+		LD=$(TARGET_CXX) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(XMAIL_CPPFLAGS)" \
+		WITH_SSL_INCLUDE=$(STAGING_INCLUDE_DIR)/openssl \
+		WITH_SSL_LIB=$(STAGING_LIB_DIR) \
+		;
+	touch $@
 
 #
 # This is the build convenience target.
@@ -139,19 +149,19 @@ xmail: $(XMAIL_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XMAIL_BUILD_DIR)/.staged: $(XMAIL_BUILD_DIR)/.built
-	rm -f $(XMAIL_BUILD_DIR)/.staged
-	$(MAKE) -C $(XMAIL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(XMAIL_BUILD_DIR)/.staged
-
-xmail-stage: $(XMAIL_BUILD_DIR)/.staged
+#$(XMAIL_BUILD_DIR)/.staged: $(XMAIL_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#xmail-stage: $(XMAIL_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/xmail
 #
 $(XMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(XMAIL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: xmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,6 +211,7 @@ $(XMAIL_IPK): $(XMAIL_BUILD_DIR)/.built
 	# This is handled by the postinst script
 	# Rest of the stuff
 	$(MAKE) $(XMAIL_IPK_DIR)/CONTROL/control
+	install -d $(XMAIL_IPK_DIR)/opt/etc/init.d
 	install -m 644 $(XMAIL_SOURCE_DIR)/postinst $(XMAIL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(XMAIL_SOURCE_DIR)/prerm $(XMAIL_IPK_DIR)/CONTROL/prerm
 	#echo $(XMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(XMAIL_IPK_DIR)/CONTROL/conffiles
@@ -223,3 +234,9 @@ xmail-clean:
 #
 xmail-dirclean:
 	rm -rf $(BUILD_DIR)/$(XMAIL_DIR) $(XMAIL_BUILD_DIR) $(XMAIL_IPK_DIR) $(XMAIL_IPK)
+
+#
+# Some sanity check for the package.
+#
+xmail-check: $(XMAIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(XMAIL_IPK)
