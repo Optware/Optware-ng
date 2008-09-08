@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HPLIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hplip
-HPLIP_VERSION=2.7.12
+HPLIP_VERSION=2.8.7
 HPLIP_SOURCE=hplip-$(HPLIP_VERSION).tar.gz
 HPLIP_DIR=hplip-$(HPLIP_VERSION)
 HPLIP_UNZIP=zcat
@@ -29,14 +29,14 @@ HPLIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HPLIP_DESCRIPTION=HP Linux Imaging and Printing
 HPLIP_SECTION=misc
 HPLIP_PRIORITY=optional
-HPLIP_DEPENDS=sane-backends, python, libstdc++
-HPLIP_SUGGESTS=cups
+HPLIP_DEPENDS=sane-backends, python25, libstdc++
+HPLIP_SUGGESTS=cups, dbus
 HPLIP_CONFLICTS=
 
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=2
+HPLIP_IPK_VERSION=1
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
@@ -112,7 +112,7 @@ hplip-source: $(DL_DIR)/$(HPLIP_SOURCE) $(HPLIP_PATCHES)
 # shown below to make various patches to it.
 #
 $(HPLIP_BUILD_DIR)/.configured: $(DL_DIR)/$(HPLIP_SOURCE) $(HPLIP_PATCHES) make/hplip.mk
-	$(MAKE) cups-stage sane-backends-stage python-stage
+	$(MAKE) cups-stage dbus-stage python25-stage sane-backends-stage
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 	$(MAKE) net-snmp-stage
 endif
@@ -125,26 +125,29 @@ endif
 	if test "$(BUILD_DIR)/$(HPLIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HPLIP_DIR) $(@D) ; \
 	fi
+	sed -i -e 's|/etc/|/opt&|' $(@D)/Makefile.am ; \
+	autoreconf -vif $(@D)
 	(cd $(@D); \
-		sed -i -e 's|/etc/|/opt/etc/|' \
-			Makefile.am; \
-		autoconf configure.in > configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HPLIP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HPLIP_LDFLAGS)" \
-		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.4 \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--sysconfdir=/opt/etc \
 		--disable-nls \
 		--disable-static \
 		$(HPLIP_CONFIG_ARGS) \
 		--disable-dependency-tracking \
 		--with-cupsbackenddir=/opt/lib/cups/backend \
 		--with-icondir=/opt/share/applications \
+		--with-systraydir=/opt/etc/xdg/autostart \
+		--with-cupsfilterdir=/opt/lib/cups/filter \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
