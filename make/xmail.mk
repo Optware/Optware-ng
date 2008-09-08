@@ -42,7 +42,7 @@ XMAIL_CONFLICTS=
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=1
+XMAIL_IPK_VERSION=2
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
@@ -125,12 +125,15 @@ xmail-unpack: $(XMAIL_BUILD_DIR)/.configured
 #
 $(XMAIL_BUILD_DIR)/.built: $(XMAIL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) -f Makefile.lnx CC=$(HOSTCC) \
+ifneq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) -C $(@D) -f Makefile.lnx CC=g++ LDFLAGS="" \
 		bin bin/MkMachDep SysMachine.h
+	cp $(XMAIL_SOURCE_DIR)/SysMachine.h $(@D)/
 	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
 	then sed -i -e 's/.*MACH_BIG_ENDIAN/#define MACH_BIG_ENDIAN/' $(@D)/SysMachine.h; \
 	else sed -i -e 's/.*MACH_BIG_ENDIAN/#undef MACH_BIG_ENDIAN/' $(@D)/SysMachine.h; \
 	fi
+endif
 	$(MAKE) -C $(@D) -f Makefile.lnx \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC=$(TARGET_CXX) \
