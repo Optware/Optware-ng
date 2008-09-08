@@ -32,7 +32,7 @@ BROKEN_PACKAGES = \
 	mod-python mod-wsgi \
 	newsbeuter nget nmap nload nzbget \
 	open2300 openldap obexftp openser oww \
-	p7zip par2cmdline pcapsipdump php-apache \
+	p7zip p910nd par2cmdline pcapsipdump php-apache \
 	picolisp player puppy py-mysql \
 	qemu quickie \
 	re2c rhtvision rsstail rtorrent \
