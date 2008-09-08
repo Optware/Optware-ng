@@ -36,7 +36,7 @@ FAAD2_CONFLICTS=
 #
 # FAAD2_IPK_VERSION should be incremented when the ipk changes.
 #
-FAAD2_IPK_VERSION=1
+FAAD2_IPK_VERSION=2
 
 #
 # FAAD2_CONFFILES should be a list of user-editable files
@@ -55,6 +55,9 @@ FAAD2_IPK_VERSION=1
 FAAD2_CPPFLAGS=
 ifdef NO_BUILTIN_MATH
 FAAD2_CPPFLAGS+=-fno-builtin-cos -fno-builtin-sin -fno-builtin-log
+endif
+ifeq ($(TARGET_CPU), $(filter arm armeb mips mipsel, $(TARGET_CPU)))
+FAAD2_CPPFLAGS+=-DFIXED_POINT
 endif
 FAAD2_LDFLAGS=
 
