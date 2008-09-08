@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET_VERSION=0.4.1
+NZBGET_VERSION=0.5.0
 NZBGET_SOURCE=nzbget-$(NZBGET_VERSION).tar.gz
 NZBGET_DIR=nzbget-$(NZBGET_VERSION)
 NZBGET_UNZIP=zcat
@@ -29,7 +29,7 @@ NZBGET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NZBGET_DESCRIPTION=A command-line client/server based binary newsgrabber for nzb-files.
 NZBGET_SECTION=net
 NZBGET_PRIORITY=optional
-NZBGET_DEPENDS=ncurses, libxml2, libpar2
+NZBGET_DEPENDS=ncurses, libxml2, libpar2, openssl
 NZBGET_SUGGESTS=
 NZBGET_CONFLICTS=
 
@@ -108,7 +108,7 @@ nzbget-source: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 # shown below to make various patches to it.
 #
 $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
-	$(MAKE) libxml2-stage ncurses-stage libpar2-stage
+	$(MAKE) libxml2-stage ncurses-stage libpar2-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(NZBGET_DIR) $(NZBGET_BUILD_DIR)
 	$(NZBGET_UNZIP) $(DL_DIR)/$(NZBGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NZBGET_PATCHES)" ; \
@@ -123,6 +123,7 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NZBGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NZBGET_LDFLAGS)" \
 		LIBPREF="$(STAGING_DIR)/opt" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		$(NZBGET_CONFIGURE) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -131,6 +132,7 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--with-tlslib=OpenSSL \
 		$(NZBGET_CONFIGURE_OPTS) \
 	)
 	sed -i -e '/^CPPFLAGS/s:-I/usr.*$$::' -e '/^LDFLAGS/s:-L/usr.*$$::' \
@@ -200,6 +202,7 @@ $(NZBGET_IPK): $(NZBGET_BUILD_DIR)/.built
 	install -d $(NZBGET_IPK_DIR)/opt/bin $(NZBGET_IPK_DIR)/opt/share/doc/nzbget
 	install -m 755 $(NZBGET_BUILD_DIR)/nzbget $(NZBGET_IPK_DIR)/opt/bin/
 	install -m 644 $(NZBGET_BUILD_DIR)/nzbget.conf.example $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
+	install -m 644 $(NZBGET_BUILD_DIR)/postprocess-example.sh $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
 	$(STRIP_COMMAND) $(NZBGET_IPK_DIR)/opt/bin/nzbget
 #	install -d $(NZBGET_IPK_DIR)/opt/etc/
 #	install -m 644 $(NZBGET_SOURCE_DIR)/nzbget.conf $(NZBGET_IPK_DIR)/opt/etc/nzbget.conf
