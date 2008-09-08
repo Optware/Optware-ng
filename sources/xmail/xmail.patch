@@ -1,5 +1,5 @@
---- xmail-1.22/xmail	2005-10-12 23:35:22.000000000 +0200
-+++ xmail/xmail	2006-04-14 12:41:43.000000000 +0200
+--- xmail-1.25/xmail.orig	2008-01-03 23:27:45.000000000 +0000
++++ xmail-1.25/xmail	2008-09-07 22:48:21.105617102 +0000
 @@ -9,17 +9,17 @@
  # Version:	@(#)skeleton  1.8  03-Mar-1998  miquels@cistron.nl
  #
@@ -12,13 +12,13 @@
 -DAEMON=$XMAIL_ROOT/bin/XMail
 +DAEMON=/opt/bin/XMail
  NAME=XMail
- DESC="XMail server"
+ DESC="XMail Server"
  
  test -f $DAEMON || exit 0
  
  set -e
 -ulimit -c 20000
 +ulimit -c 10000
+ ulimit -s 128
  
  start_xmail()
- {
