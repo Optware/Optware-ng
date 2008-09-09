@@ -28,13 +28,13 @@ CLASSPATH_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 CLASSPATH_DESCRIPTION=GNU Classpath for java
 CLASSPATH_SECTION=language
 CLASSPATH_PRIORITY=optional
-CLASSPATH_DEPENDS=
+CLASSPATH_DEPENDS=file
 CLASSPATH_CONFLICTS=sablevm
 
 #
 # CLASSPATH_IPK_VERSION should be incremented when the ipk changes.
 #
-CLASSPATH_IPK_VERSION=1
+CLASSPATH_IPK_VERSION=2
 
 #
 # CLASSPATH_CONFFILES should be a list of user-editable files
@@ -103,6 +103,7 @@ classpath-source: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PATCHES) make/classpath.mk
+	$(MAKE) file-stage
 	rm -rf $(BUILD_DIR)/$(CLASSPATH_DIR) $(@D)
 	$(CLASSPATH_UNZIP) $(DL_DIR)/$(CLASSPATH_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(CLASSPATH_PATCHES)"; then \
