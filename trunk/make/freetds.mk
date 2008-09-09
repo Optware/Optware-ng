@@ -37,7 +37,7 @@ FREETDS_CONFLICTS=
 #
 # FREETDS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETDS_IPK_VERSION=2
+FREETDS_IPK_VERSION=3
 
 #
 # FREETDS_CONFFILES should be a list of user-editable files
@@ -148,6 +148,7 @@ freetds: $(FREETDS_BUILD_DIR)/.built
 #
 $(FREETDS_BUILD_DIR)/.staged: $(FREETDS_BUILD_DIR)/.built
 	rm -f $@
+	rm -f $(STAGING_LIB_DIR)/libtds*
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libct.la
 	rm -f $(STAGING_LIB_DIR)/libsybdb.la
