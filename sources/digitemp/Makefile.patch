@@ -1,18 +1,18 @@
 diff -Naur digitemp-3.4.0.org/Makefile digitemp-3.4.0/Makefile
 --- digitemp-3.4.0.org/Makefile	2005-06-26 03:02:48.000000000 +0200
 +++ digitemp-3.4.0/Makefile	2006-01-18 00:13:27.000000000 +0100
-@@ -12,8 +12,8 @@
- VERSION = 3.4.0
+@@ -11,8 +11,8 @@
  
+ VERSION = 3.6.0
  
 -CC	= gcc
--CFLAGS	= -I./src -I./userial -O2 # -g -Wall
+-CFLAGS	= -I./src -I./userial -O2 -Wall # -g
 +CFLAGS	= -I$(STAGING_DIR)/opt/include -I./src -I./userial -O2 # -g -Wall
 +LDFLAGS = -L$(STAGING_DIR)/opt/lib -Wl,-rpath=/opt/lib
- LIBS	= -lm
  
- OBJS		=	src/digitemp.o src/device_name.o
-@@ -113,13 +113,13 @@
+ OBJS		=	src/digitemp.o src/device_name.o src/ds2438.o
+ HDRS		= 	src/digitemp.h src/device_name.h
+@@ -116,13 +116,13 @@
  
  # Build the Linux executable
  ds9097:		$(OBJS) $(HDRS) $(ONEWIREOBJS) $(ONEWIREHDRS) $(DS9097OBJS)
