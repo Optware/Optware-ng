@@ -37,7 +37,7 @@ SQSH_CONFLICTS=
 #
 # SQSH_IPK_VERSION should be incremented when the ipk changes.
 #
-SQSH_IPK_VERSION=2
+SQSH_IPK_VERSION=3
 
 #
 # SQSH_CONFFILES should be a list of user-editable files
@@ -153,7 +153,7 @@ sqsh-unpack: $(SQSH_BUILD_DIR)/.configured
 $(SQSH_BUILD_DIR)/.built: $(SQSH_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		SYBASE_LIBS="-ldl -lm -lct -lsybdb -ltdsS" \
+		SYBASE_LIBS="-ldl -lm -lct -lsybdb" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQSH_LDFLAGS)"
 	touch $@
 
