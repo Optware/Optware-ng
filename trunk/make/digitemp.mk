@@ -12,7 +12,7 @@
 #
 
 DIGITEMP_SITE=http://www.digitemp.com/software/linux
-DIGITEMP_VERSION=3.4.0
+DIGITEMP_VERSION=3.6.0
 DIGITEMP_SOURCE=digitemp-$(DIGITEMP_VERSION).tar.gz
 DIGITEMP_DIR=digitemp-$(DIGITEMP_VERSION)
 DIGITEMP_UNZIP=zcat
@@ -27,7 +27,7 @@ DIGITEMP_CONFLICTS=
 #
 # DIGITEMP_IPK_VERSION should be incremented when the ipk changes.
 #
-DIGITEMP_IPK_VERSION=3
+DIGITEMP_IPK_VERSION=1
 
 #
 # DIGITEMP_CONFFILES should be a list of user-editable files
