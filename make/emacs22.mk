@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 EMACS22_SITE=http://ftp.gnu.org/pub/gnu/emacs
-EMACS22_VERSION=22.1
+EMACS22_VERSION=22.3
 EMACS22_SOURCE=emacs-$(EMACS22_VERSION).tar.gz
 EMACS22_DIR=emacs-$(EMACS22_VERSION)
 EMACS22_UNZIP=zcat
