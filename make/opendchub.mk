@@ -54,7 +54,9 @@ OPENDCHUB_IPK_VERSION=1
 #
 OPENDCHUB_CPPFLAGS=
 OPENDCHUB_LDFLAGS=
-OPENDCHUB_PERL_LDFLAGS = -L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) -Wl,-E -lperl \
+OPENDCHUB_PERL_LDFLAGS = \
+-L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) -Wl,-E -lperl -ldl \
+$(if $(filter uclibc, $(LIBC_STYLE)), -lm,) \
 $(if $(filter 5.8, $(PERL_MAJOR_VER)), \
 $(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/auto/DynaLoader/DynaLoader.a,)
 
