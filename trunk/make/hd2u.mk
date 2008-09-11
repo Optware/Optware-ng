@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HD2U_SITE=http://hany.sk/~hany/_data/hd2u
-HD2U_VERSION=1.0.2
+HD2U_VERSION=1.0.3
 HD2U_SOURCE=hd2u-$(HD2U_VERSION).tgz
 HD2U_DIR=hd2u-$(HD2U_VERSION)
 HD2U_UNZIP=zcat
@@ -36,7 +36,7 @@ HD2U_CONFLICTS=
 #
 # HD2U_IPK_VERSION should be incremented when the ipk changes.
 #
-HD2U_IPK_VERSION=3
+HD2U_IPK_VERSION=1
 
 #
 # HD2U_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ HD2U_IPK=$(BUILD_DIR)/hd2u_$(HD2U_VERSION)-$(HD2U_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HD2U_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HD2U_SITE)/$(HD2U_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(HD2U_SOURCE)
+	$(WGET) -P $(@D) $(HD2U_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,21 +106,21 @@ hd2u-source: $(DL_DIR)/$(HD2U_SOURCE) $(HD2U_PATCHES)
 #
 $(HD2U_BUILD_DIR)/.configured: $(DL_DIR)/$(HD2U_SOURCE) $(HD2U_PATCHES) make/hd2u.mk
 	$(MAKE) popt-stage
-	rm -rf $(BUILD_DIR)/$(HD2U_DIR) $(HD2U_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(HD2U_DIR) $(@D)
 	$(HD2U_UNZIP) $(DL_DIR)/$(HD2U_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HD2U_PATCHES)" ; \
 		then cat $(HD2U_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(HD2U_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(HD2U_DIR)" != "$(HD2U_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(HD2U_DIR) $(HD2U_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(HD2U_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(HD2U_DIR) $(@D) ; \
 	fi
 	sed -i -e '/^$$(TARGET):/s/ config.h$$//' \
 	       -e '/^CFLAGS *=/s/$$/ $$(CPPFLAGS)/' \
 	       -e '/^LIBS *=/s/$$/ $$(LDFLAGS)/' \
 	       -e '/$$(INSTALL)/s/ -s//' \
-		$(HD2U_BUILD_DIR)/Makefile.in
-	(cd $(HD2U_BUILD_DIR); \
+		$(@D)/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HD2U_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HD2U_LDFLAGS)" \
@@ -133,7 +133,7 @@ $(HD2U_BUILD_DIR)/.configured: $(DL_DIR)/$(HD2U_SOURCE) $(HD2U_PATCHES) make/hd2
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(HD2U_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 hd2u-unpack: $(HD2U_BUILD_DIR)/.configured
@@ -143,7 +143,7 @@ hd2u-unpack: $(HD2U_BUILD_DIR)/.configured
 #
 $(HD2U_BUILD_DIR)/.built: $(HD2U_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(HD2U_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HD2U_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HD2U_LDFLAGS)" \
 		;
@@ -157,12 +157,12 @@ hd2u: $(HD2U_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(HD2U_BUILD_DIR)/.staged: $(HD2U_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(HD2U_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-hd2u-stage: $(HD2U_BUILD_DIR)/.staged
+#$(HD2U_BUILD_DIR)/.staged: $(HD2U_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#hd2u-stage: $(HD2U_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
