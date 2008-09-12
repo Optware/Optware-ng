@@ -56,6 +56,7 @@ $(TOOLCHAIN_BUILD_DIR)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_UCLIBC_SOURCE)
 	rm -f `find $(@D)/.. -name .unpacked`
 	cp -f $(TOOLCHAIN_SOURCE_DIR)/uClibc.config $(@D)/sources/
 	patch -d $(@D) -p0 < $(TOOLCHAIN_SOURCE_DIR)/kernel-headers.mk.patch
+	sed -i -e '/^GCC_SITE/s|=.*|=ftp://ftp.gnu.org/gnu/gcc/gcc-$$(GCC_VERSION)|' $(@D)/make/gcc-uclibc-3.3.mk
 	cp -f $(TOOLCHAIN_SOURCE_DIR)/gcc-*.patch $(@D)/sources/
 	cp -f $(TOOLCHAIN_SOURCE_DIR)/gdb-*.patch $(@D)/sources/
 	touch $@
