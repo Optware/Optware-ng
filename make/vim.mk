@@ -21,7 +21,7 @@
 #
 VIM_SITE=http://ftp.vim.org/pub/vim/unix
 VIM_VERSION_MAJOR=7
-VIM_VERSION_MINOR=1
+VIM_VERSION_MINOR=2
 VIM_VERSION=$(VIM_VERSION_MAJOR).$(VIM_VERSION_MINOR)
 VIM_SOURCE=vim-$(VIM_VERSION).tar.bz2
 VIM_DIR=vim$(VIM_VERSION_MAJOR)$(VIM_VERSION_MINOR)
@@ -46,14 +46,26 @@ VIM_CONFFILES=
 # VIM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VIM_PATCHES=$(VIM_SOURCE_DIR)/configure.in.patch
+#VIM_PATCHES=$(VIM_SOURCE_DIR)/configure.in.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 VIM_CPPFLAGS=
-VIM_LDFLAGS=-lncurses 
+VIM_LDFLAGS=-lncurses
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+VIM_CONFIGURE_ARGS = \
+ac_cv_sizeof_int=4 \
+vim_cv_toupper_broken=no \
+vim_cv_terminfo=yes \
+vim_cv_tty_group=world \
+vim_cv_tty_mode=world \
+vim_cv_getcwd_broken=no \
+vim_cv_stat_ignores_slash=no \
+vim_cv_memmove_handles_overlap=yes
+endif
 
 #
 # VIM_BUILD_DIR is the directory in which the build is done.
@@ -74,7 +86,8 @@ VIM_IPK=$(BUILD_DIR)/vim_$(VIM_VERSION)-$(VIM_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VIM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VIM_SITE)/$(VIM_SOURCE)
+	$(WGET) -P $(@D) $(VIM_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -98,26 +111,21 @@ vim-source: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES)
+$(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES) make/vim.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(@D)
 	$(VIM_UNZIP) $(DL_DIR)/$(VIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-ifneq ($(HOSTCC), $(TARGET_CC))
-	cat $(VIM_PATCHES) | patch -d $(BUILD_DIR)/$(VIM_DIR) -p1
-endif
-	mv $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR)
-ifneq ($(HOSTCC), $(TARGET_CC))
-	(cd $(VIM_BUILD_DIR); \
-		autoconf src/configure.in > src/auto/configure; \
-	)
-endif
-	(cd $(VIM_BUILD_DIR)/src; \
+	if test -d "$(VIM_PATCHES)"; then \
+		cat $(VIM_PATCHES) | patch -N -b -d $(BUILD_DIR)/$(VIM_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(VIM_DIR) $(@D)
+	(cd $(@D)/src; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VIM_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(VIM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VIM_LDFLAGS)" \
 		LIBS="$(STAGING_LDFLAGS) $(VIM_LDFLAGS)" \
-		ac_cv_sizeof_int=4 \
+		$(VIM_CONFIGURE_ARGS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -127,7 +135,7 @@ endif
 		--without-x \
 		--disable-nls \
 	)
-	touch $(VIM_BUILD_DIR)/.configured
+	touch $@
 
 vim-unpack: $(VIM_BUILD_DIR)/.configured
 
@@ -135,9 +143,9 @@ vim-unpack: $(VIM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(VIM_BUILD_DIR)/.built: $(VIM_BUILD_DIR)/.configured
-	rm -f $(VIM_BUILD_DIR)/.built
-	$(MAKE) -C $(VIM_BUILD_DIR)
-	touch $(VIM_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -147,19 +155,19 @@ vim: $(VIM_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(VIM_BUILD_DIR)/.staged: $(VIM_BUILD_DIR)/.built
-	rm -f $(VIM_BUILD_DIR)/.staged
-	$(MAKE) -C $(VIM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(VIM_BUILD_DIR)/.staged
-
-vim-stage: $(VIM_BUILD_DIR)/.staged
+#$(VIM_BUILD_DIR)/.staged: $(VIM_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#vim-stage: $(VIM_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/vim
 #
 $(VIM_IPK_DIR)/CONTROL/control:
-	@install -d $(VIM_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: vim" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
