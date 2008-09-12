@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SLANG_SITE=ftp://space.mit.edu/pub/davis/slang/v2.1
-SLANG_VERSION=2.1.3
+SLANG_VERSION=2.1.4
 SLANG_SOURCE=slang-$(SLANG_VERSION).tar.bz2
 SLANG_DIR=slang-$(SLANG_VERSION)
 SLANG_UNZIP=bzcat
@@ -93,8 +93,8 @@ SLANG_IPK=$(BUILD_DIR)/slang_$(SLANG_VERSION)-$(SLANG_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SLANG_SOURCE):
-	wget -P $(DL_DIR) $(SLANG_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	wget -P $(@D) $(SLANG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
