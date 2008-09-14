@@ -30,15 +30,15 @@ IPYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPYTHON_DESCRIPTION=An enhanced interactive Python shell
 IPYTHON_SECTION=misc
 IPYTHON_PRIORITY=optional
-IPYTHON_PY24_DEPENDS=python24
-IPYTHON_PY25_DEPENDS=python25
+IPYTHON_PY24_DEPENDS=python24, py24-setuptools
+IPYTHON_PY25_DEPENDS=python25, py25-setuptools
 IPYTHON_SUGGESTS=ipython-common
 IPYTHON_CONFLICTS=
 
 #
 # IPYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-IPYTHON_IPK_VERSION=1
+IPYTHON_IPK_VERSION=2
 
 #
 # IPYTHON_CONFFILES should be a list of user-editable files
