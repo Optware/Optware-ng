@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NCDU_SITE=http://dev.yorhel.nl/download
-NCDU_VERSION=1.3
+NCDU_VERSION=1.4
 NCDU_SOURCE=ncdu-$(NCDU_VERSION).tar.gz
 NCDU_DIR=ncdu-$(NCDU_VERSION)
 NCDU_UNZIP=zcat
@@ -76,8 +76,8 @@ NCDU_IPK=$(BUILD_DIR)/ncdu_$(NCDU_VERSION)-$(NCDU_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NCDU_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NCDU_SITE)/$(NCDU_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NCDU_SOURCE)
+	$(WGET) -P $(@D) $(NCDU_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ ncdu-source: $(DL_DIR)/$(NCDU_SOURCE) $(NCDU_PATCHES)
 #
 $(NCDU_BUILD_DIR)/.configured: $(DL_DIR)/$(NCDU_SOURCE) $(NCDU_PATCHES) make/ncdu.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(NCDU_DIR) $(NCDU_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NCDU_DIR) $(@D)
 	$(NCDU_UNZIP) $(DL_DIR)/$(NCDU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NCDU_PATCHES)" ; \
 		then cat $(NCDU_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NCDU_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NCDU_DIR)" != "$(NCDU_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NCDU_DIR) $(NCDU_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NCDU_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NCDU_DIR) $(@D) ; \
 	fi
-	(cd $(NCDU_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NCDU_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NCDU_LDFLAGS)" \
@@ -128,7 +128,7 @@ $(NCDU_BUILD_DIR)/.configured: $(DL_DIR)/$(NCDU_SOURCE) $(NCDU_PATCHES) make/ncd
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(NCDU_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 ncdu-unpack: $(NCDU_BUILD_DIR)/.configured
@@ -138,7 +138,7 @@ ncdu-unpack: $(NCDU_BUILD_DIR)/.configured
 #
 $(NCDU_BUILD_DIR)/.built: $(NCDU_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NCDU_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +151,7 @@ ncdu: $(NCDU_BUILD_DIR)/.built
 #
 $(NCDU_BUILD_DIR)/.staged: $(NCDU_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NCDU_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 ncdu-stage: $(NCDU_BUILD_DIR)/.staged
