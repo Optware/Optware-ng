@@ -4,6 +4,7 @@ PERL_MAJOR_VER = 5.10
 SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
+	cacao \
 	ipkg-opt \
 
 # Packages that do not work for cs08q1armel.
