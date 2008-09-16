@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CACAO_VERSION=0.99.2
+CACAO_VERSION=0.99.3
 CACAO_SITE=http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-$(CACAO_VERSION)
 CACAO_SOURCE=cacao-$(CACAO_VERSION).tar.bz2
 CACAO_DIR=cacao-$(CACAO_VERSION)
@@ -55,7 +55,7 @@ CACAO_IPK_VERSION=1
 CACAO_CPPFLAGS=
 CACAO_LDFLAGS=
 
-ifeq ($(OPTWARE_TARGET), $(filter some-target, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel cs08q1armel, $(OPTWARE_TARGET)))
 CACAO_CONFIG_ARGS=--enable-softfloat
 endif
 
@@ -141,7 +141,10 @@ endif
 		--target=$(CACAO_TARGET_NAME) \
 		--prefix=/opt \
 		$(CACAO_CONFIG_ARGS) \
-		--with-java-runtime-library-prefix=$(STAGING_PREFIX) \
+		--with-build-java-runtime-library-classes=$(STAGING_PREFIX)/share/classpath/glibj.zip \
+		--with-jni_md_h=$(STAGING_INCLUDE_DIR) \
+		--with-jni_h=$(STAGING_INCLUDE_DIR) \
+		--with-java-runtime-library-prefix=/opt \
 		--with-cacaoh=$(CACAO_HOST_BUILD_DIR)/src/cacaoh/cacaoh \
 		--disable-nls \
 		--disable-static \
