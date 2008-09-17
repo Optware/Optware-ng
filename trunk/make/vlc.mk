@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-VLC_VERSION=0.8.6i
+VLC_VERSION=0.9.2
 VLC_IPK_VERSION=1
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
@@ -30,13 +30,15 @@ VLC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VLC_DESCRIPTION=VLC is a cross-platform media player and streaming server.
 VLC_SECTION=video
 VLC_PRIORITY=optional
-VLC_DEPENDS=libdvbpsi
+VLC_DEPENDS=dbus
 VLC_SUGGESTS=\
 faad2, \
 ffmpeg, \
 flac, \
 freetype, \
+fribidi, \
 liba52, \
+libdvbpsi, \
 libdvdnav, \
 libdvdread, \
 libid3tag, \
@@ -49,7 +51,7 @@ libshout, \
 libupnp, \
 libvorbis, \
 libxml2, \
-ncurses, \
+ncursesw, \
 speex
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 VLC_SUGGESTS+=, avahi
@@ -139,6 +141,7 @@ endif
 	$(MAKE) ffmpeg-stage
 	$(MAKE) flac-stage
 	$(MAKE) freetype-stage
+	$(MAKE) fribidi-stage
 	$(MAKE) liba52-stage
 	$(MAKE) libdvbpsi-stage
 	$(MAKE) libdvdnav-stage
@@ -153,7 +156,7 @@ endif
 	$(MAKE) libupnp-stage
 	$(MAKE) libvorbis-stage
 	$(MAKE) libxml2-stage
-	$(MAKE) ncurses-stage
+	$(MAKE) ncurses-stage ncursesw-stage
 	$(MAKE) speex-stage
 ifeq (x264, $(filter x264, $(PACKAGES)))
 	$(MAKE) x264-stage
@@ -193,11 +196,12 @@ endif
 		--enable-ncurses \
 		--enable-ogg \
 		--enable-png \
+		--disable-remoteosd \
 		--enable-shout \
 		--enable-speex \
 		--enable-vorbis \
 		--disable-alsa \
-		--disable-dts \
+		--disable-dca \
 		--disable-glx \
 		--disable-gnomevfs \
 		--disable-libcdio \
