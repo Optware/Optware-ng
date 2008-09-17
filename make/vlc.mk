@@ -83,7 +83,7 @@ VLC_CONFIG_OPTS += $(if $(filter x264, $(PACKAGES)),--enable-x264,--disable-x264
 ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
 VLC_CONFIG_OPTS += --disable-altivec
 endif
-ifeq ($(OPTWARE_TARGET), $(filter dns323, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter dns323 ts101, $(OPTWARE_TARGET)))
 VLC_CONFIG_OPTS += --disable-dvbpsi
 else
 VLC_CONFIG_OPTS += --enable-dvbpsi
@@ -176,6 +176,9 @@ endif
 	sed -i -e '/LIBEXT=/s/=.*/=".so"/' $(@D)/configure
 ifeq (uclibc, $(LIBC_STYLE))
 	sed -i -e '/# *if.*_POSIX_SPIN_LOCKS/s/.*/#if 0/' $(@D)/include/vlc_threads.h
+endif
+ifeq (no,$(IPV6))
+	sed -i -e 's/#ifdef *AF_INET6/#if 0/' $(@D)/src/network/udp.c
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
