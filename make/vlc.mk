@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VLC_VERSION=0.9.2
-VLC_IPK_VERSION=1
+VLC_IPK_VERSION=2
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -82,6 +82,11 @@ VLC_CONFIG_OPTS = $(if $(filter avahi, $(PACKAGES)),--enable-bonjour,--disable-b
 VLC_CONFIG_OPTS += $(if $(filter x264, $(PACKAGES)),--enable-x264,--disable-x264)
 ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
 VLC_CONFIG_OPTS += --disable-altivec
+endif
+ifeq ($(OPTWARE_TARGET), $(filter dns323, $(OPTWARE_TARGET)))
+VLC_CONFIG_OPTS += --disable-dvbpsi
+else
+VLC_CONFIG_OPTS += --enable-dvbpsi
 endif
 
 #
@@ -169,6 +174,9 @@ endif
 		then mv $(BUILD_DIR)/$(VLC_DIR) $(@D) ; \
 	fi
 	sed -i -e '/LIBEXT=/s/=.*/=".so"/' $(@D)/configure
+ifeq (uclibc, $(LIBC_STYLE))
+	sed -i -e '/# *if.*_POSIX_SPIN_LOCKS/s/.*/#if 0/' $(@D)/include/vlc_threads.h
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VLC_CPPFLAGS)" \
@@ -182,9 +190,9 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-v4l \
+		--disable-v4l2 \
 		$(VLC_CONFIG_OPTS) \
 		--enable-a52 \
-		--enable-dvbpsi \
 		--enable-dvdnav \
 		--with-dvdnav-config-path=$(STAGING_PREFIX)/bin \
 		--enable-faad \
