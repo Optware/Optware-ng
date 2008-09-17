@@ -137,15 +137,13 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 	$(MAKE) avahi-stage
 endif
-	$(MAKE) faad2-stage
-	$(MAKE) ffmpeg-stage
-	$(MAKE) flac-stage
+	$(MAKE) dbus-stage
+	$(MAKE) faad2-stage ffmpeg-stage flac-stage
 	$(MAKE) freetype-stage
 	$(MAKE) fribidi-stage
 	$(MAKE) liba52-stage
 	$(MAKE) libdvbpsi-stage
-	$(MAKE) libdvdnav-stage
-	$(MAKE) libdvdread-stage
+	$(MAKE) libdvdnav-stage libdvdread-stage
 	$(MAKE) libid3tag-stage
 	$(MAKE) libmad-stage
 	$(MAKE) libmpcdec-stage
