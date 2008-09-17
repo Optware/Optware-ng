@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGMP_SITE=ftp://ftp.gnu.org/gnu/gmp
-LIBGMP_VERSION=4.2.1
+LIBGMP_VERSION=4.2.3
 LIBGMP_SOURCE=gmp-$(LIBGMP_VERSION).tar.bz2
 LIBGMP_DIR=gmp-$(LIBGMP_VERSION)
 LIBGMP_UNZIP=bzcat
@@ -86,7 +86,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBGMP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBGMP_SITE)/$(LIBGMP_SOURCE)
+	$(WGET) -P $(@D) $(LIBGMP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -115,16 +116,16 @@ libgmp-source: $(DL_DIR)/$(LIBGMP_SOURCE) $(LIBGMP_PATCHES)
 #
 $(LIBGMP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGMP_SOURCE) $(LIBGMP_PATCHES) make/libgmp.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBGMP_DIR) $(LIBGMP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBGMP_DIR) $(@D)
 	$(LIBGMP_UNZIP) $(DL_DIR)/$(LIBGMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGMP_PATCHES)" ; \
 		then cat $(LIBGMP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBGMP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBGMP_DIR)" != "$(LIBGMP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBGMP_DIR) $(LIBGMP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBGMP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBGMP_DIR) $(@D) ; \
 	fi
-	(cd $(LIBGMP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGMP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGMP_LDFLAGS)" \
@@ -136,8 +137,8 @@ $(LIBGMP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGMP_SOURCE) $(LIBGMP_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBGMP_BUILD_DIR)/libtool
-	touch $(LIBGMP_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libgmp-unpack: $(LIBGMP_BUILD_DIR)/.configured
 
@@ -145,9 +146,9 @@ libgmp-unpack: $(LIBGMP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBGMP_BUILD_DIR)/.built: $(LIBGMP_BUILD_DIR)/.configured
-	rm -f $(LIBGMP_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBGMP_BUILD_DIR)
-	touch $(LIBGMP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -158,19 +159,19 @@ libgmp: $(LIBGMP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBGMP_BUILD_DIR)/.staged: $(LIBGMP_BUILD_DIR)/.built
-	rm -f $(LIBGMP_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBGMP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LIBGMP_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 libgmp-stage: $(LIBGMP_BUILD_DIR)/.staged
 
 $(LIBGMP_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(LIBGMP_SOURCE) make/libgmp.mk
-	rm -rf $(HOST_BUILD_DIR)/$(LIBGMP_DIR) $(LIBGMP_HOST_BUILD_DIR)
+	rm -rf $(HOST_BUILD_DIR)/$(LIBGMP_DIR) $(@D)
 	$(LIBGMP_UNZIP) $(DL_DIR)/$(LIBGMP_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	if test "$(HOST_BUILD_DIR)/$(LIBGMP_DIR)" != "$(LIBGMP_HOST_BUILD_DIR)" ; \
-		then mv $(HOST_BUILD_DIR)/$(LIBGMP_DIR) $(LIBGMP_HOST_BUILD_DIR) ; \
+	if test "$(HOST_BUILD_DIR)/$(LIBGMP_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(LIBGMP_DIR) $(@D) ; \
 	fi
-	(cd $(LIBGMP_HOST_BUILD_DIR); \
+	(cd $(@D); \
 	    CPPFLAGS="$(LIBGMP_M32)" \
 	    ./configure \
 		--prefix=/opt $(LIBGMP_HOST32) \
@@ -178,7 +179,7 @@ $(LIBGMP_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(LIBGMP_SOURCE) ma
 		--disable-shared; \
 	    $(MAKE) DESTDIR=$(HOST_STAGING_DIR) install; \
 	)
-	touch $(LIBGMP_HOST_BUILD_DIR)/.staged
+	touch $@
 
 libgmp-host-stage: $(LIBGMP_HOST_BUILD_DIR)/.staged
 
@@ -187,7 +188,7 @@ libgmp-host-stage: $(LIBGMP_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libgmp
 #
 $(LIBGMP_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBGMP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libgmp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -245,3 +246,9 @@ libgmp-clean:
 #
 libgmp-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBGMP_DIR) $(LIBGMP_BUILD_DIR) $(LIBGMP_IPK_DIR) $(LIBGMP_IPK)
+
+#
+# Some sanity check for the package.
+#
+libgmp-check: $(LIBGMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBGMP_IPK)
