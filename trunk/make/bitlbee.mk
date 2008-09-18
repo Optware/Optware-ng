@@ -40,7 +40,7 @@ BITLBEE_CONFLICTS=
 #
 # BITLBEE_IPK_VERSION should be incremented when the ipk changes.
 #
-BITLBEE_IPK_VERSION=1
+BITLBEE_IPK_VERSION=2
 
 #
 # BITLBEE_CONFFILES should be a list of user-editable files

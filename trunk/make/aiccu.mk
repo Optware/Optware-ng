@@ -39,7 +39,7 @@ AICCU_CONFLICTS=
 #
 # AICCU_IPK_VERSION should be incremented when the ipk changes.
 #
-AICCU_IPK_VERSION=1
+AICCU_IPK_VERSION=2
 
 #
 # AICCU_CONFFILES should be a list of user-editable files

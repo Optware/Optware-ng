@@ -39,7 +39,7 @@ WEECHAT_CONFLICTS=
 #
 # WEECHAT_IPK_VERSION should be incremented when the ipk changes.
 #
-WEECHAT_IPK_VERSION=1
+WEECHAT_IPK_VERSION=2
 
 #
 # WEECHAT_CONFFILES should be a list of user-editable files

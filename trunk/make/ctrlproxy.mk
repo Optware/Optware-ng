@@ -40,7 +40,7 @@ CTRLPROXY_DEPENDS=glib, libxml2, popt, gnutls, pcre
 #
 # CTRLPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-CTRLPROXY_IPK_VERSION=1
+CTRLPROXY_IPK_VERSION=2
 
 #
 # CTRLPROXY_CONFFILES should be a list of user-editable files

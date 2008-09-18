@@ -26,7 +26,7 @@ FINCH_CONFLICTS=
 #
 # FINCH_IPK_VERSION should be incremented when the ipk changes.
 #
-FINCH_IPK_VERSION=1
+FINCH_IPK_VERSION=2
 
 #
 # FINCH_CONFFILES should be a list of user-editable files
