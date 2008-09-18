@@ -282,7 +282,7 @@ COMMON_CROSS_PACKAGES = \
 	ntfsprogs ntop ntp ntpclient nttcp nut nvi nylon nzbget \
 	ocaml oleo open2300 \
 	openobex obexftp \
-	opencdk opendchub openldap openser openssh openssl openvpn \
+	opendchub openldap openser openssh openssl openvpn \
 	optware-devel ossp-js oww \
 	p7zip p910nd pal palantir pango par2cmdline patch patchutils \
 	pcapsipdump pciutils pcre pen perltgd pinentry \
