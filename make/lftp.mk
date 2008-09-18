@@ -36,7 +36,7 @@ LFTP_CONFLICTS=
 #
 # LFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LFTP_IPK_VERSION=1
+LFTP_IPK_VERSION=2
 
 #
 # LFTP_CONFFILES should be a list of user-editable files
