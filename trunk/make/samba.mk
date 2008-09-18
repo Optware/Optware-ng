@@ -22,7 +22,7 @@
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_VERSION=3.2.3
-SAMBA_IPK_VERSION=2
+SAMBA_IPK_VERSION=3
 else
 SAMBA_VERSION=3.0.14a
 SAMBA_IPK_VERSION=5
@@ -34,7 +34,7 @@ SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
-SAMBA_DEPENDS=popt, readline, gnutls
+SAMBA_DEPENDS=popt, readline
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA_DEPENDS +=, openldap-libs
 endif
@@ -191,7 +191,7 @@ $(SAMBA_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
-	$(MAKE) cups-stage gnutls-stage
+	$(MAKE) cups-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(@D)
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
