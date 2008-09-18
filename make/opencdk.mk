@@ -83,7 +83,8 @@ OPENCDK_IPK=$(BUILD_DIR)/opencdk_$(OPENCDK_VERSION)-$(OPENCDK_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(OPENCDK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(OPENCDK_SITE)/$(OPENCDK_SOURCE)
+	$(WGET) -P $(@D) $(OPENCDK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,10 +110,10 @@ opencdk-source: $(DL_DIR)/$(OPENCDK_SOURCE) $(OPENCDK_PATCHES)
 #
 $(OPENCDK_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENCDK_SOURCE) $(OPENCDK_PATCHES)
 	$(MAKE) libgcrypt-stage
-	rm -rf $(BUILD_DIR)/$(OPENCDK_DIR) $(OPENCDK_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(OPENCDK_DIR) $(@D)
 	$(OPENCDK_UNZIP) $(DL_DIR)/$(OPENCDK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(OPENCDK_PATCHES) | patch -d $(BUILD_DIR)/$(OPENCDK_DIR) -p1
-	mv $(BUILD_DIR)/$(OPENCDK_DIR) $(OPENCDK_BUILD_DIR)
+	mv $(BUILD_DIR)/$(OPENCDK_DIR) $(@D)
 	(cd $(OPENCDK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OPENCDK_CPPFLAGS)" \
@@ -126,8 +127,8 @@ $(OPENCDK_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENCDK_SOURCE) $(OPENCDK_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(OPENCDK_BUILD_DIR)/libtool
-	touch $(OPENCDK_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 opencdk-unpack: $(OPENCDK_BUILD_DIR)/.configured
 
@@ -135,9 +136,9 @@ opencdk-unpack: $(OPENCDK_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(OPENCDK_BUILD_DIR)/.built: $(OPENCDK_BUILD_DIR)/.configured
-	rm -f $(OPENCDK_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(OPENCDK_BUILD_DIR)
-	touch $(OPENCDK_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,14 +149,14 @@ opencdk: $(OPENCDK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(OPENCDK_BUILD_DIR)/.staged: $(OPENCDK_BUILD_DIR)/.built
-	rm -f $(OPENCDK_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(OPENCDK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -i -e '/^opencdk_cflags/s|-I/opt/include ||g' \
 	       -e '/^opencdk_cflags/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' \
 	       -e '/includes=/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' \
 		$(STAGING_PREFIX)/bin/opencdk-config
-	rm -f $(STAGING_DIR)/opt/lib/libopencdk.la
-	touch $(OPENCDK_BUILD_DIR)/.staged
+	rm -f $(STAGING_LIB_DIR)/libopencdk.la
+	touch $@
 
 opencdk-stage: $(OPENCDK_BUILD_DIR)/.staged
 
@@ -164,7 +165,7 @@ opencdk-stage: $(OPENCDK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/opencdk
 #
 $(OPENCDK_IPK_DIR)/CONTROL/control:
-	@install -d $(OPENCDK_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: opencdk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
