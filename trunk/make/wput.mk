@@ -29,14 +29,14 @@ WPUT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WPUT_DESCRIPTION=A command-line ftp-client that uploads files or whole directories to remote ftp-servers.
 WPUT_SECTION=net
 WPUT_PRIORITY=optional
-WPUT_DEPENDS=gnutls
+WPUT_DEPENDS=
 WPUT_SUGGESTS=
 WPUT_CONFLICTS=
 
 #
 # WPUT_IPK_VERSION should be incremented when the ipk changes.
 #
-WPUT_IPK_VERSION=1
+WPUT_IPK_VERSION=2
 
 #
 # WPUT_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ wput-source: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES)
 # shown below to make various patches to it.
 #
 $(WPUT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES) make/wput.mk
-	$(MAKE) gnutls-stage
+#	$(MAKE) gnutls-stage
 	rm -rf $(BUILD_DIR)/$(WPUT_DIR) $(WPUT_BUILD_DIR)
 	$(WPUT_UNZIP) $(DL_DIR)/$(WPUT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WPUT_PATCHES)" ; \
@@ -124,6 +124,7 @@ $(WPUT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES) make/wpu
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--without-ssl \
 		--disable-nls \
 		--disable-static \
 	)
