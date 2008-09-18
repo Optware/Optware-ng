@@ -41,7 +41,7 @@ JABBERD_CONFLICTS=
 #
 # JABBERD_IPK_VERSION should be incremented when the ipk changes.
 #
-JABBERD_IPK_VERSION=1
+JABBERD_IPK_VERSION=2
 
 #
 # JABBERD_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ JABBERD_CONFFILES=/opt/etc/jabber/jabber.xml /opt/etc/jabber/jabber.conf /opt/et
 # JABBERD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# JABBERD_PATCHES=$(JABBERD_SOURCE_DIR)/Makefile.patch $(JABBERD_SOURCE_DIR)/jabber.xml.patch $(JABBERD_SOURCE_DIR)/config.c.patch
+JABBERD_PATCHES=$(JABBERD_SOURCE_DIR)/jabberd-1.6.1.1-gnutls2.patch
 
 #
 # If the compilation of the package requires additional
@@ -81,8 +81,8 @@ JABBERD_IPK=$(BUILD_DIR)/jabberd_$(JABBERD_VERSION)-$(JABBERD_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(JABBERD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(JABBERD_SITE)/$(JABBERD_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(JABBERD_SOURCE)
+	$(WGET) -P $(@D) $(JABBERD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,11 +111,11 @@ $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 	rm -rf $(BUILD_DIR)/$(JABBERD_DIR) $(JABBERD_BUILD_DIR)
 	$(JABBERD_UNZIP) $(DL_DIR)/$(JABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(JABBERD_PATCHES)"; then \
-		cat $(JABBERD_PATCHES) | patch -d $(BUILD_DIR)/$(JABBERD_DIR) -p1; \
+		cat $(JABBERD_PATCHES) | patch -d $(BUILD_DIR)/$(JABBERD_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(JABBERD_DIR) $(JABBERD_BUILD_DIR)
-	sed -i -e '/^localedir =/s|= @localedir@|= $$(DESTDIR)/@localedir@|' $(JABBERD_BUILD_DIR)/po/Makefile.in
-	(cd $(JABBERD_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(JABBERD_DIR) $(@D)
+	sed -i -e '/^localedir =/s|= @localedir@|= $$(DESTDIR)/@localedir@|' $(@D)/po/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(JABBERD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(JABBERD_LDFLAGS)" \
@@ -133,8 +133,8 @@ $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(JABBERD_BUILD_DIR)/libtool
-	touch $(JABBERD_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 jabberd-unpack: $(JABBERD_BUILD_DIR)/.configured
 
@@ -142,9 +142,9 @@ jabberd-unpack: $(JABBERD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(JABBERD_BUILD_DIR)/.built: $(JABBERD_BUILD_DIR)/.configured
-	rm -f $(JABBERD_BUILD_DIR)/.built
-	$(MAKE) -C $(JABBERD_BUILD_DIR)
-	touch $(JABBERD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -155,9 +155,9 @@ jabberd: $(JABBERD_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(JABBERD_BUILD_DIR)/.staged: $(JABBERD_BUILD_DIR)/.built
-	rm -f $(JABBERD_BUILD_DIR)/.staged
-	$(MAKE) -C $(JABBERD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(JABBERD_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 jabberd-stage: $(JABBERD_BUILD_DIR)/.staged
 
@@ -166,7 +166,7 @@ jabberd-stage: $(JABBERD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/jabberd
 #
 $(JABBERD_IPK_DIR)/CONTROL/control:
-	@install -d $(JABBERD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: jabberd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
