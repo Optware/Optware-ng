@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPNG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
-LIBPNG_VERSION=1.2.30
+LIBPNG_VERSION=1.2.31
 LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION).tar.gz
 LIBPNG_DIR=libpng-$(LIBPNG_VERSION)
 LIBPNG_UNZIP=zcat
@@ -144,8 +144,8 @@ $(LIBPNG_BUILD_DIR)/.staged: $(LIBPNG_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) prefix=$(STAGING_PREFIX) install
 	rm -f $(STAGING_DIR)/opt/lib/libpng.la
 	rm -f $(STAGING_DIR)/opt/lib/libpng12.la
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libpng*.pc
-	sed -ie 's|-I$${includedir}|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/libpng12-config
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libpng*.pc
+	sed -i -e 's|-I$${includedir}|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/libpng12-config
 	touch $@
 
 libpng-stage: $(LIBPNG_BUILD_DIR)/.staged
