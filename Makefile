@@ -120,6 +120,7 @@ PYTHON_PACKAGES = \
 	cherokee-pyscgi \
 	dstat \
 	getmail \
+	gitosis \
 	hellanzb \
 	hplip \
 	ipython \
