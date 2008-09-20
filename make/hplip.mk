@@ -36,7 +36,7 @@ HPLIP_CONFLICTS=
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=1
+HPLIP_IPK_VERSION=2
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
@@ -143,6 +143,8 @@ endif
 		--disable-nls \
 		--disable-static \
 		$(HPLIP_CONFIG_ARGS) \
+		--enable-scan-build \
+		--enable-fax-build \
 		--disable-dependency-tracking \
 		--with-cupsbackenddir=/opt/lib/cups/backend \
 		--with-icondir=/opt/share/applications \
@@ -159,7 +161,7 @@ hplip-unpack: $(HPLIP_BUILD_DIR)/.configured
 #
 $(HPLIP_BUILD_DIR)/.built: $(HPLIP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) PYTHONINCLUDEDIR="$(STAGING_INCLUDE_DIR)/python2.5"
 	touch $@
 
 #
