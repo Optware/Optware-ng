@@ -1,0 +1,32 @@
+#!/bin/sh
+
+PATH=/opt/bin:/opt/sbin:/opt/libexec:/bin:/usr/sbin:/usr/bin:/usr/local/bin:
+export PATH
+
+#
+#  Check if user/group slimserver exists
+#
+if ! grep -q "^gitosis:" /etc/passwd ; then
+	adduser \
+		-S \
+		-s /bin/sh \
+		-g 'gitosis git hosting user' \
+		-D \
+		-h /opt/share/gitosis \
+		gitosis
+fi
+
+# chown gitosis:gitosis /opt/share/gitosis
+
+echo
+echo "To complete the gitosis setup:"
+echo
+echo "1. Copy a SSH pubkey from SSH client to this gitosis server"
+echo "2. [server]$ sudo -H -u gitosis /opt/bin/gitosis-init < /tmp/transfered-SSH-key.pub"
+echo "3. [client]$ git clone gitosis@server:gitosis-admin.git"
+echo "4. Manage gitosis-admin by editing, committing & pushing"
+echo
+echo "See /opt/share/doc/gitosis for more."
+echo
+
+exit 0
