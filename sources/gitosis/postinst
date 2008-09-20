@@ -26,7 +26,7 @@ echo "2. [server]$ sudo -H -u gitosis /opt/bin/gitosis-init < /tmp/transfered-SS
 echo "3. [client]$ git clone gitosis@server:gitosis-admin.git"
 echo "4. Manage gitosis-admin by editing, committing & pushing"
 echo
-echo "See /opt/share/doc/gitosis for more."
+echo "See http://www.nslu2-linux.org/wiki/HowTo/HostingGit for more info."
 echo
 
 exit 0
