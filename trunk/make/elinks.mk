@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ELINKS_SITE=http://elinks.or.cz/download
-ELINKS_VERSION=0.11.4
+ELINKS_VERSION=0.11.5
 ELINKS_SOURCE=elinks-$(ELINKS_VERSION).tar.gz
 ELINKS_DIR=elinks-$(ELINKS_VERSION)
 ELINKS_UNZIP=zcat
