@@ -14,7 +14,7 @@ GITOSIS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GITOSIS_DESCRIPTION=Git repository hosting application.
 GITOSIS_SECTION=misc
 GITOSIS_PRIORITY=optional
-GITOSIS_DEPENDS=adduser, git, openssh, python25
+GITOSIS_DEPENDS=adduser, git, openssh, py25-setuptools
 GITOSIS_SUGGESTS=sudo
 GITOSIS_CONFLICTS=
 
@@ -46,7 +46,7 @@ GITOSIS_DIR=gitosis-$(GITOSIS_VERSION)
 #
 # GITOSIS_IPK_VERSION should be incremented when the ipk changes.
 #
-GITOSIS_IPK_VERSION=1
+GITOSIS_IPK_VERSION=2
 
 #
 # GITOSIS_CONFFILES should be a list of user-editable files
