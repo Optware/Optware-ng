@@ -199,6 +199,9 @@ endif
 ifeq (3.0.14a, $(SAMBA_VERSION))
 	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(@D)/source/aclocal.m4
 endif
+ifeq ($(OPTWARE_TARGET), $(filter ddwrt oleg openwrt-ixp4xx, $(OPTWARE_TARGET)))
+	sed -i -e 's/^static size_t strl/size_t strl/' $(@D)/source/client/mount.cifs.c
+endif
 	(cd $(@D)/source; ./autogen.sh )
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
