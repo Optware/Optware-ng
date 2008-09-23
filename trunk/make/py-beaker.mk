@@ -24,7 +24,7 @@
 # PY-BEAKER_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-BEAKER_SITE=http://cheeseshop.python.org/packages/source/B/Beaker
-PY-BEAKER_VERSION=1.0.1
+PY-BEAKER_VERSION=1.0.2
 PY-BEAKER_IPK_VERSION=1
 PY-BEAKER_SOURCE=Beaker-$(PY-BEAKER_VERSION).tar.gz
 PY-BEAKER_DIR=Beaker-$(PY-BEAKER_VERSION)
@@ -81,7 +81,8 @@ PY25-BEAKER_IPK=$(BUILD_DIR)/py25-beaker_$(PY-BEAKER_VERSION)-$(PY-BEAKER_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-BEAKER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-BEAKER_SITE)/$(PY-BEAKER_SOURCE)
+	$(WGET) -P $(@D) $(PY-BEAKER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,16 +108,16 @@ py-beaker-source: $(DL_DIR)/$(PY-BEAKER_SOURCE) $(PY-BEAKER_PATCHES)
 #
 $(PY-BEAKER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BEAKER_SOURCE) $(PY-BEAKER_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-BEAKER_BUILD_DIR)
-	mkdir -p $(PY-BEAKER_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-BEAKER_DIR)
 	$(PY-BEAKER_UNZIP) $(DL_DIR)/$(PY-BEAKER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BEAKER_PATCHES)" ; then \
 	    cat $(PY-BEAKER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(PY-BEAKER_BUILD_DIR)/2.4
-	(cd $(PY-BEAKER_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
@@ -125,8 +126,8 @@ $(PY-BEAKER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BEAKER_SOURCE) $(PY-BEAKER_PA
 	if test -n "$(PY-BEAKER_PATCHES)" ; then \
 	    cat $(PY-BEAKER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(PY-BEAKER_BUILD_DIR)/2.5
-	(cd $(PY-BEAKER_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
@@ -138,7 +139,7 @@ py-beaker-unpack: $(PY-BEAKER_BUILD_DIR)/.configured
 #
 $(PY-BEAKER_BUILD_DIR)/.built: $(PY-BEAKER_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(PY-BEAKER_BUILD_DIR)
+#	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -149,12 +150,12 @@ py-beaker: $(PY-BEAKER_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-BEAKER_BUILD_DIR)/.staged: $(PY-BEAKER_BUILD_DIR)/.built
-	rm -f $@
-#	$(MAKE) -C $(PY-BEAKER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-py-beaker-stage: $(PY-BEAKER_BUILD_DIR)/.staged
+#$(PY-BEAKER_BUILD_DIR)/.staged: $(PY-BEAKER_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#py-beaker-stage: $(PY-BEAKER_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -203,7 +204,7 @@ $(PY25-BEAKER_IPK_DIR)/CONTROL/control:
 $(PY24-BEAKER_IPK): $(PY-BEAKER_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py-beaker_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY24-BEAKER_IPK_DIR) $(BUILD_DIR)/py24-beaker_*_$(TARGET_ARCH).ipk
-	(cd $(PY-BEAKER_BUILD_DIR)/2.4; \
+	(cd $(<D)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-BEAKER_IPK_DIR) --prefix=/opt)
@@ -213,7 +214,7 @@ $(PY24-BEAKER_IPK): $(PY-BEAKER_BUILD_DIR)/.built
 
 $(PY25-BEAKER_IPK): $(PY-BEAKER_BUILD_DIR)/.built
 	rm -rf $(PY25-BEAKER_IPK_DIR) $(BUILD_DIR)/py25-beaker_*_$(TARGET_ARCH).ipk
-	(cd $(PY-BEAKER_BUILD_DIR)/2.5; \
+	(cd $(<D)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-BEAKER_IPK_DIR) --prefix=/opt)
