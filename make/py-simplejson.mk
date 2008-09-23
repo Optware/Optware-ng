@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SIMPLEJSON_SITE=http://pypi.python.org/packages/source/s/simplejson
-PY-SIMPLEJSON_VERSION=1.9.2
+PY-SIMPLEJSON_VERSION=1.9.3
 PY-SIMPLEJSON_SOURCE=simplejson-$(PY-SIMPLEJSON_VERSION).tar.gz
 PY-SIMPLEJSON_DIR=simplejson-$(PY-SIMPLEJSON_VERSION)
 PY-SIMPLEJSON_UNZIP=zcat
