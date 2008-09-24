@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBDAEMON_SITE=http://0pointer.de/lennart/projects/libdaemon
-LIBDAEMON_VERSION=0.11
+LIBDAEMON_VERSION=0.13
 LIBDAEMON_SOURCE=libdaemon-$(LIBDAEMON_VERSION).tar.gz
 LIBDAEMON_DIR=libdaemon-$(LIBDAEMON_VERSION)
 LIBDAEMON_UNZIP=zcat
@@ -76,8 +76,8 @@ LIBDAEMON_IPK=$(BUILD_DIR)/libdaemon_$(LIBDAEMON_VERSION)-$(LIBDAEMON_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBDAEMON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBDAEMON_SITE)/$(LIBDAEMON_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBDAEMON_SOURCE)
+	$(WGET) -P $(@D) $(LIBDAEMON_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,10 +112,10 @@ $(LIBDAEMON_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDAEMON_SOURCE) $(LIBDAEMON_PA
 		then cat $(LIBDAEMON_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBDAEMON_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBDAEMON_DIR)" != "$(LIBDAEMON_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBDAEMON_DIR) $(LIBDAEMON_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBDAEMON_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBDAEMON_DIR) $(@D) ; \
 	fi
-	(cd $(LIBDAEMON_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBDAEMON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBDAEMON_LDFLAGS)" \
@@ -129,7 +129,7 @@ $(LIBDAEMON_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDAEMON_SOURCE) $(LIBDAEMON_PA
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBDAEMON_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libdaemon-unpack: $(LIBDAEMON_BUILD_DIR)/.configured
@@ -139,7 +139,7 @@ libdaemon-unpack: $(LIBDAEMON_BUILD_DIR)/.configured
 #
 $(LIBDAEMON_BUILD_DIR)/.built: $(LIBDAEMON_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBDAEMON_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +152,7 @@ libdaemon: $(LIBDAEMON_BUILD_DIR)/.built
 #
 $(LIBDAEMON_BUILD_DIR)/.staged: $(LIBDAEMON_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBDAEMON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libdaemon.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libdaemon.pc
 	touch $@
