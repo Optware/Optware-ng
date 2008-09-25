@@ -42,7 +42,7 @@ GNUTLS_CONFLICTS=
 #
 # GNUTLS_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUTLS_IPK_VERSION=1
+GNUTLS_IPK_VERSION=2
 
 #
 # GNUTLS_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ GNUTLS_CONFFILES=#/opt/etc/gnutls.conf /opt/etc/init.d/SXXgnutls
 # GNUTLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#GNUTLS_PATCHES=
+GNUTLS_PATCHES=$(GNUTLS_SOURCE_DIR)/gnutls.h.in.patch
 
 #
 # If the compilation of the package requires additional
