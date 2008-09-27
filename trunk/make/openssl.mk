@@ -5,7 +5,7 @@
 OPENSSL_SITE=http://www.openssl.org/source
 
 ifeq ($(OPTWARE_TARGET), $(filter syno-e500 cs08q1armel ts509, $(OPTWARE_TARGET)))
-OPENSSL_VERSION=0.9.8h
+OPENSSL_VERSION=0.9.8i
 OPENSSL_LIB_VERSION=0.9.8
 OPENSSL_IPK_VERSION=1
 else
