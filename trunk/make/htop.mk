@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
-HTOP_VERSION=0.8
+HTOP_VERSION=0.8.1
 HTOP_IPK_VERSION=1
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
@@ -117,16 +117,16 @@ htop-source: $(DL_DIR)/$(HTOP_SOURCE) $(HTOP_PATCHES)
 #
 $(HTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(HTOP_SOURCE) $(HTOP_PATCHES) make/htop.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(HTOP_DIR) $(HTOP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(HTOP_DIR) $(@D)
 	$(HTOP_UNZIP) $(DL_DIR)/$(HTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HTOP_PATCHES)" ; \
 		then cat $(HTOP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(HTOP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(HTOP_DIR)" != "$(HTOP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(HTOP_DIR) $(HTOP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(HTOP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(HTOP_DIR) $(@D) ; \
 	fi
-	(cd $(HTOP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HTOP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HTOP_LDFLAGS)" \
@@ -150,7 +150,7 @@ htop-unpack: $(HTOP_BUILD_DIR)/.configured
 #
 $(HTOP_BUILD_DIR)/.built: $(HTOP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(HTOP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -163,7 +163,7 @@ htop: $(HTOP_BUILD_DIR)/.built
 #
 $(HTOP_BUILD_DIR)/.staged: $(HTOP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(HTOP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 htop-stage: $(HTOP_BUILD_DIR)/.staged
