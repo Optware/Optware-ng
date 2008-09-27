@@ -20,9 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SNORT_SITE=http://www.snort.org/dl/current
+SNORT_SITE=http://www.snort.org/dl
 SNORT_SITE2=http://www.snort.org/dl/old
-SNORT_VERSION=2.8.2.1
+SNORT_VERSION=2.8.3
 SNORT_SOURCE=snort-$(SNORT_VERSION).tar.gz
 SNORT_DIR=snort-$(SNORT_VERSION)
 SNORT_UNZIP=zcat
@@ -37,7 +37,7 @@ SNORT_CONFLICTS=
 #
 # SNORT_IPK_VERSION should be incremented when the ipk changes.
 #
-SNORT_IPK_VERSION=2
+SNORT_IPK_VERSION=1
 
 #
 # SNORT_CONFFILES should be a list of user-editable files
