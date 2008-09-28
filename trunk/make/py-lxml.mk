@@ -22,7 +22,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-LXML_SITE=http://pypi.python.org/packages/source/l/lxml
+ifeq (syno-x07, $(OPTWARE_TARGET))
+PY-LXML_VERSION=2.1.1
+PY-LXML_IPK_VERSION=1
+else
 PY-LXML_VERSION=2.1.2
+PY-LXML_IPK_VERSION=1
+endif
 PY-LXML_SOURCE=lxml-$(PY-LXML_VERSION).tar.gz
 PY-LXML_DIR=lxml-$(PY-LXML_VERSION)
 PY-LXML_UNZIP=zcat
@@ -34,10 +40,6 @@ PY24-LXML_DEPENDS=python24, libxml2, libxslt
 PY25-LXML_DEPENDS=python25, libxml2, libxslt
 PY-LXML_CONFLICTS=
 
-#
-# PY-LXML_IPK_VERSION should be incremented when the ipk changes.
-#
-PY-LXML_IPK_VERSION=1
 
 #
 # PY-LXML_CONFFILES should be a list of user-editable files
@@ -106,7 +108,7 @@ py-lxml-source: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
+$(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES) make/py-lxml.mk
 	$(MAKE) py-setuptools-stage libxml2-stage libxslt-stage pyrex-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
