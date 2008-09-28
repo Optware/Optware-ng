@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.12.2
+LIBTORRENT_VERSION=0.12.3
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
 #LIBTORRENT_SVN_REV=1037
 ifdef LIBTORRENT_SVN_REV
