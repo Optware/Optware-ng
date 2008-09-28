@@ -53,7 +53,7 @@ E2FSPROGS_PATCHES=
 # compilation or linking flags, then list them here.
 #
 E2FSPROGS_CPPFLAGS=
-E2FSPROGS_LDFLAGS=
+E2FSPROGS_LDFLAGS=-Wl,-rpath-link,$(E2FSPROGS_BUILD_DIR)/lib
 E2FSPROGS_CONFIG_ARGS=
 ifneq (, $(filter ddwrt oleg openwrt-ixp4xx, $(OPTWARE_TARGET)))
 E2FSPROGS_CONFIG_ARGS += --disable-tls
