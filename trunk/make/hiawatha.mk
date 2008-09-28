@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HIAWATHA_SITE=http://hiawatha.leisink.org/files
-HIAWATHA_VERSION=6.7
+HIAWATHA_VERSION=6.9
 HIAWATHA_SOURCE=hiawatha-$(HIAWATHA_VERSION).tar.gz
 HIAWATHA_DIR=hiawatha-$(HIAWATHA_VERSION)
 HIAWATHA_UNZIP=zcat
