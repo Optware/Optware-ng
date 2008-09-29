@@ -52,7 +52,9 @@ CHEROKEE_CONFFILES=\
 # CHEROKEE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CHEROKEE_PATCHES=$(CHEROKEE_SOURCE_DIR)/conf.py.patch
+CHEROKEE_PATCHES=\
+$(CHEROKEE_SOURCE_DIR)/conf.py.patch \
+$(CHEROKEE_SOURCE_DIR)/array_param.patch \
 
 #
 # If the compilation of the package requires additional
