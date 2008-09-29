@@ -210,7 +210,7 @@ COMMON_CROSS_PACKAGES = \
 	c-ares cabextract cairo calc calcurse castget \
 	catdoc ccollect ccxstream cdargs cdrtools centerim \
 	cherokee chicken chillispot chrpath cksfv \
-	classpath clamav clearsilver clips cmdftp \
+	classpath clamav clearsilver climm clips cmdftp \
 	cogito confuse connect coreutils corkscrew cpio cron \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
