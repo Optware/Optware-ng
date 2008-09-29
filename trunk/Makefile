@@ -232,7 +232,7 @@ COMMON_CROSS_PACKAGES = \
 	geoip gettext \
 	ggrab ghostscript git glib gnet gnokii \
 	gnu-httptunnel gnu-smalltalk gnugo gnupg gnuplot gnutls gpgme \
-	gpsd \
+	gloox gpsd \
 	grep groff gsasl gsnmp gtmess gtk gtypist gutenprint gzip  \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
