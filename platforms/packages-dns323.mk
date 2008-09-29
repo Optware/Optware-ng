@@ -8,6 +8,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	9base appweb \
 	fcgi ficy fish fuppes gnu-smalltalk \
+	gloox \
 	gtmess gtk ice ipac-ng iptraf kismet \
 	launchtool ldconfig mediatomb monotone \
 	mtr mysql-connector-odbc \

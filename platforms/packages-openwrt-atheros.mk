@@ -11,6 +11,7 @@ BROKEN_PACKAGES = \
 	cairo \
 	ecl \
 	fcgi ficy fish \
+	gloox \
 	gnu-smalltalk gtmess gtk \
 	hpijs hplip \
 	ice iptables \

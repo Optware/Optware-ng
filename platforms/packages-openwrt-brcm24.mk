@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	centerim \
 	ecl \
 	cairo fixesext \
+	gloox \
 	gtmess \
 	iptraf \
 	libdvb \

@@ -29,9 +29,12 @@ CLIMM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CLIMM_DESCRIPTION=A very portable text-mode ICQ clone.
 CLIMM_SECTION=net
 CLIMM_PRIORITY=optional
-CLIMM_DEPENDS=gloox, gnutls, libgcrypt, libotr
+CLIMM_DEPENDS=gnutls, libgcrypt, libotr
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 CLIMM_DEPENDS=, libiconv
+endif
+ifneq (, $(filter gloox, $(PACKAGES)))
+CLIMM_DEPENDS=, gloox
 endif
 CLIMM_SUGGESTS=
 CLIMM_CONFLICTS=
@@ -57,6 +60,11 @@ CLIMM_IPK_VERSION=1
 #
 CLIMM_CPPFLAGS=
 CLIMM_LDFLAGS=
+ifeq (, $(filter gloox, $(PACKAGES)))
+CLIMM_CONFIG_ARGS=--disable-xmpp
+else
+CLIMM_CONFIG_ARGS=--enable-xmpp
+endif
 
 #
 # CLIMM_BUILD_DIR is the directory in which the build is done.
@@ -111,7 +119,10 @@ $(CLIMM_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIMM_SOURCE) $(CLIMM_PATCHES) make/
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) libgcrypt-stage gnutls-stage gloox-stage libotr-stage
+	$(MAKE) libgcrypt-stage gnutls-stage libotr-stage
+ifneq (, $(filter gloox, $(PACKAGES)))
+	$(MAKE) gloox-stage
+endif
 	rm -rf $(BUILD_DIR)/$(CLIMM_DIR) $(@D)
 	$(CLIMM_UNZIP) $(DL_DIR)/$(CLIMM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLIMM_PATCHES)" ; \
@@ -131,7 +142,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--enable-xmpp \
+		$(CLIMM_CONFIG_ARGS) \
 		--with-libgnutls-prefix=$(STAGING_PREFIX) \
 		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
