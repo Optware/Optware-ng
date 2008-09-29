@@ -12,12 +12,12 @@ BROKEN_PACKAGES = \
 	asterisk16 asterisk16-addons \
 	atftp avahi \
 	bitlbee bsdgames btpd bzflag \
-	centerim \
+	centerim climm \
 	castget cdargs cherokee clamav ctorrent ctrlproxy cups \
 	dansguardian dspam \
 	emacs22 enhanced-ctorrent esniper erlang erl-yaws \
 	ficy finch firedrill-httptunnel flip freeradius fuppes \
-	gconv-modules ggrab ghostscript gnokii gnupg \
+	gconv-modules ggrab ghostscript gloox gnokii gnupg \
 	gnuplot gnutls gtk gutenprint \
 	hplip \
 	icecast id3lib iksemel imagemagick iptraf ivorbis-tools \
