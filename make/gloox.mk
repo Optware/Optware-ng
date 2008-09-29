@@ -29,14 +29,14 @@ GLOOX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GLOOX_DESCRIPTION=gloox is a rock-solid, full-featured Jabber/XMPP client library, written in C++.
 GLOOX_SECTION=lib
 GLOOX_PRIORITY=optional
-GLOOX_DEPENDS=gnutls
+GLOOX_DEPENDS=gnutls, libidn
 GLOOX_SUGGESTS=
 GLOOX_CONFLICTS=
 
 #
 # GLOOX_IPK_VERSION should be incremented when the ipk changes.
 #
-GLOOX_IPK_VERSION=1
+GLOOX_IPK_VERSION=2
 
 #
 # GLOOX_CONFFILES should be a list of user-editable files
@@ -107,7 +107,7 @@ gloox-source: $(DL_DIR)/$(GLOOX_SOURCE) $(GLOOX_PATCHES)
 # shown below to make various patches to it.
 #
 $(GLOOX_BUILD_DIR)/.configured: $(DL_DIR)/$(GLOOX_SOURCE) $(GLOOX_PATCHES) make/gloox.mk
-	$(MAKE) gnutls-stage
+	$(MAKE) gnutls-stage libidn-stage
 	rm -rf $(BUILD_DIR)/$(GLOOX_DIR) $(@D)
 	$(GLOOX_UNZIP) $(DL_DIR)/$(GLOOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GLOOX_PATCHES)" ; \
@@ -117,9 +117,7 @@ $(GLOOX_BUILD_DIR)/.configured: $(DL_DIR)/$(GLOOX_SOURCE) $(GLOOX_PATCHES) make/
 	if test "$(BUILD_DIR)/$(GLOOX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GLOOX_DIR) $(@D) ; \
 	fi
-ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel, $(OPTWARE_TARGET)))
 	sed -i -e 's/ -pedantic//' $(@D)/src/Makefile.in $(@D)/src/tests/*/Makefile.in
-endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLOOX_CPPFLAGS)" \
