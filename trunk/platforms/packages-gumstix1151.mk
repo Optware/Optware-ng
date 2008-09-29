@@ -12,6 +12,7 @@ BROKEN_PACKAGES = \
 	bluez-hcidump \
 	dump ficy \
 	fuppes \
+	gloox \
 	gtmess \
 	iptraf \
 	ircd-hybrid \

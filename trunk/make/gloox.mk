@@ -117,6 +117,9 @@ $(GLOOX_BUILD_DIR)/.configured: $(DL_DIR)/$(GLOOX_SOURCE) $(GLOOX_PATCHES) make/
 	if test "$(BUILD_DIR)/$(GLOOX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GLOOX_DIR) $(@D) ; \
 	fi
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel, $(OPTWARE_TARGET)))
+	sed -i -e 's/ -pedantic//' $(@D)/src/Makefile.in $(@D)/src/tests/*/Makefile.in
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLOOX_CPPFLAGS)" \

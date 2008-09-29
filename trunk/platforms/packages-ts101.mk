@@ -12,6 +12,7 @@ BROKEN_PACKAGES = \
 	gift giftcurs \
 	gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
+	gloox \
 	gtmess \
 	iptraf \
 	nfs-server nfs-utils \

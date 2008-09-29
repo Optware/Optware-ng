@@ -12,6 +12,7 @@ BROKEN_PACKAGES = \
 	dansguardian \
 	dialog \
 	gambit-c \
+	gloox \
 	iptraf \
 	libdvb \
 	ltrace \
