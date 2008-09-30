@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MEMCACHED_SITE=http://www.danga.com/memcached/dist
-MEMCACHED_VERSION=1.2.5
+MEMCACHED_VERSION=1.3.0
 MEMCACHED_SOURCE=memcached-$(MEMCACHED_VERSION).tar.gz
 MEMCACHED_DIR=memcached-$(MEMCACHED_VERSION)
 MEMCACHED_UNZIP=zcat
@@ -42,7 +42,7 @@ MEMCACHED_CONFLICTS=
 #
 # MEMCACHED_IPK_VERSION should be incremented when the ipk changes.
 #
-MEMCACHED_IPK_VERSION=2
+MEMCACHED_IPK_VERSION=1
 
 #
 # MEMCACHED_CONFFILES should be a list of user-editable files
