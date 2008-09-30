@@ -5,9 +5,9 @@
 #############################################################
 
 LIBEVENT_SITE=http://www.monkey.org/~provos/
-LIBEVENT_VERSION=1.3d
-LIBEVENT_SOURCE=libevent-$(LIBEVENT_VERSION).tar.gz
-LIBEVENT_DIR=libevent-$(LIBEVENT_VERSION)
+LIBEVENT_VERSION=1.4.8
+LIBEVENT_DIR=libevent-$(LIBEVENT_VERSION)-stable
+LIBEVENT_SOURCE=$(LIBEVENT_DIR).tar.gz
 LIBEVENT_UNZIP=zcat
 LIBEVENT_MAINTAINER=Jean-Fabrice <jeanfabrice@users.sourceforge.net>
 LIBEVENT_DESCRIPTION=libevent to implement an event loop
@@ -18,10 +18,9 @@ LIBEVENT_CONFLICTS=
 
 LIBEVENT_IPK_VERSION=1
 
-ifeq ($(LIBC_STYLE), uclibc)
-LIBEVENT_CPPFLAGS= -fPIC -DCLOCK_MONOTONIC=1 -DCLOCK_REALTIME=0
-else
 LIBEVENT_CPPFLAGS= -fPIC
+ifeq ($(LIBC_STYLE), uclibc)
+LIBEVENT_CPPFLAGS + = -DCLOCK_MONOTONIC=1 -DCLOCK_REALTIME=0
 endif
 LIBEVENT_LDFLAGS=
 
@@ -33,8 +32,8 @@ LIBEVENT_IPK=$(BUILD_DIR)/libevent_$(LIBEVENT_VERSION)-$(LIBEVENT_IPK_VERSION)_$
 .PHONY: libevent-source libevent-unpack libevent libevent-stage libevent-ipk libevent-clean libevent-dirclean libevent-check
 
 $(DL_DIR)/$(LIBEVENT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBEVENT_SITE)/$(LIBEVENT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBEVENT_SOURCE)
+	$(WGET) -P $(@D) $(LIBEVENT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 libevent-source: $(DL_DIR)/$(LIBEVENT_SOURCE)
 
@@ -53,11 +52,11 @@ libevent-source: $(DL_DIR)/$(LIBEVENT_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBEVENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEVENT_SOURCE)
-	rm -rf $(BUILD_DIR)/$(LIBEVENT_DIR) $(LIBEVENT_BUILD_DIR)
+$(LIBEVENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEVENT_SOURCE) make/libevent.mk
+	rm -rf $(BUILD_DIR)/$(LIBEVENT_DIR) $(@D)
 	$(LIBEVENT_UNZIP) $(DL_DIR)/$(LIBEVENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/libevent-$(LIBEVENT_VERSION) $(LIBEVENT_BUILD_DIR)
-	(cd $(LIBEVENT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBEVENT_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBEVENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBEVENT_LDFLAGS)" \
@@ -67,16 +66,16 @@ $(LIBEVENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEVENT_SOURCE)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	);
-	$(PATCH_LIBTOOL) $(LIBEVENT_BUILD_DIR)/libtool
-#	sed -i.orig -e '/^library_names_spec=/s|\\$${shared_ext}|.so|g' $(LIBEVENT_BUILD_DIR)/libtool
-	touch $(LIBEVENT_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+#	sed -i.orig -e '/^library_names_spec=/s|\\$${shared_ext}|.so|g' $(@D)/libtool
+	touch $@
 
 libevent-unpack: $(LIBEVENT_BUILD_DIR)/.configured
 
 $(LIBEVENT_BUILD_DIR)/.built: $(LIBEVENT_BUILD_DIR)/.configured
-	rm -f $(LIBEVENT_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBEVENT_BUILD_DIR)
-	touch $(LIBEVENT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 libevent: $(LIBEVENT_BUILD_DIR)/.built
 
@@ -84,10 +83,10 @@ libevent: $(LIBEVENT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBEVENT_BUILD_DIR)/.staged: $(LIBEVENT_BUILD_DIR)/.built
-	rm -f $(LIBEVENT_BUILD_DIR)/.staged
+	rm -f $@
 	rm -f $(STAGING_LIB_DIR)/libevent*
-	$(MAKE) -C $(LIBEVENT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LIBEVENT_BUILD_DIR)/.staged
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 libevent-stage: $(LIBEVENT_BUILD_DIR)/.staged
 
@@ -96,7 +95,7 @@ libevent-stage: $(LIBEVENT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libevent
 #
 $(LIBEVENT_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBEVENT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libevent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

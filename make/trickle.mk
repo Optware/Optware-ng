@@ -14,14 +14,14 @@ TRICKLE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TRICKLE_DESCRIPTION=Trickle is a portable lightweight userspace bandwidth shaper.
 TRICKLE_SECTION=net
 TRICKLE_PRIORITY=optional
-TRICKLE_DEPENDS=libevent
+TRICKLE_DEPENDS=libevent (>=1.4)
 TRICKLE_SUGGESTS=
 TRICKLE_CONFLICTS=
 
 #
 # TRICKLE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRICKLE_IPK_VERSION=1
+TRICKLE_IPK_VERSION=2
 
 #
 # TRICKLE_PATCHES should list any patches, in the the order in

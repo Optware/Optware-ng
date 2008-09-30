@@ -15,28 +15,29 @@ VDR_MEDIAMVP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VDR_MEDIAMVP_DESCRIPTION=A media server for the Hauppauge MediaMVP
 VDR_MEDIAMVP_SECTION=net
 VDR_MEDIAMVP_PRIORITY=optional
-VDR_MEDIAMVP_DEPENDS=zlib, libid3tag
+VDR_MEDIAMVP_DEPENDS=zlib, libid3tag, libevent (>=1.4)
 VDR_MEDIAMVP_SUGGESTS=
 VDR_MEDIAMVP_CONFLICTS=
 
-VDR_MEDIAMVP_IPK_VERSION=5
+VDR_MEDIAMVP_IPK_VERSION=6
 VDR_MEDIAMVP_IPK=$(BUILD_DIR)/vdr-mediamvp_$(VDR_MEDIAMVP_VERSION)-$(VDR_MEDIAMVP_IPK_VERSION)_$(TARGET_ARCH).ipk
 VDR_MEDIAMVP_IPK_DIR=$(BUILD_DIR)/vdr-mediamvp-$(VDR_MEDIAMVP_VERSION)-ipk
 
 $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VDR_MEDIAMVP_SITE)/$(VDR_MEDIAMVP_SOURCE)
+	$(WGET) -P $(@D) $(VDR_MEDIAMVP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 vdr-mediamvp-source: $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE) $(VDR_MEDIAMVP_PATCH)
 
 $(VDR_MEDIAMVP_DIR)/.source: $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE)
 	$(VDR_MEDIAMVP_UNZIP) $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(VDR_MEDIAMVP) $(VDR_MEDIAMVP_DIR)
-	touch $(VDR_MEDIAMVP_DIR)/.source
+	touch $@
 
-$(VDR_MEDIAMVP_DIR)/console/mediamvp: $(VDR_MEDIAMVP_DIR)/.source
+$(VDR_MEDIAMVP_DIR)/console/mediamvp: $(VDR_MEDIAMVP_DIR)/.source make/vdr-mediamvp.mk
 	$(MAKE) libid3tag-stage libevent-stage
-	echo "EXTRA_INCLUDES=-I$(STAGING_DIR)/opt/include" > $(VDR_MEDIAMVP_DIR)/config.mak
-	echo "EXTRA_LIBS=-L$(STAGING_DIR)/opt/lib " >> $(VDR_MEDIAMVP_DIR)/config.mak
+	echo "EXTRA_INCLUDES=$(STAGING_CPPFLAGS)" > $(VDR_MEDIAMVP_DIR)/config.mak
+	echo "EXTRA_LIBS=$(STAGING_LDFLAGS) " >> $(VDR_MEDIAMVP_DIR)/config.mak
 	echo "HAVE_LIBID3TAG=1" >> $(VDR_MEDIAMVP_DIR)/config.mak
 	$(MAKE) -C $(VDR_MEDIAMVP_DIR)/console RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR)" CC="$(TARGET_CC)" 
 
@@ -47,7 +48,7 @@ vdr-mediamvp: $(VDR_MEDIAMVP_DIR)/console/mediamvp
 # necessary to create a seperate control file under sources/vdr-mediamvp
 #
 $(VDR_MEDIAMVP_IPK_DIR)/CONTROL/control:
-	@install -d $(VDR_MEDIAMVP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: vdr-mediamvp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -84,3 +85,5 @@ vdr-mediamvp-clean:
 vdr-mediamvp-dirclean:
 	rm -rf $(BUILD_DIR)/$(VDR_MEDIAMVP) $(VDR_MEDIAMVP_DIR) $(VDR_MEDIAMVP_IPK_DIR) $(VDR_MEDIAMVP_IPK)
 
+vdr-mediamvp-check: $(VDR_MEDIAMVP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VDR_MEDIAMVP_IPK)

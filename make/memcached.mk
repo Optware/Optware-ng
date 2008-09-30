@@ -35,7 +35,7 @@ MEMCACHED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MEMCACHED_DESCRIPTION=memcached is a high-performance, distributed memory object caching system.
 MEMCACHED_SECTION=misc
 MEMCACHED_PRIORITY=optional
-MEMCACHED_DEPENDS=libevent
+MEMCACHED_DEPENDS=libevent (>=1.4)
 MEMCACHED_SUGGESTS=
 MEMCACHED_CONFLICTS=
 
