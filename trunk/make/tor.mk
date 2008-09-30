@@ -29,14 +29,14 @@ TOR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TOR_DESCRIPTION=Connection-oriented anonymizing communication service
 TOR_SECTION=net
 TOR_PRIORITY=optional
-TOR_DEPENDS=libevent, openssl, zlib
+TOR_DEPENDS=libevent (>=1.4), openssl, zlib
 TOR_SUGGESTS=
 TOR_CONFLICTS=
 
 #
 # TOR_IPK_VERSION should be incremented when the ipk changes.
 #
-TOR_IPK_VERSION=1
+TOR_IPK_VERSION=2
 
 #
 # TOR_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ TOR_IPK=$(BUILD_DIR)/tor_$(TOR_VERSION)-$(TOR_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TOR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TOR_SITE)/$(TOR_SOURCE)
+	$(WGET) -P $(@D) $(TOR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.

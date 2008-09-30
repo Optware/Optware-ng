@@ -35,13 +35,13 @@ NYLON_MAINTAINER=Jean-Fabrice <jeanfabrice@users.sourceforge.net>
 NYLON_DESCRIPTION=Nylon is a small socks4/socks5 proxy server
 NYLON_SECTION=misc
 NYLON_PRIORITY=optional
-NYLON_DEPENDS=libevent
+NYLON_DEPENDS=libevent (>=1.4)
 NYLON_CONFLICTS=
 
 #
 # NYLON_IPK_VERSION should be incremented when the ipk changes.
 #
-NYLON_IPK_VERSION=2
+NYLON_IPK_VERSION=3
 
 #
 # NYLON_CONFFILES should be a list of user-editable files
@@ -81,7 +81,8 @@ NYLON_IPK=$(BUILD_DIR)/nylon_$(NYLON_VERSION)-$(NYLON_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NYLON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NYLON_SITE)/$(NYLON_SOURCE)
+	$(WGET) -P $(@D) $(NYLON_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,11 +108,11 @@ nylon-source: $(DL_DIR)/$(NYLON_SOURCE)
 #
 $(NYLON_BUILD_DIR)/.configured: $(DL_DIR)/$(NYLON_SOURCE)
 	$(MAKE) libevent-stage
-	rm -rf $(BUILD_DIR)/$(NYLON_DIR) $(NYLON_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NYLON_DIR) $(@D)
 	$(NYLON_UNZIP) $(DL_DIR)/$(NYLON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(NYLON_PATCHES) | patch -d $(BUILD_DIR)/$(NYLON_DIR) -p1
-	mv $(BUILD_DIR)/$(NYLON_DIR) $(NYLON_BUILD_DIR)
-	(cd $(NYLON_BUILD_DIR); \
+#	cat $(NYLON_PATCHES) | patch -d $(BUILD_DIR)/$(NYLON_DIR) -p1
+	mv $(BUILD_DIR)/$(NYLON_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NYLON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NYLON_LDFLAGS)" \
@@ -122,7 +123,7 @@ $(NYLON_BUILD_DIR)/.configured: $(DL_DIR)/$(NYLON_SOURCE)
 		--disable-nls \
 		--with-libevent=$(STAGING_PREFIX) \
 	)
-	touch $(NYLON_BUILD_DIR)/.configured
+	touch $@
 
 nylon-unpack: $(NYLON_BUILD_DIR)/.configured
 
@@ -130,9 +131,9 @@ nylon-unpack: $(NYLON_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NYLON_BUILD_DIR)/.built: $(NYLON_BUILD_DIR)/.configured
-	rm -f $(NYLON_BUILD_DIR)/.built
-	$(MAKE) -C $(NYLON_BUILD_DIR)
-	touch $(NYLON_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,19 +143,19 @@ nylon: $(NYLON_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(NYLON_BUILD_DIR)/.staged: $(NYLON_BUILD_DIR)/.built
-	rm -f $(NYLON_BUILD_DIR)/.staged
-	$(MAKE) -C $(NYLON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NYLON_BUILD_DIR)/.staged
-
-nylon-stage: $(NYLON_BUILD_DIR)/.staged
+#$(NYLON_BUILD_DIR)/.staged: $(NYLON_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#nylon-stage: $(NYLON_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/nylon
 #
 $(NYLON_IPK_DIR)/CONTROL/control:
-	@install -d $(NYLON_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: nylon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
