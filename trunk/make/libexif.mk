@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBEXIF_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libexif
-LIBEXIF_VERSION=0.6.14
+LIBEXIF_VERSION=0.6.16
 LIBEXIF_SOURCE=libexif-$(LIBEXIF_VERSION).tar.bz2
 LIBEXIF_DIR=libexif-$(LIBEXIF_VERSION)
 LIBEXIF_UNZIP=bzcat
@@ -80,7 +80,8 @@ LIBEXIF_IPK=$(BUILD_DIR)/libexif_$(LIBEXIF_VERSION)-$(LIBEXIF_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBEXIF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBEXIF_SITE)/$(LIBEXIF_SOURCE)
+	$(WGET) -P $(@D) $(LIBEXIF_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,16 +113,16 @@ libexif-source: $(DL_DIR)/$(LIBEXIF_SOURCE) $(LIBEXIF_PATCHES)
 
 $(LIBEXIF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEXIF_SOURCE) $(LIBEXIF_PATCHES) make/libexif.mk
 #	$(MAKE) doxygen-stage
-	rm -rf $(BUILD_DIR)/$(LIBEXIF_DIR) $(LIBEXIF_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBEXIF_DIR) $(@D)
 	$(LIBEXIF_UNZIP) $(DL_DIR)/$(LIBEXIF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEXIF_PATCHES)" ; \
 		then cat $(LIBEXIF_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBEXIF_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBEXIF_DIR)" != "$(LIBEXIF_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBEXIF_DIR) $(LIBEXIF_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBEXIF_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBEXIF_DIR) $(@D) ; \
 	fi
-	(cd $(LIBEXIF_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBEXIF_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBEXIF_LDFLAGS)" \
@@ -133,8 +134,8 @@ $(LIBEXIF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEXIF_SOURCE) $(LIBEXIF_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBEXIF_BUILD_DIR)/libtool
-	touch $(LIBEXIF_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libexif-unpack: $(LIBEXIF_BUILD_DIR)/.configured
 
@@ -142,9 +143,9 @@ libexif-unpack: $(LIBEXIF_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBEXIF_BUILD_DIR)/.built: $(LIBEXIF_BUILD_DIR)/.configured
-	rm -f $(LIBEXIF_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBEXIF_BUILD_DIR)
-	touch $(LIBEXIF_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -155,9 +156,9 @@ libexif: $(LIBEXIF_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBEXIF_BUILD_DIR)/.staged: $(LIBEXIF_BUILD_DIR)/.built
-	rm -f $(LIBEXIF_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBEXIF_BUILD_DIR)/libexif DESTDIR=$(STAGING_DIR) install
-	touch $(LIBEXIF_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D)/libexif DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 libexif-stage: $(LIBEXIF_BUILD_DIR)/.staged
 
@@ -166,7 +167,7 @@ libexif-stage: $(LIBEXIF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libexif
 #
 $(LIBEXIF_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBEXIF_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libexif" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
