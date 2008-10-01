@@ -24,7 +24,7 @@ ASTERISK16_SOURCE_TYPE=tarball
 #ASTERISK16_SOURCE_TYPE=svn
 
 ASTERISK16_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK16_BASE_VERSION=1.6.0-rc4
+ASTERISK16_BASE_VERSION=1.6.0-rc6
 
 ifeq ($(ASTERISK16_SOURCE_TYPE), svn)
 ASTERISK16_SVN=http://svn.digium.com/svn/asterisk/branches/1.6
@@ -81,7 +81,7 @@ ASTERISK16_CONFLICTS=asterisk,asterisk14,asterisk-sounds,asterisk-chan-capi,aste
 #
 # ASTERISK16_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK16_IPK_VERSION=2
+ASTERISK16_IPK_VERSION=1
 
 #
 # ASTERISK16_CONFFILES should be a list of user-editable files
