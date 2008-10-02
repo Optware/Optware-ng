@@ -29,19 +29,23 @@ $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE):
 
 vdr-mediamvp-source: $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE) $(VDR_MEDIAMVP_PATCH)
 
-$(VDR_MEDIAMVP_DIR)/.source: $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE)
+$(VDR_MEDIAMVP_DIR)/.configured: $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE) make/vdr-mediamvp.mk
+	rm -rf $(@D) $(@D)-$(VDR_MEDIAMVP_VERSION)
 	$(VDR_MEDIAMVP_UNZIP) $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(VDR_MEDIAMVP) $(VDR_MEDIAMVP_DIR)
+	mv $(BUILD_DIR)/$(VDR_MEDIAMVP) $(@D)
 	touch $@
 
-$(VDR_MEDIAMVP_DIR)/console/mediamvp: $(VDR_MEDIAMVP_DIR)/.source make/vdr-mediamvp.mk
-	$(MAKE) libid3tag-stage libevent-stage
-	echo "EXTRA_INCLUDES=$(STAGING_CPPFLAGS)" > $(VDR_MEDIAMVP_DIR)/config.mak
-	echo "EXTRA_LIBS=$(STAGING_LDFLAGS) " >> $(VDR_MEDIAMVP_DIR)/config.mak
-	echo "HAVE_LIBID3TAG=1" >> $(VDR_MEDIAMVP_DIR)/config.mak
-	$(MAKE) -C $(VDR_MEDIAMVP_DIR)/console RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR)" CC="$(TARGET_CC)" 
+vdr-mediamvp-unpack: $(VDR_MEDIAMVP_DIR)/.configured
 
-vdr-mediamvp: $(VDR_MEDIAMVP_DIR)/console/mediamvp
+$(VDR_MEDIAMVP_DIR)/.built: $(VDR_MEDIAMVP_DIR)/.configured
+	$(MAKE) libid3tag-stage libevent-stage
+	echo "EXTRA_INCLUDES=$(STAGING_CPPFLAGS)" > $(@D)/config.mak
+	echo "EXTRA_LIBS=$(STAGING_LDFLAGS) " >> $(@D)/config.mak
+	echo "HAVE_LIBID3TAG=1" >> $(@D)/config.mak
+	$(MAKE) -C $(@D)/console RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR)" CC="$(TARGET_CC)" 
+	touch $@
+
+vdr-mediamvp: $(VDR_MEDIAMVP_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -63,7 +67,7 @@ $(VDR_MEDIAMVP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(VDR_MEDIAMVP_CONFLICTS)" >>$@
 
 
-$(VDR_MEDIAMVP_IPK): $(VDR_MEDIAMVP_DIR)/console/mediamvp
+$(VDR_MEDIAMVP_IPK): $(VDR_MEDIAMVP_DIR)/.built
 	rm -rf $(VDR_MEDIAMVP_IPK_DIR) $(BUILD_DIR)/vdr-mediavp_*_$(TARGET_ARCH).ipk
 	-mkdir -p $(VDR_MEDIAMVP_IPK_DIR)	
 	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/sbin
