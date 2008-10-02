@@ -81,7 +81,7 @@ ASTERISK16_CONFLICTS=asterisk,asterisk14,asterisk-sounds,asterisk-chan-capi,aste
 #
 # ASTERISK16_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK16_IPK_VERSION=1
+ASTERISK16_IPK_VERSION=2
 
 #
 # ASTERISK16_CONFFILES should be a list of user-editable files
@@ -326,7 +326,8 @@ endif
 		--without-usb \
 		--without-lua \
 		--without-imap \
-		--without-zaptel \
+		--without-dahdi \
+		--without-sdl \
 		$(ASTERISK16_CONFIGURE_OPTS) \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
