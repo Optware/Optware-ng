@@ -1,6 +1,6 @@
---- Python-2.6a3/configure.in.orig	2008-05-02 12:45:11.000000000 -0700
-+++ Python-2.6a3/configure.in	2008-05-15 14:28:12.000000000 -0700
-@@ -9,6 +9,11 @@
+--- Python-2.6/configure.in.orig	2008-09-07 19:18:16.000000000 +0000
++++ Python-2.6/configure.in	2008-10-03 00:54:26.111016602 +0000
+@@ -12,6 +12,11 @@
  AC_CONFIG_SRCDIR([Include/object.h])
  AC_CONFIG_HEADER(pyconfig.h)
  
@@ -12,7 +12,7 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -776,7 +781,7 @@
+@@ -822,7 +827,7 @@
  	    STRICT_PROTO="-Wstrict-prototypes"
  	fi
          # For gcc 4.x we need to use -fwrapv so lets check if its supported
@@ -21,7 +21,7 @@
             WRAP="-fwrapv"
          fi
  	case $ac_cv_prog_cc_g in
-@@ -2448,34 +2453,10 @@
+@@ -2559,34 +2564,10 @@
  # On Tru64, chflags seems to be present, but calling it will
  # exit Python
  AC_MSG_CHECKING(for chflags)
@@ -56,7 +56,7 @@
  
  dnl Check if system zlib has *Copy() functions
  dnl
-@@ -3532,43 +3513,8 @@
+@@ -3650,43 +3631,8 @@
  fi
  
  AC_MSG_CHECKING(for %zd printf() format support)
@@ -102,7 +102,7 @@
  
  AC_CHECK_TYPE(socklen_t,,
    AC_DEFINE(socklen_t,int,
-@@ -3598,6 +3544,25 @@
+@@ -3716,6 +3662,25 @@
  done
  AC_MSG_RESULT(done)
  

@@ -292,7 +292,7 @@ COMMON_CROSS_PACKAGES = \
 	picocom picolisp pkgconfig player polipo \
 	popt poptop portmap postgresql postfix pound ppp privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils puppy pure-ftpd pv pwgen \
-	python python24 python25 $(PYTHON_PACKAGES) \
+	python python24 python25 python26 $(PYTHON_PACKAGES) \
 	qemacs qemu qemu-libc-i386 quagga quickie quilt \
 	radiusclient-ng rc rcs rdate readline re2c recode recordext \
 	redir renderext rhtvision rlfe rlwrap rrdcollect rrdtool \
