@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK16_ADDONS_SITE=http://downloads.digium.com/pub/asterisk
-ASTERISK16_ADDONS_VERSION=1.6.0-rc1
+ASTERISK16_ADDONS_VERSION=1.6.0
 ASTERISK16_ADDONS_SOURCE=asterisk-addons-$(ASTERISK16_ADDONS_VERSION).tar.gz
 ASTERISK16_ADDONS_DIR=asterisk-addons-$(ASTERISK16_ADDONS_VERSION)
 ASTERISK16_ADDONS_UNZIP=zcat
@@ -36,7 +36,7 @@ ASTERISK16_ADDONS_CONFLICTS=
 #
 # ASTERISK16_ADDONS_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK16_ADDONS_IPK_VERSION=2
+ASTERISK16_ADDONS_IPK_VERSION=1
 
 #
 # ASTERISK16_ADDONS_CONFFILES should be a list of user-editable files
