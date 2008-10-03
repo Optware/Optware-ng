@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HPLIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hplip
-HPLIP_VERSION=2.8.7
+HPLIP_VERSION=2.8.9
 HPLIP_SOURCE=hplip-$(HPLIP_VERSION).tar.gz
 HPLIP_DIR=hplip-$(HPLIP_VERSION)
 HPLIP_UNZIP=zcat
@@ -30,13 +30,16 @@ HPLIP_DESCRIPTION=HP Linux Imaging and Printing
 HPLIP_SECTION=misc
 HPLIP_PRIORITY=optional
 HPLIP_DEPENDS=sane-backends, python25, libstdc++
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+HPLIP_DEPENDS +=, net-snmp
+endif
 HPLIP_SUGGESTS=cups, dbus
 HPLIP_CONFLICTS=
 
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=2
+HPLIP_IPK_VERSION=1
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
