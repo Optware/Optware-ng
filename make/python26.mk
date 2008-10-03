@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON26_VERSION=2.6b3
+PYTHON26_VERSION=2.6rc2
 PYTHON26_VERSION_MAJOR=2.6
 PYTHON26_SITE=http://www.python.org/ftp/python/$(PYTHON26_VERSION_MAJOR)
 PYTHON26_SOURCE=Python-$(PYTHON26_VERSION).tar.bz2
@@ -131,18 +131,17 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
-	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(PYTHON26_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(@D)
 	$(PYTHON26_UNZIP) $(DL_DIR)/$(PYTHON26_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON26_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON26_DIR) -p1
-	cd $(BUILD_DIR)/$(PYTHON26_DIR); autoconf configure.in > configure
-	mkdir $(PYTHON26_BUILD_DIR)
-	(cd $(PYTHON26_BUILD_DIR); \
-	( \
+	autoreconf -vif $(BUILD_DIR)/$(PYTHON26_DIR)
+	mkdir -p $(@D)
+	cd $(@D); (\
 	echo "[build_ext]"; \
 	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
 	echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	echo "rpath=/opt/lib") > setup.cfg; \
-	\
+	echo "rpath=/opt/lib") > setup.cfg
+	(cd $(@D); \
 	 $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON26_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON26_LDFLAGS)" \
