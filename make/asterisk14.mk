@@ -143,8 +143,7 @@ ASTERISK14_CONFFILES=\
 /opt/etc/asterisk/udptl.conf \
 /opt/etc/asterisk/users.conf \
 /opt/etc/asterisk/voicemail.conf \
-/opt/etc/asterisk/vpb.conf \
-/opt/etc/asterisk/zapata.conf
+/opt/etc/asterisk/vpb.conf
 
 
 #
