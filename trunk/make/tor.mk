@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TOR_SITE=http://tor.eff.org/dist
-TOR_VERSION=0.1.2.19
+TOR_SITE=http://www.torproject.org/dist
+TOR_VERSION=0.2.0.31
 TOR_SOURCE=tor-$(TOR_VERSION).tar.gz
 TOR_DIR=tor-$(TOR_VERSION)
 TOR_UNZIP=zcat
@@ -36,7 +36,7 @@ TOR_CONFLICTS=
 #
 # TOR_IPK_VERSION should be incremented when the ipk changes.
 #
-TOR_IPK_VERSION=2
+TOR_IPK_VERSION=1
 
 #
 # TOR_CONFFILES should be a list of user-editable files
@@ -106,16 +106,16 @@ tor-source: $(DL_DIR)/$(TOR_SOURCE) $(TOR_PATCHES)
 #
 $(TOR_BUILD_DIR)/.configured: $(DL_DIR)/$(TOR_SOURCE) $(TOR_PATCHES) make/tor.mk
 	$(MAKE) libevent-stage openssl-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(TOR_DIR) $(TOR_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TOR_DIR) $(@D)
 	$(TOR_UNZIP) $(DL_DIR)/$(TOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TOR_PATCHES)" ; \
 		then cat $(TOR_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TOR_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TOR_DIR)" != "$(TOR_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TOR_DIR) $(TOR_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TOR_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TOR_DIR) $(@D) ; \
 	fi
-	(cd $(TOR_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TOR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TOR_LDFLAGS)" \
@@ -135,7 +135,7 @@ $(TOR_BUILD_DIR)/.configured: $(DL_DIR)/$(TOR_SOURCE) $(TOR_PATCHES) make/tor.mk
 		--with-libevent-dir=$(STAGING_PREFIX) \
 		--with-openssl-dir=$(STAGING_PREFIX) \
 	)
-#	$(PATCH_LIBTOOL) $(TOR_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 tor-unpack: $(TOR_BUILD_DIR)/.configured
@@ -145,7 +145,7 @@ tor-unpack: $(TOR_BUILD_DIR)/.configured
 #
 $(TOR_BUILD_DIR)/.built: $(TOR_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(TOR_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -158,7 +158,7 @@ tor: $(TOR_BUILD_DIR)/.built
 #
 $(TOR_BUILD_DIR)/.staged: $(TOR_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(TOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 tor-stage: $(TOR_BUILD_DIR)/.staged
@@ -196,10 +196,7 @@ $(TOR_IPK_DIR)/CONTROL/control:
 #
 $(TOR_IPK): $(TOR_BUILD_DIR)/.built
 	rm -rf $(TOR_IPK_DIR) $(BUILD_DIR)/tor_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(TOR_BUILD_DIR) DESTDIR=$(TOR_IPK_DIR) install
-	$(TARGET_STRIP) $(TOR_IPK_DIR)/opt/bin/tor
-	$(TARGET_STRIP) $(TOR_IPK_DIR)/opt/bin/tor-resolve
-	install -d $(TOR_IPK_DIR)/opt/etc/tor
+	$(MAKE) -C $(TOR_BUILD_DIR) DESTDIR=$(TOR_IPK_DIR) install-strip
 #	install -m 644 $(TOR_SOURCE_DIR)/tor.conf $(TOR_IPK_DIR)/opt/etc/tor.conf
 #	install -d $(TOR_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(TOR_SOURCE_DIR)/rc.tor $(TOR_IPK_DIR)/opt/etc/init.d/SXXtor
