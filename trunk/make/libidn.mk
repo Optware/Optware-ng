@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBIDN_SITE=http://josefsson.org/libidn/releases
-LIBIDN_VERSION=1.8
+LIBIDN_SITE=http://ftp.gnu.org/gnu/libidn
+LIBIDN_VERSION=1.10
 LIBIDN_SOURCE=libidn-$(LIBIDN_VERSION).tar.gz
 LIBIDN_DIR=libidn-$(LIBIDN_VERSION)
 LIBIDN_UNZIP=zcat
@@ -107,7 +107,7 @@ libidn-source: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBIDN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES)
+$(LIBIDN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES) make/libidn.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBIDN_DIR) $(@D)
 	$(LIBIDN_UNZIP) $(DL_DIR)/$(LIBIDN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
