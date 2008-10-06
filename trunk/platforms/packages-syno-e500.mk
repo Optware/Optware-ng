@@ -12,3 +12,6 @@ BROKEN_PACKAGES = \
 	ldconfig libcapi20 monotone \
 	puppy transcode \
 	x264 lm-sensors \
+
+E2FSPROGS_VERSION := 1.40.3
+E2FSPROGS_IPK_VERSION := 5

@@ -17,3 +17,6 @@ BROKEN_PACKAGES = \
 	monotone \
 	player \
 	qemu qemu-libc-i386 \
+
+E2FSPROGS_VERSION := 1.40.3
+E2FSPROGS_IPK_VERSION := 5

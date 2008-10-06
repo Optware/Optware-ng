@@ -37,3 +37,6 @@ BROKEN_PACKAGES = \
 	snort \
 	strace \
 	uemacs \
+
+E2FSPROGS_VERSION := 1.40.3
+E2FSPROGS_IPK_VERSION := 5
