@@ -20,13 +20,10 @@
 # You should change all these variables to suit your package.
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
-ifneq ($(OPTWARE_TARGET), $(filter cs05q3armel fsg3v4 syno-x07 syno-e500 ts101, $(OPTWARE_TARGET)))
-E2FSPROGS_VERSION=1.41.2
-E2FSPROGS_IPK_VERSION=1
-else
-E2FSPROGS_VERSION=1.40.3
-E2FSPROGS_IPK_VERSION=5
-endif
+
+E2FSPROGS_VERSION ?= 1.41.2
+E2FSPROGS_IPK_VERSION ?= 1
+
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
 E2FSPROGS_UNZIP=zcat

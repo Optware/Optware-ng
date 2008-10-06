@@ -23,3 +23,6 @@ BROKEN_PACKAGES = \
 	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
 	taged \
 	ts101-kernel-modules
+
+E2FSPROGS_VERSION := 1.40.3
+E2FSPROGS_IPK_VERSION := 5

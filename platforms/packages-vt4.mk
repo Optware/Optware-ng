@@ -45,3 +45,6 @@ BROKEN_PACKAGES = \
 	xmlrpc-c xchat \
 	yougrabber \
 	perl-net-dns perl-unix-syslog \
+
+E2FSPROGS_VERSION = 1.41.1
+E2FSPROGS_IPK_VERSION = 1
