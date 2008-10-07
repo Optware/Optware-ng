@@ -37,7 +37,7 @@ SQUID_CONFLICTS=
 #
 # SQUID_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUID_IPK_VERSION=1
+SQUID_IPK_VERSION=2
 
 #
 ## SQUID_CONFFILES should be a list of user-editable files
@@ -55,6 +55,10 @@ SQUID_CONFFILES=/opt/etc/squid/squid.conf /opt/etc/init.d/S80squid
 #
 SQUID_CPPFLAGS=
 SQUID_LDFLAGS=
+SQUID_EPOLL=$(strip \
+$(if $(filter syno-e500, $(OPTWARE_TARGET)),--disable-epoll, \
+$(if $(filter module-init-tools, $(PACKAGES)),--enable-epoll, \
+--disable-epoll)))
 
 #
 # SQUID_BUILD_DIR is the directory in which the build is done.
@@ -105,7 +109,7 @@ SQUID_CROSS_CONFIG_ENVS=\
 	ac_cv_func_setresuid=yes \
 	ac_cv_func_va_copy=yes \
 	ac_cv_func___va_copy=yes
-ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
+ifeq (--enable-epoll, $(SQUID_EPOLL))
 SQUID_CROSS_CONFIG_OPTIONS=--enable-epoll
 SQUID_CROSS_CONFIG_ENVS+= ac_cv_epoll_works=yes
 else
