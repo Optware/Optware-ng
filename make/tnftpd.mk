@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TNFTPD_SITE=ftp://ftp.netbsd.org/pub/NetBSD/misc/tnftp
-TNFTPD_VERSION=20080609
+TNFTPD_VERSION=20081009
 TNFTPD_SOURCE=tnftpd-$(TNFTPD_VERSION).tar.gz
 TNFTPD_DIR=tnftpd-$(TNFTPD_VERSION)
 TNFTPD_UNZIP=zcat
