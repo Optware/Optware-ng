@@ -21,22 +21,22 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CCOLLECT_SITE=http://unix.schottelius.org/ccollect
-CCOLLECT_VERSION=0.6.2
+CCOLLECT_VERSION=0.7.0
 CCOLLECT_SOURCE=ccollect-$(CCOLLECT_VERSION).tar.bz2
 CCOLLECT_DIR=ccollect-$(CCOLLECT_VERSION)
 CCOLLECT_UNZIP=bzcat
 CCOLLECT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-CCOLLECT_DESCRIPTION=(pseudo) incremental (parallel) backup.
+CCOLLECT_DESCRIPTION=(pseudo) incremental backup with exclude lists using hardlinks and rsync.
 CCOLLECT_SECTION=net
 CCOLLECT_PRIORITY=optional
 CCOLLECT_DEPENDS=rsync, mktemp
-CCOLLECT_SUGGESTS=cron, coreutils, cwrsync
+CCOLLECT_SUGGESTS=cron, coreutils
 CCOLLECT_CONFLICTS=
 
 #
 # CCOLLECT_IPK_VERSION should be incremented when the ipk changes.
 #
-CCOLLECT_IPK_VERSION=3
+CCOLLECT_IPK_VERSION=1
 
 #
 # CCOLLECT_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ CCOLLECT_CONFFILES=/opt/etc/ccollect/defaults/pre_exec \
 # CCOLLECT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CCOLLECT_PATCHES=$(CCOLLECT_SOURCE_DIR)/configure.patch
+CCOLLECT_PATCHES=$(CCOLLECT_SOURCE_DIR)/delete-incomplete.patch
 
 #
 # If the compilation of the package requires additional
@@ -116,7 +116,7 @@ $(CCOLLECT_BUILD_DIR)/.configured: $(DL_DIR)/$(CCOLLECT_SOURCE) $(CCOLLECT_PATCH
 	$(CCOLLECT_UNZIP) $(DL_DIR)/$(CCOLLECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CCOLLECT_PATCHES)" ; \
 		then cat $(CCOLLECT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CCOLLECT_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(CCOLLECT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CCOLLECT_DIR)" != "$(CCOLLECT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CCOLLECT_DIR) $(CCOLLECT_BUILD_DIR) ; \
@@ -124,7 +124,8 @@ $(CCOLLECT_BUILD_DIR)/.configured: $(DL_DIR)/$(CCOLLECT_SOURCE) $(CCOLLECT_PATCH
 	(cd $(CCOLLECT_BUILD_DIR); \
 		sed -i -e '1aexport PATH=/opt/bin:/opt/sbin:$$PATH' \
 			-e 's|/etc/ccollect|/opt/etc/ccollect|' \
-			-e 's|mktemp|/opt/bin/mktemp|' ccollect.sh tools/* \
+			-e 's|mktemp|/opt/bin/mktemp|' ccollect.sh \
+				tools/*.sh tools/old/*.sh \
 	)
 	touch $@
 
@@ -201,11 +202,15 @@ $(CCOLLECT_IPK): $(CCOLLECT_BUILD_DIR)/.built
 	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/intervals/monthly \
 		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/intervals/
 	install -d $(CCOLLECT_IPK_DIR)/opt/etc/ccollect/tools
-	install -m 755 $(CCOLLECT_BUILD_DIR)/tools/* \
+	install -m 755 $(CCOLLECT_BUILD_DIR)/tools/*.sh \
 		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/tools/
-	install -d $(CCOLLECT_IPK_DIR)/opt/man/man1
-	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/man/*.1 \
-		$(CCOLLECT_IPK_DIR)/opt/man/man1/
+	install -d $(CCOLLECT_IPK_DIR)/opt/doc/ccollect
+	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/CHANGES \
+		$(CCOLLECT_IPK_DIR)/opt/doc/ccollect/
+	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/*.text \
+		$(CCOLLECT_IPK_DIR)/opt/doc/ccollect/
+	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/man/*.text \
+		$(CCOLLECT_IPK_DIR)/opt/doc/ccollect/
 #	install -m 644 $(CCOLLECT_SOURCE_DIR)/ccollect.conf $(CCOLLECT_IPK_DIR)/opt/etc/ccollect/ccollect.conf
 #	install -d $(CCOLLECT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(CCOLLECT_SOURCE_DIR)/rc.ccollect $(CCOLLECT_IPK_DIR)/opt/etc/init.d/SXXccollect

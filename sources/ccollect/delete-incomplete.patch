@@ -1,0 +1,16 @@
+--- ccollect-0.7.0/ccollect.sh	2008-03-17 18:23:44.000000000 +0100
++++ ccollect/ccollect.sh	2008-10-14 09:45:10.000000000 +0200
+@@ -552,7 +553,12 @@
+ 
+    _techo "Finished backup (rsync return code: $ret)."
+    if [ "${ret}" -ne 0 ]; then
+-      _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
++	if [ "${DELETE_INCOMPLETE}" = "yes" ]; then
++	    _techo "Removing incomplete backup ${abs_destination_dir}"
++	    rm -rf "${abs_destination_dir}"                     
++	else                      
++	    _techo "Warning: rsync exited non-zero, the backup may be broken (see rsync errors)."
++	fi
+    fi
+ 
+    #
