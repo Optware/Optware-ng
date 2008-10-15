@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BFTPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bftpd
-BFTPD_VERSION=2.2
+BFTPD_VERSION=2.3
 BFTPD_SOURCE=bftpd-$(BFTPD_VERSION).tar.gz
 BFTPD_DIR=bftpd
 BFTPD_UNZIP=zcat
