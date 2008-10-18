@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SOCAT_SITE=http://www.dest-unreach.org/socat/download
-SOCAT_VERSION=1.6.0.1
+SOCAT_VERSION=1.7.0.0
 SOCAT_SOURCE=socat-$(SOCAT_VERSION).tar.bz2
 SOCAT_DIR=socat-$(SOCAT_VERSION)
 SOCAT_UNZIP=bzcat
@@ -76,8 +76,8 @@ SOCAT_IPK=$(BUILD_DIR)/socat_$(SOCAT_VERSION)-$(SOCAT_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SOCAT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SOCAT_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(SOCAT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
