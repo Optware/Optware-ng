@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GEOIP_SITE=http://www.maxmind.com/download/geoip/api/c
-GEOIP_VERSION=1.4.4
+GEOIP_VERSION=1.4.5
 GEOIP_SOURCE=GeoIP-$(GEOIP_VERSION).tar.gz
 GEOIP_DIR=GeoIP-$(GEOIP_VERSION)
 GEOIP_UNZIP=zcat
