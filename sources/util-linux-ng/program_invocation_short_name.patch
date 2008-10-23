@@ -1,0 +1,73 @@
+--- misc-utils/scriptreplay.c.orig	2008-08-13 17:15:45.000000000 +0000
++++ misc-utils/scriptreplay.c	2008-10-23 21:48:26.389862211 +0000
+@@ -35,8 +35,10 @@
+ void __attribute__((__noreturn__))
+ usage(int rc)
+ {
++	extern const char *__progname;
++	char *arg = strrchr(__progname, '/');
+ 	printf(_("%s <timingfile> [<typescript> [<divisor>]]\n"),
+-			program_invocation_short_name);
++			arg ? arg + 1 : __progname);
+ 	exit(rc);
+ }
+ 
+--- sys-utils/setarch.c.orig	2008-05-28 23:01:02.000000000 +0000
++++ sys-utils/setarch.c	2008-10-23 21:55:13.825090923 +0000
+@@ -102,10 +102,16 @@
+     { NULL,                 0, 0, 0 }
+ };
+ 
++static const char * program_invocation_short_name1() {
++	extern const char *__progname;
++	char * arg = strrchr(__progname, '/');
++	return arg ? arg + 1 : __progname;
++}
++
+ static void __attribute__((__noreturn__))
+ show_help(void)
+ {
+-  const char *p = program_invocation_short_name;
++  const char *p = program_invocation_short_name1();
+ 
+   if (!*p)
+     p = "setarch";
+@@ -135,7 +141,7 @@
+ static void __attribute__((__noreturn__))
+ show_usage(const char *s)
+ {
+-  const char *p = program_invocation_short_name;
++  const char *p = program_invocation_short_name1();
+ 
+   if (!*p)
+     p = "setarch";
+@@ -248,7 +254,7 @@
+   if (argc < 1)
+     show_usage(_("Not enough arguments"));
+ 
+-  p = program_invocation_short_name;
++  p = program_invocation_short_name1();
+   if (!strcmp(p, "setarch")) {
+     argv++;
+     argc--;
+--- sys-utils/ldattach.c.orig	2008-05-28 23:01:02.000000000 +0000
++++ sys-utils/ldattach.c	2008-10-23 22:02:16.981178240 +0000
+@@ -139,14 +139,16 @@
+ 	{"debug", 0, 0, 'd'},
+ 	{0, 0, 0, 0}
+     };
+-
++    extern const char *__progname;
++    char * arg;
+ 
+     setlocale(LC_ALL, "");
+     bindtextdomain(PACKAGE, LOCALEDIR);
+     textdomain(PACKAGE);
+ 
+     /* parse options */
+-    progname = program_invocation_short_name;
++    arg  = strrchr(__progname, '/');
++    progname = arg ? arg + 1 : __progname;
+ 
+     if (argc == 0)
+ 	usage(EXIT_SUCCESS);
