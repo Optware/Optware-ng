@@ -4,7 +4,7 @@ diff -ur src/base.h src/base.h
 @@ -267,6 +267,11 @@
  	buffer *ssl_cipher_list;
  	unsigned short ssl_use_sslv2;
- 
+
 +	unsigned short ssl_verifyclient;
 +	unsigned short ssl_verifyclient_enforce;
 +	unsigned short ssl_verifyclient_depth;
@@ -17,14 +17,14 @@ diff -ur src/configfile.c src/configfile.c
 --- src/configfile.c	2007-07-03 14:47:00.000000000 -0400
 +++ src/configfile.c	2007-08-21 14:08:19.000000000 -0400
 @@ -92,6 +92,12 @@
- 		{ "etag.use-inode",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 48 */
- 		{ "etag.use-mtime",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 49 */
- 		{ "etag.use-size",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 50 */
+ 		{ "etag.use-inode",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 49 */
+ 		{ "etag.use-mtime",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 50 */
+ 		{ "etag.use-size",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 51 */
 +		
-+		{ "ssl.verifyclient.activate",   NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 51 */
-+		{ "ssl.verifyclient.enforce",    NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 52 */
-+		{ "ssl.verifyclient.depth",      NULL, T_CONFIG_SHORT,   T_CONFIG_SCOPE_SERVER }, /* 53 */
-+		{ "ssl.verifyclient.username",   NULL, T_CONFIG_STRING,  T_CONFIG_SCOPE_SERVER }, /* 54 */
++		{ "ssl.verifyclient.activate",   NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 52 */
++		{ "ssl.verifyclient.enforce",    NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 53 */
++		{ "ssl.verifyclient.depth",      NULL, T_CONFIG_SHORT,   T_CONFIG_SCOPE_SERVER }, /* 54 */
++		{ "ssl.verifyclient.username",   NULL, T_CONFIG_STRING,  T_CONFIG_SCOPE_SERVER }, /* 55 */
 +
  		{ "server.host",                 "use server.bind instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
  		{ "server.docroot",              "use server.document-root instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
@@ -38,22 +38,22 @@ diff -ur src/configfile.c src/configfile.c
 +		s->ssl_verifyclient_enforce = 1;
 +		s->ssl_verifyclient_username = buffer_init();
 +		s->ssl_verifyclient_depth = 9;
- 
+
  		cv[2].destination = s->errorfile_prefix;
- 
+
 @@ -214,6 +225,12 @@
- 		cv[48].destination = &(s->etag_use_inode);
- 		cv[49].destination = &(s->etag_use_mtime);
- 		cv[50].destination = &(s->etag_use_size);
+ 		cv[49].destination = &(s->etag_use_inode);
+ 		cv[50].destination = &(s->etag_use_mtime);
+ 		cv[51].destination = &(s->etag_use_size);
 +		
 +		/* ssl.verify */
-+		cv[51].destination = &(s->ssl_verifyclient);
-+		cv[52].destination = &(s->ssl_verifyclient_enforce);
-+		cv[53].destination = &(s->ssl_verifyclient_depth);
-+		cv[54].destination = s->ssl_verifyclient_username;
- 
++		cv[52].destination = &(s->ssl_verifyclient);
++		cv[53].destination = &(s->ssl_verifyclient_enforce);
++		cv[54].destination = &(s->ssl_verifyclient_depth);
++		cv[55].destination = s->ssl_verifyclient_username;
+
  		srv->config_storage[i] = s;
- 
+
 @@ -291,6 +308,11 @@
  	PATCH(etag_use_inode);
  	PATCH(etag_use_mtime);
@@ -63,7 +63,7 @@ diff -ur src/configfile.c src/configfile.c
 +	PATCH(ssl_verifyclient_enforce);
 +	PATCH(ssl_verifyclient_depth);
 +	PATCH(ssl_verifyclient_username);
-  
+
  	return 0;
  }
 @@ -377,6 +399,14 @@
@@ -113,7 +113,7 @@ diff -ur src/network.c src/network.c
 +				"SSL: You specified ssl.verifyclient.activate but no ca_file"
 +			);
  		}
- 
+
  		if (SSL_CTX_use_certificate_file(s->ssl_ctx, s->ssl_pemfile->ptr, SSL_FILETYPE_PEM) < 0) {
 diff -ur src/response.c src/response.c
 --- src/response.c	2007-04-13 16:47:40.000000000 -0400
@@ -121,7 +121,7 @@ diff -ur src/response.c src/response.c
 @@ -117,7 +117,50 @@
  	return 0;
  }
- 
+
 -
 +#ifdef USE_OPENSSL
 +static void https_add_ssl_entries(connection *con) {
@@ -167,19 +167,19 @@ diff -ur src/response.c src/response.c
 +	X509_free(xs);
 +}
 +#endif
- 
+
  handler_t http_response_prepare(server *srv, connection *con) {
  	handler_t r;
 @@ -313,6 +356,11 @@
  		 */
- 
+
  
 +#ifdef USE_OPENSSL
 +		if (con->conf.is_ssl && con->conf.ssl_verifyclient) {
 +			https_add_ssl_entries(con);
 +		}
 +#endif
- 
+
  
  		/* 1. stat()
 diff -ur src/server.c src/server.c
