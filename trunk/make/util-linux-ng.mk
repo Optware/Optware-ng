@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UTIL_LINUX_NG_SITE=ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.13
-UTIL_LINUX_NG_VERSION=2.13.1
+UTIL_LINUX_NG_SITE=ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.14
+UTIL_LINUX_NG_VERSION=2.14.1
 UTIL_LINUX_NG_SOURCE=util-linux-ng-$(UTIL_LINUX_NG_VERSION).tar.gz
 UTIL_LINUX_NG_DIR=util-linux-ng-$(UTIL_LINUX_NG_VERSION)
 UTIL_LINUX_NG_UNZIP=zcat
@@ -46,9 +46,10 @@ UTIL_LINUX_NG_IPK_VERSION=1
 # UTIL_LINUX_NG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-UTIL_LINUX_NG_PATCHES=$(UTIL_LINUX_NG_SOURCE_DIR)/HOST_NAME_MAX.patch $(UTIL_LINUX_NG_SOURCE_DIR)/AI_ADDRCONFIG.patch
+UTIL_LINUX_NG_PATCHES=$(UTIL_LINUX_NG_SOURCE_DIR)/AI_ADDRCONFIG.patch \
+$(UTIL_LINUX_NG_SOURCE_DIR)/strverscmp.h.patch
 ifeq (uclibc, $(LIBC_STYLE))
-UTIL_LINUX_NG_PATCHES +=$(UTIL_LINUX_NG_SOURCE_DIR)/disable-setarch.patch
+UTIL_LINUX_NG_PATCHES +=$(UTIL_LINUX_NG_SOURCE_DIR)/program_invocation_short_name.patch
 endif
 
 #
@@ -59,9 +60,6 @@ UTIL_LINUX_NG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 UTIL_LINUX_NG_LDFLAGS=
 
 UTIL_LINUX_NG_CONFIG_ARGS=
-ifeq (, $(filter angstrombe angstromle slugosbe slugosle, $(OPTWARE_TARGET)))
-UTIL_LINUX_NG_CONFIG_ARGS +=--disable-schedutils
-endif
 
 #
 # UTIL_LINUX_NG_BUILD_DIR is the directory in which the build is done.
