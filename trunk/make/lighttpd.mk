@@ -71,8 +71,7 @@ LIGHTTPD_CONFFILES=\
 #
 LIGHTTPD_PATCHES=\
 	$(LIGHTTPD_SOURCE_DIR)/src-server.c.patch \
-
-#	$(LIGHTTPD_SOURCE_DIR)/lighty-clientvalidation-1.4.x.2.patch
+	$(LIGHTTPD_SOURCE_DIR)/lighty-clientvalidation-1.4.x.2.patch
 
 #
 # If the compilation of the package requires additional
