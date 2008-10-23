@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://www.lighttpd.net/download
-LIGHTD_VERSION=1.4.19
+LIGHTD_VERSION=1.4.20
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.bz2
 LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
 LIGHTTPD_UNZIP=bzcat
@@ -56,7 +56,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=5
+LIGHTTPD_IPK_VERSION=1
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -71,7 +71,8 @@ LIGHTTPD_CONFFILES=\
 #
 LIGHTTPD_PATCHES=\
 	$(LIGHTTPD_SOURCE_DIR)/src-server.c.patch \
-	$(LIGHTTPD_SOURCE_DIR)/lighty-clientvalidation-1.4.x.2.patch
+
+#	$(LIGHTTPD_SOURCE_DIR)/lighty-clientvalidation-1.4.x.2.patch
 
 #
 # If the compilation of the package requires additional
