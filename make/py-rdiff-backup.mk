@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-RDIFF-BACKUP_VERSION=1.2.0
+PY-RDIFF-BACKUP_VERSION=1.2.2
 PY-RDIFF-BACKUP_SITE=http://savannah.nongnu.org/download/rdiff-backup
 PY-RDIFF-BACKUP_SOURCE=rdiff-backup-$(PY-RDIFF-BACKUP_VERSION).tar.gz
 PY-RDIFF-BACKUP_DIR=rdiff-backup-$(PY-RDIFF-BACKUP_VERSION)
