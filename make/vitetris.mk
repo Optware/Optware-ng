@@ -46,7 +46,7 @@ VITETRIS_IPK_VERSION=1
 # VITETRIS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#VITETRIS_PATCHES=$(VITETRIS_SOURCE_DIR)/configure.patch
+VITETRIS_PATCHES=$(VITETRIS_SOURCE_DIR)/joylinux.c-int32_t.patch
 
 #
 # If the compilation of the package requires additional
