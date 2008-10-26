@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VITETRIS_SITE=http://robert.liquidham.se/vitetris
-VITETRIS_VERSION=0.43
+VITETRIS_VERSION=0.55
 VITETRIS_SOURCE=vitetris-$(VITETRIS_VERSION).tar.gz
 VITETRIS_DIR=vitetris-$(VITETRIS_VERSION)
 VITETRIS_UNZIP=zcat
@@ -115,18 +115,15 @@ $(VITETRIS_BUILD_DIR)/.configured: $(DL_DIR)/$(VITETRIS_SOURCE) $(VITETRIS_PATCH
 	if test "$(BUILD_DIR)/$(VITETRIS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(VITETRIS_DIR) $(@D) ; \
 	fi
+	sed -i -e 's|`./systest`|`echo ok`|' $(@D)/configure
+	sed -i -e '/-strip/s|^|#|' $(@D)/Makefile
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VITETRIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VITETRIS_LDFLAGS)" \
 		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--without-x \
-		--disable-nls \
-		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -195,10 +192,8 @@ $(VITETRIS_IPK): $(VITETRIS_BUILD_DIR)/.built
 	rm -rf $(VITETRIS_IPK_DIR) $(BUILD_DIR)/vitetris_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(VITETRIS_BUILD_DIR) DESTDIR=$(VITETRIS_IPK_DIR) install
 	install -d $(VITETRIS_IPK_DIR)/opt/bin $(VITETRIS_IPK_DIR)/opt/share/doc/vitetris
-	$(STRIP_COMMAND) $(VITETRIS_BUILD_DIR)/tetris -o $(VITETRIS_IPK_DIR)/opt/bin/vitetris
-	install -m 644 \
-		$(VITETRIS_BUILD_DIR)/README \
-		$(VITETRIS_BUILD_DIR)/lice*.txt \
+	$(STRIP_COMMAND) $(<D)/tetris -o $(VITETRIS_IPK_DIR)/opt/bin/vitetris
+	install -m 644 $(<D)/README $(<D)/lice*.txt \
 		$(VITETRIS_IPK_DIR)/opt/share/doc/vitetris/
 	$(MAKE) $(VITETRIS_IPK_DIR)/CONTROL/control
 	echo $(VITETRIS_CONFFILES) | sed -e 's/ /\n/g' > $(VITETRIS_IPK_DIR)/CONTROL/conffiles
