@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NETRIK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/netrik
-NETRIK_VERSION=1.15.8
+NETRIK_VERSION=1.16
 NETRIK_SOURCE=netrik-$(NETRIK_VERSION).tar.gz
 NETRIK_DIR=netrik-$(NETRIK_VERSION)
 NETRIK_UNZIP=zcat
