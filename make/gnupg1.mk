@@ -1,6 +1,6 @@
 ###########################################################
 #
-# gnupg
+# gnupg1
 #
 ###########################################################
 
@@ -41,7 +41,7 @@ GNUPG1_IPK_VERSION=1
 
 #
 # GNUPG1_CONFFILES should be a list of user-editable files
-#GNUPG1_CONFFILES=/opt/etc/gnupg.conf /opt/etc/init.d/SXXgnupg
+#GNUPG1_CONFFILES=/opt/etc/gnupg1.conf /opt/etc/init.d/SXXgnupg1
 
 #
 # GNUPG1_PATCHES should list any patches, in the the order in
@@ -110,7 +110,7 @@ gnupg1-source: $(DL_DIR)/$(GNUPG1_SOURCE) $(GNUPG1_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GNUPG1_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG1_SOURCE) $(GNUPG1_PATCHES) make/gnupg.mk
+$(GNUPG1_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG1_SOURCE) $(GNUPG1_PATCHES) make/gnupg1.mk
 	$(MAKE) libusb-stage bzip2-stage zlib-stage readline-stage libcurl-stage openldap-stage
 	rm -rf $(BUILD_DIR)/$(GNUPG1_DIR) $(GNUPG1_BUILD_DIR)
 	$(GNUPG1_UNZIP) $(DL_DIR)/$(GNUPG1_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -163,7 +163,7 @@ gnupg1-stage: $(GNUPG1_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
-# necessary to create a seperate control file under sources/gnupg
+# necessary to create a seperate control file under sources/gnupg1
 #
 $(GNUPG1_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -186,14 +186,14 @@ $(GNUPG1_IPK_DIR)/CONTROL/control:
 # Binaries should be installed into $(GNUPG1_IPK_DIR)/opt/sbin or $(GNUPG1_IPK_DIR)/opt/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
 # Libraries and include files should be installed into $(GNUPG1_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNUPG1_IPK_DIR)/opt/etc/gnupg/...
-# Documentation files should be installed in $(GNUPG1_IPK_DIR)/opt/doc/gnupg/...
-# Daemon startup scripts should be installed in $(GNUPG1_IPK_DIR)/opt/etc/init.d/S??gnupg
+# Configuration files should be installed in $(GNUPG1_IPK_DIR)/opt/etc/gnupg1/...
+# Documentation files should be installed in $(GNUPG1_IPK_DIR)/opt/doc/gnupg1/...
+# Daemon startup scripts should be installed in $(GNUPG1_IPK_DIR)/opt/etc/init.d/S??gnupg1
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GNUPG1_IPK): $(GNUPG1_BUILD_DIR)/.built
-	rm -rf $(GNUPG1_IPK_DIR) $(BUILD_DIR)/gnupg_*_$(TARGET_ARCH).ipk
+	rm -rf $(GNUPG1_IPK_DIR) $(BUILD_DIR)/gnupg1_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<D) DESTDIR=$(GNUPG1_IPK_DIR) install-strip
 	mv $(GNUPG1_IPK_DIR)/opt/share/gnupg $(GNUPG1_IPK_DIR)/opt/share/gnupg1
 	$(MAKE) $(GNUPG1_IPK_DIR)/CONTROL/control
