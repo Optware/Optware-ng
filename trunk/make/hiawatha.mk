@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-HIAWATHA_SITE=http://hiawatha.leisink.org/files
-HIAWATHA_VERSION=6.9
+HIAWATHA_SITE=http://www.hiawatha-webserver.org/files
+HIAWATHA_VERSION=6.10
 HIAWATHA_SOURCE=hiawatha-$(HIAWATHA_VERSION).tar.gz
 HIAWATHA_DIR=hiawatha-$(HIAWATHA_VERSION)
 HIAWATHA_UNZIP=zcat
