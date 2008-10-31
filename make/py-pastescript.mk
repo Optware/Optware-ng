@@ -24,7 +24,7 @@
 # PY-PASTESCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-PASTESCRIPT_SITE=http://cheeseshop.python.org/packages/source/P/PasteScript
-PY-PASTESCRIPT_VERSION=1.6.3
+PY-PASTESCRIPT_VERSION=1.7
 #PY-PASTESCRIPT_SVN_REV=
 PY-PASTESCRIPT_IPK_VERSION=1
 #ifneq ($(PY-PASTESCRIPT_SVN_REV),)
