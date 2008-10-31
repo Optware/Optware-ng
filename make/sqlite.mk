@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.6.1
+SQLITE_VERSION=3.6.4
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
@@ -78,8 +78,8 @@ SQLITE_IPK=$(BUILD_DIR)/sqlite_$(SQLITE_VERSION)-$(SQLITE_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SQLITE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SQLITE_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(SQLITE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
