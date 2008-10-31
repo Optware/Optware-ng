@@ -14,12 +14,13 @@
 # You should change all these variables to suit your package.
 #
 JOE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/joe-editor
-JOE_VERSION=3.5
+JOE_VERSION=3.6
 JOE_SOURCE=joe-$(JOE_VERSION).tar.gz
 JOE_DIR=joe-$(JOE_VERSION)
 JOE_UNZIP=zcat
 JOE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 JOE_DESCRIPTION=Joe's own editor. A text editor with wordstar-like and emacs-like keybindings.
+#'
 JOE_SECTION=editor
 JOE_PRIORITY=optional
 JOE_DEPENDS=ncurses, termcap
@@ -68,8 +69,8 @@ JOE_IPK=$(BUILD_DIR)/joe_$(JOE_VERSION)-$(JOE_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(JOE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(JOE_SITE)/$(JOE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(JOE_SOURCE)
+	$(WGET) -P $(@D) $(JOE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -93,7 +94,7 @@ joe-source: $(DL_DIR)/$(JOE_SOURCE) $(JOE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(JOE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOE_SOURCE) $(JOE_PATCHES)
+$(JOE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOE_SOURCE) $(JOE_PATCHES) make/joe.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(JOE_DIR) $(JOE_BUILD_DIR)
 	$(JOE_UNZIP) $(DL_DIR)/$(JOE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -104,7 +105,7 @@ $(JOE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOE_SOURCE) $(JOE_PATCHES)
 	if test "$(BUILD_DIR)/$(JOE_DIR)" != "$(JOE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(JOE_DIR) $(JOE_BUILD_DIR) ; \
 	fi
-	(cd $(JOE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(JOE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(JOE_LDFLAGS)" \
@@ -114,7 +115,7 @@ $(JOE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOE_SOURCE) $(JOE_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(JOE_BUILD_DIR)/.configured
+	touch $@
 
 joe-unpack: $(JOE_BUILD_DIR)/.configured
 
@@ -122,9 +123,9 @@ joe-unpack: $(JOE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(JOE_BUILD_DIR)/.built: $(JOE_BUILD_DIR)/.configured
-	rm -f $(JOE_BUILD_DIR)/.built
-	$(MAKE) -C $(JOE_BUILD_DIR)
-	touch $(JOE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -135,9 +136,9 @@ joe: $(JOE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(JOE_BUILD_DIR)/.staged: $(JOE_BUILD_DIR)/.built
-	rm -f $(JOE_BUILD_DIR)/.staged
-	$(MAKE) -C $(JOE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(JOE_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 joe-stage: $(JOE_BUILD_DIR)/.staged
 
@@ -146,7 +147,7 @@ joe-stage: $(JOE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/joe
 #
 $(JOE_IPK_DIR)/CONTROL/control:
-	@install -d $(JOE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: joe" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
