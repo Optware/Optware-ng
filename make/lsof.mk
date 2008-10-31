@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LSOF_SITE=http://ftp.cerias.purdue.edu/pub/tools/unix/sysutils/lsof
-LSOF_VERSION=4.78
+LSOF_SITE=ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
+LSOF_VERSION=4.81
 LSOF_SOURCE=lsof_$(LSOF_VERSION).tar.bz2
 LSOF_DIR=lsof_$(LSOF_VERSION)_src
 LSOF_UNZIP=bzcat
@@ -78,8 +78,8 @@ LSOF_IPK=$(BUILD_DIR)/lsof_$(LSOF_VERSION)-$(LSOF_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LSOF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LSOF_SITE)/$(LSOF_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LSOF_SOURCE)
+	$(WGET) -P $(@D) $(LSOF_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,14 +108,14 @@ lsof-source: $(DL_DIR)/$(LSOF_SOURCE) $(LSOF_PATCHES)
 #
 $(LSOF_BUILD_DIR)/.configured: $(DL_DIR)/$(LSOF_SOURCE) $(LSOF_PATCHES) make/lsof.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LSOF_DIR) $(LSOF_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LSOF_DIR) $(@D)
 	$(LSOF_UNZIP) $(DL_DIR)/$(LSOF_SOURCE) | \
 		tar -xOvf - lsof_$(LSOF_VERSION)/lsof_$(LSOF_VERSION)_src.tar | \
 		tar -C $(BUILD_DIR) -xvf -
 	if test "$(BUILD_DIR)/$(LSOF_DIR)" != "$(LSOF_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LSOF_DIR) $(LSOF_BUILD_DIR) ; \
 	fi
-	(cd $(LSOF_BUILD_DIR); \
+	(cd $(@D); \
 		echo "n\ny\ny\ny\nn\nn\ny\n" | env \
 		LSOF_CC=$(TARGET_CC) \
 		LSOF_INCLUDE=$(TARGET_INCDIR) \
@@ -124,7 +124,7 @@ $(LSOF_BUILD_DIR)/.configured: $(DL_DIR)/$(LSOF_SOURCE) $(LSOF_PATCHES) make/lso
 	)
 	if test -n "$(LSOF_PATCHES)" ; \
 		then cat $(LSOF_PATCHES) | \
-		patch -d $(LSOF_BUILD_DIR) -p1 ; \
+		patch -d $(@D) -p1 ; \
 	fi
 	touch $@
 
@@ -135,7 +135,7 @@ lsof-unpack: $(LSOF_BUILD_DIR)/.configured
 #
 $(LSOF_BUILD_DIR)/.built: $(LSOF_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LSOF_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CDEF="$(TARGET_CFLAGS)"
 	touch $@
@@ -150,7 +150,7 @@ lsof: $(LSOF_BUILD_DIR)/.built
 #
 $(LSOF_BUILD_DIR)/.staged: $(LSOF_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LSOF_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 lsof-stage: $(LSOF_BUILD_DIR)/.staged
