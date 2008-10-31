@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MTR_SITE=ftp://ftp.bitwizard.nl/mtr
-MTR_VERSION=0.74
+MTR_VERSION=0.75
 MTR_SOURCE=mtr-$(MTR_VERSION).tar.gz
 MTR_DIR=mtr-$(MTR_VERSION)
 MTR_UNZIP=zcat
