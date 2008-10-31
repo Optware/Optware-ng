@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TREE_SITE=ftp://mama.indstate.edu/linux/tree
-TREE_VERSION=1.5.1.1
+TREE_VERSION=1.5.2.1
 TREE_SOURCE=tree-$(TREE_VERSION).tgz
 TREE_DIR=tree-$(TREE_VERSION)
 TREE_UNZIP=zcat
@@ -76,8 +76,8 @@ TREE_IPK=$(BUILD_DIR)/tree_$(TREE_VERSION)-$(TREE_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TREE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TREE_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(TREE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
