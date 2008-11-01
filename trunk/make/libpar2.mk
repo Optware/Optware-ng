@@ -42,7 +42,7 @@ LIBPAR2_CONFLICTS=
 #
 # LIBPAR2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPAR2_IPK_VERSION=4
+LIBPAR2_IPK_VERSION=5
 
 #
 # LIBPAR2_CONFFILES should be a list of user-editable files
@@ -53,7 +53,9 @@ LIBPAR2_IPK_VERSION=4
 # which they should be applied to the source code.
 #
 LIBPAR2_PATCHES=$(LIBPAR2_SOURCE_DIR)/main-packet-fix.patch \
-    $(LIBPAR2_SOURCE_DIR)/unofficial-bugfixes.patch
+    $(LIBPAR2_SOURCE_DIR)/libpar2-0.2-bugfixes.patch \
+    $(LIBPAR2_SOURCE_DIR)/libpar2-0.2-cancel.patch 
+    
 
 #
 # If the compilation of the package requires additional
