@@ -28,7 +28,7 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 # Note: asterisk-gui is a replacement for asterisk14-gui
-CROSS_PACKAGES_READY_FOR_TESTING = asterisk-gui\
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 
 # Add new native-only packages here
@@ -179,7 +179,7 @@ ASTERISK_PACKAGES = \
 	asterisk14-moh-freeplay-g729 \
 	asterisk14-moh-freeplay-gsm \
 	asterisk14-moh-freeplay-ulaw \
-	asterisk14-gui \
+	asterisk-gui \
 	asterisk16 \
 	asterisk16-addons \
 
