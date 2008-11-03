@@ -24,7 +24,7 @@ ASTERISK16_SOURCE_TYPE=tarball
 #ASTERISK16_SOURCE_TYPE=svn
 
 ASTERISK16_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK16_BASE_VERSION=1.6.0
+ASTERISK16_BASE_VERSION=1.6.0.1
 
 ifeq ($(ASTERISK16_SOURCE_TYPE), svn)
 ASTERISK16_SVN=http://svn.digium.com/svn/asterisk/branches/1.6
