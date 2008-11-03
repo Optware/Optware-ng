@@ -27,7 +27,9 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = \
+# Note: asterisk-gui is a replacement for asterisk14-gui
+CROSS_PACKAGES_READY_FOR_TESTING = asterisk-gui\
+
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
