@@ -4,15 +4,9 @@
 #
 ###########################################################
 
-ifeq ($(LIBC_STYLE),uclibc)
-GREP_VERSION=2.4.2
-GREP_IPK_VERSION=8
-GREP_DEPENDS=
-else
 GREP_VERSION=2.5.3
 GREP_IPK_VERSION=1
 GREP_DEPENDS=pcre
-endif
 
 GREP=grep-$(GREP_VERSION)
 GREP_SITE=ftp://ftp.gnu.org/pub/gnu/grep
@@ -24,11 +18,11 @@ GREP_SECTION=util
 GREP_PRIORITY=optional
 GREP_CONFLICTS=
 
-#ifeq ($(OPTWARE_TARGET), wl500g)
-#GREP_CPPFLAGS=-DMB_CUR_MAX=1
 GREP_CPPFLAGS=
 GREP_LDFLAGS=
-#endif
+ifeq ($(LIBC_STYLE), uclibc)
+GREP_LDFLAGS=-lintl
+endif
 
 GREP_BUILD_DIR=$(BUILD_DIR)/grep
 
@@ -44,19 +38,18 @@ endif
 .PHONY: grep-source grep-unpack grep grep-stage grep-ipk grep-clean grep-dirclean grep-check
 
 $(DL_DIR)/$(GREP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GREP_SITE)/$(GREP_SOURCE)
+	$(WGET) -P $(@D) $(GREP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 grep-source: $(DL_DIR)/$(GREP_SOURCE)
 
 $(GREP_BUILD_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE) make/grep.mk
-ifneq ($(GREP_VERSION), 2.4.2)
 	$(MAKE) pcre-stage
-endif
 	rm -rf $(BUILD_DIR)/$(GREP_BUILD_DIR) $(GREP_BUILD_DIR)
 	$(GREP_UNZIP) $(DL_DIR)/$(GREP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/grep-$(GREP_VERSION) $(GREP_BUILD_DIR)
-	cp -f $(SOURCE_DIR)/common/config.* $(GREP_BUILD_DIR)/
-	(cd $(GREP_BUILD_DIR); \
+	mv $(BUILD_DIR)/grep-$(GREP_VERSION) $(@D)
+#	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GREP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GREP_LDFLAGS)" \
@@ -66,14 +59,14 @@ endif
 		--prefix=/opt \
 		$(GREP_CONFIGURE_ARGS) \
 	);
-	sed -i -e '/^LIBS/s|-L/usr/lib||' $(GREP_BUILD_DIR)/src/Makefile
+	sed -i -e '/^LIBS/s|-L/usr/lib||' $(@D)/src/Makefile
 	touch $@
 
 grep-unpack: $(GREP_BUILD_DIR)/.configured
 
 $(GREP_BUILD_DIR)/.built: $(GREP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GREP_BUILD_DIR) CC=$(TARGET_CC) \
+	$(MAKE) -C $(@D) CC=$(TARGET_CC) \
 	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD)
 	touch $@
 
