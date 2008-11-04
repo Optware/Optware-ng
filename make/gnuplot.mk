@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPLOT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gnuplot
-GNUPLOT_VERSION=4.2.3
+GNUPLOT_VERSION=4.2.4
 GNUPLOT_SOURCE=gnuplot-$(GNUPLOT_VERSION).tar.gz
 GNUPLOT_DIR=gnuplot-$(GNUPLOT_VERSION)
 GNUPLOT_UNZIP=zcat
