@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://www.apache.org/dist/httpd
-APACHE_VERSION=2.2.9
+APACHE_VERSION=2.2.10
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -181,7 +181,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		LDFLAGS="$(STAGING_LDFLAGS) $(APACHE_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		ap_void_ptr_lt_long=no \
+		ap_cv_void_ptr_lt_long=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
