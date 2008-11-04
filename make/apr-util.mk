@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_UTIL_SITE=http://www.apache.org/dist/apr
-APR_UTIL_VERSION=1.3.2
+APR_UTIL_VERSION=1.3.4
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
 APR_UTIL_UNZIP=bzcat
