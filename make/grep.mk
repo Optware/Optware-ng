@@ -9,8 +9,8 @@ GREP_VERSION=2.4.2
 GREP_IPK_VERSION=8
 GREP_DEPENDS=
 else
-GREP_VERSION=2.5.1a
-GREP_IPK_VERSION=4
+GREP_VERSION=2.5.3
+GREP_IPK_VERSION=1
 GREP_DEPENDS=pcre
 endif
 
@@ -105,9 +105,7 @@ $(GREP_IPK): $(GREP_BUILD_DIR)/.built
 		AM_MAKEFLAGS="DESTDIR=$(GREP_IPK_DIR)"
 	rm -f $(GREP_IPK_DIR)/opt/info/dir $(GREP_IPK_DIR)/opt/info/dir.old
 	$(STRIP_COMMAND) $(GREP_IPK_DIR)/opt/bin/grep
-ifeq ($(GREP_VERSION), 2.4.2)
 	$(STRIP_COMMAND) $(GREP_IPK_DIR)/opt/bin/egrep $(GREP_IPK_DIR)/opt/bin/fgrep
-endif
 	$(MAKE) $(GREP_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(GREP_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(GREP_IPK_DIR)/CONTROL/prerm
