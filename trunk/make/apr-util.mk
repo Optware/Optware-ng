@@ -22,13 +22,13 @@ APR_UTIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APR_UTIL_DESCRIPTION=Apache Portable Runtime utilities library
 APR_UTIL_SECTION=lib
 APR_UTIL_PRIORITY=optional
-APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), e2fslibs, expat, gdbm, libdb
+APR_UTIL_DEPENDS=apr (>= 1.3.3), e2fslibs, expat, gdbm, libdb
 APR_UTIL_SUGGESTS=sqlite
 
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=1
+APR_UTIL_IPK_VERSION=2
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
