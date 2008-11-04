@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zsh
-ZSH_VERSION=4.3.6
+ZSH_VERSION=4.3.9
 ZSH_SOURCE=zsh-$(ZSH_VERSION).tar.gz
 ZSH_DIR=zsh-$(ZSH_VERSION)
 ZSH_UNZIP=zcat
@@ -76,8 +76,8 @@ ZSH_IPK=$(BUILD_DIR)/zsh_$(ZSH_VERSION)-$(ZSH_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ZSH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ZSH_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(ZSH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
