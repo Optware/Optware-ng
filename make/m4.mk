@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-M4_SITE=http://ftp.gnu.org/pub/gnu/m4/
-M4_VERSION=1.4.8
+M4_SITE=http://ftp.gnu.org/pub/gnu/m4
+M4_VERSION=1.4.12
 M4_SOURCE=m4-$(M4_VERSION).tar.gz
 M4_DIR=m4-$(M4_VERSION)
 M4_UNZIP=zcat
@@ -74,7 +74,8 @@ M4_IPK=$(BUILD_DIR)/m4_$(M4_VERSION)-$(M4_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(M4_SOURCE):
-	$(WGET) -P $(DL_DIR) $(M4_SITE)/$(M4_SOURCE)
+	$(WGET) -P $(@D) $(M4_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -98,13 +99,13 @@ m4-source: $(DL_DIR)/$(M4_SOURCE) $(M4_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(M4_BUILD_DIR)/.configured: $(DL_DIR)/$(M4_SOURCE) $(M4_PATCHES)
+$(M4_BUILD_DIR)/.configured: $(DL_DIR)/$(M4_SOURCE) $(M4_PATCHES) make/m4.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(M4_DIR) $(M4_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(M4_DIR) $(@D)
 	$(M4_UNZIP) $(DL_DIR)/$(M4_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(M4_PATCHES) | patch -d $(BUILD_DIR)/$(M4_DIR) -p1
-	mv $(BUILD_DIR)/$(M4_DIR) $(M4_BUILD_DIR)
-	(cd $(M4_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(M4_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(M4_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(M4_LDFLAGS)" \
@@ -114,7 +115,7 @@ $(M4_BUILD_DIR)/.configured: $(DL_DIR)/$(M4_SOURCE) $(M4_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	)
-	touch $(M4_BUILD_DIR)/.configured
+	touch $@
 
 m4-unpack: $(M4_BUILD_DIR)/.configured
 
@@ -123,9 +124,9 @@ m4-unpack: $(M4_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(M4_BUILD_DIR)/.built: $(M4_BUILD_DIR)/.configured
-	rm -f $(M4_BUILD_DIR)/.built
-	$(MAKE) -C $(M4_BUILD_DIR)
-	touch $(M4_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -165,8 +166,7 @@ $(M4_IPK_DIR)/CONTROL/control:
 #
 $(M4_IPK): $(M4_BUILD_DIR)/.built
 	rm -rf $(M4_IPK_DIR) $(M4_IPK)
-	install -d $(M4_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(M4_BUILD_DIR)/src/m4 -o $(M4_IPK_DIR)/opt/bin/m4
+	$(MAKE) -C $(M4_BUILD_DIR) DESTDIR=$(M4_IPK_DIR) install-strip
 #	install -d $(M4_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(M4_SOURCE_DIR)/rc.m4 $(M4_IPK_DIR)/opt/etc/init.d/SXXm4
 	$(MAKE) $(M4_IPK_DIR)/CONTROL/control
