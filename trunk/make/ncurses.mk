@@ -47,6 +47,7 @@ $(NCURSES_HOST_BUILD_DIR)/.built: $(HOST_BUILD_DIR)/.configured $(DL_DIR)/$(NCUR
 		./configure \
 		--prefix=/opt	\
 		--without-shared	\
+		--enable-symlinks	\
 		--with-build-cc=gcc	\
 		--without-cxx-binding	\
 		--without-ada		\
@@ -79,6 +80,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--prefix=/opt	\
 		--with-shared		\
+		--enable-symlinks	\
 		--disable-big-core	\
 		--with-build-cc=gcc	\
 		--without-cxx-binding	\
