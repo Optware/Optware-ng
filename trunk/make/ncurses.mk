@@ -29,6 +29,8 @@ NCURSES_IPK_VERSION=1
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
 
+NCURSES_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/ncurses
+
 .PHONY: ncurses-source ncurses-unpack ncurses ncurses-stage ncurses-ipk ncurses-clean ncurses-dirclean ncurses-check
 
 $(DL_DIR)/$(NCURSES_SOURCE):
@@ -37,8 +39,29 @@ $(DL_DIR)/$(NCURSES_SOURCE):
 
 ncurses-source: $(DL_DIR)/$(NCURSES_SOURCE)
 
-$(NCURSES_DIR)/.configured: $(DL_DIR)/$(NCURSES_SOURCE) make/ncursesw.mk
+$(NCURSES_HOST_BUILD_DIR)/.built: $(HOST_BUILD_DIR)/.configured $(DL_DIR)/$(NCURSES_SOURCE) make/ncurses.mk
+	rm -rf $(HOST_BUILD_DIR)/$(NCURSES) $(@D)
+	$(NCURSES_UNZIP) $(DL_DIR)/$(NCURSES_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(NCURSES) $(@D)
+	(cd $(@D); \
+		./configure \
+		--prefix=/opt	\
+		--without-shared	\
+		--with-build-cc=gcc	\
+		--without-cxx-binding	\
+		--without-ada		\
+	)
+	$(MAKE) -C $(@D)/include
+	$(MAKE) -C $(@D)/progs tic
+	touch $@
+
+ncurses-host: $(NCURSES_HOST_BUILD_DIR)/.built
+
+$(NCURSES_DIR)/.configured: $(DL_DIR)/$(NCURSES_SOURCE) make/ncurses.mk
 	$(MAKE) zlib-stage
+ifneq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) ncurses-host
+endif
 	rm -rf $(BUILD_DIR)/$(NCURSES) $(@D)
 	rm -rf  $(STAGING_INCLUDE_DIR)/ncurses \
 		$(STAGING_LIB_DIR)/libform.* \
@@ -99,8 +122,9 @@ $(NCURSES_IPK_DIR)/CONTROL/control:
 
 $(NCURSES_IPK): $(NCURSES_DIR)/.built
 	rm -rf $(NCURSES_IPK_DIR) $(BUILD_DIR)/ncurses_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
-		install.libs install.progs # install.data
+	$(if $(filter $(HOSTCC), $(TARGET_CC)),,PATH=$(NCURSES_HOST_BUILD_DIR)/progs:$$PATH) \
+		$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
+		install.libs install.progs install.data
 	rm -rf $(NCURSES_IPK_DIR)/opt/include
 	rm -f $(NCURSES_IPK_DIR)/opt/lib/*.a
 	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/bin/clear \
