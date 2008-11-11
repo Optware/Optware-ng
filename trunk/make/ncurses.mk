@@ -6,8 +6,7 @@
 
 NCURSES_DIR=$(BUILD_DIR)/ncurses
 
-NCURSES_VERSION=5.6
-NCURSES_SHLIBVERSION=5
+NCURSES_VERSION=5.7
 NCURSES=ncurses-$(NCURSES_VERSION)
 NCURSES_SITE=ftp://invisible-island.net/ncurses
 NCURSES_SOURCE=$(NCURSES).tar.gz
@@ -25,7 +24,7 @@ else
 NCURSES_FOR_OPTWARE_TARGET=ncurses
 endif
 
-NCURSES_IPK_VERSION=3
+NCURSES_IPK_VERSION=1
 
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
@@ -33,22 +32,25 @@ NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
 .PHONY: ncurses-source ncurses-unpack ncurses ncurses-stage ncurses-ipk ncurses-clean ncurses-dirclean ncurses-check
 
 $(DL_DIR)/$(NCURSES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NCURSES_SITE)/$(NCURSES_SOURCE)
+	$(WGET) -P $(@D) $(NCURSES_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 ncurses-source: $(DL_DIR)/$(NCURSES_SOURCE)
 
-$(NCURSES_DIR)/.source: $(DL_DIR)/$(NCURSES_SOURCE)
-	$(NCURSES_UNZIP) $(DL_DIR)/$(NCURSES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(NCURSES) $(NCURSES_DIR)
-	touch $(NCURSES_DIR)/.source
-
-$(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
+$(NCURSES_DIR)/.configured: $(DL_DIR)/$(NCURSES_SOURCE) make/ncursesw.mk
 	$(MAKE) zlib-stage
-	(cd $(NCURSES_DIR); \
-	export CC=$(TARGET_CC) ; \
-	export CXX=$(TARGET_CXX) ; \
-	export CPPFLAGS="$(STAGING_CPPFLAGS)"; \
-	export LDFLAGS="$(STAGING_LDFLAGS)"; \
+	rm -rf $(BUILD_DIR)/$(NCURSES) $(@D)
+	rm -rf  $(STAGING_INCLUDE_DIR)/ncurses \
+		$(STAGING_LIB_DIR)/libform.* \
+		$(STAGING_LIB_DIR)/libmenu.* \
+		$(STAGING_LIB_DIR)/libncurses.* \
+		$(STAGING_LIB_DIR)/libpanel.*
+	$(NCURSES_UNZIP) $(DL_DIR)/$(NCURSES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	mv $(BUILD_DIR)/$(NCURSES) $(@D)
+	(cd $(@D); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
@@ -60,22 +62,26 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 		--without-ada		\
 	);
 ifneq ($(HOSTCC), $(TARGET_CC))
-	sed -i -e '/^CPPFLAGS/s| -I$$[{(]includedir[)}]||' $(NCURSES_DIR)/*/Makefile
+	sed -i -e '/^CPPFLAGS/s| -I$$[{(]includedir[)}]||' $(@D)/*/Makefile
 endif
-	touch $(NCURSES_DIR)/.configured
+	touch $@
 
 ncurses-unpack: $(NCURSES_DIR)/.configured
 
-$(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/.configured
+$(NCURSES_DIR)/.built: $(NCURSES_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(NCURSES_DIR)
+	touch $@
 
-ncurses: $(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
+ncurses: $(NCURSES_DIR)/.built
 
-$(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
+$(NCURSES_DIR)/.staged: $(NCURSES_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
 	ln -sf ncurses/ncurses.h $(STAGING_INCLUDE_DIR)
+	touch $@
 
-ncurses-stage: $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
+ncurses-stage: $(NCURSES_DIR)/.staged
 
 $(NCURSES_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -91,13 +97,14 @@ $(NCURSES_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(NCURSES_DEPENDS)" >>$@
 	@echo "Conflicts: $(NCURSES_CONFLICTS)" >>$@
 
-$(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
+$(NCURSES_IPK): $(NCURSES_DIR)/.built
 	rm -rf $(NCURSES_IPK_DIR) $(BUILD_DIR)/ncurses_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
-		install.libs install.progs install.data install.panel install.menu install.form
+		install.libs install.progs # install.data
 	rm -rf $(NCURSES_IPK_DIR)/opt/include
 	rm -f $(NCURSES_IPK_DIR)/opt/lib/*.a
-	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/bin/clear \
+		$(NCURSES_IPK_DIR)/opt/bin/infocmp $(NCURSES_IPK_DIR)/opt/bin/t*
 	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/lib/*$(SO).5$(DYLIB)
 ifeq (darwin, $(TARGET_OS))
 	for dylib in $(NCURSES_IPK_DIR)/opt/lib/*$(SO).5$(DYLIB); do \
