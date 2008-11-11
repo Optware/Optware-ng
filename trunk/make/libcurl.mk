@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.19.0
+LIBCURL_VERSION=7.19.1
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=2
+LIBCURL_IPK_VERSION=1
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -52,6 +52,7 @@ LIBCURL_CONFFILES=#/opt/etc/libcurl.conf /opt/etc/init.d/SXXlibcurl
 # which they should be applied to the source code.
 #
 LIBCURL_PATCHES=$(LIBCURL_SOURCE_DIR)/proxy.patch \
+		$(LIBCURL_SOURCE_DIR)/ssluse-verbose_string.patch \
 		$(LIBCURL_SOURCE_DIR)/timeval-uclibc.patch
 
 #
