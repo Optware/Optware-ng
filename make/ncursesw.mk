@@ -6,8 +6,7 @@
 
 NCURSESW_DIR=$(BUILD_DIR)/ncursesw
 
-NCURSESW_VERSION=5.6
-NCURSESW_SHLIBVERSION=5
+NCURSESW_VERSION=5.7
 NCURSESW_SITE=ftp://invisible-island.net/ncurses
 NCURSESW_SOURCE=ncurses-$(NCURSESW_VERSION).tar.gz
 NCURSESW_UNZIP=zcat
@@ -18,7 +17,7 @@ NCURSESW_PRIORITY=optional
 NCURSESW_DEPENDS=ncurses
 NCURSESW_CONFLICTS=
 
-NCURSESW_IPK_VERSION=2
+NCURSESW_IPK_VERSION=1
 
 NCURSESW_IPK=$(BUILD_DIR)/ncursesw_$(NCURSESW_VERSION)-$(NCURSESW_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSESW_IPK_DIR=$(BUILD_DIR)/ncursesw-$(NCURSESW_VERSION)-ipk
@@ -27,13 +26,16 @@ NCURSESW_IPK_DIR=$(BUILD_DIR)/ncursesw-$(NCURSESW_VERSION)-ipk
 
 ncursesw-source: $(DL_DIR)/$(NCURSES_SOURCE)
 
-$(NCURSESW_DIR)/.source: $(DL_DIR)/$(NCURSESW_SOURCE)
+$(NCURSESW_DIR)/.configured: $(DL_DIR)/$(NCURSESW_SOURCE)
+	$(MAKE) zlib-stage
+	rm -rf $(BUILD_DIR)/$(NCURSES) $(@D)
+	rm -rf  $(STAGING_INCLUDE_DIR)/ncursesw \
+		$(STAGING_LIB_DIR)/libformw.* \
+		$(STAGING_LIB_DIR)/libmenuw.* \
+		$(STAGING_LIB_DIR)/libncursesw.* \
+		$(STAGING_LIB_DIR)/libpanelw.*
 	$(NCURSESW_UNZIP) $(DL_DIR)/$(NCURSESW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(NCURSES) $(NCURSESW_DIR)
-	touch $(NCURSESW_DIR)/.source
-
-$(NCURSESW_DIR)/.configured: $(NCURSESW_DIR)/.source
-	$(MAKE) zlib-stage
 ifneq ($(HOSTCC), $(TARGET_CC))
 	# configure without wide char just to make two build tools
 	(cd $(@D); \
@@ -73,16 +75,20 @@ endif
 
 ncursesw-unpack: $(NCURSESW_DIR)/.configured
 
-$(NCURSESW_DIR)/lib/libncursesw.so.$(NCURSESW_SHLIBVERSION): $(NCURSESW_DIR)/.configured
+$(NCURSESW_DIR)/.built: $(NCURSESW_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(NCURSESW_DIR)
+	touch $@
 
-ncursesw: $(NCURSESW_DIR)/lib/libncursesw.so.$(NCURSESW_SHLIBVERSION)
+ncursesw: $(NCURSESW_DIR)/.built
 
-$(STAGING_DIR)/opt/lib/libncursesw.so.$(NCURSESW_SHLIBVERSION): $(NCURSESW_DIR)/lib/libncursesw.so.$(NCURSESW_SHLIBVERSION)
+$(NCURSESW_DIR)/.staged: $(NCURSESW_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
 	ln -sf ncurses/ncurses.h $(STAGING_INCLUDE_DIR)
+	touch $@
 
-ncursesw-stage: $(STAGING_DIR)/opt/lib/libncursesw.so.$(NCURSESW_SHLIBVERSION)
+ncursesw-stage: $(NCURSESW_DIR)/.staged
 
 $(NCURSESW_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -98,10 +104,9 @@ $(NCURSESW_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(NCURSESW_DEPENDS)" >>$@
 	@echo "Conflicts: $(NCURSESW_CONFLICTS)" >>$@
 
-$(NCURSESW_IPK): $(STAGING_DIR)/opt/lib/libncursesw.so.$(NCURSESW_SHLIBVERSION)
+$(NCURSESW_IPK): $(NCURSESW_DIR)/.built
 	rm -rf $(NCURSESW_IPK_DIR) $(BUILD_DIR)/ncursesw_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(NCURSESW_IPK_DIR) \
-		install.libs install.panel install.menu install.form
+	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(NCURSESW_IPK_DIR) install.libs
 	rm -rf $(NCURSESW_IPK_DIR)/opt/include
 	rm -f $(NCURSESW_IPK_DIR)/opt/lib/*.a
 #	$(STRIP_COMMAND) $(NCURSESW_IPK_DIR)/opt/bin/*
