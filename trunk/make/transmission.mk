@@ -183,6 +183,9 @@ endif
 	then cd $(@D) && ./autogen.sh; \
 	else autoreconf -vif $(@D); \
 	fi
+	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
+		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
