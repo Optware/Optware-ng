@@ -25,7 +25,7 @@
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.34
+TRANSMISSION_VERSION=1.40
 #TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
 #TRANSMISSION_SVN_REV=6245
 ifdef TRANSMISSION_SVN_REV
@@ -179,12 +179,10 @@ endif
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D) ; \
 	fi
 	sed -i -e 's/-g / /' $(@D)/configure.ac
-	if test -n "$(TRANSMISSION_SOURCES)"; then cp $(TRANSMISSION_SOURCES) $(@D)/cli; fi
-ifdef TRANSMISSION_SVN_REV
-	cd $(@D) && ./autogen.sh
-else
-	autoreconf -vif $(@D)
-endif
+	if test -x "$(@D)/autogen.sh"; \
+	then cd $(@D) && ./autogen.sh; \
+	else autoreconf -vif $(@D); \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
