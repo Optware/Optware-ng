@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CENTERIM_SITE=http://www.centerim.org/download/releases
-CENTERIM_VERSION=4.22.5
+CENTERIM_VERSION=4.22.6
 CENTERIM_SOURCE=centerim-$(CENTERIM_VERSION).tar.gz
 CENTERIM_DIR=centerim-$(CENTERIM_VERSION)
 CENTERIM_UNZIP=zcat
@@ -137,7 +137,7 @@ $(CENTERIM_BUILD_DIR)/.configured: $(DL_DIR)/$(CENTERIM_SOURCE) $(CENTERIM_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 centerim-unpack: $(CENTERIM_BUILD_DIR)/.configured
