@@ -50,11 +50,6 @@
 #include <kernel/OS.h>
 #define usleep snooze
 #endif
-#ifdef __GNUC__
-#  define UNUSED __attribute__((unused))
-#else
-#  define UNUSED
-#endif
 #if defined( linux ) || defined( __linux ) || defined( __linux__ )
 #include <sys/sysinfo.h>
 #define HAVE_SYSINFO
@@ -86,7 +81,7 @@ static int          downloadLimit = -1;
 static char         * active_torrents_path = NULL;
 static int          watchdogInterval = 600;
 static int          natTraversal  = 0;
-static int	        encryptionMode = TR_PLAINTEXT_PREFERRED;
+static int	        encryptionMode = TR_CLEAR_PREFERRED;
 static sig_atomic_t mustDie       = 0;
 static sig_atomic_t got_hup       = 0;
 static sig_atomic_t got_usr1      = 0;
@@ -96,7 +91,9 @@ static char         * pidfile = NULL;
 
 static char         * finishCall   = NULL;
 static int  parseCommandLine ( int argc, char ** argv );
-static tr_handle    * h;
+static tr_session   * h;
+
+#define MAX_PATH_LENGTH 1024
 
 static struct ACTIVE_TORRENTS {
   tr_torrent   * torrent;
@@ -126,9 +123,9 @@ torrentIterate( tr_callback_t func, void * d )
 
 /* Should be non-blocking call */
 static void
-torrentStateChanged( tr_torrent   * torrent UNUSED,
-                     cp_status_t    status UNUSED,
-                     void         * user_data UNUSED )
+torrentCompletenessChanged( tr_torrent      * torrent UNUSED,
+                            tr_completeness   completeness UNUSED,
+                            void            * user_data UNUSED )
 {
   got_usr1 = 1;
 #if 0  
@@ -151,7 +148,7 @@ static int dispose()
         {
           const struct tr_stat * st = tr_torrentStat( tor->torrent );
      
-          if (st->status == TR_STATUS_STOPPED)
+          if (st->activity == TR_STATUS_STOPPED)
             {
               struct ACTIVE_TORRENTS *next;
               syslog( LOG_NOTICE, "Closing torrent %s", tor->filename );
@@ -167,8 +164,8 @@ static int dispose()
           else
             {
               dirty = 1;
-              syslog( LOG_NOTICE, "Not closing torrent %s status: 0x%x",
-                      tor->filename, st->status);
+              syslog( LOG_NOTICE, "Not closing torrent %s activity: 0x%x",
+                      tor->filename, st->activity);
               prev = tor;
               tor = tor->next;
             }
@@ -274,7 +271,7 @@ static void start_torrent(const char * filename)
                   new_torrent->next = NULL;
                   active_torrents = new_torrent;
                 }
-              tr_torrentSetStatusCallback( tor, torrentStateChanged, NULL );
+              tr_torrentSetCompletenessCallback( tor, torrentCompletenessChanged, NULL );
               tr_torrentSetDownloadDir( tor, folder);
               tr_torrentStart( tor );
               syslog( LOG_NOTICE, "Starting torrent %s", filename );
@@ -339,13 +336,22 @@ static void reload_active()
 }
 
 
-char * getStringRatio( float ratio )
+static char * getStringRatio( float ratio )
 {
-    static char string[20];
-    if( ratio == TR_RATIO_NA )
-        return "n/a";
-    tr_snprintf( string, sizeof string, "%.3f", ratio );
-    return string;
+    static char buf[20];
+    
+    if( (int)ratio == TR_RATIO_NA )
+      tr_strlcpy( buf, _( "None" ), sizeof buf );
+    else if( (int)ratio == TR_RATIO_INF )
+      tr_strlcpy( buf, "Inf", sizeof buf );
+    else if( ratio < 10.0 )
+      tr_snprintf( buf, sizeof buf, "%.2f", ratio );
+    else if( ratio < 100.0 )
+      tr_snprintf( buf, sizeof buf, "%.1f", ratio );
+    else
+      tr_snprintf( buf, sizeof buf, "%.0f", ratio );
+    
+    return buf;
 }
 
 /* Prepares status string up to STATUS_WIDTH chars width */
@@ -357,47 +363,47 @@ static char * status(tr_torrent *tor)
 
   const struct tr_stat    * s = tr_torrentStat( tor );
 
-  if ( s->error && !(s->error & TR_ERROR_TC_WARNING))
+  if ( s->error && !(s->error))
     tr_snprintf( string, STATUS_WIDTH, "Error: #%x %s", s->error, s->errorString );
-  else if( s->status & TR_STATUS_CHECK_WAIT ) 
+  else if( s->activity & TR_STATUS_CHECK_WAIT ) 
     { 
       chars = tr_snprintf( string, sizeof string, 
                         "Waiting to check files... %.2f %%",
                         100.0 * s->percentDone ); 
     }
-  else if( s->status & TR_STATUS_CHECK )
+  else if( s->activity & TR_STATUS_CHECK )
     {
       chars = tr_snprintf( string, STATUS_WIDTH,
                         "Checking files... %.2f %%", 100.0 * s->percentDone );
     }
-  else if( s->status & TR_STATUS_DOWNLOAD )
+  else if( s->activity & TR_STATUS_DOWNLOAD )
     {
       if (s->eta < 0 ) /* Without eta */
         tr_snprintf( string, STATUS_WIDTH,
                   "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
                   "ul to %d (%.2f KB/s)", 100.0 * s->percentDone,
                   s->peersConnected, ( s->peersConnected == 1 ) ? "" : "s",
-                  s->peersSendingToUs, s->rateDownload,
-                  s->peersGettingFromUs, s->rateUpload );
+                  s->peersSendingToUs, s->pieceDownloadSpeed,
+                  s->peersGettingFromUs, s->pieceUploadSpeed );
       else
         tr_snprintf( string, STATUS_WIDTH,
                   "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
                   "ul to %d (%.2f KB/s) %d:%02d remaining",
                   100.0 * s->percentDone,
                   s->peersConnected, ( s->peersConnected == 1 ) ? "" : "s",
-                  s->peersSendingToUs, s->rateDownload,
-                  s->peersGettingFromUs, s->rateUpload,
+                  s->peersSendingToUs, s->pieceDownloadSpeed,
+                  s->peersGettingFromUs, s->pieceUploadSpeed,
                   s->eta / 3600, (s->eta / 60) % 60
                   );
     }
-  else if( s->status & TR_STATUS_SEED )
+  else if( s->activity & TR_STATUS_SEED )
     {
       chars = tr_snprintf( string, STATUS_WIDTH,
               "Seeding, uploading to %d of %d peer(s), %.2f KB/s [%s]",
                         s->peersGettingFromUs, s->peersConnected,
-                        s->rateUpload, getStringRatio(s->ratio));
+                        s->pieceUploadSpeed, getStringRatio(s->ratio));
     }
-  else if (s->status & TR_STATUS_STOPPED )
+  else if (s->activity & TR_STATUS_STOPPED )
     tr_snprintf( string, STATUS_WIDTH, "Stopped (%.2f %%)",
                  100 * s->percentDone);
   else
@@ -412,12 +418,12 @@ static int progress(tr_torrent *tor)
 
   const struct tr_stat    * s = tr_torrentStat( tor );
 
-  if( s->status & TR_STATUS_CHECK )
+  if( s->activity & TR_STATUS_CHECK )
     return 100.0 * s->percentDone;
-  else if( s->status & TR_STATUS_DOWNLOAD )
+  else if( s->activity & TR_STATUS_DOWNLOAD )
     return 100.0 * s->percentDone;
-  else if( s->status & TR_STATUS_SEED  && uploadLimit > 0)
-    return 100.0*(s->rateUpload/uploadLimit);
+  else if( s->activity & TR_STATUS_SEED  && uploadLimit > 0)
+    return 100.0*(s->pieceUploadSpeed/uploadLimit);
   return 0;
 }
 
@@ -634,6 +640,7 @@ int main( int argc, char ** argv )
                          natTraversal,            /* nat enabled */
                          publicPort,              /* public port */
                          encryptionMode, 	      /* encryption mode */
+                         TR_DEFAULT_LAZY_BITFIELD_ENABLED,
                          uploadLimit >= 0,        /* use upload speed limit? */
                          uploadLimit,             /* upload speed limit */
                          downloadLimit >= 0,    /* use download speed limit? */
@@ -645,7 +652,8 @@ int main( int argc, char ** argv )
                          TR_DEFAULT_PEER_SOCKET_TOS,
                          0, 			   /* TR_DEFAULT_RPC_ENABLED, */
                          TR_DEFAULT_RPC_PORT,
-                         TR_DEFAULT_RPC_ACL,
+                         TR_DEFAULT_RPC_WHITELIST_ENABLED,
+                         TR_DEFAULT_RPC_WHITELIST,
                          FALSE, "fnord", "potzrebie",
                          TR_DEFAULT_PROXY_ENABLED,
                          TR_DEFAULT_PROXY,
@@ -691,7 +699,8 @@ int main( int argc, char ** argv )
           reload_active();
           got_hup = 0;
         }
-      tr_sessionGetSpeed(h, &download, &upload);
+      download = tr_sessionGetRawSpeed(h, TR_DOWN);
+      upload = tr_sessionGetRawSpeed(h, TR_UP);
       dispose();
 
 #ifdef HAVE_SYSINFO
@@ -822,7 +831,7 @@ static int parseCommandLine( int argc, char ** argv )
             natTraversal = 1;
             break;
 	  case 'e':
-	    encryptionMode = encryptionMode == TR_PLAINTEXT_PREFERRED ?
+	    encryptionMode = encryptionMode == TR_CLEAR_PREFERRED ?
 	    	TR_ENCRYPTION_PREFERRED : TR_ENCRYPTION_REQUIRED;
 	    break;
           default:
