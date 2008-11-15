@@ -25,9 +25,9 @@
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSIOND_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSIOND_VERSION=1.34
+TRANSMISSIOND_VERSION=1.40
 TRANSMISSIOND_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-#TRANSMISSIOND_SVN_REV=6401
+#TRANSMISSIOND_SVN_REV=7069
 ifdef TRANSMISSIOND_SVN_REV
 TRANSMISSIOND_SOURCE=transmission-svn-$(TRANSMISSIOND_SVN_REV).tar.bz2
 else
