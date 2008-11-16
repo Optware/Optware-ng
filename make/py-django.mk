@@ -21,10 +21,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DJANGO_VERSION=1.0
+PY-DJANGO_VERSION=1.0.1
 PY-DJANGO_SITE=http://www.djangoproject.com/download/$(PY-DJANGO_VERSION)/tarball/
 PY-DJANGO_SOURCE=Django-$(PY-DJANGO_VERSION).tar.gz
-PY-DJANGO_DIR=Django-$(PY-DJANGO_VERSION)
+PY-DJANGO_DIR=Django-$(PY-DJANGO_VERSION)-final
 PY-DJANGO_UNZIP=zcat
 PY-DJANGO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-DJANGO_DESCRIPTION=A high-level Python Web framework that encourages rapid development and clean, pragmatic design.
