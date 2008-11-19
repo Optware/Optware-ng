@@ -1,5 +1,5 @@
---- Python-3.0a5/setup.py.orig	2008-05-06 12:48:38.000000000 -0700
-+++ Python-3.0a5/setup.py	2008-05-15 14:48:10.000000000 -0700
+--- Python-3.0rc1/setup.py.orig	2008-09-05 23:27:15.000000000 +0000
++++ Python-3.0rc1/setup.py	2008-09-19 02:54:17.246267593 +0000
 @@ -16,7 +16,7 @@
  from distutils.command.install_lib import install_lib
  
@@ -9,7 +9,7 @@
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -253,6 +253,10 @@
+@@ -260,6 +260,10 @@
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -20,15 +20,7 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -794,7 +798,6 @@
-             exts.append(Extension('_bsddb', ['_bsddb.c'],
-                                   depends = ['bsddb.h'],
-                                   library_dirs=dblib_dir,
--                                  runtime_library_dirs=dblib_dir,
-                                   include_dirs=db_incs,
-                                   libraries=dblibs))
-         else:
-@@ -892,7 +895,6 @@
+@@ -764,7 +768,6 @@
                                    include_dirs=["Modules/_sqlite",
                                                  sqlite_incdir],
                                    library_dirs=sqlite_libdir,
@@ -36,3 +28,11 @@
                                    extra_link_args=sqlite_extra_link_args,
                                    libraries=["sqlite3",]))
          else:
+@@ -789,7 +792,6 @@
+             elif db_incs is not None:
+                 exts.append( Extension('_dbm', ['_dbmmodule.c'],
+                                        library_dirs=dblib_dir,
+-                                       runtime_library_dirs=dblib_dir,
+                                        include_dirs=db_incs,
+                                        define_macros=[('HAVE_BERKDB_H',None),
+                                                       ('DB_DBM_HSEARCH',None)],
