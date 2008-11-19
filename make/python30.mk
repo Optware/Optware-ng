@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON30_VERSION=3.0rc1
+PYTHON30_VERSION=3.0rc2
 PYTHON30_VERSION_MAJOR=3.0
 PYTHON30_SITE=http://www.python.org/ftp/python/$(PYTHON30_VERSION_MAJOR)/
 PYTHON30_SOURCE=Python-$(PYTHON30_VERSION).tgz
@@ -233,7 +233,7 @@ $(PYTHON30_IPK): $(PYTHON30_BUILD_DIR)/.built
 	chmod 555 $(PYTHON30_IPK_DIR)/opt/lib/libpython$(PYTHON30_VERSION_MAJOR).so.1.0
 	rm $(PYTHON30_IPK_DIR)/opt/bin/python $(PYTHON30_IPK_DIR)/opt/bin/python-config
 #	cd $(PYTHON30_IPK_DIR)/opt/bin; ln -s python$(PYTHON30_VERSION_MAJOR) python
-	for f in bin/pydoc bin/idle bin/smtpd.py man/man1/python.1; \
+	for f in bin/pydoc bin/idle bin/smtpd.py ; \
 	    do mv $(PYTHON30_IPK_DIR)/opt/$$f $(PYTHON30_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/3.0\1/'`; done
 	install -d $(PYTHON30_IPK_DIR)/opt/local/bin
 	install -d $(PYTHON30_IPK_DIR)/opt/local/lib/python$(PYTHON30_VERSION_MAJOR)/site-packages
