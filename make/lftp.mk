@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
-LFTP_VERSION=3.7.4
+LFTP_VERSION=3.7.5
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -36,7 +36,7 @@ LFTP_CONFLICTS=
 #
 # LFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LFTP_IPK_VERSION=2
+LFTP_IPK_VERSION=1
 
 #
 # LFTP_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ LFTP_IPK_VERSION=2
 # LFTP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LFTP_PATCHES=$(LFTP_SOURCE_DIR)/configure.patch
+LFTP_PATCHES=$(LFTP_SOURCE_DIR)/add-missing-header-to-commands.cc.patch
 
 #
 # If the compilation of the package requires additional
