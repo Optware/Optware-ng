@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DJANGO_VERSION=1.0.1
+PY-DJANGO_VERSION=1.0.2
 PY-DJANGO_SITE=http://www.djangoproject.com/download/$(PY-DJANGO_VERSION)/tarball/
 PY-DJANGO_SOURCE=Django-$(PY-DJANGO_VERSION).tar.gz
 PY-DJANGO_DIR=Django-$(PY-DJANGO_VERSION)-final
