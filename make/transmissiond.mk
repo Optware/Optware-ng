@@ -193,11 +193,13 @@ endif
 	fi
 	sed -i -e 's/-g / /' $(TRANSMISSIOND_BUILD_DIR)/configure.ac
 	if test -n "$(TRANSMISSIOND_SOURCES)"; then cp $(TRANSMISSIOND_SOURCES) $(@D)/cli; fi
-ifdef TRANSMISSIOND_SVN_REV
-	cd $(@D) && AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh
-else
-	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf $(@D)
-endif
+	if test -x "$(@D)/autogen.sh"; \
+	then cd $(@D) && ./autogen.sh; \
+	else autoreconf -vif $(@D); \
+	fi
+	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
+		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSIOND_CPPFLAGS)" \
