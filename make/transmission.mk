@@ -26,8 +26,8 @@
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.40
-#TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-#TRANSMISSION_SVN_REV=6245
+TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
+TRANSMISSION_SVN_REV=7132
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -106,10 +106,8 @@ else
 TRANSMISSION-DBG_IPK=$(BUILD_DIR)/transmission-dbg_$(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)_$(TARGET_ARCH).ipk
 endif
 
-ifdef TRANSMISSIOND_VERSION
-ifeq ($(TRANSMISSION_VERSION), $(TRANSMISSIOND_VERSION))
+ifeq ($(TRANSMISSION_SOURCE), $(TRANSMISSIOND_SOURCE))
 TRANSMISSION_SKIP_FETCH=1
-endif
 endif
 
 #
@@ -216,17 +214,19 @@ endif
 	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
 		then cat $(TRANSMISSION_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p1 ; \
+		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(TRANSMISSION-DBG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION-DBG_BUILD_DIR) ; \
 	fi
 	if test -n "$(TRANSMISSION-DBG_SOURCES)"; then cp $(TRANSMISSION-DBG_SOURCES) $(@D)/cli; fi
-ifdef TRANSMISSION_SVN_REV
-	cd $(@D) && AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh
-else
-	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf $(@D)
-endif
+	if test -x "$(@D)/autogen.sh"; \
+	then cd $(@D) && ./autogen.sh; \
+	else autoreconf -vif $(@D); \
+	fi
+	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
+		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION-DBG_CPPFLAGS)" \
@@ -317,7 +317,8 @@ endif
 # You may need to patch your application to make it use these locations.
 #
 ifdef TRANSMISSION_SVN_REV
-$(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built $(TRANSMISSION-DBG_BUILD_DIR)/.built
+$(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built \
+# $(TRANSMISSION-DBG_BUILD_DIR)/.built
 else
 $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
 endif
