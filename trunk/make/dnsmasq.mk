@@ -5,7 +5,7 @@
 #############################################################
 
 DNSMASQ_SITE=http://www.thekelleys.org.uk/dnsmasq
-DNSMASQ_VERSION=2.45
+DNSMASQ_VERSION=2.46
 DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_DIR:=dnsmasq-$(DNSMASQ_VERSION)
 DNSMASQ_UNZIP=zcat
@@ -16,7 +16,7 @@ DNSMASQ_PRIORITY=optional
 DNSMASQ_DEPENDS=
 DNSMASQ_CONFLICTS=
 
-DNSMASQ_IPK_VERSION=2
+DNSMASQ_IPK_VERSION=1
 
 # DNSMASQ_CONFFILES should be a list of user-editable files
 DNSMASQ_CONFFILES=/opt/etc/dnsmasq.conf
