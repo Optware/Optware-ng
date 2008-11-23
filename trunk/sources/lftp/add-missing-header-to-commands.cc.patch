@@ -1,9 +1,0 @@
---- src/commands.cc.orig	2008-11-06 10:56:35.000000000 +0000
-+++ src/commands.cc	2008-11-18 00:16:58.116890769 +0000
-@@ -21,6 +21,7 @@
- /* $Id: commands.cc,v 1.289 2008/11/06 10:56:35 lav Exp $ */
-
- #include <config.h>
-+#include <sys/wait.h>
-
- #include "modconfig.h"
