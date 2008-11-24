@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-FORMENCODE_SITE=http://pypi.python.org/packages/source/F/FormEncode
-PY-FORMENCODE_VERSION=1.1
+PY-FORMENCODE_VERSION=1.2
 PY-FORMENCODE_SOURCE=FormEncode-$(PY-FORMENCODE_VERSION).tar.gz
 PY-FORMENCODE_DIR=FormEncode-$(PY-FORMENCODE_VERSION)
 PY-FORMENCODE_UNZIP=zcat
