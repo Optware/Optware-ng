@@ -7,7 +7,7 @@ GNU_TARGET_NAME = arm-linux-uclibc
 LIBSTDC++_VERSION=6.0.3
 LIBNSL_VERSION=0.9.28
 
-GETTEXT_NLS=enable
+# GETTEXT_NLS=enable
 
 GPL_SOURCE_VERSION=1.00.06
 GPL_SOURCE_SITE=ftp://ftp.linksys.com/opensourcecode/wrp400/$(GPL_SOURCE_VERSION)
@@ -49,6 +49,9 @@ $(BASE_DIR)/toolchain/$(GPL_SOURCE_DIR)/.built: $(DL_DIR)/$(GPL_SOURCE_TARBALL)
 		$(@D)/Result/buildroot/toolchain/gcc/3.4.6/
 	sed -i -e '/LDSO_RUNPATH/s|.*|LDSO_RUNPATH=y|' \
 		$(@D)/Result/buildroot/toolchain/uClibc/uClibc-0.9.28.config
+	-$(MAKE) -C $(@D)/Result toolchain
+	sed -i -e 's|MAKEINFO = .*|MAKEINFO = makeinfo|' \
+                $(@D)/Result/buildroot/toolchain_build_arm/binutils-2.17-build/Makefile
 	$(MAKE) -C $(@D)/Result toolchain
 	touch $@
 
