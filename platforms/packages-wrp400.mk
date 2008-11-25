@@ -12,6 +12,68 @@ BROKEN_PACKAGES = \
 	atk \
 	avahi \
 	bash \
-	gdbm apr-util apache \
-        glib bitlbee castget ctrlproxy finch fuppes giftcurs gnet gnokii gtk irssi libopensync libsoup mc mcabber ncmpc pal pango syslog-ng tshark you grabber \
-	libdb appweb bogofilter cyrus-imapd mutt openldap perl-berkeleydb perl-db-file php-fcgi php postfix python24 python25 python26 sendmail xemacs \
+	bsdmainutils \
+	clearsilver \
+	coreutils \
+	cscope \
+	dircproxy \
+	eaccelerator \
+	ecl \
+	eggdrop \
+	emacs22 \
+	erl-yaws \
+	fcgi \
+	ficy \
+	fish \
+	flac moc mpd \
+	gambit-c \
+	gdbm apr-util apache gnu-smalltalk mt-daapd mt-daapd-svn ntop \
+	gift-ares gift-gnutella gift-openft \
+	git \
+        glib bitlbee castget ctrlproxy finch fuppes giftcurs gnet gnokii gsnmp gtk irssi libopensync libsoup mc mcabber mpdscribble msynctool ncmpc obexftp pal pango syslog-ng tshark yougrabber \
+	gnuplot \
+	gtmess \
+	hpijs \
+	ice \
+	iftop \
+	indent \
+	iptables \
+	iptraf \
+	kissdx \
+	lame \
+	launchtool \
+	ldconfig \
+	liba52 \
+	libart \
+	libcdio \
+	libdb appweb bogofilter cyrus-imapd cyrus-sasl distcc gnupg gnupg1 mod-fastcgi mutt netatalk openldap openser perl perl-berkeleydb perl-db-file php-fcgi php postfix py-setuptools python24 python25 python26 sendmail xemacs \
+	libesmtp esmtp \
+	libextractor \
+	libftdi \
+	libieee1284 libinklevel ink \
+	libmemcache \
+	libmtp \
+	libusb bluez-utils dfu-util digitemp lcd4linux libgphoto2 gphoto2 nut oww \
+	lighttpd \
+	logrotate \
+	loudmouth \
+	lzo openvpn \
+	md5deep \
+	mediatomb \
+	microdc2 \
+	mimms \
+	modutils \
+	monotone \
+	mpc \
+	msmtp \
+	mtr \
+	multitail \
+	nemesis \
+	newt \
+	nfs-server \
+	nfs-utils \
+	nylon \
+	ocaml \
+	opendchub \
+	pinentry \
+	stfl newsbeuter \
