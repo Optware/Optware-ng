@@ -27,14 +27,14 @@ BROKEN_PACKAGES = \
 	fish \
 	flac moc mpd \
 	gambit-c \
-	gdbm apr-util apache gnu-smalltalk mt-daapd mt-daapd-svn ntop \
+	gdbm apr-util apache gnu-smalltalk mt-daapd mt-daapd-svn ntop php-apache svn \
 	gift-ares gift-gnutella gift-openft \
 	git \
-        glib bitlbee castget ctrlproxy finch fuppes giftcurs gnet gnokii gsnmp gtk irssi libopensync libsoup mc mcabber mpdscribble msynctool ncmpc obexftp pal pango syslog-ng tshark yougrabber \
+        glib bitlbee castget ctrlproxy finch fuppes giftcurs gnet gnokii gsnmp gtk irssi libopensync libsoup mc mcabber mpdscribble msynctool ncmpc obexftp pal pango pkgconfig scli syslog-ng tshark xchat yougrabber \
 	gnuplot \
 	gtmess \
 	hpijs \
-	ice \
+	ice sm xt xaw xmu xterm \
 	iftop \
 	indent \
 	iptables \
@@ -44,16 +44,16 @@ BROKEN_PACKAGES = \
 	launchtool \
 	ldconfig \
 	liba52 \
-	libart \
+	libart rrdcollect rrdtool \
 	libcdio \
-	libdb appweb bogofilter cyrus-imapd cyrus-sasl distcc gnupg gnupg1 mod-fastcgi mutt netatalk openldap openser perl perl-berkeleydb perl-db-file php-fcgi php postfix py-setuptools python24 python25 python26 sendmail xemacs \
+	libdb appweb bogofilter cyrus-imapd cyrus-sasl distcc getmail gitosis gnupg gnupg1 mod-fastcgi mutt netatalk openldap openser perl perl-berkeleydb perl-db-file php-fcgi php postfix pyrex python24 python25 python26 sendmail scons syx xemacs ${PYTHON_PACKAGES} \
 	libesmtp esmtp \
 	libextractor \
 	libftdi \
 	libieee1284 libinklevel ink \
 	libmemcache \
 	libmtp \
-	libusb bluez-utils dfu-util digitemp lcd4linux libgphoto2 gphoto2 nut oww \
+	libusb bluez-utils dfu-util digitemp lcd4linux libgphoto2 gphoto2 nut oww sane-backends usbutils \
 	lighttpd \
 	logrotate \
 	loudmouth \
@@ -75,5 +75,38 @@ BROKEN_PACKAGES = \
 	nylon \
 	ocaml \
 	opendchub \
+	phoneme-advanced \
+	player \
 	pinentry \
+	pound \
+	psmisc \
+	puppy \
+	qemu \
+	quagga \
+	rssh \
+	rtorrent \
+	rtpproxy \
+	screen \
+	siproxd \
+	slrn \
+	snownews \
+	spandsp \
+	squeak \
+	squid \
+	srelay \
 	stfl newsbeuter \
+	streamripper \
+	taged \
+	tcsh \
+	textutils \
+	tig \
+	transcode \
+	uemacs \
+	up-imapproxy \
+	util-linux-ng \
+	vlc \
+	vte \
+	vtun \
+	weechat \
+	xauth \
+	yafc \
