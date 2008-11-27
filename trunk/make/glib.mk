@@ -12,8 +12,8 @@
 # GLIB_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GLIB_SITE=ftp://ftp.gtk.org/pub/glib/2.12
-GLIB_VERSION=2.12.13
+GLIB_SITE=ftp://ftp.gtk.org/pub/glib/2.16
+GLIB_VERSION=2.16.6
 GLIB_SOURCE=glib-$(GLIB_VERSION).tar.bz2
 GLIB_DIR=glib-$(GLIB_VERSION)
 GLIB_UNZIP=bzcat
@@ -124,6 +124,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GLIB_LDFLAGS)" \
+ac_cv_func_posix_getgrgid_r=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
