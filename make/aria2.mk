@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ARIA2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aria2
-ARIA2_VERSION=1.0.0
+ARIA2_VERSION=1.0.1
 ARIA2_SOURCE=aria2c-$(ARIA2_VERSION).tar.bz2
 ARIA2_DIR=aria2c-$(ARIA2_VERSION)
 ARIA2_UNZIP=bzcat
