@@ -172,7 +172,7 @@ $(ERLANG_HOST_BUILD_DIR)/.configured: host/.configured \
 		--prefix=/opt \
 		--without-ssl \
 		--disable-smp-support \
-		--disable-hipe \
+		--enable-hipe \
 		--disable-nls \
 	)
 	touch $@
