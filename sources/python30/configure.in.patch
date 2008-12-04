@@ -112,12 +112,12 @@
 +if [[ $build != $host ]]; then
 +    AC_MSG_NOTICE(Cross compiling: Configuring build python)
 +    absconfigcommand=$(pwd)/$0
-+    mkdir -p buildpython25
-+    cd buildpython25
++    mkdir -p buildpython30
++    cd buildpython30
 +    CC="" CXX="" AR="" RANLIB="" LDFLAGS="" $absconfigcommand --prefix=$prefix
 +    cd ..
-+    BUILDPYTHON='buildpython25/python$(BUILDEXE)'
-+    BUILDPGEN='buildpython25/Parser/pgen$(BUILDEXE)'
++    BUILDPYTHON='buildpython30/python$(BUILDEXE)'
++    BUILDPGEN='buildpython30/Parser/pgen$(BUILDEXE)'
 +    CROSS_COMPILE=yes
 +else
 +    BUILDPYTHON='$(HOSTPYTHON)'

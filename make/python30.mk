@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON30_VERSION=3.0rc2
+PYTHON30_VERSION=3.0
 PYTHON30_VERSION_MAJOR=3.0
 PYTHON30_SITE=http://www.python.org/ftp/python/$(PYTHON30_VERSION_MAJOR)/
 PYTHON30_SOURCE=Python-$(PYTHON30_VERSION).tgz
@@ -125,7 +125,7 @@ python30-source: $(DL_DIR)/$(PYTHON30_SOURCE) $(PYTHON30_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PYTHON30_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON30_SOURCE) $(PYTHON30_PATCHES) # make/python30.mk
+$(PYTHON30_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON30_SOURCE) $(PYTHON30_PATCHES) make/python30.mk
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
@@ -233,8 +233,8 @@ $(PYTHON30_IPK): $(PYTHON30_BUILD_DIR)/.built
 	chmod 555 $(PYTHON30_IPK_DIR)/opt/lib/libpython$(PYTHON30_VERSION_MAJOR).so.1.0
 	rm $(PYTHON30_IPK_DIR)/opt/bin/python $(PYTHON30_IPK_DIR)/opt/bin/python-config
 #	cd $(PYTHON30_IPK_DIR)/opt/bin; ln -s python$(PYTHON30_VERSION_MAJOR) python
-	for f in bin/pydoc bin/idle bin/smtpd.py ; \
-	    do mv $(PYTHON30_IPK_DIR)/opt/$$f $(PYTHON30_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/3.0\1/'`; done
+	for f in bin/pydoc bin/idle bin/smtpd.py bin/2to3 ; \
+	    do mv $(PYTHON30_IPK_DIR)/opt/$$f $(PYTHON30_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-3.0\1/'`; done
 	install -d $(PYTHON30_IPK_DIR)/opt/local/bin
 	install -d $(PYTHON30_IPK_DIR)/opt/local/lib/python$(PYTHON30_VERSION_MAJOR)/site-packages
 	$(MAKE) $(PYTHON30_IPK_DIR)/CONTROL/control

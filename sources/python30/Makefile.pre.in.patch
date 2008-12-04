@@ -81,11 +81,11 @@
 +# Rules for making python/pgen that will run on the build system
 +# (only used for cross compiles)
 +
-+buildpython25/python$(BUILDEXE):				
-+	cd buildpython25; make all; cd ..
++buildpython30/python$(BUILDEXE):
++	cd buildpython30; make all; cd ..
 +
-+buildpython25/Parser/pgen$(BUILDEXE):
-+	cd buildpython25; make Parser/pgen; cd ..
++buildpython30/Parser/pgen$(BUILDEXE):
++	cd buildpython30; make Parser/pgen; cd ..
 +				
  ############################################################################
  # Header files
