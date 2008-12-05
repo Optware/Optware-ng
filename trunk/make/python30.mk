@@ -53,6 +53,9 @@ PYTHON30_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 PYTHON30_CPPFLAGS=
+ifeq (vt4, $(OPTWARE_TARGET))
+PYTHON30_CPPFLAGS+=-DPATH_MAX=4096
+endif
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
 ifeq ($(LIBC_STYLE),uclibc)
 PYTHON30_LDFLAGS=-lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
