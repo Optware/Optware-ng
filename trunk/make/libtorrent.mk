@@ -58,9 +58,6 @@ endif
 ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
 LIBTORRENT_PATCHES+=$(LIBTORRENT_SOURCE_DIR)/ceilf.patch
 endif
-ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
-LIBTORRENT_PATCHES+=$(LIBTORRENT_SOURCE_DIR)/throttle_no_float.patch
-endif
 
 #
 # If the compilation of the package requires additional
