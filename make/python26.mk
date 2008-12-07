@@ -21,9 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON26_VERSION=2.6
+PYTHON26_VERSION=2.6.1
 PYTHON26_VERSION_MAJOR=2.6
-PYTHON26_SITE=http://www.python.org/ftp/python/$(PYTHON26_VERSION_MAJOR)
+PYTHON26_SITE=http://www.python.org/ftp/python/$(PYTHON26_VERSION)
 PYTHON26_SOURCE=Python-$(PYTHON26_VERSION).tar.bz2
 PYTHON26_DIR=Python-$(PYTHON26_VERSION)
 PYTHON26_UNZIP=bzcat
@@ -100,8 +100,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYTHON26_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PYTHON26_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PYTHON26_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -232,8 +232,8 @@ $(PYTHON26_IPK): $(PYTHON26_BUILD_DIR)/.built
 	chmod 555 $(PYTHON26_IPK_DIR)/opt/lib/libpython$(PYTHON26_VERSION_MAJOR).so.1.0
 	rm $(PYTHON26_IPK_DIR)/opt/bin/python $(PYTHON26_IPK_DIR)/opt/bin/python-config
 #	cd $(PYTHON26_IPK_DIR)/opt/bin; ln -s python$(PYTHON26_VERSION_MAJOR) python
-	for f in bin/pydoc bin/idle bin/smtpd.py man/man1/python.1; \
-	    do mv $(PYTHON26_IPK_DIR)/opt/$$f $(PYTHON26_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/2.6\1/'`; done
+	for f in bin/pydoc bin/idle bin/smtpd.py bin/2to3 man/man1/python.1; \
+	    do mv $(PYTHON26_IPK_DIR)/opt/$$f $(PYTHON26_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-2.6\1/'`; done
 	install -d $(PYTHON26_IPK_DIR)/opt/local/bin
 	install -d $(PYTHON26_IPK_DIR)/opt/local/lib/python$(PYTHON26_VERSION_MAJOR)/site-packages
 	sed -i -e 's|$(TARGET_CROSS)|/opt/bin/|g' \
