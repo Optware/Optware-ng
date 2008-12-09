@@ -1,11 +1,11 @@
---- ext/posix/posix.c.orig	2007-06-27 13:18:58.000000000 +0200
-+++ ext/posix/posix.c	2007-06-27 13:20:12.000000000 +0200
+--- ext/posix/posix.c.orig	2008-09-20 22:12:59.000000000 +0000
++++ ext/posix/posix.c	2008-12-09 23:09:23.809048633 +0000
 @@ -467,7 +467,7 @@
  	add_assoc_string(return_value, "release",  u.release,  1);
  	add_assoc_string(return_value, "version",  u.version,  1);
  	add_assoc_string(return_value, "machine",  u.machine,  1);
--#ifdef _GNU_SOURCE
-+#if  defined(_GNU_SOURCE) && !defined(__UCLIBC__)
+-#if defined(_GNU_SOURCE) && !defined(DARWIN) && defined(HAVE_UTSNAME_DOMAINNAME)
++#if defined(_GNU_SOURCE) && !defined(__UCLIBC__) && !defined(DARWIN) && defined(HAVE_UTSNAME_DOMAINNAME)
  	add_assoc_string(return_value, "domainname", u.domainname, 1);
  #endif
  }

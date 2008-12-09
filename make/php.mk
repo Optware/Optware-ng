@@ -54,6 +54,7 @@ PHP_PATCHES=\
 	$(PHP_SOURCE_DIR)/configure.in.patch \
 	$(PHP_SOURCE_DIR)/threads.m4.patch \
 	$(PHP_SOURCE_DIR)/endian-5.0.4.patch \
+	$(PHP_SOURCE_DIR)/ext-posix-uclibc.patch \
 
 #
 # If the compilation of the package requires additional
