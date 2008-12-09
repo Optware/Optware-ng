@@ -7,11 +7,11 @@ OPENSSL_SITE=http://www.openssl.org/source
 ifeq ($(OPTWARE_TARGET), $(filter syno-e500 cs08q1armel ts509, $(OPTWARE_TARGET)))
 OPENSSL_VERSION=0.9.8i
 OPENSSL_LIB_VERSION=0.9.8
-OPENSSL_IPK_VERSION=1
+OPENSSL_IPK_VERSION=2
 else
 OPENSSL_VERSION=0.9.7m
 OPENSSL_LIB_VERSION=0.9.7
-OPENSSL_IPK_VERSION=4
+OPENSSL_IPK_VERSION=5
 endif
 
 OPENSSL_SOURCE=openssl-$(OPENSSL_VERSION).tar.gz
@@ -199,6 +199,9 @@ $(OPENSSL_IPK) $(OPENSSL_DEV_IPK): $(OPENSSL_BUILD_DIR)/.built
 	rm -rf $(OPENSSL_DEV_IPK_DIR) $(BUILD_DIR)/openssl-dev_*_$(TARGET_ARCH).ipk
 	install -d $(OPENSSL_DEV_IPK_DIR)/opt/include/openssl
 	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(OPENSSL_DEV_IPK_DIR)/opt/include/openssl
+	install -d $(OPENSSL_DEV_IPK_DIR)/opt/lib/pkgconfig
+	install -m 644 $(OPENSSL_BUILD_DIR)/openssl.pc $(OPENSSL_DEV_IPK_DIR)/opt/lib/pkgconfig
+	sed -i '/^Libs:/s|-lcrypto .* -ldl|-lcrypto -ldl|' $(OPENSSL_DEV_IPK_DIR)/opt/lib/pkgconfig/openssl.pc
 	$(MAKE) $(OPENSSL_DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_DEV_IPK_DIR)
 
