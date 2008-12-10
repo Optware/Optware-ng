@@ -135,7 +135,7 @@ eaccelerator-unpack: $(EACCELERATOR_BUILD_DIR)/.configured
 #
 $(EACCELERATOR_BUILD_DIR)/.built: $(EACCELERATOR_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) INCLUDES=""
+	$(MAKE) -C $(@D) INCLUDES="$(STAGING_CPPFLAGS) $(EACCELERATOR_CPPFLAGS)"
 	touch $@
 
 #
