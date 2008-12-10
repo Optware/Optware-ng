@@ -126,6 +126,7 @@ make/eaccelerator.mk make/php.mk
 		--with-php-config=$(STAGING_DIR)/opt/bin/php-config \
 		--with-eaccelerator-userid='"nobody"' \
 	)
+	sed -i -e '/^CPPFLAGS/s|-I/opt/include/php ||' $(@D)/Makefile
 	touch $@
 
 eaccelerator-unpack: $(EACCELERATOR_BUILD_DIR)/.configured
