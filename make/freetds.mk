@@ -104,7 +104,7 @@ freetds-source: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
 # shown below to make various patches to it.
 #
 $(FREETDS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES) make/freetds.mk
-	$(MAKE) unixodbc-stage
+	$(MAKE) unixodbc-stage ncurses-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(FREETDS_DIR) $(@D)
 	$(FREETDS_UNZIP) $(DL_DIR)/$(FREETDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(FREETDS_PATCHES) | patch -d $(BUILD_DIR)/$(FREETDS_DIR) -p1
