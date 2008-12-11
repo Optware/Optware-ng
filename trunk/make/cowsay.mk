@@ -42,7 +42,7 @@ COWSAY_CONFLICTS=
 #
 # COWSAY_IPK_VERSION should be incremented when the ipk changes.
 #
-COWSAY_IPK_VERSION=1
+COWSAY_IPK_VERSION=2
 
 #
 # COWSAY_CONFFILES should be a list of user-editable files
@@ -165,6 +165,7 @@ $(COWSAY_IPK_DIR)/CONTROL/control:
 #
 $(COWSAY_IPK): $(COWSAY_BUILD_DIR)/.built
 	rm -rf $(COWSAY_IPK_DIR) $(BUILD_DIR)/cowsay_*_$(TARGET_ARCH).ipk
+	install -m 644 $(COWSAY_SOURCE_DIR)/nslu2.cow $(COWSAY_BUILD_DIR)/cows/nslu2.cow
 	cd $(COWSAY_BUILD_DIR); sh ./install.sh $(COWSAY_IPK_DIR)/opt
 	$(MAKE) $(COWSAY_IPK_DIR)/CONTROL/control
 	echo $(COWSAY_CONFFILES) | sed -e 's/ /\n/g' > $(COWSAY_IPK_DIR)/CONTROL/conffiles
