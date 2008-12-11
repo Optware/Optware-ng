@@ -1,0 +1,24 @@
+##
+## NSLU2-Linux Logo
+##
+##
+$the_cow = <<EOC;                                      
+   $thoughts
+    $thoughts
+                       MMMN,N           
+                      MMMMMMMM          
+                      M,?M  MM    	   
+                    =  :DZI7MM               
+                 \$= \$  MIIMIM,M         
+                  Z  \$M ~+   MM         
+                   \$\$\$\$\$     ,MM        
+                  \$\$\$\$?\$    ZMMNN       
+               NN\$\$\$\$\$         M\$M      
+             DMM\$\$\$\$           MOMM     
+             \$MM\$\$\$O           MNMM     
+             \$\$\$\$\$II~         IDMM?     
+           \$\$\$\$IIIIII~        III??     
+    777\$\$\$\$\$\$ZZIIIIIII+   .. MIIIII??   
+  \$\$\$ZZZOOOOOOO\$\$777III7MMMMMZ7I777     
+  ZOZ              \$\$\$\$       \$\$\$       
+EOC
