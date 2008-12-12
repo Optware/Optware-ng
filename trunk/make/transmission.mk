@@ -36,7 +36,7 @@ endif
 TRANSMISSION_DIR=transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=bzcat
 TRANSMISSION_MAINTAINER=oleo@email.si
-TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with "Clutch" web interface bundled.
+TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with web interface bundled.
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl, libcurl
@@ -46,19 +46,19 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=1
+TRANSMISSION_IPK_VERSION=2
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
 #TRANSMISSION_CONFFILES=/opt/etc/transmission.conf
 
-TRANSMISSION_PATCHES = $(TRANSMISSION_SOURCE_DIR)/platform.c.patch
+#TRANSMISSION_PATCHES = $(TRANSMISSION_SOURCE_DIR)/platform.c.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-TRANSMISSION_CPPFLAGS=-O3
+TRANSMISSION_CPPFLAGS=-O3 -DTR_EMBEDDED
 TRANSMISSION_LDFLAGS=
 TRANSMISSION-DBG_CPPFLAGS=-O0 -g
 TRANSMISSION-DBG_LDFLAGS=-lefence -lpthread
@@ -195,6 +195,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--datadir=/opt/share \
 		--disable-gtk \
 		--disable-wx \
 		--disable-nls \
