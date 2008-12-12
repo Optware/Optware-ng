@@ -46,7 +46,7 @@ TRANSMISSIOND_CONFLICTS=torrent
 #
 # TRANSMISSIOND_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSIOND_IPK_VERSION=1
+TRANSMISSIOND_IPK_VERSION=2
 
 # TRANSMISSIOND-DBG_INCLUDED=1
 
@@ -71,7 +71,7 @@ TRANSMISSIOND_SOURCES=$(TRANSMISSIOND_SOURCE_DIR)/transmissiond.c \
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-TRANSMISSIOND_CPPFLAGS=-O3
+TRANSMISSIOND_CPPFLAGS=-O3 -DTR_EMBEDDED
 TRANSMISSIOND_LDFLAGS=
 TRANSMISSIOND-DBG_CPPFLAGS=-O0 -g
 TRANSMISSIOND-DBG_LDFLAGS=-lefence -lpthread
@@ -209,6 +209,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--datadir=/opt/share \
 		--disable-daemon \
 		--disable-gtk \
 		--disable-wx \
