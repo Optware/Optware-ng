@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEWSBEUTER_SITE=http://www.newsbeuter.org/downloads
-NEWSBEUTER_VERSION=1.2
+NEWSBEUTER_VERSION=1.3
 NEWSBEUTER_SOURCE=newsbeuter-$(NEWSBEUTER_VERSION).tar.gz
 NEWSBEUTER_DIR=newsbeuter-$(NEWSBEUTER_VERSION)
 NEWSBEUTER_UNZIP=zcat
@@ -187,12 +187,12 @@ newsbeuter: $(NEWSBEUTER_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(NEWSBEUTER_BUILD_DIR)/.staged: $(NEWSBEUTER_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-newsbeuter-stage: $(NEWSBEUTER_BUILD_DIR)/.staged
+#$(NEWSBEUTER_BUILD_DIR)/.staged: $(NEWSBEUTER_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#newsbeuter-stage: $(NEWSBEUTER_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -229,7 +229,7 @@ $(NEWSBEUTER_IPK): $(NEWSBEUTER_BUILD_DIR)/.built
 	rm -rf $(NEWSBEUTER_IPK_DIR) $(BUILD_DIR)/newsbeuter_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NEWSBEUTER_BUILD_DIR) install \
 		DESTDIR=$(NEWSBEUTER_IPK_DIR) \
-		prefix=$(NEWSBEUTER_IPK_DIR)/opt
+		prefix=/opt
 	$(STRIP_COMMAND) $(NEWSBEUTER_IPK_DIR)/opt/bin/*
 #	install -d $(NEWSBEUTER_IPK_DIR)/opt/etc/
 #	install -m 644 $(NEWSBEUTER_SOURCE_DIR)/newsbeuter.conf $(NEWSBEUTER_IPK_DIR)/opt/etc/newsbeuter.conf
