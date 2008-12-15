@@ -21,7 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEWSBEUTER_SITE=http://www.newsbeuter.org/downloads
-NEWSBEUTER_VERSION=1.3
+NEWSBEUTER_GCC_MAJOR:=$(shell $(TARGET_CC) -dumpversion | cut -c1)
+NEWSBEUTER_VERSION=$(if $(filter 3, $(NEWSBEUTER_GCC_MAJOR)),1.2,1.3)
 NEWSBEUTER_SOURCE=newsbeuter-$(NEWSBEUTER_VERSION).tar.gz
 NEWSBEUTER_DIR=newsbeuter-$(NEWSBEUTER_VERSION)
 NEWSBEUTER_UNZIP=zcat
@@ -229,7 +230,7 @@ $(NEWSBEUTER_IPK): $(NEWSBEUTER_BUILD_DIR)/.built
 	rm -rf $(NEWSBEUTER_IPK_DIR) $(BUILD_DIR)/newsbeuter_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NEWSBEUTER_BUILD_DIR) install \
 		DESTDIR=$(NEWSBEUTER_IPK_DIR) \
-		prefix=/opt
+		prefix=$(if $(filter 1.2,$(NEWSBEUTER_VERSION)),$(NEWSBEUTER_IPK_DIR),)/opt
 	$(STRIP_COMMAND) $(NEWSBEUTER_IPK_DIR)/opt/bin/*
 #	install -d $(NEWSBEUTER_IPK_DIR)/opt/etc/
 #	install -m 644 $(NEWSBEUTER_SOURCE_DIR)/newsbeuter.conf $(NEWSBEUTER_IPK_DIR)/opt/etc/newsbeuter.conf
