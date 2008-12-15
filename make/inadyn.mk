@@ -36,7 +36,7 @@ INADYN_CONFLICTS=
 #
 # INADYN_IPK_VERSION should be incremented when the ipk changes.
 #
-INADYN_IPK_VERSION=1
+INADYN_IPK_VERSION=2
 
 #
 # INADYN_CONFFILES should be a list of user-editable files
@@ -115,6 +115,7 @@ $(INADYN_BUILD_DIR)/.configured: $(DL_DIR)/$(INADYN_SOURCE) $(INADYN_PATCHES) ma
 	if test "$(BUILD_DIR)/$(INADYN_DIR)" != "$(INADYN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(INADYN_DIR) $(INADYN_BUILD_DIR) ; \
 	fi
+	sed -i -e 's|/etc/inadyn.conf|/opt&|' $(@D)/man/inadyn.8 $(@D)/readme.html $(@D)/src/dyndns.h
 	sed -i -e '/^COMPILE=/s|=gcc |=$$(CC) $$(CPPFLAGS) |' \
 	       -e '/^LINK=/s|=gcc |=$$(CC) $$(LDFLAGS) |' \
 		$(INADYN_BUILD_DIR)/makefile
@@ -155,12 +156,12 @@ inadyn: $(INADYN_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(INADYN_BUILD_DIR)/.staged: $(INADYN_BUILD_DIR)/.built
-	rm -f $@
+#$(INADYN_BUILD_DIR)/.staged: $(INADYN_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(INADYN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
-inadyn-stage: $(INADYN_BUILD_DIR)/.staged
+#inadyn-stage: $(INADYN_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
