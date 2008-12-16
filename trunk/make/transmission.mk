@@ -46,7 +46,7 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=2
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -60,7 +60,7 @@ TRANSMISSION_IPK_VERSION=2
 #
 TRANSMISSION_CPPFLAGS=-O3 -DTR_EMBEDDED
 TRANSMISSION_LDFLAGS=
-TRANSMISSION-DBG_CPPFLAGS=-O0 -g
+TRANSMISSION-DBG_CPPFLAGS=-O0 -g -DTR_EMBEDDED
 TRANSMISSION-DBG_LDFLAGS=-lefence -lpthread
 ifeq (uclibc, $(LIBC_STYLE))
 TRANSMISSION_LDFLAGS+=-lintl
@@ -176,11 +176,13 @@ endif
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D) ; \
 	fi
-	sed -i -e 's/-g / /' $(@D)/configure.ac
+ifdef TRANSMISSION_SVN_REV
 	if test -x "$(@D)/autogen.sh"; \
 	then cd $(@D) && ./autogen.sh; \
 	else autoreconf -vif $(@D); \
 	fi
+endif
+	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure
 	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
 		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \
 	fi
@@ -221,10 +223,12 @@ endif
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION-DBG_BUILD_DIR) ; \
 	fi
 	if test -n "$(TRANSMISSION-DBG_SOURCES)"; then cp $(TRANSMISSION-DBG_SOURCES) $(@D)/cli; fi
+ifdef TRANSMISSION_SVN_REV
 	if test -x "$(@D)/autogen.sh"; \
 	then cd $(@D) && ./autogen.sh; \
 	else autoreconf -vif $(@D); \
 	fi
+endif
 	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
 		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \
 	fi

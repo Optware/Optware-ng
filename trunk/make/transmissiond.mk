@@ -46,7 +46,7 @@ TRANSMISSIOND_CONFLICTS=torrent
 #
 # TRANSMISSIOND_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSIOND_IPK_VERSION=2
+TRANSMISSIOND_IPK_VERSION=1
 
 # TRANSMISSIOND-DBG_INCLUDED=1
 
@@ -73,7 +73,7 @@ TRANSMISSIOND_SOURCES=$(TRANSMISSIOND_SOURCE_DIR)/transmissiond.c \
 #
 TRANSMISSIOND_CPPFLAGS=-O3 -DTR_EMBEDDED
 TRANSMISSIOND_LDFLAGS=
-TRANSMISSIOND-DBG_CPPFLAGS=-O0 -g
+TRANSMISSIOND-DBG_CPPFLAGS=-O0 -g -DTR_EMBEDDED
 TRANSMISSIOND-DBG_LDFLAGS=-lefence -lpthread
 ifeq (uclibc, $(LIBC_STYLE))
 TRANSMISSIOND_LDFLAGS+=-lintl
@@ -189,12 +189,14 @@ endif
 	if test "$(BUILD_DIR)/$(TRANSMISSIOND_DIR)" != "$(TRANSMISSIOND_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSIOND_DIR) $(TRANSMISSIOND_BUILD_DIR) ; \
 	fi
-	sed -i -e 's/-g / /' $(TRANSMISSIOND_BUILD_DIR)/configure.ac
 	if test -n "$(TRANSMISSIOND_SOURCES)"; then cp $(TRANSMISSIOND_SOURCES) $(@D)/cli; fi
+ifdef TRANSMISSIOND_SVN_REV
 	if test -x "$(@D)/autogen.sh"; \
 	then cd $(@D) && ./autogen.sh; \
 	else autoreconf -vif $(@D); \
 	fi
+endif
+	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure
 	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
 		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \
 	fi
