@@ -46,7 +46,7 @@ TRANSMISSIOND_CONFLICTS=torrent
 #
 # TRANSMISSIOND_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSIOND_IPK_VERSION=1
+TRANSMISSIOND_IPK_VERSION=2
 
 # TRANSMISSIOND-DBG_INCLUDED=1
 
@@ -190,16 +190,12 @@ endif
 		then mv $(BUILD_DIR)/$(TRANSMISSIOND_DIR) $(TRANSMISSIOND_BUILD_DIR) ; \
 	fi
 	if test -n "$(TRANSMISSIOND_SOURCES)"; then cp $(TRANSMISSIOND_SOURCES) $(@D)/cli; fi
-ifdef TRANSMISSIOND_SVN_REV
+	sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure*
 	if test -x "$(@D)/autogen.sh"; \
 	then cd $(@D) && ./autogen.sh; \
 	else autoreconf -vif $(@D); \
 	fi
-endif
-	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure
-	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
-		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \
-	fi
+	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure*
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSIOND_CPPFLAGS)" \
