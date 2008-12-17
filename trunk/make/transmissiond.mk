@@ -46,7 +46,7 @@ TRANSMISSIOND_CONFLICTS=torrent
 #
 # TRANSMISSIOND_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSIOND_IPK_VERSION=2
+TRANSMISSIOND_IPK_VERSION=3
 
 # TRANSMISSIOND-DBG_INCLUDED=1
 
@@ -60,12 +60,13 @@ TRANSMISSIOND_CONFFILES += /opt/etc/init.d/S80busybox_httpd
 # TRANSMISSIOND_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TRANSMISSIOND_PATCHES= \
-	$(TRANSMISSIOND_SOURCE_DIR)/cli-Makefile.am.patch \
+TRANSMISSIOND_PATCHES=
+#\
+#	$(TRANSMISSIOND_SOURCE_DIR)/cli-Makefile.am.patch \
 
 # Additional sources to enhance transmissiond (like this CGI daemon)
 TRANSMISSIOND_SOURCES=$(TRANSMISSIOND_SOURCE_DIR)/transmissiond.c \
-
+			$(TRANSMISSIOND_SOURCE_DIR)/transmissiond.1
 
 #
 # If the compilation of the package requires additional
@@ -191,11 +192,14 @@ endif
 	fi
 	if test -n "$(TRANSMISSIOND_SOURCES)"; then cp $(TRANSMISSIOND_SOURCES) $(@D)/cli; fi
 	sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure*
+ifdef TRANSMISSIOND_SVN_REV 
 	if test -x "$(@D)/autogen.sh"; \
 	then cd $(@D) && ./autogen.sh; \
 	else autoreconf -vif $(@D); \
 	fi
+endif
 	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure*
+	sed -i -e 's/transmissioncli/transmissiond/g' $(@D)/cli/Makefile*
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSIOND_CPPFLAGS)" \
