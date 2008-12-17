@@ -1,8 +1,8 @@
---- ocaml/configure.orig	2008-01-04 05:26:38.000000000 -0800
-+++ ocaml/configure	2008-04-02 12:24:57.000000000 -0700
-@@ -24,6 +24,9 @@
- host_type=unknown
- ccoption=''
+--- ocaml-3.11.0/configure.orig	2008-11-07 10:34:16.000000000 +0000
++++ ocaml-3.11.0/configure	2008-12-16 23:47:37.659509919 +0000
+@@ -26,6 +26,9 @@
+ asoption=''
+ asppoption=''
  cclibs=''
 +asppoption=''
 +aroption=''
@@ -10,10 +10,10 @@
  curseslibs=''
  mathlib='-lm'
  dllib=''
-@@ -73,6 +76,14 @@
-         host_type=$2; shift;;
-     -cc*)
+@@ -77,6 +80,14 @@
          ccoption="$2"; shift;;
+     -as)
+         asoption="$2"; shift;;
 +    -aspp*)
 +        asppoption="$2"; shift;;
 +    -ar*)
@@ -22,10 +22,10 @@
 +        ranliboption="$2"; shift;;
 +    -ld*)
 +        ldoption="$2"; shift;;
+     -aspp)
+         asppoption="$2"; shift;;
      -lib*)
-         cclibs="$2 $cclibs"; shift;;
-     -no-curses)
-@@ -192,7 +203,7 @@
+@@ -198,7 +209,7 @@
  buggycc="no"
  
  case "$host,$cc" in
@@ -34,8 +34,8 @@
      case `$cc --version` in
        2.7.2.1) cat <<'EOF'
  
-@@ -239,7 +250,7 @@
- exe=""
+@@ -248,7 +259,7 @@
+ iflexdir=""
  
  case "$bytecc,$host" in
 -  cc,*-*-nextstep*)
@@ -43,7 +43,7 @@
      # GNU C extensions disabled, but __GNUC__ still defined!
      bytecccompopts="-fno-defer-pop $gcc_warnings -U__GNUC__ -posix"
      bytecclinkopts="-posix";;
-@@ -257,7 +268,7 @@
+@@ -268,7 +279,7 @@
      bytecccompopts="-fno-defer-pop $gcc_warnings"
      # No -lm library
      mathlib="";;
@@ -52,7 +52,7 @@
      bytecccompopts="-fno-defer-pop $gcc_warnings"
      if cc="$bytecc" sh ./hasgot -mieee; then
        bytecccompopts="-mieee $bytecccompopts";
-@@ -266,41 +277,41 @@
+@@ -277,30 +288,30 @@
      bytecclinkopts="-Wl,-T,12000000 -Wl,-D,14000000"
      # Tell gcc that we can use 32-bit code addresses for threaded code
      echo "#define ARCH_CODE32" >> m.h;;
@@ -87,6 +87,10 @@
 -  gcc*,*-*-cygwin*)
 +  *gcc*,*-*-cygwin*)
      bytecccompopts="-fno-defer-pop $gcc_warnings -U_WIN32"
+     dllccompopts="-D_WIN32 -DCAML_DLL"
+     flexlink="flexlink -chain cygwin -merge-manifest"
+@@ -309,14 +320,14 @@
+     mkexe="$flexlink -exe"
      exe=".exe"
      ostype="Cygwin";;
 -  gcc*,x86_64-*-linux*)
@@ -102,7 +106,7 @@
      bytecccompopts="-fno-defer-pop $gcc_warnings";;
  esac
  
-@@ -309,23 +320,18 @@
+@@ -325,23 +336,18 @@
  cc="$bytecc -O $bytecclinkopts"
  export cc cclibs verbose
  
@@ -135,7 +139,7 @@
  case "$2,$3" in
    4,4) echo "OK, this is a regular 32 bit architecture."
         echo "#undef ARCH_SIXTYFOUR" >> m.h
-@@ -359,7 +365,7 @@
+@@ -375,7 +381,7 @@
       int64_native=true
  else
    sh ./runtest longlong.c
@@ -144,7 +148,7 @@
    0) echo "64-bit \"long long\" integer type found (printf with \"%ll\")."
       echo "#define ARCH_INT64_TYPE long long" >> m.h
       echo "#define ARCH_UINT64_TYPE unsigned long long" >> m.h
-@@ -375,11 +381,53 @@
+@@ -391,11 +397,53 @@
       echo "#define ARCH_UINT64_TYPE unsigned long long" >> m.h
       echo '#undef ARCH_INT64_PRINTF_FORMAT' >> m.h
       int64_native=true;;
@@ -199,7 +203,7 @@
    esac
  fi
  
-@@ -392,17 +440,26 @@
+@@ -408,17 +456,26 @@
  # Determine endianness
  
  sh ./runtest endian.c
@@ -231,7 +235,7 @@
  esac
  
  # Determine alignment constraints
-@@ -424,16 +481,21 @@
+@@ -440,16 +497,21 @@
      fi;;
    *)
      sh ./runtest dblalign.c
@@ -259,7 +263,7 @@
      esac;;
  esac
  
-@@ -449,16 +511,21 @@
+@@ -465,16 +527,21 @@
        fi;;
      *)
        sh ./runtest int64align.c
@@ -287,7 +291,7 @@
        esac
    esac
  else
-@@ -468,13 +535,21 @@
+@@ -484,13 +551,21 @@
  # Check semantics of division and modulus
  
  sh ./runtest divmod.c
@@ -312,7 +316,7 @@
  esac
  
  # Shared library support
-@@ -596,6 +671,7 @@
+@@ -638,6 +713,7 @@
                                  if $arch64; then model=ppc64; else model=ppc; fi;;
    arm*-*-linux*)                arch=arm; system=linux;;
    arm*-*-gnu*)                  arch=arm; system=gnu;;
@@ -320,24 +324,7 @@
    ia64-*-linux*)                arch=ia64; system=linux;;
    ia64-*-gnu*)                  arch=ia64; system=gnu;;
    ia64-*-freebsd*)              arch=ia64; system=freebsd;;
-@@ -646,7 +722,7 @@
- esac
- 
- asflags=''
--aspp=''
-+aspp='$aspp'
- asppflags=''
- asppprofflags='-DPROFILING'
- 
-@@ -674,6 +750,7 @@
-   power,*,rhapsody) aspp="$bytecc"; asppflags='-c';;
-   arm,*,linux)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-   arm,*,gnu)        aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-+  arm,*,macosx)     aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-   ia64,*,*)         asflags=-xexplicit
-                     aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM) -Wa,-xexplicit';;
-   amd64,*,*)        aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-@@ -696,14 +773,40 @@
+@@ -749,14 +825,40 @@
  
  # Where is ranlib?
  
@@ -378,7 +365,7 @@
  fi
  
  # Do #! scripts work?
-@@ -1174,7 +1277,7 @@
+@@ -1225,7 +1327,7 @@
      ; \
  do
    if test -f $dir/X11/X.h; then
@@ -387,8 +374,8 @@
      break
    fi
  done
-@@ -1463,7 +1566,7 @@
- #ml let mkdll out _implib files opts = Printf.sprintf "%s %s %s %s" "$mksharedlib" out opts files;;
+@@ -1524,7 +1626,7 @@
+ #ml let syslib x = "-l"^x;;
  
  ### How to build a static library
 -MKLIB=ar rc \$(1) \$(2); ranlib \$(1)
