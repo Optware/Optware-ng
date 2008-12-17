@@ -22,8 +22,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.10
-OCAML_VERSION=3.10.2
+OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.11
+OCAML_VERSION=3.11.0
 OCAML_SOURCE=ocaml-$(OCAML_VERSION).tar.gz
 OCAML_DIR=ocaml-$(OCAML_VERSION)
 OCAML_UNZIP=zcat
@@ -35,7 +35,7 @@ OCAML_DEPENDS=
 OCAML_SUGGESTS=
 OCAML_CONFLICTS=
 
-OCAML_IPK_VERSION=3
+OCAML_IPK_VERSION=1
 
 #
 # OCAML_CONFFILES should be a list of user-editable files

@@ -1,14 +1,14 @@
---- ocaml/byterun/Makefile.orig	2008-04-01 20:00:48.000000000 -0700
-+++ ocaml/byterun/Makefile	2008-04-01 20:49:20.000000000 -0700
-@@ -42,6 +42,8 @@
+--- ocaml-3.11.0/byterun/Makefile.orig	2008-11-08 16:29:02.000000000 +0000
++++ ocaml-3.11.0/byterun/Makefile	2008-12-16 23:58:01.507102928 +0000
+@@ -34,6 +34,8 @@
  ocamlrun$(EXE): libcamlrun.a prims.o
- 	$(BYTECC) $(BYTECCCOMPOPTS) $(BYTECCLINKOPTS) -o ocamlrun$(EXE) \
- 	          prims.o libcamlrun.a $(BYTECCLIBS)
+ 	$(MKEXE) $(BYTECCLINKOPTS) -o ocamlrun$(EXE) \
+ 		  prims.o libcamlrun.a $(BYTECCLIBS)
 +	mv $@ $@.target
 +	cp ../../../host/builds/ocaml/byterun/$@ .
  
  ocamlrund$(EXE): libcamlrund.a prims.o
- 	$(BYTECC) -g $(BYTECCCOMPOPTS) $(BYTECCLINKOPTS) -o ocamlrund$(EXE) \
+ 	$(MKEXE) -g $(BYTECCLINKOPTS) -o ocamlrund$(EXE) \
 --- ocaml/yacc/Makefile.orig	2007-02-07 06:49:42.000000000 -0800
 +++ ocaml/yacc/Makefile	2008-04-01 20:56:33.000000000 -0700
 @@ -26,6 +26,8 @@
@@ -20,46 +20,18 @@
  
  version.h : ../VERSION
  	echo "#define OCAML_VERSION \"`head -1 ../VERSION`\"" >version.h
---- ocaml/otherlibs/unix/Makefile.orig	2007-02-07 07:49:11.000000000 -0800
-+++ ocaml/otherlibs/unix/Makefile	2008-04-02 09:20:05.000000000 -0700
-@@ -53,6 +53,8 @@
- 
- unix.cma: $(MLOBJS)
- 	$(MKLIB) -o unix -ocamlc '$(CAMLC)' -linkall $(MLOBJS)
-+	mv dllunix.so dllunix.so.target
-+	cp ../../../../host/builds/ocaml/otherlibs/unix/dllunix.so .
- 
- unix.cmxa: $(MLOBJS:.cmo=.cmx)
- 	$(MKLIB) -o unix -ocamlopt '$(CAMLOPT)' -linkall $(MLOBJS:.cmo=.cmx)
---- ocaml/otherlibs/str/Makefile.orig	2007-01-29 04:11:16.000000000 -0800
-+++ ocaml/otherlibs/str/Makefile	2008-04-02 09:21:39.000000000 -0700
-@@ -35,6 +35,8 @@
- 
- str.cma: str.cmo
- 	$(MKLIB) -ocamlc '$(CAMLC)' -o str str.cmo
-+	mv dllstr.so dllstr.so.target
-+	cp ../../../../host/builds/ocaml/otherlibs/str/dllstr.so .
- 
- str.cmxa: str.cmx
- 	$(MKLIB) -ocamlopt '$(CAMLOPT)' -o str str.cmx
---- ocaml/Makefile.orig	2007-06-20 06:26:29.000000000 -0700
-+++ ocaml/Makefile	2008-05-24 23:13:15.000000000 -0700
-@@ -322,15 +322,15 @@
+--- ocaml-3.11.0/Makefile.orig	2008-10-23 15:29:11.000000000 +0000
++++ ocaml-3.11.0/Makefile	2008-12-17 00:07:08.201676096 +0000
+@@ -371,12 +371,12 @@
  	sed -e 's|%%LIBDIR%%|$(LIBDIR)|' \
              -e 's|%%BYTERUN%%|$(BINDIR)/ocamlrun|' \
              -e 's|%%CCOMPTYPE%%|cc|' \
 -            -e 's|%%BYTECC%%|$(BYTECC) $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)|' \
--            -e 's|%%BYTELINK%%|$(BYTECC) $(BYTECCLINKOPTS)|' \
 -            -e 's|%%NATIVECC%%|$(NATIVECC) $(NATIVECCCOMPOPTS)|' \
--            -e 's|%%NATIVELINK%%|$(NATIVECC) $(NATIVECCLINKOPTS)|' \
--            -e 's|%%PARTIALLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS)|' \
--            -e 's|%%PACKLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS) -o |' \
+-            -e 's|%%PACKLD%%|$(PACKLD)|' \
 +            -e 's|%%BYTECC%%|gcc $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)|' \
-+            -e 's|%%BYTELINK%%|gcc $(BYTECCLINKOPTS)|' \
 +            -e 's|%%NATIVECC%%|gcc $(NATIVECCCOMPOPTS)|' \
-+            -e 's|%%NATIVELINK%%|gcc $(NATIVECCLINKOPTS)|' \
-+            -e 's|%%PARTIALLD%%|ld -r $(NATIVECCLINKOPTS)|' \
-+            -e 's|%%PACKLD%%|ld -r $(NATIVECCLINKOPTS) -o |' \
++            -e 's|%%PACKLD%%|ld -r|' \
              -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
              -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
 -            -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \
@@ -67,3 +39,29 @@
              -e 's|%%CC_PROFILE%%|$(CC_PROFILE)|' \
              -e 's|%%ARCH%%|$(ARCH)|' \
              -e 's|%%MODEL%%|$(MODEL)|' \
+@@ -387,9 +387,9 @@
+             -e 's|%%EXT_DLL%%|.so|' \
+             -e 's|%%SYSTHREAD_SUPPORT%%|$(SYSTHREAD_SUPPORT)|' \
+             -e 's|%%ASM%%|$(ASM)|' \
+-            -e 's|%%MKDLL%%|$(MKDLL)|' \
+-            -e 's|%%MKEXE%%|$(MKEXE)|' \
+-            -e 's|%%MKMAINDLL%%|$(MKMAINDLL)|' \
++            -e 's|%%MKDLL%%|gcc -shared|' \
++            -e 's|%%MKEXE%%|gcc|' \
++            -e 's|%%MKMAINDLL%%|gcc -shared|' \
+             utils/config.mlp > utils/config.ml
+ 	@chmod -w utils/config.ml
+
+--- ocaml/otherlibs/Makefile.shared.orig	2008-07-15 15:31:32.000000000 +0000
++++ ocaml/otherlibs/Makefile.shared	2008-12-17 00:32:37.828393820 +0000
+@@ -46,6 +46,10 @@
+ 
+ $(LIBNAME).cma: $(CAMLOBJS)
+ 	$(MKLIB) -o $(LIBNAME) -oc $(CLIBNAME) -ocamlc '$(CAMLC)' -linkall $(CAMLOBJS) $(LINKOPTS)
++ifeq ($(LIBNAME), $(filter unix str, $(LIBNAME)))
++	mv dll$(LIBNAME).so dll$(LIBNAME).so.target
++	cp ../../../../host/builds/ocaml/otherlibs/$(LIBNAME)/dll$(LIBNAME).so .
++endif
+ 
+ $(LIBNAME).cmxa: $(CAMLOBJS_NAT)
+ 	$(MKLIB) -o $(LIBNAME) -oc $(CLIBNAME) -ocamlopt '$(CAMLOPT)' -linkall $(CAMLOBJS_NAT) $(LINKOPTS)
