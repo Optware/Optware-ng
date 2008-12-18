@@ -621,8 +621,7 @@ int main( int argc, char ** argv )
   openlog(cp, LOG_NDELAY|LOG_PID, LOG_USER);
   
   syslog(LOG_INFO,
-         "Transmission daemon %s started - http://transmission.m0k.org/ "
-         "at port %d",
+         "Transmissiond  %s started at port %d",
          LONG_VERSION_STRING, publicPort );
   
   /*  */
