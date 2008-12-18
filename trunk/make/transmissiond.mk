@@ -199,7 +199,8 @@ ifdef TRANSMISSIOND_SVN_REV
 	fi
 endif
 	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure*
-	sed -i -e 's/transmissioncli/transmissiond/g' $(@D)/cli/Makefile*
+	sed -i  -e 's/transmissioncli/transmissiond/g' \
+		-e 's/cli./transmissiond./g' $(@D)/cli/Makefile*
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSIOND_CPPFLAGS)" \
