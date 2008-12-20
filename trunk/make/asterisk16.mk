@@ -166,7 +166,8 @@ ASTERISK16_CONFFILES=\
 # ASTERISK16_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK16_PATCHES=$(ASTERISK16_SOURCE_DIR)/sounds.xml.patch
+ASTERISK16_PATCHES=$(ASTERISK16_SOURCE_DIR)/sounds.xml.patch \
+	$(ASTERISK16_SOURCE_DIR)/app_festival.c.patch
 
 #
 # If the compilation of the package requires additional
