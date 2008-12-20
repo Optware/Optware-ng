@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.2.4
+SAMBA_VERSION=3.2.6
 SAMBA_IPK_VERSION=1
 else
 SAMBA_VERSION=3.0.14a
