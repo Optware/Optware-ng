@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSORT_SITE=http://billposer.org/Software/Downloads
-MSORT_VERSION=8.47
+MSORT_VERSION=8.52
 MSORT_SOURCE=msort-$(MSORT_VERSION).tar.bz2
 MSORT_DIR=msort-$(MSORT_VERSION)
 MSORT_UNZIP=bzcat
