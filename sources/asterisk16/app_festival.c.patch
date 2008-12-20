@@ -1,0 +1,15 @@
+--- apps/app_festival.c.orig	2008-11-25 16:21:25.000000000 +0000
++++ apps/app_festival.c	2008-12-20 05:43:38.775534763 +0000
+@@ -118,11 +118,10 @@
+ static int send_waveform_to_fd(char *waveform, int length, int fd)
+ {
+ 	int res;
+-	int x;
+ #ifdef __PPC__ 
+ 	char c;
+-	int x;
+ #endif
++	int x;
+ 	sigset_t fullset, oldset;
+ 
+ 	sigfillset(&fullset);
