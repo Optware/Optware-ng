@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://www.apache.org/dist/httpd
-APACHE_VERSION=2.2.10
+APACHE_VERSION=2.2.11
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
