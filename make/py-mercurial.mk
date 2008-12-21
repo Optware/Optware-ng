@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MERCURIAL_VERSION=1.1
+PY-MERCURIAL_VERSION=1.1.1
 PY-MERCURIAL_SITE=http://www.selenic.com/mercurial/release
 PY-MERCURIAL_SOURCE=mercurial-$(PY-MERCURIAL_VERSION).tar.gz
 PY-MERCURIAL_DIR=mercurial-$(PY-MERCURIAL_VERSION)
@@ -30,8 +30,8 @@ PY-MERCURIAL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MERCURIAL_DESCRIPTION=A fast, lightweight Source Control Management system designed for efficient handling of very large distributed projects.
 PY-MERCURIAL_SECTION=misc
 PY-MERCURIAL_PRIORITY=optional
-PY24-MERCURIAL_DEPENDS=python24
 PY25-MERCURIAL_DEPENDS=python25
+PY26-MERCURIAL_DEPENDS=python26
 PY-MERCURIAL_CONFLICTS=
 
 #
@@ -71,8 +71,8 @@ $(filter angstrombe angstromle slugosbe slugosle, $(OPTWARE_TARGET)), True, Fals
 PY-MERCURIAL_BUILD_DIR=$(BUILD_DIR)/py-mercurial
 PY-MERCURIAL_SOURCE_DIR=$(SOURCE_DIR)/py-mercurial
 
-PY24-MERCURIAL_IPK_DIR=$(BUILD_DIR)/py24-mercurial-$(PY-MERCURIAL_VERSION)-ipk
-PY24-MERCURIAL_IPK=$(BUILD_DIR)/py24-mercurial_$(PY-MERCURIAL_VERSION)-$(PY-MERCURIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY26-MERCURIAL_IPK_DIR=$(BUILD_DIR)/py26-mercurial-$(PY-MERCURIAL_VERSION)-ipk
+PY26-MERCURIAL_IPK=$(BUILD_DIR)/py26-mercurial_$(PY-MERCURIAL_VERSION)-$(PY-MERCURIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MERCURIAL_IPK_DIR=$(BUILD_DIR)/py25-mercurial-$(PY-MERCURIAL_VERSION)-ipk
 PY25-MERCURIAL_IPK=$(BUILD_DIR)/py25-mercurial_$(PY-MERCURIAL_VERSION)-$(PY-MERCURIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -113,24 +113,24 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)
 	mkdir -p $(@D)
-	# 2.4
+	# 2.6
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
+	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=/opt/bin/python2.6"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
 	sed -i	-e '/linux2/s|if .*|if True:|' \
-		-e '/inotify_/s|if .*|if $(PY-MERCURIAL_WITH_INOTIFY):|' $(@D)/2.4/setup.py
+		-e '/inotify_/s|if .*|if $(PY-MERCURIAL_WITH_INOTIFY):|' $(@D)/2.6/setup.py
 	# 2.5
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p1
@@ -158,9 +158,9 @@ py-mercurial-unpack: $(PY-MERCURIAL_BUILD_DIR)/.configured
 #
 $(PY-MERCURIAL_BUILD_DIR)/.built: $(PY-MERCURIAL_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
+	(cd $(@D)/2.6; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
 	(cd $(@D)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
@@ -187,10 +187,10 @@ py-mercurial-stage: $(PY-MERCURIAL_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-mercurial
 #
-$(PY24-MERCURIAL_IPK_DIR)/CONTROL/control:
+$(PY26-MERCURIAL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py24-mercurial" >>$@
+	@echo "Package: py26-mercurial" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MERCURIAL_PRIORITY)" >>$@
 	@echo "Section: $(PY-MERCURIAL_SECTION)" >>$@
@@ -198,7 +198,7 @@ $(PY24-MERCURIAL_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-MERCURIAL_MAINTAINER)" >>$@
 	@echo "Source: $(PY-MERCURIAL_SITE)/$(PY-MERCURIAL_SOURCE)" >>$@
 	@echo "Description: $(PY-MERCURIAL_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-MERCURIAL_DEPENDS)" >>$@
+	@echo "Depends: $(PY26-MERCURIAL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MERCURIAL_CONFLICTS)" >>$@
 
 $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control:
@@ -227,22 +227,22 @@ $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
-	# 2.4
+$(PY26-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
+	# 2.6
 	rm -rf $(BUILD_DIR)/py-mercurial_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py24-mercurial_*_$(TARGET_ARCH).ipk
-	(cd $(PY-MERCURIAL_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-MERCURIAL_IPK_DIR) --prefix=/opt; \
+	rm -rf $(PY26-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py26-mercurial_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MERCURIAL_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-MERCURIAL_IPK_DIR) --prefix=/opt; \
 	)
-	(cd $(PY24-MERCURIAL_IPK_DIR)/opt/lib/python2.4/site-packages; \
+	(cd $(PY26-MERCURIAL_IPK_DIR)/opt/lib/python2.6/site-packages; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	for f in $(PY24-MERCURIAL_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
-	$(MAKE) $(PY24-MERCURIAL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MERCURIAL_IPK_DIR)
+	for f in $(PY26-MERCURIAL_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
+	$(MAKE) $(PY26-MERCURIAL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MERCURIAL_IPK_DIR)
 	# 2.5
 	rm -rf $(PY25-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py25-mercurial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MERCURIAL_BUILD_DIR)/2.5; \
@@ -259,7 +259,7 @@ $(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-mercurial-ipk: $(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK)
+py-mercurial-ipk: $(PY26-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -273,11 +273,11 @@ py-mercurial-clean:
 #
 py-mercurial-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(PY-MERCURIAL_BUILD_DIR)
-	rm -rf $(PY24-MERCURIAL_IPK_DIR) $(PY24-MERCURIAL_IPK)
+	rm -rf $(PY26-MERCURIAL_IPK_DIR) $(PY26-MERCURIAL_IPK)
 	rm -rf $(PY25-MERCURIAL_IPK_DIR) $(PY25-MERCURIAL_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-mercurial-check: $(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK)
+py-mercurial-check: $(PY26-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY26-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK)
