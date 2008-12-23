@@ -304,7 +304,7 @@ COMMON_CROSS_PACKAGES = \
 	sablevm samba samba2 sane-backends \
 	scli scponly screen scsi-idle sdl sdparm \
 	sed sendmail ser ser2net setserial setpwc sg3-utils \
-	sharutils shntool silc-client simh sipcalc siproxd \
+	sharutils shntool silc-client simh sipcalc siproxd sispmctl \
 	slang slrn slsc \
 	sm smartmontools snort snownews \
 	socat softflowd spandsp speex spindown sqlite sqlite2 \
