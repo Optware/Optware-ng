@@ -191,14 +191,14 @@ endif
 		then mv $(BUILD_DIR)/$(TRANSMISSIOND_DIR) $(TRANSMISSIOND_BUILD_DIR) ; \
 	fi
 	if test -n "$(TRANSMISSIOND_SOURCES)"; then cp $(TRANSMISSIOND_SOURCES) $(@D)/cli; fi
-	sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure*
+	sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure
 ifdef TRANSMISSIOND_SVN_REV 
 	if test -x "$(@D)/autogen.sh"; \
 	then cd $(@D) && ./autogen.sh; \
 	else autoreconf -vif $(@D); \
 	fi
 endif
-	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure*
+	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure
 	sed -i  -e 's/transmissioncli/transmissiond/g' \
 		-e 's/cli./transmissiond./g' $(@D)/cli/Makefile*
 	(cd $(@D); \
@@ -213,12 +213,12 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--datadir=/opt/share \
+		--disable-daemon \
 		--disable-gtk \
 		--disable-wx \
 		--disable-nls \
 	)
-#		--disable-daemon \
-#	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 
@@ -261,12 +261,12 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--datadir=/opt/share \
+		--disable-daemon \
 		--disable-gtk \
 		--disable-wx \
 		--disable-nls \
 	)
-#		--disable-daemon \
-#	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 
