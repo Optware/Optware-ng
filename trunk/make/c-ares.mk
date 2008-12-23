@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 C_ARES_SITE=http://daniel.haxx.se/projects/c-ares
-C_ARES_VERSION=1.5.2
+C_ARES_VERSION=1.6.0
 C_ARES_SOURCE=c-ares-$(C_ARES_VERSION).tar.gz
 C_ARES_DIR=c-ares-$(C_ARES_VERSION)
 C_ARES_UNZIP=zcat
@@ -36,7 +36,7 @@ C_ARES_CONFLICTS=
 #
 # C_ARES_IPK_VERSION should be incremented when the ipk changes.
 #
-C_ARES_IPK_VERSION=2
+C_ARES_IPK_VERSION=1
 
 #
 # C_ARES_CONFFILES should be a list of user-editable files
