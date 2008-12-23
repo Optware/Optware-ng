@@ -25,7 +25,7 @@
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSIOND_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSIOND_VERSION=1.41b4
+TRANSMISSIOND_VERSION=1.41b5
 #TRANSMISSIOND_SVN=svn://svn.transmissionbt.com/Transmission/trunk
 #TRANSMISSIOND_SVN_REV=7069
 ifdef TRANSMISSIOND_SVN_REV
@@ -46,7 +46,7 @@ TRANSMISSIOND_CONFLICTS=torrent
 #
 # TRANSMISSIOND_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSIOND_IPK_VERSION=3
+TRANSMISSIOND_IPK_VERSION=1
 
 # TRANSMISSIOND-DBG_INCLUDED=1
 
@@ -213,17 +213,12 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--datadir=/opt/share \
-		--disable-daemon \
 		--disable-gtk \
 		--disable-wx \
 		--disable-nls \
 	)
-ifneq (, $(filter fsg3v4 syno-x07, $(OPTWARE_TARGET)))
-	sed -i -e 's/ -O3/ /g' $(@D)/libtransmission/Makefile
-endif
-#		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -fi -I m4 ; \
-#		--verbose \
-	$(PATCH_LIBTOOL) $(@D)/libtool
+#		--disable-daemon \
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 
@@ -246,10 +241,14 @@ endif
 	fi
 	if test -n "$(TRANSMISSIOND-DBG_SOURCES)"; then cp $(TRANSMISSIOND-DBG_SOURCES) $(@D)/cli; fi
 ifdef TRANSMISSIOND_SVN_REV
-	cd $(@D) && AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh
-else
-	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf $(@D)
+	if test -x "$(@D)/autogen.sh"; \
+	then cd $(@D) && ./autogen.sh; \
+	else autoreconf -vif $(@D); \
+	fi
 endif
+	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
+		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSIOND-DBG_CPPFLAGS)" \
@@ -261,14 +260,13 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-daemon \
+		--datadir=/opt/share \
 		--disable-gtk \
 		--disable-wx \
 		--disable-nls \
 	)
-#		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -fi -I m4 ; \
-#		--verbose \
-	$(PATCH_LIBTOOL) $(@D)/libtool
+#		--disable-daemon \
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 
@@ -350,7 +348,7 @@ endif
 	rm -rf $(TRANSMISSIOND_IPK_DIR) $(BUILD_DIR)/transmissiond_*_$(TARGET_ARCH).ipk
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSIOND_BUILD_DIR) DESTDIR=$(TRANSMISSIOND_IPK_DIR) install-strip
-	rm -f $(TRANSMISSIOND_IPK_DIR)/opt/bin/*cli
+	rm -f $(TRANSMISSIOND_IPK_DIR)/opt/bin/transmission-*
 	rm -rf $(TRANSMISSIOND_IPK_DIR)/opt/share/man
 	rm -rf $(TRANSMISSIOND_IPK_DIR)/opt/share/transmission
 	install -d $(TRANSMISSIOND_IPK_DIR)/opt/etc
