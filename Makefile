@@ -44,7 +44,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
-	transmissiond \
 
 PERL_PACKAGES = \
 	perl \
@@ -313,7 +312,7 @@ COMMON_CROSS_PACKAGES = \
 	tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
 	tig tin tinyproxy tinyscheme tmsnc tnef tnftp tnftpd \
 	toppyweb tor torrent torrentflux \
-	transcode transmission tre tree trickle \
+	transcode transmission transmissiond tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs unarj unfs3 units unixodbc unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
