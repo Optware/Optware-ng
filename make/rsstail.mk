@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RSSTAIL_SITE=http://www.vanheusden.com/rsstail
-RSSTAIL_VERSION=1.4
+RSSTAIL_VERSION=1.5
 RSSTAIL_SOURCE=rsstail-$(RSSTAIL_VERSION).tgz
 RSSTAIL_DIR=rsstail-$(RSSTAIL_VERSION)
 RSSTAIL_UNZIP=zcat
@@ -36,7 +36,7 @@ RSSTAIL_CONFLICTS=
 #
 # RSSTAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-RSSTAIL_IPK_VERSION=2
+RSSTAIL_IPK_VERSION=1
 
 #
 # RSSTAIL_CONFFILES should be a list of user-editable files
