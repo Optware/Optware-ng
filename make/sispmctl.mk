@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 SISPMCTL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/sispmctl
-SISPMCTL_VERSION=2.4b
+SISPMCTL_VERSION=2.7
 SISPMCTL_SOURCE=sispmctl-$(SISPMCTL_VERSION).tar.gz
 SISPMCTL_DIR=sispmctl-$(SISPMCTL_VERSION)
 SISPMCTL_UNZIP=zcat
@@ -66,8 +66,8 @@ SISPMCTL_IPK=$(BUILD_DIR)/sispmctl_$(SISPMCTL_VERSION)-$(SISPMCTL_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SISPMCTL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SISPMCTL_SITE)/$(SISPMCTL_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SISPMCTL_SOURCE)
+	$(WGET) -P $(@D) $(SISPMCTL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -102,13 +102,16 @@ $(SISPMCTL_BUILD_DIR)/.configured: $(DL_DIR)/$(SISPMCTL_SOURCE) $(SISPMCTL_PATCH
 		then cat $(SISPMCTL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SISPMCTL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SISPMCTL_DIR)" != "$(SISPMCTL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SISPMCTL_DIR) $(SISPMCTL_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SISPMCTL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SISPMCTL_DIR) $(@D) ; \
 	fi
-	(cd $(SISPMCTL_BUILD_DIR); \
+	sed -i -e '/LIBUSB_LIBS=`/s|=.*|=-lusb|' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SISPMCTL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SISPMCTL_LDFLAGS)" \
+		ac_cv_path_HAVELIBUSB=$(STAGING_PREFIX)/bin/libusb-config \
+		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -118,8 +121,6 @@ $(SISPMCTL_BUILD_DIR)/.configured: $(DL_DIR)/$(SISPMCTL_SOURCE) $(SISPMCTL_PATCH
 		--disable-static \
 	)
 	# $(PATCH_LIBTOOL) $(SISPMCTL_BUILD_DIR)/libtool
-	sed -i -e 's/HAVE_MALLOC 0/HAVE_MALLOC 1/' -e '/^#.*rpl_malloc/s/^\(.*\)/\/* \1 *\//' $(SISPMCTL_BUILD_DIR)/src/config.h
-
 	touch $@
 
 sispmctl-unpack: $(SISPMCTL_BUILD_DIR)/.configured
@@ -129,7 +130,7 @@ sispmctl-unpack: $(SISPMCTL_BUILD_DIR)/.configured
 #
 $(SISPMCTL_BUILD_DIR)/.built: $(SISPMCTL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SISPMCTL_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -142,7 +143,7 @@ sispmctl: $(SISPMCTL_BUILD_DIR)/.built
 #
 $(SISPMCTL_BUILD_DIR)/.staged: $(SISPMCTL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SISPMCTL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 sispmctl-stage: $(SISPMCTL_BUILD_DIR)/.staged
@@ -180,7 +181,8 @@ $(SISPMCTL_IPK_DIR)/CONTROL/control:
 #
 $(SISPMCTL_IPK): $(SISPMCTL_BUILD_DIR)/.built
 	rm -rf $(SISPMCTL_IPK_DIR) $(BUILD_DIR)/sispmctl_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SISPMCTL_BUILD_DIR) DESTDIR=$(SISPMCTL_IPK_DIR) install-strip
+	$(MAKE) -C $(SISPMCTL_BUILD_DIR) transform='' \
+		DESTDIR=$(SISPMCTL_IPK_DIR) install-strip
 	install -d $(SISPMCTL_IPK_DIR)/opt/etc/
 	# install -m 644 $(SISPMCTL_SOURCE_DIR)/sispmctl.conf $(SISPMCTL_IPK_DIR)/opt/etc/sispmctl.conf
 	# install -d $(SISPMCTL_IPK_DIR)/opt/etc/init.d
