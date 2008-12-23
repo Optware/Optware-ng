@@ -21,9 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ARIA2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aria2
-ARIA2_VERSION=1.0.1
-ARIA2_SOURCE=aria2c-$(ARIA2_VERSION).tar.bz2
-ARIA2_DIR=aria2c-$(ARIA2_VERSION)
+ARIA2_VERSION=1.1.0
+ARIA2_SOURCE=aria2-$(ARIA2_VERSION).tar.bz2
+ARIA2_DIR=aria2-$(ARIA2_VERSION)
 ARIA2_UNZIP=bzcat
 ARIA2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ARIA2_DESCRIPTION=A utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent  (DHT, PEX, MSE/PE), and Metalink.
