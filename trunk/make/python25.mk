@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON25_VERSION=2.5.2
+PYTHON25_VERSION=2.5.4
 PYTHON25_VERSION_MAJOR=2.5
 PYTHON25_SITE=http://www.python.org/ftp/python/$(PYTHON25_VERSION)/
 PYTHON25_SOURCE=Python-$(PYTHON25_VERSION).tar.bz2
@@ -42,7 +42,7 @@ PYTHON25_SUGGESTS=
 #
 # PYTHON25_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON25_IPK_VERSION=2
+PYTHON25_IPK_VERSION=1
 
 #
 # PYTHON25_CONFFILES should be a list of user-editable files
