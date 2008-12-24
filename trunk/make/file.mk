@@ -131,7 +131,7 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(FILE_DIR) $(@D)
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
-		sed -i -e 's/ -Wextra//' $(@D)/src/Makefile.in; \
+		sed -i -e 's/ -Wextra//' $(@D)/configure; \
 	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
