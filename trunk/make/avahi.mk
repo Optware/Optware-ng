@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 AVAHI_SITE=http://avahi.org/download
-AVAHI_VERSION=0.6.23
+AVAHI_VERSION=0.6.24
 AVAHI_SOURCE=avahi-$(AVAHI_VERSION).tar.gz
 AVAHI_DIR=avahi-$(AVAHI_VERSION)
 AVAHI_UNZIP=zcat
@@ -39,7 +39,7 @@ AVAHI_CONFLICTS=
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=2
+AVAHI_IPK_VERSION=1
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
