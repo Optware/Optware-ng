@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SCONS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/scons
-SCONS_VERSION=1.0.0
+SCONS_VERSION=1.2.0
 SCONS_SOURCE=scons-$(SCONS_VERSION).tar.gz
 SCONS_DIR=scons-$(SCONS_VERSION)
 SCONS_UNZIP=zcat
@@ -127,11 +127,11 @@ $(SCONS_BUILD_DIR)/.configured: $(DL_DIR)/$(SCONS_SOURCE) $(SCONS_PATCHES) make/
 	    ( \
 		echo ; \
 		echo "[build_ext]"; \
-		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4" \
+		echo "executable=/opt/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -145,7 +145,7 @@ $(SCONS_BUILD_DIR)/.built: $(SCONS_BUILD_DIR)/.configured
 	rm -f $@
 	(cd $(@D); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
         )
 	touch $@
 
@@ -161,7 +161,7 @@ $(SCONS_BUILD_DIR)/.staged: $(SCONS_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 			--root=$(STAGING_DIR) --prefix=/opt; \
         )
 	touch $@
@@ -183,13 +183,13 @@ $(SCONS_HOST_BUILD_DIR)/.staged: host/.configured make/scons.mk
 	    ( \
 		echo ; \
 		echo "[build_ext]"; \
-		echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.4"; \
+		echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.5"; \
 		echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
 		echo "rpath=/opt/lib"; \
 	    ) >> setup.cfg; \
 	)
 	(cd $(@D); \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 			--root=$(HOST_STAGING_DIR) --prefix=/opt; \
         )
 	touch $@
@@ -231,7 +231,7 @@ $(SCONS_IPK): $(SCONS_BUILD_DIR)/.built
 	rm -rf $(SCONS_IPK_DIR) $(BUILD_DIR)/scons_*_$(TARGET_ARCH).ipk
 	(cd $(SCONS_BUILD_DIR); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 			--root=$(SCONS_IPK_DIR) --prefix=/opt; \
         )
 	install -d $(SCONS_IPK_DIR)/opt/etc/
@@ -257,3 +257,9 @@ scons-clean:
 #
 scons-dirclean:
 	rm -rf $(BUILD_DIR)/$(SCONS_DIR) $(SCONS_BUILD_DIR) $(SCONS_IPK_DIR) $(SCONS_IPK)
+
+#
+# Some sanity check for the package.
+#
+scons-check: $(SCONS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SCONS_IPK)
