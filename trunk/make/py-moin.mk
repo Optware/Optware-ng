@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MOIN_SITE=http://static.moinmo.in/files
-PY-MOIN_VERSION=1.8.0
+PY-MOIN_VERSION=1.8.1
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)
 PY-MOIN_UNZIP=zcat
@@ -30,7 +30,7 @@ PY-MOIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MOIN_DESCRIPTION=MoinMoin is a nice and easy WikiEngine with advanced features, providing collaboration on easily editable web pages.
 PY-MOIN_SECTION=web
 PY-MOIN_PRIORITY=optional
-PY24-MOIN_DEPENDS=python24, coreutils, sed, tar
+PY26-MOIN_DEPENDS=python26, coreutils, sed, tar
 PY25-MOIN_DEPENDS=python25, coreutils, sed, tar
 PY-MOIN_CONFLICTS=
 
@@ -73,8 +73,8 @@ PY-MOIN_SOURCE_DIR=$(SOURCE_DIR)/py-moin
 PY-MOIN-COMMON_IPK_DIR=$(BUILD_DIR)/py-moin-common-$(PY-MOIN_VERSION)-ipk
 PY-MOIN-COMMON_IPK=$(BUILD_DIR)/py-moin-common_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY24-MOIN_IPK_DIR=$(BUILD_DIR)/py24-moin-$(PY-MOIN_VERSION)-ipk
-PY24-MOIN_IPK=$(BUILD_DIR)/py24-moin_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY26-MOIN_IPK_DIR=$(BUILD_DIR)/py26-moin-$(PY-MOIN_VERSION)-ipk
+PY26-MOIN_IPK=$(BUILD_DIR)/py26-moin_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MOIN_IPK_DIR=$(BUILD_DIR)/py25-moin-$(PY-MOIN_VERSION)-ipk
 PY25-MOIN_IPK=$(BUILD_DIR)/py25-moin_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -115,13 +115,13 @@ $(PY-MOIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MOIN_SOURCE) $(PY-MOIN_PATCHES)
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
+	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-MOIN_DIR)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-MOIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.4
+	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.6
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.4") >> $(@D)/2.4/setup.cfg
+         echo "executable=/opt/bin/python2.6") >> $(@D)/2.6/setup.cfg
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MOIN_DIR)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -138,8 +138,8 @@ py-moin-unpack: $(PY-MOIN_BUILD_DIR)/.configured
 #
 $(PY-MOIN_BUILD_DIR)/.built: $(PY-MOIN_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(@D)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build;
+	cd $(@D)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build;
 	cd $(@D)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build;
 	touch $@
@@ -177,10 +177,10 @@ $(PY-MOIN-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY-MOIN-COMMON_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MOIN_CONFLICTS)" >>$@
 
-$(PY24-MOIN_IPK_DIR)/CONTROL/control:
+$(PY26-MOIN_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py24-moin" >>$@
+	@echo "Package: py26-moin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MOIN_PRIORITY)" >>$@
 	@echo "Section: $(PY-MOIN_SECTION)" >>$@
@@ -188,7 +188,7 @@ $(PY24-MOIN_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-MOIN_MAINTAINER)" >>$@
 	@echo "Source: $(PY-MOIN_SITE)/$(PY-MOIN_SOURCE)" >>$@
 	@echo "Description: $(PY-MOIN_DESCRIPTION)" >>$@
-	@echo "Depends: py-moin-common, $(PY24-MOIN_DEPENDS)" >>$@
+	@echo "Depends: py-moin-common, $(PY26-MOIN_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MOIN_CONFLICTS)" >>$@
 
 $(PY25-MOIN_IPK_DIR)/CONTROL/control:
@@ -217,19 +217,20 @@ $(PY25-MOIN_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-MOIN_IPK): $(PY-MOIN_BUILD_DIR)/.built
-	rm -rf $(PY24-MOIN_IPK_DIR) $(BUILD_DIR)/py24-moin_*_$(TARGET_ARCH).ipk
-	cd $(PY-MOIN_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-MOIN_IPK_DIR) --prefix=/opt;
-	for f in $(PY24-MOIN_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
-	rm -rf $(PY24-MOIN_IPK_DIR)/opt/share/
-	sed -e 's|python2.[4-9]|python2.4|' $(PY-MOIN_SOURCE_DIR)/createinstance.sh \
-		> $(PY24-MOIN_IPK_DIR)/opt/bin/py24-moin-createinstance.sh
-	chmod 755 $(PY24-MOIN_IPK_DIR)/opt/bin/py24-moin-createinstance.sh
-	$(MAKE) $(PY24-MOIN_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MOIN_IPK_DIR)
+$(PY26-MOIN_IPK): $(PY-MOIN_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py24-moin_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY26-MOIN_IPK_DIR) $(BUILD_DIR)/py26-moin_*_$(TARGET_ARCH).ipk
+	cd $(PY-MOIN_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-MOIN_IPK_DIR) --prefix=/opt;
+	for f in $(PY26-MOIN_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
+	rm -rf $(PY26-MOIN_IPK_DIR)/opt/share/
+	sed -e 's|python2.[4-9]|python2.6|' $(PY-MOIN_SOURCE_DIR)/createinstance.sh \
+		> $(PY26-MOIN_IPK_DIR)/opt/bin/py26-moin-createinstance.sh
+	chmod 755 $(PY26-MOIN_IPK_DIR)/opt/bin/py26-moin-createinstance.sh
+	$(MAKE) $(PY26-MOIN_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MOIN_IPK_DIR)
 
 $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK): $(PY-MOIN_BUILD_DIR)/.built
 	rm -rf $(PY25-MOIN_IPK_DIR) $(BUILD_DIR)/py25-moin_*_$(TARGET_ARCH).ipk
@@ -256,7 +257,7 @@ $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK): $(PY-MOIN_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-moin-ipk: $(PY24-MOIN_IPK) $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK)
+py-moin-ipk: $(PY26-MOIN_IPK) $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -271,11 +272,11 @@ py-moin-clean:
 py-moin-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-MOIN_DIR) $(PY-MOIN_BUILD_DIR)
 	rm -rf $(PY-MOIN-COMMON_IPK_DIR) $(PY-MOIN-COMMON_IPK)
-	rm -rf $(PY24-MOIN_IPK_DIR) $(PY24-MOIN_IPK)
+	rm -rf $(PY26-MOIN_IPK_DIR) $(PY26-MOIN_IPK)
 	rm -rf $(PY25-MOIN_IPK_DIR) $(PY25-MOIN_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-moin-check: $(PY24-MOIN_IPK) $(PY25-MOIN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-MOIN_IPK) $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK)
+py-moin-check: $(PY26-MOIN_IPK) $(PY25-MOIN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY26-MOIN_IPK) $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK)
