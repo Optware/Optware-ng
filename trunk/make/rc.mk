@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RC_SITE=ftp://rc.quanstro.net/pub
-RC_VERSION=1.7.1
-RC_SOURCE=rc-$(RC_VERSION).tar.bz2
+RC_VERSION=1.7.2
+RC_SOURCE=rc-$(RC_VERSION).tbz
 RC_DIR=rc-$(RC_VERSION)
 RC_UNZIP=bzcat
 RC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -82,8 +82,8 @@ RC_IPK=$(BUILD_DIR)/rc_$(RC_VERSION)-$(RC_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RC_SITE)/$(RC_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(RC_SOURCE)
+	$(WGET) -P $(@D) $(RC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,10 +118,10 @@ $(RC_BUILD_DIR)/.configured: $(DL_DIR)/$(RC_SOURCE) $(RC_PATCHES) make/rc.mk
 		then cat $(RC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(RC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RC_DIR)" != "$(RC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RC_DIR) $(RC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RC_DIR) $(@D) ; \
 	fi
-	(cd $(RC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RC_LDFLAGS)" \
@@ -135,7 +135,7 @@ $(RC_BUILD_DIR)/.configured: $(DL_DIR)/$(RC_SOURCE) $(RC_PATCHES) make/rc.mk
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(RC_BUILD_DIR)/libtool
-	touch $(RC_BUILD_DIR)/.configured
+	touch $@
 
 rc-unpack: $(RC_BUILD_DIR)/.configured
 
@@ -143,12 +143,12 @@ rc-unpack: $(RC_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RC_BUILD_DIR)/.built: $(RC_BUILD_DIR)/.configured
-	rm -f $(RC_BUILD_DIR)/.built
+	rm -f $@
 ifneq ($(HOSTCC), $(TARGET_CC))
-	$(MAKE) -C $(RC_BUILD_DIR) mksignal mkstatval CC=$(HOSTCC) CPPFLAGS="" LDFLAGS=""
+	$(MAKE) -C $(@D) mksignal mkstatval CC=$(HOSTCC) CPPFLAGS="" LDFLAGS=""
 endif
-	$(MAKE) -C $(RC_BUILD_DIR)
-	touch $(RC_BUILD_DIR)/.built
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -158,12 +158,12 @@ rc: $(RC_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(RC_BUILD_DIR)/.staged: $(RC_BUILD_DIR)/.built
-	rm -f $(RC_BUILD_DIR)/.staged
-	$(MAKE) -C $(RC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(RC_BUILD_DIR)/.staged
-
-rc-stage: $(RC_BUILD_DIR)/.staged
+#$(RC_BUILD_DIR)/.staged: $(RC_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#rc-stage: $(RC_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
