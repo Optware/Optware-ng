@@ -25,7 +25,7 @@ BROKEN_PACKAGES = \
 	fcgi \
 	gdb \
 	ldconfig \
-	libpcap loudmouth \
+	loudmouth \
 	monotone \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
