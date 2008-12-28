@@ -21,7 +21,7 @@
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
 ifneq ($(OPTWARE_TARGET), wl500g)
-TAR_VERSION=1.20
+TAR_VERSION=1.21
 TAR_IPK_VERSION=1
 else
 TAR_VERSION=1.16.1
@@ -96,8 +96,8 @@ tar-source: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES)
 $(TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES)
 	rm -rf $(BUILD_DIR)/$(TAR_DIR) $(TAR_BUILD_DIR)
 	$(TAR_UNZIP) $(DL_DIR)/$(TAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(TAR_DIR) $(TAR_BUILD_DIR)
-	(cd $(TAR_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(TAR_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TAR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TAR_LDFLAGS)" \
@@ -118,7 +118,7 @@ tar-unpack: $(TAR_BUILD_DIR)/.configured
 #
 $(TAR_BUILD_DIR)/.built: $(TAR_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(TAR_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
