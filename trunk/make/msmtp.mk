@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSMTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/msmtp
-MSMTP_VERSION=1.4.16
+MSMTP_VERSION=1.4.17
 MSMTP_SOURCE=msmtp-$(MSMTP_VERSION).tar.bz2
 MSMTP_DIR=msmtp-$(MSMTP_VERSION)
 MSMTP_UNZIP=bzcat
@@ -39,7 +39,7 @@ MSMTP_CONFLICTS=
 #
 # MSMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-MSMTP_IPK_VERSION=2
+MSMTP_IPK_VERSION=1
 
 #
 # MSMTP_CONFFILES should be a list of user-editable files
