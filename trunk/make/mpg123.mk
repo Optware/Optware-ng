@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPG123_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpg123
-MPG123_VERSION=1.6.1
+MPG123_VERSION=1.6.3
 MPG123_SOURCE=mpg123-$(MPG123_VERSION).tar.bz2
 MPG123_DIR=mpg123-$(MPG123_VERSION)
 MPG123_UNZIP=bzcat
