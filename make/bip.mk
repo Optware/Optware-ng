@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BIP_SITE=http://bip.t1r.net/downloads
-BIP_VERSION=0.7.2
+BIP_VERSION=0.7.5
 BIP_SOURCE=bip-$(BIP_VERSION).tar.gz
 BIP_DIR=bip-$(BIP_VERSION)
 BIP_UNZIP=zcat
@@ -80,8 +80,8 @@ BIP_IPK=$(BUILD_DIR)/bip_$(BIP_VERSION)-$(BIP_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BIP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BIP_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(BIP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -116,8 +116,8 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 		then cat $(BIP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(BIP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(BIP_DIR)" != "$(BIP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(BIP_DIR) $(BIP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(BIP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(BIP_DIR) $(@D) ; \
 	fi
 #		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
 		;
