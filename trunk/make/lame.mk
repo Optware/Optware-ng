@@ -20,9 +20,10 @@
 # You should change all these variables to suit your package.
 #
 LAME_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lame
-LAME_VERSION=3.97
-LAME_SOURCE=lame-$(LAME_VERSION).tar.gz
-LAME_DIR=lame-$(LAME_VERSION)
+LAME_UPSTREAM_VER=398-2
+LAME_VERSION=3.98.2
+LAME_SOURCE=lame-$(LAME_UPSTREAM_VER).tar.gz
+LAME_DIR=lame-$(LAME_UPSTREAM_VER)
 LAME_UNZIP=zcat
 LAME_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 LAME_DESCRIPTION=LAME is an LGPL MP3 encoder.
@@ -74,7 +75,8 @@ LAME_IPK=$(BUILD_DIR)/lame_$(LAME_VERSION)-$(LAME_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LAME_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LAME_SITE)/$(LAME_SOURCE)
+	$(WGET) -P $(@D) $(LAME_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -115,7 +117,7 @@ $(LAME_BUILD_DIR)/.configured: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(LAME_BUILD_DIR)/.configured
+	touch $@
 
 lame-unpack: $(LAME_BUILD_DIR)/.configured
 
@@ -123,9 +125,9 @@ lame-unpack: $(LAME_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LAME_BUILD_DIR)/.built: $(LAME_BUILD_DIR)/.configured
-	rm -f $(LAME_BUILD_DIR)/.built
-	$(MAKE) -C $(LAME_BUILD_DIR)
-	touch $(LAME_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -136,9 +138,9 @@ lame: $(LAME_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LAME_BUILD_DIR)/.staged: $(LAME_BUILD_DIR)/.built
-	rm -f $(LAME_BUILD_DIR)/.staged
-	$(MAKE) -C $(LAME_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-	touch $(LAME_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 lame-stage: $(LAME_BUILD_DIR)/.staged
 
@@ -148,7 +150,7 @@ lame-stage: $(LAME_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lame
 #
 $(LAME_IPK_DIR)/CONTROL/control:
-	@install -d $(LAME_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: lame" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
