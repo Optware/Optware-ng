@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALC_SITE=http://www.isthe.com/chongo/src/calc
-CALC_VERSION=2.12.3.3
+CALC_VERSION=2.12.4.0
 CALC_SOURCE=calc-$(CALC_VERSION).tar.bz2
 CALC_DIR=calc-$(CALC_VERSION)
 CALC_UNZIP=bzcat
