@@ -36,7 +36,7 @@ NETATALK_CONFLICTS=
 #
 # NETATALK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETATALK_IPK_VERSION=4
+NETATALK_IPK_VERSION=5
 
 #
 # NETATALK_CONFFILES should be a list of user-editable files
@@ -54,6 +54,9 @@ NETATALK_IPK_VERSION=4
 #
 NETATALK_CPPFLAGS=
 NETATALK_LDFLAGS=
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel, $(OPTWARE_TARGET)))
+NETATALK_LDFLAGS += -L$(TARGET_USRLIBDIR)
+endif
 
 #
 # NETATALK_BUILD_DIR is the directory in which the build is done.
