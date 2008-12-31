@@ -19,4 +19,3 @@ BROKEN_PACKAGES = \
 	mdadm \
 	player \
 	puppy sendmail \
-	xmail \

@@ -42,7 +42,7 @@ XMAIL_CONFLICTS=
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=3
+XMAIL_IPK_VERSION=4
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
@@ -56,13 +56,18 @@ XMAIL_IPK_VERSION=3
 # 1. Lower the ulimit
 # 2. Reduce the number of threads xmail uses
 # 3. Change the hard-coded directory to MailRoot
-XMAIL_PATCHES=$(XMAIL_SOURCE_DIR)/xmail.patch
+XMAIL_PATCHES=\
+	$(XMAIL_SOURCE_DIR)/xmail.patch \
+	$(XMAIL_SOURCE_DIR)/conditionally-disable-ipv6.patch \
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 XMAIL_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
+XMAIL_CPPFLAGS += -DDISABLE_IPV6
+endif
 XMAIL_LDFLAGS=
 
 #
