@@ -30,14 +30,14 @@ PY-YAML_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-YAML_DESCRIPTION=YAML parser and emitter for Python.
 PY-YAML_SECTION=misc
 PY-YAML_PRIORITY=optional
-PY26-YAML_DEPENDS=python24
+PY26-YAML_DEPENDS=python26
 PY25-YAML_DEPENDS=python25
 PY-YAML_CONFLICTS=
 
 #
 # PY-YAML_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-YAML_IPK_VERSION=1
+PY-YAML_IPK_VERSION=2
 
 #
 # PY-YAML_CONFFILES should be a list of user-editable files
@@ -177,7 +177,7 @@ py-yaml-stage: $(PY-YAML_BUILD_DIR)/.staged
 $(PY26-YAML_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-yaml" >>$@
+	@echo "Package: py26-yaml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-YAML_PRIORITY)" >>$@
 	@echo "Section: $(PY-YAML_SECTION)" >>$@
