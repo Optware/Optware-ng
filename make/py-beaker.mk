@@ -23,8 +23,8 @@
 #
 # PY-BEAKER_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BEAKER_SITE=http://cheeseshop.python.org/packages/source/B/Beaker
-PY-BEAKER_VERSION=1.1.2
+PY-BEAKER_SITE=http://pypi.python.org/packages/source/B/Beaker
+PY-BEAKER_VERSION=1.1.3
 PY-BEAKER_IPK_VERSION=1
 PY-BEAKER_SOURCE=Beaker-$(PY-BEAKER_VERSION).tar.gz
 PY-BEAKER_DIR=Beaker-$(PY-BEAKER_VERSION)
@@ -33,8 +33,9 @@ PY-BEAKER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BEAKER_DESCRIPTION=A Session and Caching library with WSGI Middleware.
 PY-BEAKER_SECTION=misc
 PY-BEAKER_PRIORITY=optional
-PY24-BEAKER_DEPENDS=python24, py24-myghtyutils
-PY25-BEAKER_DEPENDS=python25, py25-myghtyutils
+PY24-BEAKER_DEPENDS=python24
+PY25-BEAKER_DEPENDS=python25
+PY26-BEAKER_DEPENDS=python26
 PY-BEAKER_SUGGESTS=
 PY-BEAKER_CONFLICTS=
 
@@ -73,6 +74,9 @@ PY24-BEAKER_IPK=$(BUILD_DIR)/py24-beaker_$(PY-BEAKER_VERSION)-$(PY-BEAKER_IPK_VE
 
 PY25-BEAKER_IPK_DIR=$(BUILD_DIR)/py25-beaker-$(PY-BEAKER_VERSION)-ipk
 PY25-BEAKER_IPK=$(BUILD_DIR)/py25-beaker_$(PY-BEAKER_VERSION)-$(PY-BEAKER_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-BEAKER_IPK_DIR=$(BUILD_DIR)/py26-beaker-$(PY-BEAKER_VERSION)-ipk
+PY26-BEAKER_IPK=$(BUILD_DIR)/py26-beaker_$(PY-BEAKER_VERSION)-$(PY-BEAKER_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-beaker-source py-beaker-unpack py-beaker py-beaker-stage py-beaker-ipk py-beaker-clean py-beaker-dirclean py-beaker-check
 
@@ -129,6 +133,16 @@ $(PY-BEAKER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BEAKER_SOURCE) $(PY-BEAKER_PA
 	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-BEAKER_DIR)
+	$(PY-BEAKER_UNZIP) $(DL_DIR)/$(PY-BEAKER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-BEAKER_PATCHES)" ; then \
+	    cat $(PY-BEAKER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.6") >> setup.cfg \
 	)
 	touch $@
 
@@ -189,6 +203,20 @@ $(PY25-BEAKER_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-BEAKER_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-BEAKER_CONFLICTS)" >>$@
 
+$(PY26-BEAKER_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-beaker" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-BEAKER_PRIORITY)" >>$@
+	@echo "Section: $(PY-BEAKER_SECTION)" >>$@
+	@echo "Version: $(PY-BEAKER_VERSION)-$(PY-BEAKER_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-BEAKER_MAINTAINER)" >>$@
+	@echo "Source: $(PY-BEAKER_SITE)/$(PY-BEAKER_SOURCE)" >>$@
+	@echo "Description: $(PY-BEAKER_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-BEAKER_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-BEAKER_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -222,10 +250,20 @@ $(PY25-BEAKER_IPK): $(PY-BEAKER_BUILD_DIR)/.built
 #	echo $(PY-BEAKER_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-BEAKER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BEAKER_IPK_DIR)
 
+$(PY26-BEAKER_IPK): $(PY-BEAKER_BUILD_DIR)/.built
+	rm -rf $(PY26-BEAKER_IPK_DIR) $(BUILD_DIR)/py26-beaker_*_$(TARGET_ARCH).ipk
+	(cd $(<D)/2.6; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-BEAKER_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-BEAKER_IPK_DIR)/CONTROL/control
+#	echo $(PY-BEAKER_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-BEAKER_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-BEAKER_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-beaker-ipk: $(PY24-BEAKER_IPK) $(PY25-BEAKER_IPK)
+py-beaker-ipk: $(PY24-BEAKER_IPK) $(PY25-BEAKER_IPK) $(PY26-BEAKER_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -241,9 +279,11 @@ py-beaker-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-BEAKER_DIR) $(PY-BEAKER_BUILD_DIR)
 	rm -rf $(PY24-BEAKER_IPK_DIR) $(PY24-BEAKER_IPK)
 	rm -rf $(PY25-BEAKER_IPK_DIR) $(PY25-BEAKER_IPK)
+	rm -rf $(PY26-BEAKER_IPK_DIR) $(PY26-BEAKER_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-beaker-check: $(PY24-BEAKER_IPK) $(PY25-BEAKER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-BEAKER_IPK) $(PY25-BEAKER_IPK)
+py-beaker-check: $(PY24-BEAKER_IPK) $(PY25-BEAKER_IPK) $(PY26-BEAKER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
+		$(PY24-BEAKER_IPK) $(PY25-BEAKER_IPK) $(PY26-BEAKER_IPK)
