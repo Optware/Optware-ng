@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-WEBPY_SITE=http://webpy.org/static
-PY-WEBPY_VERSION=0.23
+PY-WEBPY_VERSION=0.31
 PY-WEBPY_SOURCE=web.py-$(PY-WEBPY_VERSION).tar.gz
 PY-WEBPY_DIR=webpy
 PY-WEBPY_UNZIP=zcat
@@ -31,15 +31,15 @@ PY-WEBPY_DESCRIPTION=A web framework for python that is as simple as it is power
 PY-WEBPY_SECTION=web
 PY-WEBPY_PRIORITY=optional
 PY-WEBPY_CONFLICTS=
-PY24-WEBPY_DEPENDS=python24
+PY26-WEBPY_DEPENDS=python26
 PY25-WEBPY_DEPENDS=python25
-PY24-WEBPY_SUGGESTS=py24-flup
+PY26-WEBPY_SUGGESTS=py26-flup
 PY25-WEBPY_SUGGESTS=py25-flup
 
 #
 # PY-WEBPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-WEBPY_IPK_VERSION=2
+PY-WEBPY_IPK_VERSION=1
 
 #
 # PY-WEBPY_CONFFILES should be a list of user-editable files
@@ -70,8 +70,8 @@ PY-WEBPY_LDFLAGS=
 PY-WEBPY_BUILD_DIR=$(BUILD_DIR)/py-webpy
 PY-WEBPY_SOURCE_DIR=$(SOURCE_DIR)/py-webpy
 
-PY24-WEBPY_IPK_DIR=$(BUILD_DIR)/py24-webpy-$(PY-WEBPY_VERSION)-ipk
-PY24-WEBPY_IPK=$(BUILD_DIR)/py24-webpy_$(PY-WEBPY_VERSION)-$(PY-WEBPY_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY26-WEBPY_IPK_DIR=$(BUILD_DIR)/py26-webpy-$(PY-WEBPY_VERSION)-ipk
+PY26-WEBPY_IPK=$(BUILD_DIR)/py26-webpy_$(PY-WEBPY_VERSION)-$(PY-WEBPY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-WEBPY_IPK_DIR=$(BUILD_DIR)/py25-webpy-$(PY-WEBPY_VERSION)-ipk
 PY25-WEBPY_IPK=$(BUILD_DIR)/py25-webpy_$(PY-WEBPY_VERSION)-$(PY-WEBPY_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -112,21 +112,21 @@ $(PY-WEBPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBPY_SOURCE) $(PY-WEBPY_PATCH
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
+	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-WEBPY_DIR)
 	$(PY-WEBPY_UNZIP) $(DL_DIR)/$(PY-WEBPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-WEBPY_PATCHES)"; \
 		then cat $(PY-WEBPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEBPY_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-WEBPY_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
+	mv $(BUILD_DIR)/$(PY-WEBPY_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4" \
+		echo "executable=/opt/bin/python2.6" \
 	    ) >> setup.cfg; \
 	)
 	# 2.5
@@ -155,10 +155,10 @@ py-webpy-unpack: $(PY-WEBPY_BUILD_DIR)/.configured
 #
 $(PY-WEBPY_BUILD_DIR)/.built: $(PY-WEBPY_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(@D)/2.4; \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	cd $(@D)/2.6; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" build
 	cd $(@D)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
@@ -184,10 +184,10 @@ py-webpy-stage: $(PY-WEBPY_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-webpy
 #
-$(PY24-WEBPY_IPK_DIR)/CONTROL/control:
+$(PY26-WEBPY_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py24-webpy" >>$@
+	@echo "Package: py26-webpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-WEBPY_PRIORITY)" >>$@
 	@echo "Section: $(PY-WEBPY_SECTION)" >>$@
@@ -195,8 +195,8 @@ $(PY24-WEBPY_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-WEBPY_MAINTAINER)" >>$@
 	@echo "Source: $(PY-WEBPY_SITE)/$(PY-WEBPY_SOURCE)" >>$@
 	@echo "Description: $(PY-WEBPY_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-WEBPY_DEPENDS)" >>$@
-	@echo "Suggests: $(PY24-WEBPY_SUGGESTS)" >>$@
+	@echo "Depends: $(PY26-WEBPY_DEPENDS)" >>$@
+	@echo "Suggests: $(PY26-WEBPY_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-WEBPY_CONFLICTS)" >>$@
 
 $(PY25-WEBPY_IPK_DIR)/CONTROL/control:
@@ -226,18 +226,18 @@ $(PY25-WEBPY_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-WEBPY_IPK): $(PY-WEBPY_BUILD_DIR)/.built
+$(PY26-WEBPY_IPK): $(PY-WEBPY_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py-webpy_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-WEBPY_IPK_DIR) $(BUILD_DIR)/py24-webpy_*_$(TARGET_ARCH).ipk
-	(cd $(PY-WEBPY_BUILD_DIR)/2.4; \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	rm -rf $(PY26-WEBPY_IPK_DIR) $(BUILD_DIR)/py26-webpy_*_$(TARGET_ARCH).ipk
+	(cd $(PY-WEBPY_BUILD_DIR)/2.6; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(PY24-WEBPY_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(PY26-WEBPY_IPK_DIR) --prefix=/opt; \
 	)
-#	$(STRIP_COMMAND) `find $(PY24-WEBPY_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
-	$(MAKE) $(PY24-WEBPY_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-WEBPY_IPK_DIR)
+#	$(STRIP_COMMAND) `find $(PY26-WEBPY_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
+	$(MAKE) $(PY26-WEBPY_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-WEBPY_IPK_DIR)
 
 $(PY25-WEBPY_IPK): $(PY-WEBPY_BUILD_DIR)/.built
 	rm -rf $(PY25-WEBPY_IPK_DIR) $(BUILD_DIR)/py25-webpy_*_$(TARGET_ARCH).ipk
@@ -254,7 +254,7 @@ $(PY25-WEBPY_IPK): $(PY-WEBPY_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-webpy-ipk: $(PY24-WEBPY_IPK) $(PY25-WEBPY_IPK)
+py-webpy-ipk: $(PY26-WEBPY_IPK) $(PY25-WEBPY_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -268,11 +268,11 @@ py-webpy-clean:
 #
 py-webpy-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-WEBPY_DIR) $(PY-WEBPY_BUILD_DIR)
-	rm -rf $(PY24-WEBPY_IPK_DIR) $(PY24-WEBPY_IPK)
+	rm -rf $(PY26-WEBPY_IPK_DIR) $(PY26-WEBPY_IPK)
 	rm -rf $(PY25-WEBPY_IPK_DIR) $(PY25-WEBPY_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-webpy-check: $(PY24-WEBPY_IPK) $(PY25-WEBPY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-WEBPY_IPK) $(PY25-WEBPY_IPK)
+py-webpy-check: $(PY26-WEBPY_IPK) $(PY25-WEBPY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY26-WEBPY_IPK) $(PY25-WEBPY_IPK)
