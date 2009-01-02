@@ -117,7 +117,7 @@ py-pastescript-source: $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) $(PY-PASTESCRIPT_PATCH
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-PASTESCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) $(PY-PASTESCRIPT_PATCHES)
+$(PY-PASTESCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) $(PY-PASTESCRIPT_PATCHES) make/py-pastescript.mk
 	$(MAKE) py-setuptools-stage py-paste-stage py-pastedeploy-stage
 	rm -rf $(PY-PASTESCRIPT_BUILD_DIR)
 	mkdir -p $(PY-PASTESCRIPT_BUILD_DIR)

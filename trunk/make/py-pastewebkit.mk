@@ -109,7 +109,7 @@ py-pastewebkit-source: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY-PASTEWEBKIT_PATCH
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY-PASTEWEBKIT_PATCHES)
+$(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY-PASTEWEBKIT_PATCHES) make/py-pastewebkit.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(PY-PASTEWEBKIT_BUILD_DIR)
 	mkdir -p $(PY-PASTEWEBKIT_BUILD_DIR)
