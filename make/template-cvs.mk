@@ -225,4 +225,4 @@ $(<BAR>_IPK): $(<BAR>_BUILD_DIR)/.built
 # Some sanity check for the package.
 #
 <bar>-check: $(<BAR>_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(<BAR>_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
