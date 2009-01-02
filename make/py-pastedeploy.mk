@@ -118,10 +118,10 @@ py-pastedeploy-source: $(DL_DIR)/$(PY-PASTEDEPLOY_SOURCE) $(PY-PASTEDEPLOY_PATCH
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-PASTEDEPLOY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEDEPLOY_SOURCE) $(PY-PASTEDEPLOY_PATCHES)
+$(PY-PASTEDEPLOY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEDEPLOY_SOURCE) $(PY-PASTEDEPLOY_PATCHES) make/py-pastedeploy.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-PASTEDEPLOY_BUILD_DIR)
-	mkdir -p $(PY-PASTEDEPLOY_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR)
 ifeq ($(PY-PASTEDEPLOY_SVN_REV),)
