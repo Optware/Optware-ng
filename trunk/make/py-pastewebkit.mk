@@ -32,12 +32,13 @@ PY-PASTEWEBKIT_SECTION=misc
 PY-PASTEWEBKIT_PRIORITY=optional
 PY24-PASTEWEBKIT_DEPENDS=python24, py24-paste, py24-pastedeploy, py24-pastescript
 PY25-PASTEWEBKIT_DEPENDS=python25, py25-paste, py25-pastedeploy, py25-pastescript
+PY26-PASTEWEBKIT_DEPENDS=python26, py26-paste, py26-pastedeploy, py26-pastescript
 PY-PASTEWEBKIT_CONFLICTS=
 
 #
 # PY-PASTEWEBKIT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PASTEWEBKIT_IPK_VERSION=3
+PY-PASTEWEBKIT_IPK_VERSION=4
 
 #
 # PY-PASTEWEBKIT_CONFFILES should be a list of user-editable files
@@ -73,6 +74,9 @@ PY24-PASTEWEBKIT_IPK=$(BUILD_DIR)/py24-pastewebkit_$(PY-PASTEWEBKIT_VERSION)-$(P
 
 PY25-PASTEWEBKIT_IPK_DIR=$(BUILD_DIR)/py25-pastewebkit-$(PY-PASTEWEBKIT_VERSION)-ipk
 PY25-PASTEWEBKIT_IPK=$(BUILD_DIR)/py25-pastewebkit_$(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-PASTEWEBKIT_IPK_DIR=$(BUILD_DIR)/py26-pastewebkit-$(PY-PASTEWEBKIT_VERSION)-ipk
+PY26-PASTEWEBKIT_IPK=$(BUILD_DIR)/py26-pastewebkit_$(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-pastewebkit-source py-pastewebkit-unpack py-pastewebkit py-pastewebkit-stage py-pastewebkit-ipk py-pastewebkit-clean py-pastewebkit-dirclean py-pastewebkit-check
 
@@ -139,6 +143,21 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR)
+	$(PY-PASTEWEBKIT_UNZIP) $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-PASTEWEBKIT_PATCHES)"; then \
+	    cat $(PY-PASTEWEBKIT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)/2.6
+	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.6; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
 	touch $@
 
 py-pastewebkit-unpack: $(PY-PASTEWEBKIT_BUILD_DIR)/.configured
@@ -154,6 +173,9 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.built: $(PY-PASTEWEBKIT_BUILD_DIR)/.configured
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	touch $@
 
 #
@@ -203,6 +225,20 @@ $(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-PASTEWEBKIT_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PASTEWEBKIT_CONFLICTS)" >>$@
 
+$(PY26-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-pastewebkit" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PASTEWEBKIT_PRIORITY)" >>$@
+	@echo "Section: $(PY-PASTEWEBKIT_SECTION)" >>$@
+	@echo "Version: $(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PASTEWEBKIT_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PASTEWEBKIT_SITE)/$(PY-PASTEWEBKIT_SOURCE)" >>$@
+	@echo "Description: $(PY-PASTEWEBKIT_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-PASTEWEBKIT_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PASTEWEBKIT_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -236,10 +272,20 @@ $(PY25-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
 #	echo $(PY-PASTEWEBKIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PASTEWEBKIT_IPK_DIR)
 
+$(PY26-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
+	rm -rf $(PY26-PASTEWEBKIT_IPK_DIR) $(BUILD_DIR)/py26-pastewebkit_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install \
+	--root=$(PY26-PASTEWEBKIT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-PASTEWEBKIT_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTEWEBKIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-PASTEWEBKIT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PASTEWEBKIT_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pastewebkit-ipk: $(PY24-PASTEWEBKIT_IPK) $(PY25-PASTEWEBKIT_IPK)
+py-pastewebkit-ipk: $(PY24-PASTEWEBKIT_IPK) $(PY25-PASTEWEBKIT_IPK) $(PY26-PASTEWEBKIT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -255,9 +301,10 @@ py-pastewebkit-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)
 	rm -rf $(PY24-PASTEWEBKIT_IPK_DIR) $(PY24-PASTEWEBKIT_IPK)
 	rm -rf $(PY25-PASTEWEBKIT_IPK_DIR) $(PY25-PASTEWEBKIT_IPK)
+	rm -rf $(PY26-PASTEWEBKIT_IPK_DIR) $(PY26-PASTEWEBKIT_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-pastewebkit-check: $(PY24-PASTEWEBKIT_IPK) $(PY25-PASTEWEBKIT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PASTEWEBKIT_IPK) $(PY25-PASTEWEBKIT_IPK)
+py-pastewebkit-check: $(PY24-PASTEWEBKIT_IPK) $(PY25-PASTEWEBKIT_IPK) $(PY26-PASTEWEBKIT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
