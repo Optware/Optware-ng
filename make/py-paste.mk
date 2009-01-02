@@ -40,10 +40,11 @@ PY-PASTE_SECTION=misc
 PY-PASTE_PRIORITY=optional
 PY24-PASTE_DEPENDS=python24
 PY25-PASTE_DEPENDS=python25
+PY26-PASTE_DEPENDS=python26
 PY-PASTE_SUGGESTS=
 PY-PASTE_CONFLICTS=
 
-PY-PASTE_IPK_VERSION=1
+PY-PASTE_IPK_VERSION=2
 
 #
 # PY-PASTE_CONFFILES should be a list of user-editable files
@@ -79,6 +80,9 @@ PY24-PASTE_IPK=$(BUILD_DIR)/py24-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSIO
 
 PY25-PASTE_IPK_DIR=$(BUILD_DIR)/py25-paste-$(PY-PASTE_VERSION)-ipk
 PY25-PASTE_IPK=$(BUILD_DIR)/py25-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-PASTE_IPK_DIR=$(BUILD_DIR)/py26-paste-$(PY-PASTE_VERSION)-ipk
+PY26-PASTE_IPK=$(BUILD_DIR)/py26-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-paste-source py-paste-unpack py-paste py-paste-stage py-paste-ipk py-paste-clean py-paste-dirclean py-paste-check
 
@@ -150,6 +154,22 @@ endif
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR)
+ifndef PY-PASTE_SVN_REV
+	$(PY-PASTE_UNZIP) $(DL_DIR)/$(PY-PASTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q -r $(PY-PASTE_SVN_REV) $(PY-PASTE_SVN) $(PY-PASTE_DIR); \
+	)
+endif
+	if test -n "$(PY-PASTE_PATCHES)" ; then \
+	    cat $(PY-PASTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	)
 	touch $@
 
 py-paste-unpack: $(PY-PASTE_BUILD_DIR)/.configured
@@ -165,6 +185,9 @@ $(PY-PASTE_BUILD_DIR)/.built: $(PY-PASTE_BUILD_DIR)/.configured
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	touch $@
 
 #
@@ -184,6 +207,10 @@ $(PY-PASTE_BUILD_DIR)/.staged: $(PY-PASTE_BUILD_DIR)/.built
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
 		--root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
@@ -221,6 +248,20 @@ $(PY25-PASTE_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-PASTE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PASTE_CONFLICTS)" >>$@
 
+$(PY26-PASTE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-paste" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PASTE_PRIORITY)" >>$@
+	@echo "Section: $(PY-PASTE_SECTION)" >>$@
+	@echo "Version: $(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PASTE_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PASTE_SITE)/$(PY-PASTE_SOURCE)" >>$@
+	@echo "Description: $(PY-PASTE_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-PASTE_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PASTE_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -254,10 +295,20 @@ $(PY25-PASTE_IPK): $(PY-PASTE_BUILD_DIR)/.built
 #	echo $(PY-PASTE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PASTE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PASTE_IPK_DIR)
 
+$(PY26-PASTE_IPK): $(PY-PASTE_BUILD_DIR)/.built
+	rm -rf $(PY26-PASTE_IPK_DIR) $(BUILD_DIR)/py26-paste_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PASTE_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+		--root=$(PY26-PASTE_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-PASTE_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTE_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-PASTE_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PASTE_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-paste-ipk: $(PY24-PASTE_IPK) $(PY25-PASTE_IPK)
+py-paste-ipk: $(PY24-PASTE_IPK) $(PY25-PASTE_IPK) $(PY26-PASTE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -273,9 +324,10 @@ py-paste-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR) $(PY-PASTE_BUILD_DIR)
 	rm -rf $(PY24-PASTE_IPK_DIR) $(PY24-PASTE_IPK)
 	rm -rf $(PY25-PASTE_IPK_DIR) $(PY25-PASTE_IPK)
+	rm -rf $(PY26-PASTE_IPK_DIR) $(PY26-PASTE_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-paste-check: $(PY24-PASTE_IPK) $(PY25-PASTE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PASTE_IPK) $(PY25-PASTE_IPK)
+py-paste-check: $(PY24-PASTE_IPK) $(PY25-PASTE_IPK) $(PY26-PASTE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
