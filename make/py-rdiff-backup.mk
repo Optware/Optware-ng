@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-RDIFF-BACKUP_VERSION=1.2.3
+PY-RDIFF-BACKUP_VERSION=1.2.4
 PY-RDIFF-BACKUP_SITE=http://savannah.nongnu.org/download/rdiff-backup
 PY-RDIFF-BACKUP_SOURCE=rdiff-backup-$(PY-RDIFF-BACKUP_VERSION).tar.gz
 PY-RDIFF-BACKUP_DIR=rdiff-backup-$(PY-RDIFF-BACKUP_VERSION)
@@ -272,4 +272,4 @@ py-rdiff-backup-dirclean:
 # Some sanity check for the package.
 #
 py-rdiff-backup-check: $(PY26-RDIFF-BACKUP_IPK) $(PY25-RDIFF-BACKUP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY26-RDIFF-BACKUP_IPK) $(PY25-RDIFF-BACKUP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
