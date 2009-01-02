@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 HDPARM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hdparm
-HDPARM_VERSION=8.9
+HDPARM_VERSION=9.6
 HDPARM_SOURCE=hdparm-$(HDPARM_VERSION).tar.gz
 HDPARM_DIR=hdparm-$(HDPARM_VERSION)
 HDPARM_UNZIP=zcat
@@ -126,7 +126,8 @@ $(HDPARM_BUILD_DIR)/.built: $(HDPARM_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		binprefix=/opt manprefix=/opt \
-		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+		STRIP=$(TARGET_STRIP)
 	touch $@
 
 #
@@ -189,4 +190,4 @@ hdparm-dirclean:
 # Some sanity check for the package.
 #
 hdparm-check: $(HDPARM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HDPARM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
