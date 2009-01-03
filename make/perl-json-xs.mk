@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-JSON-XS_SITE=http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN
-PERL-JSON-XS_VERSION=2.2222
+PERL-JSON-XS_VERSION=1.5
 PERL-JSON-XS_SOURCE=JSON-XS-$(PERL-JSON-XS_VERSION).tar.gz
 PERL-JSON-XS_DIR=JSON-XS-$(PERL-JSON-XS_VERSION)
 PERL-JSON-XS_UNZIP=zcat
@@ -107,4 +107,4 @@ perl-json-xs-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL-JSON-XS_DIR) $(PERL-JSON-XS_BUILD_DIR) $(PERL-JSON-XS_IPK_DIR) $(PERL-JSON-XS_IPK)
 
 perl-json-xs-check: $(PERL-JSON-XS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PERL-JSON-XS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
