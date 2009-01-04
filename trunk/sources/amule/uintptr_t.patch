@@ -1,0 +1,10 @@
+--- amule/src/libs/common/Format.h.orig	2008-12-04 21:59:04.000000000 +0000
++++ amule/src/libs/common/Format.h	2009-01-04 18:19:56.374157029 +0000
+@@ -26,6 +26,7 @@
+ #define FORMAT_H
+ 
+ 
++#include <stdint.h>
+ #include "MuleDebug.h"
+ 
+ #ifdef __GNUC__
