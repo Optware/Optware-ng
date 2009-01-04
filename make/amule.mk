@@ -21,8 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 # http://developer.berlios.de/projects/amule/
 
-AMULE_SITE=http://download.berlios.de/amule
-AMULE_VERSION=2.2.2
+#AMULE_SITE=http://download.berlios.de/amule
+AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/amule
+AMULE_VERSION=2.2.3
 AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
 AMULE_DIR=aMule-$(AMULE_VERSION)
 AMULE_UNZIP=bzcat
@@ -47,7 +48,7 @@ AMULE_IPK_VERSION=1
 # AMULE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-AMULE_PATCHES=
+AMULE_PATCHES=$(AMULE_SOURCE_DIR)/uintptr_t.patch
 
 ifeq ($(OPTWARE_TARGET), ts101)
 AMULE_PATCHES+=$(AMULE_SOURCE_DIR)/cmath.patch
