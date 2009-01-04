@@ -4,14 +4,14 @@
 #
 ###########################################################
 
-SQUEEZECENTER_VERSION=7.2.0
+SQUEEZECENTER_VERSION=7.3.1
 SQUEEZECENTER_SITE=http://www.slimdevices.com/downloads/SqueezeCenter_v$(SQUEEZECENTER_VERSION)
 # firmware update site: http://update.slimdevices.com/update/firmware
-SQUEEZECENTER_DIR=squeezecenter-7.2-noCPAN
+SQUEEZECENTER_DIR=squeezecenter-$(SQUEEZECENTER_VERSION)-noCPAN
 SQUEEZECENTER_SOURCE=$(SQUEEZECENTER_DIR).tgz
 SQUEEZECENTER_UNZIP=zcat
 SQUEEZECENTER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-SQUEEZECENTER_DESCRIPTION=Streaming Audio Server
+SQUEEZECENTER_DESCRIPTION=Streaming Audio Server for Logitech Squeezebox
 SQUEEZECENTER_SECTION=audio
 SQUEEZECENTER_PRIORITY=optional
 
@@ -22,6 +22,8 @@ SQUEEZECENTER_DEPENDS=adduser \
 , perl-encode-detect \
 , perl-gd \
 , perl-html-parser \
+, perl-json-xs \
+, perl-poe-xs-queue-array \
 , perl-template-toolkit \
 , perl-xml-parser \
 , perl-yaml-syck \
@@ -29,7 +31,7 @@ SQUEEZECENTER_DEPENDS=adduser \
 SQUEEZECENTER_SUGGESTS=flac
 SQUEEZECENTER_CONFLICTS=slimserver
 
-SQUEEZECENTER_IPK_VERSION=2
+SQUEEZECENTER_IPK_VERSION=1
 
 #SQUEEZECENTER_CONFFILES=/opt/etc/squeezecenter.conf /opt/etc/init.d/S99squeezecenter \
 	/opt/share/squeezecenter/MySQL/my.tt
@@ -149,6 +151,7 @@ $(SQUEEZECENTER_IPK): $(SQUEEZECENTER_BUILD_DIR)/.built
 	rm -rf $(SQUEEZECENTER_IPK_DIR)/opt/share/squeezecenter/temp
 	rm -rf $(SQUEEZECENTER_IPK_DIR)/opt/share/squeezecenter/Bin/i386-linux
 	rm -rf $(SQUEEZECENTER_IPK_DIR)/opt/share/squeezecenter/*-Makefile.PL
+	rm -f $(SQUEEZECENTER_IPK_DIR)/opt/share/squeezecenter/Bin/build-perl-modules.pl.*
 ifeq (7.0.1, $(SQUEEZECENTER_VERSION))
 	rm -rf $(SQUEEZECENTER_IPK_DIR)/opt/share/squeezecenter/Slim/Plugin/PreventStandby
 endif
@@ -184,4 +187,4 @@ squeezecenter-dirclean:
 	rm -rf $(BUILD_DIR)/$(SQUEEZECENTER_DIR) $(SQUEEZECENTER_BUILD_DIR) $(SQUEEZECENTER_IPK_DIR) $(SQUEEZECENTER_IPK)
 
 squeezecenter-check: $(SQUEEZECENTER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQUEEZECENTER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -1,5 +1,5 @@
---- Bin/build-perl-modules.pl.orig	2008-07-28 12:32:04.000000000 -0700
-+++ Bin/build-perl-modules.pl	2008-07-31 19:04:57.000000000 -0700
+--- Bin/build-perl-modules.pl.orig	2008-12-20 01:30:03.000000000 +0000
++++ Bin/build-perl-modules.pl	2009-01-04 19:26:43.377909708 +0000
 @@ -10,14 +10,13 @@
  # A compiler is obviously needed too.
  
@@ -16,28 +16,30 @@
  
  # NOTE: If you change this in a future version of SC, create a new
  # versioned directory under vendor/src for all files for that version
-@@ -26,17 +25,7 @@
+@@ -26,19 +25,6 @@
  
  # The list of all the packages needed.
  my %packages = (
--	'Compress::Zlib'     => 'Compress-Zlib-1.41.tar.gz',
--	'DBI'                => 'DBI-1.604.tar.gz',
--	'DBD::mysql'         => 'DBD-mysql-3.0002.tar.gz',
--	'Digest::SHA1'       => 'Digest-SHA1-2.11.tar.gz',
--	'Encode::Detect'     => 'Encode-Detect-1.00.tar.gz',
- 	'JSON::XS'           => 'JSON-XS-1.5.tar.gz',
--	'HTML::Parser'       => 'HTML-Parser-3.48.tar.gz',
--	'Template'           => 'Template-Toolkit-2.15.tar.gz',
--	'Time::HiRes'        => 'Time-HiRes-1.86.tar.gz',
--	'XML::Parser::Expat' => 'XML-Parser-2.34.tar.gz',
--	'YAML::Syck'         => 'YAML-Syck-0.64.tar.gz',
+-	'Class::XSAccessor::Array' => 'Class-XSAccessor-Array-0.05.tar.gz',
+-	'Compress::Zlib'           => 'Compress-Zlib-1.41.tar.gz',
+-	'DBI'                      => 'DBI-1.604.tar.gz',
+-	'DBD::mysql'               => 'DBD-mysql-3.0002.tar.gz',
+-	'Digest::SHA1'             => 'Digest-SHA1-2.11.tar.gz',
+-	'Encode::Detect'           => 'Encode-Detect-1.00.tar.gz',
+-	'JSON::XS'                 => 'JSON-XS-1.5.tar.gz',
+-	'HTML::Parser'             => 'HTML-Parser-3.48.tar.gz',
+-	'POE::XS::Queue::Array'    => 'POE-XS-Queue-Array-0.002.tar.gz',
+-	'Template'                 => 'Template-Toolkit-2.15.tar.gz',
+-	'Time::HiRes'              => 'Time-HiRes-1.86.tar.gz',
+-	'XML::Parser::Expat'       => 'XML-Parser-2.34.tar.gz',
+-	'YAML::Syck'               => 'YAML-Syck-0.64.tar.gz',
  );
  
- # Options for specific packages
-@@ -60,13 +49,15 @@
+ # Don't need Class::C3::XS if you're running 5.10
+@@ -67,13 +53,15 @@
  	'DBD-mysql-3.0002' => {
  
- 		'env' => [qw(DBI-1.50/blib/lib: DBI-1.50/blib/arch)],
+ 		'env' => [qw(DBI-1.604/blib/lib: DBI-1.604/blib/arch)],
 +		'Makefile.PL' => "--mysql_config=$ENV{STAGING_PREFIX}/bin/mysql_config",
  	},
  );
@@ -51,7 +53,7 @@
  	my $version  = $Config{'version'};
  
  	print "Welcome to the Slim Devices perl module installer.\n\n";
-@@ -139,7 +130,10 @@
+@@ -146,7 +134,10 @@
  
  		for my $cmd (qw(curl wget)) {
  
@@ -63,7 +65,7 @@
  				last;
  			}
  		}
-@@ -158,20 +152,7 @@
+@@ -165,20 +156,7 @@
  	# Only download the packages that were passsed.
  	my @packages = ();
  
@@ -85,7 +87,7 @@
  
  	# DBI needs to be first.
  	if ((grep { /DBI/ } @packages) && (grep { /DBD/ } @packages)) {
-@@ -191,6 +172,9 @@
+@@ -198,6 +176,9 @@
  
  	for my $package (@packages) {
  
@@ -95,7 +97,7 @@
  		chdir($pwd) or die "Couldn't change to $pwd : $!";
  
  		print "\nDownloading $package to: $pwd\n";
-@@ -200,15 +184,15 @@
+@@ -207,15 +188,15 @@
  
  		if ($downloadUsing eq 'lwp') {
  
@@ -114,7 +116,7 @@
  		}
  
  		unless (-r $package) {
-@@ -234,15 +218,47 @@
+@@ -241,15 +222,47 @@
  		}
  
  		print "Configuring..\n";
