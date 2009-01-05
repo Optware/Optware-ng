@@ -25,7 +25,7 @@
 #
 PY-WEBHELPERS_SITE=http://pypi.python.org/packages/source/W/WebHelpers
 PY-WEBHELPERS_VERSION=0.6.1
-PY-WEBHELPERS_IPK_VERSION=1
+PY-WEBHELPERS_IPK_VERSION=2
 PY-WEBHELPERS_SOURCE=WebHelpers-$(PY-WEBHELPERS_VERSION).tar.gz
 PY-WEBHELPERS_DIR=WebHelpers-$(PY-WEBHELPERS_VERSION)
 PY-WEBHELPERS_UNZIP=zcat
@@ -35,6 +35,7 @@ PY-WEBHELPERS_SECTION=misc
 PY-WEBHELPERS_PRIORITY=optional
 PY24-WEBHELPERS_DEPENDS=python24, py24-routes (>=1.7), py24-simplejson (>=1.4)
 PY25-WEBHELPERS_DEPENDS=python25, py25-routes (>=1.7), py25-simplejson (>=1.4)
+PY26-WEBHELPERS_DEPENDS=python26, py26-routes (>=1.7), py26-simplejson (>=1.4)
 PY-WEBHELPERS_SUGGESTS=
 PY-WEBHELPERS_CONFLICTS=
 
@@ -73,6 +74,9 @@ PY24-WEBHELPERS_IPK=$(BUILD_DIR)/py24-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-W
 
 PY25-WEBHELPERS_IPK_DIR=$(BUILD_DIR)/py25-webhelpers-$(PY-WEBHELPERS_VERSION)-ipk
 PY25-WEBHELPERS_IPK=$(BUILD_DIR)/py25-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-WEBHELPERS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-WEBHELPERS_IPK_DIR=$(BUILD_DIR)/py26-webhelpers-$(PY-WEBHELPERS_VERSION)-ipk
+PY26-WEBHELPERS_IPK=$(BUILD_DIR)/py26-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-WEBHELPERS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-webhelpers-source py-webhelpers-unpack py-webhelpers py-webhelpers-stage py-webhelpers-ipk py-webhelpers-clean py-webhelpers-dirclean py-webhelpers-check
 
@@ -129,6 +133,16 @@ $(PY-WEBHELPERS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-W
 	mv $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-WEBHELPERS_DIR)
+	$(PY-WEBHELPERS_UNZIP) $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-WEBHELPERS_PATCHES)" ; then \
+	    cat $(PY-WEBHELPERS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.6") >> setup.cfg \
 	)
 	touch $@
 
@@ -189,6 +203,20 @@ $(PY25-WEBHELPERS_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-WEBHELPERS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-WEBHELPERS_CONFLICTS)" >>$@
 
+$(PY26-WEBHELPERS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-webhelpers" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-WEBHELPERS_PRIORITY)" >>$@
+	@echo "Section: $(PY-WEBHELPERS_SECTION)" >>$@
+	@echo "Version: $(PY-WEBHELPERS_VERSION)-$(PY-WEBHELPERS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-WEBHELPERS_MAINTAINER)" >>$@
+	@echo "Source: $(PY-WEBHELPERS_SITE)/$(PY-WEBHELPERS_SOURCE)" >>$@
+	@echo "Description: $(PY-WEBHELPERS_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-WEBHELPERS_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-WEBHELPERS_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -222,10 +250,20 @@ $(PY25-WEBHELPERS_IPK): $(PY-WEBHELPERS_BUILD_DIR)/.built
 #	echo $(PY-WEBHELPERS_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-WEBHELPERS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-WEBHELPERS_IPK_DIR)
 
+$(PY26-WEBHELPERS_IPK): $(PY-WEBHELPERS_BUILD_DIR)/.built
+	rm -rf $(PY26-WEBHELPERS_IPK_DIR) $(BUILD_DIR)/py26-webhelpers_*_$(TARGET_ARCH).ipk
+	(cd $(PY-WEBHELPERS_BUILD_DIR)/2.6; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-WEBHELPERS_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-WEBHELPERS_IPK_DIR)/CONTROL/control
+#	echo $(PY-WEBHELPERS_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-WEBHELPERS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-WEBHELPERS_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-webhelpers-ipk: $(PY24-WEBHELPERS_IPK) $(PY25-WEBHELPERS_IPK)
+py-webhelpers-ipk: $(PY24-WEBHELPERS_IPK) $(PY25-WEBHELPERS_IPK) $(PY26-WEBHELPERS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -241,9 +279,10 @@ py-webhelpers-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(PY-WEBHELPERS_BUILD_DIR)
 	rm -rf $(PY24-WEBHELPERS_IPK_DIR) $(PY24-WEBHELPERS_IPK)
 	rm -rf $(PY25-WEBHELPERS_IPK_DIR) $(PY25-WEBHELPERS_IPK)
+	rm -rf $(PY26-WEBHELPERS_IPK_DIR) $(PY26-WEBHELPERS_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-webhelpers-check: $(PY24-WEBHELPERS_IPK) $(PY25-WEBHELPERS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-WEBHELPERS_IPK) $(PY25-WEBHELPERS_IPK)
+py-webhelpers-check: $(PY24-WEBHELPERS_IPK) $(PY25-WEBHELPERS_IPK) $(PY26-WEBHELPERS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
