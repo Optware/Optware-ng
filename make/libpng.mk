@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPNG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
-LIBPNG_VERSION=1.2.33
+LIBPNG_VERSION=1.2.34
 LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION).tar.gz
 LIBPNG_DIR=libpng-$(LIBPNG_VERSION)
 LIBPNG_UNZIP=zcat
@@ -210,4 +210,4 @@ libpng-dirclean:
 # Some sanity check for the package.
 #
 libpng-check: $(LIBPNG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBPNG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
