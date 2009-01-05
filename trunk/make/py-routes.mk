@@ -25,7 +25,7 @@
 #
 PY-ROUTES_SITE=http://pypi.python.org/packages/source/R/Routes
 PY-ROUTES_VERSION=1.10.1
-PY-ROUTES_IPK_VERSION=1
+PY-ROUTES_IPK_VERSION=2
 PY-ROUTES_SOURCE=Routes-$(PY-ROUTES_VERSION).tar.gz
 PY-ROUTES_DIR=Routes-$(PY-ROUTES_VERSION)
 PY-ROUTES_UNZIP=zcat
@@ -35,6 +35,7 @@ PY-ROUTES_SECTION=misc
 PY-ROUTES_PRIORITY=optional
 PY24-ROUTES_DEPENDS=python24
 PY25-ROUTES_DEPENDS=python25
+PY26-ROUTES_DEPENDS=python26
 PY-ROUTES_SUGGESTS=
 PY-ROUTES_CONFLICTS=
 
@@ -72,6 +73,9 @@ PY24-ROUTES_IPK=$(BUILD_DIR)/py24-routes_$(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VE
 
 PY25-ROUTES_IPK_DIR=$(BUILD_DIR)/py25-routes-$(PY-ROUTES_VERSION)-ipk
 PY25-ROUTES_IPK=$(BUILD_DIR)/py25-routes_$(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-ROUTES_IPK_DIR=$(BUILD_DIR)/py26-routes-$(PY-ROUTES_VERSION)-ipk
+PY26-ROUTES_IPK=$(BUILD_DIR)/py26-routes_$(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-routes-source py-routes-unpack py-routes py-routes-stage py-routes-ipk py-routes-clean py-routes-dirclean py-routes-check
 
@@ -131,6 +135,17 @@ $(PY-ROUTES_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUTES_SOURCE) $(PY-ROUTES_PA
 	    sed -i -e '/use_setuptools/d' setup.py; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-ROUTES_DIR)
+	$(PY-ROUTES_UNZIP) $(DL_DIR)/$(PY-ROUTES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-ROUTES_PATCHES)" ; then \
+	    cat $(PY-ROUTES_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUTES_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-ROUTES_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    sed -i -e '/use_setuptools/d' setup.py; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	)
 	touch $@
 
 py-routes-unpack: $(PY-ROUTES_BUILD_DIR)/.configured
@@ -146,6 +161,9 @@ $(PY-ROUTES_BUILD_DIR)/.built: $(PY-ROUTES_BUILD_DIR)/.configured
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	touch $@
 
 #
@@ -195,6 +213,20 @@ $(PY25-ROUTES_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-ROUTES_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-ROUTES_CONFLICTS)" >>$@
 
+$(PY26-ROUTES_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-routes" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-ROUTES_PRIORITY)" >>$@
+	@echo "Section: $(PY-ROUTES_SECTION)" >>$@
+	@echo "Version: $(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-ROUTES_MAINTAINER)" >>$@
+	@echo "Source: $(PY-ROUTES_SITE)/$(PY-ROUTES_SOURCE)" >>$@
+	@echo "Description: $(PY-ROUTES_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-ROUTES_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-ROUTES_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -228,10 +260,20 @@ $(PY25-ROUTES_IPK): $(PY-ROUTES_BUILD_DIR)/.built
 #	echo $(PY-ROUTES_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-ROUTES_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-ROUTES_IPK_DIR)
 
+$(PY26-ROUTES_IPK): $(PY-ROUTES_BUILD_DIR)/.built
+	rm -rf $(PY26-ROUTES_IPK_DIR) $(BUILD_DIR)/py26-routes_*_$(TARGET_ARCH).ipk
+	(cd $(PY-ROUTES_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install\
+		--root=$(PY26-ROUTES_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-ROUTES_IPK_DIR)/CONTROL/control
+#	echo $(PY-ROUTES_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-ROUTES_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-ROUTES_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-routes-ipk: $(PY24-ROUTES_IPK) $(PY25-ROUTES_IPK)
+py-routes-ipk: $(PY24-ROUTES_IPK) $(PY25-ROUTES_IPK) $(PY26-ROUTES_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -247,9 +289,10 @@ py-routes-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-ROUTES_DIR) $(PY-ROUTES_BUILD_DIR)
 	rm -rf $(PY24-ROUTES_IPK_DIR) $(PY24-ROUTES_IPK)
 	rm -rf $(PY25-ROUTES_IPK_DIR) $(PY25-ROUTES_IPK)
+	rm -rf $(PY26-ROUTES_IPK_DIR) $(PY26-ROUTES_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-routes-check: $(PY24-ROUTES_IPK) $(PY25-ROUTES_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-ROUTES_IPK) $(PY25-ROUTES_IPK)
+py-routes-check: $(PY24-ROUTES_IPK) $(PY25-ROUTES_IPK) $(PY26-ROUTES_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
