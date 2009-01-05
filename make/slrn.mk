@@ -20,16 +20,16 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SLRN_SITE=ftp://ftp.fu-berlin.de/pub/unix/news/slrn
-SLRN_VERSION=0.9.8.1
-SLRN_SOURCE=slrn-$(SLRN_VERSION).tar.bz2
+SLRN_SITE=ftp://space.mit.edu/pub/davis/slrn
+SLRN_VERSION=0.9.9p1
+SLRN_SOURCE=slrn-$(SLRN_VERSION).tar.gz
 SLRN_DIR=slrn-$(SLRN_VERSION)
-SLRN_UNZIP=bzcat
+SLRN_UNZIP=zcat
 SLRN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SLRN_DESCRIPTION=slrn (``s-lang read news'') is a newsreader run in console mode.
 SLRN_SECTION=news
 SLRN_PRIORITY=optional
-SLRN_DEPENDS=openssl
+SLRN_DEPENDS=openssl,slang
 SLRN_SUGGESTS=
 SLRN_CONFLICTS=
 
@@ -52,8 +52,8 @@ SLRN_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SLRN_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/slang1
-SLRN_LDFLAGS=-L$(STAGING_LIB_DIR)/slang1
+SLRN_CPPFLAGS=
+SLRN_LDFLAGS=-lslang
 
 #
 # SLRN_BUILD_DIR is the directory in which the build is done.
@@ -76,8 +76,8 @@ SLRN_IPK=$(BUILD_DIR)/slrn_$(SLRN_VERSION)-$(SLRN_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SLRN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SLRN_SITE)/$(SLRN_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SLRN_SOURCE)
+	$(WGET) -P $(@D) $(SLRN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,18 +105,20 @@ slrn-source: $(DL_DIR)/$(SLRN_SOURCE) $(SLRN_PATCHES)
 # shown below to make various patches to it.
 #
 $(SLRN_BUILD_DIR)/.configured: $(DL_DIR)/$(SLRN_SOURCE) $(SLRN_PATCHES) make/slrn.mk
-	$(MAKE) slang1-stage openssl-stage
+	$(MAKE) slang-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(SLRN_DIR) $(SLRN_BUILD_DIR)
 	$(SLRN_UNZIP) $(DL_DIR)/$(SLRN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SLRN_PATCHES)" ; \
 		then cat $(SLRN_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SLRN_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SLRN_DIR)" != "$(SLRN_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SLRN_DIR) $(SLRN_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SLRN_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SLRN_DIR) $(@D) ; \
 	fi
-	sed -i -e '/^[	]*\.\/chkslang/s/^/#/' $(SLRN_BUILD_DIR)/src/Makefile.in
-	(cd $(SLRN_BUILD_DIR); \
+	sed -i -e '/^	.*\/chkslang/s/^/#/' \
+	       -e '/-m 755/s/ -s//' \
+		$(@D)/src/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(SLRN_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(SLRN_LDFLAGS) $(STAGING_LDFLAGS)" \
@@ -128,13 +130,12 @@ $(SLRN_BUILD_DIR)/.configured: $(DL_DIR)/$(SLRN_SOURCE) $(SLRN_PATCHES) make/slr
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-slang-includes=$(STAGING_INCLUDE_DIR)/slang1 \
-		--with-slang-library=$(STAGING_LIB_DIR)/slang1 \
+		--with-slang=$(STAGING_PREFIX) \
 		--with-ssl=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(SLRN_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 slrn-unpack: $(SLRN_BUILD_DIR)/.configured
@@ -144,7 +145,7 @@ slrn-unpack: $(SLRN_BUILD_DIR)/.configured
 #
 $(SLRN_BUILD_DIR)/.built: $(SLRN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SLRN_BUILD_DIR) all
+	$(MAKE) -C $(@D) all RPATH=""
 	touch $@
 
 #
@@ -155,10 +156,10 @@ slrn: $(SLRN_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SLRN_BUILD_DIR)/.staged: $(SLRN_BUILD_DIR)/.built
-	rm -f $@
+#$(SLRN_BUILD_DIR)/.staged: $(SLRN_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(SLRN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
 slrn-stage: $(SLRN_BUILD_DIR)/.staged
 
@@ -195,17 +196,9 @@ $(SLRN_IPK_DIR)/CONTROL/control:
 #
 $(SLRN_IPK): $(SLRN_BUILD_DIR)/.built
 	rm -rf $(SLRN_IPK_DIR) $(BUILD_DIR)/slrn_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SLRN_BUILD_DIR) DESTDIR=$(SLRN_IPK_DIR) install-strip
-#	install -d $(SLRN_IPK_DIR)/opt/etc/
-#	install -m 644 $(SLRN_SOURCE_DIR)/slrn.conf $(SLRN_IPK_DIR)/opt/etc/slrn.conf
-#	install -d $(SLRN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SLRN_SOURCE_DIR)/rc.slrn $(SLRN_IPK_DIR)/opt/etc/init.d/SXXslrn
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SLRN_IPK_DIR)/opt/etc/init.d/SXXslrn
+	$(MAKE) -C $(SLRN_BUILD_DIR) DESTDIR=$(SLRN_IPK_DIR) install
+	$(STRIP_COMMAND) $(SLRN_IPK_DIR)/opt/bin/slrn
 	$(MAKE) $(SLRN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SLRN_SOURCE_DIR)/postinst $(SLRN_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SLRN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SLRN_SOURCE_DIR)/prerm $(SLRN_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SLRN_IPK_DIR)/CONTROL/prerm
 	echo $(SLRN_CONFFILES) | sed -e 's/ /\n/g' > $(SLRN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SLRN_IPK_DIR)
 
@@ -232,4 +225,4 @@ slrn-dirclean:
 # Some sanity check for the package.
 #
 slrn-check: $(SLRN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SLRN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
