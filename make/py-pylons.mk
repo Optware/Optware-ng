@@ -131,7 +131,7 @@ py-pylons-source: $(DL_DIR)/$(PY-PYLONS_SOURCE) $(PY-PYLONS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-PYLONS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYLONS_SOURCE) $(PY-PYLONS_PATCHES)
+$(PY-PYLONS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYLONS_SOURCE) $(PY-PYLONS_PATCHES) make/py-pylons.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
