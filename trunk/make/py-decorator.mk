@@ -25,7 +25,7 @@
 #
 PY-DECORATOR_SITE=http://www.phyast.pitt.edu/~micheles/python
 PY-DECORATOR_VERSION=2.3.0
-PY-DECORATOR_IPK_VERSION=1
+PY-DECORATOR_IPK_VERSION=2
 PY-DECORATOR_SOURCE=decorator-$(PY-DECORATOR_VERSION).zip
 PY-DECORATOR_DIR=decorator-$(PY-DECORATOR_VERSION)
 PY-DECORATOR_UNZIP=unzip
@@ -35,6 +35,7 @@ PY-DECORATOR_SECTION=misc
 PY-DECORATOR_PRIORITY=optional
 PY24-DECORATOR_DEPENDS=python24
 PY25-DECORATOR_DEPENDS=python25
+PY26-DECORATOR_DEPENDS=python26
 PY-DECORATOR_SUGGESTS=
 PY-DECORATOR_CONFLICTS=
 
@@ -73,6 +74,9 @@ PY24-DECORATOR_IPK=$(BUILD_DIR)/py24-decorator_$(PY-DECORATOR_VERSION)-$(PY-DECO
 
 PY25-DECORATOR_IPK_DIR=$(BUILD_DIR)/py25-decorator-$(PY-DECORATOR_VERSION)-ipk
 PY25-DECORATOR_IPK=$(BUILD_DIR)/py25-decorator_$(PY-DECORATOR_VERSION)-$(PY-DECORATOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-DECORATOR_IPK_DIR=$(BUILD_DIR)/py26-decorator-$(PY-DECORATOR_VERSION)-ipk
+PY26-DECORATOR_IPK=$(BUILD_DIR)/py26-decorator_$(PY-DECORATOR_VERSION)-$(PY-DECORATOR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-decorator-source py-decorator-unpack py-decorator py-decorator-stage py-decorator-ipk py-decorator-clean py-decorator-dirclean py-decorator-check
 
@@ -131,6 +135,17 @@ $(PY-DECORATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DEC
 	mv $(BUILD_DIR)/$(PY-DECORATOR_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-DECORATOR_DIR)
+	mkdir -p $(BUILD_DIR)/$(PY-DECORATOR_DIR)
+	cd $(BUILD_DIR)/$(PY-DECORATOR_DIR) && $(PY-DECORATOR_UNZIP) $(DL_DIR)/$(PY-DECORATOR_SOURCE)
+	if test -n "$(PY-DECORATOR_PATCHES)" ; then \
+	    cat $(PY-DECORATOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-DECORATOR_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.6") >> setup.cfg \
 	)
 	touch $@
 
@@ -191,6 +206,20 @@ $(PY25-DECORATOR_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-DECORATOR_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-DECORATOR_CONFLICTS)" >>$@
 
+$(PY26-DECORATOR_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-decorator" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-DECORATOR_PRIORITY)" >>$@
+	@echo "Section: $(PY-DECORATOR_SECTION)" >>$@
+	@echo "Version: $(PY-DECORATOR_VERSION)-$(PY-DECORATOR_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-DECORATOR_MAINTAINER)" >>$@
+	@echo "Source: $(PY-DECORATOR_SITE)/$(PY-DECORATOR_SOURCE)" >>$@
+	@echo "Description: $(PY-DECORATOR_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-DECORATOR_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-DECORATOR_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -224,10 +253,20 @@ $(PY25-DECORATOR_IPK): $(PY-DECORATOR_BUILD_DIR)/.built
 #	echo $(PY-DECORATOR_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-DECORATOR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-DECORATOR_IPK_DIR)
 
+$(PY26-DECORATOR_IPK): $(PY-DECORATOR_BUILD_DIR)/.built
+	rm -rf $(PY26-DECORATOR_IPK_DIR) $(BUILD_DIR)/py26-decorator_*_$(TARGET_ARCH).ipk
+	(cd $(PY-DECORATOR_BUILD_DIR)/2.6; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-DECORATOR_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-DECORATOR_IPK_DIR)/CONTROL/control
+#	echo $(PY-DECORATOR_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-DECORATOR_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-DECORATOR_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-decorator-ipk: $(PY24-DECORATOR_IPK) $(PY25-DECORATOR_IPK)
+py-decorator-ipk: $(PY24-DECORATOR_IPK) $(PY25-DECORATOR_IPK) $(PY26-DECORATOR_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -243,9 +282,10 @@ py-decorator-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-DECORATOR_DIR) $(PY-DECORATOR_BUILD_DIR)
 	rm -rf $(PY24-DECORATOR_IPK_DIR) $(PY24-DECORATOR_IPK)
 	rm -rf $(PY25-DECORATOR_IPK_DIR) $(PY25-DECORATOR_IPK)
+	rm -rf $(PY26-DECORATOR_IPK_DIR) $(PY26-DECORATOR_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-decorator-check: $(PY24-DECORATOR_IPK) $(PY25-DECORATOR_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-DECORATOR_IPK) $(PY25-DECORATOR_IPK)
+py-decorator-check: $(PY24-DECORATOR_IPK) $(PY25-DECORATOR_IPK) $(PY26-DECORATOR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
