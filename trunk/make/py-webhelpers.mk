@@ -110,7 +110,7 @@ py-webhelpers-source: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-WEBHELPERS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-WEBHELPERS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-WEBHELPERS_PATCHES)
+$(PY-WEBHELPERS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-WEBHELPERS_PATCHES) make/py-webhelpers.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(PY-WEBHELPERS_BUILD_DIR)
