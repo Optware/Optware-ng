@@ -32,12 +32,13 @@ PY-NOSE_SECTION=misc
 PY-NOSE_PRIORITY=optional
 PY24-NOSE_DEPENDS=python24
 PY25-NOSE_DEPENDS=python25
+PY26-NOSE_DEPENDS=python26
 PY-NOSE_CONFLICTS=
 
 #
 # PY-NOSE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-NOSE_IPK_VERSION=1
+PY-NOSE_IPK_VERSION=2
 
 #
 # PY-NOSE_CONFFILES should be a list of user-editable files
@@ -73,6 +74,9 @@ PY24-NOSE_IPK=$(BUILD_DIR)/py24-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$
 
 PY25-NOSE_IPK_DIR=$(BUILD_DIR)/py25-nose-$(PY-NOSE_VERSION)-ipk
 PY25-NOSE_IPK=$(BUILD_DIR)/py25-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-NOSE_IPK_DIR=$(BUILD_DIR)/py26-nose-$(PY-NOSE_VERSION)-ipk
+PY26-NOSE_IPK=$(BUILD_DIR)/py26-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -128,6 +132,15 @@ $(PY-NOSE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NOSE_SOURCE) $(PY-NOSE_PATCHES)
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-NOSE_DIR)
+	$(PY-NOSE_UNZIP) $(DL_DIR)/$(PY-NOSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-NOSE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NOSE_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-NOSE_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	)
 	touch $@
 
 py-nose-unpack: $(PY-NOSE_BUILD_DIR)/.configured
@@ -143,7 +156,9 @@ $(PY-NOSE_BUILD_DIR)/.built: $(PY-NOSE_BUILD_DIR)/.configured
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-#	$(MAKE) -C $(PY-NOSE_BUILD_DIR)
+	(cd $(@D)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	touch $@
 
 #
@@ -193,6 +208,20 @@ $(PY25-NOSE_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-NOSE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-NOSE_CONFLICTS)" >>$@
 
+$(PY26-NOSE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-nose" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-NOSE_PRIORITY)" >>$@
+	@echo "Section: $(PY-NOSE_SECTION)" >>$@
+	@echo "Version: $(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-NOSE_MAINTAINER)" >>$@
+	@echo "Source: $(PY-NOSE_SITE)/$(PY-NOSE_SOURCE)" >>$@
+	@echo "Description: $(PY-NOSE_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-NOSE_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-NOSE_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -227,10 +256,19 @@ $(PY25-NOSE_IPK): $(PY-NOSE_BUILD_DIR)/.built
 #	echo $(PY-NOSE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-NOSE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-NOSE_IPK_DIR)
 
+$(PY26-NOSE_IPK): $(PY-NOSE_BUILD_DIR)/.built
+	rm -rf $(PY26-NOSE_IPK_DIR) $(BUILD_DIR)/py26-nose_*_$(TARGET_ARCH).ipk
+	(cd $(PY-NOSE_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-NOSE_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-NOSE_IPK_DIR)/CONTROL/control
+#	echo $(PY-NOSE_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-NOSE_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-NOSE_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-nose-ipk: $(PY24-NOSE_IPK) $(PY25-NOSE_IPK)
+py-nose-ipk: $(PY24-NOSE_IPK) $(PY25-NOSE_IPK) $(PY26-NOSE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -246,9 +284,10 @@ py-nose-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-NOSE_DIR) $(PY-NOSE_BUILD_DIR)
 	rm -rf $(PY24-NOSE_IPK_DIR) $(PY24-NOSE_IPK)
 	rm -rf $(PY25-NOSE_IPK_DIR) $(PY25-NOSE_IPK)
+	rm -rf $(PY26-NOSE_IPK_DIR) $(PY26-NOSE_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-nose-check: $(PY24-NOSE_IPK) $(PY25-NOSE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-NOSE_IPK) $(PY25-NOSE_IPK)
+py-nose-check: $(PY24-NOSE_IPK) $(PY25-NOSE_IPK) $(PY26-NOSE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
