@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON24_VERSION=2.4.5
+PYTHON24_VERSION=2.4.6
 PYTHON24_VERSION_MAJOR=2.4
 PYTHON24_SITE=http://python.org/ftp/python/$(PYTHON24_VERSION)
 PYTHON24_SOURCE=Python-$(PYTHON24_VERSION).tgz
@@ -270,4 +270,4 @@ python24-dirclean:
 # Some sanity check for the package.
 #
 python24-check: $(PYTHON24_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PYTHON24_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
