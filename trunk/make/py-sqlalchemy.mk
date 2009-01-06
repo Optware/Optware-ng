@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLALCHEMY_VERSION=0.4.8
+PY-SQLALCHEMY_VERSION=0.5.0
 PY-SQLALCHEMY_IPK_VERSION=1
 
 PY-SQLALCHEMY_SVN_REV=
@@ -47,8 +47,9 @@ PY-SQLALCHEMY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SQLALCHEMY_DESCRIPTION=Python SQL toolkit and Object Relational Mapper
 PY-SQLALCHEMY_SECTION=misc
 PY-SQLALCHEMY_PRIORITY=optional
-PY-SQLALCHEMY_DEPENDS=python24
-PY-SQLALCHEMY_DEPENDS=python25
+PY24-SQLALCHEMY_DEPENDS=python24
+PY25-SQLALCHEMY_DEPENDS=python25
+PY26-SQLALCHEMY_DEPENDS=python26
 PY-SQLALCHEMY_CONFLICTS=
 
 #
@@ -86,6 +87,9 @@ PY24-SQLALCHEMY_IPK=$(BUILD_DIR)/py24-sqlalchemy_$(PY-SQLALCHEMY_VERSION)-$(PY-S
 PY25-SQLALCHEMY_IPK_DIR=$(BUILD_DIR)/py25-sqlalchemy-$(PY-SQLALCHEMY_VERSION)-ipk
 PY25-SQLALCHEMY_IPK=$(BUILD_DIR)/py25-sqlalchemy_$(PY-SQLALCHEMY_VERSION)-$(PY-SQLALCHEMY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PY26-SQLALCHEMY_IPK_DIR=$(BUILD_DIR)/py26-sqlalchemy-$(PY-SQLALCHEMY_VERSION)-ipk
+PY26-SQLALCHEMY_IPK=$(BUILD_DIR)/py26-sqlalchemy_$(PY-SQLALCHEMY_VERSION)-$(PY-SQLALCHEMY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 .PHONY: py-sqlalchemy-source py-sqlalchemy-unpack py-sqlalchemy py-sqlalchemy-stage py-sqlalchemy-ipk py-sqlalchemy-clean py-sqlalchemy-dirclean py-sqlalchemy-check
 
 #
@@ -121,7 +125,7 @@ py-sqlalchemy-source: $(DL_DIR)/$(PY-SQLALCHEMY_SOURCE) $(PY-SQLALCHEMY_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 ifeq ($(PY-SQLALCHEMY_SVN),)
-$(PY-SQLALCHEMY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLALCHEMY_SOURCE) $(PY-SQLALCHEMY_PATCHES)
+$(PY-SQLALCHEMY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLALCHEMY_SOURCE) $(PY-SQLALCHEMY_PATCHES) make/py-sqlalchemy.mk
 else
 $(PY-SQLALCHEMY_BUILD_DIR)/.configured: $(PY-SQLALCHEMY_PATCHES)
 endif
@@ -178,6 +182,31 @@ endif
 	    echo "executable=/opt/bin/python2.5"; \
 	    ) >> setup.cfg \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR)
+ifeq ($(PY-SQLALCHEMY_SVN),)
+	$(PY-SQLALCHEMY_UNZIP) $(DL_DIR)/$(PY-SQLALCHEMY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    if test -n "$(PY-SQLALCHEMY_SVN_TAG)"; then \
+		svn co --ignore-externals $(PY-SQLALCHEMY_SVN) $(PY-SQLALCHEMY_DIR); \
+	    else \
+		svn co -r $(PY-SQLALCHEMY_SVN_REV) $(PY-SQLALCHEMY_SVN) $(PY-SQLALCHEMY_DIR); \
+	    fi \
+	)
+endif
+	if test -n "$(PY-SQLALCHEMY_PATCHES)"; then \
+	    cat $(PY-SQLALCHEMY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+	    echo "[install]"; \
+	    echo "install_scripts = /opt/bin"; \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6"; \
+	    ) >> setup.cfg \
+	)
 	touch $@
 
 py-sqlalchemy-unpack: $(PY-SQLALCHEMY_BUILD_DIR)/.configured
@@ -193,6 +222,9 @@ $(PY-SQLALCHEMY_BUILD_DIR)/.built: $(PY-SQLALCHEMY_BUILD_DIR)/.configured
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	touch $@
 
 #
@@ -242,6 +274,20 @@ $(PY25-SQLALCHEMY_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-SQLALCHEMY_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SQLALCHEMY_CONFLICTS)" >>$@
 
+$(PY26-SQLALCHEMY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-sqlalchemy" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-SQLALCHEMY_PRIORITY)" >>$@
+	@echo "Section: $(PY-SQLALCHEMY_SECTION)" >>$@
+	@echo "Version: $(PY-SQLALCHEMY_VERSION)-$(PY-SQLALCHEMY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-SQLALCHEMY_MAINTAINER)" >>$@
+	@echo "Source: $(PY-SQLALCHEMY_SITE)/$(PY-SQLALCHEMY_SOURCE)" >>$@
+	@echo "Description: $(PY-SQLALCHEMY_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-SQLALCHEMY_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-SQLALCHEMY_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -273,10 +319,19 @@ $(PY25-SQLALCHEMY_IPK): $(PY-SQLALCHEMY_BUILD_DIR)/.built
 	echo $(PY-SQLALCHEMY_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SQLALCHEMY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SQLALCHEMY_IPK_DIR)
 
+$(PY26-SQLALCHEMY_IPK): $(PY-SQLALCHEMY_BUILD_DIR)/.built
+	rm -rf $(PY26-SQLALCHEMY_IPK_DIR) $(BUILD_DIR)/py26-sqlalchemy_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SQLALCHEMY_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-SQLALCHEMY_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-SQLALCHEMY_IPK_DIR)/CONTROL/control
+	echo $(PY-SQLALCHEMY_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-SQLALCHEMY_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-SQLALCHEMY_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-sqlalchemy-ipk: $(PY24-SQLALCHEMY_IPK) $(PY25-SQLALCHEMY_IPK)
+py-sqlalchemy-ipk: $(PY24-SQLALCHEMY_IPK) $(PY25-SQLALCHEMY_IPK) $(PY26-SQLALCHEMY_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -292,9 +347,10 @@ py-sqlalchemy-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) $(PY-SQLALCHEMY_BUILD_DIR)
 	rm -rf $(PY24-SQLALCHEMY_IPK_DIR) $(PY24-SQLALCHEMY_IPK)
 	rm -rf $(PY25-SQLALCHEMY_IPK_DIR) $(PY25-SQLALCHEMY_IPK)
+	rm -rf $(PY26-SQLALCHEMY_IPK_DIR) $(PY26-SQLALCHEMY_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-sqlalchemy-check: $(PY24-SQLALCHEMY_IPK) $(PY25-SQLALCHEMY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-SQLALCHEMY_IPK) $(PY25-SQLALCHEMY_IPK)
+py-sqlalchemy-check: $(PY24-SQLALCHEMY_IPK) $(PY25-SQLALCHEMY_IPK) $(PY26-SQLALCHEMY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
