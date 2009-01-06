@@ -53,7 +53,7 @@ openssl-source: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 OPENSSL_ASFLAG=$(strip $(if $(filter powerpc, $(TARGET_ARCH)), ASFLAG="",))
 
 OPENSSL_ARCH=$(strip \
-	$(if $(filter mipsel, $(TARGET_ARCH)), linux-$(TARGET_ARCH), \
+	$(if $(filter mips mipsel, $(TARGET_ARCH)), linux-$(TARGET_ARCH), \
 	$(if $(filter powerpc, $(TARGET_ARCH)), linux-ppc, \
 	$(if $(filter 0.9.8, $(OPENSSL_LIB_VERSION)), linux-generic32, \
 	linux-elf-$(TARGET_ARCH)))))
