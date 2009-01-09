@@ -5,9 +5,9 @@
 OPENSSL_SITE=http://www.openssl.org/source
 
 ifeq ($(OPTWARE_TARGET), $(filter syno-e500 cs08q1armel slugos5be slugos5le ts509, $(OPTWARE_TARGET)))
-OPENSSL_VERSION=0.9.8i
+OPENSSL_VERSION=0.9.8j
 OPENSSL_LIB_VERSION=0.9.8
-OPENSSL_IPK_VERSION=2
+OPENSSL_IPK_VERSION=1
 else
 OPENSSL_VERSION=0.9.7m
 OPENSSL_LIB_VERSION=0.9.7
@@ -218,4 +218,4 @@ openssl-dirclean:
 	rm -rf $(OPENSSL_IPK) $(OPENSSL_DEV_IPK)
 
 openssl-check: $(OPENSSL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENSSL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
