@@ -27,10 +27,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGCRYPT_SITE=ftp://ftp.gnupg.org/gcrypt/libgcrypt
-LIBGCRYPT_VERSION=1.2.4
-LIBGCRYPT_SOURCE=libgcrypt-$(LIBGCRYPT_VERSION).tar.gz
+LIBGCRYPT_VERSION=1.4.3
+LIBGCRYPT_SOURCE=libgcrypt-$(LIBGCRYPT_VERSION).tar.bz2
 LIBGCRYPT_DIR=libgcrypt-$(LIBGCRYPT_VERSION)
-LIBGCRYPT_UNZIP=zcat
+LIBGCRYPT_UNZIP=bzcat
 LIBGCRYPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBGCRYPT_DESCRIPTION=GNU cryptography libray, needed by gnutls
 LIBGCRYPT_SECTION=libs
@@ -230,4 +230,4 @@ libgcrypt-dirclean:
 # Some sanity check for the package.
 #
 libgcrypt-check: $(LIBGCRYPT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBGCRYPT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
