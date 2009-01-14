@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FETCHMAIL_SITE=http://download.berlios.de/fetchmail
-FETCHMAIL_VERSION=6.3.8
+FETCHMAIL_VERSION=6.3.9
 FETCHMAIL_SOURCE=fetchmail-$(FETCHMAIL_VERSION).tar.bz2
 FETCHMAIL_DIR=fetchmail-$(FETCHMAIL_VERSION)
 FETCHMAIL_UNZIP=bzcat
@@ -81,7 +81,8 @@ FETCHMAIL_IPK=$(BUILD_DIR)/fetchmail_$(FETCHMAIL_VERSION)-$(FETCHMAIL_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FETCHMAIL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FETCHMAIL_SITE)/$(FETCHMAIL_SOURCE)
+	$(WGET) -P $(@D) $(FETCHMAIL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,12 +109,11 @@ fetchmail-source: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PATCHES)
 $(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PATCHES)
 	$(MAKE) zlib-stage
 	$(MAKE) openssl-stage
-#	$(MAKE) openssh-stage
 	rm -rf $(BUILD_DIR)/$(FETCHMAIL_DIR) $(FETCHMAIL_BUILD_DIR)
 	$(FETCHMAIL_UNZIP) $(DL_DIR)/$(FETCHMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(FETCHMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(FETCHMAIL_DIR) -p1
-	mv $(BUILD_DIR)/$(FETCHMAIL_DIR) $(FETCHMAIL_BUILD_DIR)
-	(cd $(FETCHMAIL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(FETCHMAIL_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FETCHMAIL_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(FETCHMAIL_CPPFLAGS)" \
@@ -135,10 +135,10 @@ ifneq ($(OPTWARE_TARGET), wl500g)
 	sed -i \
 	-e 's|#define HAVE_RESOLV_H 1|#undef HAVE_RESOLV_H|' \
 	-e 's|#define HAVE_RES_SEARCH 1|#undef HAVE_RES_SEARCH|' \
-		$(FETCHMAIL_BUILD_DIR)/config.h
+		$(@D)/config.h
 endif
 endif
-	touch $(FETCHMAIL_BUILD_DIR)/.configured
+	touch $@
 
 fetchmail-unpack: $(FETCHMAIL_BUILD_DIR)/.configured
 
@@ -146,9 +146,9 @@ fetchmail-unpack: $(FETCHMAIL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FETCHMAIL_BUILD_DIR)/.built: $(FETCHMAIL_BUILD_DIR)/.configured
-	rm -f $(FETCHMAIL_BUILD_DIR)/.built
-	$(MAKE) -C $(FETCHMAIL_BUILD_DIR)
-	touch $(FETCHMAIL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -159,9 +159,9 @@ fetchmail: $(FETCHMAIL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(FETCHMAIL_BUILD_DIR)/.staged: $(FETCHMAIL_BUILD_DIR)/.built
-	rm -f $(FETCHMAIL_BUILD_DIR)/.staged
-	$(MAKE) -C $(FETCHMAIL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(FETCHMAIL_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 fetchmail-stage: $(FETCHMAIL_BUILD_DIR)/.staged
 
@@ -170,7 +170,7 @@ fetchmail-stage: $(FETCHMAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fetchmail
 #
 $(FETCHMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(FETCHMAIL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: fetchmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -234,4 +234,4 @@ fetchmail-dirclean:
 # 
 #
 fetchmail-check: $(FETCHMAIL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FETCHMAIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
