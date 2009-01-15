@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPG123_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpg123
-MPG123_VERSION=1.6.3
+MPG123_VERSION=1.6.4
 MPG123_SOURCE=mpg123-$(MPG123_VERSION).tar.bz2
 MPG123_DIR=mpg123-$(MPG123_VERSION)
 MPG123_UNZIP=bzcat
@@ -222,4 +222,4 @@ mpg123-dirclean:
 # Some sanity check for the package.
 #
 mpg123-check: $(MPG123_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MPG123_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
