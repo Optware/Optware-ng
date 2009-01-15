@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPG_SITE=ftp://ftp.gnupg.org/gcrypt/gnupg
-GNUPG_VERSION=2.0.9
+GNUPG_VERSION=2.0.10
 GNUPG_SOURCE=gnupg-$(GNUPG_VERSION).tar.bz2
 GNUPG_DIR=gnupg-$(GNUPG_VERSION)
 GNUPG_UNZIP=bzcat
@@ -37,7 +37,7 @@ GNUPG_CONFLICTS=
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=2
+GNUPG_IPK_VERSION=1
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
@@ -116,8 +116,8 @@ $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES) make/
 	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR)
 	$(GNUPG_UNZIP) $(DL_DIR)/$(GNUPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GNUPG_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
-	mv $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR)
-	(cd $(GNUPG_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(GNUPG_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUPG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNUPG_LDFLAGS)" \
@@ -149,7 +149,7 @@ gnupg-unpack: $(GNUPG_BUILD_DIR)/.configured
 #
 $(GNUPG_BUILD_DIR)/.built: $(GNUPG_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GNUPG_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -162,7 +162,7 @@ gnupg: $(GNUPG_BUILD_DIR)/.built
 #
 $(GNUPG_BUILD_DIR)/.staged: $(GNUPG_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GNUPG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 gnupg-stage: $(GNUPG_BUILD_DIR)/.staged
@@ -226,4 +226,4 @@ gnupg-dirclean:
 # Some sanity check for the package.
 #
 gnupg-check: $(GNUPG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNUPG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
