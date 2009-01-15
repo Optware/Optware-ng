@@ -281,7 +281,7 @@ COMMON_CROSS_PACKAGES = \
 	neon net-snmp net-tools netatalk netcat nethack netio netrik \
 	newsbeuter newt \
 	nfs-server nfs-utils \
-	nget nginx ngrep nickle ninvaders nmap nload noip nrpe \
+	nget nginx ngrep nickle ninvaders nmap nload noip nostromo nrpe \
 	ntfsprogs ntop ntp ntpclient nttcp nut nvi nylon nzbget \
 	ocaml oleo open2300 \
 	openobex obexftp \
