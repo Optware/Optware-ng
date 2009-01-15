@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 DSTAT_SITE=http://dag.wieers.com/home-made/dstat/
-DSTAT_VERSION=0.6.6
+DSTAT_VERSION=0.6.9
 DSTAT_SOURCE=dstat-$(DSTAT_VERSION).tar.bz2
 DSTAT_DIR=dstat-$(DSTAT_VERSION)
 DSTAT_UNZIP=bzcat
@@ -26,7 +26,7 @@ DSTAT_CONFLICTS=
 #
 # DSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-DSTAT_IPK_VERSION=3
+DSTAT_IPK_VERSION=1
 
 #
 # DSTAT_CONFFILES should be a list of user-editable files
@@ -66,8 +66,8 @@ DSTAT_IPK=$(BUILD_DIR)/dstat_$(DSTAT_VERSION)-$(DSTAT_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DSTAT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DSTAT_SITE)/$(DSTAT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(DSTAT_SOURCE)
+	$(WGET) -P $(@D) $(DSTAT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -95,20 +95,17 @@ dstat-source: $(DL_DIR)/$(DSTAT_SOURCE) $(DSTAT_PATCHES)
 # shown below to make various patches to it.
 #
 $(DSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(DSTAT_SOURCE) $(DSTAT_PATCHES) make/dstat.mk
-	#$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(DSTAT_DIR) $(DSTAT_BUILD_DIR)
+#	$(MAKE) <bar>-stage <baz>-stage
+	rm -rf $(BUILD_DIR)/$(DSTAT_DIR) $(@D)
 	$(DSTAT_UNZIP) $(DL_DIR)/$(DSTAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DSTAT_PATCHES)" ; \
 		then cat $(DSTAT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(DSTAT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DSTAT_DIR)" != "$(DSTAT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DSTAT_DIR) $(DSTAT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DSTAT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DSTAT_DIR) $(@D) ; \
 	fi
-	(cd $(DSTAT_BUILD_DIR); \
-		sed -i -e 's#prefix = /usr#prefix = /opt#' \
-			-e 's#sysconfdir = /etc#sysconfdir = /opt/etc#' Makefile; \
-		sed -i -e 's@#!/usr/bin/env python@#!/opt/bin/python@' dstat )
+	sed -i -e 's@#!/usr/bin/env python@#!/opt/bin/python@' $(@D)/dstat
 	touch $@
 
 dstat-unpack: $(DSTAT_BUILD_DIR)/.configured
@@ -118,7 +115,7 @@ dstat-unpack: $(DSTAT_BUILD_DIR)/.configured
 #
 $(DSTAT_BUILD_DIR)/.built: $(DSTAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(DSTAT_BUILD_DIR)
+	$(MAKE) -C $(@D) prefix=/opt sysconfdir=/opt/etc
 	touch $@
 
 #
@@ -129,12 +126,12 @@ dstat: $(DSTAT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(DSTAT_BUILD_DIR)/.staged: $(DSTAT_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(DSTAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-dstat-stage: $(DSTAT_BUILD_DIR)/.staged
+#$(DSTAT_BUILD_DIR)/.staged: $(DSTAT_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#dstat-stage: $(DSTAT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -169,7 +166,8 @@ $(DSTAT_IPK_DIR)/CONTROL/control:
 #
 $(DSTAT_IPK): $(DSTAT_BUILD_DIR)/.built
 	rm -rf $(DSTAT_IPK_DIR) $(BUILD_DIR)/dstat_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(DSTAT_BUILD_DIR) DESTDIR=$(DSTAT_IPK_DIR) install
+	$(MAKE) -C $(DSTAT_BUILD_DIR) install \
+		DESTDIR=$(DSTAT_IPK_DIR) prefix=/opt sysconfdir=/opt/etc
 	#install -d $(DSTAT_IPK_DIR)/opt/etc/
 	#install -m 644 $(DSTAT_SOURCE_DIR)/dstat.conf $(DSTAT_IPK_DIR)/opt/etc/dstat.conf
 	#install -d $(DSTAT_IPK_DIR)/opt/etc/init.d
