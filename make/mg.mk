@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MG_SITE=http://www.xs4all.nl/~hanb/software/mg
-MG_VERSION=20080610
+MG_VERSION=20090107
 MG_SOURCE=mg-$(MG_VERSION).tar.gz
 MG_DIR=mg-$(MG_VERSION)
 MG_UNZIP=zcat
@@ -247,4 +247,4 @@ mg-dirclean:
 # Some sanity check for the package.
 #
 mg-check: $(MG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
