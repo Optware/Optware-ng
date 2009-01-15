@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TIG_SITE=http://jonas.nitro.dk/tig/releases
-TIG_VERSION=0.12.1
+TIG_VERSION=0.13
 TIG_SOURCE=tig-$(TIG_VERSION).tar.gz
 TIG_DIR=tig-$(TIG_VERSION)
 TIG_UNZIP=zcat
@@ -76,8 +76,8 @@ TIG_IPK=$(BUILD_DIR)/tig_$(TIG_VERSION)-$(TIG_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TIG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TIG_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(TIG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -217,4 +217,4 @@ tig-dirclean:
 # Some sanity check for the package.
 #
 tig-check: $(TIG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TIG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
