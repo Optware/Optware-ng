@@ -5,9 +5,17 @@
 ###########################################################
 
 SMARTMONTOOLS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/smartmontools
+SMARTMONTOOLS_CVS_REPO=:pserver:anonymous@smartmontools.cvs.sourceforge.net:/cvsroot/smartmontools
+SMARTMONTOOLS_CVS_DATE=20090115
+SMARTMONTOOLS_CVS_OPTS=-D$(SMARTMONTOOLS_CVS_DATE)
+ifdef SMARTMONTOOLS_CVS_OPTS
+SMARTMONTOOLS_VERSION=5.38+cvs$(SMARTMONTOOLS_CVS_DATE)
+SMARTMONTOOLS_DIR=sm5
+else
 SMARTMONTOOLS_VERSION=5.38
-SMARTMONTOOLS_SOURCE=smartmontools-$(SMARTMONTOOLS_VERSION).tar.gz
 SMARTMONTOOLS_DIR=smartmontools-$(SMARTMONTOOLS_VERSION)
+endif
+SMARTMONTOOLS_SOURCE=smartmontools-$(SMARTMONTOOLS_VERSION).tar.gz
 SMARTMONTOOLS_UNZIP=zcat
 SMARTMONTOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SMARTMONTOOLS_DESCRIPTION=Utility programs to control and monitor \
@@ -21,7 +29,7 @@ SMARTMONTOOLS_CONFLICTS=
 #
 # SMARTMONTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-SMARTMONTOOLS_IPK_VERSION=2
+SMARTMONTOOLS_IPK_VERSION=1
 
 #
 # SMARTMONTOOLS_CONFFILES should be a list of user-editable files
@@ -59,8 +67,17 @@ SMARTMONTOOLS_IPK=$(BUILD_DIR)/smartmontools_$(SMARTMONTOOLS_VERSION)-$(SMARTMON
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SMARTMONTOOLS_SOURCE):
+ifdef SMARTMONTOOLS_CVS_OPTS
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(SMARTMONTOOLS_DIR) && \
+		cvs -d $(SMARTMONTOOLS_CVS_REPO) -z3 co $(SMARTMONTOOLS_CVS_OPTS) $(SMARTMONTOOLS_DIR) && \
+		tar -czf $@ --exclude=CVS $(SMARTMONTOOLS_DIR) && \
+		rm -rf $(SMARTMONTOOLS_DIR) \
+	)
+else
 	$(WGET) -P $(@D) $(SMARTMONTOOLS_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 .PHONY: smartmontools-source smartmontools-unpack smartmontools smartmontools-stage smartmontools-ipk smartmontools-clean smartmontools-dirclean smartmontools-check
 
@@ -83,7 +100,7 @@ smartmontools-source: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMARTMONTOOLS_PATCHES)
 # correctly BUILD the Makefile with the right paths, where passing it
 # to Make causes it to override the default search paths of the compiler.
 #
-$(SMARTMONTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMARTMONTOOLS_PATCHES)
+$(SMARTMONTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMARTMONTOOLS_PATCHES) make/smartmontools.mk
 	rm -rf $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(@D)
 	$(SMARTMONTOOLS_UNZIP) $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SMARTMONTOOLS_PATCHES)" ; \
@@ -93,6 +110,10 @@ $(SMARTMONTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMAR
 	if test "$(BUILD_DIR)/$(SMARTMONTOOLS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(@D) ; \
 	fi
+ifdef SMARTMONTOOLS_CVS_OPTS
+	cd $(@D); ./autogen.sh
+endif
+	sed -i -e 's|libc_have_working_snprintf=no|libc_have_working_snprintf=yes|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SMARTMONTOOLS_CPPFLAGS)" \
@@ -182,4 +203,4 @@ smartmontools-dirclean:
 # Some sanity check for the package.
 #
 smartmontools-check: $(SMARTMONTOOLS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SMARTMONTOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
