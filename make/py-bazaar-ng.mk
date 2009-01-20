@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BAZAAR-NG_VERSION=1.10
-PY-BAZAAR-NG_SITE=https://launchpad.net/bzr/1.10/$(PY-BAZAAR-NG_VERSION)/+download
+PY-BAZAAR-NG_VERSION=1.11
+PY-BAZAAR-NG_SITE=https://launchpad.net/bzr/$(PY-BAZAAR-NG_VERSION)/$(PY-BAZAAR-NG_VERSION)/+download
 PY-BAZAAR-NG_SOURCE=bzr-$(PY-BAZAAR-NG_VERSION).tar.gz
 PY-BAZAAR-NG_DIR=bzr-$(PY-BAZAAR-NG_VERSION)
 PY-BAZAAR-NG_UNZIP=zcat
@@ -31,7 +31,8 @@ PY-BAZAAR-NG_DESCRIPTION=A decentralized revision control system designed to be 
 PY-BAZAAR-NG_SECTION=misc
 PY-BAZAAR-NG_PRIORITY=optional
 PY24-BAZAAR-NG_DEPENDS=python24, py24-celementtree
-PY25-BAZAAR-NG_DEPENDS=python25, py25-celementtree
+PY25-BAZAAR-NG_DEPENDS=python25
+PY26-BAZAAR-NG_DEPENDS=python26
 PY-BAZAAR-NG_CONFLICTS=
 
 #
@@ -73,6 +74,9 @@ PY24-BAZAAR-NG_IPK=$(BUILD_DIR)/py24-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZA
 
 PY25-BAZAAR-NG_IPK_DIR=$(BUILD_DIR)/py25-bazaar-ng-$(PY-BAZAAR-NG_VERSION)-ipk
 PY25-BAZAAR-NG_IPK=$(BUILD_DIR)/py25-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-BAZAAR-NG_IPK_DIR=$(BUILD_DIR)/py26-bazaar-ng-$(PY-BAZAAR-NG_VERSION)-ipk
+PY26-BAZAAR-NG_IPK=$(BUILD_DIR)/py26-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-bazaar-ng-source py-bazaar-ng-unpack py-bazaar-ng py-bazaar-ng-stage py-bazaar-ng-ipk py-bazaar-ng-clean py-bazaar-ng-dirclean py-bazaar-ng-check
 
@@ -144,6 +148,23 @@ $(PY-BAZAAR-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZ
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR)
+	$(PY-BAZAAR-NG_UNZIP) $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-BAZAAR-NG_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.6"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	)
 	touch $@
 
 py-bazaar-ng-unpack: $(PY-BAZAAR-NG_BUILD_DIR)/.configured
@@ -160,6 +181,10 @@ $(PY-BAZAAR-NG_BUILD_DIR)/.built: $(PY-BAZAAR-NG_BUILD_DIR)/.configured
 	(cd $(@D)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	(cd $(@D)/2.6; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
 	touch $@
 
@@ -210,6 +235,20 @@ $(PY25-BAZAAR-NG_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-BAZAAR-NG_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-BAZAAR-NG_CONFLICTS)" >>$@
 
+$(PY26-BAZAAR-NG_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-bazaar-ng" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-BAZAAR-NG_PRIORITY)" >>$@
+	@echo "Section: $(PY-BAZAAR-NG_SECTION)" >>$@
+	@echo "Version: $(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-BAZAAR-NG_MAINTAINER)" >>$@
+	@echo "Source: $(PY-BAZAAR-NG_SITE)/$(PY-BAZAAR-NG_SOURCE)" >>$@
+	@echo "Description: $(PY-BAZAAR-NG_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-BAZAAR-NG_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-BAZAAR-NG_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -223,7 +262,6 @@ $(PY25-BAZAAR-NG_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-bazaar-ng_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY24-BAZAAR-NG_IPK_DIR) $(BUILD_DIR)/py24-bazaar-ng_*_$(TARGET_ARCH).ipk
 	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-BAZAAR-NG_IPK_DIR) --prefix=/opt; \
@@ -244,10 +282,19 @@ $(PY25-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
 	$(MAKE) $(PY25-BAZAAR-NG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BAZAAR-NG_IPK_DIR)
 
+$(PY26-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
+	rm -rf $(PY26-BAZAAR-NG_IPK_DIR) $(BUILD_DIR)/py26-bazaar-ng_*_$(TARGET_ARCH).ipk
+	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-BAZAAR-NG_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) $(PY26-BAZAAR-NG_IPK_DIR)/opt/lib/python2.6/site-packages/bzrlib/*.so
+	$(MAKE) $(PY26-BAZAAR-NG_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-BAZAAR-NG_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-bazaar-ng-ipk: $(PY24-BAZAAR-NG_IPK) $(PY25-BAZAAR-NG_IPK)
+py-bazaar-ng-ipk: $(PY24-BAZAAR-NG_IPK) $(PY25-BAZAAR-NG_IPK) $(PY26-BAZAAR-NG_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -263,9 +310,10 @@ py-bazaar-ng-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(PY-BAZAAR-NG_BUILD_DIR)
 	rm -rf $(PY24-BAZAAR-NG_IPK_DIR) $(PY24-BAZAAR-NG_IPK)
 	rm -rf $(PY25-BAZAAR-NG_IPK_DIR) $(PY25-BAZAAR-NG_IPK)
+	rm -rf $(PY26-BAZAAR-NG_IPK_DIR) $(PY26-BAZAAR-NG_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-bazaar-ng-check: $(PY24-BAZAAR-NG_IPK) $(PY25-BAZAAR-NG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-BAZAAR-NG_IPK) $(PY25-BAZAAR-NG_IPK)
+py-bazaar-ng-check: $(PY24-BAZAAR-NG_IPK) $(PY25-BAZAAR-NG_IPK) $(PY26-BAZAAR-NG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
