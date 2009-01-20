@@ -36,8 +36,8 @@ BROKEN_PACKAGES = \
 	picolisp player puppy py-mysql \
 	qemu quickie \
 	re2c rhtvision rsstail rtorrent \
-	sablevm samba sane-backends simh snort spandsp sqsh \
-	swi-prolog svn \
+	sablevm samba sane-backends simh smartmontools snort \
+	spandsp sqsh swi-prolog svn \
 	taglib tshark transcode \
 	unrar upslug2 upx \
 	vlc vnstat vorbis-tools vte \
