@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HIAWATHA_SITE=http://www.hiawatha-webserver.org/files
-HIAWATHA_VERSION=6.10
+HIAWATHA_VERSION=6.11
 HIAWATHA_SOURCE=hiawatha-$(HIAWATHA_VERSION).tar.gz
 HIAWATHA_DIR=hiawatha-$(HIAWATHA_VERSION)
 HIAWATHA_UNZIP=zcat
@@ -235,4 +235,4 @@ hiawatha-dirclean:
 # Some sanity check for the package.
 #
 hiawatha-check: $(HIAWATHA_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HIAWATHA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
