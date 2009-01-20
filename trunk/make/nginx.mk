@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.7.30
+NGINX_VERSION=0.7.31
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -288,4 +288,4 @@ nginx-dirclean:
 # Some sanity check for the package.
 #
 nginx-check: $(NGINX_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NGINX_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
