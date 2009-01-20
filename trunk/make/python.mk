@@ -26,6 +26,7 @@ python:
 python-stage:
 	$(MAKE) python24-stage python24-host-stage
 	$(MAKE) python25-stage python25-host-stage
+	$(MAKE) python26-stage python26-host-stage
 
 $(PYTHON_IPK_DIR)/CONTROL/control:
 	@install -d $(PYTHON_IPK_DIR)/CONTROL
