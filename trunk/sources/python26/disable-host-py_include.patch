@@ -1,0 +1,15 @@
+--- host/staging/opt/lib/python2.6/distutils/command/build_ext.py.orig	2009-01-20 11:36:21.000000000 -0800
++++ host/staging/opt/lib/python2.6/distutils/command/build_ext.py	2009-01-20 12:07:28.000000000 -0800
+@@ -157,9 +157,9 @@
+ 
+         # Put the Python "system" include dir at the end, so that
+         # any local include dirs take precedence.
+-        self.include_dirs.append(py_include)
+-        if plat_py_include != py_include:
+-            self.include_dirs.append(plat_py_include)
++        # self.include_dirs.append(py_include)
++        # if plat_py_include != py_include:
++        #     self.include_dirs.append(plat_py_include)
+ 
+         if type(self.libraries) is StringType:
+             self.libraries = [self.libraries]

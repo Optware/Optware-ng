@@ -42,7 +42,7 @@ PYTHON26_SUGGESTS=
 #
 # PYTHON26_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON26_IPK_VERSION=1
+PYTHON26_IPK_VERSION=2
 
 #
 # PYTHON26_CONFFILES should be a list of user-editable files
@@ -189,6 +189,7 @@ python26-stage: $(PYTHON26_BUILD_DIR)/.staged
 $(HOST_STAGING_PREFIX)/bin/python2.6: host/.configured make/python26.mk
 	$(MAKE) $(PYTHON26_BUILD_DIR)/.built
 	$(MAKE) -C $(PYTHON26_BUILD_DIR)/buildpython26 DESTDIR=$(HOST_STAGING_DIR) install
+	patch -b -p0 < $(PYTHON26_SOURCE_DIR)/disable-host-py_include.patch
 	rm -f $(@D)/python
 
 python26-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.6
