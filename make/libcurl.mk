@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.19.2
+LIBCURL_VERSION=7.19.3
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
@@ -52,7 +52,6 @@ LIBCURL_CONFFILES=#/opt/etc/libcurl.conf /opt/etc/init.d/SXXlibcurl
 # which they should be applied to the source code.
 #
 LIBCURL_PATCHES=$(LIBCURL_SOURCE_DIR)/proxy.patch \
-		$(LIBCURL_SOURCE_DIR)/ssluse-verbose_string.patch \
 		$(LIBCURL_SOURCE_DIR)/timeval-uclibc.patch
 
 #
