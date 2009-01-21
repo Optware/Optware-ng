@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-SQUEEZECENTER_VERSION=7.3.1
+SQUEEZECENTER_VERSION=7.3.2
 SQUEEZECENTER_SITE=http://www.slimdevices.com/downloads/SqueezeCenter_v$(SQUEEZECENTER_VERSION)
 # firmware update site: http://update.slimdevices.com/update/firmware
 SQUEEZECENTER_DIR=squeezecenter-$(SQUEEZECENTER_VERSION)-noCPAN
