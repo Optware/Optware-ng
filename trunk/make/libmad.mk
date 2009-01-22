@@ -35,7 +35,7 @@ LIBMAD_CONFLICTS=
 #
 # LIBMAD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMAD_IPK_VERSION=3
+LIBMAD_IPK_VERSION=4
 
 #
 # LIBMAD_CONFFILES should be a list of user-editable files
@@ -45,7 +45,7 @@ LIBMAD_CONFFILES=
 # LIBMAD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBMAD_PATCHES=
+LIBMAD_PATCHES=$(LIBMAD_SOURCE_DIR)/libmad-0.15.1b-pkgconfig.patch
 
 #
 # If the compilation of the package requires additional
@@ -75,7 +75,8 @@ LIBMAD_IPK=$(BUILD_DIR)/libmad_$(LIBMAD_VERSION)-$(LIBMAD_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBMAD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBMAD_SITE)/$(LIBMAD_SOURCE)
+	$(WGET) -P $(@D) $(LIBMAD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -99,18 +100,19 @@ libmad-source: $(DL_DIR)/$(LIBMAD_SOURCE) $(LIBMAD_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) \
-		$(LIBMAD_PATCHES) make/libmad.mk
+$(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) $(LIBMAD_PATCHES) make/libmad.mk
 	rm -rf $(BUILD_DIR)/$(LIBMAD_DIR) $(LIBMAD_BUILD_DIR)
 	$(LIBMAD_UNZIP) $(DL_DIR)/$(LIBMAD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMAD_PATCHES)" ; \
 		then cat $(LIBMAD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMAD_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(LIBMAD_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBMAD_DIR)" != "$(LIBMAD_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBMAD_DIR) $(LIBMAD_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBMAD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBMAD_DIR) $(@D) ; \
 	fi
-	(cd $(LIBMAD_BUILD_DIR); \
+	touch $(@D)/NEWS $(@D)/AUTHORS $(@D)/ChangeLog
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMAD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMAD_LDFLAGS)" \
@@ -122,8 +124,8 @@ $(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) \
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBMAD_BUILD_DIR)/libtool
-	touch $(LIBMAD_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libmad-unpack: $(LIBMAD_BUILD_DIR)/.configured
 
@@ -131,9 +133,9 @@ libmad-unpack: $(LIBMAD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBMAD_BUILD_DIR)/.built: $(LIBMAD_BUILD_DIR)/.configured
-	rm -f $(LIBMAD_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBMAD_BUILD_DIR)
-	touch $(LIBMAD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,10 +146,11 @@ libmad: $(LIBMAD_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBMAD_BUILD_DIR)/.staged: $(LIBMAD_BUILD_DIR)/.built
-	rm -f $(LIBMAD_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBMAD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libmad.la
-	touch $(LIBMAD_BUILD_DIR)/.staged
+	sed -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(@D)/mad.pc > $(STAGING_LIB_DIR)/pkgconfig/mad.pc
+	touch $@
 
 libmad-stage: $(LIBMAD_BUILD_DIR)/.staged
 
@@ -156,7 +159,7 @@ libmad-stage: $(LIBMAD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/<foo>
 #
 $(LIBMAD_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBMAD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libmad" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,8 +178,11 @@ $(LIBMAD_IPK_DIR)/CONTROL/control:
 #
 $(LIBMAD_IPK): $(LIBMAD_BUILD_DIR)/.built
 	rm -rf $(LIBMAD_IPK_DIR) $(BUILD_DIR)/libmad_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBMAD_BUILD_DIR) DESTDIR=$(LIBMAD_IPK_DIR) install-strip
+	$(MAKE) -C $(LIBMAD_BUILD_DIR) DESTDIR=$(LIBMAD_IPK_DIR) install
+	$(STRIP_COMMAND) $(LIBMAD_IPK_DIR)/opt/lib/libmad.so.0.*
 	rm -f $(LIBMAD_IPK_DIR)/opt/lib/libmad.la
+	install -d $(LIBMAD_IPK_DIR)/opt/lib/pkgconfig
+	install $(<D)/mad.pc $(LIBMAD_IPK_DIR)/opt/lib/pkgconfig/mad.pc
 	$(MAKE) $(LIBMAD_IPK_DIR)/CONTROL/control
 	echo $(LIBMAD_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMAD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMAD_IPK_DIR)
