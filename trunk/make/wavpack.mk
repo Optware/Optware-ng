@@ -151,6 +151,7 @@ wavpack: $(WAVPACK_BUILD_DIR)/.built
 $(WAVPACK_BUILD_DIR)/.staged: $(WAVPACK_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/wavpack.pc
 	touch $@
 
 wavpack-stage: $(WAVPACK_BUILD_DIR)/.staged
