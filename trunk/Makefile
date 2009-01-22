@@ -258,7 +258,7 @@ COMMON_CROSS_PACKAGES = \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libotr \
 	libpar2 libpcap libpng libpth librsync \
-	libshout libsigc++ libsoup libsndfile libstdc++ \
+	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
 	lighttpd lirc links2 linksys-tftp littlesmalltalk llink \
