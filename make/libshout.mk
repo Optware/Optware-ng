@@ -29,14 +29,14 @@ LIBSHOUT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBSHOUT_DESCRIPTION=Library which can be used to write a source client like ices.
 LIBSHOUT_SECTION=audio
 LIBSHOUT_PRIORITY=optional
-LIBSHOUT_DEPENDS=libvorbis
+LIBSHOUT_DEPENDS=libvorbis, speex
 LIBSHOUT_SUGGESTS=
 LIBSHOUT_CONFLICTS=
 
 #
 # LIBSHOUT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSHOUT_IPK_VERSION=1
+LIBSHOUT_IPK_VERSION=2
 
 #
 # LIBSHOUT_CONFFILES should be a list of user-editable files
@@ -114,10 +114,10 @@ $(LIBSHOUT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSHOUT_SOURCE) $(LIBSHOUT_PATCH
 		then cat $(LIBSHOUT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBSHOUT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBSHOUT_DIR)" != "$(LIBSHOUT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBSHOUT_DIR) $(LIBSHOUT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBSHOUT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBSHOUT_DIR) $(@D) ; \
 	fi
-	(cd $(LIBSHOUT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBSHOUT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBSHOUT_LDFLAGS)" \
@@ -133,7 +133,7 @@ $(LIBSHOUT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSHOUT_SOURCE) $(LIBSHOUT_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBSHOUT_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libshout-unpack: $(LIBSHOUT_BUILD_DIR)/.configured
@@ -143,7 +143,7 @@ libshout-unpack: $(LIBSHOUT_BUILD_DIR)/.configured
 #
 $(LIBSHOUT_BUILD_DIR)/.built: $(LIBSHOUT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBSHOUT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -156,8 +156,10 @@ libshout: $(LIBSHOUT_BUILD_DIR)/.built
 #
 $(LIBSHOUT_BUILD_DIR)/.staged: $(LIBSHOUT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBSHOUT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/shout.pc
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+	       -e '/^Libs:/s|$$| -lspeex|' \
+		$(STAGING_LIB_DIR)/pkgconfig/shout.pc
 	rm -f $(STAGING_LIB_DIR)/libshout.la
 	touch $@
 
