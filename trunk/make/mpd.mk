@@ -20,10 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MPD_SITE=http://www.musicpd.org/uploads/files
+#MPD_SITE=http://www.musicpd.org/uploads/files
+MPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
-MPD_VERSION=0.13.2
+MPD_VERSION=0.14.1
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.bz2
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=bzcat
@@ -31,7 +32,13 @@ MPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPD_DESCRIPTION=Music Player Daemon (MPD) allows remote access for playing music.
 MPD_SECTION=audio
 MPD_PRIORITY=optional
-MPD_DEPENDS=audiofile, faad2, flac, libao, libid3tag, libmad, libmpcdec, libvorbisidec
+MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, lame, libao, libcurl
+MPD_DEPENDS+=, libid3tag, libmad, libmpcdec, libsamplerate, wavpack
+ifneq (, $(filter i686, $(TARGET_ARCH)))
+MPD_DEPENDS+=, libvorbis
+else
+MPD_DEPENDS+=, libvorbisidec
+endif
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 MPD_DEPENDS+=, avahi
 endif
@@ -70,6 +77,12 @@ ifeq (no, $(IPV6))
 MPD_CONFIGURE_OPTIONS+=--disable-ipv6
 else
 MPD_CONFIGURE_OPTIONS+=--enable-ipv6
+endif
+
+ifeq (, $(filter i686, $(TARGET_ARCH)))
+MPD_CONFIGURE_OPTIONS+= --with-tremor=$(STAGING_PREFIX)
+else
+MPD_CONFIGURE_OPTIONS+= --disable-libOggFLACtest
 endif
 
 #
@@ -136,12 +149,22 @@ ifeq (avahi, $(filter avahi, $(PACKAGES)))
 	$(MAKE) avahi-stage
 endif
 	$(MAKE) faad2-stage
+	$(MAKE) ffmpeg-stage
 	$(MAKE) flac-stage
+	$(MAKE) lame-stage
 	$(MAKE) libao-stage
+	$(MAKE) libcurl-stage
 	$(MAKE) libid3tag-stage
 	$(MAKE) libmad-stage
 	$(MAKE) libmpcdec-stage
+	$(MAKE) libsamplerate-stage
+	$(MAKE) libshout-stage
+ifneq (, $(filter i686, $(TARGET_ARCH)))
+	$(MAKE) libvorbis-stage
+else
 	$(MAKE) libvorbisidec-stage
+endif
+	$(MAKE) wavpack-stage
 	rm -rf $(BUILD_DIR)/$(MPD_DIR) $(MPD_BUILD_DIR)
 	$(MPD_UNZIP) $(DL_DIR)/$(MPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPD_PATCHES)" ; \
@@ -158,6 +181,7 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPD_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		SHOUT_LIBS="-lshout -lspeex" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -167,29 +191,33 @@ endif
 		--enable-aac \
 		--enable-ao \
 		--enable-audiofile \
+		--enable-curl \
+		--enable-ffmpeg \
 		--enable-flac \
 		--enable-id3 \
+		--enable-lsr \
 		--enable-mp3 \
 		--enable-mpc \
 		--enable-oggvorbis \
+		--enable-wavpack \
 		$(MPD_CONFIGURE_OPTIONS) \
 		\
-		--with-ao=$(STAGING_PREFIX) \
-		--with-audiofile-prefix=$(STAGING_PREFIX) \
 		--with-faad=$(STAGING_PREFIX) \
+		--with-lame=$(STAGING_PREFIX) \
+		--disable-lametest \
+	)
+#		--with-ao=$(STAGING_PREFIX) \
+		--with-audiofile-prefix=$(STAGING_PREFIX) \
 		--with-id3tag=$(STAGING_PREFIX) \
 		--with-libFLAC=$(STAGING_PREFIX) \
 		--with-mad=$(STAGING_PREFIX) \
 		--with-flac=$(STAGING_PREFIX) \
-		--with-tremor=$(STAGING_PREFIX) \
 		\
 		--disable-nls \
 		--disable-static \
-	)
-	sed -i -e '/^MPD_CFLAGS/s| -I$${prefix}/include||g;' \
-		$(@D)/src/Makefile \
-		$(@D)/src/*/Makefile
-	$(PATCH_LIBTOOL) $(@D)/libtool
+;
+	sed -i -e '/^MPD_CFLAGS/s| -I/opt/include||g;' $(@D)/src/Makefile
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mpd-unpack: $(MPD_BUILD_DIR)/.configured
@@ -199,7 +227,7 @@ mpd-unpack: $(MPD_BUILD_DIR)/.configured
 #
 $(MPD_BUILD_DIR)/.built: $(MPD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MPD_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -212,7 +240,7 @@ mpd: $(MPD_BUILD_DIR)/.built
 #
 $(MPD_BUILD_DIR)/.staged: $(MPD_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 mpd-stage: $(MPD_BUILD_DIR)/.staged
@@ -291,4 +319,4 @@ mpd-dirclean:
 # Some sanity check for the package.
 #
 mpd-check: $(MPD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
