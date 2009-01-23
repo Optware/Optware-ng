@@ -24,7 +24,7 @@
 # PY-BEAKER_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-BEAKER_SITE=http://pypi.python.org/packages/source/B/Beaker
-PY-BEAKER_VERSION=1.1.3
+PY-BEAKER_VERSION=1.2
 PY-BEAKER_IPK_VERSION=1
 PY-BEAKER_SOURCE=Beaker-$(PY-BEAKER_VERSION).tar.gz
 PY-BEAKER_DIR=Beaker-$(PY-BEAKER_VERSION)
@@ -285,5 +285,4 @@ py-beaker-dirclean:
 # Some sanity check for the package.
 #
 py-beaker-check: $(PY24-BEAKER_IPK) $(PY25-BEAKER_IPK) $(PY26-BEAKER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
-		$(PY24-BEAKER_IPK) $(PY25-BEAKER_IPK) $(PY26-BEAKER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
