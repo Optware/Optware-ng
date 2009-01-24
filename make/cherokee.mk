@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.11.6
-CHEROKEE_SITE=http://www.0x50.org/download/0.11/$(CHEROKEE_VERSION)
+CHEROKEE_VERSION=0.98.0
+CHEROKEE_SITE=http://www.0x50.org/download/0.98/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
 CHEROKEE_UNZIP=zcat
@@ -340,5 +340,4 @@ cherokee-dirclean:
 # Some sanity check for the package.
 #
 cherokee-check: $(CHEROKEE_IPK) $(CHEROKEE-ADMIN_IPK) $(CHEROKEE-DEV_IPK) $(CHEROKEE-DOC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
-$(CHEROKEE_IPK) $(CHEROKEE-ADMIN_IPK) $(CHEROKEE-DEV_IPK) $(CHEROKEE-DOC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
