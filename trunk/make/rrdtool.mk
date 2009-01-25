@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RRDTOOL_SITE=http://oss.oetiker.ch/rrdtool/pub/
-RRDTOOL_VERSION=1.2.27
+RRDTOOL_VERSION=1.2.30
 RRDTOOL_SOURCE=rrdtool-$(RRDTOOL_VERSION).tar.gz
 RRDTOOL_DIR=rrdtool-$(RRDTOOL_VERSION)
 RRDTOOL_UNZIP=zcat
