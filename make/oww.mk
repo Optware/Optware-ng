@@ -35,7 +35,7 @@ OWW_MAINTAINER=Simon Melhuish - simon@melhuish.info
 OWW_DESCRIPTION=Oww reads from a DalSemi/AAG weather station.
 OWW_SECTION=misc
 OWW_PRIORITY=optional
-OWW_DEPENDS=libcurl, libusb
+OWW_DEPENDS=libcurl, libusb, zlib
 OWW_SUGGESTS=
 OWW_CONFLICTS=
 
@@ -105,7 +105,7 @@ oww-source: $(DL_DIR)/$(OWW_SOURCE) $(OWW_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(OWW_BUILD_DIR)/.configured: $(DL_DIR)/$(OWW_SOURCE) $(OWW_PATCHES)
-	$(MAKE) libcurl-stage libusb-stage
+	$(MAKE) libcurl-stage libusb-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(OWW_DIR) $(OWW_BUILD_DIR)
 	$(OWW_UNZIP) $(DL_DIR)/$(OWW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(OWW_PATCHES) | patch -d $(BUILD_DIR)/$(OWW_DIR) -p1
