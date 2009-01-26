@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALCURSE_SITE=http://culot.org/cgi-bin/get.cgi?
-CALCURSE_VERSION=2.4
+CALCURSE_VERSION=2.5
 CALCURSE_SOURCE=calcurse-$(CALCURSE_VERSION).tar.gz
 CALCURSE_DIR=calcurse-$(CALCURSE_VERSION)
 CALCURSE_UNZIP=zcat
@@ -232,4 +232,4 @@ calcurse-dirclean:
 # Some sanity check for the package.
 #
 calcurse-check: $(CALCURSE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CALCURSE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
