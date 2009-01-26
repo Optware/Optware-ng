@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
-LFTP_VERSION=3.7.7
+LFTP_VERSION=3.7.8
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -228,4 +228,4 @@ lftp-dirclean:
 # Some sanity check for the package.
 #
 lftp-check: $(LFTP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LFTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
