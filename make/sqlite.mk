@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.6.4
+SQLITE_VERSION=3.6.10
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
@@ -221,4 +221,4 @@ sqlite-dirclean:
 # Some sanity check for the package.
 #
 sqlite-check: $(SQLITE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQLITE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
