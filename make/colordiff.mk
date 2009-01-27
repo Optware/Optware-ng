@@ -5,7 +5,7 @@
 ###########################################################
 
 COLORDIFF_SITE=http://colordiff.sourceforge.net
-COLORDIFF_VERSION=1.0.7
+COLORDIFF_VERSION=1.0.8
 COLORDIFF_SOURCE=colordiff-$(COLORDIFF_VERSION).tar.gz
 COLORDIFF_DIR=colordiff-$(COLORDIFF_VERSION)
 COLORDIFF_UNZIP=zcat
@@ -17,7 +17,7 @@ COLORDIFF_DEPENDS=perl
 COLORDIFF_SUGGESTS=
 COLORDIFF_CONFLICTS=
 
-COLORDIFF_IPK_VERSION=2
+COLORDIFF_IPK_VERSION=1
 
 COLORDIFF_CONFFILES=
 
@@ -37,7 +37,7 @@ $(COLORDIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(COLORDIFF_SOURCE) $(COLORDIFF_PA
 	rm -rf $(BUILD_DIR)/$(COLORDIFF_DIR) $(@D)
 	$(COLORDIFF_UNZIP) $(DL_DIR)/$(COLORDIFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(COLORDIFF_DIR) $(@D)
-	sed -i -e '/chown/s/^/#/' $(@D)/Makefile
+	sed -i -e '/chown/s/^/#/' -e '/cdiff\.1/d' $(@D)/Makefile
 #	(cd $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -101,3 +101,6 @@ colordiff-clean:
 
 colordiff-dirclean:
 	rm -rf $(BUILD_DIR)/$(COLORDIFF_DIR) $(COLORDIFF_BUILD_DIR) $(COLORDIFF_IPK_DIR) $(COLORDIFF_IPK)
+
+colordiff-check: $(COLORDIFF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
