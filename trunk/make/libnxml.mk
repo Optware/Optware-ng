@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBNXML_SITE=http://www2.autistici.org/bakunin/libnxml
-LIBNXML_VERSION=0.18.2
+LIBNXML_VERSION=0.18.3
 LIBNXML_SOURCE=libnxml-$(LIBNXML_VERSION).tar.gz
 LIBNXML_DIR=libnxml-$(LIBNXML_VERSION)
 LIBNXML_UNZIP=zcat
@@ -127,7 +127,7 @@ $(LIBNXML_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNXML_SOURCE) $(LIBNXML_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBNXML_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libnxml-unpack: $(LIBNXML_BUILD_DIR)/.configured
@@ -218,4 +218,4 @@ libnxml-dirclean:
 # Some sanity check for the package.
 #
 libnxml-check: $(LIBNXML_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBNXML_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
