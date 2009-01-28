@@ -5,7 +5,7 @@
 ###########################################################
 
 DDCLIENT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ddclient
-DDCLIENT_VERSION=3.7.3
+DDCLIENT_VERSION=3.8.0
 DDCLIENT_SOURCE=ddclient-$(DDCLIENT_VERSION).tar.gz
 DDCLIENT_DIR=ddclient-$(DDCLIENT_VERSION)
 DDCLIENT_UNZIP=zcat
@@ -36,7 +36,7 @@ $(DDCLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(DDCLIENT_SOURCE) $(DDCLIENT_PATCH
 	rm -rf $(BUILD_DIR)/$(DDCLIENT_DIR) $(DDCLIENT_BUILD_DIR)
 	$(DDCLIENT_UNZIP) $(DL_DIR)/$(DDCLIENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(DDCLIENT_PATCHES) | patch -d $(BUILD_DIR)/$(DDCLIENT_DIR) -p0
-	mv $(BUILD_DIR)/$(DDCLIENT_DIR) $(DDCLIENT_BUILD_DIR)
+	mv $(BUILD_DIR)/$(DDCLIENT_DIR) $(@D)
 #	(cd $(DDCLIENT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -108,3 +108,6 @@ ddclient-clean:
 
 ddclient-dirclean:
 	rm -rf $(BUILD_DIR)/$(DDCLIENT_DIR) $(DDCLIENT_BUILD_DIR) $(DDCLIENT_IPK_DIR) $(DDCLIENT_IPK)
+
+ddclient-check: $(DDCLIENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
