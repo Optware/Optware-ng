@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEWSBEUTER_SITE=http://www.newsbeuter.org/downloads
-NEWSBEUTER_GCC_MAJOR:=$(shell $(TARGET_CC) -dumpversion | cut -c1)
+NEWSBEUTER_GCC_MAJOR:=$(shell test -x "$(TARGET_CC)" && $(TARGET_CC) -dumpversion | cut -c1)
 NEWSBEUTER_VERSION=$(if $(filter 3, $(NEWSBEUTER_GCC_MAJOR)),1.2,1.3)
 NEWSBEUTER_SOURCE=newsbeuter-$(NEWSBEUTER_VERSION).tar.gz
 NEWSBEUTER_DIR=newsbeuter-$(NEWSBEUTER_VERSION)
