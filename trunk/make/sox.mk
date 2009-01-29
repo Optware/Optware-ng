@@ -30,7 +30,10 @@ SOX_DESCRIPTION=Sound eXchange, command line utility that can convert various fo
 SOX_SECTION=audio
 SOX_PRIORITY=optional
 SOX_DEPENDS=file, libpng, libsamplerate, zlib
-SOX_SUGGESTS=ffmpeg, flac, libao, libid3tag, libmad, libogg, libsndfile, libvorbis, wavpack
+SOX_SUGGESTS=ffmpeg, flac, libao, libid3tag, libmad, libogg, libvorbis, wavpack
+ifneq (, $(filter libsndfile, $(PACKAGES)))
+SOX_SUGGESTS+=, libsndfile
+endif
 SOX_CONFLICTS=
 
 #
@@ -110,7 +113,10 @@ $(SOX_BUILD_DIR)/.configured: $(DL_DIR)/$(SOX_SOURCE) $(SOX_PATCHES) make/sox.mk
 	$(MAKE) file-stage libpng-stage libsamplerate-stage zlib-stage
 	$(MAKE) ffmpeg-stage flac-stage wavpack-stage
 	$(MAKE) libao-stage libid3tag-stage libmad-stage
-	$(MAKE) libogg-stage libsndfile-stage libvorbis-stage
+ifneq (, $(filter libsndfile, $(PACKAGES)))
+	$(MAKE) libsndfile-stage
+endif
+	$(MAKE) libogg-stage libvorbis-stage
 	rm -rf $(BUILD_DIR)/$(SOX_DIR) $(@D)
 	$(SOX_UNZIP) $(DL_DIR)/$(SOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SOX_PATCHES)" ; \
