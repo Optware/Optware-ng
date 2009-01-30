@@ -183,6 +183,7 @@ ASTERISK_PACKAGES = \
 	asterisk16-addons \
 
 PACKAGES_REQUIRE_LINUX26 = \
+	dcled \
 	inotail \
 	lm-sensors \
 	module-init-tools \
