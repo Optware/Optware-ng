@@ -14,7 +14,7 @@
 # You should change all these variables to suit your package.
 #
 CROSSTOOL_SITE=http://kegel.com/crosstool
-CROSSTOOL_VERSION ?= 0.38
+CROSSTOOL_VERSION ?= 0.43
 CROSSTOOL_SOURCE=crosstool-$(CROSSTOOL_VERSION).tar.gz
 CROSSTOOL_DIR=crosstool-$(CROSSTOOL_VERSION)
 CROSSTOOL_UNZIP=zcat
