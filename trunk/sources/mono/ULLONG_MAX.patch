@@ -1,0 +1,12 @@
+--- mono/mini/jit-icalls.c.orig	2008-11-11 04:56:14.000000000 +0000
++++ mono/mini/jit-icalls.c	2009-01-29 04:01:49.865502468 +0000
+@@ -838,6 +838,9 @@
+  * To work around this issue we test for value boundaries instead.
+  */
+ #if defined(__arm__) && MONO_ARCH_SOFT_FLOAT
++#ifndef ULLONG_MAX
++#define ULLONG_MAX   18446744073709551615ULL
++#endif
+	if (isnan (v) || !(v >= -0.5 && v <= ULLONG_MAX+0.5)) {
+		mono_raise_exception (mono_get_exception_overflow ());
+	}
