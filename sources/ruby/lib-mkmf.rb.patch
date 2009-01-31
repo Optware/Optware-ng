@@ -1,7 +1,7 @@
---- ruby-1.8.4-orig/lib/mkmf.rb	2005-11-27 16:22:53.000000000 -0800
-+++ ruby/lib/mkmf.rb	2006-01-14 20:44:16.000000000 -0800
-@@ -1061,7 +1061,7 @@
-     end
+--- ruby/lib/mkmf.rb.orig	2009-01-28 09:23:46.000000000 +0000
++++ ruby/lib/mkmf.rb	2009-01-31 18:11:40.215960600 +0000
+@@ -1615,7 +1615,7 @@
+     create_header
    end
  
 -  libpath = libpathflag(libpath)
