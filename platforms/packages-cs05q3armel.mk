@@ -6,6 +6,7 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	binutils gcc libc-dev \
+	mono \
 
 # Packages that do not work for mssii.
 BROKEN_PACKAGES = \

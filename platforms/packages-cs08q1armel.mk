@@ -6,6 +6,7 @@ SPECIFIC_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	cacao \
 	ipkg-opt \
+	mono \
 
 # Packages that do not work for cs08q1armel.
 BROKEN_PACKAGES = \
