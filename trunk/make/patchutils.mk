@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PATCHUTILS_SITE=http://cyberelk.net/tim/data/patchutils/stable
-PATCHUTILS_VERSION=0.3.0
+PATCHUTILS_VERSION=0.3.1
 PATCHUTILS_SOURCE=patchutils-$(PATCHUTILS_VERSION).tar.bz2
 PATCHUTILS_DIR=patchutils-$(PATCHUTILS_VERSION)
 PATCHUTILS_UNZIP=bzcat
@@ -225,4 +225,4 @@ patchutils-dirclean:
 # Some sanity check for the package.
 #
 patchutils-check: $(PATCHUTILS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PATCHUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
