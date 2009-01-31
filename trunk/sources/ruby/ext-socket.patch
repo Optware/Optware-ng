@@ -1,6 +1,6 @@
---- ruby-1.8.4-orig/ext/socket/addrinfo.h	2002-12-31 03:17:40.000000000 -0800
-+++ ruby/ext/socket/addrinfo.h	2006-01-14 13:42:29.000000000 -0800
-@@ -156,7 +156,7 @@
+--- ruby/ext/socket/addrinfo.h.orig	2008-08-06 20:52:44.000000000 +0000
++++ ruby/ext/socket/addrinfo.h	2009-01-31 18:11:40.215960600 +0000
+@@ -163,7 +163,7 @@
  
  extern void freehostent __P((struct hostent *));
  extern void freeaddrinfo __P((struct addrinfo *));
@@ -8,15 +8,4 @@
 +#if 1
  const
  #endif
- extern char *gai_strerror __P((int));
---- ruby-1.8.4-orig/ext/socket/getaddrinfo.c	2004-12-10 19:44:40.000000000 -0800
-+++ ruby/ext/socket/getaddrinfo.c	2006-01-14 13:42:20.000000000 -0800
-@@ -199,7 +199,7 @@
- 
- #define ERR(err) { error = (err); goto bad; }
- 
--#if defined __UCLIBC__
-+#if 1
- const
- #endif
- char *
+ #ifndef __HAIKU__

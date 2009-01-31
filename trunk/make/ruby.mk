@@ -26,10 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby/1.8
+RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby/1.9
 ifneq (wl500g, $(OPTWARE_TARGET))
-RUBY_UPSTREAM_VERSION=1.8.7
-RUBY_VERSION=1.8.7
+RUBY_UPSTREAM_VERSION=1.9.1-p0
+RUBY_VERSION=1.9.1.0
 RUBY_IPK_VERSION=1
 else
 RUBY_UPSTREAM_VERSION=1.8.6-p36
@@ -117,7 +117,7 @@ ruby-source: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 # http://www.ruby-talk.org/cgi-bin/scat.rb/ruby/ruby-talk/159766
-$(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
+$(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES) make/ruby.mk
 	$(MAKE) zlib-stage readline-stage openssl-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(RUBY_DIR) $(@D)
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -176,7 +176,7 @@ $(RUBY_HOST_BUILD_DIR)/.staged: host/.configured make/ruby.mk
 	$(MAKE) -C $(@D)
 	$(MAKE) -C $(@D) install
 	rm -f $(HOST_STAGING_LIB_DIR)/ruby/ruby.h
-	cd $(HOST_STAGING_LIB_DIR)/ruby && ln -sf 1.8/*-linux/ruby.h .
+	cd $(HOST_STAGING_LIB_DIR)/ruby && ln -sf 1.9.1/*-linux/ruby.h .
 	touch $@
 
 ifneq ($(HOSTCC), $(TARGET_CC))
@@ -231,7 +231,7 @@ $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	$(MAKE) -C $(RUBY_BUILD_DIR) DESTDIR=$(RUBY_IPK_DIR) install
 	for so in $(RUBY_IPK_DIR)/opt/bin/ruby \
 	    $(RUBY_IPK_DIR)/opt/lib/libruby.so.[0-9]*.[0-9]*.[0-9]* \
-	    `find $(RUBY_IPK_DIR)/opt/lib/ruby/1.8/ -name '*.so'`; \
+	    `find $(RUBY_IPK_DIR)/opt/lib/ruby/1.9.1/ -name '*.so'`; \
 	do $(STRIP_COMMAND) $$so; \
 	done
 	install -d $(RUBY_IPK_DIR)/opt/etc/
@@ -260,4 +260,4 @@ ruby-dirclean:
 # Some sanity check for the package.
 #
 ruby-check: $(RUBY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RUBY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
