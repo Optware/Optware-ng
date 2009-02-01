@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TWISTED_VERSION=8.1.0
-PY-TWISTED_SITE=http://tmrc.mit.edu/mirror/twisted/Twisted/8.1
+PY-TWISTED_VERSION=8.2.0
+PY-TWISTED_SITE=http://tmrc.mit.edu/mirror/twisted/Twisted/8.2
 PY-TWISTED_SOURCE=Twisted-$(PY-TWISTED_VERSION).tar.bz2
 PY-TWISTED_DIR=Twisted-$(PY-TWISTED_VERSION)
 PY-TWISTED_UNZIP=bzcat
@@ -32,6 +32,7 @@ PY-TWISTED_SECTION=misc
 PY-TWISTED_PRIORITY=optional
 PY24-TWISTED_DEPENDS=python24, py24-zope-interface
 PY25-TWISTED_DEPENDS=python25, py25-zope-interface
+PY26-TWISTED_DEPENDS=python26, py26-zope-interface
 PY-TWISTED_CONFLICTS=
 
 #
@@ -74,6 +75,9 @@ PY24-TWISTED_IPK=$(BUILD_DIR)/py24-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IP
 PY25-TWISTED_IPK_DIR=$(BUILD_DIR)/py25-twisted-$(PY-TWISTED_VERSION)-ipk
 PY25-TWISTED_IPK=$(BUILD_DIR)/py25-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PY26-TWISTED_IPK_DIR=$(BUILD_DIR)/py26-twisted-$(PY-TWISTED_VERSION)-ipk
+PY26-TWISTED_IPK=$(BUILD_DIR)/py26-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 .PHONY: py-twisted-source py-twisted-unpack py-twisted py-twisted-stage py-twisted-ipk py-twisted-clean py-twisted-dirclean py-twisted-check
 
 #
@@ -106,7 +110,7 @@ py-twisted-source: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED_PATCHES)
+$(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED_PATCHES) make/py-twisted.mk
 	$(MAKE) py-zope-interface-stage py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)
 	mkdir -p $(PY-TWISTED_BUILD_DIR)
@@ -125,8 +129,6 @@ $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	for d in $(@D)/2.4/Twisted*-[0-9]*; \
-		do cp $(@D)/2.4/setup.cfg $$d; done
 	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TWISTED_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TWISTED_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)/2.5
@@ -142,8 +144,21 @@ $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	for d in $(@D)/2.5/Twisted*-[0-9]*; \
-		do cp $(@D)/2.5/setup.cfg $$d; done
+	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-TWISTED_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TWISTED_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+		echo "library-dirs=$(STAGING_LIB_DIR)"; \
+		echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
 	touch $@
 
 py-twisted-unpack: $(PY-TWISTED_BUILD_DIR)/.configured
@@ -163,6 +178,11 @@ $(PY-TWISTED_BUILD_DIR)/.built: $(PY-TWISTED_BUILD_DIR)/.configured
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
+	rm -rf $(STAGING_LIB_DIR)/python2.6/site-packages/twisted
+	(cd $(@D)/2.6; \
+		PYTHONPATH="$(STAGING_LIB_DIR)/python2.6/site-packages" \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" build)
 	touch $@
 
 #
@@ -176,13 +196,14 @@ py-twisted: $(PY-TWISTED_BUILD_DIR)/.built
 $(PY-TWISTED_BUILD_DIR)/.staged: $(PY-TWISTED_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D)/2.4; \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	(cd $(@D)/2.5; \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.5/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.6; \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
 py-twisted-stage: $(PY-TWISTED_BUILD_DIR)/.staged
@@ -219,6 +240,20 @@ $(PY25-TWISTED_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-TWISTED_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-TWISTED_CONFLICTS)" >>$@
 
+$(PY26-TWISTED_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-twisted" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-TWISTED_PRIORITY)" >>$@
+	@echo "Section: $(PY-TWISTED_SECTION)" >>$@
+	@echo "Version: $(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-TWISTED_MAINTAINER)" >>$@
+	@echo "Source: $(PY-TWISTED_SITE)/$(PY-TWISTED_SOURCE)" >>$@
+	@echo "Description: $(PY-TWISTED_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-TWISTED_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-TWISTED_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -235,7 +270,6 @@ $(PY24-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py-twisted_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY24-TWISTED_IPK_DIR) $(BUILD_DIR)/py24-twisted_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-TWISTED_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY24-TWISTED_IPK_DIR)/opt/lib -name '*.so'`
@@ -248,7 +282,6 @@ $(PY24-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 $(PY25-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 	rm -rf $(PY25-TWISTED_IPK_DIR) $(BUILD_DIR)/py25-twisted_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TWISTED_BUILD_DIR)/2.5; \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.5/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-TWISTED_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY25-TWISTED_IPK_DIR)/opt/lib -name '*.so'`
@@ -256,10 +289,22 @@ $(PY25-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 	echo $(PY-TWISTED_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-TWISTED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TWISTED_IPK_DIR)
 
+$(PY26-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
+	rm -rf $(PY26-TWISTED_IPK_DIR) $(BUILD_DIR)/py26-twisted_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TWISTED_BUILD_DIR)/2.6; \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-TWISTED_IPK_DIR) --prefix=/opt)
+	$(STRIP_COMMAND) `find $(PY26-TWISTED_IPK_DIR)/opt/lib -name '*.so'`
+	for f in $(PY26-TWISTED_IPK_DIR)/opt/*bin/*; \
+	    do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
+	$(MAKE) $(PY26-TWISTED_IPK_DIR)/CONTROL/control
+	echo $(PY-TWISTED_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-TWISTED_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-TWISTED_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-twisted-ipk: $(PY24-TWISTED_IPK) $(PY25-TWISTED_IPK)
+py-twisted-ipk: $(PY24-TWISTED_IPK) $(PY25-TWISTED_IPK) $(PY26-TWISTED_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -275,9 +320,10 @@ py-twisted-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-TWISTED_DIR) $(PY-TWISTED_BUILD_DIR) \
 	$(PY24-TWISTED_IPK_DIR) $(PY24-TWISTED_IPK) \
 	$(PY25-TWISTED_IPK_DIR) $(PY25-TWISTED_IPK) \
+	$(PY26-TWISTED_IPK_DIR) $(PY26-TWISTED_IPK) \
 
 #
 # Some sanity check for the package.
 #
-py-twisted-check: $(PY24-TWISTED_IPK) $(PY25-TWISTED_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-TWISTED_IPK) $(PY25-TWISTED_IPK)
+py-twisted-check: $(PY24-TWISTED_IPK) $(PY25-TWISTED_IPK) $(PY26-TWISTED_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
