@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.6.1
+GIT_VERSION=1.6.1.2
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -282,4 +282,4 @@ git-dirclean:
 # Some sanity check for the package.
 #
 git-check: $(GIT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GIT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
