@@ -1,23 +1,27 @@
---- pymssql-0.8.0/setup.py.orig	2006-09-22 14:03:02.000000000 -0700
-+++ pymssql-0.8.0/setup.py	2006-12-25 23:20:35.000000000 -0800
-@@ -69,16 +69,6 @@
+--- pymssql-1.0.0/setup.py.orig	2009-01-29 18:47:38.000000000 +0000
++++ pymssql-1.0.0/setup.py	2009-02-01 07:54:56.230887091 +0000
+@@ -70,20 +70,6 @@
  		library_dirs.insert(0, os.path.join(p, r'DevTools\lib'))
  
  else:	# try some generic paths
 -	include_dirs = [
--		'/usr/include', '/usr/local/include',
--		'/usr/include/freetds', '/usr/local/include/freetds',
--		'/usr/pkg/freetds/include'	# netbsd
+-		'/usr/local/include', '/usr/local/include/freetds',  # first local install
+-		'/usr/include', '/usr/include/freetds',   # some generic Linux paths
+-		'/usr/include/freetds_mssql',             # some versions of Mandriva 
+-		'/usr/local/freetds/include',             # FreeBSD
+-		'/usr/pkg/freetds/include'	          # NetBSD
 -	]
 -	library_dirs = [
--		'/usr/lib', '/usr/local/lib',
--		'/usr/lib/freetds', '/usr/local/lib/freetds'
--		'/usr/pkg/freetds/lib'		# netbsd
+-		'/usr/local/lib', '/usr/local/lib/freetds',
+-		'/usr/lib', '/usr/lib/freetds',
+-		'/usr/lib/freetds_mssql', 
+-		'/usr/local/freetds/lib',
+-		'/usr/pkg/freetds/lib'
 -	]
- 	libraries = ["sybdb"]
+ 	libraries = [ "sybdb" ]   # on Mandriva you may have to change it to sybdb_mssql
  	data_files = []
  
-@@ -110,8 +100,6 @@
+@@ -109,8 +95,6 @@
  	url = 'http://pymssql.sourceforge.net',
  	py_modules = [ 'pymssql', ],
  	ext_modules = [Extension('_mssql', ['mssqldbmodule.c'],
