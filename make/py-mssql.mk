@@ -211,7 +211,7 @@ py-mssql: $(PY-MSSQL_BUILD_DIR)/.built
 $(PY24-MSSQL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-mssql" >>$@
+	@echo "Package: py24-mssql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MSSQL_PRIORITY)" >>$@
 	@echo "Section: $(PY-MSSQL_SECTION)" >>$@
