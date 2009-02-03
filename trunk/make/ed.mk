@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 ED_SITE=http://ftp.gnu.org/gnu/ed
-ED_VERSION=1.0
-ED_SOURCE=ed-$(ED_VERSION).tar.bz2
+ED_VERSION=1.2
+ED_SOURCE=ed-$(ED_VERSION).tar.gz
 ED_DIR=ed-$(ED_VERSION)
-ED_UNZIP=bzcat
+ED_UNZIP=zcat
 ED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ED_DESCRIPTION=Line editor
 ED_SECTION=util
@@ -193,4 +193,4 @@ ed-dirclean:
 # Some sanity check for the package.
 #
 ed-check: $(ED_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ED_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
