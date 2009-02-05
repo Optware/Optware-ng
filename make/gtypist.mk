@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GTYPIST_SITE=ftp://ftp.gnu.org/gnu/gtypist
-GTYPIST_VERSION=2.8.1
+GTYPIST_VERSION=2.8.2
 GTYPIST_SOURCE=gtypist-$(GTYPIST_VERSION).tar.bz2
 GTYPIST_DIR=gtypist-$(GTYPIST_VERSION)
 GTYPIST_UNZIP=bzcat
@@ -120,6 +120,7 @@ $(GTYPIST_BUILD_DIR)/.configured: $(DL_DIR)/$(GTYPIST_SOURCE) $(GTYPIST_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GTYPIST_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GTYPIST_LDFLAGS)" \
 		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -218,4 +219,4 @@ gtypist-dirclean:
 # Some sanity check for the package.
 #
 gtypist-check: $(GTYPIST_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GTYPIST_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
