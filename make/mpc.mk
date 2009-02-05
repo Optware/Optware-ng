@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MPC_SITE=http://www.musicpd.org/uploads/files
-MPC_VERSION=0.12.1
+MPC_SITE=http://downloads.sourceforge.net/musicpd
+MPC_VERSION=0.15
 MPC_SOURCE=mpc-$(MPC_VERSION).tar.bz2
 MPC_DIR=mpc-$(MPC_VERSION)
 MPC_UNZIP=bzcat
@@ -81,7 +81,8 @@ MPC_IPK=$(BUILD_DIR)/mpc_$(MPC_VERSION)-$(MPC_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MPC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MPC_SITE)/$(MPC_SOURCE)
+	$(WGET) -P $(@D) $(MPC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -116,10 +117,10 @@ $(MPC_BUILD_DIR)/.configured: $(DL_DIR)/$(MPC_SOURCE) $(MPC_PATCHES) make/mpc.mk
 		then cat $(MPC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MPC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MPC_DIR)" != "$(MPC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MPC_DIR) $(MPC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MPC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MPC_DIR) $(@D) ; \
 	fi
-	(cd $(MPC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPC_LDFLAGS)" \
@@ -132,8 +133,7 @@ $(MPC_BUILD_DIR)/.configured: $(DL_DIR)/$(MPC_SOURCE) $(MPC_PATCHES) make/mpc.mk
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MPC_BUILD_DIR)/libtool
-	sed -ie 's| -I$${prefix}/include||g' $(MPC_BUILD_DIR)/src/Makefile
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mpc-unpack: $(MPC_BUILD_DIR)/.configured
@@ -143,7 +143,7 @@ mpc-unpack: $(MPC_BUILD_DIR)/.configured
 #
 $(MPC_BUILD_DIR)/.built: $(MPC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MPC_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -156,7 +156,7 @@ mpc: $(MPC_BUILD_DIR)/.built
 #
 $(MPC_BUILD_DIR)/.staged: $(MPC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MPC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 mpc-stage: $(MPC_BUILD_DIR)/.staged
@@ -227,4 +227,4 @@ mpc-dirclean:
 # Some sanity check for the package.
 #
 mpc-check: $(MPC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MPC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
