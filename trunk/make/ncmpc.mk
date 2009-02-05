@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NCMPC_SITE=http://hem.bredband.net/kaw/ncmpc/files
-NCMPC_VERSION=0.11.1
-NCMPC_SOURCE=ncmpc-$(NCMPC_VERSION).tar.gz
+NCMPC_SITE=http://downloads.sourceforge.net/musicpd/ncmpc-0.13.tar.bz2
+NCMPC_VERSION=0.13
+NCMPC_SOURCE=ncmpc-$(NCMPC_VERSION).tar.bz2
 NCMPC_DIR=ncmpc-$(NCMPC_VERSION)
-NCMPC_UNZIP=zcat
+NCMPC_UNZIP=bzcat
 NCMPC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NCMPC_DESCRIPTION=A curses client for the Music Player Daemon (MPD).
 NCMPC_SECTION=multimedia
@@ -76,8 +76,8 @@ NCMPC_IPK=$(BUILD_DIR)/ncmpc_$(NCMPC_VERSION)-$(NCMPC_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NCMPC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NCMPC_SITE)/$(NCMPC_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NCMPC_SOURCE)
+	$(WGET) -P $(@D) $(NCMPC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,10 +112,10 @@ $(NCMPC_BUILD_DIR)/.configured: $(DL_DIR)/$(NCMPC_SOURCE) $(NCMPC_PATCHES) make/
 		then cat $(NCMPC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NCMPC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NCMPC_DIR)" != "$(NCMPC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NCMPC_DIR) $(NCMPC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NCMPC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NCMPC_DIR) $(@D) ; \
 	fi
-	(cd $(NCMPC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NCMPC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NCMPC_LDFLAGS)" \
@@ -128,7 +128,7 @@ $(NCMPC_BUILD_DIR)/.configured: $(DL_DIR)/$(NCMPC_SOURCE) $(NCMPC_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(NCMPC_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 ncmpc-unpack: $(NCMPC_BUILD_DIR)/.configured
@@ -138,7 +138,7 @@ ncmpc-unpack: $(NCMPC_BUILD_DIR)/.configured
 #
 $(NCMPC_BUILD_DIR)/.built: $(NCMPC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NCMPC_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +151,7 @@ ncmpc: $(NCMPC_BUILD_DIR)/.built
 #
 $(NCMPC_BUILD_DIR)/.staged: $(NCMPC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NCMPC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 ncmpc-stage: $(NCMPC_BUILD_DIR)/.staged
@@ -226,4 +226,4 @@ ncmpc-dirclean:
 # Some sanity check for the package.
 #
 ncmpc-check: $(NCMPC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NCMPC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
