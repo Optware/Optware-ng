@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBSNDFILE_SITE=http://www.mega-nerd.com/libsndfile
-LIBSNDFILE_VERSION=1.0.17
+LIBSNDFILE_VERSION=1.0.18
 LIBSNDFILE_SOURCE=libsndfile-$(LIBSNDFILE_VERSION).tar.gz
 LIBSNDFILE_DIR=libsndfile-$(LIBSNDFILE_VERSION)
 LIBSNDFILE_UNZIP=zcat
@@ -229,4 +229,4 @@ libsndfile-dirclean:
 # Some sanity check for the package.
 #
 libsndfile-check: $(LIBSNDFILE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBSNDFILE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
