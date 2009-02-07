@@ -5,7 +5,7 @@
 #############################################################
 
 DNSMASQ_SITE=http://www.thekelleys.org.uk/dnsmasq
-DNSMASQ_VERSION=2.46
+DNSMASQ_VERSION=2.47
 DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_DIR:=dnsmasq-$(DNSMASQ_VERSION)
 DNSMASQ_UNZIP=zcat
@@ -102,4 +102,4 @@ dnsmasq-dirclean:
 	rm -rf $(BUILD_DIR)/$(DNSMASQ_DIR) $(DNSMASQ_BUILD_DIR) $(DNSMASQ_IPK_DIR) $(DNSMASQ_IPK)
 
 dnsmasq-check: $(DNSMASQ_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DNSMASQ_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
