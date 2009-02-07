@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MSSQL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pymssql
-PY-MSSQL_VERSION=1.0.0
+PY-MSSQL_VERSION=1.0.1
 PY-MSSQL_SOURCE=pymssql-$(PY-MSSQL_VERSION).tar.gz
 PY-MSSQL_DIR=pymssql-$(PY-MSSQL_VERSION)
 PY-MSSQL_UNZIP=zcat
@@ -165,7 +165,6 @@ $(PY-MSSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MSSQL_SOURCE) $(PY-MSSQL_PATCH
 		echo "executable=/opt/bin/python2.6" \
 	    ) > setup.cfg; \
 	)
-	sed -i -e 's| WRITE_RESTRICTED| PY_WRITE_RESTRICTED|' $(@D)/2.6/mssqldbmodule.c
 	touch $@
 
 py-mssql-unpack: $(PY-MSSQL_BUILD_DIR)/.configured
