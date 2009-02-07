@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMRSS_SITE=http://www2.autistici.org/bakunin/libmrss
-LIBMRSS_VERSION=0.19.1
+LIBMRSS_VERSION=0.19.2
 LIBMRSS_SOURCE=libmrss-$(LIBMRSS_VERSION).tar.gz
 LIBMRSS_DIR=libmrss-$(LIBMRSS_VERSION)
 LIBMRSS_UNZIP=zcat
@@ -112,10 +112,10 @@ $(LIBMRSS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMRSS_SOURCE) $(LIBMRSS_PATCHES)
 		then cat $(LIBMRSS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBMRSS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBMRSS_DIR)" != "$(LIBMRSS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBMRSS_DIR) $(LIBMRSS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBMRSS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBMRSS_DIR) $(@D) ; \
 	fi
-	(cd $(LIBMRSS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMRSS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMRSS_LDFLAGS)" \
@@ -128,7 +128,7 @@ $(LIBMRSS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMRSS_SOURCE) $(LIBMRSS_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBMRSS_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libmrss-unpack: $(LIBMRSS_BUILD_DIR)/.configured
@@ -138,7 +138,7 @@ libmrss-unpack: $(LIBMRSS_BUILD_DIR)/.configured
 #
 $(LIBMRSS_BUILD_DIR)/.built: $(LIBMRSS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBMRSS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +151,8 @@ libmrss: $(LIBMRSS_BUILD_DIR)/.built
 #
 $(LIBMRSS_BUILD_DIR)/.staged: $(LIBMRSS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBMRSS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/mrss.pc
 	touch $@
 
 libmrss-stage: $(LIBMRSS_BUILD_DIR)/.staged
@@ -217,4 +218,4 @@ libmrss-dirclean:
 # Some sanity check for the package.
 #
 libmrss-check: $(LIBMRSS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBMRSS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
