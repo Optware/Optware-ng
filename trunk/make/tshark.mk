@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TSHARK_SITE=http://www.wireshark.org/download/src
-TSHARK_VERSION=1.0.5
+TSHARK_VERSION=1.0.6
 TSHARK_SOURCE=wireshark-$(TSHARK_VERSION).tar.bz2
 TSHARK_DIR=wireshark-$(TSHARK_VERSION)
 TSHARK_UNZIP=bzcat
@@ -247,4 +247,4 @@ tshark-dirclean:
 # Some sanity check for the package.
 #
 tshark-check: $(TSHARK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TSHARK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
