@@ -16,7 +16,7 @@
 #
 
 LIBXML2_SITE=ftp://xmlsoft.org/libxml2
-LIBXML2_VERSION=2.7.2
+LIBXML2_VERSION=2.7.3
 LIBXML2_SOURCE=libxml2-$(LIBXML2_VERSION).tar.gz
 LIBXML2_DIR=libxml2-$(LIBXML2_VERSION)
 LIBXML2_UNZIP=zcat
@@ -207,4 +207,4 @@ libxml2-dirclean:
 # Some sanity check for the package.
 #
 libxml2-check: $(LIBXML2_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBXML2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
