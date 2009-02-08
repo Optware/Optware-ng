@@ -39,7 +39,7 @@ NETCAT_CONFLICTS=
 #
 # NETCAT_IPK_VERSION should be incremented when the ipk changes.
 #
-NETCAT_IPK_VERSION=3
+NETCAT_IPK_VERSION=4
 
 #
 # NETCAT_CONFFILES should be a list of user-editable files
@@ -76,9 +76,10 @@ NETCAT_IPK=$(BUILD_DIR)/netcat_$(NETCAT_VERSION)-$(NETCAT_IPK_VERSION)_$(TARGET_
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(NETCAT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NETCAT_SITE)/$(NETCAT_SOURCE) && \
-	$(WGET) -P $(DL_DIR) $(NETCAT_SITE)/$(NETCAT_DEBIAN_PATCH)
+$(DL_DIR)/$(NETCAT_SOURCE) \
+$(DL_DIR)/$(NETCAT_DEBIAN_PATCH):
+	$(WGET) -P $(@D) $(NETCAT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,7 +106,7 @@ netcat-source: $(DL_DIR)/$(NETCAT_SOURCE) $(NETCAT_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(NETCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(NETCAT_SOURCE) $(NETCAT_PATCHES) make/netcat.mk
+$(NETCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(NETCAT_SOURCE) $(DL_DIR)/$(NETCAT_DEBIAN_PATCH) $(NETCAT_PATCHES) make/netcat.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(NETCAT_DIR) $(NETCAT_BUILD_DIR)
 	$(NETCAT_UNZIP) $(DL_DIR)/$(NETCAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -131,7 +132,7 @@ netcat-unpack: $(NETCAT_BUILD_DIR)/.configured
 #
 $(NETCAT_BUILD_DIR)/.built: $(NETCAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NETCAT_BUILD_DIR) CC=$(TARGET_CC) linux
+	$(MAKE) -C $(@D) CC=$(TARGET_CC) STATIC='' DFLAGS='-DLINUX -DTELNET -DGAPING_SECURITY_HOLE' linux
 	touch $@
 
 #
@@ -226,4 +227,4 @@ netcat-dirclean:
 # Some sanity check for the package.
 #
 netcat-check: $(NETCAT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NETCAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
