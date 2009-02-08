@@ -5,7 +5,7 @@
 ###########################################################
 
 NANO_SITE=http://www.nano-editor.org/dist/v2.1
-NANO_VERSION=2.1.7
+NANO_VERSION=2.1.8
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -114,4 +114,4 @@ nano-dirclean:
 # Some sanity check for the package.
 #
 nano-check: $(NANO_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NANO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
