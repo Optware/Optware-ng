@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FIREDRILL-HTTPTUNNEL_SITE=http://the-linux-academy.co.uk/downloads
-FIREDRILL-HTTPTUNNEL_VERSION=1.1.1
+FIREDRILL-HTTPTUNNEL_VERSION=1.3.1
 FIREDRILL-HTTPTUNNEL_UPSTREAM_SOURCE=httptunnel-$(FIREDRILL-HTTPTUNNEL_VERSION).tgz
 FIREDRILL-HTTPTUNNEL_SOURCE=firedrill-$(FIREDRILL-HTTPTUNNEL_UPSTREAM_SOURCE)
 FIREDRILL-HTTPTUNNEL_DIR=httptunnel
@@ -37,7 +37,7 @@ FIREDRILL-HTTPTUNNEL_CONFLICTS=
 #
 # FIREDRILL-HTTPTUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-FIREDRILL-HTTPTUNNEL_IPK_VERSION=2
+FIREDRILL-HTTPTUNNEL_IPK_VERSION=1
 
 #
 # FIREDRILL-HTTPTUNNEL_CONFFILES should be a list of user-editable files
@@ -49,7 +49,6 @@ FIREDRILL-HTTPTUNNEL_IPK_VERSION=2
 #
 FIREDRILL-HTTPTUNNEL_PATCHES=\
 $(FIREDRILL-HTTPTUNNEL_SOURCE_DIR)/find_if.patch \
-$(FIREDRILL-HTTPTUNNEL_SOURCE_DIR)/main.cc-unistd.patch
 
 #
 # If the compilation of the package requires additional
@@ -80,7 +79,7 @@ FIREDRILL-HTTPTUNNEL_IPK=$(BUILD_DIR)/firedrill-httptunnel_$(FIREDRILL-HTTPTUNNE
 #
 $(DL_DIR)/$(FIREDRILL-HTTPTUNNEL_SOURCE):
 	$(WGET) -O $@ $(FIREDRILL-HTTPTUNNEL_SITE)/$(FIREDRILL-HTTPTUNNEL_UPSTREAM_SOURCE) || \
-	$(WGET) -O $@ $(SOURCES_NLO_SITE)/$(FIREDRILL-HTTPTUNNEL_UPSTREAM_SOURCE)
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -121,7 +120,7 @@ $(FIREDRILL-HTTPTUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(FIREDRILL-HTTPTUNNEL_
 	fi
 	sed -i -e '/^INCLUDES/s/$$/ $$(CPPFLAGS)/' \
 	       -e '/^LIBS/s/$$/ $$(LDFLAGS)/' \
-		$(@D)/src/Makefile
+		$(@D)/src/Makefile $(@D)/src/libhttptun/Makefile
 #	(cd $(FIREDRILL-HTTPTUNNEL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FIREDRILL-HTTPTUNNEL_CPPFLAGS)" \
@@ -208,7 +207,7 @@ $(FIREDRILL-HTTPTUNNEL_IPK): $(FIREDRILL-HTTPTUNNEL_BUILD_DIR)/.built
 	install -m 755 $(FIREDRILL-HTTPTUNNEL_BUILD_DIR)/src/httptunnel $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/bin/httptunnel
 	install -d $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/share/doc/firedrill-httptunnel
-	install -m 644 $(FIREDRILL-HTTPTUNNEL_BUILD_DIR)/README $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/share/doc/firedrill-httptunnel
+	cp -rp $(<D)/docs/* $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/share/doc/firedrill-httptunnel
 	$(MAKE) $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/CONTROL/control
 	echo $(FIREDRILL-HTTPTUNNEL_CONFFILES) | sed -e 's/ /\n/g' > $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FIREDRILL-HTTPTUNNEL_IPK_DIR)
@@ -236,4 +235,4 @@ firedrill-httptunnel-dirclean:
 # Some sanity check for the package.
 #
 firedrill-httptunnel-check: $(FIREDRILL-HTTPTUNNEL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FIREDRILL-HTTPTUNNEL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
