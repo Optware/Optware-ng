@@ -1,5 +1,5 @@
---- src/ThreadManager.cc.orig	2007-08-19 19:00:45.000000000 -0700
-+++ src/ThreadManager.cc	2007-08-19 19:01:01.000000000 -0700
+--- src/libhttptun/ThreadManager.cc.orig	2007-08-19 19:00:45.000000000 -0700
++++ src/libhttptun/ThreadManager.cc	2007-08-19 19:01:01.000000000 -0700
 @@ -151,7 +151,7 @@
  	MutexVar mv(m_mtx);
  
