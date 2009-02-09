@@ -21,7 +21,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBSNDFILE_SITE=http://www.mega-nerd.com/libsndfile
+ifdef NO_BUILTIN_MATH
+LIBSNDFILE_VERSION=1.0.17
+else
 LIBSNDFILE_VERSION=1.0.18
+endif
 LIBSNDFILE_SOURCE=libsndfile-$(LIBSNDFILE_VERSION).tar.gz
 LIBSNDFILE_DIR=libsndfile-$(LIBSNDFILE_VERSION)
 LIBSNDFILE_UNZIP=zcat
@@ -76,8 +80,8 @@ LIBSNDFILE_IPK=$(BUILD_DIR)/libsndfile_$(LIBSNDFILE_VERSION)-$(LIBSNDFILE_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBSNDFILE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBSNDFILE_SITE)/$(LIBSNDFILE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBSNDFILE_SOURCE)
+	$(WGET) -P $(@D) $(LIBSNDFILE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
