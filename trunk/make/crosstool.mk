@@ -58,7 +58,8 @@ CROSSTOOL_IPK=$(BUILD_DIR)/crosstool_$(CROSSTOOL_VERSION)-$(CROSSTOOL_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CROSSTOOL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CROSSTOOL_SITE)/$(CROSSTOOL_SOURCE)
+	$(WGET) -P $(@D) $(CROSSTOOL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -92,7 +93,10 @@ $(CROSSTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PA
 	cp $(CROSSTOOL_SOURCE_DIR)/powerpc-603e.config $(@D)
 	mkdir -p $(@D)/patches/$(CROSS_CONFIGURATION_GCC)
 	# gcc 4.1.1 patch: https://trac.nslu2-linux.org/optware/ticket/1
-	sed -i '/+/s/4.0\*/4.[0-9]\*/' $(@D)/patches/glibc-2.2.5/glibc-2.2.5-allow-gcc-4.0-configure.patch
+	sed -i -e 's/|4\.[^\*]*\*/|4.[0-9]\*/' \
+		$(@D)/patches/glibc-2.2.5/glibc-2.2.5-allow-gcc-4.0-configure.patch \
+		$(@D)/patches/glibc-2.3.3/glibc-2.3.3-allow-gcc-4.0-configure.patch \
+		;
 	# these patches are required for gcc-3.3.5 to work with optware/unslung
 	cp $(@D)/patches/gcc-3.4.3/fix-fixincl.patch $(@D)/patches/gcc-3.3.5
 	cp $(@D)/patches/gcc-3.4.3/fix-fixincl.patch $(@D)/patches/gcc-3.3.4
