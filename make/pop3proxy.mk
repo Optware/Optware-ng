@@ -35,7 +35,7 @@ POP3PROXY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 POP3PROXY_DESCRIPTION=A pop3 proxy server
 POP3PROXY_SECTION=net
 POP3PROXY_PRIORITY=optional
-POP3PROXY_DEPENDS=glib, xinetd
+POP3PROXY_DEPENDS=xinetd
 POP3PROXY_SUGGESTS=
 POP3PROXY_CONFLICTS=any mail retrieval agent/server using the pop3 port 110
 
@@ -256,4 +256,4 @@ pop3proxy-dirclean:
 # Some sanity check for the package.
 #
 pop3proxy-check: $(POP3PROXY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POP3PROXY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
