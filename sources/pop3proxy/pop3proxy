@@ -1,0 +1,11 @@
+service pop3
+{
+        socket_type      = stream
+        wait             = no
+        user             = root
+        server           = /opt/sbin/pop3.proxy
+        server_args      = -m -u root -l /opt/var/pop3proxy -T /opt/var/pop3proxy -o /opt/var/pop3proxy -ee pop.isp.goes.here
+        log_on_success   += USERID
+        log_on_failure   += USERID
+        disable          = yes
+}

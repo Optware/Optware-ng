@@ -1,0 +1,28 @@
+--- pop3.proxy.1.orig	2007-03-18 17:44:18.000000000 +0000
++++ pop3.proxy.1	2009-01-28 22:13:38.000000000 +0000
+@@ -298,11 +298,11 @@
+ To start \fIpop3.proxy\fR from \fIinetd\fR you can add a line like
+ 
+     pop3 stream tcp nowait nobody \\
+-      /usr/local/sbin/pop3.proxy pop3.proxy \fIserver\fR
++      /opt/sbin/pop3.proxy pop3.proxy \fIserver\fR
+ 
+ to \fI/etc/inetd.conf\fR.
+ Notice that the packed \fImakefile\fR installs \fIpop3.proxy\fR under
+-\fI/usr/local/sbin\fR.
++\fI/opt/sbin\fR.
+ In this case you have to put the full path into \fIinetd.conf\fR.
+ .PP
+ If you are running an application gateway firewall and you have local users
+@@ -316,9 +316,9 @@
+ .ES
+  port 110
+    interface 192.168.1.1
+-     exec /usr/local/sbin/pop3.proxy -e
++     exec /opt/sbin/pop3.proxy -e
+    interface 140.77.194.1
+-     exec /usr/local/sbin/pop3.proxy local-pop3
++     exec /opt/sbin/pop3.proxy local-pop3
+ .EE
+ and configure \fIinetd\fR with
+ .EX "pop3 stream tcp nowait nobody tcpproxy tcpproxy"

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you must edit /opt/etc/xinetd.d/pop3proxy"
+echo ""
+echo "Configuration instructions are located in the text file"
+echo ""
+echo "/opt/share/doc/pop3proxy/pop3proxy.txt"
+echo ""
+echo "and also in the Groff type file"
+echo ""
+echo "/opt/man/man1/pop3.proxy.1"
+echo ""
+echo
+
+
