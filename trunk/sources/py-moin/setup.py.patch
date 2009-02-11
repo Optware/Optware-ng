@@ -1,11 +1,11 @@
---- moinmoin/setup.py.orig	2005-04-05 09:26:32.000000000 -0700
-+++ moinmoin/setup.py	2005-04-05 09:26:57.000000000 -0700
-@@ -134,7 +134,7 @@
+--- moinmoin/setup.py.orig	2009-01-07 00:26:53.000000000 +0000
++++ moinmoin/setup.py	2009-02-11 06:40:59.242637877 +0000
+@@ -150,7 +150,7 @@
              module = os.path.splitext(os.path.basename(script))[0]
-             module = string.translate(module, to_module)
+             module = module.replace('-', '_').replace('/', '.')
              script_vars = {
 -                'python': os.path.normpath(sys.executable),
 +                'python': self.executable,
                  'package': self.package_name,
                  'module': module,
-             }
+                 'package_location': '/usr/lib/python/site-packages', # FIXME: we need to know the correct path
