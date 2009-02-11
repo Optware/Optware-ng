@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	pop3proxy \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -293,7 +292,7 @@ COMMON_CROSS_PACKAGES = \
 	pcapsipdump pciutils pcre pen perltgd pinentry \
 	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
-	picocom picolisp pkgconfig player polipo \
+	picocom picolisp pkgconfig player polipo pop3proxy \
 	popt poptop portmap postgresql postfix pound ppp privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils puppy pure-ftpd pv pwgen \
 	python python24 python25 python26 python30 $(PYTHON_PACKAGES) \
