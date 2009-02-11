@@ -1,0 +1,308 @@
+
+NAME
+       pop3.proxy - POP3 proxy server
+
+SYNOPSIS
+       pop3.proxy [options] server
+
+DESCRIPTION
+       pop3.proxy  is a proxy server for the POP3 protocol.  It forwards traf-
+       fic between a client and a server watching that client and server full-
+       fill the protocol specification.
+
+       pop3.proxy  is  usually started from a TCP superserver like inetd, 
+       xinetd or tcpproxy.
+
+   Protocol Support
+       pop3.proxy supports the following POP3 commands:
+
+              USER, PASS
+              LIST, STAT, RETR, UIDL, DELE, TOP, LAST
+              NOOP, RSET, QUIT
+
+       Unsupported POP3 commands result in a syslog message without forwarding
+       the  command to the server.  A maximum number of 5 unsupported commands
+       per session is allowed before  the  connection  is  terminated  by  the
+       proxy.  This happens also in case of an invalid login.
+
+       If  the  server doesn't respond with either an `+OK' or `-ERR' the con-
+       nection is immediatly terminated.
+
+
+   Server Selection
+       If the -e switch is given on the command  line  the  proxy  allows  the
+       client  to  select the POP3 server by supplying a login username of the
+       form user@server
+       If -e is given twice pop3.proxy expects a default server as
+       option argument.
+       This default server is then used if the user doesn't supply a POP3 server
+       with his login.
+
+       The set of available servers might be restricted with the -s option.
+       This option defines a comma separated list of selectable servers.
+       To match a server on the list the client has to supply the name as it's
+       on the list.
+       If a server is defined by it's IP number the IP number must be also used
+       in the USER command.
+       pop3.proxy won't do any lookups to see if a given IP number matches
+       a server name on the list.
+
+       A different set of username/server delimeters can be set with the -c
+       option.
+
+       Notice that it's an error to specify a server command line argument with
+       server selection.
+
+   Access Control
+       An external access control program (acp) can be set with the -a switch.
+       If  set  it is called immediatly before the connection to the server is
+       made.  The program receives the following environment variables:
+
+       POP3_INTERFACE, POP3_PORT
+              interface and port where the client is connected to the proxy.
+
+       POP3_CLIENT
+              IP number of the connected client.
+
+       POP3_SERVER, POP3_SERVERPORT
+              POP3 server name and port as given by the client.
+
+       POP3_SERVERLOGIN
+              the supplied username for the POP3 server.
+
+       POP3_USERNAME, POP3_PASSWD
+              supplied username and password for usage of the proxy server.
+
+       The values  for  POP3_USERNAME  and  POP3_PASSWD  are  taken  from  the
+       supplied  remote username and password if they contain a colon `:'.  In
+       this case the local authentication data is taken from the left side  of
+       the colon and the remaining right side is passed on to the server.
+
+       The  acp's  standard  output  is  connected to the POP3 client and it's
+       stderr goes to the syslog.  The acp should return an exit code of  zero
+       to grant and any other to deny access for the client.
+
+   Proxy Authentication
+       pop3.proxy  supports  proxy  authentication in conjunction with an acp.
+       Login information of the form
+
+            USER proxy-user:server-user[@server]
+            PASS proxy-pass:server-pass
+            is processed in the obious way and given to the acp which  has  to
+            verify the proxy login.
+
+   Client Logging
+       Beside of the messages that go to syslog pop3.proxy can record the last
+       succesful login from a client  in  the  directory  given  with  the  -l
+       option.   This file contains the time, client, username and POP3 server
+       of the last succesful server login.  These files can be either used for
+       quick debugging or in conjunction with smtp.proxy to grant access to
+       the SMTP service.
+	-l /opt/var/pop3proxy
+
+   Virus Scanning
+       pop3.proxy scans every e-mails using clamav as scan engine  if  the  -z
+       option  is set.  In this mode pop3.proxy spools first every e-mail from
+       the server to a temporary file which is  scanned  by  clamd.   If  it's
+       clean  it's  sent  to  the  client  and  replaced  with  a  short virus
+       notification otherwise.  If pop3.proxy can't connect to clamd or  clamd
+       behaves strange, pop3.proxy refuses to work.
+
+       To  configure  virus  scanning  clamav's scan daemon clamd must run and
+       listen on the local TCP/IP port 3310 for service requests.  Furthermore
+       pop3.proxy  must  be  started with the -z option.  The -u option can be
+       used to start pop3.proxy with the  same  user  as  clamd  to  give  the
+       scanner read access to the temporary mail file.
+
+       If  the  -z  is  given  twice  on the command line pop3.proxy expects a
+       directory  where  it  then  quarantines  infected  e-mail.    Otherwise
+       pop3.proxy  will  simply  delete virulent mails.  Notice that succesful
+       quarantining requires that the quarantine  directory  is  on  the  same
+       harddisk  partition as pop3.proxy's directory for temporary files.  Use
+       the -T option to adjust it's location.
+
+   Connection Redirection
+       pop3.proxy can handle redirected connection request, that  is  requests
+       that  were  originally  not  destined  for  it.   This  is  done  by an
+       iptables/NAT rule like
+
+             # iptables -t nat -A PREROUTING --protocol TCP \
+                 --dport 110 -j REDIRECT --to-port 8100
+            In this example all connections requests going to port 110 will be
+            redirected to the machine's local port 8100.  The destination port
+            8100 is not of importance as long a pop3.proxy is listening on it.
+
+       pop3proxy  accepts  such  requests  wether  configured  for  it or not.
+       However, explicit support can be configured with the -r option.  The -r
+       option  expects  an argument for the redirection mode.  Possible values
+       are
+
+       none   turns off any special redirect handling, this is the default.
+
+       accept puts the original requested server data  into  the  POP3_ORIGDST
+              variables,  connects  the  client to the configured server, does
+              not redirect to the requested server.
+
+       forward
+              puts the original requested server data  into  the  POP3_ORIGDST
+              variables and connects the client to the requested server.
+
+       forward-only
+              like forward but drops connections which are not redirected.
+
+       Redirection support is actually only available for Linux.
+
+   Connection Status Files
+       pop3.proxy  can  write  information  about  it's current connections to
+       status files, one for each connection.  Each status file  contains  the
+       following, space separated, information:
+
+       - program name, is always pop3.proxy,
+
+       - the name of the pop3.proxy executable (also used as logname), default
+         is pop3.proxy,
+
+       - the proxy's process id,
+
+       - time in seconds since 01.01.1970 when the process started,
+
+       - IP number and port of the proxy's incoming interface,
+
+       - client's IP number and name,
+
+       - IP number and port of the server,
+
+       - IP number and port of the original requested server if the connection
+         was redirected, otherwise `0.0.0.0:0'.
+
+       - logged in username
+
+       - last client POP3 command.
+
+       To  enable  status  files  a directory must be given with the -o option
+       where the status files should go.  The status  file  are  automatically
+       removed when pop3.proxy terminates.
+	-o /opt/var/pop3proxy
+
+   Daemon Mode
+       pop3.proxy  can  run as standalone daemon (binding and listening on the
+       service port on it's own) if the -D option is  set.   If  -D  is  given
+       twice the service port can be set on the command line.  When running in
+       daemon mode pop3.proxy forks automatically into the background  if  the
+       debug -d option is not set.
+
+   Logging
+       The  way  pop3.proxy  writes  it's syslog has changed in version 1.3.0.
+       Prior version wrote their log data always  to  syslog.   Since  version
+       1.3.0  the  loglines  are written to stderr if pop3.proxy runs in debug
+       mode and to syslog else.
+
+OPTIONS
+       The following options are available:
+
+       -a acp set pathname of the access control program.
+
+       -c charset
+              define charset for the  username/server  delimeter,  default  is
+              `@'.
+
+       -e | -ee default-server
+              enables server selection by the client.  A default server can be
+              specified with a second -e.
+
+       -l dir if the  client  logs  succesfully  into  the  server  pop3.proxy
+              creates the file dir/clientip.
+              Notice  that  dir  must  be  writable  by the userid under which
+              pop3.proxy is started.  If pop3.proxy is started by root it will
+              change it's uid/gid to 65535/65534.
+		-l /opt/var/pop3proxy
+
+       -m     reduce the number of syslog messages.
+
+       -o statdir
+              defines  the  directory  where  pop3.proxy  writes  it's session
+              status files.
+		-o /opt/var/pop3proxy
+
+       -q srcip
+              sets the source IP-number of the outgoing connection to the POP3
+              server.
+
+       -r mode
+              sets the transparent proxy redirection mode.
+
+       -s serverlist
+              defines  a  comma  separated  list  of  POP3 servers that can be
+              selected by the client.  The characters `?' and `*' may be  used
+              as wildcards.  -e must also be specified.
+
+       -t timeout
+              sets a different POP3 timeout in seconds than the default of 600
+              (10 minutes).
+
+       -u user
+              sets the  username  under  which  pop3.proxy  should  run.   The
+              default is `nobody'.
+
+       -v prefix
+              sets a different variable prefix for the acp than POP3_.
+
+       -y | -yy path-to-spamc
+              turns spam tagging using spamassassin's spamc on.
+
+       -z | -zz directory
+              turns  virus  scanning  on.   Specifying  a  second  -z  sets  a
+              directory where pop3.proxy puts virulent e-mails  together  with
+              their info files.
+
+       -D | -DD [interface:]port
+              starts  pop3.proxy  as  standalone server.  If -D is given twice
+              pop3.proxy expects the server port where it  should  listen  for
+              incoming requests.
+
+       -T directory
+              sets the directory for pop3.proxy's temporary files.
+		-T /opt/var/pop3proxy
+
+
+EXAMPLES
+       To start pop3.proxy from inetd you can add a line like
+
+           pop3 stream tcp nowait nobody \
+             /opt/sbin/pop3.proxy pop3.proxy server
+
+       to   /etc/inetd.conf.    Notice   that  the  packed  makefile  installs
+       pop3.proxy under /opt/sbin.  In this case you have to put the full path
+       into inetd.conf.
+
+       If  you  are running an application gateway firewall and you have local
+       users connecting to external POP3 servers and external users connecting
+       to local POP3 servers you might want to prefer to start pop3.proxy from
+       tcpproxy   (or   another   superserver   with    interface    depending
+       configuration)  to  define different proxy configurations for different
+       interfaces.
+
+       If your local interface has the IP number 192.168.1.1 and your external
+       is 140.77.194.1 you can set up your tcpproxy.conf like
+
+             port 110
+               interface 192.168.1.1
+                 exec /opt/sbin/pop3.proxy -e
+               interface 140.77.194.1
+                 exec /opt/sbin/pop3.proxy local-pop3
+            and configure inetd with
+            to do the job.
+
+   Daemon Mode
+       Type
+       at the command prompt to start pop3.proxy as standalone daemon
+       listening on POP3's standard port 110.
+       starts pop3.proxy in debug mode.
+
+SEE ALSO
+       inetd(1), tcpproxy(1).
+
+
+
+
+                                04 January 2007                  POP3.PROXY(1)

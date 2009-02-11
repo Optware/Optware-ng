@@ -1,0 +1,10 @@
+--- pop3.c.orig	2007-01-15 17:35:59.000000000 +0000
++++ pop3.c	2009-01-28 20:40:34.000000000 +0000
+@@ -38,6 +38,7 @@
+ #include <syslog.h>
+ #include <time.h>
+ #include <wait.h>
++#include <limits.h>
+ 
+ #if defined (__linux__)
+ #  include <linux/netfilter_ipv4.h>

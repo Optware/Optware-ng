@@ -1,0 +1,11 @@
+--- procinfo.c.orig	2006-01-07 14:03:10.000000000 +0000
++++ procinfo.c	2009-01-28 22:05:41.000000000 +0000
+@@ -110,7 +110,7 @@
+ char *setpidfile(char *pidfile)
+ {
+ 	if (pidfile == NULL  ||  *pidfile == 0)
+-		snprintf (pi.pidfile, sizeof(pi.pidfile) - 2, "/var/run/%s.pid", program);
++		snprintf (pi.pidfile, sizeof(pi.pidfile) - 2, "/opt/var/run/%s.pid", program);
+ 	else
+ 		copy_string(pi.pidfile, pidfile, sizeof(pi.pidfile));
+ 

@@ -1,0 +1,11 @@
+--- clamav.c.orig	2007-01-15 17:35:31.000000000 +0000
++++ clamav.c	2009-01-28 21:49:21.000000000 +0000
+@@ -48,7 +48,7 @@
+ 
+ 
+ 
+-char	tmpdir[200] =		"/tmp";
++char	tmpdir[200] =		"/opt/tmp";
+ 
+ static struct _tmpfile {
+     char	filename[200];
