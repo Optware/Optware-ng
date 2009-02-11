@@ -54,7 +54,7 @@ DOVECOT_DOC_CONFLICTS=
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=1
+DOVECOT_IPK_VERSION=2
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -154,7 +154,6 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		PKG_CONFIG_LIBDIR=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		$(DOVECOT_CONFIGURE) \
-		--enable-debug \
 		--without-gssapi \
 		--without-pam \
 		--with-notify=dnotify \
