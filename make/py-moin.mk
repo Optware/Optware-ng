@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MOIN_SITE=http://static.moinmo.in/files
-PY-MOIN_VERSION=1.8.1
+PY-MOIN_VERSION=1.8.2
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)
 PY-MOIN_UNZIP=zcat
@@ -120,6 +120,7 @@ $(PY-MOIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MOIN_SOURCE) $(PY-MOIN_PATCHES)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-MOIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.6
+	sed -i -e 's|/usr/lib/python/|/opt/lib/python2.6/|' $(@D)/2.6/setup.py
 	(echo "[build_scripts]"; \
          echo "executable=/opt/bin/python2.6") >> $(@D)/2.6/setup.cfg
 	# 2.5
@@ -127,6 +128,7 @@ $(PY-MOIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MOIN_SOURCE) $(PY-MOIN_PATCHES)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-MOIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.5
+	sed -i -e 's|/usr/lib/python/|/opt/lib/python2.5/|' $(@D)/2.5/setup.py
 	(echo "[build_scripts]"; \
          echo "executable=/opt/bin/python2.5") >> $(@D)/2.5/setup.cfg
 	touch $@
@@ -279,4 +281,4 @@ py-moin-dirclean:
 # Some sanity check for the package.
 #
 py-moin-check: $(PY26-MOIN_IPK) $(PY25-MOIN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY26-MOIN_IPK) $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
