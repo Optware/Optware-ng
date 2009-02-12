@@ -30,9 +30,9 @@ toolchain:
 else
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-TARGET_CROSS_TOOLCHAIN_LOCATION=slugos/tmp/cross/armv5teb
-#TARGET_CROSS_TOOLCHAIN_LOCATION=releases/slugos-5.1-beta/nslu2be.tmp/cross
-TARGET_CROSS_TOP = $(shell cd $(BASE_DIR)/../..; pwd)/$(TARGET_CROSS_TOOLCHAIN_LOCATION)
+TARGET_TOP = $(shell cd $(BASE_DIR)/../..; pwd)/slugos/tmp
+#TARGET_TOP = $(shell cd $(BASE_DIR)/../..; pwd)/releases/slugos-5.2-beta/nslu2be.tmp
+TARGET_CROSS_TOP = $(TARGET_TOP)/cross/armv5teb
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(GNU_TARGET_NAME)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include
