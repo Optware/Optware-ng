@@ -24,6 +24,12 @@ LIBNSL_SOURCE_DIR=$(SOURCE_DIR)/libnsl
 LIBNSL_IPK_DIR=$(BUILD_DIR)/libnsl-$(LIBNSL_VERSION)-ipk
 LIBNSL_IPK=$(BUILD_DIR)/libnsl_$(LIBNSL_VERSION)-$(LIBNSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
+LIBNSL_SO_DIR = $(TARGET_USRLIBDIR)/../../lib
+else
+LIBNSL_SO_DIR ?= $(TARGET_LIBDIR)
+endif
+
 $(LIBNSL_BUILD_DIR)/.configured: make/libnsl.mk
 	rm -rf $(BUILD_DIR)/$(LIBNSL_DIR) $(LIBNSL_BUILD_DIR)
 	mkdir -p $(LIBNSL_BUILD_DIR)
@@ -33,11 +39,7 @@ libnsl-unpack: $(LIBNSL_BUILD_DIR)/.configured
 
 $(LIBNSL_BUILD_DIR)/.built: $(LIBNSL_BUILD_DIR)/.configured
 	rm -f $@
-ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
-	cp $(TARGET_USRLIBDIR)/../../lib/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_BUILD_DIR)/
-else
-	cp $(TARGET_LIBDIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_BUILD_DIR)/
-endif
+	cp $(LIBNSL_SO_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_BUILD_DIR)/
 	touch $@
 
 libnsl: $(LIBNSL_BUILD_DIR)/.built
