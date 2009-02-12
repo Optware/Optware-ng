@@ -81,7 +81,7 @@ $(GCONV_MODULES_IPK): $(GCONV_MODULES_BUILD_DIR)/.built
 	rm -rf $(GCONV_MODULES_IPK_DIR) $(BUILD_DIR)/gconv-modules_*_$(TARGET_ARCH).ipk
 ifeq ($(LIBC_STYLE),uclibc)
 else
-    ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
+    ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle slugos5be slugos5le, $(OPTWARE_TARGET)))
     else
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
 	cp $(TARGET_USRLIBDIR)/gconv/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
@@ -113,4 +113,4 @@ gconv-modules-dirclean:
 	rm -rf $(BUILD_DIR)/$(GCONV_MODULES_DIR) $(GCONV_MODULES_BUILD_DIR) $(GCONV_MODULES_IPK_DIR) $(GCONV_MODULES_IPK)
 
 gconv-modules-check: $(GCONV_MODULES_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GCONV_MODULES_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
