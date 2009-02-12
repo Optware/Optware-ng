@@ -28,14 +28,14 @@ SQLITE2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQLITE2_DESCRIPTION=SQLite is a small C library that implements a self-contained, embeddable, zero-configuration SQL database engine.
 SQLITE2_SECTION=lib
 SQLITE2_PRIORITY=optional
-SQLITE2_DEPENDS=readline
+SQLITE2_DEPENDS=ncurses, readline
 SQLITE2_SUGGESTS=
 SQLITE2_CONFLICTS=
 
 #
 # SQLITE2_IPK_VERSION should be incremented when the ipk changes.
 #
-SQLITE2_IPK_VERSION=1
+SQLITE2_IPK_VERSION=2
 
 #
 # SQLITE2_CONFFILES should be a list of user-editable files
@@ -71,8 +71,8 @@ SQLITE2_IPK=$(BUILD_DIR)/sqlite2_$(SQLITE2_VERSION)-$(SQLITE2_IPK_VERSION)_${TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SQLITE2_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SQLITE2_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(SQLITE2_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -97,14 +97,14 @@ sqlite2-source: $(DL_DIR)/$(SQLITE2_SOURCE) $(SQLITE2_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SQLITE2_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE2_SOURCE) $(SQLITE2_PATCHES)
-	$(MAKE) readline-stage
+	$(MAKE) ncurses-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(SQLITE2_DIR) $(SQLITE2_BUILD_DIR)
 	$(SQLITE2_UNZIP) $(DL_DIR)/$(SQLITE2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQLITE2_PATCHES)"; \
 		then cat $(SQLITE2_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE2_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(SQLITE2_DIR) $(SQLITE2_BUILD_DIR)
-	(cd $(SQLITE2_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(SQLITE2_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQLITE2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQLITE2_LDFLAGS)" \
@@ -116,6 +116,7 @@ $(SQLITE2_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE2_SOURCE) $(SQLITE2_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 sqlite2-unpack: $(SQLITE2_BUILD_DIR)/.configured
@@ -125,7 +126,7 @@ sqlite2-unpack: $(SQLITE2_BUILD_DIR)/.configured
 #
 $(SQLITE2_BUILD_DIR)/.built: $(SQLITE2_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SQLITE2_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -138,7 +139,7 @@ sqlite2: $(SQLITE2_BUILD_DIR)/.built
 #
 $(SQLITE2_BUILD_DIR)/.staged: $(SQLITE2_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SQLITE2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 sqlite2-stage: $(SQLITE2_BUILD_DIR)/.staged
@@ -203,4 +204,4 @@ sqlite2-dirclean:
 # Some sanity check for the package.
 #
 sqlite2-check: $(SQLITE2_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQLITE2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
