@@ -23,7 +23,7 @@ PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 #
 PERL_CPPFLAGS=
 PERL_ARCH=$(strip \
-    $(if $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)), armv5teb-linux, \
+    $(if $(filter openwrt-ixp4xx slugos5be, $(OPTWARE_TARGET)), armv5teb-linux, \
     $(if $(filter armeb, $(TARGET_ARCH)), armv5b-linux, \
     $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
     $(TARGET_ARCH)-linux))))
@@ -53,6 +53,8 @@ PERL_HOSTPERL=perl
 PERL_INC=
 endif
 PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
+
+PERL_ERRNO_H_DIR ?= $(TARGET_INCDIR)
 
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
 PERL_IPK=$(BUILD_DIR)/perl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -95,7 +97,7 @@ perl-hostperl: $(PERL_HOST_BUILD_DIR)/.hostbuilt
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 ifeq ($(HOSTCC), $(TARGET_CC))
-$(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
+$(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) $(SOURCE_DIR)/perl/$(PERL_MAJOR_VER)/perl.mk
 else
 $(PERL_BUILD_DIR)/.configured: $(PERL_PATCHES) $(PERL_HOST_BUILD_DIR)/.hostbuilt
 endif
@@ -109,7 +111,7 @@ endif
 	sed -i -e '/LIBS/s|-L/usr/local/lib|-L$(STAGING_LIB_DIR)|' $(@D)/ext/*/Makefile.PL
 	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
 	sed -i.orig \
-		-e 's:/usr/include/errno.h:$(TARGET_INCDIR)/errno.h:g' \
+		-e 's:/usr/include/errno.h:$(PERL_ERRNO_H_DIR)/errno.h:g' \
 		-e '/^# *warn/s:^#::' \
 		-e 's:= $$Config{cppstdin}:= $(TARGET_CPP):' \
 		$(@D)/ext/Errno/Errno_pm.PL
