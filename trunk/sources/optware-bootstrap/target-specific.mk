@@ -4,6 +4,8 @@ OPTWARE-BOOTSTRAP_TARGETS=\
 	hpmv2 \
 	lspro \
 	mssii \
+	slugos5be \
+	slugos5le \
 	syno-e500 \
 	syno-x07 \
 	teraprov2 \
@@ -36,60 +38,11 @@ OPTWARE-BOOTSTRAP_LIBS=$(strip \
 		$(TARGET_LIBDIR)/libgcc_s.so.1 $(TARGET_LIBDIR)/libgcc_s.so ) \
 	)
 
-# Ideally the following stanza would work
-# unfortunately it has some conflict with optware/Makefile
+define OPTWARE-BOOTSTRAP_RULE_TEMPLATE
+$(1)-optware-bootstrap-ipk:
+	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=$(1)
+$(1)-optware-bootstrap-dirclean:
+	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=$(1)
+endef
 
-# %-optware-bootstrap-ipk:
-# 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=$*
-# %-optware-bootstrap-dirclean:
-# 	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=$*
-
-fsg3v4-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=fsg3v4
-fsg3v4-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=fsg3v4
-
-dt2-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=dt2
-dt2-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=dt2
-
-vt4-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=vt4
-vt4-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=vt4
-
-hpmv2-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=hpmv2
-hpmv2-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=hpmv2
-
-lspro-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=lspro
-lspro-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=lspro
-
-mssii-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=mssii
-mssii-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=mssii
-
-syno-e500-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=syno-e500
-syno-e500-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=syno-e500
-
-syno-x07-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=syno-x07
-syno-x07-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=syno-x07
-
-teraprov2-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=teraprov2
-teraprov2-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=teraprov2
-
-tsx09-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=tsx09
-tsx09-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=tsx09
+$(foreach target,$(OPTWARE-BOOTSTRAP_TARGETS),$(eval $(call OPTWARE-BOOTSTRAP_RULE_TEMPLATE,$(target))))
