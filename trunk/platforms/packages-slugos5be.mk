@@ -2,6 +2,7 @@ PERL_MAJOR_VER = 5.10
 PERL_ERRNO_H_DIR = $(shell cd $(BASE_DIR)/../../slugos/tmp/staging/armv5teb-linux/usr/include; pwd)
 
 SPECIFIC_PACKAGES = \
+	optware-bootstrap \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
