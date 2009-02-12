@@ -1,5 +1,4 @@
 PERL_MAJOR_VER = 5.10
-PERL_ERRNO_H_DIR = $(TARGET_TOP)/staging/armv5teb-linux/usr/include
 LIBNSL_SO_DIR = $(TARGET_TOP)/staging/armv5teb-linux-gnueabi/lib
 
 SPECIFIC_PACKAGES = \
@@ -11,8 +10,8 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule \
 	bitchx bzflag \
-	calc cyrus-imapd emacs22 finch fuppes \
+	cyrus-imapd emacs22 finch fuppes \
 	gtk ipac-ng iptables iptraf ldconfig \
 	microdc2 monotone mpd netatalk nfs-utils pinentry \
 	player proftpd puppy mod-python qemu softflowd \
-	taged transcode uemacs vsftpd vte xchat \
+	taged transcode vsftpd vte xchat \
