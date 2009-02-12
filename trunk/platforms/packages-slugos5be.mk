@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule \
 	bitchx bzflag \
-	cyrus-imapd emacs22 finch fuppes \
+	cyrus-imapd finch fuppes \
 	gtk ipac-ng iptables iptraf ldconfig \
 	microdc2 monotone mpd netatalk nfs-utils pinentry \
 	player proftpd puppy mod-python qemu softflowd \
