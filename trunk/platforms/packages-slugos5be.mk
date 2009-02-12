@@ -9,3 +9,10 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
+	amule \
+	bitchx bzflag \
+	calc cyrus-imapd emacs22 finch fuppes \
+	gtk ipac-ng iptables iptraf ldconfig \
+	microdc2 monotone mpd netatalk nfs-utils pinentry \
+	player proftpd puppy mod-python qemu softflowd \
+	taged transcode uemacs vsftpd vte xchat \
