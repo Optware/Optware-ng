@@ -11,6 +11,7 @@ latest_xsh=`wget -q -O- ${feed} | grep '\.xsh' | sed -e 's/.*xsh">//' -e 's/<.*/
 
 if test -n "${latest_xsh}"; then
     cd /tmp
+    rm -f ${latest_xsh}
     wget ${feed}/${latest_xsh}
     sh ${latest_xsh}
 fi
