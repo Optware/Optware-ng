@@ -31,7 +31,7 @@ echo "Installing wget..."
 if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
 then
 	echo "Creating /opt/etc/ipkg/cross-feed.conf..."
-	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/slugos5be/cross/stable" >/opt/etc/ipkg/cross-feed.conf
+	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/slugos5be/cross/unstable" >/opt/etc/ipkg/cross-feed.conf
 fi
 
 echo "Setup complete."
