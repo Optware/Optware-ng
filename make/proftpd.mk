@@ -32,7 +32,7 @@ PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.3.tar.gz
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=4
+PROFTPD_IPK_VERSION=5
 
 #
 # Control file info
