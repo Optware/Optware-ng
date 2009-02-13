@@ -120,6 +120,9 @@ $(CRYPTO++_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTO++_SOURCE) $(CRYPTO++_PATCH
 	if test "$(BUILD_DIR)/$(CRYPTO++_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CRYPTO++_DIR) $(@D) ; \
 	fi
+ifneq ($(TARGET_ARCH), $(filter i686, $(TARGET_ARCH)))
+	sed -i -e '/-mtune/d' $(@D)/GNUmakefile
+endif
 #	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CRYPTO++_CPPFLAGS)" \
