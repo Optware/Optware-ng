@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MTOOLS_SITE=http://mtools.linux.lu
-MTOOLS_VERSION=3.9.11
+MTOOLS_VERSION=4.0.3
 MTOOLS_SOURCE=mtools-$(MTOOLS_VERSION).tar.bz2
 MTOOLS_DIR=mtools-$(MTOOLS_VERSION)
 MTOOLS_UNZIP=bzcat
@@ -76,7 +76,8 @@ MTOOLS_IPK=$(BUILD_DIR)/mtools_$(MTOOLS_VERSION)-$(MTOOLS_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MTOOLS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MTOOLS_SITE)/$(MTOOLS_SOURCE)
+	$(WGET) -P $(@D) $(MTOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,16 +106,16 @@ mtools-source: $(DL_DIR)/$(MTOOLS_SOURCE) $(MTOOLS_PATCHES)
 #
 $(MTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(MTOOLS_SOURCE) $(MTOOLS_PATCHES) make/mtools.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(MTOOLS_DIR) $(MTOOLS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MTOOLS_DIR) $(@D)
 	$(MTOOLS_UNZIP) $(DL_DIR)/$(MTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MTOOLS_PATCHES)" ; \
 		then cat $(MTOOLS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MTOOLS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MTOOLS_DIR)" != "$(MTOOLS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MTOOLS_DIR) $(MTOOLS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MTOOLS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MTOOLS_DIR) $(@D) ; \
 	fi
-	(cd $(MTOOLS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MTOOLS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MTOOLS_LDFLAGS)" \
@@ -128,8 +129,8 @@ $(MTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(MTOOLS_SOURCE) $(MTOOLS_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MTOOLS_BUILD_DIR)/libtool
-	touch $(MTOOLS_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 mtools-unpack: $(MTOOLS_BUILD_DIR)/.configured
 
@@ -137,9 +138,9 @@ mtools-unpack: $(MTOOLS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MTOOLS_BUILD_DIR)/.built: $(MTOOLS_BUILD_DIR)/.configured
-	rm -f $(MTOOLS_BUILD_DIR)/.built
-	$(MAKE) -C $(MTOOLS_BUILD_DIR)
-	touch $(MTOOLS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -149,12 +150,12 @@ mtools: $(MTOOLS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MTOOLS_BUILD_DIR)/.staged: $(MTOOLS_BUILD_DIR)/.built
-	rm -f $(MTOOLS_BUILD_DIR)/.staged
-	$(MAKE) -C $(MTOOLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MTOOLS_BUILD_DIR)/.staged
-
-mtools-stage: $(MTOOLS_BUILD_DIR)/.staged
+#$(MTOOLS_BUILD_DIR)/.staged: $(MTOOLS_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#mtools-stage: $(MTOOLS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -227,4 +228,4 @@ mtools-dirclean:
 # Some sanity check for the package.
 #
 mtools-check: $(MTOOLS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MTOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
