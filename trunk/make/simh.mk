@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SIMH_SITE=http://simh.trailing-edge.com/sources
-SIMH_UPSTREAM_VERSION=37-3
-SIMH_VERSION=37.3
+SIMH_UPSTREAM_VERSION=38-1
+SIMH_VERSION=38.1
 SIMH_SOURCE=simhv$(SIMH_UPSTREAM_VERSION).zip
 SIMH_DIR=simh-$(SIMH_VERSION)
 SIMH_UNZIP=unzip
@@ -30,14 +30,14 @@ SIMH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SIMH_DESCRIPTION=A highly portable, multi-system emulators.
 SIMH_SECTION=misc
 SIMH_PRIORITY=optional
-SIMH_DEPENDS=
+SIMH_DEPENDS=libpcap
 SIMH_SUGGESTS=
 SIMH_CONFLICTS=
 
 #
 # SIMH_IPK_VERSION should be incremented when the ipk changes.
 #
-SIMH_IPK_VERSION=2
+SIMH_IPK_VERSION=1
 
 #
 # SIMH_CONFFILES should be a list of user-editable files
@@ -237,4 +237,4 @@ simh-dirclean:
 # Some sanity check for the package.
 #
 simh-check: $(SIMH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SIMH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
