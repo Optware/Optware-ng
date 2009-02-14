@@ -23,11 +23,11 @@
 OPENSER_SOURCE_TYPE=tarball
 #OPENSER_SOURCE_TYPE=svn
 
-OPENSER_BASE_VERSION=1.3.2
+OPENSER_BASE_VERSION=1.3.4
 
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
 OPENSER_VERSION=$(OPENSER_BASE_VERSION)
-OPENSER_SITE=http://openser.org/pub/openser/$(OPENSER_VERSION)/src/
+OPENSER_SITE=http://www.kamailio.org/pub/kamailio/$(OPENSER_VERSION)/src/
 OPENSER_DIR=openser-$(OPENSER_VERSION)
 else
 OPENSER_SVN=http://openser.svn.sourceforge.net/svnroot/openser/branches/1.3
@@ -55,7 +55,7 @@ OPENSER_CONFLICTS=
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
-OPENSER_IPK_VERSION=3
+OPENSER_IPK_VERSION=1
 else
 OPENSER_IPK_VERSION=1
 endif
