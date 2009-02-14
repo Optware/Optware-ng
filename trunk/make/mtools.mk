@@ -29,7 +29,9 @@ MTOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MTOOLS_DESCRIPTION=A collection of utilities to access MS-DOS disks from Unix without mounting them.
 MTOOLS_SECTION=misc
 MTOOLS_PRIORITY=optional
-MTOOLS_DEPENDS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MTOOLS_DEPENDS=libiconv
+endif
 MTOOLS_SUGGESTS=
 MTOOLS_CONFLICTS=
 
@@ -53,7 +55,9 @@ MTOOLS_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 MTOOLS_CPPFLAGS=
-MTOOLS_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MTOOLS_LDFLAGS=-liconv
+endif
 
 #
 # MTOOLS_BUILD_DIR is the directory in which the build is done.
@@ -105,7 +109,9 @@ mtools-source: $(DL_DIR)/$(MTOOLS_SOURCE) $(MTOOLS_PATCHES)
 # shown below to make various patches to it.
 #
 $(MTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(MTOOLS_SOURCE) $(MTOOLS_PATCHES) make/mtools.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MTOOLS_DIR) $(@D)
 	$(MTOOLS_UNZIP) $(DL_DIR)/$(MTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MTOOLS_PATCHES)" ; \
