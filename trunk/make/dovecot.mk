@@ -136,11 +136,12 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 	if test "$(BUILD_DIR)/$(DOVECOT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DOVECOT_DIR) $(@D) ; \
 	fi
+	autoreconf -vif $(@D)
 	(cd $(@D); \
-		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOVECOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOVECOT_LDFLAGS)" \
+		RPCGEN=__disable_RPCGEN_rquota \
 		./configure \
 		$(DOVECOT_CONFIGURE) \
 		--build=$(GNU_HOST_NAME) \
