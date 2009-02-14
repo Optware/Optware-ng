@@ -1,10 +1,49 @@
---- ../a.org/configure.in	2007-04-15 22:18:53.000000000 +0200
-+++ configure.in	2007-04-15 22:20:57.000000000 +0200
-@@ -768,30 +768,7 @@
+--- /tmp/dovecot-1.2.beta1/configure.in	2009-02-11 01:16:54.000000000 +0100
++++ configure.in	2009-02-14 12:21:46.000000000 +0100
+@@ -565,33 +565,11 @@
+ 
+ dnl * Old glibcs have broken posix_fallocate(). Make sure not to use it.
+ dnl * It may also be broken in AIX.
+-AC_CACHE_CHECK([whether posix_fallocate() works],i_cv_posix_fallocate_works,[
+-  AC_TRY_RUN([
+-    #define _XOPEN_SOURCE 600
+-    #include <stdio.h>
+-    #include <stdlib.h>
+-    #include <fcntl.h>
+-    #include <unistd.h>
+-    #if defined(__GLIBC__) && (__GLIBC__ < 2 || __GLIBC_MINOR__ < 7)
+-      possibly broken posix_fallocate
+-    #endif
+-    int main() {
+-      int fd = creat("conftest.temp", 0600);
+-      int ret;
+-      if (fd == -1) {
+-	perror("creat()");
+-	return 2;
+-      }
+-      ret = posix_fallocate(fd, 1024, 1024) < 0 ? 1 : 0;
+-      unlink("conftest.temp");
+-      return ret;
+-    }
+-  ], [
+-    i_cv_posix_fallocate_works=yes
+-  ], [
+-    i_cv_posix_fallocate_works=no
+-  ])
+-])
++
++dnl * This check doesn't work when cros compiling.
++dnl * The glibc on unslung is to old so just set it to no.
++
++i_cv_posix_fallocate_works=no
+ if test $i_cv_posix_fallocate_works = yes; then
+   AC_DEFINE(HAVE_POSIX_FALLOCATE,, Define if you have a working posix_fallocate())
+ fi
+@@ -800,30 +778,11 @@
  dnl * make sure size_t isn't signed. we'd probably work fine with it, but
  dnl * it's more likely vulnerable to buffer overflows. Anyway, C99 specifies
  dnl * that it's unsigned and only some old systems define it as signed.
--AC_CACHE_CHECK([whether size_t is signed],signed_size_t,[
+-AC_CACHE_CHECK([whether size_t is signed],i_cv_signed_size_t,[
 -  AC_RUN_IFELSE([AC_LANG_SOURCE([[
 -    #include <sys/types.h>
 -    int main() {
@@ -12,8 +51,8 @@
 -      exit((size_t)(int)-1 <= 0 ? 0 : 1);
 -    }
 -  ]])],[
--    signed_size_t=yes
--
+-    i_cv_signed_size_t=yes
+ 
 -    echo
 -    echo "Your system's size_t is a signed integer, Dovecot isn't designed to"
 -    echo "support it. It probably works just fine, but it's less resistant to"
@@ -25,27 +64,30 @@
 -    fi
 -    echo "..ignoring as requested.."
 -  ],[
--    signed_size_t=no
+-    i_cv_signed_size_t=no
 -  ],[])
 -])
++dnl * This check doesn't work when cros compiling.
++
++i_cv_signed_size_t=no
 +
  dnl Note: we check size_t rather than ssize_t here, because on OSX 10.2
  dnl ssize_t = int and size_t = unsigned long. We're mostly concerned about
  dnl printf format here, so check the size_t one.
-@@ -883,45 +860,9 @@
+@@ -914,59 +873,17 @@
  AC_MSG_RESULT($i_cv_field_tm_gmtoff)
  
  dnl * how large time_t values does gmtime() accept?
--AC_CACHE_CHECK([how large time_t values gmtime() accepts],gmtime_max_time_t,[
+-AC_CACHE_CHECK([how large time_t values gmtime() accepts],i_cv_gmtime_max_time_t,[
 -  AC_RUN_IFELSE([AC_LANG_SOURCE([[
 -    #include <stdio.h>
 -    #include <time.h>
 -    int main() {
 -      FILE *f;
 -      int bits;
--      time_t t;
 -  
--      for (bits = 1, t = 1; t > 0; ++bits, t <<= 1) {
+-      for (bits = 1; bits < sizeof(time_t)*8; bits++) {
+-	time_t t = ((time_t)1 << bits) - 1;
 -	if (gmtime(&t) == NULL) {
 -	  bits--;
 -	  break;
@@ -67,25 +109,45 @@
 -      return 0;
 -    }
 -  ]])],[
--    gmtime_max_time_t=`cat conftest.temp`
+-    i_cv_gmtime_max_time_t=`cat conftest.temp`
 -    rm -f conftest.temp
 -  ], [
 -    printf "check failed, assuming "
--    gmtime_max_time_t=31
+-    i_cv_gmtime_max_time_t=31
 -  ],[])
 -])
--AC_DEFINE_UNQUOTED(TIME_T_MAX_BITS, $gmtime_max_time_t, max. time_t bits gmtime() can handle)
-+dnl * Set to 32 because we can't calculate it if we are cross compiling.
 +
-+AC_DEFINE_UNQUOTED(TIME_T_MAX_BITS, 32, max. time_t bits gmtime() can handle)
++dnl * This check doesn't work when cros compiling.
++
++i_cv_gmtime_max_time_t=32
++
+ AC_DEFINE_UNQUOTED(TIME_T_MAX_BITS, $i_cv_gmtime_max_time_t, max. time_t bits gmtime() can handle)
  
- dnl * do we have struct iovec
- AC_MSG_CHECKING([for struct iovec])
-@@ -993,114 +934,8 @@
+-AC_CACHE_CHECK([whether time_t is signed],i_cv_signed_time_t,[
+-  AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-    #include <sys/types.h>
+-    int main() {
+-      /* return 0 if we're signed */
+-      exit((time_t)(int)-1 <= 0 ? 0 : 1);
+-    }
+-  ]])],[
+-    i_cv_signed_time_t=yes
+-  ], [
+-    i_cv_signed_time_t=no
+-  ])
+-])
++dnl * This check doesn't work when cros compiling.
++
++i_cv_signed_time_t=yes
++
+ if test $i_cv_signed_time_t = yes; then
+   AC_DEFINE(TIME_T_SIGNED,, Define if your time_t is signed)
+ fi
+@@ -1072,122 +989,20 @@
  ])
  
  dnl * If mmap() plays nicely with write()
--AC_CACHE_CHECK([whether shared mmaps get updated by write()s],mmap_plays_with_write,[
+-AC_CACHE_CHECK([whether shared mmaps get updated by write()s],i_cv_mmap_plays_with_write,[
 -  AC_TRY_RUN([
 -    #include <stdio.h>
 -    #include <sys/types.h>
@@ -95,7 +157,7 @@
 -    #include <sys/mman.h>
 -    int main() {
 -      /* return 0 if we're signed */
--      int f = open("conftest.mmap", O_RDWR|O_CREAT|O_TRUNC);
+-      int f = open("conftest.mmap", O_RDWR|O_CREAT|O_TRUNC, 0600);
 -      void *mem;
 -      if (f == -1) {
 -	perror("open()");
@@ -117,17 +179,22 @@
 -      return strcmp(mem, "3") == 0 ? 0 : 1;
 -    }
 -  ], [
--    mmap_plays_with_write=yes
+-    i_cv_mmap_plays_with_write=yes
 -  ], [
--    mmap_plays_with_write=no
+-    i_cv_mmap_plays_with_write=no
 -  ])
 -])
--if test $mmap_plays_with_write = no; then
--  AC_DEFINE(MMAP_CONFLICTS_WRITE,, [Define if shared mmaps don't get updated by write()s])
--fi
++
++dnl * This check doesn't work when cros compiling.
++
++i_cv_mmap_plays_with_write=yes 
++
+ if test $i_cv_mmap_plays_with_write = no; then
+   AC_DEFINE(MMAP_CONFLICTS_WRITE,, [Define if shared mmaps don't get updated by write()s])
+ fi
  
  dnl * see if fd passing works
--AC_CACHE_CHECK([whether fd passing works],fd_passing,[
+-AC_CACHE_CHECK([whether fd passing works],i_cv_fd_passing,[
 -  for i in 1 2; do
 -    old_cflags="$CFLAGS"
 -    CFLAGS="$CFLAGS -I$srcdir/src/lib $srcdir/src/lib/fdpass.c"
@@ -144,17 +211,26 @@
 -      #include <fcntl.h>
 -      #include "fdpass.h"
 -      
+-      int nopen(void)
+-      {
+-	      int i, n;
+-	      struct stat sb;
+-	      for (i = n = 0; i < 256; i++)
+-		  if (fstat(i, &sb) == 0) n++;
+-	      return n;
+-      }
 -      int main(void)
 -      {
--	      int fd[2], send_fd, recv_fd, status;
+-	      int fd[2], send_fd, recv_fd, status, n1, n2;
 -	      struct stat st, st2;
 -	      char data;
 -      
--	      send_fd = open("conftest.fdpass", O_CREAT|O_WRONLY);
+-	      send_fd = creat("conftest.fdpass", 0600);
 -	      if (send_fd == -1) return 2;
 -	      unlink("conftest.fdpass");
 -	      if (fstat(send_fd, &st) < 0) return 2;
 -	      if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd) < 0) return 2;
+-	      n1 = nopen();
 -      
 -	      switch (fork()) {
 -	      case -1:
@@ -171,39 +247,69 @@
 -			return status;
 -		      if (fd_read(fd[1], &data, 1, &recv_fd) != 1) return 1;
 -		      if (fstat(recv_fd, &st2) < 0) return 2;
--		      return st.st_ino == st2.st_ino ? 0 : 1;
+-		      /* nopen check is for making sure that only a single fd
+-		         was received */
+-		      n2 = nopen();
+-		      return st.st_ino == st2.st_ino && n2 == n1 + 1 ? 0 : 1;
 -	      }
 -      }
 -    ], [
 -      CFLAGS=$old_cflags
 -      if test $i = 2; then
--	fd_passing=buggy_cmsg_macros
+-	i_cv_fd_passing=buggy_cmsg_macros
 -      else
--        fd_passing=yes
+-        i_cv_fd_passing=yes
 -      fi
 -      break
 -    ], [
 -      dnl no, try with BUGGY_CMSG_MACROS
 -      CFLAGS=$old_cflags
--      fd_passing=no
+-      i_cv_fd_passing=no
 -    ])
 -  done
 -]);
--
--if test $fd_passing = buggy_cmsg_macros; then
--  AC_DEFINE(BUGGY_CMSG_MACROS,, Define if you have buggy CMSG macros)
--fi
++
++dnl * This check doesn't work when cros compiling.
++
++i_cv_fd_passing=yes
  
- dnl * Solaris compatible sendfile()
- AC_CHECK_LIB(sendfile, sendfile, [
-@@ -1256,81 +1091,6 @@
-   AC_MSG_RESULT(no)
- ])
+ case "$host_os" in
+ darwin[[1-9]].*)
+@@ -1393,26 +1208,10 @@
+ dnl *** C99 vsnprintf()?
+ dnl ***
  
--dnl ***
--dnl *** va_copy checks (from GLIB)
--dnl ***
+-AC_CACHE_CHECK([for C99 vsnprintf()],i_cv_c99_vsnprintf,[
+-  AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-  #include <stdio.h>
+-  #include <stdarg.h>
+-  static int f(const char *fmt, ...) {
+-    va_list args;
+-    char buf[13];
+-    int ret;
 -
+-    va_start(args, fmt);
+-    ret = vsnprintf(buf, 11, fmt, args) != 12 || buf[11-1] != '\0';
+-    va_end(args);
+-    return ret;
+-  }
+-  int main() {
+-    return f("hello %s%d", "world", 1);
+-  }]])],
+-  [i_cv_c99_vsnprintf=yes],
+-  [i_cv_c99_vsnprintf=no])
+-])
++dnl * This check doesn't work when cros compiling.
++
++i_cv_c99_vsnprintf=yes
++
+ if test $i_cv_c99_vsnprintf = no; then
+   AC_DEFINE(HAVE_OLD_VSNPRINTF,, Define if you don't have C99 compatible vsnprintf() call)
+ fi
+@@ -1421,42 +1220,11 @@
+ dnl *** va_copy checks (from GLIB)
+ dnl ***
+ 
 -AC_CACHE_CHECK([for an implementation of va_copy()],lib_cv_va_copy,[
 -	AC_RUN_IFELSE([AC_LANG_SOURCE([[
 -	#include <stdarg.h>
@@ -240,18 +346,18 @@
 -	[lib_cv___va_copy=yes],
 -	[lib_cv___va_copy=no],[])
 -])
--
--if test "x$lib_cv_va_copy" = "xyes"; then
--  va_copy_func=va_copy
--else if test "x$lib_cv___va_copy" = "xyes"; then
--  va_copy_func=__va_copy
--fi
--fi
--
--if test -n "$va_copy_func"; then
--  AC_DEFINE_UNQUOTED(VA_COPY,$va_copy_func,[A 'va_copy' style function])
--fi
--
++dnl * This check doesn't work when cros compiling.
++
++lib_cv_va_copy=yes
++lib_cv___va_copy=yes
++lib_cv_va_val_copy=yes
+ 
+ if test "x$lib_cv_va_copy" = "xyes"; then
+   va_copy_func=va_copy
+@@ -1469,25 +1237,6 @@
+   AC_DEFINE_UNQUOTED(VA_COPY,$va_copy_func,[A 'va_copy' style function])
+ fi
+ 
 -AC_CACHE_CHECK([whether va_lists can be copied by value],lib_cv_va_val_copy,[
 -	AC_RUN_IFELSE([AC_LANG_SOURCE([[
 -	#include <stdarg.h>
@@ -271,10 +377,6 @@
 -	[lib_cv_va_val_copy=no],[])
 -])
 -
--if test "x$lib_cv_va_val_copy" = "xno"; then
--  AC_DEFINE(VA_COPY_AS_ARRAY,1, ['va_lists' cannot be copies as values])
--fi
--
- dnl **
- dnl ** SSL
- dnl **
+ if test "x$lib_cv_va_val_copy" = "xno"; then
+   AC_DEFINE(VA_COPY_AS_ARRAY,1, ['va_lists' cannot be copies as values])
+ fi
