@@ -1,22 +1,15 @@
---- makefile.orig	2007-02-06 19:24:54.000000000 -0800
-+++ makefile	2007-05-29 22:58:32.000000000 -0700
-@@ -13,16 +13,16 @@
- ifeq ($(OSTYPE),macos)
- CC = gcc -std=c99 -O2 -U__STRICT_ANSI__ -g -lm -lrt $(OS_CCDEFS) -I .
+--- makefile.orig	2008-11-19 21:53:48.000000000 +0000
++++ makefile	2009-02-14 04:15:41.398099303 +0000
+@@ -12,10 +12,10 @@
+       OS_CCDEFS = -lrt -lm -D_GNU_SOURCE
+     endif
+   endif
+-  CC = gcc -std=c99 -U__STRICT_ANSI__ -g $(OS_CCDEFS) -I .
++  CC = $(TARGET_CC) -std=c99 -U__STRICT_ANSI__ -g $(OS_CCDEFS) -I .
+   ifeq ($(USE_NETWORK),)
+   else
+-    NETWORK_OPT = -DUSE_NETWORK -isystem /usr/local/include /usr/local/lib/libpcap.a
++    NETWORK_OPT = -DUSE_NETWORK -isystem $(CPPFLAGS) -lpcap
+   endif
  else
--CC = gcc -std=c99 -O2 -U__STRICT_ANSI__ -g -lm $(OS_CCDEFS) -I .
-+CC = $(TARGET_CC) -std=c99 -O2 -U__STRICT_ANSI__ -g -lm $(OS_CCDEFS) -I .
- endif
- ifeq ($(USE_NETWORK),)
- else
--NETWORK_OPT = -DUSE_NETWORK -isystem /usr/local/include /usr/local/lib/libpcap.a
-+NETWORK_OPT = -DUSE_NETWORK -isystem $(CPPFLAGS) -lpcap
- endif
- else
- #Win32 Environments
- LDFLAGS = -lm -lwsock32 -lwinmm
--CC = gcc -std=c99 -U__STRICT_ANSI__ -O0 -I.
-+CC = $(TARGET_CC) -std=c99 -U__STRICT_ANSI__ -O0 -I.
- EXE = .exe
- ifeq ($(USE_NETWORK),)
- else
+   #Win32 Environments
