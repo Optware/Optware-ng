@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CUPS-PDF_SITE=http://www.cups-pdf.de/src
-CUPS-PDF_VERSION=2.4.6
+CUPS-PDF_VERSION=2.5.0
 CUPS-PDF_SOURCE=cups-pdf_$(CUPS-PDF_VERSION).tar.gz
 CUPS-PDF_DIR=cups-pdf-$(CUPS-PDF_VERSION)
 CUPS-PDF_UNZIP=zcat
@@ -36,7 +36,7 @@ CUPS-PDF_CONFLICTS=
 #
 # CUPS-PDF_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS-PDF_IPK_VERSION=2
+CUPS-PDF_IPK_VERSION=1
 
 #
 # CUPS-PDF_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ CUPS-PDF_IPK=$(BUILD_DIR)/cups-pdf_$(CUPS-PDF_VERSION)-$(CUPS-PDF_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CUPS-PDF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CUPS-PDF_SITE)/$(CUPS-PDF_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(CUPS-PDF_SOURCE)
+	$(WGET) -P $(@D) $(CUPS-PDF_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,14 +105,14 @@ cups-pdf-source: $(DL_DIR)/$(CUPS-PDF_SOURCE) $(CUPS-PDF_PATCHES)
 # shown below to make various patches to it.
 #
 $(CUPS-PDF_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS-PDF_SOURCE) $(CUPS-PDF_PATCHES) make/cups-pdf.mk
-	rm -rf $(BUILD_DIR)/$(CUPS-PDF_DIR) $(CUPS-PDF_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CUPS-PDF_DIR) $(@D)
 	$(CUPS-PDF_UNZIP) $(DL_DIR)/$(CUPS-PDF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CUPS-PDF_PATCHES)" ; \
 		then cat $(CUPS-PDF_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(CUPS-PDF_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(CUPS-PDF_DIR)" != "$(CUPS-PDF_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CUPS-PDF_DIR) $(CUPS-PDF_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(CUPS-PDF_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CUPS-PDF_DIR) $(@D) ; \
 	fi
 	touch $@
 
@@ -138,12 +138,12 @@ cups-pdf: $(CUPS-PDF_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(CUPS-PDF_BUILD_DIR)/.staged: $(CUPS-PDF_BUILD_DIR)/.built
-	rm -f $@
-#	$(MAKE) -C $(CUPS-PDF_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-cups-pdf-stage: $(CUPS-PDF_BUILD_DIR)/.staged
+#$(CUPS-PDF_BUILD_DIR)/.staged: $(CUPS-PDF_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#cups-pdf-stage: $(CUPS-PDF_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -186,7 +186,7 @@ $(CUPS-PDF_IPK): $(CUPS-PDF_BUILD_DIR)/.built
 	install -m 644 $(CUPS-PDF_BUILD_DIR)/extra/cups-pdf.conf $(CUPS-PDF_IPK_DIR)/opt/etc/
 	sed -i -e 's| /var/| /opt/var/|g' $(CUPS-PDF_IPK_DIR)/opt/etc/cups-pdf.conf
 	install -d $(CUPS-PDF_IPK_DIR)/opt/share/cups/model
-	install -m 644 $(CUPS-PDF_BUILD_DIR)/extra/PostscriptColor.ppd \
+	install -m 644 $(CUPS-PDF_BUILD_DIR)/extra/CUPS-PDF.ppd \
 		$(CUPS-PDF_IPK_DIR)/opt/share/cups/model/
 	install -d $(CUPS-PDF_IPK_DIR)/opt/share/doc/cups-pdf/examples/
 	install \
@@ -225,4 +225,4 @@ cups-pdf-dirclean:
 # Some sanity check for the package.
 #
 cups-pdf-check: $(CUPS-PDF_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CUPS-PDF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
