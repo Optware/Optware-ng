@@ -24,8 +24,9 @@
 #
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
-TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.42
+TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
+#http://download.transmissionbt.com/transmission/files
+TRANSMISSION_VERSION=1.50
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
 #TRANSMISSION_SVN_REV=7132
 ifdef TRANSMISSION_SVN_REV
@@ -366,4 +367,4 @@ transmission-dirclean:
 # Some sanity check for the package.
 # Non stripped transmissiond-dbg is intentional
 transmission-check: $(TRANSMISSION_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TRANSMISSION_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
