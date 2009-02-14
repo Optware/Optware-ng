@@ -43,7 +43,7 @@ DOVECOT_DOC_CONFLICTS=
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=1
+DOVECOT_IPK_VERSION=2
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -142,6 +142,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOVECOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOVECOT_LDFLAGS)" \
 		./configure \
+		$(DOVECOT_CONFIGURE) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
