@@ -24,7 +24,7 @@
 MPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
-MPD_VERSION=0.14.1
+MPD_VERSION=0.14.2
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.bz2
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=bzcat
@@ -48,7 +48,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=2
+MPD_IPK_VERSION=1
 
 #
 # MPD_CONFFILES should be a list of user-editable files
