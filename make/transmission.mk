@@ -185,7 +185,10 @@ ifdef TRANSMISSION_SVN_REV
 endif
 	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure
 	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
-		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \
+		sed -i -e '/CFLAGS/s| -Wdeclaration-after-statement||' $(@D)/configure; \
+	fi
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = "3"; then \
+		sed -i -e '/CFLAGS/s| -Wextra||' -e '/CFLAGS/s| -Winit-self||' $(@D)/configure; \
 	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
