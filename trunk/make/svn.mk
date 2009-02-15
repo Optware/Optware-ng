@@ -246,7 +246,7 @@ svn: $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.pl-bui
 #
 $(SVN_BUILD_DIR)/.staged: $(SVN_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) external-install local-install
 	touch $@
 
 svn-stage: $(SVN_BUILD_DIR)/.staged
