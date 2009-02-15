@@ -131,6 +131,7 @@ PYTHON_PACKAGES = \
 	pyrex \
 	sabnzbd sabnzbdplus \
 	scons \
+	subvertpy \
 	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate py-cjson \
