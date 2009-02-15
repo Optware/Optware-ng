@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SIMPY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/simpy
-PY-SIMPY_VERSION=1.9.1
+PY-SIMPY_VERSION=2.0
 PY-SIMPY_SOURCE=SimPy-$(PY-SIMPY_VERSION).tar.gz
 PY-SIMPY_DIR=SimPy-$(PY-SIMPY_VERSION)
 PY-SIMPY_UNZIP=zcat
@@ -30,8 +30,8 @@ PY-SIMPY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SIMPY_DESCRIPTION=An object-oriented, process-based discrete-event simulation language based on standard Python.
 PY-SIMPY_SECTION=misc
 PY-SIMPY_PRIORITY=optional
-PY24-SIMPY_DEPENDS=python24
 PY25-SIMPY_DEPENDS=python25
+PY26-SIMPY_DEPENDS=python26
 PY-SIMPY_SUGGESTS=py-simpy-doc
 PY-SIMPY_CONFLICTS=
 
@@ -69,11 +69,11 @@ PY-SIMPY_LDFLAGS=
 PY-SIMPY_BUILD_DIR=$(BUILD_DIR)/py-simpy
 PY-SIMPY_SOURCE_DIR=$(SOURCE_DIR)/py-simpy
 
-PY24-SIMPY_IPK_DIR=$(BUILD_DIR)/py24-simpy-$(PY-SIMPY_VERSION)-ipk
-PY24-SIMPY_IPK=$(BUILD_DIR)/py24-simpy_$(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-SIMPY_IPK_DIR=$(BUILD_DIR)/py25-simpy-$(PY-SIMPY_VERSION)-ipk
 PY25-SIMPY_IPK=$(BUILD_DIR)/py25-simpy_$(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-SIMPY_IPK_DIR=$(BUILD_DIR)/py26-simpy-$(PY-SIMPY_VERSION)-ipk
+PY26-SIMPY_IPK=$(BUILD_DIR)/py26-simpy_$(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY-SIMPY-DOC_IPK_DIR=$(BUILD_DIR)/py-simpy-doc-$(PY-SIMPY_VERSION)-ipk
 PY-SIMPY-DOC_IPK=$(BUILD_DIR)/py-simpy-doc_$(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -85,8 +85,8 @@ PY-SIMPY-DOC_IPK=$(BUILD_DIR)/py-simpy-doc_$(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SIMPY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SIMPY_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-SIMPY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,17 +114,6 @@ $(PY-SIMPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCH
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR)
-	$(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    ( \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4" \
-	    ) >> setup.cfg; \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR)
 	$(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -136,6 +125,17 @@ $(PY-SIMPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCH
 		echo "executable=/opt/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR)
+	$(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.6" \
+	    ) >> setup.cfg; \
+	)
 	touch $@
 
 py-simpy-unpack: $(PY-SIMPY_BUILD_DIR)/.configured
@@ -145,10 +145,10 @@ py-simpy-unpack: $(PY-SIMPY_BUILD_DIR)/.configured
 #
 $(PY-SIMPY_BUILD_DIR)/.built: $(PY-SIMPY_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(@D)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build;
 	cd $(@D)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build;
+	cd $(@D)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build;
 	touch $@
 
 #
@@ -159,32 +159,17 @@ py-simpy: $(PY-SIMPY_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-SIMPY_BUILD_DIR)/.staged: $(PY-SIMPY_BUILD_DIR)/.built
-	rm -f $@
-	#$(MAKE) -C $(PY-SIMPY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-py-simpy-stage: $(PY-SIMPY_BUILD_DIR)/.staged
+#$(PY-SIMPY_BUILD_DIR)/.staged: $(PY-SIMPY_BUILD_DIR)/.built
+#	rm -f $@
+#	#$(MAKE) -C $(PY-SIMPY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#py-simpy-stage: $(PY-SIMPY_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-simpy
 #
-$(PY24-SIMPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-simpy" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-SIMPY_PRIORITY)" >>$@
-	@echo "Section: $(PY-SIMPY_SECTION)" >>$@
-	@echo "Version: $(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-SIMPY_MAINTAINER)" >>$@
-	@echo "Source: $(PY-SIMPY_SITE)/$(PY-SIMPY_SOURCE)" >>$@
-	@echo "Description: $(PY-SIMPY_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-SIMPY_DEPENDS)" >>$@
-	@echo "Suggests: $(PY-SIMPY_SUGGESTS)" >>$@
-	@echo "Conflicts: $(PY-SIMPY_CONFLICTS)" >>$@
-
 $(PY25-SIMPY_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -197,6 +182,21 @@ $(PY25-SIMPY_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PY-SIMPY_SITE)/$(PY-SIMPY_SOURCE)" >>$@
 	@echo "Description: $(PY-SIMPY_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY25-SIMPY_DEPENDS)" >>$@
+	@echo "Suggests: $(PY-SIMPY_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PY-SIMPY_CONFLICTS)" >>$@
+
+$(PY26-SIMPY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-simpy" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-SIMPY_PRIORITY)" >>$@
+	@echo "Section: $(PY-SIMPY_SECTION)" >>$@
+	@echo "Version: $(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-SIMPY_MAINTAINER)" >>$@
+	@echo "Source: $(PY-SIMPY_SITE)/$(PY-SIMPY_SOURCE)" >>$@
+	@echo "Description: $(PY-SIMPY_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-SIMPY_DEPENDS)" >>$@
 	@echo "Suggests: $(PY-SIMPY_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-SIMPY_CONFLICTS)" >>$@
 
@@ -226,17 +226,8 @@ $(PY-SIMPY-DOC_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-SIMPY_IPK): $(PY-SIMPY_BUILD_DIR)/.built
-	rm -rf $(PY24-SIMPY_IPK_DIR) $(BUILD_DIR)/py-simpy_*_$(TARGET_ARCH).ipk
-	(cd $(PY-SIMPY_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-SIMPY_IPK_DIR) --prefix=/opt; \
-	)
-	$(MAKE) $(PY24-SIMPY_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SIMPY_IPK_DIR)
-
 $(PY25-SIMPY_IPK): $(PY-SIMPY_BUILD_DIR)/.built
-	rm -rf $(PY25-SIMPY_IPK_DIR) $(BUILD_DIR)/py25-simpy_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY25-SIMPY_IPK_DIR) $(BUILD_DIR)/py-simpy_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SIMPY_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-SIMPY_IPK_DIR) --prefix=/opt; \
@@ -244,19 +235,29 @@ $(PY25-SIMPY_IPK): $(PY-SIMPY_BUILD_DIR)/.built
 	$(MAKE) $(PY25-SIMPY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SIMPY_IPK_DIR)
 
+$(PY26-SIMPY_IPK): $(PY-SIMPY_BUILD_DIR)/.built
+	rm -rf $(PY26-SIMPY_IPK_DIR) $(BUILD_DIR)/py26-simpy_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SIMPY_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-SIMPY_IPK_DIR) --prefix=/opt; \
+	)
+	$(MAKE) $(PY26-SIMPY_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-SIMPY_IPK_DIR)
+
 $(PY-SIMPY-DOC_IPK): $(PY-SIMPY_BUILD_DIR)/.built
 	rm -rf $(PY-SIMPY-DOC_IPK_DIR) $(BUILD_DIR)/py-simpy-doc_*_$(TARGET_ARCH).ipk
 	install -d $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
-	install -m 644 $(PY-SIMPY_BUILD_DIR)/2.5/*.{txt,html} $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
-	cp -rp $(PY-SIMPY_BUILD_DIR)/2.5/SimPyDocs $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
-	cp -rp $(PY-SIMPY_BUILD_DIR)/2.5/SimPyModels $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
+	install -m 644 $(PY-SIMPY_BUILD_DIR)/2.6/PKG-INFO $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
+	cp -rp $(PY-SIMPY_BUILD_DIR)/2.6/LGPLlicense_files $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
+	cp -rp $(PY-SIMPY_BUILD_DIR)/2.6/SimPyDocs $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
+	cp -rp $(PY-SIMPY_BUILD_DIR)/2.6/SimPyModels $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
 	$(MAKE) $(PY-SIMPY-DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SIMPY-DOC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-simpy-ipk: $(PY24-SIMPY_IPK) $(PY25-SIMPY_IPK) $(PY-SIMPY-DOC_IPK)
+py-simpy-ipk: $(PY25-SIMPY_IPK) $(PY26-SIMPY_IPK) $(PY-SIMPY-DOC_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -270,12 +271,12 @@ py-simpy-clean:
 #
 py-simpy-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR) $(PY-SIMPY_BUILD_DIR)
-	rm -rf $(PY24-SIMPY_IPK_DIR) $(PY24-SIMPY_IPK)
 	rm -rf $(PY25-SIMPY_IPK_DIR) $(PY25-SIMPY_IPK)
+	rm -rf $(PY26-SIMPY_IPK_DIR) $(PY26-SIMPY_IPK)
 	rm -rf $(PY-SIMPY-DOC_IPK_DIR) $(PY-SIMPY-DOC_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-simpy-check: py-simpy-ipk
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-SIMPY_IPK) $(PY25-SIMPY_IPK)
+py-simpy-check: $(PY25-SIMPY_IPK) $(PY26-SIMPY_IPK) $(PY-SIMPY-DOC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
