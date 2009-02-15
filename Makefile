@@ -39,12 +39,10 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
-# gutenprint - host build cannot find /usr/lib/libssl* on builder
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
-	gutenprint \
 
 PERL_PACKAGES = \
 	perl \
@@ -239,7 +237,7 @@ COMMON_CROSS_PACKAGES = \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
 	gloox gpsd \
-	grep groff gsasl gsnmp gtmess gtk gtypist gzip  \
+	grep groff gsasl gsnmp gtmess gtk gtypist gutenprint gzip  \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
