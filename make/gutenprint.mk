@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GUTENPRINT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gimp-print
-GUTENPRINT_VERSION=5.1.7
+GUTENPRINT_VERSION=5.2.3
 GUTENPRINT_SOURCE=gutenprint-$(GUTENPRINT_VERSION).tar.bz2
 GUTENPRINT_DIR=gutenprint-$(GUTENPRINT_VERSION)
 GUTENPRINT_UNZIP=bzcat
@@ -96,11 +96,11 @@ $(GUTENPRINT_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(GUTENPRINT_SOURCE) make/gutenpr
 		then cat $(GUTENPRINT_PATCHES) | \
 		patch -d $(HOST_BUILD_DIR)/$(GUTENPRINT_DIR) -p0 ; \
 	fi
-	if test "$(HOST_BUILD_DIR)/$(GUTENPRINT_DIR)" != "$(GUTENPRINT_HOST_BUILD_DIR)" ; \
+	if test "$(HOST_BUILD_DIR)/$(GUTENPRINT_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(GUTENPRINT_DIR) $(@D) ; \
 	fi
 #		ac_cv_path_FOOMATIC_CONFIGURE=$(HOST_STAGING_PREFIX)/bin/foomatic-config
-	(cd $(GUTENPRINT_HOST_BUILD_DIR); \
+	(cd $(@D); \
 		ac_cv_path_CUPS_CONFIG=$(HOST_STAGING_PREFIX)/bin/cups-config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -131,11 +131,12 @@ $(GUTENPRINT_BUILD_DIR)/.configured: $(DL_DIR)/$(GUTENPRINT_SOURCE) $(GUTENPRINT
 		then cat $(GUTENPRINT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(GUTENPRINT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(GUTENPRINT_DIR)" != "$(GUTENPRINT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(GUTENPRINT_DIR) $(GUTENPRINT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(GUTENPRINT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(GUTENPRINT_DIR) $(@D) ; \
 	fi
-	sed -i -e 's/test -d $${withval}/true/' $(GUTENPRINT_BUILD_DIR)/configure
-	(cd $(GUTENPRINT_BUILD_DIR); \
+	sed -i -e 's/test -d $${withval}/true/' $(@D)/configure
+	sed -i -e 's|./extract-strings |$(GUTENPRINT_HOST_BUILD_DIR)/src/xml/extract-strings |' $(@D)/src/xml/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GUTENPRINT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GUTENPRINT_LDFLAGS)" \
@@ -154,21 +155,21 @@ $(GUTENPRINT_BUILD_DIR)/.configured: $(DL_DIR)/$(GUTENPRINT_SOURCE) $(GUTENPRINT
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(GUTENPRINT_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 gutenprint-unpack: $(GUTENPRINT_BUILD_DIR)/.configured
 
-$(GUTENPRINT_BUILD_DIR)/.built: $(GUTENPRINT_BUILD_DIR)/.configured
+$(GUTENPRINT_BUILD_DIR)/.built: $(GUTENPRINT_HOST_BUILD_DIR)/.built $(GUTENPRINT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GUTENPRINT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 gutenprint: $(GUTENPRINT_BUILD_DIR)/.built
 
 $(GUTENPRINT_BUILD_DIR)/.staged: $(GUTENPRINT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GUTENPRINT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 gutenprint-stage: $(GUTENPRINT_BUILD_DIR)/.staged
