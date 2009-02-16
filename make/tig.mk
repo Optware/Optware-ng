@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TIG_SITE=http://jonas.nitro.dk/tig/releases
-TIG_VERSION=0.14
+TIG_VERSION=0.14.1
 TIG_SOURCE=tig-$(TIG_VERSION).tar.gz
 TIG_DIR=tig-$(TIG_VERSION)
 TIG_UNZIP=zcat
