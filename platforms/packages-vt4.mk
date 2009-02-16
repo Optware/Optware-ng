@@ -37,7 +37,8 @@ BROKEN_PACKAGES = \
 	qemu quickie \
 	re2c rhtvision rsstail rtorrent \
 	sablevm samba sane-backends simh smartmontools snort \
-	spandsp splix sqsh swi-prolog svn \
+	spandsp splix sqsh swi-prolog \
+	subvertpy svn bzr-svn \
 	taglib tshark transcode \
 	unrar upslug2 upx \
 	vlc vnstat vorbis-tools vte \
