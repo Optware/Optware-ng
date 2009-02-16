@@ -229,8 +229,8 @@ $(GUTENPRINT_IPK): $(GUTENPRINT_BUILD_DIR)/.built
 $(GUTENPRINT-CUPS-DRIVER_IPK): $(GUTENPRINT_HOST_BUILD_DIR)/.built
 	rm -rf $(GUTENPRINT-CUPS-DRIVER_IPK_DIR) $(BUILD_DIR)/cups-driver-gutenprint_*_$(TARGET_ARCH).ipk
 	install -d $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/opt/share/cups/model
-	install $(GUTENPRINT_HOST_BUILD_DIR)/src/cups/ppd/C/*ppd.gz \
-		$(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/opt/share/cups/model/
+	cd $(GUTENPRINT_HOST_BUILD_DIR)/src/cups/ppd/C; \
+		install *ppd.gz $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/opt/share/cups/model/
 	$(MAKE) $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)
 
