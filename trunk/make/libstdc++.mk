@@ -45,7 +45,7 @@ endif
 
 LIBSTDC++_IPK_VERSION=6
 
-LIBSTDC++_TARGET_LIBDIR=$(strip \
+LIBSTDC++_TARGET_LIBDIR ?= $(strip \
 	$(if $(filter cs08q1armel ts509, $(OPTWARE_TARGET)), $(TARGET_USRLIBDIR), \
 	$(if $(filter fsg3v4, $(OPTWARE_TARGET)), $(TARGET_LIBDIR)/../../lib, \
 	$(if $(filter vt4, $(OPTWARE_TARGET)), $(TARGET_CROSS_TOP)/tmp, \
