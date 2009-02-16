@@ -110,7 +110,7 @@ py-psycopg2-source: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCOPG2_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCOPG2_PATCHES)
+$(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCOPG2_PATCHES) make/py-psycopg2.mk
 	$(MAKE) postgresql-stage py-setuptools-stage
 	rm -rf $(PY-PSYCOPG2_BUILD_DIR)
 	mkdir -p $(PY-PSYCOPG2_BUILD_DIR)
