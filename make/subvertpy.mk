@@ -47,7 +47,7 @@ SUBVERTPY_IPK_VERSION=1
 # SUBVERTPY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SUBVERTPY_PATCHES=$(SUBVERTPY_SOURCE_DIR)/configure.patch
+SUBVERTPY_PATCHES=$(SUBVERTPY_SOURCE_DIR)/setup.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -106,14 +106,16 @@ subvertpy-source: $(DL_DIR)/$(SUBVERTPY_SOURCE) $(SUBVERTPY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SUBVERTPY_BUILD_DIR)/.configured: $(DL_DIR)/$(SUBVERTPY_SOURCE) $(SUBVERTPY_PATCHES)
+$(SUBVERTPY_BUILD_DIR)/.configured: $(DL_DIR)/$(SUBVERTPY_SOURCE) $(SUBVERTPY_PATCHES) make/subvertpy.mk
 	$(MAKE) python-stage svn-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(SUBVERTPY_DIR)
 	$(SUBVERTPY_UNZIP) $(DL_DIR)/$(SUBVERTPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p1
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
+	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
+endif
 	mv $(BUILD_DIR)/$(SUBVERTPY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -130,7 +132,9 @@ $(SUBVERTPY_BUILD_DIR)/.configured: $(DL_DIR)/$(SUBVERTPY_SOURCE) $(SUBVERTPY_PA
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(SUBVERTPY_DIR)
 	$(SUBVERTPY_UNZIP) $(DL_DIR)/$(SUBVERTPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p1
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
+	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
+endif
 	mv $(BUILD_DIR)/$(SUBVERTPY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \

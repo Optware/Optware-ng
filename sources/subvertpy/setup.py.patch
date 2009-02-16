@@ -1,0 +1,12 @@
+--- setup.py.orig	2009-02-16 03:56:35.319207378 +0000
++++ setup.py	2009-02-16 03:58:46.191348346 +0000
+@@ -242,6 +242,9 @@
+             if "define_macros" not in kwargs:
+                 kwargs["define_macros"] = []
+             kwargs["define_macros"].extend((('DARWIN', None), ('SVN_KEYCHAIN_PROVIDER_AVAILABLE', '1')))
++    if "define_macros" not in kwargs:
++	kwargs["define_macros"] = []
++    kwargs["define_macros"].extend((('PATH_MAX', '4096'),))
+     return Extension(name, *args, **kwargs)
+ 
+ 
