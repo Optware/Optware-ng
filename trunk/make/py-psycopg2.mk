@@ -32,12 +32,13 @@ PY-PSYCOPG2_SECTION=misc
 PY-PSYCOPG2_PRIORITY=optional
 PY24-PSYCOPG2_DEPENDS=python24
 PY25-PSYCOPG2_DEPENDS=python25
+PY26-PSYCOPG2_DEPENDS=python26
 PY-PSYCOPG2_CONFLICTS=
 
 #
 # PY-PSYCOPG2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG2_IPK_VERSION=1
+PY-PSYCOPG2_IPK_VERSION=2
 
 #
 # PY-PSYCOPG2_CONFFILES should be a list of user-editable files
@@ -73,6 +74,9 @@ PY24-PSYCOPG2_IPK=$(BUILD_DIR)/py24-psycopg2_$(PY-PSYCOPG2_VERSION)-$(PY-PSYCOPG
 
 PY25-PSYCOPG2_IPK_DIR=$(BUILD_DIR)/py25-psycopg2-$(PY-PSYCOPG2_VERSION)-ipk
 PY25-PSYCOPG2_IPK=$(BUILD_DIR)/py25-psycopg2_$(PY-PSYCOPG2_VERSION)-$(PY-PSYCOPG2_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-PSYCOPG2_IPK_DIR=$(BUILD_DIR)/py26-psycopg2-$(PY-PSYCOPG2_VERSION)-ipk
+PY26-PSYCOPG2_IPK=$(BUILD_DIR)/py26-psycopg2_$(PY-PSYCOPG2_VERSION)-$(PY-PSYCOPG2_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-psycopg2-source py-psycopg2-unpack py-psycopg2 py-psycopg2-stage py-psycopg2-ipk py-psycopg2-clean py-psycopg2-dirclean py-psycopg2-check
 
@@ -148,6 +152,25 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 	    sed -i -e '/datetime\.h/s/^/if True: #/' \
 		   -e '/^def get_pg_config/a\    return ""' $(@D)/2.5/setup.py; \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG2_DIR)
+	$(PY-PSYCOPG2_UNZIP) $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-PSYCOPG2_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "#pg_config=$(STAGING_PREFIX)/bin/pg_config"; \
+	        echo "include_dirs=.:$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library_dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.6"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	    sed -i -e '/datetime\.h/s/^/if True: #/' \
+		   -e '/^def get_pg_config/a\    return ""' $(@D)/2.6/setup.py; \
+	)
 	touch $@
 
 py-psycopg2-unpack: $(PY-PSYCOPG2_BUILD_DIR)/.configured
@@ -164,6 +187,10 @@ $(PY-PSYCOPG2_BUILD_DIR)/.built: $(PY-PSYCOPG2_BUILD_DIR)/.configured
 	(cd $(@D)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared -Wl,-rpath,/opt/lib' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	(cd $(@D)/2.6; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared -Wl,-rpath,/opt/lib' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
 	touch $@
 
@@ -214,6 +241,20 @@ $(PY25-PSYCOPG2_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-PSYCOPG2_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PSYCOPG2_CONFLICTS)" >>$@
 
+$(PY26-PSYCOPG2_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-psycopg2" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PSYCOPG2_PRIORITY)" >>$@
+	@echo "Section: $(PY-PSYCOPG2_SECTION)" >>$@
+	@echo "Version: $(PY-PSYCOPG2_VERSION)-$(PY-PSYCOPG2_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PSYCOPG2_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PSYCOPG2_SITE)/$(PY-PSYCOPG2_SOURCE)" >>$@
+	@echo "Description: $(PY-PSYCOPG2_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-PSYCOPG2_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PSYCOPG2_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -249,10 +290,21 @@ $(PY25-PSYCOPG2_IPK): $(PY-PSYCOPG2_BUILD_DIR)/.built
 	$(MAKE) $(PY25-PSYCOPG2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PSYCOPG2_IPK_DIR)
 
+$(PY26-PSYCOPG2_IPK): $(PY-PSYCOPG2_BUILD_DIR)/.built
+	rm -rf $(PY26-PSYCOPG2_IPK_DIR) $(BUILD_DIR)/py26-psycopg2_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PSYCOPG2_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install \
+	    --root=$(PY26-PSYCOPG2_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) `find $(PY26-PSYCOPG2_IPK_DIR)/opt/lib -name '*.so'`
+	$(MAKE) $(PY26-PSYCOPG2_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PSYCOPG2_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-psycopg2-ipk: $(PY24-PSYCOPG2_IPK) $(PY25-PSYCOPG2_IPK)
+py-psycopg2-ipk: $(PY24-PSYCOPG2_IPK) $(PY25-PSYCOPG2_IPK) $(PY26-PSYCOPG2_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -268,9 +320,10 @@ py-psycopg2-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(PY-PSYCOPG2_BUILD_DIR)
 	rm -rf $(PY24-PSYCOPG2_IPK_DIR) $(PY24-PSYCOPG2_IPK)
 	rm -rf $(PY25-PSYCOPG2_IPK_DIR) $(PY25-PSYCOPG2_IPK)
+	rm -rf $(PY26-PSYCOPG2_IPK_DIR) $(PY26-PSYCOPG2_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-psycopg2-check: $(PY24-PSYCOPG2_IPK) $(PY25-PSYCOPG2_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PSYCOPG2_IPK) $(PY25-PSYCOPG2_IPK)
+py-psycopg2-check: $(PY24-PSYCOPG2_IPK) $(PY25-PSYCOPG2_IPK) $(PY26-PSYCOPG2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
