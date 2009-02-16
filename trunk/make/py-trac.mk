@@ -24,7 +24,7 @@
 #PY-TRAC_SVN_REPO=http://svn.edgewall.com/repos/trac/trunk
 #PY-TRAC_SVN_REV=4863
 #PY-TRAC_VERSION=0.10+svn$(PY-TRAC_SVN_REV)
-PY-TRAC_VERSION=0.11.2.1
+PY-TRAC_VERSION=0.11.3
 PY-TRAC_SITE=http://ftp.edgewall.com/pub/trac
 PY-TRAC_SOURCE=Trac-$(PY-TRAC_VERSION).tar.gz
 PY-TRAC_DIR=Trac-$(PY-TRAC_VERSION)
@@ -33,10 +33,10 @@ PY-TRAC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TRAC_DESCRIPTION=An enhanced wiki and issue tracking system for software development projects.
 PY-TRAC_SECTION=misc
 PY-TRAC_PRIORITY=optional
-PY24-TRAC_DEPENDS=python24, py24-genshi
 PY25-TRAC_DEPENDS=python25, py25-genshi
-PY24-TRAC_CONFLICTS=py25-trac
-PY25-TRAC_CONFLICTS=py24-trac
+PY26-TRAC_DEPENDS=python26, py26-genshi
+PY25-TRAC_CONFLICTS=py26-trac
+PY26-TRAC_CONFLICTS=py25-trac
 
 #
 # PY-TRAC_IPK_VERSION should be incremented when the ipk changes.
@@ -72,11 +72,11 @@ PY-TRAC_LDFLAGS=
 PY-TRAC_BUILD_DIR=$(BUILD_DIR)/py-trac
 PY-TRAC_SOURCE_DIR=$(SOURCE_DIR)/py-trac
 
-PY24-TRAC_IPK_DIR=$(BUILD_DIR)/py24-trac-$(PY-TRAC_VERSION)-ipk
-PY24-TRAC_IPK=$(BUILD_DIR)/py24-trac_$(PY-TRAC_VERSION)-$(PY-TRAC_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-TRAC_IPK_DIR=$(BUILD_DIR)/py25-trac-$(PY-TRAC_VERSION)-ipk
 PY25-TRAC_IPK=$(BUILD_DIR)/py25-trac_$(PY-TRAC_VERSION)-$(PY-TRAC_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-TRAC_IPK_DIR=$(BUILD_DIR)/py26-trac-$(PY-TRAC_VERSION)-ipk
+PY26-TRAC_IPK=$(BUILD_DIR)/py26-trac_$(PY-TRAC_VERSION)-$(PY-TRAC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-trac-source py-trac-unpack py-trac py-trac-stage py-trac-ipk py-trac-clean py-trac-dirclean py-trac-check
 
@@ -119,25 +119,10 @@ py-trac-source: $(DL_DIR)/$(PY-TRAC_SOURCE) $(PY-TRAC_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TRAC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TRAC_SOURCE) $(PY-TRAC_PATCHES)
+$(PY-TRAC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TRAC_SOURCE) $(PY-TRAC_PATCHES) make/py-trac.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-TRAC_DIR)
-	$(PY-TRAC_UNZIP) $(DL_DIR)/$(PY-TRAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(PY-TRAC_PATCHES)"; then \
-	    cat $(PY-TRAC_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TRAC_DIR) -p1; \
-	fi
-	mv $(BUILD_DIR)/$(PY-TRAC_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    ( \
-	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4"; \
-	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
-	    ) > setup.cfg \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-TRAC_DIR)
 	$(PY-TRAC_UNZIP) $(DL_DIR)/$(PY-TRAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -153,6 +138,21 @@ $(PY-TRAC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TRAC_SOURCE) $(PY-TRAC_PATCHES)
 	    echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-TRAC_DIR)
+	$(PY-TRAC_UNZIP) $(DL_DIR)/$(PY-TRAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-TRAC_PATCHES)"; then \
+	    cat $(PY-TRAC_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TRAC_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-TRAC_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) > setup.cfg \
+	)
 	touch $@
 
 py-trac-unpack: $(PY-TRAC_BUILD_DIR)/.configured
@@ -162,12 +162,12 @@ py-trac-unpack: $(PY-TRAC_BUILD_DIR)/.configured
 #
 $(PY-TRAC_BUILD_DIR)/.built: $(PY-TRAC_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(@D)/2.4; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
 	cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	cd $(@D)/2.6; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build
 	touch $@
 
 #
@@ -189,20 +189,6 @@ py-trac-stage: $(PY-TRAC_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-trac
 #
-$(PY24-TRAC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-trac" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-TRAC_PRIORITY)" >>$@
-	@echo "Section: $(PY-TRAC_SECTION)" >>$@
-	@echo "Version: $(PY-TRAC_VERSION)-$(PY-TRAC_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-TRAC_MAINTAINER)" >>$@
-	@echo "Source: $(PY-TRAC_SITE)/$(PY-TRAC_SOURCE)" >>$@
-	@echo "Description: $(PY-TRAC_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-TRAC_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY24-TRAC_CONFLICTS)" >>$@
-
 $(PY25-TRAC_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -217,6 +203,20 @@ $(PY25-TRAC_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-TRAC_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY25-TRAC_CONFLICTS)" >>$@
 
+$(PY26-TRAC_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-trac" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-TRAC_PRIORITY)" >>$@
+	@echo "Section: $(PY-TRAC_SECTION)" >>$@
+	@echo "Version: $(PY-TRAC_VERSION)-$(PY-TRAC_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-TRAC_MAINTAINER)" >>$@
+	@echo "Source: $(PY-TRAC_SITE)/$(PY-TRAC_SOURCE)" >>$@
+	@echo "Description: $(PY-TRAC_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-TRAC_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY26-TRAC_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -228,19 +228,8 @@ $(PY25-TRAC_IPK_DIR)/CONTROL/control:
 # Daemon startup scripts should be installed in $(PY-TRAC_IPK_DIR)/opt/etc/init.d/S??py-trac
 #
 # You may need to patch your application to make it use these locations.
-#		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
+#		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
 #
-$(PY24-TRAC_IPK): $(PY-TRAC_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-trac_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-TRAC_IPK_DIR) $(BUILD_DIR)/py24-trac_*_$(TARGET_ARCH).ipk
-	cd $(PY-TRAC_BUILD_DIR)/2.4; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-		--root=$(PY24-TRAC_IPK_DIR) --prefix=/opt
-	$(MAKE) $(PY24-TRAC_IPK_DIR)/CONTROL/control
-#	echo $(PY-TRAC_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-TRAC_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-TRAC_IPK_DIR)
-
 $(PY25-TRAC_IPK): $(PY-TRAC_BUILD_DIR)/.built
 	rm -rf $(PY25-TRAC_IPK_DIR) $(BUILD_DIR)/py25-trac_*_$(TARGET_ARCH).ipk
 	cd $(PY-TRAC_BUILD_DIR)/2.5; \
@@ -251,10 +240,22 @@ $(PY25-TRAC_IPK): $(PY-TRAC_BUILD_DIR)/.built
 #	echo $(PY-TRAC_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-TRAC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TRAC_IPK_DIR)
 
+$(PY26-TRAC_IPK): $(PY-TRAC_BUILD_DIR)/.built
+	rm -rf $(PY26-TRAC_IPK_DIR) $(BUILD_DIR)/py26-trac_*_$(TARGET_ARCH).ipk
+	cd $(PY-TRAC_BUILD_DIR)/2.6; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+		--root=$(PY26-TRAC_IPK_DIR) --prefix=/opt
+	for f in $(PY26-TRAC_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
+	$(MAKE) $(PY26-TRAC_IPK_DIR)/CONTROL/control
+#	echo $(PY-TRAC_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-TRAC_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-TRAC_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-trac-ipk: $(PY24-TRAC_IPK) $(PY25-TRAC_IPK)
+py-trac-ipk: $(PY25-TRAC_IPK) $(PY26-TRAC_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -268,11 +269,11 @@ py-trac-clean:
 #
 py-trac-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-TRAC_DIR) $(PY-TRAC_BUILD_DIR)
-	rm -rf $(PY24-TRAC_IPK_DIR) $(PY24-TRAC_IPK)
 	rm -rf $(PY25-TRAC_IPK_DIR) $(PY25-TRAC_IPK)
+	rm -rf $(PY26-TRAC_IPK_DIR) $(PY26-TRAC_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-trac-check: $(PY24-TRAC_IPK) $(PY25-TRAC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-TRAC_IPK) $(PY25-TRAC_IPK)
+py-trac-check: $(PY25-TRAC_IPK) $(PY26-TRAC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
