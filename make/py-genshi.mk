@@ -31,13 +31,14 @@ PY-GENSHI_DESCRIPTION=A toolkit for stream-based generation of output for the we
 PY-GENSHI_SECTION=web
 PY-GENSHI_PRIORITY=optional
 PY24-GENSHI_DEPENDS=python24
-PY24-GENSHI_DEPENDS=python25
+PY25-GENSHI_DEPENDS=python25
+PY26-GENSHI_DEPENDS=python26
 PY-GENSHI_CONFLICTS=
 
 #
 # PY-GENSHI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GENSHI_IPK_VERSION=1
+PY-GENSHI_IPK_VERSION=2
 
 #
 # PY-GENSHI_CONFFILES should be a list of user-editable files
@@ -73,6 +74,9 @@ PY24-GENSHI_IPK=$(BUILD_DIR)/py24-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VE
 
 PY25-GENSHI_IPK_DIR=$(BUILD_DIR)/py25-genshi-$(PY-GENSHI_VERSION)-ipk
 PY25-GENSHI_IPK=$(BUILD_DIR)/py25-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-GENSHI_IPK_DIR=$(BUILD_DIR)/py26-genshi-$(PY-GENSHI_VERSION)-ipk
+PY26-GENSHI_IPK=$(BUILD_DIR)/py26-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-genshi-source py-genshi-unpack py-genshi py-genshi-stage py-genshi-ipk py-genshi-clean py-genshi-dirclean py-genshi-check
 
@@ -140,6 +144,21 @@ $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PA
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
+#	2.6
+	$(PY-GENSHI_UNZIP) $(DL_DIR)/$(PY-GENSHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-GENSHI_PATCHES)"; \
+		then cat $(PY-GENSHI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+	    echo "[build_ext]"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	    echo "rpath=/opt/lib"; \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	)
 	touch $@
 
 py-genshi-unpack: $(PY-GENSHI_BUILD_DIR)/.configured
@@ -157,6 +176,10 @@ $(PY-GENSHI_BUILD_DIR)/.built: $(PY-GENSHI_BUILD_DIR)/.configured
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.6; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	touch $@
 
 #
@@ -206,6 +229,20 @@ $(PY25-GENSHI_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-GENSHI_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-GENSHI_CONFLICTS)" >>$@
 
+$(PY26-GENSHI_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-genshi" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-GENSHI_PRIORITY)" >>$@
+	@echo "Section: $(PY-GENSHI_SECTION)" >>$@
+	@echo "Version: $(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-GENSHI_MAINTAINER)" >>$@
+	@echo "Source: $(PY-GENSHI_SITE)/$(PY-GENSHI_SOURCE)" >>$@
+	@echo "Description: $(PY-GENSHI_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-GENSHI_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-GENSHI_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -247,10 +284,24 @@ $(PY25-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
 #	echo $(PY-GENSHI_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-GENSHI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GENSHI_IPK_DIR)
 
+$(PY26-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
+	rm -rf $(PY26-GENSHI_IPK_DIR) $(BUILD_DIR)/py26-genshi_*_$(TARGET_ARCH).ipk
+	(cd $(PY-GENSHI_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-GENSHI_IPK_DIR) --prefix=/opt)
+	(cd $(PY26-GENSHI_IPK_DIR)/opt/lib/python2.6/site-packages; \
+		find . -name '*.so' -exec chmod +w {} \; ; \
+		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.so' -exec chmod -w {} \; ; \
+	)
+	$(MAKE) $(PY26-GENSHI_IPK_DIR)/CONTROL/control
+#	echo $(PY-GENSHI_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-GENSHI_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-GENSHI_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-genshi-ipk: $(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK)
+py-genshi-ipk: $(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK) $(PY26-GENSHI_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -266,9 +317,10 @@ py-genshi-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR)
 	rm -rf $(PY24-GENSHI_IPK_DIR) $(PY24-GENSHI_IPK)
 	rm -rf $(PY25-GENSHI_IPK_DIR) $(PY25-GENSHI_IPK)
+	rm -rf $(PY26-GENSHI_IPK_DIR) $(PY26-GENSHI_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-genshi-check: $(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK)
+py-genshi-check: $(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK) $(PY26-GENSHI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
