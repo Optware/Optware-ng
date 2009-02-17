@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPCAP_SITE=http://www.tcpdump.org/release
-LIBPCAP_VERSION=0.9.8
+LIBPCAP_VERSION=1.0.0
 LIBPCAP_SOURCE=libpcap-$(LIBPCAP_VERSION).tar.gz
 LIBPCAP_DIR=libpcap-$(LIBPCAP_VERSION)
 LIBPCAP_UNZIP=zcat
@@ -52,7 +52,6 @@ LIBPCAP-DEV_IPK=$(BUILD_DIR)/libpcap-dev_$(LIBPCAP_VERSION)-$(LIBPCAP_IPK_VERSIO
 #
 LIBPCAP_PATCHES=\
 $(LIBPCAP_SOURCE_DIR)/100-shared-lib.patch \
-$(LIBPCAP_SOURCE_DIR)/101-cross-compile-fix.patch
 
 #
 # If the compilation of the package requires additional
@@ -212,12 +211,14 @@ $(LIBPCAP-DEV_IPK_DIR)/CONTROL/control:
 $(LIBPCAP_IPK) $(LIBPCAP-DEV_IPK): $(LIBPCAP_BUILD_DIR)/.built
 	rm -rf $(LIBPCAP_IPK_DIR) $(BUILD_DIR)/libpcap_*_$(TARGET_ARCH).ipk
 	rm -rf $(LIBPCAP-DEV_IPK_DIR) $(BUILD_DIR)/libpcap-dev_*_$(TARGET_ARCH).ipk
+	install -d $(LIBPCAP_IPK_DIR)/opt/bin
 	$(MAKE) -C $(LIBPCAP_BUILD_DIR) DESTDIR=$(LIBPCAP_IPK_DIR) install
 	$(STRIP_COMMAND) $(LIBPCAP_IPK_DIR)/opt/lib/libpcap.so.[0-9]*.[0-9]*.[0-9]*
 	rm -f $(LIBPCAP_IPK_DIR)/opt/lib/libpcap.a
 	$(MAKE) $(LIBPCAP_IPK_DIR)/CONTROL/control
 	$(MAKE) $(LIBPCAP-DEV_IPK_DIR)/CONTROL/control
 	install -d $(LIBPCAP-DEV_IPK_DIR)/opt/
+	mv $(LIBPCAP_IPK_DIR)/opt/bin $(LIBPCAP-DEV_IPK_DIR)/opt/
 	mv $(LIBPCAP_IPK_DIR)/opt/include $(LIBPCAP-DEV_IPK_DIR)/opt/
 	mv $(LIBPCAP_IPK_DIR)/opt/share $(LIBPCAP-DEV_IPK_DIR)/opt/
 #	echo $(LIBPCAP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBPCAP_IPK_DIR)/CONTROL/conffiles
