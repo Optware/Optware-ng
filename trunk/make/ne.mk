@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NE_SITE=http://ne.dsi.unimi.it
-NE_VERSION=1.43
+NE_VERSION=2.0
 NE_SOURCE=ne-$(NE_VERSION).tar.gz
 NE_DIR=ne-$(NE_VERSION)
 NE_UNZIP=zcat
@@ -81,8 +81,8 @@ NE_IPK=$(BUILD_DIR)/ne_$(NE_VERSION)-$(NE_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NE_SITE)/$(NE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NE_SOURCE)
+	$(WGET) -P $(@D) $(NE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,16 +111,16 @@ ne-source: $(DL_DIR)/$(NE_SOURCE) $(NE_PATCHES)
 #
 $(NE_BUILD_DIR)/.configured: $(DL_DIR)/$(NE_SOURCE) $(NE_PATCHES) make/ne.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(NE_DIR) $(NE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NE_DIR) $(@D)
 	$(NE_UNZIP) $(DL_DIR)/$(NE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NE_PATCHES)" ; \
 		then cat $(NE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NE_DIR)" != "$(NE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NE_DIR) $(NE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NE_DIR) $(@D) ; \
 	fi
-#	(cd $(NE_BUILD_DIR); \
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NE_LDFLAGS)" \
@@ -132,7 +132,7 @@ $(NE_BUILD_DIR)/.configured: $(DL_DIR)/$(NE_SOURCE) $(NE_PATCHES) make/ne.mk
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(NE_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 ne-unpack: $(NE_BUILD_DIR)/.configured
@@ -142,7 +142,7 @@ ne-unpack: $(NE_BUILD_DIR)/.configured
 #
 $(NE_BUILD_DIR)/.built: $(NE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NE_BUILD_DIR)/src \
+	$(MAKE) -C $(@D)/src \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NE_CPPFLAGS)" \
 		OPTS="$(STAGING_CPPFLAGS) $(NE_CPPFLAGS)" \
@@ -160,12 +160,12 @@ ne: $(NE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(NE_BUILD_DIR)/.staged: $(NE_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(NE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-ne-stage: $(NE_BUILD_DIR)/.staged
+#$(NE_BUILD_DIR)/.staged: $(NE_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#ne-stage: $(NE_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -246,4 +246,4 @@ ne-dirclean:
 # Some sanity check for the package.
 #
 ne-check: $(NE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
