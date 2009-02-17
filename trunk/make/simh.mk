@@ -37,7 +37,7 @@ SIMH_CONFLICTS=
 #
 # SIMH_IPK_VERSION should be incremented when the ipk changes.
 #
-SIMH_IPK_VERSION=1
+SIMH_IPK_VERSION=2
 
 #
 # SIMH_CONFFILES should be a list of user-editable files
