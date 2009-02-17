@@ -36,7 +36,7 @@ TCPDUMP_CONFLICTS=
 #
 # TCPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-TCPDUMP_IPK_VERSION=2
+TCPDUMP_IPK_VERSION=3
 
 #
 # TCPDUMP_CONFFILES should be a list of user-editable files
@@ -234,4 +234,4 @@ tcpdump-dirclean:
 # Some sanity check for the package.
 #
 tcpdump-check: $(TCPDUMP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TCPDUMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
