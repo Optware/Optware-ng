@@ -36,7 +36,7 @@ KISMET_CONFLICTS=
 #
 # KISMET_IPK_VERSION should be incremented when the ipk changes.
 #
-KISMET_IPK_VERSION=3
+KISMET_IPK_VERSION=4
 
 #
 # KISMET_CONFFILES should be a list of user-editable files
@@ -86,7 +86,8 @@ KISMET_IPK=$(BUILD_DIR)/kismet_$(KISMET_VERSION)-$(KISMET_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(KISMET_SOURCE):
-	$(WGET) -P $(DL_DIR) $(KISMET_SITE)/$(KISMET_SOURCE)
+	$(WGET) -P $(@D) $(KISMET_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -115,16 +116,16 @@ kismet-source: $(DL_DIR)/$(KISMET_SOURCE) $(KISMET_PATCHES)
 #
 $(KISMET_BUILD_DIR)/.configured: $(DL_DIR)/$(KISMET_SOURCE) $(KISMET_PATCHES) make/kismet.mk
 	$(MAKE) libpcap-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(KISMET_DIR) $(KISMET_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(KISMET_DIR) $(@D)
 	$(KISMET_UNZIP) $(DL_DIR)/$(KISMET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KISMET_PATCHES)" ; \
 		then cat $(KISMET_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(KISMET_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(KISMET_DIR)" != "$(KISMET_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(KISMET_DIR) $(KISMET_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(KISMET_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(KISMET_DIR) $(@D) ; \
 	fi
-	(cd $(KISMET_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KISMET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(KISMET_LDFLAGS)" \
@@ -141,8 +142,8 @@ $(KISMET_BUILD_DIR)/.configured: $(DL_DIR)/$(KISMET_SOURCE) $(KISMET_PATCHES) ma
 		--disable-wsp100 \
 		--disable-gpsmap \
 	)
-#	$(PATCH_LIBTOOL) $(KISMET_BUILD_DIR)/libtool
-	touch $(KISMET_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 kismet-unpack: $(KISMET_BUILD_DIR)/.configured
 
@@ -150,9 +151,9 @@ kismet-unpack: $(KISMET_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(KISMET_BUILD_DIR)/.built: $(KISMET_BUILD_DIR)/.configured
-	rm -f $(KISMET_BUILD_DIR)/.built
-	$(MAKE) -C $(KISMET_BUILD_DIR) LIBS=-lm
-	touch $(KISMET_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) LIBS=-lm
+	touch $@
 
 #
 # This is the build convenience target.
@@ -163,9 +164,9 @@ kismet: $(KISMET_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(KISMET_BUILD_DIR)/.staged: $(KISMET_BUILD_DIR)/.built
-	rm -f $(KISMET_BUILD_DIR)/.staged
-	$(MAKE) -C $(KISMET_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(KISMET_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 kismet-stage: $(KISMET_BUILD_DIR)/.staged
 
@@ -251,4 +252,4 @@ kismet-dirclean:
 # Some sanity check for the package.
 #
 kismet-check: $(KISMET_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(KISMET_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
