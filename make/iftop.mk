@@ -36,7 +36,7 @@ IFTOP_CONFLICTS=
 #
 # IFTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-IFTOP_IPK_VERSION=3
+IFTOP_IPK_VERSION=4
 
 #
 # IFTOP_CONFFILES should be a list of user-editable files
@@ -229,4 +229,4 @@ iftop-dirclean:
 # Some sanity check for the package.
 #
 iftop-check: $(IFTOP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IFTOP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
