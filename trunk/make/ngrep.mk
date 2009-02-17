@@ -36,7 +36,7 @@ NGREP_CONFLICTS=
 #
 # NGREP_IPK_VERSION should be incremented when the ipk changes.
 #
-NGREP_IPK_VERSION=3
+NGREP_IPK_VERSION=4
 
 #
 # NGREP_CONFFILES should be a list of user-editable files
@@ -230,4 +230,4 @@ ngrep-dirclean:
 # Some sanity check for the package.
 #
 ngrep-check: $(NGREP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NGREP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
