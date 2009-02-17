@@ -36,7 +36,7 @@ PCAPSIPDUMP_CONFLICTS=
 #
 # PCAPSIPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-PCAPSIPDUMP_IPK_VERSION=2
+PCAPSIPDUMP_IPK_VERSION=3
 
 #
 # PCAPSIPDUMP_CONFFILES should be a list of user-editable files
@@ -206,4 +206,4 @@ pcapsipdump-dirclean:
 # Some sanity check for the package.
 #
 pcapsipdump-check: $(PCAPSIPDUMP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PCAPSIPDUMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
