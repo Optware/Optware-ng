@@ -36,7 +36,7 @@ ARPING_CONFLICTS=
 #
 # ARPING_IPK_VERSION should be incremented when the ipk changes.
 #
-ARPING_IPK_VERSION=1
+ARPING_IPK_VERSION=2
 
 #
 # ARPING_CONFFILES should be a list of user-editable files
@@ -225,4 +225,4 @@ arping-dirclean:
 # Some sanity check for the package.
 #
 arping-check: $(ARPING_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ARPING_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
