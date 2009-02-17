@@ -10,15 +10,15 @@ KNOCK_SOURCE=knock-$(KNOCK_VERSION).tar.gz
 KNOCK_DIR=knock-$(KNOCK_VERSION)
 KNOCK_UNZIP=zcat
 KNOCK_MAINTAINER=Don Lubinski <nlsu2@shine-hs.com>
-KNOCK_DESCRIPTION=knockd is a port-knock server. It listens to all traffic on an ethernet (or PPP) interface, looking for special "knock" sequences of port-hits. A client makes these port-hits by sending a TCP (or UDP) packet to a port on the server. This port need not be open -- since knockd listens at the link-layer level, it sees all traffic even if it's destined for a closed port. When the server detects a specific sequence of port-hits, it runs a command defined in its configuration file. This can be used to open up holes in a firewall for quick access.
-KNOCK_SECTION= Security
+KNOCK_DESCRIPTION=knockd is a port-knock server. It listens to all traffic on an ethernet (or PPP) interface, looking for special "knock" sequences of port-hits. A client makes these port-hits by sending a TCP (or UDP) packet to a port on the server. This port need not be open -- since knockd listens at the link-layer level, it sees all traffic even if it is destined for a closed port. When the server detects a specific sequence of port-hits, it runs a command defined in its configuration file. This can be used to open up holes in a firewall for quick access.
+KNOCK_SECTION=security
 KNOCK_DEPENDS=libpcap
 KNOCK_PRIORITY=optional
 
 #
 # KNOCK_IPK_VERSION should be incremented when the ipk changes.
 #
-KNOCK_IPK_VERSION=3
+KNOCK_IPK_VERSION=4
 
 #
 # KNOCK_CONFFILES should be a list of user-editable files
@@ -196,4 +196,4 @@ knock-dirclean:
 # Some sanity check for the package.
 #
 knock-check: $(KNOCK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(KNOCK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
