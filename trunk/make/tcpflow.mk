@@ -36,7 +36,7 @@ TCPFLOW_CONFLICTS=
 #
 # TCPFLOW_IPK_VERSION should be incremented when the ipk changes.
 #
-TCPFLOW_IPK_VERSION=2
+TCPFLOW_IPK_VERSION=3
 
 #
 # TCPFLOW_CONFFILES should be a list of user-editable files
@@ -227,4 +227,4 @@ tcpflow-dirclean:
 # Some sanity check for the package.
 #
 tcpflow-check: $(TCPFLOW_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TCPFLOW_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
