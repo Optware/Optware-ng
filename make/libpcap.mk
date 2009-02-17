@@ -120,6 +120,7 @@ $(LIBPCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPCAP_SOURCE) $(LIBPCAP_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPCAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBPCAP_LDFLAGS)" \
 		ac_cv_linux_vers=2 \
+		ac_cv_header_bluetooth_bluetooth_h=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
