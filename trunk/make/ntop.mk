@@ -48,7 +48,7 @@ endif
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=4
+NTOP_IPK_VERSION=5
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
@@ -280,4 +280,4 @@ ntop-dirclean:
 # Some sanity check for the package.
 #
 ntop-check: $(NTOP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NTOP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
