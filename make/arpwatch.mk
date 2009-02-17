@@ -36,7 +36,7 @@ ARPWATCH_CONFLICTS=
 #
 # ARPWATCH_IPK_VERSION should be incremented when the ipk changes.
 #
-ARPWATCH_IPK_VERSION=2
+ARPWATCH_IPK_VERSION=3
 
 #
 # ARPWATCH_CONFFILES should be a list of user-editable files
@@ -236,4 +236,4 @@ arpwatch-dirclean:
 # Some sanity check for the package.
 #
 arpwatch-check: $(ARPWATCH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ARPWATCH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
