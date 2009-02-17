@@ -36,7 +36,7 @@ SOFTFLOWD_CONFLICTS=
 #
 # SOFTFLOWD_IPK_VERSION should be incremented when the ipk changes.
 #
-SOFTFLOWD_IPK_VERSION=2
+SOFTFLOWD_IPK_VERSION=3
 
 #
 # SOFTFLOWD_CONFFILES should be a list of user-editable files
@@ -218,4 +218,4 @@ softflowd-dirclean:
 # Some sanity check for the package.
 #
 softflowd-check: $(SOFTFLOWD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SOFTFLOWD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
