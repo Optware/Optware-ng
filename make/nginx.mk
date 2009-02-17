@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.7.33
+NGINX_VERSION=0.7.35
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -182,7 +182,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	sed -i.orig \
                 -e 's#conf/conf/nginx.conf#conf#g' \
                 -e '/^CFLAGS/{s| -Werror||;s|-I/opt/include||;}' \
-                $(NGINX_BUILD_DIR)/objs/Makefile
+                $(@D)/objs/Makefile
 ifneq (,$(filter nslu2 cs05q3armel, $(OPTWARE_TARGET)))
 	sed -i -e '/#define NGX_GROUP/s/nogroup/nobody/' $(@D)/objs/ngx_auto_config.h
 endif
