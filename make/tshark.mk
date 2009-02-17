@@ -42,7 +42,7 @@ TSHARK_CONFLICTS=
 #
 # TSHARK_IPK_VERSION should be incremented when the ipk changes.
 #
-TSHARK_IPK_VERSION=1
+TSHARK_IPK_VERSION=2
 
 #
 # TSHARK_CONFFILES should be a list of user-editable files
