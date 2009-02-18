@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTTPING_SITE=http://www.vanheusden.com/httping
-HTTPING_VERSION=1.2.9
+HTTPING_VERSION=1.3.0
 HTTPING_SOURCE=httping-$(HTTPING_VERSION).tgz
 HTTPING_DIR=httping-$(HTTPING_VERSION)
 HTTPING_UNZIP=zcat
@@ -232,4 +232,4 @@ httping-dirclean:
 # Some sanity check for the package.
 #
 httping-check: $(HTTPING_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HTTPING_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
