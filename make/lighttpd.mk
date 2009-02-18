@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://www.lighttpd.net/download
-LIGHTD_VERSION=1.4.20
+LIGHTD_VERSION=1.4.21
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.bz2
 LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
 LIGHTTPD_UNZIP=bzcat
@@ -70,7 +70,6 @@ LIGHTTPD_CONFFILES=\
 # which they should be applied to the source code.
 #
 LIGHTTPD_PATCHES=\
-	$(LIGHTTPD_SOURCE_DIR)/src-server.c.patch \
 	$(LIGHTTPD_SOURCE_DIR)/lighty-clientvalidation-1.4.x.2.patch
 
 #
@@ -111,8 +110,8 @@ LIGHTTPD_IPK=$(BUILD_DIR)/lighttpd_$(LIGHTD_VERSION)-$(LIGHTTPD_IPK_VERSION)_$(T
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIGHTTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIGHTTPD_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(LIGHTTPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -148,18 +147,18 @@ endif
 ifdef LIGHTTPD_WITH_MYSQL
 	$(MAKE) mysql-stage
 endif
-	rm -rf $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIGHTTPD_DIR) $(@D)
 	$(LIGHTTPD_UNZIP) $(DL_DIR)/$(LIGHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIGHTTPD_PATCHES)" ; \
 		then cat $(LIGHTTPD_PATCHES) | \
 		patch --ignore-whitespace -bd $(BUILD_DIR)/$(LIGHTTPD_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIGHTTPD_DIR)" != "$(LIGHTTPD_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIGHTTPD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIGHTTPD_DIR) $(@D) ; \
 	fi
+	sed -i '/#define _CONFIG_PARSER_H_/a#include <linux/limits.h>' $(@D)/src/configfile.h
+	sed -i '/cross_compiling.*WITH_PCRE/s/"x$$cross_compiling" = xno -a //' $(@D)/configure
 	(cd $(@D); \
-		sed -i '/#define _CONFIG_PARSER_H_/a#include <linux/limits.h>' src/configfile.h; \
-		sed -i '/cross_compiling.*WITH_PCRE/s/"x$$cross_compiling" = xno -a //' configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIGHTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIGHTTPD_LDFLAGS)" \
@@ -289,4 +288,4 @@ lighttpd-dirclean:
 # Some sanity check for the package.
 #
 lighttpd-check: $(LIGHTTPD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIGHTTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
