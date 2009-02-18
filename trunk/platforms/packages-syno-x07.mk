@@ -6,10 +6,12 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
+# btpd: arm-marvell-linux-gnu/sys-include/sys/epoll.h:62: error: syntax error before "uint32_t"
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule \
 	asterisk14-chan-capi \
+	btpd \
 	busybox \
 	centerim \
 	gambit-c gnu-smalltalk \
