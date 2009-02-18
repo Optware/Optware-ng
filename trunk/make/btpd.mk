@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BTPD_SITE=http://www.murmeldjur.se/btpd
-BTPD_VERSION=0.13
+BTPD_VERSION=0.15
 BTPD_SOURCE=btpd-$(BTPD_VERSION).tar.gz
 BTPD_DIR=btpd-$(BTPD_VERSION)
 BTPD_UNZIP=zcat
@@ -82,8 +82,8 @@ BTPD_IPK=$(BUILD_DIR)/btpd_$(BTPD_VERSION)-$(BTPD_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BTPD_SITE)/$(BTPD_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(BTPD_SOURCE)
+	$(WGET) -P $(@D) $(BTPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,16 +112,16 @@ btpd-source: $(DL_DIR)/$(BTPD_SOURCE) $(BTPD_PATCHES)
 #
 $(BTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(BTPD_SOURCE) $(BTPD_PATCHES) make/btpd.mk
 	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(BTPD_DIR) $(BTPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BTPD_DIR) $(@D)
 	$(BTPD_UNZIP) $(DL_DIR)/$(BTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BTPD_PATCHES)" ; \
 		then cat $(BTPD_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(BTPD_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(BTPD_DIR)" != "$(BTPD_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(BTPD_DIR) $(BTPD_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(BTPD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(BTPD_DIR) $(@D) ; \
 	fi
-	(cd $(BTPD_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BTPD_LDFLAGS)" \
@@ -133,7 +133,7 @@ $(BTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(BTPD_SOURCE) $(BTPD_PATCHES) make/btp
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(BTPD_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 btpd-unpack: $(BTPD_BUILD_DIR)/.configured
@@ -143,7 +143,7 @@ btpd-unpack: $(BTPD_BUILD_DIR)/.configured
 #
 $(BTPD_BUILD_DIR)/.built: $(BTPD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(BTPD_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -156,7 +156,7 @@ btpd: $(BTPD_BUILD_DIR)/.built
 #
 $(BTPD_BUILD_DIR)/.staged: $(BTPD_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(BTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 btpd-stage: $(BTPD_BUILD_DIR)/.staged
@@ -196,7 +196,7 @@ $(BTPD_IPK): $(BTPD_BUILD_DIR)/.built
 	rm -rf $(BTPD_IPK_DIR) $(BUILD_DIR)/btpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BTPD_BUILD_DIR) DESTDIR=$(BTPD_IPK_DIR) install-strip
 	install -d $(BTPD_IPK_DIR)/opt/share/doc/btpd
-	install $(BTPD_BUILD_DIR)/README $(BTPD_IPK_DIR)/opt/share/doc/btpd/
+	install $(BTPD_BUILD_DIR)/[CR]* $(BTPD_IPK_DIR)/opt/share/doc/btpd/
 	$(MAKE) $(BTPD_IPK_DIR)/CONTROL/control
 	echo $(BTPD_CONFFILES) | sed -e 's/ /\n/g' > $(BTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BTPD_IPK_DIR)
@@ -224,4 +224,4 @@ btpd-dirclean:
 # Some sanity check for the package.
 #
 btpd-check: $(BTPD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
