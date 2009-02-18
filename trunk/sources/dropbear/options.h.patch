@@ -1,0 +1,33 @@
+--- dropbear-0.52/options.h.orig	2008-11-11 14:13:50.000000000 +0000
++++ dropbear-0.52/options.h	2009-02-18 06:34:57.257601514 +0000
+@@ -21,10 +21,10 @@
+
+ /* Default hostkey paths - these can be specified on the command line */
+ #ifndef DSS_PRIV_FILENAME
+-#define DSS_PRIV_FILENAME "/etc/dropbear/dropbear_dss_host_key"
++#define DSS_PRIV_FILENAME "/opt/etc/dropbear/dropbear_dss_host_key"
+ #endif
+ #ifndef RSA_PRIV_FILENAME
+-#define RSA_PRIV_FILENAME "/etc/dropbear/dropbear_rsa_host_key"
++#define RSA_PRIV_FILENAME "/opt/etc/dropbear/dropbear_rsa_host_key"
+ #endif
+
+ /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
+@@ -232,7 +232,7 @@
+
+ /* This is used by the scp binary when used as a client binary. If you're
+  * not using the Dropbear client, you'll need to change it */
+-#define _PATH_SSH_PROGRAM "/usr/bin/dbclient"
++#define _PATH_SSH_PROGRAM "/opt/bin/dbclient"
+
+ /* Whether to log commands executed by a client. This only logs the
+  * (single) command sent to the server, not what a user did in a
+@@ -263,7 +263,7 @@
+ #define DEFAULT_IDLE_TIMEOUT 0
+
+ /* The default path. This will often get replaced by the shell */
+-#define DEFAULT_PATH "/usr/bin:/bin"
++#define DEFAULT_PATH "/usr/bin:/bin:/opt/bin"
+
+ /* Some other defines (that mostly should be left alone) are defined
+  * in sysoptions.h */
