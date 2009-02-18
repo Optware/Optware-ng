@@ -36,6 +36,7 @@ BROKEN_PACKAGES = \
 	\
 	openser \
 	snort \
+	softflowd \
 	strace \
 	uemacs \
 
