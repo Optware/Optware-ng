@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 # puppy: usb_io.h:33:23: error: linux/usb.h: No such file or directory
 # heyu: xwrite.c:34:30: error: linux/serial_reg.h: No such file or directory
 # iptraf: sys/types.h and linux/types.h conflicting, the ipk for unslung seems to work though
+# softflowd: staging/opt/include/pcap/pcap.h:339: error: conflicting types for 'bpf_filter' (with armeb-linux/include/net/bpf.h:779)
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	heyu \
@@ -17,6 +18,7 @@ BROKEN_PACKAGES = \
 	netatalk \
 	puppy \
 	qemu \
+	softflowd \
 	ushare \
 	\
 	atk gtk madplay nfs-utils squeak transcode \
