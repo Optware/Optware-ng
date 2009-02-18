@@ -8,7 +8,7 @@
 #
 
 DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/releases
-DROPBEAR_VERSION=0.51
+DROPBEAR_VERSION=0.52
 DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.bz2
 DROPBEAR_DIR=dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_UNZIP=bzcat
@@ -24,9 +24,7 @@ DROPBEAR_CONFLICTS=
 DROPBEAR_IPK_VERSION=1
 
 DROPBEAR_PATCHES=$(DROPBEAR_SOURCE_DIR)/configure.patch \
-		 $(DROPBEAR_SOURCE_DIR)/key-path.patch \
-		 $(DROPBEAR_SOURCE_DIR)/ssh-path.patch \
-		 $(DROPBEAR_SOURCE_DIR)/shell-path.patch
+		 $(DROPBEAR_SOURCE_DIR)/options.h.patch \
 
 DROPBEAR_CONFFILES=/opt/etc/default/dropbear /opt/etc/init.d/S51dropbear
 
