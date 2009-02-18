@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UTIL_LINUX_NG_SITE=ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.14
-UTIL_LINUX_NG_VERSION=2.14.1
+UTIL_LINUX_NG_VERSION=2.14.2
 UTIL_LINUX_NG_SOURCE=util-linux-ng-$(UTIL_LINUX_NG_VERSION).tar.gz
 UTIL_LINUX_NG_DIR=util-linux-ng-$(UTIL_LINUX_NG_VERSION)
 UTIL_LINUX_NG_UNZIP=zcat
@@ -85,8 +85,8 @@ UTIL_LINUX_NG_IPK=$(BUILD_DIR)/util-linux-ng_$(UTIL_LINUX_NG_VERSION)-$(UTIL_LIN
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(UTIL_LINUX_NG_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(UTIL_LINUX_NG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -249,4 +249,4 @@ util-linux-ng-dirclean:
 # Some sanity check for the package.
 #
 util-linux-ng-check: $(UTIL_LINUX_NG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UTIL_LINUX_NG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
