@@ -157,6 +157,7 @@ libpcap: $(LIBPCAP_BUILD_DIR)/.built
 #
 $(LIBPCAP_BUILD_DIR)/.staged: $(LIBPCAP_BUILD_DIR)/.built
 	rm -f $@
+	rm -f $(STAGING_DIR)/opt/share/man/man3/pcap_*.3pcap
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/opt/lib/libpcap.a
 	touch $@
