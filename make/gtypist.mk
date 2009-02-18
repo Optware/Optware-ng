@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GTYPIST_SITE=ftp://ftp.gnu.org/gnu/gtypist
-GTYPIST_VERSION=2.8.2
+GTYPIST_VERSION=2.8.3
 GTYPIST_SOURCE=gtypist-$(GTYPIST_VERSION).tar.bz2
 GTYPIST_DIR=gtypist-$(GTYPIST_VERSION)
 GTYPIST_UNZIP=bzcat
