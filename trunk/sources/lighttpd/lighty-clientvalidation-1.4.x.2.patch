@@ -14,22 +14,22 @@ diff -ur src/base.h src/base.h
  	unsigned short is_ssl;
  	unsigned short allow_http11;
 diff -ur src/configfile.c src/configfile.c
---- src/configfile.c	2007-07-03 14:47:00.000000000 -0400
-+++ src/configfile.c	2007-08-21 14:08:19.000000000 -0400
-@@ -92,6 +92,12 @@
- 		{ "etag.use-inode",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 49 */
- 		{ "etag.use-mtime",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 50 */
- 		{ "etag.use-size",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 51 */
-+		
-+		{ "ssl.verifyclient.activate",   NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 52 */
-+		{ "ssl.verifyclient.enforce",    NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 53 */
-+		{ "ssl.verifyclient.depth",      NULL, T_CONFIG_SHORT,   T_CONFIG_SCOPE_SERVER }, /* 54 */
-+		{ "ssl.verifyclient.username",   NULL, T_CONFIG_STRING,  T_CONFIG_SCOPE_SERVER }, /* 55 */
+--- src/configfile.c.orig	2009-02-05 21:35:46.000000000 +0000
++++ src/configfile.c	2009-02-17 06:26:31.890411784 +0000
+@@ -96,6 +96,12 @@
+		{ "etag.use-size",               NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 51 */
+		{ "server.reject-expect-100-with-417",  NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 52 */
+		{ "debug.log-timeouts",          NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_CONNECTION }, /* 53 */
++
++		{ "ssl.verifyclient.activate",   NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 54 */
++		{ "ssl.verifyclient.enforce",    NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 55 */
++		{ "ssl.verifyclient.depth",      NULL, T_CONFIG_SHORT,   T_CONFIG_SCOPE_SERVER }, /* 56 */
++		{ "ssl.verifyclient.username",   NULL, T_CONFIG_STRING,  T_CONFIG_SCOPE_SERVER }, /* 57 */
 +
  		{ "server.host",                 "use server.bind instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
  		{ "server.docroot",              "use server.document-root instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
  		{ "server.virtual-root",         "load mod_simple_vhost and use simple-vhost.server-root instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
-@@ -172,6 +178,11 @@
+@@ -177,6 +183,11 @@
  		s->global_kbytes_per_second = 0;
  		s->global_bytes_per_second_cnt = 0;
  		s->global_bytes_per_second_cnt_ptr = &s->global_bytes_per_second_cnt;
@@ -41,20 +41,20 @@ diff -ur src/configfile.c src/configfile.c
 
  		cv[2].destination = s->errorfile_prefix;
 
-@@ -214,6 +225,12 @@
+@@ -221,6 +232,12 @@
  		cv[49].destination = &(s->etag_use_inode);
  		cv[50].destination = &(s->etag_use_mtime);
  		cv[51].destination = &(s->etag_use_size);
 +		
 +		/* ssl.verify */
-+		cv[52].destination = &(s->ssl_verifyclient);
-+		cv[53].destination = &(s->ssl_verifyclient_enforce);
-+		cv[54].destination = &(s->ssl_verifyclient_depth);
-+		cv[55].destination = s->ssl_verifyclient_username;
++		cv[54].destination = &(s->ssl_verifyclient);
++		cv[55].destination = &(s->ssl_verifyclient_enforce);
++		cv[56].destination = &(s->ssl_verifyclient_depth);
++		cv[57].destination = s->ssl_verifyclient_username;
 
  		srv->config_storage[i] = s;
 
-@@ -291,6 +308,11 @@
+@@ -299,6 +316,11 @@
  	PATCH(etag_use_inode);
  	PATCH(etag_use_mtime);
  	PATCH(etag_use_size);
@@ -66,7 +66,7 @@ diff -ur src/configfile.c src/configfile.c
 
  	return 0;
  }
-@@ -377,6 +399,14 @@
+@@ -388,6 +410,14 @@
  				PATCH(global_kbytes_per_second);
  				PATCH(global_bytes_per_second_cnt);
  				con->conf.global_bytes_per_second_cnt_ptr = &s->global_bytes_per_second_cnt;
