@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR-SVN_VERSION=0.5.0
+BZR-SVN_VERSION=0.5.2
 BZR-SVN_SITE=http://samba.org/~jelmer/bzr
 BZR-SVN_SOURCE=bzr-svn-$(BZR-SVN_VERSION).tar.gz
 BZR-SVN_DIR=bzr-svn-$(BZR-SVN_VERSION)
