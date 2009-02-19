@@ -42,7 +42,7 @@ PYTHON26_SUGGESTS=
 #
 # PYTHON26_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON26_IPK_VERSION=2
+PYTHON26_IPK_VERSION=3
 
 #
 # PYTHON26_CONFFILES should be a list of user-editable files
@@ -134,6 +134,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(@D)
 	$(PYTHON26_UNZIP) $(DL_DIR)/$(PYTHON26_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON26_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON26_DIR) -p1
+	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON26_DIR)/Modules/_ctypes/libffi/fficonfig.py.in
 	autoreconf -vif $(BUILD_DIR)/$(PYTHON26_DIR)
 	mkdir -p $(@D)
 	cd $(@D); (\
@@ -168,7 +169,7 @@ python26-unpack: $(PYTHON26_BUILD_DIR)/.configured
 #
 $(PYTHON26_BUILD_DIR)/.built: $(PYTHON26_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	GNU_TARGET_NAME=$(GNU_TARGET_NAME) $(MAKE) -C $(@D)
 	touch $@
 
 #
