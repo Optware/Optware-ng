@@ -1,5 +1,5 @@
---- Python-3.0a5/Makefile.pre.in.orig	2008-05-04 15:42:01.000000000 -0700
-+++ Python-3.0a5/Makefile.pre.in	2008-05-15 15:00:19.000000000 -0700
+--- Python-3.0.1/Makefile.pre.in.orig	2009-01-13 22:15:07.000000000 +0000
++++ Python-3.0.1/Makefile.pre.in	2009-02-18 21:27:44.663158171 +0000
 @@ -36,6 +36,8 @@
  RANLIB=		@RANLIB@
  SVNVERSION=	@SVNVERSION@
@@ -27,7 +27,7 @@
 +BUILDPYTHON=	@BUILDPYTHON@
  
  # The task to run while instrument when building the profile-opt target
- PROFILE_TASK=	Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
+ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
 @@ -203,7 +206,8 @@
  
  ##########################################################################
@@ -47,8 +47,8 @@
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -374,7 +378,7 @@
- 	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-use"
+@@ -380,7 +384,7 @@
+
  
  # Build the interpreter
 -$(BUILDPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
@@ -56,7 +56,7 @@
  		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
  			Modules/python.o \
  			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-@@ -503,12 +507,12 @@
+@@ -513,12 +517,12 @@
  	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
  
  
@@ -73,7 +73,7 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -560,6 +564,16 @@
+@@ -572,6 +576,16 @@
                                               $(BYTESTR_DEPS)
  
  
@@ -90,16 +90,16 @@
  ############################################################################
  # Header files
  
-@@ -765,7 +779,7 @@
+@@ -776,7 +790,7 @@
  		else	true; \
  		fi; \
  	done
 -	$(INSTALL_PROGRAM) $(BUILDPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
 +	$(INSTALL_PROGRAM) $(HOSTPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
- 	if test -f libpython$(VERSION)$(SO); then \
- 		if test "$(SO)" = .dll; then \
- 			$(INSTALL_SHARED) libpython$(VERSION)$(SO) $(DESTDIR)$(BINDIR); \
-@@ -978,8 +992,9 @@
+	if test -f $(LDLIBRARY); then \
+		if test -n "$(DLLLIBRARY)" ; then \
+			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
+@@ -980,8 +994,9 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -111,7 +111,7 @@
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
  		--root=/$(DESTDIR)
-@@ -1063,7 +1078,7 @@
+@@ -1073,7 +1088,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -120,7 +120,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1124,11 +1139,12 @@
+@@ -1134,11 +1149,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal

@@ -21,9 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON30_VERSION=3.0
+PYTHON30_VERSION=3.0.1
 PYTHON30_VERSION_MAJOR=3.0
-PYTHON30_SITE=http://www.python.org/ftp/python/$(PYTHON30_VERSION_MAJOR)/
+PYTHON30_SITE=http://www.python.org/ftp/python/$(PYTHON30_VERSION)
 PYTHON30_SOURCE=Python-$(PYTHON30_VERSION).tgz
 PYTHON30_DIR=Python-$(PYTHON30_VERSION)
 PYTHON30_UNZIP=zcat
@@ -267,4 +267,4 @@ python30-dirclean:
 # Some sanity check for the package.
 #
 python30-check: $(PYTHON30_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PYTHON30_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
