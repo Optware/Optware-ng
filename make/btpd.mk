@@ -56,7 +56,7 @@ BTPD_CPPFLAGS=
 ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
 BTPD_CPPFLAGS+=-DIOV_MAX=1024
 endif
-ifneq (,$(or $(filter uclibc, $(LIBC_STYLE)), $(filter nslu2, $(OPTWARE_TARGET))))
+ifneq (,$(or $(filter uclibc, $(LIBC_STYLE)), $(filter fsg3 nslu2, $(OPTWARE_TARGET))))
 BTPD_CPPFLAGS+= -DCLOCK_MONOTONIC=1 -DCLOCK_REALTIME=0
 endif
 BTPD_LDFLAGS=
