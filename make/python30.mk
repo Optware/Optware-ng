@@ -42,7 +42,7 @@ PYTHON30_SUGGESTS=
 #
 # PYTHON30_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON30_IPK_VERSION=1
+PYTHON30_IPK_VERSION=2
 
 #
 # PYTHON30_CONFFILES should be a list of user-editable files
@@ -137,15 +137,15 @@ endif
 	rm -rf $(BUILD_DIR)/$(PYTHON30_DIR) $(PYTHON30_BUILD_DIR)
 	$(PYTHON30_UNZIP) $(DL_DIR)/$(PYTHON30_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON30_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON30_DIR) -p1
-	cd $(BUILD_DIR)/$(PYTHON30_DIR); autoconf configure.in > configure
-	mkdir $(@D)
-	(cd $(@D); \
+	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON30_DIR)/Modules/_ctypes/libffi/fficonfig.py.in
+	autoreconf -vif $(BUILD_DIR)/$(PYTHON30_DIR)
+	mkdir -p $(@D)
 	( \
 	echo "[build_ext]"; \
 	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
 	echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	echo "rpath=/opt/lib") > setup.cfg; \
-	\
+	echo "rpath=/opt/lib") > $(@D)/setup.cfg
+	(cd $(@D); \
 	 $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON30_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON30_LDFLAGS)" \
@@ -172,7 +172,7 @@ python30-unpack: $(PYTHON30_BUILD_DIR)/.configured
 #
 $(PYTHON30_BUILD_DIR)/.built: $(PYTHON30_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	GNU_TARGET_NAME=$(GNU_TARGET_NAME) $(MAKE) -C $(@D)
 	touch $@
 
 #
