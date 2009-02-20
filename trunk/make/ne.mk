@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NE_SITE=http://ne.dsi.unimi.it
-NE_VERSION=2.0
+NE_VERSION=2.0.2
 NE_SOURCE=ne-$(NE_VERSION).tar.gz
 NE_DIR=ne-$(NE_VERSION)
 NE_UNZIP=zcat
