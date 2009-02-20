@@ -1,15 +1,15 @@
---- Python-3.0rc1/setup.py.orig	2008-09-05 23:27:15.000000000 +0000
-+++ Python-3.0rc1/setup.py	2008-09-19 02:54:17.246267593 +0000
+--- Python-3.0.1/setup.py.orig	2009-02-10 16:25:06.000000000 +0000
++++ Python-3.0.1/setup.py	2009-02-19 21:53:55.136823653 +0000
 @@ -16,7 +16,7 @@
  from distutils.command.install_lib import install_lib
  
  # This global variable is used to hold the list of modules to be disabled.
 -disabled_module_list = []
-+disabled_module_list = ['_tkinter', '_ctypes'] # '_sqlite',
++disabled_module_list = ['_tkinter'] # '_sqlite',
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -260,6 +260,10 @@
+@@ -261,6 +261,10 @@
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -20,7 +20,7 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -764,7 +768,6 @@
+@@ -768,7 +772,6 @@
                                    include_dirs=["Modules/_sqlite",
                                                  sqlite_incdir],
                                    library_dirs=sqlite_libdir,
@@ -28,7 +28,7 @@
                                    extra_link_args=sqlite_extra_link_args,
                                    libraries=["sqlite3",]))
          else:
-@@ -789,7 +792,6 @@
+@@ -802,7 +805,6 @@
              elif db_incs is not None:
                  exts.append( Extension('_dbm', ['_dbmmodule.c'],
                                         library_dirs=dblib_dir,
@@ -36,3 +36,12 @@
                                         include_dirs=db_incs,
                                         define_macros=[('HAVE_BERKDB_H',None),
                                                        ('DB_DBM_HSEARCH',None)],
+@@ -1327,7 +1329,7 @@
+                                          ffi_configfile):
+                 from distutils.dir_util import mkpath
+                 mkpath(ffi_builddir)
+-                config_args = []
++                config_args = [ '--host=%s' % os.environ["GNU_TARGET_NAME"] ]
+ 
+                 # Pass empty CFLAGS because we'll just append the resulting
+                 # CFLAGS to Python's; -g or -O2 is to be avoided.
