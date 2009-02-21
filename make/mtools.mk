@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MTOOLS_SITE=http://mtools.linux.lu
-MTOOLS_VERSION=4.0.3
+MTOOLS_VERSION=4.0.5
 MTOOLS_SOURCE=mtools-$(MTOOLS_VERSION).tar.bz2
 MTOOLS_DIR=mtools-$(MTOOLS_VERSION)
 MTOOLS_UNZIP=bzcat
