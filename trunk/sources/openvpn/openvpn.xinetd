@@ -18,5 +18,9 @@ service openvpn_1
         wait            = yes
         user            = root
         server          = /opt/sbin/openvpn
-        server_args     = --cd /opt/etc/openvpn --config openvpn.conf
+        server_args     = --cd /opt/etc/openvpn --config openvpn.conf --inetd
+        log_on_success  += HOST PID
+        log_on_failure  += HOST
+#        only_from       += 0.0.0.0
+        disable         = no
 }
