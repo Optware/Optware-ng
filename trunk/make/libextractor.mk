@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBEXTRACTOR_SITE=http://gnunet.org/libextractor/download
-LIBEXTRACTOR_VERSION=0.5.18
+LIBEXTRACTOR_VERSION=0.5.22
 LIBEXTRACTOR_SOURCE=libextractor-$(LIBEXTRACTOR_VERSION).tar.gz
 LIBEXTRACTOR_DIR=libextractor-$(LIBEXTRACTOR_VERSION)
 LIBEXTRACTOR_UNZIP=zcat
@@ -98,7 +98,8 @@ LIBEXTRACTOR_IPK=$(BUILD_DIR)/libextractor_$(LIBEXTRACTOR_VERSION)-$(LIBEXTRACTO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBEXTRACTOR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBEXTRACTOR_SITE)/$(LIBEXTRACTOR_SOURCE)
+	$(WGET) -P $(@D) $(LIBEXTRACTOR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -142,15 +143,15 @@ endif
 		then cat $(LIBEXTRACTOR_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBEXTRACTOR_DIR)" != "$(LIBEXTRACTOR_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(LIBEXTRACTOR_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBEXTRACTOR_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(@D) ; \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i -e 's|./dictionary-builder |$(LIBEXTRACTOR_HOST_BUILD_DIR)/src/plugins/printable/dictionary-builder |g' \
-		$(LIBEXTRACTOR_BUILD_DIR)/src/plugins/printable/Makefile.in
+		$(@D)/src/plugins/printable/Makefile.in
 endif
-	sed -i -e '/$$(MAKE) .* install-exec-am install-data-am/s/^/#/'  $(LIBEXTRACTOR_BUILD_DIR)/libltdl/Makefile.in
-	(cd $(LIBEXTRACTOR_BUILD_DIR); \
+	sed -i -e '/$$(MAKE) .* install-exec-am install-data-am/s/^/#/' $(@D)/libltdl/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBEXTRACTOR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBEXTRACTOR_LDFLAGS)" \
@@ -167,8 +168,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e '/^#define error_t int/d' $(LIBEXTRACTOR_BUILD_DIR)/src/include/config.h
-	$(PATCH_LIBTOOL) $(LIBEXTRACTOR_BUILD_DIR)/libtool $(LIBEXTRACTOR_BUILD_DIR)/libltdl/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool $(@D)/libltdl/libtool
 	touch $@
 
 libextractor-unpack: $(LIBEXTRACTOR_BUILD_DIR)/.configured
@@ -178,7 +178,7 @@ libextractor-unpack: $(LIBEXTRACTOR_BUILD_DIR)/.configured
 #
 $(LIBEXTRACTOR_BUILD_DIR)/.built: $(LIBEXTRACTOR_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBEXTRACTOR_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -190,8 +190,8 @@ $(LIBEXTRACTOR_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LIBEXTRACTOR
 	rm -f $@
 	rm -rf $(HOST_BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(LIBEXTRACTOR_HOST_BUILD_DIR)
 	$(LIBEXTRACTOR_UNZIP) $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	mv $(HOST_BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(LIBEXTRACTOR_HOST_BUILD_DIR)
-	(cd $(LIBEXTRACTOR_HOST_BUILD_DIR); \
+	mv $(HOST_BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(@D)
+	(cd $(@D); \
 		./configure \
 		--prefix=/opt \
 		--enable-ltdl-install \
@@ -202,8 +202,8 @@ $(LIBEXTRACTOR_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LIBEXTRACTOR
 		--disable-nls \
 		--disable-static \
 	)
-	cd $(LIBEXTRACTOR_HOST_BUILD_DIR)/src/plugins/printable; \
-	    $(HOSTCC) -o dictionary-builder -I../../include dictionary-builder.c
+	cd $(@D)/src/plugins/printable; \
+	    $(HOSTCC) -o dictionary-builder -I../../.. -I../../include dictionary-builder.c
 	touch $@
 
 #
@@ -223,7 +223,7 @@ libextractor-stage: $(LIBEXTRACTOR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libextractor
 #
 $(LIBEXTRACTOR_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBEXTRACTOR_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libextractor" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -286,4 +286,4 @@ libextractor-dirclean:
 # Some sanity check for the package.
 #
 libextractor-check: $(LIBEXTRACTOR_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBEXTRACTOR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
