@@ -26,7 +26,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OPENVPN_SITE=http://openvpn.net/release
-OPENVPN_VERSION=2.1_rc9
+OPENVPN_VERSION=2.1_rc15
 OPENVPN_SOURCE=openvpn-$(OPENVPN_VERSION).tar.gz
 OPENVPN_DIR=openvpn-$(OPENVPN_VERSION)
 OPENVPN_UNZIP=zcat
@@ -209,7 +209,7 @@ $(OPENVPN_IPK): $(OPENVPN_BUILD_DIR)/.built
 	# openvpn config files
 	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn
 	install -m 644 $(OPENVPN_SOURCE_DIR)/openvpn.conf $(OPENVPN_IPK_DIR)/opt/etc/openvpn
-	install -m 644 $(OPENVPN_SOURCE_DIR)/openvpn.up $(OPENVPN_IPK_DIR)/opt/etc/openvpn
+	install -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.up $(OPENVPN_IPK_DIR)/opt/etc/openvpn
 
 	# openvpn loopback test 
 	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
@@ -222,6 +222,9 @@ $(OPENVPN_IPK): $(OPENVPN_BUILD_DIR)/.built
 	# Install man pages
 	install -d $(OPENVPN_IPK_DIR)/opt/man/man8
 	install -m 644 $(OPENVPN_BUILD_DIR)/openvpn.8 $(OPENVPN_IPK_DIR)/opt/man/man8
+
+	# Create log directory
+	install -d 666 $(OPENVPN_IPK_DIR)/opt/var/log/openvpn
 
 	# Install control files
 	make  $(OPENVPN_IPK_DIR)/CONTROL/control
