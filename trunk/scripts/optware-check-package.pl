@@ -81,7 +81,8 @@ GetOptions("tmp-dir=s" => \$tmp_dir,
         "openwrt-brcm24" => "MIPS",
         "ts101" => "PowerPC or cisco 4500",
         "ts509" => "32-bit LSB .* Intel 80386",
-        "ts72xx" => "LSB .* ARM"
+        "ts72xx" => "LSB .* ARM",
+        "wdtv" => "LSB .* MIPS",
 );
 
 if (exists $target_to_bintype{$binary_type}) {
