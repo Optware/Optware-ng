@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZILE_SITE=http://ftp.gnu.org/gnu/zile
-ZILE_VERSION=2.2.60
+ZILE_VERSION=2.3.1
 ZILE_SOURCE=zile-$(ZILE_VERSION).tar.gz
 ZILE_DIR=zile-$(ZILE_VERSION)
 ZILE_UNZIP=zcat
@@ -137,7 +137,6 @@ zile-unpack: $(ZILE_BUILD_DIR)/.configured
 #
 $(ZILE_BUILD_DIR)/.built: $(ZILE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)/doc mkdoc CPPFLAGS="" LDFLAGS=""
 	$(MAKE) -C $(@D)
 	touch $@
 
@@ -217,4 +216,4 @@ zile-dirclean:
 # Some sanity check for the package.
 #
 zile-check: $(ZILE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ZILE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
