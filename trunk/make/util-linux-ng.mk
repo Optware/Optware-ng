@@ -60,7 +60,7 @@ UTIL_LINUX_NG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 UTIL_LINUX_NG_LDFLAGS=
 
 UTIL_LINUX_NG_CONFIG_ARGS=
-ifneq (, $(filter ddwrt dns323 gumstix1151 oleg openwrt-brcm24 openwrt-ixp4xx syno-x07 ts101, $(OPTWARE_TARGET)))
+ifneq (, $(filter ddwrt dns323 gumstix1151 oleg openwrt-brcm24 openwrt-ixp4xx syno-x07 ts101 wdtv, $(OPTWARE_TARGET)))
 UTIL_LINUX_NG_CONFIG_ARGS+=--disable-schedutils
 endif
 

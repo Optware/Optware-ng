@@ -31,13 +31,16 @@ GNUPG_DESCRIPTION=GNU privacy guard - a free PGP replacement.
 GNUPG_SECTION=misc
 GNUPG_PRIORITY=optional
 GNUPG_DEPENDS=libusb, zlib, bzip2, readline, libcurl, openldap-libs, libgcrypt, libpth, libksba, pinentry
+ifneq (, $(filter libiconv, $(PACKAGES)))
+GNUPG_DEPENDS +=, libiconv
+endif
 GNUPG_SUGGESTS=
 GNUPG_CONFLICTS=
 
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=1
+GNUPG_IPK_VERSION=2
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
@@ -113,6 +116,9 @@ gnupg-source: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
 $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES) make/gnupg.mk
 	$(MAKE) libusb-stage bzip2-stage zlib-stage readline-stage libcurl-stage openldap-stage
 	$(MAKE) libassuan-stage libgpg-error-stage libgcrypt-stage libpth-stage libksba-stage
+ifneq (, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR)
 	$(GNUPG_UNZIP) $(DL_DIR)/$(GNUPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GNUPG_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
