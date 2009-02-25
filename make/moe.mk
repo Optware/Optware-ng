@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOE_SITE=http://ftp.gnu.org/gnu/moe
-MOE_VERSION=0.9
-MOE_SOURCE=moe-$(MOE_VERSION).tar.bz2
+MOE_VERSION=1.1
+MOE_SOURCE=moe-$(MOE_VERSION).tar.gz
 MOE_DIR=moe-$(MOE_VERSION)
-MOE_UNZIP=bzcat
+MOE_UNZIP=zcat
 MOE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MOE_DESCRIPTION=My own editor, a powerful, 8-bit clean text editor for ISO-8859 and ASCII character encodings.
 MOE_SECTION=editor
@@ -79,8 +79,8 @@ MOE_IPK=$(BUILD_DIR)/moe_$(MOE_VERSION)-$(MOE_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MOE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MOE_SITE)/$(MOE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MOE_SOURCE)
+	$(WGET) -P $(@D) $(MOE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,11 +118,11 @@ endif
 		then cat $(MOE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MOE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MOE_DIR)" != "$(MOE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MOE_DIR) $(MOE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MOE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MOE_DIR) $(@D) ; \
 	fi
-	sed -i -e '/-install-info/s/^/#/' $(MOE_BUILD_DIR)/Makefile.in
-	(cd $(MOE_BUILD_DIR); \
+	sed -i -e '/-install-info/s/^/#/' $(@D)/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MOE_LDFLAGS)" \
@@ -144,7 +144,7 @@ moe-unpack: $(MOE_BUILD_DIR)/.configured
 #
 $(MOE_BUILD_DIR)/.built: $(MOE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MOE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -157,7 +157,7 @@ moe: $(MOE_BUILD_DIR)/.built
 #
 $(MOE_BUILD_DIR)/.staged: $(MOE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MOE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 moe-stage: $(MOE_BUILD_DIR)/.staged
@@ -233,4 +233,4 @@ moe-dirclean:
 # Some sanity check for the package.
 #
 moe-check: $(MOE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MOE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
