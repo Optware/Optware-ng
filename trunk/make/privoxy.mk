@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PRIVOXY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ijbswa
-PRIVOXY_VERSION=3.0.10
+PRIVOXY_VERSION=3.0.11
 PRIVOXY_SOURCE=privoxy-$(PRIVOXY_VERSION)-stable-src.tar.gz
 PRIVOXY_DIR=privoxy-$(PRIVOXY_VERSION)-stable
 PRIVOXY_UNZIP=zcat
