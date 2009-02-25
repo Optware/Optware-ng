@@ -72,7 +72,8 @@ SCREEN_IPK=$(BUILD_DIR)/screen_$(SCREEN_VERSION)-$(SCREEN_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SCREEN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SCREEN_SITE)/$(SCREEN_SOURCE)
+	$(WGET) -P $(@D) $(SCREEN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -96,7 +97,7 @@ screen-source: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
+$(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES) make/screen.mk
 	$(MAKE) termcap-stage
 	rm -rf $(BUILD_DIR)/$(SCREEN_DIR) $(SCREEN_BUILD_DIR)
 	$(SCREEN_UNZIP) $(DL_DIR)/$(SCREEN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -114,15 +115,15 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
 		--prefix=/opt \
 	)
 ifeq ($(LIBC_STYLE),uclibc)
-		sed -i -e '/stropts.h/d' $(SCREEN_BUILD_DIR)/pty.c
+	sed -i -e '/stropts.h/d' $(@D)/pty.c
 endif
-ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24 openwrt-ixp4xx ts101, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24 openwrt-ixp4xx ts101 wdtv, $(OPTWARE_TARGET)))
 	sed -i -e 's/sched.h/screen_sched.h/g' \
-		$(SCREEN_BUILD_DIR)/Makefile \
-		$(SCREEN_BUILD_DIR)/screen.h
-	mv $(SCREEN_BUILD_DIR)/sched.h $(SCREEN_BUILD_DIR)/screen_sched.h
+		$(@D)/Makefile \
+		$(@D)/screen.h
+	mv $(@D)/sched.h $(@D)/screen_sched.h
 endif
-	touch $(SCREEN_BUILD_DIR)/.configured
+	touch $@
 
 screen-unpack: $(SCREEN_BUILD_DIR)/.configured
 
@@ -158,7 +159,7 @@ screen-stage: $(STAGING_DIR)/opt/lib/libscreen.so.$(SCREEN_VERSION)
 # necessary to create a seperate control file under sources/screen
 #
 $(SCREEN_IPK_DIR)/CONTROL/control:
-	@install -d $(SCREEN_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: screen" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -218,4 +219,4 @@ screen-dirclean:
 # Some sanity check for the package.
 #
 screen-check: $(SCREEN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SCREEN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
