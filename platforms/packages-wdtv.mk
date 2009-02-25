@@ -8,7 +8,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	9base asterisk16 asterisk16-addons cdrtools fcgi ficy fish \
+	9base cdrtools fcgi ficy fish \
 	fuppes ghostscript gnu-smalltalk gtmess gtk gutenprint \
 	ice iptraf launchtool ldconfig ltrace microdc2 moc \
 	monotone mtr newsbeuter nfs-server nfs-utils pango pinentry \
