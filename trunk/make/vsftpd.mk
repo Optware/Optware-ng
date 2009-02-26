@@ -108,7 +108,7 @@ $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES) ma
 	fi
 	mv $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
 	sed -i -e '/VSFTP_DEFAULT_CONFIG/s|/etc/vsftpd.conf|/opt&|' $(@D)/defs.h
-ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle slugos5be slugos5le, $(OPTWARE_TARGET)))
 	sed -i -e '/pam_start/s/.*/if false; then/' $(@D)/vsf_findlibs.sh
 	sed -i -e '/VSF_BUILD_PAM/s/#define/#undef/' $(@D)/builddefs.h
 endif
