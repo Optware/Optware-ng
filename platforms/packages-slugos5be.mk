@@ -13,4 +13,4 @@ BROKEN_PACKAGES = \
 	gtk ipac-ng iptables iptraf ldconfig \
 	microdc2 monotone mpd netatalk nfs-utils pinentry \
 	player proftpd puppy mod-python qemu softflowd \
-	taged transcode vsftpd vte xchat \
+	taged transcode vte xchat \
