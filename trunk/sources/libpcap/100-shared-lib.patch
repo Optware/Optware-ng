@@ -1,13 +1,14 @@
---- libpcap-1.0.0/Makefile.in.orig	2008-10-28 01:26:13.000000000 +0000
-+++ libpcap-1.0.0/Makefile.in	2008-10-31 04:12:56.515345145 +0000
-@@ -40,6 +40,15 @@
+--- libpcap/Makefile.in.orig	2008-10-28 01:26:13.000000000 +0000
++++ libpcap/Makefile.in	2009-02-26 03:18:36.848216819 +0000
+@@ -40,6 +40,16 @@
  srcdir = @srcdir@
  VPATH = @srcdir@
  
 +# some defines for shared library compilation
-+MAJ=1.0
++MAJ=1
 +MIN=0
-+VERSION=$(MAJ).$(MIN)
++PL=0
++VERSION=$(MAJ).$(MIN).$(PL)
 +LIBNAME=pcap
 +LIBRARY=lib$(LIBNAME).a
 +SOLIBRARY=lib$(LIBNAME).so
@@ -16,7 +17,7 @@
  #
  # You shouldn't need to edit anything below.
  #
-@@ -56,6 +65,7 @@
+@@ -56,6 +66,7 @@
  
  # Standard CFLAGS
  CFLAGS = $(CCOPT) $(INCLS) $(DEFS)
@@ -24,7 +25,7 @@
  
  INSTALL = @INSTALL@
  INSTALL_PROGRAM = @INSTALL_PROGRAM@
-@@ -76,7 +86,12 @@
+@@ -76,7 +87,12 @@
  .c.o:
  	@rm -f $@
  	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
@@ -37,15 +38,15 @@
  PSRC =	pcap-@V_PCAP@.c @USB_SRC@ @BT_SRC@
  FSRC =  fad-@V_FINDALLDEVS@.c
  SSRC =  @SSRC@
-@@ -90,6 +105,7 @@
+@@ -90,6 +106,7 @@
  # We would like to say "OBJ = $(SRC:.c=.o)" but Ultrix's make cannot
  # hack the extra indirection
  OBJ =	$(PSRC:.c=.o) $(FSRC:.c=.o) $(CSRC:.c=.o) $(SSRC:.c=.o) $(GENSRC:.c=.o) $(LIBOBJS)
 +OBJ_PIC = $(PSRC:.c=_pic.o) $(FSRC:.c=_pic.o) $(CSRC:.c=_pic.o) $(SSRC:.c=_pic.o) $(GENSRC:.c=_pic.o)
  HDR = \
-	acconfig.h \
-	arcnet.h \
-@@ -122,7 +138,7 @@
+ 	acconfig.h \
+ 	arcnet.h \
+@@ -122,7 +139,7 @@
  TAGFILES = \
  	$(SRC) $(HDR) $(TAGHDR)
  
@@ -54,16 +55,16 @@
  
  MAN1 = pcap-config.1
  
-@@ -311,7 +327,7 @@
-	Win32/Src/inet_net.c \
-	Win32/Src/inet_pton.c
+@@ -311,7 +328,7 @@
+ 	Win32/Src/inet_net.c \
+ 	Win32/Src/inet_pton.c
  
 -all: libpcap.a pcap-config
 +all: libpcap.a libpcap.so pcap-config
  
  libpcap.a: $(OBJ)
-	@rm -f $@
-@@ -351,6 +367,10 @@
+ 	@rm -f $@
+@@ -351,6 +368,10 @@
  scanner.o: scanner.c tokdefs.h
  	$(CC) $(CFLAGS) -c scanner.c
  
@@ -74,7 +75,7 @@
  pcap.o: version.h
  
  tokdefs.h: grammar.c
-@@ -364,9 +384,16 @@
+@@ -364,9 +385,16 @@
  	@rm -f $@
  	$(CC) $(CFLAGS) -Dyylval=pcap_lval -c grammar.c
  
@@ -91,9 +92,9 @@
  snprintf.o: $(srcdir)/missing/snprintf.c
  	$(CC) $(CFLAGS) -o $@ -c $(srcdir)/missing/snprintf.c
  
-@@ -413,10 +440,17 @@
+@@ -413,10 +441,18 @@
  findalldevstest: findalldevstest.c libpcap.a
-	$(CC) $(CFLAGS) -I. -L. -o findalldevstest findalldevstest.c libpcap.a
+ 	$(CC) $(CFLAGS) -I. -L. -o findalldevstest findalldevstest.c libpcap.a
  
 +bpf_filter_pic.o: bpf_filter.c
 +	$(CC) -fPIC $(CFLAGS) -c bpf_filter.c -o $@
@@ -104,7 +105,8 @@
  	    (mkdir -p $(DESTDIR)$(libdir); chmod 755 $(DESTDIR)$(libdir))
  	$(INSTALL_DATA) libpcap.a $(DESTDIR)$(libdir)/libpcap.a
 +	$(INSTALL_DATA) $(SHAREDLIB) $(DESTDIR)$(libdir)/
-+	ln -sf $(SHAREDLIB) $(DESTDIR)$(libdir)/$(SOLIBRARY).$(MAJ)
++	ln -sf $(SHAREDLIB) $(DESTDIR)$(libdir)/$(SOLIBRARY).$(MAJ).$(MIN)
++	ln -sf $(SOLIBRARY).$(MAJ).$(MIN) $(DESTDIR)$(libdir)/$(SOLIBRARY).$(MAJ)
 +	ln -sf $(SOLIBRARY).$(MAJ) $(DESTDIR)$(libdir)/$(SOLIBRARY)
  	$(RANLIB) $(DESTDIR)$(libdir)/libpcap.a
  	[ -d $(DESTDIR)$(includedir) ] || \
