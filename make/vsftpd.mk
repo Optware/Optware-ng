@@ -20,10 +20,17 @@
 # You should change all these variables to suit your package.
 #
 VSFTPD_SITE=ftp://vsftpd.beasts.org/users/cevans
-VSFTPD_VERSION=2.0.7
+VSFTPD_VERSION=2.1.0
 VSFTPD_SOURCE=vsftpd-$(VSFTPD_VERSION).tar.gz
 VSFTPD_DIR=vsftpd-$(VSFTPD_VERSION)
 VSFTPD_UNZIP=zcat
+VSFTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+VSFTPD_DESCRIPTION=ftp daemon with an emphasis on speed and security
+VSFTPD_SECTION=net
+VSFTPD_PRIORITY=optional
+VSFTPD_DEPENDS=
+VSFTPD_SUGGESTS=
+VSFTPD_CONFLICTS=
 
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
@@ -38,10 +45,7 @@ VSFTPD_CONFFILES=/opt/etc/vsftpd.conf
 # VSFTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VSFTPD_PATCHES=\
-$(VSFTPD_SOURCE_DIR)/uclibc-prctl.patch \
-$(VSFTPD_SOURCE_DIR)/syscall.patch \
-$(VSFTPD_SOURCE_DIR)/exit_status_const.patch
+#VSFTPD_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -99,7 +103,9 @@ $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES) ma
 #	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
 	$(VSFTPD_UNZIP) $(DL_DIR)/$(VSFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(VSFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(VSFTPD_DIR) -p1
+	if test -n "$(VSFPD_PATCHES)"; then \
+		cat $(VSFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(VSFTPD_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
 	sed -i -e '/VSFTP_DEFAULT_CONFIG/s|/etc/vsftpd.conf|/opt&|' $(@D)/defs.h
 ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
@@ -149,6 +155,21 @@ $(VSFTPD_BUILD_DIR)/.staged: $(VSFTPD_BUILD_DIR)/.built
 
 vsftpd-stage: $(VSFTPD_BUILD_DIR)/.staged
 
+$(VSFTPD_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: vsftpd" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(VSFTPD_PRIORITY)" >>$@
+	@echo "Section: $(VSFTPD_SECTION)" >>$@
+	@echo "Version: $(VSFTPD_VERSION)-$(VSFTPD_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(VSFTPD_MAINTAINER)" >>$@
+	@echo "Source: $(VSFTPD_SITE)/$(VSFTPD_SOURCE)" >>$@
+	@echo "Description: $(VSFTPD_DESCRIPTION)" >>$@
+	@echo "Depends: $(VSFTPD_DEPENDS)" >>$@
+	@echo "Suggests: $(VSFTPD_SUGGESTS)" >>$@
+	@echo "Conflicts: $(VSFTPD_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -167,9 +188,11 @@ $(VSFTPD_IPK): $(VSFTPD_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(VSFTPD_BUILD_DIR)/vsftpd -o $(VSFTPD_IPK_DIR)/opt/sbin/vsftpd
 	install -d $(VSFTPD_IPK_DIR)/opt/etc
 	install -m 644 $(VSFTPD_SOURCE_DIR)/vsftpd.conf $(VSFTPD_IPK_DIR)/opt/etc/vsftpd.conf
-	install -d $(VSFTPD_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(VSFTPD_VERSION)/" \
-		-e "s/@RELEASE@/$(VSFTPD_IPK_VERSION)/" $(VSFTPD_SOURCE_DIR)/control > $(VSFTPD_IPK_DIR)/CONTROL/control
+	install -d $(VSFTPD_IPK_DIR)/opt/share/man/man5
+	install -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.conf.5 $(VSFTPD_IPK_DIR)/opt/share/man/man5
+	install -d $(VSFTPD_IPK_DIR)/opt/share/man/man8
+	install -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.8 $(VSFTPD_IPK_DIR)/opt/share/man/man8
+	$(MAKE) $(VSFTPD_IPK_DIR)/CONTROL/control
 	install -m 644 $(VSFTPD_SOURCE_DIR)/postinst $(VSFTPD_IPK_DIR)/CONTROL/postinst
 	echo $(VSFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(VSFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VSFTPD_IPK_DIR)
@@ -196,5 +219,4 @@ vsftpd-dirclean:
 ## Some sanity check for the package.
 #
 vsftpd-check: $(VSFTPD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VSFTPD_IPK)
-
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
