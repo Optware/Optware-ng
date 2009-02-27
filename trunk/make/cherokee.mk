@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.98.1
-CHEROKEE_SITE=http://www.0x50.org/download/0.98/$(CHEROKEE_VERSION)
+CHEROKEE_VERSION=0.99.1
+CHEROKEE_SITE=http://www.0x50.org/download/0.99/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
 CHEROKEE_UNZIP=zcat
@@ -271,15 +271,13 @@ $(CHEROKEE_IPK) $(CHEROKEE-ADMIN_IPK) $(CHEROKEE-DEV_IPK) $(CHEROKEE-DOC_IPK): $
 	rm $(CHEROKEE_IPK_DIR)/opt/lib/*.la $(CHEROKEE_IPK_DIR)/opt/lib/cherokee/*.la
 	install -d $(CHEROKEE_IPK_DIR)/opt/share/cherokee/cgi-bin
 	sed -i \
-		-e '/server.port *=/s|=.*|= 8008|'\
+		-e '/server.*port =/s|=.*|= 8008|'\
 		-e 's|= php-cgi |= /opt/bin/php-fcgi |' \
 		$(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
 	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/S80cherokee
 	install -d $(CHEROKEE_IPK_DIR)/opt/etc/default
 	echo "CHEROKEE_ENABLE=yes" > $(CHEROKEE_IPK_DIR)/opt/etc/default/cherokee
-	mv $(CHEROKEE_IPK_DIR)/opt/bin/spawn-fcgi $(CHEROKEE_IPK_DIR)/opt/bin/cherokee-spawn-fcgi
-	mv $(CHEROKEE_IPK_DIR)/opt/share/man/man1/spawn-fcgi.1 $(CHEROKEE_IPK_DIR)/opt/share/man/man1/cherokee-spawn-fcgi.1
 	# -admin
 	install -d $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee
 	mv $(CHEROKEE_IPK_DIR)/opt/share/cherokee/admin $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee/admin
