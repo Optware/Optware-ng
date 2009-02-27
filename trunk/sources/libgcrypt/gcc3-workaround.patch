@@ -1,0 +1,11 @@
+--- libgcrypt/src/gcrypt.h.in.orig	2009-01-22 16:47:11.000000000 +0000
++++ libgcrypt/src/gcrypt.h.in	2009-02-27 17:08:30.495091341 +0000
+@@ -175,7 +175,7 @@
+ enum gcry_thread_option
+   {
+     _GCRY_THREAD_OPTION_DUMMY
+-  } _GCRY_GCC_ATTR_DEPRECATED;
++  };
+ 
+ 
+ /* Constants defining the thread model to use.  Used with the OPTION

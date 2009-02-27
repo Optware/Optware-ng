@@ -42,7 +42,7 @@ LIBGCRYPT_CONFLICTS=
 #
 # LIBGCRYPT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGCRYPT_IPK_VERSION=1
+LIBGCRYPT_IPK_VERSION=2
 
 #
 # LIBGCRYPT_CONFFILES should be a list of user-editable files
@@ -108,13 +108,16 @@ libgcrypt-source: $(DL_DIR)/$(LIBGCRYPT_SOURCE) $(LIBGCRYPT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBGCRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGCRYPT_SOURCE) $(LIBGCRYPT_PATCHES)
+$(LIBGCRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGCRYPT_SOURCE) $(LIBGCRYPT_PATCHES) make/libgcrypt.mk
 	$(MAKE) libgpg-error-stage
 	rm -rf $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(@D)
 	$(LIBGCRYPT_UNZIP) $(DL_DIR)/$(LIBGCRYPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGCRYPT_PATCHES)" ; then \
 		cat $(LIBGCRYPT_PATCHES) | \
         	 patch -d $(BUILD_DIR)/$(LIBGCRYPT_DIR) -p1 ; \
+	fi
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		cat $(LIBGCRYPT_SOURCE_DIR)/gcc3-workaround.patch | patch -d $(BUILD_DIR)/$(LIBGCRYPT_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(@D)
 	(cd $(@D); \
