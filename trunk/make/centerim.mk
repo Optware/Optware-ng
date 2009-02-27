@@ -107,7 +107,7 @@ centerim-source: $(DL_DIR)/$(CENTERIM_SOURCE) $(CENTERIM_PATCHES)
 $(CENTERIM_BUILD_DIR)/.configured: $(DL_DIR)/$(CENTERIM_SOURCE) $(CENTERIM_PATCHES) make/centerim.mk
 	$(MAKE) ncursesw-stage openssl-stage
 	$(MAKE) libcurl-stage libjpeg-stage libstdc++-stage
-	$(MAKE) gpgme-stage libotr-stage
+	$(MAKE) gpgme-stage libgcrypt-stage libotr-stage
 	rm -rf $(BUILD_DIR)/$(CENTERIM_DIR) $(@D)
 	$(CENTERIM_UNZIP) $(DL_DIR)/$(CENTERIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CENTERIM_PATCHES)" ; \
