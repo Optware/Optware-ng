@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CENTERIM_SITE=http://www.centerim.org/download/releases
-CENTERIM_VERSION=4.22.6
-CENTERIM_SOURCE=centerim-$(CENTERIM_VERSION).tar.gz
+CENTERIM_VERSION=4.22.7
+CENTERIM_SOURCE=centerim-$(CENTERIM_VERSION).tar.bz2
 CENTERIM_DIR=centerim-$(CENTERIM_VERSION)
-CENTERIM_UNZIP=zcat
+CENTERIM_UNZIP=bzcat
 CENTERIM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CENTERIM_DESCRIPTION=CenterIM is the forked project based on the good old famous CenterICQ instant messaging client.
 CENTERIM_SECTION=net
@@ -239,4 +239,4 @@ centerim-dirclean:
 # Some sanity check for the package.
 #
 centerim-check: $(CENTERIM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CENTERIM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
