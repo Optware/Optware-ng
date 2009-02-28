@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLIMM_SITE=http://www.climm.org/source
-CLIMM_VERSION=0.6.3
+CLIMM_VERSION=0.6.4
 CLIMM_SOURCE=climm-$(CLIMM_VERSION).tgz
 CLIMM_DIR=climm-$(CLIMM_VERSION)
 CLIMM_UNZIP=zcat
@@ -250,4 +250,4 @@ climm-dirclean:
 # Some sanity check for the package.
 #
 climm-check: $(CLIMM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CLIMM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
