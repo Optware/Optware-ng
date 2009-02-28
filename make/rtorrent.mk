@@ -16,7 +16,7 @@ RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
 
 RTORRENT_VERSION=$(strip \
 	$(if $(filter gumstix1151 openwrt-brcm24, $(OPTWARE_TARGET)), 0.8.0, \
-	$(if $(filter dns323 ts101, $(OPTWARE_TARGET)), 0.8.2, \
+	$(if $(filter dns323 ts101 wdtv, $(OPTWARE_TARGET)), 0.8.2, \
 	0.8.4)))
 RTORRENT_IPK_VERSION=1
 
@@ -140,8 +140,8 @@ endif
 		then cat $(RTORRENT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(RTORRENT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RTORRENT_DIR)" != "$(RTORRENT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RTORRENT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RTORRENT_DIR) $(@D) ; \
 	fi
 ifeq (mss,$(OPTWARE_TARGET))
 	sed -i -e '/#include <string>/a#include <cctype>' \
@@ -153,7 +153,7 @@ else
 	sed -i -e '/TORRENT_CHECK_EXECINFO()/s/.*/AC_DEFINE(USE_EXECINFO, 1, Use execinfo.h)/' \
 		$(@D)/configure.ac
 endif
-	(cd $(RTORRENT_BUILD_DIR); \
+	(cd $(@D); \
 		AUTOMAKE=automake ACLOCAL=aclocal autoreconf -i -f; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
@@ -170,7 +170,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(RTORRENT_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 rtorrent-unpack: $(RTORRENT_BUILD_DIR)/.configured
@@ -180,7 +180,7 @@ rtorrent-unpack: $(RTORRENT_BUILD_DIR)/.configured
 #
 $(RTORRENT_BUILD_DIR)/.built: $(RTORRENT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(RTORRENT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -276,4 +276,4 @@ rtorrent-dirclean:
 # Some sanity check for the package.
 #
 rtorrent-check: $(RTORRENT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RTORRENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
