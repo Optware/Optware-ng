@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-LIBWWW_SITE=http://search.cpan.org/CPAN/authors/id/G/GA/GAAS
-PERL-LIBWWW_VERSION=5.805
+PERL-LIBWWW_VERSION=5.825
 PERL-LIBWWW_SOURCE=libwww-perl-$(PERL-LIBWWW_VERSION).tar.gz
 PERL-LIBWWW_DIR=libwww-perl-$(PERL-LIBWWW_VERSION)
 PERL-LIBWWW_UNZIP=zcat
@@ -17,7 +17,7 @@ PERL-LIBWWW_DEPENDS=perl, perl-uri, perl-compress-zlib, perl-html-parser
 PERL-LIBWWW_SUGGESTS=
 PERL-LIBWWW_CONFLICTS=
 
-PERL-LIBWWW_IPK_VERSION=4
+PERL-LIBWWW_IPK_VERSION=1
 
 PERL-LIBWWW_CONFFILES=
 
@@ -26,27 +26,19 @@ PERL-LIBWWW_SOURCE_DIR=$(SOURCE_DIR)/perl-libwww
 PERL-LIBWWW_IPK_DIR=$(BUILD_DIR)/perl-libwww-$(PERL-LIBWWW_VERSION)-ipk
 PERL-LIBWWW_IPK=$(BUILD_DIR)/perl-libwww_$(PERL-LIBWWW_VERSION)-$(PERL-LIBWWW_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-ifeq ($(HOSTCC), $(TARGET_CC))
-PERL-LIBWWW_PATCHES=$(PERL-LIBWWW_SOURCE_DIR)/Makefile.PL.patch
-else
-PERL-LIBWWW_PATCHES= \
-	$(PERL-LIBWWW_SOURCE_DIR)/Makefile.PL.patch \
-	$(PERL-LIBWWW_SOURCE_DIR)/Makefile.PL-cross.patch \
-
-endif
-
 $(DL_DIR)/$(PERL-LIBWWW_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-LIBWWW_SITE)/$(PERL-LIBWWW_SOURCE)
+	$(WGET) -P $(@D) $(PERL-LIBWWW_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-libwww-source: $(DL_DIR)/$(PERL-LIBWWW_SOURCE) $(PERL-LIBWWW_PATCHES)
 
-$(PERL-LIBWWW_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LIBWWW_SOURCE) $(PERL-LIBWWW_PATCHES)
+$(PERL-LIBWWW_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LIBWWW_SOURCE) $(PERL-LIBWWW_PATCHES) make/perl-libwww.mk
 	$(MAKE) perl-uri-stage perl-compress-zlib-stage perl-html-parser-stage
 	rm -rf $(BUILD_DIR)/$(PERL-LIBWWW_DIR) $(PERL-LIBWWW_BUILD_DIR)
 	$(PERL-LIBWWW_UNZIP) $(DL_DIR)/$(PERL-LIBWWW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PERL-LIBWWW_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-LIBWWW_DIR) -p1
-	mv $(BUILD_DIR)/$(PERL-LIBWWW_DIR) $(PERL-LIBWWW_BUILD_DIR)
-	(cd $(PERL-LIBWWW_BUILD_DIR); \
+#	cat $(PERL-LIBWWW_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-LIBWWW_DIR) -p1
+	mv $(BUILD_DIR)/$(PERL-LIBWWW_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -54,27 +46,26 @@ $(PERL-LIBWWW_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LIBWWW_SOURCE) $(PERL-LIB
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERL-LIBWWW_BUILD_DIR)/.configured
+	touch $@
 
 perl-libwww-unpack: $(PERL-LIBWWW_BUILD_DIR)/.configured
 
 $(PERL-LIBWWW_BUILD_DIR)/.built: $(PERL-LIBWWW_BUILD_DIR)/.configured
-	rm -f $(PERL-LIBWWW_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-LIBWWW_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-LIBWWW_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	touch $@
 
 perl-libwww: $(PERL-LIBWWW_BUILD_DIR)/.built
 
 $(PERL-LIBWWW_BUILD_DIR)/.staged: $(PERL-LIBWWW_BUILD_DIR)/.built
-	rm -f $(PERL-LIBWWW_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-LIBWWW_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-LIBWWW_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-libwww-stage: $(PERL-LIBWWW_BUILD_DIR)/.staged
 
 $(PERL-LIBWWW_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-LIBWWW_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-libwww" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
