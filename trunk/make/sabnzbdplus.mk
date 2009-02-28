@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SABNZBDPLUS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/sabnzbdplus
-SABNZBDPLUS_VERSION=0.4.4
+SABNZBDPLUS_VERSION=0.4.7
 SABNZBDPLUS_SOURCE=SABnzbd-$(SABNZBDPLUS_VERSION)-src.tar.gz
 SABNZBDPLUS_DIR=SABnzbd-$(SABNZBDPLUS_VERSION)
 SABNZBDPLUS_UNZIP=zcat
@@ -29,7 +29,7 @@ SABNZBDPLUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SABNZBDPLUS_DESCRIPTION=A web-interface based binary newsgrabber written in python, with nzb file support.
 SABNZBDPLUS_SECTION=net
 SABNZBDPLUS_PRIORITY=optional
-SABNZBDPLUS_DEPENDS=py25-cheetah, py25-cherrypy, py25-yenc, par2cmdline
+SABNZBDPLUS_DEPENDS=py25-cheetah, py25-yenc, par2cmdline
 SABNZBDPLUS_SUGGESTS=unrar, unzip, py25-feedparser, py25-openssl
 SABNZBDPLUS_CONFLICTS=py24-sabnzbd, py25-sabnzbd
 
@@ -234,4 +234,4 @@ sabnzbdplus-dirclean:
 # Some sanity check for the package.
 #
 sabnzbdplus-check: $(SABNZBDPLUS_PY24_IPK) $(SABNZBDPLUS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SABNZBDPLUS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
