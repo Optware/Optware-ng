@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PLY_SITE=http://www.dabeaz.com/ply
-PY-PLY_VERSION=2.5
+PY-PLY_VERSION=3.1
 PY-PLY_SOURCE=ply-$(PY-PLY_VERSION).tar.gz
 PY-PLY_DIR=ply-$(PY-PLY_VERSION)
 PY-PLY_UNZIP=zcat
@@ -30,8 +30,8 @@ PY-PLY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PLY_DESCRIPTION=A pure-Python implementation of lex and yacc.
 PY-PLY_SECTION=misc
 PY-PLY_PRIORITY=optional
-PY24-PLY_DEPENDS=python24
 PY25-PLY_DEPENDS=python25
+PY26-PLY_DEPENDS=python26
 PY-PLY_CONFLICTS=
 
 #
@@ -68,11 +68,11 @@ PY-PLY_LDFLAGS=
 PY-PLY_BUILD_DIR=$(BUILD_DIR)/py-ply
 PY-PLY_SOURCE_DIR=$(SOURCE_DIR)/py-ply
 
-PY24-PLY_IPK_DIR=$(BUILD_DIR)/py24-ply-$(PY-PLY_VERSION)-ipk
-PY24-PLY_IPK=$(BUILD_DIR)/py24-ply_$(PY-PLY_VERSION)-$(PY-PLY_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-PLY_IPK_DIR=$(BUILD_DIR)/py25-ply-$(PY-PLY_VERSION)-ipk
 PY25-PLY_IPK=$(BUILD_DIR)/py25-ply_$(PY-PLY_VERSION)-$(PY-PLY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-PLY_IPK_DIR=$(BUILD_DIR)/py26-ply-$(PY-PLY_VERSION)-ipk
+PY26-PLY_IPK=$(BUILD_DIR)/py26-ply_$(PY-PLY_VERSION)-$(PY-PLY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -104,25 +104,10 @@ py-ply-source: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES)
+$(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES) make/py-ply.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-PLY_DIR)
-	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(PY-PLY_PATCHES)"; then \
-	    cat $(PY-PLY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
-	fi
-	mv $(BUILD_DIR)/$(PY-PLY_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    ( \
-	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4"; \
-	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
-	    ) > setup.cfg \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-PLY_DIR)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -138,6 +123,21 @@ $(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES)
 	    echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-PLY_DIR)
+	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-PLY_PATCHES)"; then \
+	    cat $(PY-PLY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-PLY_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) > setup.cfg \
+	)
 	touch $@
 
 py-ply-unpack: $(PY-PLY_BUILD_DIR)/.configured
@@ -147,12 +147,12 @@ py-ply-unpack: $(PY-PLY_BUILD_DIR)/.configured
 #
 $(PY-PLY_BUILD_DIR)/.built: $(PY-PLY_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py build)
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	python2.5 setup.py build)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	touch $@
 
 #
@@ -174,20 +174,6 @@ py-ply-stage: $(PY-PLY_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-ply
 #
-$(PY24-PLY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-ply" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-PLY_PRIORITY)" >>$@
-	@echo "Section: $(PY-PLY_SECTION)" >>$@
-	@echo "Version: $(PY-PLY_VERSION)-$(PY-PLY_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-PLY_MAINTAINER)" >>$@
-	@echo "Source: $(PY-PLY_SITE)/$(PY-PLY_SOURCE)" >>$@
-	@echo "Description: $(PY-PLY_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-PLY_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-PLY_CONFLICTS)" >>$@
-
 $(PY25-PLY_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -202,6 +188,20 @@ $(PY25-PLY_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-PLY_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PLY_CONFLICTS)" >>$@
 
+$(PY26-PLY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-ply" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PLY_PRIORITY)" >>$@
+	@echo "Section: $(PY-PLY_SECTION)" >>$@
+	@echo "Version: $(PY-PLY_VERSION)-$(PY-PLY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PLY_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PLY_SITE)/$(PY-PLY_SOURCE)" >>$@
+	@echo "Description: $(PY-PLY_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-PLY_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PLY_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -214,29 +214,29 @@ $(PY25-PLY_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-ply_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-PLY_IPK_DIR) $(BUILD_DIR)/py24-ply_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PLY_BUILD_DIR)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 -c "import setuptools; execfile('setup.py')" install --root=$(PY24-PLY_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY24-PLY_IPK_DIR)/CONTROL/control
-#	echo $(PY-PLY_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PLY_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PLY_IPK_DIR)
-
 $(PY25-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-ply_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-PLY_IPK_DIR) $(BUILD_DIR)/py25-ply_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PLY_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	python2.5 -c "import setuptools; execfile('setup.py')" install --root=$(PY25-PLY_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install --root=$(PY25-PLY_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY25-PLY_IPK_DIR)/CONTROL/control
 #	echo $(PY-PLY_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PLY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PLY_IPK_DIR)
 
+$(PY26-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
+	rm -rf $(PY26-PLY_IPK_DIR) $(BUILD_DIR)/py26-ply_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PLY_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install --root=$(PY26-PLY_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-PLY_IPK_DIR)/CONTROL/control
+#	echo $(PY-PLY_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-PLY_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PLY_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-ply-ipk: $(PY24-PLY_IPK) $(PY25-PLY_IPK)
+py-ply-ipk: $(PY25-PLY_IPK) $(PY26-PLY_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -250,5 +250,5 @@ py-ply-clean:
 #
 py-ply-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-PLY_DIR) $(PY-PLY_BUILD_DIR)
-	rm -rf $(PY24-PLY_IPK_DIR) $(PY24-PLY_IPK)
 	rm -rf $(PY25-PLY_IPK_DIR) $(PY25-PLY_IPK)
+	rm -rf $(PY26-PLY_IPK_DIR) $(PY26-PLY_IPK)
