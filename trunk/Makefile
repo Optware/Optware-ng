@@ -72,7 +72,7 @@ PERL_PACKAGES = \
 	perl-encode-detect \
 	perl-extutils-cbuilder perl-extutils-parsexs \
 	perl-file-next perl-file-rename \
-	perl-gd perl-gd-barcode perl-getopt-long \
+	perl-gd perl-gd-barcode \
 	perl-html-parser perl-html-tagset perl-html-template perl-hottproxy \
 	perl-http-response-encoding \
 	perl-ima-dbi \
@@ -93,7 +93,7 @@ PERL_PACKAGES = \
 	perl-sys-hostname-long \
 	perl-sys-syscall \
 	perl-template-toolkit \
-	perl-term-ansicolor perl-term-readkey perl-term-readline-gnu \
+	perl-term-readkey perl-term-readline-gnu \
 	perl-text-diff \
 	perl-unicode-map perl-unicode-string \
 	perl-universal-moniker \
