@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	gambit-c gnu-smalltalk \
 	iptraf \
 	ldconfig libcapi20 \
-	monotone \
 	ntop \
 	p7zip \
 	player puppy \

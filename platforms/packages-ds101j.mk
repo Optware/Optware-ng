@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	enhanced-ctorrent \
 	glib \
 	imagemagick irssi \
-	mod-fastcgi mod-python monotone \
+	mod-fastcgi mod-python \
 	php-apache \
 	qemu qemu-libc-i386 \
 	svn \

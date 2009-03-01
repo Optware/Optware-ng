@@ -28,7 +28,7 @@ BROKEN_PACKAGES = \
 	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff libtorrent \
 	llink loudmouth \
 	mediatomb mimms moc motion mod-fastcgi moe \
-	monotone mp3blaster mpd mpdscribble mpop msmtp msynctool \
+	mp3blaster mpd mpdscribble mpop msmtp msynctool \
 	mod-python mod-wsgi \
 	newsbeuter nget nmap nload nzbget \
 	open2300 openldap obexftp openser oww \

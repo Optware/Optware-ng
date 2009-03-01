@@ -9,5 +9,5 @@ BROKEN_PACKAGES = \
 	freeradius \
 	imagemagick \
 	ldconfig lftp \
-	monotone motion \
+	motion \
 	qemu qemu-libc-i386 \

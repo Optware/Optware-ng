@@ -7,7 +7,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 fcgi fish \
 	 gnu-smalltalk gtk ice iptables jabberd \
 	 launchtool ldconfig libstdc++ \
-	 moe monotone mtr \
+	 moe mtr \
 	 newsbeuter \
 	 nfs-server nfs-utils \
 	 pango \

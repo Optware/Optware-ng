@@ -17,7 +17,7 @@ BROKEN_PACKAGES = \
 	hpijs hplip \
 	ice iptables \
 	lame launchtool ldconfig \
-	moc monotone mtr \
+	moc mtr \
 	nfs-server nfs-utils nickle ntop \
 	pango puppy \
 	qemu qemu-libc-i386 quickie \

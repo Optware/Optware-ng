@@ -13,7 +13,7 @@ BROKEN_PACKAGES = \
 	gnokii \
 	ldconfig \
 	ltrace \
-	mod-fastcgi mod-python monotone \
+	mod-fastcgi mod-python \
 	newt ntp \
 	php-apache player py-lxml \
 	qemu qemu-libc-i386 quickie \

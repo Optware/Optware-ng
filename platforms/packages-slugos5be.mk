@@ -11,6 +11,6 @@ BROKEN_PACKAGES = \
 	bitchx bzflag \
 	cyrus-imapd finch fuppes \
 	gtk ipac-ng iptables iptraf ldconfig \
-	microdc2 monotone mpd netatalk nfs-utils pinentry \
+	microdc2 mpd netatalk nfs-utils pinentry \
 	player proftpd puppy mod-python qemu softflowd \
 	taged transcode vte xchat \

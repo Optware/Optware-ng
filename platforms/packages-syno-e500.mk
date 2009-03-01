@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk14-chan-capi \
 	iptraf \
-	ldconfig libcapi20 monotone \
+	ldconfig libcapi20 \
 	puppy transcode \
 	x264 lm-sensors \
 
