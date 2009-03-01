@@ -114,6 +114,7 @@ PERL_PACKAGES = \
 	perlconsole \
 	postgrey \
 	rsnapshot \
+	slimrat \
 	slimserver squeezecenter \
 	spamassassin \
 	stow \
