@@ -217,7 +217,7 @@ COMMON_CROSS_PACKAGES = \
 	catdoc ccollect ccxstream cdargs cdrtools centerim cuetools \
 	cherokee chicken chillispot chrpath cksfv \
 	classpath clamav clearsilver climm clips cmdftp \
-	cogito confuse connect coreutils corkscrew cpio cron \
+	confuse connect coreutils corkscrew cpio cron \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \
@@ -349,7 +349,7 @@ COMMON_NATIVE_PACKAGES = \
 
 # libiconv - has been made obsolete by gconv-modules
 # Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = erl-escript libiconv metalog monotone \
+PACKAGES_OBSOLETED = cogito erl-escript libiconv metalog monotone \
 	perl-spamassassin perl-mime-base64 jabber tzcode \
 
 ##############
