@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	asterisk \
 	atftp bitchx bzflag \
 	gconv-modules ipac-ng \
-	iptables iptraf ivorbis-tools ldconfig madplay monotone mt-daapd \
+	iptables iptraf ivorbis-tools ldconfig madplay mt-daapd \
 	netatalk nfs-utils phoneme-advanced player puppy \
 	qemu squeak \
 	atk gtk vte xchat

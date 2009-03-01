@@ -27,7 +27,6 @@ BROKEN_PACKAGES = \
 	gdb \
 	ldconfig \
 	loudmouth \
-	monotone \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
 	ppp \

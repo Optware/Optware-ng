@@ -33,7 +33,7 @@ BROKEN_PACKAGES = bluez-hcidump xinetd libdb\
 	 lookat lsof ltrace lua luarocks lynx m4 \
 	 mc mcabber md5deep mdadm mediatomb memcached metalog \
 	 memtester mg mimms minicom mlocate moblock moc \
-	 modutils monit most motion mod-fastcgi moe monotone \
+	 modutils monit most motion mod-fastcgi moe \
 	 mp3blaster mpd mpdscribble mpop mrtg msmtp msort \
 	 msynctool mt-daapd mtr multitail mutt mysql mysql-connector-odbc \
 	 nagios-plugins nail nano ncdu ncftp ncmpc ncurses \

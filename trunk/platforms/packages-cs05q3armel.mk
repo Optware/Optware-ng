@@ -15,7 +15,6 @@ BROKEN_PACKAGES = \
 	asterisk14-chan-capi libcapi20 \
 	iptraf \
 	ldconfig \
-	monotone \
 	player \
 	qemu qemu-libc-i386 \
 

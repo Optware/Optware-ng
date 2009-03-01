@@ -63,7 +63,6 @@ BROKEN_PACKAGES = \
 	microdc2 \
 	mimms \
 	modutils \
-	monotone \
 	mpc \
 	msmtp \
 	mtr \

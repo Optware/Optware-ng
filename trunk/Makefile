@@ -275,7 +275,7 @@ COMMON_CROSS_PACKAGES = \
 	mg miau microcom microdc2 microperl mimms \
 	minicom mini-sendmail minihttpd miscfiles \
 	mktemp mlocate moblock moc modutils monit most motion \
-	mod-fastcgi moe monotone mp3blaster mp3info mpack mpage \
+	mod-fastcgi moe mp3blaster mp3info mpack mpage \
 	mpc mpd mpdscribble \
 	mpg123 mpop mrtg msmtp \
 	msort msynctool mt-daapd mt-daapd-svn mtools \
@@ -349,7 +349,7 @@ COMMON_NATIVE_PACKAGES = \
 
 # libiconv - has been made obsolete by gconv-modules
 # Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = erl-escript libiconv metalog \
+PACKAGES_OBSOLETED = erl-escript libiconv metalog monotone \
 	perl-spamassassin perl-mime-base64 jabber tzcode \
 
 ##############

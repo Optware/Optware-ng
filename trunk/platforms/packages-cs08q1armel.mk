@@ -14,6 +14,5 @@ BROKEN_PACKAGES = \
 	bzflag \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	icecast iptables iptraf ldconfig \
-	monotone \
 	nfs-utils puppy mod-python qemu \
 	taged transcode \

@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	heyu \
 	iptraf \
 	ldconfig \
-	monotone \
 	netatalk \
 	puppy \
 	qemu \

@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	fcgi ficy fish fuppes gnu-smalltalk \
 	gloox \
 	gtmess gtk ice ipac-ng iptraf kismet \
-	launchtool ldconfig mediatomb monotone \
+	launchtool ldconfig mediatomb \
 	mtr mysql-connector-odbc \
 	newsbeuter nfs-server nfs-utils \
 	ntop openser pango pcapsipdump \
