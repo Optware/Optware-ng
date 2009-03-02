@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZILE_SITE=http://ftp.gnu.org/gnu/zile
-ZILE_VERSION=2.3.1
+ZILE_VERSION=2.3.3
 ZILE_SOURCE=zile-$(ZILE_VERSION).tar.gz
 ZILE_DIR=zile-$(ZILE_VERSION)
 ZILE_UNZIP=zcat
@@ -115,6 +115,7 @@ $(ZILE_BUILD_DIR)/.configured: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES) make/zil
 	if test "$(BUILD_DIR)/$(ZILE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ZILE_DIR) $(@D) ; \
 	fi
+	sed -i -e '/--no-info/s|^\t|&-|' $(@D)/src/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZILE_CPPFLAGS)" \
