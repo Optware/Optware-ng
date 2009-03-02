@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GHOSTSCRIPT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ghostscript
-GHOSTSCRIPT_VERSION=8.63
+GHOSTSCRIPT_VERSION=8.64
 GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)
 GHOSTSCRIPT_UNZIP=bzcat
@@ -101,8 +101,7 @@ $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GHOSTSCRIPT_S
 		; \
 	)
 	mkdir -p $(@D)/obj
-	$(MAKE) -C $(@D) \
-		./obj/echogs ./obj/genarch ./obj/genconf ./obj/geninit ./obj/mkromfs
+	$(MAKE) -C $(@D) ./obj/echogs ./obj/genarch ./obj/genconf ./obj/mkromfs
 	touch $@
 
 ghostscript-host-build: $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built
@@ -136,9 +135,8 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(@D)/Makefile.in
-	sed -i -e 's|$$(EXP)$$(MKROMFS_XE)|$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/mkromfs|' \
-		$(@D)/src/lib.mak \
-		$(@D)/src/int.mak
+	sed -i -e 's|$$(EXP)$$(MKROMFS_XE)|$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/mkromfs|' $(@D)/base/lib.mak
+	sed -i -e '/cups-config --image/s| -o |$(STAGING_LDFLAGS)&|' $(@D)/cups/cups.mak
 	(cd $(@D); \
 		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -153,6 +151,8 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--without-x \
+		--disable-gtk \
+		--disable-cairo \
 		--without-jasper \
 		--with-ijs \
 		--disable-nls \
@@ -244,9 +244,8 @@ $(GHOSTSCRIPT_IPK): $(GHOSTSCRIPT_BUILD_DIR)/.built
 		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/echogs \
 		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genarch \
 		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genconf \
-		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/geninit \
 		;
-	$(STRIP_COMMAND) $(GHOSTSCRIPT_IPK_DIR)/opt/bin/gs
+	$(STRIP_COMMAND) $(GHOSTSCRIPT_IPK_DIR)/opt/bin/gs $(GHOSTSCRIPT_IPK_DIR)/opt/lib/cups/filter/pdftoraster
 	sed -i -e 's|/usr/share|/opt/share|' $(GHOSTSCRIPT_IPK_DIR)/opt/lib/cups/filter/psto*
 	$(MAKE) $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GHOSTSCRIPT_IPK_DIR)
