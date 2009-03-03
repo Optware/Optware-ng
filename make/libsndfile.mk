@@ -21,11 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBSNDFILE_SITE=http://www.mega-nerd.com/libsndfile
-ifdef NO_BUILTIN_MATH
-LIBSNDFILE_VERSION=1.0.17
-else
-LIBSNDFILE_VERSION=1.0.18
-endif
+LIBSNDFILE_VERSION=1.0.19
 LIBSNDFILE_SOURCE=libsndfile-$(LIBSNDFILE_VERSION).tar.gz
 LIBSNDFILE_DIR=libsndfile-$(LIBSNDFILE_VERSION)
 LIBSNDFILE_UNZIP=zcat
@@ -50,7 +46,9 @@ LIBSNDFILE_IPK_VERSION=1
 # LIBSNDFILE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBSNDFILE_PATCHES=$(LIBSNDFILE_SOURCE_DIR)/configure.patch
+ifdef NO_BUILTIN_MATH
+LIBSNDFILE_PATCHES=$(LIBSNDFILE_SOURCE_DIR)/no-builtin-lrint.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -114,12 +112,13 @@ $(LIBSNDFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSNDFILE_SOURCE) $(LIBSNDFILE
 	$(LIBSNDFILE_UNZIP) $(DL_DIR)/$(LIBSNDFILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBSNDFILE_PATCHES)" ; \
 		then cat $(LIBSNDFILE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBSNDFILE_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(LIBSNDFILE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBSNDFILE_DIR)" != "$(LIBSNDFILE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBSNDFILE_DIR) $(LIBSNDFILE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBSNDFILE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBSNDFILE_DIR) $(@D) ; \
 	fi
-	(cd $(LIBSNDFILE_BUILD_DIR); \
+	sed -i.orig -e '/law_encode *\[/s/lrint/(int) &/' $(@D)/src/[au]law.c
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBSNDFILE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBSNDFILE_LDFLAGS)" \
@@ -134,7 +133,7 @@ $(LIBSNDFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSNDFILE_SOURCE) $(LIBSNDFILE
 		--disable-sqlite \
 		--disable-alsa \
 	)
-	$(PATCH_LIBTOOL) $(LIBSNDFILE_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libsndfile-unpack: $(LIBSNDFILE_BUILD_DIR)/.configured
@@ -144,7 +143,7 @@ libsndfile-unpack: $(LIBSNDFILE_BUILD_DIR)/.configured
 #
 $(LIBSNDFILE_BUILD_DIR)/.built: $(LIBSNDFILE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBSNDFILE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -157,7 +156,7 @@ libsndfile: $(LIBSNDFILE_BUILD_DIR)/.built
 #
 $(LIBSNDFILE_BUILD_DIR)/.staged: $(LIBSNDFILE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBSNDFILE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/sndfile.pc
 	touch $@
 
