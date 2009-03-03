@@ -136,7 +136,7 @@ endif
 	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(@D)/Makefile.in
 	sed -i -e 's|$$(EXP)$$(MKROMFS_XE)|$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/mkromfs|' $(@D)/base/lib.mak
-	sed -i -e '/cups-config --image/s| -o |$(STAGING_LDFLAGS)&|' $(@D)/cups/cups.mak
+	sed -i -e '/cups-config --image/s| -o | $(STAGING_LDFLAGS)&|' $(@D)/cups/cups.mak
 	(cd $(@D); \
 		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
