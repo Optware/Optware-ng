@@ -1,0 +1,17 @@
+--- src/sfconfig.h.orig	2009-02-07 03:51:46.000000000 +0000
++++ src/sfconfig.h	2009-03-03 19:08:33.080962416 +0000
+@@ -63,10 +63,14 @@
+ 
+ #ifndef HAVE_LRINT
+ #define HAVE_LRINT 0
++#include <math.h>
++#define lrint(d) ((long) (d))
+ #endif
+ 
+ #ifndef HAVE_LRINTF
+ #define HAVE_LRINTF 0
++#include <math.h>
++#define lrintf(f) ((long) f)
+ #endif
+ 
+ #ifndef HAVE_MMAP
