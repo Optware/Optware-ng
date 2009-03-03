@@ -32,7 +32,7 @@ MPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPD_DESCRIPTION=Music Player Daemon (MPD) allows remote access for playing music.
 MPD_SECTION=audio
 MPD_PRIORITY=optional
-MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, lame, libao, libcurl
+MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, glib, lame, libao, libcurl
 MPD_DEPENDS+=, libid3tag, libmad, libmpcdec, libsamplerate, libshout, wavpack
 ifneq (, $(filter i686, $(TARGET_ARCH)))
 MPD_DEPENDS+=, libvorbis
@@ -48,7 +48,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=1
+MPD_IPK_VERSION=2
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -148,10 +148,8 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 	$(MAKE) avahi-stage
 endif
-	$(MAKE) faad2-stage
-	$(MAKE) ffmpeg-stage
-	$(MAKE) flac-stage
-	$(MAKE) lame-stage
+	$(MAKE) faad2-stage ffmpeg-stage flac-stage lame-stage
+	$(MAKE) glib-stage
 	$(MAKE) libao-stage
 	$(MAKE) libcurl-stage
 	$(MAKE) libid3tag-stage
