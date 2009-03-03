@@ -33,9 +33,9 @@ MPD_DESCRIPTION=Music Player Daemon (MPD) allows remote access for playing music
 MPD_SECTION=audio
 MPD_PRIORITY=optional
 MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, glib, lame, libao, libcurl
-MPD_DEPENDS+=, libid3tag, libmad, libmpcdec, libsamplerate, libshout, wavpack
+MPD_DEPENDS+=, libid3tag, libmad, libmpcdec, libshout, wavpack
 ifneq (, $(filter i686, $(TARGET_ARCH)))
-MPD_DEPENDS+=, libvorbis
+MPD_DEPENDS+=, libsamplerate, libvorbis
 else
 MPD_DEPENDS+=, libvorbisidec
 endif
@@ -48,7 +48,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=2
+MPD_IPK_VERSION=3
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -80,9 +80,9 @@ MPD_CONFIGURE_OPTIONS+=--enable-ipv6
 endif
 
 ifeq (, $(filter i686, $(TARGET_ARCH)))
-MPD_CONFIGURE_OPTIONS+= --with-tremor=$(STAGING_PREFIX)
+MPD_CONFIGURE_OPTIONS+= --with-tremor=$(STAGING_PREFIX) --disable-lsr
 else
-MPD_CONFIGURE_OPTIONS+= --disable-libOggFLACtest
+MPD_CONFIGURE_OPTIONS+= --disable-libOggFLACtest --enable-lsr
 endif
 
 #
@@ -155,10 +155,9 @@ endif
 	$(MAKE) libid3tag-stage
 	$(MAKE) libmad-stage
 	$(MAKE) libmpcdec-stage
-	$(MAKE) libsamplerate-stage
 	$(MAKE) libshout-stage
 ifneq (, $(filter i686, $(TARGET_ARCH)))
-	$(MAKE) libvorbis-stage
+	$(MAKE) libsamplerate-stage libvorbis-stage
 else
 	$(MAKE) libvorbisidec-stage
 endif
