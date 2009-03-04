@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BIP_SITE=http://bip.t1r.net/downloads
-BIP_VERSION=0.7.5
+BIP_VERSION=0.8.0
 BIP_SOURCE=bip-$(BIP_VERSION).tar.gz
 BIP_DIR=bip-$(BIP_VERSION)
 BIP_UNZIP=zcat
@@ -227,4 +227,4 @@ bip-dirclean:
 # Some sanity check for the package.
 #
 bip-check: $(BIP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
