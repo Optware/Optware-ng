@@ -69,6 +69,7 @@ PERL_PACKAGES = \
 	perl-devel-caller perl-devel-lexalias \
 	perl-device-serialport \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
+	perl-email-mime-modifier perl-email-mime perl-email-send \
 	perl-encode-detect \
 	perl-extutils-cbuilder perl-extutils-parsexs \
 	perl-file-next perl-file-rename \
