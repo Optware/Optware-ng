@@ -1,6 +1,6 @@
---- mc/doc/Makefile.in.orig	2007-07-17 15:50:54.000000000 -0700
-+++ mc/doc/Makefile.in	2007-07-17 15:51:23.000000000 -0700
-@@ -637,7 +637,7 @@
+--- mc-4.6.2/doc/Makefile.in.orig	2009-02-01 19:46:24.000000000 +0000
++++ mc-4.6.2/doc/Makefile.in	2009-03-04 04:54:33.236835120 +0000
+@@ -677,7 +677,7 @@
  
  
  mc.hlp: mc.1 $(srcdir)/xnc.hlp $(top_builddir)/src/man2hlp

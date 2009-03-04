@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-MC_SITE=http://www.ibiblio.org/pub/Linux/utils/file/managers/mc
-MC_VERSION=4.6.1
+MC_SITE=http://www.midnight-commander.org/downloads
+MC_VERSION=4.6.2
 MC_SOURCE=mc-$(MC_VERSION).tar.gz
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=zcat
@@ -13,19 +13,20 @@ MC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MC_DESCRIPTION=Midnight Commander File Manager
 MC_SECTION=utilities
 MC_PRIORITY=optional
-MC_DEPENDS=glib, slang, e2fsprogs
+MC_DEPENDS=glib, slang, e2fslibs
 MC_CONFLICTS=
 
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=3
+MC_IPK_VERSION=1
 
 #
 # MC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MC_PATCHES=$(MC_SOURCE_DIR)/doc-Makefile.in.patch \
+MC_PATCHES=\
+$(MC_SOURCE_DIR)/doc-Makefile.in.patch \
 $(MC_SOURCE_DIR)/src-man2hlp.c.patch
 
 #
@@ -60,7 +61,8 @@ MC_IPK=$(BUILD_DIR)/mc_$(MC_VERSION)-$(MC_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MC_SITE)/$(MC_SOURCE)
+	$(WGET) -P $(@D) $(MC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -84,16 +86,16 @@ mc-source: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
-	rm -rf $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
+$(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
 	$(MAKE) e2fsprogs-stage glib-stage slang-stage
+	rm -rf $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
 	$(MC_UNZIP) $(DL_DIR)/$(MC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MC_PATCHES)" ; \
 		then cat $(MC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MC_DIR) -p1 ; \
+		patch -bd $(BUILD_DIR)/$(MC_DIR) -p1 ; \
 	fi
-	mv $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
-	(cd $(MC_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(MC_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MC_LDFLAGS)" \
@@ -111,7 +113,7 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 		--without-gpm-mouse \
 		--without-x \
 	)
-	touch $(MC_BUILD_DIR)/.configured
+	touch $@
 
 mc-unpack: $(MC_BUILD_DIR)/.configured
 
@@ -121,9 +123,8 @@ mc-unpack: $(MC_BUILD_DIR)/.configured
 #
 $(MC_BUILD_DIR)/.built: $(MC_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(MC_BUILD_DIR)/src && \
-		$(HOSTCC) -o man2hlp.host man2hlp.c
-	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(MC_BUILD_DIR)
+	cd $(@D)/src && $(HOSTCC) -o man2hlp.host man2hlp.c
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -137,7 +138,7 @@ mc: $(MC_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mc
 #
 $(MC_IPK_DIR)/CONTROL/control:
-	@install -d $(MC_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: mc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,4 +191,4 @@ mc-dirclean:
 # Some sanity check for the package.
 #
 mc-check: $(MC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
