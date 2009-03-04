@@ -1,23 +1,24 @@
---- mc/src/man2hlp.c.orig	2007-07-17 15:35:45.000000000 -0700
-+++ mc/src/man2hlp.c	2007-07-17 15:38:09.000000000 -0700
-@@ -17,15 +17,13 @@
+--- mc-4.6.2/src/man2hlp.c.orig	2009-02-01 19:30:21.000000000 +0000
++++ mc-4.6.2/src/man2hlp.c	2009-03-04 04:42:53.466522749 +0000
+@@ -18,17 +18,12 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
  
 -#include <config.h>
-+// #include <config.h>
+-
+ #include <stdarg.h>
  #include <stdio.h>
  #include <stdlib.h>
- #include <stdarg.h>
  #include <string.h>
  
 -#include <glib.h>
+-
  #include "help.h"
 -#include "glibcompat.h"
  
  #define BUFFER_SIZE 256
  
-@@ -143,7 +141,7 @@
+@@ -146,7 +141,7 @@
  
      f = fopen (filename, flags);
      if (f == NULL) {
@@ -26,7 +27,7 @@
  		    filename);
  	perror (tmp);
  	exit (3);
-@@ -287,7 +285,7 @@
+@@ -290,7 +285,7 @@
      char buffer[BUFFER_SIZE];
  
      va_start (args, format);
@@ -35,7 +36,7 @@
      va_end (args);
      print_string (buffer);
  }
-@@ -581,7 +579,7 @@
+@@ -584,7 +579,7 @@
      } else {
  	/* Other commands are ignored */
  	char warn_str[BUFFER_SIZE];
@@ -44,7 +45,7 @@
  		    "Warning: unsupported command %s", buffer);
  	print_error (warn_str);
  	return;
-@@ -612,7 +610,7 @@
+@@ -615,7 +610,7 @@
  	/* Bold text or italics text */
  	if (buffer[0] == '.' && (buffer[1] == 'I' || buffer[1] == 'B'))
  	    for (buffer += 2; *buffer == ' ' || *buffer == '\t'; buffer++);
@@ -53,7 +54,7 @@
  	link_flag = 3;
  	break;
      case 3:
-@@ -810,7 +808,7 @@
+@@ -813,7 +808,7 @@
  	    }
  	}
  	if (!found) {
