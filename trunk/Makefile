@@ -96,6 +96,7 @@ PERL_PACKAGES = \
 	perl-template-toolkit \
 	perl-term-readkey perl-term-readline-gnu \
 	perl-text-diff \
+	perl-timedate \
 	perl-unicode-map perl-unicode-string \
 	perl-universal-moniker \
 	perl-unix-syslog \
