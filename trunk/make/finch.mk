@@ -7,7 +7,7 @@
 # when we have a second client also uses libpurple, we should separate it into its own ipk, and make sure stage works
 #
 FINCH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pidgin
-FINCH_VERSION=2.5.3
+FINCH_VERSION=2.5.5
 FINCH_SOURCE=pidgin-$(FINCH_VERSION).tar.bz2
 FINCH_DIR=pidgin-$(FINCH_VERSION)
 FINCH_UNZIP=bzcat
@@ -236,4 +236,4 @@ finch-dirclean:
 # Some sanity check for the package.
 #
 finch-check: $(FINCH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FINCH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
