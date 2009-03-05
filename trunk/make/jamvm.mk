@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 JAMVM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/jamvm
-JAMVM_VERSION=1.5.1
+JAMVM_VERSION=1.5.2
 JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)
 JAMVM_UNZIP=zcat
@@ -210,4 +210,4 @@ jamvm-dirclean:
 # Some sanity check for the package.
 #
 jamvm-check: $(JAMVM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(JAMVM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
