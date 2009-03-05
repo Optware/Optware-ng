@@ -157,6 +157,8 @@ $(E2FSPROGS_BUILD_DIR)/.staged: $(E2FSPROGS_BUILD_DIR)/.built
 	$(MAKE) -C $(@D)  install
 	for l in ext2fs et blkid uuid; \
 		do $(MAKE) -C $(@D)/lib/$$l DESTDIR=$(STAGING_DIR) install; done
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/uuid.pc $(STAGING_LIB_DIR)/pkgconfig/blkid.pc
 	touch $@
 
 e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
