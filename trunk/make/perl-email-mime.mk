@@ -13,11 +13,11 @@ PERL-EMAIL-MIME_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL-EMAIL-MIME_DESCRIPTION=Easy MIME message parsing.
 PERL-EMAIL-MIME_SECTION=email
 PERL-EMAIL-MIME_PRIORITY=optional
-PERL-EMAIL-MIME_DEPENDS=perl-mime-contenttype, perl-mime-encodings, perl-email-simple
+PERL-EMAIL-MIME_DEPENDS=perl-email-mime-contenttype, perl-email-mime-encodings, perl-email-simple
 PERL-EMAIL-MIME_SUGGESTS=
 PERL-EMAIL-MIME_CONFLICTS=
 
-PERL-EMAIL-MIME_IPK_VERSION=2
+PERL-EMAIL-MIME_IPK_VERSION=3
 
 PERL-EMAIL-MIME_CONFFILES=
 
