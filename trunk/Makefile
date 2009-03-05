@@ -55,7 +55,7 @@ PERL_PACKAGES = \
 	perl-bsd-resource \
 	perl-business-isbn-data perl-business-isbn \
 	perl-carp-clan \
-	perl-cgi-application \
+	perl-cgi perl-cgi-application \
 	perl-class-accessor perl-class-data-inheritable perl-class-dbi perl-class-trigger \
 	perl-clone \
 	perl-compress-zlib \
@@ -69,7 +69,11 @@ PERL_PACKAGES = \
 	perl-devel-caller perl-devel-lexalias \
 	perl-device-serialport \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
-	perl-email-mime-modifier perl-email-mime perl-email-send \
+	perl-email-address perl-email-messageid \
+	perl-email-mime-contenttype \
+	perl-email-mime-encodings \
+	perl-email-mime-modifier perl-email-mime \
+	perl-email-simple perl-email-send \
 	perl-encode-detect \
 	perl-extutils-cbuilder perl-extutils-parsexs \
 	perl-file-next perl-file-rename \
@@ -84,11 +88,12 @@ PERL_PACKAGES = \
 	perl-libnet perl-libwww \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
-	perl-module-build perl-module-refresh perl-module-signature \
+	perl-module-build perl-module-pluggable perl-module-refresh perl-module-signature \
 	perl-net-cidr-lite perl-net-dns perl-net-ident perl-net-server perl-net-ssleay \
 	perl-padwalker \
 	perl-par-dist \
 	perl-pod-readme perl-poe-xs-queue-array \
+	perl-return-value \
 	perl-scgi \
 	perl-storable \
 	perl-sys-hostname-long \
