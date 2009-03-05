@@ -21,8 +21,8 @@
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VER=6.4.8
-IMAGEMAGICK_REV=3
+IMAGEMAGICK_VER=6.4.9
+IMAGEMAGICK_REV=8
 IMAGEMAGICK_IPK_VERSION=1
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.bz2
 IMAGEMAGICK_UNZIP=bzcat
@@ -256,4 +256,4 @@ imagemagick-dirclean:
 # Some sanity check for the package.
 #
 imagemagick-check: $(IMAGEMAGICK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IMAGEMAGICK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
