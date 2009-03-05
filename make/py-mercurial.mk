@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MERCURIAL_VERSION=1.1.2
+PY-MERCURIAL_VERSION=1.2
 PY-MERCURIAL_SITE=http://www.selenic.com/mercurial/release
 PY-MERCURIAL_SOURCE=mercurial-$(PY-MERCURIAL_VERSION).tar.gz
 PY-MERCURIAL_DIR=mercurial-$(PY-MERCURIAL_VERSION)
@@ -57,7 +57,7 @@ PY-MERCURIAL_CPPFLAGS=
 PY-MERCURIAL_LDFLAGS=
 # to be improved:
 PY-MERCURIAL_WITH_INOTIFY=$(strip $(if \
-$(filter angstrombe angstromle slugosbe slugosle, $(OPTWARE_TARGET)), True, False))
+$(filter cs08q1armel slugosbe slugosle slugos5be slugos5le, $(OPTWARE_TARGET)), True, False))
 
 #
 # PY-MERCURIAL_BUILD_DIR is the directory in which the build is done.
@@ -280,4 +280,4 @@ py-mercurial-dirclean:
 # Some sanity check for the package.
 #
 py-mercurial-check: $(PY26-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY26-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
