@@ -39,7 +39,7 @@ AVAHI_CONFLICTS=
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=1
+AVAHI_IPK_VERSION=2
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
@@ -146,6 +146,7 @@ endif
 		--disable-python \
 		--disable-qt3 \
 		--disable-qt4 \
+		--disable-stack-protector \
 		\
 		--disable-nls \
 		--disable-static \
