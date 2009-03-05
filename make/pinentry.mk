@@ -39,7 +39,7 @@ PINENTRY_CONFLICTS=
 #
 # PINENTRY_IPK_VERSION should be incremented when the ipk changes.
 #
-PINENTRY_IPK_VERSION=1
+PINENTRY_IPK_VERSION=2
 
 #
 # PINENTRY_CONFFILES should be a list of user-editable files
@@ -133,6 +133,7 @@ endif
 		--prefix=/opt \
 		--enable-pinentry-curses \
 		--disable-pinentry-gtk \
+		--disable-pinentry-gtk2 \
 		--disable-pinentry-qt \
 		--without-x \
 		--with-ncurses-include-dir=$(STAGING_INCLUDE_DIR)/ncurses \
