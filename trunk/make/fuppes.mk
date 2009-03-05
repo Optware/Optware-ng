@@ -165,7 +165,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e 's|-I/opt/include *||g' $(@D)/Makefile $(@D)/src/Makefile
+	sed -i -e 's|-I/opt/include | |g' $(@D)/Makefile $(@D)/src/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

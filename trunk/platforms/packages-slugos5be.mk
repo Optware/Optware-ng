@@ -9,7 +9,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	bitchx bzflag \
-	cyrus-imapd fuppes \
+	cyrus-imapd \
 	gtk ipac-ng iptables iptraf ldconfig \
 	microdc2 netatalk nfs-utils \
 	player proftpd puppy mod-python qemu softflowd \
