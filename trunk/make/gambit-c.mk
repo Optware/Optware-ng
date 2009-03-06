@@ -26,9 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.2/source
-GAMBIT-C_UPSTREAM_VERSION=v4_2_8
-GAMBIT-C_VERSION=4.2.8
+GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.4/source
+GAMBIT-C_UPSTREAM_VERSION=v4_4_1
+GAMBIT-C_VERSION=4.4.1
 GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_UPSTREAM_VERSION).tgz
 GAMBIT-C_DIR=gambc-$(GAMBIT-C_UPSTREAM_VERSION)
 GAMBIT-C_UNZIP=zcat
@@ -137,7 +137,7 @@ $(GAMBIT-C_BUILD_DIR)/.configured: $(DL_DIR)/$(GAMBIT-C_SOURCE) $(GAMBIT-C_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(GAMBIT-C_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 gambit-c-unpack: $(GAMBIT-C_BUILD_DIR)/.configured
@@ -199,17 +199,6 @@ $(GAMBIT-C_IPK_DIR)/CONTROL/control:
 $(GAMBIT-C_IPK): $(GAMBIT-C_BUILD_DIR)/.built
 	rm -rf $(GAMBIT-C_IPK_DIR) $(BUILD_DIR)/gambit-c_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GAMBIT-C_BUILD_DIR) prefix=$(GAMBIT-C_IPK_DIR)/opt install
-	install -d $(GAMBIT-C_IPK_DIR)/opt/lib
-	mv $(GAMBIT-C_IPK_DIR)/opt/current/bin $(GAMBIT-C_IPK_DIR)/opt/
-	mv $(GAMBIT-C_IPK_DIR)/opt/current/include $(GAMBIT-C_IPK_DIR)/opt/
-	mv $(GAMBIT-C_IPK_DIR)/opt/current/lib/lib*.so $(GAMBIT-C_IPK_DIR)/opt/lib/
-	mv $(GAMBIT-C_IPK_DIR)/opt/current/share $(GAMBIT-C_IPK_DIR)/opt/
-	install -d $(GAMBIT-C_IPK_DIR)/opt/share/doc
-	mv $(GAMBIT-C_IPK_DIR)/opt/current/doc $(GAMBIT-C_IPK_DIR)/opt/share/doc/gambit-c
-	mv $(GAMBIT-C_IPK_DIR)/opt/current/info $(GAMBIT-C_IPK_DIR)/opt/share/
-	mv $(GAMBIT-C_IPK_DIR)/opt/current/lib $(GAMBIT-C_IPK_DIR)/opt/lib/gambit-c
-	mv $(GAMBIT-C_IPK_DIR)/opt/current/*.scm $(GAMBIT-C_IPK_DIR)/opt/lib/gambit-c/
-	rm -rf $(GAMBIT-C_IPK_DIR)/opt/v$(GAMBIT-C_VERSION) $(GAMBIT-C_IPK_DIR)/opt/current
 	$(STRIP_COMMAND) $(GAMBIT-C_IPK_DIR)/opt/bin/gs[ci] $(GAMBIT-C_IPK_DIR)/opt/lib/lib*.so
 	sed -i -e 's|$(STAGING_DIR)||g; s|$(TARGET_CC)|/opt/bin/gcc|' $(GAMBIT-C_IPK_DIR)/opt/bin/gsc-cc-o.bat
 	$(MAKE) $(GAMBIT-C_IPK_DIR)/CONTROL/control
@@ -239,4 +228,4 @@ gambit-c-dirclean:
 # Some sanity check for the package.
 #
 gambit-c-check: $(GAMBIT-C_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GAMBIT-C_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
