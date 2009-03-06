@@ -21,18 +21,18 @@
 #
 PROFTPD_NAME=proftpd
 PROFTPD_SITE=ftp://ftp.proftpd.org/distrib/source
-PROFTPD_VERSION=1.3.1
+PROFTPD_VERSION=1.3.2
 PROFTPD_SOURCE=$(PROFTPD_NAME)-$(PROFTPD_VERSION).tar.bz2
 PROFTPD_DIR=$(PROFTPD_NAME)-$(PROFTPD_VERSION)
 PROFTPD_UNZIP=bzcat
 
 PROFTPD-MOD-SHAPER_SITE=http://www.castaglia.org/proftpd/modules
-PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.3.tar.gz
+PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.5.tar.gz
 
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=5
+PROFTPD_IPK_VERSION=1
 
 #
 # Control file info
@@ -55,13 +55,12 @@ PROFTPD_CONFFILES=/opt/etc/proftpd.conf /opt/etc/xinetd.d/proftpd
 PROFTPD_PATCHES=\
 $(PROFTPD_SOURCE_DIR)/libcap-makefile.patch \
 $(PROFTPD_SOURCE_DIR)/default_paths.patch \
-$(PROFTPD_SOURCE_DIR)/umode.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PROFTPD_CPPFLAGS=-DHAVE_LLU=1 -UHAVE_LU -DFTPUSERS_PATH='\"/opt/etc/ftpusers\"'
+PROFTPD_CPPFLAGS=-DHAVE_LLU=1 -UHAVE_LU
 PROFTPD_LDFLAGS=
 
 #
@@ -133,7 +132,7 @@ proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURC
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) $(PROFTPD_PATCHES)
+$(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) $(PROFTPD_PATCHES) make/proftpd.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
 	$(PROFTPD_UNZIP) $(DL_DIR)/$(PROFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
