@@ -27,3 +27,5 @@ BROKEN_PACKAGES = \
 	vte \
 	xt xmu xauth xaw xchat xterm
 
+JAMVM_VERSION = 1.5.1
+JAMVM_IPK_VERSION = 1

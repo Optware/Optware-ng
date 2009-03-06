@@ -22,3 +22,6 @@ BROKEN_PACKAGES = \
 	taglib \
 	\
 	firmware-oleg \
+
+JAMVM_VERSION = 1.5.1
+JAMVM_IPK_VERSION = 1
