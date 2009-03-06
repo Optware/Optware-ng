@@ -151,6 +151,7 @@ $(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTP
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-auth-pam \
 		--enable-ctrls \
 		--with-modules=mod_tls:mod_shaper \
 		--cache-file=config.cache \
