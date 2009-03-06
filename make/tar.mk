@@ -20,13 +20,8 @@
 # You should change all these variables to suit your package.
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
-ifneq ($(OPTWARE_TARGET), wl500g)
-TAR_VERSION=1.21
-TAR_IPK_VERSION=1
-else
-TAR_VERSION=1.16.1
-TAR_IPK_VERSION=3
-endif
+TAR_VERSION ?= 1.22
+TAR_IPK_VERSION ?= 1
 TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
 TAR_UNZIP=bzcat
@@ -93,7 +88,7 @@ tar-source: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES)
+$(TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES) make/tar.mk
 	rm -rf $(BUILD_DIR)/$(TAR_DIR) $(TAR_BUILD_DIR)
 	$(TAR_UNZIP) $(DL_DIR)/$(TAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(TAR_DIR) $(@D)
@@ -159,10 +154,8 @@ $(TAR_IPK_DIR)/CONTROL/control:
 #
 $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	rm -rf $(TAR_IPK_DIR) $(BUILD_DIR)/tar_*_$(TARGET_ARCH).ipk
-	install -d $(TAR_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(TAR_BUILD_DIR)/src/tar -o $(TAR_IPK_DIR)/opt/bin/gnutar
-	install -d $(TAR_IPK_DIR)/opt/libexec
-#	$(STRIP_COMMAND) $(TAR_BUILD_DIR)/src/rmt -o $(TAR_IPK_DIR)/opt/libexec/rmt
+	$(MAKE) -C $(TAR_BUILD_DIR) DESTDIR=$(TAR_IPK_DIR) install-strip
+	mv $(TAR_IPK_DIR)/opt/bin/tar $(TAR_IPK_DIR)/opt/bin/gnutar
 	$(MAKE) $(TAR_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --install /opt/bin/tar tar /opt/bin/gnutar 80"; \
@@ -198,4 +191,4 @@ tar-dirclean:
 # Some sanity check for the package.
 #
 tar-check: $(TAR_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TAR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
