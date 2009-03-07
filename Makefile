@@ -317,7 +317,8 @@ COMMON_CROSS_PACKAGES = \
 	sharutils shntool silc-client simh sipcalc siproxd sispmctl \
 	slang slrn slsc \
 	sm smartmontools snort snownews \
-	socat softflowd sox spandsp speex spindown splix sqlite sqlite2 \
+	socat softflowd sox spandsp spawn-fcgi speex spindown splix \
+	sqlite sqlite2 \
 	sqsh squeak squid srelay ssam sslwrap strace stunnel streamripper \
 	stupid-ftpd sudo surfraw swi-prolog svn syslog-ng sysstat syx \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
