@@ -63,6 +63,10 @@ $(PROFTPD_SOURCE_DIR)/default_paths.patch \
 PROFTPD_CPPFLAGS=-DHAVE_LLU=1 -UHAVE_LU
 PROFTPD_LDFLAGS=
 
+ifeq (no, $(IPV6))
+PROFTPD_CONFIGURE_ARGS=--disable-ipv6
+endif
+
 #
 # PROFTPD_BUILD_DIR is the directory in which the build is done.
 # PROFTPD_SOURCE_DIR is the directory which holds all the
@@ -155,6 +159,7 @@ $(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTP
 		--enable-ctrls \
 		--with-modules=mod_tls:mod_shaper \
 		--cache-file=config.cache \
+		$(PROFTPD_CONFIGURE_ARGS) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
