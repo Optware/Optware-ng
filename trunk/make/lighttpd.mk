@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://www.lighttpd.net/download
-LIGHTD_VERSION=1.4.21
+LIGHTD_VERSION=1.4.22
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.bz2
 LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
 LIGHTTPD_UNZIP=bzcat
@@ -35,7 +35,7 @@ LIGHTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
-LIGHTTPD_DEPENDS=pcre, zlib, libstdc++, openssl
+LIGHTTPD_DEPENDS=pcre, zlib, libstdc++, openssl, spawn-fcgi
 
 LIGHTTPD_SUGGESTS=bzip2, e2fsprogs, libmemcache, libxml2, lua, memcached, sqlite
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
@@ -247,6 +247,8 @@ $(LIGHTTPD_IPK): $(LIGHTTPD_BUILD_DIR)/.built
 	rm -rf $(LIGHTTPD_IPK_DIR) $(BUILD_DIR)/lighttpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIGHTTPD_BUILD_DIR) \
 	    DESTDIR=$(LIGHTTPD_IPK_DIR) program_transform_name="" install-strip
+	rm -f $(LIGHTTPD_IPK_DIR)/opt/bin/spawn-fcgi
+	rm -f $(LIGHTTPD_IPK_DIR)/opt/share/man/man1/spawn-fcgi.1
 	rm -f $(LIGHTTPD_IPK_DIR)/opt/lib/lighttpd/*.la
 	install -d $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd
 	install -d $(LIGHTTPD_IPK_DIR)/opt/share/www/lighttpd
