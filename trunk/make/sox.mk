@@ -29,17 +29,20 @@ SOX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SOX_DESCRIPTION=Sound eXchange, command line utility that can convert various formats of audio files.
 SOX_SECTION=audio
 SOX_PRIORITY=optional
-SOX_DEPENDS=file, libpng, libsamplerate, zlib
-SOX_SUGGESTS=ffmpeg, flac, libao, libid3tag, libmad, libogg, libvorbis, wavpack
+SOX_DEPENDS=file, libpng, zlib
+SOX_DEPENDS +=, ffmpeg, flac, libao, libid3tag, libmad, libogg, libvorbis, wavpack
+ifneq (, $(filter i686, $(TARGET_ARCH)))
+SOX_DEPENDS +=, libsamplerate
+endif
 ifneq (, $(filter libsndfile, $(PACKAGES)))
-SOX_SUGGESTS+=, libsndfile
+SOX_DEPENDS +=, libsndfile
 endif
 SOX_CONFLICTS=
 
 #
 # SOX_IPK_VERSION should be incremented when the ipk changes.
 #
-SOX_IPK_VERSION=1
+SOX_IPK_VERSION=2
 
 #
 # SOX_CONFFILES should be a list of user-editable files
@@ -59,6 +62,13 @@ ifdef NO_BUILTIN_MATH
 SOX_CPPFLAGS=-fno-builtin-log -fno-builtin-exp
 endif
 SOX_LDFLAGS=
+
+SOX_CONFIGURE_ARGS = --without-libltdl
+ifneq (, $(filter i686, $(TARGET_ARCH)))
+SOX_CONFIGURE_ARGS += --with-samplerate
+else
+SOX_CONFIGURE_ARGS += --without-samplerate
+endif
 
 #
 # SOX_BUILD_DIR is the directory in which the build is done.
@@ -110,13 +120,16 @@ sox-source: $(DL_DIR)/$(SOX_SOURCE) $(SOX_PATCHES)
 # shown below to make various patches to it.
 #
 $(SOX_BUILD_DIR)/.configured: $(DL_DIR)/$(SOX_SOURCE) $(SOX_PATCHES) make/sox.mk
-	$(MAKE) file-stage libpng-stage libsamplerate-stage zlib-stage
+	$(MAKE) file-stage libpng-stage zlib-stage
 	$(MAKE) ffmpeg-stage flac-stage wavpack-stage
 	$(MAKE) libao-stage libid3tag-stage libmad-stage
+	$(MAKE) libogg-stage libvorbis-stage
+ifneq (, $(filter i686, $(TARGET_ARCH)))
+	$(MAKE) libsamplerate-stage
+endif
 ifneq (, $(filter libsndfile, $(PACKAGES)))
 	$(MAKE) libsndfile-stage
 endif
-	$(MAKE) libogg-stage libvorbis-stage
 	rm -rf $(BUILD_DIR)/$(SOX_DIR) $(@D)
 	$(SOX_UNZIP) $(DL_DIR)/$(SOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SOX_PATCHES)" ; \
@@ -136,6 +149,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		$(SOX_CONFIGURE_ARGS) \
 		--disable-nls \
 		--disable-static \
 	)
