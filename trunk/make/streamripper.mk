@@ -36,13 +36,13 @@ STREAMRIPPER_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 STREAMRIPPER_DESCRIPTION=Shoutcast ripper
 STREAMRIPPER_SECTION=net
 STREAMRIPPER_PRIORITY=optional
-STREAMRIPPER_DEPENDS=libmad, libogg, libvorbis, tre
+STREAMRIPPER_DEPENDS=faad2, glib, libmad, libogg, libvorbis
 STREAMRIPPER_CONFLICTS=
 
 #
 # STREAMRIPPER_IPK_VERSION should be incremented when the ipk changes.
 #
-STREAMRIPPER_IPK_VERSION=1
+STREAMRIPPER_IPK_VERSION=2
 
 #
 # STREAMRIPPER_CONFFILES should be a list of user-editable files
@@ -110,9 +110,8 @@ streamripper-source: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAMRIPPER_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(STREAMRIPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAMRIPPER_PATCHES) make/streamripper.mk
-	$(MAKE) libmad-stage
+	$(MAKE) faad2-stage glib-stage libmad-stage
 	$(MAKE) libvorbis-stage libogg-stage
-	$(MAKE) tre-stage
 	rm -rf $(BUILD_DIR)/$(STREAMRIPPER_DIR) $(@D)
 	$(STREAMRIPPER_UNZIP) $(DL_DIR)/$(STREAMRIPPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(STREAMRIPPER_PATCHES) | patch -d $(BUILD_DIR)/$(STREAMRIPPER_DIR) -p1
@@ -228,4 +227,4 @@ streamripper-dirclean:
 # Some sanity check for the package.
 #
 streamripper-check: $(STREAMRIPPER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(STREAMRIPPER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
