@@ -30,13 +30,13 @@ BACULA_DESCRIPTION=A set of Open Source, enterprise ready, computer programs to 
 BACULA_SECTION=sysadmin
 BACULA_PRIORITY=optional
 BACULA_DEPENDS=libstdc++, openssl, readline, sqlite, tcpwrappers, zlib
-BACULA_SUGGESTS=
+BACULA_SUGGESTS=python25
 BACULA_CONFLICTS=
 
 #
 # BACULA_IPK_VERSION should be incremented when the ipk changes.
 #
-BACULA_IPK_VERSION=1
+BACULA_IPK_VERSION=2
 
 #
 # BACULA_CONFFILES should be a list of user-editable files
@@ -112,6 +112,7 @@ bacula-source: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES)
 $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) make/bacula.mk
 	$(MAKE) libstdc++-stage
 	$(MAKE) openssl-stage readline-stage sqlite-stage tcpwrappers-stage zlib-stage
+	$(MAKE) python25-stage
 	rm -rf $(BUILD_DIR)/$(BACULA_DIR) $(@D)
 	$(BACULA_UNZIP) $(DL_DIR)/$(BACULA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BACULA_PATCHES)" ; \
@@ -121,6 +122,7 @@ $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) ma
 	if test "$(BUILD_DIR)/$(BACULA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BACULA_DIR) $(@D) ; \
 	fi
+	sed -i -e '/PYTHON_LIBS=.* -lpython/s|=.*|="-lpython2.5"|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BACULA_CPPFLAGS)" \
@@ -139,6 +141,7 @@ $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) ma
 		--disable-conio --enable-readline \
 		--with-readline=$(STAGING_PREFIX) \
 		--with-openssl=$(STAGING_PREFIX) \
+		--with-python=$(STAGING_INCLUDE_DIR)/python2.5 \
 		--with-sqlite3=$(STAGING_PREFIX) \
 		--with-tcp-wrappers=$(STAGING_PREFIX) \
 		--without-x \
