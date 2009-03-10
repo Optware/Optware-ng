@@ -1,8 +1,7 @@
 PERL_MAJOR_VER = 5.10
 
 SPECIFIC_PACKAGES = \
-	ipkg-opt \
-	libiconv \
+	ipkg-opt libiconv uclibc-opt \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	$(PERL_PACKAGES) \
 

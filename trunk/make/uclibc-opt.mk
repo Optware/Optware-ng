@@ -8,6 +8,12 @@
 #
 
 UCLIBC-OPT_VERSION ?= 0.9.28
+UCLIBC-OPT_IPK_VERSION ?= $(BUILDROOT_IPK_VERSION)
+UCLIBC-OPT_LIBS_SOURCE_DIR ?= $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/lib
+ifeq ($(UCLIBC-OPT_LIBS_SOURCE_DIR),$(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/lib)
+UCLIBC-OPT_FROM_BUILDROOT=1
+endif
+
 UCLIBC-OPT_DESCRIPTION=micro C library for embedded Linux systems
 UCLIBC-OPT_SECTION=base
 UCLIBC-OPT_PRIORITY=required
@@ -15,11 +21,6 @@ UCLIBC-OPT_DEPENDS=
 UCLIBC-OPT_SUGGESTS=ipkg-opt
 UCLIBC-OPT_CONFLICTS=
 
-#
-# UCLIBC-OPT_IPK_VERSION should be incremented when the ipk changes.
-# Not necessarily the same as $(BUILDROOT_IPK_VERSION)
-#
-UCLIBC-OPT_IPK_VERSION=$(BUILDROOT_IPK_VERSION)
 
 # UCLIBC-OPT_IPK_DIR is the directory in which the ipk is built.
 # UCLIBC-OPT_IPK is the name of the resulting ipk files.
@@ -64,15 +65,24 @@ $(UCLIBC-OPT_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
+ifdef UCLIBC-OPT_FROM_BUILDROOT
 UCLIBC-OPT_LIBS=ld-uClibc libc libdl libgcc_s libm libintl libnsl libpthread \
 	libthread_db libresolv  librt libutil libuClibc libstdc++
 ifeq ($(BUILRTOOT_GCC), 4.1.1)
 UCLIBC-OPT_LIBS+=libssp
 endif
-UCLIBC-OPT_LIBS_PATTERN=$(patsubst %,\
-	$(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/lib/%*so*,$(UCLIBC-OPT_LIBS))
+else
+UCLIBC-OPT_LIBS=ld-uClibc libc libdl libgcc_s libm libpthread \
+	libthread_db libresolv librt libutil libuClibc
+endif
 
-$(UCLIBC-OPT_IPK): $(BUILDROOT_BUILD_DIR)/.built
+UCLIBC-OPT_LIBS_PATTERN=$(patsubst %,$(UCLIBC-OPT_LIBS_SOURCE_DIR)/%*so*,$(UCLIBC-OPT_LIBS))
+
+ifdef UCLIBC-OPT_FROM_BUILDROOT
+$(UCLIBC-OPT_IPK): $(BUILDROOT_BUILD_DIR)/.built make/uclibc-opt.mk
+else
+$(UCLIBC-OPT_IPK): make/uclibc-opt.mk
+endif
 	rm -rf $(UCLIBC-OPT_IPK_DIR) $(BUILD_DIR)/uclibc-opt_*_$(TARGET_ARCH).ipk
 	install -d $(UCLIBC-OPT_IPK_DIR)
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(UCLIBC-OPT_IPK_DIR) install-strip
@@ -80,14 +90,16 @@ $(UCLIBC-OPT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 #		--wildcards $(UCLIBC-OPT_LIBS_PATTERN) ./opt/sbin/ldconfig
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/etc
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/lib
-	install -d $(UCLIBC-OPT_IPK_DIR)/opt/usr/lib
 	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)/opt/lib
 	$(TARGET_STRIP) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
+	$(MAKE) $(UCLIBC-OPT_IPK_DIR)/CONTROL/control
+ifdef UCLIBC-OPT_FROM_BUILDROOT
+	install -d $(UCLIBC-OPT_IPK_DIR)/opt/usr/lib
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/sbin
 	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/sbin/ldconfig \
 		$(UCLIBC-OPT_IPK_DIR)/opt/sbin
-	$(MAKE) $(UCLIBC-OPT_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(UCLIBC-OPT_IPK_DIR)/CONTROL/postinst
+endif
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(UCLIBC-OPT_IPK_DIR)/CONTROL/prerm
 #	echo $(UCLIBC-OPT_CONFFILES) | sed -e 's/ /\n/g' > $(UCLIBC-OPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UCLIBC-OPT_IPK_DIR)
@@ -108,4 +120,4 @@ uclibc-opt-dirclean:
 # Some sanity check for the package.
 #
 uclibc-opt-check: $(UCLIBC-OPT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UCLIBC-OPT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
