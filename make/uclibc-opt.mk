@@ -72,7 +72,7 @@ ifeq ($(BUILRTOOT_GCC), 4.1.1)
 UCLIBC-OPT_LIBS+=libssp
 endif
 else
-UCLIBC-OPT_LIBS=ld-uClibc libc libdl libgcc_s libm libpthread \
+UCLIBC-OPT_LIBS=ld-uClibc libc libgcc_s libm libpthread \
 	libthread_db libresolv librt libutil libuClibc
 endif
 
