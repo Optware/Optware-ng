@@ -59,4 +59,8 @@ $(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/
 	tar -xz -C $(@D) -f $< GPL/smp86xx_toolchain_2.8.2.0
 	touch $@
 
+UCLIBC-OPT_VERSION = 0.9.28
+UCLIBC-OPT_IPK_VERSION = 1
+UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/lib
+
 endif
