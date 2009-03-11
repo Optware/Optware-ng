@@ -32,7 +32,7 @@ SOX_PRIORITY=optional
 SOX_DEPENDS=file, libpng, zlib
 SOX_DEPENDS +=, ffmpeg, flac, libao, libid3tag, libmad, libogg, libvorbis, wavpack
 ifneq (, $(filter i686, $(TARGET_ARCH)))
-SOX_DEPENDS +=, libsamplerate
+SOX_DEPENDS +=, libsamplerate, lame
 endif
 ifneq (, $(filter libsndfile, $(PACKAGES)))
 SOX_DEPENDS +=, libsndfile
@@ -42,7 +42,7 @@ SOX_CONFLICTS=
 #
 # SOX_IPK_VERSION should be incremented when the ipk changes.
 #
-SOX_IPK_VERSION=2
+SOX_IPK_VERSION=3
 
 #
 # SOX_CONFFILES should be a list of user-editable files
@@ -65,9 +65,9 @@ SOX_LDFLAGS=
 
 SOX_CONFIGURE_ARGS = --without-libltdl
 ifneq (, $(filter i686, $(TARGET_ARCH)))
-SOX_CONFIGURE_ARGS += --with-samplerate
+SOX_CONFIGURE_ARGS += --with-samplerate --with-lame
 else
-SOX_CONFIGURE_ARGS += --without-samplerate
+SOX_CONFIGURE_ARGS += --without-samplerate --without-lame
 endif
 
 #
@@ -125,7 +125,7 @@ $(SOX_BUILD_DIR)/.configured: $(DL_DIR)/$(SOX_SOURCE) $(SOX_PATCHES) make/sox.mk
 	$(MAKE) libao-stage libid3tag-stage libmad-stage
 	$(MAKE) libogg-stage libvorbis-stage
 ifneq (, $(filter i686, $(TARGET_ARCH)))
-	$(MAKE) libsamplerate-stage
+	$(MAKE) lame-stage libsamplerate-stage
 endif
 ifneq (, $(filter libsndfile, $(PACKAGES)))
 	$(MAKE) libsndfile-stage
