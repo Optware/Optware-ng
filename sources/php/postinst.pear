@@ -1,13 +1,14 @@
 #!/bin/sh
 
-PEAR_BOOT_DIR=/tmp/pear
+PEAR_BOOT_DIR=/opt/tmp/pear
 PEAR_DIR=/opt/share/pear
 BIN_DIR=/opt/bin
 
 PHP_FLAGS="-q -dshort_open_tag=0 -dsafe_mode=0"
 PEAR_FLAGS="-d $PEAR_DIR -b $BIN_DIR"
 
-/opt/bin/php $PHP_FLAGS $PEAR_BOOT_DIR/install-pear.php $PEAR_FLAGS $PEAR_BOOT_DIR/package-*.xml
-/opt/bin/php $PHP_FLAGS $PEAR_BOOT_DIR/install-pear.php $PEAR_FLAGS $PEAR_BOOT_DIR/packages/*.tar
+# /opt/bin/php $PHP_FLAGS $PEAR_BOOT_DIR/install-pear.php $PEAR_FLAGS $PEAR_BOOT_DIR/package-*.xml
+# /opt/bin/php $PHP_FLAGS $PEAR_BOOT_DIR/install-pear.php $PEAR_FLAGS $PEAR_BOOT_DIR/packages/*.tar
+/opt/bin/php $PHP_FLAGS $PEAR_BOOT_DIR/install-pear-nozlib.phar $PEAR_FLAGS
 
 rm -rf $PEAR_BOOT_DIR
