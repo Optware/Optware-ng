@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MTOOLS_SITE=http://mtools.linux.lu
-MTOOLS_VERSION=4.0.5
+MTOOLS_SITE=ftp://ftp.gnu.org/gnu/mtools
+MTOOLS_VERSION=4.0.10
 MTOOLS_SOURCE=mtools-$(MTOOLS_VERSION).tar.bz2
 MTOOLS_DIR=mtools-$(MTOOLS_VERSION)
 MTOOLS_UNZIP=bzcat
