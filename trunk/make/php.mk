@@ -29,7 +29,7 @@ endif
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=2
+PHP_IPK_VERSION=3
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -560,6 +560,9 @@ endif
 	$(MAKE) $(PHP_PEAR_IPK_DIR)/CONTROL/control
 	install -m 644 $(PHP_SOURCE_DIR)/postinst.pear $(PHP_PEAR_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(PHP_SOURCE_DIR)/prerm.pear $(PHP_PEAR_IPK_DIR)/CONTROL/prerm
+	install -d $(PHP_PEAR_IPK_DIR)/opt/etc
+	install -m 644 $(PHP_SOURCE_DIR)/pear.conf $(PHP_PEAR_IPK_DIR)/opt/etc/pear.conf.new
+	install -d $(PHP_PEAR_IPK_DIR)/opt/etc/pearkeys
 	install -d $(PHP_PEAR_IPK_DIR)/opt/tmp
 	cp -a $(PHP_BUILD_DIR)/pear $(PHP_PEAR_IPK_DIR)/opt/tmp
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_PEAR_IPK_DIR)
