@@ -11,4 +11,7 @@ PEAR_FLAGS="-d $PEAR_DIR -b $BIN_DIR"
 # /opt/bin/php $PHP_FLAGS $PEAR_BOOT_DIR/install-pear.php $PEAR_FLAGS $PEAR_BOOT_DIR/packages/*.tar
 /opt/bin/php $PHP_FLAGS $PEAR_BOOT_DIR/install-pear-nozlib.phar $PEAR_FLAGS
 
+mv -f /opt/etc/pear.conf /opt/etc/pear.conf.old
+mv -f /opt/etc/pear.conf.new /opt/etc/pear.conf
+
 rm -rf $PEAR_BOOT_DIR
