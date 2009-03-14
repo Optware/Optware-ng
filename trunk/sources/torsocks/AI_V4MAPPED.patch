@@ -1,0 +1,14 @@
+--- src/dead_pool.c.orig	2009-03-14 18:14:49.441552604 +0000
++++ src/dead_pool.c	2009-03-14 18:17:29.691172538 +0000
+@@ -763,7 +763,11 @@
+         /* Caller has requested an AF_INET6 address, and is not prepared to
+            accept IPv4-mapped IPV6 addresses. There's nothing we can do to
+            service their request. */
++#if defined(AI_V4MAPPED)
+         if((flags & AI_V4MAPPED) == 0) {
++#else
++        if (1) {
++#endif
+             show_msg(MSGWARN, "getipnodebyname: asked for V6 addresses only, "
+                      "but tsocks can't handle that\n");
+             *error_num = NO_RECOVERY;

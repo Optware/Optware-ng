@@ -47,7 +47,7 @@ TORSOCKS_IPK_VERSION=1
 # TORSOCKS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#TORSOCKS_PATCHES=$(TORSOCKS_SOURCE_DIR)/configure.patch
+TORSOCKS_PATCHES=$(TORSOCKS_SOURCE_DIR)/AI_V4MAPPED.patch
 
 #
 # If the compilation of the package requires additional
