@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GLOOX_SITE=http://camaya.net/download
-GLOOX_VERSION=0.9.9.5
+GLOOX_VERSION=0.9.9.7
 GLOOX_SOURCE=gloox-$(GLOOX_VERSION).tar.bz2
 GLOOX_DIR=gloox-$(GLOOX_VERSION)
 GLOOX_UNZIP=bzcat
@@ -36,7 +36,7 @@ GLOOX_CONFLICTS=
 #
 # GLOOX_IPK_VERSION should be incremented when the ipk changes.
 #
-GLOOX_IPK_VERSION=2
+GLOOX_IPK_VERSION=1
 
 #
 # GLOOX_CONFFILES should be a list of user-editable files
@@ -243,4 +243,4 @@ gloox-dirclean:
 # Some sanity check for the package.
 #
 gloox-check: $(GLOOX_IPK) $(GLOOX-DEV_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GLOOX_IPK) $(GLOOX-DEV_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
