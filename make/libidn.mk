@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBIDN_SITE=http://ftp.gnu.org/gnu/libidn
-LIBIDN_VERSION=1.10
+LIBIDN_VERSION=1.13
 LIBIDN_SOURCE=libidn-$(LIBIDN_VERSION).tar.gz
 LIBIDN_DIR=libidn-$(LIBIDN_VERSION)
 LIBIDN_UNZIP=zcat
@@ -213,4 +213,4 @@ libidn-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBIDN_DIR) $(LIBIDN_BUILD_DIR) $(LIBIDN_IPK_DIR) $(LIBIDN_IPK)
 
 libidn-check: $(LIBIDN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBIDN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
