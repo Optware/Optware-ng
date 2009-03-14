@@ -21,7 +21,7 @@
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
 TAR_VERSION ?= 1.22
-TAR_IPK_VERSION ?= 1
+TAR_IPK_VERSION ?= 2
 TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
 TAR_UNZIP=bzcat
@@ -156,6 +156,7 @@ $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	rm -rf $(TAR_IPK_DIR) $(BUILD_DIR)/tar_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TAR_BUILD_DIR) DESTDIR=$(TAR_IPK_DIR) install-strip
 	mv $(TAR_IPK_DIR)/opt/bin/tar $(TAR_IPK_DIR)/opt/bin/gnutar
+	mv $(TAR_IPK_DIR)/opt/libexec/rmt $(TAR_IPK_DIR)/opt/libexec/rmt-tar
 	$(MAKE) $(TAR_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --install /opt/bin/tar tar /opt/bin/gnutar 80"; \
