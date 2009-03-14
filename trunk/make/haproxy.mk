@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-HAPROXY_SITE=http://haproxy.1wt.eu/download/1.2/src
-HAPROXY_VERSION=1.2.18
+HAPROXY_SITE=http://haproxy.1wt.eu/download/1.3/src
+HAPROXY_VERSION=1.3.15.8
 HAPROXY_SOURCE=haproxy-$(HAPROXY_VERSION).tar.gz
 HAPROXY_DIR=haproxy-$(HAPROXY_VERSION)
 HAPROXY_UNZIP=zcat
@@ -82,8 +82,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HAPROXY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HAPROXY_SITE)/$(HAPROXY_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(HAPROXY_SOURCE)
+	$(WGET) -P $(@D) $(HAPROXY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,16 +112,16 @@ haproxy-source: $(DL_DIR)/$(HAPROXY_SOURCE) $(HAPROXY_PATCHES)
 #
 $(HAPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(HAPROXY_SOURCE) $(HAPROXY_PATCHES) make/haproxy.mk
 	$(MAKE) pcre-stage
-	rm -rf $(BUILD_DIR)/$(HAPROXY_DIR) $(HAPROXY_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(HAPROXY_DIR) $(@D)
 	$(HAPROXY_UNZIP) $(DL_DIR)/$(HAPROXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HAPROXY_PATCHES)" ; \
 		then cat $(HAPROXY_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(HAPROXY_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(HAPROXY_DIR)" != "$(HAPROXY_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(HAPROXY_DIR) $(HAPROXY_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(HAPROXY_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(HAPROXY_DIR) $(@D) ; \
 	fi
-#	(cd $(HAPROXY_BUILD_DIR); \
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HAPROXY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HAPROXY_LDFLAGS)" \
@@ -144,7 +144,7 @@ haproxy-unpack: $(HAPROXY_BUILD_DIR)/.configured
 $(HAPROXY_BUILD_DIR)/.built: $(HAPROXY_BUILD_DIR)/.configured
 	rm -f $@
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
-	$(MAKE) -C $(HAPROXY_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		TARGET=$(HAPROXY_LINUX_TARGET) REGEX=pcre \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HAPROXY_CPPFLAGS)" \
@@ -163,7 +163,7 @@ haproxy: $(HAPROXY_BUILD_DIR)/.built
 #
 $(HAPROXY_BUILD_DIR)/.staged: $(HAPROXY_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(HAPROXY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 haproxy-stage: $(HAPROXY_BUILD_DIR)/.staged
@@ -244,4 +244,4 @@ haproxy-dirclean:
 # Some sanity check for the package.
 #
 haproxy-check: $(HAPROXY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HAPROXY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
