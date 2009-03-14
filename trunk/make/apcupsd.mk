@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 APCUPSD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/apcupsd
-APCUPSD_VERSION=3.14.4
+APCUPSD_VERSION=3.14.5
 APCUPSD_SOURCE=apcupsd-$(APCUPSD_VERSION).tar.gz
 APCUPSD_DIR=apcupsd-$(APCUPSD_VERSION)
 APCUPSD_UNZIP=zcat
@@ -243,4 +243,4 @@ apcupsd-dirclean:
 # Some sanity check for the package.
 #
 apcupsd-check: $(APCUPSD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(APCUPSD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
