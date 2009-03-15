@@ -4,6 +4,7 @@ SPECIFIC_PACKAGES = \
 	ipkg-opt libiconv uclibc-opt \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	$(PERL_PACKAGES) \
+	binutils libc-dev gcc \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
