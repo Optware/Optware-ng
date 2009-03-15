@@ -5,7 +5,7 @@
 #############################################################
 
 UNRAR_SITE=http://www.rarlab.com/rar
-UNRAR_VERSION:=3.7.8
+UNRAR_VERSION:=3.8.5
 UNRAR_SOURCE=unrarsrc-$(UNRAR_VERSION).tar.gz
 UNRAR_DIR=unrarsrc-$(UNRAR_VERSION)
 UNRAR_UNZIP=gunzip
@@ -87,4 +87,4 @@ unrar-dirclean:
 	rm -rf $(BUILD_DIR)/$(UNRAR_DIR) $(UNRAR_BUILD_DIR) $(UNRAR_IPK_DIR) $(UNRAR_IPK)
 
 unrar-check: $(UNRAR_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UNRAR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
