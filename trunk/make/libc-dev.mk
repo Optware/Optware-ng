@@ -33,7 +33,7 @@ LIBC-DEV_DEPENDS=libnsl
 LIBC-DEV_SUGGESTS=
 LIBC-DEV_CONFLICTS=
 
-LIBC-DEV_IPK_VERSION=3
+LIBC-DEV_IPK_VERSION=4
 
 ifdef LIBNSL_VERSION
 LIBC-DEV_VERSION=$(LIBNSL_VERSION)
@@ -57,7 +57,7 @@ else
 LIBC-DEV_LIBDIR=$(TARGET_LIBDIR)
 endif
 
-LIBC-DEV_CRT_DIR ?= /opt/$(GNU_TARGET_NAME)/lib
+LIBC-DEV_CRT_DIR ?= /opt/`$(TARGET_CC) -dumpmachine`/lib
 
 #
 # LIBC-DEV_CONFFILES should be a list of user-editable files
@@ -130,6 +130,9 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	install -d $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	install -d $(LIBC-DEV_IPK_DIR)/opt/lib/
+ifeq (wdtv, $(OPTWARE_TARGET))
+	rm -f $(LIBC-DEV_IPK_DIR)/opt/include/z*.h
+else
 ifeq (uclibc, $(LIBC_STYLE))
 	rsync -l \
 		$(TARGET_LIBDIR)/libuClibc-$(LIBC-DEV_VERSION).so \
@@ -155,6 +158,7 @@ endif
 		ln -sf $${f}.so.* $${f}.so; \
 	    fi; \
 	done
+endif
 	rm -rf $(LIBC-DEV_IPK_DIR)/opt/include/c++
 	$(MAKE) $(LIBC-DEV_IPK_DIR)/CONTROL/control
 	echo $(LIBC-DEV_CONFFILES) | sed -e 's/ /\n/g' > $(LIBC-DEV_IPK_DIR)/CONTROL/conffiles

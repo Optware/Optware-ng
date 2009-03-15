@@ -62,4 +62,10 @@ UCLIBC-OPT_VERSION = 0.9.28
 UCLIBC-OPT_IPK_VERSION = 2
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/lib
 
+BINUTILS_VERSION=2.19.1
+BINUTILS_IPK_VERSION=1
+
+NATIVE_GCC_EXTRA_CONFIG_ARGS=--enable-shared --with-float=soft --disable-__cxa_atexit --enable-target-optspace --enable-sjlj-exceptions
+GCC_IPK_VERSION = 1
+
 endif

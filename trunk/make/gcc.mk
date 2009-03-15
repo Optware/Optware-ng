@@ -46,7 +46,7 @@ GCC_CONFLICTS=
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION=4
+GCC_IPK_VERSION ?= 4
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -211,6 +211,11 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	rm -f $(GCC_IPK_DIR)/opt/lib/libiberty.a $(GCC_IPK_DIR)/opt/info/dir $(GCC_IPK_DIR)/opt/info/dir.old
 ifneq (uclibc, $(LIBC_STYLE))
 	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++*
+endif
+ifeq (wdtv, $(OPTWARE_TARGET))
+	rm -f $(GCC_IPK_DIR)/opt/lib/lib*.so* $(GCC_IPK_DIR)/opt/include/*.h
+	cd $(GCC_IPK_DIR)/opt/libexec/gcc/mipsel-linux-uclibc/$(GCC_VERSION); \
+		$(STRIP_COMMAND) c* install-tools/fixincl
 endif
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/cpp
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcc
