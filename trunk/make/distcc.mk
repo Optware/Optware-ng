@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 DISTCC_SITE=http://distcc.googlecode.com/files
-DISTCC_VERSION=3.0
+DISTCC_VERSION=3.1
 DISTCC_SOURCE=distcc-$(DISTCC_VERSION).tar.bz2
 DISTCC_DIR=distcc-$(DISTCC_VERSION)
 DISTCC_UNZIP=bzcat
@@ -122,17 +122,19 @@ distcc-unpack: $(DISTCC_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(DISTCC_BUILD_DIR)/distcc: $(DISTCC_BUILD_DIR)/.configured
+$(DISTCC_BUILD_DIR)/.built: $(DISTCC_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(@D) \
 		INCLUDESERVER_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 \
 		$(TARGET_CONFIGURE_OPTS) \
 		LDSHARED='$(TARGET_CC) -shared'
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-distcc: $(DISTCC_BUILD_DIR)/distcc
+distcc: $(DISTCC_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -164,7 +166,7 @@ $(DISTCC_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(DISTCC_IPK): $(DISTCC_BUILD_DIR)/distcc
+$(DISTCC_IPK): $(DISTCC_BUILD_DIR)/.built
 	rm -rf $(DISTCC_IPK_DIR) $(DISTCC_IPK)
 	$(MAKE) -C $(DISTCC_BUILD_DIR) install \
 		DESTDIR=$(DISTCC_IPK_DIR) \
@@ -200,4 +202,4 @@ distcc-dirclean:
 # Some sanity check for the package.
 #
 distcc-check: $(DISTCC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DISTCC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
