@@ -3,9 +3,9 @@
 @@ -142,7 +142,7 @@
    using ::vsprintf;
  }
-
+ 
 -#if _GLIBCXX_USE_C99
 +#if _GLIBCXX_USE_C99 || defined(__UCLIBC__)
-
+ 
  #undef snprintf
  #undef vfscanf
