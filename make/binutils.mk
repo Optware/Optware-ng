@@ -23,6 +23,7 @@
 #
 BINUTILS_SITE=http://ftp.gnu.org/gnu/binutils
 BINUTILS_VERSION ?= 2.17
+BINUTILS_IPK_VERSION ?= 2
 BINUTILS_SOURCE=binutils-$(BINUTILS_VERSION).tar.bz2
 BINUTILS_DIR?=binutils-$(BINUTILS_VERSION)
 BINUTILS_UNZIP=bzcat
@@ -33,11 +34,6 @@ BINUTILS_PRIORITY=optional
 BINUTILS_DEPENDS=
 BINUTILS_SUGGESTS=
 BINUTILS_CONFLICTS=
-
-#
-# BINUTILS_IPK_VERSION should be incremented when the ipk changes.
-#
-BINUTILS_IPK_VERSION=2
 
 #
 # BINUTILS_CONFFILES should be a list of user-editable files
