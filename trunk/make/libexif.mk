@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBEXIF_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libexif
-LIBEXIF_VERSION=0.6.16
+LIBEXIF_VERSION=0.6.17
 LIBEXIF_SOURCE=libexif-$(LIBEXIF_VERSION).tar.bz2
 LIBEXIF_DIR=libexif-$(LIBEXIF_VERSION)
 LIBEXIF_UNZIP=bzcat
@@ -229,4 +229,4 @@ libexif-dirclean:
 # Some sanity check for the package.
 #
 libexif-check: $(LIBEXIF_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBEXIF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
