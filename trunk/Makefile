@@ -127,7 +127,7 @@ PERL_PACKAGES = \
 	stow \
 
 PYTHON_PACKAGES = \
-	bzr-svn \
+	bzr-svn bzrtools \
 	cherokee-pyscgi \
 	dstat \
 	getmail \
