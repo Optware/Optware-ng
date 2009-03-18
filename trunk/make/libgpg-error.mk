@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGPG-ERROR_SITE=ftp://ftp.gnupg.org/gcrypt/libgpg-error
-LIBGPG-ERROR_VERSION=1.4
+LIBGPG-ERROR_VERSION=1.7
 LIBGPG-ERROR_SOURCE=libgpg-error-$(LIBGPG-ERROR_VERSION).tar.gz
 LIBGPG-ERROR_DIR=libgpg-error-$(LIBGPG-ERROR_VERSION)
 LIBGPG-ERROR_UNZIP=zcat
@@ -112,8 +112,8 @@ $(LIBGPG-ERROR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG
 	rm -rf $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(LIBGPG-ERROR_BUILD_DIR)
 	$(LIBGPG-ERROR_UNZIP) $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(LIBGPG-ERROR_PATCHES) | patch -d $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(LIBGPG-ERROR_BUILD_DIR)
-	(cd $(LIBGPG-ERROR_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGPG-ERROR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGPG-ERROR_LDFLAGS)" \
@@ -125,8 +125,8 @@ $(LIBGPG-ERROR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBGPG-ERROR_BUILD_DIR)/libtool
-	touch $(LIBGPG-ERROR_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libgpg-error-unpack: $(LIBGPG-ERROR_BUILD_DIR)/.configured
 
@@ -134,9 +134,9 @@ libgpg-error-unpack: $(LIBGPG-ERROR_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBGPG-ERROR_BUILD_DIR)/.built: $(LIBGPG-ERROR_BUILD_DIR)/.configured
-	rm -f $(LIBGPG-ERROR_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBGPG-ERROR_BUILD_DIR)
-	touch $(LIBGPG-ERROR_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -147,11 +147,11 @@ libgpg-error: $(LIBGPG-ERROR_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBGPG-ERROR_BUILD_DIR)/.staged: $(LIBGPG-ERROR_BUILD_DIR)/.built
-	rm -f $(LIBGPG-ERROR_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBGPG-ERROR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	sed -ie 's|-I$$includedir|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/gpg-error-config
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|-I$$includedir|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/gpg-error-config
 	rm -f $(STAGING_DIR)/opt/lib/libgpg-error.la
-	touch $(LIBGPG-ERROR_BUILD_DIR)/.staged
+	touch $@
 
 libgpg-error-stage: $(LIBGPG-ERROR_BUILD_DIR)/.staged
 
@@ -160,7 +160,7 @@ libgpg-error-stage: $(LIBGPG-ERROR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libgpg-error
 #
 $(LIBGPG-ERROR_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBGPG-ERROR_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libgpg-error" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -221,4 +221,4 @@ libgpg-error-dirclean:
 # Some sanity check for the package.
 #
 libgpg-error-check: $(LIBGPG-ERROR_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBGPG-ERROR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
