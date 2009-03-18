@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HASERL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/haserl
-HASERL_VERSION=0.9.23
+HASERL_VERSION=0.9.25
 HASERL_SOURCE=haserl-$(HASERL_VERSION).tar.gz
 HASERL_DIR=haserl-$(HASERL_VERSION)
 HASERL_UNZIP=zcat
@@ -164,8 +164,8 @@ haserl-unpack: $(HASERL_BUILD_DIR)/.configured
 #
 $(HASERL_BUILD_DIR)/.built: $(HASERL_BUILD_DIR)/.configured
 	rm -f $@
-	if test -f $(HASERL_SOURCE_DIR)/haserl_lualib.inc.$(TARGET_ARCH); then \
-		cp $(HASERL_SOURCE_DIR)/haserl_lualib.inc.$(TARGET_ARCH) $(@D)/with-lua/src/haserl_lualib.inc; \
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; then \
+		cp $(HASERL_SOURCE_DIR)/haserl_lualib.inc.bigendian $(@D)/with-lua/src/haserl_lualib.inc; \
 	fi
 	$(MAKE) -C $(@D)/with-lua
 	$(MAKE) -C $(@D)/without-lua
