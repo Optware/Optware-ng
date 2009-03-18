@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LUAROCKS_SITE=http://luaforge.net/frs/download.php/3727
-LUAROCKS_VERSION=1.0
+LUAROCKS_SITE=http://luaforge.net/frs/download.php/3981
+LUAROCKS_VERSION=1.0.1
 LUAROCKS_SOURCE=luarocks-$(LUAROCKS_VERSION).tar.gz
 LUAROCKS_DIR=luarocks-$(LUAROCKS_VERSION)
 LUAROCKS_UNZIP=zcat
@@ -223,4 +223,4 @@ luarocks-dirclean:
 # Some sanity check for the package.
 #
 luarocks-check: $(LUAROCKS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LUAROCKS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
