@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUTLS_SITE=http://ftp.gnu.org/pub/gnu/gnutls
-GNUTLS_VERSION=2.4.2
+GNUTLS_VERSION=2.6.4
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
 GNUTLS_UNZIP=bzcat
@@ -42,7 +42,7 @@ GNUTLS_CONFLICTS=
 #
 # GNUTLS_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUTLS_IPK_VERSION=2
+GNUTLS_IPK_VERSION=1
 
 #
 # GNUTLS_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ GNUTLS_CONFFILES=#/opt/etc/gnutls.conf /opt/etc/init.d/SXXgnutls
 # GNUTLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GNUTLS_PATCHES=$(GNUTLS_SOURCE_DIR)/gnutls.h.in.patch
+#GNUTLS_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -259,4 +259,4 @@ gnutls-dirclean:
 # Some sanity check for the package.
 #
 gnutls-check: $(GNUTLS_IPK) $(GNUTLS-DEV_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNUTLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
