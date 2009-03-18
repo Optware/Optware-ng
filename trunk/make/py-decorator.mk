@@ -23,12 +23,12 @@
 #
 # PY-DECORATOR_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-DECORATOR_SITE=http://www.phyast.pitt.edu/~micheles/python
-PY-DECORATOR_VERSION=2.3.0
-PY-DECORATOR_IPK_VERSION=2
-PY-DECORATOR_SOURCE=decorator-$(PY-DECORATOR_VERSION).zip
+PY-DECORATOR_SITE=http://pypi.python.org/packages/source/d/decorator
+PY-DECORATOR_VERSION=3.0.1
+PY-DECORATOR_IPK_VERSION=1
+PY-DECORATOR_SOURCE=decorator-$(PY-DECORATOR_VERSION).tar.gz
 PY-DECORATOR_DIR=decorator-$(PY-DECORATOR_VERSION)
-PY-DECORATOR_UNZIP=unzip
+PY-DECORATOR_UNZIP=zcat
 PY-DECORATOR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-DECORATOR_DESCRIPTION=A library of helper functions intended to make writing templates in web applications easier.
 PY-DECORATOR_SECTION=misc
@@ -117,7 +117,7 @@ $(PY-DECORATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DEC
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-DECORATOR_DIR)
 	mkdir -p $(BUILD_DIR)/$(PY-DECORATOR_DIR)
-	cd $(BUILD_DIR)/$(PY-DECORATOR_DIR) && $(PY-DECORATOR_UNZIP) $(DL_DIR)/$(PY-DECORATOR_SOURCE)
+	$(PY-DECORATOR_UNZIP) $(DL_DIR)/$(PY-DECORATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-DECORATOR_PATCHES)" ; then \
 	    cat $(PY-DECORATOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
         fi
@@ -128,7 +128,7 @@ $(PY-DECORATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DEC
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-DECORATOR_DIR)
 	mkdir -p $(BUILD_DIR)/$(PY-DECORATOR_DIR)
-	cd $(BUILD_DIR)/$(PY-DECORATOR_DIR) && $(PY-DECORATOR_UNZIP) $(DL_DIR)/$(PY-DECORATOR_SOURCE)
+	$(PY-DECORATOR_UNZIP) $(DL_DIR)/$(PY-DECORATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-DECORATOR_PATCHES)" ; then \
 	    cat $(PY-DECORATOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
         fi
@@ -139,7 +139,7 @@ $(PY-DECORATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DEC
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-DECORATOR_DIR)
 	mkdir -p $(BUILD_DIR)/$(PY-DECORATOR_DIR)
-	cd $(BUILD_DIR)/$(PY-DECORATOR_DIR) && $(PY-DECORATOR_UNZIP) $(DL_DIR)/$(PY-DECORATOR_SOURCE)
+	$(PY-DECORATOR_UNZIP) $(DL_DIR)/$(PY-DECORATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-DECORATOR_PATCHES)" ; then \
 	    cat $(PY-DECORATOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
         fi
