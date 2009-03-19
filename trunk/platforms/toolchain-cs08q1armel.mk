@@ -56,4 +56,5 @@ $(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/pl
 	tar -xj -C $(BASE_DIR)/toolchain -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	touch $@
 
+NATIVE_GCC_EXTRA_CONFIG_ARGS=--enable-threads --disable-libmudflap --disable-libssp --disable-libgomp --disable-libstdcxx-pch --enable-shared --enable-symvers=gnu --enable-__cxa_atexit
 endif
