@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CACAO_VERSION=0.99.3
+CACAO_VERSION=0.99.4
 CACAO_SITE=http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-$(CACAO_VERSION)
 CACAO_SOURCE=cacao-$(CACAO_VERSION).tar.bz2
 CACAO_DIR=cacao-$(CACAO_VERSION)
