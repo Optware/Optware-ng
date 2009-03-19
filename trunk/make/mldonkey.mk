@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MLDONKEY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mldonkey
-MLDONKEY_VERSION=2.8.7
+MLDONKEY_VERSION=3.0.0
 MLDONKEY_SOURCE=mldonkey-$(MLDONKEY_VERSION).tar.bz2
 MLDONKEY_DIR=mldonkey-$(MLDONKEY_VERSION)
 MLDONKEY_UNZIP=bzcat
@@ -36,7 +36,7 @@ MLDONKEY_CONFLICTS=
 #
 # MLDONKEY_IPK_VERSION should be incremented when the ipk changes.
 #
-MLDONKEY_IPK_VERSION=2
+MLDONKEY_IPK_VERSION=1
 
 #
 # MLDONKEY_CONFFILES should be a list of user-editable files
@@ -74,7 +74,8 @@ MLDONKEY_IPK=$(BUILD_DIR)/mldonkey_$(MLDONKEY_VERSION)-$(MLDONKEY_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MLDONKEY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MLDONKEY_SITE)/$(MLDONKEY_SOURCE)
+	$(WGET) -P $(@D) $(MLDONKEY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,16 +105,16 @@ mldonkey-source: $(DL_DIR)/$(MLDONKEY_SOURCE) $(MLDONKEY_PATCHES)
 $(MLDONKEY_BUILD_DIR)/.configured: $(DL_DIR)/$(MLDONKEY_SOURCE) $(MLDONKEY_PATCHES)
 # make/mldonkey.mk
 	$(MAKE) zlib-stage bzip2-stage
-	rm -rf $(BUILD_DIR)/$(MLDONKEY_DIR) $(MLDONKEY_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MLDONKEY_DIR) $(@D)
 	$(MLDONKEY_UNZIP) $(DL_DIR)/$(MLDONKEY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MLDONKEY_PATCHES)" ; \
 		then cat $(MLDONKEY_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MLDONKEY_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MLDONKEY_DIR)" != "$(MLDONKEY_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MLDONKEY_DIR) $(MLDONKEY_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MLDONKEY_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MLDONKEY_DIR) $(@D) ; \
 	fi
-	(cd $(MLDONKEY_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MLDONKEY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MLDONKEY_LDFLAGS)" \
@@ -129,8 +130,8 @@ $(MLDONKEY_BUILD_DIR)/.configured: $(DL_DIR)/$(MLDONKEY_SOURCE) $(MLDONKEY_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MLDONKEY_BUILD_DIR)/libtool
-	touch $(MLDONKEY_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 mldonkey-unpack: $(MLDONKEY_BUILD_DIR)/.configured
 
@@ -138,9 +139,9 @@ mldonkey-unpack: $(MLDONKEY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MLDONKEY_BUILD_DIR)/.built: $(MLDONKEY_BUILD_DIR)/.configured
-	rm -f $(MLDONKEY_BUILD_DIR)/.built
-	$(MAKE) -C $(MLDONKEY_BUILD_DIR) byte utils.byte
-	touch $(MLDONKEY_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) byte utils.byte
+	touch $@
 
 #
 # This is the build convenience target.
@@ -150,12 +151,12 @@ mldonkey: $(MLDONKEY_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MLDONKEY_BUILD_DIR)/.staged: $(MLDONKEY_BUILD_DIR)/.built
-	rm -f $(MLDONKEY_BUILD_DIR)/.staged
+#$(MLDONKEY_BUILD_DIR)/.staged: $(MLDONKEY_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(MLDONKEY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MLDONKEY_BUILD_DIR)/.staged
-
-mldonkey-stage: $(MLDONKEY_BUILD_DIR)/.staged
+#	touch $@
+#
+#mldonkey-stage: $(MLDONKEY_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
