@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WEECHAT_SITE=http://weechat.flashtux.org/download
-WEECHAT_VERSION=0.2.6
+WEECHAT_VERSION=0.2.6.1
 WEECHAT_SOURCE=weechat-$(WEECHAT_VERSION).tar.bz2
 WEECHAT_DIR=weechat-$(WEECHAT_VERSION)
 WEECHAT_UNZIP=bzcat
@@ -39,7 +39,7 @@ WEECHAT_CONFLICTS=
 #
 # WEECHAT_IPK_VERSION should be incremented when the ipk changes.
 #
-WEECHAT_IPK_VERSION=2
+WEECHAT_IPK_VERSION=1
 
 #
 # WEECHAT_CONFFILES should be a list of user-editable files
@@ -81,8 +81,8 @@ WEECHAT_IPK=$(BUILD_DIR)/weechat_$(WEECHAT_VERSION)-$(WEECHAT_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WEECHAT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WEECHAT_SITE)/$(WEECHAT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(WEECHAT_SOURCE)
+	$(WGET) -P $(@D) $(WEECHAT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -115,16 +115,17 @@ $(WEECHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(WEECHAT_SOURCE) $(WEECHAT_PATCHES)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(WEECHAT_DIR) $(WEECHAT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(WEECHAT_DIR) $(@D)
 	$(WEECHAT_UNZIP) $(DL_DIR)/$(WEECHAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WEECHAT_PATCHES)" ; \
 		then cat $(WEECHAT_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(WEECHAT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(WEECHAT_DIR)" != "$(WEECHAT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(WEECHAT_DIR) $(WEECHAT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(WEECHAT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(WEECHAT_DIR) $(@D) ; \
 	fi
-	(cd $(WEECHAT_BUILD_DIR); \
+	ACLOCAL="aclocal -I $(STAGING_PREFIX)/share/aclocal" autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WEECHAT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WEECHAT_LDFLAGS)" \
@@ -147,7 +148,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(WEECHAT_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 weechat-unpack: $(WEECHAT_BUILD_DIR)/.configured
@@ -157,7 +158,7 @@ weechat-unpack: $(WEECHAT_BUILD_DIR)/.configured
 #
 $(WEECHAT_BUILD_DIR)/.built: $(WEECHAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(WEECHAT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -168,12 +169,12 @@ weechat: $(WEECHAT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(WEECHAT_BUILD_DIR)/.staged: $(WEECHAT_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(WEECHAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-weechat-stage: $(WEECHAT_BUILD_DIR)/.staged
+#$(WEECHAT_BUILD_DIR)/.staged: $(WEECHAT_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#weechat-stage: $(WEECHAT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -245,4 +246,4 @@ weechat-dirclean:
 # Some sanity check for the package.
 #
 weechat-check: $(WEECHAT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WEECHAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

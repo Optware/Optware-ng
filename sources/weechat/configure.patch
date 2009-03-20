@@ -1,23 +1,10 @@
---- configure.orig	2007-01-10 09:50:57.000000000 -0800
-+++ configure	2007-03-04 09:46:20.000000000 -0800
-@@ -29345,60 +29345,7 @@
+--- configure.in.orig	2009-03-14 13:15:34.000000000 +0000
++++ configure.in	2009-03-20 17:32:47.773731675 +0000
+@@ -210,15 +210,7 @@
+       LIBS="$LIBS $ICONV_LFLAGS"
     fi
-    { echo "$as_me:$LINENO: checking for iconv usability in programs" >&5
- echo $ECHO_N "checking for iconv usability in programs... $ECHO_C" >&6; }
--   if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
--else
--  cat >conftest.$ac_ext <<_ACEOF
--/* confdefs.h.  */
--_ACEOF
--cat confdefs.h >>conftest.$ac_ext
--cat >>conftest.$ac_ext <<_ACEOF
--/* end confdefs.h.  */
--
+    AC_MSG_CHECKING(for iconv usability in programs)
+-   AC_TRY_RUN([
 -	#include <iconv.h>
 -	int main(int argc, char **argv) {
 -	    iconv_t conv = iconv_open("ISO8859-1", "UTF-8");
@@ -25,50 +12,19 @@
 -	      return 0;
 -            }
 -	    return 1;
--      }
--_ACEOF
--rm -f conftest$ac_exeext
--if { (ac_try="$ac_link"
--case "(($ac_try" in
--  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
--  *) ac_try_echo=$ac_try;;
--esac
--eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
--  (eval "$ac_link") 2>&5
--  ac_status=$?
--  echo "$as_me:$LINENO: \$? = $ac_status" >&5
--  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
--  { (case "(($ac_try" in
--  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
--  *) ac_try_echo=$ac_try;;
--esac
--eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
--  (eval "$ac_try") 2>&5
--  ac_status=$?
--  echo "$as_me:$LINENO: \$? = $ac_status" >&5
--  (exit $ac_status); }; }; then
-   iconv_found="yes"
--else
--  echo "$as_me: program exited with status $ac_status" >&5
--echo "$as_me: failed program was:" >&5
--sed 's/^/| /' conftest.$ac_ext >&5
--
--fi
--rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
--fi
--
--
+-      }],iconv_found="yes")
++   iconv_found="yes"
    if test "x$iconv_found" = "xno" ; then
-      { echo "$as_me:$LINENO: result: no" >&5
- echo "${ECHO_T}no" >&6; }
-@@ -31135,8 +31082,8 @@
- 
- 
+      AC_MSG_RESULT(no)
+   else
+@@ -605,8 +597,8 @@
+ *** libgnutls was not found. You may want to get it from ftp://ftp.gnutls.org/pub/gnutls/
+ *** WeeChat will be built without GnuTLS support.]]))
      if test "x$found_gnutls" = "xyes" ; then
 -        GNUTLS_CFLAGS=`libgnutls-config --cflags`
 -        GNUTLS_LFLAGS=`libgnutls-config --libs`
 +        GNUTLS_CFLAGS=`$LIBGNUTLS_CONFIG --cflags`
 +        GNUTLS_LFLAGS=`$LIBGNUTLS_CONFIG --libs`
- 
- 
-         cat >>confdefs.h <<\_ACEOF
+         AC_SUBST(GNUTLS_CFLAGS)
+         AC_SUBST(GNUTLS_LFLAGS)
+         AC_DEFINE(HAVE_GNUTLS)
