@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://pypi.python.org/packages/source/r/roundup
-PY-ROUNDUP_VERSION=1.4.8
+PY-ROUNDUP_VERSION=1.4.6
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
@@ -30,8 +30,8 @@ PY-ROUNDUP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-ROUNDUP_DESCRIPTION=An issue-tracking system with command-line, web and e-mail interfaces.
 PY-ROUNDUP_SECTION=misc
 PY-ROUNDUP_PRIORITY=optional
+PY24-ROUNDUP_DEPENDS=python24
 PY25-ROUNDUP_DEPENDS=python25
-PY26-ROUNDUP_DEPENDS=python26
 PY-ROUNDUP_CONFLICTS=
 
 #
@@ -47,7 +47,7 @@ PY-ROUNDUP_IPK_VERSION=1
 # PY-ROUNDUP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PY-ROUNDUP_PATCHES=
+PY-ROUNDUP_PATCHES=$(PY-ROUNDUP_SOURCE_DIR)/setup.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -71,11 +71,11 @@ PY-ROUNDUP_SOURCE_DIR=$(SOURCE_DIR)/py-roundup
 PY-ROUNDUP-COMMON_IPK_DIR=$(BUILD_DIR)/py-roundup-common-$(PY-ROUNDUP_VERSION)-ipk
 PY-ROUNDUP-COMMON_IPK=$(BUILD_DIR)/py-roundup-common_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PY24-ROUNDUP_IPK_DIR=$(BUILD_DIR)/py24-roundup-$(PY-ROUNDUP_VERSION)-ipk
+PY24-ROUNDUP_IPK=$(BUILD_DIR)/py24-roundup_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 PY25-ROUNDUP_IPK_DIR=$(BUILD_DIR)/py25-roundup-$(PY-ROUNDUP_VERSION)-ipk
 PY25-ROUNDUP_IPK=$(BUILD_DIR)/py25-roundup_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)_$(TARGET_ARCH).ipk
-
-PY26-ROUNDUP_IPK_DIR=$(BUILD_DIR)/py26-roundup-$(PY-ROUNDUP_VERSION)-ipk
-PY26-ROUNDUP_IPK=$(BUILD_DIR)/py26-roundup_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-roundup-source py-roundup-unpack py-roundup py-roundup-stage py-roundup-ipk py-roundup-clean py-roundup-dirclean py-roundup-check
 
@@ -113,10 +113,25 @@ $(PY-ROUNDUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUNDUP_SOURCE) $(PY-ROUNDUP
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-ROUNDUP_DIR)
+	$(PY-ROUNDUP_UNZIP) $(DL_DIR)/$(PY-ROUNDUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(PY-ROUNDUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUNDUP_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-ROUNDUP_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.4" \
+	    ) >> setup.cfg; \
+	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-ROUNDUP_DIR)
 	$(PY-ROUNDUP_UNZIP) $(DL_DIR)/$(PY-ROUNDUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ROUNDUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUNDUP_DIR) -p1
+	cat $(PY-ROUNDUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUNDUP_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ROUNDUP_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -128,21 +143,6 @@ $(PY-ROUNDUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUNDUP_SOURCE) $(PY-ROUNDUP
 		echo "executable=/opt/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
-	# 2.6
-	rm -rf $(BUILD_DIR)/$(PY-ROUNDUP_DIR)
-	$(PY-ROUNDUP_UNZIP) $(DL_DIR)/$(PY-ROUNDUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ROUNDUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUNDUP_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-ROUNDUP_DIR) $(@D)/2.6
-	(cd $(@D)/2.6; \
-	    ( \
-		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
-	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6" \
-	    ) >> setup.cfg; \
-	)
 	touch $@
 
 py-roundup-unpack: $(PY-ROUNDUP_BUILD_DIR)/.configured
@@ -152,13 +152,13 @@ py-roundup-unpack: $(PY-ROUNDUP_BUILD_DIR)/.configured
 #
 $(PY-ROUNDUP_BUILD_DIR)/.built: $(PY-ROUNDUP_BUILD_DIR)/.configured
 	rm -f $@
+	(cd $(@D)/2.4; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
+	)
 	(cd $(@D)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
-	)
-	(cd $(@D)/2.6; \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
 	touch $@
 
@@ -195,6 +195,20 @@ $(PY-ROUNDUP-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Depends: " >>$@
 	@echo "Conflicts: $(PY-ROUNDUP_CONFLICTS)" >>$@
 
+$(PY24-ROUNDUP_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py24-roundup" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-ROUNDUP_PRIORITY)" >>$@
+	@echo "Section: $(PY-ROUNDUP_SECTION)" >>$@
+	@echo "Version: $(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-ROUNDUP_MAINTAINER)" >>$@
+	@echo "Source: $(PY-ROUNDUP_SITE)/$(PY-ROUNDUP_SOURCE)" >>$@
+	@echo "Description: $(PY-ROUNDUP_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY24-ROUNDUP_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-ROUNDUP_CONFLICTS)" >>$@
+
 $(PY25-ROUNDUP_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -209,20 +223,6 @@ $(PY25-ROUNDUP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-ROUNDUP_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-ROUNDUP_CONFLICTS)" >>$@
 
-$(PY26-ROUNDUP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py26-roundup" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-ROUNDUP_PRIORITY)" >>$@
-	@echo "Section: $(PY-ROUNDUP_SECTION)" >>$@
-	@echo "Version: $(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-ROUNDUP_MAINTAINER)" >>$@
-	@echo "Source: $(PY-ROUNDUP_SITE)/$(PY-ROUNDUP_SOURCE)" >>$@
-	@echo "Description: $(PY-ROUNDUP_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY26-ROUNDUP_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-ROUNDUP_CONFLICTS)" >>$@
-
 #
 # This builds the IPK file.
 #
@@ -235,39 +235,39 @@ $(PY26-ROUNDUP_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY25-ROUNDUP_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py*-roundup_*_$(TARGET_ARCH).ipk
+$(PY24-ROUNDUP_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py-roundup_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-ROUNDUP_IPK_DIR) $(BUILD_DIR)/py24-roundup_*_$(TARGET_ARCH).ipk
+	(cd $(PY-ROUNDUP_BUILD_DIR)/2.4; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-ROUNDUP_IPK_DIR) --prefix=/opt)
+	for f in $(PY24-ROUNDUP_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
+#	$(STRIP_COMMAND) `find $(PY24-ROUNDUP_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
+	rm -rf $(PY24-ROUNDUP_IPK_DIR)/opt/man $(PY24-ROUNDUP_IPK_DIR)/opt/share
+	$(MAKE) $(PY24-ROUNDUP_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-ROUNDUP_IPK_DIR)
+
+$(PY25-ROUNDUP_IPK) $(PY-ROUNDUP-COMMON_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
+	rm -rf $(PY-ROUNDUP-COMMON_IPK_DIR) $(BUILD_DIR)/py-roundup-common_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-ROUNDUP_IPK_DIR) $(BUILD_DIR)/py25-roundup_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ROUNDUP_BUILD_DIR)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-ROUNDUP_IPK_DIR) --prefix=/opt)
 #	$(STRIP_COMMAND) `find $(PY25-ROUNDUP_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
-	rm -rf $(PY25-ROUNDUP_IPK_DIR)/opt/man $(PY25-ROUNDUP_IPK_DIR)/opt/share
-	$(MAKE) $(PY25-ROUNDUP_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-ROUNDUP_IPK_DIR)
-
-$(PY26-ROUNDUP_IPK) $(PY-ROUNDUP-COMMON_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
-	rm -rf $(PY-ROUNDUP-COMMON_IPK_DIR) $(BUILD_DIR)/py-roundup-common_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY26-ROUNDUP_IPK_DIR) $(BUILD_DIR)/py26-roundup_*_$(TARGET_ARCH).ipk
-	(cd $(PY-ROUNDUP_BUILD_DIR)/2.6; \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(PY26-ROUNDUP_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-ROUNDUP_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
-#	$(STRIP_COMMAND) `find $(PY26-ROUNDUP_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
 	mkdir -p $(PY-ROUNDUP-COMMON_IPK_DIR)/opt
-	mv $(PY26-ROUNDUP_IPK_DIR)/opt/share $(PY26-ROUNDUP_IPK_DIR)/opt/man $(PY-ROUNDUP-COMMON_IPK_DIR)/opt/
+	mv $(PY25-ROUNDUP_IPK_DIR)/opt/share $(PY25-ROUNDUP_IPK_DIR)/opt/man $(PY-ROUNDUP-COMMON_IPK_DIR)/opt/
 	$(MAKE) $(PY-ROUNDUP-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-ROUNDUP-COMMON_IPK_DIR)
-	$(MAKE) $(PY26-ROUNDUP_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-ROUNDUP_IPK_DIR)
+	$(MAKE) $(PY25-ROUNDUP_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-ROUNDUP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-roundup-ipk: $(PY25-ROUNDUP_IPK) $(PY26-ROUNDUP_IPK) $(PY-ROUNDUP-COMMON_IPK)
+py-roundup-ipk: $(PY24-ROUNDUP_IPK) $(PY25-ROUNDUP_IPK) $(PY-ROUNDUP-COMMON_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -282,11 +282,11 @@ py-roundup-clean:
 py-roundup-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-ROUNDUP_DIR) $(PY-ROUNDUP_BUILD_DIR)
 	rm -rf $(PY-ROUNDUP-COMMON_IPK_DIR) $(PY-ROUNDUP-COMMON_IPK)
+	rm -rf $(PY24-ROUNDUP_IPK_DIR) $(PY24-ROUNDUP_IPK)
 	rm -rf $(PY25-ROUNDUP_IPK_DIR) $(PY25-ROUNDUP_IPK)
-	rm -rf $(PY26-ROUNDUP_IPK_DIR) $(PY26-ROUNDUP_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-roundup-check: $(PY25-ROUNDUP_IPK) $(PY26-ROUNDUP_IPK) $(PY-ROUNDUP-COMMON_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+py-roundup-check: $(PY24-ROUNDUP_IPK) $(PY25-ROUNDUP_IPK) $(PY-ROUNDUP-COMMON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-ROUNDUP_IPK) $(PY25-ROUNDUP_IPK)
