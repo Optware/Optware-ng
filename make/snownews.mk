@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SNOWNEWS_SITE=http://kiza.kcore.de/software/snownews/download
-SNOWNEWS_VERSION=1.5.10
+SNOWNEWS_VERSION=1.5.11
 SNOWNEWS_SOURCE=snownews-$(SNOWNEWS_VERSION).tar.gz
 SNOWNEWS_DIR=snownews-$(SNOWNEWS_VERSION)
 SNOWNEWS_UNZIP=zcat
@@ -116,8 +116,7 @@ snownews-source: $(DL_DIR)/$(SNOWNEWS_SOURCE) $(SNOWNEWS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SNOWNEWS_BUILD_DIR)/.configured: $(DL_DIR)/$(SNOWNEWS_SOURCE) \
-		$(SNOWNEWS_PATCHES) make/snownews.mk
+$(SNOWNEWS_BUILD_DIR)/.configured: $(DL_DIR)/$(SNOWNEWS_SOURCE) $(SNOWNEWS_PATCHES) make/snownews.mk
 	$(MAKE) libxml2-stage ncurses-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -230,4 +229,4 @@ snownews-dirclean:
 # Some sanity check for the package.
 #
 snownews-check: $(SNOWNEWS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SNOWNEWS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
