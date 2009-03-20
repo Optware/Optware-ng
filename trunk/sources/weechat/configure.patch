@@ -1,9 +1,9 @@
 --- configure.in.orig	2009-03-14 13:15:34.000000000 +0000
-+++ configure.in	2009-03-20 17:32:47.773731675 +0000
++++ configure.in	2009-03-20 17:49:32.885315678 +0000
 @@ -210,15 +210,7 @@
        LIBS="$LIBS $ICONV_LFLAGS"
     fi
-    AC_MSG_CHECKING(for iconv usability in programs)
+    AC_MSG_CHECKING(for iconv usability in programs)   
 -   AC_TRY_RUN([
 -	#include <iconv.h>
 -	int main(int argc, char **argv) {
