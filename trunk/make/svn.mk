@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.5.5
+SVN_VERSION=1.6.0
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -389,6 +389,5 @@ endif
 #
 # Some sanity check for the package.
 #
-svn-check: $(SVN_IPK) $(SVN-PY_IPK) $(SVN_PL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
-		$(SVN_IPK) $(SVN-PY_IPK) $(SVN-PL_IPK)
+svn-check: $(SVN_IPK) $(SVN-PY_IPK) $(SVN-PL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
