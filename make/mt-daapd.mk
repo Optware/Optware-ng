@@ -60,7 +60,7 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE) make/mt-daapd.mk
 		--enable-query \
 		--enable-mdns \
 	)
-ifneq (, $(filter slugosbe syno-x07, $(OPTWARE_TARGET)))
+ifneq (, $(filter slugosbe slugosle syno-x07, $(OPTWARE_TARGET)))
 	sed -i -e '/#include <limits.h>/a#include <linux/limits.h>' \
 		$(@D)/src/dynamic-art.c \
 		$(@D)/src/restart.c
@@ -127,4 +127,4 @@ mt-daapd-dirclean:
 	rm -rf $(BUILD_DIR)/$(MT_DAAPD_DIR) $(MT_DAAPD_BUILD_DIR) $(MT_DAAPD_IPK_DIR) $(MT_DAAPD_IPK)
 
 mt-daapd-check: $(MT_DAAPD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MT_DAAPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -22,9 +22,9 @@ BROKEN_PACKAGES = \
 	ushare \
 	\
 	atk \
-	gtk ipac-ng ivorbis-tools \
-	madplay mt-daapd nfs-utils \
+	gtk ipac-ng \
+	nfs-utils \
 	pcapsipdump \
 	player rhtvision \
-	squeak transcode \
+	transcode \
 	vte xchat

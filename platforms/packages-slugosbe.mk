@@ -20,5 +20,5 @@ BROKEN_PACKAGES = \
 	softflowd \
 	ushare \
 	\
-	atk gtk madplay nfs-utils squeak transcode \
+	atk gtk nfs-utils transcode \
 	vte xchat \
