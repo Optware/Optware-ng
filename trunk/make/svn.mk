@@ -35,7 +35,7 @@ SVN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SVN_DESCRIPTION=a compelling replacement for CVS
 SVN_SECTION=net
 SVN_PRIORITY=optional
-SVN_DEPENDS=neon, apr, apr-util, cyrus-sasl-libs, expat, libxml2, zlib
+SVN_DEPENDS=neon, apr, apr-util, cyrus-sasl-libs, e2fslibs, expat, gdbm, libxml2, sqlite, zlib
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SVN_DEPENDS +=, openldap-libs
 endif
@@ -58,7 +58,7 @@ SVN-PL_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=1
+SVN_IPK_VERSION=2
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -142,13 +142,10 @@ svn-source: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
-	$(MAKE) apr-stage
-	$(MAKE) apr-util-stage
-	$(MAKE) apache-stage
+	$(MAKE) apr-stage apr-util-stage apache-stage neon-stage
 	$(MAKE) cyrus-sasl-stage
-	$(MAKE) expat-stage
-	$(MAKE) libxml2-stage
-	$(MAKE) neon-stage
+	$(MAKE) expat-stage libxml2-stage
+	$(MAKE) e2fsprogs-stage gdbm-stage sqlite-stage
 	$(MAKE) zlib-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
