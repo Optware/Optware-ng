@@ -94,10 +94,12 @@ SQUEAK_IMG_SRC=SqueakV3.sources
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SQUEAK_VM_SRC):
-	$(WGET) -P $(DL_DIR) $(SQUEAK_SITE)/$(SQUEAK_VM_SRC)
+	$(WGET) -P $(@D) $(SQUEAK_SITE)/$((@F) ||
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(SQUEAK_IMG_SRC).gz:
-	$(WGET) -P $(DL_DIR) $(SQUEAK_IMG_SRC_SITE)/$(SQUEAK_IMG_SRC).gz
+	$(WGET) -P $(@D) $(SQUEAK_IMG_SRC_SITE)/$(@F) ||
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -134,14 +136,14 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 	if test "$(BUILD_DIR)/$(SQUEAK_DIR)" != "$(SQUEAK_BUILD_DIR)" ; then \
 		mv $(BUILD_DIR)/$(SQUEAK_DIR) $(SQUEAK_BUILD_DIR) ; \
 	fi
-	(cd $(SQUEAK_BUILD_DIR)/platforms/unix/config/; \
+	(cd $(@D)/platforms/unix/config/; \
 		./mkacinc > acplugins.m4; \
 		aclocal; \
 		autoconf; \
 		rm acplugins.m4; \
 	)
-	mkdir -p $(SQUEAK_BUILD_DIR)/bld
-	(cd $(SQUEAK_BUILD_DIR)/bld; \
+	mkdir -p $(@D)/bld
+	(cd $(@D)/bld; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQUEAK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQUEAK_LDFLAGS)" \
@@ -157,13 +159,15 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 		--without-ffi \
 		--without-npsqueak \
 	)
-	$(PATCH_LIBTOOL) $(SQUEAK_BUILD_DIR)/bld/libtool
+	$(PATCH_LIBTOOL) \
+		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
+		$(@D)/bld/libtool
 	sed -i -e 's/clone/_clone_/g' \
-		$(SQUEAK_BUILD_DIR)/platforms/unix/src/vm/interp.c \
-		$(SQUEAK_BUILD_DIR)/platforms/Cross/vm/sqVirtualMachine.* \
-		$(SQUEAK_BUILD_DIR)/platforms/unix/src/vm/intplugins/CroquetPlugin/CroquetPlugin.c \
-		$(SQUEAK_BUILD_DIR)/platforms/unix/src/plugins/Squeak3D/Squeak3D.c
-	touch $(SQUEAK_BUILD_DIR)/.configured
+		$(@D)/platforms/unix/src/vm/interp.c \
+		$(@D)/platforms/Cross/vm/sqVirtualMachine.* \
+		$(@D)/platforms/unix/src/vm/intplugins/CroquetPlugin/CroquetPlugin.c \
+		$(@D)/platforms/unix/src/plugins/Squeak3D/Squeak3D.c
+	touch $@
 
 squeak-unpack: $(SQUEAK_BUILD_DIR)/.configured
 
@@ -171,9 +175,9 @@ squeak-unpack: $(SQUEAK_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SQUEAK_BUILD_DIR)/.built: $(SQUEAK_BUILD_DIR)/.configured
-	rm -f $(SQUEAK_BUILD_DIR)/.built
-	$(MAKE) -C $(SQUEAK_BUILD_DIR)/bld
-	touch $(SQUEAK_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)/bld
+	touch $@
 
 #
 # This is the build convenience target.
@@ -184,9 +188,9 @@ squeak: $(SQUEAK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SQUEAK_BUILD_DIR)/.staged: $(SQUEAK_BUILD_DIR)/.built
-	rm -f $(SQUEAK_BUILD_DIR)/.staged
-	$(MAKE) -C $(SQUEAK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SQUEAK_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 squeak-stage: $(SQUEAK_BUILD_DIR)/.staged
 
@@ -195,7 +199,7 @@ squeak-stage: $(SQUEAK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/squeak
 #
 $(SQUEAK_IPK_DIR)/CONTROL/control:
-	@install -d $(SQUEAK_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: squeak" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -260,4 +264,4 @@ squeak-dirclean:
 # Some sanity check for the package.
 #
 squeak-check: $(SQUEAK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQUEAK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
