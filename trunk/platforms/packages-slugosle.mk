@@ -21,7 +21,6 @@ BROKEN_PACKAGES = \
 	softflowd \
 	ushare \
 	\
-	asterisk \
 	atk \
 	gtk ipac-ng ivorbis-tools \
 	madplay mt-daapd nfs-utils \
