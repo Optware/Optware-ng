@@ -77,7 +77,8 @@ IVORBIS_TOOLS_IPK=$(BUILD_DIR)/ivorbis-tools_$(IVORBIS_TOOLS_VERSION)-$(IVORBIS_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IVORBIS_TOOLS_SITE)/$(IVORBIS_TOOLS_SOURCE)
+	$(WGET) -P $(@D) $(IVORBIS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,8 +107,8 @@ $(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVOR
 	rm -rf $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) $(IVORBIS_TOOLS_BUILD_DIR)
 	$(IVORBIS_TOOLS_UNZIP) $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(IVORBIS_TOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) -p1
-	mv $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) $(IVORBIS_TOOLS_BUILD_DIR)
-	(cd $(IVORBIS_TOOLS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IVORBIS_TOOLS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IVORBIS_TOOLS_LDFLAGS)" \
@@ -123,9 +124,11 @@ $(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVOR
 		--disable-curltest \
 		--disable-nls \
 	)
-	sed -ie '/CURLOPT_MUTE/d' $(IVORBIS_TOOLS_BUILD_DIR)/ogg123/http_transport.c
-	$(PATCH_LIBTOOL) $(IVORBIS_TOOLS_BUILD_DIR)/libtool
-	touch $(IVORBIS_TOOLS_BUILD_DIR)/.configured
+	sed -i -e '/CURLOPT_MUTE/d' $(@D)/ogg123/http_transport.c
+	$(PATCH_LIBTOOL) \
+		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
+		$(@D)/libtool
+	touch $@
 
 ivorbis-tools-unpack: $(IVORBIS_TOOLS_BUILD_DIR)/.configured
 
@@ -133,9 +136,9 @@ ivorbis-tools-unpack: $(IVORBIS_TOOLS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(IVORBIS_TOOLS_BUILD_DIR)/.built: $(IVORBIS_TOOLS_BUILD_DIR)/.configured
-	rm -f $(IVORBIS_TOOLS_BUILD_DIR)/.built
-	$(MAKE) -C $(IVORBIS_TOOLS_BUILD_DIR)
-	touch $(IVORBIS_TOOLS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -213,4 +216,4 @@ ivorbis-tools-dirclean:
 # Some sanity check for the package.
 #
 ivorbis-tools-check: $(IVORBIS_TOOLS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IVORBIS_TOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
