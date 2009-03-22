@@ -75,7 +75,8 @@ MADPLAY_IPK=$(BUILD_DIR)/madplay_$(MADPLAY_VERSION)-$(MADPLAY_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MADPLAY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MADPLAY_SITE)/$(MADPLAY_SOURCE)
+	$(WGET) -P $(@D) $(MADPLAY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,8 +105,8 @@ $(MADPLAY_BUILD_DIR)/.configured: $(DL_DIR)/$(MADPLAY_SOURCE) $(MADPLAY_PATCHES)
 	rm -rf $(BUILD_DIR)/$(MADPLAY_DIR) $(MADPLAY_BUILD_DIR)
 	$(MADPLAY_UNZIP) $(DL_DIR)/$(MADPLAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MADPLAY_PATCHES) | patch -d $(BUILD_DIR)/$(MADPLAY_DIR) -p1
-	mv $(BUILD_DIR)/$(MADPLAY_DIR) $(MADPLAY_BUILD_DIR)
-	(cd $(MADPLAY_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(MADPLAY_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MADPLAY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MADPLAY_LDFLAGS)" \
@@ -116,8 +117,10 @@ $(MADPLAY_BUILD_DIR)/.configured: $(DL_DIR)/$(MADPLAY_SOURCE) $(MADPLAY_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(MADPLAY_BUILD_DIR)/libtool
-	touch $(MADPLAY_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) \
+		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
+		$(@D)/libtool
+	touch $@
 
 madplay-unpack: $(MADPLAY_BUILD_DIR)/.configured
 
