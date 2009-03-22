@@ -82,7 +82,8 @@ PSMISC_IPK=$(BUILD_DIR)/psmisc_$(PSMISC_VERSION)-$(PSMISC_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PSMISC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PSMISC_SITE)/$(PSMISC_SOURCE)
+	$(WGET) -P $(@D) $(PSMISC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -120,11 +121,11 @@ endif
 		then cat $(PSMISC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(PSMISC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(PSMISC_DIR)" != "$(PSMISC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(PSMISC_DIR) $(PSMISC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(PSMISC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(PSMISC_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|/usr/share/locale|/opt/share/locale|' $(PSMISC_BUILD_DIR)/src/Makefile.in
-	(cd $(PSMISC_BUILD_DIR); \
+	sed -i -e 's|/usr/share/locale|/opt/share/locale|' $(@D)/src/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PSMISC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PSMISC_LDFLAGS)" \
@@ -136,7 +137,9 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(PSMISC_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) \
+		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
+		$(@D)/libtool
 	touch $@
 
 psmisc-unpack: $(PSMISC_BUILD_DIR)/.configured
@@ -146,7 +149,7 @@ psmisc-unpack: $(PSMISC_BUILD_DIR)/.configured
 #
 $(PSMISC_BUILD_DIR)/.built: $(PSMISC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PSMISC_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -157,12 +160,12 @@ psmisc: $(PSMISC_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PSMISC_BUILD_DIR)/.staged: $(PSMISC_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(PSMISC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-psmisc-stage: $(PSMISC_BUILD_DIR)/.staged
+#$(PSMISC_BUILD_DIR)/.staged: $(PSMISC_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#psmisc-stage: $(PSMISC_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -235,4 +238,4 @@ psmisc-dirclean:
 # Some sanity check for the package.
 #
 psmisc-check: $(PSMISC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PSMISC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
