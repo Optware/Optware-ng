@@ -122,8 +122,10 @@ $(ANTINAT_BUILD_DIR)/.configured: $(DL_DIR)/$(ANTINAT_SOURCE) $(ANTINAT_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	sed -ie 's|-I$$includedir|-I$(STAGING_INCLUDE_DIR)|' $(ANTINAT_BUILD_DIR)/client/antinat-config
-	$(PATCH_LIBTOOL) $(ANTINAT_BUILD_DIR)/libtool
+	sed -i -e 's|-I$$includedir|-I$(STAGING_INCLUDE_DIR)|' $(@D)/client/antinat-config
+	$(PATCH_LIBTOOL) \
+		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
+		$(@D)/libtool
 	touch $(ANTINAT_BUILD_DIR)/.configured
 
 antinat-unpack: $(ANTINAT_BUILD_DIR)/.configured

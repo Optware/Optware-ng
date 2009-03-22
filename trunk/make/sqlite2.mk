@@ -116,7 +116,9 @@ $(SQLITE2_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE2_SOURCE) $(SQLITE2_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) \
+		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
+		$(@D)/libtool
 	touch $@
 
 sqlite2-unpack: $(SQLITE2_BUILD_DIR)/.configured
