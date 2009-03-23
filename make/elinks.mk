@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ELINKS_SITE=http://elinks.or.cz/download
-ELINKS_VERSION=0.11.5
+ELINKS_VERSION=0.11.6
 ELINKS_SOURCE=elinks-$(ELINKS_VERSION).tar.gz
 ELINKS_DIR=elinks-$(ELINKS_VERSION)
 ELINKS_UNZIP=zcat
@@ -212,4 +212,4 @@ elinks-dirclean:
 # Some sanity check for the package.
 #
 elinks-check: $(ELINKS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ELINKS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
