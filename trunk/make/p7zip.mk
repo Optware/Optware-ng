@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 P7ZIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/p7zip
-P7ZIP_VERSION=4.61
+P7ZIP_VERSION=4.65
 P7ZIP_SOURCE=p7zip_$(P7ZIP_VERSION)_src_all.tar.bz2
 P7ZIP_DIR=p7zip_$(P7ZIP_VERSION)
 P7ZIP_UNZIP=bzcat
@@ -117,7 +117,7 @@ $(P7ZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(P7ZIP_SOURCE) $(P7ZIP_PATCHES) make/
 	fi
 	sed -i.orig -e '/DEST_.*DEST_.*DEST_/s|$$| $$(DEST_DIR)|' $(@D)/makefile
 	sed -i.orig -e 's|^DEST_HOME=.*|DEST_HOME=/opt|' $(@D)/install.sh
-#	(cd $(P7ZIP_BUILD_DIR); \
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(P7ZIP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(P7ZIP_LDFLAGS)" \
@@ -129,7 +129,7 @@ $(P7ZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(P7ZIP_SOURCE) $(P7ZIP_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(P7ZIP_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 p7zip-unpack: $(P7ZIP_BUILD_DIR)/.configured
@@ -241,4 +241,4 @@ p7zip-dirclean:
 # Some sanity check for the package.
 #
 p7zip-check: $(P7ZIP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(P7ZIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
