@@ -35,7 +35,7 @@ OCAML_DEPENDS=
 OCAML_SUGGESTS=
 OCAML_CONFLICTS=
 
-OCAML_IPK_VERSION=1
+OCAML_IPK_VERSION=2
 
 #
 # OCAML_CONFFILES should be a list of user-editable files
@@ -127,6 +127,8 @@ fi; \
 		-ar $(TARGET_AR) \
 		-aspp $(TARGET_CC) \
 	)
+	sed -i -e '/^BYTECCLINKOPTS/s|$$| $(STAGING_LDFLAGS)\nCCLINKFLAGS=$(STAGING_LDFLAGS)|' \
+		$(@D)/config/Makefile
 	native_arch=`sed -n '/^ARCH=/s/ARCH=//p' $(@D)/config/Makefile`; \
 	if test -f $(@D)/asmcomp/$$native_arch/proc.ml; \
 	    then sed -i -e 's|"as |"$(TARGET_AS) |' $(@D)/asmcomp/$$native_arch/proc.ml; fi
