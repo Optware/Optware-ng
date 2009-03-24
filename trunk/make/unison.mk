@@ -39,7 +39,7 @@ UNISON_CONFLICTS=
 #
 # UNISON_IPK_VERSION should be incremented when the ipk changes.
 #
-UNISON_IPK_VERSION=1
+UNISON_IPK_VERSION=2
 
 #
 # UNISON_CONFFILES should be a list of user-editable files
@@ -77,7 +77,8 @@ UNISON_IPK=$(BUILD_DIR)/unison_$(UNISON_VERSION)-$(UNISON_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(UNISON_SOURCE):
-	$(WGET) -P $(@D) $(UNISON_SITE)/$(@F)
+	$(WGET) -P $(@D) $(UNISON_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,6 +111,7 @@ $(UNISON_BUILD_DIR)/.configured: $(DL_DIR)/$(UNISON_SOURCE) $(UNISON_PATCHES)
 	$(UNISON_UNZIP) $(DL_DIR)/$(UNISON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(UNISON_PATCHES) | patch -d $(BUILD_DIR)/$(UNISON_DIR) -p1
 	mv $(BUILD_DIR)/$(UNISON_DIR) $(@D)
+	sed -i -e 's|-cclib -lutil|& -cclib -Wl,-rpath,/opt/lib|' $(@D)/Makefile.OCaml
 	touch $@
 
 unison-unpack: $(UNISON_BUILD_DIR)/.configured
