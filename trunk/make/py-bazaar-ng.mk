@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BAZAAR-NG_VERSION=1.13
-PY-BAZAAR-NG_SITE=https://launchpad.net/bzr/$(PY-BAZAAR-NG_VERSION)/$(PY-BAZAAR-NG_VERSION)/+download
+PY-BAZAAR-NG_VERSION=1.13.1
+PY-BAZAAR-NG_SITE=https://launchpad.net/bzr/1.13/$(PY-BAZAAR-NG_VERSION)/+download
 PY-BAZAAR-NG_SOURCE=bzr-$(PY-BAZAAR-NG_VERSION).tar.gz
 PY-BAZAAR-NG_DIR=bzr-$(PY-BAZAAR-NG_VERSION)
 PY-BAZAAR-NG_UNZIP=zcat
@@ -110,7 +110,7 @@ py-bazaar-ng-source: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZAAR-NG_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-BAZAAR-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZAAR-NG_PATCHES)
+$(PY-BAZAAR-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZAAR-NG_PATCHES) make/py-bazaar-ng.mk
 	$(MAKE) python-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
@@ -288,6 +288,9 @@ $(PY26-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-BAZAAR-NG_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY26-BAZAAR-NG_IPK_DIR)/opt/lib/python2.6/site-packages/bzrlib/*.so
+	for f in $(PY26-BAZAAR-NG_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
+	rm -rf $(PY26-BAZAAR-NG_IPK_DIR)/opt/man
 	$(MAKE) $(PY26-BAZAAR-NG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-BAZAAR-NG_IPK_DIR)
 
