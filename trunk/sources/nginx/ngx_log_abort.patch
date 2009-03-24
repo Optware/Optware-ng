@@ -1,0 +1,29 @@
+--- src/core/ngx_shmtx.h.orig	2009-03-13 07:53:30.000000000 -0700
++++ src/core/ngx_shmtx.h	2009-03-24 13:25:21.000000000 -0700
+@@ -65,7 +65,7 @@
+ 
+ #endif
+ 
+-    ngx_log_abort(err, ngx_trylock_fd_n " %s failed", mtx->name);
++    ngx_log_abort(err, ngx_trylock_fd_n " %s failed");
+ 
+     return 0;
+ }
+@@ -82,7 +82,7 @@
+         return;
+     }
+ 
+-    ngx_log_abort(err, ngx_lock_fd_n " %s failed", mtx->name);
++    ngx_log_abort(err, ngx_lock_fd_n " %s failed");
+ }
+ 
+ 
+@@ -97,7 +97,7 @@
+         return;
+     }
+ 
+-    ngx_log_abort(err, ngx_unlock_fd_n " %s failed", mtx->name);
++    ngx_log_abort(err, ngx_unlock_fd_n " %s failed");
+ }
+ 
+ 
