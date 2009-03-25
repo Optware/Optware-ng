@@ -15,7 +15,7 @@ SQUEEZECENTER_DESCRIPTION=Streaming Audio Server for Logitech Squeezebox
 SQUEEZECENTER_SECTION=audio
 SQUEEZECENTER_PRIORITY=optional
 
-SQUEEZECENTER_DEPENDS=adduser \
+SQUEEZECENTER_DEPENDS=adduser, bash \
 , perl-compress-zlib \
 , perl-dbd-mysql \
 , perl-digest-sha1 \
