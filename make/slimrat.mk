@@ -5,7 +5,7 @@
 ###########################################################
 
 SLIMRAT_SITE=http://slimrat.googlecode.com/files
-SLIMRAT_VERSION=0.9.2
+SLIMRAT_VERSION=0.9.4
 SLIMRAT_SOURCE=slimrat-$(SLIMRAT_VERSION).tar.bz2
 SLIMRAT_DIR=slimrat-$(SLIMRAT_VERSION)
 SLIMRAT_UNZIP=bzcat
