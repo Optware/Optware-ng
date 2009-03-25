@@ -32,7 +32,7 @@ case "$1" in
 	# Fire up the server script, redirecting errors to the bit bucket.
 	#
 		if [ -s ${SQUEEZECENTER_PIDFILE} ]; then
-		    ${SQUEEZECENTER_PID}=`cat ${SQUEEZECENTER_PIDFILE} 2>/dev/null`
+		    SQUEEZECENTER_PID=`cat ${SQUEEZECENTER_PIDFILE} 2>/dev/null`
 	    		if [ -d /proc/${SQUEEZECENTER_PID} ]; then
 				echo "already running."
 				exit 0;

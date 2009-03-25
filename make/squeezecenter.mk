@@ -31,7 +31,7 @@ SQUEEZECENTER_DEPENDS=adduser \
 SQUEEZECENTER_SUGGESTS=flac
 SQUEEZECENTER_CONFLICTS=slimserver
 
-SQUEEZECENTER_IPK_VERSION=1
+SQUEEZECENTER_IPK_VERSION=2
 
 #SQUEEZECENTER_CONFFILES=/opt/etc/squeezecenter.conf /opt/etc/init.d/S99squeezecenter \
 	/opt/share/squeezecenter/MySQL/my.tt
