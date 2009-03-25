@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 COREUTILS_SITE=http://ftp.gnu.org/pub/gnu/coreutils
-COREUTILS_VERSION=6.12
+COREUTILS_VERSION=7.1
 COREUTILS_SOURCE=coreutils-$(COREUTILS_VERSION).tar.gz
 COREUTILS_DIR=coreutils-$(COREUTILS_VERSION)
 COREUTILS_UNZIP=zcat
@@ -41,7 +41,7 @@ COREUTILS_CONFLICTS=
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=2
+COREUTILS_IPK_VERSION=1
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -285,4 +285,4 @@ coreutils-dirclean:
 # Some sanity check for the package.
 #
 coreutils-check: $(COREUTILS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(COREUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
