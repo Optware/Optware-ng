@@ -167,7 +167,7 @@ ffmpeg-unpack: $(FFMPEG_BUILD_DIR)/.configured
 #
 $(FFMPEG_BUILD_DIR)/.built: $(FFMPEG_BUILD_DIR)/.configured
 	rm -f $@
-ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel fsg3v4, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel cs05q3armel fsg3v4, $(OPTWARE_TARGET)))
 	$(MAKE) -C $(@D) OPTLEVEL=-O2 ffmpeg.o
 endif
 	$(MAKE) -C $(@D) OPTLEVEL=-O3
