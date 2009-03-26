@@ -4,6 +4,8 @@ PERL_MAJOR_VER := 5.10
 SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
+	ipkg-opt \
+	cacao mono \
 
 # Packages that do not work for mssii.
 BROKEN_PACKAGES = \
