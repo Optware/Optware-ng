@@ -55,7 +55,7 @@ CACAO_IPK_VERSION=1
 CACAO_CPPFLAGS=
 CACAO_LDFLAGS=
 
-ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel cs08q1armel, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel cs05q3armel cs08q1armel, $(OPTWARE_TARGET)))
 CACAO_CONFIG_ARGS=--enable-softfloat
 endif
 
