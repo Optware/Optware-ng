@@ -16,7 +16,7 @@ BROKEN_PACKAGES = \
 	player \
 	qemu qemu-libc-i386 \
 	gtk vte xchat \
-	microdc2 mod-python subvertpy \
+	microdc2 mod-python \
 	taged transcode slimserver \
 
 E2FSPROGS_VERSION := 1.40.3
