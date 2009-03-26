@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	ldconfig \
 	player \
 	qemu qemu-libc-i386 \
+	gtk vte xchat \
 
 E2FSPROGS_VERSION := 1.40.3
 E2FSPROGS_IPK_VERSION := 1
