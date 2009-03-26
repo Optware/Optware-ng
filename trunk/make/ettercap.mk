@@ -42,7 +42,7 @@ ETTERCAP_DEPENDS=libtool, libpcap, ncurses
 #
 # ETTERCAP_IPK_VERSION should be incremented when the ipk changes.
 #
-ETTERCAP_IPK_VERSION=1
+ETTERCAP_IPK_VERSION=2
 
 #
 # ETTERCAP_CONFFILES should be a list of user-editable files
@@ -121,10 +121,13 @@ $(ETTERCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP_SOURCE) $(ETTERCAP_PATCH
 	if test "$(BUILD_DIR)/$(ETTERCAP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ETTERCAP_DIR) $(@D) ; \
 	fi
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	autoreconf -vi $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ETTERCAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ETTERCAP_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -201,21 +204,8 @@ $(ETTERCAP_IPK_DIR)/CONTROL/control:
 $(ETTERCAP_IPK): $(ETTERCAP_BUILD_DIR)/.built
 	rm -rf $(ETTERCAP_IPK_DIR) $(BUILD_DIR)/ettercap_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ETTERCAP_BUILD_DIR) DESTDIR=$(ETTERCAP_IPK_DIR) install
-#	install -d $(ETTERCAP_IPK_DIR)/opt/sbin/
-#	install -m 755 $(ETTERCAP_BUILD_DIR)/ettercap $(ETTERCAP_IPK_DIR)/opt/sbin/ettercap
-#	install -m 644 $(ETTERCAP_SOURCE_DIR)/ettercap.conf $(ETTERCAP_IPK_DIR)/opt/etc/ettercap.conf
-#	install -d $(ETTERCAP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ETTERCAP_SOURCE_DIR)/rc.ettercap $(ETTERCAP_IPK_DIR)/opt/etc/init.d/SXXettercap
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ETTERCAP_IPK_DIR)/opt/etc/init.d/SXXettercap
+	$(STRIP_COMMAND) $(ETTERCAP_IPK_DIR)/opt/sbin/ettercap
 	$(MAKE) $(ETTERCAP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ETTERCAP_SOURCE_DIR)/postinst $(ETTERCAP_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ETTERCAP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ETTERCAP_SOURCE_DIR)/prerm $(ETTERCAP_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ETTERCAP_IPK_DIR)/CONTROL/prerm
-#	if test -n "$(UPD-ALT_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
-			$(ETTERCAP_IPK_DIR)/CONTROL/postinst $(ETTERCAP_IPK_DIR)/CONTROL/prerm; \
-	fi
 	echo $(ETTERCAP_CONFFILES) | sed -e 's/ /\n/g' > $(ETTERCAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ETTERCAP_IPK_DIR)
 

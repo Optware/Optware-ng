@@ -1,20 +1,10 @@
---- configure	2003-07-10 12:25:31.000000000 +0400
-+++ configure.my	2009-03-25 18:18:52.000000000 +0300
-@@ -6317,7 +6317,7 @@
-    LIBOBJS="$LIBOBJS malloc.$ac_objext"
+--- configure.in.orig	2003-07-10 08:25:31.000000000 +0000
++++ configure.in	2009-03-26 19:50:38.577997646 +0000
+@@ -386,7 +386,6 @@
+ AC_CHECK_FUNCS(uname)
  
- cat >>confdefs.h <<\_ACEOF
--#define malloc rpl_malloc
-+/* #define malloc rpl_malloc */
- _ACEOF
+ AH_TEMPLATE(HAVE_NS_GET, [nameser NS_GET32])
+-EC_NS_GET()
  
- fi
-@@ -7763,7 +7763,7 @@
- 
-    echo "$as_me:$LINENO: checking for NS_GET32" >&5
- echo $ECHO_N "checking for NS_GET32... $ECHO_C" >&6
--   if test "$cross_compiling" = yes; then
-+   if test "$cross_compiling" = no; then
-   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
- See \`config.log' for more details." >&5
- echo "$as_me: error: cannot run test program while cross compiling
+ dnl ===============================
+ dnl   Check for non standard libs
