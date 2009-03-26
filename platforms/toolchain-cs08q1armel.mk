@@ -56,5 +56,17 @@ $(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/pl
 	tar -xj -C $(BASE_DIR)/toolchain -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	touch $@
 
+# following three are for building native gcc using cross toolchain
+GCC_SOURCE=gcc-2008q1-126.tar.bz2
+GCC_DIR=gcc-4.2
+GCC_PATCHES=nothing
+
+$(DL_DIR)/$(GCC_SOURCE): $(DL_DIR)/$(TOOLCHAIN_SOURCE)
+	tar -C $(@D) -xjf $(@D)/$(TOOLCHAIN_SOURCE) arm-2008q1-126-arm-none-linux-gnueabi/$(@F)
+	mv $(@D)/arm-2008q1-126-arm-none-linux-gnueabi/$(@F) $@
+	rmdir $(@D)/arm-2008q1-126-arm-none-linux-gnueabi
+	touch $@
+
 NATIVE_GCC_EXTRA_CONFIG_ARGS=--enable-threads --disable-libmudflap --disable-libssp --disable-libgomp --disable-libstdcxx-pch --enable-shared --enable-symvers=gnu --enable-__cxa_atexit
+
 endif
