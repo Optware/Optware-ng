@@ -156,7 +156,7 @@ gnuplot-unpack: $(GNUPLOT_BUILD_DIR)/.configured
 #
 $(GNUPLOT_BUILD_DIR)/.built: $(GNUPLOT_BUILD_DIR)/.configured
 	rm -f $@
-ifneq (, $(filter cs05q3armel ds101 fsg3v4 gumstix1151 syno-e500, $(OPTWARE_TARGET)))
+ifneq (, $(filter cs05q1armel cs05q3armel ds101 fsg3v4 gumstix1151 syno-e500, $(OPTWARE_TARGET)))
 # no optimization
 	$(MAKE) -C $(@D)/src HOSTCC=$(HOSTCC) matrix.o \
 		CFLAGS="" CPPFLAGS="-I$(STAGING_INCLUDE_DIR)"
