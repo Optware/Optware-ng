@@ -8,6 +8,7 @@ LIBSTDC++_VERSION=6.0.9
 LIBNSL_VERSION=2.5
 
 BINUTILS_VERSION = 2.19.1
+BINUTILS_IPK_VERSION = 1
 
 ifeq ($(HOST_MACHINE), $(filter armv5tel, $(HOST_MACHINE)))
 
@@ -60,6 +61,8 @@ $(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/pl
 GCC_SOURCE=gcc-2008q1-126.tar.bz2
 GCC_DIR=gcc-4.2
 GCC_PATCHES=nothing
+
+GCC_IPK_VERSION = 1
 
 $(DL_DIR)/$(GCC_SOURCE): $(DL_DIR)/$(TOOLCHAIN_SOURCE)
 	tar -C $(@D) -xjf $(@D)/$(TOOLCHAIN_SOURCE) arm-2008q1-126-arm-none-linux-gnueabi/$(@F)

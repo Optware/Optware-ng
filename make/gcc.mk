@@ -46,7 +46,7 @@ GCC_CONFLICTS=
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION ?= 4
+GCC_IPK_VERSION ?= 5
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -209,18 +209,13 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) \
 	$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
 	rm -f $(GCC_IPK_DIR)/opt/lib/libiberty.a $(GCC_IPK_DIR)/opt/info/dir $(GCC_IPK_DIR)/opt/info/dir.old
-ifneq (uclibc, $(LIBC_STYLE))
-	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++*
-endif
+	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++.so*
 ifeq (wdtv, $(OPTWARE_TARGET))
 	rm -f $(GCC_IPK_DIR)/opt/lib/lib*.so* $(GCC_IPK_DIR)/opt/include/*.h
-	cd $(GCC_IPK_DIR)/opt/libexec/gcc/mipsel-linux-uclibc/$(GCC_VERSION); \
-		$(STRIP_COMMAND) c* install-tools/fixincl
 endif
-	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/cpp
-	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcc
-	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/g++
-	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcov
+	-cd $(GCC_IPK_DIR)/opt/libexec/gcc/`$(TARGET_CC) -dumpmachine`/$(GCC_VERSION); \
+		$(STRIP_COMMAND) c* install-tools/fixincl
+	-cd $(GCC_IPK_DIR)/opt/bin; $(STRIP_COMMAND) cpp gcc g++ gcov
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GCC_IPK_DIR)
