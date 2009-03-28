@@ -58,8 +58,8 @@ ICES_PATCHES=$(ICES_SOURCE_DIR)/configure.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ICES_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
-ICES_LDFLAGS=-lxml2
+ICES_CPPFLAGS=
+ICES_LDFLAGS=
 
 #
 # ICES_BUILD_DIR is the directory in which the build is done.
@@ -72,8 +72,8 @@ ICES_LDFLAGS=-lxml2
 #
 ICES_BUILD_DIR=$(BUILD_DIR)/ices0
 ICES_SOURCE_DIR=$(SOURCE_DIR)/ices0
-ICES_IPK_DIR=$(BUILD_DIR)/ices-$(ICES_VERSION)-ipk
-ICES_IPK=$(BUILD_DIR)/ices_$(ICES_VERSION)-$(ICES_IPK_VERSION)_$(TARGET_ARCH).ipk
+ICES_IPK_DIR=$(BUILD_DIR)/ices0-$(ICES_VERSION)-ipk
+ICES_IPK=$(BUILD_DIR)/ices0_$(ICES_VERSION)-$(ICES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: ices0-source ices0-unpack ices0 ices0-stage ices0-ipk ices0-clean ices0-dirclean ices0-check
 
@@ -125,14 +125,21 @@ $(ICES_BUILD_DIR)/.configured: $(DL_DIR)/$(ICES_SOURCE) $(ICES_PATCHES) make/ice
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ICES_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--without-faad \
+		--without-flac \
+		--without-lame \
+		--without-vorbis \
+		--without-perl \
+		--without-python \
 		--disable-nls \
 		--disable-static \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
