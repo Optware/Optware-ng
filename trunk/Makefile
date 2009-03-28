@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	ices0 \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -254,7 +253,8 @@ COMMON_CROSS_PACKAGES = \
 	gift-openft gift-opennap \
 	haproxy haserl hd2u hdparm hello hexcurse heyu \
 	hiawatha hnb hpijs hping htop httping \
-	ice icecast id3lib iftop ii iksemel imagemagick imap \
+	ice icecast ices0 \
+	id3lib iftop ii iksemel imagemagick imap \
 	inadyn indent inetutils ink ipac-ng \
 	iperf ipkg-web iptables iptraf iputils-arping \
 	ircd-hybrid irssi ivorbis-tools \
