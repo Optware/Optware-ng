@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SABNZBDPLUS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/sabnzbdplus
-SABNZBDPLUS_VERSION=0.4.7
+SABNZBDPLUS_VERSION=0.4.8
 SABNZBDPLUS_SOURCE=SABnzbd-$(SABNZBDPLUS_VERSION)-src.tar.gz
 SABNZBDPLUS_DIR=SABnzbd-$(SABNZBDPLUS_VERSION)
 SABNZBDPLUS_UNZIP=zcat
@@ -233,5 +233,5 @@ sabnzbdplus-dirclean:
 #
 # Some sanity check for the package.
 #
-sabnzbdplus-check: $(SABNZBDPLUS_PY24_IPK) $(SABNZBDPLUS_IPK)
+sabnzbdplus-check: $(SABNZBDPLUS_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
