@@ -35,7 +35,7 @@ SCROBBY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SCROBBY_DESCRIPTION=an audioscrobbler mpd client written in C++
 SCROBBY_SECTION=multimedia
 SCROBBY_PRIORITY=optional
-SCROBBY_DEPENDS=openssl, libcurl
+SCROBBY_DEPENDS=openssl, libcurl, libstdc++
 #SCROBBY_SUGGESTS=
 #SCROBBY_CONFLICTS=
 
@@ -111,7 +111,7 @@ scrobby-source: $(DL_DIR)/$(SCROBBY_SOURCE) $(SCROBBY_PATCHES)
 # shown below to make various patches to it.
 #
 $(SCROBBY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCROBBY_SOURCE) $(SCROBBY_PATCHES) make/scrobby.mk
-	$(MAKE) openssl-stage libcurl-stage
+	$(MAKE) openssl-stage libcurl-stage libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(SCROBBY_DIR) $(@D)
 	$(SCROBBY_UNZIP) $(DL_DIR)/$(SCROBBY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCROBBY_PATCHES)" ; \
