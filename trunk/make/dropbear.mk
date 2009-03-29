@@ -21,7 +21,7 @@ DROPBEAR_SUGGESTS=
 DROPBEAR_CONFLICTS=
 
 
-DROPBEAR_IPK_VERSION=1
+DROPBEAR_IPK_VERSION=2
 
 DROPBEAR_PATCHES=$(DROPBEAR_SOURCE_DIR)/configure.patch \
 		 $(DROPBEAR_SOURCE_DIR)/options.h.patch \
@@ -35,12 +35,6 @@ DROPBEAR_BUILD_DIR=$(BUILD_DIR)/dropbear
 DROPBEAR_SOURCE_DIR=$(SOURCE_DIR)/dropbear
 DROPBEAR_IPK_DIR=$(BUILD_DIR)/dropbear-$(DROPBEAR_VERSION)-ipk
 DROPBEAR_IPK=$(BUILD_DIR)/dropbear_$(DROPBEAR_VERSION)-$(DROPBEAR_IPK_VERSION)_$(TARGET_ARCH).ipk
-
-ifneq ($(OPTWARE_TARGET),ds101)
-ifneq ($(OPTWARE_TARGET),ds101g)
-DROPBEAR_DISABLE_SHADOW=--disable-shadow
-endif
-endif
 
 $(DL_DIR)/$(DROPBEAR_SOURCE):
 	$(WGET) -P $(@D) $(DROPBEAR_SITE)/$(@F) || \
@@ -67,7 +61,6 @@ $(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH
 		--disable-lastlog --disable-utmp \
 		--disable-utmpx --disable-wtmp \
 		--disable-wtmpx --disable-libutil \
-		$(DROPBEAR_DISABLE_SHADOW) \
 	)
 	touch $@
 
