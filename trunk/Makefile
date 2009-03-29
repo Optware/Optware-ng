@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	scrobby \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -314,7 +313,7 @@ COMMON_CROSS_PACKAGES = \
 	redir renderext rhtvision rlfe rlwrap rrdcollect rrdtool \
 	rssh rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba samba2 sane-backends \
-	scli scponly screen scsi-idle sdl sdparm \
+	scli scponly screen scrobby scsi-idle sdl sdparm \
 	sed sendmail ser ser2net setserial setpwc sg3-utils \
 	sharutils shntool silc-client simh sipcalc siproxd sispmctl \
 	slang slrn slsc \

@@ -19,6 +19,7 @@ BROKEN_PACKAGES = \
 	nget \
 	player \
 	rssh \
+	scrobby \
 	taglib \
 	\
 	firmware-oleg \
