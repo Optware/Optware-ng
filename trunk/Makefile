@@ -255,7 +255,9 @@ COMMON_CROSS_PACKAGES = \
 	hiawatha hnb hpijs hping htop httping \
 	ice icecast ices0 \
 	id3lib iftop ii iksemel imagemagick imap \
-	inadyn indent inetutils ink ipac-ng \
+	inadyn indent inetutils \
+	inferno \
+	ink ipac-ng \
 	iperf ipkg-web iptables iptraf iputils-arping \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \

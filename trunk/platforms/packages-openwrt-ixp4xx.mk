@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	gloox \
 	gnu-smalltalk gtmess gtk \
 	hpijs hplip \
+	inferno \
 	ice iptables \
 	lame launchtool ldconfig \
 	moc mtr \

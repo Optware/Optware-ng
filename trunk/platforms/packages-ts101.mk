@@ -13,6 +13,7 @@ BROKEN_PACKAGES = \
 	gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
 	gloox \
+	inferno \
 	gtmess \
 	iptraf \
 	nfs-server nfs-utils \

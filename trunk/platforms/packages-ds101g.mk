@@ -11,4 +11,5 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for ds101g+.
 BROKEN_PACKAGES = \
 	ecl \
+	inferno \
 	ldconfig \

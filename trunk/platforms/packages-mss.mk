@@ -11,6 +11,7 @@ BROKEN_PACKAGES = \
 	gambit-c gawk \
 	gnu-smalltalk \
 	gnokii \
+	inferno \
 	ldconfig \
 	ltrace \
 	mod-fastcgi mod-python \

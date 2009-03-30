@@ -13,6 +13,7 @@ BROKEN_PACKAGES = \
 	dialog \
 	gambit-c \
 	gloox \
+	inferno \
 	iptraf \
 	libdvb \
 	ltrace \
