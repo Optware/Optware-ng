@@ -32,14 +32,6 @@ Index: emu/Linux/mkfile
  CLEANCONFLIST=
  
  INSTALLDIR=$ROOT/$SYSTARG/$OBJTYPE/bin	#path of directory where kernel is installed
-@@ -19,7 +19,6 @@
- OBJ=\
- 	asm-$OBJTYPE.$O\
- 	os.$O\
--	win-x11a.$O\
- 	$CONF.root.$O\
- 	lock.$O\
- 	$DEVS\
 @@ -31,7 +30,7 @@
  HFILES=\
  
