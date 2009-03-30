@@ -37,6 +37,7 @@ BROKEN_PACKAGES = \
 	ice sm xt xaw xmu xterm \
 	iftop \
 	indent \
+	inferno \
 	iptables \
 	iptraf \
 	kissdx \

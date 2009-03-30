@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	cairo fixesext \
 	gloox \
 	gtmess \
+	inferno \
 	iptraf \
 	libdvb \
 	ltrace \

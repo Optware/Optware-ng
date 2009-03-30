@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	fuppes \
 	gloox \
 	gtmess \
+	inferno \
 	iptraf \
 	ircd-hybrid \
 	mdadm \

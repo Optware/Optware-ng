@@ -9,6 +9,7 @@ BROKEN_PACKAGES = \
 	9base appweb \
 	fcgi ficy fish fuppes gnu-smalltalk \
 	gloox \
+	inferno \
 	gtmess gtk ice ipac-ng iptraf kismet \
 	launchtool ldconfig mediatomb \
 	mtr mysql-connector-odbc \
