@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	dialog \
 	gambit-c \
 	gloox \
-	inferno \
 	libdvb \
 	ltrace \
 	nget \
