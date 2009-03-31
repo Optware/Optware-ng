@@ -1,0 +1,38 @@
+--- mkfiles/mkfile-Linux-spim.orig	2006-10-06 09:04:23.000000000 +0000
++++ mkfiles/mkfile-Linux-spim	2009-03-30 21:35:23.484012396 +0000
+@@ -16,12 +16,10 @@
+ 		-Os\
+ 		-I$ROOT/Linux/spim/include\
+ 		-I$ROOT/include\
+- 		-I/usr/X11R6/include
+ 
+ ANSICPP=
+ LD=		mipsel-linux-uclibc-gcc
+-LDFLAGS=	-L/usr/openwin/lib\
+-		-L/usr/X11R6/lib\
++LDFLAGS=
+ 
+ SYSLIBS=
+ 
+--- emu/Linux/mkfile.orig	2006-10-07 13:02:33.000000000 +0000
++++ emu/Linux/mkfile	2009-03-30 21:31:42.972031621 +0000
+@@ -6,8 +6,8 @@
+ 
+ #Configurable parameters
+ 
+-CONF=emu			#default configuration
+-CONFLIST=emu
++CONF=emu-g			#default configuration
++CONFLIST=emu-g
+ CLEANCONFLIST=
+ WIN=win-x11a.$O
+ 
+@@ -34,7 +34,7 @@
+ HFILES=\
+ 
+ CFLAGS='-DROOT="'$ROOT'"' -DEMU -I. -I../port -I$ROOT/$SYSTARG/$OBJTYPE/include -I$ROOT/include -I$ROOT/libinterp $CTHREADFLAGS $CFLAGS $EMUOPTIONS
+-SYSLIBS= -lm -lX11 -lXext
++SYSLIBS= -lm
+ KERNDATE=`{$NDATE}
+ 
+ default:V:	$O.$CONF

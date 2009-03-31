@@ -35,7 +35,7 @@ INFERNO_DEPENDS=
 INFERNO_SUGGESTS=
 INFERNO_CONFLICTS=
 
-INFERNO_IPK_VERSION=1
+INFERNO_IPK_VERSION=2
 
 #INFERNO_CONFFILES=
 
@@ -45,18 +45,23 @@ INFERNO_ARCH=$(strip \
 $(if $(filter arm armeb armel, $(TARGET_ARCH)), arm, \
 $(if $(filter i686 i386, $(TARGET_ARCH)), 386, \
 $(if $(filter powerpc ppc, $(TARGET_ARCH)), power, \
-$(if $(filter mips mipsel, $(TARGET_ARCH)), mips, \
-unknown)))))
+$(if $(filter mipsel, $(TARGET_ARCH)), spim, \
+$(TARGET_ARCH))))))
 
-INFERNO_PATCHES=$(strip \
+INFERNO_PATCHES=$(INFERNO_SOURCE_DIR)/$(INFERNO_ARCH)-g.patch
+
+INFERNO_PATCHES += $(strip \
 $(if $(filter arm, $(INFERNO_ARCH)), \
-	$(INFERNO_SOURCE_DIR)/arm-g.patch $(INFERNO_SOURCE_DIR)/asm-arm-SYS_exit.patch, \
-$(if $(filter 386, $(INFERNO_ARCH)), \
-	$(INFERNO_SOURCE_DIR)/386-g.patch, \
-)))
+	$(INFERNO_SOURCE_DIR)/asm-arm-SYS_exit.patch, \
+))
 
-INFERNO_CPPFLAGS=
-INFERNO_LDFLAGS=
+ifeq ($(TARGET_ARCH), $(filter mips mipsel, $(TARGET_ARCH)))
+INFERNO_CPPFLAGS=-mips32
+endif
+
+ifeq (uclibc, $(LIBC_STYLE))
+INFERNO_LDFLAGS=-lm
+endif
 
 INFERNO_SOURCE_DIR=$(SOURCE_DIR)/inferno
 
@@ -69,8 +74,8 @@ INFERNO_IPK=$(BUILD_DIR)/inferno_$(INFERNO_VERSION)-$(INFERNO_IPK_VERSION)_$(TAR
 INFERNO-MINIMAL_IPK_DIR=$(BUILD_DIR)/inferno-minimal-$(INFERNO_VERSION)-ipk
 INFERNO-MINIMAL_IPK=$(BUILD_DIR)/inferno-minimal_$(INFERNO_VERSION)-$(INFERNO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-INFERNO-DEVEL_IPK_DIR=$(BUILD_DIR)/inferno-devel-$(INFERNO_VERSION)-ipk
-INFERNO-DEVEL_IPK=$(BUILD_DIR)/inferno-devel_$(INFERNO_VERSION)-$(INFERNO_IPK_VERSION)_$(TARGET_ARCH).ipk
+INFERNO-UTILS_IPK_DIR=$(BUILD_DIR)/inferno-utils-$(INFERNO_VERSION)-ipk
+INFERNO-UTILS_IPK=$(BUILD_DIR)/inferno-utils_$(INFERNO_VERSION)-$(INFERNO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: inferno-source inferno-unpack inferno inferno-stage inferno-ipk inferno-clean inferno-dirclean inferno-check
 
@@ -125,6 +130,10 @@ inferno-host: $(INFERNO_HOST_BUILD_DIR)/.built
 $(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/$(INFERNO_DIR) $(@D)
 	$(INFERNO_UNZIP) $(DL_DIR)/$(INFERNO_SOURCE) | tar -C $(BUILD_DIR) -xf -
+ifeq (spim, $(INFERNO_ARCH))
+	cd $(BUILD_DIR)/$(INFERNO_DIR); tar -xzv --exclude emu/Linux/mkfile -f $(INFERNO_SOURCE_DIR)/wrt54g-src.tar.gz
+	cd $(BUILD_DIR)/$(INFERNO_DIR)/libdynld; cp -p dynld-mips.c dynld-spim.c
+endif
 	if test -n "$(INFERNO_PATCHES)" ; \
 		then cat $(INFERNO_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(INFERNO_DIR) -p0 ; \
@@ -138,9 +147,11 @@ $(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built
 		-e '/^OBJTYPE=/s|=.*|=$(INFERNO_ARCH)|' \
 		$(@D)/mkconfig
 	sed -i.orig \
-		-e '/^AS=/s|=.*|=$(TARGET_CC) -c|' \
-		-e '/^CC=/s|=.*|=$(TARGET_CC) -c|' \
-		-e '/^LD=/s|=.*|=$(TARGET_CC) $(STAGING_LDFLAGS)|' \
+		-e '/^AR=/s|=.*|=$(TARGET_AR)|' \
+		-e '/^AS=/s|=.*|=$(TARGET_CC) $(INFERNO_CPPFLAGS) -c|' \
+		-e '/^CC=/s|=.*|=$(TARGET_CC) $(INFERNO_CPPFLAGS) -c|' \
+		-e '/^LD=/s|=.*|=$(TARGET_CC) $(STAGING_LDFLAGS) $(INFERNO_LDFLAGS)|' \
+		-e '/^YACC=/s|=.*|=iyacc|' \
 		$(@D)/mkfiles/mkfile-Linux-$(INFERNO_ARCH)
 	touch $@
 
@@ -193,10 +204,10 @@ $(INFERNO-MINIMAL_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(INFERNO_SUGGESTS)" >>$@
 	@echo "Conflicts: $(INFERNO_CONFLICTS)" >>$@
 
-$(INFERNO-DEVEL_IPK_DIR)/CONTROL/control:
+$(INFERNO-UTILS_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: inferno-devel" >>$@
+	@echo "Package: inferno-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(INFERNO_PRIORITY)" >>$@
 	@echo "Section: $(INFERNO_SECTION)" >>$@
@@ -235,10 +246,8 @@ $(INFERNO_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(INFERNO-MINIMAL_IPK) $(INFERNO-DEVEL_IPK): $(INFERNO_BUILD_DIR)/.built
-	rm -rf $(INFERNO-MINIMAL_IPK_DIR) $(BUILD_DIR)/inferno-minimal_*_$(TARGET_ARCH).ipk
-	rm -rf $(INFERNO-DEVEL_IPK_DIR) $(BUILD_DIR)/inferno-devel_*_$(TARGET_ARCH).ipk
-	rm -rf $(INFERNO_IPK_DIR) $(BUILD_DIR)/inferno_*_$(TARGET_ARCH).ipk
+$(INFERNO-MINIMAL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/inferno*_*_$(TARGET_ARCH).ipk $(BUILD_DIR)/inferno*-ipk
 	# inferno
 	install -d $(INFERNO_IPK_DIR)/opt/bin $(INFERNO_IPK_DIR)/opt/share/inferno
 	install $(<D)/Linux/$(INFERNO_ARCH)/bin/* $(INFERNO_IPK_DIR)/opt/bin
@@ -250,16 +259,21 @@ $(INFERNO-MINIMAL_IPK) $(INFERNO-DEVEL_IPK): $(INFERNO_BUILD_DIR)/.built
 	install -d $(INFERNO-MINIMAL_IPK_DIR)/opt/share/inferno/dis/lib
 	for f in \
 		dis/lib/arg.dis \
+		dis/lib/attrdb.dis \
 		dis/lib/bufio.dis \
 		dis/lib/daytime.dis \
-		dis/lib/string.dis \
-		dis/lib/readdir.dis \
 		dis/lib/env.dis \
 		dis/lib/filepat.dis \
-		dis/ls.dis \
+		dis/lib/ip.dis \
+		dis/lib/ipattr.dis \
+		dis/lib/readdir.dis \
+		dis/lib/string.dis \
+		dis/ndb/cs.dis \
 		dis/emuinit.dis \
-		dis/sh.dis \
+		dis/ls.dis \
+		dis/mount.dis \
 		dis/os.dis \
+		dis/sh.dis \
 		; \
 	do \
 		d=`dirname $$f`; \
@@ -268,11 +282,11 @@ $(INFERNO-MINIMAL_IPK) $(INFERNO-DEVEL_IPK): $(INFERNO_BUILD_DIR)/.built
 	done
 	$(MAKE) $(INFERNO-MINIMAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO-MINIMAL_IPK_DIR)
-	# inferno-devel
-	install -d $(INFERNO-DEVEL_IPK_DIR)/opt
-	mv $(INFERNO_IPK_DIR)/opt/bin $(INFERNO-DEVEL_IPK_DIR)/opt/
-	$(MAKE) $(INFERNO-DEVEL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO-DEVEL_IPK_DIR)
+	# inferno-utils
+	install -d $(INFERNO-UTILS_IPK_DIR)/opt/share/inferno
+	mv $(INFERNO_IPK_DIR)/opt/bin $(INFERNO-UTILS_IPK_DIR)/opt/share/inferno
+	$(MAKE) $(INFERNO-UTILS_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO-UTILS_IPK_DIR)
 #	# rest in inferno
 #	$(MAKE) $(INFERNO_IPK_DIR)/CONTROL/control
 #	echo $(INFERNO_CONFFILES) | sed -e 's/ /\n/g' > $(INFERNO_IPK_DIR)/CONTROL/conffiles
@@ -281,7 +295,7 @@ $(INFERNO-MINIMAL_IPK) $(INFERNO-DEVEL_IPK): $(INFERNO_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-inferno-ipk: $(INFERNO-MINIMAL_IPK) $(INFERNO-DEVEL_IPK)
+inferno-ipk: $(INFERNO-MINIMAL_IPK) $(INFERNO-UTILS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -297,11 +311,11 @@ inferno-clean:
 inferno-dirclean:
 	rm -rf $(BUILD_DIR)/$(INFERNO_DIR) $(INFERNO_BUILD_DIR)
 	rm -rf $(INFERNO-MINIMAL_IPK_DIR) $(INFERNO-MINIMAL_IPK)
-	rm -rf $(INFERNO-DEVEL_IPK_DIR) $(INFERNO-DEVEL_IPK)
+	rm -rf $(INFERNO-UTILS_IPK_DIR) $(INFERNO-UTILS_IPK)
 	rm -rf $(INFERNO_IPK_DIR) $(INFERNO_IPK)
 #
 #
 # Some sanity check for the package.
 #
-inferno-check: $(INFERNO-MINIMAL_IPK) $(INFERNO-DEVEL_IPK)
+inferno-check: $(INFERNO-MINIMAL_IPK) $(INFERNO-UTILS_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

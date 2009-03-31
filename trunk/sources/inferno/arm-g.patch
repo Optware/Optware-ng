@@ -1,22 +1,3 @@
-Index: mkfiles/mkfile-Linux-386
-===================================================================
---- mkfiles/mkfile-Linux-386	(revision 221)
-+++ mkfiles/mkfile-Linux-386	(working copy)
-@@ -16,13 +16,11 @@
- 		-O\
- 		-I$ROOT/Linux/386/include\
- 		-I$ROOT/include\
-- 		-I/usr/X11R6/include\
- 		-DLINUX_386
- 
- ANSICPP=
- LD=		cc -m32
--LDFLAGS=	-L/usr/openwin/lib\
--		-L/usr/X11R6/lib\
-+LDFLAGS=
- 
- SYSLIBS=
- 
 Index: emu/Linux/mkfile
 ===================================================================
 --- emu/Linux/mkfile	(revision 221)
@@ -32,7 +13,7 @@ Index: emu/Linux/mkfile
  CLEANCONFLIST=
  
  INSTALLDIR=$ROOT/$SYSTARG/$OBJTYPE/bin	#path of directory where kernel is installed
-@@ -31,7 +30,7 @@
+@@ -30,7 +30,7 @@
  HFILES=\
  
  CFLAGS='-DROOT="'$ROOT'"' -DEMU -I. -I../port -I$ROOT/$SYSTARG/$OBJTYPE/include -I$ROOT/include -I$ROOT/libinterp $CTHREADFLAGS $CFLAGS $EMUOPTIONS
