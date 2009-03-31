@@ -127,7 +127,7 @@ $(INFERNO_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(INFERNO_SOURCE) $
 
 inferno-host: $(INFERNO_HOST_BUILD_DIR)/.built
 
-$(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built
+$(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PATCHES) make/inferno.mk
 	rm -rf $(BUILD_DIR)/$(INFERNO_DIR) $(@D)
 	$(INFERNO_UNZIP) $(DL_DIR)/$(INFERNO_SOURCE) | tar -C $(BUILD_DIR) -xf -
 ifeq (spim, $(INFERNO_ARCH))
