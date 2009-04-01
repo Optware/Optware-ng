@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SHNTOOL_SITE=http://etree.org/shnutils/shntool/dist/src
-SHNTOOL_VERSION=3.0.8
+SHNTOOL_VERSION=3.0.10
 SHNTOOL_SOURCE=shntool-$(SHNTOOL_VERSION).tar.gz
 SHNTOOL_DIR=shntool-$(SHNTOOL_VERSION)
 SHNTOOL_UNZIP=zcat
@@ -229,4 +229,4 @@ shntool-dirclean:
 # Some sanity check for the package.
 #
 shntool-check: $(SHNTOOL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SHNTOOL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
