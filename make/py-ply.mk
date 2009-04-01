@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PLY_SITE=http://www.dabeaz.com/ply
-PY-PLY_VERSION=3.1
+PY-PLY_VERSION=3.2
 PY-PLY_SOURCE=ply-$(PY-PLY_VERSION).tar.gz
 PY-PLY_DIR=ply-$(PY-PLY_VERSION)
 PY-PLY_UNZIP=zcat
