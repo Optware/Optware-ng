@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HAPROXY_SITE=http://haproxy.1wt.eu/download/1.3/src
-HAPROXY_VERSION=1.3.15.8
+HAPROXY_VERSION=1.3.17
 HAPROXY_SOURCE=haproxy-$(HAPROXY_VERSION).tar.gz
 HAPROXY_DIR=haproxy-$(HAPROXY_VERSION)
 HAPROXY_UNZIP=zcat
@@ -69,11 +69,7 @@ HAPROXY_SOURCE_DIR=$(SOURCE_DIR)/haproxy
 HAPROXY_IPK_DIR=$(BUILD_DIR)/haproxy-$(HAPROXY_VERSION)-ipk
 HAPROXY_IPK=$(BUILD_DIR)/haproxy_$(HAPROXY_VERSION)-$(HAPROXY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-ifeq ($(OPTWARE_TARGET), slugosbe)
-HAPROXY_LINUX_TARGET=linux26
-else
-HAPROXY_LINUX_TARGET=linux24
-endif
+HAPROXY_LINUX_TARGET=$(if $(filter module-init-tools, $(PACKAGES)),linux26,linux24)
 
 .PHONY: haproxy-source haproxy-unpack haproxy haproxy-stage haproxy-ipk haproxy-clean haproxy-dirclean haproxy-check
 
