@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ARIA2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aria2
-ARIA2_VERSION=1.2.0
+ARIA2_VERSION=1.3.0
 ARIA2_SOURCE=aria2-$(ARIA2_VERSION).tar.bz2
 ARIA2_DIR=aria2-$(ARIA2_VERSION)
 ARIA2_UNZIP=bzcat
@@ -259,4 +259,4 @@ aria2-dirclean:
 # Some sanity check for the package.
 #
 aria2-check: $(ARIA2_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ARIA2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
