@@ -138,6 +138,8 @@ endif
 		--with-statepath=/opt/var/state/ups \
 		--with-pidpath=/opt/var/run \
 		--with-cgi \
+		--with-gd-includes=-I$(STAGING_INCLUDE_DIR) \
+		--with-gd-libs="-L$(STAGING_LIB_DIR) -lgd" \
 		--disable-nls \
 		--disable-static \
 	)
