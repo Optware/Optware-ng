@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-FORMENCODE_SITE=http://pypi.python.org/packages/source/F/FormEncode
-PY-FORMENCODE_VERSION=1.2.1
+PY-FORMENCODE_VERSION=1.2.2
 PY-FORMENCODE_SOURCE=FormEncode-$(PY-FORMENCODE_VERSION).tar.gz
 PY-FORMENCODE_DIR=FormEncode-$(PY-FORMENCODE_VERSION)
 PY-FORMENCODE_UNZIP=zcat
@@ -286,5 +286,4 @@ py-formencode-dirclean:
 # Some sanity check for the package.
 #
 py-formencode-check: $(PY24-FORMENCODE_IPK) $(PY25-FORMENCODE_IPK) $(PY26-FORMENCODE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
-		$(PY24-FORMENCODE_IPK) $(PY25-FORMENCODE_IPK) $(PY26-FORMENCODE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
