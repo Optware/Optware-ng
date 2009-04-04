@@ -284,7 +284,7 @@ COMMON_CROSS_PACKAGES = \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
 	minicom mini-sendmail minihttpd miscfiles \
-	mktemp mlocate moblock moc modutils monit most motion \
+	mktemp mlocate moblock moc modutils monit most motion motor \
 	mod-fastcgi moe mp3blaster mp3info mpack mpage \
 	mpc mpd mpdscribble \
 	mpg123 mpop mrtg msmtp \
@@ -297,7 +297,7 @@ COMMON_CROSS_PACKAGES = \
 	newsbeuter newt \
 	nfs-server nfs-utils \
 	nget nginx ngrep nickle ninvaders nmap nload noip nostromo nrpe \
-	ntfsprogs ntop ntp ntpclient nttcp nvi nylon nzbget \
+	ntfsprogs ntop ntp ntpclient nttcp nut nvi nylon nzbget \
 	ocaml oleo open2300 \
 	openobex obexftp \
 	opendchub openldap openser openssh openssl openvpn \
@@ -307,7 +307,8 @@ COMMON_CROSS_PACKAGES = \
 	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
 	picocom picolisp pkgconfig player polipo pop3proxy \
-	popt poptop portmap postgresql postfix pound ppp privoxy procmail \
+	popt poptop portmap postgresql postfix pound \
+	ppower ppp privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils puppy pure-ftpd pv pwgen \
 	python python24 python25 python26 python30 $(PYTHON_PACKAGES) \
 	qemacs qemu qemu-libc-i386 quagga quickie quilt \
