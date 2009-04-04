@@ -29,7 +29,7 @@ NUT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NUT_DESCRIPTION=Network UPS tools.
 NUT_SECTION=admin
 NUT_PRIORITY=optional
-NUT_DEPENDS=libusb, openssl, neon
+NUT_DEPENDS=libusb, openssl, neon, libgd
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 NUT_DEPENDS+=, net-snmp
 endif
@@ -49,7 +49,7 @@ NUT_IPK_VERSION=1
 # NUT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NUT_PATCHES=$(NUT_SOURCE_DIR)/configure.patch
+NUT_PATCHES=$(NUT_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +108,7 @@ nut-source: $(DL_DIR)/$(NUT_SOURCE) $(NUT_PATCHES)
 # shown below to make various patches to it.
 #
 $(NUT_BUILD_DIR)/.configured: $(DL_DIR)/$(NUT_SOURCE) $(NUT_PATCHES) make/nut.mk
-	$(MAKE) libusb-stage openssl-stage neon-stage
+	$(MAKE) libusb-stage openssl-stage neon-stage libgd-stage
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 	$(MAKE) net-snmp-stage
 endif
@@ -134,6 +134,10 @@ endif
 		--prefix=/opt \
 		--with-hotplug-dir=/opt/etc/hotplug \
 		--with-udev-dir=/opt/etc/udev \
+		--with-htmlpath=/opt/share/nut/html \
+		--with-statepath=/opt/var/state/ups \
+		--with-pidpath=/opt/var/run \
+		--with-cgi \
 		--disable-nls \
 		--disable-static \
 	)
