@@ -30,6 +30,7 @@ BROKEN_PACKAGES = \
 	mediatomb mimms moc motion mod-fastcgi moe \
 	mp3blaster mpd mpdscribble mpop msmtp msynctool \
 	mod-python mod-wsgi \
+	motor \
 	newsbeuter nget nmap nload nzbget \
 	open2300 openldap obexftp openser oww \
 	p7zip p910nd par2cmdline pcapsipdump php-apache \

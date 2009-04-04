@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	gloox \
 	libdvb \
 	ltrace \
+	motor \
 	nget \
 	player \
 	rssh \

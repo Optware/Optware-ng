@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	libdvb \
 	ltrace \
+	motor \
 	nget \
 	player \
 	rssh \
