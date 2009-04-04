@@ -28,6 +28,7 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	nut \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -297,7 +298,7 @@ COMMON_CROSS_PACKAGES = \
 	newsbeuter newt \
 	nfs-server nfs-utils \
 	nget nginx ngrep nickle ninvaders nmap nload noip nostromo nrpe \
-	ntfsprogs ntop ntp ntpclient nttcp nut nvi nylon nzbget \
+	ntfsprogs ntop ntp ntpclient nttcp nvi nylon nzbget \
 	ocaml oleo open2300 \
 	openobex obexftp \
 	opendchub openldap openser openssh openssl openvpn \
