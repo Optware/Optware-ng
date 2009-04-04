@@ -36,6 +36,9 @@ MOTOR_DESCRIPTION=Integrated IDE that works in the console
 MOTOR_SECTION=util
 MOTOR_PRIORITY=optional
 MOTOR_DEPENDS=ncurses
+ifneq (,$(filter libiconv, $(PACKAGES)))
+MOTOR_DEPENDS +=, libiconv
+endif
 MOTOR_SUGGESTS=
 MOTOR_CONFLICTS=
 
@@ -52,8 +55,7 @@ MOTOR_IPK_VERSION=1
 # MOTOR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MOTOR_PATCHES=$(MOTOR_SOURCE_DIR)/src-configuration-Makefile.in.patch \
-$(MOTOR_SOURCE_DIR)/src-Makefile.in.patch
+MOTOR_PATCHES=$(MOTOR_SOURCE_DIR)/share-Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -113,6 +115,9 @@ motor-source: $(DL_DIR)/$(MOTOR_SOURCE) $(MOTOR_PATCHES)
 #
 $(MOTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTOR_SOURCE) $(MOTOR_PATCHES) make/motor.mk
 	$(MAKE) ncurses-stage
+ifneq (,$(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MOTOR_DIR) $(@D)
 	$(MOTOR_UNZIP) $(DL_DIR)/$(MOTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOTOR_PATCHES)" ; \
@@ -122,6 +127,7 @@ $(MOTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTOR_SOURCE) $(MOTOR_PATCHES) make/
 	if test "$(BUILD_DIR)/$(MOTOR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOTOR_DIR) $(@D) ; \
 	fi
+	find $(@D) -name Makefile.in | xargs sed -i -e '/^CPPFLAGS *=/s|$$| @CPPFLAGS@|'
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOTOR_CPPFLAGS)" \
@@ -195,7 +201,8 @@ $(MOTOR_IPK_DIR)/CONTROL/control:
 #
 $(MOTOR_IPK): $(MOTOR_BUILD_DIR)/.built
 	rm -rf $(MOTOR_IPK_DIR) $(BUILD_DIR)/motor_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MOTOR_BUILD_DIR) DESTDIR=$(MOTOR_IPK_DIR) install-strip
+	$(MAKE) -C $(MOTOR_BUILD_DIR) DESTDIR=$(MOTOR_IPK_DIR) install
+	$(STRIP_COMMAND) $(MOTOR_IPK_DIR)/opt/bin/motor
 #	install -d $(MOTOR_IPK_DIR)/opt/etc/
 #	install -m 644 $(MOTOR_SOURCE_DIR)/motor.conf $(MOTOR_IPK_DIR)/opt/etc/motor.conf
 #	install -d $(MOTOR_IPK_DIR)/opt/etc/init.d
