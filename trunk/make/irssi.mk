@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IRSSI_SITE=http://www.irssi.org/files
-IRSSI_VERSION=0.8.12
+IRSSI_VERSION=0.8.13
 IRSSI_SOURCE=irssi-$(IRSSI_VERSION).tar.gz
 IRSSI_DIR=irssi-$(IRSSI_VERSION)
 IRSSI_UNZIP=zcat
@@ -31,6 +31,7 @@ IRSSI_SECTION=net
 IRSSI_PRIORITY=optional
 IRSSI_DEPENDS=glib, ncurses, gconv-modules, openssl
 IRSSI_CONFIGURE_OPTIONS=
+
 ifneq (,$(filter perl, $(PACKAGES)))
 IRSSI_SUGGESTS=perl
 IRSSI_CONFIGURE_OPTIONS+=--with-perl
@@ -38,6 +39,7 @@ else
 IRSSI_SUGGESTS=
 IRSSI_CONFIGURE_OPTIONS+=--without-perl
 endif
+
 ifeq (no,$(IPV6))
 IRSSI_CONFIGURE_OPTIONS+=--disable-ipv6
 else
@@ -48,7 +50,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=4
+IRSSI_IPK_VERSION=1
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
@@ -87,15 +89,19 @@ $(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/auto/DynaLoader/DynaLoader
 #
 IRSSI_BUILD_DIR=$(BUILD_DIR)/irssi
 IRSSI_SOURCE_DIR=$(SOURCE_DIR)/irssi
+
 IRSSI_IPK_DIR=$(BUILD_DIR)/irssi-$(IRSSI_VERSION)-ipk
 IRSSI_IPK=$(BUILD_DIR)/irssi_$(IRSSI_VERSION)-$(IRSSI_IPK_VERSION)_$(TARGET_ARCH).ipk
+IRSSI-DEV_IPK_DIR=$(BUILD_DIR)/irssi-dev-$(IRSSI_VERSION)-ipk
+IRSSI-DEV_IPK=$(BUILD_DIR)/irssi-dev_$(IRSSI_VERSION)-$(IRSSI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IRSSI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IRSSI_SITE)/$(IRSSI_SOURCE)
+	$(WGET) -P $(@D) $(IRSSI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -136,8 +142,8 @@ endif
 	if test "$(BUILD_DIR)/$(IRSSI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IRSSI_DIR) $(@D) ; \
 	fi
+	autoreconf -vif $(@D)
 	(cd $(@D); \
-		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IRSSI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IRSSI_LDFLAGS)" \
@@ -152,12 +158,15 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 		$(IRSSI_CONFIGURE_OPTIONS) \
-		--with-glib-prefix=$(STAGING_PREFIX) \
 		--with-ncurses=$(STAGING_PREFIX) \
+		--with-bot \
+		--without-gc \
 		--with-proxy \
 		--enable-ssl \
 		--disable-glibtest \
 		--with-glib-prefix=$(STAGING_PREFIX) \
+		--disable-static \
+		--enable-shared \
 	)
 ifneq (,$(filter perl, $(PACKAGES)))
 	for i in common irc ui textui; do \
@@ -229,6 +238,21 @@ $(IRSSI_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(IRSSI_SUGGESTS)" >>$@
 	@echo "Conflicts: $(IRSSI_CONFLICTS)" >>$@
 
+$(IRSSI-DEV_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: irssi-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(IRSSI_PRIORITY)" >>$@
+	@echo "Section: $(IRSSI_SECTION)" >>$@
+	@echo "Version: $(IRSSI_VERSION)-$(IRSSI_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(IRSSI_MAINTAINER)" >>$@
+	@echo "Source: $(IRSSI_SITE)/$(IRSSI_SOURCE)" >>$@
+	@echo "Description: irssi dev files" >>$@
+	@echo "Depends: $(IRSSI_DEPENDS)" >>$@
+	@echo "Suggests: $(IRSSI_SUGGESTS)" >>$@
+	@echo "Conflicts: $(IRSSI_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -241,12 +265,9 @@ $(IRSSI_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(IRSSI_IPK): $(IRSSI_BUILD_DIR)/.built
+$(IRSSI_IPK) $(IRSSI-DEV_IPK): $(IRSSI_BUILD_DIR)/.built
 	rm -rf $(IRSSI_IPK_DIR) $(BUILD_DIR)/irssi_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(IRSSI_IPK_DIR) install
-	$(STRIP_COMMAND) $(IRSSI_IPK_DIR)/opt/bin/irssi
-	$(STRIP_COMMAND) $(IRSSI_IPK_DIR)/opt/lib/irssi/modules/libirc_proxy.so.[0-9]*.[0-9]*.[0-9]*
-	rm -f $(IRSSI_IPK_DIR)/opt/lib/irssi/modules/libirc_proxy.a
+	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(IRSSI_IPK_DIR) install-strip
 	install -d $(IRSSI_IPK_DIR)/opt/etc/
 #	install -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf
 #	install -d $(IRSSI_IPK_DIR)/opt/etc/init.d
@@ -261,15 +282,19 @@ ifneq (,$(filter perl, $(PACKAGES)))
 	   $(IRSSI_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.irssi
 endif
 	$(MAKE) $(IRSSI_IPK_DIR)/CONTROL/control
+	install -d $(IRSSI-DEV_IPK_DIR)/opt
+	mv $(IRSSI_IPK_DIR)/opt/include $(IRSSI-DEV_IPK_DIR)/opt/
+	$(MAKE) $(IRSSI-DEV_IPK_DIR)/CONTROL/control
 #	install -m 755 $(IRSSI_SOURCE_DIR)/postinst $(IRSSI_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(IRSSI_SOURCE_DIR)/prerm $(IRSSI_IPK_DIR)/CONTROL/prerm
 	echo $(IRSSI_CONFFILES) | sed -e 's/ /\n/g' > $(IRSSI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IRSSI_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(IRSSI-DEV_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-irssi-ipk: $(IRSSI_IPK)
+irssi-ipk: $(IRSSI_IPK) $(IRSSI-DEV_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -283,10 +308,12 @@ irssi-clean:
 # directories.
 #
 irssi-dirclean:
-	rm -rf $(BUILD_DIR)/$(IRSSI_DIR) $(IRSSI_BUILD_DIR) $(IRSSI_IPK_DIR) $(IRSSI_IPK)
+	rm -rf $(BUILD_DIR)/$(IRSSI_DIR) $(IRSSI_BUILD_DIR)
+	rm -rf $(IRSSI_IPK_DIR) $(IRSSI_IPK)
+	rm -rf $(IRSSI-DEV_IPK_DIR) $(IRSSI-DEV_IPK)
 
 #
 # Some sanity check for the package.
 #
-irssi-check: $(IRSSI_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IRSSI_IPK)
+irssi-check: $(IRSSI_IPK) $(IRSSI-DEV_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
