@@ -196,7 +196,8 @@ $(PPOWER_IPK_DIR)/CONTROL/control:
 #
 $(PPOWER_IPK): $(PPOWER_BUILD_DIR)/.built
 	rm -rf $(PPOWER_IPK_DIR) $(BUILD_DIR)/ppower_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PPOWER_BUILD_DIR) DESTDIR=$(PPOWER_IPK_DIR) install-strip
+	$(MAKE) -C $(PPOWER_BUILD_DIR) DESTDIR=$(PPOWER_IPK_DIR) install
+	$(STRIP_COMMAND) $(PPOWER_IPK_DIR)/opt/*bin/*
 	install -d $(PPOWER_IPK_DIR)/opt/etc/
 	install -m 644 $(PPOWER_BUILD_DIR)/etc/ppower.conf $(PPOWER_IPK_DIR)/opt/etc/ppower.conf
 #	install -d $(PPOWER_IPK_DIR)/opt/etc/init.d
