@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NUT_SITE=http://eu1.networkupstools.org/source/2.2
-NUT_VERSION=2.2.1
+NUT_SITE=http://eu1.networkupstools.org/source/2.4
+NUT_VERSION=2.4.1
 NUT_SOURCE=nut-$(NUT_VERSION).tar.gz
 NUT_DIR=nut-$(NUT_VERSION)
 NUT_UNZIP=zcat
@@ -29,7 +29,7 @@ NUT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NUT_DESCRIPTION=Network UPS tools.
 NUT_SECTION=admin
 NUT_PRIORITY=optional
-NUT_DEPENDS=libusb, openssl
+NUT_DEPENDS=libusb, openssl, neon
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 NUT_DEPENDS+=, net-snmp
 endif
@@ -108,7 +108,7 @@ nut-source: $(DL_DIR)/$(NUT_SOURCE) $(NUT_PATCHES)
 # shown below to make various patches to it.
 #
 $(NUT_BUILD_DIR)/.configured: $(DL_DIR)/$(NUT_SOURCE) $(NUT_PATCHES) make/nut.mk
-	$(MAKE) libusb-stage openssl-stage
+	$(MAKE) libusb-stage openssl-stage neon-stage
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 	$(MAKE) net-snmp-stage
 endif
