@@ -1,0 +1,11 @@
+--- src/configuration/Makefile.in.orig	2005-02-12 18:07:16.000000000 +0300
++++ src/configuration/Makefile.in	2009-04-04 20:54:43.000000000 +0400
+@@ -93,7 +93,7 @@
+ INCLUDES = -I$(top_srcdir)/kkstrtext -I$(top_srcdir)/kkconsui/include     -I$(top_srcdir)/kksystr/include -I$(top_srcdir)/intl     -I$(top_srcdir)/src/ui/ncurses -I$(top_srcdir)/src/debugger     -I$(top_srcdir)/src/executor -I$(top_srcdir)/src/project     -I$(top_srcdir)/src/ui -I$(top_srcdir)/src/tagbrowser -I$(top_srcdir)/src     -I$(top_srcdir)/parser/include
+ 
+ 
+-CPPFLAGS = -DSHARE_DIR=\"$(pkgdatadir)\" -DLOCALE_DIR=\"$(datadir)/locale\"
++CPPFLAGS = -DSHARE_DIR=\"$(pkgdatadir)\" -DLOCALE_DIR=\"$(datadir)/locale\" @CPPFLAGS@
+ 
+ libconfiguration_a_SOURCES = motorconfiguration.cc extkey.cc
+ 
