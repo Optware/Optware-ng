@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MONO_SITE=http://ftp.novell.com/pub/mono/sources/mono
-MONO_VERSION=2.2
+MONO_VERSION=2.4
 MONO_SOURCE=mono-$(MONO_VERSION).tar.bz2
 MONO_DIR=mono-$(MONO_VERSION)
 MONO_UNZIP=bzcat
