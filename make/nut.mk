@@ -139,7 +139,7 @@ endif
 		--with-pidpath=/opt/var/run \
 		--with-cgi \
 		--with-gd-includes=-I$(STAGING_INCLUDE_DIR) \
-		--with-gd-libs="-L$(STAGING_LIB_DIR) -lgd" \
+		--with-gd-libs="-L$(STAGING_LIB_DIR) -lgd -lfreetype -lfontconfig -ljpeg -lpng12 -lz -lexpat" \
 		--disable-nls \
 		--disable-static \
 	)
