@@ -13,12 +13,3 @@ Index: emu/Linux/mkfile
  CLEANCONFLIST=
  
  INSTALLDIR=$ROOT/$SYSTARG/$OBJTYPE/bin	#path of directory where kernel is installed
-@@ -30,7 +30,7 @@
- HFILES=\
- 
- CFLAGS='-DROOT="'$ROOT'"' -DEMU -I. -I../port -I$ROOT/$SYSTARG/$OBJTYPE/include -I$ROOT/include -I$ROOT/libinterp $CTHREADFLAGS $CFLAGS $EMUOPTIONS
--SYSLIBS= -lm -lX11 -lXext
-+SYSLIBS= -lm
- KERNDATE=`{$NDATE}
- 
- default:V:	$O.$CONF
