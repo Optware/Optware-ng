@@ -1,0 +1,11 @@
+--- share/Makefile.in.orig	2005-02-12 15:07:17.000000000 +0000
++++ share/Makefile.in	2009-04-04 23:13:42.205176624 +0000
+@@ -225,7 +225,7 @@
+ 	-if test -d templates; then rm -f tmpl.tar.gz; fi
+ 
+ install-data-local: tmpl.tar.gz
+-	tar zxvf tmpl.tar.gz -C $(datadir)/motor/
++	tar zxvf tmpl.tar.gz -C $(DESTDIR)/$(datadir)/motor/
+ 	-find $(datadir)/motor/ -name CVS -type d -exec rm -rf {} \;
+ 	if test -d templates; then rm -f tmpl.tar.gz; fi
+ 
