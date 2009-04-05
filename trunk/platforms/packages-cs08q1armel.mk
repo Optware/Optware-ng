@@ -12,7 +12,6 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	bzflag \
-	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	icecast iptables iptraf ldconfig \
+	iptables iptraf ldconfig \
 	nfs-utils puppy mod-python qemu \
 	taged transcode \
