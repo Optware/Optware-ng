@@ -30,6 +30,9 @@ NUT_DESCRIPTION=Network UPS tools.
 NUT_SECTION=admin
 NUT_PRIORITY=optional
 NUT_DEPENDS=libusb, openssl, neon, libgd
+ifneq (, $(filter libiconv, $(PACKAGES)))
+NUT_DEPENDS+=, libiconv
+endif
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 NUT_DEPENDS+=, net-snmp
 endif
@@ -57,6 +60,7 @@ NUT_PATCHES=$(NUT_SOURCE_DIR)/configure.patch
 #
 NUT_CPPFLAGS=
 NUT_LDFLAGS=$(strip $(if $(filter uclibc, $(LIBC_STYLE)), -lm, ))
+NUT_GD_LIBS=-L$(STAGING_LIB_DIR) -lgd -lfreetype -lfontconfig -ljpeg -lpng12 -lz -lexpat $(if $(filter libiconv, $(PACKAGES)), -liconv,)
 
 #
 # NUT_BUILD_DIR is the directory in which the build is done.
@@ -109,6 +113,9 @@ nut-source: $(DL_DIR)/$(NUT_SOURCE) $(NUT_PATCHES)
 #
 $(NUT_BUILD_DIR)/.configured: $(DL_DIR)/$(NUT_SOURCE) $(NUT_PATCHES) make/nut.mk
 	$(MAKE) libusb-stage openssl-stage neon-stage libgd-stage
+ifneq (, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 	$(MAKE) net-snmp-stage
 endif
@@ -139,7 +146,7 @@ endif
 		--with-pidpath=/opt/var/run \
 		--with-cgi \
 		--with-gd-includes=-I$(STAGING_INCLUDE_DIR) \
-		--with-gd-libs="-L$(STAGING_LIB_DIR) -lgd -lfreetype -lfontconfig -ljpeg -lpng12 -lz -lexpat" \
+		--with-gd-libs="$(NUT_GD_LIBS)" \
 		--disable-nls \
 		--disable-static \
 	)
