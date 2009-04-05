@@ -14,9 +14,9 @@
  
  SYSLIBS=
  
---- emu/Linux/mkfile.orig	2006-10-07 13:02:33.000000000 +0000
-+++ emu/Linux/mkfile	2009-03-30 21:31:42.972031621 +0000
-@@ -6,8 +6,8 @@
+--- emu/Linux/mkfile.orig	2009-04-05 16:48:28.000000000 +0000
++++ emu/Linux/mkfile	2009-04-05 22:23:44.775922792 +0000
+@@ -4,8 +4,8 @@
  
  #Configurable parameters
  
@@ -25,14 +25,5 @@
 +CONF=emu-g			#default configuration
 +CONFLIST=emu-g
  CLEANCONFLIST=
- WIN=win-x11a.$O
  
-@@ -34,7 +34,7 @@
- HFILES=\
- 
- CFLAGS='-DROOT="'$ROOT'"' -DEMU -I. -I../port -I$ROOT/$SYSTARG/$OBJTYPE/include -I$ROOT/include -I$ROOT/libinterp $CTHREADFLAGS $CFLAGS $EMUOPTIONS
--SYSLIBS= -lm -lX11 -lXext
-+SYSLIBS= -lm
- KERNDATE=`{$NDATE}
- 
- default:V:	$O.$CONF
+ INSTALLDIR=$ROOT/$SYSTARG/$OBJTYPE/bin	#path of directory where kernel is installed
