@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.6.2.1
+GIT_VERSION=1.6.2.2
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -85,6 +85,9 @@ GIT_IPK=$(BUILD_DIR)/git_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 GIT-MANPAGES_IPK_DIR=$(BUILD_DIR)/git-manpages-$(GIT_VERSION)-ipk
 GIT-MANPAGES_IPK=$(BUILD_DIR)/git-manpages_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+GIT-SVN_IPK_DIR=$(BUILD_DIR)/git-svn-$(GIT_VERSION)-ipk
+GIT-SVN_IPK=$(BUILD_DIR)/git-svn_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: git-source git-unpack git git-stage git-ipk git-clean git-dirclean git-check
 
@@ -221,6 +224,21 @@ $(GIT-MANPAGES_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: " >>$@
 	@echo "Conflicts: " >>$@
 
+$(GIT-SVN_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: git-svn" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIT_PRIORITY)" >>$@
+	@echo "Section: $(GIT_SECTION)" >>$@
+	@echo "Version: $(GIT_VERSION)-$(GIT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIT_MAINTAINER)" >>$@
+	@echo "Source: $(GIT_SITE)/$(GIT-MANPAGES_SOURCE)" >>$@
+	@echo "Description: git as svn client" >>$@
+	@echo "Depends: git, svn-pl" >>$@
+	@echo "Suggests: " >>$@
+	@echo "Conflicts: " >>$@
+
 #
 # This builds the IPK file.
 #
@@ -247,6 +265,8 @@ ifneq (,$(filter perl, $(PACKAGES)))
 	mv $(GIT_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod \
 	   $(GIT_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.git 
 endif
+	install -d $(GIT_IPK_DIR)/opt/etc/bash_completion.d
+	install $(<D)/contrib/completion/git-completion.bash $(GIT_IPK_DIR)/opt/etc/bash_completion.d
 	$(MAKE) $(GIT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT_IPK_DIR)
 
@@ -257,10 +277,15 @@ $(GIT-MANPAGES_IPK): $(DL_DIR)/$(GIT-MANPAGES_SOURCE)
 	$(MAKE) $(GIT-MANPAGES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-MANPAGES_IPK_DIR)
 
+$(GIT-SVN_IPK):
+	rm -rf $(GIT-SVN_IPK_DIR) $(BUILD_DIR)/git-svn_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(GIT-SVN_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-SVN_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-git-ipk: $(GIT_IPK) $(GIT-MANPAGES_IPK)
+git-ipk: $(GIT_IPK) $(GIT-MANPAGES_IPK) $(GIT-SVN_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
