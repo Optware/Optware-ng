@@ -21,11 +21,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SIMPY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/simpy
-PY-SIMPY_VERSION=2.0
-PY-SIMPY_SOURCE=SimPy-$(PY-SIMPY_VERSION).tar.gz
+PY-SIMPY_SITE=http://pypi.python.org/packages/source/S/SimPy
+PY-SIMPY_VERSION=2.0.1
+PY-SIMPY_SOURCE=SimPy-$(PY-SIMPY_VERSION).zip
 PY-SIMPY_DIR=SimPy-$(PY-SIMPY_VERSION)
-PY-SIMPY_UNZIP=zcat
+PY-SIMPY_UNZIP=unzip
 PY-SIMPY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SIMPY_DESCRIPTION=An object-oriented, process-based discrete-event simulation language based on standard Python.
 PY-SIMPY_SECTION=misc
@@ -116,7 +116,7 @@ $(PY-SIMPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCH
 	mkdir -p $(@D)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR)
-	$(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cd $(BUILD_DIR); $(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE)
 #	cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -127,7 +127,7 @@ $(PY-SIMPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCH
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR)
-	$(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cd $(BUILD_DIR); $(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE)
 #	cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
