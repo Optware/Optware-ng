@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GETMAIL_SITE=http://pyropus.ca/software/getmail/old-versions
-GETMAIL_VERSION=4.8.4
+GETMAIL_VERSION=4.9.0
 PY-GETMAIL_SOURCE=getmail-$(GETMAIL_VERSION).tar.gz
 PY-GETMAIL_DIR=getmail-$(GETMAIL_VERSION)
 PY-GETMAIL_UNZIP=zcat
@@ -30,8 +30,8 @@ PY-GETMAIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-GETMAIL_DESCRIPTION=getmail is a mail retriever designed to allow you to get your mail from one or more mail accounts on various mail servers to your local machine.
 PY-GETMAIL_SECTION=mail
 PY-GETMAIL_PRIORITY=optional
-PY24-GETMAIL_DEPENDS=python24
 PY25-GETMAIL_DEPENDS=python25
+PY26-GETMAIL_DEPENDS=python26
 PY-GETMAIL_SUGGESTS=
 PY-GETMAIL_CONFLICTS=
 
@@ -72,11 +72,11 @@ PY-GETMAIL_SOURCE_DIR=$(SOURCE_DIR)/getmail
 PY-GETMAIL-COMMON_IPK_DIR=$(BUILD_DIR)/py-getmail-common-$(GETMAIL_VERSION)-ipk
 PY-GETMAIL-COMMON_IPK=$(BUILD_DIR)/py-getmail-common_$(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY24-GETMAIL_IPK_DIR=$(BUILD_DIR)/py24-getmail-$(GETMAIL_VERSION)-ipk
-PY24-GETMAIL_IPK=$(BUILD_DIR)/py24-getmail_$(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-GETMAIL_IPK_DIR=$(BUILD_DIR)/py25-getmail-$(GETMAIL_VERSION)-ipk
 PY25-GETMAIL_IPK=$(BUILD_DIR)/py25-getmail_$(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-GETMAIL_IPK_DIR=$(BUILD_DIR)/py26-getmail-$(GETMAIL_VERSION)-ipk
+PY26-GETMAIL_IPK=$(BUILD_DIR)/py26-getmail_$(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: getmail-source getmail-unpack getmail getmail-stage getmail-ipk getmail-clean getmail-dirclean getmail-check
 
@@ -110,23 +110,11 @@ getmail-source: $(DL_DIR)/$(PY-GETMAIL_SOURCE) $(PY-GETMAIL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-GETMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GETMAIL_SOURCE) $(PY-GETMAIL_PATCHES)
+$(PY-GETMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GETMAIL_SOURCE) $(PY-GETMAIL_PATCHES) make/getmail.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(PY-GETMAIL_BUILD_DIR)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-GETMAIL_DIR)
-	$(PY-GETMAIL_UNZIP) $(DL_DIR)/$(PY-GETMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-GETMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GETMAIL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-GETMAIL_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    ( \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4" \
-	    ) >> setup.cfg; \
-	)
-	sed -i -e '/getmail.spec/d' $(@D)/2.4/setup.py
-	# 2.4
+	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-GETMAIL_DIR)
 	$(PY-GETMAIL_UNZIP) $(DL_DIR)/$(PY-GETMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-GETMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GETMAIL_DIR) -p1
@@ -138,6 +126,18 @@ $(PY-GETMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GETMAIL_SOURCE) $(PY-GETMAIL
 	    ) >> setup.cfg; \
 	)
 	sed -i -e '/getmail.spec/d' $(@D)/2.5/setup.py
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-GETMAIL_DIR)
+	$(PY-GETMAIL_UNZIP) $(DL_DIR)/$(PY-GETMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-GETMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GETMAIL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-GETMAIL_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.6" \
+	    ) >> setup.cfg; \
+	)
+	sed -i -e '/getmail.spec/d' $(@D)/2.6/setup.py
 	touch $@
 
 getmail-unpack: $(PY-GETMAIL_BUILD_DIR)/.configured
@@ -147,11 +147,11 @@ getmail-unpack: $(PY-GETMAIL_BUILD_DIR)/.configured
 #
 $(PY-GETMAIL_BUILD_DIR)/.built: $(PY-GETMAIL_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
-	)
 	(cd $(@D)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	(cd $(@D)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
 	touch $@
 
@@ -189,21 +189,6 @@ $(PY-GETMAIL-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(PY-GETMAIL_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-GETMAIL_CONFLICTS)" >>$@
 
-$(PY24-GETMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-getmail" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-GETMAIL_PRIORITY)" >>$@
-	@echo "Section: $(PY-GETMAIL_SECTION)" >>$@
-	@echo "Version: $(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-GETMAIL_MAINTAINER)" >>$@
-	@echo "Source: $(PY-GETMAIL_SITE)/$(PY-GETMAIL_SOURCE)" >>$@
-	@echo "Description: $(PY-GETMAIL_DESCRIPTION)" >>$@
-	@echo "Depends: py-getmail-common $(PY24-GETMAIL_DEPENDS)" >>$@
-	@echo "Suggests: $(PY-GETMAIL_SUGGESTS)" >>$@
-	@echo "Conflicts: $(PY-GETMAIL_CONFLICTS)" >>$@
-
 $(PY25-GETMAIL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -219,6 +204,21 @@ $(PY25-GETMAIL_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(PY-GETMAIL_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-GETMAIL_CONFLICTS)" >>$@
 
+$(PY26-GETMAIL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-getmail" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-GETMAIL_PRIORITY)" >>$@
+	@echo "Section: $(PY-GETMAIL_SECTION)" >>$@
+	@echo "Version: $(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-GETMAIL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-GETMAIL_SITE)/$(PY-GETMAIL_SOURCE)" >>$@
+	@echo "Description: $(PY-GETMAIL_DESCRIPTION)" >>$@
+	@echo "Depends: py-getmail-common $(PY26-GETMAIL_DEPENDS)" >>$@
+	@echo "Suggests: $(PY-GETMAIL_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PY-GETMAIL_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -231,36 +231,37 @@ $(PY25-GETMAIL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-GETMAIL-COMMON_IPK) $(PY24-GETMAIL_IPK) $(PY25-GETMAIL_IPK): $(PY-GETMAIL_BUILD_DIR)/.built
-	# 2.4 & common
-	rm -rf $(PY24-GETMAIL_IPK_DIR) $(BUILD_DIR)/py24-getmail_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY-GETMAIL-COMMON_IPK_DIR) $(BUILD_DIR)/py-getmail-common_*_$(TARGET_ARCH).ipk
-	(cd $(PY-GETMAIL_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-GETMAIL_IPK_DIR) --prefix=/opt; \
-	)
-	for f in $(PY24-GETMAIL_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-py2.4|'`; done
-	install -d $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
-	mv $(PY24-GETMAIL_IPK_DIR)/opt/share $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
-	$(MAKE) $(PY24-GETMAIL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-GETMAIL_IPK_DIR)
-	$(MAKE) $(PY-GETMAIL-COMMON_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-GETMAIL-COMMON_IPK_DIR)
-	# 2.5
+$(PY-GETMAIL-COMMON_IPK) $(PY25-GETMAIL_IPK) $(PY26-GETMAIL_IPK): $(PY-GETMAIL_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-getmail*_*_$(TARGET_ARCH).ipk
+	# 2.5 & common
 	rm -rf $(PY25-GETMAIL_IPK_DIR) $(BUILD_DIR)/py25-getmail_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY-GETMAIL-COMMON_IPK_DIR) $(BUILD_DIR)/py-getmail-common_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GETMAIL_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-GETMAIL_IPK_DIR) --prefix=/opt; \
 	)
-	rm -rf $(PY25-GETMAIL_IPK_DIR)/opt/share
+	install -d $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
+	mv $(PY25-GETMAIL_IPK_DIR)/opt/share $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
 	$(MAKE) $(PY25-GETMAIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GETMAIL_IPK_DIR)
+	$(MAKE) $(PY-GETMAIL-COMMON_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-GETMAIL-COMMON_IPK_DIR)
+	# 2.6
+	rm -rf $(PY26-GETMAIL_IPK_DIR) $(BUILD_DIR)/py26-getmail_*_$(TARGET_ARCH).ipk
+	(cd $(PY-GETMAIL_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-GETMAIL_IPK_DIR) --prefix=/opt; \
+	)
+	for f in $(PY26-GETMAIL_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-py2.6|'`; done
+	rm -rf $(PY26-GETMAIL_IPK_DIR)/opt/share
+	$(MAKE) $(PY26-GETMAIL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-GETMAIL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-getmail-ipk: $(PY24-GETMAIL_IPK) $(PY25-GETMAIL_IPK)
+getmail-ipk: $(PY25-GETMAIL_IPK) $(PY26-GETMAIL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -274,11 +275,11 @@ getmail-clean:
 #
 getmail-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-GETMAIL_DIR) $(PY-GETMAIL_BUILD_DIR)
-	rm -rf $(PY24-GETMAIL_IPK_DIR) $(PY24-GETMAIL_IPK)
 	rm -rf $(PY25-GETMAIL_IPK_DIR) $(PY25-GETMAIL_IPK)
+	rm -rf $(PY26-GETMAIL_IPK_DIR) $(PY26-GETMAIL_IPK)
 
 #
 # Some sanity check for the package.
 #
-getmail-check: $(PY24-GETMAIL_IPK) $(PY25-GETMAIL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-GETMAIL_IPK) $(PY25-GETMAIL_IPK)
+getmail-check: $(PY25-GETMAIL_IPK) $(PY26-GETMAIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
