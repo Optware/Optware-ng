@@ -9,7 +9,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	atk \
-	bitchx bzflag \
+	bitchx \
 	gtk ipac-ng iptables iptraf ldconfig \
 	microdc2 netatalk nfs-utils \
 	player puppy mod-python qemu \
