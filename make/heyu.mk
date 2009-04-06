@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HEYU_SITE=http://www.heyu.org/download/
-HEYU_VERSION=2.0beta.6.2
+HEYU_VERSION=2.5.1
 HEYU_SOURCE=heyu-$(HEYU_VERSION).tgz
 HEYU_DIR=heyu-$(HEYU_VERSION)
 HEYU_UNZIP=zcat
@@ -37,7 +37,7 @@ HEYU_CONFLICTS=
 #
 # HEYU_IPK_VERSION should be incremented when the ipk changes.
 #
-HEYU_IPK_VERSION=2
+HEYU_IPK_VERSION=1
 
 #
 # HEYU_CONFFILES should be a list of user-editable files
@@ -78,7 +78,8 @@ HEYU_IPK=$(BUILD_DIR)/heyu_$(HEYU_VERSION)-$(HEYU_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HEYU_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HEYU_SITE)/$(HEYU_SOURCE)
+	$(WGET) -P $(@D) $(HEYU_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,23 +112,23 @@ heyu-source: $(DL_DIR)/$(HEYU_SOURCE) $(HEYU_PATCHES)
 
 $(HEYU_BUILD_DIR)/.configured: $(DL_DIR)/$(HEYU_SOURCE) $(HEYU_PATCHES) make/heyu.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(HEYU_DIR) $(HEYU_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(HEYU_DIR) $(@D)
 	$(HEYU_UNZIP) $(DL_DIR)/$(HEYU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HEYU_PATCHES)" ; \
 		then cat $(HEYU_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(HEYU_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(HEYU_DIR)" != "$(HEYU_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(HEYU_DIR) $(HEYU_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(HEYU_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(HEYU_DIR) $(@D) ; \
 	fi
-	(cd $(HEYU_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HEYU_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HEYU_LDFLAGS)" \
 		./Configure linux \
 	)
 #	$(PATCH_LIBTOOL) $(HEYU_BUILD_DIR)/libtool
-	touch $(HEYU_BUILD_DIR)/.configured
+	touch $@
 
 heyu-unpack: $(HEYU_BUILD_DIR)/.configured
 
@@ -135,12 +136,12 @@ heyu-unpack: $(HEYU_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(HEYU_BUILD_DIR)/.built: $(HEYU_BUILD_DIR)/.configured
-	rm -f $(HEYU_BUILD_DIR)/.built
-	$(MAKE) -C $(HEYU_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		CC=$(TARGET_CC) LD=$(TARGET_LD) \
-		CFLAGS="$(STAGING_CPPFLAGS) -I$(HEYU_BUILD_DIR) \$$(DFLAGS) -DLOCKDIR=\\\"/opt/var/run/heyu\\\" -DSYSBASEDIR=\\\"/opt/etc/heyu\\\" -DSPOOLDIR=\\\"/opt/var/spool/heyu\\\" " \
+		CFLAGS="$(STAGING_CPPFLAGS) -I$(@D) \$$(DFLAGS) -DLOCKDIR=\\\"/opt/var/run/heyu\\\" -DSYSBASEDIR=\\\"/opt/etc/heyu\\\" -DSPOOLDIR=\\\"/opt/var/spool/heyu\\\" " \
 		LDFLAGS="$(STAGING_LDFLAGS)"
-	touch $(HEYU_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -150,12 +151,12 @@ heyu: $(HEYU_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(HEYU_BUILD_DIR)/.staged: $(HEYU_BUILD_DIR)/.built
-	rm -f $(HEYU_BUILD_DIR)/.staged
-	$(MAKE) -C $(HEYU_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(HEYU_BUILD_DIR)/.staged
-
-heyu-stage: $(HEYU_BUILD_DIR)/.staged
+#$(HEYU_BUILD_DIR)/.staged: $(HEYU_BUILD_DIR)/.built
+#	rm -f $(HEYU_BUILD_DIR)/.staged
+#	$(MAKE) -C $(HEYU_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $(HEYU_BUILD_DIR)/.staged
+#
+#heyu-stage: $(HEYU_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -233,4 +234,4 @@ heyu-dirclean:
 # Some sanity check for the package.
 #
 heyu-check: $(HEYU_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HEYU_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
