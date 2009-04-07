@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MODULE_INIT_TOOLS_SITE=http://www.kernel.org/pub/linux/utils/kernel/module-init-tools
-MODULE_INIT_TOOLS_VERSION=3.3-pre1
+MODULE_INIT_TOOLS_VERSION=3.5
 MODULE_INIT_TOOLS_SOURCE=module-init-tools-$(MODULE_INIT_TOOLS_VERSION).tar.bz2
 MODULE_INIT_TOOLS_DIR=module-init-tools-$(MODULE_INIT_TOOLS_VERSION)
 MODULE_INIT_TOOLS_UNZIP=bzcat
@@ -36,7 +36,7 @@ MODULE_INIT_TOOLS_CONFLICTS=
 #
 # MODULE_INIT_TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-MODULE_INIT_TOOLS_IPK_VERSION=5
+MODULE_INIT_TOOLS_IPK_VERSION=1
 
 #
 # MODULE_INIT_TOOLS_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ MODULE_INIT_TOOLS_CPPFLAGS += -DCONFIG_NO_BACKWARDS_COMPAT
 endif
 MODULE_INIT_TOOLS_LDFLAGS=
 
-ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel syno-x07 syno-e500, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel cs08q1armel syno-x07 syno-e500 ts509, $(OPTWARE_TARGET)))
 MODULE_INIT_TOOLS_CONFIGURE_OPTIONS=--with-moddir=/opt/lib/modules
 endif
 
@@ -83,8 +83,8 @@ MODULE_INIT_TOOLS_IPK=$(BUILD_DIR)/module-init-tools_$(MODULE_INIT_TOOLS_VERSION
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MODULE_INIT_TOOLS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MODULE_INIT_TOOLS_SITE)/$(MODULE_INIT_TOOLS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MODULE_INIT_TOOLS_SOURCE)
+	$(WGET) -P $(@D) $(MODULE_INIT_TOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -113,16 +113,16 @@ module-init-tools-source: $(DL_DIR)/$(MODULE_INIT_TOOLS_SOURCE) $(MODULE_INIT_TO
 #
 $(MODULE_INIT_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(MODULE_INIT_TOOLS_SOURCE) $(MODULE_INIT_TOOLS_PATCHES) make/module-init-tools.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR) $(MODULE_INIT_TOOLS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR) $(@D)
 	$(MODULE_INIT_TOOLS_UNZIP) $(DL_DIR)/$(MODULE_INIT_TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MODULE_INIT_TOOLS_PATCHES)" ; \
 		then cat $(MODULE_INIT_TOOLS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR)" != "$(MODULE_INIT_TOOLS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR) $(MODULE_INIT_TOOLS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR) $(@D) ; \
 	fi
-	(cd $(MODULE_INIT_TOOLS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MODULE_INIT_TOOLS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MODULE_INIT_TOOLS_LDFLAGS)" \
@@ -145,7 +145,7 @@ module-init-tools-unpack: $(MODULE_INIT_TOOLS_BUILD_DIR)/.configured
 #
 $(MODULE_INIT_TOOLS_BUILD_DIR)/.built: $(MODULE_INIT_TOOLS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MODULE_INIT_TOOLS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -158,7 +158,7 @@ module-init-tools: $(MODULE_INIT_TOOLS_BUILD_DIR)/.built
 #
 $(MODULE_INIT_TOOLS_BUILD_DIR)/.staged: $(MODULE_INIT_TOOLS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MODULE_INIT_TOOLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 module-init-tools-stage: $(MODULE_INIT_TOOLS_BUILD_DIR)/.staged
@@ -239,4 +239,4 @@ module-init-tools-dirclean:
 # Some sanity check for the package.
 #
 module-init-tools-check: $(MODULE_INIT_TOOLS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MODULE_INIT_TOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
