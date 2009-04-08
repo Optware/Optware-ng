@@ -22,7 +22,7 @@
 #
 SNORT_SITE=http://www.snort.org/dl
 SNORT_SITE2=http://www.snort.org/dl/old
-SNORT_VERSION=2.8.3.2
+SNORT_VERSION=2.8.4
 SNORT_SOURCE=snort-$(SNORT_VERSION).tar.gz
 SNORT_DIR=snort-$(SNORT_VERSION)
 SNORT_UNZIP=zcat
@@ -37,7 +37,7 @@ SNORT_CONFLICTS=
 #
 # SNORT_IPK_VERSION should be incremented when the ipk changes.
 #
-SNORT_IPK_VERSION=2
+SNORT_IPK_VERSION=1
 
 #
 # SNORT_CONFFILES should be a list of user-editable files

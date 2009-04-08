@@ -1,6 +1,6 @@
---- configure.in.orig	2008-06-04 19:08:33.000000000 +0000
-+++ configure.in	2008-07-10 02:33:51.000000000 +0000
-@@ -283,17 +283,7 @@
+--- configure.in.orig	2009-03-09 17:04:08.000000000 +0000
++++ configure.in	2009-04-08 15:41:32.988385753 +0000
+@@ -282,17 +282,7 @@
  AC_CHECK_FUNCS(wprintf)
  
  AC_MSG_CHECKING([for sizeof(unsigned long)])
@@ -19,7 +19,7 @@
  if test "x$ulong_is_64_bit" = "xyes"; then
      AC_MSG_RESULT([64 bits])
      AC_DEFINE([ULONGIS64BIT], [], [If unsigned long is 64 bits])
-@@ -417,7 +407,7 @@
+@@ -416,7 +406,7 @@
  # that versions < 0.9 do not accumulate packet statistics whereas >= 0.9 do accumulate.
  # This is Linux only.  The check is done after pcre because the code below uses pcre.
  # It seems Phil Wood's pcap does not accumulate - 0.9x
@@ -28,3 +28,28 @@
  if test "x$linux" = "xyes"; then
      if test "x$pcap_version_check" = "xyes"; then
          AC_MSG_CHECKING([for libpcap version >= 0.9])
+@@ -475,23 +465,7 @@
+ fi
+ 
+ # In case INADDR_NONE is not defined (like on Solaris)
+-have_inaddr_none="no"
+-AC_MSG_CHECKING([for INADDR_NONE])
+-AC_RUN_IFELSE(
+-[AC_LANG_PROGRAM(
+-[[
+-#include <sys/types.h>
+-#include <netinet/in.h>
+-]],
+-[[
+-	if (inet_addr("10,5,2") == INADDR_NONE);
+-]])],
+-[have_inaddr_none="yes"],
+-[have_inaddr_none="no"])
+-AC_MSG_RESULT($have_inaddr_none)
+-if test "x$have_inaddr_none" = "xno"; then
+-	AC_DEFINE([INADDR_NONE], [-1], [For INADDR_NONE definition])
+-fi
++have_inaddr_none="yes"
+ 
+ default_directory="/usr /usr/local"
+ 
