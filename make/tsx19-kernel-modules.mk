@@ -6,17 +6,17 @@
 
 ifeq ($(OPTWARE_TARGET), $(filter tsx19, $(OPTWARE_TARGET)))
 
-TSX19_KERNEL_SOURCE_SITE=
-TSX19_KERNEL_SOURCE=QNAP_GPL_linux-2.6.22.18.tar.bz2
+TSX19_KERNEL_SITE=http://www.qnap.com
+TSX19_KERNEL_SOURCE=QNAP_TS_X19_GPL_linux-2.6.22.18.tar.bz2
 # KERNEL_SOURCE_SITE=http://www.kernel.org/pub/linux/kernel/v2.6
 # KERNEL_SOURCE=linux-2.6.22.18.tar.bz2
 KERNEL_VERSION=2.6.22.18
 KERNEL-MODULES_DIR=linux-$(KERNEL_VERSION)
 KERNEL-MODULES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 
-KERNEL-IMAGE_DESCRIPTION=kernel
-KERNEL-MODULE_DESCRIPTION=kernel module
-KERNEL-MODULES_DESCRIPTION=kernel modules
+KERNEL-IMAGE_DESCRIPTION=Kernel
+KERNEL-MODULE_DESCRIPTION=Kernel module
+KERNEL-MODULES_DESCRIPTION=Kernel modules
 
 KERNEL-MODULES_SECTION=kernel
 KERNEL-MODULES_PRIORITY=optional
@@ -63,7 +63,6 @@ KERNEL-IMAG_IPK=$(BUILD_DIR)/kernel-image_$(KERNEL_VERSION)-$(KERNEL-MODULES_IPK
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TSX19_KERNEL_SOURCE):
-	$(WGET) -P $(@D) $(TSX19_KERNEL_SOURCE_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -72,6 +71,9 @@ $(DL_DIR)/$(TSX19_KERNEL_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 kernel-modules-source: $(DL_DIR)/$(TSX19_KERNEL_SOURCE) $(KERNEL-MODULES_PATCHES)
+
+KERNEL-MODULES-FLAGS = ARCH=arm ROOTDIR=$(KERNEL_BUILD_DIR) CROSS_COMPILE=$(TARGET_CROSS)
+KERNEL-MODULES_CONFIG_METHOD=oldconfig
 
 $(KERNEL_BUILD_DIR)/.configured: \
 $(DL_DIR)/$(TSX19_KERNEL_SOURCE) $(KERNEL-MODULES_PATCHES) \
@@ -86,20 +88,17 @@ $(TSX19_KERNEL_SOURCE_DIR)/defconfig make/tsx19-kernel-modules.mk
 	if test "$(BUILD_DIR)/$(KERNEL-MODULES_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(@D) ; \
 	fi
+	cp $(TSX19_KERNEL_SOURCE_DIR)/defconfig $(@D)/.config
+	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) $(KERNEL-MODULES_CONFIG_METHOD)
 	touch $@
 
 kernel-modules-unpack: $(KERNEL_BUILD_DIR)/.configured
-
-KERNEL-MODULES-FLAGS = ARCH=arm ROOTDIR=$(KERNEL_BUILD_DIR) CROSS_COMPILE=$(TARGET_CROSS)
 
 #
 # This builds the actual binary.
 #
 $(KERNEL_BUILD_DIR)/.built: $(KERNEL_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) clean
-	cp $(TSX19_KERNEL_SOURCE_DIR)/defconfig $(@D)/.config
-	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) oldconfig
 	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
 	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) uImage modules
 	touch $@
@@ -150,7 +149,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Description: $(KERNEL-MODULE_DESCRIPTION) $$m"; \
 	    echo -n "Depends: "; \
             DEPS="$(KERNEL-MODULES_DEPENDS)"; \
-	    for i in `grep "$$m.ko:" $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules/$(KERNEL_VERSION)*/modules.dep|cut -d ":" -f 2`; do \
+	    for i in `grep "/$$m.ko:" $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules/$(KERNEL_VERSION)*/modules.dep|cut -d ":" -f 2`; do \
 	      if test -n "$$DEPS"; then DEPS="$$DEPS,"; fi; \
 	      j=`basename $$i .ko | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
 	      DEPS="$$DEPS kernel-module-$$j"; \
@@ -182,14 +181,14 @@ $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 $(KERNEL_BUILD_DIR)/.ipkdone: $(KERNEL_BUILD_DIR)/.built
 	rm -f $(BUILD_DIR)/kernel-modules_*_$(TARGET_ARCH).ipk
 	rm -f $(BUILD_DIR)/kernel-module-*_$(TARGET_ARCH).ipk
-	rm -f $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
-	# Package the kernel image first
-	rm -rf $(KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
-	$(MAKE) $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control
-	install -d $(KERNEL-IMAGE_IPK_DIR)/boot/
-	install -m 644 $(KERNEL_BUILD_DIR)/arch/arm/boot/uImage \
+#	rm -f $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
+#	# Package the kernel image first
+#	rm -rf $(KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
+#	$(MAKE) $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control
+#	install -d $(KERNEL-IMAGE_IPK_DIR)/boot/
+#	install -m 644 $(KERNEL_BUILD_DIR)/arch/arm/boot/uImage \
 		$(KERNEL-IMAGE_IPK_DIR)/boot/uImage-$(KERNEL_VERSION)-optware-build-$(KERNEL-MODULES_IPK_VERSION)
-	( cd $(BUILD_DIR); $(IPKG_BUILD) $(KERNEL-IMAGE_IPK_DIR) )
+#	( cd $(BUILD_DIR); $(IPKG_BUILD) $(KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules
 	rm -rf $(KERNEL-MODULES_IPK_DIR)* $(KERNEL-MODULE_IPKS_DIR)
 	mkdir -p $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules
