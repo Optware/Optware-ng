@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CRYPTO++_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/cryptopp
-CRYPTO++_VERSION=5.5.2
-CRYPTO++_DIR=cryptopp552
+CRYPTO++_VERSION=5.6.0
+CRYPTO++_DIR=cryptopp560
 CRYPTO++_SOURCE=$(CRYPTO++_DIR).zip
 CRYPTO++_UNZIP=unzip
 CRYPTO++_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
