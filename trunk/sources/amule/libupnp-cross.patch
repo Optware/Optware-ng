@@ -1,0 +1,22 @@
+--- amule-2.2.4/m4/libupnp.m4.orig	2009-03-28 19:29:59.000000000 +0000
++++ amule-2.2.4/m4/libupnp.m4	2009-04-09 01:08:36.412993999 +0000
+@@ -52,7 +52,6 @@
+ 		[export PKG_CONFIG_PATH=$withval/lib/pkgconfig])
+ 
+ dnl	Check for libupnp >= MIN_LIBUPNP_VERSION
+-	AS_IF([test $cross_compiling = no], [dnl
+ 		AC_MSG_CHECKING([for libupnp version >= MIN_LIBUPNP_VERSION])
+ 		AS_IF([test -n "$PKG_CONFIG"], [dnl
+ 			AS_IF([$PKG_CONFIG libupnp --exists], [dnl
+@@ -79,11 +78,6 @@
+ 		])dnl
+ 		AC_MSG_RESULT([$result$resultstr])
+ 		libupnp_error="libupnp >= MIN_LIBUPNP_VERSION not found$resultstr"
+-	], [dnl
+-dnl Currently cross-compilation with libupnp is not supported.
+-		result=no
+-		libupnp_error="cross compiling"
+-	])dnl
+ 
+ dnl	Execute the right action.
+ 	AS_IF([test ${result:-no} = yes], [$2], [$3])

@@ -23,7 +23,7 @@
 
 #AMULE_SITE=http://download.berlios.de/amule
 AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/amule
-AMULE_VERSION=2.2.3
+AMULE_VERSION=2.2.4
 AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
 AMULE_DIR=aMule-$(AMULE_VERSION)
 AMULE_UNZIP=bzcat
@@ -31,7 +31,7 @@ AMULE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AMULE_DESCRIPTION=non-gui part of aMule ed2k client (amuled,amulweb,amulecmd) 
 AMULE_SECTION=net
 AMULE_PRIORITY=optional
-AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl, libpng, libgd, readline, ncurses
+AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl, libpng, libgd, libupnp, readline, ncurses
 AMULE_SUGGESTS=
 AMULE_CONFLICTS=
 
@@ -48,7 +48,8 @@ AMULE_IPK_VERSION=1
 # AMULE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-AMULE_PATCHES=$(AMULE_SOURCE_DIR)/uintptr_t.patch
+AMULE_PATCHES=$(AMULE_SOURCE_DIR)/uintptr_t.patch \
+$(AMULE_SOURCE_DIR)/libupnp-cross.patch
 
 ifeq ($(OPTWARE_TARGET), ts101)
 AMULE_PATCHES+=$(AMULE_SOURCE_DIR)/cmath.patch
@@ -85,6 +86,7 @@ AMULE_CONFIGURE_ARGS = \
 		--enable-amule-daemon \
 		--enable-webserver \
 		--enable-amulecmd \
+		--enable-upnp \
 		--disable-monolithic \
 		--disable-alc \
 		--disable-amulecmdgui \
@@ -94,6 +96,7 @@ AMULE_CONFIGURE_ARGS = \
 		--with-curl-config=$(STAGING_DIR)/bin/curl-config \
 		--with-gdlib-prefix=$(STAGING_PREFIX) \
 		--with-libpng-prefix=$(STAGING_PREFIX) \
+		--with-libupnp-prefix=$(STAGING_PREFIX) \
 		--with-wxbase-config=$(STAGING_DIR)/opt/bin/wx-config \
 		--with-wx-config=$(STAGING_DIR)/opt/bin/wx-config \
 		--with-wx-prefix=$(STAGING_PREFIX) \
@@ -154,7 +157,7 @@ amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 #
 $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 	$(MAKE) libstdc++-stage crypto++-stage
-	$(MAKE) wxbase-stage libcurl-stage zlib-stage libpng-stage libgd-stage readline-stage
+	$(MAKE) wxbase-stage libcurl-stage zlib-stage libpng-stage libgd-stage libupnp-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(@D)
 	$(AMULE_UNZIP) $(DL_DIR)/$(AMULE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AMULE_PATCHES)" ; \
@@ -164,8 +167,8 @@ $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 	if test "$(BUILD_DIR)/$(AMULE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AMULE_DIR) $(@D) ; \
 	fi
+	cd $(@D); autoconf
 	(cd $(@D); \
-		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AMULE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AMULE_LDFLAGS)" \
