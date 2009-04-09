@@ -8,7 +8,7 @@ ifneq ($(OPTWARE_TARGET), $(filter \
 	cs04q3armel cs05q3armel cs06q3armel ddwrt dns323 ds101 ds101g fsg3 fsg3v4 gumstix1151 mss \
 	nslu2 oleg openwrt-brcm24 openwrt-ixp4xx slugosbe slugosle syno-x07 ts101 ts72xx vt4 wl500g, \
 	$(OPTWARE_TARGET)))
-OPENSSL_VERSION=0.9.8j
+OPENSSL_VERSION=0.9.8k
 OPENSSL_LIB_VERSION=0.9.8
 OPENSSL_IPK_VERSION=1
 else
