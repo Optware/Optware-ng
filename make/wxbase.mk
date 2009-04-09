@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 WXBASE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wxwindows
-WXBASE_VERSION=2.8.7
+WXBASE_VERSION=2.8.10
 WXBASE_SOURCE=wxWidgets-$(WXBASE_VERSION).tar.bz2
 WXBASE_DIR=wxWidgets-$(WXBASE_VERSION)
 WXBASE_UNZIP=bzcat
@@ -232,4 +232,4 @@ wxbase-dirclean:
 # Some sanity check for the package.
 #
 wxbase-check: $(WXBASE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WXBASE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
