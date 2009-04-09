@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBUPNP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pupnp
-LIBUPNP_VERSION=1.6.0
+LIBUPNP_VERSION=1.6.6
 LIBUPNP_SOURCE=libupnp-$(LIBUPNP_VERSION).tar.bz2
 LIBUPNP_DIR=libupnp-$(LIBUPNP_VERSION)
 LIBUPNP_UNZIP=bzcat
@@ -82,8 +82,8 @@ LIBUPNP_IPK=$(BUILD_DIR)/libupnp_$(LIBUPNP_VERSION)-$(LIBUPNP_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBUPNP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBUPNP_SITE)/$(LIBUPNP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBUPNP_SOURCE)
+	$(WGET) -P $(@D) $(LIBUPNP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,10 +118,10 @@ $(LIBUPNP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUPNP_SOURCE) $(LIBUPNP_PATCHES)
 		then cat $(LIBUPNP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBUPNP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBUPNP_DIR)" != "$(LIBUPNP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBUPNP_DIR) $(LIBUPNP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBUPNP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBUPNP_DIR) $(@D) ; \
 	fi
-	(cd $(LIBUPNP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBUPNP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBUPNP_LDFLAGS)" \
@@ -133,7 +133,7 @@ $(LIBUPNP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUPNP_SOURCE) $(LIBUPNP_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBUPNP_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libupnp-unpack: $(LIBUPNP_BUILD_DIR)/.configured
@@ -143,7 +143,7 @@ libupnp-unpack: $(LIBUPNP_BUILD_DIR)/.configured
 #
 $(LIBUPNP_BUILD_DIR)/.built: $(LIBUPNP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBUPNP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -156,7 +156,7 @@ libupnp: $(LIBUPNP_BUILD_DIR)/.built
 #
 $(LIBUPNP_BUILD_DIR)/.staged: $(LIBUPNP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBUPNP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libixml*.la $(STAGING_LIB_DIR)/libupnp*.la
 	sed -i -e '/^prefix=/s|=/opt|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libupnp.pc
 	touch $@
@@ -231,4 +231,4 @@ libupnp-dirclean:
 # Some sanity check for the package.
 #
 libupnp-check: $(LIBUPNP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBUPNP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
