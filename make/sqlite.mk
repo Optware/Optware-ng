@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.6.11
+SQLITE_VERSION=3.6.12
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
