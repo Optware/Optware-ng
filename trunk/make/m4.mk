@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 M4_SITE=http://ftp.gnu.org/pub/gnu/m4
-M4_VERSION=1.4.12
+M4_VERSION=1.4.13
 M4_SOURCE=m4-$(M4_VERSION).tar.gz
 M4_DIR=m4-$(M4_VERSION)
 M4_UNZIP=zcat
@@ -196,4 +196,4 @@ m4-dirclean:
 # Some sanity check for the package.
 #
 m4-check: $(M4_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(M4_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
