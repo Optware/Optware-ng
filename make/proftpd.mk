@@ -32,7 +32,7 @@ PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.5.tar.gz
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=1
+PROFTPD_IPK_VERSION=2
 
 #
 # Control file info
@@ -272,4 +272,4 @@ proftpd-dirclean:
 # Some sanity check for the package.
 #
 proftpd-check: $(PROFTPD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PROFTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
