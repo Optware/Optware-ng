@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/opt/bin/bash
 
 ############################################################################
 #Optware package of rtorrent uses non-standard layout of directories.     ##
 #Uncomment the following line to switch to the default layout of rtorrent.##
 ############################################################################
-#dirlayout=RTORRENT_DEFAULT
+#dirlayout="RTORRENT_DEFAULT"
 
 #############
 ###<Notes>###
@@ -38,7 +38,7 @@
 # user = user 
 # will not work
 # system user to run as
-user="p2p"
+user="root"
 
 # the system group to run as, not implemented, see d_start for beginning implementation
 # group=`id -ng "$user"`
@@ -46,21 +46,21 @@ user="p2p"
 prefix="/opt"
 
 # the full path to the filename where you store your rtorrent configuration
-if [ ${dirlayout} = RTORRENT_DEFAULT ] ; then
+if [ "${dirlayout}" = "RTORRENT_DEFAULT" ] ; then
   config="${prefix}/home/${user}/.rtorrent.rc"
 else
   config="/opt/etc/rtorrent.conf"
 fi
 
 # set of options to run with
-if [ ${dirlayout} = RTORRENT_DEFAULT ] ; then
+if [ "${dirlayout}" = "RTORRENT_DEFAULT" ] ; then
   options=""
 else
   options="-n -o import=${config}"
 fi
 
 # default directory for screen, needs to be an absolute path
-if [ ${dirlayout} = RTORRENT_DEFAULT ] ; then
+if [ "${dirlayout}" = "RTORRENT_DEFAULT" ] ; then
   base="${prefix}/home/${user}"
 else
   base="/opt/share/torrent"
@@ -71,6 +71,7 @@ srnname="rtorrent"
 
 # file to log to (makes for easier debugging if something goes wrong)
 logfile="/opt/var/log/rtorrentInit.log"
+
 #######################
 ###END CONFIGURATION###
 #######################
@@ -87,11 +88,13 @@ test -x /opt/bin/su -o -x /bin/su || ( echo "su not found." | tee -a "$logfile" 
 checkcnfg() {
 	exists=0
 	for i in `echo "$PATH" | tr ':' '\n'` ; do
-		if [ -f $i/$NAME ] ; then
+		if [ -f "$i/$NAME" ] ; then
 			exists=1
 			break
 		fi
 	done
+
+
 	if [ $exists -eq 0 ] ; then
 		echo "cannot find rtorrent binary in PATH $PATH" | tee -a "$logfile" >&2
 		exit 3
@@ -109,6 +112,7 @@ checkcnfg() {
 
 d_start() {
   [ -d "${base}" ] && cd "${base}"
+
   stty stop undef && stty start undef
   su -c "screen -ls | grep -sq "\.${srnname}[[:space:]]" " ${user} || su -c "screen -dm -S ${srnname} 2>&1 1>/dev/null" ${user} | tee -a "$logfile" >&2
   # this works for the screen command, but starting rtorrent below adopts screen session gid
@@ -123,7 +127,7 @@ d_stop() {
 		return
 	fi
 	pid=`cat ${session}/rtorrent.lock | awk -F: '{print($2)}' | sed "s/[^0-9]//g"`
-	if ps -A | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
+	if ps | grep -sq ${pid}.*rtorrent ; then # make sure the pid doesn't belong to another process
 		kill -s INT ${pid}
 	fi
 }
