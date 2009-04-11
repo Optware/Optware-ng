@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-CLASSPATH_SITE=http://builder.classpath.org/dist
-CLASSPATH_VERSION=0.97.2
+CLASSPATH_SITE=http://ftp.gnu.org/gnu/classpath
+CLASSPATH_VERSION=0.98
 CLASSPATH_SOURCE=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_DIR=classpath-$(CLASSPATH_VERSION)
 CLASSPATH_UNZIP=zcat
@@ -28,13 +28,13 @@ CLASSPATH_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 CLASSPATH_DESCRIPTION=GNU Classpath for java
 CLASSPATH_SECTION=language
 CLASSPATH_PRIORITY=optional
-CLASSPATH_DEPENDS=file
+CLASSPATH_DEPENDS=file, libgmp
 CLASSPATH_CONFLICTS=sablevm
 
 #
 # CLASSPATH_IPK_VERSION should be incremented when the ipk changes.
 #
-CLASSPATH_IPK_VERSION=2
+CLASSPATH_IPK_VERSION=1
 
 #
 # CLASSPATH_CONFFILES should be a list of user-editable files
@@ -80,12 +80,18 @@ $(DL_DIR)/$(CLASSPATH_SOURCE):
 	$(WGET) -P $(@D) $(CLASSPATH_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
+CLASSPATH_ANTLR_SITE=http://www.antlr.org/download
+CLASSPATH_ANTLR_JAR=antlr-3.1.3.jar
+
+$(DL_DIR)/$(CLASSPATH_ANTLR_JAR):
+	$(WGET) -P $(@D) $(CLASSPATH_ANTLR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-classpath-source: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PATCHES)
+classpath-source: $(DL_DIR)/$(CLASSPATH_SOURCE) $(DL_DIR)/$(CLASSPATH_ANTLR_JAR) $(CLASSPATH_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -102,15 +108,18 @@ classpath-source: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PATCHES) make/classpath.mk
-	$(MAKE) file-stage
+$(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(DL_DIR)/$(CLASSPATH_ANTLR_JAR) $(CLASSPATH_PATCHES) make/classpath.mk
+	$(MAKE) file-stage libgmp-stage
 	rm -rf $(BUILD_DIR)/$(CLASSPATH_DIR) $(@D)
 	$(CLASSPATH_UNZIP) $(DL_DIR)/$(CLASSPATH_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(CLASSPATH_PATCHES)"; then \
 		cat $(CLASSPATH_PATCHES) | patch -d $(BUILD_DIR)/$(CLASSPATH_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(CLASSPATH_DIR) $(@D)
-	sed -i -e 's/$$JAVAC conftest/$$JAVAC $$JAVAC_OPTS conftest/' $(@D)/configure
+	sed -i -e 's/$$JAVAC conftest/$$JAVAC $$JAVAC_OPTS conftest/' \
+	       -e 's|GMP_CFLAGS=-I/usr/include|GMP_CFLAGS=-I$(STAGING_INCLUDE_DIR)|' \
+	       -e 's|for ac_prog in cacao$$EXEEXT|for ac_prog in java$$EXEEXT cacao$$EXEEXT|' \
+		$(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLASSPATH_CPPFLAGS)" \
@@ -124,6 +133,9 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PA
 		--disable-gconf-peer \
 		--disable-plugin \
 		--disable-Werror \
+		--enable-gmp \
+		--with-antlr-jar=$(DL_DIR)/$(CLASSPATH_ANTLR_JAR) \
+		--disable-examples \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -217,4 +229,4 @@ classpath-dirclean:
 # Some sanity check for the package.
 #
 classpath-check: $(CLASSPATH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CLASSPATH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
