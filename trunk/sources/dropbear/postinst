@@ -2,6 +2,21 @@
 
 echo
 
+if [ ! -e /dev/urandom ]; then
+    unset REPLY
+    until [ "$REPLY" == "y" -o "$REPLY" == "n" ]
+    do
+        echo -n "/dev/urandom was not found and is required by dropbear.  Create it? (y/n):"
+        read REPLY
+    done
+    if [ "$REPLY" == "y" ]; then
+      mknod /dev/urandom c: 1 9
+    else
+      echo "Dropbear will not operate without /dev/urandom, exiting."
+      exit 1
+    fi
+fi
+
 mkdir -p /opt/etc/dropbear
 
 if [ ! -f /opt/etc/dropbear/dropbear_rsa_host_key ]; then
