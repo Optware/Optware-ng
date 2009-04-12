@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PSMISC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/psmisc
-PSMISC_VERSION=21.2
+PSMISC_VERSION=21.4
 PSMISC_SOURCE=psmisc-$(PSMISC_VERSION).tar.gz
 PSMISC_DIR=psmisc-$(PSMISC_VERSION)
 PSMISC_UNZIP=zcat
@@ -39,7 +39,7 @@ PSMISC_CONFLICTS=
 #
 # PSMISC_IPK_VERSION should be incremented when the ipk changes.
 #
-PSMISC_IPK_VERSION=5
+PSMISC_IPK_VERSION=1
 
 #
 # PSMISC_CONFFILES should be a list of user-editable files
@@ -49,7 +49,7 @@ PSMISC_IPK_VERSION=5
 # PSMISC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PSMISC_PATCHES=$(PSMISC_SOURCE_DIR)/src-killall.c.patch
+#PSMISC_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -201,6 +201,7 @@ $(PSMISC_IPK_DIR)/CONTROL/control:
 $(PSMISC_IPK): $(PSMISC_BUILD_DIR)/.built
 	rm -rf $(PSMISC_IPK_DIR) $(BUILD_DIR)/psmisc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PSMISC_BUILD_DIR) DESTDIR=$(PSMISC_IPK_DIR) install-strip
+	$(STRIP_COMMAND) $(PSMISC_IPK_DIR)/opt/bin/pstree.x11
 	mv $(PSMISC_IPK_DIR)/opt/bin/killall $(PSMISC_IPK_DIR)/opt/bin/psmisc-killall
 	$(MAKE) $(PSMISC_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
