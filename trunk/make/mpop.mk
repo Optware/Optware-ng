@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpop
-MPOP_VERSION=1.0.16
+MPOP_VERSION=1.0.17
 MPOP_SOURCE=mpop-$(MPOP_VERSION).tar.bz2
 MPOP_DIR=mpop-$(MPOP_VERSION)
 MPOP_UNZIP=bzcat
@@ -119,16 +119,16 @@ $(MPOP_BUILD_DIR)/.configured: $(DL_DIR)/$(MPOP_SOURCE) $(MPOP_PATCHES) make/mpo
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 	$(MAKE) libidn-stage
 endif
-	rm -rf $(BUILD_DIR)/$(MPOP_DIR) $(MPOP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MPOP_DIR) $(@D)
 	$(MPOP_UNZIP) $(DL_DIR)/$(MPOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPOP_PATCHES)" ; \
 		then cat $(MPOP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MPOP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MPOP_DIR)" != "$(MPOP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MPOP_DIR) $(MPOP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MPOP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MPOP_DIR) $(@D) ; \
 	fi
-	(cd $(MPOP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPOP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPOP_LDFLAGS)" \
@@ -141,7 +141,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MPOP_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mpop-unpack: $(MPOP_BUILD_DIR)/.configured
@@ -151,7 +151,7 @@ mpop-unpack: $(MPOP_BUILD_DIR)/.configured
 #
 $(MPOP_BUILD_DIR)/.built: $(MPOP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MPOP_BUILD_DIR) LIBS=""
+	$(MAKE) -C $(@D) LIBS=""
 	touch $@
 
 #
@@ -162,12 +162,12 @@ mpop: $(MPOP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MPOP_BUILD_DIR)/.staged: $(MPOP_BUILD_DIR)/.built
+#$(MPOP_BUILD_DIR)/.staged: $(MPOP_BUILD_DIR)/.built
 #	rm -f $@
-#	$(MAKE) -C $(MPOP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-mpop-stage: $(MPOP_BUILD_DIR)/.staged
+#
+#mpop-stage: $(MPOP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -239,4 +239,4 @@ mpop-dirclean:
 # Some sanity check for the package.
 #
 mpop-check: $(MPOP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MPOP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
