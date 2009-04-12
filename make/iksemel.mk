@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-IKSEMEL_SITE=http://jabberstudio.rediris.es/iksemel
-IKSEMEL_VERSION=1.2
+IKSEMEL_SITE=http://iksemel.googlecode.com/files/
+IKSEMEL_VERSION=1.3
 IKSEMEL_SOURCE=iksemel-$(IKSEMEL_VERSION).tar.gz
 IKSEMEL_DIR=iksemel-$(IKSEMEL_VERSION)
 IKSEMEL_UNZIP=zcat
