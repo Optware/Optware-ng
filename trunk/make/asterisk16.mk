@@ -24,7 +24,7 @@ ASTERISK16_SOURCE_TYPE=tarball
 #ASTERISK16_SOURCE_TYPE=svn
 
 ASTERISK16_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK16_BASE_VERSION=1.6.0.5
+ASTERISK16_BASE_VERSION=1.6.0.9
 
 ifeq ($(ASTERISK16_SOURCE_TYPE), svn)
 ASTERISK16_SVN=http://svn.digium.com/svn/asterisk/branches/1.6.0
@@ -166,8 +166,7 @@ ASTERISK16_CONFFILES=\
 # ASTERISK16_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK16_PATCHES=$(ASTERISK16_SOURCE_DIR)/sounds.xml.patch \
-	$(ASTERISK16_SOURCE_DIR)/app_festival.c.patch
+ASTERISK16_PATCHES=$(ASTERISK16_SOURCE_DIR)/sounds.xml.patch
 
 #
 # If the compilation of the package requires additional
