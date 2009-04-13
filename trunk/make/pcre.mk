@@ -22,7 +22,7 @@
 #
 
 PCRE_SITE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
-PCRE_VERSION=7.8
+PCRE_VERSION=7.9
 PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
 PCRE_UNZIP=bzcat
@@ -120,8 +120,10 @@ ifneq (, $(filter libstdc++, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR)
 	$(PCRE_UNZIP) $(DL_DIR)/$(PCRE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PCRE_PATCHES) | patch -d $(BUILD_DIR)/$(PCRE_DIR) -p1
-	mv $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR)
+	if test -n "$(PCRE_PATCHES)"; then \
+		cat $(PCRE_PATCHES) | patch -d $(BUILD_DIR)/$(PCRE_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PCRE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC_FOR_BUILD=$(HOSTCC) \
@@ -260,5 +262,5 @@ pcre-dirclean:
 #
 # Some sanity check for the package.
 #
-pcre-check: $(PCRE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PCRE_IPK) $(PCRE-DEV_IPK)
+pcre-check: $(PCRE_IPK) $(PCRE-DEV_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
