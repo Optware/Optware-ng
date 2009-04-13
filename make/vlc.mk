@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-VLC_VERSION=0.9.8a
+VLC_VERSION=0.9.9a
 VLC_IPK_VERSION=1
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
@@ -325,4 +325,4 @@ vlc-dirclean:
 # Some sanity check for the package.
 #
 vlc-check: $(VLC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VLC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
