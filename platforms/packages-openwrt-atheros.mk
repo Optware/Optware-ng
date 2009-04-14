@@ -17,6 +17,7 @@ BROKEN_PACKAGES = \
 	hpijs hplip \
 	ice iptables \
 	lame launchtool ldconfig \
+	minidlna \
 	moc mtr \
 	nfs-server nfs-utils nickle ntop \
 	pango puppy \

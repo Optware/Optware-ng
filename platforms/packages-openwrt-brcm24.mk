@@ -18,6 +18,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	libdvb \
 	ltrace \
+	minidlna \
 	motor \
 	nget nickle \
 	player \
