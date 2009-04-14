@@ -1,0 +1,11 @@
+--- linux/inotify-syscalls.h.orig	2009-02-11 19:50:40.000000000 +0000
++++ linux/inotify-syscalls.h	2009-04-13 06:21:50.753214587 +0000
+@@ -39,8 +39,6 @@
+ # define __NR_inotify_init	290
+ # define __NR_inotify_add_watch	291
+ # define __NR_inotify_rm_watch	292
+-#else
+-# error "Unsupported architecture!"
+ #endif
+
+ static inline int inotify_init (void)
