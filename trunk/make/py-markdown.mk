@@ -22,22 +22,22 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MARKDOWN_SITE=http://pypi.python.org/packages/source/M/Markdown
-PY-MARKDOWN_VERSION=1.7
-PY-MARKDOWN_SOURCE=markdown-$(PY-MARKDOWN_VERSION).tar.gz
-PY-MARKDOWN_DIR=markdown-$(PY-MARKDOWN_VERSION)
+PY-MARKDOWN_VERSION=2.0
+PY-MARKDOWN_SOURCE=Markdown-$(PY-MARKDOWN_VERSION).tar.gz
+PY-MARKDOWN_DIR=Markdown-$(PY-MARKDOWN_VERSION)
 PY-MARKDOWN_UNZIP=zcat
 PY-MARKDOWN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MARKDOWN_DESCRIPTION=Python implementation of Markdown, a text-to-HTML conversion tool for web writers.
 PY-MARKDOWN_SECTION=text
 PY-MARKDOWN_PRIORITY=optional
-PY24-MARKDOWN_DEPENDS=python24
 PY25-MARKDOWN_DEPENDS=python25
+PY26-MARKDOWN_DEPENDS=python26
 PY-MARKDOWN_CONFLICTS=
 
 #
 # PY-MARKDOWN_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MARKDOWN_IPK_VERSION=2
+PY-MARKDOWN_IPK_VERSION=1
 
 #
 # PY-MARKDOWN_CONFFILES should be a list of user-editable files
@@ -68,11 +68,11 @@ PY-MARKDOWN_LDFLAGS=
 PY-MARKDOWN_BUILD_DIR=$(BUILD_DIR)/py-markdown
 PY-MARKDOWN_SOURCE_DIR=$(SOURCE_DIR)/py-markdown
 
-PY24-MARKDOWN_IPK_DIR=$(BUILD_DIR)/py24-markdown-$(PY-MARKDOWN_VERSION)-ipk
-PY24-MARKDOWN_IPK=$(BUILD_DIR)/py24-markdown_$(PY-MARKDOWN_VERSION)-$(PY-MARKDOWN_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-MARKDOWN_IPK_DIR=$(BUILD_DIR)/py25-markdown-$(PY-MARKDOWN_VERSION)-ipk
 PY25-MARKDOWN_IPK=$(BUILD_DIR)/py25-markdown_$(PY-MARKDOWN_VERSION)-$(PY-MARKDOWN_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-MARKDOWN_IPK_DIR=$(BUILD_DIR)/py26-markdown-$(PY-MARKDOWN_VERSION)-ipk
+PY26-MARKDOWN_IPK=$(BUILD_DIR)/py26-markdown_$(PY-MARKDOWN_VERSION)-$(PY-MARKDOWN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-markdown-source py-markdown-unpack py-markdown py-markdown-stage py-markdown-ipk py-markdown-clean py-markdown-dirclean py-markdown-check
 
@@ -81,8 +81,8 @@ PY25-MARKDOWN_IPK=$(BUILD_DIR)/py25-markdown_$(PY-MARKDOWN_VERSION)-$(PY-MARKDOW
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-MARKDOWN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-MARKDOWN_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-MARKDOWN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,20 +110,20 @@ $(PY-MARKDOWN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MARKDOWN_SOURCE) $(PY-MARKD
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-MARKDOWN_DIR)
-	$(PY-MARKDOWN_UNZIP) $(DL_DIR)/$(PY-MARKDOWN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-MARKDOWN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MARKDOWN_DIR) $(@D)/2.4
-	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.4") >> $(@D)/2.4/setup.cfg
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MARKDOWN_DIR)
 	$(PY-MARKDOWN_UNZIP) $(DL_DIR)/$(PY-MARKDOWN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MARKDOWN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MARKDOWN_DIR) $(@D)/2.5
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.5") >> $(@D)/2.4/setup.cfg
+         echo "executable=/opt/bin/python2.5") >> $(@D)/2.5/setup.cfg
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-MARKDOWN_DIR)
+	$(PY-MARKDOWN_UNZIP) $(DL_DIR)/$(PY-MARKDOWN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-MARKDOWN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-MARKDOWN_DIR) $(@D)/2.6
+	(echo "[build_scripts]"; \
+         echo "executable=/opt/bin/python2.6") >> $(@D)/2.5/setup.cfg
 	touch $@
 
 py-markdown-unpack: $(PY-MARKDOWN_BUILD_DIR)/.configured
@@ -133,10 +133,10 @@ py-markdown-unpack: $(PY-MARKDOWN_BUILD_DIR)/.configured
 #
 $(PY-MARKDOWN_BUILD_DIR)/.built: $(PY-MARKDOWN_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(@D)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build;
 	cd $(@D)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build;
+	cd $(@D)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build;
 	touch $@
 
 #
@@ -158,20 +158,6 @@ py-markdown-stage: $(PY-MARKDOWN_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-markdown
 #
-$(PY24-MARKDOWN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-markdown" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-MARKDOWN_PRIORITY)" >>$@
-	@echo "Section: $(PY-MARKDOWN_SECTION)" >>$@
-	@echo "Version: $(PY-MARKDOWN_VERSION)-$(PY-MARKDOWN_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-MARKDOWN_MAINTAINER)" >>$@
-	@echo "Source: $(PY-MARKDOWN_SITE)/$(PY-MARKDOWN_SOURCE)" >>$@
-	@echo "Description: $(PY-MARKDOWN_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-MARKDOWN_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-MARKDOWN_CONFLICTS)" >>$@
-
 $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -186,6 +172,20 @@ $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-MARKDOWN_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MARKDOWN_CONFLICTS)" >>$@
 
+$(PY26-MARKDOWN_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-markdown" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-MARKDOWN_PRIORITY)" >>$@
+	@echo "Section: $(PY-MARKDOWN_SECTION)" >>$@
+	@echo "Version: $(PY-MARKDOWN_VERSION)-$(PY-MARKDOWN_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-MARKDOWN_MAINTAINER)" >>$@
+	@echo "Source: $(PY-MARKDOWN_SITE)/$(PY-MARKDOWN_SOURCE)" >>$@
+	@echo "Description: $(PY-MARKDOWN_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-MARKDOWN_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-MARKDOWN_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -198,31 +198,28 @@ $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-MARKDOWN_IPK): $(PY-MARKDOWN_BUILD_DIR)/.built
-	rm -rf $(PY24-MARKDOWN_IPK_DIR) $(BUILD_DIR)/py24-markdown_*_$(TARGET_ARCH).ipk
-	cd $(PY-MARKDOWN_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-MARKDOWN_IPK_DIR) --prefix=/opt;
-#	for f in $(PY24-MARKDOWN_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
-	$(MAKE) $(PY24-MARKDOWN_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MARKDOWN_IPK_DIR)
-
 $(PY25-MARKDOWN_IPK): $(PY-MARKDOWN_BUILD_DIR)/.built
 	rm -rf $(PY25-MARKDOWN_IPK_DIR) $(BUILD_DIR)/py25-markdown_*_$(TARGET_ARCH).ipk
 	cd $(PY-MARKDOWN_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-MARKDOWN_IPK_DIR) --prefix=/opt;
-#	cd $(PY25-MARKDOWN_IPK_DIR)/opt/share/markdown; \
-	    tar --remove-files -cvzf underlay.tar.gz underlay; \
-	    rm -rf underlay
+#	for f in $(PY25-MARKDOWN_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MARKDOWN_IPK_DIR)
+
+$(PY26-MARKDOWN_IPK): $(PY-MARKDOWN_BUILD_DIR)/.built
+	rm -rf $(PY26-MARKDOWN_IPK_DIR) $(BUILD_DIR)/py26-markdown_*_$(TARGET_ARCH).ipk
+	cd $(PY-MARKDOWN_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-MARKDOWN_IPK_DIR) --prefix=/opt;
+	$(MAKE) $(PY26-MARKDOWN_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MARKDOWN_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-markdown-ipk: $(PY24-MARKDOWN_IPK) $(PY25-MARKDOWN_IPK)
+py-markdown-ipk: $(PY25-MARKDOWN_IPK) $(PY26-MARKDOWN_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -236,11 +233,11 @@ py-markdown-clean:
 #
 py-markdown-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-MARKDOWN_DIR) $(PY-MARKDOWN_BUILD_DIR)
-	rm -rf $(PY24-MARKDOWN_IPK_DIR) $(PY24-MARKDOWN_IPK)
 	rm -rf $(PY25-MARKDOWN_IPK_DIR) $(PY25-MARKDOWN_IPK)
+	rm -rf $(PY26-MARKDOWN_IPK_DIR) $(PY26-MARKDOWN_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-markdown-check: $(PY24-MARKDOWN_IPK) $(PY25-MARKDOWN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-MARKDOWN_IPK) $(PY25-MARKDOWN_IPK)
+py-markdown-check: $(PY25-MARKDOWN_IPK) $(PY26-MARKDOWN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
