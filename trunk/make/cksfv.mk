@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CKSFV_SITE=http://zakalwe.fi/~shd/foss/cksfv/files
-CKSFV_VERSION=1.3.13
+CKSFV_VERSION=1.3.14
 CKSFV_SOURCE=cksfv-$(CKSFV_VERSION).tar.bz2
 CKSFV_DIR=cksfv-$(CKSFV_VERSION)
 CKSFV_UNZIP=bzcat
@@ -214,4 +214,4 @@ cksfv-dirclean:
 # Some sanity check for the package.
 #
 cksfv-check: $(CKSFV_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CKSFV_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
