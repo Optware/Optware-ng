@@ -18,7 +18,7 @@ MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.gz
 MLOCATE_UNZIP=zcat
 else
 MLOCATE_SITE=https://fedorahosted.org/releases/m/l/mlocate
-MLOCATE_VERSION=0.21.1
+MLOCATE_VERSION=0.22
 MLOCATE_IPK_VERSION=1
 MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.bz2
 MLOCATE_UNZIP=bzcat
@@ -120,10 +120,10 @@ endif
 		then cat $(MLOCATE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MLOCATE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MLOCATE_DIR)" != "$(MLOCATE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MLOCATE_DIR) $(MLOCATE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MLOCATE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MLOCATE_DIR) $(@D) ; \
 	fi
-	(cd $(MLOCATE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MLOCATE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MLOCATE_LDFLAGS)" \
@@ -136,7 +136,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MLOCATE_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mlocate-unpack: $(MLOCATE_BUILD_DIR)/.configured
@@ -146,7 +146,7 @@ mlocate-unpack: $(MLOCATE_BUILD_DIR)/.configured
 #
 $(MLOCATE_BUILD_DIR)/.built: $(MLOCATE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MLOCATE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -157,12 +157,12 @@ mlocate: $(MLOCATE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MLOCATE_BUILD_DIR)/.staged: $(MLOCATE_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(MLOCATE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-mlocate-stage: $(MLOCATE_BUILD_DIR)/.staged
+#$(MLOCATE_BUILD_DIR)/.staged: $(MLOCATE_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#mlocate-stage: $(MLOCATE_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -236,4 +236,4 @@ mlocate-dirclean:
 # Some sanity check for the package.
 #
 mlocate-check: $(MLOCATE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MLOCATE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
