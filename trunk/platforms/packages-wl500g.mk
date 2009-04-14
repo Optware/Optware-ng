@@ -21,7 +21,7 @@ BROKEN_PACKAGES = \
 	 libmtp libopensync libsoup libtorrent \
 	 loudmouth \
 	 ltrace \
-	 mc mcabber mdadm minicom mlocate moc \
+	 mc mcabber mdadm minicom minidlna mlocate moc \
 	 mod-fastcgi mod-python \
 	 mpdscribble \
 	 msort msynctool mutt \

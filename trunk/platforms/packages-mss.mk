@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	inferno \
 	ldconfig \
 	ltrace \
+	minidlna \
 	mod-fastcgi mod-python \
 	newt ntp \
 	php-apache player py-lxml \
