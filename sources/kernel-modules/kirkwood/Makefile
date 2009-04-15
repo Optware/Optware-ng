@@ -7,8 +7,8 @@
 ifeq ($(OPTWARE_TARGET), $(filter sheevaplug, $(OPTWARE_TARGET)))
 
 KERNEL_VERSION=2.6.30-rc2
-KIRKWOOD_KERNEL_SITE=http://www.kernel.org/pub/linux/kernel/v2.6/testing
-KIRKWOOD_KERNEL_SOURCE=linux-$(KERNEL_VERSION).tar.bz2
+KERNEL_SITE=http://www.kernel.org/pub/linux/kernel/v2.6/testing
+KERNEL_SOURCE=linux-$(KERNEL_VERSION).tar.bz2
 KERNEL-MODULES_DIR=linux-$(KERNEL_VERSION)
 KERNEL-MODULES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 
@@ -60,8 +60,8 @@ KERNEL-IMAG_IPK=$(BUILD_DIR)/kernel-image_$(KERNEL_VERSION)-$(KERNEL-MODULES_IPK
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(KIRKWOOD_KERNEL_SOURCE):
-	$(WGET) -P $(@D) $(KIRKWOOD_SITE)/$(@F) || \
+$(DL_DIR)/$(KERNEL_SOURCE):
+	$(WGET) -P $(@D) $(KERNEL_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -69,17 +69,17 @@ $(DL_DIR)/$(KIRKWOOD_KERNEL_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-kernel-modules-source: $(DL_DIR)/$(KIRKWOOD_KERNEL_SOURCE) $(KERNEL-MODULES_PATCHES)
+kernel-modules-source: $(DL_DIR)/$(KERNEL_SOURCE) $(KERNEL-MODULES_PATCHES)
 
 KERNEL_BUILD_ADDITIONAL_FLAGS = -j`grep -c ^processor /proc/cpuinfo`
 KERNEL_BUILD_FLAGS = ARCH=arm ROOTDIR=$(KERNEL_BUILD_DIR) CROSS_COMPILE=$(TARGET_CROSS) $(KERNEL_BUILD_ADDITIONAL_FLAGS)
 KERNEL_CONFIG_METHOD=oldconfig
 
 $(KERNEL_BUILD_DIR)/.unpacked: \
-$(DL_DIR)/$(KIRKWOOD_KERNEL_SOURCE) $(KERNEL-MODULES_PATCHES) \
-$(KIRKWOOD_KERNEL_SOURCE_DIR)/defconfig sources/kernel-modules/kirkwood/Makefile
+$(DL_DIR)/$(KERNEL_SOURCE) $(KERNEL-MODULES_PATCHES) \
+$(KERNEL_SOURCE_DIR)/defconfig sources/kernel-modules/kirkwood/Makefile
 	rm -rf $(KERNEL-MODULES_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xvjf $(DL_DIR)/$(KIRKWOOD_KERNEL_SOURCE)
+	tar -C $(BUILD_DIR) -xvjf $(DL_DIR)/$(KERNEL_SOURCE)
 	if test -n "$(KERNEL-MODULES_PATCHES)" ; \
 		then cat $(KERNEL-MODULES_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(KERNEL-MODULES_DIR) -p1 ; \
@@ -133,7 +133,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	  echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	  echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
-	  echo "Source: $(KIRKWOOD_KERNEL_SOURCE_SITE)/$(KIRKWOOD_KERNEL_SOURCE)"; \
+	  echo "Source: $(KERNEL_SOURCE_SITE)/$(KERNEL_SOURCE)"; \
 	  echo "Description: $(KERNEL-MODULES_DESCRIPTION)"; \
 	  echo -n "Depends: kernel-image"; \
 	) >> $@
@@ -150,7 +150,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	    echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	    echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
-	    echo "Source: $(KIRKWOOD_KERNEL_SOURCE_SITE)/$(KIRKWOOD_KERNEL_SOURCE)"; \
+	    echo "Source: $(KERNEL_SOURCE_SITE)/$(KERNEL_SOURCE)"; \
 	    echo "Description: $(KERNEL-MODULE_DESCRIPTION) $$m"; \
 	    echo -n "Depends: "; \
             DEPS="$(KERNEL-MODULES_DEPENDS)"; \
@@ -176,7 +176,7 @@ $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 	  echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	  echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	  echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
-	  echo "Source: $(KIRKWOOD_KERNEL_SOURCE_SITE)/$(KIRKWOOD_KERNEL_SOURCE)"; \
+	  echo "Source: $(KERNEL_SOURCE_SITE)/$(KERNEL_SOURCE)"; \
 	  echo "Description: $(KERNEL-IMAGE_DESCRIPTION)"; \
 	) >> $@
 
