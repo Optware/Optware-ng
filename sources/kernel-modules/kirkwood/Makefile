@@ -37,7 +37,7 @@ KERNEL-MODULES_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 #KERNEL-MODULES_PATCHES = \
-	$(KIRKWOOD_KERNEL_SOURCE_DIR)/arch-arm-Makefile.patch \
+	$(KERNEL_RECIPE_DIR)/arch-arm-Makefile.patch \
 
 #
 # If the compilation of the package requires additional
@@ -46,7 +46,7 @@ KERNEL-MODULES_IPK_VERSION=1
 KERNEL-MODULES_CPPFLAGS=
 KERNEL-MODULES_LDFLAGS=
 
-KIRKWOOD_KERNEL_SOURCE_DIR=$(SOURCE_DIR)/kernel-modules/kirkwood
+KERNEL_RECIPE_DIR=$(SOURCE_DIR)/kernel-modules/kirkwood
 KERNEL_BUILD_DIR=$(BUILD_DIR)/kernel
 
 KERNEL-MODULES_IPK_DIR=$(BUILD_DIR)/kernel-modules-$(KERNEL_VERSION)-ipk
@@ -77,7 +77,7 @@ KERNEL_CONFIG_METHOD=oldconfig
 
 $(KERNEL_BUILD_DIR)/.unpacked: \
 $(DL_DIR)/$(KERNEL_SOURCE) $(KERNEL-MODULES_PATCHES) \
-$(KERNEL_SOURCE_DIR)/defconfig sources/kernel-modules/kirkwood/Makefile
+$(KERNEL_RECIPE_DIR)/Makefile
 	rm -rf $(KERNEL-MODULES_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xvjf $(DL_DIR)/$(KERNEL_SOURCE)
 	if test -n "$(KERNEL-MODULES_PATCHES)" ; \
@@ -91,8 +91,9 @@ $(KERNEL_SOURCE_DIR)/defconfig sources/kernel-modules/kirkwood/Makefile
 
 kernel-modules-unpack: $(KERNEL_BUILD_DIR)/.unpacked
 
-$(KERNEL_BUILD_DIR)/.configured: $(KERNEL_BUILD_DIR)/.unpacked
-	cp $(KIRKWOOD_KERNEL_SOURCE_DIR)/defconfig $(@D)/.config
+$(KERNEL_BUILD_DIR)/.configured: $(KERNEL_BUILD_DIR)/.unpacked $(KERNEL_RECIPE_DIR)/defconfig
+	$(MAKE) -C $(@D) $(KERNEL_BUILD_FLAGS) mrproper
+	cp $(KERNEL_RECIPE_DIR)/defconfig $(@D)/.config
 	$(MAKE) -C $(@D) $(KERNEL_BUILD_FLAGS) $(KERNEL_CONFIG_METHOD)
 	touch $@
 
