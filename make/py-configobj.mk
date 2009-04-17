@@ -21,17 +21,18 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CONFIGOBJ_SITE=http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=
-PY-CONFIGOBJ_VERSION=4.5.3
-PY-CONFIGOBJ_SOURCE=configobj-$(PY-CONFIGOBJ_VERSION).zip
+PY-CONFIGOBJ_SITE=http://pypi.python.org/packages/source/C/ConfigObj
+PY-CONFIGOBJ_VERSION=4.6.0
+PY-CONFIGOBJ_SOURCE=configobj-$(PY-CONFIGOBJ_VERSION).tar.gz
 PY-CONFIGOBJ_DIR=configobj-$(PY-CONFIGOBJ_VERSION)
-PY-CONFIGOBJ_UNZIP=unzip
+PY-CONFIGOBJ_UNZIP=zcat
 PY-CONFIGOBJ_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CONFIGOBJ_DESCRIPTION=A simple but powerful config file reader and writer in Python.
 PY-CONFIGOBJ_SECTION=misc
 PY-CONFIGOBJ_PRIORITY=optional
 PY24-CONFIGOBJ_DEPENDS=python24
 PY25-CONFIGOBJ_DEPENDS=python25
+PY26-CONFIGOBJ_DEPENDS=python26
 PY-CONFIGOBJ_CONFLICTS=
 
 #
@@ -74,6 +75,9 @@ PY24-CONFIGOBJ_IPK=$(BUILD_DIR)/py24-configobj_$(PY-CONFIGOBJ_VERSION)-$(PY-CONF
 PY25-CONFIGOBJ_IPK_DIR=$(BUILD_DIR)/py25-configobj-$(PY-CONFIGOBJ_VERSION)-ipk
 PY25-CONFIGOBJ_IPK=$(BUILD_DIR)/py25-configobj_$(PY-CONFIGOBJ_VERSION)-$(PY-CONFIGOBJ_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PY26-CONFIGOBJ_IPK_DIR=$(BUILD_DIR)/py26-configobj-$(PY-CONFIGOBJ_VERSION)-ipk
+PY26-CONFIGOBJ_IPK=$(BUILD_DIR)/py26-configobj_$(PY-CONFIGOBJ_VERSION)-$(PY-CONFIGOBJ_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 .PHONY: py-configobj-source py-configobj-unpack py-configobj py-configobj-stage py-configobj-ipk py-configobj-clean py-configobj-dirclean py-configobj-check
 
 #
@@ -81,8 +85,8 @@ PY25-CONFIGOBJ_IPK=$(BUILD_DIR)/py25-configobj_$(PY-CONFIGOBJ_VERSION)-$(PY-CONF
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE):
-	$(WGET) -O $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) $(PY-CONFIGOBJ_SITE)$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -O $(@D)/$(PY-CONFIGOBJ_SOURCE) $(PY-CONFIGOBJ_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,21 +116,30 @@ $(PY-CONFIGOBJ_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) $(PY-CON
 	mkdir -p $(PY-CONFIGOBJ_BUILD_DIR)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR)
-	cd $(BUILD_DIR); $(PY-CONFIGOBJ_UNZIP) $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE)
+	$(PY-CONFIGOBJ_UNZIP) $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CONFIGOBJ_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) $(PY-CONFIGOBJ_BUILD_DIR)/2.4
-	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR)
-	cd $(BUILD_DIR); $(PY-CONFIGOBJ_UNZIP) $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE)
+	$(PY-CONFIGOBJ_UNZIP) $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CONFIGOBJ_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) $(PY-CONFIGOBJ_BUILD_DIR)/2.5
-	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR)
+	$(PY-CONFIGOBJ_UNZIP) $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CONFIGOBJ_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6") >> setup.cfg \
 	)
 	touch $@
 
@@ -137,12 +150,15 @@ py-configobj-unpack: $(PY-CONFIGOBJ_BUILD_DIR)/.configured
 #
 $(PY-CONFIGOBJ_BUILD_DIR)/.built: $(PY-CONFIGOBJ_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
-	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
+	(cd $(@D)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" build)
 	touch $@
 
 #
@@ -192,6 +208,20 @@ $(PY25-CONFIGOBJ_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-CONFIGOBJ_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-CONFIGOBJ_CONFLICTS)" >>$@
 
+$(PY26-CONFIGOBJ_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-configobj" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-CONFIGOBJ_PRIORITY)" >>$@
+	@echo "Section: $(PY-CONFIGOBJ_SECTION)" >>$@
+	@echo "Version: $(PY-CONFIGOBJ_VERSION)-$(PY-CONFIGOBJ_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-CONFIGOBJ_MAINTAINER)" >>$@
+	@echo "Source: $(PY-CONFIGOBJ_SITE)/$(PY-CONFIGOBJ_SOURCE)" >>$@
+	@echo "Description: $(PY-CONFIGOBJ_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-CONFIGOBJ_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-CONFIGOBJ_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -225,10 +255,20 @@ $(PY25-CONFIGOBJ_IPK): $(PY-CONFIGOBJ_BUILD_DIR)/.built
 	echo $(PY-CONFIGOBJ_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CONFIGOBJ_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CONFIGOBJ_IPK_DIR)
 
+$(PY26-CONFIGOBJ_IPK): $(PY-CONFIGOBJ_BUILD_DIR)/.built
+	rm -rf $(PY26-CONFIGOBJ_IPK_DIR) $(BUILD_DIR)/py26-configobj_*_$(TARGET_ARCH).ipk
+	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(PY26-CONFIGOBJ_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-CONFIGOBJ_IPK_DIR)/CONTROL/control
+	echo $(PY-CONFIGOBJ_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-CONFIGOBJ_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CONFIGOBJ_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-configobj-ipk: $(PY24-CONFIGOBJ_IPK) $(PY25-CONFIGOBJ_IPK)
+py-configobj-ipk: $(PY24-CONFIGOBJ_IPK) $(PY25-CONFIGOBJ_IPK) $(PY26-CONFIGOBJ_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -244,9 +284,10 @@ py-configobj-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) $(PY-CONFIGOBJ_BUILD_DIR)
 	rm -rf $(PY24-CONFIGOBJ_IPK_DIR) $(PY24-CONFIGOBJ_IPK)
 	rm -rf $(PY25-CONFIGOBJ_IPK_DIR) $(PY25-CONFIGOBJ_IPK)
+	rm -rf $(PY26-CONFIGOBJ_IPK_DIR) $(PY26-CONFIGOBJ_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-configobj-check: $(PY24-CONFIGOBJ_IPK) $(PY25-CONFIGOBJ_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-CONFIGOBJ_IPK) $(PY25-CONFIGOBJ_IPK)
+py-configobj-check: $(PY24-CONFIGOBJ_IPK) $(PY25-CONFIGOBJ_IPK) $(PY26-CONFIGOBJ_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
