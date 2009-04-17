@@ -26,7 +26,7 @@ KERNEL-MODULES=`find $(KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-KERNEL-MODULES_IPK_VERSION=1
+KERNEL-MODULES_IPK_VERSION=2
 
 #
 # KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -134,7 +134,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	  echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	  echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
-	  echo "Source: $(KERNEL_SOURCE_SITE)/$(KERNEL_SOURCE)"; \
+	  echo "Source: $(KERNEL_SITE)/$(KERNEL_SOURCE)"; \
 	  echo "Description: $(KERNEL-MODULES_DESCRIPTION)"; \
 	  echo -n "Depends: kernel-image"; \
 	) >> $@
@@ -151,7 +151,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	    echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	    echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
-	    echo "Source: $(KERNEL_SOURCE_SITE)/$(KERNEL_SOURCE)"; \
+	    echo "Source: $(KERNEL_SITE)/$(KERNEL_SOURCE)"; \
 	    echo "Description: $(KERNEL-MODULE_DESCRIPTION) $$m"; \
 	    echo -n "Depends: "; \
             DEPS="$(KERNEL-MODULES_DEPENDS)"; \
@@ -177,7 +177,7 @@ $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 	  echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	  echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	  echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
-	  echo "Source: $(KERNEL_SOURCE_SITE)/$(KERNEL_SOURCE)"; \
+	  echo "Source: $(KERNEL_SITE)/$(KERNEL_SOURCE)"; \
 	  echo "Description: $(KERNEL-IMAGE_DESCRIPTION)"; \
 	) >> $@
 
