@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.3.9
+CUPS_VERSION=1.3.10
 CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -466,4 +466,4 @@ cups-dirclean:
 # Some sanity check for the package.
 #
 cups-check: $(CUPS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CUPS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
