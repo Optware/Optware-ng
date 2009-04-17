@@ -1,3 +1,2 @@
 PACKAGES = \
-	mssii-kernel-modules \
-
+	tsx19-kernel-modules \
