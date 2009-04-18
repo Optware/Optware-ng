@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON26_VERSION=2.6.1
+PYTHON26_VERSION=2.6.2
 PYTHON26_VERSION_MAJOR=2.6
 PYTHON26_SITE=http://www.python.org/ftp/python/$(PYTHON26_VERSION)
 PYTHON26_SOURCE=Python-$(PYTHON26_VERSION).tar.bz2
@@ -42,7 +42,7 @@ PYTHON26_SUGGESTS=
 #
 # PYTHON26_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON26_IPK_VERSION=3
+PYTHON26_IPK_VERSION=1
 
 #
 # PYTHON26_CONFFILES should be a list of user-editable files
@@ -274,4 +274,4 @@ python26-dirclean:
 # Some sanity check for the package.
 #
 python26-check: $(PYTHON26_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PYTHON26_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
