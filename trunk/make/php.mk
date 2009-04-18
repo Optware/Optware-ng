@@ -29,7 +29,7 @@ endif
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=4
+PHP_IPK_VERSION=5
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -116,6 +116,9 @@ PHP_ODBC_IPK=$(BUILD_DIR)/php-odbc_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_AR
 PHP_PEAR_IPK_DIR=$(BUILD_DIR)/php-pear-$(PHP_VERSION)-ipk
 PHP_PEAR_IPK=$(BUILD_DIR)/php-pear_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PHP_XMLRPC_IPK_DIR=$(BUILD_DIR)/php-xmlrpc-$(PHP_VERSION)-ipk
+PHP_XMLRPC_IPK=$(BUILD_DIR)/php-xmlrpc_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 PHP_CONFIGURE_ARGS=--enable-maintainer-zts
 PHP_CONFIGURE_ENV=
 PHP_TARGET_IPKS = \
@@ -126,9 +129,12 @@ PHP_TARGET_IPKS = \
 	$(PHP_GD_IPK) \
 	$(PHP_IMAP_IPK) \
 	$(PHP_MBSTRING_IPK) \
+	$(PHP_MSSQL_IPK) \
 	$(PHP_MYSQL_IPK) \
+	$(PHP_ODBC_IPK) \
 	$(PHP_PGSQL_IPK) \
 	$(PHP_PEAR_IPK) \
+	$(PHP_XMLRPC_IPK) \
 
 # We need this because openldap does not build on the wl500g.
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
@@ -344,6 +350,23 @@ $(PHP_ODBC_IPK_DIR)/CONTROL/control:
 	@echo "Description: odbc extension for php" >>$@
 	@echo "Depends: php, unixodbc" >>$@
 
+$(PHP_XMLRPC_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: php-xmlrpc" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: xmlrpc extension for php" >>$@
+ifeq (libiconv,$(filter libiconv, $(PACKAGES)))
+	@echo "Depends: php, libiconv" >>$@
+else
+	@echo "Depends: php" >>$@
+endif
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -480,6 +503,7 @@ endif
 		--with-pcre-regex=$(STAGING_PREFIX) \
 		$(PHP_CONFIGURE_ARGS) \
 		--without-pear \
+		--with-xmlrpc=shared \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -648,6 +672,14 @@ endif
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/odbc.so $(PHP_ODBC_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=odbc.so >$(PHP_ODBC_IPK_DIR)/opt/etc/php.d/odbc.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_ODBC_IPK_DIR)
+	### now make php-xmlrpc
+	rm -rf $(PHP_XMLRPC_IPK_DIR) $(BUILD_DIR)/php-xmlrpc_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_XMLRPC_IPK_DIR)/CONTROL/control
+	install -d $(PHP_XMLRPC_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_XMLRPC_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/xmlrpc.so $(PHP_XMLRPC_IPK_DIR)/opt/lib/php/extensions/
+	echo extension=xmlrpc.so >$(PHP_XMLRPC_IPK_DIR)/opt/etc/php.d/xmlrpc.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_XMLRPC_IPK_DIR)
 	### finally the main ipkg
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
 	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
@@ -684,7 +716,7 @@ php-dirclean:
 	$(PHP_ODBC_IPK_DIR) $(PHP_ODBC_IPK) \
 	;
 ifeq (, $(filter --without-iconv, $(PHP_CONFIGURE_ARGS)))
-	$(PHP_ICONV_IPK_DIR) $(PHP_ICONV_IPK)
+	rm -rf $(PHP_ICONV_IPK_DIR) $(PHP_ICONV_IPK)
 endif
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	rm -rf $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK)
