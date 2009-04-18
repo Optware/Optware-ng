@@ -234,7 +234,11 @@ $(PHP_ICONV_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: libiconv extension for php" >>$@
-	@echo $(if $(filter libiconv, $(PACKAGES)), "Depends: php, libiconv", "Depends: php") >>$@
+ifeq (libiconv,$(filter libiconv, $(PACKAGES)))
+	@echo "Depends: php, libiconv" >>$@
+else
+	@echo "Depends: php" >>$@
+endif
 
 $(PHP_IMAP_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
