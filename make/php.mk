@@ -139,10 +139,16 @@ PHP_CONFIGURE_ENV += LIBS=-lsasl2
 PHP_TARGET_IPKS += $(PHP_LDAP_IPK)
 endif
 
-PHP_CONFIGURE_ARGS +=$(strip \
-$(if $(filter glibc, $(LIBC_STYLE)), --with-iconv=shared, \
-$(if $(filter libiconv, $(PACKAGES)), --with-iconv=shared,$(STAGING_PREFIX), \
---without-iconv)))
+ifeq (glibc, $(LIBC_STYLE))
+PHP_CONFIGURE_ARGS +=--with-iconv=shared
+else
+  ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+PHP_CONFIGURE_ARGS +=--with-iconv=shared,$(STAGING_PREFIX)
+  else
+PHP_CONFIGURE_ARGS +=--without-iconv
+  endif
+endif
+
 ifeq (, $(filter --without-iconv, $(PHP_CONFIGURE_ARGS)))
 PHP_TARGET_IPKS += $(PHP_ICONV_IPK)
 endif
