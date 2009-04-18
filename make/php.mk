@@ -29,7 +29,7 @@ endif
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=3
+PHP_IPK_VERSION=4
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -89,6 +89,9 @@ PHP_CURL_IPK=$(BUILD_DIR)/php-curl_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_AR
 PHP_GD_IPK_DIR=$(BUILD_DIR)/php-gd-$(PHP_VERSION)-ipk
 PHP_GD_IPK=$(BUILD_DIR)/php-gd_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PHP_ICONV_IPK_DIR=$(BUILD_DIR)/php-iconv-$(PHP_VERSION)-ipk
+PHP_ICONV_IPK=$(BUILD_DIR)/php-iconv_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 PHP_IMAP_IPK_DIR=$(BUILD_DIR)/php-imap-$(PHP_VERSION)-ipk
 PHP_IMAP_IPK=$(BUILD_DIR)/php-imap_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -113,19 +116,36 @@ PHP_ODBC_IPK=$(BUILD_DIR)/php-odbc_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_AR
 PHP_PEAR_IPK_DIR=$(BUILD_DIR)/php-pear-$(PHP_VERSION)-ipk
 PHP_PEAR_IPK=$(BUILD_DIR)/php-pear_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PHP_CONFIGURE_ARGS=--enable-maintainer-zts
+PHP_CONFIGURE_ENV=
+PHP_TARGET_IPKS = \
+	$(PHP_IPK) \
+	$(PHP_DEV_IPK) \
+	$(PHP_EMBED_IPK) \
+	$(PHP_CURL_IPK) \
+	$(PHP_GD_IPK) \
+	$(PHP_IMAP_IPK) \
+	$(PHP_MBSTRING_IPK) \
+	$(PHP_MYSQL_IPK) \
+	$(PHP_PGSQL_IPK) \
+	$(PHP_PEAR_IPK) \
+
 # We need this because openldap does not build on the wl500g.
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
-PHP_CONFIGURE_TARGET_ARGS= \
+PHP_CONFIGURE_ARGS += \
 		--with-ldap=shared,$(STAGING_PREFIX) \
 		--with-ldap-sasl=$(STAGING_PREFIX)
-PHP_CONFIGURE_ENV=LIBS=-lsasl2
-else
-PHP_CONFIGURE_TARGET_ARGS=
-PHP_CONFIGURE_ENV=
+PHP_CONFIGURE_ENV += LIBS=-lsasl2
+PHP_TARGET_IPKS += $(PHP_LDAP_IPK)
 endif
 
-PHP_CONFIGURE_THREAD_ARGS= \
-		--enable-maintainer-zts 
+PHP_CONFIGURE_ARGS +=$(strip \
+$(if $(filter glibc, $(LIBC_STYLE)), --with-iconv=shared, \
+$(if $(filter libiconv, $(PACKAGES)), --with-iconv=shared,$(STAGING_PREFIX), \
+--without-iconv)))
+ifeq (, $(filter --without-iconv, $(PHP_CONFIGURE_ARGS)))
+PHP_TARGET_IPKS += $(PHP_ICONV_IPK)
+endif
 
 .PHONY: php-source php-unpack php php-stage php-ipk php-clean php-dirclean php-check
 
@@ -196,6 +216,19 @@ $(PHP_GD_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: libgd extension for php" >>$@
 	@echo "Depends: php, libgd" >>$@
+
+$(PHP_ICONV_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: php-iconv" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: libiconv extension for php" >>$@
+	@echo $(if $(filter libiconv, $(PACKAGES)), "Depends: php, libiconv", "Depends: php") >>$@
 
 $(PHP_IMAP_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -306,7 +339,8 @@ $(PHP_ODBC_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PHP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PHP_SITE)/$(PHP_SOURCE)
+	$(WGET) -P $(@D) $(PHP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -336,6 +370,9 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES) make/php.mk
 	$(MAKE) libcurl-stage
 	$(MAKE) libdb-stage
 	$(MAKE) libgd-stage 
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	$(MAKE) libxml2-stage 
 	$(MAKE) libxslt-stage 
 	$(MAKE) openssl-stage 
@@ -363,7 +400,10 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	    -e 's|`$$PG_CONFIG --libdir`|$(STAGING_LIB_DIR)|' \
 	    $(@D)/ext/*pgsql/*.m4
 endif
-	autoreconf $(@D)
+ifeq (glibc, $(LIBC_STYLE))
+	sed -i -e 's|/usr/local /usr|$(shell cd $(TARGET_INCDIR)/..; pwd)|' $(@D)/ext/iconv/config.m4
+endif
+	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
@@ -428,9 +468,7 @@ endif
 		--with-freetype-dir=$(STAGING_PREFIX) \
 		--with-zlib-dir=$(STAGING_PREFIX) \
 		--with-pcre-regex=$(STAGING_PREFIX) \
-		$(PHP_CONFIGURE_TARGET_ARGS) \
-		$(PHP_CONFIGURE_THREAD_ARGS) \
-		--without-iconv \
+		$(PHP_CONFIGURE_ARGS) \
 		--without-pear \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
@@ -520,6 +558,16 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/gd.so $(PHP_GD_IPK_DIR)/opt/lib/php/extensions/gd.so
 	echo extension=gd.so >$(PHP_GD_IPK_DIR)/opt/etc/php.d/gd.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_GD_IPK_DIR)
+ifeq (, $(filter --without-iconv, $(PHP_CONFIGURE_ARGS)))
+	### now make php-iconv
+	rm -rf $(PHP_ICONV_IPK_DIR) $(BUILD_DIR)/php-iconv_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_ICONV_IPK_DIR)/CONTROL/control
+	install -d $(PHP_ICONV_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_ICONV_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/iconv.so $(PHP_ICONV_IPK_DIR)/opt/lib/php/extensions/iconv.so
+	echo extension=iconv.so >$(PHP_ICONV_IPK_DIR)/opt/etc/php.d/iconv.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_ICONV_IPK_DIR)
+endif
 	### now make php-imap
 	rm -rf $(PHP_IMAP_IPK_DIR) $(BUILD_DIR)/php-imap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_IMAP_IPK_DIR)/CONTROL/control
@@ -598,30 +646,7 @@ endif
 #
 # This is called from the top level makefile to create the IPK file.
 #
-ifeq (openldap, $(filter openldap, $(PACKAGES)))
-php-ipk: $(PHP_IPK) \
-	$(PHP_DEV_IPK) \
-	$(PHP_EMBED_IPK) \
-	$(PHP_CURL_IPK) \
-	$(PHP_GD_IPK) \
-	$(PHP_IMAP_IPK) \
-	$(PHP_LDAP_IPK) \
-	$(PHP_MBSTRING_IPK) \
-	$(PHP_MYSQL_IPK) \
-	$(PHP_PGSQL_IPK) \
-	$(PHP_PEAR_IPK)
-else
-php-ipk: $(PHP_IPK) \
-	$(PHP_DEV_IPK) \
-	$(PHP_EMBED_IPK) \
-	$(PHP_CURL_IPK) \
-	$(PHP_GD_IPK) \
-	$(PHP_IMAP_IPK) \
-	$(PHP_MBSTRING_IPK) \
-	$(PHP_MYSQL_IPK) \
-	$(PHP_PGSQL_IPK) \
-	$(PHP_PEAR_IPK)
-endif
+php-ipk: $(PHP_TARGET_IPKS)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -644,30 +669,20 @@ php-dirclean:
 	$(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) \
 	$(PHP_MSSQL_IPK_DIR) $(PHP_MSSQL_IPK) \
 	$(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) \
+	$(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK) \
 	$(PHP_PGSQL_IPK_DIR) $(PHP_PGSQL_IPK) \
 	$(PHP_ODBC_IPK_DIR) $(PHP_ODBC_IPK) \
-	$(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
+	;
+ifeq (, $(filter --without-iconv, $(PHP_CONFIGURE_ARGS)))
+	$(PHP_ICONV_IPK_DIR) $(PHP_ICONV_IPK)
+endif
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	rm -rf $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK)
 endif
 
+
 #
 # Some sanity check for the package.
 #
-php-check: php-ipk
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
-	$(PHP_IPK) \
-	$(PHP_DEV_IPK) \
-	$(PHP_EMBED_IPK) \
-	$(PHP_CURL_IPK) \
-	$(PHP_GD_IPK) \
-	$(PHP_IMAP_IPK) \
-	$(PHP_MBSTRING_IPK) \
-	$(PHP_MSSQL_IPK) \
-	$(PHP_MYSQL_IPK) \
-	$(PHP_PGSQL_IPK) \
-	$(PHP_ODBC_IPK) \
-	$(PHP_PEAR_IPK)
-ifeq (openldap, $(filter openldap, $(PACKAGES)))
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PHP_LDAP_IPK)
-endif
+php-check: $(PHP_TARGET_IPKS)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
