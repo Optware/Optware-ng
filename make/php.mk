@@ -523,7 +523,7 @@ php-stage: $(PHP_BUILD_DIR)/.staged
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PHP_IPK): $(PHP_BUILD_DIR)/.built
+$(PHP_TARGET_IPKS): $(PHP_BUILD_DIR)/.built
 	rm -rf $(PHP_IPK_DIR) $(BUILD_DIR)/php_*_$(TARGET_ARCH).ipk
 	install -d $(PHP_IPK_DIR)/opt/var/lib/php/session
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
