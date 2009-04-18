@@ -1,5 +1,5 @@
---- Python-2.6/Makefile.pre.in.orig	2008-09-05 22:59:17.000000000 +0000
-+++ Python-2.6/Makefile.pre.in	2008-10-03 00:54:26.091013892 +0000
+--- Python-2.6.2c1/Makefile.pre.in.orig	2009-02-24 11:07:44.000000000 +0000
++++ Python-2.6.2c1/Makefile.pre.in	2009-04-13 20:38:20.935024197 +0000
 @@ -36,6 +36,8 @@
  RANLIB=		@RANLIB@
  SVNVERSION=	@SVNVERSION@
@@ -27,7 +27,7 @@
 +BUILDPYTHON=	@BUILDPYTHON@
  
  # The task to run while instrument when building the profile-opt target
- PROFILE_TASK=	Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
+ PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
 @@ -204,7 +207,8 @@
  
  ##########################################################################
@@ -56,7 +56,7 @@
  		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
  			Modules/python.o \
  			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-@@ -511,12 +515,12 @@
+@@ -515,12 +519,12 @@
  	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
  
  
@@ -73,7 +73,7 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -570,6 +574,16 @@
+@@ -577,6 +581,16 @@
  Python/formatter_string.o: $(srcdir)/Python/formatter_string.c \
  				$(STRINGLIB_HEADERS)
  
@@ -90,16 +90,16 @@
  ############################################################################
  # Header files
  
-@@ -767,7 +781,7 @@
+@@ -775,7 +789,7 @@
  		else	true; \
  		fi; \
  	done
 -	$(INSTALL_PROGRAM) $(BUILDPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
 +	$(INSTALL_PROGRAM) $(HOSTPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
- 	if test -f libpython$(VERSION)$(SO); then \
- 		if test "$(SO)" = .dll; then \
- 			$(INSTALL_SHARED) libpython$(VERSION)$(SO) $(DESTDIR)$(BINDIR); \
-@@ -993,8 +1007,9 @@
+	if test -f $(LDLIBRARY); then \
+		if test -n "$(DLLLIBRARY)" ; then \
+			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
+@@ -1001,8 +1015,9 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -111,7 +111,7 @@
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
  		--root=/$(DESTDIR)
-@@ -1087,7 +1102,7 @@
+@@ -1095,7 +1110,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -120,7 +120,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1137,11 +1152,12 @@
+@@ -1145,11 +1160,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal
