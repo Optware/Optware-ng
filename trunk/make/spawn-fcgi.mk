@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SPAWN-FCGI_SITE=http://www.lighttpd.net/download
-SPAWN-FCGI_VERSION=1.6.1
+SPAWN-FCGI_VERSION=1.6.2
 SPAWN-FCGI_SOURCE=spawn-fcgi-$(SPAWN-FCGI_VERSION).tar.bz2
 SPAWN-FCGI_DIR=spawn-fcgi-$(SPAWN-FCGI_VERSION)
 SPAWN-FCGI_UNZIP=bzcat
