@@ -26,7 +26,7 @@
 #
 TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
 #http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.51
+TRANSMISSION_VERSION=1.52
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
 #TRANSMISSION_SVN_REV=7132
 ifdef TRANSMISSION_SVN_REV
