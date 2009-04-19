@@ -28,3 +28,17 @@
  
  	host->ctrl = ctrl_reg;
  	mvsd_write(MVSD_HOST_CTRL, ctrl_reg);
+--- kernel/drivers/mmc/core/core.c.orig	2009-04-14 20:51:48.000000000 +0000
++++ kernel/drivers/mmc/core/core.c	2009-04-19 17:36:35.985746917 +0000
+@@ -286,9 +286,9 @@
+ 			 * The limit is really 250 ms, but that is
+ 			 * insufficient for some crappy cards.
+ 			 */
+-			limit_us = 300000;
++			limit_us = 500000;
+ 		else
+-			limit_us = 100000;
++			limit_us = 200000;
+ 
+ 		/*
+ 		 * SDHC cards always use these fixed values.
