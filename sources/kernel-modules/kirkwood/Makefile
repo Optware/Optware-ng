@@ -26,7 +26,7 @@ KERNEL-MODULES=`find $(KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-KERNEL-MODULES_IPK_VERSION=2
+KERNEL-MODULES_IPK_VERSION=3
 
 #
 # KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -36,8 +36,8 @@ KERNEL-MODULES_IPK_VERSION=2
 # KERNEL-MODULES_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#KERNEL-MODULES_PATCHES = \
-	$(KERNEL_RECIPE_DIR)/arch-arm-Makefile.patch \
+KERNEL-MODULES_PATCHES = \
+	$(KERNEL_RECIPE_DIR)/mvsdio.patch \
 
 #
 # If the compilation of the package requires additional
