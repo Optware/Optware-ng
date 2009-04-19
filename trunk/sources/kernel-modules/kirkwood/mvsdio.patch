@@ -1,0 +1,30 @@
+--- a/drivers/mmc/host/mvsdio.c.orig	2009-04-14 20:51:48.000000000 +0000
++++ b/drivers/mmc/host/mvsdio.c	2009-04-19 15:58:42.261724324 +0000
+@@ -21,6 +21,7 @@
+ #include <linux/irq.h>
+ #include <linux/gpio.h>
+ #include <linux/mmc/host.h>
++#include <linux/mmc/sd.h>
+ 
+ #include <asm/sizes.h>
+ #include <asm/unaligned.h>
+@@ -123,6 +124,7 @@
+ 
+ 	dev_dbg(host->dev, "cmd %d (hw state 0x%04x)\n",
+ 		cmd->opcode, mvsd_read(MVSD_HW_STATE));
++	if (cmd->opcode == SD_SWITCH) mdelay(1); /* Voodoo */
+ 
+ 	cmdreg = MVSD_CMD_INDEX(cmd->opcode);
+ 
+@@ -620,9 +622,11 @@
+ 	if (ios->bus_width == MMC_BUS_WIDTH_4)
+ 		ctrl_reg |= MVSD_HOST_CTRL_DATA_WIDTH_4_BITS;
+ 
++#if 0
+ 	if (ios->timing == MMC_TIMING_MMC_HS ||
+ 	    ios->timing == MMC_TIMING_SD_HS)
+ 		ctrl_reg |= MVSD_HOST_CTRL_HI_SPEED_EN;
++#endif
+ 
+ 	host->ctrl = ctrl_reg;
+ 	mvsd_write(MVSD_HOST_CTRL, ctrl_reg);
