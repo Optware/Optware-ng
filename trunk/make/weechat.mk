@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WEECHAT_SITE=http://weechat.flashtux.org/download
-WEECHAT_VERSION=0.2.6.1
+WEECHAT_VERSION=0.2.6.2
 WEECHAT_SOURCE=weechat-$(WEECHAT_VERSION).tar.bz2
 WEECHAT_DIR=weechat-$(WEECHAT_VERSION)
 WEECHAT_UNZIP=bzcat
