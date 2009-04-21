@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	asterisk asterisk14 asterisk14-chan-capi \
 	asterisk16 asterisk16-addons \
 	atftp avahi \
-	bacula bitlbee bsdgames btpd bzflag \
+	bacula bitlbee boost bsdgames btpd bzflag \
 	centerim climm \
 	castget cdargs cherokee clamav ctorrent ctrlproxy cups \
 	dansguardian dspam \

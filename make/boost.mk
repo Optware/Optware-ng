@@ -84,53 +84,53 @@ endif
 BOOST_BUILD_DIR=$(BUILD_DIR)/boost
 BOOST_SOURCE_DIR=$(SOURCE_DIR)/boost
 
-BOOST_DEV_IPK_DIR=$(BUILD_DIR)/boost-dev_$(BOOST_VERSION)-ipk
-BOOST_DEV_IPK=$(BUILD_DIR)/boost-dev-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_DEV_IPK_DIR=$(BUILD_DIR)/boost-dev-$(BOOST_VERSION)-ipk
+BOOST_DEV_IPK=$(BUILD_DIR)/boost-dev_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-BOOST_DATE_TIME_IPK_DIR=$(BUILD_DIR)/boost-date-time_$(BOOST_VERSION)-ipk
-BOOST_DATE_TIME_IPK=$(BUILD_DIR)/boost-date-time-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_DATE_TIME_IPK_DIR=$(BUILD_DIR)/boost-date-time-$(BOOST_VERSION)-ipk
+BOOST_DATE_TIME_IPK=$(BUILD_DIR)/boost-date-time_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_FILESYSTEM_IPK_DIR=$(BUILD_DIR)/boost-filesystem-$(BOOST_VERSION)-ipk
-BOOST_FILESYSTEM_IPK=$(BUILD_DIR)/boost-filesystem-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_FILESYSTEM_IPK=$(BUILD_DIR)/boost-filesystem_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-BOOST_FUNCTION_TYPES_IPK_DIR=$(BUILD_DIR)/boost-function-types_$(BOOST_VERSION)-ipk
+BOOST_FUNCTION_TYPES_IPK_DIR=$(BUILD_DIR)/boost-function-types-$(BOOST_VERSION)-ipk
 BOOST_FUNCTION_TYPES_IPK=$(BUILD_DIR)/boost-function-types_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-BOOST_GRAPH_IPK_DIR=$(BUILD_DIR)/boost-graph_$(BOOST_VERSION)-ipk
-BOOST_GRAPH_IPK=$(BUILD_DIR)/boost-graph-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_GRAPH_IPK_DIR=$(BUILD_DIR)/boost-graph-$(BOOST_VERSION)-ipk
+BOOST_GRAPH_IPK=$(BUILD_DIR)/boost-graph_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_IOSTREAMS_IPK_DIR=$(BUILD_DIR)/boost-iostreams-$(BOOST_VERSION)-ipk
-BOOST_IOSTREAMS_IPK=$(BUILD_DIR)/boost-iostreams-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_IOSTREAMS_IPK=$(BUILD_DIR)/boost-iostreams_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_MATH_IPK_DIR=$(BUILD_DIR)/boost-math-$(BOOST_VERSION)-ipk
-BOOST_MATH_IPK=$(BUILD_DIR)/boost-math-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_MATH_IPK=$(BUILD_DIR)/boost-math_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-BOOST_PROGRAM_OPTIONS_IPK_DIR=$(BUILD_DIR)/boost-program-options_$(BOOST_VERSION)-ipk
+BOOST_PROGRAM_OPTIONS_IPK_DIR=$(BUILD_DIR)/boost-program-options-$(BOOST_VERSION)-ipk
 BOOST_PROGRAM_OPTIONS_IPK=$(BUILD_DIR)/boost-program-options_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_PYTHON_IPK_DIR=$(BUILD_DIR)/boost-python-$(BOOST_VERSION)-ipk
-BOOST_PYTHON_IPK=$(BUILD_DIR)/boost-python-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_PYTHON_IPK=$(BUILD_DIR)/boost-python_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_REGEX_IPK_DIR=$(BUILD_DIR)/boost-regex-$(BOOST_VERSION)-ipk
-BOOST_REGEX_IPK=$(BUILD_DIR)/boost-regex-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_REGEX_IPK=$(BUILD_DIR)/boost-regex_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_SERIALIZATION_IPK_DIR=$(BUILD_DIR)/boost-serialization-$(BOOST_VERSION)-ipk
-BOOST_SERIALIZATION_IPK=$(BUILD_DIR)/boost-serialization-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_SERIALIZATION_IPK=$(BUILD_DIR)/boost-serialization_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_SIGNALS_IPK_DIR=$(BUILD_DIR)/boost-signals-$(BOOST_VERSION)-ipk
-BOOST_SIGNALS_OPTIONS_IPK=$(BUILD_DIR)/boost-signals-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_SIGNALS_OPTIONS_IPK=$(BUILD_DIR)/boost-signals_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_SYSTEM_IPK_DIR=$(BUILD_DIR)/boost-system-$(BOOST_VERSION)-ipk
-BOOST_SYSTEM_OPTIONS_IPK=$(BUILD_DIR)/boost-system-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_SYSTEM_OPTIONS_IPK=$(BUILD_DIR)/boost-system_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_TEST_IPK_DIR=$(BUILD_DIR)/boost-test-$(BOOST_VERSION)-ipk
-BOOST_TEST_IPK=$(BUILD_DIR)/boost-test-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_TEST_IPK=$(BUILD_DIR)/boost-test_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_THREAD_IPK_DIR=$(BUILD_DIR)/boost-thread-$(BOOST_VERSION)-ipk
-BOOST_THREAD_IPK=$(BUILD_DIR)/boost-thread-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_THREAD_IPK=$(BUILD_DIR)/boost-thread_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_WAVE_IPK_DIR=$(BUILD_DIR)/boost-wave-$(BOOST_VERSION)-ipk
-BOOST_WAVE_IPK=$(BUILD_DIR)/boost-wave-$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_WAVE_IPK=$(BUILD_DIR)/boost-wave_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_IPK_DIRS= \
 	$(BOOST_DEV_IPK_DIR) \
@@ -223,16 +223,16 @@ $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES) make/
 	sed -i -e 's|: ar :|: $(TARGET_AR) :|' $(@D)/tools/build/v2/tools/gcc.jam
 	echo 'using gcc : $(CROSS_CONFIGURATION_GCC_VERSION) : $(TARGET_CXX) : <cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/tools/build/v2/user-config.jam
 	echo 'using python : : $(STAGING_DIR)/bin/python ;' >> $(@D)/tools/build/v2/user-config.jam
+ifeq ($(LIBC_STYLE),uclibc)
 	###uclibc portability issue
-	ifeq ($(LIBC_STYLE),uclibc) ; \
-		then sed -i -e "s/get_nprocs()/1/" $(@D)/libs/thread/src/pthread/thread.cpp ; \
-	endif
+	sed -i -e "s/get_nprocs()/1/" $(@D)/libs/thread/src/pthread/thread.cpp
+endif
+ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
 	###some bug when building on gumstix1151
-	ifeq ($(OPTWARE_TAGET), $(filter gumstix1151, $(OPTWARE_TARGET))) ; \
-		then echo '#undef BOOST_HAS_PTHREAD_DELAY_NP' >> $(@D)/boost/config.hpp ; \
-		echo '#undef BOOST_HAS_NANOSLEEP' >> $(@D)/boost/config.hpp ; \
-		sed -i -e 's|#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"|//#error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"|' $(@D)/boost/config/requires_threads.hpp ; \
-	endif
+	echo '#undef BOOST_HAS_PTHREAD_DELAY_NP' >> $(@D)/boost/config.hpp ; \
+	echo '#undef BOOST_HAS_NANOSLEEP' >> $(@D)/boost/config.hpp ; \
+	sed -i -e 's|#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"|//#error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"|' $(@D)/boost/config/requires_threads.hpp
+endif
 	touch $@
 
 boost-unpack: $(BOOST_BUILD_DIR)/.configured

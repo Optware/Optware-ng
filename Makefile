@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	boost \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -216,7 +215,7 @@ COMMON_CROSS_PACKAGES = \
 	$(ASTERISK_PACKAGES) \
 	at atftp atk atop audiofile autoconf automake autossh avahi \
 	bacula bash bc bftpd bind bip bison bitchx bitlbee \
-	bogofilter bridge-utils \
+	bogofilter boost bridge-utils \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
