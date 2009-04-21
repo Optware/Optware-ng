@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=8.2.9
+POSTGRESQL_VERSION=8.2.13
 POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_SOURCE=postgresql-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
@@ -53,9 +53,6 @@ POSTGRESQL_IPK_VERSION=1
 ifneq ($(HOSTCC), $(TARGET_CC))
 POSTGRESQL_PATCHES=$(POSTGRESQL_SOURCE_DIR)/src-timezone-Makefile.patch $(POSTGRESQL_SOURCE_DIR)/disable-buildtime-test.patch
 POSTGRESQL_CONFIG_ENV=pgac_cv_snprintf_long_long_int_format='%lld'
-endif
-ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
-POSTGRESQL_PATCHES+=$(POSTGRESQL_SOURCE_DIR)/uclibc_no_cbrt.patch
 endif
 
 #
@@ -114,7 +111,7 @@ postgresql-source: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL_PATCHES)
+$(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL_PATCHES) make/postgresql.mk
 	$(MAKE) readline-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(POSTGRESQL_DIR) $(POSTGRESQL_BUILD_DIR)
 	$(POSTGRESQL_UNZIP) $(DL_DIR)/$(POSTGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -248,4 +245,4 @@ postgresql-dirclean:
 # Some sanity check for the package.
 #
 postgresql-check: $(POSTGRESQL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POSTGRESQL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
