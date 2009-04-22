@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBTOOL_SITE=http://ftp.gnu.org/gnu/libtool
-LIBTOOL_VERSION=1.5.24
+LIBTOOL_VERSION=1.5.26
 LIBTOOL_SOURCE=libtool-$(LIBTOOL_VERSION).tar.gz
 LIBTOOL_DIR=libtool-$(LIBTOOL_VERSION)
 LIBTOOL_UNZIP=zcat
@@ -62,7 +62,8 @@ LIBTOOL_IPK=$(BUILD_DIR)/libtool_$(LIBTOOL_VERSION)-$(LIBTOOL_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBTOOL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBTOOL_SITE)/$(LIBTOOL_SOURCE)
+	$(WGET) -P $(@D) $(LIBTOOL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -89,8 +90,8 @@ libtool-source: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES)
 $(LIBTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES) make/libtool.mk
 	rm -rf $(BUILD_DIR)/$(LIBTOOL_DIR) $(LIBTOOL_BUILD_DIR)
 	$(LIBTOOL_UNZIP) $(DL_DIR)/$(LIBTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(LIBTOOL_DIR) $(LIBTOOL_BUILD_DIR)
-	(cd $(LIBTOOL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBTOOL_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTOOL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTOOL_LDFLAGS)" \
@@ -100,7 +101,7 @@ $(LIBTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	)
-	touch $(LIBTOOL_BUILD_DIR)/.configured
+	touch $@
 
 libtool-unpack: $(LIBTOOL_BUILD_DIR)/.configured
 
@@ -110,7 +111,7 @@ libtool-unpack: $(LIBTOOL_BUILD_DIR)/.configured
 #
 $(LIBTOOL_BUILD_DIR)/.built: $(LIBTOOL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBTOOL_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -124,18 +125,7 @@ libtool: $(LIBTOOL_BUILD_DIR)/.built
 #
 $(LIBTOOL_BUILD_DIR)/.staged: $(LIBTOOL_BUILD_DIR)/.built
 	rm -f $@
-	rm -f $(STAGING_PREFIX)/bin/libtool
-	rm -f $(STAGING_LIB_DIR)/libltdl.so*
-	rm -rf $(STAGING_INCLUDE_DIR)/libltdl
-	install -d $(STAGING_DIR)/opt/bin
-	install -m 755 $(LIBTOOL_BUILD_DIR)/libtool $(STAGING_PREFIX)/bin/
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/ltdl.h $(STAGING_INCLUDE_DIR)/
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.a $(STAGING_LIB_DIR)/
-	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.5 $(STAGING_LIB_DIR)/
-	cd $(STAGING_DIR)/opt/lib && ln -fs libltdl.so.3.1.5 libltdl.so.3
-	cd $(STAGING_DIR)/opt/lib && ln -fs libltdl.so.3 libltdl.so
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 libtool-stage: $(LIBTOOL_BUILD_DIR)/.staged
@@ -178,3 +168,9 @@ libtool-clean:
 #
 libtool-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBTOOL_DIR) $(LIBTOOL_BUILD_DIR) $(LIBTOOL_IPK_DIR) $(LIBTOOL_IPK)
+
+#
+# Some sanity check for the package.
+#
+libtool-check: $(LIBTOOL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
