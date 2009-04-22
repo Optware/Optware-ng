@@ -35,7 +35,7 @@ ETTERCAP-NG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ETTERCAP-NG_DESCRIPTION=Ettercap is a suite for man in the middle attacks on LAN. It features sniffing of live connections, content filtering on the fly and many other interesting tricks.
 ETTERCAP-NG_SECTION=net
 ETTERCAP-NG_PRIORITY=optional
-ETTERCAP-NG_DEPENDS=libtool, libpcap, ncurses, pcre
+ETTERCAP-NG_DEPENDS=libtool, libpcap, ncurses, pcre, zlib
 #ETTERCAP-NG_SUGGESTS=
 #ETTERCAP-NG_CONFLICTS=
 
@@ -111,7 +111,8 @@ ettercap-ng-source: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP-NG_PATCHES)
 # shown below to make various patches to it.
 #
 $(ETTERCAP-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP-NG_PATCHES) make/ettercap-ng.mk
-	$(MAKE) libnet11-stage libpcap-stage openssl-stage ncurses-stage pcre-stage
+	$(MAKE) libnet11-stage libpcap-stage openssl-stage ncurses-stage
+	$(MAKE) libtool-stage pcre-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(ETTERCAP-NG_DIR) $(@D)
 	$(ETTERCAP-NG_UNZIP) $(DL_DIR)/$(ETTERCAP-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ETTERCAP-NG_PATCHES)" ; \
@@ -121,7 +122,7 @@ $(ETTERCAP-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP
 	if test "$(BUILD_DIR)/$(ETTERCAP-NG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ETTERCAP-NG_DIR) $(@D) ; \
 	fi
-	-autoreconf -vif $(@D)
+	-ACLOCAL="aclocal -I$(STAGING_PREFIX)/share/aclocal" autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ETTERCAP-NG_CPPFLAGS)" \

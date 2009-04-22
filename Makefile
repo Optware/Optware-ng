@@ -29,7 +29,6 @@ OPTWARE_TARGET ?= nslu2
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	boost \
-	ettercap-ng \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -235,7 +234,8 @@ COMMON_CROSS_PACKAGES = \
 	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
 	dropbear drraw dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
-	emacs22 endian enhanced-ctorrent esmtp esniper ettercap \
+	emacs22 endian enhanced-ctorrent esmtp esniper \
+	ettercap ettercap-ng \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop eventlog expat extract-xiso ez-ipupdate \
 	faad2 fann fcgi fconfig fdupes fetchmail ffmpeg \

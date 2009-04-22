@@ -25,7 +25,7 @@
 -        LNETINC="-I$withval/include"
 -        LNETLIB="-L$withval/lib -L$withval/src -lnet"
 +        LNETINC="-I$withval/include/libnet11"
-+        LNETLIB="-L$withval/lib/libnet11 -lnet"
++        LNETLIB="-L$withval/lib -L$withval/lib/libnet11 -lnet"
          ac_ec_libnet=$withval
          AC_MSG_RESULT($withval)
       else
