@@ -29,6 +29,7 @@ OPTWARE_TARGET ?= nslu2
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	boost \
+	ettercap-ng \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
