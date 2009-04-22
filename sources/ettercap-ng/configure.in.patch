@@ -1,0 +1,10 @@
+--- configure.in.orig	2005-01-13 12:24:28.000000000 +0300
++++ configure.in	2009-04-22 04:58:24.000000000 +0400
+@@ -236,7 +236,6 @@
+ AC_CHECK_HEADERS(sys/poll.h poll.h sys/select.h)
+ AC_CHECK_HEADERS(sys/cdefs.h)
+ dnl nameser NS_GET32 and so on...
+-EC_NS_GET()
+ 
+ dnl ==================================================================
+ dnl   Checks for typedefs, structures, and compiler characteristics.
