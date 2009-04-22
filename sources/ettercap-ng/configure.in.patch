@@ -1,5 +1,5 @@
---- configure.in.orig	2005-01-13 12:24:28.000000000 +0300
-+++ configure.in	2009-04-22 04:58:24.000000000 +0400
+--- configure.in.orig	2005-01-13 01:24:28.000000000 -0800
++++ configure.in	2009-04-21 20:35:20.000000000 -0700
 @@ -236,7 +236,6 @@
  AC_CHECK_HEADERS(sys/poll.h poll.h sys/select.h)
  AC_CHECK_HEADERS(sys/cdefs.h)
@@ -8,3 +8,24 @@
  
  dnl ==================================================================
  dnl   Checks for typedefs, structures, and compiler characteristics.
+@@ -472,15 +471,15 @@
+      if test -f $withval/lnet.h; then
+         owd=`pwd`
+         if cd $withval; then withval=`pwd`; cd $owd; fi
+-        LNETINC="-I$withval"
+-        LNETLIB="-L$withval -lnet"
++        LNETINC="-I$withval/include/libnet11"
++        LNETLIB="-L$withval/lib/libnet11 -lnet"
+         ac_ec_libnet=$withval
+         AC_MSG_RESULT($withval)
+-     elif test -f $withval/include/libnet.h; then
++     elif test -f $withval/include/libnet11/libnet.h; then
+         owd=`pwd`
+         if cd $withval; then withval=`pwd`; cd $owd; fi
+-        LNETINC="-I$withval/include"
+-        LNETLIB="-L$withval/lib -L$withval/src -lnet"
++        LNETINC="-I$withval/include/libnet11"
++        LNETLIB="-L$withval/lib/libnet11 -lnet"
+         ac_ec_libnet=$withval
+         AC_MSG_RESULT($withval)
+      else
