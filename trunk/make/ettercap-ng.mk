@@ -35,14 +35,14 @@ ETTERCAP-NG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ETTERCAP-NG_DESCRIPTION=Ettercap is a suite for man in the middle attacks on LAN. It features sniffing of live connections, content filtering on the fly and many other interesting tricks.
 ETTERCAP-NG_SECTION=net
 ETTERCAP-NG_PRIORITY=optional
-ETTERCAP-NG_DEPENDS=libtool, libpcap, ncurses
+ETTERCAP-NG_DEPENDS=libtool, libpcap, ncurses, pcre
 #ETTERCAP-NG_SUGGESTS=
 #ETTERCAP-NG_CONFLICTS=
 
 #
 # ETTERCAP-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-ETTERCAP-NG_IPK_VERSION=2
+ETTERCAP-NG_IPK_VERSION=1
 
 #
 # ETTERCAP-NG_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ ettercap-ng-source: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP-NG_PATCHES)
 # shown below to make various patches to it.
 #
 $(ETTERCAP-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP-NG_PATCHES) make/ettercap-ng.mk
-	$(MAKE) libnet11-stage libpcap-stage openssl-stage ncurses-stage
+	$(MAKE) libnet11-stage libpcap-stage openssl-stage ncurses-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(ETTERCAP-NG_DIR) $(@D)
 	$(ETTERCAP-NG_UNZIP) $(DL_DIR)/$(ETTERCAP-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ETTERCAP-NG_PATCHES)" ; \
@@ -121,8 +121,7 @@ $(ETTERCAP-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP
 	if test "$(BUILD_DIR)/$(ETTERCAP-NG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ETTERCAP-NG_DIR) $(@D) ; \
 	fi
-	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
-#	autoreconf -vi $(@D)
+	-autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ETTERCAP-NG_CPPFLAGS)" \
@@ -135,14 +134,14 @@ $(ETTERCAP-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP
 		--includedir=$(STAGING_INCLUDE_DIR) \
 		--without-openssl \
 		--with-libtool \
+		--with-libpcap=$(STAGING_PREFIX) \
+		--with-libnet=$(STAGING_PREFIX) \
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
 		--disable-gtk \
-		COPTS="$(STAGING_CPPFLAGS) $(ETTERCAP-NG_CPPFLAGS)" \
-		LOPTS="$(STAGING_LDFLAGS) $(ETTERCAP-NG_LDFLAGS)" \
 	)
-#	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 ettercap-ng-unpack: $(ETTERCAP-NG_BUILD_DIR)/.configured
@@ -203,8 +202,7 @@ $(ETTERCAP-NG_IPK_DIR)/CONTROL/control:
 #
 $(ETTERCAP-NG_IPK): $(ETTERCAP-NG_BUILD_DIR)/.built
 	rm -rf $(ETTERCAP-NG_IPK_DIR) $(BUILD_DIR)/ettercap-ng_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ETTERCAP-NG_BUILD_DIR) DESTDIR=$(ETTERCAP-NG_IPK_DIR) install
-	$(STRIP_COMMAND) $(ETTERCAP-NG_IPK_DIR)/opt/bin/ettercap
+	$(MAKE) -C $(ETTERCAP-NG_BUILD_DIR) DESTDIR=$(ETTERCAP-NG_IPK_DIR) install-strip
 	$(MAKE) $(ETTERCAP-NG_IPK_DIR)/CONTROL/control
 	echo $(ETTERCAP-NG_CONFFILES) | sed -e 's/ /\n/g' > $(ETTERCAP-NG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ETTERCAP-NG_IPK_DIR)
