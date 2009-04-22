@@ -58,8 +58,8 @@ ETTERCAP-NG_PATCHES=$(ETTERCAP-NG_SOURCE_DIR)/configure.in.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ETTERCAP-NG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
-ETTERCAP-NG_LDFLAGS=
+ETTERCAP-NG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses -I$(STAGING_INCLUDE_DIR)/libnet11
+ETTERCAP-NG_LDFLAGS=-L$(STAGING_LIB_DIR)/libnet11
 
 #
 # ETTERCAP-NG_BUILD_DIR is the directory in which the build is done.
@@ -125,8 +125,8 @@ $(ETTERCAP-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP
 	-ACLOCAL="aclocal -I$(STAGING_PREFIX)/share/aclocal" autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ETTERCAP-NG_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(ETTERCAP-NG_LDFLAGS)" \
+		CPPFLAGS="$(ETTERCAP-NG_CPPFLAGS) $(STAGING_CPPFLAGS) $(ETTERCAP-NG_CPPFLAGS)" \
+		LDFLAGS="$(ETTERCAP-NG_LDFLAGS) $(STAGING_LDFLAGS)" \
 		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
