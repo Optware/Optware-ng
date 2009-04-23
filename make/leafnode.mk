@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LEAFNODE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/leafnode
-LEAFNODE_VERSION=1.11.6
+LEAFNODE_VERSION=1.11.7
 LEAFNODE_SOURCE=leafnode-$(LEAFNODE_VERSION).tar.bz2
 LEAFNODE_DIR=leafnode-$(LEAFNODE_VERSION)
 LEAFNODE_UNZIP=bzcat
@@ -76,8 +76,8 @@ LEAFNODE_IPK=$(BUILD_DIR)/leafnode_$(LEAFNODE_VERSION)-$(LEAFNODE_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LEAFNODE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LEAFNODE_SITE)/$(LEAFNODE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LEAFNODE_SOURCE)
+	$(WGET) -P $(@D) $(LEAFNODE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,11 +112,11 @@ $(LEAFNODE_BUILD_DIR)/.configured: $(DL_DIR)/$(LEAFNODE_SOURCE) $(LEAFNODE_PATCH
 		then cat $(LEAFNODE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LEAFNODE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LEAFNODE_DIR)" != "$(LEAFNODE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LEAFNODE_DIR) $(LEAFNODE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LEAFNODE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LEAFNODE_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|\./amiroot|false|' $(LEAFNODE_BUILD_DIR)/Makefile.in
-	(cd $(LEAFNODE_BUILD_DIR); \
+	sed -i -e 's|\./amiroot|false|' $(@D)/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LEAFNODE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LEAFNODE_LDFLAGS)" \
@@ -139,7 +139,7 @@ leafnode-unpack: $(LEAFNODE_BUILD_DIR)/.configured
 #
 $(LEAFNODE_BUILD_DIR)/.built: $(LEAFNODE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LEAFNODE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +152,7 @@ leafnode: $(LEAFNODE_BUILD_DIR)/.built
 #
 $(LEAFNODE_BUILD_DIR)/.staged: $(LEAFNODE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LEAFNODE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 leafnode-stage: $(LEAFNODE_BUILD_DIR)/.staged
@@ -218,4 +218,4 @@ leafnode-dirclean:
 # Some sanity check for the package.
 #
 leafnode-check: $(LEAFNODE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LEAFNODE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
