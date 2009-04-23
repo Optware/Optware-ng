@@ -36,7 +36,7 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION=1
+NGINX_IPK_VERSION=2
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
@@ -73,8 +73,9 @@ ngx_cache_sizeof_off_t=8 \
 ngx_cache_sizeof_time_t=4
 endif
 
-NGINX_CONFIGURE_ENV += \
-ngx_cache_NGX_HAVE_EPOLL=$(if $(filter module-init-tools, $(PACKAGES)),yes,no)
+NGINX_CONFIGURE_ENV += ngx_cache_NGX_HAVE_EPOLL=$(strip \
+$(if $(filter dns323, $(OPTWARE_TARGET)), no, \
+$(if $(filter module-init-tools, $(PACKAGES)), yes, no)))
 
 #
 # If the compilation of the package requires additional
