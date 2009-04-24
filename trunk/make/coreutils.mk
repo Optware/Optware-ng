@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 COREUTILS_SITE=http://ftp.gnu.org/pub/gnu/coreutils
-COREUTILS_VERSION=7.1
+COREUTILS_VERSION=7.2
 COREUTILS_SOURCE=coreutils-$(COREUTILS_VERSION).tar.gz
 COREUTILS_DIR=coreutils-$(COREUTILS_VERSION)
 COREUTILS_UNZIP=zcat
