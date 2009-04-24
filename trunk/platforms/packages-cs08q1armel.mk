@@ -11,7 +11,6 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for cs08q1armel.
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	boost \
 	iptables iptraf ldconfig \
 	nfs-utils puppy mod-python qemu \
 	taged transcode \
