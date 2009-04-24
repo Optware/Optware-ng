@@ -5,4 +5,5 @@ SPECIFIC_PACKAGES = unslung-feeds unslung-devel crosstool-native ufsd \
 # Packages that do not work for nslu2.
 # lftp - runtime segfaults
 BROKEN_PACKAGES = \
+	boost \
 
