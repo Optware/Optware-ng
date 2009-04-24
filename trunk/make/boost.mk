@@ -194,6 +194,7 @@ boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES)
 $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES) make/boost.mk
 	$(MAKE) bzip2-stage python25-stage
 	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(@D)
+	rm -rf $(STAGING_INCLUDE_DIR)/boost $(STAGING_LIB_DIR)/libboost*
 	$(BOOST_UNZIP) $(DL_DIR)/$(BOOST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BOOST_PATCHES)" ; \
 		then cat $(BOOST_PATCHES) | \
