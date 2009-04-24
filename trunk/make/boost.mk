@@ -138,7 +138,7 @@ BOOST_IPK_DIRS= \
 	$(BOOST_SERIALIZATION_IPK_DIR) \
 	$(BOOST_SIGNALS_IPK_DIR) \
 	$(BOOST_SYSTEM_IPK_DIR) \
-	$(BOOST_THREAD_DIR) \
+	$(BOOST_THREAD_IPK_DIR) \
 	$(BOOST_TEST_IPK_DIR) \
 	$(BOOST_WAVE_IPK_DIR)
 
@@ -153,7 +153,7 @@ BOOST_LIB_IPKS= \
 	$(BOOST_SERIALIZATION_IPK) \
 	$(BOOST_SIGNALS_IPK) \
 	$(BOOST_SYSTEM_IPK) \
-	$(BOOST_THREAD) \
+	$(BOOST_THREAD_IPK) \
 	$(BOOST_TEST_IPK)
 
 .PHONY: boost-source boost-unpack boost boost-stage boost-ipk boost-clean boost-dirclean boost-check
