@@ -66,11 +66,8 @@ BOOST_JAM_ARGS= \
 	toolset=gcc \
 	link=shared \
 	--layout=system \
-	--without-mpi
-ifeq (uclibc, $(LIBC_STYLE))
-	BOOST_JAM_ARGS+= \
-		--without-math 
-endif
+	--without-mpi \
+	--without-math
 
 #
 # BOOST_BUILD_DIR is the directory in which the build is done.
@@ -101,9 +98,6 @@ BOOST_GRAPH_IPK=$(BUILD_DIR)/boost-graph_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$
 
 BOOST_IOSTREAMS_IPK_DIR=$(BUILD_DIR)/boost-iostreams-$(BOOST_VERSION)-ipk
 BOOST_IOSTREAMS_IPK=$(BUILD_DIR)/boost-iostreams_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
-
-BOOST_MATH_IPK_DIR=$(BUILD_DIR)/boost-math-$(BOOST_VERSION)-ipk
-BOOST_MATH_IPK=$(BUILD_DIR)/boost-math_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_PROGRAM_OPTIONS_IPK_DIR=$(BUILD_DIR)/boost-program-options-$(BOOST_VERSION)-ipk
 BOOST_PROGRAM_OPTIONS_IPK=$(BUILD_DIR)/boost-program-options_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -160,15 +154,7 @@ BOOST_LIB_IPKS= \
 	$(BOOST_SIGNALS_IPK) \
 	$(BOOST_SYSTEM_IPK) \
 	$(BOOST_THREAD) \
-	$(BOOST_TEST_IPK) \
-	$(BOOST_WAVE_IPK)
-
-ifeq (glibc, $(LIBC_STYLE))
-	BOOST_IPK_DIRS+= \
-		$(BOOST_MATH_IPK_DIR) 
-	BOOST_LIB_IPKS+= \
-		$(BOOST_MATH_IPK) 
-endif
+	$(BOOST_TEST_IPK)
 
 .PHONY: boost-source boost-unpack boost boost-stage boost-ipk boost-clean boost-dirclean boost-check
 
@@ -206,7 +192,7 @@ boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES)
 # shown below to make various patches to it.
 #
 $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES) make/boost.mk
-	$(MAKE) bzip2-stage python-stage
+	$(MAKE) bzip2-stage python25-stage
 	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(@D)
 	$(BOOST_UNZIP) $(DL_DIR)/$(BOOST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BOOST_PATCHES)" ; \
@@ -221,7 +207,7 @@ $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES) make/
 		cp bin.*/bjam $(@D) \
 	)
 	sed -i -e 's|: ar :|: $(TARGET_AR) :|' $(@D)/tools/build/v2/tools/gcc.jam
-	echo 'using gcc : $(CROSS_CONFIGURATION_GCC_VERSION) : $(TARGET_CXX) : <cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/tools/build/v2/user-config.jam
+	echo 'using gcc : $(shell $(TARGET_CC) -dumpversion) : $(TARGET_CXX) : <cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/tools/build/v2/user-config.jam
 	echo 'using python : : $(STAGING_DIR)/bin/python ;' >> $(@D)/tools/build/v2/user-config.jam
 ifeq ($(LIBC_STYLE),uclibc)
 	###uclibc portability issue
@@ -232,6 +218,10 @@ ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
 	echo '#undef BOOST_HAS_PTHREAD_DELAY_NP' >> $(@D)/boost/config.hpp ; \
 	echo '#undef BOOST_HAS_NANOSLEEP' >> $(@D)/boost/config.hpp ; \
 	sed -i -e 's|#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"|//#error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"|' $(@D)/boost/config/requires_threads.hpp
+endif
+ifeq ($(shell $(TARGET_CC) -dumpversion), $(filter 3.4.3 3.4.4, $(shell $(TARGET_CC) -dumpversion)))
+	###compiler bug
+	patch -d $(BUILD_DIR) -p0 < $(BOOST_SOURCE_DIR)/gcc.bug.patch
 endif
 	touch $@
 
@@ -254,9 +244,10 @@ boost: $(BOOST_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(BOOST_BUILD_DIR)/.staged: $(BOOST_BUILD_DIR)/.built
+$(BOOST_BUILD_DIR)/.staged: $(BOOST_BUILD_DIR)/.configured
 	rm -f $@
 	(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(STAGING_DIR)/opt; exit 0)
+	touch $(BOOST_BUILD_DIR)/.built
 	touch $@
 
 boost-stage: $(BOOST_BUILD_DIR)/.staged
@@ -338,21 +329,6 @@ $(BOOST_IOSTREAMS_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
 	@echo "Depends: bzip2" >>$@
-	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
-	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
-
-$(BOOST_MATH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: boost-math" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(BOOST_PRIORITY)" >>$@
-	@echo "Section: $(BOOST_SECTION)" >>$@
-	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
-	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
-	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -503,9 +479,10 @@ $(BOOST_WAVE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.built
+$(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.configured
 	rm -rf $(BOOST_IPK_DIRS) $(BUILD_DIR)/boost*_$(TARGET_ARCH).ipk
 	(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(BOOST_DEV_IPK_DIR)/opt; exit 0)
+	touch $(BOOST_BUILD_DIR)/.built
 	### now make boost-date_time
 	$(MAKE) $(BOOST_DATE_TIME_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_DATE_TIME_IPK_DIR)/opt/lib
@@ -567,17 +544,12 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.built
 	mkdir -p $(BOOST_THREAD_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*thread* $(BOOST_THREAD_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_THREAD_IPK_DIR)
+ifeq (yes,$(shell if ls $(BOOST_DEV_IPK_DIR)/opt/lib/*wave* > /dev/null 2>&1; then echo yes; fi))
 	### now make boost-wave
 	$(MAKE) $(BOOST_WAVE_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_WAVE_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*wave* $(BOOST_WAVE_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_WAVE_IPK_DIR)
-ifeq (glibc, $(LIBC_STYLE))
-	### now make boost-math
-	$(MAKE) $(BOOST_MATH_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_MATH_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/* $(BOOST_MATH_IPK_DIR)/opt/lib
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_MATH_IPK_DIR)
 endif
 	### finally boost-dev
 	$(MAKE) $(BOOST_DEV_IPK_DIR)/CONTROL/control
@@ -607,4 +579,7 @@ boost-dirclean:
 # Some sanity check for the package.
 #
 boost-check: $(BOOST_DEV_IPK)
+ifeq (yes,$(shell if ls $(BOOST_WAVE_IPK) > /dev/null 2>&1; then echo yes; fi))
+	BOOST_LIB_IPKS+= $(BOOST_WAVE_IPK)
+endif
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_LIB_IPKS)

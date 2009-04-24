@@ -1,0 +1,39 @@
+diff -U 3 -H -d -r -N -- boost.orig/boost/system/error_code.hpp boost/boost/system/error_code.hpp
+--- boost.orig/boost/system/error_code.hpp	2009-01-21 16:08:54.000000000 +0200
++++ boost/boost/system/error_code.hpp	2009-04-23 19:53:21.000000000 +0300
+@@ -184,7 +184,7 @@
+     public:
+       virtual ~error_category(){}
+       virtual inline const char *    name() const;  // see implementation note below
+-      virtual inline std::string     message( int ev ) const;   // see implementation note below
++      virtual std::string     message( int ev ) const;   // see implementation note below
+       virtual inline error_condition default_error_condition( int ev ) const;
+       virtual inline bool equivalent( int code, const error_condition & condition ) const;
+       virtual inline bool equivalent( const error_code & code, int condition ) const;
+@@ -481,11 +481,6 @@
+       return "error: should never be called";
+     }
+ 
+-    inline std::string error_category::message( int ) const
+-    { 
+-      static std::string s("error: should never be called");
+-      return s;
+-    }
+ 
+   } // namespace system
+ } // namespace boost
+diff -U 3 -H -d -r -N -- boost.orig/libs/system/src/error_code.cpp boost/libs/system/src/error_code.cpp
+--- boost.orig/libs/system/src/error_code.cpp	2009-01-21 16:08:54.000000000 +0200
++++ boost/libs/system/src/error_code.cpp	2009-04-23 20:25:42.000000000 +0300
+@@ -429,5 +429,11 @@
+       return generic_category_const;
+     }
+ 
++    std::string error_category::message( int ) const
++    { 
++      static std::string s("error: should never be called");
++      return s;
++    }
++
+   } // namespace system
+ } // namespace boost
