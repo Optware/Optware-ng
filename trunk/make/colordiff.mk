@@ -5,7 +5,7 @@
 ###########################################################
 
 COLORDIFF_SITE=http://colordiff.sourceforge.net
-COLORDIFF_VERSION=1.0.8
+COLORDIFF_VERSION=1.0.9
 COLORDIFF_SOURCE=colordiff-$(COLORDIFF_VERSION).tar.gz
 COLORDIFF_DIR=colordiff-$(COLORDIFF_VERSION)
 COLORDIFF_UNZIP=zcat
@@ -38,6 +38,7 @@ $(COLORDIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(COLORDIFF_SOURCE) $(COLORDIFF_PA
 	$(COLORDIFF_UNZIP) $(DL_DIR)/$(COLORDIFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(COLORDIFF_DIR) $(@D)
 	sed -i -e '/chown/s/^/#/' -e '/cdiff\.1/d' $(@D)/Makefile
+	sed -i -e 's|/etc/colordiffrc|/opt&|' $(@D)/colordiff.1
 #	(cd $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -52,18 +53,16 @@ colordiff-unpack: $(COLORDIFF_BUILD_DIR)/.configured
 
 $(COLORDIFF_BUILD_DIR)/.built: $(COLORDIFF_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) etc ETC_DIR=/opt/etc
-	touch $(@D)/etc
 	touch $@
 
 colordiff: $(COLORDIFF_BUILD_DIR)/.built
 
-$(COLORDIFF_BUILD_DIR)/.staged: $(COLORDIFF_BUILD_DIR)/.built
+#$(COLORDIFF_BUILD_DIR)/.staged: $(COLORDIFF_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-colordiff-stage: $(COLORDIFF_BUILD_DIR)/.staged
+#
+#colordiff-stage: $(COLORDIFF_BUILD_DIR)/.staged
 
 $(COLORDIFF_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -85,9 +84,9 @@ $(COLORDIFF_IPK): $(COLORDIFF_BUILD_DIR)/.built
 	install -d $(COLORDIFF_IPK_DIR)/opt/etc
 	$(MAKE) -C $(COLORDIFF_BUILD_DIR) install \
 		DESTDIR=$(COLORDIFF_IPK_DIR) \
-		INSTALL_DIR=$(COLORDIFF_IPK_DIR)/opt/bin \
-		MAN_DIR=$(COLORDIFF_IPK_DIR)/opt/man/man1 \
-		ETC_DIR=$(COLORDIFF_IPK_DIR)/opt/etc \
+		INSTALL_DIR=/opt/bin \
+		MAN_DIR=/opt/man/man1 \
+		ETC_DIR=/opt/etc \
 		;
 	sed -i -e '/^#!/s|/usr/bin/perl|/opt/bin/perl|' $(COLORDIFF_IPK_DIR)/opt/bin/colordiff
 	$(MAKE) $(COLORDIFF_IPK_DIR)/CONTROL/control
