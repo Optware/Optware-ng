@@ -221,7 +221,7 @@ ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
 endif
 	###compiler bug
 	case `$(TARGET_CC) -dumpversion` in \
-	    3.[0-3].*|3.4.[0-4]) \
+	    3.4.[34]) \
 		patch -d $(BUILD_DIR) -p0 < $(BOOST_SOURCE_DIR)/gcc.bug.patch ;; \
 	esac
 	touch $@
