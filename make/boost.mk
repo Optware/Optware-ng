@@ -207,7 +207,7 @@ $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES) make/
 		cp bin.*/bjam $(@D) \
 	)
 	sed -i -e 's|: ar :|: $(TARGET_AR) :|' $(@D)/tools/build/v2/tools/gcc.jam
-	echo 'using gcc : $(shell $(TARGET_CC) -dumpversion) : $(TARGET_CXX) : <cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/tools/build/v2/user-config.jam
+	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/tools/build/v2/user-config.jam
 	echo 'using python : : $(STAGING_DIR)/bin/python ;' >> $(@D)/tools/build/v2/user-config.jam
 ifeq ($(LIBC_STYLE),uclibc)
 	###uclibc portability issue
@@ -217,12 +217,13 @@ ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
 	###some bug when building on gumstix1151
 	echo '#undef BOOST_HAS_PTHREAD_DELAY_NP' >> $(@D)/boost/config.hpp ; \
 	echo '#undef BOOST_HAS_NANOSLEEP' >> $(@D)/boost/config.hpp ; \
-	sed -i -e 's|#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"|//#error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"|' $(@D)/boost/config/requires_threads.hpp
+	sed -i -e '/#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"/s|^|// |' $(@D)/boost/config/requires_threads.hpp
 endif
-ifeq ($(shell $(TARGET_CC) -dumpversion), $(filter 3.4.3 3.4.4, $(shell $(TARGET_CC) -dumpversion)))
 	###compiler bug
-	patch -d $(BUILD_DIR) -p0 < $(BOOST_SOURCE_DIR)/gcc.bug.patch
-endif
+	case `$(TARGET_CC) -dumpversion` in \
+	    3.[0-3].*|3.4.[0-4]) \
+		patch -d $(BUILD_DIR) -p0 < $(BOOST_SOURCE_DIR)/gcc.bug.patch ;; \
+	esac
 	touch $@
 
 boost-unpack: $(BOOST_BUILD_DIR)/.configured
@@ -246,7 +247,7 @@ boost: $(BOOST_BUILD_DIR)/.built
 #
 $(BOOST_BUILD_DIR)/.staged: $(BOOST_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(STAGING_DIR)/opt; exit 0)
+	(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(STAGING_PREFIX); exit 0)
 	touch $(BOOST_BUILD_DIR)/.built
 	touch $@
 
@@ -544,13 +545,13 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.configured
 	mkdir -p $(BOOST_THREAD_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*thread* $(BOOST_THREAD_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_THREAD_IPK_DIR)
-ifeq (yes,$(shell if ls $(BOOST_DEV_IPK_DIR)/opt/lib/*wave* > /dev/null 2>&1; then echo yes; fi))
-	### now make boost-wave
-	$(MAKE) $(BOOST_WAVE_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_WAVE_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*wave* $(BOOST_WAVE_IPK_DIR)/opt/lib
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_WAVE_IPK_DIR)
-endif
+	### now make boost-wave if it has been built
+	if ls $(BOOST_DEV_IPK_DIR)/opt/lib/*wave* > /dev/null 2>&1; then \
+		$(MAKE) $(BOOST_WAVE_IPK_DIR)/CONTROL/control; \
+		mkdir -p $(BOOST_WAVE_IPK_DIR)/opt/lib; \
+		mv $(BOOST_DEV_IPK_DIR)/opt/lib/*wave* $(BOOST_WAVE_IPK_DIR)/opt/lib; \
+		cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_WAVE_IPK_DIR); \
+	fi
 	### finally boost-dev
 	$(MAKE) $(BOOST_DEV_IPK_DIR)/CONTROL/control
 	rm -rf $(BOOST_DEV_IPK_DIR)/opt/lib
@@ -579,7 +580,7 @@ boost-dirclean:
 # Some sanity check for the package.
 #
 boost-check: $(BOOST_DEV_IPK)
-ifeq (yes,$(shell if ls $(BOOST_WAVE_IPK) > /dev/null 2>&1; then echo yes; fi))
-	BOOST_LIB_IPKS+= $(BOOST_WAVE_IPK)
-endif
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_LIB_IPKS)
+	if ls $(BOOST_WAVE_IPK) > /dev/null 2>&1; then \
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_WAVE_IPK); \
+	fi
