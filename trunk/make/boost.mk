@@ -38,7 +38,9 @@ BOOST_PRIORITY=optional
 BOOST_DEPENDS=
 BOOST_SUGGESTS=
 BOOST_CONFLICTS=
-BOOST_JAM=$(BUILD_DIR)/boost/bjam
+BOOST_JAM=EXPAT_INCLUDE=$(STAGING_INCLUDE_DIR) \
+	EXPAT_LIBPATH=$(STAGING_LIB_DIR)\
+	$(BUILD_DIR)/boost/bjam
 
 #
 # BOOST_IPK_VERSION should be incremented when the ipk changes.
@@ -192,7 +194,7 @@ boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES)
 # shown below to make various patches to it.
 #
 $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES) make/boost.mk
-	$(MAKE) bzip2-stage python25-stage
+	$(MAKE) bzip2-stage python25-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(@D)
 	rm -rf $(STAGING_INCLUDE_DIR)/boost $(STAGING_LIB_DIR)/libboost*
 	$(BOOST_UNZIP) $(DL_DIR)/$(BOOST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -316,7 +318,7 @@ $(BOOST_GRAPH_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: expat" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
