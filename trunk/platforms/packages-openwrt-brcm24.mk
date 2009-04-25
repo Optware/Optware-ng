@@ -23,6 +23,7 @@ BROKEN_PACKAGES = \
 	nget nickle \
 	player \
 	recordext renderext \
+	sane-backends \
 	sdl slrn \
 	taglib \
 	x11 xdpyinfo xext xpm xtst

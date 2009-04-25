@@ -13,7 +13,6 @@ UCLIBC++_BROKEN_PACKAGES = \
 	 nfs-server nfs-utils \
 	 pango \
 	 qemu qemu-libc-i386 quickie \
-	 sane-backends \
 	 sm syx \
 	 uemacs vte \
 	 xauth xaw xchat xcursor \
