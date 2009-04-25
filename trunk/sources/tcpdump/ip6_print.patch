@@ -1,0 +1,12 @@
+--- print-enc.c.orig	2008-09-01 02:44:22.000000000 +0000
++++ print-enc.c	2009-04-25 01:20:11.514601510 +0000
+@@ -78,7 +78,9 @@
+ 		ip_print(gndo, p, length);
+ 		break;
+ 	case AF_INET6:
++#ifdef INET6
+ 		ip6_print(p, length);
++#endif
+ 		break;
+ 	}
+ 
