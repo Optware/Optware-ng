@@ -1,14 +1,11 @@
---- sane-backends/tools/Makefile.in.orig	2006-12-09 21:55:52.000000000 +0100
-+++ sane-backends/tools/Makefile.in	2006-12-09 21:57:14.000000000 +0100
-@@ -108,8 +108,9 @@
- umax_pp: umax_pp.o ../backend/umax_pp_low.o
- 	@$(LIBTOOL) $(MLINK) $(LINK) umax_pp.o ../backend/umax_pp_low.o \
- 	   $(LIBSANEI) $(LIBLIB) $(LIBS)
--sane-desc: sane-desc.o
--	@$(LIBTOOL) $(MLINK) $(LINK) sane-desc.o $(LIBSANEI) $(LIBLIB)
-+sane-desc: sane-desc.c
-+	gcc -I. sane-desc.c -I../include ../sanei/sanei_config.c ../sanei/sanei_init_debug.c -o sane-desc
-+#	@$(LIBTOOL) $(MLINK) $(LINK) sane-desc.o $(LIBSANEI) $(LIBLIB)
- 
- hotplug/libsane.usermap: $(wildcard ${top_srcdir}/doc/descriptions/*.desc) $(wildcard ${top_srcdir}/doc/descriptions-external/*.desc) sane-desc
- 	@./sane-desc -m usermap -s ${top_srcdir}/doc/descriptions:${top_srcdir}/doc/descriptions-external \
+--- sane-backends/tools/Makefile.in.orig	2009-03-02 18:53:42.000000000 -0800
++++ sane-backends/tools/Makefile.in	2009-04-24 22:01:31.000000000 -0700
+@@ -355,7 +355,7 @@
+ 	$(LINK) $(gamma4scanimage_OBJECTS) $(gamma4scanimage_LDADD) $(LIBS)
+ sane-desc$(EXEEXT): $(sane_desc_OBJECTS) $(sane_desc_DEPENDENCIES) 
+ 	@rm -f sane-desc$(EXEEXT)
+-	$(LINK) $(sane_desc_OBJECTS) $(sane_desc_LDADD) $(LIBS)
++	gcc -I. sane-desc.c -I../include ../sanei/sanei_config.c ../sanei/sanei_init_debug.c ../sanei/sanei_constrain_value.c -o $@
+ sane-find-scanner$(EXEEXT): $(sane_find_scanner_OBJECTS) $(sane_find_scanner_DEPENDENCIES) 
+ 	@rm -f sane-find-scanner$(EXEEXT)
+ 	$(LINK) $(sane_find_scanner_OBJECTS) $(sane_find_scanner_LDADD) $(LIBS)
