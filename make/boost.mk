@@ -45,7 +45,7 @@ BOOST_JAM=EXPAT_INCLUDE=$(STAGING_INCLUDE_DIR) \
 #
 # BOOST_IPK_VERSION should be incremented when the ipk changes.
 #
-BOOST_IPK_VERSION=1
+BOOST_IPK_VERSION=2
 
 #
 # BOOST_CONFFILES should be a list of user-editable files
