@@ -52,7 +52,7 @@ SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
 #
 # SANE_BACKENDS_IPK_VERSION should be incremented when the ipk changes.
 #
-SANE_BACKENDS_IPK_VERSION=1
+SANE_BACKENDS_IPK_VERSION=2
 
 #
 # SANE_BACKENDS_CONFFILES should be a list of user-editable files
