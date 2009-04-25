@@ -215,10 +215,11 @@ ifeq ($(LIBC_STYLE),uclibc)
 	sed -i -e "s/get_nprocs()/1/" $(@D)/libs/thread/src/pthread/thread.cpp
 endif
 ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
-	###some bug when building on gumstix1151
+	###some gumstix1151 threads bug
 	echo '#undef BOOST_HAS_PTHREAD_DELAY_NP' >> $(@D)/boost/config.hpp ; \
 	echo '#undef BOOST_HAS_NANOSLEEP' >> $(@D)/boost/config.hpp ; \
-	sed -i -e '/#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"/s|^|// |' $(@D)/boost/config/requires_threads.hpp
+	echo '#define BOOST_THREAD_POSIX' >> $(@D)/boost/config.hpp ; \
+	sed -i -e '/#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"/s|^|// |' $(@D)/boost/config/requires_threads.hpp ; \
 endif
 	###compiler bug
 	case `$(TARGET_CC) -dumpversion` in \
