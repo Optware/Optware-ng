@@ -219,7 +219,7 @@ ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
 	echo '#undef BOOST_HAS_PTHREAD_DELAY_NP' >> $(@D)/boost/config.hpp ; \
 	echo '#undef BOOST_HAS_NANOSLEEP' >> $(@D)/boost/config.hpp ; \
 	echo '#define BOOST_THREAD_POSIX' >> $(@D)/boost/config.hpp ; \
-	sed -i -e '/#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"/s|^|// |' $(@D)/boost/config/requires_threads.hpp ; \
+	sed -i -e '/#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"/s|^|// |' $(@D)/boost/config/requires_threads.hpp
 endif
 	###compiler bug
 	case `$(TARGET_CC) -dumpversion` in \
