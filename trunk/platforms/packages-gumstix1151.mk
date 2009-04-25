@@ -7,7 +7,7 @@ SPECIFIC_PACKAGES = \
 # iptraf: sys/types.h and linux/types.h conflicting
 BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
-	$(filter-out libstdc++, $(UCLIBC_BROKEN_PACKAGES)) \
+	$(filter-out libstdc++, $(UCLIBC++_BROKEN_PACKAGES)) \
 	amule asterisk \
 	bluez-hcidump \
 	dump ficy \
