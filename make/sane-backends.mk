@@ -44,7 +44,7 @@ SANE_BACKENDS_SUGGESTS=xinetd, inetutils
 SANE_BACKENDS_CONFLICTS=
 
 # CVS info
-SANE_BACKENDS_CVS_DATE=20080315
+SANE_BACKENDS_CVS_DATE=20090424
 SANE_BACKENDS_CVS_OPTS=-D $(SANE_BACKENDS_CVS_DATE)
 SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
 
@@ -52,7 +52,7 @@ SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
 #
 # SANE_BACKENDS_IPK_VERSION should be incremented when the ipk changes.
 #
-SANE_BACKENDS_IPK_VERSION=3
+SANE_BACKENDS_IPK_VERSION=1
 
 #
 # SANE_BACKENDS_CONFFILES should be a list of user-editable files
@@ -125,16 +125,16 @@ sane-backends-source: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES)
 #
 $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES)
 	$(MAKE) libusb-stage libjpeg-stage libtiff-stage
-	rm -rf $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(SANE_BACKENDS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(@D)
 	$(SANE_BACKENDS_UNZIP) $(DL_DIR)/$(SANE_BACKENDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SANE_BACKENDS_PATCHES)" ; \
 		then cat $(SANE_BACKENDS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SANE_BACKENDS_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SANE_BACKENDS_DIR)" != "$(SANE_BACKENDS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(SANE_BACKENDS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SANE_BACKENDS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(@D) ; \
 	fi
-	(cd $(SANE_BACKENDS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SANE_BACKENDS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SANE_BACKENDS_LDFLAGS)" \
@@ -251,4 +251,4 @@ sane-backends-dirclean:
 # Some sanity check for the package.
 #
 sane-backends-check: $(SANE_BACKENDS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SANE_BACKENDS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

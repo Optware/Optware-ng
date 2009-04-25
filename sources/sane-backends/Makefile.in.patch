@@ -1,11 +1,13 @@
---- sane-backends/Makefile.in	2004-05-04 11:44:26.000000000 -0400
-+++ sane-backends-patched/Makefile.in	2005-05-11 12:43:20.870000000 -0400
-@@ -33,7 +33,7 @@
- 
- @SET_MAKE@
- 
--SUBDIRS	= include lib sanei backend frontend tools doc po
-+SUBDIRS	= include lib sanei backend frontend tools po
- 
- DISTFILES = AUTHORS COPYING ChangeLog ChangeLog-1.0.0 ChangeLog-1.0.1 \
-   ChangeLog-1.0.2 ChangeLog-1.0.3 ChangeLog-1.0.4 ChangeLog-1.0.5 \
+--- sane-backends/Makefile.in.orig	2009-03-02 18:53:38.000000000 -0800
++++ sane-backends/Makefile.in	2009-04-24 21:57:05.000000000 -0700
+@@ -244,8 +244,8 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-SUBDIRS = include lib sanei backend frontend tools doc po
+-DIST_SUBDIRS = include lib sanei backend frontend tools doc po japi testsuite
++SUBDIRS = include lib sanei backend frontend tools po
++DIST_SUBDIRS = include lib sanei backend frontend tools po japi testsuite
+ dist_doc_DATA = AUTHORS ChangeLog COPYING LICENSE NEWS PROBLEMS PROJECTS \
+  README README.aix README.beos README.darwin README.djpeg README.freebsd \
+  README.hp-ux README.linux README.netbsd README.openbsd README.os2 \
