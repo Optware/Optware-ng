@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TCPDUMP_SITE=http://www.tcpdump.org/release
-TCPDUMP_VERSION=3.9.8
+TCPDUMP_VERSION=4.0.0
 TCPDUMP_SOURCE=tcpdump-$(TCPDUMP_VERSION).tar.gz
 TCPDUMP_DIR=tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_UNZIP=zcat
@@ -36,7 +36,7 @@ TCPDUMP_CONFLICTS=
 #
 # TCPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-TCPDUMP_IPK_VERSION=3
+TCPDUMP_IPK_VERSION=1
 
 #
 # TCPDUMP_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ TCPDUMP_IPK_VERSION=3
 # TCPDUMP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#TCPDUMP_PATCHES=$(TCPDUMP_SOURCE_DIR)/configure.patch
+TCPDUMP_PATCHES=$(TCPDUMP_SOURCE_DIR)/ip6_print.patch
 
 #
 # If the compilation of the package requires additional
@@ -131,6 +131,7 @@ $(TCPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES)
 		--disable-smb \
 		--without-crypto \
 	)
+	sed -i '/HAVE_PCAP_BLUETOOTH_H/s|^|// |' $(@D)/config.h
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -193,6 +194,7 @@ $(TCPDUMP_IPK_DIR)/CONTROL/control:
 $(TCPDUMP_IPK): $(TCPDUMP_BUILD_DIR)/.built
 	rm -rf $(TCPDUMP_IPK_DIR) $(BUILD_DIR)/tcpdump_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TCPDUMP_BUILD_DIR) DESTDIR=$(TCPDUMP_IPK_DIR) install
+	rm -f $(TCPDUMP_IPK_DIR)/opt/sbin/tcpdump.$(TCPDUMP_VERSION)
 	$(STRIP_COMMAND) $(TCPDUMP_IPK_DIR)/opt/sbin/tcpdump
 #	install -d $(TCPDUMP_IPK_DIR)/opt/etc/
 #	install -m 644 $(TCPDUMP_SOURCE_DIR)/tcpdump.conf $(TCPDUMP_IPK_DIR)/opt/etc/tcpdump.conf
