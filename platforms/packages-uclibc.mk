@@ -1,6 +1,6 @@
 # Packages that do not work for uclibc
 # moc - conflicting types for '__glibc_strerror_r'
-UCLIBC_BROKEN_PACKAGES = \
+UCLIBC++_BROKEN_PACKAGES = \
 	 9base \
 	 boost \
 	 bzflag \
@@ -13,11 +13,12 @@ UCLIBC_BROKEN_PACKAGES = \
 	 nfs-server nfs-utils \
 	 pango \
 	 qemu qemu-libc-i386 quickie \
+	 sane-backends \
 	 sm syx \
 	 uemacs vte \
 	 xauth xaw xchat xcursor \
 	 xfixes xft xrender xmu xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
-UCLIBC_SPECIFIC_PACKAGES = \
+UCLIBC++_SPECIFIC_PACKAGES = \
 	libuclibc++ buildroot uclibc-opt ipkg-opt \

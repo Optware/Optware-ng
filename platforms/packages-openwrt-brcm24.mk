@@ -1,12 +1,12 @@
 SPECIFIC_PACKAGES = \
 	libiconv \
 	$(PERL_PACKAGES) \
-	$(UCLIBC_SPECIFIC_PACKAGES) \
+	$(UCLIBC++_SPECIFIC_PACKAGES) \
 	uclibcnotimpl libuclibc++ \
 	binutils gcc libc-dev \
 
 BROKEN_PACKAGES = \
-	$(UCLIBC_BROKEN_PACKAGES) \
+	$(UCLIBC++_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
 	aspell \
 	cdrtools \
