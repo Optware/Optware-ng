@@ -21,6 +21,7 @@ BROKEN_PACKAGES = \
 	nget \
 	player \
 	rssh \
+	sane-backends \
 	scrobby \
 	taglib \
 	\
