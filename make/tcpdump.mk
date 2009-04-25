@@ -142,7 +142,7 @@ tcpdump-unpack: $(TCPDUMP_BUILD_DIR)/.configured
 #
 $(TCPDUMP_BUILD_DIR)/.built: $(TCPDUMP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) LIBS=-lpcap INCLS=-I.
+	$(MAKE) -C $(@D) CCOPT="$(STAGING_CPPFLAGS) $(TCPDUMP_CPPFLAGS)" LIBS=-lpcap INCLS=-I.
 	touch $@
 
 #
