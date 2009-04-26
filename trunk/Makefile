@@ -30,6 +30,8 @@ OPTWARE_TARGET ?= nslu2
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	libtorrent-rasterbar \
 	icu \
+	xerces-c \
+	clinkcc \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
