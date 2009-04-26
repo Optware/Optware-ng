@@ -238,7 +238,7 @@ $(ICU_IPK): $(ICU_BUILD_DIR)/.built
 	$(MAKE) -C $(ICU_BUILD_DIR)/source DESTDIR=$(ICU_IPK_DIR) install
 	cp -f $(ICU_BUILD_DIR)/source/bin.cross/pkgdata $(ICU_IPK_DIR)/opt/bin
 	cp -f $(ICU_BUILD_DIR)/source/bin.cross/pkgdata $(ICU_BUILD_DIR)/source/bin
-	$(TARGET_STRIP) --strip-unneeded (ICU_IPK_DIR)/opt/bin/* (ICU_IPK_DIR)/opt/sbin/* (ICU_IPK_DIR)/opt/lib/*
+	($(TARGET_STRIP) --strip-unneeded $(ICU_IPK_DIR)/opt/bin/* $(ICU_IPK_DIR)/opt/sbin/* $(ICU_IPK_DIR)/opt/lib/*; exit 0)
 #	install -d $(ICU_IPK_DIR)/opt/etc/
 #	install -m 644 $(ICU_SOURCE_DIR)/icu.conf $(ICU_IPK_DIR)/opt/etc/icu.conf
 #	install -d $(ICU_IPK_DIR)/opt/etc/init.d
