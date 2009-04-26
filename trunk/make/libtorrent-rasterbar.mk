@@ -32,7 +32,7 @@ LIBTORRENT-RASTERBAR_SOURCE=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION)
 LIBTORRENT-RASTERBAR_DIR=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION)
 LIBTORRENT-RASTERBAR_UNZIP=zcat
 LIBTORRENT-RASTERBAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-LIBTORRENT-RASTERBAR_DESCRIPTION=Describe libtorrent-rasterbar here.
+LIBTORRENT-RASTERBAR_DESCRIPTION=libtorrent rasterbar.
 LIBTORRENT-RASTERBAR_SECTION=net
 LIBTORRENT-RASTERBAR_PRIORITY=optional
 LIBTORRENT-RASTERBAR_DEPENDS= openssl, boost-system, boost-filesystem, boost-date-time, boost-thread
@@ -123,14 +123,14 @@ $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT-RASTERBAR_
 	if test "$(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) $(@D) ; \
 	fi
-	sed -i -e "s|/usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr|$(STAGING_DIR)/opt|" $(LIBTORRENT-RASTERBAR_BUILD_DIR)/m4/check_ssl.m4
-	sed -i -e "s|/usr/local/ssl\n                            /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr|$(STAGING_DIR)/opt|" $(LIBTORRENT-RASTERBAR_BUILD_DIR)/m4/check_ssl.m4
-	sed -i -e "s|/usr /usr/local /opt /opt/local|$(STAGING_DIR)/opt|" $(LIBTORRENT-RASTERBAR_BUILD_DIR)/m4/ax_boost_base-fixed.m4
-	sed -i -e "s|/usr/include|$(STAGING_DIR)/opt/include|" $(LIBTORRENT-RASTERBAR_BUILD_DIR)/m4/ax_python-fixed.m4
-	sed -i -e "s|namespace libtorrent|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent|" $(LIBTORRENT-RASTERBAR_BUILD_DIR)/include/libtorrent/socket.hpp
-	sed -i -e "s|namespace libtorrent { namespace|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent { namespace|" $(LIBTORRENT-RASTERBAR_BUILD_DIR)/src/enum_net.cpp
+	sed -i -e "s|/usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr|$(STAGING_DIR)/opt|" $(@D)/m4/check_ssl.m4
+	sed -i -e "s|/usr/local/ssl\n                            /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr|$(STAGING_DIR)/opt|" $(@D)/m4/check_ssl.m4
+	sed -i -e "s|/usr /usr/local /opt /opt/local|$(STAGING_DIR)/opt|" $(@D)/m4/ax_boost_base-fixed.m4
+	sed -i -e "s|/usr/include|$(STAGING_DIR)/opt/include|" $(@D)/m4/ax_boost_python-fixed.m4
+	sed -i -e "s|namespace libtorrent|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent|" $(@D)/include/libtorrent/socket.hpp
+	sed -i -e "s|namespace libtorrent { namespace|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent { namespace|" $(@D)/src/enum_net.cpp
 	autoreconf -vif $(@D)
-	sed -i -e "s|/usr/include|$(STAGING_DIR)/opt/include|" $(LIBTORRENT-RASTERBAR_BUILD_DIR)/configure
+	sed -i -e "s|/usr/include|$(STAGING_DIR)/opt/include|" $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT-RASTERBAR_CPPFLAGS)" \
@@ -247,4 +247,4 @@ libtorrent-rasterbar-dirclean:
 # Some sanity check for the package.
 #
 libtorrent-rasterbar-check: $(LIBTORRENT-RASTERBAR_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBTORRENT-RASTERBAR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
