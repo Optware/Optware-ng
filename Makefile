@@ -28,8 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	xerces-c \
-	clinkcc \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -41,11 +39,13 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
+# clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
+	clinkcc \
 
 PERL_PACKAGES = \
 	perl \
@@ -344,7 +344,7 @@ COMMON_CROSS_PACKAGES = \
 	vnstat vorbis-tools vpnc vsftpd vte vtun \
 	w3cam w3m wakelan wavpack webalizer weechat wget \
 	which whois wizd wpa-supplicant wput wxbase \
-	xmlrpc-c \
+	xerces-c xmlrpc-c \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext \
 	xextensions xfixes xft xinetd \
 	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
