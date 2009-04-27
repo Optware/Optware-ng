@@ -26,7 +26,7 @@ APCUPSD_SOURCE=apcupsd-$(APCUPSD_VERSION).tar.gz
 APCUPSD_DIR=apcupsd-$(APCUPSD_VERSION)
 APCUPSD_UNZIP=zcat
 APCUPSD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-APCUPSD_DESCRIPTION=A daemon for controlling APC UPSes.
+APCUPSD_DESCRIPTION=A daemon for controlling APC UPSes
 APCUPSD_SECTION=sysadmin
 APCUPSD_PRIORITY=optional
 APCUPSD_DEPENDS=
@@ -36,7 +36,7 @@ APCUPSD_CONFLICTS=
 #
 # APCUPSD_IPK_VERSION should be incremented when the ipk changes.
 #
-APCUPSD_IPK_VERSION=1
+APCUPSD_IPK_VERSION=2
 
 #
 # APCUPSD_CONFFILES should be a list of user-editable files
@@ -67,8 +67,12 @@ APCUPSD_LDFLAGS=
 #
 APCUPSD_BUILD_DIR=$(BUILD_DIR)/apcupsd
 APCUPSD_SOURCE_DIR=$(SOURCE_DIR)/apcupsd
+
 APCUPSD_IPK_DIR=$(BUILD_DIR)/apcupsd-$(APCUPSD_VERSION)-ipk
 APCUPSD_IPK=$(BUILD_DIR)/apcupsd_$(APCUPSD_VERSION)-$(APCUPSD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+APCUPSD-CGI_IPK_DIR=$(BUILD_DIR)/apcupsd-cgi-$(APCUPSD_VERSION)-ipk
+APCUPSD-CGI_IPK=$(BUILD_DIR)/apcupsd-cgi_$(APCUPSD_VERSION)-$(APCUPSD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: apcupsd-source apcupsd-unpack apcupsd apcupsd-stage apcupsd-ipk apcupsd-clean apcupsd-dirclean apcupsd-check
 
@@ -106,7 +110,8 @@ apcupsd-source: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 # shown below to make various patches to it.
 #
 $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES) make/apcupsd.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libgd-stage
+#	$(MAKE) tcpwrappers-stage
 	rm -rf $(BUILD_DIR)/$(APCUPSD_DIR) $(@D)
 	$(APCUPSD_UNZIP) $(DL_DIR)/$(APCUPSD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(APCUPSD_PATCHES)" ; \
@@ -124,6 +129,8 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APCUPSD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APCUPSD_LDFLAGS)" \
 		ac_cv_func_setpgrp_void=yes \
+		ac_cv_lib_gd_gdImagePng=yes \
+		ac_cv_lib_gd_gdImageGif=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -138,9 +145,15 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 		--with-log-dir=/opt/var/log \
 		--with-lock-dir=/opt/var/lock \
 		--enable-usb \
+		--enable-cgi \
+		--with-cgi-bin=/opt/share/www/cgi-bin \
+		--without-libwrap \
+		--without-x \
 		--disable-nls \
 		--disable-static \
 	)
+#		--with-libwrap=$(STAGING_PREFIX) \
+		;
 	touch $@
 
 apcupsd-unpack: $(APCUPSD_BUILD_DIR)/.configured
@@ -187,6 +200,21 @@ $(APCUPSD_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(APCUPSD_SUGGESTS)" >>$@
 	@echo "Conflicts: $(APCUPSD_CONFLICTS)" >>$@
 
+$(APCUPSD-CGI_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: apcupsd-cgi" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(APCUPSD_PRIORITY)" >>$@
+	@echo "Section: $(APCUPSD_SECTION)" >>$@
+	@echo "Version: $(APCUPSD_VERSION)-$(APCUPSD_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(APCUPSD_MAINTAINER)" >>$@
+	@echo "Source: $(APCUPSD_SITE)/$(APCUPSD_SOURCE)" >>$@
+	@echo "Description: $(APCUPSD_DESCRIPTION), web interface" >>$@
+	@echo "Depends: apcupsd, libgd" >>$@
+	@echo "Suggests: $(APCUPSD_SUGGESTS)" >>$@
+	@echo "Conflicts: $(APCUPSD_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -199,31 +227,24 @@ $(APCUPSD_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(APCUPSD_IPK): $(APCUPSD_BUILD_DIR)/.built
+$(APCUPSD_IPK) $(APCUPSD-CGI_IPK): $(APCUPSD_BUILD_DIR)/.built
 	rm -rf $(APCUPSD_IPK_DIR) $(BUILD_DIR)/apcupsd_*_$(TARGET_ARCH).ipk
+	rm -rf $(APCUPSD-CGI_IPK_DIR) $(BUILD_DIR)/apcupsd-cgi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APCUPSD_BUILD_DIR) DESTDIR=$(APCUPSD_IPK_DIR) install
-	$(STRIP_COMMAND) $(APCUPSD_IPK_DIR)/opt/sbin/*
-#	install -d $(APCUPSD_IPK_DIR)/opt/etc/
-#	install -m 644 $(APCUPSD_SOURCE_DIR)/apcupsd.conf $(APCUPSD_IPK_DIR)/opt/etc/apcupsd.conf
-#	install -d $(APCUPSD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(APCUPSD_SOURCE_DIR)/rc.apcupsd $(APCUPSD_IPK_DIR)/opt/etc/init.d/SXXapcupsd
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(APCUPSD_IPK_DIR)/opt/etc/init.d/SXXapcupsd
+	$(STRIP_COMMAND) $(APCUPSD_IPK_DIR)/opt/sbin/* $(APCUPSD_IPK_DIR)/opt/share/www/cgi-bin/*
+	install -d $(APCUPSD-CGI_IPK_DIR)/opt/share $(APCUPSD-CGI_IPK_DIR)/opt/etc/apcupsd
+	mv $(APCUPSD_IPK_DIR)/opt/share/www $(APCUPSD-CGI_IPK_DIR)/opt/share/
+	mv $(APCUPSD_IPK_DIR)/opt/etc/apcupsd/*.css $(APCUPSD-CGI_IPK_DIR)/opt/etc/apcupsd/
 	$(MAKE) $(APCUPSD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(APCUPSD_SOURCE_DIR)/postinst $(APCUPSD_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(APCUPSD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(APCUPSD_SOURCE_DIR)/prerm $(APCUPSD_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(APCUPSD_IPK_DIR)/CONTROL/prerm
-#	if test -n "$(UPD-ALT_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
-			$(APCUPSD_IPK_DIR)/CONTROL/postinst $(APCUPSD_IPK_DIR)/CONTROL/prerm; \
-	fi
 	echo $(APCUPSD_CONFFILES) | sed -e 's/ /\n/g' > $(APCUPSD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APCUPSD_IPK_DIR)
+	$(MAKE) $(APCUPSD-CGI_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(APCUPSD-CGI_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-apcupsd-ipk: $(APCUPSD_IPK)
+apcupsd-ipk: $(APCUPSD_IPK) $(APCUPSD-CGI_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -237,10 +258,12 @@ apcupsd-clean:
 # directories.
 #
 apcupsd-dirclean:
-	rm -rf $(BUILD_DIR)/$(APCUPSD_DIR) $(APCUPSD_BUILD_DIR) $(APCUPSD_IPK_DIR) $(APCUPSD_IPK)
+	rm -rf $(BUILD_DIR)/$(APCUPSD_DIR) $(APCUPSD_BUILD_DIR)
+	rm -rf $(APCUPSD_IPK_DIR) $(APCUPSD_IPK)
+	rm -rf $(APCUPSD-CGI_IPK_DIR) $(APCUPSD-CGI_IPK)
 #
 #
 # Some sanity check for the package.
 #
-apcupsd-check: $(APCUPSD_IPK)
+apcupsd-check: $(APCUPSD_IPK) $(APCUPSD-CGI_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
