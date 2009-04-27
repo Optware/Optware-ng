@@ -45,7 +45,7 @@ BOOST_JAM=EXPAT_INCLUDE=$(STAGING_INCLUDE_DIR) \
 #
 # BOOST_IPK_VERSION should be incremented when the ipk changes.
 #
-BOOST_IPK_VERSION=2
+BOOST_IPK_VERSION=3
 
 #
 # BOOST_CONFFILES should be a list of user-editable files
@@ -55,7 +55,7 @@ BOOST_IPK_VERSION=2
 # BOOST_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BOOST_PATCHES=$(BOOST_SOURCE_DIR)/configure.patch
+BOOST_PATCHES=$(BOOST_SOURCE_DIR)/atomic_count_gcc.patch
 
 #
 # If the compilation of the package requires additional
