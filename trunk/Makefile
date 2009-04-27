@@ -28,6 +28,7 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	clinkcc \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -40,12 +41,12 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
+# clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
-	clinkcc \
 
 PERL_PACKAGES = \
 	perl \
