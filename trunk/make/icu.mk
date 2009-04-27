@@ -74,17 +74,7 @@ ICU_BUILD_DIR=$(BUILD_DIR)/icu
 ICU_SOURCE_DIR=$(SOURCE_DIR)/icu
 ICU_IPK_DIR=$(BUILD_DIR)/icu-$(ICU_VERSION)-ipk
 ICU_IPK=$(BUILD_DIR)/icu_$(ICU_VERSION)-$(ICU_IPK_VERSION)_$(TARGET_ARCH).ipk
-ICU_CONFIGURE= \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICU_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(ICU_LDFLAGS)" \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-nls \
-		--disable-static 
+ICU_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/icu
 
 .PHONY: icu-source icu-unpack icu icu-stage icu-ipk icu-clean icu-dirclean icu-check
 
@@ -132,11 +122,18 @@ $(ICU_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.mk
 	if test "$(BUILD_DIR)/$(ICU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ICU_DIR) $(@D) ; \
 	fi
-	if [ -f $(HOST_BUILD_DIR)/icu/.built ] ; then \
-		(cd $(@D)/source; \
-			$(ICU_CONFIGURE) \
-		) ; \
-	fi
+	(cd $(@D)/source; \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICU_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(ICU_LDFLAGS)" \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
+	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -145,15 +142,15 @@ icu-unpack: $(ICU_BUILD_DIR)/.configured
 #
 # This builds the actual binary.
 #
-$(ICU_BUILD_DIR)/.built: $(HOST_BUILD_DIR)/icu/.built $(ICU_BUILD_DIR)/.configured
+$(ICU_BUILD_DIR)/.built: $(ICU_HOST_BUILD_DIR)/.built $(ICU_BUILD_DIR)/.configured
 	rm -f $@
 	###should exit with "/bin/sh: ../bin/icupkg: cannot execute binary file"
 	($(MAKE) -C $(@D)/source; exit 0)
 	mkdir $(@D)/source/bin.cross $(@D)/source/data.cross
 	cp -rf $(@D)/source/bin/* $(@D)/source/bin.cross
 	cp -rf $(@D)/source/data/* $(@D)/source/data.cross
-	cp -rf $(HOST_BUILD_DIR)/icu/bin/* $(@D)/source/bin
-	cp -rf $(HOST_BUILD_DIR)/icu/data/* $(@D)/source/data
+	cp -rf $(ICU_HOST_BUILD_DIR)/bin/* $(@D)/source/bin
+	cp -rf $(ICU_HOST_BUILD_DIR)/data/* $(@D)/source/data
 	sed -i -e "s|INVOKE = \$$(LDLIBRARYPATH_ENVVAR)=|INVOKE = \$$(LDLIBRARYPATH_ENVVAR)=$(HOST_BUILD_DIR)/icu/lib:|" $(@D)/source/icudefs.mk
 	$(MAKE) -C $(@D)/source
 	rm -rf $(@D)/source/bin/uconv
@@ -180,25 +177,17 @@ $(ICU_BUILD_DIR)/.staged: $(ICU_BUILD_DIR)/.built
 
 icu-stage: $(ICU_BUILD_DIR)/.staged
 
-$(HOST_BUILD_DIR)/icu/.built:
-	rm -f $@
-	rm -rf $(HOST_BUILD_DIR)/icu
-	$(MAKE) $(ICU_BUILD_DIR)/.configured
-	(cd $(ICU_BUILD_DIR)/source; \
+$(ICU_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(ICU_SOURCE)
+	rm -rf $(@D)
+	mkdir -p $(ICU_HOST_BUILD_DIR)
+	$(ICU_UNZIP) $(DL_DIR)/$(ICU_SOURCE) | tar -C $(ICU_HOST_BUILD_DIR) -xvf -
+	mv $(ICU_HOST_BUILD_DIR)/icu/source/* $(ICU_HOST_BUILD_DIR)
+	rm -rf $(ICU_HOST_BUILD_DIR)/icu
+	(cd $(HOST_BUILD_DIR)/icu; \
 		./configure \
 		--disable-threads \
 	)
-	$(MAKE) -C $(ICU_BUILD_DIR)/source
-	mkdir -p $(HOST_BUILD_DIR)/icu
-	cp -rf $(ICU_BUILD_DIR)/source/bin $(HOST_BUILD_DIR)/icu
-	cp -rf $(ICU_BUILD_DIR)/source/data $(HOST_BUILD_DIR)/icu
-	cp -rf $(ICU_BUILD_DIR)/source/lib $(HOST_BUILD_DIR)/icu
-	cp -rf $(ICU_BUILD_DIR)/source/tools $(HOST_BUILD_DIR)/icu
-	$(MAKE) -C $(ICU_BUILD_DIR)/source clean
-	(cd $(ICU_BUILD_DIR)/source; \
-		$(ICU_CONFIGURE) \
-	)
-	$(ICU_BUILD_DIR)/.configured
+	$(MAKE) -C $(ICU_HOST_BUILD_DIR)
 	touch $@
 
 #
