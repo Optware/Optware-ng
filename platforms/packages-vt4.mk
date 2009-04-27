@@ -20,12 +20,14 @@ BROKEN_PACKAGES = \
 	gconv-modules ggrab ghostscript gloox gnokii gnupg1 gnupg \
 	gnuplot gnutls gtk gutenprint \
 	hplip \
-	icecast id3lib iksemel imagemagick iptraf ivorbis-tools \
+	icecast icu id3lib iksemel imagemagick \
+	iptraf ivorbis-tools \
 	jabberd jikes \
 	kismet \
 	launchtool ldconfig lftp liba52 libbt libcapi20 libcdio \
 	libdvb libextractor libmrss libnxml libopensync \
-	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff libtorrent \
+	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff \
+	libtorrent libtorrent-rasterbar \
 	llink loudmouth \
 	mediatomb mimms minidlna moc motion mod-fastcgi moe \
 	mp3blaster mpd mpdscribble mpop msmtp msynctool \
@@ -46,7 +48,7 @@ BROKEN_PACKAGES = \
 	unrar upslug2 upx \
 	vlc vnstat vorbis-tools vte \
 	weechat wget wput wxbase \
-	xmlrpc-c xchat \
+	xerces-c xmlrpc-c xchat \
 	yougrabber \
 	perl-net-dns perl-unix-syslog \
 
