@@ -28,6 +28,7 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	icu \
 	xerces-c \
 	clinkcc \
 
@@ -43,6 +44,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # bpalogin - for some reason it can't find 'sed' on the build machine
 # icu - make: execvp: .../builds/icu/.configured: Permission denied;
 # 	host build and target build mixes and depends on each other
+# icu - fixed - should be fine now.
 # libtorrent-rasterbar: configure: error: Unable to find Boost.Asio library, currently this is required.
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
@@ -50,7 +52,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	iozone \
 	bpalogin \
 	libtorrent-rasterbar \
-	icu \
 
 PERL_PACKAGES = \
 	perl \
