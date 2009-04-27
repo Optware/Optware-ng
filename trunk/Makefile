@@ -41,16 +41,11 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
-# icu - make: execvp: .../builds/icu/.configured: Permission denied;
-# 	host build and target build mixes and depends on each other
-# icu - fixed - should be fine now.
-# libtorrent-rasterbar: configure: error: Unable to find Boost.Asio library, currently this is required.
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
-	libtorrent-rasterbar \
 
 PERL_PACKAGES = \
 	perl \
@@ -285,6 +280,7 @@ COMMON_CROSS_PACKAGES = \
 	libpar2 libpcap libpng libpth librsync \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtiff libtool libtorrent \
+	libtorrent-rasterbar \
 	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
 	lighttpd lirc links2 linksys-tftp littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
