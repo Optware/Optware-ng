@@ -145,7 +145,7 @@ icu-unpack: $(ICU_BUILD_DIR)/.configured
 $(ICU_BUILD_DIR)/.built: $(ICU_HOST_BUILD_DIR)/.built $(ICU_BUILD_DIR)/.configured
 	rm -f $@
 	###should exit with "/bin/sh: ../bin/icupkg: cannot execute binary file"
-	($(MAKE) -C $(@D)/source; exit 0)
+	-$(MAKE) -C $(@D)/source
 	mkdir $(@D)/source/bin.cross $(@D)/source/data.cross
 	cp -rf $(@D)/source/bin/* $(@D)/source/bin.cross
 	cp -rf $(@D)/source/data/* $(@D)/source/data.cross
@@ -177,17 +177,18 @@ $(ICU_BUILD_DIR)/.staged: $(ICU_BUILD_DIR)/.built
 
 icu-stage: $(ICU_BUILD_DIR)/.staged
 
-$(ICU_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(ICU_SOURCE)
-	rm -rf $(@D)
-	mkdir -p $(ICU_HOST_BUILD_DIR)
-	$(ICU_UNZIP) $(DL_DIR)/$(ICU_SOURCE) | tar -C $(ICU_HOST_BUILD_DIR) -xvf -
-	mv $(ICU_HOST_BUILD_DIR)/icu/source/* $(ICU_HOST_BUILD_DIR)
-	rm -rf $(ICU_HOST_BUILD_DIR)/icu
-	(cd $(HOST_BUILD_DIR)/icu; \
+$(ICU_HOST_BUILD_DIR)/.built: $(HOST_BUILD_DIR)/.configured $(DL_DIR)/$(ICU_SOURCE)
+	rm -rf $(HOST_BUILD_DIR)/$(ICU_DIR) $(@D)
+	$(ICU_UNZIP) $(DL_DIR)/$(ICU_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(ICU_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(ICU_DIR) $(@D) ; \
+	fi
+	mv $(@D)/source/* $(@D)/
+	(cd $(@D); \
 		./configure \
 		--disable-threads \
 	)
-	$(MAKE) -C $(ICU_HOST_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -227,7 +228,10 @@ $(ICU_IPK): $(ICU_BUILD_DIR)/.built
 	$(MAKE) -C $(ICU_BUILD_DIR)/source DESTDIR=$(ICU_IPK_DIR) install
 	cp -f $(ICU_BUILD_DIR)/source/bin.cross/pkgdata $(ICU_IPK_DIR)/opt/bin
 	cp -f $(ICU_BUILD_DIR)/source/bin.cross/pkgdata $(ICU_BUILD_DIR)/source/bin
-	($(TARGET_STRIP) --strip-unneeded $(ICU_IPK_DIR)/opt/bin/* $(ICU_IPK_DIR)/opt/sbin/* $(ICU_IPK_DIR)/opt/lib/*; exit 0)
+	$(STRIP_COMMAND) \
+		`ls $(ICU_IPK_DIR)/opt/bin/* | grep -v icu-config` \
+		$(ICU_IPK_DIR)/opt/sbin/* \
+		$(ICU_IPK_DIR)/opt/lib/lib*.so.*.*
 #	install -d $(ICU_IPK_DIR)/opt/etc/
 #	install -m 644 $(ICU_SOURCE_DIR)/icu.conf $(ICU_IPK_DIR)/opt/etc/icu.conf
 #	install -d $(ICU_IPK_DIR)/opt/etc/init.d
