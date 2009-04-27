@@ -1,22 +1,27 @@
 # Packages that do not work for uclibc
 # moc - conflicting types for '__glibc_strerror_r'
-UCLIBC++_BROKEN_PACKAGES = \
+UCLIBC_BROKEN_PACKAGES = \
 	 9base \
-	 boost \
 	 bzflag \
 	 cairo \
 	 fcgi fish \
-	 gnu-smalltalk gtk ice iptables jabberd \
-	 launchtool ldconfig libstdc++ \
+	 gnu-smalltalk ice iptables jabberd \
+	 launchtool ldconfig \
 	 moe mtr \
 	 newsbeuter \
 	 nfs-server nfs-utils \
 	 pango \
 	 qemu qemu-libc-i386 quickie \
 	 sm syx \
-	 uemacs vte \
-	 xauth xaw xchat xcursor \
-	 xfixes xft xrender xmu xt xterm
+	 uemacs \
+	 gtk vte xchat \
+	 xauth xaw xcursor xfixes xft xrender xmu xt xterm
+
+UCLIBC++_BROKEN_PACKAGES = \
+	$(UCLIBC_BROKEN_PACKAGES) \
+	 boost \
+	 libstdc++ \
+	 libtorrent-rasterbar \
 
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC++_SPECIFIC_PACKAGES = \
