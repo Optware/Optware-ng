@@ -1,0 +1,14 @@
+--- boost/detail/atomic_count_gcc.hpp.orig	2007-11-23 17:03:14.000000000 +0000
++++ boost/detail/atomic_count_gcc.hpp	2009-04-27 15:34:33.657743851 +0000
+@@ -17,7 +17,11 @@
+ //  http://www.boost.org/LICENSE_1_0.txt)
+ //
+ 
++#if defined(__GNUC__) && (__GNUC__ >= 4 && __GNUC_MINOR__ >= 2)
++#include <ext/atomicity.h>
++#else
+ #include <bits/atomicity.h>
++#endif
+ 
+ namespace boost
+ {
