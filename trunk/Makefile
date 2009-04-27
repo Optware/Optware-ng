@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	icu \
 	xerces-c \
 	clinkcc \
 
@@ -264,6 +263,7 @@ COMMON_CROSS_PACKAGES = \
 	haproxy haserl hd2u hdparm hello hexcurse heyu \
 	hiawatha hnb hpijs hping htop httping \
 	ice icecast ices0 \
+	icu \
 	id3lib iftop ii iksemel imagemagick imap \
 	inadyn indent inetutils \
 	inferno \
