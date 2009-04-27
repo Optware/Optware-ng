@@ -115,9 +115,9 @@ clinkcc-source: $(DL_DIR)/$(CLINKCC_SOURCE) $(CLINKCC_PATCHES)
 #
 $(CLINKCC_BUILD_DIR)/.configured: $(DL_DIR)/$(CLINKCC_SOURCE) $(CLINKCC_PATCHES) make/clinkcc.mk
 	$(MAKE) xerces-c-stage
-	ifeq (uclibc, $(LIBC_STYLE))
-		$(MAKE) libiconv-stage
-	endif
+ifeq (uclibc, $(LIBC_STYLE))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(CLINKCC_DIR) $(@D)
 	$(CLINKCC_UNZIP) $(DL_DIR)/$(CLINKCC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLINKCC_PATCHES)" ; \
