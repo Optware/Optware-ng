@@ -1,0 +1,31 @@
+--- a/mini_snmpd.c
++++ b/mini_snmpd.c
+@@ -134,7 +134,7 @@
+ 	} else if (rv != g_udp_client.size) {
+ 		lprintf(LOG_WARNING, "could not send packet to UDP client %s:%d: "
+ 			"only %d of %d bytes written\n", inet_ntoa(sockaddr.sin_addr),
+-			sockaddr.sin_port, rv, g_udp_client.size);
++			sockaddr.sin_port, rv, (int) g_udp_client.size);
+ 	}
+ #ifdef DEBUG
+ 	dump_packet(&g_udp_client);
+@@ -211,7 +211,7 @@
+ 	} else if (rv != client->size) {
+ 		lprintf(LOG_WARNING, "could not send packet to TCP client %s:%d: "
+ 			"only %d of %d bytes written\n", inet_ntoa(sockaddr.sin_addr),
+-			sockaddr.sin_port, rv, client->size);
++			sockaddr.sin_port, rv, (int) client->size);
+ 		close(client->sockfd);
+ 		client->sockfd = -1;
+ 		return;
+--- a/utils.c
++++ b/utils.c
+@@ -106,7 +106,7 @@
+ 		}
+ 	}
+ 	lprintf(LOG_DEBUG, "%s %u bytes %s %s:%d (%s)\n",
+-		client->outgoing ? "transmitted" : "received", client->size,
++		client->outgoing ? "transmitted" : "received", (int) client->size,
+ 		client->outgoing ? "to" : "from", inet_ntoa(client_addr),
+ 		ntohs(client->port), buffer);
+ }
