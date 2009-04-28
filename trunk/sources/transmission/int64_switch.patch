@@ -1,0 +1,17 @@
+Found by redscorp at http://forum.qnap.com/viewtopic.php?f=85&t=10607&p=48889#p48889
+--- daemon/remote.c.orig	2009-04-13 01:55:55.000000000 +0000
++++ daemon/remote.c	2009-04-28 00:06:08.900531980 +0000
+@@ -1192,10 +1192,12 @@
+     else
+     {
+         int64_t      tag = -1;
++	int          itag;
+         const char * str;
+         tr_bencDictFindInt( &top, "tag", &tag );
+ 
+-        switch( tag )
++	itag = tag;
++        switch( itag )
+         {
+             case TAG_SESSION:
+                 printSession( &top ); break;

@@ -47,13 +47,13 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=1
+TRANSMISSION_IPK_VERSION=2
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
 #TRANSMISSION_CONFFILES=/opt/etc/transmission.conf
 
-#TRANSMISSION_PATCHES = $(TRANSMISSION_SOURCE_DIR)/platform.c.patch
+TRANSMISSION_PATCHES = $(TRANSMISSION_SOURCE_DIR)/int64_switch.patch
 
 #
 # If the compilation of the package requires additional
