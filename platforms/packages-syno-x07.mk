@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	centerim \
 	gambit-c gnu-smalltalk \
 	iptraf \
+	libtorrent-rasterbar \
 	ldconfig libcapi20 \
 	ntop \
 	p7zip \
