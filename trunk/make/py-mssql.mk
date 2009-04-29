@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MSSQL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pymssql
-PY-MSSQL_VERSION=1.0.1
+PY-MSSQL_VERSION=1.0.2
 PY-MSSQL_SOURCE=pymssql-$(PY-MSSQL_VERSION).tar.gz
 PY-MSSQL_DIR=pymssql-$(PY-MSSQL_VERSION)
 PY-MSSQL_UNZIP=zcat
