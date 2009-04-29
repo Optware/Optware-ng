@@ -21,11 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ifneq (uclibc, $(LIBC_STYLE))
-CHEROKEE_VERSION=0.99.12
-else
 CHEROKEE_VERSION=0.99.11
-endif
 CHEROKEE_SITE=http://www.0x50.org/download/0.99/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
