@@ -36,7 +36,7 @@ CLINKCC_DESCRIPTION=CyberLink for C++ is a development package for UPnP programm
 CLINKCC_SECTION=net
 CLINKCC_PRIORITY=optional
 CLINKCC_DEPENDS=xerces-c
-ifeq (uclibc, $(LIBC_STYLE))
+ifeq (libiconv, $(LIBC_STYLE))
 	CLINKCC_DEPENDS+=, libiconv
 endif
 CLINKCC_SUGGESTS=
@@ -77,6 +77,7 @@ CLINKCC_BUILD_DIR=$(BUILD_DIR)/clinkcc
 CLINKCC_SOURCE_DIR=$(SOURCE_DIR)/clinkcc
 CLINKCC_IPK_DIR=$(BUILD_DIR)/clinkcc-$(CLINKCC_VERSION)-ipk
 CLINKCC_IPK=$(BUILD_DIR)/clinkcc_$(CLINKCC_VERSION)-$(CLINKCC_IPK_VERSION)_$(TARGET_ARCH).ipk
+CLINKCC_CONFIGURE_ARGS=
 
 .PHONY: clinkcc-source clinkcc-unpack clinkcc clinkcc-stage clinkcc-ipk clinkcc-clean clinkcc-dirclean clinkcc-check
 
@@ -115,7 +116,7 @@ clinkcc-source: $(DL_DIR)/$(CLINKCC_SOURCE) $(CLINKCC_PATCHES)
 #
 $(CLINKCC_BUILD_DIR)/.configured: $(DL_DIR)/$(CLINKCC_SOURCE) $(CLINKCC_PATCHES) make/clinkcc.mk
 	$(MAKE) xerces-c-stage
-ifeq (uclibc, $(LIBC_STYLE))
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
 	rm -rf $(BUILD_DIR)/$(CLINKCC_DIR) $(@D)
@@ -127,7 +128,7 @@ endif
 	if test "$(BUILD_DIR)/$(CLINKCC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CLINKCC_DIR) $(@D) ; \
 	fi
-	sed -i -e "s|size_t ret = iconv(cd, (const char|size_t ret = iconv(cd, (char|" $(@D)/src/cybergarage/xml/XML.cpp
+	sed -i -e "s|size_t ret = iconv(cd, \&inbuf, \&inbyteleft, \&coutbuf, \&outbyteleft);|size_t ret = iconv(cd, (char \*\*)\&inbuf, \&inbyteleft, \&coutbuf, \&outbyteleft);|" $(@D)/src/cybergarage/xml/XML.cpp
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLINKCC_CPPFLAGS)" \
