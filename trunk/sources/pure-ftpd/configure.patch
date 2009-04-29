@@ -1,154 +1,180 @@
---- pure-ftpd-1.0.21/configure	2006-02-19 15:33:05.000000000 +0100
-+++ pure-ftpd/configure	2007-02-20 01:11:37.000000000 +0100
-@@ -21375,11 +21375,17 @@
- echo "$as_me:$LINENO: checking whether snprintf is C99 conformant" >&5
- echo $ECHO_N "checking whether snprintf is C99 conformant... $ECHO_C" >&6
- if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
-+#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&5
-+#echo "$as_me: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&2;}
-+#   { (exit 1); exit 1; }; }
-+
+--- pure-ftpd-1.0.22/configure.ac.orig	2009-04-26 12:19:40.000000000 +0000
++++ pure-ftpd-1.0.22/configure.ac	2009-04-29 05:48:51.772543471 +0000
+@@ -909,176 +909,28 @@
+ ])  
+ 
+ AC_MSG_CHECKING(whether snprintf is C99 conformant)
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-#include <stdio.h>
+-#ifdef STDC_HEADERS
+-# include <stdlib.h>
+-# include <stddef.h>
+-#else
+-# if HAVE_STDLIB_H
+-#  include <stdlib.h>
+-# endif
+-#endif
+-#ifdef HAVE_UNISTD_H
+-# include <unistd.h>
+-#endif
+-
+-int main(void)
+-{
+-    char buf[4];
+-    
+-    (void) fprintf(fopen("conftestval", "w"), "%d\n",
+-        (int) snprintf(buf, sizeof buf, "12345678"));
+-    return 0;
+-}
+-]])],[CONF_SNPRINTF_TYPE=`cat conftestval`
+-],[],[])
+-AC_MSG_RESULT(done)
+-if test "x$CONF_SNPRINTF_TYPE" = "x" ; then
+-  AC_MSG_WARN(your operating system doesn't implement snprintf)
+-else
 +CONF_SNPRINTF_TYPE=8
-+cat >>confdefs.h <<_ACEOF
-+#define CONF_SNPRINTF_TYPE $CONF_SNPRINTF_TYPE
-+_ACEOF
-+
- else
-   cat >conftest.$ac_ext <<_ACEOF
- /* confdefs.h.  */
-@@ -21449,11 +21455,12 @@
- echo "$as_me:$LINENO: checking whether getgroups 0 is sane" >&5
- echo $ECHO_N "checking whether getgroups 0 is sane... $ECHO_C" >&6
- if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
-+  :
-+#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&5
-+#echo "$as_me: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&2;}
-+#   { (exit 1); exit 1; }; }
- else
-   cat >conftest.$ac_ext <<_ACEOF
- /* confdefs.h.  */
-@@ -21517,11 +21524,15 @@
- echo "$as_me:$LINENO: checking whether realpath likes unreadable directories" >&5
- echo $ECHO_N "checking whether realpath likes unreadable directories... $ECHO_C" >&6
- if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
-+#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&5
-+#echo "$as_me: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&2;}
-+#   { (exit 1); exit 1; }; }
-+cat >>confdefs.h <<\_ACEOF
-+#define REALPATH_WORKS_WITH_UNREADABLE_DIRECTORIES
-+_ACEOF
-+
- else
-   cat >conftest.$ac_ext <<_ACEOF
- /* confdefs.h.  */
-@@ -21623,11 +21634,12 @@
- echo "$as_me:$LINENO: checking whether you already have a standard MD5 implementation" >&5
- echo $ECHO_N "checking whether you already have a standard MD5 implementation... $ECHO_C" >&6
- if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
-+ :
-+#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&5
-+#echo "$as_me: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&2;}
-+#   { (exit 1); exit 1; }; }
- else
-   cat >conftest.$ac_ext <<_ACEOF
- /* confdefs.h.  */
-@@ -21692,11 +21704,12 @@
- echo "$as_me:$LINENO: checking whether you already have a standard SHA1 implementation" >&5
- echo $ECHO_N "checking whether you already have a standard SHA1 implementation... $ECHO_C" >&6
- if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
-+  :
-+#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&5
-+#echo "$as_me: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&2;}
-+#   { (exit 1); exit 1; }; }
- else
-   cat >conftest.$ac_ext <<_ACEOF
- /* confdefs.h.  */
-@@ -21775,7 +21788,7 @@
- echo "$as_me:$LINENO: checking default TCP send buffer size" >&5
- echo $ECHO_N "checking default TCP send buffer size... $ECHO_C" >&6
- if test "$cross_compiling" = yes; then
--  CONF_TCP_SO_SNDBUF=65536
-+  CONF_TCP_SO_SNDBUF=16384
- else
-   cat >conftest.$ac_ext <<_ACEOF
- /* confdefs.h.  */
-@@ -21844,7 +21857,7 @@
- echo "$as_me:$LINENO: checking default TCP receive buffer size" >&5
- echo $ECHO_N "checking default TCP receive buffer size... $ECHO_C" >&6
- if test "$cross_compiling" = yes; then
--  CONF_TCP_SO_RCVBUF=65536
-+  CONF_TCP_SO_RCVBUF=43689
- else
-   cat >conftest.$ac_ext <<_ACEOF
- /* confdefs.h.  */
-@@ -22479,11 +22492,12 @@
-     echo "$as_me:$LINENO: checking whether mysql clients can run" >&5
- echo $ECHO_N "checking whether mysql clients can run... $ECHO_C" >&6
-     if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
-+       :
-+#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&5
-+#echo "$as_me: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&2;}
-+#   { (exit 1); exit 1; }; }
- else
-   cat >conftest.$ac_ext <<_ACEOF
- /* confdefs.h.  */
-@@ -22882,11 +22896,12 @@
-     echo "$as_me:$LINENO: checking whether postgresql clients can run" >&5
- echo $ECHO_N "checking whether postgresql clients can run... $ECHO_C" >&6
-     if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
-+      :
-+#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&5
-+#echo "$as_me: error: cannot run test program while cross compiling
-+#See \`config.log' for more details." >&2;}
-+#   { (exit 1); exit 1; }; }
- else
-   cat >conftest.$ac_ext <<_ACEOF
- /* confdefs.h.  */
+   AC_DEFINE_UNQUOTED(CONF_SNPRINTF_TYPE, $CONF_SNPRINTF_TYPE, [return value of an overflowed snprintf])
+-fi
+ 
+ 
+ AC_MSG_CHECKING(whether getgroups 0 is sane)
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-#include <stdio.h>
+-#ifdef STDC_HEADERS
+-# include <stdlib.h>
+-# include <stddef.h>
+-#else
+-# if HAVE_STDLIB_H
+-#  include <stdlib.h>
+-# endif
+-#endif
+-#ifdef HAVE_UNISTD_H
+-# include <unistd.h>
+-#endif
+-
+-int main(void)
+-{
+-    return getgroups(0, NULL) <= 0;
+-}
+-]])],[
+ AC_MSG_RESULT(yes)
+ AC_DEFINE(SAFE_GETGROUPS_0,,[Define is getgroups(0, NULL) works on your system])
+-],[AC_MSG_RESULT(no)
+-],[])
+ 
+ AC_MSG_CHECKING(whether realpath likes unreadable directories)
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-#include <stdio.h>
+-#ifdef STDC_HEADERS
+-# include <stdlib.h>
+-# include <stddef.h>
+-#else
+-# if HAVE_STDLIB_H
+-#  include <stdlib.h>
+-# endif
+-#endif
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#ifdef HAVE_UNISTD_H
+-# include <unistd.h>
+-#endif
+-#ifdef HAVE_LIMITS_H
+-# include <limits.h>
+-#endif
+-#ifdef HAVE_SYS_PARAM_H
+-# include <sys/param.h>
+-#endif
+-
+-#ifndef MAXPATHLEN
+-# define MAXPATHLEN PATH_MAX
+-#endif
+-
+-int main(void)
+-{
+-    char x[MAXPATHLEN];
+-    
+-    if (mkdir("x", 0300) != 0) {
+-        return 1;
+-    }
+-    if (mkdir("x/y", 0300) != 0) {
+-        rmdir("x");
+-        return 2;
+-    }    
+-    if (chdir("x") != 0) {
+-        rmdir("x/y");    
+-        rmdir("x");
+-        return 3;
+-    }
+-    if (realpath("y", x) == NULL) {
+-        rmdir("y");
+-        rmdir("../x");
+-        return 4;
+-    }
+-    rmdir("y");
+-    rmdir("../x");
+-    
+-    return 0;    
+-}
+-]])],[
+ AC_MSG_RESULT(yes)
+ AC_DEFINE(REALPATH_WORKS_WITH_UNREADABLE_DIRECTORIES,,
+ [Define if realpath() works on unreadable directories])
+-],[AC_MSG_RESULT(no)
+-AC_DEFINE(USE_BUILTIN_REALPATH)
+-],[])
+ 
+ AC_MSG_CHECKING(whether you already have a standard MD5 implementation)
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-#include <stdio.h>
+-#include <stdio.h>
+-#include <string.h>
+-#include <sys/types.h>
+-#include <md5.h>
+-
+-int main(void)
+-{
+-    MD5_CTX ctx;
+-    char b[33];
+-    
+-    MD5Init(&ctx);
+-    MD5Update(&ctx, (const unsigned char *) "test", 4U);
+-    MD5End(&ctx, b);
+-    b[32] = 0;
+-
+-    return strcasecmp(b, "098f6bcd4621d373cade4e832627b4f6");
+-}
+-]])],[
+ AC_MSG_RESULT(yes)
+ AC_DEFINE(USE_SYSTEM_CRYPT_MD5,,[Define if you already have standard
+ MD5 functions])
+-],[AC_MSG_RESULT(no)
+-],[])
+ 
+ AC_MSG_CHECKING(whether you already have a standard SHA1 implementation)
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-#include <stdio.h>
+-#include <string.h>
+-#include <sys/types.h>
+-#include <sha1.h>
+-
+-int main(void)
+-{
+-    SHA1_CTX ctx;
+-    char b[41];
+-    
+-    SHA1Init(&ctx);
+-    SHA1Update(&ctx, (const unsigned char *) "test", 4U);
+-    SHA1End(&ctx, b);
+-    b[40] = 0;
+-    
+-    return strcasecmp(b, "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3");
+-}
+-]])],[
+ AC_MSG_RESULT(yes)
+ AC_DEFINE(USE_SYSTEM_CRYPT_SHA1,,[Define if you already have standard
+ SHA1 functions])
+-],[AC_MSG_RESULT(no)
+-],[])
+ 
+ AC_MSG_CHECKING([whether we are inside a Virtuozzo virtual host])
+ if test -d /proc/vz; then
