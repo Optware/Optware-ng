@@ -15,7 +15,7 @@ BIND_SECTION=net
 BIND_PRIORITY=optional
 BIND_DEPENDS=openssl
 
-BIND_IPK_VERSION=1
+BIND_IPK_VERSION=2
 
 # BIND_PATCHES=$(BIND_SOURCE_DIR)/bind_configure_patch
 
@@ -56,6 +56,7 @@ $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE) make/bind.mk
 		--prefix=/opt \
 		--with-libtool \
 		--with-openssl=$(STAGING_PREFIX) \
+		--without-libxml2 \
 		--sysconfdir=/opt/etc/named \
 		--localstatedir=/opt/var \
 		--with-randomdev=/dev/random \
