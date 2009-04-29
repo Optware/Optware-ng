@@ -36,7 +36,7 @@ CLINKCC_DESCRIPTION=CyberLink for C++ is a development package for UPnP programm
 CLINKCC_SECTION=net
 CLINKCC_PRIORITY=optional
 CLINKCC_DEPENDS=xerces-c
-ifeq (libiconv, $(LIBC_STYLE))
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	CLINKCC_DEPENDS+=, libiconv
 endif
 CLINKCC_SUGGESTS=
@@ -77,7 +77,6 @@ CLINKCC_BUILD_DIR=$(BUILD_DIR)/clinkcc
 CLINKCC_SOURCE_DIR=$(SOURCE_DIR)/clinkcc
 CLINKCC_IPK_DIR=$(BUILD_DIR)/clinkcc-$(CLINKCC_VERSION)-ipk
 CLINKCC_IPK=$(BUILD_DIR)/clinkcc_$(CLINKCC_VERSION)-$(CLINKCC_IPK_VERSION)_$(TARGET_ARCH).ipk
-CLINKCC_CONFIGURE_ARGS=
 
 .PHONY: clinkcc-source clinkcc-unpack clinkcc clinkcc-stage clinkcc-ipk clinkcc-clean clinkcc-dirclean clinkcc-check
 
