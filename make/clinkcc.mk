@@ -128,8 +128,9 @@ endif
 		then mv $(BUILD_DIR)/$(CLINKCC_DIR) $(@D) ; \
 	fi
 ifeq (glibc, $(LIBC_STYLE))
-	sed -i -e "s|size_t ret = iconv(cd, \&inbuf, \&inbyteleft, \&coutbuf, \&outbyteleft);|size_t ret = iconv(cd, (char \*\*)\&inbuf, \&inbyteleft, \&coutbuf, \&outbyteleft);|" $(@D)/src/cybergarage/xml/XML.cpp
+	sed -i -e "/size_t ret = iconv(/s|, \&inbuf,|, (char \*\*)\&inbuf,|" $(@D)/src/cybergarage/xml/XML.cpp
 endif
+	sed -i -e 's/ServiceData::setService/setService/' $(@D)/include/cybergarage/upnp/xml/ServiceData.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLINKCC_CPPFLAGS)" \
@@ -142,7 +143,9 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) \
+		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
+		$(@D)/libtool
 	touch $@
 
 clinkcc-unpack: $(CLINKCC_BUILD_DIR)/.configured
