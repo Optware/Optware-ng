@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PURE-FTPD_SITE=http://download.pureftpd.org/pub/pure-ftpd/releases
-PURE-FTPD_VERSION=1.0.21
+PURE-FTPD_VERSION=1.0.22
 PURE-FTPD_SOURCE=pure-ftpd-$(PURE-FTPD_VERSION).tar.bz2
 PURE-FTPD_DIR=pure-ftpd-$(PURE-FTPD_VERSION)
 PURE-FTPD_UNZIP=bzcat
@@ -36,7 +36,7 @@ PURE-FTPD_CONFLICTS=
 #
 # PURE-FTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PURE-FTPD_IPK_VERSION=3
+PURE-FTPD_IPK_VERSION=1
 
 #
 # PURE-FTPD_CONFFILES should be a list of user-editable files
@@ -106,24 +106,26 @@ pure-ftpd-source: $(DL_DIR)/$(PURE-FTPD_SOURCE) $(PURE-FTPD_PATCHES)
 #
 $(PURE-FTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PURE-FTPD_SOURCE) $(PURE-FTPD_PATCHES) make/pure-ftpd.mk
 	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(PURE-FTPD_DIR) $(PURE-FTPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PURE-FTPD_DIR) $(@D)
 	$(PURE-FTPD_UNZIP) $(DL_DIR)/$(PURE-FTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PURE-FTPD_PATCHES)" ; \
 		then cat $(PURE-FTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PURE-FTPD_DIR) -p1 ; \
+		patch -bd $(BUILD_DIR)/$(PURE-FTPD_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(PURE-FTPD_DIR)" != "$(PURE-FTPD_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(PURE-FTPD_DIR) $(PURE-FTPD_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(PURE-FTPD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(PURE-FTPD_DIR) $(@D) ; \
 	fi
 ifeq ($(LIBC_STYLE), uclibc)
-	cp $(PURE-FTPD_SOURCE_DIR)/config-uclibc.cache $(PURE-FTPD_BUILD_DIR)/config.cache
-	sed -i -e '/^ac_cv_path/d;/^ac_cv_env/d;/^ac_cv_prog/d;' \
-		$(PURE-FTPD_BUILD_DIR)/config.cache
+	cp $(PURE-FTPD_SOURCE_DIR)/config-uclibc.cache $(@D)/config.cache
+	sed -i -e '/^ac_cv_path/d;/^ac_cv_env/d;/^ac_cv_prog/d;' $(@D)/config.cache
 endif
-	(cd $(PURE-FTPD_BUILD_DIR); \
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PURE-FTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PURE-FTPD_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -135,7 +137,7 @@ endif
 		--with-everything \
 		--with-tls \
 	)
-#	$(PATCH_LIBTOOL) $(PURE-FTPD_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 pure-ftpd-unpack: $(PURE-FTPD_BUILD_DIR)/.configured
@@ -145,7 +147,7 @@ pure-ftpd-unpack: $(PURE-FTPD_BUILD_DIR)/.configured
 #
 $(PURE-FTPD_BUILD_DIR)/.built: $(PURE-FTPD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PURE-FTPD_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -158,7 +160,7 @@ pure-ftpd: $(PURE-FTPD_BUILD_DIR)/.built
 #
 $(PURE-FTPD_BUILD_DIR)/.staged: $(PURE-FTPD_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PURE-FTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 pure-ftpd-stage: $(PURE-FTPD_BUILD_DIR)/.staged
@@ -233,4 +235,4 @@ pure-ftpd-dirclean:
 # Some sanity check for the package.
 #
 pure-ftpd-check: $(PURE-FTPD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PURE-FTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
