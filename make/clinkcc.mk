@@ -127,7 +127,9 @@ endif
 	if test "$(BUILD_DIR)/$(CLINKCC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CLINKCC_DIR) $(@D) ; \
 	fi
+ifeq (glibc, $(LIBC_STYLE))
 	sed -i -e "s|size_t ret = iconv(cd, \&inbuf, \&inbyteleft, \&coutbuf, \&outbyteleft);|size_t ret = iconv(cd, (char \*\*)\&inbuf, \&inbyteleft, \&coutbuf, \&outbyteleft);|" $(@D)/src/cybergarage/xml/XML.cpp
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLINKCC_CPPFLAGS)" \
