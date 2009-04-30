@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLAMAV_SITE=http://$(SOURCEFORGE_MIRROR)/clamav
-CLAMAV_VERSION=0.91.2
+CLAMAV_VERSION=0.95.1
 CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
 CLAMAV_DIR=clamav-$(CLAMAV_VERSION)
 CLAMAV_UNZIP=zcat
@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=2
+CLAMAV_IPK_VERSION=1
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ CLAMAV_CONFFILES=/opt/etc/clamd.conf /opt/etc/freshclam.conf /opt/etc/init.d/S98
 # CLAMAV_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CLAMAV_PATCHES=$(CLAMAV_SOURCE_DIR)/configure.patch
+CLAMAV_PATCHES=
 ifeq ($(LIBC_STYLE), uclibc)
 CLAMAV_PATCHES+=$(CLAMAV_SOURCE_DIR)/uclibc-shared-output.c.patch
 endif
