@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UNIXODBC_SITE=http://www.unixodbc.org
-UNIXODBC_VERSION=2.2.12
+UNIXODBC_VERSION=2.2.14
 UNIXODBC_SOURCE=unixODBC-$(UNIXODBC_VERSION).tar.gz
 UNIXODBC_DIR=unixODBC-$(UNIXODBC_VERSION)
 UNIXODBC_UNZIP=zcat
@@ -37,7 +37,7 @@ UNIXODBC_CONFLICTS=
 #
 # UNIXODBC_IPK_VERSION should be incremented when the ipk changes.
 #
-UNIXODBC_IPK_VERSION=2
+UNIXODBC_IPK_VERSION=1
 
 #
 # UNIXODBC_CONFFILES should be a list of user-editable files
@@ -47,7 +47,9 @@ UNIXODBC_CONFFILES=/opt/etc/odbc.ini /opt/etc/odbcinst.ini
 # UNIXODBC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#UNIXODBC_PATCHES=$(UNIXODBC_SOURCE_DIR)/configure.patch
+ifneq ($(HOSTCC), $(TARGET_CC))
+UNIXODBC_PATCHES=$(UNIXODBC_SOURCE_DIR)/odbc_config.host.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -77,8 +79,8 @@ UNIXODBC_IPK=$(BUILD_DIR)/unixodbc_$(UNIXODBC_VERSION)-$(UNIXODBC_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(UNIXODBC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(UNIXODBC_SITE)/$(UNIXODBC_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(UNIXODBC_SOURCE)
+	$(WGET) -P $(@D) $(UNIXODBC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,16 +109,16 @@ unixodbc-source: $(DL_DIR)/$(UNIXODBC_SOURCE) $(UNIXODBC_PATCHES)
 #
 $(UNIXODBC_BUILD_DIR)/.configured: $(DL_DIR)/$(UNIXODBC_SOURCE) $(UNIXODBC_PATCHES) make/unixodbc.mk
 	$(MAKE) libtool-stage
-	rm -rf $(BUILD_DIR)/$(UNIXODBC_DIR) $(UNIXODBC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(UNIXODBC_DIR) $(@D)
 	$(UNIXODBC_UNZIP) $(DL_DIR)/$(UNIXODBC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNIXODBC_PATCHES)" ; \
 		then cat $(UNIXODBC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(UNIXODBC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(UNIXODBC_DIR)" != "$(UNIXODBC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(UNIXODBC_DIR) $(UNIXODBC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(UNIXODBC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(UNIXODBC_DIR) $(@D) ; \
 	fi
-	(cd $(UNIXODBC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UNIXODBC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UNIXODBC_LDFLAGS)" \
@@ -129,7 +131,7 @@ $(UNIXODBC_BUILD_DIR)/.configured: $(DL_DIR)/$(UNIXODBC_SOURCE) $(UNIXODBC_PATCH
 		--disable-static \
 		--enable-gui=no \
 	)
-	$(PATCH_LIBTOOL) $(UNIXODBC_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 unixodbc-unpack: $(UNIXODBC_BUILD_DIR)/.configured
@@ -139,7 +141,10 @@ unixodbc-unpack: $(UNIXODBC_BUILD_DIR)/.configured
 #
 $(UNIXODBC_BUILD_DIR)/.built: $(UNIXODBC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(UNIXODBC_BUILD_DIR)
+ifneq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) -C $(@D)/exe odbc_config.host
+endif
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +157,7 @@ unixodbc: $(UNIXODBC_BUILD_DIR)/.built
 #
 $(UNIXODBC_BUILD_DIR)/.staged: $(UNIXODBC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(UNIXODBC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 unixodbc-stage: $(UNIXODBC_BUILD_DIR)/.staged
@@ -218,4 +223,4 @@ unixodbc-dirclean:
 # Some sanity check for the package.
 #
 unixodbc-check: $(UNIXODBC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UNIXODBC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -1,0 +1,22 @@
+--- exe/Makefile.in.orig	2008-11-19 16:11:23.000000000 +0000
++++ exe/Makefile.in	2009-04-29 23:34:56.671378216 +0000
+@@ -408,6 +408,8 @@
+ odbc_config$(EXEEXT): $(odbc_config_OBJECTS) $(odbc_config_DEPENDENCIES) 
+ 	@rm -f odbc_config$(EXEEXT)
+ 	$(LINK) $(odbc_config_LDFLAGS) $(odbc_config_OBJECTS) $(odbc_config_LDADD) $(LIBS)
++odbc_config.host: $(odbc_config_SOURCES)
++	gcc -o $@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) odbc-config.c
+ odbcinst$(EXEEXT): $(odbcinst_OBJECTS) $(odbcinst_DEPENDENCIES) 
+ 	@rm -f odbcinst$(EXEEXT)
+ 	$(LINK) $(odbcinst_LDFLAGS) $(odbcinst_OBJECTS) $(odbcinst_LDADD) $(LIBS)
+--- Makefile.in.orig	2008-11-19 16:11:38.000000000 +0000
++++ Makefile.in	2009-04-29 23:46:20.607510305 +0000
+@@ -703,7 +703,7 @@
+ 	-touch $(DESTDIR)${sysconfdir}/odbcinst.ini
+ 	-touch $(DESTDIR)${sysconfdir}/odbc.ini
+ 	-mkdir -p $(DESTDIR)${sysconfdir}/ODBCDataSources
+-	$(DESTDIR)${bindir}/odbc_config --header > $(DESTDIR)${includedir}/unixodbc_conf.h
++	exe/odbc_config.host --header > $(DESTDIR)${includedir}/unixodbc_conf.h
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
