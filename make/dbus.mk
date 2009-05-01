@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
-DBUS_VERSION=1.1.1
+DBUS_VERSION=1.2.12
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat
@@ -36,7 +36,7 @@ DBUS_CONFLICTS=
 #
 # DBUS_IPK_VERSION should be incremented when the ipk changes.
 #
-DBUS_IPK_VERSION=3
+DBUS_IPK_VERSION=1
 
 #
 # DBUS_CONFFILES should be a list of user-editable files
@@ -83,8 +83,8 @@ DBUS_IPK=$(BUILD_DIR)/dbus_$(DBUS_VERSION)-$(DBUS_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DBUS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DBUS_SITE)/$(DBUS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(DBUS_SOURCE)
+	$(WGET) -P $(@D) $(DBUS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -119,10 +119,10 @@ $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbu
 		then cat $(DBUS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(DBUS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DBUS_DIR)" != "$(DBUS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DBUS_DIR) $(DBUS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DBUS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DBUS_DIR) $(@D) ; \
 	fi
-	(cd $(DBUS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DBUS_LDFLAGS)" \
@@ -138,7 +138,7 @@ $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbu
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(DBUS_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 dbus-unpack: $(DBUS_BUILD_DIR)/.configured
@@ -148,7 +148,7 @@ dbus-unpack: $(DBUS_BUILD_DIR)/.configured
 #
 $(DBUS_BUILD_DIR)/.built: $(DBUS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(DBUS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -161,8 +161,9 @@ dbus: $(DBUS_BUILD_DIR)/.built
 #
 $(DBUS_BUILD_DIR)/.staged: $(DBUS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(DBUS_BUILD_DIR) DESTDIR=$(STAGING_DIR) transform='' install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) transform='' install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/dbus-*.pc
+	rm -f $(STAGING_LIB_DIR)/dbus-1.la
 	touch $@
 
 dbus-stage: $(DBUS_BUILD_DIR)/.staged
@@ -201,7 +202,10 @@ $(DBUS_IPK_DIR)/CONTROL/control:
 $(DBUS_IPK): $(DBUS_BUILD_DIR)/.built
 	rm -rf $(DBUS_IPK_DIR) $(BUILD_DIR)/dbus_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DBUS_BUILD_DIR) DESTDIR=$(DBUS_IPK_DIR) transform='' install
-	$(STRIP_COMMAND) $(DBUS_IPK_DIR)/opt/bin/* $(DBUS_IPK_DIR)/opt/lib/libdbus-*.so.*.*.*
+	$(STRIP_COMMAND) \
+		$(DBUS_IPK_DIR)/opt/bin/* \
+		$(DBUS_IPK_DIR)/opt/libexec/dbus-daemon-launch-helper \
+		$(DBUS_IPK_DIR)/opt/lib/libdbus-*.so.*.*.*
 #	install -d $(DBUS_IPK_DIR)/opt/etc/
 #	install -m 644 $(DBUS_SOURCE_DIR)/dbus.conf $(DBUS_IPK_DIR)/opt/etc/dbus.conf
 	install -d $(DBUS_IPK_DIR)/opt/etc/default
@@ -240,4 +244,4 @@ dbus-dirclean:
 # Some sanity check for the package.
 #
 dbus-check: $(DBUS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DBUS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
