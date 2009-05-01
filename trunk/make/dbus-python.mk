@@ -30,8 +30,8 @@ DBUS-PYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DBUS-PYTHON_DESCRIPTION=Python bindings to DBUS
 DBUS-PYTHON_SECTION=devel
 DBUS-PYTHON_PRIORITY=optional
-PY25-DBUS-PYTHON_DEPENDS=dbus, python25
-PY26-DBUS-PYTHON_DEPENDS=dbus, python26
+PY25-DBUS-PYTHON_DEPENDS=dbus-glib, python25
+PY26-DBUS-PYTHON_DEPENDS=dbus-glib, python26
 DBUS-PYTHON_CONFLICTS=
 
 #
@@ -107,7 +107,7 @@ dbus-python-source: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYTHON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYTHON_PATCHES) make/dbus-python.mk
-	$(MAKE) python-stage dbus-stage
+	$(MAKE) python-stage dbus-stage dbus-glib-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	# 2.5
