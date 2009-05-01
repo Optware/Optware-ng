@@ -233,7 +233,7 @@ COMMON_CROSS_PACKAGES = \
 	cups cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \
 	dansguardian dash davtools \
-	dbus dbus-glib \
+	dbus dbus-glib dbus-python \
 	dcraw denyhosts dev-pts dfu-util \
 	dialog dict digitemp dircproxy distcc dhcp diffstat diffutils \
 	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
