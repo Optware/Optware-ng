@@ -21,7 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
-DBUS_VERSION=1.2.12
+DBUS_VERSION ?= 1.2.12
+DBUS_IPK_VERSION ?= 1
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat
@@ -33,10 +34,6 @@ DBUS_DEPENDS=expat, adduser
 DBUS_SUGGESTS=
 DBUS_CONFLICTS=
 
-#
-# DBUS_IPK_VERSION should be incremented when the ipk changes.
-#
-DBUS_IPK_VERSION=1
 
 #
 # DBUS_CONFFILES should be a list of user-editable files
@@ -138,6 +135,8 @@ $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbu
 		--enable-abstract-sockets \
 		--with-xml=expat \
 		--without-x \
+		--disable-doxygen-docs \
+		--disable-xml-docs \
 		--disable-nls \
 		--disable-static \
 	)
