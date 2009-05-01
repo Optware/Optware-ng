@@ -122,6 +122,9 @@ $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbu
 	if test "$(BUILD_DIR)/$(DBUS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DBUS_DIR) $(@D) ; \
 	fi
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		sed -i -e '/CFLAGS=.* -Wno-pointer-sign/s/ -Wno-pointer-sign//' $(@D)/configure; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS_CPPFLAGS)" \
