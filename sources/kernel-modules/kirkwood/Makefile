@@ -6,7 +6,7 @@
 
 ifeq ($(OPTWARE_TARGET), $(filter sheevaplug, $(OPTWARE_TARGET)))
 
-KERNEL_VERSION=2.6.30-rc3
+KERNEL_VERSION=2.6.30-rc4
 KERNEL_SITE=http://www.kernel.org/pub/linux/kernel/v2.6/testing
 KERNEL_SOURCE=linux-$(KERNEL_VERSION).tar.bz2
 KERNEL-MODULES_DIR=linux-$(KERNEL_VERSION)
