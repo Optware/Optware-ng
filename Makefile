@@ -232,7 +232,9 @@ COMMON_CROSS_PACKAGES = \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \
-	dansguardian dash davtools dbus dcraw denyhosts dev-pts dfu-util \
+	dansguardian dash davtools \
+	dbus dbus-glib \
+	dcraw denyhosts dev-pts dfu-util \
 	dialog dict digitemp dircproxy distcc dhcp diffstat diffutils \
 	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
 	dropbear drraw dspam dtach dump \
