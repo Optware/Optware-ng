@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 SED_SITE=http://ftp.gnu.org/gnu/sed
-SED_VERSION=4.1.5
+SED_VERSION=4.2
 SED_SOURCE=sed-$(SED_VERSION).tar.gz
 SED_DIR=sed-$(SED_VERSION)
 SED_UNZIP=zcat
@@ -30,7 +30,7 @@ SED_CONFLICTS=
 #
 # SED_IPK_VERSION should be incremented when the ipk changes.
 #
-SED_IPK_VERSION=3
+SED_IPK_VERSION=1
 
 #
 # SED_CONFFILES should be a list of user-editable files
@@ -70,7 +70,8 @@ SED_IPK=$(BUILD_DIR)/sed_$(SED_VERSION)-$(SED_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SED_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SED_SITE)/$(SED_SOURCE)
+	$(WGET) -P $(@D) $(SED_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -95,11 +96,11 @@ sed-source: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SED_BUILD_DIR)/.configured: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES) make/sed.mk
-	rm -rf $(BUILD_DIR)/$(SED_DIR) $(SED_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SED_DIR) $(@D)
 	$(SED_UNZIP) $(DL_DIR)/$(SED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SED_PATCHES) | patch -d $(BUILD_DIR)/$(SED_DIR) -p1
-	mv $(BUILD_DIR)/$(SED_DIR) $(SED_BUILD_DIR)
-	(cd $(SED_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(SED_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SED_LDFLAGS)" \
@@ -120,7 +121,7 @@ sed-unpack: $(SED_BUILD_DIR)/.configured
 #
 $(SED_BUILD_DIR)/.built: $(SED_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SED_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -133,7 +134,7 @@ sed: $(SED_BUILD_DIR)/.built
 #
 $(SED_BUILD_DIR)/.staged: $(SED_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SED_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 sed-stage: $(SED_BUILD_DIR)/.staged
@@ -208,4 +209,4 @@ sed-dirclean:
 # Some sanity check for the package.
 #
 sed-check: $(SED_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SED_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
