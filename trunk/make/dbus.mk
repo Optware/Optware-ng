@@ -163,7 +163,7 @@ $(DBUS_BUILD_DIR)/.staged: $(DBUS_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) transform='' install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/dbus-*.pc
-	rm -f $(STAGING_LIB_DIR)/dbus-1.la
+	rm -f $(STAGING_LIB_DIR)/libdbus-1.la
 	touch $@
 
 dbus-stage: $(DBUS_BUILD_DIR)/.staged
