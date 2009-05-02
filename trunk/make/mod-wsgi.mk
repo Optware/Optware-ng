@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOD_WSGI_SITE=http://modwsgi.googlecode.com/files
-MOD_WSGI_VERSION=2.3
+MOD_WSGI_VERSION=2.4
 MOD_WSGI_SOURCE=mod_wsgi-$(MOD_WSGI_VERSION).tar.gz
 MOD_WSGI_DIR=mod_wsgi-$(MOD_WSGI_VERSION)
 MOD_WSGI_UNZIP=zcat
@@ -237,4 +237,4 @@ mod-wsgi-dirclean:
 # Some sanity check for the package.
 #
 mod-wsgi-check: $(MOD_WSGI_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MOD_WSGI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
