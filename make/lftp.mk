@@ -21,7 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
-LFTP_VERSION=3.7.11
+SFR_SITE=http://www.sfr-fresh.com/unix/misc
+LFTP_VERSION=3.7.13
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -86,7 +87,8 @@ LFTP_IPK=$(BUILD_DIR)/lftp_$(LFTP_VERSION)-$(LFTP_IPK_VERSION)_$(TARGET_ARCH).ip
 #
 $(DL_DIR)/$(LFTP_SOURCE):
 	$(WGET) -P $(@D) $(LFTP_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SFR_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
