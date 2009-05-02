@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CSCOPE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/cscope
-CSCOPE_VERSION=15.6
-CSCOPE_SOURCE=cscope-$(CSCOPE_VERSION).tar.gz
+CSCOPE_VERSION=15.7a
+CSCOPE_SOURCE=cscope-$(CSCOPE_VERSION).tar.bz2
 CSCOPE_DIR=cscope-$(CSCOPE_VERSION)
-CSCOPE_UNZIP=zcat
+CSCOPE_UNZIP=bzcat
 CSCOPE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CSCOPE_DESCRIPTION=A tool for developer to browse source code.
 CSCOPE_SECTION=misc
@@ -76,7 +76,8 @@ CSCOPE_IPK=$(BUILD_DIR)/cscope_$(CSCOPE_VERSION)-$(CSCOPE_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CSCOPE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CSCOPE_SITE)/$(CSCOPE_SOURCE)
+	$(WGET) -P $(@D) $(CSCOPE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,16 +106,16 @@ cscope-source: $(DL_DIR)/$(CSCOPE_SOURCE) $(CSCOPE_PATCHES)
 #
 $(CSCOPE_BUILD_DIR)/.configured: $(DL_DIR)/$(CSCOPE_SOURCE) $(CSCOPE_PATCHES) make/cscope.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(CSCOPE_DIR) $(CSCOPE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CSCOPE_DIR) $(@D)
 	$(CSCOPE_UNZIP) $(DL_DIR)/$(CSCOPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CSCOPE_PATCHES)" ; \
 		then cat $(CSCOPE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(CSCOPE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(CSCOPE_DIR)" != "$(CSCOPE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CSCOPE_DIR) $(CSCOPE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(CSCOPE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CSCOPE_DIR) $(@D) ; \
 	fi
-	(cd $(CSCOPE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CSCOPE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CSCOPE_LDFLAGS)" \
@@ -126,8 +127,8 @@ $(CSCOPE_BUILD_DIR)/.configured: $(DL_DIR)/$(CSCOPE_SOURCE) $(CSCOPE_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(CSCOPE_BUILD_DIR)/libtool
-	touch $(CSCOPE_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 cscope-unpack: $(CSCOPE_BUILD_DIR)/.configured
 
@@ -135,9 +136,9 @@ cscope-unpack: $(CSCOPE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CSCOPE_BUILD_DIR)/.built: $(CSCOPE_BUILD_DIR)/.configured
-	rm -f $(CSCOPE_BUILD_DIR)/.built
-	$(MAKE) -C $(CSCOPE_BUILD_DIR)
-	touch $(CSCOPE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,9 +149,9 @@ cscope: $(CSCOPE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CSCOPE_BUILD_DIR)/.staged: $(CSCOPE_BUILD_DIR)/.built
-	rm -f $(CSCOPE_BUILD_DIR)/.staged
-	$(MAKE) -C $(CSCOPE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(CSCOPE_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 cscope-stage: $(CSCOPE_BUILD_DIR)/.staged
 
@@ -224,4 +225,4 @@ cscope-dirclean:
 # Some sanity check for the package.
 #
 cscope-check: $(CSCOPE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CSCOPE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
