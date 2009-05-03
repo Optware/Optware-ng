@@ -26,7 +26,7 @@ KERNEL-MODULES=`find $(KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-KERNEL-MODULES_IPK_VERSION=1
+KERNEL-MODULES_IPK_VERSION=2
 
 #
 # KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -38,6 +38,8 @@ KERNEL-MODULES_IPK_VERSION=1
 #
 KERNEL-MODULES_PATCHES = \
 	$(KERNEL_RECIPE_DIR)/mvsdio.patch \
+	$(KERNEL_RECIPE_DIR)/pow1.patch \
+	$(KERNEL_RECIPE_DIR)/pow2.patch \
 
 #
 # If the compilation of the package requires additional
