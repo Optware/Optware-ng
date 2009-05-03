@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NCDU_SITE=http://dev.yorhel.nl/download
-NCDU_VERSION=1.4
+NCDU_VERSION=1.5
 NCDU_SOURCE=ncdu-$(NCDU_VERSION).tar.gz
 NCDU_DIR=ncdu-$(NCDU_VERSION)
 NCDU_UNZIP=zcat
@@ -230,4 +230,4 @@ ncdu-dirclean:
 # Some sanity check for the package.
 #
 ncdu-check: $(NCDU_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NCDU_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
