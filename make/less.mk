@@ -5,7 +5,7 @@
 ###########################################################
 
 LESS_SITE=http://www.greenwoodsoftware.com/less/
-LESS_VERSION=418
+LESS_VERSION=429
 LESS_SOURCE=less-$(LESS_VERSION).tar.gz
 LESS_DIR=less-$(LESS_VERSION)
 LESS_UNZIP=zcat
@@ -55,7 +55,8 @@ LESS_IPK=$(BUILD_DIR)/less_$(LESS_VERSION)-$(LESS_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LESS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LESS_SITE)/$(LESS_SOURCE)
+	$(WGET) -P $(@D) $(LESS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -184,4 +185,4 @@ less-dirclean:
 # Some sanity check for the package.
 #
 less-check: $(LESS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LESS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
