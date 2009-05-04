@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=ftp://ftp.astron.com/pub/file
-FILE_VERSION=4.26
+FILE_VERSION=5.01
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
@@ -214,6 +214,7 @@ $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 		FILE_COMPILE=$(FILE_HOST_BUILD_DIR)/src/file
 	rm -f $(FILE_IPK_DIR)/opt/lib/libmagic.la
 	rm -f $(FILE_IPK_DIR)/opt/share/file/magic.mgc
+	install -d $(FILE_IPK_DIR)/opt/share/file
 	cp -rp $(FILE_BUILD_DIR)/magic/Magdir $(FILE_IPK_DIR)/opt/share/file/magic
 	$(MAKE) $(FILE_IPK_DIR)/CONTROL/control
 	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
@@ -242,4 +243,4 @@ file-dirclean:
 # Some sanity check for the package.
 #
 file-check: $(FILE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FILE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
