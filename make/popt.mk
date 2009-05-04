@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 POPT_SITE=http://rpm5.org/files/popt
-POPT_VERSION=1.14
+POPT_VERSION=1.15
 POPT_SOURCE=popt-$(POPT_VERSION).tar.gz
 POPT_DIR=popt-$(POPT_VERSION)
 POPT_UNZIP=zcat
@@ -201,4 +201,4 @@ popt-dirclean:
 # Some sanity check for the package.
 #
 popt-check: $(POPT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POPT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
