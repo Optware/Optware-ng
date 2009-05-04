@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R12B-5
-ERLANG_VERSION=R12B5
+ERLANG_UPSTREAM_VERSION=R13A
+ERLANG_VERSION=R13A
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -96,7 +96,7 @@ endif
 ERLANG_LDFLAGS=
 
 ERLANG_CONFIG_ENVS=erl_cv_time_correction=$(strip \
-	$(if $(filter syno-x07, $(OPTWARE_TARGET)), times, \
+	$(if $(filter syno-x07 wdtv, $(OPTWARE_TARGET)), times, \
 	$(if $(filter module-init-tools, $(PACKAGES)), clock_gettime, times)))
 
 ERLANG_CONFIG_ARGS=--disable-smp-support --enable-threads
@@ -236,12 +236,6 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		--disable-nls \
 	)
 else
-	sed -i -e 's|^CC *=.*|CC = $(TARGET_CC)|' \
-	       -e 's|^LD *=.*|LD = $(TARGET_LD)|' \
-		$(@D)/lib/common_test/c_src/Makefile
-	sed -i -e '/\/configure /s|^|$(TARGET_CONFIGURE_OPTS) CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" |' \
-	       -e '/\/configure /s|$$| --build=$(GNU_HOST_NAME) --host=$(GNU_TARGET_NAME) --target=$(GNU_TARGET_NAME)|' \
-		$(@D)/lib/common_test/priv/build_rx_lib
 #	configure erlang (cross version)
 	(cd $(@D)/erts; \
 		autoconf configure.in > configure; \
@@ -553,6 +547,5 @@ erlang-dirclean:
 #
 # Some sanity check for the package.
 #
-erlang-check: $(ERLANG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
-		$(ERLANG_IPK) $(ERLANG-LIBS_IPK)
+erlang-check: $(ERLANG_IPK) $(ERLANG-LIBS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
