@@ -1,69 +1,20 @@
---- otp_src_R13A/erts/configure.in.orig	2009-03-12 12:15:12.000000000 +0000
-+++ otp_src_R13A/erts/configure.in	2009-03-19 16:15:57.184077176 +0000
-@@ -452,7 +452,8 @@
- FreeBSD) OPSYS=freebsd;;
- esac
- ARCH=noarch
--case `uname -m` in
-+test "x$TARGET_ARCH" != x && TEST_ARCH=$TARGET_ARCH || TEST_ARCH=`uname -m`
-+case $TEST_ARCH in
- sun4u)	ARCH=ultrasparc;;
- sparc64)	ARCH=sparc64;;
- sun4v)	ARCH=ultrasparc;;
-@@ -463,10 +464,13 @@
- i686)	ARCH=x86;;
- x86_64) ARCH=amd64;;
- amd64)	ARCH=amd64;;
-+powerpc)	ARCH=ppc;;
- macppc)	ARCH=ppc;;
- ppc)	ARCH=ppc;;
- ppc64)	ARCH=ppc64;;
- "Power Macintosh")	ARCH=ppc;;
-+arm)	ARCH=arm;;
-+armeb)	ARCH=arm;;
- armv5b)	ARCH=arm;;
- armv5teb)	ARCH=arm;;
- armv5tel)	ARCH=arm;;
-@@ -2653,7 +2657,7 @@
-   exit(0);
- #endif
- }
--], poll_works=true, poll_works=false, poll_works=false)
-+], poll_works=true, poll_works=false, poll_works=true)
- case $poll_works in
- true)
- 	AC_DEFINE(ERTS_USE_POLL, 1, [Define if poll() should be used instead of select()])
-@@ -2831,7 +2835,11 @@
-     DED_CFLAGS="$DED_CFLAGS -fPIC"
- fi
- 
-+if test "x$LD" = x; then
- DED_LD=ld
-+else
-+DED_LD=$LD
-+fi
- DED_LD_FLAG_RUNTIME_LIBRARY_PATH="-R"
- STATIC_CFLAGS=""
- 
-@@ -2873,7 +2881,7 @@
- 	;;
- 	linux*)
- 		DED_LD="$CC"
--		DED_LDFLAGS="-shared"
-+		DED_LDFLAGS="-shared $LDFLAGS"
-		DED_LD_FLAG_RUNTIME_LIBRARY_PATH=
-		if test X${enable_m64_build} = Xyes; then
-			DED_LDFLAGS="-m64 $DED_LDFLAGS"
-@@ -2893,7 +2901,7 @@
- 	;;
- 	*)
- 		# assume GNU linker and ELF
--		DED_LDFLAGS="-shared"
-+		DED_LDFLAGS="-shared $LDFLAGS"
-		# GNU linker has no option for 64bit build, should not propagate -m64
- 	;;
- esac
-@@ -3280,6 +3288,7 @@
+--- otp_src_R13B/erts/configure.in.orig	2009-04-16 09:23:46.000000000 +0000
++++ otp_src_R13B/erts/configure.in	2009-04-21 23:53:10.335177341 +0000
+@@ -483,10 +483,13 @@
+     i686)	ARCH=x86;;
+     x86_64)	ARCH=amd64;;
+     amd64)	ARCH=amd64;;
++    powerpc)	ARCH=ppc;;
+     macppc)	ARCH=ppc;;
+     ppc)	ARCH=ppc;;
+     ppc64)	ARCH=ppc64;;
+     "Power Macintosh")	ARCH=ppc;;
++    arm)	ARCH=arm;;
++    armeb)	ARCH=arm;;
+     armv5b)	ARCH=arm;;
+     armv5teb)	ARCH=arm;;
+     armv5tel)	ARCH=arm;;
+@@ -3330,6 +3333,7 @@
      SSL_APP=ssl
      CRYPTO_APP=crypto
      SSH_APP=ssh

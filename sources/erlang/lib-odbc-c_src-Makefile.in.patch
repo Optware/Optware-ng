@@ -1,6 +1,6 @@
---- erlang/lib/odbc/c_src/Makefile.in.orig	2007-12-05 23:20:38.000000000 -0800
-+++ erlang/lib/odbc/c_src/Makefile.in	2007-12-05 23:21:24.000000000 -0800
-@@ -78,7 +78,7 @@
+--- otp_src_R13B/lib/odbc/c_src/Makefile.in.orig	2009-03-12 12:29:12.000000000 +0000
++++ otp_src_R13B/lib/odbc/c_src/Makefile.in	2009-04-21 23:16:12.439285702 +0000
+@@ -81,7 +81,7 @@
  CFLAGS = $(TYPEFLAGS) @CFLAGS@
  EI_LDFLAGS = -L$(EI_ROOT)/obj$(TYPEMARKER)/$(TARGET)
  LD = @DED_LD@
