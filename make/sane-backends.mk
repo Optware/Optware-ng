@@ -26,14 +26,30 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-#SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-1.0.15
-#SANE_BACKENDS_SITE=http://gd.tuwien.ac.at/hci/sane/sane-backends-$(SANE_BACKENDS_VERSION)
-SANE_BACKEND_RELEASE=1.0.20
-SANE_BACKENDS_VERSION=$(SANE_BACKEND_RELEASE)
+#ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24, $(OPTWARE_TARGET)))
+
+ifeq (uclibc, $(LIBC_STYLE)$(filter arm armeb i386 i686, $(TARGET_ARCH)))
+SANE_BACKENDS_RELEASE=1.0.19
+SANE_BACKENDS_CVS_DATE=20080315
+SANE_BACKENDS_IPK_VERSION=4
+else
+SANE_BACKENDS_RELEASE=1.0.20
+SANE_BACKENDS_IPK_VERSION=1
+endif
+
+ifdef SANE_BACKENDS_CVS_DATE
+SANE_BACKENDS_VERSION=$(SANE_BACKENDS_RELEASE)+cvs$(SANE_BACKENDS_CVS_DATE)
+SANE_BACKENDS_CVS_OPTS=-D $(SANE_BACKENDS_CVS_DATE)
+SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
+SANE_BACKENDS_DIR=sane-backends
+else
+SANE_BACKENDS_VERSION=$(SANE_BACKENDS_RELEASE)
+SANE_BACKENDS_DIR=sane-backends-$(SANE_BACKENDS_VERSION)
+endif
+
 SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SITE_OLD=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SOURCE=sane-backends-$(SANE_BACKENDS_VERSION).tar.gz
-SANE_BACKENDS_DIR=sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_UNZIP=zcat
 SANE_BACKENDS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SANE_BACKENDS_DESCRIPTION=SANE is a universal scanner interface
@@ -43,16 +59,6 @@ SANE_BACKENDS_DEPENDS=libjpeg, libtiff, libusb
 SANE_BACKENDS_SUGGESTS=xinetd, inetutils
 SANE_BACKENDS_CONFLICTS=
 
-# CVS info
-#SANE_BACKENDS_CVS_DATE=20090424
-#SANE_BACKENDS_CVS_OPTS=-D $(SANE_BACKENDS_CVS_DATE)
-#SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
-
-
-#
-# SANE_BACKENDS_IPK_VERSION should be incremented when the ipk changes.
-#
-SANE_BACKENDS_IPK_VERSION=1
 
 #
 # SANE_BACKENDS_CONFFILES should be a list of user-editable files
@@ -62,8 +68,13 @@ SANE_BACKENDS_CONFFILES=/opt/etc/sane.d/saned.conf /opt/etc/init.d/S01sane-backe
 # SANE_BACKENDS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq (1.0.19, $(SANE_BACKENDS_RELEASE))
+SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/1.0.19/Makefile.in.patch \
+	$(SANE_BACKENDS_SOURCE_DIR)/1.0.19/tools-Makefile.in.patch
+else
 SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/Makefile.in.patch \
 	$(SANE_BACKENDS_SOURCE_DIR)/tools-Makefile.in.patch
+endif
 
 #
 # If the compilation of the package requires additional
