@@ -26,7 +26,7 @@
 #
 TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
 #http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.52
+TRANSMISSION_VERSION=1.60
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
 #TRANSMISSION_SVN_REV=7132
 ifdef TRANSMISSION_SVN_REV
@@ -47,7 +47,7 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=2
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
