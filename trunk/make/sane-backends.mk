@@ -28,12 +28,12 @@
 #
 #SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-1.0.15
 #SANE_BACKENDS_SITE=http://gd.tuwien.ac.at/hci/sane/sane-backends-$(SANE_BACKENDS_VERSION)
-SANE_BACKEND_RELEASE=1.0.19
-SANE_BACKENDS_VERSION=$(SANE_BACKEND_RELEASE)+cvs$(SANE_BACKENDS_CVS_DATE)
+SANE_BACKEND_RELEASE=1.0.20
+SANE_BACKENDS_VERSION=$(SANE_BACKEND_RELEASE)
 SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SITE_OLD=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SOURCE=sane-backends-$(SANE_BACKENDS_VERSION).tar.gz
-SANE_BACKENDS_DIR=sane-backends
+SANE_BACKENDS_DIR=sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_UNZIP=zcat
 SANE_BACKENDS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SANE_BACKENDS_DESCRIPTION=SANE is a universal scanner interface
@@ -44,15 +44,15 @@ SANE_BACKENDS_SUGGESTS=xinetd, inetutils
 SANE_BACKENDS_CONFLICTS=
 
 # CVS info
-SANE_BACKENDS_CVS_DATE=20090424
-SANE_BACKENDS_CVS_OPTS=-D $(SANE_BACKENDS_CVS_DATE)
-SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
+#SANE_BACKENDS_CVS_DATE=20090424
+#SANE_BACKENDS_CVS_OPTS=-D $(SANE_BACKENDS_CVS_DATE)
+#SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
 
 
 #
 # SANE_BACKENDS_IPK_VERSION should be incremented when the ipk changes.
 #
-SANE_BACKENDS_IPK_VERSION=2
+SANE_BACKENDS_IPK_VERSION=1
 
 #
 # SANE_BACKENDS_CONFFILES should be a list of user-editable files
@@ -91,15 +91,18 @@ SANE_BACKENDS_IPK=$(BUILD_DIR)/sane-backends_$(SANE_BACKENDS_VERSION)-$(SANE_BAC
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/sane-backends-$(SANE_BACKENDS_VERSION).tar.gz:
+ifdef SANE_BACKENDS_CVS_DATE
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(SANE_BACKENDS_DIR) && \
 		cvs -d$(SANE_BACKENDS_REPOSITORY) -z3 co $(SANE_BACKENDS_CVS_OPTS) sane-backends && \
 		tar -czf $@ $(SANE_BACKENDS_DIR) && \
 		rm -rf $(SANE_BACKENDS_DIR) \
 	)
-
-#	$(WGET) -P $(DL_DIR) $(SANE_BACKENDS_SITE)/$(SANE_BACKENDS_SOURCE) || \
-#	$(WGET) -P $(DL_DIR) $(SANE_BACKENDS_SITE_OLD)/$(SANE_BACKENDS_SOURCE)
+else
+	$(WGET) -P $(@D) $(SANE_BACKENDS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SANE_BACKENDS_SITE_OLD)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
