@@ -18,7 +18,6 @@ BROKEN_PACKAGES = \
 	iptraf \
 	nfs-server nfs-utils \
 	player \
-	sane-backends \
 	transcode \
 	util-linux \
 	\
