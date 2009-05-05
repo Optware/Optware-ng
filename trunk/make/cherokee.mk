@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.99.11
+CHEROKEE_VERSION=0.99.13
 CHEROKEE_SITE=http://www.0x50.org/download/0.99/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
@@ -62,6 +62,10 @@ $(CHEROKEE_SOURCE_DIR)/array_param.patch \
 #
 CHEROKEE_CPPFLAGS=
 CHEROKEE_LDFLAGS=
+
+ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
+CHEROKEE_CONFIGURE_ENVS=ac_cv_func_shm_open=no ac_cv_lib_rt_shm_open=no
+endif
 
 ifeq (no, $(IPV6))
 CHEROKEE_CONFIGURE_OPTIONS+=--disable-ipv6
@@ -146,6 +150,7 @@ endif
 		ac_cv_what_readdir_r=POSIX \
 		ac_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_realloc_0_nonnull=yes \
+		$(CHEROKEE_CONFIGURE_ENVS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
