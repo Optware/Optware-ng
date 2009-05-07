@@ -28,7 +28,7 @@ TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
 #http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.60
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-#TRANSMISSION_SVN_REV=7132
+TRANSMISSION_SVN_REV=8349
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -179,8 +179,12 @@ endif
 	fi
 ifdef TRANSMISSION_SVN_REV
 	if test -x "$(@D)/autogen.sh"; \
-	then cd $(@D) && ./autogen.sh; \
-	else autoreconf -vif $(@D); \
+	then cd $(@D) && \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		./autogen.sh; \
+	else \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		autoreconf -vif $(@D); \
 	fi
 endif
 	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure
@@ -214,7 +218,7 @@ $(TRANSMISSION-DBG_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TR
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
-	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION-DBG_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D)
 ifndef TRANSMISSION_SVN_REV
 	mkdir -p $(BUILD_DIR)/$(TRANSMISSION_DIR)
 endif
@@ -223,14 +227,18 @@ endif
 		then cat $(TRANSMISSION_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(TRANSMISSION-DBG_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION-DBG_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D) ; \
 	fi
 	if test -n "$(TRANSMISSION-DBG_SOURCES)"; then cp $(TRANSMISSION-DBG_SOURCES) $(@D)/cli; fi
 ifdef TRANSMISSION_SVN_REV
 	if test -x "$(@D)/autogen.sh"; \
-	then cd $(@D) && ./autogen.sh; \
-	else autoreconf -vif $(@D); \
+	then cd $(@D) && \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		./autogen.sh; \
+	else \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		autoreconf -vif $(@D); \
 	fi
 endif
 	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
