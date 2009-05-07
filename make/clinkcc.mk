@@ -62,7 +62,10 @@ CLINKCC_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 CLINKCC_CPPFLAGS=
-CLINKCC_LDFLAGS=
+CLINKCC_LDFLAGS=-lxerces-c 
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	CLINKCC_LDFLAGS+=-liconv 
+endif
 
 #
 # CLINKCC_BUILD_DIR is the directory in which the build is done.
@@ -141,8 +144,24 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--disable-static \
+		--enable-shared=clink \
+		--enable-static=no \
 	)
+	###conver to shared
+	sed -i -e 's/-c -o/-c -fPIC -o/g' $(@D)/lib/unix/Makefile
+	sed -i -e 's/libclink\.a/libclink.so/g' $(@D)/lib/unix/Makefile
+	sed -i -e 's/libclink\.a/libclink.so/g' $(@D)/sample/tv/unix/Makefile
+	sed -i -e 's/libclink\.a/libclink.so/g' $(@D)/sample/media/server/unix/Makefile
+	sed -i -e 's/libclink\.a/libclink.so/g' $(@D)/sample/media/serverdump/unix/Makefile
+	sed -i -e 's/libclink\.a/libclink.so/g' $(@D)/sample/upnpdump/unix/Makefile
+	sed -i -e 's/libclink\.a/libclink.so/g' $(@D)/sample/clock/unix/Makefile
+	sed -i -e 's/libclink_a/libclink_so/g' $(@D)/lib/unix/Makefile
+	sed -i -e 's/libclink_so_AR/libclink_so_LINK/' $(@D)/lib/unix/Makefile
+	sed -i -e 's/\$$(AR) cru/\$$(CXX) -shared \$$(AM_CXXFLAGS) \$$(CXXFLAGS) \$$(AM_LDFLAGS) \$$(LDFLAGS) -o/' $(@D)/lib/unix/Makefile
+	sed -i -e 's/\$$(RANLIB) libclink.so//' $(@D)/lib/unix/Makefile
+	sed -i -e 's|\$$(RANLIB)|$(STRIP_COMMAND)|' $(@D)/lib/unix/Makefile
+	sed -i -e 's/FileInputStream\.\$$(OBJEXT) StringBufferInputStream\.\$$(OBJEXT)/StringBufferInputStream\.\$$(OBJEXT)/' $(@D)/lib/unix/Makefile
+
 	$(PATCH_LIBTOOL) \
 		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
 		$(@D)/libtool
@@ -168,7 +187,7 @@ clinkcc: $(CLINKCC_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CLINKCC_BUILD_DIR)/.staged: $(CLINKCC_BUILD_DIR)/.built
-	rm -f $@
+	rm -f $@ $(STAGING_DIR)/opt/lib/libclink.a
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
