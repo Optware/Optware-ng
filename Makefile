@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	clinkcc \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -227,7 +226,7 @@ COMMON_CROSS_PACKAGES = \
 	c-ares cabextract cairo calc calcurse castget \
 	catdoc ccollect ccxstream cdargs cdrtools centerim cuetools \
 	cherokee chicken chillispot chrpath cksfv \
-	classpath clamav clearsilver climm clips cmdftp \
+	classpath clamav clearsilver climm clinkcc clips cmdftp \
 	confuse connect coreutils corkscrew cpio cron \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
