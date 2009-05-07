@@ -20,6 +20,7 @@ BROKEN_PACKAGES = \
 	asterisk16 asterisk16-addons \
 	busybox \
 	chillispot \
+	clinkcc \
 	dcled \
 	dhcp \
 	ecl eggdrop \

@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	$(UCLIBC++_BROKEN_PACKAGES) \
 	cdrtools \
 	centerim \
+	clinkcc \
 	dansguardian \
 	dialog \
 	gambit-c \
