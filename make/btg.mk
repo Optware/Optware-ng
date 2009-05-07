@@ -172,8 +172,8 @@ ifeq (uclibc, $(LIBC_STYLE))
 	###roundf() workaround
 	sed -i -e "s|roundf(ratio \* 100\.0f)|((fmod(ratio \* 100\.0f,1)<0.5)?floor(ratio \* 100\.0f):ceil(ratio \* 100\.0f))|" $(@D)/bcore/client/ratio.cpp
 endif
-	sed -i -e "s|#include <bcore/type.h>\n#include <string>|#include <bcore/type.h>\n#include <unistd.h>\n#include <string>|" $(@D)/bcore/os/id.h
-	sed -i -e "s|#include <string>\n#include <bcore/type.h>|#include <string>\n#include <unistd.h>\n#include <bcore/type.h>|" $(@D)/bcore/os/exec.h
+	sed -i -e "s|#include <bcore/type.h>|#include <bcore/type.h>\n#include <unistd.h>|" $(@D)/bcore/os/id.h
+	sed -i -e "s|#include <string>|#include <string>\n#include <unistd.h>|" $(@D)/bcore/os/exec.h
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
