@@ -158,9 +158,9 @@ endif
 		--disable-static \
 		--disable-gui \
 		--disable-viewer \
+		--disable-debug \
 		--enable-btg-config \
 		--enable-cli \
-		--enable-debug \
 		--enable-url \
 		--enable-www \
 		--enable-session-saving \
