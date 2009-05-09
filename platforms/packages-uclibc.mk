@@ -2,7 +2,6 @@
 # moc - conflicting types for '__glibc_strerror_r'
 UCLIBC_BROKEN_PACKAGES = \
 	 9base \
-	 btg \
 	 bzflag \
 	 cairo \
 	 fcgi fish \
@@ -21,6 +20,7 @@ UCLIBC_BROKEN_PACKAGES = \
 UCLIBC++_BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	 boost \
+	 btg \
 	 libstdc++ \
 	 libtorrent-rasterbar \
 
