@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.6.2.5
+GIT_VERSION=1.6.3
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -64,6 +64,11 @@ GIT_LDFLAGS=-liconv
 else
 GIT_LDFLAGS=
 endif
+
+GIT_MAKE_FLAGS=$(strip \
+$(if $(filter arm armeb armel, $(TARGET_ARCH)), ARM_SHA1=1, \
+$(if $(filter powerpc ppc, $(TARGET_ARCH)), PPC_SHA1=1, \
+)))
 
 ifneq (,$(filter perl, $(PACKAGES)))
 GIT_PERL_PATH=PERL_PATH=$(PERL_HOSTPERL)
@@ -126,7 +131,7 @@ git-source: $(DL_DIR)/$(GIT_SOURCE) $(DL_DIR)/$(GIT-MANPAGES_SOURCE) $(GIT_PATCH
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(GIT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIT_SOURCE) $(GIT_PATCHES)
+$(GIT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIT_SOURCE) $(GIT_PATCHES) make/git.mk
 	$(MAKE) zlib-stage openssl-stage libcurl-stage expat-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -165,6 +170,9 @@ git-unpack: $(GIT_BUILD_DIR)/.configured
 #
 $(GIT_BUILD_DIR)/.built: $(GIT_BUILD_DIR)/.configured
 	rm -f $@
+	if ! $(TARGET_CC) -c -o /dev/null $(SOURCE_DIR)/common/tv_nsec.c >/dev/null 2>&1; \
+		then export GIT_NSEC=NO_NSEC=true ; \
+	fi; \
 	PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 	$(GIT_PERL_PATH) \
 	$(MAKE) -C $(@D) \
@@ -172,6 +180,8 @@ $(GIT_BUILD_DIR)/.built: $(GIT_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIT_LDFLAGS)" \
 		NO_TCLTK=true \
+		$$GIT_NSEC \
+		$(GIT_MAKE_FLAGS) \
 		prefix=/opt all strip
 	touch $@
 
@@ -253,17 +263,22 @@ $(GIT-SVN_IPK_DIR)/CONTROL/control:
 #
 $(GIT_IPK): $(GIT_BUILD_DIR)/.built
 	rm -rf $(GIT_IPK_DIR) $(BUILD_DIR)/git_*_$(TARGET_ARCH).ipk
+	if ! $(TARGET_CC) -c -o /dev/null $(SOURCE_DIR)/common/tv_nsec.c >/dev/null 2>&1; \
+		then export GIT_NSEC=NO_NSEC=true ; \
+	fi; \
 	PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 	$(MAKE) -C $(GIT_BUILD_DIR) DESTDIR=$(GIT_IPK_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIT_LDFLAGS)" \
 		NO_TCLTK=true \
+		$$GIT_NSEC \
+		$(GIT_MAKE_FLAGS) \
 		prefix=/opt \
 		install
 ifneq (,$(filter perl, $(PACKAGES)))
-	mv $(GIT_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod \
-	   $(GIT_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.git 
+	for f in `find $(GIT_IPK_DIR)/opt/lib -name perllocal.pod`; \
+		do mv $$f $$f.git; done
 endif
 	install -d $(GIT_IPK_DIR)/opt/etc/bash_completion.d
 	install $(<D)/contrib/completion/git-completion.bash $(GIT_IPK_DIR)/opt/etc/bash_completion.d
