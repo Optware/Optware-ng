@@ -28,7 +28,7 @@ TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
 #http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.60
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=8349
+TRANSMISSION_SVN_REV=8368
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
