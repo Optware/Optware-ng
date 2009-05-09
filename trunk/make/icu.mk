@@ -144,6 +144,9 @@ icu-unpack: $(ICU_BUILD_DIR)/.configured
 #
 $(ICU_BUILD_DIR)/.built: $(ICU_HOST_BUILD_DIR)/.built $(ICU_BUILD_DIR)/.configured
 	rm -f $@
+	rm -rf $(STAGING_DIR)/opt/include/unicode
+	rm -rf $(STAGING_DIR)/opt/lib/libicu*
+	rm -rf $(STAGING_DIR)/opt/lib/icu
 	###should exit with "/bin/sh: ../bin/icupkg: cannot execute binary file"
 	-$(MAKE) -C $(@D)/source
 	mkdir $(@D)/source/bin.cross $(@D)/source/data.cross
@@ -169,6 +172,7 @@ icu: $(ICU_BUILD_DIR)/.built
 #
 $(ICU_BUILD_DIR)/.staged: $(ICU_BUILD_DIR)/.built
 	rm -f $@
+	rm -rf $(STAGING_DIR)/opt/include/unicode
 	cp -f $(HOST_BUILD_DIR)/icu/bin/pkgdata $(@D)/source/bin
 	$(MAKE) -C $(@D)/source DESTDIR=$(STAGING_DIR) install
 	cp -f $(@D)/source/bin.cross/pkgdata $(STAGING_DIR)/opt/bin
@@ -266,7 +270,7 @@ icu-clean:
 # directories.
 #
 icu-dirclean:
-	rm -rf $(BUILD_DIR)/$(ICU_DIR) $(ICU_BUILD_DIR) $(ICU_IPK_DIR) $(ICU_IPK)
+	rm -rf $(BUILD_DIR)/$(ICU_DIR) $(ICU_BUILD_DIR) $(ICU_HOST_BUILD_DIR) $(ICU_IPK_DIR) $(ICU_IPK)
 #
 #
 # Some sanity check for the package.
