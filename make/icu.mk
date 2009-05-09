@@ -122,6 +122,9 @@ $(ICU_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.mk
 	if test "$(BUILD_DIR)/$(ICU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ICU_DIR) $(@D) ; \
 	fi
+	rm -rf $(STAGING_DIR)/opt/include/unicode
+	rm -rf $(STAGING_DIR)/opt/lib/libicu*
+	rm -rf $(STAGING_DIR)/opt/lib/icu
 	(cd $(@D)/source; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICU_CPPFLAGS)" \
@@ -144,9 +147,6 @@ icu-unpack: $(ICU_BUILD_DIR)/.configured
 #
 $(ICU_BUILD_DIR)/.built: $(ICU_HOST_BUILD_DIR)/.built $(ICU_BUILD_DIR)/.configured
 	rm -f $@
-	rm -rf $(STAGING_DIR)/opt/include/unicode
-	rm -rf $(STAGING_DIR)/opt/lib/libicu*
-	rm -rf $(STAGING_DIR)/opt/lib/icu
 	###should exit with "/bin/sh: ../bin/icupkg: cannot execute binary file"
 	-$(MAKE) -C $(@D)/source
 	mkdir $(@D)/source/bin.cross $(@D)/source/data.cross
@@ -172,7 +172,6 @@ icu: $(ICU_BUILD_DIR)/.built
 #
 $(ICU_BUILD_DIR)/.staged: $(ICU_BUILD_DIR)/.built
 	rm -f $@
-	rm -rf $(STAGING_DIR)/opt/include/unicode
 	cp -f $(HOST_BUILD_DIR)/icu/bin/pkgdata $(@D)/source/bin
 	$(MAKE) -C $(@D)/source DESTDIR=$(STAGING_DIR) install
 	cp -f $(@D)/source/bin.cross/pkgdata $(STAGING_DIR)/opt/bin
