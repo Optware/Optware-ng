@@ -28,7 +28,9 @@ TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
 #http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.60
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
+ifeq (, $(filter nslu2, $(OPTWARE_TARGET)))
 TRANSMISSION_SVN_REV=8368
+endif
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -47,7 +49,7 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=1
+TRANSMISSION_IPK_VERSION=2
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
