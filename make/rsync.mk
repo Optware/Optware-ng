@@ -5,7 +5,7 @@
 ###########################################################
 
 RSYNC_SITE=http://www.samba.org/ftp/rsync
-RSYNC_VERSION=3.0.5
+RSYNC_VERSION=3.0.6
 RSYNC_SOURCE=rsync-$(RSYNC_VERSION).tar.gz
 RSYNC_DIR=rsync-$(RSYNC_VERSION)
 RSYNC_UNZIP=zcat
@@ -145,4 +145,4 @@ rsync-dirclean:
 	rm -rf $(BUILD_DIR)/$(RSYNC_DIR) $(RSYNC_BUILD_DIR) $(RSYNC_IPK_DIR) $(RSYNC_IPK)
 
 rsync-check: $(RSYNC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RSYNC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
