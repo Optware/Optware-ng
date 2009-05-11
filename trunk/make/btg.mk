@@ -148,7 +148,7 @@ endif
 		LIBTORRENT_CFLAGS="-I$(STAGING_PREFIX)/include" \
 		LIBCURL="$(STAGING_LDFLAGS) -lcurl" \
 		LIBCURL_CPPFLAGS="$(STAGING_CPPFLAGS)" \
-		DIALOG="$(STAGING_PREFIX)/bin/dialog" \
+		DIALOG="/opt/bin/dialog" \
 		LIBGNUTLS_CONFIG="$(STAGING_PREFIX)/bin/libgnutls-config" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
