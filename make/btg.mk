@@ -62,6 +62,10 @@ BTG_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 BTG_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)))
+BTG_CPPFLAGS+=-fno-builtin-ceil
+endif
+
 BTG_LDFLAGS=-ltorrent-rasterbar -lboost_system-mt -lboost_iostreams-mt -lboost_filesystem-mt -lboost_date_time-mt -lboost_thread-mt -lboost_program_options-mt 
 ifeq (clinkcc, $(filter clinkcc, $(PACKAGES)))
 	BTG_CONFIGURE_ARGS=--enable-upnp
