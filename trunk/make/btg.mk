@@ -35,7 +35,7 @@ BTG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BTG_DESCRIPTION=BTG is a bittorrent client implemented in C++ using the Rasterbar Libtorrent library and provides various user interfaces, which communicate with a common backend running the actual bittorrent operation. Built with Ncurses and WWW GUI.
 BTG_SECTION=net
 BTG_PRIORITY=optional
-BTG_DEPENDS=libtorrent-rasterbar, boost-iostreams, boost-program-options, expat, gnutls, libcurl, dialog, php-xml
+BTG_DEPENDS=libtorrent-rasterbar, boost-iostreams, boost-program-options, expat, gnutls, libcurl, dialog, php
 ifeq (clinkcc, $(filter clinkcc, $(PACKAGES)))
 	BTG_DEPENDS+=, clinkcc
 endif
@@ -45,7 +45,7 @@ BTG_CONFLICTS=
 #
 # BTG_IPK_VERSION should be incremented when the ipk changes.
 #
-BTG_IPK_VERSION=1
+BTG_IPK_VERSION=2
 
 #
 # BTG_CONFFILES should be a list of user-editable files
