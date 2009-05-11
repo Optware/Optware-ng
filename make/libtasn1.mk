@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBTASN1_SITE=http://ftp.gnu.org/gnu/gnutls
-LIBTASN1_VERSION=1.5
+LIBTASN1_VERSION=2.1
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
 LIBTASN1_UNZIP=zcat
@@ -108,10 +108,10 @@ libtasn1-source: $(DL_DIR)/$(LIBTASN1_SOURCE) $(LIBTASN1_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBTASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTASN1_SOURCE) $(LIBTASN1_PATCHES) make/libtasn1.mk
-	#$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBTASN1_DIR) $(@D)
 	$(LIBTASN1_UNZIP) $(DL_DIR)/$(LIBTASN1_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(LIBTASN1_PATCHES) | patch -d $(BUILD_DIR)/$(LIBTASN1_DIR) -p1
+#	cat $(LIBTASN1_PATCHES) | patch -d $(BUILD_DIR)/$(LIBTASN1_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBTASN1_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -222,4 +222,4 @@ libtasn1-dirclean:
 # Some sanity check for the package.
 #
 libtasn1-check: $(LIBTASN1_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBTASN1_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
