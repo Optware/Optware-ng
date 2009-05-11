@@ -21,7 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BTPD_SITE=http://www.murmeldjur.se/btpd
-BTPD_VERSION=0.15
+BTPD_VERSION?=0.15
+BTPD_IPK_VERSION?=1
 BTPD_SOURCE=btpd-$(BTPD_VERSION).tar.gz
 BTPD_DIR=btpd-$(BTPD_VERSION)
 BTPD_UNZIP=zcat
@@ -33,10 +34,6 @@ BTPD_DEPENDS=
 BTPD_SUGGESTS=
 BTPD_CONFLICTS=
 
-#
-# BTPD_IPK_VERSION should be incremented when the ipk changes.
-#
-BTPD_IPK_VERSION=1
 
 #
 # BTPD_CONFFILES should be a list of user-editable files
