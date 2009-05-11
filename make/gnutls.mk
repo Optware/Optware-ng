@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUTLS_SITE=http://ftp.gnu.org/pub/gnu/gnutls
-GNUTLS_VERSION=2.6.4
+GNUTLS_VERSION=2.6.5
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
 GNUTLS_UNZIP=bzcat
