@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGMP_SITE=ftp://ftp.gnu.org/gnu/gmp
-LIBGMP_VERSION=4.2.3
+LIBGMP_VERSION=4.3.1
 LIBGMP_SOURCE=gmp-$(LIBGMP_VERSION).tar.bz2
 LIBGMP_DIR=gmp-$(LIBGMP_VERSION)
 LIBGMP_UNZIP=bzcat
@@ -251,4 +251,4 @@ libgmp-dirclean:
 # Some sanity check for the package.
 #
 libgmp-check: $(LIBGMP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBGMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
