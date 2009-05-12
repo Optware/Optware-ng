@@ -39,6 +39,9 @@ BROKEN_PACKAGES = \
 	 xdpyinfo xext \
 	 xpm xtst zsh \
 
+PROCPS_VERSION=3.2.3
+PROCPS_IPK_VERSION=6
+
 TAR_VERSION=1.16.1
 TAR_IPK_VERSION=3
 

@@ -4,11 +4,8 @@
 #
 ###########################################################
 
-ifeq ($(OPTWARE_TARGET), wl500g)
-PROCPS_VERSION=3.2.3
-else
-PROCPS_VERSION=3.2.7
-endif
+PROCPS_VERSION?=3.2.8
+PROCPS_IPK_VERSION?=1
 PROCPS=procps-$(PROCPS_VERSION)
 PROCPS_SITE=http://procps.sourceforge.net
 PROCPS_SOURCE_ARCHIVE=$(PROCPS).tar.gz
@@ -19,8 +16,6 @@ PROCPS_SECTION=devel
 PROCPS_PRIORITY=optional
 PROCPS_DEPENDS=ncurses
 PROCPS_CONFLICTS=
-
-PROCPS_IPK_VERSION=6
 
 PROCPS_BUILD_DIR=$(BUILD_DIR)/procps
 PROCPS_SOURCE_DIR=$(SOURCE_DIR)/procps
@@ -48,9 +43,10 @@ procps-source: $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE)
 #
 # This target unpacks the source code into the build directory.
 #
-$(PROCPS_BUILD_DIR)/.source: $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE)
+$(PROCPS_BUILD_DIR)/.source: $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE) make/procps.mk
+	rm -rf $(@D) $(BUILD_DIR)/procps-$(PROCPS_VERSION)
 	$(PROCPS_UNZIP) $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/procps-$(PROCPS_VERSION) $(PROCPS_BUILD_DIR)
+	mv $(BUILD_DIR)/procps-$(PROCPS_VERSION) $(@D)
 	sed -i -e '/ALL_CFLAGS += $$(m64)/s/^/#/' $(@D)/Makefile
 	touch $@
 
@@ -166,4 +162,4 @@ procps-dirclean:
 	rm -rf $(PROCPS_BUILD_DIR) $(PROCPS_IPK_DIR) $(PROCPS_IPK)
 
 procps-check: $(PROCPS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PROCPS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
