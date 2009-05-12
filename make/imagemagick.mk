@@ -21,8 +21,8 @@
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VER=6.5.1
-IMAGEMAGICK_REV=0
+IMAGEMAGICK_VER=6.5.2
+IMAGEMAGICK_REV=4
 IMAGEMAGICK_IPK_VERSION=1
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.bz2
 IMAGEMAGICK_UNZIP=bzcat
@@ -123,6 +123,7 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-openmp \
 		--without-perl \
 		--without-x \
 		--with-zlib \
