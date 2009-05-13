@@ -32,7 +32,7 @@ BTG_SOURCE=btg-$(BTG_VERSION).tar.gz
 BTG_DIR=btg-$(BTG_VERSION)
 BTG_UNZIP=zcat
 BTG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-BTG_DESCRIPTION=BTG is a bittorrent client implemented in C++ using the Rasterbar Libtorrent library and provides various user interfaces, which communicate with a common backend running the actual bittorrent operation. Built with Ncurses and WWW GUI.
+BTG_DESCRIPTION=BTG is a bittorrent client implemented in C++ using the Rasterbar Libtorrent library and provides various user interfaces, which communicate with a common backend running the actual bittorrent operation. Built with Ncurses and WWW UI.
 BTG_SECTION=net
 BTG_PRIORITY=optional
 BTG_DEPENDS=libtorrent-rasterbar, boost-iostreams, boost-program-options, expat, gnutls, libcurl, dialog, php
@@ -66,7 +66,7 @@ ifeq ($(OPTWARE_TARGET), $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)))
 BTG_CPPFLAGS+=-fno-builtin-ceil
 endif
 
-BTG_LDFLAGS=-ltorrent-rasterbar -lboost_system-mt -lboost_iostreams-mt -lboost_filesystem-mt -lboost_date_time-mt -lboost_thread-mt -lboost_program_options-mt 
+BTG_LDFLAGS=-Wl,-rpath,/opt/lib/btg -ltorrent-rasterbar -lboost_system-mt -lboost_iostreams-mt -lboost_filesystem-mt -lboost_date_time-mt -lboost_thread-mt -lboost_program_options-mt 
 ifeq (clinkcc, $(filter clinkcc, $(PACKAGES)))
 	BTG_CONFIGURE_ARGS=--enable-upnp
 	BTG_LDFLAGS+=-lclink 
