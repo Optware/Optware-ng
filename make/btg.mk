@@ -45,7 +45,7 @@ BTG_CONFLICTS=
 #
 # BTG_IPK_VERSION should be incremented when the ipk changes.
 #
-BTG_IPK_VERSION=2
+BTG_IPK_VERSION=3
 
 #
 # BTG_CONFFILES should be a list of user-editable files
