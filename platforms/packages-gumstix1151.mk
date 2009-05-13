@@ -8,7 +8,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
 	$(UCLIBC_BROKEN_PACKAGES) \
-	amule asterisk \
+	asterisk \
 	bluez-hcidump \
 	dump ficy \
 	fuppes \
