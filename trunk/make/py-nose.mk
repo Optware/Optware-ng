@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-NOSE_SITE=http://pypi.python.org/packages/source/n/nose
-PY-NOSE_VERSION=0.10.4
+PY-NOSE_VERSION=0.11.0
 PY-NOSE_SOURCE=nose-$(PY-NOSE_VERSION).tar.gz
 PY-NOSE_DIR=nose-$(PY-NOSE_VERSION)
 PY-NOSE_UNZIP=zcat
@@ -38,7 +38,7 @@ PY-NOSE_CONFLICTS=
 #
 # PY-NOSE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-NOSE_IPK_VERSION=2
+PY-NOSE_IPK_VERSION=1
 
 #
 # PY-NOSE_CONFFILES should be a list of user-editable files
