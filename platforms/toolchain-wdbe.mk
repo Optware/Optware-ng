@@ -45,8 +45,7 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
-#http://support.wdc.com/product/download.asp?groupid=107&sid=64
-TOOLCHAIN_SITES=http://sources.nslu2-linux.org/sources
+TOOLCHAIN_SITE=http://support.wdc.com/download/mybook
 TOOLCHAIN_SOURCE=WD-World-NAS-v02.00.18-GPL.tar.bz2
 
 UCLIBC-OPT_VERSION = 0.9.28
