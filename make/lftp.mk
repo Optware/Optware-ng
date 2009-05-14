@@ -31,13 +31,16 @@ LFTP_DESCRIPTION=Sophisticated ftp/http client, file transfer program supporting
 LFTP_SECTION=net
 LFTP_PRIORITY=optional
 LFTP_DEPENDS=readline, ncurses, expat, libstdc++, gnutls
+ifeq (enable, $(GETTEXT_NLS))
+LFTP_DEPENDS +=, gettext
+endif
 LFTP_SUGGESTS=
 LFTP_CONFLICTS=
 
 #
 # LFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LFTP_IPK_VERSION=1
+LFTP_IPK_VERSION=2
 
 #
 # LFTP_CONFFILES should be a list of user-editable files
@@ -118,6 +121,9 @@ lftp-source: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES) make/lftp.mk
 	$(MAKE) readline-stage ncurses-stage expat-stage libstdc++-stage
 	$(MAKE) libgcrypt-stage libgpg-error-stage libtasn1-stage gnutls-stage
+ifeq (enable, $(GETTEXT_NLS))
+	$(MAKE) gettext-stage
+endif
 	rm -rf $(BUILD_DIR)/$(LFTP_DIR) $(@D)
 	$(LFTP_UNZIP) $(DL_DIR)/$(LFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LFTP_PATCHES)" ; \
