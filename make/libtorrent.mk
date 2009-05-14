@@ -181,7 +181,7 @@ endif
 		--disable-static \
 		--with-openssl=$(STAGING_PREFIX) \
 	)
-ifneq (, $(filter gumstix1151, $(OPTWARE_TARGET)))
+ifneq (, $(filter gumstix1151 mbwe-bluering, $(OPTWARE_TARGET)))
 	sed -i -e '/USE_MADVISE/s|.*|/* #undef USE_MADVISE */|' $(@D)/config.h
 endif
 	$(PATCH_LIBTOOL) $(@D)/libtool

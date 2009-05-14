@@ -65,7 +65,7 @@ XMAIL_PATCHES=\
 # compilation or linking flags, then list them here.
 #
 XMAIL_CPPFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter gumstix1151 mbwe-bluering, $(OPTWARE_TARGET)))
 XMAIL_CPPFLAGS += -DDISABLE_IPV6
 endif
 XMAIL_LDFLAGS=
