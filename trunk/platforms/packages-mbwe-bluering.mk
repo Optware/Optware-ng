@@ -20,3 +20,14 @@ BROKEN_PACKAGES = \
 	player \
 	puppy sendmail \
 	scrobby \
+	\
+	btg \
+	dialog \
+	microdc2 \
+	mysql-connector-odbc \
+	mod-python \
+	rssh \
+	taged \
+	transcode \
+	util-linux \
+	slimserver \
