@@ -69,7 +69,7 @@ $(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) # $(OPTWARE_TOP)/
 	tar -xv -C $(@D) -f $(@D)/WD_v2.0_RC18/gpl-buildroot-archives.tar
 	rm -rf $(@D)/WD_v2.0_RC18
 	mv $(@D)/buildroot-archives/buildroot-20060823.tar.bz2 $(@D)
-	mv -u $(@D)/buildroot-archives/* $(DL_DIR)
+	mv -u $(@D)/buildroot-archives/binutils-2.16.1.tar.bz2 $(@D)/buildroot-archives/gcc-3.4.2.tar.bz2 $(@D)/buildroot-archives/gdb-6.4.tar.bz2 $(DL_DIR)
 	rm -rf $(@D)/buildroot-archives
 	tar -xvj -C $(@D) -f $(@D)/buildroot-20060823.tar.bz2
 	mv $(@D)/buildroot $(@D)/mbwe-bluering-buildroot
