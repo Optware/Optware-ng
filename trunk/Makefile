@@ -88,7 +88,7 @@ PERL_PACKAGES = \
 	perl-ip-country \
 	perl-json-xs \
 	perl-lexical-persistence \
-	perl-libnet perl-libwww \
+	perl-libnet perl-libwww perl-libxml \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
 	perl-module-build perl-module-pluggable perl-module-refresh perl-module-signature \
@@ -112,7 +112,7 @@ PERL_PACKAGES = \
 	perl-version \
 	perl-wakeonlan \
 	perl-www-mechanize \
-	perl-xml-parser \
+	perl-xml-dom perl-xml-parser perl-xml-regexp \
 	perl-yaml-syck \
 	ack \
 	amavisd-new \
