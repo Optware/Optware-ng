@@ -17,7 +17,7 @@ CROSS_CONFIGURATION_UCLIBC_VERSION=0.9.28
 BUILDROOT_GCC=$(CROSS_CONFIGURATION_GCC_VERSION)
 UCLIBC-OPT_VERSION=$(CROSS_CONFIGURATION_UCLIBC_VERSION)
 
-WDBE_SOURCE_DIR=$(SOURCE_DIR)/wdbe
+MBWE-BLUERING_SOURCE_DIR=$(SOURCE_DIR)/mbwe-bluering
 
 ifeq ($(HOST_MACHINE),armv5tejl)
 
@@ -37,7 +37,7 @@ else
 CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_UCLIBC=uclibc-$(CROSS_CONFIGURATION_UCLIBC_VERSION)
 CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
-TARGET_CROSS_TOP = $(shell cd $(BASE_DIR); pwd)/toolchain/wdbe-buildroot/build_arm_nofpu/staging_dir
+TARGET_CROSS_TOP = $(shell cd $(BASE_DIR); pwd)/toolchain/mbwe-bluering-buildroot/build_arm_nofpu/staging_dir
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(TARGET_ARCH)-$(TARGET_OS)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/include
@@ -45,7 +45,8 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
-TOOLCHAIN_SITE=http://support.wdc.com/download/mybook
+#http://support.wdc.com/product/download.asp?groupid=107&sid=64
+TOOLCHAIN_SITES=http://sources.nslu2-linux.org/sources
 TOOLCHAIN_SOURCE=WD-World-NAS-v02.00.18-GPL.tar.bz2
 
 UCLIBC-OPT_VERSION = 0.9.28
@@ -72,20 +73,20 @@ $(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) # $(OPTWARE_TOP)/
 	mv -u $(@D)/buildroot-archives/* $(DL_DIR)
 	rm -rf $(@D)/buildroot-archives
 	tar -xvj -C $(@D) -f $(@D)/buildroot-20060823.tar.bz2
-	mv $(@D)/buildroot $(@D)/wdbe-buildroot
+	mv $(@D)/buildroot $(@D)/mbwe-bluering-buildroot
 	rm -f $(@D)/buildroot-20060823.tar.bz2
-	cp -f $(WDBE_SOURCE_DIR)/.defconfig $(@D)/wdbe-buildroot
-	sed -i -e "s~Apply appropriate binutils patches.~Apply appropriate binutils patches.\n	cat $(WDBE_SOURCE_DIR)/binutils_bfd_ar_spacepad.patch | patch -d toolchain_build_arm_nofpu/binutils-2.16.1 -p0~" $(@D)/wdbe-buildroot/toolchain/binutils/binutils.mk
-	echo "ARCH_HAS_MMU=y" >> $(@D)/wdbe-buildroot/toolchain/uClibc/uClibc.config
-	echo "HAS_FPU=n" >> $(@D)/wdbe-buildroot/toolchain/uClibc/uClibc.config
-	echo "BUILD_UCLIBC_LDSO=y" >> $(@D)/wdbe-buildroot/toolchain/uClibc/uClibc.config
-	echo "DL_FINI_CRT_COMPAT=n" >> $(@D)/wdbe-buildroot/toolchain/uClibc/uClibc.config
-	echo "LDSO_RUNPATH=y" >> $(@D)/wdbe-buildroot/toolchain/uClibc/uClibc.config
+	cp -f $(MBWE-BLUERING_SOURCE_DIR)/.defconfig $(@D)/mbwe-bluering-buildroot
+	sed -i -e "s~Apply appropriate binutils patches.~Apply appropriate binutils patches.\n	cat $(MBWE-BLUERING_SOURCE_DIR)/binutils_bfd_ar_spacepad.patch | patch -d toolchain_build_arm_nofpu/binutils-2.16.1 -p0~" $(@D)/mbwe-bluering-buildroot/toolchain/binutils/binutils.mk
+	echo "ARCH_HAS_MMU=y" >> $(@D)/mbwe-bluering-buildroot/toolchain/uClibc/uClibc.config
+	echo "HAS_FPU=n" >> $(@D)/mbwe-bluering-buildroot/toolchain/uClibc/uClibc.config
+	echo "BUILD_UCLIBC_LDSO=y" >> $(@D)/mbwe-bluering-buildroot/toolchain/uClibc/uClibc.config
+	echo "DL_FINI_CRT_COMPAT=n" >> $(@D)/mbwe-bluering-buildroot/toolchain/uClibc/uClibc.config
+	echo "LDSO_RUNPATH=y" >> $(@D)/mbwe-bluering-buildroot/toolchain/uClibc/uClibc.config
 	touch $@
 
-$(TARGET_CROSS)gcc: $(BASE_DIR)/toolchain/.unpacked # $(OPTWARE_TOP)/platforms/toolchain-gumstix1151.mk
+$(TARGET_CROSS)gcc: $(BASE_DIR)/toolchain/.unpacked # $(OPTWARE_TOP)/platforms/toolchain-mbwe-bluering.mk
 	mkdir -p tmp
-	$(MAKE) -C toolchain/wdbe-buildroot defconfig
-	$(MAKE) -C toolchain/wdbe-buildroot DL_DIR=$(DL_DIR)
+	$(MAKE) -C toolchain/mbwe-bluering-buildroot defconfig
+	$(MAKE) -C toolchain/mbwe-bluering-buildroot DL_DIR=$(DL_DIR)
 	rm -rf tmp
 endif
