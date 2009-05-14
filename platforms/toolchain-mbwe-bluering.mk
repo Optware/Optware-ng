@@ -86,6 +86,7 @@ $(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) # $(OPTWARE_TOP)/
 $(TARGET_CROSS)gcc: $(BASE_DIR)/toolchain/.unpacked # $(OPTWARE_TOP)/platforms/toolchain-mbwe-bluering.mk
 	mkdir -p tmp
 	$(MAKE) -C toolchain/mbwe-bluering-buildroot defconfig
+	cp -f $(MBWE-BLUERING_SOURCE_DIR)/.config toolchain/mbwe-bluering-buildroot
 	$(MAKE) -C toolchain/mbwe-bluering-buildroot DL_DIR=$(DL_DIR)
 	rm -rf tmp
 endif
