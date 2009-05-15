@@ -126,6 +126,7 @@ $(DIALOG_BUILD_DIR)/.configured: $(DL_DIR)/$(DIALOG_SOURCE) $(DIALOG_PATCHES) ma
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--with-$(NCURSES_FOR_OPTWARE_TARGET) \
 	)
 	sed -i -e '/^LIBS/s| -L/lib||' $(DIALOG_BUILD_DIR)/makefile
 #	$(PATCH_LIBTOOL) $(DIALOG_BUILD_DIR)/libtool
