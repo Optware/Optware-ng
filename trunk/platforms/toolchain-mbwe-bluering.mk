@@ -69,13 +69,12 @@ $(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) # $(OPTWARE_TOP)/
 	tar -xv -C $(@D) -f $(@D)/WD_v2.0_RC18/gpl-buildroot-archives.tar
 	rm -rf $(@D)/WD_v2.0_RC18
 	mv $(@D)/buildroot-archives/buildroot-20060823.tar.bz2 $(@D)
-	mv -u $(@D)/buildroot-archives/binutils-2.16.1.tar.bz2 $(@D)/buildroot-archives/gcc-3.4.2.tar.bz2 $(@D)/buildroot-archives/gdb-6.4.tar.bz2 $(DL_DIR)
+	mv -u $(@D)/buildroot-archives/binutils-2.16.1.tar.bz2 $(@D)/buildroot-archives/gcc-3.4.2.tar.bz2 $(DL_DIR)
 	rm -rf $(@D)/buildroot-archives
 	tar -xvj -C $(@D) -f $(@D)/buildroot-20060823.tar.bz2
 	mv $(@D)/buildroot $(@D)/mbwe-bluering-buildroot
 	rm -f $(@D)/buildroot-20060823.tar.bz2
 	cp -f $(MBWE-BLUERING_SOURCE_DIR)/.defconfig $(@D)/mbwe-bluering-buildroot
-	sed -i -e 's|source "package/ncurses/Config.in"|#source "package/ncurses/Config.in"|' $(@D)/mbwe-bluering-buildroot/package/Config.in
 	sed -i -e "s~Apply appropriate binutils patches.~Apply appropriate binutils patches.\n	cat $(MBWE-BLUERING_SOURCE_DIR)/binutils_bfd_ar_spacepad.patch | patch -d toolchain_build_arm_nofpu/binutils-2.16.1 -p0~" $(@D)/mbwe-bluering-buildroot/toolchain/binutils/binutils.mk
 	echo "ARCH_HAS_MMU=y" >> $(@D)/mbwe-bluering-buildroot/toolchain/uClibc/uClibc.config
 	echo "HAS_FPU=n" >> $(@D)/mbwe-bluering-buildroot/toolchain/uClibc/uClibc.config
