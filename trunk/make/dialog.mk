@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DIALOG_SITE=ftp://invisible-island.net/dialog
-DIALOG_VERSION=1.1-20070604
+DIALOG_VERSION=1.1-20080819
 DIALOG_SOURCE=dialog-$(DIALOG_VERSION).tgz
 DIALOG_DIR=dialog-$(DIALOG_VERSION)
 DIALOG_UNZIP=zcat
