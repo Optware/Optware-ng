@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SURFRAW_SITE=http://surfraw.alioth.debian.org/dist
-SURFRAW_VERSION=2.2.4
+SURFRAW_VERSION=2.2.5
 SURFRAW_SOURCE=surfraw-$(SURFRAW_VERSION).tar.gz
 SURFRAW_DIR=surfraw-$(SURFRAW_VERSION)
 SURFRAW_UNZIP=zcat
