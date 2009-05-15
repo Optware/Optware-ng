@@ -75,6 +75,7 @@ $(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) # $(OPTWARE_TOP)/
 	mv $(@D)/buildroot $(@D)/mbwe-bluering-buildroot
 	rm -f $(@D)/buildroot-20060823.tar.bz2
 	cp -f $(MBWE-BLUERING_SOURCE_DIR)/.defconfig $(@D)/mbwe-bluering-buildroot
+	sed -i -e 's|source "package/ncurses/Config.in"|#source "package/ncurses/Config.in"|' $(@D)/mbwe-bluering-buildroot/package/Config.in
 	sed -i -e "s~Apply appropriate binutils patches.~Apply appropriate binutils patches.\n	cat $(MBWE-BLUERING_SOURCE_DIR)/binutils_bfd_ar_spacepad.patch | patch -d toolchain_build_arm_nofpu/binutils-2.16.1 -p0~" $(@D)/mbwe-bluering-buildroot/toolchain/binutils/binutils.mk
 	echo "ARCH_HAS_MMU=y" >> $(@D)/mbwe-bluering-buildroot/toolchain/uClibc/uClibc.config
 	echo "HAS_FPU=n" >> $(@D)/mbwe-bluering-buildroot/toolchain/uClibc/uClibc.config
@@ -86,7 +87,6 @@ $(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) # $(OPTWARE_TOP)/
 $(TARGET_CROSS)gcc: $(BASE_DIR)/toolchain/.unpacked # $(OPTWARE_TOP)/platforms/toolchain-mbwe-bluering.mk
 	mkdir -p tmp
 	$(MAKE) -C toolchain/mbwe-bluering-buildroot defconfig
-	cp -f $(MBWE-BLUERING_SOURCE_DIR)/.config toolchain/mbwe-bluering-buildroot
 	$(MAKE) -C toolchain/mbwe-bluering-buildroot DL_DIR=$(DL_DIR)
 	rm -rf tmp
 endif
