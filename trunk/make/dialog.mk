@@ -29,7 +29,7 @@ DIALOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DIALOG_DESCRIPTION=Script-driven curses widgets.
 DIALOG_SECTION=console
 DIALOG_PRIORITY=optional
-DIALOG_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET)
+DIALOG_DEPENDS=ncurses
 DIALOG_SUGGESTS=
 DIALOG_CONFLICTS=
 
@@ -105,7 +105,7 @@ dialog-source: $(DL_DIR)/$(DIALOG_SOURCE) $(DIALOG_PATCHES)
 # shown below to make various patches to it.
 #
 $(DIALOG_BUILD_DIR)/.configured: $(DL_DIR)/$(DIALOG_SOURCE) $(DIALOG_PATCHES) make/dialog.mk
-	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(DIALOG_DIR) $(DIALOG_BUILD_DIR)
 	$(DIALOG_UNZIP) $(DL_DIR)/$(DIALOG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DIALOG_PATCHES)" ; \
@@ -126,7 +126,6 @@ $(DIALOG_BUILD_DIR)/.configured: $(DL_DIR)/$(DIALOG_SOURCE) $(DIALOG_PATCHES) ma
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--with-$(NCURSES_FOR_OPTWARE_TARGET) \
 	)
 	sed -i -e '/^LIBS/s| -L/lib||' $(DIALOG_BUILD_DIR)/makefile
 #	$(PATCH_LIBTOOL) $(DIALOG_BUILD_DIR)/libtool
