@@ -137,6 +137,7 @@ PYTHON_PACKAGES = \
 	gitosis \
 	hellanzb \
 	hplip \
+	iotop \
 	ipython \
 	mailman \
 	mod-python mod-wsgi \
