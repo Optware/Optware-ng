@@ -21,8 +21,6 @@ BROKEN_PACKAGES = \
 	puppy sendmail \
 	scrobby \
 	\
-	btg \
-	dialog \
 	microdc2 \
 	mysql-connector-odbc \
 	mod-python \
