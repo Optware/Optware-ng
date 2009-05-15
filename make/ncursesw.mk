@@ -85,7 +85,7 @@ ncursesw: $(NCURSESW_DIR)/.built
 $(NCURSESW_DIR)/.staged: $(NCURSESW_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
-	ln -sf ncursesw/ncurses.h $(STAGING_INCLUDE_DIR)
+	ln -sf ncurses/ncurses.h $(STAGING_INCLUDE_DIR)
 	touch $@
 
 ncursesw-stage: $(NCURSESW_DIR)/.staged
