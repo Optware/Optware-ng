@@ -1,0 +1,9 @@
+--- src/common/os.h.orig	2009-05-09 09:08:44.000000000 +0000
++++ src/common/os.h	2009-05-17 16:33:01.144075039 +0000
+@@ -141,4 +141,6 @@
+ void MTX_DLL_API create_directory(const char *path);
+ int64_t MTX_DLL_API get_current_time_millis();
+ 
++#include <stdarg.h>
++
+ #endif
