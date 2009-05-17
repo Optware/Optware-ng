@@ -23,6 +23,7 @@ UCLIBC++_BROKEN_PACKAGES = \
 	 btg \
 	 libstdc++ \
 	 libtorrent-rasterbar \
+	mkvtoolnix \
 
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC++_SPECIFIC_PACKAGES = \
