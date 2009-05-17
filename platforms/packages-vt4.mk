@@ -29,6 +29,7 @@ BROKEN_PACKAGES = \
 	libdvb libextractor libmrss libnxml libopensync \
 	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff \
 	libtorrent libtorrent-rasterbar \
+	libebml libmatroska mkvtoolnix \
 	llink loudmouth \
 	mediatomb mimms minidlna moc motion mod-fastcgi moe \
 	mp3blaster mpd mpdscribble mpop msmtp msynctool \

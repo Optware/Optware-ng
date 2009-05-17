@@ -274,10 +274,13 @@ COMMON_CROSS_PACKAGES = \
 	liba52 libao libart libbt libcapi20 libcdio libcurl \
 	libdaemon libdb libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread \
+	libebml \
 	libesmtp libevent libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
 	libid3tag libidn libieee1284 libijs libinklevel libjpeg libksba \
-	liblcms libmad libmemcache libmpcdec libmpeg2 libmrss libmtp \
+	liblcms libmad \
+	libmatroska \
+	libmemcache libmpcdec libmpeg2 libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libotr \
 	libpar2 libpcap libpng libpth librsync \
@@ -293,7 +296,8 @@ COMMON_CROSS_PACKAGES = \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
 	minicom minidlna minihttpd mini-sendmail mini-snmpd miscfiles \
-	mktemp mlocate moblock moc modutils monit most motion motor \
+	mktemp mkvtoolnix mlocate moblock \
+	moc modutils monit most motion motor \
 	mod-fastcgi moe mp3blaster mp3info mpack mpage \
 	mpc mpd mpdscribble \
 	mpg123 mpop mrtg msmtp \
