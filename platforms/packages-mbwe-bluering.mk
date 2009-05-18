@@ -22,7 +22,6 @@ BROKEN_PACKAGES = \
 	scrobby \
 	\
 	microdc2 \
-	mysql-connector-odbc \
 	mod-python \
 	rssh \
 	taged \
