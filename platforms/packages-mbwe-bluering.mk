@@ -7,19 +7,14 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \
-	asterisk \
 	bluez-hcidump \
-	dump ficy \
+	ficy \
 	fuppes \
-	gloox \
 	gtmess \
 	inferno \
 	iptraf \
-	ircd-hybrid \
-	mdadm \
 	player \
-	puppy sendmail \
-	scrobby \
+	puppy \
 	\
 	microdc2 \
 	mod-python \
