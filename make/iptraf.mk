@@ -119,6 +119,9 @@ $(IPTRAF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPTRAF_SOURCE) $(IPTRAF_PATCHES) ma
 	if test "$(BUILD_DIR)/$(IPTRAF_DIR)" != "$(IPTRAF_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(IPTRAF_DIR) $(IPTRAF_BUILD_DIR) ; \
 	fi
+ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET))) 
+	sed -i -e 's|^\(#include <net/if.h>\)|//#include <net/if.h>|' $(@D)/src/tcptable.h
+endif
 #	(cd $(IPTRAF_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPTRAF_CPPFLAGS)" \
