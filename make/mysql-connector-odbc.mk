@@ -54,6 +54,9 @@ MYSQL_CONNECTOR_ODBC_IPK_VERSION=1
 #
 MYSQL_CONNECTOR_ODBC_CPPFLAGS=
 MYSQL_CONNECTOR_ODBC_LDFLAGS=
+ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
+	MYSQL_CONNECTOR_ODBC_LDFLAGS+=-lodbc
+endif
 
 #
 # MYSQL_CONNECTOR_ODBC_BUILD_DIR is the directory in which the build is done.
@@ -134,6 +137,10 @@ $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSQL_CONNECTOR_ODBC_
 		--enable-gui=no \
 	)
 	$(PATCH_LIBTOOL) $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/libtool
+ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
+	sed -i -e "s|^SQLRETURN SQL_API SQLColAttribute( SQLHSTMT  StatementHandle,|\n/\*SQLRETURN SQL_API SQLColAttribute( SQLHSTMT  StatementHandle,|" $(@D)/driver/results.c
+	sed -i -e "s|^SQLRETURN SQL_API SQLColAttributes( SQLHSTMT hstmt,|\n#endif\nSQLRETURN SQL_API SQLColAttributes( SQLHSTMT hstmt,|" $(@D)/driver/results.c
+endif
 	touch $@
 
 mysql-connector-odbc-unpack: $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.configured
