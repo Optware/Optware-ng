@@ -26,7 +26,7 @@ MYSQL_CONNECTOR_ODBC_SOURCE=mysql-connector-odbc-$(MYSQL_CONNECTOR_ODBC_VERSION)
 MYSQL_CONNECTOR_ODBC_DIR=mysql-connector-odbc-$(MYSQL_CONNECTOR_ODBC_VERSION)
 MYSQL_CONNECTOR_ODBC_UNZIP=zcat
 MYSQL_CONNECTOR_ODBC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-MYSQL_CONNECTOR_ODBC_DESCRIPTION=Describe mysql-connector-odbc here.
+MYSQL_CONNECTOR_ODBC_DESCRIPTION=MySQL connector ODBC
 MYSQL_CONNECTOR_ODBC_SECTION=util
 MYSQL_CONNECTOR_ODBC_PRIORITY=optional
 MYSQL_CONNECTOR_ODBC_DEPENDS=libtool,unixodbc,mysql
@@ -36,7 +36,7 @@ MYSQL_CONNECTOR_ODBC_CONFLICTS=
 #
 # MYSQL_CONNECTOR_ODBC_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_CONNECTOR_ODBC_IPK_VERSION=1
+MYSQL_CONNECTOR_ODBC_IPK_VERSION=2
 
 #
 # MYSQL_CONNECTOR_ODBC_CONFFILES should be a list of user-editable files
@@ -53,10 +53,7 @@ MYSQL_CONNECTOR_ODBC_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 MYSQL_CONNECTOR_ODBC_CPPFLAGS=
-MYSQL_CONNECTOR_ODBC_LDFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
-	MYSQL_CONNECTOR_ODBC_LDFLAGS+=-lodbc
-endif
+MYSQL_CONNECTOR_ODBC_LDFLAGS=-lodbc
 
 #
 # MYSQL_CONNECTOR_ODBC_BUILD_DIR is the directory in which the build is done.
@@ -79,8 +76,8 @@ MYSQL_CONNECTOR_ODBC_IPK=$(BUILD_DIR)/mysql-connector-odbc_$(MYSQL_CONNECTOR_ODB
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MYSQL_CONNECTOR_ODBC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MYSQL_CONNECTOR_ODBC_SITE)/$(MYSQL_CONNECTOR_ODBC_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MYSQL_CONNECTOR_ODBC_SOURCE)
+	$(WGET) -P $(@D) $(MYSQL_CONNECTOR_ODBC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,16 +106,16 @@ mysql-connector-odbc-source: $(DL_DIR)/$(MYSQL_CONNECTOR_ODBC_SOURCE) $(MYSQL_CO
 #
 $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSQL_CONNECTOR_ODBC_SOURCE) $(MYSQL_CONNECTOR_ODBC_PATCHES) make/mysql-connector-odbc.mk
 	$(MAKE) mysql-stage libtool-stage unixodbc-stage
-	rm -rf $(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR) $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR) $(@D)
 	$(MYSQL_CONNECTOR_ODBC_UNZIP) $(DL_DIR)/$(MYSQL_CONNECTOR_ODBC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MYSQL_CONNECTOR_ODBC_PATCHES)" ; \
 		then cat $(MYSQL_CONNECTOR_ODBC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR)" != "$(MYSQL_CONNECTOR_ODBC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR) $(MYSQL_CONNECTOR_ODBC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR) $(@D) ; \
 	fi
-	(cd $(MYSQL_CONNECTOR_ODBC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MYSQL_CONNECTOR_ODBC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MYSQL_CONNECTOR_ODBC_LDFLAGS)" \
@@ -136,11 +133,9 @@ $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSQL_CONNECTOR_ODBC_
 		--enable-thread-safe \
 		--enable-gui=no \
 	)
-	$(PATCH_LIBTOOL) $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/libtool
-ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	sed -i -e "s|^SQLRETURN SQL_API SQLColAttribute( SQLHSTMT  StatementHandle,|\n/\*SQLRETURN SQL_API SQLColAttribute( SQLHSTMT  StatementHandle,|" $(@D)/driver/results.c
 	sed -i -e "s|^SQLRETURN SQL_API SQLColAttributes( SQLHSTMT hstmt,|\n#endif\nSQLRETURN SQL_API SQLColAttributes( SQLHSTMT hstmt,|" $(@D)/driver/results.c
-endif
 	touch $@
 
 mysql-connector-odbc-unpack: $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.configured
@@ -150,7 +145,7 @@ mysql-connector-odbc-unpack: $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.configured
 #
 $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.built: $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -163,7 +158,7 @@ mysql-connector-odbc: $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.built
 #
 $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.staged: $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MYSQL_CONNECTOR_ODBC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 mysql-connector-odbc-stage: $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.staged
@@ -229,4 +224,4 @@ mysql-connector-odbc-dirclean:
 # Some sanity check for the package.
 #
 mysql-connector-odbc-check: $(MYSQL_CONNECTOR_ODBC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MYSQL_CONNECTOR_ODBC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
