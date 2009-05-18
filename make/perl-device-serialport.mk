@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PERL-DEVICE-SERIALPORT_SITE=http://search.cpan.org/CPAN/authors/id/C/CO/COOK
-PERL-DEVICE-SERIALPORT_VERSION=1.003001
+PERL-DEVICE-SERIALPORT_VERSION=1.04
 PERL-DEVICE-SERIALPORT_SOURCE=Device-SerialPort-$(PERL-DEVICE-SERIALPORT_VERSION).tar.gz
 PERL-DEVICE-SERIALPORT_DIR=Device-SerialPort-$(PERL-DEVICE-SERIALPORT_VERSION)
 PERL-DEVICE-SERIALPORT_UNZIP=zcat
@@ -108,16 +108,16 @@ perl-device-serialport-source: $(DL_DIR)/$(PERL-DEVICE-SERIALPORT_SOURCE) $(PERL
 #
 $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DEVICE-SERIALPORT_SOURCE) $(PERL-DEVICE-SERIALPORT_PATCHES) make/perl-device-serialport.mk
 	$(MAKE) perl-stage
-	rm -rf $(BUILD_DIR)/$(PERL-DEVICE-SERIALPORT_DIR) $(PERL-DEVICE-SERIALPORT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL-DEVICE-SERIALPORT_DIR) $(@D)
 	$(PERL-DEVICE-SERIALPORT_UNZIP) $(DL_DIR)/$(PERL-DEVICE-SERIALPORT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL-DEVICE-SERIALPORT_PATCHES)" ; \
 		then cat $(PERL-DEVICE-SERIALPORT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(PERL-DEVICE-SERIALPORT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(PERL-DEVICE-SERIALPORT_DIR)" != "$(PERL-DEVICE-SERIALPORT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(PERL-DEVICE-SERIALPORT_DIR) $(PERL-DEVICE-SERIALPORT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(PERL-DEVICE-SERIALPORT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(PERL-DEVICE-SERIALPORT_DIR) $(@D) ; \
 	fi
-	(cd $(PERL-DEVICE-SERIALPORT_BUILD_DIR); \
+	(cd $(@D); \
 		echo '$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL-DEVICE-SERIALPORT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PERL-DEVICE-SERIALPORT_LDFLAGS)" \
@@ -129,7 +129,9 @@ $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DEVICE-SERIALP
 		--disable-nls \
 		--disable-static ;' > configure.sh ; \
 		chmod +x configure.sh ; \
-		sed -i -e 's|./configure|./configure.sh|' Makefile.PL ;\
+	)
+	sed -i -e 's|./configure|./configure.sh|' $(@D)/Makefile.PL
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
                 CPPFLAGS="$(STAGING_CPPFLAGS)" \
                 LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -137,7 +139,7 @@ $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DEVICE-SERIALP
                 $(PERL_HOSTPERL) Makefile.PL -d \
                 PREFIX=/opt \
 	)
-#	$(PATCH_LIBTOOL) $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 perl-device-serialport-unpack: $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.configured
@@ -165,7 +167,7 @@ perl-device-serialport: $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.built
 #
 $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.staged: $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PERL-DEVICE-SERIALPORT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 perl-device-serialport-stage: $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.staged
@@ -238,4 +240,4 @@ perl-device-serialport-dirclean:
 # Some sanity check for the package.
 #
 perl-device-serialport-check: $(PERL-DEVICE-SERIALPORT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PERL-DEVICE-SERIALPORT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
