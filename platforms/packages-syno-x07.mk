@@ -6,6 +6,9 @@ SPECIFIC_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
 # btpd: arm-marvell-linux-gnu/sys-include/sys/epoll.h:62: error: syntax error before "uint32_t"
+# mkvtoolnix:
+#	src/merge/mkvmerge.cpp: In function `void parse_arg_compression(const std::string&, track_info_c&)':
+#	src/merge/mkvmerge.cpp:302: internal compiler error: Segmentation fault
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule \
@@ -18,6 +21,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	libtorrent-rasterbar \
 	ldconfig libcapi20 \
+	mkvtoolnix \
 	ntop \
 	p7zip \
 	player puppy \
