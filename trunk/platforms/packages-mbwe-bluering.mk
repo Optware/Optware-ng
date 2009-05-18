@@ -12,9 +12,7 @@ BROKEN_PACKAGES = \
 	fuppes \
 	gtmess \
 	inferno \
-	iptraf \
 	player \
-	puppy \
 	\
 	microdc2 \
 	mod-python \
