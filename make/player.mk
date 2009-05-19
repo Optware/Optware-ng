@@ -37,7 +37,7 @@ PLAYER_CONFLICTS=
 #
 # PLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-PLAYER_IPK_VERSION=1
+PLAYER_IPK_VERSION=2
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files
@@ -140,7 +140,7 @@ $(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 		--with-playercc \
-		--without-boost-signal \
+		--without-boost-signals \
 		--with-boost-thread \
 		--program-transform-name='' \
 	)
