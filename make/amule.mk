@@ -23,7 +23,7 @@
 
 #AMULE_SITE=http://download.berlios.de/amule
 AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/amule
-AMULE_VERSION=2.2.4
+AMULE_VERSION=2.2.5
 AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
 AMULE_DIR=aMule-$(AMULE_VERSION)
 AMULE_UNZIP=bzcat
