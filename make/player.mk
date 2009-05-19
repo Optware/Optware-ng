@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PLAYER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/playerstage
-PLAYER_VERSION=2.0.4
+PLAYER_VERSION=2.0.5
 PLAYER_SOURCE=player-$(PLAYER_VERSION).tar.bz2
 PLAYER_DIR=player-$(PLAYER_VERSION)
 PLAYER_UNZIP=bzcat
@@ -30,17 +30,14 @@ PLAYER_DESCRIPTION=Player provides a network interface to a variety of robot and
 Player''s client/server model allows robot control programs to be written in any programming language and to run on any computer with a network connection to the robot. Player supports multiple concurrent client connections to devices, creating new possibilities for distributed and collaborative sensing and control.
 PLAYER_SECTION=misc
 PLAYER_PRIORITY=optional
-PLAYER_DEPENDS=libjpeg, openssl
-ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
-PLAYER_DEPENDS+=, libstdc++
-endif
+PLAYER_DEPENDS=boost-thread, libjpeg, libstdc++, openssl
 PLAYER_SUGGESTS=
 PLAYER_CONFLICTS=
 
 #
 # PLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-PLAYER_IPK_VERSION=2
+PLAYER_IPK_VERSION=1
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files
@@ -84,8 +81,8 @@ PLAYER_IPK=$(BUILD_DIR)/player_$(PLAYER_VERSION)-$(PLAYER_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PLAYER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PLAYER_SITE)/$(PLAYER_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PLAYER_SOURCE)
+	$(WGET) -P $(@D) $(PLAYER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -113,25 +110,24 @@ player-source: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES)
 # shown below to make various patches to it.
 #
 $(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) make/player.mk
-	$(MAKE) libjpeg-stage
-ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
-endif
-	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(PLAYER_DIR) $(PLAYER_BUILD_DIR)
+	$(MAKE) boost-stage libjpeg-stage openssl-stage
+	rm -rf $(BUILD_DIR)/$(PLAYER_DIR) $(@D)
 	$(PLAYER_UNZIP) $(DL_DIR)/$(PLAYER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PLAYER_PATCHES)" ; \
 		then cat $(PLAYER_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(PLAYER_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(PLAYER_DIR)" != "$(PLAYER_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(PLAYER_DIR) $(PLAYER_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(PLAYER_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(PLAYER_DIR) $(@D) ; \
 	fi
-	sed -i -e '/^ *have_pkg_config=no/s/=no/=yes/' $(PLAYER_BUILD_DIR)/configure
-	(cd $(PLAYER_BUILD_DIR); \
+	sed -i -e '/^ *have_pkg_config=no/s/=no/=yes/' $(@D)/configure
+	sed -i -e 's| `pkg-config --cflags gdk-pixbuf-.*`||' $(@D)/server/drivers/planner/wavefront/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PLAYER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PLAYER_LDFLAGS)" \
+		PKG_CONFIG_LIBDIR=$(STAGING_LIB_DIR)/pkgconfig \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -139,11 +135,15 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-jplayer \
+		--disable-libplayerc-py \
 		--disable-nls \
 		--disable-static \
+		--with-playercc \
+		--without-boost-signal \
+		--with-boost-thread \
 		--program-transform-name='' \
 	)
-	$(PATCH_LIBTOOL) $(PLAYER_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 player-unpack: $(PLAYER_BUILD_DIR)/.configured
@@ -153,7 +153,7 @@ player-unpack: $(PLAYER_BUILD_DIR)/.configured
 #
 $(PLAYER_BUILD_DIR)/.built: $(PLAYER_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PLAYER_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -166,7 +166,7 @@ player: $(PLAYER_BUILD_DIR)/.built
 #
 $(PLAYER_BUILD_DIR)/.staged: $(PLAYER_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PLAYER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 player-stage: $(PLAYER_BUILD_DIR)/.staged
@@ -242,4 +242,4 @@ player-dirclean:
 # Some sanity check for the package.
 #
 player-check: $(PLAYER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PLAYER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
