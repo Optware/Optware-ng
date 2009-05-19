@@ -24,7 +24,7 @@ BROKEN_PACKAGES = \
 	mkvtoolnix \
 	ntop \
 	p7zip \
-	player puppy \
+	puppy \
 	qemu sablevm \
 	varnish \
 

@@ -16,7 +16,6 @@ BROKEN_PACKAGES = \
 	asterisk14-chan-capi libcapi20 \
 	iptraf \
 	ldconfig \
-	player \
 	qemu qemu-libc-i386 \
 
 E2FSPROGS_VERSION := 1.40.3

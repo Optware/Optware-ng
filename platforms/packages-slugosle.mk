@@ -24,6 +24,6 @@ BROKEN_PACKAGES = \
 	gtk ipac-ng \
 	nfs-utils \
 	pcapsipdump \
-	player rhtvision \
+	rhtvision \
 	transcode \
 	vte xchat

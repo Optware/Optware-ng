@@ -12,7 +12,7 @@ BROKEN_PACKAGES = \
 	bitchx \
 	gtk ipac-ng iptables iptraf ldconfig \
 	microdc2 netatalk nfs-utils \
-	player puppy mod-python qemu \
+	puppy mod-python qemu \
 	slimserver \
 	softflowd \
 	taged transcode vte xchat \

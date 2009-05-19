@@ -15,7 +15,6 @@ BROKEN_PACKAGES = \
 	bluez-utils bluez-hcidump \
 	iptraf \
 	ldconfig \
-	player \
 	qemu qemu-libc-i386 \
 	gtk vte xchat \
 	microdc2 mod-python \

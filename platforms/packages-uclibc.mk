@@ -19,11 +19,12 @@ UCLIBC_BROKEN_PACKAGES = \
 
 UCLIBC++_BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
-	 boost \
-	 btg \
-	 libstdc++ \
-	 libtorrent-rasterbar \
+	boost \
+	btg \
+	libstdc++ \
+	libtorrent-rasterbar \
 	mkvtoolnix \
+	player \
 
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC++_SPECIFIC_PACKAGES = \

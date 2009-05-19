@@ -20,7 +20,6 @@ BROKEN_PACKAGES = \
 	minidlna \
 	motor \
 	nget \
-	player \
 	rssh \
 	scrobby \
 	taglib \
