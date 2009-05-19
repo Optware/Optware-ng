@@ -21,7 +21,6 @@ BROKEN_PACKAGES = \
 	minidlna \
 	motor \
 	nget nickle \
-	player \
 	recordext renderext \
 	sdl slrn \
 	taglib \

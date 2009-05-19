@@ -12,7 +12,6 @@ BROKEN_PACKAGES = \
 	fuppes \
 	gtmess \
 	inferno \
-	player \
 	\
 	microdc2 \
 	mod-python \
