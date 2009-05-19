@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MYSQL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mysql-python
-PY-MYSQL_VERSION=1.2.2
+PY-MYSQL_VERSION=1.2.3c1
 PY-MYSQL_SOURCE=MySQL-python-$(PY-MYSQL_VERSION).tar.gz
 PY-MYSQL_DIR=MySQL-python-$(PY-MYSQL_VERSION)
 PY-MYSQL_UNZIP=zcat
@@ -30,8 +30,8 @@ PY-MYSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MYSQL_DESCRIPTION=MySQL support for Python.
 PY-MYSQL_SECTION=misc
 PY-MYSQL_PRIORITY=optional
-PY24-MYSQL_DEPENDS=python24
 PY25-MYSQL_DEPENDS=python25
+PY26-MYSQL_DEPENDS=python26
 PY-MYSQL_CONFLICTS=
 
 #
@@ -68,11 +68,11 @@ PY-MYSQL_LDFLAGS=
 PY-MYSQL_BUILD_DIR=$(BUILD_DIR)/py-mysql
 PY-MYSQL_SOURCE_DIR=$(SOURCE_DIR)/py-mysql
 
-PY24-MYSQL_IPK_DIR=$(BUILD_DIR)/py-mysql-$(PY-MYSQL_VERSION)-ipk
-PY24-MYSQL_IPK=$(BUILD_DIR)/py-mysql_$(PY-MYSQL_VERSION)-$(PY-MYSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-MYSQL_IPK_DIR=$(BUILD_DIR)/py25-mysql-$(PY-MYSQL_VERSION)-ipk
 PY25-MYSQL_IPK=$(BUILD_DIR)/py25-mysql_$(PY-MYSQL_VERSION)-$(PY-MYSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-MYSQL_IPK_DIR=$(BUILD_DIR)/py26-mysql-$(PY-MYSQL_VERSION)-ipk
+PY26-MYSQL_IPK=$(BUILD_DIR)/py26-mysql_$(PY-MYSQL_VERSION)-$(PY-MYSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-mysql-source py-mysql-unpack py-mysql py-mysql-stage py-mysql-ipk py-mysql-clean py-mysql-dirclean py-mysql-check
 
@@ -81,7 +81,8 @@ PY25-MYSQL_IPK=$(BUILD_DIR)/py25-mysql_$(PY-MYSQL_VERSION)-$(PY-MYSQL_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-MYSQL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-MYSQL_SITE)/$(PY-MYSQL_SOURCE)
+	$(WGET) -P $(@D) $(PY-MYSQL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,33 +106,16 @@ py-mysql-source: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCHES)
+$(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCHES) make/py-mysql.mk
 	$(MAKE) mysql-stage py-setuptools-stage
-	rm -rf $(PY-MYSQL_BUILD_DIR)
-	mkdir -p $(PY-MYSQL_BUILD_DIR)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-MYSQL_DIR)
-	$(PY-MYSQL_UNZIP) $(DL_DIR)/$(PY-MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)/2.4
-	(cd $(PY-MYSQL_BUILD_DIR)/2.4; \
-	    sed -i -e 's|# *mysql_config *=.*|mysql_config = $(STAGING_PREFIX)/bin/mysql_config|' site.cfg; \
-	    ( \
-		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
-	        echo "library-dirs=$(STAGING_LIB_DIR):$(STAGING_LIB_DIR)/mysql"; \
-	        echo "libraries=mysqlclient_r"; \
-	        echo "rpath=/opt/lib:/opt/lib/mysql"; \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4" \
-	    ) >> setup.cfg; \
-	)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MYSQL_DIR)
 	$(PY-MYSQL_UNZIP) $(DL_DIR)/$(PY-MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)/2.5
-	(cd $(PY-MYSQL_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-MYSQL_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    sed -i -e 's|# *mysql_config *=.*|mysql_config = $(STAGING_PREFIX)/bin/mysql_config|' site.cfg; \
 	    ( \
 		echo "[build_ext]"; \
@@ -143,7 +127,24 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 		echo "executable=/opt/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-MYSQL_BUILD_DIR)/.configured
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-MYSQL_DIR)
+	$(PY-MYSQL_UNZIP) $(DL_DIR)/$(PY-MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-MYSQL_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    sed -i -e 's|# *mysql_config *=.*|mysql_config = $(STAGING_PREFIX)/bin/mysql_config|' site.cfg; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR):$(STAGING_LIB_DIR)/mysql"; \
+	        echo "libraries=mysqlclient_r"; \
+	        echo "rpath=/opt/lib:/opt/lib/mysql"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.6" \
+	    ) >> setup.cfg; \
+	)
+	touch $@
 
 py-mysql-unpack: $(PY-MYSQL_BUILD_DIR)/.configured
 
@@ -151,18 +152,18 @@ py-mysql-unpack: $(PY-MYSQL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-MYSQL_BUILD_DIR)/.built: $(PY-MYSQL_BUILD_DIR)/.configured
-	rm -f $(PY-MYSQL_BUILD_DIR)/.built
-	(cd $(PY-MYSQL_BUILD_DIR)/2.4; \
-	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
-	)
-	(cd $(PY-MYSQL_BUILD_DIR)/2.5; \
+	rm -f $@
+	(cd $(@D)/2.5; \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
-	touch $(PY-MYSQL_BUILD_DIR)/.built
+	(cd $(@D)/2.6; \
+	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -172,31 +173,17 @@ py-mysql: $(PY-MYSQL_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-MYSQL_BUILD_DIR)/.staged: $(PY-MYSQL_BUILD_DIR)/.built
-	rm -f $(PY-MYSQL_BUILD_DIR)/.staged
-	#$(MAKE) -C $(PY-MYSQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-MYSQL_BUILD_DIR)/.staged
-
-py-mysql-stage: $(PY-MYSQL_BUILD_DIR)/.staged
+#$(PY-MYSQL_BUILD_DIR)/.staged: $(PY-MYSQL_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#py-mysql-stage: $(PY-MYSQL_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-mysql
 #
-$(PY24-MYSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py-mysql" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-MYSQL_PRIORITY)" >>$@
-	@echo "Section: $(PY-MYSQL_SECTION)" >>$@
-	@echo "Version: $(PY-MYSQL_VERSION)-$(PY-MYSQL_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-MYSQL_MAINTAINER)" >>$@
-	@echo "Source: $(PY-MYSQL_SITE)/$(PY-MYSQL_SOURCE)" >>$@
-	@echo "Description: $(PY-MYSQL_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-MYSQL_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-MYSQL_CONFLICTS)" >>$@
-
 $(PY25-MYSQL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -211,6 +198,20 @@ $(PY25-MYSQL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-MYSQL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MYSQL_CONFLICTS)" >>$@
 
+$(PY26-MYSQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-mysql" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-MYSQL_PRIORITY)" >>$@
+	@echo "Section: $(PY-MYSQL_SECTION)" >>$@
+	@echo "Version: $(PY-MYSQL_VERSION)-$(PY-MYSQL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-MYSQL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-MYSQL_SITE)/$(PY-MYSQL_SOURCE)" >>$@
+	@echo "Description: $(PY-MYSQL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-MYSQL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-MYSQL_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -223,19 +224,8 @@ $(PY25-MYSQL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
-	rm -rf $(PY24-MYSQL_IPK_DIR) $(BUILD_DIR)/py-mysql_*_$(TARGET_ARCH).ipk
-	(cd $(PY-MYSQL_BUILD_DIR)/2.4; \
-	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py \
-	    install --root=$(PY24-MYSQL_IPK_DIR) --prefix=/opt; \
-	)
-	$(STRIP_COMMAND) $(PY24-MYSQL_IPK_DIR)/opt/lib/python2.4/site-packages/_mysql.so
-	$(MAKE) $(PY24-MYSQL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MYSQL_IPK_DIR)
-
 $(PY25-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py-mysql_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-MYSQL_IPK_DIR) $(BUILD_DIR)/py25-mysql_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MYSQL_BUILD_DIR)/2.5; \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
@@ -247,10 +237,22 @@ $(PY25-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
 	$(MAKE) $(PY25-MYSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MYSQL_IPK_DIR)
 
+$(PY26-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
+	rm -rf $(PY26-MYSQL_IPK_DIR) $(BUILD_DIR)/py26-mysql_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MYSQL_BUILD_DIR)/2.6; \
+	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py \
+	    install --root=$(PY26-MYSQL_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) $(PY26-MYSQL_IPK_DIR)/opt/lib/python2.6/site-packages/_mysql.so
+	$(MAKE) $(PY26-MYSQL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MYSQL_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-mysql-ipk: $(PY24-MYSQL_IPK) $(PY25-MYSQL_IPK)
+py-mysql-ipk: $(PY25-MYSQL_IPK) $(PY26-MYSQL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -264,11 +266,11 @@ py-mysql-clean:
 #
 py-mysql-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)
-	rm -rf $(PY24-MYSQL_IPK_DIR) $(PY24-MYSQL_IPK)
 	rm -rf $(PY25-MYSQL_IPK_DIR) $(PY25-MYSQL_IPK)
+	rm -rf $(PY26-MYSQL_IPK_DIR) $(PY26-MYSQL_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-mysql-check: $(PY24-MYSQL_IPK) $(PY25-MYSQL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-MYSQL_IPK) $(PY25-MYSQL_IPK)
+py-mysql-check: $(PY25-MYSQL_IPK) $(PY26-MYSQL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
