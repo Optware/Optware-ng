@@ -56,7 +56,8 @@ PLAYER_PATCHES+=$(PLAYER_SOURCE_DIR)/uint.patch
 #
 PLAYER_CPPFLAGS=
 ifdef NO_BUILTIN_MATH
-PLAYER_CPPFLAGS+=-fno-builtin-round -fno-builtin-rint
+PLAYER_CPPFLAGS+=-fno-builtin-round -fno-builtin-rint \
+	-fno-builtin-cos -fno-builtin-sin -fno-builtin-exp
 endif
 PLAYER_LDFLAGS=
 
