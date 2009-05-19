@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.19.4
+LIBCURL_VERSION=7.19.5
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
@@ -278,4 +278,4 @@ libcurl-dirclean:
 # Some sanity check for the package.
 #
 libcurl-check: $(LIBCURL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBCURL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
