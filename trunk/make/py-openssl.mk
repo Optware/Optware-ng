@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-OPENSSL_VERSION=0.7
+PY-OPENSSL_VERSION=0.9
 PY-OPENSSL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyopenssl
 PY-OPENSSL_SOURCE=pyOpenSSL-$(PY-OPENSSL_VERSION).tar.gz
 PY-OPENSSL_DIR=pyOpenSSL-$(PY-OPENSSL_VERSION)
@@ -30,8 +30,8 @@ PY-OPENSSL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-OPENSSL_DESCRIPTION=Python wrapper around a small subset of the OpenSSL library.
 PY-OPENSSL_SECTION=lib
 PY-OPENSSL_PRIORITY=optional
-PY24-OPENSSL_DEPENDS=python24, openssl
 PY25-OPENSSL_DEPENDS=python25, openssl
+PY26-OPENSSL_DEPENDS=python26, openssl
 PY-OPENSSL_CONFLICTS=
 
 #
@@ -68,11 +68,11 @@ PY-OPENSSL_LDFLAGS=
 PY-OPENSSL_BUILD_DIR=$(BUILD_DIR)/py-openssl
 PY-OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/py-openssl
 
-PY24-OPENSSL_IPK_DIR=$(BUILD_DIR)/py24-openssl-$(PY-OPENSSL_VERSION)-ipk
-PY24-OPENSSL_IPK=$(BUILD_DIR)/py24-openssl_$(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-OPENSSL_IPK_DIR=$(BUILD_DIR)/py25-openssl-$(PY-OPENSSL_VERSION)-ipk
 PY25-OPENSSL_IPK=$(BUILD_DIR)/py25-openssl_$(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-OPENSSL_IPK_DIR=$(BUILD_DIR)/py26-openssl-$(PY-OPENSSL_VERSION)-ipk
+PY26-OPENSSL_IPK=$(BUILD_DIR)/py26-openssl_$(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-openssl-source py-openssl-unpack py-openssl py-openssl-stage py-openssl-ipk py-openssl-clean py-openssl-dirclean py-openssl-check
 
@@ -106,26 +106,10 @@ py-openssl-source: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(PY-OPENSSL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(PY-OPENSSL_PATCHES)
+$(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(PY-OPENSSL_PATCHES) make/py-openssl.mk
 	$(MAKE) openssl-stage py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)
 	mkdir -p $(PY-OPENSSL_BUILD_DIR)
-	# 2.4
-	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    ( \
-		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
-	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
-		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
-	    ) >> setup.cfg; \
-	)
 	# 2.5
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1
@@ -142,6 +126,22 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(PY-OPENSSL
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
+	# 2.6
+	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.6"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	)
 	touch $@
 
 py-openssl-unpack: $(PY-OPENSSL_BUILD_DIR)/.configured
@@ -151,13 +151,13 @@ py-openssl-unpack: $(PY-OPENSSL_BUILD_DIR)/.configured
 #
 $(PY-OPENSSL_BUILD_DIR)/.built: $(PY-OPENSSL_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
-	)
 	(cd $(@D)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	(cd $(@D)/2.6; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
 	touch $@
 
@@ -180,20 +180,6 @@ py-openssl-stage: $(PY-OPENSSL_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-openssl
 #
-$(PY24-OPENSSL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-openssl" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-OPENSSL_PRIORITY)" >>$@
-	@echo "Section: $(PY-OPENSSL_SECTION)" >>$@
-	@echo "Version: $(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-OPENSSL_MAINTAINER)" >>$@
-	@echo "Source: $(PY-OPENSSL_SITE)/$(PY-OPENSSL_SOURCE)" >>$@
-	@echo "Description: $(PY-OPENSSL_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-OPENSSL_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-OPENSSL_CONFLICTS)" >>$@
-
 $(PY25-OPENSSL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -208,6 +194,20 @@ $(PY25-OPENSSL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-OPENSSL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-OPENSSL_CONFLICTS)" >>$@
 
+$(PY26-OPENSSL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-openssl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-OPENSSL_PRIORITY)" >>$@
+	@echo "Section: $(PY-OPENSSL_SECTION)" >>$@
+	@echo "Version: $(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-OPENSSL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-OPENSSL_SITE)/$(PY-OPENSSL_SOURCE)" >>$@
+	@echo "Description: $(PY-OPENSSL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-OPENSSL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-OPENSSL_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -220,16 +220,8 @@ $(PY25-OPENSSL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-OPENSSL_IPK) $(PY25-OPENSSL_IPK): $(PY-OPENSSL_BUILD_DIR)/.built
-	# 2.4
-	rm -rf $(BUILD_DIR)/py-openssl_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-OPENSSL_IPK_DIR) $(BUILD_DIR)/py24-openssl_*_$(TARGET_ARCH).ipk
-	(cd $(PY-OPENSSL_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-OPENSSL_IPK_DIR) --prefix=/opt; \
-	)
-	$(STRIP_COMMAND) $(PY24-OPENSSL_IPK_DIR)/opt/lib/python2.4/site-packages/*/*.so
-	$(MAKE) $(PY24-OPENSSL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-OPENSSL_IPK_DIR)
+$(PY25-OPENSSL_IPK) $(PY26-OPENSSL_IPK): $(PY-OPENSSL_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-openssl_*_$(TARGET_ARCH).ipk
 	# 2.5
 	rm -rf $(PY25-OPENSSL_IPK_DIR) $(BUILD_DIR)/py25-openssl_*_$(TARGET_ARCH).ipk
 	(cd $(PY-OPENSSL_BUILD_DIR)/2.5; \
@@ -238,11 +230,19 @@ $(PY24-OPENSSL_IPK) $(PY25-OPENSSL_IPK): $(PY-OPENSSL_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(PY25-OPENSSL_IPK_DIR)/opt/lib/python2.5/site-packages/*/*.so
 	$(MAKE) $(PY25-OPENSSL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-OPENSSL_IPK_DIR)
+	# 2.6
+	rm -rf $(PY26-OPENSSL_IPK_DIR) $(BUILD_DIR)/py26-openssl_*_$(TARGET_ARCH).ipk
+	(cd $(PY-OPENSSL_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-OPENSSL_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) $(PY26-OPENSSL_IPK_DIR)/opt/lib/python2.6/site-packages/*/*.so
+	$(MAKE) $(PY26-OPENSSL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-OPENSSL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-openssl-ipk: $(PY24-OPENSSL_IPK) $(PY25-OPENSSL_IPK)
+py-openssl-ipk: $(PY25-OPENSSL_IPK) $(PY26-OPENSSL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -256,11 +256,11 @@ py-openssl-clean:
 #
 py-openssl-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(PY-OPENSSL_BUILD_DIR)
-	rm -rf $(PY24-OPENSSL_IPK_DIR) $(PY24-OPENSSL_IPK)
 	rm -rf $(PY25-OPENSSL_IPK_DIR) $(PY25-OPENSSL_IPK)
+	rm -rf $(PY26-OPENSSL_IPK_DIR) $(PY26-OPENSSL_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-openssl-check: $(PY24-OPENSSL_IPK) $(PY25-OPENSSL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-OPENSSL_IPK) $(PY25-OPENSSL_IPK)
+py-openssl-check: $(PY25-OPENSSL_IPK) $(PY26-OPENSSL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
