@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TSHARK_SITE=http://www.wireshark.org/download/src
-TSHARK_VERSION=1.0.7
+TSHARK_VERSION=1.0.8
 TSHARK_SOURCE=wireshark-$(TSHARK_VERSION).tar.bz2
 TSHARK_DIR=wireshark-$(TSHARK_VERSION)
 TSHARK_UNZIP=bzcat
@@ -83,8 +83,8 @@ TSHARK_IPK=$(BUILD_DIR)/tshark_$(TSHARK_VERSION)-$(TSHARK_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TSHARK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TSHARK_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(TSHARK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -113,18 +113,18 @@ tshark-source: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES)
 #
 $(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES)
 	$(MAKE) adns-stage glib-stage libpcap-stage pcre-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(TSHARK_DIR) $(TSHARK_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TSHARK_DIR) $(@D)
 	$(TSHARK_UNZIP) $(DL_DIR)/$(TSHARK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TSHARK_PATCHES)" ; \
 		then cat $(TSHARK_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(TSHARK_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TSHARK_DIR)" != "$(TSHARK_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TSHARK_DIR) $(TSHARK_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TSHARK_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TSHARK_DIR) $(@D) ; \
 	fi
 	sed -i -e '/^INCLUDES/s|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(@D)/plugins/*/Makefile.am
+	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
 	(cd $(@D); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TSHARK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TSHARK_LDFLAGS)" \
