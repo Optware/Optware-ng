@@ -68,11 +68,11 @@ GKRELLMD_LDFLAGS=\
 		--export-dynamic \
 		-pthread
 GKRELLMD_MAKE_OPTIONS=\
-		CC=$(TARGET_CC) \
+		CC="$(TARGET_CC) -Wall -O2 -I.. -I../shared -DGKRELLM_SERVER $(STAGING_CPPFLAGS) $(GKRELLMD_CPPFLAGS)"\
 		RANLIB=$(TARGET_RANLIB) \
 		AR=$(TARGET_AR) \
 		LD=$(TARGET_LD) \
-		SYS_LIBS="$(STAGING_CPPFLAGS) $(GKRELLMD_CPPFLAGS) $(STAGING_LDFLAGS) $(GKRELLMD_LDFLAGS)"
+		SYS_LIBS="$(STAGING_LDFLAGS) $(GKRELLMD_LDFLAGS)"
 
 #
 # GKRELLMD_BUILD_DIR is the directory in which the build is done.
@@ -134,6 +134,7 @@ $(GKRELLMD_BUILD_DIR)/.configured: $(DL_DIR)/$(GKRELLMD_SOURCE) $(GKRELLMD_PATCH
 	if test "$(BUILD_DIR)/$(GKRELLMD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GKRELLMD_DIR) $(@D) ; \
 	fi
+	sed -i -e s/override/#override/ $(@D)/server/Makefile
 	touch $@
 
 gkrellmd-unpack: $(GKRELLMD_BUILD_DIR)/.configured
