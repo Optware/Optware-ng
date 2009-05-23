@@ -186,7 +186,7 @@ $(GKRELLMD_IPK_DIR)/CONTROL/control:
 $(GKRELLMD_IPK): $(GKRELLMD_BUILD_DIR)/.built
 	rm -rf $(GKRELLMD_IPK_DIR) $(BUILD_DIR)/gkrellmd_*_$(TARGET_ARCH).ipk
 	install -d $(GKRELLMD_IPK_DIR)/opt/sbin $(GKRELLMD_IPK_DIR)/opt/etc/init.d
-	$(STRIP_COMMAND) $(GKRELLMD_DIR)/server/gkrellmd -o $(GKRELLMD_IPK_DIR)/opt/sbin/gkrellmd
+	$(STRIP_COMMAND) $(GKRELLMD_BUILD_DIR)/server/gkrellmd -o $(GKRELLMD_IPK_DIR)/opt/sbin/gkrellmd
 	install -m 755 $(GKRELLMD_SOURCE_DIR)/rc.gkrellmd $(GKRELLMD_IPK_DIR)/opt/etc/init.d/S60gkrellmd
 #	install -d $(GKRELLMD_IPK_DIR)/opt/etc/
 #	install -m 644 $(GKRELLMD_SOURCE_DIR)/gkrellmd.conf $(GKRELLMD_IPK_DIR)/opt/etc/gkrellmd.conf
