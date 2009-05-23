@@ -64,8 +64,6 @@ GKRELLMD_LDFLAGS=\
 		-lgmodule-2.0 \
 		-lglib-2.0 \
 		-lgthread-2.0 \
-		-Wl \
-		--export-dynamic \
 		-pthread
 GKRELLMD_MAKE_OPTIONS=\
 		CC="$(TARGET_CC) -Wall -O2 -I.. -I../shared -DGKRELLM_SERVER $(STAGING_CPPFLAGS) $(GKRELLMD_CPPFLAGS)"\

@@ -52,7 +52,7 @@ UCLIBC-OPT_VERSION = 0.9.28
 UCLIBC-OPT_IPK_VERSION = 1
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/lib
 
-NATIVE_GCC_VERSION=3.4.6
+NATIVE_GCC_VERSION=3.4.2
 NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-float=soft --enable-threads --disable-__cxa_atexit --enable-target-optspace --with-gnu-ld
 LIBC-DEV_CRT_DIR=/opt/lib/gcc/arm-linux-uclibc/$(NATIVE_GCC_VERSION)
 
