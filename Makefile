@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	gkrellmd
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -43,7 +42,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
 # clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
 #
-PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
+PACKAGES_THAT_NEED_TO_BE_FIXED = parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
@@ -251,7 +250,7 @@ COMMON_CROSS_PACKAGES = \
 	fribidi ftpcopy fslint ftpd-topfield fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
 	geoip gettext \
-	ggrab ghostscript git glib gnet gnokii \
+	ggrab ghostscript git gkrellmd glib gnet gnokii \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
 	gloox gpsd \
