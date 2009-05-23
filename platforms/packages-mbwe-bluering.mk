@@ -1,7 +1,7 @@
 SPECIFIC_PACKAGES = \
 	ipkg-opt libiconv uclibc-opt \
 	$(PERL_PACKAGES) \
-	binutils gcc libc-dev \
+	binutils libc-dev \
 
 # iptraf: sys/types.h and linux/types.h conflicting
 BROKEN_PACKAGES = \
@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	bluez-hcidump \
 	ficy \
 	fuppes \
+	gcc \
 	gtmess \
 	inferno \
 	\
