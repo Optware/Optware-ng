@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NTP_SITE=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
-NTP_VERSION=4.2.4p3
+NTP_VERSION=4.2.4p7
 NTP_SOURCE=ntp-$(NTP_VERSION).tar.gz
 NTP_DIR=ntp-$(NTP_VERSION)
 NTP_UNZIP=zcat
@@ -36,7 +36,7 @@ NTP_CONFLICTS=
 #
 # NTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTP_IPK_VERSION=2
+NTP_IPK_VERSION=1
 
 NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
 
@@ -74,7 +74,8 @@ NTP_IPK=$(BUILD_DIR)/ntp_$(NTP_VERSION)-$(NTP_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NTP_SITE)/$(NTP_SOURCE)
+	$(WGET) -P $(@D) $(NTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -98,12 +99,12 @@ ntp-source: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES)
-	rm -rf $(BUILD_DIR)/$(NTP_DIR) $(NTP_BUILD_DIR)
+$(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES) make/ntp.mk
+	rm -rf $(BUILD_DIR)/$(NTP_DIR) $(@D)
 	$(NTP_UNZIP) $(DL_DIR)/$(NTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(NTP_PATCHES) | patch -d $(BUILD_DIR)/$(NTP_DIR) -p1
-	mv $(BUILD_DIR)/$(NTP_DIR) $(NTP_BUILD_DIR)
-	(cd $(NTP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(NTP_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		STRIP="$(STRIP_COMMAND)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTP_CPPFLAGS)" \
@@ -114,7 +115,7 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt\
 	)
-	touch $(NTP_BUILD_DIR)/.configured
+	touch $@
 
 ntp-unpack: $(NTP_BUILD_DIR)/.configured
 
@@ -122,21 +123,23 @@ ntp-unpack: $(NTP_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(NTP_BUILD_DIR)/ntpd/ntpd: $(NTP_BUILD_DIR)/.configured
-	$(MAKE) -C $(NTP_BUILD_DIR)
+$(NTP_BUILD_DIR)/.built: $(NTP_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-ntp: $(NTP_BUILD_DIR)/ntpd/ntpd
+ntp: $(NTP_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/ntp
 #
 $(NTP_IPK_DIR)/CONTROL/control:
-	@install -d $(NTP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ntp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -163,7 +166,7 @@ $(NTP_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(NTP_IPK): $(NTP_BUILD_DIR)/ntpd/ntpd
+$(NTP_IPK): $(NTP_BUILD_DIR)/.built
 	rm -rf $(NTP_IPK_DIR) $(NTP_IPK)
 	install -d $(NTP_IPK_DIR)/opt/bin
 	install -d $(NTP_IPK_DIR)/opt/etc/ntp/keys
@@ -204,4 +207,4 @@ ntp-dirclean:
 # Some sanity check for the package.
 #
 ntp-check: $(NTP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
