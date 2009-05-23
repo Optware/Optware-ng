@@ -53,6 +53,11 @@ NTP_PATCHES=$(NTP_SOURCE_DIR)/ntpdc-Makefile.in.patch $(NTP_SOURCE_DIR)/ntpd-ifu
 NTP_CPPFLAGS=
 NTP_LDFLAGS=
 
+ifeq (no, $(IPV6))
+NTP_CPPFLAGS += -DDISABLE_IPV6
+NTP_CONFIGURE_ARGS += --disable-ipv6
+endif
+
 #
 # NTP_BUILD_DIR is the directory in which the build is done.
 # NTP_SOURCE_DIR is the directory which holds all the
@@ -104,6 +109,14 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES) make/ntp.mk
 	$(NTP_UNZIP) $(DL_DIR)/$(NTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(NTP_PATCHES) | patch -d $(BUILD_DIR)/$(NTP_DIR) -p1
 	mv $(BUILD_DIR)/$(NTP_DIR) $(@D)
+ifeq (no, $(IPV6))
+	sed -i -e '/#if.*ISC_PLATFORM_HAVEIPV6/s/.*/#if 0/' \
+		$(@D)/ntpd/ntp_intres.c \
+		$(@D)/libisc/ifiter_ioctl.c \
+		$(@D)/libisc/netaddr.c \
+		$(@D)/libisc/sockaddr.c \
+		;
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		STRIP="$(STRIP_COMMAND)" \
@@ -113,6 +126,7 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES) make/ntp.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		$(NTP_CONFIGURE_ARGS) \
 		--prefix=/opt\
 	)
 	touch $@
