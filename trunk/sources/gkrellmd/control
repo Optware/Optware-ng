@@ -1,8 +1,0 @@
-Package: gkrellm
-Priority: optional
-Version: 2.2.4-1
-Architecture: armeb
-Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: util
-Source: http://web.wt.net/~billw/gkrellm/gkrellm-2.2.4.tar.gz
-Description: System monitor package (server component)
