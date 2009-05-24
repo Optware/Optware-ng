@@ -18,7 +18,7 @@ diff --git a/arch/arm/configs/kirkwood_defconfig b/arch/arm/configs/kirkwood_def
 index c367ae4..a99b3eb 100644
 --- a/arch/arm/configs/kirkwood_defconfig
 +++ b/arch/arm/configs/kirkwood_defconfig
-@@ -263,7 +263,9 @@ CONFIG_CMDLINE=""
+@@ -270,7 +270,9 @@ CONFIG_CMDLINE=""
  #
  # CPU Power Management
  #
