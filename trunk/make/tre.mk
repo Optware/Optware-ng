@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TRE_SITE=http://laurikari.net/tre
-TRE_VERSION=0.7.5
+TRE_VERSION=0.7.6
 TRE_SOURCE=tre-$(TRE_VERSION).tar.bz2
 TRE_DIR=tre-$(TRE_VERSION)
 TRE_UNZIP=bzcat
@@ -76,8 +76,8 @@ TRE_IPK=$(BUILD_DIR)/tre_$(TRE_VERSION)-$(TRE_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TRE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TRE_SITE)/$(TRE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TRE_SOURCE)
+	$(WGET) -P $(@D) $(TRE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ tre-source: $(DL_DIR)/$(TRE_SOURCE) $(TRE_PATCHES)
 #
 $(TRE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRE_SOURCE) $(TRE_PATCHES) make/tre.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(TRE_DIR) $(TRE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TRE_DIR) $(@D)
 	$(TRE_UNZIP) $(DL_DIR)/$(TRE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRE_PATCHES)" ; \
 		then cat $(TRE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TRE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TRE_DIR)" != "$(TRE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TRE_DIR) $(TRE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TRE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TRE_DIR) $(@D) ; \
 	fi
-	(cd $(TRE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRE_LDFLAGS)" \
@@ -128,7 +128,7 @@ $(TRE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRE_SOURCE) $(TRE_PATCHES) make/tre.mk
 		--disable-static \
 		--program-transform-name="" \
 	)
-	$(PATCH_LIBTOOL) $(TRE_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 tre-unpack: $(TRE_BUILD_DIR)/.configured
@@ -138,7 +138,7 @@ tre-unpack: $(TRE_BUILD_DIR)/.configured
 #
 $(TRE_BUILD_DIR)/.built: $(TRE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(TRE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +151,7 @@ tre: $(TRE_BUILD_DIR)/.built
 #
 $(TRE_BUILD_DIR)/.staged: $(TRE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(TRE_BUILD_DIR) DESTDIR=$(STAGING_DIR) SUBDIRS=lib install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) SUBDIRS=lib install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/tre.pc
 	touch $@
 
@@ -219,4 +219,4 @@ tre-dirclean:
 # Some sanity check for the package.
 #
 tre-check: $(TRE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TRE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
