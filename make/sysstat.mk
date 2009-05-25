@@ -28,7 +28,7 @@
 #
 SYSSTAT_SITE=http://perso.orange.fr/sebastien.godard
 #ftp://ibiblio.org/pub/linux/system/status
-SYSSTAT_VERSION=7.0.4
+SYSSTAT_VERSION=9.0.3
 SYSSTAT_SOURCE=sysstat-$(SYSSTAT_VERSION).tar.bz2
 SYSSTAT_DIR=sysstat-$(SYSSTAT_VERSION)
 SYSSTAT_UNZIP=bzcat
@@ -43,7 +43,7 @@ SYSSTAT_CONFLICTS=
 #
 # SYSSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSSTAT_IPK_VERSION=2
+SYSSTAT_IPK_VERSION=1
 
 #
 # SYSSTAT_CONFFILES should be a list of user-editable files
@@ -83,7 +83,8 @@ SYSSTAT_IPK=$(BUILD_DIR)/sysstat_$(SYSSTAT_VERSION)-$(SYSSTAT_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SYSSTAT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SYSSTAT_SITE)/$(SYSSTAT_SOURCE)
+	$(WGET) -P $(@D) $(SYSSTAT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,21 +108,28 @@ sysstat-source: $(DL_DIR)/$(SYSSTAT_SOURCE) $(SYSSTAT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SYSSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSSTAT_SOURCE) $(SYSSTAT_PATCHES)
+$(SYSSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSSTAT_SOURCE) $(SYSSTAT_PATCHES) make/sysstat.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(SYSSTAT_DIR) $(SYSSTAT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SYSSTAT_DIR) $(@D)
 	$(SYSSTAT_UNZIP) $(DL_DIR)/$(SYSSTAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(SYSSTAT_PATCHES) | patch -d $(BUILD_DIR)/$(SYSSTAT_DIR) -p1
-	mv $(BUILD_DIR)/$(SYSSTAT_DIR) $(SYSSTAT_BUILD_DIR)
-	cp $(SYSSTAT_SOURCE_DIR)/CONFIG $(SYSSTAT_BUILD_DIR)/build
-	sed -i "s/\/etc\/sysconfig/\/opt\/etc\/sysconfig/g" $(SYSSTAT_BUILD_DIR)/Makefile
-	sed -i "s/\/etc\/sysconfig/\/opt\/etc\/sysconfig/g" $(SYSSTAT_BUILD_DIR)/ioconf.h
-	(cd $(SYSSTAT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(SYSSTAT_DIR) $(@D)
+#	cp $(SYSSTAT_SOURCE_DIR)/CONFIG $(@D)/build
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SYSSTAT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SYSSTAT_LDFLAGS)" \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--sysconfdir=/opt/etc \
+		--localstatedir=/opt/var \
+		--disable-nls \
+		--disable-static \
 		)
-	touch $(SYSSTAT_BUILD_DIR)/.configured
+	touch $@
 
 sysstat-unpack: $(SYSSTAT_BUILD_DIR)/.configured
 
@@ -129,9 +137,14 @@ sysstat-unpack: $(SYSSTAT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SYSSTAT_BUILD_DIR)/.built: $(SYSSTAT_BUILD_DIR)/.configured
-	rm -f $(SYSSTAT_BUILD_DIR)/.built
-	$(MAKE) CC=$(TARGET_CC) -C $(SYSSTAT_BUILD_DIR)
-	touch $(SYSSTAT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) \
+		RC_DIR=/opt/etc \
+		SYSCONFIG_DIR=/opt/etc/sysconfig \
+		INIT_DIR=/opt/etc/init.d \
+		SA_DIR=/opt/var/log/sa \
+		;
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,19 +154,19 @@ sysstat: $(SYSSTAT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SYSSTAT_BUILD_DIR)/.staged: $(SYSSTAT_BUILD_DIR)/.built
-	rm -f $(SYSSTAT_BUILD_DIR)/.staged
-	$(MAKE) -C $(SYSSTAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SYSSTAT_BUILD_DIR)/.staged
-
-sysstat-stage: $(SYSSTAT_BUILD_DIR)/.staged
+#$(SYSSTAT_BUILD_DIR)/.staged: $(SYSSTAT_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#sysstat-stage: $(SYSSTAT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/sysstat
 #
 $(SYSSTAT_IPK_DIR)/CONTROL/control:
-	@install -d $(SYSSTAT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: sysstat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,13 +194,19 @@ $(SYSSTAT_IPK_DIR)/CONTROL/control:
 #
 $(SYSSTAT_IPK): $(SYSSTAT_BUILD_DIR)/.built
 	rm -rf $(SYSSTAT_IPK_DIR) $(BUILD_DIR)/sysstat_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SYSSTAT_BUILD_DIR) DESTDIR=$(SYSSTAT_IPK_DIR) install
-	install -d $(SYSSTAT_IPK_DIR)/opt/etc/
+	$(MAKE) -C $(SYSSTAT_BUILD_DIR) install \
+		DESTDIR=$(SYSSTAT_IPK_DIR) \
+		IGNORE_MAN_GROUP=y \
+		RC_DIR=/opt/etc \
+		SYSCONFIG_DIR=/opt/etc/sysconfig \
+		INIT_DIR=/opt/etc/init.d \
+		SA_DIR=/opt/var/log/sa \
+		;
+#	install -d $(SYSSTAT_IPK_DIR)/opt/etc/
 #	install -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.conf $(SYSSTAT_IPK_DIR)/opt/etc/sysstat.conf
 	install -d $(SYSSTAT_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SYSSTAT_SOURCE_DIR)/rc.sysstat $(SYSSTAT_IPK_DIR)/opt/etc/init.d/S99sysstat
-	install -d $(SYSSTAT_IPK_DIR)/opt/doc/sysstat-6.0.0/
-	install -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.crond $(SYSSTAT_IPK_DIR)/opt/doc/sysstat-6.0.0/sysstat.crond
+	install -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.crond $(SYSSTAT_IPK_DIR)/opt/share/doc/sysstat-$(SYSSTAT_VERSION)/sysstat.crond
 	$(MAKE) $(SYSSTAT_IPK_DIR)/CONTROL/control
 	install -m 755 $(SYSSTAT_SOURCE_DIR)/postinst $(SYSSTAT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(SYSSTAT_SOURCE_DIR)/prerm $(SYSSTAT_IPK_DIR)/CONTROL/prerm
@@ -216,4 +235,4 @@ sysstat-dirclean:
 # Some sanity check for the package.
 #
 sysstat-check: $(SYSSTAT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SYSSTAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
