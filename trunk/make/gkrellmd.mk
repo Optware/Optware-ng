@@ -35,14 +35,14 @@ GKRELLMD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GKRELLMD_DESCRIPTION=Gkrellm is a utility to display system stats (cpu, processes, memory,..) in a nice little window. (Server component)
 GKRELLMD_SECTION=util
 GKRELLMD_PRIORITY=optional
-GKRELLMD_DEPENDS=glib
+GKRELLMD_DEPENDS=glib, zlib
 GKRELLMD_SUGGESTS=
 GKRELLMD_CONFLICTS=
 
 #
 # GKRELLMD_IPK_VERSION should be incremented when the ipk changes.
 #
-GKRELLMD_IPK_VERSION=2
+GKRELLMD_IPK_VERSION=3
 
 #
 # GKRELLMD_CONFFILES should be a list of user-editable files
@@ -122,7 +122,7 @@ gkrellmd-source: $(DL_DIR)/$(GKRELLMD_SOURCE) $(GKRELLMD_PATCHES)
 # shown below to make various patches to it.
 #
 $(GKRELLMD_BUILD_DIR)/.configured: $(DL_DIR)/$(GKRELLMD_SOURCE) $(GKRELLMD_PATCHES) make/gkrellmd.mk
-	$(MAKE) glib-stage
+	$(MAKE) glib-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(GKRELLMD_DIR) $(@D)
 	$(GKRELLMD_UNZIP) $(DL_DIR)/$(GKRELLMD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GKRELLMD_PATCHES)" ; \
