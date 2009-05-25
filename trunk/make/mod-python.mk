@@ -73,8 +73,6 @@ MOD_PYTHON_SOURCE_DIR=$(SOURCE_DIR)/mod-python
 MOD_PYTHON_IPK_DIR=$(BUILD_DIR)/mod-python-$(MOD_PYTHON_VERSION)-ipk
 MOD_PYTHON_IPK=$(BUILD_DIR)/mod-python_$(MOD_PYTHON_VERSION)-$(MOD_PYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-MOD_PYTHON_APACHE_VERSION=$(shell sed -n -e 's/^APACHE_VERSION *=//p' make/apache.mk)
-
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -112,13 +110,13 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
 	$(MOD_PYTHON_UNZIP) $(DL_DIR)/$(MOD_PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MOD_PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(MOD_PYTHON_DIR) -p1
 	mv $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(@D)
-	sed -i -e 's:@APACHE_VERSION@:$(MOD_PYTHON_APACHE_VERSION):' $(@D)/configure.in
+	sed -i -e "s:@APACHE_VERSION@:`sed -n -e 's/^APACHE_VERSION *=//p' make/apache.mk`:" $(@D)/configure.in
 	sed -i -e 's:@CC_AND_LDSHARED@:CC=$(TARGET_CC) LDSHARED="$(TARGET_CC) -shared":' $(@D)/dist/Makefile.in
 	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOD_PYTHON_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(MOD_PYTHON_LDFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(MOD_PYTHON_LDFLAGS) $(PYTHON25_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
