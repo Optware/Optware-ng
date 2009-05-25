@@ -37,7 +37,7 @@ MOD_PYTHON_CONFLICTS=
 #
 # MOD_PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-MOD_PYTHON_IPK_VERSION=1
+MOD_PYTHON_IPK_VERSION=2
 
 #
 # MOD_PYTHON_CONFFILES should be a list of user-editable files
@@ -47,7 +47,10 @@ MOD_PYTHON_CONFFILES=/opt/etc/apache2/conf.d/mod_python.conf
 # MOD_PYTHON_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MOD_PYTHON_PATCHES=$(MOD_PYTHON_SOURCE_DIR)/configure.in.patch $(MOD_PYTHON_SOURCE_DIR)/dist-Makefile.in.patch
+MOD_PYTHON_PATCHES=\
+	$(MOD_PYTHON_SOURCE_DIR)/configure.in.patch \
+	$(MOD_PYTHON_SOURCE_DIR)/dist-Makefile.in.patch \
+	$(MOD_PYTHON_SOURCE_DIR)/new_apr.patch \
 
 #
 # If the compilation of the package requires additional
@@ -77,7 +80,8 @@ MOD_PYTHON_APACHE_VERSION=$(shell sed -n -e 's/^APACHE_VERSION *=//p' make/apach
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MOD_PYTHON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MOD_PYTHON_SITE)/$(MOD_PYTHON_SOURCE)
+	$(WGET) -P $(@D) $(MOD_PYTHON_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -102,16 +106,16 @@ mod-python-source: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 # Note: configure breaks if bash 3.1 is installed!
-$(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON_PATCHES)
+$(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON_PATCHES) make/mod-python.mk
 	$(MAKE) python25-stage apache-stage
-	rm -rf $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(MOD_PYTHON_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(@D)
 	$(MOD_PYTHON_UNZIP) $(DL_DIR)/$(MOD_PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MOD_PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(MOD_PYTHON_DIR) -p1
-	mv $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(MOD_PYTHON_BUILD_DIR)
-	(cd $(MOD_PYTHON_BUILD_DIR); \
-		sed -i -e 's:@APACHE_VERSION@:$(MOD_PYTHON_APACHE_VERSION):' configure.in; \
-		sed -i -e 's:@CC_AND_LDSHARED@:CC=$(TARGET_CC) LDSHARED="$(TARGET_CC) -shared":' dist/Makefile.in; \
-		autoreconf; \
+	mv $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(@D)
+	sed -i -e 's:@APACHE_VERSION@:$(MOD_PYTHON_APACHE_VERSION):' $(@D)/configure.in
+	sed -i -e 's:@CC_AND_LDSHARED@:CC=$(TARGET_CC) LDSHARED="$(TARGET_CC) -shared":' $(@D)/dist/Makefile.in
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOD_PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MOD_PYTHON_LDFLAGS)" \
@@ -123,8 +127,8 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
 		--with-apxs=$(STAGING_DIR)/opt/sbin/apxs \
 		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.5 \
 		--disable-nls \
-	    ; \
-            ( \
+	)
+	( \
                 echo "[build_ext]"; \
                 echo "include-dirs=$(STAGING_DIR)/opt/include"; \
                 echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
@@ -133,9 +137,8 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
                 echo "executable=/opt/bin/python2.5"; \
                 echo "[install]"; \
                 echo "prefix=/opt"; \
-            ) > $(MOD_PYTHON_BUILD_DIR)/dist/setup.cfg; \
-	)
-	touch $(MOD_PYTHON_BUILD_DIR)/.configured
+        ) > $(@D)/dist/setup.cfg
+	touch $@
 
 mod-python-unpack: $(MOD_PYTHON_BUILD_DIR)/.configured
 
@@ -143,9 +146,9 @@ mod-python-unpack: $(MOD_PYTHON_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MOD_PYTHON_BUILD_DIR)/.built: $(MOD_PYTHON_BUILD_DIR)/.configured
-	rm -f $(MOD_PYTHON_BUILD_DIR)/.built
-	$(MAKE) -C $(MOD_PYTHON_BUILD_DIR)
-	touch $(MOD_PYTHON_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -156,11 +159,11 @@ mod-python: $(MOD_PYTHON_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MOD_PYTHON_BUILD_DIR)/.staged: $(MOD_PYTHON_BUILD_DIR)/.built
-	rm -f $(MOD_PYTHON_BUILD_DIR)/.staged
+	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) \
 	LDSHARED="$(TARGET_CC) -shared" \
-		$(MAKE) -C $(MOD_PYTHON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MOD_PYTHON_BUILD_DIR)/.staged
+		$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 mod-python-stage: $(MOD_PYTHON_BUILD_DIR)/.staged
 
@@ -169,7 +172,7 @@ mod-python-stage: $(MOD_PYTHON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mod-python
 #
 $(MOD_PYTHON_IPK_DIR)/CONTROL/control:
-	@install -d $(MOD_PYTHON_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: mod-python" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -228,4 +231,4 @@ mod-python-dirclean:
 # Some sanity check for the package.
 #
 mod-python-check: $(MOD_PYTHON_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MOD_PYTHON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
