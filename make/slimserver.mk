@@ -29,6 +29,7 @@
 SLIMSERVER_VERSION=6.5.4
 SLIMSERVER_SITE=http://www.slimdevices.com/downloads/SlimServer_v$(SLIMSERVER_VERSION)
 SLIMSERVER_SOURCE=SlimServer_v$(SLIMSERVER_VERSION).no-cpan-arch.tar.gz
+SLIMSERVER_MODULES_SRC=http://svn.slimdevices.com/slim/vendor/src/
 SLIMSERVER_DIR=SlimServer_v$(SLIMSERVER_VERSION)
 SLIMSERVER_UNZIP=zcat
 SLIMSERVER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -146,6 +147,7 @@ $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER
 		-e "/EXPAT.*PATH=/s|=/opt|$$ENV{STAGING_DIR}&|" \
 		-e '/archname = $$2/a         $$archname =~ s|-uclibc||;' \
 		-e 's/?view=auto/?view=co/g' \
+		-e "/my \$$SOURCE =/s|'.*'|'$(SLIMSERVER_MODULES_SRC)'|" \
 		$(@D)/Bin/build-perl-modules.pl
 	sed -i -e 's/^innodb_fast_shutdown/#innodb_fast_shutdown/' \
 		$(@D)/MySQL/my.tt
