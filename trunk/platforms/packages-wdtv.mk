@@ -13,7 +13,7 @@ BROKEN_PACKAGES = \
 	fuppes gnu-smalltalk gtmess gtk gutenprint \
 	ice iptraf launchtool ldconfig ltrace microdc2 moc \
 	mtr newsbeuter nfs-server nfs-utils pango pinentry \
-	puppy mod-python qemu rssh \
+	puppy qemu rssh \
 	sm taged transcode uemacs vte \
 	xauth xaw xchat xmu xt xterm lm-sensors \
 	slimserver

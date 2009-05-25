@@ -15,7 +15,6 @@ BROKEN_PACKAGES = \
 	inferno \
 	\
 	microdc2 \
-	mod-python \
 	rssh \
 	taged \
 	transcode \
