@@ -13,6 +13,5 @@ BROKEN_PACKAGES = \
 	gtk ipac-ng iptables iptraf ldconfig \
 	microdc2 netatalk nfs-utils \
 	puppy qemu \
-	slimserver \
 	softflowd \
 	taged transcode vte xchat \

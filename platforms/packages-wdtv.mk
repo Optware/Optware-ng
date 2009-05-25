@@ -16,4 +16,3 @@ BROKEN_PACKAGES = \
 	puppy qemu rssh \
 	sm taged transcode uemacs vte \
 	xauth xaw xchat xmu xt xterm lm-sensors \
-	slimserver
