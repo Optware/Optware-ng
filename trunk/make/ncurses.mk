@@ -39,7 +39,7 @@ $(DL_DIR)/$(NCURSES_SOURCE):
 
 ncurses-source: $(DL_DIR)/$(NCURSES_SOURCE)
 
-$(NCURSES_HOST_BUILD_DIR)/.built: $(HOST_BUILD_DIR)/.configured $(DL_DIR)/$(NCURSES_SOURCE) make/ncurses.mk
+$(NCURSES_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(NCURSES_SOURCE) make/ncurses.mk
 	rm -rf $(HOST_BUILD_DIR)/$(NCURSES) $(@D)
 	$(NCURSES_UNZIP) $(DL_DIR)/$(NCURSES_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(NCURSES) $(@D)

@@ -180,7 +180,7 @@ $(ICU_BUILD_DIR)/.staged: $(ICU_BUILD_DIR)/.built
 
 icu-stage: $(ICU_BUILD_DIR)/.staged
 
-$(ICU_HOST_BUILD_DIR)/.built: $(HOST_BUILD_DIR)/.configured $(DL_DIR)/$(ICU_SOURCE)
+$(ICU_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ICU_SOURCE)
 	rm -rf $(HOST_BUILD_DIR)/$(ICU_DIR) $(@D)
 	$(ICU_UNZIP) $(DL_DIR)/$(ICU_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test "$(HOST_BUILD_DIR)/$(ICU_DIR)" != "$(@D)" ; \
