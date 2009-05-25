@@ -13,4 +13,4 @@ BROKEN_PACKAGES = \
 	bitchx \
 	iptables ivorbis-tools lcd4linux \
 	ldconfig puppy \
-	mod-python qemu taged transcode \
+	qemu taged transcode \
