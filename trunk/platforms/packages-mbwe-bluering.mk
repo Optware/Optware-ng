@@ -19,6 +19,5 @@ BROKEN_PACKAGES = \
 	taged \
 	transcode \
 	util-linux \
-	slimserver \
 
 PERL_MAJOR_VER=5.10

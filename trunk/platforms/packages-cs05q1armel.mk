@@ -18,7 +18,7 @@ BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	gtk vte xchat \
 	microdc2 \
-	taged transcode slimserver \
+	taged transcode \
 
 E2FSPROGS_VERSION := 1.40.3
 E2FSPROGS_IPK_VERSION := 1

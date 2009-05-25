@@ -20,5 +20,4 @@ BROKEN_PACKAGES = \
 	rssh sablevm sm \
 	transcode uemacs util-linux vnstat \
 	vte xauth xaw xchat xmu xt xterm \
-	slimserver \
 
