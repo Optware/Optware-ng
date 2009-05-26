@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBIDN_SITE=http://ftp.gnu.org/gnu/libidn
-LIBIDN_VERSION=1.13
+LIBIDN_VERSION=1.14
 LIBIDN_SOURCE=libidn-$(LIBIDN_VERSION).tar.gz
 LIBIDN_DIR=libidn-$(LIBIDN_VERSION)
 LIBIDN_UNZIP=zcat
@@ -149,7 +149,7 @@ libidn: $(LIBIDN_BUILD_DIR)/.built
 #
 $(LIBIDN_BUILD_DIR)/.staged: $(LIBIDN_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libidn.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libidn.pc
 	touch $@
