@@ -319,7 +319,7 @@ COMMON_CROSS_PACKAGES = \
 	pcapsipdump pciutils pcre pen perltgd pinentry \
 	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
-	picocom picolisp pkgconfig player polipo pop3proxy \
+	picocom picolisp pkgconfig player plowshare polipo pop3proxy \
 	popt poptop portmap postgresql postfix pound \
 	ppower ppp privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils puppy pure-ftpd pv pwgen \
