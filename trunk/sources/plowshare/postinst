@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if ! test -L /dev/fd; then
+	rm -f /dev/fd
+	ln -s /proc/self/fd /dev/fd
+fi
+
+exit 0
