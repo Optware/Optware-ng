@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-FLUP_SITE=http://www.saddi.com/software/flup/dist
-PY-FLUP_VERSION=1.0.1
+PY-FLUP_VERSION=1.0.2
 PY-FLUP_DIR=flup-$(PY-FLUP_VERSION)
 PY-FLUP_SOURCE=$(PY-FLUP_DIR).tar.gz
 PY-FLUP_UNZIP=zcat
@@ -32,6 +32,7 @@ PY-FLUP_SECTION=misc
 PY-FLUP_PRIORITY=optional
 PY24-FLUP_DEPENDS=python24
 PY25-FLUP_DEPENDS=python25
+PY26-FLUP_DEPENDS=python26
 PY-FLUP_CONFLICTS=
 
 #
@@ -73,6 +74,9 @@ PY24-FLUP_IPK=$(BUILD_DIR)/py24-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$
 
 PY25-FLUP_IPK_DIR=$(BUILD_DIR)/py25-flup-$(PY-FLUP_VERSION)-ipk
 PY25-FLUP_IPK=$(BUILD_DIR)/py25-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-FLUP_IPK_DIR=$(BUILD_DIR)/py26-flup-$(PY-FLUP_VERSION)-ipk
+PY26-FLUP_IPK=$(BUILD_DIR)/py26-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-flup-source py-flup-unpack py-flup py-flup-stage py-flup-ipk py-flup-clean py-flup-dirclean py-flup-check
 
@@ -140,6 +144,21 @@ $(PY-FLUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FLUP_SOURCE) $(PY-FLUP_PATCHES)
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR)
+	$(PY-FLUP_UNZIP) $(DL_DIR)/$(PY-FLUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-FLUP_PATCHES)"; then \
+	    cat $(PY-FLUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
 	touch $@
 
 py-flup-unpack: $(PY-FLUP_BUILD_DIR)/.configured
@@ -153,8 +172,11 @@ $(PY-FLUP_BUILD_DIR)/.built: $(PY-FLUP_BUILD_DIR)/.configured
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
 	cd $(@D)/2.5; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	cd $(@D)/2.6; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build
 	touch $@
 
 #
@@ -204,6 +226,20 @@ $(PY25-FLUP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-FLUP_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-FLUP_CONFLICTS)" >>$@
 
+$(PY26-FLUP_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-flup" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-FLUP_PRIORITY)" >>$@
+	@echo "Section: $(PY-FLUP_SECTION)" >>$@
+	@echo "Version: $(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-FLUP_MAINTAINER)" >>$@
+	@echo "Source: $(PY-FLUP_SITE)/$(PY-FLUP_SOURCE)" >>$@
+	@echo "Description: $(PY-FLUP_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-FLUP_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-FLUP_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -239,10 +275,21 @@ $(PY25-FLUP_IPK): $(PY-FLUP_BUILD_DIR)/.built
 #	echo $(PY-FLUP_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-FLUP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-FLUP_IPK_DIR)
 
+$(PY26-FLUP_IPK): $(PY-FLUP_BUILD_DIR)/.built
+	rm -rf $(PY26-FLUP_IPK_DIR) $(BUILD_DIR)/py26-flup_*_$(TARGET_ARCH).ipk
+	(cd $(PY-FLUP_BUILD_DIR)/2.6; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	--root=$(PY26-FLUP_IPK_DIR) --prefix=/opt)
+#	python2.6 -c "import setuptools; execfile('setup.py')" install --root=$(PY-FLUP_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-FLUP_IPK_DIR)/CONTROL/control
+#	echo $(PY-FLUP_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-FLUP_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-FLUP_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-flup-ipk: $(PY24-FLUP_IPK) $(PY25-FLUP_IPK)
+py-flup-ipk: $(PY24-FLUP_IPK) $(PY25-FLUP_IPK) $(PY26-FLUP_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -258,9 +305,10 @@ py-flup-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR) $(PY-FLUP_BUILD_DIR)
 	rm -rf $(PY24-FLUP_IPK_DIR) $(PY24-FLUP_IPK)
 	rm -rf $(PY25-FLUP_IPK_DIR) $(PY25-FLUP_IPK)
+	rm -rf $(PY26-FLUP_IPK_DIR) $(PY26-FLUP_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-flup-check: $(PY24-FLUP_IPK) $(PY25-FLUP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-FLUP_IPK) $(PY25-FLUP_IPK)
+py-flup-check: $(PY24-FLUP_IPK) $(PY25-FLUP_IPK) $(PY26-FLUP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
