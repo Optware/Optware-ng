@@ -1,0 +1,32 @@
+Signed-off-by: Tom Prince <cougar@hermes>
+---
+ configure.ac     |    2 ++
+ misc-utils/cal.c |    2 +-
+ 2 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 1abf688..af946a1 100644
+--- configure.ac
++++ configure.ac
+@@ -105,6 +105,8 @@ AC_CHECK_HEADERS([linux/raw.h],
+ 		 [AM_CONDITIONAL([HAVE_RAW], [true])],
+ 		 [AM_CONDITIONAL([HAVE_RAW], [false])])
+ 
++AC_CHECK_DECLS([_NL_TIME_WEEK_1STDAY],[],[],[[#include <langinfo.h>]])
++
+ AC_CHECK_FUNCS(
+ 	[inet_aton \
+ 	fsync \
+diff --git a/misc-utils/cal.c b/misc-utils/cal.c
+index f2d52e8..a8534b8 100644
+--- misc-utils/cal.c
++++ misc-utils/cal.c
+@@ -291,7 +291,7 @@ main(int argc, char **argv) {
+  * the locale database, which can be overridden with the
+  * -s (Sunday) or -m (Monday) options.
+  */
+-#ifdef HAVE_LANGINFO_H
++#if HAVE_DECL__NL_TIME_WEEK_1STDAY
+ 	/*
+ 	 * You need to use 2 locale variables to get the first day of the week.
+ 	 * This is needed to support first_weekday=2 and first_workday=1 for

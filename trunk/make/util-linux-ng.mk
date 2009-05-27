@@ -29,7 +29,7 @@ UTIL_LINUX_NG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UTIL_LINUX_NG_DESCRIPTION=A suite of essential utilities for any Linux system, this version is a fork of util-linux.
 UTIL_LINUX_NG_SECTION=utils
 UTIL_LINUX_NG_PRIORITY=optional
-UTIL_LINUX_NG_DEPENDS=e2fsprogs, ncurses, zlib
+UTIL_LINUX_NG_DEPENDS=e2fslibs, ncursesw, zlib
 UTIL_LINUX_NG_SUGGESTS=
 UTIL_LINUX_NG_CONFLICTS=
 
@@ -46,23 +46,28 @@ UTIL_LINUX_NG_IPK_VERSION=1
 # UTIL_LINUX_NG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-UTIL_LINUX_NG_PATCHES=$(UTIL_LINUX_NG_SOURCE_DIR)/AI_ADDRCONFIG.patch \
+UTIL_LINUX_NG_PATCHES=\
+$(UTIL_LINUX_NG_SOURCE_DIR)/AI_ADDRCONFIG.patch \
 $(UTIL_LINUX_NG_SOURCE_DIR)/strverscmp.h.patch
+
 ifeq (uclibc, $(LIBC_STYLE))
-UTIL_LINUX_NG_PATCHES +=$(UTIL_LINUX_NG_SOURCE_DIR)/program_invocation_short_name.patch
+UTIL_LINUX_NG_PATCHES +=\
+$(UTIL_LINUX_NG_SOURCE_DIR)/no-decl-NL_TIME_WEEK_1STDAY.patch \
+$(UTIL_LINUX_NG_SOURCE_DIR)/program_invocation_short_name.patch
 endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-UTIL_LINUX_NG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+UTIL_LINUX_NG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncursesw -I$(STAGING_INCLUDE_DIR)/blkid
 UTIL_LINUX_NG_LDFLAGS=
 
 UTIL_LINUX_NG_CONFIG_ARGS=
-ifneq (, $(filter ddwrt dns323 gumstix1151 mbwe-bluering oleg openwrt-brcm24 openwrt-ixp4xx syno-x07 ts101 wdtv, $(OPTWARE_TARGET)))
-UTIL_LINUX_NG_CONFIG_ARGS+=--disable-schedutils
-endif
+UTIL_LINUX_NG_CONFIG_ARGS +=$(strip \
+$(if $(filter uclibc, $(LIBC_STYLE)), --disable-schedutils, \
+$(if $(filter syno-x07, $(OPTWARE_TARGET)), --disable-schedutils, \
+)))
 
 #
 # UTIL_LINUX_NG_BUILD_DIR is the directory in which the build is done.
@@ -114,7 +119,7 @@ util-linux-ng-source: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL_LINUX_NG_PATCHES)
 # shown below to make various patches to it.
 #
 $(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL_LINUX_NG_PATCHES) make/util-linux-ng.mk
-	$(MAKE) e2fsprogs-stage ncurses-stage zlib-stage
+	$(MAKE) e2fsprogs-stage ncursesw-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(UTIL_LINUX_NG_DIR) $(@D)
 	$(UTIL_LINUX_NG_UNZIP) $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UTIL_LINUX_NG_PATCHES)" ; \
@@ -124,6 +129,7 @@ $(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_NG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_NG_DIR) $(@D) ; \
 	fi
+	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_NG_CPPFLAGS)" \
@@ -139,7 +145,7 @@ $(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) -e 's/$$echo /$$ECHO /g' $(@D)/libtool
 	touch $@
 
 util-linux-ng-unpack: $(UTIL_LINUX_NG_BUILD_DIR)/.configured
