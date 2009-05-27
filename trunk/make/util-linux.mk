@@ -130,7 +130,11 @@ $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX
 	)
 	sed -i -e 's|-I/usr/include/ncurses ||g' \
 	       -e 's|HAVE_ZLIB=no|HAVE_ZLIB=yes|g' \
-		$(UTIL_LINUX_BUILD_DIR)/make_include
+		$(@D)/make_include
+ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
+	### mbwe-bluering compiler bug workaround
+	sed -i -e '/#define PAGE_CACHE_SIZE/s/^.*/#define PAGE_CACHE_SIZE (4096)/' $(@D)/disk-utils/fsck.cramfs.c
+endif
 #	$(PATCH_LIBTOOL) $(UTIL_LINUX_BUILD_DIR)/libtool
 	touch $@
 
