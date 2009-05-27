@@ -20,3 +20,4 @@ BROKEN_PACKAGES = \
 	mdadm \
 	puppy sendmail \
 	scrobby \
+	tesseract-ocr \
