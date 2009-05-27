@@ -71,3 +71,61 @@
  
      if (argc == 0)
  	usage(EXIT_SUCCESS);
+--- misc-utils/namei.c.orig	2009-03-25 12:20:18.000000000 +0000
++++ misc-utils/namei.c	2009-05-27 22:11:29.073694851 +0000
+@@ -403,7 +403,9 @@
+ static void
+ usage(int rc)
+ {
+-	const char *p = program_invocation_short_name;
++	extern const char *__progname;
++	char * arg = strrchr(__progname, '/');
++	const char *p = arg ? arg + 1 : __progname;
+ 
+ 	if (!*p)
+ 		p = "namei";
+--- sys-utils/ipcmk.c.orig	2009-03-25 12:19:08.000000000 +0000
++++ sys-utils/ipcmk.c	2009-05-27 22:16:19.659638492 +0000
+@@ -100,7 +100,9 @@
+ 	int nsems = 0;
+ 	int doShm = 0, doMsg = 0, doSem = 0;
+ 
+-	progname = program_invocation_short_name;
++	extern const char *__progname;
++	char * arg = strrchr(__progname, '/');
++	progname = arg ? arg + 1 : __progname;
+ 	if (!progname)
+ 		progname = "ipcmk";
+ 
+--- sys-utils/lscpu.c.orig	2009-03-25 12:19:08.000000000 +0000
++++ sys-utils/lscpu.c	2009-05-27 22:20:40.874503490 +0000
+@@ -618,8 +618,10 @@
+ 
+ void usage(int rc)
+ {
++	extern const char *__progname;
++	char * arg = strrchr(__progname, '/');
+ 	printf(_("Usage: %s [option]\n"),
+-			program_invocation_short_name);
++			arg ? arg + 1 : __progname);
+ 
+ 	puts(_(	"CPU architecture information helper\n\n"
+ 		"  -h, --help     usage information\n"
+--- mount/swapon.c.orig	2009-03-25 12:20:18.000000000 +0000
++++ mount/swapon.c	2009-05-27 22:29:47.607301078 +0000
+@@ -772,11 +772,14 @@
+ int
+ main(int argc, char *argv[]) {
+ 
++	extern const char *__progname;
++	char * arg = strrchr(__progname, '/');
++
+ 	setlocale(LC_ALL, "");
+ 	bindtextdomain(PACKAGE, LOCALEDIR);
+ 	textdomain(PACKAGE);
+ 
+-	progname = program_invocation_short_name;
++	progname = arg ? arg + 1 : __progname;
+ 	if (!progname) {
+ 		char *p = strrchr(argv[0], '/');
+ 		progname = p ? p+1 : argv[0];
