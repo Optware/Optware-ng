@@ -1,0 +1,39 @@
+diff -urN tesseract-2.03/viewer/scrollview.cpp tesseract-2.03-NEW/viewer/scrollview.cpp
+--- tesseract-2.03/viewer/scrollview.cpp	2008-06-27 23:21:52.000000000 +0200
++++ tesseract-2.03-NEW/viewer/scrollview.cpp	2008-06-27 23:23:31.000000000 +0200
+@@ -34,7 +34,10 @@
+ #include <utility>
+ #include <algorithm>
+ #include <vector>
+-#include <string>
++#include <string.h>
++#include <stdlib.h>
++#include <limits.h>
++
+ 
+ #include "svutil.h"
+ 
+diff -urN tesseract-2.03/viewer/svmnode.cpp tesseract-2.03-NEW/viewer/svmnode.cpp
+--- tesseract-2.03/viewer/svmnode.cpp	2008-06-27 23:22:08.000000000 +0200
++++ tesseract-2.03-NEW/viewer/svmnode.cpp	2008-06-27 23:21:28.000000000 +0200
+@@ -27,6 +27,7 @@
+ #include "svmnode.h"
+ 
+ #include <iostream>
++#include <string.h>
+ 
+ #include "scrollview.h"
+ 
+diff -urN tesseract-2.03/viewer/svutil.cpp tesseract-2.03-NEW/viewer/svutil.cpp
+--- tesseract-2.03/viewer/svutil.cpp	2008-06-27 23:22:47.000000000 +0200
++++ tesseract-2.03-NEW/viewer/svutil.cpp	2008-06-27 23:21:28.000000000 +0200
+@@ -37,7 +37,8 @@
+ #endif
+ 
+ #include <iostream>
+-#include <string>
++#include <string.h>
++#include <stdlib.h>
+ 
+ const int kBufferSize = 65536;
+ const int kMaxMsgSize = 4096;
