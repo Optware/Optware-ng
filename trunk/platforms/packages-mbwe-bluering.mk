@@ -18,6 +18,5 @@ BROKEN_PACKAGES = \
 	rssh \
 	taged \
 	transcode \
-	util-linux \
 
 PERL_MAJOR_VER=5.10
