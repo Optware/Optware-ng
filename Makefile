@@ -339,7 +339,8 @@ COMMON_CROSS_PACKAGES = \
 	sqsh squeak squid srelay ssam sslwrap strace stunnel streamripper \
 	stupid-ftpd sudo surfraw swi-prolog svn syslog-ng sysstat syx \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
-	tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
+	tcpdump tcpflow tcsh termcap tesseract-ocr \
+	texinfo textutils thttpd \
 	tig tin tinyproxy tinyscheme tmsnc tnef tnftp tnftpd \
 	toppyweb tor torsocks torrent torrentflux \
 	transcode transmission transmissiond tre tree trickle \

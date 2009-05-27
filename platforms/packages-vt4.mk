@@ -46,7 +46,7 @@ BROKEN_PACKAGES = \
 	simh smartmontools snort \
 	spandsp splix sqsh swi-prolog \
 	subvertpy svn bzr-svn \
-	taglib tshark transcode \
+	taglib tesseract-ocr tshark transcode \
 	unrar upslug2 upx \
 	vlc vnstat vorbis-tools vte \
 	weechat wget wput wxbase \
