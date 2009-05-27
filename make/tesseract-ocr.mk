@@ -36,7 +36,7 @@ TESSERACT-OCR_CONFLICTS=
 #
 # TESSERACT-OCR_IPK_VERSION should be incremented when the ipk changes.
 #
-TESSERACT-OCR_IPK_VERSION=1
+TESSERACT-OCR_IPK_VERSION=2
 
 #
 # TESSERACT-OCR_CONFFILES should be a list of user-editable files
@@ -53,6 +53,9 @@ TESSERACT-OCR_PATCHES=$(TESSERACT-OCR_SOURCE_DIR)/includes.patch
 # compilation or linking flags, then list them here.
 #
 TESSERACT-OCR_CPPFLAGS=
+ifdef NO_BUILTIN_MATH
+TESSERACT-OCR_CPPFLAGS += -fno-builtin-ceil -fno-builtin-sin -fno-builtin-cos -fno-builtin-log
+endif
 TESSERACT-OCR_LDFLAGS=
 
 TESSERACT-OCR_LANGS_200=eng fra ita deu nld spa
@@ -286,7 +289,9 @@ tesseract-ocr-clean:
 # directories.
 #
 tesseract-ocr-dirclean:
-	rm -rf $(BUILD_DIR)/$(TESSERACT-OCR_DIR) $(TESSERACT-OCR_BUILD_DIR) $(TESSERACT-OCR_IPK_DIR) $(TESSERACT-OCR_IPK)
+	rm -rf $(BUILD_DIR)/$(TESSERACT-OCR_DIR) $(TESSERACT-OCR_BUILD_DIR)
+	rm -rf $(TESSERACT-OCR_IPK_DIR) $(TESSERACT-OCR_IPK) $(TESSERACT-OCR-DEV_IPK)
+	rm -rf $(TESSERACT-OCR_IPK_DIR)-langs $(BUILD_DIR)/tesseract-ocr-lang-*_*_$(TARGET_ARCH).ipk
 #
 #
 # Some sanity check for the package.

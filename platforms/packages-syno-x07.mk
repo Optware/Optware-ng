@@ -26,6 +26,7 @@ BROKEN_PACKAGES = \
 	p7zip \
 	puppy \
 	qemu sablevm \
+	tesseract-ocr \
 	varnish \
 
 E2FSPROGS_VERSION := 1.40.3
