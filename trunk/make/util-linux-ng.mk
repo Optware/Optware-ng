@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UTIL_LINUX_NG_SITE=ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.14
-UTIL_LINUX_NG_VERSION=2.14.2
+UTIL_LINUX_NG_SITE=ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.15
+UTIL_LINUX_NG_VERSION=2.15
 UTIL_LINUX_NG_SOURCE=util-linux-ng-$(UTIL_LINUX_NG_VERSION).tar.gz
 UTIL_LINUX_NG_DIR=util-linux-ng-$(UTIL_LINUX_NG_VERSION)
 UTIL_LINUX_NG_UNZIP=zcat
@@ -128,6 +128,7 @@ $(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_NG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UTIL_LINUX_NG_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
