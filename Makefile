@@ -198,7 +198,6 @@ ASTERISK_PACKAGES = \
 	asterisk16-addons \
 
 PACKAGES_REQUIRE_LINUX26 = \
-	dcled \
 	inotail \
 	lm-sensors \
 	module-init-tools \
@@ -234,7 +233,7 @@ COMMON_CROSS_PACKAGES = \
 	cyrus-imapd cyrus-sasl \
 	dansguardian dash davtools \
 	dbus dbus-glib dbus-python \
-	dcraw denyhosts dev-pts dfu-util \
+	dcled dcraw denyhosts dev-pts dfu-util \
 	dialog dict digitemp dircproxy distcc dhcp diffstat diffutils \
 	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
 	dropbear drraw dspam dtach dump \
