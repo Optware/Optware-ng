@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DCLED_SITE=http://www.last-outpost.com/~malakai/dcled
-DCLED_VERSION=1.2
+DCLED_VERSION=1.7
 DCLED_SOURCE=dcled-$(DCLED_VERSION).tgz
 DCLED_DIR=dcled-$(DCLED_VERSION)
 DCLED_UNZIP=zcat
@@ -29,7 +29,7 @@ DCLED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DCLED_DESCRIPTION=Userland driver for Dream Cheeky USB LED Message Board.
 DCLED_SECTION=utils
 DCLED_PRIORITY=optional
-DCLED_DEPENDS=
+DCLED_DEPENDS=libhid
 DCLED_SUGGESTS=
 DCLED_CONFLICTS=
 
@@ -53,7 +53,7 @@ DCLED_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 DCLED_CPPFLAGS=
-DCLED_LDFLAGS=
+DCLED_LDFLAGS=-lhid -lm
 
 #
 # DCLED_BUILD_DIR is the directory in which the build is done.
@@ -105,7 +105,7 @@ dcled-source: $(DL_DIR)/$(DCLED_SOURCE) $(DCLED_PATCHES)
 # shown below to make various patches to it.
 #
 $(DCLED_BUILD_DIR)/.configured: $(DL_DIR)/$(DCLED_SOURCE) $(DCLED_PATCHES) make/dcled.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libhid-stage
 	rm -rf $(BUILD_DIR)/$(DCLED_DIR) $(@D)
 	mkdir $(@D)
 	$(DCLED_UNZIP) $(DL_DIR)/$(DCLED_SOURCE) | tar -C $(@D) -xvf -
