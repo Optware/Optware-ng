@@ -277,6 +277,7 @@ COMMON_CROSS_PACKAGES = \
 	libebml \
 	libesmtp libevent libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
+	libhid \
 	libid3tag libidn libieee1284 libijs libinklevel libjpeg libksba \
 	liblcms libmad \
 	libmatroska \
