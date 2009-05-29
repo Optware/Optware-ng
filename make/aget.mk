@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 AGET_SITE=http://www.enderunix.org/aget
-AGET_VERSION=0.4
+AGET_VERSION=0.4.1
 AGET_SOURCE=aget-$(AGET_VERSION).tar.gz
 AGET_DIR=aget-$(AGET_VERSION)
 AGET_UNZIP=zcat
@@ -218,4 +218,4 @@ aget-dirclean:
 # Some sanity check for the package.
 #
 aget-check: $(AGET_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(AGET_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
