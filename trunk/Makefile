@@ -46,7 +46,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
-	microdc2 \
  
 PERL_PACKAGES = \
 	perl \
@@ -295,7 +294,7 @@ COMMON_CROSS_PACKAGES = \
 	lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
-	mg miau microcom microperl mimms \
+	mg miau microcom microdc2 microperl mimms \
 	minicom minidlna minihttpd mini-sendmail mini-snmpd miscfiles \
 	mktemp mkvtoolnix mlocate moblock \
 	moc modutils monit most motion motor \

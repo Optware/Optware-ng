@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	gtmess \
 	inferno \
 	\
-	microdc2 \
 	rssh \
 	transcode \
 

@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	ldconfig \
 	qemu qemu-libc-i386 \
 	gtk vte xchat \
-	microdc2 \
 	transcode \
 
 E2FSPROGS_VERSION := 1.40.3
