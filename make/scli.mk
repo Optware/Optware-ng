@@ -36,7 +36,7 @@ SCLI_CONFLICTS=
 #
 # SCLI_IPK_VERSION should be incremented when the ipk changes.
 #
-SCLI_IPK_VERSION=2
+SCLI_IPK_VERSION=3
 
 #
 # SCLI_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ SCLI_IPK=$(BUILD_DIR)/scli_$(SCLI_VERSION)-$(SCLI_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SCLI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SCLI_SITE)/$(SCLI_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SCLI_SOURCE)
+	$(WGET) -P $(@D) $(SCLI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,21 +105,17 @@ scli-source: $(DL_DIR)/$(SCLI_SOURCE) $(SCLI_PATCHES)
 # shown below to make various patches to it.
 #
 $(SCLI_BUILD_DIR)/.configured: $(DL_DIR)/$(SCLI_SOURCE) $(SCLI_PATCHES) make/scli.mk
-	$(MAKE) gsnmp-stage
-	$(MAKE) libxml2-stage
-	$(MAKE) ncurses-stage
-	$(MAKE) readline-stage
-	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(SCLI_DIR) $(SCLI_BUILD_DIR)
+	$(MAKE) gsnmp-stage libxml2-stage ncurses-stage readline-stage zlib-stage
+	rm -rf $(BUILD_DIR)/$(SCLI_DIR) $(@D)
 	$(SCLI_UNZIP) $(DL_DIR)/$(SCLI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCLI_PATCHES)" ; \
 		then cat $(SCLI_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SCLI_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SCLI_DIR)" != "$(SCLI_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SCLI_DIR) $(SCLI_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SCLI_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SCLI_DIR) $(@D) ; \
 	fi
-	(cd $(SCLI_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SCLI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SCLI_LDFLAGS)" \
@@ -133,7 +129,7 @@ $(SCLI_BUILD_DIR)/.configured: $(DL_DIR)/$(SCLI_SOURCE) $(SCLI_PATCHES) make/scl
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(SCLI_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 scli-unpack: $(SCLI_BUILD_DIR)/.configured
@@ -143,7 +139,7 @@ scli-unpack: $(SCLI_BUILD_DIR)/.configured
 #
 $(SCLI_BUILD_DIR)/.built: $(SCLI_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SCLI_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -156,7 +152,7 @@ scli: $(SCLI_BUILD_DIR)/.built
 #
 $(SCLI_BUILD_DIR)/.staged: $(SCLI_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SCLI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 scli-stage: $(SCLI_BUILD_DIR)/.staged
@@ -231,4 +227,4 @@ scli-dirclean:
 # Some sanity check for the package.
 #
 scli-check: $(SCLI_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SCLI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

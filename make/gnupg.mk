@@ -40,7 +40,7 @@ GNUPG_CONFLICTS=
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=1
+GNUPG_IPK_VERSION=2
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
@@ -119,7 +119,7 @@ $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES) make/
 ifneq (, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(@D)
 	$(GNUPG_UNZIP) $(DL_DIR)/$(GNUPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GNUPG_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
 	mv $(BUILD_DIR)/$(GNUPG_DIR) $(@D)

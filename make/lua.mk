@@ -40,7 +40,7 @@ LUA_DEPENDS=readline, ncurses
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=1
+LUA_IPK_VERSION=2
 
 #
 # LUA_CONFFILES should be a list of user-editable files
@@ -213,4 +213,4 @@ lua-dirclean:
 # Some sanity check for the package.
 #
 lua-check: $(LUA_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LUA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

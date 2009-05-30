@@ -38,7 +38,7 @@ GUTENPRINT_CONFLICTS=
 #
 # GUTENPRINT_IPK_VERSION should be incremented when the ipk changes.
 #
-GUTENPRINT_IPK_VERSION=1
+GUTENPRINT_IPK_VERSION=2
 
 #
 # GUTENPRINT_CONFFILES should be a list of user-editable files
@@ -83,8 +83,8 @@ GUTENPRINT-FOOMATIC-DB_IPK=$(BUILD_DIR)/foomatic-db-gutenprint_$(GUTENPRINT_VERS
 .PHONY: gutenprint-source gutenprint-unpack gutenprint gutenprint-stage gutenprint-ipk gutenprint-clean gutenprint-dirclean gutenprint-check
 
 $(DL_DIR)/$(GUTENPRINT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GUTENPRINT_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GUTENPRINT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 gutenprint-source: $(DL_DIR)/$(GUTENPRINT_SOURCE) $(GUTENPRINT_PATCHES)
 
@@ -256,4 +256,4 @@ gutenprint-dirclean:
 	rm -rf $(GUTENPRINT-FOOMATIC-DB_IPK_DIR) $(GUTENPRINT-FOOMATIC-DB_IPK)
 
 gutenprint-check: $(GUTENPRINT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GUTENPRINT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

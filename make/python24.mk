@@ -42,7 +42,7 @@ PYTHON24_SUGGESTS=
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=1
+PYTHON24_IPK_VERSION=2
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files
@@ -100,8 +100,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYTHON24_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PYTHON24_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PYTHON24_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -131,12 +131,12 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage zlib-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
-	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(PYTHON24_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(@D)
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON24_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1
 	cd $(BUILD_DIR)/$(PYTHON24_DIR); autoconf configure.in > configure
-	mkdir $(PYTHON24_BUILD_DIR)
-	(cd $(PYTHON24_BUILD_DIR); \
+	mkdir $(@D)
+	(cd $(@D); \
 	( \
 	echo "[build_ext]"; \
 	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \

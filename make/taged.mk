@@ -36,7 +36,7 @@ TAGED_CONFLICTS=
 #
 # TAGED_IPK_VERSION should be incremented when the ipk changes.
 #
-TAGED_IPK_VERSION=2
+TAGED_IPK_VERSION=3
 
 #
 # TAGED_CONFFILES should be a list of user-editable files
@@ -74,7 +74,8 @@ TAGED_IPK=$(BUILD_DIR)/taged_$(TAGED_VERSION)-$(TAGED_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TAGED_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TAGED_SITE)/$(TAGED_SOURCE)
+	$(WGET) -P $(@D) $(TAGED_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,11 +104,11 @@ taged-source: $(DL_DIR)/$(TAGED_SOURCE) $(TAGED_PATCHES)
 #
 $(TAGED_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGED_SOURCE) $(TAGED_PATCHES)
 	$(MAKE) libid3tag-stage readline-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(TAGED_DIR) $(TAGED_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TAGED_DIR) $(@D)
 	$(TAGED_UNZIP) $(DL_DIR)/$(TAGED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(TAGED_PATCHES) | patch -d $(BUILD_DIR)/$(TAGED_DIR) -p1
-	mv $(BUILD_DIR)/$(TAGED_DIR) $(TAGED_BUILD_DIR)
-	(cd $(TAGED_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(TAGED_DIR) $(@D)
+	(cd $(@D); \
 	    cd confuse ; \
 	    ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
 		libtoolize --force ;\
@@ -123,8 +124,8 @@ $(TAGED_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGED_SOURCE) $(TAGED_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(TAGED_BUILD_DIR)/confuse/libtool
-	touch $(TAGED_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/confuse/libtool
+	touch $@
 
 taged-unpack: $(TAGED_BUILD_DIR)/.configured
 
@@ -132,9 +133,9 @@ taged-unpack: $(TAGED_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TAGED_BUILD_DIR)/.built: $(TAGED_BUILD_DIR)/.configured
-	rm -f $(TAGED_BUILD_DIR)/.built
-	$(MAKE) -C $(TAGED_BUILD_DIR)
-	touch $(TAGED_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -145,9 +146,9 @@ taged: $(TAGED_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(TAGED_BUILD_DIR)/.staged: $(TAGED_BUILD_DIR)/.built
-	rm -f $(TAGED_BUILD_DIR)/.staged
-	$(MAKE) -C $(TAGED_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(TAGED_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 taged-stage: $(TAGED_BUILD_DIR)/.staged
 
@@ -156,7 +157,7 @@ taged-stage: $(TAGED_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/taged
 #
 $(TAGED_IPK_DIR)/CONTROL/control:
-	@install -d $(TAGED_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: taged" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,3 +208,6 @@ taged-clean:
 #
 taged-dirclean:
 	rm -rf $(BUILD_DIR)/$(TAGED_DIR) $(TAGED_BUILD_DIR) $(TAGED_IPK_DIR) $(TAGED_IPK)
+
+taged-check: $(TAGED_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

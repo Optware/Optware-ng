@@ -37,7 +37,7 @@ FREETDS_CONFLICTS=
 #
 # FREETDS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETDS_IPK_VERSION=3
+FREETDS_IPK_VERSION=4
 
 #
 # FREETDS_CONFFILES should be a list of user-editable files
@@ -228,4 +228,4 @@ freetds-dirclean:
 # Some sanity check for the package.
 #
 freetds-check: $(FREETDS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FREETDS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

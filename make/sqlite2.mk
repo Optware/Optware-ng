@@ -35,7 +35,7 @@ SQLITE2_CONFLICTS=
 #
 # SQLITE2_IPK_VERSION should be incremented when the ipk changes.
 #
-SQLITE2_IPK_VERSION=2
+SQLITE2_IPK_VERSION=3
 
 #
 # SQLITE2_CONFFILES should be a list of user-editable files
@@ -98,7 +98,7 @@ sqlite2-source: $(DL_DIR)/$(SQLITE2_SOURCE) $(SQLITE2_PATCHES)
 #
 $(SQLITE2_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE2_SOURCE) $(SQLITE2_PATCHES)
 	$(MAKE) ncurses-stage readline-stage
-	rm -rf $(BUILD_DIR)/$(SQLITE2_DIR) $(SQLITE2_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SQLITE2_DIR) $(@D)
 	$(SQLITE2_UNZIP) $(DL_DIR)/$(SQLITE2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQLITE2_PATCHES)"; \
 		then cat $(SQLITE2_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE2_DIR) -p1; \

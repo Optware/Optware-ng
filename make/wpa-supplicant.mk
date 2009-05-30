@@ -42,7 +42,7 @@ WPA_SUPPLICANT_CONFLICTS=
 #
 # WPA_SUPPLICANT_IPK_VERSION should be incremented when the ipk changes.
 #
-WPA_SUPPLICANT_IPK_VERSION=2
+WPA_SUPPLICANT_IPK_VERSION=3
 
 #
 # WPA_SUPPLICANT_CONFFILES should be a list of user-editable files
@@ -80,7 +80,8 @@ WPA_SUPPLICANT_IPK=$(BUILD_DIR)/wpa-supplicant_$(WPA_SUPPLICANT_VERSION)-$(WPA_S
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WPA_SUPPLICANT_SITE)/$(WPA_SUPPLICANT_SOURCE)
+	$(WGET) -P $(@D) $(WPA_SUPPLICANT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,7 +107,7 @@ wpa-supplicant-source: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WPA_SUPPLICANT_PATCH
 #
 $(WPA_SUPPLICANT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WPA_SUPPLICANT_PATCHES)
 	$(MAKE) openssl-stage readline-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(WPA_SUPPLICANT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(@D)
 	$(WPA_SUPPLICANT_UNZIP) $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WPA_SUPPLICANT_PATCHES)" ; \
 		then cat $(WPA_SUPPLICANT_PATCHES) | patch -d $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) -p1 ; \
@@ -115,8 +116,8 @@ $(WPA_SUPPLICANT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WP
 	cp $(WPA_SUPPLICANT_SOURCE_DIR)/typedefs.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/typedefs.h
 	cp $(WPA_SUPPLICANT_SOURCE_DIR)/wlioctl.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wlioctl.h
 	cp -a $(WPA_SUPPLICANT_SOURCE_DIR)/proto $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)
-	mv $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(WPA_SUPPLICANT_BUILD_DIR)
-	touch $(WPA_SUPPLICANT_BUILD_DIR)/.configured
+	mv $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(@D)
+	touch $@
 
 wpa-supplicant-unpack: $(WPA_SUPPLICANT_BUILD_DIR)/.configured
 
@@ -124,15 +125,14 @@ wpa-supplicant-unpack: $(WPA_SUPPLICANT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(WPA_SUPPLICANT_BUILD_DIR)/.built: $(WPA_SUPPLICANT_BUILD_DIR)/.configured
-	rm -f $(WPA_SUPPLICANT_BUILD_DIR)/.built
+	rm -f $@
 	CC="$(TARGET_CC)" \
 	LDFLAGS="$(STAGING_LDFLAGS)" \
 	CPPFLAGS="$(STAGING_CPPFLAGS)"  \
 	CFLAGS="$(TARGET_CFLAGS)" \
 	LIBS="$(STAGING_LDFLAGS)" \
-	$(MAKE) -C $(WPA_SUPPLICANT_BUILD_DIR)
-
-	touch $(WPA_SUPPLICANT_BUILD_DIR)/.built
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,19 +142,19 @@ wpa-supplicant: $(WPA_SUPPLICANT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(WPA_SUPPLICANT_BUILD_DIR)/.staged: $(WPA_SUPPLICANT_BUILD_DIR)/.built
-	rm -f $(WPA_SUPPLICANT_BUILD_DIR)/.staged
-	$(MAKE) -C $(WPA_SUPPLICANT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(WPA_SUPPLICANT_BUILD_DIR)/.staged
-
-wpa-supplicant-stage: $(WPA_SUPPLICANT_BUILD_DIR)/.staged
+#$(WPA_SUPPLICANT_BUILD_DIR)/.staged: $(WPA_SUPPLICANT_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#wpa-supplicant-stage: $(WPA_SUPPLICANT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/wpa-supplicant
 #
 $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/control:
-	@install -d $(WPA_SUPPLICANT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: wpa-supplicant" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

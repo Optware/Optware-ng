@@ -43,7 +43,7 @@ GSASL_CONFLICTS=
 #
 # GSASL_IPK_VERSION should be incremented when the ipk changes.
 #
-GSASL_IPK_VERSION=1
+GSASL_IPK_VERSION=2
 
 #
 # GSASL_CONFFILES should be a list of user-editable files
@@ -91,8 +91,8 @@ LIBGSASL_IPK=$(BUILD_DIR)/libgsasl_$(GSASL_VERSION)-$(GSASL_IPK_VERSION)_$(TARGE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GSASL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GSASL_SITE)/$(GSASL_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(GSASL_SOURCE)
+	$(WGET) -P $(@D) $(GSASL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -124,19 +124,19 @@ ifeq (libidn, $(filter libidn, $(PACKAGES)))
 	$(MAKE) libidn-stage
 endif
 	$(MAKE) readline-stage
-	rm -rf $(BUILD_DIR)/$(GSASL_DIR) $(GSASL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GSASL_DIR) $(@D)
 	$(GSASL_UNZIP) $(DL_DIR)/$(GSASL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GSASL_PATCHES)" ; \
 		then cat $(GSASL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(GSASL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(GSASL_DIR)" != "$(GSASL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(GSASL_DIR) $(GSASL_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(GSASL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(GSASL_DIR) $(@D) ; \
 	fi
 #	sed -i.orig -e '/LTLIB.*=.*-R/s/^/true #/' \
 		$(GSASL_BUILD_DIR)/configure \
 		$(GSASL_BUILD_DIR)/lib/configure
-	(cd $(GSASL_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GSASL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GSASL_LDFLAGS)" \
@@ -150,7 +150,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(GSASL_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 gsasl-unpack: $(GSASL_BUILD_DIR)/.configured
@@ -160,7 +160,7 @@ gsasl-unpack: $(GSASL_BUILD_DIR)/.configured
 #
 $(GSASL_BUILD_DIR)/.built: $(GSASL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GSASL_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -173,7 +173,7 @@ gsasl: $(GSASL_BUILD_DIR)/.built
 #
 $(GSASL_BUILD_DIR)/.staged: $(GSASL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GSASL_BUILD_DIR)/lib DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/lib DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libgsasl*.la
 	sed -i.orig -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libgsasl.pc
 	touch $@
@@ -268,4 +268,4 @@ gsasl-dirclean:
 # Some sanity check for the package.
 #
 gsasl-check: $(LIBGSASL_IPK) $(GSASL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBGSASL_IPK) $(GSASL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

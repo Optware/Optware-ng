@@ -36,7 +36,7 @@ YAFC_CONFLICTS=
 #
 # YAFC_IPK_VERSION should be incremented when the ipk changes.
 #
-YAFC_IPK_VERSION=1
+YAFC_IPK_VERSION=2
 
 #
 # YAFC_CONFFILES should be a list of user-editable files
@@ -80,8 +80,8 @@ YAFC_IPK=$(BUILD_DIR)/yafc_$(YAFC_VERSION)-$(YAFC_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(YAFC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(YAFC_SITE)/$(YAFC_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(YAFC_SOURCE)
+	$(WGET) -P $(@D) $(YAFC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,16 +110,16 @@ yafc-source: $(DL_DIR)/$(YAFC_SOURCE) $(YAFC_PATCHES)
 #
 $(YAFC_BUILD_DIR)/.configured: $(DL_DIR)/$(YAFC_SOURCE) $(YAFC_PATCHES) make/yafc.mk
 	$(MAKE) ncurses-stage readline-stage
-	rm -rf $(BUILD_DIR)/$(YAFC_DIR) $(YAFC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(YAFC_DIR) $(@D)
 	$(YAFC_UNZIP) $(DL_DIR)/$(YAFC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(YAFC_PATCHES)" ; \
 		then cat $(YAFC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(YAFC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(YAFC_DIR)" != "$(YAFC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(YAFC_DIR) $(YAFC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(YAFC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(YAFC_DIR) $(@D) ; \
 	fi
-	(cd $(YAFC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(YAFC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(YAFC_LDFLAGS)" \
@@ -136,7 +136,7 @@ $(YAFC_BUILD_DIR)/.configured: $(DL_DIR)/$(YAFC_SOURCE) $(YAFC_PATCHES) make/yaf
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(YAFC_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 yafc-unpack: $(YAFC_BUILD_DIR)/.configured
@@ -146,7 +146,7 @@ yafc-unpack: $(YAFC_BUILD_DIR)/.configured
 #
 $(YAFC_BUILD_DIR)/.built: $(YAFC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(YAFC_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -157,12 +157,12 @@ yafc: $(YAFC_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(YAFC_BUILD_DIR)/.staged: $(YAFC_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(YAFC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-yafc-stage: $(YAFC_BUILD_DIR)/.staged
+#$(YAFC_BUILD_DIR)/.staged: $(YAFC_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#yafc-stage: $(YAFC_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -234,4 +234,4 @@ yafc-dirclean:
 # Some sanity check for the package.
 #
 yafc-check: $(YAFC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(YAFC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -37,7 +37,7 @@ SWI-PROLOG_CONFLICTS=
 #
 # SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWI-PROLOG_IPK_VERSION=1
+SWI-PROLOG_IPK_VERSION=2
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
@@ -100,7 +100,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SWI-PROLOG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SWI-PROLOG_SITE)/$(SWI-PROLOG_SOURCE)
+	$(WGET) -P $(@D) $(SWI-PROLOG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -331,4 +332,4 @@ swi-prolog-dirclean:
 # Some sanity check for the package.
 #
 swi-prolog-check: $(SWI-PROLOG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SWI-PROLOG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

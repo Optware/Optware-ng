@@ -36,7 +36,7 @@ PAL_CONFLICTS=
 #
 # PAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PAL_IPK_VERSION=1
+PAL_IPK_VERSION=2
 
 #
 # PAL_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ PAL_IPK=$(BUILD_DIR)/pal_$(PAL_VERSION)-$(PAL_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PAL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PAL_SITE)/$(PAL_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PAL_SOURCE)
+	$(WGET) -P $(@D) $(PAL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,22 +106,20 @@ pal-source: $(DL_DIR)/$(PAL_SOURCE) $(PAL_PATCHES)
 #
 $(PAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PAL_SOURCE) $(PAL_PATCHES) make/pal.mk
 	$(MAKE) glib-stage ncurses-stage readline-stage
-	rm -rf $(BUILD_DIR)/$(PAL_DIR) $(PAL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PAL_DIR) $(@D)
 	$(PAL_UNZIP) $(DL_DIR)/$(PAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PAL_PATCHES)" ; \
 		then cat $(PAL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(PAL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(PAL_DIR)" != "$(PAL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(PAL_DIR) $(PAL_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(PAL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(PAL_DIR) $(@D) ; \
 	fi
 	sed -i -e 's/strip /: /' \
 	       -e 's/-o root//' \
 	       -e 's|-I$${prefix}/include ||' \
-		$(PAL_BUILD_DIR)/src/Makefile
-	sed -i -e 's|/etc|/opt/etc|' \
-		$(PAL_BUILD_DIR)/src/input.c \
-		$(PAL_BUILD_DIR)/src/Makefile
+		$(@D)/src/Makefile
+	sed -i -e 's|/etc|/opt/etc|' $(@D)/src/input.c $(@D)/src/Makefile
 #	(cd $(PAL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PAL_CPPFLAGS)" \
@@ -144,7 +142,7 @@ pal-unpack: $(PAL_BUILD_DIR)/.configured
 $(PAL_BUILD_DIR)/.built: $(PAL_BUILD_DIR)/.configured
 	rm -f $@
 	PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
-	$(MAKE) -C $(PAL_BUILD_DIR)/src \
+	$(MAKE) -C $(@D)/src \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PAL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PAL_LDFLAGS)" \
@@ -161,12 +159,12 @@ pal: $(PAL_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PAL_BUILD_DIR)/.staged: $(PAL_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(PAL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-pal-stage: $(PAL_BUILD_DIR)/.staged
+#$(PAL_BUILD_DIR)/.staged: $(PAL_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#pal-stage: $(PAL_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -242,4 +240,4 @@ pal-dirclean:
 # Some sanity check for the package.
 #
 pal-check: $(PAL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PAL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

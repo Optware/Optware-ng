@@ -44,7 +44,7 @@ MYSQL_CONFLICTS=
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=2
+MYSQL_IPK_VERSION=3
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
@@ -139,7 +139,7 @@ $(MYSQL_BUILD_DIR)/.configured: $(MYSQL_PATCHES) $(MYSQL_HOST_BUILD_DIR)/.built
 ifneq (, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
-	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(@D)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MYSQL_PATCHES) | patch -bd $(BUILD_DIR)/$(MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
@@ -200,7 +200,7 @@ mysql: $(MYSQL_BUILD_DIR)/.built
 #
 $(MYSQL_BUILD_DIR)/.staged: $(MYSQL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MYSQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
 	rm -f $(STAGING_PREFIX)/lib/mysql/*.la
 	touch $@
 
@@ -277,4 +277,4 @@ mysql-dirclean:
 # Some sanity check for the package.
 #
 mysql-check: $(MYSQL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MYSQL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

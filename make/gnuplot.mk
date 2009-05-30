@@ -38,7 +38,7 @@ endif
 #
 # GNUPLOT_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPLOT_IPK_VERSION=1
+GNUPLOT_IPK_VERSION=2
 
 #
 # GNUPLOT_CONFFILES should be a list of user-editable files
@@ -113,17 +113,17 @@ gnuplot-source: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 #
 $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES) make/gnuplot.mk
 	$(MAKE) readline-stage libpng-stage libgd-stage ncurses-stage expat-stage
-	rm -rf $(BUILD_DIR)/$(GNUPLOT_DIR) $(GNUPLOT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GNUPLOT_DIR) $(@D)
 	$(GNUPLOT_UNZIP) $(DL_DIR)/$(GNUPLOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNUPLOT_PATCHES)" ; \
 		then cat $(GNUPLOT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(GNUPLOT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(GNUPLOT_DIR)" != "$(GNUPLOT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(GNUPLOT_DIR) $(GNUPLOT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(GNUPLOT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(GNUPLOT_DIR) $(@D) ; \
 	fi
-	(cd $(GNUPLOT_BUILD_DIR); \
-                autoconf configure.in > configure; \
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUPLOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNUPLOT_LDFLAGS)" \
@@ -146,7 +146,7 @@ $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 		--without-tutorial \
 		--disable-wxwidgets \
 	)
-#	$(PATCH_LIBTOOL) $(GNUPLOT_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 gnuplot-unpack: $(GNUPLOT_BUILD_DIR)/.configured
@@ -248,4 +248,4 @@ gnuplot-dirclean:
 # Some sanity check for the package.
 #
 gnuplot-check: $(GNUPLOT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNUPLOT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
