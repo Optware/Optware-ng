@@ -14,4 +14,4 @@ BROKEN_PACKAGES = \
 	microdc2 netatalk nfs-utils \
 	puppy qemu \
 	softflowd \
-	taged transcode vte xchat \
+	transcode vte xchat \

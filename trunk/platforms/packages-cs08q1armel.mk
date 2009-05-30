@@ -13,4 +13,4 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	iptables iptraf ldconfig \
 	nfs-utils puppy qemu \
-	taged transcode \
+	transcode \
