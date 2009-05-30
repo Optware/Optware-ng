@@ -10,6 +10,6 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	bitchx \
 	gtk ipac-ng iptables iptraf ldconfig \
-	microdc2 netatalk nfs-utils \
+	netatalk nfs-utils \
 	puppy qemu softflowd \
 	transcode vte xchat \

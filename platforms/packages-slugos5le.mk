@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	atk \
 	bitchx \
 	gtk ipac-ng iptables iptraf ldconfig \
-	microdc2 netatalk nfs-utils \
+	netatalk nfs-utils \
 	puppy qemu \
 	softflowd \
 	transcode vte xchat \
