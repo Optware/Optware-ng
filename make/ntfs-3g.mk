@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NTFS-3G_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ntfs-3g
+NTFS-3G_SITE=http://www.ntfs-3g.org
 NTFS-3G_VERSION=2009.4.4
 NTFS-3G_SOURCE=ntfs-3g-$(NTFS-3G_VERSION).tgz
 NTFS-3G_DIR=ntfs-3g-$(NTFS-3G_VERSION)
