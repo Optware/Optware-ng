@@ -39,7 +39,7 @@ MICRODC2_CONFLICTS=
 #
 # MICRODC2_IPK_VERSION should be incremented when the ipk changes.
 #
-MICRODC2_IPK_VERSION=2
+MICRODC2_IPK_VERSION=3
 
 #
 # MICRODC2_CONFFILES should be a list of user-editable files
@@ -49,7 +49,7 @@ MICRODC2_IPK_VERSION=2
 # MICRODC2_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MICRODC2_PATCHES=$(MICRODC2_SOURCE_DIR)/configure.patch
+MICRODC2_PATCHES=$(MICRODC2_SOURCE_DIR)/microdc2-0.15.6-libxml2-configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -122,7 +122,7 @@ endif
 	$(MICRODC2_UNZIP) $(DL_DIR)/$(MICRODC2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MICRODC2_PATCHES)" ; \
 		then cat $(MICRODC2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MICRODC2_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(MICRODC2_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MICRODC2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MICRODC2_DIR) $(@D) ; \
