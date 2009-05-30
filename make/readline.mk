@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 READLINE_SITE=http://ftp.gnu.org/pub/gnu/readline
-READLINE_VERSION=5.2
+READLINE_VERSION=6.0
 READLINE_SOURCE=readline-$(READLINE_VERSION).tar.gz
 READLINE_DIR=readline-$(READLINE_VERSION)
 READLINE_UNZIP=zcat
@@ -40,7 +40,7 @@ READLINE_DEPENDS=
 #
 # READLINE_IPK_VERSION should be incremented when the ipk changes.
 #
-READLINE_IPK_VERSION=2
+READLINE_IPK_VERSION=1
 
 #
 # READLINE_CONFFILES should be a list of user-editable files
@@ -222,4 +222,4 @@ readline-dirclean:
 # Some sanity check for the package.
 #
 readline-check: $(READLINE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(READLINE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
