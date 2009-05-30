@@ -21,7 +21,6 @@ BROKEN_PACKAGES = \
 	util-linux \
 	\
 	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
-	taged \
 	ts101-kernel-modules
 
 E2FSPROGS_VERSION := 1.40.3

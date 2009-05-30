@@ -14,5 +14,5 @@ BROKEN_PACKAGES = \
 	ice iptraf launchtool ldconfig ltrace microdc2 moc \
 	mtr newsbeuter nfs-server nfs-utils pango pinentry \
 	puppy qemu rssh \
-	sm taged transcode uemacs vte \
+	sm transcode uemacs vte \
 	xauth xaw xchat xmu xt xterm lm-sensors \

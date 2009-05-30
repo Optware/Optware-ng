@@ -16,7 +16,6 @@ BROKEN_PACKAGES = \
 	\
 	microdc2 \
 	rssh \
-	taged \
 	transcode \
 
 PERL_MAJOR_VER=5.10
