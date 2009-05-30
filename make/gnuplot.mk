@@ -48,8 +48,7 @@ GNUPLOT_IPK_VERSION=2
 # GNUPLOT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GNUPLOT_PATCHES=$(GNUPLOT_SOURCE_DIR)/Makefile.in.patch \
-		$(GNUPLOT_SOURCE_DIR)/docs-Makefile.in.patch \
+GNUPLOT_PATCHES=$(GNUPLOT_SOURCE_DIR)/docs-Makefile.in.patch
 
 ifneq (, $(filter openwrt-brcm24 openwrt-ixp4xx, $(OPTWARE_TARGET)))
 GNUPLOT_PATCHES += $(GNUPLOT_SOURCE_DIR)/no-specfun.patch
@@ -123,6 +122,7 @@ $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 		then mv $(BUILD_DIR)/$(GNUPLOT_DIR) $(@D) ; \
 	fi
 	autoreconf -vif $(@D)
+	sed -i -e '/^SUBDIRS/s| demo||' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUPLOT_CPPFLAGS)" \
@@ -162,7 +162,7 @@ ifneq (, $(filter cs05q1armel cs05q3armel ds101 fsg3v4 gumstix1151 mbwe-bluering
 		CFLAGS="" CPPFLAGS="-I$(STAGING_INCLUDE_DIR)"
 endif
 	$(TARGET_CONFIGURE_OPTS) \
-		$(MAKE) -C $(GNUPLOT_BUILD_DIR) HOSTCC=$(HOSTCC)
+		$(MAKE) -C $(@D) HOSTCC=$(HOSTCC)
 	touch $@
 
 #
@@ -175,7 +175,7 @@ gnuplot: $(GNUPLOT_BUILD_DIR)/.built
 #
 $(GNUPLOT_BUILD_DIR)/.staged: $(GNUPLOT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GNUPLOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 gnuplot-stage: $(GNUPLOT_BUILD_DIR)/.staged
