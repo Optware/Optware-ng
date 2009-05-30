@@ -45,7 +45,7 @@ BTG_CONFLICTS=
 #
 # BTG_IPK_VERSION should be incremented when the ipk changes.
 #
-BTG_IPK_VERSION=3
+BTG_IPK_VERSION=4
 
 #
 # BTG_CONFFILES should be a list of user-editable files
@@ -178,6 +178,8 @@ ifeq (uclibc, $(LIBC_STYLE))
 endif
 	sed -i -e "s|#include <bcore/type.h>|#include <bcore/type.h>\n#include <unistd.h>|" $(@D)/bcore/os/id.h
 	sed -i -e "s|#include <string>|#include <string>\n#include <unistd.h>|" $(@D)/bcore/os/exec.h
+	###patch to use /opt/etc/btg for config files
+	sed -i -e 's|t_PathElem(.*)|t_PathElem("/opt/etc/btg/")|' $(@D)/bcore/project.cpp
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
