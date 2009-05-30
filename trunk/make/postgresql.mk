@@ -40,7 +40,7 @@ POSTGRESQL_DEPENDS=readline, coreutils
 #
 # POSTGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-POSTGRESQL_IPK_VERSION=1
+POSTGRESQL_IPK_VERSION=2
 
 #
 # POSTGRESQL_CONFFILES should be a list of user-editable files
@@ -113,13 +113,13 @@ postgresql-source: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL_PATCHES)
 #
 $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL_PATCHES) make/postgresql.mk
 	$(MAKE) readline-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(POSTGRESQL_DIR) $(POSTGRESQL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(POSTGRESQL_DIR) $(@D)
 	$(POSTGRESQL_UNZIP) $(DL_DIR)/$(POSTGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(POSTGRESQL_PATCHES)" ; then \
 		cat $(POSTGRESQL_PATCHES) | patch -d $(BUILD_DIR)/$(POSTGRESQL_DIR) -p1 ; \
         fi
-	mv $(BUILD_DIR)/$(POSTGRESQL_DIR) $(POSTGRESQL_BUILD_DIR)
-	(cd $(POSTGRESQL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(POSTGRESQL_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POSTGRESQL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(POSTGRESQL_LDFLAGS)" \

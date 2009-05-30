@@ -35,7 +35,7 @@ SQLITE_CONFLICTS=
 #
 # SQLITE_IPK_VERSION should be incremented when the ipk changes.
 #
-SQLITE_IPK_VERSION=1
+SQLITE_IPK_VERSION=2
 
 #
 # SQLITE_CONFFILES should be a list of user-editable files
@@ -114,7 +114,7 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES) ma
 		then mv $(BUILD_DIR)/$(SQLITE_DIR) $(@D) ; \
 	fi
 	if test -n "$(SQLITE_PATCHES)"; \
-		then cd $(@D); autoreconf; \
+		then autoreconf -vif $(@D); \
 	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

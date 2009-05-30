@@ -39,7 +39,7 @@ MICRODC2_CONFLICTS=
 #
 # MICRODC2_IPK_VERSION should be incremented when the ipk changes.
 #
-MICRODC2_IPK_VERSION=1
+MICRODC2_IPK_VERSION=2
 
 #
 # MICRODC2_CONFFILES should be a list of user-editable files
@@ -244,4 +244,4 @@ microdc2-dirclean:
 # Some sanity check for the package.
 #
 microdc2-check: $(MICRODC2_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MICRODC2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -36,7 +36,7 @@ NETRIK_CONFLICTS=
 #
 # NETRIK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETRIK_IPK_VERSION=1
+NETRIK_IPK_VERSION=2
 
 #
 # NETRIK_CONFFILES should be a list of user-editable files
@@ -229,4 +229,4 @@ netrik-dirclean:
 # Some sanity check for the package.
 #
 netrik-check: $(NETRIK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NETRIK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

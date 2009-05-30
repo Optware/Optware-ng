@@ -37,7 +37,7 @@ GNUPG1_CONFLICTS=
 #
 # GNUPG1_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG1_IPK_VERSION=1
+GNUPG1_IPK_VERSION=2
 
 #
 # GNUPG1_CONFFILES should be a list of user-editable files
@@ -112,7 +112,7 @@ gnupg1-source: $(DL_DIR)/$(GNUPG1_SOURCE) $(GNUPG1_PATCHES)
 #
 $(GNUPG1_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG1_SOURCE) $(GNUPG1_PATCHES) make/gnupg1.mk
 	$(MAKE) libusb-stage bzip2-stage zlib-stage readline-stage libcurl-stage openldap-stage
-	rm -rf $(BUILD_DIR)/$(GNUPG1_DIR) $(GNUPG1_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GNUPG1_DIR) $(@D)
 	$(GNUPG1_UNZIP) $(DL_DIR)/$(GNUPG1_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GNUPG1_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG1_DIR) -p1
 	mv $(BUILD_DIR)/$(GNUPG1_DIR) $(@D)
@@ -221,4 +221,4 @@ gnupg1-dirclean:
 # Some sanity check for the package.
 #
 gnupg1-check: $(GNUPG1_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNUPG1_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

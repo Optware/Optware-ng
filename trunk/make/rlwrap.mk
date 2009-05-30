@@ -36,7 +36,7 @@ RLWRAP_CONFLICTS=
 #
 # RLWRAP_IPK_VERSION should be incremented when the ipk changes.
 #
-RLWRAP_IPK_VERSION=1
+RLWRAP_IPK_VERSION=2
 
 #
 # RLWRAP_CONFFILES should be a list of user-editable files
@@ -80,7 +80,8 @@ RLWRAP_IPK=$(BUILD_DIR)/rlwrap_$(RLWRAP_VERSION)-$(RLWRAP_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RLWRAP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RLWRAP_SITE)/$(RLWRAP_SOURCE)
+	$(WGET) -P $(@D) $(RLWRAP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,19 +110,19 @@ rlwrap-source: $(DL_DIR)/$(RLWRAP_SOURCE) $(RLWRAP_PATCHES)
 #
 $(RLWRAP_BUILD_DIR)/.configured: $(DL_DIR)/$(RLWRAP_SOURCE) $(RLWRAP_PATCHES) make/rlwrap.mk
 	$(MAKE) ncurses-stage readline-stage
-	rm -rf $(BUILD_DIR)/$(RLWRAP_DIR) $(RLWRAP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(RLWRAP_DIR) $(@D)
 	$(RLWRAP_UNZIP) $(DL_DIR)/$(RLWRAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RLWRAP_PATCHES)" ; \
 		then cat $(RLWRAP_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(RLWRAP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RLWRAP_DIR)" != "$(RLWRAP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RLWRAP_DIR) $(RLWRAP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RLWRAP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RLWRAP_DIR) $(@D) ; \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cd $(RLWRAP_BUILD_DIR); autoconf
+	cd $(@D); autoconf
 endif
-	(cd $(RLWRAP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RLWRAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RLWRAP_LDFLAGS)" \
@@ -133,7 +134,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(RLWRAP_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 rlwrap-unpack: $(RLWRAP_BUILD_DIR)/.configured
@@ -143,7 +144,7 @@ rlwrap-unpack: $(RLWRAP_BUILD_DIR)/.configured
 #
 $(RLWRAP_BUILD_DIR)/.built: $(RLWRAP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(RLWRAP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -156,7 +157,7 @@ rlwrap: $(RLWRAP_BUILD_DIR)/.built
 #
 $(RLWRAP_BUILD_DIR)/.staged: $(RLWRAP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(RLWRAP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 rlwrap-stage: $(RLWRAP_BUILD_DIR)/.staged
@@ -223,4 +224,4 @@ rlwrap-dirclean:
 # Some sanity check for the package.
 #
 rlwrap-check: $(RLWRAP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RLWRAP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -36,7 +36,7 @@ RLFE_CONFLICTS=
 #
 # RLFE_IPK_VERSION should be incremented when the ipk changes.
 #
-RLFE_IPK_VERSION=2
+RLFE_IPK_VERSION=3
 
 #
 # RLFE_CONFFILES should be a list of user-editable files
@@ -108,16 +108,16 @@ rlfe-source: $(DL_DIR)/$(RLFE_SOURCE) $(RLFE_PATCHES)
 #
 $(RLFE_BUILD_DIR)/.configured: $(DL_DIR)/$(RLFE_SOURCE) $(RLFE_PATCHES) make/rlfe.mk
 	$(MAKE) readline-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(RLFE_DIR) $(RLFE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(RLFE_DIR) $(@D)
 	$(RLFE_UNZIP) $(DL_DIR)/$(RLFE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RLFE_PATCHES)"; then \
 		cat $(RLFE_PATCHES) | patch -bd $(BUILD_DIR)/$(RLFE_DIR)/examples/rlfe -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RLFE_DIR)" != "$(RLFE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RLFE_DIR) $(RLFE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RLFE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RLFE_DIR) $(@D) ; \
 	fi
-	(cd $(RLFE_BUILD_DIR)/examples/rlfe; \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf; \
+	-autoreconf -vif $(@D)/examples/rlfe
+	(cd $(@D)/examples/rlfe; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RLFE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RLFE_LDFLAGS)" \
@@ -130,10 +130,10 @@ $(RLFE_BUILD_DIR)/.configured: $(DL_DIR)/$(RLFE_SOURCE) $(RLFE_PATCHES) make/rlf
 		--disable-static \
 	)
 ifeq ($(LIBC_STYLE), uclibc)
-	sed -ie '/stropts.h/d' $(RLFE_BUILD_DIR)/examples/rlfe/pty.c
+	sed -i -e '/stropts.h/d' $(RLFE_BUILD_DIR)/examples/rlfe/pty.c
 endif
-#	$(PATCH_LIBTOOL) $(RLFE_BUILD_DIR)/libtool
-	touch $(RLFE_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 rlfe-unpack: $(RLFE_BUILD_DIR)/.configured
 
@@ -141,9 +141,9 @@ rlfe-unpack: $(RLFE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RLFE_BUILD_DIR)/.built: $(RLFE_BUILD_DIR)/.configured
-	rm -f $(RLFE_BUILD_DIR)/.built
-	$(MAKE) -C $(RLFE_BUILD_DIR)/examples/rlfe OPTIONS="$(STAGING_CPPFLAGS) $(RLFE_CPPFLAGS)"
-	touch $(RLFE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)/examples/rlfe OPTIONS="$(STAGING_CPPFLAGS) $(RLFE_CPPFLAGS)"
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,12 +153,12 @@ rlfe: $(RLFE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(RLFE_BUILD_DIR)/.staged: $(RLFE_BUILD_DIR)/.built
-	rm -f $(RLFE_BUILD_DIR)/.staged
-#	$(MAKE) -C $(RLFE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(RLFE_BUILD_DIR)/.staged
-
-rlfe-stage: $(RLFE_BUILD_DIR)/.staged
+#$(RLFE_BUILD_DIR)/.staged: $(RLFE_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#rlfe-stage: $(RLFE_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -233,4 +233,4 @@ rlfe-dirclean:
 # Some sanity check for the package.
 #
 rlfe-check: $(RLFE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RLFE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

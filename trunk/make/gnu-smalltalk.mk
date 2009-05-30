@@ -36,7 +36,7 @@ GNU_SMALLTALK_CONFLICTS=
 #
 # GNU_SMALLTALK_IPK_VERSION should be incremented when the ipk changes.
 #
-GNU_SMALLTALK_IPK_VERSION=1
+GNU_SMALLTALK_IPK_VERSION=2
 
 #
 # GNU_SMALLTALK_CONFFILES should be a list of user-editable files
@@ -194,12 +194,12 @@ gnu-smalltalk: $(GNU_SMALLTALK_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(GNU_SMALLTALK_BUILD_DIR)/.staged: $(GNU_SMALLTALK_BUILD_DIR)/.built
+#$(GNU_SMALLTALK_BUILD_DIR)/.staged: $(GNU_SMALLTALK_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(GNU_SMALLTALK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-gnu-smalltalk-stage: $(GNU_SMALLTALK_BUILD_DIR)/.staged
+#
+#gnu-smalltalk-stage: $(GNU_SMALLTALK_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -272,4 +272,4 @@ gnu-smalltalk-dirclean:
 # Some sanity check for the package.
 #
 gnu-smalltalk-check: $(GNU_SMALLTALK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNU_SMALLTALK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

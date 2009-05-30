@@ -40,7 +40,7 @@ UNITS_DEPENDS=readline
 #
 # UNITS_IPK_VERSION should be incremented when the ipk changes.
 #
-UNITS_IPK_VERSION=1
+UNITS_IPK_VERSION=2
 
 #
 # UNITS_CONFFILES should be a list of user-editable files
@@ -80,7 +80,8 @@ UNITS_IPK=$(BUILD_DIR)/units_$(UNITS_VERSION)-$(UNITS_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(UNITS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(UNITS_SITE)/$(UNITS_SOURCE)
+	$(WGET) -P $(@D) $(UNITS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,14 +107,14 @@ units-source: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES)
 #
 $(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES) make/units.mk
 	$(MAKE) readline-stage
-	rm -rf $(BUILD_DIR)/$(UNITS_DIR) $(UNITS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(UNITS_DIR) $(@D)
 	$(UNITS_UNZIP) $(DL_DIR)/$(UNITS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNITS_PATCHES)"; \
 		then cat $(UNITS_PATCHES) | patch -d $(BUILD_DIR)/$(UNITS_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(UNITS_DIR) $(UNITS_BUILD_DIR)
-	(cd $(UNITS_BUILD_DIR); \
-		autoconf; \
+	mv $(BUILD_DIR)/$(UNITS_DIR) $(@D)
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(UNITS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UNITS_LDFLAGS)" \
@@ -133,7 +134,7 @@ units-unpack: $(UNITS_BUILD_DIR)/.configured
 #
 $(UNITS_BUILD_DIR)/.built: $(UNITS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(UNITS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -144,12 +145,12 @@ units: $(UNITS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(UNITS_BUILD_DIR)/.staged: $(UNITS_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(UNITS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-units-stage: $(UNITS_BUILD_DIR)/.staged
+#$(UNITS_BUILD_DIR)/.staged: $(UNITS_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#units-stage: $(UNITS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -209,4 +210,4 @@ units-dirclean:
 # Some sanity check for the package.
 #
 units-check: $(UNITS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UNITS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

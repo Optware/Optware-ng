@@ -42,7 +42,7 @@ QUAGGA_CONFLICTS=
 #
 # QUAGGA_IPK_VERSION should be incremented when the ipk changes.
 #
-QUAGGA_IPK_VERSION=3
+QUAGGA_IPK_VERSION=4
 
 #
 # QUAGGA_CONFFILES should be a list of user-editable files
@@ -109,18 +109,18 @@ quagga-source: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 #
 $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 	$(MAKE) readline-stage termcap-stage 
-	rm -rf $(BUILD_DIR)/$(QUAGGA_DIR) $(QUAGGA_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(QUAGGA_DIR) $(@D)
 	$(QUAGGA_UNZIP) $(DL_DIR)/$(QUAGGA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(QUAGGA_PATCHES)"; then \
 		cat $(QUAGGA_PATCHES) | patch -d $(BUILD_DIR)/$(QUAGGA_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(QUAGGA_DIR) $(QUAGGA_BUILD_DIR)
+	mv $(BUILD_DIR)/$(QUAGGA_DIR) $(@D)
 	# Cross compilation requires checks for include files to point to target include dirictory
-	sed -i -e 's!/usr/include/!$(TARGET_INCDIR)/!g' $(QUAGGA_BUILD_DIR)/configure.ac
+	sed -i -e 's!/usr/include/!$(TARGET_INCDIR)/!g' $(@D)/configure.ac
 	# Some gdb header defines struct user, so let's patch the definition in quagga vtysh_user
-	sed -i -e 's!struct user!struct vtysh_user!g' $(QUAGGA_BUILD_DIR)/vtysh/vtysh_user.c
-	(cd $(QUAGGA_BUILD_DIR); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
+	sed -i -e 's!struct user!struct vtysh_user!g' $(@D)/vtysh/vtysh_user.c
+	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
+	(cd $(@D); \
 		touch aclocal.m4 Makefile.in config.h.in; \
 		touch configure; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -146,7 +146,7 @@ quagga-unpack: $(QUAGGA_BUILD_DIR)/.configured
 #
 $(QUAGGA_BUILD_DIR)/.built: $(QUAGGA_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(QUAGGA_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -159,7 +159,7 @@ quagga: $(QUAGGA_BUILD_DIR)/.built
 #
 $(QUAGGA_BUILD_DIR)/.staged: $(QUAGGA_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(QUAGGA_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 quagga-stage: $(QUAGGA_BUILD_DIR)/.staged
@@ -231,4 +231,4 @@ quagga-dirclean:
 # Some sanity check for the package.
 #
 quagga-check: $(QUAGGA_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(QUAGGA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -37,7 +37,7 @@ SQSH_CONFLICTS=
 #
 # SQSH_IPK_VERSION should be incremented when the ipk changes.
 #
-SQSH_IPK_VERSION=3
+SQSH_IPK_VERSION=4
 
 #
 # SQSH_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ sqsh-source: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES)
 #
 $(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES) make/sqsh.mk
 	$(MAKE) freetds-stage readline-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(SQSH_DIR) $(SQSH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SQSH_DIR) $(@D)
 	$(SQSH_UNZIP) $(DL_DIR)/$(SQSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQSH_PATCHES)"; then \
 		cat $(SQSH_PATCHES) | patch -d $(BUILD_DIR)/$(SQSH_DIR) -p0; \
@@ -165,12 +165,12 @@ sqsh: $(SQSH_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SQSH_BUILD_DIR)/.staged: $(SQSH_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(SQSH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-sqsh-stage: $(SQSH_BUILD_DIR)/.staged
+#$(SQSH_BUILD_DIR)/.staged: $(SQSH_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(SQSH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#sqsh-stage: $(SQSH_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -240,4 +240,4 @@ sqsh-dirclean:
 # Some sanity check for the package.
 #
 sqsh-check: $(SQSH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQSH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

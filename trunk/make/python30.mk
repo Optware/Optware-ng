@@ -42,7 +42,7 @@ PYTHON30_SUGGESTS=
 #
 # PYTHON30_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON30_IPK_VERSION=2
+PYTHON30_IPK_VERSION=3
 
 #
 # PYTHON30_CONFFILES should be a list of user-editable files
@@ -103,8 +103,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYTHON30_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PYTHON30_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PYTHON30_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -134,7 +134,7 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
-	rm -rf $(BUILD_DIR)/$(PYTHON30_DIR) $(PYTHON30_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PYTHON30_DIR) $(@D)
 	$(PYTHON30_UNZIP) $(DL_DIR)/$(PYTHON30_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON30_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON30_DIR) -p1
 	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON30_DIR)/Modules/_ctypes/libffi/fficonfig.py.in

@@ -36,7 +36,7 @@ ABOOK_CONFLICTS=
 #
 # ABOOK_IPK_VERSION should be incremented when the ipk changes.
 #
-ABOOK_IPK_VERSION=1
+ABOOK_IPK_VERSION=2
 
 #
 # ABOOK_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ ABOOK_IPK=$(BUILD_DIR)/abook_$(ABOOK_VERSION)-$(ABOOK_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ABOOK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ABOOK_SITE)/$(ABOOK_SOURCE)
+	$(WGET) -P $(@D) $(ABOOK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,9 +108,9 @@ $(ABOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(ABOOK_SOURCE) $(ABOOK_PATCHES) make/
 	if test -n "$(ABOOK_PATCHES)"; \
 		then cat $(ABOOK_PATCHES) | patch -d $(BUILD_DIR)/$(ABOOK_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(ABOOK_DIR) $(ABOOK_BUILD_DIR)
-	cp -f $(SOURCE_DIR)/common/config.* $(ABOOK_BUILD_DIR)/
-	(cd $(ABOOK_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(ABOOK_DIR) $(@D)
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ABOOK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ABOOK_LDFLAGS)" \
@@ -120,7 +121,7 @@ $(ABOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(ABOOK_SOURCE) $(ABOOK_PATCHES) make/
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(ABOOK_BUILD_DIR)/.configured
+	touch $@
 
 abook-unpack: $(ABOOK_BUILD_DIR)/.configured
 
@@ -128,9 +129,9 @@ abook-unpack: $(ABOOK_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ABOOK_BUILD_DIR)/.built: $(ABOOK_BUILD_DIR)/.configured
-	rm -f $(ABOOK_BUILD_DIR)/.built
-	$(MAKE) -C $(ABOOK_BUILD_DIR)
-	touch $(ABOOK_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -140,19 +141,19 @@ abook: $(ABOOK_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(ABOOK_BUILD_DIR)/.staged: $(ABOOK_BUILD_DIR)/.built
-	rm -f $(ABOOK_BUILD_DIR)/.staged
-	$(MAKE) -C $(ABOOK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(ABOOK_BUILD_DIR)/.staged
-
-abook-stage: $(ABOOK_BUILD_DIR)/.staged
+#$(ABOOK_BUILD_DIR)/.staged: $(ABOOK_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#abook-stage: $(ABOOK_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/abook
 #
 $(ABOOK_IPK_DIR)/CONTROL/control:
-	@install -d $(ABOOK_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: abook" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,4 +207,4 @@ abook-dirclean:
 # Some sanity check for the package.
 #
 abook-check: $(ABOOK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ABOOK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

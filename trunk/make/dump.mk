@@ -36,7 +36,7 @@ DUMP_CONFLICTS=
 #
 # DUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-DUMP_IPK_VERSION=2
+DUMP_IPK_VERSION=3
 
 #
 # DUMP_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ DUMP_IPK=$(BUILD_DIR)/dump_$(DUMP_VERSION)-$(DUMP_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DUMP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DUMP_SITE)/$(DUMP_SOURCE)
+	$(WGET) -P $(@D) $(DUMP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,16 +106,16 @@ dump-source: $(DL_DIR)/$(DUMP_SOURCE) $(DUMP_PATCHES)
 #
 $(DUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(DUMP_SOURCE) $(DUMP_PATCHES) make/dump.mk
 	$(MAKE) bzip2-stage e2fsprogs-stage readline-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(DUMP_DIR) $(DUMP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(DUMP_DIR) $(@D)
 	$(DUMP_UNZIP) $(DL_DIR)/$(DUMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DUMP_PATCHES)" ; \
 		then cat $(DUMP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(DUMP_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DUMP_DIR)" != "$(DUMP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DUMP_DIR) $(DUMP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DUMP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DUMP_DIR) $(@D) ; \
 	fi
-	(cd $(DUMP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DUMP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DUMP_LDFLAGS)" \
@@ -126,8 +127,8 @@ $(DUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(DUMP_SOURCE) $(DUMP_PATCHES) make/dum
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	);
-#	$(PATCH_LIBTOOL) $(DUMP_BUILD_DIR)/libtool
-	touch $(DUMP_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 dump-unpack: $(DUMP_BUILD_DIR)/.configured
 
@@ -135,9 +136,9 @@ dump-unpack: $(DUMP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(DUMP_BUILD_DIR)/.built: $(DUMP_BUILD_DIR)/.configured
-	rm -f $(DUMP_BUILD_DIR)/.built
-	$(MAKE) -C $(DUMP_BUILD_DIR) LD=$(TARGET_CC)
-	touch $(DUMP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) LD=$(TARGET_CC)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -147,12 +148,12 @@ dump: $(DUMP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(DUMP_BUILD_DIR)/.staged: $(DUMP_BUILD_DIR)/.built
-	rm -f $(DUMP_BUILD_DIR)/.staged
-	$(MAKE) -C $(DUMP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(DUMP_BUILD_DIR)/.staged
-
-dump-stage: $(DUMP_BUILD_DIR)/.staged
+#$(DUMP_BUILD_DIR)/.staged: $(DUMP_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#dump-stage: $(DUMP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -219,4 +220,4 @@ dump-dirclean:
 # Some sanity check for the package.
 #
 dump-check: $(DUMP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DUMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

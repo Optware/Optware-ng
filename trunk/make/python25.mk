@@ -100,8 +100,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYTHON25_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PYTHON25_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PYTHON25_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -131,14 +131,14 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
-	rm -rf $(BUILD_DIR)/$(PYTHON25_DIR) $(PYTHON25_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PYTHON25_DIR) $(@D)
 	$(PYTHON25_UNZIP) $(DL_DIR)/$(PYTHON25_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cd $(BUILD_DIR)/$(PYTHON25_DIR); \
 	    cat $(PYTHON25_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON25_DIR) -p1
 	cd $(BUILD_DIR)/$(PYTHON25_DIR); \
 	    autoconf configure.in > configure
-	mkdir $(PYTHON25_BUILD_DIR)
-	(cd $(PYTHON25_BUILD_DIR); \
+	mkdir $(@D)
+	(cd $(@D); \
 	( \
 	echo "[build_ext]"; \
 	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
@@ -275,4 +275,4 @@ python25-dirclean:
 # Some sanity check for the package.
 #
 python25-check: $(PYTHON25_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PYTHON25_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
