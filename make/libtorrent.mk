@@ -207,7 +207,7 @@ libtorrent: $(LIBTORRENT_BUILD_DIR)/.built
 #
 $(LIBTORRENT_BUILD_DIR)/.staged: $(LIBTORRENT_BUILD_DIR)/.built
 	rm -f $@
-	rm -f $(STAGING_LIB_DIR)/libtorrent*
+	rm -f $(STAGING_LIB_DIR)/libtorrent.so*
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libtorrent.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libtorrent.pc
