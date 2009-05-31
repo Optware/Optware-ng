@@ -125,7 +125,7 @@ btg-source: $(DL_DIR)/$(BTG_SOURCE) $(BTG_PATCHES)
 # shown below to make various patches to it.
 #
 $(BTG_BUILD_DIR)/.configured: $(DL_DIR)/$(BTG_SOURCE) $(BTG_PATCHES) make/btg.mk
-	$(MAKE) libtorrent-rasterbar-stage gnutls-stage expat-stage libcurl-stage dialog-stage
+	$(MAKE) libtorrent-rasterbar-stage gnutls-stage expat-stage libcurl-stage dialog-stage icu-stage
 ifeq (clinkcc, $(filter clinkcc, $(PACKAGES)))
 	$(MAKE) clinkcc-stage
 endif
