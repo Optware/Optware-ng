@@ -169,6 +169,7 @@ libtorrent-rasterbar: $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.built
 $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.staged: $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libtorrent-rasterbar.la
 	touch $@
 
 libtorrent-rasterbar-stage: $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.staged
