@@ -121,9 +121,9 @@ $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 	if test "$(BUILD_DIR)/$(GNUPLOT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GNUPLOT_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
 	sed -i -e '/^SUBDIRS/s| demo||' $(@D)/Makefile.in
 	(cd $(@D); \
+		autoconf configure.in > configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUPLOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNUPLOT_LDFLAGS)" \
