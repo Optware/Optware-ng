@@ -19,6 +19,7 @@ BROKEN_PACKAGES = \
 	emacs22 enhanced-ctorrent esniper erlang erl-yaws \
 	ficy finch firedrill-httptunnel flip freeradius fuppes \
 	gconv-modules ggrab ghostscript gloox gnokii gnupg1 gnupg \
+	gnet gsnmp \
 	gnuplot gnutls gtk gutenprint \
 	hplip \
 	icecast icu id3lib iksemel imagemagick \
