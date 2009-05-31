@@ -46,7 +46,7 @@ MYRAPBOOK_IPK_VERSION=1
 
 #
 # MYRAPBOOK_CONFFILES should be a list of user-editable files
-#MYRAPBOOK_CONFFILES=/opt/etc/myrapbook.conf /opt/etc/init.d/SXXmyrapbook
+MYRAPBOOK_CONFFILES=/opt/etc/myrapbook.conf /opt/etc/init.d/myrapbookd
 
 #
 # MYRAPBOOK_PATCHES should list any patches, in the the order in
@@ -124,6 +124,8 @@ $(MYRAPBOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(MYRAPBOOK_SOURCE) $(MYRAPBOOK_PA
 	sed -i -e '/^CC =/s|^.*|CC = "$(TARGET_CC)"|' \
 	-e '/^CFLAGS=/s|^.*|CFLAGS=$(STAGING_CPPFLAGS) $(MYRAPBOOK_CPPFLAGS)|' \
 	-e 's|^LIBS =.*|LIBS=$(STAGING_LDFLAGS) $(MYRAPBOOK_LDFLAGS) \\|' $(@D)/makefile
+	sed -i -e 's|/tmp/myrapbook|/opt/tmp/myrapbook|' \
+	-e 's|\./myrapbook\.conf|/opt/etc/myrapbook.conf|' $(@D)/myrapbook.c
 	touch $@
 
 myrapbook-unpack: $(MYRAPBOOK_BUILD_DIR)/.configured
@@ -177,10 +179,13 @@ $(MYRAPBOOK_IPK): $(MYRAPBOOK_BUILD_DIR)/.built
 	mkdir -p $(MYRAPBOOK_IPK_DIR)/opt/bin $(MYRAPBOOK_IPK_DIR)/opt/share/myrapbook
 	cp -f $(MYRAPBOOK_BUILD_DIR)/web_interface/* $(MYRAPBOOK_IPK_DIR)/opt/share/myrapbook
 	$(STRIP_COMMAND) $(MYRAPBOOK_BUILD_DIR)/myrapbook-daemon -o $(MYRAPBOOK_IPK_DIR)/opt/bin/myrapbook-daemon
-#	install -d $(MYRAPBOOK_IPK_DIR)/opt/etc/
-#	install -m 644 $(MYRAPBOOK_SOURCE_DIR)/myrapbook.conf $(MYRAPBOOK_IPK_DIR)/opt/etc/myrapbook.conf
-#	install -d $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MYRAPBOOK_SOURCE_DIR)/rc.myrapbook $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/SXXmyrapbook
+	install -d $(MYRAPBOOK_IPK_DIR)/opt/etc/
+	install -m 644 $(MYRAPBOOK_BUILD_DIR)/myrapbook.conf $(MYRAPBOOK_IPK_DIR)/opt/etc/myrapbook.conf
+	install -d $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(MYRAPBOOK_BUILD_DIR)/myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/myrapbookd
+	ln -s myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/S92myrapbookd
+	ln -s myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/K12myrapbookd
+	install -d $(MYRAPBOOK_IPK_DIR)/opt/tmp/myrapbook
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/SXXmyrapbook
 	$(MAKE) $(MYRAPBOOK_IPK_DIR)/CONTROL/control
 #	install -m 755 $(MYRAPBOOK_SOURCE_DIR)/postinst $(MYRAPBOOK_IPK_DIR)/CONTROL/postinst
