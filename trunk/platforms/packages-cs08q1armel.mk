@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	ipkg-opt \
+	syno-mvkw-optware-bootstrap \
 	cacao mono \
 	binutils gcc libc-dev \
 
