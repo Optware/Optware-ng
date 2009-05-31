@@ -126,6 +126,8 @@ $(MYRAPBOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(MYRAPBOOK_SOURCE) $(MYRAPBOOK_PA
 	-e 's|^LIBS =.*|LIBS=$(STAGING_LDFLAGS) $(MYRAPBOOK_LDFLAGS) \\|' $(@D)/makefile
 	sed -i -e 's|/tmp/myrapbook|/opt/tmp/myrapbook|' \
 	-e 's|\./myrapbook\.conf|/opt/etc/myrapbook.conf|' $(@D)/myrapbook.c
+	###fix by andrew_sh@mybookworld.wikidot.com
+	sed -i -e "s/SOL_TCP/getprotobyname('tcp')/" $(@D)/web_interface/daemoncntrl.php
 	touch $@
 
 myrapbook-unpack: $(MYRAPBOOK_BUILD_DIR)/.configured
