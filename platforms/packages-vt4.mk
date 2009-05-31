@@ -42,7 +42,7 @@ BROKEN_PACKAGES = \
 	qemu quickie \
 	re2c rhtvision rsstail rtorrent \
 	sablevm samba sane-backends \
-	scrobby \
+	scli scrobby \
 	simh smartmontools snort \
 	spandsp splix sqsh swi-prolog \
 	subvertpy svn bzr-svn \
