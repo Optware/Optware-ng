@@ -1,0 +1,24 @@
+#!/bin/sh
+# Description: Start / Stop MyRapBook daemon
+
+NAME="MyRapBook"
+DESC="Rapidshare Downloader Daemon"
+USERNAME=name
+PASSWORD=pass
+
+case "$1" in
+  start)
+    cd /opt/tmp/myrapbook
+    rm -rf /opt/tmp/myrapbook/cookie
+    /opt/bin/curl -k --cookie-jar ./cookie --data "login=${USERNAME}&password=${PASSWORD}" https://ssl.rapidshare.com/cgi-bin/premiumzone.cgi > /dev/null
+    echo "Starting $DESC: $NAME."
+    /opt/bin/myrapbook-daemon
+    echo " "
+  ;;
+  stop)
+    echo -n "Stopping $DESC: $NAME"
+    killall myrapbook-daemon
+    echo " "
+  ;;
+esac
+exit 0

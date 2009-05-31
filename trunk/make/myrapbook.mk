@@ -180,9 +180,9 @@ $(MYRAPBOOK_IPK): $(MYRAPBOOK_BUILD_DIR)/.built
 	cp -f $(MYRAPBOOK_BUILD_DIR)/web_interface/* $(MYRAPBOOK_IPK_DIR)/opt/share/myrapbook
 	$(STRIP_COMMAND) $(MYRAPBOOK_BUILD_DIR)/myrapbook-daemon -o $(MYRAPBOOK_IPK_DIR)/opt/bin/myrapbook-daemon
 	install -d $(MYRAPBOOK_IPK_DIR)/opt/etc/
-	install -m 644 $(MYRAPBOOK_BUILD_DIR)/myrapbook.conf $(MYRAPBOOK_IPK_DIR)/opt/etc/myrapbook.conf
+	install -m 644 $(MYRAPBOOK_SOURCE_DIR)/myrapbook.conf $(MYRAPBOOK_IPK_DIR)/opt/etc/myrapbook.conf
 	install -d $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(MYRAPBOOK_BUILD_DIR)/myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/myrapbookd
+	install -m 755 $(MYRAPBOOK_SOURCE_DIR)/myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/myrapbookd
 	ln -s myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/S92myrapbookd
 	ln -s myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/K12myrapbookd
 	install -d $(MYRAPBOOK_IPK_DIR)/opt/tmp/myrapbook
