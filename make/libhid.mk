@@ -36,7 +36,7 @@ LIBHID_CONFLICTS=
 #
 # LIBHID_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBHID_IPK_VERSION=1
+LIBHID_IPK_VERSION=2
 
 #
 # LIBHID_CONFFILES should be a list of user-editable files
@@ -54,6 +54,10 @@ LIBHID_IPK_VERSION=1
 #
 LIBHID_CPPFLAGS=
 LIBHID_LDFLAGS=
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+LIBHID_SWIG_ENV=SWIG="$(HOST_STAGING_PREFIX)/bin/swig" SWIG_LIB="$(HOST_STAGING_PREFIX)/share/swig/$(SWIG_VERSION)"
+endif
 
 #
 # LIBHID_BUILD_DIR is the directory in which the build is done.
@@ -106,6 +110,9 @@ libhid-source: $(DL_DIR)/$(LIBHID_SOURCE) $(LIBHID_PATCHES)
 #
 $(LIBHID_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBHID_SOURCE) $(LIBHID_PATCHES) make/libhid.mk
 	$(MAKE) libusb-stage
+ifneq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) swig-host-stage
+endif
 	rm -rf $(BUILD_DIR)/$(LIBHID_DIR) $(@D)
 	$(LIBHID_UNZIP) $(DL_DIR)/$(LIBHID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBHID_PATCHES)" ; \
@@ -123,12 +130,14 @@ $(LIBHID_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBHID_SOURCE) $(LIBHID_PATCHES) ma
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBHID_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBHID_LDFLAGS)" \
 		PKG_CONFIG="$(STAGING_LIB_DIR)/pkgconfig" \
+		PYTHON_CPPFLAGS="-I$(STAGING_INCLUDE_DIR)/python2.5" \
+		PYTHON_LDFLAGS="-lpython2.5" \
+		$(LIBHID_SWIG_ENV) \
 		bash ./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-swig \
 		--disable-nls \
 		--disable-static \
 	)
@@ -142,7 +151,7 @@ libhid-unpack: $(LIBHID_BUILD_DIR)/.configured
 #
 $(LIBHID_BUILD_DIR)/.built: $(LIBHID_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) $(LIBHID_SWIG_ENV)
 	touch $@
 
 #
