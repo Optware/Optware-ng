@@ -44,7 +44,7 @@ ERLANG_MAKE_OPTION=
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 ERLANG_TARGET=$(shell $(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME))
 
@@ -268,6 +268,7 @@ else
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" \
+		$(ERLANG_CONFIG_ENVS) \
 		ac_cv_sizeof_size_t=4 \
 		ac_cv_sizeof_off_t=4 \
 		ERL_TOP=$(@D) \
