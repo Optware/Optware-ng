@@ -35,14 +35,14 @@ IOTOP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IOTOP_DESCRIPTION=Iotop is a top-like UI used to show the I/O behaviour of processes.
 IOTOP_SECTION=util
 IOTOP_PRIORITY=optional
-IOTOP_DEPENDS=python
+IOTOP_DEPENDS=python26
 IOTOP_SUGGESTS=
 IOTOP_CONFLICTS=
 
 #
 # IOTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-IOTOP_IPK_VERSION=1
+IOTOP_IPK_VERSION=2
 
 #
 # IOTOP_CONFFILES should be a list of user-editable files
@@ -120,11 +120,11 @@ $(IOTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(IOTOP_SOURCE) $(IOTOP_PATCHES) make/
 	(cd $(@D); \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5" \
+		echo "executable=/opt/bin/python2.6" \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -137,9 +137,9 @@ iotop-unpack: $(IOTOP_BUILD_DIR)/.configured
 $(IOTOP_BUILD_DIR)/.built: $(IOTOP_BUILD_DIR)/.configured
 	rm -f $@
 	cd $(@D); \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build
 	touch $@
 
 #
@@ -191,10 +191,10 @@ $(IOTOP_IPK_DIR)/CONTROL/control:
 $(IOTOP_IPK): $(IOTOP_BUILD_DIR)/.built
 	rm -rf $(IOTOP_IPK_DIR) $(BUILD_DIR)/iotop_*_$(TARGET_ARCH).ipk
 	cd $(IOTOP_BUILD_DIR); \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
 	    --root=$(IOTOP_IPK_DIR) --prefix=/opt
-#	$(STRIP_COMMAND) `find $(IOTOP_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
+#	$(STRIP_COMMAND) `find $(IOTOP_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
 	$(MAKE) $(IOTOP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IOTOP_IPK_DIR)
 
