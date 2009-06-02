@@ -14,7 +14,7 @@
 # You should change all these variables to suit your package.
 #
 CROSSTOOL-NATIVE_SITE=http://kegel.com/crosstool
-CROSSTOOL-NATIVE_VERSION ?= 0.28-rc37
+CROSSTOOL-NATIVE_VERSION ?= 0.43
 CROSSTOOL-NATIVE_SOURCE=crosstool-$(CROSSTOOL-NATIVE_VERSION).tar.gz
 CROSSTOOL-NATIVE_DIR=crosstool-$(CROSSTOOL-NATIVE_VERSION)
 CROSSTOOL-NATIVE_UNZIP=zcat
@@ -38,7 +38,7 @@ CROSSTOOL-NATIVE_HOSTCC ?= gcc-3.3
 #
 # CROSSTOOL-NATIVE_IPK_VERSION should be incremented when the ipk changes.
 #
-CROSSTOOL-NATIVE_IPK_VERSION=8
+CROSSTOOL-NATIVE_IPK_VERSION=1
 CROSSTOOL-NATIVE_IPK_V=$(CROSSTOOL-NATIVE_VERSION)-$(CROSSTOOL-NATIVE_IPK_VERSION)
 
 CROSSTOOL-NATIVE_SCRIPT ?= nslu2-native335.sh
@@ -48,7 +48,9 @@ CROSSTOOL-NATIVE_DAT ?= gcc-3.3.5-glibc-2.2.5.dat
 # CROSSTOOL-NATIVE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CROSSTOOL-NATIVE_PATCHES=$(CROSSTOOL-NATIVE_SOURCE_DIR)/all.sh.patch
+CROSSTOOL-NATIVE_PATCHES=$(strip \
+$(if $(filter 0.43, $(CROSSTOOL-NATIVE_VERSION)), $(CROSSTOOL-NATIVE_SOURCE_DIR)/0.43-all.sh.patch, \
+$(CROSSTOOL-NATIVE_SOURCE_DIR)/all.sh.patch))
 
 #
 # If the compilation of the package requires additional
@@ -190,8 +192,10 @@ $(CROSSTOOL-NATIVE_IPK_DIR)-lib/CONTROL/control:
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
+ifneq ($(CROSSTOOL_SOURCE), $(CROSSTOOL-NATIVE_SOURCE))
 $(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE):
 	$(WGET) -P $(DL_DIR) $(CROSSTOOL-NATIVE_SITE)/$(CROSSTOOL-NATIVE_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -311,7 +315,7 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)-lib
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)-lib$(CROSSTOOL-NATIVE_PREFIX)
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib $(CROSSTOOL-NATIVE_IPK_DIR)-lib$(CROSSTOOL-NATIVE_PREFIX)/lib
-	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/libexec $(CROSSTOOL-NATIVE_IPK_DIR)-lib$(CROSSTOOL-NATIVE_PREFIX)/libexec
+	-mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/libexec $(CROSSTOOL-NATIVE_IPK_DIR)-lib$(CROSSTOOL-NATIVE_PREFIX)/libexec
 	$(MAKE) $(CROSSTOOL-NATIVE_IPK_DIR)-lib/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL-NATIVE_IPK_DIR)-lib
 
