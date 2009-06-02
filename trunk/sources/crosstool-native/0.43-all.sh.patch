@@ -1,0 +1,13 @@
+--- crosstool-native/all.sh.orig	2006-12-06 16:17:40.000000000 -0800
++++ crosstool-native/all.sh	2009-06-01 20:25:06.000000000 -0700
+@@ -127,8 +127,8 @@
+     # Build
+     if [ -d "$PREFIX" ]; then
+	# Remove in background for speed
+-	mv "$PREFIX" "$PREFIX.del.$$"
+-	rm  -rf  "$PREFIX.del.$$" &
++	# mv "$PREFIX" "$PREFIX.del.$$"
++	true # rm  -rf  "$PREFIX.del.$$" &
+     fi
+     mkdir -p $PREFIX
+     mkdir -p $BUILD_DIR

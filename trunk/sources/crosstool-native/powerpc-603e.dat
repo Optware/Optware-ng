@@ -1,0 +1,3 @@
+TARGET=powerpc-603e-linux
+TARGET_CFLAGS="-O -mcpu=603"
+GCC_EXTRA_CONFIG="--with-cpu=603 --enable-cxx-flags=-mcpu=603"
