@@ -22,7 +22,7 @@
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
 SFR_SITE=http://www.sfr-fresh.com/unix/misc
-LFTP_VERSION=3.7.13
+LFTP_VERSION=3.7.14
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -40,7 +40,7 @@ LFTP_CONFLICTS=
 #
 # LFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LFTP_IPK_VERSION=3
+LFTP_IPK_VERSION=1
 
 #
 # LFTP_CONFFILES should be a list of user-editable files
