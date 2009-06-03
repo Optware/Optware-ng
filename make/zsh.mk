@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zsh
-ZSH_VERSION=4.3.9
+ZSH_VERSION=4.3.10
 ZSH_SOURCE=zsh-$(ZSH_VERSION).tar.gz
 ZSH_DIR=zsh-$(ZSH_VERSION)
 ZSH_UNZIP=zcat
@@ -29,7 +29,7 @@ ZSH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ZSH_DESCRIPTION=Zsh is a shell designed for interactive use.
 ZSH_SECTION=shell
 ZSH_PRIORITY=optional
-ZSH_DEPENDS=ncurses, termcap
+ZSH_DEPENDS=gdbm, ncursesw, termcap
 ZSH_SUGGESTS=
 ZSH_CONFLICTS=
 
@@ -104,9 +104,8 @@ zsh-source: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) # make/zsh.mk
-	$(MAKE) ncurses-stage
-	$(MAKE) termcap-stage
+$(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) make/zsh.mk
+	$(MAKE) gdbm-stage ncursesw-stage termcap-stage
 	rm -rf $(BUILD_DIR)/$(ZSH_DIR) $(@D)
 	$(ZSH_UNZIP) $(DL_DIR)/$(ZSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZSH_PATCHES)" ; \
@@ -233,4 +232,4 @@ zsh-dirclean:
 # Some sanity check for the package.
 #
 zsh-check: $(ZSH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ZSH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
