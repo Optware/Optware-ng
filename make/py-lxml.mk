@@ -22,13 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-LXML_SITE=http://pypi.python.org/packages/source/l/lxml
-ifeq (syno-x07, $(OPTWARE_TARGET))
-PY-LXML_VERSION=2.1.1
-PY-LXML_IPK_VERSION=1
-else
-PY-LXML_VERSION=2.2
-PY-LXML_IPK_VERSION=1
-endif
+PY-LXML_VERSION ?= 2.2.1
+PY-LXML_IPK_VERSION ?= 1
 PY-LXML_SOURCE=lxml-$(PY-LXML_VERSION).tar.gz
 PY-LXML_DIR=lxml-$(PY-LXML_VERSION)
 PY-LXML_UNZIP=zcat
