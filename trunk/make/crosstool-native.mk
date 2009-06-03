@@ -192,10 +192,8 @@ $(CROSSTOOL-NATIVE_IPK_DIR)-lib/CONTROL/control:
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-ifneq ($(CROSSTOOL_SOURCE), $(CROSSTOOL-NATIVE_SOURCE))
-$(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CROSSTOOL-NATIVE_SITE)/$(CROSSTOOL-NATIVE_SOURCE)
-endif
+#$(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE):
+#	$(WGET) -P $(DL_DIR) $(CROSSTOOL-NATIVE_SITE)/$(CROSSTOOL-NATIVE_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
