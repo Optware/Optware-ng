@@ -6,7 +6,7 @@
 
 ifeq ($(OPTWARE_TARGET), $(filter sheevaplug, $(OPTWARE_TARGET)))
 
-KERNEL_VERSION=2.6.30-rc7
+KERNEL_VERSION=2.6.30-rc8
 KERNEL_SITE=http://www.kernel.org/pub/linux/kernel/v2.6/testing
 KERNEL_SOURCE=linux-$(KERNEL_VERSION).tar.bz2
 KERNEL-MODULES_DIR=linux-$(KERNEL_VERSION)
@@ -38,9 +38,9 @@ KERNEL-MODULES_IPK_VERSION=1
 #
 KERNEL-MODULES_PATCHES = \
 	$(KERNEL_RECIPE_DIR)/mvsdio.patch \
+	$(KERNEL_RECIPE_DIR)/mvsdio-FIFO_EMPTY.patch \
 	$(KERNEL_RECIPE_DIR)/pow1.patch \
 	$(KERNEL_RECIPE_DIR)/pow2.patch \
-	$(KERNEL_RECIPE_DIR)/coherent_DMA_mask.patch \
 
 #
 # If the compilation of the package requires additional

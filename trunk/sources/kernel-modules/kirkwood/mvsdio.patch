@@ -2,24 +2,6 @@ X-Git-Url: http://git.marvell.com/?p=orion.git;a=blobdiff_plain;f=drivers%2Fmmc%
 
 diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
 index cd81c39..ba4c7ab 100644
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -263,6 +263,15 @@ static int mmc_switch_hs(struct mmc_card *card)
- 		return -ENOMEM;
- 	}
- 
-+	/*
-+	 * Some SDHC cards, notably those with a Sandisk SD controller
-+	 * (also found in Kingston products) need a bit of slack
-+	 * before successfully handling the SWITCH command.  So far,
-+	 * cards identifying themselves as "SD04G" and "SD08G" are
-+	 * affected
-+	 */
-+	udelay(1000);
-+
- 	err = mmc_sd_switch(card, 1, 0, 1, status);
- 	if (err)
- 		goto out;
 --- a/drivers/mmc/host/mvsdio.c.orig	2009-04-14 20:51:48.000000000 +0000
 +++ b/drivers/mmc/host/mvsdio.c	2009-04-19 15:58:42.261724324 +0000
 @@ -620,9 +622,11 @@
