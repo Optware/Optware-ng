@@ -1,6 +1,6 @@
---- git/Makefile.orig	2008-09-13 02:29:50.000000000 +0000
-+++ git/Makefile	2008-09-23 02:55:43.043631003 +0000
-@@ -166,7 +166,7 @@
+--- git/Makefile.orig	2009-06-03 23:26:40.000000000 -0700
++++ git/Makefile	2009-06-04 11:15:22.000000000 -0700
+@@ -194,7 +194,7 @@
  
  CFLAGS = -g -O2 -Wall
  LDFLAGS =
@@ -9,17 +9,17 @@
  ALL_LDFLAGS = $(LDFLAGS)
  STRIP ?= strip
  
-@@ -1135,7 +1135,7 @@
+@@ -1269,7 +1269,7 @@
  	$(QUIET_GEN)$(RM) $@ $@+ && \
-	INSTLIBDIR=`MAKEFLAGS= $(MAKE) -C perl -s --no-print-directory instlibdir` && \
+ 	INSTLIBDIR=`MAKEFLAGS= $(MAKE) -C perl -s --no-print-directory instlibdir` && \
  	sed -e '1{' \
 -	    -e '	s|#!.*perl|#!$(PERL_PATH_SQ)|' \
 +	    -e '	s|#!.*perl|#!/opt/bin/perl|' \
  	    -e '	h' \
  	    -e '	s=.*=use lib (split(/:/, $$ENV{GITPERLLIB} || "@@INSTLIBDIR@@"));=' \
  	    -e '	H' \
-@@ -1149,7 +1149,7 @@
- 
+@@ -1284,7 +1284,7 @@
+ OTHER_PROGRAMS += gitweb/gitweb.cgi
  gitweb/gitweb.cgi: gitweb/gitweb.perl
  	$(QUIET_GEN)$(RM) $@ $@+ && \
 -	sed -e '1s|#!.*perl|#!$(PERL_PATH_SQ)|' \
