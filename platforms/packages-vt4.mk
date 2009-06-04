@@ -23,7 +23,7 @@ BROKEN_PACKAGES = \
 	gnuplot gnutls gtk gutenprint \
 	hplip \
 	icecast icu id3lib iksemel imagemagick \
-	iptraf ivorbis-tools \
+	iotop iptraf ivorbis-tools \
 	jabberd jikes \
 	kismet \
 	launchtool ldconfig lftp liba52 libbt libcapi20 libcdio \
