@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 COREUTILS_SITE=http://ftp.gnu.org/pub/gnu/coreutils
-COREUTILS_VERSION=7.2
+COREUTILS_VERSION=7.4
 COREUTILS_SOURCE=coreutils-$(COREUTILS_VERSION).tar.gz
 COREUTILS_DIR=coreutils-$(COREUTILS_VERSION)
 COREUTILS_UNZIP=zcat
@@ -74,7 +74,12 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 COREUTILS_LDFLAGS+= -liconv
 endif
-COREUTILS_CONFIG_ENVS=gl_cv_func_fflush_stdin=yes
+
+COREUTILS_CONFIG_ENVS=\
+gl_cv_func_fflush_stdin=yes \
+gl_cv_func_rename_trailing_slash_bug=no \
+gl_cv_func_rename_dest_exists_bug=no \
+
 ifeq ($(OPTWARE_TARGET), dns323)
 # binutils too old, ld does not recognize --as-needed
 COREUTILS_CONFIG_ENVS += gl_cv_ignore_unused_libraries=none
@@ -152,6 +157,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--without-gmp \
 		--datarootdir=/opt \
 		--cache-file=config.cache \
 	)
