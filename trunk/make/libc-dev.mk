@@ -33,7 +33,7 @@ LIBC-DEV_DEPENDS=libnsl
 LIBC-DEV_SUGGESTS=
 LIBC-DEV_CONFLICTS=
 
-LIBC-DEV_IPK_VERSION=4
+LIBC-DEV_IPK_VERSION=5
 
 ifdef LIBNSL_VERSION
 LIBC-DEV_VERSION=$(LIBNSL_VERSION)
@@ -152,8 +152,8 @@ endif
 	    rsync -l \
 		$(LIBC-DEV_LIBDIR)/$${f}-[\.0-9]*.so \
 		$(LIBC-DEV_LIBDIR)/$${f}.so[\.0-9]* \
-		$(LIBC-DEV_IPK_DIR)/opt/lib/; \
-	    cd $(LIBC-DEV_IPK_DIR)/opt/lib; \
+		$(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR); \
+	    cd $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR); \
 	    if test $${f} != ld-uClibc -a ! -e $${f}.so; then \
 		ln -sf $${f}.so.* $${f}.so; \
 	    fi; \
