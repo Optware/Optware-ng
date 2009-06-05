@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-WEBPY_SITE=http://webpy.org/static
-PY-WEBPY_VERSION=0.31
+PY-WEBPY_VERSION=0.32
 PY-WEBPY_SOURCE=web.py-$(PY-WEBPY_VERSION).tar.gz
 PY-WEBPY_DIR=webpy
 PY-WEBPY_UNZIP=zcat
