@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LOUDMOUTH_SITE=http://ftp.imendio.com/pub/imendio/loudmouth/src
-LOUDMOUTH_VERSION=1.2.3
+LOUDMOUTH_VERSION=1.4.3
 LOUDMOUTH_SOURCE=loudmouth-$(LOUDMOUTH_VERSION).tar.gz
 LOUDMOUTH_DIR=loudmouth-$(LOUDMOUTH_VERSION)
 LOUDMOUTH_UNZIP=zcat
@@ -29,14 +29,14 @@ LOUDMOUTH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LOUDMOUTH_DESCRIPTION=Loudmouth is a lightweight and easy-to-use C library for programming with the Jabber protocol.
 LOUDMOUTH_SECTION=net
 LOUDMOUTH_PRIORITY=optional
-LOUDMOUTH_DEPENDS=gnutls, libidn
+LOUDMOUTH_DEPENDS=glib, gnutls, libidn
 LOUDMOUTH_SUGGESTS=
 LOUDMOUTH_CONFLICTS=
 
 #
 # LOUDMOUTH_IPK_VERSION should be incremented when the ipk changes.
 #
-LOUDMOUTH_IPK_VERSION=2
+LOUDMOUTH_IPK_VERSION=1
 
 #
 # LOUDMOUTH_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ LOUDMOUTH_IPK=$(BUILD_DIR)/loudmouth_$(LOUDMOUTH_VERSION)-$(LOUDMOUTH_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LOUDMOUTH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LOUDMOUTH_SITE)/$(LOUDMOUTH_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LOUDMOUTH_SOURCE)
+	$(WGET) -P $(@D) $(LOUDMOUTH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,17 +105,17 @@ loudmouth-source: $(DL_DIR)/$(LOUDMOUTH_SOURCE) $(LOUDMOUTH_PATCHES)
 # shown below to make various patches to it.
 #
 $(LOUDMOUTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LOUDMOUTH_SOURCE) $(LOUDMOUTH_PATCHES) make/loudmouth.mk
-	$(MAKE) gnutls-stage libidn-stage
-	rm -rf $(BUILD_DIR)/$(LOUDMOUTH_DIR) $(LOUDMOUTH_BUILD_DIR)
+	$(MAKE) glib-stage gnutls-stage libidn-stage
+	rm -rf $(BUILD_DIR)/$(LOUDMOUTH_DIR) $(@D)
 	$(LOUDMOUTH_UNZIP) $(DL_DIR)/$(LOUDMOUTH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LOUDMOUTH_PATCHES)" ; \
 		then cat $(LOUDMOUTH_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LOUDMOUTH_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LOUDMOUTH_DIR)" != "$(LOUDMOUTH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LOUDMOUTH_DIR) $(LOUDMOUTH_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LOUDMOUTH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LOUDMOUTH_DIR) $(@D) ; \
 	fi
-	(cd $(LOUDMOUTH_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LOUDMOUTH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LOUDMOUTH_LDFLAGS)" \
@@ -130,7 +130,7 @@ $(LOUDMOUTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LOUDMOUTH_SOURCE) $(LOUDMOUTH_PA
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LOUDMOUTH_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 loudmouth-unpack: $(LOUDMOUTH_BUILD_DIR)/.configured
@@ -140,7 +140,7 @@ loudmouth-unpack: $(LOUDMOUTH_BUILD_DIR)/.configured
 #
 $(LOUDMOUTH_BUILD_DIR)/.built: $(LOUDMOUTH_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LOUDMOUTH_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -153,7 +153,7 @@ loudmouth: $(LOUDMOUTH_BUILD_DIR)/.built
 #
 $(LOUDMOUTH_BUILD_DIR)/.staged: $(LOUDMOUTH_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LOUDMOUTH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/loudmouth*.pc
 	rm -f $(STAGING_LIB_DIR)/libloudmouth*.la
 	touch $@
@@ -231,4 +231,4 @@ loudmouth-dirclean:
 # Some sanity check for the package.
 #
 loudmouth-check: $(LOUDMOUTH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LOUDMOUTH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
