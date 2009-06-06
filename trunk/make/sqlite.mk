@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.6.13
+SQLITE_VERSION=3.6.14.2
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
@@ -35,7 +35,7 @@ SQLITE_CONFLICTS=
 #
 # SQLITE_IPK_VERSION should be incremented when the ipk changes.
 #
-SQLITE_IPK_VERSION=2
+SQLITE_IPK_VERSION=1
 
 #
 # SQLITE_CONFFILES should be a list of user-editable files
@@ -130,8 +130,7 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES) ma
 		--disable-nls \
 		--disable-tcl \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
-	sed -i "/^shrext_cmds=/a shrext='.so'" $(@D)/libtool
+	$(PATCH_LIBTOOL) -e "/^shrext_cmds=/a shrext='.so'" $(@D)/libtool
 	touch $@
 
 sqlite-unpack: $(SQLITE_BUILD_DIR)/.configured
