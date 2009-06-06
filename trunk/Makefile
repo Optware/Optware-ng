@@ -217,7 +217,8 @@ COMMON_CROSS_PACKAGES = \
 	arc aria2 arping arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
 	at atftp atk atop audiofile autoconf automake autossh avahi \
-	bacula bash bc bftpd bind bip bison bitchx bitlbee \
+	bacula bash bash-completion bc bftpd \
+	bind bip bison bitchx bitlbee \
 	bogofilter boost bridge-utils \
 	bsdgames bsdmainutils \
 	btg btpd busybox byrequest bzflag bzip2 \
