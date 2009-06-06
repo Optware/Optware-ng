@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 INFERNO_SVN_REPO=http://inferno-os.googlecode.com/svn/trunk
-INFERNO_SVN_REV=00403
+INFERNO_SVN_REV=00422
 INFERNO_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/inferno
 INFERNO_VERSION=4.svn$(INFERNO_SVN_REV)
 INFERNO_SOURCE=inferno-$(INFERNO_VERSION).tar.gz
@@ -127,7 +127,7 @@ $(INFERNO_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(INFERNO_SOURCE) $
 
 inferno-host: $(INFERNO_HOST_BUILD_DIR)/.built
 
-$(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PATCHES) make/inferno.mk
+$(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PATCHES) # make/inferno.mk
 	rm -rf $(BUILD_DIR)/$(INFERNO_DIR) $(@D)
 	$(INFERNO_UNZIP) $(DL_DIR)/$(INFERNO_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(INFERNO_PATCHES)" ; \
@@ -258,28 +258,39 @@ $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
 		dis/lib/auth.dis \
 		dis/lib/bufio.dis \
 		dis/lib/daytime.dis \
+		dis/lib/dis.dis \
+		dis/lib/encoding/base64.dis \
 		dis/lib/env.dis \
 		dis/lib/factotum.dis \
 		dis/lib/filepat.dis \
 		dis/lib/ip.dis \
 		dis/lib/ipattr.dis \
+		dis/lib/nametree.dis \
 		dis/lib/rand.dis \
+		dis/lib/random.dis \
 		dis/lib/readdir.dis \
 		dis/lib/regex.dis \
 		dis/lib/ssl.dis \
 		dis/lib/string.dis \
 		dis/lib/styx.dis \
+		dis/lib/styxconv/ostyx.dis \
+		dis/lib/styxconv/styxconv.dis \
+		dis/lib/styxlib.dis \
 		dis/lib/styxpersist.dis \
+		dis/lib/timers.dis \
 		dis/lib/workdir.dis \
+		dis/ip/ping.dis \
 		dis/ndb/cs.dis \
+		dis/ndb/dns.dis \
+		dis/sh/std.dis \
 		dis/ar.dis \
 		dis/bind.dis \
+		dis/cal.dis \
+		dis/calc.dis \
 		dis/cat.dis \
 		dis/cd.dis \
 		dis/chgrp.dis \
 		dis/chmod.dis \
-		dis/cal.dis \
-		dis/calc.dis \
 		dis/cp.dis \
 		dis/cpu.dis \
 		dis/date.dis \
@@ -294,13 +305,17 @@ $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
 		dis/fc.dis \
 		dis/ftest.dis \
 		dis/grep.dis \
+		dis/import.dis \
+		dis/kill.dis \
 		dis/lc \
 		dis/listen.dis \
 		dis/ls.dis \
 		dis/mc.dis \
 		dis/md5sum.dis \
 		dis/mdb.dis \
+		dis/memfs.dis \
 		dis/mkdir.dis \
+		dis/mntgen.dis \
 		dis/mount.dis \
 		dis/mv.dis \
 		dis/newer.dis \
@@ -308,6 +323,7 @@ $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
 		dis/nsbuild.dis \
 		dis/os.dis \
 		dis/p.dis \
+		dis/ps.dis \
 		dis/pwd.dis \
 		dis/read.dis \
 		dis/rm.dis \
@@ -317,9 +333,11 @@ $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
 		dis/sleep.dis \
 		dis/sort.dis \
 		dis/strings.dis \
+		dis/styxlisten.dis \
 		dis/sum.dis \
 		dis/tail.dis \
 		dis/tee.dis \
+		dis/telnet.dis \
 		dis/test.dis \
 		dis/time.dis \
 		dis/touch.dis \
@@ -329,6 +347,7 @@ $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
 		dis/wc.dis \
 		dis/xargs.dis \
 		dis/xd.dis \
+		dis/zeros.dis \
 		; \
 	do \
 		d=`dirname $$f`; \
@@ -341,6 +360,7 @@ $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
 	# inferno-utils
 	install -d $(INFERNO-UTILS_IPK_DIR)/opt
 	mv $(INFERNO_IPK_DIR)/opt/bin $(INFERNO-UTILS_IPK_DIR)/opt/
+	mv $(INFERNO-UTILS_IPK_DIR)/opt/bin/md5sum $(INFERNO-UTILS_IPK_DIR)/opt/bin/inferno-md5sum
 	$(MAKE) $(INFERNO-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO-UTILS_IPK_DIR)
 #	# rest in inferno
