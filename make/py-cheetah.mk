@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CHEETAH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/cheetahtemplate
-PY-CHEETAH_VERSION=2.0.1
+PY-CHEETAH_VERSION=2.2.1
 PY-CHEETAH_SOURCE=Cheetah-$(PY-CHEETAH_VERSION).tar.gz
 PY-CHEETAH_DIR=Cheetah-$(PY-CHEETAH_VERSION)
 PY-CHEETAH_UNZIP=zcat
@@ -38,7 +38,7 @@ PY-CHEETAH_CONFLICTS=
 #
 # PY-CHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHEETAH_IPK_VERSION=3
+PY-CHEETAH_IPK_VERSION=1
 
 #
 # PY-CHEETAH_CONFFILES should be a list of user-editable files
