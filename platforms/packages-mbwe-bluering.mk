@@ -12,7 +12,6 @@ BROKEN_PACKAGES = \
 	fuppes \
 	gcc \
 	gtmess \
-	inferno \
 	\
 	rssh \
 	transcode \
