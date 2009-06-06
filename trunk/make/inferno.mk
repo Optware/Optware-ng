@@ -151,6 +151,14 @@ $(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PAT
 		-e '/^CC=/s|=.*|=$(TARGET_CC) $(INFERNO_CPPFLAGS) -c|' \
 		-e '/^LD=/s|=.*|=$(TARGET_CC) $(STAGING_LDFLAGS) $(INFERNO_LDFLAGS)|' \
 		$(@D)/mkfiles/mkfile-Linux-$(INFERNO_ARCH)
+ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
+	##no fenv.h bug
+	cp -f $(SOURCE_DIR)/$(OPTWARE_TARGET)/fenv.h $(@D)/Linux/$(INFERNO_ARCH)/include
+endif
+ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
+	##`__ARM_NR_cacheflush' undeclared bug
+	sed -i -e "s|#include <sys/syscall\.h>|#include <sys/syscall.h>\n#include <asm/unistd.h>|" $(@D)/emu/Linux/segflush-$(INFERNO_ARCH).c
+endif
 	touch $@
 
 inferno-unpack: $(INFERNO_BUILD_DIR)/.configured
