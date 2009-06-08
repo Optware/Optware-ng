@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_SITE=http://www.apache.org/dist/apr
-APR_VERSION=1.3.3
+APR_VERSION=1.3.5
 APR_SOURCE=apr-$(APR_VERSION).tar.bz2
 APR_DIR=apr-$(APR_VERSION)
 APR_UNZIP=bzcat
@@ -218,4 +218,4 @@ apr-dirclean:
 # Some sanity check for the package.
 #
 apr-check: $(APR_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(APR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
