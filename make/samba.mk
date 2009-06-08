@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA_VERSION ?= 3.2.11
-SAMBA_IPK_VERSION ?= 1
+SAMBA_IPK_VERSION ?= 2
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
@@ -38,6 +38,7 @@ SAMBA_DEPENDS +=, gconv-modules
 endif
 SAMBA_SUGGESTS=cups
 SAMBA_CONFLICTS=samba2
+SAMBA_ADDITIONAL_CODEPAGES=CP866
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
@@ -238,6 +239,8 @@ endif
 	)
 #	Remove Kerberos libs produced by broken configure
 	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' $(@D)/Makefile
+### additional codepages
+	CODEPAGES="$(SAMBA_ADDITIONAL_CODEPAGES)" SAMBA_SOURCE_DIR=$(SAMBA_SOURCE_DIR) SAMBA_BUILD_DIR=$(SAMBA_BUILD_DIR) /bin/sh $(SAMBA_SOURCE_DIR)/addcodepages.sh
 	touch $@
 
 samba-unpack: $(SAMBA_BUILD_DIR)/.configured
