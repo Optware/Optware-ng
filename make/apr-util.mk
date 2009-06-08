@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_UTIL_SITE=http://www.apache.org/dist/apr
-APR_UTIL_VERSION=1.3.4
+APR_UTIL_VERSION=1.3.7
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
 APR_UTIL_UNZIP=bzcat
@@ -28,7 +28,7 @@ APR_UTIL_SUGGESTS=sqlite
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=2
+APR_UTIL_IPK_VERSION=1
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -138,8 +138,8 @@ endif
 	$(APR_UTIL_UNZIP) $(DL_DIR)/$(APR_UTIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APR_UTIL_DIR) $(@D)
 	cat $(APR_UTIL_PATCHES) |patch -p0 -d$(@D)
+	autoreconf -vif $(@D)
 	(cd $(@D); \
-		autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APR_UTIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APR_UTIL_LDFLAGS)" \
@@ -243,4 +243,4 @@ apr-util-dirclean:
 # Some sanity check for the package.
 #
 apr-util-check: $(APR_UTIL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(APR_UTIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
