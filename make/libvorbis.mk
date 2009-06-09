@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBVORBIS_SITE=http://downloads.xiph.org/releases/vorbis
-LIBVORBIS_VERSION=1.1.2
+LIBVORBIS_VERSION=1.2.0
 LIBVORBIS_SOURCE=libvorbis-$(LIBVORBIS_VERSION).tar.gz
 LIBVORBIS_DIR=libvorbis-$(LIBVORBIS_VERSION)
 LIBVORBIS_UNZIP=zcat
@@ -35,7 +35,7 @@ LIBVORBIS_CONFLICTS=
 #
 # LIBVORBIS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBVORBIS_IPK_VERSION=5
+LIBVORBIS_IPK_VERSION=1
 
 #
 # LIBVORBIS_CONFFILES should be a list of user-editable files
@@ -80,7 +80,8 @@ LIBVORBIS_IPK=$(BUILD_DIR)/libvorbis_$(LIBVORBIS_VERSION)-$(LIBVORBIS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBVORBIS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBVORBIS_SITE)/$(LIBVORBIS_SOURCE)
+	$(WGET) -P $(@D) $(LIBVORBIS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,18 +105,18 @@ libvorbis-source: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PATCHES)
+$(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PATCHES) make/libvorbis.mk
 	$(MAKE) libogg-stage
-	rm -rf $(BUILD_DIR)/$(LIBVORBIS_DIR) $(LIBVORBIS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBVORBIS_DIR) $(@D)
 	$(LIBVORBIS_UNZIP) $(DL_DIR)/$(LIBVORBIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBVORBIS_PATCHES)" ; \
 		then cat $(LIBVORBIS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBVORBIS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBVORBIS_DIR)" != "$(LIBVORBIS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBVORBIS_DIR) $(LIBVORBIS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBVORBIS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBVORBIS_DIR) $(@D) ; \
 	fi
-	(cd $(LIBVORBIS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(LIBVORBIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBVORBIS_LDFLAGS)" \
@@ -128,8 +129,8 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBVORBIS_BUILD_DIR)/libtool
-	sed -i -e 's/examples//g' $(LIBVORBIS_BUILD_DIR)/Makefile
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	sed -i -e 's/examples//g' $(@D)/Makefile
 ifneq (, $(filter syno-x07, $(OPTWARE_TARGET)))
 	sed -i -e 's/ -O20//g' -e 's/ -O2//g' $(@D)/lib/Makefile
 endif
@@ -145,7 +146,7 @@ $(LIBVORBIS_BUILD_DIR)/.built: $(LIBVORBIS_BUILD_DIR)/.configured
 	rm -f $@
 	CFLAGS="$(LIBVORBIS_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(LIBVORBIS_LDFLAGS)" \
-	$(MAKE) -C $(LIBVORBIS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -159,7 +160,7 @@ libvorbis: $(LIBVORBIS_BUILD_DIR)/.built
 #
 $(LIBVORBIS_BUILD_DIR)/.staged: $(LIBVORBIS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|prefix=/opt|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/vorbisenc.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/vorbisfile.pc \
@@ -173,7 +174,7 @@ libvorbis-stage: $(LIBVORBIS_BUILD_DIR)/.staged
 
 
 $(LIBVORBIS_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBVORBIS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libvorbis" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -228,4 +229,4 @@ libvorbis-dirclean:
 # Some sanity check for the package.
 #
 libvorbis-check: $(LIBVORBIS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBVORBIS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
