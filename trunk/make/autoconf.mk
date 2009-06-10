@@ -5,7 +5,7 @@
 ###########################################################
 
 AUTOCONF_SITE=http://ftp.gnu.org/gnu/autoconf
-AUTOCONF_VERSION=2.61
+AUTOCONF_VERSION=2.63
 AUTOCONF_SOURCE=autoconf-$(AUTOCONF_VERSION).tar.bz2
 AUTOCONF_DIR=autoconf-$(AUTOCONF_VERSION)
 AUTOCONF_UNZIP=bzcat
@@ -16,7 +16,7 @@ AUTOCONF_PRIORITY=optional
 AUTOCONF_DEPENDS=make, m4
 AUTOCONF_CONFLICTS=
 
-AUTOCONF_IPK_VERSION=2
+AUTOCONF_IPK_VERSION=1
 
 AUTOCONF_BUILD_DIR=$(BUILD_DIR)/autoconf
 AUTOCONF_SOURCE_DIR=$(SOURCE_DIR)/autoconf
@@ -26,15 +26,16 @@ AUTOCONF_IPK=$(BUILD_DIR)/autoconf_$(AUTOCONF_VERSION)-$(AUTOCONF_IPK_VERSION)_$
 .PHONY: autoconf-source autoconf-unpack autoconf autoconf-stage autoconf-ipk autoconf-clean autoconf-dirclean autoconf-check
 
 $(DL_DIR)/$(AUTOCONF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(AUTOCONF_SITE)/$(AUTOCONF_SOURCE)
+	$(WGET) -P $(@D) $(AUTOCONF_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 autoconf-source: $(DL_DIR)/$(AUTOCONF_SOURCE) $(AUTOCONF_PATCHES)
 
 $(AUTOCONF_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOCONF_SOURCE) $(AUTOCONF_PATCHES)
-	rm -rf $(BUILD_DIR)/$(AUTOCONF_DIR) $(AUTOCONF_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(AUTOCONF_DIR) $(@D)
 	$(AUTOCONF_UNZIP) $(DL_DIR)/$(AUTOCONF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(AUTOCONF_DIR) $(AUTOCONF_BUILD_DIR)
-	(cd $(AUTOCONF_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(AUTOCONF_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -51,14 +52,14 @@ autoconf-unpack: $(AUTOCONF_BUILD_DIR)/.configured
 
 $(AUTOCONF_BUILD_DIR)/.built: $(AUTOCONF_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(AUTOCONF_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 autoconf: $(AUTOCONF_BUILD_DIR)/.built
 
 $(AUTOCONF_BUILD_DIR)/.staged: $(AUTOCONF_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(AUTOCONF_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 autoconf-stage: $(AUTOCONF_BUILD_DIR)/.staged
@@ -102,4 +103,4 @@ autoconf-dirclean:
 	rm -rf $(BUILD_DIR)/$(AUTOCONF_DIR) $(AUTOCONF_BUILD_DIR) $(AUTOCONF_IPK_DIR) $(AUTOCONF_IPK)
 
 autoconf-check: $(AUTOCONF_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(AUTOCONF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
