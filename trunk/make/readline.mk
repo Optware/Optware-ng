@@ -154,6 +154,7 @@ readline: $(READLINE_BUILD_DIR)/.built
 #
 $(READLINE_BUILD_DIR)/.staged: $(READLINE_BUILD_DIR)/.built
 	rm -f $@
+	rm -f $(STAGING_LIB_DIR)/libreadline*
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
