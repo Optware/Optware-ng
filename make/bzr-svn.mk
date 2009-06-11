@@ -30,14 +30,14 @@ BZR-SVN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BZR-SVN_DESCRIPTION=Support for Subversion branches in Bazaar.
 BZR-SVN_SECTION=devel
 BZR-SVN_PRIORITY=optional
-PY25-BZR-SVN_DEPENDS=py25-bazaar-ng, py25-subvertpy
-PY26-BZR-SVN_DEPENDS=py26-bazaar-ng, py26-subvertpy
+PY25-BZR-SVN_DEPENDS=py25-bzr, py25-subvertpy
+PY26-BZR-SVN_DEPENDS=py26-bzr, py26-subvertpy
 BZR-SVN_CONFLICTS=
 
 #
 # BZR-SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-BZR-SVN_IPK_VERSION=1
+BZR-SVN_IPK_VERSION=2
 
 #
 # BZR-SVN_CONFFILES should be a list of user-editable files
