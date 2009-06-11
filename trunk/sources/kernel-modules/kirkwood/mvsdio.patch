@@ -1,21 +1,5 @@
 X-Git-Url: http://git.marvell.com/?p=orion.git;a=blobdiff_plain;f=drivers%2Fmmc%2Fcore%2Fsd.c;fp=drivers%2Fmmc%2Fcore%2Fsd.c;h=ba4c7ab1bc4797e3b5df4010831ebcd4130ae5b0;hp=cd81c395e1646056cd90a82200d09bff9e09a03f;hb=3ea638523747f6d312f11f643a3175c1a4661eec;hpb=c0c3df02efed0e5dea9aa4d8313e06e1f68f2cb4
 
-diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index cd81c39..ba4c7ab 100644
---- a/drivers/mmc/host/mvsdio.c.orig	2009-04-14 20:51:48.000000000 +0000
-+++ b/drivers/mmc/host/mvsdio.c	2009-04-19 15:58:42.261724324 +0000
-@@ -620,9 +622,11 @@
- 	if (ios->bus_width == MMC_BUS_WIDTH_4)
- 		ctrl_reg |= MVSD_HOST_CTRL_DATA_WIDTH_4_BITS;
- 
-+#if 0
- 	if (ios->timing == MMC_TIMING_MMC_HS ||
- 	    ios->timing == MMC_TIMING_SD_HS)
- 		ctrl_reg |= MVSD_HOST_CTRL_HI_SPEED_EN;
-+#endif
- 
- 	host->ctrl = ctrl_reg;
- 	mvsd_write(MVSD_HOST_CTRL, ctrl_reg);
 --- kernel/drivers/mmc/core/core.c.orig	2009-04-14 20:51:48.000000000 +0000
 +++ kernel/drivers/mmc/core/core.c	2009-04-19 17:36:35.985746917 +0000
 @@ -286,9 +286,9 @@
