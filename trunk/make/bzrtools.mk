@@ -30,14 +30,14 @@ BZRTOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BZRTOOLS_DESCRIPTION=A set of plugins for Bazaar.
 BZRTOOLS_SECTION=devel
 BZRTOOLS_PRIORITY=optional
-PY25-BZRTOOLS_DEPENDS=py25-bazaar-ng
-PY26-BZRTOOLS_DEPENDS=py26-bazaar-ng
+PY25-BZRTOOLS_DEPENDS=py25-bzr
+PY26-BZRTOOLS_DEPENDS=py26-bzr
 BZRTOOLS_CONFLICTS=
 
 #
 # BZRTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-BZRTOOLS_IPK_VERSION=1
+BZRTOOLS_IPK_VERSION=2
 
 #
 # BZRTOOLS_CONFFILES should be a list of user-editable files

@@ -30,14 +30,14 @@ BZR-REBASE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BZR-REBASE_DESCRIPTION=Rebase plugin for bzr.
 BZR-REBASE_SECTION=devel
 BZR-REBASE_PRIORITY=optional
-PY25-BZR-REBASE_DEPENDS=py25-bazaar-ng
-PY26-BZR-REBASE_DEPENDS=py26-bazaar-ng
+PY25-BZR-REBASE_DEPENDS=py25-bzr
+PY26-BZR-REBASE_DEPENDS=py26-bzr
 BZR-REBASE_CONFLICTS=
 
 #
 # BZR-REBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-BZR-REBASE_IPK_VERSION=1
+BZR-REBASE_IPK_VERSION=2
 
 #
 # BZR-REBASE_CONFFILES should be a list of user-editable files
