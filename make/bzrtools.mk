@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZRTOOLS_VERSION=1.14.0
-BZRTOOLS_SITE=http://launchpad.net/bzrtools/stable/1.14/+download
+BZRTOOLS_VERSION=1.15.0
+BZRTOOLS_SITE=http://launchpad.net/bzrtools/stable/1.15.0/+download
 BZRTOOLS_SOURCE=bzrtools-$(BZRTOOLS_VERSION).tar.gz
 BZRTOOLS_DIR=bzrtools
 BZRTOOLS_UNZIP=zcat
@@ -37,7 +37,7 @@ BZRTOOLS_CONFLICTS=
 #
 # BZRTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-BZRTOOLS_IPK_VERSION=2
+BZRTOOLS_IPK_VERSION=1
 
 #
 # BZRTOOLS_CONFFILES should be a list of user-editable files
