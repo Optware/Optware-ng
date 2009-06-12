@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBINKLEVEL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libinklevel
-LIBINKLEVEL_VERSION=0.7.3
+LIBINKLEVEL_VERSION=0.8.0
 LIBINKLEVEL_SOURCE=libinklevel-$(LIBINKLEVEL_VERSION).tar.gz
 LIBINKLEVEL_DIR=libinklevel-$(LIBINKLEVEL_VERSION)
 LIBINKLEVEL_UNZIP=zcat
@@ -115,11 +115,13 @@ $(LIBINKLEVEL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBINKLEVEL_SOURCE) $(LIBINKLE
 	if test "$(BUILD_DIR)/$(LIBINKLEVEL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBINKLEVEL_DIR) $(@D) ; \
 	fi
-	sed -i -e 's| -shared|& $$(LDFLAGS)|' $(@D)/Makefile
-#	(cd $(@D); \
+#	sed -i -e 's| -shared|& $$(LDFLAGS)|' $(@D)/Makefile
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBINKLEVEL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBINKLEVEL_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -128,7 +130,7 @@ $(LIBINKLEVEL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBINKLEVEL_SOURCE) $(LIBINKLE
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libinklevel-unpack: $(LIBINKLEVEL_BUILD_DIR)/.configured
@@ -138,12 +140,7 @@ libinklevel-unpack: $(LIBINKLEVEL_BUILD_DIR)/.configured
 #
 $(LIBINKLEVEL_BUILD_DIR)/.built: $(LIBINKLEVEL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBINKLEVEL_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(LIBINKLEVEL_LDFLAGS)" \
-		PREFIX=/opt \
-		;
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -158,6 +155,7 @@ $(LIBINKLEVEL_BUILD_DIR)/.staged: $(LIBINKLEVEL_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install \
 		DESTDIR=$(STAGING_DIR) PREFIX=/opt
+	rm -f $(STAGING_LIB_DIR)/libinklevel.la
 	touch $@
 
 libinklevel-stage: $(LIBINKLEVEL_BUILD_DIR)/.staged
@@ -238,4 +236,4 @@ libinklevel-dirclean:
 # Some sanity check for the package.
 #
 libinklevel-check: $(LIBINKLEVEL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBINKLEVEL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
