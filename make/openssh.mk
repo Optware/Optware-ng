@@ -18,7 +18,7 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=1
+OPENSSH_IPK_VERSION=2
 
 OPENSSH_CONFFILES=\
 	/opt/etc/openssh/ssh_config \
@@ -195,6 +195,8 @@ $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL/control:
 $(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK): $(OPENSSH_BUILD_DIR)/.built
 	rm -rf $(OPENSSH_IPK_DIR) $(BUILD_DIR)/openssh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENSSH_BUILD_DIR) DESTDIR=$(OPENSSH_IPK_DIR) install-nokeys
+	mv $(OPENSSH_IPK_DIR)/opt/bin/scp $(OPENSSH_IPK_DIR)/opt/bin/openssh-scp
+	mv $(OPENSSH_IPK_DIR)/opt/bin/ssh $(OPENSSH_IPK_DIR)/opt/bin/openssh-ssh
 	rm -rf $(OPENSSH_IPK_DIR)/opt/share
 	rm -rf $(OPENSSH_IPK_DIR)/opt/man
 	install -d $(OPENSSH_IPK_DIR)/opt/etc/init.d/
@@ -211,6 +213,10 @@ $(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK): $(OPENSSH_BUILD_DIR)/.built
 	$(MAKE) $(OPENSSH_IPK_DIR)/CONTROL/control
 	install -m 755 $(OPENSSH_SOURCE_DIR)/postinst $(OPENSSH_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(OPENSSH_SOURCE_DIR)/prerm $(OPENSSH_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+                sed -i -e '/^[  ]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+                        $(DROPBEAR_IPK_DIR)/CONTROL/postinst $(DROPBEAR_IPK_DIR)/CONTROL/prerm; \
+        fi
 	echo $(OPENSSH_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSH_IPK_DIR)
 	$(MAKE) $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL/control

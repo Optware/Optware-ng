@@ -1,5 +1,8 @@
 #!/bin/sh
 
+update-alternatives --remove scp /opt/sbin/dropbearmulti
+update-alternatives --remove ssh /opt/sbin/dropbearmulti
+
 killall /opt/sbin/dropbear
 
 /bin/rm -f /opt/etc/dropbear/dropbear_rsa_host_key

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+update-alternatives --install /opt/bin/scp scp /opt/sbin/dropbearmulti 50
+update-alternatives --install /opt/bin/ssh ssh /opt/sbin/dropbearmulti 50
+
 echo
 
 if [ ! -e /dev/urandom ]; then
