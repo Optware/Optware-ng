@@ -21,7 +21,7 @@ DROPBEAR_SUGGESTS=
 DROPBEAR_CONFLICTS=
 
 
-DROPBEAR_IPK_VERSION=3
+DROPBEAR_IPK_VERSION=4
 
 DROPBEAR_PATCHES=$(DROPBEAR_SOURCE_DIR)/configure.patch \
 		 $(DROPBEAR_SOURCE_DIR)/options.h.patch \
@@ -101,8 +101,6 @@ $(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/.built
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearkey
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearconvert
 	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti dbclient
-#	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti ssh
-#	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti scp
 	install -d $(DROPBEAR_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(DROPBEAR_SOURCE_DIR)/rc.dropbear $(DROPBEAR_IPK_DIR)/opt/etc/init.d/S51dropbear
 	install -d $(DROPBEAR_IPK_DIR)/opt/etc/default
@@ -110,6 +108,10 @@ $(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/.built
 	$(MAKE) $(DROPBEAR_IPK_DIR)/CONTROL/control
 	install -m 644 $(DROPBEAR_SOURCE_DIR)/postinst $(DROPBEAR_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(DROPBEAR_SOURCE_DIR)/prerm    $(DROPBEAR_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+                sed -i -e '/^[  ]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+                        $(DROPBEAR_IPK_DIR)/CONTROL/postinst $(DROPBEAR_IPK_DIR)/CONTROL/prerm; \
+        fi
 	echo $(DROPBEAR_CONFFILES) | sed -e 's/ /\n/g' > $(DROPBEAR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DROPBEAR_IPK_DIR)
 

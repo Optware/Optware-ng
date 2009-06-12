@@ -1,5 +1,8 @@
 #!/bin/sh
 
+update-alternatives --install /opt/bin/scp scp /opt/bin/openssh-scp 80
+update-alternatives --install /opt/bin/ssh ssh /opt/bin/openssh-ssh 80
+
 echo
 
 # Check for the SSH1 RSA key

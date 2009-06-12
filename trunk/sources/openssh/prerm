@@ -1,5 +1,8 @@
 #!/bin/sh
 
+update-alternatives --remove scp /opt/bin/openssh-scp
+update-alternatives --remove ssh /opt/bin/openssh-ssh
+
 [ -e /opt/etc/default/openssh ] && . /opt/etc/default/openssh
 
 if [ -f /opt/var/run/sshd.pid ] ; then
