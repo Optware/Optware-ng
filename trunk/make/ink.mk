@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 INK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ink
-INK_VERSION=0.4.1
+INK_VERSION=0.5.0
 INK_SOURCE=ink-$(INK_VERSION).tar.gz
 INK_DIR=ink-$(INK_VERSION)
 INK_UNZIP=zcat
@@ -224,4 +224,4 @@ ink-dirclean:
 # Some sanity check for the package.
 #
 ink-check: $(INK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(INK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
