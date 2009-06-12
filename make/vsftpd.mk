@@ -28,14 +28,16 @@ VSFTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VSFTPD_DESCRIPTION=ftp daemon with an emphasis on speed and security
 VSFTPD_SECTION=net
 VSFTPD_PRIORITY=optional
-VSFTPD_DEPENDS=
+ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
+VSFTPD_DEPENDS=openssl
+endif
 VSFTPD_SUGGESTS=
 VSFTPD_CONFLICTS=
 
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=1
+VSFTPD_IPK_VERSION=2
 
 
 # VSFTPD_CONFFILES should be a list of user-editable files
@@ -52,7 +54,12 @@ VSFTPD_CONFFILES=/opt/etc/vsftpd.conf
 # compilation or linking flags, then list them here.
 #
 VSFTPD_CPPFLAGS=
-VSFTPD_LDFLAGS=
+VSFTPD_LDFLAGS=-lcrypt
+
+ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
+VSFTPD_CPPFLAGS+=-I$(STAGING_INCLUDE_DIR)/openssl
+VSFTPD_LDFLAGS+=-lssl
+endif
 
 #
 # VSFTPD_BUILD_DIR is the directory in which the build is done.
@@ -100,7 +107,9 @@ vsftpd-source: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES) make/vsftpd.mk
-#	$(MAKE) openssl-stage
+ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
+	$(MAKE) openssl-stage
+endif
 	rm -rf $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
 	$(VSFTPD_UNZIP) $(DL_DIR)/$(VSFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VSFPD_PATCHES)"; then \
@@ -108,6 +117,10 @@ $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES) ma
 	fi
 	mv $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
 	sed -i -e '/VSFTP_DEFAULT_CONFIG/s|/etc/vsftpd.conf|/opt&|' $(@D)/defs.h
+	sed -i -e 's|$$(CC) -c|& $$(CPPFLAGS)|' $(@D)/Makefile
+ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
+	sed -i -e '/VSF_BUILD_SSL/s|#undef|#define|' $(@D)/builddefs.h
+endif
 ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle slugos5be slugos5le, $(OPTWARE_TARGET)))
 	sed -i -e '/pam_start/s/.*/if false; then/' $(@D)/vsf_findlibs.sh
 	sed -i -e '/VSF_BUILD_PAM/s/#define/#undef/' $(@D)/builddefs.h
@@ -132,7 +145,10 @@ vsftpd-unpack: $(VSFTPD_BUILD_DIR)/.configured
 #
 $(VSFTPD_BUILD_DIR)/.built: $(VSFTPD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS) LIBS="$(STAGING_LDFLAGS) -lcrypt"
+	$(MAKE) -C $(@D) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(VSFTPD_CPPFLAGS)" \
+		LIBS="$(STAGING_LDFLAGS) $(VSFTPD_LDFLAGS)"
 	touch $@
 
 #
@@ -144,7 +160,7 @@ vsftpd: $(VSFTPD_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(VSFTPD_BUILD_DIR)/.staged: $(VSFTPD_BUILD_DIR)/.built
+#$(VSFTPD_BUILD_DIR)/.staged: $(VSFTPD_BUILD_DIR)/.built
 #	install -d $(STAGING_DIR)/opt/include
 #	install -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.h $(STAGING_DIR)/opt/include
 #	install -d $(STAGING_DIR)/opt/lib
@@ -152,8 +168,8 @@ $(VSFTPD_BUILD_DIR)/.staged: $(VSFTPD_BUILD_DIR)/.built
 #	install -m 644 $(VSFTPD_BUILD_DIR)/libvsftpd.so.$(VSFTPD_VERSION) $(STAGING_DIR)/opt/lib
 #	cd $(STAGING_DIR)/opt/lib && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so.1
 #	cd $(STAGING_DIR)/opt/lib && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so
-
-vsftpd-stage: $(VSFTPD_BUILD_DIR)/.staged
+#
+#vsftpd-stage: $(VSFTPD_BUILD_DIR)/.staged
 
 $(VSFTPD_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
