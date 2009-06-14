@@ -1,0 +1,17 @@
+--- linux/include/asm-arm/setup.h.orig	2009-05-20 20:32:34.000000000 -0700
++++ linux/include/asm-arm/setup.h	2009-06-14 08:57:37.000000000 -0700
+@@ -153,12 +153,12 @@
+ 	__u32 tclk;
+ 	__u32 sysclk;
+ 	__u32 isUsbHost;
++	__u32 overEthAddr;
+ #ifdef CONFIG_ARCH_FEROCEON
+         __u8  macAddr[MV_ARRAY_SIZE][6];
+         __u16 mtu[MV_ARRAY_SIZE];
+ #else
+-		__u32 overEthAddr;
+-		__u8  macAddr[6];
++	__u8  macAddr[6];
+ #endif
+ };                     
+ 
