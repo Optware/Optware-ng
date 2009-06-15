@@ -8,6 +8,9 @@ ifeq ($(OPTWARE_TARGET), $(filter syno0844ppc824x, $(OPTWARE_TARGET)))
 
 include sources/kernel-modules/syno0844/common.mk
 
+KERNEL_VERSION=2.6.15
+KERNEL_SUBDIR=source/linux-$(KERNEL_VERSION)
+
 KERNEL-MODULES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 
 KERNEL-MODULES_DIR=gpl/$(KERNEL_SUBDIR)
