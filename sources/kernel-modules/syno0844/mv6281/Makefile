@@ -180,12 +180,12 @@ $(KERNEL_BUILD_DIR)/.ipkdone: $(KERNEL_BUILD_DIR)/.built
 	rm -f $(BUILD_DIR)/kernel-module-*_$(TARGET_ARCH).ipk
 	rm -f $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
 	# Package the kernel image first
-	rm -rf $(KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
-	$(MAKE) $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control
-	install -d $(KERNEL-IMAGE_IPK_DIR)/boot/
-	install -m 644 $(KERNEL_BUILD_DIR)/arch/arm/boot/uImage \
+#	rm -rf $(KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
+#	$(MAKE) $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control
+#	install -d $(KERNEL-IMAGE_IPK_DIR)/boot/
+#	install -m 644 $(KERNEL_BUILD_DIR)/arch/arm/boot/uImage \
 		$(KERNEL-IMAGE_IPK_DIR)/boot/uImage-$(KERNEL_VERSION)-optware-build-$(KERNEL-MODULES_IPK_VERSION)
-	( cd $(BUILD_DIR); $(IPKG_BUILD) $(KERNEL-IMAGE_IPK_DIR) )
+#	( cd $(BUILD_DIR); $(IPKG_BUILD) $(KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules
 	rm -rf $(KERNEL-MODULES_IPK_DIR)* $(KERNEL-MODULE_IPKS_DIR)
 	mkdir -p $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules
