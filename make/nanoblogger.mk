@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NANOBLOGGER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nanoblogger
-NANOBLOGGER_VERSION=3.3
+NANOBLOGGER_VERSION=3.4
 NANOBLOGGER_SOURCE=nanoblogger-$(NANOBLOGGER_VERSION).tar.gz
 NANOBLOGGER_DIR=nanoblogger-$(NANOBLOGGER_VERSION)
 NANOBLOGGER_UNZIP=zcat
@@ -36,7 +36,7 @@ NANOBLOGGER_CONFLICTS=
 #
 # NANOBLOGGER_IPK_VERSION should be incremented when the ipk changes.
 #
-NANOBLOGGER_IPK_VERSION=3
+NANOBLOGGER_IPK_VERSION=1
 
 #
 # NANOBLOGGER_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ NANOBLOGGER_IPK=$(BUILD_DIR)/nanoblogger_$(NANOBLOGGER_VERSION)-$(NANOBLOGGER_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NANOBLOGGER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NANOBLOGGER_SITE)/$(NANOBLOGGER_SOURCE)
+	$(WGET) -P $(@D) $(NANOBLOGGER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,22 +106,21 @@ nanoblogger-source: $(DL_DIR)/$(NANOBLOGGER_SOURCE) $(NANOBLOGGER_PATCHES)
 #
 $(NANOBLOGGER_BUILD_DIR)/.configured: $(DL_DIR)/$(NANOBLOGGER_SOURCE) $(NANOBLOGGER_PATCHES) make/nanoblogger.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(NANOBLOGGER_DIR) $(NANOBLOGGER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NANOBLOGGER_DIR) $(@D)
 	$(NANOBLOGGER_UNZIP) $(DL_DIR)/$(NANOBLOGGER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NANOBLOGGER_PATCHES)" ; \
 		then cat $(NANOBLOGGER_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NANOBLOGGER_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NANOBLOGGER_DIR)" != "$(NANOBLOGGER_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NANOBLOGGER_DIR) $(NANOBLOGGER_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NANOBLOGGER_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NANOBLOGGER_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|/bin/bash|/opt/bin/bash|' \
 		-e '/^NB_BASE_DIR=/s|.*|NB_BASE_DIR=/opt/share/nanoblogger|' \
 		-e '/^NB_CFG_DIR=/s|.*|NB_CFG_DIR=/opt/etc|' \
-		$(NANOBLOGGER_BUILD_DIR)/nb
-	sed -i -e '/BLOG_DIR/s|.*|BLOG_DIR=/opt/share/www|' \
-		$(NANOBLOGGER_BUILD_DIR)/nb.conf
-	touch $(NANOBLOGGER_BUILD_DIR)/.configured
+		$(@D)/nb
+	sed -i -e '/BLOG_DIR/s|.*|BLOG_DIR=/opt/share/www|' $(@D)/nb.conf
+	touch $@
 
 nanoblogger-unpack: $(NANOBLOGGER_BUILD_DIR)/.configured
 
@@ -128,9 +128,9 @@ nanoblogger-unpack: $(NANOBLOGGER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NANOBLOGGER_BUILD_DIR)/.built: $(NANOBLOGGER_BUILD_DIR)/.configured
-	rm -f $(NANOBLOGGER_BUILD_DIR)/.built
-#	$(MAKE) -C $(NANOBLOGGER_BUILD_DIR)
-	touch $(NANOBLOGGER_BUILD_DIR)/.built
+	rm -f $@
+#	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,9 +141,9 @@ nanoblogger: $(NANOBLOGGER_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(NANOBLOGGER_BUILD_DIR)/.staged: $(NANOBLOGGER_BUILD_DIR)/.built
-	rm -f $(NANOBLOGGER_BUILD_DIR)/.staged
-#	$(MAKE) -C $(NANOBLOGGER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NANOBLOGGER_BUILD_DIR)/.staged
+	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 nanoblogger-stage: $(NANOBLOGGER_BUILD_DIR)/.staged
 
@@ -225,4 +225,4 @@ nanoblogger-dirclean:
 # Some sanity check for the package.
 #
 nanoblogger-check: $(NANOBLOGGER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NANOBLOGGER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
