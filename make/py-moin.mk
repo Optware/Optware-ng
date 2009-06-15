@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MOIN_SITE=http://static.moinmo.in/files
-PY-MOIN_VERSION=1.8.3
+PY-MOIN_VERSION=1.8.4
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)
 PY-MOIN_UNZIP=zcat
@@ -86,8 +86,8 @@ PY25-MOIN_IPK=$(BUILD_DIR)/py25-moin_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-MOIN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-MOIN_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-MOIN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
