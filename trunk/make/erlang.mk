@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R13B
-ERLANG_VERSION=R13B
+ERLANG_UPSTREAM_VERSION=R13B01
+ERLANG_VERSION=R13B01
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -44,7 +44,7 @@ ERLANG_MAKE_OPTION=
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=1
 
 ERLANG_TARGET=$(shell $(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME))
 
@@ -271,6 +271,7 @@ else
 		$(ERLANG_CONFIG_ENVS) \
 		ac_cv_sizeof_size_t=4 \
 		ac_cv_sizeof_off_t=4 \
+		ac_cv_func_mmap_fixed_mapped=yes \
 		ERL_TOP=$(@D) \
 		ERL_XCOMP_CONF="$(@D)/erl-xcomp.conf" \
 		OVERRIDE_TARGET=$(ERLANG_TARGET) \
