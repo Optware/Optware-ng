@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 STUNNEL_SITE=http://www.stunnel.org/download/stunnel/src
-STUNNEL_VERSION=4.25
+STUNNEL_VERSION=4.26
 STUNNEL_SOURCE=stunnel-$(STUNNEL_VERSION).tar.gz
 STUNNEL_DIR=stunnel-$(STUNNEL_VERSION)
 STUNNEL_UNZIP=zcat
@@ -34,7 +34,7 @@ STUNNEL_CONFLICTS=
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=3
+STUNNEL_IPK_VERSION=1
 
 #
 # STUNNEL_CONFFILES should be a list of user-editable files
@@ -78,7 +78,8 @@ STUNNEL_IPK=$(BUILD_DIR)/stunnel_$(STUNNEL_VERSION)-$(STUNNEL_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(STUNNEL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(STUNNEL_SITE)/$(STUNNEL_SOURCE)
+	$(WGET) -P $(@D) $(STUNNEL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,14 +105,14 @@ stunnel-source: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
 #
 $(STUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
 	$(MAKE) openssl-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(STUNNEL_DIR) $(STUNNEL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(STUNNEL_DIR) $(@D)
 	$(STUNNEL_UNZIP) $(DL_DIR)/$(STUNNEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(STUNNEL_PATCHES)" ; \
 		then cat $(STUNNEL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(STUNNEL_DIR) -p1 ; \
 	fi
-	mv $(BUILD_DIR)/$(STUNNEL_DIR) $(STUNNEL_BUILD_DIR)
-	(cd $(STUNNEL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(STUNNEL_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(STUNNEL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(STUNNEL_LDFLAGS)" \
@@ -122,7 +123,7 @@ $(STUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
 		--prefix=/opt \
 		--with-ssl=$(STAGING_DIR)/opt \
 	)
-	touch $(STUNNEL_BUILD_DIR)/.configured
+	touch $@
 
 stunnel-unpack: $(STUNNEL_BUILD_DIR)/.configured
 
@@ -131,9 +132,9 @@ stunnel-unpack: $(STUNNEL_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(STUNNEL_BUILD_DIR)/.built: $(STUNNEL_BUILD_DIR)/.configured
-	rm -f $(STUNNEL_BUILD_DIR)/.built
-	$(MAKE) -C $(STUNNEL_BUILD_DIR)
-	touch $(STUNNEL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -147,10 +148,10 @@ stunnel: $(STUNNEL_BUILD_DIR)/.built
 $(STUNNEL_BUILD_DIR)/.staged: $(STUNNEL_BUILD_DIR)/.built
 	rm -f $@
 	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(STUNNEL_BUILD_DIR)/stunnel.h $(STAGING_DIR)/opt/include
+	install -m 644 $(@D)/stunnel.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(STUNNEL_BUILD_DIR)/libstunnel.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(STUNNEL_BUILD_DIR)/libstunnel.so.$(STUNNEL_VERSION) $(STAGING_DIR)/opt/lib
+	install -m 644 $(@D)/libstunnel.a $(STAGING_DIR)/opt/lib
+	install -m 644 $(@D)/libstunnel.so.$(STUNNEL_VERSION) $(STAGING_DIR)/opt/lib
 	cd $(STAGING_DIR)/opt/lib && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so
 	touch $@
@@ -162,7 +163,7 @@ stunnel-stage: $(STUNNEL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/stunnel
 #
 $(STUNNEL_IPK_DIR)/CONTROL/control:
-	@install -d $(STUNNEL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: stunnel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -227,4 +228,4 @@ stunnel-dirclean:
 # Some sanity check for the package.
 #
 stunnel-check: $(STUNNEL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(STUNNEL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
