@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TSHARK_SITE=http://www.wireshark.org/download/src
-TSHARK_VERSION=1.0.8
+TSHARK_VERSION=1.2.0
 TSHARK_SOURCE=wireshark-$(TSHARK_VERSION).tar.bz2
 TSHARK_DIR=wireshark-$(TSHARK_VERSION)
 TSHARK_UNZIP=bzcat
@@ -151,7 +151,6 @@ tshark-unpack: $(TSHARK_BUILD_DIR)/.configured
 #
 $(TSHARK_BUILD_DIR)/.built: $(TSHARK_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) CC_FOR_BUILD=$(HOSTCC) CC=$(HOSTCC) -C $(@D) rdps
 	$(MAKE) CC_FOR_BUILD=$(HOSTCC) CC=$(HOSTCC) -C $(@D)/tools/lemon lemon
 	$(MAKE) -C $(@D)
 	touch $@
