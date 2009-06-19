@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBICONV_SITE=http://ftp.gnu.org/pub/gnu/libiconv
-LIBICONV_VERSION=1.11
+LIBICONV_VERSION=1.13
 LIBICONV_SOURCE=libiconv-$(LIBICONV_VERSION).tar.gz
 LIBICONV_DIR=libiconv-$(LIBICONV_VERSION)
 LIBICONV_UNZIP=zcat
@@ -36,7 +36,7 @@ LIBICONV_CONFLICTS=
 #
 # LIBICONV_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBICONV_IPK_VERSION=2
+LIBICONV_IPK_VERSION=1
 
 #
 # LIBICONV_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ LIBICONV_IPK=$(BUILD_DIR)/libiconv_$(LIBICONV_VERSION)-$(LIBICONV_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBICONV_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBICONV_SITE)/$(LIBICONV_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBICONV_SOURCE)
+	$(WGET) -P $(@D) $(LIBICONV_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,16 +108,16 @@ $(LIBICONV_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBICONV_SOURCE) $(LIBICONV_PATCH
 ifneq (libiconv, $(filter libiconv, $(PACKAGES)))
 	@echo "Use of libiconv is deprecated. Use gconv-modules instead" ; false
 endif
-	rm -rf $(BUILD_DIR)/$(LIBICONV_DIR) $(LIBICONV_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBICONV_DIR) $(@D)
 	$(LIBICONV_UNZIP) $(DL_DIR)/$(LIBICONV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBICONV_PATCHES)" ; \
 		then cat $(LIBICONV_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBICONV_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBICONV_DIR)" != "$(LIBICONV_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBICONV_DIR) $(LIBICONV_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBICONV_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBICONV_DIR) $(@D) ; \
 	fi
-	(cd $(LIBICONV_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBICONV_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBICONV_LDFLAGS)" \
@@ -129,7 +129,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBICONV_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libiconv-unpack: $(LIBICONV_BUILD_DIR)/.configured
@@ -139,7 +139,7 @@ libiconv-unpack: $(LIBICONV_BUILD_DIR)/.configured
 #
 $(LIBICONV_BUILD_DIR)/.built: $(LIBICONV_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBICONV_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +152,7 @@ libiconv: $(LIBICONV_BUILD_DIR)/.built
 #
 $(LIBICONV_BUILD_DIR)/.staged: $(LIBICONV_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBICONV_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libiconv.la
 	touch $@
 
@@ -232,4 +232,4 @@ libiconv-dirclean:
 # Some sanity check for the package.
 #
 libiconv-check: $(LIBICONV_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBICONV_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
