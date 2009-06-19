@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR-SVN_VERSION=0.6.1
+BZR-SVN_VERSION=0.6.2
 BZR-SVN_SITE=http://samba.org/~jelmer/bzr
 BZR-SVN_SOURCE=bzr-svn-$(BZR-SVN_VERSION).tar.gz
 BZR-SVN_DIR=bzr-svn-$(BZR-SVN_VERSION)
@@ -37,7 +37,7 @@ BZR-SVN_CONFLICTS=
 #
 # BZR-SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-BZR-SVN_IPK_VERSION=2
+BZR-SVN_IPK_VERSION=1
 
 #
 # BZR-SVN_CONFFILES should be a list of user-editable files
