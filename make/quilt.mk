@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 QUILT_SITE=http://savannah.nongnu.org/download/quilt
-QUILT_VERSION=0.46
+QUILT_VERSION=0.48
 QUILT_SOURCE=quilt-$(QUILT_VERSION).tar.gz
 QUILT_DIR=quilt-$(QUILT_VERSION)
 QUILT_UNZIP=zcat
@@ -29,7 +29,7 @@ QUILT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 QUILT_DESCRIPTION=A set of scripts to manage a series of patches.
 QUILT_SECTION=misc
 QUILT_PRIORITY=optional
-QUILT_DEPENDS=perl, coreutils
+QUILT_DEPENDS=perl, coreutils, bash
 QUILT_SUGGESTS=
 QUILT_CONFLICTS=
 
@@ -76,7 +76,8 @@ QUILT_IPK=$(BUILD_DIR)/quilt_$(QUILT_VERSION)-$(QUILT_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(QUILT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(QUILT_SITE)/$(QUILT_SOURCE)
+	$(WGET) -P $(@D) $(QUILT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,15 +106,20 @@ quilt-source: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES)
 #
 $(QUILT_BUILD_DIR)/.configured: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES) make/quilt.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(QUILT_DIR) $(QUILT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(QUILT_DIR) $(@D)
 	$(QUILT_UNZIP) $(DL_DIR)/$(QUILT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(QUILT_PATCHES)" ; \
 		then cat $(QUILT_PATCHES) | patch -d $(BUILD_DIR)/$(QUILT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(QUILT_DIR)" != "$(QUILT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(QUILT_DIR) $(QUILT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(QUILT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(QUILT_DIR) $(@D) ; \
 	fi
-	(cd $(QUILT_BUILD_DIR); \
+	sed -i \
+		-e '/@BASH/s|$$(BASH)|/opt/bin/bash|' \
+		-e '/@PERL/s|$$(PERL)|/opt/bin/perl|' \
+		-e '/@PATCH/s|$$(PATCH)|/opt/bin/patch|' \
+		$(@D)/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(QUILT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(QUILT_LDFLAGS)" \
@@ -125,8 +131,8 @@ $(QUILT_BUILD_DIR)/.configured: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(QUILT_BUILD_DIR)/libtool
-	touch $(QUILT_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 quilt-unpack: $(QUILT_BUILD_DIR)/.configured
 
@@ -134,9 +140,9 @@ quilt-unpack: $(QUILT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(QUILT_BUILD_DIR)/.built: $(QUILT_BUILD_DIR)/.configured
-	rm -f $(QUILT_BUILD_DIR)/.built
-	$(MAKE) -C $(QUILT_BUILD_DIR)
-	touch $(QUILT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -147,9 +153,9 @@ quilt: $(QUILT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(QUILT_BUILD_DIR)/.staged: $(QUILT_BUILD_DIR)/.built
-	rm -f $(QUILT_BUILD_DIR)/.staged
-	$(MAKE) -C $(QUILT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(QUILT_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 quilt-stage: $(QUILT_BUILD_DIR)/.staged
 
@@ -224,4 +230,4 @@ quilt-dirclean:
 # Some sanity check for the package.
 #
 quilt-check: $(QUILT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(QUILT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
