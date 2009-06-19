@@ -30,15 +30,15 @@ PY-WEATHERGET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-WEATHERGET_DESCRIPTION=A command line based weather reporting tool written in python.
 PY-WEATHERGET_SECTION=misc
 PY-WEATHERGET_PRIORITY=optional
-PY24-WEATHERGET_DEPENDS=python24
 PY25-WEATHERGET_DEPENDS=python25
+PY26-WEATHERGET_DEPENDS=python26
 PY-WEATHERGET_SUGGESTS=py-weatherget-doc
 PY-WEATHERGET_CONFLICTS=
 
 #
 # PY-WEATHERGET_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-WEATHERGET_IPK_VERSION=1
+PY-WEATHERGET_IPK_VERSION=2
 
 #
 # PY-WEATHERGET_CONFFILES should be a list of user-editable files
@@ -69,11 +69,11 @@ PY-WEATHERGET_LDFLAGS=
 PY-WEATHERGET_BUILD_DIR=$(BUILD_DIR)/py-weatherget
 PY-WEATHERGET_SOURCE_DIR=$(SOURCE_DIR)/py-weatherget
 
-PY24-WEATHERGET_IPK_DIR=$(BUILD_DIR)/py-weatherget-$(PY-WEATHERGET_VERSION)-ipk
-PY24-WEATHERGET_IPK=$(BUILD_DIR)/py-weatherget_$(PY-WEATHERGET_VERSION)-$(PY-WEATHERGET_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-WEATHERGET_IPK_DIR=$(BUILD_DIR)/py25-weatherget-$(PY-WEATHERGET_VERSION)-ipk
 PY25-WEATHERGET_IPK=$(BUILD_DIR)/py25-weatherget_$(PY-WEATHERGET_VERSION)-$(PY-WEATHERGET_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-WEATHERGET_IPK_DIR=$(BUILD_DIR)/py26-weatherget-$(PY-WEATHERGET_VERSION)-ipk
+PY26-WEATHERGET_IPK=$(BUILD_DIR)/py26-weatherget_$(PY-WEATHERGET_VERSION)-$(PY-WEATHERGET_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY-WEATHERGET-DOC_IPK_DIR=$(BUILD_DIR)/py-weatherget-doc-$(PY-WEATHERGET_VERSION)-ipk
 PY-WEATHERGET-DOC_IPK=$(BUILD_DIR)/py-weatherget-doc_$(PY-WEATHERGET_VERSION)-$(PY-WEATHERGET_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -85,7 +85,8 @@ PY-WEATHERGET-DOC_IPK=$(BUILD_DIR)/py-weatherget-doc_$(PY-WEATHERGET_VERSION)-$(
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-WEATHERGET_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-WEATHERGET_SITE)/$(PY-WEATHERGET_SOURCE)
+	$(WGET) -P $(@D) $(PY-WEATHERGET_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,31 +112,14 @@ py-weatherget-source: $(DL_DIR)/$(PY-WEATHERGET_SOURCE) $(PY-WEATHERGET_PATCHES)
 #
 $(PY-WEATHERGET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEATHERGET_SOURCE) $(PY-WEATHERGET_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-WEATHERGET_DIR) $(PY-WEATHERGET_BUILD_DIR)
-	mkdir -p $(PY-WEATHERGET_BUILD_DIR)
-	# 2.4
-	$(PY-WEATHERGET_UNZIP) $(DL_DIR)/$(PY-WEATHERGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	sed -i -e 's|/usr/|/opt/|g' $(BUILD_DIR)/$(PY-WEATHERGET_DIR)/setup.py
-#	cat $(PY-WEATHERGET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEATHERGET_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-WEATHERGET_DIR) $(PY-WEATHERGET_BUILD_DIR)/2.4
-	(cd $(PY-WEATHERGET_BUILD_DIR)/2.4; \
-	    ( \
-		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
-	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
-		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
-	    ) >> setup.cfg; \
-	)
+	rm -rf $(BUILD_DIR)/$(PY-WEATHERGET_DIR) $(@D)
+	mkdir -p $(@D)
 	# 2.5
 	$(PY-WEATHERGET_UNZIP) $(DL_DIR)/$(PY-WEATHERGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	sed -i -e 's|/usr/|/opt/|g' $(BUILD_DIR)/$(PY-WEATHERGET_DIR)/setup.py
 #	cat $(PY-WEATHERGET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEATHERGET_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-WEATHERGET_DIR) $(PY-WEATHERGET_BUILD_DIR)/2.5
-	(cd $(PY-WEATHERGET_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-WEATHERGET_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -143,6 +127,23 @@ $(PY-WEATHERGET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEATHERGET_SOURCE) $(PY-W
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python2.5"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	)
+	# 2.6
+	$(PY-WEATHERGET_UNZIP) $(DL_DIR)/$(PY-WEATHERGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	sed -i -e 's|/usr/|/opt/|g' $(BUILD_DIR)/$(PY-WEATHERGET_DIR)/setup.py
+#	cat $(PY-WEATHERGET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEATHERGET_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-WEATHERGET_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.6"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
@@ -156,12 +157,12 @@ py-weatherget-unpack: $(PY-WEATHERGET_BUILD_DIR)/.configured
 #
 $(PY-WEATHERGET_BUILD_DIR)/.built: $(PY-WEATHERGET_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PY-WEATHERGET_BUILD_DIR)/2.4; \
-	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
-	cd $(PY-WEATHERGET_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	cd $(@D)/2.6; \
+	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build
 	touch $@
 
 #
@@ -174,7 +175,7 @@ py-weatherget: $(PY-WEATHERGET_BUILD_DIR)/.built
 #
 $(PY-WEATHERGET_BUILD_DIR)/.staged: $(PY-WEATHERGET_BUILD_DIR)/.built
 	rm -f $@
-#	$(MAKE) -C $(PY-WEATHERGET_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 py-weatherget-stage: $(PY-WEATHERGET_BUILD_DIR)/.staged
@@ -197,21 +198,6 @@ $(PY-WEATHERGET-DOC_IPK_DIR)/CONTROL/control:
 	@echo "Depends: " >>$@
 	@echo "Conflicts: $(PY-WEATHERGET_CONFLICTS)" >>$@
 
-$(PY24-WEATHERGET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py-weatherget" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-WEATHERGET_PRIORITY)" >>$@
-	@echo "Section: $(PY-WEATHERGET_SECTION)" >>$@
-	@echo "Version: $(PY-WEATHERGET_VERSION)-$(PY-WEATHERGET_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-WEATHERGET_MAINTAINER)" >>$@
-	@echo "Source: $(PY-WEATHERGET_SITE)/$(PY-WEATHERGET_SOURCE)" >>$@
-	@echo "Description: $(PY-WEATHERGET_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-WEATHERGET_DEPENDS)" >>$@
-	@echo "Suggests: $(PY-WEATHERGET_SUGGESTS)" >>$@
-	@echo "Conflicts: $(PY-WEATHERGET_CONFLICTS)" >>$@
-
 $(PY25-WEATHERGET_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -227,6 +213,21 @@ $(PY25-WEATHERGET_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(PY-WEATHERGET_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-WEATHERGET_CONFLICTS)" >>$@
 
+$(PY26-WEATHERGET_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-weatherget" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-WEATHERGET_PRIORITY)" >>$@
+	@echo "Section: $(PY-WEATHERGET_SECTION)" >>$@
+	@echo "Version: $(PY-WEATHERGET_VERSION)-$(PY-WEATHERGET_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-WEATHERGET_MAINTAINER)" >>$@
+	@echo "Source: $(PY-WEATHERGET_SITE)/$(PY-WEATHERGET_SOURCE)" >>$@
+	@echo "Description: $(PY-WEATHERGET_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-WEATHERGET_DEPENDS)" >>$@
+	@echo "Suggests: $(PY-WEATHERGET_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PY-WEATHERGET_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -239,36 +240,36 @@ $(PY25-WEATHERGET_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-WEATHERGET_IPK) $(PY25-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK): $(PY-WEATHERGET_BUILD_DIR)/.built
-	rm -rf $(PY24-WEATHERGET_IPK_DIR) $(BUILD_DIR)/py-weatherget_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY25-WEATHERGET_IPK_DIR) $(BUILD_DIR)/py25-weatherget_*_$(TARGET_ARCH).ipk
+$(PY25-WEATHERGET_IPK) $(PY26-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK): $(PY-WEATHERGET_BUILD_DIR)/.built
+	rm -rf $(PY25-WEATHERGET_IPK_DIR) $(BUILD_DIR)/py-weatherget_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY26-WEATHERGET_IPK_DIR) $(BUILD_DIR)/py26-weatherget_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY-WEATHERGET-DOC_IPK_DIR) $(BUILD_DIR)/py-weatherget-doc_*_$(TARGET_ARCH).ipk
-	# 2.4
-	install -d $(PY24-WEATHERGET_IPK_DIR)/opt/lib/python2.4/site-packages
-	cd $(PY-WEATHERGET_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-WEATHERGET_IPK_DIR) --prefix=/opt
-	for f in $(PY24-WEATHERGET_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-py2.4|'`; done
-	rm -rf $(PY24-WEATHERGET_IPK_DIR)/opt/share
-	$(MAKE) $(PY24-WEATHERGET_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-WEATHERGET_IPK_DIR)
 	# 2.5
 	install -d $(PY25-WEATHERGET_IPK_DIR)/opt/lib/python2.5/site-packages
 	cd $(PY-WEATHERGET_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-WEATHERGET_IPK_DIR) --prefix=/opt
-	install -d $(PY-WEATHERGET-DOC_IPK_DIR)/opt/
-	mv $(PY25-WEATHERGET_IPK_DIR)/opt/share $(PY-WEATHERGET-DOC_IPK_DIR)/opt/
+	rm -rf $(PY25-WEATHERGET_IPK_DIR)/opt/share
 	$(MAKE) $(PY25-WEATHERGET_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-WEATHERGET_IPK_DIR)
+	# 2.6
+	install -d $(PY26-WEATHERGET_IPK_DIR)/opt/lib/python2.6/site-packages
+	cd $(PY-WEATHERGET_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-WEATHERGET_IPK_DIR) --prefix=/opt
+	for f in $(PY26-WEATHERGET_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-py2.6|'`; done
+	install -d $(PY-WEATHERGET-DOC_IPK_DIR)/opt/
+	mv $(PY26-WEATHERGET_IPK_DIR)/opt/share $(PY-WEATHERGET-DOC_IPK_DIR)/opt/
+	$(MAKE) $(PY26-WEATHERGET_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-WEATHERGET_IPK_DIR)
 	$(MAKE) $(PY-WEATHERGET-DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-WEATHERGET-DOC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-weatherget-ipk: $(PY24-WEATHERGET_IPK) $(PY25-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK)
+py-weatherget-ipk: $(PY25-WEATHERGET_IPK) $(PY26-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -282,12 +283,12 @@ py-weatherget-clean:
 #
 py-weatherget-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-WEATHERGET_DIR) $(PY-WEATHERGET_BUILD_DIR)
-	rm -rf $(PY24-WEATHERGET_IPK_DIR) $(PY24-WEATHERGET_IPK)
 	rm -rf $(PY25-WEATHERGET_IPK_DIR) $(PY25-WEATHERGET_IPK)
+	rm -rf $(PY26-WEATHERGET_IPK_DIR) $(PY26-WEATHERGET_IPK)
 	rm -rf $(PY-WEATHERGET-DOC_IPK_DIR) $(PY-WEATHERGET-DOC_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-weatherget-check: $(PY24-WEATHERGET_IPK) $(PY25-WEATHERGET_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-WEATHERGET_IPK) $(PY25-WEATHERGET_IPK)
+py-weatherget-check: $(PY25-WEATHERGET_IPK) $(PY26-WEATHERGET_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
