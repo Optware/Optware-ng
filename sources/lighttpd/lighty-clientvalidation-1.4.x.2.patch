@@ -13,23 +13,22 @@ diff -ur src/base.h src/base.h
  	unsigned short use_ipv6;
  	unsigned short is_ssl;
  	unsigned short allow_http11;
-diff -ur src/configfile.c src/configfile.c
---- src/configfile.c.orig	2009-02-05 21:35:46.000000000 +0000
-+++ src/configfile.c	2009-02-17 06:26:31.890411784 +0000
-@@ -96,6 +96,12 @@
-		{ "etag.use-size",               NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 51 */
-		{ "server.reject-expect-100-with-417",  NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 52 */
-		{ "debug.log-timeouts",          NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_CONNECTION }, /* 53 */
+--- src/configfile.c.orig	2009-04-26 10:51:55.000000000 -0700
++++ src/configfile.c	2009-06-20 08:38:36.000000000 -0700
+@@ -97,6 +97,12 @@
+ 		{ "server.reject-expect-100-with-417",  NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 52 */
+ 		{ "debug.log-timeouts",          NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_CONNECTION }, /* 53 */
+ 		{ "server.defer-accept",         NULL, T_CONFIG_SHORT, T_CONFIG_SCOPE_CONNECTION },     /* 54 */
 +
-+		{ "ssl.verifyclient.activate",   NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 54 */
-+		{ "ssl.verifyclient.enforce",    NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 55 */
-+		{ "ssl.verifyclient.depth",      NULL, T_CONFIG_SHORT,   T_CONFIG_SCOPE_SERVER }, /* 56 */
-+		{ "ssl.verifyclient.username",   NULL, T_CONFIG_STRING,  T_CONFIG_SCOPE_SERVER }, /* 57 */
++		{ "ssl.verifyclient.activate",   NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 55 */
++		{ "ssl.verifyclient.enforce",    NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 56 */
++		{ "ssl.verifyclient.depth",      NULL, T_CONFIG_SHORT,   T_CONFIG_SCOPE_SERVER }, /* 57 */
++		{ "ssl.verifyclient.username",   NULL, T_CONFIG_STRING,  T_CONFIG_SCOPE_SERVER }, /* 58 */
 +
  		{ "server.host",                 "use server.bind instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
  		{ "server.docroot",              "use server.document-root instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
  		{ "server.virtual-root",         "load mod_simple_vhost and use simple-vhost.server-root instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
-@@ -177,6 +183,11 @@
+@@ -179,6 +185,11 @@
  		s->global_kbytes_per_second = 0;
  		s->global_bytes_per_second_cnt = 0;
  		s->global_bytes_per_second_cnt_ptr = &s->global_bytes_per_second_cnt;
@@ -38,23 +37,23 @@ diff -ur src/configfile.c src/configfile.c
 +		s->ssl_verifyclient_enforce = 1;
 +		s->ssl_verifyclient_username = buffer_init();
 +		s->ssl_verifyclient_depth = 9;
-
+ 
  		cv[2].destination = s->errorfile_prefix;
-
-@@ -221,6 +232,12 @@
+ 
+@@ -224,6 +235,12 @@
  		cv[49].destination = &(s->etag_use_inode);
  		cv[50].destination = &(s->etag_use_mtime);
  		cv[51].destination = &(s->etag_use_size);
 +		
 +		/* ssl.verify */
-+		cv[54].destination = &(s->ssl_verifyclient);
-+		cv[55].destination = &(s->ssl_verifyclient_enforce);
-+		cv[56].destination = &(s->ssl_verifyclient_depth);
-+		cv[57].destination = s->ssl_verifyclient_username;
-
++		cv[55].destination = &(s->ssl_verifyclient);
++		cv[56].destination = &(s->ssl_verifyclient_enforce);
++		cv[57].destination = &(s->ssl_verifyclient_depth);
++		cv[58].destination = s->ssl_verifyclient_username;
+ 
  		srv->config_storage[i] = s;
-
-@@ -299,6 +316,11 @@
+ 
+@@ -302,6 +319,11 @@
  	PATCH(etag_use_inode);
  	PATCH(etag_use_mtime);
  	PATCH(etag_use_size);
@@ -63,10 +62,10 @@ diff -ur src/configfile.c src/configfile.c
 +	PATCH(ssl_verifyclient_enforce);
 +	PATCH(ssl_verifyclient_depth);
 +	PATCH(ssl_verifyclient_username);
-
+  
  	return 0;
  }
-@@ -388,6 +410,14 @@
+@@ -391,6 +413,14 @@
  				PATCH(global_kbytes_per_second);
  				PATCH(global_bytes_per_second_cnt);
  				con->conf.global_bytes_per_second_cnt_ptr = &s->global_bytes_per_second_cnt;
