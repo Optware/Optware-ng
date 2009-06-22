@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NETRIK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/netrik
-NETRIK_VERSION=1.16
+NETRIK_VERSION=1.16.1
 NETRIK_SOURCE=netrik-$(NETRIK_VERSION).tar.gz
 NETRIK_DIR=netrik-$(NETRIK_VERSION)
 NETRIK_UNZIP=zcat
@@ -29,14 +29,14 @@ NETRIK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NETRIK_DESCRIPTION=Netrik is an advanced text mode WWW browser.
 NETRIK_SECTION=web
 NETRIK_PRIORITY=optional
-NETRIK_DEPENDS=ncurses, readline
+NETRIK_DEPENDS=ncursesw, readline
 NETRIK_SUGGESTS=
 NETRIK_CONFLICTS=
 
 #
 # NETRIK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETRIK_IPK_VERSION=2
+NETRIK_IPK_VERSION=1
 
 #
 # NETRIK_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ NETRIK_IPK_VERSION=2
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NETRIK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+NETRIK_CPPFLAGS=
 NETRIK_LDFLAGS=
 
 #
@@ -105,7 +105,7 @@ netrik-source: $(DL_DIR)/$(NETRIK_SOURCE) $(NETRIK_PATCHES)
 # shown below to make various patches to it.
 #
 $(NETRIK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETRIK_SOURCE) $(NETRIK_PATCHES) make/netrik.mk
-	$(MAKE) ncurses-stage readline-stage
+	$(MAKE) ncursesw-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(NETRIK_DIR) $(@D)
 	$(NETRIK_UNZIP) $(DL_DIR)/$(NETRIK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETRIK_PATCHES)" ; \
