@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.99.17
-CHEROKEE_SITE=http://www.0x50.org/download/0.99/$(CHEROKEE_VERSION)
+CHEROKEE_VERSION=0.99.18
+CHEROKEE_SITE=http://www.cherokee-project.com/download/0.99/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
 CHEROKEE_UNZIP=zcat
@@ -44,6 +44,7 @@ CHEROKEE_IPK_VERSION=1
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
 CHEROKEE_CONFFILES=\
+	/opt/etc/default/cherokee \
 	/opt/etc/cherokee/cherokee.conf \
 	/opt/etc/init.d/S80cherokee \
 	/opt/share/www/cherokee/index.html \
