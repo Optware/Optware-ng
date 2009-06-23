@@ -22,7 +22,7 @@
 #
 NEWSBEUTER_SITE=http://www.newsbeuter.org/downloads
 NEWSBEUTER_GCC_MAJOR:=$(shell test -x "$(TARGET_CC)" && $(TARGET_CC) -dumpversion | cut -c1)
-NEWSBEUTER_VERSION=$(if $(filter 3, $(NEWSBEUTER_GCC_MAJOR)),1.2,1.3)
+NEWSBEUTER_VERSION=$(strip $(if $(filter 3, $(NEWSBEUTER_GCC_MAJOR)), 1.2, 2.0))
 NEWSBEUTER_SOURCE=newsbeuter-$(NEWSBEUTER_VERSION).tar.gz
 NEWSBEUTER_DIR=newsbeuter-$(NEWSBEUTER_VERSION)
 NEWSBEUTER_UNZIP=zcat
@@ -30,7 +30,7 @@ NEWSBEUTER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NEWSBEUTER_DESCRIPTION=An RSS feed reader for the text console.
 NEWSBEUTER_SECTION=net
 NEWSBEUTER_PRIORITY=optional
-NEWSBEUTER_DEPENDS=libcurl, libmrss, libstdc++, ncursesw, sqlite
+NEWSBEUTER_DEPENDS=libcurl, libmrss, libstdc++, libxml2, ncursesw, sqlite
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 NEWSBEUTER_DEPENDS+=, libiconv
 endif
@@ -60,7 +60,7 @@ NEWSBEUTER_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 NEWSBEUTER_CPPFLAGS=-ggdb -I./include -I./stfl -I./filter -I.
-NEWSBEUTER_LDFLAGS=-L. -lsqlite3 -lcurl
+NEWSBEUTER_LDFLAGS=-L. -lsqlite3 -lcurl -lxml2
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 NEWSBEUTER_LDFLAGS+=-liconv
 endif
@@ -119,7 +119,7 @@ newsbeuter-source: $(DL_DIR)/$(NEWSBEUTER_SOURCE) $(NEWSBEUTER_PATCHES)
 #
 $(NEWSBEUTER_BUILD_DIR)/.configured: $(DL_DIR)/$(NEWSBEUTER_SOURCE) $(NEWSBEUTER_PATCHES) make/newsbeuter.mk
 	$(MAKE) libstdc++-stage
-	$(MAKE) sqlite-stage libmrss-stage libcurl-stage
+	$(MAKE) sqlite-stage libmrss-stage libcurl-stage libxml2-stage
 	$(MAKE) stfl-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -268,4 +268,4 @@ newsbeuter-dirclean:
 # Some sanity check for the package.
 #
 newsbeuter-check: $(NEWSBEUTER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NEWSBEUTER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
