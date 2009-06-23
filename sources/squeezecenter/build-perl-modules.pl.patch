@@ -1,5 +1,5 @@
---- Bin/build-perl-modules.pl.orig	2008-12-20 01:30:03.000000000 +0000
-+++ Bin/build-perl-modules.pl	2009-01-04 19:26:43.377909708 +0000
+--- Bin/build-perl-modules.pl.orig	2009-06-15 15:02:33.000000000 -0700
++++ Bin/build-perl-modules.pl	2009-06-22 11:22:05.000000000 -0700
 @@ -10,14 +10,13 @@
  # A compiler is obviously needed too.
  
@@ -16,7 +16,7 @@
  
  # NOTE: If you change this in a future version of SC, create a new
  # versioned directory under vendor/src for all files for that version
-@@ -26,19 +25,6 @@
+@@ -26,20 +25,6 @@
  
  # The list of all the packages needed.
  my %packages = (
@@ -33,10 +33,11 @@
 -	'Time::HiRes'              => 'Time-HiRes-1.86.tar.gz',
 -	'XML::Parser::Expat'       => 'XML-Parser-2.34.tar.gz',
 -	'YAML::Syck'               => 'YAML-Syck-0.64.tar.gz',
+-	'GD'                       => 'GD-2.35.tar.gz',
  );
  
  # Don't need Class::C3::XS if you're running 5.10
-@@ -67,13 +53,15 @@
+@@ -68,13 +53,15 @@
  	'DBD-mysql-3.0002' => {
  
  		'env' => [qw(DBI-1.604/blib/lib: DBI-1.604/blib/arch)],
@@ -53,7 +54,7 @@
  	my $version  = $Config{'version'};
  
  	print "Welcome to the Slim Devices perl module installer.\n\n";
-@@ -146,7 +134,10 @@
+@@ -147,7 +134,10 @@
  
  		for my $cmd (qw(curl wget)) {
  
@@ -65,7 +66,7 @@
  				last;
  			}
  		}
-@@ -165,20 +156,7 @@
+@@ -166,20 +156,7 @@
  	# Only download the packages that were passsed.
  	my @packages = ();
  
@@ -87,7 +88,7 @@
  
  	# DBI needs to be first.
  	if ((grep { /DBI/ } @packages) && (grep { /DBD/ } @packages)) {
-@@ -198,6 +176,9 @@
+@@ -199,6 +176,9 @@
  
  	for my $package (@packages) {
  
@@ -97,7 +98,7 @@
  		chdir($pwd) or die "Couldn't change to $pwd : $!";
  
  		print "\nDownloading $package to: $pwd\n";
-@@ -207,15 +188,15 @@
+@@ -208,15 +188,15 @@
  
  		if ($downloadUsing eq 'lwp') {
  
@@ -116,7 +117,7 @@
  		}
  
  		unless (-r $package) {
-@@ -241,15 +222,47 @@
+@@ -242,15 +222,47 @@
  		}
  
  		print "Configuring..\n";
