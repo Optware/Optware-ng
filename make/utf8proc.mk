@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UTF8PROC_SITE=http://www.flexiguided.de/pub
-UTF8PROC_VERSION=1.1.2
+UTF8PROC_VERSION=1.1.3
 UTF8PROC_SOURCE=utf8proc-v$(UTF8PROC_VERSION).tar.gz
 UTF8PROC_DIR=utf8proc
 UTF8PROC_UNZIP=zcat
@@ -76,8 +76,8 @@ UTF8PROC_IPK=$(BUILD_DIR)/utf8proc_$(UTF8PROC_VERSION)-$(UTF8PROC_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(UTF8PROC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(UTF8PROC_SITE)/$(UTF8PROC_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(UTF8PROC_SOURCE)
+	$(WGET) -P $(@D) $(UTF8PROC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ utf8proc-source: $(DL_DIR)/$(UTF8PROC_SOURCE) $(UTF8PROC_PATCHES)
 #
 $(UTF8PROC_BUILD_DIR)/.configured: $(DL_DIR)/$(UTF8PROC_SOURCE) $(UTF8PROC_PATCHES) make/utf8proc.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(UTF8PROC_DIR) $(UTF8PROC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(UTF8PROC_DIR) $(@D)
 	$(UTF8PROC_UNZIP) $(DL_DIR)/$(UTF8PROC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UTF8PROC_PATCHES)" ; \
 		then cat $(UTF8PROC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(UTF8PROC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(UTF8PROC_DIR)" != "$(UTF8PROC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(UTF8PROC_DIR) $(UTF8PROC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(UTF8PROC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(UTF8PROC_DIR) $(@D) ; \
 	fi
-#	(cd $(UTF8PROC_BUILD_DIR); \
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTF8PROC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UTF8PROC_LDFLAGS)" \
@@ -158,9 +158,9 @@ $(UTF8PROC_BUILD_DIR)/.staged: $(UTF8PROC_BUILD_DIR)/.built
 	rm -f $@
 #	$(MAKE) -C $(UTF8PROC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(UTF8PROC_BUILD_DIR)/utf8proc.h $(STAGING_INCLUDE_DIR)/
+	install -m 644 $(@D)/utf8proc.h $(STAGING_INCLUDE_DIR)/
 	install -d $(STAGING_LIB_DIR)
-	install -m 755 $(UTF8PROC_BUILD_DIR)/libutf8proc.so $(STAGING_LIB_DIR)/
+	install -m 755 $(@D)/libutf8proc.so $(STAGING_LIB_DIR)/
 	touch $@
 
 utf8proc-stage: $(UTF8PROC_BUILD_DIR)/.staged
@@ -230,4 +230,4 @@ utf8proc-dirclean:
 # Some sanity check for the package.
 #
 utf8proc-check: $(UTF8PROC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UTF8PROC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
