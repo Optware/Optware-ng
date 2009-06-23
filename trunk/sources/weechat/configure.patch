@@ -1,5 +1,14 @@
---- configure.in.orig	2009-03-14 13:15:34.000000000 +0000
-+++ configure.in	2009-03-20 17:49:32.885315678 +0000
+--- configure.in.orig	2009-06-13 02:47:55.000000000 -0700
++++ configure.in	2009-06-23 08:05:26.000000000 -0700
+@@ -177,7 +177,7 @@
+ #fi
+ 
+ if test "x$enable_gtk" = "xyes" ; then
+-    AM_PATH_GTK_2_0(2.4.0, LIBGTK_FOUND=1, LIBGTK_FOUND=0)
++    LIBGTK_FOUND=0
+     if test "$LIBGTK_FOUND" = "0" ; then
+         AC_MSG_WARN([
+ *** Gtk library not found!
 @@ -210,15 +210,7 @@
        LIBS="$LIBS $ICONV_LFLAGS"
     fi
@@ -17,14 +26,3 @@
    if test "x$iconv_found" = "xno" ; then
       AC_MSG_RESULT(no)
    else
-@@ -605,8 +597,8 @@
- *** libgnutls was not found. You may want to get it from ftp://ftp.gnutls.org/pub/gnutls/
- *** WeeChat will be built without GnuTLS support.]]))
-     if test "x$found_gnutls" = "xyes" ; then
--        GNUTLS_CFLAGS=`libgnutls-config --cflags`
--        GNUTLS_LFLAGS=`libgnutls-config --libs`
-+        GNUTLS_CFLAGS=`$LIBGNUTLS_CONFIG --cflags`
-+        GNUTLS_LFLAGS=`$LIBGNUTLS_CONFIG --libs`
-         AC_SUBST(GNUTLS_CFLAGS)
-         AC_SUBST(GNUTLS_LFLAGS)
-         AC_DEFINE(HAVE_GNUTLS)
