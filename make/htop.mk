@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
-HTOP_VERSION=0.8.2
+HTOP_VERSION=0.8.3
 HTOP_IPK_VERSION=1
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
@@ -43,9 +43,7 @@ HTOP_CONFLICTS=
 # HTOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq (modutils, $(filter modutils, $(PACKAGES)))
-HTOP_PATCHES=$(HTOP_SOURCE_DIR)/linux24-child.patch
-endif
+#HTOP_PATCHES=
 
 #
 # If the compilation of the package requires additional
