@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-SQUEEZECENTER_VERSION=7.3.2
+SQUEEZECENTER_VERSION=7.3.3
 SQUEEZECENTER_SITE=http://www.slimdevices.com/downloads/SqueezeCenter_v$(SQUEEZECENTER_VERSION)
 # firmware update site: http://update.slimdevices.com/update/firmware
 SQUEEZECENTER_DIR=squeezecenter-$(SQUEEZECENTER_VERSION)-noCPAN
@@ -31,7 +31,7 @@ SQUEEZECENTER_DEPENDS=adduser, bash \
 SQUEEZECENTER_SUGGESTS=flac
 SQUEEZECENTER_CONFLICTS=slimserver
 
-SQUEEZECENTER_IPK_VERSION=2
+SQUEEZECENTER_IPK_VERSION=1
 
 #SQUEEZECENTER_CONFFILES=/opt/etc/squeezecenter.conf /opt/etc/init.d/S99squeezecenter \
 	/opt/share/squeezecenter/MySQL/my.tt
