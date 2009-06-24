@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -180,9 +180,7 @@ endif
 	if test "$(BUILD_DIR)/$(CUPS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CUPS_DIR) $(@D) ; \
 	fi
-ifeq ($(OPTWARE_TARGET), $(filter angstrombe angstromle slugosbe slugosle, $(OPTWARE_TARGET)))
 	sed -i -e '/OPTIM=/s/ -fstack-protector//' $(@D)/configure
-endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(CUPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \
