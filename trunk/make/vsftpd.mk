@@ -37,7 +37,7 @@ VSFTPD_CONFLICTS=
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=2
+VSFTPD_IPK_VERSION=3
 
 
 # VSFTPD_CONFFILES should be a list of user-editable files
