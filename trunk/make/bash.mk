@@ -23,7 +23,7 @@
 BASH_SITE=http://ftp.gnu.org/gnu/bash/
 BASH_VER=3.2
 # must match patch files
-BASH_PATCH_LEVEL=33
+BASH_PATCH_LEVEL=49
 BASH_VERSION=$(BASH_VER).$(BASH_PATCH_LEVEL)
 BASH_SOURCE=bash-$(BASH_VER).tar.gz
 BASH_DIR=bash-$(BASH_VER)
@@ -107,21 +107,21 @@ bash-source: $(DL_DIR)/$(BASH_SOURCE)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(BASH_BUILD_DIR)/.configured: $(DL_DIR)/$(BASH_SOURCE)
+$(BASH_BUILD_DIR)/.configured: $(DL_DIR)/$(BASH_SOURCE) make/bash.mk
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
 	$(MAKE) termcap-stage
-	rm -rf $(BUILD_DIR)/$(BASH_DIR) $(BASH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BASH_DIR) $(@D)
 	$(BASH_UNZIP) $(DL_DIR)/$(BASH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BASH_PATCHES)" ; \
 		then cat $(BASH_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(BASH_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(BASH_DIR)" != "$(BASH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(BASH_DIR) $(BASH_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(BASH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(BASH_DIR) $(@D) ; \
 	fi
-	(cd $(BASH_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BASH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BASH_LDFLAGS)" \
@@ -214,4 +214,4 @@ bash-dirclean:
 # Some sanity check for the package.
 #
 bash-check: $(BASH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BASH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
