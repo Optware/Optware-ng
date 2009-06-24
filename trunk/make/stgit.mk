@@ -30,7 +30,7 @@ STGIT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 STGIT_DESCRIPTION=StGit is a Python application providing similar functionality to Quilt (i.e. pushing/popping patches to/from a stack) on top of Git.
 STGIT_SECTION=util
 STGIT_PRIORITY=optional
-STGIT_DEPENDS=python25
+STGIT_DEPENDS=python25, git
 STGIT_SUGGESTS=
 STGIT_CONFLICTS=
 
