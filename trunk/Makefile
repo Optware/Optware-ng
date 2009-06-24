@@ -145,6 +145,7 @@ PYTHON_PACKAGES = \
 	pyrex \
 	sabnzbd sabnzbdplus \
 	scons \
+	stgit \
 	subvertpy \
 	py-4suite py-amara py-apsw \
 	py-beaker py-bittorrent py-bluez py-buildutils \

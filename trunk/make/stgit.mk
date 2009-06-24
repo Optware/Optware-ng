@@ -30,7 +30,7 @@ STGIT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 STGIT_DESCRIPTION=StGit is a Python application providing similar functionality to Quilt (i.e. pushing/popping patches to/from a stack) on top of Git.
 STGIT_SECTION=util
 STGIT_PRIORITY=optional
-STGIT_DEPENDS=
+STGIT_DEPENDS=python25
 STGIT_SUGGESTS=
 STGIT_CONFLICTS=
 
@@ -106,7 +106,7 @@ stgit-source: $(DL_DIR)/$(STGIT_SOURCE) $(STGIT_PATCHES)
 # shown below to make various patches to it.
 #
 $(STGIT_BUILD_DIR)/.configured: $(DL_DIR)/$(STGIT_SOURCE) $(STGIT_PATCHES) make/stgit.mk
-#	$(MAKE) py-setuptools-stage
+	$(MAKE) python25-host-stage
 	rm -rf $(BUILD_DIR)/$(STGIT_DIR) $(@D)
 	$(STGIT_UNZIP) $(DL_DIR)/$(STGIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(STGIT_PATCHES)" ; \
@@ -119,7 +119,7 @@ $(STGIT_BUILD_DIR)/.configured: $(DL_DIR)/$(STGIT_SOURCE) $(STGIT_PATCHES) make/
 	(cd $(@D); \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
@@ -136,9 +136,9 @@ stgit-unpack: $(STGIT_BUILD_DIR)/.configured
 $(STGIT_BUILD_DIR)/.built: $(STGIT_BUILD_DIR)/.configured
 	rm -f $@
 	(cd $(@D); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build; \
 	)
 	touch $@
 
@@ -191,8 +191,8 @@ $(STGIT_IPK_DIR)/CONTROL/control:
 $(STGIT_IPK): $(STGIT_BUILD_DIR)/.built
 	rm -rf $(STGIT_IPK_DIR) $(BUILD_DIR)/stgit_*_$(TARGET_ARCH).ipk
 	(cd $(STGIT_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
 	    --root=$(STGIT_IPK_DIR) --prefix=/opt; \
 	)
 	$(MAKE) $(STGIT_IPK_DIR)/CONTROL/control
