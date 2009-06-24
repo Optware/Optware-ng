@@ -37,7 +37,7 @@ STGIT_CONFLICTS=
 #
 # STGIT_IPK_VERSION should be incremented when the ipk changes.
 #
-STGIT_IPK_VERSION=1
+STGIT_IPK_VERSION=2
 
 #
 # STGIT_CONFFILES should be a list of user-editable files
@@ -123,7 +123,7 @@ $(STGIT_BUILD_DIR)/.configured: $(DL_DIR)/$(STGIT_SOURCE) $(STGIT_PATCHES) make/
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.5" \
 	    ) > setup.cfg; \
 	)
 	touch $@
