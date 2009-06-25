@@ -14,13 +14,15 @@
 #
 # You should change all these variables to suit your package.
 #
-XVID_REPOSITORY=:pserver:anonymous@cvs.xvid.org:/xvid
-XVID_VERSION=20061226
-XVID_SOURCE=xvid-$(XVID_VERSION).tar.gz
-XVID_TAG=-D 2006-12-26
+XVID_SITE=http://downloads.xvid.org/downloads
+XVID_VERSION=1.2.2
+XVID_LIB_VER=4.2
+XVID_SOURCE=xvidcore-$(XVID_VERSION).tar.bz2
+#XVID_REPOSITORY=:pserver:anonymous@cvs.xvid.org:/xvid
+#XVID_TAG=-D 2006-12-26
 XVID_MODULE=xvidcore
-XVID_DIR=xvid-$(XVID_VERSION)
-XVID_UNZIP=zcat
+XVID_DIR=xvidcore
+XVID_UNZIP=bzcat
 XVID_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 XVID_DESCRIPTION=Xvid is MPEG4 codec
 XVID_SECTION=tool
@@ -37,7 +39,7 @@ XVID_IPK_VERSION=1
 # XVID_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XVID_PATCHES=$(XVID_SOURCE_DIR)/configure.in.patch
+#XVID_PATCHES=$(XVID_SOURCE_DIR)/configure.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -65,10 +67,15 @@ XVID_IPK=$(BUILD_DIR)/xvid_$(XVID_VERSION)-$(XVID_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from cvs.
 #
 $(DL_DIR)/$(XVID_SOURCE):
+ifdef XVID_REPOSITORY
 	cd $(DL_DIR) ; $(CVS) -z3 -d $(XVID_REPOSITORY) co $(XVID_TAG) $(XVID_MODULE)
 	mv $(DL_DIR)/$(XVID_MODULE) $(DL_DIR)/$(XVID_DIR)
 	cd $(DL_DIR) ; tar zcvf $(XVID_SOURCE) $(XVID_DIR)
 	rm -rf $(DL_DIR)/$(XVID_DIR)
+else
+	$(WGET) -P $(@D) $(XVID_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 .PHONY: xvid-source xvid-unpack xvid xvid-stage xvid-ipk xvid-clean xvid-dirclean xvid-check
 
@@ -95,18 +102,28 @@ xvid-source: $(DL_DIR)/$(XVID_SOURCE) $(XVID_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XVID_BUILD_DIR)/.configured: $(DL_DIR)/$(XVID_SOURCE) $(XVID_PATCHES)
-	rm -rf $(BUILD_DIR)/$(XVID_DIR) $(XVID_BUILD_DIR)
+$(XVID_BUILD_DIR)/.configured: $(DL_DIR)/$(XVID_SOURCE) $(XVID_PATCHES) make/xvid.mk
+	rm -rf $(BUILD_DIR)/$(XVID_DIR) $(@D)
 	$(XVID_UNZIP) $(DL_DIR)/$(XVID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(XVID_PATCHES) | patch -d $(BUILD_DIR)/$(XVID_DIR) -p1
-	mv $(BUILD_DIR)/$(XVID_DIR) $(XVID_BUILD_DIR)
-	(cd $(XVID_BUILD_DIR); \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
-		cd ./build/generic; \
+	if test -n "$(XVID_PATCHES)"; then \
+	    cat $(XVID_PATCHES) | patch -d $(BUILD_DIR)/$(XVID_DIR) -p1; \
+	fi
+	if test "$(BUILD_DIR)/$(XVID_DIR)" != "$(@D)" ; then \
+	    mv $(BUILD_DIR)/$(XVID_DIR) $(@D); \
+	fi
+	(cd $(@D)/build/generic; \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./bootstrap.sh; \
+	)
+	sed -i \
+	    -e 's:`./gcc-ver M`:'"`$(TARGET_CC) -dumpversion | cut -d. -f1`:" \
+	    -e 's:`./gcc-ver m`:'"`$(TARGET_CC) -dumpversion | cut -d. -f2`:" \
+	    $(@D)/build/generic/configure
+	(cd $(@D)/build/generic; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XVID_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XVID_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -115,7 +132,7 @@ $(XVID_BUILD_DIR)/.configured: $(DL_DIR)/$(XVID_SOURCE) $(XVID_PATCHES)
 		--disable-static \
 		--enable-shared \
 	)
-	touch $(XVID_BUILD_DIR)/.configured
+	touch $@
 
 xvid-unpack: $(XVID_BUILD_DIR)/.configured
 
@@ -124,9 +141,9 @@ xvid-unpack: $(XVID_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(XVID_BUILD_DIR)/.built: $(XVID_BUILD_DIR)/.configured
-	rm -f $(XVID_BUILD_DIR)/.built
-	$(MAKE) -C $(XVID_BUILD_DIR)/build/generic
-	touch $(XVID_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)/build/generic
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -137,23 +154,22 @@ xvid: $(XVID_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libxvid.so.$(XVID_VERSION): $(XVID_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(XVID_BUILD_DIR)/xvid.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(XVID_BUILD_DIR)/libxvid.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(XVID_BUILD_DIR)/libxvid.so.$(XVID_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libxvid.so.$(XVID_VERSION) libxvid.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libxvid.so.$(XVID_VERSION) libxvid.so
+$(XVID_BUILD_DIR)/.staged: $(XVID_BUILD_DIR)/.built
+	rm -f $@
+	rm -f $(STAGING_LIB_DIR)/libxvid*
+	$(MAKE) DESTDIR=$(STAGING_DIR) -C $(@D)/build/generic install
+	rm -f $(STAGING_LIB_DIR)/libxvidcore.a
+	cd $(STAGING_LIB_DIR) && ln -fs libxvidcore.so.$(XVID_LIB_VER) libxvidcore.so
+	touch $@
 
-xvid-stage: $(STAGING_DIR)/opt/lib/libxvid.so.$(XVID_VERSION)
+xvid-stage: $(XVID_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/xvid
 # 
 $(XVID_IPK_DIR)/CONTROL/control:
-	@install -d $(XVID_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: xvid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,7 +177,11 @@ $(XVID_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(XVID_SECTION)" >>$@
 	@echo "Version: $(XVID_VERSION)-$(XVID_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(XVID_MAINTAINER)" >>$@
+ifdef XVID_REPOSITORY
 	@echo "Source: $(XVID_REPOSITORY)" >>$@
+else
+	@echo "Source: $(XVID_SOURCE)" >>$@
+endif
 	@echo "Description: $(XVID_DESCRIPTION)" >>$@
 	@echo "Depends: $(XVID_DEPENDS)" >>$@
 	@echo "Conflicts: $(XVID_CONFLICTS)" >>$@
@@ -182,8 +202,8 @@ $(XVID_IPK): $(XVID_BUILD_DIR)/.built
 	rm -rf $(XVID_IPK_DIR) $(BUILD_DIR)/xvid_*_$(TARGET_ARCH).ipk
 	$(MAKE) DESTDIR=$(XVID_IPK_DIR) -C $(XVID_BUILD_DIR)/build/generic install
 	rm -f $(XVID_IPK_DIR)/opt/lib/libxvidcore.a
-	$(STRIP_COMMAND) $(XVID_IPK_DIR)/opt/lib/libxvidcore.so.4.1
-	ln -s $(XVID_IPK_DIR)/opt/lib/libxvidcore.so.4.1 $(XVID_IPK_DIR)/opt/lib/libxvidcore.so
+	$(STRIP_COMMAND) $(XVID_IPK_DIR)/opt/lib/libxvidcore.so.$(XVID_LIB_VER)
+	ln -s $(XVID_IPK_DIR)/opt/lib/libxvidcore.so.$(XVID_LIB_VER) $(XVID_IPK_DIR)/opt/lib/libxvidcore.so
 	$(MAKE) $(XVID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XVID_IPK_DIR)
 
@@ -209,4 +229,4 @@ xvid-dirclean:
 # Some sanity check for the package.
 #
 xvid-check: $(XVID_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(XVID_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
