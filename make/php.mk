@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.2.9
+PHP_VERSION=5.2.10
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -29,7 +29,7 @@ endif
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=5
+PHP_IPK_VERSION=1
 
 #
 # PHP_CONFFILES should be a list of user-editable files
