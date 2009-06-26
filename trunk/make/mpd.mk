@@ -24,7 +24,7 @@
 MPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
-MPD_VERSION=0.14.2
+MPD_VERSION=0.15
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.bz2
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=bzcat
@@ -33,7 +33,7 @@ MPD_DESCRIPTION=Music Player Daemon (MPD) allows remote access for playing music
 MPD_SECTION=audio
 MPD_PRIORITY=optional
 MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, glib, lame, libao, libcurl
-MPD_DEPENDS+=, libid3tag, libmad, libmpcdec, libshout, wavpack
+MPD_DEPENDS+=, libid3tag, libmad, libmms, libmpcdec, libshout, wavpack
 ifneq (, $(filter i686, $(TARGET_ARCH)))
 MPD_DEPENDS+=, libsamplerate, libvorbis
 else
@@ -48,7 +48,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=3
+MPD_IPK_VERSION=1
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -107,8 +107,8 @@ MPD_IPK=$(BUILD_DIR)/mpd_$(MPD_VERSION)-$(MPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 #
 $(DL_DIR)/$(MPD_SOURCE):
 ifndef MPD_SVN_REV
-	$(WGET) -P $(DL_DIR) $(MPD_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(MPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 else
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(MPD_DIR) && \
@@ -144,18 +144,13 @@ mpd-source: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
-	$(MAKE) audiofile-stage
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 	$(MAKE) avahi-stage
 endif
 	$(MAKE) faad2-stage ffmpeg-stage flac-stage lame-stage
-	$(MAKE) glib-stage
-	$(MAKE) libao-stage
-	$(MAKE) libcurl-stage
-	$(MAKE) libid3tag-stage
-	$(MAKE) libmad-stage
-	$(MAKE) libmpcdec-stage
-	$(MAKE) libshout-stage
+	$(MAKE) glib-stage libcurl-stage libmms-stage
+	$(MAKE) audiofile-stage libao-stage libid3tag-stage
+	$(MAKE) libmad-stage libmpcdec-stage libshout-stage
 ifneq (, $(filter i686, $(TARGET_ARCH)))
 	$(MAKE) libsamplerate-stage libvorbis-stage
 else
@@ -185,6 +180,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		\
+		--disable-alsa \
 		--enable-aac \
 		--enable-ao \
 		--enable-audiofile \
@@ -193,15 +189,13 @@ endif
 		--enable-flac \
 		--enable-id3 \
 		--enable-lsr \
-		--enable-mp3 \
+		--enable-mms \
 		--enable-mpc \
-		--enable-oggvorbis \
 		--enable-wavpack \
 		$(MPD_CONFIGURE_OPTIONS) \
 		\
 		--with-faad=$(STAGING_PREFIX) \
 		--with-lame=$(STAGING_PREFIX) \
-		--disable-lametest \
 	)
 #		--with-ao=$(STAGING_PREFIX) \
 		--with-audiofile-prefix=$(STAGING_PREFIX) \
@@ -209,11 +203,14 @@ endif
 		--with-libFLAC=$(STAGING_PREFIX) \
 		--with-mad=$(STAGING_PREFIX) \
 		--with-flac=$(STAGING_PREFIX) \
+		--enable-mp3 \
+		--enable-oggvorbis \
+		--disable-lametest \
 		\
 		--disable-nls \
 		--disable-static \
 ;
-	sed -i -e '/^MPD_CFLAGS/s| -I/opt/include||g;' $(@D)/src/Makefile
+	sed -i -e '/^LAME_CFLAGS/s| -I/opt/include||g;' $(@D)/Makefile
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
