@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-PERLBAL_SITE=http://search.cpan.org/CPAN/authors/id/B/BR/BRADFITZ
-PERLBAL_VERSION=1.70
+PERLBAL_SITE=http://perlbal.googlecode.com/files
+PERLBAL_VERSION=1.72
 PERLBAL_SOURCE=Perlbal-$(PERLBAL_VERSION).tar.gz
 PERLBAL_DIR=Perlbal-$(PERLBAL_VERSION)
 PERLBAL_UNZIP=zcat
@@ -111,4 +111,4 @@ perlbal-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERLBAL_DIR) $(PERLBAL_BUILD_DIR) $(PERLBAL_IPK_DIR) $(PERLBAL_IPK)
 
 perlbal-check: $(PERLBAL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PERLBAL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
