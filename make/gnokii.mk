@@ -19,7 +19,7 @@ GNOKII_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 GNOKII_DESCRIPTION=a multisystem tool suite and modem driver for the mobile phones
 GNOKII_SECTION=misc
 GNOKII_PRIORITY=optional
-GNOKII_DEPENDS=libusb, bluez-libs
+GNOKII_DEPENDS=libusb, bluez-libs, readline, ncurses
 GNOKII_SUGGESTS=
 GNOKII_CONFLICTS=
 
@@ -36,7 +36,7 @@ GNOKII_SMSD_MYSQL_CONFLICTS=
 #
 # GNOKII_IPK_VERSION should be incremented when the ipk changes.
 #
-GNOKII_IPK_VERSION=1
+GNOKII_IPK_VERSION=2
 
 #
 # GNOKII_CONFFILES should be a list of user-editable files
@@ -113,7 +113,7 @@ gnokii-source: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES)
 #
 $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) make/gnokii.mk
 	$(MAKE) libusb-stage bluez-libs-stage
-	$(MAKE) mysql-stage glib-stage
+	$(MAKE) glib-stage mysql-stage ncurses-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(GNOKII_DIR) $(@D)
 	$(GNOKII_UNZIP) $(DL_DIR)/$(GNOKII_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNOKII_PATCHES)" ; \
@@ -271,7 +271,6 @@ $(GNOKII_IPK): $(GNOKII_BUILD_DIR)/.built
 $(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/.smsd-built
 	rm -rf $(GNOKII_SMSD_IPK_DIR) $(BUILD_DIR)/gnokii-smsd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd DESTDIR=$(GNOKII_SMSD_IPK_DIR) install-strip transform=''
-	rm -rf $(GNOKII_SMSD_IPK_DIR)/opt/bin
 	rm $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_file.la
 	rm $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_mysql.*
 	$(MAKE) $(GNOKII_SMSD_IPK_DIR)/CONTROL/control
