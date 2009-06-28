@@ -12,6 +12,9 @@ TARGET_CC_PROBE := $(shell test -x "/opt/bin/ipkg" \
 && echo yes)
 #STAGING_CPPFLAGS+= -DPATH_MAX=4096 -DLINE_MAX=2048 -DMB_LEN_MAX=16
 
+BINUTILS_VERSION := 2.19.1
+BINUTILS_IPK_VERSION := 1
+
 ifeq (yes, $(TARGET_CC_PROBE))
 
 HOSTCC = $(TARGET_CC)
