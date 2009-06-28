@@ -73,8 +73,10 @@ GNOKII_IPK=$(BUILD_DIR)/gnokii_$(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)_$(TARGET_
 GNOKII_SMSD_IPK_DIR=$(BUILD_DIR)/gnokii-smsd-$(GNOKII_VERSION)-ipk
 GNOKII_SMSD_IPK=$(BUILD_DIR)/gnokii-smsd_$(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+ifeq (, $(filter dns323, $(OPTWARE_TARGET)))
 GNOKII_SMSD_MYSQL_IPK_DIR=$(BUILD_DIR)/gnokii-smsd-mysql-$(GNOKII_VERSION)-ipk
 GNOKII_SMSD_MYSQL_IPK=$(BUILD_DIR)/gnokii-smsd-mysql_$(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)_$(TARGET_ARCH).ipk
+endif
 
 .PHONY: gnokii-source gnokii-unpack gnokii gnokii-stage gnokii-ipk gnokii-clean gnokii-dirclean gnokii-check gnokii-smsd-ipk gnokii-smsd-mysql-ipk
 
