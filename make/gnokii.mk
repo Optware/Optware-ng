@@ -78,6 +78,12 @@ ifeq (, $(filter dns323, $(OPTWARE_TARGET)))
 GNOKII_SMSD_MYSQL_IPK=$(BUILD_DIR)/gnokii-smsd-mysql_$(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)_$(TARGET_ARCH).ipk
 endif
 
+ifeq (dns323, $(filter dns323, $(OPTWARE_TARGET)))
+GNOKII_MYSQL_CONFIG=no
+else
+GNOKII_MYSQL_CONFIG=$(STAGING_PREFIX)/bin/mysql_config
+endif
+
 .PHONY: gnokii-source gnokii-unpack gnokii gnokii-stage gnokii-ipk gnokii-clean gnokii-dirclean gnokii-check gnokii-smsd-ipk gnokii-smsd-mysql-ipk
 
 #
@@ -131,7 +137,7 @@ $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) ma
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNOKII_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNOKII_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		ac_cv_path_MYSQLCONFIG=$(STAGING_PREFIX)/bin/mysql_config \
+		ac_cv_path_MYSQLCONFIG=$(GNOKII_MYSQL_CONFIG) \
 		ac_cv_path_PGCONFIG=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -273,8 +279,8 @@ $(GNOKII_IPK): $(GNOKII_BUILD_DIR)/.built
 $(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/.smsd-built
 	rm -rf $(GNOKII_SMSD_IPK_DIR) $(BUILD_DIR)/gnokii-smsd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd DESTDIR=$(GNOKII_SMSD_IPK_DIR) install-strip transform=''
-	rm $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_file.la
-	rm $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_mysql.*
+	rm -f $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_file.la
+	rm -f $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_mysql.*
 	$(MAKE) $(GNOKII_SMSD_IPK_DIR)/CONTROL/control
 #	install -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
