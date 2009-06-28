@@ -109,7 +109,7 @@ py-duplicity-source: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUPLICITY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-DUPLICITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUPLICITY_PATCHES)
+$(PY-DUPLICITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUPLICITY_PATCHES) make/py-duplicity.mk
 	$(MAKE) py-setuptools-stage
 	$(MAKE) librsync-stage
 	rm -rf $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(@D)
