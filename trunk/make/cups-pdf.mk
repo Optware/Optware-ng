@@ -36,11 +36,11 @@ CUPS-PDF_CONFLICTS=
 #
 # CUPS-PDF_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS-PDF_IPK_VERSION=1
+CUPS-PDF_IPK_VERSION=2
 
 #
 # CUPS-PDF_CONFFILES should be a list of user-editable files
-CUPS-PDF_CONFFILES=/opt/etc/cups-pdf.conf
+CUPS-PDF_CONFFILES=/opt/etc/cups/cups-pdf.conf
 
 #
 # CUPS-PDF_PATCHES should list any patches, in the the order in
@@ -182,9 +182,12 @@ $(CUPS-PDF_IPK): $(CUPS-PDF_BUILD_DIR)/.built
 	install -d $(CUPS-PDF_IPK_DIR)/opt/lib/cups/backend
 	$(STRIP_COMMAND) $(CUPS-PDF_BUILD_DIR)/src/cups-pdf \
 		-o $(CUPS-PDF_IPK_DIR)/opt/lib/cups/backend/cups-pdf
-	install -d $(CUPS-PDF_IPK_DIR)/opt/etc
-	install -m 644 $(CUPS-PDF_BUILD_DIR)/extra/cups-pdf.conf $(CUPS-PDF_IPK_DIR)/opt/etc/
-	sed -i -e 's| /var/| /opt/var/|g' $(CUPS-PDF_IPK_DIR)/opt/etc/cups-pdf.conf
+	install -d $(CUPS-PDF_IPK_DIR)/opt/etc/cups
+	install -m 644 $(CUPS-PDF_BUILD_DIR)/extra/cups-pdf.conf $(CUPS-PDF_IPK_DIR)/opt/etc/cups
+	sed -i -e 's| /var/| /opt/var/|g' \
+	       -e 's|/usr/bin/gs|/opt/bin/gs|' \
+		$(CUPS-PDF_IPK_DIR)/opt/etc/cups/cups-pdf.conf
+	install -d $(CUPS-PDF_IPK_DIR)/opt/var/tmp
 	install -d $(CUPS-PDF_IPK_DIR)/opt/share/cups/model
 	install -m 644 $(CUPS-PDF_BUILD_DIR)/extra/CUPS-PDF.ppd \
 		$(CUPS-PDF_IPK_DIR)/opt/share/cups/model/
