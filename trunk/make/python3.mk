@@ -91,6 +91,7 @@ PYTHON3_PATCHES=\
 	$(PYTHON3_SOURCE_DIR)/setup.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
+	$(PYTHON3_SOURCE_DIR)/with-libintl.patch \
 
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
 PYTHON3_PATCHES+= $(PYTHON3_SOURCE_DIR)/disable-ncursesw.patch
@@ -132,6 +133,9 @@ $(PYTHON3_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON3_SOURCE) $(PYTHON3_PATCHES)
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
+ifeq (enable, $(GETTEXT_NLS))
+	$(MAKE) gettext-stage
+endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON3_DIR) $(@D)
@@ -163,7 +167,6 @@ endif
 		--enable-shared \
 		--with-wide-unicode \
 	)
-	sed -i -e '/^CPPFLAGS/s/$$/ -UHAVE_LIBINTL_H/' $(@D)/buildpython3/Makefile
 	touch $@
 
 python3-unpack: $(PYTHON3_BUILD_DIR)/.configured
