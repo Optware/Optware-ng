@@ -163,6 +163,7 @@ endif
 		--enable-shared \
 		--with-wide-unicode \
 	)
+	sed -i -e '/^CPPFLAGS/s/$$/ -UHAVE_LIBINTL_H/' $(@D)/buildpython3/Makefile
 	touch $@
 
 python3-unpack: $(PYTHON3_BUILD_DIR)/.configured
