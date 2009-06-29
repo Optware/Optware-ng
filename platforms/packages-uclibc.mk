@@ -10,7 +10,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 moe mtr \
 	 newsbeuter \
 	 nfs-server nfs-utils \
-	 pango python3 \
+	 pango \
 	 qemu qemu-libc-i386 quickie \
 	 sm syx \
 	 uemacs \
