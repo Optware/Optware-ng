@@ -1,0 +1,13 @@
+--- toolchain/i686-unknown-linux-gnu/i686-unknown-linux-gnu/sys-root/usr/include/linux/if_tunnel.h.orig	2009-06-28 06:53:44.514448000 +0000
++++ toolchain/i686-unknown-linux-gnu/i686-unknown-linux-gnu/sys-root/usr/include/linux/if_tunnel.h	2009-06-28 21:13:39.415822604 +0000
+@@ -2,7 +2,10 @@
+ #define _IF_TUNNEL_H_
+ 
+ #include <linux/types.h>
++ 
++#ifdef __KERNEL__
+ #include <linux/ip.h>
++#endif
+ 
+ #define SIOCGETTUNNEL   (SIOCDEVPRIVATE + 0)
+ #define SIOCADDTUNNEL   (SIOCDEVPRIVATE + 1)

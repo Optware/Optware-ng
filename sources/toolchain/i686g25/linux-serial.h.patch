@@ -1,0 +1,10 @@
+--- toolchain/i686-unknown-linux-gnu/i686-unknown-linux-gnu//sys-root/usr/include/linux/serial.h.orig	2009-06-28 06:45:47.174448000 +0000
++++ toolchain/i686-unknown-linux-gnu/i686-unknown-linux-gnu//sys-root/usr/include/linux/serial.h	2009-06-29 02:34:17.666461630 +0000
+@@ -10,6 +10,7 @@
+ #ifndef _LINUX_SERIAL_H
+ #define _LINUX_SERIAL_H
+ 
++#include <linux/types.h>
+ 
+ struct serial_struct {
+ 	int	type;
