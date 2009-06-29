@@ -137,7 +137,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PYTHON3_DIR) $(@D)
 	$(PYTHON3_UNZIP) $(DL_DIR)/$(PYTHON3_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON3_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
-	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON3_DIR)/Modules/_ctypes/libffi/fficonfig.py.in
+	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON3_DIR)/Modules/_ctypes/libffi/configure.ac
 	autoreconf -vif $(BUILD_DIR)/$(PYTHON3_DIR)
 	mkdir -p $(@D)
 	( \
