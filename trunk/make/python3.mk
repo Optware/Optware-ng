@@ -227,17 +227,15 @@ $(PYTHON3_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PYTHON3_IPK): $(PYTHON3_BUILD_DIR)/.built
-	rm -rf $(PYTHON3_IPK_DIR) $(BUILD_DIR)/python3_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PYTHON3_BUILD_DIR) DESTDIR=$(PYTHON3_IPK_DIR) fullinstall
+	rm -rf $(PYTHON3_IPK_DIR) $(BUILD_DIR)/python3*_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(PYTHON3_BUILD_DIR) DESTDIR=$(PYTHON3_IPK_DIR) install
 	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)/opt/bin/python$(PYTHON3_VERSION_MAJOR)
 	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/lib-dynload/*.so
 	chmod 755 $(PYTHON3_IPK_DIR)/opt/lib/libpython$(PYTHON3_VERSION_MAJOR).so.1.0
 	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)/opt/lib/libpython$(PYTHON3_VERSION_MAJOR).so.1.0
 	chmod 555 $(PYTHON3_IPK_DIR)/opt/lib/libpython$(PYTHON3_VERSION_MAJOR).so.1.0
-	rm $(PYTHON3_IPK_DIR)/opt/bin/python $(PYTHON3_IPK_DIR)/opt/bin/python-config
-#	cd $(PYTHON3_IPK_DIR)/opt/bin; ln -s python$(PYTHON3_VERSION_MAJOR) python
-	for f in bin/pydoc bin/idle bin/smtpd.py bin/2to3 ; \
-	    do mv $(PYTHON3_IPK_DIR)/opt/$$f $(PYTHON3_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-3.0\1/'`; done
+	for f in bin/2to3 ; \
+	    do mv $(PYTHON3_IPK_DIR)/opt/$$f $(PYTHON3_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-3.1\1/'`; done
 	install -d $(PYTHON3_IPK_DIR)/opt/local/bin
 	install -d $(PYTHON3_IPK_DIR)/opt/local/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages
 	$(MAKE) $(PYTHON3_IPK_DIR)/CONTROL/control
