@@ -1,5 +1,5 @@
---- Python-3.0.1/setup.py.orig	2009-02-10 16:25:06.000000000 +0000
-+++ Python-3.0.1/setup.py	2009-02-19 21:53:55.136823653 +0000
+--- Python-3.1/setup.py.orig	2009-05-23 10:13:14.000000000 -0700
++++ Python-3.1/setup.py	2009-06-28 20:19:14.000000000 -0700
 @@ -16,7 +16,7 @@
  from distutils.command.install_lib import install_lib
  
@@ -9,7 +9,7 @@
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -261,6 +261,10 @@
+@@ -246,6 +246,10 @@
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -20,7 +20,7 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -768,7 +772,6 @@
+@@ -887,7 +891,6 @@
                                    include_dirs=["Modules/_sqlite",
                                                  sqlite_incdir],
                                    library_dirs=sqlite_libdir,
@@ -28,15 +28,15 @@
                                    extra_link_args=sqlite_extra_link_args,
                                    libraries=["sqlite3",]))
          else:
-@@ -802,7 +805,6 @@
-             elif db_incs is not None:
-                 exts.append( Extension('_dbm', ['_dbmmodule.c'],
-                                        library_dirs=dblib_dir,
--                                       runtime_library_dirs=dblib_dir,
-                                        include_dirs=db_incs,
-                                        define_macros=[('HAVE_BERKDB_H',None),
-                                                       ('DB_DBM_HSEARCH',None)],
-@@ -1327,7 +1329,7 @@
+@@ -948,7 +951,6 @@
+                         print("building dbm using bdb")
+                         dbmext = Extension('_dbm', ['_dbmmodule.c'],
+                                            library_dirs=dblib_dir,
+-                                           runtime_library_dirs=dblib_dir,
+                                            include_dirs=db_incs,
+                                            define_macros=[
+                                                ('HAVE_BERKDB_H', None),
+@@ -1460,7 +1462,7 @@
                                           ffi_configfile):
                  from distutils.dir_util import mkpath
                  mkpath(ffi_builddir)

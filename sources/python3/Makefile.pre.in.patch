@@ -1,15 +1,15 @@
---- Python-3.0.1/Makefile.pre.in.orig	2009-01-13 22:15:07.000000000 +0000
-+++ Python-3.0.1/Makefile.pre.in	2009-02-18 21:27:44.663158171 +0000
-@@ -36,6 +36,8 @@
- RANLIB=		@RANLIB@
- SVNVERSION=	@SVNVERSION@
+--- Python-3.1/Makefile.pre.in.orig	2009-06-11 15:54:11.000000000 -0700
++++ Python-3.1/Makefile.pre.in	2009-06-28 20:11:22.000000000 -0700
+@@ -38,6 +38,8 @@
+ 
+ GNULD=          @GNULD@
  
 +CROSS_COMPILE=	@CROSS_COMPILE@
 +
  # Shell used by make (some versions default to the login shell, which is bad)
  SHELL=		/bin/sh
  
-@@ -102,7 +104,7 @@
+@@ -105,7 +107,7 @@
  
  # Symbols used for using shared libraries
  SO=		@SO@
@@ -18,7 +18,7 @@
  BLDSHARED=	@BLDSHARED@
  DESTSHARED=	$(BINLIBDEST)/lib-dynload
  
-@@ -173,7 +175,8 @@
+@@ -176,7 +178,8 @@
  LIBOBJS=	@LIBOBJS@
  
  PYTHON=		python$(EXE)
@@ -28,7 +28,7 @@
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -203,7 +206,8 @@
+@@ -216,7 +219,8 @@
  
  ##########################################################################
  # Parser
@@ -38,7 +38,7 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -350,7 +354,7 @@
+@@ -375,7 +379,7 @@
  
  # Default target
  all:		build_all
@@ -47,8 +47,8 @@
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -380,7 +384,7 @@
-
+@@ -405,7 +409,7 @@
+ 
  
  # Build the interpreter
 -$(BUILDPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
@@ -56,9 +56,9 @@
  		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
  			Modules/python.o \
  			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-@@ -513,12 +517,12 @@
- 	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
+@@ -540,12 +544,12 @@
  
+ $(IO_OBJS): $(IO_H)
  
 -$(GRAMMAR_H) $(GRAMMAR_C): $(PGEN) $(GRAMMAR_INPUT)
 +$(GRAMMAR_H) $(GRAMMAR_C): $(BUILDPGEN) $(GRAMMAR_INPUT)
@@ -73,33 +73,33 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -572,6 +576,16 @@
-                                              $(BYTESTR_DEPS)
+@@ -604,6 +608,16 @@
+ 				$(srcdir)/Objects/stringlib/formatter.h
  
  
 +#########################################################################
 +# Rules for making python/pgen that will run on the build system
 +# (only used for cross compiles)
 +
-+buildpython30/python$(BUILDEXE):
-+	cd buildpython30; make all; cd ..
++buildpython3/python$(BUILDEXE):
++	cd buildpython3; make all; cd ..
 +
-+buildpython30/Parser/pgen$(BUILDEXE):
-+	cd buildpython30; make Parser/pgen; cd ..
++buildpython3/Parser/pgen$(BUILDEXE):
++	cd buildpython3; make Parser/pgen; cd ..
 +				
  ############################################################################
  # Header files
  
-@@ -776,7 +790,7 @@
+@@ -792,7 +806,7 @@
  		else	true; \
  		fi; \
  	done
 -	$(INSTALL_PROGRAM) $(BUILDPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
 +	$(INSTALL_PROGRAM) $(HOSTPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
-	if test -f $(LDLIBRARY); then \
-		if test -n "$(DLLLIBRARY)" ; then \
-			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
-@@ -980,8 +994,9 @@
+ 	if test -f $(LDLIBRARY); then \
+ 		if test -n "$(DLLLIBRARY)" ; then \
+ 			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
+@@ -1018,8 +1032,9 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -111,7 +111,7 @@
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
  		--root=/$(DESTDIR)
-@@ -1073,7 +1088,7 @@
+@@ -1112,7 +1127,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -120,7 +120,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1134,11 +1149,12 @@
+@@ -1173,11 +1188,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal
@@ -130,7 +130,7 @@
  		config.cache config.log pyconfig.h Modules/config.c
  	-rm -rf build platform
  	-rm -rf $(PYTHONFRAMEWORKDIR)
-+	-rm -rf buildpython30
++	-rm -rf buildpython3
  
  # Make things extra clean, before making a distribution:
  # remove all generated files, even Makefile[.pre]

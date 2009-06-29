@@ -1,8 +1,8 @@
---- Python-3.0a5/configure.in.orig	2008-05-04 15:42:01.000000000 -0700
-+++ Python-3.0a5/configure.in	2008-05-15 14:48:10.000000000 -0700
-@@ -9,6 +9,11 @@
- AC_CONFIG_SRCDIR([Include/object.h])
- AC_CONFIG_HEADER(pyconfig.h)
+--- Python-3.1/configure.in.orig	2009-06-08 14:22:57.000000000 -0700
++++ Python-3.1/configure.in	2009-06-28 20:29:20.000000000 -0700
+@@ -21,6 +21,11 @@
+     prefix=`echo "$prefix" | sed -e 's/\/$//g'`
+ fi    
  
 +# find compiler while respecting --host setting
 +AC_CANONICAL_HOST()
@@ -12,7 +12,7 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -751,7 +756,7 @@
+@@ -820,7 +825,7 @@
  	    STRICT_PROTO="-Wstrict-prototypes"
  	fi
          # For gcc 4.x we need to use -fwrapv so lets check if its supported
@@ -21,7 +21,7 @@
             WRAP="-fwrapv"
          fi
  	case $ac_cv_prog_cc_g in
-@@ -2419,34 +2424,10 @@
+@@ -2538,34 +2543,10 @@
  # On Tru64, chflags seems to be present, but calling it will
  # exit Python
  AC_MSG_CHECKING(for chflags)
@@ -56,7 +56,40 @@
  
  dnl Check if system zlib has *Copy() functions
  dnl
-@@ -3485,43 +3466,8 @@
+@@ -3289,31 +3270,7 @@
+ 
+ # Multiprocessing check for broken sem_getvalue
+ AC_MSG_CHECKING(for broken sem_getvalue)
+-AC_TRY_RUN([
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <stdio.h>
+-#include <semaphore.h>
+-#include <sys/stat.h>
+-
+-int main(void){
+-  sem_t *a = sem_open("/autoconf", O_CREAT, S_IRUSR|S_IWUSR, 0);
+-  int count;
+-  int res;
+-  if(a==SEM_FAILED){
+-    perror("sem_open");
+-    return 1;
+-
+-  }
+-  res = sem_getvalue(a, &count);
+-  sem_close(a);
+-  return res==-1 ? 1 : 0;
+-}
+-]
+-,AC_MSG_RESULT(no),
+- AC_MSG_RESULT(yes)
+-  AC_DEFINE(HAVE_BROKEN_SEM_GETVALUE, 1, define to 1 if your sem_getvalue is broken.)
+-)
++ AC_MSG_RESULT(no)
+ 
+ # determine what size digit to use for Python's longs
+ AC_MSG_CHECKING([digit size for Python's longs])
+@@ -3799,43 +3756,8 @@
  fi
  
  AC_MSG_CHECKING(for %zd printf() format support)
@@ -102,7 +135,7 @@
  
  AC_CHECK_TYPE(socklen_t,,
    AC_DEFINE(socklen_t,int,
-@@ -3551,6 +3497,25 @@
+@@ -3902,6 +3824,25 @@
  done
  AC_MSG_RESULT(done)
  
@@ -112,12 +145,12 @@
 +if [[ $build != $host ]]; then
 +    AC_MSG_NOTICE(Cross compiling: Configuring build python)
 +    absconfigcommand=$(pwd)/$0
-+    mkdir -p buildpython30
-+    cd buildpython30
++    mkdir -p buildpython3
++    cd buildpython3
 +    CC="" CXX="" AR="" RANLIB="" LDFLAGS="" $absconfigcommand --prefix=$prefix
 +    cd ..
-+    BUILDPYTHON='buildpython30/python$(BUILDEXE)'
-+    BUILDPGEN='buildpython30/Parser/pgen$(BUILDEXE)'
++    BUILDPYTHON='buildpython3/python$(BUILDEXE)'
++    BUILDPGEN='buildpython3/Parser/pgen$(BUILDEXE)'
 +    CROSS_COMPILE=yes
 +else
 +    BUILDPYTHON='$(HOSTPYTHON)'
@@ -126,5 +159,5 @@
 +fi
 +
  # generate output files
- AC_CONFIG_FILES(Makefile.pre Modules/Setup.config)
+ AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc)
  AC_OUTPUT
