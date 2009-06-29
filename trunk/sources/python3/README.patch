@@ -1,8 +1,8 @@
---- Python-3.0a5/README.orig	2008-05-08 04:54:13.000000000 -0700
-+++ Python-3.0a5/README	2008-05-15 14:48:10.000000000 -0700
-@@ -180,6 +180,39 @@
- (This will fail if you *also* built at the top-level directory.  You
- should do a "make clean" at the toplevel first.)
+--- Python-3.1/README.orig	2009-06-26 06:21:52.000000000 -0700
++++ Python-3.1/README	2009-06-28 20:11:22.000000000 -0700
+@@ -174,6 +174,39 @@
+ 
+ See PEP 375 for release details: http://www.python.org/dev/peps/pep-0375/
  
 +Cross Compiling
 +---------------
@@ -12,9 +12,9 @@
 +and executed on the "host" system, in case you forgot :).  Python is
 +tricky to cross compile because it needs to execute parts of itself
 +during construction.  To work around this, make's VPATH feature is
-+used to compile a native python in the subdirectory "buildpython30".
++used to compile a native python in the subdirectory "buildpython3".
 +When parts of python need to be executed during construction, the
-+"buildpython30" versions are used.
++"buildpython3" versions are used.
 +
 +A consequence of using the VPATH feature is that you may not do a
 +cross compile build in the source directory.  In other words, do this:
