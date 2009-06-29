@@ -12,8 +12,8 @@ QUILT_PATCH_OPTS="--unified"
 #QUILT_DIFFSTAT_OPTS="-f0"
 
 # Options to pass to commands (QUILT_${COMMAND}_ARGS)
-QUILT_PUSH_ARGS="--color=auto"
-QUILT_DIFF_ARGS="--no-timestamps --color=auto"
+QUILT_PUSH_ARGS=""
+QUILT_DIFF_ARGS="--no-timestamps"
 QUILT_REFRESH_ARGS="--no-timestamps --backup"
 
 # (Add "-p ab" to QUILT_DIFF_ARGS and QUILT_REFRESH_ARGS to get

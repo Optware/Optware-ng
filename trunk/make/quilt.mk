@@ -29,14 +29,14 @@ QUILT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 QUILT_DESCRIPTION=A set of scripts to manage a series of patches.
 QUILT_SECTION=misc
 QUILT_PRIORITY=optional
-QUILT_DEPENDS=perl, coreutils, bash, diffutils, util-linux, patch
+QUILT_DEPENDS=perl, coreutils, bash, diffutils, patch
 QUILT_SUGGESTS=
 QUILT_CONFLICTS=
 
 #
 # QUILT_IPK_VERSION should be incremented when the ipk changes.
 #
-QUILT_IPK_VERSION=2
+QUILT_IPK_VERSION=3
 
 #
 # QUILT_CONFFILES should be a list of user-editable files
