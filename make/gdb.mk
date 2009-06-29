@@ -222,7 +222,7 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 	rm -rf $(GDB_IPK_DIR) $(BUILD_DIR)/gdb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GDB_BUILD_DIR) prefix=$(GDB_IPK_DIR)/opt install
 	rm -f $(GDB_IPK_DIR)/opt/info/standards.info
-	$(STRIP_COMMAND) $(GDB_IPK_DIR)/opt/bin/run
+	-$(STRIP_COMMAND) $(GDB_IPK_DIR)/opt/bin/run
 	# rm the following files to avoid conflict with binutils
 	for f in \
 		/opt/include/ansidecl.h \
