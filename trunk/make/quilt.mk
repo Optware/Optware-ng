@@ -29,14 +29,14 @@ QUILT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 QUILT_DESCRIPTION=A set of scripts to manage a series of patches.
 QUILT_SECTION=misc
 QUILT_PRIORITY=optional
-QUILT_DEPENDS=perl, coreutils, bash
+QUILT_DEPENDS=perl, coreutils, bash, diffutils, util-linux, patch
 QUILT_SUGGESTS=
 QUILT_CONFLICTS=
 
 #
 # QUILT_IPK_VERSION should be incremented when the ipk changes.
 #
-QUILT_IPK_VERSION=1
+QUILT_IPK_VERSION=2
 
 #
 # QUILT_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ QUILT_IPK_VERSION=1
 # QUILT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#QUILT_PATCHES=$(QUILT_SOURCE_DIR)/configure.patch
+QUILT_PATCHES=$(QUILT_SOURCE_DIR)/optware-paths.patch
 
 #
 # If the compilation of the package requires additional
@@ -194,8 +194,8 @@ $(QUILT_IPK): $(QUILT_BUILD_DIR)/.built
 	rm -rf $(QUILT_IPK_DIR) $(BUILD_DIR)/quilt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(QUILT_BUILD_DIR) install BUILD_ROOT=$(QUILT_IPK_DIR) COMPAT_SYMLINKS=""
 	$(STRIP_COMMAND) $(QUILT_IPK_DIR)/opt/lib/quilt/backup-files
-#	install -d $(QUILT_IPK_DIR)/opt/etc/
-#	install -m 644 $(QUILT_SOURCE_DIR)/quilt.conf $(QUILT_IPK_DIR)/opt/etc/quilt.conf
+	install -d $(QUILT_IPK_DIR)/opt/etc/
+	install -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT_IPK_DIR)/opt/etc/quilt.quiltrc
 #	install -d $(QUILT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(QUILT_SOURCE_DIR)/rc.quilt $(QUILT_IPK_DIR)/opt/etc/init.d/SXXquilt
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXquilt

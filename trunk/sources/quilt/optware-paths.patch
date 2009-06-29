@@ -1,0 +1,40 @@
+--- bin/quilt.in.orig	2009-06-29 19:15:24.000000000 +0930
++++ bin/quilt.in	2009-06-29 19:15:55.000000000 +0930
+@@ -14,7 +14,7 @@
+ 
+ if [ -z "$QUILTRC" ]
+ then
+-	for QUILTRC in $HOME/.quiltrc /etc/quilt.quiltrc; do
++	for QUILTRC in $HOME/.quiltrc /opt/etc/quilt.quiltrc; do
+ 		[ -e $QUILTRC ] && break
+ 	done
+ 	export QUILTRC
+@@ -45,7 +45,7 @@
+ 
+ --quiltrc file
+ 	Use the specified configuration file instead of ~/.quiltrc (or
+-	/etc/quilt.quiltrc if ~/.quiltrc does not exist).  See the pdf
++	/opt/etc/quilt.quiltrc if ~/.quiltrc does not exist).  See the pdf
+ 	documentation for details about its possible contents.  The
+ 	special value \"-\" causes quilt not to read any configuration
+ 	file.
+--- ./quilt/scripts/patchfns.in.orig	2009-06-29 19:31:38.000000000 +0930
++++ ./quilt/scripts/patchfns.in	2009-06-29 19:32:47.000000000 +0930
+@@ -745,7 +745,7 @@
+ 					-r "$new_file")
+ 	fi
+ 
+-	diff $QUILT_DIFF_OPTS $old_file $new_file \
++	/opt/bin/diff $QUILT_DIFF_OPTS $old_file $new_file \
+ 	     --label "$old_hdr$old_date" --label "$new_hdr$new_date" \
+ 	| if read line
+ 	then
+@@ -893,7 +893,7 @@
+ 	if [ -s $patch_file ]
+ 	then
+ 		if ! cat_file $patch_file \
+-		     | patch -d $workdir $QUILT_PATCH_OPTS $patch_args \
++		     | /opt/bin/patch -d $workdir $QUILT_PATCH_OPTS $patch_args \
+ 		     	     --no-backup-if-mismatch -Ef \
+ 			     >/dev/null 2>/dev/null
+ 		then

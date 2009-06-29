@@ -1,0 +1,31 @@
+# Example /opt/etc/quilt.quiltrc
+
+# Options passed to GNU diff when generating patches
+QUILT_DIFF_OPTS="--show-c-function"
+
+# Options passed to GNU patch when applying patches.
+# (For appling patches which are not in unified format, remove the "--unified".)
+#QUILT_PATCH_OPTS="--ignore-whitespace"
+QUILT_PATCH_OPTS="--unified"
+
+# Options passed to diffstat when generating patch statistics
+#QUILT_DIFFSTAT_OPTS="-f0"
+
+# Options to pass to commands (QUILT_${COMMAND}_ARGS)
+QUILT_PUSH_ARGS="--color=auto"
+QUILT_DIFF_ARGS="--no-timestamps --color=auto"
+QUILT_REFRESH_ARGS="--no-timestamps --backup"
+
+# (Add "-p ab" to QUILT_DIFF_ARGS and QUILT_REFRESH_ARGS to get
+#  -p1 style diffs with a/file and b/file filenams in headers
+#  instead of dir.orig/file and dir/file.)
+
+# The directory in which patches are found (defaults to "patches").
+#QUILT_PATCHES=patches
+
+# Prefix all patch names with the relative path to the patch?
+QUILT_PATCHES_PREFIX=yes
+
+# Use a specific editor for quilt (defaults to the value of $EDITOR before
+# sourcing this configuration file, or vi if $EDITOR wasn't set).
+#EDITOR=nedit
