@@ -34,7 +34,7 @@ LIBJPEG_CONFLICTS=
 #
 # LIBJPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBJPEG_IPK_VERSION=2
+LIBJPEG_IPK_VERSION=3
 
 #
 # LIBJPEG_PATCHES should list any patches, in the the order in
@@ -68,7 +68,8 @@ LIBJPEG_IPK=$(BUILD_DIR)/libjpeg_$(LIBJPEG_VERSION)-$(LIBJPEG_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBJPEG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBJPEG_SITE)/$(LIBJPEG_SOURCE)
+	$(WGET) -P $(@D) $(LIBJPEG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -92,14 +93,19 @@ libjpeg-source: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
+$(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES) make/libjpeg.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBJPEG_DIR) $(LIBJPEG_BUILD_DIR)
+	rm -f	$(STAGING_INCLUDE_DIR)/jconfig.h \
+		$(STAGING_INCLUDE_DIR)/jerror.h \
+		$(STAGING_INCLUDE_DIR)/jpeglib.h \
+		$(STAGING_INCLUDE_DIR)/jmorecfg.h \
+		$(STAGING_LIB_DIR)/libjpeg*so*
+	rm -rf $(BUILD_DIR)/$(LIBJPEG_DIR) $(@D)
 	$(LIBJPEG_UNZIP) $(DL_DIR)/$(LIBJPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBJPEG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBJPEG_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBJPEG_DIR) $(LIBJPEG_BUILD_DIR)
-	cp $(LIBJPEG_SOURCE_DIR)/config.* $(LIBJPEG_BUILD_DIR)
-	(cd $(LIBJPEG_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBJPEG_DIR) $(@D)
+	cp $(LIBJPEG_SOURCE_DIR)/config.* $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBJPEG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBJPEG_LDFLAGS)" \
@@ -111,7 +117,7 @@ $(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 		--disable-static \
 		--prefix=/opt \
 	)
-	touch $(LIBJPEG_BUILD_DIR)/.configured
+	touch $@
 
 libjpeg-unpack: $(LIBJPEG_BUILD_DIR)/.configured
 
@@ -120,9 +126,9 @@ libjpeg-unpack: $(LIBJPEG_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(LIBJPEG_BUILD_DIR)/.built: $(LIBJPEG_BUILD_DIR)/.configured
-	rm -f $(LIBJPEG_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBJPEG_BUILD_DIR)
-	touch $(LIBJPEG_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -133,22 +139,24 @@ libjpeg: $(LIBJPEG_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libjpeg.so: $(LIBJPEG_BUILD_DIR)/.built
+$(LIBJPEG_BUILD_DIR)/.staged: $(LIBJPEG_BUILD_DIR)/.built
+	rm -f $@
 	install -d $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
 	install -d $(STAGING_DIR)/opt/bin
 	install -d $(STAGING_DIR)/opt/man/man1
-	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(STAGING_DIR)/opt install
+	$(MAKE) -C $(@D) prefix=$(STAGING_PREFIX) install
 	rm -f $(STAGING_DIR)/opt/lib/libjpeg.la
+	touch $@
 
-libjpeg-stage: $(STAGING_DIR)/opt/lib/libjpeg.so
+libjpeg-stage: $(LIBJPEG_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/libjpeg
 #
 $(LIBJPEG_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBJPEG_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libjpeg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,3 +215,9 @@ libjpeg-clean:
 #
 libjpeg-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBJPEG_DIR) $(LIBJPEG_BUILD_DIR) $(LIBJPEG_IPK_DIR) $(LIBJPEG_IPK)
+
+#
+# Some sanity check for the package.
+#
+libjpeg-check: $(LIBJPEG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
