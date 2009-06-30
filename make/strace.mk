@@ -19,16 +19,14 @@
 #
 # You should change all these variables to suit your package.
 #
+
+STRACE_VERSION ?= 4.5.18
+STRACE_IPK_VERSION ?= 1
+
 STRACE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/strace/
-STRACE_VERSION=4.5.16
 STRACE_SOURCE=strace-$(STRACE_VERSION).tar.bz2
 STRACE_DIR=strace-$(STRACE_VERSION)
 STRACE_UNZIP=bzcat
-
-#
-# STRACE_IPK_VERSION should be incremented when the ipk changes.
-#
-STRACE_IPK_VERSION=1
 
 #
 # STRACE_PATCHES should list any patches, in the the order in
@@ -37,7 +35,7 @@ STRACE_IPK_VERSION=1
 #
 STRACE_PATCHES=$(STRACE_SOURCE_DIR)/CTL_PROC.patch
 ifeq ($(TARGET_ARCH), $(filter arm armeb, $(TARGET_ARCH)))
-#http://www.fluff.org/ben/patches/strace/strace-fix-arm-bad-syscall.patch
+# http://bugs.gentoo.org/attachment.cgi?id=181917&action=view
 STRACE_PATCHES+=$(STRACE_SOURCE_DIR)/strace-fix-arm-bad-syscall.patch
 endif
 
@@ -67,7 +65,8 @@ STRACE_IPK=$(BUILD_DIR)/strace_$(STRACE_VERSION)-$(STRACE_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(STRACE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(STRACE_SITE)/$(STRACE_SOURCE)
+	$(WGET) -P $(@D) $(STRACE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -176,4 +175,4 @@ strace-dirclean:
 # Some sanity check for the package.
 #
 strace-check: $(STRACE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(STRACE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
