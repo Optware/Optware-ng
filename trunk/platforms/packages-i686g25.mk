@@ -9,7 +9,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	asterisk asterisk16 asterisk16-addons \
+	asterisk \
 	bitchx \
 	gtk \
 	iptables ivorbis-tools lcd4linux \
