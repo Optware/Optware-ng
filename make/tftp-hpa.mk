@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 TFTP_HPA_SITE=http://www.kernel.org/pub/software/network/tftp
-TFTP_HPA_VERSION=0.48
+TFTP_HPA_VERSION=5.0
 TFTP_HPA_SOURCE=tftp-hpa-$(TFTP_HPA_VERSION).tar.bz2
 TFTP_HPA_DIR=tftp-hpa-$(TFTP_HPA_VERSION)
 TFTP_HPA_UNZIP=bzcat
@@ -45,6 +45,10 @@ TFTP_HPA_PATCHES=$(TFTP_HPA_SOURCE_DIR)/xinetd-conf.patch
 TFTP_HPA_CPPFLAGS=
 TFTP_HPA_LDFLAGS=
 
+ifeq (, $(filter cs08q1armel i686g25 slugos5be slugos5le ts509, $(OPTWARE_TARGET)))
+TFTP_HPA_CONFIGURE_OPTS=--without-ipv6
+endif
+
 #
 # TFTP_HPA_BUILD_DIR is the directory in which the build is done.
 # TFTP_HPA_SOURCE_DIR is the directory which holds all the
@@ -64,7 +68,8 @@ TFTP_HPA_IPK=$(BUILD_DIR)/tftp-hpa_$(TFTP_HPA_VERSION)-$(TFTP_HPA_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TFTP_HPA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TFTP_HPA_SITE)/$(TFTP_HPA_SOURCE)
+	$(WGET) -P $(@D) $(TFTP_HPA_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -88,13 +93,13 @@ tftp-hpa-source: $(DL_DIR)/$(TFTP_HPA_SOURCE) $(TFTP_HPA_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(TFTP_HPA_BUILD_DIR)/.configured: $(DL_DIR)/$(TFTP_HPA_SOURCE) $(TFTP_HPA_PATCHES)
+$(TFTP_HPA_BUILD_DIR)/.configured: $(DL_DIR)/$(TFTP_HPA_SOURCE) $(TFTP_HPA_PATCHES) make/tftp-hpa.mk
 #	$(MAKE)  tftp_hpa-stage tftp-hpa-stage
-	rm -rf $(BUILD_DIR)/$(TFTP_HPA_DIR) $(TFTP_HPA_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TFTP_HPA_DIR) $(@D)
 	$(TFTP_HPA_UNZIP) $(DL_DIR)/$(TFTP_HPA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(TFTP_HPA_PATCHES) | patch -d $(BUILD_DIR)/$(TFTP_HPA_DIR) -p1
-	mv $(BUILD_DIR)/$(TFTP_HPA_DIR) $(TFTP_HPA_BUILD_DIR)
-	(cd $(TFTP_HPA_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(TFTP_HPA_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(TFTP_HPA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TFTP_HPA_LDFLAGS)" \
@@ -103,10 +108,11 @@ $(TFTP_HPA_BUILD_DIR)/.configured: $(DL_DIR)/$(TFTP_HPA_SOURCE) $(TFTP_HPA_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		$(TFTP_HPA_CONFIGURE_OPTS) \
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(TFTP_HPA_BUILD_DIR)/.configured
+	touch $@
 
 tftp-hpa-unpack: $(TFTP_HPA_BUILD_DIR)/.configured
 
@@ -114,9 +120,9 @@ tftp-hpa-unpack: $(TFTP_HPA_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TFTP_HPA_BUILD_DIR)/.built: $(TFTP_HPA_BUILD_DIR)/.configured
-	rm -f $(TFTP_HPA_BUILD_DIR)/.built
-	$(MAKE) -C $(TFTP_HPA_BUILD_DIR)
-	touch $(TFTP_HPA_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -126,12 +132,12 @@ tftp-hpa: $(TFTP_HPA_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(TFTP_HPA_BUILD_DIR)/.staged: $(TFTP_HPA_BUILD_DIR)/.built
-	rm -f $(TFTP_HPA_BUILD_DIR)/.staged
-	$(MAKE) -C $(TFTP_HPA_BUILD_DIR) INSTALLROOT=$(STAGING_DIR) install
-	touch $(TFTP_HPA_BUILD_DIR)/.staged
-
-tftp-hpa-stage: $(TFTP_HPA_BUILD_DIR)/.staged
+#$(TFTP_HPA_BUILD_DIR)/.staged: $(TFTP_HPA_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) INSTALLROOT=$(STAGING_DIR) install
+#	touch $@
+#
+#tftp-hpa-stage: $(TFTP_HPA_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -158,6 +164,7 @@ $(TFTP_HPA_IPK_DIR)/CONTROL/control:
 $(TFTP_HPA_IPK): $(TFTP_HPA_BUILD_DIR)/.built
 	rm -rf $(TFTP_HPA_IPK_DIR) $(BUILD_DIR)/tftp-hpa_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TFTP_HPA_BUILD_DIR) INSTALLROOT=$(TFTP_HPA_IPK_DIR) install
+	mv $(TFTP_HPA_IPK_DIR)/man $(TFTP_HPA_IPK_DIR)/opt/
 	install -d $(TFTP_HPA_IPK_DIR)/opt/etc/xinetd.d
 	install -d $(TFTP_HPA_IPK_DIR)/opt/tftpboot
 	install -m 644 $(TFTP_HPA_BUILD_DIR)/tftp-xinetd $(TFTP_HPA_IPK_DIR)/opt/etc/xinetd.d/tftp
@@ -184,3 +191,9 @@ tftp-hpa-clean:
 #
 tftp-hpa-dirclean:
 	rm -rf $(BUILD_DIR)/$(TFTP_HPA_DIR) $(TFTP_HPA_BUILD_DIR) $(TFTP_HPA_IPK_DIR) $(TFTP_HPA_IPK)
+
+#
+# Some sanity check for the package.
+#
+tftp-hpa-check: $(TFTP_HPA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
