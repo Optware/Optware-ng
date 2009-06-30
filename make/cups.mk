@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=2
+CUPS_IPK_VERSION=3
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -86,6 +86,10 @@ endif
 
 ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
 CUPS_CONFIG_OPTS=--disable-pam
+endif
+
+ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel, $(OPTWARE_TARGET)))
+CUPS_CONFIG_ENV=ac_cv_func_epoll_create=no
 endif
 
 #
@@ -186,6 +190,7 @@ endif
 		CPPFLAGS="$(CUPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(CUPS_LDFLAGS) $(STAGING_LDFLAGS)" \
 		LIBS="$(CUPS_LIBS)" \
+		$(CUPS_CONFIG_ENV) \
 		./configure \
 		--verbose \
 		--build=$(GNU_HOST_NAME) \
