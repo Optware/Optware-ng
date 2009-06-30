@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ `uname -m` = i686 ]; then
+echo "Setting up ipkg arch-file"
+mkdir -p /opt/etc/ipkg
+cat >> /opt/etc/ipkg/arch.conf << EOF
+arch all 1
+arch any 6
+arch noarch 11
+arch i686 16
+arch qemux86 21
+EOF
+fi
+
+mkdir -p /etc/profile.d/
+
+cat >> /etc/profile.d/optware << EOF
+PATH=$PATH:/opt/bin
+if [ "`id -u`" -eq 0 ]; then
+  PATH=$PATH:/opt/sbin
+fi
+EOF
+
