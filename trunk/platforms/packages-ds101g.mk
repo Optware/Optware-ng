@@ -15,3 +15,6 @@ BROKEN_PACKAGES = \
 	ecl \
 	inferno \
 	ldconfig \
+
+STRACE_VERSION := 4.5.17
+STRACE_IPK_VERSION := 1

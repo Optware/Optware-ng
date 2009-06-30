@@ -15,7 +15,7 @@ BROKEN_PACKAGES = \
 	iptables ivorbis-tools lcd4linux \
 	ldconfig \
 	nfs-utils puppy \
-	qemu strace transcode \
+	qemu transcode \
 	util-linux \
 	vte \
 	xaw xchat xterm
