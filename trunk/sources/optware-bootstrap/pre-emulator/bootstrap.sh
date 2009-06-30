@@ -25,10 +25,12 @@ rm -rf $BSDIR
 rm /tmp/ipkg
 
 [ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
-if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
+if [ ! -e /opt/etc/ipkg/optware.conf ]
 then
-	echo "Creating /opt/etc/ipkg/cross-feed.conf..."
-	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/i686g25/cross/unstable" >/opt/etc/ipkg/cross-feed.conf
+	echo "Creating /opt/etc/ipkg/optware.conf..."
+	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/i686g25/cross/unstable" >/opt/etc/ipkg/optware.conf
+	echo "# src/gz native http://ipkg.nslu2-linux.org/feeds/optware/i686g25/native/unstable" >>/opt/etc/ipkg/optware.conf
+	echo "src/gz kernel http://ipkg.nslu2-linux.org/feeds/optware/pre-emulator/cross/unstable" >>/opt/etc/ipkg/optware.conf
 fi
 
 echo "Setup complete."
