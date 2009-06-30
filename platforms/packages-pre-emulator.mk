@@ -1,2 +1,2 @@
 PACKAGES = \
-	optware-bootstrap \
+	pre-emulator-optware-bootstrap \
