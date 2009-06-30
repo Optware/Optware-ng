@@ -1,0 +1,2 @@
+PACKAGES = \
+	optware-bootstrap \

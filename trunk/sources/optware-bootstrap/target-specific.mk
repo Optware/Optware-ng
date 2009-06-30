@@ -4,6 +4,7 @@ OPTWARE-BOOTSTRAP_TARGETS=\
 	hpmv2 \
 	lspro \
 	mssii \
+	pre-emulator \
 	slugos5be \
 	slugos5le \
 	syno-e500 \
