@@ -35,7 +35,7 @@ GHOSTSCRIPT_CONFLICTS=
 #
 # GHOSTSCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
-GHOSTSCRIPT_IPK_VERSION=1
+GHOSTSCRIPT_IPK_VERSION=2
 
 #
 # GHOSTSCRIPT_CONFFILES should be a list of user-editable files

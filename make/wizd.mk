@@ -46,7 +46,7 @@ WIZD_CONFLICTS=
 #
 # WIZD_IPK_VERSION should be incremented when the ipk changes.
 #
-WIZD_IPK_VERSION=1
+WIZD_IPK_VERSION=2
 
 #
 # WIZD_CONFFILES should be a list of user-editable files
