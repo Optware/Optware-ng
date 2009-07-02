@@ -40,7 +40,7 @@ GIT_CONFLICTS=
 #
 # GIT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT_IPK_VERSION=1
+GIT_IPK_VERSION=2
 
 GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
@@ -52,7 +52,7 @@ GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 # GIT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GIT_PATCHES=$(GIT_SOURCE_DIR)/Makefile.patch \
+GIT_PATCHES=$(GIT_SOURCE_DIR)/Makefile.patch $(GIT_SOURCE_DIR)/ssh-path.patch 
 
 #
 # If the compilation of the package requires additional
