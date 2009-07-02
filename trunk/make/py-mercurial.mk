@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MERCURIAL_VERSION=1.2.1
-PY-MERCURIAL_SITE=http://www.selenic.com/mercurial/release
+PY-MERCURIAL_VERSION=1.3
+PY-MERCURIAL_SITE=http://mercurial.selenic.com/release
 PY-MERCURIAL_SOURCE=mercurial-$(PY-MERCURIAL_VERSION).tar.gz
 PY-MERCURIAL_DIR=mercurial-$(PY-MERCURIAL_VERSION)
 PY-MERCURIAL_UNZIP=zcat
@@ -176,12 +176,12 @@ py-mercurial: $(PY-MERCURIAL_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-MERCURIAL_BUILD_DIR)/.staged: $(PY-MERCURIAL_BUILD_DIR)/.built
+#$(PY-MERCURIAL_BUILD_DIR)/.staged: $(PY-MERCURIAL_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(PY-MERCURIAL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-py-mercurial-stage: $(PY-MERCURIAL_BUILD_DIR)/.staged
+#
+#py-mercurial-stage: $(PY-MERCURIAL_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
