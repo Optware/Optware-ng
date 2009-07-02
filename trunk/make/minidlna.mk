@@ -49,7 +49,7 @@ MINIDLNA_VERSION=cvs$(MINIDLNA_CVS_DATE)
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=1
+MINIDLNA_IPK_VERSION=2
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
