@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBJPEG_SITE=http://www.ijg.org/files
-LIBJPEG_VERSION=6b
+LIBJPEG_VERSION=7
 LIBJPEG_SOURCE=jpegsrc.v$(LIBJPEG_VERSION).tar.gz
 LIBJPEG_DIR=jpeg-$(LIBJPEG_VERSION)
 LIBJPEG_UNZIP=zcat
@@ -34,7 +34,7 @@ LIBJPEG_CONFLICTS=
 #
 # LIBJPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBJPEG_IPK_VERSION=3
+LIBJPEG_IPK_VERSION=1
 
 #
 # LIBJPEG_PATCHES should list any patches, in the the order in
@@ -117,6 +117,7 @@ $(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 		--disable-static \
 		--prefix=/opt \
 	)
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libjpeg-unpack: $(LIBJPEG_BUILD_DIR)/.configured
@@ -187,12 +188,10 @@ $(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/.built
 	install -d $(LIBJPEG_IPK_DIR)/opt/lib
 	install -d $(LIBJPEG_IPK_DIR)/opt/bin
 	install -d $(LIBJPEG_IPK_DIR)/opt/share/man/man1
-	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(LIBJPEG_IPK_DIR)/opt mandir=$(LIBJPEG_IPK_DIR)/opt/share/man/man1 install
+	$(MAKE) -C $(LIBJPEG_BUILD_DIR) install-strip transform='' \
+		prefix=$(LIBJPEG_IPK_DIR)/opt \
+		mandir=$(LIBJPEG_IPK_DIR)/opt/share/man/man1
 	rm -f $(LIBJPEG_IPK_DIR)/opt/lib/libjpeg.la
-	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)/opt/bin/*
-	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)/opt/lib/*.so
-#	install -d $(LIBJPEG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBJPEG_SOURCE_DIR)/rc.libjpeg $(LIBJPEG_IPK_DIR)/opt/etc/init.d/SXXlibjpeg
 	$(MAKE) $(LIBJPEG_IPK_DIR)/CONTROL/control
 #	install -m 644 $(LIBJPEG_SOURCE_DIR)/postinst $(LIBJPEG_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(LIBJPEG_SOURCE_DIR)/prerm $(LIBJPEG_IPK_DIR)/CONTROL/prerm
