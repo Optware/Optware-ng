@@ -230,7 +230,7 @@ COMMON_CROSS_PACKAGES = \
 	catdoc ccollect ccxstream cdargs cdrtools centerim cuetools \
 	cherokee chicken chillispot chrpath cksfv \
 	classpath clamav clearsilver climm clinkcc clips cmdftp \
-	confuse connect coreutils corkscrew cpio cron \
+	confuse connect coreutils corkscrew cpio cron cryptcat \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \
