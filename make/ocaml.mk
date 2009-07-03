@@ -23,7 +23,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.11
-OCAML_VERSION=3.11.0
+OCAML_VERSION=3.11.1
 OCAML_SOURCE=ocaml-$(OCAML_VERSION).tar.gz
 OCAML_DIR=ocaml-$(OCAML_VERSION)
 OCAML_UNZIP=zcat
@@ -35,7 +35,7 @@ OCAML_DEPENDS=
 OCAML_SUGGESTS=
 OCAML_CONFLICTS=
 
-OCAML_IPK_VERSION=2
+OCAML_IPK_VERSION=1
 
 #
 # OCAML_CONFFILES should be a list of user-editable files
@@ -172,7 +172,7 @@ $(OCAML_IPK): $(OCAML_BUILD_DIR)/.built
 	rm -rf $(OCAML_IPK_DIR) $(BUILD_DIR)/ocaml_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OCAML_BUILD_DIR) PREFIX=$(OCAML_IPK_DIR)/opt install
 	for exe in ocamlrun ocamlyacc; do $(STRIP_COMMAND) $(OCAML_IPK_DIR)/opt/bin/$$exe; done
-	for so in $(OCAML_IPK_DIR)/opt/lib/ocaml/stublibs/*.so; do $(STRIP_COMMAND) $$so; done
+	for so in `find $(OCAML_IPK_DIR)/opt/lib/ocaml -name '*.so'`; do $(STRIP_COMMAND) $$so; done
 	$(MAKE) $(OCAML_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OCAML_IPK_DIR)
 
