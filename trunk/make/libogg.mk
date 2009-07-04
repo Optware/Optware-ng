@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBOGG_SITE=http://downloads.xiph.org/releases/ogg
-LIBOGG_VERSION=1.1.3
+LIBOGG_VERSION=1.1.4
 LIBOGG_SOURCE=libogg-$(LIBOGG_VERSION).tar.gz
 LIBOGG_DIR=libogg-$(LIBOGG_VERSION)
 LIBOGG_UNZIP=zcat
@@ -35,7 +35,7 @@ LIBOGG_CONFLICTS=
 #
 # LIBOGG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBOGG_IPK_VERSION=3
+LIBOGG_IPK_VERSION=1
 
 #
 # LIBOGG_CONFFILES should be a list of user-editable files
@@ -73,7 +73,8 @@ LIBOGG_IPK=$(BUILD_DIR)/libogg_$(LIBOGG_VERSION)-$(LIBOGG_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBOGG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBOGG_SITE)/$(LIBOGG_SOURCE)
+	$(WGET) -P $(@D) $(LIBOGG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -97,12 +98,13 @@ libogg-source: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES)
-	rm -rf $(BUILD_DIR)/$(LIBOGG_DIR) $(LIBOGG_BUILD_DIR)
+$(LIBOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES) make/libogg.mk
+	rm -rf $(BUILD_DIR)/$(LIBOGG_DIR) $(@D)
 	$(LIBOGG_UNZIP) $(DL_DIR)/$(LIBOGG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBOGG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBOGG_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBOGG_DIR) $(LIBOGG_BUILD_DIR)
-	(cd $(LIBOGG_BUILD_DIR); rm -rf config.cache; autoconf; \
+	mv $(BUILD_DIR)/$(LIBOGG_DIR) $(@D)
+	rm -f $(@D)/config.cache; autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBOGG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBOGG_LDFLAGS)" \
@@ -113,7 +115,7 @@ $(LIBOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(LIBOGG_BUILD_DIR)/.configured
+	touch $@
 
 libogg-unpack: $(LIBOGG_BUILD_DIR)/.configured
 
@@ -123,9 +125,9 @@ libogg-unpack: $(LIBOGG_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(LIBOGG_BUILD_DIR)/.built: $(LIBOGG_BUILD_DIR)/.configured
-	rm -f $(LIBOGG_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBOGG_BUILD_DIR)
-	touch $(LIBOGG_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -137,17 +139,17 @@ libogg: $(LIBOGG_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBOGG_BUILD_DIR)/.staged: $(LIBOGG_BUILD_DIR)/.built
-	rm -f $(LIBOGG_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|prefix=/opt|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/ogg.pc
-	rm -f $(STAGING_DIR)/opt/lib/libogg.la
-	touch $(LIBOGG_BUILD_DIR)/.staged
+	rm -f $(STAGING_LIB_DIR)/libogg.la $(STAGING_LIB_DIR)/libogg.a
+	touch $@
 
 libogg-stage: $(LIBOGG_BUILD_DIR)/.staged
 
 
 $(LIBOGG_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBOGG_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libogg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -176,6 +178,7 @@ $(LIBOGG_IPK_DIR)/CONTROL/control:
 $(LIBOGG_IPK): $(LIBOGG_BUILD_DIR)/.built
 	rm -rf $(LIBOGG_IPK_DIR) $(BUILD_DIR)/libogg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(LIBOGG_IPK_DIR) install-strip
+	rm -f $(LIBOGG_IPK_DIR)/opt/lib/libogg.a
 	$(MAKE) $(LIBOGG_IPK_DIR)/CONTROL/control
 	echo $(LIBOGG_CONFFILES) | sed -e 's/ /\n/g' > $(LIBOGG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBOGG_IPK_DIR)
@@ -197,3 +200,9 @@ libogg-clean:
 #
 libogg-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBOGG_DIR) $(LIBOGG_BUILD_DIR) $(LIBOGG_IPK_DIR) $(LIBOGG_IPK)
+
+#
+# Some sanity check for the package.
+#
+libogg-check: $(LIBOGG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
