@@ -14,11 +14,8 @@
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
 
-RTORRENT_VERSION=$(strip \
-	$(if $(filter gumstix1151 mbwe-bluering openwrt-brcm24, $(OPTWARE_TARGET)), 0.8.0, \
-	$(if $(filter dns323 ts101 wdtv, $(OPTWARE_TARGET)), 0.8.2, \
-	0.8.4)))
-RTORRENT_IPK_VERSION=2
+RTORRENT_VERSION ?= 0.8.5
+RTORRENT_IPK_VERSION ?= 1
 
 RTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/rtorrent
 #RTORRENT_SVN_REV=1037
@@ -103,7 +100,8 @@ ifdef RTORRENT_SVN_REV
 		rm -rf $(RTORRENT_DIR) \
 	)
 else
-	$(WGET) -P $(DL_DIR) $(RTORRENT_SITE)/$(RTORRENT_SOURCE)
+	$(WGET) -P $(@D) $(RTORRENT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -153,8 +151,8 @@ else
 	sed -i -e '/TORRENT_CHECK_EXECINFO()/s/.*/AC_DEFINE(USE_EXECINFO, 1, Use execinfo.h)/' \
 		$(@D)/configure.ac
 endif
+	AUTOMAKE=automake ACLOCAL=aclocal autoreconf -i -f $(@D)
 	(cd $(@D); \
-		AUTOMAKE=automake ACLOCAL=aclocal autoreconf -i -f; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RTORRENT_LDFLAGS)" \
@@ -170,7 +168,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) -e 's/ECHO="echo"/echo="echo"/' $(@D)/libtool
 	touch $@
 
 rtorrent-unpack: $(RTORRENT_BUILD_DIR)/.configured

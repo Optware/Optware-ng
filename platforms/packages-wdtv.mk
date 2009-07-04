@@ -16,3 +16,6 @@ BROKEN_PACKAGES = \
 	puppy qemu rssh \
 	sm transcode uemacs vte \
 	xauth xaw xchat xmu xt xterm lm-sensors \
+
+RTORRENT_VERSION := 0.8.2
+RTORRENT_IPK_VERSION := 2
