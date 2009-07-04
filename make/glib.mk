@@ -170,6 +170,7 @@ $(GLIB_BUILD_DIR)/.staged: $(GLIB_BUILD_DIR)/.built
 	rm -rf $(STAGING_DIR)/opt/lib/libgobject-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgthread-2.0.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+               -e 's|glib_mkenums=.*|glib_mkenums=$${prefix}/bin/glib-mkenums|' \
 		$(STAGING_LIB_DIR)/pkgconfig/gio*-2.0.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/glib-2.0.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/gmodule*-2.0.pc \

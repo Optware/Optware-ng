@@ -117,6 +117,7 @@ $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES) make/
 	rm -rf $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
 	$(PANGO_UNZIP) $(DL_DIR)/$(PANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
+	sed -i -e '/cd .* glib-mkenums/s|glib-mkenums |$(STAGING_PREFIX)/bin/& |' $(@D)/pango/Makefile.in
 	(cd $(PANGO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \

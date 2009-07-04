@@ -145,7 +145,7 @@ atk: $(ATK_BUILD_DIR)/.built
 $(ATK_BUILD_DIR)/.staged: $(ATK_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(ATK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/atk.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/atk.pc
 	rm -rf $(STAGING_DIR)/opt/lib/libatk-1.0.la
 	touch $@
 
