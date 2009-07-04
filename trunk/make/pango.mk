@@ -12,8 +12,8 @@
 # PANGO_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-PANGO_SITE=ftp://ftp.gtk.org/pub/gtk/v2.9/
-PANGO_VERSION=1.11.99
+PANGO_SITE=http://ftp.gnome.org/pub/gnome/sources/pango/1.24
+PANGO_VERSION=1.24.4
 PANGO_SOURCE=pango-$(PANGO_VERSION).tar.bz2
 PANGO_DIR=pango-$(PANGO_VERSION)
 PANGO_UNZIP=bzcat
@@ -109,7 +109,7 @@ pango-source: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
+$(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES) make/pango.mk
 	$(MAKE) glib-stage
 	$(MAKE) xft-stage
 	$(MAKE) ice-stage

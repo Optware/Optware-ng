@@ -12,8 +12,8 @@
 # GTK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GTK_SITE=ftp://ftp.gtk.org/pub/gtk/v2.8
-GTK_VERSION=2.8.9
+GTK_SITE=http://ftp.gtk.org/pub/gtk/2.16
+GTK_VERSION=2.16.3
 GTK_SOURCE=gtk+-$(GTK_VERSION).tar.bz2
 GTK_DIR=gtk+-$(GTK_VERSION)
 GTK_UNZIP=bzcat
@@ -41,7 +41,7 @@ GTK_LOCALES=
 # GTK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#GTK_PATCHES=$(GTK_SOURCE_DIR)/configure.patch
+GTK_PATCHES=$(GTK_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -85,7 +85,8 @@ $(GTK_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GTK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GTK_SITE)/$(GTK_SOURCE)
+	$(WGET) -P $(@D) $(GTK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,22 +110,18 @@ gtk-source: $(DL_DIR)/$(GTK_SOURCE) $(GTK_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) \
-		$(GTK_PATCHES)
-	$(MAKE) libtiff-stage
-	$(MAKE) libpng-stage
-	$(MAKE) libjpeg-stage
-	$(MAKE) x11-stage
-	$(MAKE) xcursor-stage
-	$(MAKE) xfixes-stage
-	$(MAKE) xext-stage
-	$(MAKE) xft-stage
-	$(MAKE) pango-stage
-	$(MAKE) atk-stage
-	rm -rf $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR)
+$(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) $(GTK_PATCHES)
+	$(MAKE) libtiff-stage libpng-stage libjpeg-stage
+	$(MAKE) x11-stage xcursor-stage xfixes-stage xext-stage xft-stage
+	$(MAKE) pango-stage cairo-stage atk-stage
+	rm -rf $(BUILD_DIR)/$(GTK_DIR) $(@D)
 	$(GTK_UNZIP) $(DL_DIR)/$(GTK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR)
-	(cd $(GTK_BUILD_DIR); \
+	if test -n "$(GTK_PATCHES)" ; \
+		then cat $(GTK_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(GTK_DIR) -p1 ; \
+	fi
+	mv $(BUILD_DIR)/$(GTK_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GTK_CPPFLAGS)" \
@@ -137,12 +134,13 @@ $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+                --without-libjasper \
 		--x-includes=$(STAGING_INCLUDE_DIR) \
 		--x-libraries=$(STAGING_LIB_DIR) \
 		--disable-static \
 		--disable-glibtest \
 	)
-	$(PATCH_LIBTOOL) $(GTK_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 gtk-unpack: $(GTK_BUILD_DIR)/.configured
@@ -153,8 +151,8 @@ gtk-unpack: $(GTK_BUILD_DIR)/.configured
 #
 $(GTK_BUILD_DIR)/.built: $(GTK_BUILD_DIR)/.configured
 	rm -f $@
-	cp $(GTK_SOURCE_DIR)/test-inline-pixbufs.h $(GTK_BUILD_DIR)/demos
-	$(MAKE) -C $(GTK_BUILD_DIR)
+	cp $(GTK_SOURCE_DIR)/test-inline-pixbufs.h $(@D)/demos
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
