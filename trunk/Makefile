@@ -44,6 +44,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = parted lumikki \
 	doxygen \
+	gtk \
 	iozone \
 	bpalogin \
 	transcode \
@@ -257,7 +258,7 @@ COMMON_CROSS_PACKAGES = \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
 	gloox gpsd \
-	grep groff gsasl gsnmp gtmess gtk gtypist gutenprint gzip  \
+	grep groff gsasl gsnmp gtmess gtypist gutenprint gzip  \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
