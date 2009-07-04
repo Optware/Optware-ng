@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 CAIRO_SITE=http://cairographics.org/releases
-CAIRO_VERSION=1.4.10
+CAIRO_VERSION=1.8.8
 CAIRO_SOURCE=cairo-$(CAIRO_VERSION).tar.gz
 CAIRO_DIR=cairo-$(CAIRO_VERSION)
 CAIRO_UNZIP=zcat
@@ -21,7 +21,7 @@ CAIRO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CAIRO_DESCRIPTION=Cairo is a vector graphics library with cross-device output support.
 CAIRO_SECTION=lib
 CAIRO_PRIORITY=optional
-CAIRO_DEPENDS=freetype, fontconfig, libpng, xrender
+CAIRO_DEPENDS=freetype, fontconfig, libpng, pixman, xrender
 
 #
 # CAIRO_IPK_VERSION should be incremented when the ipk changes.
@@ -85,7 +85,8 @@ $(CAIRO_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CAIRO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CAIRO_SITE)/$(CAIRO_SOURCE)
+	$(WGET) -P $(@D) $(CAIRO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,11 +110,8 @@ cairo-source: $(DL_DIR)/$(CAIRO_SOURCE) $(CAIRO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(CAIRO_SOURCE) $(CAIRO_PATCHES)
-	$(MAKE) freetype-stage
-	$(MAKE) fontconfig-stage
-	$(MAKE) libpng-stage
-	$(MAKE) xrender-stage
+$(CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(CAIRO_SOURCE) $(CAIRO_PATCHES) make/cairo.mk
+	$(MAKE) freetype-stage fontconfig-stage libpng-stage pixman-stage xrender-stage
 	rm -rf $(BUILD_DIR)/$(CAIRO_DIR) $(CAIRO_BUILD_DIR)
 	$(CAIRO_UNZIP) $(DL_DIR)/$(CAIRO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(CAIRO_DIR) $(CAIRO_BUILD_DIR)

@@ -12,8 +12,8 @@
 # ATK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-ATK_SITE=ftp://ftp.gtk.org/pub/gtk/v2.6/
-ATK_VERSION=1.9.0
+ATK_SITE=http://ftp.gnome.org/pub/gnome/sources/atk/1.26
+ATK_VERSION=1.26.0
 ATK_SOURCE=atk-$(ATK_VERSION).tar.bz2
 ATK_DIR=atk-$(ATK_VERSION)
 ATK_UNZIP=bzcat
@@ -26,7 +26,7 @@ ATK_DEPENDS=glib
 #
 # ATK_IPK_VERSION should be incremented when the ipk changes.
 #
-ATK_IPK_VERSION=2
+ATK_IPK_VERSION=1
 
 #
 # ATK_LOCALES defines which locales get installed
@@ -100,8 +100,7 @@ atk-source: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES)
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
 #
-$(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) \
-		$(ATK_PATCHES)
+$(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES) make/atk.mk
 	$(MAKE) glib-stage
 	rm -rf $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR)
 	$(ATK_UNZIP) $(DL_DIR)/$(ATK_SOURCE) | tar -C $(BUILD_DIR) -xvf -

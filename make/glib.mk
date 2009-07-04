@@ -12,8 +12,8 @@
 # GLIB_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GLIB_SITE=ftp://ftp.gtk.org/pub/glib/2.16
-GLIB_VERSION=2.16.6
+GLIB_SITE=http://ftp.gnome.org/pub/gnome/sources/glib/2.20
+GLIB_VERSION=2.20.4
 GLIB_SOURCE=glib-$(GLIB_VERSION).tar.bz2
 GLIB_DIR=glib-$(GLIB_VERSION)
 GLIB_UNZIP=bzcat
@@ -107,7 +107,7 @@ glib-source: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
+$(GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES) make/glib.mk
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -119,7 +119,8 @@ endif
 	#cat $(GLIB_PATCHES) | patch -d $(BUILD_DIR)/$(GLIB_DIR) -p1
 	mv $(BUILD_DIR)/$(GLIB_DIR) $(@D)
 	cp $(SOURCE_DIR)/glib/glib.cache $(@D)/arm.cache
-	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(GLIB_LOCALES)/;' $(@D)/configure
+#	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(GLIB_LOCALES)/;' $(@D)/configure
+	sed -i -e 's/^ *$$as_echo_n /echo -n /' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
@@ -163,15 +164,17 @@ $(GLIB_BUILD_DIR)/.staged: $(GLIB_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_DIR)/opt
 	install $(@D)/glibconfig.h $(STAGING_INCLUDE_DIR)/glib-2.0/
+	rm -rf $(STAGING_DIR)/opt/lib/libgio-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libglib-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgmodule-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgobject-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgthread-2.0.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
-		$(STAGING_LIB_DIR)/pkgconfig/glib-*.pc \
-		$(STAGING_LIB_DIR)/pkgconfig/gmodule-*.pc \
-		$(STAGING_LIB_DIR)/pkgconfig/gobject-*.pc \
-		$(STAGING_LIB_DIR)/pkgconfig/gthread-*.pc
+		$(STAGING_LIB_DIR)/pkgconfig/gio*-2.0.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/glib-2.0.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/gmodule*-2.0.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/gobject-2.0.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/gthread-2.0.pc
 	touch $@
 
 glib-stage: $(GLIB_BUILD_DIR)/.staged
