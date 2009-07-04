@@ -1,17 +1,17 @@
---- configure.orig	2008-09-11 22:21:50.000000000 +0000
-+++ configure	2008-09-28 16:49:47.046814487 +0000
-@@ -20861,11 +20861,11 @@
- $as_echo_n "checking the byte alignment... " >&6; }
- 
+--- configure.orig	2009-07-04 09:43:16.000000000 -0700
++++ configure	2009-07-04 09:44:40.000000000 -0700
+@@ -15687,11 +15687,11 @@
    if test "$cross_compiling" = yes; then
--  { { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
-+  { { $as_echo "$as_me:$LINENO: warning: cannot run test program while cross compiling
+   { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-{ { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++{ { $as_echo "$as_me:$LINENO: warning: cannot run test program while cross compiling
  See \`config.log' for more details." >&5
 -$as_echo "$as_me: error: cannot run test program while cross compiling
 +$as_echo "$as_me: warning: cannot run test program while cross compiling
  See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
-+  }
+-   { (exit 1); exit 1; }; }; }
++   }; }
  else
    cat >conftest.$ac_ext <<_ACEOF
  #include <inttypes.h>

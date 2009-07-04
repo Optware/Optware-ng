@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.12.4
+LIBTORRENT_VERSION=0.12.5
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
 #LIBTORRENT_SVN_REV=1037
 ifdef LIBTORRENT_SVN_REV
@@ -120,7 +120,8 @@ ifdef LIBTORRENT_SVN_REV
 		rm -rf $(LIBTORRENT_DIR) \
 		)
 else
-	$(WGET) -P $(DL_DIR) $(LIBTORRENT_SITE)/$(LIBTORRENT_SOURCE)
+	$(WGET) -P $(@D) $(LIBTORRENT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -283,4 +284,4 @@ libtorrent-dirclean:
 # Some sanity check for the package.
 #
 libtorrent-check: $(LIBTORRENT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBTORRENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
