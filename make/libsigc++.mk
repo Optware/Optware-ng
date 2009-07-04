@@ -12,8 +12,8 @@
 # LIBSIGC++_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-LIBSIGC++_SITE=http://ftp.gnome.org/pub/GNOME/sources/libsigc++/2.0/
-LIBSIGC++_VERSION=2.0.18
+LIBSIGC++_SITE=http://ftp.gnome.org/pub/GNOME/sources/libsigc++/2.2
+LIBSIGC++_VERSION=2.2.3
 LIBSIGC++_SOURCE=libsigc++-$(LIBSIGC++_VERSION).tar.gz
 LIBSIGC++_DIR=libsigc++-$(LIBSIGC++_VERSION)
 LIBSIGC++_UNZIP=zcat
@@ -73,7 +73,8 @@ LIBSIGC++_IPK=$(BUILD_DIR)/libsigc++_$(LIBSIGC++_VERSION)-$(LIBSIGC++_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBSIGC++_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBSIGC++_SITE)/$(LIBSIGC++_SOURCE)
+	$(WGET) -P $(@D) $(LIBSIGC++_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -145,8 +146,8 @@ libsigc++: $(LIBSIGC++_BUILD_DIR)/.built
 $(LIBSIGC++_BUILD_DIR)/.staged: $(LIBSIGC++_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) SUBDIRS=sigc++ install
-	sed -e 's!^prefix=.*!prefix=$(STAGING_PREFIX)!' \
-		$(@D)/sigc++-2.0.pc > $(STAGING_LIB_DIR)/pkgconfig/sigc++-2.0.pc
+	sed -i -e 's!^prefix=.*!prefix=$(STAGING_PREFIX)!' \
+		 $(STAGING_LIB_DIR)/pkgconfig/sigc++-2.0.pc
 	rm -f $(STAGING_LIB_DIR)/libsigc-2.0.la
 	touch $@
 
@@ -220,4 +221,4 @@ libsigc++-dirclean:
 # Some sanity check for the package.
 #
 libsigc++-check: $(LIBSIGC++_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBSIGC++_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
