@@ -116,6 +116,9 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 	if test "$(BUILD_DIR)/$(LIBVORBIS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBVORBIS_DIR) $(@D) ; \
 	fi
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = "3"; then \
+		sed -i -e 's/ -Wextra//g' $(@D)/configure; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(LIBVORBIS_CPPFLAGS)" \
