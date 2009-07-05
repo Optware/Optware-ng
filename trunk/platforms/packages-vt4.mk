@@ -13,7 +13,7 @@ BROKEN_PACKAGES = \
 	atftp avahi \
 	bacula bitlbee boost bsdgames btg btpd bzflag \
 	centerim climm \
-	castget cdargs cherokee clamav clinkcc \
+	castget cdargs cherokee clamav clinkcc cryptcat \
 	ctorrent ctrlproxy cups \
 	dansguardian dspam \
 	emacs22 enhanced-ctorrent esniper erlang erl-yaws \
