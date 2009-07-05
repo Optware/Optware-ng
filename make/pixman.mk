@@ -41,7 +41,7 @@ PIXMAN_LOCALES=
 # PIXMAN_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PIXMAN_PATCHES=$(PIXMAN_SOURCE_DIR)/pixman-arm.patch
+PIXMAN_PATCHES=$(PIXMAN_SOURCE_DIR)/pixman-arm.patch $(PIXMAN_SOURCE_DIR)/AT_HWCAP.patch
 
 #
 # If the compilation of the package requires additional
