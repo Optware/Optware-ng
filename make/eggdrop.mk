@@ -27,8 +27,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 EGGDROP_SITE=ftp://ftp.eggheads.org/pub/eggdrop/source/1.6
-EGGDROP_VERSION=1.6.17
-EGGDROP_SOURCE=eggdrop$(EGGDROP_VERSION).tar.bz2
+EGGDROP_VERSION=1.6.19
+EGGDROP_SOURCE=eggdrop$(EGGDROP_VERSION)+ctcpfix.tar.bz2
 EGGDROP_DIR=eggdrop$(EGGDROP_VERSION)
 EGGDROP_UNZIP=bzcat
 EGGDROP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -42,11 +42,11 @@ EGGDROP_CONFLICTS=
 #
 # EGGDROP_IPK_VERSION should be incremented when the ipk changes.
 #
-EGGDROP_IPK_VERSION=4
+EGGDROP_IPK_VERSION=1
 
 #
 # EGGDROP_CONFFILES should be a list of user-editable files
-#EGGDROP_CONFFILES=/opt/etc/eggdrop.conf /opt/etc/init.d/SXXeggdrop
+EGGDROP_CONFFILES=/opt/etc/eggdrop.conf /opt/etc/init.d/S50eggdrop
 
 #
 # EGGDROP_PATCHES should list any patches, in the the order in
@@ -80,7 +80,8 @@ EGGDROP_IPK=$(BUILD_DIR)/eggdrop_$(EGGDROP_VERSION)-$(EGGDROP_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(EGGDROP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(EGGDROP_SITE)/$(EGGDROP_SOURCE)
+	$(WGET) -P $(@D) $(EGGDROP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,14 +105,14 @@ eggdrop-source: $(DL_DIR)/$(EGGDROP_SOURCE) $(EGGDROP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(EGGDROP_BUILD_DIR)/.configured: $(DL_DIR)/$(EGGDROP_SOURCE) $(EGGDROP_PATCHES)
+$(EGGDROP_BUILD_DIR)/.configured: $(DL_DIR)/$(EGGDROP_SOURCE) $(EGGDROP_PATCHES) make/eggdrop.mk
 	$(MAKE) tcl-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(EGGDROP_DIR) $(EGGDROP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(EGGDROP_DIR) $(@D)
 	$(EGGDROP_UNZIP) $(DL_DIR)/$(EGGDROP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(EGGDROP_PATCHES) | patch -d $(BUILD_DIR)/$(EGGDROP_DIR) -p1
-	mv $(BUILD_DIR)/$(EGGDROP_DIR) $(EGGDROP_BUILD_DIR)
-	(cd $(EGGDROP_BUILD_DIR); \
-		autoconf configure.ac > configure; \
+	cat $(EGGDROP_PATCHES) | patch -bd $(BUILD_DIR)/$(EGGDROP_DIR) -p1
+	mv $(BUILD_DIR)/$(EGGDROP_DIR) $(@D)
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(EGGDROP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(EGGDROP_LDFLAGS)" \
@@ -119,12 +120,12 @@ $(EGGDROP_BUILD_DIR)/.configured: $(DL_DIR)/$(EGGDROP_SOURCE) $(EGGDROP_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt/eggdrop \
+		--prefix=/opt/share/eggdrop \
 		--disable-nls \
 		--with-tclinc=$(STAGING_INCLUDE_DIR)/tcl.h \
 		--with-tcllib=$(STAGING_LIB_DIR)/libtcl.so \
 	)
-	touch $(EGGDROP_BUILD_DIR)/.configured
+	touch $@
 
 eggdrop-unpack: $(EGGDROP_BUILD_DIR)/.configured
 
@@ -132,10 +133,11 @@ eggdrop-unpack: $(EGGDROP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(EGGDROP_BUILD_DIR)/.built: $(EGGDROP_BUILD_DIR)/.configured
-	rm -f $(EGGDROP_BUILD_DIR)/.built
-	$(MAKE) config -C $(EGGDROP_BUILD_DIR)
-	$(MAKE) -C $(EGGDROP_BUILD_DIR)
-	touch $(EGGDROP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) config -C $(@D)
+	$(MAKE) -C $(@D) \
+		LDFLAGS="$(STAGING_LDFLAGS) $(EGGDROP_LDFLAGS)"
+	touch $@
 
 #
 # This is the build convenience target.
@@ -147,7 +149,7 @@ eggdrop: $(EGGDROP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/eggdrop
 #
 $(EGGDROP_IPK_DIR)/CONTROL/control:
-	@install -d $(EGGDROP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: eggdrop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,10 +177,14 @@ $(EGGDROP_IPK_DIR)/CONTROL/control:
 #
 $(EGGDROP_IPK): $(EGGDROP_BUILD_DIR)/.built
 	rm -rf $(EGGDROP_IPK_DIR) $(BUILD_DIR)/eggdrop_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(EGGDROP_BUILD_DIR) DEST=$(EGGDROP_IPK_DIR)/opt/eggdrop install
+	$(MAKE) -C $(EGGDROP_BUILD_DIR) DEST=$(EGGDROP_IPK_DIR)/opt/share/eggdrop install
+	$(STRIP_COMMAND) $(EGGDROP_IPK_DIR)/opt/share/eggdrop/eggdrop-$(EGGDROP_VERSION)
+	$(STRIP_COMMAND) $(EGGDROP_IPK_DIR)/opt/share/eggdrop/modules-$(EGGDROP_VERSION)/*.so
+	mv $(EGGDROP_IPK_DIR)/opt/share/eggdrop/eggdrop.conf $(EGGDROP_IPK_DIR)/opt/share/eggdrop/eggdrop-orig.conf
 	$(MAKE) $(EGGDROP_IPK_DIR)/CONTROL/control
 	install -d $(EGGDROP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(EGGDROP_SOURCE_DIR)/rc.eggdrop $(EGGDROP_IPK_DIR)/opt/etc/init.d/S50eggdrop
+	install -m 644 $(EGGDROP_BUILD_DIR)/eggdrop.conf $(EGGDROP_IPK_DIR)/opt/etc/
 	install -m 755 $(EGGDROP_SOURCE_DIR)/postinst $(EGGDROP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EGGDROP_IPK_DIR)
 
@@ -199,3 +205,9 @@ eggdrop-clean:
 #
 eggdrop-dirclean:
 	rm -rf $(BUILD_DIR)/$(EGGDROP_DIR) $(EGGDROP_BUILD_DIR) $(EGGDROP_IPK_DIR) $(EGGDROP_IPK)
+
+#
+# Some sanity check for the package.
+#
+eggdrop-check: $(EGGDROP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
