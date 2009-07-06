@@ -11,11 +11,11 @@ if grep -q ^eggdrop: /etc/passwd; then
 	echo There already is an eggdrop user on the system.
 else
 	echo -n "No eggdrop user found, creating it... "
-	adduser -S -h /opt/eggdrop -g "eggdrop daemon" -s /bin/false -D -H  $ADDUSER_OPT eggdrop > /dev/null 2>&1
+	adduser -S -h /opt/share/eggdrop -g "eggdrop daemon" -s /bin/false -D -H  $ADDUSER_OPT eggdrop > /dev/null 2>&1
 	echo done
 fi
-chown -R eggdrop.eggdrop /opt/eggdrop 
-chmod 700 /opt/eggdrop
+chown -R eggdrop.eggdrop /opt/share/eggdrop
+chmod 700 /opt/share/eggdrop
 
 echo ; echo
 echo "A template configuration file is installed here : /opt/etc/eggdrop.conf"
