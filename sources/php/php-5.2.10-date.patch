@@ -1,0 +1,12 @@
+http://bugs.php.net/bug.php?id=48276
+--- ext/date/php_date.c	2009-06-05 15:34:30.000000000 -0700
++++ ext/date/php_date.c	2009-06-30 09:37:45.000000000 -0700
+@@ -798,7 +802,7 @@
+ 			/* year */
+ 			case 'L': length = slprintf(buffer, 32, "%d", timelib_is_leap((int) t->y)); break;
+ 			case 'y': length = slprintf(buffer, 32, "%02d", (int) t->y % 100); break;
+-			case 'Y': length = slprintf(buffer, 32, "%s%04ld", t->y < 0 ? "-" : "", llabs(t->y)); break;
++			case 'Y': length = slprintf(buffer, 32, "%s%04lld", t->y < 0 ? "-" : "", llabs(t->y)); break;
+ 
+ 			/* time */
+ 			case 'a': length = slprintf(buffer, 32, "%s", t->h >= 12 ? "pm" : "am"); break;
