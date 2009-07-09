@@ -29,7 +29,7 @@ endif
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=2
+PHP_IPK_VERSION=3
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -55,6 +55,7 @@ PHP_PATCHES=\
 	$(PHP_SOURCE_DIR)/threads.m4.patch \
 	$(PHP_SOURCE_DIR)/endian-5.0.4.patch \
 	$(PHP_SOURCE_DIR)/ext-posix-uclibc.patch \
+	$(PHP_SOURCE_DIR)/php-5.2.10-date.patch \
 
 #
 # If the compilation of the package requires additional
