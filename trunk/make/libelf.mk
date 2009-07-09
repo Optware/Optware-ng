@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBELF_SITE=http://www.mr511.de/software
-LIBELF_VERSION=0.8.9
+LIBELF_VERSION=0.8.12
 LIBELF_SOURCE=libelf-$(LIBELF_VERSION).tar.gz
 LIBELF_DIR=libelf-$(LIBELF_VERSION)
 LIBELF_UNZIP=zcat
@@ -76,8 +76,8 @@ LIBELF_IPK=$(BUILD_DIR)/libelf_$(LIBELF_VERSION)-$(LIBELF_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBELF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBELF_SITE)/$(LIBELF_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBELF_SOURCE)
+	$(WGET) -P $(@D) $(LIBELF_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ libelf-source: $(DL_DIR)/$(LIBELF_SOURCE) $(LIBELF_PATCHES)
 #
 $(LIBELF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBELF_SOURCE) $(LIBELF_PATCHES) make/libelf.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBELF_DIR) $(LIBELF_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBELF_DIR) $(@D)
 	$(LIBELF_UNZIP) $(DL_DIR)/$(LIBELF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBELF_PATCHES)" ; \
 		then cat $(LIBELF_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBELF_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBELF_DIR)" != "$(LIBELF_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBELF_DIR) $(LIBELF_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBELF_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBELF_DIR) $(@D) ; \
 	fi
-	(cd $(LIBELF_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBELF_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBELF_LDFLAGS)" \
@@ -130,7 +130,7 @@ $(LIBELF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBELF_SOURCE) $(LIBELF_PATCHES) ma
 		--disable-nls \
 		--disable-shared \
 	)
-#	$(PATCH_LIBTOOL) $(LIBELF_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libelf-unpack: $(LIBELF_BUILD_DIR)/.configured
@@ -140,7 +140,7 @@ libelf-unpack: $(LIBELF_BUILD_DIR)/.configured
 #
 $(LIBELF_BUILD_DIR)/.built: $(LIBELF_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBELF_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -153,7 +153,7 @@ libelf: $(LIBELF_BUILD_DIR)/.built
 #
 $(LIBELF_BUILD_DIR)/.staged: $(LIBELF_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBELF_BUILD_DIR) prefix=$(STAGING_PREFIX) install
+	$(MAKE) -C $(@D) prefix=$(STAGING_PREFIX) install
 	sed -i -e '/^prefix=/s|=/opt|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libelf.pc
 	touch $@
 
@@ -230,4 +230,4 @@ libelf-dirclean:
 # Some sanity check for the package.
 #
 libelf-check: $(LIBELF_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBELF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
