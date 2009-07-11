@@ -1,0 +1,31 @@
+--- libuncia/input.h.orig	2009-07-10 16:41:12.000000000 -0700
++++ libuncia/input.h	2009-07-10 16:41:34.000000000 -0700
+@@ -19,6 +19,8 @@
+ #ifndef LIBUNCIA_INPUT_H
+ #define LIBUNCIA_INPUT_H
+ 
++#include <cstdarg>
++
+ #include <boost/shared_ptr.hpp>
+ 
+ #include <libuncia/gcc_attributes.h>
+--- libuncia/output.h.orig	2009-07-10 16:55:55.000000000 -0700
++++ libuncia/output.h	2009-07-10 16:56:50.000000000 -0700
+@@ -19,6 +19,7 @@
+ #ifndef LIBUNCIA_OUTPUT_H
+ #define LIBUNCIA_OUTPUT_H
+ 
++#include <cstdarg>
+ #include <boost/shared_ptr.hpp>
+ #include <libuncia/gcc_attributes.h>
+ 
+--- libuncia/ostream.h.orig	2009-07-10 16:56:05.000000000 -0700
++++ libuncia/ostream.h	2009-07-10 16:56:55.000000000 -0700
+@@ -19,6 +19,7 @@
+ #ifndef LIBUNCIA_OSTREAM_H
+ #define LIBUNCIA_OSTREAM_H
+ 
++#include <cstdarg>
+ #include <iostream>
+ 
+ #include <libuncia/ostreambuf.h>

@@ -49,7 +49,7 @@ BROKEN_PACKAGES = \
 	subvertpy svn bzr-svn \
 	swig \
 	taglib tesseract-ocr tshark transcode \
-	unrar upslug2 upx \
+	uncia unrar upslug2 upx \
 	vlc vnstat vorbis-tools vte \
 	weechat wget wput wxbase \
 	xerces-c xmlrpc-c xchat \

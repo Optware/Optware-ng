@@ -25,6 +25,7 @@ UCLIBC++_BROKEN_PACKAGES = \
 	libtorrent-rasterbar \
 	mkvtoolnix \
 	player \
+	uncia \
 
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC++_SPECIFIC_PACKAGES = \
