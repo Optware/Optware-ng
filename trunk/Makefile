@@ -344,7 +344,8 @@ COMMON_CROSS_PACKAGES = \
 	sm smartmontools snort snownews \
 	socat softflowd sox spandsp spawn-fcgi speex spindown splix \
 	sqlite sqlite2 \
-	sqsh squeak squid srelay ssam sslwrap strace stunnel streamripper \
+	sqsh squeak squid srelay srecord ssam sslwrap \
+	strace stunnel streamripper \
 	stupid-ftpd sudo surfraw swi-prolog svn \
 	swig syslog-ng sysstat syx \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
