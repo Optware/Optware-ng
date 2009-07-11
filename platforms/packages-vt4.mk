@@ -45,7 +45,7 @@ BROKEN_PACKAGES = \
 	sablevm samba sane-backends \
 	scli scrobby \
 	simh smartmontools snort \
-	spandsp splix sqsh swi-prolog \
+	spandsp splix sqsh srecord swi-prolog \
 	subvertpy svn bzr-svn \
 	swig \
 	taglib tesseract-ocr tshark transcode \
