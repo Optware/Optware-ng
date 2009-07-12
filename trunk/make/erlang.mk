@@ -44,7 +44,7 @@ ERLANG_MAKE_OPTION=
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 ERLANG_TARGET=$(shell $(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME))
 
@@ -94,7 +94,8 @@ ERLANG_CONFIG_ENVS=erl_cv_time_correction=$(strip \
 	$(if $(filter syno-x07 wdtv, $(OPTWARE_TARGET)), times, \
 	$(if $(filter module-init-tools, $(PACKAGES)), clock_gettime, times)))
 
-ERLANG_CONFIG_ARGS=--disable-smp-support --enable-threads
+ERLANG_CONFIG_ARGS=--disable-smp-support --enable-threads \
+--enable-dynamic-ssl-lib --with-ssl-zlib=$(STAGING_LIB_DIR)
 ERLANG_CONFIG_ARGS+=$(ERLANG_HIPE)
 
 #
@@ -263,6 +264,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		--disable-nls \
 	)
 else
+	sed -i -e '/^LDFLAGS/s|$$| $(STAGING_LDFLAGS)|' $(@D)/lib/crypto/c_src/Makefile.in
 	(cd $(@D); \
 		PATH="$(ERLANG_HOST_BUILD_DIR)/bin:$$PATH" \
 		$(TARGET_CONFIGURE_OPTS) \
