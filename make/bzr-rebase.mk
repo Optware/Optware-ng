@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR-REBASE_VERSION=0.5.0
+BZR-REBASE_VERSION=0.5.1
 BZR-REBASE_SITE=http://samba.org/~jelmer/bzr
 BZR-REBASE_SOURCE=bzr-rebase-$(BZR-REBASE_VERSION).tar.gz
 BZR-REBASE_DIR=bzr-rebase-$(BZR-REBASE_VERSION)
@@ -37,7 +37,7 @@ BZR-REBASE_CONFLICTS=
 #
 # BZR-REBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-BZR-REBASE_IPK_VERSION=2
+BZR-REBASE_IPK_VERSION=1
 
 #
 # BZR-REBASE_CONFFILES should be a list of user-editable files
