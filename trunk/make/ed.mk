@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ED_SITE=http://ftp.gnu.org/gnu/ed
-ED_VERSION=1.3
+ED_VERSION=1.4
 ED_SOURCE=ed-$(ED_VERSION).tar.gz
 ED_DIR=ed-$(ED_VERSION)
 ED_UNZIP=zcat
@@ -94,7 +94,7 @@ ed-source: $(DL_DIR)/$(ED_SOURCE) $(ED_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ED_BUILD_DIR)/.configured: $(DL_DIR)/$(ED_SOURCE) $(ED_PATCHES)
+$(ED_BUILD_DIR)/.configured: $(DL_DIR)/$(ED_SOURCE) $(ED_PATCHES) make/ed.mk
 	rm -rf $(BUILD_DIR)/$(ED_DIR) $(@D)
 	$(ED_UNZIP) $(DL_DIR)/$(ED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ED_PATCHES)"; then \
@@ -164,9 +164,8 @@ $(ED_IPK_DIR)/CONTROL/control:
 #
 $(ED_IPK): $(ED_BUILD_DIR)/.built
 	rm -rf $(ED_IPK_DIR) $(BUILD_DIR)/ed_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install INSTALL_DATA=:
+	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install-strip INSTALL_DATA=:
 	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install-man
-	$(STRIP_COMMAND) $(ED_IPK_DIR)/opt/bin/ed $(ED_IPK_DIR)/opt/bin/red
 	$(MAKE) $(ED_IPK_DIR)/CONTROL/control
 #	echo $(ED_CONFFILES) | sed -e 's/ /\n/g' > $(ED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ED_IPK_DIR)
