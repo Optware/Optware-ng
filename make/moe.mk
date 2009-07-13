@@ -195,7 +195,8 @@ $(MOE_IPK_DIR)/CONTROL/control:
 #
 $(MOE_IPK): $(MOE_BUILD_DIR)/.built
 	rm -rf $(MOE_IPK_DIR) $(BUILD_DIR)/moe_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MOE_BUILD_DIR) DESTDIR=$(MOE_IPK_DIR) install-strip
+	$(MAKE) -C $(MOE_BUILD_DIR) DESTDIR=$(MOE_IPK_DIR) install
+	$(STRIP_COMMAND) $(MOE_IPK_DIR)/opt/bin/moe
 	$(MAKE) $(MOE_IPK_DIR)/CONTROL/control
 	echo $(MOE_CONFFILES) | sed -e 's/ /\n/g' > $(MOE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOE_IPK_DIR)
