@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOE_SITE=http://ftp.gnu.org/gnu/moe
-MOE_VERSION=1.1
+MOE_VERSION=1.2
 MOE_SOURCE=moe-$(MOE_VERSION).tar.gz
 MOE_DIR=moe-$(MOE_VERSION)
 MOE_UNZIP=zcat
@@ -195,18 +195,8 @@ $(MOE_IPK_DIR)/CONTROL/control:
 #
 $(MOE_IPK): $(MOE_BUILD_DIR)/.built
 	rm -rf $(MOE_IPK_DIR) $(BUILD_DIR)/moe_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MOE_BUILD_DIR) DESTDIR=$(MOE_IPK_DIR) install
-	$(STRIP_COMMAND) $(MOE_IPK_DIR)/opt/bin/*
-#	install -d $(MOE_IPK_DIR)/opt/etc/
-#	install -m 644 $(MOE_SOURCE_DIR)/moe.conf $(MOE_IPK_DIR)/opt/etc/moe.conf
-#	install -d $(MOE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MOE_SOURCE_DIR)/rc.moe $(MOE_IPK_DIR)/opt/etc/init.d/SXXmoe
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOE_IPK_DIR)/opt/etc/init.d/SXXmoe
+	$(MAKE) -C $(MOE_BUILD_DIR) DESTDIR=$(MOE_IPK_DIR) install-strip
 	$(MAKE) $(MOE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MOE_SOURCE_DIR)/postinst $(MOE_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MOE_SOURCE_DIR)/prerm $(MOE_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOE_IPK_DIR)/CONTROL/prerm
 	echo $(MOE_CONFFILES) | sed -e 's/ /\n/g' > $(MOE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOE_IPK_DIR)
 
