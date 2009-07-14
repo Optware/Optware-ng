@@ -50,6 +50,7 @@ $(SUDO_BUILD_DIR)/.configured: $(DL_DIR)/$(SUDO_SOURCE) $(SUDO_PATCHES) make/sud
 		cat $(SUDO_PATCHES) | patch -d $(BUILD_DIR)/$(SUDO_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(SUDO_DIR) $(@D)
+	sed -i -e '/$$(INSTALL) /s| -s||' $(@D)/Makefile.in
 	cd $(@D) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		$(SUDO_CONFIGURE_ENV) \
@@ -97,7 +98,10 @@ $(SUDO_IPK_DIR)/CONTROL/control:
 $(SUDO_IPK): $(SUDO_BUILD_DIR)/.built
 	rm -rf $(SUDO_IPK_DIR) $(BUILD_DIR)/sudo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SUDO_BUILD_DIR) DESTDIR=$(SUDO_IPK_DIR) install
-	$(STRIP_COMMAND) $(SUDO_IPK_DIR)/opt/libexec/sudo_noexec.so
+	$(STRIP_COMMAND) \
+	    $(SUDO_IPK_DIR)/opt/bin/sudo \
+	    $(SUDO_IPK_DIR)/opt/sbin/visudo \
+	    $(SUDO_IPK_DIR)/opt/libexec/sudo_noexec.so
 	install -d $(SUDO_IPK_DIR)/opt/share/doc/sudo
 	install -m 644 $(SUDO_BUILD_DIR)/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
 	$(MAKE) $(SUDO_IPK_DIR)/CONTROL/control
