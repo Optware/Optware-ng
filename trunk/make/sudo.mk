@@ -4,8 +4,8 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_UPSTREAM_VERSION=1.7.0
-SUDO_VERSION=1.7.0
+SUDO_UPSTREAM_VERSION=1.7.2
+SUDO_VERSION=1.7.2
 SUDO_SOURCE=sudo-$(SUDO_UPSTREAM_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_UPSTREAM_VERSION)
 SUDO_UNZIP=zcat
@@ -24,7 +24,7 @@ SUDO_CONFFILES=/opt/etc/sudoers
 #SUDO_PATCHES=
 
 ifneq ($(TARGET_CC), $(HOSTCC))
-SUDO_CONFIGURE_ENV=sudo_cv_uid_t_len=10
+SUDO_CONFIGURE_ENV=sudo_cv_uid_t_len=10 sudo_cv_func_unsetenv_void=no
 endif
 ifeq ($(OPTWARE_TARGET), wl500g)
 SUDO_CONFIGURE_ENV+=ac_cv_header_err_h=no
@@ -96,13 +96,10 @@ $(SUDO_IPK_DIR)/CONTROL/control:
 
 $(SUDO_IPK): $(SUDO_BUILD_DIR)/.built
 	rm -rf $(SUDO_IPK_DIR) $(BUILD_DIR)/sudo_*_$(TARGET_ARCH).ipk
-	install -d $(SUDO_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(SUDO_BUILD_DIR)/sudo -o $(SUDO_IPK_DIR)/opt/bin/sudo
-	$(STRIP_COMMAND) $(SUDO_BUILD_DIR)/visudo -o $(SUDO_IPK_DIR)/opt/bin/visudo
-	install -d $(SUDO_IPK_DIR)/opt/etc
-	install -m 600 $(SUDO_BUILD_DIR)/sudoers $(SUDO_IPK_DIR)/opt/etc/sudoers
-	install -d $(SUDO_IPK_DIR)/opt/doc/sudo
-	install -m 644 $(SUDO_BUILD_DIR)/sample.sudoers $(SUDO_IPK_DIR)/opt/doc/sudo/sample.sudoers
+	$(MAKE) -C $(SUDO_BUILD_DIR) DESTDIR=$(SUDO_IPK_DIR) install
+	$(STRIP_COMMAND) $(SUDO_IPK_DIR)/opt/libexec/sudo_noexec.so
+	install -d $(SUDO_IPK_DIR)/opt/share/doc/sudo
+	install -m 644 $(SUDO_BUILD_DIR)/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
 	$(MAKE) $(SUDO_IPK_DIR)/CONTROL/control
 	install -m 644 $(SUDO_SOURCE_DIR)/postinst $(SUDO_IPK_DIR)/CONTROL/postinst
 	echo $(SUDO_CONFFILES) | sed -e 's/ /\n/g' > $(SUDO_IPK_DIR)/CONTROL/conffiles
@@ -118,4 +115,4 @@ sudo-dirclean:
 	rm -rf $(BUILD_DIR)/$(SUDO_DIR) $(SUDO_BUILD_DIR) $(SUDO_IPK_DIR) $(SUDO_IPK)
 
 sudo-check: $(SUDO_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SUDO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
