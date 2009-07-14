@@ -29,7 +29,7 @@ ERL_EJABBERD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ERL_EJABBERD_DESCRIPTION=Instant messaging server written in Erlang.
 ERL_EJABBERD_SECTION=net
 ERL_EJABBERD_PRIORITY=optional
-ERL_EJABBERD_DEPENDS=erlang
+ERL_EJABBERD_DEPENDS=erlang expat
 ERL_EJABBERD_SUGGESTS=
 ERL_EJABBERD_CONFLICTS=
 
@@ -107,7 +107,7 @@ erl-ejabberd-source: $(DL_DIR)/$(ERL_EJABBERD_SOURCE) $(ERL_EJABBERD_PATCHES)
 # shown below to make various patches to it.
 #
 $(ERL_EJABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL_EJABBERD_SOURCE) $(ERL_EJABBERD_PATCHES) make/erl-ejabberd.mk
-	$(MAKE) erlang-stage
+	$(MAKE) erlang-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(@D)
 	$(ERL_EJABBERD_UNZIP) $(DL_DIR)/$(ERL_EJABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ERL_EJABBERD_PATCHES)" ; \
