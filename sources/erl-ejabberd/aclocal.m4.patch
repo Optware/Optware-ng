@@ -1,0 +1,74 @@
+--- src/aclocal.m4.orig	2009-04-01 08:23:51.000000000 -0700
++++ src/aclocal.m4	2009-07-13 21:16:45.000000000 -0700
+@@ -114,66 +114,11 @@
+    		AC_MSG_ERROR([erlang not found])
+    fi
+ 
+-
+-   cat >>conftest.erl <<_EOF
+-
+--module(conftest).
+--author('alexey@sevcom.net').
+-
+--export([[start/0]]).
+--include_lib("ssl/include/ssl_pkix.hrl").
+-
+-start() ->
+-    EIDirS = code:lib_dir("erl_interface") ++ "\n",
+-    EILibS =  libpath("erl_interface") ++ "\n",
+-    RootDirS = code:root_dir() ++ "\n",
+-    file:write_file("conftest.out", list_to_binary(EIDirS ++ EILibS ++ ssldef() ++ RootDirS)),
+-    halt().
+-
+--[ifdef]('id-pkix').
+-ssldef() -> "-DSSL39\n".
+--else.
+-ssldef() -> "\n".
+--endif.
+-
+-%% return physical architecture based on OS/Processor
+-archname() ->
+-    ArchStr = erlang:system_info(system_architecture),
+-    case os:type() of
+-	{win32, _} -> "windows";
+-	{unix,UnixName} ->
+-	    Specs = string:tokens(ArchStr,"-"),
+-	    Cpu = case lists:nth(2,Specs) of
+-		      "pc" -> "x86";
+-		      _ -> hd(Specs)
+-		  end,
+-	    atom_to_list(UnixName) ++ "-" ++ Cpu;
+-	_ -> "generic"
+-    end.
+-
+-%% Return arch-based library path or a default value if this directory
+-%% does not exist
+-libpath(App) ->
+-    PrivDir    = code:priv_dir(App),
+-    ArchDir    = archname(),
+-    LibArchDir = filename:join([[PrivDir,"lib",ArchDir]]),
+-    case file:list_dir(LibArchDir) of
+-	%% Arch lib dir exists: We use it
+-	{ok, _List}  -> LibArchDir;
+-	%% Arch lib dir does not exist: Return the default value
+-	%% ({error, enoent}):
+-	_Error -> code:lib_dir("erl_interface") ++ "/lib"
+-    end.
+-
+-_EOF
+-
+-   if ! $ERLC conftest.erl; then
+-   	   AC_MSG_ERROR([could not compile sample program])
+-   fi
+-
+-   if ! $ERL -s conftest -noshell; then
+-       AC_MSG_ERROR([could not run sample program])
+-   fi
++   STAGING_LIB_DIR=@STAGING_LIB_DIR@
++   echo ${STAGING_LIB_DIR}/erlang/lib/erl_interface-* > conftest.out
++   echo ${STAGING_LIB_DIR}/erlang/lib/erl_interface-*/lib >> conftest.out
++   echo "-I${STAGING_LIB_DIR}/erlang" >> conftest.out # printf "\x2DDSSL39\n" >> conftest.out
++   echo ${STAGING_LIB_DIR}/erlang >> conftest.out
+ 
+    if ! test -f conftest.out; then
+        AC_MSG_ERROR([erlang program was not properly executed, (conftest.out was not produced)])
