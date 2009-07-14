@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ERL_EJABBERD_VERSION=1.1.4
+ERL_EJABBERD_VERSION=2.0.5
 ERL_EJABBERD_SITE=http://www.process-one.net/downloads/ejabberd/$(ERL_EJABBERD_VERSION)
 ERL_EJABBERD_SOURCE=ejabberd-$(ERL_EJABBERD_VERSION).tar.gz
 ERL_EJABBERD_DIR=ejabberd-$(ERL_EJABBERD_VERSION)
@@ -46,14 +46,16 @@ ERL_EJABBERD_IPK_VERSION=1
 # ERL_EJABBERD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ERL_EJABBERD_PATCHES=$(ERL_EJABBERD_SOURCE_DIR)/configure.patch
+ERL_EJABBERD_PATCHES=\
+$(ERL_EJABBERD_SOURCE_DIR)/aclocal.m4.patch \
+$(ERL_EJABBERD_SOURCE_DIR)/s2s_in.patch \
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ERL_EJABBERD_CPPFLAGS=-I$(ERLANG_BUILD_DIR)/erts/emulator/beam/
-ERL_EJABBERD_LDFLAGS=-L$(ERLANG_BUILD_DIR)/lib/erl_interface/obj/$(ERLANG_TARGET)
+#ERL_EJABBERD_CPPFLAGS=-I$(ERLANG_BUILD_DIR)/erts/emulator/beam/
+#ERL_EJABBERD_LDFLAGS=-L$(ERLANG_BUILD_DIR)/lib/erl_interface/obj/$(ERLANG_TARGET)
 
 #
 # ERL_EJABBERD_BUILD_DIR is the directory in which the build is done.
@@ -76,7 +78,8 @@ ERL_EJABBERD_IPK=$(BUILD_DIR)/erl-ejabberd_$(ERL_EJABBERD_VERSION)-$(ERL_EJABBER
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ERL_EJABBERD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ERL_EJABBERD_SITE)/$(ERL_EJABBERD_SOURCE)
+	$(WGET) -P $(@D) $(ERL_EJABBERD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,18 +107,20 @@ erl-ejabberd-source: $(DL_DIR)/$(ERL_EJABBERD_SOURCE) $(ERL_EJABBERD_PATCHES)
 # shown below to make various patches to it.
 #
 $(ERL_EJABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL_EJABBERD_SOURCE) $(ERL_EJABBERD_PATCHES) make/erl-ejabberd.mk
-	$(MAKE) erlang
-	rm -rf $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(ERL_EJABBERD_BUILD_DIR)
+	$(MAKE) erlang-stage
+	rm -rf $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(@D)
 	$(ERL_EJABBERD_UNZIP) $(DL_DIR)/$(ERL_EJABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ERL_EJABBERD_PATCHES)" ; \
 		then cat $(ERL_EJABBERD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ERL_EJABBERD_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(ERL_EJABBERD_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(ERL_EJABBERD_DIR)" != "$(ERL_EJABBERD_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(ERL_EJABBERD_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(ERL_EJABBERD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(@D) ; \
 	fi
-	(cd $(ERL_EJABBERD_BUILD_DIR)/src; \
-		sed -i -e 's/	gcc -Wall/	$$(CC) -Wall/' Makefile.in stringprep/Makefile.in; \
+#	sed -i -e 's/	gcc -Wall/	$$(CC) -Wall/' $(@D)/Makefile.in $(@D)/stringprep/Makefile.in
+	sed -i -e 's|@STAGING_LIB_DIR@|$(STAGING_LIB_DIR)|' $(@D)/src/aclocal.m4
+	autoreconf -vif $(@D)/src
+	(cd $(@D)/src; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERL_EJABBERD_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(ERL-YAWS_CPPFLAGS)" \
@@ -131,8 +136,8 @@ $(ERL_EJABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL_EJABBERD_SOURCE) $(ERL_EJ
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(ERL_EJABBERD_BUILD_DIR)/libtool
-	touch $(ERL_EJABBERD_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 erl-ejabberd-unpack: $(ERL_EJABBERD_BUILD_DIR)/.configured
 
@@ -140,11 +145,9 @@ erl-ejabberd-unpack: $(ERL_EJABBERD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ERL_EJABBERD_BUILD_DIR)/.built: $(ERL_EJABBERD_BUILD_DIR)/.configured
-	rm -f $(ERL_EJABBERD_BUILD_DIR)/.built
-	$(MAKE) -C $(ERL_EJABBERD_BUILD_DIR)/src \
-	ERLANG_CFLAGS=-I$(ERLANG_BUILD_DIR)/lib/erl_interface/include \
-	ERLC_FLAGS=-I$(ERLANG_BUILD_DIR)/lib
-	touch $(ERL_EJABBERD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)/src
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,12 +157,12 @@ erl-ejabberd: $(ERL_EJABBERD_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(ERL_EJABBERD_BUILD_DIR)/.staged: $(ERL_EJABBERD_BUILD_DIR)/.built
-	rm -f $(ERL_EJABBERD_BUILD_DIR)/.staged
-	$(MAKE) -C $(ERL_EJABBERD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(ERL_EJABBERD_BUILD_DIR)/.staged
-
-erl-ejabberd-stage: $(ERL_EJABBERD_BUILD_DIR)/.staged
+#$(ERL_EJABBERD_BUILD_DIR)/.staged: $(ERL_EJABBERD_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#erl-ejabberd-stage: $(ERL_EJABBERD_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -233,4 +236,4 @@ erl-ejabberd-dirclean:
 # Some sanity check for the package.
 #
 erl-ejabberd-check: $(ERL_EJABBERD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ERL_EJABBERD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
