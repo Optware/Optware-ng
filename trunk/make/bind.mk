@@ -4,7 +4,7 @@
 #
 #############################################################
 
-BIND_VERSION=9.5.0-P2
+BIND_VERSION=9.6.1
 BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_VERSION)
 BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_VERSION)
@@ -15,13 +15,18 @@ BIND_SECTION=net
 BIND_PRIORITY=optional
 BIND_DEPENDS=openssl
 
-BIND_IPK_VERSION=2
+BIND_IPK_VERSION=1
 
 # BIND_PATCHES=$(BIND_SOURCE_DIR)/bind_configure_patch
 
 ifeq ($(OPTWARE_TARGET), $(filter vt4, $(OPTWARE_TARGET)))
 BIND_LDFLAGS=-ldl
 endif
+
+BIND_CONFIG_ARGS=$(strip \
+$(if $(filter cs05q1armel cs05q3armel, $(OPTWARE_TARGET)), --disable-epoll, \
+$(if $(filter module-init-tools, $(PACKAGES)), --enable-epoll, \
+--disable-epoll)))
 
 BIND_BUILD_DIR=$(BUILD_DIR)/bind
 BIND_SOURCE_DIR=$(SOURCE_DIR)/bind
@@ -53,6 +58,7 @@ $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE) make/bind.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		$(BIND_CONFIG_ARGS) \
 		--prefix=/opt \
 		--with-libtool \
 		--with-openssl=$(STAGING_PREFIX) \
@@ -61,6 +67,7 @@ $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE) make/bind.mk
 		--localstatedir=/opt/var \
 		--with-randomdev=/dev/random \
 		--disable-getifaddrs ; }
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 bind-unpack: $(BIND_BUILD_DIR)/.configured
@@ -118,4 +125,4 @@ bind-dirclean:
 	rm -rf $(BUILD_DIR)/$(BIND_BUILD_DIR) $(BIND_BUILD_DIR) $(BIND_IPK_DIR) $(BIND_IPK)
 
 bind-check: $(BIND_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BIND_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
