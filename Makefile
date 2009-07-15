@@ -177,7 +177,7 @@ PYTHON_PACKAGES = \
 	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
 
 ERLANG_PACKAGES = \
-	erlang erl-yaws \
+	erlang erl-yaws erl-ejabberd \
 
 # removed asterisk-chan-capi, doesn't build because of asterisk-stage problems
 ASTERISK_PACKAGES = \

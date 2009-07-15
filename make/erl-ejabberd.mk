@@ -26,10 +26,13 @@ ERL_EJABBERD_SOURCE=ejabberd-$(ERL_EJABBERD_VERSION).tar.gz
 ERL_EJABBERD_DIR=ejabberd-$(ERL_EJABBERD_VERSION)
 ERL_EJABBERD_UNZIP=zcat
 ERL_EJABBERD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-ERL_EJABBERD_DESCRIPTION=Instant messaging server written in Erlang.
+ERL_EJABBERD_DESCRIPTION=A Jabber/XMPP server written in Erlang/OTP
 ERL_EJABBERD_SECTION=net
 ERL_EJABBERD_PRIORITY=optional
-ERL_EJABBERD_DEPENDS=erlang expat
+ERL_EJABBERD_DEPENDS=erlang, expat
+ifeq (libiconv,$(filter libiconv, $(PACKAGES)))
+ERL_EJABBERD_DEPENDS+=, libiconv
+endif
 ERL_EJABBERD_SUGGESTS=
 ERL_EJABBERD_CONFLICTS=
 
@@ -40,7 +43,9 @@ ERL_EJABBERD_IPK_VERSION=1
 
 #
 # ERL_EJABBERD_CONFFILES should be a list of user-editable files
-#ERL_EJABBERD_CONFFILES=/opt/etc/erl-ejabberd.conf /opt/etc/init.d/SXXerl-ejabberd
+ERL_EJABBERD_CONFFILES=/opt/etc/ejabberd/ejabberd.cfg \
+/opt/etc/ejabberd/ejabberdctl.cfg \
+/opt/etc/ejabberd/inetrc \
 
 #
 # ERL_EJABBERD_PATCHES should list any patches, in the the order in
@@ -108,6 +113,9 @@ erl-ejabberd-source: $(DL_DIR)/$(ERL_EJABBERD_SOURCE) $(ERL_EJABBERD_PATCHES)
 #
 $(ERL_EJABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL_EJABBERD_SOURCE) $(ERL_EJABBERD_PATCHES) make/erl-ejabberd.mk
 	$(MAKE) erlang-stage expat-stage
+ifeq (libiconv,$(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(@D)
 	$(ERL_EJABBERD_UNZIP) $(DL_DIR)/$(ERL_EJABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ERL_EJABBERD_PATCHES)" ; \
@@ -117,7 +125,6 @@ $(ERL_EJABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL_EJABBERD_SOURCE) $(ERL_EJ
 	if test "$(BUILD_DIR)/$(ERL_EJABBERD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(@D) ; \
 	fi
-#	sed -i -e 's/	gcc -Wall/	$$(CC) -Wall/' $(@D)/Makefile.in $(@D)/stringprep/Makefile.in
 	sed -i -e 's|@STAGING_LIB_DIR@|$(STAGING_LIB_DIR)|' $(@D)/src/aclocal.m4
 	autoreconf -vif $(@D)/src
 	(cd $(@D)/src; \
@@ -198,6 +205,7 @@ $(ERL_EJABBERD_IPK_DIR)/CONTROL/control:
 $(ERL_EJABBERD_IPK): $(ERL_EJABBERD_BUILD_DIR)/.built
 	rm -rf $(ERL_EJABBERD_IPK_DIR) $(BUILD_DIR)/erl-ejabberd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ERL_EJABBERD_BUILD_DIR)/src DESTDIR=$(ERL_EJABBERD_IPK_DIR) install
+	sed -i -e '/^ERL=/s|=.*|=/opt/bin/erl|' $(ERL_EJABBERD_IPK_DIR)/opt/sbin/ejabberdctl
 #	install -d $(ERL_EJABBERD_IPK_DIR)/opt/etc/
 #	install -m 644 $(ERL_EJABBERD_SOURCE_DIR)/erl-ejabberd.conf $(ERL_EJABBERD_IPK_DIR)/opt/etc/erl-ejabberd.conf
 #	install -d $(ERL_EJABBERD_IPK_DIR)/opt/etc/init.d
