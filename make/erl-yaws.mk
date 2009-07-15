@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERL-YAWS_SITE=http://yaws.hyber.org/download
-ERL-YAWS_VERSION=1.76
+ERL-YAWS_VERSION=1.84
 ERL-YAWS_SOURCE=yaws-$(ERL-YAWS_VERSION).tar.gz
 ERL-YAWS_DIR=yaws-$(ERL-YAWS_VERSION)
 ERL-YAWS_UNZIP=zcat
@@ -40,7 +40,7 @@ ERL-YAWS_IPK_VERSION=1
 
 #
 # ERL-YAWS_CONFFILES should be a list of user-editable files
-ERL-YAWS_CONFFILES=/opt/etc/yaws.conf /opt/etc/yaws-cert.pem /opt/etc/yaws-key.pem
+ERL-YAWS_CONFFILES=/opt/etc/yaws/yaws.conf /opt/etc/yaws/yaws-cert.pem /opt/etc/yaws/yaws-key.pem
 
 #
 # ERL-YAWS_PATCHES should list any patches, in the the order in
@@ -52,7 +52,7 @@ ERL-YAWS_CONFFILES=/opt/etc/yaws.conf /opt/etc/yaws-cert.pem /opt/etc/yaws-key.p
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ERL-YAWS_CPPFLAGS=-I$(ERLANG_BUILD_DIR)/erts/emulator/beam/
+ERL-YAWS_CPPFLAGS=
 ERL-YAWS_LDFLAGS=
 
 #
@@ -105,7 +105,7 @@ erl-yaws-source: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCHES)
 # shown below to make various patches to it.
 #
 $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCHES) make/erl-yaws.mk
-	$(MAKE) erlang
+	$(MAKE) erlang-stage
 	rm -rf $(BUILD_DIR)/$(ERL-YAWS_DIR) $(@D)
 	$(ERL-YAWS_UNZIP) $(DL_DIR)/$(ERL-YAWS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ERL-YAWS_PATCHES)" ; \
@@ -116,11 +116,12 @@ $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCH
 	if test "$(BUILD_DIR)/$(ERL-YAWS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ERL-YAWS_DIR) $(@D) ; \
 	fi
+	sed -i -e '/LD_SHARED.*ld -shared/s|ld -shared|$(TARGET_LD) -shared|' \
+	       -e '/LD_SHARED.*gcc -shared/s|gcc -shared|$(TARGET_CC) -shared|' \
+	       -e 's|-I/usr/include/security||' \
+	       -e '/ERLDIR=/s| $$ERL| $(STAGING_LIB_DIR)/erlang/bin/erl|' \
+		$(@D)/configure; \
 	(cd $(@D); \
-		sed -i -e '/LD_SHARED.*ld -shared/s|ld -shared|$(TARGET_LD) -shared|' \
-		       -e '/LD_SHARED.*gcc -shared/s|gcc -shared|$(TARGET_CC) -shared|' \
-		       -e 's|-I/usr/include/security||' \
-			configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERL-YAWS_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(ERL-YAWS_CPPFLAGS)" \
@@ -139,7 +140,7 @@ $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCH
 	)
 	sed -i -e 's|-I/usr/include/pam/||' $(@D)/c_src/Makefile
 	sed -i -e '/-noshell.*mime_type_c/{s|-noshell |-noinput |}' $(@D)/src/Makefile
-#	$(PATCH_LIBTOOL) $(ERL-YAWS_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 erl-yaws-unpack: $(ERL-YAWS_BUILD_DIR)/.configured
@@ -201,7 +202,7 @@ $(ERL-YAWS_IPK_DIR)/CONTROL/control:
 $(ERL-YAWS_IPK): $(ERL-YAWS_BUILD_DIR)/.built
 	rm -rf $(ERL-YAWS_IPK_DIR) $(BUILD_DIR)/erl-yaws_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ERL-YAWS_BUILD_DIR) DESTDIR=$(ERL-YAWS_IPK_DIR) install
-	$(STRIP_COMMAND) $(ERL-YAWS_IPK_DIR)/opt/lib/yaws/priv/lib/setuid_drv.so
+	$(STRIP_COMMAND) $(ERL-YAWS_IPK_DIR)/opt/lib/yaws/priv/lib/*.so
 	mv $(ERL-YAWS_IPK_DIR)/opt/etc/init.d/yaws $(ERL-YAWS_IPK_DIR)/opt/share/doc/$(ERL-YAWS_DIR)/sample-init.d-yaws
 	sed -i \
 	    -e 's|^erl=.*|erl="/opt/lib/erlang/bin/erl"|' \
@@ -211,11 +212,7 @@ $(ERL-YAWS_IPK): $(ERL-YAWS_BUILD_DIR)/.built
 	sed -i \
 	    -e '/^<server localhost/,$$s/^/#/' \
 	    -e 's/<server.*>/<server localhost>/' \
-	    $(ERL-YAWS_IPK_DIR)/opt/etc/yaws.conf
-#	install -d $(ERL-YAWS_IPK_DIR)/opt/etc/
-#	install -m 644 $(ERL-YAWS_SOURCE_DIR)/erl-yaws.conf $(ERL-YAWS_IPK_DIR)/opt/etc/erl-yaws.conf
-#	install -d $(ERL-YAWS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ERL-YAWS_SOURCE_DIR)/rc.erl-yaws $(ERL-YAWS_IPK_DIR)/opt/etc/init.d/SXXerl-yaws
+	    $(ERL-YAWS_IPK_DIR)/opt/etc/yaws/yaws.conf
 	$(MAKE) $(ERL-YAWS_IPK_DIR)/CONTROL/control
 #	install -m 755 $(ERL-YAWS_SOURCE_DIR)/postinst $(ERL-YAWS_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(ERL-YAWS_SOURCE_DIR)/prerm $(ERL-YAWS_IPK_DIR)/CONTROL/prerm
