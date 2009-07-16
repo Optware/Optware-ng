@@ -17,7 +17,7 @@ BROKEN_PACKAGES = \
 	castget cdargs cherokee clamav clinkcc cryptcat \
 	ctorrent ctrlproxy cups \
 	dansguardian dspam \
-	emacs22 enhanced-ctorrent esniper erlang erl-yaws \
+	emacs22 enhanced-ctorrent esniper \
 	ficy finch firedrill-httptunnel flip freeradius fuppes \
 	gconv-modules ggrab ghostscript gloox gnokii gnupg1 gnupg \
 	gnet gsnmp \
