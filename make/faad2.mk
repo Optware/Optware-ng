@@ -36,7 +36,7 @@ FAAD2_CONFLICTS=
 #
 # FAAD2_IPK_VERSION should be incremented when the ipk changes.
 #
-FAAD2_IPK_VERSION=2
+FAAD2_IPK_VERSION=3
 
 #
 # FAAD2_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ FAAD2_IPK_VERSION=2
 # FAAD2_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FAAD2_PATCHES=$(FAAD2_SOURCE_DIR)/configure.patch
+FAAD2_PATCHES=$(FAAD2_SOURCE_DIR)/libtool22.patch
 
 #
 # If the compilation of the package requires additional
