@@ -100,7 +100,7 @@ lame-source: $(DL_DIR)/$(LAME_SOURCE)
 # If the compilation of the package requires other packages to be staged
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LAME_BUILD_DIR)/.configured: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES)
+$(LAME_BUILD_DIR)/.configured: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES) make/lame.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(LAME_DIR) $(LAME_BUILD_DIR)
 	$(LAME_UNZIP) $(DL_DIR)/$(LAME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -116,6 +116,7 @@ $(LAME_BUILD_DIR)/.configured: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+                --with-gtk-prefix=$(STAGING_PREFIX) \
 	)
 	touch $@
 
