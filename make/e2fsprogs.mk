@@ -21,7 +21,7 @@
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
 
-E2FSPROGS_VERSION ?= 1.41.4
+E2FSPROGS_VERSION ?= 1.41.8
 E2FSPROGS_IPK_VERSION ?= 1
 
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
@@ -316,5 +316,5 @@ e2fsprogs-dirclean:
 #
 # Some sanity check for the package.
 #
-e2fsprogs-check: $(E2FSPROGS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(E2FSPROGS_IPK) $(E2FSLIBS_IPK) $(E2FSLIBS-DEV_IPK)
+e2fsprogs-check: $(E2FSPROGS_IPK) $(E2FSLIBS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
