@@ -30,7 +30,6 @@ BROKEN_PACKAGES = \
 	 pal p7zip pcapsipdump \
 	 postfix player py-mssql \
 	 rhtvision rtorrent rtpproxy \
-	rxtx \
 	 sablevm samba scli sdl ser snort \
 	 snownews sqsh swi-prolog syslog-ng \
 	 taglib tshark tnftpd transcode \
