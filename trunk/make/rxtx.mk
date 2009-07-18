@@ -55,6 +55,9 @@ RXTX_PATCHES=$(RXTX_SOURCE_DIR)/no-UTS_RELEASE.patch
 # compilation or linking flags, then list them here.
 #
 RXTX_CPPFLAGS=
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
+RXTX_CPPFLAGS+=-DSSIZE_MAX=LONG_MAX
+endif
 RXTX_LDFLAGS=
 
 #
