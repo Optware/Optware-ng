@@ -21,12 +21,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RXTX_SITE=ftp://ftp.qbang.org/pub/rxtx
-RXTX_VERSION=2.1-7r2
-RXTX_SOURCE=rxtx-$(RXTX_VERSION).zip
-RXTX_DIR=rxtx-$(RXTX_VERSION)
+RXTX_UPSTREAM_VERSION=2.1-7r2
+RXTX_VERSION=2.1.7r2
+RXTX_SOURCE=rxtx-$(RXTX_UPSTREAM_VERSION).zip
+RXTX_DIR=rxtx-$(RXTX_UPSTREAM_VERSION)
 RXTX_UNZIP=unzip
 RXTX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-RXTX_DESCRIPTION=Describe rxtx here.
+RXTX_DESCRIPTION=Java serial and parallel communication library with JNI.
 RXTX_SECTION=util
 RXTX_PRIORITY=optional
 RXTX_DEPENDS=
@@ -77,8 +78,8 @@ RXTX_IPK=$(BUILD_DIR)/rxtx_$(RXTX_VERSION)-$(RXTX_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RXTX_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RXTX_SITE)/$(RXTX_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(RXTX_SOURCE)
+	$(WGET) -P $(@D) $(RXTX_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,21 +106,21 @@ rxtx-source: $(DL_DIR)/$(RXTX_SOURCE) $(RXTX_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(RXTX_BUILD_DIR)/.configured: $(DL_DIR)/$(RXTX_SOURCE) $(RXTX_PATCHES) # make/rxtx.mk
+$(RXTX_BUILD_DIR)/.configured: $(DL_DIR)/$(RXTX_SOURCE) $(RXTX_PATCHES) make/rxtx.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(RXTX_DIR) $(RXTX_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(RXTX_DIR) $(@D)
 	cd $(BUILD_DIR) && $(RXTX_UNZIP) $(DL_DIR)/$(RXTX_SOURCE)
 	if test -n "$(RXTX_PATCHES)" ; \
 		then cat $(RXTX_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(RXTX_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RXTX_DIR)" != "$(RXTX_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RXTX_DIR) $(RXTX_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RXTX_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RXTX_DIR) $(@D) ; \
 	fi
 	sed -i -e 's:UTS_RELEASE::' \
 	       -e '/`uname -r`/s:`./conftest`:`uname -r`:' \
-		$(RXTX_BUILD_DIR)/configure
-	(cd $(RXTX_BUILD_DIR); \
+		$(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RXTX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RXTX_LDFLAGS)" \
@@ -131,7 +132,7 @@ $(RXTX_BUILD_DIR)/.configured: $(DL_DIR)/$(RXTX_SOURCE) $(RXTX_PATCHES) # make/r
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(RXTX_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 rxtx-unpack: $(RXTX_BUILD_DIR)/.configured
@@ -141,7 +142,7 @@ rxtx-unpack: $(RXTX_BUILD_DIR)/.configured
 #
 $(RXTX_BUILD_DIR)/.built: $(RXTX_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(RXTX_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -154,7 +155,7 @@ rxtx: $(RXTX_BUILD_DIR)/.built
 #
 $(RXTX_BUILD_DIR)/.staged: $(RXTX_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(RXTX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 rxtx-stage: $(RXTX_BUILD_DIR)/.staged
@@ -235,4 +236,4 @@ rxtx-dirclean:
 # Some sanity check for the package.
 #
 rxtx-check: $(RXTX_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RXTX_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
