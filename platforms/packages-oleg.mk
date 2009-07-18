@@ -21,7 +21,6 @@ BROKEN_PACKAGES = \
 	motor \
 	nget \
 	rssh \
-	rxtx \
 	scrobby \
 	taglib \
 	\

@@ -123,6 +123,9 @@ $(RXTX_BUILD_DIR)/.configured: $(DL_DIR)/$(RXTX_SOURCE) $(RXTX_PATCHES) make/rxt
 	sed -i -e 's:UTS_RELEASE::' \
 	       -e '/`uname -r`/s:`./conftest`:`uname -r`:' \
 		$(@D)/configure
+ifeq ($(TARGET_ARCH), $(filter mipsel powerpc, $(TARGET_ARCH)))
+	sed -i -e '/sys\/io.h/d' $(@D)/src/RawImp.c
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RXTX_CPPFLAGS)" \
