@@ -335,7 +335,7 @@ COMMON_CROSS_PACKAGES = \
 	radiusclient-ng rc rc5pipe rcs rdate \
 	readline re2c recode recordext \
 	redir renderext rhtvision rlfe rlwrap rrdcollect rrdtool \
-	rssh rsstail rsync rtorrent rtpproxy ruby rubygems \
+	rssh rsstail rsync rtorrent rtpproxy ruby rubygems rxtx \
 	sablevm samba samba2 sane-backends \
 	scli scponly screen scrobby scsi-idle sdl sdparm \
 	sed sendmail ser ser2net setserial setpwc sg3-utils \

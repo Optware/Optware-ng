@@ -11,7 +11,9 @@ BROKEN_PACKAGES = \
 	inferno \
 	iptraf \
 	ldconfig libcapi20 \
-	puppy transcode \
+	puppy \
+	rxtx \
+	transcode \
 	x264 lm-sensors \
 
 E2FSPROGS_VERSION := 1.40.3
