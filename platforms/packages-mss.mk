@@ -19,6 +19,7 @@ BROKEN_PACKAGES = \
 	newt ntp \
 	php-apache player py-lxml \
 	qemu qemu-libc-i386 quickie \
+	rxtx \
 	sablevm svn \
 	tshark \
 	wxbase \
