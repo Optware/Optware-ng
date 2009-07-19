@@ -569,6 +569,8 @@ packages: $(PACKAGES_IPKG)
 query-%:
 	@echo $($(*))
 
+TARGET_CC_VER = $(shell test -x "$(TARGET_CC)" && $(TARGET_CC) -dumpversion)
+
 include make/*.mk
 
 directories: $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) $(STAGING_PREFIX) \
