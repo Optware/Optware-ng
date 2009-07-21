@@ -20,10 +20,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-9BASE_SITE=http://daniel.debian.net/packages/9base/upstream
-9BASE_VERSION=2+20070601
-9BASE_SOURCE=9base_$(9BASE_VERSION).orig.tar.gz
-9BASE_DIR=9base-$(9BASE_VERSION)
+9BASE_SITE=http://code.suckless.org/dl/misc
+9BASE_UPSTREAM_VERSION=2
+9BASE_VERSION=2+20090309
+9BASE_UPSTREAM_SOURCE=9base-$(9BASE_UPSTREAM_VERSION).tar.gz
+9BASE_SOURCE=9base-$(9BASE_VERSION).tar.gz
+9BASE_SOURCE_MD5=f9d30509996ec178702af20fec986e9d
+9BASE_DIR=9base-$(9BASE_UPSTREAM_VERSION)
 9BASE_UNZIP=zcat
 9BASE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 9BASE_DESCRIPTION=9base is a port of a few original Plan 9 userland tools to Unix.
@@ -53,8 +56,10 @@ endif
 .PHONY: 9base-source 9base-unpack 9base 9base-stage 9base-ipk 9base-clean 9base-dirclean 9base-check
 
 $(DL_DIR)/$(9BASE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(9BASE_SITE)/$(9BASE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(9BASE_SOURCE)
+	$(WGET) -r -P $(@D) $(9BASE_SITE)/$(9BASE_UPSTREAM_SOURCE) && \
+	test `md5sum $(@D)/$(9BASE_UPSTREAM_SOURCE) | cut -f1 -d" "` = $(9BASE_SOURCE_MD5) && \
+	mv $(@D)/$(9BASE_UPSTREAM_SOURCE) $@ || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 9base-source: $(DL_DIR)/$(9BASE_SOURCE) $(9BASE_PATCHES)
 
@@ -102,7 +107,7 @@ $(9BASE_BUILD_DIR)/.configured: $(9BASE_HOST_BUILD_DIR)/.staged $(9BASE_PATCHES)
 #
 $(9BASE_BUILD_DIR)/.built: $(9BASE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(9BASE_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(9BASE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(9BASE_LDFLAGS)" \
@@ -119,12 +124,12 @@ $(9BASE_BUILD_DIR)/.built: $(9BASE_BUILD_DIR)/.configured
 #
 # If you are building a library, then you need to stage it too.
 #
-$(9BASE_BUILD_DIR)/.staged: $(9BASE_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(9BASE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-9base-stage: $(9BASE_BUILD_DIR)/.staged
+#$(9BASE_BUILD_DIR)/.staged: $(9BASE_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#9base-stage: $(9BASE_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -198,4 +203,4 @@ $(9BASE_IPK): $(9BASE_BUILD_DIR)/.built
 # Some sanity check for the package.
 #
 9base-check: $(9BASE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(9BASE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
