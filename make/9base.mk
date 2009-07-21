@@ -56,7 +56,8 @@ endif
 .PHONY: 9base-source 9base-unpack 9base 9base-stage 9base-ipk 9base-clean 9base-dirclean 9base-check
 
 $(DL_DIR)/$(9BASE_SOURCE):
-	$(WGET) -r -P $(@D) $(9BASE_SITE)/$(9BASE_UPSTREAM_SOURCE) && \
+	rm -f $@ $(@D)/$(9BASE_UPSTREAM_SOURCE)
+	$(WGET) -P $(@D) $(9BASE_SITE)/$(9BASE_UPSTREAM_SOURCE) && \
 	test `md5sum $(@D)/$(9BASE_UPSTREAM_SOURCE) | cut -f1 -d" "` = $(9BASE_SOURCE_MD5) && \
 	mv $(@D)/$(9BASE_UPSTREAM_SOURCE) $@ || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
