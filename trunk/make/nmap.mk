@@ -198,7 +198,7 @@ $(NMAP_IPK): $(NMAP_BUILD_DIR)/.built
 	rm -rf $(NMAP_IPK_DIR) $(BUILD_DIR)/nmap_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NMAP_BUILD_DIR) DESTDIR=$(NMAP_IPK_DIR) install
 	$(STRIP_COMMAND) $(NMAP_IPK_DIR)/opt/bin/nmap $(NMAP_IPK_DIR)/opt/bin/ncat
-	sed -i -e '1s|#!/usr/bin|#!/opt/bin|' $(@D)/opt/bin/ndiff
+	sed -i -e '1s|#!/usr/bin|#!/opt/bin|' $(NMAP_IPK_DIR)/opt/bin/ndiff
 	$(MAKE) $(NMAP_IPK_DIR)/CONTROL/control
 	echo $(NMAP_CONFFILES) | sed -e 's/ /\n/g' > $(NMAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NMAP_IPK_DIR)
