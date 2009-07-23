@@ -1,6 +1,6 @@
---- nmap/libdnet-stripped/configure.orig	2008-04-06 17:23:58.000000000 +0200
-+++ nmap/libdnet-stripped/configure	2008-04-06 17:28:00.000000000 +0200
-@@ -3732,9 +3732,8 @@
+--- nmap/libdnet-stripped/configure.orig	2009-06-24 14:35:54.000000000 -0700
++++ nmap/libdnet-stripped/configure	2009-07-22 21:00:26.000000000 -0700
+@@ -3754,9 +3754,8 @@
        IFS="$lt_save_ifs"
        ;;
      esac

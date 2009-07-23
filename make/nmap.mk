@@ -7,7 +7,7 @@
 # $Header$
 #
 NMAP_SITE=http://download.insecure.org/nmap/dist
-NMAP_VERSION=4.68
+NMAP_VERSION=5.00
 NMAP_SOURCE=nmap-$(NMAP_VERSION).tar.bz2
 NMAP_DIR=nmap-$(NMAP_VERSION)
 NMAP_UNZIP=bzcat
@@ -68,7 +68,8 @@ NMAP_IPK=$(BUILD_DIR)/nmap_$(NMAP_VERSION)-$(NMAP_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NMAP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NMAP_SITE)/$(NMAP_SOURCE)
+	$(WGET) -P $(@D) $(NMAP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,10 +104,15 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nma
 		then cat $(NMAP_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(NMAP_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NMAP_DIR)" != "$(NMAP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NMAP_DIR) $(NMAP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NMAP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NMAP_DIR) $(@D) ; \
 	fi
+#	autoreconf -vif $(@D)
 	(cd $(@D); \
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
+	then export ac_cv_c_bigendian=yes; \
+	else export ac_cv_c_bigendian=no; \
+	fi; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NMAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NMAP_LDFLAGS)" \
@@ -218,4 +224,4 @@ nmap-dirclean:
 # Some sanity check for the package.
 #
 nmap-check: $(NMAP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NMAP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
