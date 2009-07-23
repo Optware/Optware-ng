@@ -107,6 +107,7 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nma
 	if test "$(BUILD_DIR)/$(NMAP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NMAP_DIR) $(@D) ; \
 	fi
+	sed -i -e '/	$$(INSTALL)/s| -s | |' $(@D)/ncat/Makefile.in
 #	autoreconf -vif $(@D)
 	(cd $(@D); \
 	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
@@ -196,7 +197,8 @@ $(NMAP_IPK_DIR)/CONTROL/control:
 $(NMAP_IPK): $(NMAP_BUILD_DIR)/.built
 	rm -rf $(NMAP_IPK_DIR) $(BUILD_DIR)/nmap_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NMAP_BUILD_DIR) DESTDIR=$(NMAP_IPK_DIR) install
-	$(STRIP_COMMAND) $(NMAP_IPK_DIR)/opt/bin/nmap
+	$(STRIP_COMMAND) $(NMAP_IPK_DIR)/opt/bin/nmap $(NMAP_IPK_DIR)/opt/bin/ncat
+	sed -i -e '1s|#!/usr/bin|#!/opt/bin|' $(@D)/opt/bin/ndiff
 	$(MAKE) $(NMAP_IPK_DIR)/CONTROL/control
 	echo $(NMAP_CONFFILES) | sed -e 's/ /\n/g' > $(NMAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NMAP_IPK_DIR)
