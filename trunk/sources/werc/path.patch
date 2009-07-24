@@ -1,0 +1,22 @@
+--- etc/initrc.orig	2009-07-14 15:54:28.000000000 -0700
++++ etc/initrc	2009-07-23 18:33:16.000000000 -0700
+@@ -13,7 +13,7 @@
+ 
+ # Path, make sure the plan9port /bin directory is included before /bin
+ # Keep '.' in path! It is needed.
+-path=($plan9port/bin . ./bin ./bin/contrib /bin /usr/bin)
++path=($plan9port/bin . ./bin ./bin/contrib /opt/bin /bin /usr/bin)
+ 
+ # Set this to your favorite markdown formatter, eg., markdown.pl (fltr_cache
+ # takes as an argument a filter, in the default configuration markdown.pl, that
+--- bin/werc.rc.orig	2009-07-24 14:19:16.000000000 -0700
++++ bin/werc.rc	2009-07-24 14:20:52.000000000 -0700
+@@ -15,7 +15,7 @@
+ dirclean=' s/\.(md|html|txt)$//; '
+ 
+ # Careful, the proper p9p path might not be set until initrc.local is sourced
+-path=(. $PLAN9/bin ./bin /bin /usr/bin) 
++path=(. $PLAN9/bin ./bin /opt/bin /bin /usr/bin)
+ 
+ headers=lib/headers.tpl
+ res_tail='</body></html>'
