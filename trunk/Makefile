@@ -239,7 +239,8 @@ COMMON_CROSS_PACKAGES = \
 	dansguardian dash davtools \
 	dbus dbus-glib dbus-python \
 	dcled dcraw denyhosts dev-pts devio devmem2 dfu-util \
-	dialog dict digitemp dircproxy distcc dhcp diffstat diffutils \
+	dialog dict digitemp dircproxy distcc dhcp \
+	diffstat diffutils discount \
 	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
 	dropbear drraw dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
