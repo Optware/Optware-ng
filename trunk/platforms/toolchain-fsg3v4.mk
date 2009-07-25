@@ -8,7 +8,7 @@ LIBNSL_VERSION=2.3.6
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = armeb-none-linux-gnueabi
-TARGET_CROSS_TOP = /opt/crosstool/gcc-2005q3-glibc-2.3.5
+TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/$(GNU_TARGET_NAME)/gcc-2005q3-glibc-2.3.5
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(GNU_TARGET_NAME)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/sys-root/lib
 TARGET_USRLIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/sys-root/usr/lib
@@ -17,21 +17,30 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
-# update-alternatives is installed in /bin/
-UPD-ALT_PREFIX=
 
-#
-## Installation instructions for the binary toolchain ...
-#
-
-# Download the toolchains from here:
-TOOLCHAIN_SITE = http://www.openfsg.com/download/
-
-# Install this one in /opt/crosstool/gcc-2005q3-glibc-2.3.5/
+TOOLCHAIN_SITE = http://ftp.osuosl.org/pub/nslu2/sources/
 TOOLCHAIN_SOURCE = arm-eabi-lebe.tar.bz2
-
-# Install /usr/local/arm-linux/sys-include from this one into
-# /opt/crosstool/gcc-2005q3-glibc-2.3.5/armeb-none-linux-gnueabi/include
 TOOLCHAIN_SOURCE2 = arm-linux-tools-20031127.tar.gz
 
-toolchain:
+
+toolchain: $(BASE_DIR)/toolchain/.unpacked
+
+$(DL_DIR)/$(TOOLCHAIN_SOURCE):
+	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_SITE)/$(@F)
+
+$(DL_DIR)/$(TOOLCHAIN_SOURCE2):
+	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_SITE)/$(@F)
+
+toolchain-download: $(DL_DIR)/$(TOOLCHAIN_SOURCE) $(DL_DIR)/$(TOOLCHAIN_SOURCE2)
+
+$(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) $(DL_DIR)/$(TOOLCHAIN_SOURCE2)
+	rm -rf $(TARGET_CROSS_TOP)
+	mkdir -p $(TARGET_CROSS_TOP)
+	tar -xj -C $(TARGET_CROSS_TOP) -f $(DL_DIR)/$(TOOLCHAIN_SOURCE)
+	mkdir -p $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include
+	tar -xz -C $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include/ \
+	    -f $(DL_DIR)/$(TOOLCHAIN_SOURCE2) usr/local/arm-linux/sys-include
+	mv $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include/usr/local/arm-linux/sys-include/* \
+	   $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include/
+	rm -rf $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include/usr
+	touch $@
