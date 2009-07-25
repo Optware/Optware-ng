@@ -54,6 +54,6 @@ toolchain/.configured: ../i686g25/toolchain/build/.configured
 
 ../i686g25/toolchain/build/.configured:
 	$(MAKE) -C .. i686g25-target
-	$(MAKE) -C ../i686g25 toolchain
+	$(MAKE) -C ../i686g25 directories toolchain
 
 endif
