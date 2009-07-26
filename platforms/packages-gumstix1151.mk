@@ -18,6 +18,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	ircd-hybrid \
 	mdadm \
+	nmap \
 	puppy sendmail \
 	scrobby \
 	tesseract-ocr \
