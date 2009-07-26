@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CTAGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ctags
-CTAGS_VERSION=5.7
+CTAGS_VERSION=5.8
 CTAGS_SOURCE=ctags-$(CTAGS_VERSION).tar.gz
 CTAGS_DIR=ctags-$(CTAGS_VERSION)
 CTAGS_UNZIP=zcat
@@ -44,7 +44,7 @@ CTAGS_IPK_VERSION=1
 
 #
 # CTAGS_CONFFILES should be a list of user-editable files
-CTAGS_CONFFILES=/opt/etc/ctags.conf /opt/etc/init.d/SXXctags
+#CTAGS_CONFFILES=/opt/etc/ctags.conf /opt/etc/init.d/SXXctags
 
 #
 # CTAGS_PATCHES should list any patches, in the the order in
@@ -78,7 +78,8 @@ CTAGS_IPK=$(BUILD_DIR)/ctags_$(CTAGS_VERSION)-$(CTAGS_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CTAGS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CTAGS_SITE)/$(CTAGS_SOURCE)
+	$(WGET) -P $(@D) $(CTAGS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,11 +104,11 @@ ctags-source: $(DL_DIR)/$(CTAGS_SOURCE) $(CTAGS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CTAGS_BUILD_DIR)/.configured: $(DL_DIR)/$(CTAGS_SOURCE) $(CTAGS_PATCHES)
-	rm -rf $(BUILD_DIR)/$(CTAGS_DIR) $(CTAGS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CTAGS_DIR) $(@D)
 	$(CTAGS_UNZIP) $(DL_DIR)/$(CTAGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CTAGS_PATCHES) | patch -d $(BUILD_DIR)/$(CTAGS_DIR) -p2
-	mv $(BUILD_DIR)/$(CTAGS_DIR) $(CTAGS_BUILD_DIR)
-	(cd $(CTAGS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(CTAGS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CTAGS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CTAGS_LDFLAGS)" \
@@ -118,7 +119,7 @@ $(CTAGS_BUILD_DIR)/.configured: $(DL_DIR)/$(CTAGS_SOURCE) $(CTAGS_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(CTAGS_BUILD_DIR)/.configured
+	touch $@
 
 ctags-unpack: $(CTAGS_BUILD_DIR)/.configured
 
@@ -126,9 +127,9 @@ ctags-unpack: $(CTAGS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CTAGS_BUILD_DIR)/.built: $(CTAGS_BUILD_DIR)/.configured
-	rm -f $(CTAGS_BUILD_DIR)/.built
-	$(MAKE) -C $(CTAGS_BUILD_DIR)
-	touch $(CTAGS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -138,19 +139,19 @@ ctags: $(CTAGS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(CTAGS_BUILD_DIR)/.staged: $(CTAGS_BUILD_DIR)/.built
-	rm -f $(CTAGS_BUILD_DIR)/.staged
-	$(MAKE) -C $(CTAGS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(CTAGS_BUILD_DIR)/.staged
-
-ctags-stage: $(CTAGS_BUILD_DIR)/.staged
+#$(CTAGS_BUILD_DIR)/.staged: $(CTAGS_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#ctags-stage: $(CTAGS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/ctags
 #
 $(CTAGS_IPK_DIR)/CONTROL/control:
-	@install -d $(CTAGS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ctags" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,4 +191,4 @@ ctags-dirclean:
 	rm -rf $(BUILD_DIR)/$(CTAGS_DIR) $(CTAGS_BUILD_DIR) $(CTAGS_IPK_DIR) $(CTAGS_IPK)
 
 ctags-check: $(CTAGS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CTAGS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
