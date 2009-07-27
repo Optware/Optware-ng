@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LSOF_SITE=ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
-LSOF_VERSION=4.81
+LSOF_VERSION=4.82
 LSOF_SOURCE=lsof_$(LSOF_VERSION).tar.bz2
 LSOF_DIR=lsof_$(LSOF_VERSION)_src
 LSOF_UNZIP=bzcat
@@ -126,6 +126,7 @@ $(LSOF_BUILD_DIR)/.configured: $(DL_DIR)/$(LSOF_SOURCE) $(LSOF_PATCHES) make/lso
 		then cat $(LSOF_PATCHES) | \
 		patch -d $(@D) -p1 ; \
 	fi
+	sed -i.orig -e '/^CFGL/s|$$| $$(LDFLAGS)|' $(@D)/Makefile
 	touch $@
 
 lsof-unpack: $(LSOF_BUILD_DIR)/.configured
@@ -137,6 +138,7 @@ $(LSOF_BUILD_DIR)/.built: $(LSOF_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
+		LDFLAGS="$(STAGING_LDFLAGS) $(LSOF_LDFLAGS)" \
 		CDEF="$(TARGET_CFLAGS)"
 	touch $@
 
@@ -148,12 +150,12 @@ lsof: $(LSOF_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(LSOF_BUILD_DIR)/.staged: $(LSOF_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-lsof-stage: $(LSOF_BUILD_DIR)/.staged
+#$(LSOF_BUILD_DIR)/.staged: $(LSOF_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#lsof-stage: $(LSOF_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -220,4 +222,4 @@ lsof-dirclean:
 # Some sanity check for the package.
 #
 lsof-check: $(LSOF_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LSOF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
