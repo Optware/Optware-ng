@@ -29,14 +29,14 @@ VPNC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VPNC_DESCRIPTION=Client for Cisco VPN concentrator
 VPNC_SECTION=net
 VPNC_PRIORITY=optional
-VPNC_DEPENDS=libgcrypt kernel-module-tun
+VPNC_DEPENDS=libgcrypt, openssl, kernel-module-tun
 VPNC_SUGGESTS=
 VPNC_CONFLICTS=
 
 #
 # VPNC_IPK_VERSION should be incremented when the ipk changes.
 #
-VPNC_IPK_VERSION=1
+VPNC_IPK_VERSION=2
 
 #
 # VPNC_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ VPNC_PATCHES= \
 # compilation or linking flags, then list them here.
 #
 VPNC_CPPFLAGS=$(shell $(STAGING_DIR)/opt/bin/libgcrypt-config --cflags)
-VPNC_LDFLAGS=$(shell $(STAGING_DIR)/opt/bin/libgcrypt-config --libs)
+VPNC_LDFLAGS=$(shell $(STAGING_DIR)/opt/bin/libgcrypt-config --libs) -lssl
 
 #
 # VPNC_BUILD_DIR is the directory in which the build is done.
@@ -110,7 +110,7 @@ vpnc-source: $(DL_DIR)/$(VPNC_SOURCE) $(VPNC_PATCHES)
 # shown below to make various patches to it.
 #
 $(VPNC_BUILD_DIR)/.configured: $(DL_DIR)/$(VPNC_SOURCE) $(VPNC_PATCHES) make/vpnc.mk
-	$(MAKE) libgcrypt-stage
+	$(MAKE) libgcrypt-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(VPNC_DIR) $(@D)
 	$(VPNC_UNZIP) $(DL_DIR)/$(VPNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VPNC_PATCHES)" ; \
@@ -120,6 +120,7 @@ $(VPNC_BUILD_DIR)/.configured: $(DL_DIR)/$(VPNC_SOURCE) $(VPNC_PATCHES) make/vpn
 	if test "$(BUILD_DIR)/$(VPNC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(VPNC_DIR) $(@D) ; \
 	fi
+	sed -i -e '/^#OPENSSL/s|^#||' $(@D)/Makefile
 	touch $@
 
 vpnc-unpack: $(VPNC_BUILD_DIR)/.configured
