@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NANOBLOGGER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nanoblogger
-NANOBLOGGER_VERSION=3.4
+NANOBLOGGER_VERSION=3.4.1
 NANOBLOGGER_SOURCE=nanoblogger-$(NANOBLOGGER_VERSION).tar.gz
 NANOBLOGGER_DIR=nanoblogger-$(NANOBLOGGER_VERSION)
 NANOBLOGGER_UNZIP=zcat
@@ -140,12 +140,12 @@ nanoblogger: $(NANOBLOGGER_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(NANOBLOGGER_BUILD_DIR)/.staged: $(NANOBLOGGER_BUILD_DIR)/.built
-	rm -f $@
+#$(NANOBLOGGER_BUILD_DIR)/.staged: $(NANOBLOGGER_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-nanoblogger-stage: $(NANOBLOGGER_BUILD_DIR)/.staged
+#	touch $@
+#
+#nanoblogger-stage: $(NANOBLOGGER_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
