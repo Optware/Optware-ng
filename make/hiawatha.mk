@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HIAWATHA_SITE=http://www.hiawatha-webserver.org/files
-HIAWATHA_VERSION=6.15
+HIAWATHA_VERSION=6.16
 HIAWATHA_SOURCE=hiawatha-$(HIAWATHA_VERSION).tar.gz
 HIAWATHA_DIR=hiawatha-$(HIAWATHA_VERSION)
 HIAWATHA_UNZIP=zcat
@@ -42,7 +42,7 @@ HIAWATHA_IPK_VERSION=1
 # HIAWATHA_CONFFILES should be a list of user-editable files
 HIAWATHA_CONFFILES=\
 /opt/etc/hiawatha/mimetype.conf \
-/opt/etc/hiawatha/httpd.conf \
+/opt/etc/hiawatha/hiawatha.conf \
 /opt/etc/hiawatha/php-fcgi.conf \
 /opt/etc/hiawatha/cgi-wrapper.conf \
 
