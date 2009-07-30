@@ -267,6 +267,7 @@ $(IRSSI-DEV_IPK_DIR)/CONTROL/control:
 #
 $(IRSSI_IPK) $(IRSSI-DEV_IPK): $(IRSSI_BUILD_DIR)/.built
 	rm -rf $(IRSSI_IPK_DIR) $(BUILD_DIR)/irssi_*_$(TARGET_ARCH).ipk
+	rm -rf $(IRSSI-DEV_IPK_DIR) $(BUILD_DIR)/irssi-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(IRSSI_IPK_DIR) install-strip
 	install -d $(IRSSI_IPK_DIR)/opt/etc/
 #	install -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf
