@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IRSSI_SITE=http://www.irssi.org/files
-IRSSI_VERSION=0.8.13
+IRSSI_VERSION=0.8.14
 IRSSI_SOURCE=irssi-$(IRSSI_VERSION).tar.gz
 IRSSI_DIR=irssi-$(IRSSI_VERSION)
 IRSSI_UNZIP=zcat
