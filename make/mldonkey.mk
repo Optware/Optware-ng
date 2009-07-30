@@ -102,8 +102,7 @@ mldonkey-source: $(DL_DIR)/$(MLDONKEY_SOURCE) $(MLDONKEY_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(MLDONKEY_BUILD_DIR)/.configured: $(DL_DIR)/$(MLDONKEY_SOURCE) $(MLDONKEY_PATCHES)
-# make/mldonkey.mk
+$(MLDONKEY_BUILD_DIR)/.configured: $(DL_DIR)/$(MLDONKEY_SOURCE) $(MLDONKEY_PATCHES) make/mldonkey.mk
 	$(MAKE) zlib-stage bzip2-stage
 	rm -rf $(BUILD_DIR)/$(MLDONKEY_DIR) $(@D)
 	$(MLDONKEY_UNZIP) $(DL_DIR)/$(MLDONKEY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -114,7 +113,7 @@ $(MLDONKEY_BUILD_DIR)/.configured: $(DL_DIR)/$(MLDONKEY_SOURCE) $(MLDONKEY_PATCH
 	if test "$(BUILD_DIR)/$(MLDONKEY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MLDONKEY_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|3\.11\.0|3\.11\.[0-9]*|' $(@D)/config/configure
+	sed -i -e 's|3\.11\.0|3\.11\.[0-9]|' $(@D)/config/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MLDONKEY_CPPFLAGS)" \
