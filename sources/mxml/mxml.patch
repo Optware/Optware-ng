@@ -1,5 +1,5 @@
---- Makefile.in.orig	2008-01-29 05:28:31.000000000 +0000
-+++ Makefile.in	2008-06-04 23:13:59.000000000 +0000
+--- Makefile.in.orig	2008-12-05 20:20:38.000000000 -0800
++++ Makefile.in	2009-07-30 22:03:09.000000000 -0700
 @@ -59,7 +59,7 @@
  # Install commands...
  #
@@ -18,7 +18,7 @@
  
  
  #
-@@ -318,6 +318,7 @@
+@@ -329,6 +329,7 @@
  
  testmxml.o:	mxml.h
  
@@ -26,16 +26,16 @@
  
  #
  # mxml.xml
-@@ -325,7 +326,7 @@
+@@ -336,7 +337,7 @@
  
  mxml.xml:	mxmldoc-static mxml.h $(PUBLIBOBJS:.o=.c)
  	$(RM) mxml.xml
 -	./mxmldoc-static --header doc/reference.heading mxml.xml mxml.h $(PUBLIBOBJS:.o=.c) >doc/reference.html
 +	$(MXMLDOC_DIR)/mxmldoc-static --header doc/reference.heading mxml.xml mxml.h $(PUBLIBOBJS:.o=.c) >doc/reference.html
- 
- valgrind:	mxmldoc-static
- 	$(RM) valgrind.xml
-@@ -340,7 +341,7 @@
+ 	if test "x`uname`" = xDarwin; then \
+ 		./mxmldoc-static --docset org.minixml.docset \
+ 			--docversion @VERSION@ --feedname minixml.org \
+@@ -363,7 +364,7 @@
  
  doc/mxml.man: mxmldoc-static mxml.xml
  	$(RM) doc/mxml.man

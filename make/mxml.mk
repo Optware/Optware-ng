@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MXML_VERSION=2.5
+MXML_VERSION=2.6
 MXML_SITE=ftp://ftp.easysw.com/pub/mxml/$(MXML_VERSION)
 MXML_SOURCE=mxml-$(MXML_VERSION).tar.gz
 MXML_DIR=mxml-$(MXML_VERSION)
@@ -236,4 +236,4 @@ mxml-dirclean:
 # Some sanity check for the package.
 #
 mxml-check: $(MXML_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MXML_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
