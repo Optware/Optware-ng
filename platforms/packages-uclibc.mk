@@ -31,3 +31,6 @@ UCLIBC++_BROKEN_PACKAGES = \
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC++_SPECIFIC_PACKAGES = \
 	libuclibc++ buildroot uclibc-opt ipkg-opt \
+
+MXML_VERSION := 2.5
+MXML_IPK_VERSION := 1

@@ -14,13 +14,15 @@
 # You should change all these variables to suit your package.
 # Please make sure that you add a description, and that you
 # list all your packages' dependencies, seperated by commas.
-# 
+#
 # If you list yourself as MAINTAINER, please give a valid email
 # address, and indicate your irc nick if it cannot be easily deduced
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MXML_VERSION=2.6
+MXML_VERSION?=2.6
+MXML_IPK_VERSION?=1
+
 MXML_SITE=ftp://ftp.easysw.com/pub/mxml/$(MXML_VERSION)
 MXML_SOURCE=mxml-$(MXML_VERSION).tar.gz
 MXML_DIR=mxml-$(MXML_VERSION)
@@ -35,16 +37,12 @@ MXML_DEPENDS=
 MXML_SUGGESTS=
 MXML_CONFLICTS=
 
-#
-# MXML_IPK_VERSION should be incremented when the ipk changes.
-#
-MXML_IPK_VERSION=1
 
 #
 # MXML_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MXML_PATCHES=$(MXML_SOURCE_DIR)/mxml.patch
+MXML_PATCHES=$(MXML_SOURCE_DIR)/mxml-$(MXML_VERSION).patch
 
 #
 # If the compilation of the package requires additional
