@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IKSEMEL_SITE=http://iksemel.googlecode.com/files/
-IKSEMEL_VERSION=1.3
+IKSEMEL_VERSION=1.4
 IKSEMEL_SOURCE=iksemel-$(IKSEMEL_VERSION).tar.gz
 IKSEMEL_DIR=iksemel-$(IKSEMEL_VERSION)
 IKSEMEL_UNZIP=zcat
@@ -37,7 +37,7 @@ IKSEMEL_CONFLICTS=
 #
 # IKSEMEL_IPK_VERSION should be incremented when the ipk changes.
 #
-IKSEMEL_IPK_VERSION=3
+IKSEMEL_IPK_VERSION=1
 
 #
 # IKSEMEL_CONFFILES should be a list of user-editable files
@@ -77,7 +77,8 @@ IKSEMEL_IPK=$(BUILD_DIR)/iksemel_$(IKSEMEL_VERSION)-$(IKSEMEL_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IKSEMEL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IKSEMEL_SITE)/$(IKSEMEL_SOURCE)
+	$(WGET) -P $(@D) $(IKSEMEL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +107,16 @@ iksemel-source: $(DL_DIR)/$(IKSEMEL_SOURCE) $(IKSEMEL_PATCHES)
 #
 $(IKSEMEL_BUILD_DIR)/.configured: $(DL_DIR)/$(IKSEMEL_SOURCE) $(IKSEMEL_PATCHES) make/iksemel.mk
 	$(MAKE) gnutls-stage
-	rm -rf $(BUILD_DIR)/$(IKSEMEL_DIR) $(IKSEMEL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(IKSEMEL_DIR) $(@D)
 	$(IKSEMEL_UNZIP) $(DL_DIR)/$(IKSEMEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IKSEMEL_PATCHES)" ; \
 		then cat $(IKSEMEL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(IKSEMEL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(IKSEMEL_DIR)" != "$(IKSEMEL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(IKSEMEL_DIR) $(IKSEMEL_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(IKSEMEL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(IKSEMEL_DIR) $(@D) ; \
 	fi
-	(cd $(IKSEMEL_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IKSEMEL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IKSEMEL_LDFLAGS)" \
@@ -128,8 +129,8 @@ $(IKSEMEL_BUILD_DIR)/.configured: $(DL_DIR)/$(IKSEMEL_SOURCE) $(IKSEMEL_PATCHES)
 		--disable-static \
 		--with-libgnutls-prefix=$(STAGING_PREFIX) \
 	)
-	$(PATCH_LIBTOOL) $(IKSEMEL_BUILD_DIR)/libtool
-	touch $(IKSEMEL_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 iksemel-unpack: $(IKSEMEL_BUILD_DIR)/.configured
 
@@ -137,9 +138,9 @@ iksemel-unpack: $(IKSEMEL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(IKSEMEL_BUILD_DIR)/.built: $(IKSEMEL_BUILD_DIR)/.configured
-	rm -f $(IKSEMEL_BUILD_DIR)/.built
-	$(MAKE) -C $(IKSEMEL_BUILD_DIR)
-	touch $(IKSEMEL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -150,9 +151,11 @@ iksemel: $(IKSEMEL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(IKSEMEL_BUILD_DIR)/.staged: $(IKSEMEL_BUILD_DIR)/.built
-	rm -f $(IKSEMEL_BUILD_DIR)/.staged
-	$(MAKE) -C $(IKSEMEL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(IKSEMEL_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/iksemel.pc
+	rm -f $(STAGING_LIB_DIR)/libiksemel.la
+	touch $@
 
 iksemel-stage: $(IKSEMEL_BUILD_DIR)/.staged
 
@@ -222,4 +225,4 @@ iksemel-dirclean:
 # Some sanity check for the package.
 #
 iksemel-check: $(IKSEMEL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IKSEMEL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
