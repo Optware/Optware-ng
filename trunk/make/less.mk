@@ -5,7 +5,7 @@
 ###########################################################
 
 LESS_SITE=http://www.greenwoodsoftware.com/less/
-LESS_VERSION=429
+LESS_VERSION=436
 LESS_SOURCE=less-$(LESS_VERSION).tar.gz
 LESS_DIR=less-$(LESS_VERSION)
 LESS_UNZIP=zcat
