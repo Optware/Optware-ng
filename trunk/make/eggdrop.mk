@@ -42,7 +42,7 @@ EGGDROP_CONFLICTS=
 #
 # EGGDROP_IPK_VERSION should be incremented when the ipk changes.
 #
-EGGDROP_IPK_VERSION=1
+EGGDROP_IPK_VERSION=2
 
 #
 # EGGDROP_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ EGGDROP_CONFFILES=/opt/etc/eggdrop.conf /opt/etc/init.d/S50eggdrop
 # EGGDROP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-EGGDROP_PATCHES=$(EGGDROP_SOURCE_DIR)/Makefile.in.patch
+EGGDROP_PATCHES=$(EGGDROP_SOURCE_DIR)/Makefile.in.patch $(EGGDROP_SOURCE_DIR)/003-language_c.patch
 
 #
 # If the compilation of the package requires additional

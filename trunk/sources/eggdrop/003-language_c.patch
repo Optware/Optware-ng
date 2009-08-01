@@ -1,0 +1,26 @@
+Index: src/language.c
+===================================================================
+--- eggdrop/src/language.c 2004-04-06 07:56:38.000000000 +0100
++++ eggdrop-patched/src/language.c 2008-09-08 23:24:34.000000000 +0100
+@@ -240,8 +240,19 @@
+ #else
+         if (sscanf(lbuf, "0x%x,%500c", &lidx, ltext) != 2) {
+ #endif
+-          putlog(LOG_MISC, "*", "Malformed text line in %s at %d.",
+-                 langfile, lline);
++          ltexts++;
++          ctmp = strchr(ltext, '\n');
++          *ctmp = 0;
++          while (ltext[strlen(ltext) - 1] == '\\') {
++            ltext[strlen(ltext) - 1] = 0;
++            if (fgets(lbuf, 511, FLANG)) {
++              lline++;
++              ctmp = strchr(lbuf, '\n');
++              *ctmp = 0;
++              ltext = nrealloc(ltext, strlen(lbuf) + strlen(ltext) + 1);
++              strcpy(strchr(ltext, 0), lbuf);
++            }
++          }
+         } else {
+           ltexts++;
+           ctmp = strchr(ltext, '\n');
