@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 QUAGGA_SITE=http://www.quagga.net/download
-QUAGGA_VERSION=0.99.4
+QUAGGA_VERSION=0.99.14
 QUAGGA_SOURCE=quagga-$(QUAGGA_VERSION).tar.gz
 QUAGGA_DIR=quagga-$(QUAGGA_VERSION)
 QUAGGA_UNZIP=zcat
@@ -42,7 +42,7 @@ QUAGGA_CONFLICTS=
 #
 # QUAGGA_IPK_VERSION should be incremented when the ipk changes.
 #
-QUAGGA_IPK_VERSION=4
+QUAGGA_IPK_VERSION=1
 
 #
 # QUAGGA_CONFFILES should be a list of user-editable files
@@ -107,7 +107,7 @@ quagga-source: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
+$(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES) make/quagga.mk
 	$(MAKE) readline-stage termcap-stage 
 	rm -rf $(BUILD_DIR)/$(QUAGGA_DIR) $(@D)
 	$(QUAGGA_UNZIP) $(DL_DIR)/$(QUAGGA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -126,6 +126,8 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(QUAGGA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(QUAGGA_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
