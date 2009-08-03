@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR-REBASE_VERSION=0.5.1
+BZR-REBASE_VERSION=0.5.3
 BZR-REBASE_SITE=http://samba.org/~jelmer/bzr
 BZR-REBASE_SOURCE=bzr-rebase-$(BZR-REBASE_VERSION).tar.gz
 BZR-REBASE_DIR=bzr-rebase-$(BZR-REBASE_VERSION)
