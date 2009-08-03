@@ -4,10 +4,11 @@
 #
 #############################################################
 
-BIND_VERSION=9.6.1
-BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_VERSION)
-BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
-BIND_DIR=bind-$(BIND_VERSION)
+BIND_UPSTREAM_VERSION=9.6.1-P1
+BIND_VERSION=9.6.1.1
+BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_UPSTREAM_VERSION)
+BIND_SOURCE=bind-$(BIND_UPSTREAM_VERSION).tar.gz
+BIND_DIR=bind-$(BIND_UPSTREAM_VERSION)
 BIND_UNZIP=zcat
 BIND_MAINTAINER=Louis Lagendijk <louis.lagendijk@gmail.com>
 BIND_DESCRIPTION=Bind provides a full name server package, including zone masters, slaves, zone transfers, security multiple views.  This is THE reference implementation from ISC, which has roots all the way back to the TOPS-20 original.  It is over-kill, unless you have a complex environment.  Other utilities (for debugging, remote management) are also included.  Full documentation and developers' files are included in this kit, though you may wish they weren't.
