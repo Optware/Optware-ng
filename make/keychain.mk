@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-KEYCHAIN_SITE=http://dev.gentoo.org/~agriffis/keychain
-KEYCHAIN_VERSION=2.6.8
+KEYCHAIN_SITE=http://www.funtoo.org/archive/keychain
+KEYCHAIN_VERSION=2.6.9
 KEYCHAIN_SOURCE=keychain-$(KEYCHAIN_VERSION).tar.bz2
 KEYCHAIN_DIR=keychain-$(KEYCHAIN_VERSION)
 KEYCHAIN_UNZIP=bzcat
@@ -76,8 +76,8 @@ KEYCHAIN_IPK=$(BUILD_DIR)/keychain_$(KEYCHAIN_VERSION)-$(KEYCHAIN_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(KEYCHAIN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(KEYCHAIN_SITE)/$(KEYCHAIN_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(KEYCHAIN_SOURCE)
+	$(WGET) -P $(@D) $(KEYCHAIN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ keychain-source: $(DL_DIR)/$(KEYCHAIN_SOURCE) $(KEYCHAIN_PATCHES)
 #
 $(KEYCHAIN_BUILD_DIR)/.configured: $(DL_DIR)/$(KEYCHAIN_SOURCE) $(KEYCHAIN_PATCHES) make/keychain.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(KEYCHAIN_DIR) $(KEYCHAIN_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(KEYCHAIN_DIR) $(@D)
 	$(KEYCHAIN_UNZIP) $(DL_DIR)/$(KEYCHAIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KEYCHAIN_PATCHES)" ; \
 		then cat $(KEYCHAIN_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(KEYCHAIN_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(KEYCHAIN_DIR)" != "$(KEYCHAIN_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(KEYCHAIN_DIR) $(KEYCHAIN_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(KEYCHAIN_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(KEYCHAIN_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|PATH="|PATH="/opt/bin:|' $(KEYCHAIN_BUILD_DIR)/keychain
+	sed -i -e 's|PATH="|PATH="/opt/bin:|' $(@D)/keychain.sh
 #	(cd $(KEYCHAIN_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KEYCHAIN_CPPFLAGS)" \
@@ -138,7 +138,7 @@ keychain-unpack: $(KEYCHAIN_BUILD_DIR)/.configured
 #
 $(KEYCHAIN_BUILD_DIR)/.built: $(KEYCHAIN_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(KEYCHAIN_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -149,12 +149,12 @@ keychain: $(KEYCHAIN_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(KEYCHAIN_BUILD_DIR)/.staged: $(KEYCHAIN_BUILD_DIR)/.built
-	rm -f $@
+#$(KEYCHAIN_BUILD_DIR)/.staged: $(KEYCHAIN_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(KEYCHAIN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-keychain-stage: $(KEYCHAIN_BUILD_DIR)/.staged
+#	touch $@
+#
+#keychain-stage: $(KEYCHAIN_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -221,4 +221,4 @@ keychain-dirclean:
 # Some sanity check for the package.
 #
 keychain-check: $(KEYCHAIN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(KEYCHAIN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
