@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTTPING_SITE=http://www.vanheusden.com/httping
-HTTPING_VERSION=1.3.0
+HTTPING_VERSION=1.3.1
 HTTPING_SOURCE=httping-$(HTTPING_VERSION).tgz
 HTTPING_DIR=httping-$(HTTPING_VERSION)
 HTTPING_UNZIP=zcat
@@ -142,6 +142,7 @@ $(HTTPING_BUILD_DIR)/.built: $(HTTPING_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HTTPING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HTTPING_LDFLAGS)" \
+		PREFIX=/opt \
 		;
 	touch $@
 
@@ -153,12 +154,12 @@ httping: $(HTTPING_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(HTTPING_BUILD_DIR)/.staged: $(HTTPING_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-httping-stage: $(HTTPING_BUILD_DIR)/.staged
+#$(HTTPING_BUILD_DIR)/.staged: $(HTTPING_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#httping-stage: $(HTTPING_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -193,19 +194,10 @@ $(HTTPING_IPK_DIR)/CONTROL/control:
 #
 $(HTTPING_IPK): $(HTTPING_BUILD_DIR)/.built
 	rm -rf $(HTTPING_IPK_DIR) $(BUILD_DIR)/httping_*_$(TARGET_ARCH).ipk
-	install -d $(HTTPING_IPK_DIR)/opt/bin $(HTTPING_IPK_DIR)/opt/share/man/man1
-	$(MAKE) -C $(HTTPING_BUILD_DIR) DESTDIR=$(HTTPING_IPK_DIR) install
+	$(MAKE) -C $(HTTPING_BUILD_DIR) DESTDIR=$(HTTPING_IPK_DIR) install \
+		STRIP=: PREFIX=/opt
 	$(STRIP_COMMAND) $(HTTPING_IPK_DIR)/opt/bin/*
-#	install -d $(HTTPING_IPK_DIR)/opt/etc/
-#	install -m 644 $(HTTPING_SOURCE_DIR)/httping.conf $(HTTPING_IPK_DIR)/opt/etc/httping.conf
-#	install -d $(HTTPING_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(HTTPING_SOURCE_DIR)/rc.httping $(HTTPING_IPK_DIR)/opt/etc/init.d/SXXhttping
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HTTPING_IPK_DIR)/opt/etc/init.d/SXXhttping
 	$(MAKE) $(HTTPING_IPK_DIR)/CONTROL/control
-#	install -m 755 $(HTTPING_SOURCE_DIR)/postinst $(HTTPING_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HTTPING_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(HTTPING_SOURCE_DIR)/prerm $(HTTPING_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HTTPING_IPK_DIR)/CONTROL/prerm
 	echo $(HTTPING_CONFFILES) | sed -e 's/ /\n/g' > $(HTTPING_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HTTPING_IPK_DIR)
 
