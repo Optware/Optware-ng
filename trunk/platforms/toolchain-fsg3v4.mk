@@ -18,7 +18,7 @@ TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
 
-TOOLCHAIN_SITE = http://ftp.osuosl.org/pub/nslu2/sources/
+TOOLCHAIN_SITE = http://ftp.osuosl.org/pub/nslu2/sources
 TOOLCHAIN_SOURCE = arm-eabi-lebe.tar.bz2
 TOOLCHAIN_SOURCE2 = arm-linux-tools-20031127.tar.gz
 
