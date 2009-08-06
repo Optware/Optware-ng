@@ -29,7 +29,7 @@ CDRTOOLS_CONFLICTS=
 #
 # CDRTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-CDRTOOLS_IPK_VERSION=4
+CDRTOOLS_IPK_VERSION=5
 
 #
 # Force using gcc rather than cc
@@ -53,6 +53,7 @@ CDRTOOLS_PATCHES=$(CDRTOOLS_SOURCE_DIR)/cdrtools-$(CDRTOOLS_VERSION).patch
 CDRTOOLS_CPPFLAGS=
 CDRTOOLS_LDFLAGS=-Wl,--strip-all
 
+ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq (uclibc, $(LIBC_STYLE))
 CDRTOOLS_CONFIG_ENVS=export \
 	ac_cv_prog_cc_cross=yes \
@@ -102,6 +103,8 @@ CDRTOOLS_CONFIG_ENVS=\
 	ac_cv_type_char_unsigned=yes \
 	; fi;
 endif
+endif
+
 #
 # CDRTOOLS_BUILD_DIR is the directory in which the build is done.
 # CDRTOOLS_SOURCE_DIR is the directory which holds all the
@@ -197,21 +200,21 @@ cdrtools: $(CDRTOOLS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(CDRTOOLS_BUILD_DIR)/.staged: $(CDRTOOLS_BUILD_DIR)/.built
-	rm -f $@
-	$(TARGET_CONFIGURE_OPTS) \
-	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS) \
-		INS_BASE=$(STAGING_DIR) install
-	touch $@
-
-cdrtools-stage: $(CDRTOOLS_BUILD_DIR)/.staged
+#$(CDRTOOLS_BUILD_DIR)/.staged: $(CDRTOOLS_BUILD_DIR)/.built
+#	rm -f $@
+#	$(TARGET_CONFIGURE_OPTS) \
+#	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS) \
+#		INS_BASE=$(STAGING_DIR) install
+#	touch $@
+#
+#cdrtools-stage: $(CDRTOOLS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/cdrtools
 #
 $(CDRTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(CDRTOOLS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cdrtools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -268,4 +271,4 @@ cdrtools-dirclean:
 # Some sanity check for the package.
 #
 cdrtools-check: $(CDRTOOLS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CDRTOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
