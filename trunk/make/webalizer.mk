@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WEBALIZER_SITE=ftp://ftp.mrunix.net/pub/webalizer
-WEBALIZER_VERSION=2.20-01
+WEBALIZER_VERSION=2.21-02
 WEBALIZER_SOURCE=webalizer-$(WEBALIZER_VERSION)-src.tar.bz2
 WEBALIZER_DIR=webalizer-$(WEBALIZER_VERSION)
 WEBALIZER_UNZIP=bzcat
@@ -35,7 +35,7 @@ WEBALIZER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WEBALIZER_DESCRIPTION=Webalizer is a webserver stats program. 
 WEBALIZER_SECTION=web
 WEBALIZER_PRIORITY=optional
-WEBALIZER_DEPENDS=libgd
+WEBALIZER_DEPENDS=bzip2, geoip, libgd, libpng, zlib
 WEBALIZER_SUGGESTS=
 WEBALIZER_CONFLICTS=
 
@@ -106,7 +106,7 @@ webalizer-source: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(WEBALIZER_BUILD_DIR)/.configured: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PATCHES) make/webalizer.mk
-	$(MAKE) libgd-stage
+	$(MAKE) bzip2-stage geoip-stage libgd-stage libpng-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(WEBALIZER_DIR) $(@D)
 	$(WEBALIZER_UNZIP) $(DL_DIR)/$(WEBALIZER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WEBALIZER_PATCHES) | patch -d $(BUILD_DIR)/$(WEBALIZER_DIR) -p1
@@ -120,9 +120,20 @@ $(WEBALIZER_BUILD_DIR)/.configured: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PA
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--enable-bz2 \
+		--enable-geoip \
 		--disable-nls \
-		--with-gd=$(STAGING_DIR)/opt/include \
-		--with-gdlib=$(STAGING_DIR)/opt/lib \
+		--with-bz2=$(STAGING_INCLUDE_DIR) \
+		--with-bz2lib=$(STAGING_LIB_DIR) \
+		--with-gd=$(STAGING_INCLUDE_DIR) \
+		--with-gdlib=$(STAGING_LIB_DIR) \
+		--with-geoip=$(STAGING_INCLUDE_DIR) \
+		--with-geoiplib=$(STAGING_LIB_DIR) \
+		--with-geodb=/opt/share/GeoDB \
+		--with-png=$(STAGING_INCLUDE_DIR) \
+		--with-pnglib=$(STAGING_LIB_DIR) \
+		--with-z=$(STAGING_INCLUDE_DIR) \
+		--with-zlib=$(STAGING_LIB_DIR) \
 	)
 	touch $@
 
@@ -217,4 +228,4 @@ webalizer-dirclean:
 # Some sanity check for the package.
 #
 webalizer-check: $(WEBALIZER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WEBALIZER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
