@@ -9,7 +9,6 @@ BROKEN_PACKAGES = \
 	$(UCLIBC++_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
 	aspell \
-	cdrtools \
 	centerim \
 	ecl \
 	cairo fixesext \

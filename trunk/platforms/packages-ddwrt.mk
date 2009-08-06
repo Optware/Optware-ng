@@ -8,7 +8,6 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(UCLIBC++_BROKEN_PACKAGES) \
 	clinkcc \
-	cdrtools \
 	centerim \
 	dansguardian \
 	dialog \

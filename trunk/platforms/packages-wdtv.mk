@@ -9,7 +9,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	9base \
-	cdrtools fcgi ficy fish \
+	fcgi ficy fish \
 	fuppes gnu-smalltalk gtmess gtk gutenprint \
 	ice iptraf launchtool ldconfig ltrace moc \
 	mtr newsbeuter nfs-server nfs-utils pango pinentry \
