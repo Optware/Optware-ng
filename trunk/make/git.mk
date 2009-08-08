@@ -37,10 +37,14 @@ endif
 GIT_SUGGESTS=git-manpages
 GIT_CONFLICTS=
 
+GIT-LITE_DEPENDS=zlib, openssl, libcurl, diffutils, rcs, expat
+GIT-LITE_SUGGESTS=git-manpages
+GIT-LITE_CONFLICTS=
+
 #
 # GIT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT_IPK_VERSION=1
+GIT_IPK_VERSION=2
 
 GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
@@ -87,6 +91,9 @@ GIT_SOURCE_DIR=$(SOURCE_DIR)/git
 
 GIT_IPK_DIR=$(BUILD_DIR)/git-$(GIT_VERSION)-ipk
 GIT_IPK=$(BUILD_DIR)/git_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+GIT-LITE_IPK_DIR=$(BUILD_DIR)/git-lite-$(GIT_VERSION)-ipk
+GIT-LITE_IPK=$(BUILD_DIR)/git-lite_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 GIT-MANPAGES_IPK_DIR=$(BUILD_DIR)/git-manpages-$(GIT_VERSION)-ipk
 GIT-MANPAGES_IPK=$(BUILD_DIR)/git-manpages_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -219,6 +226,21 @@ $(GIT_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(GIT_SUGGESTS)" >>$@
 	@echo "Conflicts: $(GIT_CONFLICTS)" >>$@
 
+$(GIT-LITE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: git-lite" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIT_PRIORITY)" >>$@
+	@echo "Section: $(GIT_SECTION)" >>$@
+	@echo "Version: $(GIT_VERSION)-$(GIT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIT_MAINTAINER)" >>$@
+	@echo "Source: $(GIT_SITE)/$(GIT_SOURCE)" >>$@
+	@echo "Description: $(GIT_DESCRIPTION)" >>$@
+	@echo "Depends: $(GIT-LITE_DEPENDS)" >>$@
+	@echo "Suggests: $(GIT-LITE_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GIT-LITE_CONFLICTS)" >>$@
+
 $(GIT-MANPAGES_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -280,10 +302,41 @@ ifneq (,$(filter perl, $(PACKAGES)))
 	for f in `find $(GIT_IPK_DIR)/opt/lib -name perllocal.pod`; \
 		do mv $$f $$f.git; done
 endif
+	rm -f $(GIT_IPK_DIR)/opt/bin/git
+	ln -s ../libexec/git-core/git $(GIT_IPK_DIR)/opt/bin/git
 	install -d $(GIT_IPK_DIR)/opt/etc/bash_completion.d
 	install $(<D)/contrib/completion/git-completion.bash $(GIT_IPK_DIR)/opt/etc/bash_completion.d
 	$(MAKE) $(GIT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT_IPK_DIR)
+
+$(GIT-LITE_IPK): $(GIT_BUILD_DIR)/.built
+	rm -rf $(GIT-LITE_IPK_DIR) $(BUILD_DIR)/git-lite_*_$(TARGET_ARCH).ipk
+	if ! $(TARGET_CC) -c -o /dev/null $(SOURCE_DIR)/common/tv_nsec.c >/dev/null 2>&1; \
+		then export GIT_NSEC=NO_NSEC=true ; \
+	fi; \
+	PATH="$(STAGING_PREFIX)/bin:$$PATH" \
+	$(MAKE) -C $(GIT_BUILD_DIR) DESTDIR=$(GIT-LITE_IPK_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(GIT_LDFLAGS)" \
+		NO_TCLTK=true \
+		SCRIPT_SH= \
+		SCRIPT_PERL= \
+		PROGRAMS= \
+		BUILT_INS= \
+		$$GIT_NSEC \
+		$(GIT_MAKE_FLAGS) \
+		prefix=/opt \
+		install
+	( cd $(GIT-LITE_IPK_DIR)/opt/bin ; \
+	  rm -f git-cvsserver git-receive-pack git-shell git-upload-archive git-upload-pack )
+	rm -f $(GIT-LITE_IPK_DIR)/opt/bin/git
+	ln -s ../libexec/git-core/git $(GIT-LITE_IPK_DIR)/opt/bin/git
+	rm -rf $(GIT-LITE_IPK_DIR)/opt/lib
+	( cd $(GIT-LITE_IPK_DIR)/opt/libexec/git-core ; rm -f git?* )
+	rm -rf $(GIT-LITE_IPK_DIR)/opt/share/man
+	$(MAKE) $(GIT-LITE_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-LITE_IPK_DIR)
 
 $(GIT-MANPAGES_IPK): $(DL_DIR)/$(GIT-MANPAGES_SOURCE)
 	rm -rf $(GIT-MANPAGES_IPK_DIR) $(BUILD_DIR)/git-manpages_*_$(TARGET_ARCH).ipk
@@ -300,7 +353,7 @@ $(GIT-SVN_IPK):
 #
 # This is called from the top level makefile to create the IPK file.
 #
-git-ipk: $(GIT_IPK) $(GIT-MANPAGES_IPK) $(GIT-SVN_IPK)
+git-ipk: $(GIT_IPK) $(GIT-LITE_IPK) $(GIT-MANPAGES_IPK) $(GIT-SVN_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
