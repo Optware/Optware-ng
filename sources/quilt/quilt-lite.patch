@@ -1,0 +1,35 @@
+--- opt/share/quilt/refresh.orig	2009-08-08 20:14:00.000000000 +0930
++++ opt/share/quilt/refresh	2009-08-08 20:14:56.000000000 +0930
+@@ -248,19 +248,19 @@
+ fi
+ 
+ # Check for trailing whitespace
+-if [ -z "$opt_strip_whitespace" ]
+-then
+-	$QUILT_DIR/scripts/remove-trailing-ws -n -p$num_strip_level \
+-	< $tmp_patch
+-else
+-	tmp_patch2=$(gen_tempfile)
+-	if $QUILT_DIR/scripts/remove-trailing-ws -p$num_strip_level \
+-				       < $tmp_patch > $tmp_patch2
+-	then
+-		rm -f $tmp_patch
+-		tmp_patch=$tmp_patch2
+-	fi
+-fi
++# if [ -z "$opt_strip_whitespace" ]
++# then
++# 	$QUILT_DIR/scripts/remove-trailing-ws -n -p$num_strip_level \
++# 	< $tmp_patch
++# else
++# 	tmp_patch2=$(gen_tempfile)
++# 	if $QUILT_DIR/scripts/remove-trailing-ws -p$num_strip_level \
++# 				       < $tmp_patch > $tmp_patch2
++# 	then
++# 		rm -f $tmp_patch
++# 		tmp_patch=$tmp_patch2
++# 	fi
++# fi
+ # FIXME: no stripping of non-topmost patch !!!
+ 
+ patch_file=$(patch_file_name $patch)
