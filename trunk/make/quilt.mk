@@ -76,7 +76,6 @@ QUILT-LITE_IPK_DIR=$(BUILD_DIR)/quilt-lite-$(QUILT_VERSION)-ipk
 QUILT-LITE_IPK=$(BUILD_DIR)/quilt-lite_$(QUILT_VERSION)-$(QUILT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: quilt-source quilt-unpack quilt quilt-stage quilt-ipk quilt-clean quilt-dirclean quilt-check
-.PHONY: quilt-lite-source quilt-lite-unpack quilt-lite quilt-lite-stage quilt-lite-ipk quilt-lite-clean quilt-lite-dirclean quilt-lite-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -91,7 +90,7 @@ $(DL_DIR)/$(QUILT_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-quilt-source quilt-lite-source: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES)
+quilt-source: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -141,7 +140,7 @@ $(QUILT_BUILD_DIR)/.configured: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES) make/
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
-quilt-unpack quilte-lite-unpack: $(QUILT_BUILD_DIR)/.configured
+quilt-unpack: $(QUILT_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
@@ -154,7 +153,7 @@ $(QUILT_BUILD_DIR)/.built: $(QUILT_BUILD_DIR)/.configured
 #
 # This is the build convenience target.
 #
-quilt quilt-lite: $(QUILT_BUILD_DIR)/.built
+quilt: $(QUILT_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -164,7 +163,7 @@ $(QUILT_BUILD_DIR)/.staged: $(QUILT_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
-quilt-stage quilt-lite-stage: $(QUILT_BUILD_DIR)/.staged
+quilt-stage: $(QUILT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -253,14 +252,12 @@ $(QUILT-LITE_IPK): $(QUILT_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-quilt-ipk: $(QUILT_IPK)
-
-quilt-lite-ipk: $(QUILT-LITE_IPK)
+quilt-ipk: $(QUILT_IPK) $(QUILT-LITE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
 #
-quilt-clean quilt-lite-clean:
+quilt-clean:
 	rm -f $(QUILT_BUILD_DIR)/.built
 	-$(MAKE) -C $(QUILT_BUILD_DIR) clean
 
@@ -268,7 +265,7 @@ quilt-clean quilt-lite-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-quilt-dirclean quilt-lite-dirclean:
+quilt-dirclean:
 	rm -rf $(BUILD_DIR)/$(QUILT_DIR) $(QUILT_BUILD_DIR)
 	rm -rf $(QUILT_IPK_DIR) $(QUILT_IPK)
 	rm -rf $(QUILT-LITE_IPK_DIR) $(QUILT-LITE_IPK)
@@ -277,7 +274,4 @@ quilt-dirclean quilt-lite-dirclean:
 # Some sanity check for the package.
 #
 quilt-check: $(QUILT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
-
-quilt-lite-check: $(QUILT-LITE_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

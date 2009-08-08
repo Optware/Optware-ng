@@ -333,7 +333,7 @@ COMMON_CROSS_PACKAGES = \
 	ppower ppp privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils puppy pure-ftpd pv pwgen \
 	python python24 python25 python26 python3 $(PYTHON_PACKAGES) \
-	qemacs qemu qemu-libc-i386 quagga quickie quilt quilt-lite \
+	qemacs qemu qemu-libc-i386 quagga quickie quilt \
 	radiusclient-ng rc rc5pipe rcs rdate \
 	readline re2c recode recordext \
 	redir renderext rhtvision rlfe rlwrap rrdcollect rrdtool \
