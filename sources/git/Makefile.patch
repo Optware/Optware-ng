@@ -27,3 +27,16 @@
  	    -e 's|++GIT_VERSION++|$(GIT_VERSION)|g' \
  	    -e 's|++GIT_BINDIR++|$(bindir)|g' \
  	    -e 's|++GITWEB_CONFIG++|$(GITWEB_CONFIG)|g' \
+--- git/Makefile.orig	2009-08-09 00:50:04.000000000 +0930
++++ git/Makefile	2009-08-09 00:50:51.000000000 +0930
+@@ -1667,9 +1667,7 @@
+ 		cp "$$bindir/git$X" "$$execdir/git$X"; } ; } && \
+ 	{ for p in $(BUILT_INS); do \
+ 		$(RM) "$$execdir/$$p" && \
+-		ln "$$execdir/git$X" "$$execdir/$$p" 2>/dev/null || \
+-		ln -s "git$X" "$$execdir/$$p" 2>/dev/null || \
+-		cp "$$execdir/git$X" "$$execdir/$$p" || exit; \
++		ln -s "git$X" "$$execdir/$$p" 2>/dev/null || exit; \
+ 	  done; } && \
+ 	./check_bindir "z$$bindir" "z$$execdir" "$$bindir/git-add$X"
+ 
