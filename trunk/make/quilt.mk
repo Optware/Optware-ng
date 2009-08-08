@@ -31,12 +31,16 @@ QUILT_SECTION=misc
 QUILT_PRIORITY=optional
 QUILT_DEPENDS=perl, coreutils, bash, diffutils, patch, util-linux-ng
 QUILT_SUGGESTS=
-QUILT_CONFLICTS=
+QUILT_CONFLICTS=quilt-lite
+
+QUILT-LITE_DEPENDS=coreutils, bash, diffutils, patch, util-linux-ng
+QUILT-LITE_SUGGESTS=
+QUILT-LITE_CONFLICTS=quilt
 
 #
 # QUILT_IPK_VERSION should be incremented when the ipk changes.
 #
-QUILT_IPK_VERSION=4
+QUILT_IPK_VERSION=5
 
 #
 # QUILT_CONFFILES should be a list of user-editable files
@@ -68,8 +72,11 @@ QUILT_BUILD_DIR=$(BUILD_DIR)/quilt
 QUILT_SOURCE_DIR=$(SOURCE_DIR)/quilt
 QUILT_IPK_DIR=$(BUILD_DIR)/quilt-$(QUILT_VERSION)-ipk
 QUILT_IPK=$(BUILD_DIR)/quilt_$(QUILT_VERSION)-$(QUILT_IPK_VERSION)_$(TARGET_ARCH).ipk
+QUILT-LITE_IPK_DIR=$(BUILD_DIR)/quilt-lite-$(QUILT_VERSION)-ipk
+QUILT-LITE_IPK=$(BUILD_DIR)/quilt-lite_$(QUILT_VERSION)-$(QUILT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: quilt-source quilt-unpack quilt quilt-stage quilt-ipk quilt-clean quilt-dirclean quilt-check
+.PHONY: quilt-lite-source quilt-lite-unpack quilt-lite quilt-lite-stage quilt-lite-ipk quilt-lite-clean quilt-lite-dirclean quilt-lite-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -84,7 +91,7 @@ $(DL_DIR)/$(QUILT_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-quilt-source: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES)
+quilt-source quilt-lite-source: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -134,7 +141,7 @@ $(QUILT_BUILD_DIR)/.configured: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES) make/
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
-quilt-unpack: $(QUILT_BUILD_DIR)/.configured
+quilt-unpack quilte-lite-unpack: $(QUILT_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
@@ -147,7 +154,7 @@ $(QUILT_BUILD_DIR)/.built: $(QUILT_BUILD_DIR)/.configured
 #
 # This is the build convenience target.
 #
-quilt: $(QUILT_BUILD_DIR)/.built
+quilt quilt-lite: $(QUILT_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -157,7 +164,7 @@ $(QUILT_BUILD_DIR)/.staged: $(QUILT_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
-quilt-stage: $(QUILT_BUILD_DIR)/.staged
+quilt-stage quilt-lite-stage: $(QUILT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -177,6 +184,25 @@ $(QUILT_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(QUILT_DEPENDS)" >>$@
 	@echo "Suggests: $(QUILT_SUGGESTS)" >>$@
 	@echo "Conflicts: $(QUILT_CONFLICTS)" >>$@
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/quilt
+#
+$(QUILT-LITE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: quilt-lite" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(QUILT_PRIORITY)" >>$@
+	@echo "Section: $(QUILT_SECTION)" >>$@
+	@echo "Version: $(QUILT_VERSION)-$(QUILT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(QUILT_MAINTAINER)" >>$@
+	@echo "Source: $(QUILT_SITE)/$(QUILT_SOURCE)" >>$@
+	@echo "Description: $(QUILT_DESCRIPTION)" >>$@
+	@echo "Depends: $(QUILT-LITE_DEPENDS)" >>$@
+	@echo "Suggests: $(QUILT-LITE_SUGGESTS)" >>$@
+	@echo "Conflicts: $(QUILT-LITE_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -207,15 +233,34 @@ $(QUILT_IPK): $(QUILT_BUILD_DIR)/.built
 #	echo $(QUILT_CONFFILES) | sed -e 's/ /\n/g' > $(QUILT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QUILT_IPK_DIR)
 
+$(QUILT-LITE_IPK): $(QUILT_BUILD_DIR)/.built
+	rm -rf $(QUILT-LITE_IPK_DIR) $(BUILD_DIR)/quilt-lite_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(QUILT_BUILD_DIR) install BUILD_ROOT=$(QUILT-LITE_IPK_DIR) COMPAT_SYMLINKS=""
+	( cd $(QUILT-LITE_IPK_DIR)/opt/bin ; rm -f guards )
+	( cd $(QUILT-LITE_IPK_DIR)/opt/etc ; rm -rf bash_completion.d )
+	( cd $(QUILT-LITE_IPK_DIR)/opt/share ; rm -rf doc emacs man )
+	( cd $(QUILT-LITE_IPK_DIR)/opt/share/quilt ; \
+	  rm -f annotate )
+	( cd $(QUILT-LITE_IPK_DIR)/opt/share/quilt/scripts ; \
+	  rm -f dependency-graph edmail parse-patch remove-trailing-ws )
+	( cd $(QUILT-LITE_IPK_DIR) ; patch -p0 < $(QUILT_SOURCE_DIR)/quilt-lite.patch )
+	$(STRIP_COMMAND) $(QUILT-LITE_IPK_DIR)/opt/lib/quilt/backup-files
+	install -d $(QUILT-LITE_IPK_DIR)/opt/etc/
+	install -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT-LITE_IPK_DIR)/opt/etc/quilt.quiltrc
+	$(MAKE) $(QUILT-LITE_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(QUILT-LITE_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
 quilt-ipk: $(QUILT_IPK)
 
+quilt-lite-ipk: $(QUILT-LITE_IPK)
+
 #
 # This is called from the top level makefile to clean all of the built files.
 #
-quilt-clean:
+quilt-clean quilt-lite-clean:
 	rm -f $(QUILT_BUILD_DIR)/.built
 	-$(MAKE) -C $(QUILT_BUILD_DIR) clean
 
@@ -223,11 +268,16 @@ quilt-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-quilt-dirclean:
-	rm -rf $(BUILD_DIR)/$(QUILT_DIR) $(QUILT_BUILD_DIR) $(QUILT_IPK_DIR) $(QUILT_IPK)
+quilt-dirclean quilt-lite-dirclean:
+	rm -rf $(BUILD_DIR)/$(QUILT_DIR) $(QUILT_BUILD_DIR)
+	rm -rf $(QUILT_IPK_DIR) $(QUILT_IPK)
+	rm -rf $(QUILT-LITE_IPK_DIR) $(QUILT-LITE_IPK)
 #
 #
 # Some sanity check for the package.
 #
 quilt-check: $(QUILT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
+quilt-lite-check: $(QUILT-LITE_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
