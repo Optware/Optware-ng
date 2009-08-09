@@ -29,14 +29,19 @@ UTIL_LINUX_NG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UTIL_LINUX_NG_DESCRIPTION=A suite of essential utilities for any Linux system, this version is a fork of util-linux.
 UTIL_LINUX_NG_SECTION=utils
 UTIL_LINUX_NG_PRIORITY=optional
-UTIL_LINUX_NG_DEPENDS=e2fslibs, ncursesw, zlib
+UTIL_LINUX_NG_DEPENDS=e2fslibs, ncursesw, zlib, getopt
 UTIL_LINUX_NG_SUGGESTS=
 UTIL_LINUX_NG_CONFLICTS=
+
+GETOPT_DEPENDS=
+GETOPT_SUGGESTS=
+GETOPT_CONFLICTS=
+
 
 #
 # UTIL_LINUX_NG_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_NG_IPK_VERSION=1
+UTIL_LINUX_NG_IPK_VERSION=2
 
 #
 # UTIL_LINUX_NG_CONFFILES should be a list of user-editable files
@@ -83,6 +88,9 @@ UTIL_LINUX_NG_SOURCE_DIR=$(SOURCE_DIR)/util-linux-ng
 UTIL_LINUX_NG_IPK_DIR=$(BUILD_DIR)/util-linux-ng-$(UTIL_LINUX_NG_VERSION)-ipk
 UTIL_LINUX_NG_IPK=$(BUILD_DIR)/util-linux-ng_$(UTIL_LINUX_NG_VERSION)-$(UTIL_LINUX_NG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+GETOPT_IPK_DIR=$(BUILD_DIR)/getopt-$(UTIL_LINUX_NG_VERSION)-ipk
+GETOPT_IPK=$(BUILD_DIR)/getopt_$(UTIL_LINUX_NG_VERSION)-$(UTIL_LINUX_NG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 .PHONY: util-linux-ng-source util-linux-ng-unpack util-linux-ng util-linux-ng-stage util-linux-ng-ipk util-linux-ng-clean util-linux-ng-dirclean util-linux-ng-check
 
 #
@@ -118,7 +126,7 @@ util-linux-ng-source: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL_LINUX_NG_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL_LINUX_NG_PATCHES) make/util-linux-ng.mk
+$(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL_LINUX_NG_PATCHES) # make/util-linux-ng.mk
 	$(MAKE) e2fsprogs-stage ncursesw-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(UTIL_LINUX_NG_DIR) $(@D)
 	$(UTIL_LINUX_NG_UNZIP) $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -192,6 +200,21 @@ $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(UTIL_LINUX_NG_SUGGESTS)" >>$@
 	@echo "Conflicts: $(UTIL_LINUX_NG_CONFLICTS)" >>$@
 
+$(GETOPT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: getopt" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(UTIL_LINUX_NG_PRIORITY)" >>$@
+	@echo "Section: $(UTIL_LINUX_NG_SECTION)" >>$@
+	@echo "Version: $(UTIL_LINUX_NG_VERSION)-$(UTIL_LINUX_NG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(UTIL_LINUX_NG_MAINTAINER)" >>$@
+	@echo "Source: $(UTIL_LINUX_NG_SITE)/$(UTIL_LINUX_NG_SOURCE)" >>$@
+	@echo "Description: $(UTIL_LINUX_NG_DESCRIPTION)" >>$@
+	@echo "Depends: $(GETOPT_DEPENDS)" >>$@
+	@echo "Suggests: $(GETOPT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GETOPT_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -204,11 +227,16 @@ $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(UTIL_LINUX_NG_IPK): $(UTIL_LINUX_NG_BUILD_DIR)/.built
+$(UTIL_LINUX_NG_IPK) $(GETOPT_IPK): $(UTIL_LINUX_NG_BUILD_DIR)/.built
 	rm -rf $(UTIL_LINUX_NG_IPK_DIR) $(BUILD_DIR)/util-linux-ng_*_$(TARGET_ARCH).ipk
+	rm -rf $(GETOPT_IPK_DIR) $(BUILD_DIR)/getopt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UTIL_LINUX_NG_BUILD_DIR) DESTDIR=$(UTIL_LINUX_NG_IPK_DIR) install-strip
 	rm -f $(UTIL_LINUX_NG_IPK_DIR)/opt/bin/linux32 $(UTIL_LINUX_NG_IPK_DIR)/opt/bin/linux64
 	rm -f $(UTIL_LINUX_NG_IPK_DIR)/opt/sbin/swapoff
+
+	mkdir -p $(GETOPT_IPK_DIR)/opt/bin/
+	mv $(UTIL_LINUX_NG_IPK_DIR)/opt/bin/getopt $(GETOPT_IPK_DIR)/opt/bin/
+
 	$(MAKE) $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/prerm
@@ -231,12 +259,32 @@ $(UTIL_LINUX_NG_IPK): $(UTIL_LINUX_NG_BUILD_DIR)/.built
 			$(UTIL_LINUX_NG_IPK_DIR)/CONTROL/postinst $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(UTIL_LINUX_NG_CONFFILES) | sed -e 's/ /\n/g' > $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/conffiles
+
+	$(MAKE) $(GETOPT_IPK_DIR)/CONTROL/control
+	echo "#!/bin/sh" > $(GETOPT_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh" > $(GETOPT_IPK_DIR)/CONTROL/prerm
+	for d in /opt/bin; do \
+	    cd $(GETOPT_IPK_DIR)/$$d; \
+	    for f in *; do \
+		mv $$f getopt-$$f; \
+		echo "update-alternatives --install $$d/$$f $$f $$d/getopt-$$f 95" \
+			>> $(GETOPT_IPK_DIR)/CONTROL/postinst; \
+		echo "update-alternatives --remove $$f $$d/getopt-$$f" \
+			>> $(GETOPT_IPK_DIR)/CONTROL/prerm; \
+	    done; \
+	done
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+			$(GETOPT_IPK_DIR)/CONTROL/postinst $(GETOPT_IPK_DIR)/CONTROL/prerm; \
+	fi
+
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UTIL_LINUX_NG_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(GETOPT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-util-linux-ng-ipk: $(UTIL_LINUX_NG_IPK)
+util-linux-ng-ipk: $(UTIL_LINUX_NG_IPK) $(GETOPT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.

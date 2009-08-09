@@ -320,9 +320,8 @@ $(GIT-LITE_IPK): $(GIT_BUILD_DIR)/.built
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIT_LDFLAGS)" \
 		NO_TCLTK=true \
-		SCRIPT_SH= \
-		SCRIPT_PERL= \
-		PROGRAMS= \
+		SCRIPTS="git-pull.sh git-sh-setup.sh git-parse-remote.sh" \
+		PROGRAMS="git-index-pack" \
 		BUILT_INS= \
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
@@ -333,7 +332,6 @@ $(GIT-LITE_IPK): $(GIT_BUILD_DIR)/.built
 	rm -f $(GIT-LITE_IPK_DIR)/opt/bin/git
 	ln -s ../libexec/git-core/git $(GIT-LITE_IPK_DIR)/opt/bin/git
 	rm -rf $(GIT-LITE_IPK_DIR)/opt/lib
-	( cd $(GIT-LITE_IPK_DIR)/opt/libexec/git-core ; rm -f git?* )
 	rm -rf $(GIT-LITE_IPK_DIR)/opt/share/man
 	$(MAKE) $(GIT-LITE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-LITE_IPK_DIR)
