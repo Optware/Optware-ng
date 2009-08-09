@@ -33,7 +33,7 @@ QUILT_DEPENDS=perl, coreutils, bash, diffutils, patch, util-linux-ng
 QUILT_SUGGESTS=
 QUILT_CONFLICTS=quilt-lite
 
-QUILT-LITE_DEPENDS=coreutils, bash, diffutils, patch, util-linux-ng
+QUILT-LITE_DEPENDS=coreutils, bash, diffutils, patch, getopt
 QUILT-LITE_SUGGESTS=
 QUILT-LITE_CONFLICTS=quilt
 
