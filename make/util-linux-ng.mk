@@ -210,7 +210,7 @@ $(GETOPT_IPK_DIR)/CONTROL/control:
 	@echo "Version: $(UTIL_LINUX_NG_VERSION)-$(UTIL_LINUX_NG_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(UTIL_LINUX_NG_MAINTAINER)" >>$@
 	@echo "Source: $(UTIL_LINUX_NG_SITE)/$(UTIL_LINUX_NG_SOURCE)" >>$@
-	@echo "Description: $(UTIL_LINUX_NG_DESCRIPTION)" >>$@
+	@echo "Description: The getopt utility from the util-linux-ng package." >>$@
 	@echo "Depends: $(GETOPT_DEPENDS)" >>$@
 	@echo "Suggests: $(GETOPT_SUGGESTS)" >>$@
 	@echo "Conflicts: $(GETOPT_CONFLICTS)" >>$@
