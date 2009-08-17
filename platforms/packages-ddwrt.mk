@@ -20,6 +20,7 @@ BROKEN_PACKAGES = \
 	motor \
 	nget \
 	rssh \
+	sandbox \
 	scrobby \
 	taglib \
 	\

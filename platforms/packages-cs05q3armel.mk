@@ -17,6 +17,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	ldconfig \
 	qemu qemu-libc-i386 \
+	sandbox \
 
 E2FSPROGS_VERSION := 1.40.3
 E2FSPROGS_IPK_VERSION := 5

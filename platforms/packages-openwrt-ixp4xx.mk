@@ -22,6 +22,7 @@ BROKEN_PACKAGES = \
 	nfs-server nfs-utils nickle ntop \
 	pango puppy \
 	qemu qemu-libc-i386 quickie \
+	sandbox \
 	sm syx \
 	transcode \
 	uemacs \
