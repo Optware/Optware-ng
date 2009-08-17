@@ -3,8 +3,8 @@ SPECIFIC_PACKAGES = unslung-feeds unslung-devel crosstool-native ufsd \
 	$(PERL_PACKAGES) \
 
 # Packages that do not work for nslu2.
-# lftp - runtime segfaults
 BROKEN_PACKAGES = \
+	sandbox \
 
 BTPD_VERSION=0.13
 BTPD_IPK_VERSION=2

@@ -21,6 +21,7 @@ BROKEN_PACKAGES = \
 	motor \
 	nget nickle \
 	recordext renderext \
+	sandbox \
 	sdl slrn \
 	taglib \
 	x11 xdpyinfo xext xpm xtst

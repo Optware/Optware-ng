@@ -35,6 +35,7 @@ BROKEN_PACKAGES = \
 	quagga \
 	\
 	openser \
+	sandbox \
 	snort \
 	softflowd \
 	strace \

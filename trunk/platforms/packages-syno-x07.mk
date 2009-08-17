@@ -26,6 +26,7 @@ BROKEN_PACKAGES = \
 	p7zip \
 	puppy \
 	qemu sablevm \
+	sandbox \
 	tesseract-ocr \
 	varnish \
 

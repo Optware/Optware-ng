@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	gtmess \
 	\
 	rssh \
+	sandbox \
 	transcode \
 
 PERL_MAJOR_VER=5.10

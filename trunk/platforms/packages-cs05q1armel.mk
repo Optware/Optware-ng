@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	ldconfig \
 	qemu qemu-libc-i386 \
+	sandbox \
 	gtk vte xchat \
 	transcode \
 

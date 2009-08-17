@@ -12,6 +12,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	ldconfig libcapi20 \
 	puppy \
+	sandbox \
 	transcode \
 	x264 lm-sensors \
 

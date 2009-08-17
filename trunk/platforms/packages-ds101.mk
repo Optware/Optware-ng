@@ -11,3 +11,4 @@ BROKEN_PACKAGES = \
 	ldconfig lftp \
 	motion \
 	qemu qemu-libc-i386 \
+	sandbox \

@@ -6,5 +6,6 @@ BROKEN_PACKAGES = \
 	asterisk \
 	ldconfig \
 	py-bazaar-ng py-simplejson \
-	qemu qemu-libc-i386 slrn spandsp 
-
+	qemu qemu-libc-i386 \
+	sandbox \
+	slrn spandsp 
