@@ -3,6 +3,7 @@ OPTWARE-BOOTSTRAP_TARGETS=\
 	fsg3v4 \
 	hpmv2 \
 	lspro \
+	ls-mvkw \
 	mssii \
 	pre-emulator \
 	slugos5be \
@@ -21,7 +22,7 @@ OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 	$(if $(filter syno-mvkw, $(OPTWARE-BOOTSTRAP_TARGET)), /volume1/@optware, \
 	$(if $(filter mssii, $(OPTWARE-BOOTSTRAP_TARGET)), /share/.optware, \
 	$(if $(filter hpmv2, $(OPTWARE-BOOTSTRAP_TARGET)), /share/1000/.optware, \
-	$(if $(filter lspro, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/disk1/.optware, \
+	$(if $(filter lspro ls-mvkw, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/disk1/.optware, \
 	$(if $(filter teraprov2, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/array1/.optware, \
 	$(if $(filter tsx09, $(OPTWARE-BOOTSTRAP_TARGET)), /share/MD0_DATA/.@optware, \
 	))))))))))
