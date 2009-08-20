@@ -20,10 +20,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UTF8PROC_SITE=http://www.flexiguided.de/pub
-UTF8PROC_VERSION=1.1.3
+UTF8PROC_VERSION=1.1.4
+UTF8PROC_SITE=http://www.public-software-group.org/pub/projects/utf8proc/v$(UTF8PROC_VERSION)
 UTF8PROC_SOURCE=utf8proc-v$(UTF8PROC_VERSION).tar.gz
-UTF8PROC_DIR=utf8proc
+UTF8PROC_DIR=utf8proc-v$(UTF8PROC_VERSION)
 UTF8PROC_UNZIP=zcat
 UTF8PROC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UTF8PROC_DESCRIPTION=utf8proc is a library for processing UTF-8 encoded Unicode strings.
