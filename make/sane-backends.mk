@@ -28,14 +28,8 @@
 #
 #ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24, $(OPTWARE_TARGET)))
 
-ifeq (uclibc, $(LIBC_STYLE)$(filter arm armeb i386 i686, $(TARGET_ARCH)))
-SANE_BACKENDS_RELEASE=1.0.19
-SANE_BACKENDS_CVS_DATE=20080315
-SANE_BACKENDS_IPK_VERSION=5
-else
 SANE_BACKENDS_RELEASE=1.0.20
-SANE_BACKENDS_IPK_VERSION=2
-endif
+SANE_BACKENDS_IPK_VERSION=3
 
 ifdef SANE_BACKENDS_CVS_DATE
 SANE_BACKENDS_VERSION=$(SANE_BACKENDS_RELEASE)+cvs$(SANE_BACKENDS_CVS_DATE)
@@ -137,7 +131,7 @@ sane-backends-source: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES)
+$(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES) make/sane-backends.mk
 	$(MAKE) libusb-stage libjpeg-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(@D)
 	$(SANE_BACKENDS_UNZIP) $(DL_DIR)/$(SANE_BACKENDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -148,6 +142,9 @@ $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE
 	if test "$(BUILD_DIR)/$(SANE_BACKENDS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(@D) ; \
 	fi
+ifeq (uclibc, $(LIBC_STYLE)$(filter arm armeb i386 i686, $(TARGET_ARCH)))
+	sed -i -e 's/ qcam / /' $(@D)/configure
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SANE_BACKENDS_CPPFLAGS)" \
