@@ -17,6 +17,7 @@ BROKEN_PACKAGES = \
 	gtmess \
 	iptraf \
 	nfs-server nfs-utils \
+	sane-backends \
 	sandbox \
 	transcode \
 	util-linux \
