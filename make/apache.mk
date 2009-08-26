@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://www.apache.org/dist/httpd
-APACHE_VERSION=2.2.11
+APACHE_VERSION=2.2.13
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -160,22 +160,18 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 	if test -d $(STAGING_INCLUDE_DIR)/apache2; then \
 		cd $(STAGING_INCLUDE_DIR)/apache2/ && rm -f `ls | egrep -v '^apr|^apu'`; \
 	fi
-	$(MAKE) zlib-stage
-	$(MAKE) e2fsprogs-stage
-	$(MAKE) expat-stage
-	$(MAKE) openssl-stage
-	$(MAKE) apr-util-stage
-	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR)
+	$(MAKE) zlib-stage e2fsprogs-stage expat-stage openssl-stage apr-util-stage
+	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(@D)
 	$(APACHE_UNZIP) $(DL_DIR)/$(APACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR)
-	cat $(APACHE_PATCHES) |patch -p0 -d $(APACHE_BUILD_DIR)
+	mv $(BUILD_DIR)/$(APACHE_DIR) $(@D)
+	cat $(APACHE_PATCHES) |patch -p0 -d $(@D)
 	sed -i -e "s% *installbuilddir: .*% installbuilddir: $(STAGING_DIR)/opt/share/apache2/build%" \
 		-e 's%[ \t]\{1,\}prefix: .*%    prefix: /opt%' \
 		-e "s% *htdocsdir: .*% htdocsdir: /opt/share/www%" \
-		$(APACHE_BUILD_DIR)/config.layout
-	#cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(APACHE_BUILD_DIR)/docs/conf
-	(cd $(APACHE_BUILD_DIR); \
-		autoconf ; \
+		$(@D)/config.layout
+	#cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(@D)/docs/conf
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APACHE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APACHE_LDFLAGS)" \
@@ -198,10 +194,10 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		--enable-mem-cache \
 		--enable-deflate \
 		$(APACHE_CONFIGURE_TARGET_ARGS) \
-		--with-z=$(STAGING_DIR)/opt \
-		--with-ssl=$(STAGING_DIR)/opt \
-		--with-apr=$(STAGING_DIR)/opt \
-		--with-apr-util=$(STAGING_DIR)/opt \
+		--with-z=$(STAGING_PREFIX) \
+		--with-ssl=$(STAGING_PREFIX) \
+		--with-apr=$(STAGING_PREFIX) \
+		--with-apr-util=$(STAGING_PREFIX) \
 		--with-expat=/opt \
 		--with-port=8000 \
 	)
@@ -215,7 +211,7 @@ apache-unpack: $(APACHE_BUILD_DIR)/.configured
 #
 $(APACHE_BUILD_DIR)/.built: $(APACHE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(APACHE_BUILD_DIR) HOSTCC=$(HOSTCC)
+	$(MAKE) -C $(@D) HOSTCC=$(HOSTCC)
 	touch $@
 
 #
@@ -230,7 +226,7 @@ apache: $(APACHE_BUILD_DIR)/.built
 $(APACHE_BUILD_DIR)/.staged: $(APACHE_BUILD_DIR)/.built
 	rm -f $@
 	rm -f $(STAGING_PREFIX)/libexec/mod_*.so
-	$(MAKE) -C $(APACHE_BUILD_DIR) install installbuilddir=/opt/share/apache2/build DESTDIR=$(STAGING_DIR)
+	$(MAKE) -C $(@D) install installbuilddir=/opt/share/apache2/build DESTDIR=$(STAGING_DIR)
 	sed -i -e 's!includedir = .*!includedir = $(STAGING_DIR)/opt/include/apache2!' $(STAGING_PREFIX)/share/apache2/build/config_vars.mk
 	touch $@
 
