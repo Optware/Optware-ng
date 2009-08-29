@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CCRYPT_SITE=http://ccrypt.sourceforge.net/download
-CCRYPT_VERSION=1.8
+CCRYPT_VERSION=1.9
 CCRYPT_SOURCE=ccrypt-$(CCRYPT_VERSION).tar.gz
 CCRYPT_DIR=ccrypt-$(CCRYPT_VERSION)
 CCRYPT_UNZIP=zcat
