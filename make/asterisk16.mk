@@ -81,7 +81,7 @@ ASTERISK16_CONFLICTS=asterisk,asterisk14,asterisk-sounds,asterisk-chan-capi,aste
 #
 # ASTERISK16_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK16_IPK_VERSION=1
+ASTERISK16_IPK_VERSION=2
 
 #
 # ASTERISK16_CONFFILES should be a list of user-editable files
@@ -166,7 +166,7 @@ ASTERISK16_CONFFILES=\
 # ASTERISK16_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ASTERISK16_PATCHES=$(ASTERISK16_SOURCE_DIR)/sounds.xml.patch
+ASTERISK16_PATCHES=$(ASTERISK16_SOURCE_DIR)/sounds.xml.patch
 
 #
 # If the compilation of the package requires additional
