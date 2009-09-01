@@ -34,10 +34,8 @@ SQUID_DEPENDS=
 SQUID_SUGGESTS=
 SQUID_CONFLICTS=
 
-#
-# SQUID_IPK_VERSION should be incremented when the ipk changes.
-#
-SQUID_IPK_VERSION=2
+# override SQUID_IPK_VERSION for target specific feeds
+SQUID_IPK_VERSION ?= 2
 
 #
 ## SQUID_CONFFILES should be a list of user-editable files
@@ -55,7 +53,7 @@ SQUID_CONFFILES=/opt/etc/squid/squid.conf /opt/etc/init.d/S80squid
 #
 SQUID_CPPFLAGS=
 SQUID_LDFLAGS=
-SQUID_EPOLL=$(strip \
+SQUID_EPOLL ?= $(strip \
 $(if $(filter syno-e500, $(OPTWARE_TARGET)),--disable-epoll, \
 $(if $(filter module-init-tools, $(PACKAGES)),--enable-epoll, \
 --disable-epoll)))
