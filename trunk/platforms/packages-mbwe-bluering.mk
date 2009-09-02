@@ -7,6 +7,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \
+	asterisk16 \
 	bluez-hcidump \
 	ficy \
 	fuppes \
