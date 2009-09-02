@@ -293,7 +293,7 @@ endif
 		then mv $(BUILD_DIR)/$(ASTERISK16_DIR) $(ASTERISK16_BUILD_DIR) ; \
 	fi
 ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
-	sed -i -e '/-pipe/s/^/#/' $(@D)/Makefile
+	sed -i -e '/+= *-pipe/s/^/#/' $(@D)/Makefile
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
