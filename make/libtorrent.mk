@@ -33,7 +33,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=1
+LIBTORRENT_IPK_VERSION=2
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -66,20 +66,20 @@ endif
 LIBTORRENT_CPPFLAGS=
 LIBTORRENT_LDFLAGS=
 LIBTORRENT_CONFIGURE=
+
 ifeq ($(LIBC_STYLE), uclibc)
 ifdef TARGET_GXX
 LIBTORRENT_CONFIGURE += CXX=$(TARGET_GXX)
 endif
+LIBTORRENT_CONFIG_ARGS=
+else
+LIBTORRENT_CONFIG_ARGS=--with-posix-fallocate
 endif
 
-#ifeq ($(OPTWARE_TARGET), $(filter ds101g ddwrt oleg, $(OPTWARE_TARGET)))
-#LIBTORRENT_CONFIG_ARGS=
-#else
-#endif
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq ($(TARGET_ARCH), $(filter $(TARGET_ARCH), arm armeb))
-LIBTORRENT_CONFIG_ARGS=--enable-aligned=yes
+LIBTORRENT_CONFIG_ARGS+=--enable-aligned=yes
 endif
 endif
 ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
@@ -180,7 +180,7 @@ endif
 		$(LIBTORRENT_CONFIG_ARGS) \
 		--disable-nls \
 		--disable-static \
-		--with-openssl=$(STAGING_PREFIX) \
+		--enable-openssl \
 	)
 ifneq (, $(filter gumstix1151 mbwe-bluering, $(OPTWARE_TARGET)))
 	sed -i -e '/USE_MADVISE/s|.*|/* #undef USE_MADVISE */|' $(@D)/config.h
