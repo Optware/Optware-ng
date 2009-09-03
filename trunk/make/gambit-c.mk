@@ -26,9 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.4/source
-GAMBIT-C_UPSTREAM_VERSION=v4_4_4
-GAMBIT-C_VERSION=4.4.4
+GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.5/source
+GAMBIT-C_UPSTREAM_VERSION=v4_5_1
+GAMBIT-C_VERSION=4.5.1
 GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_UPSTREAM_VERSION).tgz
 GAMBIT-C_DIR=gambc-$(GAMBIT-C_UPSTREAM_VERSION)
 GAMBIT-C_UNZIP=zcat
@@ -200,7 +200,7 @@ $(GAMBIT-C_IPK): $(GAMBIT-C_BUILD_DIR)/.built
 	rm -rf $(GAMBIT-C_IPK_DIR) $(BUILD_DIR)/gambit-c_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GAMBIT-C_BUILD_DIR) prefix=$(GAMBIT-C_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(GAMBIT-C_IPK_DIR)/opt/bin/gs[ci] $(GAMBIT-C_IPK_DIR)/opt/lib/lib*.so
-	sed -i -e 's|$(STAGING_DIR)||g; s|$(TARGET_CC)|/opt/bin/gcc|' $(GAMBIT-C_IPK_DIR)/opt/bin/gsc-cc-o.bat
+	sed -i -e 's|$(STAGING_DIR)||g; s|$(TARGET_CC)|/opt/bin/gcc|' $(GAMBIT-C_IPK_DIR)/opt/bin/gambc-cc.bat
 	$(MAKE) $(GAMBIT-C_IPK_DIR)/CONTROL/control
 	echo $(GAMBIT-C_CONFFILES) | sed -e 's/ /\n/g' > $(GAMBIT-C_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GAMBIT-C_IPK_DIR)
