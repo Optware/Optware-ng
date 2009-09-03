@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DIFFSTAT_SITE=ftp://invisible-island.net/diffstat
-DIFFSTAT_VERSION=1.45
+DIFFSTAT_VERSION=1.49
 DIFFSTAT_SOURCE=diffstat-$(DIFFSTAT_VERSION).tgz
 DIFFSTAT_DIR=diffstat-$(DIFFSTAT_VERSION)
 DIFFSTAT_UNZIP=zcat
@@ -226,4 +226,4 @@ diffstat-dirclean:
 # Some sanity check for the package.
 #
 diffstat-check: $(DIFFSTAT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DIFFSTAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
