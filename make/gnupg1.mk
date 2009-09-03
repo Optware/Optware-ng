@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPG1_SITE=ftp://ftp.gnupg.org/gcrypt/gnupg
-GNUPG1_VERSION=1.4.9
+GNUPG1_VERSION=1.4.10
 GNUPG1_SOURCE=gnupg-$(GNUPG1_VERSION).tar.bz2
 GNUPG1_DIR=gnupg-$(GNUPG1_VERSION)
 GNUPG1_UNZIP=bzcat
@@ -37,7 +37,7 @@ GNUPG1_CONFLICTS=
 #
 # GNUPG1_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG1_IPK_VERSION=2
+GNUPG1_IPK_VERSION=1
 
 #
 # GNUPG1_CONFFILES should be a list of user-editable files
