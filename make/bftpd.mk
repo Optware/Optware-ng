@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BFTPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bftpd
-BFTPD_VERSION=2.3
+BFTPD_VERSION=2.4
 BFTPD_SOURCE=bftpd-$(BFTPD_VERSION).tar.gz
 BFTPD_DIR=bftpd
 BFTPD_UNZIP=zcat
@@ -106,22 +106,22 @@ bftpd-source: $(DL_DIR)/$(BFTPD_SOURCE) $(BFTPD_PATCHES)
 #
 $(BFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(BFTPD_SOURCE) $(BFTPD_PATCHES) make/bftpd.mk
 	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(BFTPD_DIR) $(BFTPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BFTPD_DIR) $(@D)
 	$(BFTPD_UNZIP) $(DL_DIR)/$(BFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BFTPD_PATCHES)" ; \
 		then cat $(BFTPD_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(BFTPD_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(BFTPD_DIR)" != "$(BFTPD_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(BFTPD_DIR) $(BFTPD_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(BFTPD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(BFTPD_DIR) $(@D) ; \
 	fi
 	sed -i -e '/INSTALL/s/-[go] 0//g' \
 	       -e 's| /var/| $$(DESTDIR)/opt/var/|' \
 	       -e '/^CFLAGS/s|$$| $$(CPPFLAGS)|' \
 	       -e 's|/etc/|/opt/etc/|g' \
-		$(BFTPD_BUILD_DIR)/Makefile.in
-	sed -i -e 's|/etc/|/opt/etc/|g' $(BFTPD_BUILD_DIR)/mypaths.h
-	(cd $(BFTPD_BUILD_DIR); \
+		$(@D)/Makefile.in
+	sed -i -e 's|/etc/|/opt/etc/|g' $(@D)/mypaths.h
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BFTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BFTPD_LDFLAGS)" \
@@ -136,7 +136,7 @@ $(BFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(BFTPD_SOURCE) $(BFTPD_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(BFTPD_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 bftpd-unpack: $(BFTPD_BUILD_DIR)/.configured
@@ -146,7 +146,7 @@ bftpd-unpack: $(BFTPD_BUILD_DIR)/.configured
 #
 $(BFTPD_BUILD_DIR)/.built: $(BFTPD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(BFTPD_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BFTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BFTPD_LDFLAGS)" \
 		;
@@ -162,7 +162,7 @@ bftpd: $(BFTPD_BUILD_DIR)/.built
 #
 $(BFTPD_BUILD_DIR)/.staged: $(BFTPD_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(BFTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 bftpd-stage: $(BFTPD_BUILD_DIR)/.staged
@@ -244,4 +244,4 @@ bftpd-dirclean:
 # Some sanity check for the package.
 #
 bftpd-check: $(BFTPD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BFTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
