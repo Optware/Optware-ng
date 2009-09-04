@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOE_SITE=http://ftp.gnu.org/gnu/moe
-MOE_VERSION=1.2
+MOE_VERSION=1.3
 MOE_SOURCE=moe-$(MOE_VERSION).tar.gz
 MOE_DIR=moe-$(MOE_VERSION)
 MOE_UNZIP=zcat
