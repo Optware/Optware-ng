@@ -5,7 +5,7 @@
 ###########################################################
 
 BISON_SITE=ftp://ftp.gnu.org/gnu/bison
-BISON_VERSION=2.3
+BISON_VERSION=2.4.1
 BISON_SOURCE=bison-$(BISON_VERSION).tar.bz2
 BISON_DIR=bison-$(BISON_VERSION)
 BISON_UNZIP=bzcat
@@ -17,7 +17,7 @@ BISON_DEPENDS=m4
 BISON_SUGGESTS=
 BISON_CONFLICTS=
 
-BISON_IPK_VERSION=2
+BISON_IPK_VERSION=1
 
 BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-$(BISON_IPK_VERSION)_$(TARGET_ARCH).ipk
 BISON_IPK_DIR=$(BUILD_DIR)/bison-$(BISON_VERSION)-ipk
@@ -54,7 +54,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BISON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BISON_SITE)/$(BISON_SOURCE)
+	$(WGET) -P $(@D) $(BISON_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -63,16 +64,11 @@ $(DL_DIR)/$(BISON_SOURCE):
 #
 bison-source: $(DL_DIR)/$(BISON_SOURCE)
 
-$(BISON_BUILD_DIR)/.source: $(DL_DIR)/$(BISON_SOURCE)
-	$(BISON_UNZIP) $(DL_DIR)/$(BISON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/bison-$(BISON_VERSION) $(BISON_DIR)
-	touch $(BISON_BUILD_DIR)/.source
-
 $(BISON_BUILD_DIR)/.configured: $(DL_DIR)/$(BISON_SOURCE) $(BISON_PATCHES) make/bison.mk
-	rm -rf $(BUILD_DIR)/$(BISON_DIR) $(BISON_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BISON_DIR) $(@D)
 	$(BISON_UNZIP) $(DL_DIR)/$(BISON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(BISON_DIR) $(BISON_BUILD_DIR)
-	(cd $(BISON_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(BISON_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BISON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BISON_LDFLAGS)" \
@@ -87,17 +83,19 @@ $(BISON_BUILD_DIR)/.configured: $(DL_DIR)/$(BISON_SOURCE) $(BISON_PATCHES) make/
 		--disable-nls \
 	);
 ifneq ($(HOSTCC), $(TARGET_CC))
-	sed -i -e '/^#define M4/s|^.*$$|#define M4 "/opt/bin/m4"|' $(BISON_BUILD_DIR)/config.h
+	sed -i -e '/^#define M4/s|^.*$$|#define M4 "/opt/bin/m4"|' $(@D)/lib/config.h
 endif
-	touch $(BISON_BUILD_DIR)/.configured
+	touch $@
+
+bison-unpack: $(BISON_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
 #
 $(BISON_BUILD_DIR)/.built: $(BISON_BUILD_DIR)/.configured
-	rm -f $(BISON_BUILD_DIR)/.built
-	$(MAKE) -C $(BISON_BUILD_DIR)
-	touch $(BISON_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -107,19 +105,19 @@ bison: $(BISON_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(BISON_BUILD_DIR)/.staged: $(BISON_BUILD_DIR)/.built
-	rm -f $(BISON_BUILD_DIR)/.staged
-	$(MAKE) -C $(BISON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(BISON_BUILD_DIR)/.staged
-
-bison-stage: $(BISON_BUILD_DIR)/.staged
+#$(BISON_BUILD_DIR)/.staged: $(BISON_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#bison-stage: $(BISON_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/bison
 #
 $(BISON_IPK_DIR)/CONTROL/control:
-	@install -d $(BISON_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bison" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,4 +187,4 @@ bison-dirclean:
 # Some sanity check for the package.
 #
 bison-check: $(BISON_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BISON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
