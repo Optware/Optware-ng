@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPG_SITE=ftp://ftp.gnupg.org/gcrypt/gnupg
-GNUPG_VERSION=2.0.11
+GNUPG_VERSION=2.0.13
 GNUPG_SOURCE=gnupg-$(GNUPG_VERSION).tar.bz2
 GNUPG_DIR=gnupg-$(GNUPG_VERSION)
 GNUPG_UNZIP=bzcat
@@ -40,7 +40,7 @@ GNUPG_CONFLICTS=
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=2
+GNUPG_IPK_VERSION=1
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
@@ -138,6 +138,7 @@ endif
 		--with-libcurl=$(STAGING_PREFIX) \
 		--with-ldap=$(STAGING_PREFIX) \
 		--prefix=/opt \
+		--disable-rpath \
 		--with-gpg-error-prefix=$(STAGING_PREFIX) \
 		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--with-pth-prefix=$(STAGING_PREFIX) \
