@@ -319,7 +319,7 @@ COMMON_CROSS_PACKAGES = \
 	nfs-server nfs-utils \
 	nget nginx ngrep nickle ninvaders nmap nload noip nostromo nrpe \
 	ntfs-3g ntfsprogs \
-	ntop ntp ntpclient nttcp nut nvi nylon nzbget \
+	ntop ntp ntpclient nttcp nut nvi nylon nzbget nzbget-testing \
 	ocaml oleo open2300 \
 	openobex obexftp \
 	opendchub openldap openser openssh openssl openvpn \
