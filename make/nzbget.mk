@@ -26,17 +26,17 @@ NZBGET_SOURCE=nzbget-$(NZBGET_VERSION).tar.gz
 NZBGET_DIR=nzbget-$(NZBGET_VERSION)
 NZBGET_UNZIP=zcat
 NZBGET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-NZBGET_DESCRIPTION=A command-line client/server based binary newsgrabber for nzb-files.
+NZBGET_DESCRIPTION=A command-line client/server based binary newsgrabber for nzb-files (latest stable version).
 NZBGET_SECTION=net
 NZBGET_PRIORITY=optional
 NZBGET_DEPENDS=ncurses, libxml2, libpar2, openssl
 NZBGET_SUGGESTS=
-NZBGET_CONFLICTS=
+NZBGET_CONFLICTS=nzbget-testing
 
 #
 # NZBGET_IPK_VERSION should be incremented when the ipk changes.
 #
-NZBGET_IPK_VERSION=1
+NZBGET_IPK_VERSION=2
 
 #
 # NZBGET_CONFFILES should be a list of user-editable files
