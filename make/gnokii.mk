@@ -11,9 +11,9 @@
 # if there are reasons.
 #
 GNOKII_SITE=http://www.gnokii.org/download/gnokii
-GNOKII_VERSION=0.6.27
+GNOKII_VERSION=0.6.28.1
 GNOKII_SOURCE=gnokii-$(GNOKII_VERSION).tar.bz2
-GNOKII_DIR=gnokii-$(GNOKII_VERSION)
+GNOKII_DIR=gnokii-0.6.28
 GNOKII_UNZIP=bzcat
 GNOKII_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 GNOKII_DESCRIPTION=a multisystem tool suite and modem driver for the mobile phones
@@ -36,7 +36,7 @@ GNOKII_SMSD_MYSQL_CONFLICTS=
 #
 # GNOKII_IPK_VERSION should be incremented when the ipk changes.
 #
-GNOKII_IPK_VERSION=2
+GNOKII_IPK_VERSION=1
 
 #
 # GNOKII_CONFFILES should be a list of user-editable files
@@ -131,7 +131,7 @@ $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) ma
 	if test "$(BUILD_DIR)/$(GNOKII_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GNOKII_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
+#	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNOKII_CPPFLAGS)" \
