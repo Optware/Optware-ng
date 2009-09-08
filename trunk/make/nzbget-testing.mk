@@ -21,10 +21,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET-TESTING_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET-TESTING_VERSION=0.7.0
+NZBGET-TESTING_VER=0.7.0
 NZBGET-TESTING_REVISION=r342
-NZBGET-TESTING_SOURCE=nzbget-$(NZBGET-TESTING_VERSION)-testing-$(NZBGET-TESTING_REVISION).tar.gz
-NZBGET-TESTING_DIR=nzbget-$(NZBGET-TESTING_VERSION)-testing
+NZBGET-TESTING_VERSION=$(NZBGET-TESTING_VER)-$(NZBGET-TESTING_REVISION)
+NZBGET-TESTING_SOURCE=nzbget-$(NZBGET-TESTING_VER)-testing-$(NZBGET-TESTING_REVISION).tar.gz
+NZBGET-TESTING_DIR=nzbget-$(NZBGET-TESTING_VER)-testing
 NZBGET-TESTING_UNZIP=zcat
 NZBGET-TESTING_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NZBGET-TESTING_DESCRIPTION=A command-line client/server based binary newsgrabber for nzb-files (latest testing version).
@@ -73,15 +74,16 @@ endif
 #
 NZBGET-TESTING_BUILD_DIR=$(BUILD_DIR)/nzbget-testing
 NZBGET-TESTING_SOURCE_DIR=$(SOURCE_DIR)/nzbget-testing
-NZBGET-TESTING_IPK_DIR=$(BUILD_DIR)/nzbget-testing-$(NZBGET-TESTING_VERSION)-ipk
-NZBGET-TESTING_IPK=$(BUILD_DIR)/nzbget-testing_$(NZBGET-TESTING_VERSION)-$(NZBGET-TESTING_IPK_VERSION)_$(TARGET_ARCH).ipk
+NZBGET-TESTING_IPK_DIR=$(BUILD_DIR)/nzbget-testing-$(NZBGET-TESTING_VER)-ipk
+NZBGET-TESTING_IPK=$(BUILD_DIR)/nzbget-testing_$(NZBGET-TESTING_VER)-$(NZBGET-TESTING_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NZBGET-TESTING_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NZBGET-TESTING_SITE)/$(NZBGET-TESTING_SOURCE)
+	$(WGET) -P $(@D) $(NZBGET-TESTING_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,16 +112,16 @@ nzbget-testing-source: $(DL_DIR)/$(NZBGET-TESTING_SOURCE) $(NZBGET-TESTING_PATCH
 #
 $(NZBGET-TESTING_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET-TESTING_SOURCE) $(NZBGET-TESTING_PATCHES)
 	$(MAKE) libxml2-stage ncurses-stage libpar2-stage openssl-stage
-	rm -rf $(BUILD_DIR)/$(NZBGET-TESTING_DIR) $(NZBGET-TESTING_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NZBGET-TESTING_DIR) $(@D)
 	$(NZBGET-TESTING_UNZIP) $(DL_DIR)/$(NZBGET-TESTING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NZBGET-TESTING_PATCHES)" ; \
 		then cat $(NZBGET-TESTING_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NZBGET-TESTING_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NZBGET-TESTING_DIR)" != "$(NZBGET-TESTING_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NZBGET-TESTING_DIR) $(NZBGET-TESTING_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NZBGET-TESTING_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NZBGET-TESTING_DIR) $(@D) ; \
 	fi
-	(cd $(NZBGET-TESTING_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NZBGET-TESTING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NZBGET-TESTING_LDFLAGS)" \
@@ -134,9 +136,8 @@ $(NZBGET-TESTING_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET-TESTING_SOURCE) $(NZ
 		--with-tlslib=OpenSSL \
 		$(NZBGET-TESTING_CONFIGURE_OPTS) \
 	)
-	sed -i -e '/^CPPFLAGS/s:-I/usr.*$$::' -e '/^LDFLAGS/s:-L/usr.*$$::' \
-		$(NZBGET-TESTING_BUILD_DIR)/Makefile
-#	$(PATCH_LIBTOOL) $(NZBGET-TESTING_BUILD_DIR)/libtool
+	sed -i -e '/^CPPFLAGS/s:-I/usr.*$$::' -e '/^LDFLAGS/s:-L/usr.*$$::' $(@D)/Makefile
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 nzbget-testing-unpack: $(NZBGET-TESTING_BUILD_DIR)/.configured
@@ -146,7 +147,7 @@ nzbget-testing-unpack: $(NZBGET-TESTING_BUILD_DIR)/.configured
 #
 $(NZBGET-TESTING_BUILD_DIR)/.built: $(NZBGET-TESTING_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NZBGET-TESTING_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -159,7 +160,7 @@ nzbget-testing: $(NZBGET-TESTING_BUILD_DIR)/.built
 #
 $(NZBGET-TESTING_BUILD_DIR)/.staged: $(NZBGET-TESTING_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NZBGET-TESTING_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 nzbget-testing-stage: $(NZBGET-TESTING_BUILD_DIR)/.staged
@@ -175,7 +176,7 @@ $(NZBGET-TESTING_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(NZBGET-TESTING_PRIORITY)" >>$@
 	@echo "Section: $(NZBGET-TESTING_SECTION)" >>$@
-	@echo "Version: $(NZBGET-TESTING_VERSION)-$(NZBGET-TESTING_REVISION)-$(NZBGET-TESTING_IPK_VERSION)" >>$@
+	@echo "Version: $(NZBGET-TESTING_VERSION)-$(NZBGET-TESTING_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(NZBGET-TESTING_MAINTAINER)" >>$@
 	@echo "Source: $(NZBGET-TESTING_SITE)/$(NZBGET-TESTING_SOURCE)" >>$@
 	@echo "Description: $(NZBGET-TESTING_DESCRIPTION)" >>$@
@@ -239,4 +240,4 @@ nzbget-testing-dirclean:
 # Some sanity check for the package.
 #
 nzbget-testing-check: $(NZBGET-TESTING_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NZBGET-TESTING_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
