@@ -147,6 +147,7 @@ endif
 ifeq ($(OPTWARE_TARGET), ts101)
 	sed -i -e "/ac_cv_func_clock_settime=/s|'yes'|'no'|" $(@D)/config.cache
 	sed -i -e 's/^#ifdef POSIX_FADV_DONTNEED/#if 0/' $(@D)/src/dd.c
+	touch $(@D)/man/dd.1
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
