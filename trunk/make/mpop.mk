@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpop
-MPOP_VERSION=1.0.17
+MPOP_VERSION=1.0.18
 MPOP_SOURCE=mpop-$(MPOP_VERSION).tar.bz2
 MPOP_DIR=mpop-$(MPOP_VERSION)
 MPOP_UNZIP=bzcat
@@ -114,8 +114,7 @@ mpop-source: $(DL_DIR)/$(MPOP_SOURCE) $(MPOP_PATCHES)
 # shown below to make various patches to it.
 #
 $(MPOP_BUILD_DIR)/.configured: $(DL_DIR)/$(MPOP_SOURCE) $(MPOP_PATCHES) make/mpop.mk
-	$(MAKE) gnutls-stage
-	$(MAKE) gsasl-stage
+	$(MAKE) gnutls-stage gsasl-stage
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 	$(MAKE) libidn-stage
 endif
