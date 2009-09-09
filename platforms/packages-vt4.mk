@@ -37,7 +37,7 @@ BROKEN_PACKAGES = \
 	mp3blaster mpd mpdscribble mpop msmtp msynctool \
 	mod-python mod-wsgi \
 	motor \
-	newsbeuter nget nmap nload nzbget \
+	newsbeuter nget nmap nload nzbget nzbget-testing \
 	open2300 openldap obexftp openser oww \
 	p7zip p910nd par2cmdline pcapsipdump php-apache \
 	picolisp player puppy py-mysql \
