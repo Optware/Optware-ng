@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WEECHAT_SITE=http://weechat.flashtux.org/download
-WEECHAT_VERSION=0.2.6.3
+WEECHAT_VERSION=0.3.0
 WEECHAT_SOURCE=weechat-$(WEECHAT_VERSION).tar.bz2
 WEECHAT_DIR=weechat-$(WEECHAT_VERSION)
 WEECHAT_UNZIP=bzcat
@@ -126,6 +126,7 @@ endif
 	fi
 #	ACLOCAL="aclocal -I $(STAGING_PREFIX)/share/aclocal"
 	autoreconf -vif $(@D)
+	sed -i -e 's|$$(includedir)/$$(PACKAGE)|$$(DESTDIR)/&|' $(@D)/src/plugins/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WEECHAT_CPPFLAGS)" \
