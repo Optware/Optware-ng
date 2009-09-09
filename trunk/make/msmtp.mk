@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSMTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/msmtp
-MSMTP_VERSION=1.4.17
+MSMTP_VERSION=1.4.18
 MSMTP_SOURCE=msmtp-$(MSMTP_VERSION).tar.bz2
 MSMTP_DIR=msmtp-$(MSMTP_VERSION)
 MSMTP_UNZIP=bzcat
@@ -114,8 +114,7 @@ msmtp-source: $(DL_DIR)/$(MSMTP_SOURCE) $(MSMTP_PATCHES)
 # shown below to make various patches to it.
 #
 $(MSMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(MSMTP_SOURCE) $(MSMTP_PATCHES) make/msmtp.mk
-	$(MAKE) gnutls-stage
-	$(MAKE) gsasl-stage
+	$(MAKE) gnutls-stage gsasl-stage
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 	$(MAKE) libidn-stage
 endif
@@ -141,7 +140,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MSMTP_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 msmtp-unpack: $(MSMTP_BUILD_DIR)/.configured
@@ -162,12 +161,12 @@ msmtp: $(MSMTP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MSMTP_BUILD_DIR)/.staged: $(MSMTP_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-msmtp-stage: $(MSMTP_BUILD_DIR)/.staged
+#$(MSMTP_BUILD_DIR)/.staged: $(MSMTP_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#msmtp-stage: $(MSMTP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
