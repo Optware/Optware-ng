@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MOIN_SITE=http://static.moinmo.in/files
-PY-MOIN_VERSION=1.8.4
+PY-MOIN_VERSION=1.8.5
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)
 PY-MOIN_UNZIP=zcat
@@ -250,7 +250,7 @@ $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK): $(PY-MOIN_BUILD_DIR)/.built
 	$(MAKE) $(PY-MOIN-COMMON_IPK_DIR)/CONTROL/control
 	install -d $(PY-MOIN-COMMON_IPK_DIR)/opt/
 	mv $(PY25-MOIN_IPK_DIR)/opt/share $(PY-MOIN-COMMON_IPK_DIR)/opt/
-	chmod o+r $(PY-MOIN-COMMON_IPK_DIR)/opt/share/moin/data/*-log
+#	chmod o+r $(PY-MOIN-COMMON_IPK_DIR)/opt/share/moin/data/*-log
 	for f in wikiserver.py wikiserverconfig.py wikiserverlogging.conf; \
 	do install $(PY-MOIN_BUILD_DIR)/2.5/$${f} $(PY-MOIN-COMMON_IPK_DIR)/opt/share/moin/$${f}; done
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-MOIN-COMMON_IPK_DIR)
