@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBTIFF_SITE=ftp://ftp.remotesensing.org/libtiff
-LIBTIFF_VERSION=3.8.2
+LIBTIFF_VERSION=3.9.1
 LIBTIFF_SOURCE=tiff-$(LIBTIFF_VERSION).tar.gz
 LIBTIFF_DIR=tiff-$(LIBTIFF_VERSION)
 LIBTIFF_UNZIP=zcat
@@ -73,8 +73,8 @@ LIBTIFF_IPK=$(BUILD_DIR)/libtiff_$(LIBTIFF_VERSION)-$(LIBTIFF_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBTIFF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBTIFF_SITE)/$(LIBTIFF_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(LIBTIFF_SITE)/old/$(LIBTIFF_SOURCE)
+	$(WGET) -P $(@D) $(LIBTIFF_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(LIBTIFF_SITE)/old/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -98,7 +98,7 @@ $(DL_DIR)/$(LIBTIFF_SOURCE):
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBTIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTIFF_SOURCE) $(LIBTIFF_PATCHES)
+$(LIBTIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTIFF_SOURCE) $(LIBTIFF_PATCHES) make/libtiff.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBTIFF_DIR) $(@D)
 	$(LIBTIFF_UNZIP) $(DL_DIR)/$(LIBTIFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -130,7 +130,7 @@ libtiff-unpack: $(LIBTIFF_BUILD_DIR)/.configured
 #
 $(LIBTIFF_BUILD_DIR)/.built: $(LIBTIFF_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBTIFF_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -192,51 +192,8 @@ $(LIBTIFF_IPK_DIR)/CONTROL/control:
 $(LIBTIFF_IPK): $(LIBTIFF_BUILD_DIR)/.built
 	rm -rf $(LIBTIFF_IPK_DIR) $(LIBTIFF_IPK)
 	install -d $(LIBTIFF_IPK_DIR)/opt/bin
-	$(MAKE) -C $(LIBTIFF_BUILD_DIR) DESTDIR=$(LIBTIFF_IPK_DIR) install-exec
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-bmp2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/bmp2tiff
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2ps -o $(LIBTIFF_IPK_DIR)/opt/bin/fax2ps
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/fax2tiff
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-gif2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/gif2tiff
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-pal2rgb -o $(LIBTIFF_IPK_DIR)/opt/bin/pal2rgb
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ppm2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/ppm2tiff
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ras2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/ras2tiff
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-raw2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/raw2tiff
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-rgb2ycbcr -o $(LIBTIFF_IPK_DIR)/opt/bin/rgb2ycbcr
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-thumbnail -o $(LIBTIFF_IPK_DIR)/opt/bin/thumbnail
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2bw -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2bw
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2pdf -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2pdf*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2ps -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2ps*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2rgba -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2rgba*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffcmp -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffcmp*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffcp -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffcp*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffdither -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffdither*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffdump -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffdump*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffinfo -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffinfo*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffmedian -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffmedian*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffset -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffset*
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffsplit -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffsplit*
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-bmp2tiff
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2ps
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2tiff
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-gif2tiff
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-pal2rgb
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ppm2tiff
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ras2tiff
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-raw2tiff
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-rgb2ycbcr
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-thumbnail
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2bw
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2pdf
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2ps
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2rgba
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffcmp
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffcp
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffdither
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffdump
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffinfo
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffmedian
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffset
-	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffsplit
+	$(MAKE) -C $(LIBTIFF_BUILD_DIR) DESTDIR=$(LIBTIFF_IPK_DIR) install-exec transform=''
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/*
 
 	install -d $(LIBTIFF_IPK_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiff.h $(LIBTIFF_IPK_DIR)/opt/include
@@ -268,3 +225,8 @@ libtiff-clean:
 libtiff-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBTIFF_DIR) $(LIBTIFF_BUILD_DIR) $(LIBTIFF_IPK_DIR) $(LIBTIFF_IPK)
 
+#
+# Some sanity check for the package.
+#
+libtiff-check: $(LIBTIFF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
