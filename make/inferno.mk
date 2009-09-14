@@ -20,10 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-INFERNO_SVN_REPO=http://inferno-os.googlecode.com/svn/trunk
-INFERNO_SVN_REV=00422
+INFERNO_HG_REPO=https://inferno-os.googlecode.com/hg
+INFERNO_HG_DATE=20090830
+INFERNO_HG_REV=233e3f1c4df6
 INFERNO_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/inferno
-INFERNO_VERSION=4.svn$(INFERNO_SVN_REV)
+INFERNO_VERSION=4.hg$(INFERNO_HG_DATE)
 INFERNO_SOURCE=inferno-$(INFERNO_VERSION).tar.gz
 INFERNO_DIR=inferno-$(INFERNO_VERSION)
 INFERNO_UNZIP=zcat
@@ -55,6 +56,10 @@ $(if $(filter arm, $(INFERNO_ARCH)), \
 	$(INFERNO_SOURCE_DIR)/asm-arm-SYS_exit.patch, \
 ))
 
+INFERNO_PATCHES2 = \
+$(INFERNO_SOURCE_DIR)/emu-g-graphical-cpu.patch \
+$(INFERNO_SOURCE_DIR)/os.c-freecheck.patch \
+
 INFERNO_CPPFLAGS=$(strip \
 $(if $(filter mips spim, $(INFERNO_ARCH)), -mips32, \
 ))
@@ -80,13 +85,12 @@ INFERNO-UTILS_IPK=$(BUILD_DIR)/inferno-utils_$(INFERNO_VERSION)-$(INFERNO_IPK_VE
 .PHONY: inferno-source inferno-unpack inferno inferno-stage inferno-ipk inferno-clean inferno-dirclean inferno-check
 
 $(DL_DIR)/$(INFERNO_SOURCE):
-ifdef INFERNO_SVN_REV
+ifdef INFERNO_HG_REV
 	(cd $(BUILD_DIR); \
 		rm -rf $(INFERNO_DIR) && \
-		svn co -r $(INFERNO_SVN_REV) \
-			$(INFERNO_SVN_REPO) $(INFERNO_DIR) && \
+		hg clone -r$(INFERNO_HG_REV) $(INFERNO_HG_REPO) $(INFERNO_DIR) && \
 		tar -czf $@ \
-			--exclude .svn \
+			--exclude .hg \
 			--exclude '*.dis' \
 			--exclude '*.exe' \
 			$(INFERNO_DIR) && \
@@ -119,6 +123,7 @@ $(INFERNO_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(INFERNO_SOURCE) $
 		-e '/^LD=/s/gcc/& -m32/' \
 		$(@D)/makemk.sh
 	(cd $(@D); \
+		mkdir -p $(@D)/Linux/386/lib; \
 		./makemk.sh; \
 		export PATH=$(@D)/Linux/386/bin:$$PATH; \
 		mk nuke install X11LIBS=; \
@@ -134,9 +139,14 @@ $(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PAT
 		then cat $(INFERNO_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(INFERNO_DIR) -p0 ; \
 	fi
+	if test -n "$(INFERNO_PATCHES2)" ; \
+		then cat $(INFERNO_PATCHES2) | \
+		patch -bd $(BUILD_DIR)/$(INFERNO_DIR) -p1 ; \
+	fi
 	if test "$(BUILD_DIR)/$(INFERNO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(INFERNO_DIR) $(@D) ; \
 	fi
+	cp -p $(INFERNO_SOURCE_DIR)/audio-oss.c $(@D)/emu/Linux/
 	sed -i.bak \
 		-e '/CFLAGS=.*-DROOT/s|-DROOT=\x22\x27$$ROOT\x27\x22|-DROOT=\x22\x27/opt/share/inferno\x27\x22|' \
 		$(@D)/emu/Linux/mkfile
@@ -169,6 +179,8 @@ inferno-unpack: $(INFERNO_BUILD_DIR)/.configured
 $(INFERNO_BUILD_DIR)/.built: $(INFERNO_BUILD_DIR)/.configured
 	rm -f $@
 	(cd $(@D); \
+		mkdir -p $(@D)/Linux/$(INFERNO_ARCH)/bin; \
+		mkdir -p $(@D)/Linux/$(INFERNO_ARCH)/lib; \
 		export PATH=$(INFERNO_HOST_BUILD_DIR)/Linux/386/bin:$$PATH; \
 		mk nuke install AR=$(TARGET_AR) X11LIBS= ; \
 	)

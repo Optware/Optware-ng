@@ -1,0 +1,50 @@
+diff -r 43cc34388796 emu/Linux/emu-g
+--- a/emu/Linux/emu-g	Tue Aug 25 20:05:21 2009 +0100
++++ b/emu/Linux/emu-g	Sun Aug 30 16:13:25 2009 +0200
+@@ -14,14 +14,24 @@
+ 	cmd	cmd
+ 	indir
+ 
++	draw
++#	pointer
++#	snarf
++
+ 	ip	ipif-posix ipaux
+ 	eia
+-#	audio	audio
++	audio	audio-oss
+ 	mem
+ 
+ lib
+ 	interp
++	tk
++	freetype
+ 	math
++	draw
++
++	memlayer
++	memdraw
+ 	keyring
+ 	sec
+ 	mp
+@@ -37,6 +47,10 @@
+ 	keyring
+ 	loader
+ 
++	draw
++	tk
++	freetype
++
+ port
+ 	alloc
+ 	cache
+@@ -66,7 +80,8 @@
+ 
+ code
+ 	void setpointer(int x, int y){USED(x); USED(y);}
+-	ulong strtochan(char *s){USED(s); return ~0;}
++	void flushmemscreen(void* r){USED(r);}
++	uchar* attachscreen(void *r, ulong *chan, int *d, int *width, int *softscreen){USED(r) USED(chan); USED(d); USED(width); USED(softscreen);}
+ 
+ init
+ 	emuinit
