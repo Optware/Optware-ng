@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HEYU_SITE=http://www.heyu.org/download/
-HEYU_VERSION=2.5.1
+HEYU_VERSION=2.8.0
 HEYU_SOURCE=heyu-$(HEYU_VERSION).tgz
 HEYU_DIR=heyu-$(HEYU_VERSION)
 HEYU_UNZIP=zcat
