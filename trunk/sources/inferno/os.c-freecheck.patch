@@ -1,0 +1,17 @@
+diff --git a/emu/Linux/os.c b/emu/Linux/os.c
+index 3106cb9..bd0891c 100644
+--- a/emu/Linux/os.c
++++ b/emu/Linux/os.c
+@@ -67,8 +67,10 @@ pexit(char *msg, int t)
+ 		closesigs(e->sigs);
+ 	}
+ 	kstack = up->kstack;
+-	free(up->prog);
+-	free(up);
++	if(up->prog != nil){
++		free(up->prog);
++		free(up);
++	}
+ 	if(kstack != nil)
+ 		stackfreeandexit(kstack);
+ }
