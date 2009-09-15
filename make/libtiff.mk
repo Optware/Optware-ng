@@ -117,7 +117,7 @@ $(LIBTIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTIFF_SOURCE) $(LIBTIFF_PATCHES)
 		--disable-static \
 	)
 ifeq (syno-x07, $(OPTWARE_TARGET))
-	sed -i -e 's| -O2||' $(@D)/libtiff/Makefile
+	sed -i -e 's| -O2||' $(@D)/libtiff/Makefile $(@D)/tools/Makefile
 endif
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
