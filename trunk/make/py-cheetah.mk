@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CHEETAH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/cheetahtemplate
-PY-CHEETAH_VERSION=2.2.1
+PY-CHEETAH_SITE=http://pypi.python.org/packages/source/C/Cheetah
+PY-CHEETAH_VERSION=2.2.2
 PY-CHEETAH_SOURCE=Cheetah-$(PY-CHEETAH_VERSION).tar.gz
 PY-CHEETAH_DIR=Cheetah-$(PY-CHEETAH_VERSION)
 PY-CHEETAH_UNZIP=zcat
