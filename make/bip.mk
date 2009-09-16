@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BIP_SITE=http://bip.t1r.net/downloads
-BIP_VERSION=0.8.0
+BIP_VERSION=0.8.2
 BIP_SOURCE=bip-$(BIP_VERSION).tar.gz
 BIP_DIR=bip-$(BIP_VERSION)
 BIP_UNZIP=zcat
@@ -133,7 +133,7 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(BIP_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 bip-unpack: $(BIP_BUILD_DIR)/.configured
@@ -154,12 +154,12 @@ bip: $(BIP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(BIP_BUILD_DIR)/.staged: $(BIP_BUILD_DIR)/.built
+#$(BIP_BUILD_DIR)/.staged: $(BIP_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(BIP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-bip-stage: $(BIP_BUILD_DIR)/.staged
+#
+#bip-stage: $(BIP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
