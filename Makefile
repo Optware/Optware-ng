@@ -145,7 +145,7 @@ PYTHON_PACKAGES = \
 	mailman \
 	mod-python mod-wsgi \
 	pssh putmail \
-	pyrex \
+	pygments pyrex \
 	sabnzbd sabnzbdplus \
 	scons \
 	stgit \
