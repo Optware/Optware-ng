@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SNOWNEWS_SITE=http://kiza.kcore.de/software/snownews/download
-SNOWNEWS_VERSION=1.5.11
+SNOWNEWS_VERSION=1.5.12
 SNOWNEWS_SOURCE=snownews-$(SNOWNEWS_VERSION).tar.gz
 SNOWNEWS_DIR=snownews-$(SNOWNEWS_VERSION)
 SNOWNEWS_UNZIP=zcat
@@ -35,7 +35,7 @@ SNOWNEWS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SNOWNEWS_DESCRIPTION=Text mode RSS newsreader for Linux and Unix
 SNOWNEWS_SECTION=misc
 SNOWNEWS_PRIORITY=optional
-SNOWNEWS_DEPENDS=libxml2, ncurses, gettext
+SNOWNEWS_DEPENDS=libxml2, ncurses, gettext, openssl
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 SNOWNEWS_DEPENDS+=, libiconv
 else
@@ -62,7 +62,7 @@ SNOWNEWS_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 SNOWNEWS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
-SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm
+SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm -lssl
 ifeq ($(LIBC_STYLE), uclibc)
 SNOWNEWS_LDFLAGS+= -lintl
 endif
@@ -117,7 +117,7 @@ snownews-source: $(DL_DIR)/$(SNOWNEWS_SOURCE) $(SNOWNEWS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SNOWNEWS_BUILD_DIR)/.configured: $(DL_DIR)/$(SNOWNEWS_SOURCE) $(SNOWNEWS_PATCHES) make/snownews.mk
-	$(MAKE) libxml2-stage ncurses-stage
+	$(MAKE) libxml2-stage ncurses-stage openssl-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 else
