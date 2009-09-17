@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WERC_SITE=http://werc.cat-v.org/download
-WERC_VERSION=1.2
+WERC_VERSION=1.2.1
 WERC_SOURCE=werc-$(WERC_VERSION).tar.gz
 WERC_DIR=werc-$(WERC_VERSION)
 WERC_UNZIP=zcat
