@@ -3,6 +3,7 @@ SPECIFIC_PACKAGES = \
 	vt4-optware-bootstrap \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
+	vt4-kernel-modules \
 
 # Packages that do not work for vt4.
 BROKEN_PACKAGES = \
