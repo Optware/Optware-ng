@@ -22,7 +22,7 @@
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
 SFR_SITE=http://www.sfr-fresh.com/unix/misc
-LFTP_VERSION=3.7.15
+LFTP_VERSION=4.0.1
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -138,6 +138,7 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LFTP_LDFLAGS)" \
 		LIBGNUTLS_CONFIG=$(STAGING_PREFIX)/bin/libgnutls-config \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		$(LFTP_CONFIG_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
