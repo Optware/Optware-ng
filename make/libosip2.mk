@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBOSIP2_SITE=http://ftp.gnu.org/gnu/osip
-LIBOSIP2_VERSION=2.0.9
+LIBOSIP2_VERSION=3.3.0
 LIBOSIP2_SOURCE=libosip2-$(LIBOSIP2_VERSION).tar.gz
 LIBOSIP2_DIR=libosip2-$(LIBOSIP2_VERSION)
 LIBOSIP2_UNZIP=zcat
@@ -79,7 +79,8 @@ LIBOSIP2_IPK=$(BUILD_DIR)/libosip2_$(LIBOSIP2_VERSION)-$(LIBOSIP2_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBOSIP2_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBOSIP2_SITE)/$(LIBOSIP2_SOURCE)
+	$(WGET) -P $(@D) $(LIBOSIP2_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,13 +104,13 @@ libosip2-source: $(DL_DIR)/$(LIBOSIP2_SOURCE) $(LIBOSIP2_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBOSIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOSIP2_SOURCE) $(LIBOSIP2_PATCHES)
+$(LIBOSIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOSIP2_SOURCE) $(LIBOSIP2_PATCHES) make/libosip2.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBOSIP2_DIR) $(LIBOSIP2_BUILD_DIR)
 	$(LIBOSIP2_UNZIP) $(DL_DIR)/$(LIBOSIP2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBOSIP2_PATCHES) | patch -d $(BUILD_DIR)/$(LIBOSIP2_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBOSIP2_DIR) $(LIBOSIP2_BUILD_DIR)
-	(cd $(LIBOSIP2_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBOSIP2_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBOSIP2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBOSIP2_LDFLAGS)" \
@@ -120,7 +121,7 @@ $(LIBOSIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOSIP2_SOURCE) $(LIBOSIP2_PATCH
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(LIBOSIP2_BUILD_DIR)/.configured
+	touch $@
 
 libosip2-unpack: $(LIBOSIP2_BUILD_DIR)/.configured
 
@@ -128,9 +129,9 @@ libosip2-unpack: $(LIBOSIP2_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBOSIP2_BUILD_DIR)/.built: $(LIBOSIP2_BUILD_DIR)/.configured
-	rm -f $(LIBOSIP2_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBOSIP2_BUILD_DIR)
-	touch $(LIBOSIP2_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,9 +142,12 @@ libosip2: $(LIBOSIP2_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBOSIP2_BUILD_DIR)/.staged: $(LIBOSIP2_BUILD_DIR)/.built
-	rm -f $(LIBOSIP2_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBOSIP2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LIBOSIP2_BUILD_DIR)/.staged
+	rm -f $@
+	rm -f $(STAGING_LIB_DIR)/libosip*
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libosip*.la $(STAGING_LIB_DIR)/libosip*.a
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libosip2.pc
+	touch $@
 
 libosip2-stage: $(LIBOSIP2_BUILD_DIR)/.staged
 
@@ -152,7 +156,7 @@ libosip2-stage: $(LIBOSIP2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libosip2
 #
 $(LIBOSIP2_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBOSIP2_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libosip2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,3 +211,9 @@ libosip2-clean:
 #
 libosip2-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBOSIP2_DIR) $(LIBOSIP2_BUILD_DIR) $(LIBOSIP2_IPK_DIR) $(LIBOSIP2_IPK)
+
+#
+# Some sanity check for the package.
+#
+libosip2-check: $(LIBOSIP2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
