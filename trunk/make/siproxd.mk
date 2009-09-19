@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SIPROXD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/siproxd
-SIPROXD_VERSION=0.5.10
+SIPROXD_VERSION=0.7.1
 SIPROXD_SOURCE=siproxd-$(SIPROXD_VERSION).tar.gz
 SIPROXD_DIR=siproxd-$(SIPROXD_VERSION)
 SIPROXD_UNZIP=zcat
@@ -79,7 +79,8 @@ SIPROXD_IPK=$(BUILD_DIR)/siproxd_$(SIPROXD_VERSION)-$(SIPROXD_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SIPROXD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SIPROXD_SITE)/$(SIPROXD_SOURCE)
+	$(WGET) -P $(@D) $(SIPROXD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,13 +104,13 @@ siproxd-source: $(DL_DIR)/$(SIPROXD_SOURCE) $(SIPROXD_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SIPROXD_BUILD_DIR)/.configured: $(DL_DIR)/$(SIPROXD_SOURCE) $(SIPROXD_PATCHES)
+$(SIPROXD_BUILD_DIR)/.configured: $(DL_DIR)/$(SIPROXD_SOURCE) $(SIPROXD_PATCHES) make/siproxd.mk
 	$(MAKE) libosip2-stage
-	rm -rf $(BUILD_DIR)/$(SIPROXD_DIR) $(SIPROXD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SIPROXD_DIR) $(@D)
 	$(SIPROXD_UNZIP) $(DL_DIR)/$(SIPROXD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #       cat $(SIPROXD_PATCHES) | patch -d $(BUILD_DIR)/$(SIPROXD_DIR) -p1
-	mv $(BUILD_DIR)/$(SIPROXD_DIR) $(SIPROXD_BUILD_DIR)
-	(cd $(SIPROXD_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(SIPROXD_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SIPROXD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SIPROXD_LDFLAGS)" \
@@ -118,8 +119,9 @@ $(SIPROXD_BUILD_DIR)/.configured: $(DL_DIR)/$(SIPROXD_SOURCE) $(SIPROXD_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
-	touch $(SIPROXD_BUILD_DIR)/.configured
+	touch $@
 
 siproxd-unpack: $(SIPROXD_BUILD_DIR)/.configured
 
@@ -127,9 +129,9 @@ siproxd-unpack: $(SIPROXD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SIPROXD_BUILD_DIR)/.built: $(SIPROXD_BUILD_DIR)/.configured
-	rm -f $(SIPROXD_BUILD_DIR)/.built
-	$(MAKE) -C $(SIPROXD_BUILD_DIR)
-	touch $(SIPROXD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -139,19 +141,19 @@ siproxd: $(SIPROXD_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SIPROXD_BUILD_DIR)/.staged: $(SIPROXD_BUILD_DIR)/.built
-	rm -f $(SIPROXD_BUILD_DIR)/.staged
-	$(MAKE) -C $(SIPROXD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SIPROXD_BUILD_DIR)/.staged
-
-siproxd-stage: $(SIPROXD_BUILD_DIR)/.staged
+#$(SIPROXD_BUILD_DIR)/.staged: $(SIPROXD_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#siproxd-stage: $(SIPROXD_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/siproxd
 #
 $(SIPROXD_IPK_DIR)/CONTROL/control:
-	@install -d $(SIPROXD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: siproxd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -178,8 +180,7 @@ $(SIPROXD_IPK_DIR)/CONTROL/control:
 #
 $(SIPROXD_IPK): $(SIPROXD_BUILD_DIR)/.built
 	rm -rf $(SIPROXD_IPK_DIR) $(BUILD_DIR)/siproxd_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SIPROXD_BUILD_DIR) DESTDIR=$(SIPROXD_IPK_DIR) install
-	$(STRIP_COMMAND) $(SIPROXD_IPK_DIR)/opt/sbin/siproxd
+	$(MAKE) -C $(SIPROXD_BUILD_DIR) DESTDIR=$(SIPROXD_IPK_DIR) install-strip
 #	install -d $(SIPROXD_IPK_DIR)/opt/etc/
 #	install -m 644 $(SIPROXD_SOURCE_DIR)/siproxd.conf $(SIPROXD_IPK_DIR)/opt/etc/siproxd.conf
 	install -d $(SIPROXD_IPK_DIR)/opt/etc/init.d
@@ -207,3 +208,9 @@ siproxd-clean:
 #
 siproxd-dirclean:
 	rm -rf $(BUILD_DIR)/$(SIPROXD_DIR) $(SIPROXD_BUILD_DIR) $(SIPROXD_IPK_DIR) $(SIPROXD_IPK)
+
+#
+# Some sanity check for the package.
+#
+siproxd-check: $(SIPROXD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
