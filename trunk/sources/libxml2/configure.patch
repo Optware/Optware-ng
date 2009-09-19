@@ -1,91 +1,22 @@
---- libxml2-2.6.31/configure.orig	2008-01-11 00:01:56.000000000 -0800
-+++ libxml2-2.6.31/configure	2008-01-14 15:52:42.000000000 -0800
-@@ -9568,7 +9568,7 @@
- shlibpath_overrides_runpath=unknown
- version_type=none
- dynamic_linker="$host_os ld.so"
--sys_lib_dlsearch_path_spec="/lib /usr/lib"
-+sys_lib_dlsearch_path_spec=""
- 
- if test "$GCC" = yes; then
-   case $host_os in
-@@ -9619,7 +9619,7 @@
+--- libxml2-2.7.4/configure.orig	2009-09-10 16:10:26.000000000 +0000
++++ libxml2-2.7.4/configure	2009-09-19 05:42:40.664676456 +0000
+@@ -10442,7 +10442,7 @@
  }'`
-   sys_lib_search_path_spec=`echo $lt_search_path_spec`
+   sys_lib_search_path_spec=`$ECHO $lt_search_path_spec`
  else
 -  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
 +  sys_lib_search_path_spec=""
  fi
- need_lib_prefix=unknown
- hardcode_into_libs=no
-@@ -9963,8 +9963,8 @@
-   # Some rework will be needed to allow for fast_install
-   # before this can be enabled.
-   hardcode_into_libs=yes
+ library_names_spec=
+ libname_spec='lib$name'
+@@ -10787,8 +10787,8 @@
+   esac
+   shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
+   shlibpath_overrides_runpath=no
 -  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
 -  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
 +  sys_lib_search_path_spec=""
 +  sys_lib_dlsearch_path_spec=""
- 
-   # Append ld.so.conf contents to the search path
-   if test -f /etc/ld.so.conf; then
-@@ -13588,7 +13588,7 @@
- shlibpath_overrides_runpath=unknown
- version_type=none
- dynamic_linker="$host_os ld.so"
--sys_lib_dlsearch_path_spec="/lib /usr/lib"
-+sys_lib_dlsearch_path_spec=""
- 
- need_lib_prefix=unknown
- hardcode_into_libs=no
-@@ -13931,8 +13931,8 @@
-   # Some rework will be needed to allow for fast_install
-   # before this can be enabled.
    hardcode_into_libs=yes
--  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
--  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
-+  sys_lib_search_path_spec=""
-+  sys_lib_dlsearch_path_spec=""
+   ;;
  
-   # Append ld.so.conf contents to the search path
-   if test -f /etc/ld.so.conf; then
-@@ -16191,7 +16191,7 @@
- shlibpath_overrides_runpath=unknown
- version_type=none
- dynamic_linker="$host_os ld.so"
--sys_lib_dlsearch_path_spec="/lib /usr/lib"
-+sys_lib_dlsearch_path_spec=""
- 
- need_lib_prefix=unknown
- hardcode_into_libs=no
-@@ -16534,8 +16534,8 @@
-   # Some rework will be needed to allow for fast_install
-   # before this can be enabled.
-   hardcode_into_libs=yes
--  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
--  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
-+  sys_lib_search_path_spec=""
-+  sys_lib_dlsearch_path_spec=""
- 
-   # Append ld.so.conf contents to the search path
-   if test -f /etc/ld.so.conf; then
-@@ -18794,7 +18794,7 @@
- shlibpath_overrides_runpath=unknown
- version_type=none
- dynamic_linker="$host_os ld.so"
--sys_lib_dlsearch_path_spec="/lib /usr/lib"
-+sys_lib_dlsearch_path_spec=""
- 
- need_lib_prefix=unknown
- hardcode_into_libs=no
-@@ -19137,8 +19137,8 @@
-   # Some rework will be needed to allow for fast_install
-   # before this can be enabled.
-   hardcode_into_libs=yes
--  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
--  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
-+  sys_lib_search_path_spec=""
-+  sys_lib_dlsearch_path_spec=""
- 
-   # Append ld.so.conf contents to the search path
-   if test -f /etc/ld.so.conf; then
