@@ -54,7 +54,7 @@ SPEEX_IPK_VERSION=1
 #
 SPEEX_CPPFLAGS=
 ifdef NO_BUILTIN_MATH
-SPEEX_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin -fno-builtin-log
+SPEEX_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin -fno-builtin-log -fno-builtin-exp
 endif
 SPEEX_LDFLAGS=
 
