@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SPEEX_SITE=http://downloads.us.xiph.org/releases/speex
-SPEEX_VERSION=1.2beta1
+SPEEX_VERSION=1.2rc1
 SPEEX_SOURCE=speex-$(SPEEX_VERSION).tar.gz
 SPEEX_DIR=speex-$(SPEEX_VERSION)
 SPEEX_UNZIP=zcat
@@ -86,8 +86,8 @@ SPEEX_IPK=$(BUILD_DIR)/speex_$(SPEEX_VERSION)-$(SPEEX_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SPEEX_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SPEEX_SITE)/$(SPEEX_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SPEEX_SOURCE)
+	$(WGET) -P $(@D) $(SPEEX_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -122,10 +122,10 @@ $(SPEEX_BUILD_DIR)/.configured: $(DL_DIR)/$(SPEEX_SOURCE) $(SPEEX_PATCHES) make/
 		then cat $(SPEEX_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SPEEX_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SPEEX_DIR)" != "$(SPEEX_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SPEEX_DIR) $(SPEEX_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SPEEX_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SPEEX_DIR) $(@D) ; \
 	fi
-	(cd $(SPEEX_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SPEEX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SPEEX_LDFLAGS)" \
@@ -140,7 +140,7 @@ $(SPEEX_BUILD_DIR)/.configured: $(DL_DIR)/$(SPEEX_SOURCE) $(SPEEX_PATCHES) make/
 		--with-ogg=$(STAGING_PREFIX) \
 		$(SPEEX_CONFIG_ARGS) \
 	)
-	$(PATCH_LIBTOOL) $(SPEEX_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 speex-unpack: $(SPEEX_BUILD_DIR)/.configured
@@ -150,7 +150,7 @@ speex-unpack: $(SPEEX_BUILD_DIR)/.configured
 #
 $(SPEEX_BUILD_DIR)/.built: $(SPEEX_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SPEEX_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -163,8 +163,8 @@ speex: $(SPEEX_BUILD_DIR)/.built
 #
 $(SPEEX_BUILD_DIR)/.staged: $(SPEEX_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SPEEX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/speex.pc
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/speex.pc
 	touch $@
 
 speex-stage: $(SPEEX_BUILD_DIR)/.staged
@@ -239,4 +239,4 @@ speex-dirclean:
 # Some sanity check for the package.
 #
 speex-check: $(SPEEX_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SPEEX_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
