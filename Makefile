@@ -281,7 +281,7 @@ COMMON_CROSS_PACKAGES = \
 	liba52 libao libart libbt libcapi20 libcdio libcurl \
 	libdaemon libdb libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread \
-	libebml \
+	libebml libexosip2 \
 	libesmtp libevent libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
 	libhid \
