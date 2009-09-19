@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 LIBXSLT_SITE=ftp://xmlsoft.org/libxslt
-LIBXSLT_VERSION=1.1.24
+LIBXSLT_VERSION=1.1.25
 LIBXSLT_SOURCE=libxslt-$(LIBXSLT_VERSION).tar.gz
 LIBXSLT_DIR=libxslt-$(LIBXSLT_VERSION)
 LIBXSLT_UNZIP=zcat
@@ -215,4 +215,4 @@ libxslt-dirclean:
 # Some sanity check for the package.
 #
 libxslt-check: $(LIBXSLT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBXSLT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
