@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 	uclibcnotimpl libuclibc++ \
 	binutils gcc libc-dev \
 
+# linphone: undefined reference to `log10f'
 BROKEN_PACKAGES = \
 	$(UCLIBC++_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
@@ -16,6 +17,7 @@ BROKEN_PACKAGES = \
 	gtmess \
 	iptraf \
 	libdvb \
+	linphone \
 	ltrace \
 	minidlna \
 	motor \

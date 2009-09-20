@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	inferno \
 	gtmess \
 	iptraf \
+	linphone \
 	nfs-server nfs-utils \
 	sane-backends \
 	sandbox \
