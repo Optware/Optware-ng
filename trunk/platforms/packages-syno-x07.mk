@@ -21,6 +21,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	libtorrent-rasterbar \
 	ldconfig libcapi20 \
+	linphone \
 	mkvtoolnix \
 	ntop \
 	p7zip \

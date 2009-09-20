@@ -53,8 +53,9 @@ LINPHONE_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 LINPHONE_CPPFLAGS=
+LINPHONE_LDFLAGS ?=
 ifeq (uclibc, $(LIBC_STYLE))
-LINPHONE_LDFLAGS=-lpthread
+LINPHONE_LDFLAGS += -lpthread
 endif
 
 #

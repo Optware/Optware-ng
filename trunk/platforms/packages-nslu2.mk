@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = unslung-feeds unslung-devel crosstool-native ufsd \
 # Packages that do not work for nslu2.
 BROKEN_PACKAGES = \
 	sandbox \
+	linphone \
 
 BTPD_VERSION=0.13
 BTPD_IPK_VERSION=2
