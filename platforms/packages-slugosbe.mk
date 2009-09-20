@@ -21,6 +21,3 @@ BROKEN_PACKAGES = \
 	\
 	atk gtk nfs-utils transcode \
 	vte xchat \
-
-SPEEX_VERSION := 1.2beta2
-SPEEX_IPK_VERSION := 1

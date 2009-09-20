@@ -36,7 +36,7 @@ SPEEX_CONFLICTS=
 #
 # SPEEX_IPK_VERSION should be incremented when the ipk changes.
 #
-SPEEX_IPK_VERSION ?= 1
+SPEEX_IPK_VERSION ?= 2
 
 #
 # SPEEX_CONFFILES should be a list of user-editable files
@@ -54,15 +54,23 @@ SPEEX_IPK_VERSION ?= 1
 #
 SPEEX_CPPFLAGS=
 ifdef NO_BUILTIN_MATH
-SPEEX_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin -fno-builtin-log -fno-builtin-exp
+SPEEX_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin -fno-builtin-log -fno-builtin-exp -fno-builtin-acos
 endif
 SPEEX_LDFLAGS=
 
-ifeq ($(TARGET_ARCH), armeb)
+ifeq (, $(filter i686, $(TARGET_ARCH)))
 SPEEX_CONFIG_ARGS=--enable-fixed-point
-ifneq ($(OPTWARE_TARGET), fsg3v4)
+endif
+
+ifeq ($(TARGET_ARCH), armeb)
+ifeq ($(OPTWARE_TARGET), $(filter fsg3v4 openwrt-ixp4xx slugosbe, $(OPTWARE_TARGET)))
+SPEEX_CONFIG_ARGS+=--enable-arm4-asm
+else
 SPEEX_CONFIG_ARGS+=--enable-arm5e-asm
 endif
+endif
+ifeq ($(TARGET_ARCH), arm)
+SPEEX_CONFIG_ARGS+=--enable-arm4-asm
 endif
 
 #
