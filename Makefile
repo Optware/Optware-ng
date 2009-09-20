@@ -296,7 +296,7 @@ COMMON_CROSS_PACKAGES = \
 	libtasn1 libtiff libtool libtorrent \
 	libtorrent-rasterbar \
 	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
-	lighttpd lirc links2 linksys-tftp littlesmalltalk llink \
+	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
 	lua luarocks \
 	lynx lzo \
