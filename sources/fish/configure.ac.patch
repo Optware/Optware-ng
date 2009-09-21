@@ -1,6 +1,35 @@
---- configure.ac.orig	2006-12-07 14:55:06.000000000 -0800
-+++ configure.ac	2006-12-08 16:08:40.000000000 -0800
-@@ -289,25 +289,11 @@
+--- configure.ac.orig	2009-03-08 07:46:47.000000000 -0700
++++ configure.ac	2009-09-21 10:10:49.000000000 -0700
+@@ -104,8 +104,8 @@
+ 	AC_MSG_CHECKING([for $i/include include directory])
+ 	if test -d $i/include; then
+ 		AC_MSG_RESULT(yes)
+-		CPPFLAGS="$CPPFLAGS -I$i/include/"
+-		CFLAGS="$CFLAGS -I$i/include/"
++		# CPPFLAGS="$CPPFLAGS -I$i/include/"
++		# CFLAGS="$CFLAGS -I$i/include/"
+ 	else
+ 	AC_MSG_RESULT(no)
+ 	fi
+@@ -113,7 +113,7 @@
+ 	AC_MSG_CHECKING([for $i/lib library directory])
+ 	if test -d $i/lib; then
+ 		AC_MSG_RESULT(yes)
+-		LDFLAGS="$LDFLAGS -L$i/lib/ -R$i/lib/"
++		# LDFLAGS="$LDFLAGS -L$i/lib/ -R$i/lib/"
+ 	else
+ 		AC_MSG_RESULT(no)
+ 	fi
+@@ -121,7 +121,7 @@
+ 	AC_MSG_CHECKING([for $i/bin command directory])
+ 	if test -d $i/bin; then
+ 		AC_MSG_RESULT(yes)
+-		optbindirs="$optbindirs $i/bin"
++		# optbindirs="$optbindirs $i/bin"
+ 	else
+ 		AC_MSG_RESULT(no)
+ 	fi
+@@ -323,25 +323,11 @@
  #
  
  AC_MSG_CHECKING([if we are compiling against glibc])
@@ -31,7 +60,7 @@
  
  if test "$glibc" = yes; then
  	AC_MSG_RESULT(yes)
-@@ -617,26 +603,7 @@
+@@ -759,26 +745,7 @@
  #
  
  AC_MSG_CHECKING([if realpath accepts null for its second argument])
@@ -59,7 +88,7 @@
  
  if test "$have_realpath_null" = yes; then
  	AC_MSG_RESULT(yes)
-@@ -691,29 +658,7 @@
+@@ -833,29 +800,7 @@
  if test "$ac_cv_func_fwprintf" = yes; then
  
  	AC_MSG_CHECKING([if fwprintf is broken])

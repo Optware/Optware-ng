@@ -20,8 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-FISH_VERSION=1.23.0
-FISH_SITE=http://fishshell.org/files/$(FISH_VERSION)
+FISH_VERSION=1.23.1
+#FISH_SITE=http://fishshell.org/files/$(FISH_VERSION)
+FISH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/fish
 FISH_SOURCE=fish-$(FISH_VERSION).tar.bz2
 FISH_DIR=fish-$(FISH_VERSION)
 FISH_UNZIP=bzcat
@@ -85,7 +86,8 @@ FISH_IPK=$(BUILD_DIR)/fish_$(FISH_VERSION)-$(FISH_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FISH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FISH_SITE)/$(FISH_SOURCE)
+	$(WGET) -P $(@D) $(FISH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -123,7 +125,7 @@ $(FISH_BUILD_DIR)/.configured: $(DL_DIR)/$(FISH_SOURCE) $(FISH_PATCHES) make/fis
 		then mv $(BUILD_DIR)/$(FISH_DIR) $(@D) ; \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cd $(@D); autoreconf
+	autoreconf -vif $(@D)
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -141,7 +143,7 @@ endif
 	)
 	sed -i -e '/^all:/s/user_doc //' $(@D)/Makefile
 #	$(PATCH_LIBTOOL) $(FISH_BUILD_DIR)/libtool
-	touch $(@D)/.configured
+	touch $@
 
 fish-unpack: $(FISH_BUILD_DIR)/.configured
 
@@ -161,12 +163,12 @@ fish: $(FISH_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(FISH_BUILD_DIR)/.staged: $(FISH_BUILD_DIR)/.built
+#$(FISH_BUILD_DIR)/.staged: $(FISH_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-fish-stage: $(FISH_BUILD_DIR)/.staged
+#
+#fish-stage: $(FISH_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -203,16 +205,7 @@ $(FISH_IPK): $(FISH_BUILD_DIR)/.built
 	rm -rf $(FISH_IPK_DIR) $(BUILD_DIR)/fish_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FISH_BUILD_DIR) DESTDIR=$(FISH_IPK_DIR) install
 	$(STRIP_COMMAND) $(FISH_IPK_DIR)/opt/bin/*
-#	install -d $(FISH_IPK_DIR)/opt/etc/
-#	install -m 644 $(FISH_SOURCE_DIR)/fish.conf $(FISH_IPK_DIR)/opt/etc/fish.conf
-#	install -d $(FISH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FISH_SOURCE_DIR)/rc.fish $(FISH_IPK_DIR)/opt/etc/init.d/SXXfish
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXfish
 	$(MAKE) $(FISH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FISH_SOURCE_DIR)/postinst $(FISH_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FISH_SOURCE_DIR)/prerm $(FISH_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(FISH_CONFFILES) | sed -e 's/ /\n/g' > $(FISH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FISH_IPK_DIR)
 
@@ -239,4 +232,4 @@ fish-dirclean:
 # Some sanity check for the package.
 #
 fish-check: $(FISH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FISH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
