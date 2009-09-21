@@ -36,7 +36,7 @@ DISCOUNT_CONFLICTS=
 #
 # DISCOUNT_IPK_VERSION should be incremented when the ipk changes.
 #
-DISCOUNT_IPK_VERSION=1
+DISCOUNT_IPK_VERSION=2
 
 #
 # DISCOUNT_CONFFILES should be a list of user-editable files
@@ -197,7 +197,7 @@ $(DISCOUNT_IPK_DIR)/CONTROL/control:
 #
 $(DISCOUNT_IPK): $(DISCOUNT_BUILD_DIR)/.built
 	rm -rf $(DISCOUNT_IPK_DIR) $(BUILD_DIR)/discount_*_$(TARGET_ARCH).ipk
-	install -d $(DISCOUNT_IPK_DIR)/opt/bin
+	install -d $(DISCOUNT_IPK_DIR)/opt/bin $(DISCOUNT_IPK_DIR)/opt/include $(DISCOUNT_IPK_DIR)/opt/lib
 	$(MAKE) -C $(DISCOUNT_BUILD_DIR) DESTDIR=$(DISCOUNT_IPK_DIR) install.everything
 	$(STRIP_COMMAND) $(DISCOUNT_IPK_DIR)/opt/bin/*
 	$(MAKE) $(DISCOUNT_IPK_DIR)/CONTROL/control
