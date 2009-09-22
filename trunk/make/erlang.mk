@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R13B01
-ERLANG_VERSION=R13B01
+ERLANG_UPSTREAM_VERSION=R13B02
+ERLANG_VERSION=R13B02
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -44,7 +44,7 @@ ERLANG_MAKE_OPTION=
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=1
 
 ERLANG_TARGET=$(shell $(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME))
 
@@ -65,7 +65,6 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
-	$(ERLANG_SOURCE_DIR)/lib-erl_interface-src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-odbc-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch
 
@@ -452,6 +451,7 @@ endif
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/to_erl \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/beam* \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/child_setup* \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/dyn_erl \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/epmd \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/erlc \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/erlexec \

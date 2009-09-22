@@ -1,10 +1,10 @@
---- otp_src_R13B/erts/etc/unix/Install.src.orig	2009-03-12 12:16:56.000000000 +0000
-+++ otp_src_R13B/erts/etc/unix/Install.src	2009-04-21 23:16:12.435284887 +0000
-@@ -104,7 +104,7 @@
+--- otp_src_R13B02/erts/etc/unix/Install.src.orig	2009-09-18 07:07:12.000000000 -0700
++++ otp_src_R13B02/erts/etc/unix/Install.src	2009-09-22 13:41:23.000000000 -0700
+@@ -111,7 +111,7 @@
    /bin/rm -f epmd
  fi
  
--ln -s $ERL_ROOT/erts-%I_VSN%/bin/epmd epmd
+-ln -s $TARGET_ERL_ROOT/erts-%I_VSN%/bin/epmd epmd
 +ln -s ../erts-%I_VSN%/bin/epmd epmd
  
  cp -p $ERL_ROOT/erts-%I_VSN%/bin/run_erl .
