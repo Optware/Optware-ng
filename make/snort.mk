@@ -20,9 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SNORT_SITE=http://www.snort.org/dl
+SNORT_SITE=http://dl.snort.org/snort-current
 SNORT_SITE2=http://www.snort.org/dl/old
-SNORT_VERSION=2.8.4.1
+SNORT_VERSION=2.8.5
 SNORT_SOURCE=snort-$(SNORT_VERSION).tar.gz
 SNORT_DIR=snort-$(SNORT_VERSION)
 SNORT_UNZIP=zcat
@@ -119,7 +119,7 @@ $(SNORT_BUILD_DIR)/.configured: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES) make/
 	fi
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
 	ACLOCAL="aclocal -Im4" autoreconf -vif $(@D)
-	sed -i -e '/extra_incl/s|=-I/usr/include/pcap|=|' $(@D)/configure
+	sed -i -e '/extra_incl/s|-I/usr/include/pcap||' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SNORT_CPPFLAGS)" \
@@ -157,12 +157,12 @@ snort: $(SNORT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SNORT_BUILD_DIR)/.staged: $(SNORT_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-snort-stage: $(SNORT_BUILD_DIR)/.staged
+#$(SNORT_BUILD_DIR)/.staged: $(SNORT_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#snort-stage: $(SNORT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
