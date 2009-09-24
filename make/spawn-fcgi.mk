@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SPAWN-FCGI_SITE=http://www.lighttpd.net/download
-SPAWN-FCGI_VERSION=1.6.2
+SPAWN-FCGI_VERSION=1.6.3
 SPAWN-FCGI_SOURCE=spawn-fcgi-$(SPAWN-FCGI_VERSION).tar.bz2
 SPAWN-FCGI_DIR=spawn-fcgi-$(SPAWN-FCGI_VERSION)
 SPAWN-FCGI_UNZIP=bzcat
@@ -149,12 +149,12 @@ spawn-fcgi: $(SPAWN-FCGI_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SPAWN-FCGI_BUILD_DIR)/.staged: $(SPAWN-FCGI_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-spawn-fcgi-stage: $(SPAWN-FCGI_BUILD_DIR)/.staged
+#$(SPAWN-FCGI_BUILD_DIR)/.staged: $(SPAWN-FCGI_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#spawn-fcgi-stage: $(SPAWN-FCGI_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
