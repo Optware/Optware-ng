@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IOTOP_SITE=http://guichaz.free.fr/iotop/files
-IOTOP_VERSION=0.3
+IOTOP_VERSION=0.3.2
 IOTOP_SOURCE=iotop-$(IOTOP_VERSION).tar.gz
 IOTOP_DIR=iotop-$(IOTOP_VERSION)
 IOTOP_UNZIP=zcat
@@ -42,7 +42,7 @@ IOTOP_CONFLICTS=
 #
 # IOTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-IOTOP_IPK_VERSION=2
+IOTOP_IPK_VERSION=1
 
 #
 # IOTOP_CONFFILES should be a list of user-editable files
