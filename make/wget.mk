@@ -26,13 +26,13 @@ WGET_SECTION=net
 WGET_PRIORITY=optional
 WGET_DEPENDS=
 WGET_CONFLICTS=wget-ssl
-WGET-SSL_DEPENDS=openssl
+WGET-SSL_DEPENDS=libidn, openssl
 WGET-SSL_CONFLICTS=wget
 
 #
 # WGET_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET_IPK_VERSION=1
+WGET_IPK_VERSION=2
 
 #
 # WGET_CONFFILES should be a list of user-editable files
@@ -123,6 +123,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WGET_LDFLAGS)" \
+		ac_cv_header_idna_h=no \
 		./configure \
 		--disable-rpath \
 		--build=$(GNU_HOST_NAME) \
@@ -135,9 +136,7 @@ endif
 	touch $@
 
 $(WGET-SSL_BUILD_DIR)/.configured: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES) make/wget.mk
-ifneq ($(HOSTCC),$(TARGET_CC))
-	$(MAKE) openssl-stage
-endif
+	$(MAKE) libidn-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(@D)
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WGET_PATCHES) | patch -d $(BUILD_DIR)/$(WGET_DIR) -p1
@@ -156,6 +155,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--with-ssl \
 		--with-libssl-prefix=$(STAGING_PREFIX) \
+		--with-libidn-prefix=$(STAGING_PREFIX) \
 		--prefix=/opt \
 		--disable-nls \
 	)
