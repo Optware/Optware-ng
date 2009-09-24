@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GLOOX_SITE=http://camaya.net/download
-GLOOX_VERSION=0.9.9.7
+GLOOX_VERSION=0.9.9.9
 GLOOX_SOURCE=gloox-$(GLOOX_VERSION).tar.bz2
 GLOOX_DIR=gloox-$(GLOOX_VERSION)
 GLOOX_UNZIP=bzcat
