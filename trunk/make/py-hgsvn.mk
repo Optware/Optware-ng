@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-HGSVN_SITE=http://pypi.python.org/packages/source/h/hgsvn
-PY-HGSVN_VERSION=0.1.6
+PY-HGSVN_VERSION=0.1.7
 PY-HGSVN_SOURCE=hgsvn-$(PY-HGSVN_VERSION).tar.gz
 PY-HGSVN_DIR=hgsvn-$(PY-HGSVN_VERSION)
 PY-HGSVN_UNZIP=zcat
@@ -31,14 +31,14 @@ PY-HGSVN_DESCRIPTION=A set of scripts to work locally on Subversion checkouts us
 PY-HGSVN_SECTION=misc
 PY-HGSVN_PRIORITY=optional
 PY-HGSVN_DEPENDS=
-PY24-HGSVN_DEPENDS=py24-mercurial, py24-setuptools, svn
 PY25-HGSVN_DEPENDS=py25-mercurial, py25-setuptools, svn
+PY26-HGSVN_DEPENDS=py26-mercurial, py26-setuptools, svn
 PY-HGSVN_CONFLICTS=
 
 #
 # PY-HGSVN_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-HGSVN_IPK_VERSION=2
+PY-HGSVN_IPK_VERSION=1
 
 #
 # PY-HGSVN_CONFFILES should be a list of user-editable files
@@ -69,14 +69,14 @@ PY-HGSVN_LDFLAGS=
 PY-HGSVN_BUILD_DIR=$(BUILD_DIR)/py-hgsvn
 PY-HGSVN_SOURCE_DIR=$(SOURCE_DIR)/py-hgsvn
 
-PY-HGSVN-COMMON_IPK_DIR=$(BUILD_DIR)/py-hgsvn-common-$(PY-HGSVN_VERSION)-ipk
-PY-HGSVN-COMMON_IPK=$(BUILD_DIR)/py-hgsvn-common_$(PY-HGSVN_VERSION)-$(PY-HGSVN_IPK_VERSION)_$(TARGET_ARCH).ipk
-
-PY24-HGSVN_IPK_DIR=$(BUILD_DIR)/py24-hgsvn-$(PY-HGSVN_VERSION)-ipk
-PY24-HGSVN_IPK=$(BUILD_DIR)/py24-hgsvn_$(PY-HGSVN_VERSION)-$(PY-HGSVN_IPK_VERSION)_$(TARGET_ARCH).ipk
+#PY-HGSVN-COMMON_IPK_DIR=$(BUILD_DIR)/py-hgsvn-common-$(PY-HGSVN_VERSION)-ipk
+#PY-HGSVN-COMMON_IPK=$(BUILD_DIR)/py-hgsvn-common_$(PY-HGSVN_VERSION)-$(PY-HGSVN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-HGSVN_IPK_DIR=$(BUILD_DIR)/py25-hgsvn-$(PY-HGSVN_VERSION)-ipk
 PY25-HGSVN_IPK=$(BUILD_DIR)/py25-hgsvn_$(PY-HGSVN_VERSION)-$(PY-HGSVN_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-HGSVN_IPK_DIR=$(BUILD_DIR)/py26-hgsvn-$(PY-HGSVN_VERSION)-ipk
+PY26-HGSVN_IPK=$(BUILD_DIR)/py26-hgsvn_$(PY-HGSVN_VERSION)-$(PY-HGSVN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-hgsvn-source py-hgsvn-unpack py-hgsvn py-hgsvn-stage py-hgsvn-ipk py-hgsvn-clean py-hgsvn-dirclean py-hgsvn-check
 
@@ -114,21 +114,6 @@ $(PY-HGSVN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGSVN_SOURCE) $(PY-HGSVN_PATCH
 	$(MAKE) py-setuptools-stage
 	rm -rf $(PY-HGSVN_BUILD_DIR)
 	mkdir -p $(PY-HGSVN_BUILD_DIR)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-HGSVN_DIR)
-	$(PY-HGSVN_UNZIP) $(DL_DIR)/$(PY-HGSVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-HGSVN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-HGSVN_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-HGSVN_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    ( \
-		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
-	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4" \
-	    ) >> setup.cfg; \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-HGSVN_DIR)
 	$(PY-HGSVN_UNZIP) $(DL_DIR)/$(PY-HGSVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -144,6 +129,21 @@ $(PY-HGSVN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGSVN_SOURCE) $(PY-HGSVN_PATCH
 		echo "executable=/opt/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-HGSVN_DIR)
+	$(PY-HGSVN_UNZIP) $(DL_DIR)/$(PY-HGSVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-HGSVN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-HGSVN_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-HGSVN_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.6" \
+	    ) >> setup.cfg; \
+	)
 	touch $@
 
 py-hgsvn-unpack: $(PY-HGSVN_BUILD_DIR)/.configured
@@ -153,16 +153,16 @@ py-hgsvn-unpack: $(PY-HGSVN_BUILD_DIR)/.configured
 #
 $(PY-HGSVN_BUILD_DIR)/.built: $(PY-HGSVN_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build \
-	    ; \
-	)
 	(cd $(@D)/2.5; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build \
+	    ; \
+	)
+	(cd $(@D)/2.6; \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build \
 	    ; \
 	)
 	touch $@
@@ -175,31 +175,17 @@ py-hgsvn: $(PY-HGSVN_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-HGSVN_BUILD_DIR)/.staged: $(PY-HGSVN_BUILD_DIR)/.built
+#$(PY-HGSVN_BUILD_DIR)/.staged: $(PY-HGSVN_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-py-hgsvn-stage: $(PY-HGSVN_BUILD_DIR)/.staged
+#
+#py-hgsvn-stage: $(PY-HGSVN_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-hgsvn
 #
-$(PY24-HGSVN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-hgsvn" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-HGSVN_PRIORITY)" >>$@
-	@echo "Section: $(PY-HGSVN_SECTION)" >>$@
-	@echo "Version: $(PY-HGSVN_VERSION)-$(PY-HGSVN_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-HGSVN_MAINTAINER)" >>$@
-	@echo "Source: $(PY-HGSVN_SITE)/$(PY-HGSVN_SOURCE)" >>$@
-	@echo "Description: $(PY-HGSVN_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-HGSVN_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-HGSVN_CONFLICTS)" >>$@
-
 $(PY25-HGSVN_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -214,6 +200,20 @@ $(PY25-HGSVN_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-HGSVN_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-HGSVN_CONFLICTS)" >>$@
 
+$(PY26-HGSVN_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-hgsvn" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-HGSVN_PRIORITY)" >>$@
+	@echo "Section: $(PY-HGSVN_SECTION)" >>$@
+	@echo "Version: $(PY-HGSVN_VERSION)-$(PY-HGSVN_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-HGSVN_MAINTAINER)" >>$@
+	@echo "Source: $(PY-HGSVN_SITE)/$(PY-HGSVN_SOURCE)" >>$@
+	@echo "Description: $(PY-HGSVN_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-HGSVN_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-HGSVN_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -226,20 +226,8 @@ $(PY25-HGSVN_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-HGSVN_IPK): $(PY-HGSVN_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-hgsvn_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-HGSVN_IPK_DIR) $(BUILD_DIR)/py24-hgsvn_*_$(TARGET_ARCH).ipk
-	(cd $(PY-HGSVN_BUILD_DIR)/2.4; \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-HGSVN_IPK_DIR) --prefix=/opt; \
-	)
-	for f in $(PY24-HGSVN_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
-	$(MAKE) $(PY24-HGSVN_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-HGSVN_IPK_DIR)
-
 $(PY25-HGSVN_IPK): $(PY-HGSVN_BUILD_DIR)/.built
+	rm -f $(BUILD_DIR)/py*-hgsvn_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-HGSVN_IPK_DIR) $(BUILD_DIR)/py25-hgsvn_*_$(TARGET_ARCH).ipk
 	(cd $(PY-HGSVN_BUILD_DIR)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
@@ -249,10 +237,22 @@ $(PY25-HGSVN_IPK): $(PY-HGSVN_BUILD_DIR)/.built
 	$(MAKE) $(PY25-HGSVN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-HGSVN_IPK_DIR)
 
+$(PY26-HGSVN_IPK): $(PY-HGSVN_BUILD_DIR)/.built
+	rm -rf $(PY26-HGSVN_IPK_DIR) $(BUILD_DIR)/py26-hgsvn_*_$(TARGET_ARCH).ipk
+	(cd $(PY-HGSVN_BUILD_DIR)/2.6; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-HGSVN_IPK_DIR) --prefix=/opt; \
+	)
+	for f in $(PY26-HGSVN_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
+	$(MAKE) $(PY26-HGSVN_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-HGSVN_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-hgsvn-ipk: $(PY24-HGSVN_IPK) $(PY25-HGSVN_IPK)
+py-hgsvn-ipk: $(PY25-HGSVN_IPK) $(PY26-HGSVN_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -266,11 +266,11 @@ py-hgsvn-clean:
 #
 py-hgsvn-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-HGSVN_DIR) $(PY-HGSVN_BUILD_DIR)
-	rm -rf $(PY24-HGSVN_IPK_DIR) $(PY24-HGSVN_IPK)
 	rm -rf $(PY25-HGSVN_IPK_DIR) $(PY25-HGSVN_IPK)
+	rm -rf $(PY26-HGSVN_IPK_DIR) $(PY26-HGSVN_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-hgsvn-check: $(PY24-HGSVN_IPK) $(PY25-HGSVN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-HGSVN_IPK) $(PY25-HGSVN_IPK)
+py-hgsvn-check: $(PY25-HGSVN_IPK) $(PY26-HGSVN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
