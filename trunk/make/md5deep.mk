@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MD5DEEP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/md5deep
-MD5DEEP_VERSION=3.1
+MD5DEEP_VERSION=3.4
 MD5DEEP_SOURCE=md5deep-$(MD5DEEP_VERSION).tar.gz
 MD5DEEP_DIR=md5deep-$(MD5DEEP_VERSION)
 MD5DEEP_UNZIP=zcat
@@ -229,4 +229,4 @@ md5deep-dirclean:
 # Some sanity check for the package.
 #
 md5deep-check: $(MD5DEEP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MD5DEEP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
