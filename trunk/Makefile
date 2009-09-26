@@ -293,7 +293,7 @@ COMMON_CROSS_PACKAGES = \
 	libol libogg libosip2 libopensync libotr \
 	libpar2 libpcap libpng libpth librsync \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
-	libtasn1 libtiff libtool libtorrent \
+	libtasn1 libtheora libtiff libtool libtorrent \
 	libtorrent-rasterbar \
 	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
