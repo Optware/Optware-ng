@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR_VERSION=1.18
-BZR_SITE=https://launchpad.net/bzr/1.18/$(BZR_VERSION)/+download
+BZR_VERSION=2.0.0
+BZR_SITE=https://launchpad.net/bzr/2.0/$(BZR_VERSION)/+download
 BZR_SOURCE=bzr-$(BZR_VERSION).tar.gz
 BZR_DIR=bzr-$(BZR_VERSION)
 BZR_UNZIP=zcat
@@ -30,7 +30,6 @@ BZR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BZR_DESCRIPTION=A decentralized revision control system designed to be easy for developers and end users alike.
 BZR_SECTION=misc
 BZR_PRIORITY=optional
-PY24-BZR_DEPENDS=python24, py24-celementtree
 PY25-BZR_DEPENDS=python25
 PY26-BZR_DEPENDS=python26
 BZR_CONFLICTS=
@@ -68,9 +67,6 @@ BZR_LDFLAGS=
 #
 BZR_BUILD_DIR=$(BUILD_DIR)/bzr
 BZR_SOURCE_DIR=$(SOURCE_DIR)/bzr
-
-PY24-BZR_IPK_DIR=$(BUILD_DIR)/py24-bzr-$(BZR_VERSION)-ipk
-PY24-BZR_IPK=$(BUILD_DIR)/py24-bzr_$(BZR_VERSION)-$(BZR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-BZR_IPK_DIR=$(BUILD_DIR)/py25-bzr-$(BZR_VERSION)-ipk
 PY25-BZR_IPK=$(BUILD_DIR)/py25-bzr_$(BZR_VERSION)-$(BZR_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -208,20 +204,6 @@ bzr-stage: $(BZR_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/bzr
 #
-$(PY24-BZR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-bzr" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(BZR_PRIORITY)" >>$@
-	@echo "Section: $(BZR_SECTION)" >>$@
-	@echo "Version: $(BZR_VERSION)-$(BZR_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(BZR_MAINTAINER)" >>$@
-	@echo "Source: $(BZR_SITE)/$(BZR_SOURCE)" >>$@
-	@echo "Description: $(BZR_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-BZR_DEPENDS)" >>$@
-	@echo "Conflicts: $(BZR_CONFLICTS)" >>$@
-
 $(PY25-BZR_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -262,21 +244,8 @@ $(PY26-BZR_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-BZR_IPK): $(BZR_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py24-bazaar-ng*ipk
-	rm -rf $(PY24-BZR_IPK_DIR) $(BUILD_DIR)/py24-bzr_*_$(TARGET_ARCH).ipk
-	(cd $(BZR_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-BZR_IPK_DIR) --prefix=/opt; \
-	)
-	$(STRIP_COMMAND) $(PY24-BZR_IPK_DIR)/opt/lib/python2.4/site-packages/bzrlib/*.so
-	for f in $(PY24-BZR_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
-	rm -rf $(PY24-BZR_IPK_DIR)/opt/man
-	$(MAKE) $(PY24-BZR_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-BZR_IPK_DIR)
-
 $(PY25-BZR_IPK): $(BZR_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py25-bazaar-ng*ipk
+	rm -rf $(BUILD_DIR)/py*-bzr_*.ipk
 	rm -rf $(PY25-BZR_IPK_DIR) $(BUILD_DIR)/py25-bzr_*_$(TARGET_ARCH).ipk
 	(cd $(BZR_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-BZR_IPK_DIR) --prefix=/opt; \
@@ -286,7 +255,6 @@ $(PY25-BZR_IPK): $(BZR_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BZR_IPK_DIR)
 
 $(PY26-BZR_IPK): $(BZR_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py26-bazaar-ng*ipk
 	rm -rf $(PY26-BZR_IPK_DIR) $(BUILD_DIR)/py26-bzr_*_$(TARGET_ARCH).ipk
 	(cd $(BZR_BUILD_DIR)/2.6; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-BZR_IPK_DIR) --prefix=/opt; \
@@ -301,7 +269,7 @@ $(PY26-BZR_IPK): $(BZR_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-bzr-ipk: $(PY24-BZR_IPK) $(PY25-BZR_IPK) $(PY26-BZR_IPK)
+bzr-ipk: $(PY25-BZR_IPK) $(PY26-BZR_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -315,12 +283,11 @@ bzr-clean:
 #
 bzr-dirclean:
 	rm -rf $(BUILD_DIR)/$(BZR_DIR) $(BZR_BUILD_DIR)
-	rm -rf $(PY24-BZR_IPK_DIR) $(PY24-BZR_IPK)
 	rm -rf $(PY25-BZR_IPK_DIR) $(PY25-BZR_IPK)
 	rm -rf $(PY26-BZR_IPK_DIR) $(PY26-BZR_IPK)
 
 #
 # Some sanity check for the package.
 #
-bzr-check: $(PY24-BZR_IPK) $(PY25-BZR_IPK) $(PY26-BZR_IPK)
+bzr-check: $(PY25-BZR_IPK) $(PY26-BZR_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
