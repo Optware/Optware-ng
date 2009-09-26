@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NCMPC_VERSION=0.14
+NCMPC_VERSION=0.15
 NCMPC_SITE=http://downloads.sourceforge.net/musicpd
 NCMPC_SOURCE=ncmpc-$(NCMPC_VERSION).tar.bz2
 NCMPC_DIR=ncmpc-$(NCMPC_VERSION)
@@ -149,12 +149,12 @@ ncmpc: $(NCMPC_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(NCMPC_BUILD_DIR)/.staged: $(NCMPC_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-ncmpc-stage: $(NCMPC_BUILD_DIR)/.staged
+#$(NCMPC_BUILD_DIR)/.staged: $(NCMPC_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#ncmpc-stage: $(NCMPC_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -190,16 +190,7 @@ $(NCMPC_IPK_DIR)/CONTROL/control:
 $(NCMPC_IPK): $(NCMPC_BUILD_DIR)/.built
 	rm -rf $(NCMPC_IPK_DIR) $(BUILD_DIR)/ncmpc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NCMPC_BUILD_DIR) DESTDIR=$(NCMPC_IPK_DIR) install-strip
-#	install -d $(NCMPC_IPK_DIR)/opt/etc/
-#	install -m 644 $(NCMPC_SOURCE_DIR)/ncmpc.conf $(NCMPC_IPK_DIR)/opt/etc/ncmpc.conf
-#	install -d $(NCMPC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NCMPC_SOURCE_DIR)/rc.ncmpc $(NCMPC_IPK_DIR)/opt/etc/init.d/SXXncmpc
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NCMPC_IPK_DIR)/opt/etc/init.d/SXXncmpc
 	$(MAKE) $(NCMPC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NCMPC_SOURCE_DIR)/postinst $(NCMPC_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NCMPC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NCMPC_SOURCE_DIR)/prerm $(NCMPC_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NCMPC_IPK_DIR)/CONTROL/prerm
 	echo $(NCMPC_CONFFILES) | sed -e 's/ /\n/g' > $(NCMPC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCMPC_IPK_DIR)
 
