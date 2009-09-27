@@ -81,7 +81,7 @@ PY26-AXIOM_IPK=$(BUILD_DIR)/py26-axiom_$(PY-AXIOM_VERSION)-$(PY-AXIOM_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-AXIOM_SOURCE):
-	$(WGET) -P $(@D) $(PY-AXIOM_SITE)/$(@F) || \
+	$(WGET) -O $@ $(PY-AXIOM_SITE) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #

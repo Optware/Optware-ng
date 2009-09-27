@@ -84,7 +84,7 @@ PY26-NEVOW_IPK=$(BUILD_DIR)/py26-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-NEVOW_SOURCE):
-	$(WGET) -P $(@D) $(PY-NEVOW_SITE)/$(@F) || \
+	$(WGET) -O $@ $(PY-NEVOW_SITE) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
