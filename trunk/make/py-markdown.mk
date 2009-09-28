@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MARKDOWN_SITE=http://pypi.python.org/packages/source/M/Markdown
-PY-MARKDOWN_VERSION=2.0.1
+PY-MARKDOWN_VERSION=2.0.2
 PY-MARKDOWN_SOURCE=Markdown-$(PY-MARKDOWN_VERSION).tar.gz
 PY-MARKDOWN_DIR=Markdown-$(PY-MARKDOWN_VERSION)
 PY-MARKDOWN_UNZIP=zcat
@@ -123,7 +123,7 @@ $(PY-MARKDOWN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MARKDOWN_SOURCE) $(PY-MARKD
 #	cat $(PY-MARKDOWN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MARKDOWN_DIR) $(@D)/2.6
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.6") >> $(@D)/2.5/setup.cfg
+         echo "executable=/opt/bin/python2.6") >> $(@D)/2.6/setup.cfg
 	touch $@
 
 py-markdown-unpack: $(PY-MARKDOWN_BUILD_DIR)/.configured
@@ -203,8 +203,6 @@ $(PY25-MARKDOWN_IPK): $(PY-MARKDOWN_BUILD_DIR)/.built
 	cd $(PY-MARKDOWN_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-MARKDOWN_IPK_DIR) --prefix=/opt;
-#	for f in $(PY25-MARKDOWN_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MARKDOWN_IPK_DIR)
 
@@ -213,6 +211,8 @@ $(PY26-MARKDOWN_IPK): $(PY-MARKDOWN_BUILD_DIR)/.built
 	cd $(PY-MARKDOWN_BUILD_DIR)/2.6; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
 	    --root=$(PY26-MARKDOWN_IPK_DIR) --prefix=/opt;
+	for f in $(PY26-MARKDOWN_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
 	$(MAKE) $(PY26-MARKDOWN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MARKDOWN_IPK_DIR)
 
