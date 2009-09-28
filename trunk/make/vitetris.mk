@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VITETRIS_SITE=http://robert.liquidham.se/vitetris
-VITETRIS_VERSION=0.55
+VITETRIS_VERSION=0.57
 VITETRIS_SOURCE=vitetris-$(VITETRIS_VERSION).tar.gz
 VITETRIS_DIR=vitetris-$(VITETRIS_VERSION)
 VITETRIS_UNZIP=zcat
@@ -222,4 +222,4 @@ vitetris-dirclean:
 # Some sanity check for the package.
 #
 vitetris-check: $(VITETRIS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VITETRIS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
