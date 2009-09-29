@@ -26,23 +26,29 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-#ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24, $(OPTWARE_TARGET)))
 
 SANE_BACKENDS_RELEASE=1.0.20
-SANE_BACKENDS_IPK_VERSION=3
+SANE_BACKENDS_IPK_VERSION=1
 
-ifdef SANE_BACKENDS_CVS_DATE
-SANE_BACKENDS_VERSION=$(SANE_BACKENDS_RELEASE)+cvs$(SANE_BACKENDS_CVS_DATE)
-SANE_BACKENDS_CVS_OPTS=-D $(SANE_BACKENDS_CVS_DATE)
-SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
+# Latest commit from http://git.debian.org/git/sane/sane-backends.git/refs/heads/master
+# Recent history at http://git.debian.org/?p=sane/sane-backends.git
+SANE_BACKENDS_GIT_COMMIT=92c44e905a
+# The date of the above commit http://git.debian.org/?p=sane/sane-backends.git;a=commit;h=$(SANE_BACKENDS_GIT_COMMIT)
+SANE_BACKENDS_GIT_DATE=20090927
+
+ifdef SANE_BACKENDS_GIT_DATE
+# Snapshot from http://git.debian.org/?p=sane/sane-backends.git
+SANE_BACKENDS_SITE=http://git.debian.org/?p=sane/sane-backends.git;a=snapshot;h=$(SANE_BACKENDS_GIT_COMMIT);sf=tgz
+# Use GIT_DATE in VERSION so later is greater
+SANE_BACKENDS_VERSION=$(SANE_BACKENDS_RELEASE)+git$(SANE_BACKENDS_GIT_DATE)
 SANE_BACKENDS_DIR=sane-backends
 else
+SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-$(SANE_BACKENDS_VERSION)
+SANE_BACKENDS_SITE_OLD=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_VERSION=$(SANE_BACKENDS_RELEASE)
 SANE_BACKENDS_DIR=sane-backends-$(SANE_BACKENDS_VERSION)
 endif
 
-SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-$(SANE_BACKENDS_VERSION)
-SANE_BACKENDS_SITE_OLD=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SOURCE=sane-backends-$(SANE_BACKENDS_VERSION).tar.gz
 SANE_BACKENDS_UNZIP=zcat
 SANE_BACKENDS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -96,13 +102,9 @@ SANE_BACKENDS_IPK=$(BUILD_DIR)/sane-backends_$(SANE_BACKENDS_VERSION)-$(SANE_BAC
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/sane-backends-$(SANE_BACKENDS_VERSION).tar.gz:
-ifdef SANE_BACKENDS_CVS_DATE
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(SANE_BACKENDS_DIR) && \
-		cvs -d$(SANE_BACKENDS_REPOSITORY) -z3 co $(SANE_BACKENDS_CVS_OPTS) sane-backends && \
-		tar -czf $@ $(SANE_BACKENDS_DIR) && \
-		rm -rf $(SANE_BACKENDS_DIR) \
-	)
+ifdef SANE_BACKENDS_GIT_DATE
+	$(WGET) -O $@ "$(SANE_BACKENDS_SITE)" || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 else
 	$(WGET) -P $(@D) $(SANE_BACKENDS_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SANE_BACKENDS_SITE_OLD)/$(@F) || \
