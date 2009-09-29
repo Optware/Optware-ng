@@ -23,7 +23,7 @@
 
 #AMULE_SITE=http://download.berlios.de/amule
 AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/amule
-AMULE_VERSION=2.2.5
+AMULE_VERSION=2.2.6
 AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
 AMULE_DIR=aMule-$(AMULE_VERSION)
 AMULE_UNZIP=bzcat
@@ -38,7 +38,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=2
+AMULE_IPK_VERSION=1
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -50,10 +50,6 @@ AMULE_IPK_VERSION=2
 #
 AMULE_PATCHES=$(AMULE_SOURCE_DIR)/uintptr_t.patch \
 $(AMULE_SOURCE_DIR)/libupnp-cross.patch
-
-ifeq ($(OPTWARE_TARGET), ts101)
-AMULE_PATCHES+=$(AMULE_SOURCE_DIR)/cmath.patch
-endif
 
 ifeq ($(LIBC_STYLE), uclibc)
 AMULE_PATCHES+=$(AMULE_SOURCE_DIR)/amule-1gb-uclibc-mipsel.patch
