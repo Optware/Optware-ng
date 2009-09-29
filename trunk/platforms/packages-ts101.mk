@@ -8,7 +8,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
-	amule ecl ficy \
+	ecl ficy \
 	gift giftcurs \
 	gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
