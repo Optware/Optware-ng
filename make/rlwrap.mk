@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RLWRAP_SITE=http://utopia.knoware.nl/~hlub/uck/rlwrap
-RLWRAP_VERSION=0.30
+RLWRAP_VERSION=0.32
 RLWRAP_SOURCE=rlwrap-$(RLWRAP_VERSION).tar.gz
 RLWRAP_DIR=rlwrap-$(RLWRAP_VERSION)
 RLWRAP_UNZIP=zcat
@@ -36,7 +36,7 @@ RLWRAP_CONFLICTS=
 #
 # RLWRAP_IPK_VERSION should be incremented when the ipk changes.
 #
-RLWRAP_IPK_VERSION=2
+RLWRAP_IPK_VERSION=1
 
 #
 # RLWRAP_CONFFILES should be a list of user-editable files
@@ -120,7 +120,7 @@ $(RLWRAP_BUILD_DIR)/.configured: $(DL_DIR)/$(RLWRAP_SOURCE) $(RLWRAP_PATCHES) ma
 		then mv $(BUILD_DIR)/$(RLWRAP_DIR) $(@D) ; \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cd $(@D); autoconf
+	autoreconf -vif $(@D)
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -155,12 +155,12 @@ rlwrap: $(RLWRAP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(RLWRAP_BUILD_DIR)/.staged: $(RLWRAP_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-rlwrap-stage: $(RLWRAP_BUILD_DIR)/.staged
+#$(RLWRAP_BUILD_DIR)/.staged: $(RLWRAP_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#rlwrap-stage: $(RLWRAP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
