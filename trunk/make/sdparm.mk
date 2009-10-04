@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SDPARM_SITE=http://sg.torque.net/sg/p
-SDPARM_VERSION=1.03
+SDPARM_SITE=http://sg.danny.cz/sg/p
+SDPARM_VERSION=1.04
 SDPARM_SOURCE=sdparm-$(SDPARM_VERSION).tgz
 SDPARM_DIR=sdparm-$(SDPARM_VERSION)
 SDPARM_UNZIP=zcat
@@ -220,4 +220,4 @@ sdparm-dirclean:
 # Some sanity check for the package.
 #
 sdparm-check: $(SDPARM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SDPARM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
