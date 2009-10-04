@@ -150,7 +150,7 @@ PYTHON_PACKAGES = \
 	stgit \
 	subvertpy \
 	py-4suite py-amara py-apsw \
-	py-beaker py-bittorrent py-bluez py-buildutils \
+	py-beaker py-bittorrent py-bluez py-boto py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate py-cjson \
 	py-clips py-codeville py-configobj py-constraint py-crypto py-curl \
 	py-decorator py-decoratortools py-django py-docutils py-duplicity \
