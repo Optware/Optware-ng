@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DUPLICITY_VERSION=0.5.18
+PY-DUPLICITY_VERSION=0.6.05
 PY-DUPLICITY_SITE=http://savannah.nongnu.org/download/duplicity
 PY-DUPLICITY_SOURCE=duplicity-$(PY-DUPLICITY_VERSION).tar.gz
 PY-DUPLICITY_DIR=duplicity-$(PY-DUPLICITY_VERSION)
@@ -32,6 +32,8 @@ PY-DUPLICITY_SECTION=misc
 PY-DUPLICITY_PRIORITY=optional
 PY25-DUPLICITY_DEPENDS=python25, librsync, gnupg
 PY26-DUPLICITY_DEPENDS=python26, librsync, gnupg
+PY25-DUPLICITY_SUGGESTS=ncftp, py25-boto
+PY26-DUPLICITY_SUGGESTS=ncftp, py26-boto
 PY-DUPLICITY_CONFLICTS=
 
 #
@@ -196,6 +198,7 @@ $(PY25-DUPLICITY_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PY-DUPLICITY_SITE)/$(PY-DUPLICITY_SOURCE)" >>$@
 	@echo "Description: $(PY-DUPLICITY_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY25-DUPLICITY_DEPENDS)" >>$@
+	@echo "Suggests: $(PY25-DUPLICITY_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-DUPLICITY_CONFLICTS)" >>$@
 
 $(PY26-DUPLICITY_IPK_DIR)/CONTROL/control:
@@ -210,6 +213,7 @@ $(PY26-DUPLICITY_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PY-DUPLICITY_SITE)/$(PY-DUPLICITY_SOURCE)" >>$@
 	@echo "Description: $(PY-DUPLICITY_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY26-DUPLICITY_DEPENDS)" >>$@
+	@echo "Suggests: $(PY26-DUPLICITY_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-DUPLICITY_CONFLICTS)" >>$@
 
 $(PY-DUPLICITY-DOC_IPK_DIR)/CONTROL/control:
@@ -256,7 +260,7 @@ $(PY25-DUPLICITY_IPK) $(PY26-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLIC
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-DUPLICITY_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY26-DUPLICITY_IPK_DIR)/opt/lib/python2.6/site-packages/duplicity/*.so
-	for f in $(PY25-DUPLICITY_IPK_DIR)/opt/*bin/*; \
+	for f in $(PY26-DUPLICITY_IPK_DIR)/opt/*bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
 	$(MAKE) $(PY26-DUPLICITY_IPK_DIR)/CONTROL/control
 	# doc
