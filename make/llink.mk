@@ -24,7 +24,7 @@
 # default to no, not sure about the licensing
 LLINK_WITH_LIBDVDCSS=no
 
-LLINK_VERSION=2.1.1
+LLINK_VERSION=2.2.2
 LLINK_SITE=http://www.lundman.net/ftp/llink
 LLINK_SOURCE=llink-$(LLINK_VERSION).tar.gz
 LLINK_DIR=llink-$(LLINK_VERSION)
@@ -43,7 +43,7 @@ LLINK_CONFLICTS=
 #
 # LLINK_IPK_VERSION should be incremented when the ipk changes.
 #
-LLINK_IPK_VERSION=3
+LLINK_IPK_VERSION=1
 
 #
 # LLINK_CONFFILES should be a list of user-editable files
@@ -148,7 +148,6 @@ endif
 		$(LLINK_CONFIG_ARGS) \
 		--disable-nls \
 		--enable-shared \
-		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -273,4 +272,4 @@ llink-dirclean:
 # Some sanity check for the package.
 #
 llink-check: $(LLINK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LLINK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
