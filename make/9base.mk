@@ -20,12 +20,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-9BASE_SITE=http://code.suckless.org/dl/misc
-9BASE_UPSTREAM_VERSION=2
-9BASE_VERSION=2+20090309
+9BASE_SITE=http://dl.suckless.org/tools
+9BASE_UPSTREAM_VERSION=4
+9BASE_VERSION=4+20090827
 9BASE_UPSTREAM_SOURCE=9base-$(9BASE_UPSTREAM_VERSION).tar.gz
 9BASE_SOURCE=9base-$(9BASE_VERSION).tar.gz
-9BASE_SOURCE_MD5=f9d30509996ec178702af20fec986e9d
+9BASE_SOURCE_MD5=af10410542ea6b6875a71e06fdc12c66
 9BASE_DIR=9base-$(9BASE_UPSTREAM_VERSION)
 9BASE_UNZIP=zcat
 9BASE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -100,7 +100,11 @@ $(9BASE_BUILD_DIR)/.configured: $(9BASE_HOST_BUILD_DIR)/.staged $(9BASE_PATCHES)
 	if test "$(BUILD_DIR)/$(9BASE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(9BASE_DIR) $(@D) ; \
 	fi
+ifneq (, $(filter nslu2, $(OPTWARE_TARGET)))
+	sed -i -e 's/ || defined(__linux__)//' $(@D)/lib9/dirfwstat.c
+endif
 	sed -i -e '/yacc $$\*/s|^.*yacc |$(HOST_STAGING_LIB_DIR)/9base/bin/yacc |' $(@D)/yacc/9yacc
+	sed -i -e 's|strip|$${STRIP}|' $(@D)/std.mk
 	touch $@
 
 9base-unpack: $(9BASE_BUILD_DIR)/.configured
@@ -115,6 +119,7 @@ $(9BASE_BUILD_DIR)/.built: $(9BASE_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(9BASE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(9BASE_LDFLAGS)" \
 		AR="$(TARGET_AR) rc" \
+		STRIP="$(STRIP_COMMAND)" \
 		PREFIX=/opt/lib/9base \
 		;
 	touch $@
@@ -170,12 +175,13 @@ $(9BASE_IPK): $(9BASE_BUILD_DIR)/.built
 	$(MAKE) -C $(9BASE_BUILD_DIR) install \
 		DESTDIR=$(9BASE_IPK_DIR) \
 		PREFIX=/opt/lib/9base \
+		STRIP="true" \
 		;
 	$(STRIP_COMMAND) $(9BASE_IPK_DIR)/opt/lib/9base/bin/*
 	install -d $(9BASE_IPK_DIR)/opt/share
 	mv $(9BASE_IPK_DIR)/opt/lib/9base/share/man $(9BASE_IPK_DIR)/opt/share/
 	rmdir $(9BASE_IPK_DIR)/opt/lib/9base/share
-	for d in man1 man7; do \
+	for d in man1; do \
 		cd $(9BASE_IPK_DIR)/opt/share/man/$$d; \
 		for f in *; do mv $$f 9base-$$f; done; \
 	done
