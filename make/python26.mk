@@ -134,7 +134,6 @@ endif
 	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(@D)
 	$(PYTHON26_UNZIP) $(DL_DIR)/$(PYTHON26_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON26_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON26_DIR) -p1
-	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON26_DIR)/Modules/_ctypes/libffi/fficonfig.py.in
 	autoreconf -vif $(BUILD_DIR)/$(PYTHON26_DIR)
 	mkdir -p $(@D)
 	cd $(@D); (\
