@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPC_SITE=http://downloads.sourceforge.net/musicpd
-MPC_VERSION=0.17
+MPC_VERSION=0.18
 MPC_SOURCE=mpc-$(MPC_VERSION).tar.bz2
 MPC_DIR=mpc-$(MPC_VERSION)
 MPC_UNZIP=bzcat
@@ -29,7 +29,7 @@ MPC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPC_DESCRIPTION=A command line tool to interface MPD.
 MPC_SECTION=audio
 MPC_PRIORITY=optional
-MPC_DEPENDS=
+MPC_DEPENDS=libmpdclient
 MPC_SUGGESTS=
 MPC_CONFLICTS=
 
@@ -110,7 +110,7 @@ mpc-source: $(DL_DIR)/$(MPC_SOURCE) $(MPC_PATCHES)
 # shown below to make various patches to it.
 #
 $(MPC_BUILD_DIR)/.configured: $(DL_DIR)/$(MPC_SOURCE) $(MPC_PATCHES) make/mpc.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libmpdclient-stage
 	rm -rf $(BUILD_DIR)/$(MPC_DIR) $(MPC_BUILD_DIR)
 	$(MPC_UNZIP) $(DL_DIR)/$(MPC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPC_PATCHES)" ; \
@@ -124,6 +124,7 @@ $(MPC_BUILD_DIR)/.configured: $(DL_DIR)/$(MPC_SOURCE) $(MPC_PATCHES) make/mpc.mk
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPC_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -154,12 +155,12 @@ mpc: $(MPC_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MPC_BUILD_DIR)/.staged: $(MPC_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-mpc-stage: $(MPC_BUILD_DIR)/.staged
+#$(MPC_BUILD_DIR)/.staged: $(MPC_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#mpc-stage: $(MPC_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
