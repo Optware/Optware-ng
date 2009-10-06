@@ -23,7 +23,7 @@
 ARIA2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aria2
 
 ARIA2_VERSION=$(strip \
-$(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 1.4.1, 1.6.0))
+$(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 1.4.1, 1.6.1))
 
 ARIA2_SOURCE=aria2-$(ARIA2_VERSION).tar.bz2
 ARIA2_DIR=aria2-$(ARIA2_VERSION)
@@ -149,11 +149,11 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--without-gnutls \
-		--without-expat \
+		--without-libexpat \
 		--with-openssl \
 		--with-openssl-prefix=$(STAGING_PREFIX) \
 		--with-libxml2 \
-		--with-libxml2-prefix=$(STAGING_PREFIX) \
+		--with-xml-prefix=$(STAGING_PREFIX) \
 		--with-libcares \
 		--with-libcares-prefix=$(STAGING_PREFIX) \
 		--with-libz-prefix=$(STAGING_PREFIX) \
