@@ -100,7 +100,7 @@ $(9BASE_BUILD_DIR)/.configured: $(9BASE_HOST_BUILD_DIR)/.staged $(9BASE_PATCHES)
 	if test "$(BUILD_DIR)/$(9BASE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(9BASE_DIR) $(@D) ; \
 	fi
-ifneq (, $(filter nslu2, $(OPTWARE_TARGET)))
+ifneq (, $(filter fsg3 nslu2, $(OPTWARE_TARGET)))
 	sed -i -e 's/ || defined(__linux__)//' $(@D)/lib9/dirfwstat.c
 endif
 	sed -i -e '/yacc $$\*/s|^.*yacc |$(HOST_STAGING_LIB_DIR)/9base/bin/yacc |' $(@D)/yacc/9yacc
