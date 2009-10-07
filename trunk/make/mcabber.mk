@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MCABBER_SITE=http://www.lilotux.net/~mikael/mcabber/files
-MCABBER_VERSION=0.9.9
+MCABBER_VERSION=0.9.10
 MCABBER_SOURCE=mcabber-$(MCABBER_VERSION).tar.bz2
 MCABBER_DIR=mcabber-$(MCABBER_VERSION)
 MCABBER_UNZIP=bzcat
@@ -110,16 +110,16 @@ mcabber-source: $(DL_DIR)/$(MCABBER_SOURCE) $(MCABBER_PATCHES)
 #
 $(MCABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(MCABBER_SOURCE) $(MCABBER_PATCHES) make/mcabber.mk
 	$(MAKE) glib-stage ncursesw-stage openssl-stage
-	rm -rf $(BUILD_DIR)/$(MCABBER_DIR) $(MCABBER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MCABBER_DIR) $(@D)
 	$(MCABBER_UNZIP) $(DL_DIR)/$(MCABBER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MCABBER_PATCHES)" ; \
 		then cat $(MCABBER_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MCABBER_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MCABBER_DIR)" != "$(MCABBER_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MCABBER_DIR) $(MCABBER_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MCABBER_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MCABBER_DIR) $(@D) ; \
 	fi
-	(cd $(MCABBER_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MCABBER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MCABBER_LDFLAGS)" \
@@ -136,7 +136,7 @@ $(MCABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(MCABBER_SOURCE) $(MCABBER_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MCABBER_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mcabber-unpack: $(MCABBER_BUILD_DIR)/.configured
@@ -146,7 +146,7 @@ mcabber-unpack: $(MCABBER_BUILD_DIR)/.configured
 #
 $(MCABBER_BUILD_DIR)/.built: $(MCABBER_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MCABBER_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -157,12 +157,12 @@ mcabber: $(MCABBER_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MCABBER_BUILD_DIR)/.staged: $(MCABBER_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(MCABBER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-mcabber-stage: $(MCABBER_BUILD_DIR)/.staged
+#$(MCABBER_BUILD_DIR)/.staged: $(MCABBER_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#mcabber-stage: $(MCABBER_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -234,4 +234,4 @@ mcabber-dirclean:
 # Some sanity check for the package.
 #
 mcabber-check: $(MCABBER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MCABBER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
