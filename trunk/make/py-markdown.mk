@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MARKDOWN_SITE=http://pypi.python.org/packages/source/M/Markdown
-PY-MARKDOWN_VERSION=2.0.2
+PY-MARKDOWN_VERSION=2.0.3
 PY-MARKDOWN_SOURCE=Markdown-$(PY-MARKDOWN_VERSION).tar.gz
 PY-MARKDOWN_DIR=Markdown-$(PY-MARKDOWN_VERSION)
 PY-MARKDOWN_UNZIP=zcat
