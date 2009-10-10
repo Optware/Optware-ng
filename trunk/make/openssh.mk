@@ -5,7 +5,7 @@
 #########################################################
 
 OPENSSH_SITE=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
-OPENSSH_VERSION=5.2p1
+OPENSSH_VERSION=5.3p1
 OPENSSH_SOURCE=openssh-$(OPENSSH_VERSION).tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
@@ -18,7 +18,7 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=2
+OPENSSH_IPK_VERSION=1
 
 OPENSSH_CONFFILES=\
 	/opt/etc/openssh/ssh_config \
@@ -215,7 +215,7 @@ $(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK): $(OPENSSH_BUILD_DIR)/.built
 	install -m 755 $(OPENSSH_SOURCE_DIR)/prerm $(OPENSSH_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
                 sed -i -e '/^[  ]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
-                        $(DROPBEAR_IPK_DIR)/CONTROL/postinst $(DROPBEAR_IPK_DIR)/CONTROL/prerm; \
+                        $(OPENSSH_IPK_DIR)/CONTROL/postinst $(OPENSSH_IPK_DIR)/CONTROL/prerm; \
         fi
 	echo $(OPENSSH_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSH_IPK_DIR)
