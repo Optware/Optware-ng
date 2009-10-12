@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SIPROXD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/siproxd
-SIPROXD_VERSION=0.7.1
+SIPROXD_VERSION=0.7.2
 SIPROXD_SOURCE=siproxd-$(SIPROXD_VERSION).tar.gz
 SIPROXD_DIR=siproxd-$(SIPROXD_VERSION)
 SIPROXD_UNZIP=zcat
