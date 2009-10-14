@@ -13,7 +13,7 @@
 # APACHE_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-APACHE_SITE=http://www.apache.org/dist/httpd
+APACHE_SITE=http://archive.apache.org/dist/httpd
 APACHE_VERSION=2.2.13
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
@@ -131,7 +131,8 @@ $(APACHE_MANUAL_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(APACHE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(APACHE_SITE)/$(APACHE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(APACHE_SITE)/$(APACHE_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(APACHE_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
