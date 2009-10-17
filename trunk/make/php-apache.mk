@@ -143,7 +143,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: \
 		--without-pear \
 		--without-iconv \
 	)
-	$(PATCH_LIBTOOL) $(PHP_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $(PHP_APACHE_BUILD_DIR)/.configured
 
 php-apache-unpack: $(PHP_APACHE_BUILD_DIR)/.configured
