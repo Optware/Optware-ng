@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 POUND_SITE=http://www.apsis.ch/pound
-POUND_VERSION=2.4.3
+POUND_VERSION=2.4.5
 POUND_SOURCE=Pound-$(POUND_VERSION).tgz
 POUND_DIR=Pound-$(POUND_VERSION)
 POUND_UNZIP=zcat
@@ -231,4 +231,4 @@ pound-dirclean:
 # Some sanity check for the package.
 #
 pound-check: $(POUND_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POUND_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
