@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION=1.2.3
+BITLBEE_VERSION=1.2.4
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
@@ -40,7 +40,7 @@ BITLBEE_CONFLICTS=
 #
 # BITLBEE_IPK_VERSION should be incremented when the ipk changes.
 #
-BITLBEE_IPK_VERSION=2
+BITLBEE_IPK_VERSION=1
 
 #
 # BITLBEE_CONFFILES should be a list of user-editable files
@@ -108,7 +108,7 @@ bitlbee-source: $(DL_DIR)/$(BITLBEE_SOURCE) $(BITLBEE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(BITLBEE_BUILD_DIR)/.configured: $(DL_DIR)/$(BITLBEE_SOURCE) $(BITLBEE_PATCHES)
+$(BITLBEE_BUILD_DIR)/.configured: $(DL_DIR)/$(BITLBEE_SOURCE) $(BITLBEE_PATCHES) make/bitlbee.mk
 	$(MAKE) glib-stage gnutls-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -129,7 +129,7 @@ endif
 		PATH=$(STAGING_DIR)/opt/bin:$(PATH) \
 		./configure \
 		--prefix=/opt \
-		--cpu=armv5b \
+		--cpu=$(TARGET_ARCH) \
 		--ssl=gnutls \
 		--msn=1 \
 		--yahoo=1 \
@@ -230,4 +230,4 @@ bitlbee-dirclean:
 # Some sanity check for the package.
 #
 bitlbee-check: $(BITLBEE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BITLBEE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
