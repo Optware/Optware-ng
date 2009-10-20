@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PLOWSHARE_SITE=http://plowshare.googlecode.com/files
-PLOWSHARE_VERSION=0.7.1
+PLOWSHARE_VERSION=0.8.1
 PLOWSHARE_SOURCE=plowshare-$(PLOWSHARE_VERSION).tgz
 PLOWSHARE_DIR=plowshare-$(PLOWSHARE_VERSION)
 PLOWSHARE_UNZIP=zcat
@@ -30,8 +30,7 @@ PLOWSHARE_DESCRIPTION=A command-line downloader and uploader for some of the mos
 PLOWSHARE_SECTION=utils
 PLOWSHARE_PRIORITY=optional
 PLOWSHARE_DEPENDS=bash, libcurl, sed, recode, util-linux-ng
-# TODO tesseract-ocr, aview
-PLOWSHARE_SUGGESTS=imagemagick, py25-pil, ossp-js
+PLOWSHARE_SUGGESTS=imagemagick, py25-pil, ossp-js, tesseract-ocr
 PLOWSHARE_CONFLICTS=
 
 #
@@ -193,7 +192,7 @@ $(PLOWSHARE_IPK_DIR)/CONTROL/control:
 $(PLOWSHARE_IPK): $(PLOWSHARE_BUILD_DIR)/.built
 	rm -rf $(PLOWSHARE_IPK_DIR) $(BUILD_DIR)/plowshare_*_$(TARGET_ARCH).ipk
 	cd $(<D); \
-		DESTDIR=$(PLOWSHARE_IPK_DIR) ./setup.sh install
+		DESTDIR=$(PLOWSHARE_IPK_DIR)/opt ./setup.sh install
 	$(MAKE) $(PLOWSHARE_IPK_DIR)/CONTROL/control
 	install -m755 $(PLOWSHARE_SOURCE_DIR)/postinst $(PLOWSHARE_IPK_DIR)/CONTROL/
 	echo $(PLOWSHARE_CONFFILES) | sed -e 's/ /\n/g' > $(PLOWSHARE_IPK_DIR)/CONTROL/conffiles
