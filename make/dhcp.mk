@@ -6,7 +6,7 @@
 
 DHCP_BUILD_DIR:=$(BUILD_DIR)/dhcp
 
-DHCP_VERSION=3.1.3
+DHCP_VERSION=4.1.0p1
 DHCP=dhcp-$(DHCP_VERSION)
 DHCP_SITE=ftp://ftp.isc.org/isc/dhcp/
 DHCP_SOURCE:=$(DHCP).tar.gz
@@ -15,7 +15,7 @@ DHCP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DHCP_DESCRIPTION=A DHCP Server
 DHCP_SECTION=net
 DHCP_PRIORITY=optional
-DHCP_DEPENDS=
+DHCP_DEPENDS=openssl
 DHCP_SUGGESTS=
 DHCP_CONFLICTS=
 
@@ -40,6 +40,7 @@ dhcp-source: $(DL_DIR)/$(DHCP_SOURCE) $(DHCP_PATCH)
 # set --libwrap-directory=pathname 
 
 $(DHCP_BUILD_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE) make/dhcp.mk
+	$(MAKE) openssl-stage
 	@rm -rf $(BUILD_DIR)/$(DHCP) $(@D)
 	$(DHCP_UNZIP) $(DL_DIR)/$(DHCP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DHCP) $(@D)
@@ -53,7 +54,7 @@ dhcp-unpack: $(DHCP_BUILD_DIR)/.configured
 
 $(DHCP_BUILD_DIR)/.built: $(DHCP_BUILD_DIR)/.configured
 	rm -f $@
-	make -C $(@D) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) LFLAGS="$(STAGING_LDFLAGS)"
+	make -C $(@D) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) LDFLAGS="$(STAGING_LDFLAGS)"
 	touch $@
 
 dhcp: $(DHCP_BUILD_DIR)/.built
