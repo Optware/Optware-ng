@@ -4,9 +4,9 @@
 #
 #############################################################
 
-DHCP_DIR:=$(BUILD_DIR)/dhcp
+DHCP_BUILD_DIR:=$(BUILD_DIR)/dhcp
 
-DHCP_VERSION=3.1.0
+DHCP_VERSION=3.1.3
 DHCP=dhcp-$(DHCP_VERSION)
 DHCP_SITE=ftp://ftp.isc.org/isc/dhcp/
 DHCP_SOURCE:=$(DHCP).tar.gz
@@ -21,11 +21,15 @@ DHCP_CONFLICTS=
 
 DHCP_IPK_VERSION=1
 
+#DHCP_CPPFLAGS=
+#DHCP_LDFLAGS=
+
 DHCP_IPK=$(BUILD_DIR)/dhcp_$(DHCP_VERSION)-$(DHCP_IPK_VERSION)_$(TARGET_ARCH).ipk
 DHCP_IPK_DIR:=$(BUILD_DIR)/dhcp-$(DHCP_VERSION)-ipk
 
 $(DL_DIR)/$(DHCP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DHCP_SITE)/$(DHCP_SOURCE)
+	$(WGET) -P $(@D) $(DHCP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 .PHONY: dhcp-source dhcp-unpack dhcp dhcp-stage dhcp-ipk dhcp-clean dhcp-dirclean dhcp-check
 
@@ -35,25 +39,24 @@ dhcp-source: $(DL_DIR)/$(DHCP_SOURCE) $(DHCP_PATCH)
 # make changes to the BUILD options below.  If you are using TCP Wrappers, 
 # set --libwrap-directory=pathname 
 
-$(DHCP_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE)
-	@rm -rf $(BUILD_DIR)/$(DHCP) $(DHCP_DIR)
+$(DHCP_BUILD_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE) make/dhcp.mk
+	@rm -rf $(BUILD_DIR)/$(DHCP) $(@D)
 	$(DHCP_UNZIP) $(DL_DIR)/$(DHCP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(DHCP) $(DHCP_DIR)
-	sed -ie 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\/opt\/var\/run\/dhcpd.pid"/' $(DHCP_DIR)/includes/site.h
-	sed -ie 's/\/\* #define _PATH_DHCPD_DB.*/#define _PATH_DHCPD_DB      "\/opt\/etc\/dhcpd.leases"/' $(DHCP_DIR)/includes/site.h
-	sed -ie 's/\/\* #define _PATH_DHCPD_CONF.*/#define _PATH_DHCPD_CONF      "\/opt\/etc\/dhcpd.conf"/' $(DHCP_DIR)/includes/site.h
-	(cd $(DHCP_DIR) && \
-		./configure)
+	mv $(BUILD_DIR)/$(DHCP) $(@D)
+	sed -i -e 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\/opt\/var\/run\/dhcpd.pid"/' $(@D)/includes/site.h
+	sed -i -e 's/\/\* #define _PATH_DHCPD_DB.*/#define _PATH_DHCPD_DB      "\/opt\/etc\/dhcpd.leases"/' $(@D)/includes/site.h
+	sed -i -e 's/\/\* #define _PATH_DHCPD_CONF.*/#define _PATH_DHCPD_CONF      "\/opt\/etc\/dhcpd.conf"/' $(@D)/includes/site.h
+	(cd $(@D) && ./configure)
 	touch $@
 
-dhcp-unpack: $(DHCP_DIR)/.configured
+dhcp-unpack: $(DHCP_BUILD_DIR)/.configured
 
-$(DHCP_DIR)/.built: $(DHCP_DIR)/.configured
+$(DHCP_BUILD_DIR)/.built: $(DHCP_BUILD_DIR)/.configured
 	rm -f $@
-	make -C $(DHCP_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB)
+	make -C $(@D) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) LFLAGS="$(STAGING_LDFLAGS)"
 	touch $@
 
-dhcp: $(DHCP_DIR)/.built
+dhcp: $(DHCP_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -74,24 +77,24 @@ $(DHCP_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(DHCP_SUGGESTS)" >>$@
 	@echo "Conflicts: $(DHCP_CONFLICTS)" >>$@
 
-$(DHCP_IPK): $(DHCP_DIR)/.built
+$(DHCP_IPK): $(DHCP_BUILD_DIR)/.built
 	rm -rf $(DHCP_IPK_DIR) $(BUILD_DIR)/dhcp_*_$(TARGET_ARCH).ipk
 	install -d $(DHCP_IPK_DIR)/CONTROL
 	install -d $(DHCP_IPK_DIR)/opt/sbin $(DHCP_IPK_DIR)/opt/etc/init.d
-	$(STRIP_COMMAND) $(DHCP_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)/opt/sbin/dhcpd
+	$(STRIP_COMMAND) $(DHCP_BUILD_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)/opt/sbin/dhcpd
 	install -m 755 $(SOURCE_DIR)/dhcp.rc $(DHCP_IPK_DIR)/opt/etc/init.d/S56dhcp
 	touch $(DHCP_IPK_DIR)/opt/etc/dhcpd.leases
-	cp $(DHCP_DIR)/server/dhcpd.conf $(DHCP_IPK_DIR)/opt/etc/
+	cp $(DHCP_BUILD_DIR)/server/dhcpd.conf $(DHCP_IPK_DIR)/opt/etc/
 	$(MAKE) $(DHCP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DHCP_IPK_DIR)
 
 dhcp-ipk: $(DHCP_IPK)
 
 dhcp-clean:
-	-make -C $(DHCP_DIR) clean
+	-make -C $(DHCP_BUILD_DIR) clean
 
 dhcp-dirclean:
-	rm -rf $(DHCP_DIR) $(DHCP_IPK_DIR) $(DHCP_IPK)
+	rm -rf $(DHCP_BUILD_DIR) $(DHCP_IPK_DIR) $(DHCP_IPK)
 
 dhcp-check: $(DHCP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DHCP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
