@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SETUPTOOLS_SITE=http://cheeseshop.python.org/packages/source/s/setuptools
-PY-SETUPTOOLS_VERSION=0.6c9
+PY-SETUPTOOLS_SITE=http://pypi.python.org/packages/source/s/setuptools
+PY-SETUPTOOLS_VERSION=0.6c11
 PY-SETUPTOOLS_SOURCE=setuptools-$(PY-SETUPTOOLS_VERSION).tar.gz
 PY-SETUPTOOLS_DIR=setuptools-$(PY-SETUPTOOLS_VERSION)
 PY-SETUPTOOLS_UNZIP=zcat
@@ -38,7 +38,7 @@ PY-SETUPTOOLS_CONFLICTS=
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=2
+PY-SETUPTOOLS_IPK_VERSION=1
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files
