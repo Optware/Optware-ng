@@ -14,11 +14,20 @@
 #
 # You should change all these variables to suit your package.
 #
-QPOPPER_SITE=http://www.ring.gr.jp/archives/net/mail/qpopper
-QPOPPER_VERSION=4.0.5
+QPOPPER_SITE=ftp://ftp.qualcomm.com/eudora/servers/unix/popper
+QPOPPER_VERSION=4.0.19
 QPOPPER_SOURCE=qpopper$(QPOPPER_VERSION).tar.gz
 QPOPPER_DIR=qpopper$(QPOPPER_VERSION)
 QPOPPER_UNZIP=zcat
+
+QPOPPER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+QPOPPER_DESCRIPTION=qpopper is a pop3 server
+QPOPPER_SECTION=mail
+QPOPPER_PRIORITY=optional
+QPOPPER_DEPENDS=openssl
+QPOPPER_SUGGESTS=
+QPOPPER_CONFLICTS=
+
 
 #
 # QPOPPER_IPK_VERSION should be incremented when the ipk changes.
@@ -61,14 +70,15 @@ QPOPPER_IPK=$(BUILD_DIR)/qpopper_$(QPOPPER_VERSION)-$(QPOPPER_IPK_VERSION)_${TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(QPOPPER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(QPOPPER_SITE)/$(QPOPPER_SOURCE)
+	$(WGET) -P $(@D) $(QPOPPER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-qpopper-source: $(DL_DIR)/$(QPOPPER_SOURCE) #$(QPOPPER_PATCHES)
+qpopper-source: $(DL_DIR)/$(QPOPPER_SOURCE) $(QPOPPER_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -85,13 +95,13 @@ qpopper-source: $(DL_DIR)/$(QPOPPER_SOURCE) #$(QPOPPER_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(QPOPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(QPOPPER_SOURCE) # $(QPOPPER_PATCHES)
+$(QPOPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(QPOPPER_SOURCE) $(QPOPPER_PATCHES) make/qpopper.mk
 	$(MAKE) openssl-stage 
-	rm -rf $(BUILD_DIR)/$(QPOPPER_DIR) $(QPOPPER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(QPOPPER_DIR) $(@D)
 	$(QPOPPER_UNZIP) $(DL_DIR)/$(QPOPPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(QPOPPER_PATCHES) | patch -d $(BUILD_DIR)/$(QPOPPER_DIR) -p1
-	mv $(BUILD_DIR)/$(QPOPPER_DIR) $(QPOPPER_BUILD_DIR)
-	(cd $(QPOPPER_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(QPOPPER_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(QPOPPER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(QPOPPER_LDFLAGS)" \
@@ -105,7 +115,7 @@ $(QPOPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(QPOPPER_SOURCE) # $(QPOPPER_PATCHE
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(QPOPPER_BUILD_DIR)/.configured
+	touch $@
 
 qpopper-unpack: $(QPOPPER_BUILD_DIR)/.configured
 
@@ -113,9 +123,9 @@ qpopper-unpack: $(QPOPPER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(QPOPPER_BUILD_DIR)/.built: $(QPOPPER_BUILD_DIR)/.configured
-	rm -f $(QPOPPER_BUILD_DIR)/.built
-	$(MAKE) -C $(QPOPPER_BUILD_DIR)
-	touch $(QPOPPER_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -125,12 +135,27 @@ qpopper: $(QPOPPER_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(QPOPPER_BUILD_DIR)/.staged: $(QPOPPER_BUILD_DIR)/.built
-	rm -f $(QPOPPER_BUILD_DIR)/.staged
-	$(MAKE) -C $(QPOPPER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(QPOPPER_BUILD_DIR)/.staged
+#$(QPOPPER_BUILD_DIR)/.staged: $(QPOPPER_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#qpopper-stage: $(QPOPPER_BUILD_DIR)/.staged
 
-qpopper-stage: $(QPOPPER_BUILD_DIR)/.staged
+$(QPOPPER_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: qpopper" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(QPOPPER_PRIORITY)" >>$@
+	@echo "Section: $(QPOPPER_SECTION)" >>$@
+	@echo "Version: $(QPOPPER_VERSION)-$(QPOPPER_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(QPOPPER_MAINTAINER)" >>$@
+	@echo "Source: $(QPOPPER_SITE)/$(QPOPPER_SOURCE)" >>$@
+	@echo "Description: $(QPOPPER_DESCRIPTION)" >>$@
+	@echo "Depends: $(QPOPPER_DEPENDS)" >>$@
+	@echo "Suggests: $(QPOPPER_SUGGESTS)" >>$@
+	@echo "Conflicts: $(QPOPPER_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -162,8 +187,7 @@ $(QPOPPER_IPK): $(QPOPPER_BUILD_DIR)/.built
 #	install -m 644 $(QPOPPER_SOURCE_DIR)/qpopper.conf $(QPOPPER_IPK_DIR)/opt/etc/qpopper.conf
 #	install -d $(QPOPPER_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(QPOPPER_SOURCE_DIR)/rc.qpopper $(QPOPPER_IPK_DIR)/opt/etc/init.d/SXXqpopper
-	install -d $(QPOPPER_IPK_DIR)/CONTROL
-	install -m 644 $(QPOPPER_SOURCE_DIR)/control $(QPOPPER_IPK_DIR)/CONTROL/control
+	$(MAKE) $(QPOPPER_IPK_DIR)/CONTROL/control
 	install -m 755 $(QPOPPER_SOURCE_DIR)/postinst $(QPOPPER_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(QPOPPER_SOURCE_DIR)/prerm $(QPOPPER_IPK_DIR)/CONTROL/prerm
 #	echo $(QPOPPER_CONFFILES) | sed -e 's/ /\n/g' > $(QPOPPER_IPK_DIR)/CONTROL/conffiles
@@ -186,3 +210,9 @@ qpopper-clean:
 #
 qpopper-dirclean:
 	rm -rf $(BUILD_DIR)/$(QPOPPER_DIR) $(QPOPPER_BUILD_DIR) $(QPOPPER_IPK_DIR) $(QPOPPER_IPK)
+
+#
+# Some sanity check for the package.
+#
+qpopper-check: $(QPOPPER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
