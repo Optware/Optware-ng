@@ -1,9 +1,0 @@
-Package: qpopper
-Version: 4.0.5-1
-Architecture: armeb
-Maintainer: Steve Henson <snhenson@gmail.com>
-Source: http://ring.k-opti.com/archives/net/mail/qpopper/qpopper4.0.5.tar.gz
-Section: utility
-Priority: optional
-Depends: openssl
-Description: qpopper is a pop3 server
