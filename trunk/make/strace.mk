@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 
-STRACE_VERSION ?= 4.5.18
+STRACE_VERSION ?= 4.5.19
 STRACE_IPK_VERSION ?= 1
 
 STRACE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/strace/
@@ -34,10 +34,6 @@ STRACE_UNZIP=bzcat
 #
 #
 STRACE_PATCHES=$(STRACE_SOURCE_DIR)/CTL_PROC.patch
-ifeq ($(TARGET_ARCH), $(filter arm armeb, $(TARGET_ARCH)))
-# http://bugs.gentoo.org/attachment.cgi?id=181917&action=view
-STRACE_PATCHES+=$(STRACE_SOURCE_DIR)/strace-fix-arm-bad-syscall.patch
-endif
 
 #
 # If the compilation of the package requires additional
