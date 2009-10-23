@@ -1,12 +1,7 @@
---- ./config.h	2005-05-18 14:59:10.000000000 +0100
-+++ ./config.h	2005-06-11 12:14:44.390893708 +0100
-@@ -12,13 +12,10 @@
+--- whois/config.h.orig	2009-08-12 19:43:41.000000000 +0000
++++ whois/config.h	2009-10-23 16:41:04.834305251 +0000
+@@ -16,9 +16,6 @@
  
- /* Configuration file */
- /*
--#define CONFIG_FILE "/etc/whois.conf"
-+#define CONFIG_FILE "/opt/etc/whois.conf"
- */
  
  /* autoconf in cpp macros */
 -#ifdef linux
