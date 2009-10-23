@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NCDU_SITE=http://dev.yorhel.nl/download
-NCDU_VERSION=1.5
+NCDU_VERSION=1.6
 NCDU_SOURCE=ncdu-$(NCDU_VERSION).tar.gz
 NCDU_DIR=ncdu-$(NCDU_VERSION)
 NCDU_UNZIP=zcat
