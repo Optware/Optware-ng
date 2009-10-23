@@ -37,7 +37,7 @@ XINETD_DEPENDS=
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=8
+XINETD_IPK_VERSION=9
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
@@ -137,7 +137,10 @@ xinetd-unpack: $(XINETD_BUILD_DIR)/.configured
 #
 $(XINETD_BUILD_DIR)/.built: $(XINETD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(XINETD_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(XINETD_LDFLAGS)" \
+;
 	touch $@
 
 #
@@ -234,4 +237,4 @@ xinetd-dirclean:
 # Some sanity check for the package.
 #
 xinetd-check: $(XINETD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(XINETD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
