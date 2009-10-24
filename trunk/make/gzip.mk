@@ -34,7 +34,7 @@ GZIP_CONFLICTS=
 #
 # GZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-GZIP_IPK_VERSION=3
+GZIP_IPK_VERSION=4
 
 #
 # If the compilation of the package requires additional
@@ -62,7 +62,8 @@ GZIP_IPK=$(BUILD_DIR)/gzip_$(GZIP_VERSION)-$(GZIP_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GZIP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GZIP_SITE)/$(GZIP_SOURCE)
+	$(WGET) -P $(@D) $(WGET_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -86,11 +87,11 @@ gzip-source: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES)
-	rm -rf $(BUILD_DIR)/$(GZIP_DIR) $(GZIP_BUILD_DIR)
+$(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES) make/gzip.mk
+	rm -rf $(BUILD_DIR)/$(GZIP_DIR) $(@D)
 	$(GZIP_UNZIP) $(DL_DIR)/$(GZIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(GZIP_DIR) $(GZIP_BUILD_DIR)
-	(cd $(GZIP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(GZIP_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GZIP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GZIP_LDFLAGS)" \
@@ -110,7 +111,7 @@ gzip-unpack: $(GZIP_BUILD_DIR)/.configured
 #
 $(GZIP_BUILD_DIR)/.built: $(GZIP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GZIP_BUILD_DIR)
+	$(MAKE) -C $(@D) LDFLAGS="$(STAGING_LDFLAGS) $(GZIP_LDFLAGS)"
 	touch $@
 
 #
@@ -196,4 +197,4 @@ gzip-dirclean:
 # Some sanity check for the package.
 #
 gzip-check: $(GZIP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GZIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
