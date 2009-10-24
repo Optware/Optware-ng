@@ -23,9 +23,9 @@
 #
 #UNZIP_SITE=ftp://ftp.info-zip.org/pub/infozip/src
 UNZIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/infozip
-UNZIP_VERSION=5.52
-UNZIP_SOURCE=unzip552.tar.gz
-UNZIP_DIR=unzip-$(UNZIP_VERSION)
+UNZIP_VERSION=6.0
+UNZIP_SOURCE=unzip60.tar.gz
+UNZIP_DIR=unzip60
 UNZIP_UNZIP=zcat
 UNZIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UNZIP_DESCRIPTION=A (de)compression library for the ZIP format
@@ -38,7 +38,7 @@ UNZIP_CONFLICTS=
 #
 # UNZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-UNZIP_IPK_VERSION=3
+UNZIP_IPK_VERSION=1
 
 #
 # UNZIP_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ UNZIP_IPK=$(BUILD_DIR)/unzip_$(UNZIP_VERSION)-$(UNZIP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(UNZIP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(UNZIP_SITE)/$(UNZIP_SOURCE)
+	$(WGET) -P $(@D) $(UNZIP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,15 +104,15 @@ unzip-source: $(DL_DIR)/$(UNZIP_SOURCE) $(UNZIP_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(UNZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(UNZIP_SOURCE) $(UNZIP_PATCHES)
-	rm -rf $(BUILD_DIR)/$(UNZIP_DIR) $(UNZIP_BUILD_DIR)
+$(UNZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(UNZIP_SOURCE) $(UNZIP_PATCHES) make/unzip.mk
+	rm -rf $(BUILD_DIR)/$(UNZIP_DIR) $(@D)
 	$(UNZIP_UNZIP) $(DL_DIR)/$(UNZIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNZIP_PATCHES)" ; \
 		then cat $(UNZIP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(UNZIP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(UNZIP_DIR)" != "$(UNZIP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(UNZIP_DIR) $(UNZIP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(UNZIP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(UNZIP_DIR) $(@D) ; \
 	fi
 	touch $@
 
@@ -122,8 +123,9 @@ unzip-unpack: $(UNZIP_BUILD_DIR)/.configured
 #
 $(UNZIP_BUILD_DIR)/.built: $(UNZIP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(UNZIP_BUILD_DIR) -f unix/Makefile generic \
-		$(TARGET_CONFIGURE_OPTS) LD=$(TARGET_CC)
+	$(MAKE) -C $(@D) -f unix/Makefile generic \
+		$(TARGET_CONFIGURE_OPTS) \
+		LD="$(TARGET_CC) $(STAGING_LDFLAGS) $(UNZIP_LDFLAGS)"
 	touch $@
 
 #
@@ -202,4 +204,4 @@ unzip-dirclean:
 # Some sanity check for the package.
 #
 unzip-check: $(UNZIP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UNZIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
