@@ -39,7 +39,7 @@ NETCAT_CONFLICTS=
 #
 # NETCAT_IPK_VERSION should be incremented when the ipk changes.
 #
-NETCAT_IPK_VERSION=4
+NETCAT_IPK_VERSION=5
 
 #
 # NETCAT_CONFFILES should be a list of user-editable files
@@ -108,16 +108,16 @@ netcat-source: $(DL_DIR)/$(NETCAT_SOURCE) $(NETCAT_PATCHES)
 #
 $(NETCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(NETCAT_SOURCE) $(DL_DIR)/$(NETCAT_DEBIAN_PATCH) $(NETCAT_PATCHES) make/netcat.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(NETCAT_DIR) $(NETCAT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NETCAT_DIR) $(@D)
 	$(NETCAT_UNZIP) $(DL_DIR)/$(NETCAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETCAT_PATCHES)" ; \
 		then cat $(NETCAT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NETCAT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NETCAT_DIR)" != "$(NETCAT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NETCAT_DIR) $(NETCAT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NETCAT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NETCAT_DIR) $(@D) ; \
 	fi
-	(cd $(NETCAT_BUILD_DIR); \
+	(cd $(@D); \
 		mkdir -p debian; \
 		zcat $(DL_DIR)/$(NETCAT_DEBIAN_PATCH) | patch -d debian; \
 		for i in `cat debian/series`; do cat debian/$$i | patch -p1; done; \
@@ -132,7 +132,10 @@ netcat-unpack: $(NETCAT_BUILD_DIR)/.configured
 #
 $(NETCAT_BUILD_DIR)/.built: $(NETCAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) CC=$(TARGET_CC) STATIC='' DFLAGS='-DLINUX -DTELNET -DGAPING_SECURITY_HOLE' linux
+	$(MAKE) -C $(@D) \
+		CC=$(TARGET_CC) \
+		LD="$(TARGET_CC) $(STAGING_LDFLAGS)"\
+		STATIC='' DFLAGS='-DLINUX -DTELNET -DGAPING_SECURITY_HOLE' linux
 	touch $@
 
 #
@@ -143,12 +146,12 @@ netcat: $(NETCAT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(NETCAT_BUILD_DIR)/.staged: $(NETCAT_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(NETCAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-netcat-stage: $(NETCAT_BUILD_DIR)/.staged
+#$(NETCAT_BUILD_DIR)/.staged: $(NETCAT_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#netcat-stage: $(NETCAT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
