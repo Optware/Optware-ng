@@ -4,8 +4,8 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_UPSTREAM_VERSION=1.7.2
-SUDO_VERSION=1.7.2
+SUDO_UPSTREAM_VERSION=1.7.2p1
+SUDO_VERSION=1.7.2.1
 SUDO_SOURCE=sudo-$(SUDO_UPSTREAM_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_UPSTREAM_VERSION)
 SUDO_UNZIP=zcat
@@ -53,6 +53,8 @@ $(SUDO_BUILD_DIR)/.configured: $(DL_DIR)/$(SUDO_SOURCE) $(SUDO_PATCHES) make/sud
 	sed -i -e '/$$(INSTALL) /s| -s||' $(@D)/Makefile.in
 	cd $(@D) && \
 		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(SUDO_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(SUDO_LDFLAGS)" \
 		$(SUDO_CONFIGURE_ENV) \
 		./configure \
 			--host=$(GNU_TARGET_NAME) \
