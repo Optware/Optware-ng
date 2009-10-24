@@ -26,7 +26,7 @@ HDPARM_DEPENDS=
 #
 # HDPARM_IPK_VERSION should be incremented when the ipk changes.
 #
-HDPARM_IPK_VERSION=1
+HDPARM_IPK_VERSION=2
 
 #
 # HDPARM_LOCALES defines which locales get installed
@@ -52,7 +52,7 @@ $(HDPARM_SOURCE_DIR)/linux2.4-u64.patch,))
 # compilation or linking flags, then list them here.
 #
 HDPARM_CPPFLAGS=
-HDPARM_LDFLAGS=
+HDPARM_LDFLAGS=-s
 
 #
 # HDPARM_BUILD_DIR is the directory in which the build is done.
@@ -126,7 +126,8 @@ $(HDPARM_BUILD_DIR)/.built: $(HDPARM_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		binprefix=/opt manprefix=/opt \
-		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(HDPARM_LDFLAGS)" \
 		STRIP=$(TARGET_STRIP)
 	touch $@
 
