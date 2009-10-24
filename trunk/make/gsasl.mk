@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GSASL_SITE=http://josefsson.org/gsasl/releases
-GSASL_VERSION=0.2.20
+GSASL_SITE=http://mirrors.kernel.org/gnu/gsasl
+GSASL_VERSION=1.3
 GSASL_SOURCE=gsasl-$(GSASL_VERSION).tar.gz
 GSASL_DIR=gsasl-$(GSASL_VERSION)
 GSASL_UNZIP=zcat
@@ -43,7 +43,7 @@ GSASL_CONFLICTS=
 #
 # GSASL_IPK_VERSION should be incremented when the ipk changes.
 #
-GSASL_IPK_VERSION=2
+GSASL_IPK_VERSION=1
 
 #
 # GSASL_CONFFILES should be a list of user-editable files
