@@ -17,7 +17,7 @@ BZIP2_PRIORITY=optional
 BZIP2_DEPENDS=
 BZIP2_CONFLICTS=
 
-BZIP2_IPK_VERSION=1
+BZIP2_IPK_VERSION=2
 
 BZIP2_BUILD_DIR=$(BUILD_DIR)/bzip2
 BZIP2_SOURCE_DIR=$(SOURCE_DIR)/bzip2
@@ -32,7 +32,7 @@ $(DL_DIR)/$(BZIP2_SOURCE):
 
 bzip2-source: $(DL_DIR)/$(BZIP2_SOURCE)
 
-$(BZIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(BZIP2_SOURCE)
+$(BZIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(BZIP2_SOURCE) make/bzip2.mk
 	rm -rf $(BUILD_DIR)/$(BZIP2_DIR) $(@D)
 	$(BZIP2_UNZIP) $(DL_DIR)/$(BZIP2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(BZIP2_DIR) $(@D)
@@ -47,12 +47,14 @@ $(BZIP2_BUILD_DIR)/.built: $(BZIP2_BUILD_DIR)/.configured
 		PREFIX=/opt \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BZIP2_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(BZIP2_LDFLAGS)" \
 		-f Makefile \
 		libbz2.a bzip2 bzip2recover
 	$(MAKE) -C $(@D) \
 		PREFIX=/opt \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BZIP2_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(BZIP2_LDFLAGS)" \
 		-f Makefile-libbz2_so
 	touch $@
 
@@ -126,4 +128,4 @@ bzip2-dirclean:
 	rm -rf $(BUILD_DIR)/$(BZIP2_DIR) $(BZIP2_BUILD_DIR) $(BZIP2_IPK_DIR) $(BZIP2_IPK)
 
 bzip2-check: $(BZIP2_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BZIP2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
