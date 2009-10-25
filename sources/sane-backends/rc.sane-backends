@@ -2,6 +2,6 @@
 
 PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
 
-if !( grep -q ^sane-port /etc/services ); then
-	echo "sane-port		6566/tcp	# SANE network scanner daemon" >> /etc/services
+if !( grep -q ^saned.*6566 /etc/services ); then
+	echo "saned		6566/tcp	# SANE network scanner daemon" >> /etc/services
 fi

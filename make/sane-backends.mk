@@ -28,7 +28,7 @@
 #
 
 SANE_BACKENDS_RELEASE=1.0.20
-SANE_BACKENDS_IPK_VERSION=1
+SANE_BACKENDS_IPK_VERSION=2
 
 # Latest commit from http://git.debian.org/git/sane/sane-backends.git/refs/heads/master
 # Recent history at http://git.debian.org/?p=sane/sane-backends.git
@@ -51,7 +51,7 @@ endif
 
 SANE_BACKENDS_SOURCE=sane-backends-$(SANE_BACKENDS_VERSION).tar.gz
 SANE_BACKENDS_UNZIP=zcat
-SANE_BACKENDS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SANE_BACKENDS_MAINTAINER=carterb <carterbueford@gmx.net>
 SANE_BACKENDS_DESCRIPTION=SANE is a universal scanner interface
 SANE_BACKENDS_SECTION=util
 SANE_BACKENDS_PRIORITY=optional
