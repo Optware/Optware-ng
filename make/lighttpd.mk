@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://www.lighttpd.net/download
-LIGHTD_VERSION=1.4.23
+LIGHTD_VERSION=1.4.24
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.bz2
 LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
 LIGHTTPD_UNZIP=bzcat
@@ -69,8 +69,7 @@ LIGHTTPD_CONFFILES=\
 # LIGHTTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIGHTTPD_PATCHES=\
-	$(LIGHTTPD_SOURCE_DIR)/lighty-clientvalidation-1.4.x.2.patch
+#LIGHTTPD_PATCHES=
 
 #
 # If the compilation of the package requires additional
