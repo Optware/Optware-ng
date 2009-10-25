@@ -114,6 +114,9 @@ $(UNZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(UNZIP_SOURCE) $(UNZIP_PATCHES) make/
 	if test "$(BUILD_DIR)/$(UNZIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UNZIP_DIR) $(@D) ; \
 	fi
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel, $(OPTWARE_TARGET)))
+	sed -i -e '/CC.*unix\/unix.c/s|$$(CF) |&-O2 |' $(@D)/unix/Makefile
+endif
 	touch $@
 
 unzip-unpack: $(UNZIP_BUILD_DIR)/.configured
