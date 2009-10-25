@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSMTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/msmtp
-MSMTP_VERSION=1.4.18
+MSMTP_VERSION=1.4.19
 MSMTP_SOURCE=msmtp-$(MSMTP_VERSION).tar.bz2
 MSMTP_DIR=msmtp-$(MSMTP_VERSION)
 MSMTP_UNZIP=bzcat
@@ -238,4 +238,4 @@ msmtp-dirclean:
 # Some sanity check for the package.
 #
 msmtp-check: $(MSMTP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MSMTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
