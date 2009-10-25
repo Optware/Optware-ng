@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MLDONKEY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mldonkey
-MLDONKEY_VERSION=3.0.0
+MLDONKEY_VERSION=3.0.1
 MLDONKEY_SOURCE=mldonkey-$(MLDONKEY_VERSION).tar.bz2
 MLDONKEY_DIR=mldonkey-$(MLDONKEY_VERSION)
 MLDONKEY_UNZIP=bzcat
@@ -113,7 +113,6 @@ $(MLDONKEY_BUILD_DIR)/.configured: $(DL_DIR)/$(MLDONKEY_SOURCE) $(MLDONKEY_PATCH
 	if test "$(BUILD_DIR)/$(MLDONKEY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MLDONKEY_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|3\.11\.0|3\.11\.[0-9]|' $(@D)/config/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MLDONKEY_CPPFLAGS)" \
