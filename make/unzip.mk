@@ -31,14 +31,14 @@ UNZIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UNZIP_DESCRIPTION=A (de)compression library for the ZIP format
 UNZIP_SECTION=console/utils
 UNZIP_PRIORITY=optional
-UNZIP_DEPENDS=
+UNZIP_DEPENDS=bzip2
 UNZIP_SUGGESTS=
 UNZIP_CONFLICTS=
 
 #
 # UNZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-UNZIP_IPK_VERSION=1
+UNZIP_IPK_VERSION=2
 
 #
 # UNZIP_CONFFILES should be a list of user-editable files
@@ -105,6 +105,7 @@ unzip-source: $(DL_DIR)/$(UNZIP_SOURCE) $(UNZIP_PATCHES)
 # shown below to make various patches to it.
 #
 $(UNZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(UNZIP_SOURCE) $(UNZIP_PATCHES) make/unzip.mk
+	$(MAKE) bzip2-stage
 	rm -rf $(BUILD_DIR)/$(UNZIP_DIR) $(@D)
 	$(UNZIP_UNZIP) $(DL_DIR)/$(UNZIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNZIP_PATCHES)" ; \
