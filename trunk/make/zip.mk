@@ -10,19 +10,19 @@
 # questions. But feel free to update or change this package
 # if there are reasons.
 #
-ZIP_SITE=ftp://ctan.unik.no/tex-archive/tools/zip/info-zip/src
-ZIP_VERSION_MAJOR=2
-ZIP_VERSION_MINOR=32
+ZIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/infozip
+ZIP_VERSION_MAJOR=3
+ZIP_VERSION_MINOR=0
 ZIP_VERSION=$(ZIP_VERSION_MAJOR).$(ZIP_VERSION_MINOR)
 ZIP_VERSION_FILE=$(ZIP_VERSION_MAJOR)$(ZIP_VERSION_MINOR)
 ZIP_SOURCE=zip$(ZIP_VERSION_FILE).tar.gz
-ZIP_DIR=zip-$(ZIP_VERSION)
+ZIP_DIR=zip$(ZIP_VERSION_FILE)
 ZIP_UNZIP=zcat
 ZIP_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 ZIP_DESCRIPTION=a compression and file packaging utility.
 ZIP_SECTION=admin
 ZIP_PRIORITY=optional
-ZIP_DEPENDS=
+ZIP_DEPENDS=bzip2
 ZIP_SUGGESTS=
 ZIP_CONFLICTS=
 
@@ -67,8 +67,8 @@ ZIP_IPK=$(BUILD_DIR)/zip_$(ZIP_VERSION)-$(ZIP_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ZIP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ZIP_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(ZIP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -95,18 +95,18 @@ zip-source: $(DL_DIR)/$(ZIP_SOURCE) $(ZIP_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(ZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(ZIP_SOURCE) $(ZIP_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(ZIP_DIR) $(ZIP_BUILD_DIR)
+$(ZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(ZIP_SOURCE) $(ZIP_PATCHES) make/zip.mk
+	$(MAKE) bzip2-stage
+	rm -rf $(BUILD_DIR)/$(ZIP_DIR) $(@D)
 	$(ZIP_UNZIP) $(DL_DIR)/$(ZIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZIP_PATCHES)" ; \
 		then cat $(ZIP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ZIP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(ZIP_DIR)" != "$(ZIP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(ZIP_DIR) $(ZIP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(ZIP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(ZIP_DIR) $(@D) ; \
 	fi
-	#(cd $(ZIP_BUILD_DIR); \
+	#(cd $(@D); \
 	#	$(TARGET_CONFIGURE_OPTS) \
 	#	CPPFLAGS="$(STAGING_CPPFLAGS) $(ZIP_CPPFLAGS)" \
 	#	LDFLAGS="$(STAGING_LDFLAGS) $(ZIP_LDFLAGS)" \
@@ -118,8 +118,8 @@ $(ZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(ZIP_SOURCE) $(ZIP_PATCHES)
 	#	--disable-nls \
 	#	--disable-static \
 	#)
-	#$(PATCH_LIBTOOL) $(ZIP_BUILD_DIR)/libtool
-	touch $(ZIP_BUILD_DIR)/.configured
+	#$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 zip-unpack: $(ZIP_BUILD_DIR)/.configured
 
@@ -127,14 +127,14 @@ zip-unpack: $(ZIP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ZIP_BUILD_DIR)/.built: $(ZIP_BUILD_DIR)/.configured
-	rm -f $(ZIP_BUILD_DIR)/.built
-	$(MAKE) -C $(ZIP_BUILD_DIR) -f unix/Makefile generic	\
+	rm -f $@
+	$(MAKE) -C $(@D) -f unix/Makefile generic	\
 		$(TARGET_CONFIGURE_OPTS) 			\
 		AS="$(TARGET_CC) -c" \
+		BIND="$(TARGET_CC) $(STAGING_LDFLAGS) $(UNZIP_LDFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZIP_CPPFLAGS)"	\
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZIP_LDFLAGS)"
-		
-	touch $(ZIP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,19 +144,19 @@ zip: $(ZIP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(ZIP_BUILD_DIR)/.staged: $(ZIP_BUILD_DIR)/.built
-	rm -f $(ZIP_BUILD_DIR)/.staged
-	$(MAKE) -C $(ZIP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(ZIP_BUILD_DIR)/.staged
-
-zip-stage: $(ZIP_BUILD_DIR)/.staged
+#$(ZIP_BUILD_DIR)/.staged: $(ZIP_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#zip-stage: $(ZIP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/zip
 #
 $(ZIP_IPK_DIR)/CONTROL/control:
-	@install -d $(ZIP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: zip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,3 +214,9 @@ zip-clean:
 #
 zip-dirclean:
 	rm -rf $(BUILD_DIR)/$(ZIP_DIR) $(ZIP_BUILD_DIR) $(ZIP_IPK_DIR) $(ZIP_IPK)
+
+#
+# Some sanity check for the package.
+#
+zip-check: $(ZIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
