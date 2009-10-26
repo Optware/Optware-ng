@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERL-YAWS_SITE=http://yaws.hyber.org/download
-ERL-YAWS_VERSION=1.84
+ERL-YAWS_VERSION=1.85
 ERL-YAWS_SOURCE=yaws-$(ERL-YAWS_VERSION).tar.gz
 ERL-YAWS_DIR=yaws-$(ERL-YAWS_VERSION)
 ERL-YAWS_UNZIP=zcat
@@ -242,4 +242,4 @@ erl-yaws-dirclean:
 # Some sanity check for the package.
 #
 erl-yaws-check: $(ERL-YAWS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ERL-YAWS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
