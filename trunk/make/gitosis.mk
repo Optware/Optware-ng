@@ -28,9 +28,9 @@ GITOSIS_CONFLICTS=
 # GITOSIS_GIT_DATE
 #
 
-GITOSIS_GIT_DATE=20080901
+GITOSIS_GIT_DATE=20090917
 GITOSIS_VERSION=git$(GITOSIS_GIT_DATE)
-GITOSIS_TREEISH=`git rev-list --max-count=1 --until=2008-09-01 HEAD`
+GITOSIS_TREEISH=`git rev-list --max-count=1 --until=2009-09-17 HEAD`
 
 #
 # If you want to use a tag, uncomment the variables below and modify
@@ -46,7 +46,7 @@ GITOSIS_DIR=gitosis-$(GITOSIS_VERSION)
 #
 # GITOSIS_IPK_VERSION should be incremented when the ipk changes.
 #
-GITOSIS_IPK_VERSION=2
+GITOSIS_IPK_VERSION=1
 
 #
 # GITOSIS_CONFFILES should be a list of user-editable files
@@ -222,4 +222,4 @@ gitosis-dirclean:
 # Some sanity check for the package.
 #
 gitosis-check: $(GITOSIS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GITOSIS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
