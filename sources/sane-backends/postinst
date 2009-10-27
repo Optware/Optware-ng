@@ -16,6 +16,7 @@ fi
 #If the end-user has xinetd running and configured, add saned to xinetd configuration
 if [ -d /opt/etc/xinetd.d -a -n "`pidof xinetd`" ]; then
 	cat > /opt/etc/xinetd.d/saned <<\_ACEOF
+service saned
 {
 	socket_type = stream
 	server = /opt/sbin/saned
@@ -55,6 +56,7 @@ echo "	sane-port  stream  tcp  nowait  $ROOT_USER.$ROOT_GROUP  /opt/sbin/saned s
 echo
 echo "For xinetd, create a /opt/etc/xinetd.d/saned file like:"
 cat <<\_ACEOF
+service saned
 {
 	socket_type = stream
 	server = /opt/sbin/saned
