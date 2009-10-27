@@ -28,7 +28,7 @@
 #
 
 SANE_BACKENDS_RELEASE=1.0.20
-SANE_BACKENDS_IPK_VERSION=3
+SANE_BACKENDS_IPK_VERSION=4
 
 # Latest commit from http://git.debian.org/git/sane/sane-backends.git/refs/heads/master
 # Recent history at http://git.debian.org/?p=sane/sane-backends.git
