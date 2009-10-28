@@ -28,11 +28,13 @@
 #
 
 SANE_BACKENDS_RELEASE=1.0.20
-SANE_BACKENDS_IPK_VERSION=5
+SANE_BACKENDS_IPK_VERSION=1
+
+# You should change the next two git variables TOGETHER
 
 # Latest commit from http://git.debian.org/git/sane/sane-backends.git/refs/heads/master
 # Recent history at http://git.debian.org/?p=sane/sane-backends.git
-SANE_BACKENDS_GIT_COMMIT=92c44e905a
+SANE_BACKENDS_GIT_COMMIT=f2c663ffb1
 # The date of the above commit http://git.debian.org/?p=sane/sane-backends.git;a=commit;h=$(SANE_BACKENDS_GIT_COMMIT)
 SANE_BACKENDS_GIT_DATE=20091022
 
