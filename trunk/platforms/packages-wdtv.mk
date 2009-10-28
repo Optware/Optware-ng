@@ -12,7 +12,9 @@ BROKEN_PACKAGES = \
 	fcgi ficy fish \
 	fuppes gnu-smalltalk gtmess gtk gutenprint \
 	ice iptraf launchtool ldconfig ltrace moc \
-	mtr newsbeuter nfs-server nfs-utils pango pinentry \
+	mtr newsbeuter nfs-server nfs-utils \
+	opensips \
+	pango pinentry \
 	puppy qemu rssh \
 	sandbox \
 	sm transcode uemacs vte \
