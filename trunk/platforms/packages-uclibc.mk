@@ -10,6 +10,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 moe mtr \
 	 newsbeuter \
 	 nfs-server nfs-utils \
+	opensips \
 	 pango \
 	 qemu qemu-libc-i386 quickie \
 	 sm syx \
