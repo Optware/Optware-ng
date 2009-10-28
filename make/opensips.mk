@@ -214,6 +214,9 @@ else
 		then mv $(BUILD_DIR)/$(OPENSIPS_DIR) $(OPENSIPS_BUILD_DIR) ; \
 	fi
 endif
+	sed -i -e '/^DEFS/s|-I/usr/include/libxml2 ||' \
+	       -e '/DEFS/s|-I/usr/include ||' \
+	       -e 's|-I/opt/include ||' $(@D)/modules/*/Makefile
 	touch $@
 
 opensips-unpack: $(OPENSIPS_BUILD_DIR)/.configured
