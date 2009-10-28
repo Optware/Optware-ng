@@ -29,6 +29,7 @@ BROKEN_PACKAGES = \
 	ldconfig \
 	loudmouth \
 	net-snmp net-tools netatalk nmap \
+	opensips \
 	phoneme-advanced \
 	ppp \
 	qemu qemu-libc-i386 \
