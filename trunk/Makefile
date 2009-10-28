@@ -32,7 +32,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
 #
-NATIVE_PACKAGES_READY_FOR_TESTING = \
+NATIVE_PACKAGES_READY_FOR_TESTING = opensips \
 
 # iozone - fileop_linux-arm.o: No such file or directory
 # parted - does not work on the slug, even when compiled natively
