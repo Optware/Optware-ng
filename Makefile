@@ -32,7 +32,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
 #
-NATIVE_PACKAGES_READY_FOR_TESTING = opensips \
+NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # iozone - fileop_linux-arm.o: No such file or directory
 # parted - does not work on the slug, even when compiled natively
@@ -323,7 +323,7 @@ COMMON_CROSS_PACKAGES = \
 	ntop ntp ntpclient nttcp nut nvi nylon nzbget nzbget-testing \
 	ocaml oleo open2300 \
 	openobex obexftp \
-	opendchub openldap openser openssh openssl openvpn \
+	opendchub openldap openser opensips openssh openssl openvpn \
 	optware-devel ossp-js oww \
 	p7zip p910nd pal palantir pango par2cmdline patch patchutils \
 	pcapsipdump pciutils pcre pen perltgd pinentry pixman \
