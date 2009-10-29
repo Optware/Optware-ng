@@ -26,7 +26,7 @@ KERNEL-MODULES=`find $(KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-KERNEL-MODULES_IPK_VERSION=3
+KERNEL-MODULES_IPK_VERSION=4
 
 #
 # KERNEL-MODULES_CONFFILES should be a list of user-editable files

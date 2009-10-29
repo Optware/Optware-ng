@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.15
-# Sun Jul 27 01:41:23 2008
+# Wed Oct 28 23:08:07 2009
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -887,7 +887,7 @@ CONFIG_USB_UHCI_HCD=m
 CONFIG_OBSOLETE_OSS_USB_DRIVER=y
 CONFIG_USB_AUDIO=m
 # CONFIG_USB_MIDI is not set
-# CONFIG_USB_ACM is not set
+CONFIG_USB_ACM=m
 CONFIG_USB_PRINTER=m
 
 #
