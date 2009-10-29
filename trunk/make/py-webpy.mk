@@ -22,9 +22,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-WEBPY_SITE=http://webpy.org/static
-PY-WEBPY_VERSION=0.32
+PY-WEBPY_VERSION=0.33
 PY-WEBPY_SOURCE=web.py-$(PY-WEBPY_VERSION).tar.gz
-PY-WEBPY_DIR=webpy
+PY-WEBPY_DIR=web.py-$(PY-WEBPY_VERSION)
 PY-WEBPY_UNZIP=zcat
 PY-WEBPY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-WEBPY_DESCRIPTION=A web framework for python that is as simple as it is powerful.
@@ -173,12 +173,12 @@ py-webpy: $(PY-WEBPY_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-WEBPY_BUILD_DIR)/.staged: $(PY-WEBPY_BUILD_DIR)/.built
+#$(PY-WEBPY_BUILD_DIR)/.staged: $(PY-WEBPY_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-py-webpy-stage: $(PY-WEBPY_BUILD_DIR)/.staged
+#
+#py-webpy-stage: $(PY-WEBPY_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -275,4 +275,4 @@ py-webpy-dirclean:
 # Some sanity check for the package.
 #
 py-webpy-check: $(PY26-WEBPY_IPK) $(PY25-WEBPY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY26-WEBPY_IPK) $(PY25-WEBPY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
