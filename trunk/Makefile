@@ -244,7 +244,7 @@ COMMON_CROSS_PACKAGES = \
 	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
 	dropbear drraw dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
-	emacs22 endian enhanced-ctorrent esmtp esniper \
+	emacs22 endian enhanced-ctorrent enscript esmtp esniper \
 	ettercap ettercap-ng \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop eventlog expat extract-xiso ez-ipupdate \
