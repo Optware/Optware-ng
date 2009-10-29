@@ -78,10 +78,6 @@ SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/Makefile.in.patch \
 	$(SANE_BACKENDS_SOURCE_DIR)/tools-Makefile.in.patch
 endif
 
-ifeq (uclibc, $(LIBC_STYLE))
-SANE_BACKENDS_PATCHES+=$(SANE_BACKENDS_SOURCE_DIR)/roundf.patch
-endif
-
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
