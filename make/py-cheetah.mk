@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CHEETAH_SITE=http://pypi.python.org/packages/source/C/Cheetah
-PY-CHEETAH_VERSION=2.2.2
+PY-CHEETAH_VERSION=2.4.0
 PY-CHEETAH_SOURCE=Cheetah-$(PY-CHEETAH_VERSION).tar.gz
 PY-CHEETAH_DIR=Cheetah-$(PY-CHEETAH_VERSION)
 PY-CHEETAH_UNZIP=zcat
