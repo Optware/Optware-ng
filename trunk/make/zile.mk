@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZILE_SITE=http://ftp.gnu.org/gnu/zile
-ZILE_VERSION=2.3.12
+ZILE_VERSION=2.3.13
 ZILE_SOURCE=zile-$(ZILE_VERSION).tar.gz
 ZILE_DIR=zile-$(ZILE_VERSION)
 ZILE_UNZIP=zcat
@@ -120,6 +120,7 @@ $(ZILE_BUILD_DIR)/.configured: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES) make/zil
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZILE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZILE_LDFLAGS)" \
+gl_cv_func_getopt_gnu=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
