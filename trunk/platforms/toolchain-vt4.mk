@@ -13,8 +13,8 @@ TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/$(TARGET_NAME)
 TARGET_CROSS  = $(TARGET_CROSS_TOP)/920t_le/bin/$(TARGET_NAME)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/920t_le/lib/gcc/${GNU_TARGET_NAME}/3.4.4/
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/include
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS= -pipe
+TARGET_LDFLAGS = -L$(TARGET_LIBDIR) -Wl,-rpath-link,$(TARGET_LIBDIR)
+TARGET_CUSTOM_FLAGS= -pipe -I$(TARGET_INCDIR)
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
 TOOLCHAIN_BINARY_URL="http://sources.nslu2-linux.org/sources/arm-920t_le.tar.bz2"
@@ -46,7 +46,7 @@ $(DL_DIR)/$(TOOLCHAIN_BINARY) \
 	mkdir -p $(@D)
 	tar -xj -C $(@D) -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	install -d $(STAGING_LIB_DIR)
-	cp -fpd $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libdl*so* $(STAGING_LIB_DIR)/
+	#cp -fpd $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libdl*so* $(STAGING_LIB_DIR)/
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux $(TARGET_INCDIR)/
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-arm $(TARGET_INCDIR)/asm
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-generic $(TARGET_INCDIR)/
