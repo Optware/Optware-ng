@@ -29,7 +29,7 @@ MKVTOOLNIX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MKVTOOLNIX_DESCRIPTION=A set of tools to create, alter and inspect Matroska files
 MKVTOOLNIX_SECTION=multimedia
 MKVTOOLNIX_PRIORITY=optional
-MKVTOOLNIX_DEPENDS=boost-regex, expat, file, flac, libebml, libmatroska, libogg, libvorbis
+MKVTOOLNIX_DEPENDS=boost-regex, expat, file, flac, libebml, libmatroska, libogg, libvorbis, lzo
 ifeq (enable, $(GETTEXT_NLS))
 MKVTOOLNIX_DEPENDS +=, gettext
 endif
@@ -42,7 +42,7 @@ MKVTOOLNIX_CONFLICTS=
 #
 # MKVTOOLNIX_IPK_VERSION should be incremented when the ipk changes.
 #
-MKVTOOLNIX_IPK_VERSION=1
+MKVTOOLNIX_IPK_VERSION=2
 
 #
 # MKVTOOLNIX_CONFFILES should be a list of user-editable files
@@ -112,7 +112,7 @@ mkvtoolnix-source: $(DL_DIR)/$(MKVTOOLNIX_SOURCE) $(MKVTOOLNIX_PATCHES)
 #
 $(MKVTOOLNIX_BUILD_DIR)/.configured: $(DL_DIR)/$(MKVTOOLNIX_SOURCE) $(MKVTOOLNIX_PATCHES) make/mkvtoolnix.mk
 	$(MAKE) boost-stage bzip2-stage expat-stage file-stage flac-stage zlib-stage
-	$(MAKE) libebml-stage libmatroska-stage libogg-stage libvorbis-stage
+	$(MAKE) libebml-stage libmatroska-stage libogg-stage libvorbis-stage lzo-stage
 ifeq (enable, $(GETTEXT_NLS))
 	$(MAKE) gettext-stage
 endif
