@@ -24,10 +24,10 @@ ASTERISK16_SOURCE_TYPE=tarball
 #ASTERISK16_SOURCE_TYPE=svn
 
 ASTERISK16_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK16_BASE_VERSION=1.6.0.15
+ASTERISK16_BASE_VERSION=1.6.1.8
 
 ifeq ($(ASTERISK16_SOURCE_TYPE), svn)
-ASTERISK16_SVN=http://svn.digium.com/svn/asterisk/branches/1.6.0
+ASTERISK16_SVN=http://svn.digium.com/svn/asterisk/branches/1.6.1
 ASTERISK16_SVN_REV=166221
 ASTERISK16_VERSION=$(ASTERISK16_BASE_VERSION)svn-r$(ASTERISK16_SVN_REV)
 else
@@ -461,11 +461,11 @@ $(ASTERISK16_IPK): $(ASTERISK16_BUILD_DIR)/.built
 	for filetostrip in $(ASTERISK16_IPK_DIR)/opt/sbin/aelparse \
 			$(ASTERISK16_IPK_DIR)/opt/sbin/astcanary \
 			$(ASTERISK16_IPK_DIR)/opt/sbin/asterisk \
-			$(ASTERISK16_IPK_DIR)/opt/sbin/check_expr \
 			$(ASTERISK16_IPK_DIR)/opt/sbin/conf2ael \
 			$(ASTERISK16_IPK_DIR)/opt/sbin/hashtest \
 			$(ASTERISK16_IPK_DIR)/opt/sbin/hashtest2 \
 			$(ASTERISK16_IPK_DIR)/opt/sbin/muted \
+			$(ASTERISK16_IPK_DIR)/opt/sbin/refcounter \
 			$(ASTERISK16_IPK_DIR)/opt/sbin/smsq \
 			$(ASTERISK16_IPK_DIR)/opt/sbin/stereorize \
 			$(ASTERISK16_IPK_DIR)/opt/sbin/streamplayer ; do \
