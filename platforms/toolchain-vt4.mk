@@ -46,6 +46,17 @@ $(DL_DIR)/$(TOOLCHAIN_BINARY) \
 	mkdir -p $(@D)
 	tar -xj -C $(@D) -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	install -d $(STAGING_LIB_DIR)
+	# delete old libs in toolchain
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libcrypto*
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libjpeg*
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libncurses*
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libpng*
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libtorrent*
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libz*
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libuuid*
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libssl*
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libcurl*
+	rm -rf $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libid3tag*
 	#cp -fpd $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libdl*so* $(STAGING_LIB_DIR)/
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux $(TARGET_INCDIR)/
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-arm $(TARGET_INCDIR)/asm
