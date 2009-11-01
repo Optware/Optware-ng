@@ -182,6 +182,7 @@ ASTERISK16_LDFLAGS+=-lpthread -ldl -lresolv
 endif
 ifeq (uclibc, $(LIBC_STYLE))
 ASTERISK16_LDFLAGS+=-lpthread -lm
+ASTERISK16_PATCHES += $(ASTERISK16_SOURCE_DIR)/roundf.patch
 endif
 
 ASTERISK16_CONFIGURE_OPTS=
