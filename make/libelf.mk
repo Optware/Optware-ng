@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBELF_SITE=http://www.mr511.de/software
-LIBELF_VERSION=0.8.12
+LIBELF_VERSION=0.8.13
 LIBELF_SOURCE=libelf-$(LIBELF_VERSION).tar.gz
 LIBELF_DIR=libelf-$(LIBELF_VERSION)
 LIBELF_UNZIP=zcat
