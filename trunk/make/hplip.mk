@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HPLIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hplip
-HPLIP_VERSION=2.8.9
+HPLIP_VERSION=2.8.12
 HPLIP_SOURCE=hplip-$(HPLIP_VERSION).tar.gz
 HPLIP_DIR=hplip-$(HPLIP_VERSION)
 HPLIP_UNZIP=zcat
@@ -86,8 +86,8 @@ HPLIP_IPK=$(BUILD_DIR)/hplip_$(HPLIP_VERSION)-$(HPLIP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HPLIP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HPLIP_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(HPLIP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -128,7 +128,7 @@ endif
 	if test "$(BUILD_DIR)/$(HPLIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HPLIP_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|/etc/|/opt&|' $(@D)/Makefile.am ; \
+	sed -i -e 's|/etc/|/opt&|; /halpredir/s|/usr/share|/opt/share|' $(@D)/Makefile.am ; \
 	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -256,4 +256,4 @@ hplip-dirclean:
 # Some sanity check for the package.
 #
 hplip-check: $(HPLIP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HPLIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
