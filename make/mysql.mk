@@ -265,6 +265,7 @@ mysql-ipk: $(MYSQL_IPK)
 #
 mysql-clean:
 	-$(MAKE) -C $(MYSQL_BUILD_DIR) clean
+	-$(MAKE) -C $(MYSQL_HOST_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
@@ -272,6 +273,7 @@ mysql-clean:
 #
 mysql-dirclean:
 	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR) $(MYSQL_IPK_DIR) $(MYSQL_IPK)
+	rm -rf $(MYSQL_HOST_BUILD_DIR)
 
 #
 # Some sanity check for the package.
