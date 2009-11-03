@@ -27,8 +27,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.5/source
-GAMBIT-C_UPSTREAM_VERSION=v4_5_1
-GAMBIT-C_VERSION=4.5.1
+GAMBIT-C_UPSTREAM_VERSION=v4_5_3
+GAMBIT-C_VERSION=4.5.3
 GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_UPSTREAM_VERSION).tgz
 GAMBIT-C_DIR=gambc-$(GAMBIT-C_UPSTREAM_VERSION)
 GAMBIT-C_UNZIP=zcat
