@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	gloox \
 	inferno \
 	gtmess \
+	hplip \
 	iptraf \
 	linphone \
 	nfs-server nfs-utils \
