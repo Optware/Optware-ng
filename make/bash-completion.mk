@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BASH_COMPLETION_SITE=http://ftp.us.debian.org/debian/pool/main/b/bash-completion
-BASH_COMPLETION_VERSION=1.0
-BASH_COMPLETION_SOURCE=bash-completion_$(BASH_COMPLETION_VERSION).orig.tar.gz
+BASH_COMPLETION_SITE=http://bash-completion.alioth.debian.org/files
+BASH_COMPLETION_VERSION=1.1
+BASH_COMPLETION_SOURCE=bash-completion-$(BASH_COMPLETION_VERSION).tar.bz2
 BASH_COMPLETION_DIR=bash-completion-$(BASH_COMPLETION_VERSION)
-BASH_COMPLETION_UNZIP=zcat
+BASH_COMPLETION_UNZIP=bzcat
 BASH_COMPLETION_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BASH_COMPLETION_DESCRIPTION=Programmable completion for the bash shell
 BASH_COMPLETION_SECTION=utils
@@ -193,7 +193,7 @@ $(BASH_COMPLETION_IPK): $(BASH_COMPLETION_BUILD_DIR)/.built
 	install -d $(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/contrib
 	mv $(BASH_COMPLETION_IPK_DIR)/opt/etc/bash_completion.d/* \
 		$(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/contrib/
-	install -m644 $(<D)/[CRT]* $(<D)/bash_completion.sh \
+	install -m644 $(<D)/[CRT]* $(<D)/bash_completion \
 		$(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/
 	$(MAKE) $(BASH_COMPLETION_IPK_DIR)/CONTROL/control
 	echo $(BASH_COMPLETION_CONFFILES) | sed -e 's/ /\n/g' > $(BASH_COMPLETION_IPK_DIR)/CONTROL/conffiles
