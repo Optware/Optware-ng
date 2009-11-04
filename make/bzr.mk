@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR_VERSION=2.0.1
+BZR_VERSION=2.0.2
 BZR_SITE=https://launchpad.net/bzr/2.0/$(BZR_VERSION)/+download
 BZR_SOURCE=bzr-$(BZR_VERSION).tar.gz
 BZR_DIR=bzr-$(BZR_VERSION)
@@ -111,23 +111,6 @@ $(BZR_BUILD_DIR)/.configured: $(DL_DIR)/$(BZR_SOURCE) $(BZR_PATCHES) make/bzr.mk
 	rm -rf $(BUILD_DIR)/py-bazaar-ng
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(BZR_DIR)
-	$(BZR_UNZIP) $(DL_DIR)/$(BZR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BZR_PATCHES) | patch -d $(BUILD_DIR)/$(BZR_DIR) -p1
-	mv $(BUILD_DIR)/$(BZR_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    ( \
-		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
-	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
-		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
-	    ) >> setup.cfg; \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(BZR_DIR)
 	$(BZR_UNZIP) $(DL_DIR)/$(BZR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -171,10 +154,6 @@ bzr-unpack: $(BZR_BUILD_DIR)/.configured
 #
 $(BZR_BUILD_DIR)/.built: $(BZR_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
-	)
 	(cd $(@D)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
