@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FETCHMAIL_SITE=http://download.berlios.de/fetchmail
-FETCHMAIL_VERSION=6.3.12
+FETCHMAIL_VERSION=6.3.13
 FETCHMAIL_SOURCE=fetchmail-$(FETCHMAIL_VERSION).tar.bz2
 FETCHMAIL_DIR=fetchmail-$(FETCHMAIL_VERSION)
 FETCHMAIL_UNZIP=bzcat
@@ -50,8 +50,7 @@ endif
 # FETCHMAIL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FETCHMAIL_PATCHES=$(FETCHMAIL_SOURCE_DIR)/configure.patch
-FETCHMAIL_PATCHES=
+#FETCHMAIL_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -106,12 +105,13 @@ fetchmail-source: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PATCHES)
-	$(MAKE) zlib-stage
-	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(FETCHMAIL_DIR) $(FETCHMAIL_BUILD_DIR)
+$(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PATCHES) make/fetchmail.mk
+	$(MAKE) openssl-stage zlib-stage
+	rm -rf $(BUILD_DIR)/$(FETCHMAIL_DIR) $(@D)
 	$(FETCHMAIL_UNZIP) $(DL_DIR)/$(FETCHMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(FETCHMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(FETCHMAIL_DIR) -p1
+	if test -n "$(FETCHMAIL_PATCHES)"; then \
+		cat $(FETCHMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(FETCHMAIL_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(FETCHMAIL_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
