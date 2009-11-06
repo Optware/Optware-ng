@@ -26,7 +26,7 @@ LIBGD_DEPENDS=libpng, libjpeg, freetype, fontconfig
 #
 # LIBGD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGD_IPK_VERSION=3
+LIBGD_IPK_VERSION=4
 
 #
 # LIBGD_LOCALES defines which locales get installed
@@ -73,7 +73,7 @@ LIBGD_IPK=$(BUILD_DIR)/libgd_$(LIBGD_VERSION)-$(LIBGD_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(LIBGD_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBGD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libgd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -90,7 +90,8 @@ $(LIBGD_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBGD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBGD_SITE)/$(LIBGD_SOURCE)
+	$(WGET) -P $(@D) $(LIBGD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,19 +106,22 @@ libgd-source: $(DL_DIR)/$(LIBGD_SOURCE) $(LIBGD_PATCHES)
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
 #
-$(LIBGD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGD_SOURCE) \
-		$(LIBGD_PATCHES)
+$(LIBGD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGD_SOURCE) $(LIBGD_PATCHES) make/libgd.mk
 	$(MAKE) libpng-stage libjpeg-stage freetype-stage fontconfig-stage
 	rm -rf $(BUILD_DIR)/$(LIBGD_DIR) $(LIBGD_BUILD_DIR)
 	$(LIBGD_UNZIP) $(DL_DIR)/$(LIBGD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LIBGD_DIR) $(LIBGD_BUILD_DIR)
-	(cd $(LIBGD_BUILD_DIR); \
+	sed -i -e 's|libpng12-config --|$(STAGING_PREFIX)/bin/&|' \
+	       -e 's|libpng-config --|$(STAGING_PREFIX)/bin/&|' $(@D)/configure.ac
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGD_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		ac_cv_path_LIBPNG12_CONFIG="$(STAGING_PREFIX)/bin/libpng12-config" \
+		ac_cv_path_LIBPNG_CONFIG="$(STAGING_PREFIX)/bin/libpng-config" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -132,8 +136,8 @@ $(LIBGD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGD_SOURCE) \
 		--with-fontconfig=$(STAGING_DIR)/opt \
 		--without-xpm \
 	)
-	$(PATCH_LIBTOOL) $(LIBGD_BUILD_DIR)/libtool
-	touch $(LIBGD_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libgd-unpack: $(LIBGD_BUILD_DIR)/.configured
 
@@ -142,15 +146,9 @@ libgd-unpack: $(LIBGD_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(LIBGD_BUILD_DIR)/.built: $(LIBGD_BUILD_DIR)/.configured
-	rm -f $(LIBGD_BUILD_DIR)/.built
-		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGD_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGD_LDFLAGS)" \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-	$(MAKE) -C $(LIBGD_BUILD_DIR)
-	touch $(LIBGD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -163,9 +161,9 @@ libgd: $(LIBGD_BUILD_DIR)/.built
 #
 $(LIBGD_BUILD_DIR)/.staged: $(LIBGD_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBGD_BUILD_DIR) install \
+	$(MAKE) -C $(@D) install \
 		DESTDIR=$(STAGING_DIR) transform=''
-	rm -rf $(STAGING_DIR)/opt/lib/libgd.la
+	rm -rf $(STAGING_LIB_DIR)/libgd.la
 	touch $@
 
 libgd-stage: $(LIBGD_BUILD_DIR)/.staged
