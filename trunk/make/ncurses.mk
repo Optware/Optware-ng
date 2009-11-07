@@ -155,9 +155,10 @@ ncurses-ipk: $(NCURSES_IPK)
 
 ncurses-clean:
 	-$(MAKE) -C $(NCURSES_DIR) clean
+	-$(MAKE) -C $(NCURSES_HOST_BUILD_DIR) clean
 
 ncurses-dirclean:
-	rm -rf $(NCURSES_DIR) $(NCURSES_IPK_DIR) $(NCURSES_IPK)
+	rm -rf $(NCURSES_DIR) $(NCURSES_IPK_DIR) $(NCURSES_IPK) $(NCURSES_HOST_BUILD_DIR)
 
 ncurses-check: $(NCURSES_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NCURSES_IPK)
