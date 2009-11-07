@@ -9,7 +9,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	$(ERLANG_PACKAGES) \
-	amule apache aria2 aspell \
+	amule aria2 aspell \
 	asterisk asterisk14 asterisk14-chan-capi \
 	asterisk16 asterisk16-addons \
 	atftp avahi \
@@ -40,7 +40,7 @@ BROKEN_PACKAGES = \
 	motor \
 	newsbeuter nget nmap nload nzbget nzbget-testing \
 	open2300 openldap obexftp openser oww \
-	p7zip p910nd par2cmdline pcapsipdump php-apache \
+	p7zip p910nd par2cmdline pcapsipdump \
 	picolisp player puppy py-mysql \
 	qemu quickie \
 	re2c rhtvision rsstail rtorrent \
