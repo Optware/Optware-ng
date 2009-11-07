@@ -131,7 +131,8 @@ mysql-hostbuild: $(MYSQL_HOST_BUILD_DIR)/.built
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MYSQL_BUILD_DIR)/.configured: $(MYSQL_PATCHES) $(MYSQL_HOST_BUILD_DIR)/.built
+$(MYSQL_BUILD_DIR)/.configured: $(MYSQL_PATCHES) $(MYSQL_HOST_BUILD_DIR)/.built \
+ $(DL_DIR)/$(MYSQL_SOURCE) make/mysql.mk
 	$(MAKE) openssl-stage
 	$(MAKE) ncurses-stage
 	$(MAKE) zlib-stage
