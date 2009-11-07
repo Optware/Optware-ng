@@ -100,7 +100,7 @@ $(DL_DIR)/$(MYSQL5_SOURCE):
 #
 mysql5-source: $(DL_DIR)/$(MYSQL5_SOURCE) $(MYSQL5_PATCHES)
 
-$(MYSQL5_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MYSQL5_SOURCE) # make/mysql5.mk
+$(MYSQL5_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MYSQL5_SOURCE) make/mysql5.mk
 	rm -rf $(HOST_BUILD_DIR)/$(MYSQL5_DIR) $(@D)
 	$(MYSQL5_UNZIP) $(DL_DIR)/$(MYSQL5_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(MYSQL5_DIR) $(@D)
@@ -125,7 +125,8 @@ mysql5-hostbuild: $(MYSQL5_HOST_BUILD_DIR)/.built
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MYSQL5_BUILD_DIR)/.configured: $(MYSQL5_PATCHES) # $(MYSQL5_HOST_BUILD_DIR)/.built
+$(MYSQL5_BUILD_DIR)/.configured: $(MYSQL5_PATCHES) $(DL_DIR)/$(MYSQL5_SOURCE) make/mysql5.mk
+# $(MYSQL5_HOST_BUILD_DIR)/.built
 	$(MAKE) openssl-stage
 	$(MAKE) ncurses-stage
 	$(MAKE) zlib-stage
@@ -261,6 +262,7 @@ mysql5-ipk: $(MYSQL5_IPK)
 #
 mysql5-clean:
 	-$(MAKE) -C $(MYSQL5_BUILD_DIR) clean
+	-$(MAKE) -C $(MYSQL5_HOST_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
@@ -268,6 +270,7 @@ mysql5-clean:
 #
 mysql5-dirclean:
 	rm -rf $(BUILD_DIR)/$(MYSQL5_DIR) $(MYSQL5_BUILD_DIR) $(MYSQL5_IPK_DIR) $(MYSQL5_IPK)
+	rm -rf $(MYSQL5_HOST_BUILD_DIR)
 
 #
 # Some sanity check for the package.
