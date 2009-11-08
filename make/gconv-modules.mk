@@ -32,11 +32,14 @@ GCONV_MODULES_IPK_DIR=$(BUILD_DIR)/gconv-modules-$(GCONV_MODULES_VERSION)-ipk
 GCONV_MODULES_IPK=$(BUILD_DIR)/gconv-modules_$(GCONV_MODULES_VERSION)-$(GCONV_MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 GCONV_MODULES_ICONV=$(strip \
-$(if $(filter syno-e500, $(OPTWARE_TARGET)), \
-	$(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/$(GNU_TARGET_NAME)/bin/iconv, \
-$(if $(filter syno-x07, $(OPTWARE_TARGET)), \
-	$(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/bin/iconv, \
-$(TARGET_USRLIBDIR)/../bin/iconv)))
+	$(if $(filter syno-e500, $(OPTWARE_TARGET)), $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/$(GNU_TARGET_NAME)/bin/iconv, \
+	$(if $(filter syno-x07, $(OPTWARE_TARGET)), $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/bin/iconv, \
+	$(if $(filter vt4, $(OPTWARE_TARGET)), $(TARGET_LIBDIR)/../../../../target/bin/iconv, \
+	$(TARGET_USRLIBDIR)/../bin/iconv))))
+
+GCONV_MODULES_LIB_DIR=$(strip \
+	$(if $(filter vt4, $(OPTWARE_TARGET)), $(TARGET_LIBDIR)/gconv, \
+	$(TARGET_USRLIBDIR)/gconv))
 
 .PHONY: gconv-modules-source gconv-modules-unpack gconv-modules gconv-modules-stage gconv-modules-ipk gconv-modules-clean gconv-modules-dirclean gconv-modules-check
 
@@ -84,7 +87,7 @@ else
     ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle slugos5be slugos5le, $(OPTWARE_TARGET)))
     else
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
-	cp $(TARGET_USRLIBDIR)/gconv/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
+	cp $(GCONV_MODULES_LIB_DIR)/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/EUC-*.so
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/ISO-2022-*.so
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/JOHAB.so
