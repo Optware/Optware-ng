@@ -66,4 +66,4 @@ DBUS_IPK_VERSION := 1
 
 LINPHONE_LDFLAGS := -lpthread -lresolv -lrt
 
-MYSQL5_VERSION := 5.0.45
+MYSQL5_CONFIG_ENV_EXTRA := ac_cv_func_fesetround=no
