@@ -20,7 +20,7 @@ BROKEN_PACKAGES = \
 	dansguardian dspam \
 	emacs22 enhanced-ctorrent esniper \
 	ficy finch firedrill-httptunnel flip freeradius fuppes \
-	gconv-modules ggrab ghostscript gloox gnokii gnupg1 gnupg \
+	ggrab ghostscript gloox gnokii gnupg1 gnupg \
 	gnet gsnmp \
 	gnuplot gnutls gtk gutenprint \
 	hplip \
