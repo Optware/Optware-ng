@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	mysql5
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -313,7 +312,7 @@ COMMON_CROSS_PACKAGES = \
 	msort msynctool mt-daapd mt-daapd-svn mtools \
 	mtr multitail mutt mxml \
 	myrapbook \
-	mysql mysql-connector-odbc \
+	mysql mysql5 mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
 	ncdu ncftp ncmpc ncurses ncursesw nd ne nemesis \
 	neon net-snmp net-tools netatalk netcat nethack netio netrik \
