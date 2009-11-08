@@ -18,7 +18,6 @@ BROKEN_PACKAGES = \
 	antinat asterisk \
 	asterisk14 asterisk14-chan-capi \
 	asterisk16 asterisk16-addons \
-	busybox \
 	chillispot \
 	clinkcc \
 	dcled \
