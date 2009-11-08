@@ -26,10 +26,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+
+MYSQL5_VERSION ?= 5.0.86
+#MYSQL5_VERSION=5.1.40
+
 MYSQL5_SITE=http://downloads.mysql.com/archives/mysql-5.0
-MYSQL5_VERSION=5.0.45
+#MYSQL5_SITE=http://mysql.llarian.net/Downloads/MySQL-5.0
 #MYSQL5_SITE=http://downloads.mysql.com/archives/mysql-5.1
-#MYSQL5_VERSION=5.1.23-rc
+
 MYSQL5_SOURCE=mysql-$(MYSQL5_VERSION).tar.gz
 MYSQL5_DIR=mysql-$(MYSQL5_VERSION)
 MYSQL5_UNZIP=zcat
@@ -276,4 +280,4 @@ mysql5-dirclean:
 # Some sanity check for the package.
 #
 mysql5-check: $(MYSQL5_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MYSQL5_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
