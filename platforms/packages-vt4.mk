@@ -65,3 +65,5 @@ DBUS_VERSION := 1.1.2
 DBUS_IPK_VERSION := 1
 
 LINPHONE_LDFLAGS := -lpthread -lresolv -lrt
+
+MYSQL5_VERSION := 5.0.45
