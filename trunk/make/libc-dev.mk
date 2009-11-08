@@ -126,7 +126,7 @@ $(BUILD_DIR)/libc-dev-$(LIBC-DEV_VERSION)-ipk/CONTROL/control:
 $(LIBC-DEV_IPK): make/libc-dev.mk
 	rm -rf $(LIBC-DEV_IPK_DIR) $(BUILD_DIR)/libc-dev_*_$(TARGET_ARCH).ipk
 	install -d $(LIBC-DEV_IPK_DIR)/opt/
-	rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
+	-rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
 	install -d $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	install -d $(LIBC-DEV_IPK_DIR)/opt/lib/
@@ -140,7 +140,7 @@ ifeq (uclibc, $(LIBC_STYLE))
 		$(LIBC-DEV_IPK_DIR)/opt/lib/
 else
 	for f in libc_nonshared.a libpthread_nonshared.a; \
-		do rsync -l $(TARGET_USRLIBDIR)/$${f} $(LIBC-DEV_IPK_DIR)/opt/lib/; done
+		do rsync -l $(LIBC-DEV_USRLIBDIR)/$${f} $(LIBC-DEV_IPK_DIR)/opt/lib/; done
 	rsync -l $(LIBC-DEV_USRLIBDIR)/libc.so $(LIBC-DEV_IPK_DIR)/opt/lib/
 	sed -i -e '/^GROUP/s|.*|GROUP ( /lib/libc.so.6 /opt/lib/libc_nonshared.a )|' \
 		$(LIBC-DEV_IPK_DIR)/opt/lib/libc.so
