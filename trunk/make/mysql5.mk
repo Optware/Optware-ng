@@ -66,12 +66,13 @@ MYSQL5_PATCHES=$(MYSQL5_SOURCE_DIR)/configure-$(MYSQL5_VERSION).patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MYSQL5_CPPFLAGS=
+MYSQL5_CPPFLAGS ?=
 MYSQL5_LDFLAGS="-Wl,-rpath,/opt/lib/mysql"
 MYSQL5_CONFIG_ENV=ac_cv_sys_restartable_syscalls=yes
 MYSQL5_CONFIG_ENV += $(strip \
 $(if $(filter arm armeb, $(TARGET_ARCH)), ac_cv_c_stack_direction=1, \
 ))
+MYSQL5_CONFIG_ENV += $(MYSQL5_CONFIG_ENV_EXTRA)
 
 #
 # MYSQL5_BUILD_DIR is the directory in which the build is done.
