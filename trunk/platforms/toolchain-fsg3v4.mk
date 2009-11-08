@@ -43,4 +43,5 @@ $(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) $(DL_DIR)/$(TOOLC
 	mv $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include/usr/local/arm-linux/sys-include/* \
 	   $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include/
 	rm -rf $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include/usr
+	rm -rf $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include/net/route.h
 	touch $@
