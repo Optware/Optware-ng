@@ -33,7 +33,8 @@ $(DL_DIR)/$(TOOLCHAIN_SOURCE2):
 
 toolchain-download: $(DL_DIR)/$(TOOLCHAIN_SOURCE) $(DL_DIR)/$(TOOLCHAIN_SOURCE2)
 
-$(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) $(DL_DIR)/$(TOOLCHAIN_SOURCE2)
+$(BASE_DIR)/toolchain/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) $(DL_DIR)/$(TOOLCHAIN_SOURCE2) \
+$(OPTWARE_TOP)/platforms/toolchain-fsg3v4.mk
 	rm -rf $(TARGET_CROSS_TOP)
 	mkdir -p $(TARGET_CROSS_TOP)
 	tar -xj -C $(TARGET_CROSS_TOP) -f $(DL_DIR)/$(TOOLCHAIN_SOURCE)
