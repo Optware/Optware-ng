@@ -137,7 +137,7 @@ dosfstools-unpack: $(DOSFSTOOLS_BUILD_DIR)/.configured
 #
 $(DOSFSTOOLS_BUILD_DIR)/.built: $(DOSFSTOOLS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(DOSFSTOOLS_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOSFSTOOLS_CPPFLAGS)" \
 		DEBUGFLAGS="$(STAGING_CPPFLAGS) $(DOSFSTOOLS_CPPFLAGS)" \
@@ -155,7 +155,11 @@ dosfstools: $(DOSFSTOOLS_BUILD_DIR)/.built
 #
 $(DOSFSTOOLS_BUILD_DIR)/.staged: $(DOSFSTOOLS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(DOSFSTOOLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) install \
+		DESTDIR=$(STAGING_DIR) \
+		PREFIX=$(STAGING_DIR) \
+		MANDIR=$(STAGING_DIR)/share/man/man8 \
+		;
 	touch $@
 
 dosfstools-stage: $(DOSFSTOOLS_BUILD_DIR)/.staged
