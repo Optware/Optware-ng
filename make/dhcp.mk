@@ -19,7 +19,7 @@ DHCP_DEPENDS=openssl
 DHCP_SUGGESTS=
 DHCP_CONFLICTS=
 
-DHCP_IPK_VERSION=1
+DHCP_IPK_VERSION=2
 
 DHCP_CPPFLAGS=
 DHCP_LDFLAGS=
@@ -50,16 +50,26 @@ $(DHCP_BUILD_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE) make/dhcp.mk
 	sed -i -e 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\/opt\/var\/run\/dhcpd.pid"/' $(@D)/includes/site.h
 	sed -i -e 's/\/\* #define _PATH_DHCPD_DB.*/#define _PATH_DHCPD_DB      "\/opt\/etc\/dhcpd.leases"/' $(@D)/includes/site.h
 	sed -i -e 's/\/\* #define _PATH_DHCPD_CONF.*/#define _PATH_DHCPD_CONF      "\/opt\/etc\/dhcpd.conf"/' $(@D)/includes/site.h
-	(cd $(@D) && ./configure)
+	(cd $(@D); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(DHCP_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(DHCP_LDFLAGS)" \
+		ac_cv_file__dev_random=no \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
+	)
 	touch $@
 
 dhcp-unpack: $(DHCP_BUILD_DIR)/.configured
 
 $(DHCP_BUILD_DIR)/.built: $(DHCP_BUILD_DIR)/.configured
 	rm -f $@
-	make -C $(@D) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(DHCP_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(DHCP_CPPFLAGS)"
+	make -C $(@D)
 	touch $@
 
 dhcp: $(DHCP_BUILD_DIR)/.built
