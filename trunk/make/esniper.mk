@@ -20,8 +20,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ESNIPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esniper
-ESNIPER_UPSTREAM_VERSION=2-19-0
-ESNIPER_VERSION=2.19.0
+ESNIPER_UPSTREAM_VERSION=2-21-0
+ESNIPER_VERSION=2.21.0
 ESNIPER_SOURCE=esniper-$(ESNIPER_UPSTREAM_VERSION).tgz
 ESNIPER_DIR=esniper-$(ESNIPER_UPSTREAM_VERSION)
 ESNIPER_UNZIP=zcat
@@ -29,7 +29,7 @@ ESNIPER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ESNIPER_DESCRIPTION=A lightweight eBay sniping tool
 ESNIPER_SECTION=net
 ESNIPER_PRIORITY=optional
-ESNIPER_DEPENDS=openssl, libcurl
+ESNIPER_DEPENDS=openssl, libcurl, zlib
 ESNIPER_SUGGESTS=
 ESNIPER_CONFLICTS=
 
@@ -76,8 +76,8 @@ ESNIPER_IPK=$(BUILD_DIR)/esniper_$(ESNIPER_VERSION)-$(ESNIPER_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ESNIPER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ESNIPER_SITE)/$(ESNIPER_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(ESNIPER_SOURCE)
+	$(WGET) -P $(@D) $(ESNIPER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,17 +105,17 @@ esniper-source: $(DL_DIR)/$(ESNIPER_SOURCE) $(ESNIPER_PATCHES)
 # shown below to make various patches to it.
 #
 $(ESNIPER_BUILD_DIR)/.configured: $(DL_DIR)/$(ESNIPER_SOURCE) $(ESNIPER_PATCHES) make/esniper.mk
-	$(MAKE) openssl-stage libcurl-stage
-	rm -rf $(BUILD_DIR)/$(ESNIPER_DIR) $(ESNIPER_BUILD_DIR)
+	$(MAKE) openssl-stage libcurl-stage zlib-stage
+	rm -rf $(BUILD_DIR)/$(ESNIPER_DIR) $(@D)
 	$(ESNIPER_UNZIP) $(DL_DIR)/$(ESNIPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ESNIPER_PATCHES)" ; \
 		then cat $(ESNIPER_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ESNIPER_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(ESNIPER_DIR)" != "$(ESNIPER_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(ESNIPER_DIR) $(ESNIPER_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(ESNIPER_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(ESNIPER_DIR) $(@D) ; \
 	fi
-	(cd $(ESNIPER_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESNIPER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ESNIPER_LDFLAGS)" \
@@ -128,7 +128,7 @@ $(ESNIPER_BUILD_DIR)/.configured: $(DL_DIR)/$(ESNIPER_SOURCE) $(ESNIPER_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(ESNIPER_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 esniper-unpack: $(ESNIPER_BUILD_DIR)/.configured
@@ -138,7 +138,7 @@ esniper-unpack: $(ESNIPER_BUILD_DIR)/.configured
 #
 $(ESNIPER_BUILD_DIR)/.built: $(ESNIPER_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(ESNIPER_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +151,7 @@ esniper: $(ESNIPER_BUILD_DIR)/.built
 #
 $(ESNIPER_BUILD_DIR)/.staged: $(ESNIPER_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(ESNIPER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 esniper-stage: $(ESNIPER_BUILD_DIR)/.staged
@@ -218,4 +218,4 @@ esniper-dirclean:
 # Some sanity check for the package.
 #
 esniper-check: $(ESNIPER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ESNIPER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
