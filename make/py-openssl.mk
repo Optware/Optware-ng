@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-OPENSSL_VERSION=0.9
-PY-OPENSSL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyopenssl
+PY-OPENSSL_VERSION=0.10
+PY-OPENSSL_SITE=http://pypi.python.org/packages/source/p/pyOpenSSL
 PY-OPENSSL_SOURCE=pyOpenSSL-$(PY-OPENSSL_VERSION).tar.gz
 PY-OPENSSL_DIR=pyOpenSSL-$(PY-OPENSSL_VERSION)
 PY-OPENSSL_UNZIP=zcat
@@ -109,7 +109,7 @@ py-openssl-source: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(PY-OPENSSL_PATCHES)
 $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(PY-OPENSSL_PATCHES) make/py-openssl.mk
 	$(MAKE) openssl-stage py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)
-	mkdir -p $(PY-OPENSSL_BUILD_DIR)
+	mkdir -p $(@D)
 	# 2.5
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1
