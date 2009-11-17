@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-URWID_SITE=http://excess.org/urwid
-PY-URWID_VERSION=0.9.8.4
+PY-URWID_VERSION=0.9.9
 PY-URWID_SOURCE=urwid-$(PY-URWID_VERSION).tar.gz
 PY-URWID_DIR=urwid-$(PY-URWID_VERSION)
 PY-URWID_UNZIP=zcat
@@ -173,12 +173,12 @@ py-urwid: $(PY-URWID_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-URWID_BUILD_DIR)/.staged: $(PY-URWID_BUILD_DIR)/.built
+#$(PY-URWID_BUILD_DIR)/.staged: $(PY-URWID_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-py-urwid-stage: $(PY-URWID_BUILD_DIR)/.staged
+#
+#py-urwid-stage: $(PY-URWID_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
