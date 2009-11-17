@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BIP_SITE=http://bip.t1r.net/downloads
-BIP_VERSION=0.8.2
+BIP_VERSION=0.8.4
 BIP_SOURCE=bip-$(BIP_VERSION).tar.gz
 BIP_DIR=bip-$(BIP_VERSION)
 BIP_UNZIP=zcat
@@ -110,7 +110,7 @@ bip-source: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES)
 #
 $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(BIP_DIR) $(BIP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BIP_DIR) $(@D)
 	$(BIP_UNZIP) $(DL_DIR)/$(BIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BIP_PATCHES)" ; \
 		then cat $(BIP_PATCHES) | \
@@ -125,6 +125,8 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BIP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BIP_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -143,7 +145,8 @@ bip-unpack: $(BIP_BUILD_DIR)/.configured
 #
 $(BIP_BUILD_DIR)/.built: $(BIP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) \
+		LDFLAGS="$(STAGING_LDFLAGS) $(BIP_LDFLAGS)"
 	touch $@
 
 #
