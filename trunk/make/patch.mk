@@ -19,11 +19,11 @@
 #
 # You should change all these variables to suit your package.
 #
-PATCH_SITE=http://ftp.debian.org/debian/pool/main/p/patch
-PATCH_VERSION=2.5.9
-PATCH_SOURCE=patch_$(PATCH_VERSION).orig.tar.gz
+PATCH_SITE=http://ftp.gnu.org/gnu/patch
+PATCH_VERSION=2.6
+PATCH_SOURCE=patch-$(PATCH_VERSION).tar.bz2
 PATCH_DIR=patch-$(PATCH_VERSION)
-PATCH_UNZIP=zcat
+PATCH_UNZIP=bzcat
 PATCH_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
 PATCH_DESCRIPTION=applies a diff to produce a patched file
 PATCH_SECTION=util
@@ -34,7 +34,7 @@ PATCH_CONFLICTS=
 #
 # PATCH_IPK_VERSION should be incremented when the ipk changes.
 #
-PATCH_IPK_VERSION=3
+PATCH_IPK_VERSION=1
 
 #
 # PATCH_PATCHES should list any patches, in the the order in
@@ -70,7 +70,8 @@ PATCH_IPK=$(BUILD_DIR)/patch_$(PATCH_VERSION)-$(PATCH_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PATCH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PATCH_SITE)/$(PATCH_SOURCE)
+	$(WGET) -P $(@D) $(PATCH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -96,11 +97,11 @@ patch-source: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES)
 #
 $(PATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES) make/patch.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(PATCH_DIR) $(PATCH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PATCH_DIR) $(@D)
 	$(PATCH_UNZIP) $(DL_DIR)/$(PATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PATCH_PATCHES) | patch -d $(BUILD_DIR)/$(PATCH_DIR) -p1
-	mv $(BUILD_DIR)/$(PATCH_DIR) $(PATCH_BUILD_DIR)
-	(cd $(PATCH_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PATCH_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PATCH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PATCH_LDFLAGS)" \
@@ -121,7 +122,7 @@ patch-unpack: $(PATCH_BUILD_DIR)/.configured
 #
 $(PATCH_BUILD_DIR)/.built: $(PATCH_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PATCH_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -130,12 +131,12 @@ $(PATCH_BUILD_DIR)/.built: $(PATCH_BUILD_DIR)/.configured
 #
 patch: $(PATCH_BUILD_DIR)/.built
 
-$(PATCH_BUILD_DIR)/.staged: $(PATCH_BUILD_DIR)/.built
-	rm -f $@
-#	$(MAKE) -C $(PATCH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-patch-stage: $(PATCH_BUILD_DIR)/.staged
+#$(PATCH_BUILD_DIR)/.staged: $(PATCH_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#patch-stage: $(PATCH_BUILD_DIR)/.staged
 			
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -207,4 +208,4 @@ patch-dirclean:
 # Some sanity check for the package.
 #
 patch-check: $(PATCH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PATCH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
