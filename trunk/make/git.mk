@@ -15,14 +15,14 @@
 # You should change all these variables to suit your package.
 # Please make sure that you add a description, and that you
 # list all your packages' dependencies, seperated by commas.
-# 
+#
 # If you list yourself as MAINTAINER, please give a valid email
 # address, and indicate your irc nick if it cannot be easily deduced
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.6.5.2
+GIT_VERSION=1.6.5.3
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
