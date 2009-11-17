@@ -1,40 +1,6 @@
---- pure-ftpd-1.0.22/configure.ac.orig	2009-04-26 12:19:40.000000000 +0000
-+++ pure-ftpd-1.0.22/configure.ac	2009-04-29 05:48:51.772543471 +0000
-@@ -909,176 +909,28 @@
- ])  
- 
- AC_MSG_CHECKING(whether snprintf is C99 conformant)
--AC_RUN_IFELSE([AC_LANG_SOURCE([[
--#include <stdio.h>
--#ifdef STDC_HEADERS
--# include <stdlib.h>
--# include <stddef.h>
--#else
--# if HAVE_STDLIB_H
--#  include <stdlib.h>
--# endif
--#endif
--#ifdef HAVE_UNISTD_H
--# include <unistd.h>
--#endif
--
--int main(void)
--{
--    char buf[4];
--    
--    (void) fprintf(fopen("conftestval", "w"), "%d\n",
--        (int) snprintf(buf, sizeof buf, "12345678"));
--    return 0;
--}
--]])],[CONF_SNPRINTF_TYPE=`cat conftestval`
--],[],[])
--AC_MSG_RESULT(done)
--if test "x$CONF_SNPRINTF_TYPE" = "x" ; then
--  AC_MSG_WARN(your operating system doesn't implement snprintf)
--else
-+CONF_SNPRINTF_TYPE=8
-   AC_DEFINE_UNQUOTED(CONF_SNPRINTF_TYPE, $CONF_SNPRINTF_TYPE, [return value of an overflowed snprintf])
--fi
+--- pure-ftpd-1.0.26/configure.ac.orig	2009-11-12 22:43:52.000000000 +0000
++++ pure-ftpd-1.0.26/configure.ac	2009-11-17 03:13:02.901011120 +0000
+@@ -952,144 +952,23 @@
  
  
  AC_MSG_CHECKING(whether getgroups 0 is sane)
@@ -60,7 +26,7 @@
  AC_MSG_RESULT(yes)
  AC_DEFINE(SAFE_GETGROUPS_0,,[Define is getgroups(0, NULL) works on your system])
 -],[AC_MSG_RESULT(no)
--],[])
+-],[AC_MSG_RESULT(suppose that it doesnt)])
  
  AC_MSG_CHECKING(whether realpath likes unreadable directories)
 -AC_RUN_IFELSE([AC_LANG_SOURCE([[
@@ -121,7 +87,8 @@
  [Define if realpath() works on unreadable directories])
 -],[AC_MSG_RESULT(no)
 -AC_DEFINE(USE_BUILTIN_REALPATH)
--],[])
+-],[AC_MSG_RESULT(no)
+-AC_DEFINE(USE_BUILTIN_REALPATH)])
  
  AC_MSG_CHECKING(whether you already have a standard MD5 implementation)
 -AC_RUN_IFELSE([AC_LANG_SOURCE([[
@@ -148,7 +115,7 @@
  AC_DEFINE(USE_SYSTEM_CRYPT_MD5,,[Define if you already have standard
  MD5 functions])
 -],[AC_MSG_RESULT(no)
--],[])
+-],[AC_MSG_RESULT(assuming no)])
  
  AC_MSG_CHECKING(whether you already have a standard SHA1 implementation)
 -AC_RUN_IFELSE([AC_LANG_SOURCE([[
@@ -174,7 +141,7 @@
  AC_DEFINE(USE_SYSTEM_CRYPT_SHA1,,[Define if you already have standard
  SHA1 functions])
 -],[AC_MSG_RESULT(no)
--],[])
+-],[AC_MSG_RESULT(assuming no)])
  
  AC_MSG_CHECKING([whether we are inside a Virtuozzo virtual host])
  if test -d /proc/vz; then

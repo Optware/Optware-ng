@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PURE-FTPD_SITE=http://download.pureftpd.org/pub/pure-ftpd/releases
-PURE-FTPD_VERSION=1.0.24
+PURE-FTPD_VERSION=1.0.26
 PURE-FTPD_SOURCE=pure-ftpd-$(PURE-FTPD_VERSION).tar.bz2
 PURE-FTPD_DIR=pure-ftpd-$(PURE-FTPD_VERSION)
 PURE-FTPD_UNZIP=bzcat
@@ -76,8 +76,8 @@ PURE-FTPD_IPK=$(BUILD_DIR)/pure-ftpd_$(PURE-FTPD_VERSION)-$(PURE-FTPD_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PURE-FTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PURE-FTPD_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PURE-FTPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -158,12 +158,12 @@ pure-ftpd: $(PURE-FTPD_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PURE-FTPD_BUILD_DIR)/.staged: $(PURE-FTPD_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-pure-ftpd-stage: $(PURE-FTPD_BUILD_DIR)/.staged
+#$(PURE-FTPD_BUILD_DIR)/.staged: $(PURE-FTPD_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#pure-ftpd-stage: $(PURE-FTPD_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
