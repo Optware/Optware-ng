@@ -127,6 +127,8 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 		LDFLAGS="$(STAGING_LDFLAGS) $(BIP_LDFLAGS)" \
 		ac_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_realloc_0_nonnull=yes \
+		ac_cv_lib_crypto_CRYPTO_new_ex_data=yes \
+		ac_cv_lib_ssl_SSL_read=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
