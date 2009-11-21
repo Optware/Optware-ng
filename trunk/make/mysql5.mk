@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 
-MYSQL5_VERSION ?= 5.0.86
+MYSQL5_VERSION ?= 5.0.88
 #MYSQL5_VERSION=5.1.40
 
 MYSQL5_SITE=http://downloads.mysql.com/archives/mysql-5.0
