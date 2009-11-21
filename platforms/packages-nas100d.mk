@@ -3,4 +3,5 @@ SPECIFIC_PACKAGES = ipkg-opt
 
 # Packages that do not work for nas100d.
 BROKEN_PACKAGES = \
+	golang \
 

@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	ecl \
 	cairo fixesext \
 	gloox \
+	golang \
 	gtmess \
 	iptraf \
 	libdvb \

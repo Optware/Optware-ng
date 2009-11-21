@@ -261,7 +261,7 @@ COMMON_CROSS_PACKAGES = \
 	ggrab ghostscript git gkrellmd glib gnet gnokii \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
-	gloox gpsd \
+	gloox golang gpsd \
 	grep groff gsasl gsnmp gtmess gtypist gutenprint gzip  \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \

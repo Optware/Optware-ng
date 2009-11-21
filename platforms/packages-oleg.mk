@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	dialog \
 	gambit-c \
 	gloox \
+	golang \
 	libdvb \
 	ltrace \
 	minidlna \

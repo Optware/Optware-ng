@@ -13,6 +13,7 @@ BROKEN_PACKAGES = \
 	ecl \
 	fcgi ficy fish \
 	gloox \
+	golang \
 	gnu-smalltalk gtmess gtk \
 	hpijs hplip \
 	inferno \
