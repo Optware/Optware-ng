@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk14-chan-capi \
+	golang \
 	inferno \
 	iptraf \
 	ldconfig libcapi20 \

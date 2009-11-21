@@ -11,6 +11,7 @@ BROKEN_PACKAGES = \
 	gambit-c gawk \
 	gnu-smalltalk \
 	gnokii \
+	golang \
 	inferno \
 	ldconfig \
 	ltrace \

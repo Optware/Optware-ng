@@ -9,6 +9,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	bitchx \
+	golang \
 	gtk ipac-ng iptables iptraf ldconfig \
 	netatalk nfs-utils \
 	puppy qemu softflowd \

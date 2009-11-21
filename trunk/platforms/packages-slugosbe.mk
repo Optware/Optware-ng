@@ -11,6 +11,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	btg \
+	golang \
 	iptraf \
 	ldconfig \
 	netatalk \

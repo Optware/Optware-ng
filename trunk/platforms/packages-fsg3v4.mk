@@ -25,6 +25,7 @@ BROKEN_PACKAGES = \
 	ecl eggdrop \
 	fcgi \
 	gdb \
+	golang \
 	ldconfig \
 	loudmouth \
 	net-snmp net-tools netatalk nmap \

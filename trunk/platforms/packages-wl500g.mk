@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	 ficy finch freetds gambit-c gawk \
 	 giftcurs git-core gnokii gnupg gphoto2 ggrab libgphoto2 hnb ice \
 	 glib gloox gnet gsnmp gtmess \
+	golang \
 	 id3lib inferno iperf irssi jikes \
 	 lftp \
 	 libcdio libdaemon libdvb libftdi libidn liblcms \

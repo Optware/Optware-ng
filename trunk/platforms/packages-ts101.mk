@@ -13,6 +13,7 @@ BROKEN_PACKAGES = \
 	gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
 	gloox \
+	golang \
 	inferno \
 	gtmess \
 	hplip \

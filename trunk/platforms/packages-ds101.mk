@@ -7,6 +7,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	bpalogin \
 	freeradius \
+	golang \
 	imagemagick \
 	ldconfig lftp \
 	motion \

@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	cyrus-sasl \
 	enhanced-ctorrent \
 	glib \
+	golang \
 	imagemagick irssi \
 	mod-fastcgi mod-python \
 	php-apache \
