@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	btg \
 	ecl \
 	golang \
-	inferno \
 	ldconfig \
 	sandbox \
 
