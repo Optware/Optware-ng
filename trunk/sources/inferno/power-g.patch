@@ -1,0 +1,15 @@
+Index: emu/Linux/mkfile
+===================================================================
+--- emu/Linux/mkfile	(revision 221)
++++ emu/Linux/mkfile	(working copy)
+@@ -4,8 +4,8 @@
+ 
+ #Configurable parameters
+ 
+-CONF=emu			#default configuration
+-CONFLIST=emu
++CONF=emu-g			#default configuration
++CONFLIST=emu-g
+ CLEANCONFLIST=
+ 
+ INSTALLDIR=$ROOT/$SYSTARG/$OBJTYPE/bin	#path of directory where kernel is installed

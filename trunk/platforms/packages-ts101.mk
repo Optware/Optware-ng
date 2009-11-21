@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	gift-openft gift-opennap \
 	gloox \
 	golang \
-	inferno \
 	gtmess \
 	hplip \
 	iptraf \

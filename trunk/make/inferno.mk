@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 INFERNO_HG_REPO=https://inferno-os.googlecode.com/hg
-INFERNO_HG_DATE=20090830
-INFERNO_HG_REV=233e3f1c4df6
+INFERNO_HG_DATE=20091119
+INFERNO_HG_REV=d6d6cf406377
 INFERNO_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/inferno
 INFERNO_VERSION=4.hg$(INFERNO_HG_DATE)
 INFERNO_SOURCE=inferno-$(INFERNO_VERSION).tar.gz
@@ -160,6 +160,7 @@ $(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PAT
 		-e '/^AS=/s|=.*|=$(TARGET_CC) $(INFERNO_CPPFLAGS) -c|' \
 		-e '/^CC=/s|=.*|=$(TARGET_CC) $(INFERNO_CPPFLAGS) -c|' \
 		-e '/^LD=/s|=.*|=$(TARGET_CC) $(STAGING_LDFLAGS) $(INFERNO_LDFLAGS)|' \
+		-e '/^YACC=/s|=.*|=iyacc|' \
 		$(@D)/mkfiles/mkfile-Linux-$(INFERNO_ARCH)
 ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
 	##no fenv.h bug
@@ -378,9 +379,8 @@ $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
 	$(MAKE) $(INFERNO-SMALL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO-SMALL_IPK_DIR)
 	# inferno-utils
-	install -d $(INFERNO-UTILS_IPK_DIR)/opt
-	mv $(INFERNO_IPK_DIR)/opt/bin $(INFERNO-UTILS_IPK_DIR)/opt/
-	mv $(INFERNO-UTILS_IPK_DIR)/opt/bin/md5sum $(INFERNO-UTILS_IPK_DIR)/opt/bin/inferno-md5sum
+	install -d $(INFERNO-UTILS_IPK_DIR)/opt/share/inferno
+	mv $(INFERNO_IPK_DIR)/opt/bin $(INFERNO-UTILS_IPK_DIR)/opt/share/inferno
 	$(MAKE) $(INFERNO-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO-UTILS_IPK_DIR)
 #	# rest in inferno
