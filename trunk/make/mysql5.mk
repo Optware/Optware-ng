@@ -239,7 +239,7 @@ $(MYSQL5_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(MYSQL5_IPK): $(MYSQL5_BUILD_DIR)/.built
-	rm -rf $(MYSQL5_IPK_DIR) $(BUILD_DIR)/mysql_*_$(TARGET_ARCH).ipk
+	rm -rf $(MYSQL5_IPK_DIR) $(BUILD_DIR)/mysql5_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MYSQL5_BUILD_DIR) DESTDIR=$(MYSQL5_IPK_DIR) install-strip
 	rm -rf $(MYSQL5_IPK_DIR)/opt/mysql5-test
 	install -d $(MYSQL5_IPK_DIR)/opt/var/lib/mysql
