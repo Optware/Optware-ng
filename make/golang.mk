@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GOLANG_HG_REPO=https://go.googlecode.com/hg
-GOLANG_HG_DATE=20091120
-GOLANG_HG_REV=44699e529c44
+GOLANG_HG_DATE=20091123
+GOLANG_HG_REV=cb2c748233c8
 GOLANG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/golang
 GOLANG_VERSION=0.hg$(GOLANG_HG_DATE)
 GOLANG_SOURCE=golang-$(GOLANG_VERSION).tar.gz
@@ -113,7 +113,7 @@ $(GOLANG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GOLANG_SOURCE) $(G
 
 golang-host: $(GOLANG_HOST_BUILD_DIR)/.built
 
-$(GOLANG_BUILD_DIR)/.configured: $(GOLANG_HOST_BUILD_DIR)/.built $(GOLANG_PATCHES) # make/golang.mk
+$(GOLANG_BUILD_DIR)/.configured: $(GOLANG_HOST_BUILD_DIR)/.built $(GOLANG_PATCHES) make/golang.mk
 	rm -rf $(BUILD_DIR)/$(GOLANG_DIR) $(@D)
 	$(GOLANG_UNZIP) $(DL_DIR)/$(GOLANG_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(GOLANG_PATCHES)" ; \
@@ -130,6 +130,7 @@ endif
 	sed -i -e '/^CC/s|=quietgcc|=$(@D)/bin/quietgcc|' \
 	       -e '/^LD=/s|=quietgcc|=$(@D)/bin/quietgcc $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)|' \
 		$(@D)/src/Make.conf
+	rm -f $(@D)/pkg/~place-holder~
 	touch $@
 
 golang-unpack: $(GOLANG_BUILD_DIR)/.configured
@@ -199,7 +200,7 @@ $(GOLANG_IPK): $(GOLANG_BUILD_DIR)/.built
 	# golang
 	install -d $(GOLANG_IPK_DIR)/opt/share/go
 	# $(STRIP_COMMAND) $(GOLANG_IPK_DIR)/opt/bin/*
-	rsync -av $(<D)/bin $(<D)/pkg $(GOLANG_IPK_DIR)/opt/share/go/
+	rsync -av $(<D)/bin $(<D)/pkg $(<D)/[ACLR]* $(GOLANG_IPK_DIR)/opt/share/go/
 	$(MAKE) $(GOLANG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GOLANG_IPK_DIR)
 
