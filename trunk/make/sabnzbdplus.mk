@@ -46,8 +46,7 @@ SABNZBDPLUS_CONFFILES=/opt/etc/SABnzbd.ini /opt/etc/init.d/S70sabnzbdplus
 # SABNZBDPLUS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SABNZBDPLUS_PATCHES=$(SABNZBDPLUS_SOURCE_DIR)/fix_diskfree.patch \
-                $(SABNZBDPLUS_SOURCE_DIR)/pause_download_during_assemble_and_postprocessing.patch
+#SABNZBDPLUS_PATCHES=
 
 #
 # If the compilation of the package requires additional
