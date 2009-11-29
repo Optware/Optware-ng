@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RLWRAP_SITE=http://utopia.knoware.nl/~hlub/uck/rlwrap
-RLWRAP_VERSION=0.32
+RLWRAP_VERSION=0.33
 RLWRAP_SOURCE=rlwrap-$(RLWRAP_VERSION).tar.gz
 RLWRAP_DIR=rlwrap-$(RLWRAP_VERSION)
 RLWRAP_UNZIP=zcat
