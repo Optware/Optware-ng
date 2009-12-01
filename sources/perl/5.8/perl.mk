@@ -142,9 +142,6 @@ else
 		printf "### Target Arch\nARCH = `echo $(GNU_TARGET_NAME) | sed s/-linux.*//`\n" > config; \
 		printf "### Target OS\nOS = `echo $(GNU_TARGET_NAME) | sed s/.*-linux/linux/`\n" >> config; \
 	)
-ifneq (, $(filter -fPIC, $(STAGING_CPPFLAGS)))
-	echo "CFLAGS = -fPIC" >> $(@D)/Cross/config
-endif
 	(cd $(PERL_BUILD_DIR)/Cross; \
 		( [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) ] && \
 		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) config.sh-$(GNU_TARGET_NAME) ) || \
@@ -154,7 +151,7 @@ endif
 ifdef PERL_LDFLAGS_EXTRA
 	sed -i -e 's|-shared|& $(PERL_LDFLAGS_EXTRA)|' $(@D)/Cross/config.sh-$(GNU_TARGET_NAME)
 endif
-	sed -i -e '/^$$callbacks->{.ccflags/s|^|#|' $(@D)/Cross/generate_config_sh
+	sed -i -e '/^$$callbacks->.*"CFLAGS"/s|^|#|' $(@D)/Cross/generate_config_sh
 	(cd $(@D)/Cross; \
 		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Makefile . ; \
 		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Makefile.SH.patch . ; \
