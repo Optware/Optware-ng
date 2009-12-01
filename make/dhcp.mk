@@ -7,9 +7,9 @@
 DHCP_BUILD_DIR:=$(BUILD_DIR)/dhcp
 
 DHCP_VERSION=4.1.0p1
-DHCP=dhcp-$(DHCP_VERSION)
+DHCP_DIR=dhcp-$(DHCP_VERSION)
 DHCP_SITE=ftp://ftp.isc.org/isc/dhcp/
-DHCP_SOURCE:=$(DHCP).tar.gz
+DHCP_SOURCE:=$(DHCP_DIR).tar.gz
 DHCP_UNZIP=zcat
 DHCP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DHCP_DESCRIPTION=A DHCP Server
@@ -19,7 +19,9 @@ DHCP_DEPENDS=openssl
 DHCP_SUGGESTS=
 DHCP_CONFLICTS=
 
-DHCP_IPK_VERSION=2
+DHCP_IPK_VERSION=3
+
+DHCP_CONFFILES=/opt/etc/dhcpd.conf
 
 DHCP_CPPFLAGS=
 DHCP_LDFLAGS=
@@ -44,9 +46,9 @@ dhcp-source: $(DL_DIR)/$(DHCP_SOURCE) $(DHCP_PATCH)
 
 $(DHCP_BUILD_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE) make/dhcp.mk
 	$(MAKE) openssl-stage
-	@rm -rf $(BUILD_DIR)/$(DHCP) $(@D)
+	@rm -rf $(BUILD_DIR)/$(DHCP_DIR) $(@D)
 	$(DHCP_UNZIP) $(DL_DIR)/$(DHCP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(DHCP) $(@D)
+	mv $(BUILD_DIR)/$(DHCP_DIR) $(@D)
 	sed -i -e 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\/opt\/var\/run\/dhcpd.pid"/' $(@D)/includes/site.h
 	sed -i -e 's/\/\* #define _PATH_DHCPD_DB.*/#define _PATH_DHCPD_DB      "\/opt\/etc\/dhcpd.leases"/' $(@D)/includes/site.h
 	sed -i -e 's/\/\* #define _PATH_DHCPD_CONF.*/#define _PATH_DHCPD_CONF      "\/opt\/etc\/dhcpd.conf"/' $(@D)/includes/site.h
@@ -101,6 +103,7 @@ $(DHCP_IPK): $(DHCP_BUILD_DIR)/.built
 	install -m 755 $(SOURCE_DIR)/dhcp.rc $(DHCP_IPK_DIR)/opt/etc/init.d/S56dhcp
 	touch $(DHCP_IPK_DIR)/opt/etc/dhcpd.leases
 	cp $(DHCP_BUILD_DIR)/server/dhcpd.conf $(DHCP_IPK_DIR)/opt/etc/
+	echo $(DHCP_CONFFILES) | sed -e 's/ /\n/g' > $(DHCP_IPK_DIR)/CONTROL/conffiles
 	$(MAKE) $(DHCP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DHCP_IPK_DIR)
 
