@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-NANO_SITE=http://www.nano-editor.org/dist/v2.1
-NANO_VERSION=2.1.10
+NANO_SITE=http://www.nano-editor.org/dist/v2.2
+NANO_VERSION=2.2.0
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -40,7 +40,7 @@ nano-source: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES)
 
 $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nano.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(NANO_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(@D)
 	$(NANO_UNZIP) $(DL_DIR)/$(NANO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NANO_PATCHES)"; \
 		then cat $(NANO_PATCHES) | patch -d $(BUILD_DIR)/$(NANO_DIR); \
