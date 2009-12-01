@@ -154,6 +154,7 @@ endif
 ifdef PERL_LDFLAGS_EXTRA
 	sed -i -e 's|-shared|& $(PERL_LDFLAGS_EXTRA)|' $(@D)/Cross/config.sh-$(GNU_TARGET_NAME)
 endif
+	sed -i -e '/^$$callbacks->{.ccflags/s|^|#|' $(@D)/Cross/generate_config_sh
 	(cd $(@D)/Cross; \
 		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Makefile . ; \
 		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Makefile.SH.patch . ; \
