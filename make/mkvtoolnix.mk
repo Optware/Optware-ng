@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MKVTOOLNIX_SITE=http://bunkus.org/videotools/mkvtoolnix/sources
-MKVTOOLNIX_VERSION=2.9.8
+MKVTOOLNIX_VERSION=2.9.9
 MKVTOOLNIX_SOURCE=mkvtoolnix-$(MKVTOOLNIX_VERSION).tar.bz2
 MKVTOOLNIX_DIR=mkvtoolnix-$(MKVTOOLNIX_VERSION)
 MKVTOOLNIX_UNZIP=bzcat
@@ -42,7 +42,7 @@ MKVTOOLNIX_CONFLICTS=
 #
 # MKVTOOLNIX_IPK_VERSION should be incremented when the ipk changes.
 #
-MKVTOOLNIX_IPK_VERSION=2
+MKVTOOLNIX_IPK_VERSION=1
 
 #
 # MKVTOOLNIX_CONFFILES should be a list of user-editable files
