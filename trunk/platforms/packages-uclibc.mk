@@ -7,7 +7,6 @@ UCLIBC_BROKEN_PACKAGES = \
 	 fcgi fish \
 	 gnu-smalltalk ice iptables jabberd \
 	 launchtool ldconfig \
-	mkvtoolnix \
 	 moe mtr \
 	 newsbeuter \
 	 nfs-server nfs-utils \
@@ -25,6 +24,7 @@ UCLIBC++_BROKEN_PACKAGES = \
 	btg \
 	libstdc++ \
 	libtorrent-rasterbar \
+	mkvtoolnix \
 	player \
 	srecord \
 	uncia \
@@ -35,3 +35,6 @@ UCLIBC++_SPECIFIC_PACKAGES = \
 
 MXML_VERSION := 2.5
 MXML_IPK_VERSION := 1
+
+MKVTOOLNIX_VERSION := 2.9.8
+MKVTOOLNIX_IPK_VERSION := 2
