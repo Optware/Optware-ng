@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PURE-FTPD_SITE=http://download.pureftpd.org/pub/pure-ftpd/releases
-PURE-FTPD_VERSION=1.0.26
+PURE-FTPD_VERSION=1.0.27
 PURE-FTPD_SOURCE=pure-ftpd-$(PURE-FTPD_VERSION).tar.bz2
 PURE-FTPD_DIR=pure-ftpd-$(PURE-FTPD_VERSION)
 PURE-FTPD_UNZIP=bzcat
