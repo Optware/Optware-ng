@@ -331,7 +331,7 @@ COMMON_CROSS_PACKAGES = \
 	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
 	picocom picolisp pkgconfig player plowshare polipo pop3proxy \
-	popt poptop portmap postgresql postfix pound \
+	popt poptop portmap postgresql postfix pound powertop \
 	ppower ppp privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils puppy pure-ftpd pv pwgen \
 	python python24 python25 python26 python3 $(PYTHON_PACKAGES) \
