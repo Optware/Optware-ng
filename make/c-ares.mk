@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 C_ARES_SITE=http://daniel.haxx.se/projects/c-ares
-C_ARES_VERSION=1.6.0
+C_ARES_VERSION=1.7.0
 C_ARES_SOURCE=c-ares-$(C_ARES_VERSION).tar.gz
 C_ARES_DIR=c-ares-$(C_ARES_VERSION)
 C_ARES_UNZIP=zcat
@@ -227,4 +227,4 @@ c-ares-dirclean:
 # Some sanity check for the package.
 #
 c-ares-check: $(C_ARES_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(C_ARES_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
