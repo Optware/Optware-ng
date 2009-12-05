@@ -1,0 +1,11 @@
+--- a/Makefile.orig	2009-12-05 13:33:37.000000000 +1030
++++ b/Makefile	2009-12-05 13:33:46.000000000 +1030
+@@ -20,7 +20,7 @@
+ 	
+ 
+ powertop: $(OBJS) Makefile powertop.h
+-	$(CC) ${CFLAGS}  $(OBJS) -lncurses -o powertop
++	$(CC) ${CFLAGS}  $(OBJS) ${LDFLAGS} -lncurses -o powertop
+ 	@(cd po/ && $(MAKE))
+ 
+ powertop.8.gz: powertop.8

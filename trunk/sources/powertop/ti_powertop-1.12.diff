@@ -1,0 +1,376 @@
+diff -purN powertop-read-only/cpufreqstats.c powertop-1.12/cpufreqstats.c
+--- powertop-read-only/cpufreqstats.c	2009-08-07 19:08:57.000000000 -0500
++++ powertop-1.12/cpufreqstats.c	2009-08-07 18:46:03.000000000 -0500
+@@ -42,7 +42,7 @@ struct cpufreqdata oldfreqs[16];
+ 
+ struct cpufreqdata delta[16];
+ 
+-char cpufreqstrings[6][80];
++char cpufreqstrings[MAX_NUM_PSTATES][80];
+ int topfreq = -1;
+ 
+ static void zap(void)
+diff -purN powertop-read-only/display.c powertop-1.12/display.c
+--- powertop-read-only/display.c	2009-08-07 19:08:57.000000000 -0500
++++ powertop-1.12/display.c	2009-08-07 18:47:20.000000000 -0500
+@@ -44,6 +44,12 @@ static WINDOW *suggestion_window;
+ static WINDOW *status_bar_window;
+ 
+ #define print(win, y, x, fmt, args...) do { if (dump) printf(fmt, ## args); else mvwprintw(win, y, x, fmt, ## args); } while (0)
++#define d_wattron(win, attr) do { if (win) wattron(win, (attr)); } while (0)
++#define d_wattroff(win, attr) do { if (win) wattroff(win, (attr)); } while (0)
++#define d_wrefresh(win) do { if (win) wrefresh(win); } while (0)
++#define d_werase(win) do { if (win) werase(win); } while (0)
++#define d_wbkgd(win, attr) do { if (win) wbkgd(win, (attr)); } while (0)
++#define d_wattrset(win, attr) do { if (win) wattrset(win, (attr)); } while (0)
+ 
+ char status_bar_slots[10][40];
+ 
+@@ -91,15 +97,17 @@ int maxwidth = 200;
+ 
+ void setup_windows(void) 
+ {
++	int yline = MAX_NUM_CSTATES;
++
+ 	getmaxyx(stdscr, maxy, maxx);
+ 
+ 	zap_windows();	
+ 
+ 	title_bar_window = subwin(stdscr, 1, maxx, 0, 0);
+-	cstate_window = subwin(stdscr, 7, maxx, 2, 0);
+-	wakeup_window = subwin(stdscr, 1, maxx, 9, 0);
+-	battery_power_window = subwin(stdscr, 2, maxx, 10, 0);
+-	timerstat_window = subwin(stdscr, maxy-16, maxx, 12, 0);
++	cstate_window = subwin(stdscr, yline+2, maxx, 2, 0);
++	wakeup_window = subwin(stdscr, 1, maxx, yline+5, 0);
++	battery_power_window = subwin(stdscr, 2, maxx, yline+6, 0);
++	timerstat_window = subwin(stdscr, maxy-16, maxx, yline+8, 0);
+ 	maxtimerstats = maxy-16  -2;
+ 	maxwidth = maxx - 18;
+ 	suggestion_window = subwin(stdscr, 3, maxx, maxy-4, 0);	
+@@ -108,7 +116,7 @@ void setup_windows(void) 
+ 	strcpy(status_bar_slots[0], _(" Q - Quit "));
+ 	strcpy(status_bar_slots[1], _(" R - Refresh "));
+ 
+-	werase(stdscr);
++	d_werase(stdscr);
+ 	refresh();
+ }
+ 
+@@ -139,53 +147,53 @@ void show_title_bar(void) 
+ {
+ 	int i;
+ 	int x;
+-	wattrset(title_bar_window, COLOR_PAIR(PT_COLOR_HEADER_BAR));
+-	wbkgd(title_bar_window, COLOR_PAIR(PT_COLOR_HEADER_BAR));   
+-	werase(title_bar_window);
++	d_wattrset(title_bar_window, COLOR_PAIR(PT_COLOR_HEADER_BAR));
++	d_wbkgd(title_bar_window, COLOR_PAIR(PT_COLOR_HEADER_BAR));   
++	d_werase(title_bar_window);
+ 
+ 	print(title_bar_window, 0, 0,  "     PowerTOP version 1.12      (C) 2007 Intel Corporation");
+ 
+-	wrefresh(title_bar_window);
++	d_wrefresh(title_bar_window);
+ 
+-	werase(status_bar_window);
++	d_werase(status_bar_window);
+ 
+ 	x = 0;
+ 	for (i=0; i<10; i++) {
+ 		if (strlen(status_bar_slots[i])==0)
+ 			continue;
+-		wattron(status_bar_window, A_REVERSE);
++		d_wattron(status_bar_window, A_REVERSE);
+ 		print(status_bar_window, 0, x, status_bar_slots[i]);
+-		wattroff(status_bar_window, A_REVERSE);			
++		d_wattroff(status_bar_window, A_REVERSE);			
+ 		x+= strlen(status_bar_slots[i])+1;
+ 	}
+-	wrefresh(status_bar_window);
++	d_wrefresh(status_bar_window);
+ }
+ 
+ void show_cstates(void) 
+ {
+ 	int i, count = 0;
+-	werase(cstate_window);
++	d_werase(cstate_window);
+ 
+-	for (i=0; i < 10; i++) {
++	for (i=0; i<MAX_CSTATE_LINES; i++) {
+ 		if (i == topcstate+1)
+-			wattron(cstate_window, A_BOLD);
++			d_wattron(cstate_window, A_BOLD);
+ 		else
+-			wattroff(cstate_window, A_BOLD);			
+-		if (strlen(cstate_lines[i]) && count <= 6) {
++			d_wattroff(cstate_window, A_BOLD);			
++		if (strlen(cstate_lines[i]) && count <= MAX_CSTATE_LINES) {
+ 			print(cstate_window, count, 0, "%s", cstate_lines[i]);
+ 			count++;
+ 		}
+ 	}
+ 
+-	for (i=0; i<6; i++) {
++	for (i=0; i< MAX_NUM_PSTATES; i++) {
+ 		if (i == topfreq+1)
+-			wattron(cstate_window, A_BOLD);
++			d_wattron(cstate_window, A_BOLD);
+ 		else
+-			wattroff(cstate_window, A_BOLD);			
++			d_wattroff(cstate_window, A_BOLD);			
+ 		print(cstate_window, i, 38, "%s", cpufreqstrings[i]);
+ 	}
+ 
+-	wrefresh(cstate_window);
++	d_wrefresh(cstate_window);
+ }
+ 
+ 
+@@ -195,7 +203,7 @@ void show_acpi_power_line(double rate, d
+ 
+ 	sprintf(buffer,  _("no ACPI power usage estimate available") );
+ 
+-	werase(battery_power_window);
++	d_werase(battery_power_window);
+ 	if (rate > 0.001) {
+ 		char *c;
+ 		sprintf(buffer, _("Power usage (ACPI estimate): %3.1fW (%3.1f hours)"), rate, cap/rate);
+@@ -208,7 +216,7 @@ void show_acpi_power_line(double rate, d
+ 		sprintf(buffer, _("Power usage (5 minute ACPI estimate) : %5.1f W (%3.1f hours left)"), 3600*capdelta / ti, cap / (3600*capdelta/ti+0.01));
+ 
+ 	print(battery_power_window, 0, 0, "%s\n", buffer);	
+-	wrefresh(battery_power_window);
++	d_wrefresh(battery_power_window);
+ }
+ 
+ void show_pmu_power_line(unsigned sum_voltage_mV,
+@@ -243,38 +251,38 @@ void show_pmu_power_line(unsigned sum_vo
+ 		snprintf(buffer, sizeof(buffer),
+ 			 _("no power usage estimate available") );
+ 
+-	werase(battery_power_window);
++	d_werase(battery_power_window);
+ 	print(battery_power_window, 0, 0, "%s\n", buffer);
+-	wrefresh(battery_power_window);
++	d_wrefresh(battery_power_window);
+ }
+ 
+ 
+ void show_wakeups(double d, double interval, double C0time)
+ {
+-	werase(wakeup_window);
++	d_werase(wakeup_window);
+ 
+-	wbkgd(wakeup_window, COLOR_PAIR(PT_COLOR_RED));   
++	d_wbkgd(wakeup_window, COLOR_PAIR(PT_COLOR_RED));   
+ 	if (d <= 25.0)
+-		wbkgd(wakeup_window, COLOR_PAIR(PT_COLOR_YELLOW));   
++		d_wbkgd(wakeup_window, COLOR_PAIR(PT_COLOR_YELLOW));   
+ 	if (d <= 10.0)
+-		wbkgd(wakeup_window, COLOR_PAIR(PT_COLOR_GREEN));   
++		d_wbkgd(wakeup_window, COLOR_PAIR(PT_COLOR_GREEN));   
+ 
+ 	/* 
+ 	 * if the cpu is really busy.... then make it blue to indicate
+ 	 * that it's not the primary power consumer anymore 
+ 	 */
+ 	if (C0time > 25.0)
+-		wbkgd(wakeup_window, COLOR_PAIR(PT_COLOR_BLUE));   
++		d_wbkgd(wakeup_window, COLOR_PAIR(PT_COLOR_BLUE));   
+ 		
+-	wattron(wakeup_window, A_BOLD);
++	d_wattron(wakeup_window, A_BOLD);
+ 	print(wakeup_window, 0, 0, _("Wakeups-from-idle per second : %4.1f\tinterval: %0.1fs\n"), d, interval);
+-	wrefresh(wakeup_window);
++	d_wrefresh(wakeup_window);
+ }
+ 
+ void show_timerstats(int nostats, int ticktime)
+ {
+ 	int i;
+-	werase(timerstat_window);
++	d_werase(timerstat_window);
+ 
+ 	if (!nostats) {
+ 		int counter = 0;
+@@ -282,9 +290,9 @@ void show_timerstats(int nostats, int ti
+ 		for (i = 0; i < linehead; i++)
+ 			if (lines[i].count > 0 && counter++ < maxtimerstats) {
+ 				if ((lines[i].count * 1.0 / ticktime) >= 10.0)
+-					wattron(timerstat_window, A_BOLD);
++					d_wattron(timerstat_window, A_BOLD);
+ 				else
+-					wattroff(timerstat_window, A_BOLD);
++					d_wattroff(timerstat_window, A_BOLD);
+ 				if (showpids)
+ 					print(timerstat_window, i+1, 0," %5.1f%% (%5.1f)   [%6s] %s \n", lines[i].count * 100.0 / linectotal,
+ 						lines[i].count * 1.0 / ticktime, 
+@@ -305,12 +313,12 @@ void show_timerstats(int nostats, int ti
+ 	}
+ 
+ 
+-	wrefresh(timerstat_window);
++	d_wrefresh(timerstat_window);
+ }
+ 
+ void show_suggestion(char *sug)
+ {
+-	werase(suggestion_window);
++	d_werase(suggestion_window);
+ 	print(suggestion_window, 0, 0, "%s", sug);
+-	wrefresh(suggestion_window);
++	d_wrefresh(suggestion_window);
+ }
+diff -purN powertop-read-only/Makefile powertop-1.12/Makefile
+--- powertop-read-only/Makefile	2009-08-07 19:08:57.000000000 -0500
++++ powertop-1.12/Makefile	2009-08-07 19:02:19.000000000 -0500
+@@ -3,7 +3,9 @@ LOCALESDIR=/usr/share/locale
+ MANDIR=/usr/share/man/man8
+ WARNFLAGS=-Wall  -W -Wshadow
+ CFLAGS?=-O1 -g ${WARNFLAGS}
+-CC?=gcc
++#CC?=gcc
++CC=/tools/gcc-4.2.1/arm-2007q3/bin/arm-none-linux-gnueabi-gcc
++#CC=/tools/gcc-4.3.3/bin/arm-none-linux-gnueabi-gcc
+ 
+ 
+ # 
+@@ -20,7 +22,7 @@ OBJS = powertop.o config.o process.o mis
+ 	
+ 
+ powertop: $(OBJS) Makefile powertop.h
+-	$(CC) ${CFLAGS}  $(OBJS) -lncursesw -o powertop
++	$(CC) ${CFLAGS}  $(OBJS) -lncurses -o powertop
+ 	@(cd po/ && $(MAKE))
+ 
+ powertop.8.gz: powertop.8
+diff -purN powertop-read-only/powertop.c powertop-1.12/powertop.c
+--- powertop-read-only/powertop.c	2009-08-07 19:08:57.000000000 -0500
++++ powertop-1.12/powertop.c	2009-08-07 18:52:33.000000000 -0500
+@@ -373,12 +373,12 @@ static void read_data_acpi(uint64_t * us
+ static void read_data_cpuidle(uint64_t * usage, uint64_t * duration)
+ {
+ 	DIR *cpudir;
+-	DIR *dir;
+ 	struct dirent *entry;
+ 	FILE *file = NULL;
+ 	char line[4096];
+ 	char filename[128], *f;
+-	int len, clevel = 0;
++	int i, n, len, clevel = 0;
++	struct dirent **namelist;
+ 
+ 	memset(usage, 0, 64);
+ 	memset(duration, 0, 64);
+@@ -398,15 +398,17 @@ static void read_data_cpuidle(uint64_t *
+ 		len = sprintf(filename, "/sys/devices/system/cpu/%s/cpuidle",
+ 			      entry->d_name);
+ 
+-		dir = opendir(filename);
+-		if (!dir)
+-			return;
+-
+ 		clevel = 0;
+ 
+ 		/* For each C-state, there is a stateX directory which
+ 		 * contains a 'usage' and a 'time' (duration) file */
+-		while ((entry = readdir(dir))) {
++		n = scandir(filename, &namelist, 0, alphasort);
++		if (n < 0) {
++			closedir(cpudir);
++			return;
++		}
++		for(i = 0; i < n; i++) {
++			entry =  namelist[i];
+ 			if (strlen(entry->d_name) < 3)
+ 				continue;
+ 			sprintf(filename + len, "/%s/desc", entry->d_name);
+@@ -418,7 +420,6 @@ static void read_data_cpuidle(uint64_t *
+ 				fclose(file);
+ 				if (f == NULL)
+ 					break;
+-
+ 			
+ 				f = strstr(line, "MWAIT ");
+ 				if (f) {
+@@ -470,9 +471,9 @@ static void read_data_cpuidle(uint64_t *
+ 			if (clevel > maxcstate)
+ 				maxcstate = clevel;
+ 		
++			free(namelist[i]);
+ 		}
+-		closedir(dir);
+-
++		free(namelist);
+ 	}
+ 	closedir(cpudir);
+ }
+@@ -814,7 +815,7 @@ void print_battery_sysfs(void)
+ 	show_acpi_power_line(rate, cap, prev_bat_cap - cap, time(NULL) - prev_bat_time);
+ }
+ 
+-char cstate_lines[12][200];
++char cstate_lines[MAX_CSTATE_LINES][200];
+ 
+ void usage()
+ {
+@@ -903,7 +904,9 @@ int main(int argc, char **argv)
+ 		printf(_("PowerTOP needs to be run as root to collect enough information\n"));
+ 	printf(_("Collecting data for %i seconds \n"), (int)ticktime);
+ 	printf("\n\n");
++#ifdef __I386__
+ 	print_intel_cstates();
++#endif
+ 	stop_timerstats();
+ 
+ 	while (1) {
+@@ -956,7 +959,7 @@ int main(int argc, char **argv)
+ 		}
+ 
+ 		memset(&cstate_lines, 0, sizeof(cstate_lines));
+-		topcstate = -4;
++		topcstate = -(MAX_NUM_CSTATES);
+ 		if (totalevents == 0 && maxcstate <= 1) {
+ 			sprintf(cstate_lines[5],_("< Detailed C-state information is not available.>\n"));
+ 		} else {
+@@ -970,7 +973,7 @@ int main(int argc, char **argv)
+ 			sprintf(cstate_lines[1], _("C0 (cpu running)        (%4.1f%%)\n"), percentage);
+ 			if (percentage > 50)
+ 				topcstate = 0;
+-			for (i = 0; i < 8; i++)
++			for (i = 0; i < MAX_NUM_CSTATES; i++)
+ 				if (cur_usage[i]) {
+ 					sleept = (cur_duration[i] - last_duration[i]) / (cur_usage[i] - last_usage[i]
+ 											+ 0.1) / FREQ;
+diff -purN powertop-read-only/powertop.h powertop-1.12/powertop.h
+--- powertop-read-only/powertop.h	2009-08-07 19:08:57.000000000 -0500
++++ powertop-1.12/powertop.h	2009-08-07 18:52:54.000000000 -0500
+@@ -28,6 +28,15 @@
+ 
+ #include <libintl.h>
+ 
++#ifdef __I386__
++#define MAX_NUM_CSTATES 4
++#define MAX_CSTATE_LINES (MAX_NUM_CSTATES+3)
++#define MAX_NUM_PSTATES 5
++#else
++#define MAX_NUM_CSTATES 7
++#define MAX_CSTATE_LINES (MAX_NUM_CSTATES+3)
++#define MAX_NUM_PSTATES 5
++#endif
+ struct line {
+ 	char	*string;
+ 	int	count;
+@@ -65,8 +74,8 @@ void usb_activity_hint(void);
+ 
+ 
+ 
+-extern char cstate_lines[12][200];
+-extern char cpufreqstrings[6][80];
++extern char cstate_lines[MAX_CSTATE_LINES][200];
++extern char cpufreqstrings[MAX_NUM_PSTATES][80];
+ 
+ extern int topcstate;
+ extern int topfreq;  
