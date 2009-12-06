@@ -35,14 +35,16 @@ CPUFREQUTILS_MAINTAINER=WebOS Internals <support@webos-internals.org>
 CPUFREQUTILS_DESCRIPTION=To make access to the Linux kernel cpufreq subsystem easier for users and cpufreq userspace tools, a cpufrequtils package was created. It contains a library used by other programs (libcpufreq), command line tools to determine current CPUfreq settings and to modify them (cpufreq-info and cpufreq-set), and debug tools.
 CPUFREQUTILS_SECTION=util
 CPUFREQUTILS_PRIORITY=optional
-CPUFREQUTILS_DEPENDS=
+ifeq (enable, $(GETTEXT_NLS))
+CPUFREQUTILS_DEPENDS=gettext
+endif
 CPUFREQUTILS_SUGGESTS=
 CPUFREQUTILS_CONFLICTS=
 
 #
 # CPUFREQUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-CPUFREQUTILS_IPK_VERSION=1
+CPUFREQUTILS_IPK_VERSION=2
 
 #
 # CPUFREQUTILS_CONFFILES should be a list of user-editable files
@@ -59,7 +61,9 @@ CPUFREQUTILS_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 CPUFREQUTILS_CPPFLAGS=
-CPUFREQUTILS_LDFLAGS=
+ifeq (uclibc, $(LIBC_STYLE))
+CPUFREQUTILS_LDFLAGS=-lintl
+endif
 
 #
 # CPUFREQUTILS_BUILD_DIR is the directory in which the build is done.
@@ -112,6 +116,9 @@ cpufrequtils-source: $(DL_DIR)/$(CPUFREQUTILS_SOURCE) $(CPUFREQUTILS_PATCHES)
 #
 $(CPUFREQUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(CPUFREQUTILS_SOURCE) $(CPUFREQUTILS_PATCHES) make/cpufrequtils.mk
 	$(MAKE) libtool-stage
+ifeq (enable, $(GETTEXT_NLS))
+	$(MAKE) gettext-stage
+endif
 	rm -rf $(BUILD_DIR)/$(CPUFREQUTILS_DIR) $(@D)
 	$(CPUFREQUTILS_UNZIP) $(DL_DIR)/$(CPUFREQUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CPUFREQUTILS_PATCHES)" ; \
@@ -121,6 +128,8 @@ $(CPUFREQUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(CPUFREQUTILS_SOURCE) $(CPUFRE
 	if test "$(BUILD_DIR)/$(CPUFREQUTILS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CPUFREQUTILS_DIR) $(@D) ; \
 	fi
+	sed -i -e '/-lcpufreq -o/s|$$(CFLAGS) |&$$(LDFLAGS) |' \
+	    -i -e '/-o utils\/$$@.o/s|$$(CFLAGS) |&$$(CPPFLAGS) |' $(@D)/Makefile
 	touch $@
 
 cpufrequtils-unpack: $(CPUFREQUTILS_BUILD_DIR)/.configured
@@ -130,7 +139,11 @@ cpufrequtils-unpack: $(CPUFREQUTILS_BUILD_DIR)/.configured
 #
 $(CPUFREQUTILS_BUILD_DIR)/.built: $(CPUFREQUTILS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) V=true CROSS=${TARGET_CROSS} NLS=false LIBTOOL=$(STAGING_PREFIX)/bin/libtool bindir=$(STAGING_PREFIX)/bin libdir=$(STAGING_PREFIX)/lib WARNINGS="$(STAGING_LDFLAGS)"
+	$(MAKE) -C $(@D) V=true CROSS=${TARGET_CROSS} NLS=false \
+		LIBTOOL=$(STAGING_PREFIX)/bin/libtool \
+		bindir=$(STAGING_PREFIX)/bin libdir=$(STAGING_PREFIX)/lib \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(CPUFREQUTILS_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(CPUFREQUTILS_LDFLAGS)"
 	touch $@
 
 #
@@ -182,6 +195,8 @@ $(CPUFREQUTILS_IPK_DIR)/CONTROL/control:
 $(CPUFREQUTILS_IPK): $(CPUFREQUTILS_BUILD_DIR)/.built
 	rm -rf $(CPUFREQUTILS_IPK_DIR) $(BUILD_DIR)/cpufrequtils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CPUFREQUTILS_BUILD_DIR) DESTDIR=$(CPUFREQUTILS_IPK_DIR) CROSS=${TARGET_CROSS} NLS=false LIBTOOL=$(STAGING_PREFIX)/bin/libtool bindir=/opt/bin libdir=/opt/lib includedir=/opt/include install-lib install-tools
+	rm -f $(CPUFREQUTILS_IPK_DIR)/opt/lib/libcpufreq.a
+	$(STRIP_COMMAND) $(CPUFREQUTILS_IPK_DIR)/opt/lib/libcpufreq.so.0.0.0
 #	install -d $(CPUFREQUTILS_IPK_DIR)/opt/etc/
 #	install -m 644 $(CPUFREQUTILS_SOURCE_DIR)/cpufrequtils.conf $(CPUFREQUTILS_IPK_DIR)/opt/etc/cpufrequtils.conf
 #	install -d $(CPUFREQUTILS_IPK_DIR)/opt/etc/init.d
