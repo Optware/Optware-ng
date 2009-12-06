@@ -16,13 +16,16 @@ POWERTOP_DESCRIPTION=PowerTOP is a Linux tool that helps you find programs that 
 POWERTOP_SECTION=util
 POWERTOP_PRIORITY=optional
 POWERTOP_DEPENDS=ncurses
+ifeq (enable, $(GETTEXT_NLS))
+POWERTOP_DEPENDS +=, gettext
+endif
 POWERTOP_SUGGESTS=
 POWERTOP_CONFLICTS=
 
 #
 # POWERTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-POWERTOP_IPK_VERSION=1
+POWERTOP_IPK_VERSION=2
 
 #
 # POWERTOP_CONFFILES should be a list of user-editable files
@@ -39,7 +42,9 @@ POWERTOP_PATCHES=$(POWERTOP_SOURCE_DIR)/ti_powertop-1.12.diff $(POWERTOP_SOURCE_
 # compilation or linking flags, then list them here.
 #
 POWERTOP_CPPFLAGS=
-POWERTOP_LDFLAGS=
+ifeq (uclibc, $(LIBC_STYLE))
+POWERTOP_LDFLAGS=-lintl
+endif
 
 #
 # POWERTOP_BUILD_DIR is the directory in which the build is done.
@@ -95,7 +100,10 @@ powertop-source: $(DL_DIR)/$(POWERTOP_SOURCE) $(POWERTOP_PATCHES)
 # shown below to make various patches to it.
 #
 $(POWERTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(POWERTOP_SOURCE) $(POWERTOP_PATCHES) make/powertop.mk
-	$(MAKE) ncurses-stage gettext-stage
+	$(MAKE) ncurses-stage
+ifeq ($(GETTEXT_NLS), enable)
+	$(MAKE) gettext-stage
+endif
 	rm -rf $(BUILD_DIR)/$(POWERTOP_DIR) $(@D)
 	$(POWERTOP_UNZIP) $(DL_DIR)/$(POWERTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(POWERTOP_PATCHES)" ; \
@@ -116,7 +124,7 @@ $(POWERTOP_BUILD_DIR)/.built: $(POWERTOP_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/ncurses" \
-		LDFLAGS="$(STAGING_LDFLAGS)"
+		LDFLAGS="$(STAGING_LDFLAGS) $(POWERTOP_LDFLAGS)"
 	touch $@
 
 #
@@ -160,6 +168,7 @@ $(POWERTOP_IPK): $(POWERTOP_BUILD_DIR)/.built
 #	$(MAKE) -C $(POWERTOP_BUILD_DIR) DESTDIR=$(POWERTOP_IPK_DIR) install-strip
 	install -d $(POWERTOP_IPK_DIR)/opt/sbin/
 	install -m 755 $(POWERTOP_BUILD_DIR)/powertop $(POWERTOP_IPK_DIR)/opt/sbin/powertop
+	$(STRIP_COMMAND) $(POWERTOP_IPK_DIR)/opt/sbin/powertop
 #	install -d $(POWERTOP_IPK_DIR)/opt/etc/
 #	install -m 644 $(POWERTOP_SOURCE_DIR)/powertop.conf $(POWERTOP_IPK_DIR)/opt/etc/powertop.conf
 #	install -d $(POWERTOP_IPK_DIR)/opt/etc/init.d
