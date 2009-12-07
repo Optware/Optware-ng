@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HIAWATHA_SITE=http://www.hiawatha-webserver.org/files
-HIAWATHA_VERSION=6.18
+HIAWATHA_VERSION=6.19
 HIAWATHA_SOURCE=hiawatha-$(HIAWATHA_VERSION).tar.gz
 HIAWATHA_DIR=hiawatha-$(HIAWATHA_VERSION)
 HIAWATHA_UNZIP=zcat
@@ -133,6 +133,7 @@ $(HIAWATHA_BUILD_DIR)/.configured: $(DL_DIR)/$(HIAWATHA_SOURCE) $(HIAWATHA_PATCH
 		--disable-nls \
 		--disable-static \
 	)
+	sed -i -e '/mkdir -p $$(localstatedir)/s|$$(localstatedir)|$$(DESTDIR)/&|' $(@D)/Makefile
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
