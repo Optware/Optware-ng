@@ -11,6 +11,6 @@ BROKEN_PACKAGES = \
 	bitchx \
 	golang \
 	gtk ipac-ng iptables iptraf ldconfig \
-	netatalk nfs-utils \
+	nfs-utils \
 	puppy qemu softflowd \
 	transcode vte xchat \

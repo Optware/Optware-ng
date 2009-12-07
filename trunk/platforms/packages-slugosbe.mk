@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	golang \
 	iptraf \
 	ldconfig \
-	netatalk \
 	puppy \
 	qemu \
 	softflowd \

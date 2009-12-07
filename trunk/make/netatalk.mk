@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NETATALK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/netatalk
-NETATALK_VERSION=2.0.3
+NETATALK_VERSION=2.0.5
 NETATALK_SOURCE=netatalk-$(NETATALK_VERSION).tar.gz
 NETATALK_DIR=netatalk-$(NETATALK_VERSION)
 NETATALK_UNZIP=zcat
@@ -30,13 +30,13 @@ NETATALK_DESCRIPTION=Apple talk networking daemon.
 NETATALK_SECTION=networking
 NETATALK_PRIORITY=optional
 NETATALK_DEPENDS=libdb
-NETATALK_SUGGESTS=
+NETATALK_SUGGESTS=libgcrypt
 NETATALK_CONFLICTS=
 
 #
 # NETATALK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETATALK_IPK_VERSION=5
+NETATALK_IPK_VERSION=1
 
 #
 # NETATALK_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ NETATALK_IPK_VERSION=5
 # NETATALK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NETATALK_PATCHES=$(NETATALK_SOURCE_DIR)/configure.patch
+NETATALK_PATCHES=$(NETATALK_SOURCE_DIR)/db3-check.patch
 
 #
 # If the compilation of the package requires additional
@@ -79,8 +79,8 @@ NETATALK_IPK=$(BUILD_DIR)/netatalk_$(NETATALK_VERSION)-$(NETATALK_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NETATALK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NETATALK_SITE)/$(NETATALK_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NETATALK_SOURCE)
+	$(WGET) -P $(@D) $(NETATALK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,7 +108,7 @@ netatalk-source: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCHES)
 # shown below to make various patches to it.
 #
 $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCHES) make/netatalk.mk
-	$(MAKE) libdb-stage
+	$(MAKE) libdb-stage libgcrypt-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(NETATALK_DIR) $(@D)
 	$(NETATALK_UNZIP) $(DL_DIR)/$(NETATALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETATALK_PATCHES)" ; \
@@ -118,6 +118,7 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 	if test "$(BUILD_DIR)/$(NETATALK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NETATALK_DIR) $(@D) ; \
 	fi
+	ACLOCAL="aclocal -I$(STAGING_PREFIX)/share/aclocal" autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NETATALK_CPPFLAGS)" \
@@ -128,10 +129,13 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-bdb=$(STAGING_INCLUDE_DIR) \
+		--with-bdb=$(STAGING_PREFIX) \
+		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--with-ssl-dir=$(STAGING_PREFIX) \
 		--without-shadow \
 		--enable-afp3 \
+		--disable-quota \
+		--disable-tcp-wrappers \
 		--disable-nls \
 		--disable-static \
 	)
@@ -238,4 +242,4 @@ netatalk-dirclean:
 # Some sanity check for the package.
 #
 netatalk-check: $(NETATALK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NETATALK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
