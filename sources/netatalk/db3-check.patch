@@ -1,0 +1,43 @@
+--- macros/db3-check.m4.orig	2009-03-29 07:23:24.000000000 +0000
++++ macros/db3-check.m4	2009-12-07 17:56:03.965076967 +0000
+@@ -28,39 +28,15 @@
+     atalk_cv_bdb_version=no
+     maj=$atalk_cv_bdb_MAJOR
+     min=$atalk_cv_bdb_MINOR
+-    atalk_cv_bdb_try_libs="-ldb$maj$min -ldb$maj.$min -ldb-$maj$min -ldb-$maj.$min"
++    atalk_cv_bdb_try_libs="-ldb-$maj.$min"
+ 
+     for lib in $atalk_cv_bdb_try_libs ; do
+         LIBS="$lib $savedlibs"
+         AC_MSG_CHECKING([Berkeley DB library ($lib)])
+-        AC_TRY_RUN([
+-            #include <stdio.h>
+-            #include <db.h>
+-            int main(void) {
+-                int major, minor, patch;
+-                char *version_str;
+-                version_str = db_version(&major, &minor, &patch);
+-                if (major < DB_MAJOR_REQ || minor < DB_MINOR_REQ || patch < DB_PATCH_REQ) {
+-                    printf("linking wrong library version (%d.%d.%d), ",major, minor, patch);
+-                    return (2);
+-                }
+-                if ( major != DB_VERSION_MAJOR || minor != DB_VERSION_MINOR || patch != DB_VERSION_PATCH) {
+-                    printf("header/library version mismatch (%d.%d.%d/%d.%d.%d), ",
+-                        DB_VERSION_MAJOR, DB_VERSION_MINOR, DB_VERSION_PATCH, major, minor, patch);
+-                    return (3);
+-                }
+-                printf("%d.%d.%d ... ",major, minor, patch);
+-                return (0);
+-            }
+-        ],[
+-
+             AC_MSG_RESULT(yes)
+             atalk_cv_bdb_version="yes"
+             atalk_cv_lib_db="$lib"
+             break
+-        ],[
+-            AC_MSG_RESULT(no)
+-        ])
+     done
+     LIBS="$savedlibs"
+ ])

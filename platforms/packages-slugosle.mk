@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	btg \
 	iptraf \
 	ldconfig \
-	netatalk \
 	puppy \
 	qemu \
 	softflowd \
