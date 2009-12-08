@@ -50,7 +50,7 @@ DBUS_CONFFILES=/opt/etc/init.d/S20dbus /opt/etc/default/dbus
 # compilation or linking flags, then list them here.
 #
 DBUS_CPPFLAGS=
-DBUS_LDFLAGS=
+DBUS_LDFLAGS ?=
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 DBUS_CROSS_CONFIG_ENVS=ac_cv_have_abstract_sockets=yes
@@ -140,6 +140,9 @@ $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbu
 		--disable-nls \
 		--disable-static \
 	)
+ifdef DBUS_NO_DAEMON_LDFLAGS
+	sed -i -e '/^dbus_daemon_LDFLAGS/s|^|#|' $(@D)/bus/Makefile
+endif
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
