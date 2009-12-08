@@ -1,11 +1,11 @@
---- moinmoin/wikiserverconfig.py.orig	2008-06-21 23:30:02.000000000 -0700
-+++ moinmoin/wikiserverconfig.py	2008-06-21 23:30:23.000000000 -0700
-@@ -17,7 +17,7 @@
-     #interface = 'localhost'
- 
-     # where the static data is served from:
--    #docs = "/usr/share/moin/htdocs"
-+    docs = "/opt/share/moin/htdocs"
+--- moin-1.9.0/wiki/server/wikiserverconfig.py.orig	2009-12-05 22:42:20.000000000 +0000
++++ moin-1.9.0/wiki/server/wikiserverconfig.py	2009-12-08 01:40:22.269973433 +0000
+@@ -22,7 +22,7 @@
+     # docs = '/where/ever/you/like/to/keep/htdocs'  # serve it from the given path
+     # docs = False  # do not serve static files at all (will not work except
+     #               # you serve them in some other working way)
+-    docs = True
++    docs = '/opt/share/moin/htdocs'
  
      # tuning options:
      #serverClass = 'ThreadPoolServer'
