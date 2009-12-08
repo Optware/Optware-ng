@@ -1,0 +1,49 @@
+--- Python-2.7a1/configure.in.orig	2009-12-03 02:52:39.000000000 +0000
++++ Python-2.7a1/configure.in	2009-12-08 02:15:04.427100340 +0000
+@@ -29,6 +29,11 @@
+     prefix=`echo "$prefix" | sed -e 's/\/$//g'`
+ fi    
+ 
++# find compiler while respecting --host setting
++AC_CANONICAL_HOST()
++AC_CHECK_TOOLS(CC,gcc cc)
++AC_CHECK_TOOLS(CXX,g++ c++)
++
+ dnl This is for stuff that absolutely must end up in pyconfig.h.
+ dnl Please use pyport.h instead, if possible.
+ AH_TOP([
+@@ -873,7 +878,7 @@
+ 	    STRICT_PROTO="-Wstrict-prototypes"
+ 	fi
+         # For gcc 4.x we need to use -fwrapv so lets check if its supported
+-        if "$CC" -v --help 2>/dev/null |grep -- -fwrapv > /dev/null; then
++        if "$TARGET_CC" -v --help 2>/dev/null |grep -- -fwrapv > /dev/null; then
+            WRAP="-fwrapv"
+         fi
+ 	case $ac_cv_prog_cc_g in
+@@ -4127,6 +4132,25 @@
+ done
+ AC_MSG_RESULT(done)
+ 
++AC_SUBST(BUILDPYTHON)
++AC_SUBST(BUILDPGEN)
++AC_SUBST(CROSS_COMPILE)
++if [[ $build != $host ]]; then
++    AC_MSG_NOTICE(Cross compiling: Configuring build python)
++    absconfigcommand=$(pwd)/$0
++    mkdir -p buildpython27
++    cd buildpython27
++    CC="" CXX="" AR="" RANLIB="" LDFLAGS="" $absconfigcommand --prefix=$prefix
++    cd ..
++    BUILDPYTHON='buildpython27/python$(BUILDEXE)'
++    BUILDPGEN='buildpython27/Parser/pgen$(BUILDEXE)'
++    CROSS_COMPILE=yes
++else
++    BUILDPYTHON='$(HOSTPYTHON)'
++    BUILDPGEN='$(HOSTPGEN)'
++    CROSS_COMPILE=no
++fi
++
+ # generate output files
+ AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc)
+ AC_OUTPUT

@@ -1,0 +1,11 @@
+--- Python-2.7/Lib/site.py.orig	2008-05-06 15:41:46.000000000 -0700
++++ Python-2.7/Lib/site.py	2008-05-15 13:55:56.000000000 -0700
+@@ -63,7 +63,7 @@
+ import __builtin__
+ 
+ # Prefixes for site-packages; add additional prefixes like /usr/local here
+-PREFIXES = [sys.prefix, sys.exec_prefix]
++PREFIXES = [os.path.join(sys.prefix, "local"), sys.prefix, sys.exec_prefix]
+ # Enable per user site-packages directory
+ # set it to False to disable the feature or True to force the feature
+ ENABLE_USER_SITE = None
