@@ -58,11 +58,10 @@ BROKEN_PACKAGES = \
 	yougrabber \
 	perl-net-dns perl-unix-syslog \
 
+DBUS_NO_DAEMON_LDFLAGS := 1
+
 E2FSPROGS_VERSION = 1.41.1
 E2FSPROGS_IPK_VERSION = 1
-
-DBUS_VERSION := 1.1.2
-DBUS_IPK_VERSION := 1
 
 LINPHONE_LDFLAGS := -lpthread -lresolv -lrt
 

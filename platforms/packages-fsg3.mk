@@ -10,3 +10,5 @@ BROKEN_PACKAGES = \
 	sandbox \
 	golang \
 	linphone \
+
+DBUS_LDFLAGS := -lpthread
