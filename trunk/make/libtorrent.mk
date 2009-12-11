@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.12.5
+LIBTORRENT_VERSION=0.12.6
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
 #LIBTORRENT_SVN_REV=1037
 ifdef LIBTORRENT_SVN_REV
@@ -33,7 +33,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=2
+LIBTORRENT_IPK_VERSION=1
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -44,10 +44,6 @@ LIBTORRENT_IPK_VERSION=2
 # which they should be applied to the source code.
 #
 LIBTORRENT_PATCHES=
-ifneq ($(HOSTCC), $(TARGET_CC))
-LIBTORRENT_POST_AC_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
-#LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
-endif
 
 ifeq ($(TARGET_ARCH), armeb)
 ifeq ($(LIBC_STYLE), glibc)
