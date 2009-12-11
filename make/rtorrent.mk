@@ -14,7 +14,7 @@
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
 
-RTORRENT_VERSION ?= 0.8.5
+RTORRENT_VERSION ?= 0.8.6
 RTORRENT_IPK_VERSION ?= 1
 
 RTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/rtorrent
