@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NICKLE_SITE=http://nickle.org/release
-NICKLE_VERSION=2.68
+NICKLE_VERSION=2.69
 NICKLE_SOURCE=nickle-$(NICKLE_VERSION).tar.gz
 NICKLE_DIR=nickle-$(NICKLE_VERSION)
 NICKLE_UNZIP=zcat
@@ -36,7 +36,7 @@ NICKLE_CONFLICTS=
 #
 # NICKLE_IPK_VERSION should be incremented when the ipk changes.
 #
-NICKLE_IPK_VERSION=2
+NICKLE_IPK_VERSION=1
 
 #
 # NICKLE_CONFFILES should be a list of user-editable files
