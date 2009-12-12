@@ -1,0 +1,19 @@
+--- ez-ipupdate.c.orig	2009-12-13 01:41:13.000000000 +1030
++++ ez-ipupdate.c	2009-12-13 01:41:45.000000000 +1030
+@@ -1181,6 +1181,7 @@
+       {"mx",              required_argument,      0, 'm'},
+       {"max-interval",    required_argument,      0, 'M'},
+       {"notify-email",    required_argument,      0, 'N'},
++      {"offline",         no_argument,            0, 'o'},
+       {"resolv-period",   required_argument,      0, 'p'},
+       {"period",          required_argument,      0, 'P'},
+       {"quiet",           no_argument,            0, 'q'},
+@@ -1205,7 +1206,7 @@
+ #endif
+   int opt;
+ 
+-  while((opt=xgetopt(argc, argv, "a:b:c:dDe:fF:g:h:i:L:m:M:N:o:p:P:qQ:r:R:s:S:t:T:U:u:wHVCZz:", 
++  while((opt=xgetopt(argc, argv, "a:b:c:dDe:fF:g:h:i:L:m:M:N:op:P:qQ:r:R:s:S:t:T:U:u:wHVCZz:", 
+           long_options, NULL)) != -1)
+   {
+     switch (opt)
