@@ -36,7 +36,7 @@ EZ-IPUPDATE_CONFLICTS=
 #
 # EZ-IPUPDATE_IPK_VERSION should be incremented when the ipk changes.
 #
-EZ-IPUPDATE_IPK_VERSION=1
+EZ-IPUPDATE_IPK_VERSION=2
 
 #
 # EZ-IPUPDATE_CONFFILES should be a list of user-editable files
@@ -46,7 +46,9 @@ EZ-IPUPDATE_IPK_VERSION=1
 # EZ-IPUPDATE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-EZ-IPUPDATE_PATCHES=$(EZ-IPUPDATE_SOURCE_DIR)/errno.patch
+EZ-IPUPDATE_PATCHES=$(EZ-IPUPDATE_SOURCE_DIR)/errno.patch \
+		    $(EZ-IPUPDATE_SOURCE_DIR)/zoneedit.patch \
+		    $(EZ-IPUPDATE_SOURCE_DIR)/offline.patch
 
 #
 # If the compilation of the package requires additional

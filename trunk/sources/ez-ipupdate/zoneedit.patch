@@ -1,0 +1,11 @@
+--- ez-ipupdate.c.orig	2009-12-13 01:10:19.000000000 +1030
++++ ez-ipupdate.c	2009-12-13 01:10:31.000000000 +1030
+@@ -95,7 +95,7 @@
+ #define HN_DEFAULT_PORT "80"
+ #define HN_REQUEST "/vanity/update"
+ 
+-#define ZONEEDIT_DEFAULT_SERVER "www.zoneedit.com"
++#define ZONEEDIT_DEFAULT_SERVER "dynamic.zoneedit.com"
+ #define ZONEEDIT_DEFAULT_PORT "80"
+ #define ZONEEDIT_REQUEST "/auth/dynamic.html"
+ 
