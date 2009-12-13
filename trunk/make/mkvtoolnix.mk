@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MKVTOOLNIX_SITE=http://bunkus.org/videotools/mkvtoolnix/sources
-MKVTOOLNIX_VERSION ?= 2.9.9
+MKVTOOLNIX_VERSION ?= 3.0.0
 MKVTOOLNIX_SOURCE=mkvtoolnix-$(MKVTOOLNIX_VERSION).tar.bz2
 MKVTOOLNIX_DIR=mkvtoolnix-$(MKVTOOLNIX_VERSION)
 MKVTOOLNIX_UNZIP=bzcat
