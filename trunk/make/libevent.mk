@@ -5,7 +5,7 @@
 #############################################################
 
 LIBEVENT_SITE=http://www.monkey.org/~provos/
-LIBEVENT_VERSION=1.4.11
+LIBEVENT_VERSION=1.4.13
 LIBEVENT_DIR=libevent-$(LIBEVENT_VERSION)-stable
 LIBEVENT_SOURCE=$(LIBEVENT_DIR).tar.gz
 LIBEVENT_UNZIP=zcat
@@ -127,4 +127,4 @@ libevent-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBEVENT_DIR) $(LIBEVENT_BUILD_DIR) $(LIBEVENT_IPK_DIR) $(LIBEVENT_IPK)
 
 libevent-check: $(LIBEVENT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBEVENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
