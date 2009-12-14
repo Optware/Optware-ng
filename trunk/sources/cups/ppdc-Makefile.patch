@@ -1,0 +1,20 @@
+--- cups/ppdc/Makefile.orig	2009-05-26 23:27:06.000000000 +0000
++++ cups/ppdc/Makefile	2009-12-11 23:31:08.859957721 +0000
+@@ -237,6 +237,8 @@
+ # genstrings - generate GNU gettext strings.
+ #
+ 
++GENSTRINGS_DIR = .
++
+ genstrings:		genstrings.o libcupsppdc.a ../cups/libcups.a \
+ 			sample.drv ../data/media.defs
+ 	echo Linking $@...
+@@ -244,7 +246,7 @@
+ 		libcupsppdc.a ../cups/libcups.a $(LIBGSSAPI) $(SSLLIBS) \
+ 		$(DNSSDLIBS) $(COMMONLIBS) $(LIBZ)
+ 	echo Generating localization strings...
+-	./genstrings >sample.c
++	$(GENSTRINGS_DIR)/genstrings >sample.c
+ 
+ 
+ #

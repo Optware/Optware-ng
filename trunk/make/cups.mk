@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.3.11
+CUPS_VERSION=1.4.2
 CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -52,8 +52,7 @@ CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf
 # CUPS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch \
-	$(CUPS_SOURCE_DIR)/Makefile.patch \
+CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch $(CUPS_SOURCE_DIR)/ppdc-Makefile.patch
 
 ifeq ($(LIBC_STYLE), uclibc)
 ifneq ($(OPTWARE_TARGET), ts101)
@@ -169,7 +168,7 @@ $(CUPS_HOST_BUILD_DIR)/.staged: $(CUPS_HOST_BUILD_DIR)/.built
 
 cups-host-stage: $(CUPS_HOST_BUILD_DIR)/.staged
 
-$(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES) make/cups.mk
+$(CUPS_BUILD_DIR)/.configured: $(CUPS_HOST_BUILD_DIR)/.built $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES) make/cups.mk
 	$(MAKE) openssl-stage zlib-stage libpng-stage
 	$(MAKE) libjpeg-stage libtiff-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
@@ -213,6 +212,7 @@ endif
 		--disable-slp \
 		--disable-gnutls \
 	)
+	sed -i -e '/^GENSTRINGS_DIR/s|=.*| = $(CUPS_HOST_BUILD_DIR)/ppdc|' $(@D)/ppdc/Makefile
 	touch $@
 
 cups-unpack: $(CUPS_BUILD_DIR)/.configured
@@ -363,12 +363,18 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	install -d $(CUPS_IPK_DIR)/opt/bin
 	install -d $(CUPS_IPK_DIR)/opt/doc/cups
 	install -d $(CUPS_IPK_DIR)/opt/lib/modules
-	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/sbin/*
+	chmod u+w $(CUPS_IPK_DIR)/opt/sbin/cupsd && \
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/sbin/* && \
+	chmod u-w $(CUPS_IPK_DIR)/opt/sbin/cupsd
 	mv $(CUPS_IPK_DIR)/opt/bin/cups-config $(CUPS_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/bin/*
 	mv $(CUPS_IPK_DIR)/opt/sbin/cups-config $(CUPS_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/lib*.so.*
-	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/cups/{backend,cgi-bin,daemon,filter,monitor,notifier}/*
+	chmod u+w $(CUPS_IPK_DIR)/opt/lib/lib*.so.* && \
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/lib*.so.* && \
+	chmod u+w $(CUPS_IPK_DIR)/opt/lib/lib*.so.*
+	for d in backend cgi-bin daemon filter monitor notifier; do \
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/cups/$$d/*; \
+	done
 # Copy the configuration file
 	cp $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)/opt/etc/cups
 	cp $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)/opt/etc/cups
