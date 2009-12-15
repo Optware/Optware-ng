@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CYRUS-SASL_SITE=ftp://ftp.andrew.cmu.edu/pub/cyrus-mail
-CYRUS-SASL_VERSION=2.1.22
+CYRUS-SASL_VERSION=2.1.23
 CYRUS-SASL_SOURCE=cyrus-sasl-$(CYRUS-SASL_VERSION).tar.gz
 CYRUS-SASL_DIR=cyrus-sasl-$(CYRUS-SASL_VERSION)
 CYRUS-SASL_UNZIP=zcat
@@ -33,7 +33,7 @@ CYRUS-SASL_PRIORITY=optional
 CYRUS-SASL_DEPENDS=
 CYRUS-SASL_CONFLICTS=
 
-CYRUS-SASL_IPK_VERSION=2
+CYRUS-SASL_IPK_VERSION=1
 
 #
 # CYRUS-SASL_CONFFILES should be a list of user-editable files
@@ -62,8 +62,8 @@ CYRUS-SASL-LIBS_IPK=$(BUILD_DIR)/cyrus-sasl-libs_$(CYRUS-SASL_VERSION)-$(CYRUS-S
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CYRUS-SASL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CYRUS-SASL_SITE)/$(CYRUS-SASL_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(CYRUS-SASL_SOURCE)
+	$(WGET) -P $(@D) $(CYRUS-SASL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -92,13 +92,13 @@ cyrus-sasl-source: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL_PATCHES)
 #
 $(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL_PATCHES) make/cyrus-sasl.mk
 	$(MAKE) libdb-stage openssl-stage 
-	rm -rf $(BUILD_DIR)/$(CYRUS-SASL_DIR) $(CYRUS-SASL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CYRUS-SASL_DIR) $(@D)
 	$(CYRUS-SASL_UNZIP) $(DL_DIR)/$(CYRUS-SASL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CYRUS-SASL_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-SASL_DIR) -p1
-	mv $(BUILD_DIR)/$(CYRUS-SASL_DIR) $(CYRUS-SASL_BUILD_DIR)
-	cp -f $(SOURCE_DIR)/common/config.* $(CYRUS-SASL_BUILD_DIR)/config/
+	mv $(BUILD_DIR)/$(CYRUS-SASL_DIR) $(@D)
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/config/
 # We have to remove double blanks. Otherwise configure of saslauthd fails.
-	(cd $(CYRUS-SASL_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(strip $(STAGING_CPPFLAGS))" \
 		CFLAGS="$(strip $(STAGING_CPPFLAGS))" \
@@ -121,8 +121,8 @@ $(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(CYRUS-SASL_BUILD_DIR)/libtool
-	touch $(CYRUS-SASL_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 cyrus-sasl-unpack: $(CYRUS-SASL_BUILD_DIR)/.configured
 
@@ -130,9 +130,9 @@ cyrus-sasl-unpack: $(CYRUS-SASL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CYRUS-SASL_BUILD_DIR)/.built: $(CYRUS-SASL_BUILD_DIR)/.configured
-	rm -f $(CYRUS-SASL_BUILD_DIR)/.built
-	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) HOSTCC=$(HOSTCC)
-	touch $(CYRUS-SASL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) HOSTCC=$(HOSTCC)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,10 +143,10 @@ cyrus-sasl: $(CYRUS-SASL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CYRUS-SASL_BUILD_DIR)/.staged: $(CYRUS-SASL_BUILD_DIR)/.built
-	rm -f $(CYRUS-SASL_BUILD_DIR)/.staged
-	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libsasl2.la
-	touch $(CYRUS-SASL_BUILD_DIR)/.staged
+	touch $@
 
 cyrus-sasl-stage: $(CYRUS-SASL_BUILD_DIR)/.staged
 
@@ -155,7 +155,7 @@ cyrus-sasl-stage: $(CYRUS-SASL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cyrus-sasl
 #
 $(CYRUS-SASL_IPK_DIR)/CONTROL/control:
-	@install -d $(CYRUS-SASL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cyrus-sasl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -173,7 +173,7 @@ $(CYRUS-SASL_IPK_DIR)/CONTROL/control:
 # necessary to create a seperate control file under sources/cyrus-sasl
 #
 $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cyrus-sasl-libs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -246,4 +246,4 @@ cyrus-sasl-dirclean:
 # Some sanity check for the package.
 #
 cyrus-sasl-check: $(CYRUS-SASL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CYRUS-SASL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
