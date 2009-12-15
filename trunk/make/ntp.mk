@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NTP_SITE=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
-NTP_VERSION=4.2.4p7
+NTP_VERSION=4.2.6
 NTP_SOURCE=ntp-$(NTP_VERSION).tar.gz
 NTP_DIR=ntp-$(NTP_VERSION)
 NTP_UNZIP=zcat
@@ -44,7 +44,7 @@ NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
 # NTP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NTP_PATCHES=$(NTP_SOURCE_DIR)/ntpdc-Makefile.in.patch $(NTP_SOURCE_DIR)/ntpd-ifupdate2.patch
+NTP_PATCHES=$(NTP_SOURCE_DIR)/ntpd-ifupdate2.patch
 
 #
 # If the compilation of the package requires additional
@@ -129,6 +129,7 @@ endif
 		$(NTP_CONFIGURE_ARGS) \
 		--prefix=/opt\
 	)
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 ntp-unpack: $(NTP_BUILD_DIR)/.configured
