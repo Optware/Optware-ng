@@ -212,6 +212,9 @@ endif
 		--disable-slp \
 		--disable-gnutls \
 	)
+ifdef CUPS_GCC_DOES_NOT_SUPPORT_PIE
+	sed -i -e 's/ -pie -fPIE//' $(@D)/Makedefs
+endif
 	sed -i -e '/^GENSTRINGS_DIR/s|=.*| = $(CUPS_HOST_BUILD_DIR)/ppdc|' $(@D)/ppdc/Makefile
 	touch $@
 
