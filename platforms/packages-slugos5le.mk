@@ -15,3 +15,6 @@ BROKEN_PACKAGES = \
 	puppy qemu \
 	softflowd \
 	transcode vte xchat \
+
+SLANG_VERSION := 2.2.2
+SLANG_IPK_VERSION := 1
