@@ -109,14 +109,6 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES) make/ntp.mk
 	$(NTP_UNZIP) $(DL_DIR)/$(NTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(NTP_PATCHES) | patch -d $(BUILD_DIR)/$(NTP_DIR) -p1
 	mv $(BUILD_DIR)/$(NTP_DIR) $(@D)
-ifeq (no, $(IPV6))
-	sed -i -e '/#if.*ISC_PLATFORM_HAVEIPV6/s/.*/#if 0/' \
-		$(@D)/ntpd/ntp_intres.c \
-		$(@D)/libisc/ifiter_ioctl.c \
-		$(@D)/libisc/netaddr.c \
-		$(@D)/libisc/sockaddr.c \
-		;
-endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		STRIP="$(STRIP_COMMAND)" \
