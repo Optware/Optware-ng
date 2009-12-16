@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR_VERSION=2.0.2
+BZR_VERSION=2.0.3
 BZR_SITE=https://launchpad.net/bzr/2.0/$(BZR_VERSION)/+download
 BZR_SOURCE=bzr-$(BZR_VERSION).tar.gz
 BZR_DIR=bzr-$(BZR_VERSION)
@@ -172,12 +172,12 @@ bzr: $(BZR_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(BZR_BUILD_DIR)/.staged: $(BZR_BUILD_DIR)/.built
+#$(BZR_BUILD_DIR)/.staged: $(BZR_BUILD_DIR)/.built
 #	rm -f $@
-	#$(MAKE) -C $(BZR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(BZR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-bzr-stage: $(BZR_BUILD_DIR)/.staged
+#
+#bzr-stage: $(BZR_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
