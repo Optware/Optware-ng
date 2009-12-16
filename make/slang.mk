@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SLANG_SITE=ftp://space.mit.edu/pub/davis/slang/v2.1
-SLANG_VERSION=2.1.4
+SLANG_SITE=ftp://space.mit.edu/pub/davis/slang/v2.2
+SLANG_VERSION ?= 2.2.2
 SLANG_SOURCE=slang-$(SLANG_VERSION).tar.bz2
 SLANG_DIR=slang-$(SLANG_VERSION)
 SLANG_UNZIP=bzcat
@@ -39,7 +39,7 @@ SLANG_CONFLICTS=
 #
 # SLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-SLANG_IPK_VERSION=1
+SLANG_IPK_VERSION ?= 1
 
 #
 # SLANG_CONFFILES should be a list of user-editable files
@@ -255,4 +255,4 @@ slang-dirclean:
 # Some sanity check for the package.
 #
 slang-check: $(SLANG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SLANG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
