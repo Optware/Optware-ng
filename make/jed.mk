@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 JED_SITE=ftp://space.mit.edu/pub/davis/jed/v0.99
-JED_VERSION=0.99.18
-JED_UPSTREAM_VERSION=0.99-18
+JED_VERSION=0.99.19
+JED_UPSTREAM_VERSION=0.99-19
 JED_SOURCE=jed-$(JED_UPSTREAM_VERSION).tar.bz2
 JED_DIR=jed-$(JED_UPSTREAM_VERSION)
 JED_UNZIP=bzcat
@@ -77,8 +77,8 @@ JED_IPK=$(BUILD_DIR)/jed_$(JED_VERSION)-$(JED_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(JED_SOURCE):
-	$(WGET) -P $(DL_DIR) $(JED_SITE)/$(JED_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(JED_SOURCE)
+	$(WGET) -P $(@D) $(JED_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,23 +107,24 @@ jed-source: $(DL_DIR)/$(JED_SOURCE) $(JED_PATCHES)
 #
 $(JED_BUILD_DIR)/.configured: $(DL_DIR)/$(JED_SOURCE) $(JED_PATCHES) make/jed.mk
 	$(MAKE) slang-stage
-	rm -rf $(BUILD_DIR)/$(JED_DIR) $(JED_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(JED_DIR) $(@D)
 	$(JED_UNZIP) $(DL_DIR)/$(JED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(JED_PATCHES)" ; \
 		then cat $(JED_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(JED_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(JED_DIR)" != "$(JED_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(JED_DIR) $(JED_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(JED_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(JED_DIR) $(@D) ; \
 	fi
 	sed -i -e '/if.*\/chkslang/s/^/#/' \
 	       -e 's/@RPATH@//' \
-		$(JED_BUILD_DIR)/src/Makefile.in
-	(cd $(JED_BUILD_DIR); \
+		$(@D)/src/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(JED_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(JED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(JED_LDFLAGS)" \
+		PKG_CONFIG=false \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -131,10 +132,11 @@ $(JED_BUILD_DIR)/.configured: $(DL_DIR)/$(JED_SOURCE) $(JED_PATCHES) make/jed.mk
 		--prefix=/opt \
 		--with-slang=$(STAGING_PREFIX) \
 		--without-x \
+		--disable-xft \
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(JED_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 jed-unpack: $(JED_BUILD_DIR)/.configured
@@ -144,7 +146,7 @@ jed-unpack: $(JED_BUILD_DIR)/.configured
 #
 $(JED_BUILD_DIR)/.built: $(JED_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(JED_BUILD_DIR)
+	$(MAKE) -C $(@D) JED_ROOT=/opt/share/jed
 	touch $@
 
 #
@@ -155,12 +157,12 @@ jed: $(JED_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(JED_BUILD_DIR)/.staged: $(JED_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(JED_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-jed-stage: $(JED_BUILD_DIR)/.staged
+#$(JED_BUILD_DIR)/.staged: $(JED_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#jed-stage: $(JED_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -195,7 +197,8 @@ $(JED_IPK_DIR)/CONTROL/control:
 #
 $(JED_IPK): $(JED_BUILD_DIR)/.built
 	rm -rf $(JED_IPK_DIR) $(BUILD_DIR)/jed_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(JED_BUILD_DIR) DESTDIR=$(JED_IPK_DIR) install
+	$(MAKE) -C $(JED_BUILD_DIR) install \
+		DESTDIR=$(JED_IPK_DIR) JED_ROOT=/opt/share/jed
 	$(STRIP_COMMAND) $(JED_IPK_DIR)/opt/bin/jed
 #	install -d $(JED_IPK_DIR)/opt/etc/
 #	install -m 644 $(JED_SOURCE_DIR)/jed.conf $(JED_IPK_DIR)/opt/etc/jed.conf
@@ -233,4 +236,4 @@ jed-dirclean:
 # Some sanity check for the package.
 #
 jed-check: $(JED_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(JED_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
