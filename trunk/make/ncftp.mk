@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NCFTP_SITE=ftp://ftp.ncftp.com/ncftp
-NCFTP_VERSION=3.2.2
+NCFTP_VERSION=3.2.3
 NCFTP_SOURCE=ncftp-$(NCFTP_VERSION)-src.tar.gz
 NCFTP_DIR=ncftp-$(NCFTP_VERSION)
 NCFTP_UNZIP=zcat
@@ -205,4 +205,4 @@ ncftp-dirclean:
 # Some sanity check for the package.
 #
 ncftp-check: $(NCFTP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NCFTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
