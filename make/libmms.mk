@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBMMS_VERSION=0.4
+LIBMMS_VERSION=0.5
 LIBMMS_SITE=http://launchpad.net/libmms/trunk/$(LIBMMS_VERSION)/+download
 LIBMMS_SOURCE=libmms-$(LIBMMS_VERSION).tar.gz
 LIBMMS_DIR=libmms-$(LIBMMS_VERSION)
@@ -29,7 +29,7 @@ LIBMMS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBMMS_DESCRIPTION=A common library for parsing mms:// and mmsh:// type network streams
 LIBMMS_SECTION=audio
 LIBMMS_PRIORITY=optional
-LIBMMS_DEPENDS=
+LIBMMS_DEPENDS=glib
 LIBMMS_SUGGESTS=
 LIBMMS_CONFLICTS=
 
