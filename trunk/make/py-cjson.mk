@@ -32,6 +32,7 @@ PY-CJSON_SECTION=misc
 PY-CJSON_PRIORITY=optional
 PY24-CJSON_DEPENDS=python24
 PY25-CJSON_DEPENDS=python25
+PY26-CJSON_DEPENDS=python26
 PY-CJSON_CONFLICTS=
 
 #
@@ -73,6 +74,9 @@ PY24-CJSON_IPK=$(BUILD_DIR)/py-cjson_$(PY-CJSON_VERSION)-$(PY-CJSON_IPK_VERSION)
 
 PY25-CJSON_IPK_DIR=$(BUILD_DIR)/py25-cjson-$(PY-CJSON_VERSION)-ipk
 PY25-CJSON_IPK=$(BUILD_DIR)/py25-cjson_$(PY-CJSON_VERSION)-$(PY-CJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-CJSON_IPK_DIR=$(BUILD_DIR)/py26-cjson-$(PY-CJSON_VERSION)-ipk
+PY26-CJSON_IPK=$(BUILD_DIR)/py26-cjson_$(PY-CJSON_VERSION)-$(PY-CJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-cjson-source py-cjson-unpack py-cjson py-cjson-stage py-cjson-ipk py-cjson-clean py-cjson-dirclean py-cjson-check
 
@@ -141,6 +145,22 @@ $(PY-CJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CJSON_SOURCE) $(PY-CJSON_PATCH
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
+	# 2.5
+	$(PY-CJSON_UNZIP) $(DL_DIR)/$(PY-CJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CJSON_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CJSON_DIR) $(PY-CJSON_BUILD_DIR)/2.6
+	(cd $(PY-CJSON_BUILD_DIR)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.6"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	)
 	touch $(PY-CJSON_BUILD_DIR)/.configured
 
 py-cjson-unpack: $(PY-CJSON_BUILD_DIR)/.configured
@@ -157,6 +177,10 @@ $(PY-CJSON_BUILD_DIR)/.built: $(PY-CJSON_BUILD_DIR)/.configured
 	(cd $(PY-CJSON_BUILD_DIR)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	(cd $(PY-CJSON_BUILD_DIR)/2.6; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
 	touch $(PY-CJSON_BUILD_DIR)/.built
 
@@ -207,6 +231,20 @@ $(PY25-CJSON_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-CJSON_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-CJSON_CONFLICTS)" >>$@
 
+$(PY26-CJSON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-cjson" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-CJSON_PRIORITY)" >>$@
+	@echo "Section: $(PY-CJSON_SECTION)" >>$@
+	@echo "Version: $(PY-CJSON_VERSION)-$(PY-CJSON_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-CJSON_MAINTAINER)" >>$@
+	@echo "Source: $(PY-CJSON_SITE)/$(PY-CJSON_SOURCE)" >>$@
+	@echo "Description: $(PY-CJSON_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-CJSON_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-CJSON_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -236,6 +274,14 @@ $(PY24-CJSON_IPK) $(PY25-CJSON_IPK): $(PY-CJSON_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(PY25-CJSON_IPK_DIR)/opt/lib/python2.5/site-packages/cjson*.so
 	$(MAKE) $(PY25-CJSON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CJSON_IPK_DIR)
+	# 2.6
+	rm -rf $(PY26-CJSON_IPK_DIR) $(BUILD_DIR)/py26-cjson_*_$(TARGET_ARCH).ipk
+	(cd $(PY-CJSON_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CJSON_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) $(PY26-CJSON_IPK_DIR)/opt/lib/python2.6/site-packages/cjson*.so
+	$(MAKE) $(PY26-CJSON_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CJSON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -256,9 +302,10 @@ py-cjson-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-CJSON_DIR) $(PY-CJSON_BUILD_DIR)
 	rm -rf $(PY24-CJSON_IPK_DIR) $(PY24-CJSON_IPK)
 	rm -rf $(PY25-CJSON_IPK_DIR) $(PY25-CJSON_IPK)
+	rm -rf $(PY26-CJSON_IPK_DIR) $(PY26-CJSON_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-cjson-check: $(PY24-CJSON_IPK) $(PY25-CJSON_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-CJSON_IPK) $(PY25-CJSON_IPK)
+py-cjson-check: $(PY24-CJSON_IPK) $(PY25-CJSON_IPK) $(PY26-CJSON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-CJSON_IPK) $(PY25-CJSON_IPK) $(PY26-CJSON_IPK)
