@@ -31,7 +31,7 @@ PY-CURL_DESCRIPTION=PycURL is a Python interface to libcurl.
 PY-CURL_SECTION=misc
 PY-CURL_PRIORITY=optional
 PY24-CURL_DEPENDS=python24, libcurl (>=7.18.2), openssl
-PY24-CURL_DEPENDS=python25, libcurl (>=7.18.2), openssl
+PY25-CURL_DEPENDS=python25, libcurl (>=7.18.2), openssl
 PY-CURL_CONFLICTS=
 
 #
