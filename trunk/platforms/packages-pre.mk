@@ -1,18 +1,7 @@
+# Only list those that need to be different from cs08q1armel
+
 PACKAGES = \
-	bash \
-	dropbear \
-	ez-ipupdate \
-	ipkg-opt \
 	kernel-modules \
-	libstdc++ \
-	lighttpd \
-	nano \
-	openssh \
-	openssh-sftp-server \
-	pcre \
-	pwgen \
-	readline \
-	tar \
-	zlib
+	lighttpd
 
 KERNEL_RECIPE_DIR=sources/kernel-modules/pre
