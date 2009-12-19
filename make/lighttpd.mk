@@ -37,9 +37,13 @@ LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
 LIGHTTPD_DEPENDS=pcre, zlib, libstdc++, openssl, spawn-fcgi
 
-LIGHTTPD_SUGGESTS=bzip2, e2fsprogs, libmemcache, libxml2, lua, memcached, sqlite
+LIGHTTPD_SUGGESTS=bzip2, e2fsprogs, libxml2, lua, sqlite
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 LIGHTTPD_SUGGESTS+=, openldap-libs
+endif
+
+ifeq (libmemcache, $(filter libmemcache, $(PACKAGES)))
+LIGHTTPD_WITH_MEMCACHE=yes
 endif
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
@@ -51,6 +55,11 @@ endif
 ifdef LIGHTTPD_WITH_MYSQL
 LIGHTTPD_SUGGESTS+=, mysql
 endif
+
+ifdef LIGHTTPD_WITH_MEMCACHE
+LIGHTTD_SUGGESTS+=, libmemcache, memcached
+endif
+
 LIGHTTPD_CONFLICTS=
 
 #
@@ -82,6 +91,12 @@ ifdef LIGHTTPD_WITH_MYSQL
 LIGHTTPD_CONFIG_ARGS=--with-mysql=$(STAGING_PREFIX)/bin/mysql_config
 else
 LIGHTTPD_CONFIG_ARGS=--without-mysql
+endif
+
+ifdef LIGHTTPD_WITH_MEMCACHE
+LIGHTTPD_CONFIG_ARGS+=--with-memcache
+else
+LIGHTTPD_CONFIG_ARGS+=--without-memcache
 endif
 
 ifeq (openwrt-ixp4xx, $(OPTWARE_TARGET))
@@ -138,13 +153,16 @@ lighttpd-source: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES) make/lighttpd.mk
-	$(MAKE) bzip2-stage libmemcache-stage libxml2-stage lua-stage memcached-stage
+	$(MAKE) bzip2-stage libxml2-stage lua-stage
 	$(MAKE) openssl-stage pcre-stage sqlite-stage zlib-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
 ifdef LIGHTTPD_WITH_MYSQL
 	$(MAKE) mysql-stage
+endif
+ifdef LIGHTTPD_WITH_MEMCACHE
+	$(MAKE) libmemcache-stage memcached-stage
 endif
 	rm -rf $(BUILD_DIR)/$(LIGHTTPD_DIR) $(@D)
 	$(LIGHTTPD_UNZIP) $(DL_DIR)/$(LIGHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -174,7 +192,6 @@ endif
 		--with-bzip2 \
 		--with-ldap \
 		--with-lua \
-		--with-memcache \
 		$(LIGHTTPD_CONFIG_ARGS) \
 		--with-pcre \
 		--with-openssl \
