@@ -1,4 +1,15 @@
-SPECIFIC_PACKAGES = \
-	pre-emulator-optware-bootstrap
-
-PACKAGES = ${SPECIFIC_PACKAGES}
+PACKAGES = \
+	bash \
+	dropbear \
+	ez-ipupdate \
+	ipkg-opt \
+	libstdc++ \
+	lighttpd \
+	nano \
+	openssh \
+	openssh-sftp-server \
+	pcre \
+	pwgen \
+	readline \
+	tar \
+	zlib
