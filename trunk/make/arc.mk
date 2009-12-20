@@ -42,6 +42,7 @@ ARC_BUILD_DIR=$(BUILD_DIR)/arc
 ARC_SOURCE_DIR=$(SOURCE_DIR)/arc
 ARC_IPK_DIR=$(BUILD_DIR)/arc-$(ARC_VERSION)-ipk
 ARC_IPK=$(BUILD_DIR)/arc_$(ARC_VERSION)-$(ARC_IPK_VERSION)_$(TARGET_ARCH).ipk
+ARC_PATCHES=$(ARC_SOURCE_DIR)/strchr-inlined.patch
 
 #
 # This is the dependency on the source code.  If the source is missing,

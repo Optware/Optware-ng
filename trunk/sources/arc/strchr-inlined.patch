@@ -1,0 +1,102 @@
+diff -urN arc-5.21o/arcadd.c arc/arcadd.c
+--- arc-5.21o/arcadd.c	2005-10-12 17:22:18.000000000 +0200
++++ arc/arcadd.c	2009-12-20 23:04:48.000000000 +0100
+@@ -26,6 +26,12 @@
+ #include <strings.h>
+ #endif
+ 
++#if	_MTS || SYSV
++#define	rindex	strrchr
++#define	index	strchr
++#endif
++
++
+ static	int	addfile();
+ int	readhdr(), unlink();
+ #if	UNIX
+diff -urN arc-5.21o/arcext.c arc/arcext.c
+--- arc-5.21o/arcext.c	2005-10-12 17:22:18.000000000 +0200
++++ arc/arcext.c	2009-12-20 23:05:23.000000000 +0100
+@@ -26,6 +26,11 @@
+ #include <strings.h>
+ #endif
+ 
++#if	_MTS || SYSV
++#define	rindex	strrchr
++#define	index	strchr
++#endif
++
+ VOID	openarc(), closearc(), setstamp();
+ int	match(), readhdr(), unpack();
+ static	VOID	extfile();
+diff -urN arc-5.21o/arc.h arc/arc.h
+--- arc-5.21o/arc.h	2003-10-31 03:22:36.000000000 +0100
++++ arc/arc.h	2009-12-20 23:06:55.000000000 +0100
+@@ -46,10 +46,6 @@
+ 
+ #define	MYBUF	32766		/* Used for fopens and filecopy() */
+ 
+-#if	_MTS || SYSV
+-#define	rindex	strrchr
+-#define	index	strchr
+-#endif
+ 
+ #if	__STDC__
+ #include <stdlib.h>
+diff -urN arc-5.21o/arcmatch.c arc/arcmatch.c
+--- arc-5.21o/arcmatch.c	2003-10-31 03:22:36.000000000 +0100
++++ arc/arcmatch.c	2009-12-20 23:05:41.000000000 +0100
+@@ -24,6 +24,12 @@
+ #include <strings.h>
+ #endif
+ 
++#if	_MTS || SYSV
++#define	rindex	strrchr
++#define	index	strchr
++#endif
++
++
+ VOID	arcdie();
+ 
+ int
+diff -urN arc-5.21o/arcmisc.c arc/arcmisc.c
+--- arc-5.21o/arcmisc.c	2005-10-09 03:38:22.000000000 +0200
++++ arc/arcmisc.c	2009-12-20 23:06:13.000000000 +0100
+@@ -12,6 +12,12 @@
+ #include <strings.h>
+ #endif
+ 
++#if	_MTS || SYSV
++#define	rindex	strrchr
++#define	index	strchr
++#endif
++
++
+ #if	MSDOS
+ #include <dir.h>
+ #include <stat.h>
+@@ -22,6 +28,8 @@
+ #include <osbind.h>
+ #include <stat.h>
+ 
++
++
+ VOID 
+ exitpause()
+ {
+diff -urN arc-5.21o/arcrun.c arc/arcrun.c
+--- arc-5.21o/arcrun.c	2005-10-12 17:22:18.000000000 +0200
++++ arc/arcrun.c	2009-12-20 23:06:41.000000000 +0100
+@@ -26,6 +26,12 @@
+ #include <sys/stat.h>
+ #endif
+ 
++#if	_MTS || SYSV
++#define	rindex	strrchr
++#define	index	strchr
++#endif
++
++
+ VOID	rempath(), openarc(), closearc(), arcdie();
+ int	readhdr(), match(), unpack();
+ static	VOID	runfile();
