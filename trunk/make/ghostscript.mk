@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GHOSTSCRIPT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ghostscript
-GHOSTSCRIPT_VERSION=8.64
+GHOSTSCRIPT_VERSION=8.70
 GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)
 GHOSTSCRIPT_UNZIP=bzcat
@@ -35,7 +35,7 @@ GHOSTSCRIPT_CONFLICTS=
 #
 # GHOSTSCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
-GHOSTSCRIPT_IPK_VERSION=2
+GHOSTSCRIPT_IPK_VERSION=1
 
 #
 # GHOSTSCRIPT_CONFFILES should be a list of user-editable files
