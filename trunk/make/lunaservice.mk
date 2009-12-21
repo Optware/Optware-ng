@@ -112,7 +112,7 @@ lunaservice-source: $(DL_DIR)/$(LUNASERVICE_SOURCE)
 # shown below to make various patches to it.
 #
 $(LUNASERVICE_BUILD_DIR)/.configured: $(DL_DIR)/$(LUNASERVICE_SOURCE) $(LUNASERVICE_PATCHES) make/lunaservice.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) glib-stage mjson-stage
 	rm -rf $(BUILD_DIR)/$(LUNASERVICE_DIR) $(@D)
 	$(LUNASERVICE_UNZIP) $(DL_DIR)/$(LUNASERVICE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LUNASERVICE_PATCHES)" ; \
