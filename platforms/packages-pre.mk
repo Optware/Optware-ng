@@ -2,6 +2,8 @@
 
 PACKAGES = \
 	kernel-modules \
-	lighttpd
+	lighttpd \
+	lunaservice \
+	mjson
 
 KERNEL_RECIPE_DIR=sources/kernel-modules/pre
