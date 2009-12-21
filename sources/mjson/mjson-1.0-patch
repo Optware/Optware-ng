@@ -1,0 +1,918 @@
+Index: json_utils.h
+===================================================================
+--- json_utils.h	(.../trunk)	(revision 0)
++++ json_utils.h	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,22 @@
++
++#include <stdbool.h>
++
++#ifndef JSON_UTILS_H
++#define JSON_UTILS_H
++
++#include "json.h"
++
++#ifdef __cplusplus
++extern "C"
++{
++#endif
++
++bool json_get_string(json_t *object, const char *label, const char **ret_string);
++bool json_get_int(json_t *object, const char *label, int *ret_int);
++bool json_get_bool(json_t *object, const char *label, bool *ret_bool);
++
++#ifdef __cplusplus
++}
++#endif
++#endif
++
+Index: Makefile.inc
+===================================================================
+--- Makefile.inc	(.../trunk)	(revision 37624)
++++ Makefile.inc	(.../submissions/13)	(revision 147882)
+@@ -1,46 +1,53 @@
+-OBJDIR := $(BUILD_TYPE)-$(PLATFORM)
++OBJDIR := $(CUSTOM_BUILD_TYPE)-$(CUSTOM_PLATFORM)
+ 
++LUNA_STAGING ?= $(HOME)/Local
++
++LIB_NAME_FLAGS ?= -Wl,-soname,libmjson.so
++SHARED_LIB_EXTENSION ?= so
++SHARED_LIB_FLAG ?= -shared
++
+ # ------------------------------------------------------------------
+ 
+ 
+ TARGET_OBJS := \
+ 	$(OBJDIR)/json.o \
+ 	$(OBJDIR)/rstring.o \
+-	$(OBJDIR)/json_helper.o 
++	$(OBJDIR)/json_helper.o \
++	$(OBJDIR)/json_utils.o \
+ 
+ 
+-TARGET := $(OBJDIR)/libmjson.so
++SOLIB := $(OBJDIR)/libmjson.$(SHARED_LIB_EXTENSION)
+ 
+ # ------------------------------------------------------------------
+ 
+-ifeq ("$(BUILD_TYPE)", "debug")
++ifeq ("$(CUSTOM_BUILD_TYPE)", "debug")
+ FLAGS_OPT := -O0 -g 
+ else
+ FLAGS_OPT := -O3
+ endif
+ 
+-LOCAL_CFLAGS := $(CFLAGS) -Wall -Werror $(FLAGS_OPT) -fno-strict-aliasing
++LOCAL_CFLAGS := $(CFLAGS) -fPIC -Wall -Werror $(FLAGS_OPT) -fno-strict-aliasing $(PLAT_CFLAGS)
+ 
+-LOCAL_LFLAGS := $(LDFLAGS) $(FLAGS_OPT) $(LIBS) 
++LOCAL_LFLAGS := $(LDFLAGS) -fPIC $(FLAGS_OPT) $(LIBS)
+ 
+ # ------------------------------------------------------------------
+ 
+-all: setup $(TARGET)
++all: setup $(SOLIB)
+ 
+ setup:
+ 	@mkdir -p $(OBJDIR)
+ 
+-$(TARGET): $(TARGET_OBJS)
+-	$(CXX) -shared -o $(TARGET) $(TARGET_OBJS) $(LOCAL_LFLAGS)
+-	
+-$(OBJDIR)/json.o : json.c
++$(SOLIB): $(TARGET_OBJS)
++	$(CXX) $(SHARED_LIB_FLAG) -o $(SOLIB) $(TARGET_OBJS) $(LOCAL_LFLAGS) $(LIB_NAME_FLAGS)
++
++$(OBJDIR)/%.o: %.c
+ 	$(CC) $(INCLUDES) $(LOCAL_CFLAGS) -c $< -o $@
+-$(OBJDIR)/rstring.o : rstring.c
+-	$(CC) $(INCLUDES) $(LOCAL_CFLAGS) -c $< -o $@
+-$(OBJDIR)/json_helper.o : json_helper.c
+-	$(CC) $(INCLUDES) $(LOCAL_CFLAGS) -c $< -o $@
+ 
+-
+ clean:
+ 	rm -rf $(OBJDIR)
+ 
++install:
++	mkdir -p $(LUNA_STAGING)/include
++	mkdir -p $(LUNA_STAGING)/lib
++	install -m 0644 json.h json_helper.h json_utils.h $(LUNA_STAGING)/include
++	install -m 0755 $(SOLIB) $(LUNA_STAGING)/lib
+Index: json.c
+===================================================================
+--- json.c	(.../trunk)	(revision 37624)
++++ json.c	(.../submissions/13)	(revision 147882)
+@@ -647,7 +647,7 @@
+ 
+ 
+ char *
+-json_format_string (char *text)
++json_format_string (const char *text)
+ {
+ 	size_t pos = 0;
+ 	unsigned int indentation = 0;	/* the current indentation level */
+@@ -795,7 +795,7 @@
+ 		{
+ 			/*TODO replace swprintf() */
+ 			char tmp[6];
+-			sprintf (tmp, "\\u%4x", text[i]);
++			sprintf (tmp, "\\u%4x", (unsigned int) text[i]);
+ 			rcs_catcs (output, tmp, 6);
+ 		}
+ 		else
+@@ -857,14 +857,14 @@
+ 		{
+ 			/*TODO replace swprintf() */
+ 			char tmp[6];
+-			sprintf (tmp, "\\u%4x", text[i]);
++			sprintf (tmp, "\\u%4x", (unsigned int) text[i]);
+ 			rcs_catcs (output, tmp, 6);
+ 		}
+ 		else if (text[i] > 127)	/* escape the characters as declared in 2.5 of http://www.ietf.org/rfc/rfc4627.txt */
+ 		{
+ 			/*TODO replace swprintf() */
+ 			char tmp[6];
+-			sprintf (tmp, "\\u%4x", text[i]);
++			sprintf (tmp, "\\u%4x", (unsigned int) text[i]);
+ 			rcs_catcs (output, tmp, 6);
+ 		}
+ 		else
+@@ -888,9 +888,10 @@
+ 	jpi->string_length_limit_reached = 0;
+ }
+ 
++typedef const char* const_char_ptr;
+ 
+ int
+-lexer (char *buffer, char **p, unsigned int *state, rcstring ** text)
++lexer (const char *buffer, const_char_ptr *p, unsigned int *state, rcstring ** text)
+ {
+ 	assert (buffer != NULL);
+ 	assert (p != NULL);
+@@ -1350,6 +1351,7 @@
+ 					if (rcs_catc (*text, **p) != RS_OK)
+ 						return LEX_MEMORY;
+ 					/*TODO finish this state */
++					++*p;
+ 					*state = 20;	/* number: frac start */
+ 					break;
+ 
+@@ -1593,7 +1595,7 @@
+ 			break;
+ 
+ 		default:
+-			printf ("*state missing: %d\n", *state);
++			fprintf ( stderr, "*state missing: %d\n", *state);
+ 			return LEX_INVALID_CHARACTER;
+ 		}
+ 
+@@ -1605,7 +1607,7 @@
+ 
+ 
+ enum json_error
+-json_parse_string (struct json_parsing_info *info, char *buffer)
++json_parse_string (struct json_parsing_info *info, const char *buffer)
+ {
+ 	json_t *temp = NULL;
+ 
+@@ -1630,7 +1632,7 @@
+ 					break;
+ 
+ 				default:
+-					printf ("state %d: defaulted\n", info->state);
++					fprintf ( stderr, "state %d: defaulted\n", info->state);
+ 					return JSON_MALFORMED_DOCUMENT;
+ 					break;
+ 				}
+@@ -1728,7 +1730,7 @@
+ 					break;
+ 
+ 				default:
+-					printf ("state %d: defaulted\n", info->state);
++					fprintf ( stderr, "state %d: defaulted\n", info->state);
+ 					return JSON_MALFORMED_DOCUMENT;
+ 					break;
+ 				}
+@@ -1787,7 +1789,7 @@
+ 					break;
+ 
+ 				default:
+-					printf ("state %d: defaulted\n", info->state);
++					fprintf (stderr, "state %d: defaulted\n", info->state);
+ 					return JSON_MALFORMED_DOCUMENT;
+ 					break;
+ 				}
+@@ -1819,7 +1821,7 @@
+ 					break;
+ 
+ 				default:
+-					printf ("state %d: defaulted\n", info->state);
++					fprintf (stderr, "state %d: defaulted\n", info->state);
+ 					return JSON_MALFORMED_DOCUMENT;
+ 					break;
+ 				}
+@@ -1843,7 +1845,7 @@
+ 					break;
+ 
+ 				default:
+-					printf ("state %d: defaulted\n", info->state);
++					fprintf ( stderr, "state %d: defaulted\n", info->state);
+ 					return JSON_MALFORMED_DOCUMENT;
+ 					break;
+ 				}
+@@ -1978,7 +1980,7 @@
+ 					break;
+ 
+ 				default:
+-					printf ("state %d: defaulted\n", info->state);
++					fprintf ( stderr, "state %d: defaulted\n", info->state);
+ 					return JSON_MALFORMED_DOCUMENT;
+ 					break;
+ 				}
+@@ -2125,7 +2127,7 @@
+ 					break;
+ 
+ 				default:
+-					printf ("state %d: defaulted\n", info->state);
++					fprintf ( stderr, "state %d: defaulted\n", info->state);
+ 					return JSON_MALFORMED_DOCUMENT;
+ 					break;
+ 				}
+@@ -2186,7 +2188,7 @@
+ 					break;
+ 
+ 				default:
+-					printf ("state %d: defaulted\n", info->state);
++					fprintf (stderr, "state %d: defaulted\n", info->state);
+ 					return JSON_MALFORMED_DOCUMENT;
+ 					break;
+ 				}
+@@ -2215,7 +2217,7 @@
+ 			break;
+ 
+ 		default:
+-			printf ("invalid parser state %d: defaulted\n", info->state);
++			fprintf ( stderr, "invalid parser state %d: defaulted\n", info->state);
+ 			return JSON_UNKNOWN_PROBLEM;
+ 		}
+ 	}
+@@ -2229,7 +2231,7 @@
+ 
+ 
+ json_t *
+-json_parse_document (char *text)
++json_parse_document (const char *text)
+ {
+ 	struct json_parsing_info jpi;
+ 	enum json_error error;
+@@ -2238,7 +2240,7 @@
+ 	json_jpi_init (&jpi);
+ 
+ 	error = json_parse_string (&jpi, text);
+-	if (error != JSON_OK)
++	if (error != JSON_OK && error != JSON_WAITING_FOR_EOF)
+ 	{
+ 		return NULL;
+ 	}
+Index: mjson.pc.in
+===================================================================
+--- mjson.pc.in	(.../trunk)	(revision 0)
++++ mjson.pc.in	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,11 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: mjson
++Description: Rui Maciel's JSON implementation in C
++Version: @VERSION@
++Requires: 
++Libs:  -L${libdir} -lmjson
++Cflags: -I${includedir}
+Index: Makefile.Ubuntu
+===================================================================
+--- Makefile.Ubuntu	(.../trunk)	(revision 37624)
++++ Makefile.Ubuntu	(.../submissions/13)	(revision 147882)
+@@ -1,16 +1,13 @@
+-BUILD_TYPE := debug
+-PLATFORM   := x86
++CUSTOM_BUILD_TYPE := debug
++CUSTOM_PLATFORM   := x86
+ 
+ INCLUDES := \
+ 	`pkg-config --cflags gtk+-x11-2.0`
+ 
+ LIBS := \
+-	`pkg-config --libs gtk+-x11-2.0`
++	-lglib-2.0
+ 
++#	`pkg-config --libs gtk+-x11-2.0`
+ 
+-include Makefile.inc
+ 
+-install:
+-	cp $(TARGET) /usr/lib
+-	
+-	
++include Makefile.inc
+Index: json.h
+===================================================================
+--- json.h	(.../trunk)	(revision 37624)
++++ json.h	(.../submissions/13)	(revision 147882)
+@@ -37,6 +37,64 @@
+ {
+ #endif
+ 
++/**
++ * @mainpage
++ *
++ * <h1>M's Json</h1>
++ *
++ * Here's a simple example of how to use MJson to parse a string into a json object
++ * and extract parmeters dictionary style from that object.
++
++@code
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <locale.h>
++
++#include <json.h>
++
++int
++main (void)
++{
++    setlocale (LC_ALL, "");
++    char *document = "{\"entry\":{\"name\":\"Andew\",\"phone\":\"555 123 456\"}}";
++
++    json_t *root;
++    
++    printf("Parsing the document...\n");
++    root = json_parse_document(document);
++    
++    json_t *entry = json_find_first_label(root, "entry");
++    if (!entry)
++    {
++        fprintf(stderr, "Failed to get 'entry' label\n");                     
++        return EXIT_FAILURE;
++    }   
++    
++    json_t *name = json_find_first_label(entry->child, "name");               
++    json_t *phone = json_find_first_label(entry->child, "phone");             
++    if (name && phone)
++    {
++        printf("Hi my name is %s and you can reach me at %s\n",               
++            name->child->text, phone->child->text);
++    }       
++    
++    printf("Printing the document tree...\n");                                
++    json_tree_to_string(root, &document);
++    wprintf("%ls\n", document);
++    
++    // clean up                                                               
++    json_free_value(&root);                                                   
++    return EXIT_SUCCESS;
++}   
++@endcode
++ */
++
++/**
++ * @addtogroup MJson
++ * @{
++ */
++
+ #define JSON_MAX_STRING_LENGTH SIZE_MAX-1
+ 
+ /**
+@@ -92,7 +150,7 @@
+ 		unsigned int state;	/*!< the state where the parsing was left on the last parser run */
+ 		unsigned int lex_state;
+ 		void *lex_text;
+-		char *p;
++        const char *p;
+ 		int string_length_limit_reached;	/*!< flag informing if the string limit length defined by JSON_MAX_STRING_LENGTH was reached */
+ 		json_t *cursor;	/*!< pointers to nodes belonging to the document tree which aid the document parsing */
+ 	};
+@@ -233,7 +291,7 @@
+ @param text a JSON formatted document
+ @return a char string holding the formated document
+ **/
+-	char *json_format_string (char *text);
++	char *json_format_string (const char *text);
+ 
+ 
+ /**
+@@ -267,7 +325,7 @@
+ @param text a c-string containing information described by the JSON language, partial or complete.
+ @return a code describing how the operation ended up
+ **/
+-	enum json_error json_parse_string (struct json_parsing_info *info, char *buffer);
++	enum json_error json_parse_string (struct json_parsing_info *info, const char *text);
+ 
+ 
+ /**
+@@ -275,7 +333,7 @@
+ @param text a c-string containing a complete JSON text document
+ @return a pointer to the new document tree or NULL if some error occurred
+ **/
+-	json_t *json_parse_document (char *text);
++	json_t *json_parse_document (const char *text);
+ 
+ 
+ /**
+@@ -296,6 +354,7 @@
+ **/
+ 	json_t *json_find_first_label (const json_t * object, const char *text_label);
+ 
++/* @} END OF MJson */
+ 
+ #ifdef __cplusplus
+ }
+Index: configure.ac
+===================================================================
+--- configure.ac	(.../trunk)	(revision 0)
++++ configure.ac	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,33 @@
++#                                               -*- Autoconf -*-
++# Process this file with autoconf to produce a configure script.
++
++AC_PREREQ(2.61)
++AC_INIT(mjson, 0.0)
++AC_CONFIG_SRCDIR([json.c])
++AC_CONFIG_HEADERS([config.h])
++
++# Checks for programs.
++AC_PROG_CC
++AC_PROG_INSTALL
++
++# Check for automake and libtool
++AM_INIT_AUTOMAKE([foreign])
++AC_DISABLE_STATIC
++AC_PROG_LIBTOOL
++
++# Checks for libraries.
++
++# Checks for header files.
++AC_CHECK_HEADERS([locale.h memory.h stdint.h stdlib.h string.h wchar.h])
++
++# Checks for typedefs, structures, and compiler characteristics.
++AC_HEADER_STDBOOL
++AC_TYPE_SIZE_T
++
++# Checks for library functions.
++AC_FUNC_MALLOC
++AC_FUNC_REALLOC
++AC_CHECK_FUNCS([setlocale strtol])
++
++AC_CONFIG_FILES([Makefile mjson.pc])
++AC_OUTPUT
+Index: doc/Doxyfile
+===================================================================
+--- doc/Doxyfile	(.../trunk)	(revision 0)
++++ doc/Doxyfile	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,174 @@
++# Doxyfile 0.1
++
++#---------------------------------------------------------------------------
++# General configuration options
++#---------------------------------------------------------------------------
++PROJECT_NAME           = M's Json 
++PROJECT_NUMBER         = 0.1
++OUTPUT_DIRECTORY       = ../doc
++OUTPUT_LANGUAGE        = English
++EXTRACT_ALL            = NO
++EXTRACT_PRIVATE        = YES
++EXTRACT_STATIC         = YES
++EXTRACT_LOCAL_CLASSES  = NO
++EXTRACT_LOCAL_METHODS  = NO
++HIDE_UNDOC_MEMBERS     = YES
++HIDE_UNDOC_CLASSES     = YES
++BRIEF_MEMBER_DESC      = YES
++REPEAT_BRIEF           = YES
++ALWAYS_DETAILED_SEC    = NO
++FULL_PATH_NAMES        = NO
++STRIP_FROM_PATH        = 
++INTERNAL_DOCS          = YES
++STRIP_CODE_COMMENTS    = YES
++CASE_SENSE_NAMES       = YES
++SHORT_NAMES            = NO
++HIDE_SCOPE_NAMES       = NO
++VERBATIM_HEADERS       = YES
++SHOW_INCLUDE_FILES     = YES
++JAVADOC_AUTOBRIEF      = YES
++INHERIT_DOCS           = YES
++INLINE_INFO            = YES
++SORT_MEMBER_DOCS       = YES
++DISTRIBUTE_GROUP_DOC   = NO
++TAB_SIZE               = 4
++GENERATE_TODOLIST      = NO
++GENERATE_TESTLIST      = NO
++GENERATE_BUGLIST       = NO
++ALIASES                = 
++ENABLED_SECTIONS       = 
++MAX_INITIALIZER_LINES  = 30
++OPTIMIZE_OUTPUT_FOR_C  = YES
++SHOW_USED_FILES        = NO
++#---------------------------------------------------------------------------
++# configuration options related to warning and progress messages
++#---------------------------------------------------------------------------
++QUIET                  = YES
++WARNINGS               = YES
++WARN_IF_UNDOCUMENTED   = YES
++WARN_FORMAT            = 
++WARN_LOGFILE           = 
++#---------------------------------------------------------------------------
++# configuration options related to the input files
++#---------------------------------------------------------------------------
++INPUT                  = ../
++FILE_PATTERNS          = *.c *.h
++RECURSIVE              = YES
++#EXCLUDE                = test
++EXCLUDE_PATTERNS       = 
++#debug.h debug.c
++
++# The EXAMPLE_PATH tag can be used to specify one or more files or 
++# directories that contain example code fragments that are included (see 
++# the \include command).
++
++EXAMPLE_PATH           = 
++EXAMPLE_PATTERNS       = 
++EXAMPLE_RECURSIVE      = NO
++IMAGE_PATH             = 
++INPUT_FILTER           = 
++FILTER_SOURCE_FILES    = NO
++#---------------------------------------------------------------------------
++# configuration options related to source browsing
++#---------------------------------------------------------------------------
++SOURCE_BROWSER         = YES
++INLINE_SOURCES         = NO
++REFERENCED_BY_RELATION = YES
++REFERENCES_RELATION    = YES
++#---------------------------------------------------------------------------
++# configuration options related to the alphabetical class index
++#---------------------------------------------------------------------------
++ALPHABETICAL_INDEX     = NO
++COLS_IN_ALPHA_INDEX    = 5
++IGNORE_PREFIX          = 
++#---------------------------------------------------------------------------
++# configuration options related to the HTML output
++#---------------------------------------------------------------------------
++GENERATE_HTML          = YES
++HTML_OUTPUT            = 
++HTML_HEADER            = 
++HTML_FOOTER            = 
++HTML_STYLESHEET        = 
++HTML_ALIGN_MEMBERS     = YES
++GENERATE_HTMLHELP      = NO
++GENERATE_CHI           = NO
++BINARY_TOC             = NO
++TOC_EXPAND             = NO
++DISABLE_INDEX          = NO
++ENUM_VALUES_PER_LINE   = 1
++GENERATE_TREEVIEW      = YES
++TREEVIEW_WIDTH         = 250
++#---------------------------------------------------------------------------
++# configuration options related to the LaTeX output
++#---------------------------------------------------------------------------
++GENERATE_LATEX         = NO
++LATEX_OUTPUT           = 
++COMPACT_LATEX          = NO
++PAPER_TYPE             = a4wide
++EXTRA_PACKAGES         = 
++LATEX_HEADER           = 
++PDF_HYPERLINKS         = NO
++USE_PDFLATEX           = NO
++LATEX_BATCHMODE        = NO
++#---------------------------------------------------------------------------
++# configuration options related to the RTF output
++#---------------------------------------------------------------------------
++GENERATE_RTF           = NO
++RTF_OUTPUT             = 
++COMPACT_RTF            = NO
++RTF_HYPERLINKS         = NO
++RTF_STYLESHEET_FILE    = 
++RTF_EXTENSIONS_FILE    = 
++#---------------------------------------------------------------------------
++# configuration options related to the man page output
++#---------------------------------------------------------------------------
++GENERATE_MAN           = NO
++MAN_OUTPUT             = man
++MAN_EXTENSION          = .3
++MAN_LINKS              = YES
++#---------------------------------------------------------------------------
++# configuration options related to the XML output
++#---------------------------------------------------------------------------
++GENERATE_XML           = NO
++#---------------------------------------------------------------------------
++# Configuration options related to the preprocessor   
++#---------------------------------------------------------------------------
++ENABLE_PREPROCESSING   = YES
++MACRO_EXPANSION        = YES
++EXPAND_ONLY_PREDEF     = YES
++SEARCH_INCLUDES        = YES
++INCLUDE_PATH           = ../include
++INCLUDE_FILE_PATTERNS  = *.h
++PREDEFINED             = "G_BEGIN_DECLS=" "G_END_DECLS="
++SKIP_FUNCTION_MACROS   = YES
++#---------------------------------------------------------------------------
++# Configuration::addtions related to external references   
++#---------------------------------------------------------------------------
++TAGFILES               = 
++GENERATE_TAGFILE       = 
++ALLEXTERNALS           = NO
++PERL_PATH              = 
++#---------------------------------------------------------------------------
++# Configuration options related to the dot tool   
++#---------------------------------------------------------------------------
++CLASS_DIAGRAMS         = YES
++HAVE_DOT               = YES
++DOT_TRANSPARENT        = YES
++CALL_GRAPH             = YES
++CLASS_GRAPH            = YES
++GROUP_GRAPHS           = YES
++COLLABORATION_GRAPH    = YES
++TEMPLATE_RELATIONS     = YES
++HIDE_UNDOC_RELATIONS   = YES
++INCLUDE_GRAPH          = YES
++INCLUDED_BY_GRAPH      = YES
++GRAPHICAL_HIERARCHY    = YES
++GENERATE_LEGEND        = YES
++DOT_PATH               = 
++DOTFILE_DIRS           = 
++GENERATE_LEGEND        = YES
++DOT_CLEANUP            = YES
++#---------------------------------------------------------------------------
++# Configuration::addtions related to the search engine   
++#---------------------------------------------------------------------------
++SEARCHENGINE           = YES
+Index: rstring.c
+===================================================================
+--- rstring.c	(.../trunk)	(revision 37624)
++++ rstring.c	(.../submissions/13)	(revision 147882)
+@@ -85,22 +85,22 @@
+ 	return RS_OK;
+ }
+ 
+-/*
++
+ rwstring *
+ rws_duplicate (rwstring * copied)
+ {
+ 	rwstring *copy;
+ 	assert (copied != NULL);
+ 
+-	copy = rws_create (copy->max);
++	copy = rws_create (copied->max);
+ 	if (copy == NULL)
+ 		return NULL;
+ 
+ 	wcsncpy (copy->text, copied->text, wcslen (copied->text));
+ 	return copy;
+ }
+-*/
+ 
++
+ size_t
+ rws_length (rwstring * rws)
+ {
+@@ -174,8 +174,8 @@
+ rws_catrcs (rwstring * pre, const rcstring * pos)
+ {
+ 	size_t utf8pos;
+-	wchar_t wc=0;
+-	int i;			/* static loop counter */
++	wchar_t wc = 0;
++	signed char i;			/* static loop counter */
+ 
+ 	assert (pre != NULL);
+ 	assert (pos != NULL);
+@@ -456,22 +456,22 @@
+ 	return RS_OK;
+ }
+ 
+-/*
++
+ rcstring *
+ rcs_duplicate (rcstring * copied)
+ {
+ 	rcstring *copy;
+ 	assert (copied != NULL);
+ 
+-	copy = rcs_create (copy->max);
++	copy = rcs_create (copied->max);
+ 	if (copy == NULL)
+ 		return NULL;
+ 
+ 	strncpy (copy->text, copied->text, strlen (copied->text));
+ 	return copy;
+ }
+-*/
+ 
++
+ size_t
+ rcs_length (rcstring * rcs)
+ {
+Index: Makefile.am
+===================================================================
+--- Makefile.am	(.../trunk)	(revision 0)
++++ Makefile.am	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,7 @@
++lib_LTLIBRARIES = libmjson.la
++include_HEADERS = json.h json_helper.h json_utils.h
++
++libmjson_la_SOURCES = json.c rstring.c json_helper.c json_utils.c
++
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA = mjson.pc
+Index: json_utils.c
+===================================================================
+--- json_utils.c	(.../trunk)	(revision 0)
++++ json_utils.c	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,59 @@
++#include <stdlib.h>
++
++#include "json_utils.h"
++
++bool
++json_get_string(json_t *object, const char *label, const char **ret_string)
++{
++    if (!object) return false;
++
++    json_t *leaf = json_find_first_label(object, label);
++    if (!leaf) return false;
++
++    if (leaf->child && leaf->child->text)
++    {
++        *ret_string = leaf->child->text;
++        return true;
++    }
++
++    *ret_string = NULL;
++    return false;
++}
++
++bool
++json_get_int(json_t *object, const char *label, int *ret_int)
++{
++    const char *string;
++    bool retVal;
++    
++    retVal = json_get_string(object, label, &string);
++    if (!retVal) return false;
++
++    char *end;
++    int value = strtol(string, &end, 10);
++    if (end == string)
++    {
++        return false;
++    }
++
++    *ret_int = value;
++    return true;
++}
++
++bool
++json_get_bool(json_t *object, const char *label, bool *ret_bool)
++{
++    if (!object) return false;
++
++    json_t *leaf = json_find_first_label(object, label);
++    if (!leaf) return false;
++
++    if (leaf->child &&
++        (leaf->child->type == JSON_TRUE || leaf->child->type == JSON_FALSE))
++    {
++        *ret_bool = (leaf->child->type == JSON_TRUE);
++        return true;
++    }
++
++    return false;
++}
+Index: autogen.sh
+===================================================================
+--- autogen.sh	(.../trunk)	(revision 0)
++++ autogen.sh	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,5 @@
++#!/bin/sh
++
++# RUN ME FIRST, to generate configure and Makefile
++
++autoreconf -fi
+
+Property changes on: autogen.sh
+___________________________________________________________________
+Added: svn:executable
+   + *
+
+Index: Makefile.Mac
+===================================================================
+--- Makefile.Mac	(.../trunk)	(revision 0)
++++ Makefile.Mac	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,15 @@
++CUSTOM_BUILD_TYPE := debug
++CUSTOM_PLATFORM   := mac-x86
++
++INCLUDES := \
++	`pkg-config --cflags glib-2.0`
++
++LIBS := \
++	`pkg-config --libs glib-2.0`
++
++
++LIB_NAME_FLAGS = -install_name $(LUNA_STAGING)/lib/libmjson.dylib
++SHARED_LIB_EXTENSION = dylib
++SHARED_LIB_FLAG ?= -dynamiclib
++
++include Makefile.inc
+Index: Makefile
+===================================================================
+--- Makefile	(.../trunk)	(revision 37624)
++++ Makefile	(.../submissions/13)	(revision 147882)
+@@ -1,16 +1,14 @@
+ # Device makefile
+-BUILD_TYPE := release
+-PLATFORM   := arm
++CUSTOM_BUILD_TYPE := release
++CUSTOM_PLATFORM   := arm
+ 
+ #LIBS := -L$(LIB_DIR)
+ 
+ include Makefile.inc
+ 
+-#install:
+-#	mkdir -p $(INSTALL_DIR)/usr/bin
+-#	install -m 0775 release-arm/libmjson.so $(INSTALL_DIR)/usr/lib/libmjson.so
+-#	$(STRIP) -s release-arm/LunaAppMgr
+-#	install -m 0775 release-arm/LunaAppMgr /exported/userstore/LunaAppMgr
++install:
++	mkdir -p $(INSTALL_DIR)/usr/lib
++	install -m 0775 $(OBJDIR)/libmjson.so $(INSTALL_DIR)/usr/lib/libmjson.so
+ 
+ stage:
+ 	echo "nothing to do"
+Index: examples/andrew_simple.c
+===================================================================
+--- examples/andrew_simple.c	(.../trunk)	(revision 0)
++++ examples/andrew_simple.c	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,40 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <locale.h>
++
++#include <json.h>
++
++int
++main (void)
++{
++	setlocale (LC_ALL, "");
++	char *document = "{\"entry\":{\"name\":\"Andew\",\"phone\":\"555 123 456\"}}";
++
++	json_t *root;
++
++	printf("Parsing the document...\n");
++	root = json_parse_document(document);
++
++    json_t *entry = json_find_first_label(root, "entry");
++    if (!entry)
++    {
++        fprintf(stderr, "Failed to get 'entry' label\n");
++        return EXIT_FAILURE;
++    }
++
++    json_t *name = json_find_first_label(entry->child, "name");
++    json_t *phone = json_find_first_label(entry->child, "phone");
++    if (name && phone)
++    {
++        printf("Hi my name is %s and you can reach me at %s\n",
++            name->child->text, phone->child->text);
++    }
++
++	printf("Printing the document tree...\n");
++	json_tree_to_string(root, &document);
++	wprintf("%ls\n", document);
++
++	// clean up
++	json_free_value(&root);
++	return EXIT_SUCCESS;
++}
+Index: Makefile.Win32
+===================================================================
+--- Makefile.Win32	(.../trunk)	(revision 0)
++++ Makefile.Win32	(.../submissions/13)	(revision 147882)
+@@ -0,0 +1,14 @@
++CUSTOM_BUILD_TYPE := debug
++CUSTOM_PLATFORM   := win32
++
++PLAT_CFLAGS = -Wno-error
++
++LIB_NAME_FLAGS = -Wl,-soname,libmjson.dll
++SHARED_LIB_EXTENSION = dll
++SHARED_LIB_FLAG = -shared \
++	-Wl,--out-implib=${CUSTOM_BUILD_TYPE}-${CUSTOM_PLATFORM}/libmjson.dll.a \
++	-Wl,--export-all-symbols \
++	-Wl,--enable-auto-import
++
++include Makefile.inc
++
