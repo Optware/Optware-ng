@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GUTENPRINT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gimp-print
-GUTENPRINT_VERSION=5.2.3
+GUTENPRINT_VERSION=5.2.4
 GUTENPRINT_SOURCE=gutenprint-$(GUTENPRINT_VERSION).tar.bz2
 GUTENPRINT_DIR=gutenprint-$(GUTENPRINT_VERSION)
 GUTENPRINT_UNZIP=bzcat
@@ -38,7 +38,7 @@ GUTENPRINT_CONFLICTS=
 #
 # GUTENPRINT_IPK_VERSION should be incremented when the ipk changes.
 #
-GUTENPRINT_IPK_VERSION=2
+GUTENPRINT_IPK_VERSION=1
 
 #
 # GUTENPRINT_CONFFILES should be a list of user-editable files
