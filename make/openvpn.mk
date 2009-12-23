@@ -228,7 +228,7 @@ $(OPENVPN_IPK): $(OPENVPN_BUILD_DIR)/.built
 	install -m 644 $(OPENVPN_BUILD_DIR)/openvpn.8 $(OPENVPN_IPK_DIR)/opt/man/man8
 
 	# Create log directory
-	install -d 666 $(OPENVPN_IPK_DIR)/opt/var/log/openvpn
+	install -d $(OPENVPN_IPK_DIR)/opt/var/log/openvpn
 
 	# Install control files
 	make  $(OPENVPN_IPK_DIR)/CONTROL/control
