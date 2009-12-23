@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://pypi.python.org/packages/source/r/roundup
-PY-ROUNDUP_VERSION=1.4.9
+PY-ROUNDUP_VERSION=1.4.11
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
@@ -172,12 +172,12 @@ py-roundup: $(PY-ROUNDUP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-ROUNDUP_BUILD_DIR)/.staged: $(PY-ROUNDUP_BUILD_DIR)/.built
+#$(PY-ROUNDUP_BUILD_DIR)/.staged: $(PY-ROUNDUP_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(PY-ROUNDUP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-py-roundup-stage: $(PY-ROUNDUP_BUILD_DIR)/.staged
+#
+#py-roundup-stage: $(PY-ROUNDUP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
