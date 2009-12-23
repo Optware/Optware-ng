@@ -26,7 +26,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OPENVPN_SITE=http://openvpn.net/release
-OPENVPN_VERSION=2.1_rc15
+OPENVPN_VERSION=2.1.1
 OPENVPN_SOURCE=openvpn-$(OPENVPN_VERSION).tar.gz
 OPENVPN_DIR=openvpn-$(OPENVPN_VERSION)
 OPENVPN_UNZIP=zcat
@@ -35,7 +35,7 @@ OPENVPN_DESCRIPTION=SSL based VPN server with Windows client support
 OPENVPN_SECTION=net
 OPENVPN_PRIORITY=optional
 OPENVPN_DEPENDS=openssl, lzo
-OPENVPN_SUGGESTS=kernel-module-tun
+OPENVPN_SUGGESTS=kernel-module-tun, xinetd
 OPENVPN_CONFLICTS=
 
 #
@@ -218,6 +218,10 @@ $(OPENVPN_IPK): $(OPENVPN_BUILD_DIR)/.built
 	# openvpn sample keys
 	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
 	install -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
+
+	# openvpn sample scripts
+	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-scripts
+	install -m 644 $(OPENVPN_BUILD_DIR)/sample-scripts/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-scripts
 
 	# Install man pages
 	install -d $(OPENVPN_IPK_DIR)/opt/man/man8
