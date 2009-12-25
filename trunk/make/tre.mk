@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TRE_SITE=http://laurikari.net/tre
-TRE_VERSION=0.7.6
+TRE_VERSION=0.8.0
 TRE_SOURCE=tre-$(TRE_VERSION).tar.bz2
 TRE_DIR=tre-$(TRE_VERSION)
 TRE_UNZIP=bzcat
