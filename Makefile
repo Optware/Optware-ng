@@ -244,7 +244,7 @@ COMMON_CROSS_PACKAGES = \
 	diffstat diffutils discount \
 	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
 	dropbear drraw dspam dtach dump \
-	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
+	e2fsprogs e2tools eaccelerator easy-rsa ed ecl electric-fence elinks \
 	emacs22 endian enhanced-ctorrent enscript esmtp esniper \
 	ettercap ettercap-ng \
 	$(ERLANG_PACKAGES) \
