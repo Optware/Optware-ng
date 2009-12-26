@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GOLANG_HG_REPO=https://go.googlecode.com/hg
-GOLANG_HG_DATE=20091210
-GOLANG_HG_REV=15cde832a6a1
+GOLANG_HG_DATE=20091222
+GOLANG_HG_REV=a6fcf4303b0a
 GOLANG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/golang
 GOLANG_VERSION=0.hg$(GOLANG_HG_DATE)
 GOLANG_SOURCE=golang-$(GOLANG_VERSION).tar.gz
@@ -130,6 +130,8 @@ endif
 	sed -i -e '/^CC/s|=quietgcc|=$(@D)/bin/quietgcc|' \
 	       -e '/^LD=/s|=quietgcc|=$(@D)/bin/quietgcc $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)|' \
 		$(@D)/src/Make.conf
+	sed -i -e '/^QUOTED_GOBIN=/s|=.*|=$(GOLANG_HOST_BUILD_DIR)/bin|g' \
+		$(@D)/src/Make.cmd $(@D)/src/Make.pkg
 	rm -f $(@D)/pkg/~place-holder~
 	touch $@
 
