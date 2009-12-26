@@ -20,7 +20,7 @@ EASY-RSA_CONFLICTS=
 #
 # EASY-RSA_IPK_VERSION should be incremented when the ipk changes.
 #
-EASY-RSA_IPK_VERSION=2
+EASY-RSA_IPK_VERSION=3
 
 #
 # EASY-RSA_CONFFILES should be a list of user-editable files
@@ -105,6 +105,7 @@ $(EASY-RSA_BUILD_DIR)/.configured: $(DL_DIR)/$(EASY-RSA_SOURCE) $(EASY-RSA_PATCH
 	cat $(@D)/README >> $(@D)/README.orig
 	cp $(@D)/README.orig $(@D)/README
 	sed -i.orig -e 's|/bin/bash|/bin/sh|' `find $(@D) -type f`
+	rm -f $(@D)/*.orig
 	touch $@
 
 easy-rsa-unpack: $(EASY-RSA_BUILD_DIR)/.configured
