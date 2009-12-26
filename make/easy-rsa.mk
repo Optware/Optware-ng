@@ -20,7 +20,7 @@ EASY-RSA_CONFLICTS=
 #
 # EASY-RSA_IPK_VERSION should be incremented when the ipk changes.
 #
-EASY-RSA_IPK_VERSION=1
+EASY-RSA_IPK_VERSION=2
 
 #
 # EASY-RSA_CONFFILES should be a list of user-editable files
@@ -30,7 +30,7 @@ EASY-RSA_IPK_VERSION=1
 # EASY-RSA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# EASY-RSA_PATCHES=$(EASY-RSA_SOURCE_DIR)/configure.patch
+#EASY-RSA_PATCHES=$(EASY-RSA_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -99,6 +99,12 @@ $(EASY-RSA_BUILD_DIR)/.configured: $(DL_DIR)/$(EASY-RSA_SOURCE) $(EASY-RSA_PATCH
 	if test "$(BUILD_DIR)/$(EASY-RSA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(EASY-RSA_DIR) $(@D) ; \
 	fi
+	echo >> $(@D)/README.orig
+	echo "*********************************************************" >> $(@D)/README.orig
+	echo >> $(@D)/README.orig
+	cat $(@D)/README >> $(@D)/README.orig
+	cp $(@D)/README.orig $(@D)/README
+	sed -i.orig -e 's|/bin/bash|/bin/sh|' `find $(@D) -type f`
 	touch $@
 
 easy-rsa-unpack: $(EASY-RSA_BUILD_DIR)/.configured
@@ -115,16 +121,6 @@ $(EASY-RSA_BUILD_DIR)/.built: $(EASY-RSA_BUILD_DIR)/.configured
 # This is the build convenience target.
 #
 easy-rsa: $(EASY-RSA_BUILD_DIR)/.built
-
-#
-# If you are building a library, then you need to stage it too.
-#
-$(EASY-RSA_BUILD_DIR)/.staged: $(EASY-RSA_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) PREFIX=/opt/share/easy-rsa install
-	touch $@
-
-easy-rsa-stage: $(EASY-RSA_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -160,6 +156,7 @@ $(EASY-RSA_IPK_DIR)/CONTROL/control:
 $(EASY-RSA_IPK): $(EASY-RSA_BUILD_DIR)/.built
 	rm -rf $(EASY-RSA_IPK_DIR) $(BUILD_DIR)/easy-rsa_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(EASY-RSA_BUILD_DIR) DESTDIR=$(EASY-RSA_IPK_DIR) PREFIX=/opt/share/easy-rsa install
+	rm -f $(EASY-RSA_IPK_DIR)/opt/share/easy-rsa/
 	$(MAKE) $(EASY-RSA_IPK_DIR)/CONTROL/control
 	echo $(EASY-RSA_CONFFILES) | sed -e 's/ /\n/g' > $(EASY-RSA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EASY-RSA_IPK_DIR)
