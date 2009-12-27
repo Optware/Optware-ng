@@ -156,6 +156,7 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 		--without-python \
 		--disable-slp \
 		--disable-gnutls \
+		--disable-gssapi \
 	)
 	$(MAKE) -C $(@D)
 	touch $@
@@ -211,6 +212,7 @@ endif
 		--without-python \
 		--disable-slp \
 		--disable-gnutls \
+		--disable-gssapi \
 	)
 ifdef CUPS_GCC_DOES_NOT_SUPPORT_PIE
 	sed -i -e 's/ -pie -fPIE//' $(@D)/Makedefs
