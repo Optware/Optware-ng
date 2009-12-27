@@ -188,7 +188,9 @@ $(DELEGATE_IPK_DIR)/CONTROL/control:
 #
 $(DELEGATE_IPK): $(DELEGATE_BUILD_DIR)/.built
 	rm -rf $(DELEGATE_IPK_DIR) $(BUILD_DIR)/delegate_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(DELEGATE_BUILD_DIR) DESTDIR=$(DELEGATE_IPK_DIR) install-strip
+	install -d $(DELEGATE_IPK_DIR)/opt/sbin/
+	install -m 0755 $(DELEGATE_BUILD_DIR)/src/delegated $(DELEGATE_IPK_DIR)/opt/sbin/delegated
+#	$(MAKE) -C $(DELEGATE_BUILD_DIR) DESTDIR=$(DELEGATE_IPK_DIR) install-strip
 #	install -d $(DELEGATE_IPK_DIR)/opt/etc/
 #	install -m 644 $(DELEGATE_SOURCE_DIR)/delegate.conf $(DELEGATE_IPK_DIR)/opt/etc/delegate.conf
 #	install -d $(DELEGATE_IPK_DIR)/opt/etc/init.d
