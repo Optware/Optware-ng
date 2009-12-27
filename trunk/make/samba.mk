@@ -238,7 +238,9 @@ endif
 		--disable-nls \
 	)
 #	Remove Kerberos libs produced by broken configure
-	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' $(@D)/Makefile
+	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' \
+	 -e 's/-lgssapi_krb5\|-lkrb5\|-lk5crypto\|-lcom_err\|-lgnutls//g' \
+		$(@D)/Makefile
 ### additional codepages
 	CODEPAGES="$(SAMBA_ADDITIONAL_CODEPAGES)" SAMBA_SOURCE_DIR=$(SAMBA_SOURCE_DIR) SAMBA_BUILD_DIR=$(SAMBA_BUILD_DIR) /bin/sh $(SAMBA_SOURCE_DIR)/addcodepages.sh
 	touch $@
