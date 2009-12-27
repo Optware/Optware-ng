@@ -7,11 +7,11 @@
 ifeq ($(OPTWARE_TARGET), $(filter pre, $(OPTWARE_TARGET)))
 
 KERNEL_VERSION=2.6.24
-KERNEL_SITE=http://palm.cdnetworks.net/opensource/1.0.1
+KERNEL_SITE=http://palm.cdnetworks.net/opensource/1.3.1
 KERNEL_SOURCE=linuxkernel-$(KERNEL_VERSION).tgz
-KERNEL_PATCH=linux-$(KERNEL_VERSION)-patch.gz
+KERNEL_PATCH=linuxkernel-$(KERNEL_VERSION)-patch.gz
 KERNEL_UNZIP=bzcat
-KERNEL_SOURCE_DL_DIR=$(DL_DIR)/webOS-1.0.1
+KERNEL_SOURCE_DL_DIR=$(DL_DIR)/webOS-1.3.1
 
 
 KERNEL-MODULES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
