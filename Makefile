@@ -239,7 +239,7 @@ COMMON_CROSS_PACKAGES = \
 	cyrus-imapd cyrus-sasl \
 	dansguardian dash davtools \
 	dbus dbus-glib dbus-python \
-	dcled dcraw denyhosts dev-pts devio devmem2 dfu-util \
+	dcled dcraw delegate denyhosts dev-pts devio devmem2 dfu-util \
 	dhcp dialog dict digitemp dircproxy distcc \
 	diffstat diffutils discount \
 	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
