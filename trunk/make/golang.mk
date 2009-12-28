@@ -127,8 +127,8 @@ $(GOLANG_BUILD_DIR)/.configured: $(GOLANG_HOST_BUILD_DIR)/.built $(GOLANG_PATCHE
 ifneq ($(GOLANG_ARCH), amd64)
 	sed -i -e 's| -m64||' $(@D)/src/quietgcc.bash
 endif
-	sed -i -e '/^CC/s|=quietgcc|=$(@D)/bin/quietgcc|' \
-	       -e '/^LD=/s|=quietgcc|=$(@D)/bin/quietgcc $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)|' \
+	sed -i -e '/^CC=/s|=.*quietgcc$$|=$(@D)/bin/quietgcc|' \
+	       -e '/^LD=/s|=.*quietgcc$$|=$(@D)/bin/quietgcc $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)|' \
 		$(@D)/src/Make.conf
 	sed -i -e '/^QUOTED_GOBIN=/s|=.*|=$(GOLANG_HOST_BUILD_DIR)/bin|g' \
 		$(@D)/src/Make.cmd $(@D)/src/Make.pkg
