@@ -4,6 +4,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 9base \
 	 bzflag \
 	 cairo \
+         delegate \
 	 fcgi fish \
 	 gnu-smalltalk ice iptables jabberd \
 	 launchtool ldconfig \
