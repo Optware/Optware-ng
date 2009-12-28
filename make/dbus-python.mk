@@ -37,7 +37,7 @@ DBUS-PYTHON_CONFLICTS=
 #
 # DBUS-PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-DBUS-PYTHON_IPK_VERSION=1
+DBUS-PYTHON_IPK_VERSION=2
 
 #
 # DBUS-PYTHON_CONFFILES should be a list of user-editable files
@@ -47,7 +47,7 @@ DBUS-PYTHON_IPK_VERSION=1
 # DBUS-PYTHON_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#DBUS-PYTHON_PATCHES=$(DBUS-PYTHON_SOURCE_DIR)/setup.py.patch
+DBUS-PYTHON_PATCHES=$(DBUS-PYTHON_SOURCE_DIR)/python_include.patch
 
 #
 # If the compilation of the package requires additional
@@ -117,12 +117,14 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 		cat $(DBUS-PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(DBUS-PYTHON_DIR) $(@D)/2.5
+	autoreconf -vif $(@D)/2.5
 	(cd $(@D)/2.5; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS-PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DBUS-PYTHON_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		ac_cv_path_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 \
+                staging_prefix="$(STAGING_PREFIX)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -139,12 +141,14 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 		cat $(DBUS-PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(DBUS-PYTHON_DIR) $(@D)/2.6
+	autoreconf -vif $(@D)/2.6
 	(cd $(@D)/2.6; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS-PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DBUS-PYTHON_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		ac_cv_path_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.6 \
+                staging_prefix="$(STAGING_PREFIX)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
