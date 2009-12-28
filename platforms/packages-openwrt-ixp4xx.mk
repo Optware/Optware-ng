@@ -7,28 +7,23 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	9base \
+	$(UCLIBC_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
-	cairo \
 	ecl \
-	fcgi ficy fish \
+	ficy \
 	gloox \
 	golang \
-	gnu-smalltalk gtmess gtk \
+	gtmess \
 	hpijs hplip \
 	inferno \
-	ice iptables \
-	lame launchtool ldconfig \
-	moc mtr \
-	nfs-server nfs-utils nickle ntop \
-	pango puppy \
-	qemu qemu-libc-i386 quickie \
+	iptables \
+	lame \
+	moc \
+	nickle ntop \
+	puppy \
+	quickie \
 	sandbox \
-	sm syx \
 	transcode \
-	uemacs \
-	vte \
-	xt xmu xauth xaw xchat xterm
 
 JAMVM_VERSION = 1.5.1
 JAMVM_IPK_VERSION = 1
