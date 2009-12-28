@@ -8,19 +8,18 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	9base \
-	fcgi ficy fish fuppes \
-	gnu-smalltalk \
+	$(UCLIBC_BROKEN_PACKAGES) \
+	ficy fuppes \
 	golang \
-	gtmess gtk gutenprint \
-	ice iptraf launchtool ldconfig ltrace moc \
-	mtr newsbeuter nfs-server nfs-utils \
+	gtmess gutenprint \
+	iptraf ltrace moc \
+	mtr \
 	opensips \
-	pango pinentry \
-	puppy qemu rssh \
+	pinentry \
+	puppy rssh \
 	sandbox \
-	sm transcode uemacs vte \
-	xauth xaw xchat xmu xt xterm lm-sensors \
+	transcode \
+	lm-sensors \
 
 RTORRENT_VERSION := 0.8.2
 RTORRENT_IPK_VERSION := 2

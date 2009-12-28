@@ -6,20 +6,19 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	9base appweb \
-	fcgi ficy fish fuppes gnu-smalltalk \
+	$(UCLIBC_BROKEN_PACKAGES) \
+	appweb \
+	ficy fuppes gnu-smalltalk \
 	gloox \
 	inferno \
-	gtmess gtk ice ipac-ng iptraf kismet \
-	launchtool ldconfig mediatomb \
-	mtr mysql-connector-odbc \
-	newsbeuter nfs-server nfs-utils \
-	ntop openser pango pcapsipdump \
+	gtmess ipac-ng iptraf kismet \
+	mediatomb \
+	mysql-connector-odbc \
+	ntop openser pcapsipdump \
 	py-mysql \
-	qemu quagga \
-	rssh sablevm sm \
-	transcode uemacs util-linux vnstat \
-	vte xauth xaw xchat xmu xt xterm \
+	quagga \
+	rssh sablevm \
+	transcode util-linux vnstat \
 	slimserver \
 
 RTORRENT_VERSION := 0.8.2
