@@ -5,7 +5,7 @@
 ###########################################################
 
 SLIMRAT_SITE=http://slimrat.googlecode.com/files
-SLIMRAT_VERSION=0.9.5.4
+SLIMRAT_VERSION=1.0
 SLIMRAT_SOURCE=slimrat-$(SLIMRAT_VERSION).tar.bz2
 SLIMRAT_DIR=slimrat-$(SLIMRAT_VERSION)
 SLIMRAT_UNZIP=bzcat
@@ -14,7 +14,7 @@ SLIMRAT_DESCRIPTION=Utility for downloading files from Rapidshare (free) and a f
 SLIMRAT_SECTION=util
 SLIMRAT_PRIORITY=optional
 SLIMRAT_DEPENDS=perl-libwww, perl-www-mechanize, wget-ssl
-SLIMRAT_SUGGESTS=
+SLIMRAT_SUGGESTS=tesseract-ocr, imagemagick
 SLIMRAT_CONFLICTS=
 
 SLIMRAT_IPK_VERSION=1
@@ -37,7 +37,7 @@ $(SLIMRAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMRAT_SOURCE) $(SLIMRAT_PATCHES)
 	$(SLIMRAT_UNZIP) $(DL_DIR)/$(SLIMRAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(SLIMRAT_PATCHES) | patch -d $(BUILD_DIR)/$(SLIMRAT_DIR) -p1
 	mv $(BUILD_DIR)/$(SLIMRAT_DIR) $(@D)
-	sed -i -e '1s|#!.*|#!/opt/bin/perl|' $(@D)/slimrat
+	sed -i -e '1s|#!.*|#!/opt/bin/perl|' $(@D)/src/slimrat
 #	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -78,9 +78,10 @@ $(SLIMRAT_IPK): $(SLIMRAT_BUILD_DIR)/.built
 #	$(MAKE) -C $(SLIMRAT_BUILD_DIR) DESTDIR=$(SLIMRAT_IPK_DIR) install
 	install -d $(SLIMRAT_IPK_DIR)/opt/share
 	cp -rp $(SLIMRAT_BUILD_DIR) $(SLIMRAT_IPK_DIR)/opt/share/
-	cd $(SLIMRAT_IPK_DIR)/opt/share/slimrat && rm -f .[bc]* slimrat-gui slimrat.glade
+	rm -f $(SLIMRAT_IPK_DIR)/opt/share/slimrat/.[bc]*
+	cd $(SLIMRAT_IPK_DIR)/opt/share/slimrat/src && rm -f .[bc]* slimrat-gui slimrat.glade
 	install -d $(SLIMRAT_IPK_DIR)/opt/bin
-	cd $(SLIMRAT_IPK_DIR)/opt/bin; ln -s ../share/slimrat/slimrat .
+	cd $(SLIMRAT_IPK_DIR)/opt/bin; ln -s ../share/slimrat/src/slimrat .
 	$(MAKE) $(SLIMRAT_IPK_DIR)/CONTROL/control
 	echo $(SLIMRAT_CONFFILES) | sed -e 's/ /\n/g' > $(SLIMRAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SLIMRAT_IPK_DIR)
