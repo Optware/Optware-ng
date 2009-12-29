@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NCMPC_VERSION=0.15
+NCMPC_VERSION=0.16
 NCMPC_SITE=http://downloads.sourceforge.net/musicpd
 NCMPC_SOURCE=ncmpc-$(NCMPC_VERSION).tar.bz2
 NCMPC_DIR=ncmpc-$(NCMPC_VERSION)
@@ -29,7 +29,7 @@ NCMPC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NCMPC_DESCRIPTION=A curses client for the Music Player Daemon (MPD).
 NCMPC_SECTION=multimedia
 NCMPC_PRIORITY=optional
-NCMPC_DEPENDS=ncurses, glib
+NCMPC_DEPENDS=ncursesw, glib, libmpdclient
 NCMPC_SUGGESTS=
 NCMPC_CONFLICTS=
 
@@ -52,7 +52,7 @@ NCMPC_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NCMPC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+NCMPC_CPPFLAGS=
 NCMPC_LDFLAGS=
 
 #
@@ -105,7 +105,7 @@ ncmpc-source: $(DL_DIR)/$(NCMPC_SOURCE) $(NCMPC_PATCHES)
 # shown below to make various patches to it.
 #
 $(NCMPC_BUILD_DIR)/.configured: $(DL_DIR)/$(NCMPC_SOURCE) $(NCMPC_PATCHES) make/ncmpc.mk
-	$(MAKE) glib-stage ncurses-stage
+	$(MAKE) glib-stage libmpdclient-stage ncursesw-stage
 	rm -rf $(BUILD_DIR)/$(NCMPC_DIR) $(NCMPC_BUILD_DIR)
 	$(NCMPC_UNZIP) $(DL_DIR)/$(NCMPC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NCMPC_PATCHES)" ; \
