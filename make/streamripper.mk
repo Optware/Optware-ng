@@ -28,7 +28,7 @@
 #
 STREAMRIPPER_NAME=streamripper
 STREAMRIPPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/streamripper/
-STREAMRIPPER_VERSION=1.64.5
+STREAMRIPPER_VERSION=1.64.6
 STREAMRIPPER_SOURCE=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION).tar.gz
 STREAMRIPPER_DIR=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION)
 STREAMRIPPER_UNZIP=zcat
@@ -154,12 +154,12 @@ streamripper: $(STREAMRIPPER_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STREAMRIPPER_BUILD_DIR)/.staged: $(STREAMRIPPER_BUILD_DIR)/.built
+#$(STREAMRIPPER_BUILD_DIR)/.staged: $(STREAMRIPPER_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-streamripper-stage: $(STREAMRIPPER_BUILD_DIR)/.staged
+#
+#streamripper-stage: $(STREAMRIPPER_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
