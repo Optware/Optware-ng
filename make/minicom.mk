@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MINICOM_SITE=http://alioth.debian.org/frs/download.php/2332
-MINICOM_VERSION=2.3
+MINICOM_SITE=http://alioth.debian.org/frs/download.php/3195
+MINICOM_VERSION=2.4
 MINICOM_SOURCE=minicom-$(MINICOM_VERSION).tar.gz
 MINICOM_DIR=minicom-$(MINICOM_VERSION)
 MINICOM_UNZIP=zcat
@@ -107,13 +107,13 @@ minicom-source: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
 #
 $(MINICOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES) make/minicom.mk
 	$(MAKE) ncurses-stage termcap-stage
-	rm -rf $(BUILD_DIR)/$(MINICOM_DIR) $(MINICOM_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MINICOM_DIR) $(@D)
 	$(MINICOM_UNZIP) $(DL_DIR)/$(MINICOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINICOM_PATCHES)"; \
 		then cat $(MINICOM_PATCHES) | patch -d $(BUILD_DIR)/$(MINICOM_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(MINICOM_DIR) $(MINICOM_BUILD_DIR)
-	(cd $(MINICOM_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(MINICOM_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINICOM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINICOM_LDFLAGS)" \
@@ -134,7 +134,7 @@ minicom-unpack: $(MINICOM_BUILD_DIR)/.configured
 #
 $(MINICOM_BUILD_DIR)/.built: $(MINICOM_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MINICOM_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -145,12 +145,12 @@ minicom: $(MINICOM_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MINICOM_BUILD_DIR)/.staged: $(MINICOM_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(MINICOM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-minicom-stage: $(MINICOM_BUILD_DIR)/.staged
+#$(MINICOM_BUILD_DIR)/.staged: $(MINICOM_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#minicom-stage: $(MINICOM_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -216,4 +216,4 @@ minicom-dirclean:
 # Some sanity check for the package.
 #
 minicom-check: $(MINICOM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MINICOM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

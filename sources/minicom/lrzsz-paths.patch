@@ -1,6 +1,6 @@
---- minicom/src/rwconf.c~	2006-04-02 19:22:30.000000000 +0930
-+++ minicom/src/rwconf.c	2008-03-20 09:22:42.000000000 +1030
-@@ -76,12 +76,12 @@
+--- minicom-2.4/src/rwconf.c.orig	2009-12-12 15:47:47.000000000 +0000
++++ minicom-2.4/src/rwconf.c	2010-01-01 15:46:48.635195997 +0000
+@@ -77,14 +77,14 @@
    { "",			0,   "pname11" },
    { "",			0,   "pname12" },
  #if defined(__linux__) || defined(__GNU__)
@@ -10,12 +10,25 @@
 -  { "/usr/bin/rz -vv -b -E",	0,   "pprog4" },
 -  { "/usr/bin/rb -vv",		0,   "pprog5" },
 -  { "/usr/bin/rx -vv",		0,   "pprog6" },
-+  { "/opt/bin/lsz -vv -b",	0,   "pprog1" },
-+  { "/opt/bin/lsb -vv",		0,   "pprog2" },
-+  { "/opt/bin/lsx -vv",		0,   "pprog3" },
-+  { "/opt/bin/lrz -vv -b -E",	0,   "pprog4" },
-+  { "/opt/bin/lrb -vv",		0,   "pprog5" },
-+  { "/opt/bin/lrx -vv",		0,   "pprog6" },
-   { "/usr/bin/kermit -i -l %l -s", 0, "pprog7" },
-   { "/usr/bin/kermit -i -l %l -r", 0, "pprog8" },
+-  { "/usr/bin/kermit -i -l %l -b %b -s", 0, "pprog7" },
+-  { "/usr/bin/kermit -i -l %l -b %b -r", 0, "pprog8" },
++  { "/opt/bin/sz -vv -b",	0,   "pprog1" },
++  { "/opt/bin/sb -vv",		0,   "pprog2" },
++  { "/opt/bin/sx -vv",		0,   "pprog3" },
++  { "/opt/bin/rz -vv -b -E",	0,   "pprog4" },
++  { "/opt/bin/rb -vv",		0,   "pprog5" },
++  { "/opt/bin/rx -vv",		0,   "pprog6" },
++  { "/opt/bin/kermit -i -l %l -b %b -s", 0, "pprog7" },
++  { "/opt/bin/kermit -i -l %l -b %b -r", 0, "pprog8" },
  #else
+   /* Most sites have this in /usr/local, except Linux. */
+   { "/usr/local/bin/sz -vv",	0,   "pprog1" },
+@@ -96,7 +96,7 @@
+   { "/usr/local/bin/kermit -i -l %l -s", 0, "pprog7" },
+   { "/usr/local/bin/kermit -i -l %l -r", 0, "pprog8" },
+ #endif
+-  { "/usr/bin/ascii-xfr -dsv", 0,   "pprog9" },
++  { "/opt/bin/ascii-xfr -dsv", 0,   "pprog9" },
+   { "",			0,   "pprog10" },
+   { "",			0,   "pprog11" },
+   { "",			0,   "pprog12" },
