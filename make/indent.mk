@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 INDENT_SITE=ftp://ftp.gnu.org/pub/gnu/indent
-INDENT_VERSION=2.2.9
+INDENT_VERSION=2.2.10
 INDENT_SOURCE=indent-$(INDENT_VERSION).tar.gz
 INDENT_DIR=indent-$(INDENT_VERSION)
 INDENT_UNZIP=zcat
@@ -36,7 +36,7 @@ INDENT_CONFLICTS=
 #
 # INDENT_IPK_VERSION should be incremented when the ipk changes.
 #
-INDENT_IPK_VERSION=2
+INDENT_IPK_VERSION=1
 
 #
 # INDENT_CONFFILES should be a list of user-editable files
@@ -80,7 +80,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(INDENT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(INDENT_SITE)/$(INDENT_SOURCE)
+	$(WGET) -P $(@D) $(INDENT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,16 +110,16 @@ indent-source: $(DL_DIR)/$(INDENT_SOURCE) $(INDENT_PATCHES)
 #
 $(INDENT_BUILD_DIR)/.configured: $(DL_DIR)/$(INDENT_SOURCE) $(INDENT_PATCHES) make/indent.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(INDENT_DIR) $(INDENT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(INDENT_DIR) $(@D)
 	$(INDENT_UNZIP) $(DL_DIR)/$(INDENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(INDENT_PATCHES)" ; \
 		then cat $(INDENT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(INDENT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(INDENT_DIR)" != "$(INDENT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(INDENT_DIR) $(INDENT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(INDENT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(INDENT_DIR) $(@D) ; \
 	fi
-	(cd $(INDENT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(INDENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(INDENT_LDFLAGS)" \
@@ -131,8 +132,8 @@ $(INDENT_BUILD_DIR)/.configured: $(DL_DIR)/$(INDENT_SOURCE) $(INDENT_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(INDENT_BUILD_DIR)/libtool
-	touch $(INDENT_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 indent-unpack: $(INDENT_BUILD_DIR)/.configured
 
@@ -140,9 +141,9 @@ indent-unpack: $(INDENT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(INDENT_BUILD_DIR)/.built: $(INDENT_BUILD_DIR)/.configured
-	rm -f $(INDENT_BUILD_DIR)/.built
-	$(MAKE) -C $(INDENT_BUILD_DIR)
-	touch $(INDENT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -152,12 +153,12 @@ indent: $(INDENT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(INDENT_BUILD_DIR)/.staged: $(INDENT_BUILD_DIR)/.built
-	rm -f $(INDENT_BUILD_DIR)/.staged
-	$(MAKE) -C $(INDENT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(INDENT_BUILD_DIR)/.staged
-
-indent-stage: $(INDENT_BUILD_DIR)/.staged
+#$(INDENT_BUILD_DIR)/.staged: $(INDENT_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#indent-stage: $(INDENT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -221,4 +222,4 @@ indent-dirclean:
 # Some sanity check for the package.
 #
 indent-check: $(INDENT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(INDENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
