@@ -36,6 +36,9 @@ MINICOM_DESCRIPTION=Minicom is a serial communication program. It is a Unix clon
 MINICOM_SECTION=misc
 MINICOM_PRIORITY=optional
 MINICOM_DEPENDS=ncurses, lrzsz
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MINICOM_DEPENDS=libiconv
+endif
 MINICOM_CONFLICTS=
 
 #
@@ -59,6 +62,9 @@ MINICOM_PATCHES=$(MINICOM_SOURCE_DIR)/lrzsz-paths.patch
 #
 MINICOM_CPPFLAGS=
 MINICOM_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MINICOM_LDFLAGS += -liconv
+endif
 
 #
 # MINICOM_BUILD_DIR is the directory in which the build is done.
@@ -107,6 +113,9 @@ minicom-source: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
 #
 $(MINICOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES) make/minicom.mk
 	$(MAKE) ncurses-stage termcap-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MINICOM_DIR) $(@D)
 	$(MINICOM_UNZIP) $(DL_DIR)/$(MINICOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINICOM_PATCHES)"; \
