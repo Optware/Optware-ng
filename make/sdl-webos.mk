@@ -46,7 +46,8 @@ SDL-WEBOS_CONFFILES=
 # SDL-WEBOS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SDL-WEBOS_PATCHES=$(SDL-WEBOS_SOURCE_DIR)/libsdl-1.2-patch $(SDL-WEBOS_SOURCE_DIR)/configure-in.patch
+SDL-WEBOS_PATCHES=$(SDL-WEBOS_SOURCE_DIR)/libsdl-1.2-patch $(SDL-WEBOS_SOURCE_DIR)/configure-in.patch \
+$(SDL-WEBOS_SOURCE_DIR)/derived_headers1.patch
 
 #
 # If the compilation of the package requires additional

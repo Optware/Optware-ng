@@ -1,0 +1,109 @@
+diff -BurN sdl-webos-configured/include/napp/NApp_c.h sdl-webos-1/include/napp/NApp_c.h
+--- sdl-webos-configured/include/napp/NApp_c.h	1969-12-31 18:00:00.000000000 -0600
++++ sdl-webos-1/include/napp/NApp_c.h	2010-01-02 03:14:20.000000000 -0600
+@@ -0,0 +1,60 @@
++/*
++ * NApp_c.h
++ *
++ */
++
++#ifndef _NAPP_C_H_
++#define _NAPP_C_H_
++
++typedef enum {
++  NKeypad,
++  NAccelerometer,
++  NTouchpanel,
++} NDevsdummy;
++
++#define NNumDevices 1
++
++typedef enum {
++  NAPP_KEY_SHIFT,
++  NAPP_KEY_ALT,
++  NAPP_KEY_CTRL,
++  NAPP_KEY_OPTION,
++} NKeysdummy;
++
++int NApp_Init(void (*IQuitCallback)(void));
++
++int NApp_Quit();
++
++typedef unsigned int NInputDevice;
++
++#define NTRACE(format, ...) do {} while(0)
++
++int NApp_EnableEvent(NInputDevice Device, int);
++
++int NApp_ReadEvents(NInputDevice Index, struct input_event* Events, int MaxEvents);
++
++int NApp_RegisterActivateCb(void (*IActivateCallback)(void* Data, int Status), int);
++
++int NApp_RegisterFocusedCb(void (*IFocusedCb)(int Focused));
++
++int NApp_RegisterPausedCb(void (*IPausedCb)(int Paused));
++
++int NApp_OffscreenLock(void** Buffer, int* SizeInBytes);
++
++int NApp_OffscreenUnlock(int dummy0);
++
++int NApp_EnterEventLoop(void (*IInputEventCallback)());
++
++int NApp_QuitEventLoop();
++
++int NApp_ScreenTimeoutEnable(int Enable);
++
++int NApp_SetOrientation(const char *Orientation);
++
++int NApp_BannerMessagesEnable(int Enable);
++
++int NApp_CustomPauseUiEnable(int Enable);
++
++int NApp_LayerEnable(int Enable, int Fd);
++
++#endif /* _NAPP_C_H_ */
+diff -BurN sdl-webos-configured/include/PalmVibe.h sdl-webos-1/include/PalmVibe.h
+--- sdl-webos-configured/include/PalmVibe.h	1969-12-31 18:00:00.000000000 -0600
++++ sdl-webos-1/include/PalmVibe.h	2010-01-02 03:23:06.000000000 -0600
+@@ -0,0 +1,29 @@
++/*
++ * PalmVibe.h
++ *
++ */
++
++#ifndef _PALM_VIBE_H_
++#define _PALM_VIBE_H_
++
++int InitVibeSystem();
++
++int GetNumMaxEffects();
++
++int OpenDevice(int *devHandle);
++
++int CloseDevice(int fd);
++
++int Quit();
++
++int32_t PlayConstantEffect();
++
++int StopEffect();
++
++int GetEffectStatus(int fd, int vibeEffectHandle);
++
++int GetMinDuration(int fd);
++
++int GetMaxDuration(int fd);
++
++#endif /* _PALM_VIBE_H_ */
+diff -BurN sdl-webos-configured/src/video/fbcon/SDL_fbvfb.cc sdl-webos-1/src/video/fbcon/SDL_fbvfb.cc
+--- sdl-webos-configured/src/video/fbcon/SDL_fbvfb.cc	2010-01-02 03:42:23.000000000 -0600
++++ sdl-webos-1/src/video/fbcon/SDL_fbvfb.cc	2010-01-02 03:56:32.000000000 -0600
+@@ -1,6 +1,8 @@
+ #include <stdio.h>
+ #include "SDL_fbvfb.h"
+ 
++#undef PALM
++
+ #ifdef PALM
+ #include "Piranha/PContext.h"
+ static PContext2D Context;
