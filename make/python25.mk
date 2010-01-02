@@ -160,7 +160,7 @@ endif
 		--prefix=/opt \
 		--mandir=/opt/man \
 		--enable-shared \
-		--enable-unicode=ucs4 \
+		--enable-unicode=ucs2 \
 	)
 	touch $@
 
