@@ -127,6 +127,14 @@ $(SDL-WEBOS_BUILD_DIR)/.configured: $(DL_DIR)/$(SDL-WEBOS_SOURCE) $(SDL-WEBOS_PA
 		--disable-ipod \
 		--enable-webos \
 		--enable-video-opengles \
+		--disable-cdrom \
+		--disable-diskaudio \
+		--disable-esd \
+		--disable-oss \
+		--disable-video-oga \
+		--disable-video-directfb \
+		--disable-video-dummy \
+		--disable-video-x11 \
 		--disable-nls \
 		--disable-static \
 		--enable-shared \
