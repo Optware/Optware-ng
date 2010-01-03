@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEON_SITE=http://www.webdav.org/neon
-NEON_VERSION=0.28.4
+NEON_VERSION=0.28.6
 NEON_SOURCE=neon-$(NEON_VERSION).tar.gz
 NEON_DIR=neon-$(NEON_VERSION)
 NEON_UNZIP=zcat
@@ -106,10 +106,7 @@ neon-source: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(NEON_BUILD_DIR)/.configured: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES) make/neon.mk
-	$(MAKE) openssl-stage
-	$(MAKE) zlib-stage
-	$(MAKE) expat-stage
-	$(MAKE) libxml2-stage
+	$(MAKE) expat-stage libxml2-stage openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(NEON_DIR) $(@D)
 	$(NEON_UNZIP) $(DL_DIR)/$(NEON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(NEON_PATCHES) | patch -d $(BUILD_DIR)/$(NEON_DIR) -p1
