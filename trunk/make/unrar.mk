@@ -5,7 +5,7 @@
 #############################################################
 
 UNRAR_SITE=http://www.rarlab.com/rar
-UNRAR_VERSION:=3.9.6
+UNRAR_VERSION:=3.9.7
 UNRAR_SOURCE=unrarsrc-$(UNRAR_VERSION).tar.gz
 UNRAR_DIR=unrarsrc-$(UNRAR_VERSION)
 UNRAR_UNZIP=gunzip
@@ -33,7 +33,7 @@ $(DL_DIR)/$(UNRAR_SOURCE):
 
 unrar-source: $(DL_DIR)/$(UNRAR_SOURCE)
 
-$(UNRAR_BUILD_DIR)/.configured: $(DL_DIR)/$(UNRAR_SOURCE)
+$(UNRAR_BUILD_DIR)/.configured: $(DL_DIR)/$(UNRAR_SOURCE) make/unrar.mk
 	$(MAKE) libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(UNRAR_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzvf $(DL_DIR)/$(UNRAR_SOURCE)
@@ -75,6 +75,8 @@ $(UNRAR_IPK): $(UNRAR_BUILD_DIR)/.built
 	install -d $(UNRAR_IPK_DIR)/opt/bin
 	install -m 755 $(UNRAR_BUILD_DIR)/unrar $(UNRAR_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(UNRAR_IPK_DIR)/opt/bin/unrar
+	install -d $(UNRAR_IPK_DIR)/opt/share/doc/unrar
+	install -m 644 $(UNRAR_BUILD_DIR)/*.txt $(UNRAR_IPK_DIR)/opt/share/doc/unrar
 	$(MAKE) $(UNRAR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNRAR_IPK_DIR)
 
