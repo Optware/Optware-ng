@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DISCOUNT_SITE=http://www.pell.portland.or.us/~orc/Code/markdown
-DISCOUNT_VERSION=1.5.5
+DISCOUNT_VERSION=1.5.8
 DISCOUNT_SOURCE=discount-$(DISCOUNT_VERSION).tar.gz
 DISCOUNT_DIR=discount-$(DISCOUNT_VERSION)
 DISCOUNT_UNZIP=zcat
@@ -36,7 +36,7 @@ DISCOUNT_CONFLICTS=
 #
 # DISCOUNT_IPK_VERSION should be incremented when the ipk changes.
 #
-DISCOUNT_IPK_VERSION=2
+DISCOUNT_IPK_VERSION=1
 
 #
 # DISCOUNT_CONFFILES should be a list of user-editable files
