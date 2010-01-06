@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 PATCH_SITE=http://ftp.gnu.org/gnu/patch
-PATCH_VERSION=2.6
+PATCH_VERSION=2.6.1
 PATCH_SOURCE=patch-$(PATCH_VERSION).tar.bz2
 PATCH_DIR=patch-$(PATCH_VERSION)
 PATCH_UNZIP=bzcat
@@ -106,6 +106,7 @@ $(PATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES) make/
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PATCH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PATCH_LDFLAGS)" \
 		ac_cv_func_fseeko=no \
+		ac_cv_func_strnlen_working=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
