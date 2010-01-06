@@ -29,14 +29,14 @@ WPUT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WPUT_DESCRIPTION=A command-line ftp-client that uploads files or whole directories to remote ftp-servers.
 WPUT_SECTION=net
 WPUT_PRIORITY=optional
-WPUT_DEPENDS=
+WPUT_DEPENDS=gnutls
 WPUT_SUGGESTS=
 WPUT_CONFLICTS=
 
 #
 # WPUT_IPK_VERSION should be incremented when the ipk changes.
 #
-WPUT_IPK_VERSION=2
+WPUT_IPK_VERSION=3
 
 #
 # WPUT_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ WPUT_IPK=$(BUILD_DIR)/wput_$(WPUT_VERSION)-$(WPUT_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WPUT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WPUT_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(WPUT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,16 +105,17 @@ wput-source: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES)
 # shown below to make various patches to it.
 #
 $(WPUT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES) make/wput.mk
-#	$(MAKE) gnutls-stage
-	rm -rf $(BUILD_DIR)/$(WPUT_DIR) $(WPUT_BUILD_DIR)
+	$(MAKE) gnutls-stage
+	rm -rf $(BUILD_DIR)/$(WPUT_DIR) $(@D)
 	$(WPUT_UNZIP) $(DL_DIR)/$(WPUT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WPUT_PATCHES)" ; \
 		then cat $(WPUT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(WPUT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(WPUT_DIR)" != "$(WPUT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(WPUT_DIR) $(WPUT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(WPUT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(WPUT_DIR) $(@D) ; \
 	fi
+	sed -i -e 's|gnutls/gnutls.h, gnutls/openssl.h|gnutls/gnutls.h gnutls/openssl.h|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WPUT_CPPFLAGS)" \
@@ -124,7 +125,9 @@ $(WPUT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES) make/wpu
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--without-ssl \
+		--with-ssl \
+		--with-gnutls-includes=$(STAGING_INCLUDE_DIR) \
+		--with-gnutls-libs=$(STAGING_LIB_DIR) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -132,7 +135,7 @@ $(WPUT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES) make/wpu
 	-e 's|$$(CC)|$$(CC) $$(CPPFLAGS)|' \
 	-e 's|$$(LIBS)|$$(LIBS) $$(LDFLAGS)|' \
 	$(@D)/src/Makefile
-#	$(PATCH_LIBTOOL) $(WPUT_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 wput-unpack: $(WPUT_BUILD_DIR)/.configured
@@ -237,4 +240,4 @@ wput-dirclean:
 # Some sanity check for the package.
 #
 wput-check: $(WPUT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WPUT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
