@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GOLANG_HG_REPO=https://go.googlecode.com/hg
-GOLANG_HG_DATE=20091222
-GOLANG_HG_REV=a6fcf4303b0a
+GOLANG_HG_DATE=20100105
+GOLANG_HG_REV=3887d4d81bca
 GOLANG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/golang
 GOLANG_VERSION=0.hg$(GOLANG_HG_DATE)
 GOLANG_SOURCE=golang-$(GOLANG_VERSION).tar.gz
