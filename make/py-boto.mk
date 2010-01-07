@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BOTO_VERSION=1.8d
+PY-BOTO_VERSION=1.9b
 PY-BOTO_SITE=http://boto.googlecode.com/files
 PY-BOTO_SOURCE=boto-$(PY-BOTO_VERSION).tar.gz
 PY-BOTO_DIR=boto-$(PY-BOTO_VERSION)
@@ -174,8 +174,8 @@ py-boto: $(PY-BOTO_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-py-boto-stage: $(PY-BOTO_BUILD_DIR)/.staged
+#
+#py-boto-stage: $(PY-BOTO_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
