@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 READLINE_SITE=http://ftp.gnu.org/pub/gnu/readline
-READLINE_VERSION=6.0
+READLINE_VERSION=6.1
 READLINE_SOURCE=readline-$(READLINE_VERSION).tar.gz
 READLINE_DIR=readline-$(READLINE_VERSION)
 READLINE_UNZIP=zcat
@@ -80,8 +80,8 @@ READLINE_IPK=$(BUILD_DIR)/readline_$(READLINE_VERSION)-$(READLINE_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(READLINE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(READLINE_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(READLINE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,7 +118,7 @@ ifeq (darwin,$(TARGET_OS))
 	sed -i.orig \
 		-e '/host_os=/s|$$1|darwin8|' \
 		-e '/arch_only/s|`/usr/bin/arch`|$(TARGET_ARCH)|' \
-		$(READLINE_BUILD_DIR)/support/shobj-conf
+		$(@D)/support/shobj-conf
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -192,6 +192,7 @@ $(READLINE_IPK_DIR)/CONTROL/control:
 $(READLINE_IPK): $(READLINE_BUILD_DIR)/.built
 	rm -rf $(READLINE_IPK_DIR) $(BUILD_DIR)/readline_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(READLINE_BUILD_DIR) DESTDIR=$(READLINE_IPK_DIR) install
+	rm -f $(READLINE_IPK_DIR)/opt/share/info/dir*
 	(cd $(READLINE_IPK_DIR)/opt/lib/ ; \
 		find . -name '*.$(SHLIB_EXT)' -exec chmod +w {} \; ; \
 		find . -name '*.$(SHLIB_EXT)' -exec $(STRIP_COMMAND) {} \; ; \
