@@ -5,7 +5,7 @@
 ###########################################################
 
 BOGOFILTER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bogofilter
-BOGOFILTER_VERSION=1.1.7
+BOGOFILTER_VERSION=1.2.1
 BOGOFILTER_IPK_VERSION=1
 BOGOFILTER_SOURCE=bogofilter-$(BOGOFILTER_VERSION).tar.bz2
 BOGOFILTER_DIR=bogofilter-$(BOGOFILTER_VERSION)
@@ -46,7 +46,7 @@ BOGOFILTER_IPK=$(BUILD_DIR)/bogofilter_$(BOGOFILTER_VERSION)-$(BOGOFILTER_IPK_VE
 .PHONY: bogofilter-source bogofilter-unpack bogofilter bogofilter-stage bogofilter-ipk bogofilter-clean bogofilter-dirclean bogofilter-check
 
 $(BOGOFILTER_IPK_DIR)/CONTROL/control:
-	@install -d $(BOGOFILTER_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bogofilter" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -69,17 +69,16 @@ $(BOGOFILTER_BUILD_DIR)/.configured: $(DL_DIR)/$(BOGOFILTER_SOURCE) $(BOGOFILTER
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(BOGOFILTER_DIR) $(BOGOFILTER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BOGOFILTER_DIR) $(@D)
 	$(BOGOFILTER_UNZIP) $(DL_DIR)/$(BOGOFILTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BOGOFILTER_PATCHES)"; \
 		then cat $(BOGOFILTER_PATCHES) | patch -d $(BUILD_DIR)/$(BOGOFILTER_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(BOGOFILTER_DIR) $(BOGOFILTER_BUILD_DIR)
+	mv $(BUILD_DIR)/$(BOGOFILTER_DIR) $(@D)
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cd $(BOGOFILTER_BUILD_DIR); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf
+	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
 endif
-	(cd $(BOGOFILTER_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BOGOFILTER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BOGOFILTER_LDFLAGS)" \
@@ -99,17 +98,17 @@ bogofilter-unpack: $(BOGOFILTER_BUILD_DIR)/.configured
 
 $(BOGOFILTER_BUILD_DIR)/.built: $(BOGOFILTER_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(BOGOFILTER_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 bogofilter: $(BOGOFILTER_BUILD_DIR)/.built
 
-$(BOGOFILTER_BUILD_DIR)/.staged: $(BOGOFILTER_BUILD_DIR)/.built
+#$(BOGOFILTER_BUILD_DIR)/.staged: $(BOGOFILTER_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(BOGOFILTER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-bogofilter-stage: $(BOGOFILTER_BUILD_DIR)/.staged
+#
+#bogofilter-stage: $(BOGOFILTER_BUILD_DIR)/.staged
 
 $(BOGOFILTER_IPK): $(BOGOFILTER_BUILD_DIR)/.built
 	rm -rf $(BOGOFILTER_IPK_DIR) $(BUILD_DIR)/bogofilter_*_$(TARGET_ARCH).ipk
@@ -154,4 +153,4 @@ bogofilter-dirclean:
 # Some sanity check for the package.
 #
 bogofilter-check: $(BOGOFILTER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOGOFILTER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
