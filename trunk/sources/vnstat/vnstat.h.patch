@@ -1,20 +1,20 @@
---- vnstat-1.5/src/vnstat.h.orig	2007-12-03 19:30:48.000000000 +0100
-+++ vnstat-1.5/src/vnstat.h	2007-12-20 14:43:29.000000000 +0100
-@@ -22,7 +22,7 @@
- */
- 
- /* location of the database directory */
+--- vnstat-1.10/src/common.h.orig	2010-01-02 00:35:01.000000000 +0000
++++ vnstat-1.10/src/common.h	2010-01-09 16:36:17.383666926 +0000
+@@ -41,7 +41,7 @@
+ #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
+ #define DATABASEDIR "/var/db/vnstat"
+ #else
 -#define DATABASEDIR "/var/lib/vnstat"
 +#define DATABASEDIR "/opt/var/lib/vnstat"
+ #endif
  
  /* on which day should months change */
- #define MONTHROTATE 1
-@@ -64,7 +64,7 @@
+@@ -109,7 +109,7 @@
  #define DEFQMODE 0
  
  /* how much the boot time can variate between updates (seconds) */
 -#define BVAR 15
 +#define BVAR 100
  
- /* use file locking by default */
- #define USEFLOCK 1
+ /* check disk space by default */
+ #define USESPACECHECK 1

@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VNSTAT_SITE=http://humdi.net/vnstat
-VNSTAT_VERSION=1.6
+VNSTAT_VERSION=1.10
 VNSTAT_SOURCE=vnstat-$(VNSTAT_VERSION).tar.gz
 VNSTAT_DIR=vnstat-$(VNSTAT_VERSION)
 VNSTAT_UNZIP=zcat
@@ -36,7 +36,7 @@ VNSTAT_CONFLICTS=
 #
 # VNSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-VNSTAT_IPK_VERSION=2
+VNSTAT_IPK_VERSION=1
 
 #
 # VNSTAT_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ VNSTAT_IPK=$(BUILD_DIR)/vnstat_$(VNSTAT_VERSION)-$(VNSTAT_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VNSTAT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VNSTAT_SITE)/$(VNSTAT_SOURCE)
+	$(WGET) -P $(@D) $(VNSTAT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -120,7 +121,7 @@ $(VNSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(VNSTAT_SOURCE) $(VNSTAT_PATCHES) ma
 		-e 's|local/bin|bin|g' \
 		-e 's|install -s|install|' \
 		-e '/^CC/d;/^CFLAGS/d'  \
-		cron/vnstat pppd/vnstat_ip-down pppd/vnstat_ip-up \
+		examples/vnstat.cron examples/vnstat_ip-down examples/vnstat_ip-up \
 		Makefile src/Makefile src/cfg.c cfg/vnstat.conf \
 	)
 	touch $@
@@ -132,8 +133,7 @@ vnstat-unpack: $(VNSTAT_BUILD_DIR)/.configured
 #
 $(VNSTAT_BUILD_DIR)/.built: $(VNSTAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(TARGET_CONFIGURE_OPTS) \
-	$(MAKE) -C $(VNSTAT_BUILD_DIR)
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -146,7 +146,7 @@ vnstat: $(VNSTAT_BUILD_DIR)/.built
 #
 $(VNSTAT_BUILD_DIR)/.staged: $(VNSTAT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(VNSTAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 vnstat-stage: $(VNSTAT_BUILD_DIR)/.staged
@@ -186,8 +186,9 @@ $(VNSTAT_IPK): $(VNSTAT_BUILD_DIR)/.built
 	rm -rf $(VNSTAT_IPK_DIR) $(BUILD_DIR)/vnstat_*_$(TARGET_ARCH).ipk
 	install -d $(VNSTAT_IPK_DIR)/opt/etc/
 	$(MAKE) -C $(VNSTAT_BUILD_DIR) DESTDIR=$(VNSTAT_IPK_DIR) install
-	$(STRIP_COMMAND) $(VNSTAT_IPK_DIR)/opt/bin/vnstat
-	chmod 600 $(VNSTAT_IPK_DIR)/opt/etc/cron.d/vnstat
+	$(STRIP_COMMAND) $(VNSTAT_IPK_DIR)/opt/bin/vnstat $(VNSTAT_IPK_DIR)/opt/sbin/vnstatd
+	install -d $(VNSTAT_IPK_DIR)/opt/etc/cron.d
+	install -m 600 $(<D)/examples/vnstat.cron $(VNSTAT_IPK_DIR)/opt/etc/cron.d/vnstat
 #	install -m 644 $(VNSTAT_SOURCE_DIR)/vnstat.conf $(VNSTAT_IPK_DIR)/opt/etc/vnstat.conf
 #	install -d $(VNSTAT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(VNSTAT_SOURCE_DIR)/rc.vnstat $(VNSTAT_IPK_DIR)/opt/etc/init.d/SXXvnstat
@@ -223,4 +224,4 @@ vnstat-dirclean:
 # Some sanity check for the package.
 #
 vnstat-check: $(VNSTAT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VNSTAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
