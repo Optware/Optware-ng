@@ -36,7 +36,7 @@ VNSTAT_CONFLICTS=
 #
 # VNSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-VNSTAT_IPK_VERSION=1
+VNSTAT_IPK_VERSION=2
 
 #
 # VNSTAT_CONFFILES should be a list of user-editable files
@@ -52,7 +52,9 @@ VNSTAT_PATCHES=$(VNSTAT_SOURCE_DIR)/vnstat.h.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-VNSTAT_CPPFLAGS=
+ifdef NO_BUILTIN_MATH
+VNSTAT_CPPFLAGS=-fno-builtin-ceil
+endif
 VNSTAT_LDFLAGS=
 
 #
@@ -124,6 +126,9 @@ $(VNSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(VNSTAT_SOURCE) $(VNSTAT_PATCHES) ma
 		examples/vnstat.cron examples/vnstat_ip-down examples/vnstat_ip-up \
 		Makefile src/Makefile src/cfg.c cfg/vnstat.conf \
 	)
+ifdef NO_BUILTIN_MATH
+	sed -i -e 's/\([=,] *\)rintf/\1(float) (int) /' $(@D)/src/dbshow.c $(@D)/src/image.c $(@D)/src/traffic.c
+endif
 	touch $@
 
 vnstat-unpack: $(VNSTAT_BUILD_DIR)/.configured
@@ -133,7 +138,7 @@ vnstat-unpack: $(VNSTAT_BUILD_DIR)/.configured
 #
 $(VNSTAT_BUILD_DIR)/.built: $(VNSTAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
+	$(TARGET_CONFIGURE_OPTS) CPPFLAGS="$(STAGING_CPPFLAGS) $(VNSTAT_CPPFLAGS)" $(MAKE) -C $(@D)
 	touch $@
 
 #
