@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSORT_SITE=http://billposer.org/Software/Downloads
-MSORT_VERSION=8.52
+MSORT_VERSION=8.53
 MSORT_SOURCE=msort-$(MSORT_VERSION).tar.bz2
 MSORT_DIR=msort-$(MSORT_VERSION)
 MSORT_UNZIP=bzcat
@@ -39,7 +39,7 @@ MSORT_CONFLICTS=
 #
 # MSORT_IPK_VERSION should be incremented when the ipk changes.
 #
-MSORT_IPK_VERSION=2
+MSORT_IPK_VERSION=1
 
 #
 # MSORT_CONFFILES should be a list of user-editable files
@@ -128,7 +128,6 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MSORT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MSORT_LDFLAGS)" \
-		ac_cv_lib_tre_regwcomp=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
