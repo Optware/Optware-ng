@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IOTOP_SITE=http://guichaz.free.fr/iotop/files
-IOTOP_VERSION=0.3.2
+IOTOP_VERSION=0.4
 IOTOP_SOURCE=iotop-$(IOTOP_VERSION).tar.gz
 IOTOP_DIR=iotop-$(IOTOP_VERSION)
 IOTOP_UNZIP=zcat
