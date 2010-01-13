@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SSAM_SITE=http://www.westley.demon.co.uk/src
-SSAM_VERSION=1.9
+SSAM_VERSION=1.10
 SSAM_SOURCE=ssam-$(SSAM_VERSION).tar.gz
 SSAM_DIR=ssam-$(SSAM_VERSION)
 SSAM_UNZIP=zcat
@@ -76,8 +76,8 @@ SSAM_IPK=$(BUILD_DIR)/ssam_$(SSAM_VERSION)-$(SSAM_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SSAM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SSAM_SITE)/$(SSAM_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SSAM_SOURCE)
+	$(WGET) -P $(@D) $(SSAM_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -148,12 +148,12 @@ ssam: $(SSAM_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SSAM_BUILD_DIR)/.staged: $(SSAM_BUILD_DIR)/.built
+#$(SSAM_BUILD_DIR)/.staged: $(SSAM_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-ssam-stage: $(SSAM_BUILD_DIR)/.staged
+#
+#ssam-stage: $(SSAM_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -217,4 +217,4 @@ ssam-dirclean:
 # Some sanity check for the package.
 #
 ssam-check: $(SSAM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SSAM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
