@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEON_SITE=http://www.webdav.org/neon
-NEON_VERSION=0.28.6
+NEON_VERSION=0.29.3
 NEON_SOURCE=neon-$(NEON_VERSION).tar.gz
 NEON_DIR=neon-$(NEON_VERSION)
 NEON_UNZIP=zcat
