@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TREE_SITE=ftp://mama.indstate.edu/linux/tree
-TREE_VERSION=$(strip $(if $(filter uclibc, $(LIBC_STYLE)), 1.5.1.2, 1.5.2.2))
+TREE_VERSION=$(strip $(if $(filter uclibc, $(LIBC_STYLE)), 1.5.1.2, 1.5.3))
 TREE_SOURCE=tree-$(TREE_VERSION).tgz
 TREE_DIR=tree-$(TREE_VERSION)
 TREE_UNZIP=zcat
