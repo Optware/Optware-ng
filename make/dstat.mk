@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 DSTAT_SITE=http://dag.wieers.com/home-made/dstat/
-DSTAT_VERSION=0.6.9
+DSTAT_VERSION=0.7.0
 DSTAT_SOURCE=dstat-$(DSTAT_VERSION).tar.bz2
 DSTAT_DIR=dstat-$(DSTAT_VERSION)
 DSTAT_UNZIP=bzcat
@@ -168,17 +168,7 @@ $(DSTAT_IPK): $(DSTAT_BUILD_DIR)/.built
 	rm -rf $(DSTAT_IPK_DIR) $(BUILD_DIR)/dstat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DSTAT_BUILD_DIR) install \
 		DESTDIR=$(DSTAT_IPK_DIR) prefix=/opt sysconfdir=/opt/etc
-	#install -d $(DSTAT_IPK_DIR)/opt/etc/
-	#install -m 644 $(DSTAT_SOURCE_DIR)/dstat.conf $(DSTAT_IPK_DIR)/opt/etc/dstat.conf
-	#install -d $(DSTAT_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(DSTAT_SOURCE_DIR)/rc.dstat $(DSTAT_IPK_DIR)/opt/etc/init.d/SXXdstat
-	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DSTAT_IPK_DIR)/opt/etc/init.d/SXXdstat
 	$(MAKE) $(DSTAT_IPK_DIR)/CONTROL/control
-	#install -m 755 $(DSTAT_SOURCE_DIR)/postinst $(DSTAT_IPK_DIR)/CONTROL/postinst
-	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DSTAT_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(DSTAT_SOURCE_DIR)/prerm $(DSTAT_IPK_DIR)/CONTROL/prerm
-	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DSTAT_IPK_DIR)/CONTROL/prerm
-	#echo $(DSTAT_CONFFILES) | sed -e 's/ /\n/g' > $(DSTAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSTAT_IPK_DIR)
 
 #
@@ -204,4 +194,4 @@ dstat-dirclean:
 # Some sanity check for the package.
 #
 dstat-check: $(DSTAT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DSTAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
