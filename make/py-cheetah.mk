@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CHEETAH_SITE=http://pypi.python.org/packages/source/C/Cheetah
-PY-CHEETAH_VERSION=2.4.0
+PY-CHEETAH_VERSION=2.4.1
 PY-CHEETAH_SOURCE=Cheetah-$(PY-CHEETAH_VERSION).tar.gz
 PY-CHEETAH_DIR=Cheetah-$(PY-CHEETAH_VERSION)
 PY-CHEETAH_UNZIP=zcat
@@ -110,13 +110,13 @@ py-cheetah-source: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH_PATCHES)
 #
 $(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH_PATCHES) make/py-cheetah.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)
-	mkdir -p $(PY-CHEETAH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)/2.4
-	(cd $(PY-CHEETAH_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -129,8 +129,8 @@ $(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH
 	# 2.5
 	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)/2.5
-	(cd $(PY-CHEETAH_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -143,8 +143,8 @@ $(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH
 	# 2.6
 	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)/2.6
-	(cd $(PY-CHEETAH_BUILD_DIR)/2.6; \
+	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
@@ -163,15 +163,15 @@ py-cheetah-unpack: $(PY-CHEETAH_BUILD_DIR)/.configured
 #
 $(PY-CHEETAH_BUILD_DIR)/.built: $(PY-CHEETAH_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-CHEETAH_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	(cd $(PY-CHEETAH_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
-	(cd $(PY-CHEETAH_BUILD_DIR)/2.6; \
+	(cd $(@D)/2.6; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
@@ -185,12 +185,12 @@ py-cheetah: $(PY-CHEETAH_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-CHEETAH_BUILD_DIR)/.staged: $(PY-CHEETAH_BUILD_DIR)/.built
+#$(PY-CHEETAH_BUILD_DIR)/.staged: $(PY-CHEETAH_BUILD_DIR)/.built
 #	rm -f $@
-	#$(MAKE) -C $(PY-CHEETAH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(PY-CHEETAH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-py-cheetah-stage: $(PY-CHEETAH_BUILD_DIR)/.staged
+#
+#py-cheetah-stage: $(PY-CHEETAH_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
