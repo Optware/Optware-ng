@@ -26,9 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.5/source
-GAMBIT-C_UPSTREAM_VERSION=v4_5_3
-GAMBIT-C_VERSION=4.5.3
+GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.6/source
+GAMBIT-C_UPSTREAM_VERSION=v4_6_0
+GAMBIT-C_VERSION=4.6.0
 GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_UPSTREAM_VERSION).tgz
 GAMBIT-C_DIR=gambc-$(GAMBIT-C_UPSTREAM_VERSION)
 GAMBIT-C_UNZIP=zcat
@@ -158,12 +158,12 @@ gambit-c: $(GAMBIT-C_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(GAMBIT-C_BUILD_DIR)/.staged: $(GAMBIT-C_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-gambit-c-stage: $(GAMBIT-C_BUILD_DIR)/.staged
+#$(GAMBIT-C_BUILD_DIR)/.staged: $(GAMBIT-C_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#gambit-c-stage: $(GAMBIT-C_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
