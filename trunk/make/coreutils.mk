@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 COREUTILS_SITE=http://ftp.gnu.org/pub/gnu/coreutils
-COREUTILS_VERSION=7.5
+COREUTILS_VERSION=8.4
 COREUTILS_SOURCE=coreutils-$(COREUTILS_VERSION).tar.gz
 COREUTILS_DIR=coreutils-$(COREUTILS_VERSION)
 COREUTILS_UNZIP=zcat
@@ -236,7 +236,7 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	# Install makefiles
 	install -d $(COREUTILS_IPK_DIR)/opt/man/man1	
 	$(MAKE) -C $(COREUTILS_BUILD_DIR)/man DESTDIR=$(COREUTILS_IPK_DIR) install
-	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/* $(COREUTILS_IPK_DIR)/opt/lib/coreutils/lib*.so
 	$(MAKE) $(COREUTILS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(COREUTILS_IPK_DIR)/CONTROL/postinst
 	(echo "/bin/chown 0:0 /opt/bin/coreutils-su"; \
