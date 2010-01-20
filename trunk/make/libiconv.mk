@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBICONV_SITE=http://ftp.gnu.org/pub/gnu/libiconv
-LIBICONV_VERSION=1.13
+LIBICONV_VERSION=1.13.1
 LIBICONV_SOURCE=libiconv-$(LIBICONV_VERSION).tar.gz
 LIBICONV_DIR=libiconv-$(LIBICONV_VERSION)
 LIBICONV_UNZIP=zcat
