@@ -23,7 +23,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.11
-OCAML_VERSION=3.11.1
+OCAML_VERSION=3.11.2
 OCAML_SOURCE=ocaml-$(OCAML_VERSION).tar.gz
 OCAML_DIR=ocaml-$(OCAML_VERSION)
 OCAML_UNZIP=zcat
@@ -185,4 +185,4 @@ ocaml-dirclean:
 	rm -rf $(BUILD_DIR)/$(OCAML_DIR) $(OCAML_BUILD_DIR) $(OCAML_IPK_DIR) $(OCAML_IPK)
 
 ocaml-check: $(OCAML_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OCAML_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
