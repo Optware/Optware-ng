@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NCMPC_VERSION=0.16
+NCMPC_VERSION=0.16.1
 NCMPC_SITE=http://downloads.sourceforge.net/musicpd
 NCMPC_SOURCE=ncmpc-$(NCMPC_VERSION).tar.bz2
 NCMPC_DIR=ncmpc-$(NCMPC_VERSION)
