@@ -27,9 +27,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOKUWIKI_SITE=http://www.splitbrain.org/_media/projects/dokuwiki
-DOKUWIKI_VERSION=2009-02-14
+DOKUWIKI_VERSION=2009-12-25c
 DOKUWIKI_SOURCE=dokuwiki-$(DOKUWIKI_VERSION).tgz
-DOKUWIKI_DIR=dokuwiki-$(DOKUWIKI_VERSION)
+DOKUWIKI_DIR=dokuwiki-2009-12-25
 DOKUWIKI_UNZIP=zcat
 DOKUWIKI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DOKUWIKI_DESCRIPTION=DokuWiki is a standards compliant, simple to use Wiki
@@ -106,7 +106,7 @@ dokuwiki-source: $(DL_DIR)/$(DOKUWIKI_SOURCE) $(DOKUWIKI_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(DOKUWIKI_BUILD_DIR)/.configured: $(DL_DIR)/$(DOKUWIKI_SOURCE) $(DOKUWIKI_PATCHES)
-	rm -rf $(BUILD_DIR)/$(DOKUWIKI_DIR) $(DOKUWIKI_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(DOKUWIKI_DIR) $(@D)
 	$(DOKUWIKI_UNZIP) $(DL_DIR)/$(DOKUWIKI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DOKUWIKI_DIR) $(@D)
 	touch $@
