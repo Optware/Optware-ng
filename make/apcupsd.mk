@@ -122,6 +122,8 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 		then mv $(BUILD_DIR)/$(APCUPSD_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|prefix=NONE|prefix=/opt|; s|/usr/share/hal/|/opt/share/hal/|' $(@D)/configure
+	sed -i -e 's/strchr/&2/' $(@D)/include/astring.h
+	sed -i -e 's/astring::strchr/&2/' $(@D)/src/lib/astring.cpp
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		LD=$(TARGET_CC) \
