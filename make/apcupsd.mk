@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 APCUPSD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/apcupsd
-APCUPSD_VERSION=3.14.5
+APCUPSD_VERSION=3.14.8
 APCUPSD_SOURCE=apcupsd-$(APCUPSD_VERSION).tar.gz
 APCUPSD_DIR=apcupsd-$(APCUPSD_VERSION)
 APCUPSD_UNZIP=zcat
@@ -36,7 +36,7 @@ APCUPSD_CONFLICTS=
 #
 # APCUPSD_IPK_VERSION should be incremented when the ipk changes.
 #
-APCUPSD_IPK_VERSION=2
+APCUPSD_IPK_VERSION=1
 
 #
 # APCUPSD_CONFFILES should be a list of user-editable files
@@ -122,7 +122,6 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 		then mv $(BUILD_DIR)/$(APCUPSD_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|prefix=NONE|prefix=/opt|; s|/usr/share/hal/|/opt/share/hal/|' $(@D)/configure
-	cp -f $(SOURCE_DIR)/common/config.* $(@D)/autoconf/
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		LD=$(TARGET_CC) \
