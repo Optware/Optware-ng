@@ -121,6 +121,7 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 	if test "$(BUILD_DIR)/$(APCUPSD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(APCUPSD_DIR) $(@D) ; \
 	fi
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/autoconf/
 	sed -i -e 's|prefix=NONE|prefix=/opt|; s|/usr/share/hal/|/opt/share/hal/|' $(@D)/configure
 	sed -i -e 's/strchr/&2/' $(@D)/include/astring.h
 	sed -i -e 's/astring::strchr/&2/' $(@D)/src/lib/astring.cpp
