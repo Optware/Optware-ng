@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-WEECHAT_SITE=http://weechat.flashtux.org/download
-WEECHAT_VERSION=0.3.0
+WEECHAT_SITE=http://www.weechat.org/files/src
+WEECHAT_VERSION=0.3.1
 WEECHAT_SOURCE=weechat-$(WEECHAT_VERSION).tar.bz2
 WEECHAT_DIR=weechat-$(WEECHAT_VERSION)
 WEECHAT_UNZIP=bzcat
