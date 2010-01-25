@@ -24,7 +24,7 @@ ASTERISK16_SOURCE_TYPE=tarball
 #ASTERISK16_SOURCE_TYPE=svn
 
 ASTERISK16_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK16_BASE_VERSION=1.6.1.12
+ASTERISK16_BASE_VERSION=1.6.2.1
 
 ifeq ($(ASTERISK16_SOURCE_TYPE), svn)
 ASTERISK16_SVN=http://svn.digium.com/svn/asterisk/branches/1.6.1
@@ -41,7 +41,7 @@ ASTERISK16_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
 ASTERISK16_DESCRIPTION=Asterisk is an Open Source PBX and telephony toolkit.
 ASTERISK16_SECTION=util
 ASTERISK16_PRIORITY=optional
-ASTERISK16_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++,popt
+ASTERISK16_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++,popt,libxml2
 ASTERISK16_SUGGESTS=\
 asterisk14-core-sounds-en-alaw,\
 asterisk14-core-sounds-en-g729,\
@@ -283,7 +283,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 	$(MAKE) x11-stage
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
-	$(MAKE) sqlite2-stage libogg-stage
+	$(MAKE) sqlite2-stage libogg-stage libxml2-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK16_DIR) $(ASTERISK16_BUILD_DIR)
 	$(ASTERISK16_UNZIP) $(DL_DIR)/$(ASTERISK16_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK16_PATCHES)" ; \
