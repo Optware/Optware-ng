@@ -4,8 +4,8 @@
 #
 #############################################################
 
-BIND_UPSTREAM_VERSION=9.6.1-P1
-BIND_VERSION=9.6.1.1
+BIND_UPSTREAM_VERSION=9.6.1-P3
+BIND_VERSION=9.6.1.3
 BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_UPSTREAM_VERSION)
 BIND_SOURCE=bind-$(BIND_UPSTREAM_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_UPSTREAM_VERSION)
@@ -16,7 +16,7 @@ BIND_SECTION=net
 BIND_PRIORITY=optional
 BIND_DEPENDS=openssl
 
-BIND_IPK_VERSION=2
+BIND_IPK_VERSION=1
 
 # BIND_PATCHES=$(BIND_SOURCE_DIR)/bind_configure_patch
 
