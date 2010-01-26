@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PIL_SITE=http://effbot.org/downloads
-PY-PIL_VERSION=1.1.6
+PY-PIL_VERSION=1.1.7
 PY-PIL_SOURCE=Imaging-$(PY-PIL_VERSION).tar.gz
 PY-PIL_DIR=Imaging-$(PY-PIL_VERSION)
 PY-PIL_UNZIP=zcat
@@ -30,7 +30,6 @@ PY-PIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PIL_DESCRIPTION=The Python Imaging Library (PIL) adds image processing capabilities to your Python interpreter.
 PY-PIL_SECTION=misc
 PY-PIL_PRIORITY=optional
-PY24-PIL_DEPENDS=python24,freetype,libjpeg,zlib
 PY25-PIL_DEPENDS=python25,freetype,libjpeg,zlib
 PY26-PIL_DEPENDS=python26,freetype,libjpeg,zlib
 PY-PIL_CONFLICTS=
@@ -38,7 +37,7 @@ PY-PIL_CONFLICTS=
 #
 # PY-PIL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PIL_IPK_VERSION=3
+PY-PIL_IPK_VERSION=1
 
 #
 # PY-PIL_CONFFILES should be a list of user-editable files
@@ -68,9 +67,6 @@ PY-PIL_LDFLAGS=
 #
 PY-PIL_BUILD_DIR=$(BUILD_DIR)/py-pil
 PY-PIL_SOURCE_DIR=$(SOURCE_DIR)/py-pil
-
-PY24-PIL_IPK_DIR=$(BUILD_DIR)/py24-pil-$(PY-PIL_VERSION)-ipk
-PY24-PIL_IPK=$(BUILD_DIR)/py24-pil_$(PY-PIL_VERSION)-$(PY-PIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PIL_IPK_DIR=$(BUILD_DIR)/py25-pil-$(PY-PIL_VERSION)-ipk
 PY25-PIL_IPK=$(BUILD_DIR)/py25-pil_$(PY-PIL_VERSION)-$(PY-PIL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -114,23 +110,6 @@ $(PY-PIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PIL_SOURCE) $(PY-PIL_PATCHES) ma
 	$(MAKE) py-setuptools-stage freetype-stage libjpeg-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PY-PIL_DIR) $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	$(PY-PIL_UNZIP) $(DL_DIR)/$(PY-PIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(PY-PIL_PATCHES)"; then \
-		cat $(PY-PIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PIL_DIR) -p1; \
-	fi
-	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(BUILD_DIR)/$(PY-PIL_DIR)/setup.py
-	mv $(BUILD_DIR)/$(PY-PIL_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    ( \
-		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
-	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4" \
-	    ) >> setup.cfg; \
-	)
 	# 2.5
 	$(PY-PIL_UNZIP) $(DL_DIR)/$(PY-PIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PIL_PATCHES)"; then \
@@ -141,7 +120,7 @@ $(PY-PIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PIL_SOURCE) $(PY-PIL_PATCHES) ma
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
@@ -158,7 +137,7 @@ $(PY-PIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PIL_SOURCE) $(PY-PIL_PATCHES) ma
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
@@ -174,10 +153,6 @@ py-pil-unpack: $(PY-PIL_BUILD_DIR)/.configured
 #
 $(PY-PIL_BUILD_DIR)/.built: $(PY-PIL_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
-	)
 	(cd $(@D)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
@@ -207,20 +182,6 @@ py-pil: $(PY-PIL_BUILD_DIR)/.built
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-pil
 #
-$(PY24-PIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-pil" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-PIL_PRIORITY)" >>$@
-	@echo "Section: $(PY-PIL_SECTION)" >>$@
-	@echo "Version: $(PY-PIL_VERSION)-$(PY-PIL_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-PIL_MAINTAINER)" >>$@
-	@echo "Source: $(PY-PIL_SITE)/$(PY-PIL_SOURCE)" >>$@
-	@echo "Description: $(PY-PIL_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-PIL_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-PIL_CONFLICTS)" >>$@
-
 $(PY25-PIL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -261,19 +222,8 @@ $(PY26-PIL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-PIL_IPK): $(PY-PIL_BUILD_DIR)/.built
-	rm -rf $(PY24-PIL_IPK_DIR) $(BUILD_DIR)/py*-pil_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PIL_BUILD_DIR)/2.4; \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-PIL_IPK_DIR) --prefix=/opt; \
-	)
-	for so in `find $(PY24-PIL_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`; do \
-	    $(STRIP_COMMAND) $$so; \
-	done
-	$(MAKE) $(PY24-PIL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PIL_IPK_DIR)
-
 $(PY25-PIL_IPK): $(PY-PIL_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-pil_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-PIL_IPK_DIR) $(BUILD_DIR)/py25-pil_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PIL_BUILD_DIR)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
@@ -291,6 +241,8 @@ $(PY26-PIL_IPK): $(PY-PIL_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-PIL_IPK_DIR) --prefix=/opt; \
 	)
+	for f in $(PY26-PIL_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
 	for so in `find $(PY26-PIL_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`; do \
 	    $(STRIP_COMMAND) $$so; \
 	done
@@ -300,7 +252,7 @@ $(PY26-PIL_IPK): $(PY-PIL_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pil-ipk: $(PY24-PIL_IPK) $(PY25-PIL_IPK) $(PY26-PIL_IPK)
+py-pil-ipk: $(PY25-PIL_IPK) $(PY26-PIL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -314,12 +266,11 @@ py-pil-clean:
 #
 py-pil-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-PIL_DIR) $(PY-PIL_BUILD_DIR)
-	rm -rf $(PY24-PIL_IPK_DIR) $(PY24-PIL_IPK)
 	rm -rf $(PY25-PIL_IPK_DIR) $(PY25-PIL_IPK)
 	rm -rf $(PY26-PIL_IPK_DIR) $(PY26-PIL_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-pil-check: $(PY24-PIL_IPK) $(PY25-PIL_IPK) $(PY26-PIL_IPK)
+py-pil-check: $(PY25-PIL_IPK) $(PY26-PIL_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
