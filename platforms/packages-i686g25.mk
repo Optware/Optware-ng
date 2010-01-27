@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	ipkg-opt \
 	cacao \
+	redis \
 	binutils gcc libc-dev \
 
 BROKEN_PACKAGES = \

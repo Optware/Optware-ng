@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 	binutils gcc libc-dev \
 	cacao \
 	mono \
+	redis \
 
 # Packages that do not work for mssii.
 BROKEN_PACKAGES = \
