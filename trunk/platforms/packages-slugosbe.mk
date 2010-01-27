@@ -1,6 +1,7 @@
 # Packages that *only* work for slugosbe - do not just put new packages here.
 SPECIFIC_PACKAGES = \
 	ipkg-opt \
+	redis \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 

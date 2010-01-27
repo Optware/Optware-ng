@@ -6,6 +6,7 @@ SPECIFIC_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	ipkg-opt \
 	cacao mono \
+	redis \
 
 # Packages that do not work for mssii.
 BROKEN_PACKAGES = \

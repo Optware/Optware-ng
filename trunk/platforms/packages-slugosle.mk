@@ -2,6 +2,7 @@
 SPECIFIC_PACKAGES = \
 	ipkg-opt \
 	mono \
+	redis \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 

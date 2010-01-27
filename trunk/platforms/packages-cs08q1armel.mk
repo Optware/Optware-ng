@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 	syno-mvkw-optware-bootstrap \
 	ls-mvkw-optware-bootstrap \
 	cacao mono \
+	redis \
 	binutils gcc libc-dev \
 
 # Packages that do not work for cs08q1armel.

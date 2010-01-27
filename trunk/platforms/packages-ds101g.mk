@@ -6,6 +6,7 @@ SPECIFIC_PACKAGES = \
 	ds101-bootstrap \
 	crosstool-native \
 	mono \
+	redis \
 	py-ctypes \
 	$(PERL_PACKAGES) \
 

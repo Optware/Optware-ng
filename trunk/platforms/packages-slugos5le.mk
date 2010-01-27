@@ -3,6 +3,7 @@ LIBNSL_SO_DIR = $(TARGET_TOP)/staging/armv5te-linux-gnueabi/lib
 
 SPECIFIC_PACKAGES = \
 	optware-bootstrap \
+	redis \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
