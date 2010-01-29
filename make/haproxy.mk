@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HAPROXY_SITE=http://haproxy.1wt.eu/download/1.3/src
-HAPROXY_VERSION=1.3.22
+HAPROXY_VERSION=1.3.23
 HAPROXY_SOURCE=haproxy-$(HAPROXY_VERSION).tar.gz
 HAPROXY_DIR=haproxy-$(HAPROXY_VERSION)
 HAPROXY_UNZIP=zcat
