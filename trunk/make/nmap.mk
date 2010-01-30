@@ -7,7 +7,7 @@
 # $Header$
 #
 NMAP_SITE=http://download.insecure.org/nmap/dist
-NMAP_VERSION=5.00
+NMAP_VERSION=5.21
 NMAP_SOURCE=nmap-$(NMAP_VERSION).tar.bz2
 NMAP_DIR=nmap-$(NMAP_VERSION)
 NMAP_UNZIP=bzcat
@@ -22,7 +22,7 @@ NMAP_CONFLICTS=
 #
 # NMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-NMAP_IPK_VERSION=2
+NMAP_IPK_VERSION=1
 
 #
 # NMAP_CONFFILES should be a list of user-editable files
@@ -122,6 +122,7 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nma
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NMAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NMAP_LDFLAGS)" \
 		CXXFLAGS="$(STAGING_CPPFLAGS) $(NMAP_CPPFLAGS)" \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
