@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SRECORD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/srecord
-SRECORD_VERSION=1.50
+SRECORD_VERSION=1.51
 SRECORD_SOURCE=srecord-$(SRECORD_VERSION).tar.gz
 SRECORD_DIR=srecord-$(SRECORD_VERSION)
 SRECORD_UNZIP=zcat
