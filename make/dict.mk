@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DICT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/dict
-DICT_VERSION=1.10.10
+DICT_VERSION=1.11.2
 DICT_SOURCE=dictd-$(DICT_VERSION).tar.gz
 DICT_DIR=dictd-$(DICT_VERSION)
 DICT_UNZIP=zcat
@@ -35,7 +35,7 @@ DICT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DICT_DESCRIPTION=DICT Protocol (RFC 2229) Client.
 DICT_SECTION=text
 DICT_PRIORITY=optional
-DICT_DEPENDS=
+DICT_DEPENDS=libmaa, zlib
 
 #
 # DICT_IPK_VERSION should be incremented when the ipk changes.
@@ -104,13 +104,11 @@ dict-source: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(DICT_BUILD_DIR)/.configured: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES) make/dict.mk
-	$(MAKE) libtool-stage
+	$(MAKE) libtool-stage libmaa-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(DICT_DIR) $(DICT_BUILD_DIR)
 	$(DICT_UNZIP) $(DL_DIR)/$(DICT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DICT_DIR) $(DICT_BUILD_DIR)
-	sed -i.orig -e 's|libtool|$(STAGING_PREFIX)/bin/libtool|' \
-		$(@D)/Makefile.in \
-		$(@D)/libmaa/Makefile.in
+	sed -i.orig -e 's|libtool|$(STAGING_PREFIX)/bin/libtool|' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DICT_CPPFLAGS)" \
