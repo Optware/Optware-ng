@@ -287,8 +287,7 @@ COMMON_CROSS_PACKAGES = \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
 	libhid \
 	libid3tag libidn libieee1284 libijs libinklevel libjpeg libksba \
-	liblcms libmad \
-	libmatroska \
+	liblcms libmaa libmad libmatroska \
 	libmemcache libmms libmpcdec libmpdclient libmpeg2 libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libotr \
