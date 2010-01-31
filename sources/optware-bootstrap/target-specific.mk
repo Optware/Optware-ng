@@ -9,6 +9,7 @@ OPTWARE-BOOTSTRAP_TARGETS=\
 	slugos5be \
 	slugos5le \
 	syno-e500 \
+	syno-i686 \
 	syno-mvkw \
 	syno-x07 \
 	teraprov2 \
@@ -17,7 +18,7 @@ OPTWARE-BOOTSTRAP_TARGETS=\
 
 OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 	$(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), /volume1/opt, \
-	$(if $(filter syno-e500 syno-mvkw syno-x07, $(OPTWARE_TARGET)), /volume1/@optware, \
+	$(if $(filter syno-e500 syno-i686 syno-mvkw syno-x07, $(OPTWARE_TARGET)), /volume1/@optware, \
 	$(if $(filter fsg3 fsg3v4 dt2 vt4, $(OPTWARE_TARGET)), /home/.optware, \
 	$(if $(filter syno-mvkw, $(OPTWARE-BOOTSTRAP_TARGET)), /volume1/@optware, \
 	$(if $(filter mssii, $(OPTWARE-BOOTSTRAP_TARGET)), /share/.optware, \
@@ -29,7 +30,7 @@ OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 
 OPTWARE-BOOTSTRAP_RC=$(strip \
 	$(if $(filter cs05q3armel mssii, $(OPTWARE_TARGET)), /etc/init.d/rc.optware, \
-	$(if $(filter syno-e500 syno-mvkw syno-x07, $(OPTWARE_TARGET)), /etc/rc.optware, \
+	$(if $(filter syno-e500 syno-i686 syno-mvkw syno-x07, $(OPTWARE_TARGET)), /etc/rc.optware, \
 	$(if $(filter syno-mvkw, $(OPTWARE-BOOTSTRAP_TARGET)), /etc/rc.optware, \
 	/etc/init.d/optware))))
 
