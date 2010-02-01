@@ -1,3 +1,5 @@
+PERL_MAJOR_VER = 5.10
+
 SPECIFIC_PACKAGES = \
 	optware-bootstrap kernel-modules \
 	$(PACKAGES_REQUIRE_LINUX26) \
