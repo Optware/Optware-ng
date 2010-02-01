@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=ftp://ftp.astron.com/pub/file
-FILE_VERSION=5.03
+FILE_VERSION=5.04
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
@@ -130,8 +130,8 @@ endif
 		then cat $(FILE_PATCHES) | patch -d $(BUILD_DIR)/$(FILE_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(FILE_DIR) $(@D)
-	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
-		sed -i -e 's/ -Wextra//' $(@D)/configure; \
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3 ; \
+		then sed -i -e 's/ -Wextra//' $(@D)/configure ; \
 	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
