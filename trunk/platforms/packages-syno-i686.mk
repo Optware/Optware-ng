@@ -9,7 +9,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-         asterisk14-chan-capi atftp btg dialog gconv-modules \
+         asterisk14-chan-capi atftp btg dialog \
          iptraf ivorbis-tools lcd4linux ldconfig libcapi20 \
          mpdscribble nagios-plugins ntop opendchub opensips \
          puppy qemu rrdcollect rrdtool samba sandbox slimserver \
