@@ -32,7 +32,7 @@ GCONV_MODULES_IPK_DIR=$(BUILD_DIR)/gconv-modules-$(GCONV_MODULES_VERSION)-ipk
 GCONV_MODULES_IPK=$(BUILD_DIR)/gconv-modules_$(GCONV_MODULES_VERSION)-$(GCONV_MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 GCONV_MODULES_ICONV=$(strip \
-	$(if $(filter syno-e500, $(OPTWARE_TARGET)), $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/$(GNU_TARGET_NAME)/bin/iconv, \
+	$(if $(filter syno-e500 syno-i686, $(OPTWARE_TARGET)), $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/$(GNU_TARGET_NAME)/bin/iconv, \
 	$(if $(filter syno-x07, $(OPTWARE_TARGET)), $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/bin/iconv, \
 	$(if $(filter vt4, $(OPTWARE_TARGET)), $(TARGET_LIBDIR)/../../../../target/bin/iconv, \
 	$(TARGET_USRLIBDIR)/../bin/iconv))))
