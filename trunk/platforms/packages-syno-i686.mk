@@ -10,9 +10,9 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
          asterisk14-chan-capi atftp btg dialog gconv-modules \
-         iptraf ivorbis-tools lcd4linux ldconfig libcapi20 libnsl \
-         mpdscribble nagios-plugins ntop opendchub openser opensips postfix \
-         puppy qemu rrdcollect rrdtool samba sandbox \
+         iptraf ivorbis-tools lcd4linux ldconfig libcapi20 \
+         mpdscribble nagios-plugins ntop opendchub opensips \
+         puppy qemu rrdcollect rrdtool samba sandbox slimserver \
          vte xchat \
 
 E2FSPROGS_VERSION := 1.40.3
