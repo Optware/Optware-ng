@@ -7,15 +7,11 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	asterisk14-chan-capi \
-	golang \
-	inferno \
-	iptraf \
-	ldconfig libcapi20 \
-	puppy \
-	sandbox \
-	transcode \
-	x264 lm-sensors \
+         asterisk14-chan-capi atftp btg cyrus-imapd dialog gconv-modules git \
+         iptraf irssi ivorbis-tools lcd4linux ldconfig libcapi20 libnsl \
+         mpdscribble nagios-plugins ntop opendchub openser opensips postfix \
+         puppy subvertpy qemu rrdcollect rrdtool samba sandbox \
+         svn vte xchat \
 
 E2FSPROGS_VERSION := 1.40.3
 E2FSPROGS_IPK_VERSION := 5
