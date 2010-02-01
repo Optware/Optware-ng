@@ -92,6 +92,9 @@ $(FILE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(FILE_SOURCE) make/fi
 	rm -rf $(HOST_BUILD_DIR)/$(FILE_DIR) $(@D)
 	$(FILE_UNZIP) $(DL_DIR)/$(FILE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(FILE_DIR) $(@D)
+	if test `$(HOSTCC) -dumpversion | cut -c1` = 3 ; \
+		then sed -i -e 's/ -Wextra//' $(@D)/configure ; \
+	fi
 	(cd $(@D); \
 		CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \
 		./configure \
