@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DOSFSTOOLS_SITE=ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools
-DOSFSTOOLS_VERSION=2.11
-DOSFSTOOLS_SOURCE=dosfstools-$(DOSFSTOOLS_VERSION).src.tar.gz
+DOSFSTOOLS_SITE=http://www.daniel-baumann.ch/software/dosfstools
+DOSFSTOOLS_VERSION=3.0.9
+DOSFSTOOLS_SOURCE=dosfstools-$(DOSFSTOOLS_VERSION).tar.bz2
 DOSFSTOOLS_DIR=dosfstools-$(DOSFSTOOLS_VERSION)
-DOSFSTOOLS_UNZIP=zcat
+DOSFSTOOLS_UNZIP=bzcat
 DOSFSTOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DOSFSTOOLS_DESCRIPTION=Utilities to create and check MS-DOS FAT filesystems.
 DOSFSTOOLS_SECTION=utils
@@ -46,7 +46,7 @@ DOSFSTOOLS_IPK_VERSION=1
 # DOSFSTOOLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#DOSFSTOOLS_PATCHES=$(DOSFSTOOLS_SOURCE_DIR)/configure.patch
+DOSFSTOOLS_PATCHES=$(DOSFSTOOLS_SOURCE_DIR)/BLKSSZGET.patch
 
 #
 # If the compilation of the package requires additional
@@ -76,8 +76,8 @@ DOSFSTOOLS_IPK=$(BUILD_DIR)/dosfstools_$(DOSFSTOOLS_VERSION)-$(DOSFSTOOLS_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DOSFSTOOLS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DOSFSTOOLS_SITE)/$(DOSFSTOOLS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(DOSFSTOOLS_SOURCE)
+	$(WGET) -P $(@D) $(DOSFSTOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ dosfstools-source: $(DL_DIR)/$(DOSFSTOOLS_SOURCE) $(DOSFSTOOLS_PATCHES)
 #
 $(DOSFSTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(DOSFSTOOLS_SOURCE) $(DOSFSTOOLS_PATCHES) make/dosfstools.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(DOSFSTOOLS_DIR) $(DOSFSTOOLS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(DOSFSTOOLS_DIR) $(@D)
 	$(DOSFSTOOLS_UNZIP) $(DL_DIR)/$(DOSFSTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DOSFSTOOLS_PATCHES)" ; \
 		then cat $(DOSFSTOOLS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(DOSFSTOOLS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DOSFSTOOLS_DIR)" != "$(DOSFSTOOLS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DOSFSTOOLS_DIR) $(DOSFSTOOLS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DOSFSTOOLS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DOSFSTOOLS_DIR) $(@D) ; \
 	fi
-#	(cd $(DOSFSTOOLS_BUILD_DIR); \
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOSFSTOOLS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOSFSTOOLS_LDFLAGS)" \
@@ -127,7 +127,7 @@ $(DOSFSTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(DOSFSTOOLS_SOURCE) $(DOSFSTOOLS
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(DOSFSTOOLS_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 dosfstools-unpack: $(DOSFSTOOLS_BUILD_DIR)/.configured
@@ -153,16 +153,16 @@ dosfstools: $(DOSFSTOOLS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(DOSFSTOOLS_BUILD_DIR)/.staged: $(DOSFSTOOLS_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) install \
+#$(DOSFSTOOLS_BUILD_DIR)/.staged: $(DOSFSTOOLS_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) install \
 		DESTDIR=$(STAGING_DIR) \
-		PREFIX=$(STAGING_DIR) \
-		MANDIR=$(STAGING_DIR)/share/man/man8 \
+		PREFIX=/opt \
+		MANDIR=/opt/share/man/man8 \
 		;
-	touch $@
-
-dosfstools-stage: $(DOSFSTOOLS_BUILD_DIR)/.staged
+#	touch $@
+#
+#dosfstools-stage: $(DOSFSTOOLS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -199,10 +199,10 @@ $(DOSFSTOOLS_IPK): $(DOSFSTOOLS_BUILD_DIR)/.built
 	rm -rf $(DOSFSTOOLS_IPK_DIR) $(BUILD_DIR)/dosfstools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DOSFSTOOLS_BUILD_DIR) install \
 		DESTDIR=$(DOSFSTOOLS_IPK_DIR) \
-		PREFIX=$(DOSFSTOOLS_IPK_DIR)/opt \
-		MANDIR=$(DOSFSTOOLS_IPK_DIR)/opt/share/man/man8 \
+		PREFIX=/opt \
+		MANDIR=/opt/share/man/man8 \
 		;
-	$(STRIP_COMMAND) $(DOSFSTOOLS_IPK_DIR)/opt/sbin/dosfsck $(DOSFSTOOLS_IPK_DIR)/opt/sbin/mkdosfs
+	$(STRIP_COMMAND) $(DOSFSTOOLS_IPK_DIR)/opt/sbin/dosfs* $(DOSFSTOOLS_IPK_DIR)/opt/sbin/mkdosfs
 	$(MAKE) $(DOSFSTOOLS_IPK_DIR)/CONTROL/control
 	echo $(DOSFSTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(DOSFSTOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOSFSTOOLS_IPK_DIR)
@@ -230,4 +230,4 @@ dosfstools-dirclean:
 # Some sanity check for the package.
 #
 dosfstools-check: $(DOSFSTOOLS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DOSFSTOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

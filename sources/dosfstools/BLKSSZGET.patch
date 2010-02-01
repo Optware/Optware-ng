@@ -1,0 +1,10 @@
+--- src/mkdosfs.c.orig	2010-01-31 07:29:13.000000000 +0000
++++ src/mkdosfs.c	2010-02-01 06:13:16.071812791 +0000
+@@ -49,6 +49,7 @@
+ #include <linux/hdreg.h>
+ #include <sys/mount.h>
+ #include <linux/fd.h>
++#include <linux/fs.h>
+ #include <endian.h>
+ #include <mntent.h>
+ #include <signal.h>
