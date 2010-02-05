@@ -15,6 +15,8 @@ BROKEN_PACKAGES = \
          puppy qemu rrdcollect rrdtool samba sandbox slimserver \
          vte xchat \
 
+ERLANG_SMP := --enable-smp-support
+
 E2FSPROGS_VERSION := 1.40.3
 E2FSPROGS_IPK_VERSION := 5
 

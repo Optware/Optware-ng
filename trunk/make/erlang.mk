@@ -52,6 +52,7 @@ ERLANG_TARGET=$(shell $(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME))
 ERLANG_HIPE=$(strip \
 	$(if $(filter powerpc, $(TARGET_ARCH)), --enable-hipe, \
 	--disable-hipe))
+ERLANG_SMP ?= --disable-smp-support
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -93,7 +94,7 @@ ERLANG_CONFIG_ENVS=erl_cv_time_correction=$(strip \
 	$(if $(filter syno-x07 wdtv, $(OPTWARE_TARGET)), times, \
 	$(if $(filter module-init-tools, $(PACKAGES)), clock_gettime, times)))
 
-ERLANG_CONFIG_ARGS=--disable-smp-support --enable-threads \
+ERLANG_CONFIG_ARGS=$(ERLANG_SMP) --enable-threads \
 --enable-dynamic-ssl-lib --with-ssl-zlib=$(STAGING_LIB_DIR)
 ERLANG_CONFIG_ARGS+=$(ERLANG_HIPE)
 
