@@ -146,7 +146,7 @@ $(E2FSPROGS_BUILD_DIR)/.built: $(E2FSPROGS_BUILD_DIR)/.configured
 #
 # This is the build convenience target.
 #
-e2fsprogs: $(E2FSPROGS_BUILD_DIR)/.built
+e2fsprogs e2fslibs: $(E2FSPROGS_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -161,7 +161,7 @@ $(E2FSPROGS_BUILD_DIR)/.staged: $(E2FSPROGS_BUILD_DIR)/.built
 		$(STAGING_LIB_DIR)/pkgconfig/uuid.pc $(STAGING_LIB_DIR)/pkgconfig/blkid.pc
 	touch $@
 
-e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
+e2fsprogs-stage e2fslibs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -295,7 +295,7 @@ endif
 #
 # This is called from the top level makefile to create the IPK file.
 #
-e2fsprogs-ipk: $(E2FSPROGS_IPK) $(E2FSLIBS_IPK) $(E2FSLIBS-DEV_IPK)
+e2fsprogs-ipk e2fslibs-ipk: $(E2FSPROGS_IPK) $(E2FSLIBS_IPK) $(E2FSLIBS-DEV_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
