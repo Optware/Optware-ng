@@ -143,7 +143,7 @@ $(OPENLDAP_BUILD_DIR)/.built: $(OPENLDAP_BUILD_DIR)/.configured
 #
 # This is the build convenience target.
 #
-openldap: $(OPENLDAP_BUILD_DIR)/.built
+openldap openldap-libs: $(OPENLDAP_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -157,7 +157,7 @@ $(OPENLDAP_BUILD_DIR)/.staged: $(OPENLDAP_BUILD_DIR)/.built
 	rm -f $(STAGING_LIB_DIR)/liblber.la
 	touch $@
 
-openldap-stage: $(OPENLDAP_BUILD_DIR)/.staged
+openldap-stage openldap-libs-stage: $(OPENLDAP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -230,7 +230,7 @@ $(OPENLDAP_IPK): $(OPENLDAP_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-openldap-ipk: $(OPENLDAP_IPK)
+openldap-ipk openldap-libs-ipk: $(OPENLDAP_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
