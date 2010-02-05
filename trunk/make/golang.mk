@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GOLANG_HG_REPO=https://go.googlecode.com/hg
-GOLANG_HG_DATE=20100127
-GOLANG_HG_REV=0a2770db06ef
+GOLANG_HG_DATE=20100204
+GOLANG_HG_REV=db4262ce882d
 GOLANG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/golang
 GOLANG_VERSION=0.hg$(GOLANG_HG_DATE)
 GOLANG_SOURCE=golang-$(GOLANG_VERSION).tar.gz
@@ -48,7 +48,7 @@ $(if $(filter i686 i386, $(TARGET_ARCH)), 386, \
 $(TARGET_ARCH))))
 
 GOLANG_BUILD_CMD=$(strip \
-$(if $(filter arm, $(GOLANG_ARCH)), GOARCH=arm GOARM=5 ./make-arm.bash, \
+$(if $(filter arm, $(GOLANG_ARCH)), GOARCH=arm GOARM=5 ./make.bash, \
 $(if $(filter 386, $(GOLANG_ARCH)), GOARCH=386 ./make.bash, \
 echo $(GOLANG_ARCH) not supported)))
 
@@ -102,7 +102,7 @@ $(GOLANG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GOLANG_SOURCE) $(G
 	(cd $(@D)/src; \
 		GOROOT=$(@D) GOBIN=$(@D)/bin \
 		PATH=$(@D)/bin:$$PATH \
-		GOOS=linux GOARCH=arm GOARM=5 ./make-arm.bash; \
+		GOOS=linux GOARCH=arm GOARM=5 ./make.bash; \
 	)
 	(cd $(@D)/src; \
 		GOROOT=$(@D) GOBIN=$(@D)/bin \
