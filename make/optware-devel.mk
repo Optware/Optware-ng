@@ -7,7 +7,7 @@
 OPTWARE-DEVEL_VERSION=6.8
 OPTWARE-DEVEL_DIR=optware-devel-$(OPTWARE-DEVEL_VERSION)
 OPTWARE-DEVEL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-OPTWARE-DEVEL_DESCRIPTION=This is a meta package that bundles all the packages required for optware native development.
+OPTWARE-DEVEL_DESCRIPTION=This is a meta package that bundles all the packages required for optware native development.  When fully functional, it should be self-hosting on the target platform.
 OPTWARE-DEVEL_SECTION=util
 OPTWARE-DEVEL_PRIORITY=optional
 OPTWARE-DEVEL_DEPENDS=autoconf \
@@ -37,6 +37,7 @@ OPTWARE-DEVEL_DEPENDS=autoconf \
 , sed \
 , svn \
 , tar \
+, tcl \
 , wget-ssl
 
 ifneq (, $(filter crosstool-native, $(PACKAGES)))
@@ -56,7 +57,7 @@ endif
 OPTWARE-DEVEL_SUGGESTS=
 OPTWARE-DEVEL_CONFLICTS=
 
-OPTWARE-DEVEL_IPK_VERSION=9
+OPTWARE-DEVEL_IPK_VERSION=10
 
 OPTWARE-DEVEL_IPK_DIR=$(BUILD_DIR)/optware-devel-$(OPTWARE-DEVEL_VERSION)-ipk
 OPTWARE-DEVEL_IPK=$(BUILD_DIR)/optware-devel_$(OPTWARE-DEVEL_VERSION)-$(OPTWARE-DEVEL_IPK_VERSION)_$(TARGET_ARCH).ipk
