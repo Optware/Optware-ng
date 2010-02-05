@@ -137,7 +137,7 @@ $(CYRUS-SASL_BUILD_DIR)/.built: $(CYRUS-SASL_BUILD_DIR)/.configured
 #
 # This is the build convenience target.
 #
-cyrus-sasl: $(CYRUS-SASL_BUILD_DIR)/.built
+cyrus-sasl cyrus-sasl-libs: $(CYRUS-SASL_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -148,7 +148,7 @@ $(CYRUS-SASL_BUILD_DIR)/.staged: $(CYRUS-SASL_BUILD_DIR)/.built
 	rm -f $(STAGING_LIB_DIR)/libsasl2.la
 	touch $@
 
-cyrus-sasl-stage: $(CYRUS-SASL_BUILD_DIR)/.staged
+cyrus-sasl-stage cyrus-sasl-libs-stage: $(CYRUS-SASL_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -229,7 +229,7 @@ endif
 #
 # This is called from the top level makefile to create the IPK file.
 #
-cyrus-sasl-ipk: $(CYRUS-SASL_IPK)
+cyrus-sasl-ipk cyrus-sasl-libs-ipk: $(CYRUS-SASL_IPK)
 #
 # This is called from the top level makefile to clean all of the built files.
 #
