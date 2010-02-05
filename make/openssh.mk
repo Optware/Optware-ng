@@ -36,6 +36,8 @@ OPENSSH_PATCHES=$(OPENSSH_SOURCE_DIR)/Makefile.patch
 OPENSSH_CPPFLAGS=
 OPENSSH_LDFLAGS=
 
+OPENSSH_CONFIG_OPTS ?=
+
 #
 # OPENSSH_BUILD_DIR is the directory in which the build is done.
 # OPENSSH_SOURCE_DIR is the directory which holds all the
@@ -110,6 +112,7 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		$(OPENSSH_CONFIG_OPTS) \
 		--prefix=/opt \
 		--with-pid-dir=/opt/var/run \
 		--with-prngd-socket=/opt/var/run/egd-pool \
