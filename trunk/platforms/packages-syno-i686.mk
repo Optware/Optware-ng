@@ -18,7 +18,7 @@ BROKEN_PACKAGES = \
 E2FSPROGS_VERSION := 1.40.3
 E2FSPROGS_IPK_VERSION := 5
 
-OPENSSH_CONFIG_OPTS ?= --without-stackprotect --without-shadow
+OPENSSH_CONFIG_OPTS := --without-stackprotect
 
 SLANG_VERSION := 2.2.2
 SLANG_IPK_VERSION := 1
