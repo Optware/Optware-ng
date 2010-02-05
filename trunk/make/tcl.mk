@@ -32,7 +32,7 @@ TCL_CONFLICTS=
 #
 # TCL_IPK_VERSION should be incremented when the ipk changes.
 #
-TCL_IPK_VERSION=1
+TCL_IPK_VERSION=2
 
 #
 # TCL_CONFFILES should be a list of user-editable files #TCL_CONFFILES=/opt/etc/tcl.conf /opt/etc/init.d/SXXtcl
@@ -157,6 +157,7 @@ $(TCL_IPK): $(TCL_BUILD_DIR)/.built
 		$(TCL_IPK_DIR)/opt/bin/`echo tclsh$(TCL_VERSION) | sed -e 's/\.[0-9]\{1,\}$$//'`; \
 	do chmod +w $$f; $(STRIP_COMMAND) $$f; chmod -w $$f; done
 	cd $(TCL_IPK_DIR)/opt/lib && ln -fs `echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9]\{1,\}.so$$/so/'` libtcl.so
+	cd $(TCL_IPK_DIR)/opt/bin && ln -fs `echo tclsh$(TCL_VERSION) | sed -e 's/\.[0-9]\{1,\}$$//'` tclsh
 	$(MAKE) $(TCL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCL_IPK_DIR)
 
