@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALCURSE_SITE=http://culot.org/cgi-bin/get.cgi?
-CALCURSE_VERSION=2.6
+CALCURSE_VERSION=2.7
 CALCURSE_SOURCE=calcurse-$(CALCURSE_VERSION).tar.gz
 CALCURSE_DIR=calcurse-$(CALCURSE_VERSION)
 CALCURSE_UNZIP=zcat
@@ -155,12 +155,12 @@ calcurse: $(CALCURSE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(CALCURSE_BUILD_DIR)/.staged: $(CALCURSE_BUILD_DIR)/.built
+#$(CALCURSE_BUILD_DIR)/.staged: $(CALCURSE_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-calcurse-stage: $(CALCURSE_BUILD_DIR)/.staged
+#
+#calcurse-stage: $(CALCURSE_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -196,16 +196,7 @@ $(CALCURSE_IPK_DIR)/CONTROL/control:
 $(CALCURSE_IPK): $(CALCURSE_BUILD_DIR)/.built
 	rm -rf $(CALCURSE_IPK_DIR) $(BUILD_DIR)/calcurse_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CALCURSE_BUILD_DIR) DESTDIR=$(CALCURSE_IPK_DIR) install-strip
-#	install -d $(CALCURSE_IPK_DIR)/opt/etc/
-#	install -m 644 $(CALCURSE_SOURCE_DIR)/calcurse.conf $(CALCURSE_IPK_DIR)/opt/etc/calcurse.conf
-#	install -d $(CALCURSE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CALCURSE_SOURCE_DIR)/rc.calcurse $(CALCURSE_IPK_DIR)/opt/etc/init.d/SXXcalcurse
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXcalcurse
 	$(MAKE) $(CALCURSE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CALCURSE_SOURCE_DIR)/postinst $(CALCURSE_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CALCURSE_SOURCE_DIR)/prerm $(CALCURSE_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(CALCURSE_CONFFILES) | sed -e 's/ /\n/g' > $(CALCURSE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CALCURSE_IPK_DIR)
 
