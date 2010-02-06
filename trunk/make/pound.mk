@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 POUND_SITE=http://www.apsis.ch/pound
-POUND_VERSION=2.4.5
+POUND_VERSION=2.5
 POUND_SOURCE=Pound-$(POUND_VERSION).tgz
 POUND_DIR=Pound-$(POUND_VERSION)
 POUND_UNZIP=zcat
@@ -118,6 +118,7 @@ $(POUND_BUILD_DIR)/.configured: $(DL_DIR)/$(POUND_SOURCE) $(POUND_PATCHES) make/
 	sed -i.orig \
 		-e '/@INSTALL@/s/-s //' \
 		-e '/@INSTALL@/s/-o.*-g [^ ]*//' \
+		-e 's/gcc /$${CC} /' \
 		-e 's/-m 555 //' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -143,7 +144,7 @@ pound-unpack: $(POUND_BUILD_DIR)/.configured
 #
 $(POUND_BUILD_DIR)/.built: $(POUND_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(POUND_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -154,12 +155,12 @@ pound: $(POUND_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(POUND_BUILD_DIR)/.staged: $(POUND_BUILD_DIR)/.built
+#$(POUND_BUILD_DIR)/.staged: $(POUND_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(POUND_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-pound-stage: $(POUND_BUILD_DIR)/.staged
+#
+#pound-stage: $(POUND_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
