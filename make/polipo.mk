@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POLIPO_SITE=http://www.pps.jussieu.fr/~jch/software/files/polipo
-POLIPO_VERSION=1.0.4
+POLIPO_SITE=http://freehaven.net/~chrisd/polipo
+POLIPO_VERSION=1.0.4.1
 POLIPO_SOURCE=polipo-$(POLIPO_VERSION).tar.gz
 POLIPO_DIR=polipo-$(POLIPO_VERSION)
 POLIPO_UNZIP=zcat
@@ -76,8 +76,8 @@ POLIPO_IPK=$(BUILD_DIR)/polipo_$(POLIPO_VERSION)-$(POLIPO_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(POLIPO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(POLIPO_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(POLIPO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -232,4 +232,4 @@ polipo-dirclean:
 # Some sanity check for the package.
 #
 polipo-check: $(POLIPO_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POLIPO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
