@@ -5,7 +5,7 @@
 ###########################################################
 
 MOTION_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/motion
-MOTION_VERSION=3.2.9
+MOTION_VERSION=3.2.11.1
 MOTION_SOURCE=motion-$(MOTION_VERSION).tar.gz
 MOTION_DIR=motion-$(MOTION_VERSION)
 MOTION_UNZIP=zcat
@@ -24,7 +24,7 @@ MOTION_CONFLICTS=
 #
 # MOTION_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTION_IPK_VERSION=2
+MOTION_IPK_VERSION=1
 
 #
 # MOTION_CONFFILES should be a list of user-editable files
@@ -44,7 +44,7 @@ MOTION_CPPFLAGS=-DFFMPEG_AVWRITEFRAME_NEWAPI
 ifeq ($(OPTWARE_TARGET),ds101g)
 MOTION_LDFLAGS="-Wl,-rpath,/usr/syno/mysql/lib/mysql"
 else
-MOTION_LDFLAGS="-Wl,-rpath,/opt/lib/mysql"
+MOTION_LDFLAGS="-Wl,-rpath,/opt/lib/mysql" -L$(STAGING_PREFIX)/lib/mysql
 endif
 
 #
