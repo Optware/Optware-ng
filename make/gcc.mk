@@ -64,6 +64,7 @@ GCC_PATCHES += $(NATIVE_GCC_EXTRA_PATCHES)
   endif
 endif
 
+GCC_BUILD_EXTRA_ENV ?=
 
 #
 # If the compilation of the package requires additional
@@ -155,7 +156,9 @@ $(GCC_BUILD_DIR)/.built: $(GCC_BUILD_DIR)/.configured
 	rm -f $@
 	rm -f $(STAGING_DIR)/bin/$(GCC_TARGET_NAME)-cc
 	ln -s $(TARGET_CC) $(STAGING_DIR)/bin/$(GCC_TARGET_NAME)-cc
-	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) $(MAKE) -C $(@D)
+	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) \
+	$(GCC_BUILD_EXTRA_ENV) \
+		$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -207,7 +210,8 @@ $(GCC_IPK_DIR)/CONTROL/control:
 $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	rm -rf $(GCC_IPK_DIR) $(BUILD_DIR)/gcc_*_$(TARGET_ARCH).ipk
 	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) \
-	$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
+	$(GCC_BUILD_EXTRA_ENV) \
+		$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
 	rm -f $(GCC_IPK_DIR)/opt/lib/libiberty.a $(GCC_IPK_DIR)/opt/info/dir $(GCC_IPK_DIR)/opt/info/dir.old
 	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++.so*
 ifeq (wdtv, $(OPTWARE_TARGET))
