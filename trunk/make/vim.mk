@@ -35,7 +35,7 @@ VIM_DEPENDS=ncurses
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=1
+VIM_IPK_VERSION=2
 
 #
 # VIM_CONFFILES should be a list of user-editable files
@@ -132,6 +132,7 @@ $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES) make/vim.mk
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-gui=no \
+		--disable-selinux \
 		--without-x \
 		--disable-nls \
 	)
@@ -227,4 +228,4 @@ vim-dirclean:
 # Some sanity check for the package.
 #
 vim-check: $(VIM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VIM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
