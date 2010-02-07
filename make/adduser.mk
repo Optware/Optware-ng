@@ -132,6 +132,7 @@ $(ADDUSER_BUILD_DIR)/.built: $(ADDUSER_BUILD_DIR)/.configured
 	rm -f $@
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(ADDUSER_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(ADDUSER_LDFLAGS)" \
+	$(BUSYBOX_BUILD_EXTRA_ENV) \
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="/opt" \
 		HOSTCC=$(HOSTCC) CC=$(TARGET_CC) STRIP=$(TARGET_STRIP) \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
@@ -212,4 +213,4 @@ adduser-dirclean:
 # Some sanity check for the package.
 #
 adduser-check: $(ADDUSER_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ADDUSER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
