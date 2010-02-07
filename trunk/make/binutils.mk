@@ -188,7 +188,7 @@ $(BINUTILS_IPK_DIR)/CONTROL/control:
 $(BINUTILS_IPK): $(BINUTILS_BUILD_DIR)/.built
 	rm -rf $(BINUTILS_IPK_DIR) $(BUILD_DIR)/binutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BINUTILS_BUILD_DIR) DESTDIR=$(BINUTILS_IPK_DIR) install
-	$(STRIP_COMMAND) $(BINUTILS_IPK_DIR)/opt/bin/*
+	-$(STRIP_COMMAND) $(BINUTILS_IPK_DIR)/opt/bin/*
 	mv $(BINUTILS_IPK_DIR)/opt/bin/strings $(BINUTILS_IPK_DIR)/opt/bin/binutils-strings
 	$(MAKE) $(BINUTILS_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh" ; \
@@ -227,4 +227,4 @@ binutils-dirclean:
 # Some sanity check for the package.
 #
 binutils-check: $(BINUTILS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BINUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
