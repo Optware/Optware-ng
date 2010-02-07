@@ -24,6 +24,9 @@ ATFTP_PATCHES = $(ATFTP_SOURCE_DIR)/CLK_TCK.patch
 ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel cs05q3armel cs08q1armel fsg3v4 i686g25 slugosbe slugosle slugos5be slugos5le syno-e500 ts509, $(OPTWARE_TARGET)))
 ATFTP_PATCHES += $(ATFTP_SOURCE_DIR)/argz.h.patch
 endif
+ifdef ATFTP_EXTRA_PATCHES
+ATFTP_PATCHES += $(ATFTP_EXTRA_PATCHES)
+endif
 
 ATFTP_BUILD_DIR=$(BUILD_DIR)/atftp
 ATFTP_SOURCE_DIR=$(SOURCE_DIR)/atftp
