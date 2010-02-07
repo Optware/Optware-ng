@@ -36,7 +36,7 @@ CSCOPE_CONFLICTS=
 #
 # CSCOPE_IPK_VERSION should be incremented when the ipk changes.
 #
-CSCOPE_IPK_VERSION=1
+CSCOPE_IPK_VERSION=2
 
 #
 # CSCOPE_CONFFILES should be a list of user-editable files
@@ -119,6 +119,7 @@ $(CSCOPE_BUILD_DIR)/.configured: $(DL_DIR)/$(CSCOPE_SOURCE) $(CSCOPE_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CSCOPE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CSCOPE_LDFLAGS)" \
+		hw_cv_func_snprintf_c99=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
