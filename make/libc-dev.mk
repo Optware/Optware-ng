@@ -58,6 +58,8 @@ LIBC-DEV_LIBDIR=$(TARGET_LIBDIR)
 endif
 
 LIBC-DEV_CRT_DIR ?= /opt/`$(TARGET_CC) -dumpmachine`/lib
+LIBC-DEV_LIBC_SO_DIR ?= $(LIBC-DEV_USRLIBDIR)
+LIBC-DEV_NONSHARED_LIB_DIR ?= $(LIBC-DEV_LIBC_SO_DIR)
 
 #
 # LIBC-DEV_CONFFILES should be a list of user-editable files
@@ -140,8 +142,8 @@ ifeq (uclibc, $(LIBC_STYLE))
 		$(LIBC-DEV_IPK_DIR)/opt/lib/
 else
 	for f in libc_nonshared.a libpthread_nonshared.a; \
-		do rsync -l $(LIBC-DEV_USRLIBDIR)/$${f} $(LIBC-DEV_IPK_DIR)/opt/lib/; done
-	rsync -l $(LIBC-DEV_USRLIBDIR)/libc.so $(LIBC-DEV_IPK_DIR)/opt/lib/
+		do rsync -l $(LIBC-DEV_NONSHARED_LIB_DIR)/$${f} $(LIBC-DEV_IPK_DIR)/opt/lib/; done
+	rsync -l $(LIBC-DEV_LIBC_SO_DIR)/libc.so $(LIBC-DEV_IPK_DIR)/opt/lib/
 	sed -i -e '/^GROUP/s|.*|GROUP ( /lib/libc.so.6 /opt/lib/libc_nonshared.a )|' \
 		$(LIBC-DEV_IPK_DIR)/opt/lib/libc.so
 endif
