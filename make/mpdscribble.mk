@@ -20,16 +20,16 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MPDSCRIBBLE_SITE=http://www.frob.nl/projects/scribble
-MPDSCRIBBLE_VERSION=0.2.12
-MPDSCRIBBLE_SOURCE=mpdscribble-$(MPDSCRIBBLE_VERSION).tar.gz
+MPDSCRIBBLE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
+MPDSCRIBBLE_VERSION=0.19
+MPDSCRIBBLE_SOURCE=mpdscribble-$(MPDSCRIBBLE_VERSION).tar.bz2
 MPDSCRIBBLE_DIR=mpdscribble-$(MPDSCRIBBLE_VERSION)
-MPDSCRIBBLE_UNZIP=zcat
+MPDSCRIBBLE_UNZIP=bzcat
 MPDSCRIBBLE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPDSCRIBBLE_DESCRIPTION=Last.fm reporting client for mpd.
 MPDSCRIBBLE_SECTION=sound
 MPDSCRIBBLE_PRIORITY=optional
-MPDSCRIBBLE_DEPENDS=libsoup
+MPDSCRIBBLE_DEPENDS=libsoup, libmpdclient
 MPDSCRIBBLE_SUGGESTS=
 MPDSCRIBBLE_CONFLICTS=
 
@@ -40,13 +40,13 @@ MPDSCRIBBLE_IPK_VERSION=1
 
 #
 # MPDSCRIBBLE_CONFFILES should be a list of user-editable files
-#MPDSCRIBBLE_CONFFILES=/opt/etc/mpdscribble.conf /opt/etc/init.d/SXXmpdscribble
+MPDSCRIBBLE_CONFFILES=/opt/etc/mpdscribble.conf
 
 #
 # MPDSCRIBBLE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MPDSCRIBBLE_PATCHES=$(MPDSCRIBBLE_SOURCE_DIR)/configure.patch
+MPDSCRIBBLE_PATCHES=$(MPDSCRIBBLE_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -106,6 +106,7 @@ mpdscribble-source: $(DL_DIR)/$(MPDSCRIBBLE_SOURCE) $(MPDSCRIBBLE_PATCHES)
 #
 $(MPDSCRIBBLE_BUILD_DIR)/.configured: $(DL_DIR)/$(MPDSCRIBBLE_SOURCE) $(MPDSCRIBBLE_PATCHES) make/mpdscribble.mk
 	$(MAKE) libsoup-stage
+	$(MAKE) libmpdclient-stage
 	rm -rf $(BUILD_DIR)/$(MPDSCRIBBLE_DIR) $(MPDSCRIBBLE_BUILD_DIR)
 	$(MPDSCRIBBLE_UNZIP) $(DL_DIR)/$(MPDSCRIBBLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPDSCRIBBLE_PATCHES)" ; \

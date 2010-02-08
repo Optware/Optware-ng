@@ -1,0 +1,11 @@
+--- Makefile.in.old	2009-12-26 16:51:36.000000000 +0000
++++ Makefile.in	2010-02-08 19:54:04.000000000 +0000
+@@ -93,7 +93,7 @@
+     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+     *) f=$$p;; \
+   esac;
+-am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
++am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+ am__install_max = 40
+ am__nobase_strip_setup = \
+   srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
