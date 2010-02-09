@@ -21,6 +21,7 @@ BROKEN_PACKAGES = \
 	linphone \
 	ltrace \
 	minidlna \
+	motion \
 	motor \
 	nget nickle \
 	recordext renderext \
