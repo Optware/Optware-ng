@@ -19,6 +19,7 @@ BROKEN_PACKAGES = \
 	iptables \
 	lame \
 	moc \
+	motion \
 	nickle ntop \
 	puppy \
 	quickie \
