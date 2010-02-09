@@ -37,7 +37,7 @@ LIBMEMCACHE_CONFLICTS=
 #
 # LIBMEMCACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMEMCACHE_IPK_VERSION=3
+LIBMEMCACHE_IPK_VERSION=4
 
 #
 # LIBMEMCACHE_CONFFILES should be a list of user-editable files
@@ -116,8 +116,9 @@ $(LIBMEMCACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMEMCACHE_SOURCE) $(LIBMEMCA
 ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
 	sed -i -e 's|-Wall -pipe|-Wall|' $(@D)/configure.ac
 endif
-	(cd $(LIBMEMCACHE_BUILD_DIR); \
-		autoconf; \
+	touch $(@D)/AUTHORS $(@D)/NEWS $(@D)/README
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMEMCACHE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMEMCACHE_LDFLAGS)" \
@@ -126,11 +127,12 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--enable-shared \
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBMEMCACHE_BUILD_DIR)/libtool
-	touch $(LIBMEMCACHE_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libmemcache-unpack: $(LIBMEMCACHE_BUILD_DIR)/.configured
 
@@ -138,9 +140,9 @@ libmemcache-unpack: $(LIBMEMCACHE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBMEMCACHE_BUILD_DIR)/.built: $(LIBMEMCACHE_BUILD_DIR)/.configured
-	rm -f $(LIBMEMCACHE_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBMEMCACHE_BUILD_DIR)
-	touch $(LIBMEMCACHE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,10 +153,10 @@ libmemcache: $(LIBMEMCACHE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBMEMCACHE_BUILD_DIR)/.staged: $(LIBMEMCACHE_BUILD_DIR)/.built
-	rm -f $(LIBMEMCACHE_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBMEMCACHE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libmemcache*.la
-	touch $(LIBMEMCACHE_BUILD_DIR)/.staged
+	touch $@
 
 libmemcache-stage: $(LIBMEMCACHE_BUILD_DIR)/.staged
 
@@ -163,7 +165,7 @@ libmemcache-stage: $(LIBMEMCACHE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmemcache
 #
 $(LIBMEMCACHE_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBMEMCACHE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libmemcache" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -222,3 +224,9 @@ libmemcache-clean:
 #
 libmemcache-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBMEMCACHE_DIR) $(LIBMEMCACHE_BUILD_DIR) $(LIBMEMCACHE_IPK_DIR) $(LIBMEMCACHE_IPK)
+
+#
+# Some sanity check for the package.
+#
+libmemcache-check: $(LIBMEMCACHE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
