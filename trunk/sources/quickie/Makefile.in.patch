@@ -1,0 +1,9 @@
+--- Makefile.in.old	2006-05-20 23:56:52.000000000 +0100
++++ Makefile.in	2010-02-09 22:31:27.000000000 +0000
+@@ -2055,5 +2055,4 @@
+ # Package makers please note: this needs to be a package
+ # post-install operation, not a post-build operation.
+ #
+-install: install-bin install-man install-var bin/quickie_post_install
+-	bin/quickie_post_install
++install: install-bin install-man install-var
