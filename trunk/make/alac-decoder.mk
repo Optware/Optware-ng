@@ -194,3 +194,10 @@ alac-decoder-clean:
 #
 alac-decoder-dirclean:
 	rm -rf $(BUILD_DIR)/$(ALAC_DECODER_DIR) $(ALAC_DECODER_BUILD_DIR) $(ALAC_DECODER_IPK_DIR) $(ALAC_DECODER_IPK)
+#
+#
+# Some sanity check for the package.
+#
+alac-decoder-check: $(ALAC_DECODER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ALAC_DECODER_IPK)
+
