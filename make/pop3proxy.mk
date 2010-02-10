@@ -215,7 +215,7 @@ $(POP3PROXY_IPK): $(POP3PROXY_BUILD_DIR)/.built
 	install -m 644 $(POP3PROXY_SOURCE_DIR)/pop3proxy.txt $(POP3PROXY_IPK_DIR)/opt/share/doc/pop3proxy/
 	install -d $(POP3PROXY_IPK_DIR)/opt/etc/xinetd.d/
 	install -m 644 $(POP3PROXY_SOURCE_DIR)/pop3proxy $(POP3PROXY_IPK_DIR)/opt/etc/xinetd.d/pop3proxy
-	install -d 777 $(POP3PROXY_IPK_DIR)/opt/var/pop3proxy/
+	install -d $(POP3PROXY_IPK_DIR)/opt/var/pop3proxy/
 #	install -d $(POP3PROXY_IPK_DIR)/opt/etc/
 #	install -m 644 $(POP3PROXY_SOURCE_DIR)/pop3proxy.conf $(POP3PROXY_IPK_DIR)/opt/etc/pop3proxy.conf
 #	install -d $(POP3PROXY_IPK_DIR)/opt/etc/init.d
