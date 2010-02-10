@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.6
-SQUID_UPSTREAM_VERSION=2.6.STABLE21
-SQUID_VERSION=2.6.21
+SQUID_UPSTREAM_VERSION=2.6.STABLE23
+SQUID_VERSION=2.6.23
 SQUID_SOURCE=squid-$(SQUID_UPSTREAM_VERSION).tar.bz2
 SQUID_DIR=squid-$(SQUID_UPSTREAM_VERSION)
 SQUID_UNZIP=bzcat
@@ -35,7 +35,7 @@ SQUID_SUGGESTS=
 SQUID_CONFLICTS=
 
 # override SQUID_IPK_VERSION for target specific feeds
-SQUID_IPK_VERSION ?= 2
+SQUID_IPK_VERSION ?= 1
 
 #
 ## SQUID_CONFFILES should be a list of user-editable files
@@ -166,14 +166,14 @@ else
 $(SQUID_BUILD_DIR)/.configured: $(SQUID_HOST_BUILD_DIR)/.built $(SQUID_PATCHES)
 endif
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(SQUID_DIR) $(SQUID_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SQUID_DIR) $(@D)
 	$(SQUID_UNZIP) $(DL_DIR)/$(SQUID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQUID_PATCHES)" ; \
 		then cat $(SQUID_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SQUID_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SQUID_DIR)" != "$(SQUID_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SQUID_DIR) $(SQUID_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SQUID_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SQUID_DIR) $(@D) ; \
 	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -296,4 +296,4 @@ squid-dirclean:
 # Some sanity check for the package.
 #
 squid-check: $(SQUID_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQUID_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

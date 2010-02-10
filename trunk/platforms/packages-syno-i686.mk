@@ -24,3 +24,5 @@ OPENSSH_CONFIG_OPTS := --without-stackprotect
 
 SLANG_VERSION := 2.2.2
 SLANG_IPK_VERSION := 1
+
+SQUID_EPOLL := --disable-epoll
