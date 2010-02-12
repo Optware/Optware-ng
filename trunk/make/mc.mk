@@ -5,7 +5,7 @@
 ###########################################################
 
 MC_SITE=http://www.midnight-commander.org/downloads
-MC_VERSION=4.6.2
+MC_VERSION=4.7.0.2
 MC_SOURCE=mc-$(MC_VERSION).tar.gz
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=zcat
@@ -26,7 +26,7 @@ MC_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 MC_PATCHES=\
-$(MC_SOURCE_DIR)/doc-Makefile.in.patch \
+$(MC_SOURCE_DIR)/configure-m4.patch \
 $(MC_SOURCE_DIR)/src-man2hlp.c.patch
 
 #
@@ -95,6 +95,8 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
 		patch -bd $(BUILD_DIR)/$(MC_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(MC_DIR) $(@D)
+	sed -i -e 's|/man2hlp |/man2hlp.host |' $(@D)/doc/hlp/Makefile.am $(@D)/doc/hlp/*/Makefile.am
+	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MC_CPPFLAGS)" \
@@ -106,6 +108,8 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-screen=slang \
+		--with-slang-includes=$(STAGING_INCLUDE_DIR) \
+		--with-slang-libs=$(STAGING_LIB_DIR) \
 		--disable-nls \
 		--with-glib-prefix=$(STAGING_PREFIX) \
 		--disable-glibtest \
@@ -113,6 +117,7 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
 		--without-gpm-mouse \
 		--without-x \
 	)
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mc-unpack: $(MC_BUILD_DIR)/.configured
