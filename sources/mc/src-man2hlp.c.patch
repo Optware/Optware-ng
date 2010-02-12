@@ -1,8 +1,8 @@
---- mc-4.6.2/src/man2hlp.c.orig	2009-02-01 19:30:21.000000000 +0000
-+++ mc-4.6.2/src/man2hlp.c	2009-03-04 04:42:53.466522749 +0000
-@@ -18,17 +18,12 @@
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+--- mc/src/man2hlp.c.orig	2010-01-27 10:53:46.000000000 +0000
++++ mc/src/man2hlp.c	2010-02-12 03:54:18.088623066 +0000
+@@ -22,15 +22,11 @@
+  *  \brief Source: man page to help file converter
+  */
  
 -#include <config.h>
 -
@@ -14,11 +14,9 @@
 -#include <glib.h>
 -
  #include "help.h"
--#include "glibcompat.h"
  
  #define BUFFER_SIZE 256
- 
-@@ -146,7 +141,7 @@
+@@ -149,7 +145,7 @@
  
      f = fopen (filename, flags);
      if (f == NULL) {
@@ -27,7 +25,7 @@
  		    filename);
  	perror (tmp);
  	exit (3);
-@@ -290,7 +285,7 @@
+@@ -293,7 +289,7 @@
      char buffer[BUFFER_SIZE];
  
      va_start (args, format);
@@ -36,7 +34,7 @@
      va_end (args);
      print_string (buffer);
  }
-@@ -584,7 +579,7 @@
+@@ -587,7 +583,7 @@
      } else {
  	/* Other commands are ignored */
  	char warn_str[BUFFER_SIZE];
@@ -45,7 +43,7 @@
  		    "Warning: unsupported command %s", buffer);
  	print_error (warn_str);
  	return;
-@@ -615,7 +610,7 @@
+@@ -618,7 +614,7 @@
  	/* Bold text or italics text */
  	if (buffer[0] == '.' && (buffer[1] == 'I' || buffer[1] == 'B'))
  	    for (buffer += 2; *buffer == ' ' || *buffer == '\t'; buffer++);
@@ -54,7 +52,7 @@
  	link_flag = 3;
  	break;
      case 3:
-@@ -813,7 +808,7 @@
+@@ -816,7 +812,7 @@
  	    }
  	}
  	if (!found) {
