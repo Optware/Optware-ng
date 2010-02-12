@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CONFIGOBJ_SITE=http://pypi.python.org/packages/source/c/configobj
-PY-CONFIGOBJ_VERSION=4.7.0
+PY-CONFIGOBJ_VERSION=4.7.1
 PY-CONFIGOBJ_SOURCE=configobj-$(PY-CONFIGOBJ_VERSION).tar.gz
 PY-CONFIGOBJ_DIR=configobj-$(PY-CONFIGOBJ_VERSION)
 PY-CONFIGOBJ_UNZIP=zcat
@@ -154,12 +154,12 @@ py-configobj: $(PY-CONFIGOBJ_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-CONFIGOBJ_BUILD_DIR)/.staged: $(PY-CONFIGOBJ_BUILD_DIR)/.built
+#$(PY-CONFIGOBJ_BUILD_DIR)/.staged: $(PY-CONFIGOBJ_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(PY-CONFIGOBJ_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-py-configobj-stage: $(PY-CONFIGOBJ_BUILD_DIR)/.staged
+#
+#py-configobj-stage: $(PY-CONFIGOBJ_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
