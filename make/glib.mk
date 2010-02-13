@@ -77,6 +77,11 @@ GLIB_SOURCE_DIR=$(SOURCE_DIR)/glib
 GLIB_IPK_DIR=$(BUILD_DIR)/glib-$(GLIB_VERSION)-ipk
 GLIB_IPK=$(BUILD_DIR)/glib_$(GLIB_VERSION)-$(GLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+GLIB_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/glib
+
+.PHONY: glib-source glib-unpack glib glib-stage glib-ipk glib-clean glib-dirclean \
+glib-check glib-host glib-host-stage
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -91,6 +96,29 @@ $(DL_DIR)/$(GLIB_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 glib-source: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
+
+
+$(GLIB_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GLIB_SOURCE) make/glib.mk
+	rm -rf $(HOST_BUILD_DIR)/$(GLIB_DIR) $(@D)
+	$(GLIB_UNZIP) $(DL_DIR)/$(GLIB_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(GLIB_DIR) $(@D)
+	(cd $(@D); \
+		./configure \
+		--prefix=/opt	\
+	)
+	$(MAKE) -C $(@D)
+	touch $@
+
+glib-host: $(GLIB_HOST_BUILD_DIR)/.built
+
+
+$(GLIB_HOST_BUILD_DIR)/.staged: $(GLIB_HOST_BUILD_DIR)/.built host/.configured make/glib.mk
+	rm -f $@
+	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
+	touch $@
+
+glib-host-stage: $(GLIB_HOST_BUILD_DIR)/.staged
+
 
 #
 # This target unpacks the source code in the build directory.
@@ -114,9 +142,15 @@ endif
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
+ifneq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) glib-host-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GLIB_DIR) $(@D)
 	$(GLIB_UNZIP) $(DL_DIR)/$(GLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(GLIB_PATCHES) | patch -d $(BUILD_DIR)/$(GLIB_DIR) -p1
+#	if test -n "$(GLIB_PATCHES)" ; \
+#		then cat $(GLIB_PATCHES) | \
+#		patch -d $(BUILD_DIR)/$(GLIB_DIR) -p1 ; \
+#	fi
 	mv $(BUILD_DIR)/$(GLIB_DIR) $(@D)
 	cp $(SOURCE_DIR)/glib/glib.cache $(@D)/arm.cache
 #	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(GLIB_LOCALES)/;' $(@D)/configure
@@ -125,7 +159,8 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GLIB_LDFLAGS)" \
-ac_cv_func_posix_getgrgid_r=yes \
+        ac_cv_func_posix_getgrgid_r=yes \
+        $(if $(filter $(HOSTCC), $(TARGET_CC)),,PATH=$$PATH:$(HOST_STAGING_PREFIX)/bin) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -229,6 +264,7 @@ glib-ipk: $(GLIB_IPK)
 #
 glib-clean:
 	-$(MAKE) -C $(GLIB_BUILD_DIR) clean
+	-$(MAKE) -C $(GLIB_HOST_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
@@ -236,6 +272,7 @@ glib-clean:
 #
 glib-dirclean:
 	rm -rf $(BUILD_DIR)/$(GLIB_DIR) $(GLIB_BUILD_DIR) $(GLIB_IPK_DIR) $(GLIB_IPK)
+	rm -rf $(GLIB_HOST_BUILD_DIR)
 
 #
 # Some sanity check for the package.
