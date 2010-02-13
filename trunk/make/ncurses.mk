@@ -31,7 +31,8 @@ NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
 
 NCURSES_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/ncurses
 
-.PHONY: ncurses-source ncurses-unpack ncurses ncurses-stage ncurses-ipk ncurses-clean ncurses-dirclean ncurses-check
+.PHONY: ncurses-source ncurses-unpack ncurses ncurses-stage ncurses-ipk ncurses-clean \
+ncurses-dirclean ncurses-check ncurses-host
 
 $(DL_DIR)/$(NCURSES_SOURCE):
 	$(WGET) -P $(@D) $(NCURSES_SITE)/$(@F) || \
