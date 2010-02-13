@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 GHOSTSCRIPT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ghostscript
-GHOSTSCRIPT_VERSION=8.70
-GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
+GHOSTSCRIPT_VERSION=8.71
+GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.gz
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)
-GHOSTSCRIPT_UNZIP=bzcat
+GHOSTSCRIPT_UNZIP=zcat
 GHOSTSCRIPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GHOSTSCRIPT_DESCRIPTION=An interpreter for the PostScript (TM) language
 GHOSTSCRIPT_SECTION=text
@@ -272,4 +272,4 @@ ghostscript-dirclean:
 # Some sanity check for the package.
 #
 ghostscript-check: $(GHOSTSCRIPT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GHOSTSCRIPT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
