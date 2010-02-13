@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CRYPTO_SITE=http://www.amk.ca/files/python/crypto
-PY-CRYPTO_VERSION=2.0.1
+PY-CRYPTO_SITE=http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto
+PY-CRYPTO_VERSION=2.1.0
 PY-CRYPTO_SOURCE=pycrypto-$(PY-CRYPTO_VERSION).tar.gz
 PY-CRYPTO_DIR=pycrypto-$(PY-CRYPTO_VERSION)
 PY-CRYPTO_UNZIP=zcat
@@ -103,7 +103,7 @@ py-crypto-source: $(DL_DIR)/$(PY-CRYPTO_SOURCE) $(PY-CRYPTO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-CRYPTO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTO_SOURCE) $(PY-CRYPTO_PATCHES)
+$(PY-CRYPTO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTO_SOURCE) $(PY-CRYPTO_PATCHES) make/py-crypto.mk
 	$(MAKE) py-setuptools-stage libgmp-stage
 	rm -rf $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(PY-CRYPTO_BUILD_DIR)
 	mkdir -p $(PY-CRYPTO_BUILD_DIR)
