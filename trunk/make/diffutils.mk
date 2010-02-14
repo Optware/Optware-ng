@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 DIFFUTILS_SITE=http://ftp.gnu.org/pub/gnu/diffutils
-DIFFUTILS_VERSION=2.8.1
+DIFFUTILS_VERSION=2.9
 DIFFUTILS_SOURCE=diffutils-$(DIFFUTILS_VERSION).tar.gz
 DIFFUTILS_DIR=diffutils-$(DIFFUTILS_VERSION)
 DIFFUTILS_UNZIP=zcat
@@ -34,7 +34,7 @@ DIFFUTILS_CONFLICTS=
 #
 # DIFFUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-DIFFUTILS_IPK_VERSION=6
+DIFFUTILS_IPK_VERSION=1
 
 #
 # If the compilation of the package requires additional
@@ -62,7 +62,8 @@ DIFFUTILS_IPK=$(BUILD_DIR)/diffutils_$(DIFFUTILS_VERSION)-$(DIFFUTILS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DIFFUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DIFFUTILS_SITE)/$(DIFFUTILS_SOURCE)
+	$(WGET) -P $(@D) $(DIFFUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -87,11 +88,10 @@ diffutils-source: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(DIFFUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PATCHES) make/diffutils.mk
-	rm -rf $(BUILD_DIR)/$(DIFFUTILS_DIR) $(DIFFUTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(DIFFUTILS_DIR) $(@D)
 	$(DIFFUTILS_UNZIP) $(DL_DIR)/$(DIFFUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(DIFFUTILS_DIR) $(DIFFUTILS_BUILD_DIR)
-	cp -f $(SOURCE_DIR)/common/config.* $(DIFFUTILS_BUILD_DIR)/config/
-	(cd $(DIFFUTILS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(DIFFUTILS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DIFFUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DIFFUTILS_LDFLAGS)" \
@@ -112,7 +112,7 @@ diffutils-unpack: $(DIFFUTILS_BUILD_DIR)/.configured
 #
 $(DIFFUTILS_BUILD_DIR)/.built: $(DIFFUTILS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(DIFFUTILS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -214,4 +214,4 @@ diffutils-dirclean:
 # Some sanity check for the package.
 #
 diffutils-check: $(DIFFUTILS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DIFFUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
