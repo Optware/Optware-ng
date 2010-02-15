@@ -115,6 +115,7 @@ ipkg-opt-source: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 # first, then do that first (e.g. "$(MAKE) ipkg-opt-stage <baz>-stage").
 #
 $(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
+	$(MAKE) $(HOST_TOOL_ACLOCAL19) $(HOST_TOOL_AUTOMAKE19)
 	rm -rf $(BUILD_DIR)/$(IPKG-OPT_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 	if test -n "$(IPKG-OPT_PATCHES)" ; \
@@ -128,10 +129,10 @@ $(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 		rm -f etc/Makefile; \
 		rm -f aclocal.m4; \
 		libtoolize --force --copy; \
-		aclocal-1.9; \
+		$(ACLOCAL19); \
 		autoconf; \
 		autoheader; \
-		automake-1.9 -a -c; \
+		$(AUTOMAKE19) -a -c; \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPKG-OPT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IPKG-OPT_LDFLAGS)" \
 		$(TARGET_CONFIGURE_OPTS) \
