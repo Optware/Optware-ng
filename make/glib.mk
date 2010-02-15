@@ -263,8 +263,8 @@ glib-ipk: $(GLIB_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 glib-clean:
+	rm -f $(GLIB_BUILD_DIR)/.built
 	-$(MAKE) -C $(GLIB_BUILD_DIR) clean
-	-$(MAKE) -C $(GLIB_HOST_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
@@ -272,7 +272,6 @@ glib-clean:
 #
 glib-dirclean:
 	rm -rf $(BUILD_DIR)/$(GLIB_DIR) $(GLIB_BUILD_DIR) $(GLIB_IPK_DIR) $(GLIB_IPK)
-	rm -rf $(GLIB_HOST_BUILD_DIR)
 
 #
 # Some sanity check for the package.
