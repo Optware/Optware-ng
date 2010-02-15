@@ -481,19 +481,19 @@ PERL=perl
 
 # aclocal-1.9 check
 ifneq (,$(shell aclocal-1.9 --version 2>/dev/null))
-HOST_TOOL_ACLOCAL19=
+HOST_TOOL_ACLOCAL19_STAGE =
 ACLOCAL19=aclocal-1.9
 else
-HOST_TOOL_ACLOCAL19=automake19-host-stage autoconf-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_ACLOCAL19_STAGE = $(MAKE) automake19-host-stage autoconf-host-stage m4-host-stage libtool-host-stage
 ACLOCAL19=$(HOST_STAGING_PREFIX)/bin/aclocal-1.9
 endif
 
 # automake-1.9 check
 ifneq (,$(shell automake-1.9 --version 2>/dev/null))
-HOST_TOOL_AUTOMAKE19=
+HOST_TOOL_AUTOMAKE19_STAGE =
 AUTOMAKE19=automake-1.9
 else
-HOST_TOOL_ACLOCAL19=automake19-host-stage autoconf-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_ACLOCAL19_STAGE = $(MAKE) automake19-host-stage autoconf-host-stage m4-host-stage libtool-host-stage
 AUTOMAKE19=$(HOST_STAGING_PREFIX)/bin/automake-1.9
 endif
 

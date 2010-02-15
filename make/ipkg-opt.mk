@@ -115,7 +115,8 @@ ipkg-opt-source: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 # first, then do that first (e.g. "$(MAKE) ipkg-opt-stage <baz>-stage").
 #
 $(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
-	$(MAKE) $(HOST_TOOL_ACLOCAL19) $(HOST_TOOL_AUTOMAKE19)
+	$(HOST_TOOL_ACLOCAL19_STAGE)
+	$(HOST_TOOL_AUTOMAKE19_STAGE)
 	rm -rf $(BUILD_DIR)/$(IPKG-OPT_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 	if test -n "$(IPKG-OPT_PATCHES)" ; \
