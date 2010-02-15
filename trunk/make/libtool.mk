@@ -57,6 +57,8 @@ LIBTOOL_SOURCE_DIR=$(SOURCE_DIR)/libtool
 LIBTOOL_IPK_DIR=$(BUILD_DIR)/libtool-$(LIBTOOL_VERSION)-ipk
 LIBTOOL_IPK=$(BUILD_DIR)/libtool_$(LIBTOOL_VERSION)-$(LIBTOOL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+LIBTOOL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/libtool
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -71,6 +73,29 @@ $(DL_DIR)/$(LIBTOOL_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 libtool-source: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES)
+
+
+$(LIBTOOL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LIBTOOL_SOURCE) make/libtool.mk
+	rm -rf $(HOST_BUILD_DIR)/$(LIBTOOL_DIR) $(@D)
+	$(LIBTOOL_UNZIP) $(DL_DIR)/$(LIBTOOL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(LIBTOOL_DIR) $(@D)
+	(cd $(@D); \
+		./configure \
+		--prefix=$(HOST_STAGING_PREFIX)	\
+	)
+	$(MAKE) -C $(@D)
+	touch $@
+
+libtool-host: $(LIBTOOL_HOST_BUILD_DIR)/.built
+
+
+$(LIBTOOL_HOST_BUILD_DIR)/.staged: $(LIBTOOL_HOST_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
+	touch $@
+
+libtool-host-stage: $(LIBTOOL_HOST_BUILD_DIR)/.staged
+
 
 #
 # This target unpacks the source code in the build directory.
