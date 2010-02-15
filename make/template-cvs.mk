@@ -79,7 +79,8 @@
 <BAR>_IPK_DIR=$(BUILD_DIR)/<bar>-$(<BAR>_VERSION)-ipk
 <BAR>_IPK=$(BUILD_DIR)/<bar>_$(<BAR>_VERSION)-$(<BAR>_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: <bar>-source <bar>-unpack <bar> <bar>-stage <bar>-ipk <bar>-clean <bar>-dirclean <bar>-check
+.PHONY: <bar>-source <bar>-unpack <bar> <bar>-stage <bar>-unstage \
+<bar>-ipk <bar>-clean <bar>-dirclean <bar>-check
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -127,7 +128,7 @@ $(<BAR>_BUILD_DIR)/.configured: $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(<BAR>_BUILD_DIR)/.configured
+	touch $@
 
 <bar>-unpack: $(<BAR>_BUILD_DIR)/.configured
 
@@ -135,9 +136,9 @@ $(<BAR>_BUILD_DIR)/.configured: $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz
 # This builds the actual binary.
 #
 $(<BAR>_BUILD_DIR)/.built: $(<BAR>_BUILD_DIR)/.configured
-	rm -f $(<BAR>_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(<BAR>_BUILD_DIR)
-	touch $(<BAR>_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,11 +149,21 @@ $(<BAR>_BUILD_DIR)/.built: $(<BAR>_BUILD_DIR)/.configured
 # If you are building a library, then you need to stage it too.
 #
 $(<BAR>_BUILD_DIR)/.staged: $(<BAR>_BUILD_DIR)/.built
-	rm -f $(<BAR>_BUILD_DIR)/.staged
+	rm -f $@ $(<BAR>_BUILD_DIR)/.unstaged
 	$(MAKE) -C $(<BAR>_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(<BAR>_BUILD_DIR)/.staged
+	touch $@
 
 <bar>-stage: $(<BAR>_BUILD_DIR)/.staged
+
+#
+# Working with different versions you also need an uninstall from stage
+#
+$(<BAR>_BUILD_DIR)/.unstaged:
+	rm -f $@ $(<BAR>_BUILD_DIR)/.staged
+	-$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) uninstall
+	-touch $@
+
+<bar>-unstage: $(<BAR>_BUILD_DIR)/.unstaged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -210,7 +221,7 @@ $(<BAR>_IPK): $(<BAR>_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to clean all of the built files.
 #
-<bar>-clean:
+<bar>-clean: <bar>-unstage
 	rm -f $(<FOO>_BUILD_DIR)/.built
 	-$(MAKE) -C $(<BAR>_BUILD_DIR) clean
 
@@ -218,7 +229,7 @@ $(<BAR>_IPK): $(<BAR>_BUILD_DIR)/.built
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-<bar>-dirclean:
+<bar>-dirclean: <bar>-unstage
 	rm -rf $(BUILD_DIR)/$(<BAR>_DIR) $(<BAR>_BUILD_DIR) $(<BAR>_IPK_DIR) $(<BAR>_IPK)
 
 #
