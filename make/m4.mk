@@ -67,7 +67,9 @@ M4_SOURCE_DIR=$(SOURCE_DIR)/m4
 M4_IPK_DIR=$(BUILD_DIR)/m4-$(M4_VERSION)-ipk
 M4_IPK=$(BUILD_DIR)/m4_$(M4_VERSION)-$(M4_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: m4-source m4-unpack m4 m4-stage m4-ipk m4-clean m4-dirclean m4-check
+M4_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/m4
+
+.PHONY: m4-source m4-unpack m4 m4-stage m4-ipk m4-clean m4-dirclean m4-check m4-host m4-host-stage
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -83,6 +85,29 @@ $(DL_DIR)/$(M4_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 m4-source: $(DL_DIR)/$(M4_SOURCE) $(M4_PATCHES)
+
+
+$(M4_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(M4_SOURCE) make/m4.mk
+	rm -rf $(HOST_BUILD_DIR)/$(M4_DIR) $(@D)
+	$(M4_UNZIP) $(DL_DIR)/$(M4_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(M4_DIR) $(@D)
+	(cd $(@D); \
+		./configure \
+		--prefix=$(HOST_STAGING_PREFIX)	\
+	)
+	$(MAKE) -C $(@D)
+	touch $@
+
+m4-host: $(M4_HOST_BUILD_DIR)/.built
+
+
+$(M4_HOST_BUILD_DIR)/.staged: $(M4_HOST_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
+	touch $@
+
+m4-host-stage: $(M4_HOST_BUILD_DIR)/.staged
+
 
 #
 # This target unpacks the source code in the build directory.

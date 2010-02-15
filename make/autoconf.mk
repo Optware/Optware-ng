@@ -23,13 +23,38 @@ AUTOCONF_SOURCE_DIR=$(SOURCE_DIR)/autoconf
 AUTOCONF_IPK_DIR=$(BUILD_DIR)/autoconf-$(AUTOCONF_VERSION)-ipk
 AUTOCONF_IPK=$(BUILD_DIR)/autoconf_$(AUTOCONF_VERSION)-$(AUTOCONF_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: autoconf-source autoconf-unpack autoconf autoconf-stage autoconf-ipk autoconf-clean autoconf-dirclean autoconf-check
+AUTOCONF_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/autoconf
+
+.PHONY: autoconf-source autoconf-unpack autoconf autoconf-stage autoconf-ipk autoconf-clean autoconf-dirclean autoconf-check autoconf-host autoconf-host-stage
 
 $(DL_DIR)/$(AUTOCONF_SOURCE):
 	$(WGET) -P $(@D) $(AUTOCONF_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 autoconf-source: $(DL_DIR)/$(AUTOCONF_SOURCE) $(AUTOCONF_PATCHES)
+
+
+$(AUTOCONF_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOCONF_SOURCE) make/autoconf.mk
+	rm -rf $(HOST_BUILD_DIR)/$(AUTOCONF_DIR) $(@D)
+	$(AUTOCONF_UNZIP) $(DL_DIR)/$(AUTOCONF_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(AUTOCONF_DIR) $(@D)
+	(cd $(@D); \
+		./configure \
+		--prefix=$(HOST_STAGING_PREFIX)	\
+	)
+	$(MAKE) -C $(@D)
+	touch $@
+
+autoconf-host: $(AUTOCONF_HOST_BUILD_DIR)/.built
+
+
+$(AUTOCONF_HOST_BUILD_DIR)/.staged: $(AUTOCONF_HOST_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
+	touch $@
+
+autoconf-host-stage: $(AUTOCONF_HOST_BUILD_DIR)/.staged
+
 
 $(AUTOCONF_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOCONF_SOURCE) $(AUTOCONF_PATCHES)
 	rm -rf $(BUILD_DIR)/$(AUTOCONF_DIR) $(@D)
