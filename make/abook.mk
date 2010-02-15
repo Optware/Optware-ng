@@ -194,6 +194,7 @@ abook-ipk: $(ABOOK_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 abook-clean:
+	rm -f $(ABOOK_BUILD_DIR)/.built
 	-$(MAKE) -C $(ABOOK_BUILD_DIR) clean
 
 #
