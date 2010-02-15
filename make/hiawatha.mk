@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HIAWATHA_SITE=http://www.hiawatha-webserver.org/files
-HIAWATHA_VERSION=6.19
+HIAWATHA_VERSION=7.0
 HIAWATHA_SOURCE=hiawatha-$(HIAWATHA_VERSION).tar.gz
 HIAWATHA_DIR=hiawatha-$(HIAWATHA_VERSION)
 HIAWATHA_UNZIP=zcat
@@ -56,7 +56,7 @@ HIAWATHA_CONFFILES=\
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-HIAWATHA_CPPFLAGS=
+HIAWATHA_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
 HIAWATHA_LDFLAGS=
 
 #
@@ -119,6 +119,7 @@ $(HIAWATHA_BUILD_DIR)/.configured: $(DL_DIR)/$(HIAWATHA_SOURCE) $(HIAWATHA_PATCH
 	if test "$(BUILD_DIR)/$(HIAWATHA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HIAWATHA_DIR) $(@D) ; \
 	fi
+	sed -i -e 's|-I/usr/include/libxml2 ||' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HIAWATHA_CPPFLAGS)" \
@@ -195,7 +196,7 @@ $(HIAWATHA_IPK_DIR)/CONTROL/control:
 #
 $(HIAWATHA_IPK): $(HIAWATHA_BUILD_DIR)/.built
 	rm -rf $(HIAWATHA_IPK_DIR) $(BUILD_DIR)/hiawatha_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(HIAWATHA_BUILD_DIR) DESTDIR=$(HIAWATHA_IPK_DIR) transform='' install-strip
+	$(MAKE) -C $(HIAWATHA_BUILD_DIR) DESTDIR=$(HIAWATHA_IPK_DIR) program_transform_name='' install-strip
 #	install -d $(HIAWATHA_IPK_DIR)/opt/etc/
 #	install -m 644 $(HIAWATHA_SOURCE_DIR)/hiawatha.conf $(HIAWATHA_IPK_DIR)/opt/etc/hiawatha.conf
 #	install -d $(HIAWATHA_IPK_DIR)/opt/etc/init.d
