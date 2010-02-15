@@ -30,7 +30,7 @@ RSSH_DESCRIPTION=Rrestricted shell allowing only scp and/or sftp.
 RSSH_SECTION=net
 RSSH_PRIORITY=optional
 RSSH_DEPENDS=openssh
-RSSH_SUGGESTS=openssh-sftp-server, rsync
+RSSH_SUGGESTS=openssh-sftp-server, rsync, cvs
 RSSH_CONFLICTS=
 
 #
