@@ -36,6 +36,11 @@ ZLIB_SOURCE_DIR=$(SOURCE_DIR)/zlib
 ZLIB_IPK_DIR=$(BUILD_DIR)/zlib-$(ZLIB_VERSION)-ipk
 ZLIB_IPK=$(BUILD_DIR)/zlib_$(ZLIB_VERSION)-$(ZLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+
+.PHONY: zlib-source zlib-unpack zlib zlib-stage zlib-ipk zlib-clean \
+zlib-dirclean zlib-check zlib-host zlib-host-stage zlib-unstage
+
+
 $(DL_DIR)/$(ZLIB_SOURCE):
 	$(WGET) -P $(@D) $(ZLIB_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
@@ -93,7 +98,7 @@ $(ZLIB_BUILD_DIR)/.built: $(ZLIB_BUILD_DIR)/.configured
 zlib: $(ZLIB_BUILD_DIR)/.built
 
 $(ZLIB_BUILD_DIR)/.staged: $(ZLIB_BUILD_DIR)/.built
-	rm -f $@
+	rm -f $@ $(ZLIB_BUILD_DIR)/.unstaged
 	install -d $(STAGING_INCLUDE_DIR)
 	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(STAGING_INCLUDE_DIR)
 	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(STAGING_INCLUDE_DIR)
@@ -105,6 +110,15 @@ $(ZLIB_BUILD_DIR)/.staged: $(ZLIB_BUILD_DIR)/.built
 	touch $@
 
 zlib-stage: $(ZLIB_BUILD_DIR)/.staged
+
+$(ZLIB_BUILD_DIR)/.unstaged:
+	rm -f $@ $(ZLIB_BUILD_DIR)/.staged
+	rm -f $(STAGING_INCLUDE_DIR)/zlib.h $(STAGING_INCLUDE_DIR)/zconf.h
+	rm -f $(STAGING_LIB_DIR)/libz.a $(STAGING_LIB_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB)
+	rm -f $(STAGING_LIB_DIR)/libz$(SO).1$(DYLIB) $(STAGING_LIB_DIR)/libz.$(SHLIB_EXT)
+	-touch $@
+
+zlib-unstage: $(ZLIB_BUILD_DIR)/.unstaged
 
 
 #
@@ -140,10 +154,12 @@ $(ZLIB_IPK): $(ZLIB_BUILD_DIR)/.built
 
 zlib-ipk: $(ZLIB_IPK)
 
-zlib-clean:
+zlib-clean: zlib-unstage
+	rm -f $(ZLIB_BUILD_DIR)/.built
+	rm -f $(ZLIB_HOST_BUILD_DIR)/.staged
 	-$(MAKE) -C $(ZLIB_BUILD_DIR) clean
 
-zlib-dirclean:
+zlib-dirclean: zlib-unstage
 	rm -rf $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR) $(ZLIB_IPK_DIR) $(ZLIB_IPK)
 
 #
