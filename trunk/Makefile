@@ -479,6 +479,25 @@ SUDO=sudo
 WGET=wget --passive-ftp
 PERL=perl
 
+# aclocal-1.9 check
+ifneq (,$(shell aclocal-1.9 --version 2>/dev/null))
+HOST_TOOL_ACLOCAL19=
+ACLOCAL19=aclocal-1.9
+else
+HOST_TOOL_ACLOCAL19=automake19-host-stage autoconf-host-stage m4-host-stage libtool-host-stage
+ACLOCAL19=$(HOST_STAGING_PREFIX)/bin/aclocal-1.9
+endif
+
+# automake-1.9 check
+ifneq (,$(shell automake-1.9 --version 2>/dev/null))
+HOST_TOOL_AUTOMAKE19=
+AUTOMAKE19=automake-1.9
+else
+HOST_TOOL_ACLOCAL19=automake19-host-stage autoconf-host-stage m4-host-stage libtool-host-stage
+AUTOMAKE19=$(HOST_STAGING_PREFIX)/bin/automake-1.9
+endif
+
+
 # The hostname or IP number of our local dl.sf.net mirror
 SOURCEFORGE_MIRROR=easynews.dl.sf.net
 SOURCES_NLO_SITE=http://sources.nslu2-linux.org/sources
