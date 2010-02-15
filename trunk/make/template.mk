@@ -75,7 +75,8 @@
 <FOO>_IPK_DIR=$(BUILD_DIR)/<foo>-$(<FOO>_VERSION)-ipk
 <FOO>_IPK=$(BUILD_DIR)/<foo>_$(<FOO>_VERSION)-$(<FOO>_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: <foo>-source <foo>-unpack <foo> <foo>-stage <foo>-ipk <foo>-clean <foo>-dirclean <foo>-check
+.PHONY: <foo>-source <foo>-unpack <foo> <foo>-stage <foo>-unstage \
+<foo>-ipk <foo>-clean <foo>-dirclean <foo>-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -155,11 +156,21 @@ $(<FOO>_BUILD_DIR)/.built: $(<FOO>_BUILD_DIR)/.configured
 # If you are building a library, then you need to stage it too.
 #
 $(<FOO>_BUILD_DIR)/.staged: $(<FOO>_BUILD_DIR)/.built
-	rm -f $@
+	rm -f $@ $(<FOO>_BUILD_DIR)/.unstaged
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 <foo>-stage: $(<FOO>_BUILD_DIR)/.staged
+
+#
+# Working with different versions you also need an uninstall from stage
+#
+$(<FOO>_BUILD_DIR)/.unstaged:
+	rm -f $@ $(<FOO>_BUILD_DIR)/.staged
+	-$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) uninstall
+	-touch $@
+
+<foo>-unstage: $(<FOO>_BUILD_DIR)/.unstaged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -220,7 +231,7 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to clean all of the built files.
 #
-<foo>-clean:
+<foo>-clean: <foo>-unstage
 	rm -f $(<FOO>_BUILD_DIR)/.built
 	-$(MAKE) -C $(<FOO>_BUILD_DIR) clean
 
@@ -228,7 +239,7 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-<foo>-dirclean:
+<foo>-dirclean: <foo>-unstage
 	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR) $(<FOO>_IPK_DIR) $(<FOO>_IPK)
 #
 #
