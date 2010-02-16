@@ -97,8 +97,8 @@ xtrans-source: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz $(XTRANS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XTRANS_BUILD_DIR)/.configured: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz \
-		$(XTRANS_PATCHES)
-	rm -rf $(BUILD_DIR)/$(XTRANS_DIR) $(XTRANS_BUILD_DIR)
+		$(XTRANS_PATCHES) make/xtrans.mk
+	rm -rf $(BUILD_DIR)/$(XTRANS_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz
 	if test -n "$(XTRANS_PATCHES)" ; \
 		then cat $(XTRANS_PATCHES) | \
@@ -113,7 +113,6 @@ $(XTRANS_BUILD_DIR)/.configured: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XTRANS_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -121,7 +120,7 @@ $(XTRANS_BUILD_DIR)/.configured: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XTRANS_BUILD_DIR)/.configured
+	touch $@
 
 xtrans-unpack: $(XTRANS_BUILD_DIR)/.configured
 
