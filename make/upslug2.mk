@@ -52,7 +52,7 @@ UPSLUG2_VERSION=0.0+svn$(UPSLUG2_SVN_REV)
 #
 # UPSLUG2_IPK_VERSION should be incremented when the ipk changes.
 #
-UPSLUG2_IPK_VERSION=1
+UPSLUG2_IPK_VERSION=2
 
 #
 # UPSLUG2_CONFFILES should be a list of user-editable files
@@ -115,17 +115,17 @@ $(UPSLUG2_BUILD_DIR)/.configured: $(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
-	rm -rf $(BUILD_DIR)/$(UPSLUG2_DIR) $(UPSLUG2_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(UPSLUG2_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz
 	if test -n "$(UPSLUG2_PATCHES)" ; \
 		then cat $(UPSLUG2_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(UPSLUG2_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(UPSLUG2_DIR)" != "$(UPSLUG2_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(UPSLUG2_DIR) $(UPSLUG2_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(UPSLUG2_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(UPSLUG2_DIR) $(@D) ; \
 	fi
-	(cd $(UPSLUG2_BUILD_DIR); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -i ;\
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UPSLUG2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UPSLUG2_LDFLAGS)" \
@@ -136,7 +136,7 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(UPSLUG2_BUILD_DIR)/.configured
+	touch $@
 
 upslug2-unpack: $(UPSLUG2_BUILD_DIR)/.configured
 
@@ -144,9 +144,9 @@ upslug2-unpack: $(UPSLUG2_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(UPSLUG2_BUILD_DIR)/.built: $(UPSLUG2_BUILD_DIR)/.configured
-	rm -f $(UPSLUG2_BUILD_DIR)/.built
-	$(MAKE) -C $(UPSLUG2_BUILD_DIR)
-	touch $(UPSLUG2_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -156,19 +156,19 @@ upslug2: $(UPSLUG2_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(UPSLUG2_BUILD_DIR)/.staged: $(UPSLUG2_BUILD_DIR)/.built
-	rm -f $(UPSLUG2_BUILD_DIR)/.staged
-	$(MAKE) -C $(UPSLUG2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(UPSLUG2_BUILD_DIR)/.staged
-
-upslug2-stage: $(UPSLUG2_BUILD_DIR)/.staged
+#$(UPSLUG2_BUILD_DIR)/.staged: $(UPSLUG2_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#upslug2-stage: $(UPSLUG2_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/upslug2
 #
 $(UPSLUG2_IPK_DIR)/CONTROL/control:
-	@install -d $(UPSLUG2_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: upslug2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -230,4 +230,4 @@ upslug2-dirclean:
 # Some sanity check for the package.
 #
 upslug2-check: $(UPSLUG2_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UPSLUG2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
