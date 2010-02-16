@@ -261,9 +261,7 @@ endif
 		--disable-wx \
 		--disable-nls \
 	)
-#		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -fi -I m4 ; \
-#		--verbose \
-	$(PATCH_LIBTOOL) $(@D)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 
