@@ -105,13 +105,13 @@ libghttp-source: $(DL_DIR)/$(LIBGHTTP_SOURCE) $(LIBGHTTP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBGHTTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGHTTP_SOURCE) $(LIBGHTTP_PATCHES)
-	rm -rf $(BUILD_DIR)/$(LIBGHTTP_DIR) $(LIBGHTTP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBGHTTP_DIR) $(@D)
 	$(LIBGHTTP_UNZIP) $(DL_DIR)/$(LIBGHTTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LIBGHTTP_DIR) $(LIBGHTTP_BUILD_DIR)
 	(cd $(LIBGHTTP_BUILD_DIR); \
 		sed -i -e 's/libdir)/libdir)\/..\/bin/g' Makefile.am; \
 		sed -i -e 's/AC_DIVERT_/dnl AC_DIVERT_/g' configure.in; \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
+		autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGHTTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGHTTP_LDFLAGS)" \
@@ -124,7 +124,7 @@ $(LIBGHTTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGHTTP_SOURCE) $(LIBGHTTP_PATCH
 		--enable-shared \
 		--disable-static \
 	)
-	touch $(LIBGHTTP_BUILD_DIR)/.configured
+	touch $@
 
 libghttp-unpack: $(LIBGHTTP_BUILD_DIR)/.configured
 
@@ -132,9 +132,9 @@ libghttp-unpack: $(LIBGHTTP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBGHTTP_BUILD_DIR)/.built: $(LIBGHTTP_BUILD_DIR)/.configured
-	rm -f $(LIBGHTTP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBGHTTP_BUILD_DIR)
-	touch $(LIBGHTTP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -145,13 +145,13 @@ libghttp: $(LIBGHTTP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBGHTTP_BUILD_DIR)/.staged: $(LIBGHTTP_BUILD_DIR)/.built
-	rm -f $(LIBGHTTP_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBGHTTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
 #	install -d $(STAGING_INCLUDE_DIR)
 #	install -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(STAGING_INCLUDE_DIR)
 #	install -d $(STAGING_LIB_DIR)
 #	install -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(STAGING_LIB_DIR)
-	touch $(LIBGHTTP_BUILD_DIR)/.staged
+	touch $@
 
 libghttp-stage: $(LIBGHTTP_BUILD_DIR)/.staged
 
