@@ -108,7 +108,7 @@ $(X11_BUILD_DIR)/.configured: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES)
 	$(MAKE) xextensions-stage
 	$(MAKE) xdmcp-stage
 	$(MAKE) xtrans-stage
-	rm -rf $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(X11_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/x11-$(X11_VERSION).tar.gz
 	if test -n "$(X11_PATCHES)" ; \
 		then cat $(X11_PATCHES) | \
@@ -123,7 +123,6 @@ $(X11_BUILD_DIR)/.configured: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS) $(X11_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -131,7 +130,7 @@ $(X11_BUILD_DIR)/.configured: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES)
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(X11_BUILD_DIR)/.configured
+	touch $@
 
 x11-unpack: $(X11_BUILD_DIR)/.configured
 
