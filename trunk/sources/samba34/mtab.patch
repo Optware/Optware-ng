@@ -1,0 +1,10 @@
+--- samba34/source3/client/mtab.c.original	2009-12-26 08:53:50.000000000 -0500
++++ samba34/source3/client/mtab.c	2009-12-26 08:54:39.000000000 -0500
+@@ -38,6 +38,7 @@
+ #include <stdlib.h>
+ #include <signal.h>
+ #include "mount.h"
++#include <sys/stat.h>
+ 
+ 
+ /* Updating mtab ----------------------------------------------*/
