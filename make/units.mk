@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UNITS_SITE=ftp://ftp.gnu.org/gnu/units/
-UNITS_VERSION=1.87
+UNITS_VERSION=1.88
 UNITS_SOURCE=units-$(UNITS_VERSION).tar.gz
 UNITS_DIR=units-$(UNITS_VERSION)
 UNITS_UNZIP=zcat
@@ -35,12 +35,12 @@ UNITS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UNITS_DESCRIPTION=GNU units converts between different systems of units.
 UNITS_SECTION=misc
 UNITS_PRIORITY=optional
-UNITS_DEPENDS=readline
+UNITS_DEPENDS=readline, ncurses
 
 #
 # UNITS_IPK_VERSION should be incremented when the ipk changes.
 #
-UNITS_IPK_VERSION=2
+UNITS_IPK_VERSION=1
 
 #
 # UNITS_CONFFILES should be a list of user-editable files
@@ -106,14 +106,14 @@ units-source: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES) make/units.mk
-	$(MAKE) readline-stage
+	$(MAKE) readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(UNITS_DIR) $(@D)
 	$(UNITS_UNZIP) $(DL_DIR)/$(UNITS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNITS_PATCHES)"; \
 		then cat $(UNITS_PATCHES) | patch -d $(BUILD_DIR)/$(UNITS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(UNITS_DIR) $(@D)
-	autoreconf -vif $(@D)
+#	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(UNITS_CPPFLAGS)" \
