@@ -99,10 +99,10 @@ xext-source: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz $(XEXT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XEXT_BUILD_DIR)/.configured: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz \
-		$(XEXT_PATCHES)
+		$(XEXT_PATCHES) make/xext.mk
 	$(MAKE) x11-stage
 	$(MAKE) xextensions-stage
-	rm -rf $(BUILD_DIR)/$(XEXT_DIR) $(XEXT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(XEXT_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz
 	if test -n "$(XEXT_PATCHES)" ; \
 		then cat $(XEXT_PATCHES) | \
@@ -117,7 +117,6 @@ $(XEXT_BUILD_DIR)/.configured: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XEXT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -126,7 +125,7 @@ $(XEXT_BUILD_DIR)/.configured: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz \
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(XEXT_BUILD_DIR)/libtool
-	touch $(XEXT_BUILD_DIR)/.configured
+	touch $@
 
 xext-unpack: $(XEXT_BUILD_DIR)/.configured
 
@@ -134,9 +133,9 @@ xext-unpack: $(XEXT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XEXT_BUILD_DIR)/.built: $(XEXT_BUILD_DIR)/.configured
-	rm -f $(XEXT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XEXT_BUILD_DIR)
-	touch $(XEXT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
