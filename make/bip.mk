@@ -119,8 +119,6 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 	if test "$(BUILD_DIR)/$(BIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BIP_DIR) $(@D) ; \
 	fi
-#		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
-		;
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BIP_CPPFLAGS)" \
