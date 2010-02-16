@@ -134,7 +134,7 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_FCGI_BUILD_DIR)
 	cat $(PHP_FCGI_PATCHES) |patch -p0 -d $(PHP_FCGI_BUILD_DIR)
 	(cd $(PHP_FCGI_BUILD_DIR); \
-          ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf; \
+          autoreconf; \
                 $(TARGET_CONFIGURE_OPTS) \
                 CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_FCGI_CPPFLAGS)" \
                 LDFLAGS="$(STAGING_LDFLAGS) $(PHP_FCGI_LDFLAGS)" \
