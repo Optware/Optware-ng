@@ -97,9 +97,9 @@ xextensions-source: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz $(XEXTEN
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XEXTENSIONS_BUILD_DIR)/.configured: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz \
-		$(XEXTENSIONS_PATCHES)
+		$(XEXTENSIONS_PATCHES) make/xextensions.mk
 	$(MAKE) xproto-stage
-	rm -rf $(BUILD_DIR)/$(XEXTENSIONS_DIR) $(XEXTENSIONS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(XEXTENSIONS_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz
 	if test -n "$(XEXTENSIONS_PATCHES)" ; \
 		then cat $(XEXTENSIONS_PATCHES) | \
@@ -114,7 +114,6 @@ $(XEXTENSIONS_BUILD_DIR)/.configured: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSIO
 		LDFLAGS="$(STAGING_LDFLAGS) $(XEXTENSIONS_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -122,7 +121,7 @@ $(XEXTENSIONS_BUILD_DIR)/.configured: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSIO
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XEXTENSIONS_BUILD_DIR)/.configured
+	touch $@
 
 xextensions-unpack: $(XEXTENSIONS_BUILD_DIR)/.configured
 
