@@ -1,5 +1,7 @@
 # This toolchain is gcc 4.2.3 on glibc 2.5
 
+GNU_TARGET_NAME = arm-none-linux-gnueabi
+
 TARGET_ARCH=arm
 TARGET_OS=linux
 LIBC_STYLE=glibc
@@ -27,7 +29,6 @@ else
 
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = arm-none-linux-gnueabi
 TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/arm-2008q1
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(GNU_TARGET_NAME)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/libc/lib
