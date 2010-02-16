@@ -96,10 +96,11 @@ fixesext-source: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz $(FIXESEXT_PATCHE
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FIXESEXT_BUILD_DIR)/.configured: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz $(FIXESEXT_PATCHES)
+$(FIXESEXT_BUILD_DIR)/.configured: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz \
+$(FIXESEXT_PATCHES) make/fixesext.mk
 	$(MAKE) x11-stage
 	$(MAKE) xext-stage
-	rm -rf $(BUILD_DIR)/$(FIXESEXT_DIR) $(FIXESEXT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FIXESEXT_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz
 	if test -n "$(FIXESEXT_PATCHES)" ; \
 		then cat $(FIXESEXT_PATCHES) | \
@@ -114,7 +115,6 @@ $(FIXESEXT_BUILD_DIR)/.configured: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz
 		LDFLAGS="$(STAGING_LDFLAGS) $(FIXESEXT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -122,7 +122,7 @@ $(FIXESEXT_BUILD_DIR)/.configured: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(FIXESEXT_BUILD_DIR)/.configured
+	touch $@
 
 fixesext-unpack: $(FIXESEXT_BUILD_DIR)/.configured
 
