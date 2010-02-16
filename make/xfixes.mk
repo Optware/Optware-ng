@@ -102,7 +102,7 @@ $(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz \
 		$(XFIXES_PATCHES) make/xfixes.mk
 	$(MAKE) x11-stage
 	$(MAKE) fixesext-stage
-	rm -rf $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(XFIXES_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz
 	if test -n "$(XFIXES_PATCHES)" ; \
 		then cat $(XFIXES_PATCHES) | \
@@ -117,7 +117,6 @@ $(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XFIXES_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -125,7 +124,7 @@ $(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XFIXES_BUILD_DIR)/.configured
+	touch $@
 
 xfixes-unpack: $(XFIXES_BUILD_DIR)/.configured
 
@@ -133,9 +132,9 @@ xfixes-unpack: $(XFIXES_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XFIXES_BUILD_DIR)/.built: $(XFIXES_BUILD_DIR)/.configured
-	rm -f $(XFIXES_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XFIXES_BUILD_DIR)
-	touch $(XFIXES_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
