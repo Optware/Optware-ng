@@ -100,8 +100,8 @@ xproto-source: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XPROTO_BUILD_DIR)/.configured: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES)
-	rm -rf $(BUILD_DIR)/$(XPROTO_DIR) $(XPROTO_BUILD_DIR)
+$(XPROTO_BUILD_DIR)/.configured: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES) make/xproto.mk
+	rm -rf $(BUILD_DIR)/$(XPROTO_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz
 	if test -n "$(XPROTO_PATCHES)" ; \
 		then cat $(XPROTO_PATCHES) | \
@@ -116,7 +116,6 @@ $(XPROTO_BUILD_DIR)/.configured: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPR
 		LDFLAGS="$(STAGING_LDFLAGS) $(XPROTO_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -124,7 +123,7 @@ $(XPROTO_BUILD_DIR)/.configured: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPR
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XPROTO_BUILD_DIR)/.configured
+	touch $@
 
 xproto-unpack: $(XPROTO_BUILD_DIR)/.configured
 
