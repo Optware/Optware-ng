@@ -112,14 +112,13 @@ esound-source: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
+$(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES) make/esound.mk
 	$(MAKE) audiofile-stage
-	rm -rf $(BUILD_DIR)/$(ESOUND_DIR) $(ESOUND_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ESOUND_DIR) $(@D)
 	$(ESOUND_UNZIP) $(DL_DIR)/$(ESOUND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(ESOUND_PATCHES) | patch -d $(BUILD_DIR)/$(ESOUND_DIR) -p1
 	mv $(BUILD_DIR)/$(ESOUND_DIR) $(ESOUND_BUILD_DIR)
-	ACLOCAL="aclocal-1.9 -I $(STAGING_DIR)/opt/share/aclocal" AUTOMAKE=automake-1.9 \
-		autoreconf -vif $(ESOUND_BUILD_DIR)
+	autoreconf -vif $(@D) -I $(STAGING_DIR)/opt/share/aclocal
 	sed -ie 's/artsc-config --cflags |//' $(ESOUND_BUILD_DIR)/configure
 	(cd $(ESOUND_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -140,7 +139,7 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(ESOUND_BUILD_DIR)/libtool
-	touch $(ESOUND_BUILD_DIR)/.configured
+	touch $@
 
 esound-unpack: $(ESOUND_BUILD_DIR)/.configured
 
@@ -148,9 +147,9 @@ esound-unpack: $(ESOUND_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ESOUND_BUILD_DIR)/.built: $(ESOUND_BUILD_DIR)/.configured
-	rm -f $(ESOUND_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(ESOUND_BUILD_DIR)
-	touch $(ESOUND_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -161,10 +160,10 @@ esound: $(ESOUND_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ESOUND_BUILD_DIR)/.staged: $(ESOUND_BUILD_DIR)/.built
-	rm -f $(ESOUND_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(ESOUND_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	cp $(STAGING_DIR)/opt/bin/esd-config $(STAGING_DIR)/bin/esd-config
-	touch $(ESOUND_BUILD_DIR)/.staged
+	touch $@
 
 esound-stage: $(ESOUND_BUILD_DIR)/.staged
 
