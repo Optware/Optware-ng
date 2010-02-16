@@ -76,7 +76,7 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(BOGOFILTER_DIR) $(@D)
 ifneq ($(HOSTCC), $(TARGET_CC))
-	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
+	autoreconf -vif $(@D)
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
