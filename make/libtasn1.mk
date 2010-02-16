@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBTASN1_SITE=http://ftp.gnu.org/gnu/gnutls
-LIBTASN1_VERSION=2.1
+LIBTASN1_SITE=http://ftp.gnu.org/gnu/libtasn1
+LIBTASN1_VERSION=2.4
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
 LIBTASN1_UNZIP=zcat
@@ -42,7 +42,7 @@ LIBTASN1_CONFLICTS=
 #
 # LIBTASN1_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTASN1_IPK_VERSION=2
+LIBTASN1_IPK_VERSION=1
 
 #
 # LIBTASN1_CONFFILES should be a list of user-editable files
