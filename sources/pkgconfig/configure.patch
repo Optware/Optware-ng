@@ -16,20 +16,6 @@
  stamp-gc-h: config.status
 --- pkgconfig-0.15.0/glib-1.2.8/configure.in~configure.patch
 +++ pkgconfig-0.15.0/glib-1.2.8/configure.in
-@@ -1,10 +1,11 @@
- dnl ***********************************
- dnl *** include special GLib macros ***
- dnl ***********************************
--builtin(include, acglib.m4)dnl
-+dnl no need, just use aclocal -I . --CL
-+dnl builtin(include, acglib.m4)dnl
- 
- # require autoconf 2.13
--AC_PREREQ(2.13)
-+AC_PREREQ(2.53)
- 
- # init autoconf (and check for presence of glist.c)
- AC_INIT(glist.c)
 @@ -13,11 +14,48 @@
  cflags_set=${CFLAGS+set}
  

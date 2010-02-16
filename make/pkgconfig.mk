@@ -26,7 +26,7 @@ PKGCONFIG_DEPENDS=
 #
 # PKGCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-PKGCONFIG_IPK_VERSION=1
+PKGCONFIG_IPK_VERSION=2
 
 #
 # PKGCONFIG_LOCALES defines which locales get installed
@@ -49,6 +49,9 @@ PKGCONFIG_PATCHES=$(PKGCONFIG_SOURCE_DIR)/configure.patch
 #
 PKGCONFIG_CPPFLAGS=
 PKGCONFIG_LDFLAGS=
+ifneq ($(HOSTCC), $(TARGET_CC))
+PKGCONFIG_CONFIG_ARGS = --cache-file=arm.cache
+endif
 
 #
 # PKGCONFIG_BUILD_DIR is the directory in which the build is done.
@@ -106,16 +109,17 @@ pkgconfig-source: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PATCHES)
 # correctly BUILD the Makefile with the right paths, where passing it
 # to Make causes it to override the default search paths of the compiler.
 #
-$(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PATCHES)
-	rm -rf $(BUILD_DIR)/$(PKGCONFIG_DIR) $(PKGCONFIG_BUILD_DIR)
+$(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PATCHES) make/pkgconfig.mk
+	rm -rf $(BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PKGCONFIG_PATCHES) | patch -d $(BUILD_DIR)/$(PKGCONFIG_DIR) -p1
-	mv $(BUILD_DIR)/$(PKGCONFIG_DIR) $(PKGCONFIG_BUILD_DIR)
-	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -v -f $(PKGCONFIG_BUILD_DIR) $(PKGCONFIG_BUILD_DIR)/glib-1.2.8
-	(cd $(PKGCONFIG_BUILD_DIR)/glib-1.2.8; aclocal-1.9 -I .; autoconf)
+	mv $(BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
+	autoreconf -I. -vif $(@D)/glib-1.2.8
+ifneq ($(HOSTCC), $(TARGET_CC))
 	cp $(PKGCONFIG_SOURCE_DIR)/pkgconfig.cache $(PKGCONFIG_BUILD_DIR)/arm.cache
+endif
 	cp $(PKGCONFIG_SOURCE_DIR)/glibconfig-sysdefs.h $(PKGCONFIG_BUILD_DIR)/glib-1.2.8
-	(cd $(PKGCONFIG_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS=`echo $(STAGING_CPPFLAGS) $(PKGCONFIG_CPPFLAGS)` \
 		LDFLAGS=`echo $(STAGING_LDFLAGS) $(PKGCONFIG_LDFLAGS)` \
@@ -124,11 +128,11 @@ $(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PA
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--cache-file=arm.cache \
+		$(PKGCONFIG_CONFIG_ARGS) \
 		--disable-threads \
 		--disable-shared \
 	)
-	touch $(PKGCONFIG_BUILD_DIR)/.configured
+	touch $@
 
 pkgconfig-unpack: $(PKGCONFIG_BUILD_DIR)/.configured
 
@@ -137,9 +141,9 @@ pkgconfig-unpack: $(PKGCONFIG_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(PKGCONFIG_BUILD_DIR)/.built: $(PKGCONFIG_BUILD_DIR)/.configured
-	rm -f $(PKGCONFIG_BUILD_DIR)/.built
-	$(MAKE) -C $(PKGCONFIG_BUILD_DIR)
-	touch $(PKGCONFIG_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -179,3 +183,9 @@ pkgconfig-clean:
 #
 pkgconfig-dirclean:
 	rm -rf $(BUILD_DIR)/$(PKGCONFIG_DIR) $(PKGCONFIG_BUILD_DIR) $(PKGCONFIG_IPK_DIR) $(PKGCONFIG_IPK)
+
+#
+# Some sanity check for the package.
+#
+pkgconfig-check: $(PKGCONFIG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
