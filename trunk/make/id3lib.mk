@@ -121,7 +121,7 @@ $(ID3LIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ID3LIB_SOURCE) $(ID3LIB_PATCHES) ma
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(ID3LIB_DIR) $(ID3LIB_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ID3LIB_DIR) $(@D)
 	$(ID3LIB_UNZIP) $(DL_DIR)/$(ID3LIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ID3LIB_PATCHES)" ; \
 		then cat $(ID3LIB_PATCHES) | \
@@ -137,8 +137,7 @@ ifeq ($(OPTWARE_TARGET), $(filter dns323, $(OPTWARE_TARGET)))
 endif
 	sed -i -e '/iomanip.h/d' $(ID3LIB_BUILD_DIR)/configure.in
 	(cd $(ID3LIB_BUILD_DIR); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
-			autoreconf -vif; \
+		autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ID3LIB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ID3LIB_LDFLAGS)" \
@@ -152,7 +151,7 @@ endif
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(ID3LIB_BUILD_DIR)/libtool
-	touch $(ID3LIB_BUILD_DIR)/.configured
+	touch $@
 
 id3lib-unpack: $(ID3LIB_BUILD_DIR)/.configured
 
@@ -160,9 +159,9 @@ id3lib-unpack: $(ID3LIB_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ID3LIB_BUILD_DIR)/.built: $(ID3LIB_BUILD_DIR)/.configured
-	rm -f $(ID3LIB_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(ID3LIB_BUILD_DIR)
-	touch $(ID3LIB_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -173,10 +172,10 @@ id3lib: $(ID3LIB_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ID3LIB_BUILD_DIR)/.staged: $(ID3LIB_BUILD_DIR)/.built
-	rm -f $(ID3LIB_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(ID3LIB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_DIR)/opt/lib/libid3.la
-	touch $(ID3LIB_BUILD_DIR)/.staged
+	touch $@
 
 id3lib-stage: $(ID3LIB_BUILD_DIR)/.staged
 
