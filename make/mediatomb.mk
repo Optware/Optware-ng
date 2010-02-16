@@ -167,7 +167,7 @@ endif
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR) ; \
 	fi
 	cd $(MEDIATOMB_BUILD_DIR); \
-		ACLOCAL=aclocal-1.10 AUTOMAKE=automake-1.10 autoreconf -vif
+		autoreconf -vif
 	(cd $(MEDIATOMB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEDIATOMB_CPPFLAGS)" \
