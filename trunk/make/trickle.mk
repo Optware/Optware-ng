@@ -21,7 +21,7 @@ TRICKLE_CONFLICTS=
 #
 # TRICKLE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRICKLE_IPK_VERSION=2
+TRICKLE_IPK_VERSION=3
 
 #
 # TRICKLE_PATCHES should list any patches, in the the order in
@@ -87,7 +87,7 @@ $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 	cat $(TRICKLE_PATCHES) | patch -bd $(BUILD_DIR)/$(TRICKLE_DIR) -p0
 	mv $(BUILD_DIR)/$(TRICKLE_DIR) $(@D)
 	sed -i -e '/^AM_CFLAGS/s/+=/=/' $(@D)/Makefile.am
-	cd $(@D); ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif
+	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRICKLE_CPPFLAGS)" \
