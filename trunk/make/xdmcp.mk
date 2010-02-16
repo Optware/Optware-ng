@@ -97,9 +97,9 @@ xdmcp-source: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz $(XDMCP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz \
-		$(XDMCP_PATCHES)
+		$(XDMCP_PATCHES) make/xdmcp.mk
 	$(MAKE) xproto-stage
-	rm -rf $(BUILD_DIR)/$(XDMCP_DIR) $(XDMCP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(XDMCP_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz
 	if test -n "$(XDMCP_PATCHES)" ; \
 		then cat $(XDMCP_PATCHES) | \
@@ -114,7 +114,6 @@ $(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XDMCP_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -122,7 +121,7 @@ $(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XDMCP_BUILD_DIR)/.configured
+	touch $@
 
 xdmcp-unpack: $(XDMCP_BUILD_DIR)/.configured
 
