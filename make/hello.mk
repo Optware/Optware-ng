@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 HELLO_SITE=http://ftp.gnu.org/gnu/hello
-HELLO_VERSION=2.3
+HELLO_VERSION=2.5
 HELLO_SOURCE=hello-$(HELLO_VERSION).tar.gz
 HELLO_DIR=hello-$(HELLO_VERSION)
 HELLO_UNZIP=zcat
@@ -66,8 +66,8 @@ HELLO_IPK=$(BUILD_DIR)/hello_$(HELLO_VERSION)-$(HELLO_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HELLO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HELLO_SITE)/$(HELLO_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(HELLO_SOURCE)
+	$(WGET) -P $(@D) $(HELLO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -95,16 +95,16 @@ hello-source: $(DL_DIR)/$(HELLO_SOURCE) $(HELLO_PATCHES)
 # shown below to make various patches to it.
 #
 $(HELLO_BUILD_DIR)/.configured: $(DL_DIR)/$(HELLO_SOURCE) $(HELLO_PATCHES) make/hello.mk
-	rm -rf $(BUILD_DIR)/$(HELLO_DIR) $(HELLO_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(HELLO_DIR) $(@D)
 	$(HELLO_UNZIP) $(DL_DIR)/$(HELLO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HELLO_PATCHES)" ; \
 		then cat $(HELLO_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(HELLO_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(HELLO_DIR)" != "$(HELLO_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(HELLO_DIR) $(HELLO_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(HELLO_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(HELLO_DIR) $(@D) ; \
 	fi
-	(cd $(HELLO_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HELLO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HELLO_LDFLAGS)" \
@@ -126,7 +126,7 @@ hello-unpack: $(HELLO_BUILD_DIR)/.configured
 #
 $(HELLO_BUILD_DIR)/.built: $(HELLO_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(HELLO_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -139,7 +139,7 @@ hello: $(HELLO_BUILD_DIR)/.built
 #
 $(HELLO_BUILD_DIR)/.staged: $(HELLO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(HELLO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 hello-stage: $(HELLO_BUILD_DIR)/.staged
@@ -214,4 +214,4 @@ hello-dirclean:
 # Some sanity check for the package.
 #
 hello-check: $(HELLO_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HELLO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
