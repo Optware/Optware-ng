@@ -41,14 +41,14 @@ TRANSMISSION_MAINTAINER=oleo@email.si
 TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with web interface bundled.
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
-TRANSMISSION_DEPENDS=openssl, libcurl, libevent
+TRANSMISSION_DEPENDS=openssl, libcurl, libevent, zlib
 TRANSMISSION_SUGGESTS=
 TRANSMISSION_CONFLICTS=
 
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=1
+TRANSMISSION_IPK_VERSION=2
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -162,7 +162,7 @@ transmission-source transmission-dbg-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(
 # better to use Transmission provided (built-in) SHA1 hash
 #
 $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) make/transmission.mk
-	$(MAKE) openssl-stage libcurl-stage libevent-stage
+	$(MAKE) openssl-stage libcurl-stage libevent-stage zlib-stage
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
