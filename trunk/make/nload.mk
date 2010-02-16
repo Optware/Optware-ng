@@ -108,8 +108,7 @@ $(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 		cat $(NLOAD_PATCHES) | patch -d $(BUILD_DIR)/$(NLOAD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(NLOAD_DIR) $(@D)
-	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
-                autoreconf --verbose $(@D)
+	autoreconf --verbose $(@D)
 	(cd $(@D); \
 		sed -i -e 's|/etc/nload.conf|/opt/etc/nload.conf|' \
 			docs/nload.1.in src/main.cpp ; \
