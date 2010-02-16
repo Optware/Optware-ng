@@ -99,11 +99,11 @@ ice-source: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz $(ICE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ICE_BUILD_DIR)/.configured: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz \
-		$(ICE_PATCHES)
+		$(ICE_PATCHES) make/ice.mk
 	$(MAKE) xproto-stage
 	$(MAKE) xtrans-stage
 	$(MAKE) x11-stage
-	rm -rf $(BUILD_DIR)/$(ICE_DIR) $(ICE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ICE_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ice-$(ICE_VERSION).tar.gz
 	if test -n "$(ICE_PATCHES)" ; \
 		then cat $(ICE_PATCHES) | \
@@ -118,8 +118,6 @@ $(ICE_BUILD_DIR)/.configured: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ICE_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		ACLOCAL=aclocal-1.9 \
-		AUTOMAKE=automake-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -128,7 +126,7 @@ $(ICE_BUILD_DIR)/.configured: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz \
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(ICE_BUILD_DIR)/libtool
-	touch $(ICE_BUILD_DIR)/.configured
+	touch $@
 
 ice-unpack: $(ICE_BUILD_DIR)/.configured
 
