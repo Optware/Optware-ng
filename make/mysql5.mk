@@ -145,7 +145,7 @@ endif
 		then cat $(MYSQL5_PATCHES) | patch -bd $(BUILD_DIR)/$(MYSQL5_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(MYSQL5_DIR) $(MYSQL5_BUILD_DIR)
-	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf --install --force -v $(@D)
+	autoreconf --install --force -v $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MYSQL5_CPPFLAGS)" \
