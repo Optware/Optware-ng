@@ -20,16 +20,16 @@
 # You should change all these variables to suit your package.
 #
 SAMBA34_SITE=http://www.samba.org/samba/ftp/stable
-SAMBA34_VERSION ?= 3.4.3
+SAMBA34_VERSION ?= 3.4.5
 SAMBA34_IPK_VERSION ?= 1
 SAMBA34_SOURCE=samba-$(SAMBA34_VERSION).tar.gz
-SAMBA34_DIR=samba34-$(SAMBA34_VERSION)
+SAMBA34_DIR=samba-$(SAMBA34_VERSION)
 SAMBA34_UNZIP=zcat
 SAMBA34_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA34_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients. This is a newer version.
 SAMBA34_SECTION=net
 SAMBA34_PRIORITY=optional
-SAMBA34_DEPENDS=popt, readline
+SAMBA34_DEPENDS=avahi, popt, readline, zlib
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA34_DEPENDS +=, openldap-libs
 endif
@@ -187,11 +187,11 @@ samba34-source: $(DL_DIR)/$(SAMBA34_SOURCE) $(SAMBA34_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SAMBA34_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA34_SOURCE) $(SAMBA34_PATCHES)
+$(SAMBA34_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA34_SOURCE) $(SAMBA34_PATCHES) make/samba34.mk
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
-	$(MAKE) cups-stage
+	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA34_DIR) $(@D)
 	$(SAMBA34_UNZIP) $(DL_DIR)/$(SAMBA34_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA34_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA34_DIR) -p1
