@@ -97,8 +97,8 @@ recordext-source: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz $(RECORDEXT_PA
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(RECORDEXT_BUILD_DIR)/.configured: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(RECORDEXT_PATCHES)
+	$(MAKE) x11-stage
 	rm -rf $(BUILD_DIR)/$(RECORDEXT_DIR) $(RECORDEXT_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz
 	if test -n "$(RECORDEXT_PATCHES)" ; \
@@ -114,7 +114,6 @@ $(RECORDEXT_BUILD_DIR)/.configured: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar
 		LDFLAGS="$(STAGING_LDFLAGS) $(RECORDEXT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
