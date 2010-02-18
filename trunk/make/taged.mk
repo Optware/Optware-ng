@@ -108,7 +108,7 @@ $(TAGED_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGED_SOURCE) $(TAGED_PATCHES)
 	$(TAGED_UNZIP) $(DL_DIR)/$(TAGED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(TAGED_PATCHES) | patch -d $(BUILD_DIR)/$(TAGED_DIR) -p1
 	mv $(BUILD_DIR)/$(TAGED_DIR) $(@D)
-	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif $(@D)/confuse
+	autoreconf -vif $(@D)/confuse
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TAGED_CPPFLAGS)" \
