@@ -21,7 +21,7 @@
 #
 SAMBA34_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA34_VERSION ?= 3.4.5
-SAMBA34_IPK_VERSION ?= 1
+SAMBA34_IPK_VERSION ?= 2
 SAMBA34_SOURCE=samba-$(SAMBA34_VERSION).tar.gz
 SAMBA34_DIR=samba-$(SAMBA34_VERSION)
 SAMBA34_UNZIP=zcat
@@ -303,8 +303,8 @@ $(SAMBA34-DEV_IPK_DIR)/CONTROL/control:
 	@echo "Version: $(SAMBA34_VERSION)-$(SAMBA34_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(SAMBA34_MAINTAINER)" >>$@
 	@echo "Source: $(SAMBA34_SITE)/$(SAMBA34_SOURCE)" >>$@
-	@echo "Description: development files for samba3" >>$@
-	@echo "Depends: samba" >>$@
+	@echo "Description: development files for samba34" >>$@
+	@echo "Depends: samba34" >>$@
 	@echo "Suggests: " >>$@
 	@echo "Conflicts: " >>$@
 
@@ -318,8 +318,8 @@ $(SAMBA34-SWAT_IPK_DIR)/CONTROL/control:
 	@echo "Version: $(SAMBA34_VERSION)-$(SAMBA34_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(SAMBA34_MAINTAINER)" >>$@
 	@echo "Source: $(SAMBA34_SITE)/$(SAMBA34_SOURCE)" >>$@
-	@echo "Description: the Samba Web Admin Tool for samba3" >>$@
-	@echo "Depends: samba, xinetd" >>$@
+	@echo "Description: the Samba Web Admin Tool for samba34" >>$@
+	@echo "Depends: samba34, xinetd" >>$@
 	@echo "Suggests: " >>$@
 	@echo "Conflicts: " >>$@
 
