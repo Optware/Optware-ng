@@ -116,8 +116,6 @@ $(SM_BUILD_DIR)/.configured: $(DL_DIR)/sm-$(SM_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SM_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		ACLOCAL=aclocal-1.9 \
-		AUTOMAKE=automake-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -126,7 +124,7 @@ $(SM_BUILD_DIR)/.configured: $(DL_DIR)/sm-$(SM_VERSION).tar.gz \
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(SM_BUILD_DIR)/libtool
-	touch $(SM_BUILD_DIR)/.configured
+	touch $@
 
 sm-unpack: $(SM_BUILD_DIR)/.configured
 
@@ -134,9 +132,9 @@ sm-unpack: $(SM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SM_BUILD_DIR)/.built: $(SM_BUILD_DIR)/.configured
-	rm -f $(SM_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(SM_BUILD_DIR)
-	touch $(SM_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
