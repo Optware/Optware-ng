@@ -1,6 +1,6 @@
 # Packages that *only* work for fsg3v4 - do not just put new packages here.
 SPECIFIC_PACKAGES = \
-	fsg3v4-bootstrap fsg3v4-kernel-modules \
+	fsg3v4-optware-bootstrap fsg3v4-kernel-modules \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	$(PERL_PACKAGES)
 
