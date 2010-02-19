@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 	redis \
 	binutils gcc libc-dev \
 
+# samba34: smbd/notify_inotify.c:29:25: error: sys/inotify.h: No such file or directory
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk \
@@ -16,7 +17,9 @@ BROKEN_PACKAGES = \
 	iptables ivorbis-tools lcd4linux \
 	ldconfig \
 	nfs-utils puppy \
-	qemu transcode \
+	qemu \
+	samba34 \
+	transcode \
 	util-linux \
 	vte \
 	xaw xchat xterm

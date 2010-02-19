@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	binutils gcc libc-dev \
 
+# samba34: smbd/trans2.c: In function `get_lanman2_dir_entry':./../lib/util/byteorder.h:114: error: inconsistent operand constraints in an `asm'
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk14-chan-capi \
@@ -13,6 +14,7 @@ BROKEN_PACKAGES = \
 	iptraf \
 	ldconfig libcapi20 \
 	puppy \
+	samba34 \
 	sandbox \
 	transcode \
 	x264 lm-sensors \
