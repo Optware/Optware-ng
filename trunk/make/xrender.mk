@@ -117,7 +117,6 @@ $(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XRENDER_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -125,7 +124,7 @@ $(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XRENDER_BUILD_DIR)/.configured
+	touch $@
 
 xrender-unpack: $(XRENDER_BUILD_DIR)/.configured
 
@@ -133,9 +132,9 @@ xrender-unpack: $(XRENDER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XRENDER_BUILD_DIR)/.built: $(XRENDER_BUILD_DIR)/.configured
-	rm -f $(XRENDER_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XRENDER_BUILD_DIR)
-	touch $(XRENDER_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
