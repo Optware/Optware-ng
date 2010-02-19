@@ -99,7 +99,7 @@ xmu-source: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz $(XMU_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
-		$(XMU_PATCHES)
+		$(XMU_PATCHES) make/xmu.mk
 	$(MAKE) xext-stage
 	$(MAKE) xt-stage
 	rm -rf $(BUILD_DIR)/$(XMU_DIR) $(XMU_BUILD_DIR)
@@ -117,8 +117,6 @@ $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XMU_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		ACLOCAL=aclocal-1.9 \
-		AUTOMAKE=automake-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -127,7 +125,7 @@ $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(XMU_BUILD_DIR)/libtool
-	touch $(XMU_BUILD_DIR)/.configured
+	touch $@
 
 xmu-unpack: $(XMU_BUILD_DIR)/.configured
 
@@ -135,9 +133,9 @@ xmu-unpack: $(XMU_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XMU_BUILD_DIR)/.built: $(XMU_BUILD_DIR)/.configured
-	rm -f $(XMU_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XMU_BUILD_DIR)
-	touch $(XMU_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
