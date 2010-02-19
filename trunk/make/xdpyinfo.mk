@@ -99,7 +99,7 @@ xdpyinfo-source: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz $(XDPYINFO_PATCHE
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz  \
-		$(XDPYINFO_PATCHES)
+		$(XDPYINFO_PATCHES) make/xdpyinfo.mk
 	$(MAKE) x11-stage
 	$(MAKE) xext-stage
 	$(MAKE) xtst-stage
@@ -113,8 +113,6 @@ $(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz
 		then mv $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR) ; \
 	fi
 	(cd $(XDPYINFO_BUILD_DIR); \
-		AUTOMAKE=automake-1.9 \
-		ACLOCAL=aclocal-1.9 \
 		autoreconf -v --install; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XDPYINFO_CPPFLAGS)" \
@@ -128,7 +126,7 @@ $(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XDPYINFO_BUILD_DIR)/.configured
+	touch $@
 
 xdpyinfo-unpack: $(XDPYINFO_BUILD_DIR)/.configured
 
@@ -136,9 +134,9 @@ xdpyinfo-unpack: $(XDPYINFO_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XDPYINFO_BUILD_DIR)/.built: $(XDPYINFO_BUILD_DIR)/.configured
-	rm -f $(XDPYINFO_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XDPYINFO_BUILD_DIR)
-	touch $(XDPYINFO_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -149,9 +147,9 @@ xdpyinfo: $(XDPYINFO_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(XDPYINFO_BUILD_DIR)/.staged: $(XDPYINFO_BUILD_DIR)/.built
-	rm -f $(XDPYINFO_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(XDPYINFO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(XDPYINFO_BUILD_DIR)/.staged
+	touch $@
 
 xdpyinfo-stage: $(XDPYINFO_BUILD_DIR)/.staged
 
