@@ -99,7 +99,7 @@ xaw-source: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz $(XAW_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XAW_BUILD_DIR)/.configured: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz \
-		$(XAW_PATCHES)
+		$(XAW_PATCHES) make/xaw.mk
 	$(MAKE) xt-stage
 	$(MAKE) xmu-stage
 	$(MAKE) xpm-stage
@@ -118,8 +118,6 @@ $(XAW_BUILD_DIR)/.configured: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XAW_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		ACLOCAL=aclocal-1.9 \
-		AUTOMAKE=automake-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -128,7 +126,7 @@ $(XAW_BUILD_DIR)/.configured: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz \
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(XAW_BUILD_DIR)/libtool
-	touch $(XAW_BUILD_DIR)/.configured
+	touch $@
 
 xaw-unpack: $(XAW_BUILD_DIR)/.configured
 
@@ -136,9 +134,9 @@ xaw-unpack: $(XAW_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XAW_BUILD_DIR)/.built: $(XAW_BUILD_DIR)/.configured
-	rm -f $(XAW_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XAW_BUILD_DIR)
-	touch $(XAW_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
