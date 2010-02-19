@@ -116,6 +116,9 @@ $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/
 ifeq (enable, $(GETTEXT_NLS))
 	$(MAKE) gettext-stage
 endif
+ifneq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) glib-host-stage
+endif
 	rm -rf $(BUILD_DIR)/$(AVAHI_DIR) $(@D)
 	$(AVAHI_UNZIP) $(DL_DIR)/$(AVAHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AVAHI_PATCHES)" ; \
@@ -161,7 +164,7 @@ avahi-unpack: $(AVAHI_BUILD_DIR)/.configured
 #
 $(AVAHI_BUILD_DIR)/.built: $(AVAHI_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) $(if $(filter $(HOSTCC), $(TARGET_CC)),,PATH=$$PATH:$(HOST_STAGING_PREFIX)/bin)
 	touch $@
 
 #
