@@ -121,7 +121,7 @@ transcode-source: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
+$(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES) make/transcode.mk
 	$(MAKE) ffmpeg-stage
 	$(MAKE) freetype-stage
 	$(MAKE) lame-stage
@@ -143,7 +143,7 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 #	sed -ie 's/static int verbose/extern int verbose/' $(TRANSCODE_BUILD_DIR)/import/tcextract.c
 ifneq ($(HOSTCC), $(TARGET_CC))
 	cd $(TRANSCODE_BUILD_DIR); \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -f;
+		autoreconf -i -f;
 endif
 	sed -ie 's|="-I/usr/include"|=""|g' $(TRANSCODE_BUILD_DIR)/configure
 	(cd $(TRANSCODE_BUILD_DIR); \
@@ -183,7 +183,7 @@ endif
 	)
 	sed -i -e "/#define TC_LAME_VERSION/s/$$/ `echo $(LAME_VERSION) | sed s:[.]::`/" $(TRANSCODE_BUILD_DIR)/config.h
 	$(PATCH_LIBTOOL) $(TRANSCODE_BUILD_DIR)/libtool
-	touch $(TRANSCODE_BUILD_DIR)/.configured
+	touch $@
 
 transcode-unpack: $(TRANSCODE_BUILD_DIR)/.configured
 
@@ -191,10 +191,10 @@ transcode-unpack: $(TRANSCODE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TRANSCODE_BUILD_DIR)/.built: $(TRANSCODE_BUILD_DIR)/.configured
-	rm -f $(TRANSCODE_BUILD_DIR)/.built
+	rm -f $@
 #	$(MAKE) 'CFLAGS=-I$(STAGING_DIR)/opt/include/freetype2' -C $(TRANSCODE_BUILD_DIR)
 	$(MAKE) -C $(TRANSCODE_BUILD_DIR)
-	touch $(TRANSCODE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -205,9 +205,9 @@ transcode: $(TRANSCODE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(TRANSCODE_BUILD_DIR)/.staged: $(TRANSCODE_BUILD_DIR)/.built
-	rm -f $(TRANSCODE_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(TRANSCODE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(TRANSCODE_BUILD_DIR)/.staged
+	touch $@
 
 transcode-stage: $(TRANSCODE_BUILD_DIR)/.staged
 
