@@ -48,7 +48,7 @@ FFMPEG_IPK_VERSION=2
 ## FFMPEG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FFMPEG_PATCHES=
+FFMPEG_PATCHES=$(FFMPEG_SOURCE_DIR)/ffmpeg-swscale-headers.patch
 ifeq ($(LIBC_STYLE), uclibc)
 FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/disable-C99-math-funcs.patch
 endif
