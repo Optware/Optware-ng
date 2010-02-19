@@ -111,7 +111,7 @@ tshark-source: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES)
+$(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES) make/tshark.mk
 	$(MAKE) c-ares-stage glib-stage libpcap-stage pcre-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(TSHARK_DIR) $(@D)
 	$(TSHARK_UNZIP) $(DL_DIR)/$(TSHARK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
