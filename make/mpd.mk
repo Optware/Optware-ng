@@ -166,7 +166,6 @@ endif
 	if test "$(BUILD_DIR)/$(MPD_DIR)" != "$(MPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MPD_DIR) $(MPD_BUILD_DIR) ; \
 	fi
-#	ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
 #	sed -i -e '/LIBFLAC_LIBS="$$LIBFLAC_LIBS/s|-lFLAC|-lFLAC -logg|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
