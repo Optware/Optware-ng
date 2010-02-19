@@ -97,7 +97,7 @@ xtst-source: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz $(XTST_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XTST_BUILD_DIR)/.configured: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz \
-		$(XTST_PATCHES)
+		$(XTST_PATCHES) make/xtst.mk
 	$(MAKE) x11-stage
 	$(MAKE) xext-stage
 	$(MAKE) recordext-stage
@@ -116,7 +116,6 @@ $(XTST_BUILD_DIR)/.configured: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XTST_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -125,7 +124,7 @@ $(XTST_BUILD_DIR)/.configured: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz \
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(XTST_BUILD_DIR)/libtool
-	touch $(XTST_BUILD_DIR)/.configured
+	touch $@
 
 xtst-unpack: $(XTST_BUILD_DIR)/.configured
 
@@ -133,9 +132,9 @@ xtst-unpack: $(XTST_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XTST_BUILD_DIR)/.built: $(XTST_BUILD_DIR)/.configured
-	rm -f $(XTST_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XTST_BUILD_DIR)
-	touch $(XTST_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
