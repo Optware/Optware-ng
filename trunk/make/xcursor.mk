@@ -99,7 +99,7 @@ xcursor-source: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz $(XCURSOR_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XCURSOR_BUILD_DIR)/.configured: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz \
-		$(XCURSOR_PATCHES)
+		$(XCURSOR_PATCHES) make/xcursor.mk
 	$(MAKE) x11-stage
 	$(MAKE) xrender-stage
 	$(MAKE) xfixes-stage
@@ -118,7 +118,6 @@ $(XCURSOR_BUILD_DIR)/.configured: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XCURSOR_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -126,7 +125,7 @@ $(XCURSOR_BUILD_DIR)/.configured: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XCURSOR_BUILD_DIR)/.configured
+	touch $@
 
 xcursor-unpack: $(XCURSOR_BUILD_DIR)/.configured
 
@@ -134,9 +133,9 @@ xcursor-unpack: $(XCURSOR_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XCURSOR_BUILD_DIR)/.built: $(XCURSOR_BUILD_DIR)/.configured
-	rm -f $(XCURSOR_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XCURSOR_BUILD_DIR)
-	touch $(XCURSOR_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
