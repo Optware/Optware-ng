@@ -99,7 +99,7 @@ xauth-source: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz $(XAUTH_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XAUTH_BUILD_DIR)/.configured: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz \
-		$(XAUTH_PATCHES)
+		$(XAUTH_PATCHES) make/xauth.mk
 	$(MAKE) xau-stage
 	$(MAKE) xmu-stage
 	rm -rf $(BUILD_DIR)/$(XAUTH_DIR) $(XAUTH_BUILD_DIR)
@@ -112,7 +112,7 @@ $(XAUTH_BUILD_DIR)/.configured: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz \
 		patch -d $(XAUTH_BUILD_DIR) -p1 ; \
 	fi
 	(cd $(XAUTH_BUILD_DIR); \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -v -i; \
+		autoreconf -v -i; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XAUTH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XAUTH_LDFLAGS)" \
@@ -125,7 +125,7 @@ $(XAUTH_BUILD_DIR)/.configured: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XAUTH_BUILD_DIR)/.configured
+	touch $@
 
 xauth-unpack: $(XAUTH_BUILD_DIR)/.configured
 
@@ -133,9 +133,9 @@ xauth-unpack: $(XAUTH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XAUTH_BUILD_DIR)/.built: $(XAUTH_BUILD_DIR)/.configured
-	rm -f $(XAUTH_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XAUTH_BUILD_DIR)
-	touch $(XAUTH_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -146,9 +146,9 @@ xauth: $(XAUTH_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(XAUTH_BUILD_DIR)/.staged: $(XAUTH_BUILD_DIR)/.built
-	rm -f $(XAUTH_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(XAUTH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(XAUTH_BUILD_DIR)/.staged
+	touch $@
 
 xauth-stage: $(XAUTH_BUILD_DIR)/.staged
 
