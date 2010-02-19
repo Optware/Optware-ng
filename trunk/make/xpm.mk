@@ -98,7 +98,7 @@ xpm-source: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz $(XPM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XPM_BUILD_DIR)/.configured: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz \
-		$(XPM_PATCHES)
+		$(XPM_PATCHES) make/xpm.mk
 	$(MAKE) x11-stage
 	rm -rf $(BUILD_DIR)/$(XPM_DIR) $(XPM_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz
@@ -115,8 +115,6 @@ $(XPM_BUILD_DIR)/.configured: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XPM_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		ACLOCAL=aclocal-1.9 \
-		AUTOMAKE=automake-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -124,7 +122,7 @@ $(XPM_BUILD_DIR)/.configured: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XPM_BUILD_DIR)/.configured
+	touch $@
 
 xpm-unpack: $(XPM_BUILD_DIR)/.configured
 
