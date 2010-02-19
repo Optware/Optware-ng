@@ -99,7 +99,7 @@ xt-source: $(DL_DIR)/xt-$(XT_VERSION).tar.gz $(XT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XT_BUILD_DIR)/.configured: $(DL_DIR)/xt-$(XT_VERSION).tar.gz \
-		$(XT_PATCHES)
+		$(XT_PATCHES) make/xt.mk
 	$(MAKE) x11-stage
 	$(MAKE) sm-stage
 	rm -rf $(BUILD_DIR)/$(XT_DIR) $(XT_BUILD_DIR)
@@ -117,8 +117,6 @@ $(XT_BUILD_DIR)/.configured: $(DL_DIR)/xt-$(XT_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		ACLOCAL=aclocal-1.9 \
-		AUTOMAKE=automake-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -127,7 +125,7 @@ $(XT_BUILD_DIR)/.configured: $(DL_DIR)/xt-$(XT_VERSION).tar.gz \
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(XT_BUILD_DIR)/libtool
-	touch $(XT_BUILD_DIR)/.configured
+	touch $@
 
 xt-unpack: $(XT_BUILD_DIR)/.configured
 
@@ -135,10 +133,10 @@ xt-unpack: $(XT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XT_BUILD_DIR)/.built: $(XT_BUILD_DIR)/.configured
-	rm -f $(XT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XT_BUILD_DIR)/util CC=$(HOSTCC) CFLAGS="-pipe -O1" LDFLAGS=""
 	$(MAKE) -C $(XT_BUILD_DIR)
-	touch $(XT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
