@@ -99,7 +99,7 @@ xft-source: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz $(XFT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XFT_BUILD_DIR)/.configured: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz \
-		$(XFT_PATCHES)
+		$(XFT_PATCHES) make/xft.mk
 	$(MAKE) freetype-stage
 	$(MAKE) fontconfig-stage
 	$(MAKE) x11-stage
@@ -119,7 +119,6 @@ $(XFT_BUILD_DIR)/.configured: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XFT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
@@ -128,7 +127,7 @@ $(XFT_BUILD_DIR)/.configured: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XFT_BUILD_DIR)/.configured
+	touch $@
 
 xft-unpack: $(XFT_BUILD_DIR)/.configured
 
@@ -136,9 +135,9 @@ xft-unpack: $(XFT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XFT_BUILD_DIR)/.built: $(XFT_BUILD_DIR)/.configured
-	rm -f $(XFT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XFT_BUILD_DIR)
-	touch $(XFT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
