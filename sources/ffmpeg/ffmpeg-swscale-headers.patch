@@ -1,0 +1,20 @@
+--- libavcodec/imgresample.c    (revision 7407)
++++ libavcodec/imgresample.c    (working copy)
+@@ -641,7 +641,7 @@
+ struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat,
+                                   int dstW, int dstH, int dstFormat,
+                                   int flags, SwsFilter *srcFilter,
+-                                  SwsFilter *dstFilter, double *param)
++                                  SwsFilter *dstFilter, const double *param)
+ {
+     struct SwsContext *ctx;
+ 
+@@ -695,7 +695,7 @@
+ struct SwsContext *sws_getCachedContext(struct SwsContext *ctx,
+                         int srcW, int srcH, int srcFormat,
+                         int dstW, int dstH, int dstFormat, int flags,
+-                        SwsFilter *srcFilter, SwsFilter *dstFilter, double *param)
++                        SwsFilter *srcFilter, SwsFilter *dstFilter, const double *param)
+ {
+     if (ctx != NULL) {
+         if ((ctx->resampling_ctx->iwidth != srcW) ||
