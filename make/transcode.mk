@@ -49,8 +49,14 @@ TRANSCODE_CONFFILES=/opt/etc/transcode.conf /opt/etc/init.d/SXXtranscode
 # which they should be applied to the source code.
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
-TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/patch
+TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/configure.in-cross.patch
 endif
+
+TRANSCODE_PATCHES += \
+	$(TRANSCODE_SOURCE_DIR)/transcode-1.0.3-lavc-register-codecs.patch \
+	$(TRANSCODE_SOURCE_DIR)/transcode-1.0.3-libmpeg3_fixes-1.patch
+
+
 
 #
 # If the compilation of the package requires additional
@@ -181,7 +187,8 @@ endif
 		$(TRANSCODE_CONFIG_ARG) \
 		; \
 	)
-	sed -i -e "/#define TC_LAME_VERSION/s/$$/ `echo $(LAME_VERSION) | sed s:[.]::`/" $(TRANSCODE_BUILD_DIR)/config.h
+	sed -i -e "/#define TC_LAME_VERSION/s/$$/ `echo $(LAME_VERSION) | sed s:[.]:: | sed s:[.].*::`/" \
+		 $(TRANSCODE_BUILD_DIR)/config.h
 	$(PATCH_LIBTOOL) $(TRANSCODE_BUILD_DIR)/libtool
 	touch $@
 
