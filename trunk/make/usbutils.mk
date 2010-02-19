@@ -101,7 +101,6 @@ $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCH
 	fi
 	mv $(BUILD_DIR)/$(USBUTILS_DIR) $(@D)
 	sed -i 's|DEST=|&/opt/share/misc/|' $(@D)/update-usbids.sh
-#	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USBUTILS_CPPFLAGS)" \
