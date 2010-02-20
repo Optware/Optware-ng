@@ -40,6 +40,7 @@ $(AUTOMAKE19_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOMAKE19_SOU
 	(cd $(@D); \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX)	\
+		--datarootdir=$(HOST_STAGING_PREFIX)/share \
 	)
 	$(MAKE) -C $(@D)
 	touch $@
