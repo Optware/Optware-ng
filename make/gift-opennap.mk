@@ -93,18 +93,21 @@ gift-opennap-source: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GIFT_OPENNAP_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES)
+$(GIFT_OPENNAP_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES) make/gift-opennap.mk
+	$(HOST_TOOL_ACLOCAL19_STAGE)
+	$(HOST_TOOL_AUTOMAKE19_STAGE)
 	$(MAKE) gift-stage
-	rm -rf $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(GIFT_OPENNAP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(@D)
 	$(GIFT_OPENNAP_UNZIP) $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GIFT_OPENNAP_PATCHES) | patch -d $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(GIFT_OPENNAP_BUILD_DIR)
 	(cd $(GIFT_OPENNAP_BUILD_DIR); \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
-		ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -i -v; \
+		ACLOCAL="$(ACLOCAL19) -I m4" AUTOMAKE=$(AUTOMAKE19) autoreconf -i -v; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFT_OPENNAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFT_OPENNAP_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -113,7 +116,7 @@ $(GIFT_OPENNAP_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_O
 		--disable-static \
 		--enable-shared \
 	)
-	touch $(GIFT_OPENNAP_BUILD_DIR)/.configured
+	touch $@
 
 gift-opennap-unpack: $(GIFT_OPENNAP_BUILD_DIR)/.configured
 
@@ -122,9 +125,9 @@ gift-opennap-unpack: $(GIFT_OPENNAP_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(GIFT_OPENNAP_BUILD_DIR)/.built: $(GIFT_OPENNAP_BUILD_DIR)/.configured
-	rm -f $(GIFT_OPENNAP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(GIFT_OPENNAP_BUILD_DIR)
-	touch $(GIFT_OPENNAP_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
