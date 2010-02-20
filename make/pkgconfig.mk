@@ -67,6 +67,8 @@ PKGCONFIG_SOURCE_DIR=$(SOURCE_DIR)/pkgconfig
 PKGCONFIG_IPK_DIR=$(BUILD_DIR)/pkgconfig-$(PKGCONFIG_VERSION)-ipk
 PKGCONFIG_IPK=$(BUILD_DIR)/pkgconfig_$(PKGCONFIG_VERSION)-$(PKGCONFIG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PKGCONFIG_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/pkgconfig
+
 #
 # Automatically create a ipkg control file
 #
@@ -96,6 +98,29 @@ $(DL_DIR)/$(PKGCONFIG_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 pkgconfig-source: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PATCHES)
+
+
+$(PKGCONFIG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(PKGCONFIG_SOURCE) make/pkgconfig.mk
+	rm -rf $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
+	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
+	(cd $(@D); \
+		./configure \
+		--prefix=$(HOST_STAGING_PREFIX)	\
+	)
+	$(MAKE) -C $(@D)
+	touch $@
+
+pkgconfig-host: $(PKGCONFIG_HOST_BUILD_DIR)/.built
+
+
+$(PKGCONFIG_HOST_BUILD_DIR)/.staged: $(PKGCONFIG_HOST_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
+	touch $@
+
+pkgconfig-host-stage: $(PKGCONFIG_HOST_BUILD_DIR)/.staged
+
 
 #
 # This target unpacks the source code in the build directory.
