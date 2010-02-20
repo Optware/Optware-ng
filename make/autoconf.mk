@@ -41,6 +41,7 @@ $(AUTOCONF_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOCONF_SOURCE)
 	(cd $(@D); \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX)	\
+		--datarootdir=$(HOST_STAGING_PREFIX)/share \
 	)
 	$(MAKE) -C $(@D)
 	touch $@
