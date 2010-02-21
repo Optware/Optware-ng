@@ -369,7 +369,7 @@ COMMON_CROSS_PACKAGES = \
 	xextensions xfixes xft xinetd \
 	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
 	x264 xmail xvid \
-	yafc yawk yougrabber \
+	yafc yasm yawk yougrabber \
 	zile zip zlib zoo zsh \
 
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
