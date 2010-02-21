@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 LZO_NAME=lzo
-LZO_SITE=http://www.oberhumer.com/opensource/lzo/download/
-LZO_VERSION=1.08
+LZO_SITE=http://www.oberhumer.com/opensource/lzo/download
+LZO_VERSION=2.03
 LZO_SOURCE=$(LZO_NAME)-$(LZO_VERSION).tar.gz
 LZO_DIR=$(LZO_NAME)-$(LZO_VERSION)
 LZO_UNZIP=zcat
@@ -29,7 +29,7 @@ LZO_UNZIP=zcat
 #
 # LZO_IPK_VERSION should be incremented when the ipk changes.
 #
-LZO_IPK_VERSION=2
+LZO_IPK_VERSION=1
 
 #
 # Control file info
@@ -76,7 +76,7 @@ LZO_IPK=$(BUILD_DIR)/lzo_$(LZO_VERSION)-$(LZO_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(LZO_IPK_DIR)/CONTROL/control:
-	@install -d $(LZO_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: $(LZO_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -94,7 +94,8 @@ $(LZO_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LZO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LZO_SITE)/$(LZO_SOURCE)
+	$(WGET) -P $(@D) $(LZO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,13 +119,13 @@ lzo-source: $(DL_DIR)/$(LZO_SOURCE) $(LZO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LZO_BUILD_DIR)/.configured: $(DL_DIR)/$(LZO_SOURCE) $(LZO_PATCHES)
+$(LZO_BUILD_DIR)/.configured: $(DL_DIR)/$(LZO_SOURCE) $(LZO_PATCHES) make/lzo.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LZO_DIR) $(LZO_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LZO_DIR) $(@D)
 	$(LZO_UNZIP) $(DL_DIR)/$(LZO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LZO_PATCHES) | patch -d $(BUILD_DIR)/$(LZO_DIR) -p1
-	mv $(BUILD_DIR)/$(LZO_DIR) $(LZO_BUILD_DIR)
-	(cd $(LZO_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LZO_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LZO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LZO_LDFLAGS)" \
@@ -136,7 +137,8 @@ $(LZO_BUILD_DIR)/.configured: $(DL_DIR)/$(LZO_SOURCE) $(LZO_PATCHES)
 		--enable-shared \
 		--disable-nls \
 	)
-	touch $(LZO_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 lzo-unpack: $(LZO_BUILD_DIR)/.configured
 
@@ -144,9 +146,9 @@ lzo-unpack: $(LZO_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LZO_BUILD_DIR)/.built: $(LZO_BUILD_DIR)/.configured
-	rm -f $(LZO_BUILD_DIR)/.built
-	$(MAKE) -C $(LZO_BUILD_DIR)
-	touch $(LZO_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -156,27 +158,14 @@ lzo: $(LZO_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/liblzo.so.$(LZO_VERSION): $(LZO_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzoconf.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzoutil.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo16bit.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1.h  $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1a.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1b.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1c.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1f.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1x.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1y.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1z.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo2a.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	cd $(LZO_BUILD_DIR)/src ; /bin/sh ../libtool --mode=install install -c liblzo.la $(STAGING_DIR)/opt/lib
-        # That creepy libtool won't let us set the right version number, so clean it up
-        # Must be a better way than renaming the files, deleting the symlinks and recreating them
+$(LZO_BUILD_DIR)/.staged: $(LZO_BUILD_DIR)/.built
+	rm -f $@
+	rm -rf $(STAGING_INCLUDE_DIR)/lzo* $(STAGING_LIB_DIR)/liblzo*
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/liblzo2.a $(STAGING_LIB_DIR)/liblzo2.la
+	touch $@
 
-
-lzo-stage: $(STAGING_DIR)/opt/lib/liblzo.so.$(LZO_VERSION)
+lzo-stage: $(LZO_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -192,25 +181,8 @@ lzo-stage: $(STAGING_DIR)/opt/lib/liblzo.so.$(LZO_VERSION)
 #
 $(LZO_IPK): $(LZO_BUILD_DIR)/.built
 	rm -rf $(LZO_IPK_DIR) $(BUILD_DIR)/lzo_*_$(TARGET_ARCH).ipk
-#	install -d $(LZO_IPK_DIR)/opt/bin
-#	$(STRIP_COMMAND) $(LZO_BUILD_DIR)/lzo -o $(LZO_IPK_DIR)/opt/bin/lzo
-	# Install include files
-	install -d $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzoconf.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzoutil.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo16bit.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1a.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1b.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1c.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1f.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1x.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1y.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo1z.h $(LZO_IPK_DIR)/opt/include
-	install -m 644 $(LZO_BUILD_DIR)/include/lzo2a.h $(LZO_IPK_DIR)/opt/include
-	# Install lib files
-	install -d $(LZO_IPK_DIR)/opt/lib
-	cd $(LZO_BUILD_DIR)/src ; /bin/sh ../libtool --mode=install install -c liblzo.la $(LZO_IPK_DIR)/opt/lib
+	$(MAKE) -C $(LZO_BUILD_DIR) DESTDIR=$(LZO_IPK_DIR) install-strip
+	rm -f $(LZO_IPK_DIR)/opt/lib/liblzo2.a
 	# Install control file
 	make  $(LZO_IPK_DIR)/CONTROL/control
 #	install -m 644 $(LZO_SOURCE_DIR)/postinst $(LZO_IPK_DIR)/CONTROL
@@ -235,3 +207,9 @@ lzo-clean:
 #
 lzo-dirclean:
 	rm -rf $(BUILD_DIR)/$(LZO_DIR) $(LZO_BUILD_DIR) $(LZO_IPK_DIR) $(LZO_IPK)
+
+#
+# Some sanity check for the package.
+#
+lzo-check: $(LZO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
