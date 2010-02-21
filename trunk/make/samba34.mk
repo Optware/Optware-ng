@@ -21,7 +21,7 @@
 #
 SAMBA34_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA34_VERSION ?= 3.4.5
-SAMBA34_IPK_VERSION ?= 2
+SAMBA34_IPK_VERSION ?= 3
 SAMBA34_SOURCE=samba-$(SAMBA34_VERSION).tar.gz
 SAMBA34_DIR=samba-$(SAMBA34_VERSION)
 SAMBA34_UNZIP=zcat
@@ -36,14 +36,20 @@ endif
 ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
 SAMBA34_DEPENDS +=, gconv-modules
 endif
+SAMBA34-DEV_DEPENDS=samba34
+SAMBA34-SWAT_DEPENDS=samba34, xinetd
 SAMBA34_SUGGESTS=cups
-SAMBA34_CONFLICTS=samba,samba2
+SAMBA34-DEV_SUGGESTS=
+SAMBA34-SWAT_SUGGESTS=
+SAMBA34_CONFLICTS=samba2, samba
+SAMBA34-DEV_CONFLICTS=samba2, samba3-dev
+SAMBA34-SWAT_CONFLICTS=samba2, samba3-swat
 SAMBA34_ADDITIONAL_CODEPAGES=CP866
 
 #
 # SAMBA34_CONFFILES should be a list of user-editable files
 SAMBA34_CONFFILES=/opt/etc/init.d/S08samba
-SAMBA3-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
+SAMBA34-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
 
 #
 # SAMBA34_PATCHES should list any patches, in the the order in
@@ -106,7 +112,7 @@ SAMBA34_CROSS_ENVS=\
 		smb_krb5_cv_enctype_to_string_takes_size_t_arg=no \
 		LOOK_DIRS=$(STAGING_PREFIX) \
 		samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
-		linux_getgrouplist_ok=no \
+		linux_getgrouplist_ok=yes \
 		SAMBA_cv_HAVE_GETTIMEOFDAY_TZ=yes \
 		SAMBA_cv_have_setresuid=yes \
 		SAMBA_cv_have_setresgid=yes \
@@ -304,9 +310,9 @@ $(SAMBA34-DEV_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(SAMBA34_MAINTAINER)" >>$@
 	@echo "Source: $(SAMBA34_SITE)/$(SAMBA34_SOURCE)" >>$@
 	@echo "Description: development files for samba34" >>$@
-	@echo "Depends: samba34" >>$@
-	@echo "Suggests: " >>$@
-	@echo "Conflicts: " >>$@
+	@echo "Depends: $(SAMBA34-DEV_DEPENDS)" >>$@
+	@echo "Suggests: $(SAMBA34-DEV_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SAMBA34-DEV_CONFLICTS)" >>$@
 
 $(SAMBA34-SWAT_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)/
@@ -319,9 +325,9 @@ $(SAMBA34-SWAT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(SAMBA34_MAINTAINER)" >>$@
 	@echo "Source: $(SAMBA34_SITE)/$(SAMBA34_SOURCE)" >>$@
 	@echo "Description: the Samba Web Admin Tool for samba34" >>$@
-	@echo "Depends: samba34, xinetd" >>$@
-	@echo "Suggests: " >>$@
-	@echo "Conflicts: " >>$@
+	@echo "Depends: $(SAMBA34-SWAT_DEPENDS)" >>$@
+	@echo "Suggests: $(SAMBA34-SWAT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SAMBA34-SWAT_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -394,5 +400,5 @@ samba34-dirclean:
 #
 # Some sanity check for the package.
 #
-samba34-check: $(SAMBA34_IPK) $(SAMBA3-DEV_IPK) $(SAMBA3-SWAT_IPK)
+samba34-check: $(SAMBA34_IPK) $(SAMBA34-DEV_IPK) $(SAMBA34-SWAT_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
