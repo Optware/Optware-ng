@@ -42,7 +42,7 @@ MKVTOOLNIX_CONFLICTS=
 #
 # MKVTOOLNIX_IPK_VERSION should be incremented when the ipk changes.
 #
-MKVTOOLNIX_IPK_VERSION?=1
+MKVTOOLNIX_IPK_VERSION?=2
 
 #
 # MKVTOOLNIX_CONFFILES should be a list of user-editable files
