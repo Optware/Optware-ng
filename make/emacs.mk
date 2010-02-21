@@ -83,7 +83,8 @@ EMACS_LISP_SRC_IPK=$(BUILD_DIR)/emacs-lisp-src_$(EMACS_VERSION)-$(EMACS_IPK_VERS
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(EMACS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(EMACS_SITE)/$(EMACS_SOURCE)
+	$(WGET) -P $(@D) $(EMACS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
