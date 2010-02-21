@@ -16,7 +16,6 @@ BROKEN_PACKAGES = \
 	puppy \
 	samba34 \
 	sandbox \
-	transcode \
 	x264 lm-sensors \
 
 E2FSPROGS_VERSION := 1.40.3

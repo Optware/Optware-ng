@@ -16,7 +16,6 @@ BROKEN_PACKAGES = \
 	\
 	rssh \
 	sandbox \
-	transcode \
 
 PERL_MAJOR_VER=5.10
 
