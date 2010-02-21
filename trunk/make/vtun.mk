@@ -36,7 +36,7 @@ VTUN_CONFLICTS=
 #
 # VTUN_IPK_VERSION should be incremented when the ipk changes.
 #
-VTUN_IPK_VERSION=1
+VTUN_IPK_VERSION=2
 
 #
 # VTUN_CONFFILES should be a list of user-editable files
@@ -55,7 +55,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 VTUN_CPPFLAGS=
-VTUN_LDFLAGS=-lcrypto -llzo -lz
+VTUN_LDFLAGS=-lcrypto -llzo2 -lz
 
 #
 # VTUN_BUILD_DIR is the directory in which the build is done.
@@ -130,7 +130,7 @@ $(VTUN_BUILD_DIR)/.configured: $(DL_DIR)/$(VTUN_SOURCE) $(VTUN_PATCHES) make/vtu
 		--with-ssl-headers=$(STAGING_INCLUDE_DIR)/openssl \
 		--with-blowfish-headers=$(STAGING_INCLUDE_DIR)/openssl \
 		--with-ssl-lib=$(STAGING_LIB_DIR) \
-		--with-lzo-headers=$(STAGING_INCLUDE_DIR) \
+		--with-lzo-headers=$(STAGING_INCLUDE_DIR)/lzo \
 		--with-lzo-lib=$(STAGING_LIB_DIR) \
 		--disable-nls \
 		--disable-static \
