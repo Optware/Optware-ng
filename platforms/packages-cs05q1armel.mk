@@ -19,7 +19,6 @@ BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	sandbox \
 	gtk vte xchat \
-	transcode \
 
 CUPS_GCC_DOES_NOT_SUPPORT_PIE := 1
 

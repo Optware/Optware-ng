@@ -22,7 +22,6 @@ BROKEN_PACKAGES = \
 	samba34 \
 	sane-backends \
 	sandbox \
-	transcode \
 	util-linux \
 	\
 	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \

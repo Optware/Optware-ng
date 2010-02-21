@@ -18,7 +18,7 @@ BROKEN_PACKAGES = \
 	py-mysql \
 	quagga \
 	rssh sablevm \
-	transcode util-linux vnstat \
+	util-linux vnstat \
 	slimserver \
 
 RTORRENT_VERSION := 0.8.2

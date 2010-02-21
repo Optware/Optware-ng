@@ -25,7 +25,6 @@ BROKEN_PACKAGES = \
 	nfs-utils \
 	pcapsipdump \
 	rhtvision \
-	transcode \
 	vte xchat
 
 MYSQL5_CONFIG_ENV_EXTRA := ac_cv_func_fesetround=no

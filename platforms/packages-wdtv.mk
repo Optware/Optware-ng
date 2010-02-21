@@ -18,7 +18,6 @@ BROKEN_PACKAGES = \
 	pinentry \
 	puppy rssh \
 	sandbox \
-	transcode \
 	lm-sensors \
 
 RTORRENT_VERSION := 0.8.2

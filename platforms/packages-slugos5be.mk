@@ -14,7 +14,7 @@ BROKEN_PACKAGES = \
 	gtk ipac-ng iptables iptraf ldconfig \
 	nfs-utils \
 	puppy qemu softflowd \
-	transcode vte xchat \
+	vte xchat \
 
 SLANG_VERSION := 2.2.2
 SLANG_IPK_VERSION := 1

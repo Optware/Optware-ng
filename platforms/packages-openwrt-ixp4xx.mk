@@ -24,7 +24,6 @@ BROKEN_PACKAGES = \
 	puppy \
 	quickie \
 	sandbox \
-	transcode \
 
 JAMVM_VERSION = 1.5.1
 JAMVM_IPK_VERSION = 1
