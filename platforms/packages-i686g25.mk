@@ -19,7 +19,6 @@ BROKEN_PACKAGES = \
 	nfs-utils puppy \
 	qemu \
 	samba34 \
-	transcode \
 	util-linux \
 	vte \
 	xaw xchat xterm

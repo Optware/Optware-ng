@@ -14,7 +14,7 @@ BROKEN_PACKAGES = \
 	bitchx \
 	iptables ivorbis-tools lcd4linux \
 	ldconfig puppy \
-	qemu transcode \
+	qemu \
 
 SLANG_VERSION := 2.2.2
 SLANG_IPK_VERSION := 1
