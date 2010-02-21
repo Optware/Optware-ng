@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
         $(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule bitchx cairo clamav dmsetup inferno iptables \
 	iptraf ldconfig mpdscribble nfs-utils openser opensips \
-	pango pixman puppy qemu vlc vte xchat \
+	pango pixman puppy qemu transcode vlc vte xchat \
 	x264 lm-sensors
 
 ATFTP_EXTRA_PATCHES = $(ATFTP_SOURCE_DIR)/argz.h.patch
