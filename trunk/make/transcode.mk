@@ -21,7 +21,7 @@
 #
 #TRANSCODE_REPOSITORY=:pserver:cvs@cvs.exit1.org:/cvstc
 TRANSCODE_SITE=http://fromani.exit1.org
-TRANSCODE_VERSION=1.0.3
+TRANSCODE_VERSION=1.0.7
 TRANSCODE_SOURCE=transcode-$(TRANSCODE_VERSION).tar.bz2
 #TRANSCODE_TAG=-D 2005-02-13
 #TRANSCODE_MODULE=transcode
@@ -31,14 +31,14 @@ TRANSCODE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TRANSCODE_DESCRIPTION=Transcode is a suite of tools, all of which are command line utilities, for transcoding various video, audio, and container formats, running on a platform that supports shared libraries and threads.
 TRANSCODE_SECTION=tool
 TRANSCODE_PRIORITY=optional
-TRANSCODE_DEPENDS=ffmpeg, freetype, lame, liba52, libdvdread, libmpeg2, libogg, libvorbis
+TRANSCODE_DEPENDS=ffmpeg, freetype, lame, liba52, libdvdread, libmpeg2, libogg, libvorbis, lzo
 TRANSCODE_SUGGESTS=
 TRANSCODE_CONFLICTS=
 
 #
 # TRANSCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSCODE_IPK_VERSION=2
+TRANSCODE_IPK_VERSION=1
 
 #
 # TRANSCODE_CONFFILES should be a list of user-editable files
@@ -51,12 +51,6 @@ TRANSCODE_CONFFILES=/opt/etc/transcode.conf /opt/etc/init.d/SXXtranscode
 ifneq ($(HOSTCC), $(TARGET_CC))
 TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/configure.in-cross.patch
 endif
-
-TRANSCODE_PATCHES += \
-	$(TRANSCODE_SOURCE_DIR)/transcode-1.0.3-lavc-register-codecs.patch \
-	$(TRANSCODE_SOURCE_DIR)/transcode-1.0.3-libmpeg3_fixes-1.patch
-
-
 
 #
 # If the compilation of the package requires additional
@@ -128,16 +122,11 @@ transcode-source: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES) make/transcode.mk
-	$(MAKE) ffmpeg-stage
-	$(MAKE) freetype-stage
-	$(MAKE) lame-stage
-	$(MAKE) liba52-stage
-	$(MAKE) libdvdread-stage
-	$(MAKE) libjpeg-stage
-	$(MAKE) libmpeg2-stage
-	$(MAKE) libogg-stage
-	$(MAKE) libvorbis-stage
-	$(MAKE) libxml2-stage
+	$(MAKE) ffmpeg-stage freetype-stage lame-stage
+	$(MAKE) liba52-stage libdvdread-stage
+	$(MAKE) libjpeg-stage libmpeg2-stage
+	$(MAKE) libogg-stage libvorbis-stage
+	$(MAKE) libxml2-stage lzo-stage
 	rm -rf $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	$(TRANSCODE_UNZIP) $(DL_DIR)/$(TRANSCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSCODE_PATCHES)"; \
@@ -181,6 +170,7 @@ endif
 		--enable-a52 \
 		--enable-freetype2 \
 		--enable-libxml2 \
+		--enable-lzo \
 		--enable-ogg \
 		--enable-vorbis \
 		--disable-nls \
