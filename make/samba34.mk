@@ -102,6 +102,12 @@ SAMBA34_INFO_DIR=$(SAMBA34_INST_DIR)/info
 SAMBA34_MAN_DIR=$(SAMBA34_INST_DIR)/man
 SAMBA34_SWAT_DIR=$(SAMBA34_INST_DIR)/share/swat
 
+ifeq (uclibc, $(LIBC_STYLE))
+SAMBA34_LINUX_GETGROUPLIST_OK=no
+else
+SAMBA34_LINUX_GETGROUPLIST_OK=yes
+endif
+
 ifneq ($(HOSTCC), $(TARGET_CC))
 SAMBA34_CROSS_ENVS=\
 		LINUX_LFS_SUPPORT=yes \
@@ -112,7 +118,7 @@ SAMBA34_CROSS_ENVS=\
 		smb_krb5_cv_enctype_to_string_takes_size_t_arg=no \
 		LOOK_DIRS=$(STAGING_PREFIX) \
 		samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
-		linux_getgrouplist_ok=yes \
+		linux_getgrouplist_ok=$(SAMBA34_LINUX_GETGROUPLIST_OK) \
 		SAMBA_cv_HAVE_GETTIMEOFDAY_TZ=yes \
 		SAMBA_cv_have_setresuid=yes \
 		SAMBA_cv_have_setresgid=yes \
