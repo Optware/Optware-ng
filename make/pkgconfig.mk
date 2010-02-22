@@ -50,7 +50,7 @@ PKGCONFIG_PATCHES=$(PKGCONFIG_SOURCE_DIR)/configure.patch
 PKGCONFIG_CPPFLAGS=
 PKGCONFIG_LDFLAGS=
 ifneq ($(HOSTCC), $(TARGET_CC))
-PKGCONFIG_CONFIG_ARGS = --cache-file=arm.cache
+PKGCONFIG_CONFIG_ARGS = --cache-file=$(PKGCONFIG_BUILD_DIR)/crossconfig.cache
 endif
 
 #
@@ -141,7 +141,7 @@ $(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PA
 	mv $(BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	autoreconf -I. -vif $(@D)/glib-1.2.8
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cp $(PKGCONFIG_SOURCE_DIR)/pkgconfig.cache $(PKGCONFIG_BUILD_DIR)/arm.cache
+	cp $(PKGCONFIG_SOURCE_DIR)/pkgconfig.cache $(PKGCONFIG_BUILD_DIR)/crossconfig.cache
 endif
 	cp $(PKGCONFIG_SOURCE_DIR)/glibconfig-sysdefs.h $(PKGCONFIG_BUILD_DIR)/glib-1.2.8
 	(cd $(@D); \
