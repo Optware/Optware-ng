@@ -71,6 +71,10 @@ X264_CONFFILES=
 X264_PATCHES= \
 $(X264_SOURCE_DIR)/common-cpu.c.patch \
 
+ifeq (uclibc, $(LIBC_STYLE))
+X264_PATCHES += $(X264_SOURCE_DIR)/encoder-analyse.c.patch
+endif
+
 #$(X264_SOURCE_DIR)/common-ppc-ppccommon.h.patch \
 $(X264_SOURCE_DIR)/common-ppc-dct.c.patch \
 
