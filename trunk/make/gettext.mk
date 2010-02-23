@@ -63,6 +63,8 @@ GETTEXT_SOURCE_DIR=$(SOURCE_DIR)/gettext
 GETTEXT_IPK_DIR=$(BUILD_DIR)/gettext-$(GETTEXT_VERSION)-ipk
 GETTEXT_IPK=$(BUILD_DIR)/gettext_$(GETTEXT_VERSION)-$(GETTEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+GETTEXT_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/gettext
+
 GETTEXT_NLS ?= disable
 
 #
@@ -78,6 +80,29 @@ $(DL_DIR)/$(GETTEXT_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 gettext-source: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
+
+
+$(GETTEXT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GETTEXT_SOURCE) make/gettext.mk
+	rm -rf $(HOST_BUILD_DIR)/$(GETTEXT_DIR) $(@D)
+	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(GETTEXT_DIR) $(@D)
+	(cd $(@D); \
+		./configure \
+		--prefix=$(HOST_STAGING_PREFIX)	\
+	)
+	$(MAKE) -C $(@D)
+	touch $@
+
+gettext-host: $(GETTEXT_HOST_BUILD_DIR)/.built
+
+
+$(GETTEXT_HOST_BUILD_DIR)/.staged: $(GETTEXT_HOST_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
+	touch $@
+
+gettext-host-stage: $(GETTEXT_HOST_BUILD_DIR)/.staged
+
 
 #
 # This target unpacks the source code in the build directory.
