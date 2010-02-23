@@ -103,6 +103,7 @@ pkgconfig-source: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PATCHES)
 $(PKGCONFIG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(PKGCONFIG_SOURCE) make/pkgconfig.mk
 	rm -rf $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	cat $(PKGCONFIG_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) -p1
 	mv $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	(cd $(@D); \
 		./configure \
