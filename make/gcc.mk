@@ -76,13 +76,18 @@ GCC_LDFLAGS=
 GCC_IPK_DIR=$(BUILD_DIR)/gcc-$(GCC_VERSION)-ipk
 GCC_IPK=$(BUILD_DIR)/gcc_$(GCC_VERSION)-$(GCC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+GCC_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/gcc
+GCC_HOST_PROGRAM_SUFFIX:=$(shell echo $(GCC_VERSION) | sed 's/\([^.]*\)[.]*\([^.]*\).*/\1.\2/')
+GCC_HOST_TOOL_SUFFIX:=$(shell echo $(GCC_VERSION) | sed 's/\([^.]*\)[.]*\([^.]*\).*/\1\2/')
+
 GCC_TARGET_NAME=$(strip \
 $(if $(and \
 	$(filter uclibc, $(LIBC_STYLE)), \
 	$(filter arm-linux armeb-linux mipsel-linux, $(GNU_TARGET_NAME))), \
 $(GNU_TARGET_NAME)-uclibc, $(GNU_TARGET_NAME)))
 
-.PHONY: gcc-source gcc-unpack gcc gcc-stage gcc-ipk gcc-clean gcc-dirclean gcc-check
+.PHONY: gcc-source gcc-unpack gcc gcc-stage gcc-ipk gcc-clean gcc-dirclean gcc-check \
+gcc-host gcc-host-stage gcc33-host-tool
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,6 +105,31 @@ endif
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 gcc-source: $(DL_DIR)/$(GCC_SOURCE) $(GCC_PATCHES)
+
+
+$(GCC_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GCC_SOURCE) make/gcc.mk
+	rm -rf $(HOST_BUILD_DIR)/$(GCC_DIR) $(@D)
+	$(GCC_UNZIP) $(DL_DIR)/$(GCC_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(GCC_DIR) $(@D)
+	(cd $(@D); \
+		./configure \
+		--prefix=$(HOST_STAGING_PREFIX)	\
+		--program-suffix="-$(GCC_HOST_PROGRAM_SUFFIX)" \
+		--enable-languages=c,c++ \
+	)
+	$(MAKE) -C $(@D)
+	touch $@
+
+gcc-host: $(GCC_HOST_BUILD_DIR)/.built
+
+
+$(GCC_HOST_BUILD_DIR)/.staged: $(GCC_HOST_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
+	touch $@
+
+gcc-host-stage: $(GCC_HOST_BUILD_DIR)/.staged
+
 
 #
 # This target unpacks the source code in the build directory.
