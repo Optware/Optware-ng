@@ -478,11 +478,15 @@ WGET=wget --passive-ftp
 PERL=perl
 
 # Required host-tools, which will build if they missing
-#HOST_TOOL_GCC33 = "(MAKE)"
-HOST_TOOL_ACLOCAL19 = $(MAKE) automake19-host-tool
-HOST_TOOL_AUTOMAKE19 = $(MAKE) automake19-host-tool
-HOST_TOOL_ACLOCAL14 = $(MAKE) automake14-host-tool
-HOST_TOOL_AUTOMAKE14 = $(MAKE) automake14-host-tool
+HOST_TOOL_GCC33 = $(MAKE) gcc-host-stage GCC_VERSION=3.3.6
+HOST_TOOL_ACLOCAL19 = \
+	$(MAKE) automake19-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_AUTOMAKE19 = \
+	$(MAKE) automake19-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_ACLOCAL14 = \
+	$(MAKE) automake14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_AUTOMAKE14 =  \
+	$(MAKE) automake14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 
 
 # The hostname or IP number of our local dl.sf.net mirror
