@@ -110,8 +110,15 @@ libcdio-source: $(DL_DIR)/$(LIBCDIO_SOURCE) $(LIBCDIO_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBCDIO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCDIO_SOURCE) $(LIBCDIO_PATCHES) make/libcdio.mk
-#	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBCDIO_DIR) $(LIBCDIO_BUILD_DIR)
+ifneq ($(HOSTCC), $(TARGET_CC))
+	$(HOST_TOOL_ACLOCAL19)
+	$(HOST_TOOL_AUTOMAKE19)
+	# use gettext-trick on host-tool-stage to always find libiconv
+	if test -e $(HOST_STAGING_PREFIX)/bin/aclocal-1.9; then \
+		$(MAKE) gettext-host-stage; \
+	fi
+endif
+	rm -rf $(BUILD_DIR)/$(LIBCDIO_DIR) $(@D)
 	$(LIBCDIO_UNZIP) $(DL_DIR)/$(LIBCDIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBCDIO_PATCHES)" ; \
 		then cat $(LIBCDIO_PATCHES) | \
@@ -122,12 +129,15 @@ $(LIBCDIO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCDIO_SOURCE) $(LIBCDIO_PATCHES)
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
 	cd $(LIBCDIO_BUILD_DIR); \
+		PATH=$$PATH:$(HOST_STAGING_PREFIX)/bin \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif
 endif
 	(cd $(LIBCDIO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBCDIO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBCDIO_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
