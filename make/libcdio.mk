@@ -113,10 +113,7 @@ $(LIBCDIO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCDIO_SOURCE) $(LIBCDIO_PATCHES)
 ifneq ($(HOSTCC), $(TARGET_CC))
 	$(HOST_TOOL_ACLOCAL19)
 	$(HOST_TOOL_AUTOMAKE19)
-	# use gettext-trick on host-tool-stage to always find libiconv
-	if test -e $(HOST_STAGING_PREFIX)/bin/aclocal-1.9; then \
-		$(MAKE) gettext-host-stage; \
-	fi
+	$(MAKE) gettext-host-stage
 endif
 	rm -rf $(BUILD_DIR)/$(LIBCDIO_DIR) $(@D)
 	$(LIBCDIO_UNZIP) $(DL_DIR)/$(LIBCDIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -129,8 +126,8 @@ endif
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
 	cd $(LIBCDIO_BUILD_DIR); \
-		PATH=$$PATH:$(HOST_STAGING_PREFIX)/bin \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif
+		ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.9 \
+		AUTOMAKE=$(HOST_STAGING_PREFIX)/bin/automake-1.9 autoreconf -vif
 endif
 	(cd $(LIBCDIO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
