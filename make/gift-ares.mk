@@ -114,15 +114,15 @@ gift-ares-source: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCHES)
 $(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCHES) make/gift-ares.mk
 	$(HOST_TOOL_ACLOCAL14)
 	$(HOST_TOOL_AUTOMAKE14)
-	$(MAKE) gift-stage
+	$(MAKE) gift-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(GIFTARES_DIR) $(@D)
 	$(GIFTARES_UNZIP) $(DL_DIR)/$(GIFTARES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFTARES_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTARES_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFTARES_DIR) $(GIFTARES_BUILD_DIR)
 	(cd $(GIFTARES_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
-		PATH=$$PATH:$(HOST_STAGING_PREFIX)/bin \
-		ACLOCAL="aclocal-1.4 -I m4" AUTOMAKE=automake-1.4 autoreconf -i -v; \
+		ACLOCAL="$(HOST_STAGING_PREFIX)/bin/aclocal-1.4 -I m4" \
+		AUTOMAKE=$(HOST_STAGING_PREFIX)/bin/automake-1.4 autoreconf -i -v; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTARES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTARES_LDFLAGS)" \
