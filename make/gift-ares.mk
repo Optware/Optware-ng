@@ -111,14 +111,17 @@ gift-ares-source: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCHES)
+$(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCHES) make/gift-ares.mk
+	$(HOST_TOOL_ACLOCAL14)
+	$(HOST_TOOL_AUTOMAKE14)
 	$(MAKE) gift-stage
-	rm -rf $(BUILD_DIR)/$(GIFTARES_DIR) $(GIFTARES_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GIFTARES_DIR) $(@D)
 	$(GIFTARES_UNZIP) $(DL_DIR)/$(GIFTARES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFTARES_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTARES_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFTARES_DIR) $(GIFTARES_BUILD_DIR)
 	(cd $(GIFTARES_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
+		PATH=$$PATH:$(HOST_STAGING_PREFIX)/bin \
 		ACLOCAL="aclocal-1.4 -I m4" AUTOMAKE=automake-1.4 autoreconf -i -v; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTARES_CPPFLAGS)" \
@@ -131,7 +134,7 @@ $(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCH
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(GIFTARES_BUILD_DIR)/.configured
+	touch $@
 
 gift-ares-unpack: $(GIFTARES_BUILD_DIR)/.configured
 
@@ -139,9 +142,9 @@ gift-ares-unpack: $(GIFTARES_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(GIFTARES_BUILD_DIR)/.built: $(GIFTARES_BUILD_DIR)/.configured
-	rm -f $(GIFTARES_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(GIFTARES_BUILD_DIR)
-	touch $(GIFTARES_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
