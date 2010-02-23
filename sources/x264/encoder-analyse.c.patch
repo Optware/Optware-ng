@@ -1,0 +1,13 @@
+--- encoder/analyse.c.orig	2009-02-20 21:45:07.000000000 +0000
++++ encoder/analyse.c	2010-02-23 17:50:01.274956262 +0000
+@@ -37,6 +37,10 @@
+ #include "analyse.h"
+ #include "rdo.c"
+ 
++#ifndef        log2f
++#define        log2f(x)        (log(x) / log(2.0))
++#endif
++
+ typedef struct
+ {
+     /* 16x16 */
