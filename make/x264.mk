@@ -46,10 +46,10 @@ X264_SOURCE=x264-$(X264_VERSION).tar.gz
 X264_DIR=x264
 else
 X264_SITE=ftp://ftp.videolan.org/pub/videolan/x264/snapshots
-X264_UPSTREAM_VERSION=snapshot-20080409-2245
+X264_UPSTREAM_VERSION=snapshot-20090220-2245
 X264_DIR=x264-$(X264_UPSTREAM_VERSION)
 X264_SOURCE=x264-$(X264_UPSTREAM_VERSION).tar.bz2
-X264_VERSION=0.0.20080409-svn2245
+X264_VERSION=0.0.20090220-svn2245
 X264_UNZIP=bzcat
 endif
 #X264_SVN_OPTS=-r $(X264_SVN_TAG)
@@ -130,20 +130,26 @@ x264-source: $(DL_DIR)/$(X264_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
-$(X264_BUILD_DIR)/.configured: $(DL_DIR)/$(X264_SOURCE)
-#	$(MAKE) <foo>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(X264_DIR) $(X264_BUILD_DIR)
+$(X264_BUILD_DIR)/.configured: $(DL_DIR)/$(X264_SOURCE) make/x264.mk
+ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
+	$(MAKE) yasm-host-stage
+endif
+	rm -rf $(BUILD_DIR)/$(X264_DIR) $(@D)
 	$(X264_UNZIP) $(DL_DIR)/$(X264_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(X264_PATCHES)" ; \
 		then cat $(X264_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(X264_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(X264_DIR)" != "$(X264_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(X264_DIR) $(X264_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(X264_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(X264_DIR) $(@D) ; \
 	fi
 	sed -i -e '/MACHINE=/s|$$(./config.guess)|$(TARGET_ARCH)-unknown-linux-gnu|' $(@D)/configure
+ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
+	sed -i -e 's|AS="yasm"|AS="$(HOST_STAGING_PREFIX)/bin/yasm"|' $(@D)/configure
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
+		AS="$(TARGET_CC)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(X264_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(X264_LDFLAGS)" \
 		./configure \
@@ -153,6 +159,7 @@ $(X264_BUILD_DIR)/.configured: $(DL_DIR)/$(X264_SOURCE)
 	)
 #		--build=$(GNU_HOST_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--disable-asm \
 		--disable-nls \
 		;
 	touch $@
@@ -164,7 +171,7 @@ x264-unpack: $(X264_BUILD_DIR)/.configured
 #
 $(X264_BUILD_DIR)/.built: $(X264_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(X264_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -177,7 +184,7 @@ x264: $(X264_BUILD_DIR)/.built
 #
 $(X264_BUILD_DIR)/.staged: $(X264_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(X264_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/x264.pc
 	touch $@
 
@@ -251,4 +258,4 @@ x264-dirclean:
 # Some sanity check for the package.
 #
 x264-check: $(X264_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(X264_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
