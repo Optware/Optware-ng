@@ -93,9 +93,10 @@ gift-opennap-source: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GIFT_OPENNAP_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES) make/gift-opennap.mk
-	$(HOST_TOOL_ACLOCAL19_STAGE)
-	$(HOST_TOOL_AUTOMAKE19_STAGE)
+$(GIFT_OPENNAP_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES) \
+make/gift-opennap.mk
+	$(HOST_TOOL_ACLOCAL19)
+	$(HOST_TOOL_AUTOMAKE19)
 	$(MAKE) gift-stage
 	rm -rf $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(@D)
 	$(GIFT_OPENNAP_UNZIP) $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -103,7 +104,8 @@ $(GIFT_OPENNAP_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_O
 	mv $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(GIFT_OPENNAP_BUILD_DIR)
 	(cd $(GIFT_OPENNAP_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
-		ACLOCAL="$(ACLOCAL19) -I m4" AUTOMAKE=$(AUTOMAKE19) autoreconf -i -v; \
+		PATH=$$PATH:$(HOST_STAGING_PREFIX)/bin \
+		ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -i -v; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFT_OPENNAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFT_OPENNAP_LDFLAGS)" \
