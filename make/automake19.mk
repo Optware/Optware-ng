@@ -25,7 +25,7 @@ AUTOMAKE19_IPK=$(BUILD_DIR)/automake19_$(AUTOMAKE19_VERSION)-$(AUTOMAKE19_IPK_VE
 
 AUTOMAKE19_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/automake19
 
-.PHONY: automake19-source automake19-unpack automake19 automake19-stage automake19-ipk automake19-clean automake19-dirclean automake19-check automake19-host automake19-host-stage
+.PHONY: automake19-source automake19-unpack automake19 automake19-stage automake19-ipk automake19-clean automake19-dirclean automake19-check automake19-host automake19-host-stage automake19-host-tool
 
 $(DL_DIR)/$(AUTOMAKE19_SOURCE):
 	$(WGET) -P $(DL_DIR) $(AUTOMAKE19_SITE)/$(AUTOMAKE19_SOURCE)
@@ -56,6 +56,17 @@ $(AUTOMAKE19_HOST_BUILD_DIR)/.staged: $(AUTOMAKE19_HOST_BUILD_DIR)/.built
 	touch $@
 
 automake19-host-stage: $(AUTOMAKE19_HOST_BUILD_DIR)/.staged
+
+
+automake19-host-tool:
+ifeq (,$(shell aclocal-1.9 --version 2>/dev/null))
+	$(MAKE) \
+		automake19-host-stage \
+		autoconf-host-stage \
+		pkgconfig-host-stage \
+		m4-host-stage \
+		libtool-host-stage
+endif
 
 
 
