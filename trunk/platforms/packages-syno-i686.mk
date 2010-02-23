@@ -15,6 +15,8 @@ BROKEN_PACKAGES = \
          puppy qemu samba samba34 sandbox slimserver \
          vte xchat \
 
+BIND_CONFIG_ARGS := --disable-epoll
+
 ERLANG_SMP := --enable-smp-support
 
 E2FSPROGS_VERSION := 1.40.3

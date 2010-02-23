@@ -16,7 +16,7 @@ BIND_SECTION=net
 BIND_PRIORITY=optional
 BIND_DEPENDS=openssl
 
-BIND_IPK_VERSION=1
+BIND_IPK_VERSION=2
 
 # BIND_PATCHES=$(BIND_SOURCE_DIR)/bind_configure_patch
 
@@ -24,7 +24,7 @@ ifeq ($(OPTWARE_TARGET), $(filter vt4, $(OPTWARE_TARGET)))
 BIND_LDFLAGS=-ldl
 endif
 
-BIND_CONFIG_ARGS=$(strip \
+BIND_CONFIG_ARGS ?= $(strip \
 $(if $(filter cs05q1armel cs05q3armel syno-e500, $(OPTWARE_TARGET)), --disable-epoll, \
 $(if $(filter module-init-tools, $(PACKAGES)), --enable-epoll, \
 --disable-epoll)))
