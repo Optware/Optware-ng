@@ -58,18 +58,6 @@ $(AUTOMAKE19_HOST_BUILD_DIR)/.staged: $(AUTOMAKE19_HOST_BUILD_DIR)/.built
 automake19-host-stage: $(AUTOMAKE19_HOST_BUILD_DIR)/.staged
 
 
-automake19-host-tool:
-ifeq (,$(shell aclocal-1.9 --version 2>/dev/null))
-	$(MAKE) \
-		automake19-host-stage \
-		autoconf-host-stage \
-		pkgconfig-host-stage \
-		m4-host-stage \
-		libtool-host-stage
-endif
-
-
-
 $(AUTOMAKE19_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOMAKE19_SOURCE) $(AUTOMAKE19_PATCHES) make/automake19.mk
 	rm -rf $(BUILD_DIR)/$(AUTOMAKE19_DIR) $(AUTOMAKE19_BUILD_DIR)
 	$(AUTOMAKE19_UNZIP) $(DL_DIR)/$(AUTOMAKE19_SOURCE) | tar -C $(BUILD_DIR) -xvf -

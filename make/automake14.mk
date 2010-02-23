@@ -57,18 +57,6 @@ $(AUTOMAKE14_HOST_BUILD_DIR)/.staged: $(AUTOMAKE14_HOST_BUILD_DIR)/.built
 automake14-host-stage: $(AUTOMAKE14_HOST_BUILD_DIR)/.staged
 
 
-automake14-host-tool:
-ifeq (,$(shell aclocal-1.4 --version 2>/dev/null))
-	$(MAKE) \
-		automake14-host-stage \
-		autoconf-host-stage \
-		pkgconfig-host-stage \
-		m4-host-stage \
-		libtool-host-stage
-endif
-
-
-
 $(AUTOMAKE14_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOMAKE14_SOURCE) $(AUTOMAKE14_PATCHES) make/automake14.mk
 	rm -rf $(BUILD_DIR)/$(AUTOMAKE14_DIR) $(AUTOMAKE14_BUILD_DIR)
 	$(AUTOMAKE14_UNZIP) $(DL_DIR)/$(AUTOMAKE14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
