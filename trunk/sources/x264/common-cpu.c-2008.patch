@@ -1,0 +1,40 @@
+--- common/cpu.c.orig	2008-04-09 20:45:06.000000000 +0000
++++ common/cpu.c	2008-04-10 16:16:00.000000000 +0000
+@@ -218,37 +218,5 @@
+ 
+ int x264_cpu_num_processors( void )
+ {
+-#if !defined(HAVE_PTHREAD)
+     return 1;
+-
+-#elif defined(_WIN32)
+-    return pthread_num_processors_np();
+-
+-#elif defined(SYS_LINUX)
+-    unsigned int bit;
+-    int np;
+-    cpu_set_t p_aff;
+-    memset( &p_aff, 0, sizeof(p_aff) );
+-    sched_getaffinity( 0, sizeof(p_aff), &p_aff );
+-    for( np = 0, bit = 0; bit < sizeof(p_aff); bit++ )
+-        np += (((uint8_t *)&p_aff)[bit / 8] >> (bit % 8)) & 1;
+-    return np;
+-
+-#elif defined(SYS_BEOS)
+-    system_info info;
+-    get_system_info( &info );
+-    return info.cpu_count;
+-
+-#elif defined(SYS_MACOSX) || defined(SYS_FREEBSD)
+-    int numberOfCPUs;
+-    size_t length = sizeof( numberOfCPUs );
+-    if( sysctlbyname("hw.ncpu", &numberOfCPUs, &length, NULL, 0) )
+-    {
+-        numberOfCPUs = 1;
+-    }
+-    return numberOfCPUs;
+-
+-#else
+-    return 1;
+-#endif
+ }
