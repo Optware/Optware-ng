@@ -23,6 +23,7 @@ BROKEN_PACKAGES = \
 	sane-backends \
 	sandbox \
 	util-linux \
+	x264 \
 	\
 	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
 	ts101-kernel-modules
