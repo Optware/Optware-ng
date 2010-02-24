@@ -23,7 +23,6 @@ BROKEN_PACKAGES = \
 	sane-backends \
 	sandbox \
 	util-linux \
-	x264 \
 	\
 	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
 	ts101-kernel-modules
@@ -33,3 +32,6 @@ E2FSPROGS_IPK_VERSION := 5
 
 RTORRENT_VERSION := 0.8.2
 RTORRENT_IPK_VERSION := 2
+
+X264_UPSTREAM_VERSION := snapshot-20081231-2245
+X264_VERSION := 0.0.20081231-svn2245

@@ -46,10 +46,10 @@ X264_SOURCE=x264-$(X264_VERSION).tar.gz
 X264_DIR=x264
 else
 X264_SITE=ftp://ftp.videolan.org/pub/videolan/x264/snapshots
-X264_UPSTREAM_VERSION=snapshot-20090220-2245
+X264_UPSTREAM_VERSION ?= snapshot-20090220-2245
 X264_DIR=x264-$(X264_UPSTREAM_VERSION)
 X264_SOURCE=x264-$(X264_UPSTREAM_VERSION).tar.bz2
-X264_VERSION=0.0.20090220-svn2245
+X264_VERSION ?= 0.0.20090220-svn2245
 X264_UNZIP=bzcat
 endif
 #X264_SVN_OPTS=-r $(X264_SVN_TAG)
@@ -68,8 +68,13 @@ X264_CONFFILES=
 # X264_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-X264_PATCHES= \
-$(X264_SOURCE_DIR)/common-cpu.c.patch \
+
+ifeq (snapshot-20081231-2245, $(X264_UPSTREAM_VERSION))
+X264_PATCHES=$(X264_SOURCE_DIR)/common-cpu.c-2008.patch
+else
+X264_PATCHES=$(X264_SOURCE_DIR)/common-cpu.c.patch
+endif
+
 
 ifeq (uclibc, $(LIBC_STYLE))
 X264_PATCHES += $(X264_SOURCE_DIR)/encoder-analyse.c.patch
