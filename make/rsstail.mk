@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RSSTAIL_SITE=http://www.vanheusden.com/rsstail
-RSSTAIL_VERSION=1.5
+RSSTAIL_VERSION=1.6
 RSSTAIL_SOURCE=rsstail-$(RSSTAIL_VERSION).tgz
 RSSTAIL_DIR=rsstail-$(RSSTAIL_VERSION)
 RSSTAIL_UNZIP=zcat
@@ -106,14 +106,14 @@ rsstail-source: $(DL_DIR)/$(RSSTAIL_SOURCE) $(RSSTAIL_PATCHES)
 #
 $(RSSTAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(RSSTAIL_SOURCE) $(RSSTAIL_PATCHES) make/rsstail.mk
 	$(MAKE) libmrss-stage
-	rm -rf $(BUILD_DIR)/$(RSSTAIL_DIR) $(RSSTAIL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(RSSTAIL_DIR) $(@D)
 	$(RSSTAIL_UNZIP) $(DL_DIR)/$(RSSTAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RSSTAIL_PATCHES)" ; \
 		then cat $(RSSTAIL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(RSSTAIL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RSSTAIL_DIR)" != "$(RSSTAIL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RSSTAIL_DIR) $(RSSTAIL_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RSSTAIL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RSSTAIL_DIR) $(@D) ; \
 	fi
 #	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -225,4 +225,4 @@ rsstail-dirclean:
 # Some sanity check for the package.
 #
 rsstail-check: $(RSSTAIL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RSSTAIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
