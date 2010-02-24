@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOKID_VERSION=1.0.4
+PY-TURBOKID_VERSION=1.0.5
 #PY-TURBOKID_SVN_TAG=$(PY-TURBOKID_VERSION)
 #PY-TURBOKID_REPOSITORY=http://svn.turbogears.org/projects/TurboKid/tags/$(PY-TURBOKID_SVN_TAG)
 PY-TURBOKID_SITE=http://cheeseshop.python.org/packages/source/T/TurboKid
@@ -32,14 +32,14 @@ PY-TURBOKID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TURBOKID_DESCRIPTION=Python template plugin that supports Kid templates.
 PY-TURBOKID_SECTION=misc
 PY-TURBOKID_PRIORITY=optional
-PY24-TURBOKID_DEPENDS=python24, py24-kid
 PY25-TURBOKID_DEPENDS=python25, py25-kid
+PY26-TURBOKID_DEPENDS=python26, py26-kid
 PY-TURBOKID_CONFLICTS=
 
 #
 # PY-TURBOKID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOKID_IPK_VERSION=2
+PY-TURBOKID_IPK_VERSION=1
 
 #
 # PY-TURBOKID_CONFFILES should be a list of user-editable files
@@ -70,11 +70,11 @@ PY-TURBOKID_LDFLAGS=
 PY-TURBOKID_BUILD_DIR=$(BUILD_DIR)/py-turbokid
 PY-TURBOKID_SOURCE_DIR=$(SOURCE_DIR)/py-turbokid
 
-PY24-TURBOKID_IPK_DIR=$(BUILD_DIR)/py24-turbokid-$(PY-TURBOKID_VERSION)-ipk
-PY24-TURBOKID_IPK=$(BUILD_DIR)/py24-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-TURBOKID_IPK_DIR=$(BUILD_DIR)/py25-turbokid-$(PY-TURBOKID_VERSION)-ipk
 PY25-TURBOKID_IPK=$(BUILD_DIR)/py25-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-TURBOKID_IPK_DIR=$(BUILD_DIR)/py26-turbokid-$(PY-TURBOKID_VERSION)-ipk
+PY26-TURBOKID_IPK=$(BUILD_DIR)/py26-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-turbokid-source py-turbokid-unpack py-turbokid py-turbokid-stage py-turbokid-ipk py-turbokid-clean py-turbokid-dirclean py-turbokid-check
 
@@ -83,11 +83,8 @@ PY25-TURBOKID_IPK=$(BUILD_DIR)/py25-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKI
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-TURBOKID_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-TURBOKID_SITE)/$(PY-TURBOKID_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PY-TURBOKID_SOURCE)
-#	(cd $(BUILD_DIR); \
-	    svn co -q $(PY-TURBOKID_REPOSITORY) $(PY-TURBOKID_DIR); \
-	)
+	$(WGET) -P $(@D) $(PY-TURBOKID_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -115,15 +112,6 @@ $(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBO
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
-	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
 	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -132,6 +120,15 @@ $(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBO
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
+	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6") >> setup.cfg \
 	)
 	touch $@
 
@@ -142,12 +139,12 @@ py-turbokid-unpack: $(PY-TURBOKID_BUILD_DIR)/.configured
 #
 $(PY-TURBOKID_BUILD_DIR)/.built: $(PY-TURBOKID_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.6; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	touch $@
 
 #
@@ -169,20 +166,6 @@ py-turbokid-stage: $(PY-TURBOKID_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-turbokid
 #
-$(PY24-TURBOKID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-turbokid" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-TURBOKID_PRIORITY)" >>$@
-	@echo "Section: $(PY-TURBOKID_SECTION)" >>$@
-	@echo "Version: $(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-TURBOKID_MAINTAINER)" >>$@
-	@echo "Source: $(PY-TURBOKID_SITE)/$(PY-TURBOKID_SOURCE)" >>$@
-	@echo "Description: $(PY-TURBOKID_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-TURBOKID_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-TURBOKID_CONFLICTS)" >>$@
-
 $(PY25-TURBOKID_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -197,6 +180,20 @@ $(PY25-TURBOKID_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-TURBOKID_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-TURBOKID_CONFLICTS)" >>$@
 
+$(PY26-TURBOKID_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-turbokid" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-TURBOKID_PRIORITY)" >>$@
+	@echo "Section: $(PY-TURBOKID_SECTION)" >>$@
+	@echo "Version: $(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-TURBOKID_MAINTAINER)" >>$@
+	@echo "Source: $(PY-TURBOKID_SITE)/$(PY-TURBOKID_SOURCE)" >>$@
+	@echo "Description: $(PY-TURBOKID_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-TURBOKID_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-TURBOKID_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -209,18 +206,8 @@ $(PY25-TURBOKID_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-TURBOKID_IPK): $(PY-TURBOKID_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-turbokid_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-TURBOKID_IPK_DIR) $(BUILD_DIR)/py24-turbokid_*_$(TARGET_ARCH).ipk
-	(cd $(PY-TURBOKID_BUILD_DIR)/2.4; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-		--root=$(PY24-TURBOKID_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY24-TURBOKID_IPK_DIR)/CONTROL/control
-	echo $(PY-TURBOKID_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-TURBOKID_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-TURBOKID_IPK_DIR)
-
 $(PY25-TURBOKID_IPK): $(PY-TURBOKID_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-turbokid_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-TURBOKID_IPK_DIR) $(BUILD_DIR)/py25-turbokid_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TURBOKID_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
@@ -230,10 +217,20 @@ $(PY25-TURBOKID_IPK): $(PY-TURBOKID_BUILD_DIR)/.built
 	echo $(PY-TURBOKID_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-TURBOKID_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TURBOKID_IPK_DIR)
 
+$(PY26-TURBOKID_IPK): $(PY-TURBOKID_BUILD_DIR)/.built
+	rm -rf $(PY26-TURBOKID_IPK_DIR) $(BUILD_DIR)/py26-turbokid_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TURBOKID_BUILD_DIR)/2.6; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+		--root=$(PY26-TURBOKID_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-TURBOKID_IPK_DIR)/CONTROL/control
+	echo $(PY-TURBOKID_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-TURBOKID_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-TURBOKID_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-turbokid-ipk: $(PY24-TURBOKID_IPK) $(PY25-TURBOKID_IPK)
+py-turbokid-ipk: $(PY25-TURBOKID_IPK) $(PY26-TURBOKID_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -247,11 +244,11 @@ py-turbokid-clean:
 #
 py-turbokid-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)
-	rm -rf $(PY24-TURBOKID_IPK_DIR) $(PY24-TURBOKID_IPK)
 	rm -rf $(PY25-TURBOKID_IPK_DIR) $(PY25-TURBOKID_IPK)
+	rm -rf $(PY26-TURBOKID_IPK_DIR) $(PY26-TURBOKID_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-turbokid-check: $(PY24-TURBOKID_IPK) $(PY25-TURBOKID_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-TURBOKID_IPK) $(PY25-TURBOKID_IPK)
+py-turbokid-check: $(PY25-TURBOKID_IPK) $(PY26-TURBOKID_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
