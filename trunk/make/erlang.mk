@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R13B03
-ERLANG_VERSION=R13B03
+ERLANG_UPSTREAM_VERSION=R13B04
+ERLANG_VERSION=R13B04
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -63,8 +63,6 @@ ERLANG_SMP ?= --disable-smp-support
 # which they should be applied to the source code.
 #
 ERLANG_PATCHES=\
-	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
-	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-odbc-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch
@@ -90,7 +88,7 @@ endif
 endif
 ERLANG_LDFLAGS=
 
-ERLANG_CONFIG_ENVS=erl_cv_time_correction=$(strip \
+ERLANG_CONFIG_ENVS ?= erl_cv_time_correction=$(strip \
 	$(if $(filter syno-x07 wdtv, $(OPTWARE_TARGET)), times, \
 	$(if $(filter module-init-tools, $(PACKAGES)), clock_gettime, times)))
 
@@ -214,34 +212,7 @@ $(ERLANG_BUILD_DIR)/.unpacked: \
 erlang-unpack: $(ERLANG_BUILD_DIR)/.unpacked
 
 $(ERLANG_BUILD_DIR)/erl-xcomp.conf: $(ERLANG_BUILD_DIR)/.unpacked
-	sed \
-		-e '/^erl_xcomp_os=/s!=.*!='`echo $(ERLANG_TARGET) | awk -F- '{print $$3}'`! \
-		-e '/erl_xcomp_hw=/s!=.*!='`echo $(ERLANG_TARGET) | awk -F- '{print $$1}'`! \
-		-e '/^erl_xcomp_man=/s!=.*!='`echo $(ERLANG_TARGET) | awk -F- '{print $$2}'`! \
-		-e '/^erl_xcomp_target_xtra=/s!=.*!='`echo $(ERLANG_TARGET) | awk -F- '{print $$4}'`! \
-		-e '/^erl_xcomp_target=/s!=.*!=$(ERLANG_TARGET)!' \
-		-e '/^erl_xcomp_void_p=/s!=.*!=4!' \
-		-e '/^erl_xcomp_short=/s!=.*!=2!' \
-		-e '/^erl_xcomp_int=/s!=.*!=4!' \
-		-e '/^erl_xcomp_long=/s!=.*!=4!' \
-		-e '/^erl_xcomp_long_long=/s!=.*!=8!' \
-		-e '/^erl_xcomp_sizeof_size_t=/s!=.*!=4!' \
-		-e '/^erl_xcomp_sizeof_off_t=/s!=.*!=8!' \
-		-e '/^erl_xcomp_linux_kernel=/s!=.*!='$(strip $(if $(filter module-init-tools, $(PACKAGES)), 2.6, 2.4))! \
-		-e '/^erl_xcomp_cc=/s!=.*!="$(TARGET_CC)"!' \
-		-e '/^erl_xcomp_ld=/s!=.*!="$(TARGET_CC)"!' \
-		-e '/^erl_xcomp_cflags=/s!=.*!="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)"!' \
-		-e '/^erl_xcomp_cpp=/s!=.*!="$(TARGET_CC) -E"!' \
-		-e '/^erl_xcomp_ldflags=/s!=.*!="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)"!' \
-		-e '/^erl_xcomp_ranlib=/s!=.*!="$(TARGET_RANLIB)"!' \
-		-e '/^erl_xcomp_ar=/s!=.*!="$(TARGET_AR)"!' \
-		-e '/^erl_xcomp_ded_ld=/s!=.*!="$(TARGET_CC)"!' \
-		-e '/^erl_xcomp_ded_ldflags=/s!=.*!=-shared!' \
-		-e '/^erl_xcomp_ded_ld_runtime_library_path=/s!=.*!=/opt/lib!' \
-		-e '/^erl_xcomp_reliable_fpe=/s!=.*!=no!' \
-		-e '/^erl_xcomp_getaddrinfo=/s!=.*!=no!' \
-		-e '/^erl_xcomp_clock_gettime=/s!=.*!=yes!' \
-		$(@D)/xcomp/erl-xcomp.conf.template > $@
+	touch $@
 
 ifeq ($(HOSTCC), $(TARGET_CC))
 $(ERLANG_BUILD_DIR)/.configured: $(ERLANG_BUILD_DIR)/.unpacked
@@ -274,8 +245,8 @@ else
 		ac_cv_sizeof_size_t=4 \
 		ac_cv_sizeof_off_t=4 \
 		ac_cv_func_mmap_fixed_mapped=yes \
+		erl_xcomp_sysroot="$(STAGING_DIR)" \
 		ERL_TOP=$(@D) \
-		ERL_XCOMP_CONF="$(@D)/erl-xcomp.conf" \
 		OVERRIDE_TARGET=$(ERLANG_TARGET) \
 		./otp_build configure \
 		--build=$(GNU_HOST_NAME) \
@@ -289,7 +260,6 @@ else
 		--disable-nls \
 		; \
 	)
-#	sed -i -e '/$$(ERL_TOP)\/bin\/dialyzer/s!$$(ERL_TOP).*!-$(@D)/bin/dialyzer --output_plt $$@ -pa $(@D)/lib/kernel/ebin -pa $(@D)/lib/mnesia/ebin -pa $(@D)/lib/stdlib/ebin -I$(@D)/lib/hipe/icode --command-line ../ebin!' $(@D)/lib/dialyzer/src/Makefile
 endif
 	touch $@
 
@@ -304,7 +274,6 @@ $(ERLANG_BUILD_DIR)/.built: $(ERLANG_BUILD_DIR)/.configured $(ERLANG_HOST_BUILT)
 		PATH="$(ERLANG_HOST_BUILD_DIR)/bin:$$PATH" \
 		$(TARGET_CONFIGURE_OPTS) \
 		ERL_TOP=$(@D) \
-		ERL_XCOMP_CONF="$(@D)/erl-xcomp.conf" \
 		OVERRIDE_TARGET=$(ERLANG_TARGET) \
 		./otp_build release; \
 	)
