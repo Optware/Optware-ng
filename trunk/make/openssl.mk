@@ -55,22 +55,42 @@ openssl-source: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 
 OPENSSL_ASFLAG=$(strip $(if $(filter powerpc, $(TARGET_ARCH)), ASFLAG="",))
 
-OPENSSL_ARCH=$(strip \
-	$(if $(filter powerpc, $(TARGET_ARCH)), linux-ppc, \
-	$(if $(filter 0.9.8, $(OPENSSL_LIB_VERSION)), linux-generic32, \
-	$(if $(filter mips mipsel, $(TARGET_ARCH)), linux-$(TARGET_ARCH), \
-	linux-elf-$(TARGET_ARCH)))))
+ifeq (0.9.7,$(OPENSSL_LIB_VERSION))
+OPENSSL_ARCH=linux-$(strip \
+        $(if $(filter arm armeb, $(TARGET_ARCH)), elf-$(TARGET_ARCH), \
+        $(if $(filter i386 i686, $(TARGET_ARCH)), pentium, \
+	$(if $(filter powerpc ppc, $(TARGET_ARCH)), ppc, \
+	$(TARGET_ARCH)))))
+OPENSSL_HOST_ARCH=linux-$(strip \
+        $(if $(filter arm armeb, $(HOST_MACHINE)), elf-$(HOST_MACHINE), \
+        $(if $(filter i386 i686, $(HOST_MACHINE)), pentium, \
+	$(if $(filter powerpc ppc, $(HOST_MACHINE)), ppc, \
+	$(HOST_MACHINE)))))
+else
+OPENSSL_ARCH=linux-$(strip \
+        $(if $(filter arm armeb, $(TARGET_ARCH)), elf-$(TARGET_ARCH), \
+	$(if $(filter i386 i686, $(TARGET_ARCH)), elf, \
+	$(if $(filter powerpc ppc, $(TARGET_ARCH)), ppc, \
+	$(if $(filter x86_64, $(TARGET_ARCH)), $(TARGET_ARCH), \
+	generic32)))))
+OPENSSL_HOST_ARCH=linux-$(strip \
+        $(if $(filter arm armeb, $(HOST_MACHINE)), elf-$(HOST_MACHINE), \
+	$(if $(filter i386 i686, $(HOST_MACHINE)), elf, \
+	$(if $(filter powerpc ppc, $(HOST_MACHINE)), ppc, \
+	$(if $(filter x86_64, $(HOST_MACHINE)), $(HOST_MACHINE), \
+	generic32)))))
+endif
 
 $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
-	rm -rf $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_HOST_BUILD_DIR)
+	rm -rf $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(@D)
 	$(OPENSSL_UNZIP) $(DL_DIR)/$(OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf - 
-	mv $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_HOST_BUILD_DIR)
-	(cd $(OPENSSL_HOST_BUILD_DIR) && \
+	mv $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(@D)
+	(cd $(@D) && \
 		./Configure \
 			shared no-zlib \
 			--openssldir=/opt/share/openssl \
 			--prefix=/opt \
-		linux-$(if $(filter 0.9.7,$(OPENSSL_LIB_VERSION)),`uname -m | sed -e 's/i[5-9]86/pentium/'`,elf) \
+                        $(OPENSSL_HOST_ARCH) \
 	)
 	$(MAKE) -C $(@D)
 	touch $@
@@ -111,6 +131,7 @@ $(OPENSSL_BUILD_DIR)/.built: $(OPENSSL_BUILD_DIR)/.configured
 	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		AR="${TARGET_AR} r" \
+                $(if $(filter i686, $(TARGET_ARCH)),AS=$(TARGET_CC),) \
 		$(OPENSSL_ASFLAG) \
 		MANDIR=/opt/man \
 		EX_LIBS="$(STAGING_LDFLAGS) -ldl" \
@@ -121,12 +142,12 @@ openssl: $(OPENSSL_BUILD_DIR)/.built
 
 $(OPENSSL_BUILD_DIR)/.staged: $(OPENSSL_BUILD_DIR)/.built
 	rm -f $@
-	rm -rf $(STAGING_DIR)/opt/include/openssl
-	install -d $(STAGING_DIR)/opt/include/openssl
-	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(STAGING_DIR)/opt/include/openssl
+	rm -rf $(STAGING_INCLUDE_DIR)/openssl
+	install -d $(STAGING_INCLUDE_DIR)/openssl
+	install -m 644 $(@D)/include/openssl/*.h $(STAGING_INCLUDE_DIR)/openssl
 	install -d $(STAGING_PREFIX)/bin
 ifeq ($(HOSTCC), $(TARGET_CC))
-	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(STAGING_PREFIX)/bin/openssl
+	install -m 755 $(@D)/apps/openssl $(STAGING_PREFIX)/bin/openssl
 else
 #	a fake /opt/bin/openssl in $STAGING_DIR)
 	( \
@@ -137,16 +158,16 @@ else
 	chmod 755 $(STAGING_PREFIX)/bin/openssl
 endif
 	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
-	cd $(STAGING_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
-	cd $(STAGING_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
-	install -d $(STAGING_DIR)/opt/lib/pkgconfig
-	install -m 644 $(OPENSSL_BUILD_DIR)/openssl.pc $(STAGING_DIR)/opt/lib/pkgconfig
+	install -m 644 $(@D)/libcrypto.a $(STAGING_DIR)/opt/lib
+	install -m 644 $(@D)/libssl.a $(STAGING_DIR)/opt/lib
+	install -m 644 $(@D)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(STAGING_LIB_DIR)
+	install -m 644 $(@D)/libssl.so.$(OPENSSL_LIB_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0
+	cd $(STAGING_LIB_DIR) && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
+	cd $(STAGING_LIB_DIR) && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
+	cd $(STAGING_LIB_DIR) && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
+	install -d $(STAGING_LIB_DIR)/pkgconfig
+	install -m 644 $(@D)/openssl.pc $(STAGING_LIB_DIR)/pkgconfig
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/openssl.pc
 	touch $@
 
