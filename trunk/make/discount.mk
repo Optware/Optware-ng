@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DISCOUNT_SITE=http://www.pell.portland.or.us/~orc/Code/markdown
-DISCOUNT_VERSION=1.5.8
+DISCOUNT_VERSION=1.6.1
 DISCOUNT_SOURCE=discount-$(DISCOUNT_VERSION).tar.gz
 DISCOUNT_DIR=discount-$(DISCOUNT_VERSION)
 DISCOUNT_UNZIP=zcat
@@ -115,7 +115,7 @@ $(DISCOUNT_BUILD_DIR)/.configured: $(DL_DIR)/$(DISCOUNT_SOURCE) $(DISCOUNT_PATCH
 	if test "$(BUILD_DIR)/$(DISCOUNT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DISCOUNT_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|PROG_INSTALL -s |PROG_INSTALL |' $(@D)/configure.inc
+	sed -i -e '/^ac_default_path=/s|:/bin:|:/opt/bin&|;s|PROG_INSTALL -s |PROG_INSTALL |' $(@D)/configure.inc
 	sed -i -e 's|$$(CC) -o|$$(CC) $$(LDFLAGS) -o|' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
