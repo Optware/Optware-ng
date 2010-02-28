@@ -1,11 +1,11 @@
---- otp_src_R13B/lib/odbc/c_src/Makefile.in.orig	2009-03-12 12:29:12.000000000 +0000
-+++ otp_src_R13B/lib/odbc/c_src/Makefile.in	2009-04-21 23:16:12.439285702 +0000
+--- otp_src_R13B04/lib/odbc/c_src/Makefile.in.orig	2010-02-19 10:07:30.000000000 -0800
++++ otp_src_R13B04/lib/odbc/c_src/Makefile.in	2010-02-25 22:51:40.000000000 -0800
 @@ -81,7 +81,7 @@
- CFLAGS = $(TYPEFLAGS) @CFLAGS@
+ CFLAGS = $(TYPEFLAGS) @CFLAGS@ @THR_DEFS@ @DEFS@
  EI_LDFLAGS = -L$(EI_ROOT)/obj$(TYPEMARKER)/$(TARGET)
- LD = @DED_LD@
+ LD = @LD@
 -LDFLAGS =  $(ODBC_LIB) $(EI_LDFLAGS)
 +LDFLAGS =  $(ODBC_LIB) $(EI_LDFLAGS) @LDFLAGS@
- LIBS = @LIBS@ $(EI_LIB)
+ LIBS = @LIBS@ @THR_LIBS@ $(EI_LIB)
  INCLUDES = -I. $(ODBC_INCLUDE) $(EI_INCLUDE)
  TARGET_FLAGS =  @TARGET_FLAGS@
