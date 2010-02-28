@@ -1,5 +1,5 @@
---- samba34/source3/configure.in.orig	2009-10-29 03:47:16.000000000 -0400
-+++ samba34/source3/configure.in	2010-01-28 16:54:02.000000000 -0500
+--- samba34/source3/configure.in.orig	2010-02-23 01:35:42.000000000 -0800
++++ samba34/source3/configure.in	2010-02-27 17:15:26.000000000 -0800
 @@ -588,6 +588,7 @@
          AC_MSG_CHECKING([for LFS support])
          old_CPPFLAGS="$CPPFLAGS"
@@ -17,7 +17,7 @@
  	CPPFLAGS="$old_CPPFLAGS"
  	if test x$LINUX_LFS_SUPPORT = xyes ; then
  		CPPFLAGS="-D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE $CPPFLAGS"
-@@ -1246,6 +1247,7 @@
+@@ -1227,6 +1228,7 @@
  case "$host_os" in
      *linux* | gnu* | k*bsd*-gnu | kopensolaris*-gnu)
         # glibc <= 2.3.2 has a broken getgrouplist
@@ -25,12 +25,12 @@
         AC_TRY_RUN([
  #include <unistd.h>
  #include <sys/utsname.h>
-@@ -1262,7 +1264,7 @@
- #endif
-        exit(0);
+@@ -1245,7 +1247,7 @@
  }
--], [linux_getgrouplist_ok=yes], [linux_getgrouplist_ok=no])
-+], [linux_getgrouplist_ok=yes], [linux_getgrouplist_ok=no])])
+ ], [linux_getgrouplist_ok=yes],
+    [linux_getgrouplist_ok=no],
+-   [linux_getgrouplist_ok=cross])
++   [linux_getgrouplist_ok=cross])])
         if test x"$linux_getgrouplist_ok" = x"yes"; then
            AC_DEFINE(HAVE_GETGROUPLIST, 1, [Have good getgrouplist])
         fi
