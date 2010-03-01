@@ -68,15 +68,13 @@ OPENSSL_HOST_ARCH=linux-$(strip \
 	$(HOST_MACHINE)))))
 else
 OPENSSL_ARCH=linux-$(strip \
-	$(if $(filter i386 i686, $(TARGET_ARCH)), elf, \
 	$(if $(filter powerpc ppc, $(TARGET_ARCH)), ppc, \
 	$(if $(filter x86_64, $(TARGET_ARCH)), $(TARGET_ARCH), \
-	generic32))))
+	generic32)))
 OPENSSL_HOST_ARCH=linux-$(strip \
-	$(if $(filter i386 i686, $(HOST_MACHINE)), elf, \
 	$(if $(filter powerpc ppc, $(HOST_MACHINE)), ppc, \
 	$(if $(filter x86_64, $(HOST_MACHINE)), $(HOST_MACHINE), \
-	generic32))))
+	generic32)))
 endif
 
 $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
