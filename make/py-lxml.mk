@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-LXML_SITE=http://pypi.python.org/packages/source/l/lxml
-PY-LXML_VERSION ?= 2.2.4
+PY-LXML_VERSION ?= 2.2.5
 PY-LXML_IPK_VERSION ?= 1
 PY-LXML_SOURCE=lxml-$(PY-LXML_VERSION).tar.gz
 PY-LXML_DIR=lxml-$(PY-LXML_VERSION)
@@ -31,7 +31,6 @@ PY-LXML_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-LXML_DESCRIPTION=A Pythonic binding for the libxml2 and libxslt libraries.
 PY-LXML_SECTION=misc
 PY-LXML_PRIORITY=optional
-PY24-LXML_DEPENDS=python24, libxml2, libxslt
 PY25-LXML_DEPENDS=python25, libxml2, libxslt
 PY26-LXML_DEPENDS=python26, libxml2, libxslt
 PY-LXML_CONFLICTS=
@@ -65,9 +64,6 @@ PY-LXML_LDFLAGS=
 #
 PY-LXML_BUILD_DIR=$(BUILD_DIR)/py-lxml
 PY-LXML_SOURCE_DIR=$(SOURCE_DIR)/py-lxml
-
-PY24-LXML_IPK_DIR=$(BUILD_DIR)/py24-lxml-$(PY-LXML_VERSION)-ipk
-PY24-LXML_IPK=$(BUILD_DIR)/py24-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-LXML_IPK_DIR=$(BUILD_DIR)/py25-lxml-$(PY-LXML_VERSION)-ipk
 PY25-LXML_IPK=$(BUILD_DIR)/py25-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -111,21 +107,6 @@ $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 	$(MAKE) py-setuptools-stage libxml2-stage libxslt-stage pyrex-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
-	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-LXML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    (\
-	    echo "[build_ext]"; \
-	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/libxml2:$(STAGING_INCLUDE_DIR)/libxslt:$(STAGING_INCLUDE_DIR)/python2.4"; \
-	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	    echo "libraries=xslt"; \
-	    echo "rpath=/opt/lib"; \
-	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4") >> setup.cfg; \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
 	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -165,12 +146,6 @@ py-lxml-unpack: $(PY-LXML_BUILD_DIR)/.configured
 #
 $(PY-LXML_BUILD_DIR)/.built: $(PY-LXML_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build \
-	    --with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config; \
-	)
 	(cd $(@D)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
@@ -193,31 +168,17 @@ py-lxml: $(PY-LXML_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-LXML_BUILD_DIR)/.staged: $(PY-LXML_BUILD_DIR)/.built
+#$(PY-LXML_BUILD_DIR)/.staged: $(PY-LXML_BUILD_DIR)/.built
 #	rm -f $(@D)/.staged
 #	$(MAKE) -C $(PY-LXML_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 #	touch $(@D)/.staged
-
-py-lxml-stage: $(PY-LXML_BUILD_DIR)/.staged
+#
+#py-lxml-stage: $(PY-LXML_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-lxml
 #
-$(PY24-LXML_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-lxml" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-LXML_PRIORITY)" >>$@
-	@echo "Section: $(PY-LXML_SECTION)" >>$@
-	@echo "Version: $(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-LXML_MAINTAINER)" >>$@
-	@echo "Source: $(PY-LXML_SITE)/$(PY-LXML_SOURCE)" >>$@
-	@echo "Description: $(PY-LXML_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-LXML_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-LXML_CONFLICTS)" >>$@
-
 $(PY25-LXML_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -258,21 +219,8 @@ $(PY26-LXML_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-lxml_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-LXML_IPK_DIR) $(BUILD_DIR)/py24-lxml_*_$(TARGET_ARCH).ipk
-	(cd $(PY-LXML_BUILD_DIR)/2.4; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py \
-		install --root=$(PY24-LXML_IPK_DIR) --prefix=/opt \
-		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
-	$(STRIP_COMMAND) `find $(PY24-LXML_IPK_DIR)/opt/lib/ -name '*.so'`
-	$(MAKE) $(PY24-LXML_IPK_DIR)/CONTROL/control
-#	echo $(PY-LXML_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-LXML_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-LXML_IPK_DIR)
-
 $(PY25-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-lxml_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-LXML_IPK_DIR) $(BUILD_DIR)/py25-lxml_*_$(TARGET_ARCH).ipk
 	(cd $(PY-LXML_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
@@ -301,7 +249,7 @@ $(PY26-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-lxml-ipk: $(PY24-LXML_IPK) $(PY25-LXML_IPK) $(PY26-LXML_IPK)
+py-lxml-ipk: $(PY25-LXML_IPK) $(PY26-LXML_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -315,12 +263,11 @@ py-lxml-clean:
 #
 py-lxml-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR) $(PY-LXML_BUILD_DIR)
-	rm -rf $(PY24-LXML_IPK_DIR) $(PY24-LXML_IPK)
 	rm -rf $(PY25-LXML_IPK_DIR) $(PY25-LXML_IPK)
 	rm -rf $(PY26-LXML_IPK_DIR) $(PY26-LXML_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-lxml-check: $(PY24-LXML_IPK) $(PY25-LXML_IPK) $(PY26-LXML_IPK)
+py-lxml-check: $(PY25-LXML_IPK) $(PY26-LXML_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
