@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	ldconfig libcapi20 \
 	puppy \
 	samba34 \
+	samba35 \
 	sandbox \
 	x264 lm-sensors \
 

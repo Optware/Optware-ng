@@ -44,7 +44,9 @@ BROKEN_PACKAGES = \
 	picolisp player puppy py-mysql \
 	qemu quickie \
 	re2c rhtvision rsstail rtorrent \
-	sablevm samba samba34 sandbox sane-backends \
+	sablevm \
+	samba samba34 samba35 \
+	sandbox sane-backends \
 	scli scrobby \
 	simh smartmontools snort \
 	spandsp splix sqsh srecord swi-prolog \
