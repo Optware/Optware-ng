@@ -1,0 +1,10 @@
+service swat
+{
+        disable         = no
+        port            = 901
+        socket_type     = stream
+        wait            = no
+        user            = root
+        server          = /opt/sbin/swat
+        log_on_failure  += USERID
+}
