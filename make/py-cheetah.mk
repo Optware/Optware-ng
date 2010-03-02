@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CHEETAH_SITE=http://pypi.python.org/packages/source/C/Cheetah
-PY-CHEETAH_VERSION=2.4.2
+PY-CHEETAH_VERSION=2.4.2.1
 PY-CHEETAH_SOURCE=Cheetah-$(PY-CHEETAH_VERSION).tar.gz
 PY-CHEETAH_DIR=Cheetah-$(PY-CHEETAH_VERSION)
 PY-CHEETAH_UNZIP=zcat
@@ -224,7 +224,7 @@ $(PY25-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	    install --root=$(PY25-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
 	# ls $(PY25-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.5
-#	$(STRIP_COMMAND) `find $(PY25-CHEETAH_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
+	$(STRIP_COMMAND) `find $(PY25-CHEETAH_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
 	$(MAKE) $(PY25-CHEETAH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CHEETAH_IPK_DIR)
 
@@ -237,7 +237,7 @@ $(PY26-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	    install --root=$(PY26-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
 	ls $(PY26-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.6
-#	$(STRIP_COMMAND) `find $(PY26-CHEETAH_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
+	$(STRIP_COMMAND) `find $(PY26-CHEETAH_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
 	$(MAKE) $(PY26-CHEETAH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CHEETAH_IPK_DIR)
 
