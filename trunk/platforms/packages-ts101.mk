@@ -20,6 +20,7 @@ BROKEN_PACKAGES = \
 	linphone \
 	nfs-server nfs-utils \
 	samba34 \
+	samba35 \
 	sane-backends \
 	sandbox \
 	util-linux \
