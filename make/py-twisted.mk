@@ -226,6 +226,7 @@ $(PY26-TWISTED_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-twisted_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-TWISTED_IPK_DIR) $(BUILD_DIR)/py25-twisted_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TWISTED_BUILD_DIR)/2.5; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
