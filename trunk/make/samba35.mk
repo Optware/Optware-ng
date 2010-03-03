@@ -41,9 +41,9 @@ SAMBA35-SWAT_DEPENDS=samba35, xinetd
 SAMBA35_SUGGESTS=cups
 SAMBA35-DEV_SUGGESTS=
 SAMBA35-SWAT_SUGGESTS=
-SAMBA35_CONFLICTS=samba2, samba
-SAMBA35-DEV_CONFLICTS=samba2, samba3-dev
-SAMBA35-SWAT_CONFLICTS=samba2, samba3-swat
+SAMBA35_CONFLICTS=samba2, samba, samba34
+SAMBA35-DEV_CONFLICTS=samba2, samba3-dev,samba34-dev
+SAMBA35-SWAT_CONFLICTS=samba2, samba3-swat, samba34-swat
 SAMBA35_ADDITIONAL_CODEPAGES=CP866
 
 #
@@ -118,7 +118,7 @@ SAMBA35_CROSS_ENVS=\
 		smb_krb5_cv_enctype_to_string_takes_size_t_arg=no \
 		LOOK_DIRS=$(STAGING_PREFIX) \
 		samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
-		linux_getgrouplist_ok=$(SAMBA35_LINUX_GETGROUPLIST_OK) \
+		samba_cv_HAVE_BROKEN_GETGROUPS=$(SAMBA35_LINUX_GETGROUPLIST_OK) \
 		samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
 		samba_cv_have_setresuid=yes \
 		samba_cv_have_setresgid=yes \
@@ -166,6 +166,14 @@ ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA35_CONFIG_ARGS=--with-ldap
 endif
 
+# cifsmount does not work for ddwrt, missing fstab.h
+ifeq ($(OPTWARE_TARGET), $(filter ddwrt, $(OPTWARE_TARGET)))
+SAMBA35_CONFIG_ARGS+=--without-cifsmount
+SAMBA35_CONFIG_ARGS+=--without-cifsumount
+else
+SAMBA35_CONFIG_ARGS+=--with-cifsmount
+SAMBA35_CONFIG_ARGS+=--with-cifsumount
+endif
 .PHONY: samba35-source samba35-unpack samba35 samba35-stage samba35-ipk samba35-clean samba35-dirclean samba35-check
 
 #
@@ -250,9 +258,9 @@ endif
 		--disable-nls \
 	)
 #	Remove Kerberos libs produced by broken configure
-	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' \
-	 -e 's/-lgssapi_krb5\|-lkrb5\|-lk5crypto\|-lcom_err\|-lgnutls//g' \
-	 -e '/^TERMLIBS=/s/$$/ -ltermcap/g' \
+#	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' \
+#	 -e 's/-lgssapi_krb5\|-lkrb5\|-lk5crypto\|-lcom_err\|-lgnutls//g' \
+#	 -e '/^TERMLIBS=/s/$$/ -ltermcap/g' \
 		$(@D)/source3/Makefile
 ### additional codepages
 	CODEPAGES="$(SAMBA35_ADDITIONAL_CODEPAGES)" SAMBA35_SOURCE_DIR=$(SAMBA35_SOURCE_DIR) SAMBA35_BUILD_DIR=$(SAMBA35_BUILD_DIR) /bin/sh $(SAMBA35_SOURCE_DIR)/addcodepages.sh
