@@ -35,7 +35,7 @@ READLINE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 READLINE_DESCRIPTION=The GNU Readline library provides a set of functions for use by applications that allow users to edit command lines as they are typed in
 READLINE_SECTION=misc
 READLINE_PRIORITY=optional
-READLINE_DEPENDS=
+READLINE_DEPENDS= ncurses
 
 #
 # READLINE_IPK_VERSION should be incremented when the ipk changes.
@@ -57,7 +57,7 @@ READLINE_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 READLINE_CPPFLAGS=
-READLINE_LDFLAGS=
+READLINE_LDFLAGS=-lncurses
 
 #
 # READLINE_BUILD_DIR is the directory in which the build is done.
@@ -107,6 +107,7 @@ readline-source: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCHES)
 #
 $(READLINE_BUILD_DIR)/.configured: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCHES) make/readline.mk
 #	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(READLINE_DIR) $(@D)
 	$(READLINE_UNZIP) $(DL_DIR)/$(READLINE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(READLINE_PATCHES) | patch -d $(BUILD_DIR)/$(READLINE_DIR) -p1
@@ -131,6 +132,7 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--with-curses \
 	)
 	touch $@
 
