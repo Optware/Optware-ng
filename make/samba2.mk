@@ -21,7 +21,7 @@
 #
 SAMBA2_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA2_VERSION=2.2.12
-SAMBA2_IPK_VERSION=1
+SAMBA2_IPK_VERSION=2
 SAMBA2_SOURCE=samba-$(SAMBA2_VERSION).tar.gz
 SAMBA2_DIR=samba-$(SAMBA2_VERSION)
 SAMBA2_UNZIP=zcat
@@ -30,8 +30,8 @@ SAMBA2_DESCRIPTION=Lightweight Samba suite provides file and print services to S
 SAMBA2_SECTION=net
 SAMBA2_PRIORITY=optional
 SAMBA2_DEPENDS=
-SAMBA2_SUGGESTS=xinetd
-SAMBA2_CONFLICTS=samba
+SAMBA2_SUGGESTS=xinetd, cups
+SAMBA2_CONFLICTS=samba, samba34, samba35
 
 #
 # SAMBA2_CONFFILES should be a list of user-editable files
