@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA_VERSION ?= 3.2.15
-SAMBA_IPK_VERSION ?= 1
+SAMBA_IPK_VERSION ?= 2
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
@@ -36,8 +36,14 @@ endif
 ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
 SAMBA_DEPENDS +=, gconv-modules
 endif
+SAMBA3-DEV_DEPENDS=samba
+SAMBA3-SWAT_DEPENDS=samba, xinetd
 SAMBA_SUGGESTS=cups
-SAMBA_CONFLICTS=samba2
+SAMBA3-DEV_SUGGESTS=
+SAMBA3-SWAT_SUGGESTS=
+SAMBA_CONFLICTS=samba2, samba34, samba35
+SAMBA3-DEV_CONFLICTS=samba2, samba34-dev, samba35-dev
+SAMBA3-SWAT_CONFLICTS=samba2, samba34-swat, samba35-swat
 SAMBA_ADDITIONAL_CODEPAGES=CP866
 
 #
@@ -300,9 +306,9 @@ $(SAMBA3-DEV_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(SAMBA_MAINTAINER)" >>$@
 	@echo "Source: $(SAMBA_SITE)/$(SAMBA_SOURCE)" >>$@
 	@echo "Description: development files for samba3" >>$@
-	@echo "Depends: samba" >>$@
-	@echo "Suggests: " >>$@
-	@echo "Conflicts: " >>$@
+	@echo "Depends: $(SAMBA3-DEV_DEPENDS)" >>$@
+	@echo "Suggests: $(SAMBA3-DEV_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SAMBA3-DEV_CONFLICTS)" >>$@
 
 $(SAMBA3-SWAT_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -315,9 +321,9 @@ $(SAMBA3-SWAT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(SAMBA_MAINTAINER)" >>$@
 	@echo "Source: $(SAMBA_SITE)/$(SAMBA_SOURCE)" >>$@
 	@echo "Description: the Samba Web Admin Tool for samba3" >>$@
-	@echo "Depends: samba, xinetd" >>$@
-	@echo "Suggests: " >>$@
-	@echo "Conflicts: " >>$@
+	@echo "Depends: $(SAMBA3-SWAT_DEPENDS)" >>$@
+	@echo "Suggests: $(SAMBA3-SWAT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SAMBA3-SWAT_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
