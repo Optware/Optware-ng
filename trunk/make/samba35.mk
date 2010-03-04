@@ -167,7 +167,7 @@ SAMBA35_CONFIG_ARGS=--with-ldap
 endif
 
 # cifsmount does not work for ddwrt, missing fstab.h
-ifeq ($(OPTWARE_TARGET), $(filter ddwrt, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter ddwrt dns323 gumstix1151 mbwe-bluering oleg openwrt-brcm24 openwrt-ixp4xx wdtv, $(OPTWARE_TARGET)))
 SAMBA35_CONFIG_ARGS+=--without-cifsmount
 SAMBA35_CONFIG_ARGS+=--without-cifsumount
 else
