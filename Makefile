@@ -47,7 +47,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = parted lumikki \
 	gtk \
 	iozone \
 	bpalogin \
-	samba35 \
  
 PERL_PACKAGES = \
 	perl \

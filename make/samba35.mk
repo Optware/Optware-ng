@@ -58,6 +58,7 @@ SAMBA35-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
 SAMBA35_PATCHES=\
 $(SAMBA35_SOURCE_DIR)/configure.in.patch \
 $(SAMBA35_SOURCE_DIR)/mtab.patch \
+$(SAMBA35_SOURCE_DIR)/IPV6_V6ONLY.patch \
 
 #
 # If the compilation of the package requires additional
@@ -162,18 +163,15 @@ SAMBA35_CROSS_ENVS += libreplace_cv_HAVE_IPV6=no
 SAMBA35_CROSS_ENVS += ac_cv_header_linux_dqblk_xfs_h=no
   endif
 endif
+
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA35_CONFIG_ARGS=--with-ldap
 endif
 
-# cifsmount does not work for ddwrt, missing fstab.h
-ifeq ($(OPTWARE_TARGET), $(filter ddwrt dns323 gumstix1151 mbwe-bluering oleg openwrt-brcm24 openwrt-ixp4xx wdtv, $(OPTWARE_TARGET)))
-SAMBA35_CONFIG_ARGS+=--without-cifsmount
-SAMBA35_CONFIG_ARGS+=--without-cifsumount
-else
-SAMBA35_CONFIG_ARGS+=--with-cifsmount
-SAMBA35_CONFIG_ARGS+=--with-cifsumount
-endif
+# cifsmount does not work for ddwrt etc., missing fstab.h, allow override
+SAMBA35_CONFIG_ARGS_EXTRA ?= --with-cifsmount --with-cifsumount
+SAMBA35_CONFIG_ARGS += $(SAMBA35_CONFIG_ARGS_EXTRA)
+
 .PHONY: samba35-source samba35-unpack samba35 samba35-stage samba35-ipk samba35-clean samba35-dirclean samba35-check
 
 #

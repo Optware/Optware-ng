@@ -21,3 +21,5 @@ PERL_MAJOR_VER=5.10
 
 RTORRENT_VERSION := 0.8.0
 RTORRENT_IPK_VERSION := 2
+
+SAMBA35_CONFIG_ARGS_EXTRA := --without-cifsmount --without-cifsumount
