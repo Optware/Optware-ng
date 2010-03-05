@@ -1,6 +1,6 @@
---- samba34/client/mtab.c.orig	2009-12-26 08:53:50.000000000 -0500
-+++ samba34/client/mtab.c	2009-12-26 08:54:39.000000000 -0500
-@@ -38,6 +38,7 @@
+--- samba35/client/mtab.c.orig	2010-03-01 06:14:34.000000000 -0500
++++ samba35/client/mtab.c	2010-03-05 16:53:27.000000000 -0500
+@@ -39,6 +39,7 @@
  #include <stdlib.h>
  #include <signal.h>
  #include "mount.h"

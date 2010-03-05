@@ -23,4 +23,3 @@ BROKEN_PACKAGES = \
 RTORRENT_VERSION := 0.8.2
 RTORRENT_IPK_VERSION := 2
 
-SAMBA35_CONFIG_ARGS_EXTRA := --without-cifsmount --without-cifsumount
