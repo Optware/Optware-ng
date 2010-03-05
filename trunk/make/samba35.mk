@@ -21,7 +21,7 @@
 #
 SAMBA35_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA35_VERSION ?= 3.5.0
-SAMBA35_IPK_VERSION ?= 1
+SAMBA35_IPK_VERSION ?= 2
 SAMBA35_SOURCE=samba-$(SAMBA35_VERSION).tar.gz
 SAMBA35_DIR=samba-$(SAMBA35_VERSION)
 SAMBA35_UNZIP=zcat
@@ -59,6 +59,10 @@ SAMBA35_PATCHES=\
 $(SAMBA35_SOURCE_DIR)/configure.in.patch \
 $(SAMBA35_SOURCE_DIR)/mtab.patch \
 $(SAMBA35_SOURCE_DIR)/IPV6_V6ONLY.patch \
+
+ifeq ($(OPTWARE_TARGET), $(filter ddwrt dns323 gumstix1151 mbwe-bluering oleg openwrt-brcm24 openwrt-ixp4xx wdtv, $(OPTWARE_TARGET))) 
+SAMBA35_PATCHES+=$(SAMBA35_SOURCE_DIR)/mount.cifs.c.patch \
+endif
 
 #
 # If the compilation of the package requires additional
@@ -168,7 +172,7 @@ ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA35_CONFIG_ARGS=--with-ldap
 endif
 
-# cifsmount does not work for ddwrt etc., missing fstab.h, allow override
+# cifsmount does not work for some plattforms , missing fstab.h, allow override, should  patched now 
 SAMBA35_CONFIG_ARGS_EXTRA ?= --with-cifsmount --with-cifsumount
 SAMBA35_CONFIG_ARGS += $(SAMBA35_CONFIG_ARGS_EXTRA)
 

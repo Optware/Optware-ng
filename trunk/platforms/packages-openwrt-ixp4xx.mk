@@ -30,4 +30,3 @@ JAMVM_IPK_VERSION = 1
 
 MYSQL5_CPPFLAGS := -fno-builtin-rint
 
-SAMBA35_CONFIG_ARGS_EXTRA := --without-cifsmount --without-cifsumount
