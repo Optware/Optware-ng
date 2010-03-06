@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYGMENTS_VERSION=1.1.1
+PYGMENTS_VERSION=1.3.1
 PYGMENTS_SITE=http://pypi.python.org/packages/source/P/Pygments
 PYGMENTS_SOURCE=Pygments-$(PYGMENTS_VERSION).tar.gz
 PYGMENTS_DIR=Pygments-$(PYGMENTS_VERSION)
