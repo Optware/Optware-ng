@@ -60,8 +60,8 @@ $(SAMBA35_SOURCE_DIR)/configure.in.patch \
 $(SAMBA35_SOURCE_DIR)/mtab.patch \
 $(SAMBA35_SOURCE_DIR)/IPV6_V6ONLY.patch \
 
-ifeq ($(OPTWARE_TARGET), $(filter ddwrt dns323 gumstix1151 mbwe-bluering oleg openwrt-brcm24 openwrt-ixp4xx wdtv, $(OPTWARE_TARGET))) 
-SAMBA35_PATCHES+=$(SAMBA35_SOURCE_DIR)/mount.cifs.c.patch \
+ifeq ($(OPTWARE_TARGET), $(filter ddwrt dns323 gumstix1151 mbwe-bluering oleg openwrt-brcm24 openwrt-ixp4xx wdtv, $(OPTWARE_TARGET)))
+SAMBA35_PATCHES+=$(SAMBA35_SOURCE_DIR)/mount.cifs.c.patch
 endif
 
 #
