@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SHARUTILS_VERSION=4.7
-SHARUTILS_SITE=ftp://ftp.gnu.org/gnu/sharutils/REL-$(SHARUTILS_VERSION)
+SHARUTILS_VERSION=4.9
+SHARUTILS_SITE=http://ftp.gnu.org/gnu/sharutils
 SHARUTILS_SOURCE=sharutils-$(SHARUTILS_VERSION).tar.bz2
 SHARUTILS_DIR=sharutils-$(SHARUTILS_VERSION)
 SHARUTILS_UNZIP=bzcat
@@ -36,7 +36,7 @@ SHARUTILS_CONFLICTS=
 #
 # SHARUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-SHARUTILS_IPK_VERSION=3
+SHARUTILS_IPK_VERSION=1
 
 #
 # SHARUTILS_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ SHARUTILS_IPK_VERSION=3
 # SHARUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SHARUTILS_PATCHES=$(SHARUTILS_SOURCE_DIR)/configure.patch
+SHARUTILS_PATCHES=$(SHARUTILS_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -76,8 +76,8 @@ SHARUTILS_IPK=$(BUILD_DIR)/sharutils_$(SHARUTILS_VERSION)-$(SHARUTILS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SHARUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SHARUTILS_SITE)/$(SHARUTILS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SHARUTILS_SOURCE)
+	$(WGET) -P $(@D) $(SHARUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ sharutils-source: $(DL_DIR)/$(SHARUTILS_SOURCE) $(SHARUTILS_PATCHES)
 #
 $(SHARUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(SHARUTILS_SOURCE) $(SHARUTILS_PATCHES) make/sharutils.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(SHARUTILS_DIR) $(SHARUTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SHARUTILS_DIR) $(@D)
 	$(SHARUTILS_UNZIP) $(DL_DIR)/$(SHARUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SHARUTILS_PATCHES)" ; \
 		then cat $(SHARUTILS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SHARUTILS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SHARUTILS_DIR)" != "$(SHARUTILS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SHARUTILS_DIR) $(SHARUTILS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SHARUTILS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SHARUTILS_DIR) $(@D) ; \
 	fi
-	(cd $(SHARUTILS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SHARUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SHARUTILS_LDFLAGS)" \
@@ -127,7 +127,7 @@ $(SHARUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(SHARUTILS_SOURCE) $(SHARUTILS_PA
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(SHARUTILS_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 sharutils-unpack: $(SHARUTILS_BUILD_DIR)/.configured
@@ -137,7 +137,7 @@ sharutils-unpack: $(SHARUTILS_BUILD_DIR)/.configured
 #
 $(SHARUTILS_BUILD_DIR)/.built: $(SHARUTILS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SHARUTILS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -150,7 +150,7 @@ sharutils: $(SHARUTILS_BUILD_DIR)/.built
 #
 $(SHARUTILS_BUILD_DIR)/.staged: $(SHARUTILS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SHARUTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 sharutils-stage: $(SHARUTILS_BUILD_DIR)/.staged
@@ -230,4 +230,4 @@ sharutils-dirclean:
 # Some sanity check for the package.
 #
 sharutils-check: $(SHARUTILS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SHARUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
