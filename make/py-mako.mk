@@ -24,7 +24,7 @@
 # PY-MAKO_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-MAKO_SITE=http://pypi.python.org/packages/source/M/Mako
-PY-MAKO_VERSION=0.2.5
+PY-MAKO_VERSION=0.3.0
 PY-MAKO_IPK_VERSION=1
 PY-MAKO_SOURCE=Mako-$(PY-MAKO_VERSION).tar.gz
 PY-MAKO_DIR=Mako-$(PY-MAKO_VERSION)
@@ -33,7 +33,6 @@ PY-MAKO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MAKO_DESCRIPTION=Mako is a template library written in Python.
 PY-MAKO_SECTION=misc
 PY-MAKO_PRIORITY=optional
-PY24-MAKO_DEPENDS=python24, py24-beaker
 PY25-MAKO_DEPENDS=python25, py25-beaker
 PY26-MAKO_DEPENDS=python26, py26-beaker
 PY-MAKO_SUGGESTS=
@@ -68,9 +67,6 @@ PY-MAKO_LDFLAGS=
 #
 PY-MAKO_BUILD_DIR=$(BUILD_DIR)/py-mako
 PY-MAKO_SOURCE_DIR=$(SOURCE_DIR)/py-mako
-
-PY24-MAKO_IPK_DIR=$(BUILD_DIR)/py24-mako-$(PY-MAKO_VERSION)-ipk
-PY24-MAKO_IPK=$(BUILD_DIR)/py24-mako_$(PY-MAKO_VERSION)-$(PY-MAKO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MAKO_IPK_DIR=$(BUILD_DIR)/py25-mako-$(PY-MAKO_VERSION)-ipk
 PY25-MAKO_IPK=$(BUILD_DIR)/py25-mako_$(PY-MAKO_VERSION)-$(PY-MAKO_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -114,16 +110,6 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(PY-MAKO_PATCHES)
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR)
-	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(PY-MAKO_PATCHES)" ; then \
-	    cat $(PY-MAKO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MAKO_DIR) -p0 ; \
-        fi
-	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR)
 	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -153,9 +139,6 @@ py-mako-unpack: $(PY-MAKO_BUILD_DIR)/.configured
 #
 $(PY-MAKO_BUILD_DIR)/.built: $(PY-MAKO_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(@D)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
@@ -183,20 +166,6 @@ py-mako-stage: $(PY-MAKO_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-mako
 #
-$(PY24-MAKO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-mako" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-MAKO_PRIORITY)" >>$@
-	@echo "Section: $(PY-MAKO_SECTION)" >>$@
-	@echo "Version: $(PY-MAKO_VERSION)-$(PY-MAKO_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-MAKO_MAINTAINER)" >>$@
-	@echo "Source: $(PY-MAKO_SITE)/$(PY-MAKO_SOURCE)" >>$@
-	@echo "Description: $(PY-MAKO_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-MAKO_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-MAKO_CONFLICTS)" >>$@
-
 $(PY25-MAKO_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -237,19 +206,8 @@ $(PY26-MAKO_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
-	rm -rf $(PY24-MAKO_IPK_DIR) $(BUILD_DIR)/py24-mako_*_$(TARGET_ARCH).ipk
-	(cd $(PY-MAKO_BUILD_DIR)/2.4; \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-MAKO_IPK_DIR) --prefix=/opt)
-	for f in $(PY24-MAKO_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
-	$(MAKE) $(PY24-MAKO_IPK_DIR)/CONTROL/control
-#	echo $(PY-MAKO_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-MAKO_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MAKO_IPK_DIR)
-
 $(PY25-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-mako_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-MAKO_IPK_DIR) $(BUILD_DIR)/py25-mako_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MAKO_BUILD_DIR)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
@@ -274,7 +232,7 @@ $(PY26-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-mako-ipk: $(PY24-MAKO_IPK) $(PY25-MAKO_IPK) $(PY26-MAKO_IPK)
+py-mako-ipk: $(PY25-MAKO_IPK) $(PY26-MAKO_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -288,13 +246,11 @@ py-mako-clean:
 #
 py-mako-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR) $(PY-MAKO_BUILD_DIR)
-	rm -rf $(PY24-MAKO_IPK_DIR) $(PY24-MAKO_IPK)
 	rm -rf $(PY25-MAKO_IPK_DIR) $(PY25-MAKO_IPK)
 	rm -rf $(PY26-MAKO_IPK_DIR) $(PY26-MAKO_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-mako-check: $(PY24-MAKO_IPK) $(PY25-MAKO_IPK) $(PY26-MAKO_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
-		$(PY24-MAKO_IPK) $(PY25-MAKO_IPK) $(PY26-MAKO_IPK)
+py-mako-check: $(PY25-MAKO_IPK) $(PY26-MAKO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
