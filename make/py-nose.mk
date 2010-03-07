@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-NOSE_SITE=http://pypi.python.org/packages/source/n/nose
-PY-NOSE_VERSION=0.11.1
+PY-NOSE_VERSION=0.11.3
 PY-NOSE_SOURCE=nose-$(PY-NOSE_VERSION).tar.gz
 PY-NOSE_DIR=nose-$(PY-NOSE_VERSION)
 PY-NOSE_UNZIP=zcat
@@ -30,7 +30,6 @@ PY-NOSE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-NOSE_DESCRIPTION=A discovery-based python unittest extension.
 PY-NOSE_SECTION=misc
 PY-NOSE_PRIORITY=optional
-PY24-NOSE_DEPENDS=python24
 PY25-NOSE_DEPENDS=python25
 PY26-NOSE_DEPENDS=python26
 PY-NOSE_CONFLICTS=
@@ -68,9 +67,6 @@ PY-NOSE_LDFLAGS=
 #
 PY-NOSE_BUILD_DIR=$(BUILD_DIR)/py-nose
 PY-NOSE_SOURCE_DIR=$(SOURCE_DIR)/py-nose
-
-PY24-NOSE_IPK_DIR=$(BUILD_DIR)/py24-nose-$(PY-NOSE_VERSION)-ipk
-PY24-NOSE_IPK=$(BUILD_DIR)/py24-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-NOSE_IPK_DIR=$(BUILD_DIR)/py25-nose-$(PY-NOSE_VERSION)-ipk
 PY25-NOSE_IPK=$(BUILD_DIR)/py25-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -114,15 +110,6 @@ $(PY-NOSE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NOSE_SOURCE) $(PY-NOSE_PATCHES)
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-NOSE_DIR)
-	$(PY-NOSE_UNZIP) $(DL_DIR)/$(PY-NOSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-NOSE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NOSE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-NOSE_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-NOSE_DIR)
 	$(PY-NOSE_UNZIP) $(DL_DIR)/$(PY-NOSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -150,9 +137,6 @@ py-nose-unpack: $(PY-NOSE_BUILD_DIR)/.configured
 #
 $(PY-NOSE_BUILD_DIR)/.built: $(PY-NOSE_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
@@ -180,20 +164,6 @@ py-nose-stage: $(PY-NOSE_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-nose
 #
-$(PY24-NOSE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-nose" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-NOSE_PRIORITY)" >>$@
-	@echo "Section: $(PY-NOSE_SECTION)" >>$@
-	@echo "Version: $(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-NOSE_MAINTAINER)" >>$@
-	@echo "Source: $(PY-NOSE_SITE)/$(PY-NOSE_SOURCE)" >>$@
-	@echo "Description: $(PY-NOSE_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-NOSE_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-NOSE_CONFLICTS)" >>$@
-
 $(PY25-NOSE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -234,20 +204,8 @@ $(PY26-NOSE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-NOSE_IPK): $(PY-NOSE_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-nose_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-NOSE_IPK_DIR) $(BUILD_DIR)/py24-nose_*_$(TARGET_ARCH).ipk
-	(cd $(PY-NOSE_BUILD_DIR)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-NOSE_IPK_DIR) --prefix=/opt)
-	rm -rf $(PY24-NOSE_IPK_DIR)/opt/man/
-	for f in $(PY24-NOSE_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
-	$(MAKE) $(PY24-NOSE_IPK_DIR)/CONTROL/control
-#	echo $(PY-NOSE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-NOSE_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-NOSE_IPK_DIR)
-
 $(PY25-NOSE_IPK): $(PY-NOSE_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-nose_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-NOSE_IPK_DIR) $(BUILD_DIR)/py25-nose_*_$(TARGET_ARCH).ipk
 	(cd $(PY-NOSE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
@@ -268,7 +226,7 @@ $(PY26-NOSE_IPK): $(PY-NOSE_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-nose-ipk: $(PY24-NOSE_IPK) $(PY25-NOSE_IPK) $(PY26-NOSE_IPK)
+py-nose-ipk: $(PY25-NOSE_IPK) $(PY26-NOSE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -282,12 +240,11 @@ py-nose-clean:
 #
 py-nose-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-NOSE_DIR) $(PY-NOSE_BUILD_DIR)
-	rm -rf $(PY24-NOSE_IPK_DIR) $(PY24-NOSE_IPK)
 	rm -rf $(PY25-NOSE_IPK_DIR) $(PY25-NOSE_IPK)
 	rm -rf $(PY26-NOSE_IPK_DIR) $(PY26-NOSE_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-nose-check: $(PY24-NOSE_IPK) $(PY25-NOSE_IPK) $(PY26-NOSE_IPK)
+py-nose-check: $(PY25-NOSE_IPK) $(PY26-NOSE_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
