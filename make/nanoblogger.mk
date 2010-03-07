@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NANOBLOGGER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nanoblogger
-NANOBLOGGER_VERSION=3.4.1
+NANOBLOGGER_SITE=http://nanoblogger.sourceforge.net/downloads
+NANOBLOGGER_VERSION=3.4.2
 NANOBLOGGER_SOURCE=nanoblogger-$(NANOBLOGGER_VERSION).tar.gz
 NANOBLOGGER_DIR=nanoblogger-$(NANOBLOGGER_VERSION)
 NANOBLOGGER_UNZIP=zcat
