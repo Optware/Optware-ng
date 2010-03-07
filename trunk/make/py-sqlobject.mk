@@ -28,7 +28,7 @@ PY-SQLOBJECT_SITE=http://pypi.python.org/packages/source/S/SQLObject
 #ifneq ($(PY-SQLOBJECT_SVN_REV),)
 #PY-SQLOBJECT_ ### VERSION=0.8dev_r1675
 #else
-PY-SQLOBJECT_VERSION=0.12.1
+PY-SQLOBJECT_VERSION=0.12.2
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 #endif
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
@@ -235,7 +235,7 @@ $(PY26-SQLOBJECT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-sqlobject_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py*-sqlobject_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py25-sqlobject_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
