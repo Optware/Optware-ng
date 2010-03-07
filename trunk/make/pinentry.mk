@@ -21,12 +21,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PINENTRY_SITE=ftp://ftp.gnupg.org/gcrypt/pinentry
-PINENTRY_VERSION=0.7.5
+PINENTRY_VERSION=0.8.0
 PINENTRY_SOURCE=pinentry-$(PINENTRY_VERSION).tar.gz
 PINENTRY_DIR=pinentry-$(PINENTRY_VERSION)
 PINENTRY_UNZIP=zcat
 PINENTRY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-PINENTRY_DESCRIPTION=Describe pinentry here.
+PINENTRY_DESCRIPTION=A collection of simple PIN or passphrase entry dialogs
 PINENTRY_SECTION=utility
 PINENTRY_PRIORITY=optional
 PINENTRY_DEPENDS=ncurses
@@ -39,7 +39,7 @@ PINENTRY_CONFLICTS=
 #
 # PINENTRY_IPK_VERSION should be incremented when the ipk changes.
 #
-PINENTRY_IPK_VERSION=2
+PINENTRY_IPK_VERSION=1
 
 #
 # PINENTRY_CONFFILES should be a list of user-editable files
@@ -161,12 +161,12 @@ pinentry: $(PINENTRY_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PINENTRY_BUILD_DIR)/.staged: $(PINENTRY_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-pinentry-stage: $(PINENTRY_BUILD_DIR)/.staged
+#$(PINENTRY_BUILD_DIR)/.staged: $(PINENTRY_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#pinentry-stage: $(PINENTRY_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -242,4 +242,4 @@ pinentry-dirclean:
 # Some sanity check for the package.
 #
 pinentry-check: $(PINENTRY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PINENTRY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
