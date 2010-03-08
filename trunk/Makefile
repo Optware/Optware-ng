@@ -368,7 +368,7 @@ COMMON_CROSS_PACKAGES = \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext \
 	xextensions xfixes xft xinetd \
 	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
-	x264 xmail xvid \
+	x264 xmail xvid xz-utils \
 	yafc yasm yawk yougrabber \
 	zile zip zlib zoo zsh \
 
