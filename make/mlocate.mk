@@ -18,10 +18,10 @@ MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.gz
 MLOCATE_UNZIP=zcat
 else
 MLOCATE_SITE=https://fedorahosted.org/releases/m/l/mlocate
-MLOCATE_VERSION=0.22.2
+MLOCATE_VERSION=0.22.3
 MLOCATE_IPK_VERSION=1
-MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.bz2
-MLOCATE_UNZIP=bzcat
+MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.xz
+MLOCATE_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
 endif
 MLOCATE_DIR=mlocate-$(MLOCATE_VERSION)
 MLOCATE_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
@@ -111,6 +111,9 @@ mlocate-source: $(DL_DIR)/$(MLOCATE_SOURCE) $(MLOCATE_PATCHES)
 # shown below to make various patches to it.
 #
 $(MLOCATE_BUILD_DIR)/.configured: $(DL_DIR)/$(MLOCATE_SOURCE) $(MLOCATE_PATCHES) make/mlocate.mk
+ifneq ($(LIBC_STYLE), uclibc)
+	$(MAKE) xz-utils-host-stage
+endif
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
