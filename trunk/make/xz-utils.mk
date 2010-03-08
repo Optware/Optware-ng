@@ -61,7 +61,8 @@ $(XZ_UTILS_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(XZ_UTILS_SOURCE
 		--target=$(GNU_HOST_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--disable-static \
+		--enable-static \
+		--disable-shared \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	$(MAKE) -C $(@D) DESTDIR=$(HOST_STAGING_DIR) install
