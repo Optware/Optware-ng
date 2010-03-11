@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBASSUAN_SITE=ftp://ftp.gnupg.org/gcrypt/libassuan
-LIBASSUAN_VERSION=1.0.5
+LIBASSUAN_VERSION=2.0.0
 LIBASSUAN_SOURCE=libassuan-$(LIBASSUAN_VERSION).tar.bz2
 LIBASSUAN_DIR=libassuan-$(LIBASSUAN_VERSION)
 LIBASSUAN_UNZIP=bzcat
@@ -29,7 +29,7 @@ LIBASSUAN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBASSUAN_DESCRIPTION=Libassuan is the IPC library used by some GnuPG related software.
 LIBASSUAN_SECTION=lib
 LIBASSUAN_PRIORITY=optional
-LIBASSUAN_DEPENDS=
+LIBASSUAN_DEPENDS=libgpg-error
 LIBASSUAN_SUGGESTS=
 LIBASSUAN_CONFLICTS=
 
@@ -105,7 +105,7 @@ libassuan-source: $(DL_DIR)/$(LIBASSUAN_SOURCE) $(LIBASSUAN_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBASSUAN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBASSUAN_SOURCE) $(LIBASSUAN_PATCHES) make/libassuan.mk
-	$(MAKE) libpth-stage
+	$(MAKE) libpth-stage libgpg-error-stage
 	rm -rf $(BUILD_DIR)/$(LIBASSUAN_DIR) $(@D)
 	$(LIBASSUAN_UNZIP) $(DL_DIR)/$(LIBASSUAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBASSUAN_PATCHES)" ; \
@@ -125,6 +125,7 @@ $(LIBASSUAN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBASSUAN_SOURCE) $(LIBASSUAN_PA
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-pth-prefix=$(STAGING_PREFIX) \
+		--with-gpg-error-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
