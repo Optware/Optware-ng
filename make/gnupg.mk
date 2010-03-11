@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPG_SITE=ftp://ftp.gnupg.org/gcrypt/gnupg
-GNUPG_VERSION=2.0.14
+GNUPG_VERSION=2.0.15
 GNUPG_SOURCE=gnupg-$(GNUPG_VERSION).tar.bz2
 GNUPG_DIR=gnupg-$(GNUPG_VERSION)
 GNUPG_UNZIP=bzcat
@@ -30,7 +30,7 @@ GNUPG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUPG_DESCRIPTION=GNU privacy guard - a free PGP replacement.
 GNUPG_SECTION=misc
 GNUPG_PRIORITY=optional
-GNUPG_DEPENDS=libusb, zlib, bzip2, readline, libcurl, openldap-libs, libgcrypt, libpth, libksba, pinentry
+GNUPG_DEPENDS=libassuan, libusb, zlib, bzip2, readline, libcurl, openldap-libs, libgcrypt, libgpg-error, libpth, libksba, pinentry
 ifneq (, $(filter libiconv, $(PACKAGES)))
 GNUPG_DEPENDS +=, libiconv
 endif
@@ -65,7 +65,7 @@ GNUPG_LDFLAGS=
 # patches and ipkg control files.
 # GNUPG_IPK_DIR is the directory in which the ipk is built.
 # GNUPG_IPK is the name of the resulting ipk files.
-#
+
 # You should not change any of these variables.
 #
 GNUPG_BUILD_DIR=$(BUILD_DIR)/gnupg
