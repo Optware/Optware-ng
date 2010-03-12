@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VPNC_SITE=http://www.unix-ag.uni-kl.de/~massar/vpnc
-VPNC_VERSION=0.5.1
+VPNC_VERSION=0.5.3
 VPNC_SOURCE=vpnc-$(VPNC_VERSION).tar.gz
 VPNC_DIR=vpnc-$(VPNC_VERSION)
 VPNC_UNZIP=zcat
@@ -36,7 +36,7 @@ VPNC_CONFLICTS=
 #
 # VPNC_IPK_VERSION should be incremented when the ipk changes.
 #
-VPNC_IPK_VERSION=2
+VPNC_IPK_VERSION=1
 
 #
 # VPNC_CONFFILES should be a list of user-editable files
@@ -49,7 +49,6 @@ VPNC_CONFFILES=/opt/etc/vpnc/default.conf /opt/etc/vpnc/vpnc-script
 VPNC_PATCHES= \
 	     $(VPNC_SOURCE_DIR)/Makefile.patch \
 	     $(VPNC_SOURCE_DIR)/config.c.patch \
-	     $(VPNC_SOURCE_DIR)/vpnc-script.patch \
 	     $(VPNC_SOURCE_DIR)/vpnc-disconnect.patch \
 	     $(VPNC_SOURCE_DIR)/vpnc.conf.patch
 
@@ -57,8 +56,8 @@ VPNC_PATCHES= \
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-VPNC_CPPFLAGS=$(shell $(STAGING_DIR)/opt/bin/libgcrypt-config --cflags)
-VPNC_LDFLAGS=$(shell $(STAGING_DIR)/opt/bin/libgcrypt-config --libs) -lssl
+VPNC_CPPFLAGS=`$(STAGING_PREFIX)/bin/libgcrypt-config --cflags`
+VPNC_LDFLAGS=`$(STAGING_PREFIX)/bin/libgcrypt-config --libs` -lssl
 
 #
 # VPNC_BUILD_DIR is the directory in which the build is done.
@@ -81,8 +80,8 @@ VPNC_IPK=$(BUILD_DIR)/vpnc_$(VPNC_VERSION)-$(VPNC_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VPNC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VPNC_SITE)/$(VPNC_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(VPNC_SOURCE)
+	$(WGET) -P $(@D) $(VPNC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -130,7 +129,7 @@ vpnc-unpack: $(VPNC_BUILD_DIR)/.configured
 #
 $(VPNC_BUILD_DIR)/.built: $(VPNC_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(VPNC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VPNC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VPNC_LDFLAGS)" \
@@ -189,22 +188,10 @@ $(VPNC_IPK): $(VPNC_BUILD_DIR)/.built
 	$(MAKE) -C $(VPNC_BUILD_DIR) DESTDIR=$(VPNC_IPK_DIR) install
 	$(STRIP_COMMAND) $(VPNC_IPK_DIR)/opt/sbin/vpnc
 	$(STRIP_COMMAND) $(VPNC_IPK_DIR)/opt/bin/cisco-decrypt
+	sed -i -e 's|/var/|/opt&|' $(VPNC_IPK_DIR)/opt/etc/vpnc/vpnc-script
 	install -d $(VPNC_IPK_DIR)/opt/man/man8
 	install -m 644 $(VPNC_SOURCE_DIR)/vpnc.8 $(VPNC_IPK_DIR)/opt/man/man8
-#	install -d $(VPNC_IPK_DIR)/opt/etc/
-#	install -m 644 $(VPNC_SOURCE_DIR)/vpnc.conf $(VPNC_IPK_DIR)/opt/etc/vpnc.conf
-#	install -d $(VPNC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(VPNC_SOURCE_DIR)/rc.vpnc $(VPNC_IPK_DIR)/opt/etc/init.d/SXXvpnc
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VPNC_IPK_DIR)/opt/etc/init.d/SXXvpnc
 	$(MAKE) $(VPNC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(VPNC_SOURCE_DIR)/postinst $(VPNC_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VPNC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(VPNC_SOURCE_DIR)/prerm $(VPNC_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VPNC_IPK_DIR)/CONTROL/prerm
-#	if test -n "$(UPD-ALT_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
-			$(VPNC_IPK_DIR)/CONTROL/postinst $(VPNC_IPK_DIR)/CONTROL/prerm; \
-	fi
 	echo $(VPNC_CONFFILES) | sed -e 's/ /\n/g' > $(VPNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VPNC_IPK_DIR)
 
@@ -231,4 +218,4 @@ vpnc-dirclean:
 # Some sanity check for the package.
 #
 vpnc-check: $(VPNC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VPNC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
