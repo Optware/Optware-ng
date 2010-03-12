@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 QUAGGA_SITE=http://www.quagga.net/download
-QUAGGA_VERSION=0.99.14
+QUAGGA_VERSION=0.99.16
 QUAGGA_SOURCE=quagga-$(QUAGGA_VERSION).tar.gz
 QUAGGA_DIR=quagga-$(QUAGGA_VERSION)
 QUAGGA_UNZIP=zcat
@@ -82,8 +82,8 @@ QUAGGA_IPK=$(BUILD_DIR)/quagga_$(QUAGGA_VERSION)-$(QUAGGA_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(QUAGGA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(QUAGGA_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(QUAGGA_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
