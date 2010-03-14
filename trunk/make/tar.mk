@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
-TAR_VERSION ?= 1.22
-TAR_IPK_VERSION ?= 2
+TAR_VERSION ?= 1.23
+TAR_IPK_VERSION ?= 1
 TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
 TAR_UNZIP=bzcat
@@ -29,7 +29,8 @@ TAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TAR_DESCRIPTION=heavyweight version of the Tape ARchiver
 TAR_SECTION=util
 TAR_PRIORITY=optional
-TAR_DEPENDS=bzip2
+TAR_DEPENDS=
+TAR_SUGGESTS=bzip2, gzip, xz-utils
 TAR_CONFLICTS=
 
 
@@ -62,7 +63,8 @@ TAR_IPK=$(BUILD_DIR)/tar_$(TAR_VERSION)-$(TAR_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TAR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TAR_SITE)/$(TAR_SOURCE)
+	$(WGET) -P $(@D) $(TAR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 .PHONY: tar-source tar-unpack tar tar-stage tar-ipk tar-clean tar-dirclean tar-check
 
@@ -89,7 +91,7 @@ tar-source: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES) make/tar.mk
-	rm -rf $(BUILD_DIR)/$(TAR_DIR) $(TAR_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TAR_DIR) $(@D)
 	$(TAR_UNZIP) $(DL_DIR)/$(TAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(TAR_DIR) $(@D)
 	(cd $(@D); \
@@ -138,6 +140,7 @@ $(TAR_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(TAR_SITE)/$(TAR_SOURCE)" >>$@
 	@echo "Description: $(TAR_DESCRIPTION)" >>$@
 	@echo "Depends: $(TAR_DEPENDS)" >>$@
+	@echo "Suggests: $(TAR_SUGGESTS)" >>$@
 	@echo "Conflicts: $(TAR_CONFLICTS)" >>$@
 
 #
