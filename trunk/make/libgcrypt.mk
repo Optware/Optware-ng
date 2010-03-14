@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGCRYPT_SITE=ftp://ftp.gnupg.org/gcrypt/libgcrypt
-LIBGCRYPT_VERSION=1.4.4
+LIBGCRYPT_VERSION=1.4.5
 LIBGCRYPT_SOURCE=libgcrypt-$(LIBGCRYPT_VERSION).tar.bz2
 LIBGCRYPT_DIR=libgcrypt-$(LIBGCRYPT_VERSION)
 LIBGCRYPT_UNZIP=bzcat
@@ -42,7 +42,7 @@ LIBGCRYPT_CONFLICTS=
 #
 # LIBGCRYPT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGCRYPT_IPK_VERSION=2
+LIBGCRYPT_IPK_VERSION=1
 
 #
 # LIBGCRYPT_CONFFILES should be a list of user-editable files
