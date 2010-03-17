@@ -219,7 +219,7 @@ $(PY26-SCGI_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-SCGI_IPK): $(PY-SCGI_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py*-scgi_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py2?-scgi_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-SCGI_IPK_DIR) $(BUILD_DIR)/py25-scgi_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SCGI_BUILD_DIR)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
