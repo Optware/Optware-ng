@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION=1.2.4
+BITLBEE_VERSION=1.2.5
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
@@ -113,7 +113,7 @@ $(BITLBEE_BUILD_DIR)/.configured: $(DL_DIR)/$(BITLBEE_SOURCE) $(BITLBEE_PATCHES)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(BITLBEE_DIR) $(BITLBEE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BITLBEE_DIR) $(@D)
 	$(BITLBEE_UNZIP) $(DL_DIR)/$(BITLBEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BITLBEE_PATCHES)"; \
 		then cat $(BITLBEE_PATCHES) | patch -d $(BUILD_DIR)/$(BITLBEE_DIR) -p1; \
