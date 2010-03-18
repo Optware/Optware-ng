@@ -46,7 +46,10 @@ UTIL_LINUX_IPK_VERSION=6
 # UTIL_LINUX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-UTIL_LINUX_PATCHES=$(UTIL_LINUX_SOURCE_DIR)/llseek.patch $(UTIL_LINUX_SOURCE_DIR)/umount2.patch
+UTIL_LINUX_PATCHES=\
+	$(UTIL_LINUX_SOURCE_DIR)/llseek.patch \
+	$(UTIL_LINUX_SOURCE_DIR)/umount2.patch \
+	$(UTIL_LINUX_SOURCE_DIR)/loop-aes-util-linux-2.12r.patch
 
 #
 # If the compilation of the package requires additional
