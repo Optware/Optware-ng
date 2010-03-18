@@ -106,7 +106,7 @@ cherokee-pyscgi-source: $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) $(CHEROKEE-PYSCGI_PA
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CHEROKEE-PYSCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) $(CHEROKEE-PYSCGI_PATCHES)
+$(CHEROKEE-PYSCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) $(CHEROKEE-PYSCGI_PATCHES) make/cherokee-pyscgi.mk
 #	$(MAKE) somepkg-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
