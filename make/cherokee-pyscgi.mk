@@ -197,7 +197,7 @@ $(PY26-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-CHEROKEE-SCGI_IPK): $(CHEROKEE-PYSCGI_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py2?-cherokee-pyscgi_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py2?-cherokee-scgi_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-CHEROKEE-SCGI_IPK_DIR) $(BUILD_DIR)/py25-cherokee-scgi_*_$(TARGET_ARCH).ipk
 	(cd $(CHEROKEE-PYSCGI_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
