@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CHEROKEE-PYSCGI_SITE=http://www.cherokee-project.com/download/pyscgi
-CHEROKEE-PYSCGI_VERSION=1.6
+CHEROKEE-PYSCGI_VERSION=1.11
 CHEROKEE-PYSCGI_SOURCE=cherokee_pyscgi-$(CHEROKEE-PYSCGI_VERSION).tar.gz
 CHEROKEE-PYSCGI_DIR=cherokee_pyscgi-$(CHEROKEE-PYSCGI_VERSION)
 CHEROKEE-PYSCGI_UNZIP=zcat
@@ -30,8 +30,8 @@ CHEROKEE-PYSCGI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CHEROKEE-PYSCGI_DESCRIPTION=PySCGI is a 100% Python module implementing the SCGI protocol. It can be used to write Python-based application servers.
 CHEROKEE-PYSCGI_SECTION=misc
 CHEROKEE-PYSCGI_PRIORITY=optional
-PY24-CHEROKEE-SCGI_DEPENDS=python24
 PY25-CHEROKEE-SCGI_DEPENDS=python25
+PY26-CHEROKEE-SCGI_DEPENDS=python26
 CHEROKEE-PYSCGI_CONFLICTS=
 
 #
@@ -68,11 +68,11 @@ CHEROKEE-PYSCGI_LDFLAGS=
 CHEROKEE-PYSCGI_BUILD_DIR=$(BUILD_DIR)/cherokee-pyscgi
 CHEROKEE-PYSCGI_SOURCE_DIR=$(SOURCE_DIR)/cherokee-pyscgi
 
-PY24-CHEROKEE-SCGI_IPK_DIR=$(BUILD_DIR)/py24-cherokee-scgi-$(CHEROKEE-PYSCGI_VERSION)-ipk
-PY24-CHEROKEE-SCGI_IPK=$(BUILD_DIR)/py24-cherokee-scgi_$(CHEROKEE-PYSCGI_VERSION)-$(CHEROKEE-PYSCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-CHEROKEE-SCGI_IPK_DIR=$(BUILD_DIR)/py25-cherokee-scgi-$(CHEROKEE-PYSCGI_VERSION)-ipk
 PY25-CHEROKEE-SCGI_IPK=$(BUILD_DIR)/py25-cherokee-scgi_$(CHEROKEE-PYSCGI_VERSION)-$(CHEROKEE-PYSCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-CHEROKEE-SCGI_IPK_DIR=$(BUILD_DIR)/py26-cherokee-scgi-$(CHEROKEE-PYSCGI_VERSION)-ipk
+PY26-CHEROKEE-SCGI_IPK=$(BUILD_DIR)/py26-cherokee-scgi_$(CHEROKEE-PYSCGI_VERSION)-$(CHEROKEE-PYSCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: cherokee-pyscgi-source cherokee-pyscgi-unpack cherokee-pyscgi cherokee-pyscgi-stage cherokee-pyscgi-ipk cherokee-pyscgi-clean cherokee-pyscgi-dirclean cherokee-pyscgi-check
 
@@ -110,16 +110,16 @@ $(CHEROKEE-PYSCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) $(
 #	$(MAKE) somepkg-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR)
-	$(CHEROKEE-PYSCGI_UNZIP) $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CHEROKEE-PYSCGI_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) -p1
-	mv $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) $(@D)/2.4
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR)
 	$(CHEROKEE-PYSCGI_UNZIP) $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(CHEROKEE-PYSCGI_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) -p1
 	mv $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) $(@D)/2.5
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR)
+	$(CHEROKEE-PYSCGI_UNZIP) $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(CHEROKEE-PYSCGI_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) -p1
+	mv $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) $(@D)/2.6
 	touch $@
 
 cherokee-pyscgi-unpack: $(CHEROKEE-PYSCGI_BUILD_DIR)/.configured
@@ -129,11 +129,11 @@ cherokee-pyscgi-unpack: $(CHEROKEE-PYSCGI_BUILD_DIR)/.configured
 #
 $(CHEROKEE-PYSCGI_BUILD_DIR)/.built: $(CHEROKEE-PYSCGI_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
-	)
 	(cd $(@D)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	(cd $(@D)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
 	touch $@
 
@@ -156,20 +156,6 @@ cherokee-pyscgi-stage: $(CHEROKEE-PYSCGI_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/cherokee-pyscgi
 #
-$(PY24-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-cherokee-scgi" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(CHEROKEE-PYSCGI_PRIORITY)" >>$@
-	@echo "Section: $(CHEROKEE-PYSCGI_SECTION)" >>$@
-	@echo "Version: $(CHEROKEE-PYSCGI_VERSION)-$(CHEROKEE-PYSCGI_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(CHEROKEE-PYSCGI_MAINTAINER)" >>$@
-	@echo "Source: $(CHEROKEE-PYSCGI_SITE)/$(CHEROKEE-PYSCGI_SOURCE)" >>$@
-	@echo "Description: $(CHEROKEE-PYSCGI_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-CHEROKEE-SCGI_DEPENDS)" >>$@
-	@echo "Conflicts: $(CHEROKEE-PYSCGI_CONFLICTS)" >>$@
-
 $(PY25-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -184,6 +170,20 @@ $(PY25-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-CHEROKEE-SCGI_DEPENDS)" >>$@
 	@echo "Conflicts: $(CHEROKEE-PYSCGI_CONFLICTS)" >>$@
 
+$(PY26-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-cherokee-scgi" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CHEROKEE-PYSCGI_PRIORITY)" >>$@
+	@echo "Section: $(CHEROKEE-PYSCGI_SECTION)" >>$@
+	@echo "Version: $(CHEROKEE-PYSCGI_VERSION)-$(CHEROKEE-PYSCGI_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CHEROKEE-PYSCGI_MAINTAINER)" >>$@
+	@echo "Source: $(CHEROKEE-PYSCGI_SITE)/$(CHEROKEE-PYSCGI_SOURCE)" >>$@
+	@echo "Description: $(CHEROKEE-PYSCGI_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-CHEROKEE-SCGI_DEPENDS)" >>$@
+	@echo "Conflicts: $(CHEROKEE-PYSCGI_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -196,17 +196,8 @@ $(PY25-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-CHEROKEE-SCGI_IPK): $(CHEROKEE-PYSCGI_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/cherokee-pyscgi_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-CHEROKEE-SCGI_IPK_DIR) $(BUILD_DIR)/py24-cherokee-scgi_*_$(TARGET_ARCH).ipk
-	(cd $(CHEROKEE-PYSCGI_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-CHEROKEE-SCGI_IPK_DIR) --prefix=/opt; \
-	)
-	$(MAKE) $(PY24-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CHEROKEE-SCGI_IPK_DIR)
-
 $(PY25-CHEROKEE-SCGI_IPK): $(CHEROKEE-PYSCGI_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py2?-cherokee-pyscgi_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-CHEROKEE-SCGI_IPK_DIR) $(BUILD_DIR)/py25-cherokee-scgi_*_$(TARGET_ARCH).ipk
 	(cd $(CHEROKEE-PYSCGI_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
@@ -215,10 +206,19 @@ $(PY25-CHEROKEE-SCGI_IPK): $(CHEROKEE-PYSCGI_BUILD_DIR)/.built
 	$(MAKE) $(PY25-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CHEROKEE-SCGI_IPK_DIR)
 
+$(PY26-CHEROKEE-SCGI_IPK): $(CHEROKEE-PYSCGI_BUILD_DIR)/.built
+	rm -rf $(PY26-CHEROKEE-SCGI_IPK_DIR) $(BUILD_DIR)/py26-cherokee-scgi_*_$(TARGET_ARCH).ipk
+	(cd $(CHEROKEE-PYSCGI_BUILD_DIR)/2.6; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	    --root=$(PY26-CHEROKEE-SCGI_IPK_DIR) --prefix=/opt; \
+	)
+	$(MAKE) $(PY26-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CHEROKEE-SCGI_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-cherokee-pyscgi-ipk: $(PY24-CHEROKEE-SCGI_IPK) $(PY25-CHEROKEE-SCGI_IPK)
+cherokee-pyscgi-ipk: $(PY25-CHEROKEE-SCGI_IPK) $(PY26-CHEROKEE-SCGI_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -232,12 +232,11 @@ cherokee-pyscgi-clean:
 #
 cherokee-pyscgi-dirclean:
 	rm -rf $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) $(CHEROKEE-PYSCGI_BUILD_DIR)
-	rm -rf $(PY24-CHEROKEE-SCGI_IPK_DIR) $(PY24-CHEROKEE-SCGI_IPK)
 	rm -rf $(PY25-CHEROKEE-SCGI_IPK_DIR) $(PY25-CHEROKEE-SCGI_IPK)
+	rm -rf $(PY26-CHEROKEE-SCGI_IPK_DIR) $(PY26-CHEROKEE-SCGI_IPK)
 
 #
 # Some sanity check for the package.
 #
-cherokee-pyscgi-check: $(PY24-CHEROKEE-SCGI_IPK) $(PY25-CHEROKEE-SCGI_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
-		$(PY24-CHEROKEE-SCGI_IPK) $(PY25-CHEROKEE-SCGI_IPK)
+cherokee-pyscgi-check: $(PY25-CHEROKEE-SCGI_IPK) $(PY26-CHEROKEE-SCGI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
