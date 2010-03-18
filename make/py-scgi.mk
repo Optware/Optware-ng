@@ -106,7 +106,7 @@ py-scgi-source: $(DL_DIR)/$(PY-SCGI_SOURCE) $(PY-SCGI_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-SCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SCGI_SOURCE) $(PY-SCGI_PATCHES)
+$(PY-SCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SCGI_SOURCE) $(PY-SCGI_PATCHES) make/py-scgi.mk
 #	$(MAKE) somepkg-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
