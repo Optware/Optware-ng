@@ -5,8 +5,8 @@
 #############################################################
 
 ZLIB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
-ZLIB_VERSION:=1.2.3
-ZLIB_LIB_VERSION:=1.2.3
+ZLIB_VERSION:=1.2.4
+ZLIB_LIB_VERSION:=1.2.4
 ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.bz2
 ZLIB_DIR=zlib-$(ZLIB_VERSION)
 ZLIB_UNZIP=bzcat
@@ -17,7 +17,7 @@ ZLIB_PRIORITY=optional
 ZLIB_DEPENDS=
 ZLIB_CONFLICTS=
 
-ZLIB_IPK_VERSION=3
+ZLIB_IPK_VERSION=1
 
 ZLIB_CFLAGS= $(TARGET_CFLAGS) -fPIC
 ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
@@ -166,4 +166,4 @@ zlib-dirclean: zlib-unstage
 # Some sanity check for the package.
 #
 zlib-check: $(ZLIB_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ZLIB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
