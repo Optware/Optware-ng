@@ -119,6 +119,9 @@ endif
 		then cat $(BITLBEE_PATCHES) | patch -d $(BUILD_DIR)/$(BITLBEE_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(BITLBEE_DIR) $(@D)
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		sed -i -e 's|-iquote|-I|g' $(@D)/configure; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BITLBEE_CPPFLAGS)" \
