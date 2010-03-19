@@ -106,7 +106,7 @@ py-tailor-source: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TAILOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PATCHES)
+$(PY-TAILOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PATCHES) make/py-tailor.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
