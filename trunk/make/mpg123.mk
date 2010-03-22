@@ -46,7 +46,7 @@ MPG123_IPK_VERSION=1
 # MPG123_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MPG123_PATCHES=$(MPG123_SOURCE_DIR)/configure.patch
+MPG123_PATCHES=$(MPG123_SOURCE_DIR)/AI_ADDRCONFIG.patch
 
 #
 # If the compilation of the package requires additional

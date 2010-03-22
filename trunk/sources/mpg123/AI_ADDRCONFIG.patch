@@ -1,0 +1,14 @@
+--- src/resolver.c.orig	2010-03-20 16:50:00.000000000 +0000
++++ src/resolver.c	2010-03-22 16:39:44.474882921 +0000
+@@ -277,7 +277,11 @@
+ 	memset(&hints, 0, sizeof(struct addrinfo));
+ 	hints.ai_family   = AF_UNSPEC; /* We accept both IPv4 and IPv6 ... and perhaps IPv8;-) */
+ 	hints.ai_socktype = SOCK_STREAM;
++#ifdef AI_ADDRCONFIG
+ 	hints.ai_flags    = AI_ADDRCONFIG; /* Only ask for addresses that we have configured inerfaces for. */
++#else
++	hints.ai_flags    = 0;
++#endif
+ 
+ 	addrcount = getaddrinfo(host->p, port->p, &hints, &addrlist);
+ 
