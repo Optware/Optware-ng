@@ -1,5 +1,5 @@
---- Python-3.1/configure.in.orig	2009-06-08 14:22:57.000000000 -0700
-+++ Python-3.1/configure.in	2009-06-28 20:29:20.000000000 -0700
+--- Python-3.1.2/configure.in.orig	2010-03-19 21:38:46.000000000 +0000
++++ Python-3.1.2/configure.in	2010-03-23 03:50:51.889312739 +0000
 @@ -21,6 +21,11 @@
      prefix=`echo "$prefix" | sed -e 's/\/$//g'`
  fi    
@@ -12,7 +12,7 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -820,7 +825,7 @@
+@@ -840,7 +845,7 @@
  	    STRICT_PROTO="-Wstrict-prototypes"
  	fi
          # For gcc 4.x we need to use -fwrapv so lets check if its supported
@@ -21,42 +21,7 @@
             WRAP="-fwrapv"
          fi
  	case $ac_cv_prog_cc_g in
-@@ -2538,34 +2543,10 @@
- # On Tru64, chflags seems to be present, but calling it will
- # exit Python
- AC_MSG_CHECKING(for chflags)
--AC_TRY_RUN([
--#include <sys/stat.h>
--#include <unistd.h>
--int main(int argc, char*argv[])
--{
--  if(chflags(argv[0], 0) != 0)
--    return 1;
--  return 0;
--}
--],AC_DEFINE(HAVE_CHFLAGS, 1, Define to 1 if you have the `chflags' function.)
--  AC_MSG_RESULT(yes),
-   AC_MSG_RESULT(no)
--)
- 
- AC_MSG_CHECKING(for lchflags)
--AC_TRY_RUN([
--#include <sys/stat.h>
--#include <unistd.h>
--int main(int argc, char*argv[])
--{
--  if(lchflags(argv[0], 0) != 0)
--    return 1;
--  return 0;
--}
--],AC_DEFINE(HAVE_LCHFLAGS, 1, Define to 1 if you have the `lchflags' function.)
--  AC_MSG_RESULT(yes),
-   AC_MSG_RESULT(no)
--)
- 
- dnl Check if system zlib has *Copy() functions
- dnl
-@@ -3289,31 +3270,7 @@
+@@ -3427,32 +3432,7 @@
  
  # Multiprocessing check for broken sem_getvalue
  AC_MSG_CHECKING(for broken sem_getvalue)
@@ -68,7 +33,7 @@
 -#include <sys/stat.h>
 -
 -int main(void){
--  sem_t *a = sem_open("/autoconf", O_CREAT, S_IRUSR|S_IWUSR, 0);
+-  sem_t *a = sem_open("/autocftw", O_CREAT, S_IRUSR|S_IWUSR, 0);
 -  int count;
 -  int res;
 -  if(a==SEM_FAILED){
@@ -78,6 +43,7 @@
 -  }
 -  res = sem_getvalue(a, &count);
 -  sem_close(a);
+-  sem_unlink("/autocftw");
 -  return res==-1 ? 1 : 0;
 -}
 -]
@@ -89,7 +55,7 @@
  
  # determine what size digit to use for Python's longs
  AC_MSG_CHECKING([digit size for Python's longs])
-@@ -3799,43 +3756,8 @@
+@@ -3942,43 +3922,8 @@
  fi
  
  AC_MSG_CHECKING(for %zd printf() format support)
@@ -135,7 +101,7 @@
  
  AC_CHECK_TYPE(socklen_t,,
    AC_DEFINE(socklen_t,int,
-@@ -3902,6 +3824,25 @@
+@@ -4051,6 +3996,25 @@
  done
  AC_MSG_RESULT(done)
  
