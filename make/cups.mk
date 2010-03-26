@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -367,7 +367,6 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	install -d $(CUPS_IPK_DIR)/opt/sbin
 	install -d $(CUPS_IPK_DIR)/opt/bin
 	install -d $(CUPS_IPK_DIR)/opt/doc/cups
-	install -d $(CUPS_IPK_DIR)/opt/lib/modules
 	chmod u+w $(CUPS_IPK_DIR)/opt/sbin/cupsd && \
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/sbin/* && \
 	chmod u-w $(CUPS_IPK_DIR)/opt/sbin/cupsd
@@ -396,8 +395,6 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 		$(CUPS_IPK_DIR)/opt/doc/cups
 	install -m 755 $(CUPS_SOURCE_DIR)/cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
 	install -m 755 $(CUPS_SOURCE_DIR)/rc.samba $(CUPS_IPK_DIR)/opt/doc/cups
-# Install printer module
-	cp $(CUPS_SOURCE_DIR)/printer.o $(CUPS_IPK_DIR)/opt/lib/modules
 	mv $(CUPS_IPK_DIR)/opt/include $(CUPS_IPK_DIR)-dev/opt/
 	$(MAKE) $(CUPS_IPK_DIR)/CONTROL/control
 #	install -m 644 $(CUPS_SOURCE_DIR)/postinst $(CUPS_IPK_DIR)/CONTROL/postinst
