@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TNFTP_SITE=ftp://ftp.netbsd.org/pub/NetBSD/misc/tnftp
-TNFTP_VERSION=20070806
+TNFTP_VERSION=20100108
 TNFTP_SOURCE=tnftp-$(TNFTP_VERSION).tar.gz
 TNFTP_DIR=tnftp-$(TNFTP_VERSION)
 TNFTP_UNZIP=zcat
@@ -82,7 +82,8 @@ TNFTP_IPK=$(BUILD_DIR)/tnftp_$(TNFTP_VERSION)-$(TNFTP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TNFTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TNFTP_SITE)/$(TNFTP_SOURCE)
+	$(WGET) -P $(@D) $(TNFTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,17 +111,18 @@ tnftp-source: $(DL_DIR)/$(TNFTP_SOURCE) $(TNFTP_PATCHES)
 # shown below to make various patches to it.
 #
 $(TNFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTP_SOURCE) $(TNFTP_PATCHES) make/tnftp.mk
-#	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(TNFTP_DIR) $(TNFTP_BUILD_DIR)
+	$(MAKE) termcap-stage
+	rm -rf $(BUILD_DIR)/$(TNFTP_DIR) $(@D)
 	$(TNFTP_UNZIP) $(DL_DIR)/$(TNFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TNFTP_PATCHES)" ; \
 		then cat $(TNFTP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TNFTP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TNFTP_DIR)" != "$(TNFTP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TNFTP_DIR) $(TNFTP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TNFTP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TNFTP_DIR) $(@D) ; \
 	fi
-	(cd $(TNFTP_BUILD_DIR); \
+	sed -i -e '/^CPPFLAGS = \\/s|= |&$(STAGING_CPPFLAGS)|' $(@D)/libnetbsd/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TNFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TNFTP_LDFLAGS)" \
@@ -133,8 +135,8 @@ $(TNFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTP_SOURCE) $(TNFTP_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(TNFTP_BUILD_DIR)/libtool
-	touch $(TNFTP_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 tnftp-unpack: $(TNFTP_BUILD_DIR)/.configured
 
@@ -142,9 +144,9 @@ tnftp-unpack: $(TNFTP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TNFTP_BUILD_DIR)/.built: $(TNFTP_BUILD_DIR)/.configured
-	rm -f $(TNFTP_BUILD_DIR)/.built
-	$(MAKE) -C $(TNFTP_BUILD_DIR)
-	touch $(TNFTP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,12 +156,12 @@ tnftp: $(TNFTP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(TNFTP_BUILD_DIR)/.staged: $(TNFTP_BUILD_DIR)/.built
-	rm -f $(TNFTP_BUILD_DIR)/.staged
-	$(MAKE) -C $(TNFTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(TNFTP_BUILD_DIR)/.staged
-
-tnftp-stage: $(TNFTP_BUILD_DIR)/.staged
+#$(TNFTP_BUILD_DIR)/.staged: $(TNFTP_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#tnftp-stage: $(TNFTP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -237,4 +239,4 @@ tnftp-dirclean:
 # Some sanity check for the package.
 #
 tnftp-check: $(TNFTP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TNFTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
