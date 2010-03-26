@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TNFTPD_SITE=ftp://ftp.netbsd.org/pub/NetBSD/misc/tnftp
-TNFTPD_VERSION=20081009
+TNFTPD_VERSION=20100324
 TNFTPD_SOURCE=tnftpd-$(TNFTPD_VERSION).tar.gz
 TNFTPD_DIR=tnftpd-$(TNFTPD_VERSION)
 TNFTPD_UNZIP=zcat
@@ -191,23 +191,10 @@ $(TNFTPD_IPK_DIR)/CONTROL/control:
 $(TNFTPD_IPK): $(TNFTPD_BUILD_DIR)/.built
 	rm -rf $(TNFTPD_IPK_DIR) $(BUILD_DIR)/tnftpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TNFTPD_BUILD_DIR) prefix=$(TNFTPD_IPK_DIR)/opt install
-	chmod +w $(TNFTPD_IPK_DIR)/opt/sbin/tnftpd; \
-	$(STRIP_COMMAND) $(TNFTPD_IPK_DIR)/opt/sbin/tnftpd; \
-	chmod -w $(TNFTPD_IPK_DIR)/opt/sbin/tnftpd
-	install -d $(TNFTPD_IPK_DIR)/opt/share/doc/tnftpd/examples/
-	install $(TNFTPD_BUILD_DIR)/examples/ftpd.conf $(TNFTPD_IPK_DIR)/opt/share/doc/tnftpd/examples/
-	mv $(TNFTPD_IPK_DIR)/opt/share/man/cat5 $(TNFTPD_IPK_DIR)/opt/share/man/man5
-	mv $(TNFTPD_IPK_DIR)/opt/share/man/cat8 $(TNFTPD_IPK_DIR)/opt/share/man/man8
-#	install -d $(TNFTPD_IPK_DIR)/opt/etc/
-#	install -m 644 $(TNFTPD_SOURCE_DIR)/tnftpd.conf $(TNFTPD_IPK_DIR)/opt/etc/tnftpd.conf
-#	install -d $(TNFTPD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TNFTPD_SOURCE_DIR)/rc.tnftpd $(TNFTPD_IPK_DIR)/opt/etc/init.d/SXXtnftpd
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXtnftpd
+	chmod +w $(TNFTPD_IPK_DIR)/opt/libexec/tnftpd; \
+	$(STRIP_COMMAND) $(TNFTPD_IPK_DIR)/opt/libexec/tnftpd; \
+	chmod -w $(TNFTPD_IPK_DIR)/opt/libexec/tnftpd
 	$(MAKE) $(TNFTPD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TNFTPD_SOURCE_DIR)/postinst $(TNFTPD_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TNFTPD_SOURCE_DIR)/prerm $(TNFTPD_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(TNFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(TNFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TNFTPD_IPK_DIR)
 
@@ -234,4 +221,4 @@ tnftpd-dirclean:
 # Some sanity check for the package.
 #
 tnftpd-check: $(TNFTPD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TNFTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
