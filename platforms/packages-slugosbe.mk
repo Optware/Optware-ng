@@ -23,4 +23,7 @@ BROKEN_PACKAGES = \
 	atk gtk nfs-utils \
 	vte xchat \
 
+MKVTOOLNIX_VERSION := 3.2.0
+MKVTOOLNIX_IPK_VERSION := 1
+
 MYSQL5_CONFIG_ENV_EXTRA := ac_cv_func_fesetround=no
