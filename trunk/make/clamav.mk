@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLAMAV_SITE=http://$(SOURCEFORGE_MIRROR)/clamav
-CLAMAV_VERSION=0.95.1
+CLAMAV_VERSION=0.95.3
 CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
 CLAMAV_DIR=clamav-$(CLAMAV_VERSION)
 CLAMAV_UNZIP=zcat
@@ -85,7 +85,8 @@ CLAMAV_IPK=$(BUILD_DIR)/clamav_$(CLAMAV_VERSION)-$(CLAMAV_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CLAMAV_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CLAMAV_SITE)/$(CLAMAV_SOURCE)
+	$(WGET) -P $(@D) $(CLAMAV_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,7 +110,7 @@ clamav-source: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
+$(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES) make/clamav.mk
 	$(MAKE) zlib-stage libgmp-stage
 	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(@D)
 	$(CLAMAV_UNZIP) $(DL_DIR)/$(CLAMAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -117,9 +118,9 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
 		then cat $(CLAMAV_PATCHES) | patch -bd $(BUILD_DIR)/$(CLAMAV_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(CLAMAV_DIR) $(@D)
+	find $(@D) -name '*.[ch]' | xargs sed -i -e 's|P_tmpdir|CLAMAV_tmpdir|g'
+	cd $(@D); autoreconf
 	(cd $(@D); \
-		find . -name '*.[ch]' | xargs sed -i -e 's|P_tmpdir|CLAMAV_tmpdir|g'; \
-		autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLAMAV_LDFLAGS)" \
@@ -241,4 +242,4 @@ clamav-dirclean:
 #
 #
 clamav-check: $(CLAMAV_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CLAMAV_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
