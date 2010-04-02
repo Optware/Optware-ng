@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ARPING_SITE=ftp://ftp.habets.pp.se/pub/synscan
-ARPING_VERSION=2.08
+ARPING_SITE=http://www.habets.pp.se/synscan/files
+ARPING_VERSION=2.09
 ARPING_SOURCE=arping-$(ARPING_VERSION).tar.gz
 ARPING_DIR=arping-$(ARPING_VERSION)
 ARPING_UNZIP=zcat
@@ -36,7 +36,7 @@ ARPING_CONFLICTS=
 #
 # ARPING_IPK_VERSION should be incremented when the ipk changes.
 #
-ARPING_IPK_VERSION=2
+ARPING_IPK_VERSION=1
 
 #
 # ARPING_CONFFILES should be a list of user-editable files
@@ -115,10 +115,10 @@ $(ARPING_BUILD_DIR)/.configured: $(DL_DIR)/$(ARPING_SOURCE) $(ARPING_PATCHES) ma
 	if test "$(BUILD_DIR)/$(ARPING_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ARPING_DIR) $(@D) ; \
 	fi
-#	(cd $(@D); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ARPING_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(ARPING_LDFLAGS)" \
+		CPPFLAGS="$(ARPING_CPPFLAGS) $(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(ARPING_LDFLAGS) $(STAGING_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -137,11 +137,7 @@ arping-unpack: $(ARPING_BUILD_DIR)/.configured
 #
 $(ARPING_BUILD_DIR)/.built: $(ARPING_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) arping2 \
-		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS2="$(ARPING_CPPFLAGS) $(STAGING_CPPFLAGS)" \
-		LDFLAGS2="$(ARPING_LDFLAGS) $(STAGING_LDFLAGS)" \
-		;
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,12 +148,12 @@ arping: $(ARPING_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(ARPING_BUILD_DIR)/.staged: $(ARPING_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-arping-stage: $(ARPING_BUILD_DIR)/.staged
+#$(ARPING_BUILD_DIR)/.staged: $(ARPING_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#arping-stage: $(ARPING_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -192,12 +188,7 @@ $(ARPING_IPK_DIR)/CONTROL/control:
 #
 $(ARPING_IPK): $(ARPING_BUILD_DIR)/.built
 	rm -rf $(ARPING_IPK_DIR) $(BUILD_DIR)/arping_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(ARPING_BUILD_DIR) DESTDIR=$(ARPING_IPK_DIR) install-strip
-	install -d $(ARPING_IPK_DIR)/opt/sbin $(ARPING_IPK_DIR)/opt/share/man/man8
-	install $(ARPING_BUILD_DIR)/arping $(ARPING_IPK_DIR)/opt/sbin/
-	install $(ARPING_BUILD_DIR)/arping-scan-net.sh $(ARPING_IPK_DIR)/opt/sbin/
-	$(STRIP_COMMAND) $(ARPING_IPK_DIR)/opt/sbin/arping
-	install $(ARPING_BUILD_DIR)/arping.8 $(ARPING_IPK_DIR)/opt/share/man/man8/
+	$(MAKE) -C $(ARPING_BUILD_DIR) install-strip DESTDIR=$(ARPING_IPK_DIR) transform=''
 	$(MAKE) $(ARPING_IPK_DIR)/CONTROL/control
 	echo $(ARPING_CONFFILES) | sed -e 's/ /\n/g' > $(ARPING_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ARPING_IPK_DIR)
