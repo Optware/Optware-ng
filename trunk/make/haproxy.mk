@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HAPROXY_SITE=http://haproxy.1wt.eu/download/1.4/src
-HAPROXY_VERSION=1.4.2
+HAPROXY_VERSION=1.4.3
 HAPROXY_SOURCE=haproxy-$(HAPROXY_VERSION).tar.gz
 HAPROXY_DIR=haproxy-$(HAPROXY_VERSION)
 HAPROXY_UNZIP=zcat
@@ -129,7 +129,7 @@ $(HAPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(HAPROXY_SOURCE) $(HAPROXY_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(HAPROXY_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 haproxy-unpack: $(HAPROXY_BUILD_DIR)/.configured
