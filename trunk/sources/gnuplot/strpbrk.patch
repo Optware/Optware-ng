@@ -1,0 +1,11 @@
+--- gnuplot/term/post.trm.orig	2009-09-13 17:54:09.000000000 +0000
++++ gnuplot/term/post.trm	2010-04-06 16:43:15.674268773 +0000
+@@ -1058,7 +1058,7 @@
+ 			    int_warn(c_token-1,"Illegal characters in PostScript font name.");
+ 			    int_warn(NO_CARET,"I will try to fix it but this may not work.");
+ 			    while (strpbrk(s, "()[]{}| "))
+-				*(strpbrk(s, "()[]{}| ")) = '-';
++				*((char *) strpbrk(s, "()[]{}| ")) = '-';
+ 			}
+ 			strncpy(ps_params->font, s, sizeof(ps_params->font));
+ 		    }
