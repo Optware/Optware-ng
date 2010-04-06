@@ -54,6 +54,10 @@ ifneq (, $(filter openwrt-brcm24 openwrt-ixp4xx, $(OPTWARE_TARGET)))
 GNUPLOT_PATCHES += $(GNUPLOT_SOURCE_DIR)/no-specfun.patch
 endif
 
+ifneq (, $(filter syno-x07, $(OPTWARE_TARGET)))
+GNUPLOT_PATCHES += $(GNUPLOT_SOURCE_DIR)/strpbrk.patch
+endif
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
