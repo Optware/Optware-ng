@@ -17,5 +17,7 @@ BROKEN_PACKAGES = \
 	softflowd \
 	vte xchat \
 
+ARPING_CONFIG_ENVS := ac_cv_header_net_bpf_h=no
+
 SLANG_VERSION := 2.2.2
 SLANG_IPK_VERSION := 1
