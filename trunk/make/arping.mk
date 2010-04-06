@@ -55,6 +55,8 @@ ARPING_IPK_VERSION=1
 ARPING_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libnet11
 ARPING_LDFLAGS=-L$(STAGING_LIB_DIR)/libnet11
 
+ARPING_CONFIG_ENVS ?=
+
 #
 # ARPING_BUILD_DIR is the directory in which the build is done.
 # ARPING_SOURCE_DIR is the directory which holds all the
@@ -119,6 +121,7 @@ $(ARPING_BUILD_DIR)/.configured: $(DL_DIR)/$(ARPING_SOURCE) $(ARPING_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(ARPING_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(ARPING_LDFLAGS) $(STAGING_LDFLAGS)" \
+		$(ARPING_CONFIG_ENVS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

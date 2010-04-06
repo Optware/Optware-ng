@@ -44,5 +44,7 @@ BROKEN_PACKAGES = \
 	uemacs \
 	vte xchat \
 
+ARPING_CONFIG_ENVS := ac_cv_header_net_bpf_h=no
+
 E2FSPROGS_VERSION := 1.40.3
 E2FSPROGS_IPK_VERSION := 5

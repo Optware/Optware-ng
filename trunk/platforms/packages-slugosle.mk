@@ -27,6 +27,8 @@ BROKEN_PACKAGES = \
 	rhtvision \
 	vte xchat
 
+ARPING_CONFIG_ENVS := ac_cv_header_net_bpf_h=no
+
 MKVTOOLNIX_VERSION := 3.2.0
 MKVTOOLNIX_IPK_VERSION := 1
 
