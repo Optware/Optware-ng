@@ -28,7 +28,7 @@
 #ifneq ($(PY-PASTE_SVN_REV),)
 #PY-PASTE____VERSION=0.5dev_r4745
 #else
-PY-PASTE_VERSION=1.7.2
+PY-PASTE_VERSION=1.7.3
 PY-PASTE_SITE=http://cheeseshop.python.org/packages/source/P/Paste
 PY-PASTE_SOURCE=Paste-$(PY-PASTE_VERSION).tar.gz
 #endif
@@ -38,13 +38,12 @@ PY-PASTE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PASTE_DESCRIPTION=Tools for using a Web Server Gateway Interface stack.
 PY-PASTE_SECTION=misc
 PY-PASTE_PRIORITY=optional
-PY24-PASTE_DEPENDS=python24
 PY25-PASTE_DEPENDS=python25
 PY26-PASTE_DEPENDS=python26
 PY-PASTE_SUGGESTS=
 PY-PASTE_CONFLICTS=
 
-PY-PASTE_IPK_VERSION=2
+PY-PASTE_IPK_VERSION=1
 
 #
 # PY-PASTE_CONFFILES should be a list of user-editable files
@@ -74,9 +73,6 @@ PY-PASTE_LDFLAGS=
 #
 PY-PASTE_BUILD_DIR=$(BUILD_DIR)/py-paste
 PY-PASTE_SOURCE_DIR=$(SOURCE_DIR)/py-paste
-
-PY24-PASTE_IPK_DIR=$(BUILD_DIR)/py24-paste-$(PY-PASTE_VERSION)-ipk
-PY24-PASTE_IPK=$(BUILD_DIR)/py24-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PASTE_IPK_DIR=$(BUILD_DIR)/py25-paste-$(PY-PASTE_VERSION)-ipk
 PY25-PASTE_IPK=$(BUILD_DIR)/py25-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -122,22 +118,6 @@ $(PY-PASTE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTE_SOURCE) $(PY-PASTE_PATCH
 	$(MAKE) py-setuptools-stage
 	rm -rf $(PY-PASTE_BUILD_DIR)
 	mkdir -p $(PY-PASTE_BUILD_DIR)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR)
-ifndef PY-PASTE_SVN_REV
-	$(PY-PASTE_UNZIP) $(DL_DIR)/$(PY-PASTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-else
-	(cd $(BUILD_DIR); \
-	    svn co -q -r $(PY-PASTE_SVN_REV) $(PY-PASTE_SVN) $(PY-PASTE_DIR); \
-	)
-endif
-	if test -n "$(PY-PASTE_PATCHES)" ; then \
-	    cat $(PY-PASTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
-        fi
-	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR)
 ifndef PY-PASTE_SVN_REV
@@ -179,9 +159,6 @@ py-paste-unpack: $(PY-PASTE_BUILD_DIR)/.configured
 #
 $(PY-PASTE_BUILD_DIR)/.built: $(PY-PASTE_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
@@ -200,10 +177,6 @@ py-paste: $(PY-PASTE_BUILD_DIR)/.built
 #
 $(PY-PASTE_BUILD_DIR)/.staged: $(PY-PASTE_BUILD_DIR)/.built
 	rm -f $@
-	(cd $(@D)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-		--root=$(STAGING_DIR) --prefix=/opt)
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
@@ -220,20 +193,6 @@ py-paste-stage: $(PY-PASTE_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-paste
 #
-$(PY24-PASTE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-paste" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-PASTE_PRIORITY)" >>$@
-	@echo "Section: $(PY-PASTE_SECTION)" >>$@
-	@echo "Version: $(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-PASTE_MAINTAINER)" >>$@
-	@echo "Source: $(PY-PASTE_SITE)/$(PY-PASTE_SOURCE)" >>$@
-	@echo "Description: $(PY-PASTE_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-PASTE_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-PASTE_CONFLICTS)" >>$@
-
 $(PY25-PASTE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -274,18 +233,8 @@ $(PY26-PASTE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-PASTE_IPK): $(PY-PASTE_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-paste_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-PASTE_IPK_DIR) $(BUILD_DIR)/py24-paste_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PASTE_BUILD_DIR)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-		--root=$(PY24-PASTE_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY24-PASTE_IPK_DIR)/CONTROL/control
-#	echo $(PY-PASTE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PASTE_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PASTE_IPK_DIR)
-
 $(PY25-PASTE_IPK): $(PY-PASTE_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py2*-paste_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-PASTE_IPK_DIR) $(BUILD_DIR)/py25-paste_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PASTE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
@@ -308,7 +257,7 @@ $(PY26-PASTE_IPK): $(PY-PASTE_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-paste-ipk: $(PY24-PASTE_IPK) $(PY25-PASTE_IPK) $(PY26-PASTE_IPK)
+py-paste-ipk: $(PY25-PASTE_IPK) $(PY26-PASTE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -322,12 +271,11 @@ py-paste-clean:
 #
 py-paste-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR) $(PY-PASTE_BUILD_DIR)
-	rm -rf $(PY24-PASTE_IPK_DIR) $(PY24-PASTE_IPK)
 	rm -rf $(PY25-PASTE_IPK_DIR) $(PY25-PASTE_IPK)
 	rm -rf $(PY26-PASTE_IPK_DIR) $(PY26-PASTE_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-paste-check: $(PY24-PASTE_IPK) $(PY25-PASTE_IPK) $(PY26-PASTE_IPK)
+py-paste-check: $(PY25-PASTE_IPK) $(PY26-PASTE_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
