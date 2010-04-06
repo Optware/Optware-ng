@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DISCOUNT_SITE=http://www.pell.portland.or.us/~orc/Code/markdown
-DISCOUNT_VERSION=1.6.3
+DISCOUNT_VERSION=1.6.4
 DISCOUNT_SOURCE=discount-$(DISCOUNT_VERSION).tar.gz
 DISCOUNT_DIR=discount-$(DISCOUNT_VERSION)
 DISCOUNT_UNZIP=zcat
