@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MERCURIAL_VERSION=1.5
+PY-MERCURIAL_VERSION=1.5.1
 PY-MERCURIAL_SITE=http://mercurial.selenic.com/release
 PY-MERCURIAL_SOURCE=mercurial-$(PY-MERCURIAL_VERSION).tar.gz
 PY-MERCURIAL_DIR=mercurial-$(PY-MERCURIAL_VERSION)
@@ -47,7 +47,7 @@ PY-MERCURIAL_IPK_VERSION=1
 # PY-MERCURIAL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PY-MERCURIAL_PATCHES=$(PY-MERCURIAL_SOURCE_DIR)/configure.patch
+PY-MERCURIAL_PATCHES=$(PY-MERCURIAL_SOURCE_DIR)/setup.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -115,7 +115,9 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 	mkdir -p $(@D)
 	# 2.6
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p1
+	if test -n "$(PY-MERCURIAL_PATCHES)"; then \
+		cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -133,7 +135,9 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 		-e '/inotify_/s|if .*|if $(PY-MERCURIAL_WITH_INOTIFY):|' $(@D)/2.6/setup.py
 	# 2.5
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p1
+	if test -n "$(PY-MERCURIAL_PATCHES)"; then \
+		cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
