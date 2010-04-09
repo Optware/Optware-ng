@@ -22,7 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.6.6.2
+GIT_VERSION=1.7.0.4
+GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -37,14 +38,13 @@ endif
 GIT_SUGGESTS=git-manpages
 GIT_CONFLICTS=
 
+GIT-LITE_VERSION=1.6.6.2
+GIT-LITE_IPK_VERSION=1
+GIT-LITE_SOURCE=git-$(GIT-LITE_VERSION).tar.gz
+GIT-LITE_DIR=git-$(GIT-LITE_VERSION)
 GIT-LITE_DEPENDS=zlib, openssl, libcurl, diffutils, rcs, expat
 GIT-LITE_SUGGESTS=git-manpages
 GIT-LITE_CONFLICTS=
-
-#
-# GIT_IPK_VERSION should be incremented when the ipk changes.
-#
-GIT_IPK_VERSION=1
 
 GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
@@ -92,8 +92,9 @@ GIT_SOURCE_DIR=$(SOURCE_DIR)/git
 GIT_IPK_DIR=$(BUILD_DIR)/git-$(GIT_VERSION)-ipk
 GIT_IPK=$(BUILD_DIR)/git_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-GIT-LITE_IPK_DIR=$(BUILD_DIR)/git-lite-$(GIT_VERSION)-ipk
-GIT-LITE_IPK=$(BUILD_DIR)/git-lite_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH).ipk
+GIT-LITE_BUILD_DIR=$(BUILD_DIR)/git-lite
+GIT-LITE_IPK_DIR=$(BUILD_DIR)/git-lite-$(GIT-LITE_VERSION)-ipk
+GIT-LITE_IPK=$(BUILD_DIR)/git-lite_$(GIT-LITE_VERSION)-$(GIT-LITE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 GIT-MANPAGES_IPK_DIR=$(BUILD_DIR)/git-manpages-$(GIT_VERSION)-ipk
 GIT-MANPAGES_IPK=$(BUILD_DIR)/git-manpages_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -197,6 +198,37 @@ $(GIT_BUILD_DIR)/.built: $(GIT_BUILD_DIR)/.configured
 #
 git: $(GIT_BUILD_DIR)/.built
 
+$(GIT-LITE_BUILD_DIR)/.built: $(DL_DIR)/$(GIT-LITE_SOURCE) $(GIT_PATCHES) make/git.mk
+	$(MAKE) zlib-stage openssl-stage libcurl-stage expat-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
+ifneq (,$(filter perl, $(PACKAGES)))
+	$(MAKE) perl-stage
+endif
+	rm -rf $(BUILD_DIR)/$(GIT-LITE_DIR) $(@D)
+	$(GIT_UNZIP) $(DL_DIR)/$(GIT-LITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(GIT_PATCHES)" ; \
+		then cat $(GIT_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(GIT-LITE_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(GIT-LITE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(GIT-LITE_DIR) $(@D) ; \
+	fi
+	if ! $(TARGET_CC) -c -o /dev/null $(SOURCE_DIR)/common/tv_nsec.c >/dev/null 2>&1; \
+		then export GIT_NSEC=NO_NSEC=true ; \
+	fi; \
+	PATH="$(STAGING_PREFIX)/bin:$$PATH" \
+	$(GIT_PERL_PATH) \
+	$(MAKE) -C $(@D) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(GIT_LDFLAGS)" \
+		NO_TCLTK=true \
+		$$GIT_NSEC \
+		$(GIT_MAKE_FLAGS) \
+		prefix=/opt all strip
+	touch $@
 #
 # If you are building a library, then you need to stage it too.
 #
@@ -233,7 +265,7 @@ $(GIT-LITE_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(GIT_PRIORITY)" >>$@
 	@echo "Section: $(GIT_SECTION)" >>$@
-	@echo "Version: $(GIT_VERSION)-$(GIT_IPK_VERSION)" >>$@
+	@echo "Version: $(GIT-LITE_VERSION)-$(GIT-LITE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(GIT_MAINTAINER)" >>$@
 	@echo "Source: $(GIT_SITE)/$(GIT_SOURCE)" >>$@
 	@echo "Description: $(GIT_DESCRIPTION)" >>$@
@@ -309,26 +341,26 @@ endif
 	$(MAKE) $(GIT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT_IPK_DIR)
 
-$(GIT-LITE_IPK): $(GIT_BUILD_DIR)/.built
+$(GIT-LITE_IPK): $(GIT-LITE_BUILD_DIR)/.built
 	rm -rf $(GIT-LITE_IPK_DIR) $(BUILD_DIR)/git-lite_*_$(TARGET_ARCH).ipk
 	if ! $(TARGET_CC) -c -o /dev/null $(SOURCE_DIR)/common/tv_nsec.c >/dev/null 2>&1; \
 		then export GIT_NSEC=NO_NSEC=true ; \
 	fi; \
 	PATH="$(STAGING_PREFIX)/bin:$$PATH" \
-	$(MAKE) -C $(GIT_BUILD_DIR) DESTDIR=$(GIT-LITE_IPK_DIR) \
+	$(MAKE) -C $(GIT-LITE_BUILD_DIR) DESTDIR=$(GIT-LITE_IPK_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIT_LDFLAGS)" \
 		NO_TCLTK=true \
 		SCRIPTS="git-pull.sh git-sh-setup.sh git-parse-remote.sh" \
-		PROGRAMS="git-index-pack" \
+		PROGRAMS="" \
 		BUILT_INS= \
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
 		prefix=/opt \
 		install
 	( cd $(GIT-LITE_IPK_DIR)/opt/bin ; \
-	  rm -f git-cvsserver git-receive-pack git-shell git-upload-archive git-upload-pack )
+	  rm -f git-cvsserver git-receive-pack git-shell git-upload-archive git-upload-pack git-remote-* )
 	rm -f $(GIT-LITE_IPK_DIR)/opt/bin/git
 	ln -s ../libexec/git-core/git $(GIT-LITE_IPK_DIR)/opt/bin/git
 	rm -rf $(GIT-LITE_IPK_DIR)/opt/lib
