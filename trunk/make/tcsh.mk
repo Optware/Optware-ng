@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TCSH_SITE=ftp://ftp.astron.com/pub/tcsh
-TCSH_VERSION=6.15.00
+TCSH_VERSION=6.17.00
 TCSH_SOURCE=tcsh-$(TCSH_VERSION).tar.gz
 TCSH_DIR=tcsh-$(TCSH_VERSION)
 TCSH_UNZIP=zcat
@@ -80,9 +80,9 @@ TCSH_IPK=$(BUILD_DIR)/tcsh_$(TCSH_VERSION)-$(TCSH_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TCSH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TCSH_SITE)/$(TCSH_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(TCSH_SITE)/old/$(TCSH_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TCSH_SOURCE)
+	$(WGET) -P $(@D) $(TCSH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(TCSH_SITE)/old/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -112,17 +112,17 @@ $(TCSH_BUILD_DIR)/.configured: $(DL_DIR)/$(TCSH_SOURCE) $(TCSH_PATCHES) make/tcs
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(TCSH_DIR) $(TCSH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TCSH_DIR) $(@D)
 	$(TCSH_UNZIP) $(DL_DIR)/$(TCSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TCSH_PATCHES)" ; \
 		then cat $(TCSH_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TCSH_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TCSH_DIR)" != "$(TCSH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TCSH_DIR) $(TCSH_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TCSH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TCSH_DIR) $(@D) ; \
 	fi
-	sed -i -e '/^	-strip/s/^/#/' $(TCSH_BUILD_DIR)/Makefile.in
-	(cd $(TCSH_BUILD_DIR); \
+	sed -i -e '/^	-strip/s/^/#/' $(@D)/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TCSH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TCSH_LDFLAGS)" \
@@ -136,7 +136,7 @@ endif
 		--disable-static \
 	)
 ifeq (uclibc, $(LIBC_STYLE))
-	sed -i -e 's/^#define NLS_CATALOGS/#undef NLS_CATALOGS/' $(TCSH_BUILD_DIR)/config_p.h
+	sed -i -e 's/^#define NLS_CATALOGS/#undef NLS_CATALOGS/' $(@D)/config_p.h
 endif
 #	$(PATCH_LIBTOOL) $(TCSH_BUILD_DIR)/libtool
 	touch $@
@@ -148,9 +148,9 @@ tcsh-unpack: $(TCSH_BUILD_DIR)/.configured
 #
 $(TCSH_BUILD_DIR)/.built: $(TCSH_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(TCSH_BUILD_DIR) gethost \
+	$(MAKE) -C $(@D) gethost \
 		CC=$(HOSTCC) LDFLAGS="" EXTRALIBS=""
-	$(MAKE) -C $(TCSH_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -161,12 +161,12 @@ tcsh: $(TCSH_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(TCSH_BUILD_DIR)/.staged: $(TCSH_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(TCSH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-tcsh-stage: $(TCSH_BUILD_DIR)/.staged
+#$(TCSH_BUILD_DIR)/.staged: $(TCSH_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#tcsh-stage: $(TCSH_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -203,16 +203,7 @@ $(TCSH_IPK): $(TCSH_BUILD_DIR)/.built
 	rm -rf $(TCSH_IPK_DIR) $(BUILD_DIR)/tcsh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TCSH_BUILD_DIR) DESTDIR=$(TCSH_IPK_DIR) install install.man
 	$(STRIP_COMMAND) $(TCSH_IPK_DIR)/opt/bin/tcsh
-#	install -d $(TCSH_IPK_DIR)/opt/etc/
-#	install -m 644 $(TCSH_SOURCE_DIR)/tcsh.conf $(TCSH_IPK_DIR)/opt/etc/tcsh.conf
-#	install -d $(TCSH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TCSH_SOURCE_DIR)/rc.tcsh $(TCSH_IPK_DIR)/opt/etc/init.d/SXXtcsh
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXtcsh
 	$(MAKE) $(TCSH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TCSH_SOURCE_DIR)/postinst $(TCSH_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TCSH_SOURCE_DIR)/prerm $(TCSH_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(TCSH_CONFFILES) | sed -e 's/ /\n/g' > $(TCSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCSH_IPK_DIR)
 
@@ -239,4 +230,4 @@ tcsh-dirclean:
 # Some sanity check for the package.
 #
 tcsh-check: $(TCSH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TCSH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
