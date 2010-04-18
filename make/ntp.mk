@@ -20,9 +20,10 @@
 # You should change all these variables to suit your package.
 #
 NTP_SITE=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
-NTP_VERSION=4.2.6
-NTP_SOURCE=ntp-$(NTP_VERSION).tar.gz
-NTP_DIR=ntp-$(NTP_VERSION)
+NTP_UPSTREAM_VERSION=4.2.6p1
+NTP_VERSION=4.2.6.1
+NTP_SOURCE=ntp-$(NTP_UPSTREAM_VERSION).tar.gz
+NTP_DIR=ntp-$(NTP_UPSTREAM_VERSION)
 NTP_UNZIP=zcat
 NTP_MAINTAINER=Christopher <edmondsc@onid.ors.edu>
 NTP_DESCRIPTION=A time synchronization daemon
