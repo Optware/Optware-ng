@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MCABBER_SITE=http://www.lilotux.net/~mikael/mcabber/files
-MCABBER_VERSION=0.9.10
+MCABBER_VERSION=0.10.0
 MCABBER_SOURCE=mcabber-$(MCABBER_VERSION).tar.bz2
 MCABBER_DIR=mcabber-$(MCABBER_VERSION)
 MCABBER_UNZIP=bzcat
@@ -29,7 +29,7 @@ MCABBER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MCABBER_DESCRIPTION=A small Jabber console client.
 MCABBER_SECTION=net
 MCABBER_PRIORITY=optional
-MCABBER_DEPENDS=glib, openssl, ncursesw
+MCABBER_DEPENDS=glib, gpgme, libgcrypt, libidn, libotr, loudmouth, ncursesw
 MCABBER_SUGGESTS=
 MCABBER_CONFLICTS=
 
@@ -109,7 +109,8 @@ mcabber-source: $(DL_DIR)/$(MCABBER_SOURCE) $(MCABBER_PATCHES)
 # shown below to make various patches to it.
 #
 $(MCABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(MCABBER_SOURCE) $(MCABBER_PATCHES) make/mcabber.mk
-	$(MAKE) glib-stage ncursesw-stage openssl-stage
+	$(MAKE) glib-stage gpgme-stage libgcrypt-stage libidn-stage libotr-stage \
+		loudmouth-stage ncursesw-stage
 	rm -rf $(BUILD_DIR)/$(MCABBER_DIR) $(@D)
 	$(MCABBER_UNZIP) $(DL_DIR)/$(MCABBER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MCABBER_PATCHES)" ; \
@@ -131,7 +132,10 @@ $(MCABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(MCABBER_SOURCE) $(MCABBER_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-openssl=$(STAGING_INCLUDE_DIR) \
+		--with-gpgme-prefix=$(STAGING_PREFIX) \
+		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
+		--with-libotr-prefix=$(STAGING_PREFIX) \
+		--enable-otr \
 		--disable-hgcset \
 		--disable-nls \
 		--disable-static \
