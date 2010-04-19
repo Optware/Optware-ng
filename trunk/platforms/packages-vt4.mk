@@ -34,6 +34,7 @@ BROKEN_PACKAGES = \
 	libtorrent libtorrent-rasterbar \
 	libebml libmatroska mkvtoolnix \
 	llink loudmouth \
+	mcabber \
 	mediatomb mimms minidlna moc motion mod-fastcgi moe \
 	mp3blaster mpd mpdscribble mpop msmtp msynctool \
 	mod-python mod-wsgi \
