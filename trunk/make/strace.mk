@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 
-STRACE_VERSION ?= 4.5.19
+STRACE_VERSION ?= 4.5.20
 STRACE_IPK_VERSION ?= 1
 
 STRACE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/strace/
@@ -145,8 +145,10 @@ $(STRACE_IPK): $(STRACE_BUILD_DIR)/.built
 	install -d $(STRACE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(STRACE_BUILD_DIR)/strace -o $(STRACE_IPK_DIR)/opt/bin/strace
 	install -d $(STRACE_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(STRACE_VERSION)/" \
-		-e "s/@RELEASE@/$(STRACE_IPK_VERSION)/"	$(STRACE_SOURCE_DIR)/control > $(STRACE_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" \
+	    -e "s/@VERSION@/$(STRACE_VERSION)/" \
+	    -e "s/@RELEASE@/$(STRACE_IPK_VERSION)/" \
+	    $(STRACE_SOURCE_DIR)/control > $(STRACE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STRACE_IPK_DIR)
 
 #
