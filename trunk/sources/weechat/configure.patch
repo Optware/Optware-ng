@@ -1,6 +1,6 @@
---- configure.in.orig	2009-06-13 02:47:55.000000000 -0700
-+++ configure.in	2009-06-23 08:05:26.000000000 -0700
-@@ -177,7 +177,7 @@
+--- configure.in.orig	2010-04-17 09:24:28.000000000 +0000
++++ configure.in	2010-04-19 01:38:00.789581788 +0000
+@@ -220,7 +220,7 @@
  #fi
  
  if test "x$enable_gtk" = "xyes" ; then
@@ -9,18 +9,18 @@
      if test "$LIBGTK_FOUND" = "0" ; then
          AC_MSG_WARN([
  *** Gtk library not found!
-@@ -210,15 +210,7 @@
+@@ -255,15 +255,7 @@
        LIBS="$LIBS $ICONV_LFLAGS"
     fi
-    AC_MSG_CHECKING(for iconv usability in programs)   
+    AC_MSG_CHECKING(for iconv usability in programs)
 -   AC_TRY_RUN([
--	#include <iconv.h>
--	int main(int argc, char **argv) {
--	    iconv_t conv = iconv_open("ISO8859-1", "UTF-8");
+-        #include <iconv.h>
+-        int main(int argc, char **argv) {
+-            iconv_t conv = iconv_open("ISO8859-1", "UTF-8");
 -            if (conv != (iconv_t) -1) {
--	      return 0;
+-                return 0;
 -            }
--	    return 1;
+-            return 1;
 -      }],iconv_found="yes")
 +   iconv_found="yes"
    if test "x$iconv_found" = "xno" ; then
