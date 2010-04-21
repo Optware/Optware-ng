@@ -5,8 +5,9 @@
 #############################################################
 
 ZLIB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
-ZLIB_VERSION:=1.2.4
-ZLIB_LIB_VERSION:=1.2.4
+ZLIB_SITE2=http://zlib.net
+ZLIB_VERSION:=1.2.5
+ZLIB_LIB_VERSION:=1.2.5
 ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.bz2
 ZLIB_DIR=zlib-$(ZLIB_VERSION)
 ZLIB_UNZIP=bzcat
@@ -43,6 +44,7 @@ zlib-dirclean zlib-check zlib-host zlib-host-stage zlib-unstage
 
 $(DL_DIR)/$(ZLIB_SOURCE):
 	$(WGET) -P $(@D) $(ZLIB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(ZLIB_SITE2)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 zlib-source: $(DL_DIR)/$(ZLIB_SOURCE)
