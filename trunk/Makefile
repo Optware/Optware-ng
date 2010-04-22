@@ -27,12 +27,12 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = \
+CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
 #
-NATIVE_PACKAGES_READY_FOR_TESTING = \
+NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 
 # iozone - fileop_linux-arm.o: No such file or directory
 # parted - does not work on the slug, even when compiled natively
