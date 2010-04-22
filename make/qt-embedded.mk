@@ -58,7 +58,7 @@ QT-EMBEDDED_PLATFORM=-platform linux-g++-custom
 else
 QT-EMBEDDED_CROSS=$(GNU_TARGET_NAME)-
 QT-EMBEDDED_PATH=PATH="$$PATH:$(TARGET_CROSS_TOP)/bin"
-QT-EMBEDDED_PLATFORM=$(patsubst arm%,arm,$(patsubst i%86,i386,$(TARGET_ARCH))) -xplatform linux-g++-custom
+QT-EMBEDDED_PLATFORM=$(patsubst mips%,mips,$(patsubst arm%,arm,$(patsubst i%86,i386,$(TARGET_ARCH)))) -xplatform linux-g++-custom
 endif
 QT-EMBEDDED_QMAKE='include(../common/g++.conf)'
 QT-EMBEDDED_QMAKE+='\ninclude(../common/linux.conf)'
