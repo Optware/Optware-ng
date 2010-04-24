@@ -29,7 +29,7 @@ HIAWATHA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HIAWATHA_DESCRIPTION=Hiawatha is a webserver for Unix with 'being secure' as its main goal.
 HIAWATHA_SECTION=web
 HIAWATHA_PRIORITY=optional
-HIAWATHA_DEPENDS=openssl
+HIAWATHA_DEPENDS=openssl, zlib, libxml2, libxslt
 HIAWATHA_SUGGESTS=
 HIAWATHA_CONFLICTS=
 
@@ -109,7 +109,7 @@ hiawatha-source: $(DL_DIR)/$(HIAWATHA_SOURCE) $(HIAWATHA_PATCHES)
 # shown below to make various patches to it.
 #
 $(HIAWATHA_BUILD_DIR)/.configured: $(DL_DIR)/$(HIAWATHA_SOURCE) $(HIAWATHA_PATCHES) make/hiawatha.mk
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage zlib-stage libxml2-stage libxslt-stage
 	rm -rf $(BUILD_DIR)/$(HIAWATHA_DIR) $(@D)
 	$(HIAWATHA_UNZIP) $(DL_DIR)/$(HIAWATHA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HIAWATHA_PATCHES)" ; \
