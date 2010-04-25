@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.7.0.5
+GIT_VERSION=1.7.1
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
@@ -56,7 +56,8 @@ GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 # GIT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GIT_PATCHES=$(GIT_SOURCE_DIR)/Makefile.patch $(GIT_SOURCE_DIR)/ssh-path.patch 
+GIT_PATCHES=$(GIT_SOURCE_DIR)/Makefile.patch $(GIT_SOURCE_DIR)/ssh-path.patch
+GIT-LITE_PATCHES=$(GIT_SOURCE_DIR)/Makefile-1.6.patch $(GIT_SOURCE_DIR)/ssh-path.patch
 
 #
 # If the compilation of the package requires additional
@@ -209,7 +210,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(GIT-LITE_DIR) $(@D)
 	$(GIT_UNZIP) $(DL_DIR)/$(GIT-LITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GIT_PATCHES)" ; \
-		then cat $(GIT_PATCHES) | \
+		then cat $(GIT-LITE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(GIT-LITE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GIT-LITE_DIR)" != "$(@D)" ; \
