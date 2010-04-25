@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NE_SITE=http://ne.dsi.unimi.it
-NE_VERSION=2.0.2
+NE_VERSION=2.1
 NE_SOURCE=ne-$(NE_VERSION).tar.gz
 NE_DIR=ne-$(NE_VERSION)
 NE_UNZIP=zcat
@@ -210,16 +210,7 @@ $(NE_IPK): $(NE_BUILD_DIR)/.built
 	mv $(NE_IPK_DIR)/opt/share/doc/ne/*.1 $(NE_IPK_DIR)/opt/share/man/man1/
 	install -d $(NE_IPK_DIR)/opt/share/info
 	mv $(NE_IPK_DIR)/opt/share/doc/ne/*.info.gz $(NE_IPK_DIR)/opt/share/info/
-#	install -d $(NE_IPK_DIR)/opt/etc/
-#	install -m 644 $(NE_SOURCE_DIR)/ne.conf $(NE_IPK_DIR)/opt/etc/ne.conf
-#	install -d $(NE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NE_SOURCE_DIR)/rc.ne $(NE_IPK_DIR)/opt/etc/init.d/SXXne
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NE_IPK_DIR)/opt/etc/init.d/SXXne
 	$(MAKE) $(NE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NE_SOURCE_DIR)/postinst $(NE_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NE_SOURCE_DIR)/prerm $(NE_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NE_IPK_DIR)/CONTROL/prerm
 	echo $(NE_CONFFILES) | sed -e 's/ /\n/g' > $(NE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NE_IPK_DIR)
 
