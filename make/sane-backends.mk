@@ -27,16 +27,16 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 
-SANE_BACKENDS_RELEASE=1.0.20
+SANE_BACKENDS_RELEASE=1.0.21
 SANE_BACKENDS_IPK_VERSION=1
 
 # You should change the next two git variables TOGETHER
 
 # Latest commit from http://git.debian.org/git/sane/sane-backends.git/refs/heads/master
 # Recent history at http://git.debian.org/?p=sane/sane-backends.git
-SANE_BACKENDS_GIT_COMMIT=f2c663ffb1
+#SANE_BACKENDS_GIT_COMMIT=f2c663ffb1
 # The date of the above commit http://git.debian.org/?p=sane/sane-backends.git;a=commit;h=$(SANE_BACKENDS_GIT_COMMIT)
-SANE_BACKENDS_GIT_DATE=20091022
+#SANE_BACKENDS_GIT_DATE=20091022
 
 ifdef SANE_BACKENDS_GIT_DATE
 # Snapshot from http://git.debian.org/?p=sane/sane-backends.git
@@ -83,7 +83,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 SANE_BACKENDS_CPPFLAGS=
-SANE_BACKENDS_LDFLAGS=-Wl,-rpath=/opt/lib/sane -ldl -lpthread
+SANE_BACKENDS_LDFLAGS=-Wl,-rpath=/opt/lib/sane -ldl -lpthread -ltiff -lz
 
 #
 # SANE_BACKENDS_BUILD_DIR is the directory in which the build is done.
@@ -136,7 +136,7 @@ sane-backends-source: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES) make/sane-backends.mk
-	$(MAKE) libusb-stage libjpeg-stage libtiff-stage
+	$(MAKE) libusb-stage libjpeg-stage libtiff-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(@D)
 	$(SANE_BACKENDS_UNZIP) $(DL_DIR)/$(SANE_BACKENDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SANE_BACKENDS_PATCHES)" ; \
