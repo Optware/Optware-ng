@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.99.44
+CHEROKEE_VERSION=0.99.45
 CHEROKEE_SITE=http://www.cherokee-project.com/download/0.99/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
@@ -143,7 +143,7 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(CHEROKEE_DIR) $(@D)
 	sed -i.orig -e '1s|#!.*|#!/opt/bin/python|' $(@D)/admin/server.py
-	sed -i.orig -e '/\/var\/run\/cherokee.pid/d' $(@D)/admin/CherokeeManagement.py
+	sed -i.orig -e '/\/var\/run\/cherokee.pid/d' $(@D)/admin/PageNewConfig.py
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CHEROKEE_CPPFLAGS)" \
