@@ -21,7 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NE_SITE=http://ne.dsi.unimi.it
-NE_VERSION=2.1
+NE_VERSION?=2.1
+NE_IPK_VERSION?=1
 NE_SOURCE=ne-$(NE_VERSION).tar.gz
 NE_DIR=ne-$(NE_VERSION)
 NE_UNZIP=zcat
@@ -33,10 +34,6 @@ NE_DEPENDS=ncurses
 NE_SUGGESTS=
 NE_CONFLICTS=
 
-#
-# NE_IPK_VERSION should be incremented when the ipk changes.
-#
-NE_IPK_VERSION=1
 
 #
 # NE_CONFFILES should be a list of user-editable files

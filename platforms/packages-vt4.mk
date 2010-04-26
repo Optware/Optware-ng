@@ -69,3 +69,6 @@ E2FSPROGS_IPK_VERSION = 1
 LINPHONE_LDFLAGS := -lpthread -lresolv -lrt
 
 MYSQL5_CONFIG_ENV_EXTRA := ac_cv_func_fesetround=no
+
+NE_VERSION := 2.0.2
+NE_IPK_VERSION := 1
