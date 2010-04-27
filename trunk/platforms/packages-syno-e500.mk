@@ -19,6 +19,8 @@ BROKEN_PACKAGES = \
 	sandbox \
 	x264 lm-sensors \
 
+DHCP_CONFIG_ARGS := --disable-dhcpv6
+
 E2FSPROGS_VERSION := 1.40.3
 E2FSPROGS_IPK_VERSION := 5
 
