@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET_VERSION=0.6.0
+NZBGET_VERSION=0.7.0
 NZBGET_SOURCE=nzbget-$(NZBGET_VERSION).tar.gz
 NZBGET_DIR=nzbget-$(NZBGET_VERSION)
 NZBGET_UNZIP=zcat
@@ -36,7 +36,7 @@ NZBGET_CONFLICTS=nzbget-testing
 #
 # NZBGET_IPK_VERSION should be incremented when the ipk changes.
 #
-NZBGET_IPK_VERSION=2
+NZBGET_IPK_VERSION=1
 
 #
 # NZBGET_CONFFILES should be a list of user-editable files
@@ -130,8 +130,6 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
-		--disable-static \
 		--with-tlslib=OpenSSL \
 		$(NZBGET_CONFIGURE_OPTS) \
 	)
@@ -199,11 +197,15 @@ $(NZBGET_IPK_DIR)/CONTROL/control:
 $(NZBGET_IPK): $(NZBGET_BUILD_DIR)/.built
 	rm -rf $(NZBGET_IPK_DIR) $(BUILD_DIR)/nzbget_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(NZBGET_BUILD_DIR) DESTDIR=$(NZBGET_IPK_DIR) install
-	install -d $(NZBGET_IPK_DIR)/opt/bin $(NZBGET_IPK_DIR)/opt/share/doc/nzbget
+	install -d $(NZBGET_IPK_DIR)/opt/bin $(NZBGET_IPK_DIR)/opt/sbin $(NZBGET_IPK_DIR)/opt/share/doc/nzbget
 	install -m 755 $(NZBGET_BUILD_DIR)/nzbget $(NZBGET_IPK_DIR)/opt/bin/
+	install -m 755 $(NZBGET_BUILD_DIR)/nzbgetd $(NZBGET_IPK_DIR)/opt/sbin/
+	install -m 644 $(NZBGET_BUILD_DIR)/README $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
 	install -m 644 $(NZBGET_BUILD_DIR)/nzbget.conf.example $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
-	install -m 644 $(NZBGET_BUILD_DIR)/postprocess-example.sh $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
+	install -m 755 $(NZBGET_BUILD_DIR)/postprocess-example.sh $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
+	install -m 644 $(NZBGET_BUILD_DIR)/postprocess-example.conf $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
 	$(STRIP_COMMAND) $(NZBGET_IPK_DIR)/opt/bin/nzbget
+	sed -i s:/usr/local/bin:/opt/bin: $(NZBGET_IPK_DIR)/opt/sbin/nzbgetd
 #	install -d $(NZBGET_IPK_DIR)/opt/etc/
 #	install -m 644 $(NZBGET_SOURCE_DIR)/nzbget.conf $(NZBGET_IPK_DIR)/opt/etc/nzbget.conf
 #	install -d $(NZBGET_IPK_DIR)/opt/etc/init.d
