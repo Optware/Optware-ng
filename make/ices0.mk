@@ -36,13 +36,20 @@ ICES0_DESCRIPTION=source client for broadcasting in MP3 format to an icecast2 se
 ICES0_SECTION=multimedia
 ICES0_PRIORITY=optional
 ICES0_DEPENDS=libshout, libxml2
+ifneq (, $(filter perl, $(PACKAGES)))
+ICES0_WITH_PERL ?= yes
+endif
+ifeq (yes, $(ICES0_WITH_PERL))
+ICES0_DEPENDS += , perl
+endif
+
 #ICES0_SUGGESTS=
 #ICES0_CONFLICTS=
 
 #
 # ICES0_IPK_VERSION should be incremented when the ipk changes.
 #
-ICES0_IPK_VERSION=1
+ICES0_IPK_VERSION=2
 
 #
 # ICES0_CONFFILES should be a list of user-editable files
@@ -60,6 +67,12 @@ ICES0_PATCHES=$(ICES0_SOURCE_DIR)/configure.patch
 #
 ICES0_CPPFLAGS=
 ICES0_LDFLAGS=
+
+ifeq (yes, $(ICES0_WITH_PERL))
+ICES0_CONFIG_ARGS = --with-perl
+else
+ICES0_CONFIG_ARGS = --without-perl
+endif
 
 #
 # ICES0_BUILD_DIR is the directory in which the build is done.
@@ -112,6 +125,9 @@ ices0-source: $(DL_DIR)/$(ICES0_SOURCE) $(ICES0_PATCHES)
 #
 $(ICES0_BUILD_DIR)/.configured: $(DL_DIR)/$(ICES0_SOURCE) $(ICES0_PATCHES) make/ices0.mk
 	$(MAKE) libshout-stage libxml2-stage
+ifeq (yes, $(ICES0_WITH_PERL))
+	$(MAKE) perl-stage
+endif
 	rm -rf $(BUILD_DIR)/$(ICES0_DIR) $(@D)
 	$(ICES0_UNZIP) $(DL_DIR)/$(ICES0_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ICES0_PATCHES)" ; \
@@ -121,6 +137,14 @@ $(ICES0_BUILD_DIR)/.configured: $(DL_DIR)/$(ICES0_SOURCE) $(ICES0_PATCHES) make/
 	if test "$(BUILD_DIR)/$(ICES0_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ICES0_DIR) $(@D) ; \
 	fi
+ifeq (yes, $(ICES0_WITH_PERL))
+	sed -i -e '/PERLCFLAGS=/s|`.*`|"-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR)"|' \
+	       -e '/PERLLIBS=/s|`.*`|"-Wl,-E -L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) -Wl,-rpath,/opt/lib/$(PERL_LIB_CORE_DIR) -lperl -lnsl -ldl -lm -lcrypt -lutil -lc"|' \
+		$(@D)/configure
+	if test "$(PERL_MAJOR_VER)" = "5.8"; then \
+		sed -i -e '/PERLLIBS=/s|-lperl|$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR)/../auto/DynaLoader/DynaLoader.a &|' $(@D)/configure; \
+	fi
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICES0_CPPFLAGS)" \
@@ -136,7 +160,7 @@ $(ICES0_BUILD_DIR)/.configured: $(DL_DIR)/$(ICES0_SOURCE) $(ICES0_PATCHES) make/
 		--without-flac \
 		--without-lame \
 		--without-vorbis \
-		--without-perl \
+		$(ICES0_CONFIG_ARGS) \
 		--without-python \
 		--disable-nls \
 		--disable-static \
