@@ -1,7 +1,7 @@
---- configure.in.orig	2009-09-14 13:01:19.000000000 -0700
-+++ configure.in	2009-09-24 11:04:52.000000000 -0700
-@@ -229,21 +229,7 @@
- AC_CHECK_TYPES([int8_t,int16_t,int32_t,int64_t])
+--- configure.in.orig	2010-03-18 17:50:51.000000000 +0000
++++ configure.in	2010-04-29 18:08:11.605228834 +0000
+@@ -236,21 +236,7 @@
+ AC_CHECK_TYPES([boolean])
  
  # In case INADDR_NONE is not defined (like on Solaris)
 -have_inaddr_none="no"
@@ -23,7 +23,7 @@
  AC_MSG_RESULT($have_inaddr_none)
  if test "x$have_inaddr_none" = "xno"; then
  	AC_DEFINE([INADDR_NONE],[-1],[For INADDR_NONE definition])
-@@ -349,7 +335,7 @@
+@@ -356,7 +342,7 @@
  # that versions < 0.9 do not accumulate packet statistics whereas >= 0.9 do accumulate.
  # This is Linux only.  The check is done after pcre because the code below uses pcre.
  # It seems Phil Wood's pcap does not accumulate - 0.9x
@@ -32,3 +32,21 @@
  if test "x$linux" = "xyes"; then
      if test "x$pcap_version_check" = "xyes"; then
          AC_MSG_CHECKING([for libpcap version >= 0.9])
+@@ -415,16 +401,7 @@
+ fi
+ 
+ AC_MSG_CHECKING([for pcap_lex_destroy])
+-AC_RUN_IFELSE(
+-[AC_LANG_PROGRAM(
+-[[
+-#include <pcap.h>
+-]],
+-[[
+-   pcap_lex_destroy();
+-]])],
+-[have_pcap_lex_destroy="yes"],
+-[have_pcap_lex_destroy="no"])
++ have_pcap_lex_destroy="no"
+ AC_MSG_RESULT($have_pcap_lex_destroy)
+ if test "x$have_pcap_lex_destroy" = "xyes"; then
+     AC_DEFINE([HAVE_PCAP_LEX_DESTROY],[1],[Can cleanup lex buffer stack created by pcap bpf filter])
