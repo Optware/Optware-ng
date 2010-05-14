@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CTRLPROXY_SITE=http://www.ctrlproxy.org/releases
-CTRLPROXY_VERSION=3.0.7
+CTRLPROXY_VERSION=3.0.8
 CTRLPROXY_SOURCE=ctrlproxy-$(CTRLPROXY_VERSION).tar.gz
 CTRLPROXY_DIR=ctrlproxy-$(CTRLPROXY_VERSION)
 CTRLPROXY_UNZIP=zcat
@@ -36,11 +36,12 @@ CTRLPROXY_DESCRIPTION=An IRC server with multiserver support.
 CTRLPROXY_SECTION=irc
 CTRLPROXY_PRIORITY=optional
 CTRLPROXY_DEPENDS=glib, libxml2, popt, gnutls, pcre
+CTRLPROXY_SUGGESTS=readline
 
 #
 # CTRLPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-CTRLPROXY_IPK_VERSION=2
+CTRLPROXY_IPK_VERSION=1
 
 #
 # CTRLPROXY_CONFFILES should be a list of user-editable files
@@ -57,7 +58,7 @@ CTRLPROXY_CONFFILES=
 # compilation or linking flags, then list them here.
 #
 CTRLPROXY_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -D__USE_POSIX
-CTRLPROXY_LDFLAGS=
+CTRLPROXY_LDFLAGS=-lreadline -lncurses -ltasn1 -lgpg-error -lgcrypt
 
 #
 # CTRLPROXY_BUILD_DIR is the directory in which the build is done.
@@ -104,7 +105,7 @@ ctrlproxy-source: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CTRLPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PATCHES) make/ctrlproxy.mk
-	$(MAKE) glib-stage libxml2-stage popt-stage pcre-stage gnutls-stage
+	$(MAKE) glib-stage libxml2-stage popt-stage pcre-stage readline-stage gnutls-stage
 	rm -rf $(BUILD_DIR)/$(CTRLPROXY_DIR) $(CTRLPROXY_BUILD_DIR)
 	$(CTRLPROXY_UNZIP) $(DL_DIR)/$(CTRLPROXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test "$(CTRLPROXY_PATCHES)"; \
@@ -115,6 +116,7 @@ $(CTRLPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PA
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CTRLPROXY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CTRLPROXY_LDFLAGS)" \
+		LIBS="$(STAGING_LDFLAGS) $(CTRLPROXY_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		ac_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_realloc_0_nonnull=yes \
@@ -171,6 +173,7 @@ $(CTRLPROXY_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(CTRLPROXY_SITE)/$(CTRLPROXY_SOURCE)" >>$@
 	@echo "Description: $(CTRLPROXY_DESCRIPTION)" >>$@
 	@echo "Depends: $(CTRLPROXY_DEPENDS)" >>$@
+	@echo "Suggests: $(CTRLPROXY_SUGGESTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -188,14 +191,8 @@ $(CTRLPROXY_IPK): $(CTRLPROXY_BUILD_DIR)/.built
 	rm -rf $(CTRLPROXY_IPK_DIR) $(BUILD_DIR)/ctrlproxy_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CTRLPROXY_BUILD_DIR) DESTDIR=$(CTRLPROXY_IPK_DIR) \
 		all install-dirs install-bin install-data install-doc
-	$(STRIP_COMMAND) $(CTRLPROXY_IPK_DIR)/opt/bin/ctrlproxy
-#	install -d $(CTRLPROXY_IPK_DIR)/opt/etc/
-#	install -m 644 $(CTRLPROXY_SOURCE_DIR)/ctrlproxy.conf $(CTRLPROXY_IPK_DIR)/opt/etc/ctrlproxy.conf
-#	install -d $(CTRLPROXY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CTRLPROXY_SOURCE_DIR)/rc.ctrlproxy $(CTRLPROXY_IPK_DIR)/opt/etc/init.d/SXXctrlproxy
+	$(STRIP_COMMAND) $(CTRLPROXY_IPK_DIR)/opt/*bin/*
 	$(MAKE) $(CTRLPROXY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CTRLPROXY_SOURCE_DIR)/postinst $(CTRLPROXY_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CTRLPROXY_SOURCE_DIR)/prerm $(CTRLPROXY_IPK_DIR)/CONTROL/prerm
 	echo $(CTRLPROXY_CONFFILES) | sed -e 's/ /\n/g' > $(CTRLPROXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CTRLPROXY_IPK_DIR)
 
