@@ -362,11 +362,11 @@ COMMON_CROSS_PACKAGES = \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utf8proc util-linux util-linux-ng \
 	vblade vdr-mediamvp vim vitetris vlc \
-	vnstat vorbis-tools vpnc vsftpd vte vtun \
+	vnstat vorbis-tools vpnc vsftpd vtun \
 	w3cam w3m wakelan wavpack webalizer weechat werc wget \
 	which whois wizd wpa-supplicant wput wxbase \
 	xerces-c xmlrpc-c \
-	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext \
+	x11 xau xauth xaw xcursor xdmcp xdpyinfo xext \
 	xextensions xfixes xft xinetd \
 	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
 	x264 xmail xvid xz-utils \
