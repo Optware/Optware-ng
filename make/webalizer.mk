@@ -58,7 +58,7 @@ WEBALIZER_PATCHES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-WEBALIZER_CPPFLAGS=
+WEBALIZER_CPPFLAGS=-D_LARGEFILE64_SOURCE=1
 WEBALIZER_LDFLAGS=
 
 #
