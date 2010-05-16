@@ -1,0 +1,35 @@
+--- linux.c.old	2006-03-04 02:52:46.000000000 +0000
++++ linux.c	2010-05-16 20:11:13.000000000 +0100
+@@ -288,10 +288,30 @@
+ int usb_bulk_read(usb_dev_handle *dev, int ep, char *bytes, int size,
+ 	int timeout)
+ {
++  struct usb_bulktransfer bulk;
++  int ret, retrieved = 0, requested;
++
+   /* Ensure the endpoint address is correct */
+   ep |= USB_ENDPOINT_IN;
+-  return usb_urb_transfer(dev, ep, USB_URB_TYPE_BULK, bytes, size,
+-		timeout);
++
++  do {
++    bulk.ep = ep;
++    requested = size - retrieved;
++    if (requested > MAX_READ_WRITE)
++      requested = MAX_READ_WRITE;
++    bulk.len = requested;
++    bulk.timeout = timeout;
++    bulk.data = (unsigned char *)bytes + retrieved;
++
++    ret = ioctl(dev->fd, IOCTL_USB_BULK, &bulk);
++    if (ret < 0)
++      USB_ERROR_STR(ret, "error reading from bulk endpoint 0x%x: %s",
++    ep, strerror(errno));
++
++    retrieved += ret;
++  } while (ret > 0 && retrieved < size); /* Yefim: && ret == requested */
++
++  return retrieved;
+ }
+ 
+ /*
