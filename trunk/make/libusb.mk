@@ -25,17 +25,18 @@ LIBUSB_DESCRIPTION=Library for interfacing to the USB subsystem.
 LIBUSB_SECTION=libs
 LIBUSB_PRIORITY=optional
 LIBUSB_DEPENDS=
+LIBUSB_SUGGESTS=
 LIBUSB_CONFLICTS=
 
 #
 # LIBUSB_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUSB_IPK_VERSION=1
+LIBUSB_IPK_VERSION=2
 #
 # LIBUSB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBUSB_PATCHES=
+LIBUSB_PATCHES=$(LIBUSB_SOURCE_DIR)/digitemp.patch
 
 #
 # If the compilation of the package requires additional
@@ -57,6 +58,8 @@ LIBUSB_BUILD_DIR=$(BUILD_DIR)/libusb
 LIBUSB_SOURCE_DIR=$(SOURCE_DIR)/libusb
 LIBUSB_IPK_DIR=$(BUILD_DIR)/libusb-$(LIBUSB_VERSION)-ipk
 LIBUSB_IPK=$(BUILD_DIR)/libusb_$(LIBUSB_VERSION)-$(LIBUSB_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libusb-source libusb-unpack libusb libusb-stage libusb-ipk libusb-clean libusb-dirclean libusb-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -92,7 +95,7 @@ $(LIBUSB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB_SOURCE) $(LIBUSB_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(LIBUSB_DIR) $(LIBUSB_BUILD_DIR)
 	$(LIBUSB_UNZIP) $(DL_DIR)/$(LIBUSB_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(LIBUSB_PATCHES)"; then \
-		cat $(LIBUSB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBUSB_DIR) -p1; \
+		cat $(LIBUSB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBUSB_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(LIBUSB_DIR) $(LIBUSB_BUILD_DIR)
 	(cd $(LIBUSB_BUILD_DIR); \
@@ -113,15 +116,13 @@ $(LIBUSB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB_SOURCE) $(LIBUSB_PATCHES) ma
 
 libusb-unpack: $(LIBUSB_BUILD_DIR)/.configured
 
-libusb-configure: $(LIBUSB_BUILD_DIR)/.configured
-
 $(LIBUSB_BUILD_DIR)/.built: $(LIBUSB_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(LIBUSB_BUILD_DIR) \
 		SUBDIRS=. lib_LTLIBRARIES=libusb.la
 	touch $@
 
-libusb: $(LIBUSB_BUILD_DIR)/libusb.la
+libusb: $(LIBUSB_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -151,6 +152,7 @@ $(LIBUSB_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(LIBUSB_SITE)/$(LIBUSB_SOURCE)" >>$@
 	@echo "Description: $(LIBUSB_DESCRIPTION)" >>$@
 	@echo "Depends: $(LIBUSB_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBUSB_SUGGESTS)" >>$@
 	@echo "Conflicts: $(LIBUSB_CONFLICTS)" >>$@
 
 #
