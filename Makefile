@@ -44,7 +44,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = parted lumikki \
 	doxygen \
-	gtk \
+	gtk vte xchat \
 	iozone \
 	bpalogin \
  
