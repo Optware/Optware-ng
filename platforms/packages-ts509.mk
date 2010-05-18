@@ -12,6 +12,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk \
 	bitchx \
+	ecl \
 	iptables ivorbis-tools lcd4linux \
 	ldconfig puppy \
 	qemu \
