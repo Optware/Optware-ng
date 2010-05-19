@@ -75,6 +75,8 @@ OWW_SOURCE_DIR=$(SOURCE_DIR)/oww
 OWW_IPK_DIR=$(BUILD_DIR)/oww-$(OWW_VERSION)-ipk
 OWW_IPK=$(BUILD_DIR)/oww_$(OWW_VERSION)-$(OWW_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: oww-source oww-unpack oww oww-stage oww-ipk oww-clean oww-dirclean oww-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -108,7 +110,7 @@ $(OWW_BUILD_DIR)/.configured: $(DL_DIR)/$(OWW_SOURCE) $(OWW_PATCHES)
 	$(MAKE) libcurl-stage libusb-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(OWW_DIR) $(OWW_BUILD_DIR)
 	$(OWW_UNZIP) $(DL_DIR)/$(OWW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(OWW_PATCHES) | patch -d $(BUILD_DIR)/$(OWW_DIR) -p1
+#	cat $(OWW_PATCHES) | patch -d $(BUILD_DIR)/$(OWW_DIR) -p0
 	mv $(BUILD_DIR)/$(OWW_DIR) $(OWW_BUILD_DIR)
 	(cd $(OWW_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -214,3 +216,10 @@ oww-clean:
 #
 oww-dirclean:
 	rm -rf $(BUILD_DIR)/$(OWW_DIR) $(OWW_BUILD_DIR) $(OWW_IPK_DIR) $(OWW_IPK)
+#
+#
+# Some sanity check for the package.
+#
+oww-check: $(OWW_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
