@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GAWK_SITE=http://ftp.gnu.org/gnu/gawk
-GAWK_VERSION=3.1.7
+GAWK_VERSION=3.1.8
 GAWK_SOURCE=gawk-$(GAWK_VERSION).tar.gz
 GAWK_DIR=gawk-$(GAWK_VERSION)
 GAWK_UNZIP=zcat
@@ -71,7 +71,8 @@ GAWK_IPK=$(BUILD_DIR)/gawk_$(GAWK_VERSION)-$(GAWK_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GAWK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GAWK_SITE)/$(GAWK_SOURCE)
+	$(WGET) -P $(@D) $(GAWK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -97,11 +98,11 @@ gawk-source: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES)
 #
 $(GAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(GAWK_DIR) $(GAWK_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GAWK_DIR) $(@D)
 	$(GAWK_UNZIP) $(DL_DIR)/$(GAWK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GAWK_PATCHES) | patch -d $(BUILD_DIR)/$(GAWK_DIR) -p1
-	mv $(BUILD_DIR)/$(GAWK_DIR) $(GAWK_BUILD_DIR)
-	(cd $(GAWK_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(GAWK_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GAWK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GAWK_LDFLAGS)" \
@@ -129,7 +130,7 @@ gawk-unpack: $(GAWK_BUILD_DIR)/.configured
 #
 $(GAWK_BUILD_DIR)/.built: $(GAWK_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GAWK_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -225,4 +226,4 @@ gawk-dirclean:
 # Some sanity check for the package.
 #
 gawk-check: $(GAWK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GAWK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
