@@ -16,6 +16,8 @@ BROKEN_PACKAGES = \
 	\
 	rssh \
 	sandbox \
+	\
+	btg clinkcc libopensync msynctool obexftp \
 
 PERL_MAJOR_VER=5.10
 
