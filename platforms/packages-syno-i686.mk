@@ -9,7 +9,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-         asterisk14-chan-capi atftp btg dialog \
+         asterisk14-chan-capi atftp btg dialog ecl \
          iptraf ivorbis-tools lcd4linux ldconfig libcapi20 \
          mpdscribble nagios-plugins ntop opendchub opensips \
          puppy qemu \
