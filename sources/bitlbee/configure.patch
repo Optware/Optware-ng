@@ -1,6 +1,6 @@
---- bitlbee-1.2.5/configure.orig	2010-03-17 01:13:55.000000000 +0000
-+++ bitlbee-1.2.5/configure	2010-03-17 15:10:39.456149997 +0000
-@@ -115,7 +115,7 @@
+--- bitlbee-1.2.7/configure.orig	2010-05-15 14:52:23.000000000 +0000
++++ bitlbee-1.2.7/configure	2010-05-21 18:03:16.982392616 +0000
+@@ -117,7 +117,7 @@
  
  DESTDIR=
  LFLAGS=
@@ -9,12 +9,12 @@
  EOF
  
  cat<<EOF>config.h
-@@ -305,7 +305,7 @@
- 
- detect_resolv_static()
+@@ -312,7 +312,7 @@
  {
+ 	TMPFILE=$(mktemp /tmp/bitlbee-configure.XXXXXX)
+ 	ret=1
 -	for i in $systemlibdirs; do
 +	for i in ; do
  		if [ -f $i/libresolv.a ]; then
- 			echo "$RESOLV_TESTCODE" | $CC -o /dev/null -x c - -Wl,$i/libresolv.a >/dev/null 2>/dev/null
+ 			echo "$RESOLV_TESTCODE" | $CC -o $TMPFILE -x c - -Wl,$i/libresolv.a >/dev/null 2>/dev/null
  			if [ "$?" = "0" ]; then
