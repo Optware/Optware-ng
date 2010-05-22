@@ -63,6 +63,7 @@ $(XZ_UTILS_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(XZ_UTILS_SOURCE
 		--disable-nls \
 		--enable-static \
 		--disable-shared \
+		--disable-assembler \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	$(MAKE) -C $(@D) DESTDIR=$(HOST_STAGING_DIR) install
