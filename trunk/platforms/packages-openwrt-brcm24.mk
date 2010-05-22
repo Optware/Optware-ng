@@ -28,7 +28,8 @@ BROKEN_PACKAGES = \
 	sandbox \
 	sdl slrn \
 	taglib \
-	x11 xdpyinfo xext xpm xtst
+	x11 xdpyinfo xext xpm xtst \
+	clinkcc libopensync msynctool obexftp \
 
 RTORRENT_VERSION := 0.8.0
 RTORRENT_IPK_VERSION := 2
