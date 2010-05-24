@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 KEYCHAIN_SITE=http://www.funtoo.org/archive/keychain
-KEYCHAIN_VERSION=2.7.0
+KEYCHAIN_VERSION=2.7.1
 KEYCHAIN_SOURCE=keychain-$(KEYCHAIN_VERSION).tar.bz2
 KEYCHAIN_DIR=keychain-$(KEYCHAIN_VERSION)
 KEYCHAIN_UNZIP=bzcat
@@ -193,7 +193,7 @@ $(KEYCHAIN_IPK): $(KEYCHAIN_BUILD_DIR)/.built
 	install -d $(KEYCHAIN_IPK_DIR)/opt/bin/
 	install $(KEYCHAIN_BUILD_DIR)/keychain $(KEYCHAIN_IPK_DIR)/opt/bin/
 	install -d $(KEYCHAIN_IPK_DIR)/opt/man/man1/
-	install $(KEYCHAIN_BUILD_DIR)/keychain.1.gz $(KEYCHAIN_IPK_DIR)/opt/man/man1/
+	install $(KEYCHAIN_BUILD_DIR)/keychain.1 $(KEYCHAIN_IPK_DIR)/opt/man/man1/
 	$(MAKE) $(KEYCHAIN_IPK_DIR)/CONTROL/control
 	echo $(KEYCHAIN_CONFFILES) | sed -e 's/ /\n/g' > $(KEYCHAIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KEYCHAIN_IPK_DIR)
