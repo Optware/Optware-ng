@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TAGLIB_SITE=http://developer.kde.org/~wheeler/files/src
-TAGLIB_VERSION=1.5
+TAGLIB_VERSION=1.6.3
 TAGLIB_SOURCE=taglib-$(TAGLIB_VERSION).tar.gz
 TAGLIB_DIR=taglib-$(TAGLIB_VERSION)
 TAGLIB_UNZIP=zcat
@@ -76,8 +76,8 @@ TAGLIB_IPK=$(BUILD_DIR)/taglib_$(TAGLIB_VERSION)-$(TAGLIB_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TAGLIB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TAGLIB_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(TAGLIB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -227,4 +227,4 @@ taglib-dirclean:
 # Some sanity check for the package.
 #
 taglib-check: $(TAGLIB_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TAGLIB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
