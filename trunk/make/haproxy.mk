@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HAPROXY_SITE=http://haproxy.1wt.eu/download/1.4/src
-HAPROXY_VERSION=1.4.4
+HAPROXY_VERSION=1.4.6
 HAPROXY_SOURCE=haproxy-$(HAPROXY_VERSION).tar.gz
 HAPROXY_DIR=haproxy-$(HAPROXY_VERSION)
 HAPROXY_UNZIP=zcat
@@ -204,16 +204,7 @@ $(HAPROXY_IPK): $(HAPROXY_BUILD_DIR)/.built
 	install -d $(HAPROXY_IPK_DIR)/opt/share/haproxy/
 	cp -r $(HAPROXY_BUILD_DIR)/doc $(HAPROXY_IPK_DIR)/opt/share/haproxy/
 	cp -r $(HAPROXY_BUILD_DIR)/examples $(HAPROXY_IPK_DIR)/opt/share/haproxy/
-#	install -d $(HAPROXY_IPK_DIR)/opt/etc/
-#	install -m 644 $(HAPROXY_SOURCE_DIR)/haproxy.conf $(HAPROXY_IPK_DIR)/opt/etc/haproxy.conf
-#	install -d $(HAPROXY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(HAPROXY_SOURCE_DIR)/rc.haproxy $(HAPROXY_IPK_DIR)/opt/etc/init.d/SXXhaproxy
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HAPROXY_IPK_DIR)/opt/etc/init.d/SXXhaproxy
 	$(MAKE) $(HAPROXY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(HAPROXY_SOURCE_DIR)/postinst $(HAPROXY_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HAPROXY_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(HAPROXY_SOURCE_DIR)/prerm $(HAPROXY_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HAPROXY_IPK_DIR)/CONTROL/prerm
 	echo $(HAPROXY_CONFFILES) | sed -e 's/ /\n/g' > $(HAPROXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HAPROXY_IPK_DIR)
 
