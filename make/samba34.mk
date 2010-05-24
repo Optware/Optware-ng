@@ -55,9 +55,12 @@ SAMBA34-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
 # SAMBA34_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SAMBA34_PATCHES=$(SAMBA34_SOURCE_DIR)/configure.in.patch
-SAMBA34_PATCHES+=$(SAMBA34_SOURCE_DIR)/mtab.patch
+SAMBA34_PATCHES=$(SAMBA34_SOURCE_DIR)/configure.in.patch \
+$(SAMBA34_SOURCE_DIR)/mtab.patch \
 
+ifeq (uclibc, $(LIBC_STYLE))
+SAMBA34_PATCHES += $(SAMBA34_SOURCE_DIR)/mount.cifs.c.patch
+endif
 
 #
 # If the compilation of the package requires additional

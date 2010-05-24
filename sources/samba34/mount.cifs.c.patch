@@ -1,0 +1,21 @@
+--- samba34/source3/client/mount.cifs.c.orig	2010-03-01 06:14:34.000000000 -0500
++++ samba34/source3/client/mount.cifs.c	2010-03-05 16:50:19.000000000 -0500
+@@ -39,7 +39,6 @@
+ #include <mntent.h>
+ #include <fcntl.h>
+ #include <limits.h>
+-#include <fstab.h>
+ #include "mount.h"
+ 
+ #define MOUNT_CIFS_VERSION_MAJOR "1"
+@@ -70,6 +69,10 @@
+ #define MS_BIND 4096
+ #endif
+ 
++#ifndef _PATH_FSTAB 
++#define	_PATH_FSTAB	"/etc/fstab"
++#endif
++
+ /* private flags - clear these before passing to kernel */
+ #define MS_USERS	0x40000000
+ #define MS_USER		0x80000000
