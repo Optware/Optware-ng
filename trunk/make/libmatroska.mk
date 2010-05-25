@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMATROSKA_SITE=http://bunkus.org/videotools/mkvtoolnix/sources
-LIBMATROSKA_VERSION=0.8.1
+LIBMATROSKA_VERSION=0.9.0
 LIBMATROSKA_SOURCE=libmatroska-$(LIBMATROSKA_VERSION).tar.bz2
 LIBMATROSKA_DIR=libmatroska-$(LIBMATROSKA_VERSION)
 LIBMATROSKA_UNZIP=bzcat
@@ -141,7 +141,6 @@ $(LIBMATROSKA_BUILD_DIR)/.built: $(LIBMATROSKA_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)/make/linux \
 		$(TARGET_CONFIGURE_OPTS) \
-		AR="$(TARGET_AR) rcvu" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMATROSKA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMATROSKA_LDFLAGS)" \
 		prefix=/opt \
