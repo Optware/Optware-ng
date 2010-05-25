@@ -45,6 +45,8 @@ $(BASE_DIR)/toolchain/$(GPL_SOURCE_DIR)/.built: $(DL_DIR)/$(GPL_SOURCE_TARBALL)
 	cp $(SOURCE_DIR)/toolchain/wrp400/buildroot-defconfig $(@D)/toolchain_misc/_config
 	sed -i -e '/make -C buildroot/s|$$| DL_DIR=$(DL_DIR)|' $(@D)/Result/Makefile
 	$(MAKE) -C $(@D)/Result .toolchain
+	cp $(SOURCE_DIR)/toolchain/wrp400/102-configure.patch \
+		$(@D)/Result/buildroot/toolchain/binutils/2.17/
 	cp $(SOURCE_DIR)/toolchain/wrp400/302-c99-snprintf.patch \
 		$(@D)/Result/buildroot/toolchain/gcc/3.4.6/
 	sed -i -e '/LDSO_RUNPATH/s|.*|LDSO_RUNPATH=y|' \
@@ -62,3 +64,4 @@ endif
 # TODO:
 #	* patch toolchain_build_arm/binutils-2.17/configure.in to use makeinfo 4.11
 #		http://gcc.gnu.org/ml/gcc-patches/2007-09/msg01271.html
+#	UPDATE - patch added for host makeinfo > 4.09 - added May 2010
