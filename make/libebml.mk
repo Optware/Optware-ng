@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBEBML_SITE=http://bunkus.org/videotools/mkvtoolnix/sources
-LIBEBML_VERSION=0.7.8
+LIBEBML_VERSION=0.8.0
 LIBEBML_SOURCE=libebml-$(LIBEBML_VERSION).tar.bz2
 LIBEBML_DIR=libebml-$(LIBEBML_VERSION)
 LIBEBML_UNZIP=bzcat
@@ -141,7 +141,6 @@ $(LIBEBML_BUILD_DIR)/.built: $(LIBEBML_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)/make/linux \
 		$(TARGET_CONFIGURE_OPTS) \
-		AR="$(TARGET_AR) rcvu" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBEBML_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBEBML_LDFLAGS)" \
 		prefix=/opt \
