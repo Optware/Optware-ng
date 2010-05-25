@@ -53,6 +53,8 @@ $(TARGET_CROSS)gcc: # $(OPTWARE_TOP)/platforms/toolchain-gumstix1151.mk
 	cd toolchain; \
 	rm -rf gumstix-buildroot; \
 	svn co -r1151 --username root --password root http://svn.gumstix.com/gumstix-buildroot/trunk gumstix-buildroot
+	cp $(SOURCE_DIR)/toolchain/gumstix1151/102-configure.patch \
+		toolchain/gumstix-buildroot/toolchain/binutils/2.17
 	$(MAKE) -C toolchain/gumstix-buildroot defconfig DL_DIR=$(DL_DIR)
 	sed -i.orig \
 	    -e '/BR2_INSTALL_LIBSTDCPP/s/^.*/BR2_INSTALL_LIBSTDCPP=y/' \
