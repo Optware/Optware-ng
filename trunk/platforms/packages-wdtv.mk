@@ -19,6 +19,7 @@ BROKEN_PACKAGES = \
 	puppy rssh \
 	sandbox \
 	lm-sensors \
+	btg clinkcc libopensync msynctool obexftp \
 
 RTORRENT_VERSION := 0.8.2
 RTORRENT_IPK_VERSION := 2
