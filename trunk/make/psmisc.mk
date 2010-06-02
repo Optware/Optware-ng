@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PSMISC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/psmisc
-PSMISC_VERSION=21.4
+PSMISC_VERSION=22.11
 PSMISC_SOURCE=psmisc-$(PSMISC_VERSION).tar.gz
 PSMISC_DIR=psmisc-$(PSMISC_VERSION)
 PSMISC_UNZIP=zcat
@@ -129,6 +129,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PSMISC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PSMISC_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -137,9 +138,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) \
-		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
-		$(@D)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 psmisc-unpack: $(PSMISC_BUILD_DIR)/.configured
