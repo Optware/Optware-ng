@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MTR_SITE=ftp://ftp.bitwizard.nl/mtr
-MTR_VERSION=0.75
+MTR_VERSION=0.77
 MTR_SOURCE=mtr-$(MTR_VERSION).tar.gz
 MTR_DIR=mtr-$(MTR_VERSION)
 MTR_UNZIP=zcat
@@ -129,7 +129,7 @@ $(MTR_BUILD_DIR)/.configured: $(DL_DIR)/$(MTR_SOURCE) $(MTR_PATCHES) make/mtr.mk
 		--disable-static \
 	)
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
-		sed -i -e 's|-Wno-pointer-sign||' $(@D)/Makefile; \
+		sed -i -e 's| -Wno-pointer-sign||' $(@D)/Makefile; \
 	fi
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -230,4 +230,4 @@ mtr-dirclean:
 # Some sanity check for the package.
 #
 mtr-check: $(MTR_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MTR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
