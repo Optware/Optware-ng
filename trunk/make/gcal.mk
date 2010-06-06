@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GCAL_SITE=http://ftp.gnu.org/pub/gnu/gcal
-GCAL_VERSION=3.01
+GCAL_VERSION=3.6
 GCAL_SOURCE=gcal-$(GCAL_VERSION).tar.gz
 GCAL_DIR=gcal-$(GCAL_VERSION)
 GCAL_UNZIP=zcat
@@ -82,7 +82,8 @@ GCAL_IPK=$(BUILD_DIR)/gcal_$(GCAL_VERSION)-$(GCAL_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GCAL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GCAL_SITE)/$(GCAL_SOURCE)
+	$(WGET) -P $(@D) $(GCAL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,16 +112,16 @@ gcal-source: $(DL_DIR)/$(GCAL_SOURCE) $(GCAL_PATCHES)
 #
 $(GCAL_BUILD_DIR)/.configured: $(DL_DIR)/$(GCAL_SOURCE) $(GCAL_PATCHES) make/gcal.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(GCAL_DIR) $(GCAL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GCAL_DIR) $(@D)
 	$(GCAL_UNZIP) $(DL_DIR)/$(GCAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GCAL_PATCHES)" ; \
 		then cat $(GCAL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(GCAL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(GCAL_DIR)" != "$(GCAL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(GCAL_DIR) $(GCAL_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(GCAL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(GCAL_DIR) $(@D) ; \
 	fi
-	(cd $(GCAL_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GCAL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GCAL_LDFLAGS)" \
@@ -133,8 +134,8 @@ $(GCAL_BUILD_DIR)/.configured: $(DL_DIR)/$(GCAL_SOURCE) $(GCAL_PATCHES) make/gca
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(GCAL_BUILD_DIR)/libtool
-	touch $(GCAL_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 gcal-unpack: $(GCAL_BUILD_DIR)/.configured
 
@@ -142,9 +143,9 @@ gcal-unpack: $(GCAL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(GCAL_BUILD_DIR)/.built: $(GCAL_BUILD_DIR)/.configured
-	rm -f $(GCAL_BUILD_DIR)/.built
-	$(MAKE) -C $(GCAL_BUILD_DIR)
-	touch $(GCAL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -155,9 +156,9 @@ gcal: $(GCAL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GCAL_BUILD_DIR)/.staged: $(GCAL_BUILD_DIR)/.built
-	rm -f $(GCAL_BUILD_DIR)/.staged
-	$(MAKE) -C $(GCAL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(GCAL_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 gcal-stage: $(GCAL_BUILD_DIR)/.staged
 
@@ -227,4 +228,4 @@ gcal-dirclean:
 # Some sanity check for the package.
 #
 gcal-check: $(GCAL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GCAL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
