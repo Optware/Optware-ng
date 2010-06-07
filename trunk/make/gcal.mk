@@ -21,7 +21,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GCAL_SITE=http://ftp.gnu.org/pub/gnu/gcal
+ifeq (uclibc, $(LIBC_STYLE))
+GCAL_VERSION=3.01
+else
 GCAL_VERSION=3.6
+endif
 GCAL_SOURCE=gcal-$(GCAL_VERSION).tar.gz
 GCAL_DIR=gcal-$(GCAL_VERSION)
 GCAL_UNZIP=zcat
