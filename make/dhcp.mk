@@ -19,9 +19,11 @@ DHCP_DEPENDS=openssl
 DHCP_SUGGESTS=
 DHCP_CONFLICTS=
 
-DHCP_IPK_VERSION=4
+DHCP_IPK_VERSION=5
 
 DHCP_CONFFILES=/opt/etc/dhcpd.conf
+
+DHCP_PATCHES=$(DHCP_SOURCE_DIR)/linux_ipv6_discover.patch
 
 DHCP_CPPFLAGS=
 DHCP_LDFLAGS=
@@ -32,6 +34,8 @@ DHCP_CONFIG_ARGS ?=
 
 DHCP_IPK=$(BUILD_DIR)/dhcp_$(DHCP_VERSION)-$(DHCP_IPK_VERSION)_$(TARGET_ARCH).ipk
 DHCP_IPK_DIR:=$(BUILD_DIR)/dhcp-$(DHCP_VERSION)-ipk
+
+DHCP_SOURCE_DIR=$(SOURCE_DIR)/dhcp
 
 $(DL_DIR)/$(DHCP_SOURCE):
 	$(WGET) -P $(@D) $(DHCP_SITE)/$(@F) || \
@@ -49,6 +53,10 @@ $(DHCP_BUILD_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE) make/dhcp.mk
 	$(MAKE) openssl-stage
 	@rm -rf $(BUILD_DIR)/$(DHCP_DIR) $(@D)
 	$(DHCP_UNZIP) $(DL_DIR)/$(DHCP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(DHCP_PATCHES)" ; \
+		then cat $(DHCP_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(DHCP_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(DHCP_DIR) $(@D)
 	sed -i -e 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\/opt\/var\/run\/dhcpd.pid"/' $(@D)/includes/site.h
 	sed -i -e 's/\/\* #define _PATH_DHCPD_DB.*/#define _PATH_DHCPD_DB      "\/opt\/etc\/dhcpd.leases"/' $(@D)/includes/site.h
