@@ -49,9 +49,6 @@ $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	tar -xz -C $(@D) -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
-#	cd $(TARGET_INCDIR); \
-	rm -rf ext2fs et mtd security; \
-	rm -rf `find . -newer stdio.h -a ! -newer pam_client.h`
 	touch $@
 
 endif
