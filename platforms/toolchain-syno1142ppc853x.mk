@@ -34,7 +34,7 @@ TARGET_CUSTOM_FLAGS= -O2 -pipe -mcpu=8548 -mhard-float -mfloat-gprs=double
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
 TOOLCHAIN_BINARY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/dsgpl
-TOOLCHAIN_BINARY=gcc343_glibc234_854x.tgz
+TOOLCHAIN_BINARY=gcc343_glibc234_853x.tgz
 
 toolchain: $(TARGET_CROSS_TOP)/.unpacked
 
