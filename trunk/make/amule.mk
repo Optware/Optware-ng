@@ -152,7 +152,7 @@ amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 #
 #
 $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
-	$(MAKE) libstdc++-stage crypto++-stage
+	$(MAKE) libstdc++-stage crypto++-stage ncurses-stage
 	$(MAKE) wxbase-stage libcurl-stage zlib-stage libpng-stage libgd-stage libupnp-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(@D)
 	$(AMULE_UNZIP) $(DL_DIR)/$(AMULE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
