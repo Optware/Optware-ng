@@ -28,6 +28,8 @@ BYREQUEST_IPK_DIR=$(BUILD_DIR)/byrequest-ipk
 BYREQUEST_IPK=$(BUILD_DIR)/byrequest_cvs-$(BYREQUEST_VERSION)-$(BYREQUEST_IPK_VERSION)_$(TARGET_ARCH).ipk
 BYREQUEST_IPK_VERSION=1
 
+.PHONY: byrequest-source byrequest-unpack byrequest byrequest-stage byrequest-ipk byrequest-clean byrequest-dirclean byrequest-check
+
 # Fetch source code
 byrequest-source: $(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz
 
@@ -54,11 +56,13 @@ $(BYREQUEST_BUILD_DIR)/.configured: \
 byrequest-unpack: $(BYREQUEST_BUILD_DIR)/.configured
 
 # Compile
-$(BYREQUEST_BUILD_DIR)/byRequest: $(BYREQUEST_BUILD_DIR)/.configured
+$(BYREQUEST_BUILD_DIR)/.built: $(BYREQUEST_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(BYREQUEST_BUILD_DIR) CC=$(TARGET_CC) \
-	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) 
+	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD)
+	touch $@ 
 
-byrequest: $(BYREQUEST_BUILD_DIR)/byRequest
+byrequest: $(BYREQUEST_BUILD_DIR)/.built
 
 # Build ipk file
 $(BYREQUEST_IPK): $(BYREQUEST_BUILD_DIR)/byRequest
@@ -102,3 +106,9 @@ byrequest-clean:
 
 byrequest-dirclean:
 	rm -rf $(BYREQUEST_BUILD_DIR) $(BYREQUEST_IPK_DIR) $(BYREQUEST_IPK)
+
+# Some sanity check for the package.
+#
+byrequest-check: $(BYREQUEST_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
