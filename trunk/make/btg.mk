@@ -61,7 +61,7 @@ BTG_IPK_VERSION=4
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-BTG_CPPFLAGS=
+BTG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ifeq ($(OPTWARE_TARGET), $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)))
 BTG_CPPFLAGS+=-fno-builtin-ceil
 endif
@@ -125,7 +125,7 @@ btg-source: $(DL_DIR)/$(BTG_SOURCE) $(BTG_PATCHES)
 # shown below to make various patches to it.
 #
 $(BTG_BUILD_DIR)/.configured: $(DL_DIR)/$(BTG_SOURCE) $(BTG_PATCHES) make/btg.mk
-	$(MAKE) libtorrent-rasterbar-stage gnutls-stage expat-stage libcurl-stage dialog-stage icu-stage
+	$(MAKE) libtorrent-rasterbar-stage gnutls-stage expat-stage libcurl-stage dialog-stage icu-stage ncurses-stage
 ifeq (clinkcc, $(filter clinkcc, $(PACKAGES)))
 	$(MAKE) clinkcc-stage
 endif
