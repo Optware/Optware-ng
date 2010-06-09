@@ -24,6 +24,13 @@ ALSA-UTILS_VERSION=1.0.8
 ALSA-UTILS_SOURCE=alsa-utils-$(ALSA-UTILS_VERSION).tar.bz2
 ALSA-UTILS_DIR=alsa-utils-$(ALSA-UTILS_VERSION)
 ALSA-UTILS_UNZIP=bzcat
+ALSA-UTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+ALSA-UTILS_DESCRIPTION=ALSA utils
+ALSA-UTILS_SECTION=util
+ALSA-UTILS_PRIORITY=optional
+ALSA-UTILS_DEPENDS=alsa-lib, gettext, ncurses
+ALSA-UTILS_SUGGESTS=
+ALSA-UTILS_CONFLICTS=
 
 #
 # ALSA-UTILS_IPK_VERSION should be incremented when the ipk changes.
@@ -44,7 +51,7 @@ ALSA-UTILS_PATCHES=/dev/null
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ALSA-UTILS_CPPFLAGS=
+ALSA-UTILS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ALSA-UTILS_LDFLAGS=
 
 #
@@ -60,6 +67,8 @@ ALSA-UTILS_BUILD_DIR=$(BUILD_DIR)/alsa-utils
 ALSA-UTILS_SOURCE_DIR=$(SOURCE_DIR)/alsa-utils
 ALSA-UTILS_IPK_DIR=$(BUILD_DIR)/alsa-utils-$(ALSA-UTILS_VERSION)-ipk
 ALSA-UTILS_IPK=$(BUILD_DIR)/alsa-utils_$(ALSA-UTILS_VERSION)-$(ALSA-UTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: alsa-utils-source alsa-utils-unpack alsa-utils alsa-utils-stage alsa-utils-ipk alsa-utils-clean alsa-utils-dirclean alsa-utils-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -135,6 +144,25 @@ $(ALSA-UTILS_BUILD_DIR)/.staged: $(ALSA-UTILS_BUILD_DIR)/.built
 alsa-utils-stage: $(ALSA-UTILS_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/alsa-utils
+#
+$(ALSA-UTILS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: alsa-utils" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ALSA-UTILS_PRIORITY)" >>$@
+	@echo "Section: $(ALSA-UTILS_SECTION)" >>$@
+	@echo "Version: $(ALSA-UTILS_VERSION)-$(ALSA-UTILS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ALSA-UTILS_MAINTAINER)" >>$@
+	@echo "Source: $(ALSA-UTILS_SITE)/$(ALSA-UTILS_SOURCE)" >>$@
+	@echo "Description: $(ALSA-UTILS_DESCRIPTION)" >>$@
+	@echo "Depends: $(ALSA-UTILS_DEPENDS)" >>$@
+	@echo "Suggests: $(ALSA-UTILS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(ALSA-UTILS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(ALSA-UTILS_IPK_DIR)/opt/sbin or $(ALSA-UTILS_IPK_DIR)/opt/bin
@@ -148,9 +176,9 @@ alsa-utils-stage: $(ALSA-UTILS_BUILD_DIR)/.staged
 #
 $(ALSA-UTILS_IPK): $(ALSA-UTILS_BUILD_DIR)/.built
 	rm -rf $(ALSA-UTILS_IPK_DIR) $(BUILD_DIR)/alsa-utils_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ALSA-UTILS_BUILD_DIR) DESTDIR=$(ALSA-UTILS_IPK_DIR) install
-	install -d $(ALSA-UTILS_IPK_DIR)/CONTROL
-	install -m 644 $(ALSA-UTILS_SOURCE_DIR)/control $(ALSA-UTILS_IPK_DIR)/CONTROL/control
+	$(MAKE) -C $(ALSA-UTILS_BUILD_DIR) DESTDIR=$(ALSA-UTILS_IPK_DIR) install-strip
+	$(MAKE) $(ALSA-UTILS_IPK_DIR)/CONTROL/control
+#	install -m 644 $(ALSA-UTILS_SOURCE_DIR)/control $(ALSA-UTILS_IPK_DIR)/CONTROL/control
 	echo $(ALSA-UTILS_CONFFILES) | sed -e 's/ /\n/g' > $(ALSA-UTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ALSA-UTILS_IPK_DIR)
 
@@ -163,6 +191,7 @@ alsa-utils-ipk: $(ALSA-UTILS_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 alsa-utils-clean:
+	rm -f $(ALSA-UTILS_BUILD_DIR)/.built
 	-$(MAKE) -C $(ALSA-UTILS_BUILD_DIR) clean
 
 #
@@ -171,3 +200,9 @@ alsa-utils-clean:
 #
 alsa-utils-dirclean:
 	rm -rf $(BUILD_DIR)/$(ALSA-UTILS_DIR) $(ALSA-UTILS_BUILD_DIR) $(ALSA-UTILS_IPK_DIR) $(ALSA-UTILS_IPK)
+
+#
+# Some sanity check for the package.
+#
+alsa-utils-check: $(ALSA-UTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
