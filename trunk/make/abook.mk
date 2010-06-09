@@ -52,7 +52,7 @@ ABOOK_PATCHES=$(ABOOK_SOURCE_DIR)/0.5.6-01_editor
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ABOOK_CPPFLAGS=
+ABOOK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ABOOK_LDFLAGS=
 
 #
