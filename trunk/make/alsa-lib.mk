@@ -24,6 +24,14 @@ ALSA-LIB_VERSION=1.0.8
 ALSA-LIB_SOURCE=alsa-lib-$(ALSA-LIB_VERSION).tar.bz2
 ALSA-LIB_DIR=alsa-lib-$(ALSA-LIB_VERSION)
 ALSA-LIB_UNZIP=bzcat
+ALSA-LIB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+ALSA-LIB_DESCRIPTION=ALSA sound library
+ALSA-LIB_SECTION=libs
+ALSA-LIB_PRIORITY=optional
+ALSA-LIB_DEPENDS=
+ALSA-LIB_SUGGESTS=
+ALSA-LIB_CONFLICTS=
+
 
 #
 # ALSA-LIB_IPK_VERSION should be incremented when the ipk changes.
@@ -60,6 +68,8 @@ ALSA-LIB_BUILD_DIR=$(BUILD_DIR)/alsa-lib
 ALSA-LIB_SOURCE_DIR=$(SOURCE_DIR)/alsa-lib
 ALSA-LIB_IPK_DIR=$(BUILD_DIR)/alsa-lib-$(ALSA-LIB_VERSION)-ipk
 ALSA-LIB_IPK=$(BUILD_DIR)/alsa-lib_$(ALSA-LIB_VERSION)-$(ALSA-LIB_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: alsa-lib-source alsa-lib-unpack alsa-lib alsa-lib-stage alsa-lib-ipk alsa-lib-clean alsa-lib-dirclean alsa-lib-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -134,6 +144,25 @@ $(ALSA-LIB_BUILD_DIR)/.staged: $(ALSA-LIB_BUILD_DIR)/.built
 alsa-lib-stage: $(ALSA-LIB_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/alsa-lib
+#
+$(ALSA-LIB_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: alsa-lib" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ALSA-LIB_PRIORITY)" >>$@
+	@echo "Section: $(ALSA-LIB_SECTION)" >>$@
+	@echo "Version: $(ALSA-LIB_VERSION)-$(ALSA-LIB_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ALSA-LIB_MAINTAINER)" >>$@
+	@echo "Source: $(ALSA-LIB_SITE)/$(ALSA-LIB_SOURCE)" >>$@
+	@echo "Description: $(ALSA-LIB_DESCRIPTION)" >>$@
+	@echo "Depends: $(ALSA-LIB_DEPENDS)" >>$@
+	@echo "Suggests: $(ALSA-LIB_SUGGESTS)" >>$@
+	@echo "Conflicts: $(ALSA-LIB_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(ALSA-LIB_IPK_DIR)/opt/sbin or $(ALSA-LIB_IPK_DIR)/opt/bin
@@ -147,9 +176,9 @@ alsa-lib-stage: $(ALSA-LIB_BUILD_DIR)/.staged
 #
 $(ALSA-LIB_IPK): $(ALSA-LIB_BUILD_DIR)/.built
 	rm -rf $(ALSA-LIB_IPK_DIR) $(BUILD_DIR)/alsa-lib_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ALSA-LIB_BUILD_DIR) DESTDIR=$(ALSA-LIB_IPK_DIR) install
-	install -d $(ALSA-LIB_IPK_DIR)/CONTROL
-	install -m 644 $(ALSA-LIB_SOURCE_DIR)/control $(ALSA-LIB_IPK_DIR)/CONTROL/control
+	$(MAKE) -C $(ALSA-LIB_BUILD_DIR) DESTDIR=$(ALSA-LIB_IPK_DIR) install-strip
+	$(MAKE) $(ALSA-LIB_IPK_DIR)/CONTROL/control
+#	install -m 644 $(ALSA-LIB_SOURCE_DIR)/control $(ALSA-LIB_IPK_DIR)/CONTROL/control
 	echo $(ALSA-LIB_CONFFILES) | sed -e 's/ /\n/g' > $(ALSA-LIB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ALSA-LIB_IPK_DIR)
 
@@ -162,6 +191,7 @@ alsa-lib-ipk: $(ALSA-LIB_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 alsa-lib-clean:
+	rm -f $(ALSA-LIB_BUILD_DIR)/.built
 	-$(MAKE) -C $(ALSA-LIB_BUILD_DIR) clean
 
 #
@@ -170,3 +200,10 @@ alsa-lib-clean:
 #
 alsa-lib-dirclean:
 	rm -rf $(BUILD_DIR)/$(ALSA-LIB_DIR) $(ALSA-LIB_BUILD_DIR) $(ALSA-LIB_IPK_DIR) $(ALSA-LIB_IPK)
+#
+#
+# Some sanity check for the package.
+#
+alsa-lib-check: $(ALSA-LIB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
