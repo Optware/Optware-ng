@@ -14,6 +14,8 @@ CDARGS_DESCRIPTION= CDargs heavily enhances the navigation of the common linux f
 CDARGS_SECTION= Utility
 CDARGS_DEPENDS=bash
 CDARGS_PRIORITY=optional
+CDARGS_SUGGESTS=
+CDARGS_CONFLICTS=
 
 #
 # CDARGS_IPK_VERSION should be incremented when the ipk changes.
@@ -29,7 +31,7 @@ CDARGS_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CDARGS_CPPFLAGS=
+CDARGS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 CDARGS_LDFLAGS=
 CDARGS_CFLAGS=$(TARGET_CFLAGS) 
 
@@ -46,6 +48,9 @@ CDARGS_BUILD_DIR=$(BUILD_DIR)/cdargs
 CDARGS_SOURCE_DIR=$(SOURCE_DIR)/cdargs
 CDARGS_IPK_DIR=$(BUILD_DIR)/cdargs-$(CDARGS_VERSION)-ipk
 CDARGS_IPK=$(BUILD_DIR)/cdargs_$(CDARGS_VERSION)-$(CDARGS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: cdargs-source cdargs-unpack cdargs cdargs-stage cdargs-ipk cdargs-clean cdargs-dirclean cdargs-check
+
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -186,3 +191,10 @@ cdargs-clean:
 #
 cdargs-dirclean:
 	rm -rf $(BUILD_DIR)/$(CDARGS_DIR) $(CDARGS_BUILD_DIR) $(CDARGS_IPK_DIR) $(CDARGS_IPK)
+
+#
+# Some sanity check for the package.
+#
+cdargs-check: $(CDARGS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
