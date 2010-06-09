@@ -24,6 +24,14 @@ ALSA-OSS_VERSION=1.0.8
 ALSA-OSS_SOURCE=alsa-oss-$(ALSA-OSS_VERSION).tar.bz2
 ALSA-OSS_DIR=alsa-oss-$(ALSA-OSS_VERSION)
 ALSA-OSS_UNZIP=bzcat
+ALSA-OSS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+ALSA-OSS_DESCRIPTION=ALSA sound OSS emulation library
+ALSA-OSS_SECTION=libs
+ALSA-OSS_PRIORITY=optional
+ALSA-OSS_DEPENDS=alsa-lib
+ALSA-OSS_SUGGESTS=
+ALSA-OSS_CONFLICTS=
+
 
 #
 # ALSA-OSS_IPK_VERSION should be incremented when the ipk changes.
@@ -45,7 +53,7 @@ ALSA-OSS_PATCHES=/dev/null
 # compilation or linking flags, then list them here.
 #
 ALSA-OSS_CPPFLAGS=
-ALSA-OSS_LDFLAGS=
+ALSA-OSS_LDFLAGS=-Wl,-rpath,/opt/lib -Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
 # ALSA-OSS_BUILD_DIR is the directory in which the build is done.
@@ -60,6 +68,8 @@ ALSA-OSS_BUILD_DIR=$(BUILD_DIR)/alsa-oss
 ALSA-OSS_SOURCE_DIR=$(SOURCE_DIR)/alsa-oss
 ALSA-OSS_IPK_DIR=$(BUILD_DIR)/alsa-oss-$(ALSA-OSS_VERSION)-ipk
 ALSA-OSS_IPK=$(BUILD_DIR)/alsa-oss_$(ALSA-OSS_VERSION)-$(ALSA-OSS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: alsa-oss-source alsa-oss-unpack alsa-oss alsa-oss-stage alsa-oss-ipk alsa-oss-clean alsa-oss-dirclean alsa-oss-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -135,6 +145,25 @@ $(ALSA-OSS_BUILD_DIR)/.staged: $(ALSA-OSS_BUILD_DIR)/.built
 alsa-oss-stage: $(ALSA-OSS_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/alsa-oss
+#
+$(ALSA-OSS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: alsa-oss" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ALSA-OSS_PRIORITY)" >>$@
+	@echo "Section: $(ALSA-OSS_SECTION)" >>$@
+	@echo "Version: $(ALSA-OSS_VERSION)-$(ALSA-OSS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ALSA-OSS_MAINTAINER)" >>$@
+	@echo "Source: $(ALSA-OSS_SITE)/$(ALSA-OSS_SOURCE)" >>$@
+	@echo "Description: $(ALSA-OSS_DESCRIPTION)" >>$@
+	@echo "Depends: $(ALSA-OSS_DEPENDS)" >>$@
+	@echo "Suggests: $(ALSA-OSS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(ALSA-OSS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(ALSA-OSS_IPK_DIR)/opt/sbin or $(ALSA-OSS_IPK_DIR)/opt/bin
@@ -148,9 +177,9 @@ alsa-oss-stage: $(ALSA-OSS_BUILD_DIR)/.staged
 #
 $(ALSA-OSS_IPK): $(ALSA-OSS_BUILD_DIR)/.built
 	rm -rf $(ALSA-OSS_IPK_DIR) $(BUILD_DIR)/alsa-oss_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ALSA-OSS_BUILD_DIR) DESTDIR=$(ALSA-OSS_IPK_DIR) install
-	install -d $(ALSA-OSS_IPK_DIR)/CONTROL
-	install -m 644 $(ALSA-OSS_SOURCE_DIR)/control $(ALSA-OSS_IPK_DIR)/CONTROL/control
+	$(MAKE) -C $(ALSA-OSS_BUILD_DIR) DESTDIR=$(ALSA-OSS_IPK_DIR) install-strip
+	$(MAKE) $(ALSA-OSS_IPK_DIR)/CONTROL/control
+#	install -m 644 $(ALSA-OSS_SOURCE_DIR)/control $(ALSA-OSS_IPK_DIR)/CONTROL/control
 	echo $(ALSA-OSS_CONFFILES) | sed -e 's/ /\n/g' > $(ALSA-OSS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ALSA-OSS_IPK_DIR)
 
@@ -163,6 +192,7 @@ alsa-oss-ipk: $(ALSA-OSS_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 alsa-oss-clean:
+	rm -f $(ALSA-OSS_BUILD_DIR)/.built
 	-$(MAKE) -C $(ALSA-OSS_BUILD_DIR) clean
 
 #
@@ -171,3 +201,11 @@ alsa-oss-clean:
 #
 alsa-oss-dirclean:
 	rm -rf $(BUILD_DIR)/$(ALSA-OSS_DIR) $(ALSA-OSS_BUILD_DIR) $(ALSA-OSS_IPK_DIR) $(ALSA-OSS_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+alsa-oss-check: $(ALSA-OSS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
