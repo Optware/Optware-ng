@@ -65,7 +65,7 @@ $(BYREQUEST_BUILD_DIR)/.built: $(BYREQUEST_BUILD_DIR)/.configured
 byrequest: $(BYREQUEST_BUILD_DIR)/.built
 
 # Build ipk file
-$(BYREQUEST_IPK): $(BYREQUEST_BUILD_DIR)/byRequest
+$(BYREQUEST_IPK): $(BYREQUEST_BUILD_DIR)/.built
 	rm -rf $(BYREQUEST_IPK_DIR) $(BUILD_DIR)/byrequest_*_$(TARGET_ARCH).ipk
 	# Bin file
 	install -d $(BYREQUEST_IPK_DIR)/opt/bin
@@ -88,7 +88,7 @@ byrequest-ipk: $(BYREQUEST_IPK)
 
 # Make Control file
 $(BYREQUEST_IPK_DIR)/CONTROL/control:
-	@install -d $(BYREQUEST_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: byrequest" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
