@@ -62,7 +62,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FISH_CPPFLAGS=
+FISH_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 FISH_LDFLAGS=
 
 #
