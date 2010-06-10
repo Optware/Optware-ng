@@ -68,6 +68,8 @@ GIFTCURS_SOURCE_DIR=$(SOURCE_DIR)/giftcurs
 GIFTCURS_IPK_DIR=$(BUILD_DIR)/giftcurs-$(GIFTCURS_VERSION)-ipk
 GIFTCURS_IPK=$(BUILD_DIR)/giftcurs_$(GIFTCURS_VERSION)-$(GIFTCURS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: giftcurs-source giftcurs-unpack giftcurs giftcurs-stage giftcurs-ipk giftcurs-clean giftcurs-dirclean giftcurs-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -194,6 +196,7 @@ giftcurs-ipk: $(GIFTCURS_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 giftcurs-clean:
+	rm -f $(GIFTCURS_BUILD_DIR)/.built
 	-$(MAKE) -C $(GIFTCURS_BUILD_DIR) clean
 
 #
@@ -202,3 +205,10 @@ giftcurs-clean:
 #
 giftcurs-dirclean:
 	rm -rf $(BUILD_DIR)/$(GIFTCURS_DIR) $(GIFTCURS_BUILD_DIR) $(GIFTCURS_IPK_DIR) $(GIFTCURS_IPK)
+#
+#
+# Some sanity check for the package.
+#
+giftcurs-check: $(GIFTCURS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
