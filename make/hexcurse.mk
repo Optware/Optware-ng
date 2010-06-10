@@ -71,6 +71,8 @@ HEXCURSE_SOURCE_DIR=$(SOURCE_DIR)/hexcurse
 HEXCURSE_IPK_DIR=$(BUILD_DIR)/hexcurse-$(HEXCURSE_VERSION)-ipk
 HEXCURSE_IPK=$(BUILD_DIR)/hexcurse_$(HEXCURSE_VERSION)-$(HEXCURSE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: hexcurse-source hexcurse-unpack hexcurse hexcurse-stage hexcurse-ipk hexcurse-clean hexcurse-dirclean hexcurse-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -192,6 +194,7 @@ hexcurse-ipk: $(HEXCURSE_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 hexcurse-clean:
+	rm -f $(HEXCURSE_BUILD_DIR)/.built
 	-$(MAKE) -C $(HEXCURSE_BUILD_DIR) clean
 
 #
@@ -200,3 +203,10 @@ hexcurse-clean:
 #
 hexcurse-dirclean:
 	rm -rf $(BUILD_DIR)/$(HEXCURSE_DIR) $(HEXCURSE_BUILD_DIR) $(HEXCURSE_IPK_DIR) $(HEXCURSE_IPK)
+#
+#
+# Some sanity check for the package.
+#
+hexcurse-check: $(HEXCURSE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
