@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 C_ARES_SITE=http://daniel.haxx.se/projects/c-ares
-C_ARES_VERSION=1.7.1
+C_ARES_VERSION=1.7.2
 C_ARES_SOURCE=c-ares-$(C_ARES_VERSION).tar.gz
 C_ARES_DIR=c-ares-$(C_ARES_VERSION)
 C_ARES_UNZIP=zcat
