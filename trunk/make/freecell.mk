@@ -52,7 +52,7 @@ FREECELL_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FREECELL_CPPFLAGS=
+FREECELL_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 FREECELL_LDFLAGS=
 
 #
