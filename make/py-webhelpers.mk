@@ -24,8 +24,8 @@
 # PY-WEBHELPERS_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-WEBHELPERS_SITE=http://pypi.python.org/packages/source/W/WebHelpers
-PY-WEBHELPERS_VERSION=0.6.1
-PY-WEBHELPERS_IPK_VERSION=2
+PY-WEBHELPERS_VERSION=1.0
+PY-WEBHELPERS_IPK_VERSION=1
 PY-WEBHELPERS_SOURCE=WebHelpers-$(PY-WEBHELPERS_VERSION).tar.gz
 PY-WEBHELPERS_DIR=WebHelpers-$(PY-WEBHELPERS_VERSION)
 PY-WEBHELPERS_UNZIP=zcat
@@ -33,7 +33,6 @@ PY-WEBHELPERS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-WEBHELPERS_DESCRIPTION=A library of helper functions intended to make writing templates in web applications easier.
 PY-WEBHELPERS_SECTION=misc
 PY-WEBHELPERS_PRIORITY=optional
-PY24-WEBHELPERS_DEPENDS=python24, py24-routes (>=1.7), py24-simplejson (>=1.4)
 PY25-WEBHELPERS_DEPENDS=python25, py25-routes (>=1.7), py25-simplejson (>=1.4)
 PY26-WEBHELPERS_DEPENDS=python26, py26-routes (>=1.7), py26-simplejson (>=1.4)
 PY-WEBHELPERS_SUGGESTS=
@@ -68,9 +67,6 @@ PY-WEBHELPERS_LDFLAGS=
 #
 PY-WEBHELPERS_BUILD_DIR=$(BUILD_DIR)/py-webhelpers
 PY-WEBHELPERS_SOURCE_DIR=$(SOURCE_DIR)/py-webhelpers
-
-PY24-WEBHELPERS_IPK_DIR=$(BUILD_DIR)/py24-webhelpers-$(PY-WEBHELPERS_VERSION)-ipk
-PY24-WEBHELPERS_IPK=$(BUILD_DIR)/py24-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-WEBHELPERS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-WEBHELPERS_IPK_DIR=$(BUILD_DIR)/py25-webhelpers-$(PY-WEBHELPERS_VERSION)-ipk
 PY25-WEBHELPERS_IPK=$(BUILD_DIR)/py25-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-WEBHELPERS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -114,16 +110,6 @@ $(PY-WEBHELPERS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-W
 	$(MAKE) py-setuptools-stage
 	rm -rf $(@D)
 	mkdir -p $(PY-WEBHELPERS_BUILD_DIR)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-WEBHELPERS_DIR)
-	$(PY-WEBHELPERS_UNZIP) $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(PY-WEBHELPERS_PATCHES)" ; then \
-	    cat $(PY-WEBHELPERS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) -p0 ; \
-        fi
-	mv $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-WEBHELPERS_DIR)
 	$(PY-WEBHELPERS_UNZIP) $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -175,20 +161,6 @@ py-webhelpers-stage: $(PY-WEBHELPERS_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-webhelpers
 #
-$(PY24-WEBHELPERS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-webhelpers" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-WEBHELPERS_PRIORITY)" >>$@
-	@echo "Section: $(PY-WEBHELPERS_SECTION)" >>$@
-	@echo "Version: $(PY-WEBHELPERS_VERSION)-$(PY-WEBHELPERS_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-WEBHELPERS_MAINTAINER)" >>$@
-	@echo "Source: $(PY-WEBHELPERS_SITE)/$(PY-WEBHELPERS_SOURCE)" >>$@
-	@echo "Description: $(PY-WEBHELPERS_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-WEBHELPERS_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-WEBHELPERS_CONFLICTS)" >>$@
-
 $(PY25-WEBHELPERS_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -229,18 +201,8 @@ $(PY26-WEBHELPERS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-WEBHELPERS_IPK): $(PY-WEBHELPERS_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-webhelpers_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-WEBHELPERS_IPK_DIR) $(BUILD_DIR)/py24-webhelpers_*_$(TARGET_ARCH).ipk
-	(cd $(PY-WEBHELPERS_BUILD_DIR)/2.4; \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-WEBHELPERS_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY24-WEBHELPERS_IPK_DIR)/CONTROL/control
-#	echo $(PY-WEBHELPERS_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-WEBHELPERS_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-WEBHELPERS_IPK_DIR)
-
 $(PY25-WEBHELPERS_IPK): $(PY-WEBHELPERS_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py2*-webhelpers_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-WEBHELPERS_IPK_DIR) $(BUILD_DIR)/py25-webhelpers_*_$(TARGET_ARCH).ipk
 	(cd $(PY-WEBHELPERS_BUILD_DIR)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
@@ -263,7 +225,7 @@ $(PY26-WEBHELPERS_IPK): $(PY-WEBHELPERS_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-webhelpers-ipk: $(PY24-WEBHELPERS_IPK) $(PY25-WEBHELPERS_IPK) $(PY26-WEBHELPERS_IPK)
+py-webhelpers-ipk: $(PY25-WEBHELPERS_IPK) $(PY26-WEBHELPERS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -277,12 +239,11 @@ py-webhelpers-clean:
 #
 py-webhelpers-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(PY-WEBHELPERS_BUILD_DIR)
-	rm -rf $(PY24-WEBHELPERS_IPK_DIR) $(PY24-WEBHELPERS_IPK)
 	rm -rf $(PY25-WEBHELPERS_IPK_DIR) $(PY25-WEBHELPERS_IPK)
 	rm -rf $(PY26-WEBHELPERS_IPK_DIR) $(PY26-WEBHELPERS_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-webhelpers-check: $(PY24-WEBHELPERS_IPK) $(PY25-WEBHELPERS_IPK) $(PY26-WEBHELPERS_IPK)
+py-webhelpers-check: $(PY25-WEBHELPERS_IPK) $(PY26-WEBHELPERS_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
