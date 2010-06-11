@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-YAML_SITE=http://pyyaml.org/download/pyyaml
-PY-YAML_VERSION=3.08
+PY-YAML_VERSION=3.09
 PY-YAML_SOURCE=PyYAML-$(PY-YAML_VERSION).tar.gz
 PY-YAML_DIR=PyYAML-$(PY-YAML_VERSION)
 PY-YAML_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-YAML_CONFLICTS=
 #
 # PY-YAML_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-YAML_IPK_VERSION=2
+PY-YAML_IPK_VERSION=1
 
 #
 # PY-YAML_CONFFILES should be a list of user-editable files
