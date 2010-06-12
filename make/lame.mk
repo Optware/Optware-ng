@@ -20,10 +20,9 @@
 # You should change all these variables to suit your package.
 #
 LAME_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lame
-LAME_UPSTREAM_VER=398-2
-LAME_VERSION=3.98.2
-LAME_SOURCE=lame-$(LAME_UPSTREAM_VER).tar.gz
-LAME_DIR=lame-$(LAME_UPSTREAM_VER)
+LAME_VERSION=3.98.4
+LAME_SOURCE=lame-$(LAME_VERSION).tar.gz
+LAME_DIR=lame-$(LAME_VERSION)
 LAME_UNZIP=zcat
 LAME_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 LAME_DESCRIPTION=LAME is an LGPL MP3 encoder.
@@ -205,4 +204,4 @@ lame-dirclean:
 # Some sanity check for the package.
 #
 lame-check: $(LAME_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LAME_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
