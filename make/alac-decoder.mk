@@ -74,6 +74,8 @@ ALAC_DECODER_SOURCE_DIR=$(SOURCE_DIR)/alac-decoder
 ALAC_DECODER_IPK_DIR=$(BUILD_DIR)/alac-decoder-$(ALAC_DECODER_VERSION)-ipk
 ALAC_DECODER_IPK=$(BUILD_DIR)/alac-decoder_$(ALAC_DECODER_VERSION)-$(ALAC_DECODER_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: alac_decoder-source alac_decoder-unpack alac_decoder alac_decoder-stage alac_decoder-ipk alac_decoder-clean alac_decoder-dirclean alac_decoder-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -103,7 +105,7 @@ alac-decoder-source: $(DL_DIR)/$(ALAC_DECODER_SOURCE) $(ALAC_DECODER_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ALAC_DECODER_BUILD_DIR)/.built: $(DL_DIR)/$(ALAC_DECODER_SOURCE) $(ALAC_DECODER_PATCHES)
+$(ALAC_DECODER_BUILD_DIR)/.configured: $(DL_DIR)/$(ALAC_DECODER_SOURCE) $(ALAC_DECODER_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(ALAC_DECODER_DIR) $(ALAC_DECODER_BUILD_DIR)
 	$(ALAC_DECODER_UNZIP) $(DL_DIR)/$(ALAC_DECODER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -115,11 +117,18 @@ $(ALAC_DECODER_BUILD_DIR)/.built: $(DL_DIR)/$(ALAC_DECODER_SOURCE) $(ALAC_DECODE
 		LDFLAGS="$(STAGING_LDFLAGS) $(ALAC_DECODER_LDFLAGS)" \
 		$(MAKE) \
 	)
-	touch $(ALAC_DECODER_BUILD_DIR)/.built
+	touch $@
 
 # I'm not sure what this target is used for
-alac-decoder-unpack: $(ALAC_DECODER_BUILD_DIR)/.built
+alac-decoder-unpack: $(ALAC_DECODER_BUILD_DIR)/.configured
 
+#
+# This builds the actual binary.
+#
+$(ALAC_DECODER_BUILD_DIR)/.built: $(ALAC_DECODER_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -186,6 +195,7 @@ alac-decoder-ipk: $(ALAC_DECODER_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 alac-decoder-clean:
+	rm -f $(ALAC_DECODER_BUILD_DIR)/.built
 	-$(MAKE) -C $(ALAC_DECODER_BUILD_DIR) clean
 
 #
