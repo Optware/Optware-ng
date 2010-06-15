@@ -45,7 +45,7 @@ ALSA-UTILS_CONFFILES=
 # ALSA-UTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ALSA-UTILS_PATCHES=/dev/null
+ALSA-UTILS_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -103,7 +103,7 @@ $(ALSA-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS
 	$(MAKE) alsa-lib-stage gettext-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(ALSA-UTILS_DIR) $(ALSA-UTILS_BUILD_DIR)
 	$(ALSA-UTILS_UNZIP) $(DL_DIR)/$(ALSA-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ALSA-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-UTILS_DIR) -p1
+#	cat $(ALSA-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-UTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(ALSA-UTILS_DIR) $(ALSA-UTILS_BUILD_DIR)
 	(cd $(ALSA-UTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -115,6 +115,7 @@ $(ALSA-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(ALSA-UTILS_BUILD_DIR)/.configured
 
