@@ -24,6 +24,13 @@ PARTED_VERSION=1.6.21
 PARTED_SOURCE=parted-$(PARTED_VERSION).tar.gz
 PARTED_DIR=parted-$(PARTED_VERSION)
 PARTED_UNZIP=zcat
+PARTED_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+PARTED_DESCRIPTION=GNU partition editor
+PARTED_SECTION=sys
+PARTED_PRIORITY=optional
+PARTED_DEPENDS=e2fsprogs
+PARTED_SUGGESTS=
+PARTED_CONFLICTS=
 
 #
 # PARTED_IPK_VERSION should be incremented when the ipk changes.
@@ -62,6 +69,8 @@ PARTED_BUILD_DIR=$(BUILD_DIR)/parted
 PARTED_SOURCE_DIR=$(SOURCE_DIR)/parted
 PARTED_IPK_DIR=$(BUILD_DIR)/parted-$(PARTED_VERSION)-ipk
 PARTED_IPK=$(BUILD_DIR)/parted_$(PARTED_VERSION)-$(PARTED_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: parted-source parted-unpack parted parted-stage parted-ipk parted-clean parted-dirclean parted-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -109,6 +118,7 @@ $(PARTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES)
 		--prefix=/opt \
 		--without-readline \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(PARTED_BUILD_DIR)/.configured
 
@@ -138,6 +148,25 @@ $(PARTED_BUILD_DIR)/.staged: $(PARTED_BUILD_DIR)/.built
 parted-stage: $(PARTED_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/parted
+#
+$(PARTED_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: parted" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PARTED_PRIORITY)" >>$@
+	@echo "Section: $(PARTED_SECTION)" >>$@
+	@echo "Version: $(PARTED_VERSION)-$(PARTED_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PARTED_MAINTAINER)" >>$@
+	@echo "Source: $(PARTED_SITE)/$(PARTED_SOURCE)" >>$@
+	@echo "Description: $(PARTED_DESCRIPTION)" >>$@
+	@echo "Depends: $(PARTED_DEPENDS)" >>$@
+	@echo "Suggests: $(PARTED_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PARTED_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(PARTED_IPK_DIR)/opt/sbin or $(PARTED_IPK_DIR)/opt/bin
@@ -151,13 +180,14 @@ parted-stage: $(PARTED_BUILD_DIR)/.staged
 #
 $(PARTED_IPK): $(PARTED_BUILD_DIR)/.built
 	rm -rf $(PARTED_IPK_DIR) $(BUILD_DIR)/parted_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PARTED_BUILD_DIR) DESTDIR=$(PARTED_IPK_DIR) install
+	$(MAKE) -C $(PARTED_BUILD_DIR) DESTDIR=$(PARTED_IPK_DIR) install-strip
 #	install -d $(PARTED_IPK_DIR)/opt/etc/
 #	install -m 644 $(PARTED_SOURCE_DIR)/parted.conf $(PARTED_IPK_DIR)/opt/etc/parted.conf
 #	install -d $(PARTED_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(PARTED_SOURCE_DIR)/rc.parted $(PARTED_IPK_DIR)/opt/etc/init.d/SXXparted
-	install -d $(PARTED_IPK_DIR)/CONTROL
-	install -m 644 $(PARTED_SOURCE_DIR)/control $(PARTED_IPK_DIR)/CONTROL/control
+#	install -d $(PARTED_IPK_DIR)/CONTROL
+#	install -m 644 $(PARTED_SOURCE_DIR)/control $(PARTED_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PARTED_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PARTED_SOURCE_DIR)/postinst $(PARTED_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(PARTED_SOURCE_DIR)/prerm $(PARTED_IPK_DIR)/CONTROL/prerm
 #	echo $(PARTED_CONFFILES) | sed -e 's/ /\n/g' > $(PARTED_IPK_DIR)/CONTROL/conffiles
@@ -172,6 +202,7 @@ parted-ipk: $(PARTED_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 parted-clean:
+	rm -f $(PARTED_BUILD_DIR)/.built
 	-$(MAKE) -C $(PARTED_BUILD_DIR) clean
 
 #
@@ -180,3 +211,11 @@ parted-clean:
 #
 parted-dirclean:
 	rm -rf $(BUILD_DIR)/$(PARTED_DIR) $(PARTED_BUILD_DIR) $(PARTED_IPK_DIR) $(PARTED_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+parted-check: $(PARTED_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
