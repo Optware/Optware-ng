@@ -46,7 +46,7 @@ ALSA-LIB_CONFFILES=
 # ALSA-LIB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ALSA-LIB_PATCHES=/dev/null
+ALSA-LIB_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -103,7 +103,7 @@ alsa-lib-source: $(DL_DIR)/$(ALSA-LIB_SOURCE) $(ALSA-LIB_PATCHES)
 $(ALSA-LIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-LIB_SOURCE) $(ALSA-LIB_PATCHES)
 	rm -rf $(BUILD_DIR)/$(ALSA-LIB_DIR) $(ALSA-LIB_BUILD_DIR)
 	$(ALSA-LIB_UNZIP) $(DL_DIR)/$(ALSA-LIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ALSA-LIB_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-LIB_DIR) -p1
+#	cat $(ALSA-LIB_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-LIB_DIR) -p1
 	mv $(BUILD_DIR)/$(ALSA-LIB_DIR) $(ALSA-LIB_BUILD_DIR)
 	(cd $(ALSA-LIB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -115,6 +115,7 @@ $(ALSA-LIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-LIB_SOURCE) $(ALSA-LIB_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(ALSA-LIB_BUILD_DIR)/.configured
 
