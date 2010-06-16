@@ -24,6 +24,13 @@ LIBTOOL_VERSION=1.5.26
 LIBTOOL_SOURCE=libtool-$(LIBTOOL_VERSION).tar.gz
 LIBTOOL_DIR=libtool-$(LIBTOOL_VERSION)
 LIBTOOL_UNZIP=zcat
+LIBTOOL_MAINTAINER=Christopher <edmondsc@onid.orst.edu>
+LIBTOOL_DESCRIPTION=Library tools.
+LIBTOOL_SECTION=utilities
+LIBTOOL_PRIORITY=optional
+LIBTOOL_DEPENDS=
+LIBTOOL_SUGGESTS=
+LIBTOOL_CONFLICTS=
 
 #
 # LIBTOOL_IPK_VERSION should be incremented when the ipk changes.
@@ -58,6 +65,9 @@ LIBTOOL_IPK_DIR=$(BUILD_DIR)/libtool-$(LIBTOOL_VERSION)-ipk
 LIBTOOL_IPK=$(BUILD_DIR)/libtool_$(LIBTOOL_VERSION)-$(LIBTOOL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 LIBTOOL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/libtool
+
+.PHONY: libtool-source libtool-host libtool-host-stage libtool-unpack libtool libtool-stage
+.PHONY: libtool-ipk libtool-clean libtool-dirclean libtool-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -125,6 +135,8 @@ $(LIBTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
 	)
 	touch $@
 
@@ -156,6 +168,25 @@ $(LIBTOOL_BUILD_DIR)/.staged: $(LIBTOOL_BUILD_DIR)/.built
 libtool-stage: $(LIBTOOL_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libtool
+#
+$(LIBTOOL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: libtool" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBTOOL_PRIORITY)" >>$@
+	@echo "Section: $(LIBTOOL_SECTION)" >>$@
+	@echo "Version: $(LIBTOOL_VERSION)-$(LIBTOOL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBTOOL_MAINTAINER)" >>$@
+	@echo "Source: $(LIBTOOL_SITE)/$(LIBTOOL_SOURCE)" >>$@
+	@echo "Description: $(LIBTOOL_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBTOOL_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBTOOL_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBTOOL_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBTOOL_IPK_DIR)/opt/sbin or $(LIBTOOL_IPK_DIR)/opt/bin
@@ -171,9 +202,10 @@ $(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/.built
 	rm -rf $(LIBTOOL_IPK_DIR) $(BUILD_DIR)/libtool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR) DESTDIR=$(LIBTOOL_IPK_DIR) install-strip
 	rm -f $(LIBTOOL_IPK_DIR)/opt/info/dir
-	install -d $(LIBTOOL_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBTOOL_VERSION)/" \
-		-e "s/@RELEASE@/$(LIBTOOL_IPK_VERSION)/" $(LIBTOOL_SOURCE_DIR)/control > $(LIBTOOL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBTOOL_IPK_DIR)/CONTROL/control
+#	install -d $(LIBTOOL_IPK_DIR)/CONTROL
+#	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBTOOL_VERSION)/" \
+#		-e "s/@RELEASE@/$(LIBTOOL_IPK_VERSION)/" $(LIBTOOL_SOURCE_DIR)/control > $(LIBTOOL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTOOL_IPK_DIR)
 
 #
@@ -185,6 +217,7 @@ libtool-ipk: $(LIBTOOL_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 libtool-clean:
+	rm -f $(LIBTOOL_BUILD_DIR)/.built
 	-$(MAKE) -C $(LIBTOOL_BUILD_DIR) clean
 
 #
