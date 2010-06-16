@@ -24,6 +24,13 @@ CENTERICQ_VERSION=4.20.0
 CENTERICQ_SOURCE=centericq-$(CENTERICQ_VERSION).tar.gz
 CENTERICQ_DIR=centericq-$(CENTERICQ_VERSION)
 CENTERICQ_UNZIP=zcat
+CENTERICQ_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+CENTERICQ_DESCRIPTION=MSN, ICQ, Jabber  etc. console client
+CENTERICQ_SECTION=net
+CENTERICQ_PRIORITY=optional
+CENTERICQ_DEPENDS=ncurses, openssl, libcurl, libstdc++
+CENTERICQ_SUGGESTS=
+CENTERICQ_CONFLICTS=
 
 #
 # CENTERICQ_IPK_VERSION should be incremented when the ipk changes.
@@ -39,13 +46,13 @@ CENTERICQ_CONFFILES=
 # CENTERICQ_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CENTERICQ_PATCHES=$(CENTERICQ_SOURCE_DIR)/Makefile.in.patch
+#CENTERICQ_PATCHES=$(CENTERICQ_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CENTERICQ_CPPFLAGS=
+CENTERICQ_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 CENTERICQ_LDFLAGS=
 
 #
@@ -61,6 +68,8 @@ CENTERICQ_BUILD_DIR=$(BUILD_DIR)/centericq
 CENTERICQ_SOURCE_DIR=$(SOURCE_DIR)/centericq
 CENTERICQ_IPK_DIR=$(BUILD_DIR)/centericq-$(CENTERICQ_VERSION)-ipk
 CENTERICQ_IPK=$(BUILD_DIR)/centericq_$(CENTERICQ_VERSION)-$(CENTERICQ_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: centericq-source centericq-unpack centericq centericq-stage centericq-ipk centericq-clean centericq-dirclean centericq-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -108,6 +117,7 @@ $(CENTERICQ_BUILD_DIR)/.configured: $(DL_DIR)/$(CENTERICQ_SOURCE) $(CENTERICQ_PA
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 		--with-openssl=$(STAGING_DIR)/opt \
 		--without-gpgme \
 		--disable-gg \
@@ -141,6 +151,25 @@ $(CENTERICQ_BUILD_DIR)/.staged: $(CENTERICQ_BUILD_DIR)/.built
 centericq-stage: $(CENTERICQ_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/centericq
+#
+$(CENTERICQ_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: centericq" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CENTERICQ_PRIORITY)" >>$@
+	@echo "Section: $(CENTERICQ_SECTION)" >>$@
+	@echo "Version: $(CENTERICQ_VERSION)-$(CENTERICQ_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CENTERICQ_MAINTAINER)" >>$@
+	@echo "Source: $(CENTERICQ_SITE)/$(CENTERICQ_SOURCE)" >>$@
+	@echo "Description: $(CENTERICQ_DESCRIPTION)" >>$@
+	@echo "Depends: $(CENTERICQ_DEPENDS)" >>$@
+	@echo "Suggests: $(CENTERICQ_SUGGESTS)" >>$@
+	@echo "Conflicts: $(CENTERICQ_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(CENTERICQ_IPK_DIR)/opt/sbin or $(CENTERICQ_IPK_DIR)/opt/bin
@@ -161,8 +190,9 @@ $(CENTERICQ_IPK): $(CENTERICQ_BUILD_DIR)/.built
 #	install -m 644 $(CENTERICQ_SOURCE_DIR)/centericq.conf $(CENTERICQ_IPK_DIR)/opt/etc/centericq.conf
 #	install -d $(CENTERICQ_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(CENTERICQ_SOURCE_DIR)/rc.centericq $(CENTERICQ_IPK_DIR)/opt/etc/init.d/SXXcentericq
-	install -d $(CENTERICQ_IPK_DIR)/CONTROL
-	install -m 644 $(CENTERICQ_SOURCE_DIR)/control $(CENTERICQ_IPK_DIR)/CONTROL/control
+	$(MAKE) $(CENTERICQ_IPK_DIR)/CONTROL/control
+#	install -d $(CENTERICQ_IPK_DIR)/CONTROL
+#	install -m 644 $(CENTERICQ_SOURCE_DIR)/control $(CENTERICQ_IPK_DIR)/CONTROL/control
 #	install -m 755 $(CENTERICQ_SOURCE_DIR)/postinst $(CENTERICQ_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(CENTERICQ_SOURCE_DIR)/prerm $(CENTERICQ_IPK_DIR)/CONTROL/prerm
 #	echo $(CENTERICQ_CONFFILES) | sed -e 's/ /\n/g' > $(CENTERICQ_IPK_DIR)/CONTROL/conffiles
@@ -177,6 +207,7 @@ centericq-ipk: $(CENTERICQ_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 centericq-clean:
+	rm -f $(CENTERICQ_BUILD_DIR)/.built
 	-$(MAKE) -C $(CENTERICQ_BUILD_DIR) clean
 
 #
@@ -185,3 +216,11 @@ centericq-clean:
 #
 centericq-dirclean:
 	rm -rf $(BUILD_DIR)/$(CENTERICQ_DIR) $(CENTERICQ_BUILD_DIR) $(CENTERICQ_IPK_DIR) $(CENTERICQ_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+centericq-check: $(CENTERICQ_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
