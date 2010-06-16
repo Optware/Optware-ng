@@ -24,6 +24,13 @@ GIMP-PRINT_VERSION=5.0.0-beta2
 GIMP-PRINT_SOURCE=gimp-print-$(GIMP-PRINT_VERSION).tar.bz2
 GIMP-PRINT_DIR=gimp-print-$(GIMP-PRINT_VERSION)
 GIMP-PRINT_UNZIP=bzcat
+GIMP-PRINT_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+GIMP-PRINT_DESCRIPTION=print drivers
+GIMP-PRINT_SECTION=tool
+GIMP-PRINT_PRIORITY=optional
+GIMP-PRINT_DEPENDS=
+GIMP-PRINT_SUGGESTS=
+GIMP-PRINT_CONFLICTS=
 
 #
 # GIMP-PRINT_IPK_VERSION should be incremented when the ipk changes.
@@ -60,6 +67,8 @@ GIMP-PRINT_BUILD_DIR=$(BUILD_DIR)/gimp-print
 GIMP-PRINT_SOURCE_DIR=$(SOURCE_DIR)/gimp-print
 GIMP-PRINT_IPK_DIR=$(BUILD_DIR)/gimp-print-$(GIMP-PRINT_VERSION)-ipk
 GIMP-PRINT_IPK=$(BUILD_DIR)/gimp-print_$(GIMP-PRINT_VERSION)-$(GIMP-PRINT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: gimp-print-source gimp-print-unpack gimp-print gimp-print-stage gimp-print-ipk gimp-print-clean gimp-print-dirclean gimp-print-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -106,6 +115,7 @@ $(GIMP-PRINT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIMP-PRINT_SOURCE) $(GIMP-PRINT
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(GIMP-PRINT_BUILD_DIR)/.configured
 
@@ -135,6 +145,25 @@ $(GIMP-PRINT_BUILD_DIR)/.staged: $(GIMP-PRINT_BUILD_DIR)/.built
 gimp-print-stage: $(GIMP-PRINT_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/gimp-print
+#
+$(GIMP-PRINT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: gimp-print" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIMP-PRINT_PRIORITY)" >>$@
+	@echo "Section: $(GIMP-PRINT_SECTION)" >>$@
+	@echo "Version: $(GIMP-PRINT_VERSION)-$(GIMP-PRINT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIMP-PRINT_MAINTAINER)" >>$@
+	@echo "Source: $(GIMP-PRINT_SITE)/$(GIMP-PRINT_SOURCE)" >>$@
+	@echo "Description: $(GIMP-PRINT_DESCRIPTION)" >>$@
+	@echo "Depends: $(GIMP-PRINT_DEPENDS)" >>$@
+	@echo "Suggests: $(GIMP-PRINT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GIMP-PRINT_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GIMP-PRINT_IPK_DIR)/opt/sbin or $(GIMP-PRINT_IPK_DIR)/opt/bin
@@ -149,8 +178,9 @@ gimp-print-stage: $(GIMP-PRINT_BUILD_DIR)/.staged
 $(GIMP-PRINT_IPK): $(GIMP-PRINT_BUILD_DIR)/.built
 	rm -rf $(GIMP-PRINT_IPK_DIR) $(BUILD_DIR)/gimp-print_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GIMP-PRINT_BUILD_DIR) DESTDIR=$(GIMP-PRINT_IPK_DIR) install-strip
-	install -d $(GIMP-PRINT_IPK_DIR)/CONTROL
-	install -m 644 $(GIMP-PRINT_SOURCE_DIR)/control $(GIMP-PRINT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GIMP-PRINT_IPK_DIR)/CONTROL/control
+#	install -d $(GIMP-PRINT_IPK_DIR)/CONTROL
+#	install -m 644 $(GIMP-PRINT_SOURCE_DIR)/control $(GIMP-PRINT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIMP-PRINT_IPK_DIR)
 
 #
@@ -162,6 +192,7 @@ gimp-print-ipk: $(GIMP-PRINT_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 gimp-print-clean:
+	rm -f $(GIMP-PRINT_BUILD_DIR)/.built
 	-$(MAKE) -C $(GIMP-PRINT_BUILD_DIR) clean
 
 #
@@ -170,3 +201,11 @@ gimp-print-clean:
 #
 gimp-print-dirclean:
 	rm -rf $(BUILD_DIR)/$(GIMP-PRINT_DIR) $(GIMP-PRINT_BUILD_DIR) $(GIMP-PRINT_IPK_DIR) $(GIMP-PRINT_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+gimp-print-check: $(GIMP-PRINT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
