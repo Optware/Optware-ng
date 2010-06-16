@@ -46,7 +46,7 @@ ALSA-OSS_CONFFILES=
 # ALSA-OSS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ALSA-OSS_PATCHES=/dev/null
+ALSA-OSS_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -104,7 +104,7 @@ $(ALSA-OSS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-OSS_SOURCE) $(ALSA-OSS_PATCH
 	$(MAKE) alsa-lib-stage
 	rm -rf $(BUILD_DIR)/$(ALSA-OSS_DIR) $(ALSA-OSS_BUILD_DIR)
 	$(ALSA-OSS_UNZIP) $(DL_DIR)/$(ALSA-OSS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ALSA-OSS_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-OSS_DIR) -p1
+#	cat $(ALSA-OSS_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-OSS_DIR) -p1
 	mv $(BUILD_DIR)/$(ALSA-OSS_DIR) $(ALSA-OSS_BUILD_DIR)
 	(cd $(ALSA-OSS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -116,6 +116,7 @@ $(ALSA-OSS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-OSS_SOURCE) $(ALSA-OSS_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(ALSA-OSS_BUILD_DIR)/.configured
 
