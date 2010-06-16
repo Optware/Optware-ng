@@ -23,10 +23,17 @@
 STRACE_VERSION ?= 4.5.20
 STRACE_IPK_VERSION ?= 1
 
-STRACE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/strace/
+STRACE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/strace
 STRACE_SOURCE=strace-$(STRACE_VERSION).tar.bz2
 STRACE_DIR=strace-$(STRACE_VERSION)
 STRACE_UNZIP=bzcat
+STRACE_MAINTAINER=Christopher <edmondsc@onid.orst.edu>
+STRACE_DESCRIPTION=Traces all system calls a program makes.
+STRACE_SECTION=utility
+STRACE_PRIORITY=optional
+STRACE_DEPENDS=
+STRACE_SUGGESTS=
+STRACE_CONFLICTS=
 
 #
 # STRACE_PATCHES should list any patches, in the the order in
@@ -55,6 +62,8 @@ STRACE_BUILD_DIR=$(BUILD_DIR)/strace
 STRACE_SOURCE_DIR=$(SOURCE_DIR)/strace
 STRACE_IPK_DIR=$(BUILD_DIR)/strace-$(STRACE_VERSION)-ipk
 STRACE_IPK=$(BUILD_DIR)/strace_$(STRACE_VERSION)-$(STRACE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: strace-source strace-unpack strace strace-stage strace-ipk strace-clean strace-dirclean strace-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -103,6 +112,8 @@ $(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES) ma
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
 	)
 	touch $@
 
@@ -127,6 +138,24 @@ strace: $(STRACE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/strace
+#
+$(STRACE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: strace" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(STRACE_PRIORITY)" >>$@
+	@echo "Section: $(STRACE_SECTION)" >>$@
+	@echo "Version: $(STRACE_VERSION)-$(STRACE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(STRACE_MAINTAINER)" >>$@
+	@echo "Source: $(STRACE_SITE)/$(STRACE_SOURCE)" >>$@
+	@echo "Description: $(STRACE_DESCRIPTION)" >>$@
+	@echo "Depends: $(STRACE_DEPENDS)" >>$@
+	@echo "Suggests: $(STRACE_SUGGESTS)" >>$@
+	@echo "Conflicts: $(STRACE_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -144,11 +173,12 @@ $(STRACE_IPK): $(STRACE_BUILD_DIR)/.built
 	rm -rf $(STRACE_IPK_DIR) $(STRACE_IPK)
 	install -d $(STRACE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(STRACE_BUILD_DIR)/strace -o $(STRACE_IPK_DIR)/opt/bin/strace
-	install -d $(STRACE_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" \
-	    -e "s/@VERSION@/$(STRACE_VERSION)/" \
-	    -e "s/@RELEASE@/$(STRACE_IPK_VERSION)/" \
-	    $(STRACE_SOURCE_DIR)/control > $(STRACE_IPK_DIR)/CONTROL/control
+#	install -d $(STRACE_IPK_DIR)/CONTROL
+	$(MAKE) $(STRACE_IPK_DIR)/CONTROL/control
+#	sed -e "s/@ARCH@/$(TARGET_ARCH)/" \
+#	    -e "s/@VERSION@/$(STRACE_VERSION)/" \
+#	    -e "s/@RELEASE@/$(STRACE_IPK_VERSION)/" \
+#	    $(STRACE_SOURCE_DIR)/control > $(STRACE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STRACE_IPK_DIR)
 
 #
@@ -160,6 +190,7 @@ strace-ipk: $(STRACE_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 strace-clean:
+	rm -f $(STRACE_BUILD_DIR)/.built
 	-$(MAKE) -C $(STRACE_BUILD_DIR) clean
 
 #
