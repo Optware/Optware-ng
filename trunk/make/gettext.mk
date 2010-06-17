@@ -67,6 +67,9 @@ GETTEXT_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/gettext
 
 GETTEXT_NLS ?= disable
 
+.PHONY: gettext-source gettext-host gettext-host-stage gettext-unpack gettext
+.PHONY: gettext-stage gettext-ipk gettext-clean gettext-dirclean gettext-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -137,6 +140,7 @@ $(GETTEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--$(GETTEXT_NLS)-nls \
+		--disable-static \
 	)
 	touch $(GETTEXT_BUILD_DIR)/.configured
 
@@ -203,6 +207,7 @@ $(GETTEXT_IPK_DIR)/CONTROL/control:
 $(GETTEXT_IPK): $(GETTEXT_BUILD_DIR)/.built
 	rm -rf $(GETTEXT_IPK_DIR) $(BUILD_DIR)/gettext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GETTEXT_BUILD_DIR) DESTDIR=$(GETTEXT_IPK_DIR) install
+	$(STRIP_COMMAND) $(GETTEXT_IPK_DIR)/opt/lib/*.so*
 #	install -d $(GETTEXT_IPK_DIR)/opt/etc/
 #	install -m 755 $(GETTEXT_SOURCE_DIR)/gettext.conf $(GETTEXT_IPK_DIR)/opt/etc/gettext.conf
 #	install -d $(GETTEXT_IPK_DIR)/opt/etc/init.d
@@ -222,6 +227,7 @@ gettext-ipk: $(GETTEXT_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 gettext-clean:
+	rm -f $(GETTEXT_BUILD_DIR)/.built
 	-$(MAKE) -C $(GETTEXT_BUILD_DIR) clean
 
 #
@@ -230,3 +236,11 @@ gettext-clean:
 #
 gettext-dirclean:
 	rm -rf $(BUILD_DIR)/$(GETTEXT_DIR) $(GETTEXT_BUILD_DIR) $(GETTEXT_IPK_DIR) $(GETTEXT_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+gettext-check: $(GETTEXT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
