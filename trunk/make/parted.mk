@@ -152,21 +152,6 @@ $(PARTED_BUILD_DIR)/.staged: $(PARTED_BUILD_DIR)/.built
 
 parted-stage: $(PARTED_BUILD_DIR)/.staged
 
-$(PARTED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: parted" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PARTED_PRIORITY)" >>$@
-	@echo "Section: $(PARTED_SECTION)" >>$@
-	@echo "Version: $(PARTED_VERSION)-$(PARTED_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PARTED_MAINTAINER)" >>$@
-	@echo "Source: $(PARTED_SITE)/$(PARTED_SOURCE)" >>$@
-	@echo "Description: $(PARTED_DESCRIPTION)" >>$@
-	@echo "Depends: $(PARTED_DEPENDS)" >>$@
-	@echo "Suggests: $(PARTED_SUGGESTS)" >>$@
-	@echo "Conflicts: $(PARTED_CONFLICTS)" >>$@
-
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/parted
