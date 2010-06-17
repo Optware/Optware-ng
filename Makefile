@@ -42,7 +42,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
 # clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
 #
-PACKAGES_THAT_NEED_TO_BE_FIXED = parted lumikki \
+PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
 	gtk vte xchat \
 	iozone \
@@ -247,7 +247,8 @@ COMMON_CROSS_PACKAGES = \
 	ettercap ettercap-ng \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop eventlog expat extract-xiso ez-ipupdate \
-	faad2 fann fbcat fcgi fconfig fdupes fetchmail ffmpeg \
+	faad2 fann fatresize fbcat fcgi fconfig \
+	fdupes fetchmail ffmpeg \
 	ficy file finch findutils firedrill-httptunnel \
 	fis fish fixesext flac flex flip \
 	fontconfig \
@@ -324,7 +325,8 @@ COMMON_CROSS_PACKAGES = \
 	openobex obexftp \
 	opendchub openldap openser opensips openssh openssl openvpn \
 	optware-devel ossp-js oww \
-	p7zip p910nd pal palantir pango par2cmdline patch patchutils \
+	p7zip p910nd pal palantir pango parted \
+	par2cmdline patch patchutils \
 	pcal pcapsipdump pciutils pcre pen perltgd pinentry pixman \
 	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
