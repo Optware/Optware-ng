@@ -20,15 +20,15 @@
 # You should change all these variables to suit your package.
 #
 PARTED_SITE=http://ftp.gnu.org/gnu/parted/
-PARTED_VERSION=1.6.21
+PARTED_VERSION=1.7.1
 PARTED_SOURCE=parted-$(PARTED_VERSION).tar.gz
 PARTED_DIR=parted-$(PARTED_VERSION)
 PARTED_UNZIP=zcat
-PARTED_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+PARTED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PARTED_DESCRIPTION=GNU partition editor
 PARTED_SECTION=sys
 PARTED_PRIORITY=optional
-PARTED_DEPENDS=e2fsprogs
+PARTED_DEPENDS=e2fslibs
 PARTED_SUGGESTS=
 PARTED_CONFLICTS=
 
@@ -77,7 +77,8 @@ PARTED_IPK=$(BUILD_DIR)/parted_$(PARTED_VERSION)-$(PARTED_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PARTED_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PARTED_SITE)/$(PARTED_SOURCE)
+	$(WGET) -P $(@D) $(PARTED_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -101,13 +102,13 @@ parted-source: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PARTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES)
+$(PARTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES) make/parted.mk
 	$(MAKE) e2fsprogs-stage
-	rm -rf $(BUILD_DIR)/$(PARTED_DIR) $(PARTED_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PARTED_DIR) $(@D)
 	$(PARTED_UNZIP) $(DL_DIR)/$(PARTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PARTED_PATCHES) | patch -d $(BUILD_DIR)/$(PARTED_DIR) -p1
-	mv $(BUILD_DIR)/$(PARTED_DIR) $(PARTED_BUILD_DIR)
-	(cd $(PARTED_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PARTED_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PARTED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PARTED_LDFLAGS)" \
@@ -117,10 +118,12 @@ $(PARTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--without-readline \
+		--disable-Werror \
 		--disable-nls \
 		--disable-static \
 	)
-	touch $(PARTED_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 parted-unpack: $(PARTED_BUILD_DIR)/.configured
 
@@ -128,9 +131,9 @@ parted-unpack: $(PARTED_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PARTED_BUILD_DIR)/.built: $(PARTED_BUILD_DIR)/.configured
-	rm -f $(PARTED_BUILD_DIR)/.built
-	$(MAKE) -C $(PARTED_BUILD_DIR)
-	touch $(PARTED_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,11 +144,28 @@ parted: $(PARTED_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PARTED_BUILD_DIR)/.staged: $(PARTED_BUILD_DIR)/.built
-#	rm -f $(PARTED_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PARTED_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-#	touch $(PARTED_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libparted.la $(STAGING_LIB_DIR)/libparted.a
+#	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libparted.pc
+	touch $@
 
 parted-stage: $(PARTED_BUILD_DIR)/.staged
+
+$(PARTED_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: parted" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PARTED_PRIORITY)" >>$@
+	@echo "Section: $(PARTED_SECTION)" >>$@
+	@echo "Version: $(PARTED_VERSION)-$(PARTED_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PARTED_MAINTAINER)" >>$@
+	@echo "Source: $(PARTED_SITE)/$(PARTED_SOURCE)" >>$@
+	@echo "Description: $(PARTED_DESCRIPTION)" >>$@
+	@echo "Depends: $(PARTED_DEPENDS)" >>$@
+	@echo "Suggests: $(PARTED_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PARTED_CONFLICTS)" >>$@
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -181,16 +201,8 @@ $(PARTED_IPK_DIR)/CONTROL/control:
 $(PARTED_IPK): $(PARTED_BUILD_DIR)/.built
 	rm -rf $(PARTED_IPK_DIR) $(BUILD_DIR)/parted_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PARTED_BUILD_DIR) DESTDIR=$(PARTED_IPK_DIR) install-strip
-#	install -d $(PARTED_IPK_DIR)/opt/etc/
-#	install -m 644 $(PARTED_SOURCE_DIR)/parted.conf $(PARTED_IPK_DIR)/opt/etc/parted.conf
-#	install -d $(PARTED_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PARTED_SOURCE_DIR)/rc.parted $(PARTED_IPK_DIR)/opt/etc/init.d/SXXparted
-#	install -d $(PARTED_IPK_DIR)/CONTROL
-#	install -m 644 $(PARTED_SOURCE_DIR)/control $(PARTED_IPK_DIR)/CONTROL/control
+	rm -f $(PARTED_IPK_DIR)/opt/lib/libparted.a
 	$(MAKE) $(PARTED_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PARTED_SOURCE_DIR)/postinst $(PARTED_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PARTED_SOURCE_DIR)/prerm $(PARTED_IPK_DIR)/CONTROL/prerm
-#	echo $(PARTED_CONFFILES) | sed -e 's/ /\n/g' > $(PARTED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PARTED_IPK_DIR)
 
 #
@@ -218,4 +230,3 @@ parted-dirclean:
 #
 parted-check: $(PARTED_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
-
