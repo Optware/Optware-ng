@@ -34,7 +34,7 @@ LIBOL_CONFLICTS=
 #
 # LIBOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBOL_IPK_VERSION=2
+LIBOL_IPK_VERSION=3
 
 #
 # LIBOL_CONFFILES should be a list of user-editable files
@@ -67,6 +67,8 @@ LIBOL_BUILD_DIR=$(BUILD_DIR)/libol
 LIBOL_SOURCE_DIR=$(SOURCE_DIR)/libol
 LIBOL_IPK_DIR=$(BUILD_DIR)/libol-$(LIBOL_VERSION)-ipk
 LIBOL_IPK=$(BUILD_DIR)/libol_$(LIBOL_VERSION)-$(LIBOL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libol-source libol-unpack libol libol-stage libol-ipk libol-clean libol-dirclean libol-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -114,6 +116,7 @@ $(LIBOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOL_SOURCE) $(LIBOL_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(LIBOL_BUILD_DIR)/.configured
 
@@ -174,7 +177,7 @@ $(LIBOL_IPK_DIR)/CONTROL/control:
 #
 $(LIBOL_IPK): $(LIBOL_BUILD_DIR)/.built
 	rm -rf $(LIBOL_IPK_DIR) $(BUILD_DIR)/libol_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBOL_BUILD_DIR) DESTDIR=$(LIBOL_IPK_DIR) install
+	$(MAKE) -C $(LIBOL_BUILD_DIR) DESTDIR=$(LIBOL_IPK_DIR) install-strip
 	$(MAKE) $(LIBOL_IPK_DIR)/CONTROL/control
 #	install -m 644 $(LIBOL_SOURCE_DIR)/postinst $(LIBOL_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(LIBOL_SOURCE_DIR)/prerm $(LIBOL_IPK_DIR)/CONTROL/prerm
@@ -190,6 +193,7 @@ libol-ipk: $(LIBOL_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 libol-clean:
+	rm -f $(LIBOL_BUILD_DIR)/.built
 	-$(MAKE) -C $(LIBOL_BUILD_DIR) clean
 
 #
@@ -198,3 +202,11 @@ libol-clean:
 #
 libol-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBOL_DIR) $(LIBOL_BUILD_DIR) $(LIBOL_IPK_DIR) $(LIBOL_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+libol-check: $(LIBOL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
