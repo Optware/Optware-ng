@@ -35,7 +35,7 @@ LIBDVDREAD_CONFLICTS=
 #
 # LIBDVDREAD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDVDREAD_IPK_VERSION=1
+LIBDVDREAD_IPK_VERSION=2
 
 #
 # LIBDVDREAD_CONFFILES should be a list of user-editable files
@@ -67,6 +67,8 @@ LIBDVDREAD_BUILD_DIR=$(BUILD_DIR)/libdvdread
 LIBDVDREAD_SOURCE_DIR=$(SOURCE_DIR)/libdvdread
 LIBDVDREAD_IPK_DIR=$(BUILD_DIR)/libdvdread-$(LIBDVDREAD_VERSION)-ipk
 LIBDVDREAD_IPK=$(BUILD_DIR)/libdvdread_$(LIBDVDREAD_VERSION)-$(LIBDVDREAD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libdvdread-source libdvdread-unpack libdvdread libdvdread-stage libdvdread-ipk libdvdread-clean libdvdread-dirclean libdvdread-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -114,6 +116,7 @@ $(LIBDVDREAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVDREAD_SOURCE) $(LIBDVDREAD
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $@
 
@@ -175,7 +178,7 @@ $(LIBDVDREAD_IPK_DIR)/CONTROL/control:
 #
 $(LIBDVDREAD_IPK): $(LIBDVDREAD_BUILD_DIR)/.built
 	rm -rf $(LIBDVDREAD_IPK_DIR) $(BUILD_DIR)/libdvdread_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBDVDREAD_BUILD_DIR) DESTDIR=$(LIBDVDREAD_IPK_DIR) install
+	$(MAKE) -C $(LIBDVDREAD_BUILD_DIR) DESTDIR=$(LIBDVDREAD_IPK_DIR) install-strip
 	$(MAKE) $(LIBDVDREAD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDVDREAD_IPK_DIR)
 
@@ -188,6 +191,7 @@ libdvdread-ipk: $(LIBDVDREAD_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 libdvdread-clean:
+	rm -f $(LIBDVDREAD_BUILD_DIR)/.built
 	-$(MAKE) -C $(LIBDVDREAD_BUILD_DIR) clean
 
 #
@@ -196,3 +200,11 @@ libdvdread-clean:
 #
 libdvdread-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBDVDREAD_DIR) $(LIBDVDREAD_BUILD_DIR) $(LIBDVDREAD_IPK_DIR) $(LIBDVDREAD_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+libdvdread-check: $(LIBDVDREAD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
