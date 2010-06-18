@@ -41,7 +41,7 @@ LIBOSIP2_CONFLICTS=
 #
 # LIBOSIP2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBOSIP2_IPK_VERSION=1
+LIBOSIP2_IPK_VERSION=2
 
 #
 # LIBOSIP2_CONFFILES should be a list of user-editable files
@@ -73,6 +73,8 @@ LIBOSIP2_BUILD_DIR=$(BUILD_DIR)/libosip2
 LIBOSIP2_SOURCE_DIR=$(SOURCE_DIR)/libosip2
 LIBOSIP2_IPK_DIR=$(BUILD_DIR)/libosip2-$(LIBOSIP2_VERSION)-ipk
 LIBOSIP2_IPK=$(BUILD_DIR)/libosip2_$(LIBOSIP2_VERSION)-$(LIBOSIP2_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libosip2-source libosip2-unpack libosip2 libosip2-stage libosip2-ipk libosip2-clean libosip2-dirclean libosip2-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -120,6 +122,7 @@ $(LIBOSIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOSIP2_SOURCE) $(LIBOSIP2_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $@
 
@@ -183,7 +186,7 @@ $(LIBOSIP2_IPK_DIR)/CONTROL/control:
 #
 $(LIBOSIP2_IPK): $(LIBOSIP2_BUILD_DIR)/.built
 	rm -rf $(LIBOSIP2_IPK_DIR) $(BUILD_DIR)/libosip2_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBOSIP2_BUILD_DIR) DESTDIR=$(LIBOSIP2_IPK_DIR) install
+	$(MAKE) -C $(LIBOSIP2_BUILD_DIR) DESTDIR=$(LIBOSIP2_IPK_DIR) install-strip
 #	install -d $(LIBOSIP2_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBOSIP2_SOURCE_DIR)/libosip2.conf $(LIBOSIP2_IPK_DIR)/opt/etc/libosip2.conf
 #	install -d $(LIBOSIP2_IPK_DIR)/opt/etc/init.d
@@ -203,6 +206,7 @@ libosip2-ipk: $(LIBOSIP2_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 libosip2-clean:
+	rm -f $(LIBOSIP2_BUILD_DIR)/.built
 	-$(MAKE) -C $(LIBOSIP2_BUILD_DIR) clean
 
 #
