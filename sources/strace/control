@@ -1,9 +1,0 @@
-Package: strace
-Version: @VERSION@-@RELEASE@
-Architecture: @ARCH@
-Maintainer: Christopher <edmondsc@onid.orst.edu>
-Source: http://unc.dl.sourceforge.net/sourceforge/strace/strace-@VERSION@.tar.bz2
-Section: utility
-Priority: optional
-Depends:
-Description: Traces all system calls a program makes.

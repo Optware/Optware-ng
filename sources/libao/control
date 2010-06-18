@@ -1,8 +1,0 @@
-Package: libao
-Priority: optional
-Version: 0.8.6-1
-Architecture: armeb
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: lib
-Source: http://downloads.xiph.org/releases/ao/libao-0.8.6.tar.gz
-Description: Cross Platform Audio Library

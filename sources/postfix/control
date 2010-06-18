@@ -1,9 +1,0 @@
-Package: postfix
-Version: 2.1.5-1
-Architecture: armeb
-Maintainer: Matthias Appel <private_tweety@gmx.net>
-Source: ftp://netmirror.org/postfix.org/official/postfix-2.1.5.tar.gz
-Section: util
-Priority: optional
-Depends: libdb, libnsl, pcre, cyrus-sasl
-Description: The Postfix mail system is an alternative to sendmail.

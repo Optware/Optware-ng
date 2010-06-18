@@ -1,9 +1,0 @@
-Package: amule
-Priority: optional
-Version: 2.0.0rc8-1
-Architecture: armeb
-Maintainer:  Michal Gorski <michal-gorski@o2.pl>
-Source: http://www.aMule.org/
-Section: net
-Depends: libstdc++, wxbase, zlib, libcurl
-Description: non-gui part of aMule ed2k client (amuled,amulweb,amulecmd)

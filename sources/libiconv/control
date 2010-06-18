@@ -1,9 +1,0 @@
-Package: libiconv
-Version: 1.9.1-1
-Architecture: armeb
-Maintainer: Keith Garry Boyce <nslu2-linux@yahoogroups.com>
-Source: http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.9.1.tar.gz 
-Section: lib
-Priority: optional
-Depends: 
-Description: This library provides an iconv() implementation, for use on systems which don't have one 

@@ -1,9 +1,0 @@
-Package: kaffe
-Priority: optional
-Version: 20050129-1
-Architecture: armeb
-Depends: 
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: JVM
-Source: cvs -d :pserver:readonly@cvs.kaffe.org:/cvs/kaffe co kaffe
-Description: clean room implementation of the java virtual machine

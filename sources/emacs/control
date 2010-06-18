@@ -1,9 +1,0 @@
-Package: emacs
-Priority: optional
-Version: 21.3-3
-Architecture: armeb
-Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: editors
-Source: http://ftp.gnu.org/gnu/emacs/emacs-21.3.tar.gz
-Description: emacs text editor
-Depends: ncurses, xaw, xmu, libpng, libjpeg, libtiff

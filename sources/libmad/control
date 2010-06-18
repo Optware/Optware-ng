@@ -1,8 +1,0 @@
-Package: libmad
-Priority: optional
-Version: @VERSION@-@RELEASE@
-Architecture: @ARCH@
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: lib
-Source: http://aleron.dl.sourceforge.net/sourceforge/mad/libmad-@VERSION@.tar.gz
-Description: MPEG Audio Decoder library

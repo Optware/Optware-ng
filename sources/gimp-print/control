@@ -1,9 +1,0 @@
-Package: gimp-print
-Version: 5.0.0-beta2-1
-Architecture: armeb
-Maintainer: Keith Garry Boyce <nslu2-linux@yahoogroups.com>
-Source: http://unc.dl.sourceforge.net/sourceforge/gimp-print
-Section: tool
-Priority: optional
-Depends: 
-Description: print drivers
