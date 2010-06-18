@@ -1,9 +1,0 @@
-Package: libvorbis
-Version: @VERSION@-@RELEASE@
-Architecture: @ARCH@
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Source: http://www.xiph.org/ogg/vorbis/download
-Section: lib
-Priority: optional
-Depends: 
-Description: Ogg Vorbis is a completely open, patent-free, professional audio encoding and streaming technology. Ogg is the name of Xiph.org's container format for audio, video, and metadata.

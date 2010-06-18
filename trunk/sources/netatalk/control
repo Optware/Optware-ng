@@ -1,9 +1,0 @@
-Package: netatalk
-Version: 2.0.1-1
-Architecture: armeb
-Maintainer: Christopher <edmondsc@onid.orst.edu>
-Source: http://www.cse.unsw.edu.au/~neilb/source/mdadm/mdadm-1.8.0.tgz
-Section: networking
-Priority: optional
-Depends:
-Description: Apple talk networking daemon. 

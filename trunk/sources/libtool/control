@@ -1,9 +1,0 @@
-Package: libtool
-Version: @VERSION@-@RELEASE@
-Architecture: @ARCH@
-Maintainer: Christopher <edmondsc@onid.orst.edu>
-Source: http://ftp.gnu.org/gnu/libtool/libtool-@VERSION@.tar.gz
-Section: utilities
-Priority: optional
-Depends:
-Description: Library tools.

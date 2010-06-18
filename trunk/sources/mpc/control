@@ -1,8 +1,0 @@
-Package: mpc
-Priority: optional
-Version: 0.11.1
-Architecture: armeb
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: audio
-Source: http://mercury.chem.pitt.edu/~shank/mpc-0.11.1.tar.gz
-Description: Commandline mpd client

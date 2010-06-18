@@ -1,9 +1,0 @@
-Package: mpd
-Priority: optional
-Version: 0.11.5-1
-Architecture: armeb
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: util
-Source: http://mercury.chem.pitt.edu/~shank/mpd-0.11.5.tar.gz
-Depends: libao, libmad, libid3tag, libogg, libvorbis
-Description: The Music Player Deamon
