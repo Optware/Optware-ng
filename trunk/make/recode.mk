@@ -36,7 +36,7 @@ RECODE_CONFLICTS=
 #
 # RECODE_IPK_VERSION should be incremented when the ipk changes.
 #
-RECODE_IPK_VERSION=1
+RECODE_IPK_VERSION=2
 
 #
 # RECODE_CONFFILES should be a list of user-editable files
@@ -68,6 +68,8 @@ RECODE_BUILD_DIR=$(BUILD_DIR)/recode
 RECODE_SOURCE_DIR=$(SOURCE_DIR)/recode
 RECODE_IPK_DIR=$(BUILD_DIR)/recode-$(RECODE_VERSION)-ipk
 RECODE_IPK=$(BUILD_DIR)/recode_$(RECODE_VERSION)-$(RECODE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: recode-source recode-unpack recode recode-stage recode-ipk recode-clean recode-dirclean recode-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -187,6 +189,7 @@ $(RECODE_IPK): $(RECODE_BUILD_DIR)/.built
 	rm -rf $(RECODE_IPK_DIR) $(BUILD_DIR)/recode_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RECODE_BUILD_DIR) DESTDIR=$(RECODE_IPK_DIR) install
 	$(STRIP_COMMAND) $(RECODE_IPK_DIR)/opt/bin/recode
+	$(STRIP_COMMAND) $(RECODE_IPK_DIR)/opt/lib/librecode.a
 #	install -d $(RECODE_IPK_DIR)/opt/etc/
 #	install -m 644 $(RECODE_SOURCE_DIR)/recode.conf $(RECODE_IPK_DIR)/opt/etc/recode.conf
 #	install -d $(RECODE_IPK_DIR)/opt/etc/init.d
@@ -215,3 +218,12 @@ recode-clean:
 #
 recode-dirclean:
 	rm -rf $(BUILD_DIR)/$(RECODE_DIR) $(RECODE_BUILD_DIR) $(RECODE_IPK_DIR) $(RECODE_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+recode-check: $(RECODE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
+
