@@ -1,8 +1,0 @@
-Package: unslung-feeds
-Version: 3.0-1
-Architecture: armeb
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: base
-Priority: optional
-Source: Unslung CVS repository
-Description: A list of sanctioned Unslung package feeds.
