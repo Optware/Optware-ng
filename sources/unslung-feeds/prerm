@@ -9,3 +9,9 @@ fi
 if [ -f /usr/lib/ipkg/lists/unslung-native ] ;  then
     rm /usr/lib/ipkg/lists/unslung-native
 fi
+if [ -f /usr/lib/ipkg/lists/optware-nslu2-cross-stable ] ;  then
+    rm /usr/lib/ipkg/lists/optware-nslu2-cross-stable
+fi
+if [ -f /usr/lib/ipkg/lists/optware-nslu2-native-stable ] ;  then
+    rm /usr/lib/ipkg/lists/optware-nslu2-native-stable
+fi

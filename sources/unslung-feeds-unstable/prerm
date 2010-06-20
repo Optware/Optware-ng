@@ -1,0 +1,9 @@
+#!/bin/sh
+
+fi
+if [ -f /usr/lib/ipkg/lists/optware-nslu2-cross-unstable ] ;  then
+    rm /usr/lib/ipkg/lists/optware-nslu2-cross-unstable
+fi
+if [ -f /usr/lib/ipkg/lists/optware-nslu2-native-unstable ] ;  then
+    rm /usr/lib/ipkg/lists/optware-nslu2-native-unstable
+fi

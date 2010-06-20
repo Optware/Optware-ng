@@ -19,7 +19,20 @@
 #
 # You should change all these variables to suit your package.
 #
-UNSLUNG-FEEDS_VERSION=3.0
+# Revison History
+# 3.0 adds unslung-cross and unslung-native feeds
+# 3.1 adds two additional stable optware feeds - combinations of cross and native
+
+UNSLUNG-FEEDS_VERSION=3.1
+UNSLUNG-FEEDS_SOURCE=Unslung CVS repository
+UNSLUNG-FEEDS_DIR=unslung-feeds-$(UNSLUNG-FEEDS_VERSION)
+UNSLUNG-FEEDS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+UNSLUNG-FEEDS_DESCRIPTION=A list of sanctioned Unslung package feeds.
+UNSLUNG-FEEDS_SECTION=base
+UNSLUNG-FEEDS_PRIORITY=optional
+UNSLUNG-FEEDS_DEPENDS=
+UNSLUNG-FEEDS_SUGGESTS=
+UNSLUNG-FEEDS_CONFLICTS=
 
 #
 # UNSLUNG-FEEDS_IPK_VERSION should be incremented when the ipk changes.
@@ -28,7 +41,10 @@ UNSLUNG-FEEDS_IPK_VERSION=1
 
 #
 # UNSLUNG-FEEDS_CONFFILES should be a list of user-editable files
-UNSLUNG-FEEDS_CONFFILES=/etc/ipkg/unslung-cross.conf /etc/ipkg/unslung-native.conf
+UNSLUNG-FEEDS_CONFFILES= \
+			/etc/ipkg/unslung-cross.conf /etc/ipkg/unslung-native.conf \
+			/etc/ipkg/optware-nslu2-cross-stable.conf \
+			/etc/ipkg/optware-nslu2-native-stable.conf
 
 #
 # UNSLUNG-FEEDS_BUILD_DIR is the directory in which the build is done.
@@ -43,6 +59,8 @@ UNSLUNG-FEEDS_BUILD_DIR=$(BUILD_DIR)/unslung-feeds
 UNSLUNG-FEEDS_SOURCE_DIR=$(SOURCE_DIR)/unslung-feeds
 UNSLUNG-FEEDS_IPK_DIR=$(BUILD_DIR)/unslung-feeds-$(UNSLUNG-FEEDS_VERSION)-ipk
 UNSLUNG-FEEDS_IPK=$(BUILD_DIR)/unslung-feeds_$(UNSLUNG-FEEDS_VERSION)-$(UNSLUNG-FEEDS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: unslung-feeds-source unslung-feeds-unpack unslung-feeds unslung-feeds-stage unslung-feeds-ipk unslung-feeds-clean unslung-feeds-dirclean unslung-feeds-check
 
 #
 # The source code depends on it existing within the download directory.
@@ -86,6 +104,25 @@ $(UNSLUNG-FEEDS_BUILD_DIR)/.built: $(UNSLUNG-FEEDS_BUILD_DIR)/.configured
 unslung-feeds: $(UNSLUNG-FEEDS_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/unslung-feeds
+#
+$(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: unslung-feeds" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(UNSLUNG-FEEDS_PRIORITY)" >>$@
+	@echo "Section: $(UNSLUNG-FEEDS_SECTION)" >>$@
+	@echo "Version: $(UNSLUNG-FEEDS_VERSION)-$(UNSLUNG-FEEDS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(UNSLUNG-FEEDS_MAINTAINER)" >>$@
+	@echo "Source: $(UNSLUNG-FEEDS_SOURCE)" >>$@
+	@echo "Description: $(UNSLUNG-FEEDS_DESCRIPTION)" >>$@
+	@echo "Depends: $(UNSLUNG-FEEDS_DEPENDS)" >>$@
+	@echo "Suggests: $(UNSLUNG-FEEDS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(UNSLUNG-FEEDS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(UNSLUNG-FEEDS_IPK_DIR)/opt/sbin or $(UNSLUNG-FEEDS_IPK_DIR)/opt/bin
@@ -102,8 +139,9 @@ $(UNSLUNG-FEEDS_IPK): $(UNSLUNG-FEEDS_BUILD_DIR)/.built
 	install -d $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg
 	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/unslung-cross.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/unslung-cross.conf
 	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/unslung-native.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/unslung-native.conf
-	install -d $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL
-	install -m 644 $(UNSLUNG-FEEDS_SOURCE_DIR)/control $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/control
+	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/optware-nslu2-cross-stable.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/optware-nslu2-cross-stable.conf
+	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/optware-nslu2-native-stable.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/optware-nslu2-native-stable.conf
+	$(MAKE) $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/control
 	install -m 644 $(UNSLUNG-FEEDS_SOURCE_DIR)/postinst $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(UNSLUNG-FEEDS_SOURCE_DIR)/prerm $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/prerm
 	echo $(UNSLUNG-FEEDS_CONFFILES) | sed -e 's/ /\n/g' > $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/conffiles
@@ -125,3 +163,5 @@ unslung-feeds-clean:
 #
 unslung-feeds-dirclean:
 	rm -rf $(UNSLUNG-FEEDS_BUILD_DIR) $(UNSLUNG-FEEDS_IPK_DIR) $(UNSLUNG-FEEDS_IPK)
+
+
