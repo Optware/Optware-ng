@@ -32,6 +32,7 @@ APPWEB_DESCRIPTION=AppWeb is the leading web server technology for embedding in 
 APPWEB_SECTION=net
 APPWEB_PRIORITY=optional
 APPWEB_DEPENDS=openssl, php-embed
+APPWEB_SUGGESTS=
 APPWEB_CONFLICTS=
 
 #
@@ -67,6 +68,8 @@ APPWEB_BUILD_DIR=$(BUILD_DIR)/appweb
 APPWEB_SOURCE_DIR=$(SOURCE_DIR)/appweb
 APPWEB_IPK_DIR=$(BUILD_DIR)/appweb-$(APPWEB_VERSION)-ipk
 APPWEB_IPK=$(BUILD_DIR)/appweb_$(APPWEB_VERSION)-$(APPWEB_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: appweb-source appweb-unpack appweb appweb-stage appweb-ipk appweb-clean appweb-dirclean appweb-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -163,14 +166,16 @@ appweb-unpack: $(APPWEB_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(APPWEB_BUILD_DIR)/bin/appWeb: $(APPWEB_BUILD_DIR)/.configured
+$(APPWEB_BUILD_DIR)/.built: $(APPWEB_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(APPWEB_BUILD_DIR)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-appweb: $(APPWEB_BUILD_DIR)/bin/appWeb
+appweb: $(APPWEB_BUILD_DIR)/.built
 
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/appweb
@@ -187,6 +192,7 @@ $(APPWEB_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(APPWEB_SITE)/$(APPWEB_SOURCE)" >>$@
 	@echo "Description: $(APPWEB_DESCRIPTION)" >>$@
 	@echo "Depends: $(APPWEB_DEPENDS)" >>$@
+	@echo "Suggests: $(APPWEB_SUGGESTS)" >>$@
 	@echo "Conflicts: $(APPWEB_CONFLICTS)" >>$@
 
 #
@@ -202,7 +208,7 @@ $(APPWEB_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
+$(APPWEB_IPK): $(APPWEB_BUILD_DIR)/.built
 	rm -rf $(APPWEB_IPK_DIR) $(BUILD_DIR)/appweb_*_$(TARGET_ARCH).ipk
 
 	# Copy shared libraries
@@ -285,6 +291,7 @@ appweb-ipk: $(APPWEB_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 appweb-clean:
+	rm -f $(APPWEB_BUILD_DIR)/.built
 	-$(MAKE) -C $(APPWEB_BUILD_DIR) clean
 
 #
@@ -293,3 +300,11 @@ appweb-clean:
 #
 appweb-dirclean:
 	rm -rf $(BUILD_DIR)/$(APPWEB_DIR) $(APPWEB_BUILD_DIR) $(APPWEB_IPK_DIR) $(APPWEB_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+appweb-check: $(APPWEB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
