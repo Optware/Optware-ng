@@ -66,6 +66,8 @@ CTORRENT_SOURCE_DIR=$(SOURCE_DIR)/ctorrent
 CTORRENT_IPK_DIR=$(BUILD_DIR)/ctorrent-$(CTORRENT_VERSION)-ipk
 CTORRENT_IPK=$(BUILD_DIR)/ctorrent_$(CTORRENT_VERSION)-$(CTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: ctorrent-source ctorrent-unpack ctorrent ctorrent-stage ctorrent-ipk ctorrent-clean ctorrent-dirclean ctorrent-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -110,6 +112,8 @@ $(CTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(CTORRENT_SOURCE) $(CTORRENT_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
 	)
 	touch $(CTORRENT_BUILD_DIR)/.configured
 
@@ -119,14 +123,16 @@ ctorrent-unpack: $(CTORRENT_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(CTORRENT_BUILD_DIR)/ctorrent: $(CTORRENT_BUILD_DIR)/.configured
+$(CTORRENT_BUILD_DIR)/.built: $(CTORRENT_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(CTORRENT_BUILD_DIR)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-ctorrent: $(CTORRENT_BUILD_DIR)/ctorrent
+ctorrent: $(CTORRENT_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -159,7 +165,7 @@ $(CTORRENT_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(CTORRENT_IPK): $(CTORRENT_BUILD_DIR)/ctorrent
+$(CTORRENT_IPK): $(CTORRENT_BUILD_DIR)/.built
 	rm -rf $(CTORRENT_IPK_DIR) $(CTORRENT_IPK)
 	install -d $(CTORRENT_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(CTORRENT_BUILD_DIR)/ctorrent -o $(CTORRENT_IPK_DIR)/opt/bin/ctorrent
@@ -179,6 +185,7 @@ ctorrent-ipk: $(CTORRENT_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 ctorrent-clean:
+	rm -f $(CTORRENT_BUILD_DIR)/.built
 	-$(MAKE) -C $(CTORRENT_BUILD_DIR) clean
 
 #
@@ -187,3 +194,11 @@ ctorrent-clean:
 #
 ctorrent-dirclean:
 	rm -rf $(BUILD_DIR)/$(CTORRENT_DIR) $(CTORRENT_BUILD_DIR) $(CTORRENT_IPK_DIR) $(CTORRENT_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+ctorrent-check: $(CTORRENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
