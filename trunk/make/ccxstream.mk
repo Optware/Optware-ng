@@ -14,6 +14,7 @@ CCXSTREAM_DESCRIPTION=A server to stream music and video to an XBox running Xbox
 CCXSTREAM_SECTION=net
 CCXSTREAM_PRIORITY=optional
 CCXSTREAM_DEPENDS=
+CCXSTREAM_SUGGESTS=
 CCXSTREAM_CONFLICTS=
 
 #
@@ -47,6 +48,8 @@ CCXSTREAM_BUILD_DIR=$(BUILD_DIR)/ccxstream
 CCXSTREAM_SOURCE_DIR=$(SOURCE_DIR)/ccxstream
 CCXSTREAM_IPK_DIR=$(BUILD_DIR)/ccxstream-$(CCXSTREAM_VERSION)-ipk
 CCXSTREAM_IPK=$(BUILD_DIR)/ccxstream_$(CCXSTREAM_VERSION)-$(CCXSTREAM_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: ccxstream-source ccxstream-unpack ccxstream ccxstream-stage ccxstream-ipk ccxstream-clean ccxstream-dirclean ccxstream-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -86,16 +89,18 @@ ccxstream-unpack: $(CCXSTREAM_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(CCXSTREAM_BUILD_DIR)/ccxstream: $(CCXSTREAM_BUILD_DIR)/.configured
+$(CCXSTREAM_BUILD_DIR)/.built: $(CCXSTREAM_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) CC=$(TARGET_CC) -C $(CCXSTREAM_BUILD_DIR)
+	touch $@
 
 #
 # These are the dependencies for the package (remove ccxstream-dependencies if
 # there are no build dependencies for this package.  Again, you should change
 # the final dependency to refer directly to the main binary which is built.
 #
-#ccxstream: ccxstream-dependencies $(CCXSTREAM_BUILD_DIR)/ccxstream
-ccxstream: $(CCXSTREAM_BUILD_DIR)/ccxstream
+#ccxstream: ccxstream-dependencies $(CCXSTREAM_BUILD_DIR)/.built
+ccxstream: $(CCXSTREAM_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -113,6 +118,7 @@ $(CCXSTREAM_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(CCXSTREAM_SITE)/$(CCXSTREAM_SOURCE)" >>$@
 	@echo "Description: $(CCXSTREAM_DESCRIPTION)" >>$@
 	@echo "Depends: $(CCXSTREAM_DEPENDS)" >>$@
+	@echo "Suggests: $(CCXSTREAM_SUGGESTS)" >>$@
 	@echo "Conflicts: $(CCXSTREAM_CONFLICTS)" >>$@
 
 #
@@ -127,7 +133,7 @@ $(CCXSTREAM_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(CCXSTREAM_IPK): $(CCXSTREAM_BUILD_DIR)/ccxstream
+$(CCXSTREAM_IPK): $(CCXSTREAM_BUILD_DIR)/.built
 	rm -rf $(CCXSTREAM_IPK_DIR) $(CCXSTREAM_IPK)
 	install -d $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
 	install -m 644 $(CCXSTREAM_BUILD_DIR)/README $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
@@ -149,6 +155,7 @@ ccxstream-ipk: $(CCXSTREAM_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 ccxstream-clean:
+	rm -f $(CCXSTREAM_BUILD_DIR)/.built
 	-$(MAKE) -C $(CCXSTREAM_BUILD_DIR) clean
 
 #
@@ -157,3 +164,11 @@ ccxstream-clean:
 #
 ccxstream-dirclean:
 	rm -rf $(BUILD_DIR)/$(CCXSTREAM_DIR) $(CCXSTREAM_BUILD_DIR) $(CCXSTREAM_IPK_DIR) $(CCXSTREAM_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+ccxstream-check: $(CCXSTREAM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
