@@ -36,7 +36,7 @@ RECODE_CONFLICTS=
 #
 # RECODE_IPK_VERSION should be incremented when the ipk changes.
 #
-RECODE_IPK_VERSION=2
+RECODE_IPK_VERSION=3
 
 #
 # RECODE_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ RECODE_IPK=$(BUILD_DIR)/recode_$(RECODE_VERSION)-$(RECODE_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RECODE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RECODE_SITE)/$(RECODE_SOURCE)
+	$(WGET) -P $(@D) $(RECODE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,16 +106,17 @@ recode-source: $(DL_DIR)/$(RECODE_SOURCE) $(RECODE_PATCHES)
 #
 $(RECODE_BUILD_DIR)/.configured: $(DL_DIR)/$(RECODE_SOURCE) $(RECODE_PATCHES) make/recode.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(RECODE_DIR) $(RECODE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(RECODE_DIR) $(@D)
 	$(RECODE_UNZIP) $(DL_DIR)/$(RECODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RECODE_PATCHES)" ; \
 		then cat $(RECODE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(RECODE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RECODE_DIR)" != "$(RECODE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RECODE_DIR) $(RECODE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RECODE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RECODE_DIR) $(@D) ; \
 	fi
-	(cd $(RECODE_BUILD_DIR); \
+	sed -i -e 's/^linux-gnu\*)$$/*)/g' $(@D)/ltconfig
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RECODE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RECODE_LDFLAGS)" \
@@ -125,9 +127,10 @@ $(RECODE_BUILD_DIR)/.configured: $(DL_DIR)/$(RECODE_SOURCE) $(RECODE_PATCHES) ma
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--enable-shared \
 	)
-	$(PATCH_LIBTOOL) $(RECODE_BUILD_DIR)/libtool
-	touch $(RECODE_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 recode-unpack: $(RECODE_BUILD_DIR)/.configured
 
@@ -135,9 +138,9 @@ recode-unpack: $(RECODE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RECODE_BUILD_DIR)/.built: $(RECODE_BUILD_DIR)/.configured
-	rm -f $(RECODE_BUILD_DIR)/.built
-	$(MAKE) -C $(RECODE_BUILD_DIR)
-	touch $(RECODE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,9 +151,9 @@ recode: $(RECODE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(RECODE_BUILD_DIR)/.staged: $(RECODE_BUILD_DIR)/.built
-	rm -f $(RECODE_BUILD_DIR)/.staged
-	$(MAKE) -C $(RECODE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(RECODE_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 recode-stage: $(RECODE_BUILD_DIR)/.staged
 
@@ -159,7 +162,7 @@ recode-stage: $(RECODE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/recode
 #
 $(RECODE_IPK_DIR)/CONTROL/control:
-	@install -d $(RECODE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: recode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,8 +191,7 @@ $(RECODE_IPK_DIR)/CONTROL/control:
 $(RECODE_IPK): $(RECODE_BUILD_DIR)/.built
 	rm -rf $(RECODE_IPK_DIR) $(BUILD_DIR)/recode_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RECODE_BUILD_DIR) DESTDIR=$(RECODE_IPK_DIR) install
-	$(STRIP_COMMAND) $(RECODE_IPK_DIR)/opt/bin/recode
-	$(STRIP_COMMAND) $(RECODE_IPK_DIR)/opt/lib/librecode.a
+	$(STRIP_COMMAND) $(RECODE_IPK_DIR)/opt/bin/recode $(RECODE_IPK_DIR)/opt/lib/librecode.so.*.*.*
 #	install -d $(RECODE_IPK_DIR)/opt/etc/
 #	install -m 644 $(RECODE_SOURCE_DIR)/recode.conf $(RECODE_IPK_DIR)/opt/etc/recode.conf
 #	install -d $(RECODE_IPK_DIR)/opt/etc/init.d
