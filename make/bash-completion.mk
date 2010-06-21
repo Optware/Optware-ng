@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BASH_COMPLETION_SITE=http://bash-completion.alioth.debian.org/files
-BASH_COMPLETION_VERSION=1.1
+BASH_COMPLETION_VERSION=1.2
 BASH_COMPLETION_SOURCE=bash-completion-$(BASH_COMPLETION_VERSION).tar.bz2
 BASH_COMPLETION_DIR=bash-completion-$(BASH_COMPLETION_VERSION)
 BASH_COMPLETION_UNZIP=bzcat
