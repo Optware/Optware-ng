@@ -107,20 +107,22 @@ nethack-unpack: $(NETHACK_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(NETHACK_BUILD_DIR)/src/nethack: $(NETHACK_BUILD_DIR)/.configured
+$(NETHACK_BUILD_DIR)/.built: $(NETHACK_BUILD_DIR)/.configured
+	rm -f $@
 	make install -C $(NETHACK_BUILD_DIR) \
 		CC=$(TARGET_CC) \
 		AR=$(TARGET_AR) \
 		RANLIB=$(TARGET_RANLIB) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(NETHACK_CPPFLAGS)" \
 		LFLAGS="$(STAGING_LDFLAGS) $(NETHACK_LDFLAGS)" \
-		PREFIX=$(NETHACK_BUILD_DIR)/install 
+		PREFIX=$(NETHACK_BUILD_DIR)/install
+	touch $@ 
 
 #
 # You should change the dependency to refer directly to the main
 # binary which is built.
 #
-nethack: $(NETHACK_BUILD_DIR)/src/nethack
+nethack: $(NETHACK_BUILD_DIR)/.built
 
 $(NETHACK_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -149,7 +151,7 @@ $(NETHACK_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(NETHACK_IPK): $(NETHACK_BUILD_DIR)/src/nethack
+$(NETHACK_IPK): $(NETHACK_BUILD_DIR)/.built
 	rm -rf $(NETHACK_IPK_DIR) $(BUILD_DIR)/nethack_*_$(TARGET_ARCH).ipk
 	install -d $(NETHACK_IPK_DIR)/opt/bin
 	install -m 755 $(NETHACK_BUILD_DIR)/install/nethack $(NETHACK_IPK_DIR)/opt/bin/
@@ -172,6 +174,7 @@ nethack-ipk: $(NETHACK_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 nethack-clean:
+	rm -f $(NETHACK_BUILD_DIR)/.built
 	-$(MAKE) -C $(NETHACK_BUILD_DIR) clean
 
 #
