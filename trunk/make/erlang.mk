@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R13B04
-ERLANG_VERSION=R13B04
+ERLANG_UPSTREAM_VERSION=R14A
+ERLANG_VERSION=R14A
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -144,7 +144,7 @@ $(ERLANG_HOST_BUILD_DIR)/.configured: host/.configured \
 		$(DL_DIR)/$(ERLANG_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) \
-		$(ERLANG_PATCHES) make/erlang.mk
+		$(ERLANG_PATCHES) # make/erlang.mk
 	rm -rf $(HOST_BUILD_DIR)/$(ERLANG_DIR) $(@D)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	cat $(ERLANG_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(ERLANG_DIR) -p1
@@ -220,6 +220,7 @@ else
 $(ERLANG_BUILD_DIR)/.configured: $(ERLANG_BUILD_DIR)/erl-xcomp.conf
 endif
 	rm -f $@
+	sed -i -e '/^std_ssl_locations=/s|=.*|=/opt|' $(@D)/erts/configure
 ifeq ($(HOSTCC), $(TARGET_CC))
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -417,6 +418,7 @@ endif
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/escript \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/dialyzer \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/run_erl \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/run_test \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/typer \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/to_erl \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/beam* \
@@ -429,6 +431,7 @@ endif
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/heart \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/inet_gethost \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/run_erl \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/run_test \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/to_erl \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/typer \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/dialyzer \
