@@ -37,7 +37,7 @@ NETKIT-TELNET_SECTION=net
 NETKIT-TELNET_PRIORITY=optional
 NETKIT-TELNET_DEPENDS=ncurses
 NETKIT-TELNET_SUGGESTS=
-NETKIT-TELNET_CONFLICTS=Any telnet client program located in /bin, such as inetutils-telnet
+NETKIT-TELNET_CONFLICTS=Any telnet client program located in /opt/bin, such as inetutils-telnet
 
 #
 # NETKIT-TELNET_IPK_VERSION should be incremented when the ipk changes.
