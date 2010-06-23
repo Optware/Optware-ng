@@ -75,6 +75,8 @@ NVI_SOURCE_DIR=$(SOURCE_DIR)/nvi
 NVI_IPK_DIR=$(BUILD_DIR)/nvi-$(NVI_VERSION)-ipk
 NVI_IPK=$(BUILD_DIR)/nvi_$(NVI_VERSION)-$(NVI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: nvi-source nvi-unpack nvi nvi-stage nvi-ipk nvi-clean nvi-dirclean nvi-check
+
 ifneq ($(HOSTCC),$(TARGET_CC))
 NVI_CROSS_AC_PARAM=vi_cv_sprintf_count=yes 
 ifeq ($(LIBC_STYLE), uclibc)
@@ -226,3 +228,11 @@ nvi-clean:
 #
 nvi-dirclean:
 	rm -rf $(BUILD_DIR)/$(NVI_DIR) $(NVI_BUILD_DIR) $(NVI_IPK_DIR) $(NVI_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+nvi-check: $(NVI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
