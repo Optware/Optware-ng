@@ -1,0 +1,33 @@
+--- telnet/Makefile.old	1999-08-01 06:06:37.000000000 +0100
++++ telnet/Makefile	2010-06-23 16:51:10.000000000 +0100
+@@ -22,7 +22,7 @@
+ 	$(CXX) $(CXXFLAGS) -MM $(SRCS) >depend.mk
+ 
+ install: telnet
+-	install -s -m$(BINMODE) telnet $(INSTALLROOT)$(BINDIR)
++	install -m$(BINMODE) telnet $(INSTALLROOT)$(BINDIR)
+ 	install -m$(MANMODE) telnet.1 $(INSTALLROOT)$(MANDIR)/man1
+ 
+ clean:
+--- telnetlogin/Makefile.old	2000-04-13 02:07:22.000000000 +0100
++++ telnetlogin/Makefile	2010-06-23 17:13:22.000000000 +0100
+@@ -11,7 +11,7 @@
+ $(OBJS): ../version.h
+ 
+ install: telnetlogin
+-	install -s -m4750 -oroot -gtelnetd telnetlogin $(INSTALLROOT)$(SBINDIR)
++	install -m4750 -oroot -gtelnetd telnetlogin $(INSTALLROOT)$(SBINDIR)
+ 	install -m$(MANMODE) telnetlogin.8 $(INSTALLROOT)$(MANDIR)/man8
+ 
+ clean:
+--- telnetd/Makefile.old	1999-12-14 00:43:30.000000000 +0000
++++ telnetd/Makefile	2010-06-23 17:16:02.000000000 +0100
+@@ -27,7 +27,7 @@
+ telnetd.o: ../version.h
+ 
+ install: telnetd
+-	install -s -m$(DAEMONMODE) telnetd $(INSTALLROOT)$(SBINDIR)/in.telnetd
++	install -m$(DAEMONMODE) telnetd $(INSTALLROOT)$(SBINDIR)/in.telnetd
+ 	install -m$(MANMODE) issue.net.5 $(INSTALLROOT)$(MANDIR)/man5/
+ 	install -m$(MANMODE) telnetd.8 $(INSTALLROOT)$(MANDIR)/man8/in.telnetd.8
+ 	ln -sf in.telnetd.8 $(INSTALLROOT)$(MANDIR)/man8/telnetd.8

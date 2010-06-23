@@ -33,11 +33,11 @@ NETKIT-TELNET_DIR=netkit-telnet-$(NETKIT-TELNET_VERSION)
 NETKIT-TELNET_UNZIP=zcat
 NETKIT-TELNET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NETKIT-TELNET_DESCRIPTION=This package contains telnet client and server programs.
-NETKIT-TELNET_SECTION=
+NETKIT-TELNET_SECTION=net
 NETKIT-TELNET_PRIORITY=optional
-NETKIT-TELNET_DEPENDS=
+NETKIT-TELNET_DEPENDS=ncurses
 NETKIT-TELNET_SUGGESTS=
-NETKIT-TELNET_CONFLICTS=
+NETKIT-TELNET_CONFLICTS=Any telnet client program located in /bin, such as inetutils-telnet
 
 #
 # NETKIT-TELNET_IPK_VERSION should be incremented when the ipk changes.
@@ -52,13 +52,16 @@ NETKIT-TELNET_CONFFILES=/opt/etc/netkit-telnet.conf /opt/etc/init.d/SXXnetkit-te
 # NETKIT-TELNET_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NETKIT-TELNET_PATCHES=$(NETKIT-TELNET_SOURCE_DIR)/configure.patch $(NETKIT-TELNET_SOURCE_DIR)/missing-includes.patch
+NETKIT-TELNET_PATCHES= \
+		$(NETKIT-TELNET_SOURCE_DIR)/configure.patch \
+		$(NETKIT-TELNET_SOURCE_DIR)/missing-includes.patch \
+		$(NETKIT-TELNET_SOURCE_DIR)/Makefiles.patches
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NETKIT-TELNET_CPPFLAGS=
+NETKIT-TELNET_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 NETKIT-TELNET_LDFLAGS=
 
 #
@@ -124,10 +127,12 @@ $(NETKIT-TELNET_BUILD_DIR)/.configured: $(DL_DIR)/$(NETKIT-TELNET_SOURCE) $(NETK
 	(cd $(NETKIT-TELNET_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NETKIT-TELNET_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(NETKIT-TELNET_CPPFLAGS)" \
 		CXXFLAGS="$(STAGING_CPPFLAGS) $(NETKIT-TELNET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NETKIT-TELNET_LDFLAGS)" \
 		./configure \
 		--prefix=/opt \
+		--installroot=$(NETKIT-TELNET_IPK_DIR) \
 		--with-c-compiler=$(TARGET_CC) \
 		--with-c++-compiler=$(TARGET_CPP) \
 	)
@@ -141,7 +146,7 @@ netkit-telnet-unpack: $(NETKIT-TELNET_BUILD_DIR)/.configured
 #
 $(NETKIT-TELNET_BUILD_DIR)/.built: $(NETKIT-TELNET_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NETKIT-TELNET_BUILD_DIR) SUB=telnet
+	$(MAKE) -C $(NETKIT-TELNET_BUILD_DIR) 
 	touch $@
 
 #
@@ -192,18 +197,25 @@ $(NETKIT-TELNET_IPK_DIR)/CONTROL/control:
 #
 $(NETKIT-TELNET_IPK): $(NETKIT-TELNET_BUILD_DIR)/.built
 	rm -rf $(NETKIT-TELNET_IPK_DIR) $(BUILD_DIR)/netkit-telnet_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(NETKIT-TELNET_BUILD_DIR) DESTDIR=$(NETKIT-TELNET_IPK_DIR) install-strip
-	install -d $(NETKIT-TELNET_IPK_DIR)/opt/etc/
-	install -m 644 $(NETKIT-TELNET_SOURCE_DIR)/netkit-telnet.conf $(NETKIT-TELNET_IPK_DIR)/opt/etc/netkit-telnet.conf
-	install -d $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NETKIT-TELNET_SOURCE_DIR)/rc.netkit-telnet $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d/SXXnetkit-telnet
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d/SXXnetkit-telnet
+	install -d $(NETKIT-TELNET_IPK_DIR)/opt/bin/
+	install -d $(NETKIT-TELNET_IPK_DIR)/opt/man/man1/
+	install -d $(NETKIT-TELNET_IPK_DIR)/opt/man/man5/
+	install -d $(NETKIT-TELNET_IPK_DIR)/opt/man/man8/
+	install -d $(NETKIT-TELNET_IPK_DIR)/opt/sbin/in.telnetd/
+	$(MAKE) -C $(NETKIT-TELNET_BUILD_DIR) DESTDIR=$(NETKIT-TELNET_IPK_DIR) install
+	$(STRIP_COMMAND) $(NETKIT-TELNET_IPK_DIR)/opt/bin/telnet
+	$(STRIP_COMMAND) $(NETKIT-TELNET_IPK_DIR)/opt/sbin/in.telnetd/telnetd
+#	install -d $(NETKIT-TELNET_IPK_DIR)/opt/etc/
+#	install -m 644 $(NETKIT-TELNET_SOURCE_DIR)/netkit-telnet.conf $(NETKIT-TELNET_IPK_DIR)/opt/etc/netkit-telnet.conf
+#	install -d $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(NETKIT-TELNET_SOURCE_DIR)/rc.netkit-telnet $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d/SXXnetkit-telnet
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d/SXXnetkit-telnet
 	$(MAKE) $(NETKIT-TELNET_IPK_DIR)/CONTROL/control
-	install -m 755 $(NETKIT-TELNET_SOURCE_DIR)/postinst $(NETKIT-TELNET_IPK_DIR)/CONTROL/postinst
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETKIT-TELNET_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(NETKIT-TELNET_SOURCE_DIR)/prerm $(NETKIT-TELNET_IPK_DIR)/CONTROL/prerm
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETKIT-TELNET_IPK_DIR)/CONTROL/prerm
-	echo $(NETKIT-TELNET_CONFFILES) | sed -e 's/ /\n/g' > $(NETKIT-TELNET_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(NETKIT-TELNET_SOURCE_DIR)/postinst $(NETKIT-TELNET_IPK_DIR)/CONTROL/postinst
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETKIT-TELNET_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(NETKIT-TELNET_SOURCE_DIR)/prerm $(NETKIT-TELNET_IPK_DIR)/CONTROL/prerm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETKIT-TELNET_IPK_DIR)/CONTROL/prerm
+#	echo $(NETKIT-TELNET_CONFFILES) | sed -e 's/ /\n/g' > $(NETKIT-TELNET_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETKIT-TELNET_IPK_DIR)
 
 #
