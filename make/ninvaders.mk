@@ -52,7 +52,7 @@ NINVADERS_CONFFILES=/opt/etc/ninvaders.conf /opt/etc/init.d/SXXninvaders
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NINVADERS_CPPFLAGS=
+NINVADERS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 NINVADERS_LDFLAGS=
 
 #
