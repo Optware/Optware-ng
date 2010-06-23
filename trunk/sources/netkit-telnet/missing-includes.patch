@@ -50,3 +50,18 @@
  #include <arpa/telnet.h>
  #include <sys/types.h>
  #include <sys/time.h>
+--- telnet/telnet.cc.old	2000-07-23 04:24:53.000000000 +0100
++++ telnet/telnet.cc	2010-06-22 22:54:14.000000000 +0100
+@@ -61,12 +61,8 @@
+  * Due to lossage in some linux distributions/kernel releases/libc versions
+  * this must come *after* termios.h (which is included in externs.h)
+  */
+-#include <termcap.h>
+ 
+-#ifdef USE_NCURSES
+ #include <term.h>
+-#endif
+-
+ 
+ #define	strip(x)	((x)&0x7f)
+ 

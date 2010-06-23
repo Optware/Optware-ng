@@ -1,5 +1,5 @@
---- configure.orig	2007-04-20 04:59:51.000000000 +0000
-+++ configure	2007-04-20 05:02:39.000000000 +0000
+--- configure.old	2000-07-29 19:00:29.000000000 +0100
++++ configure	2010-06-22 21:57:33.000000000 +0100
 @@ -78,7 +78,7 @@
      for TRY in egcs gcc g++ CC c++ cc; do
         (
@@ -36,6 +36,15 @@
         ) >/dev/null 2>&1; then
           echo 'yes'
       else
+@@ -252,7 +252,7 @@
+ fi
+ 
+ 
+-LDFLAGS=
++# LDFLAGS=
+ LIBS=
+ 
+ rm -f __conftest*
 @@ -278,13 +278,13 @@
  EOF
  if (
