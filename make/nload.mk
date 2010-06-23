@@ -70,6 +70,8 @@ NLOAD_SOURCE_DIR=$(SOURCE_DIR)/nload
 NLOAD_IPK_DIR=$(BUILD_DIR)/nload-$(NLOAD_VERSION)-ipk
 NLOAD_IPK=$(BUILD_DIR)/nload_$(NLOAD_VERSION)-$(NLOAD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: nload-source nload-unpack nload nload-stage nload-ipk nload-clean nload-dirclean nload-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -122,6 +124,8 @@ $(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-dependency-tracking \
+		--disable-nls \
+		--disable-static \
 	)
 	touch $@
 
@@ -145,17 +149,18 @@ nload: $(NLOAD_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libnload.so.$(NLOAD_VERSION): $(NLOAD_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(NLOAD_BUILD_DIR)/nload.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(NLOAD_BUILD_DIR)/libnload.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(NLOAD_BUILD_DIR)/libnload.so.$(NLOAD_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so
-
-nload-stage: $(STAGING_DIR)/opt/lib/libnload.so.$(NLOAD_VERSION)
-
+#$(STAGING_DIR)/.staged: $(NLOAD_BUILD_DIR)/.built
+#	rm -f $@
+#	install -d $(STAGING_DIR)/opt/include
+#	install -m 644 $(NLOAD_BUILD_DIR)/nload.h $(STAGING_DIR)/opt/include
+#	install -d $(STAGING_DIR)/opt/lib
+#	install -m 644 $(NLOAD_BUILD_DIR)/libnload.a $(STAGING_DIR)/opt/lib
+#	install -m 644 $(NLOAD_BUILD_DIR)/libnload.so.$(NLOAD_VERSION) $(STAGING_DIR)/opt/lib
+#	cd $(STAGING_DIR)/opt/lib && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so.1
+#	cd $(STAGING_DIR)/opt/lib && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so
+#	touch $@
+#
+#nload-stage: $(STAGING_DIR)/.staged
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/nload
@@ -202,6 +207,7 @@ nload-ipk: $(NLOAD_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 nload-clean:
+	rm -f $(NLOAD_BUILD_DIR)/.built
 	-$(MAKE) -C $(NLOAD_BUILD_DIR) clean
 
 #
