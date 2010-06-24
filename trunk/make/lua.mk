@@ -36,11 +36,14 @@ LUA_DESCRIPTION=Lua is a powerful light-weight programming language designed for
 LUA_SECTION=misc
 LUA_PRIORITY=optional
 LUA_DEPENDS=readline, ncurses
+LUA_SUGGESTS=
+LUA_CONFLICTS=
+
 
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=2
+LUA_IPK_VERSION=3
 
 #
 # LUA_CONFFILES should be a list of user-editable files
@@ -50,7 +53,7 @@ LUA_IPK_VERSION=2
 # LUA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LUA_PATCHES=$(LUA_SOURCE_DIR)/configure.patch
+LUA_PATCHES=$(LUA_SOURCE_DIR)/makefiles.patch
 
 #
 # If the compilation of the package requires additional
@@ -72,7 +75,9 @@ LUA_BUILD_DIR=$(BUILD_DIR)/lua
 LUA_SOURCE_DIR=$(SOURCE_DIR)/lua
 LUA_IPK_DIR=$(BUILD_DIR)/lua-$(LUA_VERSION)-ipk
 LUA_IPK=$(BUILD_DIR)/lua_$(LUA_VERSION)-$(LUA_IPK_VERSION)_$(TARGET_ARCH).ipk
-LUA_HOST_BUILD_DIR=$(BUILD_DIR)/lua-host
+LUA_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/lua
+
+.PHONY: lua-source lua-unpack lua lua-stage lua-ipk lua-clean lua-dirclean lua-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -110,6 +115,10 @@ $(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_HOST_BUILD_DIR)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(LUA_PATCHES)" ; \
+		then cat $(LUA_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(LUA_DIR) -p0 ; \
+	fi
 	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR)
 	sed -i -e 's|/usr/local|/opt|' $(@D)/src/luaconf.h
 	touch $@
@@ -169,6 +178,9 @@ $(LUA_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(LUA_SITE)/$(LUA_SOURCE)" >>$@
 	@echo "Description: $(LUA_DESCRIPTION)" >>$@
 	@echo "Depends: $(LUA_DEPENDS)" >>$@
+	@echo "Suggests: $(LUA_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LUA_CONFLICTS)" >>$@
+
 
 #
 # This builds the IPK file.
@@ -186,6 +198,7 @@ $(LUA_IPK): $(LUA_BUILD_DIR)/.built
 	rm -rf $(LUA_IPK_DIR) $(BUILD_DIR)/lua_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(LUA_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(LUA_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(LUA_IPK_DIR)/opt/lib/liblua.so
 	install -d $(LUA_IPK_DIR)/opt/lib/pkgconfig
 	sed -e 's|^prefix=.*|prefix=/opt|' $(LUA_BUILD_DIR)/etc/lua.pc > $(LUA_IPK_DIR)/opt/lib/pkgconfig/lua.pc
 	$(MAKE) $(LUA_IPK_DIR)/CONTROL/control
@@ -200,6 +213,7 @@ lua-ipk: $(LUA_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 lua-clean:
+	rm -f $(LUA_BUILD_DIR)/.built
 	-$(MAKE) -C $(LUA_BUILD_DIR) clean
 
 #
