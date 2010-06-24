@@ -71,10 +71,12 @@ ECL_LDFLAGS=
 # You should not change any of these variables.
 #
 ECL_BUILD_DIR=$(BUILD_DIR)/ecl
-ECL_HOST_BUILD_DIR=$(BUILD_DIR)/ecl-host
+ECL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/ecl
 ECL_SOURCE_DIR=$(SOURCE_DIR)/ecl
 ECL_IPK_DIR=$(BUILD_DIR)/ecl-$(ECL_VERSION)-ipk
 ECL_IPK=$(BUILD_DIR)/ecl_$(ECL_VERSION)-$(ECL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: ecl-source ecl-unpack ecl ecl-stage ecl-ipk ecl-clean ecl-dirclean ecl-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -256,3 +258,10 @@ ecl-clean:
 #
 ecl-dirclean:
 	rm -rf $(BUILD_DIR)/$(ECL_DIR) $(ECL_BUILD_DIR) $(ECL_HOST_BUILD_DIR) $(ECL_IPK_DIR) $(ECL_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+ecl-check: $(ECL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
