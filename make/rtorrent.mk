@@ -52,7 +52,7 @@ RTORRENT_PATCHES=$(RTORRENT_SOURCE_DIR)/uint32_t.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-RTORRENT_CPPFLAGS=-O3
+RTORRENT_CPPFLAGS=-O3 -I$(STAGING_INCLUDE_DIR)/$(RTORRENT_NCURSES)
 RTORRENT_LDFLAGS=
 RTORRENT_CONFIGURE=
 ifeq ($(LIBC_STYLE), uclibc)
@@ -124,7 +124,6 @@ rtorrent-source: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
 # to Make causes it to override the default search paths of the compiler.
 # 
 $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES) make/rtorrent.mk
-	$(MAKE) ncurses-stage
 	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage
 	$(MAKE) libcurl-stage xmlrpc-c-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR)
