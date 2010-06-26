@@ -12,7 +12,10 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk \
-	bitchx \
+	bitchx btg \
+	clinkcc \
+	ecl \
+	fuppes \
 	gtk \
 	iptables ivorbis-tools lcd4linux \
 	ldconfig \
@@ -21,8 +24,8 @@ BROKEN_PACKAGES = \
 	samba34 \
 	samba35 \
 	util-linux \
-	vte \
-	xaw xchat xterm
+	vlc vte \
+	x264 xaw xchat xterm
 
 SLANG_VERSION := 2.2.2
 SLANG_IPK_VERSION := 1
