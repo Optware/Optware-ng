@@ -69,6 +69,8 @@ TAGED_SOURCE_DIR=$(SOURCE_DIR)/taged
 TAGED_IPK_DIR=$(BUILD_DIR)/taged-$(TAGED_VERSION)-ipk
 TAGED_IPK=$(BUILD_DIR)/taged_$(TAGED_VERSION)-$(TAGED_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: taged-source taged-unpack taged taged-stage taged-ipk taged-clean taged-dirclean taged-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -198,6 +200,7 @@ taged-ipk: $(TAGED_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 taged-clean:
+	rm -f $(TAGED_BUILD_DIR)/.built
 	-$(MAKE) -C $(TAGED_BUILD_DIR) clean
 
 #
