@@ -70,6 +70,8 @@ SQSH_SOURCE_DIR=$(SOURCE_DIR)/sqsh
 SQSH_IPK_DIR=$(BUILD_DIR)/sqsh-$(SQSH_VERSION)-ipk
 SQSH_IPK=$(BUILD_DIR)/sqsh_$(SQSH_VERSION)-$(SQSH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: sqsh-source sqsh-unpack sqsh sqsh-stage sqsh-ipk sqsh-clean sqsh-dirclean sqsh-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
