@@ -56,13 +56,18 @@ WIZD_CONFFILES=/opt/etc/wizd.conf
 # WIZD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-WIZD_PATCHES=$(WIZD_SOURCE_DIR)/wizd.h.patch $(WIZD_SOURCE_DIR)/Makefile.patch $(WIZD_SOURCE_DIR)/wizd_http.c.patch $(WIZD_SOURCE_DIR)/wizd_menu.c.patch $(WIZD_SOURCE_DIR)/wizd_mp3.h.patch
+WIZD_PATCHES= \
+	$(WIZD_SOURCE_DIR)/wizd.h.patch \
+	$(WIZD_SOURCE_DIR)/Makefile.patch \
+	$(WIZD_SOURCE_DIR)/wizd_http.c.patch \
+	$(WIZD_SOURCE_DIR)/wizd_menu.c.patch \
+	$(WIZD_SOURCE_DIR)/wizd_mp3.h.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-WIZD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)
+WIZD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR) -I$(STAGING_INCLUDE_DIR)/ncurses
 WIZD_LDFLAGS=-lm
 
 #
@@ -78,6 +83,8 @@ WIZD_BUILD_DIR=$(BUILD_DIR)/wizd
 WIZD_SOURCE_DIR=$(SOURCE_DIR)/wizd
 WIZD_IPK_DIR=$(BUILD_DIR)/wizd-$(WIZD_VERSION)-ipk
 WIZD_IPK=$(BUILD_DIR)/wizd_$(WIZD_VERSION)-$(WIZD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: wizd-source wizd-unpack wizd wizd-stage wizd-ipk wizd-clean wizd-dirclean wizd-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -130,10 +137,11 @@ wizd-unpack: $(WIZD_BUILD_DIR)/.configured
 #
 $(WIZD_BUILD_DIR)/.built: $(WIZD_BUILD_DIR)/.configured
 	rm -f $(WIZD_BUILD_DIR)/.built
+	sed -i "s#-I/usr/local/include#$(WIZD_CPPFLAGS)#g" $(WIZD_BUILD_DIR)/Makefile
 	sed -i "s#/usr/local#${STAGING_DIR}/opt#g" $(WIZD_BUILD_DIR)/Makefile 
 	sed -i "s/-static //" $(WIZD_BUILD_DIR)/Makefile
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(WIZD_CPPFLAGS)" \
-        LDFLAGS="$(STAGING_LDFLAGS) $(WIZD_LDFLAGS)" \
+       LDFLAGS="$(STAGING_LDFLAGS) $(WIZD_LDFLAGS)" \
 	$(MAKE) -C $(WIZD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS)
 	touch $(WIZD_BUILD_DIR)/.built
 
@@ -210,6 +218,7 @@ wizd-ipk: $(WIZD_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 wizd-clean:
+	rm -f $(WIZD_BUILD_DIR)/.built
 	-$(MAKE) -C $(WIZD_BUILD_DIR) clean
 
 #
@@ -218,3 +227,9 @@ wizd-clean:
 #
 wizd-dirclean:
 	rm -rf $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR) $(WIZD_IPK_DIR) $(WIZD_IPK)
+#
+#
+# Some sanity check for the package.
+#
+wizd-check: $(WIZD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
