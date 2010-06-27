@@ -52,7 +52,7 @@ SCLI_IPK_VERSION=3
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SCLI_CPPFLAGS=
+SCLI_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 SCLI_LDFLAGS=
 
 #
