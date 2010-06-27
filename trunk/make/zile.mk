@@ -52,7 +52,7 @@ ZILE_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ZILE_CPPFLAGS=
+ZILE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ZILE_LDFLAGS=
 
 #
@@ -120,7 +120,7 @@ $(ZILE_BUILD_DIR)/.configured: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES) make/zil
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZILE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZILE_LDFLAGS)" \
-gl_cv_func_getopt_gnu=yes \
+		gl_cv_func_getopt_gnu=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
