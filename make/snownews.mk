@@ -41,6 +41,8 @@ SNOWNEWS_DEPENDS+=, libiconv
 else
 SNOWNEWS_DEPENDS+=, gconv-modules
 endif
+SNOWNEWS_SUGGESTS=
+SNOWNEWS_CONFLICTS=
 
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
@@ -61,7 +63,7 @@ SNOWNEWS_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SNOWNEWS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
+SNOWNEWS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/ncurses
 SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm -lssl
 ifeq ($(LIBC_STYLE), uclibc)
 SNOWNEWS_LDFLAGS+= -lintl
@@ -187,6 +189,8 @@ $(SNOWNEWS_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(SNOWNEWS_SITE)/$(SNOWNEWS_SOURCE)" >>$@
 	@echo "Description: $(SNOWNEWS_DESCRIPTION)" >>$@
 	@echo "Depends: $(SNOWNEWS_DEPENDS)" >>$@
+	@echo "Suggests: $(SNOWNEWS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SNOWNEWS_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -216,6 +220,7 @@ snownews-ipk: $(SNOWNEWS_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 snownews-clean:
+	rm -f $(SNOWNEWS_BUILD_DIR)/.built
 	-$(MAKE) -C $(SNOWNEWS_BUILD_DIR) clean
 
 #
