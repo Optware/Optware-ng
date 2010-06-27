@@ -75,6 +75,8 @@ WPA_SUPPLICANT_SOURCE_DIR=$(SOURCE_DIR)/wpa-supplicant
 WPA_SUPPLICANT_IPK_DIR=$(BUILD_DIR)/wpa-supplicant-$(WPA_SUPPLICANT_VERSION)-ipk
 WPA_SUPPLICANT_IPK=$(BUILD_DIR)/wpa-supplicant_$(WPA_SUPPLICANT_VERSION)-$(WPA_SUPPLICANT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: wpa-supplicant-source wpa-supplicant-unpack wpa-supplicant wpa-supplicant-stage wpa-supplicant-ipk wpa-supplicant-clean wpa-supplicant-dirclean wpa-supplicant-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -206,6 +208,7 @@ wpa-supplicant-ipk: $(WPA_SUPPLICANT_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 wpa-supplicant-clean:
+	rm -f $(WPA_SUPPLICANT_BUILD_DIR)/.built
 	-$(MAKE) -C $(WPA_SUPPLICANT_BUILD_DIR) clean
 
 #
@@ -214,3 +217,10 @@ wpa-supplicant-clean:
 #
 wpa-supplicant-dirclean:
 	rm -rf $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(WPA_SUPPLICANT_BUILD_DIR) $(WPA_SUPPLICANT_IPK_DIR) $(WPA_SUPPLICANT_IPK)
+#
+#
+# Some sanity check for the package.
+#
+wpa-supplicant-check: $(WPA_SUPPLICANT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
