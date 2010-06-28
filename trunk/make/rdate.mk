@@ -9,7 +9,7 @@ RDATE_SOURCE_DIR=$(SOURCE_DIR)/rdate
 
 RDATE_VERSION=1.4
 RDATE=rdate-$(RDATE_VERSION)
-RDATE_SITE=http://sources.nslu2-linux.org/sources/
+RDATE_SITE=http://sources.nslu2-linux.org/sources
 RDATE_SOURCE=$(RDATE).tar.gz
 RDATE_UNZIP=zcat
 RDATE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -17,12 +17,15 @@ RDATE_DESCRIPTION=Using RFC868, retrieves a remote date and time and sets the lo
 RDATE_SECTION=network
 RDATE_PRIORITY=optional
 RDATE_DEPENDS=
+RDATE_SUGGESTS=
 RDATE_CONFLICTS=
 
 RDATE_IPK_VERSION=2
 
 RDATE_IPK=$(BUILD_DIR)/rdate_$(RDATE_VERSION)-$(RDATE_IPK_VERSION)_$(TARGET_ARCH).ipk
 RDATE_IPK_DIR=$(BUILD_DIR)/rdate-$(RDATE_VERSION)-ipk
+
+.PHONY: rdate-source rdate-unpack rdate rdate-stage rdate-ipk rdate-clean rdate-dirclean rdate-check
 
 $(DL_DIR)/$(RDATE_SOURCE):
 	$(WGET) -P $(DL_DIR) $(RDATE_SITE)/$(RDATE_SOURCE)
@@ -36,11 +39,13 @@ $(RDATE_DIR)/.configured: $(DL_DIR)/$(RDATE_SOURCE)
 
 rdate-unpack: $(RDATE_DIR)/.configured
 
-$(RDATE_DIR)/rdate: $(RDATE_DIR)/.configured
+$(RDATE_DIR)/.built: $(RDATE_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(RDATE_DIR) CC=$(TARGET_CC) \
-	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) 
+	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD)
+	touch $@ 
 
-rdate: $(RDATE_DIR)/rdate
+rdate: $(RDATE_DIR)/.built
 
 $(RDATE_IPK_DIR)/CONTROL/control:
 	@install -d $(RDATE_IPK_DIR)/CONTROL
@@ -54,9 +59,10 @@ $(RDATE_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(RDATE_SITE)/$(RDATE_SOURCE)" >>$@
 	@echo "Description: $(RDATE_DESCRIPTION)" >>$@
 	@echo "Depends: $(RDATE_DEPENDS)" >>$@
+	@echo "Suggests: $(RDATE_SUGGESTS)" >>$@
 	@echo "Conflicts: $(RDATE_CONFLICTS)" >>$@
 
-$(RDATE_IPK): $(RDATE_DIR)/rdate
+$(RDATE_IPK): $(RDATE_DIR)/.built
 	install -d $(RDATE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(RDATE_DIR)/rdate -o $(RDATE_IPK_DIR)/opt/bin/rdate
 	$(MAKE) $(RDATE_IPK_DIR)/CONTROL/control
@@ -65,11 +71,15 @@ $(RDATE_IPK): $(RDATE_DIR)/rdate
 rdate-ipk: $(RDATE_IPK)
 
 rdate-clean:
-	-$(MAKE) -C $(RDATE_DIR) clean
-
-rdate-distclean:
-	-rm $(RDATE_DIR)/.configured
+	rm -f $(RDATE_BUILD_DIR)/.built
 	-$(MAKE) -C $(RDATE_DIR) clean
 
 rdate-dirclean:
 	rm -rf $(RDATE_DIR) $(RDATE_IPK_DIR) $(RDATE_IPK)
+#
+#
+# Some sanity check for the package.
+#
+rdate-check: $(RDATE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+
