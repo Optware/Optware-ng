@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ALSA-LIB_SITE=ftp://ftp.alsa-project.org/pub/lib
-ALSA-LIB_VERSION=1.0.8
+ALSA-LIB_VERSION=1.0.23
 ALSA-LIB_SOURCE=alsa-lib-$(ALSA-LIB_VERSION).tar.bz2
 ALSA-LIB_DIR=alsa-lib-$(ALSA-LIB_VERSION)
 ALSA-LIB_UNZIP=bzcat
