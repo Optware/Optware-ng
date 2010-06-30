@@ -33,15 +33,15 @@ PY-TRAC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TRAC_DESCRIPTION=An enhanced wiki and issue tracking system for software development projects.
 PY-TRAC_SECTION=misc
 PY-TRAC_PRIORITY=optional
-PY25-TRAC_DEPENDS=python25, py25-genshi
-PY26-TRAC_DEPENDS=python26, py26-genshi
+PY25-TRAC_DEPENDS=python25, py25-genshi, py25-setuptools
+PY26-TRAC_DEPENDS=python26, py26-genshi, py26-setuptools
 PY25-TRAC_CONFLICTS=py26-trac
 PY26-TRAC_CONFLICTS=py25-trac
 
 #
 # PY-TRAC_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TRAC_IPK_VERSION=1
+PY-TRAC_IPK_VERSION=2
 
 #
 # PY-TRAC_CONFFILES should be a list of user-editable files
