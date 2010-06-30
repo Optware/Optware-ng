@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ALSA-OSS_SITE=ftp://ftp.alsa-project.org/pub/oss-lib
-ALSA-OSS_VERSION=1.0.8
+ALSA-OSS_VERSION=1.0.17
 ALSA-OSS_SOURCE=alsa-oss-$(ALSA-OSS_VERSION).tar.bz2
 ALSA-OSS_DIR=alsa-oss-$(ALSA-OSS_VERSION)
 ALSA-OSS_UNZIP=bzcat
@@ -141,6 +141,7 @@ alsa-oss: $(ALSA-OSS_BUILD_DIR)/.built
 $(ALSA-OSS_BUILD_DIR)/.staged: $(ALSA-OSS_BUILD_DIR)/.built
 	rm -f $(ALSA-OSS_BUILD_DIR)/.staged
 	$(MAKE) -C $(ALSA-OSS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libalsatoss.la $(STAGING_LIB_DIR)/libaoss.la $(STAGING_LIB_DIR)/libossredir.la
 	touch $(ALSA-OSS_BUILD_DIR)/.staged
 
 alsa-oss-stage: $(ALSA-OSS_BUILD_DIR)/.staged
