@@ -28,7 +28,7 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
-	unslung-feeds-unstable \
+	alsa-lib \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
