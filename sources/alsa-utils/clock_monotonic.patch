@@ -1,0 +1,35 @@
+--- configure.orig	2010-04-16 12:19:17.000000000 +0100
++++ configure	2010-06-30 20:50:38.000000000 +0100
+@@ -7163,21 +7163,21 @@
+ fi
+ { echo "$as_me:$LINENO: result: $ac_cv_lib_rt_clock_gettime" >&5
+ echo "${ECHO_T}$ac_cv_lib_rt_clock_gettime" >&6; }
+-if test $ac_cv_lib_rt_clock_gettime = yes; then
+-  HAVE_LIBRT="yes"
+-fi
++# if test $ac_cv_lib_rt_clock_gettime = yes; then
++#   HAVE_LIBRT="yes"
++# fi
+ 
+   if test "$HAVE_LIBRT" = "yes" ; then
+     LIBRT="-lrt"
+ 
+-cat >>confdefs.h <<\_ACEOF
+-#define HAVE_LIBRT 1
+-_ACEOF
+-
+-
+-cat >>confdefs.h <<\_ACEOF
+-#define HAVE_CLOCK_GETTIME 1
+-_ACEOF
++# cat >>confdefs.h <<\_ACEOF
++# #define HAVE_LIBRT 1
++# _ACEOF
++ 
++
++# cat >>confdefs.h <<\_ACEOF
++# #define HAVE_CLOCK_GETTIME 1
++# _ACEOF
+ 
+   fi
+ else

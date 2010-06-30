@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ALSA-UTILS_SITE=ftp://ftp.alsa-project.org/pub/utils
-ALSA-UTILS_VERSION=1.0.8
+ALSA-UTILS_VERSION=1.0.23
 ALSA-UTILS_SOURCE=alsa-utils-$(ALSA-UTILS_VERSION).tar.bz2
 ALSA-UTILS_DIR=alsa-utils-$(ALSA-UTILS_VERSION)
 ALSA-UTILS_UNZIP=bzcat
@@ -45,7 +45,11 @@ ALSA-UTILS_CONFFILES=
 # ALSA-UTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ALSA-UTILS_PATCHES=
+# ALSA-UTILS_PATCHES=$(ALSA-UTILS_SOURCE_DIR)/clock_monotonic.patch
+
+ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
+ALSA-UTILS_PATCHES=$(ALSA-UTILS_SOURCE_DIR)/clock_monotonic.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -103,7 +107,10 @@ $(ALSA-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS
 	$(MAKE) alsa-lib-stage gettext-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(ALSA-UTILS_DIR) $(ALSA-UTILS_BUILD_DIR)
 	$(ALSA-UTILS_UNZIP) $(DL_DIR)/$(ALSA-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(ALSA-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-UTILS_DIR) -p1
+	if test -n "$(ALSA-UTILS_PATCHES)" ; \
+		then cat $(ALSA-UTILS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(ALSA-UTILS_DIR) -p0 ; \
+	fi
 	mv $(BUILD_DIR)/$(ALSA-UTILS_DIR) $(ALSA-UTILS_BUILD_DIR)
 	(cd $(ALSA-UTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -179,7 +186,6 @@ $(ALSA-UTILS_IPK): $(ALSA-UTILS_BUILD_DIR)/.built
 	rm -rf $(ALSA-UTILS_IPK_DIR) $(BUILD_DIR)/alsa-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ALSA-UTILS_BUILD_DIR) DESTDIR=$(ALSA-UTILS_IPK_DIR) install-strip
 	$(MAKE) $(ALSA-UTILS_IPK_DIR)/CONTROL/control
-#	install -m 644 $(ALSA-UTILS_SOURCE_DIR)/control $(ALSA-UTILS_IPK_DIR)/CONTROL/control
 	echo $(ALSA-UTILS_CONFFILES) | sed -e 's/ /\n/g' > $(ALSA-UTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ALSA-UTILS_IPK_DIR)
 
