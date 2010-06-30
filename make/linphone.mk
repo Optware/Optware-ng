@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LINPHONE_SITE=http://mirror.its.uidaho.edu/pub/savannah/linphone/stable/sources
-LINPHONE_VERSION=3.2.1
+LINPHONE_VERSION=3.3.1
 LINPHONE_SOURCE=linphone-$(LINPHONE_VERSION).tar.gz
 LINPHONE_DIR=linphone-$(LINPHONE_VERSION)
 LINPHONE_UNZIP=zcat
@@ -29,7 +29,7 @@ LINPHONE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LINPHONE_DESCRIPTION=Open source SIP VOIP phone.
 LINPHONE_SECTION=util
 LINPHONE_PRIORITY=optional
-LINPHONE_DEPENDS=libosip2, libexosip2, ncurses, readline, speex
+LINPHONE_DEPENDS=libosip2, libexosip2, ncurses, readline, speex, alsa-lib
 LINPHONE_SUGGESTS=
 LINPHONE_CONFLICTS=
 
@@ -46,7 +46,11 @@ LINPHONE_IPK_VERSION=1
 # LINPHONE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LINPHONE_PATCHES=$(LINPHONE_SOURCE_DIR)/configure.patch
+# LINPHONE_PATCHES=$(LINPHONE_SOURCE_DIR)/msticker.c.patch
+
+ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
+LINPHONE_PATCHES=$(LINPHONE_SOURCE_DIR)/msticker.c.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +112,7 @@ linphone-source: $(DL_DIR)/$(LINPHONE_SOURCE) $(LINPHONE_PATCHES)
 # shown below to make various patches to it.
 #
 $(LINPHONE_BUILD_DIR)/.configured: $(DL_DIR)/$(LINPHONE_SOURCE) $(LINPHONE_PATCHES) make/linphone.mk
-	$(MAKE) libosip2-stage libexosip2-stage ncurses-stage readline-stage speex-stage
+	$(MAKE) libosip2-stage libexosip2-stage ncurses-stage readline-stage speex-stage alsa-lib-stage
 	rm -rf $(BUILD_DIR)/$(LINPHONE_DIR) $(@D)
 	$(LINPHONE_UNZIP) $(DL_DIR)/$(LINPHONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LINPHONE_PATCHES)" ; \

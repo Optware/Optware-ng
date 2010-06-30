@@ -1,0 +1,12 @@
+--- mediastreamer2/src/msticker.c.orig	2009-06-16 11:49:48.000000000 +0100
++++ mediastreamer2/src/msticker.c	2010-06-28 21:52:30.000000000 +0100
+@@ -245,9 +245,6 @@
+ 	return (ts.tv_sec*1000LL) + (ts.tv_nsec/1000000LL);
+ #else
+ 	struct timespec ts;
+-	if (clock_gettime(CLOCK_MONOTONIC,&ts)<0){
+-		ms_fatal("clock_gettime() doesn't work: %s",strerror(errno));
+-	}
+ 	return (ts.tv_sec*1000LL) + (ts.tv_nsec/1000000LL);
+ #endif
+ }
