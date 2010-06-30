@@ -173,6 +173,7 @@ $(SPEEX_BUILD_DIR)/.staged: $(SPEEX_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/speex.pc
+	rm -f $(STAGING_LIB_DIR)/libspeex.la $(STAGING_LIB_DIR)/libspeexdsp.la
 	touch $@
 
 speex-stage: $(SPEEX_BUILD_DIR)/.staged
