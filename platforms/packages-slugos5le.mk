@@ -13,6 +13,7 @@ BROKEN_PACKAGES = \
 	atk \
 	bitchx \
 	gtk ipac-ng iptables iptraf ldconfig \
+	linphone \
 	nfs-utils \
 	puppy qemu \
 	softflowd \
