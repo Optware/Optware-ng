@@ -116,6 +116,7 @@ $(ALSA-LIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-LIB_SOURCE) $(ALSA-LIB_PATCH
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--disable-python \
 	)
 	touch $(ALSA-LIB_BUILD_DIR)/.configured
 
