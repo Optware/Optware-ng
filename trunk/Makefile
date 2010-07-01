@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
-	alsa-lib \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -215,6 +214,7 @@ PACKAGES_ONLY_WORK_ON_LINUX24 = \
 COMMON_CROSS_PACKAGES = \
 	9base \
 	abook adduser adns aget aiccu alac-decoder \
+	alsa-lib \
 	amule analog antinat apcupsd appweb \
 	apache apr apr-util \
 	arc aria2 arping arpwatch aspell \
