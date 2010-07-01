@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	golang \
 	iptraf \
 	ldconfig \
+	linphone \
 	puppy \
 	qemu \
 	softflowd \

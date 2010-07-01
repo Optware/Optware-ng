@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	btg \
 	iptraf \
 	ldconfig \
+	linphone \
 	puppy \
 	qemu \
 	softflowd \
