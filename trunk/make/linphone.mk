@@ -48,7 +48,8 @@ LINPHONE_IPK_VERSION=1
 #
 # LINPHONE_PATCHES=$(LINPHONE_SOURCE_DIR)/msticker.c.patch
 
-ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
+# This patch is needed if the target glibc has a broken or missing CLOCK_MONOTONIC function
+ifeq ($(OPTWARE_TARGET), $(filter ds101j fsg3 mss nas100d nslu2 openwiz, $(OPTWARE_TARGET)))
 LINPHONE_PATCHES=$(LINPHONE_SOURCE_DIR)/msticker.c.patch
 endif
 
