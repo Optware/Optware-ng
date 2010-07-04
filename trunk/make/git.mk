@@ -405,5 +405,5 @@ git-dirclean:
 #
 # Some sanity check for the package.
 #
-git-check: $(GIT_IPK)
+git-check: $(GIT_IPK) $(GIT-LITE_IPK) $(GIT-MANPAGES_IPK) $(GIT-SVN_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
