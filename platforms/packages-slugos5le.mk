@@ -9,11 +9,9 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	alsa-lib \
 	atk \
 	bitchx \
 	gtk ipac-ng iptables iptraf ldconfig \
-	linphone \
 	nfs-utils \
 	puppy qemu \
 	softflowd \

@@ -47,7 +47,8 @@ ALSA-UTILS_CONFFILES=
 #
 # ALSA-UTILS_PATCHES=$(ALSA-UTILS_SOURCE_DIR)/clock_monotonic.patch
 
-ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
+# This patch is needed if the target glibc has a broken or missing CLOCK_MONOTONIC function
+ifeq ($(OPTWARE_TARGET), $(filter ds101j fsg3 mss nas100d nslu2 openwiz, $(OPTWARE_TARGET)))
 ALSA-UTILS_PATCHES=$(ALSA-UTILS_SOURCE_DIR)/clock_monotonic.patch
 endif
 

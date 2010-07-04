@@ -11,12 +11,10 @@ SPECIFIC_PACKAGES = \
 # softflowd: staging/opt/include/pcap/pcap.h:339: error: conflicting types for 'bpf_filter' (with armeb-linux/include/net/bpf.h:779)
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	alsa-lib \
 	btg \
 	golang \
 	iptraf \
 	ldconfig \
-	linphone \
 	puppy \
 	qemu \
 	softflowd \
