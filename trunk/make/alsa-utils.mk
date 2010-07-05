@@ -28,7 +28,7 @@ ALSA-UTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ALSA-UTILS_DESCRIPTION=ALSA utils
 ALSA-UTILS_SECTION=util
 ALSA-UTILS_PRIORITY=optional
-ALSA-UTILS_DEPENDS=alsa-lib, gettext, ncurses
+ALSA-UTILS_DEPENDS=alsa-lib, gettext, ncursesw
 ALSA-UTILS_SUGGESTS=
 ALSA-UTILS_CONFLICTS=
 
@@ -48,7 +48,7 @@ ALSA-UTILS_CONFFILES=
 # ALSA-UTILS_PATCHES=$(ALSA-UTILS_SOURCE_DIR)/clock_monotonic.patch
 
 # This patch is needed if the target glibc has a broken or missing CLOCK_MONOTONIC function
-ifeq ($(OPTWARE_TARGET), $(filter ds101j fsg3 mss nas100d nslu2 openwiz, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter ds101j fsg3 mss nas100d nslu2 openwiz syno0844mv5281 syno1142mv5281 syno-x07 ts101, $(OPTWARE_TARGET)))
 ALSA-UTILS_PATCHES=$(ALSA-UTILS_SOURCE_DIR)/clock_monotonic.patch
 endif
 
@@ -56,7 +56,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ALSA-UTILS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+ALSA-UTILS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncursesw
 ALSA-UTILS_LDFLAGS=
 
 #
@@ -104,8 +104,8 @@ alsa-utils-source: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ALSA-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS_PATCHES)
-	$(MAKE) alsa-lib-stage gettext-stage ncurses-stage
+$(ALSA-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS_PATCHES) make/alsa-utils.mk
+	$(MAKE) alsa-lib-stage gettext-stage ncursesw-stage
 	rm -rf $(BUILD_DIR)/$(ALSA-UTILS_DIR) $(ALSA-UTILS_BUILD_DIR)
 	$(ALSA-UTILS_UNZIP) $(DL_DIR)/$(ALSA-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ALSA-UTILS_PATCHES)" ; \
@@ -124,6 +124,7 @@ $(ALSA-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		ac_cv_prog_ncurses5_config=no \
 	)
 	touch $(ALSA-UTILS_BUILD_DIR)/.configured
 

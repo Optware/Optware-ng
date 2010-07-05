@@ -100,7 +100,7 @@ alsa-oss-source: $(DL_DIR)/$(ALSA-OSS_SOURCE) $(ALSA-OSS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ALSA-OSS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-OSS_SOURCE) $(ALSA-OSS_PATCHES)
+$(ALSA-OSS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-OSS_SOURCE) $(ALSA-OSS_PATCHES) make/alsa-oss.mk
 	$(MAKE) alsa-lib-stage
 	rm -rf $(BUILD_DIR)/$(ALSA-OSS_DIR) $(ALSA-OSS_BUILD_DIR)
 	$(ALSA-OSS_UNZIP) $(DL_DIR)/$(ALSA-OSS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
