@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBEBML_SITE=http://bunkus.org/videotools/mkvtoolnix/sources
-LIBEBML_VERSION=0.8.0
+LIBEBML_VERSION=1.0.0
 LIBEBML_SOURCE=libebml-$(LIBEBML_VERSION).tar.bz2
 LIBEBML_DIR=libebml-$(LIBEBML_VERSION)
 LIBEBML_UNZIP=bzcat
