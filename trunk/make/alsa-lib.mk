@@ -100,7 +100,7 @@ alsa-lib-source: $(DL_DIR)/$(ALSA-LIB_SOURCE) $(ALSA-LIB_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ALSA-LIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-LIB_SOURCE) $(ALSA-LIB_PATCHES)
+$(ALSA-LIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-LIB_SOURCE) $(ALSA-LIB_PATCHES) make/alsa-lib.mk
 	rm -rf $(BUILD_DIR)/$(ALSA-LIB_DIR) $(ALSA-LIB_BUILD_DIR)
 	$(ALSA-LIB_UNZIP) $(DL_DIR)/$(ALSA-LIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(ALSA-LIB_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-LIB_DIR) -p1
