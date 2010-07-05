@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMATROSKA_SITE=http://bunkus.org/videotools/mkvtoolnix/sources
-LIBMATROSKA_VERSION=0.9.0
+LIBMATROSKA_VERSION=1.0.0
 LIBMATROSKA_SOURCE=libmatroska-$(LIBMATROSKA_VERSION).tar.bz2
 LIBMATROSKA_DIR=libmatroska-$(LIBMATROSKA_VERSION)
 LIBMATROSKA_UNZIP=bzcat
