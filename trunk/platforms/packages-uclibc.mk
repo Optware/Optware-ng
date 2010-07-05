@@ -34,6 +34,8 @@ UCLIBC++_BROKEN_PACKAGES = \
 UCLIBC++_SPECIFIC_PACKAGES = \
 	libuclibc++ buildroot uclibc-opt ipkg-opt \
 
+HDPARM_VERSION := 9.28
+
 M4_VERSION := 1.4.13
 
 MXML_VERSION := 2.5
