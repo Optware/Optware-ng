@@ -53,7 +53,7 @@ ALSA-OSS_PATCHES=
 # compilation or linking flags, then list them here.
 #
 ALSA-OSS_CPPFLAGS=
-ALSA-OSS_LDFLAGS=-Wl,-rpath,/opt/lib -Wl,-rpath-link=$(STAGING_LIB_DIR)
+ALSA-OSS_LDFLAGS=
 
 #
 # ALSA-OSS_BUILD_DIR is the directory in which the build is done.
