@@ -27,7 +27,11 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
+#alsa-oss and alsa-utils are existing mk files, now upgrades and fixed for most platforms - ready for testing
+#
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
+	alsa-oss \
+	alsa-utils \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
