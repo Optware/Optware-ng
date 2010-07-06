@@ -27,11 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-#alsa-oss and alsa-utils are existing mk files, now upgrades and fixed for most platforms - ready for testing
-#
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
-	alsa-oss \
-	alsa-utils \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -218,7 +214,7 @@ PACKAGES_ONLY_WORK_ON_LINUX24 = \
 COMMON_CROSS_PACKAGES = \
 	9base \
 	abook adduser adns aget aiccu alac-decoder \
-	alsa-lib \
+	alsa-lib alsa-oss alsa-utils \
 	amule analog antinat apcupsd appweb \
 	apache apr apr-util \
 	arc aria2 arping arpwatch aspell \

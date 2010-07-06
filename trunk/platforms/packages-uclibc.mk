@@ -1,7 +1,10 @@
 # Packages that do not work for uclibc
 # moc - conflicting types for '__glibc_strerror_r'
+# alsa-oss:	In file included from alsa-oss.c:732:
+# 		stdioemu.c:40:19: error: libio.h: No such file or directory
 UCLIBC_BROKEN_PACKAGES = \
 	 9base \
+	alsa-oss \
 	 bzflag \
 	 cairo \
          delegate \
