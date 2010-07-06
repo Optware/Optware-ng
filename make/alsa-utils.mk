@@ -117,6 +117,7 @@ $(ALSA-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ALSA-UTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ALSA-UTILS_LDFLAGS)" \
+		ac_cv_prog_ncurses5_config=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -124,7 +125,7 @@ $(ALSA-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		ac_cv_prog_ncurses5_config=no \
+		--disable-xmlto \
 	)
 	touch $(ALSA-UTILS_BUILD_DIR)/.configured
 
