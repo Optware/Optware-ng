@@ -22,7 +22,7 @@
 #
 
 PCRE_SITE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
-PCRE_VERSION=8.02
+PCRE_VERSION=8.10
 PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
 PCRE_UNZIP=bzcat
