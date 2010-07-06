@@ -18,5 +18,7 @@ BROKEN_PACKAGES = \
 	ldconfig \
 	sandbox \
 
+HDPARM_VERSION := 9.28
+
 STRACE_VERSION := 4.5.17
 STRACE_IPK_VERSION := 1

@@ -13,3 +13,5 @@ BROKEN_PACKAGES = \
 	motion \
 	qemu qemu-libc-i386 \
 	sandbox \
+
+HDPARM_VERSION := 9.28

@@ -9,3 +9,5 @@ BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	sandbox \
 	slrn spandsp 
+
+HDPARM_VERSION := 9.28
