@@ -107,6 +107,12 @@ varnish-source: $(DL_DIR)/$(VARNISH_SOURCE) $(VARNISH_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
+
+# This configure flag is needed if the target glibc has a broken or missing CLOCK_MONOTONIC function
+ifeq ($(OPTWARE_TARGET), $(filter ds101j fsg3 mss nas100d nslu2 openwiz syno0844mv5281 syno1142mv5281 syno-x07 ts101, $(OPTWARE_TARGET)))
+VARNISH_CONFIGURE_OPTS = ac_cv_lib_rt_clock_gettime=no
+endif
+
 $(VARNISH_BUILD_DIR)/.configured: $(DL_DIR)/$(VARNISH_SOURCE) $(VARNISH_PATCHES) make/varnish.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(VARNISH_DIR) $(VARNISH_BUILD_DIR)
@@ -123,6 +129,7 @@ $(VARNISH_BUILD_DIR)/.configured: $(DL_DIR)/$(VARNISH_SOURCE) $(VARNISH_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VARNISH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VARNISH_LDFLAGS)" \
+		$(VARNISH_CONFIGURE_OPTS) \
 		ac_cv_so_sndtimeo_works=yes \
 		ac_cv_so_rcvtimeo_works=yes \
 		./configure \
@@ -157,6 +164,7 @@ varnish: $(VARNISH_BUILD_DIR)/.built
 $(VARNISH_BUILD_DIR)/.staged: $(VARNISH_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(VARNISH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libvarnish.la $(STAGING_LIB_DIR)/libvarnishapi.la $(STAGING_LIB_DIR)/libvarnishcompat.la $(STAGING_LIB_DIR)/libvcl.la
 	touch $@
 
 varnish-stage: $(VARNISH_BUILD_DIR)/.staged
