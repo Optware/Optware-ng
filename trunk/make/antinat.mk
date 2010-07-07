@@ -106,7 +106,7 @@ antinat-source: $(DL_DIR)/$(ANTINAT_SOURCE) $(ANTINAT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ANTINAT_BUILD_DIR)/.configured: $(DL_DIR)/$(ANTINAT_SOURCE) $(ANTINAT_PATCHES)
+$(ANTINAT_BUILD_DIR)/.configured: $(DL_DIR)/$(ANTINAT_SOURCE) $(ANTINAT_PATCHES) make/antinat.mk
 	$(MAKE) expat-stage
 	rm -rf $(BUILD_DIR)/$(ANTINAT_DIR) $(ANTINAT_BUILD_DIR)
 	$(ANTINAT_UNZIP) $(DL_DIR)/$(ANTINAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -121,6 +121,7 @@ $(ANTINAT_BUILD_DIR)/.configured: $(DL_DIR)/$(ANTINAT_SOURCE) $(ANTINAT_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	sed -i -e 's|-I$$includedir|-I$(STAGING_INCLUDE_DIR)|' $(@D)/client/antinat-config
 	$(PATCH_LIBTOOL) \
@@ -148,7 +149,8 @@ antinat: $(ANTINAT_BUILD_DIR)/.built
 #
 $(ANTINAT_BUILD_DIR)/.staged: $(ANTINAT_BUILD_DIR)/.built
 	rm -f $(ANTINAT_BUILD_DIR)/.staged
-	$(MAKE) -C $(ANTINAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(ANTINAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) prefix=$(STAGING_DIR)/opt install
+	rm -f $(STAGING_DIR)/opt/lib/libantinat.a $(STAGING_DIR)/opt/lib/libantinat.la
 	touch $(ANTINAT_BUILD_DIR)/.staged
 
 antinat-stage: $(ANTINAT_BUILD_DIR)/.staged
@@ -205,6 +207,7 @@ antinat-ipk: $(ANTINAT_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 antinat-clean:
+	rm -f $(ANTINAT_BUILD_DIR)/.built
 	-$(MAKE) -C $(ANTINAT_BUILD_DIR) clean
 
 #
