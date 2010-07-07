@@ -26,13 +26,15 @@ ACK_SOURCE_DIR=$(SOURCE_DIR)/ack
 ACK_IPK_DIR=$(BUILD_DIR)/ack-$(ACK_VERSION)-ipk
 ACK_IPK=$(BUILD_DIR)/ack_$(ACK_VERSION)-$(ACK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: ack-source ack-unpack ack ack-stage ack-ipk ack-clean ack-dirclean ack-check
+
 $(DL_DIR)/$(ACK_SOURCE):
 	$(WGET) -P $(@D) $(ACK_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 ack-source: $(DL_DIR)/$(ACK_SOURCE) $(ACK_PATCHES)
 
-$(ACK_BUILD_DIR)/.configured: $(DL_DIR)/$(ACK_SOURCE) $(ACK_PATCHES)
+$(ACK_BUILD_DIR)/.configured: $(DL_DIR)/$(ACK_SOURCE) $(ACK_PATCHES) make/ack.mk
 	$(MAKE) perl-file-next-stage
 	rm -rf $(BUILD_DIR)/$(ACK_DIR) $(@D)
 	$(ACK_UNZIP) $(DL_DIR)/$(ACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -98,6 +100,7 @@ $(ACK_IPK): $(ACK_BUILD_DIR)/.built
 ack-ipk: $(ACK_IPK)
 
 ack-clean:
+	rm -f $(ACK_BUILD_DIR)/.built
 	-$(MAKE) -C $(ACK_BUILD_DIR) clean
 
 ack-dirclean:
