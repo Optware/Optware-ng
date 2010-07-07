@@ -71,6 +71,8 @@ ADDUSER_SOURCE_DIR=$(SOURCE_DIR)/adduser
 ADDUSER_IPK_DIR=$(BUILD_DIR)/adduser-$(ADDUSER_VERSION)-ipk
 ADDUSER_IPK=$(BUILD_DIR)/adduser_$(ADDUSER_VERSION)-$(ADDUSER_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: adduser-source adduser-unpack adduser adduser-stage adduser-ipk adduser-clean adduser-dirclean adduser-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -200,6 +202,7 @@ adduser-ipk: $(ADDUSER_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 adduser-clean:
+	rm -f $(ADDUSER_BUILD_DIR)/.built
 	-$(MAKE) -C $(ADDUSER_BUILD_DIR) clean
 
 #
