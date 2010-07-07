@@ -141,7 +141,7 @@ alsa-lib: $(ALSA-LIB_BUILD_DIR)/.built
 $(ALSA-LIB_BUILD_DIR)/.staged: $(ALSA-LIB_BUILD_DIR)/.built
 	rm -f $(ALSA-LIB_BUILD_DIR)/.staged
 	$(MAKE) -C $(ALSA-LIB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	rm -f $(STAGING_LIB_DIR)/libasound.la
+	rm -f $(STAGING_LIB_DIR)/libasound.la $(STAGING_LIB_DIR)/alsa-lib/smixer/*.la
 	touch $(ALSA-LIB_BUILD_DIR)/.staged
 
 alsa-lib-stage: $(ALSA-LIB_BUILD_DIR)/.staged
