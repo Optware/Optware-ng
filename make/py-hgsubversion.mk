@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-HGSUBVERSION_SITE=http://pypi.python.org/packages/source/h/hgsubversion
-PY-HGSUBVERSION_VERSION=1.1
+PY-HGSUBVERSION_VERSION=1.1.2
 PY-HGSUBVERSION_SOURCE=hgsubversion-$(PY-HGSUBVERSION_VERSION).tar.gz
 PY-HGSUBVERSION_DIR=hgsubversion-$(PY-HGSUBVERSION_VERSION)
 PY-HGSUBVERSION_UNZIP=zcat
