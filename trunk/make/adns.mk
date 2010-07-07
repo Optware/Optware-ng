@@ -24,6 +24,8 @@ ADNS_MAINTAINER= NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ADNS_SECTION=libraries
 ADNS_DEPENDS=
 ADNS_DESCRIPTION=Asynchronous resolver library and DNS resolver utilities.
+ADNS_SUGGESTS=
+ADNS_CONFLICTS=
 
 #
 # ADNS_IPK_VERSION should be incremented when the ipk changes.
@@ -61,6 +63,8 @@ ADNS_SOURCE_DIR=$(SOURCE_DIR)/adns
 ADNS_IPK_DIR=$(BUILD_DIR)/adns-$(ADNS_VERSION)-ipk
 ADNS_IPK=$(BUILD_DIR)/adns_$(ADNS_VERSION)-$(ADNS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: adns-source adns-unpack adns adns-stage adns-ipk adns-clean adns-dirclean adns-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -90,7 +94,7 @@ adns-source: $(DL_DIR)/$(ADNS_SOURCE) $(ADNS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ADNS_BUILD_DIR)/.configured: $(DL_DIR)/$(ADNS_SOURCE) $(ADNS_PATCHES)
+$(ADNS_BUILD_DIR)/.configured: $(DL_DIR)/$(ADNS_SOURCE) $(ADNS_PATCHES) make/adns.mk
 	rm -rf $(BUILD_DIR)/$(ADNS_DIR) $(ADNS_BUILD_DIR)
 	$(ADNS_UNZIP) $(DL_DIR)/$(ADNS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(ADNS_PATCHES) | patch -d $(BUILD_DIR)/$(ADNS_DIR) -p1
@@ -105,6 +109,7 @@ $(ADNS_BUILD_DIR)/.configured: $(DL_DIR)/$(ADNS_SOURCE) $(ADNS_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(ADNS_BUILD_DIR)/.configured
 
@@ -129,12 +134,12 @@ adns: $(ADNS_BUILD_DIR)/.built
 $(ADNS_BUILD_DIR)/.staged: $(ADNS_BUILD_DIR)/.built
 	rm -f $(ADNS_BUILD_DIR)/.staged
 	(cd $(ADNS_BUILD_DIR); \
-		install -c -m 644 src/libadns.a $(STAGING_LIB_DIR)/libadns.a ; \
-		install -c -m 755 dynamic/libadns.so.$(ADNS_VERSION) \
-			 $(STAGING_LIB_DIR)/libadns.so.$(ADNS_VERSION) ; \
-		ln -sf libadns.so.$(ADNS_VERSION) \
+#		install -c -m 644 src/libadns.a $(STAGING_LIB_DIR)/libadns.a ; \
+		install -c -m 755 dynamic/libadns.so.1.3 \
+			 $(STAGING_LIB_DIR)/libadns.so.1.3 ; \
+		ln -sf libadns.so.1.3 \
 			$(STAGING_LIB_DIR)/libadns.so.1 ; \
-		ln -sf libadns.so.$(ADNS_VERSION) $(STAGING_LIB_DIR)/libadns.so ; \
+		ln -sf libadns.so.1 $(STAGING_LIB_DIR)/libadns.so ; \
 		install -c -m 644 src/adns.h $(STAGING_INCLUDE_DIR)/adns.h ; \
 	)
 	touch $(ADNS_BUILD_DIR)/.staged
@@ -143,7 +148,7 @@ adns-stage: $(ADNS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
-# necessary to create a seperate control file under sources/<foo>
+# necessary to create a seperate control file under sources/adns
 #
 $(ADNS_IPK_DIR)/CONTROL/control:
 	@install -d $(ADNS_IPK_DIR)/CONTROL
@@ -157,6 +162,7 @@ $(ADNS_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(ADNS_SITE)/$(ADNS_SOURCE)" >>$@
 	@echo "Description: $(ADNS_DESCRIPTION)" >>$@
 	@echo "Depends: $(ADNS_DEPENDS)" >>$@
+	@echo "Suggests: $(ADNS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(ADNS_CONFLICTS)" >>$@
 
 #
@@ -200,6 +206,7 @@ adns-ipk: $(ADNS_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 adns-clean:
+	rm -f $(ADNS_BUILD_DIR)/.built
 	-$(MAKE) -C $(ADNS_BUILD_DIR) clean
 
 #
