@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CHEROKEE-PYSCGI_SITE=http://www.cherokee-project.com/download/pyscgi
-CHEROKEE-PYSCGI_VERSION=1.11
+CHEROKEE-PYSCGI_VERSION=1.14
 CHEROKEE-PYSCGI_SOURCE=cherokee_pyscgi-$(CHEROKEE-PYSCGI_VERSION).tar.gz
 CHEROKEE-PYSCGI_DIR=cherokee_pyscgi-$(CHEROKEE-PYSCGI_VERSION)
 CHEROKEE-PYSCGI_UNZIP=zcat
