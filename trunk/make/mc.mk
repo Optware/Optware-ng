@@ -5,7 +5,7 @@
 ###########################################################
 
 MC_SITE=http://www.midnight-commander.org/downloads
-MC_VERSION=4.7.0.2
+MC_VERSION=4.7.0.6
 MC_SOURCE=mc-$(MC_VERSION).tar.gz
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=zcat
@@ -117,7 +117,7 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
 		--without-gpm-mouse \
 		--without-x \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) -e 's/$$echo /$$ECHO /g' $(@D)/libtool
 	touch $@
 
 mc-unpack: $(MC_BUILD_DIR)/.configured
