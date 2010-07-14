@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 POPT_SITE=http://rpm5.org/files/popt
-POPT_VERSION=1.15
+POPT_VERSION=1.16
 POPT_SOURCE=popt-$(POPT_VERSION).tar.gz
 POPT_DIR=popt-$(POPT_VERSION)
 POPT_UNZIP=zcat
@@ -144,6 +144,7 @@ $(POPT_BUILD_DIR)/.staged: $(POPT_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libpopt.la
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/popt.pc
 	touch $@
 
 popt-stage: $(POPT_BUILD_DIR)/.staged
@@ -175,7 +176,7 @@ $(POPT_IPK): $(POPT_BUILD_DIR)/.built
 	$(MAKE) -C $(POPT_BUILD_DIR) DESTDIR=$(POPT_IPK_DIR) install-strip transform=""
 	rm -f $(POPT_IPK_DIR)/opt/lib/*.a
 	rm -f $(POPT_IPK_DIR)/opt/lib/*.la
-	$(STRIP_COMMAND) $(POPT_IPK_DIR)/opt/lib/*
+	$(STRIP_COMMAND) $(POPT_IPK_DIR)/opt/lib/*.so.*
 	$(MAKE) $(POPT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POPT_IPK_DIR)
 
