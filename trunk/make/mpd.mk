@@ -24,7 +24,7 @@
 MPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
-MPD_VERSION=0.15.10
+MPD_VERSION=0.15.12
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.bz2
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=bzcat
