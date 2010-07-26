@@ -128,6 +128,9 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 	    ) >> setup.cfg; \
 	    sed -i -e '/datetime\.h/s/^/if True: #/' \
 		   -e '/^def get_pg_config/a\    return ""' $(@D)/2.5/setup.py; \
+	    if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+	        sed -i -e '/-Wdeclaration-after-statement/s/.*/            pass/' $(@D)/2.5/setup.py; \
+	    fi; \
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG2_DIR)
@@ -147,6 +150,9 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 	    ) >> setup.cfg; \
 	    sed -i -e '/datetime\.h/s/^/if True: #/' \
 		   -e '/^def get_pg_config/a\    return ""' $(@D)/2.6/setup.py; \
+	    if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+	        sed -i -e '/-Wdeclaration-after-statement/s/.*/            pass/' $(@D)/2.6/setup.py; \
+	    fi; \
 	)
 	touch $@
 
