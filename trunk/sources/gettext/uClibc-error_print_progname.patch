@@ -1,0 +1,238 @@
+# This patch is specific to uClibc 0.9.29
+# See http://lists.uclibc.org/pipermail/uclibc-cvs/2008-April/024859.html
+# for explanation of missing definition
+#
+diff -urN gettext-0.14.5/gettext-tools/libgrep/regex.c gettext/gettext-tools/libgrep/regex.c
+--- gettext-0.14.5/gettext-tools/libgrep/regex.c	2005-05-20 22:34:06.000000000 +0200
++++ gettext/gettext-tools/libgrep/regex.c	2009-12-27 15:40:42.000000000 +0100
+@@ -8178,7 +8178,7 @@
+     {
+       if (msg_size > errbuf_size)
+         {
+-#if defined HAVE_MEMPCPY || defined _LIBC
++#if (defined HAVE_MEMPCPY || defined _LIBC) && !defined __UCLIBC__
+ 	  *((char *) __mempcpy (errbuf, msg, errbuf_size - 1)) = '\0';
+ #else
+           memcpy (errbuf, msg, errbuf_size - 1);
+diff -urN gettext-0.14.5/gettext-tools/src/hostname.c gettext/gettext-tools/src/hostname.c
+--- gettext-0.14.5/gettext-tools/src/hostname.c	2005-05-20 22:40:02.000000000 +0200
++++ gettext/gettext-tools/src/hostname.c	2009-12-27 15:42:35.000000000 +0100
+@@ -119,6 +119,10 @@
+ ;
+ static void print_hostname (void);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
++
+ int
+ main (int argc, char *argv[])
+ {
+diff -urN gettext-0.14.5/gettext-tools/src/msgattrib.c gettext/gettext-tools/src/msgattrib.c
+--- gettext-0.14.5/gettext-tools/src/msgattrib.c	2005-05-20 22:40:15.000000000 +0200
++++ gettext/gettext-tools/src/msgattrib.c	2009-12-27 15:38:31.000000000 +0100
+@@ -118,6 +118,9 @@
+ 						  msgdomain_list_ty *only_mdlp,
+ 						msgdomain_list_ty *ignore_mdlp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msgcat.c gettext/gettext-tools/src/msgcat.c
+--- gettext-0.14.5/gettext-tools/src/msgcat.c	2005-05-20 22:40:19.000000000 +0200
++++ gettext/gettext-tools/src/msgcat.c	2009-12-27 15:38:47.000000000 +0100
+@@ -91,6 +91,9 @@
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msgcmp.c gettext/gettext-tools/src/msgcmp.c
+--- gettext-0.14.5/gettext-tools/src/msgcmp.c	2005-05-20 22:40:23.000000000 +0200
++++ gettext/gettext-tools/src/msgcmp.c	2009-12-27 15:37:03.000000000 +0100
+@@ -69,6 +69,9 @@
+ ;
+ static void compare (const char *fn1, const char *fn2);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char *argv[])
+diff -urN gettext-0.14.5/gettext-tools/src/msgcomm.c gettext/gettext-tools/src/msgcomm.c
+--- gettext-0.14.5/gettext-tools/src/msgcomm.c	2005-05-20 22:40:27.000000000 +0200
++++ gettext/gettext-tools/src/msgcomm.c	2009-12-27 15:38:55.000000000 +0100
+@@ -94,6 +94,9 @@
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char *argv[])
+diff -urN gettext-0.14.5/gettext-tools/src/msgconv.c gettext/gettext-tools/src/msgconv.c
+--- gettext-0.14.5/gettext-tools/src/msgconv.c	2005-05-20 22:40:31.000000000 +0200
++++ gettext/gettext-tools/src/msgconv.c	2009-12-27 15:39:03.000000000 +0100
+@@ -85,6 +85,9 @@
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msgen.c gettext/gettext-tools/src/msgen.c
+--- gettext-0.14.5/gettext-tools/src/msgen.c	2005-05-20 22:40:35.000000000 +0200
++++ gettext/gettext-tools/src/msgen.c	2009-12-27 15:39:16.000000000 +0100
+@@ -80,6 +80,9 @@
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msgexec.c gettext/gettext-tools/src/msgexec.c
+--- gettext-0.14.5/gettext-tools/src/msgexec.c	2005-05-20 22:40:40.000000000 +0200
++++ gettext/gettext-tools/src/msgexec.c	2009-12-27 15:39:28.000000000 +0100
+@@ -94,6 +94,9 @@
+ ;
+ static void process_msgdomain_list (const msgdomain_list_ty *mdlp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msgfilter.c gettext/gettext-tools/src/msgfilter.c
+--- gettext-0.14.5/gettext-tools/src/msgfilter.c	2005-05-20 22:40:44.000000000 +0200
++++ gettext/gettext-tools/src/msgfilter.c	2009-12-27 15:39:36.000000000 +0100
+@@ -132,6 +132,9 @@
+ ;
+ static msgdomain_list_ty *process_msgdomain_list (msgdomain_list_ty *mdlp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msgfmt.c gettext/gettext-tools/src/msgfmt.c
+--- gettext-0.14.5/gettext-tools/src/msgfmt.c	2005-05-20 22:40:48.000000000 +0200
++++ gettext/gettext-tools/src/msgfmt.c	2009-12-27 15:37:22.000000000 +0100
+@@ -207,6 +207,9 @@
+ static void check_plural (message_list_ty *mlp);
+ static void read_po_file_msgfmt (char *filename);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char *argv[])
+diff -urN gettext-0.14.5/gettext-tools/src/msggrep.c gettext/gettext-tools/src/msggrep.c
+--- gettext-0.14.5/gettext-tools/src/msggrep.c	2005-05-20 22:41:05.000000000 +0200
++++ gettext/gettext-tools/src/msggrep.c	2009-12-27 15:39:46.000000000 +0100
+@@ -129,6 +129,9 @@
+ ;
+ static msgdomain_list_ty *process_msgdomain_list (msgdomain_list_ty *mdlp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msginit.c gettext/gettext-tools/src/msginit.c
+--- gettext-0.14.5/gettext-tools/src/msginit.c	2005-05-20 22:41:09.000000000 +0200
++++ gettext/gettext-tools/src/msginit.c	2009-12-27 15:42:16.000000000 +0100
+@@ -155,6 +155,9 @@
+ static msgdomain_list_ty *fill_header (msgdomain_list_ty *mdlp);
+ static msgdomain_list_ty *update_msgstr_plurals (msgdomain_list_ty *mdlp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msgmerge.c gettext/gettext-tools/src/msgmerge.c
+--- gettext-0.14.5/gettext-tools/src/msgmerge.c	2005-05-20 22:42:09.000000000 +0200
++++ gettext/gettext-tools/src/msgmerge.c	2009-12-27 15:37:41.000000000 +0100
+@@ -137,6 +137,9 @@
+ static msgdomain_list_ty *merge (const char *fn1, const char *fn2,
+ 				 msgdomain_list_ty **defp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msgunfmt.c gettext/gettext-tools/src/msgunfmt.c
+--- gettext-0.14.5/gettext-tools/src/msgunfmt.c	2005-05-20 22:42:11.000000000 +0200
++++ gettext/gettext-tools/src/msgunfmt.c	2009-12-27 15:37:53.000000000 +0100
+@@ -107,6 +107,9 @@
+ ;
+ static void read_one_file (message_list_ty *mlp, const char *filename);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/msguniq.c gettext/gettext-tools/src/msguniq.c
+--- gettext-0.14.5/gettext-tools/src/msguniq.c	2005-05-20 22:42:23.000000000 +0200
++++ gettext/gettext-tools/src/msguniq.c	2009-12-27 15:42:25.000000000 +0100
+@@ -88,6 +88,9 @@
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -urN gettext-0.14.5/gettext-tools/src/urlget.c gettext/gettext-tools/src/urlget.c
+--- gettext-0.14.5/gettext-tools/src/urlget.c	2005-05-20 22:44:41.000000000 +0200
++++ gettext/gettext-tools/src/urlget.c	2009-12-27 15:42:45.000000000 +0100
+@@ -81,6 +81,9 @@
+ ;
+ static void fetch (const char *url, const char *file);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char *argv[])
+diff -urN gettext-0.14.5/gettext-tools/src/xgettext.c gettext/gettext-tools/src/xgettext.c
+--- gettext-0.14.5/gettext-tools/src/xgettext.c	2005-05-20 22:47:42.000000000 +0200
++++ gettext/gettext-tools/src/xgettext.c	2009-12-27 15:38:19.000000000 +0100
+@@ -253,6 +253,9 @@
+ static extractor_ty language_to_extractor (const char *name);
+ static const char *extension_to_language (const char *extension);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char *argv[])
