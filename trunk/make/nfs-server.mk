@@ -97,9 +97,11 @@ $(NFS_SERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS_SERVER_SOURCE) $(NFS_SERVER
 	rm -rf $(BUILD_DIR)/$(NFS_SERVER_DIR) $(NFS_SERVER_BUILD_DIR)
 	$(NFS_SERVER_UNZIP) $(DL_DIR)/$(NFS_SERVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(NFS_SERVER_DIR) $(NFS_SERVER_BUILD_DIR)
+	sed -i -e 's/function \([^ ]\{1,\}\) {/\1 () {/' \
+		$(NFS_SERVER_BUILD_DIR)/BUILD	
 	(cd $(NFS_SERVER_BUILD_DIR); \
 	./BUILD --batch \
-		--multi \
+		--multi=yes \
 		--devtab=no \
 		--ugidd=no \
 		--nis=no \
