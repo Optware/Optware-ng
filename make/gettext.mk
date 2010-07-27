@@ -40,7 +40,8 @@ GETTEXT_IPK_VERSION=2
 # GETTEXT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GETTEXT_PATCHES=$(GETTEXT_SOURCE_DIR)/Makefile.in.patch
+GETTEXT_PATCHES=$(GETTEXT_SOURCE_DIR)/Makefile.in.patch \
+		$(GETTEXT_SOURCE_DIR)/uClibc-error_print_progname.patch \
 
 #
 # If the compilation of the package requires additional
