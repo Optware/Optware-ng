@@ -57,7 +57,9 @@ MYSQL_CONFFILES=/opt/etc/my.cnf
 MYSQL_PATCHES=\
 $(MYSQL_SOURCE_DIR)/configure.patch \
 $(MYSQL_SOURCE_DIR)/lex_hash.patch \
-$(MYSQL_SOURCE_DIR)/comp_err.patch
+$(MYSQL_SOURCE_DIR)/comp_err.patch\
+$(MYSQL_SOURCE_DIR)/m_string.h.patch
+
 ifeq ($(OPTWARE_TARGET), dns323)
 # SIGILL if -O3 is used, so replace -O3 with -Os; it will supercede the TARGET_OPTIMIZATION
 # in toolchain-dns323 because it is later on the command line.
@@ -176,6 +178,9 @@ endif
 
 	sed -i -e 's!"/etc!"/opt/etc!g' $(@D)/*/default.c $(@D)/scripts/*.sh
 	$(PATCH_LIBTOOL) $(@D)/libtool
+ifeq ($(CROSS_CONFIGURATION_UCLIBC_VERSION), 0.9.29)
+	sed -i -e 's!.*HAVE_INDEX.*!#define HAVE_INDEX 1!' $(@D)/config.h
+endif
 	touch $@
 
 mysql-unpack: $(MYSQL_BUILD_DIR)/.configured

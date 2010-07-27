@@ -1,0 +1,18 @@
+--- mysql-4.1.22/include/m_string.h	2006-11-03 03:15:57.000000000 +0100
++++ mysql/include/m_string.h	2009-12-20 23:52:59.000000000 +0100
+@@ -24,12 +24,12 @@
+ #ifndef __USE_GNU
+ #define __USE_GNU				/* We want to use stpcpy */
+ #endif
+-#if defined(HAVE_STRINGS_H)
+-#include <strings.h>
+-#endif
+ #if defined(HAVE_STRING_H)
+ #include <string.h>
+ #endif
++#if defined(HAVE_STRINGS_H)
++#include <strings.h>
++#endif
+ 
+ /* need by my_vsnprintf */
+ #include <stdarg.h> 
