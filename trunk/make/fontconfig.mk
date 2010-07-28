@@ -11,7 +11,7 @@
 # archive is unpacked.
 #
 FONTCONFIG_SITE=http://fontconfig.org/release
-FONTCONFIG_VERSION=2.5.0
+FONTCONFIG_VERSION=2.8.0
 FONTCONFIG_SOURCE=fontconfig-$(FONTCONFIG_VERSION).tar.gz
 FONTCONFIG_DIR=fontconfig-$(FONTCONFIG_VERSION)
 FONTCONFIG_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>

@@ -25,7 +25,7 @@ XFT_DEPENDS=x11, xrender, freetype, fontconfig
 #
 # XFT_IPK_VERSION should be incremented when the ipk changes.
 #
-XFT_IPK_VERSION=2
+XFT_IPK_VERSION=3
 
 #
 # XFT_CONFFILES should be a list of user-editable files
