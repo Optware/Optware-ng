@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-LYNX_SITE=http://lynx.isc.org/release
+LYNX_SITE=http://lynx.isc.org/lynx$(LYNX_VERSION)
 LYNX_VERSION=2.8.6
 LYNX_SOURCE=lynx$(LYNX_VERSION).tar.bz2
 LYNX_DIR=lynx2-8-6
