@@ -20,8 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PICOCOM_SITE=http://efault.net/npat/hacks/picocom/dist/
-PICOCOM_VERSION=1.4
+#PICOCOM_SITE=http://efault.net/npat/hacks/picocom/dist/
+PICOCOM_SITE=http://picocom.googlecode.com/files
+PICOCOM_VERSION=1.6
 PICOCOM_SOURCE=picocom-$(PICOCOM_VERSION).tar.gz
 PICOCOM_DIR=picocom-$(PICOCOM_VERSION)
 PICOCOM_UNZIP=zcat
