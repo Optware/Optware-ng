@@ -4,7 +4,8 @@
 #
 ###########################################################
 
-ZOO_SITE=http://security.debian.org/pool/updates/non-free/z/zoo
+#ZOO_SITE=http://security.debian.org/pool/updates/non-free/z/zoo
+ZOO_SITE=http://np.archive.ubuntu.com/ubuntu/pool/universe/z/zoo/
 ZOO_VERSION=2.10
 ZOO_SOURCE=zoo_$(ZOO_VERSION).orig.tar.gz
 ZOO_DIR=zoo-$(ZOO_VERSION).orig
