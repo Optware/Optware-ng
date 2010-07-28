@@ -19,7 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBTIFF_SITE=ftp://ftp.remotesensing.org/libtiff
+# http://www.remotesensing.org/libtiff/
+#
+LIBTIFF_SITE=http://download.osgeo.org/libtiff
 LIBTIFF_VERSION=3.9.4
 LIBTIFF_SOURCE=tiff-$(LIBTIFF_VERSION).tar.gz
 LIBTIFF_DIR=tiff-$(LIBTIFF_VERSION)
