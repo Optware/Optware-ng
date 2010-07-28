@@ -1,6 +1,6 @@
---- dspam/configure.orig	2006-08-08 21:06:36.000000000 +0200
-+++ dspam/configure	2006-08-08 21:08:46.000000000 +0200
-@@ -21294,204 +21294,10 @@
+--- dspam-3.9.0/configure.orig	2010-01-11 22:27:01.000000000 +0100
++++ dspam-3.9.0/configure	2010-07-29 01:02:09.000000000 +0200
+@@ -21744,237 +21744,10 @@
  if test x"$enable_daemon" = xyes
  then
  
@@ -12,8 +12,8 @@
 -ds_pthreads_LDFLAGS=""
 -ds_pthreads_LIBS=""
 -
--echo "$as_me:$LINENO: checking how you like your pthreads" >&5
--echo $ECHO_N "checking how you like your pthreads... $ECHO_C" >&6
+-{ echo "$as_me:$LINENO: checking how you like your pthreads" >&5
+-echo $ECHO_N "checking how you like your pthreads... $ECHO_C" >&6; }
 -pthreads_success="no"
 -
 -LIBS="$ds_pthreads_save_LIBS -pthread"
@@ -46,21 +46,30 @@
 -
 -_ACEOF
 -rm -f conftest$ac_exeext
--if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
--  (eval $ac_link) 2>&5
+-if { (ac_try="$ac_link"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_link") 2>&5
 -  ac_status=$?
 -  echo "$as_me:$LINENO: \$? = $ac_status" >&5
 -  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
--  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
--  (eval $ac_try) 2>&5
+-  { (case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_try") 2>&5
 -  ac_status=$?
 -  echo "$as_me:$LINENO: \$? = $ac_status" >&5
 -  (exit $ac_status); }; }; then
 -
      pthreads_success="yes"
 -    ds_pthreads_LIBS="-pthread"
--    echo "$as_me:$LINENO: result: -pthread" >&5
--echo "${ECHO_T}-pthread" >&6
+-    { echo "$as_me:$LINENO: result: -pthread" >&5
+-echo "${ECHO_T}-pthread" >&6; }
 -
 -else
 -  echo "$as_me: program exited with status $ac_status" >&5
@@ -70,8 +79,10 @@
 -( exit $ac_status )
 -
 -fi
--rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 -fi
+-
+-
 -
 -if test x"$pthreads_success" = xno
 -then
@@ -104,21 +115,30 @@
 -
 -_ACEOF
 -rm -f conftest$ac_exeext
--if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
--  (eval $ac_link) 2>&5
+-if { (ac_try="$ac_link"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_link") 2>&5
 -  ac_status=$?
 -  echo "$as_me:$LINENO: \$? = $ac_status" >&5
 -  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
--  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
--  (eval $ac_try) 2>&5
+-  { (case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_try") 2>&5
 -  ac_status=$?
 -  echo "$as_me:$LINENO: \$? = $ac_status" >&5
 -  (exit $ac_status); }; }; then
 -
 -    pthreads_success="yes"
 -    ds_pthreads_LIBS="-lpthread"
--    echo "$as_me:$LINENO: result: -lpthread" >&5
--echo "${ECHO_T}-lpthread" >&6
+-    { echo "$as_me:$LINENO: result: -lpthread" >&5
+-echo "${ECHO_T}-lpthread" >&6; }
 -
 -else
 -  echo "$as_me: program exited with status $ac_status" >&5
@@ -128,8 +148,10 @@
 -( exit $ac_status )
 -
 -fi
--rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 -fi
+-
+-
 -fi
 -
 -if test x"$pthreads_success" = xno
@@ -163,21 +185,30 @@
 -
 -_ACEOF
 -rm -f conftest$ac_exeext
--if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
--  (eval $ac_link) 2>&5
+-if { (ac_try="$ac_link"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_link") 2>&5
 -  ac_status=$?
 -  echo "$as_me:$LINENO: \$? = $ac_status" >&5
 -  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
--  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
--  (eval $ac_try) 2>&5
+-  { (case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_try") 2>&5
 -  ac_status=$?
 -  echo "$as_me:$LINENO: \$? = $ac_status" >&5
 -  (exit $ac_status); }; }; then
 -
 -    pthreads_success="yes"
 -    ds_pthreads_LIBS="-lpthread -mt"
--    echo "$as_me:$LINENO: result: -lpthread -mt" >&5
--echo "${ECHO_T}-lpthread -mt" >&6
+-    { echo "$as_me:$LINENO: result: -lpthread -mt" >&5
+-echo "${ECHO_T}-lpthread -mt" >&6; }
 -
 -else
 -  echo "$as_me: program exited with status $ac_status" >&5
@@ -187,14 +218,16 @@
 -( exit $ac_status )
 -
 -fi
--rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 -fi
+-
+-
 -fi
 -
 -if test x"$pthreads_success" = xno
 -then
--  echo "$as_me:$LINENO: result: unknown" >&5
--echo "${ECHO_T}unknown" >&6
+-  { echo "$as_me:$LINENO: result: unknown" >&5
+-echo "${ECHO_T}unknown" >&6; }
 -  { { echo "$as_me:$LINENO: error: Unable to determine how to compile with pthreads" >&5
 -echo "$as_me: error: Unable to determine how to compile with pthreads" >&2;}
 -   { (exit 1); exit 1; }; }

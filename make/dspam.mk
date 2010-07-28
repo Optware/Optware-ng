@@ -20,8 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DSPAM_SITE=http://dspam.nuclearelephant.com/sources
-DSPAM_VERSION=3.6.8
+#DSPAM_SITE=http://dspam.nuclearelephant.com/
+DSPAM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/dspam
+DSPAM_VERSION=3.9.0
 DSPAM_SOURCE=dspam-$(DSPAM_VERSION).tar.gz
 DSPAM_DIR=dspam-$(DSPAM_VERSION)
 DSPAM_UNZIP=zcat
