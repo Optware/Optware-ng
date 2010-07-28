@@ -5,7 +5,7 @@
 ###########################################################
 
 POSTGREY_SITE=http://postgrey.schweikert.ch/pub
-POSTGREY_VERSION=1.31
+POSTGREY_VERSION=1.33
 POSTGREY_SOURCE=postgrey-$(POSTGREY_VERSION).tar.gz
 POSTGREY_DIR=postgrey-$(POSTGREY_VERSION)
 POSTGREY_UNZIP=zcat
