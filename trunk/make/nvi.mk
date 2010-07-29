@@ -89,7 +89,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NVI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NVI_SITE)/$(NVI_SOURCE)
+	$(WGET) -P $(DL_DIR) $(NVI_SITE)/$(NVI_SOURCE)|| \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
