@@ -117,7 +117,7 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES) ma
 ifeq ($(LIBC_STYLE),uclibc)
 	sed -i -e '/stropts.h/d' $(@D)/pty.c
 endif
-ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24 openwrt-ixp4xx ts101 wdtv, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24 openwrt-brcm47xx openwrt-ixp4xx ts101 wdtv, $(OPTWARE_TARGET)))
 	sed -i -e 's/sched.h/screen_sched.h/g' \
 		$(@D)/Makefile \
 		$(@D)/screen.h

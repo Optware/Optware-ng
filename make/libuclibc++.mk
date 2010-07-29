@@ -32,12 +32,12 @@ LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION).tbz2
 else
 LIBUCLIBC++_VERSION=0.2.2
 LIBUCLIBC++_SVN=svn://uclibc.org/trunk/uClibc++
-LIBUCLIBC++_SVN_REV=18737
+LIBUCLIBC++_SVN_REV=26250
 LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION)+r$(LIBUCLIBC++_SVN_REV).tbz2
 endif
 LIBUCLIBC++_DIR=uClibc++
 LIBUCLIBC++_UNZIP=bzcat
-LIBUCLIBC++_MAINTAINER=Leon Kos <oleo@email.si>
+LIBUCLIBC++_MAINTAINER=Leon Kos <leon.kos@amis.net>
 LIBUCLIBC++_DESCRIPTION=C++ standard library designed for use in embedded systems
 LIBUCLIBC++_SECTION=libs
 LIBUCLIBC++_PRIORITY=required
@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=8
+LIBUCLIBC++_IPK_VERSION=9
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -60,7 +60,12 @@ LIBUCLIBC++_IPK_VERSION=8
 #
 LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/bin-Makefile.patch \
 	$(LIBUCLIBC++_SOURCE_DIR)/eabi_fix.patch \
-	$(LIBUCLIBC++_SOURCE_DIR)/associative_base_swap.patch
+	$(LIBUCLIBC++_SOURCE_DIR)/009-compile_fixes.patch \
+	$(LIBUCLIBC++_SOURCE_DIR)/associative_base_swap.patch \
+	$(LIBUCLIBC++_SOURCE_DIR)/900-dependent_exception.patch \
+
+#	$(LIBUCLIBC++_SOURCE_DIR)/008-integer_width.patch \
+#	$(LIBUCLIBC++_SOURCE_DIR)/007-numeric_limits.patch \
 
 ifeq ($(OPTWARE_TARGET), wl500g)
 LIBUCLIBC++_PATCHES +=	$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch \
@@ -172,7 +177,7 @@ libuclibc++: $(LIBUCLIBC++_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 LIBUCLIBC++_INSTALL_DIR=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
-ifeq ($(OPTWARE_TARGET), openwrt-brcm24)
+ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24 openwrt-brcm47xx openwrt-brcm47xx-trunk, $(OPTWARE_TARGET)))
 $(LIBUCLIBC++_BUILD_DIR)/.staged: $(LIBUCLIBC++_BUILD_DIR)/.built \
   $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged
 else
@@ -183,13 +188,20 @@ endif
 	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) \
 		DESTDIR=$(LIBUCLIBC++_INSTALL_DIR)/uClibc++ install
 	if test ! -d $(LIBUCLIBC++_INSTALL_DIR)/nowrap ; then \
-		install -d $(LIBUCLIBC++_INSTALL_DIR)/nowrap ; \
-		mv $(TARGET_CXX) $(LIBUCLIBC++_INSTALL_DIR)/nowrap/ ; \
+		install -d $(LIBUCLIBC++_INSTALL_DIR)/nowrap && \
+		if test -h $(TARGET_CXX) ; then \
+			SRC=`readlink $(TARGET_CXX)`; \
+			DST=`basename $(TARGET_CXX)`; \
+			rm -f $(TARGET_CXX) ; \
+			ln -sf ../bin/$${SRC} $(LIBUCLIBC++_INSTALL_DIR)/nowrap/$${DST} ; \
+		else \
+			mv $(TARGET_CXX) $(LIBUCLIBC++_INSTALL_DIR)/nowrap/ ; \
+		fi; \
 	fi
 	sed -i -e 's|/bin/bash|/bin/sh|;s/==/=/g' \
 	  -e 's|^WRAPPER_INCLUDEDIR=.*|WRAPPER_INCLUDEDIR=-I$(LIBUCLIBC++_INSTALL_DIR)/uClibc++/include|' \
 	  -e 's|^WRAPPER_LIBDIR=.*|WRAPPER_LIBDIR=-L$(LIBUCLIBC++_INSTALL_DIR)/uClibc++/lib|' \
-	  -e 's|$(CROSS_CONFIGURATION)/bin|$(CROSS_CONFIGURATION)/nowrap|' \
+	  -e '/$(subst /,\/,$(TARGET_CROSS))/s|/bin|/nowrap|' \
 	   $(LIBUCLIBC++_INSTALL_DIR)/uClibc++/bin/g++-uc
 	mv $(LIBUCLIBC++_INSTALL_DIR)/uClibc++/bin/g++-uc $(TARGET_CXX)
 	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR)/src DESTDIR=$(STAGING_PREFIX) install
