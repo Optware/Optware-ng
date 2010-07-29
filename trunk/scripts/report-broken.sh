@@ -2,6 +2,13 @@
 # This script will  try to build all common cross packages one by one and 
 # at the end will output broken packages in Makefile format
 # Example batch usage: nohup sh scripts/report-broken.sh &
+# or with artument: nohup sh scripts/report-broken.sh PACKAGES &
+#
+# After paste into platforms/packages-foo.mk one can reytry build
+# with manual cleanup and retry after some fixes were performed for
+# incremental rebuild of broken packages
+# for f in $(make query-BROKEN_PACKAGES_REPORT);do make $f-dirclean;done
+#
 
 PKGS_VAR=$1
 if test -z "$PKGS_VAR"; then
@@ -28,4 +35,4 @@ for package in ${PACKAGES} ; do
 	fi
 done
 
-echo -e "BROKEN_PACKAGES = ${NL}\t${BROKEN}"
+echo -e "BROKEN_PACKAGES_REPORT = ${NL}\t${BROKEN}"
