@@ -115,6 +115,12 @@ $(DL_DIR)/$(GIT_SOURCE):
 $(DL_DIR)/$(GIT-MANPAGES_SOURCE):
 	$(WGET) -P $(@D) $(GIT_SITE)/$(@F)
 
+$(DL_DIR)/$(GIT-LITE_SOURCE):
+	$(WGET) -P $(@D) $(GIT_SITE)/$(@F)
+
+$(DL_DIR)/$(GIT-LITE-MANPAGES_SOURCE):
+	$(WGET) -P $(@D) $(GIT_SITE)/$(@F)
+
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
