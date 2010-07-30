@@ -37,7 +37,7 @@ DSPAM_CONFLICTS=
 #
 # DSPAM_IPK_VERSION should be incremented when the ipk changes.
 #
-DSPAM_IPK_VERSION=3
+DSPAM_IPK_VERSION=1
 
 #
 # DSPAM_CONFFILES should be a list of user-editable files
@@ -54,7 +54,7 @@ DSPAM_PATCHES=$(DSPAM_SOURCE_DIR)/dspam-configure-cross.patch
 # compilation or linking flags, then list them here.
 #
 DSPAM_CPPFLAGS=
-DSPAM_LDFLAGS=
+DSPAM_LDFLAGS=-Wl,-rpath,/opt/lib/dspam
 ifeq ($(LIBC_STYLE), uclibc)
 DSPAM_LDFLAGS += -lpthread
 endif
@@ -84,7 +84,8 @@ DSPAM_MYSQL_IPK=$(BUILD_DIR)/dspam-mysql_$(DSPAM_VERSION)-$(DSPAM_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DSPAM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DSPAM_SITE)/$(DSPAM_SOURCE)
+	$(WGET) -P $(@D) $(DSPAM_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -241,12 +242,12 @@ $(DSPAM_IPK): $(DSPAM_BUILD_DIR)/.built
 #	install -m 755 $(DSPAM_SOURCE_DIR)/rc.dspam $(DSPAM_IPK_DIR)/opt/etc/init.d/SXXdspam
 
 	# Split into the different packages
-	install -d $(DSPAM_PGSQL_IPK_DIR)/opt/lib
-	mv $(DSPAM_IPK_DIR)/opt/lib/libpgsql* $(DSPAM_PGSQL_IPK_DIR)/opt/lib
+	install -d $(DSPAM_PGSQL_IPK_DIR)/opt/lib/dspam
+	mv $(DSPAM_IPK_DIR)/opt/lib/dspam/libpgsql* $(DSPAM_PGSQL_IPK_DIR)/opt/lib/dspam
 	$(MAKE) $(DSPAM_PGSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSPAM_PGSQL_IPK_DIR)
-	install -d $(DSPAM_MYSQL_IPK_DIR)/opt/lib
-	mv $(DSPAM_IPK_DIR)/opt/lib/libmysql* $(DSPAM_MYSQL_IPK_DIR)/opt/lib
+	install -d $(DSPAM_MYSQL_IPK_DIR)/opt/lib/dspam
+	mv $(DSPAM_IPK_DIR)/opt/lib/dspam/libmysql* $(DSPAM_MYSQL_IPK_DIR)/opt/lib/dspam
 	$(MAKE) $(DSPAM_MYSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSPAM_MYSQL_IPK_DIR)
 
