@@ -47,6 +47,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	gtk vte xchat \
 	iozone \
 	bpalogin \
+	dspam \
  
 PERL_PACKAGES = \
 	perl \
@@ -242,7 +243,7 @@ COMMON_CROSS_PACKAGES = \
 	dhcp dialog dict digitemp dircproxy distcc \
 	diffstat diffutils discount \
 	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
-	dropbear drraw dspam dtach dump \
+	dropbear drraw dtach dump \
 	e2fsprogs e2tools eaccelerator easy-rsa ed ecl electric-fence elinks \
 	emacs22 endian enhanced-ctorrent enscript esmtp esniper \
 	ettercap ettercap-ng \
