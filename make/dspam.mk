@@ -53,7 +53,7 @@ DSPAM_PATCHES=$(DSPAM_SOURCE_DIR)/dspam-configure-cross.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-DSPAM_CPPFLAGS=
+DSPAM_CPPFLAGS ?=
 DSPAM_LDFLAGS=-Wl,-rpath,/opt/lib/dspam
 ifeq ($(LIBC_STYLE), uclibc)
 DSPAM_LDFLAGS += -lpthread
