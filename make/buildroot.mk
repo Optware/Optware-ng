@@ -61,7 +61,7 @@ BUILDROOT_SOURCE=buildroot-svn-$(BUILDROOT_SVN_REV).tar.gz
 endif
 BUILDROOT_DIR=buildroot
 BUILDROOT_UNZIP=zcat
-BUILDROOT_MAINTAINER=Leon Kos <oleo@email.si>
+BUILDROOT_MAINTAINER=leon.kos@amis.net
 BUILDROOT_DESCRIPTION=uClibc compilation toolchain
 BUILDROOT_SECTION=devel
 BUILDROOT_PRIORITY=optional
@@ -80,7 +80,7 @@ BUILDROOT_IPK_VERSION=13
 BUILDROOT_HEADERS_DIR=$(TOOL_BUILD_DIR)/buildroot/toolchain_build_$(TARGET_ARCH)
 
 # Oleg firmware for Asus Wireless routers
-HEADERS_OLEG_SITE=http://www.wlan-sat.com/boleo/optware
+HEADERS_OLEG_SITE=http://www.lecad.fs.uni-lj.si/~leon/other/wlan/optware
 HEADERS_OLEG_SOURCE=linux-libc-headers-oleg.tar.bz2
 HEADERS_OLEG_UNPACK_DIR=linux
 HEADERS_OLEG=LINUX_HEADERS_SOURCE=$(HEADERS_OLEG_SOURCE) \
@@ -89,9 +89,10 @@ $(DL_DIR)/$(HEADERS_OLEG_SOURCE):
 	$(WGET) -P $(DL_DIR) $(HEADERS_OLEG_SITE)/$(HEADERS_OLEG_SOURCE)
 
 # DD-WRT firmware for various Broadcom based routers
-HEADERS_DDWRT_SITE=http://www.wlan-sat.com/boleo/optware
-HEADERS_DDWRT_SOURCE=linux-libc-headers-DD-WRT-v23.tar.bz2
-HEADERS_DDWRT_UNPACK_DIR=linux.v23
+# Created with: tar cvjf linux-libc-headers-DD-WRT-v24.tar.bz2 linux.v24/Makefile linux.v24/include --exclude \*/.svn\*
+HEADERS_DDWRT_SITE=http://www.lecad.fs.uni-lj.si/~leon/other/wlan/optware
+HEADERS_DDWRT_SOURCE=linux-libc-headers-DD-WRT-v24.tar.bz2
+HEADERS_DDWRT_UNPACK_DIR=linux.v24
 HEADERS_DDWRT=LINUX_HEADERS_SOURCE=$(HEADERS_DDWRT_SOURCE) \
  LINUX_HEADERS_UNPACK_DIR=$(BUILDROOT_HEADERS_DIR)/$(HEADERS_DDWRT_UNPACK_DIR) 
 $(DL_DIR)/$(HEADERS_DDWRT_SOURCE):
@@ -280,8 +281,10 @@ buildroot-unpack uclibc-unpack: $(BUILDROOT_BUILD_DIR)/.configured
 $(BUILDROOT_BUILD_DIR)/.built: $(BUILDROOT_BUILD_DIR)/.configured
 	rm -f $(BUILDROOT_BUILD_DIR)/.built
 	rm -rf $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC-OPT_VERSION)
+	echo "$(MAKE) -C $(BUILDROOT_BUILD_DIR) $(BUILDROOT_CUSTOM_HEADERS) \
+	UCLIBC_CONFIG_FILE=$(BUILDROOT_SOURCE_DIR)/$(UCLIBC_CONFIG_FILE) " > $(BUILDROOT_BUILD_DIR)/build.sh
 	$(MAKE) -C $(BUILDROOT_BUILD_DIR) $(BUILDROOT_CUSTOM_HEADERS) \
-	UCLIBC_CONFIG_FILE=$(BUILDROOT_SOURCE_DIR)/$(UCLIBC_CONFIG_FILE)
+	UCLIBC_CONFIG_FILE=$(BUILDROOT_SOURCE_DIR)/$(UCLIBC_CONFIG_FILE) 
 	touch $(BUILDROOT_BUILD_DIR)/.built
 
 #
