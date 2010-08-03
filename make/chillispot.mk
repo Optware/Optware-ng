@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHILLISPOT_SITE=http://www.chillispot.org/download
+CHILLISPOT_SITE=http://www.chillispot.info/download
 CHILLISPOT_VERSION=1.1.0
 CHILLISPOT_SOURCE=chillispot-$(CHILLISPOT_VERSION).tar.gz
 CHILLISPOT_DIR=chillispot-$(CHILLISPOT_VERSION)
