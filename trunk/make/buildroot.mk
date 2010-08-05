@@ -91,8 +91,8 @@ $(DL_DIR)/$(HEADERS_OLEG_SOURCE):
 # DD-WRT firmware for various Broadcom based routers
 # Created with: tar cvjf linux-libc-headers-DD-WRT-v24.tar.bz2 linux.v24/Makefile linux.v24/include --exclude \*/.svn\*
 HEADERS_DDWRT_SITE=http://www.lecad.fs.uni-lj.si/~leon/other/wlan/optware
-HEADERS_DDWRT_SOURCE=linux-libc-headers-DD-WRT-v24.tar.bz2
-HEADERS_DDWRT_UNPACK_DIR=linux.v24
+HEADERS_DDWRT_SOURCE=linux-libc-headers-DD-WRT-v24_2.tar.bz2
+HEADERS_DDWRT_UNPACK_DIR=linux.v24_2
 HEADERS_DDWRT=LINUX_HEADERS_SOURCE=$(HEADERS_DDWRT_SOURCE) \
  LINUX_HEADERS_UNPACK_DIR=$(BUILDROOT_HEADERS_DIR)/$(HEADERS_DDWRT_UNPACK_DIR) 
 $(DL_DIR)/$(HEADERS_DDWRT_SOURCE):
@@ -270,6 +270,7 @@ ifneq ($(OPTWARE_TARGET), ts101)
 else
 	sed -i.orig -e '/^GCC_SITE/s|=.*|=http://ftp.gnu.org/gnu/gcc/gcc-$$(GCC_VERSION)|' $(@D)/toolchain/gcc/gcc-uclibc-3.x.mk
 endif
+	sed -i.orig -e '/UCLIBC_SITE:=/s|/downloads|/downloads/old-releases|' $(@D)/toolchain/uClibc/uclibc.mk
 	touch $(BUILDROOT_BUILD_DIR)/.configured
 
 buildroot-unpack uclibc-unpack: $(BUILDROOT_BUILD_DIR)/.configured
@@ -425,3 +426,11 @@ buildroot-check: $(BUILDROOT_IPK)
 # for missing math see http://busybox.net/bugs/view.php?id=144
 # http://www.gnu.org/software/binutils
 # http://developer.apple.com/releasenotes/DeveloperTools/GCC40PortingReleaseNotes/Articles/PortingToGCC.html
+#
+#
+# Preparing linux headers for DD-WRT must be done with:
+#  svn co svn://svn.dd-wrt.com/DD-WRT/src/linux/brcm
+#  cd brcm/linux.v24_2
+#  make menuconfig
+#  cd ..
+#  tar cvjf linux-libc-headers-DD-WRT-v24_2.tar.bz2 linux.v24_2/include linux.v24_2/Makefile --exclude \*/.svn\*
