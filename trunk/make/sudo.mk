@@ -4,8 +4,8 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_UPSTREAM_VERSION=1.7.3
-SUDO_VERSION=1.7.3
+SUDO_UPSTREAM_VERSION=1.7.4
+SUDO_VERSION=1.7.4
 SUDO_SOURCE=sudo-$(SUDO_UPSTREAM_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_UPSTREAM_VERSION)
 SUDO_UNZIP=zcat
@@ -103,6 +103,7 @@ $(SUDO_IPK): $(SUDO_BUILD_DIR)/.built
 	$(STRIP_COMMAND) \
 	    $(SUDO_IPK_DIR)/opt/bin/sudo \
 	    $(SUDO_IPK_DIR)/opt/bin/sudoreplay \
+	    $(SUDO_IPK_DIR)/opt/libexec/sudo_noexec.so \
 	    $(SUDO_IPK_DIR)/opt/sbin/visudo
 	install -d $(SUDO_IPK_DIR)/opt/share/doc/sudo
 	install -m 644 $(SUDO_BUILD_DIR)/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
