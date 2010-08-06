@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SOCAT_SITE=http://www.dest-unreach.org/socat/download
-SOCAT_VERSION=1.7.1.2
+SOCAT_VERSION=1.7.1.3
 SOCAT_SOURCE=socat-$(SOCAT_VERSION).tar.bz2
 SOCAT_DIR=socat-$(SOCAT_VERSION)
 SOCAT_UNZIP=bzcat
