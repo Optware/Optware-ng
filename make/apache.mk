@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://archive.apache.org/dist/httpd
-APACHE_VERSION=2.2.15
+APACHE_VERSION=2.2.16
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -53,10 +53,14 @@ APACHE_LOCALES=
 # APACHE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-APACHE_PATCHES=$(APACHE_SOURCE_DIR)/hostcc.patch \
+APACHE_PATCHES= \
 		$(APACHE_SOURCE_DIR)/hostcc-pcre.patch \
 		$(APACHE_SOURCE_DIR)/apxs.patch \
-		$(APACHE_SOURCE_DIR)/ulimit.patch
+		$(APACHE_SOURCE_DIR)/ulimit.patch \
+		$(APACHE_SOURCE_DIR)/Makefile_in.patch \
+		$(APACHE_SOURCE_DIR)/test_char_h.patch \
+
+#$(APACHE_SOURCE_DIR)/hostcc.patch \
 # if the platform does not have a daemon user and group, use nobody/-1
 ifneq ($(OPTWARE_TARGET), $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
 APACHE_PATCHES += $(APACHE_SOURCE_DIR)/httpd-conf-in.patch
