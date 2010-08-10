@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZRTOOLS_VERSION=2.1.0
-BZRTOOLS_SITE=http://launchpad.net/bzrtools/trunk/2.1.0/+download
+BZRTOOLS_VERSION=2.2.0
+BZRTOOLS_SITE=http://launchpad.net/bzrtools/stable/2.2.0/+download
 BZRTOOLS_SOURCE=bzrtools-$(BZRTOOLS_VERSION).tar.gz
 BZRTOOLS_DIR=bzrtools
 BZRTOOLS_UNZIP=zcat
