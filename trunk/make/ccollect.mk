@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CCOLLECT_SITE=http://unix.schottelius.org/ccollect
-CCOLLECT_VERSION=0.7.0
+CCOLLECT_SITE=http://www.nico.schottelius.org/software/ccollect/download
+CCOLLECT_VERSION=0.8
 CCOLLECT_SOURCE=ccollect-$(CCOLLECT_VERSION).tar.bz2
 CCOLLECT_DIR=ccollect-$(CCOLLECT_VERSION)
 CCOLLECT_UNZIP=bzcat
@@ -44,15 +44,21 @@ CCOLLECT_CONFFILES=/opt/etc/ccollect/defaults/pre_exec \
 		/opt/etc/ccollect/defaults/post_exec \
 		/opt/etc/ccollect/defaults/intervals/daily \
 		/opt/etc/ccollect/defaults/intervals/weekly \
-		/opt/etc/ccollect/defaults/intervals/monthly
-
-
+		/opt/etc/ccollect/defaults/intervals/monthly \
+		/opt/etc/ccollect/defaults/intervals/normal \
+		/opt/etc/ccollect/defaults/sources/exclude \
+		/opt/etc/ccollect/defaults/sources/rsync_options \
+		/opt/etc/ccollect/defaults/sources/source_postfix \
+		/opt/etc/ccollect/defaults/sources/source_prefix \
+		/opt/etc/ccollect/defaults/sources/verbose \
+		/opt/etc/ccollect/defaults/verbose \
 
 #
 # CCOLLECT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CCOLLECT_PATCHES=$(CCOLLECT_SOURCE_DIR)/delete-incomplete.patch
+CCOLLECT_PATCHES=
+#$(CCOLLECT_SOURCE_DIR)/delete-incomplete.patch
 
 #
 # If the compilation of the package requires additional
@@ -189,6 +195,11 @@ $(CCOLLECT_IPK): $(CCOLLECT_BUILD_DIR)/.built
 	rm -rf $(CCOLLECT_IPK_DIR) $(BUILD_DIR)/ccollect_*_$(TARGET_ARCH).ipk
 	install -d $(CCOLLECT_IPK_DIR)/opt/bin
 	install -m 755 $(CCOLLECT_BUILD_DIR)/ccollect.sh $(CCOLLECT_IPK_DIR)/opt/bin
+#	install -m 755 $(CCOLLECT_BUILD_DIR)/tools/ccollect_add_source.sh $(CCOLLECT_IPK_DIR)/opt/bin
+#	install -m 755 $(CCOLLECT_BUILD_DIR)/tools/ccollect_analyse_logs.sh $(CCOLLECT_IPK_DIR)/opt/bin
+#	install -m 755 $(CCOLLECT_BUILD_DIR)/tools/ccollect_delete_source.sh $(CCOLLECT_IPK_DIR)/opt/bin
+#	install -m 755 $(CCOLLECT_BUILD_DIR)/tools/ccollect_list_intervals.sh $(CCOLLECT_IPK_DIR)/opt/bin
+#	install -m 755 $(CCOLLECT_BUILD_DIR)/tools/ccollect_logwrapper.sh $(CCOLLECT_IPK_DIR)/opt/bin
 	install -d $(CCOLLECT_IPK_DIR)/opt/etc/ccollect/sources
 	install -d $(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/intervals
 	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/pre_exec  \
@@ -201,15 +212,30 @@ $(CCOLLECT_IPK): $(CCOLLECT_BUILD_DIR)/.built
 		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/intervals/
 	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/intervals/monthly \
 		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/intervals/
+	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/intervals/normal \
+		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/intervals/
+	install -d $(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/sources
+	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/sources/exclude \
+		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/sources/
+	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/sources/rsync_options \
+		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/sources/
+	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/sources/source_postfix \
+		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/sources/
+	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/sources/source_prefix \
+		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/sources/
+	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/sources/verbose \
+		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/sources/
+	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/verbose \
+		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/
 	install -d $(CCOLLECT_IPK_DIR)/opt/etc/ccollect/tools
 	install -m 755 $(CCOLLECT_BUILD_DIR)/tools/*.sh \
 		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/tools/
 	install -d $(CCOLLECT_IPK_DIR)/opt/doc/ccollect
-	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/CHANGES \
-		$(CCOLLECT_IPK_DIR)/opt/doc/ccollect/
 	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/*.text \
 		$(CCOLLECT_IPK_DIR)/opt/doc/ccollect/
 	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/man/*.text \
+		$(CCOLLECT_IPK_DIR)/opt/doc/ccollect/
+	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/HACKING \
 		$(CCOLLECT_IPK_DIR)/opt/doc/ccollect/
 #	install -m 644 $(CCOLLECT_SOURCE_DIR)/ccollect.conf $(CCOLLECT_IPK_DIR)/opt/etc/ccollect/ccollect.conf
 #	install -d $(CCOLLECT_IPK_DIR)/opt/etc/init.d
