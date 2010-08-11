@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ESMTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esmtp
-ESMTP_VERSION=0.6.0
+ESMTP_VERSION=1.2
 ESMTP_SOURCE=esmtp-$(ESMTP_VERSION).tar.bz2
 ESMTP_DIR=esmtp-$(ESMTP_VERSION)
 ESMTP_UNZIP=bzcat
@@ -80,7 +80,8 @@ ESMTP_IPK=$(BUILD_DIR)/esmtp_$(ESMTP_VERSION)-$(ESMTP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ESMTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ESMTP_SITE)/$(ESMTP_SOURCE)
+	$(WGET) -P $(@D) $(ESMTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,13 +105,13 @@ esmtp-source: $(DL_DIR)/$(ESMTP_SOURCE) $(ESMTP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ESMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ESMTP_SOURCE) $(ESMTP_PATCHES)
+$(ESMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ESMTP_SOURCE) $(ESMTP_PATCHES) make/esmtp.mk
 	$(MAKE) libesmtp-stage
-	rm -rf $(BUILD_DIR)/$(ESMTP_DIR) $(ESMTP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ESMTP_DIR) $(@D)
 	$(ESMTP_UNZIP) $(DL_DIR)/$(ESMTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(ESMTP_PATCHES) | patch -d $(BUILD_DIR)/$(ESMTP_DIR) -p1
-	mv $(BUILD_DIR)/$(ESMTP_DIR) $(ESMTP_BUILD_DIR)
-	(cd $(ESMTP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(ESMTP_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESMTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ESMTP_LDFLAGS)" \
@@ -123,7 +124,7 @@ $(ESMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ESMTP_SOURCE) $(ESMTP_PATCHES)
 		--with-libesmtp=$(STAGING_LIB_DIR) \
 		--disable-nls \
 	)
-	touch $(ESMTP_BUILD_DIR)/.configured
+	touch $@
 
 esmtp-unpack: $(ESMTP_BUILD_DIR)/.configured
 
@@ -131,9 +132,9 @@ esmtp-unpack: $(ESMTP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ESMTP_BUILD_DIR)/.built: $(ESMTP_BUILD_DIR)/.configured
-	rm -f $(ESMTP_BUILD_DIR)/.built
-	$(MAKE) -C $(ESMTP_BUILD_DIR)
-	touch $(ESMTP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,19 +144,19 @@ esmtp: $(ESMTP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(ESMTP_BUILD_DIR)/.staged: $(ESMTP_BUILD_DIR)/.built
-	rm -f $(ESMTP_BUILD_DIR)/.staged
-	$(MAKE) -C $(ESMTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(ESMTP_BUILD_DIR)/.staged
-
-esmtp-stage: $(ESMTP_BUILD_DIR)/.staged
+#$(ESMTP_BUILD_DIR)/.staged: $(ESMTP_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#esmtp-stage: $(ESMTP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/esmtp
 #
 $(ESMTP_IPK_DIR)/CONTROL/control:
-	@install -d $(ESMTP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: esmtp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,4 +217,4 @@ esmtp-dirclean:
 # Some sanity check for the package.
 #
 esmtp-check: $(ESMTP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ESMTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
