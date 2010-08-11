@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBESMTP_SITE=http://www.stafford.uklinux.net/libesmtp
-LIBESMTP_VERSION=1.0.4
+LIBESMTP_VERSION=1.0.6
 LIBESMTP_SOURCE=libesmtp-$(LIBESMTP_VERSION).tar.bz2
 LIBESMTP_DIR=libesmtp-$(LIBESMTP_VERSION)
 LIBESMTP_UNZIP=bzcat
@@ -37,7 +37,7 @@ LIBESMTP_CONFLICTS=
 #
 # LIBESMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBESMTP_IPK_VERSION=2
+LIBESMTP_IPK_VERSION=1
 
 #
 # LIBESMTP_CONFFILES should be a list of user-editable files
@@ -75,7 +75,8 @@ LIBESMTP_IPK=$(BUILD_DIR)/libesmtp_$(LIBESMTP_VERSION)-$(LIBESMTP_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBESMTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBESMTP_SITE)/$(LIBESMTP_SOURCE)
+	$(WGET) -P $(@D) $(LIBESMTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -99,13 +100,13 @@ libesmtp-source: $(DL_DIR)/$(LIBESMTP_SOURCE) $(LIBESMTP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBESMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBESMTP_SOURCE) $(LIBESMTP_PATCHES)
+$(LIBESMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBESMTP_SOURCE) $(LIBESMTP_PATCHES) make/libesmtp.mk
 	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(LIBESMTP_DIR) $(LIBESMTP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBESMTP_DIR) $(@D)
 	$(LIBESMTP_UNZIP) $(DL_DIR)/$(LIBESMTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBESMTP_PATCHES) | patch -d $(BUILD_DIR)/$(LIBESMTP_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBESMTP_DIR) $(LIBESMTP_BUILD_DIR)
-	(cd $(LIBESMTP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBESMTP_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBESMTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBESMTP_LDFLAGS)" \
@@ -117,7 +118,7 @@ $(LIBESMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBESMTP_SOURCE) $(LIBESMTP_PATCH
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(LIBESMTP_BUILD_DIR)/.configured
+	touch $@
 
 libesmtp-unpack: $(LIBESMTP_BUILD_DIR)/.configured
 
@@ -125,9 +126,9 @@ libesmtp-unpack: $(LIBESMTP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBESMTP_BUILD_DIR)/.built: $(LIBESMTP_BUILD_DIR)/.configured
-	rm -f $(LIBESMTP_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBESMTP_BUILD_DIR)
-	touch $(LIBESMTP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -138,10 +139,10 @@ libesmtp: $(LIBESMTP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBESMTP_BUILD_DIR)/.staged: $(LIBESMTP_BUILD_DIR)/.built
-	rm -f $(LIBESMTP_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBESMTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/libesmtp-config
-	touch $(LIBESMTP_BUILD_DIR)/.staged
+	touch $@
 
 libesmtp-stage: $(LIBESMTP_BUILD_DIR)/.staged
 
@@ -150,7 +151,7 @@ libesmtp-stage: $(LIBESMTP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libesmtp
 #
 $(LIBESMTP_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBESMTP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libesmtp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,3 +208,9 @@ libesmtp-clean:
 #
 libesmtp-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBESMTP_DIR) $(LIBESMTP_BUILD_DIR) $(LIBESMTP_IPK_DIR) $(LIBESMTP_IPK)
+
+#
+# Some sanity check for the package.
+#
+libesmtp-check: $(LIBESMTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
