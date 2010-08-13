@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://download.lighttpd.net/lighttpd/releases-1.4.x
-LIGHTD_VERSION=1.4.26
+LIGHTD_VERSION=1.4.27
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.bz2
 LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
 LIGHTTPD_UNZIP=bzcat
@@ -269,7 +269,7 @@ $(LIGHTTPD_IPK): $(LIGHTTPD_BUILD_DIR)/.built
 	install -d $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd
 	install -d $(LIGHTTPD_IPK_DIR)/opt/share/www/lighttpd
 	install -d $(LIGHTTPD_IPK_DIR)/opt/var/log/lighttpd
-	install -m 644 $(LIGHTTPD_BUILD_DIR)/doc/* $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd/
+	rsync -av $(LIGHTTPD_BUILD_DIR)/doc/* $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd/
 	install -m 644 $(LIGHTTPD_SOURCE_DIR)/index.html $(LIGHTTPD_IPK_DIR)/opt/share/www/lighttpd/
 	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd
 	install -m 644 $(LIGHTTPD_SOURCE_DIR)/lighttpd.conf $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd/
