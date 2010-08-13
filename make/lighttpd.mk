@@ -10,7 +10,7 @@
 # which must always be done to ensure we have unique names.
 
 #
-# LIGHTD_VERSION, LIGHTTPD_SITE and LIGHTTPD_SOURCE define
+# LIGHTTPD_VERSION, LIGHTTPD_SITE and LIGHTTPD_SOURCE define
 # the upstream location of the source code for the package.
 # LIGHTTPD_DIR is the directory which is created when the source
 # archive is unpacked.
@@ -27,9 +27,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://download.lighttpd.net/lighttpd/releases-1.4.x
-LIGHTD_VERSION=1.4.27
-LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.bz2
-LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
+LIGHTTPD_VERSION=1.4.27
+LIGHTTPD_SOURCE=lighttpd-$(LIGHTTPD_VERSION).tar.bz2
+LIGHTTPD_DIR=lighttpd-$(LIGHTTPD_VERSION)
 LIGHTTPD_UNZIP=bzcat
 LIGHTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
@@ -102,6 +102,9 @@ endif
 ifeq (openwrt-ixp4xx, $(OPTWARE_TARGET))
 LIGHTTPD_CONFIG_ARGS+= --disable-ipv6
 endif
+ifeq (no, $(IPV6))
+LIGHTTPD_CONFIG_ARGS+= --disable-ipv6
+endif
 
 #
 # LIGHTTPD_BUILD_DIR is the directory in which the build is done.
@@ -114,8 +117,8 @@ endif
 #
 LIGHTTPD_BUILD_DIR=$(BUILD_DIR)/lighttpd
 LIGHTTPD_SOURCE_DIR=$(SOURCE_DIR)/lighttpd
-LIGHTTPD_IPK_DIR=$(BUILD_DIR)/lighttpd-$(LIGHTD_VERSION)-ipk
-LIGHTTPD_IPK=$(BUILD_DIR)/lighttpd_$(LIGHTD_VERSION)-$(LIGHTTPD_IPK_VERSION)_$(TARGET_ARCH).ipk
+LIGHTTPD_IPK_DIR=$(BUILD_DIR)/lighttpd-$(LIGHTTPD_VERSION)-ipk
+LIGHTTPD_IPK=$(BUILD_DIR)/lighttpd_$(LIGHTTPD_VERSION)-$(LIGHTTPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: lighttpd-source lighttpd-unpack lighttpd lighttpd-stage lighttpd-ipk lighttpd-clean lighttpd-dirclean lighttpd-check
 
@@ -239,7 +242,7 @@ $(LIGHTTPD_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(LIGHTTPD_PRIORITY)" >>$@
 	@echo "Section: $(LIGHTTPD_SECTION)" >>$@
-	@echo "Version: $(LIGHTD_VERSION)-$(LIGHTTPD_IPK_VERSION)" >>$@
+	@echo "Version: $(LIGHTTPD_VERSION)-$(LIGHTTPD_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(LIGHTTPD_MAINTAINER)" >>$@
 	@echo "Source: $(LIGHTTPD_SITE)/$(LIGHTTPD_SOURCE)" >>$@
 	@echo "Description: $(LIGHTTPD_DESCRIPTION)" >>$@
