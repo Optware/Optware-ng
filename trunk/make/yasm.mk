@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 YASM_SITE=http://www.tortall.net/projects/yasm/releases
-YASM_VERSION=0.8.0
+YASM_VERSION=1.1.0
 YASM_SOURCE=yasm-$(YASM_VERSION).tar.gz
 YASM_DIR=yasm-$(YASM_VERSION)
 YASM_UNZIP=zcat
