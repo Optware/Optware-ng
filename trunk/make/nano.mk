@@ -5,7 +5,7 @@
 ###########################################################
 
 NANO_SITE=http://www.nano-editor.org/dist/v2.2
-NANO_VERSION=2.2.4
+NANO_VERSION=2.2.5
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
