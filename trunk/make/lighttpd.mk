@@ -99,7 +99,7 @@ else
 LIGHTTPD_CONFIG_ARGS+=--without-memcache
 endif
 
-ifeq (openwrt-ixp4xx, $(OPTWARE_TARGET))
+ifeq ($(OPTWARE_TARGET), $(filter openwrt-ixp4xx dns323 nslu2 syno-x07 wdtv, $(OPTWARE_TARGET)))
 LIGHTTPD_CONFIG_ARGS+= --disable-ipv6
 endif
 ifeq (no, $(IPV6))
