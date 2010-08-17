@@ -19,9 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-VIM_SITE=http://ftp.vim.org/pub/vim/unix
+VIM_SITE=ftp://ftp.vim.org/pub/vim/unix
 VIM_VERSION_MAJOR=7
-VIM_VERSION_MINOR=2
+VIM_VERSION_MINOR=3
 VIM_VERSION=$(VIM_VERSION_MAJOR).$(VIM_VERSION_MINOR)
 VIM_SOURCE=vim-$(VIM_VERSION).tar.bz2
 VIM_DIR=vim$(VIM_VERSION_MAJOR)$(VIM_VERSION_MINOR)
@@ -35,7 +35,7 @@ VIM_DEPENDS=ncurses
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=2
+VIM_IPK_VERSION=1
 
 #
 # VIM_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ VIM_CONFFILES=
 # VIM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#VIM_PATCHES=$(VIM_SOURCE_DIR)/configure.in.patch
+VIM_PATCHES=$(VIM_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -115,7 +115,7 @@ $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES) make/vim.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(@D)
 	$(VIM_UNZIP) $(DL_DIR)/$(VIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -d "$(VIM_PATCHES)"; then \
+	if test -f "$(VIM_PATCHES)"; then \
 		cat $(VIM_PATCHES) | patch -N -b -d $(BUILD_DIR)/$(VIM_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(VIM_DIR) $(@D)
