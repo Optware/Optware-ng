@@ -115,7 +115,7 @@ $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES) make/vim.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(@D)
 	$(VIM_UNZIP) $(DL_DIR)/$(VIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -f "$(VIM_PATCHES)"; then \
+	if test -n "$(VIM_PATCHES)"; then \
 		cat $(VIM_PATCHES) | patch -N -b -d $(BUILD_DIR)/$(VIM_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(VIM_DIR) $(@D)
