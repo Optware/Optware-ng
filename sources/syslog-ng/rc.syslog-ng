@@ -5,7 +5,7 @@
 
 # Stop itself if running
 if [ -n "`pidof syslog-ng`" ]; then
-    /bin/killall syslog-ng 2>/dev/null
+    killall syslog-ng 2>/dev/null
 fi
 
 sleep 2

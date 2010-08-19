@@ -34,7 +34,7 @@ SYSLOG-NG_CONFLICTS=
 #
 # SYSLOG-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSLOG-NG_IPK_VERSION=2
+SYSLOG-NG_IPK_VERSION=3
 
 #
 # SYSLOG-NG_CONFFILES should be a list of user-editable files
