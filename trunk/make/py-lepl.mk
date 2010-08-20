@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-LEPL_SITE=http://pypi.python.org/packages/source/L/LEPL
-PY-LEPL_VERSION=4.3.1
+PY-LEPL_VERSION=4.3.2
 PY-LEPL_SOURCE=LEPL-$(PY-LEPL_VERSION).tar.gz
 PY-LEPL_DIR=LEPL-$(PY-LEPL_VERSION)
 PY-LEPL_UNZIP=zcat
