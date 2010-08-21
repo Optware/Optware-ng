@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SUBVERTPY_VERSION=0.7.2
+SUBVERTPY_VERSION=0.7.3.1
 SUBVERTPY_SITE=http://samba.org/~jelmer/subvertpy
 SUBVERTPY_SOURCE=subvertpy-$(SUBVERTPY_VERSION).tar.gz
 SUBVERTPY_DIR=subvertpy-$(SUBVERTPY_VERSION)
