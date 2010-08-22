@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 MAKE_SITE=http://ftp.gnu.org/pub/gnu/make
-MAKE_VERSION=3.81
+MAKE_VERSION=3.82
 MAKE_SOURCE=make-$(MAKE_VERSION).tar.bz2
 MAKE_DIR=make-$(MAKE_VERSION)
 MAKE_UNZIP=bzcat
@@ -35,7 +35,7 @@ MAKE_CONFLICTS=
 #
 # MAKE_IPK_VERSION should be incremented when the ipk changes.
 #
-MAKE_IPK_VERSION=2
+MAKE_IPK_VERSION=1
 
 #
 # MAKE_PATCHES should list any patches, in the the order in
@@ -135,16 +135,16 @@ make: $(MAKE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libmake.so.$(MAKE_VERSION): $(MAKE_BUILD_DIR)/libmake.so.$(MAKE_VERSION)
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(MAKE_BUILD_DIR)/make.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(MAKE_BUILD_DIR)/libmake.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(MAKE_BUILD_DIR)/libmake.so.$(MAKE_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libmake.so.$(MAKE_VERSION) libmake.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libmake.so.$(MAKE_VERSION) libmake.so
-
-make-stage: $(STAGING_DIR)/opt/lib/libmake.so.$(MAKE_VERSION)
+#$(STAGING_DIR)/opt/lib/libmake.so.$(MAKE_VERSION): $(MAKE_BUILD_DIR)/libmake.so.$(MAKE_VERSION)
+#	install -d $(STAGING_DIR)/opt/include
+#	install -m 644 $(MAKE_BUILD_DIR)/make.h $(STAGING_DIR)/opt/include
+#	install -d $(STAGING_DIR)/opt/lib
+#	install -m 644 $(MAKE_BUILD_DIR)/libmake.a $(STAGING_DIR)/opt/lib
+#	install -m 644 $(MAKE_BUILD_DIR)/libmake.so.$(MAKE_VERSION) $(STAGING_DIR)/opt/lib
+#	cd $(STAGING_DIR)/opt/lib && ln -fs libmake.so.$(MAKE_VERSION) libmake.so.1
+#	cd $(STAGING_DIR)/opt/lib && ln -fs libmake.so.$(MAKE_VERSION) libmake.so
+#
+#make-stage: $(STAGING_DIR)/opt/lib/libmake.so.$(MAKE_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -208,4 +208,4 @@ make-dirclean:
 # Some sanity check for the package.
 #
 make-check: $(MAKE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MAKE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
