@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SCONS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/scons
-SCONS_VERSION=1.2.0
+SCONS_VERSION=2.0.1
 SCONS_SOURCE=scons-$(SCONS_VERSION).tar.gz
 SCONS_DIR=scons-$(SCONS_VERSION)
 SCONS_UNZIP=zcat
@@ -262,4 +262,4 @@ scons-dirclean:
 # Some sanity check for the package.
 #
 scons-check: $(SCONS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SCONS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
