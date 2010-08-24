@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-ARC_SITE=ftp://ftp.freebsd.org/pub/FreeBSD/distfiles/
+ARC_SITE=ftp://ftp.freebsd.org/pub/FreeBSD/distfiles
 ARC_VERSION=5.21o
 ARC_SOURCE=arc-$(ARC_VERSION).tgz
 ARC_DIR=arc-$(ARC_VERSION)
