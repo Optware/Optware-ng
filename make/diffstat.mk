@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DIFFSTAT_SITE=ftp://invisible-island.net/diffstat
-DIFFSTAT_VERSION=1.49
+DIFFSTAT_VERSION=1.53
 DIFFSTAT_SOURCE=diffstat-$(DIFFSTAT_VERSION).tgz
 DIFFSTAT_DIR=diffstat-$(DIFFSTAT_VERSION)
 DIFFSTAT_UNZIP=zcat
