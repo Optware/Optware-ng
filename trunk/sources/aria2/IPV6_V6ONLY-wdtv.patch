@@ -1,0 +1,11 @@
+--- src/SocketCore.cc.orig	2010-08-25 12:32:29.000000000 +0000
++++ src/SocketCore.cc	2010-09-03 05:19:44.223910882 +0000
+@@ -202,7 +202,7 @@
+   }
+   if(family == AF_INET6) {
+     int sockopt = 1;
+-    if(setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (a2_sockopt_t) &sockopt,
++    if(setsockopt(fd, IPPROTO_IPV6, 26, (a2_sockopt_t) &sockopt,
+                   sizeof(sockopt)) < 0) {
+       CLOSE(fd);
+       return -1;
