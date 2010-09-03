@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 M4_SITE=http://ftp.gnu.org/pub/gnu/m4
-M4_VERSION ?= 1.4.14
+M4_VERSION ?= 1.4.15
 M4_SOURCE=m4-$(M4_VERSION).tar.gz
 M4_DIR=m4-$(M4_VERSION)
 M4_UNZIP=zcat
