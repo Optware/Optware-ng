@@ -21,6 +21,7 @@ BROKEN_PACKAGES = \
 	lm-sensors \
 	btg clinkcc libopensync msynctool obexftp \
 
+ARIA2_PATCHES := $(SOURCE_DIR)/aria2/IPV6_V6ONLY-wdtv.patch
+
 RTORRENT_VERSION := 0.8.2
 RTORRENT_IPK_VERSION := 2
-
