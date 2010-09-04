@@ -5,7 +5,7 @@
 ###########################################################
 
 AUTOCONF_SITE=http://ftp.gnu.org/gnu/autoconf
-AUTOCONF_VERSION=2.63
+AUTOCONF_VERSION=2.67
 AUTOCONF_SOURCE=autoconf-$(AUTOCONF_VERSION).tar.bz2
 AUTOCONF_DIR=autoconf-$(AUTOCONF_VERSION)
 AUTOCONF_UNZIP=bzcat
