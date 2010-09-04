@@ -22,3 +22,5 @@ HDPARM_VERSION := 9.28
 
 STRACE_VERSION := 4.5.17
 STRACE_IPK_VERSION := 1
+
+REDIS_PATCHES := $(SOURCE_DIR)/redis/no_sa_sigaction.patch

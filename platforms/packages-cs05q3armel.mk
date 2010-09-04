@@ -26,3 +26,5 @@ E2FSPROGS_IPK_VERSION := 5
 
 SLANG_VERSION := 2.2.2
 SLANG_IPK_VERSION := 1
+
+REDIS_PATCHES := $(SOURCE_DIR)/redis/no_sa_sigaction.patch
