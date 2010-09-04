@@ -1,0 +1,18 @@
+--- redis.c.orig	2010-09-04 14:56:05.970436000 +0000
++++ redis.c	2010-09-04 15:02:33.328323345 +0000
+@@ -10935,6 +10935,7 @@
+     sigemptyset (&act.sa_mask);
+     /* When the SA_SIGINFO flag is set in sa_flags then sa_sigaction
+      * is used. Otherwise, sa_handler is used */
++    /*
+     act.sa_flags = SA_NODEFER | SA_ONSTACK | SA_RESETHAND | SA_SIGINFO;
+     act.sa_sigaction = segvHandler;
+     sigaction (SIGSEGV, &act, NULL);
+@@ -10946,6 +10947,7 @@
+     act.sa_flags = SA_NODEFER | SA_ONSTACK | SA_RESETHAND;
+     act.sa_handler = sigtermHandler;
+     sigaction (SIGTERM, &act, NULL);
++    */
+     return;
+ }
+ 
