@@ -1,6 +1,14 @@
---- Python-2.7a1/configure.in.orig	2009-12-03 02:52:39.000000000 +0000
-+++ Python-2.7a1/configure.in	2009-12-08 02:15:04.427100340 +0000
-@@ -29,6 +29,11 @@
+--- Python-2.7/configure.in.orig	2010-05-28 15:28:47.000000000 +0000
++++ Python-2.7/configure.in	2010-09-05 01:50:11.256014039 +0000
+@@ -12,7 +12,6 @@
+        [],
+        [m4_fatal([Autoconf version $1 is required for Python], 63)])
+ ])
+-version_required(2.65)
+ 
+ AC_REVISION($Revision: 81582 $)
+ AC_INIT(python, PYTHON_VERSION, http://bugs.python.org/)
+@@ -28,6 +27,11 @@
      prefix=`echo "$prefix" | sed -e 's/\/$//g'`
  fi    
  
@@ -12,7 +20,7 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -873,7 +878,7 @@
+@@ -916,7 +920,7 @@
  	    STRICT_PROTO="-Wstrict-prototypes"
  	fi
          # For gcc 4.x we need to use -fwrapv so lets check if its supported
@@ -21,7 +29,7 @@
             WRAP="-fwrapv"
          fi
  	case $ac_cv_prog_cc_g in
-@@ -4127,6 +4132,25 @@
+@@ -4258,6 +4262,25 @@
  done
  AC_MSG_RESULT(done)
  

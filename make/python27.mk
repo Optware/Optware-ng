@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON27_VERSION=2.7a4
+PYTHON27_VERSION=2.7
 PYTHON27_VERSION_MAJOR=2.7
 PYTHON27_SITE=http://python.org/ftp/python/$(PYTHON27_VERSION_MAJOR)
 PYTHON27_SOURCE=Python-$(PYTHON27_VERSION).tar.bz2
@@ -131,10 +131,11 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
+	$(MAKE) autoconf-host-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON27_DIR) $(@D)
 	$(PYTHON27_UNZIP) $(DL_DIR)/$(PYTHON27_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON27_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON27_DIR) -p1
-	autoreconf -vif $(BUILD_DIR)/$(PYTHON27_DIR)
+	$(HOST_STAGING_PREFIX)/bin/autoreconf -vif $(BUILD_DIR)/$(PYTHON27_DIR)
 	mkdir -p $(@D)
 	cd $(@D); (\
 	echo "[build_ext]"; \
