@@ -1,5 +1,5 @@
---- Python-2.7a1/Makefile.pre.in.orig	2009-10-27 20:52:02.000000000 +0000
-+++ Python-2.7a1/Makefile.pre.in	2009-12-08 02:09:13.448791037 +0000
+--- Python-2.7b2/Makefile.pre.in.orig	2010-04-12 00:10:46.000000000 +0000
++++ Python-2.7b2/Makefile.pre.in	2010-05-09 15:40:54.459795492 +0000
 @@ -38,6 +38,8 @@
  
  GNULD=          @GNULD@
@@ -16,9 +16,9 @@
 -LDSHARED=	@LDSHARED@
 +LDSHARED=	@LDSHARED@ @LDFLAGS@
  BLDSHARED=	@BLDSHARED@
+ LDCXXSHARED=	@LDCXXSHARED@
  DESTSHARED=	$(BINLIBDEST)/lib-dynload
- 
-@@ -177,7 +179,8 @@
+@@ -178,7 +180,8 @@
  UNICODE_OBJS=   @UNICODE_OBJS@
  
  PYTHON=		python$(EXE)
@@ -28,7 +28,7 @@
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -207,7 +210,8 @@
+@@ -210,7 +213,8 @@
  
  ##########################################################################
  # Parser
@@ -38,16 +38,16 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -357,7 +361,7 @@
+@@ -362,7 +366,7 @@
  
  # Default target
  all:		build_all
--build_all:	$(BUILDPYTHON) oldsharedmods sharedmods
-+build_all:	$(HOSTPYTHON) oldsharedmods sharedmods
+-build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks
++build_all:	$(HOSTPYTHON) oldsharedmods sharedmods gdbhooks
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -387,7 +391,7 @@
+@@ -392,7 +396,7 @@
  
  
  # Build the interpreter
@@ -56,7 +56,7 @@
  		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
  			Modules/python.o \
  			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-@@ -520,12 +524,12 @@
+@@ -536,12 +540,12 @@
  	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
  
  
@@ -73,7 +73,7 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -582,6 +586,16 @@
+@@ -599,6 +603,16 @@
  Python/formatter_string.o: $(srcdir)/Python/formatter_string.c \
  				$(STRINGLIB_HEADERS)
  
@@ -90,7 +90,7 @@
  ############################################################################
  # Header files
  
-@@ -787,7 +801,7 @@
+@@ -805,7 +819,7 @@
  		else	true; \
  		fi; \
  	done
@@ -99,7 +99,7 @@
  	if test -f $(LDLIBRARY); then \
  		if test -n "$(DLLLIBRARY)" ; then \
  			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
-@@ -1022,8 +1036,9 @@
+@@ -1043,8 +1057,9 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -111,7 +111,7 @@
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
  		--root=/$(DESTDIR)
-@@ -1117,7 +1132,7 @@
+@@ -1130,7 +1145,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -120,7 +120,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1168,11 +1183,12 @@
+@@ -1181,11 +1196,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal
