@@ -5,7 +5,7 @@
 ###########################################################
 
 MC_SITE=http://www.midnight-commander.org/downloads
-MC_VERSION=4.7.0.6
+MC_VERSION=4.7.0.8
 MC_SOURCE=mc-$(MC_VERSION).tar.gz
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=zcat
@@ -26,7 +26,6 @@ MC_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 MC_PATCHES=\
-$(MC_SOURCE_DIR)/configure-m4.patch \
 $(MC_SOURCE_DIR)/src-man2hlp.c.patch
 
 #
