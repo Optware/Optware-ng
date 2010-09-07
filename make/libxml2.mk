@@ -24,12 +24,12 @@ LIBXML2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBXML2_DESCRIPTION=Libxml2 is the XML C parser and toolkit developed for the Gnome project.
 LIBXML2_SECTION=libs
 LIBXML2_PRIORITY=optional
-LIBXML2_DEPENDS=zlib
+LIBXML2_DEPENDS=zlib (>=1.2.5)
 
 #
 # LIBXML2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXML2_IPK_VERSION=1
+LIBXML2_IPK_VERSION=2
 
 #
 # LIBXML2_CONFFILES should be a list of user-editable files
