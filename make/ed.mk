@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ED_SITE=http://ftp.gnu.org/gnu/ed
-ED_VERSION=1.4
+ED_VERSION=1.5
 ED_SOURCE=ed-$(ED_VERSION).tar.gz
 ED_DIR=ed-$(ED_VERSION)
 ED_UNZIP=zcat
