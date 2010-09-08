@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LINPHONE_SITE=http://mirror.its.uidaho.edu/pub/savannah/linphone/stable/sources
-LINPHONE_VERSION=3.3.1
+LINPHONE_VERSION=3.3.2
 LINPHONE_SOURCE=linphone-$(LINPHONE_VERSION).tar.gz
 LINPHONE_DIR=linphone-$(LINPHONE_VERSION)
 LINPHONE_UNZIP=zcat
