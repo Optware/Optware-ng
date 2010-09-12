@@ -129,7 +129,8 @@ endif
 	    -e 's/install -o root -g root/install /' \
 	    -e '/root:tty/s/^/#/' \
 	    -e 's|/usr/|/opt/|g' \
-		$(BSDMAINUTILS_BUILD_DIR)/{Makefile,*.mk} \
+		$(BSDMAINUTILS_BUILD_DIR)/Makefile \
+		$(BSDMAINUTILS_BUILD_DIR)/*.mk \
 		$(BSDMAINUTILS_BUILD_DIR)/*/*/Makefile \
 		$(BSDMAINUTILS_BUILD_DIR)/usr.bin/*/pathnames.h
 #	(cd $(BSDMAINUTILS_BUILD_DIR); \
