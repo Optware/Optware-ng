@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RRDCOLLECT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/rrdcollect
-RRDCOLLECT_VERSION=0.2.3
+RRDCOLLECT_VERSION=0.2.9
 RRDCOLLECT_SOURCE=rrdcollect-$(RRDCOLLECT_VERSION).tar.gz
 RRDCOLLECT_DIR=rrdcollect-$(RRDCOLLECT_VERSION)
 RRDCOLLECT_UNZIP=zcat
@@ -36,7 +36,7 @@ RRDCOLLECT_CONFLICTS=
 #
 # RRDCOLLECT_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDCOLLECT_IPK_VERSION=4
+RRDCOLLECT_IPK_VERSION=1
 
 #
 # RRDCOLLECT_CONFFILES should be a list of user-editable files
@@ -47,8 +47,6 @@ RRDCOLLECT_CONFFILES=/opt/etc/rrdcollect.conf /opt/etc/init.d/S95rrdcollect
 # which they should be applied to the source code.
 #
 RRDCOLLECT_PATCHES= \
-	$(RRDCOLLECT_SOURCE_DIR)/rrdcollect-scan.patch \
-	$(RRDCOLLECT_SOURCE_DIR)/loglevel.patch
 
 #
 # If the compilation of the package requires additional
