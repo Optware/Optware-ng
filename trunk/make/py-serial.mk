@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SERIAL_SITE=http://pypi.python.org/packages/source/p/pyserial
-PY-SERIAL_VERSION=2.4
+PY-SERIAL_VERSION=2.5
 PY-SERIAL_SOURCE=pyserial-$(PY-SERIAL_VERSION).tar.gz
 PY-SERIAL_DIR=pyserial-$(PY-SERIAL_VERSION)
 PY-SERIAL_UNZIP=zcat
@@ -30,8 +30,8 @@ PY-SERIAL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SERIAL_DESCRIPTION=Python module encapsulating the access to serial port.
 PY-SERIAL_SECTION=misc
 PY-SERIAL_PRIORITY=optional
-PY24-SERIAL_DEPENDS=python24, py-serial-common
 PY25-SERIAL_DEPENDS=python25, py-serial-common
+PY26-SERIAL_DEPENDS=python26, py-serial-common
 PY-SERIAL_CONFLICTS=
 
 #
@@ -71,11 +71,11 @@ PY-SERIAL_SOURCE_DIR=$(SOURCE_DIR)/py-serial
 PY-SERIAL-COMMON_IPK_DIR=$(BUILD_DIR)/py-serial-common-$(PY-SERIAL_VERSION)-ipk
 PY-SERIAL-COMMON_IPK=$(BUILD_DIR)/py-serial-common_$(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY24-SERIAL_IPK_DIR=$(BUILD_DIR)/py24-serial-$(PY-SERIAL_VERSION)-ipk
-PY24-SERIAL_IPK=$(BUILD_DIR)/py24-serial_$(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 PY25-SERIAL_IPK_DIR=$(BUILD_DIR)/py25-serial-$(PY-SERIAL_VERSION)-ipk
 PY25-SERIAL_IPK=$(BUILD_DIR)/py25-serial_$(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY26-SERIAL_IPK_DIR=$(BUILD_DIR)/py26-serial-$(PY-SERIAL_VERSION)-ipk
+PY26-SERIAL_IPK=$(BUILD_DIR)/py26-serial_$(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-serial-source py-serial-unpack py-serial py-serial-stage py-serial-ipk py-serial-clean py-serial-dirclean py-serial-check
 
@@ -109,19 +109,10 @@ py-serial-source: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+$(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PATCHES) make/py-serial.mk
+	$(MAKE) python-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
-	# 2.4
-	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
-	$(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.4
-	(cd $(@D)/2.4; \
-	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4") > setup.cfg \
-	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
 	$(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -130,6 +121,15 @@ $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PA
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") > setup.cfg \
+	)
+	# 2.6
+	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
+	$(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6") > setup.cfg \
 	)
 	touch $@
 
@@ -140,8 +140,8 @@ py-serial-unpack: $(PY-SERIAL_BUILD_DIR)/.configured
 #
 $(PY-SERIAL_BUILD_DIR)/.built: $(PY-SERIAL_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(@D)/2.4 && $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
 	cd $(@D)/2.5 && $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	cd $(@D)/2.6 && $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build
 	touch $@
 
 #
@@ -177,20 +177,6 @@ $(PY-SERIAL-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Depends: " >>$@
 	@echo "Conflicts: $(PY-SERIAL_CONFLICTS)" >>$@
 
-$(PY24-SERIAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: py24-serial" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PY-SERIAL_PRIORITY)" >>$@
-	@echo "Section: $(PY-SERIAL_SECTION)" >>$@
-	@echo "Version: $(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PY-SERIAL_MAINTAINER)" >>$@
-	@echo "Source: $(PY-SERIAL_SITE)/$(PY-SERIAL_SOURCE)" >>$@
-	@echo "Description: $(PY-SERIAL_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-SERIAL_DEPENDS)" >>$@
-	@echo "Conflicts: $(PY-SERIAL_CONFLICTS)" >>$@
-
 $(PY25-SERIAL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -205,6 +191,20 @@ $(PY25-SERIAL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY25-SERIAL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SERIAL_CONFLICTS)" >>$@
 
+$(PY26-SERIAL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-serial" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-SERIAL_PRIORITY)" >>$@
+	@echo "Section: $(PY-SERIAL_SECTION)" >>$@
+	@echo "Version: $(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-SERIAL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-SERIAL_SITE)/$(PY-SERIAL_SOURCE)" >>$@
+	@echo "Description: $(PY-SERIAL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-SERIAL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-SERIAL_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -217,33 +217,34 @@ $(PY25-SERIAL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-SERIAL_IPK): $(PY-SERIAL_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-serial_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY24-SERIAL_IPK_DIR) $(BUILD_DIR)/py24-serial_*_$(TARGET_ARCH).ipk
-	(cd $(PY-SERIAL_BUILD_DIR)/2.4; \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	--root=$(PY24-SERIAL_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY24-SERIAL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SERIAL_IPK_DIR)
-
-$(PY25-SERIAL_IPK) $(PY-SERIAL-COMMON_IPK): $(PY-SERIAL_BUILD_DIR)/.built
+$(PY25-SERIAL_IPK): $(PY-SERIAL_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py*-serial_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-SERIAL_IPK_DIR) $(BUILD_DIR)/py25-serial_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY-SERIAL-COMMON_IPK_DIR) $(BUILD_DIR)/py-serial-common_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SERIAL_BUILD_DIR)/2.5; \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	--root=$(PY25-SERIAL_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY25-SERIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SERIAL_IPK_DIR)
+
+$(PY26-SERIAL_IPK) $(PY-SERIAL-COMMON_IPK): $(PY-SERIAL_BUILD_DIR)/.built
+	rm -rf $(PY26-SERIAL_IPK_DIR) $(BUILD_DIR)/py26-serial_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY-SERIAL-COMMON_IPK_DIR) $(BUILD_DIR)/py-serial-common_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SERIAL_BUILD_DIR)/2.6; \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
+	--root=$(PY26-SERIAL_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY26-SERIAL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-SERIAL_IPK_DIR)
 	install -d $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples
-	install $(PY-SERIAL_BUILD_DIR)/2.5/[CLR]*.txt $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/
-	install $(PY-SERIAL_BUILD_DIR)/2.5/examples/* $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples/
+	install $(PY-SERIAL_BUILD_DIR)/2.6/[CLR]*.txt $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/
+	install $(PY-SERIAL_BUILD_DIR)/2.6/examples/* $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples/
+	mv $(PY26-SERIAL_IPK_DIR)/opt/bin/miniterm.py $(PY26-SERIAL_IPK_DIR)/opt/bin/miniterm.py26
 	$(MAKE) $(PY-SERIAL-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SERIAL-COMMON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-serial-ipk: $(PY24-SERIAL_IPK) $(PY25-SERIAL_IPK) $(PY-SERIAL-COMMON_IPK)
+py-serial-ipk: $(PY25-SERIAL_IPK) $(PY26-SERIAL_IPK) $(PY-SERIAL-COMMON_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -257,11 +258,11 @@ py-serial-clean:
 #
 py-serial-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR) $(PY-SERIAL_BUILD_DIR)
-	rm -rf $(PY24-SERIAL_IPK_DIR) $(PY24-SERIAL_IPK)
 	rm -rf $(PY25-SERIAL_IPK_DIR) $(PY25-SERIAL_IPK)
+	rm -rf $(PY26-SERIAL_IPK_DIR) $(PY26-SERIAL_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-serial-check: $(PY24-SERIAL_IPK) $(PY25-SERIAL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-SERIAL_IPK) $(PY25-SERIAL_IPK)
+py-serial-check: $(PY25-SERIAL_IPK) $(PY26-SERIAL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
