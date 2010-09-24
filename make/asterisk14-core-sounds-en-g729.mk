@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_CORE_SOUNDS_EN_G729_SITE=http://downloads.digium.com/pub/telephony/sounds/releases
-ASTERISK14_CORE_SOUNDS_EN_G729_VERSION=1.4.8
+ASTERISK14_CORE_SOUNDS_EN_G729_SITE=http://downloads.asterisk.org/pub/telephony/sounds/releases
+ASTERISK14_CORE_SOUNDS_EN_G729_VERSION=1.4.19
 ASTERISK14_CORE_SOUNDS_EN_G729_SOURCE=asterisk-core-sounds-en-g729-$(ASTERISK14_CORE_SOUNDS_EN_G729_VERSION).tar.gz
 ASTERISK14_CORE_SOUNDS_EN_G729_DIR=asterisk-core-sounds-en-g729-$(ASTERISK14_CORE_SOUNDS_EN_G729_VERSION)
 ASTERISK14_CORE_SOUNDS_EN_G729_UNZIP=zcat
