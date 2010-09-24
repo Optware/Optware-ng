@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-GREP_VERSION=2.5.4
+GREP_VERSION=2.7
 GREP_IPK_VERSION=1
 GREP_DEPENDS=pcre
 
@@ -125,4 +125,4 @@ grep-dirclean:
 	rm -rf $(GREP_BUILD_DIR) $(GREP_IPK_DIR) $(GREP_IPK)
 
 grep-check: $(GREP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GREP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
