@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_EXTRA_SOUNDS_EN_ALAW_SITE=http://downloads.digium.com/pub/telephony/sounds/releases
-ASTERISK14_EXTRA_SOUNDS_EN_ALAW_VERSION=1.4.7
+ASTERISK14_EXTRA_SOUNDS_EN_ALAW_SITE=http://downloads.asterisk.org/pub/telephony/sounds/releases
+ASTERISK14_EXTRA_SOUNDS_EN_ALAW_VERSION=1.4.11
 ASTERISK14_EXTRA_SOUNDS_EN_ALAW_SOURCE=asterisk-extra-sounds-en-alaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_VERSION).tar.gz
 ASTERISK14_EXTRA_SOUNDS_EN_ALAW_DIR=asterisk-extra-sounds-en-alaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_VERSION)
 ASTERISK14_EXTRA_SOUNDS_EN_ALAW_UNZIP=zcat
