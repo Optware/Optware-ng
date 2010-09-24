@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
-asterisk14-moh-opsound-alaw asterisk14-moh-opsound-g729 asterisk14-moh-opsound-gsm asterisk14-moh-opsound-ulaw \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -196,6 +195,10 @@ ASTERISK_PACKAGES = \
 	asterisk14-moh-freeplay-g729 \
 	asterisk14-moh-freeplay-gsm \
 	asterisk14-moh-freeplay-ulaw \
+	asterisk14-moh-opsound-alaw \
+	asterisk14-moh-opsound-g729 \
+	asterisk14-moh-opsound-gsm \
+	asterisk14-moh-opsound-ulaw \
 	asterisk-gui \
 	asterisk16 \
 	asterisk16-addons \
