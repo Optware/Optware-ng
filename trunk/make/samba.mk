@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA_VERSION ?= 3.2.15
-SAMBA_IPK_VERSION ?= 2
+SAMBA_IPK_VERSION ?= 3
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
@@ -33,7 +33,7 @@ SAMBA_DEPENDS=popt, readline
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA_DEPENDS +=, openldap-libs
 endif
-ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
+ifeq (glibc, $(LIBC_STYLE))
 SAMBA_DEPENDS +=, gconv-modules
 endif
 SAMBA3-DEV_DEPENDS=samba
