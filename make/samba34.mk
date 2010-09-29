@@ -21,7 +21,7 @@
 #
 SAMBA34_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA34_VERSION ?= 3.4.9
-SAMBA34_IPK_VERSION ?= 1
+SAMBA34_IPK_VERSION ?= 2
 SAMBA34_SOURCE=samba-$(SAMBA34_VERSION).tar.gz
 SAMBA34_DIR=samba-$(SAMBA34_VERSION)
 SAMBA34_UNZIP=zcat
@@ -33,7 +33,7 @@ SAMBA34_DEPENDS=avahi, popt, readline, zlib
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA34_DEPENDS +=, openldap-libs
 endif
-ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
+ifeq (glibc, $(LIBC_STYLE))
 SAMBA34_DEPENDS +=, gconv-modules
 endif
 SAMBA34-DEV_DEPENDS=samba34

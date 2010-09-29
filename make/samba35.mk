@@ -21,7 +21,7 @@
 #
 SAMBA35_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA35_VERSION ?= 3.5.5
-SAMBA35_IPK_VERSION ?= 1
+SAMBA35_IPK_VERSION ?= 2
 SAMBA35_SOURCE=samba-$(SAMBA35_VERSION).tar.gz
 SAMBA35_DIR=samba-$(SAMBA35_VERSION)
 SAMBA35_UNZIP=zcat
@@ -33,7 +33,7 @@ SAMBA35_DEPENDS=avahi, popt, readline, zlib
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA35_DEPENDS +=, openldap-libs
 endif
-ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
+ifeq (glibc, $(LIBC_STYLE))
 SAMBA35_DEPENDS +=, gconv-modules
 endif
 SAMBA35-DEV_DEPENDS=samba35
