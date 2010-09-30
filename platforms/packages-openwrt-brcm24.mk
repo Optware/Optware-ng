@@ -12,6 +12,7 @@ BROKEN_PACKAGES = \
 	aspell \
 	centerim \
 	ecl \
+	erl-ejabberd \
 	cairo fixesext \
 	gloox \
 	golang \

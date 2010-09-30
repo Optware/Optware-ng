@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
 	ecl \
+	erl-ejabberd \
 	ficy \
 	gloox \
 	golang \

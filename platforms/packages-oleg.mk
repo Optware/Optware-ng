@@ -12,6 +12,7 @@ BROKEN_PACKAGES = \
 	clinkcc \
 	dansguardian \
 	dialog \
+	erl-ejabberd \
 	gambit-c \
 	gloox \
 	golang \

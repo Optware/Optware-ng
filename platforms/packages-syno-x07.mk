@@ -17,6 +17,7 @@ BROKEN_PACKAGES = \
 	btpd \
 	busybox \
 	centerim \
+	erl-ejabberd \
 	gambit-c gnu-smalltalk \
 	iptraf \
 	libtorrent-rasterbar \

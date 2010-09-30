@@ -11,6 +11,7 @@ BROKEN_PACKAGES = \
 	centerim \
 	dansguardian \
 	dialog \
+	erl-ejabberd \
 	gambit-c \
 	gloox \
 	golang \
