@@ -1,6 +1,6 @@
---- src/aclocal.m4.orig	2009-04-01 08:23:51.000000000 -0700
-+++ src/aclocal.m4	2009-07-13 21:16:45.000000000 -0700
-@@ -114,66 +114,11 @@
+--- src/aclocal.m4.orig	2010-08-02 16:33:20.000000000 +0000
++++ src/aclocal.m4	2010-09-28 18:28:50.861824590 +0000
+@@ -114,71 +114,11 @@
     		AC_MSG_ERROR([erlang not found])
     fi
  
@@ -11,7 +11,6 @@
 --author('alexey@sevcom.net').
 -
 --export([[start/0]]).
---include_lib("ssl/include/ssl_pkix.hrl").
 -
 -start() ->
 -    EIDirS = code:lib_dir("erl_interface") ++ "\n",
@@ -20,11 +19,13 @@
 -    file:write_file("conftest.out", list_to_binary(EIDirS ++ EILibS ++ ssldef() ++ RootDirS)),
 -    halt().
 -
---[ifdef]('id-pkix').
--ssldef() -> "-DSSL39\n".
---else.
--ssldef() -> "\n".
---endif.
+-ssldef() -> 
+-   OTP = (catch erlang:system_info(otp_release)),
+-   if
+-	OTP >= "R14" -> "-DSSL40\n";
+-	OTP >= "R12" -> "-DSSL39\n";
+-        true -> ""
+-   end.
 -
 -%% return physical architecture based on OS/Processor
 -archname() ->
@@ -64,11 +65,15 @@
 -   if ! $ERL -s conftest -noshell; then
 -       AC_MSG_ERROR([could not run sample program])
 -   fi
+-
+-   if ! test -f conftest.out; then
+-       AC_MSG_ERROR([erlang program was not properly executed, (conftest.out was not produced)])
+-   fi
 +   STAGING_LIB_DIR=@STAGING_LIB_DIR@
 +   echo ${STAGING_LIB_DIR}/erlang/lib/erl_interface-* > conftest.out
 +   echo ${STAGING_LIB_DIR}/erlang/lib/erl_interface-*/lib >> conftest.out
-+   echo "-I${STAGING_LIB_DIR}/erlang" >> conftest.out # printf "\x2DDSSL39\n" >> conftest.out
++   printf "\x2DDSSL40\n" >> conftest.out
 +   echo ${STAGING_LIB_DIR}/erlang >> conftest.out
  
-    if ! test -f conftest.out; then
-        AC_MSG_ERROR([erlang program was not properly executed, (conftest.out was not produced)])
+    # First line
+    ERLANG_EI_DIR=`cat conftest.out | head -n 1`
