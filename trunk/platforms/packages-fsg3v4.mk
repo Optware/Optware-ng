@@ -24,6 +24,7 @@ BROKEN_PACKAGES = \
 	dcled \
 	dhcp \
 	ecl eggdrop \
+	erl-ejabberd \
 	fcgi \
 	gdb \
 	golang \

@@ -14,6 +14,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	btg \
 	ecl \
+	erl-ejabberd \
 	golang \
 	ldconfig \
 	sandbox \

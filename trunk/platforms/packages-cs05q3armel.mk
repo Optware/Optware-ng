@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	amule \
 	asterisk14-chan-capi libcapi20 \
 	asterisk16 \
+	erl-ejabberd \
 	iptraf \
 	ldconfig \
 	qemu qemu-libc-i386 \

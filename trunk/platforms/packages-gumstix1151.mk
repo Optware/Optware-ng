@@ -11,6 +11,7 @@ BROKEN_PACKAGES = \
 	asterisk \
 	bluez-hcidump \
 	dump ficy \
+	erl-ejabberd \
 	fuppes \
 	gloox \
 	gtmess \

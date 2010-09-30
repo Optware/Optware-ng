@@ -4,6 +4,7 @@ SPECIFIC_PACKAGES = unslung-feeds unslung-feeds-unstable unslung-devel crosstool
 
 # Packages that do not work for nslu2.
 BROKEN_PACKAGES = \
+	erl-ejabberd \
 	sandbox \
 	golang \
 	linphone \

@@ -6,6 +6,7 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for ds101.
 BROKEN_PACKAGES = \
 	bpalogin \
+	erl-ejabberd \
 	freeradius \
 	golang \
 	imagemagick \
