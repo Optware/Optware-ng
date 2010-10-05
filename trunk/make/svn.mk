@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.6.12
+SVN_VERSION=1.6.13
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -46,7 +46,7 @@ SVN_SUGGESTS=
 SVN_CONFLICTS=
 
 SVN-PY_DESCRIPTION=python SWIG binding for subversion
-SVN-PY_DEPENDS=python25, svn
+SVN-PY_DEPENDS=python26, svn
 SVN-PY_SUGGESTS=
 SVN-PY_CONFLICTS=
 
@@ -150,7 +150,7 @@ $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
-	$(MAKE) python25-stage python25-host-stage
+	$(MAKE) python26-stage python26-host-stage
 ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
@@ -162,7 +162,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SVN_LDFLAGS)" \
-		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 \
+		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.6 \
 		$(SVN_CONFIG_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -355,8 +355,8 @@ endif
 	$(MAKE) $(SVN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN_IPK_DIR)
 	# svn-py ipk
-	install -d $(SVN-PY_IPK_DIR)/opt/lib/python2.5/site-packages
-	echo /opt/lib/svn-python > $(SVN-PY_IPK_DIR)/opt/lib/python2.5/site-packages/subversion.pth
+	install -d $(SVN-PY_IPK_DIR)/opt/lib/python2.6/site-packages
+	echo /opt/lib/svn-python > $(SVN-PY_IPK_DIR)/opt/lib/python2.6/site-packages/subversion.pth
 	$(MAKE) $(SVN-PY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN-PY_IPK_DIR)
 
