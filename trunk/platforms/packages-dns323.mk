@@ -23,6 +23,8 @@ BROKEN_PACKAGES = \
 	slimserver \
 	btg clinkcc libopensync msynctool obexftp \
 
+PSMISC_VERSION := 22.11
+
 RTORRENT_VERSION := 0.8.2
 RTORRENT_IPK_VERSION := 2
 
