@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WPUT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wput
-WPUT_VERSION=0.6.1
+WPUT_VERSION=0.6.2
 WPUT_SOURCE=wput-$(WPUT_VERSION).tgz
 WPUT_DIR=wput-$(WPUT_VERSION)
 WPUT_UNZIP=zcat
@@ -36,7 +36,7 @@ WPUT_CONFLICTS=
 #
 # WPUT_IPK_VERSION should be incremented when the ipk changes.
 #
-WPUT_IPK_VERSION=3
+WPUT_IPK_VERSION=1
 
 #
 # WPUT_CONFFILES should be a list of user-editable files
