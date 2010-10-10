@@ -25,7 +25,7 @@
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
-TRANSMISSION_VERSION=2.04
+TRANSMISSION_VERSION=2.10
 
 #TRANSMISSION_SVN_REV=8696
 
