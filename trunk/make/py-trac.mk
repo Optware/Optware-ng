@@ -24,7 +24,7 @@
 #PY-TRAC_SVN_REPO=http://svn.edgewall.com/repos/trac/trunk
 #PY-TRAC_SVN_REV=4863
 #PY-TRAC_VERSION=0.10+svn$(PY-TRAC_SVN_REV)
-PY-TRAC_VERSION=0.12
+PY-TRAC_VERSION=0.12.1
 PY-TRAC_SITE=http://ftp.edgewall.com/pub/trac
 PY-TRAC_SOURCE=Trac-$(PY-TRAC_VERSION).tar.gz
 PY-TRAC_DIR=Trac-$(PY-TRAC_VERSION)
@@ -41,7 +41,7 @@ PY26-TRAC_CONFLICTS=py25-trac
 #
 # PY-TRAC_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TRAC_IPK_VERSION=2
+PY-TRAC_IPK_VERSION=1
 
 #
 # PY-TRAC_CONFFILES should be a list of user-editable files
@@ -236,6 +236,8 @@ $(PY25-TRAC_IPK): $(PY-TRAC_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 		--root=$(PY25-TRAC_IPK_DIR) --prefix=/opt
+	for f in $(PY25-TRAC_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-TRAC_IPK_DIR)/CONTROL/control
 #	echo $(PY-TRAC_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-TRAC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TRAC_IPK_DIR)
@@ -246,8 +248,6 @@ $(PY26-TRAC_IPK): $(PY-TRAC_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
 		--root=$(PY26-TRAC_IPK_DIR) --prefix=/opt
-	for f in $(PY26-TRAC_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
 	$(MAKE) $(PY26-TRAC_IPK_DIR)/CONTROL/control
 #	echo $(PY-TRAC_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-TRAC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-TRAC_IPK_DIR)
