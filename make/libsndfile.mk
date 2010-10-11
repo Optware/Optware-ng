@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBSNDFILE_SITE=http://www.mega-nerd.com/libsndfile
-LIBSNDFILE_VERSION=1.0.21
+LIBSNDFILE_SITE=http://www.mega-nerd.com/libsndfile/files
+LIBSNDFILE_VERSION=1.0.23
 LIBSNDFILE_SOURCE=libsndfile-$(LIBSNDFILE_VERSION).tar.gz
 LIBSNDFILE_DIR=libsndfile-$(LIBSNDFILE_VERSION)
 LIBSNDFILE_UNZIP=zcat
