@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA_VERSION ?= 3.2.15
-SAMBA_IPK_VERSION ?= 3
+SAMBA_IPK_VERSION ?= 4
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
@@ -60,6 +60,10 @@ SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in.patch
 else
 SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in-wl500g.patch
 endif
+
+SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/samba-3.3.12-CVE-2010-2063.patch
+SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/0001-s3-smbclient-Fix-bug-6606-reported-as-6744-in-3.2.patch 
+SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/0002-Fix-bug-6776-Running-overlapping-Byte-Lock-test-wi.patch   
 
 #
 # If the compilation of the package requires additional
