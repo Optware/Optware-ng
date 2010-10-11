@@ -12,3 +12,5 @@ BROKEN_PACKAGES = \
 	slrn spandsp 
 
 HDPARM_VERSION := 9.28
+
+PSMISC_VERSION := 22.11
