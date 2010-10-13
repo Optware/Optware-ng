@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPYTHON_SITE=http://ipython.scipy.org/dist
-IPYTHON_VERSION=0.10
+IPYTHON_VERSION=0.10.1
 IPYTHON_SOURCE=ipython-$(IPYTHON_VERSION).tar.gz
 IPYTHON_DIR=ipython-$(IPYTHON_VERSION)
 IPYTHON_UNZIP=zcat
@@ -232,6 +232,8 @@ $(IPYTHON_PY25_IPK): $(IPYTHON_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
 		install --root=$(IPYTHON_PY25_IPK_DIR) --prefix=/opt)
 	rm -rf $(IPYTHON_PY25_IPK_DIR)/opt/share
+	for f in $(IPYTHON_PY25_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(IPYTHON_PY25_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY25_IPK_DIR)
 
@@ -243,8 +245,6 @@ $(IPYTHON_PY26_IPK): $(IPYTHON_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
 		install --root=$(IPYTHON_PY26_IPK_DIR) --prefix=/opt)
 	rm -rf $(IPYTHON_PY26_IPK_DIR)/opt/share
-	for f in $(IPYTHON_PY26_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
 	$(MAKE) $(IPYTHON_PY26_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY26_IPK_DIR)
 
