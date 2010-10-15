@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBASSUAN_SITE=ftp://ftp.gnupg.org/gcrypt/libassuan
-LIBASSUAN_VERSION=2.0.0
+LIBASSUAN_VERSION=2.0.1
 LIBASSUAN_SOURCE=libassuan-$(LIBASSUAN_VERSION).tar.bz2
 LIBASSUAN_DIR=libassuan-$(LIBASSUAN_VERSION)
 LIBASSUAN_UNZIP=bzcat
