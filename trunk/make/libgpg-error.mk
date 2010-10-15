@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGPG-ERROR_SITE=ftp://ftp.gnupg.org/gcrypt/libgpg-error
-LIBGPG-ERROR_VERSION=1.7
+LIBGPG-ERROR_VERSION=1.8
 LIBGPG-ERROR_SOURCE=libgpg-error-$(LIBGPG-ERROR_VERSION).tar.gz
 LIBGPG-ERROR_DIR=libgpg-error-$(LIBGPG-ERROR_VERSION)
 LIBGPG-ERROR_UNZIP=zcat
