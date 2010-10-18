@@ -24,7 +24,7 @@ ASTERISK16_SOURCE_TYPE=tarball
 #ASTERISK16_SOURCE_TYPE=svn
 
 ASTERISK16_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK16_BASE_VERSION=1.6.2.12
+ASTERISK16_BASE_VERSION=1.6.2.13
 
 ifeq ($(ASTERISK16_SOURCE_TYPE), svn)
 ASTERISK16_SVN=http://svn.digium.com/svn/asterisk/branches/1.6.1
@@ -51,10 +51,10 @@ asterisk14-extra-sounds-en-alaw,\
 asterisk14-extra-sounds-en-g729,\
 asterisk14-extra-sounds-en-gsm,\
 asterisk14-extra-sounds-en-ulaw,\
-asterisk14-moh-freeplay-alaw,\
-asterisk14-moh-freeplay-g729,\
-asterisk14-moh-freeplay-gsm,\
-asterisk14-moh-freeplay-ulaw,\
+asterisk14-moh-opsound-alaw,\
+asterisk14-moh-opsound-g729,\
+asterisk14-moh-opsound-gsm,\
+asterisk14-moh-opsound-ulaw,\
 asterisk14-gui\
 ,libogg\
 ,net-snmp\
@@ -75,7 +75,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 ASTERISK16_SUGGESTS +=,x11
 endif
 
-ASTERISK16_CONFLICTS=asterisk,asterisk14,asterisk-sounds,asterisk-chan-capi,asterisk14-chan-capi
+ASTERISK16_CONFLICTS=asterisk,asterisk14,astersk18,asterisk-sounds,asterisk-chan-capi,asterisk14-chan-capi
 
 
 #
