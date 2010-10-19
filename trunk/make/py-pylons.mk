@@ -34,8 +34,8 @@ PY-PYLONS_CONFLICTS=
 
 PY25-PYLONS_DEPENDS=\
 	py25-beaker (>=0.8.1), \
-	py25-decorator (>=2.1.0),
-	py25-formencode (>=0.7),
+	py25-decorator (>=2.1.0), \
+	py25-formencode (>=0.7), \
 	py25-mako (>=0.1.8), \
 	py25-nose (>=0.9.3), \
 	py25-paste (>=1.4), \
@@ -43,12 +43,12 @@ PY25-PYLONS_DEPENDS=\
 	py25-pastescript (>=1.3.6), \
 	py25-routes (>=1.7.3), \
 	py25-simplejson (>=1.7.1), \
-	py25-webhelpers (>=0.3.2)
+	py25-webhelpers (>=0.3.2) \
 
 PY26-PYLONS_DEPENDS=\
 	py26-beaker (>=0.8.1), \
-	py26-decorator (>=2.1.0),
-	py26-formencode (>=0.7),
+	py26-decorator (>=2.1.0), \
+	py26-formencode (>=0.7), \
 	py26-mako (>=0.1.8), \
 	py26-nose (>=0.9.3), \
 	py26-paste (>=1.4), \
@@ -56,13 +56,13 @@ PY26-PYLONS_DEPENDS=\
 	py26-pastescript (>=1.3.6), \
 	py26-routes (>=1.7.3), \
 	py26-simplejson (>=1.7.1), \
-	py26-webhelpers (>=0.3.2)
+	py26-webhelpers (>=0.3.2) \
 
 
 #
 # PY-PYLONS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PYLONS_IPK_VERSION=1
+PY-PYLONS_IPK_VERSION=2
 
 #
 # PY-PYLONS_CONFFILES should be a list of user-editable files
