@@ -28,13 +28,13 @@ SYSLOG-NG_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 SYSLOG-NG_DESCRIPTION=Syslog replacement logging on behalf of remote hosts
 SYSLOG-NG_SECTION=sys
 SYSLOG-NG_PRIORITY=optional
-SYSLOG-NG_DEPENDS=glib, eventlog
+SYSLOG-NG_DEPENDS=glib, eventlog, psmisc
 SYSLOG-NG_CONFLICTS=
 
 #
 # SYSLOG-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSLOG-NG_IPK_VERSION=1
+SYSLOG-NG_IPK_VERSION=2
 
 #
 # SYSLOG-NG_CONFFILES should be a list of user-editable files
