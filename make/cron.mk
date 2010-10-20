@@ -23,14 +23,14 @@ CRON_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CRON_DESCRIPTION=Standard vixie cron, with cron.d addition
 CRON_SECTION=sys
 CRON_PRIORITY=optional
-CRON_DEPENDS=
+CRON_DEPENDS=psmisc
 
 .PHONY: cron-source cron-unpack cron cron-stage cron-ipk cron-clean cron-dirclean cron-check
 
 #
 # CRON_IPK_VERSION should be incremented when the ipk changes.
 #
-CRON_IPK_VERSION=7
+CRON_IPK_VERSION=8
 
 #
 # CRON_CONFFILES should be a list of user-editable files
