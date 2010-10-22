@@ -92,7 +92,10 @@ $(foreach lang,$(TESSERACT-OCR_LANGS_201),$(DL_DIR)/tesseract-2.01.$(lang).tar.g
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(TESSERACT-OCR_SOURCE) \
+$(DL_DIR)/$(TESSERACT-OCR_SOURCE):
+	$(WGET) -P $(@D) $(TESSERACT-OCR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
 $(DL_DIR)/tesseract-2.00.%.tar.gz $(DL_DIR)/tesseract-2.01.%.tar.gz:
 	$(WGET) -P $(@D) $(TESSERACT-OCR_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)

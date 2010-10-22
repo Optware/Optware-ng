@@ -552,8 +552,10 @@ PACKAGES_STAGE:=$(patsubst %,%-stage,$(PACKAGES))
 PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 
 $(PACKAGES) : directories toolchain
-$(PACKAGES_STAGE) %-stage : directories toolchain
-$(PACKAGES_IPKG) %-ipk : directories toolchain ipkg-utils
+$(PACKAGES_STAGE) : directories toolchain
+%-stage : directories toolchain
+$(PACKAGES_IPKG) : directories toolchain ipkg-utils
+%-ipk : directories toolchain ipkg-utils
 
 .PHONY: index
 index: $(PACKAGE_DIR)/Packages
