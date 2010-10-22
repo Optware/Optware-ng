@@ -1,0 +1,11 @@
+--- main/file.c.orig	2009-06-26 21:26:50.000000000 +0000
++++ main/file.c	2009-11-01 01:00:56.643765305 +0000
+@@ -744,7 +744,7 @@
+ 			float samp_rate = (float) ast_format_rate(s->fmt->format);
+ 			unsigned int rate;
+ 
+-			rate = (unsigned int) roundf(samp_rate / ((float) whennext));
++			rate = (unsigned int) (samp_rate / ((float) whennext) + 0.5);
+ 
+ 			ast_settimeout(s->owner, rate, ast_fsread_audio, s);
+ 		} else {
