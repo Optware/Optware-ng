@@ -19,6 +19,9 @@ BROKEN_PACKAGES = \
 
 BIND_CONFIG_ARGS := --disable-epoll
 
+BITLBEE_VERSION := 1.2.8
+BITLBEE_IPK_VERSION := 1
+
 ERLANG_SMP := --enable-smp-support
 
 E2FSPROGS_VERSION := 1.40.3
