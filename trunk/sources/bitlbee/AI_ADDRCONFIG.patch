@@ -1,0 +1,15 @@
+--- bitlbee/lib/proxy.c.orig	2010-10-22 00:51:31.000000000 +0000
++++ bitlbee/lib/proxy.c	2010-10-22 18:16:50.809308163 +0000
+@@ -126,7 +126,11 @@
+ 		memset(&hints, 0, sizeof(struct addrinfo));
+ 		hints.ai_family = AF_UNSPEC;
+ 		hints.ai_socktype = SOCK_STREAM;
+-		hints.ai_flags = AI_ADDRCONFIG | AI_NUMERICSERV;
++		hints.ai_flags = AI_NUMERICSERV
++#ifdef AI_ADDRCONFIG
++			| AI_ADDRCONFIG
++#endif
++		;
+ 	
+ 		if (!(ret = getaddrinfo(host, port, &hints, &phb->gai)))
+ 			phb->gai_cur = phb->gai;

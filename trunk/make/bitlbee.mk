@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION=1.2.8
+BITLBEE_VERSION=3.0
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
@@ -50,7 +50,8 @@ BITLBEE_CONFFILES=/opt/etc/bitlbee/bitlbee.conf /opt/etc/xinetd.d/bitlbee
 # BITLBEE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-BITLBEE_PATCHES=$(BITLBEE_SOURCE_DIR)/configure.patch
+BITLBEE_PATCHES=$(BITLBEE_SOURCE_DIR)/configure.patch \
+$(BITLBEE_SOURCE_DIR)/AI_ADDRCONFIG.patch
 
 #
 # If the compilation of the package requires additional
@@ -136,6 +137,7 @@ endif
 		--ssl=gnutls \
 		--msn=1 \
 		--yahoo=1 \
+		--otr=1 \
 		--mandir=/opt/man \
 		--datadir=/opt/var/bitlbee \
 		--config=/opt/var/bitlbee \
