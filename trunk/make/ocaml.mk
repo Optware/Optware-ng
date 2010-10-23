@@ -22,8 +22,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.11
-OCAML_VERSION=3.11.2
+OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.12
+OCAML_VERSION=3.12.0
 OCAML_SOURCE=ocaml-$(OCAML_VERSION).tar.gz
 OCAML_DIR=ocaml-$(OCAML_VERSION)
 OCAML_UNZIP=zcat
@@ -140,7 +140,7 @@ ocaml-unpack: $(OCAML_BUILD_DIR)/.configured
 $(OCAML_BUILD_DIR)/.built: $(OCAML_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) world # opt
-	for f in byterun/ocamlrun yacc/ocamlyacc otherlibs/unix/dllunix.so otherlibs/str/dllstr.so; \
+	for f in byterun/ocamlrun yacc/ocamlyacc otherlibs/unix/dllunix.so otherlibs/str/dllcamlstr.so; \
 	    do cp -p $(@D)/$${f}.target $(@D)/$$f; done
 	touch $@
 
