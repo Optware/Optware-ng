@@ -20,38 +20,38 @@
  
  version.h : ../VERSION
  	echo "#define OCAML_VERSION \"`head -1 ../VERSION`\"" >version.h
---- ocaml-3.11.0/Makefile.orig	2008-10-23 15:29:11.000000000 +0000
-+++ ocaml-3.11.0/Makefile	2008-12-17 00:07:08.201676096 +0000
-@@ -371,12 +371,12 @@
+--- ocaml-3.12.0/Makefile.orig	2010-06-16 01:32:26.000000000 +0000
++++ ocaml-3.12.0/Makefile	2010-08-18 05:47:15.910751720 +0000
+@@ -376,12 +376,12 @@
  	sed -e 's|%%LIBDIR%%|$(LIBDIR)|' \
-             -e 's|%%BYTERUN%%|$(BINDIR)/ocamlrun|' \
-             -e 's|%%CCOMPTYPE%%|cc|' \
--            -e 's|%%BYTECC%%|$(BYTECC) $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)|' \
--            -e 's|%%NATIVECC%%|$(NATIVECC) $(NATIVECCCOMPOPTS)|' \
--            -e 's|%%PACKLD%%|$(PACKLD)|' \
-+            -e 's|%%BYTECC%%|gcc $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)|' \
-+            -e 's|%%NATIVECC%%|gcc $(NATIVECCCOMPOPTS)|' \
-+            -e 's|%%PACKLD%%|ld -r|' \
-             -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
-             -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
--            -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \
-+            -e 's|%%RANLIBCMD%%|ranlib|' \
-             -e 's|%%CC_PROFILE%%|$(CC_PROFILE)|' \
-             -e 's|%%ARCH%%|$(ARCH)|' \
-             -e 's|%%MODEL%%|$(MODEL)|' \
-@@ -387,9 +387,9 @@
-             -e 's|%%EXT_DLL%%|.so|' \
-             -e 's|%%SYSTHREAD_SUPPORT%%|$(SYSTHREAD_SUPPORT)|' \
-             -e 's|%%ASM%%|$(ASM)|' \
--            -e 's|%%MKDLL%%|$(MKDLL)|' \
--            -e 's|%%MKEXE%%|$(MKEXE)|' \
--            -e 's|%%MKMAINDLL%%|$(MKMAINDLL)|' \
-+            -e 's|%%MKDLL%%|gcc -shared|' \
-+            -e 's|%%MKEXE%%|gcc|' \
-+            -e 's|%%MKMAINDLL%%|gcc -shared|' \
-             utils/config.mlp > utils/config.ml
+ 	    -e 's|%%BYTERUN%%|$(BINDIR)/ocamlrun|' \
+ 	    -e 's|%%CCOMPTYPE%%|cc|' \
+-	    -e 's|%%BYTECC%%|$(BYTECC) $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)|' \
+-	    -e 's|%%NATIVECC%%|$(NATIVECC) $(NATIVECCCOMPOPTS)|' \
+-	    -e 's|%%PACKLD%%|$(PACKLD)|' \
++	    -e 's|%%BYTECC%%|gcc $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)|' \
++	    -e 's|%%NATIVECC%%|gcc $(NATIVECCCOMPOPTS)|' \
++	    -e 's|%%PACKLD%%|ld -r|' \
+ 	    -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
+ 	    -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
+-	    -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \
++	    -e 's|%%RANLIBCMD%%|ranlib|' \
+ 	    -e 's|%%CC_PROFILE%%|$(CC_PROFILE)|' \
+ 	    -e 's|%%ARCH%%|$(ARCH)|' \
+ 	    -e 's|%%MODEL%%|$(MODEL)|' \
+@@ -392,9 +392,9 @@
+ 	    -e 's|%%EXT_DLL%%|.so|' \
+ 	    -e 's|%%SYSTHREAD_SUPPORT%%|$(SYSTHREAD_SUPPORT)|' \
+ 	    -e 's|%%ASM%%|$(ASM)|' \
+-	    -e 's|%%MKDLL%%|$(MKDLL)|' \
+-	    -e 's|%%MKEXE%%|$(MKEXE)|' \
+-	    -e 's|%%MKMAINDLL%%|$(MKMAINDLL)|' \
++	    -e 's|%%MKDLL%%|gcc -shared|' \
++	    -e 's|%%MKEXE%%|gcc|' \
++	    -e 's|%%MKMAINDLL%%|gcc -shared|' \
+ 	    utils/config.mlp > utils/config.ml
  	@chmod -w utils/config.ml
-
+ 
 --- ocaml/otherlibs/Makefile.shared.orig	2008-07-15 15:31:32.000000000 +0000
 +++ ocaml/otherlibs/Makefile.shared	2008-12-17 00:32:37.828393820 +0000
 @@ -46,6 +46,10 @@
@@ -59,8 +59,8 @@
  $(LIBNAME).cma: $(CAMLOBJS)
  	$(MKLIB) -o $(LIBNAME) -oc $(CLIBNAME) -ocamlc '$(CAMLC)' -linkall $(CAMLOBJS) $(LINKOPTS)
 +ifeq ($(LIBNAME), $(filter unix str, $(LIBNAME)))
-+	mv dll$(LIBNAME).so dll$(LIBNAME).so.target
-+	cp ../../../../host/builds/ocaml/otherlibs/$(LIBNAME)/dll$(LIBNAME).so .
++	mv dll$(CLIBNAME).so dll$(CLIBNAME).so.target
++	cp ../../../../host/builds/ocaml/otherlibs/$(LIBNAME)/dll$(CLIBNAME).so .
 +endif
  
  $(LIBNAME).cmxa: $(CAMLOBJS_NAT)
