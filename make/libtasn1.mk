@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBTASN1_SITE=http://ftp.gnu.org/gnu/libtasn1
-LIBTASN1_VERSION=2.6
+LIBTASN1_VERSION=2.8
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
 LIBTASN1_UNZIP=zcat
