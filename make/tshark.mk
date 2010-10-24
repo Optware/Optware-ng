@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TSHARK_SITE=http://www.wireshark.org/download/src
-TSHARK_VERSION=1.2.12
+TSHARK_VERSION=1.4.1
 TSHARK_SOURCE=wireshark-$(TSHARK_VERSION).tar.bz2
 TSHARK_DIR=wireshark-$(TSHARK_VERSION)
 TSHARK_UNZIP=bzcat
@@ -52,7 +52,8 @@ TSHARK_IPK_VERSION=1
 # TSHARK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TSHARK_PATCHES=$(TSHARK_SOURCE_DIR)/configure.in.patch
+TSHARK_PATCHES=$(TSHARK_SOURCE_DIR)/configure.in.patch \
+	$(TSHARK_SOURCE_DIR)/old-gcc-compat.patch \
 
 #
 # If the compilation of the package requires additional
