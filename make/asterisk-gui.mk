@@ -20,12 +20,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK_GUI_SITE=http://downloads.digium.com/pub/telephony/asterisk
-ASTERISK_GUI_SVN=http://svn.digium.com/svn/asterisk-gui/branches/2.0
-ASTERISK_GUI_SVN_REV=4045
-ASTERISK_GUI_VERSION=2.0svn-r$(ASTERISK_GUI_SVN_REV)
+ASTERISK_GUI_SITE=http://downloads.asterisk.org/pub/telephony/asterisk-gui/releases/
+ASTERISK_GUI_VERSION=2.0.4
 ASTERISK_GUI_SOURCE=asterisk-gui-$(ASTERISK_GUI_VERSION).tar.gz
-ASTERISK_GUI_DIR=asterisk-gui
+ASTERISK_GUI_DIR=asterisk-gui-$(ASTERISK_GUI_VERSION)
 ASTERISK_GUI_UNZIP=zcat
 ASTERISK_GUI_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
 ASTERISK_GUI_DESCRIPTION=Asterisk-GUI is a framework for the \
@@ -75,14 +73,7 @@ ASTERISK_GUI_IPK=$(BUILD_DIR)/asterisk-gui_$(ASTERISK_GUI_VERSION)-$(ASTERISK_GU
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ASTERISK_GUI_SOURCE):
-	#$(WGET) -P $(DL_DIR) $(ASTERISK_GUI_SITE)/$(ASTERISK_GUI_SOURCE)
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(ASTERISK_GUI_DIR) && \
-		svn co -r $(ASTERISK_GUI_SVN_REV) $(ASTERISK_GUI_SVN) \
-			$(ASTERISK_GUI_DIR) && \
-		tar -czf $@ $(ASTERISK_GUI_DIR) && \
-		rm -rf $(ASTERISK_GUI_DIR) \
-	)
+	$(WGET) -P $(DL_DIR) $(ASTERISK_GUI_SITE)/$(ASTERISK_GUI_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
