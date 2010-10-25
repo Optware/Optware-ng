@@ -309,8 +309,8 @@ COMMON_CROSS_PACKAGES = \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
-	minicom minidlna minihttpd mini-sendmail mini-snmpd miscfiles \
-	mktemp mkvtoolnix mlocate moblock \
+	minicom minidlna minihttpd mini-sendmail mini-snmpd miniupnpd \
+	miscfiles mktemp mkvtoolnix mlocate moblock \
 	moc modutils monit most motion motor \
 	mod-fastcgi moe mp3blaster mp3info mpack mpage \
 	mpc mpd mpdscribble \
