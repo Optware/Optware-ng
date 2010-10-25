@@ -1,20 +1,52 @@
---- libavcodec/imgresample.c    (revision 7407)
-+++ libavcodec/imgresample.c    (working copy)
-@@ -641,7 +641,7 @@
- struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat,
-                                   int dstW, int dstH, int dstFormat,
+--- libavcodec/imgresample.c.orig	2010-03-17 11:34:47.000000000 +0100
++++ libavcodec/imgresample.c	2010-03-17 11:57:33.000000000 +0100
+@@ -512,14 +512,14 @@
+     av_free(s);
+ }
+ 
+ static const AVClass context_class = { "imgresample", NULL, NULL };
+ 
+-struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat,
+-                                  int dstW, int dstH, int dstFormat,
++struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat,
++                                  int dstW, int dstH, enum PixelFormat dstFormat,
                                    int flags, SwsFilter *srcFilter,
 -                                  SwsFilter *dstFilter, double *param)
 +                                  SwsFilter *dstFilter, const double *param)
  {
      struct SwsContext *ctx;
  
-@@ -695,7 +695,7 @@
+     ctx = av_malloc(sizeof(struct SwsContext));
+     if (!ctx) {
+@@ -570,13 +570,13 @@
+  *
+  * Be warned that srcFilter, dstFilter are not checked, they are
+  * asumed to remain valid.
+  */
  struct SwsContext *sws_getCachedContext(struct SwsContext *ctx,
-                         int srcW, int srcH, int srcFormat,
-                         int dstW, int dstH, int dstFormat, int flags,
+-                        int srcW, int srcH, int srcFormat,
+-                        int dstW, int dstH, int dstFormat, int flags,
 -                        SwsFilter *srcFilter, SwsFilter *dstFilter, double *param)
++                        int srcW, int srcH, enum PixelFormat srcFormat,
++                        int dstW, int dstH, enum PixelFormat dstFormat, int flags,
 +                        SwsFilter *srcFilter, SwsFilter *dstFilter, const double *param)
  {
      if (ctx != NULL) {
          if ((ctx->resampling_ctx->iwidth != srcW) ||
+                         (ctx->resampling_ctx->iheight != srcH) ||
+                         (ctx->src_pix_fmt != srcFormat) ||
+@@ -594,12 +594,12 @@
+                         srcFilter, dstFilter, param);
+     }
+     return ctx;
+ }
+ 
+-int sws_scale(struct SwsContext *ctx, uint8_t* src[], int srcStride[],
+-              int srcSliceY, int srcSliceH, uint8_t* dst[], int dstStride[])
++int sws_scale(struct SwsContext *ctx, const uint8_t* const src[], const int srcStride[],
++              int srcSliceY, int srcSliceH, uint8_t* const dst[], const int dstStride[])
+ {
+     AVPicture src_pict, dst_pict;
+     int i, res = 0;
+     AVPicture picture_format_temp;
+     AVPicture picture_resample_temp, *formatted_picture, *resampled_picture;
