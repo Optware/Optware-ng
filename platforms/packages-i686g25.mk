@@ -17,7 +17,7 @@ BROKEN_PACKAGES = \
 	ecl \
 	fuppes \
 	gtk \
-	iptables ivorbis-tools lcd4linux \
+	ivorbis-tools lcd4linux \
 	ldconfig \
 	nfs-utils puppy \
 	qemu \

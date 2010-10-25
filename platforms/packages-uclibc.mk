@@ -9,7 +9,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 cairo \
          delegate \
 	 fcgi fish \
-	 gnu-smalltalk ice iptables jabberd \
+	 gnu-smalltalk ice jabberd \
 	 launchtool ldconfig \
 	 moe mtr \
 	 newsbeuter \
