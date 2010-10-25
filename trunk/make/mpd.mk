@@ -171,7 +171,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPD_LDFLAGS)" \
-		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		PKG_CONFIG_LIBDIR=$(STAGING_LIB_DIR)/pkgconfig \
 		SHOUT_LIBS="-lshout -lspeex" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
