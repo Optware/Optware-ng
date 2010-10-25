@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	gtmess \
 	hpijs hplip \
 	inferno \
-	iptables \
 	lame \
 	moc \
 	motion \

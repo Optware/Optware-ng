@@ -16,7 +16,7 @@ BROKEN_PACKAGES = \
 	inferno \
 	gnu-smalltalk gtmess gtk \
 	hpijs hplip \
-	ice iptables \
+	ice \
 	lame launchtool ldconfig \
 	minidlna \
 	moc mtr \

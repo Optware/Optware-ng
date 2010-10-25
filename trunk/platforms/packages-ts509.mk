@@ -13,7 +13,7 @@ BROKEN_PACKAGES = \
 	asterisk \
 	bitchx \
 	ecl \
-	iptables ivorbis-tools lcd4linux \
+	ivorbis-tools lcd4linux \
 	ldconfig puppy \
 	qemu \
 
