@@ -88,6 +88,7 @@ GetOptions("tmp-dir=s" => \$tmp_dir,
         "ts509" => "32-bit LSB .* Intel 80386",
         "ts72xx" => "LSB .* ARM",
         "wdtv" => "LSB .* MIPS",
+	"openwrt-atheros" => "32-bit MSB .* MIPS",
 );
 
 if (exists $target_to_bintype{$binary_type}) {
