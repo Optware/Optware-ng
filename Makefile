@@ -158,7 +158,7 @@ PYTHON_PACKAGES = \
 	py-hgsubversion py-hgsvn py-kid py-lepl py-lxml \
 	py-mako py-markdown py-mercurial \
 	py-moin py-mssql py-mx-base py-mysql \
-	py-myghty py-myghtyutils \
+	py-myghty \
 	py-nose \
 	py-openssl py-paramiko \
 	py-paste py-pastedeploy py-pastescript py-pastewebkit \
