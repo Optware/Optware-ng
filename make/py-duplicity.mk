@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DUPLICITY_VERSION=0.6.05
+PY-DUPLICITY_VERSION=0.6.10
 PY-DUPLICITY_SITE=http://savannah.nongnu.org/download/duplicity
 PY-DUPLICITY_SOURCE=duplicity-$(PY-DUPLICITY_VERSION).tar.gz
 PY-DUPLICITY_DIR=duplicity-$(PY-DUPLICITY_VERSION)
@@ -251,6 +251,8 @@ $(PY25-DUPLICITY_IPK) $(PY26-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLIC
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-DUPLICITY_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY25-DUPLICITY_IPK_DIR)/opt/lib/python2.5/site-packages/duplicity/*.so
+	for f in $(PY25-DUPLICITY_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-py2.5|'`; done
 	$(MAKE) $(PY25-DUPLICITY_IPK_DIR)/CONTROL/control
 	rm -rf $(PY25-DUPLICITY_IPK_DIR)/opt/share
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-DUPLICITY_IPK_DIR)
@@ -260,8 +262,6 @@ $(PY25-DUPLICITY_IPK) $(PY26-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLIC
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-DUPLICITY_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY26-DUPLICITY_IPK_DIR)/opt/lib/python2.6/site-packages/duplicity/*.so
-	for f in $(PY26-DUPLICITY_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
 	$(MAKE) $(PY26-DUPLICITY_IPK_DIR)/CONTROL/control
 	# doc
 	rm -rf $(PY-DUPLICITY-DOC_IPK_DIR) $(BUILD_DIR)/py-duplicity-doc_*_$(TARGET_ARCH).ipk
