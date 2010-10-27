@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SUBVERTPY_VERSION=0.7.3.1
+SUBVERTPY_VERSION=0.7.5
 SUBVERTPY_SITE=http://samba.org/~jelmer/subvertpy
 SUBVERTPY_SOURCE=subvertpy-$(SUBVERTPY_VERSION).tar.gz
 SUBVERTPY_DIR=subvertpy-$(SUBVERTPY_VERSION)
@@ -160,12 +160,14 @@ $(SUBVERTPY_BUILD_DIR)/.built: $(SUBVERTPY_BUILD_DIR)/.configured
 	(cd $(@D)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	APR_CONFIG="$(STAGING_PREFIX)/bin/apr-1-config" \
+	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
 	SVN_PREFIX="$(STAGING_PREFIX)" \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
 	(cd $(@D)/2.6; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	APR_CONFIG="$(STAGING_PREFIX)/bin/apr-1-config" \
+	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
 	SVN_PREFIX="$(STAGING_PREFIX)" \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
 	)
@@ -234,9 +236,12 @@ $(PY25-SUBVERTPY_IPK): $(SUBVERTPY_BUILD_DIR)/.built
 	rm -rf $(PY25-SUBVERTPY_IPK_DIR) $(BUILD_DIR)/py25-subvertpy_*_$(TARGET_ARCH).ipk
 	(cd $(SUBVERTPY_BUILD_DIR)/2.5; \
 	APR_CONFIG="$(STAGING_PREFIX)/bin/apr-1-config" \
+	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
 	SVN_PREFIX="$(STAGING_PREFIX)" \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-SUBVERTPY_IPK_DIR) --prefix=/opt; \
 	)
+	for f in $(PY25-SUBVERTPY_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-py2.5|'`; done
 	$(STRIP_COMMAND) $(PY25-SUBVERTPY_IPK_DIR)/opt/lib/python2.5/site-packages/subvertpy/*.so
 	$(MAKE) $(PY25-SUBVERTPY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SUBVERTPY_IPK_DIR)
@@ -245,6 +250,7 @@ $(PY26-SUBVERTPY_IPK): $(SUBVERTPY_BUILD_DIR)/.built
 	rm -rf $(PY26-SUBVERTPY_IPK_DIR) $(BUILD_DIR)/py26-subvertpy_*_$(TARGET_ARCH).ipk
 	(cd $(SUBVERTPY_BUILD_DIR)/2.6; \
 	APR_CONFIG="$(STAGING_PREFIX)/bin/apr-1-config" \
+	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
 	SVN_PREFIX="$(STAGING_PREFIX)" \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-SUBVERTPY_IPK_DIR) --prefix=/opt; \
 	)
