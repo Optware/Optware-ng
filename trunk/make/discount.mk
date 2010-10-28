@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DISCOUNT_SITE=http://www.pell.portland.or.us/~orc/Code/markdown
-DISCOUNT_VERSION=1.6.4
+DISCOUNT_VERSION=2.0.1
 DISCOUNT_SOURCE=discount-$(DISCOUNT_VERSION).tar.gz
 DISCOUNT_DIR=discount-$(DISCOUNT_VERSION)
 DISCOUNT_UNZIP=zcat
@@ -29,7 +29,7 @@ DISCOUNT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DISCOUNT_DESCRIPTION=Markdown text to HTML, in C.
 DISCOUNT_SECTION=text
 DISCOUNT_PRIORITY=optional
-DISCOUNT_DEPENDS=
+DISCOUNT_DEPENDS=sed
 DISCOUNT_SUGGESTS=
 DISCOUNT_CONFLICTS=
 
@@ -126,6 +126,8 @@ $(DISCOUNT_BUILD_DIR)/.configured: $(DL_DIR)/$(DISCOUNT_SOURCE) $(DISCOUNT_PATCH
 		--confdir=/opt/etc \
 		--enable-all-features \
 	)
+	sed -i -e 's:@DWORD@:unsigned long:g' $(@D)/mkdio.h
+	sed -i -e '/PATH_SED/{s:".*":"/opt/bin/sed"\n#define DWORD unsigned long:}' $(@D)/config.h
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 #		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
