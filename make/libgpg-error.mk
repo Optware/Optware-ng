@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGPG-ERROR_SITE=ftp://ftp.gnupg.org/gcrypt/libgpg-error
-LIBGPG-ERROR_VERSION=1.8
+LIBGPG-ERROR_VERSION=1.10
 LIBGPG-ERROR_SOURCE=libgpg-error-$(LIBGPG-ERROR_VERSION).tar.gz
 LIBGPG-ERROR_DIR=libgpg-error-$(LIBGPG-ERROR_VERSION)
 LIBGPG-ERROR_UNZIP=zcat
@@ -82,8 +82,8 @@ LIBGPG-ERROR_IPK=$(BUILD_DIR)/libgpg-error_$(LIBGPG-ERROR_VERSION)-$(LIBGPG-ERRO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBGPG-ERROR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBGPG-ERROR_SITE)/$(LIBGPG-ERROR_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBGPG-ERROR_SOURCE)
+	$(WGET) -P $(@D) $(LIBGPG-ERROR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,7 +109,7 @@ libgpg-error-source: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG-ERROR_PATCHES)
 #
 $(LIBGPG-ERROR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG-ERROR_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(LIBGPG-ERROR_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(@D)
 	$(LIBGPG-ERROR_UNZIP) $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(LIBGPG-ERROR_PATCHES) | patch -d $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(@D)
