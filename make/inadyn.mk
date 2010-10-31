@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-INADYN_SITE=ftp://ftp.FreeBSD.org/pub/FreeBSD/ports/distfiles
-INADYN_VERSION=1.96.2
-INADYN_SOURCE=inadyn.v$(INADYN_VERSION).zip
-INADYN_DIR=inadyn
-INADYN_UNZIP=unzip
+INADYN_SITE=ftp://ftp.vmlinux.org/pub/People/jocke/inadyn
+INADYN_VERSION=1.97.2
+INADYN_SOURCE=inadyn-$(INADYN_VERSION).tar.bz2
+INADYN_DIR=inadyn-$(INADYN_VERSION)
+INADYN_UNZIP=bzcat
 INADYN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 INADYN_DESCRIPTION=INADYN is a dynamic DNS client. That is, it maintains the IP address of a host name. It periodically checks whether the IP address stored by the DNS server is the real current address of the machine that is running INADYN.
 INADYN_SECTION=net
@@ -36,7 +36,7 @@ INADYN_CONFLICTS=
 #
 # INADYN_IPK_VERSION should be incremented when the ipk changes.
 #
-INADYN_IPK_VERSION=2
+INADYN_IPK_VERSION=1
 
 #
 # INADYN_CONFFILES should be a list of user-editable files
@@ -107,7 +107,7 @@ inadyn-source: $(DL_DIR)/$(INADYN_SOURCE) $(INADYN_PATCHES)
 $(INADYN_BUILD_DIR)/.configured: $(DL_DIR)/$(INADYN_SOURCE) $(INADYN_PATCHES) make/inadyn.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(INADYN_DIR) $(INADYN_BUILD_DIR)
-	cd $(BUILD_DIR) && $(INADYN_UNZIP) $(DL_DIR)/$(INADYN_SOURCE)
+	$(INADYN_UNZIP) $(DL_DIR)/$(INADYN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(INADYN_PATCHES)" ; \
 		then cat $(INADYN_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(INADYN_DIR) -p0 ; \
@@ -115,8 +115,8 @@ $(INADYN_BUILD_DIR)/.configured: $(DL_DIR)/$(INADYN_SOURCE) $(INADYN_PATCHES) ma
 	if test "$(BUILD_DIR)/$(INADYN_DIR)" != "$(INADYN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(INADYN_DIR) $(INADYN_BUILD_DIR) ; \
 	fi
-	sed -i -e 's|/etc/inadyn.conf|/opt&|' $(@D)/man/inadyn.8 $(@D)/readme.html $(@D)/src/dyndns.h
-	sed -i -e '/^COMPILE=/s|=gcc |=$$(CC) $$(CPPFLAGS) |' \
+	sed -i -e 's|/etc/inadyn.conf|/opt&|' $(@D)/man/inadyn.8 $(@D)/include/dyndns.h
+#	sed -i -e '/^COMPILE=/s|=gcc |=$$(CC) $$(CPPFLAGS) |' \
 	       -e '/^LINK=/s|=gcc |=$$(CC) $$(LDFLAGS) |' \
 		$(INADYN_BUILD_DIR)/makefile
 #	(cd $(INADYN_BUILD_DIR); \
@@ -145,6 +145,7 @@ $(INADYN_BUILD_DIR)/.built: $(INADYN_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(INADYN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(INADYN_LDFLAGS)" \
+		prefix=/opt sysconfdir=/opt/etc \
 		TARGET_ARCH=linux
 	touch $@
 
@@ -198,14 +199,14 @@ $(INADYN_IPK): $(INADYN_BUILD_DIR)/.built
 	rm -rf $(INADYN_IPK_DIR) $(BUILD_DIR)/inadyn_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(INADYN_BUILD_DIR) DESTDIR=$(INADYN_IPK_DIR) install-strip
 	install -d $(INADYN_IPK_DIR)/opt/bin
-	install -m 755 $(INADYN_BUILD_DIR)/bin/linux/inadyn $(INADYN_IPK_DIR)/opt/bin/
+	install -m 755 $(<D)/src/inadyn $(INADYN_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(INADYN_IPK_DIR)/opt/bin/inadyn
 	install -d $(INADYN_IPK_DIR)/opt/man/man5
-	install -m 644 $(INADYN_BUILD_DIR)/man/*.5 $(INADYN_IPK_DIR)/opt/man/man5
+	install -m 644 $(<D)/man/*.5 $(INADYN_IPK_DIR)/opt/man/man5
 	install -d $(INADYN_IPK_DIR)/opt/man/man8
-	install -m 644 $(INADYN_BUILD_DIR)/man/*.8 $(INADYN_IPK_DIR)/opt/man/man8
+	install -m 644 $(<D)/man/*.8 $(INADYN_IPK_DIR)/opt/man/man8
 	install -d $(INADYN_IPK_DIR)/opt/share/doc/inadyn
-	install -m 644 $(INADYN_BUILD_DIR)/readme.html $(INADYN_IPK_DIR)/opt/share/doc/inadyn
+	install -m 644 $(<D)/[CLR]* $(<D)/debian/inadyn.conf $(INADYN_IPK_DIR)/opt/share/doc/inadyn/
 #	install -d $(INADYN_IPK_DIR)/opt/etc/
 #	install -m 644 $(INADYN_SOURCE_DIR)/inadyn.conf $(INADYN_IPK_DIR)/opt/etc/inadyn.conf
 	$(MAKE) $(INADYN_IPK_DIR)/CONTROL/control
