@@ -1,5 +1,5 @@
 #!/bin/sh
 
-killall stunnel
+/opt/bin/killall stunnel
 
 rm -f /opt/etc/stunnel/stunnel.pem

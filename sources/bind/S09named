@@ -48,7 +48,7 @@ case "$1" in
 	restart
 	;;
   condrestart)
-	[ -n "`pidof named`" ] && restart
+	[ -n "`/opt/bin/pidof named`" ] && restart
 	;;
   *)
 	echo "Usage: $0 {start|stop|status|restart|condrestart}"

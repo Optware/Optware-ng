@@ -1,6 +1,6 @@
 #!/bin/sh
 
-killall xinetd 2>/dev/null
+/opt/bin/killall xinetd 2>/dev/null
 
 if [ ${OPTWARE_TARGET} = "nslu2" ] ; then
   /etc/rc.d/rc.xinetd
