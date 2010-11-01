@@ -34,14 +34,14 @@ OPENVPN_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 OPENVPN_DESCRIPTION=SSL based VPN server with Windows client support
 OPENVPN_SECTION=net
 OPENVPN_PRIORITY=optional
-OPENVPN_DEPENDS=openssl, lzo
+OPENVPN_DEPENDS=openssl, lzo, psmisc
 OPENVPN_SUGGESTS=kernel-module-tun, xinetd
 OPENVPN_CONFLICTS=
 
 #
 # OPENVPN_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENVPN_IPK_VERSION=1
+OPENVPN_IPK_VERSION=2
 
 #
 # OPENVPN_CONFFILES should be a list of user-editable files

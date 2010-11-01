@@ -28,13 +28,13 @@ OPENLDAP_MAINTAINER=Joerg Berg <caplink@gmx.net>
 OPENLDAP_DESCRIPTION=Open Lightweight Directory Access Protocol
 OPENLDAP_SECTION=net
 OPENLDAP_PRIORITY=optional
-OPENLDAP_DEPENDS=openssl, libdb, gdbm, cyrus-sasl-libs
+OPENLDAP_DEPENDS=openssl, libdb, gdbm, cyrus-sasl-libs, psmisc
 OPENLDAP_CONFLICTS=
 
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=1
+OPENLDAP_IPK_VERSION=2
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files

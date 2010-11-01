@@ -30,14 +30,14 @@ BPALOGIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BPALOGIN_DESCRIPTION=BigPond Cable Network authentication client.
 BPALOGIN_SECTION=net
 BPALOGIN_PRIORITY=optional
-BPALOGIN_DEPENDS=
+BPALOGIN_DEPENDS=psmisc
 BPALOGIN_SUGGESTS=
 BPALOGIN_CONFLICTS=
 
 #
 # BPALOGIN_IPK_VERSION should be incremented when the ipk changes.
 #
-BPALOGIN_IPK_VERSION=2
+BPALOGIN_IPK_VERSION=3
 
 #
 # BPALOGIN_CONFFILES should be a list of user-editable files

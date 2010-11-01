@@ -33,7 +33,7 @@ NTOP_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 NTOP_DESCRIPTION=Network monitoring software
 NTOP_SECTION=net
 NTOP_PRIORITY=optional
-NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool, pcre, libpcap
+NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool, pcre, libpcap, psmisc
 ifneq (, $(filter mysql, $(PACKAGES)))
 NTOP_DEPENDS+=, mysql
 endif
@@ -48,7 +48,7 @@ endif
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=5
+NTOP_IPK_VERSION=6
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
