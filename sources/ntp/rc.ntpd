@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ -n "`pidof ntpd`" ]; then 
-    /bin/killall ntpd 2>/dev/null
+if [ -n "`/opt/bin/pidof ntpd`" ]; then 
+    /opt/bin/killall ntpd 2>/dev/null
 fi
 
 if [ ! -d /var/spool/ntp ] ;  then

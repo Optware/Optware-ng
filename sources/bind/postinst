@@ -16,8 +16,8 @@ mkdir -p /opt/var/run
 #else
 #    rm -f /opt/sbin/named.exe
 #fi
-#if [ -n "`pidof named`" ]; then
-#    /bin/killall named 2>/dev/null
+#if [ -n "`/opt/bin/pidof named`" ]; then
+#    /opt/bin/killall named 2>/dev/null
 #fi
 
 # Register for shutdown/halt

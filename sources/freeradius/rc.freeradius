@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ -n "`pidof radiusd`" ]; then 
-    /bin/killall radiusd 2>/dev/null
+if [ -n "`/opt/bin/pidof radiusd`" ]; then 
+    /opt/bin/killall radiusd 2>/dev/null
 fi
 
 if [ ! -d /var/spool/log/radius ] ;  then

@@ -32,7 +32,7 @@ PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.5.tar.gz
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=2
+PROFTPD_IPK_VERSION=3
 
 #
 # Control file info
@@ -42,7 +42,7 @@ PROFTPD_DESCRIPTION=Highly configurable FTP server with SSL-TLS
 PROFTPD_SECTION=net
 PROFTPD_PRIORITY=optional
 PROFTPD_CONFLICTS=
-PROFTPD_DEPENDS=openssl
+PROFTPD_DEPENDS=openssl, psmisc
 
 #
 # PROFTPD_CONFFILES should be a list of user-editable files

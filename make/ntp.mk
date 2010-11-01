@@ -29,7 +29,7 @@ NTP_MAINTAINER=Christopher <edmondsc@onid.ors.edu>
 NTP_DESCRIPTION=A time synchronization daemon
 NTP_SECTION=net
 NTP_PRIORITY=optional
-NTP_DEPENDS=
+NTP_DEPENDS=psmisc
 NTP_SUGGESTS=
 NTP_CONFLICTS=
 
@@ -37,7 +37,7 @@ NTP_CONFLICTS=
 #
 # NTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTP_IPK_VERSION=1
+NTP_IPK_VERSION=2
 
 NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
 

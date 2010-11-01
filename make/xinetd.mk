@@ -32,12 +32,12 @@ XINETD_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 XINETD_DESCRIPTION=Highly configurable, modular and secure inetd
 XINETD_SECTION=net
 XINETD_PRIORITY=required
-XINETD_DEPENDS=
+XINETD_DEPENDS=psmisc
 
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=9
+XINETD_IPK_VERSION=10
 
 #
 # XINETD_CONFFILES should be a list of user-editable files

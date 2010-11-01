@@ -1,15 +1,15 @@
 #!/bin/sh
 
-if [ -n "`pidof statd`" ]; then 
-    /bin/killall statd 2>/dev/null
+if [ -n "`/opt/bin/pidof statd`" ]; then 
+    /opt/bin/killall statd 2>/dev/null
 fi
 
-if [ -n "`pidof nfsd`" ]; then 
-    /bin/killall nfsd 2>/dev/null
+if [ -n "`/opt/bin/pidof nfsd`" ]; then 
+    /opt/bin/killall nfsd 2>/dev/null
 fi
 
-if [ -n "`pidof mountd`" ]; then 
-    /bin/killall mountd 2>/dev/null
+if [ -n "`/opt/bin/pidof mountd`" ]; then 
+    /opt/bin/killall mountd 2>/dev/null
 fi
 
 if [ ! -d /var/lib/nfs ] ;  then

@@ -23,14 +23,14 @@ NFS-UTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NFS-UTILS_DESCRIPTION=Kernel NFS Server
 NFS-UTILS_SECTION=net
 NFS-UTILS_PRIORITY=optional
-NFS-UTILS_DEPENDS=portmap, e2fsprogs
+NFS-UTILS_DEPENDS=portmap, e2fsprogs, psmisc
 NFS-UTILS_SUGGESTS=
 NFS-UTILS_CONFLICTS=
 
 #
 # NFS-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-NFS-UTILS_IPK_VERSION=1
+NFS-UTILS_IPK_VERSION=2
 
 #
 # NFS-UTILS_PATCHES should list any patches, in the the order in
