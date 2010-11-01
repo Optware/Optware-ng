@@ -3,11 +3,11 @@
 # Startup script for xinetd
 #
 # Stop myself if running
-killall xinetd 2>/dev/null
+/opt/bin/killall xinetd 2>/dev/null
 
 # Stop other inetd processes if running
 if [ ${OPTWARE_TARGET} = "nslu2" ] ; then
-  killall inetd 2>/dev/null
+  /opt/bin/killall inetd 2>/dev/null
 fi
 
 /opt/sbin/xinetd

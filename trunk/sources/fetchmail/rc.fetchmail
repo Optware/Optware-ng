@@ -22,8 +22,8 @@ case "$rc" in
     stop)
 	echo "stopping service $PROG"
 	
-	if [ -n "`pidof $PROG`" ]; then
-	    killall $PROG
+	if [ -n "`/opt/bin/pidof $PROG`" ]; then
+	    /opt/bin/killall $PROG
 	fi
 	;;
     restart)

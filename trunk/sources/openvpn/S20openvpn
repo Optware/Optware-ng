@@ -26,8 +26,8 @@ return 0
 
 ## This is for standalone servers only!!!!
 # Kill old server if still there
-if [ -n "`pidof openvpn`" ]; then
-    /bin/killall openvpn 2>/dev/null
+if [ -n "`/opt/bin/pidof openvpn`" ]; then
+    /opt/bin/killall openvpn 2>/dev/null
 fi
 
 # Start afresh - add as many daemons as you want

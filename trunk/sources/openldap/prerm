@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/bin/killall slapd
+/opt/bin/killall slapd
 
 /bin/rm -rf /opt/etc/openldap
 /bin/rm -rf /opt/var/openldap-slurp
