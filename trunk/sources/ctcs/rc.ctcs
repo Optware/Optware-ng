@@ -34,8 +34,8 @@ fi
 pid_file=/var/run/ctcs.pid
 
 # Stop itself if running
-if [ -n "`pidof ctcs`" ]; then
-    /bin/killall ctcs 2>/dev/null
+if [ -n "`/opt/bin/pidof ctcs`" ]; then
+    /opt/bin/killall ctcs 2>/dev/null
 fi
 
 sleep 5

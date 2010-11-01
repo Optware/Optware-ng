@@ -38,19 +38,19 @@ case "$1" in
 		;;
 	stop)
 		echo -n "Shutting down $PROG: "
-		/bin/killall $PROG
+		/opt/bin/killall $PROG
 		RETVAL=$?
 		echo
 		;;
 	reload)
 		echo -n "Reloading $PROG daemon configuration: "
-		/bin/killall -HUP $PROG
+		/opt/bin/killall -HUP $PROG
 		RETVAL=$?
 		echo
 		;;
 	report)
 		echo -n "Checking SMART devices now: "
-		/bin/killall -USR1 $PROG
+		/opt/bin/killall -USR1 $PROG
 		RETVAL=$?
 		echo
 		;;

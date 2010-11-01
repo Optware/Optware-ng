@@ -20,14 +20,14 @@ CTCS_MAINTAINER=Fernando Carolo <carolo@gmail.com>
 CTCS_DESCRIPTION=CTorrent Control Server (CTCS) is an interface for monitoring and managing Enhanced CTorrent clients
 CTCS_SECTION=net
 CTCS_PRIORITY=optional
-CTCS_DEPENDS=perl
+CTCS_DEPENDS=perl, psmisc
 CTCS_SUGGESTS=
 CTCS_CONFLICTS=
 
 #
 # CTCS_IPK_VERSION should be incremented when the ipk changes.
 #
-CTCS_IPK_VERSION=9
+CTCS_IPK_VERSION=10
 
 #
 # CTCS_CONFFILES should be a list of user-editable files

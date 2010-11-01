@@ -3,8 +3,8 @@
 # Startup script for cups lpd as standalone server
 #
 
-if [ -n "`pidof cups-lpd`" ]; then
-    /bin/killall cups-lpd 2>/dev/null
+if [ -n "`/opt/bin/pidof cups-lpd`" ]; then
+    /opt/bin/killall cups-lpd 2>/dev/null
 fi
 
 /opt/lib/cups/daemon/cups-lpd

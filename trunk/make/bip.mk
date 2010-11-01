@@ -35,14 +35,14 @@ BIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BIP_DESCRIPTION=multi user irc proxy
 BIP_SECTION=net
 BIP_PRIORITY=optional
-BIP_DEPENDS=openssl
+BIP_DEPENDS=openssl, psmisc
 BIP_SUGGESTS=
 BIP_CONFLICTS=
 
 #
 # BIP_IPK_VERSION should be incremented when the ipk changes.
 #
-BIP_IPK_VERSION=1
+BIP_IPK_VERSION=2
 
 #
 # BIP_CONFFILES should be a list of user-editable files

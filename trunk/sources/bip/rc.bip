@@ -12,8 +12,8 @@ fi
 
 test "$ENABLED" != "0" || exit 0
 
-if [ -n "`pidof bip`" ]; then
-    /bin/killall bip 2>/dev/null
+if [ -n "`/opt/bin/pidof bip`" ]; then
+    /opt/bin/killall bip 2>/dev/null
 fi
 
 /opt/bin/bip -f /opt/etc/bip.conf $PARAMS

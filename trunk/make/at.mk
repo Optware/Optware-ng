@@ -29,14 +29,14 @@ AT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AT_DESCRIPTION=Delayed job execution and batch processing.
 AT_SECTION=misc
 AT_PRIORITY=optional
-AT_DEPENDS=
+AT_DEPENDS=psmisc
 AT_SUGGESTS=
 AT_CONFLICTS=
 
 #
 # AT_IPK_VERSION should be incremented when the ipk changes.
 #
-AT_IPK_VERSION=4
+AT_IPK_VERSION=5
 
 #
 # AT_CONFFILES should be a list of user-editable files
