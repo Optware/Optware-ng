@@ -13,14 +13,14 @@ MONIT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MONIT_DESCRIPTION=monit is a utility for managing and monitoring, processes, files, directories and devices on a UNIX system. monit conducts automatic maintenance and repair and can execute meaningful causal actions in error situations.
 MONIT_SECTION=misc
 MONIT_PRIORITY=optional
-MONIT_DEPENDS=openssl
+MONIT_DEPENDS=openssl, psmisc
 MONIT_SUGGESTS=
 MONIT_CONFLICTS=
 
 #
 # MONIT_IPK_VERSION should be incremented when the ipk changes.
 #
-MONIT_IPK_VERSION=1
+MONIT_IPK_VERSION=2
 
 #
 # MONIT_CONFFILES should be a list of user-editable files

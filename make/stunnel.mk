@@ -28,13 +28,13 @@ STUNNEL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 STUNNEL_DESCRIPTION=SSL encryption wrapper for all kinds of servers
 STUNNEL_SECTION=net
 STUNNEL_PRIORITY=optional
-STUNNEL_DEPENDS=openssl, zlib
+STUNNEL_DEPENDS=openssl, zlib, psmisc
 STUNNEL_CONFLICTS=
 
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=1
+STUNNEL_IPK_VERSION=2
 
 #
 # STUNNEL_CONFFILES should be a list of user-editable files
