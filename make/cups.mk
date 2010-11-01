@@ -28,7 +28,7 @@ CUPS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DESCRIPTION=Common Unix Printing System
 CUPS_SECTION=net
 CUPS_PRIORITY=optional
-CUPS_DEPENDS=libjpeg, libpng, libtiff, openssl, zlib
+CUPS_DEPENDS=libjpeg, libpng, libtiff, openssl, zlib, psmisc
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS+=, openldap-libs
 else
@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS

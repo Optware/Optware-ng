@@ -28,14 +28,14 @@ METALOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 METALOG_DESCRIPTION=Modern, highly configurable syslogd replacement
 METALOG_SECTION=sys
 METALOG_PRIORITY=optional
-METALOG_DEPENDS=pcre
+METALOG_DEPENDS=pcre, psmisc
 METALOG_SUGGESTS=
 METALOG_CONFLICTS=
 
 #
 # METALOG_IPK_VERSION should be incremented when the ipk changes.
 #
-METALOG_IPK_VERSION=5
+METALOG_IPK_VERSION=6
 
 #
 # METALOG_CONFFILES should be a list of user-editable files

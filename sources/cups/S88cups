@@ -15,8 +15,8 @@ if ( !(lsmod | grep "^printer" -q) ); then
         insmod /opt/lib/modules/printer.o
 fi
 
-if [ -n "`pidof cupsd`" ]; then
-    /bin/killall cupsd 2>/dev/null
+if [ -n "`/opt/bin/pidof cupsd`" ]; then
+    /opt/bin/killall cupsd 2>/dev/null
 fi
 
 /opt/sbin/cupsd
