@@ -24,7 +24,7 @@ case "$1" in
   stop)
 	# Stop daemons.
 	echo -n "Shutting down bpalogin: "
-	killall bpalogin
+	/opt/bin/killall bpalogin
 	echo
 #	rm -f /var/lock/subsys/bpalogin
 	;;
