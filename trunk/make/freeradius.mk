@@ -29,14 +29,14 @@ FREERADIUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FREERADIUS_DESCRIPTION=An open source RADIUS server.
 FREERADIUS_SECTION=net
 FREERADIUS_PRIORITY=optional
-FREERADIUS_DEPENDS=libtool, openssl
+FREERADIUS_DEPENDS=libtool, openssl, psmisc
 FREERADIUS_SUGGESTS=freeradius-doc
 FREERADIUS_CONFLICTS=
 
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=2
+FREERADIUS_IPK_VERSION=3
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in

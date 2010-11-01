@@ -5,7 +5,7 @@
 
 start() {
     echo -n "Starting DNS Services: "
-    if [ -n "`pidof named`" ]; then
+    if [ -n "`/opt/bin/pidof named`" ]; then
 	echo "already running..."
 	false; 
 	return
@@ -19,9 +19,9 @@ stop() {
     echo "Shutting down DNS Services: "
     /opt/sbin/rndc -s 127.0.0.1 stop
     sleep 5
-    if [ -n "`pidof named`" ]; then
+    if [ -n "`/opt/bin/pidof named`" ]; then
         echo -n "Failed, killing process"
-	/bin/killall named 2>/dev/null
+	/opt/bin/killall named 2>/dev/null
     fi
     return
 }
