@@ -21,7 +21,7 @@
 #
 PROFTPD_NAME=proftpd
 PROFTPD_SITE=ftp://ftp.proftpd.org/distrib/source
-PROFTPD_VERSION=1.3.3
+PROFTPD_VERSION=1.3.3c
 PROFTPD_SOURCE=$(PROFTPD_NAME)-$(PROFTPD_VERSION).tar.bz2
 PROFTPD_DIR=$(PROFTPD_NAME)-$(PROFTPD_VERSION)
 PROFTPD_UNZIP=bzcat
@@ -32,7 +32,7 @@ PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.5.tar.gz
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=3
+PROFTPD_IPK_VERSION=1
 
 #
 # Control file info
