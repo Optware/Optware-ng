@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBOGG_SITE=http://downloads.xiph.org/releases/ogg
-LIBOGG_VERSION=1.2.0
+LIBOGG_VERSION=1.2.1
 LIBOGG_SOURCE=libogg-$(LIBOGG_VERSION).tar.gz
 LIBOGG_DIR=libogg-$(LIBOGG_VERSION)
 LIBOGG_UNZIP=zcat
