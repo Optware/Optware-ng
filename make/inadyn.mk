@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 INADYN_SITE=ftp://ftp.vmlinux.org/pub/People/jocke/inadyn
-INADYN_VERSION=1.97.2
+INADYN_VERSION=1.97.3
 INADYN_SOURCE=inadyn-$(INADYN_VERSION).tar.bz2
 INADYN_DIR=inadyn-$(INADYN_VERSION)
 INADYN_UNZIP=bzcat
@@ -240,4 +240,4 @@ inadyn-dirclean:
 # Some sanity check for the package.
 #
 inadyn-check: $(INADYN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(INADYN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
