@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 INADYN_SITE=ftp://ftp.vmlinux.org/pub/People/jocke/inadyn
-INADYN_VERSION=1.97.3
+INADYN_VERSION=1.97.4
 INADYN_SOURCE=inadyn-$(INADYN_VERSION).tar.bz2
 INADYN_DIR=inadyn-$(INADYN_VERSION)
 INADYN_UNZIP=bzcat
