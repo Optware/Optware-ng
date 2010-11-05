@@ -7,7 +7,7 @@
 # when we have a second client also uses libpurple, we should separate it into its own ipk, and make sure stage works
 #
 FINCH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pidgin
-FINCH_VERSION=2.7.4
+FINCH_VERSION=2.7.5
 FINCH_SOURCE=pidgin-$(FINCH_VERSION).tar.bz2
 FINCH_DIR=pidgin-$(FINCH_VERSION)
 FINCH_UNZIP=bzcat
@@ -16,7 +16,7 @@ FINCH_DESCRIPTION=Finch is a console-based IM program that lets you sign on to A
 It uses ncurses. It was formerly called Gaim-text.
 FINCH_SECTION=net-im
 FINCH_PRIORITY=optional
-FINCH_DEPENDS=glib, gnutls, libxml2, ncursesw
+FINCH_DEPENDS=glib, gnutls, libidn, libxml2, ncursesw
 ifneq (, $(filter avahi, $(PACKAGES)))
 FINCH_DEPENDS+=, avahi
 endif
@@ -95,7 +95,7 @@ finch-source: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES)
 # shown below to make various patches to it.
 #
 $(FINCH_BUILD_DIR)/.configured: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES) make/finch.mk
-	$(MAKE) glib-stage gnutls-stage libxml2-stage ncursesw-stage
+	$(MAKE) glib-stage gnutls-stage libidn-stage libxml2-stage ncursesw-stage
 ifneq (, $(filter avahi, $(PACKAGES)))
 	$(MAKE) avahi-stage
 endif
