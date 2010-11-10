@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Startup script for openvpn as standalone server
+# Startup script for openvpn server
 #
 
 # Make sure IP forwarding is enabled
@@ -20,7 +20,7 @@ if ( !(lsmod | grep -q "^tun") ); then
 	insmod /opt/lib/modules/tun.o
 fi
 
-# I you want a standalone server (not xinetd), comment out the return statement below
+# If you want a standalone server (not xinetd), then comment out the return statement below
 return 0
 
 
@@ -30,7 +30,7 @@ if [ -n "`/opt/bin/pidof openvpn`" ]; then
     /opt/bin/killall openvpn 2>/dev/null
 fi
 
-# Start afresh - add as many daemons as you want
+# Start the openvpn daemon - add as many daemons as you want
 /opt/sbin/openvpn --daemon --cd /opt/etc/openvpn --config openvpn.conf 
 
 # [EOF]
