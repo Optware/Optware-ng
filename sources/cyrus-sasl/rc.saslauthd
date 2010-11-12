@@ -2,8 +2,8 @@
 
 echo "(re)starting service saslauthd"
 
-if [ -n "`pidof saslauthd`" ]; then 
-    /bin/killall saslauthd 2>/dev/null
+if [ -n "`/opt/bin/pidof saslauthd`" ]; then 
+    /opt/bin/killall saslauthd 2>/dev/null
 fi
 
 /opt/sbin/saslauthd -a getpwent -n 1 > /dev/null 2>&1

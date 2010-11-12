@@ -30,10 +30,10 @@ CYRUS-SASL_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
 CYRUS-SASL_DESCRIPTION=Provides client or server side authentication (see RFC 2222).
 CYRUS-SASL_SECTION=util
 CYRUS-SASL_PRIORITY=optional
-CYRUS-SASL_DEPENDS=
+CYRUS-SASL_DEPENDS=psmisc
 CYRUS-SASL_CONFLICTS=
 
-CYRUS-SASL_IPK_VERSION=1
+CYRUS-SASL_IPK_VERSION=2
 
 #
 # CYRUS-SASL_CONFFILES should be a list of user-editable files
