@@ -34,6 +34,7 @@ MPD_SECTION=audio
 MPD_PRIORITY=optional
 MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, glib, lame, libao, libcurl
 MPD_DEPENDS+=, libid3tag, libmad, libmms, libmpcdec, libshout, wavpack
+MPD_DEPENDS+=, psmisc
 ifneq (, $(filter i686, $(TARGET_ARCH)))
 MPD_DEPENDS+=, libsamplerate, libvorbis
 else
@@ -48,7 +49,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=1
+MPD_IPK_VERSION=2
 
 #
 # MPD_CONFFILES should be a list of user-editable files
