@@ -14,9 +14,9 @@ PERL-SPAMASSASSIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL-SPAMASSASSIN_DESCRIPTION=A mail filter which attempts to identify spam using a variety of mechanisms including text analysis, Bayesian filtering, DNS blocklists, and collaborative filtering databases.
 PERL-SPAMASSASSIN_SECTION=util
 PERL-SPAMASSASSIN_PRIORITY=optional
-PERL-SPAMASSASSIN_DEPENDS=perl, perl-digest-sha1, perl-html-parser, perl-net-dns, perl-db-file
+PERL-SPAMASSASSIN_DEPENDS=perl, perl-digest-sha1, perl-html-parser, perl-net-dns, perl-db-file, psmisc
 
-PERL-SPAMASSASSIN_IPK_VERSION=1
+PERL-SPAMASSASSIN_IPK_VERSION=2
 
 #PERL-SPAMASSASSIN_CONFFILES=/opt/etc/perl-spamassassin.conf /opt/etc/init.d/SXXperl-spamassassin
 PERL-SPAMASSASSIN_CONFFILES=/opt/etc/spamassassin/init.pre /opt/etc/spamassassin/local.cf /opt/etc/init.d/S62spamd
