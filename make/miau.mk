@@ -13,10 +13,10 @@ MIAU_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MIAU_DESCRIPTION=The MIAU IRC Bouncer (Proxy)
 MIAU_SECTION=net
 MIAU_PRIORITY=optional
-MIAU_DEPENDS=
+MIAU_DEPENDS=psmisc
 MIAU_CONFLICTS=
 
-MIAU_IPK_VERSION=1
+MIAU_IPK_VERSION=2
 
 MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/init.d/S52miau \
