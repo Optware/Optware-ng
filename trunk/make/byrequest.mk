@@ -13,7 +13,7 @@ BYREQUEST_PRIORITY=optional
 BYREQUEST_SECTION=net
 BYREQUEST_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BYREQUEST_DESCRIPTION=TiVo HMO server
-BYREQUEST_DEPENDS=imagemagick
+BYREQUEST_DEPENDS=imagemagick, psmisc
 
 #
 # BYREQUEST_BUILD_DIR is the directory in which the build is done.
@@ -26,7 +26,7 @@ BYREQUEST_BUILD_DIR=$(BUILD_DIR)/byrequest
 BYREQUEST_SOURCE_DIR=$(SOURCE_DIR)/byrequest
 BYREQUEST_IPK_DIR=$(BUILD_DIR)/byrequest-ipk
 BYREQUEST_IPK=$(BUILD_DIR)/byrequest_cvs-$(BYREQUEST_VERSION)-$(BYREQUEST_IPK_VERSION)_$(TARGET_ARCH).ipk
-BYREQUEST_IPK_VERSION=1
+BYREQUEST_IPK_VERSION=2
 
 .PHONY: byrequest-source byrequest-unpack byrequest byrequest-stage byrequest-ipk byrequest-clean byrequest-dirclean byrequest-check
 
