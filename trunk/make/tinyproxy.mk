@@ -30,7 +30,7 @@ TINYPROXY_DESCRIPTION=Tinyproxy is a fast light-weight HTTP proxy.
 TINYPROXY_SECTION=net
 TINYPROXY_PRIORITY=optional
 ifeq (uclibc, $(LIBC_STYLE))
-TINYPROXY_DEPENDS=gettext
+TINYPROXY_DEPENDS=gettext, psmisc
 else
 TINYPROXY_DEPENDS=
 endif
@@ -40,7 +40,7 @@ TINYPROXY_CONFLICTS=
 #
 # TINYPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-TINYPROXY_IPK_VERSION=2
+TINYPROXY_IPK_VERSION=3
 
 #
 # TINYPROXY_CONFFILES should be a list of user-editable files
