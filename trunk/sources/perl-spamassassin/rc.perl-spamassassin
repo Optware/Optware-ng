@@ -19,8 +19,8 @@ case "$rc" in
     stop)
 	echo "stopping service spamd"
 	
-	if [ -n "`pidof spamd`" ] ; then
-	    /bin/killall spamd
+	if [ -n "`/opt/bin/pidof spamd`" ] ; then
+	    /opt/bin/killall spamd
 	fi
 	;;
     restart)
