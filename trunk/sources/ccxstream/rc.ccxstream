@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ -n "`pidof ccxstream`" ] ; then
-    killall ccxstream 2>/dev/null
+if [ -n "`/opt/bin/pidof ccxstream`" ] ; then
+    /opt/bin/killall ccxstream 2>/dev/null
 fi
 
 # see /opt/doc/ccxstream/README for the full summary on

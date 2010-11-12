@@ -13,14 +13,14 @@ CCXSTREAM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CCXSTREAM_DESCRIPTION=A server to stream music and video to an XBox running Xbox Media Player using XBMSP protocol
 CCXSTREAM_SECTION=net
 CCXSTREAM_PRIORITY=optional
-CCXSTREAM_DEPENDS=
+CCXSTREAM_DEPENDS=psmisc
 CCXSTREAM_SUGGESTS=
 CCXSTREAM_CONFLICTS=
 
 #
 # CCXSTREAM_IPK_VERSION should be incremented when the ipk changes.
 #
-CCXSTREAM_IPK_VERSION=3
+CCXSTREAM_IPK_VERSION=4
 
 #
 # CCXSTREAM_PATCHES should list any patches, in the the order in
