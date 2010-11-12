@@ -31,14 +31,14 @@ APPWEB_MAINTAINER=Matt McNeill <matt_mcneill@hotmail.com>
 APPWEB_DESCRIPTION=AppWeb is the leading web server technology for embedding in devices and applications. Supports embedded javascript, CGI, Virtual Sites, SSL, user passwords, virtual directories - all with minimal memory footprint.
 APPWEB_SECTION=net
 APPWEB_PRIORITY=optional
-APPWEB_DEPENDS=openssl, php-embed
+APPWEB_DEPENDS=openssl, php-embed, psmisc
 APPWEB_SUGGESTS=
 APPWEB_CONFLICTS=
 
 #
 # APPWEB_IPK_VERSION should be incremented when the ipk changes.
 #
-APPWEB_IPK_VERSION=1
+APPWEB_IPK_VERSION=2
 
 #
 # APPWEB_PATCHES should list any patches, in the the order in
