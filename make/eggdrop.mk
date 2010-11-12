@@ -35,14 +35,14 @@ EGGDROP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 EGGDROP_DESCRIPTION=Eggdrop is a popular Open Source IRC bot
 EGGDROP_SECTION=util
 EGGDROP_PRIORITY=optional
-EGGDROP_DEPENDS=tcl, zlib, adduser
+EGGDROP_DEPENDS=tcl, zlib, adduser, psmisc
 EGGDROP_SUGGESTS=
 EGGDROP_CONFLICTS=
 
 #
 # EGGDROP_IPK_VERSION should be incremented when the ipk changes.
 #
-EGGDROP_IPK_VERSION=2
+EGGDROP_IPK_VERSION=3
 
 #
 # EGGDROP_CONFFILES should be a list of user-editable files
