@@ -31,11 +31,13 @@ VIM_DESCRIPTION=Yet another version of the vi editor.
 VIM_SECTION=util
 VIM_PRIORITY=optional
 VIM_DEPENDS=ncurses
+VIM_SUGGESTS=
+VIM_CONFLICTS=
 
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=1
+VIM_IPK_VERSION=2
 
 #
 # VIM_CONFFILES should be a list of user-editable files
@@ -80,6 +82,8 @@ VIM_BUILD_DIR=$(BUILD_DIR)/vim
 VIM_SOURCE_DIR=$(SOURCE_DIR)/vim
 VIM_IPK_DIR=$(BUILD_DIR)/vim-$(VIM_VERSION)-ipk
 VIM_IPK=$(BUILD_DIR)/vim_$(VIM_VERSION)-$(VIM_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: vim-source vim-unpack vim vim-stage vim-ipk vim-clean vim-dirclean vim-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -135,6 +139,8 @@ $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES) make/vim.mk
 		--disable-selinux \
 		--without-x \
 		--disable-nls \
+		--enable-multibyte \
+		--disable-static \
 	)
 	touch $@
 
@@ -179,6 +185,8 @@ $(VIM_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(VIM_SITE)/$(VIM_SOURCE)" >>$@
 	@echo "Description: $(VIM_DESCRIPTION)" >>$@
 	@echo "Depends: $(VIM_DEPENDS)" >>$@
+	@echo "Suggests: $(VIM_SUGGESTS)" >>$@
+	@echo "Conflicts: $(VIM_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -215,6 +223,7 @@ vim-ipk: $(VIM_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 vim-clean:
+	rm -f $(VIM_BUILD_DIR)/.built
 	-$(MAKE) -C $(VIM_BUILD_DIR) clean
 
 #
