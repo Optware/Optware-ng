@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR-REWRITE_VERSION=0.6.0
+BZR-REWRITE_VERSION=0.6.1
 BZR-REWRITE_SITE=http://samba.org/~jelmer/bzr
 BZR-REWRITE_SOURCE=bzr-rewrite-$(BZR-REWRITE_VERSION).tar.gz
 BZR-REWRITE_DIR=bzr-rewrite-$(BZR-REWRITE_VERSION)
