@@ -24,7 +24,7 @@
 # PY-MAKO_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-MAKO_SITE=http://pypi.python.org/packages/source/M/Mako
-PY-MAKO_VERSION=0.3.5
+PY-MAKO_VERSION=0.3.6
 PY-MAKO_IPK_VERSION=1
 PY-MAKO_SOURCE=Mako-$(PY-MAKO_VERSION).tar.gz
 PY-MAKO_DIR=Mako-$(PY-MAKO_VERSION)
@@ -214,7 +214,7 @@ $(PY25-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-MAKO_IPK_DIR) --prefix=/opt)
 	for f in $(PY25-MAKO_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+		do mv $$f `echo $$f | sed 's|$$|-py2.5|'`; done
 	$(MAKE) $(PY25-MAKO_IPK_DIR)/CONTROL/control
 #	echo $(PY-MAKO_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-MAKO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MAKO_IPK_DIR)
