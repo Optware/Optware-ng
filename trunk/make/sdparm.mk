@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SDPARM_SITE=http://sg.danny.cz/sg/p
-SDPARM_VERSION=1.05
+SDPARM_VERSION=1.06
 SDPARM_SOURCE=sdparm-$(SDPARM_VERSION).tgz
 SDPARM_DIR=sdparm-$(SDPARM_VERSION)
 SDPARM_UNZIP=zcat
