@@ -102,13 +102,13 @@ syslog-ng-source: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PATCHES)
 #
 $(SYSLOG-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PATCHES) make/syslog-ng.mk
 	$(MAKE) glib-stage eventlog-stage libnet10-stage flex-stage
-	rm -rf $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(SYSLOG-NG_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(@D)
 	$(SYSLOG-NG_UNZIP) $(DL_DIR)/$(SYSLOG-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SYSLOG-NG_PATCHES)"; then \
 		cat $(SYSLOG-NG_PATCHES) | patch -d $(BUILD_DIR)/$(SYSLOG-NG_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(SYSLOG-NG_BUILD_DIR)
-	(cd $(SYSLOG-NG_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SYSLOG-NG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SYSLOG-NG_LDFLAGS)" \
@@ -133,7 +133,7 @@ syslog-ng-unpack: $(SYSLOG-NG_BUILD_DIR)/.configured
 #
 $(SYSLOG-NG_BUILD_DIR)/.built: $(SYSLOG-NG_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SYSLOG-NG_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -146,7 +146,7 @@ syslog-ng: $(SYSLOG-NG_BUILD_DIR)/.built
 #
 $(SYSLOG-NG_BUILD_DIR)/.staged: $(SYSLOG-NG_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SYSLOG-NG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 syslog-ng-stage: $(SYSLOG-NG_BUILD_DIR)/.staged
@@ -220,4 +220,4 @@ syslog-ng-dirclean:
 # Some sanity check for the package.
 #
 syslog-ng-check: $(SYSLOG-NG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SYSLOG-NG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
