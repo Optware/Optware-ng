@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DISCOUNT_SITE=http://www.pell.portland.or.us/~orc/Code/markdown
-DISCOUNT_VERSION=2.0.1
-DISCOUNT_SOURCE=discount-$(DISCOUNT_VERSION).tar.gz
+DISCOUNT_VERSION=2.0.2
+DISCOUNT_SOURCE=discount-$(DISCOUNT_VERSION).tar.bz2
 DISCOUNT_DIR=discount-$(DISCOUNT_VERSION)
-DISCOUNT_UNZIP=zcat
+DISCOUNT_UNZIP=bzcat
 DISCOUNT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DISCOUNT_DESCRIPTION=Markdown text to HTML, in C.
 DISCOUNT_SECTION=text
