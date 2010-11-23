@@ -38,7 +38,7 @@ FFMPEG_CONFLICTS=
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION=2
+FFMPEG_IPK_VERSION=3
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -63,6 +63,8 @@ FFMPEG_CPPFLAGS += -fno-builtin-cos -fno-builtin-sin -fno-builtin-lrint -fno-bui
 FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/powf-to-pow.patch
 endif
 FFMPEG_LDFLAGS=
+
+FFMPEG_CONFIG_OPTS ?=
 
 #
 # FFMPEG_BUILD_DIR is the directory in which the build is done.
@@ -142,6 +144,7 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) ma
 		--enable-cross-compile \
 		--cross-prefix=$(TARGET_CROSS) \
 		--arch=$(FFMPEG_ARCH) \
+		$(FFMPEG_CONFIG_OPTS) \
 		--disable-encoder=snow \
 		--disable-decoder=snow \
 		--enable-shared \
@@ -271,4 +274,4 @@ ffmpeg-dirclean:
 # Some sanity check for the package.
 #
 ffmpeg-check: $(FFMPEG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FFMPEG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
