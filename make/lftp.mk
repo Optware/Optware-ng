@@ -22,7 +22,7 @@
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
 SFR_SITE=http://www.sfr-fresh.com/unix/misc
-LFTP_VERSION=4.0.10
+LFTP_VERSION=4.1.0
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -65,7 +65,8 @@ LFTP_CONFIG_ENV = \
 	lftp_cv_va_copy=yes \
 	enable_wcwidth_replacement=yes \
 	ac_cv_func_malloc_0_nonnull=yes \
-	gl_cv_func_gettimeofday_clobber=no
+	gl_cv_func_gettimeofday_clobber=no \
+	i_cv_posix_fallocate_works=$(if $(filter $(LIBC_STYLE),uclibc),no,yes)
 endif
 
 #
