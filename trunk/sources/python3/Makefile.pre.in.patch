@@ -1,8 +1,8 @@
---- Python-3.1/Makefile.pre.in.orig	2009-06-11 15:54:11.000000000 -0700
-+++ Python-3.1/Makefile.pre.in	2009-06-28 20:11:22.000000000 -0700
+--- Python-3.1.3/Makefile.pre.in.orig	2010-10-14 11:35:17.000000000 +0000
++++ Python-3.1.3/Makefile.pre.in	2010-11-28 19:36:43.433954791 +0000
 @@ -38,6 +38,8 @@
  
- GNULD=          @GNULD@
+ GNULD=		@GNULD@
  
 +CROSS_COMPILE=	@CROSS_COMPILE@
 +
@@ -99,19 +99,15 @@
  	if test -f $(LDLIBRARY); then \
  		if test -n "$(DLLLIBRARY)" ; then \
  			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
-@@ -1018,8 +1032,9 @@
+@@ -1020,6 +1034,7 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
- sharedinstall:
--	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
--	   	--prefix=$(prefix) \
+ sharedinstall: sharedmods
 +	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' CROSS_COMPILE='$(CROSS_COMPILE)' \
-+		$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
-+		--prefix=$(prefix) \
+ 	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
+ 	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
- 		--install-platlib=$(DESTSHARED) \
- 		--root=/$(DESTDIR)
-@@ -1112,7 +1127,7 @@
+@@ -1115,7 +1130,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -120,7 +116,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1173,11 +1188,12 @@
+@@ -1178,11 +1193,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal
