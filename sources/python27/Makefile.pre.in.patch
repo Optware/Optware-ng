@@ -1,5 +1,5 @@
---- Python-2.7b2/Makefile.pre.in.orig	2010-04-12 00:10:46.000000000 +0000
-+++ Python-2.7b2/Makefile.pre.in	2010-05-09 15:40:54.459795492 +0000
+--- Python-2.7.1rc1/Makefile.pre.in.orig	2010-10-14 11:37:30.000000000 +0000
++++ Python-2.7.1rc1/Makefile.pre.in	2010-11-14 19:57:21.190389508 +0000
 @@ -38,6 +38,8 @@
  
  GNULD=          @GNULD@
@@ -9,15 +9,6 @@
  # Shell used by make (some versions default to the login shell, which is bad)
  SHELL=		/bin/sh
  
-@@ -105,7 +107,7 @@
- 
- # Symbols used for using shared libraries
- SO=		@SO@
--LDSHARED=	@LDSHARED@
-+LDSHARED=	@LDSHARED@ @LDFLAGS@
- BLDSHARED=	@BLDSHARED@
- LDCXXSHARED=	@LDCXXSHARED@
- DESTSHARED=	$(BINLIBDEST)/lib-dynload
 @@ -178,7 +180,8 @@
  UNICODE_OBJS=   @UNICODE_OBJS@
  
@@ -99,19 +90,15 @@
  	if test -f $(LDLIBRARY); then \
  		if test -n "$(DLLLIBRARY)" ; then \
  			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
-@@ -1043,8 +1057,9 @@
+@@ -1044,6 +1058,7 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
- sharedinstall:
--	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
--	   	--prefix=$(prefix) \
+ sharedinstall: sharedmods
 +	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' CROSS_COMPILE='$(CROSS_COMPILE)' \
-+		$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
-+		--prefix=$(prefix) \
+ 	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
+ 	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
- 		--install-platlib=$(DESTSHARED) \
- 		--root=/$(DESTDIR)
-@@ -1130,7 +1145,7 @@
+@@ -1131,7 +1146,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -120,7 +107,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1181,11 +1196,12 @@
+@@ -1183,11 +1198,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal
