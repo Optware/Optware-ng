@@ -36,7 +36,7 @@ HIAWATHA_CONFLICTS=
 #
 # HIAWATHA_IPK_VERSION should be incremented when the ipk changes.
 #
-HIAWATHA_IPK_VERSION=1
+HIAWATHA_IPK_VERSION=2
 
 #
 # HIAWATHA_CONFFILES should be a list of user-editable files
