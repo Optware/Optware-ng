@@ -48,6 +48,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	iozone \
 	bpalogin \
         icu btg xerces-c \
+	iptables \
  
 PERL_PACKAGES = \
 	perl \
@@ -279,7 +280,7 @@ COMMON_CROSS_PACKAGES = \
 	inadyn indent inetutils \
 	inferno \
 	ink ipac-ng \
-	iperf ipkg-web iptables iptraf iputils-arping \
+	iperf ipkg-web iptraf iputils-arping \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \
 	keychain kismet kissdx knock \
