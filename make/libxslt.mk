@@ -28,7 +28,7 @@ LIBXSLT_DEPENDS=libxml2
 #
 # LIBXSLT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXSLT_IPK_VERSION=1
+LIBXSLT_IPK_VERSION=2
 
 #
 # LIBXSLT_CONFFILES should be a list of user-editable files
