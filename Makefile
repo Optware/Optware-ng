@@ -47,6 +47,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	gtk vte xchat \
 	iozone \
 	bpalogin \
+        icu btg xerces-c \
  
 PERL_PACKAGES = \
 	perl \
@@ -229,7 +230,7 @@ COMMON_CROSS_PACKAGES = \
 	bind bip bison bitchx bitlbee \
 	bogofilter boost bridge-utils \
 	bsdgames bsdmainutils \
-	btg btpd busybox byrequest bzflag bzip2 \
+	btpd busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	bluez2-libs bluez2-utils \
 	c-ares cabextract cadaver cairo calc calcurse castget \
@@ -274,7 +275,6 @@ COMMON_CROSS_PACKAGES = \
 	haproxy haserl hd2u hdparm hello hexcurse heyu \
 	hiawatha hnb hpijs hping htop httping \
 	ice icecast ices0 \
-	icu \
 	id3lib iftop ii iksemel imagemagick imap \
 	inadyn indent inetutils \
 	inferno \
@@ -373,7 +373,7 @@ COMMON_CROSS_PACKAGES = \
 	vnstat vorbis-tools vpnc vsftpd vtun \
 	w3cam w3m wakelan wavpack webalizer weechat werc wget \
 	which whois wizd wpa-supplicant wput wxbase \
-	xerces-c xmlrpc-c \
+	xmlrpc-c \
 	x11 xau xauth xaw xcursor xdmcp xdpyinfo xext \
 	xextensions xfixes xft xinetd \
 	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
