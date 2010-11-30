@@ -30,21 +30,7 @@ IPTABLES_SITE=http://ftp.netfilter.org/pub/iptables
 IPTABLES_VERSION=1.4.10
 IPTABLES_SOURCE=iptables-$(IPTABLES_VERSION).tar.bz2
 IPTABLES_UNZIP=bzcat
-
-IPTABLES_L7FILTER_SITE="http://downloads.sourceforge.net/project/l7-filter/l7-filter kernel version"
-IPTABLES_L7FILTER_VERSION=2.22
-IPTABLES_L7FILTER_SOURCE=netfilter-layer7-v$(IPTABLES_L7FILTER_VERSION).tar.gz
-IPTABLES_L7FILTER_USERPATCH=iptables-1.4.3forward-for-kernel-2.6.20forward/libxt_layer7*
-IPTABLES_L7FILTER_KERNELPATCH=kernel-2.6.25-2.6.28-layer7-$(IPTABLES_L7FILTER_VERSION).patch
-IPTABLES_L7FILTER_UNZIP=zcat
-
-IPTABLES_IPP2P_SITE=http://www.ipp2p.org/downloads
-IPTABLES_IPP2P_VERSION=0.8.2
-IPTABLES_IPP2P_SOURCE=ipp2p-$(IPTABLES_IPP2P_VERSION).tar.gz
-IPTABLES_IPP2P_USERPATCH=$(IPTABLES_SOURCE_DIR)/ipp2p-0.8.2-iptables-1.4.10.patch
-IPTABLES_IPP2P_UNZIP=zcat
-
-IPTABLES_SOURCES=$(DL_DIR)/$(IPTABLES_SOURCE) $(DL_DIR)/$(IPTABLES_L7FILTER_SOURCE) $(DL_DIR)/$(IPTABLES_IPP2P_SOURCE)
+IPTABLES_SOURCES=$(DL_DIR)/$(IPTABLES_SOURCE) 
 IPTABLES_DIR=iptables-$(IPTABLES_VERSION)
 IPTABLES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPTABLES_DESCRIPTION=Userland utilities for controlling firewalling rules
@@ -67,9 +53,7 @@ IPTABLES_IPK_VERSION=1
 #
 # IPTABLES_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
-#
-IPTABLES_L7FILTER_PATCH=$(DL_DIR)/$(IPTABLES_L7FILTER_SOURCE)
-IPTABLES_IPP2P_PATCH=$(DL_DIR)/$(IPTABLES_IPP2P_SOURCE)
+#IPTABLES_PATCHES=
 
 
 #
@@ -95,12 +79,6 @@ IPTABLES_INST_DIR=/opt
 #
 $(DL_DIR)/$(IPTABLES_SOURCE):
 	$(WGET) -P $(DL_DIR) $(IPTABLES_SITE)/$(IPTABLES_SOURCE)
-
-$(DL_DIR)/$(IPTABLES_L7FILTER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IPTABLES_L7FILTER_SITE)/$(IPTABLES_L7FILTER_VERSION)/$(IPTABLES_L7FILTER_SOURCE)
-
-$(DL_DIR)/$(IPTABLES_IPP2P_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IPTABLES_IPP2P_SITE)/$(IPTABLES_IPP2P_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -132,20 +110,6 @@ iptables-source: $(IPTABLES_SOURCES)
 $(IPTABLES_BUILD_DIR)/.configured: $(IPTABLES_SOURCES) make/iptables.mk
 	rm -rf $(BUILD_DIR)/$(IPTABLES_DIR) $(IPTABLES_BUILD_DIR)
 	$(IPTABLES_UNZIP) $(DL_DIR)/$(IPTABLES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(IPTABLES_L7FILTER_PATCH)" ; \
-		then $(IPTABLES_L7FILTER_UNZIP) $(IPTABLES_L7FILTER_PATCH) | \
-		tar -C $(BUILD_DIR)/$(IPTABLES_DIR)/extensions --strip-components 2 */$(IPTABLES_L7FILTER_USERPATCH) -xvf - ; \
-		$(IPTABLES_L7FILTER_UNZIP) $(IPTABLES_L7FILTER_PATCH) | \
-		tar -C $(BUILD_DIR)/$(IPTABLES_DIR) --strip-components 1  */$(IPTABLES_L7FILTER_KERNELPATCH) -xvf - ; \
-		patch -d $(BUILD_DIR)/$(IPTABLES_DIR) -p1 -f -r l7.rej -s < \
-			$(BUILD_DIR)/$(IPTABLES_DIR)/$(IPTABLES_L7FILTER_KERNELPATCH) > /dev/null 2>&1 ; \
-			exit 0 ; \
-	fi
-	if test -n "$(IPTABLES_IPP2P_PATCH)" ; \
-		then $(IPTABLES_IPP2P_UNZIP) $(IPTABLES_IPP2P_PATCH) | \
-		tar -C $(BUILD_DIR)/$(IPTABLES_DIR)/extensions --strip-components 1 */libipt_ipp2p.c */ipt_ipp2p.h -xvf - ; \
-		patch -d $(BUILD_DIR)/$(IPTABLES_DIR)/extensions -p0 < $(IPTABLES_IPP2P_USERPATCH) ; \
-	fi
 	if test "$(BUILD_DIR)/$(IPTABLES_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IPTABLES_DIR) $(@D) ; \
 	fi
@@ -159,7 +123,6 @@ $(IPTABLES_BUILD_DIR)/.configured: $(IPTABLES_SOURCES) make/iptables.mk
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(IPTABLES_INST_DIR) \
 		--enable-devel \
-		--with-ksource=$(IPTABLES_BUILD_DIR) \
 	)
 	touch $(IPTABLES_BUILD_DIR)/.configured
 
