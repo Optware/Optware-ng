@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	atk \
 	bitchx \
-	gtk ipac-ng iptraf ldconfig \
+	gtk iptraf ldconfig \
 	nfs-utils \
 	puppy qemu \
 	softflowd \
