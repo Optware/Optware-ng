@@ -45,7 +45,7 @@ IPAC-NG_PATCHES= \
 #
 IPAC-NG_CPPFLAGS=
 IPAC-NG_LDFLAGS=
-ifeq ($(OPTWARE_TARGET), slugosbe)
+ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle slugos5be slugos5le, $(OPTWARE_TARGET)))
 IPAC-NG_LDFLAGS+=-ldl
 endif
 
