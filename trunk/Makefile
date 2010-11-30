@@ -49,6 +49,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	bpalogin \
         icu btg xerces-c \
 	iptables ipac-ng miniupnpd \
+	nemesis \
 	ulogd \
  
 PERL_PACKAGES = \
@@ -322,7 +323,7 @@ COMMON_CROSS_PACKAGES = \
 	myrapbook \
 	mysql mysql5 mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
-	ncdu ncftp ncmpc ncurses ncursesw nd ne nemesis \
+	ncdu ncftp ncmpc ncurses ncursesw nd ne \
 	neon net-snmp net-tools netatalk netcat nethack netio netrik \
 	newsbeuter newt \
 	nfs-server nfs-utils \
