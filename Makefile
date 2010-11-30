@@ -48,7 +48,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	iozone \
 	bpalogin \
         icu btg xerces-c \
-	iptables ipac-ng miniupnpd \
 	nemesis \
 	ulogd \
  
@@ -282,7 +281,7 @@ COMMON_CROSS_PACKAGES = \
 	inadyn indent inetutils \
 	inferno \
 	ink \
-	iperf ipkg-web iptraf iputils-arping \
+	ipac-ng iperf ipkg-web iptables iptraf iputils-arping \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \
 	keychain kismet kissdx knock \
@@ -312,7 +311,8 @@ COMMON_CROSS_PACKAGES = \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
-	minicom minidlna minihttpd mini-sendmail mini-snmpd \
+	minicom minidlna minihttpd miniupnpd \
+	mini-sendmail mini-snmpd \
 	miscfiles mktemp mkvtoolnix mlocate moblock \
 	moc modutils monit most motion motor \
 	mod-fastcgi moe mp3blaster mp3info mpack mpage \
