@@ -11,6 +11,7 @@ SPECIFIC_PACKAGES = \
 #	src/merge/mkvmerge.cpp:302: internal compiler error: Segmentation fault
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
+	aiccu \
 	amule \
 	asterisk14-chan-capi \
 	btg \
