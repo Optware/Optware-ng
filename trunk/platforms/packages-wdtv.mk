@@ -9,6 +9,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	$(UCLIBC_BROKEN_PACKAGES) \
+	aiccu \
 	ficy fuppes \
 	golang \
 	gtmess gutenprint \
