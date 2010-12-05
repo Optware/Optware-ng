@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 VSFTPD_SITE=ftp://vsftpd.beasts.org/users/cevans
-VSFTPD_VERSION=2.3.1
+VSFTPD_VERSION=2.3.2
 VSFTPD_SOURCE=vsftpd-$(VSFTPD_VERSION).tar.gz
 VSFTPD_DIR=vsftpd-$(VSFTPD_VERSION)
 VSFTPD_UNZIP=zcat
