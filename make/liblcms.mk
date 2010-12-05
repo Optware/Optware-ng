@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBLCMS_SITE=http://www.littlecms.com
-LIBLCMS_VERSION=1.15
+LIBLCMS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lcms
+LIBLCMS_VERSION=1.19
 LIBLCMS_SOURCE=lcms-$(LIBLCMS_VERSION).tar.gz
 LIBLCMS_DIR=lcms-$(LIBLCMS_VERSION)
 LIBLCMS_UNZIP=zcat
@@ -102,19 +102,18 @@ liblcms-source: $(DL_DIR)/$(LIBLCMS_SOURCE) $(LIBLCMS_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(LIBLCMS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBLCMS_SOURCE) $(LIBLCMS_PATCHES)
-# make/liblcms.mk
+$(LIBLCMS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBLCMS_SOURCE) $(LIBLCMS_PATCHES) make/liblcms.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBLCMS_DIR) $(LIBLCMS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBLCMS_DIR) $(@D)
 	$(LIBLCMS_UNZIP) $(DL_DIR)/$(LIBLCMS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBLCMS_PATCHES)" ; \
 		then cat $(LIBLCMS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBLCMS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBLCMS_DIR)" != "$(LIBLCMS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBLCMS_DIR) $(LIBLCMS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBLCMS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBLCMS_DIR) $(@D) ; \
 	fi
-	(cd $(LIBLCMS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBLCMS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBLCMS_LDFLAGS)" \
@@ -126,8 +125,8 @@ $(LIBLCMS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBLCMS_SOURCE) $(LIBLCMS_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBLCMS_BUILD_DIR)/libtool
-	touch $(LIBLCMS_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 liblcms-unpack: $(LIBLCMS_BUILD_DIR)/.configured
 
@@ -135,9 +134,9 @@ liblcms-unpack: $(LIBLCMS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBLCMS_BUILD_DIR)/.built: $(LIBLCMS_BUILD_DIR)/.configured
-	rm -f $(LIBLCMS_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBLCMS_BUILD_DIR)
-	touch $(LIBLCMS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,9 +147,11 @@ liblcms: $(LIBLCMS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBLCMS_BUILD_DIR)/.staged: $(LIBLCMS_BUILD_DIR)/.built
-	rm -f $(LIBLCMS_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBLCMS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LIBLCMS_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/liblcms.la
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/lcms.pc
+	touch $@
 
 liblcms-stage: $(LIBLCMS_BUILD_DIR)/.staged
 
@@ -159,7 +160,7 @@ liblcms-stage: $(LIBLCMS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/liblcms
 #
 $(LIBLCMS_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBLCMS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: liblcms" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,3 +217,9 @@ liblcms-clean:
 #
 liblcms-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBLCMS_DIR) $(LIBLCMS_BUILD_DIR) $(LIBLCMS_IPK_DIR) $(LIBLCMS_IPK)
+
+#
+# Some sanity check for the package.
+#
+liblcms-check: $(LIBLCMS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
