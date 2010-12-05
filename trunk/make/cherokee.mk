@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=1.0.9
+CHEROKEE_VERSION=1.0.12
 CHEROKEE_SITE=http://www.cherokee-project.com/download/1.0/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
