@@ -162,6 +162,7 @@ $(OPENJPEG_BUILD_DIR)/.staged: $(OPENJPEG_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install DESTDIR=$(STAGING_DIR) PREFIX=/opt
 	rm -f $(STAGING_LIB_DIR)/libopenjpeg.a
+	cd $(STAGING_LIB_DIR); ln -s libopenjpeg.so.2 libopenjpeg.so
 	touch $@
 
 openjpeg-stage: $(OPENJPEG_BUILD_DIR)/.staged
@@ -201,6 +202,7 @@ $(OPENJPEG_IPK): $(OPENJPEG_BUILD_DIR)/.built
 	rm -rf $(OPENJPEG_IPK_DIR) $(BUILD_DIR)/openjpeg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<D) install DESTDIR=$(OPENJPEG_IPK_DIR) PREFIX=/opt
 	rm -f $(OPENJPEG_IPK_DIR)/opt/lib/libopenjpeg.a
+	cd $(OPENJPEG_IPK_DIR)/opt/lib; ln -s libopenjpeg.so.2 libopenjpeg.so
 	$(MAKE) $(OPENJPEG_IPK_DIR)/CONTROL/control
 	echo $(OPENJPEG_CONFFILES) | sed -e 's/ /\n/g' > $(OPENJPEG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENJPEG_IPK_DIR)
