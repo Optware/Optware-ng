@@ -1,10 +1,17 @@
---- hgsubversion-1.1.2/setup.py.orig	2010-05-18 22:07:34.000000000 +0000
-+++ hgsubversion-1.1.2/setup.py	2010-07-07 16:27:31.276480970 +0000
-@@ -101,7 +101,6 @@
+--- hgsubversion-1.2/setup.py.orig	2010-10-12 04:00:11.000000000 +0000
++++ hgsubversion-1.2/setup.py	2010-12-07 01:15:48.871789763 +0000
+@@ -100,10 +100,10 @@
+     requires.append('mercurial')
  
- # Ensure that the Subversion bindings are present
- sys.path.insert(0, 'hgsubversion')
--import svnwrap
+ # If the Subversion SWIG bindings aren't present, require Subvertpy
+-try:
+-    from hgsubversion.svnwrap import svn_swig_wrapper
+-except ImportError:
+-    requires.append('subvertpy>=0.7.4')
++# try:
++#     from hgsubversion.svnwrap import svn_swig_wrapper
++# except ImportError:
++#     requires.append('subvertpy>=0.7.4')
  
  setup(
      name = 'hgsubversion',
