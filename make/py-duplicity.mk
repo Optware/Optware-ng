@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DUPLICITY_VERSION=0.6.10
+PY-DUPLICITY_VERSION=0.6.11
 PY-DUPLICITY_SITE=http://savannah.nongnu.org/download/duplicity
 PY-DUPLICITY_SOURCE=duplicity-$(PY-DUPLICITY_VERSION).tar.gz
 PY-DUPLICITY_DIR=duplicity-$(PY-DUPLICITY_VERSION)
@@ -112,8 +112,7 @@ py-duplicity-source: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUPLICITY_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-DUPLICITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUPLICITY_PATCHES) make/py-duplicity.mk
-	$(MAKE) py-setuptools-stage
-	$(MAKE) librsync-stage
+	$(MAKE) py-setuptools-stage librsync-stage
 	rm -rf $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(@D)
 	mkdir -p $(@D)
 	# 2.5
