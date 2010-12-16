@@ -55,7 +55,7 @@ MOE_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MOE_CPPFLAGS=
+MOE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/$(NCURSES_FOR_OPTWARE_TARGET)
 MOE_LDFLAGS=-l$(NCURSES_FOR_OPTWARE_TARGET)
 
 #
