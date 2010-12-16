@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R14B
-ERLANG_VERSION=R14B
+ERLANG_UPSTREAM_VERSION=R14B01
+ERLANG_VERSION=R14B01
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -423,6 +423,7 @@ endif
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/to_erl \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/beam* \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/child_setup* \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/ct_run \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/dyn_erl \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/epmd \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/erlc \
