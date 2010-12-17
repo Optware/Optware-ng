@@ -16,14 +16,14 @@ PHP_APACHE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PHP_APACHE_DESCRIPTION=The php scripting language, built as an apache module
 PHP_APACHE_SECTION=net
 PHP_APACHE_PRIORITY=optional
-PHP_APACHE_DEPENDS=apache (>= 2.0.53-9), php (>= 5.0.3-8), libxml2
+PHP_APACHE_DEPENDS=apache (>= 2.2.17), php (>= 5.2.16), libxml2
 
 PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=2
+PHP_APACHE_IPK_VERSION=1
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -68,7 +68,7 @@ PHP_APACHE_IPK=$(BUILD_DIR)/php-apache_$(PHP_APACHE_VERSION)-$(PHP_APACHE_IPK_VE
 # Automatically create a ipkg control file
 #
 $(PHP_APACHE_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_APACHE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-apache" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -109,15 +109,14 @@ php-apache-source: $(DL_DIR)/$(PHP_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PHP_APACHE_BUILD_DIR)/.configured: \
-		$(PHP_APACHE_PATCHES)
+$(PHP_APACHE_BUILD_DIR)/.configured: $(PHP_APACHE_PATCHES) make/php-apache.mk
 	$(MAKE) $(DL_DIR)/$(PHP_SOURCE)
 	$(MAKE) apache-stage libxml2-stage
-	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_APACHE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(@D)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_APACHE_BUILD_DIR)
-	cat $(PHP_APACHE_PATCHES) |patch -p0 -d $(PHP_APACHE_BUILD_DIR)
-	(cd $(PHP_APACHE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PHP_DIR) $(@D)
+	cat $(PHP_APACHE_PATCHES) | patch -p0 -d $(@D)
+	(cd $(@D); \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_APACHE_CPPFLAGS)" \
@@ -144,7 +143,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: \
 		--without-iconv \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
-	touch $(PHP_APACHE_BUILD_DIR)/.configured
+	touch $@
 
 php-apache-unpack: $(PHP_APACHE_BUILD_DIR)/.configured
 
@@ -153,9 +152,9 @@ php-apache-unpack: $(PHP_APACHE_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(PHP_APACHE_BUILD_DIR)/.built: $(PHP_APACHE_BUILD_DIR)/.configured
-	rm -f $(PHP_APACHE_BUILD_DIR)/.built
-	$(MAKE) -C $(PHP_APACHE_BUILD_DIR)
-	touch $(PHP_APACHE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -168,7 +167,7 @@ php-apache: $(PHP_APACHE_BUILD_DIR)/.built
 #
 $(PHP_APACHE_BUILD_DIR)/.staged: $(PHP_APACHE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PHP_APACHE_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_DIR)/opt
 	touch $@
 
 php-apache-stage: $(PHP_APACHE_BUILD_DIR)/.staged
@@ -218,4 +217,4 @@ php-apache-dirclean:
 # Some sanity check for the package.
 #
 php-apache-check: $(PHP_APACHE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PHP_APACHE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
