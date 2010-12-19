@@ -40,7 +40,7 @@ LIRC_CONFLICTS=
 #
 # LIRC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIRC_IPK_VERSION=2
+LIRC_IPK_VERSION=3
 
 #
 # LIRC_CONFFILES should be a list of user-editable files
@@ -60,7 +60,7 @@ LIRC_CPPFLAGS=
 LIRC_LDFLAGS=
 
 
-# http://www.lirc.org/html/table.html
+# 
 ifeq ($(OPTWARE_TARGET), oleg)
 LIRC_KERNELDIR=$(FIRMWARE_OLEG_KERNELDIR)
 LIRC_DRIVER=igorplugusb
@@ -148,6 +148,7 @@ endif
 		--with-kerneldir=$(LIRC_KERNELDIR) \
 		--with-moduledir=/opt/lib/modules \
 		--with-driver="$(LIRC_DRIVER)" \
+		--with-driver=udp \
 		--without-x \
 		--with-pic \
 		--with-gnu-ld \
