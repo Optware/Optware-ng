@@ -29,7 +29,7 @@ GPSD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GPSD_DESCRIPTION=A daemon that communicates with GPS receiver and provides data to other applications.
 GPSD_SECTION=misc
 GPSD_PRIORITY=optional
-GPSD_DEPENDS=
+GPSD_DEPENDS=ncurses
 GPSD_SUGGESTS=
 GPSD_CONFLICTS=
 
@@ -52,7 +52,7 @@ GPSD_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-GPSD_CPPFLAGS=
+GPSD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ifdef NO_BUILTIN_MATH
 GPSD_CPPFLAGS += -fno-builtin-rint
 endif
@@ -113,7 +113,7 @@ gpsd-source: $(DL_DIR)/$(GPSD_SOURCE) $(GPSD_PATCHES)
 # shown below to make various patches to it.
 #
 $(GPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(GPSD_SOURCE) $(GPSD_PATCHES) make/gpsd.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(GPSD_DIR) $(@D)
 	$(GPSD_UNZIP) $(DL_DIR)/$(GPSD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GPSD_PATCHES)" ; \
