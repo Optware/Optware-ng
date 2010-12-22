@@ -49,7 +49,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	bpalogin \
         icu btg xerces-c \
 	nemesis \
-	ulogd \
  
 PERL_PACKAGES = \
 	perl \
@@ -369,7 +368,7 @@ COMMON_CROSS_PACKAGES = \
 	toppyweb tor torsocks torrent torrentflux transcode \
 	transmission transmissiond tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
-	ucl uemacs unarj uncia unfs3 units unixodbc \
+	ucl uemacs ulogd unarj uncia unfs3 units unixodbc \
 	unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utf8proc util-linux util-linux-ng \

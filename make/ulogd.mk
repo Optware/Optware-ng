@@ -52,7 +52,7 @@ ULOGD_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ULOGD_CPPFLAGS=
+ULOGD_CPPFLAGS=-I$(ULOGD_BUILD_DIR)/include -I$(ULOGD_BUILD_DIR)/libipulog/include
 ULOGD_LDFLAGS=
 
 #
