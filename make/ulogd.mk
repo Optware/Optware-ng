@@ -118,8 +118,8 @@ $(ULOGD_BUILD_DIR)/.configured: $(DL_DIR)/$(ULOGD_SOURCE) $(ULOGD_PATCHES) make/
 	sed -i -e '/CFLAGS.*uname -r/d' $(@D)/Rules.make.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ULOGD_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(ULOGD_LDFLAGS)" \
+		CPPFLAGS="$(ULOGD_CPPFLAGS) $(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(ULOGD_LDFLAGS) $(STAGING_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
