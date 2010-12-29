@@ -80,7 +80,7 @@ ASTERISK18_CONFLICTS=asterisk,asterisk14,asterisk16,asterisk-sounds,asterisk-cha
 #
 # ASTERISK18_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK18_IPK_VERSION=1
+ASTERISK18_IPK_VERSION=2
 
 #
 # ASTERISK18_CONFFILES should be a list of user-editable files
@@ -306,6 +306,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
 	$(MAKE) sqlite2-stage libogg-stage libxml2-stage
+	$(MAKE) mysql-stage bluez2-libs-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK18_DIR) $(ASTERISK18_BUILD_DIR)
 	$(ASTERISK18_UNZIP) $(DL_DIR)/$(ASTERISK18_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK18_PATCHES)" ; \
@@ -345,6 +346,8 @@ endif
 		--with-odbc=$(STAGING_PREFIX) \
 		--with-netsnmp=$(STAGING_PREFIX) \
 		--with-ltdl=$(STAGING_PREFIX) \
+		--with-mysqlclient=$(STAGING_PREFIX) \
+		--with-bluetooth=$(STAGING_PREFIX) \
 		--without-postgres \
 		--without-sqlite3 \
 		--without-pwlib \
@@ -366,6 +369,12 @@ asterisk18-unpack: $(ASTERISK18_BUILD_DIR)/.configured
 #
 $(ASTERISK18_BUILD_DIR)/.built: $(ASTERISK18_BUILD_DIR)/.configured
 	rm -f $@
+	ASTCFLAGS="$(ASTERISK18_CPPFLAGS)" \
+	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK18_LDFLAGS)" \
+	$(MAKE) -C $(@D) menuselect.makeopts
+	( cd $(ASTERISK18_BUILD_DIR);\
+	./menuselect/menuselect --enable-category MENUSELECT_ADDONS menuselect.makeopts;\
+	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
 	ASTCFLAGS="$(ASTERISK18_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK18_LDFLAGS)" \
 	$(MAKE) -C $(@D)
