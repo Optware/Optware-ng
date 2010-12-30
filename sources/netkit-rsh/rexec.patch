@@ -1,0 +1,16 @@
+diff -ruNp rexec.orig/rexec.c rexec/rexec.c
+--- rexec.orig/rexec.c	1999-10-02 23:50:52.000000000 +0200
++++ rexec/rexec.c	2010-12-28 13:18:15.000000000 +0100
+@@ -83,6 +83,12 @@
+ #define USERLEN 256
+ #endif
+ 
++
++#ifdef _PATH_DEFPATH
++#define _PATH_DEFPATH "/opt/bin:/usr/bin:/bin"
++#endif /* _PATH_DEFPATH */
++
++
+ void parse_options(char *argv[], int argc, int *debug, int *extra_error,
+ 		   int *close_on_stdin, int *prompt, int *pass_sig,
+ 		   char **host, char **command);
