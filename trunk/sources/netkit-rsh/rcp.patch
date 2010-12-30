@@ -1,0 +1,9 @@
+diff -ruNp rcp.orig/pathnames.h rcp/pathnames.h
+--- rcp.orig/pathnames.h	1996-07-15 09:20:16.000000000 +0200
++++ rcp/pathnames.h	2010-12-28 11:28:40.000000000 +0100
+@@ -37,4 +37,4 @@
+ #include <paths.h>
+ 
+ #define	_PATH_CP	"/bin/cp"
+-#define	_PATH_RSH	"/usr/bin/rsh"
++#define	_PATH_RSH	"/opt/bin/rsh"

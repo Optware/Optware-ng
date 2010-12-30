@@ -1,0 +1,9 @@
+diff -ruNp rsh.orig/pathnames.h rsh/pathnames.h
+--- rsh.orig/pathnames.h	1996-07-15 21:58:37.000000000 +0200
++++ rsh/pathnames.h	2010-12-28 11:29:23.000000000 +0100
+@@ -34,4 +34,4 @@
+  *	$Id: pathnames.h,v 1.1 1996/07/15 19:58:37 dholland Exp $
+  */
+ 
+-#define	_PATH_RLOGIN	"/usr/bin/rlogin"
++#define	_PATH_RLOGIN	"/opt/bin/rlogin"

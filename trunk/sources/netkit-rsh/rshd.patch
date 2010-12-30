@@ -1,0 +1,14 @@
+diff -ruNp rshd.orig/rshd.c rshd/rshd.c
+--- rshd.orig/rshd.c	2000-07-23 06:16:24.000000000 +0200
++++ rshd/rshd.c	2010-12-28 13:11:50.000000000 +0100
+@@ -84,6 +84,10 @@ char rcsid[] = 
+ #define _check_rhosts_file  __check_rhosts_file
+ #endif
+ 
++#ifdef _PATH_DEFPATH
++#define _PATH_DEFPATH "/opt/bin:/usr/bin:/bin"
++#endif /* _PATH_DEFPATH */
++
+ #ifdef USE_PAM
+ #include <security/pam_appl.h>
+ #include <security/pam_misc.h>
