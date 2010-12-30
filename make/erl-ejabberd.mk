@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ERL_EJABBERD_VERSION=2.1.5
+ERL_EJABBERD_VERSION=2.1.6
 ERL_EJABBERD_SITE=http://www.process-one.net/downloads/ejabberd/$(ERL_EJABBERD_VERSION)
 ERL_EJABBERD_SOURCE=ejabberd-$(ERL_EJABBERD_VERSION).tar.gz
 ERL_EJABBERD_DIR=ejabberd-$(ERL_EJABBERD_VERSION)
@@ -125,7 +125,7 @@ endif
 	if test "$(BUILD_DIR)/$(ERL_EJABBERD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|@STAGING_LIB_DIR@|$(STAGING_LIB_DIR)|' $(@D)/src/aclocal.m4
+	sed -i -e 's|@STAGING_LIB_DIR@|$(STAGING_LIB_DIR)|' $(@D)/src/acinclude.m4
 	autoreconf -vif $(@D)/src
 	(cd $(@D)/src; \
 		$(TARGET_CONFIGURE_OPTS) \

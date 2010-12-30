@@ -1,5 +1,5 @@
---- src/aclocal.m4.orig	2010-08-02 16:33:20.000000000 +0000
-+++ src/aclocal.m4	2010-09-28 18:28:50.861824590 +0000
+--- src/acinclude.m4.orig	2010-12-13 11:21:26.000000000 +0000
++++ src/acinclude.m4	2010-12-15 00:23:40.948655616 +0000
 @@ -114,71 +114,11 @@
     		AC_MSG_ERROR([erlang not found])
     fi
@@ -24,7 +24,7 @@
 -   if
 -	OTP >= "R14" -> "-DSSL40\n";
 -	OTP >= "R12" -> "-DSSL39\n";
--        true -> ""
+-        true -> "\n"
 -   end.
 -
 -%% return physical architecture based on OS/Processor
