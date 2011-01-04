@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-STGIT_SITE=http://homepage.ntlworld.com/cmarinas/stgit
-STGIT_VERSION=0.14.3
+STGIT_SITE=http://download.gna.org/stgit
+STGIT_VERSION=0.15
 STGIT_SOURCE=stgit-$(STGIT_VERSION).tar.gz
 STGIT_DIR=stgit-$(STGIT_VERSION)
 STGIT_UNZIP=zcat
@@ -37,7 +37,7 @@ STGIT_CONFLICTS=
 #
 # STGIT_IPK_VERSION should be incremented when the ipk changes.
 #
-STGIT_IPK_VERSION=2
+STGIT_IPK_VERSION=1
 
 #
 # STGIT_CONFFILES should be a list of user-editable files
@@ -135,11 +135,7 @@ stgit-unpack: $(STGIT_BUILD_DIR)/.configured
 #
 $(STGIT_BUILD_DIR)/.built: $(STGIT_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(@D); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build; \
-	)
+	$(MAKE) -C $(@D) PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 prefix=/opt
 	touch $@
 
 #
@@ -190,11 +186,10 @@ $(STGIT_IPK_DIR)/CONTROL/control:
 #
 $(STGIT_IPK): $(STGIT_BUILD_DIR)/.built
 	rm -rf $(STGIT_IPK_DIR) $(BUILD_DIR)/stgit_*_$(TARGET_ARCH).ipk
-	(cd $(STGIT_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
-	    --root=$(STGIT_IPK_DIR) --prefix=/opt; \
-	)
+	$(MAKE) -C $(STGIT_BUILD_DIR) install \
+		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 \
+		prefix=/opt \
+		DESTDIR=$(STGIT_IPK_DIR)
 	$(MAKE) $(STGIT_IPK_DIR)/CONTROL/control
 	echo $(STGIT_CONFFILES) | sed -e 's/ /\n/g' > $(STGIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STGIT_IPK_DIR)
