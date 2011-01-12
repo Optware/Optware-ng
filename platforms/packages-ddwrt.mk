@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	golang \
 	iptraf \
 	libdvb \
-	ltrace \
 	minidlna \
 	motor \
 	nget \
