@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	gloox \
 	golang \
 	libdvb \
-	ltrace \
 	minidlna \
 	motor \
 	nget \

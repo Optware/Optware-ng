@@ -13,7 +13,7 @@ BROKEN_PACKAGES = \
 	ficy fuppes \
 	golang \
 	gtmess gutenprint \
-	iptraf ltrace moc \
+	iptraf moc \
 	mtr \
 	opensips \
 	pinentry \
