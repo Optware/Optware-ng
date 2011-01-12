@@ -21,7 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LTRACE_SITE=http://ftp.debian.org/debian/pool/main/l/ltrace
-LTRACE_VERSION=0.4
+LTRACE_VERSION?=$(strip \
+  $(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 0.4, 0.5.3))
 LTRACE_SOURCE=ltrace_$(LTRACE_VERSION).orig.tar.gz
 LTRACE_DIR=ltrace-$(LTRACE_VERSION)
 LTRACE_UNZIP=zcat
@@ -46,7 +47,18 @@ LTRACE_IPK_VERSION=1
 # LTRACE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LTRACE_PATCHES=$(LTRACE_SOURCE_DIR)/configure.patch
+ifneq (0.4, $(LTRACE_VERSION))
+LTRACE_PATCHES=\
+$(LTRACE_SOURCE_DIR)/100-allow-cross-compile.patch \
+$(LTRACE_SOURCE_DIR)/110-alpha-support.patch \
+$(LTRACE_SOURCE_DIR)/120-debian-ltrace_0.5.3-2.patch \
+$(LTRACE_SOURCE_DIR)/130-add-sysdep.patch \
+$(LTRACE_SOURCE_DIR)/140-mips-remove-CP.patch \
+$(LTRACE_SOURCE_DIR)/140-mips.patch \
+$(LTRACE_SOURCE_DIR)/150-allow-configurable-arch.patch \
+$(LTRACE_SOURCE_DIR)/160-fix-missing-ptrace-defines.patch \
+
+endif
 
 #
 # If the compilation of the package requires additional
@@ -116,11 +128,13 @@ $(LTRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(LTRACE_SOURCE) $(LTRACE_PATCHES) ma
 	$(LTRACE_UNZIP) $(DL_DIR)/$(LTRACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LTRACE_PATCHES)" ; \
 		then cat $(LTRACE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LTRACE_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(LTRACE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LTRACE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LTRACE_DIR) $(@D) ; \
 	fi
+	sed -i -e 's|/usr/include/libelf|$(STAGING_INCLUDE_DIR)/libelf $(STAGING_CPPFLAGS)|' \
+		$(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LTRACE_CPPFLAGS)" \
@@ -132,9 +146,10 @@ $(LTRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(LTRACE_SOURCE) $(LTRACE_PATCHES) ma
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--disable-static \
 	)
+ifeq (0.4, $(LTRACE_VERSION))
 	sed -i -e 's/-o root -g root //' $(@D)/Makefile
+endif
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -145,7 +160,8 @@ ltrace-unpack: $(LTRACE_BUILD_DIR)/.configured
 #
 $(LTRACE_BUILD_DIR)/.built: $(LTRACE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) ARCH=$(LTRACE_ARCH) OS=linux-gnu
+	$(MAKE) -C $(@D) ARCH=$(LTRACE_ARCH) OS=linux-gnu \
+		$(TARGET_CONFIGURE_OPTS)
 	touch $@
 
 #
