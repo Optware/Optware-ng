@@ -5,7 +5,7 @@
 ###########################################################
 
 MONIT_SITE=http://www.tildeslash.com/monit/dist/
-MONIT_VERSION=4.10.1
+MONIT_VERSION=5.2.3
 MONIT_SOURCE=monit-$(MONIT_VERSION).tar.gz
 MONIT_DIR=monit-$(MONIT_VERSION)
 MONIT_UNZIP=zcat
@@ -31,7 +31,7 @@ MONIT_CONFFILES=/opt/etc/monitrc /opt/etc/init.d/S99monit
 # which they should be applied to the source code.
 #
 MONIT_PATCHES=\
-  $(MONIT_SOURCE_DIR)/Makefile.patch \
+#  $(MONIT_SOURCE_DIR)/Makefile.patch \
 #  $(MONIT_SOURCE_DIR)/configure.patch \
 
 #
