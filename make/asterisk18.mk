@@ -24,7 +24,7 @@ ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
 ASTERISK18_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.1.1
+ASTERISK18_BASE_VERSION=1.8.2
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -43,18 +43,18 @@ ASTERISK18_SECTION=util
 ASTERISK18_PRIORITY=optional
 ASTERISK18_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++,popt,libxml2
 ASTERISK18_SUGGESTS=\
-asterisk14-core-sounds-en-alaw,\
-asterisk14-core-sounds-en-g729,\
-asterisk14-core-sounds-en-gsm,\
-asterisk14-core-sounds-en-ulaw,\
-asterisk14-extra-sounds-en-alaw,\
-asterisk14-extra-sounds-en-g729,\
-asterisk14-extra-sounds-en-gsm,\
-asterisk14-extra-sounds-en-ulaw,\
-asterisk14-moh-opsound-alaw,\
-asterisk14-moh-opsound-g729,\
-asterisk14-moh-opsound-gsm,\
-asterisk14-moh-opsound-ulaw,\
+asterisk14-core-sounds-en-alaw\
+,asterisk14-core-sounds-en-g729\
+,asterisk14-core-sounds-en-gsm\
+,asterisk14-core-sounds-en-ulaw\
+,asterisk14-extra-sounds-en-alaw\
+,asterisk14-extra-sounds-en-g729\
+,asterisk14-extra-sounds-en-gsm\
+,asterisk14-extra-sounds-en-ulaw\
+,asterisk14-moh-opsound-alaw\
+,asterisk14-moh-opsound-g729\
+,asterisk14-moh-opsound-gsm\
+,asterisk14-moh-opsound-ulaw\
 ,libogg\
 ,net-snmp\
 ,radiusclient-ng\
@@ -80,7 +80,7 @@ ASTERISK18_CONFLICTS=asterisk,asterisk14,asterisk16,asterisk-sounds,asterisk-cha
 #
 # ASTERISK18_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK18_IPK_VERSION=2
+ASTERISK18_IPK_VERSION=1
 
 #
 # ASTERISK18_CONFFILES should be a list of user-editable files
