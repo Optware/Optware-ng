@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	inferno \
 	iptraf \
 	ldconfig libcapi20 \
+	monit \
 	puppy \
 	samba34 \
 	samba35 \
