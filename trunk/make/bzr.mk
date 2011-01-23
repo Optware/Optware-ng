@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR_VERSION=2.2.2
+BZR_VERSION=2.2.3
 BZR_SITE=https://launchpad.net/bzr/2.2/$(BZR_VERSION)/+download
 BZR_SOURCE=bzr-$(BZR_VERSION).tar.gz
 BZR_DIR=bzr-$(BZR_VERSION)
