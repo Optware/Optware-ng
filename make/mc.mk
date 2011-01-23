@@ -5,7 +5,7 @@
 ###########################################################
 
 MC_SITE=http://www.midnight-commander.org/downloads
-MC_VERSION=4.7.0.9
+MC_VERSION=4.7.5
 MC_SOURCE=mc-$(MC_VERSION).tar.gz
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=zcat
@@ -25,8 +25,7 @@ MC_IPK_VERSION=1
 # MC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MC_PATCHES=\
-$(MC_SOURCE_DIR)/src-man2hlp.c.patch
+#MC_PATCHES=$(MC_SOURCE_DIR)/src-man2hlp.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -94,7 +93,7 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
 		patch -bd $(BUILD_DIR)/$(MC_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(MC_DIR) $(@D)
-	sed -i -e 's|/man2hlp |/man2hlp.host |' $(@D)/doc/hlp/Makefile.am $(@D)/doc/hlp/*/Makefile.am
+#	sed -i -e 's|/man2hlp |/man2hlp.host |' $(@D)/doc/hlp/Makefile.am $(@D)/doc/hlp/*/Makefile.am
 	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -127,7 +126,7 @@ mc-unpack: $(MC_BUILD_DIR)/.configured
 #
 $(MC_BUILD_DIR)/.built: $(MC_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(@D)/src && $(HOSTCC) -o man2hlp.host man2hlp.c
+#	cd $(@D)/src && $(HOSTCC) -o man2hlp.host man2hlp.c
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
