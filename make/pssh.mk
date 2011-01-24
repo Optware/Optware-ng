@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PSSH_VERSION=2.1.1
+PSSH_VERSION=2.2
 PSSH_SITE=http://parallel-ssh.googlecode.com/files
 PSSH_SOURCE=pssh-$(PSSH_VERSION).tar.gz
 PSSH_DIR=pssh-$(PSSH_VERSION)
