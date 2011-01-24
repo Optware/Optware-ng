@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOE_SITE=http://ftp.gnu.org/gnu/moe
-MOE_VERSION=1.3
+MOE_VERSION=1.4
 MOE_SOURCE=moe-$(MOE_VERSION).tar.gz
 MOE_DIR=moe-$(MOE_VERSION)
 MOE_UNZIP=zcat
@@ -155,12 +155,12 @@ moe: $(MOE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MOE_BUILD_DIR)/.staged: $(MOE_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-moe-stage: $(MOE_BUILD_DIR)/.staged
+#$(MOE_BUILD_DIR)/.staged: $(MOE_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#moe-stage: $(MOE_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
