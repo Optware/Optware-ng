@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CENTERIM_SITE=http://www.centerim.org/download/releases
-CENTERIM_VERSION=4.22.7
-CENTERIM_SOURCE=centerim-$(CENTERIM_VERSION).tar.bz2
+CENTERIM_SITE=http://centerim.org/download/releases
+CENTERIM_VERSION=4.22.10
+CENTERIM_SOURCE=centerim-$(CENTERIM_VERSION).tar.gz
 CENTERIM_DIR=centerim-$(CENTERIM_VERSION)
-CENTERIM_UNZIP=bzcat
+CENTERIM_UNZIP=zcat
 CENTERIM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CENTERIM_DESCRIPTION=CenterIM is the forked project based on the good old famous CenterICQ instant messaging client.
 CENTERIM_SECTION=net
@@ -36,7 +36,7 @@ CENTERIM_CONFLICTS=
 #
 # CENTERIM_IPK_VERSION should be incremented when the ipk changes.
 #
-CENTERIM_IPK_VERSION=2
+CENTERIM_IPK_VERSION=1
 
 #
 # CENTERIM_CONFFILES should be a list of user-editable files
