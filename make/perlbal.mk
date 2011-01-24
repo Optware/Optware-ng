@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-PERLBAL_SITE=http://perlbal.googlecode.com/files
-PERLBAL_VERSION=1.72
+PERLBAL_SITE=http://search.cpan.org/CPAN/authors/id/D/DO/DORMANDO
+PERLBAL_VERSION=1.78
 PERLBAL_SOURCE=Perlbal-$(PERLBAL_VERSION).tar.gz
 PERLBAL_DIR=Perlbal-$(PERLBAL_VERSION)
 PERLBAL_UNZIP=zcat
