@@ -26,6 +26,3 @@ BROKEN_PACKAGES = \
 	util-linux \
 	vlc vte \
 	x264 xaw xchat xterm
-
-SLANG_VERSION := 2.2.2
-SLANG_IPK_VERSION := 1
