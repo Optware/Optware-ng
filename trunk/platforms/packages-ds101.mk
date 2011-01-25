@@ -15,6 +15,4 @@ BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	sandbox \
 
-HDPARM_VERSION := 9.28
-
 PSMISC_VERSION := 22.11
