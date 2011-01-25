@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 W3M_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/w3m
-W3M_VERSION=0.5.2
+W3M_VERSION=0.5.3
 W3M_SOURCE=w3m-$(W3M_VERSION).tar.gz
 W3M_DIR=w3m-$(W3M_VERSION)
 W3M_UNZIP=zcat
@@ -85,7 +85,8 @@ W3M_IPK=$(BUILD_DIR)/w3m_$(W3M_VERSION)-$(W3M_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(W3M_SOURCE):
-	$(WGET) -P $(DL_DIR) $(W3M_SITE)/$(W3M_SOURCE)
+	$(WGET) -P $(@D) $(W3M_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -170,7 +171,7 @@ else
 	)
 	touch $(W3M_BUILD_DIR)/mktable
 endif
-	touch $(W3M_BUILD_DIR)/.configured
+	touch $@
 
 w3m-unpack: $(W3M_BUILD_DIR)/.configured
 
@@ -178,7 +179,7 @@ w3m-unpack: $(W3M_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(W3M_BUILD_DIR)/.built: $(W3M_BUILD_DIR)/.configured
-	rm -f $(W3M_BUILD_DIR)/.built
+	rm -f $@
 ifeq ($(HOSTCC), $(TARGET_CC))
 	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
 	    $(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=no
@@ -187,7 +188,7 @@ else
 	LD_LIBRARY_PATH=$(W3M_LIBGC_HOSTBUILD_DIR)/opt/lib \
 	$(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=yes
 endif
-	touch $(W3M_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -198,9 +199,9 @@ w3m: $(W3M_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(W3M_BUILD_DIR)/.staged: $(W3M_BUILD_DIR)/.built
-	rm -f $(W3M_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(W3M_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(W3M_BUILD_DIR)/.staged
+	touch $@
 
 w3m-stage: $(W3M_BUILD_DIR)/.staged
 
@@ -209,7 +210,7 @@ w3m-stage: $(W3M_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/w3m
 #
 $(W3M_IPK_DIR)/CONTROL/control:
-	@install -d $(W3M_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: w3m" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -272,4 +273,4 @@ w3m-dirclean:
 # Some sanity check for the package.
 #
 w3m-check: $(W3M_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(W3M_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
