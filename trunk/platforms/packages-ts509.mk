@@ -16,6 +16,3 @@ BROKEN_PACKAGES = \
 	ivorbis-tools lcd4linux \
 	ldconfig puppy \
 	qemu \
-
-SLANG_VERSION := 2.2.2
-SLANG_IPK_VERSION := 1

@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SLANG_SITE=ftp://space.mit.edu/pub/davis/slang/v2.2
-SLANG_VERSION ?= 2.1.4
+SLANG_VERSION ?= 2.2.3
 SLANG_SOURCE=slang-$(SLANG_VERSION).tar.bz2
 SLANG_DIR=slang-$(SLANG_VERSION)
 SLANG_UNZIP=bzcat
@@ -51,6 +51,8 @@ SLANG_IPK_VERSION ?= 1
 #
 ifeq (uclibc, $(LIBC_STYLE))
 SLANG_PATCHES=$(SLANG_SOURCE_DIR)/uclibc.patch
+else
+SLANG_PATCHES=$(SLANG_SOURCE_DIR)/WCONTINUED.patch
 endif
 
 #

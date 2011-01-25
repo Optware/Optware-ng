@@ -16,6 +16,3 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	iptraf ldconfig \
 	nfs-utils puppy qemu \
-
-SLANG_VERSION := 2.2.2
-SLANG_IPK_VERSION := 1

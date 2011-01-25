@@ -1,0 +1,12 @@
+--- modules/fork-module.c.orig	2010-12-13 07:18:53.000000000 +0000
++++ modules/fork-module.c	2011-01-25 21:44:36.602716390 +0000
+@@ -271,6 +271,9 @@
+    SLfile_free_fd (f0);
+ }
+ 
++#ifndef WCONTINUED
++#define WCONTINUED 0
++#endif
+ static SLang_IConstant_Type Module_IConstants [] =
+ {
+    MAKE_ICONSTANT("WNOHANG", WNOHANG),
