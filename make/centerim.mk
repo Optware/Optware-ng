@@ -52,7 +52,7 @@ CENTERIM_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CENTERIM_CPPFLAGS=
+CENTERIM_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncursesw
 CENTERIM_LDFLAGS=
 
 #
