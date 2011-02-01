@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DISCOUNT_SITE=http://www.pell.portland.or.us/~orc/Code/markdown
-DISCOUNT_VERSION=2.0.3
+DISCOUNT_VERSION=2.0.5
 DISCOUNT_SOURCE=discount-$(DISCOUNT_VERSION).tar.bz2
 DISCOUNT_DIR=discount-$(DISCOUNT_VERSION)
 DISCOUNT_UNZIP=bzcat
@@ -46,7 +46,7 @@ DISCOUNT_IPK_VERSION=1
 # DISCOUNT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#DISCOUNT_PATCHES=$(DISCOUNT_SOURCE_DIR)/configure.patch
+DISCOUNT_PATCHES=$(DISCOUNT_SOURCE_DIR)/configure.inc.patch
 
 #
 # If the compilation of the package requires additional
@@ -115,8 +115,7 @@ $(DISCOUNT_BUILD_DIR)/.configured: $(DL_DIR)/$(DISCOUNT_SOURCE) $(DISCOUNT_PATCH
 	if test "$(BUILD_DIR)/$(DISCOUNT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DISCOUNT_DIR) $(@D) ; \
 	fi
-	sed -i -e '/^ac_default_path=/s|:/bin:|:/opt/bin&|;s|PROG_INSTALL -s |PROG_INSTALL |' $(@D)/configure.inc
-	sed -i -e 's|$$(CC) -o|$$(CC) $$(LDFLAGS) -o|' $(@D)/Makefile.in
+	sed -i -e '/$$(CC)/s| -lmarkdown| $$(LDFLAGS) &|' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DISCOUNT_CPPFLAGS)" \
