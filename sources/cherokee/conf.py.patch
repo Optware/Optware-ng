@@ -1,7 +1,7 @@
---- cherokee-1.0.12/qa/conf.py.orig	2010-11-28 08:12:29.000000000 +0000
-+++ cherokee-1.0.12/qa/conf.py	2010-12-05 03:12:01.518402918 +0000
-@@ -27,18 +27,21 @@
- PHPCGI_PATH       = "auto"
+--- cherokee/qa/conf.py.pre.orig	2011-01-28 08:28:46.000000000 +0000
++++ cherokee/qa/conf.py.pre	2011-02-01 00:39:09.575811469 +0000
+@@ -29,18 +29,21 @@
+ PHPCGI_PATH       = "%phpcgi%"
  PHP_FCGI_PORT     = 1980
  
 -PHP_DIRS          = ["/usr/lib/cgi-bin/",
