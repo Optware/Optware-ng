@@ -1,0 +1,28 @@
+--- configure.inc.orig	2011-01-25 01:05:44.000000000 +0000
++++ configure.inc	2011-01-27 18:59:36.753359099 +0000
+@@ -32,7 +32,7 @@
+ # this preamble code is executed when this file is sourced and it picks
+ # interesting things off the command line.
+ #
+-ac_default_path="/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin"
++ac_default_path="/sbin:/usr/sbin:/opt/bin:/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin"
+ 
+ ac_standard="--src=DIR		where the source lives (.)
+ --prefix=DIR		where to install the final product (/usr/local)
+@@ -899,7 +899,6 @@
+     fi
+     case "$rc" in
+     0) TLOG "" ;;
+-    *) AC_FAIL " ** FAILED **" ;;
+     esac
+     rm -f /tmp/pd$$ /tmp/pd$$.c
+ }
+@@ -1335,7 +1334,7 @@
+     fi
+ 
+     AC_SUB 'INSTALL' "$PROG_INSTALL"
+-    AC_SUB 'INSTALL_PROGRAM' "$PROG_INSTALL -s -m 755"
++    AC_SUB 'INSTALL_PROGRAM' "$PROG_INSTALL -m 755"
+     AC_SUB 'INSTALL_DATA' "$PROG_INSTALL -m 444"
+ 
+     # finally build a little directory installer
