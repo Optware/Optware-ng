@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MINICOM_SITE=http://alioth.debian.org/frs/download.php/3195
-MINICOM_VERSION=2.4
+MINICOM_SITE=http://alioth.debian.org/frs/download.php/3487
+MINICOM_VERSION=2.5
 MINICOM_SOURCE=minicom-$(MINICOM_VERSION).tar.gz
 MINICOM_DIR=minicom-$(MINICOM_VERSION)
 MINICOM_UNZIP=zcat
