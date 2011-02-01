@@ -22,7 +22,7 @@
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
 HTOP_VERSION ?= 0.9
-HTOP_IPK_VERSION ?= 1
+HTOP_IPK_VERSION ?= 2
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
 HTOP_UNZIP=zcat
@@ -49,7 +49,7 @@ HTOP_CONFLICTS=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-HTOP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses -DDEBUG
+HTOP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 HTOP_LDFLAGS=
 
 ifneq ($(HOSTCC), $(TARGET_CC))
