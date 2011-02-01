@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
-HTOP_VERSION=0.9
-HTOP_IPK_VERSION=1
+HTOP_VERSION ?= 0.9
+HTOP_IPK_VERSION ?= 1
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
 HTOP_UNZIP=zcat
@@ -124,7 +124,9 @@ $(HTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(HTOP_SOURCE) $(HTOP_PATCHES) make/hto
 	if test "$(BUILD_DIR)/$(HTOP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HTOP_DIR) $(@D) ; \
 	fi
+ifeq (0.9, $(HTOP_VERSION))
 	sed -i -e 's/out->len/out->chlen/' $(@D)/Process.c
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HTOP_CPPFLAGS)" \
