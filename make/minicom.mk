@@ -122,6 +122,9 @@ endif
 		then cat $(MINICOM_PATCHES) | patch -d $(BUILD_DIR)/$(MINICOM_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(MINICOM_DIR) $(@D)
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		sed -i -e 's/ -Wextra//' $(@D)/configure; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINICOM_CPPFLAGS)" \
