@@ -50,6 +50,9 @@ HTOP_CONFLICTS=
 # compilation or linking flags, then list them here.
 #
 HTOP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+ifneq (0.9, $(HTOP_VERSION))
+HTOP_CPPFLAGS += -DDEBUG
+endif
 HTOP_LDFLAGS=
 
 ifneq ($(HOSTCC), $(TARGET_CC))
