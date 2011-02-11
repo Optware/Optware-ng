@@ -27,25 +27,31 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BTG_SITE=http://download.berlios.de/btg
-BTG_VERSION=0.9.9
+BTG_VERSION=2.0.0
+
+BTG_SVN_REV=659
+
+ifdef BTG_SVN_REV
+BTG_SVN=http://svn.berlios.de/svnroot/repos/btg/trunk
+BTG_SOURCE=btg-svn-$(BTG_SVN_REV).tar.gz
+else
 BTG_SOURCE=btg-$(BTG_VERSION).tar.gz
-BTG_DIR=btg-$(BTG_VERSION)
+endif
+
+BTG_DIR=btg-$(shell echo $(BTG_VERSION)|cut -d "-" -f 1)
 BTG_UNZIP=zcat
 BTG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BTG_DESCRIPTION=BTG is a bittorrent client implemented in C++ using the Rasterbar Libtorrent library and provides various user interfaces, which communicate with a common backend running the actual bittorrent operation. Built with Ncurses and WWW UI.
 BTG_SECTION=net
 BTG_PRIORITY=optional
-BTG_DEPENDS=libtorrent-rasterbar, boost-iostreams, boost-program-options, expat, gnutls, libcurl, dialog, php
-ifeq (clinkcc, $(filter clinkcc, $(PACKAGES)))
-	BTG_DEPENDS+=, clinkcc
-endif
+BTG_DEPENDS=libtorrent-rasterbar, boost-system, boost-filesystem, boost-date-time, boost-thread, boost-program-options, gnutls, libcurl, expat, dialog, zlib
 BTG_SUGGESTS=
 BTG_CONFLICTS=
 
 #
 # BTG_IPK_VERSION should be incremented when the ipk changes.
 #
-BTG_IPK_VERSION=4
+BTG_IPK_VERSION=1
 
 #
 # BTG_CONFFILES should be a list of user-editable files
@@ -65,15 +71,12 @@ BTG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ifeq ($(OPTWARE_TARGET), $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)))
 BTG_CPPFLAGS+=-fno-builtin-ceil
 endif
-
-BTG_LDFLAGS=-Wl,-rpath,/opt/lib/btg -ltorrent-rasterbar -lboost_system-mt -lboost_iostreams-mt -lboost_filesystem-mt -lboost_date_time-mt -lboost_thread-mt -lboost_program_options-mt 
-ifeq (clinkcc, $(filter clinkcc, $(PACKAGES)))
-	BTG_CONFIGURE_ARGS=--enable-upnp
-	BTG_LDFLAGS+=-lclink 
-else
-	BTG_CONFIGURE_ARGS=--disable-upnp
+ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
+	###bad instruction `dmb' issue
+	BTG_CPPFLAGS+= -mcpu=arm9
 endif
 
+BTG_LDFLAGS=-Wl,-rpath,/opt/lib/btg -ltorrent-rasterbar -lboost_system -lboost_filesystem -lboost_date_time -lboost_thread -lboost_program_options -lgnutls 
 
 #
 # BTG_BUILD_DIR is the directory in which the build is done.
@@ -87,7 +90,11 @@ endif
 BTG_BUILD_DIR=$(BUILD_DIR)/btg
 BTG_SOURCE_DIR=$(SOURCE_DIR)/btg
 BTG_IPK_DIR=$(BUILD_DIR)/btg-$(BTG_VERSION)-ipk
+ifdef BTG_SVN_REV
+BTG_IPK=$(BUILD_DIR)/btg_$(BTG_VERSION)+r$(BTG_SVN_REV)-$(BTG_IPK_VERSION)_$(TARGET_ARCH).ipk
+else
 BTG_IPK=$(BUILD_DIR)/btg_$(BTG_VERSION)-$(BTG_IPK_VERSION)_$(TARGET_ARCH).ipk
+endif
 
 .PHONY: btg-source btg-unpack btg btg-stage btg-ipk btg-clean btg-dirclean btg-check
 
@@ -96,8 +103,19 @@ BTG_IPK=$(BUILD_DIR)/btg_$(BTG_VERSION)-$(BTG_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BTG_SOURCE):
+ifdef BTG_SVN_REV
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(BTG_DIR) && \
+		svn co -r $(BTG_SVN_REV) $(BTG_SVN) \
+			$(BTG_DIR) && \
+		tar -czf $@ $(BTG_DIR) && \
+		rm -rf $(BTG_DIR) \
+	) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+else
 	$(WGET) -P $(@D) $(BTG_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -125,11 +143,10 @@ btg-source: $(DL_DIR)/$(BTG_SOURCE) $(BTG_PATCHES)
 # shown below to make various patches to it.
 #
 $(BTG_BUILD_DIR)/.configured: $(DL_DIR)/$(BTG_SOURCE) $(BTG_PATCHES) make/btg.mk
-	$(MAKE) libtorrent-rasterbar-stage gnutls-stage expat-stage libcurl-stage dialog-stage icu-stage ncurses-stage
-ifeq (clinkcc, $(filter clinkcc, $(PACKAGES)))
-	$(MAKE) clinkcc-stage
-endif
+	$(MAKE) zlib-stage libtorrent-rasterbar-stage gnutls-stage libcurl-stage expat-stage dialog-stage ncurses-stage
+
 	rm -rf $(BUILD_DIR)/$(BTG_DIR) $(@D)
+	rm -rf $(STAGING_LIB_DIR)/btg
 	$(BTG_UNZIP) $(DL_DIR)/$(BTG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BTG_PATCHES)" ; \
 		then cat $(BTG_PATCHES) | \
@@ -138,26 +155,40 @@ endif
 	if test "$(BUILD_DIR)/$(BTG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BTG_DIR) $(@D) ; \
 	fi
+	sed -i -e "s/  AC_DEFINE_UNQUOTED(GNUTLS_MAJOR_VER/LIBGNUTLS_MAJOR_VER=`echo $(GNUTLS_VERSION) |cut -d "." -f 1`\nLIBGNUTLS_MINOR_VER=`echo $(GNUTLS_VERSION) |cut -d "." -f 2`\n  AC_DEFINE_UNQUOTED(GNUTLS_MAJOR_VER/" $(@D)/m4/libgnutls-version.m4
+ifdef BTG_SVN_REV
+	(cd $(@D); \
+		./autogen.sh \
+	)
+else
+	autoreconf -vif $(@D)
+endif
+	sed -i -e 's|ZLIB_HOME=/usr/local|ZLIB_HOME="$(STAGING_PREFIX)"|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BTG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BTG_LDFLAGS)" \
-		BOOST_CPPFLAGS="-I$(STAGING_PREFIX)/include" \
-		BOOST_LDFLAGS="-L$(STAGING_PREFIX)/lib" \
-		LIBTORRENT_LIBS="-L$(STAGING_PREFIX)/lib" \
-		LIBTORRENT_CFLAGS="-I$(STAGING_PREFIX)/include" \
+		BOOST_CPPFLAGS="-I$(STAGING_INCLUDE_DIR)" \
+		BOOST_LDFLAGS="-L$(STAGING_LIB_DIR)" \
+		LIBTORRENT_LIBS="-L$(STAGING_LIB_DIR)" \
+		LIBTORRENT_CFLAGS="-I$(STAGING_INCLUDE_DIR)" \
 		LIBCURL="$(STAGING_LDFLAGS) -lcurl" \
 		LIBCURL_CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		DIALOG="/opt/bin/dialog" \
 		LIBGNUTLS_CONFIG="$(STAGING_PREFIX)/bin/libgnutls-config" \
+		LIBGNUTLS_CFLAGS="$(STAGING_CPPFLAGS)" \
+		LIBGNUTLS_LIBS="$(STAGING_LDFLAGS) -lgnutls" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--program-prefix= \
-		--with-libgnutls-prefix=$(STAGING_PREFIX) \
-		--with-curl \
+		--with-boost="$(STAGING_PREFIX)" \
+		--with-boost-libdir="$(STAGING_LIB_DIR)" \
+		--with-zlib="$(STAGING_PREFIX)" \
+		--with-xmlrpc-prefix="$(STAGING_PREFIX)" \
+		--without-cyberlink \
 		--disable-nls \
 		--disable-static \
 		--disable-gui \
@@ -170,16 +201,16 @@ endif
 		--enable-session-saving \
 		--enable-event-callback \
 		--enable-command-list \
-		$(BTG_CONFIGURE_ARGS) \
+		--includedir="$(STAGING_INCLUDE_DIR)" \
+  		--oldincludedir="$(STAGING_INCLUDE_DIR)" \
+		--enable-upnp \
 	)
 ifeq (uclibc, $(LIBC_STYLE))
 	###roundf() workaround
 	sed -i -e "s|roundf(ratio \* 100\.0f)|((fmod(ratio \* 100\.0f,1)<0.5)?floor(ratio \* 100\.0f):ceil(ratio \* 100\.0f))|" $(@D)/bcore/client/ratio.cpp
 endif
-	sed -i -e "s|#include <bcore/type.h>|#include <bcore/type.h>\n#include <unistd.h>|" $(@D)/bcore/os/id.h
-	sed -i -e "s|#include <string>|#include <string>\n#include <unistd.h>|" $(@D)/bcore/os/exec.h
-	###patch to use /opt/etc/btg for config files
-	sed -i -e 's|t_PathElem(.*)|t_PathElem("/opt/etc/btg/")|' $(@D)/bcore/project.cpp
+	#sed -i -e "s|#include <bcore/type.h>|#include <bcore/type.h>\n#include <unistd.h>|" $(@D)/bcore/os/id.h
+	#sed -i -e "s|#include <string>|#include <string>\n#include <unistd.h>|" $(@D)/bcore/os/exec.h
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -219,7 +250,11 @@ $(BTG_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(BTG_PRIORITY)" >>$@
 	@echo "Section: $(BTG_SECTION)" >>$@
+ifdef BTG_SVN_REV
+	@echo "Version: $(BTG_VERSION)+r$(BTG_SVN_REV)-$(BTG_IPK_VERSION)" >>$@
+else
 	@echo "Version: $(BTG_VERSION)-$(BTG_IPK_VERSION)" >>$@
+endif
 	@echo "Maintainer: $(BTG_MAINTAINER)" >>$@
 	@echo "Source: $(BTG_SITE)/$(BTG_SOURCE)" >>$@
 	@echo "Description: $(BTG_DESCRIPTION)" >>$@

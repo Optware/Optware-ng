@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BOOST_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/boost
-BOOST_VERSION=1_38_0
+BOOST_VERSION=1_45_0
 BOOST_SOURCE=boost_$(BOOST_VERSION).tar.gz
 BOOST_DIR=boost_$(BOOST_VERSION)
 BOOST_UNZIP=zcat
@@ -41,11 +41,15 @@ BOOST_CONFLICTS=
 BOOST_JAM=EXPAT_INCLUDE=$(STAGING_INCLUDE_DIR) \
 	EXPAT_LIBPATH=$(STAGING_LIB_DIR)\
 	$(BUILD_DIR)/boost/bjam
+BOOST_JAM_VERSION=3.1.17
+BOOST_JAM_SOURCE=boost-jam-$(BOOST_JAM_VERSION).tgz
+BOOST_JAM_DIR=boost-jam-$(BOOST_JAM_VERSION)
+BOOST_JAM_UNZIP=zcat
 
 #
 # BOOST_IPK_VERSION should be incremented when the ipk changes.
 #
-BOOST_IPK_VERSION=3
+BOOST_IPK_VERSION=1
 
 #
 # BOOST_CONFFILES should be a list of user-editable files
@@ -55,7 +59,7 @@ BOOST_IPK_VERSION=3
 # BOOST_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-BOOST_PATCHES=$(BOOST_SOURCE_DIR)/atomic_count_gcc.patch
+#BOOST_PATCHES=$(BOOST_SOURCE_DIR)/atomic_count_gcc.patch
 
 #
 # If the compilation of the package requires additional
@@ -107,6 +111,9 @@ BOOST_PROGRAM_OPTIONS_IPK=$(BUILD_DIR)/boost-program-options_$(BOOST_VERSION)-$(
 BOOST_PYTHON_IPK_DIR=$(BUILD_DIR)/boost-python-$(BOOST_VERSION)-ipk
 BOOST_PYTHON_IPK=$(BUILD_DIR)/boost-python_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+BOOST_RANDOM_IPK_DIR=$(BUILD_DIR)/boost-random-$(BOOST_VERSION)-ipk
+BOOST_RANDOM_IPK=$(BUILD_DIR)/boost-random_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 BOOST_REGEX_IPK_DIR=$(BUILD_DIR)/boost-regex-$(BOOST_VERSION)-ipk
 BOOST_REGEX_IPK=$(BUILD_DIR)/boost-regex_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -136,6 +143,7 @@ BOOST_IPK_DIRS= \
 	$(BOOST_IOSTREAMS_IPK_DIR) \
 	$(BOOST_PROGRAM_OPTIONS_IPK_DIR) \
 	$(BOOST_PYTHON_IPK_DIR) \
+	$(BOOST_RANDOM_IPK_DIR) \
 	$(BOOST_REGEX_IPK_DIR) \
 	$(BOOST_SERIALIZATION_IPK_DIR) \
 	$(BOOST_SIGNALS_IPK_DIR) \
@@ -151,8 +159,8 @@ BOOST_LIB_IPKS= \
 	$(BOOST_IOSTREAMS_IPK) \
 	$(BOOST_PROGRAM_OPTIONS_IPK) \
 	$(BOOST_PYTHON_IPK) \
+	$(BOOST_RANDOM_IPK) \
 	$(BOOST_REGEX_IPK) \
-	$(BOOST_SERIALIZATION_IPK) \
 	$(BOOST_SIGNALS_IPK) \
 	$(BOOST_SYSTEM_IPK) \
 	$(BOOST_THREAD_IPK) \
@@ -168,12 +176,16 @@ $(DL_DIR)/$(BOOST_SOURCE):
 	$(WGET) -P $(@D) $(BOOST_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
+$(DL_DIR)/$(BOOST_JAM_SOURCE):
+	$(WGET) -P $(@D) $(BOOST_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES)
+boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -193,7 +205,7 @@ boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES) make/boost.mk
+$(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PATCHES) make/boost.mk
 	$(MAKE) bzip2-stage python25-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(@D)
 	rm -rf $(STAGING_INCLUDE_DIR)/boost $(STAGING_LIB_DIR)/libboost*
@@ -205,7 +217,8 @@ $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES) make/
 	if test "$(BUILD_DIR)/$(BOOST_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BOOST_DIR) $(@D) ; \
 	fi
-	(cd $(@D)/tools/jam/src; \
+	$(BOOST_JAM_UNZIP) $(DL_DIR)/$(BOOST_JAM_SOURCE) | tar -C $(@D) -xvf -
+	(cd $(@D)/$(BOOST_JAM_DIR); \
 		./build.sh; \
 		cp bin.*/bjam $(@D) \
 	)
@@ -215,6 +228,10 @@ $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(BOOST_PATCHES) make/
 ifeq ($(LIBC_STYLE),uclibc)
 	###uclibc portability issue
 	sed -i -e "s/get_nprocs()/1/" $(@D)/libs/thread/src/pthread/thread.cpp
+	###another uclibc issue
+	sed -i -e 's/sizeof(tracking_type) == sizeof(bool)/1/' \
+		-e 's/sizeof(class_id_type) == sizeof(int_least16_t)/1/' \
+		-e 's/sizeof(class_id_reference_type) == sizeof(int_least16_t)/1/' $(@D)/boost/archive/basic_binary_iarchive.hpp $(@D)/boost/archive/basic_binary_oarchive.hpp
 endif
 ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
 	###some gumstix1151 threads bug
@@ -223,11 +240,13 @@ ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
 	echo '#define BOOST_THREAD_POSIX' >> $(@D)/boost/config.hpp ; \
 	sed -i -e '/#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"/s|^|// |' $(@D)/boost/config/requires_threads.hpp
 endif
-	###compiler bug
-	case `$(TARGET_CC) -dumpversion` in \
-	    3.4.[34]) \
-		patch -d $(BUILD_DIR) -p0 < $(BOOST_SOURCE_DIR)/gcc.bug.patch ;; \
-	esac
+	###compiler bug - no need for this anymore
+	#case `$(TARGET_CC) -dumpversion` in \
+	#    3.4.[34]) \
+	#	patch -d $(BUILD_DIR) -p0 < $(BOOST_SOURCE_DIR)/gcc.bug.patch ;; \
+	#esac
+	###'No WCHAR_MIN and WCHAR_MAX present' issue
+	sed -i -e 's/namespace boost {/#ifndef WCHAR_MAX\n#define WCHAR_MAX 2147483647\n#endif\n#ifndef WCHAR_MIN\n#define WCHAR_MIN (-2147483647-1)\n#endif\nnamespace boost {/' $(@D)/boost/integer_traits.hpp
 	touch $@
 
 boost-unpack: $(BOOST_BUILD_DIR)/.configured
@@ -367,6 +386,21 @@ $(BOOST_PYTHON_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
+$(BOOST_RANDOM_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-random" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends:" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
 $(BOOST_REGEX_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -488,6 +522,7 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.configured
 	rm -rf $(BOOST_IPK_DIRS) $(BUILD_DIR)/boost*_$(TARGET_ARCH).ipk
 	(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(BOOST_DEV_IPK_DIR)/opt; exit 0)
 	touch $(BOOST_BUILD_DIR)/.built
+	$(STRIP_COMMAND) $(BOOST_DEV_IPK_DIR)/opt/lib/*.so*
 	### now make boost-date_time
 	$(MAKE) $(BOOST_DATE_TIME_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_DATE_TIME_IPK_DIR)/opt/lib
@@ -518,16 +553,23 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.configured
 	mkdir -p $(BOOST_PYTHON_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*python* $(BOOST_PYTHON_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON_IPK_DIR)
+	### now make boost-random
+	$(MAKE) $(BOOST_RANDOM_IPK_DIR)/CONTROL/control
+	mkdir -p $(BOOST_RANDOM_IPK_DIR)/opt/lib
+	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*random* $(BOOST_RANDOM_IPK_DIR)/opt/lib
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_RANDOM_IPK_DIR)
 	### now make boost-regex
 	$(MAKE) $(BOOST_REGEX_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_REGEX_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*regex* $(BOOST_REGEX_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_REGEX_IPK_DIR)
-	### now make boost-serialization
-	$(MAKE) $(BOOST_SERIALIZATION_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_SERIALIZATION_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*serialization* $(BOOST_SERIALIZATION_IPK_DIR)/opt/lib
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_SERIALIZATION_IPK_DIR)
+	### now make boost-serialization if it has been built
+	if ls $(BOOST_DEV_IPK_DIR)/opt/lib/*serialization* > /dev/null 2>&1; then \
+		$(MAKE) $(BOOST_SERIALIZATION_IPK_DIR)/CONTROL/control; \
+		mkdir -p $(BOOST_SERIALIZATION_IPK_DIR)/opt/lib; \
+		mv $(BOOST_DEV_IPK_DIR)/opt/lib/*serialization* $(BOOST_SERIALIZATION_IPK_DIR)/opt/lib; \
+		cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_SERIALIZATION_IPK_DIR); \
+	fi
 	### now make boost-signals
 	$(MAKE) $(BOOST_SIGNALS_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_SIGNALS_IPK_DIR)/opt/lib
@@ -587,4 +629,7 @@ boost-check: $(BOOST_DEV_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_LIB_IPKS)
 	if ls $(BOOST_WAVE_IPK) > /dev/null 2>&1; then \
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_WAVE_IPK); \
+	fi
+	if ls $(BOOST_SERIALIZATION_IPK) > /dev/null 2>&1; then \
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_SERIALIZATION_IPK); \
 	fi
