@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BTPD_SITE=http://www.murmeldjur.se/btpd
-BTPD_VERSION?=0.15
+BTPD_SITE=https://github.com/downloads/btpd/btpd
+BTPD_VERSION?=0.16
 BTPD_IPK_VERSION?=1
 BTPD_SOURCE=btpd-$(BTPD_VERSION).tar.gz
 BTPD_DIR=btpd-$(BTPD_VERSION)
@@ -79,7 +79,7 @@ BTPD_IPK=$(BUILD_DIR)/btpd_$(BTPD_VERSION)-$(BTPD_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BTPD_SOURCE):
-	$(WGET) -P $(@D) $(BTPD_SITE)/$(@F) || \
+	$(WGET) --no-check-certificate -P $(@D) $(BTPD_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #

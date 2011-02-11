@@ -26,8 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBTORRENT-RASTERBAR_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libtorrent
-LIBTORRENT-RASTERBAR_VERSION=0.14.1
+#LIBTORRENT-RASTERBAR_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libtorrent
+LIBTORRENT-RASTERBAR_SITE=http://libtorrent.googlecode.com/files
+LIBTORRENT-RASTERBAR_VERSION=0.14.12
 LIBTORRENT-RASTERBAR_SOURCE=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION).tar.gz
 LIBTORRENT-RASTERBAR_DIR=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION)
 LIBTORRENT-RASTERBAR_UNZIP=zcat
@@ -35,7 +36,7 @@ LIBTORRENT-RASTERBAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBTORRENT-RASTERBAR_DESCRIPTION=libtorrent rasterbar.
 LIBTORRENT-RASTERBAR_SECTION=net
 LIBTORRENT-RASTERBAR_PRIORITY=optional
-LIBTORRENT-RASTERBAR_DEPENDS= openssl, boost-system, boost-filesystem, boost-date-time, boost-thread
+LIBTORRENT-RASTERBAR_DEPENDS= openssl, boost-system, boost-filesystem, boost-thread, boost-program-options, boost-regex
 LIBTORRENT-RASTERBAR_SUGGESTS=
 LIBTORRENT-RASTERBAR_CONFLICTS=
 
@@ -60,8 +61,10 @@ LIBTORRENT-RASTERBAR_IPK_VERSION=1
 #
 LIBTORRENT-RASTERBAR_CPPFLAGS=
 LIBTORRENT-RASTERBAR_LDFLAGS=
-LIBTORRENT-RASTERBAR_BOOST_CPPFLAGS=$(STAGING_CPPFLAGS)
-LIBTORRENT-RASTERBAR_BOOST_LDFLAGS= -lboost_system-mt -lboost_filesystem-mt -lboost_date_time-mt -lboost_thread-mt
+ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
+	###bad instruction `dmb' issue
+	LIBTORRENT-RASTERBAR_CPPFLAGS+= -mcpu=arm9
+endif
 
 #
 # LIBTORRENT-RASTERBAR_BUILD_DIR is the directory in which the build is done.
@@ -115,6 +118,7 @@ libtorrent-rasterbar-source: $(DL_DIR)/$(LIBTORRENT-RASTERBAR_SOURCE) $(LIBTORRE
 $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT-RASTERBAR_SOURCE) $(LIBTORRENT-RASTERBAR_PATCHES) make/libtorrent-rasterbar.mk
 	$(MAKE) boost-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) $(@D)
+	rm -rf $(STAGING_INCLUDE_DIR)/libtorrent $(STAGING_LIB_DIR)/libtorrent-rasterbar*
 	$(LIBTORRENT-RASTERBAR_UNZIP) $(DL_DIR)/$(LIBTORRENT-RASTERBAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBTORRENT-RASTERBAR_PATCHES)" ; \
 		then cat $(LIBTORRENT-RASTERBAR_PATCHES) | \
@@ -129,8 +133,10 @@ $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT-RASTERBAR_
 	sed -i -e "s|/usr/include|$(STAGING_DIR)/opt/include|" $(@D)/m4/ax_boost_python-fixed.m4
 	sed -i -e "s|namespace libtorrent|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent|" $(@D)/include/libtorrent/socket.hpp
 	sed -i -e "s|namespace libtorrent { namespace|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent { namespace|" $(@D)/src/enum_net.cpp
+	sed -i -e "s/#include <vector>/#include <vector>\n#include <list>/" $(@D)/include/libtorrent/udp_socket.hpp
 	autoreconf -vif $(@D)
 	sed -i -e "s|/usr/include|$(STAGING_DIR)/opt/include|" $(@D)/configure
+	echo $(LIBTORRENT-RASTERBAR_LIBTOOL_CONFI)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT-RASTERBAR_CPPFLAGS)" \
@@ -144,7 +150,14 @@ $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT-RASTERBAR_
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--disable-debug \
 	)
+	###needed to build with libtool 1.5.x
+	mv -f $(@D)/libtool $(@D)/libtool.old
+	cp -f $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/libtool.template $(@D)
+	sed -n 1,`awk "/^# ### END LIBTOOL CONFIG/ {print NR; exit 0 }" $(@D)/libtool.old`p < $(@D)/libtool.old > $(@D)/libtool-config.1
+	sed 1,`awk "/^# ### BEGIN LIBTOOL TAG CONFIG: CXX/ {print NR; exit 0 }" $(@D)/libtool.old`d < $(@D)/libtool.old > $(@D)/libtool-config.2
+	cat $(@D)/libtool-config.1 $(@D)/libtool.template $(@D)/libtool-config.2 > $(@D)/libtool
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

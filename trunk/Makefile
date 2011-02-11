@@ -28,6 +28,8 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
+	btg \
+	udpxy \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -41,13 +43,15 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 # bpalogin - for some reason it can't find 'sed' on the build machine
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
 # clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
+# clinkcc - depends on broken xerces-c package
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
 	gtk vte xchat \
 	iozone \
 	bpalogin \
-        icu btg xerces-c \
+	clinkcc \
+        icu xerces-c \
 	nemesis \
  
 PERL_PACKAGES = \
@@ -238,7 +242,7 @@ COMMON_CROSS_PACKAGES = \
 	catdoc ccollect ccrypt ccxstream cdargs \
 	cdrtools centerim cuetools \
 	cherokee chicken chillispot chrpath cksfv \
-	classpath clamav clearsilver climm clinkcc clips cmdftp \
+	classpath clamav clearsilver climm clips cmdftp \
 	confuse connect coreutils corkscrew cpio cpufrequtils cron cryptcat \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
