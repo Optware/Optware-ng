@@ -176,7 +176,7 @@ $(PY-BTPD-WEBUI_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-BTPD-WEBUI_MAINTAINER)" >>$@
 	@echo "Source: $(PY-BTPD-WEBUI_SITE)/$(PY-BTPD-WEBUI_SOURCE)" >>$@
 	@echo "Description: $(PY-BTPD-WEBUI_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-BTPD-WEBUI_BUILD_DIR)" >>$@
+	@echo "Depends: $(PY-BTPD-WEBUI_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-BTPD-WEBUI_CONFLICTS)" >>$@
 
 #
