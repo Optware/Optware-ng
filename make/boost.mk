@@ -65,7 +65,7 @@ BOOST_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-BOOST_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.5
+BOOST_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.5 -I$(STAGING_INCLUDE_DIR)/ncurses
 BOOST_LDFLAGS=
 BOOST_JAM_ARGS= \
 	-d+2 \
@@ -206,7 +206,7 @@ boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PA
 # shown below to make various patches to it.
 #
 $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PATCHES) make/boost.mk
-	$(MAKE) bzip2-stage python25-stage expat-stage
+	$(MAKE) bzip2-stage python25-stage expat-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(@D)
 	rm -rf $(STAGING_INCLUDE_DIR)/boost $(STAGING_LIB_DIR)/libboost*
 	$(BOOST_UNZIP) $(DL_DIR)/$(BOOST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
