@@ -21,7 +21,7 @@
 #
 SAMBA2_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA2_VERSION=2.2.12
-SAMBA2_IPK_VERSION=2
+SAMBA2_IPK_VERSION=3
 SAMBA2_SOURCE=samba-$(SAMBA2_VERSION).tar.gz
 SAMBA2_DIR=samba-$(SAMBA2_VERSION)
 SAMBA2_UNZIP=zcat
@@ -44,7 +44,7 @@ SAMBA2_CONFFILES=/opt/etc/init.d/S80samba \
 # SAMBA2_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SAMBA2_PATCHES=$(SAMBA2_SOURCE_DIR)/configure.in.patch $(SAMBA2_SOURCE_DIR)/Makefile.in.patch
+SAMBA2_PATCHES=$(SAMBA2_SOURCE_DIR)/configure.in.patch $(SAMBA2_SOURCE_DIR)/Makefile.in.patch $(SAMBA2_SOURCE_DIR)/smbmount-nomtab-mtab-flags.patch
 
 
 #
@@ -302,6 +302,8 @@ $(SAMBA2_IPK): $(SAMBA2_BUILD_DIR)/.built
 	rm -rf $(SAMBA2_IPK_DIR) $(BUILD_DIR)/samba2_*_$(TARGET_ARCH).ipk
 	install -d $(SAMBA2_IPK_DIR)/opt/share/
 	$(MAKE) -C $(SAMBA2_BUILD_DIR) DESTDIR=$(SAMBA2_IPK_DIR) install
+	###in case install creates usr/local/samba/private dir for some reason
+	rm -rf $(SAMBA2_IPK_DIR)/usr
 	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
 	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
 	install -d $(SAMBA2_IPK_DIR)/opt/etc/init.d
