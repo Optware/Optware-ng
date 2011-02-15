@@ -116,6 +116,7 @@ $(PY-BTPD-WEBUI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BTPD-WEBUI_SOURCE) $(PY-B
 	if test "$(BUILD_DIR)/$(PY-BTPD-WEBUI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PY-BTPD-WEBUI_DIR) $(@D) ; \
 	fi
+	sed -i -e "s|^TWISTD=.*|TWISTD=/opt/bin/twistd|" -e "s|^BTPDWEBUI=.*|BTPDWEBUI=/opt/bin/btpd-webui-server|" $(@D)/scripts/btpd-webui
 	(cd $(@D); \
 	    ( \
 		echo "[build_ext]"; \
