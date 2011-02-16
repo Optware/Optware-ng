@@ -21,7 +21,7 @@
 #
 SAMBA2_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA2_VERSION=2.2.12
-SAMBA2_IPK_VERSION=3
+SAMBA2_IPK_VERSION=4
 SAMBA2_SOURCE=samba-$(SAMBA2_VERSION).tar.gz
 SAMBA2_DIR=samba-$(SAMBA2_VERSION)
 SAMBA2_UNZIP=zcat
@@ -304,6 +304,8 @@ $(SAMBA2_IPK): $(SAMBA2_BUILD_DIR)/.built
 	$(MAKE) -C $(SAMBA2_BUILD_DIR) DESTDIR=$(SAMBA2_IPK_DIR) install
 	###in case install creates usr/local/samba/private dir for some reason
 	rm -rf $(SAMBA2_IPK_DIR)/usr
+	###smbmount and smbumount need to be root privelaged to work from user accounts
+	chmod +s $(SAMBA2_IPK_DIR)/opt/bin/smbmount $(SAMBA2_IPK_DIR)/opt/bin/smbumount
 	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
 	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
 	install -d $(SAMBA2_IPK_DIR)/opt/etc/init.d
