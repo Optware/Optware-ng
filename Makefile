@@ -31,6 +31,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	btg \
 	udpxy \
 	py-btpd-webui \
+	libevent \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
