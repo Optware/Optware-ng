@@ -296,7 +296,7 @@ COMMON_CROSS_PACKAGES = \
 	libdaemon libdb libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libebml libexosip2 \
-	libesmtp libevent libexif libextractor libftdi \
+	libesmtp libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
 	libhid \
 	libid3tag libidn libieee1284 libijs libinklevel libjpeg libksba \
