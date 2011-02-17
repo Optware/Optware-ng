@@ -32,6 +32,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	udpxy \
 	py-btpd-webui \
 	libevent \
+	transmission \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -372,7 +373,7 @@ COMMON_CROSS_PACKAGES = \
 	texinfo textutils thttpd \
 	tig tin tinyproxy tinyscheme tmsnc tnef tnftp tnftpd \
 	toppyweb tor torsocks torrent torrentflux transcode \
-	transmission transmissiond tre tree trickle \
+	transmissiond tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ulogd unarj uncia unfs3 units unixodbc \
 	unrar unrtf \
