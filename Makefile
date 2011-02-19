@@ -33,6 +33,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	py-btpd-webui \
 	libevent \
 	transmission \
+	mc \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -314,7 +315,7 @@ COMMON_CROSS_PACKAGES = \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
 	lua luarocks \
 	lynx lzo \
-	m4 madplay make man man-pages mc mcabber md5deep mdadm \
+	m4 madplay make man man-pages mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
 	minicom minidlna minihttpd miniupnpd \
