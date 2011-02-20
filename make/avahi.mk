@@ -128,10 +128,15 @@ endif
 	if test "$(BUILD_DIR)/$(AVAHI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AVAHI_DIR) $(@D) ; \
 	fi
+	sed -i -e "s/INTLTOOL_APPLIED_VERSION=.*/INTLTOOL_APPLIED_VERSION=0.35.0/" -e 's/^if test .*INTLTOOL_UPDATE.*INTLTOOL_MERGE.*INTLTOOL_EXTRACT"/if \[ 1 != 1 \]/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AVAHI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AVAHI_LDFLAGS)" \
+		DBUS_CFLAGS="-I$(STAGING_INCLUDE_DIR)/dbus-1.0 -I$(STAGING_PREFIX)/lib/dbus-1.0/include -Ddbus_connection_disconnect=dbus_connection_close" \
+		DBUS_LIBS="-ldbus-1" \
+		LIBDAEMON_CFLAGS="" \
+		LIBDAEMON_LIBS="-ldaemon" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		ac_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_realloc_0_nonnull=yes \
