@@ -86,6 +86,8 @@ $(LIBEVENT_BUILD_DIR)/.staged: $(LIBEVENT_BUILD_DIR)/.built
 	rm -f $@
 	rm -f $(STAGING_LIB_DIR)/libevent*
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libevent.pc
+	rm -f $(STAGING_LIB_DIR)/libevent.la
 	touch $@
 
 libevent-stage: $(LIBEVENT_BUILD_DIR)/.staged

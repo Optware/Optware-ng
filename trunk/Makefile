@@ -31,9 +31,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	btg \
 	udpxy \
 	py-btpd-webui \
-	libevent \
-	transmission \
-	mc \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -298,6 +295,7 @@ COMMON_CROSS_PACKAGES = \
 	libdaemon libdb libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libebml libexosip2 \
+	libevent \
 	libesmtp libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
 	libhid \
@@ -315,7 +313,7 @@ COMMON_CROSS_PACKAGES = \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
 	lua luarocks \
 	lynx lzo \
-	m4 madplay make man man-pages mcabber md5deep mdadm \
+	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
 	minicom minidlna minihttpd miniupnpd \
@@ -374,6 +372,7 @@ COMMON_CROSS_PACKAGES = \
 	texinfo textutils thttpd \
 	tig tin tinyproxy tinyscheme tmsnc tnef tnftp tnftpd \
 	toppyweb tor torsocks torrent torrentflux transcode \
+	transmission \
 	transmissiond tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ulogd unarj uncia unfs3 units unixodbc \
