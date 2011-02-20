@@ -21,7 +21,7 @@
 #
 SAMBA35_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA35_VERSION ?= 3.5.6
-SAMBA35_IPK_VERSION ?= 1
+SAMBA35_IPK_VERSION ?= 2
 SAMBA35_SOURCE=samba-$(SAMBA35_VERSION).tar.gz
 SAMBA35_DIR=samba-$(SAMBA35_VERSION)
 SAMBA35_UNZIP=zcat
@@ -29,7 +29,7 @@ SAMBA35_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA35_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients. This is a newer version.
 SAMBA35_SECTION=net
 SAMBA35_PRIORITY=optional
-SAMBA35_DEPENDS=avahi, popt, readline, zlib
+SAMBA35_DEPENDS=avahi, popt, readline, zlib, e2fsprogs
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA35_DEPENDS +=, openldap-libs
 endif
@@ -68,7 +68,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SAMBA35_CPPFLAGS=
+SAMBA35_CPPFLAGS= -I$(STAGING_INCLUDE_DIR)/et
 SAMBA35_LDFLAGS=
 
 #
@@ -212,7 +212,7 @@ $(SAMBA35_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA35_SOURCE) $(SAMBA35_PATCHES)
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
-	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage
+	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage e2fsprogs-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA35_DIR) $(@D)
 	$(SAMBA35_UNZIP) $(DL_DIR)/$(SAMBA35_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA35_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA35_DIR) -p1

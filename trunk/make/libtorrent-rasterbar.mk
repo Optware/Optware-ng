@@ -158,6 +158,7 @@ $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT-RASTERBAR_
 	sed -n 1,`awk "/^# ### END LIBTOOL CONFIG/ {print NR; exit 0 }" $(@D)/libtool.old`p < $(@D)/libtool.old > $(@D)/libtool-config.1
 	sed 1,`awk "/^# ### BEGIN LIBTOOL TAG CONFIG: CXX/ {print NR; exit 0 }" $(@D)/libtool.old`d < $(@D)/libtool.old > $(@D)/libtool-config.2
 	cat $(@D)/libtool-config.1 $(@D)/libtool.template $(@D)/libtool-config.2 > $(@D)/libtool
+	sed -i -e 's/^VERSION=.*/VERSION="2.2.6b"/' -e 's/^package_revision=.*/package_revision=1.3017/' -e 's/^macro_version=.*/macro_version=2.2.6b/' -e 's/macro_revision=.*/macro_revision=1.3017/' $(@D)/libtool
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
