@@ -531,12 +531,12 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.configured
 	### now make boost-filesystem
 	$(MAKE) $(BOOST_FILESYSTEM_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_FILESYSTEM_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*filesystem* $(BOOST_FILESYSTEM_IPK_DIR)/opt/lib
+	-mv $(BOOST_DEV_IPK_DIR)/opt/lib/*filesystem* $(BOOST_FILESYSTEM_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_FILESYSTEM_IPK_DIR)
 	### now make boost-graph
 	$(MAKE) $(BOOST_GRAPH_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_GRAPH_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*graph* $(BOOST_GRAPH_IPK_DIR)/opt/lib
+	-mv $(BOOST_DEV_IPK_DIR)/opt/lib/*graph* $(BOOST_GRAPH_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_GRAPH_IPK_DIR)
 	### now make boost-iostreams
 	$(MAKE) $(BOOST_IOSTREAMS_IPK_DIR)/CONTROL/control
