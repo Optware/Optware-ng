@@ -29,6 +29,7 @@ OPTWARE_TARGET ?= nslu2
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	btg \
+	libtorrent-rasterbar \
 	udpxy \
 	py-btpd-webui \
 
@@ -307,7 +308,6 @@ COMMON_CROSS_PACKAGES = \
 	libpar2 libpcap libpng libpth librsync \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent \
-	libtorrent-rasterbar \
 	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
