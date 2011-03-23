@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES =
 BROKEN_PACKAGES = \
 	amule \
 	$(filter-out asterisk asterisk-sounds, $(ASTERISK_PACKAGES)) \
+	boost \
 	clamav \
 	elinks \
 	$(ERLANG_PACKAGES) \

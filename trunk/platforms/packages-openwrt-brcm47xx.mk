@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	$(UCLIBC++_BROKEN_PACKAGES) \
 	$(UCLIBC_BROKEN_PACKAGES) \
+	boost \
 	buildroot uclibc-opt \
 	lm-sensors module-init-tools \
 	$(BROKEN_PACKAGES_REPORT_ACHILLES) \

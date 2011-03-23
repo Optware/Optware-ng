@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 # linphone: undefined reference to `log10f'
 BROKEN_PACKAGES = \
 	$(UCLIBC++_BROKEN_PACKAGES) \
+	boost \
 	buildroot uclibc-opt \
 	aspell \
 	centerim \
