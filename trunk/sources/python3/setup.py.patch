@@ -1,15 +1,15 @@
---- Python-3.1.3/setup.py.orig	2010-11-26 11:56:26.000000000 +0000
-+++ Python-3.1.3/setup.py	2010-11-28 19:32:14.206201797 +0000
-@@ -17,7 +17,7 @@
- from distutils.spawn import find_executable
+--- Python-3.2rc1/setup.py.orig	2010-12-28 09:51:43.000000000 +0000
++++ Python-3.2rc1/setup.py	2011-01-17 00:11:21.852270894 +0000
+@@ -21,7 +21,7 @@
+ COMPILED_WITH_PYDEBUG = hasattr(sys, 'gettotalrefcount')
  
  # This global variable is used to hold the list of modules to be disabled.
 -disabled_module_list = []
 +disabled_module_list = ['_tkinter'] # '_sqlite',
  
- def add_dir_to_list(dirlist, dir):
-     """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -292,6 +292,10 @@
+ # File which contains the directory for shared mods (for sys.path fixup
+ # when running from the build dir, see Modules/getpath.c)
+@@ -323,6 +323,10 @@
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -20,7 +20,7 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -378,17 +382,6 @@
+@@ -411,17 +415,6 @@
                      for directory in reversed(options.dirs):
                          add_dir_to_list(dir_list, directory)
  
@@ -38,7 +38,7 @@
          # lib_dirs and inc_dirs are used to search for files;
          # if a file is found in one of those directories, it can
          # be assumed that no additional -I,-L directives are needed.
-@@ -1005,7 +998,6 @@
+@@ -1029,7 +1022,6 @@
                                    include_dirs=["Modules/_sqlite",
                                                  sqlite_incdir],
                                    library_dirs=sqlite_libdir,
@@ -46,7 +46,7 @@
                                    extra_link_args=sqlite_extra_link_args,
                                    libraries=["sqlite3",]))
          else:
-@@ -1067,7 +1059,6 @@
+@@ -1093,7 +1085,6 @@
                          print("building dbm using bdb")
                          dbmext = Extension('_dbm', ['_dbmmodule.c'],
                                             library_dirs=dblib_dir,
@@ -54,7 +54,7 @@
                                             include_dirs=db_incs,
                                             define_macros=[
                                                 ('HAVE_BERKDB_H', None),
-@@ -1603,7 +1594,7 @@
+@@ -1640,7 +1631,7 @@
                                           ffi_configfile):
                  from distutils.dir_util import mkpath
                  mkpath(ffi_builddir)
