@@ -20,7 +20,7 @@ MONIT_CONFLICTS=
 #
 # MONIT_IPK_VERSION should be incremented when the ipk changes.
 #
-MONIT_IPK_VERSION=1
+MONIT_IPK_VERSION=2
 
 #
 # MONIT_CONFFILES should be a list of user-editable files
@@ -31,8 +31,7 @@ MONIT_CONFFILES=/opt/etc/monitrc /opt/etc/init.d/S99monit
 # which they should be applied to the source code.
 #
 MONIT_PATCHES=\
-#  $(MONIT_SOURCE_DIR)/Makefile.patch \
-#  $(MONIT_SOURCE_DIR)/configure.patch \
+$(MONIT_SOURCE_DIR)/uclibc.patch \
 
 #
 # If the compilation of the package requires additional
@@ -83,13 +82,13 @@ monit-source: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES)
 # correctly BUILD the Makefile with the right paths, where passing it
 # to Make causes it to override the default search paths of the compiler.
 #
-$(MONIT_BUILD_DIR)/.configured: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES)
+$(MONIT_BUILD_DIR)/.configured: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES) make/monit.mk
 	$(MAKE) openssl-stage 
 	rm -rf $(BUILD_DIR)/$(MONIT_DIR) $(MONIT_BUILD_DIR)
 	$(MONIT_UNZIP) $(DL_DIR)/$(MONIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MONIT_PATCHES)" ; \
 		then cat $(MONIT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MONIT_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(MONIT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MONIT_DIR)" != "$(MONIT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MONIT_DIR) $(MONIT_BUILD_DIR) ; \
