@@ -4,9 +4,11 @@ SPECIFIC_PACKAGES = unslung-feeds unslung-feeds-unstable unslung-devel crosstool
 
 # Packages that do not work for nslu2.
 BROKEN_PACKAGES = \
+	btg \
 	erl-ejabberd \
 	sandbox \
 	golang \
+	libtorrent-rasterbar \
 	linphone \
 
 BTPD_VERSION=0.13
