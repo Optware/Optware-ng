@@ -1,6 +1,6 @@
---- Python-3.1.3/Makefile.pre.in.orig	2010-10-14 11:35:17.000000000 +0000
-+++ Python-3.1.3/Makefile.pre.in	2010-11-28 19:36:43.433954791 +0000
-@@ -38,6 +38,8 @@
+--- Python-3.2rc1/Makefile.pre.in.orig	2010-12-30 22:12:40.000000000 +0000
++++ Python-3.2rc1/Makefile.pre.in	2011-01-16 23:40:56.891994578 +0000
+@@ -40,6 +40,8 @@
  
  GNULD=		@GNULD@
  
@@ -9,16 +9,16 @@
  # Shell used by make (some versions default to the login shell, which is bad)
  SHELL=		/bin/sh
  
-@@ -105,7 +107,7 @@
+@@ -113,7 +115,7 @@
  
  # Symbols used for using shared libraries
  SO=		@SO@
--LDSHARED=	@LDSHARED@
-+LDSHARED=	@LDSHARED@ @LDFLAGS@
- BLDSHARED=	@BLDSHARED@
+-LDSHARED=	@LDSHARED@ $(PY_LDFLAGS)
++LDSHARED=	@LDSHARED@ @LDFLAGS@ $(PY_LDFLAGS)
+ BLDSHARED=	@BLDSHARED@ $(PY_LDFLAGS)
+ LDCXXSHARED=	@LDCXXSHARED@
  DESTSHARED=	$(BINLIBDEST)/lib-dynload
- 
-@@ -176,7 +178,8 @@
+@@ -186,7 +188,8 @@
  LIBOBJS=	@LIBOBJS@
  
  PYTHON=		python$(EXE)
@@ -28,7 +28,7 @@
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -216,7 +219,8 @@
+@@ -228,7 +231,8 @@
  
  ##########################################################################
  # Parser
@@ -38,44 +38,45 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -375,7 +379,7 @@
+@@ -391,7 +395,7 @@
  
  # Default target
  all:		build_all
--build_all:	$(BUILDPYTHON) oldsharedmods sharedmods
-+build_all:	$(HOSTPYTHON) oldsharedmods sharedmods
+-build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks
++build_all:	$(HOSTPYTHON) oldsharedmods sharedmods gdbhooks
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -405,7 +409,7 @@
+@@ -421,7 +425,7 @@
  
  
  # Build the interpreter
--$(BUILDPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
-+$(HOSTPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
- 		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
- 			Modules/python.o \
- 			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-@@ -540,12 +544,12 @@
+-$(BUILDPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY) $(PY3LIBRARY)
++$(HOSTPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY) $(PY3LIBRARY)
+ 	$(LINKCC) $(PY_LDFLAGS) $(LINKFORSHARED) -o $@ Modules/python.o $(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
  
- $(IO_OBJS): $(IO_H)
+ platform: $(BUILDPYTHON)
+@@ -579,13 +583,13 @@
  
--$(GRAMMAR_H) $(GRAMMAR_C): $(PGEN) $(GRAMMAR_INPUT)
-+$(GRAMMAR_H) $(GRAMMAR_C): $(BUILDPGEN) $(GRAMMAR_INPUT)
+ # Use a stamp file to prevent make -j invoking pgen twice
+ $(GRAMMAR_H) $(GRAMMAR_C): Parser/pgen.stamp
+-Parser/pgen.stamp: $(PGEN) $(GRAMMAR_INPUT)
++Parser/pgen.stamp: $(BUILDPGEN) $(GRAMMAR_INPUT)
  		-@$(INSTALL) -d Include
--		-$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
-+		-$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
+-		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
++		$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
+ 		-touch Parser/pgen.stamp
  
 -$(PGEN):	$(PGENOBJS)
--		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
+-		$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
 +$(HOSTPGEN):	$(PGENOBJS)
-+		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $@
++		$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -604,6 +608,16 @@
- 				$(srcdir)/Objects/stringlib/formatter.h
- 
+@@ -648,6 +652,16 @@
+ $(srcdir)/Objects/typeslots.inc: $(srcdir)/Include/typeslots.h $(srcdir)/Objects/typeslots.py
+ 	$(PYTHON) $(srcdir)/Objects/typeslots.py < $(srcdir)/Include/typeslots.h > $(srcdir)/Objects/typeslots.inc
  
 +#########################################################################
 +# Rules for making python/pgen that will run on the build system
@@ -90,16 +91,16 @@
  ############################################################################
  # Header files
  
-@@ -792,7 +806,7 @@
+@@ -839,7 +853,7 @@
  		else	true; \
  		fi; \
  	done
--	$(INSTALL_PROGRAM) $(BUILDPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
-+	$(INSTALL_PROGRAM) $(HOSTPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
- 	if test -f $(LDLIBRARY); then \
- 		if test -n "$(DLLLIBRARY)" ; then \
- 			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
-@@ -1020,6 +1034,7 @@
+-	$(INSTALL_PROGRAM) $(BUILDPYTHON) $(DESTDIR)$(BINDIR)/python$(LDVERSION)$(EXE)
++	$(INSTALL_PROGRAM) $(HOSTPYTHON) $(DESTDIR)$(BINDIR)/python$(LDVERSION)$(EXE)
+ 	-if test "$(VERSION)" != "$(LDVERSION)"; then \
+ 		if test -f $(DESTDIR)$(BINDIR)/$(PYTHON)$(VERSION)$(EXE) -o -h $(DESTDIR)$(BINDIR)/$(PYTHON)$(VERSION)$(EXE); \
+ 		then rm -f $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE); \
+@@ -1091,6 +1105,7 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -107,7 +108,7 @@
  	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
-@@ -1115,7 +1130,7 @@
+@@ -1177,7 +1192,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -116,13 +117,13 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1178,11 +1193,12 @@
+@@ -1241,11 +1256,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal
 -	-rm -f $(BUILDPYTHON) $(PGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
 +	-rm -f $(HOSTPYTHON) $(HOSTPGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
- 		tags TAGS \
+ 		tags TAGS Parser/pgen.stamp \
  		config.cache config.log pyconfig.h Modules/config.c
  	-rm -rf build platform
  	-rm -rf $(PYTHONFRAMEWORKDIR)

@@ -1,6 +1,14 @@
---- Python-3.1.2/configure.in.orig	2010-03-19 21:38:46.000000000 +0000
-+++ Python-3.1.2/configure.in	2010-03-23 03:50:51.889312739 +0000
-@@ -21,6 +21,11 @@
+--- Python-3.2rc1/configure.in.orig	2011-01-03 18:53:50.000000000 +0000
++++ Python-3.2rc1/configure.in	2011-01-17 00:11:21.848267976 +0000
+@@ -12,7 +12,6 @@
+        [],
+        [m4_fatal([Autoconf version $1 is required for Python], 63)])
+ ])
+-AC_PREREQ(2.65)
+ 
+ AC_REVISION($Revision: 87698 $)
+ AC_INIT(python, PYTHON_VERSION, http://bugs.python.org/)
+@@ -28,6 +27,11 @@
      prefix=`echo "$prefix" | sed -e 's/\/$//g'`
  fi    
  
@@ -12,7 +20,7 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -840,7 +845,7 @@
+@@ -881,7 +885,7 @@
  	    STRICT_PROTO="-Wstrict-prototypes"
  	fi
          # For gcc 4.x we need to use -fwrapv so lets check if its supported
@@ -21,87 +29,7 @@
             WRAP="-fwrapv"
          fi
  	case $ac_cv_prog_cc_g in
-@@ -3427,32 +3432,7 @@
- 
- # Multiprocessing check for broken sem_getvalue
- AC_MSG_CHECKING(for broken sem_getvalue)
--AC_TRY_RUN([
--#include <unistd.h>
--#include <fcntl.h>
--#include <stdio.h>
--#include <semaphore.h>
--#include <sys/stat.h>
--
--int main(void){
--  sem_t *a = sem_open("/autocftw", O_CREAT, S_IRUSR|S_IWUSR, 0);
--  int count;
--  int res;
--  if(a==SEM_FAILED){
--    perror("sem_open");
--    return 1;
--
--  }
--  res = sem_getvalue(a, &count);
--  sem_close(a);
--  sem_unlink("/autocftw");
--  return res==-1 ? 1 : 0;
--}
--]
--,AC_MSG_RESULT(no),
-- AC_MSG_RESULT(yes)
--  AC_DEFINE(HAVE_BROKEN_SEM_GETVALUE, 1, define to 1 if your sem_getvalue is broken.)
--)
-+ AC_MSG_RESULT(no)
- 
- # determine what size digit to use for Python's longs
- AC_MSG_CHECKING([digit size for Python's longs])
-@@ -3942,43 +3922,8 @@
- fi
- 
- AC_MSG_CHECKING(for %zd printf() format support)
--AC_TRY_RUN([#include <stdio.h>
--#include <stddef.h>
--#include <string.h>
--
--#ifdef HAVE_SYS_TYPES_H
--#include <sys/types.h>
--#endif
--
--#ifdef HAVE_SSIZE_T
--typedef ssize_t Py_ssize_t;
--#elif SIZEOF_VOID_P == SIZEOF_LONG
--typedef long Py_ssize_t;
--#else
--typedef int Py_ssize_t;
--#endif
--
--int main()
--{
--    char buffer[256];
--
--    if(sprintf(buffer, "%zd", (size_t)123) < 0)
--       	return 1;
--
--    if (strcmp(buffer, "123"))
--	return 1;
--
--    if (sprintf(buffer, "%zd", (Py_ssize_t)-123) < 0)
--       	return 1;
--
--    if (strcmp(buffer, "-123"))
--	return 1;
--
--    return 0;
--}],
--[AC_MSG_RESULT(yes)
-- AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])],
-- AC_MSG_RESULT(no))
-+ AC_MSG_RESULT(yes)
-+ AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])
- 
- AC_CHECK_TYPE(socklen_t,,
-   AC_DEFINE(socklen_t,int,
-@@ -4051,6 +3996,25 @@
+@@ -4264,6 +4268,25 @@
  done
  AC_MSG_RESULT(done)
  
@@ -126,4 +54,4 @@
 +
  # generate output files
  AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc)
- AC_OUTPUT
+ AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])

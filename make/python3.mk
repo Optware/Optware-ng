@@ -21,9 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON3_VERSION=3.1.3
-PYTHON3_VERSION_MAJOR=3.1
-PYTHON3_SITE=http://www.python.org/ftp/python/$(PYTHON3_VERSION)
+PYTHON3_VERSION=3.2
+PYTHON3_VERSION_MAJOR=3.2
+PYTHON3_SITE=http://www.python.org/ftp/python/$(PYTHON3_VERSION_MAJOR)
 PYTHON3_SOURCE=Python-$(PYTHON3_VERSION).tgz
 PYTHON3_DIR=Python-$(PYTHON3_VERSION)
 PYTHON3_UNZIP=zcat
@@ -138,11 +138,12 @@ ifeq (enable, $(GETTEXT_NLS))
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
+	$(MAKE) autoconf-host-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON3_DIR) $(@D)
 	$(PYTHON3_UNZIP) $(DL_DIR)/$(PYTHON3_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON3_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
 	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON3_DIR)/Modules/_ctypes/libffi/configure.ac
-	autoreconf -vif $(BUILD_DIR)/$(PYTHON3_DIR)
+	$(HOST_STAGING_PREFIX)/bin/autoreconf -vif $(BUILD_DIR)/$(PYTHON3_DIR)
 	mkdir -p $(@D)
 	( \
 	echo "[build_ext]"; \
@@ -158,6 +159,9 @@ endif
 		ac_cv_file__dev_ptc=no \
 		ac_cv_header_bluetooth_bluetooth_h=no \
 		ac_cv_header_bluetooth_h=no \
+		ac_cv_broken_sem_getvalue=no \
+		ac_cv_have_size_t_format=yes \
+		ac_cv_have_long_long_format=yes \
 		../$(PYTHON3_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -165,8 +169,9 @@ endif
 		--prefix=/opt \
 		--mandir=/opt/man \
 		--enable-shared \
-		--with-wide-unicode \
 	)
+#		--without-pymalloc \
+;
 	touch $@
 
 python3-unpack: $(PYTHON3_BUILD_DIR)/.configured
@@ -235,9 +240,8 @@ $(PYTHON3_IPK): $(PYTHON3_BUILD_DIR)/.built
 	$(MAKE) -C $(PYTHON3_BUILD_DIR) DESTDIR=$(PYTHON3_IPK_DIR) install
 	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)/opt/bin/python$(PYTHON3_VERSION_MAJOR)
 	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/lib-dynload/*.so
-	chmod 755 $(PYTHON3_IPK_DIR)/opt/lib/libpython$(PYTHON3_VERSION_MAJOR).so.1.0
-	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)/opt/lib/libpython$(PYTHON3_VERSION_MAJOR).so.1.0
-	chmod 555 $(PYTHON3_IPK_DIR)/opt/lib/libpython$(PYTHON3_VERSION_MAJOR).so.1.0
+	for f in $(PYTHON3_IPK_DIR)/opt/lib/libpython$(PYTHON3_VERSION_MAJOR)*.so.1.0 $(PYTHON3_IPK_DIR)/opt/lib/libpython3.so; \
+		do chmod 755 $$f; $(STRIP_COMMAND) $$f; chmod 555 $$f; done
 	for f in bin/2to3 ; \
 	    do mv $(PYTHON3_IPK_DIR)/opt/$$f $(PYTHON3_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-3.1\1/'`; done
 	install -d $(PYTHON3_IPK_DIR)/opt/local/bin

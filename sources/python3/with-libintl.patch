@@ -1,6 +1,6 @@
---- Python-3.1/Modules/_localemodule.c.orig	2009-06-07 08:29:46.000000000 -0700
-+++ Python-3.1/Modules/_localemodule.c	2009-06-29 10:07:57.000000000 -0700
-@@ -24,7 +24,7 @@
+--- Python-3.2a3/Modules/_localemodule.c.orig	2010-10-07 01:02:42.000000000 +0000
++++ Python-3.2a3/Modules/_localemodule.c	2010-10-13 02:47:25.470244213 +0000
+@@ -25,7 +25,7 @@
  #include <langinfo.h>
  #endif
  
@@ -9,7 +9,7 @@
  #include <libintl.h>
  #endif
  
-@@ -498,7 +498,7 @@
+@@ -492,7 +492,7 @@
  }
  #endif /* HAVE_LANGINFO_H */
  
@@ -18,7 +18,7 @@
  
  PyDoc_STRVAR(gettext__doc__,
  "gettext(msg) -> string\n"
-@@ -620,7 +620,7 @@
+@@ -626,7 +626,7 @@
    {"nl_langinfo", (PyCFunction) PyLocale_nl_langinfo,
     METH_VARARGS, nl_langinfo__doc__},
  #endif
