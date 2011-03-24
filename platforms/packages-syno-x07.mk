@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	aiccu \
 	amule \
 	asterisk14-chan-capi \
+	boost \
 	btg \
 	btpd \
 	busybox \
