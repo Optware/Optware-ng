@@ -16,3 +16,4 @@ BROKEN_PACKAGES = \
 	ivorbis-tools lcd4linux \
 	ldconfig puppy \
 	qemu \
+	samba35 \
