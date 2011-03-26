@@ -23,7 +23,7 @@
 ARIA2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aria2
 
 ARIA2_VERSION=$(strip \
-$(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 1.4.1, 1.10.8))
+$(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 1.4.1, 1.11.0))
 
 ARIA2_SOURCE=aria2-$(ARIA2_VERSION).tar.bz2
 ARIA2_DIR=aria2-$(ARIA2_VERSION)
