@@ -76,7 +76,7 @@ TOR_IPK=$(BUILD_DIR)/tor_$(TOR_VERSION)-$(TOR_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TOR_SOURCE):
-	$(WGET) -P $(@D) $(TOR_SITE)/$(@F) || \
+	$(WGET) --no-check-certificate -P $(@D) $(TOR_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
