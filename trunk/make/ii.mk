@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-II_SITE=http://code.suckless.org/dl/tools
-II_VERSION=1.4
+II_SITE=http://dl.suckless.org/tools
+II_VERSION=1.6
 II_SOURCE=ii-$(II_VERSION).tar.gz
 II_DIR=ii-$(II_VERSION)
 II_UNZIP=zcat
@@ -229,4 +229,4 @@ ii-dirclean:
 # Some sanity check for the package.
 #
 ii-check: $(II_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(II_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
