@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBSNDFILE_SITE=http://www.mega-nerd.com/libsndfile/files
-LIBSNDFILE_VERSION=1.0.23
+LIBSNDFILE_VERSION=1.0.24
 LIBSNDFILE_SOURCE=libsndfile-$(LIBSNDFILE_VERSION).tar.gz
 LIBSNDFILE_DIR=libsndfile-$(LIBSNDFILE_VERSION)
 LIBSNDFILE_UNZIP=zcat
@@ -107,7 +107,7 @@ libsndfile-source: $(DL_DIR)/$(LIBSNDFILE_SOURCE) $(LIBSNDFILE_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBSNDFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSNDFILE_SOURCE) $(LIBSNDFILE_PATCHES) make/libsndfile.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) flac-stage libvorbis-stage
 	rm -rf $(BUILD_DIR)/$(LIBSNDFILE_DIR) $(LIBSNDFILE_BUILD_DIR)
 	$(LIBSNDFILE_UNZIP) $(DL_DIR)/$(LIBSNDFILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBSNDFILE_PATCHES)" ; \
@@ -122,11 +122,13 @@ $(LIBSNDFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSNDFILE_SOURCE) $(LIBSNDFILE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBSNDFILE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBSNDFILE_LDFLAGS)" \
+                PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+                --disable-external-libs \
 		--disable-nls \
 		--disable-static \
 		--disable-flac \
