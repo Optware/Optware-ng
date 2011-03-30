@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 HELLO_SITE=http://ftp.gnu.org/gnu/hello
-HELLO_VERSION=2.5
+HELLO_VERSION=2.7
 HELLO_SOURCE=hello-$(HELLO_VERSION).tar.gz
 HELLO_DIR=hello-$(HELLO_VERSION)
 HELLO_UNZIP=zcat
