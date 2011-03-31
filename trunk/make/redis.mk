@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 REDIS_SITE=http://redis.googlecode.com/files
-REDIS_VERSION=2.0.4
+REDIS_VERSION ?= 2.2.2
 REDIS_SOURCE=redis-$(REDIS_VERSION).tar.gz
 REDIS_DIR=redis-$(REDIS_VERSION)
 REDIS_UNZIP=zcat
@@ -195,10 +195,16 @@ $(REDIS_IPK_DIR)/CONTROL/control:
 #
 $(REDIS_IPK): $(REDIS_BUILD_DIR)/.built
 	rm -rf $(REDIS_IPK_DIR) $(BUILD_DIR)/redis_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(REDIS_BUILD_DIR) DESTDIR=$(REDIS_IPK_DIR) install-strip
+ifeq (2.0.4, $(REDIS_VERSION))
 	install -d $(REDIS_IPK_DIR)/opt/bin
-	install -m 755 $(<D)/redis-benchmark $(<D)/redis-cli $(<D)/redis-server \
-		$(REDIS_IPK_DIR)/opt/bin/
+	install -m 755 $(<D)/redis-benchmark $(<D)/redis-cli $(<D)/redis-server $(REDIS_IPK_DIR)/opt/bin/
+else
+	$(MAKE) -C $(REDIS_BUILD_DIR) PREFIX=$(REDIS_IPK_DIR)/opt install \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(REDIS_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(REDIS_LDFLAGS)" \
+		;
+endif
 	$(STRIP_COMMAND) $(REDIS_IPK_DIR)/opt/bin/*
 	install -d $(REDIS_IPK_DIR)/opt/share/doc/redis/examples
 	install -m 755 $(<D)/redis.conf $(REDIS_IPK_DIR)/opt/share/doc/redis/examples/
