@@ -148,7 +148,7 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 		--disable-nls \
 		--disable-dbus \
 		--disable-tiff \
-		--with-openssl-libs=/lib \
+		--with-openssl-libs=/lib  \
 		--with-openssl-includes=/usr/include/openssl \
 		--without-java \
 		--without-perl \
