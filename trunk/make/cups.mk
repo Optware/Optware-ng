@@ -129,7 +129,7 @@ cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 
 $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cups.mk
 #	$(MAKE) libjpeg-host-stage libpng-host-stage
-	$(MAKE) openssl-host-stage
+#	$(MAKE) openssl-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D)
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test "$(HOST_BUILD_DIR)/$(CUPS_DIR)" != "$(@D)" ; \
@@ -148,8 +148,8 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 		--disable-nls \
 		--disable-dbus \
 		--disable-tiff \
-		--with-openssl-libs=$(HOST_STAGING_LIB_DIR) \
-		--with-openssl-includes=$(HOST_STAGING_INCLUDE_DIR) \
+		--with-openssl-libs=/lib \
+		--with-openssl-includes=/usr/include/openssl \
 		--without-java \
 		--without-perl \
 		--without-php \
