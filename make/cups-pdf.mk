@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CUPS-PDF_SITE=http://www.cups-pdf.de/src
-CUPS-PDF_VERSION=2.5.0
+CUPS-PDF_VERSION=2.5.1
 CUPS-PDF_SOURCE=cups-pdf_$(CUPS-PDF_VERSION).tar.gz
 CUPS-PDF_DIR=cups-pdf-$(CUPS-PDF_VERSION)
 CUPS-PDF_UNZIP=zcat
@@ -36,7 +36,7 @@ CUPS-PDF_CONFLICTS=
 #
 # CUPS-PDF_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS-PDF_IPK_VERSION=2
+CUPS-PDF_IPK_VERSION=1
 
 #
 # CUPS-PDF_CONFFILES should be a list of user-editable files
