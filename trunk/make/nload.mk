@@ -35,7 +35,7 @@ NLOAD_CONFLICTS=
 #
 # NLOAD_IPK_VERSION should be incremented when the ipk changes.
 #
-NLOAD_IPK_VERSION=1
+NLOAD_IPK_VERSION=2
 
 #
 # NLOAD_PATCHES should list any patches, in the the order in
@@ -110,7 +110,7 @@ $(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 		cat $(NLOAD_PATCHES) | patch -d $(BUILD_DIR)/$(NLOAD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(NLOAD_DIR) $(@D)
-	autoreconf --verbose $(@D)
+	autoreconf -vif $(@D)
 	(cd $(@D); \
 		sed -i -e 's|/etc/nload.conf|/opt/etc/nload.conf|' \
 			docs/nload.1.in src/main.cpp ; \
