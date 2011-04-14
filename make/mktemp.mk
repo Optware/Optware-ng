@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MKTEMP_SITE=ftp://ftp.cs.colorado.edu/pub/mktemp
-MKTEMP_VERSION=1.5
+MKTEMP_SITE=ftp://ftp.mktemp.org/pub/mktemp
+MKTEMP_VERSION=1.7
 MKTEMP_SOURCE=mktemp-$(MKTEMP_VERSION).tar.gz
 MKTEMP_DIR=mktemp-$(MKTEMP_VERSION)
 MKTEMP_UNZIP=zcat
@@ -41,7 +41,7 @@ MKTEMP_CONFLICTS=
 #
 # MKTEMP_IPK_VERSION should be incremented when the ipk changes.
 #
-MKTEMP_IPK_VERSION=2
+MKTEMP_IPK_VERSION=1
 
 #
 # MKTEMP_CONFFILES should be a list of user-editable files
