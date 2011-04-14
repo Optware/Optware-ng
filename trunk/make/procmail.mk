@@ -36,7 +36,7 @@ PROCMAIL_CONFLICTS=
 #
 # PROCMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-PROCMAIL_IPK_VERSION=3
+PROCMAIL_IPK_VERSION=4
 
 #
 # PROCMAIL_CONFFILES should be a list of user-editable files
@@ -77,8 +77,8 @@ PROCMAIL_IPK=$(BUILD_DIR)/procmail_$(PROCMAIL_VERSION)-$(PROCMAIL_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PROCMAIL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PROCMAIL_SITE)/$(PROCMAIL_SOURCE)
-
+	$(WGET) -P $(DL_DIR) $(PROCMAIL_SITE)/$(PROCMAIL_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PROCMAIL_SOURCE)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
