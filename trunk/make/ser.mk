@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-SER_SITE=ftp://ftp.berlios.de/pub/ser/0.8.14/src
 SER_VERSION=0.8.14
+SER_SITE=http://ftp.iptel.org/pub/ser/$(SER_VERSION)/src
 SER_SOURCE=ser-$(SER_VERSION)_src.tar.gz
 SER_DIR=ser-$(SER_VERSION)
 SER_UNZIP=zcat
@@ -35,7 +35,7 @@ SER_CONFLICTS=
 #
 # SER_IPK_VERSION should be incremented when the ipk changes.
 #
-SER_IPK_VERSION=4
+SER_IPK_VERSION=5
 
 #
 # SER_CONFFILES should be a list of user-editable files
