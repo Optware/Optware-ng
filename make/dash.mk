@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DASH_SITE=http://ftp.debian.org/debian/pool/main/d/dash
-DASH_VERSION=0.5.3
+DASH_VERSION=0.5.6.1
 DASH_SOURCE=dash_$(DASH_VERSION).orig.tar.gz
 DASH_DIR=dash-$(DASH_VERSION)
 DASH_UNZIP=zcat
