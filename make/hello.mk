@@ -190,6 +190,7 @@ $(HELLO_IPK): $(HELLO_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HELLO_IPK_DIR)/CONTROL/prerm
 #	echo $(HELLO_CONFFILES) | sed -e 's/ /\n/g' > $(HELLO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HELLO_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(HELLO_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
