@@ -211,6 +211,7 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	fi
 	echo $(<FOO>_CONFFILES) | sed -e 's/ /\n/g' > $(<FOO>_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(<FOO>_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(<FOO>_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
