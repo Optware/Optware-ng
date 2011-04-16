@@ -391,6 +391,7 @@ endif
 	$(MAKE) $(SAMBA35-SWAT_IPK_DIR)/CONTROL/control
 	echo $(SAMBA35-SWAT_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA35-SWAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA35-SWAT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SAMBA35_IPK_DIR) $(SAMBA35-DEV_IPK_DIR) $(SAMBA35-SWAT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
