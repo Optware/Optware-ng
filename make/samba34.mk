@@ -386,6 +386,7 @@ endif
 	$(MAKE) $(SAMBA34-SWAT_IPK_DIR)/CONTROL/control
 	echo $(SAMBA34-SWAT_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA34-SWAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA34-SWAT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SAMBA34_IPK_DIR) $(SAMBA34-DEV_IPK_DIR) $(SAMBA34-SWAT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
