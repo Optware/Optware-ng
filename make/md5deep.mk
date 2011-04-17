@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MD5DEEP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/md5deep
-MD5DEEP_VERSION=3.7
+MD5DEEP_VERSION=3.8
 MD5DEEP_SOURCE=md5deep-$(MD5DEEP_VERSION).tar.gz
 MD5DEEP_DIR=md5deep-$(MD5DEEP_VERSION)
 MD5DEEP_UNZIP=zcat
@@ -205,6 +205,7 @@ $(MD5DEEP_IPK): $(MD5DEEP_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MD5DEEP_IPK_DIR)/CONTROL/prerm
 	echo $(MD5DEEP_CONFFILES) | sed -e 's/ /\n/g' > $(MD5DEEP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MD5DEEP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(MD5DEEP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
