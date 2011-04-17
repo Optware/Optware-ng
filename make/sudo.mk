@@ -4,8 +4,8 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_UPSTREAM_VERSION=1.7.4p6
-SUDO_VERSION=1.7.4.6
+SUDO_UPSTREAM_VERSION=1.8.1p1
+SUDO_VERSION=1.8.1.1
 SUDO_SOURCE=sudo-$(SUDO_UPSTREAM_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_UPSTREAM_VERSION)
 SUDO_UNZIP=zcat
@@ -104,14 +104,15 @@ $(SUDO_IPK): $(SUDO_BUILD_DIR)/.built
 	    $(SUDO_IPK_DIR)/opt/bin/sudo \
 	    $(SUDO_IPK_DIR)/opt/bin/sudoreplay \
 	    $(SUDO_IPK_DIR)/opt/libexec/sudo_noexec.so \
+	    $(SUDO_IPK_DIR)/opt/libexec/sudoers.so \
 	    $(SUDO_IPK_DIR)/opt/sbin/visudo
 	install -d $(SUDO_IPK_DIR)/opt/share/doc/sudo
-	install -m 644 $(SUDO_BUILD_DIR)/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
+	install -m 644 $(<D)/doc/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
 	$(MAKE) $(SUDO_IPK_DIR)/CONTROL/control
 	install -m 644 $(SUDO_SOURCE_DIR)/postinst $(SUDO_IPK_DIR)/CONTROL/postinst
 	echo $(SUDO_CONFFILES) | sed -e 's/ /\n/g' > $(SUDO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR) && $(IPKG_BUILD) $(SUDO_IPK_DIR)
-
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SUDO_IPK_DIR)
 
 sudo-ipk: $(SUDO_IPK)
 
