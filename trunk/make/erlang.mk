@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R14B01
-ERLANG_VERSION=R14B.01
+ERLANG_UPSTREAM_VERSION=R14B02
+ERLANG_VERSION=R14B.02
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -478,6 +478,8 @@ endif
 		tar -C $(ERLANG-DOC-HTML_IPK_DIR)/opt/share/doc/erlang-doc-html -xvf -
 	$(MAKE) $(ERLANG-DOC-HTML_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERLANG-DOC-HTML_IPK_DIR)
+
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ERLANG_IPK_DIR) $(ERLANG-LIBS_IPK_DIR) $(ERLANG-MANPAGES_IPK_DIR) $(ERLANG-DOC-HTML_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
