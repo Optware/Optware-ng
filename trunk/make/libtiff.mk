@@ -22,7 +22,7 @@
 # http://www.remotesensing.org/libtiff/
 #
 LIBTIFF_SITE=http://download.osgeo.org/libtiff
-LIBTIFF_VERSION=3.9.4
+LIBTIFF_VERSION=3.9.5
 LIBTIFF_SOURCE=tiff-$(LIBTIFF_VERSION).tar.gz
 LIBTIFF_DIR=tiff-$(LIBTIFF_VERSION)
 LIBTIFF_UNZIP=zcat
@@ -208,6 +208,7 @@ $(LIBTIFF_IPK): $(LIBTIFF_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/lib/lib*.so
 	$(MAKE) $(LIBTIFF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTIFF_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBTIFF_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
