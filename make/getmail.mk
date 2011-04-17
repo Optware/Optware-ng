@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GETMAIL_SITE=http://pyropus.ca/software/getmail/old-versions
-GETMAIL_VERSION=4.17.0
+GETMAIL_VERSION=4.20.2
 PY-GETMAIL_SOURCE=getmail-$(GETMAIL_VERSION).tar.gz
 PY-GETMAIL_DIR=getmail-$(GETMAIL_VERSION)
 PY-GETMAIL_UNZIP=zcat
@@ -257,7 +257,7 @@ $(PY-GETMAIL-COMMON_IPK) $(PY25-GETMAIL_IPK) $(PY26-GETMAIL_IPK): $(PY-GETMAIL_B
 	rm -rf $(PY26-GETMAIL_IPK_DIR)/opt/share
 	$(MAKE) $(PY26-GETMAIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-GETMAIL_IPK_DIR)
-
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY-GETMAIL-COMMON_IPK_DIR) $(PY25-GETMAIL_IPK_DIR) $(PY26-GETMAIL_IPK_DIR)
 #
 # This is called from the top level makefile to create the IPK file.
 #
