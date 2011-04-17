@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HAPROXY_SITE=http://haproxy.1wt.eu/download/1.4/src
-HAPROXY_VERSION ?= 1.4.13
+HAPROXY_VERSION ?= 1.4.15
 HAPROXY_SOURCE=haproxy-$(HAPROXY_VERSION).tar.gz
 HAPROXY_DIR=haproxy-$(HAPROXY_VERSION)
 HAPROXY_UNZIP=zcat
@@ -207,6 +207,7 @@ $(HAPROXY_IPK): $(HAPROXY_BUILD_DIR)/.built
 	$(MAKE) $(HAPROXY_IPK_DIR)/CONTROL/control
 	echo $(HAPROXY_CONFFILES) | sed -e 's/ /\n/g' > $(HAPROXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HAPROXY_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(HAPROXY_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
