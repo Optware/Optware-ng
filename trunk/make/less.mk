@@ -5,7 +5,7 @@
 ###########################################################
 
 LESS_SITE=http://www.greenwoodsoftware.com/less/
-LESS_VERSION=436
+LESS_VERSION=443
 LESS_SOURCE=less-$(LESS_VERSION).tar.gz
 LESS_DIR=less-$(LESS_VERSION)
 LESS_UNZIP=zcat
@@ -162,6 +162,7 @@ $(LESS_IPK): $(LESS_BUILD_DIR)/.built
 			$(LESS_IPK_DIR)/CONTROL/postinst $(LESS_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LESS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LESS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
