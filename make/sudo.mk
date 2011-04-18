@@ -4,8 +4,8 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_UPSTREAM_VERSION=1.8.1p1
-SUDO_VERSION=1.8.1.1
+SUDO_UPSTREAM_VERSION?=1.8.1p1
+SUDO_VERSION?=1.8.1.1
 SUDO_SOURCE=sudo-$(SUDO_UPSTREAM_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_UPSTREAM_VERSION)
 SUDO_UNZIP=zcat
@@ -17,7 +17,7 @@ SUDO_DEPENDS=
 SUDO_SUGGESTS=
 SUDO_CONFLICTS=
 
-SUDO_IPK_VERSION=1
+SUDO_IPK_VERSION?=1
 
 SUDO_CONFFILES=/opt/etc/sudoers
 
@@ -104,10 +104,14 @@ $(SUDO_IPK): $(SUDO_BUILD_DIR)/.built
 	    $(SUDO_IPK_DIR)/opt/bin/sudo \
 	    $(SUDO_IPK_DIR)/opt/bin/sudoreplay \
 	    $(SUDO_IPK_DIR)/opt/libexec/sudo_noexec.so \
-	    $(SUDO_IPK_DIR)/opt/libexec/sudoers.so \
 	    $(SUDO_IPK_DIR)/opt/sbin/visudo
 	install -d $(SUDO_IPK_DIR)/opt/share/doc/sudo
+ifeq ($(SUDO_VERSION),1.7.4.6)
+	install -m 644 $(<D)/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
+else
+	$(STRIP_COMMAND) $(SUDO_IPK_DIR)/opt/libexec/sudoers.so
 	install -m 644 $(<D)/doc/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
+endif
 	$(MAKE) $(SUDO_IPK_DIR)/CONTROL/control
 	install -m 644 $(SUDO_SOURCE_DIR)/postinst $(SUDO_IPK_DIR)/CONTROL/postinst
 	echo $(SUDO_CONFFILES) | sed -e 's/ /\n/g' > $(SUDO_IPK_DIR)/CONTROL/conffiles
