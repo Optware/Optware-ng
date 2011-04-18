@@ -378,6 +378,8 @@ endif
 	$(MAKE) $(SAMBA3-SWAT_IPK_DIR)/CONTROL/control
 	echo $(SAMBA3-SWAT_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA3-SWAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA3-SWAT_IPK_DIR)
+	# cleanup
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SAMBA_IPK_DIR) $(SAMBA3-DEV_IPK_DIR) $(SAMBA3-SWAT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
