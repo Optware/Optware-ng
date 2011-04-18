@@ -321,6 +321,7 @@ $(SAMBA2_IPK): $(SAMBA2_BUILD_DIR)/.built
 	install -m 644 $(SAMBA2_SOURCE_DIR)/preinst $(SAMBA2_IPK_DIR)/CONTROL/preinst
 	echo $(SAMBA2_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA2_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SAMBA2_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
