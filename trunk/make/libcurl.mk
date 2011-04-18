@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.21.4
+LIBCURL_VERSION=7.21.5
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
@@ -51,8 +51,7 @@ LIBCURL_CONFFILES=#/opt/etc/libcurl.conf /opt/etc/init.d/SXXlibcurl
 # LIBCURL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBCURL_PATCHES=$(LIBCURL_SOURCE_DIR)/proxy.patch \
-		$(LIBCURL_SOURCE_DIR)/timeval-uclibc.patch
+LIBCURL_PATCHES=$(LIBCURL_SOURCE_DIR)/timeval-uclibc.patch
 
 #
 # If the compilation of the package requires additional
@@ -253,6 +252,7 @@ $(LIBCURL_IPK) $(LIBCURL-DEV_IPK): $(LIBCURL_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCURL_IPK_DIR)
 	$(MAKE) $(LIBCURL-DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCURL-DEV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBCURL_IPK_DIR) $(LIBCURL-DEV_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
