@@ -252,6 +252,7 @@ $(PYTHON27_IPK): $(PYTHON27_BUILD_DIR)/.built
 #	install -m 755 $(PYTHON27_SOURCE_DIR)/postinst $(PYTHON27_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(PYTHON27_SOURCE_DIR)/prerm $(PYTHON27_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON27_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PYTHON27_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

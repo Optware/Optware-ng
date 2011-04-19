@@ -250,6 +250,7 @@ endif
 #	install -m 755 $(PYTHON26_SOURCE_DIR)/postinst $(PYTHON26_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(PYTHON26_SOURCE_DIR)/prerm $(PYTHON26_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON26_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PYTHON26_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

@@ -250,6 +250,7 @@ $(PYTHON3_IPK): $(PYTHON3_BUILD_DIR)/.built
 #	install -m 755 $(PYTHON3_SOURCE_DIR)/postinst $(PYTHON3_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(PYTHON3_SOURCE_DIR)/prerm $(PYTHON3_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON3_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PYTHON3_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
