@@ -247,6 +247,7 @@ $(PYTHON24_IPK): $(PYTHON24_BUILD_DIR)/.built
 #	install -m 755 $(PYTHON24_SOURCE_DIR)/postinst $(PYTHON24_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(PYTHON24_SOURCE_DIR)/prerm $(PYTHON24_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON24_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PYTHON24_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
