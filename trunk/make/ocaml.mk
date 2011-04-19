@@ -175,6 +175,7 @@ $(OCAML_IPK): $(OCAML_BUILD_DIR)/.built
 	for so in `find $(OCAML_IPK_DIR)/opt/lib/ocaml -name '*.so'`; do $(STRIP_COMMAND) $$so; done
 	$(MAKE) $(OCAML_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OCAML_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(OCAML_IPK_DIR)
 
 ocaml-ipk: $(OCAML_IPK)
 
