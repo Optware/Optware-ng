@@ -50,7 +50,7 @@ LFTP_IPK_VERSION=1
 # LFTP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LFTP_PATCHES=
+LFTP_PATCHES=$(LFTP_SOURCE_DIR)/IPV6_V6ONLY.patch
 
 #
 # If the compilation of the package requires additional
