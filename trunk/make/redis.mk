@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 REDIS_SITE=http://redis.googlecode.com/files
-REDIS_VERSION ?= 2.2.4
+REDIS_VERSION ?= 2.2.5
 REDIS_SOURCE=redis-$(REDIS_VERSION).tar.gz
 REDIS_DIR=redis-$(REDIS_VERSION)
 REDIS_UNZIP=zcat
@@ -211,6 +211,7 @@ endif
 	$(MAKE) $(REDIS_IPK_DIR)/CONTROL/control
 	echo $(REDIS_CONFFILES) | sed -e 's/ /\n/g' > $(REDIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(REDIS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(REDIS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
