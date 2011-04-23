@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.7.4.4
+GIT_VERSION=1.7.4.5
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
@@ -347,6 +347,7 @@ endif
 	install $(<D)/contrib/completion/git-completion.bash $(GIT_IPK_DIR)/opt/etc/bash_completion.d
 	$(MAKE) $(GIT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT_IPK_DIR)
 
 $(GIT-LITE_IPK): $(GIT-LITE_BUILD_DIR)/.built
 	rm -rf $(GIT-LITE_IPK_DIR) $(BUILD_DIR)/git-lite_*_$(TARGET_ARCH).ipk
@@ -374,6 +375,7 @@ $(GIT-LITE_IPK): $(GIT-LITE_BUILD_DIR)/.built
 	rm -rf $(GIT-LITE_IPK_DIR)/opt/share/man
 	$(MAKE) $(GIT-LITE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-LITE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT-LITE_IPK_DIR)
 
 $(GIT-MANPAGES_IPK): $(DL_DIR)/$(GIT-MANPAGES_SOURCE)
 	rm -rf $(GIT-MANPAGES_IPK_DIR) $(BUILD_DIR)/git-manpages_*_$(TARGET_ARCH).ipk
@@ -381,11 +383,13 @@ $(GIT-MANPAGES_IPK): $(DL_DIR)/$(GIT-MANPAGES_SOURCE)
 	tar -xzvf $(DL_DIR)/$(GIT-MANPAGES_SOURCE) -C $(GIT-MANPAGES_IPK_DIR)/opt/man
 	$(MAKE) $(GIT-MANPAGES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-MANPAGES_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT-MANPAGES_IPK_DIR)
 
 $(GIT-SVN_IPK):
 	rm -rf $(GIT-SVN_IPK_DIR) $(BUILD_DIR)/git-svn_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(GIT-SVN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-SVN_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT-SVN_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
