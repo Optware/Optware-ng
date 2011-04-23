@@ -22,7 +22,7 @@
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
 SFR_SITE=http://www.sfr-fresh.com/unix/misc
-LFTP_VERSION=4.1.2
+LFTP_VERSION=4.2.2
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -214,6 +214,7 @@ $(LFTP_IPK): $(LFTP_BUILD_DIR)/.built
 	$(MAKE) $(LFTP_IPK_DIR)/CONTROL/control
 	echo $(LFTP_CONFFILES) | sed -e 's/ /\n/g' > $(LFTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LFTP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LFTP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
