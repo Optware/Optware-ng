@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION ?= 3.0.1
+BITLBEE_VERSION ?= 3.0.2
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
@@ -214,6 +214,7 @@ $(BITLBEE_IPK): $(BITLBEE_BUILD_DIR)/.built
 	#install -m 755 $(BITLBEE_SOURCE_DIR)/prerm $(BITLBEE_IPK_DIR)/CONTROL/prerm
 	echo $(BITLBEE_CONFFILES) | sed -e 's/ /\n/g' > $(BITLBEE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BITLBEE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(BITLBEE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
