@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BIP_SITE=http://bip.t1r.net/downloads
-BIP_VERSION=0.8.4
+BIP_SITE=https://projects.duckcorp.org/attachments/download/39
+BIP_VERSION=0.8.8
 BIP_SOURCE=bip-$(BIP_VERSION).tar.gz
 BIP_DIR=bip-$(BIP_VERSION)
 BIP_UNZIP=zcat
@@ -42,7 +42,7 @@ BIP_CONFLICTS=
 #
 # BIP_IPK_VERSION should be incremented when the ipk changes.
 #
-BIP_IPK_VERSION=2
+BIP_IPK_VERSION=1
 
 #
 # BIP_CONFFILES should be a list of user-editable files
@@ -80,7 +80,7 @@ BIP_IPK=$(BUILD_DIR)/bip_$(BIP_VERSION)-$(BIP_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BIP_SOURCE):
-	$(WGET) -P $(@D) $(BIP_SITE)/$(@F) || \
+	$(WGET) --no-check-certificate -P $(@D) $(BIP_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -135,6 +135,9 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 		--disable-nls \
 		--disable-static \
 	)
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+	    sed -i -e 's/ -fPIE//' $(@D)/Makefile; \
+	fi
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -206,6 +209,7 @@ $(BIP_IPK): $(BIP_BUILD_DIR)/.built
 	$(MAKE) $(BIP_IPK_DIR)/CONTROL/control
 	echo $(BIP_CONFFILES) | sed -e 's/ /\n/g' > $(BIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BIP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(BIP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
