@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 P910ND_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/p910nd
-P910ND_VERSION=0.92
+P910ND_VERSION=0.95
 P910ND_SOURCE=p910nd-$(P910ND_VERSION).tar.bz2
 P910ND_DIR=p910nd-$(P910ND_VERSION)
 P910ND_UNZIP=bzcat
