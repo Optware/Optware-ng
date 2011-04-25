@@ -77,7 +77,8 @@ PHPMYADMIN_IPK=$(BUILD_DIR)/phpmyadmin_$(PHPMYADMIN_VERSION)-$(PHPMYADMIN_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PHPMYADMIN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PHPMYADMIN_SITE)/$(PHPMYADMIN_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PHPMYADMIN_SITE)/$(PHPMYADMIN_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PHPMYADMIN_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -169,7 +170,7 @@ $(PHPMYADMIN_IPK): $(PHPMYADMIN_BUILD_DIR)/.built
 	#install -m 755 $(PHPMYADMIN_SOURCE_DIR)/prerm $(PHPMYADMIN_IPK_DIR)/CONTROL/prerm
 	echo $(PHPMYADMIN_CONFFILES) | sed -e 's/ /\n/g' > $(PHPMYADMIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHPMYADMIN_IPK_DIR)
-
+	$(WHAT_TO_DO_WITH_IPK_DIR)$(PHPMYADMIN_IPK_DIR)
 #
 # This is called from the top level makefile to create the IPK file.
 #
