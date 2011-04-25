@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ESOUND_SITE=ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2
-ESOUND_VERSION=0.2.38
+ESOUND_VERSION=0.2.41
 ESOUND_SOURCE=esound-$(ESOUND_VERSION).tar.gz
 ESOUND_DIR=esound-$(ESOUND_VERSION)
 ESOUND_UNZIP=zcat
@@ -88,7 +88,8 @@ ESOUND_IPK=$(BUILD_DIR)/esound_$(ESOUND_VERSION)-$(ESOUND_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ESOUND_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ESOUND_SITE)/$(ESOUND_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ESOUND_SITE)/$(ESOUND_SOURCE)|| \
+        $(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(ESOUND_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -211,6 +212,7 @@ $(ESOUND_IPK): $(ESOUND_BUILD_DIR)/.built
 	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesd.la
 	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesddsp.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESOUND_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR)$(ESOUND_BUILD_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
