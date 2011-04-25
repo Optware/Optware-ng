@@ -8,8 +8,8 @@
 # some additional software. E.g. for Debian testing this 
 # is libdb4.2, libdb4.2-dev, libpcre3, libpcre3-dev
 
-POSTFIX_SITE=ftp://netmirror.org/postfix.org/official
-POSTFIX_VERSION=2.3.6
+POSTFIX_SITE=http://de.postfix.org/ftpmirror/official/
+POSTFIX_VERSION=2.3.19
 POSTFIX_SOURCE=postfix-$(POSTFIX_VERSION).tar.gz
 POSTFIX_DIR=postfix-$(POSTFIX_VERSION)
 POSTFIX_UNZIP=zcat
@@ -21,7 +21,7 @@ POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils, openssl
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=3
+POSTFIX_IPK_VERSION=1
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
@@ -47,7 +47,8 @@ POSTFIX_DOC_IPK=$(BUILD_DIR)/postfix-doc_$(POSTFIX_VERSION)-$(POSTFIX_IPK_VERSIO
 .PHONY: postfix-source postfix-unpack postfix postfix-stage postfix-ipk postfix-clean postfix-dirclean postfix-check
 
 $(DL_DIR)/$(POSTFIX_SOURCE):
-	$(WGET) -P $(DL_DIR) $(POSTFIX_SITE)/$(POSTFIX_SOURCE)
+	$(WGET) -P $(DL_DIR) $(POSTFIX_SITE)/$(POSTFIX_SOURCE)||\
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(POSTFIX_SOURCE)
 
 postfix-source: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 
@@ -192,6 +193,7 @@ endif
 #	install -m 644 $(POSTFIX_SOURCE_DIR)/prerm $(POSTFIX_IPK_DIR)/CONTROL/prerm
 	echo $(POSTFIX_CONFFILES) | sed -e 's/ /\n/g' > $(POSTFIX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTFIX_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR)$(POSTFIX_IPK_DIR)
 
 postfix-ipk: $(POSTFIX_IPK)
 
