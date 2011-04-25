@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK16_ADDONS_SITE=http://downloads.digium.com/pub/asterisk
+ASTERISK16_ADDONS_SITE=http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/
 ASTERISK16_ADDONS_VERSION=1.6.2.2
 ASTERISK16_ADDONS_SOURCE=asterisk-addons-$(ASTERISK16_ADDONS_VERSION).tar.gz
 ASTERISK16_ADDONS_DIR=asterisk-addons-$(ASTERISK16_ADDONS_VERSION)
@@ -80,8 +80,8 @@ ASTERISK16_ADDONS_IPK=$(BUILD_DIR)/asterisk16-addons_$(ASTERISK16_ADDONS_VERSION
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ASTERISK16_ADDONS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ASTERISK16_ADDONS_SITE)/$(ASTERISK16_ADDONS_SOURCE)
-
+	$(WGET) -P $(DL_DIR) $(ASTERISK16_ADDONS_SITE)/$(ASTERISK16_ADDONS_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(ASTERISK16_ADDONS_SOURCE)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -233,7 +233,7 @@ $(ASTERISK16_ADDONS_IPK): $(ASTERISK16_ADDONS_BUILD_DIR)/.built
 	done
 
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK16_ADDONS_IPK_DIR)
-
+	$(WHAT_TO_DO_WITH_IPK_DIR)$(ASTERISK16_ADDONS_IPK_DIR) 
 #
 # This is called from the top level makefile to create the IPK file.
 #
