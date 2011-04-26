@@ -1,0 +1,13 @@
+--- tshark/configure.in.orig	2011-04-18 13:43:07.000000000 -0500
++++ tshark/configure.in	2011-04-26 17:03:26.093394623 -0500
+@@ -1634,8 +1634,8 @@ int main()
+ #endif
+ }], [AC_MSG_RESULT(ok);
+ have_inet_pton=yes], [AC_MSG_RESULT(broken);
+-have_inet_pton=no], [AC_MSG_RESULT(cross compiling, assume it is broken);
+-have_inet_pton=no])],
++have_inet_pton=no], [AC_MSG_RESULT(cross compiling, assume it is ok);
++have_inet_pton=yes])],
+ have_inet_pton=no)
+ if test "$have_inet_pton" = no; then
+   INET_PTON_LO="inet_pton.lo"

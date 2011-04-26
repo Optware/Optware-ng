@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TSHARK_SITE=http://www.wireshark.org/download/src
-TSHARK_VERSION ?= 1.4.3
+TSHARK_VERSION ?= 1.4.6
 TSHARK_SOURCE=wireshark-$(TSHARK_VERSION).tar.bz2
 TSHARK_DIR=wireshark-$(TSHARK_VERSION)
 TSHARK_UNZIP=bzcat
@@ -52,9 +52,9 @@ TSHARK_IPK_VERSION ?= 1
 # TSHARK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TSHARK_PATCHES=$(TSHARK_SOURCE_DIR)/configure.in.patch
+TSHARK_PATCHES=$(TSHARK_SOURCE_DIR)/configure.in_1.4.6.patch
 ifneq (1.2.12, $(TSHARK_VERSION))
-TSHARK_PATCHES += $(TSHARK_SOURCE_DIR)/old-gcc-compat.patch
+TSHARK_PATCHES += $(TSHARK_SOURCE_DIR)/packet-ntlmssp_1.4.6-old-gcc.patch
 endif
 
 #
@@ -225,6 +225,7 @@ $(TSHARK_IPK): $(TSHARK_BUILD_DIR)/.built
 #	install -m 755 $(TSHARK_SOURCE_DIR)/prerm $(TSHARK_IPK_DIR)/CONTROL/prerm
 	echo $(TSHARK_CONFFILES) | sed -e 's/ /\n/g' > $(TSHARK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TSHARK_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TSHARK_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
