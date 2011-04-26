@@ -23,6 +23,29 @@
 # one of `ls platforms/toolchain-*.mk | sed 's|^platforms/toolchain-\(.*\)\.mk$$|\1|'`
 OPTWARE_TARGET ?= nslu2
 
+PACKAGES_BROKEN_ON_64BIT_HOST = \
+apcupsd appweb atop php 9base alsa-oss appweb \
+php php-apache php-fcgi php-thttpd \
+bitlbee boost bridge-utils bsdgames bzflag \
+centerim cyrus-imapd dansguardian delegate dialog \
+eaccelerator libol elinks gift-opennap netatalk \
+taglib libopensync newsbeuter newt ettercap-ng lighttpd \
+ice nfs-server transcode esound ices0 nfs-utils \
+littlesmalltalk nget fcgi nload ffmpeg uemacs fish \
+loudmouth nrpe uncia freeze madplay iptraf ntop \
+ffmpeg ushare fuppes mc irssi util-linux-ng mdadm vlc \
+ivorbis-tools jabberd rrdcollect gambit-c obexftp \
+vorbis-tools rrdtool jove git launchtool gnu-smalltalk \
+ldconfig libao gloox libcdio libdlna libdvb gift-ares \
+opendchub openser wakelan opensips \
+xauth xaw xcursor xmu xt xterm xvid \
+ossp-js mediatomb memcached minidlna pango mkvtoolnix \
+phoneme-advanced motion picoLisp motor pkgconfig moe \
+player mpd mrtg msynctool mt-daapd mt-daapd-svn mtr \
+rssh rtorrent qemu rxtx sablevm qemu-libc-i386 quickie \
+samba2 sandbox scrobby sm sox srecord swi-prolog \
+ack avn colordiff ipcalc perlbal perlconsole \
+subvertpy slimserver squeezecenter py-codeville SpamAssassin py-pyro \
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
@@ -481,7 +504,11 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 PACKAGES ?= $(COMMON_NATIVE_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 else
-PACKAGES ?= $(filter-out $(NATIVE_PACKAGES) $(BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(SPECIFIC_PACKAGES))
+PACKAGES ?= $(filter-out \
+    $(NATIVE_PACKAGES) \
+    $(BROKEN_PACKAGES) \
+    $(if $(filter x86_64, $(HOST_MACHINE)), $(PACKAGES_BROKEN_ON_64BIT_HOST), ) \
+    , $(COMMON_CROSS_PACKAGES) $(SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 
