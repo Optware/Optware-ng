@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HPLIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hplip
-HPLIP_VERSION=2.8.12
+HPLIP_VERSION=3.11.3a
 HPLIP_SOURCE=hplip-$(HPLIP_VERSION).tar.gz
 HPLIP_DIR=hplip-$(HPLIP_VERSION)
 HPLIP_UNZIP=zcat
@@ -59,7 +59,7 @@ HPLIP_CONFFILES=/opt/etc/hp/hplip.conf \
 # compilation or linking flags, then list them here.
 #
 HPLIP_CPPFLAGS=
-HPLIP_LDFLAGS=
+HPLIP_LDFLAGS=-lm
 
 ifeq (, $(filter net-snmp, $(PACKAGES)))
 HPLIP_CONFIG_ARGS += --disable-network-build
@@ -129,6 +129,7 @@ endif
 		then mv $(BUILD_DIR)/$(HPLIP_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|/etc/|/opt&|; /halpredir/s|/usr/share|/opt/share|' $(@D)/Makefile.am ; \
+	cd $(@D) ; touch INSTALL NEWS README AUTHORS ChangeLog
 	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
