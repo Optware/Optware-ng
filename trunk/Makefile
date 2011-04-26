@@ -55,7 +55,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	libtorrent-rasterbar \
 	udpxy \
 	py-btpd-webui \
-	nmon \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -356,7 +355,8 @@ COMMON_CROSS_PACKAGES = \
 	neon net-snmp net-tools netatalk netcat nethack netio netrik \
 	newsbeuter newt \
 	nfs-server nfs-utils \
-	nget nginx ngrep nickle ninvaders nmap nload noip nostromo nrpe \
+	nget nginx ngrep nickle ninvaders nload \
+        nmap nmon noip nostromo nrpe \
 	ntfs-3g ntfsprogs \
 	ntop ntp ntpclient nttcp nut nvi nylon nzbget nzbget-testing \
 	ocaml oleo open2300 \
