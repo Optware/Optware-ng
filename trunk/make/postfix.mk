@@ -193,7 +193,7 @@ endif
 #	install -m 644 $(POSTFIX_SOURCE_DIR)/prerm $(POSTFIX_IPK_DIR)/CONTROL/prerm
 	echo $(POSTFIX_CONFFILES) | sed -e 's/ /\n/g' > $(POSTFIX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTFIX_IPK_DIR)
-	$(WHAT_TO_DO_WITH_IPK_DIR)$(POSTFIX_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(POSTFIX_IPK_DIR)
 
 postfix-ipk: $(POSTFIX_IPK)
 
