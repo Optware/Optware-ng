@@ -181,7 +181,7 @@ $(NMON_IPK_DIR)/CONTROL/control:
 $(NMON_IPK): $(NMON_BUILD_DIR)/.built
 	rm -rf $(NMON_IPK_DIR) $(BUILD_DIR)/nmon_*_$(TARGET_ARCH).ipk
 	install -d $(NMON_IPK_DIR)/opt/bin
-	install -m 755 -o root -g root $(NMON_BUILD_DIR)/nmon $(NMON_IPK_DIR)/opt/bin
+	install -m 755 $(NMON_BUILD_DIR)/nmon $(NMON_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(NMON_IPK_DIR)/opt/bin/nmon
 	$(MAKE) $(NMON_IPK_DIR)/CONTROL/control
 	echo $(NMON_CONFFILES) | sed -e 's/ /\n/g' > $(NMON_IPK_DIR)/CONTROL/conffiles
