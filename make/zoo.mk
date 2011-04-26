@@ -129,7 +129,7 @@ $(ZOO_IPK): $(ZOO_BUILD_DIR)/.built
 	install -m 644 $(ZOO_BUILD_DIR)/zoo.1  $(ZOO_IPK_DIR)/opt/share/man/man1
 	$(MAKE) $(ZOO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZOO_IPK_DIR)
-	$(WHAT_TO_DO_WITH_IPK_DIR)$(ZOO_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ZOO_IPK_DIR)
 #
 # This is called from the top level makefile to create the IPK file.
 #
