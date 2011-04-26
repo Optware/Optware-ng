@@ -502,6 +502,7 @@ $(ASTERISK18_IPK): $(ASTERISK18_BUILD_DIR)/.built
 	done
 
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK18_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ASTERISK18_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
