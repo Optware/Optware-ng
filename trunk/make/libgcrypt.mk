@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGCRYPT_SITE=ftp://ftp.gnupg.org/gcrypt/libgcrypt
-LIBGCRYPT_VERSION=1.4.5
+LIBGCRYPT_VERSION=1.4.6
 LIBGCRYPT_SOURCE=libgcrypt-$(LIBGCRYPT_VERSION).tar.bz2
 LIBGCRYPT_DIR=libgcrypt-$(LIBGCRYPT_VERSION)
 LIBGCRYPT_UNZIP=bzcat
