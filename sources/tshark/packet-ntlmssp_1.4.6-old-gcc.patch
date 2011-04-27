@@ -27,7 +27,7 @@
 +  / * Check to see if we already have state for this packet * /
 +  packet_ntlmssp_info = p_get_proto_data(pinfo->fd, proto_ntlmssp);
 +  if (packet_ntlmssp_info == NULL) {
-+    / * We don't have any packet state, so create one * /
++    / * We don''t have any packet state, so create one * /
 +    packet_ntlmssp_info = se_alloc0(sizeof(ntlmssp_packet_info));
 +    p_add_proto_data(pinfo->fd, proto_ntlmssp, packet_ntlmssp_info);
 +  }
@@ -65,7 +65,7 @@
 +    }
 +
 +    / * Store the decrypted contents in the packet state struct
-+       (of course at this point, they aren't decrypted yet) * /
++       (of course at this point, they aren''t decrypted yet) * /
 +    packet_ntlmssp_info->decrypted_payload = tvb_memdup(data_tvb, offset,
 +                                                        encrypted_block_length);
 +    decrypted_payloads = g_slist_prepend(decrypted_payloads,
@@ -76,7 +76,7 @@
 +	      encrypted_block_length);
 +
 +    / * We setup a temporary buffer so we can re-encrypt the payload after
-+       decryption.  This is to update the opposite peer's RC4 state * /
++       decryption.  This is to update the opposite peer''s RC4 state * /
 +    peer_block = ep_memdup(packet_ntlmssp_info->decrypted_payload, encrypted_block_length);
 +    crypt_rc4(rc4_state_peer, peer_block, encrypted_block_length);
 +
