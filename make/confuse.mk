@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CONFUSE_SITE=http://bzero.se/confuse
-CONFUSE_VERSION=2.6
+CONFUSE_SITE=http://download.savannah.gnu.org/releases/confuse
+CONFUSE_VERSION=2.7
 CONFUSE_SOURCE=confuse-$(CONFUSE_VERSION).tar.gz
 CONFUSE_DIR=confuse-$(CONFUSE_VERSION)
 CONFUSE_UNZIP=zcat
