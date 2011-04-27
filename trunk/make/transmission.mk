@@ -354,6 +354,7 @@ endif
 	$(MAKE) $(TRANSMISSION_IPK_DIR)/CONTROL/control
 	echo $(TRANSMISSION_CONFFILES) | sed -e 's/ /\n/g' > $(TRANSMISSION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSION_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSION_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
