@@ -210,6 +210,7 @@ $(P910ND_IPK): $(P910ND_BUILD_DIR)/.built
 	$(MAKE) $(P910ND_IPK_DIR)/CONTROL/control
 	echo $(P910ND_CONFFILES) | sed -e 's/ /\n/g' > $(P910ND_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(P910ND_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(P910ND_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
