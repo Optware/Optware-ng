@@ -48,13 +48,15 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=1
+TRANSMISSION_IPK_VERSION=2
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
 #TRANSMISSION_CONFFILES=/opt/etc/transmission.conf
 
 TRANSMISSION_PATCHES = $(TRANSMISSION_SOURCE_DIR)/int64_switch.patch
+
+TRANSMISSION_CONFIG_ENV ?=
 
 #
 # If the compilation of the package requires additional
@@ -201,6 +203,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSMISSION_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+                $(TRANSMISSION_CONFIG_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

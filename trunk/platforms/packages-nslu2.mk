@@ -17,3 +17,5 @@ BTPD_IPK_VERSION=2
 DBUS_LDFLAGS := -lpthread
 
 PSMISC_VERSION := 22.11
+
+TRANSMISSION_CONFIG_ENV := ac_cv_func_pread=no ac_cv_func_pwrite=no
