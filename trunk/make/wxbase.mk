@@ -207,6 +207,7 @@ $(WXBASE_IPK): $(WXBASE_BUILD_DIR)/.built
 		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)* wx-config
 	cp $(WXBASE_IPK_DIR)/opt/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(WXBASE_IPK_DIR)/opt/include/wx-2.8/wx/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WXBASE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(WXBASE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
