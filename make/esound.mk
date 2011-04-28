@@ -36,6 +36,7 @@ ESOUND_DESCRIPTION=The Enlighted Sound Daemon.
 ESOUND_SECTION=misc
 ESOUND_PRIORITY=optional
 ESOUND_DEPENDS=audiofile
+ESOUND_SUGGESTS=
 ESOUND_CONFLICTS=
 
 #
@@ -82,6 +83,8 @@ ESOUND_BUILD_DIR=$(BUILD_DIR)/esound
 ESOUND_SOURCE_DIR=$(SOURCE_DIR)/esound
 ESOUND_IPK_DIR=$(BUILD_DIR)/esound-$(ESOUND_VERSION)-ipk
 ESOUND_IPK=$(BUILD_DIR)/esound_$(ESOUND_VERSION)-$(ESOUND_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: esound-source esound-unpack esound esound-stage esound-ipk esound-clean esound-dirclean esound-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -184,6 +187,7 @@ $(ESOUND_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(ESOUND_SITE)/$(ESOUND_SOURCE)" >>$@
 	@echo "Description: $(ESOUND_DESCRIPTION)" >>$@
 	@echo "Depends: $(ESOUND_DEPENDS)" >>$@
+	@echo "Suggests: $(ESOUND_SUGGESTS)" >>$@
 	@echo "Conflicts: $(ESOUND_CONFLICTS)" >>$@
 
 #
@@ -212,7 +216,7 @@ $(ESOUND_IPK): $(ESOUND_BUILD_DIR)/.built
 	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesd.la
 	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesddsp.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESOUND_IPK_DIR)
-	$(WHAT_TO_DO_WITH_IPK_DIR)$(ESOUND_BUILD_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ESOUND_BUILD_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -223,6 +227,7 @@ esound-ipk: $(ESOUND_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 esound-clean:
+	rm -f $(ESOUND_BUILD_DIR)/.built
 	-$(MAKE) -C $(ESOUND_BUILD_DIR) clean
 
 #
