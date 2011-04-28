@@ -76,8 +76,8 @@ DMSETUP_IPK=$(BUILD_DIR)/dmsetup_$(DMSETUP_VERSION)-$(DMSETUP_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DMSETUP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DMSETUP_SITE)/$(DMSETUP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(DMSETUP_SOURCE)
+	$(WGET) -P $(@D) $(DMSETUP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ dmsetup-source: $(DL_DIR)/$(DMSETUP_SOURCE) $(DMSETUP_PATCHES)
 #
 $(DMSETUP_BUILD_DIR)/.configured: $(DL_DIR)/$(DMSETUP_SOURCE) $(DMSETUP_PATCHES) make/dmsetup.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(DMSETUP_DIR) $(DMSETUP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(DMSETUP_DIR) $(@D)
 	$(DMSETUP_UNZIP) $(DL_DIR)/$(DMSETUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DMSETUP_PATCHES)" ; \
 		then cat $(DMSETUP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(DMSETUP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DMSETUP_DIR)" != "$(DMSETUP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DMSETUP_DIR) $(DMSETUP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DMSETUP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DMSETUP_DIR) $(@D) ; \
 	fi
-	(cd $(DMSETUP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DMSETUP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DMSETUP_LDFLAGS)" \
@@ -128,7 +128,7 @@ $(DMSETUP_BUILD_DIR)/.configured: $(DL_DIR)/$(DMSETUP_SOURCE) $(DMSETUP_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(DMSETUP_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 dmsetup-unpack: $(DMSETUP_BUILD_DIR)/.configured
@@ -138,7 +138,7 @@ dmsetup-unpack: $(DMSETUP_BUILD_DIR)/.configured
 #
 $(DMSETUP_BUILD_DIR)/.built: $(DMSETUP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(DMSETUP_BUILD_DIR) DESTDIR=$(STAGING_PREFIX)
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_PREFIX)
 	touch $@
 
 #
@@ -151,7 +151,7 @@ dmsetup: $(DMSETUP_BUILD_DIR)/.built
 #
 $(DMSETUP_BUILD_DIR)/.staged: $(DMSETUP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(DMSETUP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install OWNER="" GROUP=""
 	touch $@
 
 dmsetup-stage: $(DMSETUP_BUILD_DIR)/.staged
@@ -199,6 +199,7 @@ $(DMSETUP_IPK): $(DMSETUP_BUILD_DIR)/.built
 	$(MAKE) $(DMSETUP_IPK_DIR)/CONTROL/control
 	echo $(DMSETUP_CONFFILES) | sed -e 's/ /\n/g' > $(DMSETUP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DMSETUP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(DMSETUP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -223,4 +224,4 @@ dmsetup-dirclean:
 # Some sanity check for the package.
 #
 dmsetup-check: $(DMSETUP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DMSETUP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
