@@ -26,7 +26,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OPENVPN_SITE=http://swupdate.openvpn.net/community/releases
-OPENVPN_VERSION=2.1.4
+OPENVPN_VERSION=2.2.0
 OPENVPN_SOURCE=openvpn-$(OPENVPN_VERSION).tar.gz
 OPENVPN_DIR=openvpn-$(OPENVPN_VERSION)
 OPENVPN_UNZIP=zcat
@@ -41,7 +41,7 @@ OPENVPN_CONFLICTS=
 #
 # OPENVPN_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENVPN_IPK_VERSION=2
+OPENVPN_IPK_VERSION=1
 
 #
 # OPENVPN_CONFFILES should be a list of user-editable files
@@ -236,6 +236,8 @@ $(OPENVPN_IPK): $(OPENVPN_BUILD_DIR)/.built
 #	install -m 644 $(OPENVPN_SOURCE_DIR)/prerm $(OPENVPN_IPK_DIR)/CONTROL
 	echo $(OPENVPN_CONFFILES) | sed -e 's/ /\n/g' > $(OPENVPN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENVPN_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(OPENVPN_IPK_DIR)
+
 
 #
 # This is called from the top level makefile to create the IPK file.
