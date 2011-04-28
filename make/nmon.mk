@@ -58,7 +58,7 @@ NMON_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NMON_CPPFLAGS=-g -D JFS -D GETUSER -Wall -D LARGEMEM
+NMON_CPPFLAGS=-g -D JFS -D GETUSER -Wall -D LARGEMEM -I$(STAGING_INCLUDE_DIR)/ncurses
 NMON_LDFLAGS=-lncurses
 
 #
