@@ -125,10 +125,12 @@ $(CRYPTSETUP_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTSETUP_SOURCE) $(CRYPTSETUP
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CRYPTSETUP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CRYPTSETUP_LDFLAGS)" \
+                PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+                --with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--prefix=/opt \
 		--mandir=/opt/man \
 		--disable-nls \
