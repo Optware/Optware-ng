@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NCDU_SITE=http://dev.yorhel.nl/download
-NCDU_VERSION=1.6
+NCDU_VERSION=1.7
 NCDU_SOURCE=ncdu-$(NCDU_VERSION).tar.gz
 NCDU_DIR=ncdu-$(NCDU_VERSION)
 NCDU_UNZIP=zcat
@@ -190,22 +190,10 @@ $(NCDU_IPK_DIR)/CONTROL/control:
 $(NCDU_IPK): $(NCDU_BUILD_DIR)/.built
 	rm -rf $(NCDU_IPK_DIR) $(BUILD_DIR)/ncdu_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NCDU_BUILD_DIR) DESTDIR=$(NCDU_IPK_DIR) install-strip
-#	install -d $(NCDU_IPK_DIR)/opt/etc/
-#	install -m 644 $(NCDU_SOURCE_DIR)/ncdu.conf $(NCDU_IPK_DIR)/opt/etc/ncdu.conf
-#	install -d $(NCDU_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NCDU_SOURCE_DIR)/rc.ncdu $(NCDU_IPK_DIR)/opt/etc/init.d/SXXncdu
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NCDU_IPK_DIR)/opt/etc/init.d/SXXncdu
 	$(MAKE) $(NCDU_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NCDU_SOURCE_DIR)/postinst $(NCDU_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NCDU_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NCDU_SOURCE_DIR)/prerm $(NCDU_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NCDU_IPK_DIR)/CONTROL/prerm
-#	if test -n "$(UPD-ALT_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
-			$(NCDU_IPK_DIR)/CONTROL/postinst $(NCDU_IPK_DIR)/CONTROL/prerm; \
-	fi
 	echo $(NCDU_CONFFILES) | sed -e 's/ /\n/g' > $(NCDU_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCDU_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(NCDU_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
