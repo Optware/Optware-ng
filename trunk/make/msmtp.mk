@@ -131,6 +131,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MSMTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MSMTP_LDFLAGS)" \
+                PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

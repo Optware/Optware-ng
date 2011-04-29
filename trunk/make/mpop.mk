@@ -55,7 +55,7 @@ MPOP_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MPOP_CPPFLAGS=
+MPOP_CPPFLAGS=-std=c99
 MPOP_LDFLAGS=-lgnutls -lgsasl
 MPOP_CONFIG_OPTS=
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
@@ -131,6 +131,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPOP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPOP_LDFLAGS)" \
+                PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
