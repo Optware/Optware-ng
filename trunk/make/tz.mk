@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TZ_SITE=ftp://elsie.nci.nih.gov/pub
-TZ_CODE_VERSION=2010n
-TZ_DATA_VERSION=2010n
+TZ_CODE_VERSION=2011g
+TZ_DATA_VERSION=2011g
 TZ_VERSION=$(TZ_DATA_VERSION)
 TZ_CODE_SOURCE=tzcode$(TZ_CODE_VERSION).tar.gz
 TZ_DATA_SOURCE=tzdata$(TZ_DATA_VERSION).tar.gz
@@ -215,18 +215,10 @@ $(TZ_IPK): $(TZ_BUILD_DIR)/.built
 	   $(TZ_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(TZ_IPK_DIR)/opt/sbin/*
 	sed -i -e 's|/usr/local|/opt|g' $(TZ_IPK_DIR)/opt/man/man*/*
-#	install -d $(TZ_IPK_DIR)/opt/etc/
-#	install -m 644 $(TZ_SOURCE_DIR)/tz.conf $(TZ_IPK_DIR)/opt/etc/tz.conf
-#	install -d $(TZ_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TZ_SOURCE_DIR)/rc.tz $(TZ_IPK_DIR)/opt/etc/init.d/SXXtz
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TZ_IPK_DIR)/opt/etc/init.d/SXXtz
 	$(MAKE) $(TZ_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TZ_SOURCE_DIR)/postinst $(TZ_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TZ_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TZ_SOURCE_DIR)/prerm $(TZ_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TZ_IPK_DIR)/CONTROL/prerm
 	echo $(TZ_CONFFILES) | sed -e 's/ /\n/g' > $(TZ_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TZ_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TZ_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
