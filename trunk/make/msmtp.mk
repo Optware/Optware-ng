@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSMTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/msmtp
-MSMTP_VERSION=1.4.23
+MSMTP_VERSION=1.4.24
 MSMTP_SOURCE=msmtp-$(MSMTP_VERSION).tar.bz2
 MSMTP_DIR=msmtp-$(MSMTP_VERSION)
 MSMTP_UNZIP=bzcat
@@ -214,6 +214,7 @@ $(MSMTP_IPK): $(MSMTP_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSMTP_IPK_DIR)/CONTROL/prerm
 	echo $(MSMTP_CONFFILES) | sed -e 's/ /\n/g' > $(MSMTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MSMTP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(MSMTP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
