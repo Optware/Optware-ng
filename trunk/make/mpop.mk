@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpop
-MPOP_VERSION=1.0.23
+MPOP_VERSION=1.0.24
 MPOP_SOURCE=mpop-$(MPOP_VERSION).tar.bz2
 MPOP_DIR=mpop-$(MPOP_VERSION)
 MPOP_UNZIP=bzcat
@@ -214,6 +214,7 @@ $(MPOP_IPK): $(MPOP_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MPOP_IPK_DIR)/CONTROL/prerm
 	echo $(MPOP_CONFFILES) | sed -e 's/ /\n/g' > $(MPOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MPOP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(MPOP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
