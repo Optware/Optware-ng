@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPG123_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpg123
-MPG123_VERSION=1.13.1
+MPG123_VERSION=1.13.3
 MPG123_SOURCE=mpg123-$(MPG123_VERSION).tar.bz2
 MPG123_DIR=mpg123-$(MPG123_VERSION)
 MPG123_UNZIP=bzcat
@@ -198,6 +198,7 @@ $(MPG123_IPK): $(MPG123_BUILD_DIR)/.built
 	$(MAKE) -C $(MPG123_BUILD_DIR) DESTDIR=$(MPG123_IPK_DIR) program_transform_name="" install-strip
 	$(MAKE) $(MPG123_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MPG123_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(MPG123_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
