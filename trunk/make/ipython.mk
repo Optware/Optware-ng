@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPYTHON_SITE=http://ipython.scipy.org/dist
-IPYTHON_VERSION=0.10.1
+IPYTHON_VERSION=0.10.2
 IPYTHON_SOURCE=ipython-$(IPYTHON_VERSION).tar.gz
 IPYTHON_DIR=ipython-$(IPYTHON_VERSION)
 IPYTHON_UNZIP=zcat
@@ -236,6 +236,7 @@ $(IPYTHON_PY25_IPK): $(IPYTHON_BUILD_DIR)/.built
 		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(IPYTHON_PY25_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY25_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(IPYTHON_PY25_IPK_DIR)
 
 $(IPYTHON_PY26_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON_PY26_IPK_DIR) $(BUILD_DIR)/py26-ipython_*_$(TARGET_ARCH).ipk
@@ -247,6 +248,7 @@ $(IPYTHON_PY26_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON_PY26_IPK_DIR)/opt/share
 	$(MAKE) $(IPYTHON_PY26_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY26_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(IPYTHON_PY26_IPK_DIR)
 
 $(IPYTHON-COMMON_IPK): $(IPYTHON_BUILD_DIR)/.built
 	(cd $(IPYTHON_BUILD_DIR)/2.6; \
@@ -256,6 +258,7 @@ $(IPYTHON-COMMON_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR)/opt/bin $(IPYTHON-COMMON_IPK_DIR)/opt/lib
 	$(MAKE) $(IPYTHON-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON-COMMON_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(IPYTHON-COMMON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
