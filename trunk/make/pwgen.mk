@@ -5,7 +5,7 @@
 ###########################################################
 #
 PWGEN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pwgen
-PWGEN_VERSION=2.04
+PWGEN_VERSION=2.06
 PWGEN_SOURCE=pwgen-$(PWGEN_VERSION).tar.gz
 PWGEN_DIR=pwgen-$(PWGEN_VERSION)
 PWGEN_UNZIP=zcat
@@ -148,6 +148,7 @@ $(PWGEN_IPK): $(PWGEN_BUILD_DIR)/.built
 	$(MAKE) $(PWGEN_IPK_DIR)/CONTROL/control
 	echo $(PWGEN_CONFFILES) | sed -e 's/ /\n/g' > $(PWGEN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PWGEN_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PWGEN_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
