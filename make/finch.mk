@@ -26,7 +26,7 @@ FINCH_CONFLICTS=
 #
 # FINCH_IPK_VERSION should be incremented when the ipk changes.
 #
-FINCH_IPK_VERSION=1
+FINCH_IPK_VERSION=2
 
 #
 # FINCH_CONFFILES should be a list of user-editable files
@@ -213,6 +213,7 @@ $(FINCH_IPK): $(FINCH_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FINCH_IPK_DIR)/CONTROL/prerm
 	echo $(FINCH_CONFFILES) | sed -e 's/ /\n/g' > $(FINCH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINCH_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(FINCH_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
