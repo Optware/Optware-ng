@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBDVDREAD_SITE=http://www.dtek.chalmers.se/groups/dvd/dist
+LIBDVDREAD_SITE=ftp://mirror.ovh.net/gentoo-distfiles/distfiles
 LIBDVDREAD_VERSION=0.9.7
 LIBDVDREAD_SOURCE=libdvdread-$(LIBDVDREAD_VERSION).tar.gz
 LIBDVDREAD_DIR=libdvdread-$(LIBDVDREAD_VERSION)
@@ -181,6 +181,7 @@ $(LIBDVDREAD_IPK): $(LIBDVDREAD_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBDVDREAD_BUILD_DIR) DESTDIR=$(LIBDVDREAD_IPK_DIR) install-strip
 	$(MAKE) $(LIBDVDREAD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDVDREAD_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBDVDREAD_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
