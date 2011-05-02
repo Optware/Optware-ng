@@ -5,7 +5,7 @@
 ###########################################################
 
 NANO_SITE=http://www.nano-editor.org/dist/v2.2
-NANO_VERSION=2.2.5
+NANO_VERSION=2.2.6
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -101,6 +101,7 @@ $(NANO_IPK): $(NANO_BUILD_DIR)/.built
 	$(MAKE) $(NANO_IPK_DIR)/CONTROL/control
 	echo $(NANO_CONFFILES) | sed -e 's/ /\n/g' > $(NANO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NANO_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(NANO_IPK_DIR)
 
 nano-ipk: $(NANO_IPK)
 
