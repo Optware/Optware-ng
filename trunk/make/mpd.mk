@@ -49,7 +49,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=1
+MPD_IPK_VERSION=2
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -289,6 +289,7 @@ $(MPD_IPK): $(MPD_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(MPD_CONFFILES) | sed -e 's/ /\n/g' > $(MPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MPD_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(MPD_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
