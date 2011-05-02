@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBDAEMON_SITE=http://0pointer.de/lennart/projects/libdaemon
-LIBDAEMON_VERSION=0.13
+LIBDAEMON_VERSION=0.14
 LIBDAEMON_SOURCE=libdaemon-$(LIBDAEMON_VERSION).tar.gz
 LIBDAEMON_DIR=libdaemon-$(LIBDAEMON_VERSION)
 LIBDAEMON_UNZIP=zcat
@@ -206,6 +206,7 @@ $(LIBDAEMON_IPK): $(LIBDAEMON_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDAEMON_IPK_DIR)/CONTROL/prerm
 	echo $(LIBDAEMON_CONFFILES) | sed -e 's/ /\n/g' > $(LIBDAEMON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDAEMON_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBDAEMON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
