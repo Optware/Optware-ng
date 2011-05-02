@@ -436,7 +436,9 @@ PACKAGES_OBSOLETED = cogito erl-escript libiconv metalog monotone \
 
 ##############
 
-HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
+HOST_MACHINE:=$(shell \
+if test x86_64 = `uname -m` -a 32-bit = `file /sbin/init | awk '{print $$3}'`; then echo i386 ; else uname -m; fi \
+| sed -e 's/i[3-9]86/i386/' )
 HOST_OS:=$(shell uname)
 
 # Directory location definitions
