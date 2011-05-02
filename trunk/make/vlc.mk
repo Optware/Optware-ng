@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VLC_VERSION=0.9.9a
-VLC_IPK_VERSION=1
+VLC_IPK_VERSION=2
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -301,6 +301,7 @@ $(VLC_IPK): $(VLC_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(VLC_CONFFILES) | sed -e 's/ /\n/g' > $(VLC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VLC_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(VLC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
