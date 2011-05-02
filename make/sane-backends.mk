@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 
-SANE_BACKENDS_RELEASE=1.0.21
+SANE_BACKENDS_RELEASE=1.0.22
 SANE_BACKENDS_IPK_VERSION=1
 
 # You should change the next two git variables TOGETHER
@@ -242,6 +242,7 @@ $(SANE_BACKENDS_IPK): $(SANE_BACKENDS_BUILD_DIR)/.built
 	install -m 755 $(SANE_BACKENDS_SOURCE_DIR)/prerm $(SANE_BACKENDS_IPK_DIR)/CONTROL/prerm
 	echo $(SANE_BACKENDS_CONFFILES) | sed -e 's/ /\n/g' > $(SANE_BACKENDS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SANE_BACKENDS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SANE_BACKENDS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
