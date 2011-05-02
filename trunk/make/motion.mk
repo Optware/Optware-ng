@@ -5,7 +5,7 @@
 ###########################################################
 
 MOTION_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/motion
-MOTION_VERSION=3.2.11.1
+MOTION_VERSION=3.2.12
 MOTION_SOURCE=motion-$(MOTION_VERSION).tar.gz
 MOTION_DIR=motion-$(MOTION_VERSION)
 MOTION_UNZIP=zcat
@@ -172,6 +172,7 @@ $(MOTION_IPK): $(MOTION_BUILD_DIR)/.built
 	install -m 755 $(MOTION_SOURCE_DIR)/prerm $(MOTION_IPK_DIR)/CONTROL/prerm
 	echo $(MOTION_CONFFILES) | sed -e 's/ /\n/g' > $(MOTION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOTION_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(MOTION_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
