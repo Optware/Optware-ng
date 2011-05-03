@@ -5,7 +5,7 @@
 #########################################################
 
 OPENSSH_SITE=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
-OPENSSH_VERSION=5.8p1
+OPENSSH_VERSION=5.8p2
 OPENSSH_SOURCE=openssh-$(OPENSSH_VERSION).tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
