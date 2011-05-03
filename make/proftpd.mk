@@ -21,7 +21,7 @@
 #
 PROFTPD_NAME=proftpd
 PROFTPD_SITE=ftp://ftp.proftpd.org/distrib/source
-PROFTPD_VERSION=1.3.3c
+PROFTPD_VERSION=1.3.3e
 PROFTPD_SOURCE=$(PROFTPD_NAME)-$(PROFTPD_VERSION).tar.bz2
 PROFTPD_DIR=$(PROFTPD_NAME)-$(PROFTPD_VERSION)
 PROFTPD_UNZIP=bzcat
@@ -249,6 +249,7 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	install -m 755 $(PROFTPD_SOURCE_DIR)/prerm $(PROFTPD_IPK_DIR)/CONTROL/prerm
 	echo $(PROFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(PROFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROFTPD_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PROFTPD_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
