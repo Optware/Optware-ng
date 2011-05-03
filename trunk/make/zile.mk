@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZILE_SITE=http://ftp.gnu.org/gnu/zile
-ZILE_VERSION=2.3.21
+ZILE_VERSION=2.3.24
 ZILE_SOURCE=zile-$(ZILE_VERSION).tar.gz
 ZILE_DIR=zile-$(ZILE_VERSION)
 ZILE_UNZIP=zcat
@@ -194,6 +194,7 @@ $(ZILE_IPK): $(ZILE_BUILD_DIR)/.built
 	$(MAKE) $(ZILE_IPK_DIR)/CONTROL/control
 	echo $(ZILE_CONFFILES) | sed -e 's/ /\n/g' > $(ZILE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZILE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ZILE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
