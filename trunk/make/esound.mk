@@ -121,10 +121,10 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(ESOUND_DIR) $(@D)
 	$(ESOUND_UNZIP) $(DL_DIR)/$(ESOUND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(ESOUND_PATCHES) | patch -d $(BUILD_DIR)/$(ESOUND_DIR) -p1
-	mv $(BUILD_DIR)/$(ESOUND_DIR) $(ESOUND_BUILD_DIR)
-	autoreconf -vif $(@D) -I $(STAGING_DIR)/opt/share/aclocal
-	sed -ie 's/artsc-config --cflags |//' $(ESOUND_BUILD_DIR)/configure
-	(cd $(ESOUND_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(ESOUND_DIR) $(@D)
+	autoreconf -vif $(@D) -I $(STAGING_PREFIX)/share/aclocal
+	sed -i -e 's/artsc-config --cflags |//' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESOUND_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ESOUND_LDFLAGS)" \
@@ -142,7 +142,7 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES) ma
 		--disable-alsa \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(ESOUND_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 esound-unpack: $(ESOUND_BUILD_DIR)/.configured
@@ -152,7 +152,7 @@ esound-unpack: $(ESOUND_BUILD_DIR)/.configured
 #
 $(ESOUND_BUILD_DIR)/.built: $(ESOUND_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(ESOUND_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -165,7 +165,7 @@ esound: $(ESOUND_BUILD_DIR)/.built
 #
 $(ESOUND_BUILD_DIR)/.staged: $(ESOUND_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(ESOUND_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	cp $(STAGING_DIR)/opt/bin/esd-config $(STAGING_DIR)/bin/esd-config
 	touch $@
 
@@ -176,7 +176,7 @@ esound-stage: $(ESOUND_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/esound
 #
 $(ESOUND_IPK_DIR)/CONTROL/control:
-	@install -d $(ESOUND_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: esound" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,7 +216,7 @@ $(ESOUND_IPK): $(ESOUND_BUILD_DIR)/.built
 	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesd.la
 	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesddsp.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESOUND_IPK_DIR)
-	$(WHAT_TO_DO_WITH_IPK_DIR) $(ESOUND_BUILD_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ESOUND_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -241,4 +241,4 @@ esound-dirclean:
 # Some sanity check for the package.
 #
 esound-check: $(ESOUND_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ESOUND_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
