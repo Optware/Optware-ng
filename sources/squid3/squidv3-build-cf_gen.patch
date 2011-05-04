@@ -1,0 +1,33 @@
+Index: squid-3.1.4/configure.in
+===================================================================
+--- configure.in	2010-05-30 17:21:49.000000000 +0400
++++ configure.in	2010-07-06 15:41:52.000000000 +0400
+@@ -2116,6 +2116,10 @@
+ 	;;
+ esac
+ 
++dnl Define BUILD_CXX
++BUILD_CXX="$BUILD_CXX"
++AC_SUBST(BUILD_CXX)
++
+ dnl Check for programs
+ AC_PROG_CPP
+ AC_PROG_INSTALL
+Index: squid-3.1.4/src/Makefile.am
+===================================================================
+--- src/Makefile.am	2010-05-30 17:21:11.000000000 +0400
++++ src/Makefile.am	2010-07-06 15:42:29.000000000 +0400
+@@ -751,6 +751,13 @@
+ squid.conf.default squid.conf.documented: cf_parser.cci
+ 	true
+ 
++BUILD_CXX ?= @BUILD_CXX@
++
++cf_gen$(EXEEXT): $(cf_gen_SOURCES) $(cf_gen_DEPENDENCIES)
++	$(BUILD_CXX) -o $@ $(srcdir)/cf_gen.cc \
++		$(top_srcdir)/lib/util.c $(top_srcdir)/compat/assert.cc \
++		-DNDEBUG -DBUILD_HOST_TOOL ${INCLUDES}
++
+ cf_parser.cci: cf.data cf_gen$(EXEEXT)
+ 	./cf_gen cf.data $(srcdir)/cf.data.depend
+ 
