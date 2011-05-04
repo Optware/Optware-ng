@@ -1,0 +1,39 @@
+#! /bin/sh
+
+case "$1" in
+    start)
+        echo -n "Starting proxy server: "
+        if [ -n "`pidof quotacheck`" ]; then
+           #you don't need it if you don't have quota check enable.
+           echo "Starting squid-cache server after delay for few mins:"
+           /opt/etc/squid/squid.delay-start.sh&
+        else
+           /opt/sbin/squid -f /opt/etc/squid/squid.conf
+           echo "done."
+        fi
+        echo "done."
+        ;;
+    stop)
+        echo -n "Stopping proxy server: "
+        /opt/sbin/squid -f /opt/etc/squid/squid.conf -k shutdown
+        echo "done."
+        ;;
+    reload|force-reload)
+        echo -n "Reloading proxy server configuration files: "
+        /opt/sbin/squid -f /opt/etc/squid/squid.conf -k reconfigure
+        echo "done."
+        ;;
+    restart)
+        echo -n "Restarting proxy server: "
+        /opt/sbin/squid -f /opt/etc/squid/squid.conf -k shutdown
+	sleep 2
+        /opt/sbin/squid -f /opt/etc/squid/squid.conf
+        echo "done."
+        ;;
+    *)
+        echo "Usage: /opt/etc/init.d/S80squid {start|stop|reload|force-reload|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
