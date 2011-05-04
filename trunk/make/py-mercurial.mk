@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MERCURIAL_VERSION=1.8.2
+PY-MERCURIAL_VERSION=1.8.3
 PY-MERCURIAL_SITE=http://mercurial.selenic.com/release
 PY-MERCURIAL_SOURCE=mercurial-$(PY-MERCURIAL_VERSION).tar.gz
 PY-MERCURIAL_DIR=mercurial-$(PY-MERCURIAL_VERSION)
@@ -289,6 +289,7 @@ $(PY25-MERCURIAL_IPK) $(PY26-MERCURIAL_IPK) $(PY27-MERCURIAL_IPK): $(PY-MERCURIA
 		do mv $$f `echo $$f | sed 's|$$|-py2.5|'`; done
 	$(MAKE) $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MERCURIAL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY25-MERCURIAL_IPK_DIR)
 	# 2.6
 	rm -rf $(PY26-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py26-mercurial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MERCURIAL_BUILD_DIR)/2.6; \
@@ -301,6 +302,7 @@ $(PY25-MERCURIAL_IPK) $(PY26-MERCURIAL_IPK) $(PY27-MERCURIAL_IPK): $(PY-MERCURIA
 	)
 	$(MAKE) $(PY26-MERCURIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MERCURIAL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY26-MERCURIAL_IPK_DIR)
 	# 2.7
 	rm -rf $(PY27-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py27-mercurial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MERCURIAL_BUILD_DIR)/2.7; \
@@ -315,6 +317,7 @@ $(PY25-MERCURIAL_IPK) $(PY26-MERCURIAL_IPK) $(PY27-MERCURIAL_IPK): $(PY-MERCURIA
 		do mv $$f `echo $$f | sed 's|$$|-py2.7|'`; done
 	$(MAKE) $(PY27-MERCURIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-MERCURIAL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY27-MERCURIAL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
