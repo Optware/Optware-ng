@@ -13,9 +13,9 @@
  
      echo " + $NGX_SYSTEM $NGX_RELEASE $NGX_MACHINE"
  
---- auto/feature.orig	2006-12-23 12:31:14.000000000 -0800
-+++ auto/feature	2007-06-15 22:01:55.000000000 -0700
-@@ -46,11 +46,14 @@
+--- auto/feature.orig	2010-11-25 03:04:03.000000000 -0800
++++ auto/feature	2011-05-03 22:24:55.000000000 -0700
+@@ -48,11 +48,14 @@
  
  if [ -x $NGX_AUTOTEST ]; then
  
@@ -31,7 +31,34 @@
                  echo " found"
                  ngx_found=yes
  
-@@ -65,7 +68,8 @@
+@@ -67,7 +70,7 @@
+ 
+         value)
+             # /bin/sh is used to intercept "Killed" or "Abort trap" messages
+-            if /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1; then
++            if test "$cross_compiling" != "yes" && /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1; then
+                 echo " found"
+                 ngx_found=yes
+ 
+@@ -78,6 +81,17 @@
+ #endif
+ 
+ END
++            elif test "$cross_compiling" =  "yes" && test -n "$ngx_feature_cache_value"; then
++                echo " found"
++                ngx_found=yes
++
++                cat << END >> $NGX_AUTO_CONFIG_H
++
++#ifndef $ngx_feature_name
++#define $ngx_feature_name  $ngx_feature_cache_value
++#endif
++
++END
+             else
+                 echo " found but is not working"
+             fi
+@@ -85,7 +99,8 @@
  
          bug)
              # /bin/sh is used to intercept "Killed" or "Abort trap" messages
