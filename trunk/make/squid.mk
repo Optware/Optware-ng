@@ -19,20 +19,20 @@
 #
 # You should change all these variables to suit your package.
 #
-SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.6
-SQUID_UPSTREAM_VERSION=2.6.STABLE23
-SQUID_VERSION=2.6.23
+SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.7
+SQUID_UPSTREAM_VERSION=2.7.STABLE9
+SQUID_VERSION=2.7.9
 SQUID_SOURCE=squid-$(SQUID_UPSTREAM_VERSION).tar.bz2
 SQUID_DIR=squid-$(SQUID_UPSTREAM_VERSION)
 SQUID_UNZIP=bzcat
 
 SQUID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-SQUID_DESCRIPTION=Full-featured Web proxy cache.
+SQUID_DESCRIPTION=Full-featured Web proxy cache, with smaller footprint than 3.x
 SQUID_SECTION=web
 SQUID_PRIORITY=optional
 SQUID_DEPENDS=
 SQUID_SUGGESTS=
-SQUID_CONFLICTS=
+SQUID_CONFLICTS=squid3
 
 # override SQUID_IPK_VERSION for target specific feeds
 SQUID_IPK_VERSION ?= 1
@@ -273,6 +273,7 @@ $(SQUID_IPK): $(SQUID_BUILD_DIR)/.built
 	install -m 644 $(SQUID_SOURCE_DIR)/postinst $(SQUID_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SQUID_SOURCE_DIR)/preinst $(SQUID_IPK_DIR)/CONTROL/preinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQUID_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SQUID_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
