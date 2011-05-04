@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MRTG_SITE=http://oss.oetiker.ch/mrtg/pub/
-MRTG_VERSION=2.17.0
+MRTG_VERSION=2.17.2
 MRTG_SOURCE=mrtg-$(MRTG_VERSION).tar.gz
 MRTG_DIR=mrtg-$(MRTG_VERSION)
 MRTG_UNZIP=zcat
@@ -199,6 +199,7 @@ $(MRTG_IPK): $(MRTG_BUILD_DIR)/.built
 #	install -m 755 $(MRTG_SOURCE_DIR)/prerm $(MRTG_IPK_DIR)/CONTROL/prerm
 	echo $(MRTG_CONFFILES) | sed -e 's/ /\n/g' > $(MRTG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MRTG_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(MRTG_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
