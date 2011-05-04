@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.8.54
+NGINX_VERSION=1.0.1
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -63,6 +63,7 @@ NGX_RELEASE=$(if $(filter module-init-tools, $(PACKAGES)),2.6,2.4) \
 NGINX_CONFIGURE_ENV+=\
 cross_compiling=yes \
 ngx_cache_NGX_HAVE_STRERROR_R=no \
+ngx_cache_NGX_SYS_NERR=sys_nerr \
 ngx_cache_sizeof_int=4 \
 ngx_cache_sizeof_long=4 \
 ngx_cache_sizeof_long_long=8 \
@@ -265,6 +266,7 @@ $(NGINX_IPK): $(NGINX_BUILD_DIR)/.built
 	install -m 755 $(NGINX_SOURCE_DIR)/prerm $(NGINX_IPK_DIR)/CONTROL/prerm
 	echo $(NGINX_CONFFILES) | sed -e 's/ /\n/g' > $(NGINX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NGINX_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(NGINX_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
