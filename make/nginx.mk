@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=1.0.1
+NGINX_VERSION?=1.0.1
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -36,7 +36,7 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION=1
+NGINX_IPK_VERSION?=1
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
@@ -55,7 +55,7 @@ NGINX_CONFFILES=\
 NGINX_PATCHES=
 
 ifneq ($(HOSTCC), $(TARGET_CC))
-NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/cross-configure.patch
+NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/cross-configure$(if $(filter 0.8.54, $(NGINX_VERSION)),-$(NGINX_VERSION),).patch
 
 NGINX_CONFIGURE_ENV=NGX_SYSTEM=Linux NGX_MACHINE=$(TARGET_ARCH) \
 NGX_RELEASE=$(if $(filter module-init-tools, $(PACKAGES)),2.6,2.4) \
