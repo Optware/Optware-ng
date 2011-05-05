@@ -264,7 +264,14 @@ $(SQUID3_IPK): $(SQUID3_BUILD_DIR)/.built
 	$(MAKE) -C $(SQUID3_BUILD_DIR) DESTDIR=$(SQUID3_IPK_DIR) install
 	cd $(SQUID3_IPK_DIR)/opt; \
 	$(STRIP_COMMAND) bin/squidclient sbin/squid \
-		libexec/cachemgr.cgi libexec/ncsa_auth libexec/unlinkd
+		libexec/cachemgr.cgi libexec/ncsa_auth libexec/unlinkd \
+		libexec/digest_pw_auth \
+		libexec/diskd \
+		libexec/fakeauth_auth \
+		libexec/ip_user_check \
+		libexec/ntlm_smb_lm_auth \
+		libexec/squid_unix_group \
+		;
 	install -d $(SQUID3_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SQUID3_SOURCE_DIR)/rc.squid $(SQUID3_IPK_DIR)/opt/etc/init.d/S80squid
 	ln -sf /opt/etc/init.d/S80squid $(SQUID3_IPK_DIR)/opt/etc/init.d/K80squid 
