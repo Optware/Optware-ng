@@ -83,7 +83,7 @@ TINYPROXY_IPK=$(BUILD_DIR)/tinyproxy_$(TINYPROXY_VERSION)-$(TINYPROXY_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TINYPROXY_SOURCE):
-	$(WGET) --no-check-certificate -P $(@D) $(TINYPROXY_SITE)/$(@F) ||
+	$(WGET) --no-check-certificate -P $(@D) $(TINYPROXY_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
