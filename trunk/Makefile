@@ -52,7 +52,6 @@ subvertpy slimserver squeezecenter py-codeville SpamAssassin py-pyro \
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	btg \
-	jfsutils \
 	libtorrent-rasterbar \
 	udpxy \
 	py-btpd-webui \
@@ -313,7 +312,7 @@ COMMON_CROSS_PACKAGES = \
 	ink \
 	ipac-ng iperf ipkg-web iptables iptraf iputils-arping \
 	ircd-hybrid irssi ivorbis-tools \
-	jabberd jamvm jed jikes jove joe \
+	jabberd jamvm jed jfsutils jikes jove joe \
 	keychain kismet kissdx knock \
 	lame launchtool lcd4linux ldconfig leafnode less lftp lha \
 	liba52 libao libart libassuan libbt \

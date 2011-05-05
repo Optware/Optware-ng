@@ -88,14 +88,13 @@ jfsutils-source: $(DL_DIR)/$(JFSUTILS_SOURCE) $(JFSUTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(JFSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(JFSUTILS_SOURCE) $(JFSUTILS_PATCHES)
+$(JFSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(JFSUTILS_SOURCE) $(JFSUTILS_PATCHES) make/jfsutils.mk
 	$(MAKE) e2fsprogs-stage
-	rm -rf $(BUILD_DIR)/$(JFSUTILS_DIR) $(JFSUTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(JFSUTILS_DIR) $(@D)
 	$(JFSUTILS_UNZIP) $(DL_DIR)/$(JFSUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	chmod u+w $(BUILD_DIR)/$(JFSUTILS_DIR)/*
-	mv $(BUILD_DIR)/$(JFSUTILS_DIR) $(JFSUTILS_BUILD_DIR)
-	cd $(JFSUTILS_BUILD_DIR)
-	(cd $(JFSUTILS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(JFSUTILS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) "  \
 		LDFLAGS="$(STAGING_LDFLAGS) " \
@@ -107,8 +106,7 @@ $(JFSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(JFSUTILS_SOURCE) $(JFSUTILS_PATCH
 		--prefix=/opt \
   		--libdir=/opt/lib          \
 	)
-
-	touch $(JFSUTILS_BUILD_DIR)/.configured
+	touch $@
 
 jfsutils-unpack: $(JFSUTILS_BUILD_DIR)/.configured
 
@@ -117,10 +115,6 @@ jfsutils-unpack: $(JFSUTILS_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(JFSUTILS_BUILD_DIR)/.built: $(JFSUTILS_BUILD_DIR)/.configured
-#	rm -f $@
-#	$(MAKE) -C $(@D)
-#	touch $@
-
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -140,7 +134,7 @@ jfsutils: $(JFSUTILS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/jfsutils
 #
 $(JFSUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(JFSUTILS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: jfsutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -167,7 +161,7 @@ $(JFSUTILS_IPK_DIR)/CONTROL/control:
 $(JFSUTILS_IPK): $(JFSUTILS_BUILD_DIR)/.built
 	rm -rf $(JFSUTILS_IPK_DIR) $(BUILD_DIR)/jfsutils_*_$(TARGET_ARCH).ipk
 	install -d $(JFSUTILS_IPK_DIR)/opt/sbin
-	$(MAKE) -C $(JFSUTILS_BUILD_DIR) DESTDIR=$(JFSUTILS_IPK_DIR) install
+	$(MAKE) -C $(JFSUTILS_BUILD_DIR) DESTDIR=$(JFSUTILS_IPK_DIR) install-strip
 	$(MAKE) $(JFSUTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JFSUTILS_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(JFSUTILS_IPK_DIR)
@@ -189,3 +183,9 @@ jfsutils-clean:
 #
 jfsutils-dirclean:
 	rm -rf $(BUILD_DIR)/$(JFSUTILS_DIR) $(JFSUTILS_BUILD_DIR) $(JFSUTILS_IPK_DIR) $(JFSUTILS_IPK)
+
+#
+# Some sanity check for the package.
+#
+jfsutils-check: $(JFSUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
