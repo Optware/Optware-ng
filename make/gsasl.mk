@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GSASL_SITE=http://mirrors.kernel.org/gnu/gsasl
-GSASL_VERSION=1.4.2
+GSASL_VERSION=1.6.1
 GSASL_SOURCE=gsasl-$(GSASL_VERSION).tar.gz
 GSASL_DIR=gsasl-$(GSASL_VERSION)
 GSASL_UNZIP=zcat
@@ -232,6 +232,7 @@ $(LIBGSASL_IPK): $(GSASL_BUILD_DIR)/.built
 	rm -f $(LIBGSASL_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(LIBGSASL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGSASL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBGSASL_IPK_DIR)
 
 $(GSASL_IPK): $(GSASL_BUILD_DIR)/.built
 	rm -rf $(GSASL_IPK_DIR) $(BUILD_DIR)/gsasl_*_$(TARGET_ARCH).ipk
@@ -242,6 +243,7 @@ $(GSASL_IPK): $(GSASL_BUILD_DIR)/.built
 	$(MAKE) $(GSASL_IPK_DIR)/CONTROL/control
 	echo $(GSASL_CONFFILES) | sed -e 's/ /\n/g' > $(GSASL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GSASL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GSASL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
