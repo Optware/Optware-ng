@@ -260,7 +260,7 @@ $(SQUID3_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(SQUID3_IPK): $(SQUID3_BUILD_DIR)/.built
-	rm -rf $(SQUID3_IPK_DIR) $(BUILD_DIR)/squid_*_$(TARGET_ARCH).ipk
+	rm -rf $(SQUID3_IPK_DIR) $(BUILD_DIR)/squid3_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQUID3_BUILD_DIR) DESTDIR=$(SQUID3_IPK_DIR) install
 	cd $(SQUID3_IPK_DIR)/opt; \
 	$(STRIP_COMMAND) bin/squidclient sbin/squid \
