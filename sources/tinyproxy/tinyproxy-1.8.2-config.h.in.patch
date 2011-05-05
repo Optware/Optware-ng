@@ -1,0 +1,18 @@
+--- config.h.in.orig	2011-04-10 12:04:21.245546887 -0500
++++ config.h.in	2011-04-10 12:02:21.855543307 -0500
+@@ -304,13 +304,13 @@
+ #undef int32_t
+ 
+ /* Define to rpl_malloc if the replacement function should be used. */
+-#undef malloc
++/*#undef malloc
+ 
+ /* Define to `int' if <sys/types.h> does not define. */
+ #undef pid_t
+ 
+ /* Define to rpl_realloc if the replacement function should be used. */
+-#undef realloc
++/*#undef realloc
+ 
+ /* Define to `unsigned int' if <sys/types.h> does not define. */
+ #undef size_t
