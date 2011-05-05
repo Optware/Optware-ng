@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TINYPROXY_SITE=http://www.banu.com/pub/tinyproxy/1.6
-TINYPROXY_VERSION=1.6.4
+TINYPROXY_SITE=http://www.banu.com/pub/tinyproxy/1.8
+TINYPROXY_VERSION=1.8.2
 TINYPROXY_SOURCE=tinyproxy-$(TINYPROXY_VERSION).tar.gz
 TINYPROXY_DIR=tinyproxy-$(TINYPROXY_VERSION)
 TINYPROXY_UNZIP=zcat
@@ -40,17 +40,17 @@ TINYPROXY_CONFLICTS=
 #
 # TINYPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-TINYPROXY_IPK_VERSION=3
+TINYPROXY_IPK_VERSION=1
 
 #
 # TINYPROXY_CONFFILES should be a list of user-editable files
-TINYPROXY_CONFFILES=/opt/etc/tinyproxy/tinyproxy.conf
+TINYPROXY_CONFFILES=/opt/etc/tinyproxy.conf
 
 #
 # TINYPROXY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#TINYPROXY_PATCHES=$(TINYPROXY_SOURCE_DIR)/configure.patch
+TINYPROXY_PATCHES=$(TINYPROXY_SOURCE_DIR)/tinyproxy-1.8.2-config.h.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -134,7 +134,8 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-shared \
-		--enable-transparent-proxy \
+		--enable-transparent \
+		--enable-regexcheck=no \
 		--disable-nls \
 	)
 #		--disable-static \
@@ -212,6 +213,7 @@ $(TINYPROXY_IPK): $(TINYPROXY_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TINYPROXY_IPK_DIR)/CONTROL/prerm
 	echo $(TINYPROXY_CONFFILES) | sed -e 's/ /\n/g' > $(TINYPROXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TINYPROXY_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TINYPROXY_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
