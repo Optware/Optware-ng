@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SIPROXD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/siproxd
-SIPROXD_VERSION=0.7.2
+SIPROXD_VERSION=0.8.0
 SIPROXD_SOURCE=siproxd-$(SIPROXD_VERSION).tar.gz
 SIPROXD_DIR=siproxd-$(SIPROXD_VERSION)
 SIPROXD_UNZIP=zcat
@@ -190,6 +190,7 @@ $(SIPROXD_IPK): $(SIPROXD_BUILD_DIR)/.built
 	install -m 755 $(SIPROXD_SOURCE_DIR)/prerm $(SIPROXD_IPK_DIR)/CONTROL/prerm
 	echo $(SIPROXD_CONFFILES) | sed -e 's/ /\n/g' > $(SIPROXD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SIPROXD_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SIPROXD_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
