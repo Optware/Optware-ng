@@ -138,6 +138,7 @@ endif
 		--enable-regexcheck=no \
 		--disable-nls \
 	)
+	sed -i -e '/docs \\/d' $(@D)/Makefile
 #		--disable-static \
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
