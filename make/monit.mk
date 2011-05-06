@@ -5,7 +5,7 @@
 ###########################################################
 
 MONIT_SITE=http://www.tildeslash.com/monit/dist/
-MONIT_VERSION=5.2.4
+MONIT_VERSION=5.2.5
 MONIT_SOURCE=monit-$(MONIT_VERSION).tar.gz
 MONIT_DIR=monit-$(MONIT_VERSION)
 MONIT_UNZIP=zcat
@@ -20,7 +20,7 @@ MONIT_CONFLICTS=
 #
 # MONIT_IPK_VERSION should be incremented when the ipk changes.
 #
-MONIT_IPK_VERSION=2
+MONIT_IPK_VERSION=1
 
 #
 # MONIT_CONFFILES should be a list of user-editable files
@@ -61,7 +61,8 @@ MONIT_IPK=$(BUILD_DIR)/monit_$(MONIT_VERSION)-$(MONIT_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MONIT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MONIT_SITE)/$(MONIT_SOURCE)
+	$(WGET) -P $(@D) $(MONIT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -84,16 +85,16 @@ monit-source: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES)
 #
 $(MONIT_BUILD_DIR)/.configured: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES) make/monit.mk
 	$(MAKE) openssl-stage 
-	rm -rf $(BUILD_DIR)/$(MONIT_DIR) $(MONIT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MONIT_DIR) $(@D)
 	$(MONIT_UNZIP) $(DL_DIR)/$(MONIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MONIT_PATCHES)" ; \
 		then cat $(MONIT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MONIT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MONIT_DIR)" != "$(MONIT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MONIT_DIR) $(MONIT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MONIT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MONIT_DIR) $(@D) ; \
 	fi
-	(cd $(MONIT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MONIT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MONIT_LDFLAGS)" \
@@ -107,7 +108,7 @@ $(MONIT_BUILD_DIR)/.configured: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES) make/
 		--with-ssl-incl-dir=$(STAGING_PREFIX)/include \
 		--with-ssl-lib-dir=$(STAGING_PREFIX)/lib \
 	)
-	touch $(MONIT_BUILD_DIR)/.configured
+	touch $@
 
 monit-unpack: $(MONIT_BUILD_DIR)/.configured
 
@@ -115,9 +116,9 @@ monit-unpack: $(MONIT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MONIT_BUILD_DIR)/.built: $(MONIT_BUILD_DIR)/.configured
-	rm -f $(MONIT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(MONIT_BUILD_DIR)
-	touch $(MONIT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -129,7 +130,7 @@ monit: $(MONIT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/monit
 #
 $(MONIT_IPK_DIR)/CONTROL/control:
-	@install -d $(MONIT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: monit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -162,6 +163,7 @@ $(MONIT_IPK): $(MONIT_BUILD_DIR)/.built
 	install -m 755 $(MONIT_SOURCE_DIR)/prerm $(MONIT_IPK_DIR)/CONTROL/prerm
 	echo $(MONIT_CONFFILES) | sed -e 's/ /\n/g' > $(MONIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MONIT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(MONIT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -186,4 +188,4 @@ monit-dirclean:
 # Some sanity check for the package.
 #
 monit-check: $(MONIT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MONIT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
