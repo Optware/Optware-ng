@@ -29,6 +29,7 @@ BROKEN_PACKAGES = \
 	recordext renderext \
 	sandbox \
 	sdl slrn \
+	squid3 \
 	taglib \
 	x11 xdpyinfo xext xpm xtst \
 	clinkcc libopensync msynctool obexftp \
