@@ -26,10 +26,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SIPROXD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/siproxd
-SIPROXD_VERSION=0.8.0
-SIPROXD_SOURCE=siproxd-$(SIPROXD_VERSION).tar.gz
-SIPROXD_DIR=siproxd-$(SIPROXD_VERSION)
+#SIPROXD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/siproxd
+SIPROXD_SITE=http://siproxd.tuxworld.ch
+SIPROXD_UPSTREAM_VERSION=06May2011
+SIPROXD_VERSION=0.8.0+$(SIPROXD_UPSTREAM_VERSION)
+SIPROXD_SOURCE=siproxd-$(SIPROXD_UPSTREAM_VERSION).tar.gz
+SIPROXD_DIR=siproxd-0.8.1dev
 SIPROXD_UNZIP=zcat
 SIPROXD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SIPROXD_DESCRIPTION=Siproxd is a proxy/masquerading daemon for the SIP protocol
@@ -118,7 +120,6 @@ $(SIPROXD_BUILD_DIR)/.configured: $(DL_DIR)/$(SIPROXD_SOURCE) $(SIPROXD_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-doc \
 		--disable-nls \
 		--disable-static \
 	)
