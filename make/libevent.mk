@@ -5,7 +5,7 @@
 #############################################################
 
 LIBEVENT_SITE=http://www.monkey.org/~provos/
-LIBEVENT_VERSION=2.0.10
+LIBEVENT_VERSION=2.0.11
 LIBEVENT_DIR=libevent-$(LIBEVENT_VERSION)-stable
 LIBEVENT_SOURCE=$(LIBEVENT_DIR).tar.gz
 LIBEVENT_UNZIP=zcat
@@ -66,6 +66,7 @@ $(LIBEVENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEVENT_SOURCE) make/libevent.mk
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	);
+	sed -i -e '/^SUBDIRS/s/ sample//' $(@D)/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 #	sed -i.orig -e '/^library_names_spec=/s|\\$${shared_ext}|.so|g' $(@D)/libtool
 	touch $@
@@ -86,7 +87,7 @@ $(LIBEVENT_BUILD_DIR)/.staged: $(LIBEVENT_BUILD_DIR)/.built
 	rm -f $@
 	rm -f $(STAGING_LIB_DIR)/libevent*
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libevent.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libevent*.pc
 	rm -f $(STAGING_LIB_DIR)/libevent.la
 	touch $@
 
@@ -119,6 +120,7 @@ $(LIBEVENT_IPK): $(LIBEVENT_BUILD_DIR)/.built
 	rm -f $(LIBEVENT_IPK_DIR)/opt/lib/libevent*.la $(LIBEVENT_IPK_DIR)/opt/lib/libevent*.a
 	$(MAKE) $(LIBEVENT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBEVENT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBEVENT_IPK_DIR)
 
 libevent-ipk: $(LIBEVENT_IPK)
 
