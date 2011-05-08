@@ -41,7 +41,7 @@ NYLON_CONFLICTS=
 #
 # NYLON_IPK_VERSION should be incremented when the ipk changes.
 #
-NYLON_IPK_VERSION=3
+NYLON_IPK_VERSION=4
 
 #
 # NYLON_CONFFILES should be a list of user-editable files
@@ -194,6 +194,7 @@ $(NYLON_IPK): $(NYLON_BUILD_DIR)/.built
 	install -m 755 $(NYLON_SOURCE_DIR)/prerm $(NYLON_IPK_DIR)/CONTROL/prerm
 	echo $(NYLON_CONFFILES) | sed -e 's/ /\n/g' > $(NYLON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NYLON_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(NYLON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -217,4 +218,4 @@ nylon-dirclean:
 # Some sanity check for the package.
 #
 nylon-check: $(NYLON_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NYLON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
