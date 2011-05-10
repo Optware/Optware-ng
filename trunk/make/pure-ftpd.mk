@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PURE-FTPD_SITE=http://download.pureftpd.org/pub/pure-ftpd/releases
-PURE-FTPD_VERSION=1.0.29
+PURE-FTPD_VERSION=1.0.32
 PURE-FTPD_SOURCE=pure-ftpd-$(PURE-FTPD_VERSION).tar.bz2
 PURE-FTPD_DIR=pure-ftpd-$(PURE-FTPD_VERSION)
 PURE-FTPD_UNZIP=bzcat
@@ -211,6 +211,7 @@ $(PURE-FTPD_IPK): $(PURE-FTPD_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PURE-FTPD_IPK_DIR)/CONTROL/prerm
 	echo $(PURE-FTPD_CONFFILES) | sed -e 's/ /\n/g' > $(PURE-FTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PURE-FTPD_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PURE-FTPD_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
