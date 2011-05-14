@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://archive.apache.org/dist/httpd
-APACHE_VERSION=2.2.17
+APACHE_VERSION=2.2.18
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -282,10 +282,12 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	fi
 	echo $(APACHE_CONFFILES) | sed -e 's/ /\n/g' > $(APACHE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APACHE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(APACHE_IPK_DIR)
 	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_MANUAL_IPK_DIR) installbuilddir=/opt/share/apache2/build install-man
 	rm -rf $(APACHE_MANUAL_IPK_DIR)/opt/man
 	$(MAKE) $(APACHE_MANUAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APACHE_MANUAL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(APACHE_MANUAL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -309,4 +311,4 @@ apache-dirclean:
 # Some sanity check for the package.
 #
 apache-check: $(APACHE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(APACHE_IPK) $(APACHE_MANUAL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
