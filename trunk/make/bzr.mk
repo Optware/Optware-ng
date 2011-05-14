@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BZR_VERSION=2.3.1
+BZR_VERSION=2.3.3
 BZR_SITE=https://launchpad.net/bzr/2.3/$(BZR_VERSION)/+download
 BZR_SOURCE=bzr-$(BZR_VERSION).tar.gz
 BZR_DIR=bzr-$(BZR_VERSION)
@@ -232,6 +232,7 @@ $(PY25-BZR_IPK): $(BZR_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(PY25-BZR_IPK_DIR)/opt/lib/python2.5/site-packages/bzrlib/*.so
 	$(MAKE) $(PY25-BZR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BZR_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY25-BZR_IPK_DIR)
 
 $(PY26-BZR_IPK): $(BZR_BUILD_DIR)/.built
 	rm -rf $(PY26-BZR_IPK_DIR) $(BUILD_DIR)/py26-bzr_*_$(TARGET_ARCH).ipk
@@ -244,6 +245,7 @@ $(PY26-BZR_IPK): $(BZR_BUILD_DIR)/.built
 	rm -rf $(PY26-BZR_IPK_DIR)/opt/man
 	$(MAKE) $(PY26-BZR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-BZR_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY26-BZR_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
