@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WEECHAT_SITE=http://www.weechat.org/files/src
-WEECHAT_VERSION=0.3.4
+WEECHAT_VERSION=0.3.5
 WEECHAT_SOURCE=weechat-$(WEECHAT_VERSION).tar.bz2
 WEECHAT_DIR=weechat-$(WEECHAT_VERSION)
 WEECHAT_UNZIP=bzcat
@@ -224,6 +224,7 @@ $(WEECHAT_IPK): $(WEECHAT_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WEECHAT_IPK_DIR)/CONTROL/prerm
 	echo $(WEECHAT_CONFFILES) | sed -e 's/ /\n/g' > $(WEECHAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WEECHAT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(WEECHAT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
