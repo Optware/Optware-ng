@@ -41,7 +41,7 @@ OPTWARE-BOOTSTRAP_CONTAINS=$(strip \
 
 OPTWARE-BOOTSTRAP_UPDATE_ALTERNATIVES=$(strip \
 	$(if $(filter ipkg-opt, $(OPTWARE-BOOTSTRAP_CONTAINS)),,yes) \
-	$(if $(filter fsg3v4, $(OPTWARE-BOOTSTRAP_TARGET)), yes) \
+	$(if $(filter fsg3v4 vt4, $(OPTWARE-BOOTSTRAP_TARGET)), yes) \
 	)
 
 OPTWARE-BOOTSTRAP_LIBS=$(strip \
