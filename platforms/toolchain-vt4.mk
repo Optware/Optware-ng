@@ -17,6 +17,9 @@ TARGET_LDFLAGS = -L$(TARGET_LIBDIR) -Wl,-rpath-link,$(TARGET_LIBDIR)
 TARGET_CUSTOM_FLAGS= -pipe -I$(TARGET_INCDIR)
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
+UPD-ALT_PREFIX = /usr
+
+
 TOOLCHAIN_BINARY_URL="http://sources.nslu2-linux.org/sources/arm-920t_le.tar.bz2"
 TOOLCHAIN_BINARY=arm-920t_le.tar.bz2
 
@@ -41,7 +44,7 @@ $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux/version.h:
 $(TARGET_CROSS_TOP)/.unpacked: \
 $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux/version.h \
 $(DL_DIR)/$(TOOLCHAIN_BINARY) \
-# $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	tar -xj -C $(@D) -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
