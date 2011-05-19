@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-GREP_VERSION=2.7
+GREP_VERSION=2.8
 GREP_IPK_VERSION=1
 GREP_DEPENDS=pcre
 
@@ -115,6 +115,7 @@ $(GREP_IPK): $(GREP_BUILD_DIR)/.built
 			$(GREP_IPK_DIR)/CONTROL/postinst $(GREP_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GREP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GREP_IPK_DIR)
 
 grep-ipk: $(GREP_IPK)
 
