@@ -19,11 +19,20 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+ESNIPER_CVS_REPO:=:pserver:anonymous@esniper.cvs.sourceforge.net:/cvsroot/esniper
+ESNIPER_CVS_DATE:=20110519
+ESNIPER_CVS_OPTS:=-D$(ESNIPER_CVS_DATE)
 ESNIPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esniper
+ifdef ESNIPER_CVS_REPO
+ESNIPER_VERSION+=2.24.0+$(ESNIPER_CVS_DATE)
+ESNIPER_UPSTREAM_VERSION=$(ESNIPER_VERSION)
+ESNIPER_DIR=esniper
+else
 ESNIPER_UPSTREAM_VERSION=2-24-0
 ESNIPER_VERSION=2.24.0
-ESNIPER_SOURCE=esniper-$(ESNIPER_UPSTREAM_VERSION).tgz
 ESNIPER_DIR=esniper-$(ESNIPER_UPSTREAM_VERSION)
+endif
+ESNIPER_SOURCE=esniper-$(ESNIPER_UPSTREAM_VERSION).tgz
 ESNIPER_UNZIP=zcat
 ESNIPER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ESNIPER_DESCRIPTION=A lightweight eBay sniping tool
@@ -76,8 +85,17 @@ ESNIPER_IPK=$(BUILD_DIR)/esniper_$(ESNIPER_VERSION)-$(ESNIPER_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ESNIPER_SOURCE):
+ifdef ESNIPER_CVS_REPO
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(ESNIPER_DIR) && \
+		cvs -d $(ESNIPER_CVS_REPO) -z3 co $(ESNIPER_CVS_OPTS) $(ESNIPER_DIR) && \
+		tar -czf $@ --exclude=CVS $(ESNIPER_DIR) && \
+		rm -rf $(ESNIPER_DIR) \
+)
+else
 	$(WGET) -P $(@D) $(ESNIPER_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -194,6 +212,7 @@ $(ESNIPER_IPK): $(ESNIPER_BUILD_DIR)/.built
 	$(MAKE) $(ESNIPER_IPK_DIR)/CONTROL/control
 #	echo $(ESNIPER_CONFFILES) | sed -e 's/ /\n/g' > $(ESNIPER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESNIPER_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ESNIPER_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
