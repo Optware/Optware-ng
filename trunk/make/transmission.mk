@@ -25,7 +25,7 @@
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
-TRANSMISSION_VERSION=2.22
+TRANSMISSION_VERSION=2.31
 
 #TRANSMISSION_SVN_REV=8696
 
@@ -48,7 +48,7 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=2
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
