@@ -20,7 +20,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ESNIPER_CVS_REPO:=:pserver:anonymous@esniper.cvs.sourceforge.net:/cvsroot/esniper
-ESNIPER_CVS_DATE:=20110519
+ESNIPER_CVS_DATE:=20110525
 ESNIPER_CVS_OPTS:=-D$(ESNIPER_CVS_DATE)
 ESNIPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esniper
 ifdef ESNIPER_CVS_REPO
