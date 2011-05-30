@@ -1,5 +1,5 @@
---- Python-2.5/setup.py.orig	2006-08-09 16:42:18.000000000 -0700
-+++ Python-2.5/setup.py	2007-04-10 10:31:09.000000000 -0700
+--- Python-2.5.6/setup.py.orig	2008-10-16 11:58:19.000000000 -0700
++++ Python-2.5.6/setup.py	2011-05-29 21:48:31.000000000 -0700
 @@ -15,7 +15,7 @@
  from distutils.command.install_lib import install_lib
  
@@ -20,7 +20,31 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -731,7 +735,6 @@
+@@ -243,10 +247,6 @@
+         return sys.platform
+ 
+     def detect_modules(self):
+-        # Ensure that /usr/local is always used
+-        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+-        add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+-
+         # Add paths specified in the environment variables LDFLAGS and
+         # CPPFLAGS for header and library files.
+         # We must get the values from the Makefile and not the environment
+@@ -281,12 +281,6 @@
+                     for directory in reversed(options.dirs):
+                         add_dir_to_list(dir_list, directory)
+ 
+-        if os.path.normpath(sys.prefix) != '/usr':
+-            add_dir_to_list(self.compiler.library_dirs,
+-                            sysconfig.get_config_var("LIBDIR"))
+-            add_dir_to_list(self.compiler.include_dirs,
+-                            sysconfig.get_config_var("INCLUDEDIR"))
+-
+         try:
+             have_unicode = unicode
+         except NameError:
+@@ -746,7 +740,6 @@
              # is on an NFS server that goes away).
              exts.append(Extension('_bsddb', ['_bsddb.c'],
                                    library_dirs=dblib_dir,
@@ -28,7 +52,7 @@
                                    include_dirs=db_incs,
                                    libraries=dblibs))
          else:
-@@ -827,7 +830,6 @@
+@@ -842,7 +835,6 @@
                                    include_dirs=["Modules/_sqlite",
                                                  sqlite_incdir],
                                    library_dirs=sqlite_libdir,
