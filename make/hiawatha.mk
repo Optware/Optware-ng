@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HIAWATHA_SITE=http://www.hiawatha-webserver.org/files
-HIAWATHA_VERSION=7.4
+HIAWATHA_VERSION=7.5
 HIAWATHA_SOURCE=hiawatha-$(HIAWATHA_VERSION).tar.gz
 HIAWATHA_DIR=hiawatha-$(HIAWATHA_VERSION)
 HIAWATHA_UNZIP=zcat
@@ -36,7 +36,7 @@ HIAWATHA_CONFLICTS=
 #
 # HIAWATHA_IPK_VERSION should be incremented when the ipk changes.
 #
-HIAWATHA_IPK_VERSION=2
+HIAWATHA_IPK_VERSION=1
 
 #
 # HIAWATHA_CONFFILES should be a list of user-editable files
@@ -126,6 +126,7 @@ $(HIAWATHA_BUILD_DIR)/.configured: $(DL_DIR)/$(HIAWATHA_SOURCE) $(HIAWATHA_PATCH
 		LDFLAGS="$(STAGING_LDFLAGS) $(HIAWATHA_LDFLAGS)" \
 		ac_cv_file__dev_urandom=/dev/urandom \
 		webrootdir=/opt/share/www/hiawatha \
+                ac_cv_lib_xslt_xsltApplyStylesheet=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -213,6 +214,7 @@ $(HIAWATHA_IPK): $(HIAWATHA_BUILD_DIR)/.built
 	fi
 	echo $(HIAWATHA_CONFFILES) | sed -e 's/ /\n/g' > $(HIAWATHA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HIAWATHA_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(HIAWATHA_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
