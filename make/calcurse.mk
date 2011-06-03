@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CALCURSE_SITE=http://culot.org/cgi-bin/get.cgi?
-CALCURSE_VERSION=2.8
+CALCURSE_SITE=http://calcurse.org/files
+CALCURSE_VERSION=2.9.0
 CALCURSE_SOURCE=calcurse-$(CALCURSE_VERSION).tar.gz
 CALCURSE_DIR=calcurse-$(CALCURSE_VERSION)
 CALCURSE_UNZIP=zcat
@@ -82,7 +82,7 @@ CALCURSE_IPK=$(BUILD_DIR)/calcurse_$(CALCURSE_VERSION)-$(CALCURSE_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CALCURSE_SOURCE):
-	$(WGET) -O $@ "$(CALCURSE_SITE)$(@F)" || \
+	$(WGET) -P $(@D) $(CALCURSE_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -199,6 +199,7 @@ $(CALCURSE_IPK): $(CALCURSE_BUILD_DIR)/.built
 	$(MAKE) $(CALCURSE_IPK_DIR)/CONTROL/control
 	echo $(CALCURSE_CONFFILES) | sed -e 's/ /\n/g' > $(CALCURSE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CALCURSE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(CALCURSE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
