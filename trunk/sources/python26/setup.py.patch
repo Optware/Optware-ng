@@ -1,7 +1,7 @@
---- Python-2.6.1/setup.py.orig	2008-11-04 20:43:31.000000000 +0000
-+++ Python-2.6.1/setup.py	2009-02-19 19:19:20.376104391 +0000
-@@ -17,7 +17,7 @@
- from distutils.command.install_lib import install_lib
+--- Python-2.6.7rc2/setup.py.orig	2010-07-17 05:31:09.000000000 -0700
++++ Python-2.6.7rc2/setup.py	2011-05-29 22:33:00.000000000 -0700
+@@ -18,7 +18,7 @@
+ from distutils.spawn import find_executable
  
  # This global variable is used to hold the list of modules to be disabled.
 -disabled_module_list = []
@@ -9,7 +9,7 @@
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -267,6 +267,10 @@
+@@ -313,6 +313,10 @@
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -20,7 +20,31 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -872,7 +876,6 @@
+@@ -355,10 +359,6 @@
+         return sys.platform
+ 
+     def detect_modules(self):
+-        # Ensure that /usr/local is always used
+-        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+-        add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+-
+         # Add paths specified in the environment variables LDFLAGS and
+         # CPPFLAGS for header and library files.
+         # We must get the values from the Makefile and not the environment
+@@ -393,12 +393,6 @@
+                     for directory in reversed(options.dirs):
+                         add_dir_to_list(dir_list, directory)
+ 
+-        if os.path.normpath(sys.prefix) != '/usr':
+-            add_dir_to_list(self.compiler.library_dirs,
+-                            sysconfig.get_config_var("LIBDIR"))
+-            add_dir_to_list(self.compiler.include_dirs,
+-                            sysconfig.get_config_var("INCLUDEDIR"))
+-
+         try:
+             have_unicode = unicode
+         except NameError:
+@@ -971,7 +965,6 @@
              exts.append(Extension('_bsddb', ['_bsddb.c'],
                                    depends = ['bsddb.h'],
                                    library_dirs=dblib_dir,
@@ -28,7 +52,7 @@
                                    include_dirs=db_incs,
                                    libraries=dblibs))
          else:
-@@ -971,7 +974,6 @@
+@@ -1077,7 +1070,6 @@
                                    include_dirs=["Modules/_sqlite",
                                                  sqlite_incdir],
                                    library_dirs=sqlite_libdir,
@@ -36,7 +60,7 @@
                                    extra_link_args=sqlite_extra_link_args,
                                    libraries=["sqlite3",]))
          else:
-@@ -1668,7 +1670,7 @@
+@@ -1823,7 +1815,7 @@
                                           ffi_configfile):
                  from distutils.dir_util import mkpath
                  mkpath(ffi_builddir)
