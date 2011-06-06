@@ -30,7 +30,7 @@ GIFT_OPENNAP_DESCRIPTION=gIFt opennap plugin
 #
 # GIFT_OPENNAP_IPK_VERSION should be incremented when the ipk changes.
 #
-GIFT_OPENNAP_IPK_VERSION=1
+GIFT_OPENNAP_IPK_VERSION=2
 
 #
 # GIFT_OPENNAP_PATCHES should list any patches, in the the order in
@@ -96,16 +96,19 @@ gift-opennap-source: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES)
 $(GIFT_OPENNAP_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES) \
 make/gift-opennap.mk
 	$(HOST_TOOL_ACLOCAL19)
-	$(HOST_TOOL_AUTOMAKE19)
+	$(HOST_TOOL_AUTOMAKE19) 
 	$(MAKE) gift-stage
 	rm -rf $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(@D)
 	$(GIFT_OPENNAP_UNZIP) $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GIFT_OPENNAP_PATCHES) | patch -d $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(GIFT_OPENNAP_BUILD_DIR)
-	(cd $(GIFT_OPENNAP_BUILD_DIR); \
+	cd $(@D) && aclocal -I m4
+	cd $(@D) && autoheader
+	cd $(@D) && autoconf
+	cd $(@D) && libtoolize --automake
+	cd $(@D) && automake --add-missing --force-missing
+	(cd $(@D); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
-		ACLOCAL="$(HOST_STAGING_PREFIX)/bin/aclocal-1.9 -I m4" \
-		AUTOMAKE=$(HOST_STAGING_PREFIX)/bin/automake-1.9 autoreconf -i -v; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFT_OPENNAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFT_OPENNAP_LDFLAGS)" \
@@ -193,6 +196,7 @@ $(GIFT_OPENNAP_IPK): $(GIFT_OPENNAP_BUILD_DIR)/.built
 	install -d $(GIFT_OPENNAP_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFT_OPENNAP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_OPENNAP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIFT_OPENNAP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
