@@ -70,6 +70,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
 # clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
 # clinkcc - depends on broken xerces-c package
+# amule - broken on 32bit ubuntu 08.04
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
@@ -79,6 +80,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	clinkcc \
         icu xerces-c \
 	nemesis \
+        amule \
  
 PERL_PACKAGES = \
 	perl \
@@ -252,7 +254,7 @@ COMMON_CROSS_PACKAGES = \
 	9base \
 	abook adduser adns aget aiccu alac-decoder \
 	alsa-lib alsa-oss alsa-utils \
-	amule analog antinat apcupsd appweb \
+	analog antinat apcupsd appweb \
 	apache apr apr-util \
 	arc aria2 arping arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
