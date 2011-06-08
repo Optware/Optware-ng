@@ -543,7 +543,7 @@ HOST_TOOL_AUTOMAKE14 =  \
 
 
 # The hostname or IP number of our local dl.sf.net mirror
-SOURCEFORGE_MIRROR=easynews.dl.sf.net
+SOURCEFORGE_MIRROR=downloads.sourceforge.net
 #SOURCES_NLO_SITE=http://sources.nslu2-linux.org/sources
 SOURCES_NLO_SITE=http://ftp.osuosl.org/pub/nslu2/sources
 
