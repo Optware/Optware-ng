@@ -22,8 +22,9 @@
 # http://developer.berlios.de/projects/amule/
 
 #AMULE_SITE=http://download.berlios.de/amule
-AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/amule
 AMULE_VERSION=2.3.1rc1
+#AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/amule
+AMULE_SITE=http://cdnetworks-us-2.dl.sourceforge.net/project/amule/aMule/$(AMULE_VERSION)
 AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
 AMULE_DIR=aMule-$(AMULE_VERSION)
 AMULE_UNZIP=bzcat
