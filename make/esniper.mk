@@ -19,17 +19,17 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ESNIPER_CVS_REPO:=:pserver:anonymous@esniper.cvs.sourceforge.net:/cvsroot/esniper
-ESNIPER_CVS_DATE:=20110525
-ESNIPER_CVS_OPTS:=-D$(ESNIPER_CVS_DATE)
+#ESNIPER_CVS_REPO:=:pserver:anonymous@esniper.cvs.sourceforge.net:/cvsroot/esniper
+#ESNIPER_CVS_DATE:=20110525
+#ESNIPER_CVS_OPTS:=-D$(ESNIPER_CVS_DATE)
 ESNIPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esniper
 ifdef ESNIPER_CVS_REPO
-ESNIPER_VERSION+=2.24.0+$(ESNIPER_CVS_DATE)
+ESNIPER_VERSION+=2.25.0+$(ESNIPER_CVS_DATE)
 ESNIPER_UPSTREAM_VERSION=$(ESNIPER_VERSION)
 ESNIPER_DIR=esniper
 else
-ESNIPER_UPSTREAM_VERSION=2-24-0
-ESNIPER_VERSION=2.24.0
+ESNIPER_UPSTREAM_VERSION=2-25-0
+ESNIPER_VERSION=2.25.0
 ESNIPER_DIR=esniper-$(ESNIPER_UPSTREAM_VERSION)
 endif
 ESNIPER_SOURCE=esniper-$(ESNIPER_UPSTREAM_VERSION).tgz
