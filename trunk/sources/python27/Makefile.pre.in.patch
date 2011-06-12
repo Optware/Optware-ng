@@ -1,6 +1,6 @@
---- Python-2.7.1rc1/Makefile.pre.in.orig	2010-10-14 11:37:30.000000000 +0000
-+++ Python-2.7.1rc1/Makefile.pre.in	2010-11-14 19:57:21.190389508 +0000
-@@ -38,6 +38,8 @@
+--- Python-2.7.2rc1/Makefile.pre.in.orig	2011-05-29 14:54:47.000000000 -0700
++++ Python-2.7.2rc1/Makefile.pre.in	2011-05-29 23:16:10.000000000 -0700
+@@ -41,6 +41,8 @@
  
  GNULD=          @GNULD@
  
@@ -9,7 +9,7 @@
  # Shell used by make (some versions default to the login shell, which is bad)
  SHELL=		/bin/sh
  
-@@ -178,7 +180,8 @@
+@@ -181,7 +183,8 @@
  UNICODE_OBJS=   @UNICODE_OBJS@
  
  PYTHON=		python$(EXE)
@@ -19,7 +19,7 @@
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -210,7 +213,8 @@
+@@ -213,7 +216,8 @@
  
  ##########################################################################
  # Parser
@@ -29,7 +29,7 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -362,7 +366,7 @@
+@@ -365,7 +369,7 @@
  
  # Default target
  all:		build_all
@@ -38,7 +38,7 @@
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -392,7 +396,7 @@
+@@ -395,7 +399,7 @@
  
  
  # Build the interpreter
@@ -47,15 +47,16 @@
  		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
  			Modules/python.o \
  			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-@@ -536,12 +540,12 @@
- 	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
+@@ -540,13 +544,13 @@
  
- 
--$(GRAMMAR_H) $(GRAMMAR_C): $(PGEN) $(GRAMMAR_INPUT)
-+$(GRAMMAR_H) $(GRAMMAR_C): $(BUILDPGEN) $(GRAMMAR_INPUT)
+ # Use a stamp file to prevent make -j invoking pgen twice
+ $(GRAMMAR_H) $(GRAMMAR_C): Parser/pgen.stamp
+-Parser/pgen.stamp: $(PGEN) $(GRAMMAR_INPUT)
++Parser/pgen.stamp: $(BUILDPGEN) $(GRAMMAR_INPUT)
  		-@$(INSTALL) -d Include
--		-$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
-+		-$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
+-		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
++		$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
+ 		-touch Parser/pgen.stamp
  
 -$(PGEN):	$(PGENOBJS)
 -		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
@@ -64,7 +65,7 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -599,6 +603,16 @@
+@@ -604,6 +608,16 @@
  Python/formatter_string.o: $(srcdir)/Python/formatter_string.c \
  				$(STRINGLIB_HEADERS)
  
@@ -81,7 +82,7 @@
  ############################################################################
  # Header files
  
-@@ -805,7 +819,7 @@
+@@ -810,7 +824,7 @@
  		else	true; \
  		fi; \
  	done
@@ -90,7 +91,7 @@
  	if test -f $(LDLIBRARY); then \
  		if test -n "$(DLLLIBRARY)" ; then \
  			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
-@@ -1044,6 +1058,7 @@
+@@ -1049,6 +1063,7 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -98,7 +99,7 @@
  	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
-@@ -1131,7 +1146,7 @@
+@@ -1136,7 +1151,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -107,13 +108,13 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1183,11 +1198,12 @@
+@@ -1188,11 +1203,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal
 -	-rm -f $(BUILDPYTHON) $(PGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
 +	-rm -f $(HOSTPYTHON) $(HOSTPGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
- 		tags TAGS \
+ 		tags TAGS Parser/pgen.stamp \
  		config.cache config.log pyconfig.h Modules/config.c
  	-rm -rf build platform
  	-rm -rf $(PYTHONFRAMEWORKDIR)
