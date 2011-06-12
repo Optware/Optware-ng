@@ -1,14 +1,15 @@
---- Python-2.7/configure.in.orig	2010-05-28 15:28:47.000000000 +0000
-+++ Python-2.7/configure.in	2010-09-05 01:50:11.256014039 +0000
-@@ -12,7 +12,6 @@
-        [],
-        [m4_fatal([Autoconf version $1 is required for Python], 63)])
- ])
--version_required(2.65)
+--- Python-2.7.2rc1/configure.in.orig	2011-05-29 14:54:52.000000000 -0700
++++ Python-2.7.2rc1/configure.in	2011-05-29 23:31:22.000000000 -0700
+@@ -5,8 +5,6 @@
+ # Set VERSION so we only need to edit in one place (i.e., here)
+ m4_define(PYTHON_VERSION, 2.7)
  
- AC_REVISION($Revision: 81582 $)
+-AC_PREREQ(2.65)
+-
+ AC_REVISION($Revision$)
  AC_INIT(python, PYTHON_VERSION, http://bugs.python.org/)
-@@ -28,6 +27,11 @@
+ AC_CONFIG_SRCDIR([Include/object.h])
+@@ -21,6 +19,11 @@
      prefix=`echo "$prefix" | sed -e 's/\/$//g'`
  fi    
  
@@ -20,7 +21,7 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -916,7 +920,7 @@
+@@ -928,7 +931,7 @@
  	    STRICT_PROTO="-Wstrict-prototypes"
  	fi
          # For gcc 4.x we need to use -fwrapv so lets check if its supported
@@ -29,7 +30,7 @@
             WRAP="-fwrapv"
          fi
  	case $ac_cv_prog_cc_g in
-@@ -4258,6 +4262,25 @@
+@@ -4305,6 +4308,25 @@
  done
  AC_MSG_RESULT(done)
  
@@ -54,4 +55,4 @@
 +
  # generate output files
  AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc)
- AC_OUTPUT
+ AC_CONFIG_FILES([Modules/ld_so_aix], [chmod +x Modules/ld_so_aix])
