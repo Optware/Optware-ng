@@ -147,6 +147,7 @@ bftpd-unpack: $(BFTPD_BUILD_DIR)/.configured
 $(BFTPD_BUILD_DIR)/.built: $(BFTPD_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
+		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BFTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BFTPD_LDFLAGS)" \
 		;
