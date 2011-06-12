@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FETCHMAIL_SITE=http://download.berlios.de/fetchmail
-FETCHMAIL_VERSION=6.3.19
+FETCHMAIL_VERSION=6.3.20
 FETCHMAIL_SOURCE=fetchmail-$(FETCHMAIL_VERSION).tar.bz2
 FETCHMAIL_DIR=fetchmail-$(FETCHMAIL_VERSION)
 FETCHMAIL_UNZIP=bzcat
@@ -210,6 +210,7 @@ $(FETCHMAIL_IPK): $(FETCHMAIL_BUILD_DIR)/.built
 	install -m 644 $(FETCHMAIL_SOURCE_DIR)/prerm $(FETCHMAIL_IPK_DIR)/CONTROL/prerm
 	echo $(FETCHMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(FETCHMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FETCHMAIL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(FETCHMAIL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
