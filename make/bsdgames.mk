@@ -157,7 +157,7 @@ $(BSDGAMES_BUILD_DIR)/.built: $(BSDGAMES_BUILD_DIR)/.configured
 		fortune/strfile/strfile \
 		monop/initdeck \
 		;
-	mv $(BSDGAMES_BUILD_DIR)/fortune/strfile/strfile{,.host}
+	mv $(@D)/fortune/strfile/strfile $(@D)/fortune/strfile/strfile.host
 	$(MAKE) -C $(BSDGAMES_BUILD_DIR) fortune_strfile_clean
 	$(MAKE) -C $(BSDGAMES_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -223,6 +223,7 @@ $(BSDGAMES_IPK): $(BSDGAMES_BUILD_DIR)/.built
 	$(MAKE) $(BSDGAMES_IPK_DIR)/CONTROL/control
 	echo $(BSDGAMES_CONFFILES) | sed -e 's/ /\n/g' > $(BSDGAMES_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BSDGAMES_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(BSDGAMES_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -247,4 +248,4 @@ bsdgames-dirclean:
 # Some sanity check for the package.
 #
 bsdgames-check: $(BSDGAMES_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BSDGAMES_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
