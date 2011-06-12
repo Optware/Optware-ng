@@ -125,6 +125,7 @@ $(BFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(BFTPD_SOURCE) $(BFTPD_PATCHES) make/
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BFTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BFTPD_LDFLAGS)" \
+                ac_cv_prog_CC=$(TARGET_CC) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
