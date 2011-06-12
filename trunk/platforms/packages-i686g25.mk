@@ -25,4 +25,5 @@ BROKEN_PACKAGES = \
 	samba35 \
 	util-linux \
 	vlc vte \
-	x264 xaw xchat xterm
+	x264 xaw xchat xterm \
+        golang memtester newt py-codeville py-pyro py-wsgiref sandbox sendmail tshark \
