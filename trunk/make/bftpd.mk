@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BFTPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bftpd
-BFTPD_VERSION=3.2
+BFTPD_VERSION=3.4
 BFTPD_SOURCE=bftpd-$(BFTPD_VERSION).tar.gz
 BFTPD_DIR=bftpd
 BFTPD_UNZIP=zcat
@@ -220,6 +220,7 @@ $(BFTPD_IPK): $(BFTPD_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(BFTPD_IPK_DIR)/CONTROL/prerm
 	echo $(BFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(BFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BFTPD_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(BFTPD_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
