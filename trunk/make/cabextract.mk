@@ -5,7 +5,7 @@
 ###########################################################
 
 CABEXTRACT_SITE=http://www.cabextract.org.uk
-CABEXTRACT_VERSION=1.3
+CABEXTRACT_VERSION=1.4
 CABEXTRACT_SOURCE=cabextract-$(CABEXTRACT_VERSION).tar.gz
 CABEXTRACT_DIR=cabextract-$(CABEXTRACT_VERSION)
 CABEXTRACT_UNZIP=zcat
@@ -61,16 +61,16 @@ $(DL_DIR)/$(CABEXTRACT_SOURCE):
 cabextract-source: $(DL_DIR)/$(CABEXTRACT_SOURCE) $(CABEXTRACT_PATCHES)
 
 $(CABEXTRACT_BUILD_DIR)/.configured: $(DL_DIR)/$(CABEXTRACT_SOURCE) $(CABEXTRACT_PATCHES) make/cabextract.mk
-	rm -rf $(BUILD_DIR)/$(CABEXTRACT_DIR) $(CABEXTRACT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CABEXTRACT_DIR) $(@D)
 	$(CABEXTRACT_UNZIP) $(DL_DIR)/$(CABEXTRACT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CABEXTRACT_PATCHES)" ; \
 		then cat $(CABEXTRACT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(CABEXTRACT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(CABEXTRACT_DIR)" != "$(CABEXTRACT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CABEXTRACT_DIR) $(CABEXTRACT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(CABEXTRACT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CABEXTRACT_DIR) $(@D) ; \
 	fi
-	(cd $(CABEXTRACT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CABEXTRACT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CABEXTRACT_LDFLAGS)" \
@@ -83,7 +83,7 @@ $(CABEXTRACT_BUILD_DIR)/.configured: $(DL_DIR)/$(CABEXTRACT_SOURCE) $(CABEXTRACT
 		--disable-nls \
 		--disable-static \
 	)
-	touch $(CABEXTRACT_BUILD_DIR)/.configured
+	touch $@
 
 cabextract-unpack: $(CABEXTRACT_BUILD_DIR)/.configured
 
@@ -91,9 +91,9 @@ cabextract-unpack: $(CABEXTRACT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CABEXTRACT_BUILD_DIR)/.built: $(CABEXTRACT_BUILD_DIR)/.configured
-	rm -f $(CABEXTRACT_BUILD_DIR)/.built
-	$(MAKE) -C $(CABEXTRACT_BUILD_DIR) 
-	touch $(CABEXTRACT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -124,6 +124,7 @@ $(CABEXTRACT_IPK): $(CABEXTRACT_BUILD_DIR)/.built
 	$(MAKE) -C $(CABEXTRACT_BUILD_DIR) DESTDIR=$(CABEXTRACT_IPK_DIR) install-strip
 	$(MAKE) $(CABEXTRACT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CABEXTRACT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(CABEXTRACT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -148,4 +149,4 @@ cabextract-dirclean:
 # Some sanity check for the package.
 #
 cabextract-check: $(CABEXTRACT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CABEXTRACT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
