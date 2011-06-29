@@ -39,7 +39,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=1
+AMULE_IPK_VERSION=2
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -164,7 +164,6 @@ $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 	if test "$(BUILD_DIR)/$(AMULE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AMULE_DIR) $(@D) ; \
 	fi
-	cd $(@D); autoconf
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AMULE_CPPFLAGS)" \
