@@ -36,7 +36,7 @@ NETATALK_CONFLICTS=
 #
 # NETATALK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETATALK_IPK_VERSION=1
+NETATALK_IPK_VERSION=2
 
 #
 # NETATALK_CONFFILES should be a list of user-editable files
@@ -118,7 +118,11 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 	if test "$(BUILD_DIR)/$(NETATALK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NETATALK_DIR) $(@D) ; \
 	fi
-	ACLOCAL="aclocal -I$(STAGING_PREFIX)/share/aclocal" autoreconf -vif $(@D)
+	cd $(@D) && aclocal -I macros 
+	cd $(@D) && autoheader
+	cd $(@D) && autoconf
+	cd $(@D) && libtoolize --automake
+	cd $(@D) && automake --add-missing --force-missing
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NETATALK_CPPFLAGS)" \
@@ -218,6 +222,7 @@ $(NETATALK_IPK): $(NETATALK_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETATALK_IPK_DIR)/CONTROL/prerm
 	echo $(NETATALK_CONFFILES) | sed -e 's/ /\n/g' > $(NETATALK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETATALK_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(NETATALK_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
