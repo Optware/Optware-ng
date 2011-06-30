@@ -21,7 +21,7 @@
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
 
-E2FSPROGS_VERSION ?= 1.41.9
+E2FSPROGS_VERSION ?= 1.41.14
 E2FSPROGS_IPK_VERSION ?= 1
 
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
@@ -124,7 +124,6 @@ $(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PA
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--with-ldopts="$(STAGING_LDFLAGS) $(E2FSPROGS_LDFLAGS)" \
 		--enable-elf-shlibs \
 		--enable-rpath \
 	)
