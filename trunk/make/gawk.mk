@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GAWK_SITE=http://ftp.gnu.org/gnu/gawk
-GAWK_VERSION=3.1.8
+GAWK_VERSION=4.0.0
 GAWK_SOURCE=gawk-$(GAWK_VERSION).tar.gz
 GAWK_DIR=gawk-$(GAWK_VERSION)
 GAWK_UNZIP=zcat
@@ -96,7 +96,7 @@ gawk-source: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES)
+$(GAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES) make/gawk.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(GAWK_DIR) $(@D)
 	$(GAWK_UNZIP) $(DL_DIR)/$(GAWK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -142,16 +142,16 @@ gawk: $(GAWK_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION): $(GAWK_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(GAWK_BUILD_DIR)/gawk.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(GAWK_BUILD_DIR)/libgawk.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(GAWK_BUILD_DIR)/libgawk.so.$(GAWK_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so
-
-gawk-stage: $(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION)
+#$(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION): $(GAWK_BUILD_DIR)/.built
+#	install -d $(STAGING_DIR)/opt/include
+#	install -m 644 $(GAWK_BUILD_DIR)/gawk.h $(STAGING_DIR)/opt/include
+#	install -d $(STAGING_DIR)/opt/lib
+#	install -m 644 $(GAWK_BUILD_DIR)/libgawk.a $(STAGING_DIR)/opt/lib
+#	install -m 644 $(GAWK_BUILD_DIR)/libgawk.so.$(GAWK_VERSION) $(STAGING_DIR)/opt/lib
+#	cd $(STAGING_DIR)/opt/lib && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so.1
+#	cd $(STAGING_DIR)/opt/lib && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so
+#
+#gawk-stage: $(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION)
 
 $(GAWK_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -183,14 +183,10 @@ $(GAWK_IPK_DIR)/CONTROL/control:
 $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
 	rm -rf $(GAWK_IPK_DIR) $(BUILD_DIR)/gawk_*_$(TARGET_ARCH).ipk
 	install -d $(GAWK_IPK_DIR)/opt/bin
-	$(MAKE) -C $(GAWK_BUILD_DIR) DESTDIR=$(GAWK_IPK_DIR) install
-	rm -rf $(GAWK_IPK_DIR)/opt/{man,info}
-	rm -f $(GAWK_IPK_DIR)/opt/bin/gawk-3.1.5
-	rm -f $(GAWK_IPK_DIR)/opt/bin/pgawk-3.1.5
-	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/gawk
-	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/pgawk
-	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/grcat
-	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/pwcat
+	$(MAKE) -C $(GAWK_BUILD_DIR) DESTDIR=$(GAWK_IPK_DIR) install-strip
+	rm -f $(GAWK_IPK_DIR)/opt/info/dir $(GAWK_IPK_DIR)/opt/share/info/dir
+	rm -f $(GAWK_IPK_DIR)/opt/bin/gawk-$(GAWK_VERSION)
+	rm -f $(GAWK_IPK_DIR)/opt/bin/pgawk-$(GAWK_VERSION)
 	$(MAKE) $(GAWK_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --install /opt/bin/awk awk /opt/bin/gawk 80"; \
@@ -203,6 +199,7 @@ $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
 			$(GAWK_IPK_DIR)/CONTROL/postinst $(GAWK_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GAWK_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GAWK_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
