@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 WHICH_SITE=http://www.xs4all.nl/~carlo17/which
-WHICH_VERSION=2.18
+WHICH_VERSION=2.20
 WHICH_SOURCE=which-$(WHICH_VERSION).tar.gz
 WHICH_DIR=which-$(WHICH_VERSION)
 WHICH_UNZIP=zcat
