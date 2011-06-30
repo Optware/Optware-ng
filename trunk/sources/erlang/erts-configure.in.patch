@@ -1,6 +1,6 @@
---- erlang/erts/configure.in.orig	2010-06-11 15:29:55.000000000 +0000
-+++ erlang/erts/configure.in	2010-06-22 03:54:17.282196409 +0000
-@@ -619,10 +619,13 @@
+--- otp_src_R14B03/erts/configure.in.orig	2011-05-24 11:16:43.000000000 +0000
++++ otp_src_R14B03/erts/configure.in	2011-06-30 04:27:32.442126291 +0000
+@@ -624,10 +624,13 @@
      i686)	ARCH=x86;;
      x86_64)	ARCH=amd64;;
      amd64)	ARCH=amd64;;
@@ -14,24 +14,12 @@
      armv5b)	ARCH=arm;;
      armv5teb)	ARCH=arm;;
      armv5tel)	ARCH=arm;;
-@@ -3408,7 +3411,7 @@
+@@ -3535,7 +3538,7 @@
+ AC_SUBST(SSL_LINK_WITH_ZLIB)
  AC_SUBST(STATIC_ZLIB_LIBS)
- AC_SUBST(OPENSSL_CMD)
  
 -std_ssl_locations="/usr/local /usr/sfw /opt/local /usr /usr/pkg /usr/local/openssl /usr/lib/openssl /usr/openssl /usr/local/ssl /usr/lib/ssl /usr/ssl"
 +std_ssl_locations="/opt"
  
  AC_ARG_WITH(ssl-zlib,
- [  --with-ssl-zlib=PATH    specify location of ZLib to be used by OpenSSL
-@@ -3552,9 +3555,10 @@
-     SSL_APP=ssl
-     CRYPTO_APP=crypto
-     SSH_APP=ssh
-+    SSL_DYNAMIC_ONLY="yes"
- 
-     AC_MSG_CHECKING(for OpenSSL >= 0.9.7 in standard locations) 
--    for rdir in $extra_dir /cygdrive/c/OpenSSL $std_ssl_locations; do
-+    for rdir in /opt; do
- 	dir="$erl_xcomp_sysroot$rdir"
- 	if test -f "$erl_xcomp_isysroot$rdir/include/openssl/opensslv.h"; then
- 		is_real_ssl=yes
+ AS_HELP_STRING([--with-ssl-zlib=PATH],
