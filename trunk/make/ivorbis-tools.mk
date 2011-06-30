@@ -36,7 +36,7 @@ IVORBIS_TOOLS_CONFLICTS=vorbis-tools
 #
 # IVORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-IVORBIS_TOOLS_IPK_VERSION=6
+IVORBIS_TOOLS_IPK_VERSION=7
 
 #
 # IVORBIS-TOOLS_CONFFILES should be a list of user-editable files
@@ -77,7 +77,7 @@ IVORBIS_TOOLS_IPK=$(BUILD_DIR)/ivorbis-tools_$(IVORBIS_TOOLS_VERSION)-$(IVORBIS_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE):
-	$(WGET) -P $(@D) $(IVORBIS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(IVORBIS_TOOLS_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
