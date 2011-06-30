@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PV_SITE=http://pipeviewer.googlecode.com/files
-PV_VERSION=1.1.0
+PV_VERSION=1.2.0
 PV_SOURCE=pv-$(PV_VERSION).tar.bz2
 PV_DIR=pv-$(PV_VERSION)
 PV_UNZIP=bzcat
@@ -195,6 +195,7 @@ $(PV_IPK): $(PV_BUILD_DIR)/.built
 	$(MAKE) $(PV_IPK_DIR)/CONTROL/control
 	echo $(PV_CONFFILES) | sed -e 's/ /\n/g' > $(PV_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PV_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -219,4 +220,4 @@ pv-dirclean:
 # Some sanity check for the package.
 #
 pv-check: $(PV_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PV_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
