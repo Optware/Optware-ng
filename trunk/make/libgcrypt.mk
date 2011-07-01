@@ -27,7 +27,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGCRYPT_SITE=ftp://ftp.gnupg.org/gcrypt/libgcrypt
-LIBGCRYPT_VERSION=1.5.0
+LIBGCRYPT_VERSION?=1.5.0
+LIBGCRYPT_IPK_VERSION?=1
 LIBGCRYPT_SOURCE=libgcrypt-$(LIBGCRYPT_VERSION).tar.bz2
 LIBGCRYPT_DIR=libgcrypt-$(LIBGCRYPT_VERSION)
 LIBGCRYPT_UNZIP=bzcat
@@ -38,11 +39,6 @@ LIBGCRYPT_PRIORITY=optional
 LIBGCRYPT_DEPENDS=libgpg-error
 LIBGCRYPT_SUGGESTS=
 LIBGCRYPT_CONFLICTS=
-
-#
-# LIBGCRYPT_IPK_VERSION should be incremented when the ipk changes.
-#
-LIBGCRYPT_IPK_VERSION=1
 
 #
 # LIBGCRYPT_CONFFILES should be a list of user-editable files
@@ -210,6 +206,7 @@ $(LIBGCRYPT_IPK): $(LIBGCRYPT_BUILD_DIR)/.built
 	#install -m 755 $(LIBGCRYPT_SOURCE_DIR)/prerm $(LIBGCRYPT_IPK_DIR)/CONTROL/prerm
 	echo $(LIBGCRYPT_CONFFILES) | sed -e 's/ /\n/g' > $(LIBGCRYPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGCRYPT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBGCRYPT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
