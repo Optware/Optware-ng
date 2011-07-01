@@ -27,3 +27,6 @@ BROKEN_PACKAGES = \
 	vlc vte \
 	x264 xaw xchat xterm \
         golang memtester newt py-codeville py-pyro py-wsgiref sandbox sendmail tshark \
+
+LIBGCRYPT_VERSION := 1.4.6
+LIBGCRYPT_IPK_VERSION := 1
