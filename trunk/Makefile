@@ -403,7 +403,7 @@ COMMON_CROSS_PACKAGES = \
 	ucl uemacs ulogd unarj uncia unfs3 units unixodbc \
 	unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
-	upx usbutils ushare utf8proc util-linux util-linux-ng \
+	upx usbutils ushare utelnetd utf8proc util-linux util-linux-ng \
 	vblade vdr-mediamvp vim vitetris vlc \
 	vnstat vorbis-tools vpnc vsftpd vtun \
 	w3cam w3m wakelan wavpack webalizer weechat werc wget \
