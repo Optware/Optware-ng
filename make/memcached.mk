@@ -42,7 +42,7 @@ MEMCACHED_CONFLICTS=
 #
 # MEMCACHED_IPK_VERSION should be incremented when the ipk changes.
 #
-MEMCACHED_IPK_VERSION=1
+MEMCACHED_IPK_VERSION=2
 
 #
 # MEMCACHED_CONFFILES should be a list of user-editable files
@@ -53,6 +53,9 @@ MEMCACHED_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 MEMCACHED_PATCHES=$(MEMCACHED_SOURCE_DIR)/AI_ADDRCONFIG.patch
+ifeq (uclibc,$(LIBC_STYLE))
+MEMCACHED_PATCHES+=$(MEMCACHED_SOURCE_DIR)/IOV_MAX.patch
+endif
 
 #
 # If the compilation of the package requires additional
