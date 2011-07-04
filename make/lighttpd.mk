@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://download.lighttpd.net/lighttpd/releases-1.4.x
-LIGHTTPD_VERSION=1.4.28
+LIGHTTPD_VERSION=1.4.29
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTTPD_VERSION).tar.bz2
 LIGHTTPD_DIR=lighttpd-$(LIGHTTPD_VERSION)
 LIGHTTPD_UNZIP=bzcat
@@ -285,6 +285,7 @@ $(LIGHTTPD_IPK): $(LIGHTTPD_BUILD_DIR)/.built
 	install -m 755 $(LIGHTTPD_SOURCE_DIR)/prerm $(LIGHTTPD_IPK_DIR)/CONTROL/prerm
 	echo $(LIGHTTPD_CONFFILES) | sed -e 's/ /\n/g' > $(LIGHTTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIGHTTPD_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIGHTTPD_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
