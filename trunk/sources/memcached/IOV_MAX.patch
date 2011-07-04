@@ -1,0 +1,24 @@
+--- memcached.c.orig	2011-07-04 18:57:43.132119958 +0000
++++ memcached.c	2011-07-04 19:20:20.642124306 +0000
+@@ -15,6 +15,10 @@
+ std *
+  *  $Id: memcached.c 771 2008-03-29 09:36:33Z dormando $
+  */
++/* need this to get IOV_MAX on some platforms. */
++#ifndef __need_IOV_MAX
++#define __need_IOV_MAX
++#endif
+ #include "memcached.h"
+ #include <sys/stat.h>
+ #include <sys/socket.h>
+@@ -29,10 +33,6 @@
+ #ifndef _P1003_1B_VISIBLE
+ #define _P1003_1B_VISIBLE
+ #endif
+-/* need this to get IOV_MAX on some platforms. */
+-#ifndef __need_IOV_MAX
+-#define __need_IOV_MAX
+-#endif
+ #include <pwd.h>
+ #include <sys/mman.h>
+ #include <fcntl.h>
