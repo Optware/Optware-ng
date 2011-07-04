@@ -52,10 +52,8 @@ MEMCACHED_IPK_VERSION=2
 # MEMCACHED_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MEMCACHED_PATCHES=$(MEMCACHED_SOURCE_DIR)/AI_ADDRCONFIG.patch
-ifeq (uclibc,$(LIBC_STYLE))
-MEMCACHED_PATCHES+=$(MEMCACHED_SOURCE_DIR)/IOV_MAX.patch
-endif
+MEMCACHED_PATCHES=$(MEMCACHED_SOURCE_DIR)/AI_ADDRCONFIG.patch \
+	$(MEMCACHED_SOURCE_DIR)/IOV_MAX.patch
 
 #
 # If the compilation of the package requires additional
