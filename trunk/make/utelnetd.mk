@@ -30,13 +30,13 @@ UTELNETD_DESCRIPTION=The utelnetd package provides a small and efficient stand a
 UTELNETD_SECTION=utils
 UTELNETD_PRIORITY=optional
 UTELNETD_DEPENDS=
-UTELNETD_SUGGESTS=xinetd
+UTELNETD_SUGGESTS=
 UTELNETD_CONFLICTS=
 
 #
 # UTELNETD_IPK_VERSION should be incremented when the ipk changes.
 #
-UTELNETD_IPK_VERSION=1
+UTELNETD_IPK_VERSION=2
 
 #
 # UTELNETD_CONFFILES should be a list of user-editable files
