@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION ?= 3.0.2
+BITLBEE_VERSION ?= 3.0.3
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
@@ -112,7 +112,7 @@ bitlbee-source: $(DL_DIR)/$(BITLBEE_SOURCE) $(BITLBEE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(BITLBEE_BUILD_DIR)/.configured: $(DL_DIR)/$(BITLBEE_SOURCE) $(BITLBEE_PATCHES) make/bitlbee.mk
-	$(MAKE) glib-stage gnutls-stage
+	$(MAKE) glib-stage gnutls-stage libotr-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -125,6 +125,7 @@ endif
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
 		sed -i -e 's|-iquote|-I|g' $(@D)/configure; \
 	fi
+	sed -i -e 's|$${otrprefix}/|$(STAGING_PREFIX)/|g' $(@D)/configure; \
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BITLBEE_CPPFLAGS)" \
