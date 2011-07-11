@@ -1,6 +1,6 @@
---- Python-3.2rc1/Makefile.pre.in.orig	2010-12-30 22:12:40.000000000 +0000
-+++ Python-3.2rc1/Makefile.pre.in	2011-01-16 23:40:56.891994578 +0000
-@@ -40,6 +40,8 @@
+--- Python-3.2.1rc1/Makefile.pre.in.orig	2011-05-15 08:54:52.000000000 -0700
++++ Python-3.2.1rc1/Makefile.pre.in	2011-05-17 10:57:43.000000000 -0700
+@@ -43,6 +43,8 @@
  
  GNULD=		@GNULD@
  
@@ -9,7 +9,7 @@
  # Shell used by make (some versions default to the login shell, which is bad)
  SHELL=		/bin/sh
  
-@@ -113,7 +115,7 @@
+@@ -117,7 +119,7 @@
  
  # Symbols used for using shared libraries
  SO=		@SO@
@@ -18,7 +18,7 @@
  BLDSHARED=	@BLDSHARED@ $(PY_LDFLAGS)
  LDCXXSHARED=	@LDCXXSHARED@
  DESTSHARED=	$(BINLIBDEST)/lib-dynload
-@@ -186,7 +188,8 @@
+@@ -190,7 +192,8 @@
  LIBOBJS=	@LIBOBJS@
  
  PYTHON=		python$(EXE)
@@ -28,7 +28,7 @@
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -228,7 +231,8 @@
+@@ -232,7 +235,8 @@
  
  ##########################################################################
  # Parser
@@ -38,16 +38,16 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -391,7 +395,7 @@
+@@ -395,7 +399,7 @@
  
  # Default target
  all:		build_all
--build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks
-+build_all:	$(HOSTPYTHON) oldsharedmods sharedmods gdbhooks
+-build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks Modules/_testembed
++build_all:	$(HOSTPYTHON) oldsharedmods sharedmods gdbhooks Modules/_testembed
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -421,7 +425,7 @@
+@@ -425,7 +429,7 @@
  
  
  # Build the interpreter
@@ -56,7 +56,7 @@
  	$(LINKCC) $(PY_LDFLAGS) $(LINKFORSHARED) -o $@ Modules/python.o $(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
  
  platform: $(BUILDPYTHON)
-@@ -579,13 +583,13 @@
+@@ -585,13 +589,13 @@
  
  # Use a stamp file to prevent make -j invoking pgen twice
  $(GRAMMAR_H) $(GRAMMAR_C): Parser/pgen.stamp
@@ -74,7 +74,7 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -648,6 +652,16 @@
+@@ -654,6 +658,16 @@
  $(srcdir)/Objects/typeslots.inc: $(srcdir)/Include/typeslots.h $(srcdir)/Objects/typeslots.py
  	$(PYTHON) $(srcdir)/Objects/typeslots.py < $(srcdir)/Include/typeslots.h > $(srcdir)/Objects/typeslots.inc
  
@@ -91,7 +91,7 @@
  ############################################################################
  # Header files
  
-@@ -839,7 +853,7 @@
+@@ -845,7 +859,7 @@
  		else	true; \
  		fi; \
  	done
@@ -100,7 +100,7 @@
  	-if test "$(VERSION)" != "$(LDVERSION)"; then \
  		if test -f $(DESTDIR)$(BINDIR)/$(PYTHON)$(VERSION)$(EXE) -o -h $(DESTDIR)$(BINDIR)/$(PYTHON)$(VERSION)$(EXE); \
  		then rm -f $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE); \
-@@ -1091,6 +1105,7 @@
+@@ -1097,6 +1111,7 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -108,7 +108,7 @@
  	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
-@@ -1177,7 +1192,7 @@
+@@ -1183,7 +1198,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -117,7 +117,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1241,11 +1256,12 @@
+@@ -1247,11 +1262,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal
