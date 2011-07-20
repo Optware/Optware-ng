@@ -5,7 +5,7 @@
 ###########################################################
 
 DDCLIENT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ddclient
-DDCLIENT_VERSION=3.8.0
+DDCLIENT_VERSION=3.8.1
 DDCLIENT_SOURCE=ddclient-$(DDCLIENT_VERSION).tar.gz
 DDCLIENT_DIR=ddclient-$(DDCLIENT_VERSION)
 DDCLIENT_UNZIP=zcat
@@ -100,6 +100,7 @@ $(DDCLIENT_IPK): $(DDCLIENT_BUILD_DIR)/.built
 	$(MAKE) $(DDCLIENT_IPK_DIR)/CONTROL/control
 	echo $(DDCLIENT_CONFFILES) | sed -e 's/ /\n/g' > $(DDCLIENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DDCLIENT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(DDCLIENT_IPK_DIR)
 
 ddclient-ipk: $(DDCLIENT_IPK)
 
