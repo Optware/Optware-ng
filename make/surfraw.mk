@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SURFRAW_SITE=http://surfraw.alioth.debian.org/dist
-SURFRAW_VERSION=2.2.5
+SURFRAW_VERSION=2.2.8
 SURFRAW_SOURCE=surfraw-$(SURFRAW_VERSION).tar.gz
 SURFRAW_DIR=surfraw-$(SURFRAW_VERSION)
 SURFRAW_UNZIP=zcat
@@ -197,6 +197,7 @@ $(SURFRAW_IPK): $(SURFRAW_BUILD_DIR)/.built
 	$(MAKE) $(SURFRAW_IPK_DIR)/CONTROL/control
 	echo $(SURFRAW_CONFFILES) | sed -e 's/ /\n/g' > $(SURFRAW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SURFRAW_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SURFRAW_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
