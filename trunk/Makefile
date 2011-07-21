@@ -395,7 +395,7 @@ COMMON_CROSS_PACKAGES = \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
 	tcpdump tcpflow tcsh termcap tesseract-ocr \
 	texinfo textutils thttpd \
-	tig tin tinyproxy tinyscheme tmsnc tnef tnftp tnftpd \
+	tig tin tinyproxy tinyscheme tmsnc tmux tnef tnftp tnftpd \
 	toppyweb tor torsocks torrent torrentflux transcode \
 	transmission \
 	transmissiond tre tree trickle \
