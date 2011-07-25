@@ -13,8 +13,8 @@
  
      echo " + $NGX_SYSTEM $NGX_RELEASE $NGX_MACHINE"
  
---- auto/feature.orig	2010-11-25 03:04:03.000000000 -0800
-+++ auto/feature	2011-05-03 22:24:55.000000000 -0700
+--- auto/feature.orig	2011-05-11 11:50:19.000000000 +0000
++++ auto/feature	2011-07-25 03:57:49.021227931 +0000
 @@ -48,11 +48,14 @@
  
  if [ -x $NGX_AUTOTEST ]; then
@@ -25,9 +25,9 @@
  
          yes)
              # /bin/sh is used to intercept "Killed" or "Abort trap" messages
--            if /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1; then
+-            if /bin/sh -c $NGX_AUTOTEST >> $NGX_AUTOCONF_ERR 2>&1; then
 +            if (test "$cross_compiling" =  "yes" && test "$ngx_feature_cache_value" != "no") \
-+            || (test "$cross_compiling" != "yes" && /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1); then
++            || (test "$cross_compiling" != "yes" && /bin/sh -c $NGX_AUTOTEST >> $NGX_AUTOCONF_ERR 2>&1); then
                  echo " found"
                  ngx_found=yes
  
@@ -35,8 +35,8 @@
  
          value)
              # /bin/sh is used to intercept "Killed" or "Abort trap" messages
--            if /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1; then
-+            if test "$cross_compiling" != "yes" && /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1; then
+-            if /bin/sh -c $NGX_AUTOTEST >> $NGX_AUTOCONF_ERR 2>&1; then
++            if (test "$cross_compiling" != "yes" && /bin/sh -c $NGX_AUTOTEST >> $NGX_AUTOCONF_ERR 2>&1); then
                  echo " found"
                  ngx_found=yes
  
@@ -62,9 +62,9 @@
  
          bug)
              # /bin/sh is used to intercept "Killed" or "Abort trap" messages
--            if /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1; then
-+            if (test "$cross_compiling" =  "yes" && test "$ngx_feature_cache_value" != "yes") \
-+            || (test "$cross_compiling" != "yes" && test /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1); then
+-            if /bin/sh -c $NGX_AUTOTEST >> $NGX_AUTOCONF_ERR 2>&1; then
++            if (test "$cross_compiling" =  "yes" && test "$ngx_feature_cache_value" != "no") \
++            || (test "$cross_compiling" != "yes" && /bin/sh -c $NGX_AUTOTEST >> $NGX_AUTOCONF_ERR 2>&1); then
                  echo " not found"
  
              else
