@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 SAMBA34_SITE=http://www.samba.org/samba/ftp/stable
-SAMBA34_VERSION ?= 3.4.13
-SAMBA34_IPK_VERSION ?= 2
+SAMBA34_VERSION ?= 3.4.14
+SAMBA34_IPK_VERSION ?= 1
 SAMBA34_SOURCE=samba-$(SAMBA34_VERSION).tar.gz
 SAMBA34_DIR=samba-$(SAMBA34_VERSION)
 SAMBA34_UNZIP=zcat
