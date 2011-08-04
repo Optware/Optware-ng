@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SAMBA35_SITE=http://www.samba.org/samba/ftp/stable
-SAMBA35_VERSION ?= 3.5.9
+SAMBA35_VERSION ?= 3.5.10
 SAMBA35_IPK_VERSION ?= 1
 SAMBA35_SOURCE=samba-$(SAMBA35_VERSION).tar.gz
 SAMBA35_DIR=samba-$(SAMBA35_VERSION)
