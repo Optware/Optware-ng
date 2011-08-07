@@ -317,7 +317,7 @@ COMMON_CROSS_PACKAGES = \
 	lame launchtool lcd4linux ldconfig leafnode less lftp lha \
 	liba52 libao libart libassuan libbt \
 	libcapi20 libcdio libcurl \
-	libdaemon libdb libdlna \
+	libdaemon libdb libdb52 libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libebml libexosip2 \
 	libevent \
