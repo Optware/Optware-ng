@@ -1,0 +1,12 @@
+--- libatalk/cnid/dbd/cnid_dbd.c.orig	2011-08-06 15:30:34.696663933 +0200
++++ libatalk/cnid/dbd/cnid_dbd.c	2011-08-06 15:31:43.976663873 +0200
+@@ -41,6 +41,9 @@
+ #include <atalk/cnid_dbd_private.h>
+ #include <atalk/util.h>
+ 
++// Definition copied from newer clib
++#define AI_NUMERICSERV	0x0400	/* Don't use name resolution.  */
++
+ #include "cnid_dbd.h"
+ 
+ #ifndef SOL_TCP
