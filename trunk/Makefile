@@ -52,6 +52,7 @@ subvertpy slimserver squeezecenter py-codeville SpamAssassin py-pyro \
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	btg \
+	samba36 \
 	libtorrent-rasterbar \
 	udpxy \
 	py-btpd-webui \
