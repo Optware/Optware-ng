@@ -1,0 +1,11 @@
+--- etc/afpd/afp_asp.c.orig	2011-08-06 19:40:14.936663901 +0200
++++ etc/afpd/afp_asp.c	2011-08-06 19:41:44.392666034 +0200
+@@ -33,7 +33,7 @@
+ #include <atalk/compat.h>
+ #include <atalk/util.h>
+ 
+-#include "globals.h"
++#include "atalk/globals.h"
+ #include "switch.h"
+ #include "auth.h"
+ #include "fork.h"

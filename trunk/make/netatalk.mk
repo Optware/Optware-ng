@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NETATALK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/netatalk
-NETATALK_VERSION=2.0.5
+NETATALK_VERSION=2.2.0
 NETATALK_SOURCE=netatalk-$(NETATALK_VERSION).tar.gz
 NETATALK_DIR=netatalk-$(NETATALK_VERSION)
 NETATALK_UNZIP=zcat
@@ -29,14 +29,19 @@ NETATALK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NETATALK_DESCRIPTION=Apple talk networking daemon.
 NETATALK_SECTION=networking
 NETATALK_PRIORITY=optional
-NETATALK_DEPENDS=libdb
+NETATALK_DEPENDS=libdb52
 NETATALK_SUGGESTS=libgcrypt
 NETATALK_CONFLICTS=
 
 #
+# SYMBOL POSTFIX FOR GIVEN LIBDB (BUILD WITH UNIQUENAMES)
+#
+DB_VERSION="_5002"
+
+#
 # NETATALK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETATALK_IPK_VERSION=2
+NETATALK_IPK_VERSION=1
 
 #
 # NETATALK_CONFFILES should be a list of user-editable files
@@ -46,14 +51,16 @@ NETATALK_IPK_VERSION=2
 # NETATALK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NETATALK_PATCHES=$(NETATALK_SOURCE_DIR)/db3-check.patch
+NETATALK_PATCHES = $(NETATALK_SOURCE_DIR)/dbd_def_AI_NUMERICSERV.patch
+NETATALK_PATCHES+= $(NETATALK_SOURCE_DIR)/afp_asp_include.patch
+NETATALK_PATCHES+=#$(NETATALK_SOURCE_DIR)/db3-check.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NETATALK_CPPFLAGS=
-NETATALK_LDFLAGS=
+#NETATALK_CPPFLAGS+= -I$(@D)/include/atalk/
+#NETATALK_LDFLAGS += 
 ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel, $(OPTWARE_TARGET)))
 NETATALK_LDFLAGS += -L$(TARGET_USRLIBDIR)
 endif
@@ -108,7 +115,7 @@ netatalk-source: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCHES)
 # shown below to make various patches to it.
 #
 $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCHES) make/netatalk.mk
-	$(MAKE) libdb-stage libgcrypt-stage libtool-stage
+	$(MAKE) libdb52-stage libgcrypt-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(NETATALK_DIR) $(@D)
 	$(NETATALK_UNZIP) $(DL_DIR)/$(NETATALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETATALK_PATCHES)" ; \
@@ -137,13 +144,20 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--with-ssl-dir=$(STAGING_PREFIX) \
 		--without-shadow \
+		--without-ldap \
 		--enable-afp3 \
+		--enable-ddp \
+		--enable-timelord \
+		--enable-a2boot \
 		--disable-quota \
 		--disable-tcp-wrappers \
 		--disable-nls \
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
+	sed -i -e "s/db_strerror/db_strerror$(DB_VERSION)/g" $(@D)/etc/cnid_dbd/dbif.c
+	sed -i -e "s/db_create/db_create$(DB_VERSION)/g" $(@D)/etc/cnid_dbd/dbif.c
+	sed -i -e "s/db_env_create/db_env_create$(DB_VERSION)/g" $(@D)/etc/cnid_dbd/dbif.c
 	touch $@
 
 netatalk-unpack: $(NETATALK_BUILD_DIR)/.configured
