@@ -1,0 +1,20 @@
+--- samba36/lib/tsocket/tsocket_bsd.c.orig	2010-03-01 11:14:34.000000000 +0000
++++ samba36/lib/tsocket/tsocket_bsd.c	2010-03-04 04:13:30.071649381 +0000
+@@ -1242,7 +1242,7 @@
+ 	bsds->fd = fd;
+ 	talloc_set_destructor(bsds, tdgram_bsd_destructor);
+ 
+-#ifdef HAVE_IPV6
++#if defined(HAVE_IPV6) && defined(IPV6_V6ONLY)
+ 	if (do_ipv6only) {
+ 		int val = 1;
+ 
+@@ -2083,7 +2083,7 @@
+ 		goto post;
+ 	}
+ 
+-#ifdef HAVE_IPV6
++#if defined(HAVE_IPV6) && defined(IPV6_V6ONLY)
+ 	if (do_ipv6only) {
+ 		int val = 1;
+ 
