@@ -1,0 +1,44 @@
+--- samba36/source3/configure.in.orig	2010-03-01 11:14:34.000000000 +0000
++++ samba36/source3/configure.in	2010-03-02 04:27:56.818165533 +0000
+@@ -546,6 +546,7 @@
+         AC_MSG_CHECKING([for LFS support])
+         old_CPPFLAGS="$CPPFLAGS"
+         CPPFLAGS="-D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE $CPPFLAGS"
++       AC_CACHE_CHECK([for LFS support],LINUX_LFS_SUPPORT,[
+        AC_TRY_RUN([
+ #include <unistd.h>
+ #include <sys/utsname.h>
+@@ -582,7 +583,7 @@
+        exit(1);
+ #endif
+ }
+-], [LINUX_LFS_SUPPORT=yes], [LINUX_LFS_SUPPORT=no], [LINUX_LFS_SUPPORT=cross])
++], [LINUX_LFS_SUPPORT=yes], [LINUX_LFS_SUPPORT=no], [LINUX_LFS_SUPPORT=cross])])
+ 	CPPFLAGS="$old_CPPFLAGS"
+ 	if test x$LINUX_LFS_SUPPORT = xyes ; then
+ 		CPPFLAGS="-D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE $CPPFLAGS"
+--- samba36/source3/configure.in.orig	2011-08-11 19:58:26.410116782 +0200
++++ samba36/source3/configure.in	2011-08-11 20:45:56.954116921 +0200
+@@ -1115,10 +1115,19 @@
+ # Check to see if core dump directory is defined in linux
+ # with /proc/sys/kernel/core_pattern
+ 
++if test x"$samba_cv_has_proc_sys_kernel_core_pattern" = x"yes"; then
++AC_DEFINE(HAVE_SYS_KERNEL_PROC_CORE_PATTERN, 1,
++        [Whether Linux kernel uses core_pattern for core files])
++elif test x"$samba_cv_has_proc_sys_kernel_core_pattern" = x"no"; then
++ac_cv_file__proc_sys_kernel_core_pattern=no
++else
+ AC_CHECK_FILE([/proc/sys/kernel/core_pattern],
+-	AC_DEFINE(HAVE_SYS_KERNEL_PROC_CORE_PATTERN, 1,
+-	[Whether Linux kernel uses core_pattern for core files]),
+-	 [])
++        AC_DEFINE(HAVE_SYS_KERNEL_PROC_CORE_PATTERN, 1,
++        [Whether Linux kernel uses core_pattern for core files]),
++         [])
++fi
++
++
+ 
+ #############################
+ # check if building with gpfs

@@ -1,0 +1,20 @@
+--- lib/replace/libreplace_network.m4.orig	2011-08-10 09:25:35.522386788 +0200
++++ lib/replace/libreplace_network.m4	2011-08-10 09:29:31.418387072 +0200
+@@ -230,7 +230,8 @@
+ if test x"$libreplace_cv_HAVE_GETADDRINFO" = x"yes"; then
+ 	# getaddrinfo is broken on some AIX systems
+ 	# see bug 5910, use our replacements if we detect
+-	# a broken system.
++	AC_CACHE_CHECK([for getaddrinfoi broken ],libreplace_cv_HAVE_GETADDRINFO_BROKEN,[
+ 	AC_TRY_RUN([
+ 		#include <stddef.h>
+ 		#include <sys/types.h>
+@@ -261,7 +262,7 @@
+ 			return getaddrinfo(hostname3, NULL, &hints, &ppres) != 0 ? 1 : 0;
+ 		}],
+ 		libreplace_cv_HAVE_GETADDRINFO=yes,
+-		libreplace_cv_HAVE_GETADDRINFO=no)
++		libreplace_cv_HAVE_GETADDRINFO=no)])
+ fi
+ 
+ if test x"$libreplace_cv_HAVE_GETADDRINFO" = x"yes"; then
