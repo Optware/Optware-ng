@@ -55,6 +55,8 @@ NETATALK_PATCHES = $(NETATALK_SOURCE_DIR)/dbd_def_AI_NUMERICSERV.patch
 NETATALK_PATCHES+= $(NETATALK_SOURCE_DIR)/afp_asp_include.patch
 NETATALK_PATCHES+=#$(NETATALK_SOURCE_DIR)/db3-check.patch
 
+NETATALK_CONFIG_ARGS ?=
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -135,6 +137,7 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NETATALK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NETATALK_LDFLAGS)" \
 		netatalk_cv_SIZEOF_OFF_T=yes \
+		$(NETATALK_CONFIG_ARGS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
