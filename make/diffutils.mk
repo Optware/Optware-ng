@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 DIFFUTILS_SITE=http://ftp.gnu.org/pub/gnu/diffutils
-DIFFUTILS_VERSION=3.0
+DIFFUTILS_VERSION=3.1
 DIFFUTILS_SOURCE=diffutils-$(DIFFUTILS_VERSION).tar.gz
 DIFFUTILS_DIR=diffutils-$(DIFFUTILS_VERSION)
 DIFFUTILS_UNZIP=zcat
