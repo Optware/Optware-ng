@@ -52,7 +52,6 @@ subvertpy slimserver squeezecenter py-codeville SpamAssassin py-pyro \
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	btg \
-	samba36 \
 	libtorrent-rasterbar \
 	udpxy \
 	py-btpd-webui \
@@ -71,6 +70,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
 # clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
 # clinkcc - depends on broken xerces-c package
+# samba36 - *** No rule to make target `modules/CP866.o', needed by `bin/CP866.so'.  Stop.
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
@@ -80,6 +80,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	clinkcc \
         icu xerces-c \
 	nemesis \
+	samba36 \
  
 PERL_PACKAGES = \
 	perl \
