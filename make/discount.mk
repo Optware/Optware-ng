@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DISCOUNT_SITE=http://www.pell.portland.or.us/~orc/Code/markdown
-DISCOUNT_VERSION=2.1.1.1
+DISCOUNT_VERSION=2.1.1.2
 DISCOUNT_SOURCE=discount-$(DISCOUNT_VERSION).tar.bz2
 DISCOUNT_DIR=discount-$(DISCOUNT_VERSION)
 DISCOUNT_UNZIP=bzcat
@@ -143,6 +143,7 @@ discount-unpack: $(DISCOUNT_BUILD_DIR)/.configured
 #
 $(DISCOUNT_BUILD_DIR)/.built: $(DISCOUNT_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) -C $(@D) CC=$(HOSTCC) mktags
 	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DISCOUNT_CPPFLAGS)" \
