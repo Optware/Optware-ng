@@ -59,10 +59,6 @@ SAMBA36_PATCHES=\
 $(SAMBA36_SOURCE_DIR)/configure.in.patch \
 $(SAMBA36_SOURCE_DIR)/IPV6_V6ONLY.patch \
 
-ifeq ($(OPTWARE_TARGET), $(filter ddwrt dns323 gumstix1151 mbwe-bluering oleg openwrt-brcm24 openwrt-ixp4xx wdtv, $(OPTWARE_TARGET)))
-#SAMBA36_PATCHES+=$(SAMBA36_SOURCE_DIR)/mount.cifs.c.patch
-endif
-
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -218,9 +214,6 @@ endif
 	$(SAMBA36_UNZIP) $(DL_DIR)/$(SAMBA36_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(SAMBA36_DIR) $(@D)
 	cat $(SAMBA36_PATCHES) | patch -d $(@D) -p1
-ifeq (3.0.14a, $(SAMBA36_VERSION))
-	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(@D)/source/aclocal.m4
-endif
 	(cd $(@D)/source3/; ./autogen.sh)
 	(cd $(@D)/source3/; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -372,10 +365,6 @@ $(SAMBA36_IPK) $(SAMBA36-DEV_IPK) $(SAMBA36-SWAT_IPK): $(SAMBA36_BUILD_DIR)/.bui
 	$(MAKE) $(SAMBA36_IPK_DIR)/CONTROL/control
 	install -m 644 $(SAMBA36_SOURCE_DIR)/postinst $(SAMBA36_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SAMBA36_SOURCE_DIR)/preinst $(SAMBA36_IPK_DIR)/CONTROL/preinst
-ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g, $(OPTWARE_TARGET)))
-	install -m 644 $(SAMBA36_SOURCE_DIR)/postinst.$(OPTWARE_TARGET) $(SAMBA36_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA36_SOURCE_DIR)/preinst.$(OPTWARE_TARGET) $(SAMBA36_IPK_DIR)/CONTROL/preinst
-endif
 	echo $(SAMBA36_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA36_IPK_DIR)/CONTROL/conffiles
 	# samba3-dev
 	install -d $(SAMBA36-DEV_IPK_DIR)/opt
