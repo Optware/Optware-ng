@@ -7,13 +7,14 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	binutils gcc libc-dev \
 
+# samba36: auth/pampass.c:46:31: error: security/pam_appl.h: No such file or directory
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
          asterisk14-chan-capi atftp btg dialog ecl \
          iptraf ivorbis-tools lcd4linux ldconfig libcapi20 \
          mpdscribble nagios-plugins ntop opendchub opensips \
          puppy qemu \
-	samba samba34 samba35 \
+	samba samba34 samba35 samba36 \
 	sandbox slimserver \
          vte xchat \
 

@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 	redis \
 	binutils gcc libc-dev \
 
+# samba36: auth/pampass.c:46:31: error: security/pam_appl.h: No such file or directory
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk \
@@ -17,3 +18,4 @@ BROKEN_PACKAGES = \
 	ldconfig puppy \
 	qemu \
 	samba35 \
+        samba36 \
