@@ -18,6 +18,7 @@ BROKEN_PACKAGES = \
 	puppy \
 	samba34 \
 	samba35 \
+	samba36 \
 	sandbox \
 	x264 lm-sensors \
 

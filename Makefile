@@ -70,7 +70,6 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
 # clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
 # clinkcc - depends on broken xerces-c package
-# samba36 - install: cannot stat `/home/bzhou/slug/optware/slugos5le/sources/samba36/rc.samba': No such file or directory
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
@@ -80,7 +79,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	clinkcc \
         icu xerces-c \
 	nemesis \
-	samba36 \
  
 PERL_PACKAGES = \
 	perl \
@@ -382,7 +380,7 @@ COMMON_CROSS_PACKAGES = \
 	readline re2c recode recordext \
 	redir renderext rhtvision rlfe rlwrap rrdcollect rrdtool \
 	rssh rsstail rsync rtorrent rtpproxy ruby rubygems rxtx \
-	sablevm samba samba2 samba34 samba35 sandbox sane-backends \
+	sablevm samba samba2 samba34 samba35 samba36 sandbox sane-backends \
 	scli scponly screen scrobby scsi-idle sdl sdparm \
 	sed sendmail ser ser2net setserial setpwc sg3-utils \
 	sharutils shntool silc-client simh sipcalc siproxd sispmctl \
