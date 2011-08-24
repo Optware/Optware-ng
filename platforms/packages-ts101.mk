@@ -22,6 +22,7 @@ BROKEN_PACKAGES = \
 	nfs-server nfs-utils \
 	samba34 \
 	samba35 \
+	samba36 \
 	sane-backends \
 	sandbox \
 	util-linux \
