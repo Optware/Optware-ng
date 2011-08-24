@@ -9,6 +9,7 @@ SPECIFIC_PACKAGES = \
 	binutils gcc libc-dev \
 
 # samba34: smbd/notify_inotify.c:29:25: error: sys/inotify.h: No such file or directory
+# samba36: auth/pampass.c:46:31: error: security/pam_appl.h: No such file or directory
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk \
@@ -23,6 +24,7 @@ BROKEN_PACKAGES = \
 	qemu \
 	samba34 \
 	samba35 \
+        samba36 \
 	util-linux \
 	vlc vte \
 	x264 xaw xchat xterm \
