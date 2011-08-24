@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SAMBA34_SITE=http://www.samba.org/samba/ftp/stable
-SAMBA34_VERSION ?= 3.4.14
+SAMBA34_VERSION ?= 3.4.15
 SAMBA34_IPK_VERSION ?= 1
 SAMBA34_SOURCE=samba-$(SAMBA34_VERSION).tar.gz
 SAMBA34_DIR=samba-$(SAMBA34_VERSION)
@@ -41,9 +41,9 @@ SAMBA34-SWAT_DEPENDS=samba34, xinetd
 SAMBA34_SUGGESTS=cups
 SAMBA34-DEV_SUGGESTS=
 SAMBA34-SWAT_SUGGESTS=
-SAMBA34_CONFLICTS=samba2, samba, samba35
-SAMBA34-DEV_CONFLICTS=samba2, samba3-dev, samba35-dev
-SAMBA34-SWAT_CONFLICTS=samba2, samba3-swat, samba35-swat
+SAMBA34_CONFLICTS=samba2, samba, samba35, samba36
+SAMBA34-DEV_CONFLICTS=samba2, samba3-dev, samba35-dev, samba36-dev
+SAMBA34-SWAT_CONFLICTS=samba2, samba3-swat, samba35-swat, samba36-swat
 SAMBA34_ADDITIONAL_CODEPAGES=CP866
 
 #
