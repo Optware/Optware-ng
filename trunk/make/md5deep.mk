@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MD5DEEP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/md5deep
-MD5DEEP_VERSION=3.9.1
+MD5DEEP_VERSION=3.9.2
 MD5DEEP_SOURCE=md5deep-$(MD5DEEP_VERSION).tar.gz
 MD5DEEP_DIR=md5deep-$(MD5DEEP_VERSION)
 MD5DEEP_UNZIP=zcat
@@ -191,18 +191,9 @@ $(MD5DEEP_IPK_DIR)/CONTROL/control:
 #
 $(MD5DEEP_IPK): $(MD5DEEP_BUILD_DIR)/.built
 	rm -rf $(MD5DEEP_IPK_DIR) $(BUILD_DIR)/md5deep_*_$(TARGET_ARCH).ipk
-	install -d $(MD5DEEP_BUILD_DIR)/opt/bin $(MD5DEEP_BUILD_DIR)/opt/man/man1
-	$(MAKE) -C $(MD5DEEP_BUILD_DIR) install-strip DESTDIR=$(MD5DEEP_IPK_DIR)
-#	install -d $(MD5DEEP_IPK_DIR)/opt/etc/
-#	install -m 644 $(MD5DEEP_SOURCE_DIR)/md5deep.conf $(MD5DEEP_IPK_DIR)/opt/etc/md5deep.conf
-#	install -d $(MD5DEEP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MD5DEEP_SOURCE_DIR)/rc.md5deep $(MD5DEEP_IPK_DIR)/opt/etc/init.d/SXXmd5deep
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MD5DEEP_IPK_DIR)/opt/etc/init.d/SXXmd5deep
+	$(MAKE) -C $(MD5DEEP_BUILD_DIR) install DESTDIR=$(MD5DEEP_IPK_DIR)
+	$(STRIP_COMMAND) $(MD5DEEP_IPK_DIR)/opt/bin/*
 	$(MAKE) $(MD5DEEP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MD5DEEP_SOURCE_DIR)/postinst $(MD5DEEP_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MD5DEEP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MD5DEEP_SOURCE_DIR)/prerm $(MD5DEEP_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MD5DEEP_IPK_DIR)/CONTROL/prerm
 	echo $(MD5DEEP_CONFFILES) | sed -e 's/ /\n/g' > $(MD5DEEP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MD5DEEP_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(MD5DEEP_IPK_DIR)
