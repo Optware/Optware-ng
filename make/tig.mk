@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TIG_SITE=http://jonas.nitro.dk/tig/releases
-TIG_VERSION=0.17
+TIG_VERSION=0.18
 TIG_SOURCE=tig-$(TIG_VERSION).tar.gz
 TIG_DIR=tig-$(TIG_VERSION)
 TIG_UNZIP=zcat
@@ -189,11 +189,11 @@ $(TIG_IPK_DIR)/CONTROL/control:
 $(TIG_IPK): $(TIG_BUILD_DIR)/.built
 	rm -rf $(TIG_IPK_DIR) $(BUILD_DIR)/tig_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TIG_BUILD_DIR) DESTDIR=$(TIG_IPK_DIR) install install-doc-man
-	mv $(TIG_IPK_DIR)/opt/bin/test-graph $(TIG_IPK_DIR)/opt/bin/tig-test-graph
-	$(STRIP_COMMAND) $(TIG_IPK_DIR)/opt/bin/tig $(TIG_IPK_DIR)/opt/bin/tig-test-graph
+	$(STRIP_COMMAND) $(TIG_IPK_DIR)/opt/bin/tig
 	$(MAKE) $(TIG_IPK_DIR)/CONTROL/control
 	echo $(TIG_CONFFILES) | sed -e 's/ /\n/g' > $(TIG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TIG_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TIG_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
