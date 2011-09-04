@@ -5,7 +5,7 @@
 #############################################################
 
 DNSMASQ_SITE=http://www.thekelleys.org.uk/dnsmasq
-DNSMASQ_VERSION=2.57
+DNSMASQ_VERSION=2.58
 DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_DIR:=dnsmasq-$(DNSMASQ_VERSION)
 DNSMASQ_UNZIP=zcat
@@ -92,6 +92,7 @@ $(DNSMASQ_IPK): $(DNSMASQ_BUILD_DIR)/.built
 	install -m 644 $(DNSMASQ_BUILD_DIR)/setup.html \
 		$(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq/setup.html
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DNSMASQ_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(DNSMASQ_IPK_DIR)
 
 dnsmasq-ipk: $(DNSMASQ_IPK)
 
