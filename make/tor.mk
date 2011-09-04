@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TOR_SITE=http://www.torproject.org/dist
-TOR_VERSION=0.2.1.30
+TOR_VERSION=0.2.2.32
 TOR_SOURCE=tor-$(TOR_VERSION).tar.gz
 TOR_DIR=tor-$(TOR_VERSION)
 TOR_UNZIP=zcat
@@ -197,17 +197,9 @@ $(TOR_IPK_DIR)/CONTROL/control:
 $(TOR_IPK): $(TOR_BUILD_DIR)/.built
 	rm -rf $(TOR_IPK_DIR) $(BUILD_DIR)/tor_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TOR_BUILD_DIR) DESTDIR=$(TOR_IPK_DIR) install-strip
-#	install -m 644 $(TOR_SOURCE_DIR)/tor.conf $(TOR_IPK_DIR)/opt/etc/tor.conf
-#	install -d $(TOR_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TOR_SOURCE_DIR)/rc.tor $(TOR_IPK_DIR)/opt/etc/init.d/SXXtor
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXtor
 	$(MAKE) $(TOR_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TOR_SOURCE_DIR)/postinst $(TOR_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TOR_SOURCE_DIR)/prerm $(TOR_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
-#	echo $(TOR_CONFFILES) | sed -e 's/ /\n/g' > $(TOR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TOR_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TOR_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
