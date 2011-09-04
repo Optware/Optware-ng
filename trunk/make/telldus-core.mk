@@ -152,7 +152,7 @@ $(TELLDUS-CORE_IPK): $(TELLDUS-CORE_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)/opt/bin/tdtool
 	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)/opt/lib/libtelldus-core.so.2.0.4
 	install -d $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(TELLDUS-CORE_SOURCE_DIR)/rc.tellstick.sh $(CRON_IPK_DIR)/opt/etc/init.d/S50tellstick
+	install -m 755 $(TELLDUS-CORE_SOURCE_DIR)/rc.tellstick.sh $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d/S50tellstick
 	$(MAKE) $(TELLDUS-CORE_IPK_DIR)/CONTROL/control
 	install -m 755 $(TELLDUS-CORE_SOURCE_DIR)/postinst $(TELLDUS-CORE_IPK_DIR)/CONTROL/postinst
 	echo $(TELLDUS-CORE_CONFFILES) | sed -e 's/ /\n/g' > $(TELLDUS-CORE_IPK_DIR)/CONTROL/conffiles
