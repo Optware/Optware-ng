@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# $Id$
+#
+
+/opt/etc/init.d/S50tellstick
+
