@@ -46,7 +46,7 @@ TOR_CONFFILES=/opt/etc/tor.conf /opt/etc/init.d/SXXtor
 # TOR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#TOR_PATCHES=$(TOR_SOURCE_DIR)/configure.patch
+TOR_PATCHES=$(TOR_SOURCE_DIR)/uclibc-lround.patch
 
 #
 # If the compilation of the package requires additional
