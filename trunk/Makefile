@@ -198,7 +198,8 @@ PYTHON_PACKAGES = \
 	py-pexpect py-pil py-ply py-protocols \
 	py-pgsql py-psycopg py-psycopg2 py-pygresql \
 	py-pudge py-pylons py-pyro py-quixote \
-	py-rdiff-backup py-reportlab py-routes py-roundup py-ruledispatch \
+	py-rdiff-backup py-redis \
+	py-reportlab py-routes py-roundup py-ruledispatch \
 	py-scgi py-selector py-serial py-setuptools \
 	py-silvercity py-simplejson py-simpy py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject py-statlib \
