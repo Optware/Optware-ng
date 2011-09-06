@@ -21,6 +21,7 @@ BROKEN_PACKAGES = \
 	rssh sablevm \
 	util-linux vnstat \
 	slimserver \
+	telldus-core \
 	btg clinkcc libopensync msynctool obexftp \
 
 PSMISC_VERSION := 22.11
