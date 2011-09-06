@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	golang \
 	libtorrent-rasterbar \
 	linphone \
+	telldus-core \
 
 BTPD_VERSION=0.13
 BTPD_IPK_VERSION=2

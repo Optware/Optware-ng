@@ -9,7 +9,8 @@ BROKEN_PACKAGES = \
 	py-bazaar-ng py-simplejson \
 	qemu qemu-libc-i386 \
 	sandbox \
-	slrn spandsp 
+	slrn spandsp \
+	telldus-core \
 
 PSMISC_VERSION := 22.11
 
