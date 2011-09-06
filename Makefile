@@ -395,7 +395,7 @@ COMMON_CROSS_PACKAGES = \
 	stupid-ftpd sudo surfraw swi-prolog svn \
 	swig syslog-ng sysstat syx \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
-	tcpdump tcpflow tcsh termcap tesseract-ocr \
+	tcpdump tcpflow tcsh telldus-core termcap tesseract-ocr \
 	texinfo textutils thttpd \
 	tig tin tinyproxy tinyscheme tmsnc tmux tnef tnftp tnftpd \
 	toppyweb tor torsocks torrent torrentflux transcode \

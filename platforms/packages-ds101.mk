@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	motion \
 	qemu qemu-libc-i386 \
 	sandbox \
+	telldus-core \
 
 PSMISC_VERSION := 22.11
 

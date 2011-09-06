@@ -18,6 +18,7 @@ BROKEN_PACKAGES = \
 	golang \
 	ldconfig \
 	sandbox \
+	telldus-core \
 
 PSMISC_VERSION := 22.11
 
