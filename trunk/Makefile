@@ -58,6 +58,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	cryptsetup \
 	telldus-core \
 	znc \
+	rkhunter \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
