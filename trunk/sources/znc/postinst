@@ -1,0 +1,41 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+ZNC_USER=znc
+ZNC_GROUP=znc
+ZNC_HOME=/opt/var/lib/znc
+
+# group creation
+if grep -q ^$ZNC_GROUP: /etc/group; then
+	echo "$ZNC_GROUP group already exists, skipping creation."
+else
+	echo -n "No $ZNC_GROUP group found, creating it... "
+	addgroup $ZNC_GR0UP
+	echo "done"
+fi
+
+# user creation
+if grep -q ^$ZNC_USER: /etc/passwd; then
+	echo "$ZNC_USER user already exists, skipping creation."
+else
+	echo -n "No $ZNC_USER user found, creating it... "
+	adduser -S -D -H -h $ZNC_HOME -g "znc daemon" -s /bin/sh -G $ZNC_GROUP $ZNC_USER > /dev/null 2>&1
+	echo "done"
+fi
+
+# homedir creation
+if [ -d "$ZNC_HOME" ]; then
+	echo "home directory already exists, skipping creation."
+else
+	echo -n "No home directory found, creating it... "
+	mkdir -p $ZNC_HOME
+	chown $ZNC_USER:$ZNC_GROUP $ZNC_HOME
+	chmod 700 $ZNC_HOME
+	echo "done"
+fi
+
+echo ; echo
+echo "Before launching znc for the first time, you must run 'znc -c' as $ZNC_USER to generate the configuration."
+echo "Then, you can launch znc by using /opt/etc/init.d/S91znc"
+echo
+
