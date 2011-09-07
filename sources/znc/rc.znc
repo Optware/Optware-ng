@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# Startup script for znc as standalone server
+#
+
+. /opt/etc/default/znc
+
+if [ ! -x /opt/bin/su -a ! -x /bin/su ]; then
+    echo "su not found.";
+    exit 2;
+fi
+
+if [ -n "`/opt/bin/pidof znc`" ]; then
+    /opt/bin/killall znc 2>/dev/null
+fi
+
+su - -c "/opt/bin/znc -d ${ZNC_DATADIR}" ${ZNC_USER}
+
