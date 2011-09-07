@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GZIP_SITE=http://ftp.gnu.org/pub/gnu/gzip
-GZIP_VERSION=1.2.4a
+GZIP_VERSION=1.4
 GZIP_SOURCE=gzip-$(GZIP_VERSION).tar.gz
 GZIP_DIR=gzip-$(GZIP_VERSION)
 GZIP_UNZIP=zcat
@@ -62,7 +62,7 @@ GZIP_IPK=$(BUILD_DIR)/gzip_$(GZIP_VERSION)-$(GZIP_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GZIP_SOURCE):
-	$(WGET) -P $(@D) $(WGET_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(GZIP_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
