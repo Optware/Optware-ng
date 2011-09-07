@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
-TAR_VERSION ?= 1.25
+TAR_VERSION ?= 1.26
 TAR_IPK_VERSION ?= 1
 TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
