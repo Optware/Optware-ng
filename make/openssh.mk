@@ -5,7 +5,7 @@
 #########################################################
 
 OPENSSH_SITE=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
-OPENSSH_VERSION=5.8p2
+OPENSSH_VERSION=5.9p1
 OPENSSH_SOURCE=openssh-$(OPENSSH_VERSION).tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
@@ -150,7 +150,6 @@ $(OPENSSH_BUILD_DIR)/.built: $(OPENSSH_BUILD_DIR)/.configured
 	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/ssh-keyscan
 	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/ssh-keysign
 	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/ssh-pkcs11-helper
-	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/ssh-rand-helper
 	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/sshd
 	touch $@
 
