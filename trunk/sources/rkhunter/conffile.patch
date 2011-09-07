@@ -1,0 +1,12 @@
+diff -Naur rkhunter.old/files/rkhunter.conf rkhunter/files/rkhunter.conf
+--- rkhunter.old/files/rkhunter.conf	2010-11-13 21:25:22.000000000 +0100
++++ rkhunter/files/rkhunter.conf	2011-09-07 14:20:12.666116331 +0200
+@@ -155,7 +155,7 @@
+ #
+ # NOTE: This option should be present in the configuration file.
+ #
+-LOGFILE=/var/log/rkhunter.log
++LOGFILE=/opt/var/log/rkhunter.log
+ 
+ #
+ # Set the following option to 1 if the log file is to be appended to

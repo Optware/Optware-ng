@@ -1,0 +1,8 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+# updating the database
+echo ; echo
+rkhunter --update
+echo
