@@ -15,8 +15,8 @@
 # You should change all these variables to suit your package.
 #
 XVID_SITE=http://downloads.xvid.org/downloads
-XVID_VERSION=1.2.2
-XVID_LIB_VER=4.2
+XVID_VERSION=1.3.2
+XVID_LIB_VER=4.3
 XVID_SOURCE=xvidcore-$(XVID_VERSION).tar.bz2
 #XVID_REPOSITORY=:pserver:anonymous@cvs.xvid.org:/xvid
 #XVID_TAG=-D 2006-12-26
