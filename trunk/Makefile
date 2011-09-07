@@ -57,6 +57,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	py-btpd-webui \
 	cryptsetup \
 	telldus-core \
+	znc \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
