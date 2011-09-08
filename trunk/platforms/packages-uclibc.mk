@@ -22,7 +22,8 @@ UCLIBC_BROKEN_PACKAGES = \
 	tmux \
 	 uemacs \
 	 gtk vte xchat \
-	 xauth xaw xcursor xfixes xft xrender xmu xt xterm
+	 xauth xaw xcursor xfixes xft xrender xmu xt xterm \
+        znc \
 
 UCLIBC++_BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
@@ -34,7 +35,6 @@ UCLIBC++_BROKEN_PACKAGES = \
 	player \
 	srecord \
 	uncia \
-        znc \
 
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC++_SPECIFIC_PACKAGES = \
