@@ -157,7 +157,7 @@ $(TELLDUS-CORE_IPK): $(TELLDUS-CORE_BUILD_DIR)/.built
 	install -m 755 $(TELLDUS-CORE_SOURCE_DIR)/postinst $(TELLDUS-CORE_IPK_DIR)/CONTROL/postinst
 	echo $(TELLDUS-CORE_CONFFILES) | sed -e 's/ /\n/g' > $(TELLDUS-CORE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TELLDUS-CORE_IPK_DIR)
-	$(WHAT_TO_DO_WITH_IPK_DIR) $(iTELLDUS-CORE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TELLDUS-CORE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
