@@ -34,6 +34,7 @@ UCLIBC++_BROKEN_PACKAGES = \
 	player \
 	srecord \
 	uncia \
+        znc \
 
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC++_SPECIFIC_PACKAGES = \
