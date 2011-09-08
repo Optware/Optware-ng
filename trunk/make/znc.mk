@@ -126,6 +126,7 @@ $(ZNC_BUILD_DIR)/.configured: $(DL_DIR)/$(ZNC_SOURCE) $(ZNC_PATCHES) make/znc.mk
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZNC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZNC_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		$(ZNC_CONFIG_ARGS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

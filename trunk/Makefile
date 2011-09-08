@@ -56,8 +56,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	udpxy \
 	py-btpd-webui \
 	cryptsetup \
-	telldus-core \
-	znc \
 	rkhunter \
 
 # Add new native-only packages here
@@ -418,7 +416,7 @@ COMMON_CROSS_PACKAGES = \
 	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
 	x264 xmail xvid xz-utils \
 	yafc yasm yawk yougrabber \
-	zile zip zlib zoo zsh \
+	zile zip zlib znc zoo zsh \
 
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first

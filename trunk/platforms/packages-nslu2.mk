@@ -28,3 +28,5 @@ SAMBA35_VERSION := 3.5.9
 SAMBA35_IPK_VERSION := 1
 
 TRANSMISSION_CONFIG_ENV := ac_cv_func_pread=no ac_cv_func_pwrite=no
+
+ZNC_CONFIG_ARGS:=gl_cv_cc_visibility=true
