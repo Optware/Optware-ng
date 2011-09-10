@@ -128,14 +128,14 @@ rkhunter-unpack: $(RKHUNTER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RKHUNTER_BUILD_DIR)/.built: $(RKHUNTER_BUILD_DIR)/.configured
-	
+	rm -f $@
+	touch $@
+
 #
 # This is the build convenience target.
 #
 rkhunter: $(RKHUNTER_BUILD_DIR)/.built
-	rm -f $@
-	touch $@
-	
+
 #
 # If you are building a library, then you need to stage it too.
 #
@@ -147,7 +147,7 @@ $(RKHUNTER_BUILD_DIR)/.staged: $(RKHUNTER_BUILD_DIR)/.built
 		--install \
 	)
 	touch $@
-	
+
 rkhunter-stage: $(RKHUNTER_BUILD_DIR)/.staged
 
 #
