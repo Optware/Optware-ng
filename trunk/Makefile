@@ -56,7 +56,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	udpxy \
 	py-btpd-webui \
 	cryptsetup \
-	rkhunter \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -380,7 +379,8 @@ COMMON_CROSS_PACKAGES = \
 	qemacs qemu qemu-libc-i386 qpopper quagga quickie quilt \
 	radiusclient-ng rc rc5pipe rcs rdate \
 	readline re2c recode recordext \
-	redir renderext rhtvision rlfe rlwrap rrdcollect rrdtool \
+	redir renderext rhtvision rkhunter \
+	rlfe rlwrap rrdcollect rrdtool \
 	rssh rsstail rsync rtorrent rtpproxy ruby rubygems rxtx \
 	sablevm samba samba2 samba34 samba35 samba36 sandbox sane-backends \
 	scli scponly screen scrobby scsi-idle sdl sdparm \
