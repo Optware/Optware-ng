@@ -24,7 +24,7 @@
 
 --- a/driver/libtelldus-core/CMakeLists.txt	2010-11-09 14:01:26.000000000 +0100
 +++ b/driver/libtelldus-core/CMakeLists.txt	2011-01-18 16:54:07.000000000 +0100
-@@ -193,18 +193,15 @@
+@@ -193,18 +193,9 @@
  ENDIF (UNIX)
  
  IF (UNIX AND NOT APPLE)
@@ -32,8 +32,6 @@
 -	SET(STATE_INSTALL_DIR	"/var/state" CACHE PATH "The directory to store state information of the devices" )
 -	SET(UDEV_RULES_DIR	"/etc/udev/rules.d" CACHE PATH "The directory where udev store its rules" )
 +	SET(SYSCONF_INSTALL_DIR "/opt/etc" CACHE PATH "The sysconfig install dir (default prefix/etc)" )
-+	SET(STATE_INSTALL_DIR	"/opt/var/state" CACHE PATH "The directory to store state information of the devices" )
-+	SET(UDEV_RULES_DIR	"/opt/etc/udev/rules.d" CACHE PATH "The directory where udev store its rules" )
  	
  	INSTALL(FILES tellstick.conf
  		DESTINATION ${SYSCONF_INSTALL_DIR}
@@ -45,8 +43,4 @@
 -	INSTALL(FILES 99-tellstick.rules
 -		DESTINATION ${UDEV_RULES_DIR}
 -	)
-+        INSTALL(FILES telldus-core.conf
-+                DESTINATION ${STATE_INSTALL_DIR}
-+                PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ WORLD_WRITE
-+        )
  ENDIF (UNIX AND NOT APPLE)
