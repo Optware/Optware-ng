@@ -30,7 +30,7 @@ CRON_DEPENDS=psmisc
 #
 # CRON_IPK_VERSION should be incremented when the ipk changes.
 #
-CRON_IPK_VERSION=8
+CRON_IPK_VERSION=9
 
 #
 # CRON_CONFFILES should be a list of user-editable files
@@ -108,7 +108,9 @@ cron-unpack: $(CRON_BUILD_DIR)/.configured
 #
 $(CRON_BUILD_DIR)/.built: $(CRON_BUILD_DIR)/.configured
 	rm -f $(CRON_BUILD_DIR)/.built
-	$(MAKE) -C $(CRON_BUILD_DIR) $(TARGET_CONFIGURE_OPTS)
+	$(MAKE) -C $(CRON_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) \
+	LDFLAGS="$(STAGING_LDFLAGS) $(CRON_LDFLAGS)" \
+	CPPFLAGS="$(STAGING_CPPFLAGS) $(CRON_CPPFLAGS)"
 	touch $(CRON_BUILD_DIR)/.built
 
 #
