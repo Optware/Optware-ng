@@ -17,7 +17,7 @@ TELLDUS-CORE_DEPENDS=confuse
 TELLDUS-CORE_SUGGESTS=
 TELLDUS-CORE_CONFLICTS=
 
-TELLDUS-CORE_IPK_VERSION=1
+TELLDUS-CORE_IPK_VERSION=2
 
 TELLDUS-CORE_CONFFILES=/opt/etc/tellstick.conf /opt/etc/init.d/S50tellstick
 TELLDUS-CORE_PATCHES=$(TELLDUS-CORE_SOURCE_DIR)/telldus-core.patch
@@ -152,7 +152,11 @@ $(TELLDUS-CORE_IPK): $(TELLDUS-CORE_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)/opt/bin/tdtool
 	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)/opt/lib/libtelldus-core.so.2.0.4
 	install -d $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d
+	install -d $(TELLDUS-CORE_IPK_DIR)/opt/var/state
 	install -m 755 $(TELLDUS-CORE_SOURCE_DIR)/rc.tellstick.sh $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d/S50tellstick
+	install -d $(TELLDUS-CORE_IPK_DIR)/opt/var/state
+	touch $(TELLDUS-CORE_IPK_DIR)/opt/var/state/telldus-core.conf
+	chmod 666 $(TELLDUS-CORE_IPK_DIR)/opt/var/state/telldus-core.conf
 	$(MAKE) $(TELLDUS-CORE_IPK_DIR)/CONTROL/control
 	install -m 755 $(TELLDUS-CORE_SOURCE_DIR)/postinst $(TELLDUS-CORE_IPK_DIR)/CONTROL/postinst
 	echo $(TELLDUS-CORE_CONFFILES) | sed -e 's/ /\n/g' > $(TELLDUS-CORE_IPK_DIR)/CONTROL/conffiles
