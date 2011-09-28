@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.7.6.1
+GIT_SITE=http://git-core.googlecode.com/files
+GIT_VERSION=1.7.6.4
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
@@ -110,16 +110,20 @@ GIT-SVN_IPK=$(BUILD_DIR)/git-svn_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GIT_SOURCE):
-	$(WGET) -P $(@D) $(GIT_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GIT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(GIT-MANPAGES_SOURCE):
-	$(WGET) -P $(@D) $(GIT_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GIT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(GIT-LITE_SOURCE):
-	$(WGET) -P $(@D) $(GIT_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GIT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(GIT-LITE-MANPAGES_SOURCE):
-	$(WGET) -P $(@D) $(GIT_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GIT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
