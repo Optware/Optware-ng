@@ -5,10 +5,10 @@
 ###########################################################
 
 MC_SITE=http://www.midnight-commander.org/downloads
-MC_VERSION=4.7.5.1
-MC_SOURCE=mc-$(MC_VERSION).tar.gz
+MC_VERSION=4.7.5.5
+MC_SOURCE=mc-$(MC_VERSION).tar.bz2
 MC_DIR=mc-$(MC_VERSION)
-MC_UNZIP=zcat
+MC_UNZIP=bzcat
 MC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MC_DESCRIPTION=Midnight Commander File Manager
 MC_SECTION=utilities
@@ -171,6 +171,7 @@ $(MC_IPK): $(MC_BUILD_DIR)/.built
 	$(MAKE) -C $(MC_BUILD_DIR) DESTDIR=$(MC_IPK_DIR) install-strip
 	$(MAKE) $(MC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MC_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(MC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
