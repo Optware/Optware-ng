@@ -1,5 +1,5 @@
---- otp_src_R14B03/erts/configure.in.orig	2011-05-24 11:16:43.000000000 +0000
-+++ otp_src_R14B03/erts/configure.in	2011-06-30 04:27:32.442126291 +0000
+--- otp_src_R14B04/erts/configure.in.orig	2011-10-03 18:12:07.000000000 +0000
++++ otp_src_R14B04/erts/configure.in	2011-10-06 16:35:45.986049272 +0000
 @@ -624,10 +624,13 @@
      i686)	ARCH=x86;;
      x86_64)	ARCH=amd64;;
@@ -14,11 +14,11 @@
      armv5b)	ARCH=arm;;
      armv5teb)	ARCH=arm;;
      armv5tel)	ARCH=arm;;
-@@ -3535,7 +3538,7 @@
+@@ -3538,7 +3541,7 @@
  AC_SUBST(SSL_LINK_WITH_ZLIB)
  AC_SUBST(STATIC_ZLIB_LIBS)
  
--std_ssl_locations="/usr/local /usr/sfw /opt/local /usr /usr/pkg /usr/local/openssl /usr/lib/openssl /usr/openssl /usr/local/ssl /usr/lib/ssl /usr/ssl"
+-std_ssl_locations="/usr/local /usr/sfw /usr /opt/local /usr/pkg /usr/local/openssl /usr/lib/openssl /usr/openssl /usr/local/ssl /usr/lib/ssl /usr/ssl"
 +std_ssl_locations="/opt"
  
  AC_ARG_WITH(ssl-zlib,
