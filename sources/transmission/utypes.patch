@@ -1,0 +1,14 @@
+--- third-party/libutp/utypes.h.orig	2011-10-20 01:57:54.423707533 +0000
++++ third-party/libutp/utypes.h	2011-11-18 23:10:19.288767822 +0000
+@@ -36,7 +36,11 @@
+ typedef char * str;
+ 
+ #ifndef __cplusplus
++#ifdef HAVE_STDBOOL_H
++#include <stdbool.h>
++#else
+ typedef uint8 bool;
+ #endif
++#endif
+ 
+ #endif //__UTYPES_H__
