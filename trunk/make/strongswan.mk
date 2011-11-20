@@ -121,6 +121,9 @@ $(STRONGSWAN_BUILD_DIR)/.configured: $(DL_DIR)/$(STRONGSWAN_SOURCE) $(STRONGSWAN
 	if test "$(BUILD_DIR)/$(STRONGSWAN_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(STRONGSWAN_DIR) $(@D) ; \
 	fi
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		sed -i -e 's/ -Wno-pointer-sign//' $(@D)/configure; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(STRONGSWAN_CPPFLAGS)" \
