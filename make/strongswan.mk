@@ -35,14 +35,14 @@ STRONGSWAN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 STRONGSWAN_DESCRIPTION=A IPsec implementation.
 STRONGSWAN_SECTION=net
 STRONGSWAN_PRIORITY=optional
-STRONGSWAN_DEPENDS=libgmp,libsoup,libcurl,libldap
-STRONGSWAN_SUGGESTS=
+STRONGSWAN_DEPENDS=libgmp,libsoup,libcurl,openldap-libs
+STRONGSWAN_SUGGESTS=openldap
 STRONGSWAN_CONFLICTS=
 
 #
 # STRONGSWAN_IPK_VERSION should be incremented when the ipk changes.
 #
-STRONGSWAN_IPK_VERSION=1
+STRONGSWAN_IPK_VERSION=2
 
 #
 # STRONGSWAN_CONFFILES should be a list of user-editable files
