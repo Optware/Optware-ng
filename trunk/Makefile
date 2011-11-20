@@ -56,7 +56,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	udpxy \
 	py-btpd-webui \
 	cryptsetup \
-	strongswan \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -392,7 +391,7 @@ COMMON_CROSS_PACKAGES = \
 	socat softflowd sox spandsp spawn-fcgi speex spindown splix \
 	sqlite sqlite2 \
 	sqsh squeak squid squid3 srelay srecord ssam sslwrap \
-	strace stunnel streamripper \
+	strace strongswan stunnel streamripper \
 	stupid-ftpd sudo surfraw swi-prolog svn \
 	swig syslog-ng sysstat syx \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
