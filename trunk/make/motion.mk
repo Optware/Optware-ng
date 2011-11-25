@@ -24,7 +24,7 @@ MOTION_CONFLICTS=
 #
 # MOTION_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTION_IPK_VERSION=1
+MOTION_IPK_VERSION=2
 
 #
 # MOTION_CONFFILES should be a list of user-editable files
@@ -66,7 +66,8 @@ MOTION_IPK=$(BUILD_DIR)/motion_$(MOTION_VERSION)-$(MOTION_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MOTION_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MOTION_SITE)/$(MOTION_SOURCE)
+	$(WGET) -P $(@D) $(MOTION_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -77,16 +78,16 @@ motion-source: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES)
 
 $(MOTION_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES) make/motion.mk
 	$(MAKE) libjpeg-stage ffmpeg-stage mysql-stage
-	rm -rf $(BUILD_DIR)/$(MOTION_DIR) $(MOTION_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MOTION_DIR) $(@D)
 	$(MOTION_UNZIP) $(DL_DIR)/$(MOTION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOTION_PATCHES)" ; \
 		then cat $(MOTION_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MOTION_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MOTION_DIR)" != "$(MOTION_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MOTION_DIR) $(MOTION_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MOTION_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MOTION_DIR) $(@D) ; \
 	fi
-	(cd $(MOTION_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(MOTION_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MOTION_LDFLAGS)" \
@@ -97,12 +98,13 @@ $(MOTION_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES) ma
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--with-mysql=$(STAGING_PREFIX) \
+		--with-mysql-include=$(STAGING_INCLUDE_DIR)/mysql \
+		--with-mysql-lib=$(STAGING_LIB_DIR)/mysql \
 		--without-pgsql \
 		--with-ffmpeg=$(STAGING_PREFIX) \
 	)
 #	$(PATCH_LIBTOOL) $(MOTION_BUILD_DIR)/libtool
-	touch $(MOTION_BUILD_DIR)/.configured
+	touch $@
 
 motion-unpack: $(MOTION_BUILD_DIR)/.configured
 
@@ -110,9 +112,9 @@ motion-unpack: $(MOTION_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MOTION_BUILD_DIR)/.built: $(MOTION_BUILD_DIR)/.configured
-	rm -f $(MOTION_BUILD_DIR)/.built
-	$(MAKE) -C $(MOTION_BUILD_DIR)
-	touch $(MOTION_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -123,9 +125,9 @@ motion: $(MOTION_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MOTION_BUILD_DIR)/.staged: $(MOTION_BUILD_DIR)/.built
-	rm -f $(MOTION_BUILD_DIR)/.staged
-	$(MAKE) -C $(MOTION_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MOTION_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 motion-stage: $(MOTION_BUILD_DIR)/.staged
 
@@ -134,7 +136,7 @@ motion-stage: $(MOTION_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/motion
 #
 $(MOTION_IPK_DIR)/CONTROL/control:
-	@install -d $(MOTION_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: motion" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,4 +199,4 @@ motion-dirclean:
 # Some sanity check for the package.
 #
 motion-check: $(MOTION_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MOTION_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
