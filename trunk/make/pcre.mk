@@ -22,7 +22,7 @@
 #
 
 PCRE_SITE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
-PCRE_VERSION=8.13
+PCRE_VERSION=8.20
 PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
 PCRE_UNZIP=bzcat
@@ -237,6 +237,7 @@ $(PCRE_IPK) $(PCRE-DEV_IPK): $(PCRE_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCRE_IPK_DIR)
 	$(MAKE) $(PCRE-DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCRE-DEV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PCRE_IPK_DIR) $(PCRE-DEV_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
