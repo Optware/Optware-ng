@@ -23,21 +23,21 @@
 OPENSIPS_SOURCE_TYPE=tarball
 #OPENSIPS_SOURCE_TYPE=svn
 
-OPENSIPS_BASE_VERSION=1.6.4
+OPENSIPS_BASE_VERSION=1.7.1
 
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 OPENSIPS_VERSION=$(OPENSIPS_BASE_VERSION)
 OPENSIPS_SITE=http://opensips.org/pub/opensips/$(OPENSIPS_VERSION)/src/
 OPENSIPS_DIR=opensips-$(OPENSIPS_VERSION)
 else
-OPENSIPS_SVN=http://opensips.svn.sourceforge.net/svnroot/opensips/branches/1.6
+OPENSIPS_SVN=http://opensips.svn.sourceforge.net/svnroot/opensips/branches/1.7
 #OPENSIPS_SVN=http://opensips.svn.sourceforge.net/svnroot/opensips/trunk
-OPENSIPS_SVN_REV=3104
+OPENSIPS_SVN_REV=8275
 OPENSIPS_VERSION=$(OPENSIPS_BASE_VERSION)svn-r$(OPENSIPS_SVN_REV)
 OPENSIPS_DIR=opensips
 endif
 
-OPENSIPS_SOURCE=opensips-$(OPENSIPS_VERSION)-tls_src.tar.gz
+OPENSIPS_SOURCE=opensips-$(OPENSIPS_VERSION)_src.tar.gz
 
 OPENSIPS_UNZIP=zcat
 OPENSIPS_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
@@ -76,7 +76,7 @@ OPENSIPS_CONFFILES=\
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-OPENSIPS_CPPFLAGS=-fexpensive-optimizations -fomit-frame-pointer -fsigned-char -DSTATS
+OPENSIPS_CPPFLAGS=-fexpensive-optimizations -fomit-frame-pointer -fsigned-char
 
 # perl stuff
 #
@@ -159,7 +159,7 @@ else
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(OPENSIPS_DIR) && \
 		svn co -r $(OPENSIPS_SVN_REV) $(OPENSIPS_SVN) $(OPENSIPS_DIR) && \
-		tar -czf $@ $(OPENSIPS_DIR) && \
+		tar -czf $@ $(OPENSIPS_DIR) --exclude=.svn && \
 		rm -rf $(OPENSIPS_DIR) \
 	)
 endif
