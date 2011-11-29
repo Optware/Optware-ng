@@ -21,12 +21,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RTPPROXY_SITE=http://b2bua.org/chrome/site
-RTPPROXY_VERSION=1.1
+RTPPROXY_VERSION=1.2.1
 RTPPROXY_SOURCE=rtpproxy-$(RTPPROXY_VERSION).tar.gz
 RTPPROXY_DIR=rtpproxy-$(RTPPROXY_VERSION)
 RTPPROXY_UNZIP=zcat
 RTPPROXY_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
-RTPPROXY_DESCRIPTION=RTPproxy is a proxy for RTP streams that can help SER/OpenSER \
+RTPPROXY_DESCRIPTION=RTPproxy is a proxy for RTP streams that can help *SER \
 handle NAT situations, as well as proxy IP telephony between IPv4 and IPv6 networks.
 RTPPROXY_SECTION=util
 RTPPROXY_PRIORITY=optional
@@ -115,7 +115,16 @@ $(RTPPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(RTPPROXY_SOURCE) $(RTPPROXY_PATCH
 	if test "$(BUILD_DIR)/$(RTPPROXY_DIR)" != "$(RTPPROXY_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RTPPROXY_DIR) $(RTPPROXY_BUILD_DIR) ; \
 	fi
+
+#		sed -i -e "s/#define malloc rpl_malloc//" configure; \
+
+
 	(cd $(RTPPROXY_BUILD_DIR); \
+		sed -i -e "s/random()/rand()/" rtpp_session.c; \
+		sed -i -e "s/random()/rand()/" rtp_server.c; \
+		sed -i -e "s/random()/rand()/" rtpp_util.c; \
+		sed -i -e "s/srandom(/srand(/" rtpp_util.c; \
+		ac_cv_func_malloc_0_nonnull=yes \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTPPROXY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RTPPROXY_LDFLAGS)" \
