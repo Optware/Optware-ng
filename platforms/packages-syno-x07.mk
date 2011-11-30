@@ -29,7 +29,9 @@ BROKEN_PACKAGES = \
 	ntop \
 	p7zip \
 	puppy \
-	qemu sablevm \
+	qemu \
+	rtpproxy \
+	sablevm \
 	sandbox \
 	tesseract-ocr \
 	varnish \
