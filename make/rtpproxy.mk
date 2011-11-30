@@ -37,7 +37,7 @@ RTPPROXY_CONFLICTS=
 #
 # RTPPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-RTPPROXY_IPK_VERSION=1
+RTPPROXY_IPK_VERSION=2
 
 #
 # RTPPROXY_CONFFILES should be a list of user-editable files
@@ -47,13 +47,15 @@ RTPPROXY_IPK_VERSION=1
 # RTPPROXY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#RTPPROXY_PATCHES=$(RTPPROXY_SOURCE_DIR)/rtpproxy.patch
+ifeq (uclibc,$(LIBC_STYLE))
+RTPPROXY_PATCHES=$(RTPPROXY_SOURCE_DIR)/lround.patch
+endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-RTPPROXY_CPPFLAGS=-fsigned-char
+RTPPROXY_CPPFLAGS=
 RTPPROXY_LDFLAGS=
 
 #
@@ -77,7 +79,8 @@ RTPPROXY_IPK=$(BUILD_DIR)/rtpproxy_$(RTPPROXY_VERSION)-$(RTPPROXY_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RTPPROXY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RTPPROXY_SITE)/$(RTPPROXY_SOURCE)
+	$(WGET) -P $(@D) $(RTPROXY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,21 +108,17 @@ rtpproxy-source: $(DL_DIR)/$(RTPPROXY_SOURCE) $(RTPPROXY_PATCHES)
 # shown below to make various patches to it.
 #
 $(RTPPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(RTPPROXY_SOURCE) $(RTPPROXY_PATCHES) make/rtpproxy.mk
-	#$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(RTPPROXY_DIR) $(RTPPROXY_BUILD_DIR)
+#	$(MAKE) <bar>-stage <baz>-stage
+	rm -rf $(BUILD_DIR)/$(RTPPROXY_DIR) $(@D)
 	$(RTPPROXY_UNZIP) $(DL_DIR)/$(RTPPROXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RTPPROXY_PATCHES)" ; \
 		then cat $(RTPPROXY_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(RTPPROXY_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RTPPROXY_DIR)" != "$(RTPPROXY_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RTPPROXY_DIR) $(RTPPROXY_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RTPPROXY_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RTPPROXY_DIR) $(@D) ; \
 	fi
-
-#		sed -i -e "s/#define malloc rpl_malloc//" configure; \
-
-
-	(cd $(RTPPROXY_BUILD_DIR); \
+	(cd $(@D); \
 		sed -i -e "s/random()/rand()/" rtpp_session.c; \
 		sed -i -e "s/random()/rand()/" rtp_server.c; \
 		sed -i -e "s/random()/rand()/" rtpp_util.c; \
@@ -136,7 +135,7 @@ $(RTPPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(RTPPROXY_SOURCE) $(RTPPROXY_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-	touch $(RTPPROXY_BUILD_DIR)/.configured
+	touch $@
 
 rtpproxy-unpack: $(RTPPROXY_BUILD_DIR)/.configured
 
@@ -144,9 +143,9 @@ rtpproxy-unpack: $(RTPPROXY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RTPPROXY_BUILD_DIR)/.built: $(RTPPROXY_BUILD_DIR)/.configured
-	rm -f $(RTPPROXY_BUILD_DIR)/.built
-	$(MAKE) -C $(RTPPROXY_BUILD_DIR)
-	touch $(RTPPROXY_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -156,12 +155,12 @@ rtpproxy: $(RTPPROXY_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(RTPPROXY_BUILD_DIR)/.staged: $(RTPPROXY_BUILD_DIR)/.built
-	rm -f $(RTPPROXY_BUILD_DIR)/.staged
-	$(MAKE) -C $(RTPPROXY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(RTPPROXY_BUILD_DIR)/.staged
-
-rtpproxy-stage: $(RTPPROXY_BUILD_DIR)/.staged
+#$(RTPPROXY_BUILD_DIR)/.staged: $(RTPPROXY_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#rtpproxy-stage: $(RTPPROXY_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -199,6 +198,7 @@ $(RTPPROXY_IPK): $(RTPPROXY_BUILD_DIR)/.built
 	$(MAKE) -C $(RTPPROXY_BUILD_DIR) DESTDIR=$(RTPPROXY_IPK_DIR) install-strip
 	$(MAKE) $(RTPPROXY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RTPPROXY_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(RTPPROXY_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -223,4 +223,4 @@ rtpproxy-dirclean:
 # Some sanity check for the package.
 #
 rtpproxy-check: $(RTPPROXY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RTPPROXY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
