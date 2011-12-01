@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 JAMVM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/jamvm
-JAMVM_VERSION ?= 1.5.3
+JAMVM_VERSION ?= 1.5.4
 JAMVM_IPK_VERSION ?= 1
 JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)
@@ -184,6 +184,7 @@ $(JAMVM_IPK): $(JAMVM_BUILD_DIR)/.built
 	mv $(JAMVM_IPK_DIR)/opt/include/jni.h $(JAMVM_IPK_DIR)/opt/include/jamvm/jni.h
 	$(MAKE) $(JAMVM_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JAMVM_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(JAMVM_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
