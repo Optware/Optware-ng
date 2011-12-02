@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZNC_SITE=http://znc.in/releases/
-ZNC_VERSION=0.200
+ZNC_VERSION=0.202
 ZNC_SOURCE=znc-$(ZNC_VERSION).tar.gz
 ZNC_DIR=znc-$(ZNC_VERSION)
 ZNC_UNZIP=zcat
