@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NE_SITE=http://ne.dsi.unimi.it
-NE_VERSION?=2.2
+NE_VERSION?=2.3
 NE_IPK_VERSION?=1
 NE_SOURCE=ne-$(NE_VERSION).tar.gz
 NE_DIR=ne-$(NE_VERSION)
@@ -210,6 +210,7 @@ $(NE_IPK): $(NE_BUILD_DIR)/.built
 	$(MAKE) $(NE_IPK_DIR)/CONTROL/control
 	echo $(NE_CONFFILES) | sed -e 's/ /\n/g' > $(NE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(NE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
