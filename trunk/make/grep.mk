@@ -4,14 +4,14 @@
 #
 ###########################################################
 
-GREP_VERSION=2.9
+GREP_VERSION=2.10
 GREP_IPK_VERSION=1
 GREP_DEPENDS=pcre
 
 GREP=grep-$(GREP_VERSION)
-GREP_SITE=ftp://ftp.gnu.org/pub/gnu/grep
-GREP_SOURCE=$(GREP).tar.gz
-GREP_UNZIP=zcat
+GREP_SITE=http://ftp.gnu.org/pub/gnu/grep
+GREP_SOURCE=$(GREP).tar.xz
+GREP_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
 GREP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GREP_DESCRIPTION=Global regular expression parser
 GREP_SECTION=util
@@ -44,7 +44,7 @@ $(DL_DIR)/$(GREP_SOURCE):
 grep-source: $(DL_DIR)/$(GREP_SOURCE)
 
 $(GREP_BUILD_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE) make/grep.mk
-	$(MAKE) pcre-stage
+	$(MAKE) xz-utils-host-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(GREP_BUILD_DIR) $(GREP_BUILD_DIR)
 	$(GREP_UNZIP) $(DL_DIR)/$(GREP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/grep-$(GREP_VERSION) $(@D)
