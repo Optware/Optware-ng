@@ -24,7 +24,7 @@ ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
 ASTERISK18_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.7.1
+ASTERISK18_BASE_VERSION=1.8.7.2
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -65,7 +65,7 @@ ifeq (jabberd, $(filter jabberd, $(PACKAGES)))
 ASTERISK18_SUGGESTS +=,jabberd
 endif
 ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
-ASTERISK18_SUGGESTS +=,iksemel
+ASTERISK18_DEPENDS +=,iksemel
 endif
 ifeq (gtk, $(filter gtk, $(PACKAGES)))
 ASTERISK18_SUGGESTS +=,gtk
