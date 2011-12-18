@@ -80,7 +80,7 @@ ASTERISK18_CONFLICTS=asterisk,asterisk14,asterisk16,asterisk-sounds,asterisk-cha
 #
 # ASTERISK18_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK18_IPK_VERSION=1
+ASTERISK18_IPK_VERSION=2
 
 #
 # ASTERISK18_CONFFILES should be a list of user-editable files
@@ -446,6 +446,7 @@ $(ASTERISK18_IPK): $(ASTERISK18_BUILD_DIR)/.built
 
 	echo "" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => func_odbc.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => func_speex.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_alsa.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_console.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
@@ -455,6 +456,7 @@ $(ASTERISK18_IPK): $(ASTERISK18_BUILD_DIR)/.built
 	echo "noload => chan_mgcp.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_mobile.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_skinny.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => chan_ooh323.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_oss.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_unistim.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
@@ -472,6 +474,7 @@ $(ASTERISK18_IPK): $(ASTERISK18_BUILD_DIR)/.built
 	echo "noload => app_queue.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => app_mixmonitor.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => app_mysql.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_stack.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_curl.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_ldap.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
