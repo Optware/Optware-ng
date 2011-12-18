@@ -24,7 +24,7 @@ ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
 ASTERISK18_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.7.2
+ASTERISK18_BASE_VERSION=1.8.8.0
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -453,6 +453,7 @@ $(ASTERISK18_IPK): $(ASTERISK18_BUILD_DIR)/.built
 	echo "noload => chan_iax2.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_jingle.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_mgcp.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => chan_mobile.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_skinny.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_oss.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_unistim.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
@@ -470,9 +471,11 @@ $(ASTERISK18_IPK): $(ASTERISK18_BUILD_DIR)/.built
 	echo "noload => app_amd.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => app_queue.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => app_mixmonitor.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_mysql.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_curl.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_ldap.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_config_mysql.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_odbc.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_sqlite.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_jabber.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
@@ -481,6 +484,7 @@ $(ASTERISK18_IPK): $(ASTERISK18_BUILD_DIR)/.built
 	echo "noload => res_smdi.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_adaptive_odbc.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => cdr_mysql.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_odbc.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_radius.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_sqlite.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
