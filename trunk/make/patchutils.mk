@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PATCHUTILS_SITE=http://cyberelk.net/tim/data/patchutils/stable
-PATCHUTILS_VERSION=0.3.1
+PATCHUTILS_VERSION=0.3.2
 PATCHUTILS_SOURCE=patchutils-$(PATCHUTILS_VERSION).tar.bz2
 PATCHUTILS_DIR=patchutils-$(PATCHUTILS_VERSION)
 PATCHUTILS_UNZIP=bzcat
@@ -189,18 +189,10 @@ $(PATCHUTILS_IPK_DIR)/CONTROL/control:
 $(PATCHUTILS_IPK): $(PATCHUTILS_BUILD_DIR)/.built
 	rm -rf $(PATCHUTILS_IPK_DIR) $(BUILD_DIR)/patchutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PATCHUTILS_BUILD_DIR) DESTDIR=$(PATCHUTILS_IPK_DIR) install-strip
-#	install -d $(PATCHUTILS_IPK_DIR)/opt/etc/
-#	install -m 644 $(PATCHUTILS_SOURCE_DIR)/patchutils.conf $(PATCHUTILS_IPK_DIR)/opt/etc/patchutils.conf
-#	install -d $(PATCHUTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PATCHUTILS_SOURCE_DIR)/rc.patchutils $(PATCHUTILS_IPK_DIR)/opt/etc/init.d/SXXpatchutils
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PATCHUTILS_IPK_DIR)/opt/etc/init.d/SXXpatchutils
 	$(MAKE) $(PATCHUTILS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PATCHUTILS_SOURCE_DIR)/postinst $(PATCHUTILS_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PATCHUTILS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PATCHUTILS_SOURCE_DIR)/prerm $(PATCHUTILS_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PATCHUTILS_IPK_DIR)/CONTROL/prerm
 	echo $(PATCHUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(PATCHUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PATCHUTILS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PATCHUTILS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
