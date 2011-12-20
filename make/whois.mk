@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WHOIS_SITE=http://ftp.debian.org/debian/pool/main/w/whois
-WHOIS_VERSION=5.0.10
+WHOIS_VERSION=5.0.13
 WHOIS_SOURCE=whois_$(WHOIS_VERSION).tar.gz
 WHOIS_DIR=whois-$(WHOIS_VERSION)
 WHOIS_UNZIP=zcat
