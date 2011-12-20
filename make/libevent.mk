@@ -32,7 +32,7 @@ LIBEVENT_IPK=$(BUILD_DIR)/libevent_$(LIBEVENT_VERSION)-$(LIBEVENT_IPK_VERSION)_$
 .PHONY: libevent-source libevent-unpack libevent libevent-stage libevent-ipk libevent-clean libevent-dirclean libevent-check
 
 $(DL_DIR)/$(LIBEVENT_SOURCE):
-	$(WGET) -P $(@D) $(LIBEVENT_SITE)/$(@F) || \
+	$(WGET) --no-check-certificate -P $(@D) $(LIBEVENT_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 libevent-source: $(DL_DIR)/$(LIBEVENT_SOURCE)
