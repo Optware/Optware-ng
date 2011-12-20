@@ -5,7 +5,7 @@
 #############################################################
 
 UNRAR_SITE=http://www.rarlab.com/rar
-UNRAR_VERSION:=3.9.8
+UNRAR_VERSION:=4.1.3
 UNRAR_SOURCE=unrarsrc-$(UNRAR_VERSION).tar.gz
 UNRAR_DIR=unrarsrc-$(UNRAR_VERSION)
 UNRAR_UNZIP=gunzip
@@ -79,6 +79,7 @@ $(UNRAR_IPK): $(UNRAR_BUILD_DIR)/.built
 	install -m 644 $(UNRAR_BUILD_DIR)/*.txt $(UNRAR_IPK_DIR)/opt/share/doc/unrar
 	$(MAKE) $(UNRAR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNRAR_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(UNRAR_IPK_DIR)
 
 unrar-ipk: $(UNRAR_IPK)
 
