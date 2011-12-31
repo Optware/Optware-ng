@@ -286,7 +286,7 @@ COMMON_CROSS_PACKAGES = \
 	ettercap ettercap-ng \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop eventlog exif expat extract-xiso ez-ipupdate \
-	faad2 fann fatresize fbcat fcgi fconfig \
+	faad2 fann fatresize fatsort fbcat fcgi fconfig \
 	fdupes fetchmail ffmpeg \
 	ficy file finch findutils firedrill-httptunnel \
 	fis fish fixesext flac flex flip \
