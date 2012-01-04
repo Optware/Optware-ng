@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPLOT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gnuplot
-GNUPLOT_VERSION=4.4.1
+GNUPLOT_VERSION=4.4.4
 GNUPLOT_SOURCE=gnuplot-$(GNUPLOT_VERSION).tar.gz
 GNUPLOT_DIR=gnuplot-$(GNUPLOT_VERSION)
 GNUPLOT_UNZIP=zcat
@@ -34,6 +34,9 @@ GNUPLOT_SUGGESTS=
 GNUPLOT_CONFLICTS=
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GNUPLOT_DEPENDS+=, libiconv
+endif
+ifeq (pango, $(filter pango, $(PACKAGES)))
+GNUPLOT_DEPENDS+=, pango
 endif
 #
 # GNUPLOT_IPK_VERSION should be incremented when the ipk changes.
@@ -116,6 +119,9 @@ gnuplot-source: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 #
 $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES) make/gnuplot.mk
 	$(MAKE) expat-stage libpng-stage libgd-stage ncurses-stage readline-stage zlib-stage
+ifeq (pango, $(filter pango, $(PACKAGES)))
+	$(MAKE) pango-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GNUPLOT_DIR) $(@D)
 	$(GNUPLOT_UNZIP) $(DL_DIR)/$(GNUPLOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNUPLOT_PATCHES)" ; \
