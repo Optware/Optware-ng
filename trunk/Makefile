@@ -39,7 +39,7 @@ vorbis-tools rrdtool jove git launchtool gnu-smalltalk \
 ldconfig libao gloox libcdio libdlna libdvb gift-ares \
 opendchub openser wakelan opensips \
 xauth xaw xcursor xmu xt xterm xvid \
-ossp-js mediatomb memcached minidlna pango mkvtoolnix \
+ossp-js mediatomb memcached minidlna mkvtoolnix \
 phoneme-advanced motion picoLisp motor pkgconfig moe \
 player mpd mrtg msynctool mt-daapd mt-daapd-svn mtr \
 rssh rtorrent qemu rxtx sablevm qemu-libc-i386 quickie \
