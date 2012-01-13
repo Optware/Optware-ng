@@ -24,7 +24,7 @@ ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
 ASTERISK18_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.8.0
+ASTERISK18_BASE_VERSION=1.8.8.1
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -80,7 +80,7 @@ ASTERISK18_CONFLICTS=asterisk,asterisk14,asterisk16,asterisk-sounds,asterisk-cha
 #
 # ASTERISK18_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK18_IPK_VERSION=2
+ASTERISK18_IPK_VERSION=1
 
 #
 # ASTERISK18_CONFFILES should be a list of user-editable files
@@ -476,11 +476,14 @@ $(ASTERISK18_IPK): $(ASTERISK18_BUILD_DIR)/.built
 	echo "noload => app_mysql.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => app_stack.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_ael_share.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_agi.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_curl.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_ldap.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_mysql.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_odbc.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_sqlite.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_fax.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_jabber.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_odbc.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_snmp.so" >> $(ASTERISK18_IPK_DIR)/opt/etc/asterisk/modules.conf
