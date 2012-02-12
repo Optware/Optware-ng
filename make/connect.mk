@@ -76,9 +76,10 @@ CONNECT_IPK=$(BUILD_DIR)/connect_$(CONNECT_VERSION)-$(CONNECT_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CONNECT_SOURCE): make/connect.mk
-	rm -f $(DL_DIR)/$(CONNECT_SOURCE)
-	$(WGET) -P $(DL_DIR) $(CONNECT_SITE)/$(CONNECT_SOURCE)
-	touch $(DL_DIR)/$(CONNECT_SOURCE)
+	rm -f $@
+	$(WGET) -P $(@D) $(CONNECT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+	touch $@
 
 #
 # The source code depends on it existing within the download directory.
@@ -130,7 +131,7 @@ $(CONNECT_BUILD_DIR)/.configured: $(DL_DIR)/$(CONNECT_SOURCE) $(CONNECT_PATCHES)
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(CONNECT_BUILD_DIR)/libtool
-	touch $(CONNECT_BUILD_DIR)/.configured
+	touch $@
 
 connect-unpack: $(CONNECT_BUILD_DIR)/.configured
 
@@ -138,7 +139,7 @@ connect-unpack: $(CONNECT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CONNECT_BUILD_DIR)/.built: $(CONNECT_BUILD_DIR)/.configured
-	rm -f $(CONNECT_BUILD_DIR)/.built
+	rm -f $@
 #	$(MAKE) -C $(CONNECT_BUILD_DIR)
 	(cd $(CONNECT_BUILD_DIR); \
 	$(TARGET_CC) connect.c -o connect \
@@ -146,7 +147,7 @@ $(CONNECT_BUILD_DIR)/.built: $(CONNECT_BUILD_DIR)/.configured
 		$(STAGING_LDFLAGS) $(CONNECT_LDFLAGS) \
 		; \
 	)
-	touch $(CONNECT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -156,12 +157,12 @@ connect: $(CONNECT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(CONNECT_BUILD_DIR)/.staged: $(CONNECT_BUILD_DIR)/.built
-	rm -f $(CONNECT_BUILD_DIR)/.staged
+#$(CONNECT_BUILD_DIR)/.staged: $(CONNECT_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(CONNECT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(CONNECT_BUILD_DIR)/.staged
-
-connect-stage: $(CONNECT_BUILD_DIR)/.staged
+#	touch $@
+#
+#connect-stage: $(CONNECT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -227,4 +228,4 @@ connect-dirclean:
 # Some sanity check for the package.
 #
 connect-check: $(CONNECT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CONNECT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
