@@ -30,13 +30,13 @@ PY-PYRO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PYRO_DESCRIPTION=PYthon Remote Objects.
 PY-PYRO_SECTION=misc
 PY-PYRO_PRIORITY=optional
-PY-PYRO_DEPENDS=python
+PY-PYRO_DEPENDS=python24
 PY-PYRO_CONFLICTS=
 
 #
 # PY-PYRO_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PYRO_IPK_VERSION=1
+PY-PYRO_IPK_VERSION=2
 
 #
 # PY-PYRO_CONFFILES should be a list of user-editable files
@@ -125,7 +125,7 @@ py-pyro-unpack: $(PY-PYRO_BUILD_DIR)/.configured
 $(PY-PYRO_BUILD_DIR)/.built: $(PY-PYRO_BUILD_DIR)/.configured
 	rm -f $(PY-PYRO_BUILD_DIR)/.built
 	(cd $(PY-PYRO_BUILD_DIR); \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
 	touch $(PY-PYRO_BUILD_DIR)/.built
 
@@ -178,11 +178,12 @@ $(PY-PYRO_IPK): $(PY-PYRO_BUILD_DIR)/.built
 	rm -rf $(PY-PYRO_IPK_DIR) $(BUILD_DIR)/py-pyro_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PYRO_BUILD_DIR); \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    python2.4 -c "import setuptools; execfile('setup.py')" \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
 		install --root=$(PY-PYRO_IPK_DIR) --prefix=/opt; \
 	)
 	$(MAKE) $(PY-PYRO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PYRO_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY-PYRO_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
