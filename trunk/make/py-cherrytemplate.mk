@@ -30,13 +30,13 @@ PY-CHERRYTEMPLATE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-CHERRYTEMPLATE_DESCRIPTION=CherryTemplate is an easy and powerful templating module for Python.
 PY-CHERRYTEMPLATE_SECTION=web
 PY-CHERRYTEMPLATE_PRIORITY=optional
-PY-CHERRYTEMPLATE_DEPENDS=python
+PY-CHERRYTEMPLATE_DEPENDS=python24
 PY-CHERRYTEMPLATE_CONFLICTS=
 
 #
 # PY-CHERRYTEMPLATE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHERRYTEMPLATE_IPK_VERSION=2
+PY-CHERRYTEMPLATE_IPK_VERSION=3
 
 #
 # PY-CHERRYTEMPLATE_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-cherrytemplate-source: $(DL_DIR)/$(PY-CHERRYTEMPLATE_SOURCE) $(PY-CHERRYTEMPL
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CHERRYTEMPLATE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHERRYTEMPLATE_SOURCE) $(PY-CHERRYTEMPLATE_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) python24-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-CHERRYTEMPLATE_DIR) $(PY-CHERRYTEMPLATE_BUILD_DIR)
 	$(PY-CHERRYTEMPLATE_UNZIP) $(DL_DIR)/$(PY-CHERRYTEMPLATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CHERRYTEMPLATE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHERRYTEMPLATE_DIR) -p1
@@ -169,7 +169,7 @@ $(PY-CHERRYTEMPLATE_IPK): $(PY-CHERRYTEMPLATE_BUILD_DIR)/.built
 	rm -rf $(PY-CHERRYTEMPLATE_IPK_DIR) $(BUILD_DIR)/py-cherrytemplate_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-CHERRYTEMPLATE_BUILD_DIR) DESTDIR=$(PY-CHERRYTEMPLATE_IPK_DIR) install
 	(cd $(PY-CHERRYTEMPLATE_BUILD_DIR); \
-	python2.4 setup.py install --root=$(PY-CHERRYTEMPLATE_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-CHERRYTEMPLATE_IPK_DIR) --prefix=/opt)
 #	install -d $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/
 #	install -m 644 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/py-cherrytemplate.conf $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/py-cherrytemplate.conf
 #	install -d $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/init.d
@@ -179,6 +179,7 @@ $(PY-CHERRYTEMPLATE_IPK): $(PY-CHERRYTEMPLATE_BUILD_DIR)/.built
 #	install -m 755 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/prerm $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL/prerm
 #	echo $(PY-CHERRYTEMPLATE_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-CHERRYTEMPLATE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY-CHERRYTEMPLATE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
