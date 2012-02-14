@@ -99,7 +99,7 @@ py-tgfastdata-source: $(DL_DIR)/$(PY-TGFASTDATA_SOURCE) $(PY-TGFASTDATA_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TGFASTDATA_BUILD_DIR)/.configured: $(PY-TGFASTDATA_PATCHES) make/py-tgfastdata.mk
+$(PY-TGFASTDATA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TGFASTDATA_SOURCE) $(PY-TGFASTDATA_PATCHES) make/py-tgfastdata.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) $(PY-TGFASTDATA_BUILD_DIR)
 	cd $(BUILD_DIR) && $(PY-TGFASTDATA_UNZIP) $(DL_DIR)/$(PY-TGFASTDATA_SOURCE)
