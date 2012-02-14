@@ -45,7 +45,7 @@ player mpd mrtg msynctool mt-daapd mt-daapd-svn mtr \
 rssh rtorrent qemu rxtx sablevm qemu-libc-i386 quickie \
 samba2 sandbox scrobby sm sox srecord swi-prolog \
 ack avn colordiff ipcalc perlbal perlconsole \
-subvertpy slimserver squeezecenter py-codeville SpamAssassin py-pyro \
+subvertpy slimserver squeezecenter SpamAssassin py-pyro \
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
@@ -183,7 +183,7 @@ PYTHON_PACKAGES = \
 	py-4suite py-amara py-apsw \
 	py-beaker py-bittorrent py-bluez py-boto py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate py-cjson \
-	py-clips py-codeville py-configobj py-constraint py-crypto py-curl \
+	py-clips py-configobj py-constraint py-crypto py-curl \
 	py-decorator py-decoratortools py-django py-docutils py-duplicity \
 	py-elementtree py-feedparser py-flup py-formencode \
 	py-gdchart2 py-gd py-genshi py-gnosis-utils \
