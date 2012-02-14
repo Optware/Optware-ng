@@ -30,13 +30,13 @@ PY-WSGIREF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-WSGIREF_DESCRIPTION=Reference implementation of the python Web Server Gateway Interface specification.
 PY-WSGIREF_SECTION=misc
 PY-WSGIREF_PRIORITY=optional
-PY-WSGIREF_DEPENDS=python
+PY-WSGIREF_DEPENDS=python24
 PY-WSGIREF_CONFLICTS=
 
 #
 # PY-WSGIREF_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-WSGIREF_IPK_VERSION=1
+PY-WSGIREF_IPK_VERSION=2
 
 #
 # PY-WSGIREF_CONFFILES should be a list of user-editable files
@@ -119,7 +119,7 @@ $(PY-WSGIREF_BUILD_DIR)/.built: $(PY-WSGIREF_BUILD_DIR)/.configured
 	rm -f $(PY-WSGIREF_BUILD_DIR)/.built
 	(cd $(PY-WSGIREF_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py build)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 #	$(MAKE) -C $(PY-WSGIREF_BUILD_DIR)
 	touch $(PY-WSGIREF_BUILD_DIR)/.built
 
@@ -172,7 +172,7 @@ $(PY-WSGIREF_IPK): $(PY-WSGIREF_BUILD_DIR)/.built
 	rm -rf $(PY-WSGIREF_IPK_DIR) $(BUILD_DIR)/py-wsgiref_*_$(TARGET_ARCH).ipk
 	(cd $(PY-WSGIREF_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-WSGIREF_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-WSGIREF_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY-WSGIREF_IPK_DIR)/CONTROL/control
 	echo $(PY-WSGIREF_CONFFILES) | sed -e 's/ /\n/g' > $(PY-WSGIREF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-WSGIREF_IPK_DIR)
