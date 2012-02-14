@@ -21,7 +21,7 @@ POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils, openssl
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=1
+POSTFIX_IPK_VERSION=2
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
@@ -52,12 +52,13 @@ $(DL_DIR)/$(POSTFIX_SOURCE):
 
 postfix-source: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 
-$(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
+$(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES) make/postfix.mk
 	$(MAKE) libdb-stage libnsl-stage pcre-stage cyrus-sasl-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(@D)
 	$(POSTFIX_UNZIP) $(DL_DIR)/$(POSTFIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(POSTFIX_PATCHES) | patch -d $(BUILD_DIR)/$(POSTFIX_DIR) -p1
 	mv $(BUILD_DIR)/$(POSTFIX_DIR) $(@D)
+	sed -i -e 's/SYSLIBS="-ldb"/SYSLIBS="-ldb-$(LIBDB_LIB_VERSION)"/' $(@D)/makedefs
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		$(MAKE) makefiles \
