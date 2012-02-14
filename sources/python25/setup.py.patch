@@ -1,5 +1,5 @@
 --- Python-2.5.6/setup.py.orig	2008-10-16 11:58:19.000000000 -0700
-+++ Python-2.5.6/setup.py	2011-05-29 21:48:31.000000000 -0700
++++ Python-2.5.6/setup.py	2012-02-13 20:19:51.000000000 -0800
 @@ -15,7 +15,7 @@
  from distutils.command.install_lib import install_lib
  
@@ -44,6 +44,15 @@
          try:
              have_unicode = unicode
          except NameError:
+@@ -588,7 +582,7 @@
+                             sources = ['md5module.c', 'md5.c'],
+                             depends = ['md5.h']) )
+ 
+-        if (openssl_ver < 0x00908000):
++        if True:
+             # OpenSSL doesn't do these until 0.9.8 so we'll bring our own hash
+             exts.append( Extension('_sha256', ['sha256module.c']) )
+             exts.append( Extension('_sha512', ['sha512module.c']) )
 @@ -746,7 +740,6 @@
              # is on an NFS server that goes away).
              exts.append(Extension('_bsddb', ['_bsddb.c'],
