@@ -1,5 +1,5 @@
---- Python-2.7.2rc1/setup.py.orig	2011-05-29 14:54:52.000000000 -0700
-+++ Python-2.7.2rc1/setup.py	2011-05-29 23:24:52.000000000 -0700
+--- Python-2.7.2/setup.py.orig	2011-06-11 15:46:28.000000000 +0000
++++ Python-2.7.2/setup.py	2012-02-14 06:50:18.477049528 +0000
 @@ -21,7 +21,7 @@
  COMPILED_WITH_PYDEBUG = hasattr(sys, 'gettotalrefcount')
  
@@ -50,6 +50,15 @@
          try:
              have_unicode = unicode
          except NameError:
+@@ -779,7 +767,7 @@
+                             depends = ['md5.h']) )
+ 
+         min_sha2_openssl_ver = 0x00908000
+-        if COMPILED_WITH_PYDEBUG or openssl_ver < min_sha2_openssl_ver:
++        if True: # COMPILED_WITH_PYDEBUG or openssl_ver < min_sha2_openssl_ver:
+             # OpenSSL doesn't do these until 0.9.8 so we'll bring our own hash
+             exts.append( Extension('_sha256', ['sha256module.c']) )
+             exts.append( Extension('_sha512', ['sha512module.c']) )
 @@ -988,7 +976,6 @@
              exts.append(Extension('_bsddb', ['_bsddb.c'],
                                    depends = ['bsddb.h'],
