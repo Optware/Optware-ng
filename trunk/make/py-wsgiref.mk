@@ -176,6 +176,7 @@ $(PY-WSGIREF_IPK): $(PY-WSGIREF_BUILD_DIR)/.built
 	$(MAKE) $(PY-WSGIREF_IPK_DIR)/CONTROL/control
 	echo $(PY-WSGIREF_CONFFILES) | sed -e 's/ /\n/g' > $(PY-WSGIREF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-WSGIREF_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY-WSGIREF_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
