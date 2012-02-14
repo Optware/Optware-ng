@@ -26,11 +26,11 @@ PY-SOAPPY_VERSION=0.12.0
 PY-SOAPPY_SOURCE=SOAPpy-$(PY-SOAPPY_VERSION).tar.gz
 PY-SOAPPY_DIR=SOAPpy-$(PY-SOAPPY_VERSION)
 PY-SOAPPY_UNZIP=zcat
-PY-SOAPPY_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-SOAPPY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SOAPPY_DESCRIPTION=A SOAP implementation for Python.
 PY-SOAPPY_SECTION=misc
 PY-SOAPPY_PRIORITY=optional
-PY-SOAPPY_DEPENDS=python, py-xml
+PY-SOAPPY_DEPENDS=python24, py-xml
 PY-SOAPPY_CONFLICTS=
 
 PY-SOAPPY_FPCONST_SITE=http://pypi.python.org/packages/source/f/fpconst
@@ -106,8 +106,8 @@ py-soappy-source: $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(DL_DIR)/$(PY-SOAPPY_FPCONST_SO
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-SOAPPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(PY-SOAPPY_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+$(PY-SOAPPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(DL_DIR)/$(PY-SOAPPY_FPCONST_SOURCE) $(PY-SOAPPY_PATCHES)
+	$(MAKE) python24-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-SOAPPY_DIR) $(PY-SOAPPY_BUILD_DIR)
 	$(PY-SOAPPY_UNZIP) $(DL_DIR)/$(PY-SOAPPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(PY-SOAPPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SOAPPY_DIR) -p1
@@ -127,7 +127,7 @@ py-soappy-unpack: $(PY-SOAPPY_BUILD_DIR)/.configured
 #
 $(PY-SOAPPY_BUILD_DIR)/.built: $(PY-SOAPPY_BUILD_DIR)/.configured
 	rm -f $(PY-SOAPPY_BUILD_DIR)/.built
-	cd $(PY-SOAPPY_BUILD_DIR) &&  python2.4 setup.py build
+	cd $(PY-SOAPPY_BUILD_DIR) &&  $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
 	touch $(PY-SOAPPY_BUILD_DIR)/.built
 
 #
@@ -138,12 +138,12 @@ py-soappy: $(PY-SOAPPY_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-SOAPPY_BUILD_DIR)/.staged: $(PY-SOAPPY_BUILD_DIR)/.built
-	rm -f $(PY-SOAPPY_BUILD_DIR)/.staged
-	#$(MAKE) -C $(PY-SOAPPY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-SOAPPY_BUILD_DIR)/.staged
-
-py-soappy-stage: $(PY-SOAPPY_BUILD_DIR)/.staged
+#$(PY-SOAPPY_BUILD_DIR)/.staged: $(PY-SOAPPY_BUILD_DIR)/.built
+#	rm -f $(PY-SOAPPY_BUILD_DIR)/.staged
+#	#$(MAKE) -C $(PY-SOAPPY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $(PY-SOAPPY_BUILD_DIR)/.staged
+#
+#py-soappy-stage: $(PY-SOAPPY_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -179,7 +179,7 @@ $(PY-SOAPPY_IPK): $(PY-SOAPPY_BUILD_DIR)/.built
 	rm -rf $(PY-SOAPPY_IPK_DIR) $(BUILD_DIR)/py-soappy_*_$(TARGET_ARCH).ipk
 	#$(MAKE) -C $(PY-SOAPPY_BUILD_DIR) DESTDIR=$(PY-SOAPPY_IPK_DIR) install
 	(cd $(PY-SOAPPY_BUILD_DIR); \
-	python2.4 setup.py install --root=$(PY-SOAPPY_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-SOAPPY_IPK_DIR) --prefix=/opt)
 	for d in bid contrib docs tests tools validate fpconst; do \
 		install -d $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/$$d; \
 		install $(PY-SOAPPY_BUILD_DIR)/$$d*/* $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/$$d; \
@@ -189,6 +189,7 @@ $(PY-SOAPPY_IPK): $(PY-SOAPPY_BUILD_DIR)/.built
 	done
 	$(MAKE) $(PY-SOAPPY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SOAPPY_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY-SOAPPY_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
