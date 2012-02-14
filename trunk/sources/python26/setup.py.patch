@@ -1,5 +1,5 @@
---- Python-2.6.7rc2/setup.py.orig	2010-07-17 05:31:09.000000000 -0700
-+++ Python-2.6.7rc2/setup.py	2011-05-29 22:33:00.000000000 -0700
+--- Python-2.6.7/setup.py.orig	2010-07-17 12:31:09.000000000 +0000
++++ Python-2.6.7/setup.py	2012-02-14 06:05:37.107049536 +0000
 @@ -18,7 +18,7 @@
  from distutils.spawn import find_executable
  
@@ -44,6 +44,15 @@
          try:
              have_unicode = unicode
          except NameError:
+@@ -762,7 +756,7 @@
+                             depends = ['md5.h']) )
+             missing.append('_hashlib')
+ 
+-        if (openssl_ver < 0x00908000):
++        if True: # (openssl_ver < 0x00908000):
+             # OpenSSL doesn't do these until 0.9.8 so we'll bring our own hash
+             exts.append( Extension('_sha256', ['sha256module.c']) )
+             exts.append( Extension('_sha512', ['sha512module.c']) )
 @@ -971,7 +965,6 @@
              exts.append(Extension('_bsddb', ['_bsddb.c'],
                                    depends = ['bsddb.h'],
