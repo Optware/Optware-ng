@@ -21,21 +21,22 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TGFASTDATA_VERSION=0.9a5
-PY-TGFASTDATA_SVN_TAG=$(PY-TGFASTDATA_VERSION)
-PY-TGFASTDATA_REPOSITORY=http://svn.turbogears.org/projects/FastData/tags/$(PY-TGFASTDATA_SVN_TAG)
+PY-TGFASTDATA_VERSION=0.9a7
+PY-TGFASTDATA_SITE=http://pypi.python.org/packages/source/T/TGFastData
+PY-TGFASTDATA_SOURCE=TGFastData-$(PY-TGFASTDATA_VERSION).zip
+PY-TGFASTDATA_UNZIP=unzip
 PY-TGFASTDATA_DIR=TGFastData-$(PY-TGFASTDATA_VERSION)
 PY-TGFASTDATA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TGFASTDATA_DESCRIPTION=An TurboGears extension that provides automatic user interface generation based upon an application model objects.
 PY-TGFASTDATA_SECTION=misc
 PY-TGFASTDATA_PRIORITY=optional
-PY-TGFASTDATA_DEPENDS=python
+PY-TGFASTDATA_DEPENDS=python24
 PY-TGFASTDATA_CONFLICTS=
 
 #
 # PY-TGFASTDATA_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TGFASTDATA_IPK_VERSION=3
+PY-TGFASTDATA_IPK_VERSION=1
 
 #
 # PY-TGFASTDATA_CONFFILES should be a list of user-editable files
@@ -72,17 +73,16 @@ PY-TGFASTDATA_IPK=$(BUILD_DIR)/py-tgfastdata_$(PY-TGFASTDATA_VERSION)-$(PY-TGFAS
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-ifeq ($(PY-TGFASTDATA_SVN_TAG),)
 $(DL_DIR)/$(PY-TGFASTDATA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-TGFASTDATA_SITE)/$(PY-TGFASTDATA_SOURCE)
-endif
+	$(WGET) -P $(@D) $(PY-TGFASTDATA_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-tgfastdata-source: $(PY-TGFASTDATA_PATCHES)
+py-tgfastdata-source: $(DL_DIR)/$(PY-TGFASTDATA_SOURCE) $(PY-TGFASTDATA_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -102,13 +102,7 @@ py-tgfastdata-source: $(PY-TGFASTDATA_PATCHES)
 $(PY-TGFASTDATA_BUILD_DIR)/.configured: $(PY-TGFASTDATA_PATCHES) make/py-tgfastdata.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) $(PY-TGFASTDATA_BUILD_DIR)
-ifeq ($(PY-TGFASTDATA_SVN_TAG),)
-	$(PY-TGFASTDATA_UNZIP) $(DL_DIR)/$(PY-TGFASTDATA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-else
-	(cd $(BUILD_DIR); \
-	    svn co -q $(PY-TGFASTDATA_REPOSITORY) $(PY-TGFASTDATA_DIR); \
-	)
-endif
+	cd $(BUILD_DIR) && $(PY-TGFASTDATA_UNZIP) $(DL_DIR)/$(PY-TGFASTDATA_SOURCE)
 #	cat $(PY-TGFASTDATA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) $(PY-TGFASTDATA_BUILD_DIR)
 	(cd $(PY-TGFASTDATA_BUILD_DIR); \
@@ -176,10 +170,11 @@ $(PY-TGFASTDATA_IPK): $(PY-TGFASTDATA_BUILD_DIR)/.built
 	rm -rf $(PY-TGFASTDATA_IPK_DIR) $(BUILD_DIR)/py-tgfastdata_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TGFASTDATA_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-TGFASTDATA_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-TGFASTDATA_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY-TGFASTDATA_IPK_DIR)/CONTROL/control
 	echo $(PY-TGFASTDATA_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TGFASTDATA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TGFASTDATA_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY-TGFASTDATA_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
