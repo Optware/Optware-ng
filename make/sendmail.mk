@@ -20,7 +20,7 @@ SENDMAIL_CONFLICTS=postfix
 #
 # SENDMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-SENDMAIL_IPK_VERSION=1
+SENDMAIL_IPK_VERSION=2
 
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files
@@ -94,8 +94,7 @@ sendmail-source: $(DL_DIR)/$(SENDMAIL_SOURCE) $(SENDMAIL_PATCHES)
 # shown below to make various patches to it.
 #
 $(SENDMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(SENDMAIL_SOURCE) $(SENDMAIL_PATCHES) make/sendmail.mk
-	$(MAKE) openssl-stage
-	$(MAKE) libdb-stage
+	$(MAKE) openssl-stage libdb-stage
 	rm -rf $(BUILD_DIR)/$(SENDMAIL_DIR) $(SENDMAIL_BUILD_DIR)
 	$(SENDMAIL_UNZIP) $(DL_DIR)/$(SENDMAIL_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(SENDMAIL_PATCHES)" ; then  \
@@ -105,6 +104,7 @@ $(SENDMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(SENDMAIL_SOURCE) $(SENDMAIL_PATCH
 	if test "$(BUILD_DIR)/$(SENDMAIL_DIR)" != "$(SENDMAIL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SENDMAIL_DIR) $(SENDMAIL_BUILD_DIR) ; \
 	fi
+	sed -i -e '/APPENDDEF/s/-ldb/&-$(LIBDB_LIB_VERSION)/' $(@D)/devtools/Site/site.config.m4
 	touch $(SENDMAIL_BUILD_DIR)/.configured
 
 sendmail-unpack: $(SENDMAIL_BUILD_DIR)/.configured
@@ -202,6 +202,7 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 	install -m 755 $(SENDMAIL_SOURCE_DIR)/postinst $(SENDMAIL_IPK_DIR)/CONTROL/postinst
 	echo $(SENDMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(SENDMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SENDMAIL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SENDMAIL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
