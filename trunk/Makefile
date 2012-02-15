@@ -79,6 +79,8 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	clinkcc \
         icu xerces-c \
 	nemesis \
+	\
+	appweb atk bluez-utils bluez-hcidump libextractor sandbox \
  
 PERL_PACKAGES = \
 	perl \
@@ -253,17 +255,17 @@ COMMON_CROSS_PACKAGES = \
 	9base \
 	abook adduser adns aget aiccu alac-decoder \
 	alsa-lib alsa-oss alsa-utils \
-	amule analog antinat apcupsd appweb \
+	amule analog antinat apcupsd \
 	apache apr apr-util \
 	arc aria2 arping arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
-	at atftp atk atop audiofile autoconf automake autossh avahi \
+	at atftp atop audiofile autoconf automake autossh avahi \
 	bacula bash bash-completion bc bftpd \
 	bind bip bison bitchx bitlbee \
 	bogofilter boost bridge-utils \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
-	bluez-libs bluez-utils bluez-hcidump \
+	bluez-libs \
 	bluez2-libs bluez2-utils \
 	c-ares cabextract cadaver cairo calc calcurse castget \
 	catdoc ccollect ccrypt ccxstream cdargs \
@@ -322,7 +324,7 @@ COMMON_CROSS_PACKAGES = \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libebml libexosip2 \
 	libevent \
-	libesmtp libexif libextractor libftdi \
+	libesmtp libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
 	libhid \
 	libid3tag libidn libieee1284 libijs libinklevel libjpeg libksba \
@@ -382,7 +384,7 @@ COMMON_CROSS_PACKAGES = \
 	redir renderext rhtvision rkhunter \
 	rlfe rlwrap rrdcollect rrdtool \
 	rssh rsstail rsync rtorrent rtpproxy ruby rubygems rxtx \
-	sablevm samba samba2 samba34 samba35 samba36 sandbox sane-backends \
+	sablevm samba samba2 samba34 samba35 samba36 sane-backends \
 	scli scponly screen scrobby scsi-idle sdl sdparm \
 	sed sendmail ser ser2net setserial setpwc sg3-utils \
 	sharutils shntool silc-client simh sipcalc siproxd sispmctl \

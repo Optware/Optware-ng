@@ -5,7 +5,6 @@ SPECIFIC_PACKAGES = \
 	ds101g-kernel-modules-fuse \
 	ds101-bootstrap \
 	crosstool-native \
-	mono \
 	redis \
 	py-ctypes \
 	$(PERL_PACKAGES) \
