@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	golang \
 	libtorrent-rasterbar \
 	linphone \
+	mkvtoolnix \
 	strongswan \
 	telldus-core \
 

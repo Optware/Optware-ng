@@ -7,7 +7,6 @@ SPECIFIC_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	binutils gcc libc-dev \
 	cacao \
-	mono \
 	redis \
 
 # Packages that do not work for mssii.

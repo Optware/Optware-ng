@@ -5,7 +5,7 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	ipkg-opt \
-	cacao mono \
+	cacao \
 	redis \
 
 # Packages that do not work for mssii.

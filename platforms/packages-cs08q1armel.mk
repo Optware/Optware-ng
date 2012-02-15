@@ -7,7 +7,7 @@ SPECIFIC_PACKAGES = \
 	ipkg-opt \
 	syno-mvkw-optware-bootstrap \
 	ls-mvkw-optware-bootstrap \
-	cacao mono \
+	cacao \
 	redis \
 	binutils gcc libc-dev \
 
