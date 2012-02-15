@@ -45,7 +45,7 @@ LIBEXTRACTOR_CONFLICTS=
 #
 # LIBEXTRACTOR_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBEXTRACTOR_IPK_VERSION=1
+LIBEXTRACTOR_IPK_VERSION=2
 
 #
 # LIBEXTRACTOR_CONFFILES should be a list of user-editable files
@@ -132,8 +132,7 @@ else
 $(LIBEXTRACTOR_BUILD_DIR)/.configured: $(LIBEXTRACTOR_HOST_BUILD_DIR)/.built
 endif
 	$(MAKE) libtool-stage zlib-stage bzip2-stage
-	$(MAKE) libvorbis-stage libexif-stage
-	$(MAKE) libmpeg2-stage
+	$(MAKE) flac-stage libvorbis-stage libexif-stage libmpeg2-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
