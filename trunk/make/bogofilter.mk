@@ -5,7 +5,7 @@
 ###########################################################
 
 BOGOFILTER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bogofilter
-BOGOFILTER_VERSION=1.2.1
+BOGOFILTER_VERSION=1.2.2
 BOGOFILTER_IPK_VERSION=1
 BOGOFILTER_SOURCE=bogofilter-$(BOGOFILTER_VERSION).tar.bz2
 BOGOFILTER_DIR=bogofilter-$(BOGOFILTER_VERSION)
@@ -78,6 +78,7 @@ endif
 ifneq ($(HOSTCC), $(TARGET_CC))
 	autoreconf -vif $(@D)
 endif
+	sed -i -e '/names_next_round=/s/db /db-$(LIBDB_LIB_VERSION) /' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BOGOFILTER_CPPFLAGS)" \
@@ -140,6 +141,7 @@ $(BOGOFILTER_IPK): $(BOGOFILTER_BUILD_DIR)/.built
 #	install -m 755 $(BOGOFILTER_SOURCE_DIR)/prerm $(BOGOFILTER_IPK_DIR)/CONTROL/prerm
 	echo $(BOGOFILTER_CONFFILES) | sed -e 's/ /\n/g' > $(BOGOFILTER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOGOFILTER_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(BOGOFILTER_IPK_DIR)
 
 bogofilter-ipk: $(BOGOFILTER_IPK)
 
