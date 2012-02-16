@@ -45,7 +45,7 @@ ESNIPER_CONFLICTS=
 #
 # ESNIPER_IPK_VERSION should be incremented when the ipk changes.
 #
-ESNIPER_IPK_VERSION=1
+ESNIPER_IPK_VERSION=2
 
 #
 # ESNIPER_CONFFILES should be a list of user-editable files
@@ -133,6 +133,7 @@ $(ESNIPER_BUILD_DIR)/.configured: $(DL_DIR)/$(ESNIPER_SOURCE) $(ESNIPER_PATCHES)
 	if test "$(BUILD_DIR)/$(ESNIPER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ESNIPER_DIR) $(@D) ; \
 	fi
+	sed -i -e '/curl\/types.h/d' $(@D)/http.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESNIPER_CPPFLAGS)" \
