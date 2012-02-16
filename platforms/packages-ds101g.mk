@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	erl-ejabberd \
 	golang \
 	ldconfig \
+	mkvtoolnix \
 	sandbox \
 	telldus-core \
 
