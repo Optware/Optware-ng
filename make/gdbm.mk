@@ -18,7 +18,7 @@ GDBM_DEPENDS=
 GDBM_SUGGESTS=
 GDBM_CONFLICTS=
 
-GDBM_IPK_VERSION=3
+GDBM_IPK_VERSION=4
 
 GDBM_PATCHES=$(GDBM_SOURCE_DIR)/Makefile.patch
 
@@ -47,6 +47,7 @@ $(GDBM_BUILD_DIR)/.configured: $(DL_DIR)/$(GDBM_SOURCE) $(GDBM_PATCHES) make/gdb
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	);
 	touch $@
 

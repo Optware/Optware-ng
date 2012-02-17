@@ -16,7 +16,7 @@ MT_DAAPD_PRIORITY=optional
 MT_DAAPD_DEPENDS=gdbm, libid3tag
 MT_DAAPD_CONFLICTS=
 
-MT_DAAPD_IPK_VERSION=1
+MT_DAAPD_IPK_VERSION=2
 
 MT_DAAPD_CPPFLAGS=-DSTRSEP
 MT_DAAPD_LDFLAGS=
@@ -53,7 +53,6 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE) make/mt-daapd.mk
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-	        --with-static-libs=$(STAGING_LIB_DIR) \
 		--with-gdbm-include=$(STAGING_INCLUDE_DIR) \
 		--enable-nslu2 \
 		--enable-browse \
