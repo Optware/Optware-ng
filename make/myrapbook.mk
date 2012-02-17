@@ -42,7 +42,7 @@ MYRAPBOOK_CONFLICTS=
 #
 # MYRAPBOOK_IPK_VERSION should be incremented when the ipk changes.
 #
-MYRAPBOOK_IPK_VERSION=1
+MYRAPBOOK_IPK_VERSION=2
 
 #
 # MYRAPBOOK_CONFFILES should be a list of user-editable files
@@ -125,7 +125,9 @@ $(MYRAPBOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(MYRAPBOOK_SOURCE) $(MYRAPBOOK_PA
 	-e '/^CFLAGS=/s|^.*|CFLAGS=$(STAGING_CPPFLAGS) $(MYRAPBOOK_CPPFLAGS)|' \
 	-e 's|^LIBS =.*|LIBS=$(STAGING_LDFLAGS) $(MYRAPBOOK_LDFLAGS) \\|' $(@D)/makefile
 	sed -i -e 's|/tmp/myrapbook|/opt/tmp/myrapbook|' \
-	-e 's|\./myrapbook\.conf|/opt/etc/myrapbook.conf|' $(@D)/myrapbook.c
+		-e 's|\./myrapbook\.conf|/opt/etc/myrapbook.conf|' \
+		-e '/curl\/types.h/d' \
+		$(@D)/myrapbook.c
 	###fix by andrew_sh@mybookworld.wikidot.com
 	sed -i -e "s/SOL_TCP/getprotobyname('tcp')/" $(@D)/web_interface/daemoncntrl.php
 	touch $@
