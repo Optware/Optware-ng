@@ -39,7 +39,7 @@ XMLRPC-C_CONFLICTS=
 #
 # XMLRPC-C_IPK_VERSION should be incremented when the ipk changes.
 #
-XMLRPC-C_IPK_VERSION=3
+XMLRPC-C_IPK_VERSION=4
 
 #
 # XMLRPC-C_CONFFILES should be a list of user-editable files
@@ -126,6 +126,7 @@ endif
 	fi
 #	sed -i -e '/ifeq.*linux-gnu/s/.*/ifeq (1,1)/' $(@D)/Makefile.config.in
 	sed -i '/FLAGS_COMMON *=/s|$$| $$(CPPFLAGS)|' $(@D)/Makefile.common
+	sed -i -e '/curl\/types.h/d' $(@D)/lib/curl_transport/xmlrpc_curl_transport.c
 	(cd $(XMLRPC-C_BUILD_DIR); \
 		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
