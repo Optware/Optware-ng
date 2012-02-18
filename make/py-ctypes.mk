@@ -30,13 +30,13 @@ PY-CTYPES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CTYPES_DESCRIPTION=A fast, lightweight Source Control Management system designed for efficient handling of very large distributed projects.
 PY-CTYPES_SECTION=misc
 PY-CTYPES_PRIORITY=optional
-PY-CTYPES_DEPENDS=python
+PY-CTYPES_DEPENDS=python24
 PY-CTYPES_CONFLICTS=
 
 #
 # PY-CTYPES_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CTYPES_IPK_VERSION=1
+PY-CTYPES_IPK_VERSION=2
 
 #
 # PY-CTYPES_CONFFILES should be a list of user-editable files
@@ -69,7 +69,7 @@ PY-CTYPES_SOURCE_DIR=$(SOURCE_DIR)/py-ctypes
 PY-CTYPES_IPK_DIR=$(BUILD_DIR)/py-ctypes-$(PY-CTYPES_VERSION)-ipk
 PY-CTYPES_IPK=$(BUILD_DIR)/py-ctypes_$(PY-CTYPES_VERSION)-$(PY-CTYPES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY-CTYPES_TARGET_CONFIGURE_OPTS=$(shell echo $(TARGET_CONFIGURE_OPTS))
+#PY-CTYPES_TARGET_CONFIGURE_OPTS=$(shell echo $(TARGET_CONFIGURE_OPTS))
 
 .PHONY: py-ctypes-source py-ctypes-unpack py-ctypes py-ctypes-stage py-ctypes-ipk py-ctypes-clean py-ctypes-dirclean py-ctypes-check
 
@@ -78,7 +78,8 @@ PY-CTYPES_TARGET_CONFIGURE_OPTS=$(shell echo $(TARGET_CONFIGURE_OPTS))
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-CTYPES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-CTYPES_SITE)/$(PY-CTYPES_SOURCE)
+	$(WGET) -P $(@D) $(PY-CTYPES_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,7 +104,7 @@ py-ctypes-source: $(DL_DIR)/$(PY-CTYPES_SOURCE) $(PY-CTYPES_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CTYPES_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CTYPES_SOURCE) $(PY-CTYPES_PATCHES)
-	$(MAKE) python-stage
+	$(MAKE) python24-stage python24-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-CTYPES_DIR) $(PY-CTYPES_BUILD_DIR)
 	$(PY-CTYPES_UNZIP) $(DL_DIR)/$(PY-CTYPES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CTYPES_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CTYPES_DIR) -p1
@@ -136,7 +137,7 @@ $(PY-CTYPES_BUILD_DIR)/.built: $(PY-CTYPES_BUILD_DIR)/.configured
 	rm -f $(PY-CTYPES_BUILD_DIR)/.built
 	(cd $(PY-CTYPES_BUILD_DIR); \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
 	touch $(PY-CTYPES_BUILD_DIR)/.built
 
@@ -188,7 +189,7 @@ $(PY-CTYPES_IPK_DIR)/CONTROL/control:
 $(PY-CTYPES_IPK): $(PY-CTYPES_BUILD_DIR)/.built
 	rm -rf $(PY-CTYPES_IPK_DIR) $(BUILD_DIR)/py-ctypes_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CTYPES_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PY-CTYPES_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-CTYPES_IPK_DIR) --prefix=/opt; \
 	)
 #	$(STRIP_COMMAND) $(PY-CTYPES_IPK_DIR)/opt/lib/python2.4/site-packages/ctypes/*.so
 	(cd $(PY-CTYPES_IPK_DIR)/opt; \
@@ -198,6 +199,7 @@ $(PY-CTYPES_IPK): $(PY-CTYPES_BUILD_DIR)/.built
 	)
 	$(MAKE) $(PY-CTYPES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-CTYPES_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY-CTYPES_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
