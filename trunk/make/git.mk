@@ -35,6 +35,9 @@ GIT_DEPENDS=zlib, openssl, libcurl, diffutils, rcs, expat
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GIT_DEPENDS+=, libiconv
 endif
+ifeq ($(GETTEXT_NLS), enable)
+GIT_DEPENDS+=, gettext
+endif
 GIT_SUGGESTS=git-manpages
 GIT_CONFLICTS=
 
@@ -68,6 +71,9 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GIT_LDFLAGS=-liconv
 else
 GIT_LDFLAGS=
+endif
+ifeq ($(LIBC_STYLE), uclibc)
+GIT_LDFLAGS+=-lintl
 endif
 
 GIT_MAKE_FLAGS=$(strip \
@@ -154,6 +160,9 @@ $(GIT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIT_SOURCE) $(GIT_PATCHES) make/git.mk
 	$(MAKE) zlib-stage openssl-stage libcurl-stage expat-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
+endif
+ifeq ($(GETTEXT_NLS), enable)
+	$(MAKE) gettext-stage
 endif
 ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
