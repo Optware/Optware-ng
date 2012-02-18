@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	golang \
 	gtmess gutenprint \
 	iptraf moc \
+	mkvtoolnix \
 	mtr \
 	opensips \
 	pinentry \
