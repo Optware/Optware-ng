@@ -21,6 +21,7 @@ BROKEN_PACKAGES = \
 	pinentry \
 	puppy rssh \
 	sandbox \
+	srecord \
 	lm-sensors \
 	btg clinkcc libopensync msynctool obexftp \
 
