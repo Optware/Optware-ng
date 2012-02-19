@@ -6,6 +6,7 @@ BROKEN_PACKAGES = \
 	asterisk \
 	erl-ejabberd \
 	ldconfig \
+	mkvtoolnix \
 	py-bazaar-ng py-simplejson \
 	qemu qemu-libc-i386 \
 	sandbox \
