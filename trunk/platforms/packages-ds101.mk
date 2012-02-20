@@ -11,6 +11,7 @@ BROKEN_PACKAGES = \
 	golang \
 	imagemagick \
 	ldconfig lftp \
+	mkvtoolnix \
 	motion \
 	qemu qemu-libc-i386 \
 	sandbox \
