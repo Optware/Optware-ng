@@ -351,7 +351,7 @@ COMMON_CROSS_PACKAGES = \
 	mpc mpd mpdscribble \
 	mpg123 mpop mrtg msmtp \
 	msort msynctool mt-daapd mt-daapd-svn mtools \
-	mtr multitail mutt mxml \
+	mtr multitail mussh mutt mxml \
 	myrapbook \
 	mysql mysql5 mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
