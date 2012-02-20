@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PSSH_VERSION=2.2.2
+PSSH_VERSION=2.3
 PSSH_SITE=http://parallel-ssh.googlecode.com/files
 PSSH_SOURCE=pssh-$(PSSH_VERSION).tar.gz
 PSSH_DIR=pssh-$(PSSH_VERSION)
@@ -195,6 +195,7 @@ $(PSSH_IPK): $(PSSH_BUILD_DIR)/.built
 	)
 	$(MAKE) $(PSSH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PSSH_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PSSH_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
