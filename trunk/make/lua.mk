@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LUA_SITE=http://www.lua.org/ftp
-LUA_VERSION=5.1.4
+LUA_VERSION=5.1.5
 LUA_SOURCE=lua-$(LUA_VERSION).tar.gz
 LUA_DIR=lua-$(LUA_VERSION)
 LUA_UNZIP=zcat
@@ -43,7 +43,7 @@ LUA_CONFLICTS=
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=3
+LUA_IPK_VERSION=1
 
 #
 # LUA_CONFFILES should be a list of user-editable files
@@ -94,6 +94,29 @@ $(DL_DIR)/$(LUA_SOURCE):
 #
 lua-source: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
 
+# Host build
+
+$(LUA_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES) make/lua.mk
+	rm -rf $(@D)
+	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(LUA_DIR) $(@D)
+	sed -i -e 's|/usr/local|/opt|' $(@D)/src/luaconf.h
+	$(MAKE) -C $(@D)/src \
+		MYCFLAGS="-DLUA_ANSI" \
+		MYLDFLAGS="$(LUA_LDFLAGS)" \
+		MYLIBS="-Wl,-E -ldl" \
+		all
+	touch $@
+
+$(LUA_HOST_BUILD_DIR)/.staged: $(LUA_HOST_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) INSTALL_TOP=$(HOST_STAGING_PREFIX) install
+	mkdir -p $(HOST_STAGING_LIB_DIR)/pkgconfig
+	sed -e 's|^prefix=.*|prefix=$(HOST_STAGING_PREFIX)|' $(@D)/etc/lua.pc > $(HOST_STAGING_LIB_DIR)/pkgconfig/lua.pc
+	touch $@
+
+lua-host-stage: $(LUA_HOST_BUILD_DIR)/.staged
+
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -109,17 +132,15 @@ lua-source: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
+$(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES) make/lua.mk
 	make readline-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(LUA_DIR) $(LUA_HOST_BUILD_DIR) $(LUA_BUILD_DIR)
-	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_HOST_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LUA_DIR) $(@D)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LUA_PATCHES)" ; \
 		then cat $(LUA_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LUA_DIR) -p0 ; \
 	fi
-	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR)
+	mv $(BUILD_DIR)/$(LUA_DIR) $(@D)
 	sed -i -e 's|/usr/local|/opt|' $(@D)/src/luaconf.h
 	touch $@
 
@@ -130,11 +151,6 @@ lua-unpack: $(LUA_BUILD_DIR)/.configured
 #
 $(LUA_BUILD_DIR)/.built: $(LUA_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LUA_HOST_BUILD_DIR)/src \
-		MYCFLAGS="-DLUA_ANSI" \
-		MYLDFLAGS="$(LUA_LDFLAGS)" \
-		MYLIBS="-Wl,-E -ldl" \
-		all
 	$(MAKE) -C $(LUA_BUILD_DIR)/src \
 		$(TARGET_CONFIGURE_OPTS) \
 		AR="$(TARGET_AR) rcu" \
@@ -154,7 +170,6 @@ lua: $(LUA_BUILD_DIR)/.built
 #
 $(LUA_BUILD_DIR)/.staged: $(LUA_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LUA_HOST_BUILD_DIR) INSTALL_TOP=$(LUA_HOST_BUILD_DIR)/opt install
 	$(MAKE) -C $(@D) INSTALL_TOP=$(STAGING_PREFIX) install
 	mkdir -p $(STAGING_LIB_DIR)/pkgconfig
 	sed -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(@D)/etc/lua.pc > $(STAGING_LIB_DIR)/pkgconfig/lua.pc
@@ -203,6 +218,7 @@ $(LUA_IPK): $(LUA_BUILD_DIR)/.built
 	sed -e 's|^prefix=.*|prefix=/opt|' $(LUA_BUILD_DIR)/etc/lua.pc > $(LUA_IPK_DIR)/opt/lib/pkgconfig/lua.pc
 	$(MAKE) $(LUA_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUA_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LUA_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
