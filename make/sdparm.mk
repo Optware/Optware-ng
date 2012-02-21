@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SDPARM_SITE=http://sg.danny.cz/sg/p
-SDPARM_VERSION=1.06
+SDPARM_VERSION=1.07
 SDPARM_SOURCE=sdparm-$(SDPARM_VERSION).tgz
 SDPARM_DIR=sdparm-$(SDPARM_VERSION)
 SDPARM_UNZIP=zcat
@@ -196,6 +196,7 @@ $(SDPARM_IPK): $(SDPARM_BUILD_DIR)/.built
 #	install -m 755 $(SDPARM_SOURCE_DIR)/prerm $(SDPARM_IPK_DIR)/CONTROL/prerm
 	echo $(SDPARM_CONFFILES) | sed -e 's/ /\n/g' > $(SDPARM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SDPARM_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SDPARM_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
