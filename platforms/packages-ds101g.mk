@@ -20,8 +20,6 @@ BROKEN_PACKAGES = \
 	sandbox \
 	telldus-core \
 
-PSMISC_VERSION := 22.11
-
 REDIS_VERSION := 2.0.4
 REDIS_PATCHES := $(SOURCE_DIR)/redis/no_sa_sigaction.patch
 
