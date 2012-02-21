@@ -46,7 +46,9 @@ TMUX_IPK_VERSION=1
 # TMUX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#TMUX_PATCHES=$(TMUX_SOURCE_DIR)/configure.patch
+ifeq (uclibc, $(LIBC_STYLE))
+TMUX_PATCHES=$(TMUX_SOURCE_DIR)/100-b64_ntop-conflict.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +115,7 @@ $(TMUX_BUILD_DIR)/.configured: $(DL_DIR)/$(TMUX_SOURCE) $(TMUX_PATCHES) make/tmu
 	$(TMUX_UNZIP) $(DL_DIR)/$(TMUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TMUX_PATCHES)" ; \
 		then cat $(TMUX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TMUX_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(TMUX_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TMUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TMUX_DIR) $(@D) ; \
