@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TMUX_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/tmux
-TMUX_VERSION=1.5
+TMUX_VERSION=1.6
 TMUX_SOURCE=tmux-$(TMUX_VERSION).tar.gz
 TMUX_DIR=tmux-$(TMUX_VERSION)
 TMUX_UNZIP=zcat
@@ -133,7 +133,6 @@ $(TMUX_BUILD_DIR)/.configured: $(DL_DIR)/$(TMUX_SOURCE) $(TMUX_PATCHES) make/tmu
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
