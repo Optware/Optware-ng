@@ -19,7 +19,6 @@ UCLIBC_BROKEN_PACKAGES = \
 	 pango \
 	 qemu qemu-libc-i386 quickie \
 	 sm syx \
-	tmux \
 	 uemacs \
 	 gtk vte xchat \
 	 xauth xaw xcursor xfixes xft xrender xmu xt xterm \
