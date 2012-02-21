@@ -22,7 +22,7 @@
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
 HTOP_VERSION ?= 1.0.1
-HTOP_IPK_VERSION ?= 1
+HTOP_IPK_VERSION ?= 2
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
 HTOP_UNZIP=zcat
@@ -173,12 +173,12 @@ htop: $(HTOP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(HTOP_BUILD_DIR)/.staged: $(HTOP_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-htop-stage: $(HTOP_BUILD_DIR)/.staged
+#$(HTOP_BUILD_DIR)/.staged: $(HTOP_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#htop-stage: $(HTOP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -213,7 +213,7 @@ $(HTOP_IPK_DIR)/CONTROL/control:
 #
 $(HTOP_IPK): $(HTOP_BUILD_DIR)/.built
 	rm -rf $(HTOP_IPK_DIR) $(BUILD_DIR)/htop_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(HTOP_BUILD_DIR) DESTDIR=$(HTOP_IPK_DIR) install-strip
+	$(MAKE) -C $(HTOP_BUILD_DIR) DESTDIR=$(HTOP_IPK_DIR) transform='' install-strip
 	$(MAKE) $(HTOP_IPK_DIR)/CONTROL/control
 #	echo $(HTOP_CONFFILES) | sed -e 's/ /\n/g' > $(HTOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HTOP_IPK_DIR)
