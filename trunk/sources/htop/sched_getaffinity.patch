@@ -1,0 +1,20 @@
+--- Process.c.orig	2011-12-26 21:54:07.000000000 +0000
++++ Process.c	2012-02-20 22:35:44.647048949 +0000
+@@ -609,7 +609,7 @@
+ 
+ Affinity* Process_getAffinity(Process* this) {
+    cpu_set_t cpuset;
+-   bool ok = (sched_getaffinity(this->pid, sizeof(cpu_set_t), &cpuset) == 0);
++   bool ok = (sched_getaffinity(this->pid, &cpuset) == 0);
+    if (!ok) return NULL;
+    Affinity* affinity = Affinity_new();
+    for (int i = 0; i < this->pl->cpuCount; i++) {
+@@ -625,7 +625,7 @@
+    for (int i = 0; i < affinity->used; i++) {
+       CPU_SET(affinity->cpus[i], &cpuset);
+    }
+-   bool ok = (sched_setaffinity(this->pid, sizeof(unsigned long), &cpuset) == 0);
++   bool ok = (sched_setaffinity(this->pid, &cpuset) == 0);
+    return ok;
+ }
+ 
