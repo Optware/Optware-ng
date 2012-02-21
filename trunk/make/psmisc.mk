@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PSMISC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/psmisc
-PSMISC_VERSION ?= 22.13
+PSMISC_VERSION ?= 22.15
 PSMISC_SOURCE=psmisc-$(PSMISC_VERSION).tar.gz
 PSMISC_DIR=psmisc-$(PSMISC_VERSION)
 PSMISC_UNZIP=zcat
@@ -216,6 +216,7 @@ $(PSMISC_IPK): $(PSMISC_BUILD_DIR)/.built
 			$(PSMISC_IPK_DIR)/CONTROL/postinst $(PSMISC_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PSMISC_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PSMISC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
