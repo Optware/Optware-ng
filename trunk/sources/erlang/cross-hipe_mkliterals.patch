@@ -53,7 +53,7 @@
  
  $(BINDIR)/hipe_mkliterals$(TF_MARKER):	$(OBJDIR)/hipe_mkliterals.o
 -	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $<
-+	cp `type -p $(@F)` $@
++	cp HOST_HIPE_MKLITERAL_PATH/$(@F) $@
  
  $(OBJDIR)/hipe_mkliterals.o:	$(TTF_DIR)/hipe_x86_asm.h $(TTF_DIR)/hipe_ppc_asm.h
  

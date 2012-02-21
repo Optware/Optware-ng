@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R14B04
-ERLANG_VERSION=R14B.04
+ERLANG_UPSTREAM_VERSION=R15B
+ERLANG_VERSION=R15B
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -50,7 +50,7 @@ ERLANG_TARGET=$(shell $(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME))
 
 
 ERLANG_HIPE=$(strip \
-	$(if $(filter powerpc, $(TARGET_ARCH)), --enable-hipe, \
+	$(if $(filter none, $(TARGET_ARCH)), --enable-hipe, \
 	--disable-hipe))
 ERLANG_SMP ?= --disable-smp-support
 
@@ -65,7 +65,6 @@ ERLANG_SMP ?= --disable-smp-support
 ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-odbc-c_src-Makefile.in.patch \
-	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch
 
 ERLANG_CROSS_PATCHES=$(ERLANG_PATCHES)
 
@@ -144,7 +143,7 @@ $(ERLANG_HOST_BUILD_DIR)/.configured: host/.configured \
 		$(DL_DIR)/$(ERLANG_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) \
-		$(ERLANG_PATCHES) # make/erlang.mk
+		$(ERLANG_PATCHES) make/erlang.mk
 	rm -rf $(HOST_BUILD_DIR)/$(ERLANG_DIR) $(@D)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	cat $(ERLANG_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(ERLANG_DIR) -p1
@@ -207,6 +206,7 @@ $(ERLANG_BUILD_DIR)/.unpacked: \
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ERLANG_CROSS_PATCHES) | patch -bd $(BUILD_DIR)/$(ERLANG_DIR) -p1
 	mv $(BUILD_DIR)/$(ERLANG_DIR) $(@D)
+	sed -i -e "s:HOST_HIPE_MKLITERAL_PATH:$(ERLANG_HOST_BUILD_DIR)/bin/`sources/common/config.guess`:" $(@D)/erts/emulator/Makefile.in
 	touch $@
 
 erlang-unpack: $(ERLANG_BUILD_DIR)/.unpacked
