@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 HDPARM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hdparm
-HDPARM_VERSION ?= 9.37
+HDPARM_VERSION ?= 9.39
 HDPARM_SOURCE=hdparm-$(HDPARM_VERSION).tar.gz
 HDPARM_DIR=hdparm-$(HDPARM_VERSION)
 HDPARM_UNZIP=zcat
@@ -168,6 +168,7 @@ $(HDPARM_IPK): $(HDPARM_BUILD_DIR)/.built
 			$(HDPARM_IPK_DIR)/CONTROL/postinst $(HDPARM_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HDPARM_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(HDPARM_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
