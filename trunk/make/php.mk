@@ -55,6 +55,7 @@ PHP_PATCHES=\
 	$(PHP_SOURCE_DIR)/threads.m4.patch \
 	$(PHP_SOURCE_DIR)/endian-5.0.4.patch \
 	$(PHP_SOURCE_DIR)/ext-posix-uclibc.patch \
+	$(PHP_SOURCE_DIR)/pcre_info.patch \
 
 #
 # If the compilation of the package requires additional
@@ -427,6 +428,8 @@ endif
 	if test -n "$(PHP_PATCHES)"; \
 	    then cat $(PHP_PATCHES) | patch -p0 -bd $(@D); \
 	fi
+
+ttt:
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i \
 	    -e 's|`$$PG_CONFIG --includedir`|$(STAGING_INCLUDE_DIR)|' \
