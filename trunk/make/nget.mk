@@ -37,7 +37,7 @@ NGET_CONFLICTS=
 #
 # NGET_IPK_VERSION should be incremented when the ipk changes.
 #
-NGET_IPK_VERSION=4
+NGET_IPK_VERSION=5
 
 #
 # NGET_CONFFILES should be a list of user-editable files

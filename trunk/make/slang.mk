@@ -39,7 +39,7 @@ SLANG_CONFLICTS=
 #
 # SLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-SLANG_IPK_VERSION ?= 1
+SLANG_IPK_VERSION ?= 2
 
 #
 # SLANG_CONFFILES should be a list of user-editable files
