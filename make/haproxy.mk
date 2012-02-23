@@ -36,7 +36,7 @@ HAPROXY_CONFLICTS=
 #
 # HAPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-HAPROXY_IPK_VERSION ?= 1
+HAPROXY_IPK_VERSION ?= 2
 
 #
 # HAPROXY_CONFFILES should be a list of user-editable files

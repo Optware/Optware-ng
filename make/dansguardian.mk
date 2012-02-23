@@ -39,7 +39,7 @@ DANSGUARDIAN_CONFLICTS=
 #
 # DANSGUARDIAN_IPK_VERSION should be incremented when the ipk changes.
 #
-DANSGUARDIAN_IPK_VERSION=1
+DANSGUARDIAN_IPK_VERSION=2
 
 #
 # DANSGUARDIAN_CONFFILES should be a list of user-editable files

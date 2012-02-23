@@ -22,7 +22,7 @@ NMAP_CONFLICTS=
 #
 # NMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-NMAP_IPK_VERSION=1
+NMAP_IPK_VERSION=2
 
 #
 # NMAP_CONFFILES should be a list of user-editable files
