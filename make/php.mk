@@ -428,8 +428,6 @@ endif
 	if test -n "$(PHP_PATCHES)"; \
 	    then cat $(PHP_PATCHES) | patch -p0 -bd $(@D); \
 	fi
-
-ttt:
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i \
 	    -e 's|`$$PG_CONFIG --includedir`|$(STAGING_INCLUDE_DIR)|' \
