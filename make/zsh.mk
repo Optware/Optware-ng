@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zsh
-ZSH_VERSION=4.3.10
+ZSH_VERSION=4.3.17
 ZSH_SOURCE=zsh-$(ZSH_VERSION).tar.gz
 ZSH_DIR=zsh-$(ZSH_VERSION)
 ZSH_UNZIP=zcat
@@ -208,6 +208,7 @@ $(ZSH_IPK): $(ZSH_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(ZSH_CONFFILES) | sed -e 's/ /\n/g' > $(ZSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZSH_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ZSH_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
