@@ -281,7 +281,7 @@ COMMON_CROSS_PACKAGES = \
 	dcled dcraw delegate denyhosts dev-pts devio devmem2 dfu-util \
 	dhcp dialog dict digitemp dircproxy distcc \
 	diffstat diffutils discount \
-	dmsetup dnsmasq dnstracer dokuwiki dosfstools dovecot \
+	dmsetup dnsmasq dnstracer dokuwiki dos2unix dosfstools dovecot \
 	dropbear drraw dspam dtach dump \
 	e2fsprogs e2tools eaccelerator easy-rsa ed ecl electric-fence elinks \
 	emacs22 endian enhanced-ctorrent enscript esmtp esniper \
