@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION ?= 3.0.3
+BITLBEE_VERSION ?= 3.0.5
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
@@ -145,6 +145,7 @@ endif
 		--datadir=/opt/var/bitlbee \
 		--config=/opt/var/bitlbee \
 	)
+	sed -i -e '/BITLBEE_VERSION/d' $(@D)/config.h
 	touch $@
 
 bitlbee-unpack: $(BITLBEE_BUILD_DIR)/.configured
