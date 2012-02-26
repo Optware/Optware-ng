@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION?=1.0.5
+NGINX_SITE=http://nginx.org/download
+NGINX_VERSION?=1.0.12
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -36,7 +36,7 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION?=2
+NGINX_IPK_VERSION?=1
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
@@ -53,6 +53,10 @@ NGINX_CONFFILES=\
 # which they should be applied to the source code.
 #
 NGINX_PATCHES=
+
+ifeq ($(LIBC_STYLE), uclibc)
+NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/ngx_errno.patch
+endif
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/cross-configure$(if $(filter 0.8.54, $(NGINX_VERSION)),-$(NGINX_VERSION),).patch
