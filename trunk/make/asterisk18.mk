@@ -24,7 +24,7 @@ ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
 ASTERISK18_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.9.1
+ASTERISK18_BASE_VERSION=1.8.9.3
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -58,7 +58,7 @@ asterisk14-core-sounds-en-alaw\
 ,libogg\
 ,net-snmp\
 ,radiusclient-ng\
-,sqlite2\
+,sqlite\
 ,unixodbc
 
 ifeq (jabberd, $(filter jabberd, $(PACKAGES)))
@@ -305,7 +305,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 	$(MAKE) x11-stage
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
-	$(MAKE) sqlite2-stage libogg-stage libxml2-stage
+	$(MAKE) sqlite-stage libogg-stage libxml2-stage
 	$(MAKE) mysql-stage bluez2-libs-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK18_DIR) $(ASTERISK18_BUILD_DIR)
 	$(ASTERISK18_UNZIP) $(DL_DIR)/$(ASTERISK18_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -349,7 +349,6 @@ endif
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
 		--without-postgres \
-		--without-sqlite3 \
 		--without-pwlib \
 		--without-usb \
 		--without-lua \
