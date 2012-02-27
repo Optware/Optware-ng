@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WEECHAT_SITE=http://www.weechat.org/files/src
-WEECHAT_VERSION=0.3.5
+WEECHAT_VERSION=0.3.7
 WEECHAT_SOURCE=weechat-$(WEECHAT_VERSION).tar.bz2
 WEECHAT_DIR=weechat-$(WEECHAT_VERSION)
 WEECHAT_UNZIP=bzcat
@@ -132,6 +132,7 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WEECHAT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WEECHAT_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		CURL_CONFIG=$(STAGING_PREFIX)/bin/curl-config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
