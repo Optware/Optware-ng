@@ -56,7 +56,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	udpxy \
 	py-btpd-webui \
 	cryptsetup \
-	asterisk10 \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -217,6 +216,7 @@ ERLANG_PACKAGES = \
 # removed asterisk-chan-capi, doesn't build because of asterisk-stage problems
 ASTERISK_PACKAGES = \
 	asterisk asterisk-sounds \
+	asterisk10 \
 	asterisk14 \
 	asterisk14-chan-capi \
 	asterisk14-core-sounds-en-alaw \
