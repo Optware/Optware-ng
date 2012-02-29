@@ -23,7 +23,7 @@
 ARIA2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aria2
 
 ARIA2_VERSION=$(strip \
-$(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 1.4.1, 1.12.1))
+$(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 1.4.1, 1.14.2))
 
 ARIA2_SOURCE=aria2-$(ARIA2_VERSION).tar.bz2
 ARIA2_DIR=aria2-$(ARIA2_VERSION)
@@ -238,6 +238,7 @@ $(ARIA2_IPK): $(ARIA2_BUILD_DIR)/.built
 	fi
 	echo $(ARIA2_CONFFILES) | sed -e 's/ /\n/g' > $(ARIA2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ARIA2_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ARIA2_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
