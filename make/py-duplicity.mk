@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DUPLICITY_VERSION=0.6.13
+PY-DUPLICITY_VERSION=0.6.14
 PY-DUPLICITY_SITE=http://savannah.nongnu.org/download/duplicity
 PY-DUPLICITY_SOURCE=duplicity-$(PY-DUPLICITY_VERSION).tar.gz
 PY-DUPLICITY_DIR=duplicity-$(PY-DUPLICITY_VERSION)
@@ -255,6 +255,7 @@ $(PY25-DUPLICITY_IPK) $(PY26-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLIC
 	$(MAKE) $(PY25-DUPLICITY_IPK_DIR)/CONTROL/control
 	rm -rf $(PY25-DUPLICITY_IPK_DIR)/opt/share
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-DUPLICITY_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY25-DUPLICITY_IPK_DIR)
 	# 2.6
 	rm -rf $(PY26-DUPLICITY_IPK_DIR) $(BUILD_DIR)/py26-duplicity_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DUPLICITY_BUILD_DIR)/2.6; \
@@ -269,6 +270,7 @@ $(PY25-DUPLICITY_IPK) $(PY26-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLIC
 	$(MAKE) $(PY-DUPLICITY-DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-DUPLICITY_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-DUPLICITY-DOC_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY26-DUPLICITY_IPK_DIR) $(PY-DUPLICITY-DOC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
