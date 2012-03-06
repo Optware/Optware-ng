@@ -24,7 +24,7 @@ ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
 ASTERISK10_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK10_BASE_VERSION=10.1.3
+ASTERISK10_BASE_VERSION=10.2.0
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -84,104 +84,7 @@ ASTERISK10_IPK_VERSION=1
 #
 # ASTERISK10_CONFFILES should be a list of user-editable files
 #ASTERISK10_CONFFILES=/opt/etc/asterisk.conf /opt/etc/init.d/SXXasterisk
-ASTERISK10_CONFFILES=\
-/opt/etc/asterisk/adsi.conf \
-/opt/etc/asterisk/agents.conf \
-/opt/etc/asterisk/ais.conf \
-/opt/etc/asterisk/alarmreceiver.conf \
-/opt/etc/asterisk/alsa.conf \
-/opt/etc/asterisk/amd.conf \
-/opt/etc/asterisk/app_mysql.conf \
-/opt/etc/asterisk/asterisk.adsi \
-/opt/etc/asterisk/asterisk.conf \
-/opt/etc/asterisk/calendar.conf \
-/opt/etc/asterisk/ccss.conf \
-/opt/etc/asterisk/cdr_adaptive_odbc.conf \
-/opt/etc/asterisk/cdr.conf \
-/opt/etc/asterisk/cdr_custom.conf \
-/opt/etc/asterisk/cdr_manager.conf \
-/opt/etc/asterisk/cdr_mysql.conf \
-/opt/etc/asterisk/cdr_odbc.conf \
-/opt/etc/asterisk/cdr_pgsql.conf \
-/opt/etc/asterisk/cdr_sqlite3_custom.conf \
-/opt/etc/asterisk/cdr_syslog.conf \
-/opt/etc/asterisk/cdr_tds.conf \
-/opt/etc/asterisk/cel.conf \
-/opt/etc/asterisk/cel_custom.conf \
-/opt/etc/asterisk/cel_odbc.conf \
-/opt/etc/asterisk/cel_pgsql.conf \
-/opt/etc/asterisk/cel_sqlite3_custom.conf \
-/opt/etc/asterisk/cel_tds.conf \
-/opt/etc/asterisk/chan_dahdi.conf \
-/opt/etc/asterisk/chan_mobile.conf \
-/opt/etc/asterisk/chan_ooh323.conf \
-/opt/etc/asterisk/cli_aliases.conf \
-/opt/etc/asterisk/cli.conf \
-/opt/etc/asterisk/cli_permissions.conf \
-/opt/etc/asterisk/codecs.conf \
-/opt/etc/asterisk/console.conf \
-/opt/etc/asterisk/dbsep.conf \
-/opt/etc/asterisk/dnsmgr.conf \
-/opt/etc/asterisk/dsp.conf \
-/opt/etc/asterisk/dundi.conf \
-/opt/etc/asterisk/enum.conf \
-/opt/etc/asterisk/extconfig.conf \
-/opt/etc/asterisk/extensions.ael \
-/opt/etc/asterisk/extensions.conf \
-/opt/etc/asterisk/extensions.lua \
-/opt/etc/asterisk/extensions_minivm.conf \
-/opt/etc/asterisk/features.conf \
-/opt/etc/asterisk/festival.conf \
-/opt/etc/asterisk/followme.conf \
-/opt/etc/asterisk/func_odbc.conf \
-/opt/etc/asterisk/gtalk.conf \
-/opt/etc/asterisk/h323.conf \
-/opt/etc/asterisk/http.conf \
-/opt/etc/asterisk/iax.conf \
-/opt/etc/asterisk/iaxprov.conf \
-/opt/etc/asterisk/indications.conf \
-/opt/etc/asterisk/jabber.conf \
-/opt/etc/asterisk/jingle.conf \
-/opt/etc/asterisk/logger.conf \
-/opt/etc/asterisk/manager.conf \
-/opt/etc/asterisk/meetme.conf \
-/opt/etc/asterisk/mgcp.conf \
-/opt/etc/asterisk/minivm.conf \
-/opt/etc/asterisk/misdn.conf \
-/opt/etc/asterisk/modules.conf \
-/opt/etc/asterisk/musiconhold.conf \
-/opt/etc/asterisk/muted.conf \
-/opt/etc/asterisk/osp.conf \
-/opt/etc/asterisk/oss.conf \
-/opt/etc/asterisk/phone.conf \
-/opt/etc/asterisk/phoneprov.conf \
-/opt/etc/asterisk/queuerules.conf \
-/opt/etc/asterisk/queues.conf \
-/opt/etc/asterisk/res_config_mysql.conf \
-/opt/etc/asterisk/res_config_sqlite.conf \
-/opt/etc/asterisk/res_curl.conf \
-/opt/etc/asterisk/res_fax.conf \
-/opt/etc/asterisk/res_ldap.conf \
-/opt/etc/asterisk/res_odbc.conf \
-/opt/etc/asterisk/res_pgsql.conf \
-/opt/etc/asterisk/res_pktccops.conf \
-/opt/etc/asterisk/res_snmp.conf \
-/opt/etc/asterisk/res_stun_monitor.conf \
-/opt/etc/asterisk/rpt.conf \
-/opt/etc/asterisk/rtp.conf \
-/opt/etc/asterisk/say.conf \
-/opt/etc/asterisk/sip.conf \
-/opt/etc/asterisk/sip_notify.conf \
-/opt/etc/asterisk/skinny.conf \
-/opt/etc/asterisk/sla.conf \
-/opt/etc/asterisk/smdi.conf \
-/opt/etc/asterisk/telcordia-1.adsi \
-/opt/etc/asterisk/udptl.conf \
-/opt/etc/asterisk/unistim.conf \
-/opt/etc/asterisk/usbradio.conf \
-/opt/etc/asterisk/users.conf \
-/opt/etc/asterisk/voicemail.conf \
-/opt/etc/asterisk/vpb.conf
+ASTERISK10_CONFFILES=/opt/etc/asterisk/*
 
 #
 # ASTERISK10_PATCHES should list any patches, in the the order in
@@ -467,12 +370,14 @@ $(ASTERISK10_IPK): $(ASTERISK10_BUILD_DIR)/.built
 	echo "" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => format_ogg_vorbis.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_festival.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => app_amd.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_queue.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_dictate.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_festival.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => app_mixmonitor.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_morsecode.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => app_mysql.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_stack.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_queue.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_speech_utils.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_ael_share.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_agi.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
@@ -485,6 +390,7 @@ $(ASTERISK10_IPK): $(ASTERISK10_BUILD_DIR)/.built
 	echo "noload => res_jabber.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_odbc.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_snmp.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_speech.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_smdi.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_adaptive_odbc.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
