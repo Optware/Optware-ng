@@ -36,7 +36,7 @@ CUETOOLS_CONFLICTS=
 #
 # CUETOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUETOOLS_IPK_VERSION=1
+CUETOOLS_IPK_VERSION=2
 
 #
 # CUETOOLS_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ CUETOOLS_IPK_VERSION=1
 # CUETOOLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CUETOOLS_PATCHES=$(CUETOOLS_SOURCE_DIR)/configure.patch
+CUETOOLS_PATCHES=$(CUETOOLS_SOURCE_DIR)/04-source-fixes.diff
 
 #
 # If the compilation of the package requires additional
@@ -110,7 +110,7 @@ $(CUETOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUETOOLS_SOURCE) $(CUETOOLS_PATCH
 	$(CUETOOLS_UNZIP) $(DL_DIR)/$(CUETOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CUETOOLS_PATCHES)" ; \
 		then cat $(CUETOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CUETOOLS_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(CUETOOLS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CUETOOLS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CUETOOLS_DIR) $(@D) ; \
@@ -148,12 +148,12 @@ cuetools: $(CUETOOLS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(CUETOOLS_BUILD_DIR)/.staged: $(CUETOOLS_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-cuetools-stage: $(CUETOOLS_BUILD_DIR)/.staged
+#$(CUETOOLS_BUILD_DIR)/.staged: $(CUETOOLS_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#cuetools-stage: $(CUETOOLS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -189,22 +189,10 @@ $(CUETOOLS_IPK_DIR)/CONTROL/control:
 $(CUETOOLS_IPK): $(CUETOOLS_BUILD_DIR)/.built
 	rm -rf $(CUETOOLS_IPK_DIR) $(BUILD_DIR)/cuetools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CUETOOLS_BUILD_DIR) DESTDIR=$(CUETOOLS_IPK_DIR) install-strip
-#	install -d $(CUETOOLS_IPK_DIR)/opt/etc/
-#	install -m 644 $(CUETOOLS_SOURCE_DIR)/cuetools.conf $(CUETOOLS_IPK_DIR)/opt/etc/cuetools.conf
-#	install -d $(CUETOOLS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CUETOOLS_SOURCE_DIR)/rc.cuetools $(CUETOOLS_IPK_DIR)/opt/etc/init.d/SXXcuetools
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CUETOOLS_IPK_DIR)/opt/etc/init.d/SXXcuetools
 	$(MAKE) $(CUETOOLS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CUETOOLS_SOURCE_DIR)/postinst $(CUETOOLS_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CUETOOLS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CUETOOLS_SOURCE_DIR)/prerm $(CUETOOLS_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CUETOOLS_IPK_DIR)/CONTROL/prerm
-#	if test -n "$(UPD-ALT_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
-			$(CUETOOLS_IPK_DIR)/CONTROL/postinst $(CUETOOLS_IPK_DIR)/CONTROL/prerm; \
-	fi
 	echo $(CUETOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(CUETOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUETOOLS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(CUETOOLS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
