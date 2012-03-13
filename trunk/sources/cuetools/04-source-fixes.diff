@@ -1,0 +1,569 @@
+# This giant patch purges all "unholiness" from cuetools.
+
+diff -Naur cuetools-1.3.1.orig/src/tools/cuebreakpoints.c cuetools-1.3.1/src/tools/cuebreakpoints.c
+--- cuetools-1.3.1.orig/src/tools/cuebreakpoints.c	2008-04-26 12:52:15.000000000 +0200
++++ cuetools-1.3.1/src/tools/cuebreakpoints.c	2008-04-26 12:55:37.000000000 +0200
+@@ -3,18 +3,21 @@
+  *
+  * Copyright (C) 2004, 2005, 2006 Svend Sorensen
+  * For license terms, see the file COPYING in this distribution.
++ *
++ * Modified 2005-08-23 by Branden Robinson.
+  */
+ 
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <getopt.h>
++#include <getopt.h>	/* getopt_long() */
++#include <stdio.h>	/* fprintf(), printf(), snprintf(), stderr */
++#include <stdlib.h>	/* exit() */
++#include <string.h>	/* strcasecmp() */
+ #include "cuefile.h"
+ #include "time.h"
+ 
+ char *progname;
+ 
+-/* pregap correction modes
++/*
++ * pregap correction modes:
+  * APPEND - append pregap to previous track (except for first track)
+  * PREPEND - prefix pregap to current track
+  * SPLIT - print breakpoints for beginning and end of pregap
+@@ -23,22 +26,36 @@
+ 
+ void usage (int status)
+ {
++	char synopsis[1024];
++
++	/* TODO: We could use asprintf() if we know we're using GNU libc. */
++	snprintf(synopsis, 1023, "usage: %s [option ...] [file ...]\n",
++		 progname);
++
+ 	if (0 == status) {
+-		fprintf(stdout, "%s: usage: cuebreakpoints [option...] [file...]\n", progname);
+-		fputs("\
+-\n\
+-OPTIONS\n\
+--h, --help			print usage\n\
+--i, --input-format cue|toc	set format of file(s)\n\
+---append-gaps			append pregaps to previous track (default)\n\
+---prepend-gaps			prefix pregaps to track\n\
+---split-gaps			split at beginning and end of pregaps\n\
+-", stdout);
++		printf("%s", synopsis);
++		printf("Report track breakpoints from a CUE or TOC file.\n"
++		       "\n"
++		       "Options:\n"
++		       "-h, --help\t\t\t\tdisplay this message and exit\n"
++		       "-i {cue|toc}, --input-format={cue|toc}\tset format of"
++		       " input file(s)\n"
++		       "--append-gaps\t\t\t\tappend pregaps to previous track\n"
++		       "--prepend-gaps\t\t\t\tprefix pregaps to track\n"
++		       "--split-gaps\t\t\t\tsplit at beginning and end of"
++		       " pregaps\n"
++		       "\n"
++		       "The default handling of gaps is as if --append-gaps"
++		       " were specified.\n"
++		       "\n"
++		       "See the %s(1) manual page for more information.\n",
++		       progname);
+ 	} else {
+-		fprintf(stderr, "run `%s --help' for usage\n", progname);
++		fprintf(stderr, "%sRun \"%s --help\" for more information.\n",
++			synopsis, progname);
+ 	}
+ 
+-	exit (status);
++	exit(status);
+ }
+ 
+ void print_m_ss_ff (long frame)
+@@ -46,7 +63,7 @@
+ 	int m, s, f;
+ 
+ 	time_frame_to_msf(frame, &m, &s, &f);
+-	printf ("%d:%02d.%02d\n", m, s, f);
++	printf("%d:%02d.%02d\n", m, s, f);
+ }
+ 
+ void print_breakpoint (long b)
+@@ -65,7 +82,8 @@
+ 
+ 	for (i = 1; i <= cd_get_ntrack(cd); i++) {
+ 		track = cd_get_track(cd, i);
+-		/* when breakpoint is at:
++		/*
++		 * when breakpoint is at:
+ 		 * index 0: gap is prepended to track
+ 		 * index 1: gap is appended to previous track
+ 		 */
+@@ -91,7 +109,8 @@
+ 	Cd *cd = NULL;
+ 
+ 	if (NULL == (cd = cf_parse(name, &format))) {
+-		fprintf(stderr, "%s: input file error\n", name);
++		fprintf(stderr, "%s: error: unable to parse input file"
++			" \"%s\"\n", progname, name);
+ 		return -1;
+ 	}
+ 
+@@ -104,9 +123,10 @@
+ {
+ 	int format = UNKNOWN;
+ 	int gaps = APPEND;
++	int ret = 0;		/* return value of breaks() */
+ 
+ 	/* option variables */
+-	char c;
++	int c;
+ 	/* getopt_long() variables */
+ 	extern char *optarg;
+ 	extern int optind;
+@@ -120,7 +140,7 @@
+ 		{NULL, 0, NULL, 0}
+ 	};
+ 
+-	progname = *argv;
++	progname = argv[0];
+ 
+ 	while (-1 != (c = getopt_long(argc, argv, "hi:", longopts, NULL))) {
+ 		switch (c) {
+@@ -128,12 +148,13 @@
+ 			usage(0);
+ 			break;
+ 		case 'i':
+-			if (0 == strcmp("cue", optarg)) {
++			if (0 == strcasecmp("cue", optarg)) {
+ 				format = CUE;
+-			} else if (0 == strcmp("toc", optarg)) {
++			} else if (0 == strcasecmp("toc", optarg)) {
+ 				format = TOC;
+ 			} else {
+-				fprintf(stderr, "%s: illegal format `%s'\n", progname, optarg);
++				fprintf(stderr, "%s: error: unknown input file"
++					" format \"%s\"\n", progname, optarg);
+ 				usage(1);
+ 			}
+ 			break;
+@@ -152,12 +173,19 @@
+ 		}
+ 	}
+ 
++	/* What we do depends on the number of operands. */
+ 	if (optind == argc) {
+-		breaks("-", format, gaps);
++		/* No operands: report breakpoints of stdin. */
++		ret = breaks("-", format, gaps);
+ 	} else {
+-		for (; optind < argc; optind++)
+-			breaks(argv[optind], format, gaps);
++		/* Report track breakpoints for each operand. */
++		for (; optind < argc; optind++) {
++			ret = breaks(argv[optind], format, gaps);
++			/* Bail out if breaks() returns nonzero. */
++			if (!ret)
++				break;
++		}
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+diff -Naur cuetools-1.3.1.orig/src/tools/cueconvert.c cuetools-1.3.1/src/tools/cueconvert.c
+--- cuetools-1.3.1.orig/src/tools/cueconvert.c	2008-04-26 12:52:15.000000000 +0200
++++ cuetools-1.3.1/src/tools/cueconvert.c	2008-04-26 12:55:37.000000000 +0200
+@@ -3,32 +3,45 @@
+  *
+  * Copyright (C) 2004, 2005, 2006 Svend Sorensen
+  * For license terms, see the file COPYING in this distribution.
++ *
++ * Modified 2005-08-23 by Branden Robinson.
+  */
+ 
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <getopt.h>
++#include <getopt.h>	/* getopt_long() */
++#include <stdio.h>	/* fprintf(), printf(), snprintf(), stderr */
++#include <stdlib.h>	/* exit() */
++#include <string.h>	/* strcasecmp() */
+ #include "cuefile.h"
+ 
+ char *progname;
+ 
+ void usage (int status)
+ {
++	char synopsis[1024];
++
++	/* TODO: We could use asprintf() if we know we're using GNU libc. */
++	snprintf(synopsis, 1023, "usage: %s [option ...] [infile [outfile]]\n",
++		 progname);
++
+ 	if (0 == status) {
+-		fprintf(stdout, "%s: usage: cueconvert [option...] [infile [outfile]]\n", progname);
+-		fputs("\
+-\n\
+-OPTIONS\n\
+--h, --help 			print usage\n\
+--i, --input-format cue|toc	set format of input file\n\
+--o, --output-format cue|toc	set format of output file\n\
+-", stdout);
++		printf("%s", synopsis);
++		printf("Convert files between CUE and TOC formats.\n"
++		       "\n"
++		       "Options:\n"
++		       "-h, --help\t\t\t\tdisplay this message and exit\n"
++		       "-i {cue|toc}, --input-format={cue|toc}\tset format of"
++		       " input file\n"
++		       "-o {cue|toc}, --output-format={cue|toc}\tset format of"
++		       " output file\n"
++		       "\n"
++		       "See the %s(1) manual page for more information.\n",
++		       progname);
+ 	} else {
+-		fprintf(stderr, "run `%s --help' for usage\n", progname);
++		fprintf(stderr, "%sRun \"%s --help\" for more information.\n",
++				synopsis, progname);
+ 	}
+ 
+-	exit (status);
++	exit(status);
+ }
+ 
+ int convert (char *iname, int iformat, char *oname, int oformat)
+@@ -36,7 +49,8 @@
+ 	Cd *cd = NULL;
+ 
+ 	if (NULL == (cd = cf_parse(iname, &iformat))) {
+-		fprintf(stderr, "input file error\n");
++		fprintf(stderr, "%s: error: unable to parse input file\n",
++			progname);
+ 		return -1;
+ 	}
+ 
+@@ -62,9 +76,9 @@
+ {
+ 	int iformat = UNKNOWN;
+ 	int oformat = UNKNOWN;
+-	/* option variables */
+-	char c;
++	int ret = 0;		/* return value of convert() */
+ 	/* getopt_long() variables */
++	int c;
+ 	extern char *optarg;
+ 	extern int optind;
+ 
+@@ -75,7 +89,7 @@
+ 		{NULL, 0, NULL, 0}
+ 	};
+ 
+-	progname = *argv;
++	progname = argv[0];
+ 
+ 	while (-1 != (c = getopt_long(argc, argv, "hi:o:", longopts, NULL))) {
+ 		switch (c) {
+@@ -83,22 +97,24 @@
+ 			usage(0);
+ 			break;
+ 		case 'i':
+-			if (0 == strcmp("cue", optarg)) {
++			if (0 == strcasecmp("cue", optarg)) {
+ 				iformat = CUE;
+-			} else if (0 == strcmp("toc", optarg)) {
++			} else if (0 == strcasecmp("toc", optarg)) {
+ 				iformat = TOC;
+ 			} else {
+-				fprintf(stderr, "%s: illegal format `%s'\n", progname, optarg);
++				fprintf(stderr, "%s: unknown input file format"
++					" \"%s\"\n", progname, optarg);
+ 				usage(1);
+ 			}
+ 			break;
+ 		case 'o':
+-			if (0 == strcmp("cue", optarg)) {
++			if (0 == strcasecmp("cue", optarg)) {
+ 				oformat = CUE;
+-			} else if (0 == strcmp("toc", optarg)) {
++			} else if (0 == strcasecmp("toc", optarg)) {
+ 				oformat = TOC;
+ 			} else {
+-				fprintf(stderr, "%s: illegal format `%s'\n", progname, optarg);
++				fprintf(stderr, "%s: unknown output file format"
++					" \"%s\"\n", progname, optarg);
+ 				usage(1);
+ 			}
+ 			break;
+@@ -108,15 +124,23 @@
+ 		}
+ 	}
+ 
++	/* What we do depends on the number of operands. */
+ 	if (optind == argc) {
+-		convert("-", iformat, "-", oformat);
++		/* No operands: convert stdin to stdout. */
++		ret = convert("-", iformat, "-", oformat);
+ 	} else if (optind == argc - 1) {
+-		convert(argv[optind], iformat, "-", oformat);
++		/* One operand: convert operand file to stdout. */
++		ret = convert(argv[optind], iformat, "-", oformat);
+ 	} else if (optind == argc - 2) {
+-		convert(argv[optind], iformat, argv[optind + 1], oformat);
++		/* Two operands: convert input file to output file. */
++		ret = convert(argv[optind], iformat, argv[optind + 1], oformat);
+ 	} else {
+ 		usage(1);
+ 	}
+ 
+-	return 0;
++	if (0 != ret) {
++		fprintf(stderr, "%s: conversion failed\n", progname);
++	}
++
++	return ret;
+ }
+diff -Naur cuetools-1.3.1.orig/src/tools/cueprint.c cuetools-1.3.1/src/tools/cueprint.c
+--- cuetools-1.3.1.orig/src/tools/cueprint.c	2008-04-26 12:52:15.000000000 +0200
++++ cuetools-1.3.1/src/tools/cueprint.c	2008-04-26 12:55:37.000000000 +0200
+@@ -3,13 +3,15 @@
+  *
+  * Copyright (C) 2004, 2005, 2006 Svend Sorensen
+  * For license terms, see the file COPYING in this distribution.
++ *
++ * Modified 2005-08-23 by Branden Robinson.
+  */
+ 
+-#include <stdio.h>
+-#include <stdlib.h>		/* exit() */
+-#include <string.h>		/* strcmp() */
+-#include <getopt.h>
+-#include <ctype.h>		/* isdigit() */
++#include <ctype.h>	/* isdigit() */
++#include <getopt.h>	/* getopt_long() */
++#include <stdio.h>	/* fprintf(), printf(), snprintf(), stderr */
++#include <stdlib.h>	/* exit() */
++#include <string.h>	/* strcasecmp() */
+ #include "cuefile.h"
+ 
+ /* default templates */
+@@ -57,52 +59,44 @@
+ 
+ void usage (int status)
+ {
++	char synopsis[1024];
++
++	/* TODO: We could use asprintf() if we know we're using GNU libc. */
++	snprintf(synopsis, 1023, "usage: %s [option ...] [file ...]\n",
++		 progname);
++
+ 	if (0 == status) {
+-		fprintf(stdout, "%s: usage: cueprint [option...] [file...]\n", progname);
+-		fputs("\
+-\n\
+-OPTIONS\n\
+--h, --help 			print usage\n\
+--i, --input-format cue|toc	set format of file(s)\n\
+--n, --track-number <number>	only print track information for single track\n\
+--d, --disc-template <template>	set disc template (see TEMPLATE EXPANSION)\n\
+--t, --track-template <template>	set track template (see TEMPLATE EXPANSION)\n\
+-\n\
+-Template Expansion\n\
+-Disc:\n\
+-%A - album arranger\n\
+-%C - album composer\n\
+-%G - album genre\n\
+-%M - album message\n\
+-%N - number of tracks\n\
+-%P - album performer\n\
+-%S - album songwriter\n\
+-%T - album title\n\
+-%U - album UPC/EAN\n\
+-Track:\n\
+-%a - track arranger\n\
+-%c - track composer\n\
+-%g - track genre\n\
+-%i - track ISRC\n\
+-%m - track message\n\
+-%n - track number\n\
+-%p - track perfomer\n\
+-%t - track title\n\
+-%u - track ISRC (CD-TEXT)\n\
+-\n\
+-Any other %<character> is expanded to that character.  For example, to get a\n\
+-'%', use %%.\n\
+-\n\
+-", stdout);
+-		fprintf(stdout, "default disc template is:\n%s\n", D_TEMPLATE);
+-		fprintf(stdout, "default track template is:\n%s\n", T_TEMPLATE);
++		printf("%s", synopsis);
++		printf("Report disc and track information from a CUE or TOC"
++		       " file.\n"
++		       "\n"
++		       "Options:\n"
++		       "-d TEMPLATE, --disc-template=TEMPLATE\tset disc"
++		       " template\n"
++		       "-h, --help\t\t\t\tdisplay this message and exit\n"
++		       "-i {cue|toc}, --input-format={cue|toc}\tset format of"
++		       " input file(s)\n"
++		       "-n N, --track-number=N\t\t\treport information for"
++		       " track N only\n"
++		       "-t TEMPLATE, --track-template=TEMPLATE\tset track"
++		       " template\n"
++		       "\n"
++		       "TEMPLATE is a printf(3)-style format string.\n"
++		       "\n"
++		       "Default disc template: %s\n"
++		       "Default track template: %s\n"
++		       "See the %s(1) manual page for more information.\n",
++		       D_TEMPLATE, T_TEMPLATE, progname);
+ 	} else {
+-		fprintf(stderr, "run `%s --help' for usage\n", progname);
++		fprintf(stderr, "%sRun \"%s --help\" for more information.\n",
++			synopsis, progname);
+ 	}
+ 
+-	exit (status);
++	exit(status);
+ }
+ 
++/* TODO: Shouldn't we be using vprintf() to help us out with this stuff? */
++
+ void disc_field (char *conv, int length, Cd *cd, Value *value)
+ {
+ 	char *c;	/* pointer to conversion character */
+@@ -230,8 +224,9 @@
+ 
+ }
+ 
+-/* print a % conversion specification
+- * %[flag(s)][width][.precision]<conversion-char>
++/*
++ * Print a conversion specification.
++ * [flag(s)][width][.precision]<conversion-char>
+  */
+ void print_conv (char *start, int length, Cd *cd, int trackno)
+ {
+@@ -240,7 +235,7 @@
+ 	char *c;	/* pointer to conversion-char */
+ 
+ 	/* TODO: use strndup? */
+-	conv = malloc ((unsigned) (length + 1));
++	conv = malloc((unsigned) (length + 1));
+ 	strncpy(conv, start, length);
+ 	conv[length] = '\0';
+ 
+@@ -303,7 +298,7 @@
+ 				conv_length++;
+ 				c++;
+ 			}
+-			
++
+ 			/* precision */
+ 			/* '*' not recognized */
+ 			if ('.' == *c) {
+@@ -329,7 +324,8 @@
+ 	}
+ }
+ 
+-int info (char *name, int format, int trackno, char *d_template, char *t_template)
++int info (char *name, int format, int trackno, char *d_template,
++	  char *t_template)
+ {
+ 	Cd *cd = NULL;
+ 	int ntrack;
+@@ -359,8 +355,9 @@
+ 	return 0;
+ }
+ 
+-/* translate escape sequences in a string
+- * string is overwritten and terminated
++/*
++ * Translate escape sequences in a string.
++ * The string is overwritten and terminated.
+  * TODO: this does not handle octal and hexidecimal escapes
+  *       except for \0
+  */
+@@ -420,11 +417,13 @@
+ int main (int argc, char **argv)
+ {
+ 	int format = UNKNOWN;
+-	int trackno = -1;		/* track number (-1 = unspecified, 0 = disc info) */
++	int trackno = -1;		/* track number (-1 = unspecified,
++							  0 = disc info) */
+ 	char *d_template = NULL;	/* disc template */
+ 	char *t_template = NULL;	/* track template */
++	int ret = 0;			/* return value of info() */
+ 	/* getopt_long() variables */
+-	char c;
++	int c;
+ 	extern char *optarg;
+ 	extern int optind;
+ 
+@@ -437,20 +436,22 @@
+ 		{NULL, 0, NULL, 0}
+ 	};
+ 
+-	progname = *argv;
++	progname = argv[0];
+ 
+-	while (-1 != (c = getopt_long(argc, argv, "hi:n:d:t:", longopts, NULL))) {
++	while (-1 != (c = getopt_long(argc, argv, "hi:n:d:t:", longopts, NULL)))
++	{
+ 		switch (c) {
+ 		case 'h':
+ 			usage(0);
+ 			break;
+ 		case 'i':
+-			if (0 == strcmp("cue", optarg)) {
++			if (0 == strcasecmp("cue", optarg)) {
+ 				format = CUE;
+-			} else if (0 == strcmp("toc", optarg)) {
++			} else if (0 == strcasecmp("toc", optarg)) {
+ 				format = TOC;
+ 			} else {
+-				fprintf(stderr, "%s: illegal format `%s'\n", progname, optarg);
++				fprintf(stderr, "%s: error: unknown input file"
++					" format \"%s\"\n", progname, optarg);
+ 				usage(1);
+ 			}
+ 			break;
+@@ -469,7 +470,7 @@
+ 		}
+ 	}
+ 
+-	/* if no disc or track template is set, use the defaults for both */
++	/* If no disc or track template is set, use the defaults for both. */
+ 	/* TODO: alternative to strdup to get variable strings? */
+ 	if (NULL == d_template && NULL == t_template) {
+ 		d_template = strdup(D_TEMPLATE);
+@@ -482,16 +483,24 @@
+ 			t_template = strdup("");
+ 	}
+ 
+-	/* translate escape sequences */
++	/* Translate escape sequences. */
+ 	translate_escapes(d_template);
+ 	translate_escapes(t_template);
+ 
++	/* What we do depends on the number of operands. */
+ 	if (optind == argc) {
+-		info("-", format, trackno, d_template, t_template);
++		/* No operands: report information about stdin. */
++		ret = info("-", format, trackno, d_template, t_template);
+ 	} else {
+-		for (; optind < argc; optind++)
+-			info(argv[optind], format, trackno, d_template, t_template);
++		/* Report information for each operand. */
++		for (; optind < argc; optind++) {
++			ret = info(argv[optind], format, trackno, d_template,
++				   t_template);
++			/* Bail out if info() returns nonzero. */
++			if (!ret)
++				break;
++		}
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
