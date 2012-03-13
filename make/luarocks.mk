@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LUAROCKS_SITE=http://luarocks.org/releases
-LUAROCKS_VERSION=2.0.4.1
+LUAROCKS_VERSION=2.0.8
 LUAROCKS_SOURCE=luarocks-$(LUAROCKS_VERSION).tar.gz
 LUAROCKS_DIR=luarocks-$(LUAROCKS_VERSION)
 LUAROCKS_UNZIP=zcat
@@ -198,6 +198,7 @@ $(LUAROCKS_IPK): $(LUAROCKS_BUILD_DIR)/.built
 	$(MAKE) $(LUAROCKS_IPK_DIR)/CONTROL/control
 	echo $(LUAROCKS_CONFFILES) | sed -e 's/ /\n/g' > $(LUAROCKS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUAROCKS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LUAROCKS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
