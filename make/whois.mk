@@ -22,10 +22,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WHOIS_SITE=http://ftp.debian.org/debian/pool/main/w/whois
-WHOIS_VERSION=5.0.13
-WHOIS_SOURCE=whois_$(WHOIS_VERSION).tar.gz
+WHOIS_VERSION=5.0.15
+WHOIS_SOURCE=whois_$(WHOIS_VERSION).tar.xz
 WHOIS_DIR=whois-$(WHOIS_VERSION)
-WHOIS_UNZIP=zcat
+WHOIS_UNZIP=xzcat
 WHOIS_MAINTAINER=Adam Baker <slug@baker-net.org.uk>
 WHOIS_DESCRIPTION=Perform whois lookups to identify site owners
 WHOIS_SECTION=net
@@ -107,6 +107,7 @@ whois-source: $(DL_DIR)/$(WHOIS_SOURCE) $(WHOIS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(WHOIS_BUILD_DIR)/.configured: $(DL_DIR)/$(WHOIS_SOURCE) $(WHOIS_PATCHES) make/whois.mk
+	$(MAKE) xz-utils-host-stage
 ifeq (uclibc, $(LIBC_STYLE))
 	$(MAKE) gettext-stage
 endif
@@ -190,6 +191,7 @@ $(WHOIS_IPK): $(WHOIS_BUILD_DIR)/.built
 	$(MAKE) $(WHOIS_IPK_DIR)/CONTROL/control
 	echo $(WHOIS_CONFFILES) | sed -e 's/ /\n/g' > $(WHOIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WHOIS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(WHOIS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
