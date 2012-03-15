@@ -25,7 +25,7 @@
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
 TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
-TRANSMISSION_VERSION=2.42
+TRANSMISSION_VERSION=2.50
 
 #TRANSMISSION_SVN_REV=8696
 
@@ -55,7 +55,6 @@ TRANSMISSION_IPK_VERSION=1
 #TRANSMISSION_CONFFILES=/opt/etc/transmission.conf
 
 TRANSMISSION_PATCHES = $(TRANSMISSION_SOURCE_DIR)/int64_switch.patch \
-	$(TRANSMISSION_SOURCE_DIR)/utypes.patch \
 
 TRANSMISSION_CONFIG_ENV ?=
 
