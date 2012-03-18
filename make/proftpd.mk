@@ -21,13 +21,13 @@
 #
 PROFTPD_NAME=proftpd
 PROFTPD_SITE=ftp://ftp.proftpd.org/distrib/source
-PROFTPD_VERSION=1.3.3e
+PROFTPD_VERSION=1.3.4a
 PROFTPD_SOURCE=$(PROFTPD_NAME)-$(PROFTPD_VERSION).tar.bz2
 PROFTPD_DIR=$(PROFTPD_NAME)-$(PROFTPD_VERSION)
 PROFTPD_UNZIP=bzcat
 
-PROFTPD-MOD-SHAPER_SITE=http://www.castaglia.org/proftpd/modules
-PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.5.tar.gz
+#PROFTPD-MOD-SHAPER_SITE=http://www.castaglia.org/proftpd/modules
+#PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.5.tar.gz
 
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
@@ -110,16 +110,16 @@ $(DL_DIR)/$(PROFTPD_SOURCE):
 	$(WGET) -P $(@D) $(PROFTPD_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-$(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE):
-	$(WGET) -P $(@D) $(PROFTPD-MOD-SHAPER_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+#$(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE):
+#	$(WGET) -P $(@D) $(PROFTPD-MOD-SHAPER_SITE)/$(@F) || \
+#	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) $(PROFTPD_PATCHES)
+proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -136,14 +136,14 @@ proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURC
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) $(PROFTPD_PATCHES) make/proftpd.mk
+$(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES) make/proftpd.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
 	$(PROFTPD_UNZIP) $(DL_DIR)/$(PROFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PROFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(PROFTPD_DIR) -p1
 	mv $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
-	zcat $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) | tar -C $(@D) -xvf -
-	cp $(@D)/mod_shaper/* $(@D)/contrib/
+#	zcat $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) | tar -C $(@D) -xvf -
+#	cp $(@D)/mod_shaper/* $(@D)/contrib/
 	# Copy required config.cache file
 	cp $(PROFTPD_SOURCE_DIR)/config.cache $(@D)/config.cache
 	(cd $(@D); \
