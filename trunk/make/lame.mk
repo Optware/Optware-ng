@@ -20,7 +20,8 @@
 # You should change all these variables to suit your package.
 #
 LAME_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lame
-LAME_VERSION=3.99.5
+LAME_VERSION?=3.99.5
+LAME_IPK_VERSION?=1
 LAME_SOURCE=lame-$(LAME_VERSION).tar.gz
 LAME_DIR=lame-$(LAME_VERSION)
 LAME_UNZIP=zcat
@@ -30,11 +31,6 @@ LAME_SECTION=lib
 LAME_PRIORITY=optional
 LAME_DEPENDS=ncurses
 LAME_CONFLICTS=
-
-#
-# LAME_IPK_VERSION should be incremented when the ipk changes.
-#
-LAME_IPK_VERSION=1
 
 #
 # LAME_CONFFILES should be a list of user-editable files
