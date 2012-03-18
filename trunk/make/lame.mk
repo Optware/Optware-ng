@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LAME_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lame
-LAME_VERSION=3.98.4
+LAME_VERSION=3.99.5
 LAME_SOURCE=lame-$(LAME_VERSION).tar.gz
 LAME_DIR=lame-$(LAME_VERSION)
 LAME_UNZIP=zcat
@@ -181,6 +181,7 @@ $(LAME_IPK): $(LAME_BUILD_DIR)/.built
 	rm -f $(LAME_IPK_DIR)/opt/lib/libmp3lame.a
 	$(MAKE) $(LAME_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LAME_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LAME_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
