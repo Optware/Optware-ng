@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-GREP_VERSION=2.10
-GREP_IPK_VERSION=2
+GREP_VERSION=2.11
+GREP_IPK_VERSION=1
 GREP_DEPENDS=pcre
 
 GREP=grep-$(GREP_VERSION)
