@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HAPROXY_SITE=http://haproxy.1wt.eu/download/1.4/src
-HAPROXY_VERSION ?= 1.4.17
+HAPROXY_VERSION ?= 1.4.20
 HAPROXY_SOURCE=haproxy-$(HAPROXY_VERSION).tar.gz
 HAPROXY_DIR=haproxy-$(HAPROXY_VERSION)
 HAPROXY_UNZIP=zcat
@@ -36,7 +36,7 @@ HAPROXY_CONFLICTS=
 #
 # HAPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-HAPROXY_IPK_VERSION ?= 2
+HAPROXY_IPK_VERSION ?= 1
 
 #
 # HAPROXY_CONFFILES should be a list of user-editable files
