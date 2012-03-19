@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-REDIS_SITE=http://cloud.github.com/downloads/andymccurdy/redis-py
-PY-REDIS_VERSION=2.4.9
+PY-REDIS_VERSION=2.4.11
 PY-REDIS_SOURCE_UPSTREAM=redis-$(PY-REDIS_VERSION).tar.gz
 PY-REDIS_SOURCE=py-redis-$(PY-REDIS_VERSION).tar.gz
 PY-REDIS_DIR=redis-$(PY-REDIS_VERSION)
@@ -38,7 +38,7 @@ PY-REDIS_CONFLICTS=
 #
 # PY-REDIS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-REDIS_IPK_VERSION=2
+PY-REDIS_IPK_VERSION=1
 
 #
 # PY-REDIS_CONFFILES should be a list of user-editable files
