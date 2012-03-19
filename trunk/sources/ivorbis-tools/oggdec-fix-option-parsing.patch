@@ -1,0 +1,15 @@
+diff -brU5 ivorbis-tools/oggdec/oggdec.c ivorbis-tools.new/oggdec/oggdec.c
+--- ivorbis-tools/oggdec/oggdec.c	2012-03-19 02:22:57.000000000 +0100
++++ ivorbis-tools.new/oggdec/oggdec.c	2012-03-19 01:58:17.000000000 +0100
+@@ -134,10 +134,11 @@
+             case 'e':
+                 endian = atoi(optarg);
+                 break;
+             case 'o':
+                 outfilename = strdup(optarg);
++                break;
+             case 'R':
+                 raw = atoi(optarg);
+                 break;
+             default:
+                 fprintf(stderr, "Internal error: Unrecognised argument\n");
