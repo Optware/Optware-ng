@@ -23,7 +23,8 @@
 #
 PY-REDIS_SITE=http://cloud.github.com/downloads/andymccurdy/redis-py
 PY-REDIS_VERSION=2.4.9
-PY-REDIS_SOURCE=redis-$(PY-REDIS_VERSION).tar.gz
+PY-REDIS_SOURCE_UPSTREAM=redis-$(PY-REDIS_VERSION).tar.gz
+PY-REDIS_SOURCE=py-redis-$(PY-REDIS_VERSION).tar.gz
 PY-REDIS_DIR=redis-$(PY-REDIS_VERSION)
 PY-REDIS_UNZIP=zcat
 PY-REDIS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -37,7 +38,7 @@ PY-REDIS_CONFLICTS=
 #
 # PY-REDIS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-REDIS_IPK_VERSION=1
+PY-REDIS_IPK_VERSION=2
 
 #
 # PY-REDIS_CONFFILES should be a list of user-editable files
@@ -79,8 +80,9 @@ PY27-REDIS_IPK=$(BUILD_DIR)/py27-redis_$(PY-REDIS_VERSION)-$(PY-REDIS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-REDIS_SOURCE):
-	$(WGET) -P $(@D) $(PY-REDIS_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+	($(WGET) -P $(@D) $(PY-REDIS_SITE)/$(PY-REDIS_SOURCE_UPSTREAM) || \
+	 $(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(PY-REDIS_SOURCE_UPSTREAM)) \
+	&& mv $(@D)/$(PY-REDIS_SOURCE_UPSTREAM) $@
 
 #
 # The source code depends on it existing within the download directory.
