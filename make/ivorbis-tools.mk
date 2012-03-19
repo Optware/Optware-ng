@@ -36,7 +36,7 @@ IVORBIS_TOOLS_CONFLICTS=vorbis-tools
 #
 # IVORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-IVORBIS_TOOLS_IPK_VERSION=7
+IVORBIS_TOOLS_IPK_VERSION=8
 
 #
 # IVORBIS-TOOLS_CONFFILES should be a list of user-editable files
@@ -47,7 +47,8 @@ IVORBIS_TOOLS_IPK_VERSION=7
 # which they should be applied to the source code.
 #
 IVORBIS_TOOLS_PATCHES=$(IVORBIS_TOOLS_SOURCE_DIR)/oggdec-tremor.patch \
-			$(IVORBIS_TOOLS_SOURCE_DIR)/oggdec-endian.patch
+			$(IVORBIS_TOOLS_SOURCE_DIR)/oggdec-restore-options.patch \
+			$(IVORBIS_TOOLS_SOURCE_DIR)/oggdec-fix-option-parsing.patch
 
 #
 # If the compilation of the package requires additional
