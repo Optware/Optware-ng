@@ -4,6 +4,7 @@ PERL_BUILD_EXTRA_ENV := CROSS_COMPILE=ppc_4xxFP
 SPECIFIC_PACKAGES = \
         ipkg-opt \
         $(PACKAGES_REQUIRE_LINUX26) \
+	redis \
         $(PERL_PACKAGES) \
 	binutils gcc libc-dev \
 

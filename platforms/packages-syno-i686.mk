@@ -4,6 +4,7 @@ SPECIFIC_PACKAGES = \
 	optware-bootstrap kernel-modules \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	py-ctypes \
+	redis \
 	$(PERL_PACKAGES) \
 	binutils gcc libc-dev \
 
