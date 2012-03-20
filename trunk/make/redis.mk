@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 REDIS_SITE=http://redis.googlecode.com/files
-REDIS_VERSION ?= 2.2.12
+REDIS_VERSION ?= 2.4.9
 REDIS_SOURCE=redis-$(REDIS_VERSION).tar.gz
 REDIS_DIR=redis-$(REDIS_VERSION)
 REDIS_UNZIP=zcat
@@ -115,9 +115,6 @@ $(REDIS_BUILD_DIR)/.configured: $(DL_DIR)/$(REDIS_SOURCE) $(REDIS_PATCHES) make/
 	if test "$(BUILD_DIR)/$(REDIS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(REDIS_DIR) $(@D) ; \
 	fi
-	sed -i -e '/CFLAGS *?=/s|$$| $$(CPPFLAGS)|' \
-	       -e '/CCLINK *?=/s|$$| $$(LDFLAGS)|' \
-		$(@D)/Makefile
 #	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(REDIS_CPPFLAGS)" \
@@ -141,6 +138,8 @@ redis-unpack: $(REDIS_BUILD_DIR)/.configured
 $(REDIS_BUILD_DIR)/.built: $(REDIS_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
+		FORCE_LIBC_MALLOC=yes \
+		PREFIX=/opt \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(REDIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(REDIS_LDFLAGS)" \
@@ -200,6 +199,8 @@ ifeq (2.0.4, $(REDIS_VERSION))
 	install -m 755 $(<D)/redis-benchmark $(<D)/redis-cli $(<D)/redis-server $(REDIS_IPK_DIR)/opt/bin/
 else
 	$(MAKE) -C $(REDIS_BUILD_DIR) PREFIX=$(REDIS_IPK_DIR)/opt install \
+		FORCE_LIBC_MALLOC=yes \
+		PREFIX=/opt \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(REDIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(REDIS_LDFLAGS)" \
