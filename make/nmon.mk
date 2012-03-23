@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NMON_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nmon
-NMON_VERSION=14f
+NMON_VERSION=14g
 NMON_SOURCE=lmon$(NMON_VERSION).c
 NMON_DIR=nmon-$(NMON_VERSION)
 NMON_UNZIP=
