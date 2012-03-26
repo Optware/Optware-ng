@@ -36,7 +36,7 @@ ERL-YAWS_CONFLICTS=
 #
 # ERL-YAWS_IPK_VERSION should be incremented when the ipk changes.
 #
-ERL-YAWS_IPK_VERSION=1
+ERL-YAWS_IPK_VERSION=2
 
 #
 # ERL-YAWS_CONFFILES should be a list of user-editable files
