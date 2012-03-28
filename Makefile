@@ -56,6 +56,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	udpxy \
 	py-btpd-webui \
 	cryptsetup \
+	owwlog \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
