@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GAWK_SITE=http://ftp.gnu.org/gnu/gawk
-GAWK_VERSION=4.0.0
+GAWK_VERSION=4.0.1
 GAWK_SOURCE=gawk-$(GAWK_VERSION).tar.gz
 GAWK_DIR=gawk-$(GAWK_VERSION)
 GAWK_UNZIP=zcat
