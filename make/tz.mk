@@ -20,9 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TZ_SITE=ftp://elsie.nci.nih.gov/pub
-TZ_CODE_VERSION=2011g
-TZ_DATA_VERSION=2011g
+TZ_SITE=ftp://ftp.iana.org/tz/releases
+TZ_CODE_VERSION=2012b
+TZ_DATA_VERSION=2012c
 TZ_VERSION=$(TZ_DATA_VERSION)
 TZ_CODE_SOURCE=tzcode$(TZ_CODE_VERSION).tar.gz
 TZ_DATA_SOURCE=tzdata$(TZ_DATA_VERSION).tar.gz
