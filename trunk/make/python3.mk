@@ -21,11 +21,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON3_VERSION=3.2.2
+PYTHON3_VERSION=3.2.3
 PYTHON3_VERSION_MAJOR=3.2
 PYTHON3_SITE=http://www.python.org/ftp/python/$(PYTHON3_VERSION)
-PYTHON3_SOURCE=Python-$(PYTHON3_VERSION).tgz
 PYTHON3_DIR=Python-$(PYTHON3_VERSION)
+PYTHON3_SOURCE=$(PYTHON3_DIR).tgz
 PYTHON3_UNZIP=zcat
 
 PYTHON3_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
