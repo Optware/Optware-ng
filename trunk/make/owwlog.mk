@@ -27,9 +27,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OWWLOG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/oww
-#OWWLOG_VERSION=0.3.12
 #OWWLOG_SITE=http://localhost/~sjm/owwlog
-OWWLOG_VERSION=0.3.15
+OWWLOG_VERSION=0.3.17
 OWWLOG_SOURCE=owwlog-$(OWWLOG_VERSION).tar.gz
 OWWLOG_DIR=owwlog-$(OWWLOG_VERSION)
 OWWLOG_UNZIP=zcat
@@ -37,7 +36,7 @@ OWWLOG_MAINTAINER=Simon Melhuish - simon@melhuish.info
 OWWLOG_DESCRIPTION=Owwlog logs data from Owwl protocol servers, such as oww.
 OWWLOG_SECTION=extras
 OWWLOG_PRIORITY=optional
-OWWLOG_DEPENDS=gsl, popt
+OWWLOG_DEPENDS=popt
 OWWLOG_SUGGESTS=
 OWWLOG_CONFLICTS=
 
@@ -112,7 +111,7 @@ owwlog-source: $(DL_DIR)/$(OWWLOG_SOURCE) $(OWWLOG_PATCHES)
 # shown below to make various patches to it.
 #
 $(OWWLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(OWWLOG_SOURCE) $(OWWLOG_PATCHES) make/owwlog.mk
-	$(MAKE) gsl-stage popt-stage
+	$(MAKE) popt-stage
 	rm -rf $(BUILD_DIR)/$(OWWLOG_DIR) $(OWWLOG_BUILD_DIR)
 	$(OWWLOG_UNZIP) $(DL_DIR)/$(OWWLOG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OWWLOG_PATCHES)" ; \
@@ -126,7 +125,6 @@ $(OWWLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(OWWLOG_SOURCE) $(OWWLOG_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OWWLOG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OWWLOG_LDFLAGS)" \
-		GSL_CONFIG="$(STAGING_DIR)/opt/bin/gsl-config" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
