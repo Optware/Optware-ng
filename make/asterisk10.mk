@@ -24,7 +24,7 @@ ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
 ASTERISK10_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK10_BASE_VERSION=10.2.0
+ASTERISK10_BASE_VERSION=10.3.0
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -79,7 +79,7 @@ ASTERISK10_CONFLICTS=asterisk12,asterisk14,asterisk16,asterisk-sounds,asterisk-c
 #
 # ASTERISK10_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK10_IPK_VERSION=2
+ASTERISK10_IPK_VERSION=1
 
 #
 # ASTERISK10_CONFFILES should be a list of user-editable files
@@ -148,6 +148,7 @@ ASTERISK10_CONFFILES=\
 /opt/etc/asterisk/dnsmgr.conf \
 /opt/etc/asterisk/dbsep.conf \
 /opt/etc/asterisk/console.conf \
+/opt/etc/asterisk/confbridge.conf \
 /opt/etc/asterisk/codecs.conf \
 /opt/etc/asterisk/cli_permissions.conf \
 /opt/etc/asterisk/cli_aliases.conf \
