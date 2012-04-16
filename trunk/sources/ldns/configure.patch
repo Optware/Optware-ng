@@ -1,0 +1,19 @@
+*** Makefile.in.orig	2012-03-29 15:57:03.033366326 -0400
+--- Makefile.in	2012-03-29 15:57:41.048888405 -0400
+***************
+*** 187,193 ****
+  	$(LIBTOOL) --mode clean rm -f $(EXAMPLE_LOBJS)
+  
+  linktest: $(srcdir)/linktest.c libldns.la
+! 	$(LIBTOOL) --mode=link $(CC) $(srcdir)/linktest.c $(CPPFLAGS) $(LIBSSL_CPPFLAGS) $(CFLAGS) -lldns $(LIBS) -o linktest
+  
+  lib: libldns.la
+  
+--- 187,193 ----
+  	$(LIBTOOL) --mode clean rm -f $(EXAMPLE_LOBJS)
+  
+  linktest: $(srcdir)/linktest.c libldns.la
+! 	$(LIBTOOL) --mode=link $(CC) $(srcdir)/linktest.c $(CPPFLAGS) $(LIBSSL_CPPFLAGS) $(CFLAGS) $(LDFLAGS) -lldns $(LIBS) -o linktest
+  
+  lib: libldns.la
+  
