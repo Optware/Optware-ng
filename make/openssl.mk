@@ -4,17 +4,25 @@
 
 OPENSSL_SITE=http://www.openssl.org/source
 
-ifneq ($(OPTWARE_TARGET), $(filter \
+ifeq ($(OPENSSL_VERSION), 1.0.1)
+export OPENSSL_VERSION := 1.0.1
+export OPENSSL_LIB_VERSION := 1.0.0
+export OPENSSL_IPK_VERSION := 101
+else ifeq ($(OPENSSL_VERSION), 1.0.0)
+export OPENSSL_VERSION := 1.0.0h
+export OPENSSL_LIB_VERSION := 1.0.0
+export OPENSSL_IPK_VERSION := 100
+else ifneq ($(OPTWARE_TARGET), $(filter \
 	cs04q3armel cs05q3armel cs06q3armel ddwrt dns323 ds101 ds101g fsg3 fsg3v4 gumstix1151 mss \
 	nslu2 oleg openwrt-brcm24 openwrt-ixp4xx slugosbe slugosle syno-x07 ts101 ts72xx vt4 wl500g, \
 	$(OPTWARE_TARGET)))
-OPENSSL_VERSION=0.9.8p
-OPENSSL_LIB_VERSION=0.9.8
-OPENSSL_IPK_VERSION=1
+export OPENSSL_VERSION := 0.9.8p
+export OPENSSL_LIB_VERSION := 0.9.8
+export OPENSSL_IPK_VERSION := 1
 else
-OPENSSL_VERSION=0.9.7m
-OPENSSL_LIB_VERSION=0.9.7
-OPENSSL_IPK_VERSION=5
+export OPENSSL_VERSION := 0.9.7m
+export OPENSSL_LIB_VERSION := 0.9.7
+export OPENSSL_IPK_VERSION := 5
 endif
 
 OPENSSL_SOURCE=openssl-$(OPENSSL_VERSION).tar.gz
