@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CRYPTSETUP_SITE=http://cryptsetup.googlecode.com/files
-CRYPTSETUP_VERSION=1.4.1
+CRYPTSETUP_VERSION=1.4.2
 CRYPTSETUP_SOURCE=cryptsetup-$(CRYPTSETUP_VERSION).tar.bz2
 CRYPTSETUP_DIR=cryptsetup-$(CRYPTSETUP_VERSION)
 CRYPTSETUP_UNZIP=bzcat
