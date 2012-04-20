@@ -5,22 +5,24 @@
 OPENSSL_SITE=http://www.openssl.org/source
 
 ifeq ($(OPENSSL_VERSION), 1.0.1)
-export OPENSSL_VERSION := 1.0.1
+override OPENSSL_VERSION := 1.0.1a
+export OPENSSL_VERSION
 export OPENSSL_LIB_VERSION := 1.0.0
-export OPENSSL_IPK_VERSION := 101
+export OPENSSL_IPK_VERSION := 2
 else ifeq ($(OPENSSL_VERSION), 1.0.0)
-export OPENSSL_VERSION := 1.0.0h
+override OPENSSL_VERSION = 1.0.0i
+export OPENSSL_VERSION
 export OPENSSL_LIB_VERSION := 1.0.0
-export OPENSSL_IPK_VERSION := 100
+export OPENSSL_IPK_VERSION := 2
 else ifneq ($(OPTWARE_TARGET), $(filter \
 	cs04q3armel cs05q3armel cs06q3armel ddwrt dns323 ds101 ds101g fsg3 fsg3v4 gumstix1151 mss \
 	nslu2 oleg openwrt-brcm24 openwrt-ixp4xx slugosbe slugosle syno-x07 ts101 ts72xx vt4 wl500g, \
 	$(OPTWARE_TARGET)))
-export OPENSSL_VERSION := 0.9.8u
+export OPENSSL_VERSION = 0.9.8v
 export OPENSSL_LIB_VERSION := 0.9.8
 export OPENSSL_IPK_VERSION := 1
 else
-export OPENSSL_VERSION := 0.9.7m
+export OPENSSL_VERSION = 0.9.7m
 export OPENSSL_LIB_VERSION := 0.9.7
 export OPENSSL_IPK_VERSION := 5
 endif
@@ -45,9 +47,19 @@ OPENSSL_IPK=$(BUILD_DIR)/openssl_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TAR
 OPENSSL_DEV_IPK_DIR=$(BUILD_DIR)/openssl-dev-$(OPENSSL_VERSION)-ipk
 OPENSSL_DEV_IPK=$(BUILD_DIR)/openssl-dev_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+ifneq (,$(findstring 1.0.1, $(OPENSSL_VERSION)))
+ifeq (1.0.1a,$(OPENSSL_VERSION))
+OPENSSL_PATCHES=$(OPENSSL_SOURCE_DIR)/openssl-1.0.1a.patch
+endif
+
+else ifneq (,$(findstring 1.0.0, $(OPENSSL_VERSION)) )
+OPENSSL_PATCHES=
+
+else
 OPENSSL_PATCHES=$(strip \
 $(if $(filter 0.9.7, $(OPENSSL_LIB_VERSION)), $(OPENSSL_SOURCE_DIR)/Configure.patch, \
 $(OPENSSL_SOURCE_DIR)/0.9.8-configure-targets.patch))
+endif
 
 ifeq ($(OPTWARE_TARGET), dns323)
 OPENSSL_PATCHES+=$(OPENSSL_SOURCE_DIR)/Configure-O3-to-O2.patch
