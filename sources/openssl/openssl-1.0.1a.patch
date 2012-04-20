@@ -1,0 +1,19 @@
+--- openssl/crypto/evp/e_rc4_hmac_md5.c.orig	2012-04-18 13:51:33.000000000 -0400
++++ openssl/crypto/evp/e_rc4_hmac_md5.c	2012-04-20 09:10:22.727238671 -0400
+@@ -289,8 +289,16 @@
+ 
+ const EVP_CIPHER *EVP_rc4_hmac_md5(void)
+ 	{
++#if     defined(__i386)   || defined(__i386__)   || defined(_M_IX86) || \
++        defined(__INTEL__) || \
++        defined(__x86_64) || defined(__x86_64__) || defined(_M_AMD64) || defined(_M_X64)
+ 	extern unsigned int OPENSSL_ia32cap_P[];
+ 	/* RC4_CHAR flag ------------vvvvv */
+ 	return(OPENSSL_ia32cap_P[0]&(1<<20) ? NULL : &r4_hmac_md5_cipher);
++#else
++        return(&r4_hmac_md5_cipher);
++#endif
+ 	}
++
++
+ #endif
