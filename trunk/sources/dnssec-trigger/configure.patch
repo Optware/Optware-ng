@@ -1,0 +1,14 @@
+*** Makefile.in	2011-11-02 11:00:36.000000000 -0400
+--- Makefile.in	2012-04-16 12:39:57.565992980 -0400
+***************
+*** 182,187 ****
+--- 182,190 ----
+  
+  cocoa-gui:	osx/RiggerStatusItem osx/osx-riggerapp nl.nlnetlabs.dnssec-trigger-panel.plist
+  
++ bla-gui: ;
++ bla-gui-install: ;
++ 
+  none-hook:
+  	@echo "no dhcp hooks available, need trigger script"
+  
