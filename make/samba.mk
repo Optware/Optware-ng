@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA_VERSION ?= 3.2.15
-SAMBA_IPK_VERSION ?= 4
+SAMBA_IPK_VERSION ?= 5
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
@@ -41,9 +41,9 @@ SAMBA3-SWAT_DEPENDS=samba, xinetd
 SAMBA_SUGGESTS=cups
 SAMBA3-DEV_SUGGESTS=
 SAMBA3-SWAT_SUGGESTS=
-SAMBA_CONFLICTS=samba2, samba34, samba35
-SAMBA3-DEV_CONFLICTS=samba2, samba34-dev, samba35-dev
-SAMBA3-SWAT_CONFLICTS=samba2, samba34-swat, samba35-swat
+SAMBA_CONFLICTS=samba2, samba34, samba35, samba36
+SAMBA3-DEV_CONFLICTS=samba2, samba34-dev, samba35-dev, samba36-dev
+SAMBA3-SWAT_CONFLICTS=samba2, samba34-swat, samba35-swat, samba36-swat
 SAMBA_ADDITIONAL_CODEPAGES=CP866
 
 #
@@ -64,6 +64,8 @@ endif
 SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/samba-3.3.12-CVE-2010-2063.patch
 SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/0001-s3-smbclient-Fix-bug-6606-reported-as-6744-in-3.2.patch 
 SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/0002-Fix-bug-6776-Running-overlapping-Byte-Lock-test-wi.patch   
+SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/samba-3.2-CVE-2012-0870.patch
+SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/samba-3.2.15-CVE-2012-1182.patch
 
 #
 # If the compilation of the package requires additional
