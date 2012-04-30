@@ -20,11 +20,11 @@ else ifneq ($(OPTWARE_TARGET), $(filter \
 	$(OPTWARE_TARGET)))
 export OPENSSL_VERSION = 0.9.8v
 export OPENSSL_LIB_VERSION := 0.9.8
-export OPENSSL_IPK_VERSION := 1
+export OPENSSL_IPK_VERSION := 2
 else
 export OPENSSL_VERSION = 0.9.7m
 export OPENSSL_LIB_VERSION := 0.9.7
-export OPENSSL_IPK_VERSION := 5
+export OPENSSL_IPK_VERSION := 6
 endif
 
 OPENSSL_SOURCE=openssl-$(OPENSSL_VERSION).tar.gz
@@ -52,7 +52,7 @@ ifeq (1.0.1a,$(OPENSSL_VERSION))
 OPENSSL_PATCHES=$(OPENSSL_SOURCE_DIR)/openssl-1.0.1a.patch
 endif
 
-else ifneq (,$(findstring 1.0.0, $(OPENSSL_VERSION)) )
+else ifeq (,$(findstring 1.0.0, $(OPENSSL_VERSION)) )
 OPENSSL_PATCHES=
 
 else
