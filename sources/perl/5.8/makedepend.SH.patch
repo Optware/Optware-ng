@@ -1,0 +1,12 @@
+--- makedepend.SH.orig    2012-05-02 21:34:17.932097674 +0200
++++ makedepend.SH       2012-05-02 20:52:22.771354032 +0200
+@@ -128,7 +128,7 @@
+     *.y) filebase=`basename $file .y` ;;
+     esac
+     case "$file" in
+-    */*) finc="-I`echo $file | sed 's#/[^/]*$##`" ;;
++    */*) finc="-I`echo $file | sed 's#/[^/]*$##'`" ;;
+     *)   finc= ;;
+     esac
+     $echo "Finding dependencies for $filebase$_o."
+
