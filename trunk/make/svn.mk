@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SVN_SITE=http://www.apache.org/dist/subversion/
-SVN_VERSION=1.7.4
+SVN_SITE=http://subversion.tigris.org/downloads
+SVN_VERSION=1.6.17
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
