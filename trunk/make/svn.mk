@@ -141,7 +141,7 @@ svn-source: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
+$(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES) make/svn.mk
 	$(MAKE) apr-stage apr-util-stage apache-stage neon-stage
 	$(MAKE) cyrus-sasl-stage
 	$(MAKE) expat-stage libxml2-stage
