@@ -20,9 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ERL_EJABBERD_VERSION=2.1.8
+ERL_EJABBERD_VERSION=2.1.11
 ERL_EJABBERD_SITE=http://www.process-one.net/downloads/ejabberd/$(ERL_EJABBERD_VERSION)
-ERL_EJABBERD_SOURCE=ejabberd-$(ERL_EJABBERD_VERSION).tar.gz
+ERL_EJABBERD_SOURCE=ejabberd-$(ERL_EJABBERD_VERSION).tgz
 ERL_EJABBERD_DIR=ejabberd-$(ERL_EJABBERD_VERSION)
 ERL_EJABBERD_UNZIP=zcat
 ERL_EJABBERD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -220,6 +220,7 @@ $(ERL_EJABBERD_IPK): $(ERL_EJABBERD_BUILD_DIR)/.built
 #	install -m 755 $(ERL_EJABBERD_SOURCE_DIR)/prerm $(ERL_EJABBERD_IPK_DIR)/CONTROL/prerm
 	echo $(ERL_EJABBERD_CONFFILES) | sed -e 's/ /\n/g' > $(ERL_EJABBERD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERL_EJABBERD_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ERL_EJABBERD_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
