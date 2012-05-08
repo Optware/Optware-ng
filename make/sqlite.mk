@@ -21,9 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.7.3
-SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
-SQLITE_DIR=sqlite-$(SQLITE_VERSION)
+SQLITE_VERSION=3.7.11
+SQLITE_DIR=sqlite-autoconf-3071100
+SQLITE_SOURCE=$(SQLITE_DIR).tar.gz
 SQLITE_UNZIP=zcat
 SQLITE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQLITE_DESCRIPTION=SQLite is a small C library that implements a self-contained, embeddable, zero-configuration SQL database engine.
@@ -196,6 +196,7 @@ $(SQLITE_IPK): $(SQLITE_BUILD_DIR)/.built
 	rm -f $(SQLITE_IPK_DIR)/opt/lib/libsqlite3.a
 	$(MAKE) $(SQLITE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQLITE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SQLITE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
