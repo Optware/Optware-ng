@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpop
-MPOP_VERSION=1.0.25
+MPOP_VERSION=1.0.27
 MPOP_SOURCE=mpop-$(MPOP_VERSION).tar.bz2
 MPOP_DIR=mpop-$(MPOP_VERSION)
 MPOP_UNZIP=bzcat
