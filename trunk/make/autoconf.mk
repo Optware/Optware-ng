@@ -5,10 +5,10 @@
 ###########################################################
 
 AUTOCONF_SITE=http://ftp.gnu.org/gnu/autoconf
-AUTOCONF_VERSION=2.68
-AUTOCONF_SOURCE=autoconf-$(AUTOCONF_VERSION).tar.bz2
+AUTOCONF_VERSION=2.69
+AUTOCONF_SOURCE=autoconf-$(AUTOCONF_VERSION).tar.xz
 AUTOCONF_DIR=autoconf-$(AUTOCONF_VERSION)
-AUTOCONF_UNZIP=bzcat
+AUTOCONF_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
 AUTOCONF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AUTOCONF_DESCRIPTION=Creating scripts to configure source code packages using templates
 AUTOCONF_SECTION=util
@@ -35,6 +35,7 @@ autoconf-source: $(DL_DIR)/$(AUTOCONF_SOURCE) $(AUTOCONF_PATCHES)
 
 
 $(AUTOCONF_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOCONF_SOURCE) make/autoconf.mk
+	$(MAKE) xz-utils-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(AUTOCONF_DIR) $(@D)
 	$(AUTOCONF_UNZIP) $(DL_DIR)/$(AUTOCONF_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(AUTOCONF_DIR) $(@D)
@@ -57,7 +58,8 @@ $(AUTOCONF_HOST_BUILD_DIR)/.staged: $(AUTOCONF_HOST_BUILD_DIR)/.built
 autoconf-host-stage: $(AUTOCONF_HOST_BUILD_DIR)/.staged
 
 
-$(AUTOCONF_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOCONF_SOURCE) $(AUTOCONF_PATCHES)
+$(AUTOCONF_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOCONF_SOURCE) $(AUTOCONF_PATCHES) make/autoconf.mk
+	$(MAKE) xz-utils-host-stage
 	rm -rf $(BUILD_DIR)/$(AUTOCONF_DIR) $(@D)
 	$(AUTOCONF_UNZIP) $(DL_DIR)/$(AUTOCONF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(AUTOCONF_DIR) $(@D)
@@ -119,6 +121,7 @@ $(AUTOCONF_IPK): $(AUTOCONF_BUILD_DIR)/.built
 	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOCONF_IPK_DIR)/opt/bin/*
 	$(MAKE) $(AUTOCONF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUTOCONF_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(AUTOCONF_IPK_DIR)
 
 autoconf-ipk: $(AUTOCONF_IPK)
 
