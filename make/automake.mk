@@ -5,11 +5,11 @@
 ###########################################################
 
 AUTOMAKE_SITE=http://ftp.gnu.org/gnu/automake
-AUTOMAKE_VERSION=1.11.1
-AUTOMAKE_VER=1.11
-AUTOMAKE_SOURCE=automake-$(AUTOMAKE_VERSION).tar.bz2
+AUTOMAKE_VERSION=1.12
+AUTOMAKE_VER=1.12
+AUTOMAKE_SOURCE=automake-$(AUTOMAKE_VERSION).tar.xz
 AUTOMAKE_DIR=automake-$(AUTOMAKE_VERSION)
-AUTOMAKE_UNZIP=bzcat
+AUTOMAKE_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
 AUTOMAKE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AUTOMAKE_DESCRIPTION=Creates GNU standards-compliant Makefiles from template files
 AUTOMAKE_SECTION=util
@@ -17,7 +17,7 @@ AUTOMAKE_PRIORITY=optional
 AUTOMAKE_DEPENDS=autoconf
 AUTOMAKE_CONFLICTS=
 
-AUTOMAKE_IPK_VERSION=2
+AUTOMAKE_IPK_VERSION=1
 
 AUTOMAKE_BUILD_DIR=$(BUILD_DIR)/automake
 AUTOMAKE_SOURCE_DIR=$(SOURCE_DIR)/automake
@@ -35,7 +35,7 @@ $(DL_DIR)/$(AUTOMAKE_SOURCE):
 automake-source: $(DL_DIR)/$(AUTOMAKE_SOURCE) $(AUTOMAKE_PATCHES)
 
 $(AUTOMAKE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOMAKE_SOURCE) make/automake.mk
-	$(MAKE) autoconf-host-stage
+	$(MAKE) xz-utils-host-stage autoconf-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(AUTOMAKE_DIR) $(@D)
 	$(AUTOMAKE_UNZIP) $(DL_DIR)/$(AUTOMAKE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(AUTOMAKE_DIR) $(@D)
@@ -59,7 +59,7 @@ $(AUTOMAKE_HOST_BUILD_DIR)/.staged: $(AUTOMAKE_HOST_BUILD_DIR)/.built
 automake-host-stage: $(AUTOMAKE_HOST_BUILD_DIR)/.staged
 
 $(AUTOMAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOMAKE_SOURCE) $(AUTOMAKE_PATCHES) make/automake.mk
-	$(MAKE) autoconf-host-stage
+	$(MAKE) xz-utils-host-stage autoconf-host-stage
 	rm -rf $(BUILD_DIR)/$(AUTOMAKE_DIR) $(@D)
 	$(AUTOMAKE_UNZIP) $(DL_DIR)/$(AUTOMAKE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(AUTOMAKE_DIR) $(@D)
