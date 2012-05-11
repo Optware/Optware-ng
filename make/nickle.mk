@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NICKLE_SITE=http://nickle.org/release
-NICKLE_VERSION=2.69
+NICKLE_VERSION=2.75
 NICKLE_SOURCE=nickle-$(NICKLE_VERSION).tar.gz
 NICKLE_DIR=nickle-$(NICKLE_VERSION)
 NICKLE_UNZIP=zcat
@@ -199,6 +199,7 @@ $(NICKLE_IPK): $(NICKLE_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NICKLE_IPK_DIR)/CONTROL/prerm
 	echo $(NICKLE_CONFFILES) | sed -e 's/ /\n/g' > $(NICKLE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NICKLE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(NICKLE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
