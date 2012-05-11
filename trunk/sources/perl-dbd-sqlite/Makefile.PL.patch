@@ -1,0 +1,47 @@
+--- Makefile.PL.orig	2011-11-29 00:05:51.000000000 +0000
++++ Makefile.PL	2012-05-10 21:04:38.853419566 +0000
+@@ -48,16 +48,7 @@
+ 	}
+ };
+ 
+-# Because DBI generates a postamble at configure-time, we need
+-# the required version of DBI very early.
+ my $DBI_required = 1.57;
+-eval {
+-	require DBI;
+-};
+-if ( $@ or DBI->VERSION < $DBI_required ) {
+-	print "DBI 1.57 is required to configure this module; please install it or upgrade your CPAN/CPANPLUS shell.\n";
+-	exit(0);
+-}
+ 
+ # See if we have a C compiler
+ # The following code is adapted from Module::Install::Can
+@@ -346,27 +337,6 @@
+ 
+ use Config;
+ 
+-sub postamble {
+-	require DBI;
+-	require DBI::DBD;
+-	my $postamble = eval {
+-		DBI::DBD::dbd_postamble(@_)
+-	};
+-    if (-e 'sqlite3.c' && -e 'sqlite3.h') {
+-		my $S = $^O eq 'MSWin32' ? '\\' : '/';  # only Win32 (not cygwin)
+-		my $share = "\$(INST_LIB)${S}auto${S}share${S}dist${S}\$(DISTNAME)";
+-		my $perm_dir = $ExtUtils::MakeMaker::VERSION >= 6.52 ? '$(PERM_DIR)' : '755';
+-		$postamble .= <<"SHARE";
+-config ::
+-\t\$(NOECHO) \$(MKPATH) "$share"
+-\t\$(NOECHO) \$(CHMOD) $perm_dir "$share"
+-\t\$(NOECHO) \$(CP) "sqlite3.c" "$share${S}sqlite3.c"
+-\t\$(NOECHO) \$(CP) "sqlite3.h" "$share${S}sqlite3.h"
+-SHARE
+-	}
+-	return $postamble;
+-}
+-
+ sub libscan {
+ 	my ($self, $path) = @_;
+ 	return if $path =~ /\.pl$/;
