@@ -140,6 +140,7 @@ endif
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
+	sed -i -e 's/ln -s /ln -sf /g' $(@D)/Makefile
 	touch $@
 
 pcre-unpack: $(PCRE_BUILD_DIR)/.configured
