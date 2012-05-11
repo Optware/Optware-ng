@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DBI_SITE=http://search.cpan.org/CPAN/authors/id/T/TI/TIMB
-PERL-DBI_VERSION=1.607
+PERL-DBI_VERSION=1.620
 PERL-DBI_SOURCE=DBI-$(PERL-DBI_VERSION).tar.gz
 PERL-DBI_DIR=DBI-$(PERL-DBI_VERSION)
 PERL-DBI_UNZIP=zcat
@@ -32,7 +32,7 @@ $(DL_DIR)/$(PERL-DBI_SOURCE):
 
 perl-dbi-source: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCHES)
 
-$(PERL-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCHES)
+$(PERL-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCHES) make/perl-dbi.mk
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DBI_DIR) $(@D)
 	$(PERL-DBI_UNZIP) $(DL_DIR)/$(PERL-DBI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -97,6 +97,7 @@ $(PERL-DBI_IPK): $(PERL-DBI_BUILD_DIR)/.built
 	$(MAKE) $(PERL-DBI_IPK_DIR)/CONTROL/control
 	echo $(PERL-DBI_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-DBI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-DBI_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PERL-DBI_IPK_DIR)
 
 perl-dbi-ipk: $(PERL-DBI_IPK)
 
@@ -107,4 +108,4 @@ perl-dbi-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL-DBI_DIR) $(PERL-DBI_BUILD_DIR) $(PERL-DBI_IPK_DIR) $(PERL-DBI_IPK)
 
 perl-dbi-check: $(PERL-DBI_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PERL-DBI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
