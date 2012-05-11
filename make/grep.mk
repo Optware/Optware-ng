@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-GREP_VERSION=2.11
+GREP_VERSION=2.12
 GREP_IPK_VERSION=1
 GREP_DEPENDS=pcre
 
