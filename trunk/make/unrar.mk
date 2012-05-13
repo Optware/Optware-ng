@@ -5,7 +5,7 @@
 #############################################################
 
 UNRAR_SITE=http://www.rarlab.com/rar
-UNRAR_VERSION:=4.1.3
+UNRAR_VERSION:=4.2.1
 UNRAR_SOURCE=unrarsrc-$(UNRAR_VERSION).tar.gz
 UNRAR_DIR=unrarsrc-$(UNRAR_VERSION)
 UNRAR_UNZIP=gunzip
