@@ -1,0 +1,11 @@
+--- a/build/ltmain.sh.orig	2012-03-01 18:52:15.000000000 +0100
++++ a/build/ltmain.sh	2012-05-14 20:57:26.061786524 +0200
+@@ -8050,7 +8050,7 @@
+ 	    elif test -n "$runpath_var"; then
+ 	      case "$perm_rpath " in
+ 	      *" $libdir "*) ;;
+-	      *) func_apped perm_rpath " $libdir" ;;
++	      *) func_append perm_rpath " $libdir" ;;
+ 	      esac
+ 	    fi
+ 	  done

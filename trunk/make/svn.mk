@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.6.17
+SVN_SITE=http://archive.apache.org/dist/subversion/
+SVN_VERSION=1.7.4
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -68,7 +68,7 @@ SVN_CONFFILES=
 # SVN_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SVN_PATCHES=$(SVN_SOURCE_DIR)/configure.patch
+SVN_PATCHES=$(SVN_SOURCE_DIR)/ltmain.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -156,7 +156,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(@D)
 	$(SVN_UNZIP) $(DL_DIR)/$(SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p1
+	cat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p1
 	mv $(BUILD_DIR)/$(SVN_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
