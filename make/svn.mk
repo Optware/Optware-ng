@@ -155,6 +155,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(@D)
+	rm -rf $(STAGING_INCLUDE_DIR)/subversion-1/ $(STAGING_LIB_DIR)/libsvn*
 	$(SVN_UNZIP) $(DL_DIR)/$(SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p1
 	mv $(BUILD_DIR)/$(SVN_DIR) $(@D)
