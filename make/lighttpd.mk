@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://download.lighttpd.net/lighttpd/releases-1.4.x
-LIGHTTPD_VERSION=1.4.30
+LIGHTTPD_VERSION=1.4.31
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTTPD_VERSION).tar.bz2
 LIGHTTPD_DIR=lighttpd-$(LIGHTTPD_VERSION)
 LIGHTTPD_UNZIP=bzcat
@@ -65,7 +65,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=2
+LIGHTTPD_IPK_VERSION=1
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
