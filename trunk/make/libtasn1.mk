@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBTASN1_SITE=http://ftp.gnu.org/gnu/libtasn1
-LIBTASN1_VERSION=2.9
+LIBTASN1_VERSION=2.13
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
 LIBTASN1_UNZIP=zcat
@@ -199,6 +199,7 @@ $(LIBTASN1_IPK): $(LIBTASN1_BUILD_DIR)/.built
 	#install -m 755 $(LIBTASN1_SOURCE_DIR)/prerm $(LIBTASN1_IPK_DIR)/CONTROL/prerm
 	echo $(LIBTASN1_CONFFILES) | sed -e 's/ /\n/g' > $(LIBTASN1_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTASN1_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBTASN1_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
