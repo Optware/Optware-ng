@@ -24,7 +24,7 @@ ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
 ASTERISK18_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.12.0
+ASTERISK18_BASE_VERSION=1.8.13.0
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -89,7 +89,6 @@ ASTERISK18_CONFFILES=\
 /opt/etc/asterisk/vpb.conf \
 /opt/etc/asterisk/voicemail.conf \
 /opt/etc/asterisk/users.conf \
-/opt/etc/asterisk/usbradio.conf \
 /opt/etc/asterisk/unistim.conf \
 /opt/etc/asterisk/udptl.conf \
 /opt/etc/asterisk/telcordia-1.adsi \
@@ -100,7 +99,6 @@ ASTERISK18_CONFFILES=\
 /opt/etc/asterisk/sip.conf \
 /opt/etc/asterisk/say.conf \
 /opt/etc/asterisk/rtp.conf \
-/opt/etc/asterisk/rpt.conf \
 /opt/etc/asterisk/res_stun_monitor.conf \
 /opt/etc/asterisk/res_snmp.conf \
 /opt/etc/asterisk/res_pktccops.conf \
@@ -342,6 +340,7 @@ endif
 		--with-ogg=$(STAGING_PREFIX) \
 		--with-popt=$(STAGING_PREFIX) \
 		--without-tds \
+		--without-openais \
 		--with-sqlite=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
