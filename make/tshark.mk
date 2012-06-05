@@ -35,14 +35,14 @@ TSHARK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TSHARK_DESCRIPTION=Terminal based wireshark to dump and analyze network traffic
 TSHARK_SECTION=net
 TSHARK_PRIORITY=optional
-TSHARK_DEPENDS=c-ares, glib, libpcap, pcre, zlib
+TSHARK_DEPENDS=c-ares, glib, libpcap, pcre, zlib, gnutls, geoip
 TSHARK_SUGGESTS=
 TSHARK_CONFLICTS=
 
 #
 # TSHARK_IPK_VERSION should be incremented when the ipk changes.
 #
-TSHARK_IPK_VERSION ?= 2
+TSHARK_IPK_VERSION ?= 3
 
 #
 # TSHARK_CONFFILES should be a list of user-editable files
@@ -115,7 +115,7 @@ tshark-source: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES)
 # shown below to make various patches to it.
 #
 $(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES) make/tshark.mk
-	$(MAKE) c-ares-stage glib-stage libpcap-stage pcre-stage zlib-stage
+	$(MAKE) c-ares-stage geoip-stage glib-stage gnutls-stage libpcap-stage pcre-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(TSHARK_DIR) $(@D)
 	$(TSHARK_UNZIP) $(DL_DIR)/$(TSHARK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TSHARK_PATCHES)" ; \
