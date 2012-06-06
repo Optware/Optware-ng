@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WEECHAT_SITE=http://www.weechat.org/files/src
-WEECHAT_VERSION=0.3.7
+WEECHAT_VERSION=0.3.8
 WEECHAT_SOURCE=weechat-$(WEECHAT_VERSION).tar.bz2
 WEECHAT_DIR=weechat-$(WEECHAT_VERSION)
 WEECHAT_UNZIP=bzcat
@@ -33,7 +33,7 @@ WEECHAT_DEPENDS=gnutls, $(NCURSES_FOR_OPTWARE_TARGET)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 WEECHAT_DEPENDS+=, libiconv
 endif
-WEECHAT_SUGGESTS=
+WEECHAT_SUGGESTS=python26,lua
 WEECHAT_CONFLICTS=
 
 #
@@ -110,7 +110,7 @@ weechat-source: $(DL_DIR)/$(WEECHAT_SOURCE) $(WEECHAT_PATCHES)
 # shown below to make various patches to it.
 #
 $(WEECHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(WEECHAT_SOURCE) $(WEECHAT_PATCHES) make/weechat.mk
-	$(MAKE) gnutls-stage
+	$(MAKE) gnutls-stage python26-stage lua-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -126,6 +126,13 @@ endif
 	fi
 #	ACLOCAL="aclocal -I $(STAGING_PREFIX)/share/aclocal"
 	autoreconf -vif $(@D)
+	sed -i	-e '/PYTHON_SYSPREFIX=/s|=.*|=$(STAGING_PREFIX)|' \
+		-e '/PYTHON_VERSION=/s|=.*|=2.6|' \
+		-e '/PYTHON_INCLUDE=/s|=.*|=$(STAGING_INCLUDE_DIR)/python2.6|' \
+		-e '/PYTHON_LIB=/s|`$$PYTHON.*`|$(STAGING_LIB_DIR)/python2.6/config|' \
+		-e '/PYTHON_LFLAGS=/s|`$$PYTHON.*`|-lpthread -ldl -lpthread -lutil -lm -Xlinker -export-dynamic|' \
+		-e '/LUA_TEST=/s|=.*|=0|' \
+		$(@D)/configure
 	sed -i -e 's|$$(includedir)/$$(PACKAGE)|$$(DESTDIR)/&|' $(@D)/src/plugins/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -143,9 +150,9 @@ endif
 		--disable-wxwidgets \
 		--disable-aspell \
 		--enable-gnutls \
-		--disable-lua \
+		--enable-lua \
 		--disable-perl \
-		--disable-python \
+		--enable-python \
 		--disable-ruby \
 		--with-libgnutls-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
