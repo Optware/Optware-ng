@@ -24,7 +24,7 @@ ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
 ASTERISK10_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK10_BASE_VERSION=10.3.0
+ASTERISK10_BASE_VERSION=10.5.0
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -88,7 +88,6 @@ ASTERISK10_CONFFILES=\
 /opt/etc/asterisk/vpb.conf \
 /opt/etc/asterisk/voicemail.conf \
 /opt/etc/asterisk/users.conf \
-/opt/etc/asterisk/usbradio.conf \
 /opt/etc/asterisk/unistim.conf \
 /opt/etc/asterisk/udptl.conf \
 /opt/etc/asterisk/telcordia-1.adsi \
@@ -99,7 +98,6 @@ ASTERISK10_CONFFILES=\
 /opt/etc/asterisk/sip.conf \
 /opt/etc/asterisk/say.conf \
 /opt/etc/asterisk/rtp.conf \
-/opt/etc/asterisk/rpt.conf \
 /opt/etc/asterisk/res_stun_monitor.conf \
 /opt/etc/asterisk/res_snmp.conf \
 /opt/etc/asterisk/res_pktccops.conf \
@@ -342,6 +340,7 @@ endif
 		--with-ogg=$(STAGING_PREFIX) \
 		--with-popt=$(STAGING_PREFIX) \
 		--without-tds \
+		--without-openais \
 		--with-sqlite=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
