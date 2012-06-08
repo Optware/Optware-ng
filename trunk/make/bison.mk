@@ -45,7 +45,11 @@ BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-$(BISON_IPK_VERSION)_$(TARGET_ARCH
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 BISON_CROSS_CONFIGURE_ENV=ac_cv_func_malloc_0_nonnull=yes ac_cv_func_strnlen_working=yes ac_cv_prog_gnu_m4_gnu=\"/opt/bin/m4\"
+ifeq (uclibc,$(LIBC_STYLE))
+BISON_CROSS_CONFIGURE_SIGNBIT=gl_cv_func_signbit_gcc=no gl_cv_func_signbit=no
+else
 BISON_CROSS_CONFIGURE_SIGNBIT=gl_cv_func_signbit_gcc=no gl_cv_func_signbit=yes
+endif
 endif
 
 .PHONY: bison-source bison-unpack bison bison-stage bison-ipk bison-clean bison-dirclean bison-check
