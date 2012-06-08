@@ -4,11 +4,11 @@
 #
 ###########################################################
 
-BISON_SITE=ftp://ftp.gnu.org/gnu/bison
-BISON_VERSION=2.4.1
-BISON_SOURCE=bison-$(BISON_VERSION).tar.bz2
+BISON_SITE=http://ftp.gnu.org/gnu/bison
+BISON_VERSION=2.5.1
+BISON_SOURCE=bison-$(BISON_VERSION).tar.xz
 BISON_DIR=bison-$(BISON_VERSION)
-BISON_UNZIP=bzcat
+BISON_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
 BISON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BISON_DESCRIPTION=a general-purpose parser generator that converts an annotated context-free grammar into an LALR(1) or GLR parser for that grammar.
 BISON_SECTION=devel
@@ -44,7 +44,8 @@ BISON_IPK_DIR=$(BUILD_DIR)/bison-$(BISON_VERSION)-ipk
 BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-$(BISON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 ifneq ($(HOSTCC), $(TARGET_CC))
-BISON_CROSS_CONFIGURE_ENV=ac_cv_func_malloc_0_nonnull=yes ac_cv_func_strnlen_working=yes
+BISON_CROSS_CONFIGURE_ENV=ac_cv_func_malloc_0_nonnull=yes ac_cv_func_strnlen_working=yes ac_cv_prog_gnu_m4_gnu=\"/opt/bin/m4\"
+BISON_CROSS_CONFIGURE_SIGNBIT=gl_cv_func_signbit_gcc=no gl_cv_func_signbit=yes
 endif
 
 .PHONY: bison-source bison-unpack bison bison-stage bison-ipk bison-clean bison-dirclean bison-check
@@ -65,10 +66,27 @@ $(DL_DIR)/$(BISON_SOURCE):
 bison-source: $(DL_DIR)/$(BISON_SOURCE)
 
 $(BISON_BUILD_DIR)/.configured: $(DL_DIR)/$(BISON_SOURCE) $(BISON_PATCHES) make/bison.mk
+	$(MAKE) xz-utils-host-stage
 	rm -rf $(BUILD_DIR)/$(BISON_DIR) $(@D)
 	$(BISON_UNZIP) $(DL_DIR)/$(BISON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(BISON_DIR) $(@D)
 	(cd $(@D); \
+	    if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(BISON_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(BISON_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		$(BISON_CROSS_CONFIGURE_ENV) \
+		$(BISON_CROSS_CONFIGURE_SIGNBIT) \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+		; \
+	    else \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BISON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BISON_LDFLAGS)" \
@@ -81,10 +99,9 @@ $(BISON_BUILD_DIR)/.configured: $(DL_DIR)/$(BISON_SOURCE) $(BISON_PATCHES) make/
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		; \
+	    fi; \
 	);
-ifneq ($(HOSTCC), $(TARGET_CC))
-	sed -i -e '/^#define M4/s|^.*$$|#define M4 "/opt/bin/m4"|' $(@D)/lib/config.h
-endif
 	touch $@
 
 bison-unpack: $(BISON_BUILD_DIR)/.configured
@@ -162,6 +179,7 @@ $(BISON_IPK): $(BISON_BUILD_DIR)/.built
 	cp -a $(BISON_BUILD_DIR)/m4 $(BISON_IPK_DIR)/opt/share/bison/m4
 	$(MAKE) $(BISON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BISON_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(BISON_IPK_DIR)
 
 #
 #
