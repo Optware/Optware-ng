@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PSMISC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/psmisc
-PSMISC_VERSION ?= 22.15
+PSMISC_VERSION ?= 22.17
 PSMISC_SOURCE=psmisc-$(PSMISC_VERSION).tar.gz
 PSMISC_DIR=psmisc-$(PSMISC_VERSION)
 PSMISC_UNZIP=zcat
