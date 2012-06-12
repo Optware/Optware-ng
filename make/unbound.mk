@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UNBOUND_SITE=http://unbound.net/downloads
-UNBOUND_VERSION=1.4.16
+UNBOUND_VERSION=1.4.17
 UNBOUND_SOURCE=unbound-$(UNBOUND_VERSION).tar.gz
 UNBOUND_DIR=unbound-$(UNBOUND_VERSION)
 UNBOUND_UNZIP=zcat
