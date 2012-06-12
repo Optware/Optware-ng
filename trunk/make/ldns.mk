@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LDNS_SITE=http://nlnetlabs.nl/downloads/ldns/
-LDNS_VERSION=1.6.12
+LDNS_VERSION=1.6.13
 LDNS_SOURCE=ldns-$(LDNS_VERSION).tar.gz
 LDNS_DIR=ldns-$(LDNS_VERSION)
 LDNS_UNZIP=zcat

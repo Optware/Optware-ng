@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DNSSEC-TRIGGER_SITE=http://nlnetlabs.nl/downloads/dnssec-trigger/
-DNSSEC-TRIGGER_VERSION=0.10
+DNSSEC-TRIGGER_VERSION=0.11
 DNSSEC-TRIGGER_SOURCE=dnssec-trigger-$(DNSSEC-TRIGGER_VERSION).tar.gz
 DNSSEC-TRIGGER_DIR=dnssec-trigger-$(DNSSEC-TRIGGER_VERSION)
 DNSSEC-TRIGGER_UNZIP=zcat
