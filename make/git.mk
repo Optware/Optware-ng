@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://git-core.googlecode.com/files
-GIT_VERSION=1.7.10.4
+GIT_VERSION=1.7.11
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
@@ -423,7 +423,9 @@ git-clean:
 git-dirclean:
 	rm -rf $(BUILD_DIR)/$(GIT_DIR) $(GIT_BUILD_DIR)
 	rm -rf $(GIT_IPK_DIR) $(GIT_IPK)
+	rm -rf $(GIT-LITE_IPK_DIR) $(GIT-LITE_IPK)
 	rm -rf $(GIT-MANPAGES_IPK_DIR) $(GIT-MANPAGES_IPK)
+	rm -rf $(GIT-SVN_IPK_DIR) $(GIT-SVN_IPK)
 
 #
 # Some sanity check for the package.
