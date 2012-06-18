@@ -1,6 +1,6 @@
---- git-1.7.2/Makefile.orig	2010-07-21 21:35:25.000000000 +0000
-+++ git-1.7.2/Makefile	2010-07-25 18:33:54.145675193 +0000
-@@ -1633,7 +1633,7 @@
+--- git-1.7.11/Makefile.orig	2012-06-17 22:01:30.000000000 +0000
++++ git-1.7.11/Makefile	2012-06-18 18:15:01.823420358 +0000
+@@ -2022,7 +2022,7 @@
  	$(QUIET_GEN)$(RM) $@ $@+ && \
  	INSTLIBDIR=`MAKEFLAGS= $(MAKE) -C perl -s --no-print-directory instlibdir` && \
  	sed -e '1{' \
@@ -9,7 +9,7 @@
  	    -e '	h' \
  	    -e '	s=.*=use lib (split(/$(pathsep)/, $$ENV{GITPERLLIB} || "'"$$INSTLIBDIR"'"));=' \
  	    -e '	H' \
-@@ -1681,7 +1681,7 @@
+@@ -2044,7 +2044,7 @@
  	    -e 's/@@GIT_VERSION@@/$(GIT_VERSION)/g' \
  	    -e 's/@@NO_CURL@@/$(NO_CURL)/g' \
  	    -e 's|@@GITWEBDIR@@|$(gitwebdir_SQ)|g' \
@@ -18,10 +18,10 @@
  	    $@.sh > $@+ && \
  	chmod +x $@+ && \
  	mv $@+ $@
-@@ -2081,9 +2081,7 @@
- 		cp "$$bindir/git$X" "$$execdir/git$X"; } ; } && \
+@@ -2596,9 +2596,7 @@
  	for p in $(BUILT_INS); do \
  		$(RM) "$$execdir/$$p" && \
+ 		test -z "$(NO_INSTALL_HARDLINKS)" && \
 -		ln "$$execdir/git$X" "$$execdir/$$p" 2>/dev/null || \
 -		ln -s "git$X" "$$execdir/$$p" 2>/dev/null || \
 -		cp "$$execdir/git$X" "$$execdir/$$p" || exit; \
