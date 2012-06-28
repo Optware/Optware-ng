@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GZIP_SITE=http://ftp.gnu.org/pub/gnu/gzip
-GZIP_VERSION=1.4
+GZIP_VERSION=1.5
 GZIP_SOURCE=gzip-$(GZIP_VERSION).tar.gz
 GZIP_DIR=gzip-$(GZIP_VERSION)
 GZIP_UNZIP=zcat
@@ -34,7 +34,7 @@ GZIP_CONFLICTS=
 #
 # GZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-GZIP_IPK_VERSION=4
+GZIP_IPK_VERSION=1
 
 #
 # If the compilation of the package requires additional
@@ -42,6 +42,14 @@ GZIP_IPK_VERSION=4
 #
 GZIP_CPPFLAGS=
 GZIP_LDFLAGS=
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+ifeq (uclibc,$(LIBC_STYLE))
+GZIP_CROSS_CONFIGURE_SIGNBIT_GCC3=gl_cv_func_signbit_gcc=no gl_cv_func_signbit=no
+else
+GZIP_CROSS_CONFIGURE_SIGNBIT_GCC3=gl_cv_func_signbit_gcc=no gl_cv_func_signbit=yes
+endif
+endif
 
 #
 # GZIP_BUILD_DIR is the directory in which the build is done.
@@ -92,6 +100,19 @@ $(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES) make/gzi
 	$(GZIP_UNZIP) $(DL_DIR)/$(GZIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(GZIP_DIR) $(@D)
 	(cd $(@D); \
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(GZIP_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(GZIP_LDFLAGS)" \
+		$(GZIP_CROSS_CONFIGURE_SIGNBIT_GCC3) \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+		; \
+	else \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GZIP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GZIP_LDFLAGS)" \
@@ -101,6 +122,8 @@ $(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES) make/gzi
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		; \
+	fi \
 	)
 	touch $@
 
@@ -174,6 +197,7 @@ $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 	fi
 	echo $(GZIP_CONFFILES) | sed -e 's/ /\n/g' > $(GZIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GZIP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GZIP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
