@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UNITS_SITE=ftp://ftp.gnu.org/gnu/units/
-UNITS_VERSION=1.88
+UNITS_SITE=http://ftp.gnu.org/gnu/units/
+UNITS_VERSION=2.00
 UNITS_SOURCE=units-$(UNITS_VERSION).tar.gz
 UNITS_DIR=units-$(UNITS_VERSION)
 UNITS_UNZIP=zcat
@@ -35,7 +35,7 @@ UNITS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UNITS_DESCRIPTION=GNU units converts between different systems of units.
 UNITS_SECTION=misc
 UNITS_PRIORITY=optional
-UNITS_DEPENDS=readline, ncurses
+UNITS_DEPENDS=readline
 
 #
 # UNITS_IPK_VERSION should be incremented when the ipk changes.
@@ -106,7 +106,7 @@ units-source: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES) make/units.mk
-	$(MAKE) readline-stage ncurses-stage
+	$(MAKE) readline-stage
 	rm -rf $(BUILD_DIR)/$(UNITS_DIR) $(@D)
 	$(UNITS_UNZIP) $(DL_DIR)/$(UNITS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNITS_PATCHES)"; \
@@ -114,6 +114,7 @@ $(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES) make/
 	fi
 	mv $(BUILD_DIR)/$(UNITS_DIR) $(@D)
 #	autoreconf -vif $(@D)
+	sed -i -e '/ @UDAT@/s|@UDAT@|$$(DESTDIR)/&|' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(UNITS_CPPFLAGS)" \
@@ -187,6 +188,7 @@ $(UNITS_IPK): $(UNITS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(UNITS_IPK_DIR)/opt/bin/units
 	$(MAKE) $(UNITS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNITS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(UNITS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
