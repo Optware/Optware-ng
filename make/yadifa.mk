@@ -111,7 +111,7 @@ yadifa-source: $(DL_DIR)/$(YADIFA_SOURCE) $(YADIFA_PATCHES)
 # shown below to make various patches to it.
 #
 $(YADIFA_BUILD_DIR)/.configured: $(DL_DIR)/$(YADIFA_SOURCE) $(YADIFA_PATCHES) make/yadifa.mk
-	$(MAKE) openssl-stage
+	$(MAKE) OPENSSL_VERSION=1.0.1 openssl-stage
 	rm -rf $(BUILD_DIR)/$(YADIFA_DIR) $(@D)
 	$(YADIFA_UNZIP) $(DL_DIR)/$(YADIFA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(YADIFA_PATCHES)" ; \
