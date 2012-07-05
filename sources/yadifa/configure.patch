@@ -1,0 +1,414 @@
+*** configure	2012-06-22 08:59:41.000000000 -0400
+--- configure.modified	2012-07-05 10:23:54.981952563 -0400
+***************
+*** 11626,11632 ****
+          ;;
+  esac
+  
+- CPPFLAGS="$CFLAGS3264 $CPPFLAGS"
+  
+  
+  
+--- 11626,11631 ----
+
+*** lib/dnscore/configure	2012-06-22 08:59:16.000000000 -0400
+--- lib/dnscore/configure.modified	2012-07-05 10:32:35.315411085 -0400
+***************
+*** 13161,13167 ****
+          ;;
+  esac
+  
+- CPPFLAGS="$CFLAGS3264 $CPPFLAGS"
+  
+  
+  
+--- 13161,13166 ----
+***************
+*** 14014,14020 ****
+  			echo "yes"
+  
+  			OPENSSL="${withval}"
+! 			CPPFLAGS="-I$with_openssl/include $CPPFLAGS $CFLAGS3264"
+  			LDFLAGS="-L$with_openssl/lib $LDFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+--- 14013,14019 ----
+  			echo "yes"
+  
+  			OPENSSL="${withval}"
+! 			CPPFLAGS="-I$with_openssl/include $CPPFLAGS"
+  			LDFLAGS="-L$with_openssl/lib $LDFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+***************
+*** 14116,14122 ****
+  else
+  
+  			echo "no"
+! 			CPPFLAGS="$CPPFLAGS $CFLAGS3264"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+  
+--- 14115,14121 ----
+  else
+  
+  			echo "no"
+! 			CPPFLAGS="$CPPFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+  
+***************
+*** 14219,14225 ****
+  
+  else
+  	echo "SSL is not required by this setup"
+! 	CPPFLAGS="$CPPFLAGS $CFLAGS3264"
+  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
+  $as_echo_n "checking for socket in -lsocket... " >&6; }
+  if ${ac_cv_lib_socket_socket+:} false; then :
+--- 14218,14224 ----
+  
+  else
+  	echo "SSL is not required by this setup"
+! 	CPPFLAGS="$CPPFLAGS"
+  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
+  $as_echo_n "checking for socket in -lsocket... " >&6; }
+  if ${ac_cv_lib_socket_socket+:} false; then :
+
+
+*** lib/dnsdb/configure	2012-06-22 08:59:23.000000000 -0400
+--- lib/dnsdb/configure.modified	2012-07-05 10:38:06.531247139 -0400
+***************
+*** 13107,13113 ****
+          ;;
+  esac
+  
+- CPPFLAGS="$CFLAGS3264 $CPPFLAGS"
+  
+  
+  
+--- 13107,13112 ----
+***************
+*** 13964,13970 ****
+  			echo "yes"
+  
+  			OPENSSL="${withval}"
+! 			CPPFLAGS="-I$with_openssl/include $CPPFLAGS $CFLAGS3264"
+  			LDFLAGS="-L$with_openssl/lib $LDFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+--- 13963,13969 ----
+  			echo "yes"
+  
+  			OPENSSL="${withval}"
+! 			CPPFLAGS="-I$with_openssl/include $CPPFLAGS"
+  			LDFLAGS="-L$with_openssl/lib $LDFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+***************
+*** 14066,14072 ****
+  else
+  
+  			echo "no"
+! 			CPPFLAGS="$CPPFLAGS $CFLAGS3264"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+  
+--- 14065,14071 ----
+  else
+  
+  			echo "no"
+! 			CPPFLAGS="$CPPFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+  
+***************
+*** 14169,14175 ****
+  
+  else
+  	echo "SSL is not required by this setup"
+! 	CPPFLAGS="$CPPFLAGS $CFLAGS3264"
+  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
+  $as_echo_n "checking for socket in -lsocket... " >&6; }
+  if ${ac_cv_lib_socket_socket+:} false; then :
+--- 14168,14174 ----
+  
+  else
+  	echo "SSL is not required by this setup"
+! 	CPPFLAGS="$CPPFLAGS"
+  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
+  $as_echo_n "checking for socket in -lsocket... " >&6; }
+  if ${ac_cv_lib_socket_socket+:} false; then :
+
+
+*** lib/dnszone/configure	2012-06-22 08:59:30.000000000 -0400
+--- lib/dnszone/configure.modified	2012-07-05 10:41:19.828817059 -0400
+***************
+*** 13109,13115 ****
+          ;;
+  esac
+  
+- CPPFLAGS="$CFLAGS3264 $CPPFLAGS"
+  
+  
+  
+--- 13109,13114 ----
+***************
+*** 13968,13974 ****
+  			echo "yes"
+  
+  			OPENSSL="${withval}"
+! 			CPPFLAGS="-I$with_openssl/include $CPPFLAGS $CFLAGS3264"
+  			LDFLAGS="-L$with_openssl/lib $LDFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+--- 13967,13973 ----
+  			echo "yes"
+  
+  			OPENSSL="${withval}"
+! 			CPPFLAGS="-I$with_openssl/include $CPPFLAGS"
+  			LDFLAGS="-L$with_openssl/lib $LDFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+***************
+*** 14070,14076 ****
+  else
+  
+  			echo "no"
+! 			CPPFLAGS="$CPPFLAGS $CFLAGS3264"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+  
+--- 14069,14075 ----
+  else
+  
+  			echo "no"
+! 			CPPFLAGS="$CPPFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+  
+***************
+*** 14173,14179 ****
+  
+  else
+  	echo "SSL is not required by this setup"
+! 	CPPFLAGS="$CPPFLAGS $CFLAGS3264"
+  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
+  $as_echo_n "checking for socket in -lsocket... " >&6; }
+  if ${ac_cv_lib_socket_socket+:} false; then :
+--- 14172,14178 ----
+  
+  else
+  	echo "SSL is not required by this setup"
+! 	CPPFLAGS="$CPPFLAGS"
+  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
+  $as_echo_n "checking for socket in -lsocket... " >&6; }
+  if ${ac_cv_lib_socket_socket+:} false; then :
+
+
+*** sbin/yadifad/configure	2012-06-22 13:59:01.000000000 -0400
+--- sbin/yadifad/configure.modified	2012-07-05 10:46:35.092853653 -0400
+***************
+*** 13126,13132 ****
+          ;;
+  esac
+  
+- CPPFLAGS="$CFLAGS3264 $CPPFLAGS"
+  
+  
+  
+--- 13126,13131 ----
+***************
+*** 13988,13994 ****
+  			echo "yes"
+  
+  			OPENSSL="${withval}"
+! 			CPPFLAGS="-I$with_openssl/include $CPPFLAGS $CFLAGS3264"
+  			LDFLAGS="-L$with_openssl/lib $LDFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+--- 13987,13993 ----
+  			echo "yes"
+  
+  			OPENSSL="${withval}"
+! 			CPPFLAGS="-I$with_openssl/include $CPPFLAGS"
+  			LDFLAGS="-L$with_openssl/lib $LDFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+***************
+*** 14090,14096 ****
+  else
+  
+  			echo "no"
+! 			CPPFLAGS="$CPPFLAGS $CFLAGS3264"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+  
+--- 14089,14095 ----
+  else
+  
+  			echo "no"
+! 			CPPFLAGS="$CPPFLAGS"
+  			echo "CPPFLAGS=${CPPFLAGS}"
+  			echo "LDFLAGS=${LDFLAGS}"
+  
+***************
+*** 14193,14199 ****
+  
+  else
+  	echo "SSL is not required by this setup"
+! 	CPPFLAGS="$CPPFLAGS $CFLAGS3264"
+  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
+  $as_echo_n "checking for socket in -lsocket... " >&6; }
+  if ${ac_cv_lib_socket_socket+:} false; then :
+--- 14192,14198 ----
+  
+  else
+  	echo "SSL is not required by this setup"
+! 	CPPFLAGS="$CPPFLAGS"
+  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5
+  $as_echo_n "checking for socket in -lsocket... " >&6; }
+  if ${ac_cv_lib_socket_socket+:} false; then :
+
+
+*** sbin/yadifad/signals.c	2012-06-22 08:09:10.000000000 -0400
+--- sbin/yadifad/signals.c.modified	2012-07-05 12:13:45.271101409 -0400
+***************
+*** 43,49 ****
+  #include <unistd.h>
+  
+  #if defined(__linux__)
+- #include <execinfo.h>
+  #endif
+  
+  #include <dnscore/logger.h>
+--- 43,48 ----
+***************
+*** 341,347 ****
+                  if(f != NULL)
+                  {
+  
+!         #if defined(__linux__)
+                      void* buffer[MAXTRACE];
+                      char** strings;
+                      int n = backtrace(buffer, MAXTRACE);
+--- 340,346 ----
+                  if(f != NULL)
+                  {
+  
+!         #if defined(__linux_NOT_OPTWARE__)
+                      void* buffer[MAXTRACE];
+                      char** strings;
+                      int n = backtrace(buffer, MAXTRACE);
+
+
+*** lib/dnscore/src/debug.c	2012-06-22 08:09:24.000000000 -0400
+--- lib/dnscore/src/debug.c.modified	2012-07-05 12:15:37.313692843 -0400
+***************
+*** 47,53 ****
+  #include <sys/mman.h>
+  
+  #if defined(__linux__) || defined(__APPLE__)
+- #include <execinfo.h>
+  #endif
+  
+  #include "dnscore/sys_types.h"
+--- 47,52 ----
+***************
+*** 63,69 ****
+  #undef debug_mallocated
+  
+  #if defined(__linux__) || defined(__APPLE__)
+! #define ZDB_DEBUG_STACKTRACE 1
+  #else /* __FreeBSD__ or unknown */
+  #define ZDB_DEBUG_STACKTRACE 0
+  #endif
+--- 62,68 ----
+  #undef debug_mallocated
+  
+  #if defined(__linux__) || defined(__APPLE__)
+! #define ZDB_DEBUG_STACKTRACE 0
+  #else /* __FreeBSD__ or unknown */
+  #define ZDB_DEBUG_STACKTRACE 0
+  #endif
+
+
+*** sbin/yadifad/server_context.c	2012-06-22 08:09:12.000000000 -0400
+--- sbin/yadifad/server_context.c.modified	2012-07-05 12:47:45.729449374 -0400
+***************
+*** 234,240 ****
+          fd_set scheduler_set;
+          FD_ZERO(&scheduler_set);
+          FD_SET(g_config->scheduler.sockfd, &scheduler_set);
+!         int return_code = pselect(g_config->scheduler.sockfd,&scheduler_set,NULL,NULL,&timeout,0);
+  
+          if(return_code > 0) /* Are any bit sets by pselect ? */
+          {
+--- 234,240 ----
+          fd_set scheduler_set;
+          FD_ZERO(&scheduler_set);
+          FD_SET(g_config->scheduler.sockfd, &scheduler_set);
+!         int return_code = select(g_config->scheduler.sockfd,&scheduler_set,NULL,NULL,&timeout);
+  
+          if(return_code > 0) /* Are any bit sets by pselect ? */
+          {
+
+
+*** sbin/yadifad/server-mt.c	2012-06-22 14:24:41.000000000 -0400
+--- sbin/yadifad/server-mt.c.modified	2012-07-05 12:57:02.382451298 -0400
+***************
+*** 1422,1433 ****
+           * @todo See man select about said bugs
+           */
+  
+!         return_code = pselect(maxfd,
+                  &read_set,
+                  NULL,
+                  NULL,
+!                 &timeout,
+!                 0);
+  
+          if(return_code > 0) /* Are any bit sets by pselect ? */
+          {
+--- 1422,1432 ----
+           * @todo See man select about said bugs
+           */
+  
+!         return_code = select(maxfd,
+                  &read_set,
+                  NULL,
+                  NULL,
+!                 &timeout);
+  
+          if(return_code > 0) /* Are any bit sets by pselect ? */
+          {
+
+
+*** sbin/yadifad/server-st.c	2012-06-22 14:24:29.000000000 -0400
+--- sbin/yadifad/server-st.c.modified	2012-07-05 12:58:45.425155876 -0400
+***************
+*** 1133,1144 ****
+           * @todo See man select about said bugs
+           */
+  
+!         return_code = pselect(maxfd,
+                  &read_set,
+                  NULL,
+                  NULL,
+!                 &timeout,
+!                 0);
+  
+          if(return_code > 0) /* Are any bit sets by pselect ? */
+          {
+--- 1133,1143 ----
+           * @todo See man select about said bugs
+           */
+  
+!         return_code = select(maxfd,
+                  &read_set,
+                  NULL,
+                  NULL,
+!                 &timeout);
+  
+          if(return_code > 0) /* Are any bit sets by pselect ? */
+          {
