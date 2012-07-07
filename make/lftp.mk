@@ -22,7 +22,7 @@
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
 SFR_SITE=http://www.sfr-fresh.com/unix/misc
-LFTP_VERSION=4.3.6
+LFTP_VERSION=4.3.7
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -68,6 +68,11 @@ LFTP_CONFIG_ENV = \
 	gl_cv_func_gettimeofday_clobber=no \
 	ac_cv_posix_fadvise=$(if $(filter uclibc, $(LIBC_STYLE)),no,yes) \
 	i_cv_posix_fallocate_works=$(if $(filter $(LIBC_STYLE),uclibc),no,yes)
+ifeq (uclibc,$(LIBC_STYLE))
+LFTP_CROSS_CONFIGURE_SIGNBIT_GCC3=gl_cv_func_signbit_gcc=no gl_cv_func_signbit=no
+else
+LFTP_CROSS_CONFIGURE_SIGNBIT_GCC3=gl_cv_func_signbit_gcc=no gl_cv_func_signbit=yes
+endif
 endif
 
 #
@@ -136,6 +141,23 @@ endif
 		then mv $(BUILD_DIR)/$(LFTP_DIR) $(@D) ; \
 	fi
 	(cd $(@D); \
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(LFTP_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(LFTP_LDFLAGS)" \
+		LIBGNUTLS_CONFIG=$(STAGING_PREFIX)/bin/libgnutls-config \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		$(LFTP_CONFIG_ENV) \
+		$(LFTP_CROSS_CONFIGURE_SIGNBIT_GCC3) \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
+		; \
+	else \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LFTP_LDFLAGS)" \
@@ -149,6 +171,8 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		; \
+	fi \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
