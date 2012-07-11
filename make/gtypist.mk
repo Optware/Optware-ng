@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GTYPIST_SITE=ftp://ftp.gnu.org/gnu/gtypist
-GTYPIST_VERSION=2.8.3
-GTYPIST_SOURCE=gtypist-$(GTYPIST_VERSION).tar.bz2
+GTYPIST_SITE=http://ftp.gnu.org/gnu/gtypist
+GTYPIST_VERSION=2.9.1
+GTYPIST_SOURCE=gtypist-$(GTYPIST_VERSION).tar.xz
 GTYPIST_DIR=gtypist-$(GTYPIST_VERSION)
-GTYPIST_UNZIP=bzcat
+GTYPIST_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
 GTYPIST_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GTYPIST_DESCRIPTION=A universal typing tutor.
 GTYPIST_SECTION=misc
@@ -105,7 +105,7 @@ gtypist-source: $(DL_DIR)/$(GTYPIST_SOURCE) $(GTYPIST_PATCHES)
 # shown below to make various patches to it.
 #
 $(GTYPIST_BUILD_DIR)/.configured: $(DL_DIR)/$(GTYPIST_SOURCE) $(GTYPIST_PATCHES) make/gtypist.mk
-	$(MAKE) ncurses-stage
+	$(MAKE) xz-utils-host-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(GTYPIST_DIR) $(@D)
 	$(GTYPIST_UNZIP) $(DL_DIR)/$(GTYPIST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GTYPIST_PATCHES)" ; \
@@ -195,6 +195,7 @@ $(GTYPIST_IPK): $(GTYPIST_BUILD_DIR)/.built
 	$(MAKE) $(GTYPIST_IPK_DIR)/CONTROL/control
 	echo $(GTYPIST_CONFFILES) | sed -e 's/ /\n/g' > $(GTYPIST_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTYPIST_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GTYPIST_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
