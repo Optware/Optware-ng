@@ -30,6 +30,9 @@ GTYPIST_DESCRIPTION=A universal typing tutor.
 GTYPIST_SECTION=misc
 GTYPIST_PRIORITY=optional
 GTYPIST_DEPENDS=ncurses
+ifneq (, $(filter libiconv, $(PACKAGES)))
+GTYPIST_DEPENDS += , libiconv
+endif
 GTYPIST_SUGGESTS=bsdgames
 GTYPIST_CONFLICTS=
 
@@ -54,6 +57,9 @@ GTYPIST_IPK_VERSION=1
 #
 GTYPIST_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 GTYPIST_LDFLAGS=
+ifneq (, $(filter libiconv, $(PACKAGES)))
+GTYPIST_LDFLAGS += -liconv
+endif
 
 #
 # GTYPIST_BUILD_DIR is the directory in which the build is done.
@@ -106,6 +112,9 @@ gtypist-source: $(DL_DIR)/$(GTYPIST_SOURCE) $(GTYPIST_PATCHES)
 #
 $(GTYPIST_BUILD_DIR)/.configured: $(DL_DIR)/$(GTYPIST_SOURCE) $(GTYPIST_PATCHES) make/gtypist.mk
 	$(MAKE) xz-utils-host-stage ncurses-stage
+ifneq (, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GTYPIST_DIR) $(@D)
 	$(GTYPIST_UNZIP) $(DL_DIR)/$(GTYPIST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GTYPIST_PATCHES)" ; \
