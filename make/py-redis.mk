@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-REDIS_SITE=http://cloud.github.com/downloads/andymccurdy/redis-py
-PY-REDIS_VERSION=2.4.11
+PY-REDIS_VERSION=2.4.13
 PY-REDIS_SOURCE_UPSTREAM=redis-$(PY-REDIS_VERSION).tar.gz
 PY-REDIS_SOURCE=py-redis-$(PY-REDIS_VERSION).tar.gz
 PY-REDIS_DIR=redis-$(PY-REDIS_VERSION)
@@ -80,9 +80,9 @@ PY27-REDIS_IPK=$(BUILD_DIR)/py27-redis_$(PY-REDIS_VERSION)-$(PY-REDIS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-REDIS_SOURCE):
-	($(WGET) -P $(@D) $(PY-REDIS_SITE)/$(PY-REDIS_SOURCE_UPSTREAM) || \
-	 $(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(PY-REDIS_SOURCE_UPSTREAM)) \
-	&& mv $(@D)/$(PY-REDIS_SOURCE_UPSTREAM) $@
+	($(WGET) -P $(@D)/tmp $(PY-REDIS_SITE)/$(PY-REDIS_SOURCE_UPSTREAM) && \
+	 mv $(@D)/tmp/$(PY-REDIS_SOURCE_UPSTREAM) $@ || \
+	 $(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$@)
 
 #
 # The source code depends on it existing within the download directory.
