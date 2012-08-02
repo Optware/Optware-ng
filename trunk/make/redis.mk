@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 REDIS_SITE=http://redis.googlecode.com/files
-REDIS_VERSION ?= 2.4.15
+REDIS_VERSION ?= 2.4.16
 REDIS_SOURCE=redis-$(REDIS_VERSION).tar.gz
 REDIS_DIR=redis-$(REDIS_VERSION)
 REDIS_UNZIP=zcat
