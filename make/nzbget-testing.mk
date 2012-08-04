@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET-TESTING_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET-TESTING_VER=0.8.0
-NZBGET-TESTING_REV=r407
+NZBGET-TESTING_VER=9.0
+NZBGET-TESTING_REV=r455
 NZBGET-TESTING_VERSION=$(NZBGET-TESTING_VER)-$(NZBGET-TESTING_REV)
 NZBGET-TESTING_SOURCE=nzbget-$(NZBGET-TESTING_VER)-testing-$(NZBGET-TESTING_REV).tar.gz
 NZBGET-TESTING_DIR=nzbget-$(NZBGET-TESTING_VER)-testing
@@ -134,6 +134,7 @@ $(NZBGET-TESTING_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET-TESTING_SOURCE) $(NZ
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-tlslib=OpenSSL \
+		--program-prefix= \
 		$(NZBGET-TESTING_CONFIGURE_OPTS) \
 	)
 	sed -i -e '/^CPPFLAGS/s:-I/usr.*$$::' -e '/^LDFLAGS/s:-L/usr.*$$::' $(@D)/Makefile
@@ -198,18 +199,8 @@ $(NZBGET-TESTING_IPK_DIR)/CONTROL/control:
 #
 $(NZBGET-TESTING_IPK): $(NZBGET-TESTING_BUILD_DIR)/.built
 	rm -rf $(NZBGET-TESTING_IPK_DIR) $(BUILD_DIR)/nzbget-testing_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(NZBGET-TESTING_BUILD_DIR) DESTDIR=$(NZBGET-TESTING_IPK_DIR) install
-	install -d $(NZBGET-TESTING_IPK_DIR)/opt/bin $(NZBGET-TESTING_IPK_DIR)/opt/sbin $(NZBGET-TESTING_IPK_DIR)/opt/share/doc/nzbget
-	install -m 755 $(NZBGET-TESTING_BUILD_DIR)/nzbget $(NZBGET-TESTING_IPK_DIR)/opt/bin/
-	install -m 755 $(NZBGET-TESTING_BUILD_DIR)/nzbgetd $(NZBGET-TESTING_IPK_DIR)/opt/sbin/
-	install -m 644 $(NZBGET-TESTING_BUILD_DIR)/README $(NZBGET-TESTING_IPK_DIR)/opt/share/doc/nzbget/
-	install -m 644 $(NZBGET-TESTING_BUILD_DIR)/nzbget.conf.example $(NZBGET-TESTING_IPK_DIR)/opt/share/doc/nzbget/
-	install -m 755 $(NZBGET-TESTING_BUILD_DIR)/postprocess-example.sh $(NZBGET-TESTING_IPK_DIR)/opt/share/doc/nzbget/
-	install -m 644 $(NZBGET-TESTING_BUILD_DIR)/postprocess-example.conf $(NZBGET-TESTING_IPK_DIR)/opt/share/doc/nzbget/
+	$(MAKE) -C $(NZBGET-TESTING_BUILD_DIR) DESTDIR=$(NZBGET-TESTING_IPK_DIR) install
 	$(STRIP_COMMAND) $(NZBGET-TESTING_IPK_DIR)/opt/bin/nzbget
-	sed -i s:/usr/local/bin:/opt/bin: $(NZBGET-TESTING_IPK_DIR)/opt/sbin/nzbgetd
-#	install -d $(NZBGET-TESTING_IPK_DIR)/opt/etc/
-#	install -m 644 $(NZBGET-TESTING_SOURCE_DIR)/nzbget.conf $(NZBGET-TESTING_IPK_DIR)/opt/etc/nzbget.conf
 #	install -d $(NZBGET-TESTING_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(NZBGET-TESTING_SOURCE_DIR)/rc.nzbget $(NZBGET-TESTING_IPK_DIR)/opt/etc/init.d/SXXnzbget
 	$(MAKE) $(NZBGET-TESTING_IPK_DIR)/CONTROL/control
