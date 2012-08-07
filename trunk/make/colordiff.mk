@@ -5,7 +5,7 @@
 ###########################################################
 
 COLORDIFF_SITE=http://colordiff.sourceforge.net
-COLORDIFF_VERSION=1.0.9
+COLORDIFF_VERSION=1.0.10
 COLORDIFF_SOURCE=colordiff-$(COLORDIFF_VERSION).tar.gz
 COLORDIFF_DIR=colordiff-$(COLORDIFF_VERSION)
 COLORDIFF_UNZIP=zcat
@@ -92,6 +92,7 @@ $(COLORDIFF_IPK): $(COLORDIFF_BUILD_DIR)/.built
 	$(MAKE) $(COLORDIFF_IPK_DIR)/CONTROL/control
 	echo $(COLORDIFF_CONFFILES) | sed -e 's/ /\n/g' > $(COLORDIFF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COLORDIFF_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(COLORDIFF_IPK_DIR)
 
 colordiff-ipk: $(COLORDIFF_IPK)
 
