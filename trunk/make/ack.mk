@@ -5,7 +5,7 @@
 ###########################################################
 
 ACK_SITE=http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE
-ACK_VERSION=1.94
+ACK_VERSION=1.96
 ACK_SOURCE=ack-$(ACK_VERSION).tar.gz
 ACK_DIR=ack-$(ACK_VERSION)
 ACK_UNZIP=zcat
@@ -38,7 +38,7 @@ $(ACK_BUILD_DIR)/.configured: $(DL_DIR)/$(ACK_SOURCE) $(ACK_PATCHES) make/ack.mk
 	$(MAKE) perl-file-next-stage
 	rm -rf $(BUILD_DIR)/$(ACK_DIR) $(@D)
 	$(ACK_UNZIP) $(DL_DIR)/$(ACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test "$(ACK_PATCHES)"; then \
+	if test -n "$(ACK_PATCHES)"; then \
 		cat $(ACK_PATCHES) | patch -d $(BUILD_DIR)/$(ACK_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(ACK_DIR) $(@D)
@@ -61,12 +61,12 @@ $(ACK_BUILD_DIR)/.built: $(ACK_BUILD_DIR)/.configured
 
 ack: $(ACK_BUILD_DIR)/.built
 
-$(ACK_BUILD_DIR)/.staged: $(ACK_BUILD_DIR)/.built
+#$(ACK_BUILD_DIR)/.staged: $(ACK_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
-
-ack-stage: $(ACK_BUILD_DIR)/.staged
+#
+#ack-stage: $(ACK_BUILD_DIR)/.staged
 
 $(ACK_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -96,6 +96,7 @@ $(ACK_IPK): $(ACK_BUILD_DIR)/.built
 	$(MAKE) $(ACK_IPK_DIR)/CONTROL/control
 	echo $(ACK_CONFFILES) | sed -e 's/ /\n/g' > $(ACK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ACK_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ACK_IPK_DIR)
 
 ack-ipk: $(ACK_IPK)
 
