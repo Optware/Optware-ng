@@ -42,7 +42,7 @@ PYTHON3_SUGGESTS=
 #
 # PYTHON3_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON3_IPK_VERSION=1
+PYTHON3_IPK_VERSION=2
 
 #
 # PYTHON3_CONFFILES should be a list of user-editable files
@@ -96,6 +96,8 @@ PYTHON3_PATCHES=\
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
 PYTHON3_PATCHES+= $(PYTHON3_SOURCE_DIR)/disable-ncursesw.patch
 endif
+
+PYTHON3_CONFIGURE_ENV?=
 
 .PHONY: python3-source python3-unpack python3 python3-stage python3-ipk python3-clean python3-dirclean python3-check python3-host-stage
 
@@ -162,6 +164,7 @@ endif
 		ac_cv_broken_sem_getvalue=no \
 		ac_cv_have_size_t_format=yes \
 		ac_cv_have_long_long_format=yes \
+		$(PYTHON3_CONFIGURE_ENV) \
 		../$(PYTHON3_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
