@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TREE_SITE=ftp://mama.indstate.edu/linux/tree
-TREE_VERSION=$(strip $(if $(filter uclibc, $(LIBC_STYLE)), 1.5.1.2, 1.5.3))
+TREE_SITE=http://mama.indstate.edu/users/ice/tree/src
+TREE_VERSION?=$(strip $(if $(filter uclibc, $(LIBC_STYLE)), 1.5.1.2, 1.6.0))
 TREE_SOURCE=tree-$(TREE_VERSION).tgz
 TREE_DIR=tree-$(TREE_VERSION)
 TREE_UNZIP=zcat
@@ -200,6 +200,7 @@ $(TREE_IPK): $(TREE_BUILD_DIR)/.built
 	$(MAKE) $(TREE_IPK_DIR)/CONTROL/control
 	echo $(TREE_CONFFILES) | sed -e 's/ /\n/g' > $(TREE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TREE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TREE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
