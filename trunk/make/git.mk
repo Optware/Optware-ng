@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://git-core.googlecode.com/files
-GIT_VERSION=1.7.11.5
+GIT_VERSION=1.7.12
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
@@ -357,7 +357,7 @@ endif
 	rm -f $(GIT_IPK_DIR)/opt/bin/git
 	ln -s ../libexec/git-core/git $(GIT_IPK_DIR)/opt/bin/git
 	install -d $(GIT_IPK_DIR)/opt/etc/bash_completion.d
-	install $(<D)/contrib/completion/git-completion.bash $(GIT_IPK_DIR)/opt/etc/bash_completion.d
+	install $(<D)/contrib/completion/* $(GIT_IPK_DIR)/opt/etc/bash_completion.d
 	$(MAKE) $(GIT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT_IPK_DIR)
@@ -421,9 +421,9 @@ git-clean:
 # directories.
 #
 git-dirclean:
-	rm -rf $(BUILD_DIR)/$(GIT_DIR) $(GIT_BUILD_DIR)
-	rm -rf $(GIT_IPK_DIR) $(GIT_IPK)
-	rm -rf $(GIT-LITE_IPK_DIR) $(GIT-LITE_IPK)
+	rm -rf $(BUILD_DIR)/$(GIT_DIR)
+	rm -rf $(GIT_BUILD_DIR) $(GIT_IPK_DIR) $(GIT_IPK)
+	rm -rf $(GIT-LITE_BUILD_DIR) $(GIT-LITE_IPK_DIR) $(GIT-LITE_IPK)
 	rm -rf $(GIT-MANPAGES_IPK_DIR) $(GIT-MANPAGES_IPK)
 	rm -rf $(GIT-SVN_IPK_DIR) $(GIT-SVN_IPK)
 
