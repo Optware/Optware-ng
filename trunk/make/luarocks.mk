@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LUAROCKS_SITE=http://luarocks.org/releases
-LUAROCKS_VERSION=2.0.8
+LUAROCKS_VERSION=2.0.10
 LUAROCKS_SOURCE=luarocks-$(LUAROCKS_VERSION).tar.gz
 LUAROCKS_DIR=luarocks-$(LUAROCKS_VERSION)
 LUAROCKS_UNZIP=zcat
