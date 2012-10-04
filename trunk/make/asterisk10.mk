@@ -24,7 +24,7 @@ ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
 ASTERISK10_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK10_BASE_VERSION=10.5.0
+ASTERISK10_BASE_VERSION=10.8.0
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -341,7 +341,8 @@ endif
 		--with-popt=$(STAGING_PREFIX) \
 		--without-tds \
 		--without-openais \
-		--with-sqlite=$(STAGING_PREFIX) \
+		--without-sqlite \
+		--with-sqlite3=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
 		--with-netsnmp=$(STAGING_PREFIX) \
