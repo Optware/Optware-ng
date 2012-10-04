@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RADIUSCLIENT_NG_SITE=http://download2.berlios.de/radiusclient-ng
+RADIUSCLIENT_NG_SITE=http://download.berlios.de/radiusclient-ng
 RADIUSCLIENT_NG_VERSION=0.5.6
 RADIUSCLIENT_NG_SOURCE=radiusclient-ng-$(RADIUSCLIENT_NG_VERSION).tar.gz
 RADIUSCLIENT_NG_DIR=radiusclient-ng-$(RADIUSCLIENT_NG_VERSION)
