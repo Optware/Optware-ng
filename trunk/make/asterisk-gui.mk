@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK_GUI_SITE=http://downloads.asterisk.org/pub/telephony/asterisk-gui/releases/
-ASTERISK_GUI_VERSION=2.0.4
+ASTERISK_GUI_VERSION=2.1.0-rc1
 ASTERISK_GUI_SOURCE=asterisk-gui-$(ASTERISK_GUI_VERSION).tar.gz
 ASTERISK_GUI_DIR=asterisk-gui-$(ASTERISK_GUI_VERSION)
 ASTERISK_GUI_UNZIP=zcat
