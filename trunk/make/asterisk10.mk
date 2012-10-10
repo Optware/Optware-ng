@@ -24,7 +24,7 @@ ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
 ASTERISK10_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK10_BASE_VERSION=10.8.0
+ASTERISK10_BASE_VERSION=10.9.0
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
