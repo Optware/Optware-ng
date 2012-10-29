@@ -1,0 +1,22 @@
+--- Python-3.2.3/Modules/_posixsubprocess.c.orig	2012-04-11 06:54:07.000000000 +0000
++++ Python-3.2.3/Modules/_posixsubprocess.c	2012-10-29 20:01:49.838508734 +0000
+@@ -202,7 +202,18 @@
+     int fd_dir_fd;
+     if (start_fd >= end_fd)
+         return;
+-        fd_dir_fd = open(FD_DIR, O_RDONLY | O_CLOEXEC, 0);
++#ifdef O_CLOEXEC
++    fd_dir_fd = open(FD_DIR, O_RDONLY | O_CLOEXEC, 0);
++#else
++    fd_dir_fd = open(FD_DIR, O_RDONLY, 0);
++#ifdef FD_CLOEXEC
++    {
++        int old = fcntl(fd_dir_fd, F_GETFD);
++        if (old != -1)
++            fcntl(fd_dir_fd, F_SETFD, old | FD_CLOEXEC);
++    }
++#endif
++#endif
+     if (fd_dir_fd == -1) {
+         /* No way to get a list of open fds. */
+         _close_fds_by_brute_force(start_fd, end_fd, py_fds_to_keep);
