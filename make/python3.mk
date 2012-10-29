@@ -42,7 +42,7 @@ PYTHON3_SUGGESTS=
 #
 # PYTHON3_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON3_IPK_VERSION=2
+PYTHON3_IPK_VERSION=3
 
 #
 # PYTHON3_CONFFILES should be a list of user-editable files
@@ -92,6 +92,7 @@ PYTHON3_PATCHES=\
 	$(PYTHON3_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
 	$(PYTHON3_SOURCE_DIR)/with-libintl.patch \
+	$(PYTHON3_SOURCE_DIR)/O_CLOEXEC.patch \
 
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
 PYTHON3_PATCHES+= $(PYTHON3_SOURCE_DIR)/disable-ncursesw.patch
