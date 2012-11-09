@@ -23,7 +23,7 @@
 OPENSIPS_SOURCE_TYPE=tarball
 #OPENSIPS_SOURCE_TYPE=svn
 
-OPENSIPS_BASE_VERSION=1.7.2
+OPENSIPS_BASE_VERSION=1.8.2
 
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 OPENSIPS_VERSION=$(OPENSIPS_BASE_VERSION)
@@ -45,7 +45,7 @@ OPENSIPS_DESCRIPTION=OpenSIPS Express Router
 OPENSIPS_SECTION=util
 OPENSIPS_PRIORITY=optional
 OPENSIPS_DEPENDS=coreutils,openssl
-OPENSIPS_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,perl,confuse,openldap
+OPENSIPS_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,confuse,openldap,libmicrohttpd
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 OPENSIPS_SUGGESTS=$(OPENSIPS_BASE_SUGGESTS),mysql
 endif
@@ -128,7 +128,7 @@ else
 OPENSIPS_INCLUDE_MODULES=$(OPENSIPS_INCLUDE_BASE_MODULES)
 endif
 
-#OPENSIPS_EXCLUDE_MODULES=exclude_modules="seas mi_xmlrpc osp pa"
+OPENSIPS_EXCLUDE_MODULES=drouting siptrace sipcapture cachedb_memcached cachedb_cassandra cachedb_redis db_berkeley db_oracle event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350 httpd mi_http pi_http
 OPENSIPS_DEBUG_MODE=mode=debug
 
 #
@@ -191,7 +191,8 @@ opensips-source: $(DL_DIR)/$(OPENSIPS_SOURCE) $(OPENSIPS_PATCHES)
 #
 $(OPENSIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSIPS_SOURCE) $(OPENSIPS_PATCHES) make/opensips.mk
 	$(MAKE) openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage
-	$(MAKE) postgresql-stage net-snmp-stage perl-stage confuse-stage openldap-stage
+	$(MAKE) postgresql-stage net-snmp-stage confuse-stage openldap-stage pcre-stage
+	#$(MAKE) libmicrohttpd-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
@@ -217,6 +218,12 @@ endif
 	sed -i -e '/^DEFS/s|-I/usr/include/libxml2 ||' \
 	       -e '/DEFS/s|-I/usr/include ||' \
 	       -e 's|-I/opt/include ||' $(@D)/modules/*/Makefile
+	sed -i -e 's/LLONG_MIN/-9223372036854775807LL - 1LL/' \
+           -e 's/LLONG_MAX/9223372036854775807LL/' $(@D)/db/db_ut.c
+	sed -i -e 's/str \*id;/str \*id/' $(@D)/modules/drouting/prefix_tree.h
+	sed -i -e 's/<curses/<ncurses/' $(@D)/menuconfig/*.[hc]
+	sed -i -e 's/(MENUCONFIG_HAVE_SOURCES)/(MENUCONFIG_HAVE_SOURCES) $$(CC_EXTRA_OPTS)/' \
+	       -e 's/-lcurses/-lncurses $$(LD_EXTRA_OPTS)/' $(@D)/menuconfig/Makefile
 	touch $@
 
 opensips-unpack: $(OPENSIPS_BUILD_DIR)/.configured
@@ -227,13 +234,13 @@ opensips-unpack: $(OPENSIPS_BUILD_DIR)/.configured
 $(OPENSIPS_BUILD_DIR)/.built: $(OPENSIPS_BUILD_DIR)/.configured
 	rm -f $@
 
-	CC_EXTRA_OPTS="$(OPENSIPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \
+	CC_EXTRA_OPTS="$(OPENSIPS_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
 	PERLLDOPTS="$(OPENSIPS_PERLLDOPTS)" PERLCCOPTS="$(OPENSIPS_PERLCCOPTS)" TYPEMAP="$(OPENSIPS_TYPEMAP)" \
-	CROSS_COMPILE="true" \
+	CROSS_COMPILE="true" NICER=0\
 	TLS=1 LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) -C $(OPENSIPS_BUILD_DIR) $(OPENSIPS_MAKEFLAGS) $(OPENSIPS_DEBUG_MODE) \
-	include_modules="$(OPENSIPS_INCLUDE_MODULES)" $(OPENSIPS_EXCLUDE_MODULES) prefix=/opt all
+	include_modules="$(OPENSIPS_INCLUDE_MODULES)" exclude_modules="$(OPENSIPS_EXCLUDE_MODULES)" prefix=/opt all
 	touch $@
 
 #
@@ -291,7 +298,7 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 	TLS=1 LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) -C $(OPENSIPS_BUILD_DIR) $(OPENSIPS_MAKEFLAGS) DESTDIR=$(OPENSIPS_IPK_DIR) \
 	prefix=$(OPENSIPS_IPK_DIR)/opt cfg-prefix=$(OPENSIPS_IPK_DIR)/opt $(OPENSIPS_DEBUG_MODE) \
-	include_modules="$(OPENSIPS_INCLUDE_MODULES)" $(OPENSIPS_EXCLUDE_MODULES) install
+	include_modules="$(OPENSIPS_INCLUDE_MODULES)" exclude_modules="$(OPENSIPS_EXCLUDE_MODULES)" install
 
 	$(MAKE) $(OPENSIPS_IPK_DIR)/CONTROL/control
 	echo $(OPENSIPS_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSIPS_IPK_DIR)/CONTROL/conffiles
@@ -299,6 +306,7 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 	for f in `find $(OPENSIPS_IPK_DIR)/opt/lib/opensips/modules -name '*.so'`; do $(STRIP_COMMAND) $$f; done
 	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)/opt/sbin/opensips
 	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsunix
+	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)/opt/sbin/osipsconfig
 
 	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsdbctl
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsdbctl
@@ -324,8 +332,8 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 	############################
 	# installing perl examples #
 	############################
-	mkdir $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples/perl
-	cp -r $(OPENSIPS_BUILD_DIR)/modules/perl/doc/samples/* $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples/perl
+	#mkdir $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples/perl
+	#cp -r $(OPENSIPS_BUILD_DIR)/modules/perl/doc/samples/* $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples/perl
 
 	####################
 	# fixing man files #
