@@ -55,9 +55,9 @@ OPENSIPS_CONFLICTS=
 # OPENSIPS_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
-OPENSIPS_IPK_VERSION=1
+OPENSIPS_IPK_VERSION=2
 else
-OPENSIPS_IPK_VERSION=1
+OPENSIPS_IPK_VERSION=2
 endif
 
 #
@@ -128,7 +128,8 @@ else
 OPENSIPS_INCLUDE_MODULES=$(OPENSIPS_INCLUDE_BASE_MODULES)
 endif
 
-OPENSIPS_EXCLUDE_MODULES=drouting siptrace sipcapture cachedb_memcached cachedb_cassandra cachedb_redis db_berkeley db_oracle event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350 httpd mi_http pi_http
+#OPENSIPS_EXCLUDE_MODULES=drouting siptrace sipcapture cachedb_memcached cachedb_cassandra cachedb_redis db_berkeley db_oracle event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350 httpd mi_http pi_http
+OPENSIPS_EXCLUDE_MODULES=drouting siptrace sipcapture cachedb_memcached cachedb_cassandra cachedb_redis db_berkeley db_oracle event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350
 OPENSIPS_DEBUG_MODE=mode=debug
 
 #
@@ -192,7 +193,7 @@ opensips-source: $(DL_DIR)/$(OPENSIPS_SOURCE) $(OPENSIPS_PATCHES)
 $(OPENSIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSIPS_SOURCE) $(OPENSIPS_PATCHES) make/opensips.mk
 	$(MAKE) openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage
 	$(MAKE) postgresql-stage net-snmp-stage confuse-stage openldap-stage pcre-stage
-	#$(MAKE) libmicrohttpd-stage
+	$(MAKE) libmicrohttpd-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
