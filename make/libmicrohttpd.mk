@@ -52,7 +52,7 @@ LIBMICROHTTPD_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBMICROHTTPD_CPPFLAGS=
+LIBMICROHTTPD_CPPFLAGS ?=
 LIBMICROHTTPD_LDFLAGS=
 
 #
