@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-REDIS_SITE=http://cloud.github.com/downloads/andymccurdy/redis-py
-PY-REDIS_VERSION=2.4.13
+PY-REDIS_VERSION=2.7.2
 PY-REDIS_SOURCE_UPSTREAM=redis-$(PY-REDIS_VERSION).tar.gz
 PY-REDIS_SOURCE=py-redis-$(PY-REDIS_VERSION).tar.gz
 PY-REDIS_DIR=redis-$(PY-REDIS_VERSION)
