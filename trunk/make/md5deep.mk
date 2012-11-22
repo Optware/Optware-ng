@@ -53,7 +53,7 @@ MD5DEEP_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 MD5DEEP_CPPFLAGS=
-MD5DEEP_LDFLAGS=
+MD5DEEP_LDFLAGS ?=
 
 #
 # MD5DEEP_BUILD_DIR is the directory in which the build is done.
