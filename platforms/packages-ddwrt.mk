@@ -31,6 +31,8 @@ BROKEN_PACKAGES = \
 JAMVM_VERSION = 1.5.1
 JAMVM_IPK_VERSION = 1
 
+MD5DEEP_LDFLAGS := -lpthread
+
 #SAMBA35_CONFIG_ARGS_EXTRA := --without-cifsmount --without-cifsumount
 
 PYTHON3_CONFIGURE_ENV:=ac_cv_func_wcsftime=no
