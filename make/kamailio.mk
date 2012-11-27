@@ -33,7 +33,7 @@ KAMAILIO_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
 KAMAILIO_DESCRIPTION=Kamailio Express Router
 KAMAILIO_SECTION=util
 KAMAILIO_PRIORITY=optional
-KAMAILIO_DEPENDS=coreutils,openssl
+KAMAILIO_DEPENDS=coreutils,openssl,gawk
 KAMAILIO_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,confuse,openldap
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 KAMAILIO_SUGGESTS=$(KAMAILIO_BASE_SUGGESTS),mysql
