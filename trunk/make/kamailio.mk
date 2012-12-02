@@ -50,10 +50,11 @@ KAMAILIO_IPK_VERSION=1
 KAMAILIO_CONFFILES=\
 /opt/etc/kamailio/dictionary.kamailio \
 /opt/etc/kamailio/kamailio.cfg \
-/opt/etc/kamailio/kamailio-selfsigned.key \
-/opt/etc/kamailio/kamailio-selfsigned.pem \
 /opt/etc/kamailio/kamctlrc \
-/opt/etc/kamailio/tls.cfg
+
+#/opt/etc/kamailio/kamailio-selfsigned.key \
+#/opt/etc/kamailio/kamailio-selfsigned.pem \
+#/opt/etc/kamailio/tls.cfg
 
 #
 # KAMAILIO_PATCHES should list any patches, in the the order in
