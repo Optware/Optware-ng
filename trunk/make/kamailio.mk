@@ -79,7 +79,7 @@ KAMAILIO_INCLUDE_PUA_MODULES=pua pua_bla pua_dialoginfo pua_mi pua_reginfo pua_u
 KAMAILIO_INCLUDE_PRESENCE_MODULES=presence presence_conference presence_dialoginfo presence_mwi presence_profile presence_reginfo presence_xml presence_b2b
 KAMAILIO_INCLUDE_AAA_MODULES=auth auth_identity auth_db auth_diameter auth_radius auth_db auth_radius
 KAMAILIO_INCLUDE_LDAP_MODULES=ldap
-KAMAILIO_INCLUDE_BASE_MODULES=$(KAMAILIO_INCLUDE_PRESENCE_MODULES) $(KAMAILIO_INCLUDE_PUA_MODULES) xmpp cpl-c db_unixodbc db_postgres carrierroute rls identity regex $(KAMAILIO_INCLUDE_AAA_MODULES) $(KAMAILIO_INCLUDE_LDAP_MODULES)
+KAMAILIO_INCLUDE_BASE_MODULES=$(KAMAILIO_INCLUDE_PUA_MODULES) xmpp cpl-c db_unixodbc db_postgres carrierroute rls identity regex $(KAMAILIO_INCLUDE_AAA_MODULES) $(KAMAILIO_INCLUDE_LDAP_MODULES)
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 KAMAILIO_INCLUDE_MODULES=$(KAMAILIO_INCLUDE_BASE_MODULES) db_mysql
@@ -89,7 +89,7 @@ endif
 
 KAMAILIO_EXCLUDE_APP_MODULES=app_lua app_mono app_python
 KAMAILIO_EXCLUDE_DB_MODULES=db_berkeley db_cassandra db_oracle
-KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) bdb siptrace sipcapture geoip identity iptrtpproxy jabber json jsonrpc-c memcached mi_xmlrpc ndb_redis mmgeoip osp perl perlvdb h350 oracle purple seas $(KAMAILIO_EXCLUDE_DB_MODULES)
+KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) bdb siptrace sipcapture geoip identity iptrtpproxy jabber json jsonrpc-c memcached mi_xmlrpc ndb_redis mmgeoip osp perl perlvdb h350 oracle purple seas $(KAMAILIO_EXCLUDE_DB_MODULES) xmlops $(KAMAILIO_INCLUDE_PRESENCE_MODULES) xcap_server tls
 
 #
 # KAMAILIO_BUILD_DIR is the directory in which the build is done.
@@ -155,9 +155,20 @@ endif
 	if test "$(BUILD_DIR)/$(KAMAILIO_DIR)" != "$(KAMAILIO_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(KAMAILIO_DIR) $(KAMAILIO_BUILD_DIR) ; \
 	fi
-	sed -i -e '/^DEFS/s|-I/usr/include/libxml2 ||' \
+	sed -i -e 's|-I/usr/include/libxml2 ||' \
+	       -e 's|-I/usr/include/mysql||' \
+	       -e 's|-L/usr/lib/mysql||' \
+	       -e 's|-L/usr/lib64/mysql||' \
+	       -e 's|-L/usr/pkg/lib||' \
 	       -e '/DEFS/s|-I/usr/include ||' \
 	       -e 's|-I/opt/include ||' $(@D)/modules/*/Makefile
+	sed -i -e 's|-I/usr/include/libxml2 ||' \
+	       -e 's|-I/usr/include/mysql||' \
+	       -e 's|-L/usr/lib/mysql||' \
+	       -e 's|-L/usr/lib64/mysql||' \
+	       -e 's|-L/usr/pkg/lib||' \
+	       -e '/DEFS/s|-I/usr/include ||' \
+	       -e 's|-I/opt/include ||' $(@D)/modules_k/*/Makefile
 	sed -i -e '/^#include /s|linux/netlink.h|linux/types.h"\n#include "linux/netlink.h|' $(@D)/socket_info.c
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="true" \
