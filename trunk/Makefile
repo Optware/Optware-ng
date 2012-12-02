@@ -59,6 +59,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	unbound \
 	ldns \
 	dnssec-trigger \
+	kamailio \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -81,11 +82,9 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	iozone \
 	bpalogin \
 	clinkcc \
-        icu xerces-c \
+	icu xerces-c \
 	nemesis \
-	\
 	appweb atk bluez-utils bluez-hcidump libextractor sandbox \
-	kamailio \
  
 PERL_PACKAGES = \
 	perl \
@@ -308,7 +307,7 @@ COMMON_CROSS_PACKAGES = \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
 	gloox golang gpsd \
-	grep groff gsasl gsnmp gtmess gtypist gutenprint gzip  \
+	grep groff gsasl gsnmp gtmess gtypist gutenprint gzip \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
@@ -366,7 +365,7 @@ COMMON_CROSS_PACKAGES = \
 	newsbeuter newt \
 	nfs-server nfs-utils \
 	nget nginx ngrep nickle ninvaders nload \
-        nmap nmon noip nostromo nrpe \
+	nmap nmon noip nostromo nrpe \
 	ntfs-3g ntfsprogs \
 	ntop ntp ntpclient nttcp nut nvi nylon nzbget nzbget-testing \
 	ocaml oleo open2300 \
@@ -435,8 +434,8 @@ COMMON_NATIVE_PACKAGES = \
 	hugs \
 	mldonkey \
 	mzscheme \
-        ocaml \
-        pure-ftpd \
+	ocaml \
+	pure-ftpd \
 	unison \
 
 # libiconv - has been made obsolete by gconv-modules
@@ -519,10 +518,10 @@ PACKAGES ?= $(COMMON_NATIVE_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 else
 PACKAGES ?= $(filter-out \
-    $(NATIVE_PACKAGES) \
-    $(BROKEN_PACKAGES) \
-    $(if $(filter x86_64, $(HOST_MACHINE)), $(PACKAGES_BROKEN_ON_64BIT_HOST), ) \
-    , $(COMMON_CROSS_PACKAGES) $(SPECIFIC_PACKAGES))
+	$(NATIVE_PACKAGES) \
+	$(BROKEN_PACKAGES) \
+	$(if $(filter x86_64, $(HOST_MACHINE)), $(PACKAGES_BROKEN_ON_64BIT_HOST), ) \
+	, $(COMMON_CROSS_PACKAGES) $(SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 
@@ -548,7 +547,7 @@ HOST_TOOL_AUTOMAKE19 = \
 	$(MAKE) automake19-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_ACLOCAL14 = \
 	$(MAKE) automake14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
-HOST_TOOL_AUTOMAKE14 =  \
+HOST_TOOL_AUTOMAKE14 = \
 	$(MAKE) automake14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 
 
