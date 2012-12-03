@@ -157,6 +157,7 @@ endif
 		then mv $(BUILD_DIR)/$(KAMAILIO_DIR) $(KAMAILIO_BUILD_DIR) ; \
 	fi
 	sed -i -e 's|-I/usr/include/libxml2 ||' \
+	       -e 's|-L /usr/lib||' \
 	       -e 's|-I/usr/include/mysql||' \
 	       -e 's|-L/usr/lib/mysql||' \
 	       -e 's|-L/usr/lib64/mysql||' \
