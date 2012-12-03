@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	ecl \
 	erl-ejabberd \
 	golang \
+	kamailio \
 	ldconfig \
 	mkvtoolnix \
 	sandbox \
