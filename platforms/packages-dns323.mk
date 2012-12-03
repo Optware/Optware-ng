@@ -12,7 +12,7 @@ BROKEN_PACKAGES = \
 	ficy fuppes gnu-smalltalk \
 	gloox \
 	inferno \
-	gtmess ipac-ng iptraf kismet \
+	gtmess ipac-ng iptraf kamailio kismet \
 	mediatomb \
 	mysql-connector-odbc \
 	ntop openser pcapsipdump \
