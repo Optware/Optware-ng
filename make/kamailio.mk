@@ -172,6 +172,10 @@ endif
 	       -e '/DEFS/s|-I/usr/include ||' \
 	       -e 's|-I/opt/include ||' $(@D)/modules_k/*/Makefile
 	sed -i -e '/^#include /s|linux/netlink.h|linux/types.h"\n#include "linux/netlink.h|' $(@D)/socket_info.c
+	case "$(GCC_VERSION)" in \
+		4.0*|4.1*) \
+			sed -i -e 's/-minline-all-stringops //' $(@D)/ccopts.sh $(@D)/Makefile.defs;; \
+	esac
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="true" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \

@@ -59,7 +59,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	unbound \
 	ldns \
 	dnssec-trigger \
-	kamailio \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -74,7 +73,6 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
 # clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
 # clinkcc - depends on broken xerces-c package
-# kamailio - -I/usr/include or -L/usr/lib cross compilation failed
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
@@ -321,7 +319,7 @@ COMMON_CROSS_PACKAGES = \
 	ipac-ng iperf ipkg-web iptables iptraf iputils-arping \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jfsutils jikes jove joe \
-	keychain kismet kissdx knock \
+	kamailio keychain kismet kissdx knock \
 	lame launchtool lcd4linux ldconfig leafnode less lftp lha \
 	liba52 libao libart libassuan libbt \
 	libcapi20 libcdio libcurl \
