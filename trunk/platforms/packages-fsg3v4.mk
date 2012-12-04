@@ -37,7 +37,6 @@ BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	quagga \
 	\
-	openser \
 	sandbox \
 	snort \
 	softflowd \

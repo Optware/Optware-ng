@@ -15,7 +15,7 @@ BROKEN_PACKAGES = \
 	gtmess ipac-ng iptraf kamailio kismet \
 	mediatomb \
 	mysql-connector-odbc \
-	ntop openser pcapsipdump \
+	ntop pcapsipdump \
 	py-mysql \
 	quagga \
 	rssh sablevm \
