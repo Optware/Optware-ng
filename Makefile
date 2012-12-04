@@ -37,7 +37,7 @@ ffmpeg ushare fuppes mc irssi util-linux-ng mdadm vlc \
 ivorbis-tools jabberd rrdcollect gambit-c obexftp \
 vorbis-tools rrdtool jove git launchtool gnu-smalltalk \
 ldconfig libao gloox libcdio libdlna libdvb gift-ares \
-opendchub openser wakelan opensips \
+opendchub wakelan opensips \
 xauth xaw xcursor xmu xt xterm xvid \
 ossp-js mediatomb memcached minidlna mkvtoolnix \
 phoneme-advanced motion picoLisp motor pkgconfig moe \
@@ -368,7 +368,7 @@ COMMON_CROSS_PACKAGES = \
 	ntop ntp ntpclient nttcp nut nvi nylon nzbget nzbget-testing \
 	ocaml oleo open2300 \
 	openobex obexftp \
-	opendchub openjpeg openldap openser opensips \
+	opendchub openjpeg openldap opensips \
 	openssl openssh openvpn \
 	optware-devel ossp-js oww owwlog \
 	p7zip p910nd pal palantir pango parted \

@@ -12,7 +12,7 @@ BROKEN_PACKAGES = \
         $(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule bitchx cairo clamav dmsetup inferno \
 	iptraf \
-	ldconfig mpdscribble nfs-utils openser opensips \
+	ldconfig mpdscribble nfs-utils opensips \
 	pango pixman puppy qemu transcode vlc vte xchat \
 	x264 lm-sensors
 
