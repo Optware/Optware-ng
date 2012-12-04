@@ -143,7 +143,7 @@ kamailio-source: $(DL_DIR)/$(KAMAILIO_SOURCE) $(KAMAILIO_PATCHES)
 #
 $(KAMAILIO_BUILD_DIR)/.configured: $(DL_DIR)/$(KAMAILIO_SOURCE) $(KAMAILIO_PATCHES) make/kamailio.mk
 	$(MAKE) openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage
-	$(MAKE) postgresql-stage net-snmp-stage confuse-stage openldap-stage pcre-stage
+	$(MAKE) postgresql-stage net-snmp-stage confuse-stage libcurl-stage openldap-stage pcre-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
@@ -177,7 +177,7 @@ endif
 			sed -i -e 's/-minline-all-stringops //' $(@D)/ccopts.sh $(@D)/Makefile.defs;; \
 	esac
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
-	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="true" \
+	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) --debug=ij -C $(KAMAILIO_BUILD_DIR) FLAVOUR=kamailio cfg $(KAMAILIO_MAKEFLAGS) \
 	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt \
@@ -194,7 +194,7 @@ $(KAMAILIO_BUILD_DIR)/.built: $(KAMAILIO_BUILD_DIR)/.configured
 	rm -f $@
 
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
-	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="true" \
+	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) -C $(KAMAILIO_BUILD_DIR) quiet=noisy $(KAMAILIO_MAKEFLAGS) \
 	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt all \
@@ -251,7 +251,7 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	rm -rf $(KAMAILIO_IPK_DIR) $(BUILD_DIR)/kamailio_*_$(TARGET_ARCH).ipk
 
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS)" \
-	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="true" \
+	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) -C $(KAMAILIO_BUILD_DIR) quiet=noisy $(KAMAILIO_MAKEFLAGS) DESTDIR=$(KAMAILIO_IPK_DIR) \
 	prefix=/opt cfg-prefix=$(KAMAILIO_IPK_DIR)/opt install
