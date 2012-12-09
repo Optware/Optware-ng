@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET_VERSION=0.8.0
+NZBGET_VERSION=9.0
 NZBGET_SOURCE=nzbget-$(NZBGET_VERSION).tar.gz
 NZBGET_DIR=nzbget-$(NZBGET_VERSION)
 NZBGET_UNZIP=zcat
@@ -131,6 +131,7 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-tlslib=OpenSSL \
+		--program-prefix= \
 		$(NZBGET_CONFIGURE_OPTS) \
 	)
 	sed -i -e '/^CPPFLAGS/s:-I/usr.*$$::' -e '/^LDFLAGS/s:-L/usr.*$$::' \
@@ -196,18 +197,8 @@ $(NZBGET_IPK_DIR)/CONTROL/control:
 #
 $(NZBGET_IPK): $(NZBGET_BUILD_DIR)/.built
 	rm -rf $(NZBGET_IPK_DIR) $(BUILD_DIR)/nzbget_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(NZBGET_BUILD_DIR) DESTDIR=$(NZBGET_IPK_DIR) install
-	install -d $(NZBGET_IPK_DIR)/opt/bin $(NZBGET_IPK_DIR)/opt/sbin $(NZBGET_IPK_DIR)/opt/share/doc/nzbget
-	install -m 755 $(NZBGET_BUILD_DIR)/nzbget $(NZBGET_IPK_DIR)/opt/bin/
-	install -m 755 $(NZBGET_BUILD_DIR)/nzbgetd $(NZBGET_IPK_DIR)/opt/sbin/
-	install -m 644 $(NZBGET_BUILD_DIR)/README $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
-	install -m 644 $(NZBGET_BUILD_DIR)/nzbget.conf.example $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
-	install -m 755 $(NZBGET_BUILD_DIR)/postprocess-example.sh $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
-	install -m 644 $(NZBGET_BUILD_DIR)/postprocess-example.conf $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
+	$(MAKE) -C $(NZBGET_BUILD_DIR) DESTDIR=$(NZBGET_IPK_DIR) install
 	$(STRIP_COMMAND) $(NZBGET_IPK_DIR)/opt/bin/nzbget
-	sed -i s:/usr/local/bin:/opt/bin: $(NZBGET_IPK_DIR)/opt/sbin/nzbgetd
-#	install -d $(NZBGET_IPK_DIR)/opt/etc/
-#	install -m 644 $(NZBGET_SOURCE_DIR)/nzbget.conf $(NZBGET_IPK_DIR)/opt/etc/nzbget.conf
 #	install -d $(NZBGET_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(NZBGET_SOURCE_DIR)/rc.nzbget $(NZBGET_IPK_DIR)/opt/etc/init.d/SXXnzbget
 	$(MAKE) $(NZBGET_IPK_DIR)/CONTROL/control
