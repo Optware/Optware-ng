@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEON_SITE=http://www.webdav.org/neon
-NEON_VERSION=0.29.3
+NEON_VERSION=0.29.6
 NEON_SOURCE=neon-$(NEON_VERSION).tar.gz
 NEON_DIR=neon-$(NEON_VERSION)
 NEON_UNZIP=zcat
@@ -154,7 +154,7 @@ $(NEON_BUILD_DIR)/.staged: $(NEON_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(NEON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -e "s:echo \$${libdir}/libneon.la:echo $(STAGING_DIR)/\$${libdir}/libneon.la:" <$(NEON_BUILD_DIR)/neon-config >$(STAGING_DIR)/opt/bin/neon-config
-	sed -i -e '/echo/s|-I$${includedir}/neon|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/neon-config
+	sed -i -e '/echo/s|-I$${includedir}/neon|-I$(STAGING_INCLUDE_DIR)/neon|' $(STAGING_PREFIX)/bin/neon-config
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/neon.pc
 	touch $@
 
