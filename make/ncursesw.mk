@@ -17,7 +17,7 @@ NCURSESW_PRIORITY=optional
 NCURSESW_DEPENDS=ncurses
 NCURSESW_CONFLICTS=
 
-NCURSESW_IPK_VERSION=1
+NCURSESW_IPK_VERSION=2
 
 NCURSESW_IPK=$(BUILD_DIR)/ncursesw_$(NCURSESW_VERSION)-$(NCURSESW_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSESW-DEV_IPK=$(BUILD_DIR)/ncursesw-dev_$(NCURSESW_VERSION)-$(NCURSESW_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -28,7 +28,7 @@ NCURSESW-DEV_IPK_DIR=$(BUILD_DIR)/ncursesw-dev-$(NCURSESW_VERSION)-ipk
 
 ncursesw-source: $(DL_DIR)/$(NCURSES_SOURCE)
 
-$(NCURSESW_DIR)/.configured: $(DL_DIR)/$(NCURSESW_SOURCE)
+$(NCURSESW_DIR)/.configured: $(DL_DIR)/$(NCURSESW_SOURCE) make/ncursesw.mk
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(NCURSES) $(@D)
 	rm -rf  $(STAGING_INCLUDE_DIR)/ncursesw \
@@ -87,6 +87,7 @@ ncursesw: $(NCURSESW_DIR)/.built
 $(NCURSESW_DIR)/.staged: $(NCURSESW_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/ncursesw[0-9]*-config
 	touch $@
 
 ncursesw-stage: $(NCURSESW_DIR)/.staged
