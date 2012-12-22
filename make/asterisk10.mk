@@ -55,8 +55,10 @@ asterisk14-core-sounds-en-alaw\
 ,asterisk14-moh-opsound-g729\
 ,asterisk14-moh-opsound-gsm\
 ,asterisk14-moh-opsound-ulaw\
+,libical\
 ,libogg\
 ,net-snmp\
+,neon\
 ,radiusclient-ng\
 ,unixodbc
 
@@ -79,7 +81,7 @@ ASTERISK10_CONFLICTS=asterisk12,asterisk14,asterisk16,asterisk-sounds,asterisk-c
 #
 # ASTERISK10_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK10_IPK_VERSION=1
+ASTERISK10_IPK_VERSION=2
 
 #
 # ASTERISK10_CONFFILES should be a list of user-editable files
@@ -193,7 +195,8 @@ ASTERISK10_CONFFILES=\
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ASTERISK10_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR)
+ASTERISK10_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR) \
+	-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/ncurses
 ifeq (slugosbe, $(OPTWARE_TARGET))
 ASTERISK10_CPPFLAGS+= -DPATH_MAX=4096
 endif
@@ -305,7 +308,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
 	$(MAKE) sqlite-stage libogg-stage libxml2-stage
-	$(MAKE) mysql-stage bluez2-libs-stage
+	$(MAKE) mysql-stage bluez2-libs-stage neon-stage libical-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK10_DIR) $(ASTERISK10_BUILD_DIR)
 	$(ASTERISK10_UNZIP) $(DL_DIR)/$(ASTERISK10_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK10_PATCHES)" ; \
@@ -349,6 +352,10 @@ endif
 		--with-ltdl=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
+		--with-neon=$(STAGING_PREFIX) \
+		--with-ical=$(STAGING_PREFIX) \
+		--with-ncurses=$(STAGING_PREFIX) \
+		--with-libxml2=$(STAGING_PREFIX) \
 		--without-postgres \
 		--without-pwlib \
 		--without-usb \
@@ -356,7 +363,6 @@ endif
 		--without-imap \
 		--without-dahdi \
 		--without-sdl \
-		--disable-xmldoc \
 		$(ASTERISK10_CONFIGURE_OPTS) \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
@@ -443,6 +449,10 @@ $(ASTERISK10_IPK): $(ASTERISK10_BUILD_DIR)/.built
 	sed -i -e 's#/var/calls#/opt/var/calls#g' $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/usr/bin/streamplayer#/opt/sbin/streamplayer#g' $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/opt/opt/#/opt/#g' $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/*
+	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#' \
+		-e 's#/var/spool/asterisk#/opt/var/spool/asterisk#' \
+		-e 's#/var/log/asterisk#/opt/var/log/asterisk#' \
+		-e 's#/etc/asterisk#/opt/etc/asterisk#' $(ASTERISK18_IPK_DIR)/opt/var/lib/asterisk/static-http/core-en_US.xml
 
 	echo "" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => func_odbc.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
