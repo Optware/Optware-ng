@@ -449,10 +449,10 @@ $(ASTERISK10_IPK): $(ASTERISK10_BUILD_DIR)/.built
 	sed -i -e 's#/var/calls#/opt/var/calls#g' $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/usr/bin/streamplayer#/opt/sbin/streamplayer#g' $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/opt/opt/#/opt/#g' $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/*
-	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#' \
-		-e 's#/var/spool/asterisk#/opt/var/spool/asterisk#' \
-		-e 's#/var/log/asterisk#/opt/var/log/asterisk#' \
-		-e 's#/etc/asterisk#/opt/etc/asterisk#' $(ASTERISK18_IPK_DIR)/opt/var/lib/asterisk/static-http/core-en_US.xml
+	#sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#' \
+	#	-e 's#/var/spool/asterisk#/opt/var/spool/asterisk#' \
+	#	-e 's#/var/log/asterisk#/opt/var/log/asterisk#' \
+	#	-e 's#/etc/asterisk#/opt/etc/asterisk#' $(ASTERISK18_IPK_DIR)/opt/var/lib/asterisk/static-http/core-en_US.xml
 
 	echo "" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => func_odbc.so" >> $(ASTERISK10_IPK_DIR)/opt/etc/asterisk/modules.conf
