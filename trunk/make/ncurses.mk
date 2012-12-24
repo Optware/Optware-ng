@@ -24,7 +24,7 @@ else
 NCURSES_FOR_OPTWARE_TARGET=ncurses
 endif
 
-NCURSES_IPK_VERSION=2
+NCURSES_IPK_VERSION=3
 
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES-DEV_IPK=$(BUILD_DIR)/ncurses-dev_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -108,6 +108,7 @@ $(NCURSES_DIR)/.staged: $(NCURSES_DIR)/.built
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/ncurses[0-9]*-config
 	ln -sf ncurses/ncurses.h $(STAGING_INCLUDE_DIR)
+	ln -sf ncurses/curses.h $(STAGING_INCLUDE_DIR)
 	touch $@
 
 ncurses-stage: $(NCURSES_DIR)/.staged
@@ -171,6 +172,8 @@ endif
 	# ncurses-dev
 	install -d $(NCURSES-DEV_IPK_DIR)/opt/include/ncurses
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES-DEV_IPK_DIR) install.includes
+	ln -sf ncurses/ncurses.h $(NCURSES-DEV_IPK_DIR)/opt/include/
+	ln -sf ncurses/curses.h $(NCURSES-DEV_IPK_DIR)/opt/include/
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
 	$(MAKE) $(NCURSES-DEV_IPK_DIR)/CONTROL/control
