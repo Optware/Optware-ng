@@ -24,7 +24,7 @@ ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
 ASTERISK10_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK10_BASE_VERSION=10.11.0
+ASTERISK10_BASE_VERSION=10.11.1
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -81,7 +81,7 @@ ASTERISK10_CONFLICTS=asterisk12,asterisk14,asterisk16,asterisk-sounds,asterisk-c
 #
 # ASTERISK10_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK10_IPK_VERSION=3
+ASTERISK10_IPK_VERSION=1
 
 #
 # ASTERISK10_CONFFILES should be a list of user-editable files
@@ -196,7 +196,7 @@ ASTERISK10_CONFFILES=\
 # compilation or linking flags, then list them here.
 #
 ASTERISK10_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR) \
-	-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/ncurses
+	-I$(STAGING_INCLUDE_DIR)/libxml2
 ifeq (slugosbe, $(OPTWARE_TARGET))
 ASTERISK10_CPPFLAGS+= -DPATH_MAX=4096
 endif
