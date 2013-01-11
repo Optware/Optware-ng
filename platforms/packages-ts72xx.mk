@@ -3,7 +3,6 @@ SPECIFIC_PACKAGES =
 
 # Packages that do not work for ts72xx.
 BROKEN_PACKAGES = \
-	asterisk \
 	erl-ejabberd \
 	ldconfig \
 	mkvtoolnix \

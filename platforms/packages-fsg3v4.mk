@@ -15,7 +15,7 @@ BROKEN_PACKAGES = \
 	crosstool-native optware-devel ufsd \
 	\
 	amule \
-	antinat asterisk \
+	antinat \
 	asterisk14 asterisk14-chan-capi \
 	asterisk16 asterisk16-addons \
 	chillispot \

@@ -12,7 +12,6 @@ SPECIFIC_PACKAGES = \
 # samba36: auth/pampass.c:46:31: error: security/pam_appl.h: No such file or directory
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	asterisk \
 	bitchx btg \
 	clinkcc \
 	ecl \

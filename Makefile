@@ -217,7 +217,6 @@ ERLANG_PACKAGES = \
 
 # removed asterisk-chan-capi, doesn't build because of asterisk-stage problems
 ASTERISK_PACKAGES = \
-	asterisk asterisk-sounds \
 	asterisk10 \
 	asterisk14 \
 	asterisk14-chan-capi \
