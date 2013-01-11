@@ -8,7 +8,7 @@ BROKEN_PACKAGES = \
 	antinat \
 	aria2 \
 	arpwatch \
-	asterisk asterisk16 asterisk16-addons \
+	asterisk16 asterisk16-addons \
 	atk \
 	avahi \
 	bash \

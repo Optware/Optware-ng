@@ -8,7 +8,6 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
 	$(UCLIBC_BROKEN_PACKAGES) \
-	asterisk \
 	bluez-hcidump \
 	dump ficy \
 	erl-ejabberd \
