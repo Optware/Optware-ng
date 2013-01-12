@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=ftp://ftp.astron.com/pub/file
-FILE_VERSION=5.09
+FILE_VERSION=5.12
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
