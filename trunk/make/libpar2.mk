@@ -42,7 +42,7 @@ LIBPAR2_CONFLICTS=
 #
 # LIBPAR2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPAR2_IPK_VERSION=5
+LIBPAR2_IPK_VERSION=6
 
 #
 # LIBPAR2_CONFFILES should be a list of user-editable files
