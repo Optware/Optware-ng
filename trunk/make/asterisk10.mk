@@ -24,7 +24,7 @@ ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
 ASTERISK10_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK10_BASE_VERSION=10.11.1
+ASTERISK10_BASE_VERSION=10.12.0
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -190,6 +190,7 @@ ASTERISK10_CONFFILES=\
 # which they should be applied to the source code.
 #
 #ASTERISK10_PATCHES=$(ASTERISK10_SOURCE_DIR)/sounds.xml.patch
+ASTERISK10_PATCHES += $(ASTERISK10_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
 
 #
 # If the compilation of the package requires additional
@@ -206,7 +207,6 @@ ASTERISK10_LDFLAGS+=-lpthread -ldl -lresolv
 endif
 ifeq (uclibc, $(LIBC_STYLE))
 ASTERISK10_LDFLAGS+=-lpthread -lm
-ASTERISK10_PATCHES += $(ASTERISK10_SOURCE_DIR)/roundf.patch
 endif
 
 ASTERISK10_CONFIGURE_OPTS=
