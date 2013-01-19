@@ -18,6 +18,7 @@ BROKEN_PACKAGES = \
 	golang \
 	iptraf \
 	libdvb \
+	libunistring \
 	minidlna \
 	motor \
 	nget \

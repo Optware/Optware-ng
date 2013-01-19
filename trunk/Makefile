@@ -59,7 +59,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	unbound \
 	ldns \
 	dnssec-trigger \
-	libunistring \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -339,6 +338,7 @@ COMMON_CROSS_PACKAGES = \
 	libpar2 libpcap libpng libpth librsync \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent \
+	libunistring \
 	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
