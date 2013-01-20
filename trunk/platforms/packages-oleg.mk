@@ -25,7 +25,7 @@ BROKEN_PACKAGES = \
 	sandbox \
 	scrobby \
 	taglib \
-	\
+	libunistring \
 	firmware-oleg \
 	lirc \
 
