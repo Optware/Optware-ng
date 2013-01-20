@@ -26,7 +26,7 @@ BROKEN_PACKAGES = \
 	sandbox \
 	scrobby \
 	taglib \
-	\
+	asterisk10\
 	firmware-oleg \
 
 JAMVM_VERSION = 1.5.1
