@@ -1,52 +1,46 @@
---- stunnel/configure.orig	2008-05-22 15:08:14.000000000 +0930
-+++ stunnel/configure	2008-07-26 23:38:49.000000000 +0930
-@@ -20906,16 +20906,8 @@
- if test "${ac_cv_file___dev_ptmx_+set}" = set; then
-   echo $ECHO_N "(cached) $ECHO_C" >&6
+--- stunnel/configure.orig	2012-03-26 12:52:47.000000000 +0400
++++ stunnel/configure	2013-01-27 00:04:47.985393890 +0400
+@@ -11255,14 +11255,8 @@
+ if eval "test \"\${$as_ac_File+set}\"" = set; then :
+   $as_echo_n "(cached) " >&6
  else
 -  test "$cross_compiling" = yes &&
--  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
--echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
--   { (exit 1); exit 1; }; }
+-  as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
 -if test -r ""/dev/ptmx""; then
--  ac_cv_file___dev_ptmx_=yes
+-  eval "$as_ac_File=yes"
 -else
-   ac_cv_file___dev_ptmx_=no
+   eval "$as_ac_File=no"
  fi
 -fi
- { echo "$as_me:$LINENO: result: $ac_cv_file___dev_ptmx_" >&5
- echo "${ECHO_T}$ac_cv_file___dev_ptmx_" >&6; }
- if test $ac_cv_file___dev_ptmx_ = yes; then
-@@ -20930,16 +20922,8 @@
- if test "${ac_cv_file___dev_ptc_+set}" = set; then
-   echo $ECHO_N "(cached) $ECHO_C" >&6
+ eval ac_res=\$$as_ac_File
+ 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+ $as_echo "$ac_res" >&6; }
+@@ -11278,14 +11272,8 @@
+ if eval "test \"\${$as_ac_File+set}\"" = set; then :
+   $as_echo_n "(cached) " >&6
  else
 -  test "$cross_compiling" = yes &&
--  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
--echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
--   { (exit 1); exit 1; }; }
+-  as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
 -if test -r ""/dev/ptc""; then
--  ac_cv_file___dev_ptc_=yes
+-  eval "$as_ac_File=yes"
 -else
-   ac_cv_file___dev_ptc_=no
+   eval "$as_ac_File=no"
  fi
 -fi
- { echo "$as_me:$LINENO: result: $ac_cv_file___dev_ptc_" >&5
- echo "${ECHO_T}$ac_cv_file___dev_ptc_" >&6; }
- if test $ac_cv_file___dev_ptc_ = yes; then
-@@ -20980,15 +20964,7 @@
- if test "${ac_cv_file___dev_urandom_+set}" = set; then
-   echo $ECHO_N "(cached) $ECHO_C" >&6
+ eval ac_res=\$$as_ac_File
+ 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+ $as_echo "$ac_res" >&6; }
+@@ -11333,13 +11321,7 @@
+ if eval "test \"\${$as_ac_File+set}\"" = set; then :
+   $as_echo_n "(cached) " >&6
  else
 -  test "$cross_compiling" = yes &&
--  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
--echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
--   { (exit 1); exit 1; }; }
+-  as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
 -if test -r ""/dev/urandom""; then
-   ac_cv_file___dev_urandom_=yes
+   eval "$as_ac_File=yes"
 -else
--  ac_cv_file___dev_urandom_=no
+-  eval "$as_ac_File=no"
 -fi
  fi
- { echo "$as_me:$LINENO: result: $ac_cv_file___dev_urandom_" >&5
- echo "${ECHO_T}$ac_cv_file___dev_urandom_" >&6; }
+ eval ac_res=\$$as_ac_File
+ 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
