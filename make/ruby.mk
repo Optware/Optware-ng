@@ -28,8 +28,8 @@
 #
 RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby/1.9
 ifneq (wl500g, $(OPTWARE_TARGET))
-RUBY_UPSTREAM_VERSION=1.9.1-p243
-RUBY_VERSION=1.9.1.243
+RUBY_UPSTREAM_VERSION=1.9.3-p0
+RUBY_VERSION=1.9.3.0
 RUBY_IPK_VERSION=1
 else
 RUBY_UPSTREAM_VERSION=1.8.6-p36
@@ -54,7 +54,7 @@ RUBY_DEPENDS=
 # RUBY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-RUBY_PATCHES=$(RUBY_SOURCE_DIR)/ext-socket.patch $(RUBY_SOURCE_DIR)/lib-mkmf.rb.patch
+RUBY_PATCHES=$(RUBY_SOURCE_DIR)/lib-mkmf.rb.patch
 
 #
 # If the compilation of the package requires additional
