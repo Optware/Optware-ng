@@ -173,6 +173,7 @@ $(RUBY_HOST_BUILD_DIR)/.staged: host/.configured make/ruby.mk
 		--enable-shared \
 		--disable-ipv6 \
 		--disable-install-doc \
+		--no-dev-docs \
 	)
 	$(MAKE) -C $(@D)
 	$(MAKE) -C $(@D) install
