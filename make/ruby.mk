@@ -30,7 +30,7 @@ RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby/1.9
 ifneq (wl500g, $(OPTWARE_TARGET))
 RUBY_UPSTREAM_VERSION=1.9.1-p243
 RUBY_VERSION=1.9.1.243
-RUBY_IPK_VERSION=1
+RUBY_IPK_VERSION=2
 else
 RUBY_UPSTREAM_VERSION=1.8.6-p36
 RUBY_VERSION=1.8.6.36
@@ -140,6 +140,7 @@ $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES) make/rub
                 --with-target-dir=$(STAGING_PREFIX) \
 		--enable-shared \
 		--disable-ipv6 \
+		--disable-install-doc \
 	)
 	touch $@
 
