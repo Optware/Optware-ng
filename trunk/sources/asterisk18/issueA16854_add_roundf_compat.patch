@@ -1,0 +1,75 @@
+Index: configure.ac
+===================================================================
+--- configure.ac	(revision 379425)
++++ configure.ac	(working copy)
+@@ -568,7 +568,7 @@
+ # so that AC_CHECK_FUNCS can detect functions in that library.
+ AC_CHECK_LIB([m], [sqrt])
+ # BSD might not have exp2, and/or log2
+-AC_CHECK_FUNCS([exp2 log2 exp10 log10 sin cos tan asin acos atan atan2 pow rint exp log remainder fmod round trunc floor ceil])
++AC_CHECK_FUNCS([exp2 log2 exp10 log10 sin cos tan asin acos atan atan2 pow rint exp log remainder fmod round roundf trunc floor ceil])
+ 
+ # Certain architectures don't really have long double, even though
+ # AC_CHECK_FUNCS would otherwise find the following functions.
+Index: include/asterisk/compat.h
+===================================================================
+--- include/asterisk/compat.h	(revision 379425)
++++ include/asterisk/compat.h	(working copy)
+@@ -216,4 +216,12 @@
+ #define MY_GLOB_FLAGS   (GLOB_NOMAGIC | GLOB_BRACE)
+ #endif
+ 
++#ifndef HAVE_ROUNDF
++#ifdef HAVE_ROUND
++#define roundf(a) ((float)round(a))
++#else
++float roundf(float x);
+ #endif
++#endif
++
++#endif
+Index: include/asterisk/autoconfig.h.in
+===================================================================
+--- include/asterisk/autoconfig.h.in	(revision 379425)
++++ include/asterisk/autoconfig.h.in	(working copy)
+@@ -679,6 +679,9 @@
+ /* Define to 1 if you have the `round' function. */
+ #undef HAVE_ROUND
+ 
++/* Define to 1 if you have the `roundf' function. */
++#undef HAVE_ROUNDF
++
+ /* Define to 1 if you have the `roundl' function. */
+ #undef HAVE_ROUNDL
+ 
+Index: main/strcompat.c
+===================================================================
+--- main/strcompat.c	(revision 379425)
++++ main/strcompat.c	(working copy)
+@@ -16,7 +16,9 @@
+ 
+ /*! \file
+  *
+- * \brief Compatibility functions for strsep and strtoq missing on Solaris 
++ * \brief Compatibility functions for strsep and strtoq missing on Solaris
++ *
++ * .. and lots of other functions too.
+  */
+ 
+ /*** MODULEINFO
+@@ -568,3 +570,15 @@
+ 	return mktemp_internal(path, 0, MKTEMP_DIR) ? NULL : path;
+ }
+ #endif
++
++#ifndef HAVE_ROUNDF
++#ifndef HAVE_ROUND
++float roundf(float x) {
++	if (x < 0.0) {
++		return (float)(int)((x) - 0.5);
++	} else {
++		return (float)(int)((x) + 0.5);
++	}
++}
++#endif
++#endif
