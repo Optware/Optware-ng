@@ -23,8 +23,8 @@
 ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
-ASTERISK18_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.19.1
+ASTERISK18_SITE=http://downloads.asterisk.org/pub/telephony/asterisk/releases
+ASTERISK18_BASE_VERSION=1.8.20.1
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -189,7 +189,7 @@ ASTERISK18_CONFFILES=\
 # ASTERISK18_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ASTERISK18_PATCHES=$(ASTERISK18_SOURCE_DIR)/sounds.xml.patch
+ASTERISK18_PATCHES += $(ASTERISK18_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
 
 #
 # If the compilation of the package requires additional
@@ -206,7 +206,6 @@ ASTERISK18_LDFLAGS+=-lpthread -ldl -lresolv
 endif
 ifeq (uclibc, $(LIBC_STYLE))
 ASTERISK18_LDFLAGS+=-lpthread -lm
-ASTERISK18_PATCHES += $(ASTERISK18_SOURCE_DIR)/roundf.patch
 endif
 
 ASTERISK18_CONFIGURE_OPTS=
