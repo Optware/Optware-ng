@@ -23,8 +23,8 @@
 ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
-ASTERISK10_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK10_BASE_VERSION=10.12.0
+ASTERISK10_SITE=http://downloads.asterisk.org/pub/telephony/asterisk/releases
+ASTERISK10_BASE_VERSION=10.12.1
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -85,7 +85,6 @@ ASTERISK10_IPK_VERSION=1
 
 #
 # ASTERISK10_CONFFILES should be a list of user-editable files
-#ASTERISK10_CONFFILES=/opt/etc/asterisk.conf /opt/etc/init.d/SXXasterisk
 ASTERISK10_CONFFILES=\
 /opt/etc/asterisk/vpb.conf \
 /opt/etc/asterisk/voicemail.conf \
@@ -189,8 +188,7 @@ ASTERISK10_CONFFILES=\
 # ASTERISK10_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ASTERISK10_PATCHES=$(ASTERISK10_SOURCE_DIR)/sounds.xml.patch
-ASTERISK10_PATCHES += $(ASTERISK10_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
+ASTERISK10_PATCHES = $(ASTERISK10_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
 
 #
 # If the compilation of the package requires additional
@@ -384,7 +382,7 @@ $(ASTERISK10_BUILD_DIR)/.built: $(ASTERISK10_BUILD_DIR)/.configured
 	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
 	ASTCFLAGS="$(ASTERISK10_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK10_LDFLAGS)" \
-	$(MAKE) -C $(@D)
+	$(MAKE) NOISY_BUILD=yes -C $(@D)
 	touch $@
 
 #
