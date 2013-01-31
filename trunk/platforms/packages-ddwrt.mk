@@ -26,6 +26,7 @@ BROKEN_PACKAGES = \
 	sandbox \
 	scrobby \
 	taglib \
+	asterisk18\
 	asterisk10\
 	firmware-oleg \
 
