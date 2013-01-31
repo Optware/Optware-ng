@@ -28,6 +28,7 @@ BROKEN_PACKAGES = \
 	libunistring \
 	firmware-oleg \
 	lirc \
+	asterisk18 \
 	asterisk10 \
 
 JAMVM_VERSION = 1.5.1
