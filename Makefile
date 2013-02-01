@@ -218,8 +218,6 @@ ERLANG_PACKAGES = \
 # removed asterisk-chan-capi, doesn't build because of asterisk-stage problems
 ASTERISK_PACKAGES = \
 	asterisk10 \
-	asterisk14 \
-	asterisk14-chan-capi \
 	asterisk14-core-sounds-en-alaw \
 	asterisk14-core-sounds-en-g729 \
 	asterisk14-core-sounds-en-gsm \
@@ -237,8 +235,6 @@ ASTERISK_PACKAGES = \
 	asterisk14-moh-opsound-gsm \
 	asterisk14-moh-opsound-ulaw \
 	asterisk-gui \
-	asterisk16 \
-	asterisk16-addons \
 	asterisk18 \
 
 PACKAGES_REQUIRE_LINUX26 = \
