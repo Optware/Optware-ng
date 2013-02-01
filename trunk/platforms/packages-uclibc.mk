@@ -3,25 +3,24 @@
 # alsa-oss:	In file included from alsa-oss.c:732:
 # 		stdioemu.c:40:19: error: libio.h: No such file or directory
 UCLIBC_BROKEN_PACKAGES = \
-	 9base \
+	9base \
 	alsa-oss \
-	 bzflag \
-	 cairo \
-         delegate \
-	 fcgi fish \
-	 gnu-smalltalk ice jabberd \
-	 launchtool ldconfig \
-	 moe mtr \
-	 newsbeuter \
-	 nfs-server nfs-utils \
+	bzflag \
+	cairo \
+	delegate \
+	fcgi fish \
+	gnu-smalltalk ice jabberd \
+	launchtool ldconfig \
+	moe mtr \
+	newsbeuter \
+	nfs-server nfs-utils \
 	nmon \
-	opensips \
-	 pango \
-	 qemu qemu-libc-i386 quickie \
-	 sm syx \
-	 uemacs \
-	 gtk vte xchat \
-	 xauth xaw xcursor xfixes xft xrender xmu xt xterm \
+	pango \
+	qemu qemu-libc-i386 quickie \
+	sm syx \
+	uemacs \
+	gtk vte xchat \
+	xauth xaw xcursor xfixes xft xrender xmu xt xterm \
 
 UCLIBC++_BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
@@ -33,7 +32,7 @@ UCLIBC++_BROKEN_PACKAGES = \
 	player \
 	srecord \
 	uncia \
-        znc \
+	znc \
 
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC++_SPECIFIC_PACKAGES = \
