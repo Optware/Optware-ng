@@ -23,7 +23,7 @@
 OPENSIPS_SOURCE_TYPE=tarball
 #OPENSIPS_SOURCE_TYPE=svn
 
-OPENSIPS_BASE_VERSION=1.8.2
+OPENSIPS_BASE_VERSION=1.9.0
 
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 OPENSIPS_VERSION=$(OPENSIPS_BASE_VERSION)
@@ -37,7 +37,7 @@ OPENSIPS_VERSION=$(OPENSIPS_BASE_VERSION)svn-r$(OPENSIPS_SVN_REV)
 OPENSIPS_DIR=opensips
 endif
 
-OPENSIPS_SOURCE=opensips-$(OPENSIPS_VERSION)_src.tar.gz
+OPENSIPS_SOURCE=opensips-$(OPENSIPS_VERSION)-rc_src.tar.gz
 
 OPENSIPS_UNZIP=zcat
 OPENSIPS_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
@@ -55,9 +55,9 @@ OPENSIPS_CONFLICTS=
 # OPENSIPS_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
-OPENSIPS_IPK_VERSION=2
+OPENSIPS_IPK_VERSION=1
 else
-OPENSIPS_IPK_VERSION=2
+OPENSIPS_IPK_VERSION=1
 endif
 
 #
@@ -115,21 +115,13 @@ OPENSIPS_INCLUDE_AAA_MODULES=auth_aaa aaa_radius
 OPENSIPS_INCLUDE_LDAP_MODULES=ldap
 OPENSIPS_INCLUDE_BASE_MODULES=presence presence_dialoginfo presence_mwi $(OPENSIPS_INCLUDE_PUA_MODULES) xmpp cpl-c db_http db_unixodbc db_postgres carrierroute b2b_logic rls xcap_client identity regex $(OPENSIPS_INCLUDE_AAA_MODULES) $(OPENSIPS_INCLUDE_LDAP_MODULES)
 
-#ifneq (, $(filter perl, $(PACKAGES)))
-#OPENSIPS_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer $(PERL_LDFLAGS) -L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-#OPENSIPS_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR)
-#OPENSIPS_TYPEMAP=$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/ExtUtils/typemap
-#OPENSIPS_INCLUDE_BASE_MODULES+= perl pua
-#endif
-
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 OPENSIPS_INCLUDE_MODULES=$(OPENSIPS_INCLUDE_BASE_MODULES) db_mysql
 else
 OPENSIPS_INCLUDE_MODULES=$(OPENSIPS_INCLUDE_BASE_MODULES)
 endif
 
-#OPENSIPS_EXCLUDE_MODULES=drouting siptrace sipcapture cachedb_memcached cachedb_cassandra cachedb_redis db_berkeley db_oracle event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350 httpd mi_http pi_http
-OPENSIPS_EXCLUDE_MODULES=drouting siptrace sipcapture cachedb_memcached cachedb_cassandra cachedb_redis db_berkeley db_oracle event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350
+OPENSIPS_EXCLUDE_MODULES=siptrace sipcapture cachedb_couchbase cachedb_memcached cachedb_cassandra cachedb_redis cachedb_mongodb db_berkeley db_oracle db_perlvdb event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350
 OPENSIPS_DEBUG_MODE=mode=debug
 
 #
@@ -204,8 +196,8 @@ ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 		then cat $(OPENSIPS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(OPENSIPS_DIR)-tls -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(OPENSIPS_DIR)" != "$(OPENSIPS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(OPENSIPS_DIR)-tls $(OPENSIPS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(OPENSIPS_DIR)-rc-tls" != "$(OPENSIPS_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(OPENSIPS_DIR)-rc-tls $(OPENSIPS_BUILD_DIR) ; \
 	fi
 else
 	if test -n "$(OPENSIPS_PATCHES)" ; \
@@ -216,15 +208,16 @@ else
 		then mv $(BUILD_DIR)/$(OPENSIPS_DIR) $(OPENSIPS_BUILD_DIR) ; \
 	fi
 endif
-	sed -i -e '/^DEFS/s|-I/usr/include/libxml2 ||' \
-	       -e '/DEFS/s|-I/usr/include ||' \
-	       -e 's|-I/opt/include ||' $(@D)/modules/*/Makefile
+	#####################
+	# FIX for constants #
+	#####################
 	sed -i -e 's/LLONG_MIN/-9223372036854775807LL - 1LL/' \
            -e 's/LLONG_MAX/9223372036854775807LL/' $(@D)/db/db_ut.c
-	sed -i -e 's/str \*id;/str \*id/' $(@D)/modules/drouting/prefix_tree.h
-	sed -i -e 's/<curses/<ncurses/' $(@D)/menuconfig/*.[hc]
-	sed -i -e 's/(MENUCONFIG_HAVE_SOURCES)/(MENUCONFIG_HAVE_SOURCES) $$(CC_EXTRA_OPTS)/' \
-	       -e 's/-lcurses/-lncurses $$(LD_EXTRA_OPTS)/' $(@D)/menuconfig/Makefile
+	#################################
+	# FIX for ncurses in menuconfig #
+	#################################
+	sed -i -e 's/-lcurses/-lncurses/' $(@D)/menuconfig/Makefile
+
 	touch $@
 
 opensips-unpack: $(OPENSIPS_BUILD_DIR)/.configured
@@ -330,12 +323,6 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 	cp $(OPENSIPS_IPK_DIR)/opt/etc/opensips/opensips.cfg $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples
 	cp $(OPENSIPS_IPK_DIR)/opt/etc/opensips/opensipsctlrc $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples
 
-	############################
-	# installing perl examples #
-	############################
-	#mkdir $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples/perl
-	#cp -r $(OPENSIPS_BUILD_DIR)/modules/perl/doc/samples/* $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples/perl
-
 	####################
 	# fixing man files #
 	####################
@@ -345,6 +332,7 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 	for f in $(OPENSIPS_IPK_DIR)/opt/share/doc/opensips/README* ; do sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $$f; done
 	
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSIPS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(OPENSIPS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
