@@ -13,11 +13,8 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	crosstool-native optware-devel ufsd \
-	\
 	amule \
 	antinat \
-	asterisk14 asterisk14-chan-capi \
-	asterisk16 asterisk16-addons \
 	chillispot \
 	clinkcc \
 	cpufrequtils \
@@ -31,12 +28,10 @@ BROKEN_PACKAGES = \
 	ldconfig \
 	loudmouth \
 	net-snmp net-tools netatalk nmap \
-	opensips \
 	phoneme-advanced \
 	ppp \
 	qemu qemu-libc-i386 \
 	quagga \
-	\
 	sandbox \
 	snort \
 	softflowd \
