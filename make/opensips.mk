@@ -305,14 +305,13 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsdbctl
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsdbctl
 
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsdbctl.dbtext
-
 	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsctl
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsctl
 
 	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsctl.base
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsctl.base
 
+	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.dbtext
 	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.base
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.base
 
