@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	iptraf moc \
 	mkvtoolnix \
 	mtr \
-	opensips \
 	pinentry \
 	puppy rssh \
 	sandbox \
