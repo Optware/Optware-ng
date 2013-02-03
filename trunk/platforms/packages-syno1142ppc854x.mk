@@ -1,13 +1,13 @@
 BROKEN_PACKAGES = \
-         amule apcupsd appweb apache apr-util asterisk14 asterisk14-chan-capi \
-         asterisk16 asterisk16-addons atftp bacula boost btg cairo \
+         amule apcupsd appweb apache apr-util \
+         atftp bacula boost btg cairo \
          clearsilver cyrus-imapd davtools dbus-python distcc dump e2fsprogs \
          e2tools eaccelerator enscript finch fixesext fontconfig fuppes \
          gconv-modules gdchart ghostscript gnuplot ice inferno ipac-ng \
          iptraf lcd4linux ldconfig libcapi20 libgd libtorrent-rasterbar \
          mc mimms minidlna mkvtoolnix modutils mod-fastcgi mrtg \
-         mutt newt nfs-utils ntop nut opendchub openser \
-         opensips pango php php-apache player puppy python24 \
+         mutt newt nfs-utils ntop nut opendchub \
+         pango php php-apache player puppy python24 \
          python25 python26 python3 bzr bzr-rewrite bzr-svn bzrtools \
          getmail gitosis hellanzb hplip iotop ipython mailman \
          mod-python mod-wsgi pssh putmail pygments pyrex sabnzbd \
