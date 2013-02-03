@@ -5,7 +5,7 @@
 ###########################################################
 
 MONIT_SITE=http://www.tildeslash.com/monit/dist/
-MONIT_VERSION=5.2.5
+MONIT_VERSION=5.5
 MONIT_SOURCE=monit-$(MONIT_VERSION).tar.gz
 MONIT_DIR=monit-$(MONIT_VERSION)
 MONIT_UNZIP=zcat
@@ -30,8 +30,7 @@ MONIT_CONFFILES=/opt/etc/monitrc /opt/etc/init.d/S99monit
 # MONIT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MONIT_PATCHES=\
-$(MONIT_SOURCE_DIR)/uclibc.patch \
+MONIT_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -107,6 +106,9 @@ $(MONIT_BUILD_DIR)/.configured: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES) make/
 		--disable-static \
 		--with-ssl-incl-dir=$(STAGING_PREFIX)/include \
 		--with-ssl-lib-dir=$(STAGING_PREFIX)/lib \
+		--without-pam \
+		libmonit_cv_setjmp_available=yes \
+		libmonit_cv_vsnprintf_c99_conformant=yes \
 	)
 	touch $@
 
