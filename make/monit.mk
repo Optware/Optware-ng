@@ -20,7 +20,7 @@ MONIT_CONFLICTS=
 #
 # MONIT_IPK_VERSION should be incremented when the ipk changes.
 #
-MONIT_IPK_VERSION=1
+MONIT_IPK_VERSION=2
 
 #
 # MONIT_CONFFILES should be a list of user-editable files
@@ -106,7 +106,7 @@ $(MONIT_BUILD_DIR)/.configured: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES) make/
 		--disable-static \
 		--with-ssl-incl-dir=$(STAGING_PREFIX)/include \
 		--with-ssl-lib-dir=$(STAGING_PREFIX)/lib \
-		--without-pam \
+		--with-pam=$(STAGING_PREFIX) \
 		libmonit_cv_setjmp_available=yes \
 		libmonit_cv_vsnprintf_c99_conformant=yes \
 	)
