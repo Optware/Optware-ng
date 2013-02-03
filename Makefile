@@ -37,7 +37,7 @@ ffmpeg ushare fuppes mc irssi util-linux-ng mdadm vlc \
 ivorbis-tools jabberd rrdcollect gambit-c obexftp \
 vorbis-tools rrdtool jove git launchtool gnu-smalltalk \
 ldconfig libao gloox libcdio libdlna libdvb gift-ares \
-opendchub wakelan opensips \
+opendchub wakelan \
 xauth xaw xcursor xmu xt xterm xvid \
 ossp-js mediatomb memcached minidlna mkvtoolnix \
 phoneme-advanced motion picoLisp motor pkgconfig moe \
