@@ -13,7 +13,6 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	aiccu \
 	amule \
-	asterisk14-chan-capi \
 	boost \
 	btg \
 	btpd \

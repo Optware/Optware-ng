@@ -30,9 +30,9 @@ JAMVM_IPK_VERSION = 1
 
 BROKEN_PACKAGES_REPORT_ACHILLES = \
 	dump e2fsprogs e2tools libtheora pinentry ppp py-mx-base py-psycopg py-pygresql ulogd \
-	amule aspell asterisk14 asterisk14-chan-capi bacula bsdgames busybox \
-         calc castget centerim clinkcc confuse cpio cyrus-imapd \
-         distcc dspam erl-ejabberd fuppes gambit-c gcal git \
+	amule aspell bacula bsdgames busybox \
+	calc castget centerim clinkcc confuse cpio cyrus-imapd \
+	distcc dspam erl-ejabberd fuppes gambit-c gcal git \
          gloox grep gtmess id3lib inetutils inferno ipac-ng \
          libdvb libmad libnsl libopensync ltrace madplay mediatomb \
          minidlna moc motor mpd msynctool mt-daapd newt \
@@ -60,7 +60,7 @@ BROKEN_PACKAGES_REPORT_ACHILLES = \
          perl-html-parser perl-libwww perl-term-readline-gnu perl-timedate perlbal spamassassin
 
 BROKEN_PACKAGES_REPORT_DUO = \
-         amule appweb apache aspell asterisk14 asterisk14-chan-capi bacula \
+         amule appweb apache aspell bacula \
          bsdgames bsdmainutils busybox bluez-utils calc castget ccollect \
          centerim clinkcc confuse cpio cyrus-imapd dcraw distcc \
          dspam eaccelerator ecl ettercap-ng erl-ejabberd esound ffmpeg \

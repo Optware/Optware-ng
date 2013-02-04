@@ -8,7 +8,6 @@ BROKEN_PACKAGES = \
 	antinat \
 	aria2 \
 	arpwatch \
-	asterisk16 asterisk16-addons \
 	atk \
 	avahi \
 	bash \
@@ -30,7 +29,7 @@ BROKEN_PACKAGES = \
 	gdbm apr-util apache gnu-smalltalk mt-daapd mt-daapd-svn ntop php-apache svn \
 	gift-ares gift-gnutella gift-openft \
 	git \
-        glib bitlbee castget ctrlproxy finch fuppes giftcurs gnet gnokii gsnmp gtk irssi libopensync libsoup mc mcabber mpdscribble msynctool ncmpc obexftp pal pango pkgconfig scli syslog-ng tshark xchat yougrabber \
+	glib bitlbee castget ctrlproxy finch fuppes giftcurs gnet gnokii gsnmp gtk irssi libopensync libsoup mc mcabber mpdscribble msynctool ncmpc obexftp pal pango pkgconfig scli syslog-ng tshark xchat yougrabber \
 	gnuplot \
 	gtmess \
 	hpijs \

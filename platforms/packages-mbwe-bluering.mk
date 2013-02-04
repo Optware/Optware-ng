@@ -7,16 +7,13 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \
-	asterisk16 \
 	bluez-hcidump \
 	ficy \
 	fuppes \
 	gcc \
 	gtmess \
-	\
 	rssh \
 	sandbox \
-	\
 	btg clinkcc libopensync msynctool obexftp \
 
 PERL_MAJOR_VER=5.10

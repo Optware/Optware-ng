@@ -10,8 +10,6 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	$(ERLANG_PACKAGES) \
 	amule aria2 aspell \
-	asterisk14 asterisk14-chan-capi \
-	asterisk16 asterisk16-addons \
 	atftp avahi \
 	bacula bitlbee boost bsdgames btg btpd bzflag \
 	centerim climm \
