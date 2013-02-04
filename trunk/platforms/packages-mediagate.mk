@@ -2,8 +2,8 @@ BAD =$(filter-out $(UCLIBC_BROKEN_PACKAGES), $(BROKEN_PACKAGES))
 GOOD=$(filter-out  $(BROKEN_PACKAGES), $(UCLIBC_BROKEN_PACKAGES))
 BROKEN_PACKAGES = bluez-hcidump xinetd libdb\
 	 9base abook adduser adns amule analog appweb \
-	 apache apr apr-util arping arpwatch asterisk14 \
-	 asterisk14-chan-capi asterisk14-gui asterisk16 asterisk16-addons atftp atop avahi \
+	 apache apr apr-util arping arpwatch \
+	 atftp atop avahi \
 	 bash bftpd bind bip bison bitchx bsdgames \
 	 bsdmainutils btpd busybox byrequest bzflag bzip2 bluez-utils \
 	 bluez2-utils cairo calc calcurse castget ccxstream cdargs \

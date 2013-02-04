@@ -13,8 +13,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule \
-	asterisk14-chan-capi libcapi20 \
-	asterisk16 \
+	libcapi20 \
 	erl-ejabberd \
 	iptraf \
 	ldconfig \
