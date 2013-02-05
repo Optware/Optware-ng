@@ -75,13 +75,13 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 ASTERISK10_SUGGESTS +=,x11
 endif
 
-ASTERISK10_CONFLICTS=asterisk12,asterisk14,asterisk16,asterisk-sounds,asterisk-chan-capi,asterisk14-chan-capi,asterisk16-chan-capi,asterisk18
+ASTERISK10_CONFLICTS=asterisk14,asterisk16,asterisk18,asterisk11
 
 
 #
 # ASTERISK10_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK10_IPK_VERSION=1
+ASTERISK10_IPK_VERSION=2
 
 #
 # ASTERISK10_CONFFILES should be a list of user-editable files
@@ -188,7 +188,8 @@ ASTERISK10_CONFFILES=\
 # ASTERISK10_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK10_PATCHES = $(ASTERISK10_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
+ASTERISK10_PATCHES = $(ASTERISK10_SOURCE_DIR)/roundf.patch \
+$(ASTERISK10_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
 
 #
 # If the compilation of the package requires additional
