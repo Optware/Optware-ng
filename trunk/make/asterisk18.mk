@@ -76,13 +76,13 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 ASTERISK18_SUGGESTS +=,x11
 endif
 
-ASTERISK18_CONFLICTS=asterisk,asterisk14,asterisk16,asterisk-sounds,asterisk-chan-capi,asterisk14-chan-capi,asterisk16-chan-capi
+ASTERISK18_CONFLICTS=asterisk14,asterisk16,asterisk10,asterisk11
 
 
 #
 # ASTERISK18_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK18_IPK_VERSION=1
+ASTERISK18_IPK_VERSION=2
 
 #
 # ASTERISK18_CONFFILES should be a list of user-editable files
@@ -189,7 +189,8 @@ ASTERISK18_CONFFILES=\
 # ASTERISK18_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK18_PATCHES += $(ASTERISK18_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
+ASTERISK18_PATCHES = $(ASTERISK18_SOURCE_DIR)/roundf.patch \
+$(ASTERISK18_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
 
 #
 # If the compilation of the package requires additional
