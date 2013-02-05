@@ -29,7 +29,6 @@ BROKEN_PACKAGES = \
 	firmware-oleg \
 	lirc \
 	asterisk18 \
-	asterisk10 \
 
 JAMVM_VERSION = 1.5.1
 JAMVM_IPK_VERSION = 1
