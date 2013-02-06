@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMICROHTTPD_SITE=ftp://ftp.gnu.org/gnu/libmicrohttpd/
-LIBMICROHTTPD_VERSION=0.9.20
+LIBMICROHTTPD_VERSION=0.9.25
 LIBMICROHTTPD_SOURCE=libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz
 LIBMICROHTTPD_DIR=libmicrohttpd-$(LIBMICROHTTPD_VERSION)
 LIBMICROHTTPD_UNZIP=zcat
@@ -115,6 +115,7 @@ $(LIBMICROHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMICROHTTPD_SOURCE) $(LIBM
 	if test "$(BUILD_DIR)/$(LIBMICROHTTPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMICROHTTPD_DIR) $(@D) ; \
 	fi
+	sed -i -e 's/(CLOCK_MONOTONIC,/(1,/' $(@D)/src/daemon/internal.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMICROHTTPD_CPPFLAGS)" \
