@@ -1,0 +1,17 @@
+--- Makefile.in	2002-09-18 20:00:40.000000000 -0400
++++ Makefile.in	2013-02-26 00:50:12.875208536 -0500
+@@ -65,10 +65,10 @@
+ install: install-$(TARGET) install-@LIBTARGET@
+ 
+ install-$(TARGET): $(TARGET)
+-	$(INSTALL) -d -m 755 $(bindir)
+-	$(INSTALL) -s -m 755 $(TARGET) $(bindir)/$(TARGET)
+-	$(INSTALL) -d -m 755 $(mandir)/man1
+-	$(INSTALL) -m 644 ifstat.1 $(mandir)/man1/ifstat.1
++	$(INSTALL) -d -m 755 $(DESTDIR)$(bindir)
++	$(INSTALL) -m 755 $(TARGET) $(DESTDIR)$(bindir)/$(TARGET)
++	$(INSTALL) -d -m 755 $(DESTDIR)$(mandir)/man1
++	$(INSTALL) -m 644 ifstat.1 $(DESTDIR)$(mandir)/man1/ifstat.1
+ 
+ install-$(LIBTARGET): $(LIBTARGET) libifstat-config
+ 	$(INSTALL) -d -m 755 $(bindir)
