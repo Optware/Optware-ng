@@ -61,6 +61,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	dnssec-trigger \
 	ifstat \
 	collectd \
+	moreutils \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
