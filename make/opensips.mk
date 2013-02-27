@@ -37,7 +37,7 @@ OPENSIPS_VERSION=$(OPENSIPS_BASE_VERSION)svn-r$(OPENSIPS_SVN_REV)
 OPENSIPS_DIR=opensips
 endif
 
-OPENSIPS_SOURCE=opensips-$(OPENSIPS_VERSION)-rc_src.tar.gz
+OPENSIPS_SOURCE=opensips-$(OPENSIPS_VERSION)_src.tar.gz
 
 OPENSIPS_UNZIP=zcat
 OPENSIPS_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
@@ -55,7 +55,7 @@ OPENSIPS_CONFLICTS=
 # OPENSIPS_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
-OPENSIPS_IPK_VERSION=2
+OPENSIPS_IPK_VERSION=3
 else
 OPENSIPS_IPK_VERSION=1
 endif
@@ -196,8 +196,8 @@ ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 		then cat $(OPENSIPS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(OPENSIPS_DIR)-tls -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(OPENSIPS_DIR)-rc-tls" != "$(OPENSIPS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(OPENSIPS_DIR)-rc-tls $(OPENSIPS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(OPENSIPS_DIR)-tls" != "$(OPENSIPS_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(OPENSIPS_DIR)-tls $(OPENSIPS_BUILD_DIR) ; \
 	fi
 else
 	if test -n "$(OPENSIPS_PATCHES)" ; \
@@ -297,10 +297,38 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 	$(MAKE) $(OPENSIPS_IPK_DIR)/CONTROL/control
 	echo $(OPENSIPS_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSIPS_IPK_DIR)/CONTROL/conffiles
 
-	for f in `find $(OPENSIPS_IPK_DIR)/opt/lib/opensips/modules -name '*.so'`; do $(STRIP_COMMAND) $$f; done
 	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)/opt/sbin/opensips
 	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsunix
 	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)/opt/sbin/osipsconfig
+
+	if test -d $(OPENSIPS_IPK_DIR)/opt/lib/opensips ; then \
+		for f in `find $(OPENSIPS_IPK_DIR)/opt/lib/opensips/modules -name '*.so'`; \
+			do $(STRIP_COMMAND) $$f; done; \
+		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
+			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsctl.base; \
+		sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' \
+			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsctl.base; \
+		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
+			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.dbtext; \
+		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
+			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.base; \
+		sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' \
+			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.base; \
+	fi
+	if test -d $(OPENSIPS_IPK_DIR)/opt/lib64/opensips ; then \
+		for f in `find $(OPENSIPS_IPK_DIR)/opt/lib64/opensips/modules -name '*.so'`; \
+			do $(STRIP_COMMAND) $$f; done; \
+		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
+			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsctl.base; \
+		sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' \
+			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsctl.base; \
+		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
+			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsdbctl.dbtext; \
+		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
+			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsdbctl.base; \
+		sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' \
+			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsdbctl.base; \
+	fi
 
 	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsdbctl
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsdbctl
@@ -308,12 +336,6 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsctl
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsctl
 
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsctl.base
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsctl.base
-
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.dbtext
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.base
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.base
 
 	############################
 	# installing example files #
