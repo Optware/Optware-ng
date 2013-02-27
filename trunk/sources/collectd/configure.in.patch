@@ -1,0 +1,34 @@
+--- configure.in	2013-01-27 08:47:18.246255910 -0500
++++ configure.in	2013-02-27 00:54:21.296591252 -0500
+@@ -391,6 +391,18 @@
+ #  include <sys/socket.h>
+ #endif
+ ])
++AC_CHECK_HEADERS(linux/iinet_diag.h, [], [],
++[
++#if HAVE_SYS_TYPES_H
++#  include <sys/types.h>
++#endif
++#if HAVE_SYS_SOCKET_H
++#  include <sys/socket.h>
++#endif
++#if HAVE_LINUX_INET_DIAG_H
++# include <linux/iinet_diag.h>
++#endif
++])
+ AC_CHECK_HEADERS(linux/netdevice.h, [], [],
+ [
+ #if HAVE_SYS_TYPES_H
+@@ -1213,6 +1225,12 @@
+ 	#include <linux/if.h>
+ 	#include <linux/netdevice.h>
+ 	])
++AC_CHECK_MEMBERS([struct inet_diag_req.id, struct inet_diag_req.idiag_states],
++  [AC_DEFINE(HAVE_STRUCT_LINUX_INET_DIAG_REQ, 1, [Define if struct inet_diag_req exists and is usable.])],
++  [],
++  [
++  #include <linux/iinet_diag.h>
++  ])
+ 
+ AC_CHECK_MEMBERS([struct ip_mreqn.imr_ifindex], [],
+ 	[],

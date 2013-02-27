@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# $Header$
+#
+
+if [ -n "`/opt/bin/pidof collectdmon`" ] ; then
+    killall collectdmon 2>/dev/null
+fi
+
+sleep 2
+/opt/sbin/collectdmon -- -C /opt/etc/collectd.conf
