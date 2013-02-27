@@ -1,0 +1,53 @@
+--- src/tcpconns.c	2013-01-27 08:47:18.246255910 -0500
++++ src/tcpconns.c	2013-02-27 00:57:16.915039754 -0500
+@@ -74,7 +74,9 @@
+ /* sys/socket.h is necessary to compile when using netlink on older systems. */
+ # include <sys/socket.h>
+ # include <linux/netlink.h>
++#if HAVE_LINUX_INET_DIAG_H
+ # include <linux/inet_diag.h>
++#endif
+ # include <sys/socket.h>
+ # include <arpa/inet.h>
+ /* #endif KERNEL_LINUX */
+@@ -137,10 +139,12 @@
+ #endif /* KERNEL_AIX */
+ 
+ #if KERNEL_LINUX
++#if HAVE_STRUCT_LINUX_INET_DIAG_REQ
+ struct nlreq {
+   struct nlmsghdr nlh;
+   struct inet_diag_req r;
+ };
++#endif
+ 
+ static const char *tcp_state[] =
+ {
+@@ -276,7 +280,9 @@
+ static port_entry_t *port_list_head = NULL;
+ 
+ #if KERNEL_LINUX
++#if HAVE_STRUCT_LINUX_INET_DIAG_REQ
+ static uint32_t sequence_number = 0;
++#endif
+ 
+ enum
+ {
+@@ -446,6 +452,7 @@
+  * zero on other errors. */
+ static int conn_read_netlink (void)
+ {
++#if HAVE_STRUCT_LINUX_INET_DIAG_REQ
+   int fd;
+   struct sockaddr_nl nladdr;
+   struct nlreq req;
+@@ -574,6 +581,9 @@
+ 
+   /* Not reached because the while() loop above handles the exit condition. */
+   return (0);
++#else
++  return (1);
++#endif /* HAVE_STRUCT_LINUX_INET_DIAG_REQ */
+ } /* int conn_read_netlink */
+ 
+ static int conn_handle_line (char *buffer)
