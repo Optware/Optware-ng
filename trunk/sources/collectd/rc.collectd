@@ -8,4 +8,4 @@ if [ -n "`/opt/bin/pidof collectdmon`" ] ; then
 fi
 
 sleep 2
-/opt/sbin/collectdmon -- -C /opt/etc/collectd.conf
+/opt/sbin/collectdmon -c /opt/sbin/collectd -- -C /opt/etc/collectd.conf
