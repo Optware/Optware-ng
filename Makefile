@@ -60,7 +60,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	ldns \
 	dnssec-trigger \
 	collectd \
-	moreutils \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -349,7 +348,7 @@ COMMON_CROSS_PACKAGES = \
 	mini-sendmail mini-snmpd \
 	miscfiles mktemp mkvtoolnix mlocate moblock \
 	moc modutils monit most motion motor \
-	mod-fastcgi moe mp3blaster mp3info mpack mpage \
+	mod-fastcgi moe moreutils mp3blaster mp3info mpack mpage \
 	mpc mpd mpdscribble \
 	mpg123 mpop mrtg msmtp \
 	msort msynctool mt-daapd mt-daapd-svn mtools \
