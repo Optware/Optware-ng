@@ -59,7 +59,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	unbound \
 	ldns \
 	dnssec-trigger \
-	ifstat \
 	collectd \
 	moreutils \
 
@@ -310,7 +309,7 @@ COMMON_CROSS_PACKAGES = \
 	haproxy haserl hd2u hdparm hello hexcurse heyu \
 	hiawatha hnb hpijs hping htop httping \
 	ice icecast ices0 \
-	id3lib iftop ii iksemel imagemagick imap \
+	id3lib ifstat iftop ii iksemel imagemagick imap \
 	inadyn indent inetutils \
 	inferno \
 	ink \
