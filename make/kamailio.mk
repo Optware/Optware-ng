@@ -22,7 +22,7 @@
 #
 
 
-KAMAILIO_VERSION=3.3.2
+KAMAILIO_VERSION=4.0.0
 KAMAILIO_SITE=http://kamailio.org/pub/kamailio/$(KAMAILIO_VERSION)/src/
 KAMAILIO_DIR=kamailio-$(KAMAILIO_VERSION)
 
@@ -34,9 +34,12 @@ KAMAILIO_DESCRIPTION=Kamailio Express Router
 KAMAILIO_SECTION=util
 KAMAILIO_PRIORITY=optional
 KAMAILIO_DEPENDS=coreutils,openssl,gawk
-KAMAILIO_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,confuse,openldap
+KAMAILIO_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,confuse,openldap,libunistring
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 KAMAILIO_SUGGESTS=$(KAMAILIO_BASE_SUGGESTS),mysql
+endif
+ifeq (libunistring, $(filter libunistring, $(PACKAGES)))
+KAMAILIO_SUGGESTS+=,libunistring
 endif
 KAMAILIO_CONFLICTS=
 
@@ -48,13 +51,13 @@ KAMAILIO_IPK_VERSION=1
 #
 # KAMAILIO_CONFFILES should be a list of user-editable files
 KAMAILIO_CONFFILES=\
-/opt/etc/kamailio/dictionary.kamailio \
 /opt/etc/kamailio/kamailio.cfg \
 /opt/etc/kamailio/kamctlrc \
-
-#/opt/etc/kamailio/kamailio-selfsigned.key \
-#/opt/etc/kamailio/kamailio-selfsigned.pem \
-#/opt/etc/kamailio/tls.cfg
+/opt/etc/kamailio/dictionary.kamailio \
+/opt/etc/kamailio/kamailio-selfsigned.key \
+/opt/etc/kamailio/kamailio-selfsigned.pem \
+/opt/etc/kamailio/pi_framework.xml \
+/opt/etc/kamailio/tls.cfg
 
 #
 # KAMAILIO_PATCHES should list any patches, in the the order in
@@ -78,9 +81,17 @@ KAMAILIO_MAKEFLAGS=$(strip \
 
 KAMAILIO_INCLUDE_PUA_MODULES=pua pua_bla pua_dialoginfo pua_mi pua_reginfo pua_usrloc pua_xmpp
 KAMAILIO_INCLUDE_PRESENCE_MODULES=presence presence_conference presence_dialoginfo presence_mwi presence_profile presence_reginfo presence_xml presence_b2b
-KAMAILIO_INCLUDE_AAA_MODULES=auth auth_identity auth_db auth_diameter auth_radius auth_db auth_radius
+KAMAILIO_INCLUDE_AAA_MODULES=auth auth_ims auth_identity auth_db auth_diameter auth_radius auth_db auth_radius
 KAMAILIO_INCLUDE_LDAP_MODULES=ldap
-KAMAILIO_INCLUDE_BASE_MODULES=$(KAMAILIO_INCLUDE_PUA_MODULES) xmpp cpl-c db_unixodbc db_postgres carrierroute rls identity regex $(KAMAILIO_INCLUDE_AAA_MODULES) $(KAMAILIO_INCLUDE_LDAP_MODULES)
+KAMAILIO_INCLUDE_BASE_MODULES=$(KAMAILIO_INCLUDE_PUA_MODULES) \
+$(KAMAILIO_INCLUDE_PRESENCE_MODULES) \
+$(KAMAILIO_INCLUDE_AAA_MODULES) \
+$(KAMAILIO_INCLUDE_LDAP_MODULES) \
+xmpp cpl-c db_unixodbc db_postgres carrierroute rls identity regex xmlops xcap_server tls xhttp_pi
+KAMAILIO_EXCLUDE_APP_MODULES=app_lua app_mono app_perl app_python
+KAMAILIO_EXCLUDE_DB_MODULES=db_berkeley db_cassandra db_oracle db_perlvdb
+# cdp: AI_ADDRCONFIG not defined
+KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) $(KAMAILIO_EXCLUDE_DB_MODULES) bdb cdp siptrace sipcapture geoip identity iptrtpproxy jabber json jsonrpc-c memcached ndb_redis mmgeoip osp h350 purple seas mi_xmlrpc
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 KAMAILIO_INCLUDE_MODULES=$(KAMAILIO_INCLUDE_BASE_MODULES) db_mysql
@@ -88,9 +99,9 @@ else
 KAMAILIO_INCLUDE_MODULES=$(KAMAILIO_INCLUDE_BASE_MODULES)
 endif
 
-KAMAILIO_EXCLUDE_APP_MODULES=app_lua app_mono app_python
-KAMAILIO_EXCLUDE_DB_MODULES=db_berkeley db_cassandra db_oracle
-KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) bdb siptrace sipcapture geoip identity iptrtpproxy jabber json jsonrpc-c memcached mi_xmlrpc ndb_redis mmgeoip osp perl perlvdb h350 oracle purple seas $(KAMAILIO_EXCLUDE_DB_MODULES) xmlops $(KAMAILIO_INCLUDE_PRESENCE_MODULES) xcap_server tls
+ifneq (libunistring, $(filter libunistring, $(PACKAGES)))
+KAMAILIO_EXCLUDE_MODULES += websocket
+endif
 
 #
 # KAMAILIO_BUILD_DIR is the directory in which the build is done.
@@ -144,8 +155,12 @@ kamailio-source: $(DL_DIR)/$(KAMAILIO_SOURCE) $(KAMAILIO_PATCHES)
 $(KAMAILIO_BUILD_DIR)/.configured: $(DL_DIR)/$(KAMAILIO_SOURCE) $(KAMAILIO_PATCHES) make/kamailio.mk
 	$(MAKE) openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage
 	$(MAKE) postgresql-stage net-snmp-stage confuse-stage libcurl-stage openldap-stage pcre-stage
+	$(MAKE) sqlite-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
+endif
+ifeq (libunistring, $(filter libunistring, $(PACKAGES)))
+	$(MAKE) libunistring-stage
 endif
 	rm -rf $(BUILD_DIR)/$(KAMAILIO_DIR) $(KAMAILIO_BUILD_DIR)
 	$(KAMAILIO_UNZIP) $(DL_DIR)/$(KAMAILIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -156,22 +171,6 @@ endif
 	if test "$(BUILD_DIR)/$(KAMAILIO_DIR)" != "$(KAMAILIO_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(KAMAILIO_DIR) $(KAMAILIO_BUILD_DIR) ; \
 	fi
-	sed -i -e 's|-I/usr/include/libxml2 ||' \
-	       -e 's|-L /usr/lib||' \
-	       -e 's|-I/usr/include/mysql||' \
-	       -e 's|-L/usr/lib/mysql||' \
-	       -e 's|-L/usr/lib64/mysql||' \
-	       -e 's|-L/usr/pkg/lib||' \
-	       -e '/DEFS/s|-I/usr/include ||' \
-	       -e 's|-I/opt/include ||' $(@D)/modules/*/Makefile
-	sed -i -e 's|-I/usr/include/libxml2 ||' \
-	       -e 's|-I/usr/include/mysql||' \
-	       -e 's|-L/usr/lib/mysql||' \
-	       -e 's|-L/usr/lib64/mysql||' \
-	       -e 's|-L/usr/pkg/lib||' \
-	       -e '/DEFS/s|-I/usr/include ||' \
-	       -e 's|-I/opt/include ||' $(@D)/modules_k/*/Makefile
-	sed -i -e '/^#include /s|linux/netlink.h|linux/types.h"\n#include "linux/netlink.h|' $(@D)/socket_info.c
 	case "$(GCC_VERSION)" in \
 		4.0*|4.1*) \
 			sed -i -e 's/-minline-all-stringops //' $(@D)/ccopts.sh $(@D)/Makefile.defs;; \
@@ -179,7 +178,7 @@ endif
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
-	$(MAKE) --debug=ij -C $(KAMAILIO_BUILD_DIR) FLAVOUR=kamailio cfg $(KAMAILIO_MAKEFLAGS) \
+	$(MAKE) -C $(KAMAILIO_BUILD_DIR) FLAVOUR=kamailio cfg $(KAMAILIO_MAKEFLAGS) \
 	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt \
 	modules_dirs="modules modules_k"
 
@@ -196,7 +195,7 @@ $(KAMAILIO_BUILD_DIR)/.built: $(KAMAILIO_BUILD_DIR)/.configured
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
-	$(MAKE) -C $(KAMAILIO_BUILD_DIR) quiet=noisy $(KAMAILIO_MAKEFLAGS) \
+	$(MAKE) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) \
 	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt all \
 	modules_dirs="modules modules_k"
 
@@ -253,7 +252,7 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
-	$(MAKE) -C $(KAMAILIO_BUILD_DIR) quiet=noisy $(KAMAILIO_MAKEFLAGS) DESTDIR=$(KAMAILIO_IPK_DIR) \
+	$(MAKE) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) DESTDIR=$(KAMAILIO_IPK_DIR) \
 	prefix=/opt cfg-prefix=$(KAMAILIO_IPK_DIR)/opt install
 
 	$(MAKE) $(KAMAILIO_IPK_DIR)/CONTROL/control
@@ -263,7 +262,7 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	for f in `find $(KAMAILIO_IPK_DIR)/opt/lib/kamailio/modules_k -name '*.so'`; do $(STRIP_COMMAND) $$f; done
 	for f in `find $(KAMAILIO_IPK_DIR)/opt/lib/kamailio -name '*.so'`; do $(STRIP_COMMAND) $$f; done
 	$(STRIP_COMMAND) $(KAMAILIO_IPK_DIR)/opt/sbin/kamailio
-	$(STRIP_COMMAND) $(KAMAILIO_IPK_DIR)/opt/sbin/sercmd
+	$(STRIP_COMMAND) $(KAMAILIO_IPK_DIR)/opt/sbin/kamcmd
 
 	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' $(KAMAILIO_IPK_DIR)/opt/sbin/kamdbctl
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(KAMAILIO_IPK_DIR)/opt/sbin/kamdbctl
@@ -297,6 +296,7 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(KAMAILIO_IPK_DIR)/opt/share/doc/kamailio/INSTALL
 
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KAMAILIO_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(KAMAILIO_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
