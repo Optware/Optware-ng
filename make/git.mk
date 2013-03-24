@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://git-core.googlecode.com/files
-GIT_VERSION=1.8.1.5
+GIT_VERSION=1.8.2
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
@@ -357,7 +357,7 @@ endif
 	rm -f $(GIT_IPK_DIR)/opt/bin/git
 	ln -s ../libexec/git-core/git $(GIT_IPK_DIR)/opt/bin/git
 	install -d $(GIT_IPK_DIR)/opt/etc/bash_completion.d
-	install $(<D)/contrib/completion/* $(GIT_IPK_DIR)/opt/etc/bash_completion.d
+	install $(<D)/contrib/completion/*.bash $(GIT_IPK_DIR)/opt/etc/bash_completion.d
 	$(MAKE) $(GIT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT_IPK_DIR)
