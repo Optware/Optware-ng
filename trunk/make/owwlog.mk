@@ -28,7 +28,7 @@
 #
 OWWLOG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/oww
 #OWWLOG_SITE=http://localhost/~sjm/owwlog
-OWWLOG_VERSION=0.3.17
+OWWLOG_VERSION=0.3.18
 OWWLOG_SOURCE=owwlog-$(OWWLOG_VERSION).tar.gz
 OWWLOG_DIR=owwlog-$(OWWLOG_VERSION)
 OWWLOG_UNZIP=zcat
