@@ -24,7 +24,7 @@ ASTERISK11_SOURCE_TYPE=tarball
 #ASTERISK11_SOURCE_TYPE=svn
 
 ASTERISK11_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK11_BASE_VERSION=11.2.1
+ASTERISK11_BASE_VERSION=11.2.2
 
 ifeq ($(ASTERISK11_SOURCE_TYPE), svn)
 ASTERISK11_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -73,7 +73,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 ASTERISK11_SUGGESTS +=,x11
 endif
 
-ASTERISK11_CONFLICTS=asterisk12,asterisk14,asterisk16,asterisk-sounds,asterisk-chan-capi,asterisk14-chan-capi,asterisk16-chan-capi,asterisk18
+ASTERISK11_CONFLICTS=asterisk18,asterisk10
 
 
 #
@@ -185,7 +185,7 @@ ASTERISK11_CONFFILES=\
 # ASTERISK11_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK11_PATCHES += $(ASTERISK11_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
+ASTERISK11_PATCHES = $(ASTERISK11_SOURCE_DIR)/roundf.patch
 
 #
 # If the compilation of the package requires additional
