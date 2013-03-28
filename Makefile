@@ -60,6 +60,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	ldns \
 	dnssec-trigger \
 	collectd \
+	asterisk11 \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
