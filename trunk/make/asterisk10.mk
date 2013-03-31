@@ -24,7 +24,7 @@ ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
 ASTERISK10_SITE=http://downloads.asterisk.org/pub/telephony/asterisk/releases
-ASTERISK10_BASE_VERSION=10.12.1
+ASTERISK10_BASE_VERSION=10.12.2
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -188,8 +188,7 @@ ASTERISK10_CONFFILES=\
 # ASTERISK10_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK10_PATCHES = $(ASTERISK10_SOURCE_DIR)/roundf.patch \
-$(ASTERISK10_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
+ASTERISK10_PATCHES = $(ASTERISK10_SOURCE_DIR)/roundf.patch
 
 #
 # If the compilation of the package requires additional
@@ -383,7 +382,7 @@ $(ASTERISK10_BUILD_DIR)/.built: $(ASTERISK10_BUILD_DIR)/.configured
 	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
 	ASTCFLAGS="$(ASTERISK10_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK10_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(@D)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
