@@ -24,7 +24,7 @@ ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
 ASTERISK18_SITE=http://downloads.asterisk.org/pub/telephony/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.20.1
+ASTERISK18_BASE_VERSION=1.8.21.0
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -189,8 +189,7 @@ ASTERISK18_CONFFILES=\
 # ASTERISK18_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK18_PATCHES = $(ASTERISK18_SOURCE_DIR)/roundf.patch \
-$(ASTERISK18_SOURCE_DIR)/issueA16854_add_roundf_compat.patch
+ASTERISK18_PATCHES = $(ASTERISK18_SOURCE_DIR)/roundf.patch
 
 #
 # If the compilation of the package requires additional
