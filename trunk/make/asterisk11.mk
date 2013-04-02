@@ -41,7 +41,7 @@ ASTERISK11_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
 ASTERISK11_DESCRIPTION=Asterisk is an Open Source PBX and telephony toolkit.
 ASTERISK11_SECTION=util
 ASTERISK11_PRIORITY=optional
-ASTERISK11_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++,popt,libxml2,sqlite
+ASTERISK11_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++,popt,libxml2,sqlite,e2fslibs
 ASTERISK11_SUGGESTS=\
 asterisk14-core-sounds-en-alaw\
 ,asterisk14-core-sounds-en-g729\
