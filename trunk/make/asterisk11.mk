@@ -24,7 +24,7 @@ ASTERISK11_SOURCE_TYPE=tarball
 #ASTERISK11_SOURCE_TYPE=svn
 
 ASTERISK11_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK11_BASE_VERSION=11.2.2
+ASTERISK11_BASE_VERSION=11.3.0
 
 ifeq ($(ASTERISK11_SOURCE_TYPE), svn)
 ASTERISK11_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -204,11 +204,6 @@ ASTERISK11_LDFLAGS+=-lpthread -lm
 endif
 
 ASTERISK11_CONFIGURE_OPTS=
-ifeq (gnutls, $(filter gnutls, $(PACKAGES)))
-ASTERISK11_CONFIGURE_OPTS += --with-gnutls=$(STAGING_PREFIX)
-else
-ASTERISK11_CONFIGURE_OPTS += --without-gnutls
-endif
 ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
 ASTERISK11_CONFIGURE_OPTS += --with-iksemel=$(STAGING_PREFIX)
 else
@@ -302,7 +297,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
 	$(MAKE) sqlite-stage libogg-stage libxml2-stage
-	$(MAKE) mysql-stage bluez2-libs-stage openssl-stage
+	$(MAKE) mysql-stage bluez2-libs-stage openssl-stage e2fsprogs-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK11_DIR) $(ASTERISK11_BUILD_DIR)
 	$(ASTERISK11_UNZIP) $(DL_DIR)/$(ASTERISK11_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK11_PATCHES)" ; \
@@ -321,6 +316,7 @@ endif
 		sed -i -e "s#    ac_cross_compile=\$$.*#    ac_cross_compile=\`echo \$$\{CC\} | sed 's/gcc\$$//'\`#" res/pjproject/aconfigure; \
 		./bootstrap.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
+		LIBEDIT_DIR="internal" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK11_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 		PATH="$(STAGING_PREFIX)/bin:$(PATH)" \
@@ -334,22 +330,21 @@ endif
 		--with-ssl=$(STAGING_PREFIX) \
 		--with-z=$(STAGING_PREFIX) \
 		--with-termcap=$(STAGING_PREFIX) \
-		--with-curl=$(STAGING_PREFIX) \
+		--with-libcurl=$(STAGING_PREFIX) \
 		--with-ogg=$(STAGING_PREFIX) \
 		--with-popt=$(STAGING_PREFIX) \
 		--without-tds \
-		--without-openais \
 		--without-sqlite \
 		--with-sqlite3=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
-		--with-odbc=$(STAGING_PREFIX) \
+		--with-unixodbc=$(STAGING_PREFIX) \
 		--with-netsnmp=$(STAGING_PREFIX) \
 		--with-ltdl=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
+		--without-ilbc \
 		--without-postgres \
 		--without-pwlib \
-		--without-usb \
 		--without-lua \
 		--without-imap \
 		--without-dahdi \
@@ -359,6 +354,8 @@ endif
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc; \
 	cd $(@D)/res/pjproject; \
+		echo "export CFLAGS += $(STAGING_CPPFLAGS) $(ASTERISK11_CPPFLAGS)" > user.mak; \
+		echo "export LDLAGS += $(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" >> user.mak; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK11_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
