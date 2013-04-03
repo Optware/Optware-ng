@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPCAP_SITE=http://www.tcpdump.org/release
-LIBPCAP_VERSION=1.0.0
+LIBPCAP_VERSION=1.3.0
 LIBPCAP_SOURCE=libpcap-$(LIBPCAP_VERSION).tar.gz
 LIBPCAP_DIR=libpcap-$(LIBPCAP_VERSION)
 LIBPCAP_UNZIP=zcat
@@ -35,7 +35,7 @@ LIBPCAP_CONFLICTS=
 #
 # LIBPCAP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPCAP_IPK_VERSION=2
+LIBPCAP_IPK_VERSION=1
 
 LIBPCAP_BUILD_DIR=$(BUILD_DIR)/libpcap
 LIBPCAP_SOURCE_DIR=$(SOURCE_DIR)/libpcap
@@ -51,7 +51,6 @@ LIBPCAP-DEV_IPK=$(BUILD_DIR)/libpcap-dev_$(LIBPCAP_VERSION)-$(LIBPCAP_IPK_VERSIO
 # which they should be applied to the source code.
 #
 LIBPCAP_PATCHES=\
-$(LIBPCAP_SOURCE_DIR)/100-shared-lib.patch \
 
 #
 # If the compilation of the package requires additional
