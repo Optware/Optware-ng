@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMICROHTTPD_SITE=ftp://ftp.gnu.org/gnu/libmicrohttpd/
-LIBMICROHTTPD_VERSION=0.9.25
+LIBMICROHTTPD_VERSION=0.9.26
 LIBMICROHTTPD_SOURCE=libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz
 LIBMICROHTTPD_DIR=libmicrohttpd-$(LIBMICROHTTPD_VERSION)
 LIBMICROHTTPD_UNZIP=zcat
