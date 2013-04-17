@@ -60,7 +60,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	ldns \
 	dnssec-trigger \
 	collectd \
-	srtp \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -395,7 +394,8 @@ COMMON_CROSS_PACKAGES = \
 	sm smartmontools snort snownews \
 	socat softflowd sox spandsp spawn-fcgi speex spindown splix \
 	sqlite sqlite2 \
-	sqsh squeak squid squid3 srelay srecord ssam sslwrap \
+	sqsh squeak squid squid3 \
+	srelay srecord srtp ssam sslwrap \
 	strace strongswan stunnel streamripper \
 	stupid-ftpd sudo surfraw swi-prolog svn \
 	swig syslog-ng sysstat syx \
