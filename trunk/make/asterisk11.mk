@@ -79,12 +79,13 @@ ASTERISK11_CONFLICTS=asterisk18,asterisk10
 #
 # ASTERISK11_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK11_IPK_VERSION=1
+ASTERISK11_IPK_VERSION=2
 
 #
 # ASTERISK11_CONFFILES should be a list of user-editable files
 #ASTERISK11_CONFFILES=/opt/etc/asterisk.conf /opt/etc/init.d/SXXasterisk
 ASTERISK11_CONFFILES=\
+/opt/etc/asterisk/xmpp.conf \
 /opt/etc/asterisk/vpb.conf \
 /opt/etc/asterisk/voicemail.conf \
 /opt/etc/asterisk/users.conf \
@@ -106,7 +107,8 @@ ASTERISK11_CONFFILES=\
 /opt/etc/asterisk/res_ldap.conf \
 /opt/etc/asterisk/res_fax.conf \
 /opt/etc/asterisk/res_curl.conf \
-/opt/etc/asterisk/res_config_sqlite.conf \
+/opt/etc/asterisk/res_corosync.conf \
+/opt/etc/asterisk/res_config_sqlite3.conf \
 /opt/etc/asterisk/res_config_mysql.conf \
 /opt/etc/asterisk/queues.conf \
 /opt/etc/asterisk/queuerules.conf \
@@ -114,8 +116,10 @@ ASTERISK11_CONFFILES=\
 /opt/etc/asterisk/phone.conf \
 /opt/etc/asterisk/oss.conf \
 /opt/etc/asterisk/osp.conf \
+/opt/etc/asterisk/ooh323.conf \
 /opt/etc/asterisk/muted.conf \
 /opt/etc/asterisk/musiconhold.conf \
+/opt/etc/asterisk/motif.conf \
 /opt/etc/asterisk/modules.conf \
 /opt/etc/asterisk/misdn.conf \
 /opt/etc/asterisk/minivm.conf \
@@ -146,6 +150,7 @@ ASTERISK11_CONFFILES=\
 /opt/etc/asterisk/dnsmgr.conf \
 /opt/etc/asterisk/dbsep.conf \
 /opt/etc/asterisk/console.conf \
+/opt/etc/asterisk/config_test.conf \
 /opt/etc/asterisk/confbridge.conf \
 /opt/etc/asterisk/codecs.conf \
 /opt/etc/asterisk/cli_permissions.conf \
@@ -173,12 +178,14 @@ ASTERISK11_CONFFILES=\
 /opt/etc/asterisk/calendar.conf \
 /opt/etc/asterisk/asterisk.conf \
 /opt/etc/asterisk/asterisk.adsi \
+/opt/etc/asterisk/app_skel.conf \
 /opt/etc/asterisk/app_mysql.conf \
 /opt/etc/asterisk/amd.conf \
 /opt/etc/asterisk/alsa.conf \
 /opt/etc/asterisk/alarmreceiver.conf \
 /opt/etc/asterisk/agents.conf \
 /opt/etc/asterisk/adsi.conf \
+/opt/etc/asterisk/acl.conf \
 
 
 #
@@ -296,7 +303,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 	$(MAKE) x11-stage
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
-	$(MAKE) sqlite-stage libogg-stage libxml2-stage
+	$(MAKE) sqlite-stage libogg-stage libxml2-stage srtp
 	$(MAKE) mysql-stage bluez2-libs-stage openssl-stage e2fsprogs-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK11_DIR) $(ASTERISK11_BUILD_DIR)
 	$(ASTERISK11_UNZIP) $(DL_DIR)/$(ASTERISK11_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -342,6 +349,7 @@ endif
 		--with-ltdl=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
+		--with-srtp=$(STAGING_PREFIX) \
 		--without-ilbc \
 		--without-postgres \
 		--without-pwlib \
@@ -392,17 +400,15 @@ asterisk11-unpack: $(ASTERISK11_BUILD_DIR)/.configured
 #
 $(ASTERISK11_BUILD_DIR)/.built: $(ASTERISK11_BUILD_DIR)/.configured
 	rm -f $@
-	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(@D) menuselect.makeopts
+	$(MAKE) -C $(@D) menuselect.makeopts
 	( cd $(ASTERISK11_BUILD_DIR);\
 	./menuselect/menuselect --enable-category MENUSELECT_ADDONS menuselect.makeopts;\
 	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
-	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(@D)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -415,10 +421,8 @@ asterisk11: $(ASTERISK11_BUILD_DIR)/.built
 #
 $(ASTERISK11_BUILD_DIR)/.staged: $(ASTERISK11_BUILD_DIR)/.built
 	rm -f $(ASTERISK11_BUILD_DIR)/.staged
-	NOISY_BUILD=yes \
-	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=/opt/sbin install
+	$(MAKE) -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=/opt/sbin install
 	touch $(ASTERISK11_BUILD_DIR)/.staged
 
 asterisk11-stage: $(ASTERISK11_BUILD_DIR)/.staged
@@ -456,14 +460,12 @@ $(ASTERISK11_IPK_DIR)/CONTROL/control:
 #
 $(ASTERISK11_IPK): $(ASTERISK11_BUILD_DIR)/.built
 	rm -rf $(ASTERISK11_IPK_DIR) $(BUILD_DIR)/asterisk11_*_$(TARGET_ARCH).ipk
-	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) ASTSBINDIR=/opt/sbin install
-	NOISY_BUILD=yes \
+	$(MAKE) -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) ASTSBINDIR=/opt/sbin install
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) samples
+	$(MAKE) -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) samples
 
 	sed -i -e 's#/var/spool/asterisk#/opt/var/spool/asterisk#g' $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#g' $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/*
@@ -530,7 +532,6 @@ $(ASTERISK11_IPK): $(ASTERISK11_BUILD_DIR)/.built
 	echo "noload => cel_radius.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cel_sqlite3_custom.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 
-	NOISY_BUILD=yes \
 	$(MAKE) NOISY_BUILD=yes $(ASTERISK11_IPK_DIR)/CONTROL/control
 	echo $(ASTERISK11_CONFFILES) | sed -e 's/ /\n/g' > $(ASTERISK11_IPK_DIR)/CONTROL/conffiles
 
