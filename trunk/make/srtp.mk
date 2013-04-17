@@ -117,6 +117,7 @@ $(SRTP_BUILD_DIR)/.configured: $(DL_DIR)/$(SRTP_SOURCE) $(SRTP_PATCHES) make/srt
 	fi
 	(cd $(@D); \
 		sed -i -e "s/\bmips/srtp_mips/g" test/srtp_driver.c; \
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SRTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SRTP_LDFLAGS)" \
@@ -125,8 +126,6 @@ $(SRTP_BUILD_DIR)/.configured: $(DL_DIR)/$(SRTP_SOURCE) $(SRTP_PATCHES) make/srt
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
-		--disable-static \
 	)
 	touch $@
 
