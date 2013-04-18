@@ -85,6 +85,7 @@ ASTERISK11_IPK_VERSION=1
 # ASTERISK11_CONFFILES should be a list of user-editable files
 #ASTERISK11_CONFFILES=/opt/etc/asterisk.conf /opt/etc/init.d/SXXasterisk
 ASTERISK11_CONFFILES=\
+/opt/etc/asterisk/xmpp.conf \
 /opt/etc/asterisk/vpb.conf \
 /opt/etc/asterisk/voicemail.conf \
 /opt/etc/asterisk/users.conf \
@@ -106,7 +107,8 @@ ASTERISK11_CONFFILES=\
 /opt/etc/asterisk/res_ldap.conf \
 /opt/etc/asterisk/res_fax.conf \
 /opt/etc/asterisk/res_curl.conf \
-/opt/etc/asterisk/res_config_sqlite.conf \
+/opt/etc/asterisk/res_corosync.conf \
+/opt/etc/asterisk/res_config_sqlite3.conf \
 /opt/etc/asterisk/res_config_mysql.conf \
 /opt/etc/asterisk/queues.conf \
 /opt/etc/asterisk/queuerules.conf \
@@ -114,8 +116,10 @@ ASTERISK11_CONFFILES=\
 /opt/etc/asterisk/phone.conf \
 /opt/etc/asterisk/oss.conf \
 /opt/etc/asterisk/osp.conf \
+/opt/etc/asterisk/ooh323.conf \
 /opt/etc/asterisk/muted.conf \
 /opt/etc/asterisk/musiconhold.conf \
+/opt/etc/asterisk/motif.conf \
 /opt/etc/asterisk/modules.conf \
 /opt/etc/asterisk/misdn.conf \
 /opt/etc/asterisk/minivm.conf \
@@ -146,6 +150,7 @@ ASTERISK11_CONFFILES=\
 /opt/etc/asterisk/dnsmgr.conf \
 /opt/etc/asterisk/dbsep.conf \
 /opt/etc/asterisk/console.conf \
+/opt/etc/asterisk/config_test.conf \
 /opt/etc/asterisk/confbridge.conf \
 /opt/etc/asterisk/codecs.conf \
 /opt/etc/asterisk/cli_permissions.conf \
@@ -173,12 +178,14 @@ ASTERISK11_CONFFILES=\
 /opt/etc/asterisk/calendar.conf \
 /opt/etc/asterisk/asterisk.conf \
 /opt/etc/asterisk/asterisk.adsi \
+/opt/etc/asterisk/app_skel.conf \
 /opt/etc/asterisk/app_mysql.conf \
 /opt/etc/asterisk/amd.conf \
 /opt/etc/asterisk/alsa.conf \
 /opt/etc/asterisk/alarmreceiver.conf \
 /opt/etc/asterisk/agents.conf \
 /opt/etc/asterisk/adsi.conf \
+/opt/etc/asterisk/acl.conf \
 
 
 #
