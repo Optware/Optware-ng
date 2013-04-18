@@ -36,7 +36,7 @@ SRTP_CONFLICTS=
 #
 # SRTP_IPK_VERSION should be incremented when the ipk changes.
 #
-SRTP_IPK_VERSION=1
+SRTP_IPK_VERSION=2
 
 #
 # SRTP_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ SRTP_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SRTP_CPPFLAGS=
+SRTP_CPPFLAGS=-fPIC -fsigned-char
 SRTP_LDFLAGS=
 
 #
