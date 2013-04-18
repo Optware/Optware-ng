@@ -399,14 +399,12 @@ asterisk11-unpack: $(ASTERISK11_BUILD_DIR)/.configured
 #
 $(ASTERISK11_BUILD_DIR)/.built: $(ASTERISK11_BUILD_DIR)/.configured
 	rm -f $@
-	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=yes -C $(@D) menuselect.makeopts
 	( cd $(ASTERISK11_BUILD_DIR);\
 	./menuselect/menuselect --enable-category MENUSELECT_ADDONS menuselect.makeopts;\
 	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
-	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=yes -C $(@D)
@@ -422,7 +420,6 @@ asterisk11: $(ASTERISK11_BUILD_DIR)/.built
 #
 $(ASTERISK11_BUILD_DIR)/.staged: $(ASTERISK11_BUILD_DIR)/.built
 	rm -f $(ASTERISK11_BUILD_DIR)/.staged
-	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=yes -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=/opt/sbin install
@@ -463,11 +460,9 @@ $(ASTERISK11_IPK_DIR)/CONTROL/control:
 #
 $(ASTERISK11_IPK): $(ASTERISK11_BUILD_DIR)/.built
 	rm -rf $(ASTERISK11_IPK_DIR) $(BUILD_DIR)/asterisk11_*_$(TARGET_ARCH).ipk
-	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=yes -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) ASTSBINDIR=/opt/sbin install
-	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=yes -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) samples
@@ -537,7 +532,6 @@ $(ASTERISK11_IPK): $(ASTERISK11_BUILD_DIR)/.built
 	echo "noload => cel_radius.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cel_sqlite3_custom.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 
-	NOISY_BUILD=yes \
 	$(MAKE) NOISY_BUILD=yes $(ASTERISK11_IPK_DIR)/CONTROL/control
 	echo $(ASTERISK11_CONFFILES) | sed -e 's/ /\n/g' > $(ASTERISK11_IPK_DIR)/CONTROL/conffiles
 
