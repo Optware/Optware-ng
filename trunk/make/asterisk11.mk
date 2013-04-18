@@ -79,7 +79,7 @@ ASTERISK11_CONFLICTS=asterisk18,asterisk10
 #
 # ASTERISK11_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK11_IPK_VERSION=1
+ASTERISK11_IPK_VERSION=2
 
 #
 # ASTERISK11_CONFFILES should be a list of user-editable files
@@ -303,7 +303,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 	$(MAKE) x11-stage
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
-	$(MAKE) sqlite-stage libogg-stage libxml2-stage
+	$(MAKE) sqlite-stage libogg-stage libxml2-stage srtp
 	$(MAKE) mysql-stage bluez2-libs-stage openssl-stage e2fsprogs-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK11_DIR) $(ASTERISK11_BUILD_DIR)
 	$(ASTERISK11_UNZIP) $(DL_DIR)/$(ASTERISK11_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -349,6 +349,7 @@ endif
 		--with-ltdl=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
+		--with-srtp=$(STAGING_PREFIX) \
 		--without-ilbc \
 		--without-postgres \
 		--without-pwlib \
