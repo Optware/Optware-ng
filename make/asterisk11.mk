@@ -79,7 +79,7 @@ ASTERISK11_CONFLICTS=asterisk18,asterisk10
 #
 # ASTERISK11_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK11_IPK_VERSION=2
+ASTERISK11_IPK_VERSION=1
 
 #
 # ASTERISK11_CONFFILES should be a list of user-editable files
@@ -349,7 +349,6 @@ endif
 		--with-ltdl=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
-		--with-srtp=$(STAGING_PREFIX) \
 		--without-ilbc \
 		--without-postgres \
 		--without-pwlib \
