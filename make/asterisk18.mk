@@ -76,13 +76,13 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 ASTERISK18_SUGGESTS +=,x11
 endif
 
-ASTERISK18_CONFLICTS=asterisk14,asterisk16,asterisk10,asterisk11
+ASTERISK18_CONFLICTS=asterisk10,asterisk11
 
 
 #
 # ASTERISK18_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK18_IPK_VERSION=2
+ASTERISK18_IPK_VERSION=3
 
 #
 # ASTERISK18_CONFFILES should be a list of user-editable files
@@ -209,11 +209,6 @@ ASTERISK18_LDFLAGS+=-lpthread -lm
 endif
 
 ASTERISK18_CONFIGURE_OPTS=
-ifeq (gnutls, $(filter gnutls, $(PACKAGES)))
-ASTERISK18_CONFIGURE_OPTS += --with-gnutls=$(STAGING_PREFIX)
-else
-ASTERISK18_CONFIGURE_OPTS += --without-gnutls
-endif
 ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
 ASTERISK18_CONFIGURE_OPTS += --with-iksemel=$(STAGING_PREFIX)
 else
@@ -338,7 +333,7 @@ endif
 		--with-ssl=$(STAGING_PREFIX) \
 		--with-z=$(STAGING_PREFIX) \
 		--with-termcap=$(STAGING_PREFIX) \
-		--with-curl=$(STAGING_PREFIX) \
+		--with-libcurl=$(STAGING_PREFIX) \
 		--with-ogg=$(STAGING_PREFIX) \
 		--with-popt=$(STAGING_PREFIX) \
 		--without-tds \
@@ -346,7 +341,7 @@ endif
 		--without-sqlite \
 		--with-sqlite3=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
-		--with-odbc=$(STAGING_PREFIX) \
+		--with-unixodbc=$(STAGING_PREFIX) \
 		--with-netsnmp=$(STAGING_PREFIX) \
 		--with-ltdl=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
@@ -357,7 +352,6 @@ endif
 		--with-libxml2=$(STAGING_PREFIX) \
 		--without-postgres \
 		--without-pwlib \
-		--without-usb \
 		--without-lua \
 		--without-imap \
 		--without-dahdi \
