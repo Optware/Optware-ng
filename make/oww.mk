@@ -28,7 +28,7 @@
 #
 OWW_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/oww
 #OWW_SITE=http://localhost/~sjm/oww
-OWW_VERSION=0.86.3
+OWW_VERSION=0.86.4
 OWW_SOURCE=oww-$(OWW_VERSION).tar.gz
 OWW_DIR=oww-$(OWW_VERSION)
 OWW_UNZIP=zcat
