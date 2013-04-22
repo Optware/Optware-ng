@@ -320,8 +320,7 @@ ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
 endif
 	(cd $(@D); \
 		sed -i -e "s/AC_CHECK_HEADERS..xlocale\.h../###########/" configure.ac; \
-		sed -i -e "s/AST_EXT_LIB_SETUP([SRTP]/###########/" configure.ac; \
-		sed -i -e "s/AST_EXT_LIB_CHECK([SRTP]/###########/" configure.ac; \
+		sed -i -e "s|MENUSELECT_DEPENDS_res_srtp=SRTP||" menuselect.makedeps; \
 		sed -i -e "s|<defaultenabled>yes</defaultenabled>||" sounds/sounds.xml; \
 		sed -i -e "s#    ac_cross_compile=\$$.*#    ac_cross_compile=\`echo \$$\{CC\} | sed 's/gcc\$$//'\`#" res/pjproject/aconfigure; \
 		./bootstrap.sh; \
@@ -352,7 +351,6 @@ endif
 		--with-ltdl=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
-		--with-srtp=$(STAGING_PREFIX) \
 		--without-ilbc \
 		--without-postgres \
 		--without-pwlib \
