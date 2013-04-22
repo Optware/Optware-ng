@@ -79,7 +79,7 @@ ASTERISK11_CONFLICTS=asterisk18,asterisk10
 #
 # ASTERISK11_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK11_IPK_VERSION=1
+ASTERISK11_IPK_VERSION=2
 
 #
 # ASTERISK11_CONFFILES should be a list of user-editable files
@@ -198,6 +198,7 @@ ASTERISK11_PATCHES = $(ASTERISK11_SOURCE_DIR)/roundf.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+NOISY_BUILD=yes
 ASTERISK11_CPPFLAGS=-fPIC -fsigned-char -I$(STAGING_INCLUDE_DIR)
 ifeq (slugosbe, $(OPTWARE_TARGET))
 ASTERISK11_CPPFLAGS+= -DPATH_MAX=4096
@@ -319,6 +320,8 @@ ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
 endif
 	(cd $(@D); \
 		sed -i -e "s/AC_CHECK_HEADERS..xlocale\.h../###########/" configure.ac; \
+		sed -i -e "s/AST_EXT_LIB_SETUP([SRTP]/###########/" configure.ac; \
+		sed -i -e "s/AST_EXT_LIB_CHECK([SRTP]/###########/" configure.ac; \
 		sed -i -e "s|<defaultenabled>yes</defaultenabled>||" sounds/sounds.xml; \
 		sed -i -e "s#    ac_cross_compile=\$$.*#    ac_cross_compile=\`echo \$$\{CC\} | sed 's/gcc\$$//'\`#" res/pjproject/aconfigure; \
 		./bootstrap.sh; \
@@ -349,6 +352,7 @@ endif
 		--with-ltdl=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
+		--with-srtp=$(STAGING_PREFIX) \
 		--without-ilbc \
 		--without-postgres \
 		--without-pwlib \
@@ -401,13 +405,13 @@ $(ASTERISK11_BUILD_DIR)/.built: $(ASTERISK11_BUILD_DIR)/.configured
 	rm -f $@
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(@D) menuselect.makeopts
+	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D) menuselect.makeopts
 	( cd $(ASTERISK11_BUILD_DIR);\
 	./menuselect/menuselect --enable-category MENUSELECT_ADDONS menuselect.makeopts;\
 	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(@D)
+	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D)
 	touch $@
 
 #
@@ -422,7 +426,7 @@ $(ASTERISK11_BUILD_DIR)/.staged: $(ASTERISK11_BUILD_DIR)/.built
 	rm -f $(ASTERISK11_BUILD_DIR)/.staged
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=/opt/sbin install
+	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=/opt/sbin install
 	touch $(ASTERISK11_BUILD_DIR)/.staged
 
 asterisk11-stage: $(ASTERISK11_BUILD_DIR)/.staged
@@ -462,10 +466,10 @@ $(ASTERISK11_IPK): $(ASTERISK11_BUILD_DIR)/.built
 	rm -rf $(ASTERISK11_IPK_DIR) $(BUILD_DIR)/asterisk11_*_$(TARGET_ARCH).ipk
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) ASTSBINDIR=/opt/sbin install
+	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) ASTSBINDIR=/opt/sbin install
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=yes -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) samples
+	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(ASTERISK11_BUILD_DIR) DESTDIR=$(ASTERISK11_IPK_DIR) samples
 
 	sed -i -e 's#/var/spool/asterisk#/opt/var/spool/asterisk#g' $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#g' $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/*
@@ -532,7 +536,7 @@ $(ASTERISK11_IPK): $(ASTERISK11_BUILD_DIR)/.built
 	echo "noload => cel_radius.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cel_sqlite3_custom.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 
-	$(MAKE) NOISY_BUILD=yes $(ASTERISK11_IPK_DIR)/CONTROL/control
+	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) $(ASTERISK11_IPK_DIR)/CONTROL/control
 	echo $(ASTERISK11_CONFFILES) | sed -e 's/ /\n/g' > $(ASTERISK11_IPK_DIR)/CONTROL/conffiles
 
 	for filetostrip in $(ASTERISK11_IPK_DIR)/opt/lib/asterisk/modules/*.so ; do \
