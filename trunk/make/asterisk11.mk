@@ -320,7 +320,6 @@ ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
 endif
 	(cd $(@D); \
 		sed -i -e "s/AC_CHECK_HEADERS..xlocale\.h../###########/" configure.ac; \
-		sed -i -e "s|MENUSELECT_DEPENDS_res_srtp=SRTP||" menuselect.makedeps; \
 		sed -i -e "s|<defaultenabled>yes</defaultenabled>||" sounds/sounds.xml; \
 		sed -i -e "s#    ac_cross_compile=\$$.*#    ac_cross_compile=\`echo \$$\{CC\} | sed 's/gcc\$$//'\`#" res/pjproject/aconfigure; \
 		./bootstrap.sh; \
@@ -404,9 +403,12 @@ $(ASTERISK11_BUILD_DIR)/.built: $(ASTERISK11_BUILD_DIR)/.configured
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D) menuselect.makeopts
+	# enable addons, disable mp3, disable srtp dependency check
 	( cd $(ASTERISK11_BUILD_DIR);\
 	./menuselect/menuselect --enable-category MENUSELECT_ADDONS menuselect.makeopts;\
-	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
+	./menuselect/menuselect --disable format_mp3 menuselect.makeopts;\
+	egrep -v SRTP menuselect.makedeps > menuselect.makedeps.no_srtp;\
+	mv -f menuselect.makedeps.no_srtp menuselect.makedeps )
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D)
