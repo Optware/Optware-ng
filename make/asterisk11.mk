@@ -79,7 +79,7 @@ ASTERISK11_CONFLICTS=asterisk18,asterisk10
 #
 # ASTERISK11_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK11_IPK_VERSION=2
+ASTERISK11_IPK_VERSION=3
 
 #
 # ASTERISK11_CONFFILES should be a list of user-editable files
@@ -408,7 +408,8 @@ $(ASTERISK11_BUILD_DIR)/.built: $(ASTERISK11_BUILD_DIR)/.configured
 	./menuselect/menuselect --enable-category MENUSELECT_ADDONS menuselect.makeopts;\
 	./menuselect/menuselect --disable format_mp3 menuselect.makeopts;\
 	egrep -v SRTP menuselect.makedeps > menuselect.makedeps.no_srtp;\
-	mv -f menuselect.makedeps.no_srtp menuselect.makedeps )
+	mv -f menuselect.makedeps.no_srtp menuselect.makedeps; \
+	sed -i -e "s|<depend>srtp</depend>||" menuselect-tree; )
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D)
