@@ -525,6 +525,7 @@ $(ASTERISK11_IPK): $(ASTERISK11_BUILD_DIR)/.built
 	echo "noload => res_snmp.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_speech.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_smdi.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_srtp.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_adaptive_odbc.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_mysql.so" >> $(ASTERISK11_IPK_DIR)/opt/etc/asterisk/modules.conf
