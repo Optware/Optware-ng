@@ -304,7 +304,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 	$(MAKE) x11-stage
 endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
-	$(MAKE) sqlite-stage libogg-stage libxml2-stage srtp
+	$(MAKE) sqlite-stage libogg-stage libxml2-stage srtp-stage
 	$(MAKE) mysql-stage bluez2-libs-stage openssl-stage e2fsprogs-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK11_DIR) $(ASTERISK11_BUILD_DIR)
 	$(ASTERISK11_UNZIP) $(DL_DIR)/$(ASTERISK11_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -350,6 +350,7 @@ endif
 		--with-ltdl=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
+		--without-srtp \
 		--without-ilbc \
 		--without-postgres \
 		--without-pwlib \
