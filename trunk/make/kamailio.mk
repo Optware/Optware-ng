@@ -22,7 +22,7 @@
 #
 
 
-KAMAILIO_VERSION=4.0.0
+KAMAILIO_VERSION=4.0.1
 KAMAILIO_SITE=http://kamailio.org/pub/kamailio/$(KAMAILIO_VERSION)/src/
 KAMAILIO_DIR=kamailio-$(KAMAILIO_VERSION)
 
@@ -30,11 +30,11 @@ KAMAILIO_SOURCE=kamailio-$(KAMAILIO_VERSION)_src.tar.gz
 
 KAMAILIO_UNZIP=zcat
 KAMAILIO_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
-KAMAILIO_DESCRIPTION=Kamailio Express Router
+KAMAILIO_DESCRIPTION=Kamailio SIP Express Router
 KAMAILIO_SECTION=util
 KAMAILIO_PRIORITY=optional
 KAMAILIO_DEPENDS=coreutils,openssl,gawk
-KAMAILIO_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,confuse,openldap,libunistring
+KAMAILIO_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,confuse,openldap
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 KAMAILIO_SUGGESTS=$(KAMAILIO_BASE_SUGGESTS),mysql
 endif
@@ -78,6 +78,10 @@ KAMAILIO_MAKEFLAGS=$(strip \
         $(if $(filter mipsel, $(TARGET_ARCH)), ARCH=mips OS=linux OSREL=2.4.20, \
         $(if $(filter i386 i686, $(TARGET_ARCH)), ARCH=i386 OS=linux, \
         ARCH=arm OS=linux OSREL=2.4.22))))))
+# disable IPV6 support
+KAMAILIO_MAKEFLAGS+=DEFS_RM=-DUSE_IPV6
+
+#KAMAILIO_NOISY_BUILD=Q=0
 
 KAMAILIO_INCLUDE_PUA_MODULES=pua pua_bla pua_dialoginfo pua_mi pua_reginfo pua_usrloc pua_xmpp
 KAMAILIO_INCLUDE_PRESENCE_MODULES=presence presence_conference presence_dialoginfo presence_mwi presence_profile presence_reginfo presence_xml presence_b2b
@@ -91,7 +95,7 @@ xmpp cpl-c db_unixodbc db_postgres carrierroute rls identity regex xmlops xcap_s
 KAMAILIO_EXCLUDE_APP_MODULES=app_lua app_mono app_perl app_python
 KAMAILIO_EXCLUDE_DB_MODULES=db_berkeley db_cassandra db_oracle db_perlvdb
 # cdp: AI_ADDRCONFIG not defined
-KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) $(KAMAILIO_EXCLUDE_DB_MODULES) bdb cdp siptrace sipcapture geoip identity iptrtpproxy jabber json jsonrpc-c memcached ndb_redis mmgeoip osp h350 purple seas mi_xmlrpc
+KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) $(KAMAILIO_EXCLUDE_DB_MODULES) bdb cdp siptrace sipcapture geoip identity iptrtpproxy jabber json jsonrpc-c memcached ndb_redis mmgeoip osp h350 purple seas mi_xmlrpc snmpstats
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 KAMAILIO_INCLUDE_MODULES=$(KAMAILIO_INCLUDE_BASE_MODULES) db_mysql
@@ -178,7 +182,7 @@ endif
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
-	$(MAKE) -C $(KAMAILIO_BUILD_DIR) FLAVOUR=kamailio cfg $(KAMAILIO_MAKEFLAGS) \
+	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) FLAVOUR=kamailio cfg $(KAMAILIO_MAKEFLAGS) \
 	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt \
 	modules_dirs="modules modules_k"
 
@@ -195,7 +199,7 @@ $(KAMAILIO_BUILD_DIR)/.built: $(KAMAILIO_BUILD_DIR)/.configured
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
-	$(MAKE) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) \
+	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) \
 	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt all \
 	modules_dirs="modules modules_k"
 
@@ -252,7 +256,7 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
-	$(MAKE) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) DESTDIR=$(KAMAILIO_IPK_DIR) \
+	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) DESTDIR=$(KAMAILIO_IPK_DIR) \
 	prefix=/opt cfg-prefix=$(KAMAILIO_IPK_DIR)/opt install
 
 	$(MAKE) $(KAMAILIO_IPK_DIR)/CONTROL/control
