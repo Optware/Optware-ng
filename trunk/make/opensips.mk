@@ -23,7 +23,7 @@
 OPENSIPS_SOURCE_TYPE=tarball
 #OPENSIPS_SOURCE_TYPE=svn
 
-OPENSIPS_BASE_VERSION=1.9.0
+OPENSIPS_BASE_VERSION=1.9.1
 
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 OPENSIPS_VERSION=$(OPENSIPS_BASE_VERSION)
@@ -55,7 +55,7 @@ OPENSIPS_CONFLICTS=
 # OPENSIPS_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
-OPENSIPS_IPK_VERSION=3
+OPENSIPS_IPK_VERSION=1
 else
 OPENSIPS_IPK_VERSION=1
 endif
@@ -77,19 +77,6 @@ OPENSIPS_CONFFILES=\
 # compilation or linking flags, then list them here.
 #
 OPENSIPS_CPPFLAGS=-fexpensive-optimizations -fomit-frame-pointer -fsigned-char
-
-# perl stuff
-#
-#PERLLDOPTS should be set to the output of
-#perl -MExtUtils::Embed -e ldopts
-#on the destination machine;
-#
-#PERLCCOPTS should be set to the output of
-#perl -MExtUtils::Embed -e ccopts
-#on the destination machine;
-#
-#TYPEMAP should be set to the full file name including path of your
-#ExtUtils/typemap file.
 
 OPENSIPS_MAKEFLAGS=$(strip \
         $(if $(filter powerpc, $(TARGET_ARCH)), ARCH=ppc OS=linux, \
@@ -121,7 +108,7 @@ else
 OPENSIPS_INCLUDE_MODULES=$(OPENSIPS_INCLUDE_BASE_MODULES)
 endif
 
-OPENSIPS_EXCLUDE_MODULES=siptrace sipcapture cachedb_couchbase cachedb_memcached cachedb_cassandra cachedb_redis cachedb_mongodb db_berkeley db_oracle db_perlvdb event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350
+OPENSIPS_EXCLUDE_MODULES=siptrace sipcapture cachedb_couchbase cachedb_memcached cachedb_cassandra cachedb_redis cachedb_mongodb db_berkeley db_oracle db_perlvdb event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350 snmpstats
 OPENSIPS_DEBUG_MODE=mode=debug
 
 #
@@ -194,7 +181,7 @@ endif
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 	if test -n "$(OPENSIPS_PATCHES)" ; \
 		then cat $(OPENSIPS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENSIPS_DIR)-tls -p0 ; \
+		patch -d $(BUILD_DIR)/$(OPENSIPS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENSIPS_DIR)-tls" != "$(OPENSIPS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENSIPS_DIR)-tls $(OPENSIPS_BUILD_DIR) ; \
@@ -230,7 +217,6 @@ $(OPENSIPS_BUILD_DIR)/.built: $(OPENSIPS_BUILD_DIR)/.configured
 
 	CC_EXTRA_OPTS="$(OPENSIPS_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
-	PERLLDOPTS="$(OPENSIPS_PERLLDOPTS)" PERLCCOPTS="$(OPENSIPS_PERLCCOPTS)" TYPEMAP="$(OPENSIPS_TYPEMAP)" \
 	CROSS_COMPILE="$(TARGET_CROSS)" NICER=0\
 	TLS=1 LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) -C $(OPENSIPS_BUILD_DIR) $(OPENSIPS_MAKEFLAGS) $(OPENSIPS_DEBUG_MODE) \
@@ -287,7 +273,6 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 
 	CC_EXTRA_OPTS="$(OPENSIPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
-	PERLLDOPTS="$(OPENSIPS_PERLLDOPTS)" PERLCCOPTS="$(OPENSIPS_PERLCCOPTS)" TYPEMAP="$(OPENSIPS_TYPEMAP)" \
 	CROSS_COMPILE="$(TARGET_CROSS)" \
 	TLS=1 LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) -C $(OPENSIPS_BUILD_DIR) $(OPENSIPS_MAKEFLAGS) DESTDIR=$(OPENSIPS_IPK_DIR) \
