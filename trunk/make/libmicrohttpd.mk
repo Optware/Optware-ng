@@ -21,12 +21,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMICROHTTPD_SITE=ftp://ftp.gnu.org/gnu/libmicrohttpd/
-LIBMICROHTTPD_VERSION=0.9.26
+LIBMICROHTTPD_VERSION=0.9.27
 LIBMICROHTTPD_SOURCE=libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz
 LIBMICROHTTPD_DIR=libmicrohttpd-$(LIBMICROHTTPD_VERSION)
 LIBMICROHTTPD_UNZIP=zcat
 LIBMICROHTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-LIBMICROHTTPD_DESCRIPTION=Describe libmicrohttpd here.
+LIBMICROHTTPD_DESCRIPTION=Small C library for embedding HTTP server functionality into other applications
 LIBMICROHTTPD_SECTION=libs
 LIBMICROHTTPD_PRIORITY=optional
 LIBMICROHTTPD_DEPENDS=
@@ -115,7 +115,7 @@ $(LIBMICROHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMICROHTTPD_SOURCE) $(LIBM
 	if test "$(BUILD_DIR)/$(LIBMICROHTTPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMICROHTTPD_DIR) $(@D) ; \
 	fi
-	sed -i -e 's/(CLOCK_MONOTONIC,/(1,/' $(@D)/src/daemon/internal.c
+	sed -i -e 's/(CLOCK_MONOTONIC,/(1,/' $(@D)/src/microhttpd/internal.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMICROHTTPD_CPPFLAGS)" \
