@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DUPLICITY_VERSION=0.6.14
+PY-DUPLICITY_VERSION=0.6.21
 PY-DUPLICITY_SITE=http://savannah.nongnu.org/download/duplicity
 PY-DUPLICITY_SOURCE=duplicity-$(PY-DUPLICITY_VERSION).tar.gz
 PY-DUPLICITY_DIR=duplicity-$(PY-DUPLICITY_VERSION)
