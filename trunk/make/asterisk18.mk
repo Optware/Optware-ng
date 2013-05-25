@@ -24,7 +24,7 @@ ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
 ASTERISK18_SITE=http://downloads.asterisk.org/pub/telephony/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.21.0
+ASTERISK18_BASE_VERSION=1.8.22.0
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -82,7 +82,7 @@ ASTERISK18_CONFLICTS=asterisk10,asterisk11
 #
 # ASTERISK18_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK18_IPK_VERSION=3
+ASTERISK18_IPK_VERSION=1
 
 #
 # ASTERISK18_CONFFILES should be a list of user-editable files
