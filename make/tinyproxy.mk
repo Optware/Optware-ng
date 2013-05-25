@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TINYPROXY_SITE=http://www.banu.com/pub/tinyproxy/1.8
-TINYPROXY_VERSION=1.8.2
+TINYPROXY_VERSION=1.8.3
 TINYPROXY_SOURCE=tinyproxy-$(TINYPROXY_VERSION).tar.gz
 TINYPROXY_DIR=tinyproxy-$(TINYPROXY_VERSION)
 TINYPROXY_UNZIP=zcat
