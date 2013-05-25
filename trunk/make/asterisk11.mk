@@ -24,7 +24,7 @@ ASTERISK11_SOURCE_TYPE=tarball
 #ASTERISK11_SOURCE_TYPE=svn
 
 ASTERISK11_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK11_BASE_VERSION=11.3.0
+ASTERISK11_BASE_VERSION=11.4.0
 
 ifeq ($(ASTERISK11_SOURCE_TYPE), svn)
 ASTERISK11_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -79,7 +79,7 @@ ASTERISK11_CONFLICTS=asterisk18,asterisk10
 #
 # ASTERISK11_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK11_IPK_VERSION=3
+ASTERISK11_IPK_VERSION=1
 
 #
 # ASTERISK11_CONFFILES should be a list of user-editable files
@@ -404,14 +404,16 @@ $(ASTERISK11_BUILD_DIR)/.built: $(ASTERISK11_BUILD_DIR)/.configured
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D) menuselect.makeopts
-	# enable addons, disable mp3, disable srtp dependency check, force -lsrtp for res_srtp.so
+	# enable addons, disable mp3
 	( cd $(ASTERISK11_BUILD_DIR);\
 	./menuselect/menuselect --enable-category MENUSELECT_ADDONS menuselect.makeopts;\
-	./menuselect/menuselect --disable format_mp3 menuselect.makeopts;\
-	egrep -v SRTP menuselect.makedeps > menuselect.makedeps.no_srtp;\
-	mv -f menuselect.makedeps.no_srtp menuselect.makedeps; \
-	sed -i -e "s|<depend>srtp</depend>||" menuselect-tree; \
-	sed -i -e "s|clean::|res_srtp.so: _ASTLDFLAGS+=-lsrtp\n\nclean::|" res/Makefile )
+	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
+	## disable srtp dependency check, force -lsrtp for res_srtp.so
+	#( cd $(ASTERISK11_BUILD_DIR);\
+	#egrep -v SRTP menuselect.makedeps > menuselect.makedeps.no_srtp;\
+	#mv -f menuselect.makedeps.no_srtp menuselect.makedeps; \
+	#sed -i -e "s|<depend>srtp</depend>||" menuselect-tree; \
+	#sed -i -e "s|clean::|res_srtp.so: _ASTLDFLAGS+=libsrtp.a\n\nclean::|" res/Makefile )
 	ASTCFLAGS="$(ASTERISK11_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D)
