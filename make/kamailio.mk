@@ -22,7 +22,7 @@
 #
 
 
-KAMAILIO_VERSION=4.0.1
+KAMAILIO_VERSION=4.0.2
 KAMAILIO_SITE=http://kamailio.org/pub/kamailio/$(KAMAILIO_VERSION)/src/
 KAMAILIO_DIR=kamailio-$(KAMAILIO_VERSION)
 
@@ -95,7 +95,7 @@ xmpp cpl-c db_unixodbc db_postgres carrierroute rls identity regex xmlops xcap_s
 KAMAILIO_EXCLUDE_APP_MODULES=app_lua app_mono app_perl app_python
 KAMAILIO_EXCLUDE_DB_MODULES=db_berkeley db_cassandra db_oracle db_perlvdb
 # cdp: AI_ADDRCONFIG not defined
-KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) $(KAMAILIO_EXCLUDE_DB_MODULES) bdb cdp siptrace sipcapture geoip identity iptrtpproxy jabber json jsonrpc-c memcached ndb_redis mmgeoip osp h350 purple seas mi_xmlrpc snmpstats
+KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) $(KAMAILIO_EXCLUDE_DB_MODULES) bdb cdp siptrace sipcapture geoip identity iptrtpproxy jabber json jsonrpc-c memcached ndb_redis mmgeoip osp h350 purple seas mi_xmlrpc
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 KAMAILIO_INCLUDE_MODULES=$(KAMAILIO_INCLUDE_BASE_MODULES) db_mysql
