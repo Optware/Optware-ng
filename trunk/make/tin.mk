@@ -36,12 +36,12 @@ TIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TIN_DESCRIPTION=tin is a threaded NNTP and spool based UseNet newsreader
 TIN_SECTION=misc
 TIN_PRIORITY=optional
-TIN_DEPENDS=icu, libidn, ncurses, pcre
+TIN_DEPENDS=libidn, ncurses, pcre
 
 #
 # TIN_IPK_VERSION should be incremented when the ipk changes.
 #
-TIN_IPK_VERSION=2
+TIN_IPK_VERSION=3
 
 #
 # TIN_CONFFILES should be a list of user-editable files
@@ -107,7 +107,7 @@ tin-source: $(DL_DIR)/$(TIN_SOURCE) $(TIN_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TIN_BUILD_DIR)/.configured: $(DL_DIR)/$(TIN_SOURCE) $(TIN_PATCHES)
-	make icu-stage libidn-stage ncurses-stage pcre-stage
+	make libidn-stage ncurses-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(TIN_DIR) $(@D)
 	$(TIN_UNZIP) $(DL_DIR)/$(TIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(TIN_PATCHES) | patch -d $(BUILD_DIR)/$(TIN_DIR) -p1
@@ -116,6 +116,7 @@ $(TIN_BUILD_DIR)/.configured: $(DL_DIR)/$(TIN_SOURCE) $(TIN_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TIN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TIN_LDFLAGS)" \
+ac_cv_header_unicode_unorm_h=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
