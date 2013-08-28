@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://git-core.googlecode.com/files
-GIT_VERSION=1.8.2.3
-GIT_IPK_VERSION=2
+GIT_VERSION=1.8.4
+GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -176,6 +176,8 @@ endif
 	if test "$(BUILD_DIR)/$(GIT_DIR)" != "$(GIT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(GIT_DIR) $(GIT_BUILD_DIR) ; \
 	fi
+# 1.8.4 only, to workaround a bug only shown on uclibc that expands fgetc as macro
+	sed -i -e '/cf->fgetc/s/cf->fgetc/(&)/' $(@D)/config.c
 #	(cd $(GIT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
