@@ -20,16 +20,16 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.7.14.1
-SQLITE_DIR=sqlite-autoconf-3071401
+SQLITE_SITE=http://www.sqlite.org/2013
+SQLITE_VERSION=3.8.0
+SQLITE_DIR=sqlite-autoconf-3080000
 SQLITE_SOURCE=$(SQLITE_DIR).tar.gz
 SQLITE_UNZIP=zcat
 SQLITE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQLITE_DESCRIPTION=SQLite is a small C library that implements a self-contained, embeddable, zero-configuration SQL database engine.
 SQLITE_SECTION=misc
 SQLITE_PRIORITY=optional
-SQLITE_DEPENDS=readline, ncurses
+SQLITE_DEPENDS=
 SQLITE_CONFLICTS=
 
 #
@@ -52,7 +52,7 @@ SQLITE_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 SQLITE_CPPFLAGS=
-SQLITE_LDFLAGS=-lreadline -lncurses
+SQLITE_LDFLAGS=
 ifeq ($(LIBC_STYLE), uclibc)
 SQLITE_LDFLAGS+=-lm
 endif
@@ -104,7 +104,7 @@ sqlite-source: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES) make/sqlite.mk
-	$(MAKE) readline-stage ncurses-stage
+#	$(MAKE)
 	rm -rf $(BUILD_DIR)/$(SQLITE_DIR) $(@D)
 	$(SQLITE_UNZIP) $(DL_DIR)/$(SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQLITE_PATCHES)"; \
@@ -125,8 +125,6 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES) ma
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-readline-inc="$(STAGING_CPPFLAGS) $(SQLITE_CPPFLAGS)" \
-		--with-readline-lib="$(STAGING_LDFLAGS) $(SQLITE_LDFLAGS)" \
 		--disable-nls \
 		--disable-tcl \
 	)
