@@ -22,7 +22,7 @@
 #
 
 
-KAMAILIO_VERSION=4.0.2
+KAMAILIO_VERSION=4.0.3
 KAMAILIO_SITE=http://kamailio.org/pub/kamailio/$(KAMAILIO_VERSION)/src/
 KAMAILIO_DIR=kamailio-$(KAMAILIO_VERSION)
 
