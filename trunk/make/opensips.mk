@@ -23,7 +23,7 @@
 OPENSIPS_SOURCE_TYPE=tarball
 #OPENSIPS_SOURCE_TYPE=svn
 
-OPENSIPS_BASE_VERSION=1.9.1
+OPENSIPS_BASE_VERSION=1.10.0
 
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 OPENSIPS_VERSION=$(OPENSIPS_BASE_VERSION)
@@ -101,14 +101,20 @@ OPENSIPS_INCLUDE_AAA_MODULES=auth_aaa aaa_radius
 #OPENSIPS_INCLUDE_LDAP_MODULES=ldap h350
 OPENSIPS_INCLUDE_LDAP_MODULES=ldap
 OPENSIPS_INCLUDE_BASE_MODULES=presence presence_dialoginfo presence_mwi $(OPENSIPS_INCLUDE_PUA_MODULES) xmpp cpl-c db_http db_unixodbc db_postgres carrierroute b2b_logic rls xcap_client identity regex $(OPENSIPS_INCLUDE_AAA_MODULES) $(OPENSIPS_INCLUDE_LDAP_MODULES)
-
+ 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 OPENSIPS_INCLUDE_MODULES=$(OPENSIPS_INCLUDE_BASE_MODULES) db_mysql
 else
 OPENSIPS_INCLUDE_MODULES=$(OPENSIPS_INCLUDE_BASE_MODULES)
 endif
 
-OPENSIPS_EXCLUDE_MODULES=siptrace sipcapture cachedb_couchbase cachedb_memcached cachedb_cassandra cachedb_redis cachedb_mongodb db_berkeley db_oracle db_perlvdb event_rabbitmq identity jabber json ldap lua mi_xmlrpc mmgeoip osp perl perlvdb python h350 snmpstats
+ifeq (geoip, $(filter geoip, $(PACKAGES)))
+OPENSIPS_INCLUDE_MODULES=$(OPENSIPS_INCLUDE_BASE_MODULES) mmgeoip
+else
+OPENSIPS_INCLUDE_MODULES=$(OPENSIPS_INCLUDE_BASE_MODULES)
+endif
+
+OPENSIPS_EXCLUDE_MODULES=siptrace sipcapture cachedb_couchbase cachedb_memcached cachedb_cassandra cachedb_redis cachedb_mongodb db_berkeley db_oracle db_perlvdb event_rabbitmq identity jabber json ldap lua mi_xmlrpc osp perl perlvdb python h350 snmpstats sngtc
 OPENSIPS_DEBUG_MODE=mode=debug
 
 #
@@ -175,6 +181,9 @@ $(OPENSIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSIPS_SOURCE) $(OPENSIPS_PATCH
 	$(MAKE) libmicrohttpd-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
+endif
+ifeq (geoip, $(filter mysql, $(PACKAGES)))
+	$(MAKE) geoip-stage
 endif
 	rm -rf $(BUILD_DIR)/$(OPENSIPS_DIR) $(OPENSIPS_BUILD_DIR)
 	$(OPENSIPS_UNZIP) $(DL_DIR)/$(OPENSIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
