@@ -24,7 +24,7 @@ ASTERISK10_SOURCE_TYPE=tarball
 #ASTERISK10_SOURCE_TYPE=svn
 
 ASTERISK10_SITE=http://downloads.asterisk.org/pub/telephony/asterisk/releases
-ASTERISK10_BASE_VERSION=10.12.2
+ASTERISK10_BASE_VERSION=10.12.3
 
 ifeq ($(ASTERISK10_SOURCE_TYPE), svn)
 ASTERISK10_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
@@ -81,7 +81,7 @@ ASTERISK10_CONFLICTS=asterisk18,asterisk11
 #
 # ASTERISK10_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK10_IPK_VERSION=3
+ASTERISK10_IPK_VERSION=1
 
 #
 # ASTERISK10_CONFFILES should be a list of user-editable files
