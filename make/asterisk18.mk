@@ -24,7 +24,7 @@ ASTERISK18_SOURCE_TYPE=tarball
 #ASTERISK18_SOURCE_TYPE=svn
 
 ASTERISK18_SITE=http://downloads.asterisk.org/pub/telephony/asterisk/releases
-ASTERISK18_BASE_VERSION=1.8.23.0
+ASTERISK18_BASE_VERSION=1.8.23.1
 
 ifeq ($(ASTERISK18_SOURCE_TYPE), svn)
 ASTERISK18_SVN=http://svn.digium.com/svn/asterisk/branches/1.8.0
