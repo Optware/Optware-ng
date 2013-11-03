@@ -5,7 +5,7 @@
 #############################################################
 
 UNRAR_SITE=http://www.rarlab.com/rar
-UNRAR_VERSION:=4.2.4
+UNRAR_VERSION:=5.0.12
 UNRAR_SOURCE=unrarsrc-$(UNRAR_VERSION).tar.gz
 UNRAR_DIR=unrarsrc-$(UNRAR_VERSION)
 UNRAR_UNZIP=gunzip
@@ -37,7 +37,6 @@ $(UNRAR_BUILD_DIR)/.configured: $(DL_DIR)/$(UNRAR_SOURCE) make/unrar.mk
 	$(MAKE) libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(UNRAR_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzvf $(DL_DIR)/$(UNRAR_SOURCE)
-	ln $(@D)/makefile.unix $(@D)/Makefile
 	touch $@
 
 unrar-unpack: $(UNRAR_BUILD_DIR)/.configured
@@ -47,7 +46,7 @@ $(UNRAR_BUILD_DIR)/.built: $(UNRAR_BUILD_DIR)/.configured
 	$(MAKE) $(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(UNRAR_CFLAGS)" CXXFLAGS="$(UNRAR_CFLAGS)" \
 		-C $(@D) \
-		LDFLAGS="$(STAGING_LDFLAGS)"
+		LDFLAGS="$(STAGING_LDFLAGS) $(if $(filter $(LIBC_STYLE),uclibc),-lpthread,-pthread)"
 	touch $@
 
 unrar: $(UNRAR_BUILD_DIR)/.built
