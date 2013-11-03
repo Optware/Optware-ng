@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org/2013
-SQLITE_VERSION=3.8.0.2
-SQLITE_DIR=sqlite-autoconf-3080002
+SQLITE_VERSION=3.8.1
+SQLITE_DIR=sqlite-autoconf-3080100
 SQLITE_SOURCE=$(SQLITE_DIR).tar.gz
 SQLITE_UNZIP=zcat
 SQLITE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
