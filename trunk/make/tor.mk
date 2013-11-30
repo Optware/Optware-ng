@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TOR_SITE=http://www.torproject.org/dist
-TOR_VERSION=0.2.2.36
+TOR_VERSION=0.2.3.25
 TOR_SOURCE=tor-$(TOR_VERSION).tar.gz
 TOR_DIR=tor-$(TOR_VERSION)
 TOR_UNZIP=zcat
