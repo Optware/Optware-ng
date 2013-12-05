@@ -22,7 +22,7 @@
 #
 
 
-KAMAILIO_VERSION=4.0.3
+KAMAILIO_VERSION=4.1.0
 KAMAILIO_SITE=http://kamailio.org/pub/kamailio/$(KAMAILIO_VERSION)/src/
 KAMAILIO_DIR=kamailio-$(KAMAILIO_VERSION)
 
@@ -92,16 +92,20 @@ $(KAMAILIO_INCLUDE_PRESENCE_MODULES) \
 $(KAMAILIO_INCLUDE_AAA_MODULES) \
 $(KAMAILIO_INCLUDE_LDAP_MODULES) \
 xmpp cpl-c db_unixodbc db_postgres carrierroute rls identity regex xmlops xcap_server tls xhttp_pi
-KAMAILIO_EXCLUDE_APP_MODULES=app_lua app_mono app_perl app_python
+KAMAILIO_EXCLUDE_APP_MODULES=app_lua app_mono app_perl app_python app_java
 KAMAILIO_EXCLUDE_DB_MODULES=db_berkeley db_cassandra db_oracle db_perlvdb
 # cdp: AI_ADDRCONFIG not defined
-KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) $(KAMAILIO_EXCLUDE_DB_MODULES) bdb cdp siptrace sipcapture geoip identity iptrtpproxy jabber json jsonrpc-c memcached ndb_redis mmgeoip osp h350 purple seas mi_xmlrpc
+KAMAILIO_EXCLUDE_MODULES=$(KAMAILIO_EXCLUDE_APP_MODULES) $(KAMAILIO_EXCLUDE_DB_MODULES) bdb cdp siptrace sipcapture identity iptrtpproxy jabber json jsonrpc-c memcached ndb_redis osp h350 purple seas mi_xmlrpc dnssec sctp
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
-KAMAILIO_INCLUDE_MODULES=$(KAMAILIO_INCLUDE_BASE_MODULES) db_mysql
-else
-KAMAILIO_INCLUDE_MODULES=$(KAMAILIO_INCLUDE_BASE_MODULES)
+KAMAILIO_INCLUDE_MODULES+=db_mysql
 endif
+
+ifeq (geoip, $(filter geoip, $(PACKAGES)))
+KAMAILIO_INCLUDE_MODULES+=geoip
+endif
+
+KAMAILIO_INCLUDE_MODULES += $(KAMAILIO_INCLUDE_BASE_MODULES)
 
 ifneq (libunistring, $(filter libunistring, $(PACKAGES)))
 KAMAILIO_EXCLUDE_MODULES += websocket
@@ -179,12 +183,14 @@ endif
 		4.0*|4.1*) \
 			sed -i -e 's/-minline-all-stringops //' $(@D)/ccopts.sh $(@D)/Makefile.defs;; \
 	esac
+	sed -i -e 's/IPV6_TCLASS/67/' $(@D)/tcp_main.c
+	sed -i -e 's/IPV6_TCLASS/67/' $(@D)/udp_server.c
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(TARGET_INCDIR)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) FLAVOUR=kamailio cfg $(KAMAILIO_MAKEFLAGS) \
 	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt \
-	modules_dirs="modules modules_k"
+	modules_dirs="modules"
 
 	touch $@
 
