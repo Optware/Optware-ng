@@ -24,8 +24,8 @@
 #
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
-TRANSMISSION_SITE=http://mirrors.m0k.org/transmission/files
-TRANSMISSION_VERSION=2.77
+TRANSMISSION_SITE=http://download-origin.transmissionbt.com/files
+TRANSMISSION_VERSION=2.82
 
 #TRANSMISSION_SVN_REV=8696
 
@@ -33,10 +33,10 @@ ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
-TRANSMISSION_SOURCE=transmission-$(TRANSMISSION_VERSION).tar.bz2
+TRANSMISSION_SOURCE=transmission-$(TRANSMISSION_VERSION).tar.xz
 endif
 TRANSMISSION_DIR=transmission-$(TRANSMISSION_VERSION)
-TRANSMISSION_UNZIP=bzcat
+TRANSMISSION_UNZIP=cat
 TRANSMISSION_MAINTAINER=oleo@email.si
 TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with web interface bundled.
 TRANSMISSION_SECTION=net
@@ -172,7 +172,7 @@ endif
 ifndef TRANSMISSION_SVN_REV
 	mkdir -p $(BUILD_DIR)/$(TRANSMISSION_DIR)
 endif
-	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xJvf -
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
 		then cat $(TRANSMISSION_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p0 ; \
