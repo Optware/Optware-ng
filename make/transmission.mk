@@ -36,7 +36,7 @@ else
 TRANSMISSION_SOURCE=transmission-$(TRANSMISSION_VERSION).tar.xz
 endif
 TRANSMISSION_DIR=transmission-$(TRANSMISSION_VERSION)
-TRANSMISSION_UNZIP=cat
+TRANSMISSION_UNZIP=xzcat
 TRANSMISSION_MAINTAINER=oleo@email.si
 TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with web interface bundled.
 TRANSMISSION_SECTION=net
@@ -172,7 +172,7 @@ endif
 ifndef TRANSMISSION_SVN_REV
 	mkdir -p $(BUILD_DIR)/$(TRANSMISSION_DIR)
 endif
-	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xJvf -
+	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
 		then cat $(TRANSMISSION_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p0 ; \
