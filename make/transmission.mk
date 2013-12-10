@@ -36,7 +36,7 @@ else
 TRANSMISSION_SOURCE=transmission-$(TRANSMISSION_VERSION).tar.xz
 endif
 TRANSMISSION_DIR=transmission-$(TRANSMISSION_VERSION)
-TRANSMISSION_UNZIP=xzcat
+TRANSMISSION_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
 TRANSMISSION_MAINTAINER=oleo@email.si
 TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with web interface bundled.
 TRANSMISSION_SECTION=net
