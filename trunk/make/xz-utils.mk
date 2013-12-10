@@ -4,7 +4,7 @@
 #
 ###########################################################
 XZ_UTILS_SITE=http://tukaani.org/xz
-XZ_UTILS_VERSION=5.0.4
+XZ_UTILS_VERSION=5.0.5
 XZ_UTILS_SOURCE=xz-$(XZ_UTILS_VERSION).tar.bz2
 XZ_UTILS_DIR=xz-$(XZ_UTILS_VERSION)
 XZ_UTILS_UNZIP=bzcat
