@@ -22,7 +22,7 @@
 #
 
 
-KAMAILIO_VERSION=4.1.0
+KAMAILIO_VERSION=4.1.1
 KAMAILIO_SITE=http://kamailio.org/pub/kamailio/$(KAMAILIO_VERSION)/src/
 KAMAILIO_DIR=kamailio-$(KAMAILIO_VERSION)
 
@@ -167,6 +167,9 @@ $(KAMAILIO_BUILD_DIR)/.configured: $(DL_DIR)/$(KAMAILIO_SOURCE) $(KAMAILIO_PATCH
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
+ifeq (geoip, $(filter geoip, $(PACKAGES)))
+	$(MAKE) geoip-stage
+endif
 ifeq (libunistring, $(filter libunistring, $(PACKAGES)))
 	$(MAKE) libunistring-stage
 endif
@@ -207,7 +210,7 @@ $(KAMAILIO_BUILD_DIR)/.built: $(KAMAILIO_BUILD_DIR)/.configured
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) \
 	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt all \
-	modules_dirs="modules modules_k"
+	modules_dirs="modules"
 
 	touch $@
 
