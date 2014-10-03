@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 # Please make sure that you add a description, and that you
 # list all your packages' dependencies, seperated by commas.
-# 
+#
 # If you list yourself as MAINTAINER, please give a valid email
 # address, and indicate your irc nick if it cannot be easily deduced
 # from your name or email address.  If you leave MAINTAINER set to
@@ -42,7 +42,7 @@ LIBRSYNC_CONFLICTS=
 #
 # LIBRSYNC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBRSYNC_IPK_VERSION=1
+LIBRSYNC_IPK_VERSION=2
 
 #
 # LIBRSYNC_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ LIBRSYNC_IPK_VERSION=1
 # LIBRSYNC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBRSYNC_PATCHES=$(LIBRSYNC_SOURCE_DIR)/configure.patch
+LIBRSYNC_PATCHES=$(LIBRSYNC_SOURCE_DIR)/4gb.patch
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +113,7 @@ $(LIBRSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBRSYNC_SOURCE) $(LIBRSYNC_PATCH
 	$(LIBRSYNC_UNZIP) $(DL_DIR)/$(LIBRSYNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBRSYNC_PATCHES)" ; \
 		then cat $(LIBRSYNC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBRSYNC_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(LIBRSYNC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBRSYNC_DIR)" != "$(LIBRSYNC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBRSYNC_DIR) $(LIBRSYNC_BUILD_DIR) ; \
