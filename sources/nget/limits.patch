@@ -1,0 +1,12 @@
+Index: nget/server.cc
+===================================================================
+--- nget.orig/server.cc	2009-05-08 21:02:33.000000000 +0200
++++ nget/server.cc	2009-05-08 21:03:44.000000000 +0200
+@@ -20,6 +20,7 @@
+ #include "strreps.h"
+ #include "nget.h"
+ #include "status.h"
++#include "limits.h"
+ #include <sys/types.h>
+ #include <dirent.h>
+ #include <algorithm>

@@ -1,0 +1,103 @@
+diff -u -r1.11 db_berkeley.c
+--- cyrus-sasl/sasldb/db_berkeley.c        12 Sep 2011 08:50:47 -0000      1.11
++++ cyrus-sasl/sasldb/db_berkeley.c        7 May 2012 18:31:23 -0000
+@@ -53,6 +53,8 @@
+ #include <errno.h>
+ #include "sasldb.h"
+ 
++#define DB_VERSION_FULL ((DB_VERSION_MAJOR << 24) | (DB_VERSION_MINOR << 16) | DB_VERSION_PATCH)
++
+ static int db_ok = 0;
+ #if defined(KEEP_DB_OPEN)
+ static DB * g_db = NULL;
+@@ -95,13 +97,13 @@
+ #endif
+ #endif
+ 
+-#if DB_VERSION_MAJOR < 3
++#if DB_VERSION_FULL < 0x03000000
+     ret = db_open(path, DB_HASH, flags, 0660, NULL, NULL, mbdb);
+-#else /* DB_VERSION_MAJOR < 3 */
++#else /* DB_VERSION_FULL < 0x03000000 */
+     ret = db_create(mbdb, NULL, 0);
+     if (ret == 0 && *mbdb != NULL)
+     {
+-#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 1
++#if DB_VERSION_FULL >= 0x04010000 
+ 	ret = (*mbdb)->open(*mbdb, NULL, path, NULL, DB_HASH, flags, 0660);
+ #else
+ 	ret = (*mbdb)->open(*mbdb, path, NULL, DB_HASH, flags, 0660);
+@@ -112,7 +114,7 @@
+ 	    *mbdb = NULL;
+ 	}
+     }
+-#endif /* DB_VERSION_MAJOR < 3 */
++#endif /* DB_VERSION_FULL < 0x03000000 */
+ 
+     if (ret != 0) {
+ 	if (rdwr == 0 && ret == ENOENT) {
+@@ -464,15 +466,11 @@
+ 
+     if(!dbh->cursor) {
+         /* make cursor */
+-#if DB_VERSION_MAJOR < 3
+-#if DB_VERSION_MINOR < 6
++#if DB_VERSION_FULL < 0x03060000
+ 	result = mbdb->cursor(mbdb, NULL,&dbh->cursor); 
+ #else
+ 	result = mbdb->cursor(mbdb, NULL,&dbh->cursor, 0); 
+-#endif /* DB_VERSION_MINOR < 7 */
+-#else /* DB_VERSION_MAJOR < 3 */
+-	result = mbdb->cursor(mbdb, NULL,&dbh->cursor, 0); 
+-#endif /* DB_VERSION_MAJOR < 3 */
++#endif /* DB_VERSION_FULL < 0x03000000 */
+ 
+ 	if (result!=0) {
+ 	    return SASL_FAIL;
+diff -u -r1.8 dbconverter-2.c
+--- cyrus-sasl/utils/dbconverter-2.c       13 Feb 2003 19:56:17 -0000      1.8
++++ cyrus-sasl/utils/dbconverter-2.c       7 May 2012 18:31:23 -0000
+@@ -200,6 +200,8 @@
+ 
+ #include <db.h>
+ 
++#define DB_VERSION_FULL ((DB_VERSION_MAJOR << 24) | (DB_VERSION_MINOR << 16) | DB_VERSION_PATCH)
++
+ /*
+  * Open the database
+  *
+@@ -208,13 +210,13 @@
+ {
+     int ret;
+ 
+-#if DB_VERSION_MAJOR < 3
++#if DB_VERSION_FULL < 0x03000000
+     ret = db_open(path, DB_HASH, DB_CREATE, 0664, NULL, NULL, mbdb);
+-#else /* DB_VERSION_MAJOR < 3 */
++#else /* DB_VERSION_FULL < 0x03000000 */
+     ret = db_create(mbdb, NULL, 0);
+     if (ret == 0 && *mbdb != NULL)
+     {
+-#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 1
++#if DB_VERSION_FULL >= 0x04010000
+ 	ret = (*mbdb)->open(*mbdb, NULL, path, NULL, DB_HASH, DB_CREATE, 0664);
+ #else
+ 	ret = (*mbdb)->open(*mbdb, path, NULL, DB_HASH, DB_CREATE, 0664);
+@@ -263,15 +265,11 @@
+     if (result!=SASL_OK) goto cleanup;
+ 
+     /* make cursor */
+-#if DB_VERSION_MAJOR < 3
+-#if DB_VERSION_MINOR < 6
++#if DB_VERSION_FULL < 0x03060000
+     result = mbdb->cursor(mbdb, NULL,&cursor); 
+ #else
+     result = mbdb->cursor(mbdb, NULL,&cursor, 0); 
+-#endif /* DB_VERSION_MINOR < 7 */
+-#else /* DB_VERSION_MAJOR < 3 */
+-    result = mbdb->cursor(mbdb, NULL,&cursor, 0); 
+-#endif /* DB_VERSION_MAJOR < 3 */
++#endif /* DB_VERSION_FULL < 0x03060000 */
+ 
+     if (result!=0) {
+ 	fprintf(stderr,"Making cursor failure: %s\n",db_strerror(result));

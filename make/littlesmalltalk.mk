@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LITTLESMALLTALK_SVN_REPO=https://littlesmalltalk.svn.sourceforge.net/svnroot/littlesmalltalk/lst5
-LITTLESMALLTALK_SVN_REV=0086
+LITTLESMALLTALK_SVN_REV=0107
 #LITTLESMALLTALK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/littlesmalltalk
 LITTLESMALLTALK_VERSION=5.0a08+svn$(LITTLESMALLTALK_SVN_REV)
 LITTLESMALLTALK_SOURCE=littlesmalltalk-$(LITTLESMALLTALK_VERSION).tar.gz
@@ -126,16 +126,16 @@ littlesmalltalk-source: $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) $(LITTLESMALLTALK_PA
 # shown below to make various patches to it.
 #
 $(LITTLESMALLTALK_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) $(LITTLESMALLTALK_PATCHES) make/littlesmalltalk.mk
-	rm -rf $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(LITTLESMALLTALK_HOST_BUILD_DIR)
+	rm -rf $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(@D)
 	$(LITTLESMALLTALK_UNZIP) $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(LITTLESMALLTALK_PATCHES)" ; \
 		then cat $(LITTLESMALLTALK_PATCHES) | \
 		patch -d $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) -p0 ; \
 	fi
-	if test "$(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR)" != "$(LITTLESMALLTALK_HOST_BUILD_DIR)" ; \
-		then mv $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(LITTLESMALLTALK_HOST_BUILD_DIR) ; \
+	if test "$(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(@D) ; \
 	fi
-	$(MAKE) -C $(LITTLESMALLTALK_HOST_BUILD_DIR) CPPFLAGS=-DNETWORK_BYTE_ORDER
+	$(MAKE) -C $(@D) CPPFLAGS=-DNETWORK_BYTE_ORDER
 	touch $@
 
 ifeq ($(TARGET_CC), $(HOSTCC))
@@ -144,14 +144,14 @@ else
 $(LITTLESMALLTALK_BUILD_DIR)/.configured: $(LITTLESMALLTALK_HOST_BUILD_DIR)/.built $(LITTLESMALLTALK_PATCHES)
 endif
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(LITTLESMALLTALK_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(@D)
 	$(LITTLESMALLTALK_UNZIP) $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LITTLESMALLTALK_PATCHES)" ; \
 		then cat $(LITTLESMALLTALK_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LITTLESMALLTALK_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LITTLESMALLTALK_DIR)" != "$(LITTLESMALLTALK_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(LITTLESMALLTALK_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LITTLESMALLTALK_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(@D) ; \
 	fi
 	touch $@
 
@@ -162,7 +162,7 @@ littlesmalltalk-unpack: $(LITTLESMALLTALK_BUILD_DIR)/.configured
 #
 $(LITTLESMALLTALK_BUILD_DIR)/.built: $(LITTLESMALLTALK_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LITTLESMALLTALK_BUILD_DIR) $(LITTLESMALLTALK_TARGET) \
+	$(MAKE) -C $(@D) $(LITTLESMALLTALK_TARGET) \
 		UNAME_O=Linux \
 		UNAME_M=$(TARGET_ARCH) \
 		CC=$(TARGET_CC) \
@@ -181,7 +181,7 @@ littlesmalltalk: $(LITTLESMALLTALK_BUILD_DIR)/.built
 #
 $(LITTLESMALLTALK_BUILD_DIR)/.staged: $(LITTLESMALLTALK_BUILD_DIR)/.built
 	rm -f $@
-#	$(MAKE) -C $(LITTLESMALLTALK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 littlesmalltalk-stage: $(LITTLESMALLTALK_BUILD_DIR)/.staged
@@ -256,4 +256,4 @@ littlesmalltalk-dirclean:
 # Some sanity check for the package.
 #
 littlesmalltalk-check: $(LITTLESMALLTALK_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LITTLESMALLTALK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

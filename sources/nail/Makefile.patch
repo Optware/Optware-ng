@@ -14,7 +14,7 @@
  MAILRC		= $(SYSCONFDIR)/nail.rc
  MAILSPOOL	= /var/mail
 -SENDMAIL	= /usr/lib/sendmail
-+SENDMAIL	= /opt/bin/false
++SENDMAIL	= /opt/sbin/sendmail
  
  DESTDIR		=
  

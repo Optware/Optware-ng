@@ -39,15 +39,3 @@ diff -ruN mod_fastcgi-2.4.2/fcgi.h mod_fastcgi-2.4.2-ap22/fcgi.h
  #if (defined(HAVE_WRITEV) && !HAVE_WRITEV && !defined(NO_WRITEV)) || defined WIN32
  #define NO_WRITEV
  #endif
-diff -ruN mod_fastcgi-2.4.2/Makefile.AP2 mod_fastcgi-2.4.2-ap22/Makefile.AP2
---- mod_fastcgi-2.4.2/Makefile.AP2	2002-07-29 03:36:34.000000000 +0200
-+++ mod_fastcgi-2.4.2-ap22/Makefile.AP2	2005-12-07 20:27:50.000000000 +0100
-@@ -20,8 +20,6 @@
- 
- all: local-shared-build
- 
--install: install-modules
--
- clean:
- 	-rm -f *.o *.lo *.slo *.la 
- 

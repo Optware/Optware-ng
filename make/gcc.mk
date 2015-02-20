@@ -43,6 +43,10 @@ GCC_DEPENDS=binutils, libc-dev
 GCC_SUGGESTS=
 GCC_CONFLICTS=
 
+ifeq ($(GCC_VERSION), $(filter 4.5.3, $(GCC_VERSION)))
+GCC_DEPENDS+=, libgmp, libmpfr, libmpc
+endif
+
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -66,11 +70,13 @@ endif
 
 GCC_BUILD_EXTRA_ENV ?=
 
+GCC_EXTRA_CONF_ENV ?=
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-GCC_CPPFLAGS=
+GCC_CPPFLAGS ?=
 GCC_LDFLAGS=
 
 GCC_IPK_DIR=$(BUILD_DIR)/gcc-$(GCC_VERSION)-ipk
@@ -80,7 +86,7 @@ GCC_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/gcc
 GCC_HOST_PROGRAM_SUFFIX:=$(shell echo $(GCC_VERSION) | sed 's/\([^.]*\)[.]*\([^.]*\).*/\1.\2/')
 GCC_HOST_TOOL_SUFFIX:=$(shell echo $(GCC_VERSION) | sed 's/\([^.]*\)[.]*\([^.]*\).*/\1\2/')
 
-GCC_TARGET_NAME=$(strip \
+GCC_TARGET_NAME ?= $(strip \
 $(if $(and \
 	$(filter uclibc, $(LIBC_STYLE)), \
 	$(filter arm-linux armeb-linux mipsel-linux, $(GNU_TARGET_NAME))), \
@@ -150,6 +156,9 @@ gcc-host-stage: $(GCC_HOST_BUILD_DIR)/.staged
 # shown below to make various patches to it.
 #
 $(GCC_BUILD_DIR)/.configured: $(DL_DIR)/$(GCC_SOURCE) $(GCC_PATCHES) #make/gcc.mk
+ifeq ($(GCC_VERSION), $(filter 4.5.3, $(GCC_VERSION)))
+	$(MAKE) libgmp-stage libmpfr-stage libmpc-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GCC_DIR) $(@D)
 	$(GCC_UNZIP) $(DL_DIR)/$(GCC_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(GCC_PATCHES)" ; \
@@ -161,6 +170,10 @@ $(GCC_BUILD_DIR)/.configured: $(DL_DIR)/$(GCC_SOURCE) $(GCC_PATCHES) #make/gcc.m
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GCC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GCC_LDFLAGS)" \
+		GCC_FOR_TARGET="$(TARGET_CC)" \
+		CC_FOR_TARGET="$(TARGET_CC)" \
+		CXX_FOR_TARGET="$(TARGET_CXX)" \
+		$(GCC_EXTRA_CONF_ENV) \
 		../$(GCC_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GCC_TARGET_NAME) \
@@ -247,9 +260,13 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 ifeq (wdtv, $(OPTWARE_TARGET))
 	rm -f $(GCC_IPK_DIR)/opt/lib/lib*.so* $(GCC_IPK_DIR)/opt/include/*.h
 endif
+ifeq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
+	rm -f $(GCC_IPK_DIR)/opt/lib/libgcc_s.so*
+endif
 	-cd $(GCC_IPK_DIR)/opt/libexec/gcc/`$(TARGET_CC) -dumpmachine`/$(GCC_VERSION); \
 		$(STRIP_COMMAND) c* install-tools/fixincl
 	-cd $(GCC_IPK_DIR)/opt/bin; $(STRIP_COMMAND) cpp gcc g++ gcov
+	rm -f $(GCC_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GCC_IPK_DIR)

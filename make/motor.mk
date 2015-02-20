@@ -127,7 +127,8 @@ endif
 	if test "$(BUILD_DIR)/$(MOTOR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOTOR_DIR) $(@D) ; \
 	fi
-	find $(@D) -name Makefile.in | xargs sed -i -e '/^CPPFLAGS *=/s|$$| @CPPFLAGS@|'
+	sed -i -e '1 i #include <memory>' $(@D)/src/debugger/motordebugger.cc
+	find $(@D) -type f -name Makefile.in -exec sed -i -e '/^CPPFLAGS *=/s|$$| @CPPFLAGS@|' {} \;
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOTOR_CPPFLAGS)" \

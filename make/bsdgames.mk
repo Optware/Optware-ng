@@ -36,7 +36,7 @@ BSDGAMES_CONFLICTS=
 #
 # BSDGAMES_IPK_VERSION should be incremented when the ipk changes.
 #
-BSDGAMES_IPK_VERSION=1
+BSDGAMES_IPK_VERSION=2
 
 #
 # BSDGAMES_CONFFILES should be a list of user-editable files
@@ -46,7 +46,16 @@ BSDGAMES_IPK_VERSION=1
 # BSDGAMES_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BSDGAMES_PATCHES=$(BSDGAMES_SOURCE_DIR)/configure.patch
+BSDGAMES_PATCHES=$(BSDGAMES_SOURCE_DIR)/replace-getline.patch \
+$(BSDGAMES_SOURCE_DIR)/quiz-presidents.patch \
+$(BSDGAMES_SOURCE_DIR)/add-acronyms.patch \
+$(BSDGAMES_SOURCE_DIR)/sort-acronyms.comp.patch \
+$(BSDGAMES_SOURCE_DIR)/refresh-robots-screen.patch \
+$(BSDGAMES_SOURCE_DIR)/anne-boleyn.patch \
+$(BSDGAMES_SOURCE_DIR)/capitals.patch \
+$(BSDGAMES_SOURCE_DIR)/define-dead.patch \
+$(BSDGAMES_SOURCE_DIR)/wump-update.patch \
+$(BSDGAMES_SOURCE_DIR)/debian-changes-2.17-19.patch \
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +122,7 @@ $(BSDGAMES_BUILD_DIR)/.configured: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCH
 	$(BSDGAMES_UNZIP) $(DL_DIR)/$(BSDGAMES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BSDGAMES_PATCHES)" ; \
 		then cat $(BSDGAMES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BSDGAMES_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(BSDGAMES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BSDGAMES_DIR)" != "$(BSDGAMES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(BSDGAMES_DIR) $(BSDGAMES_BUILD_DIR) ; \

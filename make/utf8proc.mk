@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UTF8PROC_VERSION=1.1.5
+UTF8PROC_VERSION=1.1.6
 UTF8PROC_SITE=http://www.public-software-group.org/pub/projects/utf8proc/v$(UTF8PROC_VERSION)
 UTF8PROC_SOURCE=utf8proc-v$(UTF8PROC_VERSION).tar.gz
 UTF8PROC_DIR=utf8proc-v$(UTF8PROC_VERSION)
@@ -52,7 +52,7 @@ UTF8PROC_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-UTF8PROC_CPPFLAGS=
+UTF8PROC_CPPFLAGS=-fPIC
 UTF8PROC_LDFLAGS=
 
 #

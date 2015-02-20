@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 STRONGSWAN_SITE=http://download.strongswan.org/
-STRONGSWAN_VERSION=4.5.3
+STRONGSWAN_VERSION=5.2.2
 STRONGSWAN_SOURCE=strongswan-$(STRONGSWAN_VERSION).tar.gz
 STRONGSWAN_DIR=strongswan-$(STRONGSWAN_VERSION)
 STRONGSWAN_UNZIP=zcat
@@ -42,7 +42,7 @@ STRONGSWAN_CONFLICTS=
 #
 # STRONGSWAN_IPK_VERSION should be incremented when the ipk changes.
 #
-STRONGSWAN_IPK_VERSION=2
+STRONGSWAN_IPK_VERSION=1
 
 #
 # STRONGSWAN_CONFFILES should be a list of user-editable files
@@ -144,6 +144,7 @@ $(STRONGSWAN_BUILD_DIR)/.configured: $(DL_DIR)/$(STRONGSWAN_SOURCE) $(STRONGSWAN
 		--enable-agent \
 		--enable-monolithic \
 	)
+	sed -i -e 's|^LDFLAGS =|LDFLAGS = -L../../src/libtls/.libs -ltls|' $(@D)/src/charon/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

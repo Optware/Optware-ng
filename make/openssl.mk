@@ -5,22 +5,22 @@
 OPENSSL_SITE=http://www.openssl.org/source
 
 ifeq ($(OPENSSL_VERSION), 1.0.1)
-override OPENSSL_VERSION := 1.0.1a
+override OPENSSL_VERSION := 1.0.1l
 export OPENSSL_VERSION
 export OPENSSL_LIB_VERSION := 1.0.0
-export OPENSSL_IPK_VERSION := 2
+export OPENSSL_IPK_VERSION := 1
 else ifeq ($(OPENSSL_VERSION), 1.0.0)
-override OPENSSL_VERSION = 1.0.0i
+override OPENSSL_VERSION = 1.0.0q
 export OPENSSL_VERSION
 export OPENSSL_LIB_VERSION := 1.0.0
-export OPENSSL_IPK_VERSION := 2
+export OPENSSL_IPK_VERSION := 1
 else ifneq ($(OPTWARE_TARGET), $(filter \
 	cs04q3armel cs05q3armel cs06q3armel ddwrt dns323 ds101 ds101g fsg3 fsg3v4 gumstix1151 mss \
 	nslu2 oleg openwrt-brcm24 openwrt-ixp4xx slugosbe slugosle syno-x07 ts101 ts72xx vt4 wl500g, \
 	$(OPTWARE_TARGET)))
-export OPENSSL_VERSION = 0.9.8v
+export OPENSSL_VERSION = 0.9.8ze
 export OPENSSL_LIB_VERSION := 0.9.8
-export OPENSSL_IPK_VERSION := 2
+export OPENSSL_IPK_VERSION := 1
 else
 export OPENSSL_VERSION = 0.9.7m
 export OPENSSL_LIB_VERSION := 0.9.7
@@ -106,6 +106,7 @@ $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $
 			shared no-zlib \
 			--openssldir=/opt/share/openssl \
 			--prefix=/opt \
+			enable-md2 \
                         $(OPENSSL_HOST_ARCH) \
 	)
 	$(MAKE) -C $(@D)
@@ -131,6 +132,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		./Configure \
 			shared zlib-dynamic \
+			enable-md2 \
 			$(STAGING_CPPFLAGS) \
 			--openssldir=/opt/share/openssl \
 			--prefix=/opt \

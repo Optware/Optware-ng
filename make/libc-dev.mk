@@ -33,7 +33,11 @@ LIBC-DEV_DEPENDS=libnsl
 LIBC-DEV_SUGGESTS=
 LIBC-DEV_CONFLICTS=
 
-LIBC-DEV_IPK_VERSION=5
+ifeq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
+	LIBC-DEV_DEPENDS+=, uclibc-opt
+endif
+
+LIBC-DEV_IPK_VERSION=6
 
 ifdef LIBNSL_VERSION
 LIBC-DEV_VERSION=$(LIBNSL_VERSION)
@@ -129,6 +133,11 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	rm -rf $(LIBC-DEV_IPK_DIR) $(BUILD_DIR)/libc-dev_*_$(TARGET_ARCH).ipk
 	install -d $(LIBC-DEV_IPK_DIR)/opt/
 	-rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
+ifeq (shibby-tomato-arm, $(OPTWARE_TARGET))
+	rm -f $(LIBC-DEV_IPK_DIR)/opt/include/zlib.h \
+		$(LIBC-DEV_IPK_DIR)/opt/include/zconf.h \
+		$(LIBC-DEV_IPK_DIR)/opt/include/iconv.h
+endif
 	install -d $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	install -d $(LIBC-DEV_IPK_DIR)/opt/lib/
@@ -136,10 +145,12 @@ ifeq (wdtv, $(OPTWARE_TARGET))
 	rm -f $(LIBC-DEV_IPK_DIR)/opt/include/z*.h
 else
 ifeq (uclibc, $(LIBC_STYLE))
+ifneq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
 	rsync -l \
 		$(TARGET_LIBDIR)/libuClibc-$(LIBC-DEV_VERSION).so \
 		$(LIBC-DEV_USRLIBDIR)/libc.so* \
 		$(LIBC-DEV_IPK_DIR)/opt/lib/
+endif
 else
 	for f in libc_nonshared.a libpthread_nonshared.a; \
 		do rsync -l $(LIBC-DEV_NONSHARED_LIB_DIR)/$${f} $(LIBC-DEV_IPK_DIR)/opt/lib/; done

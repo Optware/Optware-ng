@@ -47,7 +47,7 @@ endif
 #
 # SLIMSERVER_IPK_VERSION should be incremented when the ipk changes.
 #
-SLIMSERVER_IPK_VERSION=13
+SLIMSERVER_IPK_VERSION=14
 
 #
 # SLIMSERVER_CONFFILES should be a list of user-editable files
@@ -121,7 +121,10 @@ slimserver-source: $(DL_DIR)/$(SLIMSERVER_SOURCE)
 # shown below to make various patches to it.
 #
 #
-$(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER_PATCHES)  make/slimserver.mk
+$(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) make/slimserver.mk
+	$(MAKE) perl-compress-zlib-source perl-dbi-source perl-dbd-mysql-source
+	$(MAKE) perl-digest-sha1-source perl-html-parser-source perl-template-toolkit-source
+	$(MAKE) perl-time-hires-source perl-xml-parser-source perl-yaml-syck-source
 	$(MAKE) perl-stage expat-stage mysql-stage
 	rm -rf $(BUILD_DIR)/$(SLIMSERVER_DIR) $(@D)
 	$(SLIMSERVER_UNZIP) $(DL_DIR)/$(SLIMSERVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -	
@@ -133,13 +136,24 @@ $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER
 		then mv $(BUILD_DIR)/$(SLIMSERVER_DIR) $(@D) ; \
 	fi
 	cp $(SLIMSERVER_SOURCE_DIR)/DBD-mysql-Makefile.PL $(@D)/
-	sed -i  -e "s|^DBI_INSTARCH_DIR=.*|DBI_INSTARCH_DIR=$(@D)/temp/DBI-1.50/blib/arch/auto/DBI|" \
-		-e "s|^DBI_DRIVER_XST=.*|DBI_DRIVER_XST=$(@D)/temp/DBI-1.50/blib/arch/auto/DBI/Driver.xst|" \
+	sed -i  -e "s|^DBI_INSTARCH_DIR=.*|DBI_INSTARCH_DIR=$(@D)/temp/$(PERL-DBI_DIR)/blib/arch/auto/DBI|" \
+		-e "s|^DBI_DRIVER_XST=.*|DBI_DRIVER_XST=$(@D)/temp/$(PERL-DBI_DIR)/blib/arch/auto/DBI/Driver.xst|" \
 		$(@D)/DBD-mysql-Makefile.PL
 	cp $(SLIMSERVER_SOURCE_DIR)/Time-HiRes-Makefile.PL $(@D)/
 	sed -i -e "s|\$$Config{'ccflags'}|'$(STAGING_CPPFLAGS)'|" \
 		-e "s|\$$Config{'cc'}|$(TARGET_CC)|" \
 		$(@D)/Time-HiRes-Makefile.PL
+	sed -i  -e 's|@DL_DIR@|$(DL_DIR)|' \
+		-e 's|@Compress-Zlib@|$(PERL-COMPRESS-ZLIB_DIR)|' \
+		-e 's|@DBI@|$(PERL-DBI_DIR)|' \
+		-e 's|@DBD-mysql@|$(PERL-DBD-MYSQL_DIR)|' \
+		-e 's|@Digest-SHA1@|$(PERL-DIGEST-SHA1_DIR)|' \
+		-e 's|@HTML-Parser@|$(PERL-HTML-PARSER_DIR)|' \
+		-e 's|@Template-Toolkit@|$(PERL-TEMPLATE-TOOLKIT_DIR)|' \
+		-e 's|@Time-HiRes@|$(PERL-TIME-HIRES_DIR)|' \
+		-e 's|@XML-Parser@|$(PERL-XML-PARSER_DIR)|' \
+		-e 's|@YAML-Syck@|$(PERL-YAML-SYCK_DIR)|' \
+		$(@D)/Bin/build-perl-modules.pl
 	sed -i  -e "s|perlBinary = <STDIN>|perlBinary = \"$(PERL_HOSTPERL)\"|" \
 		-e "s|slimServerPath = <STDIN>|slimServerPath = \"$(@D)\"|" \
 		-e "s|downloadPath = <STDIN>|downloadPath = \"$(@D)\/temp\"|" \

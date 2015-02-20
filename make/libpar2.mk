@@ -65,6 +65,7 @@ LIBPAR2_CPPFLAGS=
 LIBPAR2_LDFLAGS=
 LIBPAR2_CONFIGURE=
 ifeq ($(LIBC_STYLE), uclibc)
+LIBPAR2_LDFLAGS += -lgcc
 ifdef TARGET_GXX
 LIBPAR2_CONFIGURE += CXX=$(TARGET_GXX)
 endif
@@ -126,7 +127,7 @@ $(LIBPAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPAR2_SOURCE) $(LIBPAR2_PATCHES)
 	$(LIBPAR2_UNZIP) $(DL_DIR)/$(LIBPAR2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPAR2_PATCHES)" ; \
 		then cat $(LIBPAR2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBPAR2_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(LIBPAR2_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBPAR2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBPAR2_DIR) $(@D) ; \

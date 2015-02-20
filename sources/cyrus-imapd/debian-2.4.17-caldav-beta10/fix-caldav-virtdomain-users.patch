@@ -1,0 +1,276 @@
+Description: Fix CalDAV/CardDAV with Virtual Domains
+ Fix CalDAV/CardDAV when user is in a virtual domain so that the virtual
+ domain gets used in the mailbox name.  This fixes CalDAV failing
+ to create/open mailbox for calendars when user is not in default
+ or only domain.
+ There were three issues.  The first was that if you specify a domain
+ in the calendar URI it is converted as if it it were a mailbox name
+ instead of cyrus domain part (e.g. with '.' separator '.' in domain
+ is converted to '^') of mailbox name.
+ This second was that in calendar lookups for scheduling the userid
+ part of the mailbox name got the domain part truncated due to
+ '@' being replaced by NUL (string terminator) in calendar lookup
+ function (caladdress_lookup).
+ The third was that in some cases mailboxname creation functions
+ didn't use the standard functions and failed correctly created
+ mailbox name when mailbox had a domain.
+ .
+Author: Daniel Dickinson <debian@daniel.thecshore.com>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+Index: cyrus-imapd-2.4-2.4.17+caldav~beta10.test/imap/http_caldav.c
+===================================================================
+--- cyrus-imapd-2.4-2.4.17+caldav~beta10.test.orig/imap/http_caldav.c
++++ cyrus-imapd-2.4-2.4.17+caldav~beta10.test/imap/http_caldav.c
+@@ -631,8 +631,9 @@ static void my_caldav_auth(const char *u
+ 
+     /* Auto-provision calendars for 'userid' */
+ 
+-    strlcpy(ident, userid, sizeof(ident));
++    strlcpy(ident, userid, strcspn(userid, "@"));
+     mboxname_hiersep_toexternal(&httpd_namespace, ident, 0);
++    strlcpy(ident + strlen(ident), userid + strlen(ident), sizeof(ident) - strlen(ident));
+ 
+     /* calendar-home-set */
+     r = mboxlist_lookup(mailboxname, &mbentry, NULL);
+@@ -761,6 +762,10 @@ static int caldav_parse_path(const char
+     char *p;
+     size_t len, siz;
+     static const char *prefix = NULL;
++    char userid[MAX_MAILBOX_BUFFER];
++    char userdomain[MAX_MAILBOX_BUFFER];
++    char *domain_start;
++    int userlen, domainlen;
+ 
+     /* Make a working copy of target path */
+     strlcpy(tgt->path, path, sizeof(tgt->path));
+@@ -857,13 +862,20 @@ static int caldav_parse_path(const char
+     p = tgt->mboxname;
+     siz = MAX_MAILBOX_BUFFER;
+     if (tgt->user) {
+-	len = snprintf(p, siz, "user");
+-	p += len;
+-	siz -= len;
+-
+ 	if (tgt->userlen) {
+-	    len = snprintf(p, siz, ".%.*s", (int) tgt->userlen, tgt->user);
+-	    mboxname_hiersep_tointernal(&httpd_namespace, p+1, tgt->userlen);
++	    domain_start = strchr(tgt->user, '@');
++	    if (domain_start != NULL) {
++		userlen = domain_start - tgt->user + 1;
++		domain_start++;
++		domainlen = tgt->userlen - userlen + 1;
++	        strlcpy(userid, tgt->user, userlen);
++	        mboxname_hiersep_tointernal(&httpd_namespace, userid, userlen);
++		strlcpy(userdomain, domain_start, domainlen);
++	        len = snprintf(p, siz, "%.*s!user.%.*s", (int) domainlen, userdomain, (int) userlen, userid);
++            } else {
++	        len = snprintf(p, siz, "user.%.*s", (int) tgt->userlen, tgt->user);
++	        mboxname_hiersep_tointernal(&httpd_namespace, p+5, tgt->userlen);
++            }
+ 	    p += len;
+ 	    siz -= len;
+ 	}
+@@ -1917,8 +1929,9 @@ static int caldav_post(struct transactio
+     if (organizer) {
+ 	if (!caladdress_lookup(organizer, &sparam) &&
+ 	    !(sparam.flags & SCHEDTYPE_REMOTE)) {
+-	    strlcpy(orgid, sparam.userid, sizeof(orgid));
++	    strlcpy(orgid, sparam.userid, strcspn(sparam.userid, "@"));
+ 	    mboxname_hiersep_toexternal(&httpd_namespace, orgid, 0);
++	    strlcpy(orgid + strlen(orgid), sparam.userid + strlen(orgid), sizeof(orgid) - strlen(orgid));
+ 	}
+     }
+ 
+@@ -2133,8 +2146,9 @@ static int caldav_put(struct transaction
+ 		/* CALDAV:unique-scheduling-object-resource */
+ 		char ext_userid[MAX_MAILBOX_NAME+1];
+ 
+-		strlcpy(ext_userid, userid, sizeof(ext_userid));
++		strlcpy(ext_userid, userid, strcspn(userid, "@"));
+ 		mboxname_hiersep_toexternal(&httpd_namespace, ext_userid, 0);
++	        strlcpy(ext_userid + strlen(ext_userid), userid + strlen(ext_userid), sizeof(ext_userid) - strlen(ext_userid));
+ 
+ 		txn->error.precond = CALDAV_UNIQUE_OBJECT;
+ 		assert(!buf_len(&txn->buf));
+@@ -4096,9 +4110,12 @@ static int store_resource(struct transac
+ 
+ int caladdress_lookup(const char *addr, struct sched_param *param)
+ {
+-    char *p;
++    char *p, *domain_start;
+     int islocal = 1, found = 1;
+     static char userid[MAX_MAILBOX_BUFFER];
++    static char tmpuserid[MAX_MAILBOX_BUFFER];
++    static char tmpuserdomain[MAX_MAILBOX_BUFFER];
++    int userlen, domainlen, useridlen;
+ 
+     memset(param, 0, sizeof(struct sched_param));
+ 
+@@ -4110,7 +4127,8 @@ int caladdress_lookup(const char *addr,
+     /* XXX  Do LDAP/DB/socket lookup to see if user is local */
+     /* XXX  Hack until real lookup stuff is written */
+     strlcpy(userid, p, sizeof(userid));
+-    if ((p = strchr(userid, '@')) && !(*p = '\0') && *++p) {
++    strlcpy(tmpuserid, p, sizeof(tmpuserid));
++    if ((p = strchr(tmpuserid, '@')) && !(*p = '\0') && *++p) {
+ 	struct strlist *domains = cua_domains;
+ 
+ 	for (; domains && strcmp(p, domains->s); domains = domains->next);
+@@ -4132,9 +4150,20 @@ int caladdress_lookup(const char *addr,
+ 	    calendarprefix = config_getstring(IMAPOPT_CALENDARPREFIX);
+ 	}
+ 
+-	mboxname_hiersep_tointernal(&httpd_namespace, userid, 0);
+-	snprintf(mailboxname, sizeof(mailboxname),
+-		 "user.%s.%s", param->userid, calendarprefix);
++       domain_start = strchr(userid, '@');
++	if (domain_start != NULL) {
++	    userlen = domain_start - userid + 1;
++            domain_start++;
++	    useridlen = strcspn(userid, "/");
++	    domainlen = useridlen - userlen + 1;
++	    strlcpy(tmpuserid, userid, userlen);
++	    mboxname_hiersep_tointernal(&httpd_namespace, tmpuserid, 0);
++	    strlcpy(tmpuserdomain, domain_start, domainlen);
++	    snprintf(mailboxname, sizeof(mailboxname), "%.*s!user.%.*s.%s", (int) domainlen, tmpuserdomain, (int) userlen, tmpuserid, calendarprefix);
++        } else {
++            snprintf(mailboxname, sizeof(mailboxname), "user.%s.%s", userid, calendarprefix);
++	    mboxname_hiersep_tointernal(&httpd_namespace, userid, 0);
++        }
+ 
+ 	r = http_mlookup(mailboxname, &param->server, NULL, NULL);
+ 	if (!r) {
+@@ -4441,6 +4470,10 @@ int sched_busytime_query(struct transact
+     static const char *calendarprefix = NULL;
+     icalcomponent *comp;
+     char mailboxname[MAX_MAILBOX_BUFFER];
++    char tmpuserid[MAX_MAILBOX_BUFFER];
++    char tmpuserdomain[MAX_MAILBOX_BUFFER];
++    char *domain_start;
++    int userlen, domainlen, useridlen;
+     icalproperty *prop = NULL, *next;
+     const char *uid = NULL, *organizer = NULL;
+     struct sched_param sparam;
+@@ -4583,9 +4616,19 @@ int sched_busytime_query(struct transact
+ 				 
+ 
+ 	    /* Check ACL of ORGANIZER on attendee's Scheduling Inbox */
+-	    snprintf(mailboxname, sizeof(mailboxname),
+-		     "user.%s.%s.Inbox", userid, calendarprefix);
+-
++            domain_start = strchr(userid, '@');
++	    if (domain_start != NULL) {
++	        userlen = domain_start - userid + 1;
++                domain_start++;
++	        useridlen = strcspn(userid, "/");
++	        domainlen = useridlen - userlen + 1;
++	        strlcpy(tmpuserid, userid, userlen);
++	        strlcpy(tmpuserdomain, domain_start, domainlen);
++	        snprintf(mailboxname, sizeof(mailboxname), "%.*s!user.%.*s.%s.Inbox", (int) domainlen, tmpuserdomain, (int) userlen, tmpuserid, calendarprefix);
++            } else {
++                snprintf(mailboxname, sizeof(mailboxname), "user.%s.%s.Inbox", userid, calendarprefix);
++            }
++	
+ 	    if ((r = mboxlist_lookup(mailboxname, &mbentry, NULL))) {
+ 		syslog(LOG_INFO, "mboxlist_lookup(%s) failed: %s",
+ 		       mailboxname, error_message(r));
+@@ -4602,8 +4645,18 @@ int sched_busytime_query(struct transact
+ 
+ 	    else {
+ 		/* Start query at attendee's calendar-home-set */
+-		snprintf(mailboxname, sizeof(mailboxname),
+-			 "user.%s.%s", userid, calendarprefix);
++                domain_start = strchr(userid, '@');
++	        if (domain_start != NULL) {
++	            userlen = domain_start - userid + 1;
++                    domain_start++;
++	            useridlen = strcspn(userid, "/");
++	            domainlen = useridlen - userlen + 1;
++	            strlcpy(tmpuserid, userid, userlen);
++	            strlcpy(tmpuserdomain, domain_start, domainlen);
++	            snprintf(mailboxname, sizeof(mailboxname), "%.*s!user.%.*s.%s.Inbox", (int) domainlen, tmpuserdomain, (int) userlen, tmpuserid, calendarprefix);
++                } else {
++                    snprintf(mailboxname, sizeof(mailboxname), "user.%s.%s.Inbox", userid, calendarprefix);
++                }
+ 
+ 		fctx.davdb = NULL;
+ 		fctx.req_tgt->collection = NULL;
+Index: cyrus-imapd-2.4-2.4.17+caldav~beta10.test/imap/http_carddav.c
+===================================================================
+--- cyrus-imapd-2.4-2.4.17+caldav~beta10.test.orig/imap/http_carddav.c
++++ cyrus-imapd-2.4-2.4.17+caldav~beta10.test/imap/http_carddav.c
+@@ -368,8 +368,9 @@ static void my_carddav_auth(const char *
+     }
+ 
+     /* Auto-provision an addressbook for 'userid' */
+-    strlcpy(ident, userid, sizeof(ident));
++    strlcpy(ident, userid, strcspn(userid, "@"));
+     mboxname_hiersep_toexternal(&httpd_namespace, ident, 0);
++    strlcpy(ident + strlen(ident), userid + strlen(ident), sizeof(ident) - strlen(ident));
+ 
+     /* addressbook-home-set */
+     len += snprintf(mailboxname+len, MAX_MAILBOX_BUFFER - len, ".%s",
+@@ -461,6 +462,10 @@ static int carddav_parse_path(const char
+     char *p;
+     size_t len, siz;
+     static const char *prefix = NULL;
++    char userid[MAX_MAILBOX_BUFFER];
++    char userdomain[MAX_MAILBOX_BUFFER];
++    char *domain_start;
++    int userlen, domainlen;
+ 
+     /* Make a working copy of target path */
+     strlcpy(tgt->path, path, sizeof(tgt->path));
+@@ -546,13 +551,20 @@ static int carddav_parse_path(const char
+     p = tgt->mboxname;
+     siz = MAX_MAILBOX_BUFFER;
+     if (tgt->user) {
+-	len = snprintf(p, siz, "user");
+-	p += len;
+-	siz -= len;
+-
+ 	if (tgt->userlen) {
+-	    len = snprintf(p, siz, ".%.*s", (int) tgt->userlen, tgt->user);
+-	    mboxname_hiersep_tointernal(&httpd_namespace, p+1, tgt->userlen);
++	    domain_start = strchr(tgt->user, '@');
++	    if (domain_start != NULL) {
++		userlen = domain_start - tgt->user + 1;
++		domain_start++;
++		domainlen = tgt->userlen - userlen + 1;
++	        strlcpy(userid, tgt->user, userlen);
++	        mboxname_hiersep_tointernal(&httpd_namespace, userid, userlen);
++		strlcpy(userdomain, domain_start, domainlen);
++	        len = snprintf(p, siz, "%.*s!user.%.*s", (int) domainlen, userdomain, (int) userlen, userid);
++            } else {
++	        len = snprintf(p, siz, "user.%.*s", (int) tgt->userlen, tgt->user);
++	        mboxname_hiersep_tointernal(&httpd_namespace, p+5, tgt->userlen);
++            }
+ 	    p += len;
+ 	    siz -= len;
+ 	}
+Index: cyrus-imapd-2.4-2.4.17+caldav~beta10.test/imap/http_dav.c
+===================================================================
+--- cyrus-imapd-2.4-2.4.17+caldav~beta10.test.orig/imap/http_dav.c
++++ cyrus-imapd-2.4-2.4.17+caldav~beta10.test/imap/http_dav.c
+@@ -4716,7 +4716,7 @@ static int principal_search(char *mboxna
+     if (!(p = mboxname_isusermailbox(mboxname, 1))) return 0;
+ 
+     strlcpy(userid, p, MAX_MAILBOX_NAME+1);
+-    mboxname_hiersep_toexternal(&httpd_namespace, userid, 0);
++    //mboxname_hiersep_toexternal(&httpd_namespace, userid, 0);
+ 
+     for (search_crit = (struct search_crit *) fctx->filter_crit;
+ 	 search_crit; search_crit = search_crit->next) {

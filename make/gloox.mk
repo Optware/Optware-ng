@@ -53,7 +53,7 @@ GLOOX_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 GLOOX_CPPFLAGS=
-GLOOX_LDFLAGS=-lgnutls
+GLOOX_LDFLAGS=-lgcc -lgnutls
 
 #
 # GLOOX_BUILD_DIR is the directory in which the build is done.

@@ -194,6 +194,7 @@ $(M4_IPK): $(M4_BUILD_DIR)/.built
 	$(MAKE) -C $(M4_BUILD_DIR) DESTDIR=$(M4_IPK_DIR) install-strip
 #	install -d $(M4_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(M4_SOURCE_DIR)/rc.m4 $(M4_IPK_DIR)/opt/etc/init.d/SXXm4
+	rm -f $(M4_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(M4_IPK_DIR)/CONTROL/control
 #	install -m 644 $(M4_SOURCE_DIR)/postinst $(M4_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(M4_SOURCE_DIR)/prerm $(M4_IPK_DIR)/CONTROL/prerm

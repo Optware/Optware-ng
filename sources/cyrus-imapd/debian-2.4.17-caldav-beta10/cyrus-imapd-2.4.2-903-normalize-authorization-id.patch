@@ -1,0 +1,104 @@
+From 89197dba7887493dbaeaeee0dcb0dd8bed32a321 Mon Sep 17 00:00:00 2001
+From: Jeroen van Meeuwen (Kolab Systems) <vanmeeuwen@kolabsys.com>
+Date: Tue, 3 Aug 2010 10:19:11 +0200
+Subject: [PATCH 09/13] Normalize the authentication ID
+
+By normalize, it is intended that;
+
+    1) Authentication IDs all can be lowercased for more accurate
+       comparison without being volatile to, say, user error, and
+    2) Any leading or trailing blank space can be stripped
+---
+ lib/auth_unix.c  |   18 ++++++++++++++++++
+ lib/imapoptions  |    5 +++++
+ lib/libcyr_cfg.c |    4 ++++
+ lib/libcyr_cfg.h |    2 ++
+ 4 files changed, 29 insertions(+), 0 deletions(-)
+
+--- cyrus-imapd-2.4.orig/imap/global.c
++++ cyrus-imapd-2.4/imap/global.c
+@@ -227,6 +227,8 @@ int cyrus_init(const char *alt_config, c
+ 				  config_getswitch(IMAPOPT_UNIX_GROUP_ENABLE));
+ 	libcyrus_config_setswitch(CYRUSOPT_USERNAME_TOLOWER,
+ 				  config_getswitch(IMAPOPT_USERNAME_TOLOWER));
++	libcyrus_config_setswitch(CYRUSOPT_NORMALIZEUID,
++				  config_getswitch(IMAPOPT_NORMALIZEUID));
+ 	libcyrus_config_setswitch(CYRUSOPT_SKIPLIST_UNSAFE,
+ 				  config_getswitch(IMAPOPT_SKIPLIST_UNSAFE));
+ 	libcyrus_config_setstring(CYRUSOPT_TEMP_PATH,
+--- cyrus-imapd-2.4.orig/lib/auth_unix.c
++++ cyrus-imapd-2.4/lib/auth_unix.c
+@@ -156,10 +156,12 @@ const char *identifier;
+ size_t len;
+ {
+     static char retbuf[81];
++    char backup[81];
+     struct group *grp;
+     char sawalpha;
+     char *p;
+     int username_tolower = 0;
++    int ic,rbc;
+ 
+     if(!len) len = strlen(identifier);
+     if(len >= sizeof(retbuf)) return NULL;
+@@ -211,6 +213,22 @@ size_t len;
+     /* now we don't */
+     /* if (!sawalpha) return NULL;  */
+ 
++    if( (libcyrus_config_getswitch(CYRUSOPT_NORMALIZEUID) == 1) ) {
++        strcpy(backup,retbuf);
++       /* remove leading blanks */
++       for(ic=0; isblank(backup[ic]); ic++);
++       for(rbc=0; backup[ic]; ic++) {
++            retbuf[rbc] = ( isalpha(backup[ic]) ?
++                 tolower(backup[ic]) : backup[ic] );
++            rbc++;
++       }
++       retbuf[rbc] = '\0';
++       /* remove trailing blanks */
++       for(--rbc; isblank(retbuf[rbc]); rbc--) {
++            retbuf[rbc] = '\0';
++       }
++    }
++
+     return retbuf;
+ }
+ 
+--- cyrus-imapd-2.4.orig/lib/imapoptions
++++ cyrus-imapd-2.4/lib/imapoptions
+@@ -1592,6 +1592,11 @@ product version in the capabilities */
+ /* The absolute path to the zoneinfo db file.  If not specified,
+    will be confdir/zoneinfo.db */
+ 
++{ "normalizeuid", 0, SWITCH }
++/* Lowercase uid and strip leading and trailing blanks. It is recommended
++   to set this to yes, especially if OpenLDAP is used as authentication
++   source. */
++
+ /*
+ .SH SEE ALSO
+ .PP
+--- cyrus-imapd-2.4.orig/lib/libcyr_cfg.c
++++ cyrus-imapd-2.4/lib/libcyr_cfg.c
+@@ -158,6 +158,10 @@ struct cyrusopt_s cyrus_options[] = {
+       CFGVAL(long, 1),
+       CYRUS_OPT_SWITCH },
+ 
++    { CYRUSOPT_NORMALIZEUID,
++      CFGVAL(long, 1),
++      CYRUS_OPT_SWITCH },
++
+     { CYRUSOPT_LAST, { NULL }, CYRUS_OPT_NOTOPT }
+ };
+ 
+--- cyrus-imapd-2.4.orig/lib/libcyr_cfg.h
++++ cyrus-imapd-2.4/lib/libcyr_cfg.h
+@@ -116,6 +116,8 @@ enum cyrus_opt {
+     CYRUSOPT_SQL_USESSL,
+     /* Checkpoint after every recovery (OFF) */
+     CYRUSOPT_SKIPLIST_ALWAYS_CHECKPOINT,
++    /* Lowercase uid and strip leading and trailing blanks (OFF) */
++    CYRUSOPT_NORMALIZEUID,
+ 
+     CYRUSOPT_LAST
+     

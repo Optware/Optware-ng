@@ -19,8 +19,12 @@
 #
 # You should change all these variables to suit your package.
 #
+NAIL_REPOSITORY=:pserver:anonymous@nail.cvs.sourceforge.net:/cvsroot/nail
+NAIL_CVS_TAG=R12_5__6_20_10
+NAIL_CVS_OPTS=-r $(NAIL_CVS_TAG)
 NAIL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nail/
-NAIL_VERSION=11.25
+#NAIL_VERSION=11.25
+NAIL_VERSION=12.5
 NAIL_SOURCE=nail-$(NAIL_VERSION).tar.bz2
 NAIL_DIR=nail-$(NAIL_VERSION)
 NAIL_UNZIP=bzcat
@@ -28,7 +32,7 @@ NAIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NAIL_DESCRIPTION=command-line email-client supporting POP3, IMAP, SMTP, ...
 NAIL_SECTION=net
 NAIL_PRIORITY=optional
-NAIL_DEPENDS=openssl
+NAIL_DEPENDS=openssl, sendmail
 NAIL_SUGGESTS=
 NAIL_CONFLICTS=
 
@@ -37,6 +41,10 @@ NAIL_CONFLICTS=
 # NAIL_IPK_VERSION should be incremented when the ipk changes.
 #
 NAIL_IPK_VERSION=1
+
+#
+# NAIL_CONFFILES should be a list of user-editable files
+NAIL_CONFFILES=/opt/etc/nail.rc
 
 #
 # NAIL_PATCHES should list any patches, in the the order in
@@ -69,12 +77,28 @@ NAIL_SOURCE_DIR=$(SOURCE_DIR)/nail
 NAIL_IPK_DIR=$(BUILD_DIR)/nail-$(NAIL_VERSION)-ipk
 NAIL_IPK=$(BUILD_DIR)/nail_$(NAIL_VERSION)-$(NAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+
+ifdef NAIL_REPOSITORY
+#
+# In this case there is no tarball, instead we fetch the sources
+# directly to the builddir with CVS
+#
+$(DL_DIR)/$(NAIL_SOURCE):
+	( cd $(BUILD_DIR) ; \
+		rm -rf nail $(NAIL_DIR) && \
+		cvs -d $(NAIL_REPOSITORY) -z3 co $(NAIL_CVS_OPTS) nail && \
+		mv -f nail $(NAIL_DIR) && \
+		tar -cjf $@ $(NAIL_DIR) && \
+		rm -rf $(NAIL_DIR) \
+	)
+else
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NAIL_SOURCE):
 	$(WGET) -P $(DL_DIR) $(NAIL_SITE)/$(NAIL_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -98,11 +122,14 @@ nail-source: $(DL_DIR)/$(NAIL_SOURCE) $(NAIL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(NAIL_SOURCE) $(NAIL_PATCHES)
+$(NAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(NAIL_SOURCE) $(NAIL_PATCHES) make/nail.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NAIL_DIR) $(NAIL_BUILD_DIR)
 	$(NAIL_UNZIP) $(DL_DIR)/$(NAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NAIL_PATCHES) | patch -d $(BUILD_DIR)/$(NAIL_DIR) -p1
+	if test -n "$(NAIL_PATCHES)" ; \
+		then cat $(NAIL_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(NAIL_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(NAIL_DIR) $(NAIL_BUILD_DIR)
 	(cd $(NAIL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -158,7 +185,11 @@ $(NAIL_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(NAIL_SECTION)" >>$@
 	@echo "Version: $(NAIL_VERSION)-$(NAIL_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(NAIL_MAINTAINER)" >>$@
+ifdef NAIL_REPOSITORY
+	@echo "Source: $(NAIL_REPOSITORY)" >>$@
+else
 	@echo "Source: $(NAIL_SITE)/$(NAIL_SOURCE)" >>$@
+endif
 	@echo "Description: $(NAIL_DESCRIPTION)" >>$@
 	@echo "Depends: $(NAIL_DEPENDS)" >>$@
 	@echo "Suggests: $(NAIL_SUGGESTS)" >>$@
@@ -180,14 +211,18 @@ $(NAIL_IPK_DIR)/CONTROL/control:
 $(NAIL_IPK): $(NAIL_BUILD_DIR)/.built
 	rm -rf $(NAIL_IPK_DIR) $(BUILD_DIR)/nail_*_$(TARGET_ARCH).ipk
 	install -d $(NAIL_IPK_DIR)/opt/bin
-	install -d $(NAIL_IPK_DIR)/opt/doc/nail
-	$(STRIP_COMMAND) $(NAIL_BUILD_DIR)/nail -o $(NAIL_IPK_DIR)/opt/bin/nail
-	install -m 644 $(NAIL_BUILD_DIR)/nail.rc $(NAIL_IPK_DIR)/opt/doc/nail/nail.rc
+	install -d $(NAIL_IPK_DIR)/opt/etc
+	install -d $(NAIL_IPK_DIR)/opt/share/man/man1
+	$(STRIP_COMMAND) $(NAIL_BUILD_DIR)/mailx -o $(NAIL_IPK_DIR)/opt/bin/mailx
+	install -m 644 $(NAIL_BUILD_DIR)/mailx.1 $(NAIL_IPK_DIR)/opt/share/man/man1
+	ln -s mailx $(NAIL_IPK_DIR)/opt/bin/nail
+	install -m 644 $(NAIL_BUILD_DIR)/nail.rc $(NAIL_IPK_DIR)/opt/etc/nail.rc
 #	install -d $(NAIL_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(NAIL_SOURCE_DIR)/rc.nail $(NAIL_IPK_DIR)/opt/etc/init.d/SXXnail
 	$(MAKE) $(NAIL_IPK_DIR)/CONTROL/control
-	install -m 644 $(NAIL_SOURCE_DIR)/postinst $(NAIL_IPK_DIR)/CONTROL/postinst
+#	install -m 644 $(NAIL_SOURCE_DIR)/postinst $(NAIL_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(NAIL_SOURCE_DIR)/prerm $(NAIL_IPK_DIR)/CONTROL/prerm
+	echo $(NAIL_CONFFILES) | sed -e 's/ /\n/g' > $(NAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NAIL_IPK_DIR)
 
 #

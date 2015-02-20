@@ -136,6 +136,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 	if test "$(BUILD_DIR)/$(DOVECOT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DOVECOT_DIR) $(@D) ; \
 	fi
+	fgrep -rlZ pkglib_DATA --include Makefile.am $(@D) | xargs -0 sed -i 's/pkglib_DATA/pkgdata_DATA/g'
 	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

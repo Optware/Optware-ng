@@ -1,0 +1,22 @@
+Description: compile pam_cap with -lpam
+ A similar fix was in Debian but appears to have been accidentally
+ dropped.  Drop this one if or when debian gets it back so we can
+ directly sync.
+Author: Andrew Straw <strawman@astraw.com>
+Forwarded: no
+Bug-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/libcap2/+bug/582769
+Bug: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=591410
+
+Index: libcap2-2.20/pam_cap/Makefile
+===================================================================
+--- libcap2-2.20.orig/pam_cap/Makefile	2011-05-10 10:15:02.540359338 -0500
++++ libcap2-2.20/pam_cap/Makefile	2011-05-10 10:15:07.600359338 -0500
+@@ -7,7 +7,7 @@
+ # that this next line does *not* require -lpam on it.) If you think it
+ # does, *verify that it does*, and if you observe that it fails as
+ # written (and you know why it fails), email me and explain why. Thanks!
+-LDLIBS += -L../libcap -lcap
++LDLIBS += -L../libcap -lcap -lpam
+ 
+ all: pam_cap.so
+ 	$(MAKE) testcompile

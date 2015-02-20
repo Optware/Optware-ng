@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-PADWALKER_SITE=http://search.cpan.org/CPAN/authors/id/R/RO/ROBIN
-PERL-PADWALKER_VERSION=1.5
+PERL-PADWALKER_VERSION=2.0
 PERL-PADWALKER_SOURCE=PadWalker-$(PERL-PADWALKER_VERSION).tar.gz
 PERL-PADWALKER_DIR=PadWalker-$(PERL-PADWALKER_VERSION)
 PERL-PADWALKER_UNZIP=zcat

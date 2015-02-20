@@ -6,9 +6,9 @@
 
 # PUPPY_REPOSITORY=:ext:$(LOGNAME)@cvs.sf.net:/cvsroot/puppy
 PUPPY_REPOSITORY=:pserver:anonymous@puppy.cvs.sf.net:/cvsroot/puppy
-PUPPY_VERSION=1.11
+PUPPY_VERSION=1.14
 PUPPY_SOURCE=puppy-$(PUPPY_VERSION).tar.gz
-PUPPY_TAG=-r PUPPY_1_11
+PUPPY_TAG=-r PUPPY_1_14
 PUPPY_MODULE=puppy
 PUPPY_DIR=puppy-$(PUPPY_VERSION)
 PUPPY_UNZIP=zcat

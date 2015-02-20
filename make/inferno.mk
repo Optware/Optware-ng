@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 INFERNO_HG_REPO=https://inferno-os.googlecode.com/hg
-INFERNO_HG_DATE=20091119
-INFERNO_HG_REV=d6d6cf406377
+INFERNO_HG_DATE=20140630
+INFERNO_HG_REV=7ab390b860ca
 INFERNO_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/inferno
 INFERNO_VERSION=4.hg$(INFERNO_HG_DATE)
 INFERNO_SOURCE=inferno-$(INFERNO_VERSION).tar.gz
@@ -40,7 +40,7 @@ INFERNO_IPK_VERSION=1
 
 #INFERNO_CONFFILES=
 
-INFERNO_HOST_PATCHES=$(INFERNO_SOURCE_DIR)/386-g.patch
+INFERNO_HOST_PATCHES=#$(INFERNO_SOURCE_DIR)/386-g.patch
 
 INFERNO_ARCH=$(strip \
 $(if $(filter arm armeb armel, $(TARGET_ARCH)), arm, \
@@ -49,20 +49,27 @@ $(if $(filter powerpc ppc, $(TARGET_ARCH)), power, \
 $(if $(filter mipsel, $(TARGET_ARCH)), spim, \
 $(TARGET_ARCH))))))
 
-INFERNO_PATCHES=$(INFERNO_SOURCE_DIR)/$(INFERNO_ARCH)-g.patch
+#INFERNO_PATCHES=$(INFERNO_SOURCE_DIR)/$(INFERNO_ARCH)-g.patch
 
-INFERNO_PATCHES += $(strip \
+#INFERNO_PATCHES += $(strip \
 $(if $(filter arm, $(INFERNO_ARCH)), \
 	$(INFERNO_SOURCE_DIR)/asm-arm-SYS_exit.patch, \
 ))
 
-INFERNO_PATCHES2 = \
+#INFERNO_PATCHES2 = \
 $(INFERNO_SOURCE_DIR)/emu-g-graphical-cpu.patch \
 $(INFERNO_SOURCE_DIR)/os.c-freecheck.patch \
 
 INFERNO_CPPFLAGS=$(strip \
 $(if $(filter mips spim, $(INFERNO_ARCH)), -mips32, \
 ))
+ifeq (uclibc, $(LIBC_STYLE))
+ifneq (yes, $(UCLIBC_HAS_PTHREAD_YIELD))
+# set UCLIBC_HAS_PTHREAD_YIELD in platforms/toolchain-<target>.mk
+# set to 'yes', if libpthread has pthread_yield
+INFERNO_CPPFLAGS+= -Dpthread_yield=sched_yield
+endif
+endif
 
 ifeq (uclibc, $(LIBC_STYLE))
 INFERNO_LDFLAGS=-lm
@@ -113,6 +120,8 @@ $(INFERNO_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(INFERNO_SOURCE) $
 	if test "$(HOST_BUILD_DIR)/$(INFERNO_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(INFERNO_DIR) $(@D) ; \
 	fi
+	sed -i -e 's/__asm__(	"xorb/__asm__ volatile(	"xorb/' -e 's|: /\* no output \*/|: "=a" (fcr)|'  $(@D)/Linux/386/include/fpuctl.h
+	sed -i -e 's/^CONF=.*/CONF=emu-g/' -e 's/^CONFLIST=.*/CONFLIST=emu-g/' $(@D)/emu/Linux/mkfile
 	sed -i.bak \
 		-e '/^ROOT=/s|=.*|=$(@D)|' \
 		-e '/^SYSHOST=/s|=.*|=Linux|' \
@@ -132,7 +141,7 @@ $(INFERNO_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(INFERNO_SOURCE) $
 
 inferno-host: $(INFERNO_HOST_BUILD_DIR)/.built
 
-$(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PATCHES) # make/inferno.mk
+$(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PATCHES) #make/inferno.mk
 	rm -rf $(BUILD_DIR)/$(INFERNO_DIR) $(@D)
 	$(INFERNO_UNZIP) $(DL_DIR)/$(INFERNO_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(INFERNO_PATCHES)" ; \
@@ -147,6 +156,11 @@ $(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PAT
 		then mv $(BUILD_DIR)/$(INFERNO_DIR) $(@D) ; \
 	fi
 	cp -p $(INFERNO_SOURCE_DIR)/audio-oss.c $(@D)/emu/Linux/
+ifeq (uclibc, $(LIBC_STYLE))
+	sed -i -e "/#include <fenv\.h>/s|^|//|" $(@D)/Linux/$(INFERNO_ARCH)/include/fpuctl.h
+endif
+	sed -i -e 's/__asm__(	"xorb/__asm__ volatile(	"xorb/' -e 's|: /\* no output \*/|: "=a" (fcr)|'  $(@D)/Linux/$(INFERNO_ARCH)/include/fpuctl.h
+	sed -i -e 's/^CONF=.*/CONF=emu-g/' -e 's/^CONFLIST=.*/CONFLIST=emu-g/' $(@D)/emu/Linux/mkfile
 	sed -i.bak \
 		-e '/CFLAGS=.*-DROOT/s|-DROOT=\x22\x27$$ROOT\x27\x22|-DROOT=\x22\x27/opt/share/inferno\x27\x22|' \
 		$(@D)/emu/Linux/mkfile
@@ -247,7 +261,7 @@ $(INFERNO_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(INFERNO_MAINTAINER)" >>$@
 	@echo "Source: $(INFERNO_SITE)/$(INFERNO_SOURCE)" >>$@
 	@echo "Description: $(INFERNO_DESCRIPTION)" >>$@
-	@echo "Depends: $(INFERNO_DEPENDS)" >>$@
+	@echo "Depends: inferno-small, inferno-utils" >>$@
 	@echo "Suggests: $(INFERNO_SUGGESTS)" >>$@
 	@echo "Conflicts: $(INFERNO_CONFLICTS)" >>$@
 
@@ -263,7 +277,7 @@ $(INFERNO_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
+$(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK) $(INFERNO_IPK): $(INFERNO_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/inferno*_*_$(TARGET_ARCH).ipk $(BUILD_DIR)/inferno*-ipk
 	# inferno
 	install -d $(INFERNO_IPK_DIR)/opt/bin $(INFERNO_IPK_DIR)/opt/share/inferno
@@ -383,15 +397,15 @@ $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK): $(INFERNO_BUILD_DIR)/.built
 	mv $(INFERNO_IPK_DIR)/opt/bin $(INFERNO-UTILS_IPK_DIR)/opt/share/inferno
 	$(MAKE) $(INFERNO-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO-UTILS_IPK_DIR)
-#	# rest in inferno
-#	$(MAKE) $(INFERNO_IPK_DIR)/CONTROL/control
-#	echo $(INFERNO_CONFFILES) | sed -e 's/ /\n/g' > $(INFERNO_IPK_DIR)/CONTROL/conffiles
-#	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO_IPK_DIR)
+	# rest in inferno
+	$(MAKE) $(INFERNO_IPK_DIR)/CONTROL/control
+	echo $(INFERNO_CONFFILES) | sed -e 's/ /\n/g' > $(INFERNO_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-inferno-ipk: $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK)
+inferno-ipk: $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK) $(INFERNO_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -413,5 +427,5 @@ inferno-dirclean:
 #
 # Some sanity check for the package.
 #
-inferno-check: $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK)
+inferno-check: $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK) $(INFERNO_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

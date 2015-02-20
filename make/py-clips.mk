@@ -134,6 +134,9 @@ $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-C
 	    ) >> setup.cfg; \
 	    cp $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) ./clipssrc.zip \
 	)
+	unzip $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) -d $(@D)/2.4
+	mkdir -p $(@D)/2.4/clipssrc
+	mv -f $(@D)/2.4/CLIPSSrc/CLIPSSrc/* $(@D)/2.4/clipssrc
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR)
 	$(PY-CLIPS_UNZIP) $(DL_DIR)/$(PY-CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -151,6 +154,9 @@ $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-C
 	    ) >> setup.cfg; \
 	    cp $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) ./clipssrc.zip \
 	)
+	unzip $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) -d $(@D)/2.5
+	mkdir -p $(@D)/2.5/clipssrc
+	mv -f $(@D)/2.5/CLIPSSrc/CLIPSSrc/* $(@D)/2.5/clipssrc
 	touch $@
 
 py-clips-unpack: $(PY-CLIPS_BUILD_DIR)/.configured

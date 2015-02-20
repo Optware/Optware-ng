@@ -13,9 +13,9 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PKGCONFIG_SITE=http://www.freedesktop.org/software/pkgconfig/releases
-PKGCONFIG_VERSION=0.15.0
-PKGCONFIG_SOURCE=pkgconfig-$(PKGCONFIG_VERSION).tar.gz
-PKGCONFIG_DIR=pkgconfig-$(PKGCONFIG_VERSION)
+PKGCONFIG_VERSION=0.28
+PKGCONFIG_SOURCE=pkg-config-$(PKGCONFIG_VERSION).tar.gz
+PKGCONFIG_DIR=pkg-config-$(PKGCONFIG_VERSION)
 PKGCONFIG_UNZIP=zcat
 PKGCONFIG_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PKGCONFIG_DESCRIPTION=Package configuration tool
@@ -26,7 +26,7 @@ PKGCONFIG_DEPENDS=
 #
 # PKGCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-PKGCONFIG_IPK_VERSION=2
+PKGCONFIG_IPK_VERSION=1
 
 #
 # PKGCONFIG_LOCALES defines which locales get installed
@@ -41,7 +41,7 @@ PKGCONFIG_LOCALES=
 # PKGCONFIG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PKGCONFIG_PATCHES=$(PKGCONFIG_SOURCE_DIR)/configure.patch
+#PKGCONFIG_PATCHES=$(PKGCONFIG_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -103,7 +103,9 @@ pkgconfig-source: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PATCHES)
 $(PKGCONFIG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(PKGCONFIG_SOURCE) make/pkgconfig.mk
 	rm -rf $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	cat $(PKGCONFIG_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) -p1
+	if test -n "$(PKGCONFIG_PATCHES)"; then \
+		cat $(PKGCONFIG_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) -p1; \
+	fi
 	mv $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	(cd $(@D); \
 		./configure \
@@ -138,13 +140,19 @@ pkgconfig-host-stage: $(PKGCONFIG_HOST_BUILD_DIR)/.staged
 $(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PATCHES) make/pkgconfig.mk
 	rm -rf $(BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PKGCONFIG_PATCHES) | patch -d $(BUILD_DIR)/$(PKGCONFIG_DIR) -p1
+	if test -n "$(PKGCONFIG_PATCHES)"; then \
+		cat $(PKGCONFIG_PATCHES) | patch -d $(BUILD_DIR)/$(PKGCONFIG_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
-	autoreconf -I. -vif $(@D)/glib-1.2.8
+	sed -i -e '/AM_SILENT_RULES/s/^/dnl /' -e '/AM_INIT_AUTOMAKE/s/.*/AM_INIT_AUTOMAKE/' $(@D)/configure.ac $(@D)/glib/configure.ac
+	rm -f $(@D)/glib/aclocal.m4 $(@D)/aclocal.m4
+	touch $(@D)/glib/ChangeLog
+	autoreconf -I. -vif $(@D)/glib
+	autoreconf -I. -vif $(@D)
 ifneq ($(HOSTCC), $(TARGET_CC))
 	cp $(PKGCONFIG_SOURCE_DIR)/pkgconfig.cache $(PKGCONFIG_BUILD_DIR)/crossconfig.cache
 endif
-	cp $(PKGCONFIG_SOURCE_DIR)/glibconfig-sysdefs.h $(PKGCONFIG_BUILD_DIR)/glib-1.2.8
+	cp $(PKGCONFIG_SOURCE_DIR)/glibconfig-sysdefs.h $(PKGCONFIG_BUILD_DIR)/glib
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS=`echo $(STAGING_CPPFLAGS) $(PKGCONFIG_CPPFLAGS)` \

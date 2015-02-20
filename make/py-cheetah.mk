@@ -32,6 +32,7 @@ PY-CHEETAH_SECTION=misc
 PY-CHEETAH_PRIORITY=optional
 PY25-CHEETAH_DEPENDS=python25
 PY26-CHEETAH_DEPENDS=python26
+PY27-CHEETAH_DEPENDS=python27
 PY-CHEETAH_CONFLICTS=
 
 #
@@ -73,6 +74,9 @@ PY25-CHEETAH_IPK=$(BUILD_DIR)/py25-cheetah_$(PY-CHEETAH_VERSION)-$(PY-CHEETAH_IP
 
 PY26-CHEETAH_IPK_DIR=$(BUILD_DIR)/py26-cheetah-$(PY-CHEETAH_VERSION)-ipk
 PY26-CHEETAH_IPK=$(BUILD_DIR)/py26-cheetah_$(PY-CHEETAH_VERSION)-$(PY-CHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY27-CHEETAH_IPK_DIR=$(BUILD_DIR)/py27-cheetah-$(PY-CHEETAH_VERSION)-ipk
+PY27-CHEETAH_IPK=$(BUILD_DIR)/py27-cheetah_$(PY-CHEETAH_VERSION)-$(PY-CHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -136,6 +140,20 @@ $(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH
 		echo "executable=/opt/bin/python2.6" \
 	    ) >> setup.cfg; \
 	)
+	# 2.7
+	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.7"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.7" \
+	    ) >> setup.cfg; \
+	)
 	touch $@
 
 py-cheetah-unpack: $(PY-CHEETAH_BUILD_DIR)/.configured
@@ -152,6 +170,10 @@ $(PY-CHEETAH_BUILD_DIR)/.built: $(PY-CHEETAH_BUILD_DIR)/.configured
 	(cd $(@D)/2.6; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
+	)
+	(cd $(@D)/2.7; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build; \
 	)
 	touch $@
 
@@ -202,6 +224,20 @@ $(PY26-CHEETAH_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY26-CHEETAH_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-CHEETAH_CONFLICTS)" >>$@
 
+$(PY27-CHEETAH_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-cheetah" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-CHEETAH_PRIORITY)" >>$@
+	@echo "Section: $(PY-CHEETAH_SECTION)" >>$@
+	@echo "Version: $(PY-CHEETAH_VERSION)-$(PY-CHEETAH_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-CHEETAH_MAINTAINER)" >>$@
+	@echo "Source: $(PY-CHEETAH_SITE)/$(PY-CHEETAH_SOURCE)" >>$@
+	@echo "Description: $(PY-CHEETAH_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-CHEETAH_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-CHEETAH_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -241,10 +277,23 @@ $(PY26-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	$(MAKE) $(PY26-CHEETAH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CHEETAH_IPK_DIR)
 
+$(PY27-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
+	rm -rf $(PY27-CHEETAH_IPK_DIR) $(BUILD_DIR)/py27-cheetah_*_$(TARGET_ARCH).ipk
+	(cd $(PY-CHEETAH_BUILD_DIR)/2.7; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(PY27-CHEETAH_IPK_DIR) --prefix=/opt; \
+	)
+	ls $(PY27-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.7
+	$(STRIP_COMMAND) `find $(PY27-CHEETAH_IPK_DIR)/opt/lib/python2.7/site-packages -name '*.so'`
+	$(MAKE) $(PY27-CHEETAH_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-CHEETAH_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-cheetah-ipk: $(PY25-CHEETAH_IPK) $(PY26-CHEETAH_IPK)
+py-cheetah-ipk: $(PY25-CHEETAH_IPK) $(PY26-CHEETAH_IPK) $(PY27-CHEETAH_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -260,9 +309,10 @@ py-cheetah-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR) \
 	$(PY25-CHEETAH_IPK_DIR) $(PY25-CHEETAH_IPK) \
 	$(PY26-CHEETAH_IPK_DIR) $(PY26-CHEETAH_IPK) \
+	$(PY27-CHEETAH_IPK_DIR) $(PY27-CHEETAH_IPK) \
 
 #
 # Some sanity check for the package.
 #
-py-cheetah-check: $(PY25-CHEETAH_IPK) $(PY26-CHEETAH_IPK)
+py-cheetah-check: $(PY25-CHEETAH_IPK) $(PY26-CHEETAH_IPK) $(PY27-CHEETAH_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

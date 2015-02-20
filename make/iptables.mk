@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPTABLES_SITE=http://ftp.netfilter.org/pub/iptables
-IPTABLES_VERSION=1.4.10
+IPTABLES_VERSION=1.4.21
 IPTABLES_SOURCE=iptables-$(IPTABLES_VERSION).tar.bz2
 IPTABLES_UNZIP=bzcat
 IPTABLES_SOURCES=$(DL_DIR)/$(IPTABLES_SOURCE) 
@@ -148,6 +148,7 @@ iptables: $(IPTABLES_BUILD_DIR)/.built
 $(IPTABLES_BUILD_DIR)/.staged: $(IPTABLES_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libip*tc.pc
 	touch $@
 
 iptables-stage: $(IPTABLES_BUILD_DIR)/.staged $(IPTABLES_BUILD_DIR)/.staged-headers
@@ -202,7 +203,7 @@ $(IPTABLES_IPK): $(IPTABLES_BUILD_DIR)/.built
 	$(MAKE) -C $(IPTABLES_BUILD_DIR) install \
 		$(TARGET_CONFIGURE_OPTS) PREFIX=/opt DESTDIR=$(IPTABLES_IPK_DIR)
 	$(STRIP_COMMAND) $(IPTABLES_IPK_DIR)/opt/lib/*.so* $(IPTABLES_IPK_DIR)/opt/sbin/* \
-		$(IPTABLES_IPK_DIR)/opt/libexec/xtables/*.so*
+		$(IPTABLES_IPK_DIR)/opt/lib/xtables/*.so*
 	$(MAKE) $(IPTABLES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPTABLES_IPK_DIR)
 

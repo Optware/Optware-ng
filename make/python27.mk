@@ -21,18 +21,18 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON27_VERSION=2.7.3
+PYTHON27_VERSION=2.7.9
 PYTHON27_VERSION_MAJOR=2.7
 PYTHON27_SITE=http://python.org/ftp/python/$(PYTHON27_VERSION)
 PYTHON27_DIR=Python-$(PYTHON27_VERSION)
-PYTHON27_SOURCE=$(PYTHON27_DIR).tar.bz2
-PYTHON27_UNZIP=bzcat
+PYTHON27_SOURCE=$(PYTHON27_DIR).tgz
+PYTHON27_UNZIP=zcat
 
 PYTHON27_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON27_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON27_SECTION=misc
 PYTHON27_PRIORITY=optional
-PYTHON27_DEPENDS=readline, bzip2, openssl, libdb, zlib, sqlite
+PYTHON27_DEPENDS=readline, bzip2, openssl, libdb, zlib, sqlite, xz-utils
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON27_DEPENDS+=, libstdc++
 endif
@@ -54,8 +54,9 @@ PYTHON27_IPK_VERSION=1
 #
 PYTHON27_CPPFLAGS=
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
+# as for -lgcc_s flag, see: http://bugs.python.org/issue23340
 ifeq ($(LIBC_STYLE),uclibc)
-PYTHON27_LDFLAGS=-lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
+PYTHON27_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
 else
 PYTHON27_LDFLAGS=
 endif
@@ -81,10 +82,7 @@ PYTHON27_IPK=$(BUILD_DIR)/python27_$(PYTHON27_VERSION)-$(PYTHON27_IPK_VERSION)_$
 # http://mail.python.org/pipermail/patches/2004-October/016312.html
 PYTHON27_PATCHES=\
 	$(PYTHON27_SOURCE_DIR)/Makefile.pre.in.patch \
-	$(PYTHON27_SOURCE_DIR)/README.patch \
-	$(PYTHON27_SOURCE_DIR)/config.guess.patch \
-	$(PYTHON27_SOURCE_DIR)/config.sub.patch \
-	$(PYTHON27_SOURCE_DIR)/configure.in.patch \
+	$(PYTHON27_SOURCE_DIR)/configure.ac.patch \
 	$(PYTHON27_SOURCE_DIR)/setup.py.patch \
 	$(PYTHON27_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON27_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
@@ -129,12 +127,13 @@ $(PYTHON27_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON27_SOURCE) $(PYTHON27_PATCH
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
-	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
+	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage xz-utils-stage libffi-host-stage zlib-host-stage xz-utils-host-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	$(MAKE) autoconf-host-stage
-	rm -rf $(BUILD_DIR)/$(PYTHON27_DIR) $(@D)
+	rm -rf $(BUILD_DIR)/$(PYTHON27_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.7
 	$(PYTHON27_UNZIP) $(DL_DIR)/$(PYTHON27_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON27_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON27_DIR) -p1
+	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_PREFIX)/lib" CPPFLAGS="-I$(HOST_STAGING_PREFIX)/include" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON27_DIR)/configure.ac
 	$(HOST_STAGING_PREFIX)/bin/autoreconf -vif $(BUILD_DIR)/$(PYTHON27_DIR)
 	mkdir -p $(@D)
 	cd $(@D); (\

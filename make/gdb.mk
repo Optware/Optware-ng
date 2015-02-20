@@ -40,6 +40,13 @@ GDB_DEPENDS+=, libiconv
 endif
 GDB_CONFLICTS=
 
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
+GDB_VERSION=7.8.1
+GDB_IPK_VERSION=1
+GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
+GDB_UNZIP=xzcat
+endif
+
 
 #
 # GDB_CONFFILES should be a list of user-editable files
@@ -59,6 +66,9 @@ GDB_CPPFLAGS=
 # Note: added -s in here to strip binaries.
 #
 GDB_LDFLAGS=-s
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
+GDB_LDFLAGS+= -lm
+endif
 
 #
 # GDB_BUILD_DIR is the directory in which the build is done.
@@ -231,7 +241,9 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 		/opt/include/dis-asm.h \
 		/opt/include/symcat.h \
 		/opt/info/bfd.info \
+		/opt/share/info/bfd.info \
 		/opt/info/configure.info \
+		/opt/share/info/configure.info \
 		/opt/lib/libbfd.a \
 		/opt/lib/libbfd.la \
 		/opt/lib/libiberty.a \
@@ -239,6 +251,7 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 		/opt/lib/libopcodes.la \
 		; \
 	do rm -f $(GDB_IPK_DIR)/$$f; done
+	rm -f $(GDB_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(GDB_IPK_DIR)/CONTROL/control
 #	install -m 644 $(GDB_SOURCE_DIR)/postinst $(GDB_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(GDB_SOURCE_DIR)/prerm $(GDB_IPK_DIR)/CONTROL/prerm

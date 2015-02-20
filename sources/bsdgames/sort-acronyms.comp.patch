@@ -1,0 +1,80 @@
+--- a/wtf/acronyms.comp
++++ b/wtf/acronyms.comp
+@@ -17,8 +17,8 @@
+ ARP	address resolution protocol
+ ARQ	automatic repeat request
+ AS	autonomous system
+-ASN	autonomous system number
+ ASCII	american standard code for information interchange
++ASN	autonomous system number
+ AT	advanced technology
+ ATA	advanced technology attachment
+ ATAPI	advanced technology attachment packet interface
+@@ -85,6 +85,7 @@
+ DTE	dumb terminal emulator
+ DVD	digital versatile disc
+ DVI	digital visual interface
++E-XER	extended XML encoding rules
+ ECP	enhanced capability port
+ EDID	extended display identification data
+ EDO	extended data out
+@@ -98,7 +99,6 @@
+ EPRML	extended partial response, maximum likelihood
+ EPROM	erasable programmable read only memory
+ ESDRAM	enhanced synchronous dynamic random access memory
+-E-XER	extended XML encoding rules
+ FAT	file allocation table
+ FBRAM	frame buffer random access memory
+ FCS	frame check sequence
+@@ -139,10 +139,10 @@
+ IKE	internet key exchange
+ IMAP	internet mail access protocol
+ INCITS	international committee on information technology standards
+-IPC	interprocess communication
+ IO	input/output
+ IOCTL	input/output control
+ IP	internet protocol
++IPC	interprocess communication
+ IPNG	internet protocol, next generation
+ IPSEC	internet protocol security
+ IRC	internet relay chat
+@@ -156,6 +156,7 @@
+ ISO	international standards organization
+ ISOC	internet society
+ ISP	internet service provider
++JFGI	just fucking google it
+ JPEG	joint photographic experts group
+ KVA	kernel virtual address
+ LAN	local area network
+@@ -212,8 +213,8 @@
+ PCI	peripheral component interconnect
+ PCM	pulse code modulation
+ PCMCIA	personal computer memory card international association
+-PDU	protocol data unit
+ PDP	page descriptor page
++PDU	protocol data unit
+ PER	packed encoding rules
+ PERL	practical extraction [and] report language
+ PGP	pretty good privacy
+@@ -233,10 +234,10 @@
+ PPPOE	point-to-point protocol over ethernet
+ PRML	partial response, maximum likelihood
+ PROM	programmable read only memory
++PSTN	public switched telephone network
+ PTE	page table entry
+ PTLA	pseudo top level aggregator
+ PTP	page table page
+-PSTN	public switched telephone network
+ PWM	pulse width modulation
+ QOS	quality of service
+ RAID	redundant array of inexpensive disks
+@@ -255,8 +256,8 @@
+ RTF	rich text format
+ RTS	request to send
+ RTSL	read the source, Luke (open source programming)
+-RTSL	real-time systems laboratory
+ RTSL	real-time shading language (Stanford University)
++RTSL	real-time systems laboratory
+ RTT	round time trip
+ S/PDIF	sony/phillips digital interface
+ SACD	super audio compact disc

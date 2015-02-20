@@ -1,0 +1,86 @@
+#! /bin/sh
+
+# ircd-hybrid	Start/stop the Hybrid 8 IRC server.
+
+### BEGIN INIT INFO
+# Provides:          ircd-hybrid
+# Required-Start:    $syslog $remote_fs
+# Required-Stop:     $syslog $remote_fs
+# Should-Start:      $local_fs $network $named
+# Should-Stop:       $local_fs $network $named
+# Short-Description: IRCd-Hybrid daemon init.d script
+# Description:       Use to manage the IRCd-Hybrid daemon.
+### END INIT INFO
+
+PATH=/opt/sbin:/opt/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/opt/bin/ircd-hybrid
+DEFAULT=/opt/etc/default/ircd-hybrid
+NAME=ircd-hybrid
+DESC="Hybrid 8 IRC Server"
+
+test -f $DAEMON || exit 0
+
+if [ -f $DEFAULT ]
+then
+	. $DEFAULT
+fi
+
+set -e
+
+case "$1" in
+  start)
+	if [ "$START" = "yes" ]
+	then
+		echo -n "Starting $DESC: $NAME"
+		mkdir -p -m 755 /opt/var/run/ircd
+#		/opt/bin/coreutils-chown irc:irc /opt/var/run/ircd
+		/opt/sbin/start-stop-daemon-start-stop-daemon --start --quiet \
+			-u irc -c irc --exec $DAEMON -- -pidfile /opt/var/run/ircd/$NAME.pid \
+			> /dev/null
+		echo "."
+	fi
+	;;
+  stop)
+	echo -n "Stopping $DESC: $NAME"
+	/opt/sbin/start-stop-daemon-start-stop-daemon --oknodo --stop --quiet \
+	--pidfile /opt/var/run/ircd/$NAME.pid \
+	--signal 15 --exec $DAEMON -- -pidfile /opt/var/run/ircd/$NAME.pid
+	echo "."
+	;;
+  reload)
+	if [ "$START" = "yes" ]
+	then
+	  	if [ -f "/opt/var/run/ircd/$NAME.pid" ]; then
+	  	  echo -n "Reloading configuration files for $NAME..."
+		  /opt/bin/coreutils-kill -HUP `cat /opt/var/run/ircd/$NAME.pid`
+		  echo "done."
+		else
+		  echo "Not reloading configuration files for $NAME - not running!"
+		fi
+	fi
+	;;
+  restart|force-reload)
+	if [ "$START" = "yes" ]
+	then
+		echo -n "Restarting $DESC: $NAME"
+		if [ -f "/opt/var/run/ircd/$NAME.pid" ]; then
+		  /opt/sbin/start-stop-daemon-start-stop-daemon --stop --quiet --pidfile \
+			/opt/var/run/ircd/$NAME.pid --signal 15 \
+			--exec $DAEMON -- -pidfile /opt/var/run/ircd/$NAME.pid
+		  sleep 1
+		fi
+		mkdir -p -m 755 /opt/var/run/ircd
+#		/opt/bin/coreutils-chown irc:irc /opt/var/run/ircd
+		/opt/sbin/start-stop-daemon-start-stop-daemon --start --quiet \
+		  -u irc -c irc --exec $DAEMON -- -pidfile /opt/var/run/ircd/$NAME.pid \
+		> /dev/null
+		echo "."
+	fi
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart|reload|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

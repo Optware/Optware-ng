@@ -111,14 +111,15 @@ libdvb-source: $(DL_DIR)/$(LIBDVB_SOURCE) $(DL_DIR)/$(LIBDVB_HEADERS_SOURCE) $(L
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBDVB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVB_SOURCE) $(DL_DIR)/$(LIBDVB_HEADERS_SOURCE) $(LIBDVB_PATCHES)
+$(LIBDVB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVB_SOURCE) $(DL_DIR)/$(LIBDVB_HEADERS_SOURCE) $(LIBDVB_PATCHES) make/libdvb.mk
 #	$(MAKE) dvb-kernel-stage
-	rm -rf $(BUILD_DIR)/$(LIBDVB_DIR) $(LIBDVB_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBDVB_DIR) $(@D)
 	$(LIBDVB_UNZIP) $(DL_DIR)/$(LIBDVB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	$(LIBDVB_UNZIP) $(DL_DIR)/$(LIBDVB_HEADERS_SOURCE) | tar -C $(BUILD_DIR)/$(LIBDVB_DIR) -xvf -
 	cat $(LIBDVB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBDVB_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBDVB_DIR) $(LIBDVB_BUILD_DIR)
-	touch $(LIBDVB_BUILD_DIR)/.configured
+	mv $(BUILD_DIR)/$(LIBDVB_DIR) $(@D)
+	sed -i -e '1 i #include <string.h>' $(@D)/sample_progs/cam_menu.hh
+	touch $@
 
 libdvb-unpack: $(LIBDVB_BUILD_DIR)/.configured
 
@@ -126,13 +127,13 @@ libdvb-unpack: $(LIBDVB_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBDVB_BUILD_DIR)/.built: $(LIBDVB_BUILD_DIR)/.configured
-	rm -f $(LIBDVB_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBDVB_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		INCLUDES="$(STAGING_CPPFLAGS) $(LIBDVB_CPPFLAGS)" \
 		LIBS="$(STAGING_LDFLAGS) $(LIBDVB_LDFLAGS) -L../ -ldvbmpegtools" \
 		PREFIX=/opt
-	touch $(LIBDVB_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,13 +144,13 @@ libdvb: $(LIBDVB_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBDVB_BUILD_DIR)/.staged: $(LIBDVB_BUILD_DIR)/.built
-	rm -f $(LIBDVB_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBDVB_BUILD_DIR) DESTDIR=$(STAGING_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		INCLUDES="$(STAGING_CPPFLAGS) $(LIBDVB_CPPFLAGS)" \
 		LIBS="$(STAGING_LDFLAGS) $(LIBDVB_LDFLAGS) -L../ -ldvbmpegtools" \
 		PREFIX=/opt install
-	touch $(LIBDVB_BUILD_DIR)/.staged
+	touch $@
 
 libdvb-stage: $(LIBDVB_BUILD_DIR)/.staged
 
@@ -158,7 +159,7 @@ libdvb-stage: $(LIBDVB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdvb
 #
 $(LIBDVB_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBDVB_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libdvb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -212,3 +213,9 @@ libdvb-clean:
 #
 libdvb-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBDVB_DIR) $(LIBDVB_BUILD_DIR) $(LIBDVB_IPK_DIR) $(LIBDVB_IPK)
+#
+#
+# Some sanity check for the package.
+#
+libdvb-check: $(LIBDVB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

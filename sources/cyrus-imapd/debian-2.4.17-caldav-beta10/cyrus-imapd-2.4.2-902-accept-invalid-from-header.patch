@@ -1,0 +1,58 @@
+From 8ab849423b250c0572e1786a64fcb3924a6b747e Mon Sep 17 00:00:00 2001
+From: Jeroen van Meeuwen (Kolab Systems) <vanmeeuwen@kolabsys.com>
+Date: Tue, 3 Aug 2010 10:13:36 +0200
+Subject: [PATCH 08/13] Accept invalid From: header in email
+
+This stops Cyrus from ruining everything all by itself; Your MTA is
+the point where the validity of headers should be checked. For more
+information on such and so forth, see (amongst others):
+
+    http://www.postfix.org/header_checks.5.html
+
+If one chooses to allow slightly invalid headers in the MTA, then
+Cyrus should not raise problems.
+---
+ imap/message.c |   18 ++++++++++++++++--
+ 1 files changed, 16 insertions(+), 2 deletions(-)
+
+--- cyrus-imapd-2.4.orig/imap/message.c
++++ cyrus-imapd-2.4/imap/message.c
+@@ -173,6 +173,8 @@ int allow_null;
+     int reject8bit = config_getswitch(IMAPOPT_REJECT8BIT);
+     int munge8bit = config_getswitch(IMAPOPT_MUNGE8BIT);
+     int inheader = 1, blankline = 1;
++    char is_from;
++    static const char * from_header = "From ";
+ 
+     while (size) {
+ 	n = prot_read(from, buf, size > 4096 ? 4096 : size);
+@@ -249,11 +251,24 @@ int allow_null;
+ 	/* Check for valid header name */
+ 	if (sawnl && buf[0] != ' ' && buf[0] != '\t') {
+ 	    if (buf[0] == ':') return IMAP_MESSAGE_BADHEADER;
+-      if (strstr(buf, "From ") != buf)
+-	    for (p = (unsigned char *)buf; *p != ':'; p++) {
+-		if (*p <= ' ') return IMAP_MESSAGE_BADHEADER;
+-	    }
+-	}
++            p = (unsigned char *) buf;
++            if (*p == '>') p++;
++
++            if (*p == from_header[0])
++                is_from = 0;
++            else
++                is_from = -1;
++
++            for (; *p != ':' && is_from < 5; p++) {
++                if (is_from > 0 && *p != from_header[is_from])
++                    is_from = -1;
++
++                if (is_from >= 0)
++                    is_from++;
++                else
++                    if (*p <= ' ') return IMAP_MESSAGE_BADHEADER;
++            }
++        }
+ 
+ 	/* Used to be some 8bit checks here but those were moved above so that 
+ 	   we could do something other than refuse the message.

@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA_VERSION ?= 3.2.15
-SAMBA_IPK_VERSION ?= 5
+SAMBA_IPK_VERSION ?= 6
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
@@ -32,6 +32,9 @@ SAMBA_PRIORITY=optional
 SAMBA_DEPENDS=popt, readline
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA_DEPENDS +=, openldap-libs
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+SAMBA_DEPENDS+=, libiconv
 endif
 ifeq (glibc, $(LIBC_STYLE))
 SAMBA_DEPENDS +=, gconv-modules
@@ -66,6 +69,13 @@ SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/0001-s3-smbclient-Fix-bug-6606-reported-as-67
 SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/0002-Fix-bug-6776-Running-overlapping-Byte-Lock-test-wi.patch   
 SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/samba-3.2-CVE-2012-0870.patch
 SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/samba-3.2.15-CVE-2012-1182.patch
+SAMBA_PATCHES+=$(SAMBA_SOURCE_DIR)/samba-3.2.cups-1.6+.patch
+
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+SAMBA_LIBICONV_DIR=$(STAGING_PREFIX)
+else
+SAMBA_LIBICONV_DIR=$(shell cd $(TARGET_INCDIR)/..; pwd)
+endif
 
 #
 # If the compilation of the package requires additional
@@ -199,6 +209,9 @@ $(SAMBA_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	$(MAKE) cups-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(@D)
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -210,6 +223,7 @@ endif
 ifeq ($(OPTWARE_TARGET), $(filter ddwrt oleg openwrt-ixp4xx, $(OPTWARE_TARGET)))
 	sed -i -e 's/^static size_t strl/size_t strl/' $(@D)/source/client/mount.cifs.c
 endif
+	sed -i -e '/AC_PATH_PROG(CUPS_CONFIG, cups-config)/s|.*|CUPS_CONFIG=$(STAGING_PREFIX)/bin/cups-config|' $(@D)/source/configure.in
 	(cd $(@D)/source; ./autogen.sh )
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -234,6 +248,7 @@ endif
 		--oldincludedir=$(SAMBA_INCLUDE_DIR) \
 		--infodir=$(SAMBA_INFO_DIR) \
 		--mandir=$(SAMBA_MAN_DIR) \
+		--enable-cups \
 		--disable-pie \
 		--with-privatedir=$(SAMBA_SYSCONF_DIR) \
 		--with-lockdir=$(SAMBA_LOCALSTATE_DIR) \
@@ -245,12 +260,17 @@ endif
 		--with-mandir=$(SAMBA_MAN_DIR) \
 		--with-smbmount \
 		--with-quotas \
-		--with-krb5=no \
+		--without-krb5 \
+		--without-ads \
+		--with-libiconv=$(SAMBA_LIBICONV_DIR) \
 		$(SAMBA_CONFIG_ARGS) \
 		--disable-nls \
 	)
+#	Make sure staged headers (like memcache.h) don't come before samba's internal ones and break things up
+	sed -i -e 's|^CFLAGS=|CFLAGS= -I$(@D)/source/include |' $(@D)/Makefile
 #	Remove Kerberos libs produced by broken configure
-	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' \
+#	No need for this anymore: --without-ads option takes care of this
+#	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' \
 	 -e 's/-lgssapi_krb5\|-lkrb5\|-lk5crypto\|-lcom_err\|-lgnutls//g' \
 		$(@D)/Makefile
 ### additional codepages

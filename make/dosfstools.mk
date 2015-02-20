@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DOSFSTOOLS_SITE=http://www.daniel-baumann.ch/software/dosfstools
+DOSFSTOOLS_SITE=http://daniel-baumann.ch/files/software/dosfstools
 DOSFSTOOLS_VERSION=3.0.9
 DOSFSTOOLS_SOURCE=dosfstools-$(DOSFSTOOLS_VERSION).tar.bz2
 DOSFSTOOLS_DIR=dosfstools-$(DOSFSTOOLS_VERSION)

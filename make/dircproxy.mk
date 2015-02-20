@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DIRCPROXY_SITE=http://dircproxy.securiweb.net/pub/1.1
+DIRCPROXY_SITE=https://dircproxy.googlecode.com/files
 DIRCPROXY_VERSION=1.1.0
 DIRCPROXY_SOURCE=dircproxy-$(DIRCPROXY_VERSION).tar.gz
 DIRCPROXY_DIR=dircproxy-$(DIRCPROXY_VERSION)

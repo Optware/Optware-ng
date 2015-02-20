@@ -26,16 +26,16 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBGC_SITE=http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source
-LIBGC_VERSION=6.8
-LIBGC_SOURCE=gc$(LIBGC_VERSION).tar.gz
-LIBGC_DIR=gc$(LIBGC_VERSION)
+LIBGC_SITE=https://launchpad.net/libgc/main/$(LIBGC_VERSION)/+download
+LIBGC_VERSION=7.4.0
+LIBGC_SOURCE=gc-$(LIBGC_VERSION).tar.gz
+LIBGC_DIR=gc-$(LIBGC_VERSION)
 LIBGC_UNZIP=zcat
 LIBGC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBGC_DESCRIPTION=The Boehm-Demers-Weiser conservative garbage collector can be used as a garbage collecting replacement for C malloc or C++ new.
 LIBGC_SECTION=misc
 LIBGC_PRIORITY=optional
-LIBGC_DEPENDS=
+LIBGC_DEPENDS=libatomic-ops
 LIBGC_CONFLICTS=
 
 #
@@ -54,7 +54,7 @@ LIBGC_IPK_VERSION=1
 ifneq ($(LIBC_STYLE), uclibc)
 LIBGC_PATCHES=
 else
-LIBGC_PATCHES=$(LIBGC_SOURCE_DIR)/backtrace.patch
+LIBGC_PATCHES=#$(LIBGC_SOURCE_DIR)/backtrace.patch
 endif
 
 #
@@ -62,7 +62,10 @@ endif
 # compilation or linking flags, then list them here.
 #
 LIBGC_CPPFLAGS=
-LIBGC_LDFLAGS=
+LIBGC_LDFLAGS=-pthread
+ifeq ($(LIBC_STYLE),uclibc)
+LIBGC_CPPFLAGS+= -DNO_PTHREAD_GETATTR_NP
+endif
 
 #
 # LIBGC_BUILD_DIR is the directory in which the build is done.
@@ -108,7 +111,7 @@ libgc-source: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES) make/libgc.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libatomic-ops-stage
 	rm -rf $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR)
 	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGC_PATCHES)" ; \
@@ -121,6 +124,8 @@ $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES) make/
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGC_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -218,3 +223,9 @@ libgc-clean:
 #
 libgc-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR) $(LIBGC_IPK_DIR) $(LIBGC_IPK)
+
+#
+# Some sanity check for the package.
+#
+libgc-check: $(LIBGC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

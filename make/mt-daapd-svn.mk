@@ -13,14 +13,20 @@ MT-DAAPD-SVN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MT-DAAPD-SVN_DESCRIPTION=A multi-threaded DAAP server for Linux and other POSIX type systems. Allows a Linux box to share audio files with iTunes users on Windows or Mac.
 MT-DAAPD-SVN_SECTION=net
 MT-DAAPD-SVN_PRIORITY=optional
-MT-DAAPD-SVN_DEPENDS=ffmpeg, flac, libid3tag, libogg, libvorbis, sqlite, zlib
+MT-DAAPD-SVN_DEPENDS=flac, libid3tag, libogg, libvorbis, sqlite, zlib
+ifneq ($(FFMPEG_OLD), yes)
+MT-DAAPD-SVN_DEPENDS+=, ffmpeg 
+endif
 MT-DAAPD-SVN_SUGGESTS=ivorbis-tools
 MT-DAAPD-SVN_CONFLICTS=mt-daapd
 
-MT-DAAPD-SVN_IPK_VERSION=1
+MT-DAAPD-SVN_IPK_VERSION=2
 
 MT-DAAPD-SVN_CPPFLAGS=
 MT-DAAPD-SVN_LDFLAGS=
+
+MT-DAAPD-SVN_OLD_FFMPEG_CPPFLAGS=
+MT-DAAPD-SVN_OLD_FFMPEG_LDFLAGS=
 
 MT-DAAPD-SVN_BUILD_DIR=$(BUILD_DIR)/mt-daapd-svn
 MT-DAAPD-SVN_SOURCE_DIR=$(SOURCE_DIR)/mt-daapd-svn
@@ -40,10 +46,20 @@ $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE):
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 mt-daapd-svn-source: $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE)
-
-$(MT-DAAPD-SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE) # make/mt-daapd-svn.mk
+ifneq ($(FFMPEG_OLD), yes)
+$(MT-DAAPD-SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE) $(DL_DIR)/$(FFMPEG_SOURCE_OLD) make/mt-daapd-svn.mk
+else
+$(MT-DAAPD-SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE) make/mt-daapd-svn.mk
+endif
 	$(MAKE) sqlite-stage libid3tag-stage zlib-stage
-	$(MAKE) ffmpeg-stage flac-stage libogg-stage libvorbis-stage
+ifeq ($(FFMPEG_OLD), yes)
+	$(MAKE) ffmpeg-stage
+else
+#	mt-daapd-svn needs old ffmpeg
+#	Following command builds and stages headers and static ffmpeg libs to $(STAGING_PREFIX)/ffmpeg_old
+	$(MAKE) ffmpeg-old-stage
+endif
+	$(MAKE) flac-stage libogg-stage libvorbis-stage
 	rm -rf $(BUILD_DIR)/$(MT-DAAPD-SVN_DIR) $(@D)
 	$(MT-DAAPD-SVN_UNZIP) $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MT-DAAPD-SVN_PATCHES)"; then \
@@ -52,8 +68,9 @@ $(MT-DAAPD-SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE) # make/m
 	mv $(BUILD_DIR)/$(MT-DAAPD-SVN_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(MT-DAAPD-SVN_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(MT-DAAPD-SVN_LDFLAGS)" \
+		CPPFLAGS="-I$(STAGING_PREFIX)/ffmpeg_old/include -I$(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg \
+			$(STAGING_CPPFLAGS) $(MT-DAAPD-SVN_CPPFLAGS)" \
+		LDFLAGS="-L$(STAGING_PREFIX)/ffmpeg_old/lib $(STAGING_LDFLAGS) $(MT-DAAPD-SVN_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_func_setpgrp_void=yes \
 		./configure \

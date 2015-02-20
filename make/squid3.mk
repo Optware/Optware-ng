@@ -144,6 +144,7 @@ $(SQUID3_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SQUID3_SOURCE) mak
 		./configure \
 		--prefix=/opt \
 	)
+	find $(@D) -type f -name "Makefile" -exec sed -i -e 's/ -Werror[$$ ]/ /' {} \;
 	$(MAKE) -C $(@D)
 	touch $@
 #
@@ -202,6 +203,7 @@ endif
 		--enable-basic-auth-helpers="NCSA" \
 		--disable-nls \
 	)
+	find $(@D) -type f -name "Makefile" -exec sed -i -e 's/ -Werror[$$ ]/ /' {} \;
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i -e 's|./cf_gen |$(SQUID3_HOST_BUILD_DIR)/src/cf_gen |g' $(@D)/src/Makefile
 endif

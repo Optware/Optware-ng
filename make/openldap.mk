@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 OPENLDAP_SITE=ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release
-OPENLDAP_VERSION=2.3.43
+OPENLDAP_VERSION=2.4.40
 OPENLDAP_SOURCE=openldap-$(OPENLDAP_VERSION).tgz
 OPENLDAP_DIR=openldap-$(OPENLDAP_VERSION)
 OPENLDAP_UNZIP=zcat
@@ -34,7 +34,7 @@ OPENLDAP_CONFLICTS=
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=2
+OPENLDAP_IPK_VERSION=1
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files

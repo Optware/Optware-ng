@@ -12,10 +12,10 @@
 # LIBGD_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-LIBGD_SITE=http://www.libgd.org/releases
-LIBGD_VERSION=2.0.35
-LIBGD_SOURCE=gd-$(LIBGD_VERSION).tar.bz2
-LIBGD_DIR=gd-$(LIBGD_VERSION)
+LIBGD_SITE=https://bitbucket.org/libgd/gd-libgd/downloads
+LIBGD_VERSION=2.1.0
+LIBGD_SOURCE=libgd-$(LIBGD_VERSION).tar.bz2
+LIBGD_DIR=libgd-$(LIBGD_VERSION)
 LIBGD_UNZIP=bzcat
 LIBGD_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 LIBGD_DESCRIPTION=An ANSI C library for the dynamic creation of images
@@ -26,7 +26,7 @@ LIBGD_DEPENDS=libpng, libjpeg, freetype, fontconfig
 #
 # LIBGD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGD_IPK_VERSION=6
+LIBGD_IPK_VERSION=1
 
 #
 # LIBGD_LOCALES defines which locales get installed
@@ -112,8 +112,10 @@ $(LIBGD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGD_SOURCE) $(LIBGD_PATCHES) make/
 	$(LIBGD_UNZIP) $(DL_DIR)/$(LIBGD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LIBGD_DIR) $(LIBGD_BUILD_DIR)
 	sed -i -e 's|libpng12-config --|$(STAGING_PREFIX)/bin/&|' \
-	       -e 's|libpng-config --|$(STAGING_PREFIX)/bin/&|' $(@D)/configure.ac
+	       -e 's|libpng-config --|$(STAGING_PREFIX)/bin/&|' \
+	       -e 's|AM_INIT_AUTOMAKE(\[|AM_INIT_AUTOMAKE(\[subdir-objects |' $(@D)/configure.ac
 	autoreconf -vif $(@D)
+	sed -i -e 's/ceill/ceil/g' $(@D)/src/gd_bmp.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGD_CPPFLAGS)" \

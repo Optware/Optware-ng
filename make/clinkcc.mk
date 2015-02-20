@@ -55,16 +55,16 @@ CLINKCC_IPK_VERSION=1
 # CLINKCC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CLINKCC_PATCHES=$(CLINKCC_SOURCE_DIR)/configure.patch
+CLINKCC_PATCHES=$(CLINKCC_SOURCE_DIR)/missing-declarations.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 CLINKCC_CPPFLAGS=
-CLINKCC_LDFLAGS=-lxerces-c 
+CLINKCC_LDFLAGS=-lxerces-c
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-	CLINKCC_LDFLAGS+=-liconv 
+CLINKCC_LDFLAGS += -liconv 
 endif
 
 #
@@ -125,14 +125,12 @@ endif
 	$(CLINKCC_UNZIP) $(DL_DIR)/$(CLINKCC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLINKCC_PATCHES)" ; \
 		then cat $(CLINKCC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CLINKCC_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(CLINKCC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CLINKCC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CLINKCC_DIR) $(@D) ; \
 	fi
-ifeq (glibc, $(LIBC_STYLE))
 	sed -i -e "/size_t ret = iconv(/s|, \&inbuf,|, (char \*\*)\&inbuf,|" $(@D)/src/cybergarage/xml/XML.cpp
-endif
 	sed -i -e 's/ServiceData::setService/setService/' $(@D)/include/cybergarage/upnp/xml/ServiceData.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -174,7 +172,7 @@ clinkcc-unpack: $(CLINKCC_BUILD_DIR)/.configured
 #
 $(CLINKCC_BUILD_DIR)/.built: $(CLINKCC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) libclink_so_LIBADD=-lgcc
 	chmod +x $(@D)/config/install-sh
 	touch $@
 

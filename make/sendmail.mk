@@ -20,7 +20,7 @@ SENDMAIL_CONFLICTS=postfix
 #
 # SENDMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-SENDMAIL_IPK_VERSION=2
+SENDMAIL_IPK_VERSION=3
 
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files
@@ -105,6 +105,7 @@ $(SENDMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(SENDMAIL_SOURCE) $(SENDMAIL_PATCH
 		then mv $(BUILD_DIR)/$(SENDMAIL_DIR) $(SENDMAIL_BUILD_DIR) ; \
 	fi
 	sed -i -e '/APPENDDEF/s/-ldb/&-$(LIBDB_LIB_VERSION)/' $(@D)/devtools/Site/site.config.m4
+	sed -i -e 's|".*/spool/mail"|"/opt/var/spool/mail"|' $(@D)/include/*/*.h
 	touch $(SENDMAIL_BUILD_DIR)/.configured
 
 sendmail-unpack: $(SENDMAIL_BUILD_DIR)/.configured
@@ -171,8 +172,10 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 	install -d $(SENDMAIL_IPK_DIR)/opt/etc/mail
 	install -d $(SENDMAIL_IPK_DIR)/opt/bin
 	install -d $(SENDMAIL_IPK_DIR)/opt/sbin
-	install -d $(SENDMAIL_IPK_DIR)/opt/man/man{1,5,8}
+	install -d $(SENDMAIL_IPK_DIR)/opt/share
+	install -d $(SENDMAIL_IPK_DIR)/opt/man/man1 $(SENDMAIL_IPK_DIR)/opt/man/man5 $(SENDMAIL_IPK_DIR)/opt/man/man8
 	install -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mqueue
+	install -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mail
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR) DESTDIR=$(SENDMAIL_IPK_DIR) \
 		UBINGRP=$(LOGNAME) UBINOWN=$(LOGNAME) \
 		SBINGRP=$(LOGNAME) SBINOWN=$(LOGNAME) \
@@ -183,11 +186,12 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 		MSPQOWN=$(LOGNAME) \
 		MAILDIR=/opt/etc/mail \
 		install
+	mv -f $(SENDMAIL_IPK_DIR)/opt/man $(SENDMAIL_IPK_DIR)/opt/share/
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR)/cf/cf DESTDIR=$(SENDMAIL_IPK_DIR) \
 		CFGRP=$(LOGNAME)   CFOWN=$(LOGNAME) \
 		MAILDIR=/opt/etc/mail \
 		CF=generic-linux install-sendmail-cf
-	for i in $(SENDMAIL_IPK_DIR)/opt/{bin/vacation,sbin/*}; do chmod u+w $$i; $(STRIP_COMMAND) $$i; chmod a-w $$i; done
+	for i in $(SENDMAIL_IPK_DIR)/opt/sbin/* $(SENDMAIL_IPK_DIR)/opt/bin/vacation; do chmod u+w $$i; $(STRIP_COMMAND) $$i; chmod a-w $$i; done
 	( umask 022;\
 	echo "# local-host-names - include all aliases for your machine here."\
         > $(SENDMAIL_IPK_DIR)/opt/etc/mail/local-host-names;\
@@ -202,7 +206,7 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 	install -m 755 $(SENDMAIL_SOURCE_DIR)/postinst $(SENDMAIL_IPK_DIR)/CONTROL/postinst
 	echo $(SENDMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(SENDMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SENDMAIL_IPK_DIR)
-	$(WHAT_TO_DO_WITH_IPK_DIR) $(SENDMAIL_IPK_DIR)
+#	$(WHAT_TO_DO_WITH_IPK_DIR) $(SENDMAIL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

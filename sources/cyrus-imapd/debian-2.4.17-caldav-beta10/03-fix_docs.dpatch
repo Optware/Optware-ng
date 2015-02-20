@@ -1,0 +1,58 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+_# 03-fix_docs.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix FAQ and virtual domains installation docs
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/doc/faq.html
++++ cyrus-imapd-2.4/doc/faq.html
+@@ -169,7 +169,7 @@ Dec  6 12:58:57 mail3.andrew.cmu.edu ima
+ </pre>
+ 
+ <p>Make sure that <tt>saslauthd</tt> is running and that the cyrus
+-user can access the unix domain socket (defaults to <tt>/var/run/mux</tt>).
++user can access the unix domain socket (defaults to <tt>/var/run/saslauthd/mux</tt>).
+ 
+ </dd>
+ 
+--- cyrus-imapd-2.4.orig/doc/install-virtdomains.html
++++ cyrus-imapd-2.4/doc/install-virtdomains.html
+@@ -99,6 +99,10 @@ then set <tt>defaultdomain</tt> to 'xxx.
+ to the <tt>defaultdomain</tt>.  See <a href=#admins>Administrators</a>
+ below for further discussion.
+ 
++<p><b>Note:</b> Users in the <tt>defaultdomain</tt> must <i>not</i>
++log in using the <tt>user@domain</tt> cross-realm login syntax. The
++<tt>user@domain</tt> type specification only works for them in LMTP.
++
+ <p>Here is a sample <tt>imapd.conf</tt> with a minimal set of configuration
+ options.</p>
+ 
+--- cyrus-imapd-2.4.orig/lib/imapoptions
++++ cyrus-imapd-2.4/lib/imapoptions
+@@ -307,7 +307,11 @@ Blank lines and lines beginning with ``#
+    mailbox that does not have a parent mailbox. */
+ 
+ { "defaultdomain", NULL, STRING }
+-/* The default domain for virtual domain support */
++/* The default domain for virtual domain support. Note that this domain
++   is stripped from the email-address transmitted using LMTP, but it
++   is not stripped from usernames at login-time. For imapd/pop3d, 
++   "user" and "user@defaultdomain" specify two different users.
++   Please check install-virtdomains.html for details. */
+ 
+ { "defaultpartition", NULL, STRING }
+ /* The partition name used by default for new mailboxes.  If not
+@@ -751,7 +755,10 @@ Blank lines and lines beginning with ``#
+ /* The list of remote realms whose users may authenticate using cross-realm
+    authentication identifiers.  Separate each realm name by a space.  (A
+    cross-realm identity is considered any identity returned by SASL
+-   with an "@" in it.). */
++   with an "@" in it.) Note that to support multiple virtual domains
++   on the same interface/IP, you need to list them all as loginreals.
++   If you don't list them here, your users probably won't be able to
++   log in. */
+ 
+ { "loginuseacl", 0, SWITCH }
+ /* If enabled, any authentication identity which has \fBa\fR rights on a

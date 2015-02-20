@@ -10,13 +10,14 @@
 # XTRANS_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XTRANS_SITE=http://freedesktop.org
-XTRANS_SOURCE=# none - available from CVS only
-XTRANS_VERSION=0.1+cvs20050130
-XTRANS_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
-XTRANS_DIR=xtrans
-XTRANS_CVS_OPTS=-D20050130
-XTRANS_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+#
+
+XTRANS_SITE=http://xorg.freedesktop.org/releases/individual/lib
+XTRANS_VERSION=1.3.5
+XTRANS_FULL_VERSION=release-$(XTRANS_VERSION)
+XTRANS_DIR=xtrans-$(XTRANS_VERSION)
+XTRANS_SOURCE=xtrans-$(XTRANS_VERSION).tar.gz
+XTRANS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XTRANS_DESCRIPTION=X transport headers
 XTRANS_SECTION=lib
 XTRANS_PRIORITY=optional
@@ -24,7 +25,7 @@ XTRANS_PRIORITY=optional
 #
 # XTRANS_IPK_VERSION should be incremented when the ipk changes.
 #
-XTRANS_IPK_VERSION=2
+XTRANS_IPK_VERSION=1
 
 #
 # XTRANS_CONFFILES should be a list of user-editable files
@@ -34,7 +35,7 @@ XTRANS_CONFFILES=
 # XTRANS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XTRANS_PATCHES=
+XTRANS_PATCHES=$(XTRANS_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -54,8 +55,8 @@ XTRANS_LDFLAGS=
 #
 XTRANS_BUILD_DIR=$(BUILD_DIR)/xtrans
 XTRANS_SOURCE_DIR=$(SOURCE_DIR)/xtrans
-XTRANS_IPK_DIR=$(BUILD_DIR)/xtrans-$(XTRANS_VERSION)-ipk
-XTRANS_IPK=$(BUILD_DIR)/xtrans_$(XTRANS_VERSION)-$(XTRANS_IPK_VERSION)_$(TARGET_ARCH).ipk
+XTRANS_IPK_DIR=$(BUILD_DIR)/xtrans-$(XTRANS_FULL_VERSION)-ipk
+XTRANS_IPK=$(BUILD_DIR)/xtrans_$(XTRANS_FULL_VERSION)-$(XTRANS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -67,24 +68,20 @@ $(XTRANS_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XTRANS_PRIORITY)" >>$@
 	@echo "Section: $(XTRANS_SECTION)" >>$@
-	@echo "Version: $(XTRANS_VERSION)-$(XTRANS_IPK_VERSION)" >>$@
+	@echo "Version: $(XTRANS_FULL_VERSION)-$(XTRANS_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(XTRANS_MAINTAINER)" >>$@
 	@echo "Source: $(XTRANS_SITE)/$(XTRANS_SOURCE)" >>$@
 	@echo "Description: $(XTRANS_DESCRIPTION)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XTRANS_DIR) && \
-		cvs -d $(XTRANS_REPOSITORY) -z3 co $(XTRANS_CVS_OPTS) $(XTRANS_DIR) && \
-		tar -czf $@ $(XTRANS_DIR) && \
-		rm -rf $(XTRANS_DIR) \
-	)
+$(DL_DIR)/$(XTRANS_SOURCE):
+	$(WGET) -P $(@D) $(XTRANS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-xtrans-source: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz $(XTRANS_PATCHES)
+xtrans-source: $(DL_DIR)/$(XTRANS_SOURCE) $(XTRANS_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,18 +93,17 @@ xtrans-source: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz $(XTRANS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XTRANS_BUILD_DIR)/.configured: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz \
-		$(XTRANS_PATCHES) make/xtrans.mk
+$(XTRANS_BUILD_DIR)/.configured: $(DL_DIR)/$(XTRANS_SOURCE) $(XTRANS_PATCHES) make/xtrans.mk
 	rm -rf $(BUILD_DIR)/$(XTRANS_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XTRANS_SOURCE)
 	if test -n "$(XTRANS_PATCHES)" ; \
 		then cat $(XTRANS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(XTRANS_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XTRANS_DIR)" != "$(XTRANS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XTRANS_DIR) $(XTRANS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XTRANS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XTRANS_DIR) $(@D) ; \
 	fi
-	(cd $(XTRANS_BUILD_DIR); \
+	(cd $(@D); chmod +x autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XTRANS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XTRANS_LDFLAGS)" \

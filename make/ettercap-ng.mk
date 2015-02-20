@@ -36,13 +36,16 @@ ETTERCAP-NG_DESCRIPTION=Ettercap is a suite for man in the middle attacks on LAN
 ETTERCAP-NG_SECTION=net
 ETTERCAP-NG_PRIORITY=optional
 ETTERCAP-NG_DEPENDS=libtool, libpcap, ncurses, pcre, zlib
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+ETTERCAP-NG_DEPENDS+=, libiconv
+endif
 #ETTERCAP-NG_SUGGESTS=
 #ETTERCAP-NG_CONFLICTS=
 
 #
 # ETTERCAP-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-ETTERCAP-NG_IPK_VERSION=1
+ETTERCAP-NG_IPK_VERSION=2
 
 #
 # ETTERCAP-NG_CONFFILES should be a list of user-editable files
@@ -60,6 +63,9 @@ ETTERCAP-NG_PATCHES=$(ETTERCAP-NG_SOURCE_DIR)/configure.in.patch
 #
 ETTERCAP-NG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses -I$(STAGING_INCLUDE_DIR)/libnet11
 ETTERCAP-NG_LDFLAGS=-L$(STAGING_LIB_DIR)/libnet11
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+ETTERCAP-NG_LDFLAGS+= -liconv
+endif
 
 #
 # ETTERCAP-NG_BUILD_DIR is the directory in which the build is done.
@@ -113,6 +119,9 @@ ettercap-ng-source: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP-NG_PATCHES)
 $(ETTERCAP-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP-NG_PATCHES) make/ettercap-ng.mk
 	$(MAKE) libnet11-stage libpcap-stage openssl-stage ncurses-stage
 	$(MAKE) libtool-stage pcre-stage zlib-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(ETTERCAP-NG_DIR) $(@D)
 	$(ETTERCAP-NG_UNZIP) $(DL_DIR)/$(ETTERCAP-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ETTERCAP-NG_PATCHES)" ; \
@@ -122,7 +131,15 @@ $(ETTERCAP-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP-NG_SOURCE) $(ETTERCAP
 	if test "$(BUILD_DIR)/$(ETTERCAP-NG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ETTERCAP-NG_DIR) $(@D) ; \
 	fi
-	-ACLOCAL="aclocal -I$(STAGING_PREFIX)/share/aclocal" autoreconf -vif $(@D)
+	sed -i -e 's/LTDL_SHLIB_EXT//g' $(@D)/src/ec_plugins.c
+	sed -i -e 's/^#define PLUGIN_PATTERN .*/#define PLUGIN_PATTERN   "ec_*.so"/' $(@D)/include/ec_plugins.h
+	(cd `aclocal --print-ac-dir`; \
+		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
+			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
+	)
+	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
+	-autoreconf -vif $(@D)
+	sed -i -e 's/-lpcap/-lusb-1.0 -lpcap/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(ETTERCAP-NG_CPPFLAGS) $(STAGING_CPPFLAGS) $(ETTERCAP-NG_CPPFLAGS)" \

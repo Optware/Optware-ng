@@ -5,9 +5,9 @@
 ###########################################################
 
 PERL-NET-SSLEAY_SITE=http://search.cpan.org/CPAN/authors/id/F/FL/FLORA
-PERL-NET-SSLEAY_VERSION=1.30
-PERL-NET-SSLEAY_SOURCE=Net_SSLeay.pm-$(PERL-NET-SSLEAY_VERSION).tar.gz
-PERL-NET-SSLEAY_DIR=Net_SSLeay.pm-$(PERL-NET-SSLEAY_VERSION)
+PERL-NET-SSLEAY_VERSION=1.36
+PERL-NET-SSLEAY_SOURCE=Net-SSLeay-$(PERL-NET-SSLEAY_VERSION).tar.gz
+PERL-NET-SSLEAY_DIR=Net-SSLeay-$(PERL-NET-SSLEAY_VERSION)
 PERL-NET-SSLEAY_UNZIP=zcat
 PERL-NET-SSLEAY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL-NET-SSLEAY_DESCRIPTION=Net_SSLeay - Perl extension for using OpenSSL 
@@ -31,13 +31,13 @@ $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE):
 
 perl-net-ssleay-source: $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) $(PERL-NET-SSLEAY_PATCHES)
 
-$(PERL-NET-SSLEAY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) $(PERL-NET-SSLEAY_PATCHES)
+$(PERL-NET-SSLEAY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) $(PERL-NET-SSLEAY_PATCHES) make/perl-net-ssleay.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) $(PERL-NET-SSLEAY_BUILD_DIR)
 	$(PERL-NET-SSLEAY_UNZIP) $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-NET-SSLEAY_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) $(PERL-NET-SSLEAY_BUILD_DIR)
-	(cd $(PERL-NET-SSLEAY_BUILD_DIR); \
+	(cd $(PERL-NET-SSLEAY_BUILD_DIR); echo 'n'| \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -54,8 +54,13 @@ $(PERL-NET-SSLEAY_BUILD_DIR)/.built: $(PERL-NET-SSLEAY_BUILD_DIR)/.configured
 	rm -f $(PERL-NET-SSLEAY_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-NET-SSLEAY_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LD=$(TARGET_CC) \
+		INC="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \
+		LD_RUN_PATH=/opt/lib \
+		EXTRALIBS="-lssl -lcrypto -lz" \
+		LDLOADLIBS="-lssl -lcrypto -lz" \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-NET-SSLEAY_BUILD_DIR)/.built
@@ -105,3 +110,9 @@ perl-net-ssleay-clean:
 
 perl-net-ssleay-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) $(PERL-NET-SSLEAY_BUILD_DIR) $(PERL-NET-SSLEAY_IPK_DIR) $(PERL-NET-SSLEAY_IPK)
+
+#
+# Some sanity check for the package.
+#
+perl-net-ssleay-check: $(PERL-NET-SSLEAY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

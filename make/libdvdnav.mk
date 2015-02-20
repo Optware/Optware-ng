@@ -20,16 +20,16 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBDVDNAV_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/dvd
-LIBDVDNAV_VERSION=0.1.10
-LIBDVDNAV_SOURCE=libdvdnav-$(LIBDVDNAV_VERSION).tar.gz
+LIBDVDNAV_SITE=http://download.videolan.org/videolan/libdvdnav/$(LIBDVDNAV_VERSION)
+LIBDVDNAV_VERSION=5.0.3
+LIBDVDNAV_SOURCE=libdvdnav-$(LIBDVDNAV_VERSION).tar.bz2
 LIBDVDNAV_DIR=libdvdnav-$(LIBDVDNAV_VERSION)
-LIBDVDNAV_UNZIP=zcat
+LIBDVDNAV_UNZIP=bzcat
 LIBDVDNAV_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBDVDNAV_DESCRIPTION=dvdnav
 LIBDVDNAV_SECTION=multimedia
 LIBDVDNAV_PRIORITY=optional
-LIBDVDNAV_DEPENDS=
+LIBDVDNAV_DEPENDS=libdvdread
 LIBDVDNAV_SUGGESTS=
 LIBDVDNAV_CONFLICTS=
 
@@ -105,7 +105,7 @@ libdvdnav-source: $(DL_DIR)/$(LIBDVDNAV_SOURCE) $(LIBDVDNAV_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBDVDNAV_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVDNAV_SOURCE) $(LIBDVDNAV_PATCHES) make/libdvdnav.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libdvdread-stage
 	rm -rf $(BUILD_DIR)/$(LIBDVDNAV_DIR) $(LIBDVDNAV_BUILD_DIR)
 	$(LIBDVDNAV_UNZIP) $(DL_DIR)/$(LIBDVDNAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDVDNAV_PATCHES)" ; \
@@ -119,6 +119,8 @@ $(LIBDVDNAV_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVDNAV_SOURCE) $(LIBDVDNAV_PA
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBDVDNAV_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBDVDNAV_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

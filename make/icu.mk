@@ -122,12 +122,9 @@ $(ICU_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.mk
 	if test "$(BUILD_DIR)/$(ICU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ICU_DIR) $(@D) ; \
 	fi
-	rm -rf $(STAGING_DIR)/opt/include/unicode
-	rm -rf $(STAGING_DIR)/opt/lib/libicu*
-	rm -rf $(STAGING_DIR)/opt/lib/icu
 	(cd $(@D)/source; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICU_CPPFLAGS)" \
+		CPPFLAGS="$(TARGET_CFLAGS) $(ICU_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ICU_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -137,6 +134,9 @@ $(ICU_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.mk
 		--disable-nls \
 		--disable-static \
 	)
+
+	sed -i -e 's/^#elif$$/#else/' $(@D)/source/layoutex/ParagraphLayout.cpp
+
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -149,7 +149,7 @@ $(ICU_BUILD_DIR)/.built: $(ICU_HOST_BUILD_DIR)/.built $(ICU_BUILD_DIR)/.configur
 	rm -f $@
 	###should exit with "/bin/sh: ../bin/icupkg: cannot execute binary file"
 	-$(MAKE) -C $(@D)/source
-	mkdir $(@D)/source/bin.cross $(@D)/source/data.cross
+	mkdir -p $(@D)/source/bin.cross $(@D)/source/data.cross
 	cp -rf $(@D)/source/bin/* $(@D)/source/bin.cross
 	cp -rf $(@D)/source/data/* $(@D)/source/data.cross
 	cp -rf $(ICU_HOST_BUILD_DIR)/bin/* $(@D)/source/bin
@@ -171,8 +171,7 @@ icu: $(ICU_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ICU_BUILD_DIR)/.staged: $(ICU_BUILD_DIR)/.built
-	rm -f $@
-	cp -f $(HOST_BUILD_DIR)/icu/bin/pkgdata $(@D)/source/bin
+	cp -f $(ICU_HOST_BUILD_DIR)/bin/pkgdata $(@D)/source/bin
 	$(MAKE) -C $(@D)/source DESTDIR=$(STAGING_DIR) install
 	cp -f $(@D)/source/bin.cross/pkgdata $(STAGING_DIR)/opt/bin
 	cp -f $(@D)/source/bin.cross/pkgdata $(@D)/source/bin
@@ -191,6 +190,9 @@ $(ICU_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ICU_SOURCE)
 		./configure \
 		--disable-threads \
 	)
+
+	sed -i -e 's/^#elif$$/#else/' $(@D)/layoutex/ParagraphLayout.cpp
+
 	$(MAKE) -C $(@D)
 	touch $@
 

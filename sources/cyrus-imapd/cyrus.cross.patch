@@ -40,10 +40,9 @@ diff -Nur cyrus-imapd-2.2.10-orig/imtest/Makefile.in cyrus-imapd-2.2.10/imtest/M
  	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/pop3test
  	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/nntptest
  	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/lmtptest
-diff -Nur cyrus-imapd-2.2.10-orig/lib/Makefile.in cyrus-imapd-2.2.10/lib/Makefile.in
---- cyrus-imapd-2.2.10-orig/lib/Makefile.in	2004-05-28 14:03:04.000000000 -0400
-+++ cyrus-imapd-2.2.10/lib/Makefile.in	2005-04-27 03:29:34.980000000 -0400
-@@ -53,6 +53,7 @@
+--- cyrus-imapd-2.3.16/lib/Makefile.in.orig	2009-11-19 23:52:55.000000000 +0200
++++ cyrus-imapd-2.3.16/lib/Makefile.in	2015-02-13 16:19:48.364439382 +0200
+@@ -54,6 +54,7 @@
  VPATH = @srcdir@
  
  CC = @CC@
@@ -51,7 +50,7 @@ diff -Nur cyrus-imapd-2.2.10-orig/lib/Makefile.in cyrus-imapd-2.2.10/lib/Makefil
  
  INSTALL = @INSTALL@
  RANLIB = @RANLIB@
-@@ -63,7 +64,9 @@
+@@ -64,7 +65,9 @@
  
  MAKEDEPEND_CFLAGS = @CFLAGS@
  CFLAGS = @CFLAGS@ @PERL_CCCDLFLAGS@
@@ -61,20 +60,26 @@ diff -Nur cyrus-imapd-2.2.10-orig/lib/Makefile.in cyrus-imapd-2.2.10/lib/Makefil
  
  SHELL = /bin/sh
  MAKEDEPEND = @MAKEDEPEND@
-@@ -149,8 +152,17 @@
+@@ -154,8 +157,23 @@
  #	./mkchartable -m $(srcdir)/charset/unicode.map $(srcdir)/charset/*.t >x-chartables.h
  #	mv x-chartables.h chartables.h
  
--mkchartable: mkchartable.o xmalloc.o assert.o
--	$(CC) $(LDFLAGS) -o mkchartable mkchartable.o xmalloc.o assert.o
-+mkchartable: mkchartable.native.o xmalloc.native.o assert.native.o
-+	$(CC_FOR_BUILD) $(BUILD_LDFLAGS) -o mkchartable mkchartable.native.o xmalloc.native.o assert.native.o
+-mkchartable: mkchartable.o xstrlcpy.o xstrlcat.o xmalloc.o assert.o
+-	$(CC) $(LDFLAGS) -o mkchartable mkchartable.o xstrlcpy.o xstrlcat.o xmalloc.o assert.o
++mkchartable: mkchartable.native.o xstrlcpy.native.o xstrlcat.native.o xmalloc.native.o assert.native.o
++	$(CC_FOR_BUILD) $(BUILD_LDFLAGS) -o mkchartable mkchartable.native.o xstrlcpy.native.o xstrlcat.native.o xmalloc.native.o assert.native.o
 +
 +xmalloc.native.o: xmalloc.c
 +	$(CC_FOR_BUILD) $(BUILD_CFLAGS) -c -o xmalloc.native.o xmalloc.c
 +
 +assert.native.o: assert.c
 +	$(CC_FOR_BUILD) $(BUILD_CFLAGS) -c -o assert.native.o assert.c
++
++xstrlcpy.native.o: xstrlcpy.c
++	$(CC_FOR_BUILD) $(BUILD_CFLAGS) -c -o xstrlcpy.native.o xstrlcpy.c
++
++xstrlcat.native.o: xstrlcat.c
++	$(CC_FOR_BUILD) $(BUILD_CFLAGS) -c -o xstrlcat.native.o xstrlcat.c
 +
 +mkchartable.native.o: mkchartable.c
 +	$(CC_FOR_BUILD) $(BUILD_CFLAGS) -c -o mkchartable.native.o mkchartable.c

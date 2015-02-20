@@ -37,8 +37,8 @@
 # You should change all these variables to suit your package.
 #
 LIBDB_SITE=http://download.oracle.com/berkeley-db
-LIBDB_VERSION=4.2.52
-LIBDB_LIB_VERSION=4.2
+LIBDB_VERSION=5.3.21
+LIBDB_LIB_VERSION=5.3
 LIBDB_SOURCE=db-$(LIBDB_VERSION).tar.gz
 LIBDB_DIR=db-$(LIBDB_VERSION)
 LIBDB_UNZIP=zcat
@@ -52,7 +52,7 @@ LIBDB_CONFLICTS=
 #
 # <FOO>_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDB_IPK_VERSION=3
+LIBDB_IPK_VERSION=1
 
 #
 # <FOO>_PATCHES should list any patches, in the the order in
@@ -111,7 +111,7 @@ libdb-source: $(DL_DIR)/$(LIBDB_SOURCE) $(LIBDB_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBDB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDB_SOURCE) $(LIBDB_PATCHES)
+$(LIBDB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDB_SOURCE) $(LIBDB_PATCHES) make/libdb.mk
 	rm -rf $(BUILD_DIR)/$(LIBDB_DIR) $(LIBDB_BUILD_DIR)
 	$(LIBDB_UNZIP) $(DL_DIR)/$(LIBDB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(LIBDB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBDB_DIR) -p1
@@ -149,6 +149,7 @@ libdb: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
 #
 $(LIBDB_BUILD_DIR)/.staged: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
 	rm -f $@
+	rm -f $(STAGING_LIB_DIR)/libdb-* $(STAGING_LIB_DIR)/libdb.*
 	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix DESTDIR=$(STAGING_DIR) install_setup install_include install_lib
 	rm -f $(STAGING_LIB_DIR)/libdb-$(LIBDB_LIB_VERSION).la
 	touch $@

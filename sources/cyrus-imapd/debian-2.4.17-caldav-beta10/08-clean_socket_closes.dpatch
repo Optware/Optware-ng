@@ -1,0 +1,73 @@
+From: Henrique de Moraes Holschuh <hmh@debian.org>
+Subject: Shutdown and close sockets cleanly
+
+Origin: vendor, Debian Cyrus IMAPd 2.1.4-11 (2002-05-19)
+
+Cleanly shutdown and close sockets, this is supposed to allow for better
+TCP teardown on the remote end, and reduces CLOSE_WAIT time.
+
+This patch was written 8 years ago, it is possible that nowadays nothing
+will benefit from a shutdown() right before close().  The commit log
+from eight years ago mentions that SHUT_RD should be upgraded to
+SHUT_RDWR where possible, but only after verification that this is not
+going to cause problems (e.g. by discarding data still on flight to the
+remote).
+
+Also, it is possible that new daemons and utils in Cyrus 2.2 and 2.3 may
+need similar patches.
+
+--- cyrus-imapd-2.4.orig/imap/fud.c
++++ cyrus-imapd-2.4/imap/fud.c
+@@ -163,6 +163,15 @@ void shut_down(int code)
+     mboxlist_done();
+     closelog();
+     cyrus_done();
++
++    /* be nice to remote */
++    shutdown(0, SHUT_RD);
++    shutdown(1, SHUT_RD);
++    shutdown(2, SHUT_RD);
++    close(0);
++    close(1);
++    close(2);
++
+     exit(code);
+ }
+ 
+--- cyrus-imapd-2.4.orig/imap/imapd.c
++++ cyrus-imapd-2.4/imap/imapd.c
+@@ -1078,6 +1078,10 @@ void shut_down(int code)
+ #ifdef HAVE_SSL
+     tls_shutdown_serverengine();
+ #endif
++    /* shutdown socket nicely */
++    cyrus_close_sock(0);
++    cyrus_close_sock(1);
++    cyrus_close_sock(2);
+ 
+     cyrus_done();
+ 
+--- cyrus-imapd-2.4.orig/imap/lmtpd.c
++++ cyrus-imapd-2.4/imap/lmtpd.c
+@@ -990,6 +990,9 @@ void shut_down(int code)
+ 
+     cyrus_done();
+ 
++    /* shutdown socket nicely */
++    cyrus_reset_stdio();
++
+     exit(code);
+ }
+ 
+--- cyrus-imapd-2.4.orig/imap/pop3d.c
++++ cyrus-imapd-2.4/imap/pop3d.c
+@@ -689,6 +689,9 @@ void shut_down(int code)
+ #endif
+ 
+     cyrus_done();
++    cyrus_close_sock(0);
++    cyrus_close_sock(1);
++    cyrus_close_sock(2);
+ 
+     exit(code);
+ }

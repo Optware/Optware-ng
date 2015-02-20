@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BACULA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bacula
-BACULA_VERSION=3.0.3
+BACULA_VERSION=7.0.5
 BACULA_SOURCE=bacula-$(BACULA_VERSION).tar.gz
 BACULA_DIR=bacula-$(BACULA_VERSION)
 BACULA_UNZIP=zcat
@@ -30,7 +30,7 @@ BACULA_DESCRIPTION=A set of Open Source, enterprise ready, computer programs to 
 BACULA_SECTION=sysadmin
 BACULA_PRIORITY=optional
 BACULA_DEPENDS=libstdc++, openssl, readline, sqlite, tcpwrappers, zlib
-BACULA_SUGGESTS=python25
+BACULA_SUGGESTS=python27
 BACULA_CONFLICTS=
 
 #
@@ -112,7 +112,7 @@ bacula-source: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES)
 $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) make/bacula.mk
 	$(MAKE) libstdc++-stage
 	$(MAKE) openssl-stage readline-stage sqlite-stage tcpwrappers-stage zlib-stage
-	$(MAKE) python25-stage
+	$(MAKE) python27-stage
 	rm -rf $(BUILD_DIR)/$(BACULA_DIR) $(@D)
 	$(BACULA_UNZIP) $(DL_DIR)/$(BACULA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BACULA_PATCHES)" ; \
@@ -122,7 +122,7 @@ $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) ma
 	if test "$(BUILD_DIR)/$(BACULA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BACULA_DIR) $(@D) ; \
 	fi
-	sed -i -e '/PYTHON_LIBS=.* -lpython/s|=.*|="-lpython2.5"|' $(@D)/configure
+	sed -i -e '/PYTHON_LIBS=.* -lpython/s|=.*|="-lpython2.7"|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BACULA_CPPFLAGS)" \
@@ -210,8 +210,9 @@ $(BACULA_IPK_DIR)/CONTROL/control:
 $(BACULA_IPK): $(BACULA_BUILD_DIR)/.built
 	rm -rf $(BACULA_IPK_DIR) $(BUILD_DIR)/bacula_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BACULA_BUILD_DIR) DESTDIR=$(BACULA_IPK_DIR) install
+	rm -rf $(BACULA_IPK_DIR)/tmp
 	find $(BACULA_IPK_DIR)/opt/sbin -type f \! -name btraceback \! -name bacula | xargs $(STRIP_COMMAND)
-	$(STRIP_COMMAND) $(BACULA_IPK_DIR)/opt/lib/lib*.so.*.* $(BACULA_IPK_DIR)/opt/lib/bpipe-fd.so
+	$(STRIP_COMMAND) $(BACULA_IPK_DIR)/opt/lib/lib*.so* $(BACULA_IPK_DIR)/opt/lib/bpipe-fd.so
 	$(MAKE) $(BACULA_IPK_DIR)/CONTROL/control
 	echo $(BACULA_CONFFILES) | sed -e 's/ /\n/g' > $(BACULA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BACULA_IPK_DIR)

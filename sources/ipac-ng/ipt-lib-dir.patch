@@ -1,29 +1,29 @@
---- configure~	2004-08-25 08:03:23.000000000 +0930
-+++ configure	2007-08-01 15:10:23.000000000 +0930
-@@ -5350,25 +5350,7 @@
+--- configure.orig	2015-02-03 19:08:56.029794787 +0200
++++ configure	2015-02-03 19:12:39.117786627 +0200
+@@ -5128,25 +5128,7 @@
  fi
  
  if test $DEFAULT_AGENT = iptables; then
 -	# test for the 64 bit libs first (18.04.2004 - Thomas Zehetbauer <thomasz@hostmaster.org>)
--	if test -d /usr/lib64/iptables; then
--		IPT_LIB_DIR=/usr/lib64/iptables
--	elif test -d /lib64/iptables; then
--		IPT_LIB_DIR=/lib64/iptables
--	elif test -d /usr/local/lib64/iptables; then
--		IPT_LIB_DIR=/usr/local/lib64/iptables
--	elif test -d /usr/lib/iptables; then
--		IPT_LIB_DIR=/usr/lib/iptables
--	elif test -d /lib/iptables; then
--		IPT_LIB_DIR=/lib/iptables
--	elif test -d /usr/local/lib/iptables; then
--		IPT_LIB_DIR=/usr/local/lib/iptables
+-	if test -d /usr/lib64/xtables; then
+-		XTABLES_LIBDIR=/usr/lib64/xtables
+-	elif test -d /lib64/xtables; then
+-		XTABLES_LIBDIR=/lib64/xtables
+-	elif test -d /usr/local/lib64/xtables; then
+-		XTABLES_LIBDIR=/usr/local/lib64/xtables
+-	elif test -d /usr/lib/xtables; then
+-		XTABLES_LIBDIR=/usr/lib/xtables
+-	elif test -d /lib/xtables; then
+-		XTABLES_LIBDIR=/lib/xtables
+-	elif test -d /usr/local/lib/xtables; then
+-		XTABLES_LIBDIR=/usr/local/lib/xtables
 -	else
--		{ echo "$as_me:$LINENO: WARNING: iptables library directory not found, define
+-		{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: iptables library directory not found, define
 -				it at config.h" >&5
--echo "$as_me: WARNING: iptables library directory not found, define
+-$as_echo "$as_me: WARNING: iptables library directory not found, define
 -				it at config.h" >&2;}
 -	fi
-+	IPT_LIB_DIR=/opt/lib/iptables
- fi
- 
- 
++	XTABLES_LIBDIR=/opt/lib/xtables
+ 	IPTSLIBS=""
+ 	IPTSINC=""
+ 	IPTSSRC=""

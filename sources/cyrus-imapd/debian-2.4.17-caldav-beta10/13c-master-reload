@@ -1,0 +1,58 @@
+From: Henrique de Moraes Holschuh <hmh@debian.org>
+Subject: Fixes related to master SIGHUP handling
+
+Origin: vendor, Debian Cyrus IMAPd 2.1.16-7 (2004-08-07)
+
+* Cleans up various data fields for reconfig.
+
+--- cyrus-imapd-2.4.orig/master/master.c
++++ cyrus-imapd-2.4/master/master.c
+@@ -1494,8 +1494,9 @@ void add_service(const char *name, struc
+ 	char buf[1024];
+ 	snprintf(buf, sizeof(buf),
+ 		 "cannot find executable for service '%s'", name);
+-	/* if it is not, we're misconfigured, die. */
+-	fatal(buf, EX_CONFIG);
++	/* if it is not, we just skip it */
++	syslog(LOG_WARNING, "WARNING: %s -- ignored", buf);
++	return;
+     }
+ 
+     Services[i].maxforkrate = maxforkrate;
+@@ -1515,6 +1516,7 @@ void add_service(const char *name, struc
+ 	if (prefork > 1) prefork = 1;
+ 	Services[i].desired_workers = prefork;
+ 	Services[i].max_workers = 1;
++	Services[i].babysit = 0;
+     }
+  
+     if (reconfig) {
+@@ -1562,7 +1564,7 @@ void add_event(const char *name, struct
+     if (!strcmp(cmd,"")) {
+ 	char buf[256];
+ 	snprintf(buf, sizeof(buf),
+-		 "unable to find command or port for event '%s'", name);
++		 "unable to find command for event '%s'", name);
+ 
+ 	if (ignore_err) {
+ 	    syslog(LOG_WARNING, "WARNING: %s -- ignored", buf);
+@@ -1668,13 +1670,18 @@ void reread_conf(void)
+ 		       Services[i].stat[0], Services[i].stat[1]);
+ 
+ 	    /* Only free the service info on the primary */
+-	    if(Services[i].associate == 0) {
++	    if (Services[i].associate == 0) {
++		free(Services[i].name);
+ 		free(Services[i].listen);
+ 		free(Services[i].proto);
+ 	    }
++	    Services[i].name = NULL;
+ 	    Services[i].listen = NULL;
+ 	    Services[i].proto = NULL;
+ 	    Services[i].desired_workers = 0;
++	    Services[i].nforks = 0;
++	    Services[i].nactive = 0;
++	    Services[i].nconnections = 0;
+ 
+ 	    /* send SIGHUP to all children */
+ 	    for (j = 0 ; j < child_table_size ; j++ ) {

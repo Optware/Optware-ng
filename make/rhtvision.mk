@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RHTVISION_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/tvision
-RHTVISION_VERSION=2.0.3
+RHTVISION_SITE=http://tvision.sourceforge.net
+RHTVISION_VERSION=2.2.1
 RHTVISION_SOURCE=rhtvision-$(RHTVISION_VERSION).src.tar.gz
 RHTVISION_DIR=tvision
 RHTVISION_UNZIP=zcat
@@ -50,7 +50,7 @@ RHTVISION_IPK_VERSION=1
 RHTVISION_PATCHES=\
 $(RHTVISION_SOURCE_DIR)/conflib.pl-cross.patch \
 $(RHTVISION_SOURCE_DIR)/config.pl-cross.patch \
-$(RHTVISION_SOURCE_DIR)/gcc4.patch \
+#$(RHTVISION_SOURCE_DIR)/gcc4.patch \
 
 #
 # If the compilation of the package requires additional
@@ -61,6 +61,10 @@ RHTVISION_LDFLAGS=
 ifeq ($(LIBC_STYLE), uclibc)
 RHTVISION_LDFLAGS+=-lintl
 endif
+
+RHTVISION_HAVE_64BITS_POINTERS=$(strip \
+$(if $(filter x86_64 amd64, $(TARGET_ARCH)), yes, \
+no))
 
 #
 # RHTVISION_BUILD_DIR is the directory in which the build is done.
@@ -127,6 +131,7 @@ $(RHTVISION_BUILD_DIR)/.configured: $(DL_DIR)/$(RHTVISION_SOURCE) $(RHTVISION_PA
 		then export TV_BIG_ENDIAN=yes; \
 		else export TV_BIG_ENDIAN=no; \
 		fi; \
+		HAVE_64BITS_POINTERS=$(RHTVISION_HAVE_64BITS_POINTERS) \
 		$(TARGET_CONFIGURE_OPTS) \
 		GXX=$(TARGET_CXX) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RHTVISION_CPPFLAGS)" \
@@ -145,6 +150,8 @@ $(RHTVISION_BUILD_DIR)/.configured: $(DL_DIR)/$(RHTVISION_SOURCE) $(RHTVISION_PA
 		--disable-static \
 		;
 #	$(PATCH_LIBTOOL) $(RHTVISION_BUILD_DIR)/libtool
+	sed -i -e 's|-Iinclude|-Iinclude $(STAGING_CPPFLAGS) $(RHTVISION_CPPFLAGS) $(STAGING_CPPFLAGS) $(RHTVISION_CPPFLAGS)|' \
+		-e '/\t\$$(MAKE) -C examples/s/\$$(MAKE)/-\$$(MAKE)/' $(@D)/Makefile
 	touch $@
 
 rhtvision-unpack: $(RHTVISION_BUILD_DIR)/.configured

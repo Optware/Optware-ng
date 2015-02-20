@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-CARP-CLAN_SITE=http://search.cpan.org/CPAN/authors/id/S/ST/STBEY
-PERL-CARP-CLAN_VERSION=5.3
+PERL-CARP-CLAN_VERSION=5.4
 PERL-CARP-CLAN_SOURCE=Carp-Clan-$(PERL-CARP-CLAN_VERSION).tar.gz
 PERL-CARP-CLAN_DIR=Carp-Clan-$(PERL-CARP-CLAN_VERSION)
 PERL-CARP-CLAN_UNZIP=zcat

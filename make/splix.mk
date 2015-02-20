@@ -20,16 +20,17 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SPLIX_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/splix
-SPLIX_VERSION=2.0.0
+#SPLIX_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/splix
+SPLIX_SITE=https://pkgs.fedoraproject.org/repo/pkgs/splix/splix-2.0.1.20130902svn.tar.bz2/2901e9482dd1a7c44f7b730696868e09
+SPLIX_VERSION=2.0.1.20130902svn
 SPLIX_SOURCE=splix-$(SPLIX_VERSION).tar.bz2
-SPLIX_DIR=splix-$(SPLIX_VERSION)
+SPLIX_DIR=splix
 SPLIX_UNZIP=bzcat
 SPLIX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SPLIX_DESCRIPTION=Splix is a driver for printers that speak SPL (Samsung Printer Language). This includes printers made by Samsung, Dell, and Xerox.
 SPLIX_SECTION=print
 SPLIX_PRIORITY=optional
-SPLIX_DEPENDS=cups
+SPLIX_DEPENDS=cups, libjbigkit
 SPLIX_SUGGESTS=
 SPLIX_CONFLICTS=
 
@@ -76,7 +77,7 @@ SPLIX_IPK=$(BUILD_DIR)/splix_$(SPLIX_VERSION)-$(SPLIX_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SPLIX_SOURCE):
-	$(WGET) -P $(@D) $(SPLIX_SITE)/$(@F) || \
+	$(WGET) -P $(@D) --no-check-certificate $(SPLIX_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -105,7 +106,7 @@ splix-source: $(DL_DIR)/$(SPLIX_SOURCE) $(SPLIX_PATCHES)
 # shown below to make various patches to it.
 #
 $(SPLIX_BUILD_DIR)/.configured: $(DL_DIR)/$(SPLIX_SOURCE) $(SPLIX_PATCHES) make/splix.mk
-	$(MAKE) cups-stage
+	$(MAKE) cups-stage libjbigkit-stage
 	rm -rf $(BUILD_DIR)/$(SPLIX_DIR) $(@D)
 	$(SPLIX_UNZIP) $(DL_DIR)/$(SPLIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPLIX_PATCHES)" ; \
@@ -115,23 +116,12 @@ $(SPLIX_BUILD_DIR)/.configured: $(DL_DIR)/$(SPLIX_SOURCE) $(SPLIX_PATCHES) make/
 	if test "$(BUILD_DIR)/$(SPLIX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SPLIX_DIR) $(@D) ; \
 	fi
+	sed -i -e 's/(const PPDFile::Value::Value/(const PPDFile::Value/' $(@D)/src/ppdfile.cpp
 	sed -i \
 		-e 's|$$(Q)g++|$$(Q)$(TARGET_CXX) $$(LDFLAGS)|' \
 		-e '/install/s|-s ||' \
 		$(@D)/rules.mk
-#	(cd $(@D); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(SPLIX_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(SPLIX_LDFLAGS)" \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-nls \
-		--disable-static \
-	)
-#	$(PATCH_LIBTOOL) $(@D)/libtool
+	mv $(@D)/*.ppd $(@D)/ppd/
 	touch $@
 
 splix-unpack: $(SPLIX_BUILD_DIR)/.configured
@@ -144,7 +134,6 @@ $(SPLIX_BUILD_DIR)/.built: $(SPLIX_BUILD_DIR)/.configured
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
 	$(MAKE) -C $(@D) \
 		V=1 \
-		DISABLE_JBIG=1 \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SPLIX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SPLIX_LDFLAGS)" \

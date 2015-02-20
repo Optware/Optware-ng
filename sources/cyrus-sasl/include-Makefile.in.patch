@@ -1,22 +1,21 @@
---- cyrus-sasl-2.1.23/include/Makefile.in	2009-05-07 16:24:46.000000000 +0200
-+++ cyrus-sasl/include/Makefile.in	2009-12-27 02:42:02.000000000 +0100
-@@ -265,13 +265,13 @@
+--- cyrus-sasl/include/Makefile.in.orig	2011-09-07 16:29:23.000000000 +0300
++++ cyrus-sasl/include/Makefile.in	2015-01-08 13:05:08.695814094 +0200
+@@ -113,14 +113,14 @@
  depcomp = $(SHELL) $(top_srcdir)/config/depcomp
  am__depfiles_maybe = depfiles
- @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/makemd5.Po
+ am__mv = mv -f
 -COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
--	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
--LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 +COMPILE = $(HOSTCC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-+	$(AM_CFLAGS)
-+LTCOMPILE = $(LIBTOOL) --mode=compile $(HOSTCC) $(DEFS) $(DEFAULT_INCLUDES) \
- 	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+ 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+ LTCOMPILE = $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
++	--mode=compile $(HOSTCC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+ 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 -CCLD = $(CC)
--LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
--	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 +CCLD = $(HOSTCC)
-+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) \
-+	$(AM_LDFLAGS) -o $@
+ LINK = $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
+-	$(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
++	$(CCLD) $(AM_CFLAGS) $(AM_LDFLAGS) -o $@
+ SOURCES = $(makemd5_SOURCES)
  DIST_SOURCES = $(makemd5_SOURCES)
- DATA = $(frameheader_DATA)
- 
+ am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;

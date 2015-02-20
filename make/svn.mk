@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://archive.apache.org/dist/subversion/
-SVN_VERSION=1.7.7
+SVN_VERSION=1.8.11
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -46,7 +46,7 @@ SVN_SUGGESTS=
 SVN_CONFLICTS=
 
 SVN-PY_DESCRIPTION=python SWIG binding for subversion
-SVN-PY_DEPENDS=python26, svn
+SVN-PY_DEPENDS=python27, svn
 SVN-PY_SUGGESTS=
 SVN-PY_CONFLICTS=
 
@@ -54,6 +54,11 @@ SVN-PL_DESCRIPTION=perl SWIG binding for subversion
 SVN-PL_DEPENDS=perl, svn
 SVN-PL_SUGGESTS=
 SVN-PL_CONFLICTS=
+
+SVN-RB_DESCRIPTION=ruby SWIG binding for subversion
+SVN-RB_DEPENDS=ruby, svn
+SVN-RB_SUGGESTS=
+SVN-RB_CONFLICTS=
 
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
@@ -68,7 +73,7 @@ SVN_CONFFILES=
 # SVN_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SVN_PATCHES=$(SVN_SOURCE_DIR)/ltmain.sh.patch
+#SVN_PATCHES=$(SVN_SOURCE_DIR)/ltmain.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -99,13 +104,17 @@ SVN_IPK=$(BUILD_DIR)/svn_$(SVN_VERSION)-$(SVN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 SVN-PY_IPK_DIR=$(BUILD_DIR)/svn-py-$(SVN_VERSION)-ipk
 SVN-PY_IPK=$(BUILD_DIR)/svn-py_$(SVN_VERSION)-$(SVN_IPK_VERSION)_$(TARGET_ARCH).ipk
-SVN_INSTALL_SWIG_TARGETS=install-swig-py
+
+SVN-RB_IPK_DIR=$(BUILD_DIR)/svn-rb-$(SVN_VERSION)-ipk
+SVN-RB_IPK=$(BUILD_DIR)/svn-rb_$(SVN_VERSION)-$(SVN_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+SVN_INSTALL_SWIG_TARGETS=install-swig-py install-swig-rb
 
 ifneq (,$(filter perl, $(PACKAGES)))
 SVN_CONFIG_ENV+=PERL=$(PERL_HOSTPERL)
 SVN-PL_IPK_DIR=$(BUILD_DIR)/svn-pl-$(SVN_VERSION)-ipk
 SVN-PL_IPK=$(BUILD_DIR)/svn-pl_$(SVN_VERSION)-$(SVN_IPK_VERSION)_$(TARGET_ARCH).ipk
-SVN_INSTALL_SWIG_TARGETS+=install-swig-pl
+SVN_INSTALL_SWIG_TARGETS+= install-swig-pl
 else
 SVN_CONFIG_ENV+=ac_cv_path_PERL=none
 endif
@@ -148,20 +157,26 @@ $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES) make/svn.mk
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
-	$(MAKE) python26-stage python26-host-stage
+	$(MAKE) python27-stage python27-host-stage ruby-stage ruby-host-stage
 ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(@D)
 	rm -rf $(STAGING_INCLUDE_DIR)/subversion-1/ $(STAGING_LIB_DIR)/libsvn*
 	$(SVN_UNZIP) $(DL_DIR)/$(SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p1
+	if test -n "$(SVN_PATCHES)" ; \
+		then cat $(SVN_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(SVN_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(SVN_DIR) $(@D)
+	sed -i -e 's/as_fn_error .* "cannot run test program while cross compiling/echo "cannot run test program while cross compiling/' \
+		$(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SVN_LDFLAGS)" \
-		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.6 \
+		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7 \
+		RUBY=$(HOST_STAGING_PREFIX)/bin/ruby \
 		$(SVN_CONFIG_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -170,19 +185,30 @@ endif
 		--prefix=/opt \
 		--with-neon=$(STAGING_DIR)/opt \
 		--with-apr=$(STAGING_DIR)/opt \
-		--with-apr=$(STAGING_DIR)/opt \
+		--with-ruby-sitedir=/opt/local/lib/ruby/site_ruby/$(RUBY_VERSION) \
 		--with-apr-util=$(STAGING_DIR)/opt \
-		--with-apxs=$(STAGING_DIR)/opt/sbin/apxs \
+		--with-apxs=$(STAGING_DIR)/opt/bin/apxs \
 		--without-swig \
 		--enable-shared \
 		--disable-static \
 	)
 #	sed -i -e 's/ --silent//' $(SVN_BUILD_DIR)/Makefile
 	sed -i \
+	    -e 's|-I/usr/local/include[ \t$$]||g' \
 	    -e '/^SWIG_PY/s|= *gcc|= $(TARGET_CC)|' \
-	    -e '/^SWIG_PY_INCLUDES/s|/host||' \
-	    -e '/^SWIG_PY_LIBS/s|$$| $(STAGING_LDFLAGS) $(SVN_LDFLAGS)|' \
+	    -e '/^SWIG_PY_INCLUDES/s|.*|SWIG_PY_INCLUDES = \$$(SWIG_INCLUDES) -I$(STAGING_INCLUDE_DIR)/python2.7 -I\$$(SWIG_SRC_DIR)/python/libsvn_swig_py|' \
+	    -e '/^SWIG_PY_LIBS/s|.*|SWIG_PY_LIBS = $(STAGING_LDFLAGS) $(SVN_LDFLAGS)|' \
+	    -e '/^SWIG_PY_LINK/s|.*|SWIG_PY_LINK = $(TARGET_CC) -pthread -shared|' \
+	    -e '/^SWIG_RB/s|= *gcc|= $(TARGET_CC)|' \
+	    -e '/^SWIG_RB_INCLUDES/s|.*|SWIG_RB_INCLUDES =  \$$(SWIG_INCLUDES) -I. -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION) -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby/backward -I$(shell ls -d $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/*|grep "\-linux"|head -n 1) -I\$$(SWIG_SRC_DIR)/ruby/libsvn_swig_ruby|' \
+	    -e '/^SWIG_RB_LIBS/s|.*|SWIG_RB_LIBS = -Wl,-R/opt/lib -L$(STAGING_LIB_DIR) -lruby -lpthread -ldl -lcrypt -lm|' \
+	    -e '/^SWIG_RB_SITE_ARCH_DIR/s|.*|SWIG_RB_SITE_ARCH_DIR = /$(shell cd $(STAGING_DIR); ls -d opt/local/lib/ruby/site_ruby/$(RUBY_VERSION)/*|grep "\-linux"|head -n 1)|' \
+	    -e 's|-L/opt/lib||g' \
+	    -e '/^SVN_APRUTIL_LIBS/s/=/= -lpthread /' \
 	    $(@D)/Makefile
+ifneq (wl500g, $(OPTWARE_TARGET))
+	sed -i -e '/^SWIG_RB_COMPILE/s/$$/ -Druby_errinfo=rb_errinfo/' $(@D)/Makefile
+endif
 	$(PATCH_LIBTOOL) $(@D)/libtool
 #	sed -i -e '/^runpath_var=/s/LD_RUN_PATH//' $(SVN_BUILD_DIR)/libtool
 	sed -i -e '/export $$runpath_var/'"s|'.*'|'/opt/lib'|" $(@D)/libtool
@@ -203,8 +229,14 @@ $(SVN_BUILD_DIR)/.py-built: $(SVN_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) swig-py
 	touch $@
 
+$(SVN_BUILD_DIR)/.rb-built: $(SVN_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) swig-rb
+	touch $@
+
 $(SVN_BUILD_DIR)/.pl-built: $(SVN_BUILD_DIR)/.built
 	rm -f $@
+ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) -C $(@D) libsvn_swig_perl
 	cd $(@D)/subversion/bindings/swig/perl/native; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -228,21 +260,23 @@ $(SVN_BUILD_DIR)/.pl-built: $(SVN_BUILD_DIR)/.built
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		SWIG_LDFLAGS="" \
 		;
+endif
 	touch $@
 
 #
 # This is the build convenience target.
 #
 svn-py: $(SVN_BUILD_DIR)/.py-built
+svn-rb: $(SVN_BUILD_DIR)/.rb-built
 svn-pl: $(SVN_BUILD_DIR)/.pl-built
-svn: $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.pl-built
+svn: $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.rb-built $(SVN_BUILD_DIR)/.pl-built
 
 #
 # If you are building a library, then you need to stage it too.
 #
 $(SVN_BUILD_DIR)/.staged: $(SVN_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) external-install local-install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) local-install
 	touch $@
 
 svn-stage: $(SVN_BUILD_DIR)/.staged
@@ -281,6 +315,21 @@ $(SVN-PY_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(SVN-PY_SUGGESTS)" >>$@
 	@echo "Conflicts: $(SVN-PY_CONFLICTS)" >>$@
 
+$(SVN-RB_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: svn-rb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SVN_PRIORITY)" >>$@
+	@echo "Section: $(SVN_SECTION)" >>$@
+	@echo "Version: $(SVN_VERSION)-$(SVN_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SVN_MAINTAINER)" >>$@
+	@echo "Source: $(SVN_SITE)/$(SVN_SOURCE)" >>$@
+	@echo "Description: $(SVN-RB_DESCRIPTION)" >>$@
+	@echo "Depends: $(SVN-RB_DEPENDS)" >>$@
+	@echo "Suggests: $(SVN-RB_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SVN-RB_CONFLICTS)" >>$@
+
 ifneq (,$(filter perl, $(PACKAGES)))
 $(SVN-PL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -311,33 +360,29 @@ endif
 # You may need to patch your application to make it use these locations.
 #
 ifneq (,$(filter perl, $(PACKAGES)))
-$(SVN_IPK) $(SVN-PY_IPK) $(SVN_PL_IPK): $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.pl-built
+$(SVN_IPK) $(SVN-PY_IPK) $(SVN-RB_IPK) $(SVN_PL_IPK): $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.rb-built $(SVN_BUILD_DIR)/.pl-built
 else
-$(SVN_IPK) $(SVN-PY_IPK): $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built
+$(SVN_IPK) $(SVN-PY_IPK) $(SVN-RB_IPK): $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.rb-built
 endif
 	rm -rf $(SVN_IPK_DIR) $(BUILD_DIR)/svn_*_$(TARGET_ARCH).ipk
 	install -d $(SVN_IPK_DIR)/opt/lib/svn-python/libsvn
 	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) \
-		external-install local-install $(SVN_INSTALL_SWIG_TARGETS)
-	rm -f	$(SVN_IPK_DIR)/opt/lib/*.la \
-		$(SVN_IPK_DIR)/opt/lib/svn-python/libsvn/*.la
-	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/bin/*
-	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/lib/*.so
-	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/libexec/*.so
-	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/lib/svn-python/libsvn/*.so
-ifneq (,$(filter perl, $(PACKAGES)))
-	for f in `find $(SVN_IPK_DIR)/opt/lib/perl5/ -type f -name '*.so'`; do \
+		local-install $(SVN_INSTALL_SWIG_TARGETS)
+	$(STRIP_COMMAND) $(SVN_IPK_DIR)/opt/bin/*
+	for f in `find $(SVN_IPK_DIR)/opt -name '*.so'`; do \
 		chmod +w $$f; \
-		$(TARGET_STRIP) $$f; \
+		$(STRIP_COMMAND) $$f;\
 		chmod -w $$f; \
 	done
+	find $(SVN_IPK_DIR)/opt -name '*.la' -exec rm -f {} \;
+ifneq (,$(filter perl, $(PACKAGES)))
 	# mv to svn-pl
 	rm -rf $(SVN-PL_IPK_DIR) $(BUILD_DIR)/svn-pl_*_$(TARGET_ARCH).ipk
 	install -d $(SVN-PL_IPK_DIR)/opt/lib
-	mv $(SVN_IPK_DIR)/opt/lib/perl5 $(SVN-PL_IPK_DIR)/opt/lib/
-	mv $(SVN_IPK_DIR)/opt/lib/libsvn_swig_perl* $(SVN-PL_IPK_DIR)/opt/lib/
+	mv -f $(SVN_IPK_DIR)/opt/lib/perl5 $(SVN-PL_IPK_DIR)/opt/lib/
+	mv -f $(SVN_IPK_DIR)/opt/lib/libsvn_swig_perl* $(SVN-PL_IPK_DIR)/opt/lib/
 	install -d $(SVN-PL_IPK_DIR)/opt/man
-	mv $(SVN_IPK_DIR)/opt/man/man3 $(SVN-PL_IPK_DIR)/opt/man/
+	mv -f $(SVN_IPK_DIR)/opt/man/man3 $(SVN-PL_IPK_DIR)/opt/man/
 	rm -f `find $(SVN-PL_IPK_DIR)/opt/lib/perl5/ -name perllocal.pod`
 	# svn-pl ipk
 	$(MAKE) $(SVN-PL_IPK_DIR)/CONTROL/control
@@ -346,23 +391,35 @@ endif
 	# mv to svn-py
 	rm -rf $(SVN-PY_IPK_DIR) $(BUILD_DIR)/svn-py_*_$(TARGET_ARCH).ipk
 	install -d $(SVN-PY_IPK_DIR)/opt/lib
-	mv $(SVN_IPK_DIR)/opt/lib/svn-python $(SVN-PY_IPK_DIR)/opt/lib/
-	mv $(SVN_IPK_DIR)/opt/lib/libsvn_swig_py* $(SVN-PY_IPK_DIR)/opt/lib/
+	mv -f $(SVN_IPK_DIR)/opt/lib/svn-python $(SVN-PY_IPK_DIR)/opt/lib/
+	mv -f $(SVN_IPK_DIR)/opt/lib/libsvn_swig_py* $(SVN-PY_IPK_DIR)/opt/lib/
+	# mv to svn-rb
+	rm -rf $(SVN-RB_IPK_DIR) $(BUILD_DIR)/svn-rb_*_$(TARGET_ARCH).ipk
+	install -d $(SVN-RB_IPK_DIR)/opt/lib
+	mv -f $(SVN_IPK_DIR)/opt/local $(SVN-RB_IPK_DIR)/opt/
+	mv -f $(SVN_IPK_DIR)/opt/lib/libsvn_swig_ruby* $(SVN-RB_IPK_DIR)/opt/lib/
 	# svn ipk
 	install -d $(SVN_IPK_DIR)/opt/etc/apache2/conf.d
 	install -m 644 $(SVN_SOURCE_DIR)/mod_dav_svn.conf $(SVN_IPK_DIR)/opt/etc/apache2/conf.d/mod_dav_svn.conf
 	$(MAKE) $(SVN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN_IPK_DIR)
 	# svn-py ipk
-	install -d $(SVN-PY_IPK_DIR)/opt/lib/python2.6/site-packages
-	echo /opt/lib/svn-python > $(SVN-PY_IPK_DIR)/opt/lib/python2.6/site-packages/subversion.pth
+	install -d $(SVN-PY_IPK_DIR)/opt/lib/python2.7/site-packages
+	echo /opt/lib/svn-python > $(SVN-PY_IPK_DIR)/opt/lib/python2.7/site-packages/subversion.pth
 	$(MAKE) $(SVN-PY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN-PY_IPK_DIR)
+	# svn-rb ipk
+	$(MAKE) $(SVN-RB_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN-RB_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-svn-ipk: $(SVN_IPK) $(SVN-PY_IPK) $(SVN-PL_IPK)
+ifneq (,$(filter perl, $(PACKAGES)))
+svn-ipk: $(SVN_IPK) $(SVN-PY_IPK) $(SVN-RB_IPK) $(SVN-PL_IPK)
+else
+svn-ipk: $(SVN_IPK) $(SVN-PY_IPK) $(SVN-RB_IPK)
+endif
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -385,5 +442,9 @@ endif
 #
 # Some sanity check for the package.
 #
-svn-check: $(SVN_IPK) $(SVN-PY_IPK) $(SVN-PL_IPK)
+ifneq (,$(filter perl, $(PACKAGES)))
+svn-check: $(SVN_IPK) $(SVN-PY_IPK) $(SVN-RB_IPK) $(SVN-PL_IPK)
+else
+svn-check: $(SVN_IPK) $(SVN-PY_IPK) $(SVN-RB_IPK)
+endif
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

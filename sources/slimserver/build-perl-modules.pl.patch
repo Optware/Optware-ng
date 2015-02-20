@@ -1,12 +1,12 @@
---- Bin/build-perl-modules.pl.654	2007-10-23 10:32:49.000000000 +0100
-+++ Bin/build-perl-modules.pl	2007-10-23 13:31:07.000000000 +0100
+--- Bin/build-perl-modules.pl.orig	2007-05-25 04:02:45.000000000 +0300
++++ Bin/build-perl-modules.pl	2015-02-20 18:08:09.629564795 +0200
 @@ -1,4 +1,4 @@
 -#!/usr/bin/perl -w
 +#
  
  # $Id$
  #
-@@ -17,7 +17,6 @@
+@@ -17,27 +17,26 @@
  use File::Copy;
  use File::Find;
  use File::Path;
@@ -14,21 +14,54 @@
  
  my $SOURCE = 'http://svn.slimdevices.com/vendor/src';
  my $dlext  = $Config{'dlext'};
-@@ -53,6 +52,13 @@
+ 
+ # The list of all the packages needed.
+ my %packages = (
+-	'Compress::Zlib'     => 'Compress-Zlib-1.41.tar.gz',
+-	'DBI'                => 'DBI-1.50.tar.gz',
+-	'DBD::mysql'         => 'DBD-mysql-3.0002.tar.gz',
+-	'Digest::SHA1'       => 'Digest-SHA1-2.11.tar.gz',
+-	'HTML::Parser'       => 'HTML-Parser-3.48.tar.gz',
+-	'Template'           => 'Template-Toolkit-2.15.tar.gz',
+-	'Time::HiRes'        => 'Time-HiRes-1.86.tar.gz',
+-	'XML::Parser::Expat' => 'XML-Parser-2.34.tar.gz',
+-	'YAML::Syck'         => 'YAML-Syck-0.64.tar.gz',
++	'Compress::Zlib'     => '@Compress-Zlib@.tar.gz',
++	'DBI'                => '@DBI@.tar.gz',
++	'DBD::mysql'         => '@DBD-mysql@.tar.gz',
++	'Digest::SHA1'       => '@Digest-SHA1@.tar.gz',
++	'HTML::Parser'       => '@HTML-Parser@.tar.gz',
++	'Template'           => '@Template-Toolkit@.tar.gz',
++	'Time::HiRes'        => '@Time-HiRes@.tar.gz',
++	'XML::Parser::Expat' => '@XML-Parser@.tar.gz',
++	'YAML::Syck'         => '@YAML-Syck@.tar.gz',
+ );
+ 
+ # Options for specific packages
+ my %packageOptions = (
+-	'Template-Toolkit-2.15' => {
++	'@Template-Toolkit@' => {
+ 
+ 		'Makefile.PL' => join(' ', qw(
+ 			TT_DOCS=n
+@@ -53,19 +52,32 @@
  		)),
  	},
  
-+	'XML-Parser-2.34' => {
+-	'DBD-mysql-3.0002' => {
++	'@XML-Parser@' => {
 +		'Makefile.PL' => join(' ', qw(
-+                        EXPATLIBPATH=/opt/lib
-+                        EXPATINCPATH=/opt/include
++                        --cflags=
++                        --libs=
 +                 )),
 +        },
 +
- 	'DBD-mysql-3.0002' => {
++	'@DBD-mysql@' => {
  
- 		'env' => [qw(DBI-1.50/blib/lib: DBI-1.50/blib/arch)],
-@@ -61,11 +67,17 @@
+-		'env' => [qw(DBI-1.50/blib/lib: DBI-1.50/blib/arch)],
++		'env' => [qw(@DBI@/blib/lib: @DBI@/blib/arch)],
+ 	},
+ );
  
  sub main {
  	my ($slimServerPath, $downloadPath, $perlBinary, @libList, $downloadUsing);
@@ -42,7 +75,7 @@
  	my $version  = $Config{'version'};
  
 -	print "Welcome to the SlimServer perl module installer.\n\n";
-+	$packageOptions{'DBD-mysql-3.0002'}->{'Makefile.PL'} = " --mysql_config=$ENV{STAGINGDIR}/opt/bin/mysql_config ";
++	$packageOptions{'@DBD-mysql@'}->{'Makefile.PL'} = " --mysql_config=$ENV{STAGINGDIR}/opt/bin/mysql_config ";
 +
 +	print "Welcome to the Slim Devices perl module installer.\n\n";
  	print "These packages are needed for SlimServer to function.\n";
@@ -83,7 +116,7 @@
  
  	# DBI needs to be first.
  	if ((grep { /DBI/ } @packages) && (grep { /DBD/ } @packages)) {
-@@ -187,6 +188,8 @@
+@@ -187,34 +188,12 @@
  
  	for my $package (@packages) {
  
@@ -91,8 +124,38 @@
 +		$targetconfigureopts = "AR=$ENV{AR} AS=$ENV{AS} LD=$ENV{LD} NM=$ENV{NM} CC=$ENV{CC} CPP=\"$ENV{CPP}\" GCC=$ENV{GCC} CXX=$ENV{CXX} RANLIB=$ENV{RANLIB} STRIP=$ENV{STRIP} CPPFLAGS=\"$ENV{CPPFLAGS}\" LDFLAGS=\"$ENV{LDFLAGS}\"";
  		chdir($pwd) or die "Couldn't change to $pwd : $!";
  
- 		print "\nDownloading $package to: $pwd\n";
-@@ -230,15 +233,48 @@
+-		print "\nDownloading $package to: $pwd\n";
+-
+-		# Remove any previous version.
+-		unlink $package;
+-
+-		if ($downloadUsing eq 'lwp') {
+-
+-			LWP::Simple::getstore("$SOURCE/$package?view=auto", $package);
+-
+-		} elsif ($downloadUsing =~ /curl$/) {
+-
+-			`$downloadUsing --silent -o $package $SOURCE/$package?view=auto`;
+-
+-		} else {
+-
+-			`$downloadUsing -q -O $package $SOURCE/$package?view=auto`;
+-		}
+-
+-		unless (-r $package) {
+-			print "Something looks wrong - I couldn't read $pwd/$package, which I just downloaded.\n";
+-		}
+-
+-		print "Uncompressing..\n";
+-		`gzip -d < $package | tar xvf -`;
+-
+-		unlink $package;
++		print "Uncompressing $package to: $pwd..\n";
++		`gzip -d < @DL_DIR@/$package | tar xvf -`;
+ 
+ 		# Just the directory name.
+ 		my ($packageDir) = ($package =~ /(\S+?)\.tar\.gz/);
+@@ -230,15 +209,50 @@
  		}
  
  		print "Configuring..\n";
@@ -100,10 +163,10 @@
 -		`$env $perlBinary Makefile.PL $options`;
 +		print "$env$targetconfigureopts $perlBinary Makefile.PL $options  PREFIX=/opt\n";
 +
-+		if ( $package eq  "DBD-mysql-3.0002.tar.gz" ) { 
++		if ( $package eq  "@DBD-mysql@.tar.gz" ) { 
 +		`cp ../../DBD-mysql-Makefile.PL Makefile.PL`;
 +		}
-+		if ( $package eq  "Time-HiRes-1.86.tar.gz" ) { 
++		if ( $package eq  "@Time-HiRes@.tar.gz" ) { 
 +		`cp ../../Time-HiRes-Makefile.PL Makefile.PL`;
 +		}
 +
@@ -112,7 +175,9 @@
  		unless (-f 'Makefile') {
  			die "There was a problem creating Makefile - exiting!\n";
  		}
-+		if ($package eq  "DBD-mysql-3.0002.tar.gz") {
++		if ($package eq  "@DBD-mysql@.tar.gz") {
++#	no 'error' field in MYSQL_BIND in mysql-4.1
++		`sed -i -e '/buffer->error/s|^|//|' $downloadPath/$packageDir/dbdimp.c`;
 +# This code relies on DBI being processed before DBDSqlite.
 +		`sed -e "s/~DRIVER~/mysql/g"  $dbipackagedir/Driver.xst > mysql.xsi`;
 +		  $pasthruinc="\"$ENV{CPPFLAGS} -I$dbipackagedir -I$ENV{STAGINGDIR}/opt/include/mysql -L$ENV{STAGINGDIR}/opt/lib/mysql\"";
@@ -121,16 +186,16 @@
 +		  $pasthruinc = "\"$ENV{CPPFLAGS}\"";
 +		}
 +
-+		if ($package eq  "DBI-1.50.tar.gz") {
++		if ($package eq  "@DBI@.tar.gz") {
 +		  $dbipackagedir  = "$downloadPath/$packageDir/blib/arch/auto/DBI" ;
 +		}
 +
 +		$ldopts="PASTHRU_INC=$pasthruinc"; 
-+		if ( $package eq  "XML-Parser-2.34.tar.gz" ) { 
++		if ( $package eq  "@XML-Parser@.tar.gz" ) { 
 +                      $ldopts = $ldopts . " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS}\"";
 +                 } ;
 +
-+		if ( $package eq  "DBD-mysql-3.0002.tar.gz" ) { 
++		if ( $package eq  "@DBD-mysql@.tar.gz" ) { 
 +		         $ldopts = $ldopts . " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS} -Wl,-rpath,/opt/lib/mysql\"";
 +		} ;
 +		$ldopts = $ldopts . " LD_RUN_PATH=/opt/lib" ;

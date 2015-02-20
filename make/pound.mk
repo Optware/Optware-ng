@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 POUND_SITE=http://www.apsis.ch/pound
-POUND_VERSION=2.5
+POUND_VERSION=2.7
 POUND_SOURCE=Pound-$(POUND_VERSION).tgz
 POUND_DIR=Pound-$(POUND_VERSION)
 POUND_UNZIP=zcat
@@ -36,7 +36,7 @@ POUND_CONFLICTS=
 #
 # POUND_IPK_VERSION should be incremented when the ipk changes.
 #
-POUND_IPK_VERSION=2
+POUND_IPK_VERSION=1
 
 #
 # POUND_CONFFILES should be a list of user-editable files

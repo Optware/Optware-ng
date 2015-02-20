@@ -6,11 +6,11 @@
 
 ZLIB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
 ZLIB_SITE2=http://zlib.net
-ZLIB_VERSION:=1.2.5
-ZLIB_LIB_VERSION:=1.2.5
-ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.bz2
+ZLIB_VERSION:=1.2.8
+ZLIB_LIB_VERSION:=1.2.8
+ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.gz
 ZLIB_DIR=zlib-$(ZLIB_VERSION)
-ZLIB_UNZIP=bzcat
+ZLIB_UNZIP=zcat
 ZLIB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ZLIB_DESCRIPTION=zlib is a library implementing the 'deflate' compression system.
 ZLIB_SECTION=libs
@@ -54,6 +54,7 @@ $(ZLIB_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(ZLIB_SOURCE) make/z
 	$(ZLIB_UNZIP) $(DL_DIR)/$(ZLIB_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(ZLIB_DIR) $(@D)
 	(cd $(@D); \
+	    	CFLAGS="-fPIC" \
 		prefix=/opt \
 		./configure \
 		--shared \
@@ -62,6 +63,7 @@ $(ZLIB_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(ZLIB_SOURCE) make/z
 	install -d $(HOST_STAGING_INCLUDE_DIR)
 	install -m 644 $(@D)/zlib.h $(HOST_STAGING_INCLUDE_DIR)
 	install -m 644 $(@D)/zconf.h $(HOST_STAGING_INCLUDE_DIR)
+	install -m 644 $(@D)/libz.a $(HOST_STAGING_LIB_DIR)
 	touch $@
 
 zlib-host-stage: $(ZLIB_HOST_BUILD_DIR)/.staged
@@ -81,6 +83,7 @@ endif
 		./configure \
 		--shared \
 	)
+	sed -i -e "s/^ARFLAGS=.*/ARFLAGS=/" $(@D)/Makefile
 	touch $@
 
 zlib-unpack: $(ZLIB_BUILD_DIR)/.configured

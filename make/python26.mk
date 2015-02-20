@@ -21,12 +21,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON26_VERSION=2.6.8
+PYTHON26_VERSION=2.6.9
 PYTHON26_VERSION_MAJOR=2.6
-PYTHON26_SITE=http://www.python.org/ftp/python/$(PYTHON26_VERSION)
+PYTHON26_SITE=https://www.python.org/ftp/python/$(PYTHON26_VERSION)
 PYTHON26_DIR=Python-$(PYTHON26_VERSION)
-PYTHON26_SOURCE=$(PYTHON26_DIR).tar.bz2
-PYTHON26_UNZIP=bzcat
+PYTHON26_SOURCE=$(PYTHON26_DIR).tgz
+PYTHON26_UNZIP=zcat
 
 PYTHON26_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON26_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
@@ -54,8 +54,9 @@ PYTHON26_IPK_VERSION=1
 #
 PYTHON26_CPPFLAGS=
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
+# as for -lgcc_s flag, see: http://bugs.python.org/issue23340
 ifeq ($(LIBC_STYLE),uclibc)
-PYTHON26_LDFLAGS=-lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
+PYTHON26_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
 else
 PYTHON26_LDFLAGS=
 endif
@@ -129,11 +130,12 @@ $(PYTHON26_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON26_SOURCE) $(PYTHON26_PATCH
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
-	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
+	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage libffi-host-stage zlib-host-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
-	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(@D)
+	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.6
 	$(PYTHON26_UNZIP) $(DL_DIR)/$(PYTHON26_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON26_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON26_DIR) -p1
+	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_PREFIX)/lib" CPPFLAGS="-I$(HOST_STAGING_PREFIX)/include" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON26_DIR)/configure.in
 	autoreconf -vif $(BUILD_DIR)/$(PYTHON26_DIR)
 	mkdir -p $(@D)
 	cd $(@D); (\
@@ -159,6 +161,12 @@ endif
 		--enable-shared \
 		--enable-unicode=ucs4 \
 	)
+	### for linux3 build machines
+	sed -i -e 's/MACHDEP=.*/MACHDEP=\tlinux2/' $(@D)/Makefile
+
+	### make sure host default include and lib dirs aren't used
+	sed -i -e '/inc_dirs = self\.compiler\.include_dirs/s/^/        lib_dirs = self\.compiler\.library_dirs\n/' -e \
+		's/inc_dirs = self\.compiler\.include_dirs.*/inc_dirs = self\.compiler\.include_dirs/' $(BUILD_DIR)/$(PYTHON26_DIR)/setup.py
 	touch $@
 
 python26-unpack: $(PYTHON26_BUILD_DIR)/.configured

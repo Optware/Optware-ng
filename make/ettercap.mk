@@ -42,7 +42,7 @@ ETTERCAP_DEPENDS=libtool, libpcap, ncurses
 #
 # ETTERCAP_IPK_VERSION should be incremented when the ipk changes.
 #
-ETTERCAP_IPK_VERSION=2
+ETTERCAP_IPK_VERSION=3
 
 #
 # ETTERCAP_CONFFILES should be a list of user-editable files
@@ -123,6 +123,7 @@ $(ETTERCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP_SOURCE) $(ETTERCAP_PATCH
 	fi
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
 	autoreconf -vi $(@D)
+	sed -i -e 's/-lpcap/-lusb-1.0 -lpcap/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ETTERCAP_CPPFLAGS)" \

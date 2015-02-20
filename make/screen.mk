@@ -19,9 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-SCREEN_SITE=ftp://ftp.uni-erlangen.de/pub/utilities/screen
+SCREEN_SITE=ftp://ftp.gnu.org/gnu/screen/
 # ftp://ftp.ibiblio.org/pub/mirrors/gnu/ftp/gnu/screen/
-SCREEN_VERSION=4.0.3
+SCREEN_VERSION=4.2.1
 SCREEN_SOURCE=screen-$(SCREEN_VERSION).tar.gz
 SCREEN_DIR=screen-$(SCREEN_VERSION)
 SCREEN_UNZIP=zcat
@@ -36,13 +36,13 @@ SCREEN_CONFLICTS=
 #
 # SCREEN_IPK_VERSION should be incremented when the ipk changes.
 #
-SCREEN_IPK_VERSION=2
+SCREEN_IPK_VERSION=1
 
 #
 # SCREEN_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SCREEN_PATCHES=$(SCREEN_SOURCE_DIR)/configure.patch 
+SCREEN_PATCHES=#$(SCREEN_SOURCE_DIR)/configure.patch 
 
 #
 # If the compilation of the package requires additional
@@ -99,11 +99,18 @@ screen-source: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
 #
 $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES) make/screen.mk
 	$(MAKE) termcap-stage
-	rm -rf $(BUILD_DIR)/$(SCREEN_DIR) $(SCREEN_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SCREEN_DIR) $(@D)
 	$(SCREEN_UNZIP) $(DL_DIR)/$(SCREEN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SCREEN_PATCHES) | patch -d $(BUILD_DIR)/$(SCREEN_DIR) 
-	mv $(BUILD_DIR)/$(SCREEN_DIR) $(SCREEN_BUILD_DIR)
-	(cd $(SCREEN_BUILD_DIR); \
+	if test -n "$(SCREEN_PATCHES)" ; \
+		then cat $(SCREEN_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(SCREEN_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(SCREEN_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SCREEN_DIR) $(@D) ; \
+	fi
+	sed -i -e 's/as_fn_error .* "cannot run test program while cross compiling/echo "cannot run test program while cross compiling/' \
+		-e '/if test -n "\$$fifo";/s/^/fifo=1\nfifobr=\n/' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SCREEN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SCREEN_LDFLAGS)" \
@@ -116,6 +123,7 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES) ma
 	)
 ifeq ($(LIBC_STYLE),uclibc)
 	sed -i -e '/stropts.h/d' $(@D)/pty.c
+	sed -i -e '1s/^/#ifndef _SCHED_H\n#define _SCHED_H\n#define __need_timeval\n#include <bits\/time.h>\n/' -e '$$s/$$/\n#endif/' $(@D)/sched.h
 endif
 ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24 openwrt-brcm47xx openwrt-ixp4xx ts101 wdtv, $(OPTWARE_TARGET)))
 	sed -i -e 's/sched.h/screen_sched.h/g' \
@@ -132,7 +140,7 @@ screen-unpack: $(SCREEN_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(SCREEN_BUILD_DIR)/screen: $(SCREEN_BUILD_DIR)/.configured
-	$(MAKE) -C $(SCREEN_BUILD_DIR)
+	$(MAKE) -C $(@D)
 
 #
 # You should change the dependency to refer directly to the main binary

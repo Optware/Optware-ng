@@ -13,8 +13,8 @@
 # questions. But feel free to update or change this package
 # if there are reasons.
 #
-NAGIOS_PLUGINS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nagiosplug
-NAGIOS_PLUGINS_VERSION=1.4.2
+NAGIOS_PLUGINS_SITE=http://nagios-plugins.org/download
+NAGIOS_PLUGINS_VERSION=2.0.3
 NAGIOS_PLUGINS_SOURCE=nagios-plugins-$(NAGIOS_PLUGINS_VERSION).tar.gz
 NAGIOS_PLUGINS_DIR=nagios-plugins-$(NAGIOS_PLUGINS_VERSION)
 NAGIOS_PLUGINS_UNZIP=zcat
@@ -22,7 +22,7 @@ NAGIOS_PLUGINS_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 NAGIOS_PLUGINS_DESCRIPTION=The nagios (network monitor system) plugins
 NAGIOS_PLUGINS_SECTION=net
 NAGIOS_PLUGINS_PRIORITY=optional
-NAGIOS_PLUGINS_DEPENDS=openssl
+NAGIOS_PLUGINS_DEPENDS=openssl, gnutls
 NAGIOS_PLUGINS_SUGGESTS=
 NAGIOS_PLUGINS_CONFLICTS=
 
@@ -78,7 +78,7 @@ PLUGINS_REMOVE=			\
 #
 # NAGIOS_PLUGINS_IPK_VERSION should be incremented when the ipk changes.
 #
-NAGIOS_PLUGINS_IPK_VERSION=4
+NAGIOS_PLUGINS_IPK_VERSION=1
 
 #
 # NAGIOS_PLUGINS_CONFFILES should be a list of user-editable files
@@ -88,7 +88,7 @@ NAGIOS_PLUGINS_IPK_VERSION=4
 # NAGIOS_PLUGINS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NAGIOS_PLUGINS_PATCHES=$(NAGIOS_PLUGINS_SOURCE_DIR)/configure.patch
+NAGIOS_PLUGINS_PATCHES=#$(NAGIOS_PLUGINS_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -144,7 +144,7 @@ nagios-plugins-source: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NAGIOS_PLUGINS_PATCH
 # shown below to make various patches to it.
 #
 $(NAGIOS_PLUGINS_BUILD_DIR)/.configured: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NAGIOS_PLUGINS_PATCHES) make/nagios-plugins.mk
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage gnutls-stage postgresql-stage
 	rm -rf $(BUILD_DIR)/$(NAGIOS_PLUGINS_DIR) $(NAGIOS_PLUGINS_BUILD_DIR)
 	$(NAGIOS_PLUGINS_UNZIP) $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NAGIOS_PLUGINS_PATCHES)" ; \
@@ -154,11 +154,14 @@ $(NAGIOS_PLUGINS_BUILD_DIR)/.configured: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NA
 	if test "$(BUILD_DIR)/$(NAGIOS_PLUGINS_DIR)" != "$(NAGIOS_PLUGINS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NAGIOS_PLUGINS_DIR) $(NAGIOS_PLUGINS_BUILD_DIR) ; \
 	fi
-	sed -ie 's|-I/usr|-I$(STAGING_PREFIX)|g' $(NAGIOS_PLUGINS_BUILD_DIR)/configure
+	sed -i -e 's|-I/usr|-I$(STAGING_PREFIX)|g' -e 's/fu_cv_sys_stat_statfs2_bsize=no/fu_cv_sys_stat_statfs2_bsize=yes/' \
+										$(NAGIOS_PLUGINS_BUILD_DIR)/configure
 	(cd $(NAGIOS_PLUGINS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NAGIOS_PLUGINS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NAGIOS_PLUGINS_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -166,6 +169,10 @@ $(NAGIOS_PLUGINS_BUILD_DIR)/.configured: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NA
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--with-openssl=$(STAGING_PREFIX) \
+		--with-gnutls=$(STAGING_PREFIX) \
+		--with-pgsql=$(STAGING_PREFIX) \
+		--without-mysql \
 	)
 	# $(PATCH_LIBTOOL) $(NAGIOS_PLUGINS_BUILD_DIR)/libtool
 	touch $(NAGIOS_PLUGINS_BUILD_DIR)/.configured

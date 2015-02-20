@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-LIBWWW_SITE=http://search.cpan.org/CPAN/authors/id/G/GA/GAAS
-PERL-LIBWWW_VERSION=5.825
+PERL-LIBWWW_VERSION=6.05
 PERL-LIBWWW_SOURCE=libwww-perl-$(PERL-LIBWWW_VERSION).tar.gz
 PERL-LIBWWW_DIR=libwww-perl-$(PERL-LIBWWW_VERSION)
 PERL-LIBWWW_UNZIP=zcat

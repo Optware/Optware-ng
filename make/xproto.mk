@@ -14,13 +14,11 @@
 #
 # You should change all these variables to suit your package.
 #
-XPROTO_SITE=http://freedesktop.org/
-XPROTO_SOURCE=# none - available from CVS only
-XPROTO_VERSION=6.6.2+cvs20050130
-XPROTO_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
-XPROTO_DIR=Xproto
-XPROTO_CVS_OPTS=-D20050130
-XPROTO_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+XPROTO_SITE=http://xorg.freedesktop.org/releases/individual/proto
+XPROTO_SOURCE=xproto-$(XPROTO_VERSION).tar.gz
+XPROTO_VERSION=7.0.27
+XPROTO_DIR=xproto-$(XPROTO_VERSION)
+XPROTO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XPROTO_DESCRIPTION=X protocol headers
 XPROTO_SECTION=lib
 XPROTO_PRIORITY=optional
@@ -28,7 +26,7 @@ XPROTO_PRIORITY=optional
 #
 # XPROTO_IPK_VERSION should be incremented when the ipk changes.
 #
-XPROTO_IPK_VERSION=3
+XPROTO_IPK_VERSION=1
 
 #
 # XPROTO_CONFFILES should be a list of user-editable files
@@ -38,7 +36,7 @@ XPROTO_CONFFILES=
 # XPROTO_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XPROTO_PATCHES=
+XPROTO_PATCHES=$(XPROTO_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -77,18 +75,14 @@ $(XPROTO_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(XPROTO_DESCRIPTION)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XPROTO_DIR) && \
-		cvs -d $(XPROTO_REPOSITORY) -z3 co $(XPROTO_CVS_OPTS) $(XPROTO_DIR) && \
-		tar -czf $@ $(XPROTO_DIR) && \
-		rm -rf $(XPROTO_DIR) \
-	)
+$(DL_DIR)/$(XPROTO_SOURCE):
+	$(WGET) -P $(@D) $(XPROTO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-xproto-source: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES)
+xproto-source: $(DL_DIR)/$(XPROTO_SOURCE) $(XPROTO_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -100,17 +94,17 @@ xproto-source: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XPROTO_BUILD_DIR)/.configured: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES) make/xproto.mk
+$(XPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(XPROTO_SOURCE) $(XPROTO_PATCHES) make/xproto.mk
 	rm -rf $(BUILD_DIR)/$(XPROTO_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XPROTO_SOURCE)
 	if test -n "$(XPROTO_PATCHES)" ; \
 		then cat $(XPROTO_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(XPROTO_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XPROTO_DIR)" != "$(XPROTO_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XPROTO_DIR) $(XPROTO_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XPROTO_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XPROTO_DIR) $(@D) ; \
 	fi
-	(cd $(XPROTO_BUILD_DIR); \
+	(cd $(@D); chmod +x autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XPROTO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XPROTO_LDFLAGS)" \
@@ -132,7 +126,7 @@ xproto-unpack: $(XPROTO_BUILD_DIR)/.configured
 #
 $(XPROTO_BUILD_DIR)/.built: $(XPROTO_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XPROTO_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -146,7 +140,7 @@ xproto: $(XPROTO_BUILD_DIR)/.built
 $(XPROTO_BUILD_DIR)/.staged: $(XPROTO_BUILD_DIR)/.built
 	rm -f $@
 #	rm -rf $(STAGING_INCLUDE_DIR)/X11
-	$(MAKE) -C $(XPROTO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xproto.pc
 	touch $@
 

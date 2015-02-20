@@ -14,6 +14,7 @@ ifeq ($(UCLIBC-OPT_LIBS_SOURCE_DIR),$(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/
 UCLIBC-OPT_FROM_BUILDROOT=1
 endif
 
+
 UCLIBC-OPT_DESCRIPTION=micro C library for embedded Linux systems
 UCLIBC-OPT_SECTION=base
 UCLIBC-OPT_PRIORITY=required
@@ -22,11 +23,15 @@ UCLIBC-OPT_SUGGESTS=ipkg-opt
 UCLIBC-OPT_CONFLICTS=
 
 
+### package non-stripped libpthread and libthread_db, increment ipk version
+override UCLIBC-OPT_IPK_VERSION := $(shell expr $(UCLIBC-OPT_IPK_VERSION) + 1 )
+
 # UCLIBC-OPT_IPK_DIR is the directory in which the ipk is built.
 # UCLIBC-OPT_IPK is the name of the resulting ipk files.
 #
 # You should not change any of these variables.
 #
+UCLIBC-OPT_BUILD_DIR=$(BUILD_DIR)/uclibc-opt
 UCLIBC-OPT_IPK_DIR=$(BUILD_DIR)/uclibc-opt-$(UCLIBC-OPT_VERSION)-ipk
 UCLIBC-OPT_IPK=$(BUILD_DIR)/uclibc-opt_$(UCLIBC-OPT_VERSION)-$(UCLIBC-OPT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -78,6 +83,18 @@ endif
 
 UCLIBC-OPT_LIBS_PATTERN=$(patsubst %,$(UCLIBC-OPT_LIBS_SOURCE_DIR)/%*so*,$(UCLIBC-OPT_LIBS))
 
+$(UCLIBC-OPT_BUILD_DIR)/.staged: make/uclibc-opt.mk
+	rm -rf $(@D)
+	install -d $(@D)
+	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(STAGING_LIB_DIR)
+	touch $@
+
+ifdef UCLIBC-OPT_FROM_BUILDROOT
+uclibc-opt-stage: $(BUILDROOT_BUILD_DIR)/.staged
+else
+uclibc-opt-stage: $(UCLIBC-OPT_BUILD_DIR)/.staged
+endif
+
 ifdef UCLIBC-OPT_FROM_BUILDROOT
 $(UCLIBC-OPT_IPK): $(BUILDROOT_BUILD_DIR)/.built make/uclibc-opt.mk
 else
@@ -92,6 +109,9 @@ endif
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/lib
 	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)/opt/lib
 	$(TARGET_STRIP) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
+	### package non-stripped libpthread and libthread_db
+	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libpthread* $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libthread_db* \
+							$(UCLIBC-OPT_IPK_DIR)/opt/lib
 	$(MAKE) $(UCLIBC-OPT_IPK_DIR)/CONTROL/control
 ifdef UCLIBC-OPT_FROM_BUILDROOT
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/usr/lib

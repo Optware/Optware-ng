@@ -47,7 +47,7 @@ NGET_IPK_VERSION=5
 # NGET_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NGET_PATCHES=$(NGET_SOURCE_DIR)/configure.patch
+NGET_PATCHES=$(NGET_SOURCE_DIR)/limits.patch
 
 #
 # If the compilation of the package requires additional
@@ -107,7 +107,7 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nge
 	case `$(TARGET_CC) -dumpversion` in \
 	  4.2.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch \
 	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
-	  4.3.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch \
+	  4.[3-9].* | 4.10.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch \
 	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
 	esac
 	mv $(BUILD_DIR)/$(NGET_DIR) $(@D)

@@ -1,0 +1,354 @@
+diff -pur gettext-0.19.4.orig/gettext-runtime/gnulib-lib/canonicalize-lgpl.c gettext-0.19.4/gettext-runtime/gnulib-lib/canonicalize-lgpl.c
+--- gettext-0.19.4.orig/gettext-runtime/gnulib-lib/canonicalize-lgpl.c	2014-12-24 08:59:44.000000000 +0200
++++ gettext-0.19.4/gettext-runtime/gnulib-lib/canonicalize-lgpl.c	2015-02-19 08:49:21.514427276 +0200
+@@ -249,7 +249,7 @@ __realpath (const char *name, char *reso
+               dest = rpath + dest_offset;
+             }
+ 
+-#ifdef _LIBC
++#ifdef _LIBC && !defined __UCLIBC__
+           dest = __mempcpy (dest, start, end - start);
+ #else
+           memcpy (dest, start, end - start);
+diff -pur gettext-0.19.4.orig/gettext-runtime/gnulib-lib/getopt.c gettext-0.19.4/gettext-runtime/gnulib-lib/getopt.c
+--- gettext-0.19.4.orig/gettext-runtime/gnulib-lib/getopt.c	2014-12-24 08:59:44.000000000 +0200
++++ gettext-0.19.4/gettext-runtime/gnulib-lib/getopt.c	2015-02-19 08:47:48.658937698 +0200
+@@ -153,7 +153,7 @@ exchange (char **argv, struct _getopt_da
+      It leaves the longer segment in the right place overall,
+      but it consists of two parts that need to be swapped next.  */
+ 
+-#if defined _LIBC && defined USE_NONOPTION_FLAGS
++#if defined _LIBC && !defined __UCLIBC__ && defined USE_NONOPTION_FLAGS
+   /* First make sure the handling of the '__getopt_nonoption_flags'
+      string can work normally.  Our top argument must be in the range
+      of the string.  */
+@@ -253,7 +253,7 @@ _getopt_initialize (int argc _GL_UNUSED,
+   else
+     d->__ordering = PERMUTE;
+ 
+-#if defined _LIBC && defined USE_NONOPTION_FLAGS
++#if defined _LIBC && !defined __UCLIBC__ && defined USE_NONOPTION_FLAGS
+   if (!d->__posixly_correct
+       && argc == __libc_argc && argv == __libc_argv)
+     {
+diff -pur gettext-0.19.4.orig/gettext-runtime/gnulib-lib/setenv.c gettext-0.19.4/gettext-runtime/gnulib-lib/setenv.c
+--- gettext-0.19.4.orig/gettext-runtime/gnulib-lib/setenv.c	2014-12-24 08:59:44.000000000 +0200
++++ gettext-0.19.4/gettext-runtime/gnulib-lib/setenv.c	2015-02-19 08:49:09.866490819 +0200
+@@ -164,7 +164,7 @@ __add_to_environ (const char *name, cons
+         {
+           /* See whether the value is already known.  */
+ #ifdef USE_TSEARCH
+-# ifdef _LIBC
++# if defined _LIBC && !defined __UCLIBC__
+           new_value = (char *) alloca (namelen + 1 + vallen);
+           __mempcpy (__mempcpy (__mempcpy (new_value, name, namelen), "=", 1),
+                      value, vallen);
+@@ -232,7 +232,7 @@ __add_to_environ (const char *name, cons
+         {
+ #ifdef USE_TSEARCH
+           char *new_value;
+-# ifdef _LIBC
++# if defined _LIBC && !defined __UCLIBC__
+           new_value = alloca (namelen + 1 + vallen);
+           __mempcpy (__mempcpy (__mempcpy (new_value, name, namelen), "=", 1),
+                      value, vallen);
+diff -pur gettext-0.19.4.orig/gettext-tools/gnulib-lib/canonicalize-lgpl.c gettext-0.19.4/gettext-tools/gnulib-lib/canonicalize-lgpl.c
+--- gettext-0.19.4.orig/gettext-tools/gnulib-lib/canonicalize-lgpl.c	2014-12-24 09:00:10.000000000 +0200
++++ gettext-0.19.4/gettext-tools/gnulib-lib/canonicalize-lgpl.c	2015-02-19 08:45:42.255579197 +0200
+@@ -249,7 +249,7 @@ __realpath (const char *name, char *reso
+               dest = rpath + dest_offset;
+             }
+ 
+-#ifdef _LIBC
++#if defined _LIBC && !defined __UCLIBC__
+           dest = __mempcpy (dest, start, end - start);
+ #else
+           memcpy (dest, start, end - start);
+diff -pur gettext-0.19.4.orig/gettext-tools/gnulib-lib/fnmatch.c gettext-0.19.4/gettext-tools/gnulib-lib/fnmatch.c
+--- gettext-0.19.4.orig/gettext-tools/gnulib-lib/fnmatch.c	2014-12-24 09:00:10.000000000 +0200
++++ gettext-0.19.4/gettext-tools/gnulib-lib/fnmatch.c	2015-02-19 08:44:16.616000615 +0200
+@@ -157,7 +157,7 @@ static int posixly_correct;
+ # endif
+ # define STRLEN(S) strlen (S)
+ # define STRCAT(D, S) strcat (D, S)
+-# ifdef _LIBC
++# if defined _LIBC && !defined __UCLIBC__
+ #  define MEMPCPY(D, S, N) __mempcpy (D, S, N)
+ # else
+ #  if HAVE_MEMPCPY
+diff -pur gettext-0.19.4.orig/gettext-tools/gnulib-lib/getopt.c gettext-0.19.4/gettext-tools/gnulib-lib/getopt.c
+--- gettext-0.19.4.orig/gettext-tools/gnulib-lib/getopt.c	2014-12-24 09:00:10.000000000 +0200
++++ gettext-0.19.4/gettext-tools/gnulib-lib/getopt.c	2015-02-19 08:48:06.378839756 +0200
+@@ -153,7 +153,7 @@ exchange (char **argv, struct _getopt_da
+      It leaves the longer segment in the right place overall,
+      but it consists of two parts that need to be swapped next.  */
+ 
+-#if defined _LIBC && defined USE_NONOPTION_FLAGS
++#if defined _LIBC && !defined __UCLIBC__ && defined USE_NONOPTION_FLAGS
+   /* First make sure the handling of the '__getopt_nonoption_flags'
+      string can work normally.  Our top argument must be in the range
+      of the string.  */
+@@ -253,7 +253,7 @@ _getopt_initialize (int argc _GL_UNUSED,
+   else
+     d->__ordering = PERMUTE;
+ 
+-#if defined _LIBC && defined USE_NONOPTION_FLAGS
++#if defined _LIBC && !defined __UCLIBC__ && defined USE_NONOPTION_FLAGS
+   if (!d->__posixly_correct
+       && argc == __libc_argc && argv == __libc_argv)
+     {
+diff -pur gettext-0.19.4.orig/gettext-tools/gnulib-lib/setenv.c gettext-0.19.4/gettext-tools/gnulib-lib/setenv.c
+--- gettext-0.19.4.orig/gettext-tools/gnulib-lib/setenv.c	2014-12-24 09:00:14.000000000 +0200
++++ gettext-0.19.4/gettext-tools/gnulib-lib/setenv.c	2015-02-19 08:48:39.482657103 +0200
+@@ -164,7 +164,7 @@ __add_to_environ (const char *name, cons
+         {
+           /* See whether the value is already known.  */
+ #ifdef USE_TSEARCH
+-# ifdef _LIBC
++# if defined _LIBC && !defined __UCLIBC__
+           new_value = (char *) alloca (namelen + 1 + vallen);
+           __mempcpy (__mempcpy (__mempcpy (new_value, name, namelen), "=", 1),
+                      value, vallen);
+@@ -232,7 +232,7 @@ __add_to_environ (const char *name, cons
+         {
+ #ifdef USE_TSEARCH
+           char *new_value;
+-# ifdef _LIBC
++# if defined _LIBC && !defined __UCLIBC__
+           new_value = alloca (namelen + 1 + vallen);
+           __mempcpy (__mempcpy (__mempcpy (new_value, name, namelen), "=", 1),
+                      value, vallen);
+diff -pur gettext-0.19.4.orig/gettext-tools/libgrep/regexec.c gettext-0.19.4/gettext-tools/libgrep/regexec.c
+--- gettext-0.19.4.orig/gettext-tools/libgrep/regexec.c	2014-12-24 09:00:40.000000000 +0200
++++ gettext-0.19.4/gettext-tools/libgrep/regexec.c	2015-02-19 08:42:06.472641536 +0200
+@@ -384,7 +384,7 @@ re_search_2_stub (struct re_pattern_buff
+ 
+ 	if (BE (s == NULL, 0))
+ 	  return -2;
+-#ifdef _LIBC
++#if defined _LIBC && !defined __UCLIBC__
+ 	memcpy (__mempcpy (s, string1, length1), string2, length2);
+ #else
+ 	memcpy (s, string1, length1);
+diff -pur gettext-0.19.4.orig/gettext-tools/src/hostname.c gettext-0.19.4/gettext-tools/src/hostname.c
+--- gettext-0.19.4.orig/gettext-tools/src/hostname.c	2014-12-09 10:43:46.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/hostname.c	2015-02-19 08:32:09.391502468 +0200
+@@ -117,6 +117,10 @@ static void usage (int status)
+ ;
+ static void print_hostname (void);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
++
+ int
+ main (int argc, char *argv[])
+ {
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgattrib.c gettext-0.19.4/gettext-tools/src/msgattrib.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgattrib.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgattrib.c	2015-02-19 08:32:09.395502451 +0200
+@@ -122,6 +122,9 @@ static const struct option long_options[
+   { NULL, 0, NULL, 0 }
+ };
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ /* Forward declaration of local functions.  */
+ static void usage (int status)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgcat.c gettext-0.19.4/gettext-tools/src/msgcat.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgcat.c	2014-04-15 04:52:10.000000000 +0300
++++ gettext-0.19.4/gettext-tools/src/msgcat.c	2015-02-19 08:32:09.395502451 +0200
+@@ -101,6 +101,9 @@ static void usage (int status)
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgcmp.c gettext-0.19.4/gettext-tools/src/msgcmp.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgcmp.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgcmp.c	2015-02-19 08:32:09.395502451 +0200
+@@ -77,6 +77,9 @@ static const struct option long_options[
+   { NULL, 0, NULL, 0 }
+ };
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ /* Forward declaration of local functions.  */
+ static void usage (int status)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgcomm.c gettext-0.19.4/gettext-tools/src/msgcomm.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgcomm.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgcomm.c	2015-02-19 08:32:09.395502451 +0200
+@@ -102,6 +102,9 @@ static void usage (int status)
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char *argv[])
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgconv.c gettext-0.19.4/gettext-tools/src/msgconv.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgconv.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgconv.c	2015-02-19 08:32:09.399502434 +0200
+@@ -93,6 +93,9 @@ static void usage (int status)
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgen.c gettext-0.19.4/gettext-tools/src/msgen.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgen.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgen.c	2015-02-19 08:32:09.399502434 +0200
+@@ -90,6 +90,9 @@ static void usage (int status)
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgexec.c gettext-0.19.4/gettext-tools/src/msgexec.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgexec.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgexec.c	2015-02-19 08:32:09.399502434 +0200
+@@ -95,6 +95,9 @@ static void usage (int status)
+ ;
+ static void process_msgdomain_list (const msgdomain_list_ty *mdlp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgfilter.c gettext-0.19.4/gettext-tools/src/msgfilter.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgfilter.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgfilter.c	2015-02-19 08:32:09.399502434 +0200
+@@ -123,6 +123,9 @@ static void usage (int status)
+ static void generic_filter (const char *str, size_t len, char **resultp, size_t *lengthp);
+ static msgdomain_list_ty *process_msgdomain_list (msgdomain_list_ty *mdlp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgfmt.c gettext-0.19.4/gettext-tools/src/msgfmt.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgfmt.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgfmt.c	2015-02-19 08:32:09.399502434 +0200
+@@ -199,6 +199,9 @@ static const struct option long_options[
+   { NULL, 0, NULL, 0 }
+ };
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ /* Forward declaration of local functions.  */
+ static void usage (int status)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msggrep.c gettext-0.19.4/gettext-tools/src/msggrep.c
+--- gettext-0.19.4.orig/gettext-tools/src/msggrep.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msggrep.c	2015-02-19 08:32:09.399502434 +0200
+@@ -142,6 +142,9 @@ static void usage (int status)
+ ;
+ static msgdomain_list_ty *process_msgdomain_list (msgdomain_list_ty *mdlp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msginit.c gettext-0.19.4/gettext-tools/src/msginit.c
+--- gettext-0.19.4.orig/gettext-tools/src/msginit.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msginit.c	2015-02-19 08:32:09.399502434 +0200
+@@ -144,6 +144,9 @@ static char *get_field (const char *head
+ static msgdomain_list_ty *fill_header (msgdomain_list_ty *mdlp);
+ static msgdomain_list_ty *update_msgstr_plurals (msgdomain_list_ty *mdlp);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgmerge.c gettext-0.19.4/gettext-tools/src/msgmerge.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgmerge.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgmerge.c	2015-02-19 08:32:09.399502434 +0200
+@@ -142,6 +142,9 @@ static const struct option long_options[
+   { NULL, 0, NULL, 0 }
+ };
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ struct statistics
+ {
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msgunfmt.c gettext-0.19.4/gettext-tools/src/msgunfmt.c
+--- gettext-0.19.4.orig/gettext-tools/src/msgunfmt.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msgunfmt.c	2015-02-19 08:32:09.399502434 +0200
+@@ -112,6 +112,9 @@ static void usage (int status)
+ ;
+ static void read_one_file (message_list_ty *mlp, const char *filename);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/msguniq.c gettext-0.19.4/gettext-tools/src/msguniq.c
+--- gettext-0.19.4.orig/gettext-tools/src/msguniq.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/msguniq.c	2015-02-19 08:32:09.403502417 +0200
+@@ -96,6 +96,9 @@ static void usage (int status)
+ #endif
+ ;
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char **argv)
+diff -pur gettext-0.19.4.orig/gettext-tools/src/urlget.c gettext-0.19.4/gettext-tools/src/urlget.c
+--- gettext-0.19.4.orig/gettext-tools/src/urlget.c	2013-01-09 06:01:27.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/urlget.c	2015-02-19 08:32:09.403502417 +0200
+@@ -87,6 +87,9 @@ static void usage (int status)
+ ;
+ static void fetch (const char *url, const char *file);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char *argv[])
+diff -pur gettext-0.19.4.orig/gettext-tools/src/xgettext.c gettext-0.19.4/gettext-tools/src/xgettext.c
+--- gettext-0.19.4.orig/gettext-tools/src/xgettext.c	2014-12-16 11:03:54.000000000 +0200
++++ gettext-0.19.4/gettext-tools/src/xgettext.c	2015-02-19 08:32:09.403502417 +0200
+@@ -283,6 +283,9 @@ static void finalize_header (msgdomain_l
+ static extractor_ty language_to_extractor (const char *name);
+ static const char *extension_to_language (const char *extension);
+ 
++#if defined(__UCLIBC__) && __UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ == 29
++void (*error_print_progname) (void) = NULL;
++#endif
+ 
+ int
+ main (int argc, char *argv[])

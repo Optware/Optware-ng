@@ -32,8 +32,8 @@ JOVE_PATCHES=$(JOVE_SOURCE_DIR)/Makefile.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-JOVE_CPPFLAGS=
-JOVE_LDFLAGS=
+JOVE_CPPFLAGS=-DBSDPOSIX
+JOVE_LDFLAGS=-Xlinker -rpath -Xlinker /opt/lib
 
 #
 # JOVE_BUILD_DIR is the directory in which the build is done.
@@ -78,13 +78,14 @@ jove-source: $(DL_DIR)/$(JOVE_SOURCE) $(JOVE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(JOVE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOVE_SOURCE) $(JOVE_PATCHES)
+$(JOVE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOVE_SOURCE) $(JOVE_PATCHES) make/jove.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(JOVE_DIR) $(JOVE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(JOVE_DIR) $(@D)
 	$(JOVE_UNZIP) $(DL_DIR)/$(JOVE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(JOVE_PATCHES) | patch -d $(BUILD_DIR)/$(JOVE_DIR) -p1
-	mv $(BUILD_DIR)/$(JOVE_DIR) $(JOVE_BUILD_DIR)
-	touch $(JOVE_BUILD_DIR)/.configured
+	mv $(BUILD_DIR)/$(JOVE_DIR) $(@D)
+	find $(@D) -type f -name "*.[ch]" -exec sed -i -e 's/getline/_getline_/g' {} \;
+	touch $@
 
 jove-unpack: $(JOVE_BUILD_DIR)/.configured
 
@@ -92,21 +93,25 @@ jove-unpack: $(JOVE_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(JOVE_BUILD_DIR)/jjove: $(JOVE_BUILD_DIR)/.configured
-	$(MAKE) LDFLAGS="$(STAGING_LDFLAGS) -Xlinker -rpath -Xlinker /opt/lib" LOCALCC=gcc CC=$(TARGET_CC) -C $(JOVE_BUILD_DIR)
+$(JOVE_BUILD_DIR)/.built: $(JOVE_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) LDFLAGS="$(STAGING_LDFLAGS) $(JOVE_LDFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(JOVE_CPPFLAGS)" \
+			LOCALCC=gcc CC=$(TARGET_CC) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-jove: $(JOVE_BUILD_DIR)/jjove
+jove: $(JOVE_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/jove
 #
 $(JOVE_IPK_DIR)/CONTROL/control:
-	@install -d $(JOVE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: jove" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -132,7 +137,7 @@ $(JOVE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(JOVE_IPK): $(JOVE_BUILD_DIR)/jjove
+$(JOVE_IPK): $(JOVE_BUILD_DIR)/.built
 	rm -rf $(JOVE_IPK_DIR) $(JOVE_IPK)
 	install -d $(JOVE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(JOVE_BUILD_DIR)/jjove -o $(JOVE_IPK_DIR)/opt/bin/jove
@@ -161,4 +166,4 @@ jove-dirclean:
 # Some sanity check for the package.
 #
 jove-check: $(JOVE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(JOVE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

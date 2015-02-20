@@ -142,7 +142,7 @@ ntop-source: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 # 
-$(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
+$(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES) make/ntop.mk
 	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage
 	$(MAKE) libgd-stage rrdtool-stage pcre-stage
 ifneq (, $(filter mysql, $(PACKAGES)))
@@ -151,11 +151,8 @@ endif
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 	$(MAKE) net-snmp-stage
 endif
-#	rm -rf $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR)
-#	$(NTOP_UNZIP) $(DL_DIR)/$(NTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(NTOP_PATCHES) | patch -d $(BUILD_DIR)/$(NTOP_DIR) -p1
-#	mv $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz
+	rm -rf $(BUILD_DIR)/$(NTOP_DIR) $(@D)
+	$(NTOP_UNZIP) $(DL_DIR)/$(NTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NTOP_PATCHES)" ; \
 		then cat $(NTOP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NTOP_DIR) -p1 ; \
@@ -163,12 +160,11 @@ endif
 	if test "$(BUILD_DIR)/$(NTOP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NTOP_DIR) $(@D) ; \
 	fi
-	(cd $(@D); \
-		sed -i -e 's/config="y"/config="n"/' autogen.sh; \
-		./autogen.sh; \
-	)
+	rm -f $(@D)/aclocal.m4
+	cd $(@D); libtoolize -c -f; aclocal; cat $(addprefix `aclocal --print-ac-dir`/, \
+		libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 lt~obsolete.m4) >> aclocal.m4; \
+		autoheader; autoconf; automake -a -c
 	sed -i -e '/FLAGS=.*FLAGS.*-I\/usr\//d' $(@D)/configure.in
-	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTOP_CPPFLAGS)" \

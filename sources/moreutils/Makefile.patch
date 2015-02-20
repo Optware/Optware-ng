@@ -1,24 +1,24 @@
---- Makefile	2012-06-05 13:55:53.000000000 -0400
-+++ Makefile.new	2013-02-26 03:34:22.120677130 -0500
+--- Makefile.orig	2015-01-19 20:03:51.000000000 +0200
++++ Makefile	2015-02-05 18:40:42.280954570 +0200
 @@ -1,8 +1,8 @@
 -BINS=isutf8 ifdata ifne pee sponge mispipe lckdo parallel errno
 +BINS=isutf8 ifdata ifne pee sponge mispipe lckdo errno
  PERLSCRIPTS=vidir vipe ts combine zrun chronic
 -MANS=sponge.1 vidir.1 vipe.1 isutf8.1 ts.1 combine.1 ifdata.1 ifne.1 pee.1 zrun.1 chronic.1 mispipe.1 lckdo.1 parallel.1 errno.1
 +MANS=sponge.1 vidir.1 vipe.1 isutf8.1 ts.1 combine.1 ifdata.1 ifne.1 pee.1 zrun.1 chronic.1 mispipe.1 lckdo.1 errno.1
- CFLAGS=-O2 -g -Wall
+ CFLAGS?=-O2 -g -Wall
 -INSTALL_BIN?=install -s
 +INSTALL_BIN?=install
- PREFIX=/usr
+ PREFIX?=/usr
  
- DOCBOOK2XMAN=docbook2x-man
-@@ -14,7 +14,9 @@
- 
+ DOCBOOK2XMAN=xsltproc --param man.authors.section.enabled 0 /usr/share/xml/docbook/stylesheet/docbook-xsl/manpages/docbook.xsl
+@@ -15,7 +15,9 @@
  install:
  	mkdir -p $(DESTDIR)$(PREFIX)/bin
-+	$(STRIP_COMMAND) $(BINS)
  	$(INSTALL_BIN) $(BINS) $(DESTDIR)$(PREFIX)/bin
-+	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(PERLSCRIPTS)
++	cd  $(DESTDIR)$(PREFIX)/bin; $(STRIP_COMMAND) $(BINS)
  	install $(PERLSCRIPTS) $(DESTDIR)$(PREFIX)/bin
++	cd  $(DESTDIR)$(PREFIX)/bin; sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(PERLSCRIPTS)
  	
  	mkdir -p $(DESTDIR)$(PREFIX)/share/man/man1
+ 	install $(MANS) $(DESTDIR)$(PREFIX)/share/man/man1

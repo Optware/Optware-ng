@@ -21,7 +21,7 @@
 #
 BUSYBOX_SITE=http://www.busybox.net/downloads
 # If you change this version, you must check the adduser package as well.
-BUSYBOX_VERSION=1.10.3
+BUSYBOX_VERSION=1.23.0
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
@@ -121,6 +121,10 @@ endif
 	sed -i -e 's/-strip /-$$(STRIP) /' $(@D)/scripts/Makefile.IMA
 ifeq ($(OPTWARE_TARGET), $(filter ds101g, $(OPTWARE_TARGET)))
 	sed -i -e '/sort-common/d; /sort-section/d' $(@D)/scripts/trylink
+endif
+ifeq ($(OPTWARE_TARGET), $(filter openwiz, $(OPTWARE_TARGET)))
+	sed -i -e "s/re_exec(/re_execnew(/" $(@D)/include/libbb.h
+	sed -i -e "s/re_exec(/re_execnew(/" $(@D)/libbb/vfork_daemon_rexec.c
 endif
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" \
 		-C $(@D) oldconfig
@@ -242,7 +246,9 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 	mv $(BUSYBOX_IPK_DIR)/opt/bin/* $(BUSYBOX_IPK_DIR)-links/opt/bin
 	mv $(BUSYBOX_IPK_DIR)/opt/sbin/* $(BUSYBOX_IPK_DIR)-links/opt/sbin
 	mv $(BUSYBOX_IPK_DIR)-links/opt/sbin/chroot $(BUSYBOX_IPK_DIR)-links/opt/bin/
-	mv $(BUSYBOX_IPK_DIR)-links/opt/sbin/ifconfig $(BUSYBOX_IPK_DIR)-links/opt/bin/
+	if [ -f $(BUSYBOX_IPK_DIR)-links/opt/sbin/ifconfig ] ; then \
+		mv $(BUSYBOX_IPK_DIR)-links/opt/sbin/ifconfig $(BUSYBOX_IPK_DIR)-links/opt/bin/; \
+	fi
 	mv $(BUSYBOX_IPK_DIR)-links/opt/sbin/syslogd $(BUSYBOX_IPK_DIR)-links/opt/libexec/
 	$(MAKE) $(BUSYBOX_IPK_DIR)-links/CONTROL/control
 	echo "#!/bin/sh" > $(BUSYBOX_IPK_DIR)-links/CONTROL/postinst

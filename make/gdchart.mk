@@ -35,14 +35,14 @@ GDCHART_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GDCHART_DESCRIPTION=Easy to use C API for create charts and graphs in PNG, GIF and WBMP format.
 GDCHART_SECTION=misc
 GDCHART_PRIORITY=optional
-GDCHART_DEPENDS=libgd,zlib,libpng,freetype,libjpeg
+GDCHART_DEPENDS=libgd, zlib, libpng, freetype, libjpeg
 GDCHART_SUGGESTS=
 GDCHART_CONFLICTS=
 
 #
 # GDCHART_IPK_VERSION should be incremented when the ipk changes.
 #
-GDCHART_IPK_VERSION=2
+GDCHART_IPK_VERSION=3
 
 #
 # GDCHART_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ GDCHART_PATCHES=$(GDCHART_SOURCE_DIR)/Makefile.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-GDCHART_CPPFLAGS=
+GDCHART_CPPFLAGS=-fPIC
 GDCHART_LDFLAGS=
 
 #
@@ -104,7 +104,7 @@ gdchart-source: $(DL_DIR)/$(GDCHART_SOURCE) $(GDCHART_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GDCHART_BUILD_DIR)/.configured: $(DL_DIR)/$(GDCHART_SOURCE) $(GDCHART_PATCHES)
+$(GDCHART_BUILD_DIR)/.configured: $(DL_DIR)/$(GDCHART_SOURCE) $(GDCHART_PATCHES) make/gdchart.mk
 	$(MAKE) libgd-stage zlib-stage libpng-stage freetype-stage libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(GDCHART_DIR) $(GDCHART_BUILD_DIR)
 	$(GDCHART_UNZIP) $(DL_DIR)/$(GDCHART_SOURCE) | tar -C $(BUILD_DIR) -xvf -

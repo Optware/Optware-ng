@@ -1,0 +1,74 @@
+--- configure.orig	2009-07-14 00:20:36.000000000 +0300
++++ configure	2015-02-07 22:52:25.506482802 +0200
+@@ -5890,64 +5890,21 @@
+ 
+ { echo "$as_me:$LINENO: checking for sendmail program" >&5
+ echo $ECHO_N "checking for sendmail program... $ECHO_C" >&6; }
+-if test -f ${sbindir}/sendmail
+-then
+-    cat >>confdefs.h <<\_ACEOF
+-#define MAIL_COMMAND "${sbindir}/sendmail"
+-_ACEOF
+-
+-    { echo "$as_me:$LINENO: result: found at ${sbindir}/sendmail" >&5
+-echo "${ECHO_T}found at ${sbindir}/sendmail" >&6; }
+-elif test -f /usr/sbin/sendmail
+-then
+-    cat >>confdefs.h <<\_ACEOF
+-#define MAIL_COMMAND "/usr/sbin/sendmail"
+-_ACEOF
+ 
+-    { echo "$as_me:$LINENO: result: found at /usr/sbin/sendmail" >&5
+-echo "${ECHO_T}found at /usr/sbin/sendmail" >&6; }
+-elif test -f /usr/lib/sendmail
+-then
+-    cat >>confdefs.h <<\_ACEOF
+-#define MAIL_COMMAND "/usr/lib/sendmail"
++cat >>confdefs.h <<\_ACEOF
++#define MAIL_COMMAND "/opt/sbin/sendmail"
+ _ACEOF
+ 
+-    { echo "$as_me:$LINENO: result: found at /usr/lib/sendmail" >&5
++{ echo "$as_me:$LINENO: result: Hack! Set to /opt/sbin/sendmail" >&5
+ echo "${ECHO_T}found at /usr/lib/sendmail" >&6; }
+-elif test -f /usr/ucblib/sendmail
+-then
+-    cat >>confdefs.h <<\_ACEOF
+-#define MAIL_COMMAND "/usr/ucblib/sendmail"
+-_ACEOF
+ 
+-    { echo "$as_me:$LINENO: result: found at /usr/ucblib/sendmail" >&5
+-echo "${ECHO_T}found at /usr/ucblib/sendmail" >&6; }
+-else
+-    { echo "$as_me:$LINENO: result: ERROR: The sendmail program cannot be located" >&5
+-echo "${ECHO_T}ERROR: The sendmail program cannot be located" >&6; }
+-    exit 1
+-fi
++
+ if test "$spooldir" = "no" -o "$spooldir" = "yes" ; then
+     { echo "$as_me:$LINENO: checking for mail spool directory" >&5
+ echo $ECHO_N "checking for mail spool directory... $ECHO_C" >&6; }
+-    if test -d /var/mail
+-    then
+-        pop_maildir="/var/mail"
+-    elif test -d /var/spool/mail
+-    then
+-        pop_maildir="/var/spool/mail"
+-    elif test -d /usr/mail
+-    then
+-        pop_maildir="/usr/mail"
+-    elif test -d /usr/spool/mail
+-    then
+-        pop_maildir="/usr/spool/mail"
+-    else
+-        { echo "$as_me:$LINENO: result: ERROR: Couln't locate the mail spool" >&5
+-echo "${ECHO_T}ERROR: Couln't locate the mail spool" >&6; }
+-        exit 1
+-    fi
+-    { echo "$as_me:$LINENO: result: \"found at $pop_maildir\"" >&5
++    pop_maildir="/opt/var/spool/mail"
++
++{ echo "$as_me:$LINENO: result: \"Hach! Set to $pop_maildir\"" >&5
+ echo "${ECHO_T}\"found at $pop_maildir\"" >&6; }
+     cat >>confdefs.h <<_ACEOF
+ #define POP_MAILDIR "$pop_maildir"

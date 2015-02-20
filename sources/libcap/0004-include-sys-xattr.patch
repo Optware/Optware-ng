@@ -1,0 +1,16 @@
+Description: Include sys/xattr.h in sys/capability.h
+ We include sys/xattr.h before linux/xattr.h to guard against redefinition
+ of some defines when userspace applications include sys/capability.h and
+ sys/xattr.h and get linux/xattr.h implicitly included out of order.
+Author: Adam Conrad <adconrad@ubuntu.com>
+
+--- libcap2-2.24.orig/libcap/include/sys/capability.h
++++ libcap2-2.24/libcap/include/sys/capability.h
+@@ -27,6 +27,7 @@ extern "C" {
+ #define __user
+ #endif
+ #include <linux/capability.h>
++#include <sys/xattr.h>
+ #include <linux/xattr.h>
+ 
+ /*

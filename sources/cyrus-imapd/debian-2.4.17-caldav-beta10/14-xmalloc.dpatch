@@ -1,0 +1,29 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 14-xmalloc.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix xmalloc usage
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/lib/map_stupidshared.c
++++ cyrus-imapd-2.4/lib/map_stupidshared.c
+@@ -49,6 +49,7 @@
+ #include <sys/stat.h>
+ #include <syslog.h>
+ 
++#include "xmalloc.h"
+ #include "map.h"
+ #include "exitcodes.h"
+ 
+--- cyrus-imapd-2.4.orig/lib/xmalloc.h
++++ cyrus-imapd-2.4/lib/xmalloc.h
+@@ -58,7 +58,7 @@ extern char *xstrndup (const char *str,
+ 
+ /* Functions using xmalloc.h must provide a function called fatal() conforming
+    to the following: */
+-extern void fatal(const char *fatal_message, int fatal_code);
+-/*   __attribute__ ((noreturn));*/
++extern void fatal(const char *fatal_message, int fatal_code)
++   __attribute__ ((noreturn));
+ 
+ #endif /* INCLUDED_XMALLOC_H */

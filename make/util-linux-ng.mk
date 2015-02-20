@@ -137,7 +137,7 @@ $(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_NG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_NG_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
+#	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_NG_CPPFLAGS)" \
@@ -230,12 +230,13 @@ $(GETOPT_IPK_DIR)/CONTROL/control:
 $(UTIL_LINUX_NG_IPK) $(GETOPT_IPK): $(UTIL_LINUX_NG_BUILD_DIR)/.built
 	rm -rf $(UTIL_LINUX_NG_IPK_DIR) $(BUILD_DIR)/util-linux-ng_*_$(TARGET_ARCH).ipk
 	rm -rf $(GETOPT_IPK_DIR) $(BUILD_DIR)/getopt_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(UTIL_LINUX_NG_BUILD_DIR) DESTDIR=$(UTIL_LINUX_NG_IPK_DIR) install-strip
+	$(MAKE) -C $(UTIL_LINUX_NG_BUILD_DIR) DESTDIR=$(UTIL_LINUX_NG_IPK_DIR) install
 	rm -f $(UTIL_LINUX_NG_IPK_DIR)/opt/bin/linux32 $(UTIL_LINUX_NG_IPK_DIR)/opt/bin/linux64
 	rm -f $(UTIL_LINUX_NG_IPK_DIR)/opt/sbin/swapoff
 
 	mkdir -p $(GETOPT_IPK_DIR)/opt/bin/
 	mv $(UTIL_LINUX_NG_IPK_DIR)/opt/bin/getopt $(GETOPT_IPK_DIR)/opt/bin/
+	-$(STRIP_COMMAND) $(UTIL_LINUX_NG_IPK_DIR)/opt/bin/* $(UTIL_LINUX_NG_IPK_DIR)/opt/sbin/*
 
 	$(MAKE) $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/postinst

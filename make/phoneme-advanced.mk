@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PHONEME_ADVANCED_SITE=http://download.java.net/mobileembedded/phoneme/advanced
-PHONEME_ADVANCED_VERSION=0.0.mr.2.b.34
-PHONEME_ADVANCED_SOURCE=phoneme_advanced-mr2-dev-src-b34-02_aug_2007.zip
+PHONEME_ADVANCED_VERSION=0.0.mr.2.b.97
+PHONEME_ADVANCED_SOURCE=phoneme_advanced-mr2-dev-src-b97-20_nov_2008.zip
 PHONEME_ADVANCED_LEGAL=phoneme_advanced-legal.tar.gz
 PHONEME_ADVANCED_REPO=https://phoneme.dev.java.net/svn/phoneme
 PHONEME_ADVANCED_DIR=phoneme_advanced_mr2
@@ -159,6 +159,17 @@ endif
 	( [ -e $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) ] && \
 	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile ) || \
 	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile $(PHONEME_ADVANCED_CDC_BUILD_DIR)
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
+	sed -i -e 's|<asm/ucontext\.h>|<asm-generic/ucontext.h>|' $(@D)/cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c
+endif
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
+#	uclibc built without sigignore() implementation
+	sed -i -e '/CVMBool CVMinitVMTargetGlobalState()/ i int sigignore (int sig)\n{\nstruct sigaction act;\nmemset(\&act, 0, sizeof(act));\nact.sa_handler = SIG_IGN;\nreturn sigaction (sig, \&act, NULL);\n}' $(@D)/cdc/src/linux/javavm/runtime/globals_md.c
+endif
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
+#	fix for Assembler messages: Error: .size expression for atomicSwap does not evaluate to a constant
+	sed -i -e '/SET_SIZE(atomicSwap)/s/^/@/' $(@D)/cdc/src/arm/javavm/runtime/atomic_arm.S
+endif
 	touch $@
 
 phoneme-advanced-unpack: $(PHONEME_ADVANCED_BUILD_DIR)/.configured

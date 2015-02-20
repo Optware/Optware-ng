@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UNCIA_SITE=http://uncia.sourceforge.net
-UNCIA_VERSION=1.0
+UNCIA_VERSION=1.3
 UNCIA_SOURCE=uncia-$(UNCIA_VERSION).tar.gz
 UNCIA_DIR=uncia-$(UNCIA_VERSION)
 UNCIA_UNZIP=zcat
@@ -29,7 +29,7 @@ UNCIA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UNCIA_DESCRIPTION=a big cat, ASCII text manipulation tool.
 UNCIA_SECTION=utils
 UNCIA_PRIORITY=optional
-UNCIA_DEPENDS=libstdc++, libcurl, zlib
+UNCIA_DEPENDS=libstdc++, libcurl, zlib, libexplain
 UNCIA_SUGGESTS=
 UNCIA_CONFLICTS=
 
@@ -53,7 +53,7 @@ UNCIA_PATCHES=$(UNCIA_SOURCE_DIR)/cstdarg.patch
 # compilation or linking flags, then list them here.
 #
 UNCIA_CPPFLAGS=
-UNCIA_LDFLAGS=
+UNCIA_LDFLAGS=-lgcc
 
 #
 # UNCIA_BUILD_DIR is the directory in which the build is done.
@@ -104,8 +104,8 @@ uncia-source: $(DL_DIR)/$(UNCIA_SOURCE) $(UNCIA_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(UNCIA_BUILD_DIR)/.configured: $(DL_DIR)/$(UNCIA_SOURCE) $(UNCIA_PATCHES) # make/uncia.mk
-	$(MAKE) libstdc++-stage boost-stage libcurl-stage zlib-stage
+$(UNCIA_BUILD_DIR)/.configured: $(DL_DIR)/$(UNCIA_SOURCE) $(UNCIA_PATCHES) make/uncia.mk
+	$(MAKE) libstdc++-stage boost-stage libcurl-stage zlib-stage libexplain-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(UNCIA_DIR) $(@D)
 	$(UNCIA_UNZIP) $(DL_DIR)/$(UNCIA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNCIA_PATCHES)" ; \
@@ -120,6 +120,7 @@ $(UNCIA_BUILD_DIR)/.configured: $(DL_DIR)/$(UNCIA_SOURCE) $(UNCIA_PATCHES) # mak
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UNCIA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UNCIA_LDFLAGS)" \
+		LIBTOOL=$(STAGING_PREFIX)/bin/libtool \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

@@ -1,0 +1,161 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01-fix_Makefile.in.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix all Makefile.in files as necessary
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/Makefile.in
++++ cyrus-imapd-2.4/Makefile.in
+@@ -42,7 +42,7 @@
+ #
+ 
+ SUBDIRS = man @PRE_SUBDIRS@ lib @SIEVE_SUBDIRS@ @SERVER_SUBDIRS@ \
+-	imtest @SNMP_SUBDIRS@ @EXTRA_SUBDIRS@
++	imtest perl @SNMP_SUBDIRS@ @EXTRA_SUBDIRS@
+ DISTSUBDIRS = doc
+ 
+ srcdir = @srcdir@
+--- cyrus-imapd-2.4.orig/imap/Makefile.in
++++ cyrus-imapd-2.4/imap/Makefile.in
+@@ -78,8 +78,8 @@ LIB_WRAP = @LIB_WRAP@
+ LIBS = $(IMAP_LIBS) $(IMAP_COM_ERR_LIBS)
+ DEPLIBS = ../lib/libcyrus.a ../lib/libcyrus_min.a @DEPLIBS@
+ 
+-CFLAGS = @CFLAGS@
+-LDFLAGS = @LDFLAGS@ @COM_ERR_LDFLAGS@ 
++CFLAGS = @CFLAGS@ @WARNERROR@
++LDFLAGS = @LDFLAGS@ @COM_ERR_LDFLAGS@ -lpthread
+ 
+ SHELL = /bin/sh
+ MAKEDEPEND = @MAKEDEPEND@
+--- cyrus-imapd-2.4.orig/installsieve/Makefile.in
++++ cyrus-imapd-2.4/installsieve/Makefile.in
+@@ -50,7 +50,7 @@ RANLIB = @RANLIB@
+ 
+ DEFS = @DEFS@
+ CPPFLAGS = -I. -I$(srcdir) -I$(srcdir)/../lib @CPPFLAGS@ @SASLFLAGS@
+-CFLAGS = @CFLAGS@
++CFLAGS = @CFLAGS@ @WARNERROR@
+ LDFLAGS = @LDFLAGS@
+ 
+ INSTALL = @INSTALL@
+--- cyrus-imapd-2.4.orig/lib/Makefile.in
++++ cyrus-imapd-2.4/lib/Makefile.in
+@@ -63,7 +63,7 @@ CPPFLAGS = -I.. @CPPFLAGS@ @COM_ERR_CPPF
+ LIBS = @LIBS@
+ 
+ MAKEDEPEND_CFLAGS = @CFLAGS@
+-CFLAGS = @CFLAGS@ @PERL_CCCDLFLAGS@
++CFLAGS = @CFLAGS@ @PERL_CCCDLFLAGS@ @WARNERROR@ -fPIC
+ LDFLAGS = @LDFLAGS@
+ 
+ SHELL = /bin/sh
+--- cyrus-imapd-2.4.orig/master/Makefile.in
++++ cyrus-imapd-2.4/master/Makefile.in
+@@ -56,8 +56,8 @@ DEFS = @DEFS@ @LOCALDEFS@
+ CPPFLAGS = -I.. -I$(srcdir)/../lib -I$(srcdir)/../imap @CPPFLAGS@ @COM_ERR_CPPFLAGS@
+ DEPLIBS = @DEPLIBS@
+ 
+-CFLAGS = @CFLAGS@
+-LDFLAGS = @LDFLAGS@ @COM_ERR_LDFLAGS@
++CFLAGS = @CFLAGS@ @WARNERROR@
++LDFLAGS = @LDFLAGS@ @COM_ERR_LDFLAGS@ -lpthread
+ LIBS = ../lib/libcyrus_min.a @LIB_UCDSNMP@ @LIBS@ @COM_ERR_LIBS@
+ 
+ SHELL = /bin/sh
+--- cyrus-imapd-2.4.orig/notifyd/Makefile.in
++++ cyrus-imapd-2.4/notifyd/Makefile.in
+@@ -56,8 +56,8 @@ CYRUS_GROUP=@cyrus_group@
+ 
+ DEFS = @DEFS@ @LOCALDEFS@
+ CPPFLAGS = -I.. -I$(srcdir)/../sieve -I$(srcdir)/../imap -I$(srcdir)/../lib @COM_ERR_CPPFLAGS@ @CPPFLAGS@ @SASLFLAGS@
+-CFLAGS = @CFLAGS@
+-LDFLAGS = @LDFLAGS@
++CFLAGS = @CFLAGS@ @WARNERROR@
++LDFLAGS = @LDFLAGS@ -lpthread
+ 
+ prefix = @prefix@
+ exec_prefix = @exec_prefix@
+--- cyrus-imapd-2.4.orig/perl/Makefile.in
++++ cyrus-imapd-2.4/perl/Makefile.in
+@@ -86,9 +86,9 @@ all::
+ 			   BDB_LIB="$(BDB_LIB)" BDB_INC="$(BDB_INC)" \
+ 			   OPENSSL_LIB="$(OPENSSL_LIB)" OPENSSL_INC="$(OPENSSL_INC)" \
+ 			   SASL_LIB="$(SASL_LIB)" SASL_INC="$(SASL_INC)" CC="$(CC)" \
+-			     $(PERL) Makefile.PL PREFIX=$(prefix); \
++			     $(PERL) Makefile.PL INSTALLDIRS=vendor; \
+ 			fi; \
+-			$(MAKE) $(MFLAGS) DESTDIR=$(DESTDIR) all) || exit 1; \
++			$(MAKE) $(MFLAGS) LD_RUN_PATH= DESTDIR=$(DESTDIR) all) || exit 1; \
+ 	done
+ 
+ install::
+--- cyrus-imapd-2.4.orig/perl/sieve/Makefile.in
++++ cyrus-imapd-2.4/perl/sieve/Makefile.in
+@@ -86,9 +86,9 @@ all::
+ 			   BDB_LIB="$(BDB_LIB)" BDB_INC="$(BDB_INC)" \
+ 			   OPENSSL_LIB="$(OPENSSL_LIB)" OPENSSL_INC="$(OPENSSL_INC)" \
+ 			   SASL_LIB="$(SASL_LIB)" SASL_INC="$(SASL_INC)" CC="$(CC)" \
+-			     $(PERL) Makefile.PL PREFIX=$(prefix); \
++			     $(PERL) Makefile.PL INSTALLDIRS=vendor; \
+ 			fi; \
+-			$(MAKE) $(MFLAGS) DESTDIR=$(DESTDIR) all) || exit 1; \
++			$(MAKE) $(MFLAGS) LD_RUN_PATH= DESTDIR=$(DESTDIR) all) || exit 1; \
+ 	done
+ 
+ install::
+--- cyrus-imapd-2.4.orig/perl/sieve/lib/Makefile.in
++++ cyrus-imapd-2.4/perl/sieve/lib/Makefile.in
+@@ -58,7 +58,7 @@ IMAP_LIBS = @IMAP_LIBS@
+ DEPLIBS = ../../../lib/libcyrus.a ../../../lib/libcyrus_min.a @DEPLIBS@
+ 
+ MAKEDEPEND_CFLAGS = @CFLAGS@
+-CFLAGS = @CFLAGS@ @PERL_CCCDLFLAGS@
++CFLAGS = @CFLAGS@ @PERL_CCCDLFLAGS@ -fPIC
+ LDFLAGS = @LDFLAGS@
+ 
+ SHELL = /bin/sh
+--- cyrus-imapd-2.4.orig/sieve/Makefile.in
++++ cyrus-imapd-2.4/sieve/Makefile.in
+@@ -60,8 +60,8 @@ COMPILE_ET = @COMPILE_ET@
+ DEFS = @DEFS@ @LOCALDEFS@
+ CPPFLAGS = -I.. -I$(srcdir)/../lib @COM_ERR_CPPFLAGS@ @CPPFLAGS@ @SASLFLAGS@
+ MAKEDEPEND_CFLAGS = @CFLAGS@
+-CFLAGS = @CFLAGS@ @PERL_CCCDLFLAGS@
+-LDFLAGS = @LDFLAGS@
++CFLAGS = @CFLAGS@ @PERL_CCCDLFLAGS@ -fPIC
++LDFLAGS = @LDFLAGS@ -lpthread
+ 
+ MAKEDEPEND = @MAKEDEPEND@
+ 
+@@ -71,6 +71,7 @@ IMAP_LIBS = @IMAP_LIBS@ @LIB_RT@
+ LIBS = libsieve.a $(IMAP_LIBS) $(IMAP_COM_ERR_LIBS)
+ DEPLIBS=../lib/libcyrus.a ../lib/libcyrus_min.a @DEPLIBS@
+ 
++BINARIES = sievec sieved
+ BUILT_SOURCES = addr.c addr.h addr-lex.c \
+ 	sieve.c sieve.h sieve-lex.c \
+ 	sieve_err.h sieve_err.c
+@@ -136,7 +137,7 @@ sieve_err.h sieve_err.c: sieve_err.et
+ 	$(COMPILE_ET) $(srcdir)/sieve_err.et
+ 
+ clean:
+-	rm -f sievec sieved test *~ *.o *.a Makefile.bak makedepend.log
++	rm -f sievec sieved test *~ *.o *.a Makefile.bak makedepend.log $(BINARIES)
+ 
+ distclean: clean
+ 	rm -f sieve_err.c sieve_err.h
+--- cyrus-imapd-2.4.orig/timsieved/Makefile.in
++++ cyrus-imapd-2.4/timsieved/Makefile.in
+@@ -56,8 +56,8 @@ CYRUS_GROUP=@cyrus_group@
+ 
+ DEFS = @DEFS@ @LOCALDEFS@
+ CPPFLAGS = -I.. -I$(srcdir)/../sieve -I$(srcdir)/../imap -I$(srcdir)/../lib @COM_ERR_CPPFLAGS@ @CPPFLAGS@ @SASLFLAGS@
+-CFLAGS = @CFLAGS@
+-LDFLAGS = @LDFLAGS@
++CFLAGS = @CFLAGS@ @WARNERROR@
++LDFLAGS = @LDFLAGS@ -lpthread
+ 
+ prefix = @prefix@
+ exec_prefix = @exec_prefix@

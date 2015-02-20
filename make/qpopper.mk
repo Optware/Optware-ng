@@ -24,7 +24,7 @@ QPOPPER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 QPOPPER_DESCRIPTION=qpopper is a pop3 server
 QPOPPER_SECTION=mail
 QPOPPER_PRIORITY=optional
-QPOPPER_DEPENDS=openssl
+QPOPPER_DEPENDS=openssl, sendmail
 QPOPPER_SUGGESTS=
 QPOPPER_CONFLICTS=
 
@@ -32,7 +32,7 @@ QPOPPER_CONFLICTS=
 #
 # QPOPPER_IPK_VERSION should be incremented when the ipk changes.
 #
-QPOPPER_IPK_VERSION=1
+QPOPPER_IPK_VERSION=2
 
 #
 # QPOPPER_CONFFILES should be a list of user-editable files
@@ -42,7 +42,7 @@ QPOPPER_IPK_VERSION=1
 # QPOPPER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#QPOPPER_PATCHES=$(QPOPPER_SOURCE_DIR)/configure.patch
+QPOPPER_PATCHES=$(QPOPPER_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -99,7 +99,7 @@ $(QPOPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(QPOPPER_SOURCE) $(QPOPPER_PATCHES)
 	$(MAKE) openssl-stage 
 	rm -rf $(BUILD_DIR)/$(QPOPPER_DIR) $(@D)
 	$(QPOPPER_UNZIP) $(DL_DIR)/$(QPOPPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(QPOPPER_PATCHES) | patch -d $(BUILD_DIR)/$(QPOPPER_DIR) -p1
+	cat $(QPOPPER_PATCHES) | patch -d $(BUILD_DIR)/$(QPOPPER_DIR) -p0
 	mv $(BUILD_DIR)/$(QPOPPER_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

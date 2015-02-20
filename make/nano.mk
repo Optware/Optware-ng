@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-NANO_SITE=http://www.nano-editor.org/dist/v2.2
-NANO_VERSION=2.2.6
+NANO_SITE=http://www.nano-editor.org/dist/v2.3
+NANO_VERSION=2.3.6
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -98,6 +98,7 @@ $(NANO_IPK): $(NANO_BUILD_DIR)/.built
 	$(MAKE) -C $(NANO_BUILD_DIR) DESTDIR=$(NANO_IPK_DIR) program_transform_name="" install-strip
 	install -d $(NANO_IPK_DIR)/opt/etc/
 	install -m 644 $(NANO_BUILD_DIR)/doc/nanorc.sample $(NANO_IPK_DIR)/opt/etc/nanorc
+	rm -f $(NANO_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(NANO_IPK_DIR)/CONTROL/control
 	echo $(NANO_CONFFILES) | sed -e 's/ /\n/g' > $(NANO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NANO_IPK_DIR)

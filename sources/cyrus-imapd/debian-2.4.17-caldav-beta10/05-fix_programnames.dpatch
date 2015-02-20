@@ -1,0 +1,503 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 05-fix_programnames_in_manpages.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: fix some minor things in manpages, fix program names in manpages and
+## DP: program sources
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/imap/deliver.c
++++ cyrus-imapd-2.4/imap/deliver.c
+@@ -117,7 +117,7 @@ static struct backend *init_net(const ch
+ static void usage()
+ {
+     fprintf(stderr, 
+-	    "421-4.3.0 usage: deliver [-C <alt_config> ] [-m mailbox]"
++	    "421-4.3.0 usage: cyrdeliver [-C <alt_config> ] [-m mailbox]"
+ 	    " [-a auth] [-r return_path] [-l] [-D]\r\n");
+     fprintf(stderr, "421 4.3.0 %s\n", cyrus_version());
+     exit(EC_USAGE);
+--- cyrus-imapd-2.4.orig/imap/quota.c
++++ cyrus-imapd-2.4/imap/quota.c
+@@ -206,7 +206,7 @@ int main(int argc,char **argv)
+ void usage(void)
+ {
+     fprintf(stderr,
+-	    "usage: quota [-C <alt_config>] [-d <domain>] [-f] [prefix]...\n");
++	    "usage: cyrquota [-C <alt_config>] [-d <domain>] [-f] [prefix]...\n");
+     exit(EC_USAGE);
+ }
+ 
+--- cyrus-imapd-2.4.orig/imap/reconstruct.c
++++ cyrus-imapd-2.4/imap/reconstruct.c
+@@ -409,8 +409,8 @@ int main(int argc, char **argv)
+ void usage(void)
+ {
+     fprintf(stderr,
+-	    "usage: reconstruct [-C <alt_config>] [-p partition] [-ksrfx] mailbox...\n");
+-    fprintf(stderr, "       reconstruct [-C <alt_config>] -m\n");
++	    "usage: cyrreconstruct [-C <alt_config>] [-p partition] [-ksrfx] mailbox...\n");
++    fprintf(stderr, "       cyrreconstruct [-C <alt_config>] -m\n");
+     exit(EC_USAGE);
+ }    
+ 
+--- cyrus-imapd-2.4.orig/man/chk_cyrus.8
++++ cyrus-imapd-2.4/man/chk_cyrus.8
+@@ -85,4 +85,4 @@ May not be specified with -P.
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/ctl_cyrusdb.8
++++ cyrus-imapd-2.4/man/ctl_cyrusdb.8
+@@ -99,4 +99,4 @@ removed.
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/ctl_deliver.8
++++ cyrus-imapd-2.4/man/ctl_deliver.8
+@@ -79,4 +79,4 @@ Use the database specified by \fIfilenam
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/ctl_mboxlist.8
++++ cyrus-imapd-2.4/man/ctl_mboxlist.8
+@@ -167,4 +167,4 @@ Use the database specified by \fIfilenam
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/cyr_expire.8
++++ cyrus-imapd-2.4/man/cyr_expire.8
+@@ -131,4 +131,4 @@ only \fIexpire-days\fR is considered for
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/cyrus.conf.5
++++ cyrus-imapd-2.4/man/cyrus.conf.5
+@@ -45,9 +45,9 @@
+ cyrus.conf \- Cyrus configuration file
+ .SH DESCRIPTION
+ \fB/etc/cyrus.conf\fR 
+-is the configuration file for the Cyrus \fBmaster\fR process.  It
++is the configuration file for the Cyrus \fBcyrmaster\fR process.  It
+ defines the startup procedures, services and events to be spawned by
+-\fBmaster\fR.
++\fBcyrmaster\fR.
+ .PP
+ The \fB/etc/cyrus.conf\fR file consists of a series of entries divided
+ into sections of the form
+@@ -109,7 +109,7 @@ string field is required and takes one o
+ \fR[ \fIhost\fR \fB: \fR] \fIport\fR
+ .br
+ .sp
+-where \fIpath\fR is the explicit path to a UNIX socket, \fIhost\fR is
++where \fIpath\fR is the explicit (absolute) path to a UNIX socket, \fIhost\fR is
+ either the hostname or bracket-enclosed IP address of a network
+ interface, and \fIport\fR is either a port number or service name (as listed
+ in \fB/etc/services\fR).
+@@ -186,6 +186,6 @@ different modes or configurations (i.e.,
+ still have separate access control rules.
+ .SH SEE ALSO
+ .PP
+-\fBmaster(8)\fR, \fBimapd(8)\fR, \fBpop3d(8)\fR, \fBlmtpd(8)\fR,
++\fBcyrmaster(8)\fR, \fBimapd(8)\fR, \fBpop3d(8)\fR, \fBlmtpd(8)\fR,
+ \fBtimsieved(8)\fR, \fBidled(8)\fR, \fBnotifyd(8)\fR, \fBctl_cyrusdb(8)\fR,
+ \fBctl_deliver(8)\fR, \fBtls_prune(8)\fR, \fBhosts_access(5)\fR
+--- cyrus-imapd-2.4.orig/man/deliver.8
++++ cyrus-imapd-2.4/man/deliver.8
+@@ -1,5 +1,5 @@
+ .\" -*- nroff -*-
+-.TH DELIVER 8 "Project Cyrus" CMU
++.TH CYRDELIVER 8 "Project Cyrus" CMU
+ .\"
+ .\" Copyright (c) 1994-2008 Carnegie Mellon University.  All rights reserved.
+ .\"
+@@ -42,9 +42,9 @@
+ .\"
+ .\" $Id: deliver.8,v 1.21 2010/01/06 17:01:51 murch Exp $
+ .SH NAME
+-deliver \- deliver mail to an IMAP mailbox
++cyrdeliver \- deliver mail to an IMAP mailbox
+ .SH SYNOPSIS
+-.B deliver
++.B cyrdeliver
+ [
+ .B \-C
+ .I config-file
+@@ -77,7 +77,7 @@ deliver \- deliver mail to an IMAP mailb
+ .I userid
+ ]...
+ .br
+-.B deliver
++.B cyrdeliver
+ [
+ .B \-C
+ .I config-file
+--- cyrus-imapd-2.4.orig/man/fud.8
++++ cyrus-imapd-2.4/man/fud.8
+@@ -62,7 +62,7 @@ FUD \- provide information about user ma
+ ]
+ .SH DESCRIPTION
+ .B FUD
+-is a long lived datagram daemon started from master that provides
++is a long lived datagram daemon started from cyrmaster that provides
+ information about when a user last
+ read their mail, when mail last arrived in a user's mailbox, and how
+ many messages are recent for that user.
+--- cyrus-imapd-2.4.orig/man/idled.8
++++ cyrus-imapd-2.4/man/idled.8
+@@ -57,7 +57,7 @@ mailbox changes and signals the appropri
+ to report the changes to the client.
+ .I Idled
+ is usually started from
+-.I master.
++.I cyrmaster.
+ .PP
+ .I Idled
+ reads its configuration options out of the
+@@ -76,4 +76,4 @@ Read configuration options from \fIconfi
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/imapd.8
++++ cyrus-imapd-2.4/man/imapd.8
+@@ -76,7 +76,7 @@ imapd \- IMAP server process
+ is an IMAP4rev1 server.
+ It accepts commands on its standard input and responds on its standard output.
+ It MUST be invoked by
+-.IR master (8)
++.IR cyrmaster (8)
+ with those descriptors attached to a remote client connection.
+ .PP
+ .I Imapd
+@@ -155,4 +155,4 @@ some form of privacy protection.
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/lmtpd.8
++++ cyrus-imapd-2.4/man/lmtpd.8
+@@ -69,7 +69,7 @@ lmtpd \- LMTP server process
+ is an LMTP server used to deliver mail to the IMAP mailstore.
+ It accepts commands on its standard input and responds on its standard output.
+ It MUST be invoked by
+-.IR master (8)
++.IR cyrmaster (8)
+ with those descriptors attached to a remote client connection.
+ .PP
+ .I Lmtpd
+@@ -102,4 +102,4 @@ from trusted hosts.
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/master.8
++++ cyrus-imapd-2.4/man/master.8
+@@ -1,5 +1,5 @@
+ .\" -*- nroff -*-
+-.TH MASTER 8 "Project Cyrus" CMU
++.TH CYRMASTER 8 "Project Cyrus" CMU
+ .\"
+ .\" Copyright (c) 1994-2008 Carnegie Mellon University.  All rights reserved.
+ .\"
+@@ -42,9 +42,9 @@
+ .\"
+ .\" $Id: master.8,v 1.16 2010/01/06 17:01:52 murch Exp $
+ .SH NAME
+-master \- master Cyrus process
++cyrmaster \- master Cyrus process
+ .SH SYNOPSIS
+-.B master
++.B cyrmaster
+ [
+ .B \-C
+ .I alternate imapd.conf
+@@ -80,7 +80,7 @@ master \- master Cyrus process
+ .I snmp agentx socket
+ ]
+ .SH DESCRIPTION
+-.I Master
++.I cyrmaster
+ is the process that controls all of the Cyrus processes. This process
+ is responsible for creating all imapd, pop3d, lmtpd and sieved child
+ processes. This process also initializes the Berkeley DB code and
+@@ -93,12 +93,12 @@ when it receives a SIGTERM.
+ .SH OPTIONS
+ .TP
+ .BI \-C " alternate imapd.conf"
+-Specifies an alternate imapd.conf for use by master (note that this will
+-not affect any sub-processes spawned by master, you should specify those
++Specifies an alternate imapd.conf for use by cyrmaster (note that this will
++not affect any sub-processes spawned by cyrmaster, you should specify those
+ specifically in the respective entries in cyrus.conf).
+ .TP
+ .BI \-M " alternate cyrus.conf"
+-Specifies an alternate cyrus.conf for use by master.
++Specifies an alternate cyrus.conf for use by cyrmaster.
+ .TP
+ .BI \-l " listen queue backlog"
+ Increase the listen queue backlog. By default, the listen queue is set
+@@ -114,7 +114,7 @@ compiled Cyrus from its default of 10000
+ .BI \-p " pidfile"
+ Use
+ .I pidfile
+-as the pidfile.  If not specified, defaults to /var/run/cyrus-master.pid
++as the pidfile.  If not specified, defaults to /var/run/cyrmaster.pid
+ .TP
+ .BI \-P " snmp agentx ping interval"
+ Sets the amount on time in seconds the subagent will try and reconnect to the
+@@ -133,12 +133,12 @@ Address the master agent (most likely sn
+ Requires net-snmp 5.0 or higher.
+ .SH CONFIGURATION
+ Upon execution,
+-.I master
++.I cyrmaster
+ reads its configuration information out of the
+ .IR cyrus.conf (5)
+ file.
+ .PP
+-.I Master
++.I cyrmaster
+ rereads its configuration file when it receives a hangup signal,
+ SIGHUP.  Services and events may be added, deleted or modified when the
+ configuration file is reread.  Any active services removed from the
+@@ -147,9 +147,18 @@ configuration file will be allowed to ru
+ The environment variable \fBCYRUS_VERBOSE\fR can be set to log additional
+ debugging information. Setting the value to 1 results in base level logging. 
+ Setting it higher results in more log messages being generated.
++.SH BUGS
++Services do not always go away silently when removed through a SIGHUP.  If
++there are workers of the removed service still running, messages to syslog
++about broken pipes and accept() failures are to be expected.
++.PP
++The in-memory list of services is not cleaned up ever, so a cyrmaster daemon
++that has been sent an extremely high amount of SIGHUP signals to
++add/remove/modify services will lose performance eventually.  Restarting
++cyrmaster fixes this.
+ .SH FILES
+ .TP
+-.B /etc/cyrus.conf, /etc/imapd.conf, /var/run/cyrus-master.pid
++.B /etc/cyrus.conf, /etc/imapd.conf, /var/run/cyrmaster.pid
+ .SH SEE ALSO
+ .PP
+ \fBcyrus.conf(5)\fR, \fBimapd.conf(5)\fR, \fBimapd(8)\fR,
+--- cyrus-imapd-2.4.orig/man/nntpd.8
++++ cyrus-imapd-2.4/man/nntpd.8
+@@ -79,7 +79,7 @@ nntpd \- NNTP server process
+ is a NNTP server.
+ It accepts commands on its standard input and responds on its standard output.
+ It MUST invoked by
+-.IR master (8)
++.IR cyrmaster (8)
+ with those descriptors attached to a remote client connection.
+ .PP
+ .I Nntpd
+@@ -154,4 +154,4 @@ some form of privacy protection.
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/notifyd.8
++++ cyrus-imapd-2.4/man/notifyd.8
+@@ -63,7 +63,7 @@ notifyd \- Cyrus notification server
+ ]
+ .SH DESCRIPTION
+ .B Notifyd
+-is a daemon started from master(8) that handles notification requests on
++is a daemon started from cyrmaster(8) that handles notification requests on
+ behalf of lmtpd(8).
+ .B Notifyd
+ accepts the request and performs the notification using the method
+@@ -128,4 +128,4 @@ Default configuration file.
+ Cyrus Master process configuration file.
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBcyrus.conf\fR, \fBmaster(8)\fR, \fBlmtpd(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrus.conf\fR, \fBcyrmaster(8)\fR, \fBlmtpd(8)\fR
+--- cyrus-imapd-2.4.orig/man/pop3d.8
++++ cyrus-imapd-2.4/man/pop3d.8
+@@ -76,7 +76,7 @@ pop3d \- POP3 server process
+ is a POP3 server.
+ It accepts commands on its standard input and responds on its standard output.
+ It MUST invoked by
+-.IR master (8)
++.IR cyrmaster (8)
+ with those descriptors attached to a remote client connection.
+ .PP
+ .I Pop3d
+@@ -133,4 +133,4 @@ some form of privacy protection.
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/quota.8
++++ cyrus-imapd-2.4/man/quota.8
+@@ -1,5 +1,5 @@
+ .\" -*- nroff -*-
+-.TH QUOTA 8 "Project Cyrus" CMU
++.TH CYRQUOTA 8 "Project Cyrus" CMU
+ .\"
+ .\" Copyright (c) 1994-2008 Carnegie Mellon University.  All rights reserved.
+ .\"
+@@ -42,9 +42,9 @@
+ .\"
+ .\" $Id: quota.8,v 1.13 2010/01/06 17:01:52 murch Exp $
+ .SH NAME
+-quota \- report and optionally fix quota usage
++cyrquota \- report and optionally fix quota usage
+ .SH SYNOPSIS
+-.B quota
++.B cyrquota
+ [
+ .B \-C
+ .I config-file
+@@ -60,12 +60,12 @@ quota \- report and optionally fix quota
+ .IR mailbox-prefix ...
+ ]
+ .SH DESCRIPTION
+-.I Quota
++.I cyrquota
+ generates a report listing quota roots, giving their limits and usage.
+ If the
+ .I \-f
+ option is given, 
+-.I quota
++.I cyrquota
+ first fixes any inconsistencies in the quota subsystem, such as
+ mailboxes with the wrong quota root or quota roots with the wrong
+ quota usage reported.
+@@ -80,14 +80,14 @@ limited to quota roots with names that s
+ prefixes.
+ .PP
+ Running
+-.I quota
++.I cyrquota
+ with both the 
+ .I \-f
+ option and
+ .I mailbox-prefix
+ arguments is not recommended.
+ .PP
+-.I Quota
++.I cyrquota
+ reads its configuration options out of the
+ .IR imapd.conf (5)
+ file unless specified otherwise by \fB-C\fR.
+--- cyrus-imapd-2.4.orig/man/reconstruct.8
++++ cyrus-imapd-2.4/man/reconstruct.8
+@@ -1,5 +1,5 @@
+ .\" -*- nroff -*-
+-.TH RECONSTRUCT 8 "Project Cyrus" CMU
++.TH CYRRECONSTRUCT 8 "Project Cyrus" CMU
+ .\"
+ .\" Copyright (c) 1994-2008 Carnegie Mellon University.  All rights reserved.
+ .\"
+@@ -42,9 +42,9 @@
+ .\"
+ .\" $Id: reconstruct.8,v 1.26 2010/01/06 17:01:52 murch Exp $
+ .SH NAME
+-reconstruct \- reconstruct mailboxes
++cyrreconstruct \- reconstruct mailboxes
+ .SH SYNOPSIS
+-.B reconstruct
++.B cyrreconstruct
+ [
+ .B \-C
+ .I config-file
+@@ -87,14 +87,14 @@ reconstruct \- reconstruct mailboxes
+ .IR mailbox ...
+ .br
+ .br
+-.B reconstruct
++.B cyrreconstruct
+ [
+ .B \-C
+ .I config-file
+ ]
+ .B \-m
+ .SH DESCRIPTION
+-.I Reconstruct
++.I cyrreconstruct
+ rebuilds one or more IMAP mailboxes.  When invoked with the
+ .B \-m
+ switch, it rebuilds the master
+@@ -102,17 +102,17 @@ mailboxes file.  It can be used to recov
+ almost any sort of data corruption.
+ .PP
+ If
+-.I Reconstruct
++.I cyrreconstruct
+ can find existing header and index files, it attempts to preserve any
+ data in them that is not derivable from the message files themselves.
+ The state 
+-.I reconstruct
++.I cyrreconstruct
+ attempts to preserve includes the flag names, flag state, and
+ internaldate.
+-.I Reconstruct
++.I cyrreconstruct
+ derives all other information from the message files.
+ .PP
+-.I Reconstruct
++.I cyrreconstruct
+ reads its configuration options out of the
+ .IR imapd.conf (5)
+ file unless specified otherwise by \fB-C\fR.  Any mailbox directory
+@@ -120,12 +120,12 @@ underneath the path specified in the
+ .I partition-news
+ configuration option is assumed to be in news format.
+ .PP
+-.I Reconstruct
++.I cyrreconstruct
+ does not adjust the quota usage recorded in any quota
+ root files.  After running
+-.IR reconstruct ,
++.IR cyrreconstruct ,
+ it is advisable to run
+-.IR quota (8)
++.IR cyrquota (8)
+ with the
+ .I \-f
+ switch in order to fix the quota root files.
+--- cyrus-imapd-2.4.orig/man/smmapd.8
++++ cyrus-imapd-2.4/man/smmapd.8
+@@ -68,7 +68,7 @@ mailbox exists, that it is postable and
+ It accepts commands on its standard input and responds on its standard
+ output.
+ It MUST be invoked by
+-.IR master (8)
++.IR cyrmaster (8)
+ with those descriptors attached to a remote client connection.
+ .PP
+ .B SMMAPD
+--- cyrus-imapd-2.4.orig/man/timsieved.8
++++ cyrus-imapd-2.4/man/timsieved.8
+@@ -74,4 +74,4 @@ Read configuration options from \fIconfi
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR
+--- cyrus-imapd-2.4.orig/man/tls_prune.8
++++ cyrus-imapd-2.4/man/tls_prune.8
+@@ -68,4 +68,4 @@ Read configuration options from \fIconfi
+ .B /etc/imapd.conf
+ .SH SEE ALSO
+ .PP
+-\fBimapd.conf(5)\fR, \fBmaster(8)\fR
++\fBimapd.conf(5)\fR, \fBcyrmaster(8)\fR

@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBTASN1_SITE=http://ftp.gnu.org/gnu/libtasn1
-LIBTASN1_VERSION=2.13
+LIBTASN1_VERSION=4.2
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
 LIBTASN1_UNZIP=zcat
@@ -194,6 +194,7 @@ $(LIBTASN1_IPK): $(LIBTASN1_BUILD_DIR)/.built
 	#install -m 644 $(LIBTASN1_SOURCE_DIR)/libtasn1.conf $(LIBTASN1_IPK_DIR)/opt/etc/libtasn1.conf
 	#install -d $(LIBTASN1_IPK_DIR)/opt/etc/init.d
 	#install -m 755 $(LIBTASN1_SOURCE_DIR)/rc.libtasn1 $(LIBTASN1_IPK_DIR)/opt/etc/init.d/SXXlibtasn1
+	rm -f $(LIBTASN1_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(LIBTASN1_IPK_DIR)/CONTROL/control
 	#install -m 755 $(LIBTASN1_SOURCE_DIR)/postinst $(LIBTASN1_IPK_DIR)/CONTROL/postinst
 	#install -m 755 $(LIBTASN1_SOURCE_DIR)/prerm $(LIBTASN1_IPK_DIR)/CONTROL/prerm

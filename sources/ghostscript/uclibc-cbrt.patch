@@ -1,5 +1,5 @@
---- cups/gdevcups.c.orig	2007-10-14 22:40:10.000000000 -0700
-+++ cups/gdevcups.c	2007-10-14 22:40:48.000000000 -0700
+--- ghostscript-8.71/cups/gdevcups.c.orig	2007-10-14 22:40:10.000000000 -0700
++++ ghostscript-8.71/cups/gdevcups.c	2007-10-14 22:40:48.000000000 -0700
 @@ -947,7 +947,7 @@
    x_xn = x / xn;
  

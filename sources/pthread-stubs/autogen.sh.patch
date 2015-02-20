@@ -1,0 +1,17 @@
+--- pthread-stubs-0.1.orig/autogen.sh
++++ pthread-stubs-0.1/autogen.sh
+@@ -0,0 +1,14 @@
++#! /bin/sh
++
++srcdir=`dirname $0`
++test -z "$srcdir" && srcdir=.
++
++ORIGDIR=`pwd`
++cd $srcdir
++
++autoreconf -v --install || exit 1
++cd $ORIGDIR || exit $?
++
++if test -z "$NOCONFIGURE"; then
++    $srcdir/configure "$@"
++fi

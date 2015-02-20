@@ -4,7 +4,14 @@
 #
 ###########################################################
 
-ifeq (5.10, $(PERL_MAJOR_VER))
+ifeq (5.20, $(PERL_MAJOR_VER))
+MICROPERL_VERSION=5.20.1
+MICROPERL_IPK_VERSION=1
+MICROPERL_PATCHES=$(MICROPERL_SOURCE_DIR)/5.20/0001-Fix-build-failure-for-microperl.patch \
+	$(MICROPERL_SOURCE_DIR)/5.20/0002-Makefile.micro-clean-ugenerate_uudmap.o.patch \
+	$(MICROPERL_SOURCE_DIR)/5.20/0003-Include-float.h-for-microperl.patch \
+	$(MICROPERL_SOURCE_DIR)/5.20/0004-Avoid-double-definition-for-DBL_DIG.patch
+else ifeq (5.10, $(PERL_MAJOR_VER))
 MICROPERL_VERSION=5.10.0
 MICROPERL_IPK_VERSION=1
 else
@@ -14,6 +21,7 @@ endif
 
 MICROPERL_DESCRIPTION=Microperl.
 MICROPERL_SOURCE=perl-$(MICROPERL_VERSION).tar.gz
+MICROPERL_DIR=perl-$(MICROPERL_VERSION)
 
 
 MICROPERL_BUILD_DIR=$(BUILD_DIR)/microperl
@@ -28,7 +36,7 @@ $(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(MICROPERL_SOURCE) $(MICROPERL_PA
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MICROPERL_PATCHES)"; then \
 		cat $(MICROPERL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MICROPERL_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(MICROPERL_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	touch $@
@@ -37,8 +45,12 @@ microperl-unpack: $(MICROPERL_BUILD_DIR)/.configured
 
 $(MICROPERL_BUILD_DIR)/.built: $(MICROPERL_BUILD_DIR)/.configured
 	rm -f $@
-ifeq (5.10, $(PERL_MAJOR_VER))
+ifeq ($(PERL_MAJOR_VER), 5.10)
 	$(MAKE) -C $(@D) -f Makefile.micro generate_uudmap \
+		CC=$(HOSTCC) \
+		;
+else ifeq ($(PERL_MAJOR_VER),$(filter $(PERL_MAJOR_VER), 5.20))
+	$(MAKE) -C $(@D) -f Makefile.micro generate_uudmap ugenerate_uudmap \
 		CC=$(HOSTCC) \
 		;
 endif

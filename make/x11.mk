@@ -10,22 +10,21 @@
 # X11_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-X11_SITE=http://freedesktop.org
-X11_SOURCE=# none - available from CVS only
-X11_VERSION=6.2.1+cvs20050209
-X11_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
-X11_DIR=X11
-X11_CVS_OPTS=-D20050209
-X11_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+X11_SITE=http://xorg.freedesktop.org/releases/individual/lib
+X11_SOURCE=libX11-$(X11_VERSION).tar.gz
+X11_VERSION=1.6.2
+X11_FULL_VERSION=release-$(X11_VERSION)
+X11_DIR=libX11-$(X11_VERSION)
+X11_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 X11_DESCRIPTION=X protocol library
 X11_SECTION=lib
 X11_PRIORITY=optional
-X11_DEPENDS=xau, xdmcp
+X11_DEPENDS=xau, xdmcp, xcb
 
 #
 # X11_IPK_VERSION should be incremented when the ipk changes.
 #
-X11_IPK_VERSION=3
+X11_IPK_VERSION=1
 
 #
 # X11_CONFFILES should be a list of user-editable files
@@ -35,7 +34,7 @@ X11_CONFFILES=
 # X11_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-X11_PATCHES=$(X11_SOURCE_DIR)/localedir.patch $(X11_SOURCE_DIR)/find-keysymdef.patch
+X11_PATCHES=$(X11_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -59,8 +58,8 @@ X11_LDFLAGS=
 #
 X11_BUILD_DIR=$(BUILD_DIR)/x11
 X11_SOURCE_DIR=$(SOURCE_DIR)/x11
-X11_IPK_DIR=$(BUILD_DIR)/x11-$(X11_VERSION)-ipk
-X11_IPK=$(BUILD_DIR)/x11_$(X11_VERSION)-$(X11_IPK_VERSION)_$(TARGET_ARCH).ipk
+X11_IPK_DIR=$(BUILD_DIR)/x11-$(X11_FULL_VERSION)-ipk
+X11_IPK=$(BUILD_DIR)/x11_$(X11_FULL_VERSION)-$(X11_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -72,25 +71,21 @@ $(X11_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(X11_PRIORITY)" >>$@
 	@echo "Section: $(X11_SECTION)" >>$@
-	@echo "Version: $(X11_VERSION)-$(X11_IPK_VERSION)" >>$@
+	@echo "Version: $(X11_FULL_VERSION)-$(X11_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(X11_MAINTAINER)" >>$@
 	@echo "Source: $(X11_SITE)/$(X11_SOURCE)" >>$@
 	@echo "Description: $(X11_DESCRIPTION)" >>$@
 	@echo "Depends: $(X11_DEPENDS)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/x11-$(X11_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(X11_DIR) && \
-		cvs -d $(X11_REPOSITORY) -z3 co $(X11_CVS_OPTS) $(X11_DIR) && \
-		tar -czf $@ $(X11_DIR) && \
-		rm -rf $(X11_DIR) \
-	)
+$(DL_DIR)/$(X11_SOURCE):
+	$(WGET) -P $(@D) $(X11_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-x11-source: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES)
+x11-source: $(DL_DIR)/$(X11_SOURCE) $(X11_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -102,22 +97,22 @@ x11-source: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(X11_BUILD_DIR)/.configured: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES) make/x11.mk
-	$(MAKE) xproto-stage
+$(X11_BUILD_DIR)/.configured: $(DL_DIR)/$(X11_SOURCE) $(X11_PATCHES) make/x11.mk
+	$(MAKE) xproto-stage kbproto-stage inputproto-stage xextproto-stage xcb-stage
 	$(MAKE) xau-stage
 	$(MAKE) xextensions-stage
 	$(MAKE) xdmcp-stage
 	$(MAKE) xtrans-stage
 	rm -rf $(BUILD_DIR)/$(X11_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/x11-$(X11_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(X11_SOURCE)
 	if test -n "$(X11_PATCHES)" ; \
 		then cat $(X11_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(X11_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(X11_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(X11_DIR)" != "$(X11_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(X11_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(X11_DIR) $(@D) ; \
 	fi
-	(cd $(X11_BUILD_DIR); \
+	(cd $(@D); chmod +x autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(X11_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(X11_LDFLAGS)" \
@@ -129,6 +124,7 @@ $(X11_BUILD_DIR)/.configured: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-static \
+		--enable-malloc0returnsnull \
 	)
 	touch $@
 
@@ -139,7 +135,7 @@ x11-unpack: $(X11_BUILD_DIR)/.configured
 #
 $(X11_BUILD_DIR)/.built: $(X11_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(X11_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +148,7 @@ x11: $(X11_BUILD_DIR)/.built
 #
 $(X11_BUILD_DIR)/.staged: $(X11_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(X11_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/x11.pc
 	rm -f $(STAGING_LIB_DIR)/libX11.la
 	touch $@

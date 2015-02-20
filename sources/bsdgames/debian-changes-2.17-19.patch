@@ -1,0 +1,513 @@
+Description: Upstream changes introduced in version 2.17-19
+ This patch has been created by dpkg-source during the package build.
+ Here's the last changelog entry, hopefully it gives details on why
+ those changes were made:
+ .
+ bsdgames (2.17-19) unstable; urgency=low
+ .
+   * debian/patches/define-dead.diff:
+     - Define __dead in include/sys/cdefs.h
+   * debian/patches/wump-update.diff:
+     - Update wump sources to NetBSD CVS as of 2010-01-14. This fixes
+       several bugs, including the over-crowded cave. Thanks to
+       Jörg Neulist for the bug report and patch. Closes: #564891
+ .
+ The person named in the Author field signed this changelog entry.
+Author: Tobias Quathamer <toddy@debian.org>
+Bug-Debian: http://bugs.debian.org/564891
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+--- bsdgames-2.17.orig/dm/dm.c
++++ bsdgames-2.17/dm/dm.c
+@@ -134,19 +134,19 @@ read_config()
+ 	while (fgets(lbuf, sizeof(lbuf), cfp))
+ 		switch (*lbuf) {
+ 		case 'b':		/* badtty */
+-			if (sscanf(lbuf, "%s%s", f1, f2) != 2 ||
++			if (sscanf(lbuf, "%39s%39s", f1, f2) != 2 ||
+ 			    strcasecmp(f1, "badtty"))
+ 				break;
+ 			c_tty(f2);
+ 			break;
+ 		case 'g':		/* game */
+-			if (sscanf(lbuf, "%s%s%s%s%s",
++			if (sscanf(lbuf, "%39s%39s%39s%39s%39s",
+ 			    f1, f2, f3, f4, f5) != 5 || strcasecmp(f1, "game"))
+ 				break;
+ 			c_game(f2, f3, f4, f5);
+ 			break;
+ 		case 't':		/* time */
+-			if (sscanf(lbuf, "%s%s%s%s", f1, f2, f3, f4) != 4 ||
++			if (sscanf(lbuf, "%39s%39s%39s%39s", f1, f2, f3, f4) != 4 ||
+ 			    strcasecmp(f1, "time"))
+ 				break;
+ 			c_day(f2, f3, f4);
+--- bsdgames-2.17.orig/dab/gamescreen.h
++++ bsdgames-2.17/dab/gamescreen.h
+@@ -70,9 +70,9 @@ class GAMESCREEN {
+     virtual void redraw(void) = 0;			// Refresh
+     virtual int getinput(void) = 0;			// Get user input
+     virtual void bell(void) = 0;			// Beep
+-    virtual void score(size_t p, const PLAYER& p) = 0;	// Post current score
+-    virtual void games(size_t p, const PLAYER& p) = 0;	// Post games won
+-    virtual void total(size_t p, const PLAYER& p) = 0;	// Post total score
++    virtual void score(size_t s, const PLAYER& p) = 0;	// Post current score
++    virtual void games(size_t s, const PLAYER& p) = 0;	// Post games won
++    virtual void total(size_t s, const PLAYER& p) = 0;	// Post total score
+     virtual void ties(const PLAYER& p) = 0;		// Post tie games
+ };
+ 
+--- bsdgames-2.17.orig/adventure/crc.c
++++ bsdgames-2.17/adventure/crc.c
+@@ -42,6 +42,8 @@ __RCSID("$NetBSD: crc.c,v 1.8 2003/08/07
+ #endif
+ #endif /* not lint */
+ 
++#include <limits.h>
++
+ #include "extern.h"
+ 
+ const unsigned long crctab[] = {
+@@ -125,7 +127,7 @@ crc(ptr, nr)		/* Process nr bytes at a t
+ 
+ 	while (nr > 0)
+ 		for (p = ptr; nr--; ++p) {
+-			if (!(i = crcval >> 24 ^ *p)) {
++			if (!(i = crcval >> (sizeof(crcval) * CHAR_BIT - 8) ^ *p)) {
+ 				i = step++;
+ 				if (step >= sizeof(crctab) / sizeof(crctab[0]))
+ 					step = 0;
+--- bsdgames-2.17.orig/number/number.c
++++ bsdgames-2.17/number/number.c
+@@ -78,9 +78,9 @@ static const char	*const name1[] = {
+ 
+ void	convert(char *);
+ int	main(int, char *[]);
+-int	number(const char *, int);
+-void	pfract(int);
+-int	unit(int, const char *);
++int	number(const char *, int, int *);
++void	pfract(int, int);
++int	unit(int, const char *, int *);
+ void	usage(void) __attribute__((__noreturn__));
+ 
+ int lflag;
+@@ -131,7 +131,7 @@ void
+ convert(line)
+ 	char *line;
+ {
+-	int flen, len, rval;
++	int flen, len, rval, singular;
+ 	char *p, *fraction;
+ 
+ 	flen = 0;
+@@ -174,7 +174,7 @@ badnum:			errx(1, "illegal number: %s", 
+ 		--len;
+ 	}
+ 
+-	rval = len > 0 ? unit(len, line) : 0;
++	rval = len > 0 ? unit(len, line, &singular) : 0;
+ 	if (fraction != NULL && flen != 0)
+ 		for (p = fraction; *p != '\0'; ++p)
+ 			if (*p != '0') {
+@@ -182,10 +182,10 @@ badnum:			errx(1, "illegal number: %s", 
+ 					(void)printf("%sand%s",
+ 					    lflag ? " " : "",
+ 					    lflag ? " " : "\n");
+-				if (unit(flen, fraction)) {
++				if (unit(flen, fraction, &singular)) {
+ 					if (lflag)
+ 						(void)printf(" ");
+-					pfract(flen);
++					pfract(flen, singular);
+ 					rval = 1;
+ 				}
+ 				break;
+@@ -197,9 +197,10 @@ badnum:			errx(1, "illegal number: %s", 
+ }
+ 
+ int
+-unit(len, p)
++unit(len, p, singular)
+ 	int len;
+ 	const char *p;
++	int *singular;
+ {
+ 	int off, rval;
+ 
+@@ -208,7 +209,7 @@ unit(len, p)
+ 		if (len % 3) {
+ 			off = len % 3;
+ 			len -= off;
+-			if (number(p, off)) {
++			if (number(p, off, singular)) {
+ 				rval = 1;
+ 				(void)printf(" %s%s",
+ 				    name3[len / 3], lflag ? " " : ".\n");
+@@ -217,14 +218,16 @@ unit(len, p)
+ 		}
+ 		for (; len > 3; p += 3) {
+ 			len -= 3;
+-			if (number(p, 3)) {
++			if (number(p, 3, singular)) {
+ 				rval = 1;
+ 				(void)printf(" %s%s",
+ 				    name3[len / 3], lflag ? " " : ".\n");
+ 			}
+ 		}
+ 	}
+-	if (number(p, len)) {
++	if (number(p, len, singular)) {
++		if (rval)
++			*singular = 0;
+ 		if (!lflag)
+ 			(void)printf(".\n");
+ 		rval = 1;
+@@ -233,17 +236,20 @@ unit(len, p)
+ }
+ 
+ int
+-number(p, len)
++number(p, len, singular)
+ 	const char *p;
+ 	int len;
++	int *singular;
+ {
+ 	int val, rval;
+ 
+ 	rval = 0;
++	*singular = 1;
+ 	switch (len) {
+ 	case 3:
+ 		if (*p != '0') {
+ 			rval = 1;
++			*singular = 0;
+ 			(void)printf("%s hundred", name1[*p - '0']);
+ 		}
+ 		++p;
+@@ -262,33 +268,42 @@ number(p, len)
+ 			}
+ 			rval = 1;
+ 		}
++		if (val != 1)
++			*singular = 0;
+ 		break;
+ 	case 1:
+ 		if (*p != '0') {
+ 			rval = 1;
+ 			(void)printf("%s", name1[*p - '0']);
+ 		}
++		if (*p != '1')
++			*singular = 0;
+ 	}
+ 	return (rval);
+ }
+ 
+ void
+-pfract(len)
++pfract(len, singular)
+ 	int len;
++	int singular;
+ {
+ 	static const char *const pref[] = { "", "ten-", "hundred-" };
+ 
+ 	switch(len) {
+ 	case 1:
+-		(void)printf("tenths.\n");
++		(void)printf("tenth");
+ 		break;
+ 	case 2:
+-		(void)printf("hundredths.\n");
++		(void)printf("hundredth");
+ 		break;
+ 	default:
+-		(void)printf("%s%sths.\n", pref[len % 3], name3[len / 3]);
++		(void)printf("%s%sth", pref[len % 3], name3[len / 3]);
+ 		break;
+ 	}
++	if (!singular) {
++		printf("s");
++	}
++	printf(".\n");
+ }
+ 
+ void
+--- bsdgames-2.17.orig/backgammon/teachgammon/ttext1.c
++++ bsdgames-2.17/backgammon/teachgammon/ttext1.c
+@@ -94,7 +94,7 @@ const char   *const intro2[] = {
+ 	"\n   Although not indicated on the board, the players' homes are",
+ 	"located just to the right of the board.  A player's men are placed",
+ 	"there when they are removed from the board.  The board you just",
+-	"saw was in it's initial position.  All games start with the board",
++	"saw was in its initial position.  All games start with the board",
+ 	"looking like this.  Notice that red's pieces are represented by the",
+ 	"letter 'r' and white's pieces are represented by the letter 'w'.",
+ 	"Also, a position may have zero or more pieces on it, e.g.  posi-",
+--- bsdgames-2.17.orig/backgammon/teachgammon/ttext2.c
++++ bsdgames-2.17/backgammon/teachgammon/ttext2.c
+@@ -65,7 +65,7 @@ const char   *const stragy[] = {
+ 	"points in a row) are difficult to form, many points nestled close-",
+ 	"ly together produce a formidable barrier.  Also, while it is good",
+ 	"to move back men forward, doing so lessens the opportunity for you",
+-	"to hit men.  Finally, remember that once the two player's have",
++	"to hit men.  Finally, remember that once the two players have",
+ 	"passed each other on the board, there is no chance of either team",
+ 	"being hit, so the game reduces to a race off the board.  Addi-",
+ 	"tional hints on strategy are presented in the practice game.",
+--- bsdgames-2.17.orig/backgammon/backgammon/move.c
++++ bsdgames-2.17/backgammon/backgammon/move.c
+@@ -152,6 +152,9 @@ move(okay)
+ 	trymove(0, 0);
+ 	pickmove();
+ 
++	if (d0)
++		swap;
++
+ 	/* print move */
+ 	writel(" and moves ");
+ 	for (i = 0; i < mvlim; i++) {
+--- bsdgames-2.17.orig/backgammon/common_source/allow.c
++++ bsdgames-2.17/backgammon/common_source/allow.c
+@@ -83,8 +83,10 @@ movallow()
+ 				p[i--] = bar;
+ 				if (p[i] != bar)
+ 					continue;
+-				else
++				else if (d0)
+ 					break;
++				swap;
++				continue;
+ 			}
+ 			if (d0 || m == 4)
+ 				break;
+--- bsdgames-2.17.orig/quiz/datfiles/poetry
++++ bsdgames-2.17/quiz/datfiles/poetry
+@@ -64,7 +64,7 @@ Drink deep{,} or taste not the Pierian s
+ {Alexander }Pope
+ The curfew tolls the knell of parting day{,}:\
+ The lowing herd wind slowly o'er the lea:\
+-Elegy{ Written in a Country Church{-| }Yard:\
++Elegy{ Written in a Country Church{-| }Yard}:\
+ {Thomas }Gray
+ The best laid schemes o' mice an' men gang aft a-gley{,}:\
+ An{'|d} lea{'|v}e us nought but grief an{'|d} pain for promised joy{.}:\
+--- bsdgames-2.17.orig/gomoku/gomoku.6
++++ bsdgames-2.17/gomoku/gomoku.6
+@@ -45,7 +45,7 @@
+ .Op Ar inputfile
+ .Sh DESCRIPTION
+ .Nm
+-is a two player game were the object is to get 5 in a row horizontally,
++is a two player game where the object is to get 5 in a row horizontally,
+ vertically or diagonally on a 19 by 19 grid.
+ By convention, black always moves first.
+ With no arguments,
+--- bsdgames-2.17.orig/trek/setup.c
++++ bsdgames-2.17/trek/setup.c
+@@ -234,11 +234,14 @@ setup()
+ 	for (i = 0; i < NQUADS; i++)
+ 		for (j = 0; j < NQUADS; j++)
+ 		{
++			signed char tmp;
+ 			q = &Quad[i][j];
+ 			q->klings = q->bases = 0;
+ 			q->scanned = -1;
+ 			q->stars = ranf(9) + 1;
+-			q->holes = ranf(3) - q->stars / 5;
++			tmp = ranf(3) - q->stars / 5;
++			tmp = tmp < 0 ? 0 : tmp;
++			q->holes = tmp;
+ 			q->qsystemname = 0;
+ 		}
+ 
+--- bsdgames-2.17.orig/fish/Makefrag
++++ bsdgames-2.17/fish/Makefrag
+@@ -31,7 +31,9 @@ fish_DIRS := $(GAMESDIR) $(MAN6DIR) $(sh
+ fish_all:	fish/fish fish/fish.instr fish/fish.6
+ 
+ fish_install:	fish_all
+-	$(INSTALL_BINARY) fish/fish $(INSTALL_PREFIX)$(GAMESDIR)/fish
+-	$(HIDE_GAME) fish
++	$(INSTALL_BINARY) fish/fish $(INSTALL_PREFIX)$(GAMESDIR)/go-fish
++	$(HIDE_GAME) go-fish
+ 	$(INSTALL_DATA) fish/fish.instr $(INSTALL_PREFIX)$(FISH_INSTRFILE)
+-	$(INSTALL_MANUAL) fish/fish.6
++	ln -sf fish.6 fish/go-fish.6 # hack for rename
++	$(INSTALL_MANUAL) fish/go-fish.6
++	rm -f fish/go-fish.6
+--- bsdgames-2.17.orig/fish/fish.6
++++ bsdgames-2.17/fish/fish.6
+@@ -30,10 +30,10 @@
+ .\"	@(#)fish.6	8.1 (Berkeley) 5/31/93
+ .\"
+ .Dd May 31, 1993
+-.Dt FISH 6
++.Dt GO-FISH 6
+ .Os
+ .Sh NAME
+-.Nm fish
++.Nm go-fish
+ .Nd play
+ .Dq Go Fish
+ .Sh SYNOPSIS
+--- bsdgames-2.17.orig/hunt/hunt/hunt.c
++++ bsdgames-2.17/hunt/hunt/hunt.c
+@@ -394,7 +394,8 @@ broadcast_vec(s, vector)
+ 
+ 	vec_cnt = 0;
+ 	for (ip = ifp; ip; ip = ip->ifa_next)
+-		if ((ip->ifa_addr->sa_family == AF_INET) &&
++		if (ip->ifa_addr &&
++		    (ip->ifa_addr->sa_family == AF_INET) &&
+ 		    (ip->ifa_flags & IFF_BROADCAST))
+ 			vec_cnt++;
+ 
+@@ -405,7 +406,8 @@ broadcast_vec(s, vector)
+ 
+ 	vec_cnt = 0;
+ 	for (ip = ifp; ip; ip = ip->ifa_next)
+-		if ((ip->ifa_addr->sa_family == AF_INET) &&
++		if (ip->ifa_addr &&
++		    (ip->ifa_addr->sa_family == AF_INET) &&
+ 		    (ip->ifa_flags & IFF_BROADCAST))
+ 			memcpy(&(*vector)[vec_cnt++], ip->ifa_broadaddr,
+ 			       sizeof(struct sockaddr_in));
+--- bsdgames-2.17.orig/hunt/hunt/hunt.6.in
++++ bsdgames-2.17/hunt/hunt/hunt.6.in
+@@ -387,7 +387,7 @@ how many of player's shots were ducked
+ how many slime kills player had
+ .It enemy
+ how many enemies were killed
+-.tI friend
++.It friend
+ how many friends were killed (self and same team)
+ .It deaths
+ how many times player died
+--- bsdgames-2.17.orig/hunt/hunt/playit.c
++++ bsdgames-2.17/hunt/hunt/playit.c
+@@ -114,7 +114,7 @@ playit()
+ 		bad_con();
+ 		/* NOTREACHED */
+ 	}
+-	if (ntohl(version) != (unsigned long)HUNT_VERSION) {
++	if (ntohl(version) != (uint32_t)HUNT_VERSION) {
+ 		bad_ver();
+ 		/* NOTREACHED */
+ 	}
+@@ -649,7 +649,7 @@ do_message()
+ 		bad_con();
+ 		/* NOTREACHED */
+ 	}
+-	if (ntohl(version) != (unsigned long)HUNT_VERSION) {
++	if (ntohl(version) != (uint32_t)HUNT_VERSION) {
+ 		bad_ver();
+ 		/* NOTREACHED */
+ 	}
+--- bsdgames-2.17.orig/tetris/scores.c
++++ bsdgames-2.17/tetris/scores.c
+@@ -335,7 +335,8 @@ checkscores(hs, num)
+ 				continue;
+ 			}
+ 		}
+-		levelfound[sp->hs_level] = 1;
++        if (sp->hs_level < NLEVELS && sp->hs_level >= 0)
++    		levelfound[sp->hs_level] = 1;
+ 		i++, sp++;
+ 	}
+ 	return (num > MAXHISCORES ? MAXHISCORES : num);
+@@ -374,12 +375,14 @@ showscores(level)
+ 	for (i = MINLEVEL; i < NLEVELS; i++)
+ 		levelfound[i] = 0;
+ 	for (i = 0, sp = scores; i < nscores; i++, sp++) {
+-		if (levelfound[sp->hs_level])
+-			sp->hs_time = 0;
+-		else {
+-			sp->hs_time = 1;
+-			levelfound[sp->hs_level] = 1;
+-		}
++        if (sp->hs_level < NLEVELS && sp->hs_level >= 0) {
++    		if (levelfound[sp->hs_level])
++	    		sp->hs_time = 0;
++		    else {
++			    sp->hs_time = 1;
++		    	levelfound[sp->hs_level] = 1;
++		    }
++        }
+ 	}
+ 
+ 	/*
+@@ -433,7 +436,7 @@ printem(level, offset, hs, n, me)
+ 				continue;
+ 			}
+ 			sp = &hs[item];
+-			(void)sprintf(buf,
++			(void)snprintf(buf, sizeof(buf),
+ 			    "%3d%c %6d  %-11s (%6d on %d)",
+ 			    item + offset, sp->hs_time ? '*' : ' ',
+ 			    sp->hs_score * sp->hs_level,
+--- bsdgames-2.17.orig/hack/Makefrag
++++ bsdgames-2.17/hack/Makefrag
+@@ -56,7 +56,8 @@ hack_install:	hack_all
+ 	$(INSTALL_SCORE_GAME) hack/hack $(INSTALL_PREFIX)$(GAMESDIR)/hack
+ 	$(HIDE_GAME) hack
+ 	$(INSTALL_HACK_DIR) $(INSTALL_PREFIX)$(HACK_DIR)
+-	set -e; for f in data help hh rumors; do $(INSTALL_DATA) hack/$$f $(INSTALL_PREFIX)$(HACK_DIR)/$$f; done
++	install -d $(INSTALL_PREFIX)/usr/share/games/bsdgames/hack
++	set -e; for f in data help hh rumors; do $(INSTALL_DATA) hack/$$f $(INSTALL_PREFIX)/usr/share/games/bsdgames/hack/$$f; done
+ 	$(INSTALL_SCORE_FILE) $(HACK_DIR)/perm
+ 	$(INSTALL_SCORE_FILE) $(HACK_DIR)/record
+ 	$(INSTALL_MANUAL) hack/hack.6
+--- bsdgames-2.17.orig/hack/config.h
++++ bsdgames-2.17/hack/config.h
+@@ -88,13 +88,18 @@
+ /* #define PYRAMID_BUG */	/* avoid a bug on the Pyramid */
+ /* #define NOWAITINCLUDE */	/* neither <wait.h> nor <sys/wait.h> exists */
+ 
+-#define WIZARD  "bruno"	/* the person allowed to use the -D option */
++/*
++ * Debian mods: use root for WIZARD, and move files that are static to
++ * /usr/share/ -- JEH
++ */
++#define WIZARD  "root"	/* the person allowed to use the -D option */
++#define SHAREDIR "/usr/share/games/bsdgames/hack/"
+ #define RECORD	"record"/* the file containing the list of topscorers */
+ #define	NEWS	"news"	/* the file containing the latest hack news */
+-#define	HELP	"help"	/* the file containing a description of the commands */
+-#define	SHELP	"hh"	/* abbreviated form of the same */
+-#define	RUMORFILE	"rumors"	/* a file with fortune cookies */
+-#define	DATAFILE	"data"	/* a file giving the meaning of symbols used */
++#define	HELP	SHAREDIR "help"	/* the file containing a description of the commands */
++#define	SHELP	SHAREDIR "hh"	/* abbreviated form of the same */
++#define	RUMORFILE	SHAREDIR "rumors"	/* a file with fortune cookies */
++#define	DATAFILE	SHAREDIR "data"	/* a file giving the meaning of symbols used */
+ #define	FMASK	0660	/* file creation mask */
+ #define	HLOCK	"perm"	/* an empty file used for locking purposes */
+ #define LLOCK	"safelock"	/* link to previous */
+--- bsdgames-2.17.orig/sail/pl_main.c
++++ bsdgames-2.17/sail/pl_main.c
+@@ -219,7 +219,7 @@ reprint:
+ 		printf("\nInitial broadside %s (grape, chain, round, double): ",
+ 			n ? "right" : "left");
+ 		fflush(stdout);
+-		scanf("%s", buf);
++		scanf("%9s", buf);
+ 		switch (*buf) {
+ 		case 'g':
+ 			load = L_GRAPE;
+--- bsdgames-2.17.orig/tests/number.-0.1
++++ bsdgames-2.17/tests/number.-0.1
+@@ -1,3 +1,3 @@
+ minus
+ one.
+-tenths.
++tenth.

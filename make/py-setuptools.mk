@@ -22,9 +22,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SETUPTOOLS_SITE=http://pypi.python.org/packages/source/s/setuptools
-PY-SETUPTOOLS_VERSION=0.6c11
+PY-SETUPTOOLS_VERSION=12.0.1
+PY-SETUPTOOLS_VERSION_OLD=1.4.2
 PY-SETUPTOOLS_SOURCE=setuptools-$(PY-SETUPTOOLS_VERSION).tar.gz
+PY-SETUPTOOLS_SOURCE_OLD=setuptools-$(PY-SETUPTOOLS_VERSION_OLD).tar.gz
 PY-SETUPTOOLS_DIR=setuptools-$(PY-SETUPTOOLS_VERSION)
+PY-SETUPTOOLS_DIR_OLD=setuptools-$(PY-SETUPTOOLS_VERSION_OLD)
 PY-SETUPTOOLS_UNZIP=zcat
 PY-SETUPTOOLS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-SETUPTOOLS_DESCRIPTION=Tool to build and distribute Python packages, enhancement to distutils.
@@ -34,12 +37,13 @@ PY24-SETUPTOOLS_DEPENDS=python24
 PY25-SETUPTOOLS_DEPENDS=python25
 PY26-SETUPTOOLS_DEPENDS=python26
 PY27-SETUPTOOLS_DEPENDS=python27
+PY3-SETUPTOOLS_DEPENDS=python3
 PY-SETUPTOOLS_CONFLICTS=
 
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=2
+PY-SETUPTOOLS_IPK_VERSION=1
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files
@@ -69,12 +73,13 @@ PY-SETUPTOOLS_LDFLAGS=
 #
 PY-SETUPTOOLS_SOURCE_DIR=$(SOURCE_DIR)/py-setuptools
 PY-SETUPTOOLS_BUILD_DIR=$(BUILD_DIR)/py-setuptools
+PY-SETUPTOOLS_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/py-setuptools
 
-PY24-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py24-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
-PY24-SETUPTOOLS_IPK=$(BUILD_DIR)/py24-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py24-setuptools-$(PY-SETUPTOOLS_VERSION_OLD)-ipk
+PY24-SETUPTOOLS_IPK=$(BUILD_DIR)/py24-setuptools_$(PY-SETUPTOOLS_VERSION_OLD)-$(PY-SETUPTOOLS_IPK_VERSION_OLD)_$(TARGET_ARCH).ipk
 
-PY25-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py25-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
-PY25-SETUPTOOLS_IPK=$(BUILD_DIR)/py25-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY25-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py25-setuptools-$(PY-SETUPTOOLS_VERSION_OLD)-ipk
+PY25-SETUPTOOLS_IPK=$(BUILD_DIR)/py25-setuptools_$(PY-SETUPTOOLS_VERSION_OLD)-$(PY-SETUPTOOLS_IPK_VERSION_OLD)_$(TARGET_ARCH).ipk
 
 PY26-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py26-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
 PY26-SETUPTOOLS_IPK=$(BUILD_DIR)/py26-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -82,7 +87,10 @@ PY26-SETUPTOOLS_IPK=$(BUILD_DIR)/py26-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-S
 PY27-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py27-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
 PY27-SETUPTOOLS_IPK=$(BUILD_DIR)/py27-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: py-setuptools-source py-setuptools-unpack py-setuptools py-setuptools-stage py-setuptools-ipk py-setuptools-clean py-setuptools-dirclean py-setuptools-check
+PY3-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py3-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
+PY3-SETUPTOOLS_IPK=$(BUILD_DIR)/py3-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-setuptools-source py-setuptools-unpack py-setuptools py-setuptools-stage py-setuptools-ipk py-setuptools-clean py-setuptools-dirclean py-setuptools-check py-setuptools-host-stage
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -91,6 +99,11 @@ PY27-SETUPTOOLS_IPK=$(BUILD_DIR)/py27-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-S
 $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE):
 	$(WGET) -P $(@D) $(PY-SETUPTOOLS_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+$(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD):
+	$(WGET) -P $(@D) $(PY-SETUPTOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,15 +127,15 @@ py-setuptools-source: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES) make/py-setuptools.mk
-	$(MAKE) python24-host-stage python25-host-stage python26-host-stage python27-host-stage
-	$(MAKE) python24-stage python25-stage python26-stage python27-stage
-	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)
+$(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) $(PY-SETUPTOOLS_PATCHES) make/py-setuptools.mk
+	$(MAKE) python24-host-stage python25-host-stage python26-host-stage python27-host-stage python3-host-stage
+	$(MAKE) python24-stage python25-stage python26-stage python27-stage python3-stage
+	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
-	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.4
+	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    ( \
 		echo "[install]"; \
@@ -132,9 +145,9 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-S
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
-	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.5
+	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[install]"; \
@@ -167,6 +180,18 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-S
 		echo "executable=/opt/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
+#	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/3
+	(cd $(@D)/3; \
+	    ( \
+		echo "[install]"; \
+		echo "install_scripts = /opt/bin"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+	    ) >> setup.cfg \
+	)
 	touch $@
 
 py-setuptools-unpack: $(PY-SETUPTOOLS_BUILD_DIR)/.configured
@@ -180,6 +205,7 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.built: $(PY-SETUPTOOLS_BUILD_DIR)/.configured
 	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
+	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	touch $@
 
 #
@@ -201,11 +227,48 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.staged: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 	rm -rf $(STAGING_LIB_DIR)/python2.6/site-packages/setuptools*
 	(cd $(@D)/2.6; \
 	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	rm -rf $(STAGING_LIB_DIR)/python2.7/site-packages/setuptools*
 	(cd $(@D)/2.7; \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	rm -rf $(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages/setuptools*
+	(cd $(@D)/3; \
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	touch $@
+
+$(PY-SETUPTOOLS_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) make/py-setuptools.mk
+	rm -rf $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)
+	$(MAKE) python24-host-stage python25-host-stage python26-host-stage python27-host-stage python3-host-stage
+	mkdir -p $(@D)/
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.4
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.5
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.6
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.7
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/3
+	(cd $(@D)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(@D)/2.4; \
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.5; \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
+	(cd $(@D)/2.6; \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
+	(cd $(@D)/2.7; \
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
+	(cd $(@D)/3; \
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
 	touch $@
 
 py-setuptools-stage: $(PY-SETUPTOOLS_BUILD_DIR)/.staged
+
+py-setuptools-host-stage: $(PY-SETUPTOOLS_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -218,9 +281,9 @@ $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SETUPTOOLS_PRIORITY)" >>$@
 	@echo "Section: $(PY-SETUPTOOLS_SECTION)" >>$@
-	@echo "Version: $(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)" >>$@
+	@echo "Version: $(PY-SETUPTOOLS_VERSION_OLD)-$(PY-SETUPTOOLS_IPK_VERSION_OLD)" >>$@
 	@echo "Maintainer: $(PY-SETUPTOOLS_MAINTAINER)" >>$@
-	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)" >>$@
+	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE_OLD)" >>$@
 	@echo "Description: $(PY-SETUPTOOLS_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY24-SETUPTOOLS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
@@ -232,9 +295,9 @@ $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SETUPTOOLS_PRIORITY)" >>$@
 	@echo "Section: $(PY-SETUPTOOLS_SECTION)" >>$@
-	@echo "Version: $(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)" >>$@
+	@echo "Version: $(PY-SETUPTOOLS_VERSION_OLD)-$(PY-SETUPTOOLS_IPK_VERSION_OLD)" >>$@
 	@echo "Maintainer: $(PY-SETUPTOOLS_MAINTAINER)" >>$@
-	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)" >>$@
+	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE_OLD)" >>$@
 	@echo "Description: $(PY-SETUPTOOLS_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY25-SETUPTOOLS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
@@ -265,6 +328,20 @@ $(PY27-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)" >>$@
 	@echo "Description: $(PY-SETUPTOOLS_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY27-SETUPTOOLS_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
+
+$(PY3-SETUPTOOLS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py3-setuptools" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-SETUPTOOLS_PRIORITY)" >>$@
+	@echo "Section: $(PY-SETUPTOOLS_SECTION)" >>$@
+	@echo "Version: $(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-SETUPTOOLS_MAINTAINER)" >>$@
+	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)" >>$@
+	@echo "Description: $(PY-SETUPTOOLS_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY3-SETUPTOOLS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
 
 #
@@ -323,10 +400,21 @@ $(PY27-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
 	echo $(PY-SETUPTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-SETUPTOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-SETUPTOOLS_IPK_DIR)
 
+$(PY3-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
+	$(MAKE) py-setuptools-stage
+	rm -rf $(PY27-SETUPTOOLS_IPK_DIR) $(BUILD_DIR)/py3-setuptools_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SETUPTOOLS_BUILD_DIR)/3; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-SETUPTOOLS_IPK_DIR) --prefix=/opt)
+	rm -f $(PY3-SETUPTOOLS_IPK_DIR)/opt/bin/easy_install
+	$(MAKE) $(PY3-SETUPTOOLS_IPK_DIR)/CONTROL/control
+	echo $(PY-SETUPTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-SETUPTOOLS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-SETUPTOOLS_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-setuptools-ipk: $(PY24-SETUPTOOLS_IPK) $(PY25-SETUPTOOLS_IPK) $(PY26-SETUPTOOLS_IPK) $(PY27-SETUPTOOLS_IPK)
+py-setuptools-ipk: $(PY24-SETUPTOOLS_IPK) $(PY25-SETUPTOOLS_IPK) $(PY26-SETUPTOOLS_IPK) $(PY27-SETUPTOOLS_IPK) $(PY3-SETUPTOOLS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -339,14 +427,17 @@ py-setuptools-clean:
 # directories.
 #
 py-setuptools-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR) \
+	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) \
+	$(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD)\
+	$(PY-SETUPTOOLS_HOST_BUILD_DIR) $(PY-SETUPTOOLS_BUILD_DIR) \
 	$(PY24-SETUPTOOLS_IPK_DIR) $(PY24-SETUPTOOLS_IPK) \
 	$(PY25-SETUPTOOLS_IPK_DIR) $(PY25-SETUPTOOLS_IPK) \
 	$(PY26-SETUPTOOLS_IPK_DIR) $(PY26-SETUPTOOLS_IPK) \
 	$(PY27-SETUPTOOLS_IPK_DIR) $(PY27-SETUPTOOLS_IPK) \
+	$(PY3-SETUPTOOLS_IPK_DIR) $(PY3-SETUPTOOLS_IPK) \
 
 #
 # Some sanity check for the package.
 #
-py-setuptools-check: $(PY24-SETUPTOOLS_IPK) $(PY25-SETUPTOOLS_IPK) $(PY26-SETUPTOOLS_IPK) $(PY27-SETUPTOOLS_IPK)
+py-setuptools-check: $(PY24-SETUPTOOLS_IPK) $(PY25-SETUPTOOLS_IPK) $(PY26-SETUPTOOLS_IPK) $(PY27-SETUPTOOLS_IPK) $(PY3-SETUPTOOLS_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

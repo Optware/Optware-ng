@@ -22,7 +22,7 @@ SCPONLY_CONFLICTS=
 #
 # SCPONLY_IPK_VERSION should be incremented when the ipk changes.
 #
-SCPONLY_IPK_VERSION=1
+SCPONLY_IPK_VERSION=2
 
 #
 # SCPONLY_CONFFILES should be a list of user-editable files
@@ -92,25 +92,24 @@ scponly-source: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 #
 $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES) make/scponly.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(SCPONLY_DIR) $(SCPONLY_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SCPONLY_DIR) $(@D)
 	$(SCPONLY_UNZIP) $(DL_DIR)/$(SCPONLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCPONLY_PATCHES)" ; \
 		then cat $(SCPONLY_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SCPONLY_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SCPONLY_DIR)" != "$(SCPONLY_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SCPONLY_DIR) $(SCPONLY_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SCPONLY_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SCPONLY_DIR) $(@D) ; \
 	fi
-	cp -f $(SOURCE_DIR)/common/config.* $(SCPONLY_BUILD_DIR)/
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	sed -i -e 's/^#elif$$/#else/' $(@D)/helper.c
 #
 # Rsync isn't working yet!
 #		--enable-rsync-compat \
 #
-# NOTE
-# 	The sed is used to force the path for the sftp-server.
-# 	Otherwise configure uses the path it finds on the build system!
-#
-	(cd $(SCPONLY_BUILD_DIR); \
+	sed -i -e '/echo "\$$as_me: enabling SFTP compatability..."/s|$$|\nscponly_explicit_sftpserver_path=/opt/libexec/sftp-server|' \
+		-e 's|scponly_PROG_SFTP_SERVER=.*|scponly_PROG_SFTP_SERVER=/opt/libexec/sftp-server|' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SCPONLY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SCPONLY_LDFLAGS)" \
@@ -127,10 +126,9 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 		--enable-sftp-logging-compat \
 		--enable-scp-compat \
 		--enable-chrooted-binary \
-		--with-sftp-server=/usr/libexec/sftp-server; \
-		sed -i 's@#define PROG_SFTP_SERVER ".*"@#define PROG_SFTP_SERVER "/usr/libexec/sftp-server"@' config.h \
+		--with-sftp-server=/opt/libexec/sftp-server; \
 	)
-	# $(PATCH_LIBTOOL) $(SCPONLY_BUILD_DIR)/libtool
+	# $(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 scponly-unpack: $(SCPONLY_BUILD_DIR)/.configured
@@ -140,7 +138,7 @@ scponly-unpack: $(SCPONLY_BUILD_DIR)/.configured
 #
 $(SCPONLY_BUILD_DIR)/.built: $(SCPONLY_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SCPONLY_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -153,7 +151,7 @@ scponly: $(SCPONLY_BUILD_DIR)/.built
 #
 $(SCPONLY_BUILD_DIR)/.staged: $(SCPONLY_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SCPONLY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 scponly-stage: $(SCPONLY_BUILD_DIR)/.staged
@@ -231,4 +229,4 @@ scponly-dirclean:
 # Some sanity check for the package.
 #
 scponly-check: $(SCPONLY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SCPONLY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

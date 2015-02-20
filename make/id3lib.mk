@@ -61,7 +61,8 @@ ID3LIB_PATCHES=$(ID3LIB_SOURCE_DIR)/wchar.patch
 # compilation or linking flags, then list them here.
 #
 ID3LIB_CPPFLAGS=
-ID3LIB_LDFLAGS=
+### worakaround for ld: conftest: hidden symbol `__sync_fetch_and_add_4' in .../libgcc.a(linux-atomic.o) is referenced by DSO
+ID3LIB_LDFLAGS=-lgcc
 
 ifeq ($(LIBC_STYLE), uclibc)
 ifdef TARGET_GXX
@@ -132,10 +133,12 @@ endif
 	fi
 ifeq ($(OPTWARE_TARGET), $(filter dns323, $(OPTWARE_TARGET)))
 	sed -i -e 's/^#if (defined(ID3_NEED_WCHAR_TEMPLATE))/#if 1/' \
-	       -e 's/^#ifndef _GLIBCPP_USE_WCHAR_T/#if 1/' \
+		-e 's/^#ifndef _GLIBCPP_USE_WCHAR_T/#if 1/' \
 		$(@D)/include/id3/id3lib_strings.h
 endif
 	sed -i -e '/iomanip.h/d' $(ID3LIB_BUILD_DIR)/configure.in
+	sed -i -e '/#include <string>/s/$$/\n#include <string.h>/' $(@D)/include/id3/id3lib_strings.h
+	sed -i -e '/#include <string\.h>/s|//||' $(@D)/include/id3/writers.h
 	(cd $(ID3LIB_BUILD_DIR); \
 		autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -150,7 +153,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(ID3LIB_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 id3lib-unpack: $(ID3LIB_BUILD_DIR)/.configured

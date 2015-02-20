@@ -16,7 +16,7 @@ PHP_APACHE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PHP_APACHE_DESCRIPTION=The php scripting language, built as an apache module
 PHP_APACHE_SECTION=net
 PHP_APACHE_PRIORITY=optional
-PHP_APACHE_DEPENDS=apache (>= 2.2.17), php (>= 5.2.16), libxml2
+PHP_APACHE_DEPENDS=apache (>= 2.2.17), php (>= 5.2.16), libxml2, sqlite
 
 PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 
@@ -45,7 +45,8 @@ PHP_APACHE_PATCHES=$(PHP_PATCHES)
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PHP_APACHE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2 -I$(STAGING_INCLUDE_DIR)/libxml2
+PHP_APACHE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2 -I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt \
+			-I$(STAGING_INCLUDE_DIR)/libexslt -I$(STAGING_INCLUDE_DIR)/freetype2
 PHP_APACHE_LDFLAGS=-ldl -lpthread
 
 #
@@ -109,23 +110,80 @@ php-apache-source: $(DL_DIR)/$(PHP_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PHP_APACHE_BUILD_DIR)/.configured: $(PHP_APACHE_PATCHES) make/php-apache.mk
-	$(MAKE) $(DL_DIR)/$(PHP_SOURCE)
-	$(MAKE) apache-stage libxml2-stage
+$(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_HOST_CLI) $(PHP_APACHE_PATCHES) make/php-apache.mk
+	$(MAKE) apache-stage
+	$(MAKE) bzip2-stage 
+	$(MAKE) gdbm-stage 
+	$(MAKE) libcurl-stage
+	$(MAKE) libdb-stage
+	$(MAKE) libgd-stage 
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
+	$(MAKE) libxml2-stage 
+	$(MAKE) libxslt-stage 
+	$(MAKE) openssl-stage 
+	$(MAKE) mysql-stage
+	$(MAKE) postgresql-stage
+	$(MAKE) freetds-stage
+	$(MAKE) unixodbc-stage
+	$(MAKE) imap-stage
+	$(MAKE) libpng-stage
+	$(MAKE) libjpeg-stage
+	$(MAKE) libzip-stage
+	$(MAKE) icu-stage
+	$(MAKE) libgmp-stage
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+	$(MAKE) openldap-stage
+	$(MAKE) cyrus-sasl-stage
+	$(MAKE) sqlite-stage
+endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(@D)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(@D)
-	cat $(PHP_APACHE_PATCHES) | patch -p0 -d $(@D)
+	if test -n "$(PHP_PATCHES)"; \
+	    then cat $(PHP_PATCHES) | patch -p0 -bd $(@D); \
+	fi
+ifneq ($(HOSTCC), $(TARGET_CC))
+	sed -i \
+	    -e 's|`$$PG_CONFIG --includedir`|$(STAGING_INCLUDE_DIR)|' \
+	    -e 's|`$$PG_CONFIG --libdir`|$(STAGING_LIB_DIR)|' \
+	    $(@D)/ext/*pgsql/*.m4
+endif
+ifeq (glibc, $(LIBC_STYLE))
+	sed -i -e 's|/usr/local /usr|$(shell cd $(TARGET_INCDIR)/..; pwd)|' $(@D)/ext/iconv/config.m4
+endif
+
+	sed -i -e '/extern int php_string_to_if_index/s/^/#ifndef AI_ADDRCONFIG\n#define AI_ADDRCONFIG 0\n#endif\n/' \
+		$(@D)/ext/sockets/sockaddr_conv.c
+
+	(cd `aclocal --print-ac-dir`; \
+		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
+			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
+	)
+
+	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
+
+	autoreconf -vif $(@D)
+	sed -i -e 's/as_fn_error \$$? "cannot run test program while cross compiling/\$$as_echo \$$? "cannot run test program while cross compiling/' \
+		-e 's|flock_type=unknown|flock_type=linux\n\$$as_echo "#define HAVE_FLOCK_LINUX /\*\*/" >>confdefs\.h|' \
+		-e 's|icu_install_prefix=.*|icu_install_prefix=$(STAGING_PREFIX)|' \
+		-e 's/APACHE_THREADED_MPM=.*/APACHE_THREADED_MPM="yes"/' \
+		-e 's/APACHE_VERSION=.*/APACHE_VERSION=$(shell expr `echo "$(APACHE_VERSION)"|cut -d '.' -f 1` \* 1000000 + `echo "$(APACHE_VERSION)"|cut -d '.' -f 2` \* 1000 + `echo "$(APACHE_VERSION)"|cut -d '.' -f 3`)/' \
+		-e 's/GCC_MAJOR_VERSION=.*/GCC_MAJOR_VERSION=$(shell $(TARGET_CC) -dumpversion|cut -d '.' -f 1)/' $(@D)/configure
+
 	(cd $(@D); \
-		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_APACHE_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_APACHE_LDFLAGS)" \
-		CFLAGS="$(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(PHP_APACHE_LDFLAGS)" \
-		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
+		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		ac_cv_func_memcmp_working=yes \
+		cv_php_mbstring_stdarg=yes \
+		STAGING_PREFIX="$(STAGING_PREFIX)" \
+		$(PHP_CONFIGURE_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -134,15 +192,70 @@ $(PHP_APACHE_BUILD_DIR)/.configured: $(PHP_APACHE_PATCHES) make/php-apache.mk
 		--with-config-file-scan-dir=/opt/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
-		$(PHP_CONFIGURE_THREAD_ARGS) \
-		--disable-dom \
-		--disable-xml \
-		--enable-libxml \
-		--with-apxs2=$(STAGING_DIR)/opt/sbin/apxs \
+		--disable-cgi \
+		--disable-cli \
+		--enable-bcmath=shared \
+		--enable-calendar=shared \
+		--enable-dba=shared \
+		--with-inifile \
+		--with-flatfile \
+		--enable-dom=shared \
+		--enable-exif=shared \
+		--enable-ftp=shared \
+		--enable-mbstring=shared \
+		--enable-pdo=shared \
+		--enable-shmop=shared \
+		--enable-sockets=shared \
+		--enable-sysvmsg=shared \
+		--enable-sysvshm=shared \
+		--enable-sysvsem=shared \
+		--enable-xml=shared \
+		--enable-xmlreader=shared \
+		--enable-zip=shared \
+		--enable-intl=shared \
+		--with-bz2=shared,$(STAGING_PREFIX) \
+		--with-curl=shared,$(STAGING_PREFIX) \
+		--with-db4=$(STAGING_PREFIX) \
+		--with-dom=shared,$(STAGING_PREFIX) \
+		--with-gdbm=$(STAGING_PREFIX) \
+		--with-gd=shared,$(STAGING_PREFIX) \
+		--with-imap=shared,$(STAGING_PREFIX) \
+		--with-mysql=shared,$(STAGING_PREFIX) \
+		--with-mysql-sock=/tmp/mysql.sock \
+		--with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
+		--with-pgsql=shared,$(STAGING_PREFIX) \
+		--with-mssql=shared,$(STAGING_PREFIX) \
+		--with-unixODBC=shared,$(STAGING_PREFIX) \
+		--with-openssl=shared,$(STAGING_PREFIX) \
+		--with-sqlite=shared,$(STAGING_PREFIX) \
+		--with-pdo-mysql=shared,$(STAGING_PREFIX) \
+		--with-pdo-pgsql=shared,$(STAGING_PREFIX) \
+		--with-pdo-sqlite=shared,$(STAGING_PREFIX) \
+		--with-xsl=shared,$(STAGING_PREFIX) \
+		--with-zlib=shared,$(STAGING_PREFIX) \
+		--with-libxml-dir=$(STAGING_PREFIX) \
+		--with-jpeg-dir=$(STAGING_PREFIX) \
+		--with-png-dir=$(STAGING_PREFIX) \
+		--with-freetype-dir=$(STAGING_PREFIX) \
+		--with-zlib-dir=$(STAGING_PREFIX) \
+		--with-libzip=$(STAGING_PREFIX) \
+		--with-icu-dir=$(STAGING_PREFIX) \
+		--with-gmp=shared,$(STAGING_PREFIX) \
+		$(PHP_CONFIGURE_ARGS) \
 		--without-pear \
-		--without-iconv \
+		--with-xmlrpc=shared \
+		--with-apxs2=$(STAGING_DIR)/opt/bin/apxs \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
+
+	sed -i -e '/#define HAVE_GD_XPM/s|^|//|' \
+		-e '/#define HAVE_ATOMIC_H/s|^|//|' $(@D)/main/php_config.h
+
+	sed -i -e 's|\$$(top_builddir)/\$$(SAPI_CLI_PATH)|$(PHP_HOST_CLI)|' \
+		-e 's|-Wl,-rpath,$(STAGING_DIR)/lib|-Wl,-rpath,/opt/lib|g' \
+		-e 's/###      or --detect-prefix//' \
+		-e 's|INTL_SHARED_LIBADD =.*|INTL_SHARED_LIBADD = -L$(STAGING_LIB_DIR) -licuuc -licui18n|' $(@D)/Makefile
+
 	touch $@
 
 php-apache-unpack: $(PHP_APACHE_BUILD_DIR)/.configured
@@ -198,7 +311,7 @@ $(PHP_APACHE_IPK): $(PHP_APACHE_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-php-apache-ipk: $(PHP_APACHE_IPK)
+php-apache-ipk: #$(PHP_APACHE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.

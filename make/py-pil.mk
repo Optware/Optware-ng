@@ -32,6 +32,7 @@ PY-PIL_SECTION=misc
 PY-PIL_PRIORITY=optional
 PY25-PIL_DEPENDS=python25,freetype,libjpeg,zlib
 PY26-PIL_DEPENDS=python26,freetype,libjpeg,zlib
+PY27-PIL_DEPENDS=python27,freetype,libjpeg,zlib
 PY-PIL_CONFLICTS=
 
 #
@@ -73,6 +74,9 @@ PY25-PIL_IPK=$(BUILD_DIR)/py25-pil_$(PY-PIL_VERSION)-$(PY-PIL_IPK_VERSION)_$(TAR
 
 PY26-PIL_IPK_DIR=$(BUILD_DIR)/py26-pil-$(PY-PIL_VERSION)-ipk
 PY26-PIL_IPK=$(BUILD_DIR)/py26-pil_$(PY-PIL_VERSION)-$(PY-PIL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY27-PIL_IPK_DIR=$(BUILD_DIR)/py27-pil-$(PY-PIL_VERSION)-ipk
+PY27-PIL_IPK=$(BUILD_DIR)/py27-pil_$(PY-PIL_VERSION)-$(PY-PIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-pil-source py-pil-unpack py-pil py-pil-stage py-pil-ipk py-pil-clean py-pil-dirclean py-pil-check
 
@@ -144,6 +148,24 @@ $(PY-PIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PIL_SOURCE) $(PY-PIL_PATCHES) ma
 		echo "executable=/opt/bin/python2.6" \
 	    ) >> setup.cfg; \
 	)
+	# 2.7
+	$(PY-PIL_UNZIP) $(DL_DIR)/$(PY-PIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-PIL_PATCHES)"; then \
+		cat $(PY-PIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PIL_DIR) -p1; \
+	fi
+	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(BUILD_DIR)/$(PY-PIL_DIR)/setup.py
+	mv $(BUILD_DIR)/$(PY-PIL_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.7"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.7" \
+	    ) >> setup.cfg; \
+	)
+	sed -i -e 's|freetype/fterrors\.h|freetype2/fterrors.h|' $(@D)/*/_imagingft.c
 	touch $@
 
 py-pil-unpack: $(PY-PIL_BUILD_DIR)/.configured
@@ -160,6 +182,10 @@ $(PY-PIL_BUILD_DIR)/.built: $(PY-PIL_BUILD_DIR)/.configured
 	(cd $(@D)/2.6; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
+	)
+	(cd $(@D)/2.7; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build; \
 	)
 	touch $@
 
@@ -210,6 +236,20 @@ $(PY26-PIL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY26-PIL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PIL_CONFLICTS)" >>$@
 
+$(PY27-PIL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-pil" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PIL_PRIORITY)" >>$@
+	@echo "Section: $(PY-PIL_SECTION)" >>$@
+	@echo "Version: $(PY-PIL_VERSION)-$(PY-PIL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PIL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PIL_SITE)/$(PY-PIL_SOURCE)" >>$@
+	@echo "Description: $(PY-PIL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-PIL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PIL_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -249,10 +289,24 @@ $(PY26-PIL_IPK): $(PY-PIL_BUILD_DIR)/.built
 	$(MAKE) $(PY26-PIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PIL_IPK_DIR)
 
+$(PY27-PIL_IPK): $(PY-PIL_BUILD_DIR)/.built
+	rm -rf $(PY27-PIL_IPK_DIR) $(BUILD_DIR)/py27-pil_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PIL_BUILD_DIR)/2.7; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-PIL_IPK_DIR) --prefix=/opt; \
+	)
+	for f in $(PY27-PIL_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.7|'`; done
+	for so in `find $(PY27-PIL_IPK_DIR)/opt/lib/python2.7/site-packages -name '*.so'`; do \
+	    $(STRIP_COMMAND) $$so; \
+	done
+	$(MAKE) $(PY27-PIL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-PIL_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pil-ipk: $(PY25-PIL_IPK) $(PY26-PIL_IPK)
+py-pil-ipk: $(PY25-PIL_IPK) $(PY26-PIL_IPK) $(PY27-PIL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -268,9 +322,10 @@ py-pil-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-PIL_DIR) $(PY-PIL_BUILD_DIR)
 	rm -rf $(PY25-PIL_IPK_DIR) $(PY25-PIL_IPK)
 	rm -rf $(PY26-PIL_IPK_DIR) $(PY26-PIL_IPK)
+	rm -rf $(PY27-PIL_IPK_DIR) $(PY27-PIL_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-pil-check: $(PY25-PIL_IPK) $(PY26-PIL_IPK)
+py-pil-check: $(PY25-PIL_IPK) $(PY26-PIL_IPK) $(PY27-PIL_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

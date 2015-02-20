@@ -34,7 +34,7 @@ CLASSPATH_CONFLICTS=sablevm
 #
 # CLASSPATH_IPK_VERSION should be incremented when the ipk changes.
 #
-CLASSPATH_IPK_VERSION=1
+CLASSPATH_IPK_VERSION=2
 
 #
 # CLASSPATH_CONFFILES should be a list of user-editable files
@@ -80,11 +80,11 @@ $(DL_DIR)/$(CLASSPATH_SOURCE):
 	$(WGET) -P $(@D) $(CLASSPATH_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-CLASSPATH_ANTLR_SITE=http://www.antlr.org/download
-CLASSPATH_ANTLR_JAR=antlr-3.1.3.jar
+CLASSPATH_ANTLR_SITE=https://github.com/antlr/website-antlr3/blob/gh-pages/download
+CLASSPATH_ANTLR_JAR=antlr-3.5.2-complete.jar
 
 $(DL_DIR)/$(CLASSPATH_ANTLR_JAR):
-	$(WGET) -P $(@D) $(CLASSPATH_ANTLR_SITE)/$(@F) || \
+	$(WGET) -O $@ $(CLASSPATH_ANTLR_SITE)/$(@F)?raw=true || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 #
 # The source code depends on it existing within the download directory.

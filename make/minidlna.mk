@@ -126,27 +126,9 @@ endif
 	if test "$(BUILD_DIR)/$(MINIDLNA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MINIDLNA_DIR) $(@D) ; \
 	fi
-	sed -i.orig \
-		-e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|g' \
-		-e '/$$(CFLAGS).*-c/s|$$(CFLAGS) |&$$(CPPFLAGS) |' \
-		-e '/$$(CFLAGS).*$$(LIBS)/s|$$(CFLAGS) |$$(LDFLAGS) |' \
-		-e '/^minidlna:/s| $$(LIBS)||' \
-		$(@D)/Makefile
-	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
-		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/Makefile; \
-	fi
-	sed -i.orig \
-		-e 's|\[ *-f /usr/include/sys/inotify.h *\]|$(TARGET_CC) -E $(SOURCE_DIR)/common/have_inotify.c >/dev/null 2>\&1|' \
-		-e 's|/usr/include/|$(STAGING_INCLUDE_DIR)/|g' \
-		-e '/^echo.*#define/s|$$OS_NAME|Linux|' \
-		-e '/^echo.*#define/s|$$OS_VERSION|Cross_compiled|' \
-		-e '/^echo.*#define/s|$${OS_URL}|http://www.kernel.org/|' \
-		$(@D)/genconfig.sh
-	sed -i.orig \
-		 -e 's|/etc/|/opt&|' \
-		 -e 's|/usr/|/opt/|' \
-		$(@D)/minidlna.c
-#	(cd $(@D); \
+	sed -i -e '/^AM_SILENT_RULES/s/^/dnl /' $(@D)/configure.ac
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIDLNA_LDFLAGS)" \
@@ -157,6 +139,26 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 	)
+	sed -i.orig \
+		-e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|g' \
+		-e '/$$(CFLAGS).*-c/s|$$(CFLAGS) |&$$(CPPFLAGS) |' \
+		-e '/$$(CFLAGS).*$$(LIBS)/s|$$(CFLAGS) |$$(LDFLAGS) |' \
+		-e '/^minidlna:/s| $$(LIBS)||' \
+		$(@D)/Makefile
+	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
+		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/Makefile; \
+	fi
+#	sed -i.orig \
+		-e 's|\[ *-f /usr/include/sys/inotify.h *\]|$(TARGET_CC) -E $(SOURCE_DIR)/common/have_inotify.c >/dev/null 2>\&1|' \
+		-e 's|/usr/include/|$(STAGING_INCLUDE_DIR)/|g' \
+		-e '/^echo.*#define/s|$$OS_NAME|Linux|' \
+		-e '/^echo.*#define/s|$$OS_VERSION|Cross_compiled|' \
+		-e '/^echo.*#define/s|$${OS_URL}|http://www.kernel.org/|' \
+		$(@D)/genconfig.sh
+	sed -i.orig \
+		 -e 's|/etc/|/opt&|' \
+		 -e 's|/usr/|/opt/|' \
+		$(@D)/minidlna.c
 	touch $@
 
 minidlna-unpack: $(MINIDLNA_BUILD_DIR)/.configured

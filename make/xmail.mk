@@ -27,7 +27,7 @@
 # You should change all these variables to suit your package.
 #
 XMAIL_SITE=http://www.xmailserver.org
-XMAIL_VERSION=1.25
+XMAIL_VERSION=1.27
 XMAIL_SOURCE=xmail-$(XMAIL_VERSION).tar.gz
 XMAIL_DIR=xmail-$(XMAIL_VERSION)
 XMAIL_UNZIP=zcat
@@ -42,7 +42,7 @@ XMAIL_CONFLICTS=
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=4
+XMAIL_IPK_VERSION=1
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
@@ -123,7 +123,8 @@ endif
 	$(XMAIL_UNZIP) $(DL_DIR)/$(XMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(XMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(XMAIL_DIR) -p1
 	mv $(BUILD_DIR)/$(XMAIL_DIR) $(@D)
-	sed -i -e '/^LDFLAGS/s|$$(LDFLAGS) $$(SSLLIBS)|& $(STAGING_LDFLAGS) $(XMAIL_LDFLAGS)|' $(@D)/Makefile.lnx
+	sed -i -e '/^LDFLAGS/s|$$(LDFLAGS) $$(SSLLIBS)|& $(STAGING_LDFLAGS) $(XMAIL_LDFLAGS)|' \
+		-e 's|/usr/include/sys|$(TARGET_INCDIR)/sys|g' $(@D)/Makefile.lnx
 	touch $@
 
 xmail-unpack: $(XMAIL_BUILD_DIR)/.configured

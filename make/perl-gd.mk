@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-GD_SITE=http://search.cpan.org/CPAN/authors/id/L/LD/LDS
-PERL-GD_VERSION=2.35
+PERL-GD_VERSION=2.56
 PERL-GD_SOURCE=GD-$(PERL-GD_VERSION).tar.gz
 PERL-GD_DIR=GD-$(PERL-GD_VERSION)
 PERL-GD_UNZIP=zcat
@@ -18,7 +18,7 @@ PERL-GD_DEPENDS=perl, libgd, zlib
 PERL-GD_SUGGESTS=
 PERL-GD_CONFLICTS=
 
-PERL-GD_IPK_VERSION=2
+PERL-GD_IPK_VERSION=1
 
 PERL-GD_CONFFILES=
 
@@ -32,24 +32,28 @@ $(DL_DIR)/$(PERL-GD_SOURCE):
 
 perl-gd-source: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES)
 
-$(PERL-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES)
+$(PERL-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES) make/perl-gd.mk
 	$(MAKE) perl-stage libgd-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PERL-GD_DIR) $(PERL-GD_BUILD_DIR)
 	$(PERL-GD_UNZIP) $(DL_DIR)/$(PERL-GD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-GD_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-GD_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-GD_DIR) $(PERL-GD_BUILD_DIR)
+	find $(@D) -type f -exec chmod +w {} \;
+#	some very odd bug workaround
+	sed -i -e '/unless (try_to_autoconfigure(/,/Build options passed in to script/s/^/#/' -e \
+	'/unless (\$$result) {/s|^|\$$lib_gd_path = "$(STAGING_PREFIX)";\n\$$lib_ft_path = "$(STAGING_PREFIX)";\n\$$lib_png_path = "$(STAGING_PREFIX)";\n\$$lib_jpeg_path = "$(STAGING_PREFIX)";\n\$$lib_zlib_path = "$(STAGING_PREFIX)";\n\$$options = "JPEG,FT,PNG,GIF,ANIMGIF,FONTCONFIG";\n|' $(@D)/Makefile.PL
 	(cd $(PERL-GD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_PREFIX)/lib/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 			-options "JPEG,FT,PNG,GIF,ANIMGIF,FONTCONFIG" \
-			-lib_gd_path $(STAGING_DIR)/opt \
-			-lib_ft_path $(STAGING_DIR)/opt \
-			-lib_png_path  $(STAGING_DIR)/opt \
-			-lib_jpeg_path $(STAGING_DIR)/opt \
-		     	-lib_zlib_path $(STAGING_DIR)/opt \
+			-lib_gd_path $(STAGING_PREFIX) \
+			-lib_ft_path $(STAGING_PREFIX) \
+			-lib_png_path  $(STAGING_PREFIX) \
+			-lib_jpeg_path $(STAGING_PREFIX) \
+		     	-lib_zlib_path $(STAGING_PREFIX) \
 			INC="$(STAGING_CPPFLAGS)" \
 		PREFIX=/opt \
 	)
@@ -67,7 +71,7 @@ $(PERL-GD_BUILD_DIR)/.built: $(PERL-GD_BUILD_DIR)/.configured
 		LDLOADLIBS="`$(STAGING_PREFIX)/bin/gdlib-config --libs` -lgd" \
 		LD_RUN_PATH=/opt/lib \
 		$(PERL_INC) \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+		PERL5LIB="$(STAGING_PREFIX)/lib/perl5/site_perl"
 	touch $(PERL-GD_BUILD_DIR)/.built
 
 perl-gd: $(PERL-GD_BUILD_DIR)/.built

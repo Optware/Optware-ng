@@ -20,8 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+PLOWSHARE_GIT_REPOSITORY=https://code.google.com/p/plowshare
 PLOWSHARE_SITE=http://plowshare.googlecode.com/files
-PLOWSHARE_VERSION=0.9.1
+#PLOWSHARE_VERSION=0.9.1
+PLOWSHARE_VERSION=4.1.0.git20150205
+PLOWSHARE_TREEISH=`git rev-list --max-count=1 --until=2015-02-05 HEAD`
 PLOWSHARE_SOURCE=plowshare-$(PLOWSHARE_VERSION).tgz
 PLOWSHARE_DIR=plowshare-$(PLOWSHARE_VERSION)
 PLOWSHARE_UNZIP=zcat
@@ -71,6 +74,21 @@ PLOWSHARE_IPK=$(BUILD_DIR)/plowshare_$(PLOWSHARE_VERSION)-$(PLOWSHARE_IPK_VERSIO
 
 .PHONY: plowshare-source plowshare-unpack plowshare plowshare-stage plowshare-ipk plowshare-clean plowshare-dirclean plowshare-check
 
+ifdef PLOWSHARE_GIT_REPOSITORY
+#
+# In this case there is no tarball, instead we fetch the sources
+# directly to the builddir with GIT
+#
+$(DL_DIR)/$(PLOWSHARE_SOURCE):
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(PLOWSHARE_DIR) && \
+		git clone --bare $(PLOWSHARE_GIT_REPOSITORY) $(PLOWSHARE_DIR) && \
+		(cd $(PLOWSHARE_DIR) && \
+		git archive --format=tar --prefix=$(PLOWSHARE_DIR)/ $(PLOWSHARE_TREEISH) | gzip > $@) && \
+		rm -rf $(PLOWSHARE_DIR) \
+	)
+else
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -78,6 +96,7 @@ PLOWSHARE_IPK=$(BUILD_DIR)/plowshare_$(PLOWSHARE_VERSION)-$(PLOWSHARE_IPK_VERSIO
 $(DL_DIR)/$(PLOWSHARE_SOURCE):
 	$(WGET) -P $(@D) $(PLOWSHARE_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -115,7 +134,7 @@ $(PLOWSHARE_BUILD_DIR)/.configured: $(DL_DIR)/$(PLOWSHARE_SOURCE) $(PLOWSHARE_PA
 	if test "$(BUILD_DIR)/$(PLOWSHARE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PLOWSHARE_DIR) $(@D) ; \
 	fi
-	sed -i -e '/^USRDIR=/s|/usr/local|/opt|' $(@D)/setup.sh
+#	sed -i -e '/^USRDIR=/s|/usr/local|/opt|' $(@D)/setup.sh
 	find $(@D)/src -name '*.sh' | \
 		xargs sed -i -e '1s|#!.*/bash|#!/opt/bin/bash|'
 #	(cd $(@D); \
@@ -171,7 +190,11 @@ $(PLOWSHARE_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(PLOWSHARE_SECTION)" >>$@
 	@echo "Version: $(PLOWSHARE_VERSION)-$(PLOWSHARE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PLOWSHARE_MAINTAINER)" >>$@
+ifdef PLOWSHARE_GIT_REPOSITORY
+	@echo "Source: $(PLOWSHARE_GIT_REPOSITORY)" >>$@
+else
 	@echo "Source: $(PLOWSHARE_SITE)/$(PLOWSHARE_SOURCE)" >>$@
+endif
 	@echo "Description: $(PLOWSHARE_DESCRIPTION)" >>$@
 	@echo "Depends: $(PLOWSHARE_DEPENDS)" >>$@
 	@echo "Suggests: $(PLOWSHARE_SUGGESTS)" >>$@
@@ -191,8 +214,7 @@ $(PLOWSHARE_IPK_DIR)/CONTROL/control:
 #
 $(PLOWSHARE_IPK): $(PLOWSHARE_BUILD_DIR)/.built
 	rm -rf $(PLOWSHARE_IPK_DIR) $(BUILD_DIR)/plowshare_*_$(TARGET_ARCH).ipk
-	cd $(<D); \
-		DESTDIR=$(PLOWSHARE_IPK_DIR) PREFIX=/opt ./setup.sh install
+	$(MAKE) -C $(<D) DESTDIR=$(PLOWSHARE_IPK_DIR) PREFIX=/opt install
 	$(MAKE) $(PLOWSHARE_IPK_DIR)/CONTROL/control
 	install -m755 $(PLOWSHARE_SOURCE_DIR)/postinst $(PLOWSHARE_IPK_DIR)/CONTROL/
 	echo $(PLOWSHARE_CONFFILES) | sed -e 's/ /\n/g' > $(PLOWSHARE_IPK_DIR)/CONTROL/conffiles

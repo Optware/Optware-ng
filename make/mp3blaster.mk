@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MP3BLASTER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mp3blaster
-MP3BLASTER_VERSION=3.2.3
+MP3BLASTER_VERSION=3.2.5
 MP3BLASTER_SOURCE=mp3blaster-$(MP3BLASTER_VERSION).tar.gz
 MP3BLASTER_DIR=mp3blaster-$(MP3BLASTER_VERSION)
 MP3BLASTER_UNZIP=zcat
@@ -37,7 +37,7 @@ MP3BLASTER_CONFLICTS=
 #
 # MP3BLASTER_IPK_VERSION should be incremented when the ipk changes.
 #
-MP3BLASTER_IPK_VERSION=2
+MP3BLASTER_IPK_VERSION=1
 
 #
 # MP3BLASTER_CONFFILES should be a list of user-editable files

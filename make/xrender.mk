@@ -10,13 +10,11 @@
 # XRENDER_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XRENDER_SITE=http://freedesktop.org
-XRENDER_SOURCE=# none - available from CVS only
-XRENDER_VERSION=0.8.4+cvs20050130
-XRENDER_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
-XRENDER_DIR=Xrender
-XRENDER_CVS_OPTS=-D20050130
-XRENDER_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+XRENDER_SITE=http://xorg.freedesktop.org/releases/individual/lib
+XRENDER_SOURCE=libXrender-$(XRENDER_VERSION).tar.gz
+XRENDER_VERSION=0.9.8
+XRENDER_DIR=libXrender-$(XRENDER_VERSION)
+XRENDER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XRENDER_DESCRIPTION=X render extension library
 XRENDER_SECTION=lib
 XRENDER_PRIORITY=optional
@@ -25,7 +23,7 @@ XRENDER_DEPENDS=x11
 #
 # XRENDER_IPK_VERSION should be incremented when the ipk changes.
 #
-XRENDER_IPK_VERSION=4
+XRENDER_IPK_VERSION=1
 
 #
 # XRENDER_CONFFILES should be a list of user-editable files
@@ -35,7 +33,7 @@ XRENDER_CONFFILES=
 # XRENDER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XRENDER_PATCHES=
+XRENDER_PATCHES=$(XRENDER_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -75,18 +73,14 @@ $(XRENDER_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(XRENDER_DEPENDS)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XRENDER_DIR) && \
-		cvs -d $(XRENDER_REPOSITORY) -z3 co $(XRENDER_CVS_OPTS) $(XRENDER_DIR) && \
-		tar -czf $@ $(XRENDER_DIR) && \
-		rm -rf $(XRENDER_DIR) \
-	)
+$(DL_DIR)/$(XRENDER_SOURCE):
+	$(WGET) -P $(@D) $(XRENDER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-xrender-source: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz $(XRENDER_PATCHES)
+xrender-source: $(DL_DIR)/$(XRENDER_SOURCE) $(XRENDER_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,20 +92,18 @@ xrender-source: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz $(XRENDER_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz \
-		$(XRENDER_PATCHES) make/xrender.mk
-	$(MAKE) renderext-stage
-	$(MAKE) x11-stage
-	rm -rf $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz
+$(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/$(XRENDER_SOURCE) $(XRENDER_PATCHES) make/xrender.mk
+	$(MAKE) x11-stage xorg-macros-stage renderproto-stage
+	rm -rf $(BUILD_DIR)/$(XRENDER_DIR) $(@D)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XRENDER_SOURCE)
 	if test -n "$(XRENDER_PATCHES)" ; \
 		then cat $(XRENDER_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(XRENDER_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XRENDER_DIR)" != "$(XRENDER_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XRENDER_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XRENDER_DIR) $(@D) ; \
 	fi
-	(cd $(XRENDER_BUILD_DIR); \
+	(cd $(@D); chmod +x autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XRENDER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XRENDER_LDFLAGS)" \
@@ -123,6 +115,7 @@ $(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-static \
+		--enable-malloc0returnsnull \
 	)
 	touch $@
 
@@ -133,7 +126,7 @@ xrender-unpack: $(XRENDER_BUILD_DIR)/.configured
 #
 $(XRENDER_BUILD_DIR)/.built: $(XRENDER_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XRENDER_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -146,7 +139,7 @@ xrender: $(XRENDER_BUILD_DIR)/.built
 #
 $(XRENDER_BUILD_DIR)/.staged: $(XRENDER_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XRENDER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xrender.pc
 	rm -f $(STAGING_LIB_DIR)/libXrender.la
 	touch $@
@@ -168,8 +161,9 @@ xrender-stage: $(XRENDER_BUILD_DIR)/.staged
 $(XRENDER_IPK): $(XRENDER_BUILD_DIR)/.built
 	rm -rf $(XRENDER_IPK_DIR) $(BUILD_DIR)/xrender_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XRENDER_BUILD_DIR) DESTDIR=$(XRENDER_IPK_DIR) install-strip
-	rm -f $(XRENDER_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(XRENDER_IPK_DIR)/CONTROL/control
+#	install -m 644 $(XRENDER_SOURCE_DIR)/postinst $(XRENDER_IPK_DIR)/CONTROL/postinst
+	rm -f $(XRENDER_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XRENDER_IPK_DIR)
 
 #

@@ -1,6 +1,6 @@
-diff -Naud ../libpar2-0.2.orig/letype.h ../libpar2-0.2/letype.h
---- ../libpar2-0.2.orig/letype.h	2007-11-26 16:41:58.000000000 -0500
-+++ ../libpar2-0.2/letype.h	2007-11-26 16:55:00.000000000 -0500
+diff -Naud libpar2-0.2.orig/letype.h libpar2-0.2/letype.h
+--- libpar2-0.2.orig/letype.h	2007-11-26 16:41:58.000000000 -0500
++++ libpar2-0.2/letype.h	2007-11-26 16:55:00.000000000 -0500
 @@ -28,44 +28,15 @@
  
  #else
@@ -147,9 +147,9 @@ diff -Naud ../libpar2-0.2.orig/letype.h ../libpar2-0.2/letype.h
  inline leu64& leu64::operator=(const u64 &other)
  {
    ((unsigned char*)&value)[0] = (unsigned char)((other >> 0) & 0xff);
-diff -Naud ../libpar2-0.2.orig/md5.h ../libpar2-0.2/md5.h
---- ../libpar2-0.2.orig/md5.h	2007-11-26 16:41:58.000000000 -0500
-+++ ../libpar2-0.2/md5.h	2007-11-26 16:55:11.000000000 -0500
+diff -Naud libpar2-0.2.orig/md5.h libpar2-0.2/md5.h
+--- libpar2-0.2.orig/md5.h	2007-11-26 16:41:58.000000000 -0500
++++ libpar2-0.2/md5.h	2007-11-26 16:55:11.000000000 -0500
 @@ -20,6 +20,13 @@
  #ifndef __MD5_H__
  #define __MD5_H__

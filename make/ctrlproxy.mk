@@ -35,13 +35,13 @@ CTRLPROXY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CTRLPROXY_DESCRIPTION=An IRC server with multiserver support.
 CTRLPROXY_SECTION=irc
 CTRLPROXY_PRIORITY=optional
-CTRLPROXY_DEPENDS=glib, libxml2, popt, gnutls, pcre
+CTRLPROXY_DEPENDS=glib, libxml2, popt, gnutls, pcre, libgssapi
 CTRLPROXY_SUGGESTS=readline
 
 #
 # CTRLPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-CTRLPROXY_IPK_VERSION=2
+CTRLPROXY_IPK_VERSION=3
 
 #
 # CTRLPROXY_CONFFILES should be a list of user-editable files
@@ -57,8 +57,8 @@ CTRLPROXY_CONFFILES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CTRLPROXY_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -D__USE_POSIX
-CTRLPROXY_LDFLAGS=-lreadline -lncurses -ltasn1 -lgpg-error -lgcrypt
+CTRLPROXY_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_INCLUDE_DIR)/gssglue/gssapi -D__USE_POSIX -DHAVE_GSSAPI
+CTRLPROXY_LDFLAGS=-lreadline -lncurses -ltasn1 -lgpg-error -lgcrypt -lgssapi
 
 #
 # CTRLPROXY_BUILD_DIR is the directory in which the build is done.
@@ -105,16 +105,18 @@ ctrlproxy-source: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CTRLPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PATCHES) make/ctrlproxy.mk
-	$(MAKE) glib-stage libxml2-stage popt-stage pcre-stage readline-stage gnutls-stage
+	$(MAKE) glib-stage libxml2-stage popt-stage pcre-stage readline-stage gnutls-stage libgssapi-stage
 	rm -rf $(BUILD_DIR)/$(CTRLPROXY_DIR) $(CTRLPROXY_BUILD_DIR)
 	$(CTRLPROXY_UNZIP) $(DL_DIR)/$(CTRLPROXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test "$(CTRLPROXY_PATCHES)"; \
 		then cat $(CTRLPROXY_PATCHES) | patch -d $(BUILD_DIR)/$(CTRLPROXY_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(CTRLPROXY_DIR) $(CTRLPROXY_BUILD_DIR)
-	(cd $(CTRLPROXY_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(CTRLPROXY_DIR) $(@D)
+	### don't pick host gssapi ldflags and cflags from host krb5-config if it is present
+	sed -i -e 's/\$$KRB5_CONFIG != no/no != no/' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(CTRLPROXY_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(CTRLPROXY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CTRLPROXY_LDFLAGS)" \
 		LIBS="$(STAGING_LDFLAGS) $(CTRLPROXY_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \

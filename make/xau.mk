@@ -10,21 +10,20 @@
 # XAU_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XAU_SITE=http://freedesktop.org
-XAU_SOURCE=# none - available from CVS only
-XAU_VERSION=0.1.1+cvs20050130
-XAU_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
-XAU_DIR=Xau
-XAU_CVS_OPTS=-D20050130
-XAU_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+XAU_SITE=http://xorg.freedesktop.org/releases/individual/lib
+XAU_SOURCE=libXau-$(XAU_VERSION).tar.gz
+XAU_VERSION=1.0.8
+XAU_DIR=libXau-$(XAU_VERSION)
+XAU_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XAU_DESCRIPTION=X authorization library
 XAU_SECTION=lib
 XAU_PRIORITY=optional
+XAU_DEPENDS=
 
 #
 # XAU_IPK_VERSION should be incremented when the ipk changes.
 #
-XAU_IPK_VERSION=2
+XAU_IPK_VERSION=1
 
 #
 # XAU_CONFFILES should be a list of user-editable files
@@ -34,7 +33,7 @@ XAU_CONFFILES=
 # XAU_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XAU_PATCHES=
+XAU_PATCHES=$(XAU_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -71,20 +70,17 @@ $(XAU_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(XAU_MAINTAINER)" >>$@
 	@echo "Source: $(XAU_SITE)/$(XAU_SOURCE)" >>$@
 	@echo "Description: $(XAU_DESCRIPTION)" >>$@
+	@echo "Depends: $(XAU_DEPENDS)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/xau-$(XAU_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XAU_DIR) && \
-		cvs -d $(XAU_REPOSITORY) -z3 co $(XAU_CVS_OPTS) $(XAU_DIR) && \
-		tar -czf $@ $(XAU_DIR) && \
-		rm -rf $(XAU_DIR) \
-	)
+$(DL_DIR)/$(XAU_SOURCE):
+	$(WGET) -P $(@D) $(XAU_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-xau-source: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz $(XAU_PATCHES)
+xau-source: $(DL_DIR)/$(XAU_SOURCE) $(XAU_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,19 +92,18 @@ xau-source: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz $(XAU_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XAU_BUILD_DIR)/.configured: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz \
-		$(XAU_PATCHES) make/xau.mk
+$(XAU_BUILD_DIR)/.configured: $(DL_DIR)/$(XAU_SOURCE) $(XAU_PATCHES) make/xau.mk
 	$(MAKE) xproto-stage
-	rm -rf $(BUILD_DIR)/$(XAU_DIR) $(XAU_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xau-$(XAU_VERSION).tar.gz
+	rm -rf $(BUILD_DIR)/$(XAU_DIR) $(@D)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XAU_SOURCE)
 	if test -n "$(XAU_PATCHES)" ; \
 		then cat $(XAU_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(XAU_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XAU_DIR)" != "$(XAU_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XAU_DIR) $(XAU_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XAU_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XAU_DIR) $(@D) ; \
 	fi
-	(cd $(XAU_BUILD_DIR); \
+	(cd $(@D); chmod +x autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XAU_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XAU_LDFLAGS)" \
@@ -121,7 +116,7 @@ $(XAU_BUILD_DIR)/.configured: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
-	touch $(XAU_BUILD_DIR)/.configured
+	touch $@
 
 xau-unpack: $(XAU_BUILD_DIR)/.configured
 
@@ -130,7 +125,7 @@ xau-unpack: $(XAU_BUILD_DIR)/.configured
 #
 $(XAU_BUILD_DIR)/.built: $(XAU_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XAU_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -143,9 +138,9 @@ xau: $(XAU_BUILD_DIR)/.built
 #
 $(XAU_BUILD_DIR)/.staged: $(XAU_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XAU_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	rm -f $(STAGING_LIB_DIR)/libXau.la
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xau.pc
+	rm -f $(STAGING_LIB_DIR)/libXau.la
 	touch $@
 
 xau-stage: $(XAU_BUILD_DIR)/.staged
@@ -166,6 +161,7 @@ $(XAU_IPK): $(XAU_BUILD_DIR)/.built
 	rm -rf $(XAU_IPK_DIR) $(BUILD_DIR)/xau_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAU_BUILD_DIR) DESTDIR=$(XAU_IPK_DIR) install-strip
 	$(MAKE) $(XAU_IPK_DIR)/CONTROL/control
+#	install -m 644 $(XAU_SOURCE_DIR)/postinst $(XAU_IPK_DIR)/CONTROL/postinst
 	rm -f $(XAU_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAU_IPK_DIR)
 

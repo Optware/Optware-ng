@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-EMAIL-MIME_SITE=http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS
-PERL-EMAIL-MIME_VERSION=1.863
+PERL-EMAIL-MIME_VERSION=1.928
 PERL-EMAIL-MIME_SOURCE=Email-MIME-$(PERL-EMAIL-MIME_VERSION).tar.gz
 PERL-EMAIL-MIME_DIR=Email-MIME-$(PERL-EMAIL-MIME_VERSION)
 PERL-EMAIL-MIME_UNZIP=zcat

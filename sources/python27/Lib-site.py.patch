@@ -1,7 +1,7 @@
---- Python-2.7/Lib/site.py.orig	2008-05-06 15:41:46.000000000 -0700
-+++ Python-2.7/Lib/site.py	2008-05-15 13:55:56.000000000 -0700
-@@ -63,7 +63,7 @@
- import __builtin__
+--- Python-2.7.9/Lib/site.py.orig	2014-12-10 17:59:40.000000000 +0200
++++ Python-2.7.9/Lib/site.py	2015-01-26 20:00:59.514417000 +0200
+@@ -64,7 +64,7 @@
+ import traceback
  
  # Prefixes for site-packages; add additional prefixes like /usr/local here
 -PREFIXES = [sys.prefix, sys.exec_prefix]

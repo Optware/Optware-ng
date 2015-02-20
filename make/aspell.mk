@@ -23,7 +23,7 @@
 # dictionaries at ftp://ftp.gnu.org/gnu/aspell/dict/0index.html
 #
 ASPELL_SITE=ftp://ftp.gnu.org/gnu/aspell
-ASPELL_VERSION=0.60.5
+ASPELL_VERSION=0.60.6.1
 ASPELL_SOURCE=aspell-$(ASPELL_VERSION).tar.gz
 ASPELL_DIR=aspell-$(ASPELL_VERSION)
 ASPELL_UNZIP=zcat

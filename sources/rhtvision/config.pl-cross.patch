@@ -1,6 +1,6 @@
---- config.pl.orig	2004-11-02 08:45:21.000000000 -0800
-+++ config.pl	2007-06-20 11:46:06.000000000 -0700
-@@ -491,14 +491,16 @@
+--- config.pl.orig	2009-07-28 18:40:30.000000000 +0300
++++ config.pl	2015-02-08 22:29:32.813864499 +0200
+@@ -545,14 +545,16 @@
  
   print 'Checking endianess: ';
  
@@ -19,7 +19,7 @@
      return;
     }
   $test='
-@@ -776,6 +778,9 @@
+@@ -862,6 +864,9 @@
   my ($result,$test);
  
   print 'Looking for ncurses library: ';
@@ -29,18 +29,15 @@
   if (@conf{'ncurses'})
     {
      print "@conf{'ncurses'} (cached) OK\n";
-@@ -1034,8 +1039,8 @@
-       }
-     # Note: -sf should work for Solaris 9 but at least in the machines at S.F.
-     # it doesn't. So we just delete the file and do the link.
--    $rep.="\t-cd $makeDir; rm $nameSO; ln -s $nameSOV $nameSO\n";
--    $rep.="\t-cd $makeDir; rm $nameSOM; ln -s $nameSOV $nameSOM\n";
-+    $rep.="\t-cd $makeDir; rm -f $nameSO; ln -s $nameSOV $nameSO\n";
-+    $rep.="\t-cd $makeDir; rm -f $nameSOM; ln -s $nameSOV $nameSOM\n";
-    }
-  if ($internac)
+@@ -1053,6 +1058,7 @@
+  my $test;
+ 
+  print 'Looking for pointer size: ';
++ $conf{'HAVE_64BITS_POINTERS'}=$ENV{'HAVE_64BITS_POINTERS'};
+  if ($conf{'HAVE_64BITS_POINTERS'})
     {
-@@ -1129,7 +1134,7 @@
+     print ($conf{'HAVE_64BITS_POINTERS'} eq 'yes' ? '64' : '32')."bits (cached)\n";
+@@ -1254,7 +1260,7 @@
      # Darwin: doesn't have ldconfig.
      if ($OSf ne 'Darwin')
        {

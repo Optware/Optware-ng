@@ -1,0 +1,11 @@
+--- cyrus-imapd-2.4.orig/cmulocal/ucdsnmp.m4
++++ cyrus-imapd-2.4/cmulocal/ucdsnmp.m4
+@@ -27,7 +27,7 @@ if test "$with_snmp" != "no"; then
+   if test -x "$SNMP_CONFIG"; then
+     AC_MSG_CHECKING(NET SNMP libraries)
+ 
+-    SNMP_LIBS=`$SNMP_CONFIG --agent-libs`
++    SNMP_LIBS=`$SNMP_CONFIG --agent-libs | sed -e s/-lpci//`
+     SNMP_PREFIX=`$SNMP_CONFIG --prefix`
+ 
+     if test -n "$SNMP_LIBS" && test -n "$SNMP_PREFIX"; then

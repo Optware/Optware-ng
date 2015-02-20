@@ -36,7 +36,7 @@ LIBA52_CONFLICTS=
 #
 # LIBA52_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBA52_IPK_VERSION=1
+LIBA52_IPK_VERSION=2
 
 #
 # LIBA52_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ LIBA52_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBA52_CPPFLAGS=
+LIBA52_CPPFLAGS=-fPIC
 LIBA52_LDFLAGS=
 
 #

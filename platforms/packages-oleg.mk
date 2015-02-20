@@ -2,6 +2,7 @@ SPECIFIC_PACKAGES = \
 	firmware-oleg \
 	$(PERL_PACKAGES) \
 	$(UCLIBC++_SPECIFIC_PACKAGES) \
+	libiconv \
 
 # firmware-oleg 1) needs specific version of old make; 2) requires wl500g toolchain
 # lirc depends on firmware-oleg

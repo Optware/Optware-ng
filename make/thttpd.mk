@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 THTTPD_SITE=http://www.acme.com/software/thttpd
-THTTPD_VERSION=2.25b
+THTTPD_VERSION=2.26
 THTTPD_SOURCE=thttpd-$(THTTPD_VERSION).tar.gz
 THTTPD_DIR=thttpd-$(THTTPD_VERSION)
 THTTPD_UNZIP=zcat
@@ -41,7 +41,7 @@ THTTPD_CONFLICTS=
 #
 # THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-THTTPD_IPK_VERSION=5
+THTTPD_IPK_VERSION=1
 
 #
 # THTTPD_CONFFILES should be a list of user-editable files
@@ -121,6 +121,7 @@ $(THTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(THTTPD_SOURCE) $(THTTPD_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--mandir=/opt/share/man \
 		--disable-nls \
 	)
 	touch $(THTTPD_BUILD_DIR)/.configured
@@ -216,3 +217,9 @@ thttpd-clean:
 #
 thttpd-dirclean:
 	rm -rf $(BUILD_DIR)/$(THTTPD_DIR) $(THTTPD_BUILD_DIR) $(THTTPD_IPK_DIR) $(THTTPD_IPK)
+#
+#
+# Some sanity check for the package.
+#
+thttpd-check: $(THTTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -142,6 +142,7 @@ $(KISMET_BUILD_DIR)/.configured: $(DL_DIR)/$(KISMET_SOURCE) $(KISMET_PATCHES) ma
 		--disable-wsp100 \
 		--disable-gpsmap \
 	)
+	echo '\n#include <string.h>\n#include <math.h>\n#define finite isfinite' >> $(@D)/config.h
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DBD-MYSQL_SITE=http://search.cpan.org/CPAN/authors/id/C/CA/CAPTTOFU
-PERL-DBD-MYSQL_VERSION=4.006
+PERL-DBD-MYSQL_VERSION=4.030_01
 PERL-DBD-MYSQL_SOURCE=DBD-mysql-$(PERL-DBD-MYSQL_VERSION).tar.gz
 PERL-DBD-MYSQL_DIR=DBD-mysql-$(PERL-DBD-MYSQL_VERSION)
 PERL-DBD-MYSQL_UNZIP=zcat
@@ -35,7 +35,7 @@ $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE):
 
 perl-dbd-mysql-source: $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) $(PERL-DBD-MYSQL_PATCHES)
 
-$(PERL-DBD-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) $(PERL-DBD-MYSQL_PATCHES)
+$(PERL-DBD-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) $(PERL-DBD-MYSQL_PATCHES) make/perl-dbd-mysql.mk
 	$(MAKE) mysql-stage
 	$(MAKE) perl-dbi-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) $(PERL-DBD-MYSQL_BUILD_DIR)
@@ -44,9 +44,11 @@ $(PERL-DBD-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) $(PE
 		cat $(PERL-DBD-MYSQL_PATCHES) | patch -bd $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) $(PERL-DBD-MYSQL_BUILD_DIR)
+#	no 'error' field in MYSQL_BIND in mysql-4.1
+	sed -i -e '/buffer->error/s|^|//|' $(@D)/dbdimp.c
 	(cd $(PERL-DBD-MYSQL_BUILD_DIR); \
-		sed -i -e 's/PERL_VERSION/$(PERL_VERSION)/' \
-			-e 's/PERL_ARCH/$(PERL_ARCH)/' Makefile.PL; \
+		sed -i -e 's/@PERL_VERSION@/$(PERL_VERSION)/' -e '/^require DBI::DBD;/s/^/#/' \
+			-e 's/@PERL_ARCH@/$(PERL_ARCH)/' Makefile.PL; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL-DBD-MYSQL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PERL-DBD-MYSQL_LDFLAGS)" \

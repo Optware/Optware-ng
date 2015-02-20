@@ -29,8 +29,8 @@
 INETUTILS_NAME=inetutils
 INETUTILS_SITE=ftp://ftp.gnu.org/pub/gnu/inetutils
 ifneq ($(OPTWARE_TARGET), wl500g)
-INETUTILS_VERSION=1.5
-INETUTILS_IPK_VERSION=6
+INETUTILS_VERSION=1.9
+INETUTILS_IPK_VERSION=1
 else
 INETUTILS_VERSION=1.4.2
 INETUTILS_IPK_VERSION=11
@@ -109,10 +109,11 @@ inetutils-source: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PATCHES)
 #
 $(INETUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PATCHES) make/inetutils.mk
 	$(MAKE) ncurses-stage zlib-stage readline-stage
-	rm -rf $(BUILD_DIR)/$(INETUTILS_DIR) $(INETUTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(INETUTILS_DIR) $(@D)
 	$(INETUTILS_UNZIP) $(DL_DIR)/$(INETUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(INETUTILS_DIR) $(INETUTILS_BUILD_DIR)
-	(cd $(INETUTILS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(INETUTILS_DIR) $(@D)
+	sed -i -e '/#include "\.\.\/ifconfig.h"/s|$$|\n\n#ifndef PATH_PROCNET_DEV\n  #define PATH_PROCNET_DEV "/proc/net/dev"\n#endif|' $(@D)/ifconfig/system/linux.c
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(INETUTILS_CPPFLAGS)" \
@@ -137,7 +138,7 @@ inetutils-unpack: $(INETUTILS_BUILD_DIR)/.configured
 #
 $(INETUTILS_BUILD_DIR)/.built: $(INETUTILS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(INETUTILS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -239,4 +240,4 @@ inetutils-dirclean:
 # Some sanity check for the package.
 #
 inetutils-check: $(INETUTILS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(INETUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

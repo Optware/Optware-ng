@@ -42,6 +42,7 @@ PY-PASTESCRIPT_PRIORITY=optional
 PY24-PASTESCRIPT_DEPENDS=python24, py24-cheetah, py24-paste, py24-pastedeploy
 PY25-PASTESCRIPT_DEPENDS=python25, py25-cheetah, py25-paste, py25-pastedeploy
 PY26-PASTESCRIPT_DEPENDS=python26, py26-cheetah, py26-paste, py26-pastedeploy
+PY27-PASTESCRIPT_DEPENDS=python27, py27-cheetah, py27-paste, py27-pastedeploy
 PY-PASTESCRIPT_SUGGESTS=
 PY-PASTESCRIPT_CONFLICTS=
 
@@ -83,6 +84,9 @@ PY25-PASTESCRIPT_IPK=$(BUILD_DIR)/py25-pastescript_$(PY-PASTESCRIPT_VERSION)-$(P
 PY26-PASTESCRIPT_IPK_DIR=$(BUILD_DIR)/py26-pastescript-$(PY-PASTESCRIPT_VERSION)-ipk
 PY26-PASTESCRIPT_IPK=$(BUILD_DIR)/py26-pastescript_$(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PY27-PASTESCRIPT_IPK_DIR=$(BUILD_DIR)/py27-pastescript-$(PY-PASTESCRIPT_VERSION)-ipk
+PY27-PASTESCRIPT_IPK=$(BUILD_DIR)/py27-pastescript_$(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 .PHONY: py-pastescript-source py-pastescript-unpack py-pastescript py-pastescript-stage py-pastescript-ipk py-pastescript-clean py-pastescript-dirclean py-pastescript-check
 
 #
@@ -118,7 +122,7 @@ py-pastescript-source: $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) $(PY-PASTESCRIPT_PATCH
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-PASTESCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) $(PY-PASTESCRIPT_PATCHES) make/py-pastescript.mk
-	$(MAKE) py-setuptools-stage py-paste-stage py-pastedeploy-stage
+	$(MAKE) py-setuptools-stage py-paste-stage py-pastedeploy-stage py-setuptools-host-stage py-paste-host-stage
 	rm -rf $(PY-PASTESCRIPT_BUILD_DIR)
 	mkdir -p $(PY-PASTESCRIPT_BUILD_DIR)
 	# 2.4
@@ -169,6 +173,22 @@ endif
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.6") >> setup.cfg \
 	)
+	# 2.7
+	rm -rf $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR)
+ifeq ($(PY-PASTESCRIPT_SVN_REV),)
+	$(PY-PASTESCRIPT_UNZIP) $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q -r $(PY-PASTESCRIPT_SVN_REV) $(PY-PASTESCRIPT_SVN) $(PY-PASTESCRIPT_DIR); \
+	)
+endif
+	if test -n "$(PY-PASTESCRIPT_PATCHES)" ; then \
+	    cat $(PY-PASTESCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.7") >> setup.cfg \
+	)
 	touch $@
 
 py-pastescript-unpack: $(PY-PASTESCRIPT_BUILD_DIR)/.configured
@@ -187,6 +207,9 @@ $(PY-PASTESCRIPT_BUILD_DIR)/.built: $(PY-PASTESCRIPT_BUILD_DIR)/.configured
 	(cd $(@D)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
+	(cd $(@D)/2.7; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	touch $@
 
 #
@@ -250,6 +273,20 @@ $(PY26-PASTESCRIPT_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY26-PASTESCRIPT_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PASTESCRIPT_CONFLICTS)" >>$@
 
+$(PY27-PASTESCRIPT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-pastescript" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PASTESCRIPT_PRIORITY)" >>$@
+	@echo "Section: $(PY-PASTESCRIPT_SECTION)" >>$@
+	@echo "Version: $(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PASTESCRIPT_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PASTESCRIPT_SITE)/$(PY-PASTESCRIPT_SOURCE)" >>$@
+	@echo "Description: $(PY-PASTESCRIPT_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-PASTESCRIPT_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PASTESCRIPT_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -265,7 +302,7 @@ $(PY26-PASTESCRIPT_IPK_DIR)/CONTROL/control:
 $(PY24-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py-pastescript_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY24-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py24-pastescript_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.4; \
+	-(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 		--root=$(PY24-PASTESCRIPT_IPK_DIR) --prefix=/opt)
@@ -277,7 +314,7 @@ $(PY24-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
 
 $(PY25-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
 	rm -rf $(PY25-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py25-pastescript_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.5; \
+	-(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 		--root=$(PY25-PASTESCRIPT_IPK_DIR) --prefix=/opt)
@@ -287,7 +324,7 @@ $(PY25-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
 
 $(PY26-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
 	rm -rf $(PY26-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py26-pastescript_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.6; \
+	-(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
 		--root=$(PY26-PASTESCRIPT_IPK_DIR) --prefix=/opt)
@@ -295,10 +332,20 @@ $(PY26-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
 #	echo $(PY-PASTESCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-PASTESCRIPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PASTESCRIPT_IPK_DIR)
 
+$(PY27-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
+	rm -rf $(PY27-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py27-pastescript_*_$(TARGET_ARCH).ipk
+	-(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.7; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install \
+		--root=$(PY27-PASTESCRIPT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY27-PASTESCRIPT_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTESCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-PASTESCRIPT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-PASTESCRIPT_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pastescript-ipk: $(PY24-PASTESCRIPT_IPK) $(PY25-PASTESCRIPT_IPK) $(PY26-PASTESCRIPT_IPK)
+py-pastescript-ipk: $(PY24-PASTESCRIPT_IPK) $(PY25-PASTESCRIPT_IPK) $(PY26-PASTESCRIPT_IPK) $(PY27-PASTESCRIPT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -315,9 +362,10 @@ py-pastescript-dirclean:
 	rm -rf $(PY24-PASTESCRIPT_IPK_DIR) $(PY24-PASTESCRIPT_IPK)
 	rm -rf $(PY25-PASTESCRIPT_IPK_DIR) $(PY25-PASTESCRIPT_IPK)
 	rm -rf $(PY26-PASTESCRIPT_IPK_DIR) $(PY26-PASTESCRIPT_IPK)
+	rm -rf $(PY27-PASTESCRIPT_IPK_DIR) $(PY27-PASTESCRIPT_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-pastescript-check: $(PY24-PASTESCRIPT_IPK) $(PY25-PASTESCRIPT_IPK) $(PY26-PASTESCRIPT_IPK)
+py-pastescript-check: $(PY24-PASTESCRIPT_IPK) $(PY25-PASTESCRIPT_IPK) $(PY26-PASTESCRIPT_IPK) $(PY27-PASTESCRIPT_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

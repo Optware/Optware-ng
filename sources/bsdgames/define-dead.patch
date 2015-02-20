@@ -1,0 +1,10 @@
+--- a/include/sys/cdefs.h
++++ b/include/sys/cdefs.h
+@@ -40,3 +40,7 @@
+ #ifndef __COPYRIGHT
+ #define __COPYRIGHT(arg)	static const char copyright[] __attribute__((__unused__)) = arg
+ #endif
++
++#ifndef __dead
++#define	__dead	__attribute__((__noreturn__))
++#endif

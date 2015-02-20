@@ -35,7 +35,7 @@ POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch \
 		$(POSTFIX_SOURCE_DIR)/sys_defs.h.patch
 
 POSTFIX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/sasl
-POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2 -ldl -lssl
+POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2 -ldl -lssl -lpthread
 
 POSTFIX_BUILD_DIR=$(BUILD_DIR)/postfix
 POSTFIX_SOURCE_DIR=$(SOURCE_DIR)/postfix
@@ -59,6 +59,7 @@ $(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 	cat $(POSTFIX_PATCHES) | patch -d $(BUILD_DIR)/$(POSTFIX_DIR) -p1
 	mv $(BUILD_DIR)/$(POSTFIX_DIR) $(@D)
 	sed -i -e 's/SYSLIBS="-ldb"/SYSLIBS="-ldb-$(LIBDB_LIB_VERSION)"/' $(@D)/makedefs
+	sed -i -e '/^#if (DB_VERSION_MAJOR == 4/s/$$/ || (DB_VERSION_MAJOR > 4)/' $(@D)/src/util/dict_db.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		$(MAKE) makefiles \

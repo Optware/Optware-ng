@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GSASL_SITE=http://mirrors.kernel.org/gnu/gsasl
-GSASL_VERSION=1.6.1
+GSASL_VERSION=1.8.0
 GSASL_SOURCE=gsasl-$(GSASL_VERSION).tar.gz
 GSASL_DIR=gsasl-$(GSASL_VERSION)
 GSASL_UNZIP=zcat

@@ -1,0 +1,47 @@
+Index: cups/usersys.c
+===================================================================
+--- cups/cups/usersys.c	(revision 12310)
++++ cups/cups/usersys.c	(working copy)
+@@ -955,6 +955,8 @@
+ #endif /* HAVE_GSSAPI */
+ 
+ 
++  (void)ssl_options; /* Silence compiler warning */
++
+  /*
+   * Read from the file...
+   */
+@@ -1009,6 +1011,7 @@
+       cups_gssservicename = gss_service_name;
+     }
+ #endif /* HAVE_GSSAPI */
++#ifdef HAVE_SSL
+     else if (ssl_options && !_cups_strcasecmp(line, "SSLOptions") && value)
+     {
+      /*
+@@ -1046,6 +1049,7 @@
+ 
+       _httpTLSSetOptions(options);
+     }
++#endif /* HAVE_SSL */
+   }
+ 
+  /*
+--- cups/scheduler/conf.c.orig	2015-01-13 09:09:48.220015917 +0200
++++ cups/scheduler/conf.c	2015-01-13 09:10:50.304015558 +0200
+@@ -2934,6 +2934,7 @@
+ 		      "FaxRetryLimit is deprecated; use "
+ 		      "JobRetryLimit on line %d.", linenum);
+     }
++#ifdef HAVE_SSL
+     else if (!_cups_strcasecmp(line, "SSLOptions"))
+     {
+      /*
+@@ -2977,6 +2978,7 @@
+ 
+       _httpTLSSetOptions(options);
+     }
++#endif /* HAVE_SSL */
+     else if ((!_cups_strcasecmp(line, "Port") || !_cups_strcasecmp(line, "Listen")
+ #ifdef HAVE_SSL
+              || !_cups_strcasecmp(line, "SSLPort") || !_cups_strcasecmp(line, "SSLListen")

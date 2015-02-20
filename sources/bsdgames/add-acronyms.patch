@@ -1,0 +1,134 @@
+--- a/wtf/acronyms
++++ b/wtf/acronyms
+@@ -87,6 +87,7 @@
+ HICA	here it comes again
+ HTH	hope this helps
+ IAC	in any case
++IANADD	I am not a Debian developer
+ IANAL	I am not a lawyer
+ IC	I see
+ ICBW	I could be wrong
+@@ -139,6 +140,8 @@
+ NFI	no fucking idea
+ NFW	no fucking way
+ NIH	not invented here
++NIMB	not in my backyard
++NIMBY	not in my backyard
+ NMF	not my fault
+ NMP	not my problem
+ NOYB	none of your business
+@@ -146,6 +149,7 @@
+ NP	no problem
+ NRFPT	not ready for prime time
+ NRN	no reply necessary
++NSFW	not safe for work
+ OIC	oh, I see
+ OMG	oh, my god
+ OT	off topic
+@@ -187,6 +191,7 @@
+ SFA	sweet fuck all
+ SHID	slaps head in disgust
+ SIMCA	sitting in my chair amused
++SIYH	sooner if you help
+ SMLSFB	so many losers, so few bullets
+ SMOP	simple matter of programming
+ SNAFU	situation normal, all fucked up
+@@ -212,7 +217,9 @@
+ THNX	thanks
+ THX	thanks
+ TIA	thanks in advance
++TINASOTODP	this is not a statement of the official Debian position
+ TINC	there is no cabal
++TINLA	this is not legal advice
+ TLA	three letter acronym
+ TLB	translation lookaside buffer
+ TMA	too many abbreviations
+@@ -237,6 +244,7 @@
+ WFM	works for me
+ WIBNI	wouldn't it be nice if
+ WIP	work in progress
++WIR	when it's ready
+ WOFTAM	waste of fucking time and money
+ WOMBAT	waste of money, brain, and time
+ WRT	with respect to
+--- a/wtf/acronyms.comp
++++ b/wtf/acronyms.comp
+@@ -62,7 +62,9 @@
+ DCE	data control equipment
+ DCE	distributed computing environment
+ DCT	discrete cosine transform
++DD	Debian developer
+ DDC	display data channel
++DDPO	Debian developer's package overview (http://qa.debian.org/developer.php)
+ DDR	double data rate
+ DDWG	digital display working group
+ DER	distinguished encoding rules
+@@ -108,12 +110,14 @@
+ FM	frequency modulation
+ FPM	fast page mode
+ FQDN	fully qualified domain name
++FTBFS	fails to build from source
+ FTP	file transfer protocol
+ GC	garbage collector
+ GCR	group-coded recording
+ GIF	graphics interchange format
+-GNU	gnu's not unix
+-GPL	gnu/general public license
++GIYF	google is your friend
++GNU	GNU's not unix
++GPL	GNU general public license
+ GPU	graphics processing unit
+ GRE	generic routing encapsulation
+ GUI	graphics user interface
+@@ -160,6 +164,7 @@
+ LCP	link control protocol
+ LDAP	lightweight directory access protocol
+ LED	light emitting diode
++LGPL	GNU lesser general public license
+ LIR	local internet registry
+ LLC	logical link control
+ LRC	longitudinal redundancy check
+@@ -174,7 +179,9 @@
+ MIME	multipurpose internet mail extensions
+ MIPS	million instructions per second
+ MMU	memory management unit
++MOTU	masters of the universe (Ubuntu developer)
+ MPEG	moving picture experts group
++MPL	Mozilla public license
+ MSB	most significant bit [or: byte]
+ MSF	minutes seconds frames
+ MSS	maximum segment size
+@@ -236,6 +243,7 @@
+ RAM	random access memory
+ RCS	revision control system
+ RFC	request for comments
++RFS	request for sponsorship
+ RGB	red green blue
+ RIP	routing information protocol
+ RIR	regional internet registry
+@@ -246,6 +254,9 @@
+ RPM	revolutions per minute
+ RTF	rich text format
+ RTS	request to send
++RTSL	read the source, Luke (open source programming)
++RTSL	real-time systems laboratory
++RTSL	real-time shading language (Stanford University)
+ RTT	round time trip
+ S/PDIF	sony/phillips digital interface
+ SACD	super audio compact disc
+@@ -265,6 +276,7 @@
+ SNMP	simple network management protocol
+ SPD	serial presence detect
+ SRAM	static random access memory
++SRU	stable release update
+ SSFDC	solid state floppy disc card
+ SSH	secure shell
+ SSL	secure sockets layer
+@@ -296,6 +308,7 @@
+ USB	universal serial bus
+ USWC	uncacheable speculative write combining
+ UTP	unshielded twisted pair
++UTSL	use the source, Luke (open source programming)
+ UUCP	unix-to-unix copy protocol
+ VAX	virtual address extension
+ VCM	virtual channel memory

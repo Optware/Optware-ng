@@ -20,17 +20,27 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-VLC_VERSION=0.9.9a
-VLC_IPK_VERSION=2
-VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
-VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
-VLC_DIR=vlc-$(VLC_VERSION)
+VLC_REPOSITORY=git://git.videolan.org/vlc.git
+VLC_GIT_DATE=20150218
+VLC_TREEISH=`git rev-list --max-count=1 --until=2015-02-18 HEAD`
+ifdef VLC_REPOSITORY
+VLC_VERSION=2.2.0-git$(VLC_GIT_DATE)
 VLC_UNZIP=bzcat
+VLC_SOURCE_SUFFIX=tar.bz2
+else
+VLC_VERSION=2.1.5
+VLC_UNZIP=xzcat
+VLC_SOURCE_SUFFIX=tar.xz
+endif
+VLC_IPK_VERSION=1
+VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
+VLC_SOURCE=vlc-$(VLC_VERSION).$(VLC_SOURCE_SUFFIX)
+VLC_DIR=vlc-$(VLC_VERSION)
 VLC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VLC_DESCRIPTION=VLC is a cross-platform media player and streaming server.
 VLC_SECTION=video
 VLC_PRIORITY=optional
-VLC_DEPENDS=dbus
+VLC_DEPENDS=dbus, lua
 VLC_SUGGESTS=\
 faad2, \
 ffmpeg, \
@@ -62,6 +72,14 @@ endif
 VLC_CONFLICTS=
 
 #
+# VLC git needs recent automake version, but many optware packages need
+# automake-1.10, which is the recommended version for unprefixed automake,
+# so we'll detect latest automake installed on the build system and use it
+# instead of unprefixed one
+VLC_ACLOCAL=aclocal-1.$(shell ls $$(dirname `which automake`)/automake-*|cut -d '.' -f 2-|sort -n|tail -n 1)
+VLC_AUTOMAKE=automake-1.$(shell ls $$(dirname `which automake`)/automake-*|cut -d '.' -f 2-|sort -n|tail -n 1)
+
+#
 # VLC_CONFFILES should be a list of user-editable files
 #VLC_CONFFILES=/opt/etc/vlc.conf /opt/etc/init.d/SXXvlc
 
@@ -69,7 +87,10 @@ VLC_CONFLICTS=
 # VLC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#VLC_PATCHES=
+VLC_PATCHES=$(VLC_SOURCE_DIR)/vlc_filter.h.patch
+ifeq ($(LIBC_STYLE), uclibc)
+VLC_PATCHES += $(VLC_SOURCE_DIR)/uclibc.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -110,8 +131,20 @@ VLC_IPK=$(BUILD_DIR)/vlc_$(VLC_VERSION)-$(VLC_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VLC_SOURCE):
+ifdef VLC_REPOSITORY
+	(cd $(BUILD_DIR) ; \
+		rm -rf $(VLC_DIR) && \
+		git clone $(VLC_REPOSITORY) $(VLC_DIR) && \
+		(cd $(VLC_DIR) && \
+		git checkout $(VLC_TREEISH) && \
+		git describe --tags --long --match '?.*.*' --always > src/revision.txt) && \
+		tar -cjvf $@ --exclude .git --exclude "*.log" $(VLC_DIR) && \
+		rm -rf $(VLC_DIR) ; \
+	)
+else
 	$(WGET) -P $(@D) $(VLC_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -164,15 +197,19 @@ endif
 ifeq (x264, $(filter x264, $(PACKAGES)))
 	$(MAKE) x264-stage
 endif
+	$(MAKE) lua-stage lua-host-stage
 	rm -rf $(BUILD_DIR)/$(VLC_DIR) $(@D)
 	$(VLC_UNZIP) $(DL_DIR)/$(VLC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VLC_PATCHES)" ; \
 		then cat $(VLC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(VLC_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(VLC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(VLC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(VLC_DIR) $(@D) ; \
 	fi
+	sed -i -e '/modules\/gui\//s/.*//' $(@D)/configure.ac
+	cd $(@D); libtoolize -c -f; $(VLC_ACLOCAL) -I m4; \
+		autoheader; autoconf; $(VLC_AUTOMAKE) -a -c
 	sed -i -e '/LIBEXT=/s/=.*/=".so"/' $(@D)/configure
 ifeq (uclibc, $(LIBC_STYLE))
 	sed -i -e '/# *if.*_POSIX_SPIN_LOCKS/s/.*/#if 0/' $(@D)/include/vlc_threads.h
@@ -181,12 +218,15 @@ ifeq (no,$(IPV6))
 	sed -i -e 's/#ifdef *AF_INET6/#if 0/' $(@D)/src/network/udp.c
 endif
 	(cd $(@D); \
+		PATH=$$PATH:$(HOST_STAGING_PREFIX)/bin \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(VLC_CPPFLAGS)" \
+		CPPFLAGS="-I$(TARGET_INCDIR) $(STAGING_CPPFLAGS) $(VLC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VLC_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_header_sysfs_libsysfs_h=no \
+		NCURSES_CFLAGS="$(STAGING_CPPFLAGS)" \
+		NCURSES_LIBS="$(STAGING_LDFLAGS) -lncursesw" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -220,12 +260,16 @@ endif
 		--disable-wxwidgets --disable-skins2 \
 		--disable-x11 \
 		--disable-nls \
+		--disable-jpeg \
+		--disable-linsys \
+		--disable-macosx \
+		--disable-minimal-macosx \
+		--disable-macosx-dialog-provider \
 		--disable-static \
 	)
-	sed -i -e 's|-I$$[^ ]*/include|-I$(STAGING_INCLUDE_DIR)|g' \
-	       -e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|g' \
-	       -e 's|-I/opt/include|-I$(STAGING_INCLUDE_DIR)|g' \
-	       $(@D)/vlc-config
+	find $(@D) -type f -name Makefile -exec sed -i -e 's|-L/opt/lib|-L$(STAGING_LIB_DIR)|g' \
+	       -e 's;-I/opt/include\|-I/usr/include;-I$(STAGING_INCLUDE_DIR);g' {} \;
+	sed -i -e '/^#define HAVE_SCHED_GETAFFINITY/s|^|//|' $(@D)/config.h
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -236,7 +280,7 @@ vlc-unpack: $(VLC_BUILD_DIR)/.configured
 #
 $(VLC_BUILD_DIR)/.built: $(VLC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) vlc_LDFLAGS="-L../src/.libs -lvlccore" vlc_cache_gen_LDADD="-L../src/.libs -L../lib/.libs -lvlccore -lvlc"
 	touch $@
 
 #
@@ -267,7 +311,11 @@ $(VLC_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(VLC_SECTION)" >>$@
 	@echo "Version: $(VLC_VERSION)-$(VLC_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(VLC_MAINTAINER)" >>$@
+ifdef VLC_REPOSITORY
+	@echo "Source: $(VLC_REPOSITORY)" >>$@
+else
 	@echo "Source: $(VLC_SITE)/$(VLC_SOURCE)" >>$@
+endif
 	@echo "Description: $(VLC_DESCRIPTION)" >>$@
 	@echo "Depends: $(VLC_DEPENDS)" >>$@
 	@echo "Suggests: $(VLC_SUGGESTS)" >>$@

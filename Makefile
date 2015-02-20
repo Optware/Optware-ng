@@ -23,14 +23,13 @@
 # one of `ls platforms/toolchain-*.mk | sed 's|^platforms/toolchain-\(.*\)\.mk$$|\1|'`
 OPTWARE_TARGET ?= nslu2
 
-PACKAGES_BROKEN_ON_64BIT_HOST = \
-apcupsd appweb atop php 9base alsa-oss appweb \
-php php-apache php-fcgi php-thttpd \
+#PACKAGES_BROKEN_ON_64BIT_HOST = \
+apcupsd appweb atop 9base alsa-oss appweb \
 bitlbee boost bridge-utils bsdgames bzflag \
 centerim cyrus-imapd dansguardian delegate dialog \
 eaccelerator libol elinks gift-opennap netatalk \
 taglib libopensync newsbeuter newt ettercap-ng lighttpd \
-ice nfs-server transcode esound ices0 nfs-utils \
+nfs-server transcode esound ices0 nfs-utils \
 littlesmalltalk nget fcgi nload ffmpeg uemacs fish \
 loudmouth nrpe uncia freeze madplay iptraf ntop \
 ffmpeg ushare fuppes mc irssi util-linux-ng mdadm vlc \
@@ -38,7 +37,6 @@ ivorbis-tools jabberd rrdcollect gambit-c obexftp \
 vorbis-tools rrdtool jove git launchtool gnu-smalltalk \
 ldconfig libao gloox libcdio libdlna libdvb gift-ares \
 opendchub wakelan \
-xauth xaw xcursor xmu xt xterm xvid \
 ossp-js mediatomb memcached minidlna mkvtoolnix \
 phoneme-advanced motion picoLisp motor pkgconfig moe \
 player mpd mrtg msynctool mt-daapd mt-daapd-svn mtr \
@@ -51,8 +49,6 @@ subvertpy slimserver squeezecenter SpamAssassin py-pyro \
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
-	btg \
-	libtorrent-rasterbar \
 	udpxy \
 	py-btpd-webui \
 	cryptsetup \
@@ -74,18 +70,21 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
 # clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
 # clinkcc - depends on broken xerces-c package
+# btg - needs old boost and libtorrent-rasterbar
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
 	gtk vte xchat \
 	iozone \
 	bpalogin \
-	clinkcc \
-	icu xerces-c \
 	nemesis \
 	appweb atk bluez-utils bluez-hcidump libextractor sandbox \
+	btg \
  
+# deluge is actually a python package, but it depends on perl package intltool
 PERL_PACKAGES = \
+	deluge \
+	intltool \
 	perl \
 	perl-algorithm-diff \
 	perl-appconfig perl-assp \
@@ -186,8 +185,10 @@ PYTHON_PACKAGES = \
 	stgit \
 	subvertpy \
 	py-4suite py-amara py-apsw \
+	py-asn1-modules py-asn1 py-cffi py-characteristic py-cparser \
+	py-cryptography py-enum34 py-hgdistver py-ordereddict py-service-identity py-six \
 	py-beaker py-bittorrent py-bluez py-boto py-buildutils \
-	py-celementtree py-cheetah py-cherrypy py-cherrytemplate py-cjson \
+	py-celementtree py-chardet py-cheetah py-cherrypy py-cherrytemplate py-cjson \
 	py-clips py-configobj py-constraint py-crypto py-curl \
 	py-decorator py-decoratortools py-django py-docutils py-duplicity \
 	py-elementtree py-feedparser py-flup py-formencode \
@@ -210,7 +211,7 @@ PYTHON_PACKAGES = \
 	py-tailor py-tgfastdata py-trac \
 	py-turbocheetah py-turbogears py-turbojson py-turbokid \
 	py-urwid py-usb py-weatherget py-webpy py-wsgiref py-webhelpers \
-	py-xml py-yaml py-yenc py-zope-interface \
+	py-xdg py-xml py-yaml py-yenc py-zope-interface \
 	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
 
 ERLANG_PACKAGES = \
@@ -259,7 +260,7 @@ COMMON_CROSS_PACKAGES = \
 	apache apr apr-util \
 	arc aria2 arping arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
-	at atftp atop audiofile autoconf automake autossh avahi \
+	at atftp atop attr audiofile autoconf automake autossh avahi \
 	bacula bash bash-completion bc bftpd \
 	bind bip bison bitchx bitlbee \
 	bogofilter boost bridge-utils \
@@ -271,7 +272,7 @@ COMMON_CROSS_PACKAGES = \
 	catdoc ccollect ccrypt ccxstream cdargs \
 	cdrtools centerim cuetools \
 	cherokee chicken chillispot chrpath cksfv \
-	classpath clamav clearsilver climm clips cmdftp \
+	classpath clamav clearsilver climm clinkcc clips cmdftp \
 	confuse connect coreutils corkscrew cpio cpufrequtils cron cryptcat \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
@@ -306,38 +307,38 @@ COMMON_CROSS_PACKAGES = \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
-	haproxy haserl hd2u hdparm hello hexcurse heyu \
+	haproxy harfbuzz haserl hd2u hdparm hello hexcurse heyu \
 	hiawatha hnb hpijs hping htop httping \
-	ice icecast ices0 \
+	ice icecast ices0 icu icu54 \
 	id3lib ifstat iftop ii iksemel imagemagick imap \
 	inadyn indent inetutils \
 	inferno \
-	ink \
+	ink inputproto \
 	ipac-ng iperf ipkg-web iptables iptraf iputils-arping \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jfsutils jikes jove joe \
-	kamailio keychain kismet kissdx knock \
+	kamailio kbproto keychain kismet kissdx knock \
 	lame launchtool lcd4linux ldconfig leafnode less lftp lha \
-	liba52 libao libart libassuan libbt \
+	liba52 libacl libao libart libassuan libatomic-ops libbt libcap \
 	libcapi20 libcdio libcurl \
 	libdaemon libdb libdb52 libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libebml libexosip2 \
 	libevent \
-	libesmtp libexif libftdi \
-	libgc libgcrypt libgd libghttp libgmp libgpg-error \
+	libesmtp libexif libexplain libffi libftdi \
+	libgc libgcrypt libgd libghttp libgmp libgpg-error libgssapi \
 	libhid \
 	libical \
-	libid3tag libidn libieee1284 libijs libinklevel libjpeg libksba \
-	liblcms libmaa libmad libmatroska libmemcache libmicrohttpd \
-	libmms libmpcdec libmpdclient libmpeg2 libmrss libmtp \
-	libnetfilter-queue libnfnetlink libnsl libnxml \
+	libid3tag libidn libieee1284 libijs libinklevel libjbigkit libjpeg \
+	libksba liblcms libmaa libmad libmatroska libmemcache libmicrohttpd \
+	libmms libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
+	libnetfilter-queue libnfnetlink libnettle libnsl libnxml \
 	libol libogg libosip2 libopensync libotr \
 	libpar2 libpcap libpng libpth librsync \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
-	libtasn1 libtheora libtiff libtool libtorrent \
-	libunistring \
-	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
+	libtasn1 libtheora libtiff libtool libtorrent libtorrent-rasterbar \
+	libunistring libupnp libusb libusb1 libvncserver \
+	libvorbis libvorbisidec libxml2 libxslt libzip \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
 	lua luarocks \
@@ -374,16 +375,16 @@ COMMON_CROSS_PACKAGES = \
 	par2cmdline patch patchutils \
 	pcal pcapsipdump pciutils pcre pen perltgd pinentry pixman \
 	phoneme-advanced \
-	php php-apache php-fcgi php-thttpd phpmyadmin \
+	php php-apache php-thttpd phpmyadmin \
 	picocom picolisp pkgconfig player plowshare polipo pop3proxy \
 	popt poptop portmap postgresql postfix pound powertop \
 	ppower ppp privoxy procmail \
-	procps proftpd proxytunnel psmisc psutils puppy pure-ftpd pv pwgen \
+	procps proftpd proxytunnel psmisc psutils pthread-stubs puppy pure-ftpd pv pwgen \
 	python python24 python25 python26 python27 python3 $(PYTHON_PACKAGES) \
 	qemacs qemu qemu-libc-i386 qpopper quagga quickie quilt \
 	radiusclient-ng rc rc5pipe rcs rdate \
 	readline re2c recode recordext \
-	redir renderext rhtvision rkhunter \
+	redir renderext renderproto rhtvision rkhunter \
 	rlfe rlwrap rrdcollect rrdtool \
 	rssh rsstail rsync rtorrent rtpproxy ruby rubygems rxtx \
 	sablevm samba samba2 samba34 samba35 samba36 sane-backends \
@@ -395,7 +396,7 @@ COMMON_CROSS_PACKAGES = \
 	socat softflowd sox spandsp spawn-fcgi speex spindown splix \
 	sqlite sqlite2 \
 	sqsh squeak squid squid3 \
-	srelay srecord srtp ssam sslwrap \
+	srelay srecord srtp ssam sslwrap start-stop-daemon \
 	strace strongswan stunnel streamripper \
 	stupid-ftpd sudo surfraw swi-prolog svn \
 	swig syslog-ng sysstat syx \
@@ -415,13 +416,15 @@ COMMON_CROSS_PACKAGES = \
 	vnstat vorbis-tools vpnc vsftpd vtun \
 	w3cam w3m wakelan wavpack webalizer weechat werc wget \
 	which whois wizd wpa-supplicant wput wxbase \
-	xmlrpc-c \
+	xerces-c xmlrpc-c \
 	x11 xau xauth xaw xcursor xdmcp xdpyinfo xext \
-	xextensions xfixes xft xinetd \
-	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
+	xextensions xfixes xfixesproto xft xinetd \
+	xmu xpdf xpm xcb-proto xcb xextproto xorg-macros xproto xrender xt xterm xtrans xtst \
 	x264 xmail xvid xz-utils \
 	yafc yasm yawk yougrabber \
 	zile zip zlib znc zoo zsh \
+
+# php-fcgi ipk is now built from php.mk
 
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first

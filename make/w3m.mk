@@ -41,7 +41,7 @@ W3M_CONFLICTS=
 #
 # W3M_IPK_VERSION should be incremented when the ipk changes.
 #
-W3M_IPK_VERSION=1
+W3M_IPK_VERSION=2
 
 #
 # W3M_CONFFILES should be a list of user-editable files
@@ -110,14 +110,19 @@ w3m-source: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES)
+$(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES) make/w3m.mk
 	$(MAKE) libgc-stage openssl-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(W3M_DIR) $(W3M_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(W3M_DIR) $(@D)
 	$(W3M_UNZIP) $(DL_DIR)/$(W3M_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(W3M_PATCHES) | patch -b -d $(BUILD_DIR)/$(W3M_DIR) -p1
-	mv $(BUILD_DIR)/$(W3M_DIR) $(W3M_BUILD_DIR)
+	mv $(BUILD_DIR)/$(W3M_DIR) $(@D)
+#	GC_set_warn_proc in newer libgc returns void
+#	use GC_get_warn_proc() to get the old warning procedure
+	sed -i -e \
+	's|orig_GC_warn_proc = GC_set_warn_proc(wrap_GC_warn_proc);|orig_GC_warn_proc = GC_get_warn_proc();\n    GC_set_warn_proc(wrap_GC_warn_proc);|' \
+				$(@D)/main.c
 ifeq ($(HOSTCC), $(TARGET_CC))
-	(cd $(W3M_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(W3M_LDFLAGS)" \
@@ -136,23 +141,29 @@ else
 	rm -rf $(W3M_LIBGC_HOSTBUILD_DIR)
 	mkdir $(W3M_LIBGC_HOSTBUILD_DIR)
 	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR) -xvf -
+	$(LIBATOMIC_OPS_UNZIP) $(DL_DIR)/$(LIBATOMIC_OPS_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR) -xvf -
+	mv $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR)/$(LIBATOMIC_OPS_DIR) $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR)/libatomic_ops
 	@echo "=============================== host libgc configure & build ============"
 	cd $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR); \
-		./configure --prefix=/opt --disable-static; \
+		CPPFLAGS="-fPIC" \
+		LDFLAGS="-pthread" \
+		./configure --prefix=/opt --disable-shared; \
 		make DESTDIR=$(W3M_LIBGC_HOSTBUILD_DIR) install
-	mkdir $(W3M_BUILD_DIR)/hostbuild
+	mkdir $(@D)/hostbuild
 	@echo "=============================== host w3m configure ======================="
-	cd $(W3M_BUILD_DIR)/hostbuild; \
+	cd $(@D)/hostbuild; \
 		ac_cv_sizeof_long_long=8 \
+		CPPFLAGS="-I$(W3M_LIBGC_HOSTBUILD_DIR)/opt/include" \
+		LDFLAGS="-L$(W3M_LIBGC_HOSTBUILD_DIR)/opt/lib -pthread" \
 		../configure \
 		--disable-image \
 		--without-ssl \
 		--with-gc=$(W3M_LIBGC_HOSTBUILD_DIR)/opt
 	@echo "=============================== host w3m mktable =========================="
-	$(MAKE) -C $(W3M_BUILD_DIR)/hostbuild mktable CROSS_COMPILATION=no
-	cp $(W3M_BUILD_DIR)/hostbuild/mktable $(W3M_BUILD_DIR)
+	$(MAKE) -C $(@D)/hostbuild mktable CROSS_COMPILATION=no
+	cp $(@D)/hostbuild/mktable $(@D)
 	@echo "=============================== cross w3m configure ======================"
-	(cd $(W3M_BUILD_DIR); \
+	(cd $(@D); \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
@@ -169,7 +180,7 @@ else
 		--with-gc=$(STAGING_PREFIX) \
 		--disable-image \
 	)
-	touch $(W3M_BUILD_DIR)/mktable
+	touch $(@D)/mktable
 endif
 	touch $@
 
@@ -182,11 +193,11 @@ $(W3M_BUILD_DIR)/.built: $(W3M_BUILD_DIR)/.configured
 	rm -f $@
 ifeq ($(HOSTCC), $(TARGET_CC))
 	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
-	    $(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=no
+	    $(MAKE) -C $(@D) CROSS_COMPILATION=no
 else
 	@echo "=============================== cross w3m build ============================"
 	LD_LIBRARY_PATH=$(W3M_LIBGC_HOSTBUILD_DIR)/opt/lib \
-	$(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=yes
+	$(MAKE) -C $(@D) CROSS_COMPILATION=yes
 endif
 	touch $@
 
@@ -200,7 +211,7 @@ w3m: $(W3M_BUILD_DIR)/.built
 #
 $(W3M_BUILD_DIR)/.staged: $(W3M_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(W3M_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 w3m-stage: $(W3M_BUILD_DIR)/.staged
@@ -240,7 +251,7 @@ $(W3M_IPK): $(W3M_BUILD_DIR)/.built
 	$(MAKE) -C $(W3M_BUILD_DIR) DESTDIR=$(W3M_IPK_DIR) install
 	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/bin/w3m
 	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/inflate
-	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/cgi-bin/{w3mbookmark,w3mhelperpanel}
+	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/cgi-bin/w3mbookmark $(W3M_IPK_DIR)/opt/libexec/w3m/cgi-bin/w3mhelperpanel
 #	install -d $(W3M_IPK_DIR)/opt/etc/
 #	install -m 644 $(W3M_SOURCE_DIR)/w3m.conf $(W3M_IPK_DIR)/opt/etc/w3m.conf
 #	install -d $(W3M_IPK_DIR)/opt/etc/init.d

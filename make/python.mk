@@ -4,13 +4,13 @@
 #
 ###########################################################
 
-PYTHON_VERSION=2.5
+PYTHON_VERSION=2.7
 PYTHON_DIR=python-$(PYTHON_VERSION)
 PYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PYTHON_DESCRIPTION=This is a package that sets up the default python.
 PYTHON_SECTION=devel
 PYTHON_PRIORITY=optional
-PYTHON_DEPENDS=python25
+PYTHON_DEPENDS=python27
 PYTHON_SUGGESTS=
 PYTHON_CONFLICTS=
 
@@ -27,6 +27,8 @@ python-stage:
 	$(MAKE) python24-stage python24-host-stage
 	$(MAKE) python25-stage python25-host-stage
 	$(MAKE) python26-stage python26-host-stage
+	$(MAKE) python27-stage python27-host-stage
+	$(MAKE) python3-stage python3-host-stage
 
 $(PYTHON_IPK_DIR)/CONTROL/control:
 	@install -d $(PYTHON_IPK_DIR)/CONTROL
@@ -43,15 +45,15 @@ $(PYTHON_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(PYTHON_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PYTHON_CONFLICTS)" >>$@
 
-$(PYTHON_IPK):
+$(PYTHON_IPK): make/python.mk
 	rm -rf $(PYTHON_IPK_DIR) $(BUILD_DIR)/python_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
 	install -d $(PYTHON_IPK_DIR)/opt/bin
 	(cd $(PYTHON_IPK_DIR)/opt/bin; \
-		ln -s python2.5 python; \
-		ln -s idle2.5 idle; \
-		ln -s pydoc2.5 pydoc; \
-		ln -s smtpd2.5.py smtpd.py; \
+		ln -s python2.7 python; \
+		ln -s idle2.7 idle; \
+		ln -s pydoc2.7 pydoc; \
+		ln -s smtpd2.7.py smtpd.py; \
 	)
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 	install -d $(PYTHON_IPK_DIR)/usr/bin

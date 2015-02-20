@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BLUEZ_SITE=http://org.csail.mit.edu/pybluez/release
-PY-BLUEZ_VERSION=0.9.2
+PY-BLUEZ_VERSION=0.13
 PY-BLUEZ_SOURCE=pybluez-src-$(PY-BLUEZ_VERSION).tar.gz
 PY-BLUEZ_DIR=pybluez-$(PY-BLUEZ_VERSION)
 PY-BLUEZ_UNZIP=zcat
@@ -228,7 +228,7 @@ $(PY24-BLUEZ_IPK): $(PY-BLUEZ_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-BLUEZ_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) `find $(PY24-BLUEZ_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
+#	$(STRIP_COMMAND) `find $(PY24-BLUEZ_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
 	$(MAKE) $(PY24-BLUEZ_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-BLUEZ_IPK_DIR)
 
@@ -239,7 +239,7 @@ $(PY25-BLUEZ_IPK): $(PY-BLUEZ_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-BLUEZ_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) `find $(PY25-BLUEZ_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
+#	$(STRIP_COMMAND) `find $(PY25-BLUEZ_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
 	$(MAKE) $(PY25-BLUEZ_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BLUEZ_IPK_DIR)
 

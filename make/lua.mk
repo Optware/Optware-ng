@@ -157,7 +157,16 @@ $(LUA_BUILD_DIR)/.built: $(LUA_BUILD_DIR)/.configured
 		MYCFLAGS="$(STAGING_CPPFLAGS) $(LUA_CPPFLAGS)" \
 		MYLDFLAGS="$(STAGING_LDFLAGS) $(LUA_LDFLAGS)" \
 		MYLIBS="-Wl,-E -ldl -lreadline -lhistory -lncurses" \
-		all
+		liblua.a lua luac
+#		all
+	rm -f $(LUA_BUILD_DIR)/src/*.o
+	$(MAKE) -C $(LUA_BUILD_DIR)/src \
+		$(TARGET_CONFIGURE_OPTS) \
+		AR="$(TARGET_AR) rcu" \
+		MYCFLAGS="-fPIC $(STAGING_CPPFLAGS) $(LUA_CPPFLAGS)" \
+		MYLDFLAGS="$(STAGING_LDFLAGS) $(LUA_LDFLAGS)" \
+		MYLIBS="-Wl,-E -ldl -lreadline -lhistory -lncurses" \
+		liblua.so
 	touch $@
 
 #

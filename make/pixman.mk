@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PIXMAN_SITE=http://cairographics.org/releases
-PIXMAN_VERSION=0.15.14
+PIXMAN_VERSION=0.32.6
 PIXMAN_SOURCE=pixman-$(PIXMAN_VERSION).tar.gz
 PIXMAN_DIR=pixman-$(PIXMAN_VERSION)
 PIXMAN_UNZIP=zcat
@@ -41,7 +41,8 @@ PIXMAN_LOCALES=
 # PIXMAN_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PIXMAN_PATCHES=$(PIXMAN_SOURCE_DIR)/pixman-arm.patch $(PIXMAN_SOURCE_DIR)/AT_HWCAP.patch
+PIXMAN_PATCHES=
+#$(PIXMAN_SOURCE_DIR)/pixman-arm.patch $(PIXMAN_SOURCE_DIR)/AT_HWCAP.patch
 
 #
 # If the compilation of the package requires additional

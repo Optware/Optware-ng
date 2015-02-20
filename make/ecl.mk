@@ -83,7 +83,7 @@ ECL_IPK=$(BUILD_DIR)/ecl_$(ECL_VERSION)-$(ECL_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ECL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ECL_SITE)/$(ECL_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ECL_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -93,10 +93,10 @@ $(DL_DIR)/$(ECL_SOURCE):
 ecl-source: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES)
 
 $(ECL_HOST_BUILD_DIR)/.host-built: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES)
-	rm -rf $(BUILD_DIR)/$(ECL_DIR) $(ECL_HOST_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ECL_DIR) $(@D)
 	$(ECL_UNZIP) $(DL_DIR)/$(ECL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(ECL_DIR) $(ECL_HOST_BUILD_DIR)
-	(cd $(ECL_HOST_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(ECL_DIR) $(@D)
+	(cd $(@D); \
 		ac_cv_path_INSTALL_INFO=/bin/true \
 		./configure \
 		--prefix=$(ECL_HOST_BUILD_DIR)/install \
@@ -108,10 +108,10 @@ $(ECL_HOST_BUILD_DIR)/.host-built: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES)
 		--without-defsystem \
 		--without-asdf \
 	)
-	$(MAKE) -C $(ECL_HOST_BUILD_DIR) all install
+	$(MAKE) -C $(@D) all install
 # now ready to invoke like this:
 #	LD_LIBRARY_PATH=$(ECL_HOST_BUILD_DIR)/build $(ECL_HOST_BUILD_DIR)/build/ecl -dir $(ECL_HOST_BUILD_DIR)/build
-	touch $(ECL_HOST_BUILD_DIR)/.host-built
+	touch $@
 
 #
 # This target unpacks the source code in the build directory.
@@ -131,9 +131,9 @@ $(ECL_HOST_BUILD_DIR)/.host-built: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(ECL_BUILD_DIR)/.configured: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES) $(ECL_HOST_BUILD_DIR)/.host-built
+$(ECL_BUILD_DIR)/.configured: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES) $(ECL_HOST_BUILD_DIR)/.host-built make/ecl.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(ECL_DIR) $(ECL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ECL_DIR) $(@D)
 	$(ECL_UNZIP) $(DL_DIR)/$(ECL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ECL_PATCHES)" ; then \
 		cat $(ECL_PATCHES) | patch -d $(BUILD_DIR)/$(ECL_DIR) -p1 ; \
@@ -147,7 +147,7 @@ else
 	cp $(ECL_SOURCE_DIR)/cross_config $(ECL_BUILD_DIR)/
 endif
 	echo ECL_TO_RUN=$(ECL_HOST_BUILD_DIR)/install/bin/ecl >> $(ECL_BUILD_DIR)/cross_config
-	(cd $(ECL_BUILD_DIR); \
+	(cd $(@D); \
 		PATH=$(ECL_HOST_BUILD_DIR)/install/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ECL_CPPFLAGS)" \
@@ -166,8 +166,8 @@ endif
 		--without-clx \
 		--without-defsystem \
 	)
-#	$(PATCH_LIBTOOL) $(ECL_BUILD_DIR)/libtool
-	touch $(ECL_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 ecl-unpack: $(ECL_BUILD_DIR)/.configured
 
@@ -175,9 +175,9 @@ ecl-unpack: $(ECL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ECL_BUILD_DIR)/.built: $(ECL_BUILD_DIR)/.configured
-	rm -f $(ECL_BUILD_DIR)/.built
-	$(MAKE) -C $(ECL_BUILD_DIR) all
-	touch $(ECL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) all
+	touch $@
 
 #
 # This is the build convenience target.
@@ -188,9 +188,9 @@ ecl: $(ECL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ECL_BUILD_DIR)/.staged: $(ECL_BUILD_DIR)/.built
-	rm -f $(ECL_BUILD_DIR)/.staged
-	$(MAKE) -C $(ECL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(ECL_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 ecl-stage: $(ECL_BUILD_DIR)/.staged
 
@@ -199,7 +199,7 @@ ecl-stage: $(ECL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ecl
 #
 $(ECL_IPK_DIR)/CONTROL/control:
-	@install -d $(ECL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ecl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -229,7 +229,7 @@ $(ECL_IPK): $(ECL_BUILD_DIR)/.built
 	rm -rf $(ECL_IPK_DIR) $(BUILD_DIR)/ecl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ECL_BUILD_DIR) DESTDIR=$(ECL_IPK_DIR) install
 	$(STRIP_COMMAND) $(ECL_IPK_DIR)/opt/bin/ecl
-	$(STRIP_COMMAND) $(ECL_IPK_DIR)/opt/lib/ecl/{*.so,*.fas}
+	$(STRIP_COMMAND) $(ECL_IPK_DIR)/opt/lib/ecl/*.so $(ECL_IPK_DIR)/opt/lib/ecl/*.fas
 #	install -d $(ECL_IPK_DIR)/opt/etc/
 #	install -m 644 $(ECL_SOURCE_DIR)/ecl.conf $(ECL_IPK_DIR)/opt/etc/ecl.conf
 #	install -d $(ECL_IPK_DIR)/opt/etc/init.d

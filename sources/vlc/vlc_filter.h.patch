@@ -1,0 +1,24 @@
+diff -Npur vlc-3.0.0-git20150218/include/vlc_filter.h vlc/include/vlc_filter.h
+--- vlc-3.0.0-git20150218/include/vlc_filter.h	2015-02-19 13:34:14.000000000 +0200
++++ vlc/include/vlc_filter.h	2015-02-19 13:49:50.394889891 +0200
+@@ -41,8 +41,8 @@ typedef struct filter_owner_t
+ {
+     void *sys;
+ 
+-    union
+-    {
++//    union
++//    {
+         struct
+         {
+             picture_t * (*buffer_new)( filter_t * );
+@@ -51,7 +51,7 @@ typedef struct filter_owner_t
+         {
+             subpicture_t * (*buffer_new)( filter_t * );
+         } sub;
+-    };
++//    };
+ } filter_owner_t;
+ 
+ 
+

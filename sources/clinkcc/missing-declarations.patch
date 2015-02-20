@@ -1,0 +1,1211 @@
+diff -ruN CyberLink.orig/include/cybergarage/http/HTTPPacket.h CyberLink/include/cybergarage/http/HTTPPacket.h
+--- CyberLink.orig/include/cybergarage/http/HTTPPacket.h	1970-01-01 03:14:17.000000000 +0300
++++ CyberLink/include/cybergarage/http/HTTPPacket.h	2015-01-16 20:14:57.081235330 +0200
+@@ -24,6 +24,7 @@
+ #include <string>
+ #include <vector>
+ #include <sstream>
++#include <cstdlib>
+ 
+ namespace CyberHTTP {
+ 
+@@ -204,7 +205,7 @@
+ 		HTTPHeader *header = getHeader(name);
+ 		if (header == NULL)
+ 			return 0;
+-		return atoi(header->getValue()); 
++		return std::atoi(header->getValue()); 
+ 	}
+ 
+ 	long getLongHeaderValue(const char *name)
+@@ -212,7 +213,7 @@
+ 		HTTPHeader *header = getHeader(name);
+ 		if (header == NULL)
+ 			return 0;
+-		return atol(header->getValue());
++		return std::atol(header->getValue());
+ 	}
+ 
+ 	////////////////////////////////////////////////
+@@ -398,7 +399,7 @@
+ public:
+ 
+ 	void setHost(const char *host, int port);
+-	void setHost(const char *host);
++	void setHost(const char *host);
+ 
+ 	const char *getHost()
+ 	{
+diff -ruN CyberLink.orig/include/cybergarage/upnp/Argument.h CyberLink/include/cybergarage/upnp/Argument.h
+--- CyberLink.orig/include/cybergarage/upnp/Argument.h	1970-01-01 03:14:17.000000000 +0300
++++ CyberLink/include/cybergarage/upnp/Argument.h	2015-01-16 20:15:40.305236685 +0200
+@@ -20,6 +20,8 @@
+ #include <cybergarage/xml/Node.h>
+ #include <cybergarage/upnp/xml/ArgumentData.h>
+ 
++#include <cstdlib>
++
+ namespace CyberLink{
+ 
+ class Service;
+@@ -175,7 +177,7 @@
+ 
+ 	int getIntegerValue()
+ 	{
+-		return atoi(getValue());
++		return std::atoi(getValue());
+ 	}
+ 
+ };
+diff -ruN CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentNode.h CyberLink/include/cybergarage/upnp/media/server/object/ContentNode.h
+--- CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentNode.h	1970-01-01 03:14:18.000000000 +0300
++++ CyberLink/include/cybergarage/upnp/media/server/object/ContentNode.h	2015-01-16 20:16:54.409239008 +0200
+@@ -19,6 +19,7 @@
+ #include <string>
+ #include <sstream>
+ #include <iostream>
++#include <cstdlib>
+ 
+ #include <cybergarage/xml/Node.h>
+ #include <cybergarage/upnp/media/server/UPnP.h>
+@@ -54,8 +55,8 @@
+ public:
+ 
+ 	ContentNode();
+-	virtual ~ContentNode();
+-
++	virtual ~ContentNode();
++
+ 	////////////////////////////////////////////////
+ 	// ContentDirectory
+ 	////////////////////////////////////////////////
+@@ -215,14 +216,14 @@
+ 		const char *val = getPropertyValue(name);
+ 		if (val == NULL)
+ 			return 0;
+-		return atoi(val);
++		return std::atoi(val);
+ 	}
+ 
+ 	long getPropertyLongValue(const char *name) {
+ 		const char *val = getPropertyValue(name);
+ 		if (val == NULL)
+ 			return 0;
+-		return atol(val);
++		return std::atol(val);
+ 	}
+ 
+ 	////////////////////////////////////////////////
+diff -ruN CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentProperty.h CyberLink/include/cybergarage/upnp/media/server/object/ContentProperty.h
+--- CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentProperty.h	1970-01-01 03:14:18.000000000 +0300
++++ CyberLink/include/cybergarage/upnp/media/server/object/ContentProperty.h	2015-01-16 20:17:49.349240730 +0200
+@@ -18,6 +18,7 @@
+ 
+ #include <string>
+ #include <sstream>
++#include <cstdlib>
+ #include <cybergarage/xml/AttributeList.h>
+ 
+ namespace CyberLink {
+@@ -158,7 +159,7 @@
+ 		const char *val = getAttributeValue(name);
+ 		if (val == NULL)
+ 			return 0;
+-		return atoi(val);
++		return std::atoi(val);
+ 	}
+ };
+ 
+diff -ruN CyberLink.orig/include/cybergarage/xml/Parser.h CyberLink/include/cybergarage/xml/Parser.h
+--- CyberLink.orig/include/cybergarage/xml/Parser.h	1970-01-01 03:14:19.000000000 +0300
++++ CyberLink/include/cybergarage/xml/Parser.h	2015-01-16 20:19:16.069243448 +0200
+@@ -18,6 +18,7 @@
+ 
+ #include <stdio.h>
+ #include <string>
++#include <cstring>
+ #include <cybergarage/xml/XML.h>
+ #include <cybergarage/xml/Node.h>
+ #include <cybergarage/io/File.h>
+@@ -54,7 +55,7 @@
+ 
+ 	Node *parse(const char *data)
+ 	{
+-		return parse(data, strlen(data));
++		return parse(data, std::strlen(data));
+ 	}
+ 	
+ 	Node *parse(std::string *data)
+diff -ruN CyberLink.orig/sample/clock/ClockDevice.cpp CyberLink/sample/clock/ClockDevice.cpp
+--- CyberLink.orig/sample/clock/ClockDevice.cpp	1970-01-01 03:14:24.000000000 +0300
++++ CyberLink/sample/clock/ClockDevice.cpp	2015-01-16 20:19:56.697244722 +0200
+@@ -8,29 +8,30 @@
+ *
+ ******************************************************************/
+ 
+-#include "ClockDevice.h"
++#include "ClockDevice.h"
+ #include "Clock.h"
+-
+-#include <iostream>
+-#include <sstream>
++
++#include <iostream>
++#include <sstream>
++#include <cstring>
+ 
+ using namespace std;
+ using namespace CyberLink;
+-
+-//#define USE_CLOCK_DESCRIPTION_FILE
+-
++
++//#define USE_CLOCK_DESCRIPTION_FILE
++
+ #if defined(USE_CLOCK_DESCRIPTION_FILE)
+-ClockDevice::ClockDevice() : Device(CLOCK_DESCRIPTION_FILE_NAME)
+-#else
+-ClockDevice::ClockDevice() : Device()
++ClockDevice::ClockDevice() : Device(CLOCK_DESCRIPTION_FILE_NAME)
++#else
++ClockDevice::ClockDevice() : Device()
+ #endif
+ {
+-#if !defined(USE_CLOCK_DESCRIPTION_FILE)
+-	loadDescription(CLOCK_DEVICE_DESCRIPTION);
+-	Service *timeService = getService("urn:schemas-upnp-org:service:timer:1");
+-	timeService->loadSCPD(CLOCK_SERVICE_DESCRIPTION);
+-#endif
+-
++#if !defined(USE_CLOCK_DESCRIPTION_FILE)
++	loadDescription(CLOCK_DEVICE_DESCRIPTION);
++	Service *timeService = getService("urn:schemas-upnp-org:service:timer:1");
++	timeService->loadSCPD(CLOCK_SERVICE_DESCRIPTION);
++#endif
++
+ 	Action *getTimeAction = getAction("GetTime");
+ 	getTimeAction->setActionListener(this);
+ 		
+@@ -78,7 +79,7 @@
+ ////////////////////////////////////////////////
+ 
+ bool ClockDevice::queryControlReceived(StateVariable *stateVar)
+-{
++{
+ 	const char *varName = stateVar->getName();
+ 	Clock clock;
+ 	string clockVal;
+@@ -92,14 +93,14 @@
+ 	
+ void ClockDevice::httpRequestRecieved(HTTPRequest *httpReq)
+ {
+-	ParameterList paramList;
+-	httpReq->getParameterList(paramList);
+-	for (int n=0; n<paramList.size(); n++) {
+-		Parameter *param = paramList.getParameter(n);
+-		cout << "[" << n << "] : " << param->getName() << " = " << param->getValue() << endl;
+-	}
+-
+-	string uri;
++	ParameterList paramList;
++	httpReq->getParameterList(paramList);
++	for (int n=0; n<paramList.size(); n++) {
++		Parameter *param = paramList.getParameter(n);
++		cout << "[" << n << "] : " << param->getName() << " = " << param->getValue() << endl;
++	}
++
++	string uri;
+ 	httpReq->getURI(uri);
+ 	if (uri.find(CLOCK_PRESENTATION_URI) == string::npos)  {
+ 		Device::httpRequestRecieved(httpReq);
+diff -ruN CyberLink.orig/sample/media/server/unix/MediaGateMain.cpp CyberLink/sample/media/server/unix/MediaGateMain.cpp
+--- CyberLink.orig/sample/media/server/unix/MediaGateMain.cpp	1970-01-01 03:14:34.000000000 +0300
++++ CyberLink/sample/media/server/unix/MediaGateMain.cpp	2015-01-16 20:20:28.117245706 +0200
+@@ -18,6 +18,7 @@
+ 
+ #include <string>
+ #include <iostream>
++#include <cstring>
+ 
+ #include <stdio.h>
+ #include <stdio.h>
+@@ -65,18 +66,18 @@
+ 	int n;
+ 
+ 	for (n=1; n<argc; n++) {
+-#ifdef SUPPORT_MYTHTV
++#ifdef SUPPORT_MYTHTV
+ 		if (strcmp(MediaGate::MYTHTV_OPT_STRING, argv[n]) == 0)
+-			mode = MediaGate::MYTHTV_MODE;
+-		if (strcmp(MediaGate::MYTHTV_OPT_STRING_OLD, argv[n]) == 0)
+-			mode = MediaGate::MYTHTV_MODE;
++			mode = MediaGate::MYTHTV_MODE;
++		if (strcmp(MediaGate::MYTHTV_OPT_STRING_OLD, argv[n]) == 0)
++			mode = MediaGate::MYTHTV_MODE;
+ #endif
+ 		if (strcmp(VERBOSE_ARG, argv[n]) == 0)
+ 			Debug::on();
+ 	}
+ 
+ 	gMediaGate = new MediaGate(option);
+-
++
+ 	int mode = gMediaGate->getModeOption();
+ 	if (mode == MediaGate::FILESYS_MODE) {
+ 		string prefFileName = MediaGate::DEFAULT_PREFERENCE_FILENAME;
+@@ -88,9 +89,9 @@
+ 			cout << "Couldn't load " << prefFileName << endl;
+ 	}
+ 
+-	cout << "mode : " << (mode == MediaGate::FILESYS_MODE ? "FileSystem" : "MythTV") << endl;
+-	cout << "verbose : " << (Debug::isOn() ? "yes" : "no") << endl;
+-
++	cout << "mode : " << (mode == MediaGate::FILESYS_MODE ? "FileSystem" : "MythTV") << endl;
++	cout << "verbose : " << (Debug::isOn() ? "yes" : "no") << endl;
++
+ 	gMediaGate->start();
+ }
+ 
+diff -ruN CyberLink.orig/sample/tv/TvDevice.cpp CyberLink/sample/tv/TvDevice.cpp
+--- CyberLink.orig/sample/tv/TvDevice.cpp	1970-01-01 03:14:36.000000000 +0300
++++ CyberLink/sample/tv/TvDevice.cpp	2015-01-16 20:20:56.277246589 +0200
+@@ -10,9 +10,10 @@
+ 
+ #include "TvDevice.h"
+ 
+-#include <iostream>
+-#include <sstream>
+-
++#include <iostream>
++#include <sstream>
++#include <cstring>
++
+ using namespace std;
+ using namespace CyberLink;
+ 
+diff -ruN CyberLink.orig/src/cybergarage/http/HTTPHeader.cpp CyberLink/src/cybergarage/http/HTTPHeader.cpp
+--- CyberLink.orig/src/cybergarage/http/HTTPHeader.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/http/HTTPHeader.cpp	2015-01-16 20:21:16.465247222 +0200
+@@ -17,6 +17,7 @@
+ ******************************************************************/
+ 
+ #include <string>
++#include <cstdlib>
+ #include <cybergarage/http/HTTPHeader.h>
+ #include <cybergarage/util/StringUtil.h>
+ #include <cybergarage/io/StringReader.h>
+diff -ruN CyberLink.orig/src/cybergarage/http/HTTPPacket.cpp CyberLink/src/cybergarage/http/HTTPPacket.cpp
+--- CyberLink.orig/src/cybergarage/http/HTTPPacket.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/http/HTTPPacket.cpp	2015-01-16 20:21:59.185248561 +0200
+@@ -68,9 +68,9 @@
+ *	03/03/05
+ *		- Changed the following methods not to use iostream for TRON.
+ *		  setHeader(int), setHeader(long), getHeaderString(), setContentRange(), setCacheControl().
+-*	07/07/05
+-*		- Lee Peik Feng <pflee@users.sourceforge.net> (07/07/05)
+-*		- Fixed set() to parse the chunk size as a hex string.
++*	07/07/05
++*		- Lee Peik Feng <pflee@users.sourceforge.net> (07/07/05)
++*		- Fixed set() to parse the chunk size as a hex string.
+ *
+ ******************************************************************/
+ 
+@@ -85,7 +85,8 @@
+ 
+ #include <string>
+ #include <sstream>
+-#include <stdlib.h>
++#include <cstdlib>
++#include <cstring>
+ 
+ using namespace std;
+ using namespace CyberHTTP;
+@@ -269,7 +270,7 @@
+ 	long contentLen = 0;
+ 	if (isChunkedStream == true) {
+ 		const char *chunkSize = bufReader.readLine();
+-		// Thanks for Lee Peik Feng <pflee@users.sourceforge.net> (07/07/05)
++		// Thanks for Lee Peik Feng <pflee@users.sourceforge.net> (07/07/05)
+ 		contentLen = HexString2Long(chunkSize);
+ 	}
+ 	else
+@@ -301,7 +302,7 @@
+ 				} while (skipLen < HTTP::CRLF_LEN);
+ 			// read next chunk size
+ 			const char *chunkSize = bufReader.readLine();
+-			// Thanks for Lee Peik Feng <pflee@users.sourceforge.net> (07/07/05)
++			// Thanks for Lee Peik Feng <pflee@users.sourceforge.net> (07/07/05)
+ 			contentLen = HexString2Long(chunkSize);
+ 		}
+ 		else
+@@ -415,16 +416,16 @@
+ 		sprintf(str, "%s:%d", host, port);
+ 	setHeader(HTTP::HOST, str);
+ }
+-
+-void HTTPPacket::setHost(const char *host)
+-{
+-	char str[256];
+-	if (IsIPv6Address(host) == true)
+-		sprintf(str, "[%s]", host);
+-	else
+-		sprintf(str, "%s", host);
+-	setHeader(HTTP::HOST, str);
+-}
++
++void HTTPPacket::setHost(const char *host)
++{
++	char str[256];
++	if (IsIPv6Address(host) == true)
++		sprintf(str, "[%s]", host);
++	else
++		sprintf(str, "%s", host);
++	setHeader(HTTP::HOST, str);
++}
+ 
+ ////////////////////////////////////////////////
+ //	ContentRange
+diff -ruN CyberLink.orig/src/cybergarage/http/HTTPRequest.cpp CyberLink/src/cybergarage/http/HTTPRequest.cpp
+--- CyberLink.orig/src/cybergarage/http/HTTPRequest.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/http/HTTPRequest.cpp	2015-01-16 20:22:32.281249598 +0200
+@@ -39,9 +39,9 @@
+ *		- Changed the status code for the Content-Range request in post().
+ *	06/10/05
+ *		- Changed post() to add a HOST headedr before the posting.
+-*	07/07/05
+-*		- Lee Peik Feng <pflee@users.sourceforge.net>
+-*		- Fixed post() to output the chunk size as a hex string.
++*	07/07/05
++*		- Lee Peik Feng <pflee@users.sourceforge.net>
++*		- Fixed post() to output the chunk size as a hex string.
+ *
+ ******************************************************************/
+ 
+@@ -53,11 +53,12 @@
+ #include <string>
+ #include <iostream>
+ #include <sstream>
++#include <cstring>
+ 
+ using namespace std;
+ using namespace CyberNet;
+ using namespace CyberHTTP;
+-using namespace CyberUtil;
++using namespace CyberUtil;
+ 
+  ////////////////////////////////////////////////
+ //	Constructor
+@@ -256,37 +257,37 @@
+ 	}	
+ 
+ 	setHost(host);
+-
++
+ 	setConnection((isKeepAlive == true) ? HTTP::KEEP_ALIVE : HTTP::CLOSE);
+ 
+ 	string header;
+ 	postSock->send(getHeader(header));
+ 	postSock->send(HTTP::CRLF);
+-	
+-	bool isChunkedRequest = isChunked();
+-
+-	const char *content = getContent();
+-	int contentLength = 0;
+-	if (content != NULL)
+-		contentLength = strlen(content);
+-
+-	if (0 < contentLength) {
+-		if (isChunkedRequest == true) {
+-			string chunSizeBuf;
+-			Integer2HexString(strlen(content), chunSizeBuf);
+-			postSock->send(chunSizeBuf.c_str());
+-			postSock->send(HTTP::CRLF);
+-		}
+-		postSock->send(content);
+-		if (isChunkedRequest == true)
+-			postSock->send(HTTP::CRLF);
+-	}
+-
+-	if (isChunkedRequest == true) {
+-		postSock->send("0");
+-		postSock->send(HTTP::CRLF);
+-	}
+-
++	
++	bool isChunkedRequest = isChunked();
++
++	const char *content = getContent();
++	int contentLength = 0;
++	if (content != NULL)
++		contentLength = strlen(content);
++
++	if (0 < contentLength) {
++		if (isChunkedRequest == true) {
++			string chunSizeBuf;
++			Integer2HexString(strlen(content), chunSizeBuf);
++			postSock->send(chunSizeBuf.c_str());
++			postSock->send(HTTP::CRLF);
++		}
++		postSock->send(content);
++		if (isChunkedRequest == true)
++			postSock->send(HTTP::CRLF);
++	}
++
++	if (isChunkedRequest == true) {
++		postSock->send("0");
++		postSock->send(HTTP::CRLF);
++	}
++
+ 	httpRes->set(postSock, isHeadRequest());			
+ 
+ 	if (isKeepAlive == false) {	
+@@ -294,7 +295,7 @@
+ 		delete postSock;
+ 		postSock = NULL;
+ 	}
+-
++
+ 	return httpRes;
+ }
+ 
+diff -ruN CyberLink.orig/src/cybergarage/http/HTTPStatus.cpp CyberLink/src/cybergarage/http/HTTPStatus.cpp
+--- CyberLink.orig/src/cybergarage/http/HTTPStatus.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/http/HTTPStatus.cpp	2015-01-16 20:23:11.845250838 +0200
+@@ -10,14 +10,14 @@
+ *
+ *	03/23/03
+ *		- first revision.
+-*	10/20/04 
+-*		- Brent Hills <bhills@openshores.com>
+-*		- Added PARTIAL_CONTENT and INVALID_RANGE;
+-*	10/22/04
+-*		- Added isSuccessful().
+-*	10/29/04
+-*		- Fixed set() to set the verion and the response code when the mothod is null.
+-*		- Fixed set() to read multi words of the response sring such as Not Found.
++*	10/20/04 
++*		- Brent Hills <bhills@openshores.com>
++*		- Added PARTIAL_CONTENT and INVALID_RANGE;
++*	10/22/04
++*		- Added isSuccessful().
++*	10/29/04
++*		- Fixed set() to set the verion and the response code when the mothod is null.
++*		- Fixed set() to read multi words of the response sring such as Not Found.
+ *	
+ ******************************************************************/
+ 
+@@ -26,6 +26,10 @@
+ #include <cybergarage/util/StringTokenizer.h>
+ #include <cybergarage/util/StringUtil.h>
+ 
++#include <cstdlib>
++
++using namespace std;
++
+ using namespace CyberHTTP;
+ using namespace CyberUtil;
+ 
+@@ -65,40 +69,40 @@
+ 			return;
+ 		}
+ 
+-		StringTokenizer st(lineStr, HTTP::STATUS_LINE_DELIM);
+-		std::string trimBuf;
++		StringTokenizer st(lineStr, HTTP::STATUS_LINE_DELIM);
++		std::string trimBuf;
+ 		
+ 		if (st.hasMoreTokens() == false)
+ 			return;
+ 		std::string ver = st.nextToken();
+-		setVersion(StringTrim(ver.c_str(), trimBuf));
+-
++		setVersion(StringTrim(ver.c_str(), trimBuf));
++
+ 		if (st.hasMoreTokens() == false)
+ 			return;
+ 		std::string codeStr = st.nextToken();
+ 		int code = atoi(codeStr.c_str());
+-		setStatusCode(code);
+-
+-		std::string reason = "";
+-		while (st.hasMoreTokens() == true) {
+-			if (0 <= reason.length())
+-				reason.append(" ");
+-			reason.append(st.nextToken());
+-		}
++		setStatusCode(code);
++
++		std::string reason = "";
++		while (st.hasMoreTokens() == true) {
++			if (0 <= reason.length())
++				reason.append(" ");
++			reason.append(st.nextToken());
++		}
+ 		setReasonPhrase(StringTrim(reason.c_str(), trimBuf));
+ }
+ 
+-////////////////////////////////////////////////
+-//	Status
+-////////////////////////////////////////////////
+-	
+-bool HTTPStatus::isSuccessful(int statCode)
+-{
+-	if (200 <= statCode && statCode < 300)
+-		return true;
+-	return false;
+-}
+-
++////////////////////////////////////////////////
++//	Status
++////////////////////////////////////////////////
++	
++bool HTTPStatus::isSuccessful(int statCode)
++{
++	if (200 <= statCode && statCode < 300)
++		return true;
++	return false;
++}
++
+ ////////////////////////////////////////////////
+ //	StatusCode2String
+ ////////////////////////////////////////////////
+@@ -106,15 +110,15 @@
+ const char *CyberHTTP::HTTP::StatusCode2String(int code)
+ {
+ 	switch (code) {
+-	case HTTP::CONTINUE: return "Continue";
+-	case HTTP::OK_REQUEST: return "OK";
+-	case HTTP::PARTIAL_CONTENT: return "Partial Content";
+-	case HTTP::BAD_REQUEST: return "Bad Request";
+-	case HTTP::NOT_FOUND: return "Not Found";
+-	case HTTP::PRECONDITION_FAILED: return "Precondition Failed";
+-	case HTTP::INVALID_RANGE: return "Invalid Range";
+-	case HTTP::INTERNAL_SERVER_ERROR: return "Internal Server Error";
++	case HTTP::CONTINUE: return "Continue";
++	case HTTP::OK_REQUEST: return "OK";
++	case HTTP::PARTIAL_CONTENT: return "Partial Content";
++	case HTTP::BAD_REQUEST: return "Bad Request";
++	case HTTP::NOT_FOUND: return "Not Found";
++	case HTTP::PRECONDITION_FAILED: return "Precondition Failed";
++	case HTTP::INVALID_RANGE: return "Invalid Range";
++	case HTTP::INTERNAL_SERVER_ERROR: return "Internal Server Error";
+ 	}
+ 	 return "";
+ }
+-
++
+diff -ruN CyberLink.orig/src/cybergarage/io/File.cpp CyberLink/src/cybergarage/io/File.cpp
+--- CyberLink.orig/src/cybergarage/io/File.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/io/File.cpp	2015-01-16 20:25:17.541254778 +0200
+@@ -40,7 +40,7 @@
+ 
+ #if defined(WIN32)
+ #include <windows.h>
+-#include <sys/stat.h>
++#include <sys/stat.h>
+ #elif defined(BTRON)
+ #include <fcntl.h>
+ #include <unistd.h>
+@@ -56,10 +56,12 @@
+ 
+ 
+ #include <cybergarage/io/File.h>
+-#include <cybergarage/io/FileList.h>
++#include <cybergarage/io/FileList.h>
+ 
+ #include <cybergarage/util/StringUtil.h>
+ 
++#include <cstring>
++
+ using namespace std;
+ using namespace CyberIO;
+ using namespace CyberUtil;
+@@ -141,8 +143,8 @@
+ 	if (fd == -1)
+ 		return false;
+ 	close(fd);
+-	return true;
+-#else
++	return true;
++#else
+ 	return false;
+ #endif
+ }
+@@ -280,16 +282,16 @@
+ long File::lastModified()
+ {
+ #if defined(BTRON)
+-	struct stat buf ;
++	struct stat buf ;
+ 	if(u_stat(getName(),&buf ) == -1)
+ 		return 0;
+ 	return buf.st_mtime;
+ #elif !defined(ITRON) && !defined(TENGINE)
+-	struct stat buf ;
++	struct stat buf ;
+ 	if(stat(getName(),&buf ) == -1)
+ 		return 0;
+-	return buf.st_mtime;
+-#else
++	return buf.st_mtime;
++#else
+ 	return 0;
+ #endif
+ }
+@@ -297,16 +299,16 @@
+ long File::length()
+ {
+ #if defined(BTRON)
+-	struct stat buf ;
++	struct stat buf ;
+ 	if(u_stat(getName(),&buf ) == -1)
+ 		return 0;
+-	return buf.st_size;
+-#elif !defined(ITRON) && !defined(TENGINE)
+-	struct stat buf ;
++	return buf.st_size;
++#elif !defined(ITRON) && !defined(TENGINE)
++	struct stat buf ;
+ 	if(stat(getName(),&buf ) == -1)
+-		return 0;
+-	return buf.st_size;
+-#else
++		return 0;
++	return buf.st_size;
++#else
+ 	return 0;
+ #endif
+ }
+@@ -318,39 +320,39 @@
+ bool File::isDirectory()
+ {
+ #if defined(BTRON)
+-	struct stat buf ;
++	struct stat buf ;
+ 	if(u_stat(getName(),&buf ) == -1)
+ 		return false;
+ #elif !defined(ITRON) && !defined(TENGINE)
+-	struct stat buf ;
++	struct stat buf ;
+ 	if(stat(getName(),&buf ) == -1)
+ 		return false;
+-#else
+-	return false;
+-#endif
++#else
++	return false;
++#endif
+ #if defined(WIN32)
+ 	return ((buf.st_mode & _S_IFMT)==_S_IFDIR) ? true : false;
+-#elif !defined(ITRON) && !defined(TENGINE)
++#elif !defined(ITRON) && !defined(TENGINE)
+ 	return ((buf.st_mode & S_IFMT)==S_IFDIR) ? true : false;
+ #endif
+ }
+ 
+ bool File::isFile()
+ {
+-#if defined(BTRON)
+-	struct stat buf ;
++#if defined(BTRON)
++	struct stat buf ;
+ 	if(u_stat(getName(),&buf ) == -1)
+ 		return false;
+-#elif !defined(ITRON) && !defined(TENGINE)
+-	struct stat buf ;
++#elif !defined(ITRON) && !defined(TENGINE)
++	struct stat buf ;
+ 	if(stat(getName(),&buf ) == -1)
+-		return false;
+-#else
++		return false;
++#else
+ 		return false;
+ #endif
+-#if defined(WIN32)
++#if defined(WIN32)
+ 	return ((buf.st_mode & _S_IFMT)==_S_IFREG) ? true : false;
+-#elif !defined(ITRON) && !defined(TENGINE)
++#elif !defined(ITRON) && !defined(TENGINE)
+ 	return ((buf.st_mode & S_IFMT)==S_IFREG) ? true : false;
+ #endif
+ }
+@@ -406,7 +408,7 @@
+ 		}
+   	}
+ 	close(fd);
+-#elif !defined(ITRON) && !defined(TENGINE)
++#elif !defined(ITRON) && !defined(TENGINE)
+ 	struct dirent **namelist;
+ 	int n = scandir(dir.c_str(), &namelist, 0, alphasort);
+ 	if (0 <= n) {
+diff -ruN CyberLink.orig/src/cybergarage/io/StringBufferInputStream.cpp CyberLink/src/cybergarage/io/StringBufferInputStream.cpp
+--- CyberLink.orig/src/cybergarage/io/StringBufferInputStream.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/io/StringBufferInputStream.cpp	2015-01-16 20:26:07.341256339 +0200
+@@ -14,7 +14,9 @@
+ ******************************************************************/
+ 
+ #include <cybergarage/io/StringBufferInputStream.h>
+-
++#include <cstring>
++ 
++using namespace std;
+ using namespace CyberIO;
+ 
+ StringBufferInputStream::StringBufferInputStream(const char *str)
+diff -ruN CyberLink.orig/src/cybergarage/net/DatagramSocket.cpp CyberLink/src/cybergarage/net/DatagramSocket.cpp
+--- CyberLink.orig/src/cybergarage/net/DatagramSocket.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/net/DatagramSocket.cpp	2015-01-16 20:26:38.077257303 +0200
+@@ -11,19 +11,19 @@
+ *	03/27/03
+ *		- first revision
+ *	08/01/04
+-*		- Added <stdio.h> for sprintf() for gcc 2.95.3.
+-*	09/06/05
+-*		- Thanks for Roland Moser <rmoser@gmx.at>
+-*		- Changed bind() because
+-*		 when trying to run two ControlPoints on the same 
+-*		 computer, notification doesn't work. The problem is, 
+-*		 that the ControlPoint tries to bind the same port 
+-*		 twice and returns before setting the local address 
+-*		 and port. Consequently the device doesn't know where 
++*		- Added <stdio.h> for sprintf() for gcc 2.95.3.
++*	09/06/05
++*		- Thanks for Roland Moser <rmoser@gmx.at>
++*		- Changed bind() because
++*		 when trying to run two ControlPoints on the same 
++*		 computer, notification doesn't work. The problem is, 
++*		 that the ControlPoint tries to bind the same port 
++*		 twice and returns before setting the local address 
++*		 and port. Consequently the device doesn't know where 
+ *		 to send the notifications
+ *
+ ******************************************************************/
+-
++
+ #include <cybergarage/net/Socket.h>
+ #include <cybergarage/net/DatagramSocket.h>
+ #include <cybergarage/net/DatagramPacket.h>
+@@ -31,6 +31,10 @@
+ 
+ #include <stdio.h>
+ 
++#include <cstring>
++#include <cstdlib>
++ 
++using namespace std;
+ using namespace CyberNet;
+ 
+ const int DGRAM_SOCKET_RECV_BUFSIZE = 512;
+@@ -118,10 +122,10 @@
+ 
+ 	setLocalAddress(bindAddr);
+ 	setLocalPort(bindPort);
+-
+-	// Thanks for Roland Moser (09/06/05)
+-	if (ret != 0)
+-		return false;
++
++	// Thanks for Roland Moser (09/06/05)
++	if (ret != 0)
++		return false;
+ 
+ 	return true;
+ }
+diff -ruN CyberLink.orig/src/cybergarage/net/HostInterface.cpp CyberLink/src/cybergarage/net/HostInterface.cpp
+--- CyberLink.orig/src/cybergarage/net/HostInterface.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/net/HostInterface.cpp	2015-01-16 20:27:09.725258294 +0200
+@@ -30,7 +30,7 @@
+ #include <cybergarage/net/Socket.h>
+ #include <cybergarage/net/HostInterface.h>
+ #include <cybergarage/net/NetworkInterfaceList.h>
+-#include <cybergarage/net/SocketUtil.h>
++#include <cybergarage/net/SocketUtil.h>
+ #include <cybergarage/util/StringUtil.h>
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -55,6 +55,8 @@
+ 
+ #include <iostream>
+ #include <sstream>
++#include <cstdlib>
++#include <cstring>
+ 
+ using namespace std;
+ using namespace CyberNet;
+@@ -63,14 +65,14 @@
+ bool CyberNet::HostInterface::USE_LOOPBACK_ADDR = false;
+ bool CyberNet::HostInterface::USE_ONLY_IPV4_ADDR = false;
+ bool CyberNet::HostInterface::USE_ONLY_IPV6_ADDR = false;
+-
+-#if defined(BTRON) || defined(TENGINE)
+-const char *CyberNet::HostInterface::DEFAULT_IFNAME = "Neta";
+-#endif
+-
+-#if defined(TENGINE) && defined(TENGINE_NET_KASAGO)
+-extern ttUserInterface kaInterfaceHandle;
+-#endif
++
++#if defined(BTRON) || defined(TENGINE)
++const char *CyberNet::HostInterface::DEFAULT_IFNAME = "Neta";
++#endif
++
++#if defined(TENGINE) && defined(TENGINE_NET_KASAGO)
++extern ttUserInterface kaInterfaceHandle;
++#endif
+ 
+ ////////////////////////////////////////////////
+ //	GetNHostAddresses
+@@ -318,7 +320,7 @@
+ //	GetHostAddresses (BTRON)
+ ////////////////////////////////////////////////
+ 
+-#if defined(BTRON) || (defined(TENGINE) && !defined(TENGINE_NET_KASAGO))
++#if defined(BTRON) || (defined(TENGINE) && !defined(TENGINE_NET_KASAGO))
+ 
+ int CyberNet::GetHostAddresses(NetworkInterfaceList &netIfList)
+ {
+@@ -341,35 +343,35 @@
+ }
+ 
+ #endif
+-
+-////////////////////////////////////////////////
+-//	GetHostAddresses  (TENGINE-KASAGO)
+-////////////////////////////////////////////////
+-
+-#if defined(TENGINE) && defined(TENGINE_NET_KASAGO)
+-
+-int CyberNet::GetHostAddresses(NetworkInterfaceList &netIfList)
+-{
+-	SocketStartup();
+-
+-	const char *ifname = "Neta";
+-	char ifaddr[32];
+-
+-    struct in_addr inAddr;
+-    inAddr.s_addr = 0;
+-    int kaRet = ka_tfGetIpAddress(kaInterfaceHandle, &(inAddr.s_addr), 0);
+-    if(kaRet != 0)
+-		return 0;
+-		
+-    ka_tfInetToAscii((unsigned long)inAddr.s_addr, ifaddr);
+-	
+-	NetworkInterface *netIf = new NetworkInterface(ifaddr, ifname, 0);
+-	netIfList.add(netIf);
+-
+-	return netIfList.size();
+-}
+-
+-#endif
++
++////////////////////////////////////////////////
++//	GetHostAddresses  (TENGINE-KASAGO)
++////////////////////////////////////////////////
++
++#if defined(TENGINE) && defined(TENGINE_NET_KASAGO)
++
++int CyberNet::GetHostAddresses(NetworkInterfaceList &netIfList)
++{
++	SocketStartup();
++
++	const char *ifname = "Neta";
++	char ifaddr[32];
++
++    struct in_addr inAddr;
++    inAddr.s_addr = 0;
++    int kaRet = ka_tfGetIpAddress(kaInterfaceHandle, &(inAddr.s_addr), 0);
++    if(kaRet != 0)
++		return 0;
++		
++    ka_tfInetToAscii((unsigned long)inAddr.s_addr, ifaddr);
++	
++	NetworkInterface *netIf = new NetworkInterface(ifaddr, ifname, 0);
++	netIfList.add(netIf);
++
++	return netIfList.size();
++}
++
++#endif
+ 
+ ////////////////////////////////////////////////
+ //	IsIPv6Address
+diff -ruN CyberLink.orig/src/cybergarage/net/MulticastSocket.cpp CyberLink/src/cybergarage/net/MulticastSocket.cpp
+--- CyberLink.orig/src/cybergarage/net/MulticastSocket.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/net/MulticastSocket.cpp	2015-01-16 20:27:40.269259252 +0200
+@@ -28,7 +28,9 @@
+ #include <cybergarage/net/HostInterface.h>
+ #include <cybergarage/util/StringUtil.h>
+ #include <stdio.h>
++#include <cstring>
+ 
++using namespace std;
+ using namespace CyberNet;
+ 
+ ////////////////////////////////////////////////
+diff -ruN CyberLink.orig/src/cybergarage/net/SocketUtil.cpp CyberLink/src/cybergarage/net/SocketUtil.cpp
+--- CyberLink.orig/src/cybergarage/net/SocketUtil.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/net/SocketUtil.cpp	2015-01-16 20:28:19.389260478 +0200
+@@ -24,7 +24,9 @@
+ #include <cybergarage/net/SocketUtil.h>
+ 
+ #include <stdio.h>
+-
++#include <cstring>
++ 
++using namespace std;
+ using namespace CyberNet;
+ 
+ ////////////////////////////////////////////////
+diff -ruN CyberLink.orig/src/cybergarage/upnp/event/SubscriptionRequest.cpp CyberLink/src/cybergarage/upnp/event/SubscriptionRequest.cpp
+--- CyberLink.orig/src/cybergarage/upnp/event/SubscriptionRequest.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/upnp/event/SubscriptionRequest.cpp	2015-01-16 20:29:21.893262437 +0200
+@@ -29,6 +29,7 @@
+ 
+ #include <string>
+ #include <sstream>
++#include <cstring>
+ 
+ using namespace std;
+ using namespace CyberLink;
+diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/ContentDirectory.cpp CyberLink/src/cybergarage/upnp/media/server/ContentDirectory.cpp
+--- CyberLink.orig/src/cybergarage/upnp/media/server/ContentDirectory.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/upnp/media/server/ContentDirectory.cpp	2015-01-16 20:29:44.629263150 +0200
+@@ -43,6 +43,7 @@
+ #include <cybergarage/upnp/media/server/object/search/IdSearchCap.h>
+ 
+ #include <sstream>
++#include <cstring>
+ 
+ using namespace std;
+ using namespace CyberLink;
+diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp CyberLink/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp
+--- CyberLink.orig/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp	2015-01-16 20:30:09.145263918 +0200
+@@ -16,6 +16,9 @@
+ #include <stdio.h>
+ #include <cybergarage/upnp/media/server/object/format/GIFFormat.h>
+ 
++#include <cstring>
++
++using namespace std;
+ using namespace CyberLink;
+ 
+ ////////////////////////////////////////////////
+diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp CyberLink/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp
+--- CyberLink.orig/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp	2015-01-16 20:30:28.585264528 +0200
+@@ -15,6 +15,8 @@
+ 
+ #include <cybergarage/upnp/media/server/object/format/ID3Frame.h>
+ 
++#include <cstring>
++
+ using namespace std;
+ using namespace CyberLink;
+ 
+diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp CyberLink/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp
+--- CyberLink.orig/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp	2015-01-16 20:30:54.601265343 +0200
+@@ -16,6 +16,10 @@
+ #include <stdio.h>
+ #include <cybergarage/upnp/media/server/object/format/PNGFormat.h>
+ 
++#include <cstring>
++
++using namespace std;
++
+ using namespace CyberLink;
+ 
+ ////////////////////////////////////////////////
+diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp CyberLink/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp
+--- CyberLink.orig/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp	2015-01-16 20:31:28.273266398 +0200
+@@ -8,12 +8,13 @@
+ *
+ *	Revision;
+ *
+-*	08/07/04
++*	08/07/04
+ *		- first revision.
+ *
+ ******************************************************************/
+ 
+ #include <string>
++#include <cstring>
+ #include <cybergarage/upnp/media/server/object/ContentNode.h>
+ #include <cybergarage/upnp/media/server/object/search/IdSearchCap.h>
+ 
+@@ -24,14 +25,14 @@
+ // compare
+ ////////////////////////////////////////////////
+ 
+-bool IdSearchCap::compare(SearchCriteria *searchCri, ContentNode *conNode)
+-{
+-	const char *searchCriID = searchCri->getValue();
+-	const char *conID = conNode->getID();
+-	if (searchCriID == NULL || conID == NULL)
+-			return false;
+-	if (searchCri->isEQ() == true)
+-		return (strcmp(searchCriID, conID) == 0) ? true : false;
++bool IdSearchCap::compare(SearchCriteria *searchCri, ContentNode *conNode)
++{
++	const char *searchCriID = searchCri->getValue();
++	const char *conID = conNode->getID();
++	if (searchCriID == NULL || conID == NULL)
++			return false;
++	if (searchCri->isEQ() == true)
++		return (strcmp(searchCriID, conID) == 0) ? true : false;
+ 	return false;
+ }
+ 
+diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp CyberLink/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp
+--- CyberLink.orig/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp	1970-01-01 03:14:45.000000000 +0300
++++ CyberLink/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp	2015-01-16 20:31:49.425267061 +0200
+@@ -8,12 +8,13 @@
+ *
+ *	Revision;
+ *
+-*	08/07/04
++*	08/07/04
+ *		- first revision.
+ *
+ ******************************************************************/
+ 
+ #include <string>
++#include <cstring>
+ #include <cybergarage/upnp/media/server/object/ContentNode.h>
+ #include <cybergarage/upnp/media/server/object/search/TitleSearchCap.h>
+ 
+@@ -24,25 +25,25 @@
+ // compare
+ ////////////////////////////////////////////////
+ 
+-bool TitleSearchCap::compare(SearchCriteria *searchCri, ContentNode *conNode)
+-{
+-	const char *searchCriTitle = searchCri->getValue();
+-	const char *conTitle = conNode->getTitle();
+-	if (searchCriTitle == NULL || conTitle == NULL)
+-			return false;
+-	int cmpRet = strcmp(conTitle, searchCriTitle);
+-	if (cmpRet == 0 && (searchCri->isEQ() || searchCri->isLE() || searchCri->isGE()))
+-			return true;
+-	else if (cmpRet < 0 && searchCri->isLT())
+-		return true;
+-	else if (0 < cmpRet && searchCri->isGT())
+-		return true;
+-	string conTitleStr = conTitle;
+-	int idxRet = conTitleStr.find(searchCriTitle);
+-	if (0 <= idxRet && searchCri->isContains())
+-		return true;
+-	else if (searchCri->isDoesNotContain())
+-		return true;
+-	return false;
++bool TitleSearchCap::compare(SearchCriteria *searchCri, ContentNode *conNode)
++{
++	const char *searchCriTitle = searchCri->getValue();
++	const char *conTitle = conNode->getTitle();
++	if (searchCriTitle == NULL || conTitle == NULL)
++			return false;
++	int cmpRet = strcmp(conTitle, searchCriTitle);
++	if (cmpRet == 0 && (searchCri->isEQ() || searchCri->isLE() || searchCri->isGE()))
++			return true;
++	else if (cmpRet < 0 && searchCri->isLT())
++		return true;
++	else if (0 < cmpRet && searchCri->isGT())
++		return true;
++	string conTitleStr = conTitle;
++	int idxRet = conTitleStr.find(searchCriTitle);
++	if (0 <= idxRet && searchCri->isContains())
++		return true;
++	else if (searchCri->isDoesNotContain())
++		return true;
++	return false;
+ }
+ 
+diff -ruN CyberLink.orig/src/cybergarage/upnp/ssdp/SSDP.cpp CyberLink/src/cybergarage/upnp/ssdp/SSDP.cpp
+--- CyberLink.orig/src/cybergarage/upnp/ssdp/SSDP.cpp	1970-01-01 03:14:46.000000000 +0300
++++ CyberLink/src/cybergarage/upnp/ssdp/SSDP.cpp	2015-01-16 20:32:15.321267873 +0200
+@@ -16,6 +16,9 @@
+ #include <string>
+ #include <cybergarage/upnp/ssdp/SSDP.h>
+ 
++#include <cstring>
++#include <cstdlib>
++
+ using namespace std;
+ using namespace CyberLink::SSDP;
+ 
+diff -ruN CyberLink.orig/src/cybergarage/xml/Node.cpp CyberLink/src/cybergarage/xml/Node.cpp
+--- CyberLink.orig/src/cybergarage/xml/Node.cpp	1970-01-01 03:14:46.000000000 +0300
++++ CyberLink/src/cybergarage/xml/Node.cpp	2015-01-16 20:32:35.933268519 +0200
+@@ -23,8 +23,8 @@
+ *	12/16/04
+ *		- Added support not to use ostringstream.
+ *		- Added support not to use cout.
+-*	06/14/05
+-*		- Added addValue().
++*	06/14/05
++*		- Added addValue().
+ *
+ ******************************************************************/
+ 
+@@ -33,6 +33,9 @@
+ 
+ #include <stdio.h>
+ 
++#include <cstring>
++#include <cstdlib>
++
+ using namespace std;
+ using namespace CyberXML;
+ 
+diff -ruN CyberLink.orig/src/cybergarage/xml/XML.cpp CyberLink/src/cybergarage/xml/XML.cpp
+--- CyberLink.orig/src/cybergarage/xml/XML.cpp	1970-01-01 04:02:17.000000000 +0300
++++ CyberLink/src/cybergarage/xml/XML.cpp	2015-01-16 20:32:58.401269223 +0200
+@@ -23,9 +23,9 @@
+ *		- Fixed EscapeXMLChars() to convert from "'" to "&apos;" instead of "\".
+ *	12/16/04
+ *		- Added support for BTRON
+-*	09/06/06
+-*		- Thanks for Smolander Visa <visa.smolander@nokia.com>
+-*		- Changed EscapeXMLChars() to process the '&' character at first for libxml2.
++*	09/06/06
++*		- Thanks for Smolander Visa <visa.smolander@nokia.com>
++*		- Changed EscapeXMLChars() to process the '&' character at first for libxml2.
+ *
+ ******************************************************************/
+ 
+@@ -51,6 +51,7 @@
+ #endif
+ 
+ #include <stdio.h>
++#include <cstdlib>
+ 
+ using namespace std;
+ using namespace CyberXML;
+@@ -66,18 +67,18 @@
+ 
+ const char *CyberXML::XML::EscapeXMLChars(const char *in, std::string &out)
+ {
+-	out = in;
+-	
++	out = in;
++	
+ 	// Thanks for Smolander Visa (09/06/05)
+-	StringReplaceChars(out, "&", "&amp;");
+-
++	StringReplaceChars(out, "&", "&amp;");
++
+ 	StringReplaceChars(out, "<", "&lt;");
+ 	StringReplaceChars(out, ">", "&gt;");
+ 	StringReplaceChars(out, "\"", "&quot;");
+-	
++	
+ 	// Thanks for Brian Owens (12/02/04)
+ 	StringReplaceChars(out, "'", "&apos;");
+-	
++	
+ 	return out.c_str();
+ }
+ 

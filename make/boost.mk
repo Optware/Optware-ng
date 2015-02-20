@@ -27,7 +27,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BOOST_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/boost
-BOOST_VERSION=1_45_0
+BOOST_VERSION ?= 1_45_0
+BOOST_VERSION_DOTTED=$(shell echo $(BOOST_VERSION)|sed s/_/\./g)
 BOOST_SOURCE=boost_$(BOOST_VERSION).tar.gz
 BOOST_DIR=boost_$(BOOST_VERSION)
 BOOST_UNZIP=zcat
@@ -35,21 +36,41 @@ BOOST_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BOOST_DESCRIPTION=Boost is a set of peer-reviewed extensions to the standard C++ library
 BOOST_SECTION=misc
 BOOST_PRIORITY=optional
-BOOST_DEPENDS=
+BOOST_DEPENDS=libstdc++
+BOOST_LOCALE_DEPENDS=$(BOOST_DEPENDS), icu
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+BOOST_LOCALE_DEPENDS+=, libiconv
+endif
 BOOST_SUGGESTS=
 BOOST_CONFLICTS=
+
+BOOST_EXTERNAL_JAM ?= yes
+
 BOOST_JAM=EXPAT_INCLUDE=$(STAGING_INCLUDE_DIR) \
 	EXPAT_LIBPATH=$(STAGING_LIB_DIR)\
+	$(BUILD_DIR)/boost/bjam
+BOOST_JAM_PYTHON26=PYVER=-py26 \
+	$(BUILD_DIR)/boost/bjam
+BOOST_JAM_PYTHON27=PYVER=-py27 \
+	$(BUILD_DIR)/boost/bjam
+BOOST_JAM_PYTHON3=PYVER=-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g') \
 	$(BUILD_DIR)/boost/bjam
 BOOST_JAM_VERSION=3.1.17
 BOOST_JAM_SOURCE=boost-jam-$(BOOST_JAM_VERSION).tgz
 BOOST_JAM_DIR=boost-jam-$(BOOST_JAM_VERSION)
 BOOST_JAM_UNZIP=zcat
 
+BOOST_GCC_CONF ?= tools/build/v2/tools/gcc
+
+BOOST_JAM_ROOT ?= tools/build/v2
+
+BOOST_ADDITIONAL_LIBS ?=
+
+
 #
 # BOOST_IPK_VERSION should be incremented when the ipk changes.
 #
-BOOST_IPK_VERSION=1
+BOOST_IPK_VERSION ?= 1
 
 #
 # BOOST_CONFFILES should be a list of user-editable files
@@ -65,15 +86,49 @@ BOOST_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-BOOST_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.5
-BOOST_LDFLAGS=
+BOOST_CPPFLAGS=
+BOOST_PYTHON26_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.6
+BOOST_PYTHON27_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.7
+BOOST_PYTHON3_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m
+BOOST_LDFLAGS=-lgcc
 BOOST_JAM_ARGS= \
 	-d+2 \
 	toolset=gcc \
 	link=shared \
 	--layout=system \
 	--without-mpi \
-	--without-math
+	--without-math \
+	--without-python \
+	-sICU_PATH=$(STAGING_PREFIX) \
+	--user-config=$(BOOST_BUILD_DIR)/user-config.jam
+BOOST_JAM_PYTHON26_ARGS= \
+	-d+2 \
+	toolset=gcc \
+	link=shared \
+	--layout=system \
+	--with-python \
+	-sBOOST_VERSION=$(BOOST_VERSION_DOTTED)-py2.6 \
+	--user-config=$(BOOST_BUILD_DIR)/user-config-py2.6.jam
+BOOST_JAM_PYTHON27_ARGS= \
+	-d+2 \
+	toolset=gcc \
+	link=shared \
+	--layout=system \
+	--with-python \
+	-sBOOST_VERSION=$(BOOST_VERSION_DOTTED)-py2.7 \
+	--user-config=$(BOOST_BUILD_DIR)/user-config-py2.7.jam
+BOOST_JAM_PYTHON3_ARGS= \
+	-d+2 \
+	toolset=gcc \
+	link=shared \
+	--layout=system \
+	--with-python \
+	-sBOOST_VERSION=$(BOOST_VERSION_DOTTED)-py$(PYTHON3_VERSION_MAJOR) \
+	--user-config=$(BOOST_BUILD_DIR)/user-config-py$(PYTHON3_VERSION_MAJOR).jam
+
+ifeq ($(LIBC_STYLE),uclibc)
+	BOOST_JAM_ARGS += boost.locale.posix=off define=BOOST_LOG_NO_THREADS
+endif
 
 #
 # BOOST_BUILD_DIR is the directory in which the build is done.
@@ -108,8 +163,14 @@ BOOST_IOSTREAMS_IPK=$(BUILD_DIR)/boost-iostreams_$(BOOST_VERSION)-$(BOOST_IPK_VE
 BOOST_PROGRAM_OPTIONS_IPK_DIR=$(BUILD_DIR)/boost-program-options-$(BOOST_VERSION)-ipk
 BOOST_PROGRAM_OPTIONS_IPK=$(BUILD_DIR)/boost-program-options_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-BOOST_PYTHON_IPK_DIR=$(BUILD_DIR)/boost-python-$(BOOST_VERSION)-ipk
-BOOST_PYTHON_IPK=$(BUILD_DIR)/boost-python_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BOOST_PYTHON26_IPK_DIR=$(BUILD_DIR)/boost-python26-$(BOOST_VERSION)-ipk
+BOOST_PYTHON26_IPK=$(BUILD_DIR)/boost-python26_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_PYTHON27_IPK_DIR=$(BUILD_DIR)/boost-python27-$(BOOST_VERSION)-ipk
+BOOST_PYTHON27_IPK=$(BUILD_DIR)/boost-python27_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_PYTHON3_IPK_DIR=$(BUILD_DIR)/boost-python3-$(BOOST_VERSION)-ipk
+BOOST_PYTHON3_IPK=$(BUILD_DIR)/boost-python3_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_RANDOM_IPK_DIR=$(BUILD_DIR)/boost-random-$(BOOST_VERSION)-ipk
 BOOST_RANDOM_IPK=$(BUILD_DIR)/boost-random_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -135,6 +196,35 @@ BOOST_THREAD_IPK=$(BUILD_DIR)/boost-thread_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)
 BOOST_WAVE_IPK_DIR=$(BUILD_DIR)/boost-wave-$(BOOST_VERSION)-ipk
 BOOST_WAVE_IPK=$(BUILD_DIR)/boost-wave_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+### additional libs that can be built starting from certain boost version
+
+BOOST_ATOMIC_IPK_DIR=$(BUILD_DIR)/boost-atomic-$(BOOST_VERSION)-ipk
+BOOST_ATOMIC_IPK=$(BUILD_DIR)/boost-atomic_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_CHRONO_IPK_DIR=$(BUILD_DIR)/boost-chrono-$(BOOST_VERSION)-ipk
+BOOST_CHRONO_IPK=$(BUILD_DIR)/boost-chrono_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_CONTAINER_IPK_DIR=$(BUILD_DIR)/boost-container-$(BOOST_VERSION)-ipk
+BOOST_CONTAINER_IPK=$(BUILD_DIR)/boost-container_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_CONTEXT_IPK_DIR=$(BUILD_DIR)/boost-context-$(BOOST_VERSION)-ipk
+BOOST_CONTEXT_IPK=$(BUILD_DIR)/boost-context_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_COROUTINE_IPK_DIR=$(BUILD_DIR)/boost-coroutine-$(BOOST_VERSION)-ipk
+BOOST_COROUTINE_IPK=$(BUILD_DIR)/boost-coroutine_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_LOCALE_IPK_DIR=$(BUILD_DIR)/boost-locale-$(BOOST_VERSION)-ipk
+BOOST_LOCALE_IPK=$(BUILD_DIR)/boost-locale_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_LOG_IPK_DIR=$(BUILD_DIR)/boost-log-$(BOOST_VERSION)-ipk
+BOOST_LOG_IPK=$(BUILD_DIR)/boost-log_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_TIMER_IPK_DIR=$(BUILD_DIR)/boost-timer-$(BOOST_VERSION)-ipk
+BOOST_TIMER_IPK=$(BUILD_DIR)/boost-timer_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+BOOST_EXCEPTION_IPK_DIR=$(BUILD_DIR)/boost-exception-$(BOOST_VERSION)-ipk
+BOOST_EXCEPTION_IPK=$(BUILD_DIR)/boost-exception-dev_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 BOOST_IPK_DIRS= \
 	$(BOOST_DEV_IPK_DIR) \
 	$(BOOST_DATE_TIME_IPK_DIR) \
@@ -142,7 +232,6 @@ BOOST_IPK_DIRS= \
 	$(BOOST_GRAPH_IPK_DIR) \
 	$(BOOST_IOSTREAMS_IPK_DIR) \
 	$(BOOST_PROGRAM_OPTIONS_IPK_DIR) \
-	$(BOOST_PYTHON_IPK_DIR) \
 	$(BOOST_RANDOM_IPK_DIR) \
 	$(BOOST_REGEX_IPK_DIR) \
 	$(BOOST_SERIALIZATION_IPK_DIR) \
@@ -150,7 +239,15 @@ BOOST_IPK_DIRS= \
 	$(BOOST_SYSTEM_IPK_DIR) \
 	$(BOOST_THREAD_IPK_DIR) \
 	$(BOOST_TEST_IPK_DIR) \
-	$(BOOST_WAVE_IPK_DIR)
+	$(BOOST_WAVE_IPK_DIR) \
+	$(BOOST_ATOMIC_IPK_DIR) \
+	$(BOOST_CHRONO_IPK_DIR) \
+	$(BOOST_CONTAINER_IPK_DIR) \
+	$(BOOST_CONTEXT_IPK_DIR) \
+	$(BOOST_COROUTINE_IPK_DIR) \
+	$(BOOST_LOCALE_IPK_DIR) \
+	$(BOOST_LOG_IPK_DIR) \
+	$(BOOST_TIMER_IPK_DIR)
 
 BOOST_LIB_IPKS= \
 	$(BOOST_DATE_TIME_IPK) \
@@ -158,7 +255,9 @@ BOOST_LIB_IPKS= \
 	$(BOOST_GRAPH_IPK) \
 	$(BOOST_IOSTREAMS_IPK) \
 	$(BOOST_PROGRAM_OPTIONS_IPK) \
-	$(BOOST_PYTHON_IPK) \
+	$(BOOST_PYTHON26_IPK) \
+	$(BOOST_PYTHON27_IPK) \
+	$(BOOST_PYTHON3_IPK) \
 	$(BOOST_RANDOM_IPK) \
 	$(BOOST_REGEX_IPK) \
 	$(BOOST_SIGNALS_IPK) \
@@ -205,9 +304,12 @@ boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PA
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PATCHES) make/boost.mk
-	$(MAKE) bzip2-stage python25-stage expat-stage
-	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(@D)
+$(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PATCHES)
+	$(MAKE) bzip2-stage expat-stage icu-stage libstdc++-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
+	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(BOOST_IPK_DIRS) $(BOOST_PYTHON26_IPK_DIR) $(BOOST_PYTHON27_IPK_DIR) $(BOOST_PYTHON3_IPK_DIR) $(@D)
 	rm -rf $(STAGING_INCLUDE_DIR)/boost $(STAGING_LIB_DIR)/libboost*
 	$(BOOST_UNZIP) $(DL_DIR)/$(BOOST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BOOST_PATCHES)" ; \
@@ -217,14 +319,28 @@ $(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_
 	if test "$(BUILD_DIR)/$(BOOST_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BOOST_DIR) $(@D) ; \
 	fi
+ifeq ($(BOOST_EXTERNAL_JAM),yes)
 	$(BOOST_JAM_UNZIP) $(DL_DIR)/$(BOOST_JAM_SOURCE) | tar -C $(@D) -xvf -
 	(cd $(@D)/$(BOOST_JAM_DIR); \
 		./build.sh; \
 		cp bin.*/bjam $(@D) \
 	)
-	sed -i -e 's|: ar :|: $(TARGET_AR) :|' $(@D)/tools/build/v2/tools/gcc.jam
-	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/tools/build/v2/user-config.jam
-	echo 'using python : : $(STAGING_DIR)/bin/python ;' >> $(@D)/tools/build/v2/user-config.jam
+else
+	(cd $(@D)/$(BOOST_JAM_ROOT); \
+		./bootstrap.sh; \
+		cp bjam $(@D) \
+	)
+endif
+	sed -i -e 's|: ar :|: $(TARGET_AR) :|' -e 's/-Wl,\$$(RPATH_OPTION:E=-R)\$$(SPACE)-Wl,\$$(RPATH)//' $(@D)/$(BOOST_GCC_CONF).jam
+	sed -i -e 's/-Wl,\$$(RPATH_OPTION:E=-R)\$$(SPACE)-Wl,"\$$(RPATH)" //' $(@D)/$(BOOST_GCC_CONF).py
+
+	### add PYVER env variable to libboost_python soname, e.g.: libboost_python.so.1.45.0 --> libboost_python${PYVER}.so.1.45.0
+	sed -i -e 's;\$$(SONAME_OPTION)\$$(SPACE)-Wl,\$$(<\[-1\]:D=);\$$(SONAME_OPTION)\$$(SPACE)-Wl,`echo \$$(<\[-1\]:D=)|sed s/python/python\$${PYVER}/`;' $(@D)/$(BOOST_GCC_CONF).jam
+	### set compilation and linking flags
+	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/user-config.jam
+	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_PYTHON26_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_PYTHON26_LDFLAGS)" ;' > $(@D)/user-config-py2.6.jam
+	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_PYTHON27_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_PYTHON27_LDFLAGS)" ;' > $(@D)/user-config-py2.7.jam
+	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_PYTHON3_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_PYTHON3_LDFLAGS)" ;' > $(@D)/user-config-py$(PYTHON3_VERSION_MAJOR).jam
 ifeq ($(LIBC_STYLE),uclibc)
 	###uclibc portability issue
 	sed -i -e "s/get_nprocs()/1/" $(@D)/libs/thread/src/pthread/thread.cpp
@@ -254,24 +370,55 @@ boost-unpack: $(BOOST_BUILD_DIR)/.configured
 #
 # This builds the actual binary.
 #
-$(BOOST_BUILD_DIR)/.built: $(BOOST_BUILD_DIR)/.configured
+$(BOOST_BUILD_DIR)/.mainbuilt: $(BOOST_BUILD_DIR)/.configured
 	rm -f $@
-	###We need this 'exit 0' trick cause building serialization can give '#error "wide char i/o not supported on this platform"', which means no libboost_wserialization*, and yet build libboost_serialization* fine.
-	(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) $(BOOST_JAM_ARGS); exit 0)
+	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/user-config.jam
+	### building serialization can give '#error "wide char i/o not supported on this platform"', which means no libboost_wserialization*, and yet build libboost_serialization* fine.
+	-cd $(@D); $(BOOST_JAM) $(BOOST_JAM_ARGS)
+	touch $@
+
+$(BOOST_BUILD_DIR)/.py26built: $(BOOST_BUILD_DIR)/.configured
+	rm -f $@
+	rm -rf $(@D)/bin.v2/libs/python
+	(cd $(@D); $(BOOST_JAM_PYTHON26) $(BOOST_JAM_PYTHON26_ARGS))
+	mv $(@D)/stage/lib/libboost_python.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED)
+	rm -f $(@D)/stage/lib/libboost_python-py26.so
+	ln -s libboost_python-py26.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py26.so
+	rm -f $(@D)/stage/lib/libboost_python.so
+	touch $@
+
+$(BOOST_BUILD_DIR)/.py27built: $(BOOST_BUILD_DIR)/.configured
+	rm -f $@
+	rm -rf $(@D)/bin.v2/libs/python
+	(cd $(@D); $(BOOST_JAM_PYTHON27) $(BOOST_JAM_PYTHON27_ARGS))
+	mv $(@D)/stage/lib/libboost_python.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py27.so.$(BOOST_VERSION_DOTTED)
+	rm -f $(@D)/stage/lib/libboost_python-py27.so
+	ln -s libboost_python-py27.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py27.so
+	rm -f $(@D)/stage/lib/libboost_python.so
+	touch $@
+
+$(BOOST_BUILD_DIR)/.py3built: $(BOOST_BUILD_DIR)/.configured
+	rm -f $@
+	rm -rf $(@D)/bin.v2/libs/python
+	(cd $(@D); $(BOOST_JAM_PYTHON3) $(BOOST_JAM_PYTHON3_ARGS))
+	mv -f $(@D)/stage/lib/libboost_python.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED)
+	rm -f $(@D)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so
+	ln -s libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so
+	rm -f $(@D)/stage/lib/libboost_python.so
 	touch $@
 
 #
 # This is the build convenience target.
 #
-boost: $(BOOST_BUILD_DIR)/.built
+boost: $(BOOST_BUILD_DIR)/.mainbuilt $(BOOST_BUILD_DIR)/.py26built $(BOOST_BUILD_DIR)/.py27built $(BOOST_BUILD_DIR)/.py3built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(BOOST_BUILD_DIR)/.staged: $(BOOST_BUILD_DIR)/.configured
-	rm -f $@
-	(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(STAGING_PREFIX); exit 0)
-	touch $(BOOST_BUILD_DIR)/.built
+$(BOOST_BUILD_DIR)/.staged: $(BOOST_BUILD_DIR)/.mainbuilt $(BOOST_BUILD_DIR)/.py26built $(BOOST_BUILD_DIR)/.py27built $(BOOST_BUILD_DIR)/.py3built
+	rm -f $@ $(STAGING_LIB_DIR)/libboost_*
+	-cd $(@D); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(STAGING_PREFIX)
+	cp -f $(@D)/stage/lib/libboost_python-py*.so* $(STAGING_LIB_DIR)
 	touch $@
 
 boost-stage: $(BOOST_BUILD_DIR)/.staged
@@ -307,7 +454,7 @@ $(BOOST_DATE_TIME_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -322,7 +469,7 @@ $(BOOST_FILESYSTEM_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -337,7 +484,7 @@ $(BOOST_GRAPH_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends: expat" >>$@
+	@echo "Depends: $(BOOST_DEPENDS), expat" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -352,7 +499,7 @@ $(BOOST_IOSTREAMS_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends: bzip2" >>$@
+	@echo "Depends: $(BOOST_DEPENDS), bzip2" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -367,14 +514,14 @@ $(BOOST_PROGRAM_OPTIONS_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
-$(BOOST_PYTHON_IPK_DIR)/CONTROL/control:
+$(BOOST_PYTHON26_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: boost-python" >>$@
+	@echo "Package: boost-python26" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(BOOST_PRIORITY)" >>$@
 	@echo "Section: $(BOOST_SECTION)" >>$@
@@ -382,7 +529,37 @@ $(BOOST_PYTHON_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends: python" >>$@
+	@echo "Depends: $(BOOST_DEPENDS), python26" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_PYTHON27_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-python27" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_DEPENDS), python27" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_PYTHON3_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-python3" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_DEPENDS), python3" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -397,7 +574,7 @@ $(BOOST_RANDOM_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -412,7 +589,7 @@ $(BOOST_REGEX_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -427,7 +604,7 @@ $(BOOST_SERIALIZATION_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -442,7 +619,7 @@ $(BOOST_SIGNALS_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -457,7 +634,7 @@ $(BOOST_SYSTEM_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -472,7 +649,7 @@ $(BOOST_TEST_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -487,7 +664,7 @@ $(BOOST_THREAD_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -502,7 +679,144 @@ $(BOOST_WAVE_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
 	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
 	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+### additional libs that can be built starting from certain boost version
+
+$(BOOST_ATOMIC_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-atomic" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_CHRONO_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-chrono" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_CONTAINER_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-container" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_CONTEXT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-context" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_COROUTINE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-coroutine" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_LOCALE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-locale" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_LOCALE_DEPENDS)" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_LOG_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-log" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_TIMER_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-timer" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION)" >>$@
+	@echo "Depends: $(BOOST_DEPENDS)" >>$@
+	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
+
+$(BOOST_EXCEPTION_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: boost-exception-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BOOST_PRIORITY)" >>$@
+	@echo "Section: $(BOOST_SECTION)" >>$@
+	@echo "Version: $(BOOST_VERSION)-$(BOOST_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BOOST_MAINTAINER)" >>$@
+	@echo "Source: $(BOOST_SITE)/$(BOOST_SOURCE)" >>$@
+	@echo "Description: $(BOOST_DESCRIPTION). This is a static library for native development only" >>$@
+	@echo "Depends:  $(BOOST_DEPENDS), boost-dev" >>$@
 	@echo "Suggests: $(BOOST_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
@@ -518,10 +832,40 @@ $(BOOST_WAVE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.configured
+$(BOOST_PYTHON26_IPK): $(BOOST_BUILD_DIR)/.py26built
+	### now make boost-python-py26
+	rm -rf $(BOOST_PYTHON26_IPK_DIR)
+	$(MAKE) $(BOOST_PYTHON26_IPK_DIR)/CONTROL/control
+	mkdir -p $(BOOST_PYTHON26_IPK_DIR)/opt/lib
+	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON26_IPK_DIR)/opt/lib
+	ln -s libboost_python-py26.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON26_IPK_DIR)/opt/lib/libboost_python-py26.so
+	$(STRIP_COMMAND) $(BOOST_PYTHON26_IPK_DIR)/opt/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON26_IPK_DIR)
+
+$(BOOST_PYTHON27_IPK): $(BOOST_BUILD_DIR)/.py27built
+	rm -rf $(BOOST_PYTHON27_IPK_DIR)
+	### now make boost-python-py27
+	$(MAKE) $(BOOST_PYTHON27_IPK_DIR)/CONTROL/control
+	mkdir -p $(BOOST_PYTHON27_IPK_DIR)/opt/lib
+	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py27.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON27_IPK_DIR)/opt/lib
+	ln -s libboost_python-py27.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON27_IPK_DIR)/opt/lib/libboost_python-py27.so
+	$(STRIP_COMMAND) $(BOOST_PYTHON27_IPK_DIR)/opt/lib/libboost_python-py27.so.$(BOOST_VERSION_DOTTED)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON27_IPK_DIR)
+
+$(BOOST_PYTHON3_IPK): $(BOOST_BUILD_DIR)/.py3built
+	rm -rf $(BOOST_PYTHON3_IPK_DIR)
+	### now make boost-python-py3
+	$(MAKE) $(BOOST_PYTHON3_IPK_DIR)/CONTROL/control
+	mkdir -p $(BOOST_PYTHON3_IPK_DIR)/opt/lib
+	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON3_IPK_DIR)/opt/lib
+	ln -s libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON3_IPK_DIR)/opt/lib/libboost_python-py$(shell \
+																echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so
+	$(STRIP_COMMAND) $(BOOST_PYTHON3_IPK_DIR)/opt/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON3_IPK_DIR)
+
+$(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.mainbuilt
 	rm -rf $(BOOST_IPK_DIRS) $(BUILD_DIR)/boost*_$(TARGET_ARCH).ipk
-	(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(BOOST_DEV_IPK_DIR)/opt; exit 0)
-	touch $(BOOST_BUILD_DIR)/.built
+	-(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --without-python --prefix=$(BOOST_DEV_IPK_DIR)/opt)
 	$(STRIP_COMMAND) $(BOOST_DEV_IPK_DIR)/opt/lib/*.so*
 	### now make boost-date_time
 	$(MAKE) $(BOOST_DATE_TIME_IPK_DIR)/CONTROL/control
@@ -548,11 +892,6 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.configured
 	mkdir -p $(BOOST_PROGRAM_OPTIONS_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*program_options* $(BOOST_PROGRAM_OPTIONS_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PROGRAM_OPTIONS_IPK_DIR)
-	### now make boost-python
-	$(MAKE) $(BOOST_PYTHON_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_PYTHON_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*python* $(BOOST_PYTHON_IPK_DIR)/opt/lib
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON_IPK_DIR)
 	### now make boost-random
 	$(MAKE) $(BOOST_RANDOM_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_RANDOM_IPK_DIR)/opt/lib
@@ -598,6 +937,15 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.configured
 		mv $(BOOST_DEV_IPK_DIR)/opt/lib/*wave* $(BOOST_WAVE_IPK_DIR)/opt/lib; \
 		cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_WAVE_IPK_DIR); \
 	fi
+ifneq ($(BOOST_ADDITIONAL_LIBS),)
+	### make additional libs
+	for lib in $(BOOST_ADDITIONAL_LIBS); do \
+		$(MAKE) $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/CONTROL/control; \
+		mkdir -p $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/opt/lib; \
+		mv $(BOOST_DEV_IPK_DIR)/opt/lib/libboost_$${lib}* $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/opt/lib; \
+		(cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk); \
+	done
+endif
 	### finally boost-dev
 	$(MAKE) $(BOOST_DEV_IPK_DIR)/CONTROL/control
 	rm -rf $(BOOST_DEV_IPK_DIR)/opt/lib
@@ -606,7 +954,7 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.configured
 #
 # This is called from the top level makefile to create the IPK file.
 #
-boost-ipk: $(BOOST_DEV_IPK)
+boost-ipk: $(BOOST_DEV_IPK) $(BOOST_PYTHON26_IPK) $(BOOST_PYTHON27_IPK) $(BOOST_PYTHON3_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -620,12 +968,12 @@ boost-clean:
 # directories.
 #
 boost-dirclean:
-	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(BOOST_BUILD_DIR) $(BOOST_IPK_DIRS) $(BUILD_DIR)/boost*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(BOOST_BUILD_DIR) $(BOOST_IPK_DIRS) $(BOOST_PYTHON26_IPK_DIR) $(BOOST_PYTHON27_IPK_DIR) $(BOOST_PYTHON3_IPK_DIR) $(BUILD_DIR)/boost*_$(TARGET_ARCH).ipk
 #
 #
 # Some sanity check for the package.
 #
-boost-check: $(BOOST_DEV_IPK)
+boost-check: $(BOOST_DEV_IPK) $(BOOST_PYTHON26_IPK) $(BOOST_PYTHON27_IPK) $(BOOST_PYTHON3_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_LIB_IPKS)
 	if ls $(BOOST_WAVE_IPK) > /dev/null 2>&1; then \
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_WAVE_IPK); \
@@ -633,3 +981,11 @@ boost-check: $(BOOST_DEV_IPK)
 	if ls $(BOOST_SERIALIZATION_IPK) > /dev/null 2>&1; then \
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_SERIALIZATION_IPK); \
 	fi
+ifneq ($(BOOST_ADDITIONAL_LIBS),)
+	for lib in $(filter-out exception, $(BOOST_ADDITIONAL_LIBS)); do \
+		perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BUILD_DIR)/boost-$${lib}_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk; \
+	done
+ifeq (exception, $(filter exception, $(BOOST_ADDITIONAL_LIBS)))
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_EXCEPTION_IPK)
+endif
+endif

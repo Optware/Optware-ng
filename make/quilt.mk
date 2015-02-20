@@ -125,6 +125,7 @@ $(QUILT_BUILD_DIR)/.configured: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES) make/
 		-e '/@PERL/s|$$(PERL)|/opt/bin/perl|' \
 		-e '/@PATCH/s|$$(PATCH)|/opt/bin/patch|' \
 		$(@D)/Makefile.in
+	sed -i -e 's|patch_version=\$$2|patch_version=$(shell patch --version|head -n 1|sed 's/.* //')|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(QUILT_CPPFLAGS)" \

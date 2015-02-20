@@ -4,8 +4,14 @@
 #
 ###########################################################
 
-MOTION_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/motion
+MOTION_SVN=http://www.lavrsen.dk/svn/motion/trunk
+MOTION_SVN_REVISION=000564
+ifdef MOTION_SVN
+MOTION_VERSION=3.2.12+svn$(MOTION_SVN_REVISION)
+else
 MOTION_VERSION=3.2.12
+endif
+MOTION_SITE=http://sourceforge.net/projects/motion/files/motion%20-%20$(shell echo $(MOTION_VERSION)|cut -d '.' -f 1-2)
 MOTION_SOURCE=motion-$(MOTION_VERSION).tar.gz
 MOTION_DIR=motion-$(MOTION_VERSION)
 MOTION_UNZIP=zcat
@@ -24,7 +30,7 @@ MOTION_CONFLICTS=
 #
 # MOTION_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTION_IPK_VERSION=2
+MOTION_IPK_VERSION=1
 
 #
 # MOTION_CONFFILES should be a list of user-editable files
@@ -66,8 +72,17 @@ MOTION_IPK=$(BUILD_DIR)/motion_$(MOTION_VERSION)-$(MOTION_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MOTION_SOURCE):
+ifdef MOTION_SVN
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(MOTION_DIR) && \
+		svn co -r $(MOTION_SVN_REVISION) $(MOTION_SVN) $(MOTION_DIR) && \
+		tar -czf $@ $(MOTION_DIR) --exclude .svn && \
+		rm -rf $(MOTION_DIR) \
+	)
+else
 	$(WGET) -P $(@D) $(MOTION_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -144,7 +159,11 @@ $(MOTION_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(MOTION_SECTION)" >>$@
 	@echo "Version: $(MOTION_VERSION)-$(MOTION_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(MOTION_MAINTAINER)" >>$@
+ifdef MOTION_SVN
+	@echo "Source: $(MOTION_SVN)" >>$@
+else
 	@echo "Source: $(MOTION_SITE)/$(MOTION_SOURCE)" >>$@
+endif
 	@echo "Description: $(MOTION_DESCRIPTION)" >>$@
 	@echo "Depends: $(MOTION_DEPENDS)" >>$@
 	@echo "Suggests: $(MOTION_SUGGESTS)" >>$@

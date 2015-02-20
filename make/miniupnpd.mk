@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MINIUPNPD_SITE=http://miniupnp.free.fr/files
-MINIUPNPD_VERSION=1.4.20100921
+MINIUPNPD_VERSION=1.9.20141209
 MINIUPNPD_SOURCE=miniupnpd-$(MINIUPNPD_VERSION).tar.gz
 MINIUPNPD_DIR=miniupnpd-$(MINIUPNPD_VERSION)
 MINIUPNPD_UNZIP=zcat
@@ -35,7 +35,7 @@ MINIUPNPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MINIUPNPD_DESCRIPTION=A lightweight uPNP and NAT-PMP daemon
 MINIUPNPD_SECTION=net
 MINIUPNPD_PRIORITY=optional
-MINIUPNPD_DEPENDS=iptables
+MINIUPNPD_DEPENDS=iptables, openssl, start-stop-daemon
 MINIUPNPD_CONFLICTS=
 
 #
@@ -46,7 +46,7 @@ MINIUPNPD_IPK_VERSION=1
 #
 # MINIUPNPD_CONFFILES should be a list of user-editable files
 #
-MINIUPNPD_CONFFILES=/opt/etc/miniupnpd/minupnpd.conf 
+MINIUPNPD_CONFFILES=/opt/etc/miniupnpd/minupnpd.conf /opt/etc/init.d/miniupnpd
 
 #
 # MINIUPNPD_PATCHES should list any patches, in the the order in
@@ -112,7 +112,7 @@ miniupnpd-source: $(DL_DIR)/$(MINIUPNPD_SOURCE) $(MINIUPNPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(MINIUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINIUPNPD_SOURCE) $(MINIUPNPD_PATCHES) make/miniupnpd.mk
-	$(MAKE) iptables-stage
+	$(MAKE) iptables-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(MINIUPNPD_DIR) $(MINIUPNPD_BUILD_DIR)
 	$(MINIUPNPD_UNZIP) $(DL_DIR)/$(MINIUPNPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINIUPNPD_PATCHES)" ; \
@@ -136,6 +136,9 @@ $(MINIUPNPD_BUILD_DIR)/.built: $(MINIUPNPD_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIUPNPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIUPNPD_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		PREFIX=/opt \
 		$(MAKE) -f Makefile.optware all \
 	)
 	touch $@
@@ -186,9 +189,8 @@ $(MINIUPNPD_IPK_DIR)/CONTROL/control:
 #
 $(MINIUPNPD_IPK): $(MINIUPNPD_BUILD_DIR)/.built
 	rm -rf $(MINIUPNPD_IPK_DIR) $(BUILD_DIR)/miniupnpd_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MINIUPNPD_BUILD_DIR) -f Makefile.optware DESTDIR=$(MINIUPNPD_IPK_DIR) install
+	$(MAKE) -C $(MINIUPNPD_BUILD_DIR) -f Makefile.optware STRIP="$(STRIP_COMMAND)" PREFIX=/opt DESTDIR=$(MINIUPNPD_IPK_DIR) install
 	rm -f $(MINIUPNPD_IPK_DIR)/opt/info/dir $(MINIUPNPD_IPK_DIR)/opt/info/dir.old
-	$(STRIP_COMMAND) $(MINIUPNPD_IPK_DIR)/opt/sbin/miniupnpd
 	$(MAKE) $(MINIUPNPD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIUPNPD_IPK_DIR)
 
@@ -202,7 +204,7 @@ miniupnpd-ipk: $(MINIUPNPD_IPK)
 #
 miniupnpd-clean:
 	rm -f $(MINIUPNPD_BUILD_DIR)/.built
-	-$(MAKE) -C $(MINIUPNPD_BUILD_DIR) clean
+	-$(MAKE) -C $(MINIUPNPD_BUILD_DIR) -f Makefile.optware clean
 
 #
 # This is called from the top level makefile to clean all dynamically created

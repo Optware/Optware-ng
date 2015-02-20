@@ -108,16 +108,16 @@ sablevm-source: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES)
 #
 $(SABLEVM_BUILD_DIR)/.configured: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES) # make/sablevm.mk
 	$(MAKE) libtool-stage
-	rm -rf $(BUILD_DIR)/$(SABLEVM_DIR) $(SABLEVM_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SABLEVM_DIR) $(@D)
 	$(SABLEVM_UNZIP) $(DL_DIR)/$(SABLEVM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SABLEVM_PATCHES)" ; \
 		then cat $(SABLEVM_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SABLEVM_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SABLEVM_DIR)" != "$(SABLEVM_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SABLEVM_DIR) $(SABLEVM_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SABLEVM_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SABLEVM_DIR) $(@D) ; \
 	fi
-	(cd $(SABLEVM_BUILD_DIR)/sablevm; \
+	(cd $(@D)/sablevm; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SABLEVM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SABLEVM_LDFLAGS)" \
@@ -130,7 +130,11 @@ $(SABLEVM_BUILD_DIR)/.configured: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	(cd $(SABLEVM_BUILD_DIR)/sablevm-classpath; \
+#	due to some odd bug configure fails to find javac,
+#	so force it to use gcj
+#	(make sure it is installed, e.g., sudo apt-get install gcj-jdk)
+	sed -i -e 's|\$${GCJ}|$(shell which gcj)|g' $(@D)/sablevm-classpath/configure
+	(cd $(@D)/sablevm-classpath; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SABLEVM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SABLEVM_LDFLAGS)" \
@@ -142,11 +146,12 @@ $(SABLEVM_BUILD_DIR)/.configured: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES)
 		--disable-gtk-peer \
 		--disable-qt-peer \
 		--without-x \
+		--with-ecj \
 		--disable-nls \
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(SABLEVM_BUILD_DIR)/libtool
-	touch $(SABLEVM_BUILD_DIR)/.configured
+	touch $@
 
 sablevm-unpack: $(SABLEVM_BUILD_DIR)/.configured
 
@@ -154,10 +159,10 @@ sablevm-unpack: $(SABLEVM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SABLEVM_BUILD_DIR)/.built: $(SABLEVM_BUILD_DIR)/.configured
-	rm -f $(SABLEVM_BUILD_DIR)/.built
-	$(MAKE) -C $(SABLEVM_BUILD_DIR)/sablevm
-	$(MAKE) -C $(SABLEVM_BUILD_DIR)/sablevm-classpath
-	touch $(SABLEVM_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)/sablevm
+	$(MAKE) -C $(@D)/sablevm-classpath
+	touch $@
 
 #
 # This is the build convenience target.
@@ -168,9 +173,9 @@ sablevm: $(SABLEVM_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SABLEVM_BUILD_DIR)/.staged: $(SABLEVM_BUILD_DIR)/.built
-	rm -f $(SABLEVM_BUILD_DIR)/.staged
-	$(MAKE) -C $(SABLEVM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SABLEVM_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 sablevm-stage: $(SABLEVM_BUILD_DIR)/.staged
 
@@ -179,7 +184,7 @@ sablevm-stage: $(SABLEVM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sablevm
 #
 $(SABLEVM_IPK_DIR)/CONTROL/control:
-	@install -d $(SABLEVM_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: sablevm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -243,3 +248,9 @@ sablevm-clean:
 #
 sablevm-dirclean:
 	rm -rf $(BUILD_DIR)/$(SABLEVM_DIR) $(SABLEVM_BUILD_DIR) $(SABLEVM_IPK_DIR) $(SABLEVM_IPK)
+
+#
+# Some sanity check for the package.
+#
+sablevm-check: $(SABLEVM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

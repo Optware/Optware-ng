@@ -20,21 +20,22 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-#MPD_SITE=http://www.musicpd.org/uploads/files
-MPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
+MPD_SITE=http://www.musicpd.org/download/mpd/$(shell echo $(MPD_VERSION)|cut -d '.' -f 1-2)
+#MPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
-MPD_VERSION=0.15.15
-MPD_SOURCE=mpd-$(MPD_VERSION).tar.bz2
+MPD_VERSION=0.17.6
+MPD_SOURCE=mpd-$(MPD_VERSION).tar.xz
 MPD_DIR=mpd-$(MPD_VERSION)
-MPD_UNZIP=bzcat
+MPD_UNZIP=xzcat
 MPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPD_DESCRIPTION=Music Player Daemon (MPD) allows remote access for playing music.
 MPD_SECTION=audio
 MPD_PRIORITY=optional
-MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, glib, lame, libao, libcurl
-MPD_DEPENDS+=, libid3tag, libmad, libmms, libmpcdec, libshout, wavpack
+MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, glib, lame, libao, libcurl, icu
+MPD_DEPENDS+=, libid3tag, libmad, libmms, libmpcdec, libshout, wavpack, audiofile
 MPD_DEPENDS+=, psmisc
+MPD_DEPENDS+=, zlib, expat
 ifneq (, $(filter i686, $(TARGET_ARCH)))
 MPD_DEPENDS+=, libsamplerate, libvorbis
 else
@@ -49,7 +50,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=2
+MPD_IPK_VERSION=1
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -67,6 +68,9 @@ MPD_IPK_VERSION=2
 #
 MPD_CPPFLAGS=
 MPD_LDFLAGS=
+ifneq ($(FFMPEG_OLD), yes)
+MPD_CPPFLAGS += -DAVCODEC_MAX_AUDIO_FRAME_SIZE=192000
+endif
 
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 MPD_CONFIGURE_OPTIONS=--with-zeroconf=avahi
@@ -149,7 +153,7 @@ ifeq (avahi, $(filter avahi, $(PACKAGES)))
 	$(MAKE) avahi-stage
 endif
 	$(MAKE) faad2-stage ffmpeg-stage flac-stage lame-stage
-	$(MAKE) glib-stage libcurl-stage libmms-stage
+	$(MAKE) glib-stage libcurl-stage libmms-stage icu-stage
 	$(MAKE) audiofile-stage libao-stage libid3tag-stage
 	$(MAKE) libmad-stage libmpcdec-stage libshout-stage
 ifneq (, $(filter i686, $(TARGET_ARCH)))
@@ -157,7 +161,8 @@ ifneq (, $(filter i686, $(TARGET_ARCH)))
 else
 	$(MAKE) libvorbisidec-stage
 endif
-	$(MAKE) wavpack-stage
+	$(MAKE) wavpack-stage audiofile-stage
+	$(MAKE) expat-stage
 	rm -rf $(BUILD_DIR)/$(MPD_DIR) $(MPD_BUILD_DIR)
 	$(MPD_UNZIP) $(DL_DIR)/$(MPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPD_PATCHES)" ; \
@@ -173,7 +178,15 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPD_LDFLAGS)" \
 		PKG_CONFIG_LIBDIR=$(STAGING_LIB_DIR)/pkgconfig \
-		SHOUT_LIBS="-lshout -lspeex" \
+		SHOUT_LIBS="$(STAGING_LDFLAGS) -lshout -lspeex" \
+		ICU_CFLAGS="$(STAGING_CPPFLAGS)" \
+		ICU_LIBS="$(STAGING_LDFLAGS) -licuuc -licui18n" \
+		ZLIB_CFLAGS="$(STAGING_CPPFLAGS)" \
+		ZLIB_LIBS="$(STAGING_LDFLAGS) -lz" \
+		EXPAT_CFLAGS="$(STAGING_CPPFLAGS)" \
+		EXPAT_LIBS="$(STAGING_LDFLAGS) -lexpat" \
+		AUDIOFILE_CFLAGS="$(STAGING_CPPFLAGS)" \
+		AUDIOFILE_LIBS="$(STAGING_LDFLAGS) -laudiofile" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -192,6 +205,7 @@ endif
 		--enable-mms \
 		--enable-mpc \
 		--enable-wavpack \
+		--enable-expat \
 		$(MPD_CONFIGURE_OPTIONS) \
 		\
 		--with-faad=$(STAGING_PREFIX) \

@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_SITE=http://www.apache.org/dist/apr
-APR_VERSION=1.4.6
+APR_VERSION=1.5.1
 APR_SOURCE=apr-$(APR_VERSION).tar.bz2
 APR_DIR=apr-$(APR_VERSION)
 APR_UNZIP=bzcat
@@ -61,11 +61,13 @@ APR_LDFLAGS=-lpthread
 # You should not change any of these variables.
 #
 APR_BUILD_DIR=$(BUILD_DIR)/apr
+APR_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/apr
+APR_HOST_GENTESTCHAR=$(APR_HOST_BUILD_DIR)/tools/gen_test_char
 APR_SOURCE_DIR=$(SOURCE_DIR)/apr
 APR_IPK_DIR=$(BUILD_DIR)/apr-$(APR_VERSION)-ipk
 APR_IPK=$(BUILD_DIR)/apr_$(APR_VERSION)-$(APR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: apr-source apr-unpack apr apr-stage apr-ipk apr-clean apr-dirclean apr-check
+.PHONY: apr-source apr-unpack apr apr-stage apr-ipk apr-clean apr-dirclean apr-check apr-host-gentestchar
 
 #
 # Automatically create a ipkg control file
@@ -99,6 +101,20 @@ $(DL_DIR)/$(APR_SOURCE):
 apr-source: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES)
 
 #
+# Build host binary to use during cross compilation
+#
+$(APR_HOST_GENTESTCHAR): $(DL_DIR)/$(APR_SOURCE)
+	rm -rf $(HOST_BUILD_DIR)/$(APR_DIR) $(@D)
+	$(APR_UNZIP) $(DL_DIR)/$(APR_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(APR_DIR) $(APR_HOST_BUILD_DIR)
+	(cd $(APR_HOST_BUILD_DIR); \
+		./configure \
+	)
+	$(MAKE) -C $(APR_HOST_BUILD_DIR) tools/gen_test_char
+
+apr-host-gentestchar: $(APR_HOST_GENTESTCHAR)
+
+#
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
 # to change the commands here.  Patches to the source code are also
@@ -113,7 +129,7 @@ apr-source: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) make/apr.mk
+$(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) $(APR_HOST_GENTESTCHAR) make/apr.mk
 	rm -rf $(BUILD_DIR)/$(APR_DIR) $(@D)
 	$(APR_UNZIP) $(DL_DIR)/$(APR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APR_DIR) $(@D)
@@ -142,6 +158,7 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) make/apr.mk
 		--enable-lfs \
 		--with-devrandom=/dev/urandom \
 	)
+	sed -i -e 's|tools/gen_test_char >|$(APR_HOST_GENTESTCHAR) >|' $(@D)/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

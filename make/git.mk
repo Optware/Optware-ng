@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GIT_SITE=http://git-core.googlecode.com/files
+GIT_SITE=http://ftp.be.debian.org/pub/software/scm/git-core
 GIT_VERSION=1.8.4.2
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz

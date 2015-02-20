@@ -1,0 +1,14 @@
+--- lock.c.orig	1999-05-16 10:04:17.000000000 +0300
++++ lock.c	2015-02-15 19:45:06.667313857 +0200
+@@ -152,10 +152,7 @@
+ 
+ 	strcpy(obuf, errstr);
+ 	strcat(obuf, " - ");
+-	if (errno < sys_nerr)
+-		strcat(obuf, sys_errlist[errno]);
+-	else
+-		strcat(obuf, "(can not get system error message)");
++	strcat(obuf, strerror(errno));
+ 	mlwrite(obuf);
+ }
+ #endif

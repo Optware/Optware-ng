@@ -8,7 +8,7 @@ AUTOCONF_SITE=http://ftp.gnu.org/gnu/autoconf
 AUTOCONF_VERSION=2.69
 AUTOCONF_SOURCE=autoconf-$(AUTOCONF_VERSION).tar.xz
 AUTOCONF_DIR=autoconf-$(AUTOCONF_VERSION)
-AUTOCONF_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
+AUTOCONF_UNZIP=xzcat
 AUTOCONF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AUTOCONF_DESCRIPTION=Creating scripts to configure source code packages using templates
 AUTOCONF_SECTION=util
@@ -119,6 +119,7 @@ $(AUTOCONF_IPK): $(AUTOCONF_BUILD_DIR)/.built
 	$(MAKE) -C $(AUTOCONF_BUILD_DIR) DESTDIR=$(AUTOCONF_IPK_DIR) install
 	sed -i -e 's|/usr/bin/m4|/opt/bin/m4|g' $(AUTOCONF_IPK_DIR)/opt/bin/*
 	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOCONF_IPK_DIR)/opt/bin/*
+	rm -f $(AUTOCONF_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(AUTOCONF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUTOCONF_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(AUTOCONF_IPK_DIR)

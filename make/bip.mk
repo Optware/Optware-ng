@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BIP_SITE=https://projects.duckcorp.org/attachments/download/39
-BIP_VERSION=0.8.8
+BIP_SITE=https://projects.duckcorp.org/attachments/download/61
+BIP_VERSION=0.8.9
 BIP_SOURCE=bip-$(BIP_VERSION).tar.gz
 BIP_DIR=bip-$(BIP_VERSION)
 BIP_UNZIP=zcat

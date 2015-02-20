@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
+LFTP_SITE=http://lftp.cybermirror.org/old
 SFR_SITE=http://www.sfr-fresh.com/unix/misc
 LFTP_VERSION=4.4.0
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz

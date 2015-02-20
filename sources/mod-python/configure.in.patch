@@ -1,31 +1,24 @@
---- mod-python/configure.in.orig	2006-03-10 19:46:52.000000000 -0800
-+++ mod-python/configure.in	2007-07-28 18:31:47.000000000 -0700
-@@ -109,7 +109,7 @@
+--- mod_python-3.5.0/configure.in.orig	2015-02-06 21:52:43.293275136 +0200
++++ mod_python-3.5.0/configure.in	2015-02-07 11:28:09.293257767 +0200
+@@ -76,7 +76,7 @@
    # check Apache version
    AC_MSG_CHECKING(Apache version)
    HTTPD="`${APXS} -q SBINDIR`/`${APXS} -q TARGET`"
--  ver=`$HTTPD -v | awk '/version/ {print $3}' | awk -F/ '{print $2}'`
-+  ver=@APACHE_VERSION@
-   AC_MSG_RESULT($ver)
+-  HTTPD_VERSION=`$HTTPD -v | awk '/version/ {print $3}' | awk -F/ '{print $2}' | awk '{print $1}'`
++  HTTPD_VERSION=@APACHE_VERSION@
+   APR_VERSION=`${APXS} -q APR_VERSION`
+   AC_MSG_RESULT($HTTPD_VERSION)
  
-   # make sure version begins with 2
-@@ -199,8 +199,8 @@
+@@ -167,9 +167,9 @@
  
  # find out python version
  AC_MSG_CHECKING(Python version)
--PyVERSION=`$PYTHON_BIN -c ['import sys; print sys.version[:3]'`]
--PyMAJVERSION=`$PYTHON_BIN -c ['import sys; print sys.version[:1]'`]
-+PyVERSION=2.5
+-PyVERSION=`$PYTHON_BIN -c ['import sys; print(sys.version[:3])'`]
+-PyMAJVERSION=`$PYTHON_BIN -c ['import sys; print(sys.version[:1])'`]
+-PyMINVERSION=`$PYTHON_BIN -c ['import sys; print(sys.version.split(".")[1])'`]
++PyVERSION=2.7
 +PyMAJVERSION=2
++PyMINVERSION=7
  AC_MSG_RESULT($PyVERSION)
- 
- # make sure Python is version 2
-@@ -210,7 +210,7 @@
- 
- # find out compiled in install prefix
- AC_MSG_CHECKING(Python install prefix)
--PyEXEC_INSTALLDIR=`$PYTHON_BIN -c "import sys; print sys.exec_prefix"`
-+PyEXEC_INSTALLDIR=`cd ../../staging; pwd`/opt
- AC_MSG_RESULT($PyEXEC_INSTALLDIR)
- 
- # this is where the Python libraries will get installed
+ if test -z "$PyMAJVERSION"; then
+   AC_MSG_ERROR([Unable to get Python version - is your Python working?])

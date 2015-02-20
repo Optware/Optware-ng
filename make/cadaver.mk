@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CADAVER_SITE=http://www.webdav.org/cadaver
-CADAVER_VERSION=0.23.2
+CADAVER_VERSION=0.23.3
 CADAVER_SOURCE=cadaver-$(CADAVER_VERSION).tar.gz
 CADAVER_DIR=cadaver-$(CADAVER_VERSION)
 CADAVER_UNZIP=zcat
@@ -36,7 +36,7 @@ CADAVER_CONFLICTS=
 #
 # CADAVER_IPK_VERSION should be incremented when the ipk changes.
 #
-CADAVER_IPK_VERSION=2
+CADAVER_IPK_VERSION=1
 
 #
 # CADAVER_CONFFILES should be a list of user-editable files

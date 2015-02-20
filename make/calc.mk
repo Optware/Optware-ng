@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALC_SITE=http://www.isthe.com/chongo/src/calc
-CALC_VERSION=2.12.4.0
+CALC_VERSION=2.12.5.0
 CALC_SOURCE=calc-$(CALC_VERSION).tar.bz2
 CALC_DIR=calc-$(CALC_VERSION)
 CALC_UNZIP=bzcat
@@ -54,6 +54,19 @@ CALC_IPK_VERSION=1
 #
 CALC_CPPFLAGS=
 CALC_LDFLAGS=
+
+CALC_LONG_BITS=$(strip \
+$(if $(filter x86_64 amd64, $(TARGET_ARCH)), 64, \
+32))
+# override this variable in platforms/packages-<target>.mk
+CALC_HAVE_USTAT?=no
+# set to yes if target has ustat.h
+
+
+
+CALC_CONFIGURE_OPTS=LONG_BITS=$(CALC_LONG_BITS) \
+HAVE_USTAT=$(strip $(if $(filter yes, $(CALC_HAVE_USTAT)), , -DHAVE_NO_USTAT))
+
 
 #
 # CALC_BUILD_DIR is the directory in which the build is done.
@@ -117,9 +130,6 @@ $(CALC_BUILD_DIR)/.configured: $(DL_DIR)/$(CALC_SOURCE) $(CALC_PATCHES) make/cal
 	fi
 	sed -i -e 's| -I/usr/include||; s|/usr/include|$(TARGET_INCDIR)|' $(@D)/Makefile $(@D)/*/Makefile
 	sed -i -e 's|/usr/lib/|/opt/lib|' $(@D)/hist.h
-	touch $(@D)/longbits.o
-	touch $(@D)/longbits
-	cp $(CALC_SOURCE_DIR)/longbits.h $(@D)/
 #	(cd $(CALC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
@@ -143,7 +153,7 @@ calc-unpack: $(CALC_BUILD_DIR)/.configured
 $(CALC_BUILD_DIR)/.built: $(CALC_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		$(TARGET_CONFIGURE_OPTS) \
+		$(TARGET_CONFIGURE_OPTS) $(CALC_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CALC_LDFLAGS)" \
 		CALC_SHAREDIR=/opt/share/calc \

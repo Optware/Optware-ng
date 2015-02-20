@@ -1,10 +1,21 @@
-diff -Nru postfix-2.1.5-orig/makedefs postfix-2.1.5/makedefs
---- postfix-2.1.5-orig/makedefs	2004-04-14 20:59:43.000000000 +0200
-+++ postfix-2.1.5/makedefs	2005-01-29 21:45:02.000000000 +0100
-@@ -189,14 +189,14 @@
- 		elif [ -f /usr/include/db/db.h ]
- 		then
- 		    CCARGS="$CCARGS -I/usr/include/db"
+--- postfix-2.1.5/makedefs.orig	2006-08-26 18:54:59.000000000 +0300
++++ postfix-2.1.5/makedefs	2015-02-06 20:22:08.709473911 +0200
+@@ -222,25 +222,25 @@
+ 		esac;;
+ 		# Tested with RedHat 3.03 on 20020729.
+     Linux.1*)	SYSTYPE=LINUX1
+-		SYSLIBS="-ldb"
++		SYSLIBS="-ldb-5.3"
+ 		;;
+-    Linux.2*)	SYSTYPE=LINUX2
++   Linux.[23]*)	SYSTYPE=LINUX2
+ 		# Postfix no longer needs DB 1.85 compatibility
+-		if [ -f /usr/include/db.h ]
+-		then
+-		    : we are all set
+-		elif [ -f /usr/include/db/db.h ]
+-		then
+-		    CCARGS="$CCARGS -I/usr/include/db"
 -		else
 -		    # No, we're not going to try db1 db2 db3 etc.
 -		    # On a properly installed system, Postfix builds
@@ -13,6 +24,13 @@ diff -Nru postfix-2.1.5-orig/makedefs postfix-2.1.5/makedefs
 -		    echo "Install the appropriate db*-devel package first." 1>&2
 -		    echo "See the RELEASE_NOTES file for more information." 1>&2
 -		    exit 1
+-		fi
++#		if [ -f /usr/include/db.h ]
++#		then
++#		    : we are all set
++#		elif [ -f /usr/include/db/db.h ]
++#		then
++#		    CCARGS="$CCARGS -I/usr/include/db"
 +#		else
 +#		    # No, we're not going to try db1 db2 db3 etc.
 +#		    # On a properly installed system, Postfix builds
@@ -21,6 +39,16 @@ diff -Nru postfix-2.1.5-orig/makedefs postfix-2.1.5/makedefs
 +#		    echo "Install the appropriate db*-devel package first." 1>&2
 +#		    echo "See the RELEASE_NOTES file for more information." 1>&2
 +#		    exit 1
- 		fi
++#		fi
  		# GDBM locks the DBM .pag file after open. This breaks postmap.
  		# if [ -f /usr/include/gdbm-ndbm.h ]
+ 		# then
+@@ -251,7 +251,7 @@
+ 		#     CCARGS="$CCARGS -DHAS_DBM -DPATH_NDBM_H='<gdbm/ndbm.h>'"
+ 		#     GDBM_LIBS=gdbm
+ 		# fi
+-		SYSLIBS="-ldb"
++		SYSLIBS="-ldb-5.3"
+ 		for name in nsl resolv $GDBM_LIBS
+ 		do
+ 		    for lib in /usr/lib64 /lib64 /usr/lib /lib

@@ -201,6 +201,7 @@ $(LIBGCRYPT_IPK): $(LIBGCRYPT_BUILD_DIR)/.built
 	#install -m 644 $(LIBGCRYPT_SOURCE_DIR)/libgcrypt.conf $(LIBGCRYPT_IPK_DIR)/opt/etc/libgcrypt.conf
 	#install -d $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d
 	#install -m 755 $(LIBGCRYPT_SOURCE_DIR)/rc.libgcrypt $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d/SXXlibgcrypt
+	rm -f $(LIBGCRYPT_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(LIBGCRYPT_IPK_DIR)/CONTROL/control
 	#install -m 755 $(LIBGCRYPT_SOURCE_DIR)/postinst $(LIBGCRYPT_IPK_DIR)/CONTROL/postinst
 	#install -m 755 $(LIBGCRYPT_SOURCE_DIR)/prerm $(LIBGCRYPT_IPK_DIR)/CONTROL/prerm

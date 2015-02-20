@@ -21,7 +21,7 @@
 #
 SAMBA35_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA35_VERSION ?= 3.5.22
-SAMBA35_IPK_VERSION ?= 1
+SAMBA35_IPK_VERSION ?= 2
 SAMBA35_SOURCE=samba-$(SAMBA35_VERSION).tar.gz
 SAMBA35_DIR=samba-$(SAMBA35_VERSION)
 SAMBA35_UNZIP=zcat
@@ -59,8 +59,9 @@ SAMBA35_PATCHES=\
 $(SAMBA35_SOURCE_DIR)/configure.in.patch \
 $(SAMBA35_SOURCE_DIR)/mtab.patch \
 $(SAMBA35_SOURCE_DIR)/IPV6_V6ONLY.patch \
+$(SAMBA35_SOURCE_DIR)/samba-3.5.cups-1.6+.patch
 
-ifeq ($(OPTWARE_TARGET), $(filter ddwrt dns323 gumstix1151 mbwe-bluering oleg openwrt-brcm24 openwrt-ixp4xx wdtv, $(OPTWARE_TARGET)))
+ifeq (uclibc, $(LIBC_STYLE))
 SAMBA35_PATCHES+=$(SAMBA35_SOURCE_DIR)/mount.cifs.c.patch
 endif
 
@@ -220,6 +221,7 @@ endif
 ifeq (3.0.14a, $(SAMBA35_VERSION))
 	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(@D)/source/aclocal.m4
 endif
+	sed -i -e '/AC_PATH_PROG(CUPS_CONFIG, cups-config)/s|.*|CUPS_CONFIG=$(STAGING_PREFIX)/bin/cups-config|' $(@D)/source3/configure.in
 	(cd $(@D)/source3/; ./autogen.sh)
 	(cd $(@D)/source3/; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -255,7 +257,9 @@ endif
 		--with-mandir=$(SAMBA35_MAN_DIR) \
 		--with-smbmount \
 		--with-quotas \
-		--with-krb5=no \
+		--without-krb5 \
+		--without-ads \
+		--with-libiconv=$(SAMBA_LIBICONV_DIR) \
 		$(SAMBA35_CONFIG_ARGS) \
 		--disable-nls \
 	)

@@ -144,6 +144,7 @@ $(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
+	sed -i -e 's|\$$(MAKE) \.\./wireshark-filter\.4|touch ../wireshark-filter.4|' $(@D)/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -210,6 +211,8 @@ $(TSHARK_IPK): $(TSHARK_BUILD_DIR)/.built
 		DESTDIR=$(TSHARK_IPK_DIR) \
 		program_transform_name="" \
 		install
+	rm -rf $(TSHARK_IPK_DIR)/opt/share/man/man4
+	rm -f $(TSHARK_IPK_DIR)/opt/share/wireshark/wireshark-filter.html
 	rm -f $(TSHARK_IPK_DIR)/opt/lib/*.la
 	rm -f $(TSHARK_IPK_DIR)/opt/lib/wireshark/plugins/*/*.la
 	$(STRIP_COMMAND) \

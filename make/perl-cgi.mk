@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-CGI_SITE=http://search.cpan.org/CPAN/authors/id/L/LD/LDS
-PERL-CGI_VERSION=3.42
+PERL-CGI_VERSION=3.50
 PERL-CGI_SOURCE=CGI.pm-$(PERL-CGI_VERSION).tar.gz
 PERL-CGI_DIR=CGI.pm-$(PERL-CGI_VERSION)
 PERL-CGI_UNZIP=zcat

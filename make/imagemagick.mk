@@ -21,8 +21,8 @@
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VER=6.6.9
-IMAGEMAGICK_REV=1
+IMAGEMAGICK_VER=6.9.0
+IMAGEMAGICK_REV=4
 IMAGEMAGICK_IPK_VERSION=1
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.bz2
 IMAGEMAGICK_UNZIP=bzcat
@@ -43,7 +43,7 @@ IMAGEMAGICK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IMAGEMAGICK_DESCRIPTION=A set of image processing utilities.
 IMAGEMAGICK_SECTION=graphics
 IMAGEMAGICK_PRIORITY=optional
-IMAGEMAGICK_DEPENDS=zlib, freetype, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2, liblcms
+IMAGEMAGICK_DEPENDS=zlib, freetype, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2, liblcms, pango
 IMAGEMAGICK_SUGGESTS=
 IMAGEMAGICK_CONFLICTS=
 
@@ -51,7 +51,7 @@ IMAGEMAGICK_CONFLICTS=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-IMAGEMAGICK_CPPFLAGS=
+IMAGEMAGICK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
 ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
 IMAGEMAGICK_CPPFLAGS+=-D__error_t_defined
 endif
@@ -104,7 +104,7 @@ imagemagick-source: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES) make/imagemagick.mk
-	make zlib-stage freetype-stage libjpeg-stage libpng-stage bzip2-stage libtiff-stage
+	make zlib-stage freetype-stage libjpeg-stage libpng-stage bzip2-stage libtiff-stage pango-stage
 	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(@D)
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IMAGEMAGICK_PATCHES)" ; \
@@ -118,6 +118,8 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IMAGEMAGICK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IMAGEMAGICK_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

@@ -39,6 +39,16 @@ BINUTILS_CONFLICTS=
 # BINUTILS_CONFFILES should be a list of user-editable files
 #BINUTILS_CONFFILES=/opt/etc/binutils.conf /opt/etc/init.d/SXXbinutils
 
+ifneq ($(GCC_TARGET_NAME),)
+BINUTILS_TARGET_NAME=$(GCC_TARGET_NAME)
+else
+BINUTILS_TARGET_NAME = $(strip \
+$(if $(and \
+	$(filter uclibc, $(LIBC_STYLE)), \
+	$(filter arm-linux armeb-linux mipsel-linux, $(GNU_TARGET_NAME))), \
+$(GNU_TARGET_NAME)-uclibc, $(GNU_TARGET_NAME)))
+endif
+
 #
 # BINUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
@@ -120,11 +130,12 @@ $(BINUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BINUTILS_SOURCE) $(BINUTILS_PATCH
 		LDFLAGS="$(STAGING_LDFLAGS) $(BINUTILS_LDFLAGS)" \
 		../$(BINUTILS_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
+		--host=$(BINUTILS_TARGET_NAME) \
+		--target=$(BINUTILS_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--disable-werror \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@

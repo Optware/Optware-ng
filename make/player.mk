@@ -37,7 +37,7 @@ PLAYER_CONFLICTS=
 #
 # PLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-PLAYER_IPK_VERSION=3
+PLAYER_IPK_VERSION=4
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files
@@ -59,7 +59,10 @@ ifdef NO_BUILTIN_MATH
 PLAYER_CPPFLAGS+=-fno-builtin-round -fno-builtin-rint \
 	-fno-builtin-cos -fno-builtin-sin -fno-builtin-exp
 endif
-PLAYER_LDFLAGS=
+ifeq ($(shell test $(shell echo $(BOOST_VERSION) | cut -d '_' -f2) -ge 50; echo $$?),0)
+PLAYER_CPPFLAGS+=-DTIME_UTC=TIME_UTC_
+endif
+PLAYER_LDFLAGS=-lgcc
 
 #
 # PLAYER_BUILD_DIR is the directory in which the build is done.
@@ -122,6 +125,8 @@ $(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) ma
 	if test "$(BUILD_DIR)/$(PLAYER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PLAYER_DIR) $(@D) ; \
 	fi
+	sed -i -e '/^#include <stdio.h>/ i #include <stdlib.h>' $(@D)/server/drivers/mixed/erratic/erratic.cc
+	sed -i -e 's/gzseek(\|gzgets(/&(gzFile)/' $(@D)/server/drivers/shell/readlog.cc
 	sed -i -e '/^ *have_pkg_config=no/s/=no/=yes/' $(@D)/configure
 	sed -i -e 's| `pkg-config --cflags gdk-pixbuf-.*`||' $(@D)/server/drivers/planner/wavefront/Makefile.in
 	(cd $(@D); \

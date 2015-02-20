@@ -53,7 +53,7 @@ TAGLIB_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 TAGLIB_CPPFLAGS=
-TAGLIB_LDFLAGS=
+TAGLIB_LDFLAGS=-lgcc
 
 #
 # TAGLIB_BUILD_DIR is the directory in which the build is done.

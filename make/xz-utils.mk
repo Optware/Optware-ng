@@ -55,6 +55,7 @@ $(XZ_UTILS_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(XZ_UTILS_SOURCE
 		then mv $(HOST_BUILD_DIR)/$(XZ_UTILS_DIR) $(@D) ; \
 	fi
 	(cd $(@D); \
+		CPPFLAGS="-fPIC" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \

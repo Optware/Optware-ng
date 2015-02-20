@@ -1,0 +1,68 @@
+--- cyrus-imapd-2.4.orig/imtest/imtest.c
++++ cyrus-imapd-2.4/imtest/imtest.c
+@@ -507,15 +507,16 @@ static int tls_init_clientengine(int ver
+ 	return IMTEST_FAIL;
+     }
+     
+-    tls_ctx = SSL_CTX_new(TLSv1_client_method());
++    tls_ctx = SSL_CTX_new(SSLv23_client_method());
+     if (tls_ctx == NULL) {
+ 	return IMTEST_FAIL;
+     };
+     
+     off |= SSL_OP_ALL;		/* Work around all known bugs */
++    off |= SSL_OP_NO_SSLv2;     /* Disable insecure SSLv2 */
+     SSL_CTX_set_options(tls_ctx, off);
+     SSL_CTX_set_info_callback(tls_ctx, (void (*)()) apps_ssl_info_callback);
+-    
++
+     if (strlen(var_tls_CAfile) == 0)
+ 	CAfile = NULL;
+     else
+--- cyrus-imapd-2.4.orig/imap/tls.c
++++ cyrus-imapd-2.4/imap/tls.c
+@@ -678,8 +678,8 @@ int     tls_init_serverengine(const char
+     };
+ 
+     off |= SSL_OP_ALL;		/* Work around all known bugs */
++    off |= SSL_OP_NO_SSLv2;     /* Disable insecure SSLv2 */
+     if (tlsonly) {
+-	off |= SSL_OP_NO_SSLv2;
+ 	off |= SSL_OP_NO_SSLv3;
+     }
+     SSL_CTX_set_options(s_ctx, off);
+@@ -1230,12 +1230,13 @@ int tls_init_clientengine(int verifydept
+     }
+ 
+     /* XXX  May need to use only SSLv3 for iSchedule */
+-    c_ctx = SSL_CTX_new(TLSv1_client_method());
++    c_ctx = SSL_CTX_new(SSLv23_client_method());
+     if (c_ctx == NULL) {
+ 	return (-1);
+     };
+     
+     off |= SSL_OP_ALL;		/* Work around all known bugs */
++    off |= SSL_OP_NO_SSLv2;     /* Disable insecure SSLv2 */
+     SSL_CTX_set_options(c_ctx, off);
+     SSL_CTX_set_info_callback(c_ctx, (void (*)()) apps_ssl_info_callback);
+     
+--- cyrus-imapd-2.4.orig/lib/imclient.c
++++ cyrus-imapd-2.4/lib/imclient.c
+@@ -1695,14 +1695,15 @@ static int tls_init_clientengine(struct
+ 	return -1;
+     }
+ 
+-    imclient->tls_ctx = SSL_CTX_new(TLSv1_client_method());
++    imclient->tls_ctx = SSL_CTX_new(SSLv23_client_method());
+     if (imclient->tls_ctx == NULL) {
+ 	return -1;
+     };
+ 
+     off |= SSL_OP_ALL;		/* Work around all known bugs */
++    off |= SSL_OP_NO_SSLv2;     /* Disable insecure SSLv2 */
+     SSL_CTX_set_options(imclient->tls_ctx, off);
+-    
++
+     /* debugging   SSL_CTX_set_info_callback(imclient->tls_ctx, apps_ssl_info_callback); */
+ 
+     if (var_tls_CAfile == NULL || strlen(var_tls_CAfile) == 0)

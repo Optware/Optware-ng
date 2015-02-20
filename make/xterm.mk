@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 XTERM_SITE=ftp://invisible-island.net/xterm
-XTERM_VERSION=225
+XTERM_VERSION=314
 XTERM_SOURCE=xterm-$(XTERM_VERSION).tgz
 XTERM_DIR=xterm-$(XTERM_VERSION)
 XTERM_UNZIP=zcat
@@ -35,7 +35,7 @@ XTERM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XTERM_DESCRIPTION=Terminal emulator for X.
 XTERM_SECTION=x11
 XTERM_PRIORITY=optional
-XTERM_DEPENDS=xaw
+XTERM_DEPENDS=xaw, freeype
 
 #
 # XTERM_IPK_VERSION should be incremented when the ipk changes.
@@ -56,7 +56,7 @@ XTERM_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-XTERM_CPPFLAGS=
+XTERM_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
 XTERM_LDFLAGS=-lX11 -lXt -lICE -lSM -lXau
 
 #
@@ -104,13 +104,13 @@ xterm-source: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XTERM_BUILD_DIR)/.configured: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES)
-	$(MAKE) x11-stage xaw-stage xt-stage
-	rm -rf $(BUILD_DIR)/$(XTERM_DIR) $(XTERM_BUILD_DIR)
+$(XTERM_BUILD_DIR)/.configured: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES) make/xterm.mk
+	$(MAKE) x11-stage xaw-stage xt-stage freetype-stage
+	rm -rf $(BUILD_DIR)/$(XTERM_DIR) $(@D)
 	$(XTERM_UNZIP) $(DL_DIR)/$(XTERM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(XTERM_PATCHES) | patch -d $(BUILD_DIR)/$(XTERM_DIR) -p1
-	mv $(BUILD_DIR)/$(XTERM_DIR) $(XTERM_BUILD_DIR)
-	(cd $(XTERM_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(XTERM_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XTERM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XTERM_LDFLAGS)" \
@@ -123,7 +123,7 @@ $(XTERM_BUILD_DIR)/.configured: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES)
 		--x-libraries=$(STAGING_LIB_DIR) \
 		--disable-nls \
 	)
-	touch $(XTERM_BUILD_DIR)/.configured
+	touch $@
 
 xterm-unpack: $(XTERM_BUILD_DIR)/.configured
 
@@ -131,9 +131,9 @@ xterm-unpack: $(XTERM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XTERM_BUILD_DIR)/.built: $(XTERM_BUILD_DIR)/.configured
-	rm -f $(XTERM_BUILD_DIR)/.built
-	$(MAKE) -C $(XTERM_BUILD_DIR)
-	touch $(XTERM_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,9 +144,9 @@ xterm: $(XTERM_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(XTERM_BUILD_DIR)/.staged: $(XTERM_BUILD_DIR)/.built
-	rm -f $(XTERM_BUILD_DIR)/.staged
-	$(MAKE) -C $(XTERM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(XTERM_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 xterm-stage: $(XTERM_BUILD_DIR)/.staged
 
@@ -155,7 +155,7 @@ xterm-stage: $(XTERM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/xterm
 #
 $(XTERM_IPK_DIR)/CONTROL/control:
-	@install -d $(XTERM_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: xterm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,7 +182,7 @@ $(XTERM_IPK_DIR)/CONTROL/control:
 $(XTERM_IPK): $(XTERM_BUILD_DIR)/.built
 	rm -rf $(XTERM_IPK_DIR) $(BUILD_DIR)/xterm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XTERM_BUILD_DIR) DESTDIR=$(XTERM_IPK_DIR) install
-	$(STRIP_COMMAND) $(XTERM_IPK_DIR)/opt/bin/{resize,xterm}
+	$(STRIP_COMMAND) $(XTERM_IPK_DIR)/opt/bin/resize $(XTERM_IPK_DIR)/opt/bin/xterm
 	$(MAKE) $(XTERM_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTERM_IPK_DIR)
 
@@ -208,4 +208,4 @@ xterm-dirclean:
 # Some sanity check for the package.
 #
 xterm-check: $(XTERM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(XTERM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

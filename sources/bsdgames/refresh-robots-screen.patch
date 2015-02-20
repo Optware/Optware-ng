@@ -1,0 +1,10 @@
+--- a/robots/move.c
++++ b/robots/move.c
+@@ -185,6 +185,7 @@
+ 			flush_in();
+ 			goto ret;
+ 		  case CTRL('L'):
++			redrawwin(curscr);
+ 			refresh();
+ 			break;
+ 		  case EOF:

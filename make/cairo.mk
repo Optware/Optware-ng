@@ -13,10 +13,10 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 CAIRO_SITE=http://cairographics.org/releases
-CAIRO_VERSION=1.8.8
-CAIRO_SOURCE=cairo-$(CAIRO_VERSION).tar.gz
+CAIRO_VERSION=1.12.18
+CAIRO_SOURCE=cairo-$(CAIRO_VERSION).tar.xz
 CAIRO_DIR=cairo-$(CAIRO_VERSION)
-CAIRO_UNZIP=zcat
+CAIRO_UNZIP=xzcat
 CAIRO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CAIRO_DESCRIPTION=Cairo is a vector graphics library with cross-device output support.
 CAIRO_SECTION=lib
@@ -26,7 +26,7 @@ CAIRO_DEPENDS=freetype, fontconfig, libpng, pixman, xrender
 #
 # CAIRO_IPK_VERSION should be incremented when the ipk changes.
 #
-CAIRO_IPK_VERSION=2
+CAIRO_IPK_VERSION=1
 
 #
 # CAIRO_LOCALES defines which locales get installed
@@ -47,7 +47,7 @@ CAIRO_LOCALES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CAIRO_CPPFLAGS=
+CAIRO_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
 CAIRO_LDFLAGS=
 
 #
@@ -60,6 +60,7 @@ CAIRO_LDFLAGS=
 # You should not change any of these variables.
 #
 CAIRO_BUILD_DIR=$(BUILD_DIR)/cairo
+CAIRO_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/cairo
 CAIRO_SOURCE_DIR=$(SOURCE_DIR)/cairo
 CAIRO_IPK_DIR=$(BUILD_DIR)/cairo-$(CAIRO_VERSION)-ipk
 CAIRO_IPK=$(BUILD_DIR)/cairo_$(CAIRO_VERSION)-$(CAIRO_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -130,6 +131,8 @@ $(CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(CAIRO_SOURCE) $(CAIRO_PATCHES) make/
 		--x-libraries=$(STAGING_LIB_DIR) \
 		--prefix=/opt \
 		--disable-static \
+		--enable-ft=yes \
+		--enable-fc=yes \
 	)
 	$(PATCH_LIBTOOL) $(CAIRO_BUILD_DIR)/libtool
 	touch $@
@@ -156,12 +159,37 @@ cairo: $(CAIRO_BUILD_DIR)/.built
 #
 $(CAIRO_BUILD_DIR)/.staged: $(CAIRO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(CAIRO_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_DIR)/opt
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/cairo*.pc
 	rm -f $(STAGING_DIR)/opt/lib/libcairo*.la
 	touch $@
 
 cairo-stage: $(CAIRO_BUILD_DIR)/.staged
+
+$(CAIRO_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(CAIRO_SOURCE) $(CAIRO_PATCHES) make/cairo.mk
+	$(MAKE) glib-host-stage freetype-host-stage
+	rm -rf $(HOST_BUILD_DIR)/$(CAIRO_DIR) $(@D)
+	$(CAIRO_UNZIP) $(DL_DIR)/$(CAIRO_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(CAIRO_DIR) $(@D)
+	(cd $(@D); \
+		CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR) -I$(HOST_STAGING_INCLUDE_DIR)/freetype2" \
+		LDFLAGS="-L$(HOST_STAGING_LIB_DIR) -fPIC" \
+		./configure \
+		--prefix=$(HOST_STAGING_PREFIX) \
+		--disable-shared \
+		--enable-xlib=no \
+		--enable-xlib-xrender=no \
+		--enable-xcb=no \
+		--enable-xlib-xcb=no \
+		--enable-xcb-shm=no \
+		--enable-ft=yes \
+		--enable-fc=no \
+	)
+	$(MAKE) -C $(@D) install
+	rm -f $(HOST_STAGING_LIB_DIR)/libcairo.la
+	touch $@
+
+cairo-host-stage: $(CAIRO_HOST_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

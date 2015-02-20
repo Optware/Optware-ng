@@ -22,24 +22,24 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQUEAK_SITE=http://www.squeakvm.org/unix/release/
-SQUEAK_VERSION_MAJOR_MINOR=3.9
-SQUEAK_VERSION=3.9.9
-SQUEAK_VM_VERSION=$(SQUEAK_VERSION_MAJOR_MINOR)-9
-SQUEAK_VM_SRC=Squeak-$(SQUEAK_VM_VERSION).src.tar.gz
-SQUEAK_DIR=Squeak-$(SQUEAK_VM_VERSION)
+SQUEAK_VERSION_MAJOR_MINOR=4.10.2
+SQUEAK_VERSION_PATCH=2614
+SQUEAK_VERSION=$(SQUEAK_VERSION_MAJOR_MINOR).$(SQUEAK_VERSION_PATCH)
+SQUEAK_VM_SRC=Squeak-$(SQUEAK_VERSION)-src.tar.gz
+SQUEAK_DIR=Squeak-$(SQUEAK_VERSION)-src
 SQUEAK_UNZIP=zcat
 SQUEAK_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 SQUEAK_DESCRIPTION=Squeak is a full-featured implementation of the Smalltalk programming language and environment.
 SQUEAK_SECTION=lang
 SQUEAK_PRIORITY=optional
-SQUEAK_DEPENDS=
+SQUEAK_DEPENDS=pango
 SQUEAK_SUGGESTS=
 SQUEAK_CONFLICTS=
 
 #
 # SQUEAK_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUEAK_IPK_VERSION=2
+SQUEAK_IPK_VERSION=1
 
 #
 # SQUEAK_CONFFILES should be a list of user-editable files
@@ -51,10 +51,10 @@ SQUEAK_IPK_VERSION=2
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq ($(OPTWARE_TARGET),nslu2)
-SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-$(OPTWARE_TARGET).patch \
+#SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-$(OPTWARE_TARGET).patch \
 	$(SQUEAK_SOURCE_DIR)/Makefile.in-cross.patch
 else
-SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-cross.patch \
+#SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-cross.patch \
 	$(SQUEAK_SOURCE_DIR)/Makefile.in-cross.patch \
 	$(SQUEAK_SOURCE_DIR)/sqUnixMain.c.patch
 endif
@@ -64,7 +64,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SQUEAK_CPPFLAGS=-O3
+SQUEAK_CPPFLAGS=-O3 -I$(STAGING_INCLUDE_DIR)/cairo
 ifeq ($(NO_BUILTIN_MATH), true)
 SQUEAK_CPPFLAGS+= -fno-builtin-cos -fno-builtin-exp -fno-builtin-sin
 endif
@@ -85,7 +85,7 @@ SQUEAK_IPK_DIR=$(BUILD_DIR)/squeak-$(SQUEAK_VERSION)-ipk
 SQUEAK_IPK=$(BUILD_DIR)/squeak_$(SQUEAK_VERSION)-$(SQUEAK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 SQUEAK_IMG_SRC_SITE=http://ftp.squeak.org/sources_files
-SQUEAK_IMG_SRC=SqueakV3.sources
+SQUEAK_IMG_SRC=SqueakV41.sources
 
 .PHONY: squeak-source squeak-unpack squeak squeak-stage squeak-ipk squeak-clean squeak-dirclean squeak-check
 
@@ -94,11 +94,11 @@ SQUEAK_IMG_SRC=SqueakV3.sources
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SQUEAK_VM_SRC):
-	$(WGET) -P $(@D) $(SQUEAK_SITE)/$((@F) ||
+	$(WGET) -P $(@D) $(SQUEAK_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(SQUEAK_IMG_SRC).gz:
-	$(WGET) -P $(@D) $(SQUEAK_IMG_SRC_SITE)/$(@F) ||
+	$(WGET) -P $(@D) $(SQUEAK_IMG_SRC_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -127,7 +127,7 @@ squeak-source: $(SQUEAK_PATCHES) $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 # shown below to make various patches to it.
 #
 $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_IMG_SRC).gz make/squeak.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) pango-stage
 	rm -rf $(BUILD_DIR)/$(SQUEAK_DIR) $(SQUEAK_BUILD_DIR)
 	$(SQUEAK_UNZIP) $(DL_DIR)/$(SQUEAK_VM_SRC) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQUEAK_PATCHES)" ; then \
@@ -143,14 +143,18 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 		rm acplugins.m4; \
 	)
 	mkdir -p $(@D)/bld
+	find $(@D) -type f -name "*.[ch]" -exec sed -i -e 's/clone/_clone_/g' {} \;
+#	Avoid adding host include and lib dirs
+	sed -i -e '/  SET (CMAKE_C_FLAGS "\$${CMAKE_C_FLAGS}/s/^/#/' $(@D)/unix/CMakeLists.txt
 	(cd $(@D)/bld; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQUEAK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQUEAK_LDFLAGS)" \
-		../platforms/unix/config/configure \
+		../unix/cmake/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--CFLAGS="$(STAGING_CPPFLAGS) $(SQUEAK_CPPFLAGS)" \
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
@@ -159,10 +163,11 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 		--without-ffi \
 		--without-npsqueak \
 	)
-	$(PATCH_LIBTOOL) \
+	sed -i -e 's|\(-P .*cmake_install\.cmake\)|-DCMAKE_INSTALL_PREFIX=$$(ROOT)/opt \1|' $(@D)/bld/Makefile
+#	$(PATCH_LIBTOOL) \
 		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
 		$(@D)/bld/libtool
-	sed -i -e 's/clone/_clone_/g' \
+#	sed -i -e 's/clone/_clone_/g' \
 		$(@D)/platforms/unix/src/vm/interp.c \
 		$(@D)/platforms/Cross/vm/sqVirtualMachine.* \
 		$(@D)/platforms/unix/src/vm/intplugins/CroquetPlugin/CroquetPlugin.c \
@@ -189,7 +194,7 @@ squeak: $(SQUEAK_BUILD_DIR)/.built
 #
 $(SQUEAK_BUILD_DIR)/.staged: $(SQUEAK_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/bld ROOT=$(STAGING_DIR) install
 	touch $@
 
 squeak-stage: $(SQUEAK_BUILD_DIR)/.staged
@@ -228,8 +233,8 @@ $(SQUEAK_IPK_DIR)/CONTROL/control:
 $(SQUEAK_IPK): $(SQUEAK_BUILD_DIR)/.built
 	rm -rf $(SQUEAK_IPK_DIR) $(BUILD_DIR)/squeak_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQUEAK_BUILD_DIR)/bld ROOT=$(SQUEAK_IPK_DIR) install
-	$(STRIP_COMMAND) $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_VM_VERSION)/*
-	install -m 755 $(SQUEAK_BUILD_DIR)/bld/inisqueak  $(SQUEAK_IPK_DIR)/opt/bin/
+	$(STRIP_COMMAND) $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_VERSION_MAJOR_MINOR)-$(SQUEAK_VERSION_PATCH)/*
+#	install -m 755 $(SQUEAK_BUILD_DIR)/bld/inisqueak  $(SQUEAK_IPK_DIR)/opt/bin/
 	$(SQUEAK_UNZIP) $(DL_DIR)/$(SQUEAK_IMG_SRC).gz > $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_IMG_SRC)
 #	install -d $(SQUEAK_IPK_DIR)/opt/etc/
 #	install -m 644 $(SQUEAK_SOURCE_DIR)/squeak.conf $(SQUEAK_IPK_DIR)/opt/etc/squeak.conf

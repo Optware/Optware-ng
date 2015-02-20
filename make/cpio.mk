@@ -5,7 +5,7 @@
 ###########################################################
 
 CPIO_SITE=http://ftp.gnu.org/gnu/cpio
-CPIO_VERSION=2.9
+CPIO_VERSION=2.11
 CPIO_SOURCE=cpio-$(CPIO_VERSION).tar.bz2
 CPIO_DIR=cpio-$(CPIO_VERSION)
 CPIO_UNZIP=bzcat
@@ -18,12 +18,13 @@ CPIO_DEPENDS=
 #
 # CPIO_IPK_VERSION should be incremented when the ipk changes.
 #
-CPIO_IPK_VERSION=3
+CPIO_IPK_VERSION=1
 
 #
 # CPIO_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+CPIO_PATCHES=$(CPIO_SOURCE_DIR)/src-filetypes.h.patch
 
 #
 # If the compilation of the package requires additional
@@ -81,6 +82,9 @@ cpio-source: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES)
 $(CPIO_BUILD_DIR)/.configured: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES) make/cpio.mk
 	rm -rf $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR)
 	$(CPIO_UNZIP) $(DL_DIR)/$(CPIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(CPIO_PATCHES)"; then \
+		cat $(CPIO_PATCHES) | patch -d $(BUILD_DIR)/$(CPIO_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR)
 	(cd $(CPIO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \

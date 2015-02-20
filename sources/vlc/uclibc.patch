@@ -1,0 +1,736 @@
+diff -Npur vlc-3.0.0-git20150218/include/spawn.h vlc/include/spawn.h
+--- vlc-3.0.0-git20150218/include/spawn.h	1970-01-01 00:00:00.000000000 +0300
++++ vlc/include/spawn.h	2015-02-19 16:40:21.053333930 +0200
+@@ -0,0 +1,290 @@
++/* Definitions for POSIX spawn interface.
++   Copyright (C) 2000,2003,2004,2009,2011,2012 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, see
++   <http://www.gnu.org/licenses/>.  */
++
++#if !defined _SPAWN_H && !defined _SPAWN_H_STUB
++#define	_SPAWN_H	1
++#define	_SPAWN_H_STUB	1
++
++#include <features.h>
++#include <sched.h>
++#define __need_sigset_t
++#include <signal.h>
++#include <sys/types.h>
++
++/* For the tiny inlines (errno/free/memset).  */
++#include <errno.h>
++#include <string.h>
++#include <stdlib.h>
++
++
++/* Data structure to contain attributes for thread creation.  */
++typedef struct
++{
++  short int __flags;
++  pid_t __pgrp;
++  sigset_t __sd;
++  sigset_t __ss;
++  struct sched_param __sp;
++  int __policy;
++  int __pad[16];
++} posix_spawnattr_t;
++
++
++/* Data structure to contain information about the actions to be
++   performed in the new process with respect to file descriptors.  */
++typedef struct
++{
++  int __allocated;
++  int __used;
++  struct __spawn_action *__actions;
++  int __pad[16];
++} posix_spawn_file_actions_t;
++
++
++/* Flags to be set in the `posix_spawnattr_t'.  */
++#define POSIX_SPAWN_RESETIDS		0x01
++#define POSIX_SPAWN_SETPGROUP		0x02
++#define POSIX_SPAWN_SETSIGDEF		0x04
++#define POSIX_SPAWN_SETSIGMASK		0x08
++#define POSIX_SPAWN_SETSCHEDPARAM	0x10
++#define POSIX_SPAWN_SETSCHEDULER	0x20
++#ifdef __USE_GNU
++# define POSIX_SPAWN_USEVFORK		0x40
++#endif
++
++
++#define __POSIX_SPAWN_MASK (POSIX_SPAWN_RESETIDS		\
++			    | POSIX_SPAWN_SETPGROUP		\
++			    | POSIX_SPAWN_SETSIGDEF		\
++			    | POSIX_SPAWN_SETSIGMASK		\
++			    | POSIX_SPAWN_SETSCHEDPARAM		\
++			    | POSIX_SPAWN_SETSCHEDULER		\
++			    | POSIX_SPAWN_USEVFORK)
++
++__BEGIN_DECLS
++
++/* Spawn a new process executing PATH with the attributes describes in *ATTRP.
++   Before running the process perform the actions described in FILE-ACTIONS.
++
++   This function is a possible cancellation point and therefore not
++   marked with __THROW. */
++extern int posix_spawn (pid_t *__restrict __pid,
++			const char *__restrict __path,
++			const posix_spawn_file_actions_t *__restrict
++			__file_actions,
++			const posix_spawnattr_t *__restrict __attrp,
++			char *const __argv[__restrict_arr],
++			char *const __envp[__restrict_arr]);
++
++/* Similar to `posix_spawn' but search for FILE in the PATH.
++
++   This function is a possible cancellation point and therefore not
++   marked with __THROW.  */
++extern int posix_spawnp (pid_t *__pid, const char *__file,
++			 const posix_spawn_file_actions_t *__file_actions,
++			 const posix_spawnattr_t *__attrp,
++			 char *const __argv[], char *const __envp[]);
++
++
++/* Initialize data structure with attributes for `spawn' to default values.  */
++static inline
++int posix_spawnattr_init (posix_spawnattr_t *__attr)
++{
++  memset (__attr, 0, sizeof (*__attr));
++  return 0;
++}
++
++/* Free resources associated with ATTR.  */
++static inline
++int posix_spawnattr_destroy (posix_spawnattr_t *__attr)
++{
++  return 0;
++}
++
++/* Store signal mask for signals with default handling from ATTR in
++   SIGDEFAULT.  */
++static inline
++int posix_spawnattr_getsigdefault (const posix_spawnattr_t *
++					  __restrict __attr,
++					  sigset_t *__restrict __sigdefault)
++{
++  memcpy (__sigdefault, &__attr->__sd, sizeof (sigset_t));
++  return 0;
++}
++
++/* Set signal mask for signals with default handling in ATTR to SIGDEFAULT.  */
++static inline
++int posix_spawnattr_setsigdefault (posix_spawnattr_t *__restrict __attr,
++					  const sigset_t *__restrict
++					  __sigdefault)
++{
++  memcpy (&__attr->__sd, __sigdefault, sizeof (sigset_t));
++  return 0;
++}
++
++/* Store signal mask for the new process from ATTR in SIGMASK.  */
++static inline
++int posix_spawnattr_getsigmask (const posix_spawnattr_t *__restrict
++				       __attr,
++				       sigset_t *__restrict __sigmask)
++{
++  memcpy (__sigmask, &__attr->__ss, sizeof (sigset_t));
++  return 0;
++}
++
++/* Set signal mask for the new process in ATTR to SIGMASK.  */
++static inline
++int posix_spawnattr_setsigmask (posix_spawnattr_t *__restrict __attr,
++				       const sigset_t *__restrict __sigmask)
++{
++  memcpy (&__attr->__ss, __sigmask, sizeof (sigset_t));
++  return 0;
++}
++
++/* Get flag word from the attribute structure.  */
++static inline
++int posix_spawnattr_getflags (const posix_spawnattr_t *__restrict
++				     __attr,
++				     short int *__restrict __flags)
++{
++  *__flags = __attr->__flags;
++  return 0;
++}
++
++/* Store flags in the attribute structure.  */
++static inline
++int posix_spawnattr_setflags (posix_spawnattr_t *_attr,
++				     short int __flags)
++{
++  /* Check no invalid bits are set.  */
++  if (__flags & ~__POSIX_SPAWN_MASK)
++    return EINVAL;
++
++  _attr->__flags = __flags;
++  return 0;
++}
++
++/* Get process group ID from the attribute structure.  */
++static inline
++int posix_spawnattr_getpgroup (const posix_spawnattr_t *__restrict
++				      __attr, pid_t *__restrict __pgroup)
++{
++  *__pgroup = __attr->__pgrp;
++  return 0;
++}
++
++/* Store process group ID in the attribute structure.  */
++static inline
++int posix_spawnattr_setpgroup (posix_spawnattr_t *__attr,
++				      pid_t __pgroup)
++{
++  __attr->__pgrp = __pgroup;
++  return 0;
++}
++
++/* Get scheduling policy from the attribute structure.  */
++static inline
++int posix_spawnattr_getschedpolicy (const posix_spawnattr_t *
++					   __restrict __attr,
++					   int *__restrict __schedpolicy)
++{
++  *__schedpolicy = __attr->__policy;
++  return 0;
++}
++
++/* Store scheduling policy in the attribute structure.  */
++static inline
++int posix_spawnattr_setschedpolicy (posix_spawnattr_t *__attr,
++					   int __schedpolicy)
++{
++  switch (__schedpolicy) {
++  case SCHED_OTHER:
++  case SCHED_FIFO:
++  case SCHED_RR:
++    break;
++  default:
++    return EINVAL;
++  }
++
++  __attr->__policy = __schedpolicy;
++  return 0;
++}
++
++/* Get scheduling parameters from the attribute structure.  */
++static inline
++int posix_spawnattr_getschedparam (const posix_spawnattr_t *
++					  __restrict __attr,
++					  struct sched_param *__restrict
++					  __schedparam)
++{
++  memcpy (__schedparam, &__attr->__sp, sizeof (__attr->__sp));
++  return 0;
++}
++
++/* Store scheduling parameters in the attribute structure.  */
++static inline
++int posix_spawnattr_setschedparam (posix_spawnattr_t *__restrict __attr,
++					  const struct sched_param *
++					  __restrict __schedparam)
++{
++  __attr->__sp = *__schedparam;
++  return 0;
++}
++
++/* Initialize data structure for file attribute for `spawn' call.  */
++static inline
++int posix_spawn_file_actions_init (posix_spawn_file_actions_t *
++					  __file_actions)
++{
++  memset (__file_actions, 0, sizeof (*__file_actions));
++  return 0;
++}
++
++/* Free resources associated with FILE-ACTIONS.  */
++static inline
++int posix_spawn_file_actions_destroy (posix_spawn_file_actions_t *
++					     __file_actions)
++{
++  free (__file_actions->__actions);
++  return 0;
++}
++
++/* Add an action to FILE-ACTIONS which tells the implementation to call
++   `open' for the given file during the `spawn' call.  */
++extern int posix_spawn_file_actions_addopen (posix_spawn_file_actions_t *
++					     __restrict __file_actions,
++					     int __fd,
++					     const char *__restrict __path,
++					     int __oflag, mode_t __mode)
++     __THROW;
++
++/* Add an action to FILE-ACTIONS which tells the implementation to call
++   `close' for the given file descriptor during the `spawn' call.  */
++extern int posix_spawn_file_actions_addclose (posix_spawn_file_actions_t *
++					      __file_actions, int __fd)
++     __THROW;
++
++/* Add an action to FILE-ACTIONS which tells the implementation to call
++   `dup2' for the given file descriptors during the `spawn' call.  */
++extern int posix_spawn_file_actions_adddup2 (posix_spawn_file_actions_t *
++					     __file_actions,
++					     int __fd, int __newfd) __THROW;
++
++__END_DECLS
++
++#endif /* spawn.h */
+diff -Npur vlc-3.0.0-git20150218/src/posix/error.c vlc/src/posix/error.c
+--- vlc-3.0.0-git20150218/src/posix/error.c	2015-02-19 13:34:16.000000000 +0200
++++ vlc/src/posix/error.c	2015-02-19 16:12:15.980197428 +0200
+@@ -29,6 +29,8 @@
+ 
+ #include <vlc_common.h>
+ 
++#define strerror_l(err, locale) strerror(err)
++
+ static const char *vlc_strerror_l(int errnum, const char *lname)
+ {
+     int saved_errno = errno;
+diff -Npur vlc-3.0.0-git20150218/src/posix/netconf.c vlc/src/posix/netconf.c
+--- vlc-3.0.0-git20150218/src/posix/netconf.c	2015-02-19 13:34:16.000000000 +0200
++++ vlc/src/posix/netconf.c	2015-02-19 16:49:54.473770933 +0200
+@@ -32,6 +32,409 @@
+ #include <spawn.h>
+ #include <unistd.h>
+ 
++/********************************************************spawn_stub begin********************************************************/
++#ifdef _SPAWN_H_STUB
++/******************************************************spawn_int.h******************************************************/
++/* Data structure to contain the action information.  */
++struct __spawn_action {
++	enum {
++		spawn_do_close,
++		spawn_do_dup2,
++		spawn_do_open
++	} tag;
++
++	union {
++		struct {
++			int fd;
++		} close_action;
++		struct {
++			int fd;
++			int newfd;
++		} dup2_action;
++		struct {
++			int fd;
++			const char *path;
++			int oflag;
++			mode_t mode;
++		} open_action;
++	} action;
++};
++
++int __posix_spawn_file_actions_realloc(posix_spawn_file_actions_t *fa);
++
++/* handle !LFS */
++#ifndef __UCLIBC_HAS_LFS__
++# define rlimit64 rlimit
++# define getrlimit64 getrlimit
++#endif
++#ifndef O_LARGEFILE
++# define O_LARGEFILE 0
++#endif
++/********************************************************spawn.c********************************************************/
++#include <errno.h>
++#include <alloca.h>
++#include <unistd.h>
++#include <signal.h>
++#include <stdbool.h>
++#include <fcntl.h>
++
++#include <sys/resource.h>
++//#include <not-cancel.h>
++
++#include <spawn.h>
++
++/* The Unix standard contains a long explanation of the way to signal
++   an error after the fork() was successful.  Since no new wait status
++   was wanted there is no way to signal an error using one of the
++   available methods.  The committee chose to signal an error by a
++   normal program exit with the exit code 127.  */
++#define SPAWN_ERROR	127
++
++/* Execute file actions.
++ * Returns true on error.
++ */
++inline static bool execute_file_actions(const posix_spawn_file_actions_t *fa)
++{
++	struct rlimit64 fdlimit;
++	bool have_fdlimit = false;
++	int cnt;
++
++	for (cnt = 0; cnt < fa->__used; ++cnt) {
++		struct __spawn_action *action = &fa->__actions[cnt];
++
++		switch (action->tag) {
++		case spawn_do_close:
++			if (close(action->action.close_action.fd) != 0) {
++				if (!have_fdlimit) {
++					getrlimit64(RLIMIT_NOFILE, &fdlimit);
++					have_fdlimit = true;
++				}
++
++				/* Only signal errors for file descriptors out of range.  */
++				if (0 > action->action.close_action.fd
++				    || action->action.close_action.fd >= fdlimit.rlim_cur)
++					/* Signal the error.  */
++					return true;
++			}
++			break;
++
++		case spawn_do_open:;
++			int new_fd = open(action->action.open_action.path,
++						     action->action.open_action.oflag
++						     | O_LARGEFILE,
++						     action->action.open_action.mode);
++
++			if (new_fd == -1)
++				return true;
++
++			/* Make sure the desired file descriptor is used.  */
++			if (new_fd != action->action.open_action.fd) {
++				if (dup2(new_fd, action->action.open_action.fd)
++				    != action->action.open_action.fd)
++					return true;
++
++				if (close(new_fd) != 0)
++					return true;
++			}
++			break;
++
++		case spawn_do_dup2:
++			if (dup2(action->action.dup2_action.fd,
++				   action->action.dup2_action.newfd)
++			    != action->action.dup2_action.newfd)
++				return true;
++			break;
++		}
++	}
++
++	return false;
++}
++
++#define DANGEROUS (POSIX_SPAWN_SETSIGMASK		\
++		   | POSIX_SPAWN_SETSIGDEF		\
++		   | POSIX_SPAWN_SETSCHEDPARAM		\
++		   | POSIX_SPAWN_SETSCHEDULER		\
++		   | POSIX_SPAWN_SETPGROUP		\
++		   | POSIX_SPAWN_RESETIDS)
++inline static bool is_vfork_safe(short int flags)
++{
++	return ((flags & POSIX_SPAWN_USEVFORK) || !(flags & DANGEROUS));
++}
++
++
++/* Spawn a new process executing PATH with the attributes describes in *ATTRP.
++   Before running the process perform the actions described in FILE-ACTIONS. */
++static int
++__spawni(pid_t *pid, const char *file,
++	 const posix_spawn_file_actions_t *fa,
++	 const posix_spawnattr_t *attrp, char *const argv[],
++	 char *const envp[], const char *path)
++{
++	short int flags = attrp ? attrp->__flags : 0;
++
++	pid_t new_pid;
++	if (is_vfork_safe(flags) && !fa)
++		new_pid = vfork();
++	else {
++#ifdef __ARCH_USE_MMU__
++		new_pid = fork();
++#else
++		return ENOSYS;
++#endif
++	}
++
++	if (new_pid) {
++		if (new_pid < 0)
++			return errno;
++
++		if (pid)
++			*pid = new_pid;
++
++		return 0;
++	}
++
++	if (flags & POSIX_SPAWN_SETSIGMASK) {
++		if (sigprocmask(SIG_SETMASK, &attrp->__ss, NULL) != 0)
++			goto error;
++	}
++
++	if (flags & POSIX_SPAWN_SETSIGDEF) {
++		/* We have to iterate over all signals.  This could possibly be
++		   done better but it requires system specific solutions since
++		   the sigset_t data type can be very different on different
++		   architectures.  */
++		struct sigaction sa;
++		int sig;
++
++		memset(&sa, 0, sizeof(sa));
++		sa.sa_handler = SIG_DFL;
++
++		for (sig = 1; sig <= _NSIG; ++sig) {
++			if (sigismember(&attrp->__sd, sig)) {
++				if (sigaction(sig, &sa, NULL) != 0)
++					goto error;
++			}
++		}
++	}
++
++	if (flags & POSIX_SPAWN_SETSCHEDULER) {
++		if (sched_setscheduler(0, attrp->__policy, &attrp->__sp) == -1)
++			goto error;
++	} else if (flags & POSIX_SPAWN_SETSCHEDPARAM) {
++		if (sched_setparam(0, &attrp->__sp) == -1)
++			goto error;
++	}
++
++	if (flags & POSIX_SPAWN_SETPGROUP) {
++		if (setpgid(0, attrp->__pgrp) != 0)
++			goto error;
++	}
++
++	if (flags & POSIX_SPAWN_RESETIDS) {
++		if (seteuid(getuid()) || setegid(getgid()))
++			goto error;
++	}
++
++	if (fa && execute_file_actions(fa))
++		goto error;
++
++	if (!path || strchr(file, '/')) {
++		execve(file, argv, envp);
++		goto error;
++	}
++
++
++	char *name;
++	{
++		size_t filelen = strlen(file) + 1;
++		size_t pathlen = strlen(path) + 1;
++		name = alloca(pathlen + filelen);
++
++		/* Copy the file name at the top. */
++		name = (char *) memcpy(name + pathlen, file, filelen);
++
++		/* And add the slash.  */
++		*--name = '/';
++	}
++
++	char *p;
++	do {
++		char *startp;
++		p = strchrnul(path, ':');
++
++		/* Two adjacent colons, or a colon at the beginning or the end
++		   of `PATH' means to search the current directory.  */
++		if (p == path)
++			startp = name + 1;
++		else
++			startp = (char *) memcpy(name - (p - path), path, p - path);
++
++		execve(startp, argv, envp);
++
++		switch (errno) {
++		case EACCES:
++		case ENOENT:
++		case ESTALE:
++		case ENOTDIR:
++			/* Those errors indicate the file is missing or not
++			   executable by us, in which case we want to just try
++			   the next path directory. */
++			break;
++		default:
++			/* Some other error means we found an executable file,
++			   but something went wrong executing it; return the
++			   error to our caller. */
++			goto error;
++		}
++
++		path = p;
++	} while (*p++ != '\0');
++
++error:
++	_exit(SPAWN_ERROR);
++}
++
++/* Spawn a new process executing PATH with the attributes describes in *ATTRP.
++   Before running the process perform the actions described in FILE-ACTIONS. */
++int posix_spawn (pid_t *pid, const char *path,
++	       const posix_spawn_file_actions_t *fa,
++	       const posix_spawnattr_t *attrp, char *const argv[],
++	       char *const envp[])
++{
++	return __spawni(pid, path, fa, attrp, argv, envp, NULL);
++}
++
++/* Spawn a new process executing FILE with the attributes describes in *ATTRP.
++   Before running the process perform the actions described in FILE-ACTIONS. */
++int
++posix_spawnp(pid_t *pid, const char *file,
++	     const posix_spawn_file_actions_t *fa,
++	     const posix_spawnattr_t *attrp, char *const argv[],
++	     char *const envp[])
++{
++	const char *path = getenv("PATH");
++
++	if (!path)
++		path = ":/bin:/usr/bin";
++
++	return __spawni(pid, file, fa, attrp, argv, envp, path);
++}
++/********************************************************spawn_faction_addclose.c********************************************************/
++/* Add an action to FILE-ACTIONS which tells the implementation to call
++   `close' for the given file descriptor during the `spawn' call.  */
++int
++posix_spawn_file_actions_addclose(posix_spawn_file_actions_t *file_actions,
++				  int fd)
++{
++	int maxfd = sysconf(_SC_OPEN_MAX);
++	struct __spawn_action *rec;
++
++	/* Test for the validity of the file descriptor.  */
++	if (fd < 0 || fd >= maxfd)
++		return EBADF;
++
++	/* Allocate more memory if needed.  */
++	if (file_actions->__used == file_actions->__allocated
++	    && __posix_spawn_file_actions_realloc(file_actions) != 0)
++		/* This can only mean we ran out of memory.  */
++		return ENOMEM;
++
++	/* Add the new value.  */
++	rec = &file_actions->__actions[file_actions->__used];
++	rec->tag = spawn_do_close;
++	rec->action.open_action.fd = fd;
++
++	/* Account for the new entry.  */
++	++file_actions->__used;
++	return 0;
++}
++/********************************************************spawn_faction_addup2.c********************************************************/
++/* Add an action to FILE-ACTIONS which tells the implementation to call
++   `dup2' for the given file descriptors during the `spawn' call.  */
++int
++posix_spawn_file_actions_adddup2(posix_spawn_file_actions_t *file_actions,
++				 int fd, int newfd)
++{
++	int maxfd = sysconf(_SC_OPEN_MAX);
++	struct __spawn_action *rec;
++
++	/* Test for the validity of the file descriptor.  */
++	if (fd < 0 || newfd < 0 || fd >= maxfd || newfd >= maxfd)
++		return EBADF;
++
++	/* Allocate more memory if needed.  */
++	if (file_actions->__used == file_actions->__allocated
++	    && __posix_spawn_file_actions_realloc (file_actions) != 0)
++		/* This can only mean we ran out of memory.  */
++		return ENOMEM;
++
++	/* Add the new value.  */
++	rec = &file_actions->__actions[file_actions->__used];
++	rec->tag = spawn_do_dup2;
++	rec->action.dup2_action.fd = fd;
++	rec->action.dup2_action.newfd = newfd;
++
++	/* Account for the new entry.  */
++	++file_actions->__used;
++	return 0;
++}
++/********************************************************spawn_faction_addopen.c********************************************************/
++/* Add an action to FILE-ACTIONS which tells the implementation to call
++   `open' for the given file during the `spawn' call.  */
++int
++posix_spawn_file_actions_addopen(posix_spawn_file_actions_t *file_actions,
++				 int fd, const char *path, int oflag,
++				 mode_t mode)
++{
++	int maxfd = sysconf(_SC_OPEN_MAX);
++	struct __spawn_action *rec;
++
++	/* Test for the validity of the file descriptor.  */
++	if (fd < 0 || fd >= maxfd)
++		return EBADF;
++
++	/* Allocate more memory if needed.  */
++	if (file_actions->__used == file_actions->__allocated
++	    && __posix_spawn_file_actions_realloc (file_actions) != 0)
++		/* This can only mean we ran out of memory.  */
++		return ENOMEM;
++
++	/* Add the new value.  */
++	rec = &file_actions->__actions[file_actions->__used];
++	rec->tag = spawn_do_open;
++	rec->action.open_action.fd = fd;
++	rec->action.open_action.path = path;
++	rec->action.open_action.oflag = oflag;
++	rec->action.open_action.mode = mode;
++
++	/* Account for the new entry.  */
++	++file_actions->__used;
++	return 0;
++}
++/********************************************************spawn_faction_init.c********************************************************/
++#include <stdlib.h>
++#include <string.h>
++
++/* Function used to increase the size of the allocated array.  This
++   function is called from the `add'-functions.  */
++int
++__posix_spawn_file_actions_realloc(posix_spawn_file_actions_t *file_actions)
++{
++	int newalloc = file_actions->__allocated + 8;
++	void *newmem = realloc(file_actions->__actions,
++			       newalloc * sizeof(struct __spawn_action));
++
++	if (newmem == NULL)
++		/* Not enough memory.  */
++		return ENOMEM;
++
++	file_actions->__actions = (struct __spawn_action *)newmem;
++	file_actions->__allocated = newalloc;
++	return 0;
++}
++#endif
++/********************************************************spawn_stub end********************************************************/
++
+ extern char **environ;
+ 
+ #include <vlc_common.h>
+diff -Npur vlc-3.0.0-git20150218/src/posix/thread.c vlc/src/posix/thread.c
+--- vlc-3.0.0-git20150218/src/posix/thread.c	2015-02-19 13:34:17.000000000 +0200
++++ vlc/src/posix/thread.c	2015-02-19 17:01:33.642163229 +0200
+@@ -54,6 +54,13 @@
+ # include <sys/pset.h>
+ #endif
+ 
++#ifdef _POSIX_CLOCK_SELECTION
++# undef _POSIX_CLOCK_SELECTION
++#endif
++#ifdef _POSIX_MONOTONIC_CLOCK
++# undef _POSIX_MONOTONIC_CLOCK
++#endif
++
+ #if !defined (_POSIX_TIMERS)
+ # define _POSIX_TIMERS (-1)
+ #endif

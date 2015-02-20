@@ -217,7 +217,7 @@ $(SAMBA2_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SAMBA2_SOURCE) mak
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SAMBA2_BUILD_DIR)/.configured: $(SAMBA2_HOST_BUILD_DIR)/.built $(DL_DIR)/$(SAMBA2_SOURCE) $(SAMBA2_PATCHES)
+$(SAMBA2_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA2_SOURCE) $(SAMBA2_PATCHES)
 	rm -rf $(BUILD_DIR)/$(SAMBA2_DIR) $(SAMBA2_BUILD_DIR)
 	$(SAMBA2_UNZIP) $(DL_DIR)/$(SAMBA2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA2_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA2_DIR) -p1

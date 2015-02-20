@@ -178,7 +178,7 @@ $(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(LIBUSB_IPK_DIR)/opt/bin/testlibusb
 #	rm -rf $(LIBUSB_IPK_DIR)/opt/include
 #	rm -rf $(LIBUSB_IPK_DIR)/opt/bin/libusb-config
-	rm -rf $(LIBUSB_IPK_DIR)/opt/lib/libusb.{a,la}
+	rm -f $(LIBUSB_IPK_DIR)/opt/lib/*.la $(LIBUSB_IPK_DIR)/opt/lib/*.a
 	$(MAKE) $(LIBUSB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUSB_IPK_DIR)
 

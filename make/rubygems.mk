@@ -21,8 +21,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RUBYGEMS_SITE=http://rubyforge.org/frs/download.php/35283
+RUBYGEMS_SITE=http://production.cf.rubygems.org/rubygems
+ifneq (wl500g, $(OPTWARE_TARGET))
+RUBYGEMS_VERSION=2.4.5
+else
 RUBYGEMS_VERSION=1.1.1
+endif
 RUBYGEMS_SOURCE=rubygems-$(RUBYGEMS_VERSION).tgz
 RUBYGEMS_DIR=rubygems-$(RUBYGEMS_VERSION)
 RUBYGEMS_UNZIP=zcat
@@ -47,9 +51,11 @@ RUBYGEMS_IPK_VERSION=1
 # RUBYGEMS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq (wl500g, $(OPTWARE_TARGET))
 RUBYGEMS_PATCHES=\
 	$(RUBYGEMS_SOURCE_DIR)/hash-bang-path.patch \
-	$(RUBYGEMS_SOURCE_DIR)/install-lib-dir.patch \
+	$(RUBYGEMS_SOURCE_DIR)/install-lib-dir.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -107,7 +113,7 @@ rubygems-source: $(DL_DIR)/$(RUBYGEMS_SOURCE) $(RUBYGEMS_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(RUBYGEMS_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBYGEMS_SOURCE) $(RUBYGEMS_PATCHES)
+$(RUBYGEMS_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBYGEMS_SOURCE) $(RUBYGEMS_PATCHES) make/rubygems.mk
 #	$(MAKE) ruby-stage
 	rm -rf $(BUILD_DIR)/$(RUBYGEMS_DIR) $(RUBYGEMS_BUILD_DIR)
 	$(RUBYGEMS_UNZIP) $(DL_DIR)/$(RUBYGEMS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -183,9 +189,19 @@ $(RUBYGEMS_IPK): $(RUBYGEMS_BUILD_DIR)/.built
 	rm -rf $(RUBYGEMS_IPK_DIR) $(BUILD_DIR)/rubygems_*_$(TARGET_ARCH).ipk
 	$(RUBY_HOST_RUBY) -C $(RUBYGEMS_BUILD_DIR) setup.rb all \
 		--prefix=$(RUBYGEMS_IPK_DIR)/opt
+	sed -i -e '0,/^#!/s|^#!.*|#!/opt/bin/ruby|' $(RUBYGEMS_IPK_DIR)/opt/bin/gem
+	mv -f $(RUBYGEMS_IPK_DIR)/opt/bin/gem $(RUBYGEMS_IPK_DIR)/opt/bin/rubygems-gem
+ifeq (wl500g, $(OPTWARE_TARGET))
 	install -d $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems
 	cp -R $(RUBYGEMS_BUILD_DIR)/doc/* $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems
+endif
 	$(MAKE) $(RUBYGEMS_IPK_DIR)/CONTROL/control
+	echo "#!/bin/sh\n/opt/bin/update-alternatives --install '/opt/bin/gem' 'gem' /opt/bin/rubygems-gem 40" > \
+		$(RUBYGEMS_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh\n/opt/bin/update-alternatives --remove 'gem' /opt/bin/rubygems-gem" > \
+		$(RUBYGEMS_IPK_DIR)/CONTROL/prerm
+	chmod 755 $(RUBYGEMS_IPK_DIR)/CONTROL/postinst
+	chmod 755 $(RUBYGEMS_IPK_DIR)/CONTROL/prerm
 	echo $(RUBYGEMS_CONFFILES) | sed -e 's/ /\n/g' > $(RUBYGEMS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RUBYGEMS_IPK_DIR)
 

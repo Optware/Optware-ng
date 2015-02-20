@@ -22,11 +22,18 @@
 #
 GOLANG_HG_REPO=https://go.googlecode.com/hg
 GOLANG_HG_DATE=20100315
-GOLANG_HG_REV=194d473264c1
-GOLANG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/golang
+#GOLANG_HG_REV=194d473264c1
+GOLANG_SITE=https://storage.googleapis.com/golang
+ifdef GOLANG_HG_REV
 GOLANG_VERSION=0.hg$(GOLANG_HG_DATE)
 GOLANG_SOURCE=golang-$(GOLANG_VERSION).tar.gz
 GOLANG_DIR=golang-$(GOLANG_VERSION)
+else
+GOLANG_VERSION=1.4.1
+GOLANG_SOURCE=go$(GOLANG_VERSION).src.tar.gz
+GOLANG_DIR=go
+endif
+
 GOLANG_UNZIP=zcat
 GOLANG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GOLANG_DESCRIPTION=A systems programming language - expressive, concurrent, garbage-collected
@@ -45,12 +52,14 @@ GOLANG_IPK_VERSION=1
 GOLANG_ARCH=$(strip \
 $(if $(filter arm armel, $(TARGET_ARCH)), arm, \
 $(if $(filter i686 i386, $(TARGET_ARCH)), 386, \
-$(TARGET_ARCH))))
+$(if $(filter x86_64 amd64, $(TARGET_ARCH)), amd64, \
+$(TARGET_ARCH)))))
 
 GOLANG_BUILD_CMD=$(strip \
 $(if $(filter arm, $(GOLANG_ARCH)), GOARCH=arm GOARM=5 ./make.bash, \
 $(if $(filter 386, $(GOLANG_ARCH)), GOARCH=386 ./make.bash, \
-echo $(GOLANG_ARCH) not supported)))
+$(if $(filter amd64, $(GOLANG_ARCH)), GOARCH=amd64 ./make.bash, \
+echo $(GOLANG_ARCH) not supported))))
 
 #GOLANG_PATCHES=$(GOLANG_SOURCE_DIR)/$(GOLANG_ARCH)-g.patch
 
@@ -113,7 +122,7 @@ $(GOLANG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GOLANG_SOURCE) $(G
 
 golang-host: $(GOLANG_HOST_BUILD_DIR)/.built
 
-$(GOLANG_BUILD_DIR)/.configured: $(GOLANG_HOST_BUILD_DIR)/.built $(GOLANG_PATCHES) make/golang.mk
+$(GOLANG_BUILD_DIR)/.configured: $(GOLANG_PATCHES) make/golang.mk #$(GOLANG_HOST_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/$(GOLANG_DIR) $(@D)
 	$(GOLANG_UNZIP) $(DL_DIR)/$(GOLANG_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(GOLANG_PATCHES)" ; \
@@ -123,16 +132,16 @@ $(GOLANG_BUILD_DIR)/.configured: $(GOLANG_HOST_BUILD_DIR)/.built $(GOLANG_PATCHE
 	if test "$(BUILD_DIR)/$(GOLANG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GOLANG_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|@CC@|$(TARGET_CC)|' $(@D)/src/quietgcc.bash
+#	sed -i -e 's|@CC@|$(TARGET_CC)|' $(@D)/src/quietgcc.bash
 ifneq ($(GOLANG_ARCH), amd64)
-	sed -i -e 's| -m64||' $(@D)/src/quietgcc.bash
+#	sed -i -e 's| -m64||' $(@D)/src/quietgcc.bash
 endif
-	sed -i -e '/^CC=/s|=.*quietgcc$$|=$(@D)/bin/quietgcc|' \
+#	sed -i -e '/^CC=/s|=.*quietgcc$$|=$(@D)/bin/quietgcc|' \
 	       -e '/^LD=/s|=.*quietgcc$$|=$(@D)/bin/quietgcc $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)|' \
 		$(@D)/src/Make.conf
-	sed -i -e '/^QUOTED_GOBIN=/s|=.*|=$(GOLANG_HOST_BUILD_DIR)/bin|g' \
+#	sed -i -e '/^QUOTED_GOBIN=/s|=.*|=$(GOLANG_HOST_BUILD_DIR)/bin|g' \
 		$(@D)/src/Make.cmd $(@D)/src/Make.pkg
-	rm -f $(@D)/pkg/~place-holder~
+#	rm -f $(@D)/pkg/~place-holder~
 	touch $@
 
 golang-unpack: $(GOLANG_BUILD_DIR)/.configured
@@ -142,11 +151,13 @@ golang-unpack: $(GOLANG_BUILD_DIR)/.configured
 #
 $(GOLANG_BUILD_DIR)/.built: $(GOLANG_BUILD_DIR)/.configured
 	rm -f $@
-	mkdir -p $(@D)/bin
+#	mkdir -p $(@D)/bin
+#		PATH=$(GOLANG_HOST_BUILD_DIR)/bin:$$PATH \
+		GOBIN=$(@D)/bin
 	(cd $(@D)/src; \
-		CC=$(TARGET_CC) \
-		PATH=$(GOLANG_HOST_BUILD_DIR)/bin:$$PATH \
-		GOROOT=$(@D) GOBIN=$(@D)/bin GOOS=linux \
+		CC_FOR_TARGET="$(TARGET_CC) $(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)" \
+		CXX_FOR_TARGET="$(TARGET_CXX)  $(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)" \
+		GOROOT=$(@D) GOROOT_FINAL=/opt/lib/go GOOS=linux \
 		$(GOLANG_BUILD_CMD); \
 	)
 	touch $@
@@ -200,9 +211,15 @@ $(GOLANG_IPK_DIR)/CONTROL/control:
 $(GOLANG_IPK): $(GOLANG_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/golang*_*_$(TARGET_ARCH).ipk $(BUILD_DIR)/golang*-ipk
 	# golang
-	install -d $(GOLANG_IPK_DIR)/opt/share/go
+#	install -d $(GOLANG_IPK_DIR)/opt/share/go
 	# $(STRIP_COMMAND) $(GOLANG_IPK_DIR)/opt/bin/*
-	rsync -av $(<D)/bin $(<D)/pkg $(<D)/[ACLR]* $(GOLANG_IPK_DIR)/opt/share/go/
+#	rsync -av $(<D)/bin $(<D)/pkg $(<D)/[ACLR]* $(GOLANG_IPK_DIR)/opt/share/go/
+	install -d $(GOLANG_IPK_DIR)/opt/bin
+	install -d $(GOLANG_IPK_DIR)/opt/lib/go/pkg/tool
+	cp -af $(GOLANG_BUILD_DIR)/bin/linux_$(GOLANG_ARCH)/* $(GOLANG_IPK_DIR)/opt/bin
+	cp -af $(GOLANG_BUILD_DIR)/pkg/linux_$(GOLANG_ARCH) $(GOLANG_IPK_DIR)/opt/lib/go/pkg
+	cp -af $(GOLANG_BUILD_DIR)/pkg/tool/linux_$(GOLANG_ARCH) $(GOLANG_IPK_DIR)/opt/lib/go/pkg/tool
+	$(STRIP_COMMAND) $(GOLANG_IPK_DIR)/opt/bin/* $(GOLANG_IPK_DIR)/opt/lib/go/pkg/tool/linux_$(GOLANG_ARCH)/*
 	$(MAKE) $(GOLANG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GOLANG_IPK_DIR)
 

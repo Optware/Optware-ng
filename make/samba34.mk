@@ -21,7 +21,7 @@
 #
 SAMBA34_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA34_VERSION ?= 3.4.17
-SAMBA34_IPK_VERSION ?= 1
+SAMBA34_IPK_VERSION ?= 2
 SAMBA34_SOURCE=samba-$(SAMBA34_VERSION).tar.gz
 SAMBA34_DIR=samba-$(SAMBA34_VERSION)
 SAMBA34_UNZIP=zcat
@@ -57,6 +57,7 @@ SAMBA34-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
 #
 SAMBA34_PATCHES=$(SAMBA34_SOURCE_DIR)/configure.in.patch \
 $(SAMBA34_SOURCE_DIR)/mtab.patch \
+$(SAMBA34_SOURCE_DIR)/samba-3.4.cups-1.6+.patch
 
 ifeq (uclibc, $(LIBC_STYLE))
 SAMBA34_PATCHES += $(SAMBA34_SOURCE_DIR)/mount.cifs.c.patch
@@ -216,6 +217,7 @@ endif
 ifeq ($(OPTWARE_TARGET), $(filter ddwrt oleg openwrt-ixp4xx, $(OPTWARE_TARGET)))
 	#sed -i -e 's/^static size_t strl/size_t strl/' $(@D)/source3/client/mount.cifs.c
 endif
+	sed -i -e '/AC_PATH_PROG(CUPS_CONFIG, cups-config)/s|.*|CUPS_CONFIG=$(STAGING_PREFIX)/bin/cups-config|' $(@D)/source3/configure.in
 	(cd $(@D)/source3/; ./autogen.sh )
 	(cd $(@D)/source3/; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -251,12 +253,17 @@ endif
 		--with-mandir=$(SAMBA34_MAN_DIR) \
 		--with-smbmount \
 		--with-quotas \
-		--with-krb5=no \
+		--without-krb5 \
+		--without-ads \
+		--with-libiconv=$(SAMBA_LIBICONV_DIR) \
 		$(SAMBA34_CONFIG_ARGS) \
 		--disable-nls \
 	)
+#	Make sure staged headers (like memcache.h) don't come before samba's internal ones and break things up
+	sed -i -e 's|^CFLAGS=|CFLAGS= -I$(@D)/source3/include |' $(@D)/source3/Makefile
 #	Remove Kerberos libs produced by broken configure
-	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' \
+#	No need for this anymore: --without-ads option takes care of this
+#	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' \
 	 -e 's/-lgssapi_krb5\|-lkrb5\|-lk5crypto\|-lcom_err\|-lgnutls//g' \
 		$(@D)/source3/Makefile
 ### additional codepages

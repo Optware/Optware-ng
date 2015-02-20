@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://archive.apache.org/dist/httpd
-APACHE_VERSION=2.2.20
+APACHE_VERSION=2.4.9
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -23,7 +23,7 @@ APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
 APACHE_DEPENDS=apr (>= $(APR_VERSION)), apr-util (>= $(APR_UTIL_VERSION)), \
-	e2fsprogs, expat, openssl, zlib $(APACHE_TARGET_DEPENDS)
+	e2fsprogs, expat, openssl, zlib $(APACHE_TARGET_DEPENDS), pcre
 
 APACHE_MPM=worker
 #APACHE_MPM=prefork
@@ -54,11 +54,11 @@ APACHE_LOCALES=
 # which they should be applied to the source code.
 #
 APACHE_PATCHES= \
-		$(APACHE_SOURCE_DIR)/hostcc-pcre.patch \
 		$(APACHE_SOURCE_DIR)/apxs.patch \
 		$(APACHE_SOURCE_DIR)/ulimit.patch \
 		$(APACHE_SOURCE_DIR)/Makefile_in.patch \
 		$(APACHE_SOURCE_DIR)/test_char_h.patch \
+#		$(APACHE_SOURCE_DIR)/hostcc-pcre.patch \
 
 #$(APACHE_SOURCE_DIR)/hostcc.patch \
 # if the platform does not have a daemon user and group, use nobody/-1
@@ -71,7 +71,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 APACHE_CPPFLAGS=
-APACHE_LDFLAGS=
+APACHE_LDFLAGS=-lpthread
 
 # We need this because openldap does not build on some platforms.
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
@@ -165,7 +165,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 	if test -d $(STAGING_INCLUDE_DIR)/apache2; then \
 		cd $(STAGING_INCLUDE_DIR)/apache2/ && rm -f `ls | egrep -v '^apr|^apu'`; \
 	fi
-	$(MAKE) zlib-stage e2fsprogs-stage expat-stage openssl-stage apr-util-stage
+	$(MAKE) zlib-stage e2fsprogs-stage expat-stage openssl-stage apr-util-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(@D)
 	$(APACHE_UNZIP) $(DL_DIR)/$(APACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APACHE_DIR) $(@D)
@@ -176,6 +176,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		$(@D)/config.layout
 	#cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(@D)/docs/conf
 	autoreconf -vif $(@D)
+	sed -i -e '/if (TEST_CHAR(c, T_ESCAPE_URLENCODED)) {/s/^/#ifndef T_ESCAPE_URLENCODED\n#define T_ESCAPE_URLENCODED   (0x40)\n#endif\n/' $(@D)/server/util.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APACHE_CPPFLAGS)" \
@@ -203,9 +204,11 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		--with-ssl=$(STAGING_PREFIX) \
 		--with-apr=$(STAGING_PREFIX) \
 		--with-apr-util=$(STAGING_PREFIX) \
+		--with-pcre=$(STAGING_PREFIX) \
 		--with-expat=/opt \
 		--with-port=8000 \
 	)
+	sed -i -e "s|-L/opt/lib -R/opt/lib|$(STAGING_LDFLAGS)|g" $(@D)/build/config_vars.mk
 	touch $@
 
 apache-unpack: $(APACHE_BUILD_DIR)/.configured
@@ -253,17 +256,19 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	rm -rf $(APACHE_IPK_DIR) $(BUILD_DIR)/apache_*_$(TARGET_ARCH).ipk $(APACHE_MANUAL_IPK_DIR) $(BUILD_DIR)/apache-manual_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_IPK_DIR) installbuilddir=/opt/share/apache2/build install
 	rm -rf $(APACHE_IPK_DIR)/opt/share/apache2/manual
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/libexec/*.so
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/ab
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/checkgid
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htcacheclean
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdbm
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdigest
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htpasswd
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httxt2dbm
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httpd
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/logresolve
-	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/rotatelogs
+	mv -f $(APACHE_IPK_DIR)/opt/bin/* $(APACHE_IPK_DIR)/opt/sbin/
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/libexec/*.so
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/ab
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/checkgid
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htcacheclean
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdbm
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdigest
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htpasswd
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httxt2dbm
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httpd
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/logresolve
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/rotatelogs
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/fcgistarter
 	mv $(APACHE_IPK_DIR)/opt/sbin/httpd $(APACHE_IPK_DIR)/opt/sbin/apache-httpd
 	mv $(APACHE_IPK_DIR)/opt/sbin/htpasswd $(APACHE_IPK_DIR)/opt/sbin/apache-htpasswd
 	rm -f $(APACHE_IPK_DIR)/opt/man/man1/htpasswd.1

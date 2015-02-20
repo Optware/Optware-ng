@@ -16,7 +16,7 @@
 # You should change all these variables to suit your package.
 #
 WGET_SITE=http://ftp.gnu.org/pub/gnu/wget
-WGET_VERSION=1.12
+WGET_VERSION=1.16.1
 WGET_SOURCE=wget-$(WGET_VERSION).tar.gz
 WGET_DIR=wget-$(WGET_VERSION)
 WGET_UNZIP=zcat
@@ -26,13 +26,13 @@ WGET_SECTION=net
 WGET_PRIORITY=optional
 WGET_DEPENDS=
 WGET_CONFLICTS=wget-ssl
-WGET-SSL_DEPENDS=libidn, openssl
+WGET-SSL_DEPENDS=libidn, openssl, gnutls, libnettle
 WGET-SSL_CONFLICTS=wget
 
 #
 # WGET_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET_IPK_VERSION=2
+WGET_IPK_VERSION=1
 
 #
 # WGET_CONFFILES should be a list of user-editable files
@@ -136,7 +136,7 @@ endif
 	touch $@
 
 $(WGET-SSL_BUILD_DIR)/.configured: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES) make/wget.mk
-	$(MAKE) libidn-stage openssl-stage
+	$(MAKE) libidn-stage openssl-stage gnutls-stage libnettle-stage
 	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(@D)
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WGET_PATCHES) | patch -d $(BUILD_DIR)/$(WGET_DIR) -p1

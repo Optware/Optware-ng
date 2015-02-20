@@ -45,8 +45,9 @@ GHOSTSCRIPT_IPK_VERSION=2
 ## GHOSTSCRIPT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+GHOSTSCRIPT_PATCHES=$(GHOSTSCRIPT_SOURCE_DIR)/base-time_.h.patch
 ifdef NO_BUILTIN_MATH
-GHOSTSCRIPT_PATCHES=$(GHOSTSCRIPT_SOURCE_DIR)/uclibc-cbrt.patch
+GHOSTSCRIPT_PATCHES+=$(GHOSTSCRIPT_SOURCE_DIR)/uclibc-cbrt.patch
 endif
 
 #
@@ -89,6 +90,7 @@ ghostscript-source: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE)
 $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) make/ghostscript.mk
 	rm -rf $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	cat $(GHOSTSCRIPT_SOURCE_DIR)/base-time_.h.patch | patch -d $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p1
 	mv $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 #	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(@D)/Makefile.in
 	(cd $(@D); \
@@ -131,7 +133,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GHOSTSCRIPT_PATCHES)"; then \
-		cat $(GHOSTSCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p0; \
+		cat $(GHOSTSCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(@D)/Makefile.in

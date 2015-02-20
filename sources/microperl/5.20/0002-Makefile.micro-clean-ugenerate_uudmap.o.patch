@@ -1,0 +1,25 @@
+From 0caf66c0480c7b280aa6a8673d11c4235d537126 Mon Sep 17 00:00:00 2001
+From: Guo Yixuan <culu.gyx@gmail.com>
+Date: Sat, 6 Sep 2014 01:40:42 -0400
+Subject: [PATCH 2/4] Makefile.micro: clean ugenerate_uudmap.o
+
+---
+ Makefile.micro | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.micro b/Makefile.micro
+index aba9338..7f30969 100644
+--- a/Makefile.micro
++++ b/Makefile.micro
+@@ -37,7 +37,7 @@ H = av.h uconfig.h cop.h cv.h embed.h embedvar.h form.h gv.h handy.h \
+ HE = $(H) EXTERN.h
+ 
+ clean:
+-	-rm -f $(O) microperl ugenerate_uudmap$(_X) $(generated_headers)
++	-rm -f $(O) microperl ugenerate_uudmap$(_X) ugenerate_uudmap$(_O) $(generated_headers)
+ 
+ distclean:	clean
+ 
+-- 
+2.1.0
+

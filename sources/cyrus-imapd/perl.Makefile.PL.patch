@@ -1,8 +1,8 @@
---- cyrus-imapd-2.2.10/perl/imap/Makefile.PL.orig	2003-10-22 20:50:18.000000000 +0200
-+++ cyrus-imapd-2.2.10/perl/imap/Makefile.PL	2005-02-23 15:05:39.000000000 +0100
+--- cyrus-imapd-2.3.16/perl/imap/Makefile.PL.orig	2009-05-06 16:48:04.000000000 +0300
++++ cyrus-imapd-2.3.16/perl/imap/Makefile.PL	2015-02-13 11:50:45.699024866 +0200
 @@ -53,6 +53,9 @@
- 
  my $LIB_RT = $ENV{LIB_RT};
+ my $ZLIB = $ENV{ZLIB};
  
 +my $CPPFLAGS = $ENV{CPPFLAGS};
 +my $LDFLAGS = $ENV{LDFLAGS};
@@ -14,18 +14,18 @@
      'clean'	=> {'FILES' => 'libcyrperl.a cyradm'},
      'OBJECT'    => 'IMAP.o',
      'MYEXTLIB'  => '../../lib/libcyrus.a ../../lib/libcyrus_min.a',
--    'LIBS'	=> ["$BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT -lssl -lcrypto"],
-+    'LIBS'	=> ["$LDFLAGS $BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT -lssl -lcrypto"],
-     'DEFINE'	=> '-DPERL_POLLUTE',     # e.g., '-DHAVE_SOMETHING' 
--    'INC'	=> "-I../../lib $SASL_INC $OPENSSL_INC", 
-+    'INC'	=> "-I../../lib $CPPFLAGS $SASL_INC $OPENSSL_INC", 
+-    'LIBS'	=> ["$BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT $ZLIB -lssl -lcrypto"],
++    'LIBS'	=> ["$LDFLAGS $BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT $ZLIB -lssl -lcrypto"],
+     'DEFINE'	=> '-DPERL_POLLUTE',    # e.g., '-DHAVE_SOMETHING' 
+-    'INC'	=> "-I../../lib -I../.. -I../../com_err/et $SASL_INC $OPENSSL_INC", 
++    'INC'	=> "-I../../lib -I../.. -I../../com_err/et $CPPFLAGS $SASL_INC $OPENSSL_INC", 
      'EXE_FILES' => [cyradm],
  );
---- cyrus-imapd-2.2.10/perl/sieve/managesieve/Makefile.PL.orig	2005-02-23 15:06:42.000000000 +0100
-+++ cyrus-imapd-2.2.10/perl/sieve/managesieve/Makefile.PL	2005-02-23 15:08:16.000000000 +0100
-@@ -51,6 +51,9 @@
- 
+--- cyrus-imapd-2.3.16/perl/sieve/managesieve/Makefile.PL.orig	2009-05-06 16:48:04.000000000 +0300
++++ cyrus-imapd-2.3.16/perl/sieve/managesieve/Makefile.PL	2015-02-13 11:52:53.438704868 +0200
+@@ -53,6 +53,9 @@
  my $LIB_RT = $ENV{LIB_RT};
+ my $ZLIB = $ENV{ZLIB};
  
 +my $CPPFLAGS = $ENV{CPPFLAGS};
 +my $LDFLAGS = $ENV{LDFLAGS};
@@ -33,12 +33,12 @@
  $libs = "-lcyrus";
  
  # See lib/ExtUtils/MakeMaker.pm for details of how to influence
-@@ -60,7 +63,7 @@
+@@ -62,7 +65,7 @@
      'ABSTRACT'  => 'Cyurs Sieve management interface',
      'VERSION_FROM' => 'managesieve.pm', # finds $VERSION
      'MYEXTLIB'  => '../lib/isieve.o ../lib/lex.o ../lib/mystring.o ../lib/request.o ../../../lib/libcyrus.a ../../../lib/libcyrus_min.a',
--    'LIBS'	=> ["$BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT -lssl -lcrypto"], 
-+    'LIBS'	=> ["$LDFLAGS $BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT -lssl -lcrypto"], 
+-    'LIBS'	=> ["$BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT $ZLIB -lssl -lcrypto"], 
++    'LIBS'	=> ["$LDFLAGS $BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT $ZLIB -lssl -lcrypto"], 
      'DEFINE'	=> '-DPERL_POLLUTE',     # e.g., '-DHAVE_SOMETHING' 
 -    'INC'	=> "-I../lib/ -I../../../lib/ $SASL_INC $OPENSSL_INC",
 +    'INC'	=> "-I../lib/ -I../../../lib/ $CPPFLAGS $SASL_INC $OPENSSL_INC",

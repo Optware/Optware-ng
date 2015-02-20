@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SUBVERTPY_VERSION=0.7.5
+SUBVERTPY_VERSION=0.9.1
 SUBVERTPY_SITE=http://samba.org/~jelmer/subvertpy
 SUBVERTPY_SOURCE=subvertpy-$(SUBVERTPY_VERSION).tar.gz
 SUBVERTPY_DIR=subvertpy-$(SUBVERTPY_VERSION)
@@ -32,6 +32,8 @@ SUBVERTPY_SECTION=devel
 SUBVERTPY_PRIORITY=optional
 PY25-SUBVERTPY_DEPENDS=svn, python25
 PY26-SUBVERTPY_DEPENDS=svn, python26
+PY27-SUBVERTPY_DEPENDS=svn, python26
+PY3-SUBVERTPY_DEPENDS=svn, python3
 SUBVERTPY_CONFLICTS=
 
 #
@@ -73,6 +75,12 @@ PY25-SUBVERTPY_IPK=$(BUILD_DIR)/py25-subvertpy_$(SUBVERTPY_VERSION)-$(SUBVERTPY_
 
 PY26-SUBVERTPY_IPK_DIR=$(BUILD_DIR)/py26-subvertpy-$(SUBVERTPY_VERSION)-ipk
 PY26-SUBVERTPY_IPK=$(BUILD_DIR)/py26-subvertpy_$(SUBVERTPY_VERSION)-$(SUBVERTPY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY27-SUBVERTPY_IPK_DIR=$(BUILD_DIR)/py27-subvertpy-$(SUBVERTPY_VERSION)-ipk
+PY27-SUBVERTPY_IPK=$(BUILD_DIR)/py27-subvertpy_$(SUBVERTPY_VERSION)-$(SUBVERTPY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY3-SUBVERTPY_IPK_DIR=$(BUILD_DIR)/py3-subvertpy-$(SUBVERTPY_VERSION)-ipk
+PY3-SUBVERTPY_IPK=$(BUILD_DIR)/py3-subvertpy_$(SUBVERTPY_VERSION)-$(SUBVERTPY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: subvertpy-source subvertpy-unpack subvertpy subvertpy-stage subvertpy-ipk subvertpy-clean subvertpy-dirclean subvertpy-check
 
@@ -148,6 +156,44 @@ endif
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
+	# 2.7
+	rm -rf $(BUILD_DIR)/$(SUBVERTPY_DIR)
+	$(SUBVERTPY_UNZIP) $(DL_DIR)/$(SUBVERTPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
+	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
+endif
+	mv $(BUILD_DIR)/$(SUBVERTPY_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.7"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.7"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	)
+	# 3
+#	rm -rf $(BUILD_DIR)/$(SUBVERTPY_DIR)
+#	$(SUBVERTPY_UNZIP) $(DL_DIR)/$(SUBVERTPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
+#	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
+endif
+#	mv $(BUILD_DIR)/$(SUBVERTPY_DIR) $(@D)/3
+#	(cd $(@D)/3; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	)
 	touch $@
 
 subvertpy-unpack: $(SUBVERTPY_BUILD_DIR)/.configured
@@ -158,7 +204,7 @@ subvertpy-unpack: $(SUBVERTPY_BUILD_DIR)/.configured
 $(SUBVERTPY_BUILD_DIR)/.built: $(SUBVERTPY_BUILD_DIR)/.configured
 	rm -f $@
 	(cd $(@D)/2.5; \
-	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	$(TARGET_CONFIGURE_OPTS) CC='$(TARGET_CC) -DT_PYSSIZET=19' LDSHARED='$(TARGET_CC) -shared' \
 	APR_CONFIG="$(STAGING_PREFIX)/bin/apr-1-config" \
 	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
 	SVN_PREFIX="$(STAGING_PREFIX)" \
@@ -170,6 +216,20 @@ $(SUBVERTPY_BUILD_DIR)/.built: $(SUBVERTPY_BUILD_DIR)/.configured
 	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
 	SVN_PREFIX="$(STAGING_PREFIX)" \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
+	)
+	(cd $(@D)/2.7; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	APR_CONFIG="$(STAGING_PREFIX)/bin/apr-1-config" \
+	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
+	SVN_PREFIX="$(STAGING_PREFIX)" \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build; \
+	)
+#	(cd $(@D)/3; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	APR_CONFIG="$(STAGING_PREFIX)/bin/apr-1-config" \
+	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
+	SVN_PREFIX="$(STAGING_PREFIX)" \
+	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build; \
 	)
 	touch $@
 
@@ -220,6 +280,34 @@ $(PY26-SUBVERTPY_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY26-SUBVERTPY_DEPENDS)" >>$@
 	@echo "Conflicts: $(SUBVERTPY_CONFLICTS)" >>$@
 
+$(PY27-SUBVERTPY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-subvertpy" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SUBVERTPY_PRIORITY)" >>$@
+	@echo "Section: $(SUBVERTPY_SECTION)" >>$@
+	@echo "Version: $(SUBVERTPY_VERSION)-$(SUBVERTPY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SUBVERTPY_MAINTAINER)" >>$@
+	@echo "Source: $(SUBVERTPY_SITE)/$(SUBVERTPY_SOURCE)" >>$@
+	@echo "Description: $(SUBVERTPY_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-SUBVERTPY_DEPENDS)" >>$@
+	@echo "Conflicts: $(SUBVERTPY_CONFLICTS)" >>$@
+
+$(PY3-SUBVERTPY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py3-subvertpy" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SUBVERTPY_PRIORITY)" >>$@
+	@echo "Section: $(SUBVERTPY_SECTION)" >>$@
+	@echo "Version: $(SUBVERTPY_VERSION)-$(SUBVERTPY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SUBVERTPY_MAINTAINER)" >>$@
+	@echo "Source: $(SUBVERTPY_SITE)/$(SUBVERTPY_SOURCE)" >>$@
+	@echo "Description: $(SUBVERTPY_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY3-SUBVERTPY_DEPENDS)" >>$@
+	@echo "Conflicts: $(SUBVERTPY_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -258,10 +346,34 @@ $(PY26-SUBVERTPY_IPK): $(SUBVERTPY_BUILD_DIR)/.built
 	$(MAKE) $(PY26-SUBVERTPY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-SUBVERTPY_IPK_DIR)
 
+$(PY27-SUBVERTPY_IPK): $(SUBVERTPY_BUILD_DIR)/.built
+	rm -rf $(PY27-SUBVERTPY_IPK_DIR) $(BUILD_DIR)/py27-subvertpy_*_$(TARGET_ARCH).ipk
+	(cd $(SUBVERTPY_BUILD_DIR)/2.7; \
+	APR_CONFIG="$(STAGING_PREFIX)/bin/apr-1-config" \
+	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
+	SVN_PREFIX="$(STAGING_PREFIX)" \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-SUBVERTPY_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) $(PY27-SUBVERTPY_IPK_DIR)/opt/lib/python2.7/site-packages/subvertpy/*.so
+	$(MAKE) $(PY27-SUBVERTPY_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-SUBVERTPY_IPK_DIR)
+
+$(PY3-SUBVERTPY_IPK): $(SUBVERTPY_BUILD_DIR)/.built
+	rm -rf $(PY3-SUBVERTPY_IPK_DIR) $(BUILD_DIR)/py3-subvertpy_*_$(TARGET_ARCH).ipk
+	(cd $(SUBVERTPY_BUILD_DIR)/3; \
+	APR_CONFIG="$(STAGING_PREFIX)/bin/apr-1-config" \
+	APU_CONFIG="$(STAGING_PREFIX)/bin/apu-1-config" \
+	SVN_PREFIX="$(STAGING_PREFIX)" \
+	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-SUBVERTPY_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) $(PY3-SUBVERTPY_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/subvertpy/*.so
+	$(MAKE) $(PY3-SUBVERTPY_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-SUBVERTPY_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-subvertpy-ipk: $(PY25-SUBVERTPY_IPK) $(PY26-SUBVERTPY_IPK)
+subvertpy-ipk: $(PY25-SUBVERTPY_IPK) $(PY26-SUBVERTPY_IPK) $(PY27-SUBVERTPY_IPK) #$(PY3-SUBVERTPY_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -277,9 +389,11 @@ subvertpy-dirclean:
 	rm -rf $(BUILD_DIR)/$(SUBVERTPY_DIR) $(SUBVERTPY_BUILD_DIR)
 	rm -rf $(PY25-SUBVERTPY_IPK_DIR) $(PY25-SUBVERTPY_IPK)
 	rm -rf $(PY26-SUBVERTPY_IPK_DIR) $(PY26-SUBVERTPY_IPK)
+	rm -rf $(PY27-SUBVERTPY_IPK_DIR) $(PY27-SUBVERTPY_IPK)
+#	rm -rf $(PY3-SUBVERTPY_IPK_DIR) $(PY3-SUBVERTPY_IPK)
 
 #
 # Some sanity check for the package.
 #
-subvertpy-check: $(PY25-SUBVERTPY_IPK) $(PY26-SUBVERTPY_IPK)
+subvertpy-check: $(PY25-SUBVERTPY_IPK) $(PY26-SUBVERTPY_IPK) $(PY27-SUBVERTPY_IPK) #$(PY3-SUBVERTPY_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

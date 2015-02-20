@@ -1,0 +1,22 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 07-add-warnings-are-errors-mode.dpatch
+## by Henrique de Moraes Holschuh <hmh@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: add a maintainer mode to abort on any warnings
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/configure.in
++++ cyrus-imapd-2.4/configure.in
+@@ -51,6 +51,11 @@ AC_PREREQ([2.54])
+ AC_CONFIG_HEADER(config.h)
+ AC_CANONICAL_SYSTEM
+ 
++dnl Useful for maintainer mode stuff
++WARNERROR=-W
++AC_ARG_ENABLE(warnings-are-errors,[  --enable-warnings-are-errors   add -Werror to most gcc calls], [ if test "$enableval" != "no" ; then WARNERROR=-Werror ; fi ])
++AC_SUBST(WARNERROR)
++
+ dnl Useful hook for distributions
+ AC_ARG_WITH(extraident,[  --with-extraident=STRING   use STRING as extra version information],
+ 	[AC_DEFINE_UNQUOTED(EXTRA_IDENT,"$withval", [Extra version information for imap/version.h])])

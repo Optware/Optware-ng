@@ -5,11 +5,11 @@
 ###########################################################
 
 AUTOMAKE_SITE=http://ftp.gnu.org/gnu/automake
-AUTOMAKE_VERSION=1.12
-AUTOMAKE_VER=1.12
+AUTOMAKE_VERSION=1.15
+AUTOMAKE_VER=1.15
 AUTOMAKE_SOURCE=automake-$(AUTOMAKE_VERSION).tar.xz
 AUTOMAKE_DIR=automake-$(AUTOMAKE_VERSION)
-AUTOMAKE_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
+AUTOMAKE_UNZIP=xzcat
 AUTOMAKE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AUTOMAKE_DESCRIPTION=Creates GNU standards-compliant Makefiles from template files
 AUTOMAKE_SECTION=util

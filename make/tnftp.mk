@@ -122,6 +122,7 @@ $(TNFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTP_SOURCE) $(TNFTP_PATCHES) make/
 		then mv $(BUILD_DIR)/$(TNFTP_DIR) $(@D) ; \
 	fi
 	sed -i -e '/^CPPFLAGS = \\/s|= |&$(STAGING_CPPFLAGS)|' $(@D)/libnetbsd/Makefile.in
+	find $(@D) -type f -name "*.[ch]" -exec sed -i -e 's/ruserpass/_ruserpass_/g' {} \;
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TNFTP_CPPFLAGS)" \

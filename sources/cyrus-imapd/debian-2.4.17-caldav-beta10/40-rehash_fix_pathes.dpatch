@@ -1,0 +1,22 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 40_rehash_fix_pathes.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix paths in tools/rehash
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/tools/rehash
++++ cyrus-imapd-2.4/tools/rehash
+@@ -66,10 +66,10 @@ my %ishash = map { $_ => 1 } (@bdirs, @f
+ 
+ # evil globals
+ my @configs = ($imapdconf);
+-my $confdir = "/var/imap";
++my $confdir = "/var/lib/cyrus";
+ my @parts;
+ my $yn = "y";
+-my $sievedir = "/usr/sieve";
++my $sievedir = "/var/spool/sieve";
+ my $nosievedir = 0;
+ my $hashimapspool = 0;
+ my $fulldirhash = 0;

@@ -1,38 +1,28 @@
---- ../httpd-2.0.53/support/apxs.in	2005-02-04 12:21:18.000000000 -0800
-+++ support/apxs.in	2005-02-20 09:53:13.861402759 -0800
-@@ -199,18 +199,19 @@
-     ($httpd = $0) =~ s:support/apxs$::;
- }
- 
--unless (-x "$httpd") {
--	error("$httpd not found or not executable");
--	exit 1;
--}
--
--unless (grep /mod_so/, `. $envvars && $httpd -l`) {
+--- apxs.in.orig	2013-12-26 20:01:53.000000000 +0200
++++ support/apxs.in	2015-01-10 13:11:04.797756113 +0200
+@@ -189,13 +189,14 @@
+ ##
+ ##  Initial shared object support check
+ ##
+-unless ("@MOD_SO_ENABLED@" eq "yes") {
 -    error("Sorry, no shared object support for Apache");
 -    error("available under your platform. Make sure");
 -    error("the Apache module mod_so is compiled into");
--    error("your server binary `$httpd'.");
+-    error("the server binary.");
 -    exit 1;
 -}
 +### these checks will not work when cross-compiling into a staging area!
-+#unless (-x "$httpd") {
-+#	error("$httpd not found or not executable");
-+#	exit 1;
-+#}
-+#
-+#unless (grep /mod_so/, `. $envvars && $httpd -l`) {
++#unless ("@MOD_SO_ENABLED@" eq "yes") {
 +#    error("Sorry, no shared object support for Apache");
 +#    error("available under your platform. Make sure");
 +#    error("the Apache module mod_so is compiled into");
-+#    error("your server binary `$httpd'.");
++#    error("the server binary.");
 +#    exit 1;
 +#}
  
  sub get_config_vars{
      my ($file, $rh_config) = @_;
-@@ -528,9 +529,10 @@
+@@ -550,9 +551,10 @@
  
      #   activate module via LoadModule/AddModule directive
      if ($opt_a or $opt_A) {

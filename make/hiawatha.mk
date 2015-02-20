@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-HIAWATHA_SITE=http://www.hiawatha-webserver.org/files
+HIAWATHA_SITE=https://www.hiawatha-webserver.org/files/hiawatha-7
 HIAWATHA_VERSION=7.6
 HIAWATHA_SOURCE=hiawatha-$(HIAWATHA_VERSION).tar.gz
 HIAWATHA_DIR=hiawatha-$(HIAWATHA_VERSION)

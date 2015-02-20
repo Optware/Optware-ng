@@ -21,9 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-NEVOW_VERSION=0.9.33
+PY-NEVOW_VERSION=0.11.1
 PY-NEVOW_SOURCE=Nevow-$(PY-NEVOW_VERSION).tar.gz
-PY-NEVOW_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-NEVOW_SOURCE)?format=raw
+PY-NEVOW_SITE=https://pypi.python.org/packages/source/N/Nevow
 PY-NEVOW_DIR=Nevow-$(PY-NEVOW_VERSION)
 PY-NEVOW_UNZIP=zcat
 PY-NEVOW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -32,6 +32,7 @@ PY-NEVOW_SECTION=misc
 PY-NEVOW_PRIORITY=optional
 PY25-NEVOW_DEPENDS=python25
 PY26-NEVOW_DEPENDS=python26
+PY27-NEVOW_DEPENDS=python27
 PY-NEVOW_CONFLICTS=
 
 #
@@ -77,6 +78,9 @@ PY25-NEVOW_IPK=$(BUILD_DIR)/py25-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSIO
 PY26-NEVOW_IPK_DIR=$(BUILD_DIR)/py26-nevow-$(PY-NEVOW_VERSION)-ipk
 PY26-NEVOW_IPK=$(BUILD_DIR)/py26-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PY27-NEVOW_IPK_DIR=$(BUILD_DIR)/py27-nevow-$(PY-NEVOW_VERSION)-ipk
+PY27-NEVOW_IPK=$(BUILD_DIR)/py27-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 .PHONY: py-nevow-source py-nevow-unpack py-nevow py-nevow-stage py-nevow-ipk py-nevow-clean py-nevow-dirclean py-nevow-check
 
 #
@@ -84,7 +88,7 @@ PY26-NEVOW_IPK=$(BUILD_DIR)/py26-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-NEVOW_SOURCE):
-	$(WGET) -O $@ $(PY-NEVOW_SITE) || \
+	$(WGET) -P $(@D) $(PY-NEVOW_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -139,6 +143,19 @@ $(PY-NEVOW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NEVOW_SOURCE) $(PY-NEVOW_PATCH
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
+	# 2.7
+	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR)
+	$(PY-NEVOW_UNZIP) $(DL_DIR)/$(PY-NEVOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-NEVOW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-NEVOW_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.7"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
 	touch $@
 
 py-nevow-unpack: $(PY-NEVOW_BUILD_DIR)/.configured
@@ -154,6 +171,9 @@ $(PY-NEVOW_BUILD_DIR)/.built: $(PY-NEVOW_BUILD_DIR)/.configured
 	cd $(@D)/2.6; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build
+	cd $(@D)/2.7; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build
 	touch $@
 
 #
@@ -185,8 +205,8 @@ $(PY-NEVOW-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Version: $(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-NEVOW_MAINTAINER)" >>$@
 	@echo "Source: $(PY-NEVOW_SITE)/$(PY-NEVOW_SOURCE)" >>$@
-	@echo "Description: $(PY-NEVOW_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY25-NEVOW_DEPENDS)" >>$@
+	@echo "Description: $(PY-NEVOW_DESCRIPTION). Documents package." >>$@
+	@echo "Depends:" >>$@
 	@echo "Conflicts: $(PY-NEVOW_CONFLICTS)" >>$@
 
 $(PY25-NEVOW_IPK_DIR)/CONTROL/control:
@@ -217,6 +237,20 @@ $(PY26-NEVOW_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY26-NEVOW_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-NEVOW_CONFLICTS)" >>$@
 
+$(PY27-NEVOW_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-nevow" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-NEVOW_PRIORITY)" >>$@
+	@echo "Section: $(PY-NEVOW_SECTION)" >>$@
+	@echo "Version: $(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-NEVOW_MAINTAINER)" >>$@
+	@echo "Source: $(PY-NEVOW_SITE)/$(PY-NEVOW_SOURCE)" >>$@
+	@echo "Description: $(PY-NEVOW_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-NEVOW_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-NEVOW_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -230,7 +264,6 @@ $(PY26-NEVOW_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-NEVOW_IPK): $(PY-NEVOW_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py*-nevow_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-NEVOW_IPK_DIR) $(BUILD_DIR)/py25-nevow_*_$(TARGET_ARCH).ipk
 	(cd $(PY-NEVOW_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
@@ -241,27 +274,38 @@ $(PY25-NEVOW_IPK): $(PY-NEVOW_BUILD_DIR)/.built
 	echo $(PY-NEVOW_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-NEVOW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-NEVOW_IPK_DIR)
 
-$(PY26-NEVOW_IPK) $(PY-NEVOW-COMMON_IPK): $(PY-NEVOW_BUILD_DIR)/.built
+$(PY26-NEVOW_IPK): $(PY-NEVOW_BUILD_DIR)/.built
 	rm -rf $(PY26-NEVOW_IPK_DIR) $(BUILD_DIR)/py26-nevow_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY-NEVOW-COMMON_IPK_DIR) $(BUILD_DIR)/py-nevow-common_*_$(TARGET_ARCH).ipk
 	(cd $(PY-NEVOW_BUILD_DIR)/2.6; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
 		--root=$(PY26-NEVOW_IPK_DIR) --prefix=/opt)
-	for f in $(PY26-NEVOW_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
-	install -d $(PY-NEVOW-COMMON_IPK_DIR)/opt/share
-	mv $(PY26-NEVOW_IPK_DIR)/opt/doc $(PY-NEVOW-COMMON_IPK_DIR)/opt/share
+	rm -rf $(PY26-NEVOW_IPK_DIR)/opt/doc
 	$(MAKE) $(PY26-NEVOW_IPK_DIR)/CONTROL/control
-	$(MAKE) $(PY-NEVOW-COMMON_IPK_DIR)/CONTROL/control
 	echo $(PY-NEVOW_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-NEVOW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-NEVOW_IPK_DIR)
+
+$(PY27-NEVOW_IPK) $(PY-NEVOW-COMMON_IPK): $(PY-NEVOW_BUILD_DIR)/.built
+	rm -rf $(PY27-NEVOW_IPK_DIR) $(BUILD_DIR)/py27-nevow_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY-NEVOW-COMMON_IPK_DIR) $(BUILD_DIR)/py-nevow-common_*_$(TARGET_ARCH).ipk
+	(cd $(PY-NEVOW_BUILD_DIR)/2.7; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install \
+		--root=$(PY27-NEVOW_IPK_DIR) --prefix=/opt)
+	for f in $(PY27-NEVOW_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.7|'`; done
+	install -d $(PY-NEVOW-COMMON_IPK_DIR)/opt/share
+	mv $(PY27-NEVOW_IPK_DIR)/opt/doc $(PY-NEVOW-COMMON_IPK_DIR)/opt/share
+	$(MAKE) $(PY27-NEVOW_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PY-NEVOW-COMMON_IPK_DIR)/CONTROL/control
+	echo $(PY-NEVOW_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-NEVOW_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-NEVOW_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-NEVOW-COMMON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-nevow-ipk: $(PY25-NEVOW_IPK) $(PY26-NEVOW_IPK)
+py-nevow-ipk: $(PY25-NEVOW_IPK) $(PY26-NEVOW_IPK) $(PY27-NEVOW_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -277,9 +321,10 @@ py-nevow-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR) $(PY-NEVOW_BUILD_DIR)
 	rm -rf $(PY25-NEVOW_IPK_DIR) $(PY25-NEVOW_IPK)
 	rm -rf $(PY26-NEVOW_IPK_DIR) $(PY26-NEVOW_IPK)
+	rm -rf $(PY27-NEVOW_IPK_DIR) $(PY27-NEVOW_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-nevow-check: $(PY25-NEVOW_IPK) $(PY26-NEVOW_IPK)
+py-nevow-check: $(PY25-NEVOW_IPK) $(PY26-NEVOW_IPK) $(PY27-NEVOW_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

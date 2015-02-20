@@ -137,6 +137,7 @@ $(TINYSCHEME_BUILD_DIR)/.built: $(TINYSCHEME_BUILD_DIR)/.configured
 	$(MAKE) -C $(TINYSCHEME_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		LD=$(TARGET_CC) \
+		CC="$(TARGET_CC) -fPIC" \
 		AR="$(TARGET_AR) crs" \
 		PLATFORM_FEATURES=-DInitFile=\\\"/opt/lib/tinyscheme/init.scm\\\" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TINYSCHEME_CPPFLAGS)" \

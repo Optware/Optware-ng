@@ -1,0 +1,34 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 06-disable_runpath.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: disable runpath
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/cmulocal/cyrus.m4
++++ cyrus-imapd-2.4/cmulocal/cyrus.m4
+@@ -3,6 +3,7 @@ dnl Additional macros for configure.in p
+ dnl $Id: cyrus.m4,v 1.6 2010/01/06 17:01:27 murch Exp $
+ dnl tjs@andrew.cmu.edu 6-may-1998
+ dnl
++dnl Debian fix (hmh@debian.org): We don't want runpath set in Debian
+ 
+ dnl It would be good if ANDREW_ADD_LIBPATH could detect if something was
+ dnl already there and not redundantly add it if it is.
+@@ -32,14 +33,5 @@ AC_DEFUN([CMU_ADD_LIBPATH_TO], [
+ dnl runpath initialization
+ AC_DEFUN([CMU_GUESS_RUNPATH_SWITCH], [
+    # CMU GUESS RUNPATH SWITCH
+-  AC_CACHE_CHECK(for runpath switch, andrew_cv_runpath_switch, [
+-    # first, try -R
+-    SAVE_LDFLAGS="${LDFLAGS}"
+-    LDFLAGS="-R /usr/lib"
+-    AC_TRY_LINK([],[],[andrew_cv_runpath_switch="-R"], [
+-  	LDFLAGS="-Wl,-rpath,/usr/lib"
+-    AC_TRY_LINK([],[],[andrew_cv_runpath_switch="-Wl,-rpath,"],
+-    [andrew_cv_runpath_switch="none"])
+-    ])
+-  LDFLAGS="${SAVE_LDFLAGS}"
+-  ])])
++    andrew_cv_runpath_switch="none"
++])

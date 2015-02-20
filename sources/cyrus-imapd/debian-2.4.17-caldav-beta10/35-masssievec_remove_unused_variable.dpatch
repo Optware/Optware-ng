@@ -1,0 +1,17 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 35_masssievec_remove_unused_variable.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Remove the $nosievedir variable which is set once but never used.
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/tools/masssievec
++++ cyrus-imapd-2.4/tools/masssievec
+@@ -84,7 +84,6 @@ sub read_conf {
+ 	    push @configs, $1;
+ 	}
+ 	if (/^sieveusehomedir:\s+(1|t|yes|on)/) {
+-	    $nosievedir = 1;
+ 	    print "you are storing sieve scripts in user's home directories, this script cannot deal with that\n";
+ 	    exit;
+ 	}

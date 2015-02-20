@@ -1,0 +1,9 @@
+--- cpio-2.11/src/filetypes.h.orig	2010-02-12 12:19:23.000000000 +0200
++++ cpio-2.11/src/filetypes.h	2015-02-01 14:30:19.909356972 +0200
+@@ -82,4 +82,6 @@
+ #define lstat stat
+ #endif
+ int lstat ();
++#ifndef stat
+ int stat ();
++#endif

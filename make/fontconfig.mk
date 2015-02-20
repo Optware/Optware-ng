@@ -19,6 +19,9 @@ FONTCONFIG_DESCRIPTION=Font configuration library
 FONTCONFIG_SECTION=lib
 FONTCONFIG_PRIORITY=optional
 FONTCONFIG_DEPENDS=expat, freetype, gconv-modules
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+FONTCONFIG_DEPENDS+=, libiconv
+endif
 
 #
 # FONTCONFIG_IPK_VERSION should be incremented when the ipk changes.
@@ -98,6 +101,9 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).
 		$(FONTCONFIG_PATCHES)
 	$(MAKE) freetype-stage
 	$(MAKE) expat-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz
 	if test -n "$(FONTCONFIG_PATCHES)" ; \

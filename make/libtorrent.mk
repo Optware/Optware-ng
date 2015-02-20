@@ -60,7 +60,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 LIBTORRENT_CPPFLAGS=
-LIBTORRENT_LDFLAGS=
+LIBTORRENT_LDFLAGS=-lgcc
 LIBTORRENT_CONFIGURE=
 
 ifeq ($(LIBC_STYLE), uclibc)

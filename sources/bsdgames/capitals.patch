@@ -1,0 +1,290 @@
+--- a/quiz/datfiles/africa
++++ b/quiz/datfiles/africa
+@@ -1,43 +1,56 @@
+-Algeria:Alg[iers|er]
+-Botswana:Gaberones
++Algeria:Algiers
++Angola:Luanda
++Benin:Porto-Novo
++Botswana:Gaborone
++Burkina Faso:Ouagadougou
+ Burundi:Bujumbura
+-Cameroun:Yaound['e|e'|e]
++C[^o|o^|o]te d'Ivoire:Yamoussoukro
++Cameroon:Yaound['e|e'|e]
++Cape Verde:Praia
+ Central Africa{n Rep{ublic}}:Bangui
+-Chad:Ndjamena
+-Congo:Brazzaville
+-Dahomey:Porto Novo
++Chad:N'Djamena|Ndjamena
++Comoros:Moroni
++Djibouti:Djibouti
++Egypt:Cairo
++Equatorial Guinea:Malabo
++Eritrea:Asmara
+ Ethiopia:Addis Ababa
+ Gabon:Libreville
+ Ghana:Accra
+ Guinea-Bissau:Bissau
+ Guinea:Conakry
+-Ivory Coast:Abidjan
+ Kenya:Nairobi
+ Lesotho:Maseru
+ Liberia:Monrovia
+-Libya:Al Bayda{'}
+-Malagasy{ Rep{ublic}}|Madagascar:Tananarive
+-Malawi:Zomba
++Libya:Tripoli
++Malagasy{ Rep{ublic}}|Madagascar:Antananarivo
++Malawi:Lilongwe
+ Mali:Bamako
+ Mauritania:Nouakchott
++Mauritius:Port Louis
++Mayotte:Mamoudzou
++Mo[z|,c|c,|c]ambique:Maputo
+ Morocco:Rabat
+-Mo[z|,c|c,|c]ambique:Louren[,c|c,|c]o Marques
++Namibia:Windhoek
+ Niger:Niamey
+-Nigeria:Lagos
+-Rhodesia:Salisbury
++Nigeria:Abuja
++R['e|e'|e]union:Saint-Denis
++Rep. Congo:Brazzaville
+ Rwanda:Kigali
++S[~a|a~|a]o Tom['e|e'|e] and Pr['i|i'|i]ncipe:S[~a|a~|a]o Tom['e|e'|e]
++Saint Helena:Jamestown
+ Senegal:Dakar
++Seychelles:Victoria
+ Sierra Leone:Freetown
+-Somali{ Rep{ublic}}:Mogadis[cio|hu]
++Somalia:Mogadishu
+ Sudan:Khartoum
+ Swaziland:Mbabane
+-Tanzania:Dar es Salaam
++Tanzania:Dodoma
+ Togo:Lom['e|e'|e]
+ Tunisia:Tunis
+ Uganda:Kampala
+-United Arab Rep{ublic}|Egypt:Cairo
+-Upper Volta:Ouagadougou
+ Zambia:Lusaka
+-Za["i|i"|i]re:Kinshasha
++Zimbabwe:Harare
++{DR |Democratic Republic of the }Congo:Kinshasa
+ {Rep{ublic} of }South Africa:Pretoria
+-{The }Gambia:Bathurst
++{The }Gambia:Banjul|Bathurst
+--- a/quiz/datfiles/america
++++ b/quiz/datfiles/america
+@@ -1,27 +1,54 @@
++Anguilla:The Valley
++Antigua and Barbuda:St. John's
+ Argentina:Buenos Aires
+-Bahamas:Nassau
++Aruba:Oranjestad
+ Barbados:Bridgetown
++Belize:Belmopan
++Bermuda:Hamilton
+ Bolivia:La Paz|Sucre
+-Bra[z|s]il:Brasilia
++Bra[z|s]il:Bras['i|i'|i]lia
++British Virgin Islands:Road Town
+ Canada:Ottawa
++Cayman Islands:George Town
+ Chile:Santiago
+ Colombia:Bogot['a|a'|a]
+-Costa Rica:San Jose
++Costa Rica:San Jos['e|e'|e]
+ Cuba:Ha[v|b]ana
++Dominica:Roseau
+ Dominican Republic:Santo Domingo
+ Ecuador:Quito
+ El Salvador:San Salvador
+-Guatemala:Guatemala
++Falkland Islands:Stanley
++French Guiana:Cayenne
++Greenland:Nuuk
++Grenada:St. George's
++Guadeloupe:Basse-Terre
++Guatemala:Guatemala City
+ Guyana:Georgetown
+-Haiti:Port au Prince
++Haiti:Port[-| ]au[-| ]Prince
+ Honduras:Tegucigalpa
+ Jamaica:Kingston
+-Mexico:Mexico
++Martinique:Fort-de-France
++Mexico:Mexico City
++Montserrat:Plymouth|Brades
++Netherlands Antilles:Willemstad
+ Nicaragua:Managua
+-Panama:Panama
++Panama:Panama City
+ Paraguay:Asunci['o|o'|o]n
+ Peru:Lima
+-Trinidad[ and Tobago|]:Port of Spain
+-United States|US{A}:Washington
++Puerto Rico:San Juan
++SGSSI|South Georgia and the South Sandwich Islands:Grytviken|King Edward Point
++Saint Barth['e|e'|e]lemy:Gustavia
++Saint Kitts and Nevis:Basseterre
++Saint Lucia:Castries
++Saint Martin:Marigot
++Saint Pierre and Miquelon:Saint-Pierre
++Saint Vincent and the Grenadines:Kingstown
++Suriname:Paramaribo
++Trinidad{ and Tobago}:Port of Spain
++Turks and Caicos Islands:Cockburn Town
++United States Virgin Islands:Charlotte Amalie
++United States|US{A}:Washington{ DC}
+ Uruguay:Montevideo
+ Venezuela:Caracas
++{The }Bahamas:Nassau
+--- a/quiz/datfiles/asia
++++ b/quiz/datfiles/asia
+@@ -1,12 +1,16 @@
+ Afghanistan:Kabul
++Armenia:Yerevan
+ Australia:Canberra
+-Bahrein:Manama
+-Bangladesh:Dacca
+-Bhutan:Thimbu
+-Burma:Rangoon
+-Cambodia|Khmer:P{h}nom Penh
+-China:Peking
++Azerbaijan:Baku
++Bahr[a|e]in:Manama
++Bangladesh:Dhaka
++Bhutan:Thimphu
++Burma:Naypyidaw
++Cambodia:Phnom Penh
+ Cyprus:Nicosia
++East Timor:Dili
++Egypt:Cairo
++Georgia:Tbilisi
+ India:New Delhi
+ Indonesia:Jakarta|Djakarta
+ Iran:Tehran
+@@ -14,28 +18,34 @@
+ Israel:Jerusalem
+ Japan:Tokyo
+ Jordan:Amman
+-Kuwait:Al-kuwait
++Kazakhstan:Astana
++Kuwait:Kuwait City
++Kyrgyzstan:Bishkek
+ Laos:Vientiane
+ Lebanon:Beirut
+ Malaysia:Kuala Lumpur
+-Maldive Islands:Male
++Maldives:Mal['e|e'|e]
+ Mongolia:Ulan Bator
+-Nepal:Katmandu
++Nepal:Kathmandu
+ North Korea:P{'}yongyang
+-North Yemen:San{'}a
+ Oman:Muscat
+ Pakistan:Islamabad
+-Papua[-| ]New Guinea:Port Moresby
++Papua New Guinea:Port Moresby
+ Philippines:Manila
+ Qatar:Doha
+-Saudi Arabia:Riyadh|J{ei}ddah
++Russia:Moscow
++Saudi Arabia:Riyadh
+ Singapore:Singapore
+ South Korea:Seoul
+-South Yemen:Aden
+-Sri Lanka:Colombo
++Sri Lanka:Kotte
+ Syria:Damascus
+ Taiwan:Taipei
++Tajikistan:Dushanbe
+ Thailand:Bangkok
+ Turkey:Ankara
+-United Arab Emirates:Abu Dhabi
++Turkmenistan:Ashgabat
++United Arab Emirates|UAE:Abu Dhabi
++Uzbekistan:Tashkent
+ Vietnam:Hanoi
++{Republic of }Yemen:Sana'a
++{{People's }Republic of }China:Beijing|Peking
+--- a/quiz/datfiles/europe
++++ b/quiz/datfiles/europe
+@@ -1,44 +1,60 @@
+-Albania:Tirana|Tirane"
++Abkhazia:Sukhumi
++Albania:Tirana
+ Andorra:Andorra la V[ell|iej]a
++Armenia:Yerevan
+ Austria:Vienna|Wien
+-Belarus|Byelorussia:M[i|e]nsk
+-Belgium:Brussel[s|]|Bruxelles
+-Bosnia[-Herzegovina|]:Sarajevo
+-Bulgaria:Sofi[a|ya]
++Azerbaijan:Baku
++Belarus:Minsk
++Belgium:Brussel{s}|Bruxelles
++Bosnia and Herzegovina:Sarajevo
++Bulgaria:Sofia
+ Croatia:Zagreb
++Cyprus:Nicosia
+ Czech Republic:Prague|Praha
+-Denmark:Copenhagen|K[o|o/]benhavn
+-United Kingdom|England|Great Britain|UK:London
++Denmark:Copenhagen|K[o|o/|/o]benhavn
+ Estonia:Tallinn
++Faroe Islands:T['o|o'|o]rshavn
+ Finland:Helsinki
+ France:Paris
+ Georgia:Tbilisi
+ Germany:Berlin
++Gibraltar:Gibraltar
+ Greece:Athens
++Guernsey:Saint Peter Port
+ Hungary:Budapest
+-Iceland:Reykjavik
++Iceland:Reykjav['i|i'|i]k
+ Ireland|Eire:Dublin
++Isle of Man:Douglas
+ Italy:Rom[e|a]
++Jersey:Saint Helier
++Kazakhstan:Astana
++Kosovo:Pristina
+ Latvia:Riga
+ Liechtenstein:Vaduz
+ Lithuania:Vilnius
+ Luxembourg:Luxembourg
+-[|Former Yugoslav Republic Of ]Macedonia:Skop[|l]je
++Macedonia:Skopje
+ Malta:Valletta
+-Moldova:Chisinau|Kishinev
++Moldova:Chi[,s|s,|s]inau|Kishinev
+ Monaco:Monaco
+-Netherlands|Holland:Amsterdam
++Montenegro:Podgorica
++Netherlands:Amsterdam
+ Norway:Oslo
+ Poland:Wars[aw|zawa]
+ Portugal:Lisbo[n|a]
+-R[u|o]mania:Bucharest|Bucuresti
++Romania:Bucharest
+ Russia:Mos[cow|kva]
+ San Marino:San Marino
+-Serbia and Montenegro:Belgrade|Beograd
+-Slovakia|Slovak Republic:Bratislava
++Serbia:Belgrade
++Slovakia:Bratislava
+ Slovenia:Ljubljana
++South Ossetia:Tskhinvali
+ Spain:Madrid
++Svalbard:Longyearbyen
+ Sweden:Stockholm
+ Switzerland:Bern{e}
+ Turkey:Ankara
+ Ukraine:Kiev|Kyiv
++United Kingdom|England|Great Britain|UK:London
++Vatican City:Vatican City
++[°A|A°|A]land Islands:Mariehamn

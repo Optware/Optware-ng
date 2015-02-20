@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MOC_SITE=ftp://ftp.daper.net/pub/soft/moc/stable
-MOC_VERSION=2.4.3
+MOC_SITE=http://ftp.daper.net/pub/soft/moc/stable
+MOC_VERSION=2.5.0
 MOC_SOURCE=moc-$(MOC_VERSION).tar.bz2
 MOC_DIR=moc-$(MOC_VERSION)
 MOC_UNZIP=bzcat
@@ -125,17 +125,18 @@ $(MOC_BUILD_DIR)/.configured: $(DL_DIR)/$(MOC_SOURCE) $(MOC_PATCHES) make/moc.mk
 	$(MAKE) ncursesw-stage
 	$(MAKE) speex-stage
 	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(MOC_DIR) $(MOC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MOC_DIR) $(@D)
 	$(MOC_UNZIP) $(DL_DIR)/$(MOC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOC_PATCHES)" ; \
 		then cat $(MOC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MOC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MOC_DIR)" != "$(MOC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MOC_DIR) $(MOC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MOC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MOC_DIR) $(@D) ; \
 	fi
-	sed -i -e '/--exists.*alsa/s/alsa /noalsa /g' $(MOC_BUILD_DIR)/configure
-	(cd $(MOC_BUILD_DIR); \
+	sed -i -e '/--exists.*alsa/s/alsa /noalsa /g' $(@D)/configure
+	sed -i -e '/#include <stdio\.h>/s/^/#include <stddef.h>\n/' $(@D)/decoder.c
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MOC_LDFLAGS)" \
@@ -153,7 +154,7 @@ $(MOC_BUILD_DIR)/.configured: $(DL_DIR)/$(MOC_SOURCE) $(MOC_PATCHES) make/moc.mk
 		--with-libFLAC=$(STAGING_PREFIX) \
 		$(MOC_CONFIGURE_OPTS) \
 	)
-	$(PATCH_LIBTOOL) $(MOC_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 moc-unpack: $(MOC_BUILD_DIR)/.configured
@@ -163,7 +164,7 @@ moc-unpack: $(MOC_BUILD_DIR)/.configured
 #
 $(MOC_BUILD_DIR)/.built: $(MOC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MOC_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -176,7 +177,7 @@ moc: $(MOC_BUILD_DIR)/.built
 #
 $(MOC_BUILD_DIR)/.staged: $(MOC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MOC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 moc-stage: $(MOC_BUILD_DIR)/.staged
@@ -251,4 +252,4 @@ moc-dirclean:
 # Some sanity check for the package.
 #
 moc-check: $(MOC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MOC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

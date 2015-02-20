@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLIMM_SITE=http://www.climm.org/source
-CLIMM_VERSION=0.7
+CLIMM_VERSION=0.7.1
 CLIMM_SOURCE=climm-$(CLIMM_VERSION).tgz
 CLIMM_DIR=climm-$(CLIMM_VERSION)
 CLIMM_UNZIP=zcat
@@ -139,6 +139,7 @@ endif
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
+	sed -i -e 's/\(^all-am:.*\) \$$(LIBRARIES)/\1/' $(@D)/src/Makefile
 	touch $@
 
 climm-unpack: $(CLIMM_BUILD_DIR)/.configured

@@ -21,12 +21,18 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-EACCELERATOR_VER=0.9.5.3
+EACCELERATOR_SVN=https://github.com/eaccelerator/eaccelerator/trunk
+EACCELERATOR_SVN_REV=445
+ifdef EACCELERATOR_SVN
+EACCELERATOR_VER=0.9.6-rev$(EACCELERATOR_SVN_REV)
+else
+EACCELERATOR_VER=0.9.6-rc2
+endif
 EACCELERATOR_VERSION:=$(EACCELERATOR_VER)-$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
-EACCELERATOR_SITE=http://bart.eaccelerator.net/source/$(EACCELERATOR_VER)
-EACCELERATOR_SOURCE=eaccelerator-$(EACCELERATOR_VER).tar.bz2
+EACCELERATOR_SITE=https://github.com/eaccelerator/eaccelerator/archive
+EACCELERATOR_SOURCE=eaccelerator-$(EACCELERATOR_VER).tar.gz
 EACCELERATOR_DIR=eaccelerator-$(EACCELERATOR_VER)
-EACCELERATOR_UNZIP=bzcat
+EACCELERATOR_UNZIP=zcat
 EACCELERATOR_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 EACCELERATOR_DESCRIPTION=Yet another php cache / accelerator
 EACCELERATOR_SECTION=web
@@ -47,14 +53,14 @@ EACCELERATOR_CONFFILES=/opt/etc/php.d/eaccelerator.ini
 # EACCELERATOR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# EACCELERATOR_PATCHES=$(EACCELERATOR_SOURCE_DIR)/uclibc.patch
+EACCELERATOR_PATCHES=$(EACCELERATOR_SOURCE_DIR)/eAccelerator-42067ac.bugfix.diff
 
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-EACCELERATOR_CPPFLAGS=-DMM_SEM_IPC -DMM_SHM_IPC -I$(STAGING_INCLUDE_DIR)/php -I$(STAGING_INCLUDE_DIR)/php/main -I$(STAGING_INCLUDE_DIR)/php/Zend -I$(STAGING_INCLUDE_DIR)/php/TSRM
+EACCELERATOR_CPPFLAGS=-DIS_CONSTANT_ARRAY=IS_CONSTANT_AST -DMM_SEM_IPC -DMM_SHM_IPC -I$(STAGING_INCLUDE_DIR)/php -I$(STAGING_INCLUDE_DIR)/php/main -I$(STAGING_INCLUDE_DIR)/php/Zend -I$(STAGING_INCLUDE_DIR)/php/TSRM
 EACCELERATOR_LDFLAGS=
 
 #
@@ -78,8 +84,18 @@ EACCELERATOR_IPK=$(BUILD_DIR)/eaccelerator_$(EACCELERATOR_VERSION)-$(EACCELERATO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(EACCELERATOR_SOURCE):
-	$(WGET) -P $(@D) $(EACCELERATOR_SITE)/$(@F) || \
+ifdef EACCELERATOR_SVN
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(EACCELERATOR_DIR) && \
+		svn co -r $(EACCELERATOR_SVN_REV) $(EACCELERATOR_SVN) \
+			$(EACCELERATOR_DIR) && \
+		tar -czf $@ $(EACCELERATOR_DIR) && \
+		rm -rf $(EACCELERATOR_DIR) \
+	)
+else
+	$(WGET) -O $@ $(EACCELERATOR_SITE)/$(EACCELERATOR_VER).tar.gz || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -112,8 +128,16 @@ make/eaccelerator.mk make/php.mk
 		patch -d $(BUILD_DIR)/$(EACCELERATOR_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(EACCELERATOR_DIR) $(@D)
+#	WANT_AUTOMAKE=1.6 
+	cd $(@D); $(STAGING_DIR)/bin/phpize
+	(cd `aclocal --print-ac-dir`; \
+		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
+			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
+	)
+	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
+	autoreconf -vif $(@D)
 	(cd $(@D); \
-		WANT_AUTOMAKE=1.6 $(STAGING_DIR)/bin/phpize; \
+		sed -i -e 's/mm_shm_mmap_posix=no/mm_shm_mmap_posix=yes/' -e 's/\$$mm_sem_pthread/yes/' configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(EACCELERATOR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(EACCELERATOR_LDFLAGS)" \

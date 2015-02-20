@@ -1,0 +1,31 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 77-change-missing-sieve-notice.dpatch.dpatch by Sven Mueller <sven@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Change the wording of sieved's notice when a user's default sieve
+## DP: script is missing
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/sieve/script.c
++++ cyrus-imapd-2.4/sieve/script.c
+@@ -55,6 +55,7 @@
+ #include <sys/types.h>
+ #include <unistd.h>
+ #include <assert.h>
++#include <errno.h>
+ 
+ #include "charset.h"
+ #include "hash.h"
+@@ -507,7 +508,11 @@ int sieve_script_load(const char *fname,
+     if (!fname || !ret) return SIEVE_FAIL;
+     
+     if (stat(fname, &sbuf) == -1) {
+-	syslog(LOG_DEBUG, "IOERROR: fstating sieve script %s: %m", fname);
++	if (errno == ENOENT) {
++		syslog(LOG_DEBUG, "WARNING: sieve script %s doesn't exist: %m", fname);
++	} else {
++		syslog(LOG_DEBUG, "IOERROR: fstating sieve script %s: %m", fname);
++	}
+ 	return SIEVE_FAIL;
+     }
+ 

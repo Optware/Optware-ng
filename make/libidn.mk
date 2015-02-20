@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBIDN_SITE=http://ftp.gnu.org/gnu/libidn
-LIBIDN_VERSION=1.25
+LIBIDN_VERSION=1.29
 LIBIDN_SOURCE=libidn-$(LIBIDN_VERSION).tar.gz
 LIBIDN_DIR=libidn-$(LIBIDN_VERSION)
 LIBIDN_UNZIP=zcat
@@ -190,7 +190,7 @@ $(LIBIDN_IPK_DIR)/CONTROL/control:
 $(LIBIDN_IPK): $(LIBIDN_BUILD_DIR)/.built
 	rm -rf $(LIBIDN_IPK_DIR) $(BUILD_DIR)/libidn_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBIDN_BUILD_DIR) DESTDIR=$(LIBIDN_IPK_DIR) install-strip
-	rm -f $(LIBIDN_IPK_DIR)/opt/lib/libidn.a
+	rm -f $(LIBIDN_IPK_DIR)/opt/lib/libidn.a $(LIBIDN_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(LIBIDN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBIDN_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBIDN_IPK_DIR)

@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 FLAC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/flac
-FLAC_VERSION=1.2.1
-FLAC_SOURCE=flac-$(FLAC_VERSION).tar.gz
+FLAC_VERSION=1.3.1
+FLAC_SOURCE=flac-$(FLAC_VERSION).tar.xz
 FLAC_DIR=flac-$(FLAC_VERSION)
-FLAC_UNZIP=zcat
+FLAC_UNZIP=xzcat
 FLAC_MAINTAINER=Josh Coalson <jcoalson@users.sourceforge.net>
 FLAC_DESCRIPTION=FLAC is a free lossless audio codec.  This package contains the codec libraries and the command-line tools flac and metaflac.
 FLAC_SECTION=compression

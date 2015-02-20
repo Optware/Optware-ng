@@ -22,9 +22,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGMP_SITE=ftp://ftp.gnu.org/gnu/gmp
-LIBGMP_VERSION=4.3.2
+LIBGMP_VERSION=6.0.0a
 LIBGMP_SOURCE=gmp-$(LIBGMP_VERSION).tar.bz2
-LIBGMP_DIR=gmp-$(LIBGMP_VERSION)
+LIBGMP_DIR=gmp-6.0.0
 LIBGMP_UNZIP=bzcat
 LIBGMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBGMP_DESCRIPTION=GNU Multiple Precision Arithmetic Library.
@@ -159,8 +159,9 @@ libgmp: $(LIBGMP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBGMP_BUILD_DIR)/.staged: $(LIBGMP_BUILD_DIR)/.built
-	rm -f $@
+	rm -f $@ $(STAGING_LIB_DIR)/libgmp.*
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libgmp.la
 	touch $@
 
 libgmp-stage: $(LIBGMP_BUILD_DIR)/.staged
@@ -217,11 +218,12 @@ $(LIBGMP_IPK_DIR)/CONTROL/control:
 $(LIBGMP_IPK): $(LIBGMP_BUILD_DIR)/.built
 	rm -rf $(LIBGMP_IPK_DIR) $(BUILD_DIR)/libgmp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGMP_BUILD_DIR) DESTDIR=$(LIBGMP_IPK_DIR) install-strip
-	$(STRIP_COMMAND) $(LIBGMP_IPK_DIR)/opt/lib/libgmp.so.[0-9].[0-9].[0-9]
+	$(STRIP_COMMAND) $(LIBGMP_IPK_DIR)/opt/lib/libgmp.so.*
 #	install -d $(LIBGMP_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBGMP_SOURCE_DIR)/libgmp.conf $(LIBGMP_IPK_DIR)/opt/etc/libgmp.conf
 #	install -d $(LIBGMP_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIBGMP_SOURCE_DIR)/rc.libgmp $(LIBGMP_IPK_DIR)/opt/etc/init.d/SXXlibgmp
+	rm -f $(LIBGMP_IPK_DIR)/opt/share/info/dir $(LIBGMP_IPK_DIR)/opt/lib/libgmp.la
 	$(MAKE) $(LIBGMP_IPK_DIR)/CONTROL/control
 #	install -m 755 $(LIBGMP_SOURCE_DIR)/postinst $(LIBGMP_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(LIBGMP_SOURCE_DIR)/prerm $(LIBGMP_IPK_DIR)/CONTROL/prerm

@@ -1,0 +1,36 @@
+From b7d8171382db198c43d62a6fff34e9bc86d07583 Mon Sep 17 00:00:00 2001
+From: Guo Yixuan <culu.gyx@gmail.com>
+Date: Sat, 6 Sep 2014 03:00:11 -0400
+Subject: [PATCH 4/4] Avoid double definition for DBL_DIG
+
+---
+ uconfig.sh   | 2 +-
+ uconfig64.sh | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/uconfig.sh b/uconfig.sh
+index b009b96..3ccec9a 100644
+--- a/uconfig.sh
++++ b/uconfig.sh
+@@ -89,7 +89,7 @@
+ d_ctime64='undef'
+ d_ctime_r='undef'
+ d_cuserid='undef'
+-d_dbl_dig='undef'
++d_dbl_dig='define'
+ d_dbminitproto='undef'
+ d_difftime64='undef'
+ d_difftime='undef'
+diff --git a/uconfig64.sh b/uconfig64.sh
+index a3bd544..2a0f9aa 100644
+--- a/uconfig64.sh
++++ b/uconfig64.sh
+@@ -90,7 +90,7 @@
+ d_ctime64='undef'
+ d_ctime_r='undef'
+ d_cuserid='undef'
+-d_dbl_dig='undef'
++d_dbl_dig='define'
+ d_dbminitproto='undef'
+ d_difftime64='undef'
+ d_difftime='undef'

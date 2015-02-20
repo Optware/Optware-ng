@@ -53,7 +53,7 @@ LIBSOUP_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 LIBSOUP_CPPFLAGS=
-LIBSOUP_LDFLAGS=
+LIBSOUP_LDFLAGS=-lgnutls
 
 #
 # LIBSOUP_BUILD_DIR is the directory in which the build is done.
@@ -106,16 +106,18 @@ libsoup-source: $(DL_DIR)/$(LIBSOUP_SOURCE) $(LIBSOUP_PATCHES)
 #
 $(LIBSOUP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSOUP_SOURCE) $(LIBSOUP_PATCHES) make/libsoup.mk
 	$(MAKE) glib-stage gnutls-stage libxml2-stage
-	rm -rf $(BUILD_DIR)/$(LIBSOUP_DIR) $(LIBSOUP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBSOUP_DIR) $(@D)
 	$(LIBSOUP_UNZIP) $(DL_DIR)/$(LIBSOUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBSOUP_PATCHES)" ; \
 		then cat $(LIBSOUP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBSOUP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBSOUP_DIR)" != "$(LIBSOUP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBSOUP_DIR) $(LIBSOUP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBSOUP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBSOUP_DIR) $(@D) ; \
 	fi
-	(cd $(LIBSOUP_BUILD_DIR); \
+	# Only <glib.h> can be included directly.
+	sed -i -e '/#include <glib[\/c]/s/^/#include <glib.h>\n/' $(@D)/libsoup/soup-types.h $(@D)/libsoup/soup-portability.h
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBSOUP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBSOUP_LDFLAGS)" \
@@ -129,7 +131,7 @@ $(LIBSOUP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSOUP_SOURCE) $(LIBSOUP_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBSOUP_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libsoup-unpack: $(LIBSOUP_BUILD_DIR)/.configured
@@ -139,7 +141,7 @@ libsoup-unpack: $(LIBSOUP_BUILD_DIR)/.configured
 #
 $(LIBSOUP_BUILD_DIR)/.built: $(LIBSOUP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBSOUP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +154,7 @@ libsoup: $(LIBSOUP_BUILD_DIR)/.built
 #
 $(LIBSOUP_BUILD_DIR)/.staged: $(LIBSOUP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBSOUP_BUILD_DIR) install SUBDIRS=libsoup DESTDIR=$(STAGING_DIR)
+	$(MAKE) -C $(@D) install SUBDIRS=libsoup DESTDIR=$(STAGING_DIR)
 	rm -f $(STAGING_LIB_DIR)/libsoup.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libsoup-2.2.pc
 	touch $@

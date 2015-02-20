@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON3_VERSION=3.2.3
-PYTHON3_VERSION_MAJOR=3.2
+PYTHON3_VERSION=3.4.2
+PYTHON3_VERSION_MAJOR=3.4
 PYTHON3_SITE=http://www.python.org/ftp/python/$(PYTHON3_VERSION)
 PYTHON3_DIR=Python-$(PYTHON3_VERSION)
 PYTHON3_SOURCE=$(PYTHON3_DIR).tgz
@@ -32,7 +32,7 @@ PYTHON3_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON3_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON3_SECTION=misc
 PYTHON3_PRIORITY=optional
-PYTHON3_DEPENDS=readline, bzip2, openssl, libdb, zlib, sqlite
+PYTHON3_DEPENDS=readline, bzip2, openssl, libdb, zlib, sqlite, xz-utils
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON3_DEPENDS+=, libstdc++
 endif
@@ -42,7 +42,7 @@ PYTHON3_SUGGESTS=
 #
 # PYTHON3_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON3_IPK_VERSION=3
+PYTHON3_IPK_VERSION=1
 
 #
 # PYTHON3_CONFFILES should be a list of user-editable files
@@ -57,8 +57,9 @@ ifeq (vt4, $(OPTWARE_TARGET))
 PYTHON3_CPPFLAGS+=-DPATH_MAX=4096
 endif
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
+# as for -lgcc_s flag, see: http://bugs.python.org/issue23340
 ifeq ($(LIBC_STYLE),uclibc)
-PYTHON3_LDFLAGS=-lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
+PYTHON3_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
 else
 PYTHON3_LDFLAGS=
 endif
@@ -84,15 +85,12 @@ PYTHON3_IPK=$(BUILD_DIR)/python3_$(PYTHON3_VERSION)-$(PYTHON3_IPK_VERSION)_$(TAR
 # http://mail.python.org/pipermail/patches/2004-October/016312.html
 PYTHON3_PATCHES=\
 	$(PYTHON3_SOURCE_DIR)/Makefile.pre.in.patch \
-	$(PYTHON3_SOURCE_DIR)/README.patch \
-	$(PYTHON3_SOURCE_DIR)/config.guess.patch \
-	$(PYTHON3_SOURCE_DIR)/config.sub.patch \
-	$(PYTHON3_SOURCE_DIR)/configure.in.patch \
+	$(PYTHON3_SOURCE_DIR)/configure.ac.patch \
 	$(PYTHON3_SOURCE_DIR)/setup.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
-	$(PYTHON3_SOURCE_DIR)/with-libintl.patch \
-	$(PYTHON3_SOURCE_DIR)/O_CLOEXEC.patch \
+	$(PYTHON3_SOURCE_DIR)/with-libintl.patch
+#	$(PYTHON3_SOURCE_DIR)/O_CLOEXEC.patch
 
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
 PYTHON3_PATCHES+= $(PYTHON3_SOURCE_DIR)/disable-ncursesw.patch
@@ -139,14 +137,16 @@ endif
 ifeq (enable, $(GETTEXT_NLS))
 	$(MAKE) gettext-stage
 endif
-	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
+	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage xz-utils-stage libffi-host-stage zlib-host-stage xz-utils-host-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	$(MAKE) autoconf-host-stage
-	rm -rf $(BUILD_DIR)/$(PYTHON3_DIR) $(@D)
+	rm -rf $(BUILD_DIR)/$(PYTHON3_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python3
 	$(PYTHON3_UNZIP) $(DL_DIR)/$(PYTHON3_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON3_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
 	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON3_DIR)/Modules/_ctypes/libffi/configure.ac
+	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_PREFIX)/lib" CPPFLAGS="-I$(HOST_STAGING_PREFIX)/include" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON3_DIR)/configure.ac
 	$(HOST_STAGING_PREFIX)/bin/autoreconf -vif $(BUILD_DIR)/$(PYTHON3_DIR)
+	sed -i -e 's|@STAGING_INCLUDE@|$(STAGING_INCLUDE_DIR)|g' -e 's|@TOOLCHAIN_TARGET_INCLUDE@|$(TARGET_INCDIR)|g' $(BUILD_DIR)/$(PYTHON3_DIR)/setup.py
 	mkdir -p $(@D)
 	( \
 	echo "[build_ext]"; \
@@ -155,6 +155,7 @@ endif
 	echo "rpath=/opt/lib") > $(@D)/setup.cfg
 	(cd $(@D); \
 	 $(TARGET_CONFIGURE_OPTS) \
+	 READELF=$(TARGET_CROSS)readelf \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON3_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON3_LDFLAGS)" \
 		ac_cv_sizeof_off_t=8 \
@@ -174,8 +175,6 @@ endif
 		--mandir=/opt/man \
 		--enable-shared \
 	)
-#		--without-pymalloc \
-;
 	touch $@
 
 python3-unpack: $(PYTHON3_BUILD_DIR)/.configured
@@ -203,12 +202,12 @@ $(PYTHON3_BUILD_DIR)/.staged: $(PYTHON3_BUILD_DIR)/.built
 
 python3-stage: $(PYTHON3_BUILD_DIR)/.staged
 
-$(HOST_STAGING_PREFIX)/bin/python3.0: host/.configured make/python3.mk
+$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR): host/.configured make/python3.mk
 	$(MAKE) $(PYTHON3_BUILD_DIR)/.built
 	$(MAKE) -C $(PYTHON3_BUILD_DIR)/buildpython3 DESTDIR=$(HOST_STAGING_DIR) install
 	rm -f $(@D)/bin/python
 
-python3-host-stage: $(HOST_STAGING_PREFIX)/bin/python3.0
+python3-host-stage: $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

@@ -176,6 +176,7 @@ $(FILE_BUILD_DIR)/.staged: $(FILE_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) install \
 		DESTDIR=$(STAGING_DIR) \
 		FILE_COMPILE=$(FILE_HOST_BUILD_DIR)/src/file
+	rm -f $(STAGING_LIB_DIR)/libmagic.la
 	touch $@
 
 file-stage: $(FILE_BUILD_DIR)/.staged

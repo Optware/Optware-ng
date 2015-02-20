@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DEVEL-CALLER_SITE=http://search.cpan.org/CPAN/authors/id/R/RC/RCLAMP
-PERL-DEVEL-CALLER_VERSION=0.11
+PERL-DEVEL-CALLER_VERSION=2.06
 PERL-DEVEL-CALLER_SOURCE=Devel-Caller-$(PERL-DEVEL-CALLER_VERSION).tar.gz
 PERL-DEVEL-CALLER_DIR=Devel-Caller-$(PERL-DEVEL-CALLER_VERSION)
 PERL-DEVEL-CALLER_UNZIP=zcat
@@ -31,7 +31,7 @@ $(DL_DIR)/$(PERL-DEVEL-CALLER_SOURCE):
 
 perl-devel-caller-source: $(DL_DIR)/$(PERL-DEVEL-CALLER_SOURCE) $(PERL-DEVEL-CALLER_PATCHES)
 
-$(PERL-DEVEL-CALLER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DEVEL-CALLER_SOURCE) $(PERL-DEVEL-CALLER_PATCHES)
+$(PERL-DEVEL-CALLER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DEVEL-CALLER_SOURCE) $(PERL-DEVEL-CALLER_PATCHES) make/perl-devel-caller.mk
 	$(MAKE) perl-module-build-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DEVEL-CALLER_DIR) $(PERL-DEVEL-CALLER_BUILD_DIR)
 	$(PERL-DEVEL-CALLER_UNZIP) $(DL_DIR)/$(PERL-DEVEL-CALLER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -42,7 +42,8 @@ $(PERL-DEVEL-CALLER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DEVEL-CALLER_SOURCE
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		$(PERL_HOSTPERL) Build.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
+		PREFIX=/opt \
 		--config cc=$(TARGET_CC) \
 		--config ld=$(TARGET_CC) \
 	)
@@ -52,10 +53,14 @@ perl-devel-caller-unpack: $(PERL-DEVEL-CALLER_BUILD_DIR)/.configured
 
 $(PERL-DEVEL-CALLER_BUILD_DIR)/.built: $(PERL-DEVEL-CALLER_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PERL-DEVEL-CALLER_BUILD_DIR); \
+	$(MAKE) -C $(@D) \
+		$(TARGET_CONFIGURE_OPTS) \
+		LD=$(TARGET_CC) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL-DEVEL-CALLER_CPPFLAGS)" \
+		LDDLFLAGS="-shared $(STAGING_LDFLAGS) $(PERL-DEVEL-CALLER_LDFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PERL-DEVEL-CALLER_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		./Build \
-	)
+		;
 	touch $@
 
 perl-devel-caller: $(PERL-DEVEL-CALLER_BUILD_DIR)/.built
@@ -84,10 +89,7 @@ $(PERL-DEVEL-CALLER_IPK_DIR)/CONTROL/control:
 
 $(PERL-DEVEL-CALLER_IPK): $(PERL-DEVEL-CALLER_BUILD_DIR)/.built
 	rm -rf $(PERL-DEVEL-CALLER_IPK_DIR) $(BUILD_DIR)/perl-devel-caller_*_$(TARGET_ARCH).ipk
-	(cd $(PERL-DEVEL-CALLER_BUILD_DIR); \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		./Build --prefix $(PERL-DEVEL-CALLER_IPK_DIR)/opt install \
-	)
+	$(MAKE) -C $(PERL-DEVEL-CALLER_BUILD_DIR) DESTDIR=$(PERL-DEVEL-CALLER_IPK_DIR) install
 	find $(PERL-DEVEL-CALLER_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-DEVEL-CALLER_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \

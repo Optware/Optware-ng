@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 50-fix-imclient-manpage.dpatch by Sven Mueller <sven@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix formatting of imclient manpage
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/man/imclient.3
++++ cyrus-imapd-2.4/man/imclient.3
+@@ -41,7 +41,7 @@
+ .\"
+ .\" $Id: imclient.3,v 1.14 2010/01/06 17:01:51 murch Exp $
+ .SH NAME
+-imclient library - authenticating callback interface to IMAP/IMSP servers
++imclient \- (library) authenticating callback interface to IMAP/IMSP servers
+ .SH SYNOPSIS
+ .ad l
+ .ft B

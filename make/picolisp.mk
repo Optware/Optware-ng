@@ -115,7 +115,7 @@ $(PICOLISP_BUILD_DIR)/.configured: $(DL_DIR)/$(PICOLISP_SOURCE) $(PICOLISP_PATCH
 	if test "$(BUILD_DIR)/$(PICOLISP_DIR)" != "$(PICOLISP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PICOLISP_DIR) $(PICOLISP_BUILD_DIR) ; \
 	fi
-	sed -i -e 's/	gcc /	$$(CC) /' $(PICOLISP_BUILD_DIR)/src/Makefile
+	sed -i -e 's/	gcc /	$$(CC) /' -e 's/^CFLAGS :=/CFLAGS := -fPIC/' $(PICOLISP_BUILD_DIR)/src/Makefile
 #	(cd $(PICOLISP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PICOLISP_CPPFLAGS)" \

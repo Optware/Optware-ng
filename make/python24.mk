@@ -42,7 +42,7 @@ PYTHON24_SUGGESTS=
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=2
+PYTHON24_IPK_VERSION=3
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files
@@ -54,8 +54,9 @@ PYTHON24_IPK_VERSION=2
 #
 PYTHON24_CPPFLAGS=
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
+# as for -lgcc_s flag, see: http://bugs.python.org/issue23340
 ifeq ($(LIBC_STYLE),uclibc)
-PYTHON24_LDFLAGS=-lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
+PYTHON24_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
 else
 PYTHON24_LDFLAGS=
 endif
@@ -129,11 +130,12 @@ $(PYTHON24_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON24_SOURCE) $(PYTHON24_PATCH
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
-	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage zlib-stage
+	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage zlib-stage libffi-host-stage zlib-host-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
-	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(@D)
+	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.4
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON24_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1
+	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_PREFIX)/lib" CPPFLAGS="-I$(HOST_STAGING_PREFIX)/include" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON24_DIR)/configure.in
 	cd $(BUILD_DIR)/$(PYTHON24_DIR); autoconf configure.in > configure
 	mkdir $(@D)
 	(cd $(@D); \
@@ -158,6 +160,12 @@ endif
 		--enable-shared \
 		--enable-unicode=ucs4 \
 	)
+	### for linux3 build machines
+	sed -i -e 's/MACHDEP=.*/MACHDEP=\tlinux2/' $(@D)/Makefile
+
+	### make sure host default include and lib dirs aren't used
+	sed -i -e "/add_dir_to_list(self\.compiler\..*_dirs, '\/usr/s/^/#/" $(BUILD_DIR)/$(PYTHON24_DIR)/setup.py
+
 	touch $@
 
 python24-unpack: $(PYTHON24_BUILD_DIR)/.configured

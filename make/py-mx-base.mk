@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MX-BASE_SITE=http://www.egenix.com/files/python
-PY-MX-BASE_VERSION=3.1.3
+PY-MX-BASE_SITE=https://downloads.egenix.com/python
+PY-MX-BASE_VERSION=3.2.8
 PY-MX-BASE_SOURCE=egenix-mx-base-$(PY-MX-BASE_VERSION).tar.gz
 PY-MX-BASE_DIR=egenix-mx-base-$(PY-MX-BASE_VERSION)
 PY-MX-BASE_UNZIP=zcat
@@ -33,6 +33,7 @@ PY-MX-BASE_PRIORITY=optional
 PY24-MX-BASE_DEPENDS=python24
 PY25-MX-BASE_DEPENDS=python25
 PY26-MX-BASE_DEPENDS=python26
+PY27-MX-BASE_DEPENDS=python27
 PY-MX-BASE_CONFLICTS=
 
 #
@@ -80,6 +81,9 @@ PY25-MX-BASE_IPK=$(BUILD_DIR)/py25-mx-base_$(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IP
 PY26-MX-BASE_IPK_DIR=$(BUILD_DIR)/py26-mx-base-$(PY-MX-BASE_VERSION)-ipk
 PY26-MX-BASE_IPK=$(BUILD_DIR)/py26-mx-base_$(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PY27-MX-BASE_IPK_DIR=$(BUILD_DIR)/py27-mx-base-$(PY-MX-BASE_VERSION)-ipk
+PY27-MX-BASE_IPK=$(BUILD_DIR)/py27-mx-base_$(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 .PHONY: py-mx-base-source py-mx-base-unpack py-mx-base py-mx-base-stage py-mx-base-ipk py-mx-base-clean py-mx-base-dirclean py-mx-base-check
 
 #
@@ -112,7 +116,7 @@ py-mx-base-source: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE_PATCHES)
+$(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE_PATCHES) make/py-mx-base.mk
 	$(MAKE) python-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
@@ -161,6 +165,22 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
                 echo "executable=/opt/bin/python2.6" \
             ) >> setup.cfg; \
         )
+	# 2.7
+	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
+	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	#cat $(PY-MX-BASE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+            ( \
+                echo "[build_ext]"; \
+                echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+                echo "library-dirs=$(STAGING_LIB_DIR)"; \
+                echo "rpath=/opt/lib"; \
+                echo "[build_scripts]"; \
+                echo "executable=/opt/bin/python2.6" \
+            ) >> setup.cfg; \
+        )
+	find $(@D) -type f -name *.[ch] -a -not -name mx.h -exec sed -i -e 's/staticforward/statichere/' {} \;
 	touch $@
 
 py-mx-base-unpack: $(PY-MX-BASE_BUILD_DIR)/.configured
@@ -186,6 +206,11 @@ $(PY-MX-BASE_BUILD_DIR)/.built: $(PY-MX-BASE_BUILD_DIR)/.configured
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
         )
+	(cd $(@D)/2.7; \
+	 CPPFLAG=`echo $(STAGING_CPPFLAGS) $(PY27-MX-BASE_CPPFLAGS)` \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build; \
+        )
 	touch $@
 
 #
@@ -209,6 +234,10 @@ $(PY-MX-BASE_BUILD_DIR)/.staged: $(PY-MX-BASE_BUILD_DIR)/.built
 	(cd $(@D)/2.6; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
+        )
+	(cd $(@D)/2.7; \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
         )
 	touch $@
 
@@ -260,6 +289,20 @@ $(PY26-MX-BASE_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY26-MX-BASE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MX-BASE_CONFLICTS)" >>$@
 
+$(PY27-MX-BASE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-mx-base" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-MX-BASE_PRIORITY)" >>$@
+	@echo "Section: $(PY-MX-BASE_SECTION)" >>$@
+	@echo "Version: $(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-MX-BASE_MAINTAINER)" >>$@
+	@echo "Source: $(PY-MX-BASE_SITE)/$(PY-MX-BASE_SOURCE)" >>$@
+	@echo "Description: $(PY-MX-BASE_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-MX-BASE_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-MX-BASE_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -303,10 +346,20 @@ $(PY26-MX-BASE_IPK): $(PY-MX-BASE_BUILD_DIR)/.built
 	$(MAKE) $(PY26-MX-BASE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MX-BASE_IPK_DIR)
 
+$(PY27-MX-BASE_IPK): $(PY-MX-BASE_BUILD_DIR)/.built
+	rm -rf $(PY27-MX-BASE_IPK_DIR) $(BUILD_DIR)/py27-mx-base_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MX-BASE_BUILD_DIR)/2.7; \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-MX-BASE_IPK_DIR) --prefix=/opt; \
+        )
+	$(STRIP_COMMAND) `find $(PY27-MX-BASE_IPK_DIR) -name '*.so'`
+	$(MAKE) $(PY27-MX-BASE_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-MX-BASE_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-mx-base-ipk: $(PY24-MX-BASE_IPK) $(PY25-MX-BASE_IPK) $(PY26-MX-BASE_IPK)
+py-mx-base-ipk: $(PY24-MX-BASE_IPK) $(PY25-MX-BASE_IPK) $(PY26-MX-BASE_IPK) $(PY27-MX-BASE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -323,9 +376,10 @@ py-mx-base-dirclean:
 	rm -rf $(PY24-MX-BASE_IPK_DIR) $(PY24-MX-BASE_IPK)
 	rm -rf $(PY25-MX-BASE_IPK_DIR) $(PY25-MX-BASE_IPK)
 	rm -rf $(PY26-MX-BASE_IPK_DIR) $(PY26-MX-BASE_IPK)
+	rm -rf $(PY27-MX-BASE_IPK_DIR) $(PY27-MX-BASE_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-mx-base-check: $(PY24-MX-BASE_IPK) $(PY25-MX-BASE_IPK) $(PY26-MX-BASE_IPK)
+py-mx-base-check: $(PY24-MX-BASE_IPK) $(PY25-MX-BASE_IPK) $(PY26-MX-BASE_IPK) $(PY27-MX-BASE_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

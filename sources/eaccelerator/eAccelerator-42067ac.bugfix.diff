@@ -1,0 +1,382 @@
+https://gist.github.com/NewEraCracker/99b4a0e8b37244765f78
+diff -uNra eaccelerator-42067ac/ea_info.c eaccelerator.new/ea_info.c
+--- eaccelerator-42067ac/ea_info.c	Thu Aug 16 14:34:36 2012
++++ eaccelerator.new/ea_info.c	Fri Aug 29 20:34:38 2014
+@@ -359,7 +359,11 @@
+     add_assoc_string(return_value, "version", EACCELERATOR_VERSION, 1);
+     add_assoc_string(return_value, "shm_type", shm, 1);
+     add_assoc_string(return_value, "sem_type", sem, 1);
++
++#ifndef ZEND_ENGINE_2_5
+     add_assoc_string(return_value, "logo", EACCELERATOR_LOGO_GUID, 1);
++#endif
++
+     add_assoc_bool(return_value, "cache", (EAG (enabled)
+                                            && (ea_mm_instance != NULL)
+                                            && ea_mm_instance->enabled) ? 1 : 0);
+diff -uNra eaccelerator-42067ac/ea_restore.c eaccelerator.new/ea_restore.c
+--- eaccelerator-42067ac/ea_restore.c	Thu Aug 16 14:34:36 2012
++++ eaccelerator.new/ea_restore.c	Fri Aug 29 20:34:38 2014
+@@ -639,6 +639,10 @@
+     to->T = from->T;
+     to->brk_cont_array = from->brk_cont_array;
+     to->last_brk_cont = from->last_brk_cont;
++#ifdef ZEND_ENGINE_2_5
++    to->nested_calls = from->nested_calls;
++    to->used_stack = from->used_stack;
++#endif
+ 
+ #ifndef ZEND_ENGINE_2_4
+     to->current_brk_cont = -1;
+diff -uNra eaccelerator-42067ac/ea_store.c eaccelerator.new/ea_store.c
+--- eaccelerator-42067ac/ea_store.c	Thu Aug 16 14:34:36 2012
++++ eaccelerator.new/ea_store.c	Fri Aug 29 20:34:38 2014
+@@ -157,6 +157,9 @@
+ static size_t calc_op_array(zend_op_array * from TSRMLS_DC)
+ {
+     size_t size = 0;
++#ifndef ZEND_ENGINE_2_4
++    zend_op *opline, *end;
++#endif
+ 
+     if (from->type == ZEND_INTERNAL_FUNCTION) {
+         ADDSIZE(size, sizeof(zend_internal_function));
+@@ -202,8 +205,6 @@
+         ADDSIZE(size, from->last * sizeof(zend_op));
+ 
+ #ifndef ZEND_ENGINE_2_4
+-        zend_op *opline, *end;
+-
+         opline = from->opcodes;
+         end = opline + from->last;
+         for (; opline < end; opline++) {
+@@ -636,6 +637,10 @@
+     to->early_binding = from->early_binding;
+ #else
+     to->uses_this = from->uses_this;
++#endif
++#ifdef ZEND_ENGINE_2_5
++    to->nested_calls = from->nested_calls;
++    to->used_stack = from->used_stack;
+ #endif
+ 
+ #ifdef ZEND_ENGINE_2_4
+diff -uNra eaccelerator-42067ac/eaccelerator.c eaccelerator.new/eaccelerator.c
+--- eaccelerator-42067ac/eaccelerator.c	Thu Aug 16 14:34:36 2012
++++ eaccelerator.new/eaccelerator.c	Fri Aug 29 20:34:38 2014
+@@ -47,9 +47,11 @@
+ #ifdef ZEND_WIN32
+ #  include "fnmatch.h"
+ #  include "win32/time.h"
++#  include <direct.h>
+ #  include <time.h>
+ #  include <sys/utime.h>
+ #else
++#  include <unistd.h>
+ #  include <fnmatch.h>
+ #  include <sys/file.h>
+ #  include <sys/time.h>
+@@ -61,9 +63,17 @@
+ #  define O_BINARY 0
+ #endif
+ 
++#ifndef S_ISDIR
++#define S_ISDIR(mode) ((mode) & _S_IFDIR)
++#endif
++
+ #include "php.h"
+ #include "php_ini.h"
++
++#ifndef ZEND_ENGINE_2_5
+ #include "php_logos.h"
++#endif
++
+ #include "main/fopen_wrappers.h"
+ #include "ext/standard/info.h"
+ #include "ext/standard/php_incomplete_class.h"
+@@ -257,7 +267,12 @@
+     ea_mm_instance->hash_cnt = 0;
+     ea_mm_instance->rem_cnt  = 0;
+     ea_mm_instance->enabled = 1;
++#if 0
+     ea_mm_instance->optimizer_enabled = 1;
++#else
++    /* @TODO : The optimizer innumerous bugs must be fixed, in meantime completely disable it. */
++    ea_mm_instance->optimizer_enabled = 0;
++#endif
+     ea_mm_instance->check_mtime_enabled = 1;
+     ea_mm_instance->removed = NULL;
+     ea_mm_instance->cache_dir_uid = 0;
+@@ -1767,7 +1782,7 @@
+ 
+     if (status == 0) {
+         // check permissions
+-        if (buffer.st_mode != 777) {
++        if (buffer.st_mode != 0777) {
+             status = chmod(cache_path, 0777);
+             if (status < 0) {
+                 ea_debug_error(
+@@ -2269,8 +2284,10 @@
+         }
+     }
+ 
++#ifndef ZEND_ENGINE_2_5
+     php_register_info_logo(EACCELERATOR_VERSION_GUID, "text/plain", (unsigned char*)EACCELERATOR_VERSION_STRING, sizeof(EACCELERATOR_VERSION_STRING));
+     php_register_info_logo(EACCELERATOR_LOGO_GUID,    "image/gif",  (unsigned char*)eaccelerator_logo, sizeof(eaccelerator_logo));
++#endif
+ 
+     return SUCCESS;
+ }
+diff -uNra eaccelerator-42067ac/eaccelerator.h eaccelerator.new/eaccelerator.h
+--- eaccelerator-42067ac/eaccelerator.h	Thu Aug 16 14:34:36 2012
++++ eaccelerator.new/eaccelerator.h	Fri Aug 29 20:34:38 2014
+@@ -57,6 +57,10 @@
+ #   define ZEND_ENGINE_2_4
+ #endif
+ 
++#if PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 5
++#   define ZEND_ENGINE_2_5
++#endif
++
+ /* fixes compile errors on php5.1 */
+ #ifdef STR_EMPTY_ALLOC
+ #	define empty_string STR_EMPTY_ALLOC()
+@@ -226,6 +230,10 @@
+     zend_compiled_variable *vars;
+     int last_var;
+     zend_uint T;
++#ifdef ZEND_ENGINE_2_5
++    zend_uint nested_calls;
++    zend_uint used_stack;
++#endif
+     zend_brk_cont_element *brk_cont_array;
+     int last_brk_cont;
+     zend_try_catch_element *try_catch_array;
+diff -uNra eaccelerator-42067ac/opcodes.c eaccelerator.new/opcodes.c
+--- eaccelerator-42067ac/opcodes.c	Thu Aug 16 14:34:36 2012
++++ eaccelerator.new/opcodes.c	Fri Aug 29 20:34:38 2014
+@@ -90,7 +90,7 @@
+     OPDEF("SWITCH_FREE",               EXT_BIT    | OP1_STD    | OP2_UNUSED | RES_UNUSED), /* 49 */
+     OPDEF("BRK",                       EXT_UNUSED | OP1_BRK    | OP2_STD    | RES_UNUSED), /* 50 */
+     OPDEF("CONT",                      EXT_UNUSED | OP1_CONT   | OP2_STD    | RES_UNUSED), /* 51 */
+-    OPDEF("BOOL",                      EXT_UNUSED | OPS_STD    | OP2_UNUSED | RES_TMP), /* 52 */
++    OPDEF("BOOL",                      EXT_UNUSED | OP1_STD    | OP2_UNUSED | RES_TMP), /* 52 */
+     OPDEF("INIT_STRING",               EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_TMP), /* 53 */
+     OPDEF("ADD_CHAR",                  EXT_UNUSED | OP1_STD    | OP2_STD    | RES_TMP), /* 54 */
+     OPDEF("ADD_STRING",                EXT_UNUSED | OP1_STD    | OP2_STD    | RES_TMP), /* 55 */
+@@ -98,8 +98,8 @@
+     OPDEF("BEGIN_SILENCE",             EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_TMP), /* 57 */
+     OPDEF("END_SILENCE",               EXT_UNUSED | OP1_TMP    | OP2_UNUSED | RES_UNUSED), /* 58 */
+     OPDEF("INIT_FCALL_BY_NAME",        EXT_INIT_FCALL | OP1_STD | OP2_STD   | RES_UNUSED), /* 59 */
+-    OPDEF("DO_FCALL",                  EXT_FCALL  | OP1_STD    | OP2_UNUSED | RES_VAR), /* 60 */
+-    OPDEF("DO_FCALL_BY_NAME",          EXT_FCALL  | OP1_STD    | OP2_UNUSED | RES_VAR), /* 61 */
++    OPDEF("DO_FCALL",                  EXT_FCALL  | OP1_STD    | OP2_OPLINE | RES_VAR), /* 60 */
++    OPDEF("DO_FCALL_BY_NAME",          EXT_FCALL  | OP1_STD    | OP2_OPLINE | RES_VAR), /* 61 */
+     OPDEF("RETURN",                    EXT_UNUSED | OP1_STD    | OP2_UNUSED | RES_UNUSED), /* 62 */
+     OPDEF("RECV",                      EXT_UNUSED | OP1_ARG    | OP2_UNUSED | RES_VAR), /* 63 */
+     OPDEF("RECV_INIT",                 EXT_UNUSED | OP1_ARG    | OP2_STD    | RES_VAR), /* 64 */
+@@ -108,7 +108,7 @@
+     OPDEF("SEND_REF",                  EXT_SEND   | OP1_VAR    | OP2_ARG    | RES_UNUSED), /* 67 */
+     OPDEF("NEW",                       EXT_UNUSED | OP1_CLASS  | OP2_UNUSED | RES_VAR), /* 68 */
+ #ifdef ZEND_ENGINE_2_3
+-    OPDEF("INIT_NS_FCALL_BY_NAME",     EXT_STD    | OP1_STD    | OP1_STD    | RES_UNUSED), /* 69 */
++    OPDEF("INIT_NS_FCALL_BY_NAME",     EXT_STD    | OP1_STD    | OP2_STD    | RES_UNUSED), /* 69 */
+ #else
+     OPDEF("JMP_NO_CTOR",               EXT_UNUSED | OP1_STD    | OP2_OPLINE | RES_UNUSED), /* 69 */
+ #endif
+@@ -116,7 +116,11 @@
+     OPDEF("INIT_ARRAY",                EXT_BIT    | OP1_STD    | OP2_STD    | RES_TMP), /* 71 */
+     OPDEF("ADD_ARRAY_ELEMENT",         EXT_BIT    | OP1_STD    | OP2_STD    | RES_TMP), /* 72 */
+     OPDEF("INCLUDE_OR_EVAL",           EXT_UNUSED | OP1_STD    | OP2_INCLUDE| RES_VAR), /* 73 */
++#ifdef ZEND_ENGINE_2_4
++    OPDEF("UNSET_VAR",                 EXT_FETCHTYPE | OP1_STD | OP2_STD    | RES_UNUSED), /* 74 */
++#else
+     OPDEF("UNSET_VAR",                 EXT_UNUSED | OP1_STD    | OP2_FETCH  | RES_UNUSED), /* 74 */
++#endif
+     OPDEF("UNSET_DIM",                 EXT_STD    | OP1_STD    | OP2_STD    | RES_UNUSED), /* 75 */
+     OPDEF("UNSET_OBJ",                 EXT_STD    | OP1_STD    | OP2_STD    | RES_UNUSED), /* 76 */
+     OPDEF("FE_RESET",                  EXT_BIT    | OP1_STD    | OP2_OPLINE | RES_VAR), /* 77 */
+@@ -167,7 +171,7 @@
+     OPDEF("FETCH_DIM_UNSET",           EXT_UNUSED | OP1_VAR    | OP2_STD    | RES_VAR), /* 96 */
+     OPDEF("FETCH_OBJ_UNSET",           EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR), /* 97 */
+     OPDEF("FETCH_DIM_TMP_VAR",         EXT_FETCH  | OP1_STD    | OP2_STD    | RES_VAR), /* 98 */
+-#ifdef ZEND_ENGINE_2_4
++#ifdef ZEND_ENGINE_2_3
+     OPDEF("FETCH_CONSTANT",            EXT_UNUSED | OP1_STD    | OP2_STD    | RES_TMP), /* 99 */
+ #else
+     OPDEF("FETCH_CONSTANT",            EXT_UNUSED | OP1_UCLASS | OP2_STD    | RES_TMP), /* 99 */
+@@ -175,7 +179,7 @@
+ #ifdef ZEND_ENGINE_2_3
+     OPDEF("GOTO",                      EXT_STD    | OP1_JMPADDR | OP2_STD    | RES_UNUSED), /* 100 */
+ #else
+-    OPDEF("UNDEF-100",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 100 */
++    OPDEF("DECLARE_FUNCTION_OR_CLASS", EXT_DECLARE | OP1_STD   | OP2_STD    | RES_UNUSED), /* 100 */
+ #endif
+     OPDEF("EXT_STMT",                  EXT_STD    | OP1_STD    | OP2_STD    | RES_STD), /* 101 */
+     OPDEF("EXT_FCALL_BEGIN",           EXT_STD    | OP1_STD    | OP2_STD    | RES_STD), /* 102 */
+@@ -183,17 +187,23 @@
+     OPDEF("EXT_NOP",                   EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 104 */
+     OPDEF("TICKS",                     EXT_UNUSED | OP1_STD    | OP2_UNUSED | RES_UNUSED), /* 105 */
+     OPDEF("SEND_VAR_NO_REF",           EXT_SEND_NOREF| OP1_VAR | OP2_ARG    | RES_UNUSED),  /* 106 */
++#ifdef ZEND_ENGINE_2_4
++    OPDEF("CATCH",                     EXT_OPLINE | OP1_STD    | OP2_STD    | RES_UNUSED), /* 107 */
++#else
+     OPDEF("CATCH",                     EXT_OPLINE | OP1_CLASS  | OP2_STD    | RES_UNUSED), /* 107 */
++#endif
+     OPDEF("THROW",                     EXT_UNUSED | OP1_STD    | OP2_OPLINE | RES_UNUSED), /* 108 */
+     OPDEF("FETCH_CLASS",               EXT_FCLASS | OP1_STD    | OP2_STD    | RES_CLASS), /* 109 */
+     OPDEF("CLONE",                     EXT_UNUSED | OP1_STD    | OP2_UNUSED | RES_VAR), /* 110 */
++
+ #ifdef ZEND_ENGINE_2_4
+     OPDEF("RETURN_BY_REF",             EXT_STD    | OP1_STD    | OP2_UNUSED | RES_UNUSED), /* 111 */
+ #else
+-    OPDEF("UNDEF-111",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 111 */
++    OPDEF("INIT_CTOR_CALL",            EXT_UNUSED | OP1_STD    | OP2_UNUSED | RES_UNUSED), /* 111 */
+ #endif
++
+     OPDEF("INIT_METHOD_CALL",          EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR), /* 112 */
+-#ifdef ZEND_ENGINE_2_4
++#ifdef ZEND_ENGINE_2_3
+     OPDEF("INIT_STATIC_METHOD_CALL",   EXT_UNUSED | OP1_STD    | OP2_STD    | RES_UNUSED), /* 113 */
+ #else
+     OPDEF("INIT_STATIC_METHOD_CALL",   EXT_UNUSED | OP1_UCLASS | OP2_STD    | RES_UNUSED), /* 113 */
+@@ -205,22 +215,22 @@
+ #endif
+     OPDEF("ISSET_ISEMPTY_DIM_OBJ",     EXT_ISSET  | OP1_STD    | OP2_STD    | RES_TMP), /* 115 */
+ 
+-    OPDEF("UNDEF-116",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 116 */
+-    OPDEF("UNDEF-117",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 117 */
+-    OPDEF("UNDEF-118",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 118 */
+-    OPDEF("UNDEF-119",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 119 */
+-    OPDEF("UNDEF-120",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 120 */
+-    OPDEF("UNDEF-121",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 121 */
+-    OPDEF("UNDEF-122",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 122 */
+-    OPDEF("UNDEF-123",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 123 */
+-    OPDEF("UNDEF-124",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 124 */
+-    OPDEF("UNDEF-125",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 125 */
+-    OPDEF("UNDEF-126",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 126 */
+-    OPDEF("UNDEF-127",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 127 */
+-    OPDEF("UNDEF-128",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 128 */
+-    OPDEF("UNDEF-129",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 129 */
+-    OPDEF("UNDEF-130",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 130 */
+-    OPDEF("UNDEF-131",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 131 */
++    OPDEF("IMPORT_FUNCTION",           EXT_UNUSED | OP1_CLASS  | OP2_STD    | RES_UNUSED), /* 116 */
++    OPDEF("IMPORT_CLASS",              EXT_UNUSED | OP1_CLASS  | OP2_STD    | RES_UNUSED), /* 117 */
++    OPDEF("IMPORT_CONST",              EXT_UNUSED | OP1_CLASS  | OP2_STD    | RES_UNUSED), /* 118 */
++    OPDEF("OP_119",                    EXT_STD    | OP1_STD    | OP2_STD    | RES_STD),    /* 119 */
++    OPDEF("OP_120",                    EXT_STD    | OP1_STD    | OP2_STD    | RES_STD),    /* 120 */
++    OPDEF("ASSIGN_ADD_OBJ",            EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 121 */
++    OPDEF("ASSIGN_SUB_OBJ",            EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 122 */
++    OPDEF("ASSIGN_MUL_OBJ",            EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 123 */
++    OPDEF("ASSIGN_DIV_OBJ",            EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 124 */
++    OPDEF("ASSIGN_MOD_OBJ",            EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 125 */
++    OPDEF("ASSIGN_SL_OBJ",             EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 126 */
++    OPDEF("ASSIGN_SR_OBJ",             EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 127 */
++    OPDEF("ASSIGN_CONCAT_OBJ",         EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 128 */
++    OPDEF("ASSIGN_BW_OR_OBJ",          EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 129 */
++    OPDEF("ASSIGN_BW_AND_OBJ",         EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 130 */
++    OPDEF("ASSIGN_BW_XOR_OBJ",         EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),    /* 131 */
+ 
+     OPDEF("PRE_INC_OBJ",               EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR), /* 132 */
+     OPDEF("PRE_DEC_OBJ",               EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR), /* 133 */
+@@ -246,7 +256,7 @@
+ #ifdef ZEND_ENGINE_2_3
+     OPDEF("DECLARE_INHERITED_CLASS_DELAYED",         EXT_CLASS | OP1_STD  | OP2_STD    | RES_OPLINE), /* 145 */
+ #else
+-    OPDEF("UNDEF-145",                 EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 145 */
++    OPDEF("VERIFY_INSTANCEOF",         EXT_UNUSED | OP1_CLASS  | OP2_STD    | RES_UNUSED), /* 145 */
+ #endif
+     OPDEF("VERIFY_ABSTRACT_CLASS",     EXT_UNUSED | OP1_CLASS  | OP2_UNUSED | RES_UNUSED), /* 146 */
+     OPDEF("ASSIGN_DIM",                EXT_UNUSED | OP1_STD    | OP2_STD    | RES_VAR),   /* 147 */
+@@ -257,7 +267,7 @@
+     ,
+     OPDEF("UNDEF-151",                EXT_UNUSED | OP1_UNUSED | OP2_UNUSED | RES_UNUSED), /* 151 */
+     OPDEF("JMP_SET",                  EXT_UNUSED | OP1_STD    | OP2_JMPADDR| RES_TMP),    /* 152 */
+-    OPDEF("DECLARE_LAMBDA_FUNCTION",  EXT_UNUSED | OP1_STD    | OP2_UNUSED | RES_UNUSED)  /* 153 */
++    OPDEF("DECLARE_LAMBDA_FUNCTION",  EXT_UNUSED | OP1_STD    | OP2_STD    | RES_TMP)     /* 153 */
+ # endif
+ #ifdef ZEND_ENGINE_2_4
+     ,
+@@ -266,6 +276,14 @@
+     OPDEF("SEPARATE",                 EXT_UNUSED | OP1_STD    | OP2_STD    | RES_STD),    /* 156 */
+     OPDEF("QM_ASSIGN_VAR",            EXT_UNUSED | OP1_STD    | OP2_UNUSED | RES_TMP),    /* 157 */
+     OPDEF("JMP_SET_VAR",              EXT_UNUSED | OP1_STD    | OP2_STD    | RES_TMP)     /* 158 */
++#endif
++#ifdef ZEND_ENGINE_2_5
++    ,
++    OPDEF("DISCARD_EXCEPTION",        EXT_UNUSED | OP1_UNUSED  | OP2_UNUSED | RES_UNUSED), /* 159 */
++    OPDEF("YIELD",                    EXT_UNUSED | OP1_STD     | OP2_STD    | RES_UNUSED), /* 160 */
++    OPDEF("GENERATOR_RETURN",         EXT_UNUSED | OP1_STD     | OP2_UNUSED | RES_UNUSED), /* 161 */
++    OPDEF("FAST_CALL",                EXT_UNUSED | OP1_JMPADDR | OP2_UNUSED | RES_UNUSED), /* 162 */
++    OPDEF("FAST_RET",                 EXT_UNUSED | OP1_UNUSED  | OP2_UNUSED | RES_UNUSED)  /* 163 */
+ #endif
+ };
+ 
+diff -uNra eaccelerator-42067ac/optimize.c eaccelerator.new/optimize.c
+--- eaccelerator-42067ac/optimize.c	Thu Aug 16 14:34:36 2012
++++ eaccelerator.new/optimize.c	Fri Aug 29 20:34:38 2014
+@@ -1836,13 +1836,21 @@
+                     op->opcode == ZEND_BOOL_NOT) &&
+                    OP1_TYPE(op) == IS_CONST &&
+                    RES_TYPE(op) == IS_TMP_VAR) {
++#ifdef ZEND_ENGINE_2_3
++            int (*unary_op)(zval *result, zval *op1 TSRMLS_DC) =
++#else
+             int (*unary_op)(zval *result, zval *op1) =
++#endif
+                 unary_op = get_unary_op(op->opcode);
+             if (unary_op != NULL) {
+                 int old = EG(error_reporting);
+                 zval res;
+                 EG(error_reporting) = 0;
++#ifdef ZEND_ENGINE_2_3
++                if (unary_op(&res, &OP1_CONST(op) TSRMLS_CC) != FAILURE) {				
++#else
+                 if (unary_op(&res, &OP1_CONST(op)) != FAILURE) {
++#endif
+ #ifndef ZEND_ENGINE_2_4
+                     zval_dtor(&OP1_CONST(op));
+                     /* TODO check */
+@@ -3499,6 +3507,42 @@
+     if (!EAG(compiler) || op_array->type != ZEND_USER_FUNCTION) {
+         return;
+     }
++
++#ifdef ZEND_ENGINE_2_5
++    /* @TODO : Certain PHP 5.5 features are not supported */
++    if (op_array->has_finally_block || (op_array->fn_flags & ZEND_ACC_GENERATOR)) {
++        return;
++    }
++
++    /* @TODO : Opcodes added or changed in PHP 5.5 are not supported */
++    {
++        zend_op* op = op_array->opcodes;
++        zend_op* end = op + op_array->last;
++
++        while (op < end) {
++            /* Opcodes added in PHP 5.5 */
++            if (op->opcode == ZEND_DISCARD_EXCEPTION
++                    || op->opcode == ZEND_YIELD
++                    || op->opcode == ZEND_GENERATOR_RETURN
++                    || op->opcode == ZEND_FAST_CALL
++                    || op->opcode == ZEND_FAST_RET) {
++                return;
++            }
++            /* Opcodes with behaviour changes (See PHP 5.5 UPGRADING.INTERNALS) */
++            if (op->opcode == ZEND_INIT_METHOD_CALL
++                    || op->opcode == ZEND_INIT_STATIC_METHOD_CALL
++                    || op->opcode == ZEND_INIT_FCALL_BY_NAME
++                    || op->opcode == ZEND_INIT_NS_FCALL_BY_NAME
++                    || op->opcode == ZEND_NEW
++                    || op->opcode == ZEND_DO_FCALL
++                    || op->opcode == ZEND_DO_FCALL_BY_NAME) {
++                return;
++            }
++            /* Don't forget to increment */
++            op++;
++        }
++    }
++#endif
+ 
+ #ifdef ZEND_ENGINE_2_3
+     /* We run pass_two() here to let the Zend engine resolve ZEND_GOTO labels

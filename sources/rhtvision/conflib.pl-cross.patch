@@ -1,33 +1,33 @@
---- conflib.pl.orig	2004-11-01 12:35:14.000000000 -0800
-+++ conflib.pl	2007-06-19 10:15:00.000000000 -0700
+--- conflib.pl.orig	2007-01-16 20:21:40.000000000 +0200
++++ conflib.pl	2015-02-08 22:07:14.110008632 +0200
 @@ -356,7 +356,7 @@
   return 0;
  }
  ';
 - $test=RunGCCTest($cc,'c',$test,'');
 + $test="OK\n"; # RunGCCTest($cc,'c',$test,'');
-  if ($test ne "OK\n")
+  $test=~s/\W//g;
+  if ($test ne "OK")
     {
-     CreateCache();
-@@ -396,7 +396,7 @@
+@@ -397,7 +397,7 @@
   STD(cout) << "OK" << STD(endl);
   return 0;
  }';
 - $test=RunGCCTest($cc,'cc',$test,$stdcxx);
 + $test="OK\n"; #RunGCCTest($cc,'cc',$test,$stdcxx);
-  if ($test eq "OK\n")
+  $test=~s/\W//g;
+  if ($test eq "OK")
     {
-     print "yes\n";
-@@ -471,7 +471,7 @@
-  @list=split(/:/,$defaultCXX);
+@@ -478,7 +478,7 @@
+    }
   foreach $i (@list)
     {
 -    $res=RunGCCTest($i,'cc',$test,$stdcxx);
 +    $res="OK\n"; #RunGCCTest($i,'cc',$test,$stdcxx);
-     if ($res eq "OK\n")
+     $res=~s/\W//g;
+     if ($res eq "OK")
        {
-        print "$i\n";
-@@ -590,6 +590,7 @@
+@@ -600,6 +600,7 @@
  {
   my $ret;
  
@@ -35,7 +35,7 @@
   $ret=@conf{'LDExtraDirs'};
   if ($ret)
     {
-@@ -779,7 +780,7 @@
+@@ -789,7 +790,7 @@
      $OSf='Linux';
      $Compf='';
      $stdcxx='-lstdc++';
@@ -44,12 +44,12 @@
      $supportDir='linux';
     }
   elsif ($os=~/FreeBSD/)
-@@ -1337,7 +1338,7 @@
+@@ -1347,7 +1348,7 @@
   return 0;
  }
  ';
 - $test=RunGCCTest($GCC,'c',$test,'');
 + $test="$ENV{TARGET_ARCH}\n"; #RunGCCTest($GCC,'c',$test,'');
-  chop($test);
+  $test=~s/\W//g;
   $CPU=$conf{'TV_CPU'}=$test;
   print "$test\n";

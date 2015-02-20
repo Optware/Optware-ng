@@ -58,6 +58,9 @@ TEXTUTILS_PATCHES=
 # compilation or linking flags, then list them here.
 #
 TEXTUTILS_CPPFLAGS=
+ifeq ($(LIBC_STYLE),uclibc)
+TEXTUTILS_CPPFLAGS+= -D__mempcpy=mempcpy
+endif
 TEXTUTILS_LDFLAGS=
 
 #

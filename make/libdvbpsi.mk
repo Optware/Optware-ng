@@ -20,10 +20,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBDVBPSI_SITE=http://download.videolan.org/pub/libdvbpsi/0.1.5
-LIBDVBPSI_VERSION=0.1.5
-LIBDVBPSI_SOURCE=libdvbpsi4-$(LIBDVBPSI_VERSION).tar.bz2
-LIBDVBPSI_DIR=libdvbpsi4-$(LIBDVBPSI_VERSION)
+LIBDVBPSI_SITE=http://download.videolan.org/pub/libdvbpsi/$(LIBDVBPSI_VERSION)
+LIBDVBPSI_VERSION=1.2.0
+LIBDVBPSI_SOURCE=libdvbpsi-$(LIBDVBPSI_VERSION).tar.bz2
+LIBDVBPSI_DIR=libdvbpsi-$(LIBDVBPSI_VERSION)
 LIBDVBPSI_UNZIP=bzcat
 LIBDVBPSI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBDVBPSI_DESCRIPTION=A simple library designed for decoding and generation of MPEG TS and DVB PSI tables.

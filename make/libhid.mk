@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBHID_SITE=https://alioth.debian.org/frs/download.php/1958
+LIBHID_SITE=http://repository.timesys.com/buildsources/l/libhid/libhid-$(LIBHID_VERSION)
 LIBHID_VERSION=0.2.16
 LIBHID_SOURCE=libhid-$(LIBHID_VERSION).tar.gz
 LIBHID_DIR=libhid-$(LIBHID_VERSION)

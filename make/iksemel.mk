@@ -54,7 +54,7 @@ IKSEMEL_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 IKSEMEL_CPPFLAGS=
-IKSEMEL_LDFLAGS=
+IKSEMEL_LDFLAGS=-lgnutls
 
 #
 # IKSEMEL_BUILD_DIR is the directory in which the build is done.

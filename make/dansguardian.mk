@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DANSGUARDIAN_SITE=http://dansguardian.org/downloads/2/Beta
-DANSGUARDIAN_VERSION=2.9.8.5
+DANSGUARDIAN_SITE=http://dansguardian.org/downloads/2/Stable
+DANSGUARDIAN_VERSION=2.10.1.1
 DANSGUARDIAN_SOURCE=dansguardian-$(DANSGUARDIAN_VERSION).tar.gz
 DANSGUARDIAN_DIR=dansguardian-$(DANSGUARDIAN_VERSION)
 DANSGUARDIAN_UNZIP=zcat
@@ -31,7 +31,7 @@ DANSGUARDIAN_SECTION=web
 DANSGUARDIAN_PRIORITY=optional
 DANSGUARDIAN_DEPENDS=pcre, zlib
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
-DANSGUARDIAN_DEPENDS+=libstdc++
+DANSGUARDIAN_DEPENDS+=, libstdc++
 endif
 DANSGUARDIAN_SUGGESTS=
 DANSGUARDIAN_CONFLICTS=
@@ -39,7 +39,7 @@ DANSGUARDIAN_CONFLICTS=
 #
 # DANSGUARDIAN_IPK_VERSION should be incremented when the ipk changes.
 #
-DANSGUARDIAN_IPK_VERSION=2
+DANSGUARDIAN_IPK_VERSION=1
 
 #
 # DANSGUARDIAN_CONFFILES should be a list of user-editable files
@@ -112,16 +112,17 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
 	$(MAKE) pcre-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(DANSGUARDIAN_DIR) $(DANSGUARDIAN_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(DANSGUARDIAN_DIR) $(@D)
 	$(DANSGUARDIAN_UNZIP) $(DL_DIR)/$(DANSGUARDIAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DANSGUARDIAN_PATCHES)" ; \
 		then cat $(DANSGUARDIAN_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(DANSGUARDIAN_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DANSGUARDIAN_DIR)" != "$(DANSGUARDIAN_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DANSGUARDIAN_DIR) $(DANSGUARDIAN_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DANSGUARDIAN_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DANSGUARDIAN_DIR) $(@D) ; \
 	fi
-	(cd $(DANSGUARDIAN_BUILD_DIR); \
+	sed -i -e 's/iostream/stdio.h/' $(@D)/src/downloadmanagers/fancy.cpp
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DANSGUARDIAN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DANSGUARDIAN_LDFLAGS)" \
@@ -135,7 +136,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e 's|chown -R|true chown -R|' $(DANSGUARDIAN_BUILD_DIR)/Makefile
+	sed -i -e 's|chown -R|true chown -R|' $(@D)/Makefile
 #	$(PATCH_LIBTOOL) $(DANSGUARDIAN_BUILD_DIR)/libtool
 	touch $@
 
@@ -146,7 +147,7 @@ dansguardian-unpack: $(DANSGUARDIAN_BUILD_DIR)/.configured
 #
 $(DANSGUARDIAN_BUILD_DIR)/.built: $(DANSGUARDIAN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(DANSGUARDIAN_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -159,7 +160,7 @@ dansguardian: $(DANSGUARDIAN_BUILD_DIR)/.built
 #
 $(DANSGUARDIAN_BUILD_DIR)/.staged: $(DANSGUARDIAN_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(DANSGUARDIAN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 dansguardian-stage: $(DANSGUARDIAN_BUILD_DIR)/.staged
@@ -234,4 +235,4 @@ dansguardian-dirclean:
 # Some sanity check for the package.
 #
 dansguardian-check: $(DANSGUARDIAN_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DANSGUARDIAN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

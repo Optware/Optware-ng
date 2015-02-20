@@ -19,9 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-MDADM_SITE=http://www.cse.unsw.edu.au/~neilb/source/mdadm/
-MDADM_VERSION=2.6
-MDADM_SOURCE=mdadm-$(MDADM_VERSION).tgz
+MDADM_SITE=https://www.kernel.org/pub/linux/utils/raid/mdadm
+MDADM_VERSION=3.3.2
+MDADM_SOURCE=mdadm-$(MDADM_VERSION).tar.gz
 MDADM_DIR=mdadm-$(MDADM_VERSION)
 MDADM_UNZIP=zcat
 MDADM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -95,12 +95,18 @@ mdadm-source: $(DL_DIR)/$(MDADM_SOURCE) $(MDADM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MDADM_BUILD_DIR)/.configured: $(DL_DIR)/$(MDADM_SOURCE) $(MDADM_PATCHES)
+$(MDADM_BUILD_DIR)/.configured: $(DL_DIR)/$(MDADM_SOURCE) $(MDADM_PATCHES) make/mdadm.mk
 	rm -rf $(BUILD_DIR)/$(MDADM_DIR) $(MDADM_BUILD_DIR)
 	$(MDADM_UNZIP) $(DL_DIR)/$(MDADM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(MDADM_PATCHES) | patch -d $(BUILD_DIR)/$(MDADM_DIR) -p1
-	mv $(BUILD_DIR)/$(MDADM_DIR) $(MDADM_BUILD_DIR)
-	touch $(MDADM_BUILD_DIR)/.configured
+	if test -n "$(MDADM_PATCHES)" ; \
+		then cat $(MDADM_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(MDADM_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(MDADM_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MDADM_DIR) $(@D) ; \
+	fi
+	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/bswap_16\|bswap_32\|bswap_64/_&_/g' {} \;
+	touch $@
 
 mdadm-unpack: $(MDADM_BUILD_DIR)/.configured
 
@@ -108,14 +114,16 @@ mdadm-unpack: $(MDADM_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(MDADM_BUILD_DIR)/mdadm: $(MDADM_BUILD_DIR)/.configured
-	$(MAKE) -C $(MDADM_BUILD_DIR) CC=$(TARGET_CC) DESTDIR="$(MDADM_BUILD_DIR)/opt/"
+$(MDADM_BUILD_DIR)/.built: $(MDADM_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D) CC=$(TARGET_CC) DESTDIR="$(MDADM_BUILD_DIR)/opt/" all mdadm.8
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-mdadm: $(MDADM_BUILD_DIR)/mdadm
+mdadm: $(MDADM_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -126,7 +134,7 @@ mdadm: $(MDADM_BUILD_DIR)/mdadm
 # necessary to create a seperate control file under sources/mdadm
 #
 $(MDADM_IPK_DIR)/CONTROL/control:
-	@install -d $(MDADM_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: mdadm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -152,17 +160,17 @@ $(MDADM_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(MDADM_IPK): $(MDADM_BUILD_DIR)/mdadm
+$(MDADM_IPK): $(MDADM_BUILD_DIR)/.built
 	rm -rf $(MDADM_IPK_DIR) $(MDADM_IPK)
 	install -d $(MDADM_IPK_DIR)/opt/sbin
-	install -d $(MDADM_IPK_DIR)/opt/man/man8
-	install -d $(MDADM_IPK_DIR)/opt/man/man4
-	install -d $(MDADM_IPK_DIR)/opt/man/man5
+	install -d $(MDADM_IPK_DIR)/opt/share/man/man8
+	install -d $(MDADM_IPK_DIR)/opt/share/man/man4
+	install -d $(MDADM_IPK_DIR)/opt/share/man/man5
 	$(STRIP_COMMAND) $(MDADM_BUILD_DIR)/mdadm -o $(MDADM_IPK_DIR)/opt/sbin/mdadm
 	$(MAKE) $(MDADM_IPK_DIR)/CONTROL/control
-	install -m 644 $(MDADM_BUILD_DIR)/mdadm.8 $(MDADM_IPK_DIR)/opt/man/man8
-	install -m 644 $(MDADM_BUILD_DIR)/md.4 $(MDADM_IPK_DIR)/opt/man/man4
-	install -m 644 $(MDADM_BUILD_DIR)/mdadm.conf.5 $(MDADM_IPK_DIR)/opt/man/man5/mdadm.c
+	install -m 644 $(MDADM_BUILD_DIR)/mdadm.8 $(MDADM_IPK_DIR)/opt/share/man/man8
+	install -m 644 $(MDADM_BUILD_DIR)/md.4 $(MDADM_IPK_DIR)/opt/share/man/man4
+	install -m 644 $(MDADM_BUILD_DIR)/mdadm.conf.5 $(MDADM_IPK_DIR)/opt/share/man/man5
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MDADM_IPK_DIR)
 
 #
@@ -187,4 +195,4 @@ mdadm-dirclean:
 # Some sanity check for the package.
 #
 mdadm-check: $(MDADM_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MDADM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-EMAIL-SIMPLE_SITE=http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS
-PERL-EMAIL-SIMPLE_VERSION=2.005
+PERL-EMAIL-SIMPLE_VERSION=2.203
 PERL-EMAIL-SIMPLE_SOURCE=Email-Simple-$(PERL-EMAIL-SIMPLE_VERSION).tar.gz
 PERL-EMAIL-SIMPLE_DIR=Email-Simple-$(PERL-EMAIL-SIMPLE_VERSION)
 PERL-EMAIL-SIMPLE_UNZIP=zcat

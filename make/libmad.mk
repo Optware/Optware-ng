@@ -124,6 +124,12 @@ $(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) $(LIBMAD_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
+	### '-fforce-mem' option was removed in gcc 4.3
+	### fixes cc1: error: unrecognized command line option "-fforce-mem"
+	case `$(TARGET_CC) -dumpversion` in \
+	    4.[3-9]* | [5-9]*) \
+		sed -i -e 's/-fforce-mem//g' $(@D)/Makefile ;; \
+	esac
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

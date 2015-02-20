@@ -8,7 +8,7 @@
 #
 
 DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/releases
-DROPBEAR_VERSION=0.52
+DROPBEAR_VERSION=2014.66
 DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.bz2
 DROPBEAR_DIR=dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_UNZIP=bzcat
@@ -21,7 +21,7 @@ DROPBEAR_SUGGESTS=
 DROPBEAR_CONFLICTS=
 
 
-DROPBEAR_IPK_VERSION=5
+DROPBEAR_IPK_VERSION=1
 
 DROPBEAR_PATCHES=$(DROPBEAR_SOURCE_DIR)/configure.patch \
 		 $(DROPBEAR_SOURCE_DIR)/options.h.patch \
@@ -45,7 +45,10 @@ dropbear-source: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCHES)
 $(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCHES) make/dropbear.mk
 	rm -rf $(BUILD_DIR)/$(DROPBEAR_DIR) $(@D)
 	$(DROPBEAR_UNZIP) $(DL_DIR)/$(DROPBEAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(DROPBEAR_PATCHES) | patch -d $(BUILD_DIR)/$(DROPBEAR_DIR) -p1
+	if test -n "$(DROPBEAR_PATCHES)" ; \
+		then cat $(DROPBEAR_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(DROPBEAR_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(DROPBEAR_DIR) $(@D)
 	(cd $(@D) && \
 		autoreconf && \

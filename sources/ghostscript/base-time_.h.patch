@@ -1,0 +1,12 @@
+--- ghostscript-8.71/base/time_.h.orig	2007-08-27 03:53:59.000000000 +0300
++++ ghostscript-8.71/base/time_.h	2015-02-01 20:26:33.928575200 +0200
+@@ -45,7 +45,8 @@
+ #  endif
+ #else
+ #  include <time.h>
+-#  if !defined(__DECC) && !defined(__MWERKS__)
++#  if !defined(__DECC) && !defined(__MWERKS__) && !defined(_STRUCT_TIMEVAL)
++#   define _STRUCT_TIMEVAL
+ struct timeval {
+     long tv_sec, tv_usec;
+ };

@@ -44,7 +44,10 @@ BTG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BTG_DESCRIPTION=BTG is a bittorrent client implemented in C++ using the Rasterbar Libtorrent library and provides various user interfaces, which communicate with a common backend running the actual bittorrent operation. Built with Ncurses and WWW UI.
 BTG_SECTION=net
 BTG_PRIORITY=optional
-BTG_DEPENDS=libtorrent-rasterbar, boost-system, boost-filesystem, boost-date-time, boost-thread, boost-program-options, gnutls, libcurl, expat, dialog, zlib
+BTG_DEPENDS=libtorrent-rasterbar, boost-system, boost-filesystem, boost-date-time, boost-thread, boost-program-options, gnutls, libcurl, expat, dialog, zlib, xmlrpc-c
+ifeq (libiconv,$(filter libiconv, $(PACKAGES)))
+BTG_DEPENDS+=, libiconv
+endif
 BTG_SUGGESTS=
 BTG_CONFLICTS=
 
@@ -76,7 +79,11 @@ ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
 	BTG_CPPFLAGS+= -mcpu=arm9
 endif
 
-BTG_LDFLAGS=-Wl,-rpath,/opt/lib/btg -ltorrent-rasterbar -lboost_system -lboost_filesystem -lboost_date_time -lboost_thread -lboost_program_options -lgnutls 
+BTG_LDFLAGS=-Wl,-rpath,/opt/lib/btg -ltorrent-rasterbar -lboost_system -lboost_filesystem -lboost_date_time -lboost_thread -lboost_program_options -lgnutls
+
+ifeq (libiconv,$(filter libiconv, $(PACKAGES)))
+BTG_LDFLAGS+= -liconv
+endif
 
 #
 # BTG_BUILD_DIR is the directory in which the build is done.
@@ -143,8 +150,10 @@ btg-source: $(DL_DIR)/$(BTG_SOURCE) $(BTG_PATCHES)
 # shown below to make various patches to it.
 #
 $(BTG_BUILD_DIR)/.configured: $(DL_DIR)/$(BTG_SOURCE) $(BTG_PATCHES) make/btg.mk
-	$(MAKE) zlib-stage libtorrent-rasterbar-stage gnutls-stage libcurl-stage expat-stage dialog-stage ncurses-stage
-
+	$(MAKE) zlib-stage libtorrent-rasterbar-stage gnutls-stage libcurl-stage expat-stage dialog-stage ncurses-stage xmlrpc-c-stage
+ifeq (libiconv,$(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(BTG_DIR) $(@D)
 	rm -rf $(STAGING_LIB_DIR)/btg
 	$(BTG_UNZIP) $(DL_DIR)/$(BTG_SOURCE) | tar -C $(BUILD_DIR) -xvf -

@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-UNIX-SYSLOG_SITE=http://search.cpan.org/CPAN/authors/id/M/MH/MHARNISCH
-PERL-UNIX-SYSLOG_VERSION=0.100
+PERL-UNIX-SYSLOG_VERSION=1.1
 PERL-UNIX-SYSLOG_SOURCE=Unix-Syslog-$(PERL-UNIX-SYSLOG_VERSION).tar.gz
 PERL-UNIX-SYSLOG_DIR=Unix-Syslog-$(PERL-UNIX-SYSLOG_VERSION)
 PERL-UNIX-SYSLOG_UNZIP=zcat

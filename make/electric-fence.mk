@@ -22,7 +22,7 @@
 #
 # ELECTRIC_FENCE_SITE=http://perens.com/FreeSoftware/ElectricFence
 ELECTRIC_FENCE_SITE=http://ftp.debian.org/debian/pool/main/e/electric-fence
-ELECTRIC_FENCE_VERSION=2.1.14.1
+ELECTRIC_FENCE_VERSION=2.2.4
 ELECTRIC_FENCE_SOURCE=electric-fence_$(ELECTRIC_FENCE_VERSION).tar.gz
 ELECTRIC_FENCE_DIR=electric-fence-$(ELECTRIC_FENCE_VERSION)
 ELECTRIC_FENCE_UNZIP=zcat
@@ -107,7 +107,8 @@ electric-fence-source: $(DL_DIR)/$(ELECTRIC_FENCE_SOURCE) $(ELECTRIC_FENCE_PATCH
 $(ELECTRIC_FENCE_BUILD_DIR)/.configured: $(DL_DIR)/$(ELECTRIC_FENCE_SOURCE) $(ELECTRIC_FENCE_PATCHES) make/electric-fence.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(ELECTRIC_FENCE_DIR) $(ELECTRIC_FENCE_BUILD_DIR)
-	$(ELECTRIC_FENCE_UNZIP) $(DL_DIR)/$(ELECTRIC_FENCE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	mkdir -p $(BUILD_DIR)/$(ELECTRIC_FENCE_DIR)
+	$(ELECTRIC_FENCE_UNZIP) $(DL_DIR)/$(ELECTRIC_FENCE_SOURCE) | tar -C $(BUILD_DIR)/$(ELECTRIC_FENCE_DIR) -xvf - --strip 1
 	if test -n "$(ELECTRIC_FENCE_PATCHES)" ; \
 		then cat $(ELECTRIC_FENCE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ELECTRIC_FENCE_DIR) -p0 ; \

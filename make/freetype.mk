@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FREETYPE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/freetype
-FREETYPE_VERSION=2.3.6
+FREETYPE_VERSION=2.5.5
 FREETYPE_SOURCE=freetype-$(FREETYPE_VERSION).tar.bz2
 FREETYPE_DIR=freetype-$(FREETYPE_VERSION)
 FREETYPE_UNZIP=bzcat
@@ -28,7 +28,7 @@ FREETYPE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 FREETYPE_DESCRIPTION=Free truetype library
 FREETYPE_SECTION=lib
 FREETYPE_PRIORITY=optional
-FREETYPE_DEPENDS=zlib
+FREETYPE_DEPENDS=zlib, bzip2, libpng
 
 #
 # FREETYPE_IPK_VERSION should be incremented when the ipk changes.
@@ -62,6 +62,7 @@ FREETYPE_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 # You should not change any of these variables.
 #
 FREETYPE_BUILD_DIR=$(BUILD_DIR)/freetype
+FREETYPE_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/freetype
 FREETYPE_SOURCE_DIR=$(SOURCE_DIR)/freetype
 FREETYPE_IPK_DIR=$(BUILD_DIR)/freetype-$(FREETYPE_VERSION)-ipk
 FREETYPE_IPK=$(BUILD_DIR)/freetype_$(FREETYPE_VERSION)-$(FREETYPE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -112,11 +113,12 @@ freetype-source: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
-	$(MAKE) zlib-stage
+$(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES) make/freetype.mk
+	$(MAKE) zlib-stage bzip2-stage libpng-stage
 	rm -rf $(BUILD_DIR)/$(FREETYPE_DIR) $(@D)
 	$(FREETYPE_UNZIP) $(DL_DIR)/$(FREETYPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(FREETYPE_DIR) $(@D)
+	rm -f $(STAGING_INCLUDE_DIR)/ft2build.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREETYPE_CPPFLAGS)" \
@@ -129,6 +131,7 @@ $(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-static \
+		--with-harfbuzz=no \
 	)
 	$(PATCH_LIBTOOL) $(@D)/builds/unix/libtool
 	touch $@
@@ -162,6 +165,24 @@ $(FREETYPE_BUILD_DIR)/.staged: $(FREETYPE_BUILD_DIR)/.built
 	touch $@
 
 freetype-stage: $(FREETYPE_BUILD_DIR)/.staged
+
+$(FREETYPE_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES) make/freetype.mk
+	$(MAKE) zlib-host-stage
+	rm -rf $(HOST_BUILD_DIR)/$(FREETYPE_DIR) $(@D)
+	$(FREETYPE_UNZIP) $(DL_DIR)/$(FREETYPE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(FREETYPE_DIR) $(@D)
+	(cd $(@D); \
+		CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \
+		LDFLAGS="-L$(HOST_STAGING_LIB_DIR) -fPIC" \
+		./configure \
+		--prefix=$(HOST_STAGING_PREFIX) \
+		--disable-shared \
+	)
+	$(MAKE) -C $(@D) install
+	rm -f $(HOST_STAGING_LIB_DIR)/libfreetype.la
+	touch $@
+
+freetype-host-stage: $(FREETYPE_HOST_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

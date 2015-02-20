@@ -21,9 +21,28 @@
 #
 # Check http://svn.mplayerhq.hu/ffmpeg/trunk/
 # Take care when upgrading for multiple targets
-FFMPEG_SVN=svn://svn.mplayerhq.hu/ffmpeg/trunk
-FFMPEG_SVN_DATE=20080409
-FFMPEG_VERSION=0.svn$(FFMPEG_SVN_DATE)
+FFMPEG_SVN=https://github.com/FFmpeg/FFmpeg.git/trunk
+ifneq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
+FFMPEG_SVN_DATE=20150217
+FFMPEG_SVN_REVISION=075178
+FFMPEG_VERSION=2.5.4+git$(FFMPEG_SVN_DATE)-rev$(FFMPEG_SVN_REVISION)
+
+### version for old packages that need old ffmpeg
+FFMPEG_SVN_DATE_OLD=20081123
+FFMPEG_SVN_REVISION_OLD=016576
+FFMPEG_VERSION_OLD=0.svn$(FFMPEG_SVN_DATE_OLD)-git-rev$(FFMPEG_SVN_REVISION_OLD)
+FFMPEG_DIR_OLD=ffmpeg-$(FFMPEG_VERSION_OLD)
+FFMPEG_SOURCE_OLD=$(FFMPEG_DIR_OLD).tar.bz2
+FFMPEG_BUILD_DIR_OLD=$(BUILD_DIR)/ffmpeg_old
+else
+# resent revisions fail to compile due to old assambler
+# if other old arm targets fail to build with some assembler errors,
+# they should be added to the list
+FFMPEG_OLD=yes
+FFMPEG_SVN_DATE=20081123
+FFMPEG_SVN_REVISION=016576
+FFMPEG_VERSION=0.svn$(FFMPEG_SVN_DATE)-git-rev$(FFMPEG_SVN_REVISION)
+endif
 FFMPEG_DIR=ffmpeg-$(FFMPEG_VERSION)
 FFMPEG_SOURCE=$(FFMPEG_DIR).tar.bz2
 FFMPEG_UNZIP=bzcat
@@ -38,7 +57,7 @@ FFMPEG_CONFLICTS=
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION=3
+FFMPEG_IPK_VERSION=1
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -50,17 +69,19 @@ FFMPEG_IPK_VERSION=3
 #
 FFMPEG_PATCHES=
 ifeq ($(LIBC_STYLE), uclibc)
-FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/disable-C99-math-funcs.patch
+ifneq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
+#FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/disable-C99-math-funcs.patch
+endif
 endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FFMPEG_CPPFLAGS=
+FFMPEG_CPPFLAGS= -fPIC
 ifdef NO_BUILTIN_MATH
 FFMPEG_CPPFLAGS += -fno-builtin-cos -fno-builtin-sin -fno-builtin-lrint -fno-builtin-rint
-FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/powf-to-pow.patch
+#FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/powf-to-pow.patch
 endif
 FFMPEG_LDFLAGS=
 
@@ -90,10 +111,22 @@ FFMPEG_IPK=$(BUILD_DIR)/ffmpeg_$(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)_$(TARGET_
 $(DL_DIR)/$(FFMPEG_SOURCE):
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(FFMPEG_DIR) && \
-		svn co -r '{$(FFMPEG_SVN_DATE)}' $(FFMPEG_SVN) $(FFMPEG_DIR) && \
+		svn co -r $(FFMPEG_SVN_REVISION) $(FFMPEG_SVN) $(FFMPEG_DIR) && \
+		rm -f $(FFMPEG_DIR)/.gitattributes $(FFMPEG_DIR)/.gitignore && \
 		tar -cjf $@ $(FFMPEG_DIR) --exclude .svn && \
 		rm -rf $(FFMPEG_DIR) \
 	)
+
+ifneq ($(FFMPEG_OLD), yes)
+$(DL_DIR)/$(FFMPEG_SOURCE_OLD):
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(FFMPEG_DIR_OLD) && \
+		svn co -r $(FFMPEG_SVN_REVISION_OLD) $(FFMPEG_SVN) $(FFMPEG_DIR_OLD) && \
+		rm -f $(FFMPEG_DIR_OLD)/.gitattributes $(FFMPEG_DIR_OLD)/.gitignore && \
+		tar -cjf $@ $(FFMPEG_DIR_OLD) --exclude .svn && \
+		rm -rf $(FFMPEG_DIR_OLD) \
+	)
+endif
 
 
 #
@@ -136,6 +169,13 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) ma
 	if test "$(BUILD_DIR)/$(FFMPEG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FFMPEG_DIR) $(@D) ; \
 	fi
+ifeq ($(FFMPEG_OLD), yes)
+	sed -i -e 's/pop/ldmfd sp!,/' -e 's/push/stmfd sp!,/' -e '/preserve8/s/^/@/' $(@D)/libavcodec/armv4l/dsputil_arm_s.S
+endif
+	sed -i -e 's/cpuflags=".*"/cpuflags=""/' $(@D)/configure
+ifdef NO_BUILTIN_MATH
+	find $(@D) -type f -name '*.[hc]' -exec sed -i -e 's/powf/pow/g' {} \;
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FFMPEG_CPPFLAGS)" \
@@ -144,6 +184,7 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) ma
 		--enable-cross-compile \
 		--cross-prefix=$(TARGET_CROSS) \
 		--arch=$(FFMPEG_ARCH) \
+		--target-os=linux \
 		$(FFMPEG_CONFIG_OPTS) \
 		--disable-encoder=snow \
 		--disable-decoder=snow \
@@ -153,15 +194,17 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) ma
 		--enable-postproc \
 		--prefix=/opt \
 	)
+ifneq (, $(filter glibc shibby-tomato-arm, $(LIBC_STYLE) $(OPTWARE_TARGET)))
+	for lib in CBRT CBRTF RINT LRINT LRINTF ROUND ROUNDF TRUNC TRUNCF ISINF ISNAN; do \
+		sed -i -e "s/^#define HAVE_$${lib} .*/#define HAVE_$${lib} 1/" $(@D)/config.h; \
+	done
+endif
 ifeq ($(LIBC_STYLE), uclibc)
 #	No lrintf() support in uClibc 0.9.28
 	sed -i -e 's/-D_ISOC9X_SOURCE//g' $(@D)/common.mak $(@D)/Makefile $(@D)/lib*/Makefile
 endif
 	sed -i -e '/^OPTFLAGS/s| -O3| $(TARGET_CUSTOM_FLAGS) $(FFMPEG_CPPFLAGS) $$(OPTLEVEL)|' $(@D)/config.mak
 	touch $@
-#		--host=$(GNU_TARGET_NAME) \
-#		--target=$(GNU_TARGET_NAME) \
-##		--disable-nls \
 
 ffmpeg-unpack: $(FFMPEG_BUILD_DIR)/.configured
 
@@ -188,16 +231,24 @@ $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
 	rm -f $@
 	rm -rf $(STAGING_INCLUDE_DIR)/ffmpeg $(STAGING_INCLUDE_DIR)/postproc
 	$(MAKE) -C $(@D) install \
-		mandir=$(STAGING_DIR)/opt/man \
+		mandir=$(STAGING_DIR)/opt/share/man \
 		bindir=$(STAGING_DIR)/opt/bin \
-		prefix=$(STAGING_DIR)/opt \
-		DESTDIR=$(STAGING_DIR)
+		prefix=$(STAGING_DIR)/opt
+	if [ -f $(STAGING_INCLUDE_DIR)/libavutil/time.h ]; then \
+		mv -f $(STAGING_INCLUDE_DIR)/libavutil/time.h $(STAGING_INCLUDE_DIR)/libavutil/time.h_; \
+	fi
 	install -d $(STAGING_INCLUDE_DIR)/ffmpeg $(STAGING_INCLUDE_DIR)/postproc
-	cp -p	$(STAGING_INCLUDE_DIR)/libavcodec/* \
+#	cp -p	$(STAGING_INCLUDE_DIR)/libavcodec/* \
 		$(STAGING_INCLUDE_DIR)/libavformat/* \
 		$(STAGING_INCLUDE_DIR)/libavutil/* \
 		$(STAGING_INCLUDE_DIR)/ffmpeg/
-	cp -p	$(STAGING_INCLUDE_DIR)/libpostproc/* \
+	cp -p	$(STAGING_INCLUDE_DIR)/libavcodec/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg/
+	cp -p	$(STAGING_INCLUDE_DIR)/libavformat/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg/
+	cp -p	$(STAGING_INCLUDE_DIR)/libavutil/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg/
+	cp -p 	$(STAGING_INCLUDE_DIR)/libpostproc/* \
 		$(STAGING_INCLUDE_DIR)/postproc/
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/libavcodec.pc \
@@ -207,6 +258,61 @@ $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
 	touch $@
 
 ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
+
+ifneq ($(FFMPEG_OLD), yes)
+$(FFMPEG_BUILD_DIR_OLD)/.staged:
+	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(@D) $(STAGING_PREFIX)/ffmpeg_old
+	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
+	if test "$(BUILD_DIR)/$(FFMPEG_DIR_OLD)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(FFMPEG_DIR_OLD) $(@D) ; \
+	fi
+	sed -i -e 's/cpuflags=".*"/cpuflags=""/' $(@D)/configure
+ifdef NO_BUILTIN_MATH
+	find $(@D) -type f -name '*.[hc]' -exec sed -i -e 's/powf/pow/g' {} \;
+endif
+	(cd $(@D); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(FFMPEG_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(FFMPEG_LDFLAGS)" \
+		./configure \
+		--enable-cross-compile \
+		--cross-prefix=$(TARGET_CROSS) \
+		--arch=$(FFMPEG_ARCH) \
+		--target-os=linux \
+		$(FFMPEG_CONFIG_OPTS) \
+		--disable-encoder=snow \
+		--disable-decoder=snow \
+		--disable-shared \
+		--enable-static \
+		--enable-gpl \
+		--enable-postproc \
+		--prefix=$(STAGING_PREFIX)/ffmpeg_old \
+	)
+ifneq (, $(filter glibc shibby-tomato-arm, $(LIBC_STYLE) $(OPTWARE_TARGET)))
+	for lib in CBRT CBRTF RINT LRINT LRINTF ROUND ROUNDF TRUNC TRUNCF ISINF ISNAN; do \
+		sed -i -e "s/^#define HAVE_$${lib} .*/#define HAVE_$${lib} 1/" $(@D)/config.h; \
+	done
+endif
+ifeq ($(LIBC_STYLE), uclibc)
+#	No lrintf() support in uClibc 0.9.28
+	sed -i -e 's/-D_ISOC9X_SOURCE//g' $(@D)/common.mak $(@D)/Makefile $(@D)/lib*/Makefile
+endif
+	sed -i -e '/^OPTFLAGS/s| -O3| $(TARGET_CUSTOM_FLAGS) $(FFMPEG_CPPFLAGS) $$(OPTLEVEL)|' $(@D)/config.mak
+ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel cs05q3armel fsg3v4, $(OPTWARE_TARGET)))
+	$(MAKE) -C $(@D) OPTLEVEL=-O2 ffmpeg.o
+endif
+	$(MAKE) -C $(@D) OPTLEVEL=-O3 install
+	install -d $(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg $(STAGING_PREFIX)/ffmpeg_old/include/postproc
+	cp -p	$(STAGING_PREFIX)/ffmpeg_old/include/libavcodec/* \
+		$(STAGING_PREFIX)/ffmpeg_old/include/libavformat/* \
+		$(STAGING_PREFIX)/ffmpeg_old/include/libavutil/* \
+		$(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg/
+	cp -p 	$(STAGING_PREFIX)/ffmpeg_old/include/libpostproc/* \
+		$(STAGING_PREFIX)/ffmpeg_old/include/postproc/
+	touch $@
+
+ffmpeg-old-stage: $(FFMPEG_BUILD_DIR_OLD)/.staged
+endif
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -221,7 +327,7 @@ $(FFMPEG_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(FFMPEG_SECTION)" >>$@
 	@echo "Version: $(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(FFMPEG_MAINTAINER)" >>$@
-	@echo "Source: $(FFMPEG_SITE)/$(FFMPEG_SOURCE)" >>$@
+	@echo "Source: $(FFMPEG_SVN)" >>$@
 	@echo "Description: $(FFMPEG_DESCRIPTION)" >>$@
 	@echo "Depends: $(FFMPEG_DEPENDS)" >>$@
 	@echo "Suggests: $(FFMPEG_SUGGESTS)" >>$@
@@ -241,14 +347,15 @@ $(FFMPEG_IPK_DIR)/CONTROL/control:
 #
 $(FFMPEG_IPK): $(FFMPEG_BUILD_DIR)/.built
 	rm -rf $(FFMPEG_IPK_DIR) $(BUILD_DIR)/ffmpeg_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/man \
+	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/share/man \
 		bindir=$(FFMPEG_IPK_DIR)/opt/bin libdir=$(FFMPEG_IPK_DIR)/opt/lib \
-		prefix=$(FFMPEG_IPK_DIR)/opt DESTDIR=$(FFMPEG_IPK_DIR) \
+		prefix=$(FFMPEG_IPK_DIR)/opt \
 		LDCONFIG='$$(warning ldconfig disabled when building package)' install
-	$(TARGET_STRIP) $(FFMPEG_IPK_DIR)/opt/bin/ffmpeg
-	$(TARGET_STRIP) $(FFMPEG_IPK_DIR)/opt/bin/ffserver
-	$(TARGET_STRIP) $(FFMPEG_IPK_DIR)/opt/lib/*.so
-	$(TARGET_STRIP) $(FFMPEG_IPK_DIR)/opt/lib/vhook/*.so
+	if [ -f $(FFMPEG_IPK_DIR)/opt/include/libavutil/time.h ]; then \
+		mv -f $(FFMPEG_IPK_DIR)/opt/include/libavutil/time.h $(FFMPEG_IPK_DIR)/opt/include/libavutil/time.h_; \
+	fi
+	$(STRIP_COMMAND) $(FFMPEG_IPK_DIR)/opt/bin/*
+	find $(FFMPEG_IPK_DIR) -type f -name "*.so" -exec $(STRIP_COMMAND) {} \;
 	$(MAKE) $(FFMPEG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FFMPEG_IPK_DIR)
 

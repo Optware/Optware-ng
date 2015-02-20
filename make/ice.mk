@@ -10,22 +10,21 @@
 # ICE_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-ICE_SITE=http://freedesktop.org
-ICE_SOURCE=# none - available from CVS only
-ICE_VERSION=6.3.5cvs20050130
-ICE_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
-ICE_DIR=ICE
-ICE_CVS_OPTS=-D20050130
-ICE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+ICE_SITE=http://xorg.freedesktop.org/releases/individual/lib
+ICE_SOURCE=libICE-$(ICE_VERSION).tar.gz
+ICE_VERSION=1.0.9
+ICE_FULL_VERSION=release-$(ICE_VERSION)
+ICE_DIR=libICE-$(ICE_VERSION)
+ICE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ICE_DESCRIPTION=X inter-client library
 ICE_SECTION=lib
 ICE_PRIORITY=optional
-ICE_DEPENDS=
+ICE_DEPENDS=x11
 
 #
 # ICE_IPK_VERSION should be incremented when the ipk changes.
 #
-ICE_IPK_VERSION=2
+ICE_IPK_VERSION=1
 
 #
 # ICE_CONFFILES should be a list of user-editable files
@@ -35,13 +34,13 @@ ICE_CONFFILES=
 # ICE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ICE_PATCHES=
+ICE_PATCHES=$(ICE_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ICE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/X11/Xtrans
+ICE_CPPFLAGS=
 ICE_LDFLAGS=
 
 #
@@ -55,8 +54,8 @@ ICE_LDFLAGS=
 #
 ICE_BUILD_DIR=$(BUILD_DIR)/ice
 ICE_SOURCE_DIR=$(SOURCE_DIR)/ice
-ICE_IPK_DIR=$(BUILD_DIR)/ice-$(ICE_VERSION)-ipk
-ICE_IPK=$(BUILD_DIR)/ice_$(ICE_VERSION)-$(ICE_IPK_VERSION)_$(TARGET_ARCH).ipk
+ICE_IPK_DIR=$(BUILD_DIR)/ice-$(ICE_FULL_VERSION)-ipk
+ICE_IPK=$(BUILD_DIR)/ice_$(ICE_FULL_VERSION)-$(ICE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -68,25 +67,21 @@ $(ICE_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(ICE_PRIORITY)" >>$@
 	@echo "Section: $(ICE_SECTION)" >>$@
-	@echo "Version: $(ICE_VERSION)-$(ICE_IPK_VERSION)" >>$@
+	@echo "Version: $(ICE_FULL_VERSION)-$(ICE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(ICE_MAINTAINER)" >>$@
 	@echo "Source: $(ICE_SITE)/$(ICE_SOURCE)" >>$@
 	@echo "Description: $(ICE_DESCRIPTION)" >>$@
 	@echo "Depends: $(ICE_DEPENDS)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/ice-$(ICE_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(ICE_DIR) && \
-		cvs -d $(ICE_REPOSITORY) -z3 co $(ICE_CVS_OPTS) $(ICE_DIR) && \
-		tar -czf $@ $(ICE_DIR) && \
-		rm -rf $(ICE_DIR) \
-	)
+$(DL_DIR)/$(ICE_SOURCE):
+	$(WGET) -P $(@D) $(ICE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-ice-source: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz $(ICE_PATCHES)
+ice-source: $(DL_DIR)/$(ICE_SOURCE) $(ICE_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,21 +93,21 @@ ice-source: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz $(ICE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ICE_BUILD_DIR)/.configured: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz \
+$(ICE_BUILD_DIR)/.configured: $(DL_DIR)/$(ICE_SOURCE) \
 		$(ICE_PATCHES) make/ice.mk
 	$(MAKE) xproto-stage
 	$(MAKE) xtrans-stage
 	$(MAKE) x11-stage
 	rm -rf $(BUILD_DIR)/$(ICE_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ice-$(ICE_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(ICE_SOURCE)
 	if test -n "$(ICE_PATCHES)" ; \
 		then cat $(ICE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ICE_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(ICE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ICE_DIR)" != "$(ICE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ICE_DIR) $(ICE_BUILD_DIR) ; \
 	fi
-	(cd $(ICE_BUILD_DIR); \
+	(cd $(ICE_BUILD_DIR); chmod +x autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ICE_LDFLAGS)" \

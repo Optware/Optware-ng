@@ -27,7 +27,7 @@ FCGI_IPK_VERSION=2
 # compilation or linking flags, then list them here.
 #
 FCGI_CPPFLAGS=
-FCGI_LDFLAGS=
+FCGI_LDFLAGS=-lm
 
 FCGI_BUILD_DIR=$(BUILD_DIR)/fcgi
 FCGI_SOURCE_DIR=$(SOURCE_DIR)/fcgi
@@ -53,16 +53,17 @@ $(DL_DIR)/$(FCGI_SOURCE):
 fcgi-source: $(DL_DIR)/$(FCGI_SOURCE) $(FCGI_PATCHES)
 
 $(FCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(FCGI_SOURCE) $(FCGI_PATCHES) make/fcgi.mk
-	rm -rf $(BUILD_DIR)/$(FCGI_DIR) $(FCGI_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FCGI_DIR) $(@D)
 	$(FCGI_UNZIP) $(DL_DIR)/$(FCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FCGI_PATCHES)" ; \
 		then cat $(FCGI_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(FCGI_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(FCGI_DIR)" != "$(FCGI_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(FCGI_DIR) $(FCGI_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(FCGI_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(FCGI_DIR) $(@D) ; \
 	fi
-	(cd $(FCGI_BUILD_DIR); \
+	sed -i -e '1 i #include <stdio.h>' $(@D)/libfcgi/fcgio.cpp
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(FCGI_CPPFLAGS)" \
 		LDFLAGS="$(FCGI_LDFLAGS)" \
@@ -75,7 +76,7 @@ $(FCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(FCGI_SOURCE) $(FCGI_PATCHES) make/fcg
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(FCGI_BUILD_DIR)/libtool
-	touch $(FCGI_BUILD_DIR)/.configured
+	touch $@
 
 fcgi-unpack: $(FCGI_BUILD_DIR)/.configured
 
@@ -83,9 +84,9 @@ fcgi-unpack: $(FCGI_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FCGI_BUILD_DIR)/.built: $(FCGI_BUILD_DIR)/.configured
-	rm -f $(FCGI_BUILD_DIR)/.built
-	$(MAKE) -C $(FCGI_BUILD_DIR)
-	touch $(FCGI_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -96,9 +97,9 @@ fcgi: $(FCGI_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(FCGI_BUILD_DIR)/.staged: $(FCGI_BUILD_DIR)/.built
-	rm -f $(FCGI_BUILD_DIR)/.staged
-	$(MAKE) -C $(FCGI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(FCGI_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 fcgi-stage: $(FCGI_BUILD_DIR)/.staged
 
@@ -174,4 +175,4 @@ fcgi-dirclean:
 # Some sanity check for the package.
 #
 fcgi-check: $(FCGI_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FCGI_IPK) $(FCGI_DEV_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FCGI_IPK) $^

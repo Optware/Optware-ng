@@ -53,7 +53,7 @@ LIBEBML_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 LIBEBML_CPPFLAGS=
-LIBEBML_LDFLAGS=
+LIBEBML_LDFLAGS=-lgcc
 
 #
 # LIBEBML_BUILD_DIR is the directory in which the build is done.

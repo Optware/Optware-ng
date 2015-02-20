@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCDIO_SITE=http://ftp.gnu.org/gnu/libcdio
-LIBCDIO_VERSION=0.78.2
+LIBCDIO_VERSION=0.93
 LIBCDIO_SOURCE=libcdio-$(LIBCDIO_VERSION).tar.gz
 LIBCDIO_DIR=libcdio-$(LIBCDIO_VERSION)
 LIBCDIO_UNZIP=zcat
@@ -47,7 +47,7 @@ LIBCDIO_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
-LIBCDIO_PATCHES=$(LIBCDIO_SOURCE_DIR)/configure.ac.patch
+#LIBCDIO_PATCHES=$(LIBCDIO_SOURCE_DIR)/configure.ac.patch
 endif
 
 #
@@ -111,8 +111,6 @@ libcdio-source: $(DL_DIR)/$(LIBCDIO_SOURCE) $(LIBCDIO_PATCHES)
 #
 $(LIBCDIO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCDIO_SOURCE) $(LIBCDIO_PATCHES) make/libcdio.mk
 ifneq ($(HOSTCC), $(TARGET_CC))
-	$(HOST_TOOL_ACLOCAL19)
-	$(HOST_TOOL_AUTOMAKE19)
 	$(MAKE) gettext-host-stage
 endif
 	rm -rf $(BUILD_DIR)/$(LIBCDIO_DIR) $(@D)
@@ -121,15 +119,14 @@ endif
 		then cat $(LIBCDIO_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(LIBCDIO_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBCDIO_DIR)" != "$(LIBCDIO_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBCDIO_DIR) $(LIBCDIO_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBCDIO_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBCDIO_DIR) $(@D) ; \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cd $(LIBCDIO_BUILD_DIR); \
-		ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.9 \
-		AUTOMAKE=$(HOST_STAGING_PREFIX)/bin/automake-1.9 autoreconf -vif
+	echo "AC_CONFIG_MACRO_DIR([m4])" >> $(@D)/configure.ac
+	autoreconf -vif $(@D)
 endif
-	(cd $(LIBCDIO_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBCDIO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBCDIO_LDFLAGS)" \
@@ -153,7 +150,7 @@ libcdio-unpack: $(LIBCDIO_BUILD_DIR)/.configured
 #
 $(LIBCDIO_BUILD_DIR)/.built: $(LIBCDIO_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBCDIO_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -166,7 +163,7 @@ libcdio: $(LIBCDIO_BUILD_DIR)/.built
 #
 $(LIBCDIO_BUILD_DIR)/.staged: $(LIBCDIO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBCDIO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/libcdio*.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/libiso9660.pc

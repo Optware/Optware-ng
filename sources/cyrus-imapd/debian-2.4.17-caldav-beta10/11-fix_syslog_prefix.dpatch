@@ -1,0 +1,64 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 11-fix_syslog_prefix.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Make sure all programs log (to syslog) with "cyrus/<program>" as the
+## DP: log prefix.
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/imap/global.c
++++ cyrus-imapd-2.4/imap/global.c
+@@ -111,6 +111,9 @@ int session_id_count = 0;
+ 
+ strarray_t *suppressed_capabilities = NULL;
+ 
++/* syslog prefix tag */
++static char syslog_prefix[20];
++
+ /* Called before a cyrus application starts (but after command line parameters
+  * are read) */
+ int cyrus_init(const char *alt_config, const char *ident, unsigned flags)
+@@ -138,7 +141,9 @@ int cyrus_init(const char *alt_config, c
+     
+     /* xxx we lose here since we can't have the prefix until we load the
+      * config file */
+-    openlog(config_ident, LOG_PID, SYSLOG_FACILITY);
++    strncpy(syslog_prefix, "cyrus/", sizeof(syslog_prefix));
++    strncat(syslog_prefix, ident, sizeof(syslog_prefix) - 7);
++    openlog(syslog_prefix, LOG_PID, SYSLOG_FACILITY);
+ 
+     /* Load configuration file.  This will set config_dir when it finds it */
+     config_read(alt_config);
+--- cyrus-imapd-2.4.orig/ptclient/ptexpire.c
++++ cyrus-imapd-2.4/ptclient/ptexpire.c
+@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
+ 	fatal("must run as the Cyrus user", EC_USAGE);
+     }
+     
+-    openlog("ptexpire", LOG_PID, SYSLOG_FACILITY);
++    openlog("cyrus/ptexpire", LOG_PID, SYSLOG_FACILITY);
+ 
+     while ((opt = getopt(argc, argv, "C:E:")) != EOF) {
+ 	switch (opt) {
+--- cyrus-imapd-2.4.orig/ptclient/test.c
++++ cyrus-imapd-2.4/ptclient/test.c
+@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
+     cacheid=cache;
+   } else
+     cacheid=NULL;
+-  openlog("pttest", LOG_PID, SYSLOG_FACILITY);  
++  openlog("cyrus/pttest", LOG_PID, SYSLOG_FACILITY);  
+   
+   if (!auth_setid(argv[1],cacheid))
+     printf ("Auth_memberof(%s,%s) is %d\n", argv[1], argv[2],
+--- cyrus-imapd-2.4.orig/ptclient/test2.c
++++ cyrus-imapd-2.4/ptclient/test2.c
+@@ -46,7 +46,7 @@
+ 
+ int main(void) {
+   char cacheid[16]="4224423";
+-  openlog("testr", LOG_PID, SYSLOG_FACILITY);
++  openlog("cyrus/testr", LOG_PID, SYSLOG_FACILITY);
+   
+   if (!auth_setid("cg2v@club.cc.cmu.edu",cacheid))
+     printf ("Auth_memberof(cg2v,cg2v:me) is %d\n",

@@ -6,21 +6,17 @@ UCLIBC_BROKEN_PACKAGES = \
 	9base \
 	alsa-oss \
 	bzflag \
-	cairo \
 	delegate \
-	fcgi fish \
-	gnu-smalltalk ice jabberd \
+	fish \
+	gnu-smalltalk jabberd \
 	launchtool ldconfig \
 	moe mtr \
 	newsbeuter \
 	nfs-server nfs-utils \
 	nmon \
-	pango \
 	qemu qemu-libc-i386 quickie \
-	sm syx \
-	uemacs \
+	syx \
 	gtk vte xchat \
-	xauth xaw xcursor xfixes xft xrender xmu xt xterm \
 
 UCLIBC++_BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
@@ -34,7 +30,7 @@ UCLIBC++_BROKEN_PACKAGES = \
 	uncia \
 	znc \
 
-# Packages that *only* work for uclibc - do not just put new packages here.
+# Packages that *only* work for uclibc++ - do not just put new packages here.
 UCLIBC++_SPECIFIC_PACKAGES = \
 	libuclibc++ buildroot uclibc-opt ipkg-opt \
 
@@ -53,8 +49,8 @@ M4_VERSION := 1.4.13
 MXML_VERSION := 2.5
 MXML_IPK_VERSION := 1
 
-MKVTOOLNIX_VERSION := 2.9.8
-MKVTOOLNIX_IPK_VERSION := 2
+MKVTOOLNIX_VERSION ?= 2.9.8
+MKVTOOLNIX_IPK_VERSION ?= 2
 
 PSMISC_VERSION := 22.13
 

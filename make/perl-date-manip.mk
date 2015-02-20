@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DATE-MANIP_SITE=http://search.cpan.org/CPAN/authors/id/S/SB/SBECK
-PERL-DATE-MANIP_VERSION=5.48
+PERL-DATE-MANIP_VERSION=6.48
 PERL-DATE-MANIP_SOURCE=Date-Manip-$(PERL-DATE-MANIP_VERSION).tar.gz
 PERL-DATE-MANIP_DIR=Date-Manip-$(PERL-DATE-MANIP_VERSION)
 PERL-DATE-MANIP_UNZIP=zcat

@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 MAKE_SITE=http://ftp.gnu.org/pub/gnu/make
-MAKE_VERSION=3.82
+MAKE_VERSION=4.1
 MAKE_SOURCE=make-$(MAKE_VERSION).tar.bz2
 MAKE_DIR=make-$(MAKE_VERSION)
 MAKE_UNZIP=bzcat

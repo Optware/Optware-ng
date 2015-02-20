@@ -115,6 +115,7 @@ $(PCAPSIPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(PCAPSIPDUMP_SOURCE) $(PCAPSIPD
 	if test "$(BUILD_DIR)/$(PCAPSIPDUMP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) $(@D) ; \
 	fi
+	sed -i -e "s/^#elif$$/#else/" $(@D)/pcapsipdump.h
 	touch $@
 
 pcapsipdump-unpack: $(PCAPSIPDUMP_BUILD_DIR)/.configured

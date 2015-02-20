@@ -63,6 +63,10 @@ $(PROFTPD_SOURCE_DIR)/default_paths.patch \
 PROFTPD_CPPFLAGS=-DHAVE_LLU=1 -UHAVE_LU
 PROFTPD_LDFLAGS=
 
+ifeq (uclibc, $(LIBC_STYLE))
+PROFTPD_CPPFLAGS+=-D__mempcpy=mempcpy
+endif
+
 ifeq (no, $(IPV6))
 PROFTPD_CONFIGURE_ARGS=--disable-ipv6
 endif

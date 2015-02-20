@@ -1,0 +1,44 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 75-update-imapd.conf-documentation.dpatch by Sven Mueller <sven@debian.org>
+## Updated to 2.3.13 by Duncan Gibb <duncan.gibb@siriusit.co.uk>
+## Note that the default for allowplaintext is "no" since release 2.3.9
+## (Ken changed it on 30 March 2007)
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: update imapd.conf option descriptions to be a bit more verbose about
+## DP: supported option names
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/lib/imapoptions
++++ cyrus-imapd-2.4/lib/imapoptions
+@@ -90,7 +90,10 @@ The sections below detail options that c
+ \fB/etc/imapd.conf\fR file, and show each option's default value.
+ Some options have no default value, these are listed with
+ ``<no default>''.  Some options default to the empty string, these
+-are listed with ``<none>''.
++are listed with ``<none>''. It is also possible to override options by
++specifying them as <service_id>_<optionname>. One example is ``lmtp_admins'',
++which overrides ``admins'' just for the lmtp service. The <service_id> is the
++one you specified in the \fB/etc/cyrus.conf\fR file.
+ */
+ 
+ # OPTIONS
+@@ -149,7 +152,17 @@ are listed with ``<none>''.
+   enabled when absolutely necessary. */
+ 
+ { "allowplaintext", 0, SWITCH }
+-/* Allow the use of cleartext passwords on the wire. */
++/* Allow the use of cleartext passwords on the wire.
++.PP
++  To allow the use of plaintext passwords for authentication, you can
++  set ``allowplaintext: yes'' in imapd.conf. This will still allow PLAIN
++  under TLS, but IMAP LOGIN commands will now fail.
++.PP
++  If you only list plaintext authentication mechanisms in ``sasl_mech_list''
++  and set ``allowplaintext: no'', only users on encrypted sessions (TLS or
++  SSL) will be able to authenticate. On the other hand, if you list no
++  plaintext authentication options in ``sasl_mech_list'',
++  ``allowplaintext: yes'' would have no effect. */
+    
+ { "allowusermoves", 0, SWITCH }
+ /* Allow moving user accounts (with associated meta-data) via RENAME

@@ -28,10 +28,10 @@
 #
 #SIPROXD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/siproxd
 SIPROXD_SITE=http://siproxd.tuxworld.ch
-SIPROXD_UPSTREAM_VERSION=06May2011
-SIPROXD_VERSION=0.8.0+$(SIPROXD_UPSTREAM_VERSION)
+SIPROXD_UPSTREAM_VERSION=11Feb2015
+SIPROXD_VERSION=0.8.1+$(SIPROXD_UPSTREAM_VERSION)
 SIPROXD_SOURCE=siproxd-$(SIPROXD_UPSTREAM_VERSION).tar.gz
-SIPROXD_DIR=siproxd-0.8.1dev
+SIPROXD_DIR=siproxd-0.8.2dev
 SIPROXD_UNZIP=zcat
 SIPROXD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SIPROXD_DESCRIPTION=Siproxd is a proxy/masquerading daemon for the SIP protocol
@@ -123,6 +123,8 @@ $(SIPROXD_BUILD_DIR)/.configured: $(DL_DIR)/$(SIPROXD_SOURCE) $(SIPROXD_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
+#	Don't make docs
+	sed -i -e '/SUBDIRS =.* doc/s/doc//' $(@D)/Makefile
 	touch $@
 
 siproxd-unpack: $(SIPROXD_BUILD_DIR)/.configured

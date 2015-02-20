@@ -10,13 +10,12 @@
 # XAW_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XAW_SITE=http://freedesktop.org
-XAW_SOURCE=# none - available from CVS only
-XAW_VERSION=7.0.1+cvs20050130
-XAW_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
-XAW_DIR=Xaw
-XAW_CVS_OPTS=-D20050130
-XAW_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+XAW_SITE=http://xorg.freedesktop.org/releases/individual/lib
+XAW_SOURCE=libXaw-$(XAW_VERSION).tar.gz
+XAW_VERSION=1.0.12
+XAW_FULL_VERSION=release-$(XAW_VERSION)
+XAW_DIR=libXaw-$(XAW_VERSION)
+XAW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XAW_DESCRIPTION=Athena widgets library
 XAW_SECTION=lib
 XAW_PRIORITY=optional
@@ -25,7 +24,7 @@ XAW_DEPENDS=xt, xmu, xpm
 #
 # XAW_IPK_VERSION should be incremented when the ipk changes.
 #
-XAW_IPK_VERSION=2
+XAW_IPK_VERSION=1
 
 #
 # XAW_CONFFILES should be a list of user-editable files
@@ -35,7 +34,7 @@ XAW_CONFFILES=
 # XAW_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XAW_PATCHES=
+XAW_PATCHES=$(XAW_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -55,8 +54,8 @@ XAW_LDFLAGS=
 #
 XAW_BUILD_DIR=$(BUILD_DIR)/xaw
 XAW_SOURCE_DIR=$(SOURCE_DIR)/xaw
-XAW_IPK_DIR=$(BUILD_DIR)/xaw-$(XAW_VERSION)-ipk
-XAW_IPK=$(BUILD_DIR)/xaw_$(XAW_VERSION)-$(XAW_IPK_VERSION)_$(TARGET_ARCH).ipk
+XAW_IPK_DIR=$(BUILD_DIR)/xaw-$(XAW_FULL_VERSION)-ipk
+XAW_IPK=$(BUILD_DIR)/xaw_$(XAW_FULL_VERSION)-$(XAW_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -68,25 +67,21 @@ $(XAW_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XAW_PRIORITY)" >>$@
 	@echo "Section: $(XAW_SECTION)" >>$@
-	@echo "Version: $(XAW_VERSION)-$(XAW_IPK_VERSION)" >>$@
+	@echo "Version: $(XAW_FULL_VERSION)-$(XAW_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(XAW_MAINTAINER)" >>$@
 	@echo "Source: $(XAW_SITE)/$(XAW_SOURCE)" >>$@
 	@echo "Description: $(XAW_DESCRIPTION)" >>$@
 	@echo "Depends: $(XAW_DEPENDS)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/xaw-$(XAW_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XAW_DIR) && \
-		cvs -d $(XAW_REPOSITORY) -z3 co $(XAW_CVS_OPTS) $(XAW_DIR) && \
-		tar -czf $@ $(XAW_DIR) && \
-		rm -rf $(XAW_DIR) \
-	)
+$(DL_DIR)/$(XAW_SOURCE):
+	$(WGET) -P $(@D) $(XAW_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-xaw-source: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz $(XAW_PATCHES)
+xaw-source: $(DL_DIR)/$(XAW_SOURCE) $(XAW_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,21 +93,19 @@ xaw-source: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz $(XAW_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XAW_BUILD_DIR)/.configured: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz \
+$(XAW_BUILD_DIR)/.configured: $(DL_DIR)/$(XAW_SOURCE) \
 		$(XAW_PATCHES) make/xaw.mk
-	$(MAKE) xt-stage
-	$(MAKE) xmu-stage
-	$(MAKE) xpm-stage
-	rm -rf $(BUILD_DIR)/$(XAW_DIR) $(XAW_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz
+	$(MAKE) xt-stage xmu-stage xpm-stage
+	rm -rf $(BUILD_DIR)/$(XAW_DIR) $(@D)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XAW_SOURCE)
 	if test -n "$(XAW_PATCHES)" ; \
 		then cat $(XAW_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XAW_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(XAW_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XAW_DIR)" != "$(XAW_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XAW_DIR) $(XAW_BUILD_DIR) ; \
 	fi
-	(cd $(XAW_BUILD_DIR); \
+	(cd $(XAW_BUILD_DIR); chmod +x autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XAW_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XAW_LDFLAGS)" \
@@ -149,8 +142,9 @@ xaw: $(XAW_BUILD_DIR)/.built
 $(XAW_BUILD_DIR)/.staged: $(XAW_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(XAW_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xaw.pc
-	rm -f $(STAGING_LIB_DIR)/libXaw.la
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/xaw*.pc
+	rm -f $(STAGING_LIB_DIR)/libXAW.la
 	touch $@
 
 xaw-stage: $(XAW_BUILD_DIR)/.staged

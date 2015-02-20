@@ -10,13 +10,12 @@
 # XEXT_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XEXT_SITE=http://freedesktop.org
-XEXT_SOURCE=# none - available from CVS only
-XEXT_VERSION=6.4.3+cvs20050130
-XEXT_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
-XEXT_DIR=Xext
-XEXT_CVS_OPTS=-D20050130
-XEXT_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+XEXT_SITE=http://xorg.freedesktop.org/releases/individual/lib
+XEXT_SOURCE=libXext-$(XEXT_VERSION).tar.gz
+XEXT_VERSION=1.3.3
+XEXT_FULL_VERSION=release-$(XEXT_VERSION)
+XEXT_DIR=libXext-$(XEXT_VERSION)
+XEXT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XEXT_DESCRIPTION=X extensions library
 XEXT_SECTION=lib
 XEXT_PRIORITY=optional
@@ -25,7 +24,7 @@ XEXT_DEPENDS=x11
 #
 # XEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-XEXT_IPK_VERSION=2
+XEXT_IPK_VERSION=1
 
 #
 # XEXT_CONFFILES should be a list of user-editable files
@@ -35,7 +34,7 @@ XEXT_CONFFILES=
 # XEXT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XEXT_PATCHES=
+XEXT_PATCHES=$(XEXT_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -55,8 +54,8 @@ XEXT_LDFLAGS=
 #
 XEXT_BUILD_DIR=$(BUILD_DIR)/xext
 XEXT_SOURCE_DIR=$(SOURCE_DIR)/xext
-XEXT_IPK_DIR=$(BUILD_DIR)/xext-$(XEXT_VERSION)-ipk
-XEXT_IPK=$(BUILD_DIR)/xext_$(XEXT_VERSION)-$(XEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
+XEXT_IPK_DIR=$(BUILD_DIR)/xext-$(XEXT_FULL_VERSION)-ipk
+XEXT_IPK=$(BUILD_DIR)/xext_$(XEXT_FULL_VERSION)-$(XEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -68,25 +67,21 @@ $(XEXT_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XEXT_PRIORITY)" >>$@
 	@echo "Section: $(XEXT_SECTION)" >>$@
-	@echo "Version: $(XEXT_VERSION)-$(XEXT_IPK_VERSION)" >>$@
+	@echo "Version: $(XEXT_FULL_VERSION)-$(XEXT_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(XEXT_MAINTAINER)" >>$@
 	@echo "Source: $(XEXT_SITE)/$(XEXT_SOURCE)" >>$@
 	@echo "Description: $(XEXT_DESCRIPTION)" >>$@
 	@echo "Depends: $(XEXT_DEPENDS)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/xext-$(XEXT_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XEXT_DIR) && \
-		cvs -d $(XEXT_REPOSITORY) -z3 co $(XEXT_CVS_OPTS) $(XEXT_DIR) && \
-		tar -czf $@ $(XEXT_DIR) && \
-		rm -rf $(XEXT_DIR) \
-	)
+$(DL_DIR)/$(XEXT_SOURCE):
+	$(WGET) -P $(@D) $(XEXT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-xext-source: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz $(XEXT_PATCHES)
+xext-source: $(DL_DIR)/$(XEXT_SOURCE) $(XEXT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,20 +93,18 @@ xext-source: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz $(XEXT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XEXT_BUILD_DIR)/.configured: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz \
-		$(XEXT_PATCHES) make/xext.mk
-	$(MAKE) x11-stage
-	$(MAKE) xextensions-stage
+$(XEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(XEXT_SOURCE) $(XEXT_PATCHES) make/xext.mk
+	$(MAKE) xextensions-stage x11-stage
 	rm -rf $(BUILD_DIR)/$(XEXT_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XEXT_SOURCE)
 	if test -n "$(XEXT_PATCHES)" ; \
 		then cat $(XEXT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(XEXT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XEXT_DIR)" != "$(XEXT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XEXT_DIR) $(XEXT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XEXT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XEXT_DIR) $(@D) ; \
 	fi
-	(cd $(XEXT_BUILD_DIR); \
+	(cd $(@D); chmod +x autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XEXT_LDFLAGS)" \
@@ -123,8 +116,8 @@ $(XEXT_BUILD_DIR)/.configured: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-static \
+		--enable-malloc0returnsnull \
 	)
-	$(PATCH_LIBTOOL) $(XEXT_BUILD_DIR)/libtool
 	touch $@
 
 xext-unpack: $(XEXT_BUILD_DIR)/.configured
@@ -134,7 +127,7 @@ xext-unpack: $(XEXT_BUILD_DIR)/.configured
 #
 $(XEXT_BUILD_DIR)/.built: $(XEXT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XEXT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -147,9 +140,9 @@ xext: $(XEXT_BUILD_DIR)/.built
 #
 $(XEXT_BUILD_DIR)/.staged: $(XEXT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xext.pc
-	rm -f $(STAGING_LIB_DIR)/libXext.la
+	rm -f $(STAGING_LIB_DIR)/libxext.la $(STAGING_LIB_DIR)/libxext-*.la
 	touch $@
 
 xext-stage: $(XEXT_BUILD_DIR)/.staged
@@ -170,6 +163,7 @@ $(XEXT_IPK): $(XEXT_BUILD_DIR)/.built
 	rm -rf $(XEXT_IPK_DIR) $(BUILD_DIR)/xext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XEXT_BUILD_DIR) DESTDIR=$(XEXT_IPK_DIR) install-strip
 	$(MAKE) $(XEXT_IPK_DIR)/CONTROL/control
+#	install -m 644 $(XEXT_SOURCE_DIR)/postinst $(XEXT_IPK_DIR)/CONTROL/postinst
 	rm -f $(XEXT_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XEXT_IPK_DIR)
 
@@ -182,7 +176,6 @@ xext-ipk: $(XEXT_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 xext-clean:
-	rm -f $(XEXT_BUILD_DIR)/.built
 	-$(MAKE) -C $(XEXT_BUILD_DIR) clean
 
 #

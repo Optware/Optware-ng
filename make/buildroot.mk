@@ -301,7 +301,7 @@ $(BUILDROOT_BUILD_DIR)/.staged: $(BUILDROOT_BUILD_DIR)/.built
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(BUILDROOT_BUILD_DIR)/.staged
 
-buildroot-stage uclibc-opt-stage buildroot-toolchain: $(BUILDROOT_BUILD_DIR)/.staged
+buildroot-stage buildroot-toolchain: $(BUILDROOT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer

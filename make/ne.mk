@@ -20,10 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NE_SITE=http://ne.dsi.unimi.it
-NE_VERSION?=2.4
+NE_SITE=https://launchpad.net/ubuntu/+archive/primary/+files
+NE_VERSION?=2.5
 NE_IPK_VERSION?=1
 NE_SOURCE=ne-$(NE_VERSION).tar.gz
+NE_SOURCE_DL=ne_$(NE_VERSION).orig.tar.gz
 NE_DIR=ne-$(NE_VERSION)
 NE_UNZIP=zcat
 NE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -78,7 +79,7 @@ NE_IPK=$(BUILD_DIR)/ne_$(NE_VERSION)-$(NE_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NE_SOURCE):
-	$(WGET) -P $(@D) $(NE_SITE)/$(@F) || \
+	$(WGET) -O $@ $(NE_SITE)/$(NE_SOURCE_DL) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -177,7 +178,7 @@ $(NE_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(NE_SECTION)" >>$@
 	@echo "Version: $(NE_VERSION)-$(NE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(NE_MAINTAINER)" >>$@
-	@echo "Source: $(NE_SITE)/$(NE_SOURCE)" >>$@
+	@echo "Source: $(NE_SITE)/$(NE_SOURCE_DL)" >>$@
 	@echo "Description: $(NE_DESCRIPTION)" >>$@
 	@echo "Depends: $(NE_DEPENDS)" >>$@
 	@echo "Suggests: $(NE_SUGGESTS)" >>$@

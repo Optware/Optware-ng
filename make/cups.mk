@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.4.6
-CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
+CUPS_VERSION=2.0.1
+CUPS_SITE=https://www.cups.org/software/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
 CUPS_UNZIP=bzcat
@@ -31,7 +31,12 @@ CUPS_PRIORITY=optional
 CUPS_DEPENDS=libjpeg, libpng, libtiff, openssl, zlib, psmisc
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS+=, openldap-libs
-else
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+CUPS_DEPENDS+=, libiconv
+endif
+ifeq (gnutls, $(filter gnutls, $(PACKAGES)))
+CUPS_DEPENDS+=, gnutls
 endif
 CUPS_SUGGESTS=
 CUPS_CONFLICTS=
@@ -46,17 +51,20 @@ CUPS-DEV_DESCRIPTION=Development files for CUPS
 
 #
 # CUPS_CONFFILES should be a list of user-editable files
-CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf
+CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf \
+		/opt/etc/cups/cups-files.conf /opt/etc/cups/printers.conf \
+		/opt/etc/cups/snmp.conf /opt/etc/cups/mime.types /opt/etc/cups/mime.convs
 
 #
 # CUPS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch $(CUPS_SOURCE_DIR)/ppdc-Makefile.patch
+#CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch $(CUPS_SOURCE_DIR)/ppdc-Makefile.patch
+CUPS_PATCHES=$(CUPS_SOURCE_DIR)/build_without_gnutls.patch
 
 ifeq ($(LIBC_STYLE), uclibc)
 ifneq ($(OPTWARE_TARGET), ts101)
-CUPS_PATCHES+=$(CUPS_SOURCE_DIR)/uclibc-backend-lpd.c.patch
+#CUPS_PATCHES+=$(CUPS_SOURCE_DIR)/uclibc-backend-lpd.c.patch
 endif
 endif
 
@@ -80,11 +88,19 @@ CUPS_CPPFLAGS+=-fno-builtin-ceil -fno-builtin-cbrt
 endif
 CUPS_LDFLAGS=
 ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
-CUPS_LDFLAGS+=-lm
+CUPS_LDFLAGS+= -lm
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+CUPS_LDFLAGS+= -liconv
 endif
 
 ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
 CUPS_CONFIG_OPTS=--disable-pam
+endif
+ifeq (libiconv, $(filter gnutls, $(PACKAGES)))
+CUPS_CONFIG_OPTS+= --enable-gnutls
+else
+CUPS_CONFIG_OPTS+= --disable-gnutls
 endif
 
 ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel, $(OPTWARE_TARGET)))
@@ -132,6 +148,7 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 #	$(MAKE) openssl-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D)
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	cat $(CUPS_SOURCE_DIR)/build_without_gnutls.patch | patch -d $(HOST_BUILD_DIR)/$(CUPS_DIR) -p1
 	if test "$(HOST_BUILD_DIR)/$(CUPS_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D) ; \
 	fi
@@ -148,6 +165,7 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 		--disable-nls \
 		--disable-dbus \
 		--disable-tiff \
+		--disable-avahi \
 		--with-openssl-libs=/lib  \
 		--with-openssl-includes=/usr/include/openssl \
 		--without-java \
@@ -158,6 +176,8 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 		--disable-gnutls \
 		--disable-gssapi \
 	)
+	sed -i -e "s/-Wno-tautological-compare//" $(@D)/Makedefs
+	sed -i -e "s/^DIRS\t=.*/DIRS\t=\tcups \$$(BUILDDIRS)/" $(@D)/Makefile
 	$(MAKE) -C $(@D)
 	touch $@
 
@@ -174,6 +194,12 @@ $(CUPS_BUILD_DIR)/.configured: $(CUPS_HOST_BUILD_DIR)/.built $(DL_DIR)/$(CUPS_SO
 	$(MAKE) libjpeg-stage libtiff-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
+ifeq (gnutls, $(filter gnutls, $(PACKAGES)))
+	$(MAKE) gnutls-stage
 endif
 	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(@D)
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -211,13 +237,20 @@ endif
 		--without-php \
 		--without-python \
 		--disable-slp \
-		--disable-gnutls \
 		--disable-gssapi \
 	)
 ifdef CUPS_GCC_DOES_NOT_SUPPORT_PIE
 	sed -i -e 's/ -pie -fPIE//' $(@D)/Makedefs
 endif
-	sed -i -e '/^GENSTRINGS_DIR/s|=.*| = $(CUPS_HOST_BUILD_DIR)/ppdc|' $(@D)/ppdc/Makefile
+#	sed -i -e '/^GENSTRINGS_DIR/s|=.*| = $(CUPS_HOST_BUILD_DIR)/ppdc|' $(@D)/ppdc/Makefile
+	sed -i -e "s/-Wno-tautological-compare//" -e\
+		"s|^DSOFLAGS\t=\t|DSOFLAGS\t=\t-L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(STAGING_LIB_DIR) |" $(@D)/Makedefs
+	sed -i -e "s/^DIRS\t=.*/DIRS\t=\tcups \$$(BUILDDIRS)/" $(@D)/Makefile
+	sed -i -e 's|\./genstrings|$(CUPS_HOST_BUILD_DIR)/ppdc/genstrings|' $(@D)/ppdc/Makefile
+	sed -i -e 's|\./mantohtml|$(CUPS_HOST_BUILD_DIR)/man/mantohtml|' $(@D)/man/Makefile
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	sed -i -e 's/^COMMONLIBS\t=\t/COMMONLIBS\t=\t-liconv /' $(@D)/Makedefs
+endif
 	touch $@
 
 cups-unpack: $(CUPS_BUILD_DIR)/.configured
@@ -396,6 +429,7 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	install -m 755 $(CUPS_SOURCE_DIR)/cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
 	install -m 755 $(CUPS_SOURCE_DIR)/rc.samba $(CUPS_IPK_DIR)/opt/doc/cups
 	mv $(CUPS_IPK_DIR)/opt/include $(CUPS_IPK_DIR)-dev/opt/
+	sed -i -e '/^SystemGroup/s/^/#/' $(CUPS_IPK_DIR)/opt/etc/cups/cups-files.conf
 	$(MAKE) $(CUPS_IPK_DIR)/CONTROL/control
 #	install -m 644 $(CUPS_SOURCE_DIR)/postinst $(CUPS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm

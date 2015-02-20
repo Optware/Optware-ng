@@ -28,14 +28,14 @@ LIBPCAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBPCAP_DESCRIPTION=PCAP Library
 LIBPCAP_SECTION=lib
 LIBPCAP_PRIORITY=optional
-LIBPCAP_DEPENDS=
+LIBPCAP_DEPENDS=libusb1
 LIBPCAP_SUGGESTS=
 LIBPCAP_CONFLICTS=
 
 #
 # LIBPCAP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPCAP_IPK_VERSION=1
+LIBPCAP_IPK_VERSION=2
 
 LIBPCAP_BUILD_DIR=$(BUILD_DIR)/libpcap
 LIBPCAP_SOURCE_DIR=$(SOURCE_DIR)/libpcap
@@ -107,7 +107,7 @@ libpcap-source: $(DL_DIR)/$(LIBPCAP_SOURCE) $(LIBPCAP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBPCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPCAP_SOURCE) $(LIBPCAP_PATCHES) make/libpcap.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libusb1-stage
 	rm -rf $(BUILD_DIR)/$(LIBPCAP_DIR) $(@D)
 	$(LIBPCAP_UNZIP) $(DL_DIR)/$(LIBPCAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPCAP_PATCHES)"; then \
@@ -142,6 +142,7 @@ $(LIBPCAP_BUILD_DIR)/.built: $(LIBPCAP_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBPCAP_LDFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(LIBPCAP_CPPFLAGS)" \
 		;
 	touch $@
 

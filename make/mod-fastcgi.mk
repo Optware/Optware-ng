@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOD_FASTCGI_SITE=http://www.fastcgi.com/dist
-MOD_FASTCGI_VERSION=2.4.2
+MOD_FASTCGI_VERSION=2.4.6
 MOD_FASTCGI_SOURCE=mod_fastcgi-$(MOD_FASTCGI_VERSION).tar.gz
 MOD_FASTCGI_DIR=mod_fastcgi-$(MOD_FASTCGI_VERSION)
 MOD_FASTCGI_UNZIP=zcat
@@ -37,7 +37,7 @@ MOD_FASTCGI_CONFLICTS=
 #
 # MOD_FASTCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-MOD_FASTCGI_IPK_VERSION=3
+MOD_FASTCGI_IPK_VERSION=1
 
 #
 # MOD_FASTCGI_CONFFILES should be a list of user-editable files
@@ -47,7 +47,8 @@ MOD_FASTCGI_CONFFILES=/opt/etc/apache2/conf.d/mod_fastcgi.conf
 # MOD_FASTCGI_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MOD_FASTCGI_PATCHES=$(MOD_FASTCGI_SOURCE_DIR)/mod_fastcgi-apache-2.x.patch
+MOD_FASTCGI_PATCHES=$(MOD_FASTCGI_SOURCE_DIR)/compile-against-apache24.diff
+#$(MOD_FASTCGI_SOURCE_DIR)/mod_fastcgi-apache-2.x.patch
 
 #
 # If the compilation of the package requires additional
@@ -103,7 +104,7 @@ mod-fastcgi-source: $(DL_DIR)/$(MOD_FASTCGI_SOURCE) $(MOD_FASTCGI_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MOD_FASTCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_FASTCGI_SOURCE) $(MOD_FASTCGI_PATCHES)
+$(MOD_FASTCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_FASTCGI_SOURCE) $(MOD_FASTCGI_PATCHES) make/mod-fastcgi.mk
 	$(MAKE) apache-stage
 	rm -rf $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(MOD_FASTCGI_BUILD_DIR)
 	$(MOD_FASTCGI_UNZIP) $(DL_DIR)/$(MOD_FASTCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -123,7 +124,7 @@ $(MOD_FASTCGI_BUILD_DIR)/.built: $(MOD_FASTCGI_BUILD_DIR)/.configured
 	rm -f $(MOD_FASTCGI_BUILD_DIR)/.built
 	$(MAKE) -C $(MOD_FASTCGI_BUILD_DIR) \
 	    top_dir=$(STAGING_DIR)/opt/share/apache2 \
-	    LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent" \
+#	    LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent" \
 	    SH_LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent"
 	touch $(MOD_FASTCGI_BUILD_DIR)/.built
 
@@ -177,8 +178,6 @@ $(MOD_FASTCGI_IPK): $(MOD_FASTCGI_BUILD_DIR)/.built
 	$(MAKE) -C $(MOD_FASTCGI_BUILD_DIR) \
 	    DESTDIR=$(MOD_FASTCGI_IPK_DIR) \
 	    top_dir=$(STAGING_DIR)/opt/share/apache2 \
-	    LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent" \
-	    SH_LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent" \
 	    install
 	$(STRIP_COMMAND) $(MOD_FASTCGI_IPK_DIR)/opt/libexec/mod_fastcgi.so
 	install -d $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/

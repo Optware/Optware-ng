@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NTP_SITE=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
-NTP_UPSTREAM_VERSION=4.2.6p2
+NTP_UPSTREAM_VERSION=4.2.8p1
 NTP_VERSION=4.2.6.2
 NTP_SOURCE=ntp-$(NTP_UPSTREAM_VERSION).tar.gz
 NTP_DIR=ntp-$(NTP_UPSTREAM_VERSION)
@@ -37,7 +37,7 @@ NTP_CONFLICTS=
 #
 # NTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTP_IPK_VERSION=2
+NTP_IPK_VERSION=1
 
 NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
 
@@ -45,7 +45,7 @@ NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
 # NTP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NTP_PATCHES=$(NTP_SOURCE_DIR)/ntpd-ifupdate2.patch
+NTP_PATCHES=#$(NTP_SOURCE_DIR)/ntpd-ifupdate2.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,8 +108,12 @@ ntp-source: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES)
 $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES) make/ntp.mk
 	rm -rf $(BUILD_DIR)/$(NTP_DIR) $(@D)
 	$(NTP_UNZIP) $(DL_DIR)/$(NTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NTP_PATCHES) | patch -d $(BUILD_DIR)/$(NTP_DIR) -p1
+	if test -n "$(NTP_PATCHES)" ; \
+		then cat $(NTP_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(HARFBUZZ_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(NTP_DIR) $(@D)
+	sed -i -e 's/ac_cv_make_ntptime=.*/ac_cv_make_ntptime=yes/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		STRIP="$(STRIP_COMMAND)" \
@@ -121,6 +125,7 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES) make/ntp.mk
 		--target=$(GNU_TARGET_NAME) \
 		$(NTP_CONFIGURE_ARGS) \
 		--prefix=/opt\
+		--with-yielding_select=yes \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@

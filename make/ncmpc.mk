@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NCMPC_VERSION=0.16.1
-NCMPC_SITE=http://downloads.sourceforge.net/musicpd
-NCMPC_SOURCE=ncmpc-$(NCMPC_VERSION).tar.bz2
+NCMPC_VERSION=0.24
+NCMPC_SITE=http://www.musicpd.org/download/ncmpc/0
+NCMPC_SOURCE=ncmpc-$(NCMPC_VERSION).tar.xz
 NCMPC_DIR=ncmpc-$(NCMPC_VERSION)
-NCMPC_UNZIP=bzcat
+NCMPC_UNZIP=xzcat
 NCMPC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NCMPC_DESCRIPTION=A curses client for the Music Player Daemon (MPD).
 NCMPC_SECTION=multimedia

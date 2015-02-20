@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPNG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
-LIBPNG_VERSION=1.2.44
+LIBPNG_VERSION=1.2.50
 LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION).tar.gz
 LIBPNG_DIR=libpng-$(LIBPNG_VERSION)
 LIBPNG_UNZIP=zcat
@@ -103,7 +103,7 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES) ma
 		then cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LIBPNG_DIR) $(@D)
-	autoreconf -vif $(@D)
+#	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPNG_CPPFLAGS)" \

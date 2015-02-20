@@ -25,7 +25,7 @@ XFT_DEPENDS=x11, xrender, freetype, fontconfig
 #
 # XFT_IPK_VERSION should be incremented when the ipk changes.
 #
-XFT_IPK_VERSION=3
+XFT_IPK_VERSION=4
 
 #
 # XFT_CONFFILES should be a list of user-editable files
@@ -110,10 +110,11 @@ $(XFT_BUILD_DIR)/.configured: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz \
 		then cat $(XFT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(XFT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XFT_DIR)" != "$(XFT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XFT_DIR) $(XFT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XFT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XFT_DIR) $(@D) ; \
 	fi
-	(cd $(XFT_BUILD_DIR); \
+	sed -i -e 's|freetype/ftoutln.h|freetype2/ftoutln.h|' $(@D)/xftglyphs.c
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XFT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XFT_LDFLAGS)" \
@@ -136,7 +137,7 @@ xft-unpack: $(XFT_BUILD_DIR)/.configured
 #
 $(XFT_BUILD_DIR)/.built: $(XFT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XFT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -149,7 +150,7 @@ xft: $(XFT_BUILD_DIR)/.built
 #
 $(XFT_BUILD_DIR)/.staged: $(XFT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XFT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xft.pc
 	rm -f $(STAGING_LIB_DIR)/libXft.la
 	touch $@

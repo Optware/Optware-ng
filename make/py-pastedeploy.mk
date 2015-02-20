@@ -42,6 +42,7 @@ PY-PASTEDEPLOY_PRIORITY=optional
 PY24-PASTEDEPLOY_DEPENDS=python24
 PY25-PASTEDEPLOY_DEPENDS=python25
 PY26-PASTEDEPLOY_DEPENDS=python26
+PY27-PASTEDEPLOY_DEPENDS=python27
 PY-PASTEDEPLOY_SUGGESTS=
 PY-PASTEDEPLOY_CONFLICTS=
 
@@ -83,6 +84,9 @@ PY25-PASTEDEPLOY_IPK=$(BUILD_DIR)/py25-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(P
 
 PY26-PASTEDEPLOY_IPK_DIR=$(BUILD_DIR)/py26-pastedeploy-$(PY-PASTEDEPLOY_VERSION)-ipk
 PY26-PASTEDEPLOY_IPK=$(BUILD_DIR)/py26-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY27-PASTEDEPLOY_IPK_DIR=$(BUILD_DIR)/py27-pastedeploy-$(PY-PASTEDEPLOY_VERSION)-ipk
+PY27-PASTEDEPLOY_IPK=$(BUILD_DIR)/py27-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: py-pastedeploy-source py-pastedeploy-unpack py-pastedeploy py-pastedeploy-stage py-pastedeploy-ipk py-pastedeploy-clean py-pastedeploy-dirclean py-pastedeploy-check
 
@@ -170,6 +174,22 @@ endif
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.6") >> setup.cfg \
 	)
+	# 2.7
+	rm -rf $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR)
+ifeq ($(PY-PASTEDEPLOY_SVN_REV),)
+	$(PY-PASTEDEPLOY_UNZIP) $(DL_DIR)/$(PY-PASTEDEPLOY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q -r $(PY-PASTEDEPLOY_SVN_REV) $(PY-PASTEDEPLOY_SVN) $(PY-PASTEDEPLOY_DIR); \
+	)
+endif
+	if test -n "$(PY-PASTEDEPLOY_PATCHES)" ; then \
+	    cat $(PY-PASTEDEPLOY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.7") >> setup.cfg \
+	)
 	touch $@
 
 py-pastedeploy-unpack: $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
@@ -188,6 +208,9 @@ $(PY-PASTEDEPLOY_BUILD_DIR)/.built: $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
 	(cd $(@D)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
+	(cd $(@D)/2.7; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	touch $@
 
 #
@@ -211,6 +234,10 @@ $(PY-PASTEDEPLOY_BUILD_DIR)/.staged: $(PY-PASTEDEPLOY_BUILD_DIR)/.built
 	(cd $(@D)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install\
+		--root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.7; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install\
 		--root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
@@ -262,6 +289,20 @@ $(PY26-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY26-PASTEDEPLOY_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PASTEDEPLOY_CONFLICTS)" >>$@
 
+$(PY27-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-pastedeploy" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PASTEDEPLOY_PRIORITY)" >>$@
+	@echo "Section: $(PY-PASTEDEPLOY_SECTION)" >>$@
+	@echo "Version: $(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PASTEDEPLOY_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PASTEDEPLOY_SITE)/$(PY-PASTEDEPLOY_SOURCE)" >>$@
+	@echo "Description: $(PY-PASTEDEPLOY_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-PASTEDEPLOY_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PASTEDEPLOY_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -305,10 +346,20 @@ $(PY26-PASTEDEPLOY_IPK): $(PY-PASTEDEPLOY_BUILD_DIR)/.built
 #	echo $(PY-PASTEDEPLOY_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-PASTEDEPLOY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PASTEDEPLOY_IPK_DIR)
 
+$(PY27-PASTEDEPLOY_IPK): $(PY-PASTEDEPLOY_BUILD_DIR)/.built
+	rm -rf $(PY27-PASTEDEPLOY_IPK_DIR) $(BUILD_DIR)/py27-pastedeploy_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.7; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install\
+		--root=$(PY26-PASTEDEPLOY_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY27-PASTEDEPLOY_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTEDEPLOY_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-PASTEDEPLOY_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-PASTEDEPLOY_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pastedeploy-ipk: $(PY24-PASTEDEPLOY_IPK) $(PY25-PASTEDEPLOY_IPK) $(PY26-PASTEDEPLOY_IPK)
+py-pastedeploy-ipk: $(PY24-PASTEDEPLOY_IPK) $(PY25-PASTEDEPLOY_IPK) $(PY26-PASTEDEPLOY_IPK) $(PY27-PASTEDEPLOY_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -325,9 +376,10 @@ py-pastedeploy-dirclean:
 	rm -rf $(PY24-PASTEDEPLOY_IPK_DIR) $(PY24-PASTEDEPLOY_IPK)
 	rm -rf $(PY25-PASTEDEPLOY_IPK_DIR) $(PY25-PASTEDEPLOY_IPK)
 	rm -rf $(PY26-PASTEDEPLOY_IPK_DIR) $(PY26-PASTEDEPLOY_IPK)
+	rm -rf $(PY27-PASTEDEPLOY_IPK_DIR) $(PY27-PASTEDEPLOY_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-pastedeploy-check: $(PY24-PASTEDEPLOY_IPK) $(PY25-PASTEDEPLOY_IPK) $(PY26-PASTEDEPLOY_IPK)
+py-pastedeploy-check: $(PY24-PASTEDEPLOY_IPK) $(PY25-PASTEDEPLOY_IPK) $(PY26-PASTEDEPLOY_IPK) $(PY27-PASTEDEPLOY_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

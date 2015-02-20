@@ -112,17 +112,21 @@ gift-ares-source: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCHES) make/gift-ares.mk
-	$(HOST_TOOL_ACLOCAL14)
-	$(HOST_TOOL_AUTOMAKE14)
 	$(MAKE) gift-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(GIFTARES_DIR) $(@D)
 	$(GIFTARES_UNZIP) $(DL_DIR)/$(GIFTARES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFTARES_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTARES_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFTARES_DIR) $(GIFTARES_BUILD_DIR)
-	(cd $(GIFTARES_BUILD_DIR); \
+	(cd `aclocal --print-ac-dir`; \
+		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
+			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
+	)
+	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.ac
+	echo 'ACLOCAL_AMFLAGS = -I m4' >> $(@D)/Makefile.am
+	sed -i -e '/^AC_CONFIG_AUX_DIR/s/^/dnl /' -e '/^AM_INIT_AUTOMAKE/s/^/AC_CONFIG_AUX_DIR(.)\n/' $(@D)/configure.ac
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
-		ACLOCAL="$(HOST_STAGING_PREFIX)/bin/aclocal-1.4 -I m4" \
-		AUTOMAKE=$(HOST_STAGING_PREFIX)/bin/automake-1.4 autoreconf -i -v; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTARES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTARES_LDFLAGS)" \
@@ -143,7 +147,7 @@ gift-ares-unpack: $(GIFTARES_BUILD_DIR)/.configured
 #
 $(GIFTARES_BUILD_DIR)/.built: $(GIFTARES_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GIFTARES_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -154,7 +158,8 @@ gift-ares: $(GIFTARES_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libgift-ares.so.$(GIFTARES_VERSION): $(GIFTARES_BUILD_DIR)/.built
+$(GIFTARES_BUILD_DIR)/.staged: $(GIFTARES_BUILD_DIR)/.built
+	rm -f $@
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(GIFTARES_BUILD_DIR)/gift-ares.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
@@ -162,8 +167,9 @@ $(STAGING_DIR)/opt/lib/libgift-ares.so.$(GIFTARES_VERSION): $(GIFTARES_BUILD_DIR
 	install -m 644 $(GIFTARES_BUILD_DIR)/libgift-ares.so.$(GIFTARES_VERSION) $(STAGING_DIR)/opt/lib
 	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-ares.so.$(GIFTARES_VERSION) libgift-ares.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-ares.so.$(GIFTARES_VERSION) libgift-ares.so
+	touch $@
 
-gift-ares-stage: $(STAGING_DIR)/opt/lib/libgift-ares.so.$(GIFTARES_VERSION)
+gift-ares-stage:$(GIFTARES_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer

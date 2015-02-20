@@ -94,6 +94,8 @@ rsnapshot: $(RSNAPSHOT_BUILD_DIR)/.built
 
 $(RSNAPSHOT_IPK): $(RSNAPSHOT_BUILD_DIR)/.built
 	rm -rf $(RSNAPSHOT_IPK_DIR) $(BUILD_DIR)/rsnapshot_*_$(TARGET_ARCH).ipk
+	-$(MAKE) -C $(RSNAPSHOT_BUILD_DIR) DESTDIR=$(RSNAPSHOT_IPK_DIR) install
+	sed -i '/^=head1 USAGE$$/s/^/=back\n\n/' $(RSNAPSHOT_BUILD_DIR)/rsnapshot
 	$(MAKE) -C $(RSNAPSHOT_BUILD_DIR) DESTDIR=$(RSNAPSHOT_IPK_DIR) install
 	sed -i -e '/\/usr\/bin\/perl -w/d' -e 's|/usr/local/|/opt/|g' $(RSNAPSHOT_IPK_DIR)/opt/bin/*
 	find $(RSNAPSHOT_IPK_DIR)/opt -type d -exec chmod go+rx {} \;

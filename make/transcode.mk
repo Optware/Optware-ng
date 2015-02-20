@@ -21,7 +21,7 @@
 #
 #TRANSCODE_REPOSITORY=:pserver:cvs@cvs.exit1.org:/cvstc
 TRANSCODE_SITE=http://fromani.exit1.org
-TRANSCODE_VERSION=1.0.7
+TRANSCODE_VERSION=1.1.0
 TRANSCODE_SOURCE=transcode-$(TRANSCODE_VERSION).tar.bz2
 #TRANSCODE_TAG=-D 2005-02-13
 #TRANSCODE_MODULE=transcode
@@ -31,7 +31,10 @@ TRANSCODE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TRANSCODE_DESCRIPTION=Transcode is a suite of tools, all of which are command line utilities, for transcoding various video, audio, and container formats, running on a platform that supports shared libraries and threads.
 TRANSCODE_SECTION=tool
 TRANSCODE_PRIORITY=optional
-TRANSCODE_DEPENDS=ffmpeg, freetype, lame, liba52, libdvdread, libmpeg2, libogg, libvorbis, lzo
+TRANSCODE_DEPENDS=freetype, lame, liba52, libdvdread, libmpeg2, libogg, libvorbis, lzo
+ifeq ($(FFMPEG_OLD), yes)
+TRANSCODE_DEPENDS+=, ffmpeg
+endif
 TRANSCODE_SUGGESTS=
 TRANSCODE_CONFLICTS=
 
@@ -49,7 +52,7 @@ TRANSCODE_CONFFILES=/opt/etc/transcode.conf /opt/etc/init.d/SXXtranscode
 # which they should be applied to the source code.
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
-TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/configure.in-cross.patch
+TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/configure.cross.patch
 endif
 
 #
@@ -122,7 +125,14 @@ transcode-source: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES) make/transcode.mk
-	$(MAKE) ffmpeg-stage freetype-stage lame-stage
+ifeq ($(FFMPEG_OLD), yes)
+	$(MAKE) ffmpeg-stage
+else
+#	transcode needs old ffmpeg
+#	Following command builds and stages headers and static ffmpeg libs to $(STAGING_PREFIX)/ffmpeg_old
+	$(MAKE) ffmpeg-old-stage
+endif
+	$(MAKE) freetype-stage lame-stage
 	$(MAKE) liba52-stage libdvdread-stage
 	$(MAKE) libjpeg-stage libmpeg2-stage
 	$(MAKE) libogg-stage libvorbis-stage
@@ -137,16 +147,16 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 #	sed -ie '/static int verbose/d' $(TRANSCODE_BUILD_DIR)/import/dvd_reader.c
 #	sed -ie 's/static int verbose/extern int verbose/' $(TRANSCODE_BUILD_DIR)/import/tcextract.c
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cd $(TRANSCODE_BUILD_DIR); \
+#	cd $(TRANSCODE_BUILD_DIR); \
 		autoreconf -i -f;
 endif
 	sed -ie 's|="-I/usr/include"|=""|g' $(TRANSCODE_BUILD_DIR)/configure
 	(cd $(TRANSCODE_BUILD_DIR); \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
+		PKG_CONFIG_PATH="$(STAGING_PREFIX)/ffmpeg_old/lib/pkgconfig:$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
 		FT2_CONFIG="$(STAGING_DIR)/opt/bin/freetype-config";export FT2_CONFIG; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSCODE_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSCODE_LDFLAGS)" \
+		CPPFLAGS="-I$(STAGING_PREFIX)/ffmpeg_old/include $(STAGING_CPPFLAGS) $(TRANSCODE_CPPFLAGS)" \
+		LDFLAGS="-L$(STAGING_PREFIX)/ffmpeg_old/lib $(STAGING_LDFLAGS) $(TRANSCODE_LDFLAGS)" \
 		$(TRANSCODE_CONFIG_ENV) \
 		./configure -C \
 		--build=$(GNU_HOST_NAME) \
@@ -158,7 +168,6 @@ endif
 		--with-avifile-prefix=$(STAGING_PREFIX) \
 		--with-freetype2-prefix=$(STAGING_PREFIX) \
 		--with-lame-prefix=$(STAGING_PREFIX) \
-		--with-libavcodec-prefix=$(STAGING_PREFIX) \
 		--with-libdv-prefix=$(STAGING_PREFIX) \
 		--with-libdvdread-prefix=$(STAGING_PREFIX) \
 		--with-libjpeg-prefix=$(STAGING_PREFIX) \

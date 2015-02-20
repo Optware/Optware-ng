@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBUNISTRING_SITE=http://ftp.gnu.org/gnu/libunistring/
-LIBUNISTRING_VERSION=0.9.3
+LIBUNISTRING_VERSION=0.9.4
 LIBUNISTRING_SOURCE=libunistring-$(LIBUNISTRING_VERSION).tar.gz
 LIBUNISTRING_DIR=libunistring-$(LIBUNISTRING_VERSION)
 LIBUNISTRING_UNZIP=zcat

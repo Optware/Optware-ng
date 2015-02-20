@@ -12,16 +12,16 @@
 # PANGO_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-PANGO_SITE=http://ftp.gnome.org/pub/gnome/sources/pango/1.24
-PANGO_VERSION=1.24.4
-PANGO_SOURCE=pango-$(PANGO_VERSION).tar.bz2
+PANGO_SITE=http://ftp.gnome.org/pub/gnome/sources/pango/1.36
+PANGO_VERSION=1.36.8
+PANGO_SOURCE=pango-$(PANGO_VERSION).tar.xz
 PANGO_DIR=pango-$(PANGO_VERSION)
-PANGO_UNZIP=bzcat
+PANGO_UNZIP=xzcat
 PANGO_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PANGO_DESCRIPTION=GNOME font abstraction library
 PANGO_SECTION=lib
 PANGO_PRIORITY=optional
-PANGO_DEPENDS=glib, xft, freetype, fontconfig, ice, cairo
+PANGO_DEPENDS=glib, xft, freetype, fontconfig, ice, cairo, harfbuzz
 
 #
 # PANGO_IPK_VERSION should be incremented when the ipk changes.
@@ -47,7 +47,7 @@ PANGO_LOCALES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PANGO_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include -I$(STAGING_INCLUDE_DIR)/freetype2
+PANGO_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include -I$(STAGING_INCLUDE_DIR)/freetype2 -I$(STAGING_INCLUDE_DIR)/harfbuzz
 PANGO_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
@@ -114,17 +114,23 @@ $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES) make/
 	$(MAKE) xft-stage
 	$(MAKE) ice-stage
 	$(MAKE) cairo-stage
+	$(MAKE) harfbuzz-stage
 	rm -rf $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
 	$(PANGO_UNZIP) $(DL_DIR)/$(PANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
+	mv $(BUILD_DIR)/$(PANGO_DIR) $(@D)
 	sed -i -e '/cd .* glib-mkenums/s|glib-mkenums |$(STAGING_PREFIX)/bin/& |' $(@D)/pango/Makefile.in
-	(cd $(PANGO_BUILD_DIR); \
+	sed -i -e 's/have_freetype=false/have_freetype=true/' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PANGO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PANGO_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		FONTCONFIG_CFLAGS="-I$(STAGING_INCLUDE_DIR)" \
+		FONTCONFIG_LIBS="-L$(STAGING_LIB_DIR) -lfontconfig" \
+		FREETYPE_CFLAGS="-I$(STAGING_INCLUDE_DIR) -I$(STAGING_INCLUDE_DIR)/freetype2" \
+		FREETYPE_LIBS="-L$(STAGING_LIB_DIR) -lfreetype -lz" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -134,6 +140,7 @@ $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES) make/
 		--prefix=/opt \
 		--disable-static \
 		--disable-glibtest \
+		--with-cairo \
 	)
 	$(PATCH_LIBTOOL) $(PANGO_BUILD_DIR)/libtool
 	touch $@
@@ -186,7 +193,7 @@ pango-stage: $(PANGO_BUILD_DIR)/.staged
 $(PANGO_IPK): $(PANGO_BUILD_DIR)/.built
 	rm -rf $(PANGO_IPK_DIR) $(BUILD_DIR)/pango_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PANGO_BUILD_DIR) DESTDIR=$(PANGO_IPK_DIR) install-strip
-	rm -f $(PANGO_IPK_DIR)/opt/lib/*.la
+	find $(PANGO_IPK_DIR) -type f -name '*.la' -exec rm -f {} \;
 	rm -rf $(PANGO_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(PANGO_IPK_DIR)/CONTROL/control
 	install -m 644 $(PANGO_SOURCE_DIR)/postinst $(PANGO_IPK_DIR)/CONTROL/postinst

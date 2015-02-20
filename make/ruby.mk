@@ -26,15 +26,18 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby/1.9
+RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
 ifneq (wl500g, $(OPTWARE_TARGET))
-RUBY_UPSTREAM_VERSION=1.9.1-p243
-RUBY_VERSION=1.9.1.243
-RUBY_IPK_VERSION=2
+RUBY_UPSTREAM_VERSION=2.2.0
+RUBY_VERSION=2.2.0
+RUBY_IPK_VERSION=1
+#RUBY_UPSTREAM_VERSION=1.9.1-p243
+#RUBY_VERSION=1.9.1.243
+#RUBY_IPK_VERSION=2
 else
 RUBY_UPSTREAM_VERSION=1.8.6-p36
 RUBY_VERSION=1.8.6.36
-RUBY_IPK_VERSION=1
+RUBY_IPK_VERSION=2
 endif
 RUBY_SOURCE=ruby-$(RUBY_UPSTREAM_VERSION).tar.gz
 RUBY_DIR=ruby-$(RUBY_UPSTREAM_VERSION)
@@ -43,7 +46,7 @@ RUBY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RUBY_DESCRIPTION=An interpreted scripting language for quick and easy object-oriented programming.
 RUBY_SECTION=misc
 RUBY_PRIORITY=optional
-RUBY_DEPENDS=
+RUBY_DEPENDS=zlib, readline, openssl, ncurses
 
 
 #
@@ -54,7 +57,7 @@ RUBY_DEPENDS=
 # RUBY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-RUBY_PATCHES=$(RUBY_SOURCE_DIR)/ext-socket.patch $(RUBY_SOURCE_DIR)/lib-mkmf.rb.patch
+RUBY_PATCHES=#$(RUBY_SOURCE_DIR)/ext-socket.patch $(RUBY_SOURCE_DIR)/lib-mkmf.rb.patch
 
 #
 # If the compilation of the package requires additional
@@ -91,7 +94,7 @@ RUBY_IPK=$(BUILD_DIR)/ruby_$(RUBY_VERSION)-$(RUBY_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RUBY_SOURCE):
-	$(WGET) -P $(@D) $(RUBY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(RUBY_SITE)/$(shell echo $(RUBY_VERSION) | sed 's/\([0-9]*\.[0-9]*\)\..*/\1/')/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -121,8 +124,17 @@ $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES) make/rub
 	$(MAKE) zlib-stage readline-stage openssl-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(RUBY_DIR) $(@D)
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(RUBY_PATCHES) | patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1
+	if test -n "$(RUBY_PATCHES)" ; \
+		then cat $(RUBY_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(RUBY_DIR) $(@D)
+# $(RUBY_SOURCE_DIR)/lib-mkmf.rb.patch:
+	sed -i -e 's/libpath = libpathflag(libpath)/libpath = "-L \$$(topdir)"/' $(@D)/lib/mkmf.rb
+# $(RUBY_SOURCE_DIR)/ext-socket.patch (not needed in 2.2):
+ifeq (wl500g, $(OPTWARE_TARGET))
+	sed -i -e 's/#if defined __UCLIBC__/#if 1/' $(@D)/ext/socket/addrinfo.h
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RUBY_CPPFLAGS)" \
@@ -142,6 +154,7 @@ $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES) make/rub
 		--disable-ipv6 \
 		--disable-install-doc \
 	)
+	find $(@D) -type f -name Makefile -exec sed -i -e 's|-Wl,-R$(STAGING_LIB_DIR)||g' {} \;
 	touch $@
 
 ruby-unpack: $(RUBY_BUILD_DIR)/.configured
@@ -178,7 +191,7 @@ $(RUBY_HOST_BUILD_DIR)/.staged: host/.configured make/ruby.mk
 	$(MAKE) -C $(@D)
 	$(MAKE) -C $(@D) install
 	rm -f $(HOST_STAGING_LIB_DIR)/ruby/ruby.h
-	cd $(HOST_STAGING_LIB_DIR)/ruby && ln -sf 1.9.1/*-linux/ruby.h .
+	cd $(HOST_STAGING_LIB_DIR)/ruby && ln -sf $(RUBY_VERSION)/*-linux/ruby.h .
 	touch $@
 
 ifneq ($(HOSTCC), $(TARGET_CC))
@@ -233,11 +246,20 @@ $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	$(MAKE) -C $(RUBY_BUILD_DIR) DESTDIR=$(RUBY_IPK_DIR) install
 	for so in $(RUBY_IPK_DIR)/opt/bin/ruby \
 	    $(RUBY_IPK_DIR)/opt/lib/libruby.so.[0-9]*.[0-9]*.[0-9]* \
-	    `find $(RUBY_IPK_DIR)/opt/lib/ruby/1.9.1/ -name '*.so'`; \
+	    `find $(RUBY_IPK_DIR)/opt/lib/ruby/$(RUBY_VERSION)/ -name '*.so'`; \
 	do $(STRIP_COMMAND) $$so; \
 	done
 	install -d $(RUBY_IPK_DIR)/opt/etc/
 	$(MAKE) $(RUBY_IPK_DIR)/CONTROL/control
+	if [ -f $(RUBY_IPK_DIR)/opt/bin/gem ] ; then \
+		mv -f $(RUBY_IPK_DIR)/opt/bin/gem $(RUBY_IPK_DIR)/opt/bin/ruby-gem; \
+		echo "#!/bin/sh\n/opt/bin/update-alternatives --install '/opt/bin/gem' 'gem' /opt/bin/ruby-gem 30" > \
+								$(RUBY_IPK_DIR)/CONTROL/postinst; \
+		echo "#!/bin/sh\n/opt/bin/update-alternatives --remove 'gem' /opt/bin/ruby-gem" > \
+								$(RUBY_IPK_DIR)/CONTROL/prerm; \
+		chmod 755 $(RUBY_IPK_DIR)/CONTROL/postinst; \
+		chmod 755 $(RUBY_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RUBY_IPK_DIR)
 
 #

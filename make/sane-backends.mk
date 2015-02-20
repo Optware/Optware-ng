@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 
-SANE_BACKENDS_RELEASE=1.0.22
+SANE_BACKENDS_RELEASE=1.0.24
 SANE_BACKENDS_IPK_VERSION=1
 
 # You should change the next two git variables TOGETHER
@@ -73,9 +73,9 @@ SANE_BACKENDS_CONFFILES=/opt/etc/sane.d/saned.conf /opt/etc/init.d/S01sane-backe
 ifeq (1.0.19, $(SANE_BACKENDS_RELEASE))
 SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/1.0.19/Makefile.in.patch \
 	$(SANE_BACKENDS_SOURCE_DIR)/1.0.19/tools-Makefile.in.patch
-else
-SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/Makefile.in.patch \
-	$(SANE_BACKENDS_SOURCE_DIR)/tools-Makefile.in.patch
+#else
+#SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/Makefile.in.patch \
+#	$(SANE_BACKENDS_SOURCE_DIR)/tools-Makefile.in.patch
 endif
 
 #
@@ -149,6 +149,7 @@ $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE
 ifeq (uclibc, $(LIBC_STYLE)$(filter arm armeb i386 i686, $(TARGET_ARCH)))
 	sed -i -e 's/ qcam / /' $(@D)/configure
 endif
+	sed -e "s|-I/usr/local/include||" -i "$(@D)/configure"
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SANE_BACKENDS_CPPFLAGS)" \
@@ -157,6 +158,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--oldincludedir=$(STAGING_INCLUDE_DIR) \
 		--prefix=/opt \
 		--disable-fork-process \
 		--without-gphoto2 \

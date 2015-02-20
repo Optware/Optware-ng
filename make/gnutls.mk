@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUTLS_SITE=http://ftp.gnu.org/pub/gnu/gnutls
-GNUTLS_VERSION=2.6.5
+GNUTLS_VERSION=2.10.5
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
 GNUTLS_UNZIP=bzcat
@@ -52,7 +52,8 @@ GNUTLS_CONFFILES=#/opt/etc/gnutls.conf /opt/etc/init.d/SXXgnutls
 # GNUTLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#GNUTLS_PATCHES=
+GNUTLS_PATCHES=$(GNUTLS_SOURCE_DIR)/x509.c.patch \
+		$(GNUTLS_SOURCE_DIR)/gdoc.patch
 
 #
 # If the compilation of the package requires additional
@@ -129,9 +130,11 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES) ma
 		--prefix=/opt \
 		--with-libgcrypt-prefix=$(STAGING_DIR)/opt \
 		--with-libtasn1-prefix=$(STAGING_DIR)/opt \
+		--without-p11-kit \
 		--disable-nls \
 		--disable-static \
 	)
+	find $(@D) -type f -name Makefile -exec sed -i -e "s|-Wl,-rpath -Wl,$(STAGING_DIR)/opt/lib||g" -e "s|-R$(STAGING_DIR)/opt/lib||g" {} \;
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -158,7 +161,7 @@ $(GNUTLS_BUILD_DIR)/.staged: $(GNUTLS_BUILD_DIR)/.built
 	rm -f $(STAGING_PREFIX)/bin/*gnutls*
 	$(MAKE) -C $(@D) install \
 		DESTDIR=$(STAGING_DIR) program_transform_name=""
-	sed -i -e 's|echo $$includes $$.*_cflags|echo "-I$(STAGING_INCLUDE_DIR)"|' $(STAGING_PREFIX)/bin/*gnutls-config
+#	sed -i -e 's|echo $$includes $$.*_cflags|echo "-I$(STAGING_INCLUDE_DIR)"|' $(STAGING_PREFIX)/bin/*gnutls-config
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gnutls*.pc
 	rm -f $(STAGING_LIB_DIR)/libgnutls*.la
 	touch $@
@@ -219,10 +222,11 @@ $(GNUTLS_IPK) $(GNUTLS-DEV_IPK): $(GNUTLS_BUILD_DIR)/.built
 	mv $(GNUTLS_IPK_DIR)/opt/include $(GNUTLS-DEV_IPK_DIR)/opt/
 	install -d $(GNUTLS-DEV_IPK_DIR)/opt/share/man
 	mv $(GNUTLS_IPK_DIR)/opt/share/man/man3 $(GNUTLS-DEV_IPK_DIR)/opt/share/man/
+	rm -rf $(GNUTLS_IPK_DIR)/opt/share/info/dir
 	mv $(GNUTLS_IPK_DIR)/opt/share/info $(GNUTLS-DEV_IPK_DIR)/opt/share/
-	mv $(GNUTLS_IPK_DIR)/opt/share/aclocal $(GNUTLS-DEV_IPK_DIR)/opt/share/
+#	mv $(GNUTLS_IPK_DIR)/opt/share/aclocal $(GNUTLS-DEV_IPK_DIR)/opt/share/
 	install -d $(GNUTLS-DEV_IPK_DIR)/opt/bin $(GNUTLS-DEV_IPK_DIR)/opt/lib
-	mv $(GNUTLS_IPK_DIR)/opt/bin/libgnutls*-config $(GNUTLS-DEV_IPK_DIR)/opt/bin/
+#	mv $(GNUTLS_IPK_DIR)/opt/bin/libgnutls*-config $(GNUTLS-DEV_IPK_DIR)/opt/bin/
 	mv $(GNUTLS_IPK_DIR)/opt/lib/pkgconfig $(GNUTLS-DEV_IPK_DIR)/opt/lib/
 #	install -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)/opt/etc/gnutls.conf
 #	install -d $(GNUTLS_IPK_DIR)/opt/etc/init.d

@@ -24,8 +24,8 @@
 #
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
-TRANSMISSION_SITE=http://download-origin.transmissionbt.com/files
-TRANSMISSION_VERSION=2.82
+TRANSMISSION_SITE=https://transmission.cachefly.net
+TRANSMISSION_VERSION=2.84
 
 #TRANSMISSION_SVN_REV=8696
 

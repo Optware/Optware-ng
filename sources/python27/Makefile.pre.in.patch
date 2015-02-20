@@ -1,6 +1,6 @@
---- Python-2.7.2rc1/Makefile.pre.in.orig	2011-05-29 14:54:47.000000000 -0700
-+++ Python-2.7.2rc1/Makefile.pre.in	2011-05-29 23:16:10.000000000 -0700
-@@ -41,6 +41,8 @@
+--- Python-2.7.9/Makefile.pre.in.orig	2014-12-10 17:59:50.000000000 +0200
++++ Python-2.7.9/Makefile.pre.in	2015-01-26 19:15:33.978440688 +0200
+@@ -45,6 +45,8 @@
  
  GNULD=          @GNULD@
  
@@ -9,7 +9,25 @@
  # Shell used by make (some versions default to the login shell, which is bad)
  SHELL=		/bin/sh
  
-@@ -181,7 +183,8 @@
+@@ -117,7 +119,7 @@
+ 
+ # Symbols used for using shared libraries
+ SO=		@SO@
+-LDSHARED=	@LDSHARED@ $(LDFLAGS)
++LDSHARED=	@LDSHARED@ @LDFLAGS@ $(PY_LDFLAGS)
+ BLDSHARED=	@BLDSHARED@ $(LDFLAGS)
+ LDCXXSHARED=	@LDCXXSHARED@
+ DESTSHARED=	$(BINLIBDEST)/lib-dynload
+@@ -142,7 +144,7 @@
+ OTHER_LIBTOOL_OPT=@OTHER_LIBTOOL_OPT@
+ 
+ # Environment to run shared python without installed libraries
+-RUNSHARED=       @RUNSHARED@
++RUNSHARED=       @RUNSHARED@ _PYTHON_HOST_PLATFORM='$(_PYTHON_HOST_PLATFORM)'
+ 
+ # ensurepip options
+ ENSUREPIP=      @ENSUREPIP@
+@@ -193,9 +195,10 @@
  UNICODE_OBJS=   @UNICODE_OBJS@
  
  PYTHON=		python$(EXE)
@@ -17,9 +35,12 @@
 +HOSTPYTHON=	python$(BUILDEXE)
 +BUILDPYTHON=	@BUILDPYTHON@
  
- # The task to run while instrument when building the profile-opt target
- PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -213,7 +216,8 @@
+-PYTHON_FOR_BUILD=@PYTHON_FOR_BUILD@
++PYTHON_FOR_BUILD=./@BUILDPYTHON@
+ _PYTHON_HOST_PLATFORM=@_PYTHON_HOST_PLATFORM@
+ HOST_GNU_TYPE=  @host@
+ 
+@@ -233,7 +236,8 @@
  
  ##########################################################################
  # Parser
@@ -27,9 +48,9 @@
 +HOSTPGEN=	Parser/pgen$(EXE)
 +BUILDPGEN=	@BUILDPGEN@
  
- POBJS=		\
- 		Parser/acceler.o \
-@@ -365,7 +369,7 @@
+ PSRCS=		\
+ 		Parser/acceler.c \
+@@ -408,7 +412,7 @@
  
  # Default target
  all:		build_all
@@ -38,7 +59,16 @@
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -395,7 +399,7 @@
+@@ -427,7 +431,7 @@
+ 
+ run_profile_task:
+ 	: # FIXME: can't run for a cross build
+-	./$(BUILDPYTHON) $(PROFILE_TASK)
++	$(PYTHON_FOR_BUILD) $(PROFILE_TASK)
+ 
+ build_all_use_profile:
+ 	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-use"
+@@ -439,12 +443,12 @@
  
  
  # Build the interpreter
@@ -47,25 +77,65 @@
  		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
  			Modules/python.o \
  			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-@@ -540,13 +544,13 @@
  
- # Use a stamp file to prevent make -j invoking pgen twice
- $(GRAMMAR_H) $(GRAMMAR_C): Parser/pgen.stamp
--Parser/pgen.stamp: $(PGEN) $(GRAMMAR_INPUT)
-+Parser/pgen.stamp: $(BUILDPGEN) $(GRAMMAR_INPUT)
- 		-@$(INSTALL) -d Include
+-platform: $(BUILDPYTHON) pybuilddir.txt
++platform: $(HOSTPYTHON) pybuilddir.txt
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) -c 'import sys ; from sysconfig import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
+ 
+ # Create build directory and generate the sysconfig build-time data there.
+@@ -454,7 +458,7 @@
+ # problems by creating a dummy pybuilddir.txt just to allow interpreter
+ # initialization to succeed.  It will be overwritten by generate-posix-vars
+ # or removed in case of failure.
+-pybuilddir.txt: $(BUILDPYTHON)
++pybuilddir.txt: $(HOSTPYTHON) $(PYTHON_FOR_BUILD)
+ 	@echo "none" > ./pybuilddir.txt
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) -S -m sysconfig --generate-posix-vars ;\
+ 	if test $$? -ne 0 ; then \
+@@ -467,7 +471,7 @@
+ # Under GNU make, MAKEFLAGS are sorted and normalized; the 's' for
+ # -s, --silent or --quiet is always the first char.
+ # Under BSD make, MAKEFLAGS might be " -s -v x=y".
+-sharedmods: $(BUILDPYTHON) pybuilddir.txt
++sharedmods: $(HOSTPYTHON) pybuilddir.txt
+ 	@case "$$MAKEFLAGS" in \
+ 	    *\ -s*|s*) quiet="-q";; \
+ 	    *) quiet="";; \
+@@ -508,11 +512,11 @@
+ #
+ # Distributors are likely to want to install this somewhere else e.g. relative
+ # to the stripped DWARF data for the shared library.
+-gdbhooks: $(BUILDPYTHON)-gdb.py
++gdbhooks: $(HOSTPYTHON)-gdb.py
+ 
+ SRC_GDB_HOOKS=$(srcdir)/Tools/gdb/libpython.py
+-$(BUILDPYTHON)-gdb.py: $(SRC_GDB_HOOKS)
+-	$(INSTALL_DATA) $(SRC_GDB_HOOKS) $(BUILDPYTHON)-gdb.py
++$(HOSTPYTHON)-gdb.py: $(SRC_GDB_HOOKS)
++	$(INSTALL_DATA) $(SRC_GDB_HOOKS) $(HOSTPYTHON)-gdb.py
+ 
+ # This rule is here for OPENSTEP/Rhapsody/MacOSX. It builds a temporary
+ # minimal framework (not including the Lib directory and such) in the current
+@@ -610,14 +614,14 @@
+ 
+ $(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGENSRCS)
+ 		@$(MKDIR_P) Include
+-		$(MAKE) $(PGEN)
 -		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
++		$(MAKE) $(BUILDPGEN)
 +		$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
- 		-touch Parser/pgen.stamp
+ $(GRAMMAR_C): $(GRAMMAR_H) $(GRAMMAR_INPUT) $(PGENSRCS)
+ 		$(MAKE) $(GRAMMAR_H)
+ 		touch $(GRAMMAR_C)
  
 -$(PGEN):	$(PGENOBJS)
 -		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
 +$(HOSTPGEN):	$(PGENOBJS)
-+		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $@
++		$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -604,6 +608,16 @@
+@@ -677,6 +681,16 @@
  Python/formatter_string.o: $(srcdir)/Python/formatter_string.c \
  				$(STRINGLIB_HEADERS)
  
@@ -73,16 +143,43 @@
 +# Rules for making python/pgen that will run on the build system
 +# (only used for cross compiles)
 +
-+buildpython27/python$(BUILDEXE):				
++buildpython27/python$(BUILDEXE):
 +	cd buildpython27; make all; cd ..
 +
 +buildpython27/Parser/pgen$(BUILDEXE):
 +	cd buildpython27; make Parser/pgen; cd ..
-+				
++
  ############################################################################
  # Header files
  
-@@ -810,7 +824,7 @@
+@@ -781,7 +795,7 @@
+ 
+ TESTOPTS=	-l $(EXTRATESTOPTS)
+ TESTPROG=	$(srcdir)/Lib/test/regrtest.py
+-TESTPYTHON=	$(RUNSHARED) ./$(BUILDPYTHON) -Wd -3 -E -tt $(TESTPYTHONOPTS)
++TESTPYTHON=	$(RUNSHARED) $(PYTHON_FOR_BUILD) -Wd -3 -E -tt $(TESTPYTHONOPTS)
+ test:		all platform
+ 		-find $(srcdir)/Lib -name '*.py[co]' -print | xargs rm -f
+ 		-$(TESTPYTHON) $(TESTPROG) $(TESTOPTS)
+@@ -804,7 +818,7 @@
+ 		-find $(srcdir)/Lib -name '*.py[co]' -print | xargs rm -f
+ 		-$(TESTPYTHON) $(TESTPROG) -uall $(TESTOPTS)
+ 		$(TESTPYTHON) $(TESTPROG) -uall $(TESTOPTS)
+-		$(RUNSHARED) /usr/libexec/oah/translate ./$(BUILDPYTHON) -E -tt $(TESTPROG) -uall $(TESTOPTS)
++		$(RUNSHARED) /usr/libexec/oah/translate $(PYTHON_FOR_BUILD) -E -tt $(TESTPROG) -uall $(TESTOPTS)
+ 
+ 
+ # Like testall, but with a single pass only
+@@ -903,7 +917,7 @@
+ 
+ # Install the interpreter with $(VERSION) affixed
+ # This goes into $(exec_prefix)
+-altbininstall:	$(BUILDPYTHON)
++altbininstall:	$(HOSTPYTHON) $(PYTHON_FOR_BUILD)
+ 	@for i in $(BINDIR) $(LIBDIR); \
+ 	do \
+ 		if test ! -d $(DESTDIR)$$i; then \
+@@ -912,7 +926,7 @@
  		else	true; \
  		fi; \
  	done
@@ -91,15 +188,33 @@
  	if test -f $(LDLIBRARY); then \
  		if test -n "$(DLLLIBRARY)" ; then \
  			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
-@@ -1049,6 +1063,7 @@
+@@ -1076,7 +1090,7 @@
+ 	if [ -n "$(MULTIARCH)" ]; then export MULTIARCH; MULTIARCH=$(MULTIARCH); fi; \
+ 	export PYTHON_FOR_BUILD; \
+ 	if [ "$(build)" = "$(host)" ]; then \
+-	  PYTHON_FOR_BUILD="$(BUILDPYTHON)"; \
++	  PYTHON_FOR_BUILD="$(PYTHON_FOR_BUILD)"; \
+ 	else \
+ 	  PYTHON_FOR_BUILD="$(PYTHON_FOR_BUILD)"; \
+ 	fi; \
+@@ -1175,6 +1189,7 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
 +	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' CROSS_COMPILE='$(CROSS_COMPILE)' \
- 	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
-@@ -1136,7 +1151,7 @@
+@@ -1214,7 +1229,7 @@
+ 		fi; \
+ 	done
+ 	$(LN) -fsn include/python$(VERSION) $(DESTDIR)$(prefix)/Headers
+-	sed 's/%VERSION%/'"`$(RUNSHARED) ./$(BUILDPYTHON) -c 'import platform; print platform.python_version()'`"'/g' < $(RESSRCDIR)/Info.plist > $(DESTDIR)$(prefix)/Resources/Info.plist
++	sed 's/%VERSION%/'"`$(RUNSHARED) $(PYTHON_FOR_BUILD) -c 'import platform; print platform.python_version()'`"'/g' < $(RESSRCDIR)/Info.plist > $(DESTDIR)$(prefix)/Resources/Info.plist
+ 	$(LN) -fsn $(VERSION) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Versions/Current
+ 	$(LN) -fsn Versions/Current/$(PYTHONFRAMEWORK) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/$(PYTHONFRAMEWORK)
+ 	$(LN) -fsn Versions/Current/Headers $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Headers
+@@ -1263,7 +1278,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -108,13 +223,22 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1188,11 +1203,12 @@
+@@ -1271,7 +1286,7 @@
+ 
+ # Run reindent on the library
+ reindent:
+-	./$(BUILDPYTHON) $(srcdir)/Tools/scripts/reindent.py -r $(srcdir)/Lib
++	$(PYTHON_FOR_BUILD) $(srcdir)/Tools/scripts/reindent.py -r $(srcdir)/Lib
+ 
+ # Rerun configure with the same options as it was run last time,
+ # provided the config.status script exists
+@@ -1320,11 +1335,12 @@
  	find . -name '*.gc??' -exec rm -f {} ';'
  
  clobber: clean profile-removal
 -	-rm -f $(BUILDPYTHON) $(PGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
-+	-rm -f $(HOSTPYTHON) $(HOSTPGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
- 		tags TAGS Parser/pgen.stamp \
++	-rm -f $(HOSTPYTHON) $(PGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
+ 		tags TAGS \
  		config.cache config.log pyconfig.h Modules/config.c
  	-rm -rf build platform
  	-rm -rf $(PYTHONFRAMEWORKDIR)
@@ -122,3 +246,12 @@
  
  # Make things extra clean, before making a distribution:
  # remove all generated files, even Makefile[.pre]
+@@ -1380,7 +1396,7 @@
+ 
+ # Perform some verification checks on any modified files.
+ patchcheck:
+-	$(RUNSHARED) ./$(BUILDPYTHON) $(srcdir)/Tools/scripts/patchcheck.py
++	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/Tools/scripts/patchcheck.py
+ 
+ # Dependencies
+ 

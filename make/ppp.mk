@@ -35,14 +35,14 @@ PPP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PPP_DESCRIPTION=PPP is the Point-to-Point Protocol daemon.
 PPP_SECTION=net
 PPP_PRIORITY=optional
-PPP_DEPENDS=
+PPP_DEPENDS=libpcap
 PPP_SUGGESTS=
 PPP_CONFLICTS=
 
 #
 # PPP_IPK_VERSION should be incremented when the ipk changes.
 #
-PPP_IPK_VERSION=1
+PPP_IPK_VERSION=2
 
 #
 # PPP_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ ppp-source: $(DL_DIR)/$(PPP_SOURCE) $(PPP_PATCHES)
 # shown below to make various patches to it.
 #
 $(PPP_BUILD_DIR)/.configured: $(DL_DIR)/$(PPP_SOURCE) $(PPP_PATCHES) make/ppp.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libpcap-stage
 	rm -rf $(BUILD_DIR)/$(PPP_DIR) $(@D)
 	$(PPP_UNZIP) $(DL_DIR)/$(PPP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PPP_PATCHES)" ; \
@@ -134,6 +134,11 @@ $(PPP_BUILD_DIR)/.configured: $(DL_DIR)/$(PPP_SOURCE) $(PPP_PATCHES) make/ppp.mk
 		--disable-nls \
 		--disable-static \
 	)
+	sed -i -e "/(wildcard .*crypt.h/s|/usr/include|$(TARGET_INCDIR)|" \
+		-e "/(wildcard .*libcrypt/s|/usr/lib|$(TARGET_LIBDIR)|" \
+		-e "/(wildcard .*pcap-bpf.h/s|/usr/include|$(STAGING_INCLUDE_DIR)|" \
+		-e "s|+= -DPPP_FILTER|+= -DPPP_FILTER -I$(STAGING_INCLUDE_DIR)|" \
+		-e "s|-lpcap|$(STAGING_LDFLAGS) $(PPP_LDFLAGS) -lpthread -lusb-1.0 -lpcap|" $(@D)/pppd/Makefile
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

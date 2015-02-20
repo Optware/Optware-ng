@@ -46,7 +46,19 @@ RECODE_IPK_VERSION=3
 # RECODE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#RECODE_PATCHES=$(RECODE_SOURCE_DIR)/configure.patch
+RECODE_PATCHES=$(RECODE_SOURCE_DIR)/01-no-usr-share-info-dir-gz\
+$(RECODE_SOURCE_DIR)/02-src-libiconv-c-utf8\
+$(RECODE_SOURCE_DIR)/03-src-task-c-librecode\
+$(RECODE_SOURCE_DIR)/04-src-hash-h-php4-collision\
+$(RECODE_SOURCE_DIR)/05-src-request-c-pointer-recalculation\
+$(RECODE_SOURCE_DIR)/06-libtool-update\
+$(RECODE_SOURCE_DIR)/07-po-update \
+$(RECODE_SOURCE_DIR)/08-all-linguas-update \
+$(RECODE_SOURCE_DIR)/09-manpage-name-section\
+$(RECODE_SOURCE_DIR)/10-src-recodext-h-gcc-fix\
+$(RECODE_SOURCE_DIR)/11-src-names-c-memory-leak\
+$(RECODE_SOURCE_DIR)/12-src-names-c-format-string\
+$(RECODE_SOURCE_DIR)/99-config-guess-config-sub \
 
 #
 # If the compilation of the package requires additional
@@ -110,12 +122,18 @@ $(RECODE_BUILD_DIR)/.configured: $(DL_DIR)/$(RECODE_SOURCE) $(RECODE_PATCHES) ma
 	$(RECODE_UNZIP) $(DL_DIR)/$(RECODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RECODE_PATCHES)" ; \
 		then cat $(RECODE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RECODE_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(RECODE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RECODE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RECODE_DIR) $(@D) ; \
 	fi
+	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
 	sed -i -e 's/^linux-gnu\*)$$/*)/g' $(@D)/ltconfig
+	sed -i -e '/AC_PROG_LEX/s/$$/\n:/' $(@D)/m4/flex.m4
+	rm -f $(@D)/aclocal.m4
+	cd $(@D); libtoolize -c -f; aclocal -I m4; cat $(addprefix `aclocal --print-ac-dir`/, \
+		libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 lt~obsolete.m4) >> aclocal.m4; \
+		autoheader; autoconf; automake -a -c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RECODE_CPPFLAGS)" \

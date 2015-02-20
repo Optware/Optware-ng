@@ -34,7 +34,10 @@ TARGET_INCDIR = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURAT
 TARGET_LDFLAGS = 
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: buildroot-toolchain libuclibc++-toolchain
+toolchain/.statfs-patched:
+	sed -i -e "s/^struct statfs {/#ifndef _SYS_STATFS_H\nstruct statfs {/" -e "s/^};/};\n#endif/" toolchain/mipsel-linux-uclibc/gcc-4.1.1-uclibc-0.9.28/mipsel-linux-uclibc/sys-include/asm/statfs.h
+	touch $@
+toolchain: buildroot-toolchain libuclibc++-toolchain toolchain/.statfs-patched
 endif
 
 TARGET_GXX=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/nowrap/$(TARGET_ARCH)-$(TARGET_OS)-g++

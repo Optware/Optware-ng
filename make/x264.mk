@@ -46,7 +46,7 @@ X264_SOURCE=x264-$(X264_VERSION).tar.gz
 X264_DIR=x264
 else
 X264_SITE=ftp://ftp.videolan.org/pub/videolan/x264/snapshots
-X264_UPSTREAM_VERSION ?= snapshot-20090220-2245
+X264_UPSTREAM_VERSION ?= snapshot-20141218-2245
 X264_DIR=x264-$(X264_UPSTREAM_VERSION)
 X264_SOURCE=x264-$(X264_UPSTREAM_VERSION).tar.bz2
 X264_VERSION ?= 0.0.20090220-svn2245
@@ -72,7 +72,7 @@ X264_CONFFILES=
 ifeq (snapshot-20081231-2245, $(X264_UPSTREAM_VERSION))
 X264_PATCHES=$(X264_SOURCE_DIR)/common-cpu.c-2008.patch
 else
-X264_PATCHES=$(X264_SOURCE_DIR)/common-cpu.c.patch
+#X264_PATCHES=$(X264_SOURCE_DIR)/common-cpu.c.patch
 endif
 
 
@@ -91,7 +91,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-X264_CPPFLAGS=
+X264_CPPFLAGS=-fPIC
 X264_LDFLAGS=
 
 #
@@ -159,18 +159,15 @@ endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		AS="$(TARGET_CC)" \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(X264_CPPFLAGS)" \
+		CFLAGS="-I. $(STAGING_CPPFLAGS) $(X264_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(X264_LDFLAGS)" \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-shared \
+		--disable-share \
 	)
-#		--build=$(GNU_HOST_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--disable-asm \
-		--disable-nls \
-		;
+	sed -i -e 's/-mcpu=[^ ]*\|-mfpu=[^ ]*//g' $(@D)/config.mak
 	touch $@
 
 x264-unpack: $(X264_BUILD_DIR)/.configured

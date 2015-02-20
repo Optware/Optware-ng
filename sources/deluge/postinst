@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo -n "Setting default deluge ui to console ... "
+/opt/bin/deluge -s console

@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-PERL-XML-PARSER_SITE=http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT
-PERL-XML-PARSER_VERSION=2.34
+PERL-XML-PARSER_SITE=http://search.cpan.org/CPAN/authors/id/T/TO/TODDR
+PERL-XML-PARSER_VERSION=2.44
 PERL-XML-PARSER_SOURCE=XML-Parser-$(PERL-XML-PARSER_VERSION).tar.gz
 PERL-XML-PARSER_DIR=XML-Parser-$(PERL-XML-PARSER_VERSION)
 PERL-XML-PARSER_UNZIP=zcat

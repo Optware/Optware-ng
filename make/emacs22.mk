@@ -91,8 +91,8 @@ EMACS22_IPK=$(BUILD_DIR)/emacs22_$(EMACS22_VERSION)-$(EMACS22_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(EMACS22_SOURCE):
-	$(WGET) -P $(DL_DIR) $(EMACS22_SITE)/$(EMACS22_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(EMACS22_SOURCE)
+	$(WGET) -P $(DL_DIR) $(EMACS22_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -102,12 +102,17 @@ $(DL_DIR)/$(EMACS22_SOURCE):
 emacs22-source: $(DL_DIR)/$(EMACS22_SOURCE) $(EMACS22_PATCHES)
 
 $(EMACS22_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(EMACS22_SOURCE) # $(EMACS22_PATCHES) make/emacs22.mk
-	rm -rf $(HOST_BUILD_DIR)/$(EMACS22_DIR) $(EMACS22_HOST_BUILD_DIR)
+	rm -rf $(HOST_BUILD_DIR)/$(EMACS22_DIR) $(@D)
 	$(EMACS22_UNZIP) $(DL_DIR)/$(EMACS22_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	if test "$(HOST_BUILD_DIR)/$(EMACS22_DIR)" != "$(HOST_EMACS22_BUILD_DIR)" ; \
+	if test "$(HOST_BUILD_DIR)/$(EMACS22_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(EMACS22_DIR) $(EMACS22_HOST_BUILD_DIR) ; \
 	fi
-	(cd $(EMACS22_HOST_BUILD_DIR); \
+### fix this kind of errors:
+### Makefile:148: *** commands commence before first target.  Stop.
+	sed -i -e '/start of cpp stuff/,$$s|\\$$|\\\\|' $(@D)/src/Makefile.in  $(@D)/lib-src/Makefile.in
+### also make sure that your host gcc's crt*.o files are present in /usr/lib. On multilib/multiarch distros
+### they're usually in /usr/lib/<arch>
+	(cd $(@D); \
 		./configure \
 		--prefix=/opt \
 		--without-x \
@@ -115,7 +120,7 @@ $(EMACS22_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(EMACS22_SOURCE) #
 		--disable-nls \
 		--disable-static \
 	)
-	$(MAKE) -C $(EMACS22_HOST_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -142,16 +147,19 @@ else
 $(EMACS22_BUILD_DIR)/.configured: $(EMACS22_HOST_BUILD_DIR)/.built
 endif
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(EMACS22_DIR) $(EMACS22_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(EMACS22_DIR) $(@D)
 	$(EMACS22_UNZIP) $(DL_DIR)/$(EMACS22_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EMACS22_PATCHES)" ; \
 		then cat $(EMACS22_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(EMACS22_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(EMACS22_DIR)" != "$(EMACS22_BUILD_DIR)" ; \
+	if test "$(BUILD_DIR)/$(EMACS22_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(EMACS22_DIR) $(EMACS22_BUILD_DIR) ; \
 	fi
-	(cd $(EMACS22_BUILD_DIR); \
+### fix this kind of errors:
+### Makefile:148: *** commands commence before first target.  Stop.
+	sed -i -e '/start of cpp stuff/,$$s|\\$$|\\\\|' $(@D)/src/Makefile.in  $(@D)/lib-src/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(EMACS22_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(EMACS22_LDFLAGS)" \
@@ -174,7 +182,7 @@ emacs22-unpack: $(EMACS22_BUILD_DIR)/.configured
 #
 $(EMACS22_BUILD_DIR)/.built: $(EMACS22_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(EMACS22_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		EMACS22_HOST_BUILD_DIR=$(EMACS22_HOST_BUILD_DIR) \
 		EMACS=$(EMACS22_HOST_BUILD_DIR)/src/emacs \
 		BUILT-EMACS=$(EMACS22_HOST_BUILD_DIR)/src/emacs \
@@ -192,7 +200,7 @@ emacs22: $(EMACS22_BUILD_DIR)/.built
 #
 $(EMACS22_BUILD_DIR)/.staged: $(EMACS22_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(EMACS22_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 emacs22-stage: $(EMACS22_BUILD_DIR)/.staged

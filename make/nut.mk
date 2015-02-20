@@ -60,7 +60,7 @@ NUT_PATCHES=$(NUT_SOURCE_DIR)/configure.patch
 #
 NUT_CPPFLAGS=
 NUT_LDFLAGS=$(strip $(if $(filter uclibc, $(LIBC_STYLE)), -lm, ))
-NUT_GD_LIBS=-L$(STAGING_LIB_DIR) -lgd -lfreetype -lfontconfig -ljpeg -lpng12 -lz -lexpat $(if $(filter libiconv, $(PACKAGES)), -liconv,)
+NUT_GD_LIBS=-L$(STAGING_LIB_DIR) -lgd -lbz2 -lfreetype -lfontconfig -ljpeg -lpng12 -lz -lexpat $(if $(filter libiconv, $(PACKAGES)), -liconv,)
 
 #
 # NUT_BUILD_DIR is the directory in which the build is done.

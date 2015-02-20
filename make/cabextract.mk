@@ -5,7 +5,7 @@
 ###########################################################
 
 CABEXTRACT_SITE=http://www.cabextract.org.uk
-CABEXTRACT_VERSION=1.4
+CABEXTRACT_VERSION=1.5
 CABEXTRACT_SOURCE=cabextract-$(CABEXTRACT_VERSION).tar.gz
 CABEXTRACT_DIR=cabextract-$(CABEXTRACT_VERSION)
 CABEXTRACT_UNZIP=zcat

@@ -1,0 +1,34 @@
+--- cyrus-imapd-2.4.orig/lib/imapoptions
++++ cyrus-imapd-2.4/lib/imapoptions
+@@ -1058,12 +1058,13 @@ And the notification message will be ava
+    in minutes.  The minimum value is 10, the default. */
+ 
+ { "popuseacl", 0, SWITCH }
++
+ /* Enforce IMAP ACLs in the pop server.  Due to the nature of the POP3
+-   protocol, the only rights which are used by the pop server are 'r',
+-   't', and 's' for the owner of the mailbox.  The 'r' right allows the
+-   user to open the mailbox and list/retrieve messages.  The 't' right
+-   allows the user to delete messages.  The 's' right allows messages
+-   retrieved by the user to have the \\Seen flag set (only if
++   protocol, the only rights which are used by the pop server are 'r', 't',
++   and 's' for the owner of the mailbox.  The 'r' right allows
++   the user to open the mailbox and list/retrieve messages.  The 't'
++   right allows the user to delete messages.  The 's' right allows
++   messages retrieved by the user to have the \\Seen flag set (only if
+    \fIpopuseimapflags\fR is also enabled). */
+ 
+ { "popuseimapflags", 0, SWITCH }
+--- cyrus-imapd-2.4.orig/man/cyr_dbtool.8
++++ cyrus-imapd-2.4/man/cyr_dbtool.8
+@@ -79,8 +79,8 @@ terminated by tab or newline, values are
+ Running without any options will list the available database backends and
+ usable actions.
+ .PP
+-The 'consistency' command runs a consistency check on the DB by calling
+-'myconsistent' on it.
++The 'consistency' command runs a consistency check on the DB by
++calling 'myconsistent' on it.
+ .PP
+ .I cyr_dbtool
+ reads any applicable configuration options out of the

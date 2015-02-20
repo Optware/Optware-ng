@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SAMBA36_SITE=http://www.samba.org/samba/ftp/stable
-SAMBA36_VERSION ?= 3.6.23
+SAMBA36_VERSION ?= 3.6.24
 SAMBA36_IPK_VERSION ?= 1
 SAMBA36_SOURCE=samba-$(SAMBA36_VERSION).tar.gz
 SAMBA36_DIR=samba-$(SAMBA36_VERSION)
@@ -214,6 +214,7 @@ endif
 	$(SAMBA36_UNZIP) $(DL_DIR)/$(SAMBA36_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(SAMBA36_DIR) $(@D)
 	cat $(SAMBA36_PATCHES) | patch -d $(@D) -p1
+	sed -i -e '/AC_PATH_PROG(CUPS_CONFIG, cups-config)/s|.*|CUPS_CONFIG=$(STAGING_PREFIX)/bin/cups-config|' $(@D)/source3/configure.in
 	(cd $(@D)/source3/; ./autogen.sh)
 	(cd $(@D)/source3/; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -250,7 +251,9 @@ endif
 		--with-smbmount \
 		--without-quotas \
 		--without-sys-quotas\
-		--with-krb5=no \
+		--without-krb5 \
+		--without-ads \
+		--with-libiconv=$(SAMBA_LIBICONV_DIR) \
 		$(SAMBA36_CONFIG_ARGS) \
 		--disable-nls \
 	)

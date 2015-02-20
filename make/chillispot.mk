@@ -106,7 +106,7 @@ chillispot-source: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CHILLISPOT_BUILD_DIR)/.configured: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT_PATCHES)
+$(CHILLISPOT_BUILD_DIR)/.configured: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT_PATCHES) make/chillispot.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(CHILLISPOT_DIR) $(@D)
 	$(CHILLISPOT_UNZIP) $(DL_DIR)/$(CHILLISPOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -114,6 +114,7 @@ $(CHILLISPOT_BUILD_DIR)/.configured: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT
 		then cat $(CHILLISPOT_PATCHES) | patch -d $(BUILD_DIR)/$(CHILLISPOT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(CHILLISPOT_DIR) $(@D)
+	sed -i -e 's/(__FreeBSD__) defined (__OpenBSD__)/(__FreeBSD__) \|\| defined (__OpenBSD__)/' $(@D)/src/tun.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CHILLISPOT_CPPFLAGS)" \

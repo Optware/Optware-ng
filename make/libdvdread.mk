@@ -19,11 +19,11 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBDVDREAD_SITE=ftp://mirror.ovh.net/gentoo-distfiles/distfiles
-LIBDVDREAD_VERSION=0.9.7
-LIBDVDREAD_SOURCE=libdvdread-$(LIBDVDREAD_VERSION).tar.gz
+LIBDVDREAD_SITE=http://download.videolan.org/videolan/libdvdread/$(LIBDVDREAD_VERSION)
+LIBDVDREAD_VERSION=5.0.2
+LIBDVDREAD_SOURCE=libdvdread-$(LIBDVDREAD_VERSION).tar.bz2
 LIBDVDREAD_DIR=libdvdread-$(LIBDVDREAD_VERSION)
-LIBDVDREAD_UNZIP=zcat
+LIBDVDREAD_UNZIP=bzcat
 LIBDVDREAD_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 LIBDVDREAD_DESCRIPTION=library for reading dvd
 LIBDVDREAD_SECTION=lib
@@ -35,7 +35,7 @@ LIBDVDREAD_CONFLICTS=
 #
 # LIBDVDREAD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDVDREAD_IPK_VERSION=2
+LIBDVDREAD_IPK_VERSION=1
 
 #
 # LIBDVDREAD_CONFFILES should be a list of user-editable files

@@ -1,0 +1,65 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 10-fix_potential_overflows.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: fix potential buffer overflows
+## DP: Revised for 2.3.14 by Duncan Gibb <duncan.gibb@siriusit.co.uk>
+## DP: Many of the problems Sven's original patch fixed have since
+## DP: been resolved upsteam (thanks mainly to Bron Gondwana).
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/imtest/imtest.c
++++ cyrus-imapd-2.4/imtest/imtest.c
+@@ -1256,7 +1256,7 @@ static void interactive(struct protocol_
+ 	
+ 	/* can't have this and a file for input */
+ 	sunsock.sun_family = AF_UNIX;
+-	strcpy(sunsock.sun_path, output_socket);
++	strlcpy(sunsock.sun_path, output_socket, sizeof(sunsock.sun_path));
+ 	unlink(output_socket);
+ 
+ 	listen_sock = socket(AF_UNIX, SOCK_STREAM, 0);
+--- cyrus-imapd-2.4.orig/master/master.c
++++ cyrus-imapd-2.4/master/master.c
+@@ -197,13 +197,17 @@ void event_free(struct event *a)
+     free(a);
+ }
+ 
+-void get_prog(char *path, unsigned size, char *const *cmd)
++void get_prog(char *path, unsigned int size, char *const *cmd)
+ {
+     if (cmd[0][0] == '/') {
+ 	/* master lacks strlcpy, due to no libcyrus */
+ 	snprintf(path, size, "%s", cmd[0]);
++	path[size-1] = '\0';
++    }
++    else {
++	snprintf(path, size, "%s/%s", SERVICE_PATH, cmd[0]);
++	path[size-1] = '\0';
+     }
+-    else snprintf(path, size, "%s/%s", SERVICE_PATH, cmd[0]);
+ }
+ 
+ void get_statsock(int filedes[2])
+--- cyrus-imapd-2.4.orig/master/masterconf.c
++++ cyrus-imapd-2.4/master/masterconf.c
+@@ -135,7 +135,7 @@ const char *masterconf_getstring(struct
+ 	} else {
+ 	    /* one word */
+ 	    for (i = 0; i < 255; i++) {
+-		if (Uisspace(*p)) break;
++		if ((!*p) || (Uisspace(*p))) break;
+ 		v[i] = *p++;
+ 	    }
+ 	}
+--- cyrus-imapd-2.4.orig/notifyd/notifyd.c
++++ cyrus-imapd-2.4/notifyd/notifyd.c
+@@ -145,7 +145,7 @@ int do_notify()
+ 	if (cp) nopt = strtol(cp, NULL, 10);
+ 	if (nopt < 0 || errno == ERANGE) cp = NULL;
+ 
+-	if (cp && nopt) {
++	if (cp && (nopt > 0)) {
+ 	    options = (char**) xrealloc(options, nopt * sizeof(char*));
+ 	    if (!options)
+ 		fatal("xmalloc(): can't allocate options", EC_OSERR);

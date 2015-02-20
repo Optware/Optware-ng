@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBDLNA_SITE=http://libdlna.geexbox.org/releases
-LIBDLNA_VERSION=0.2.3
+LIBDLNA_VERSION=0.2.4
 LIBDLNA_SOURCE=libdlna-$(LIBDLNA_VERSION).tar.bz2
 LIBDLNA_DIR=libdlna-$(LIBDLNA_VERSION)
 LIBDLNA_UNZIP=bzcat
@@ -36,7 +36,7 @@ LIBDLNA_CONFLICTS=
 #
 # LIBDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDLNA_IPK_VERSION=2
+LIBDLNA_IPK_VERSION=1
 
 #
 # LIBDLNA_CONFFILES should be a list of user-editable files
@@ -122,6 +122,10 @@ $(LIBDLNA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDLNA_SOURCE) $(LIBDLNA_PATCHES)
 		--disable-nls \
 		--disable-static \
 		;
+ifneq ($(FFMPEG_OLD), yes)
+	sed -i -e 's/av_close_input_file (ctx);/avformat_close_input (\&ctx);/' \
+		-e 's/av_find_stream_info (ctx)/avformat_find_stream_info (ctx, NULL)/' $(@D)/src/profiles.c
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBDLNA_CPPFLAGS)" \
@@ -230,4 +234,4 @@ libdlna-dirclean:
 # Some sanity check for the package.
 #
 libdlna-check: $(LIBDLNA_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBDLNA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

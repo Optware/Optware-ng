@@ -5,7 +5,7 @@
 #########################################################
 
 OPENSSH_SITE=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
-OPENSSH_VERSION=5.9p1
+OPENSSH_VERSION=6.7p1
 OPENSSH_SOURCE=openssh-$(OPENSSH_VERSION).tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
@@ -27,7 +27,7 @@ OPENSSH_CONFFILES=\
 	/opt/etc/default/openssh \
 	/opt/etc/init.d/S40sshd
 
-OPENSSH_PATCHES=$(OPENSSH_SOURCE_DIR)/Makefile.patch
+#OPENSSH_PATCHES=$(OPENSSH_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -102,7 +102,8 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 	if test "$(BUILD_DIR)/$(OPENSSH_DIR)" != "$(OPENSSH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENSSH_DIR) $(OPENSSH_BUILD_DIR) ; \
 	fi
-	(cd $(OPENSSH_BUILD_DIR); \
+	sed -i -e 's/^STRIP_OPT=.*/STRIP_OPT=/' $(@D)/Makefile.in
+	(cd $(@D); \
 		rm -rf config.cache; autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		LD=$(TARGET_CC) \

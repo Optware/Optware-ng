@@ -20,8 +20,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBMPCDEC_SITE=http://files.musepack.net/source
+LIBMPCDEC_SVN=http://svn.musepack.net/libmpc/trunk
+LIBMPCDEC_SVN_REVISION=000485
+ifdef LIBMPCDEC_SVN
+LIBMPCDEC_VERSION=1.2.6+svn$(LIBMPCDEC_SVN_REVISION)
+else
 LIBMPCDEC_VERSION=1.2.6
+endif
+LIBMPCDEC_SITE=http://files.musepack.net/source
 LIBMPCDEC_SOURCE=libmpcdec-$(LIBMPCDEC_VERSION).tar.bz2
 LIBMPCDEC_DIR=libmpcdec-$(LIBMPCDEC_VERSION)
 LIBMPCDEC_UNZIP=bzcat
@@ -81,8 +87,17 @@ LIBMPCDEC_IPK=$(BUILD_DIR)/libmpcdec_$(LIBMPCDEC_VERSION)-$(LIBMPCDEC_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBMPCDEC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBMPCDEC_SITE)/$(LIBMPCDEC_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBMPCDEC_SOURCE)
+ifdef LIBMPCDEC_SVN
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(LIBMPCDEC_DIR) && \
+		svn co -r $(LIBMPCDEC_SVN_REVISION) $(LIBMPCDEC_SVN) $(LIBMPCDEC_DIR) && \
+		tar -cjf $@ $(LIBMPCDEC_DIR) --exclude .svn && \
+		rm -rf $(LIBMPCDEC_DIR) \
+	)
+else
+	$(WGET) -P $(@D) $(LIBMPCDEC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,16 +126,20 @@ libmpcdec-source: $(DL_DIR)/$(LIBMPCDEC_SOURCE) $(LIBMPCDEC_PATCHES)
 #
 $(LIBMPCDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMPCDEC_SOURCE) $(LIBMPCDEC_PATCHES) make/libmpcdec.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBMPCDEC_DIR) $(LIBMPCDEC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBMPCDEC_DIR) $(@D)
 	$(LIBMPCDEC_UNZIP) $(DL_DIR)/$(LIBMPCDEC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMPCDEC_PATCHES)" ; \
 		then cat $(LIBMPCDEC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBMPCDEC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBMPCDEC_DIR)" != "$(LIBMPCDEC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBMPCDEC_DIR) $(LIBMPCDEC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBMPCDEC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBMPCDEC_DIR) $(@D) ; \
 	fi
-	(cd $(LIBMPCDEC_BUILD_DIR); \
+	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/bswap_16\|bswap_32\|bswap_64/_&_/g' -e 's/nearbyintf/nearbyint/g' {} \;
+	sed -i '/^if HAVE_VISIBILITY/,/endif/s/^/#/'  $(@D)/*/Makefile.am
+	sed -i -e '/^ACLOCAL_AMFLAGS/s/^/dnl /' $(@D)/Makefile.am
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMPCDEC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMPCDEC_LDFLAGS)" \
@@ -133,7 +152,7 @@ $(LIBMPCDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMPCDEC_SOURCE) $(LIBMPCDEC_PA
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBMPCDEC_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libmpcdec-unpack: $(LIBMPCDEC_BUILD_DIR)/.configured
@@ -143,7 +162,7 @@ libmpcdec-unpack: $(LIBMPCDEC_BUILD_DIR)/.configured
 #
 $(LIBMPCDEC_BUILD_DIR)/.built: $(LIBMPCDEC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBMPCDEC_BUILD_DIR)
+	$(MAKE) -C $(@D) depmode=gcc
 	touch $@
 
 #
@@ -156,7 +175,9 @@ libmpcdec: $(LIBMPCDEC_BUILD_DIR)/.built
 #
 $(LIBMPCDEC_BUILD_DIR)/.staged: $(LIBMPCDEC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBMPCDEC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -rf $(STAGING_INCLUDE_DIR)/mpcdec $(STAGING_INCLUDE_DIR)/mpc
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	ln -s mpc $(STAGING_INCLUDE_DIR)/mpcdec
 	rm -f $(STAGING_LIB_DIR)/libmpcdec.la
 	touch $@
 
@@ -175,7 +196,11 @@ $(LIBMPCDEC_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(LIBMPCDEC_SECTION)" >>$@
 	@echo "Version: $(LIBMPCDEC_VERSION)-$(LIBMPCDEC_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(LIBMPCDEC_MAINTAINER)" >>$@
+ifdef LIBMPCDEC_SVN
+	@echo "Source: $(LIBMPCDEC_SVN)" >>$@
+else
 	@echo "Source: $(LIBMPCDEC_SITE)/$(LIBMPCDEC_SOURCE)" >>$@
+endif
 	@echo "Description: $(LIBMPCDEC_DESCRIPTION)" >>$@
 	@echo "Depends: $(LIBMPCDEC_DEPENDS)" >>$@
 	@echo "Suggests: $(LIBMPCDEC_SUGGESTS)" >>$@
@@ -196,6 +221,7 @@ $(LIBMPCDEC_IPK_DIR)/CONTROL/control:
 $(LIBMPCDEC_IPK): $(LIBMPCDEC_BUILD_DIR)/.built
 	rm -rf $(LIBMPCDEC_IPK_DIR) $(BUILD_DIR)/libmpcdec_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMPCDEC_BUILD_DIR) DESTDIR=$(LIBMPCDEC_IPK_DIR) install-strip
+	ln -s mpc $(LIBMPCDEC_IPK_DIR)/opt/include/mpcdec
 	rm -f $(LIBMPCDEC_IPK_DIR)/opt/lib/libmpcdec.la
 #	install -d $(LIBMPCDEC_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBMPCDEC_SOURCE_DIR)/libmpcdec.conf $(LIBMPCDEC_IPK_DIR)/opt/etc/libmpcdec.conf
@@ -233,4 +259,4 @@ libmpcdec-dirclean:
 # Some sanity check for the package.
 #
 libmpcdec-check: $(LIBMPCDEC_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBMPCDEC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

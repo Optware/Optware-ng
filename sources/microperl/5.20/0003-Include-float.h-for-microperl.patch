@@ -1,0 +1,38 @@
+From 071f32cc2307ebc019fc95b9a97fa99197d58c69 Mon Sep 17 00:00:00 2001
+From: Guo Yixuan <culu.gyx@gmail.com>
+Date: Sat, 6 Sep 2014 02:53:32 -0400
+Subject: [PATCH 3/4] Include float.h for microperl
+
+float.h is needed to define NV_MANT_DIG, which is
+required by microperl after commit 40bca5a.
+---
+ uconfig.sh   | 2 +-
+ uconfig64.sh | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/uconfig.sh b/uconfig.sh
+index 331ecfb..b009b96 100644
+--- a/uconfig.sh
++++ b/uconfig.sh
+@@ -553,7 +553,7 @@
+ i_dirent='define'
+ i_dlfcn='undef'
+ i_fcntl='undef'
+-i_float='undef'
++i_float='define'
+ i_fp='undef'
+ i_fp_class='undef'
+ i_gdbm='undef'
+diff --git a/uconfig64.sh b/uconfig64.sh
+index 5dfddb5..a3bd544 100644
+--- a/uconfig64.sh
++++ b/uconfig64.sh
+@@ -554,7 +554,7 @@
+ i_dirent='define'
+ i_dlfcn='undef'
+ i_fcntl='undef'
+-i_float='undef'
++i_float='define'
+ i_fp='undef'
+ i_fp_class='undef'
+ i_gdbm='undef'

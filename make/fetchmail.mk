@@ -19,11 +19,11 @@
 #
 # You should change all these variables to suit your package.
 #
-FETCHMAIL_SITE=http://download.berlios.de/fetchmail
-FETCHMAIL_VERSION=6.3.21
-FETCHMAIL_SOURCE=fetchmail-$(FETCHMAIL_VERSION).tar.bz2
+FETCHMAIL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/fetchmail
+FETCHMAIL_VERSION=6.3.26
+FETCHMAIL_SOURCE=fetchmail-$(FETCHMAIL_VERSION).tar.xz
 FETCHMAIL_DIR=fetchmail-$(FETCHMAIL_VERSION)
-FETCHMAIL_UNZIP=bzcat
+FETCHMAIL_UNZIP=xzcat
 FETCHMAIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FETCHMAIL_DESCRIPTION=A remote mail retrieval and forwarding utility
 FETCHMAIL_SECTION=util

@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBMPDCLIENT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
-LIBMPDCLIENT_VERSION=2.1
-LIBMPDCLIENT_SOURCE=libmpdclient-$(LIBMPDCLIENT_VERSION).tar.bz2
+LIBMPDCLIENT_SITE=http://www.musicpd.org/download/libmpdclient/2
+LIBMPDCLIENT_VERSION=2.9
+LIBMPDCLIENT_SOURCE=libmpdclient-$(LIBMPDCLIENT_VERSION).tar.xz
 LIBMPDCLIENT_DIR=libmpdclient-$(LIBMPDCLIENT_VERSION)
-LIBMPDCLIENT_UNZIP=bzcat
+LIBMPDCLIENT_UNZIP=xzcat
 LIBMPDCLIENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBMPDCLIENT_DESCRIPTION=A stable, documented, asynchronous API library for interfacing MPD in the C, C++ & Objective C languages
 LIBMPDCLIENT_SECTION=lib

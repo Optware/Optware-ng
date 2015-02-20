@@ -1,10 +1,10 @@
---- support/config.m4~	2004-11-24 11:31:09.000000000 -0800
-+++ support/config.m4	2005-05-05 20:10:56.000000000 -0700
-@@ -94,11 +94,7 @@
+--- config.m4.orig	2015-01-10 13:05:42.638917976 +0200
++++ support/config.m4	2015-01-10 13:15:47.444360477 +0200
+@@ -141,11 +141,7 @@
          APACHECTL_ULIMIT="ulimit -S -n \`ulimit -h -n\`"
          ;;
      *)
--        if TMP_ULIMIT=`ulimit -H -n` && ulimit -S -n $TMP_ULIMIT ; then
+-        if TMP_ULIMIT=`ulimit -H -n` && ulimit -S -n $TMP_ULIMIT >/dev/null 2>&1; then
 -            APACHECTL_ULIMIT="ulimit -S -n \`ulimit -H -n\`"
 -        else
 -            APACHECTL_ULIMIT=""

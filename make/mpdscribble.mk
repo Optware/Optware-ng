@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MPDSCRIBBLE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
-MPDSCRIBBLE_VERSION=0.19
+MPDSCRIBBLE_SITE=https://pkgs.fedoraproject.org/repo/pkgs/mpdscribble/mpdscribble-0.22.tar.bz2/652ee927b797e9a4cef45494e77047db
+MPDSCRIBBLE_VERSION=0.22
 MPDSCRIBBLE_SOURCE=mpdscribble-$(MPDSCRIBBLE_VERSION).tar.bz2
 MPDSCRIBBLE_DIR=mpdscribble-$(MPDSCRIBBLE_VERSION)
 MPDSCRIBBLE_UNZIP=bzcat
@@ -76,7 +76,7 @@ MPDSCRIBBLE_IPK=$(BUILD_DIR)/mpdscribble_$(MPDSCRIBBLE_VERSION)-$(MPDSCRIBBLE_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MPDSCRIBBLE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MPDSCRIBBLE_SITE)/$(MPDSCRIBBLE_SOURCE) || \
+	$(WGET) --no-check-certificate -P $(DL_DIR) $(MPDSCRIBBLE_SITE)/$(MPDSCRIBBLE_SOURCE) || \
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MPDSCRIBBLE_SOURCE)
 
 #

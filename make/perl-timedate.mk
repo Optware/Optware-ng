@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-TIMEDATE_SITE=http://search.cpan.org/CPAN/authors/id/G/GB/GBARR
-PERL-TIMEDATE_VERSION=1.16
+PERL-TIMEDATE_VERSION=2.30
 PERL-TIMEDATE_SOURCE=TimeDate-$(PERL-TIMEDATE_VERSION).tar.gz
 PERL-TIMEDATE_DIR=TimeDate-$(PERL-TIMEDATE_VERSION)
 PERL-TIMEDATE_UNZIP=zcat

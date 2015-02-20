@@ -47,8 +47,11 @@ UEMACS_CONFFILES=/opt/etc/.uemacsrc
 # which they should be applied to the source code.
 #
 UEMACS_PATCHES=$(UEMACS_SOURCE_DIR)/epath.h.patch $(UEMACS_SOURCE_DIR)/static-forward-decl.patch
+ifeq (uclibc, $(LIBC_STYLE))
+UEMACS_PATCHES += $(UEMACS_SOURCE_DIR)/strerror.patch
+endif
 ifeq (wl500g, $(OPTWARE_TARGET))
-UEMACS_PATCHES+=$(UEMACS_SOURCE_DIR)/cuserid.patch
+UEMACS_PATCHES += $(UEMACS_SOURCE_DIR)/cuserid.patch
 endif
 
 #

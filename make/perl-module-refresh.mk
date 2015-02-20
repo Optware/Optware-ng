@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-PERL-MODULE-REFRESH_SITE=http://www.cpan.org/pub/CPAN/modules/by-authors/id/J/JE/JESSE
-PERL-MODULE-REFRESH_VERSION=0.13
+PERL-MODULE-REFRESH_SITE=http://www.cpan.org/authors/id/A/AL/ALEXMV
+PERL-MODULE-REFRESH_VERSION=0.17
 PERL-MODULE-REFRESH_SOURCE=Module-Refresh-$(PERL-MODULE-REFRESH_VERSION).tar.gz
 PERL-MODULE-REFRESH_DIR=Module-Refresh-$(PERL-MODULE-REFRESH_VERSION)
 PERL-MODULE-REFRESH_UNZIP=zcat

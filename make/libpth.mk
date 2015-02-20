@@ -52,7 +52,7 @@ LIBPTH_IPK_VERSION=2
 # LIBPTH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBPTH_PATCHES=$(LIBPTH_SOURCE_DIR)/configure.patch
+LIBPTH_PATCHES=$(LIBPTH_SOURCE_DIR)/makecontext-less-glibc-linux3.patch
 
 #
 # If the compilation of the package requires additional
@@ -110,7 +110,9 @@ $(LIBPTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPTH_SOURCE) $(LIBPTH_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBPTH_DIR) $(@D)
 	$(LIBPTH_UNZIP) $(DL_DIR)/$(LIBPTH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBPTH_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPTH_DIR) -p1
+	if test -n "$(LIBPTH_PATCHES)"; then \
+		cat $(LIBPTH_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPTH_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(LIBPTH_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

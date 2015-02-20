@@ -20,16 +20,19 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MPC_SITE=http://downloads.sourceforge.net/musicpd
-MPC_VERSION=0.19
-MPC_SOURCE=mpc-$(MPC_VERSION).tar.bz2
+MPC_SITE=http://www.musicpd.org/download/mpc/0
+MPC_VERSION=0.26
+MPC_SOURCE=mpc-$(MPC_VERSION).tar.xz
 MPC_DIR=mpc-$(MPC_VERSION)
-MPC_UNZIP=bzcat
+MPC_UNZIP=xzcat
 MPC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPC_DESCRIPTION=A command line tool to interface MPD.
 MPC_SECTION=audio
 MPC_PRIORITY=optional
 MPC_DEPENDS=libmpdclient
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MPC_DEPENDS+=, libiconv
+endif
 MPC_SUGGESTS=
 MPC_CONFLICTS=
 
@@ -54,6 +57,9 @@ MPC_IPK_VERSION=1
 #
 MPC_CPPFLAGS=
 MPC_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MPC_LDFLAGS+= -liconv
+endif
 ifeq ($(OPTWARE_TARGET), wl500g)
 MPC_CONFIG_ARGS=--disable-iconv
 else
@@ -111,6 +117,9 @@ mpc-source: $(DL_DIR)/$(MPC_SOURCE) $(MPC_PATCHES)
 #
 $(MPC_BUILD_DIR)/.configured: $(DL_DIR)/$(MPC_SOURCE) $(MPC_PATCHES) make/mpc.mk
 	$(MAKE) libmpdclient-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MPC_DIR) $(MPC_BUILD_DIR)
 	$(MPC_UNZIP) $(DL_DIR)/$(MPC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPC_PATCHES)" ; \

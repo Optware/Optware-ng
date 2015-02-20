@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-EMAIL-SEND_SITE=http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS
-PERL-EMAIL-SEND_VERSION=2.194
+PERL-EMAIL-SEND_VERSION=2.199
 PERL-EMAIL-SEND_SOURCE=Email-Send-$(PERL-EMAIL-SEND_VERSION).tar.gz
 PERL-EMAIL-SEND_DIR=Email-Send-$(PERL-EMAIL-SEND_VERSION)
 PERL-EMAIL-SEND_UNZIP=zcat

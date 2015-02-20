@@ -28,13 +28,13 @@ DISTCC_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
 DISTCC_DESCRIPTION=distributes builds across a local network
 DISTCC_SECTION=util
 DISTCC_PRIORITY=optional
-DISTCC_DEPENDS=popt
+DISTCC_DEPENDS=popt, python27
 DISTCC_CONFLICTS=
 
 #
 # DISTCC_IPK_VERSION should be incremented when the ipk changes.
 #
-DISTCC_IPK_VERSION=1
+DISTCC_IPK_VERSION=2
 
 #
 # DISTCC_PATCHES should list any patches, in the the order in
@@ -47,7 +47,7 @@ $(DISTCC_SOURCE_DIR)/lzo-minilzo.c.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-DISTCC_CPPFLAGS=
+DISTCC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.7
 DISTCC_LDFLAGS=
 
 #
@@ -95,7 +95,7 @@ distcc-source: $(DL_DIR)/$(DISTCC_SOURCE) $(DISTCC_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(DISTCC_BUILD_DIR)/.configured: $(DL_DIR)/$(DISTCC_SOURCE) $(DISTCC_PATCHES) make/distcc.mk
-	$(MAKE) popt-stage py-setuptools-stage
+	$(MAKE) popt-stage py-setuptools-host-stage
 	rm -rf $(BUILD_DIR)/$(DISTCC_DIR) $(@D)
 	$(DISTCC_UNZIP) $(DL_DIR)/$(DISTCC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DISTCC_PATCHES)"; then \
@@ -106,7 +106,7 @@ $(DISTCC_BUILD_DIR)/.configured: $(DL_DIR)/$(DISTCC_SOURCE) $(DISTCC_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DISTCC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DISTCC_LDFLAGS)" \
-		PYTHON=/opt/bin/python2.5 \
+		PYTHON=/opt/bin/python2.7 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -125,7 +125,7 @@ distcc-unpack: $(DISTCC_BUILD_DIR)/.configured
 $(DISTCC_BUILD_DIR)/.built: $(DISTCC_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		INCLUDESERVER_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 \
+		INCLUDESERVER_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7 \
 		$(TARGET_CONFIGURE_OPTS) \
 		LDSHARED='$(TARGET_CC) -shared'
 	touch $@
@@ -170,9 +170,9 @@ $(DISTCC_IPK): $(DISTCC_BUILD_DIR)/.built
 	rm -rf $(DISTCC_IPK_DIR) $(DISTCC_IPK)
 	$(MAKE) -C $(DISTCC_BUILD_DIR) install \
 		DESTDIR=$(DISTCC_IPK_DIR) \
-		INCLUDESERVER_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5
+		INCLUDESERVER_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7
 	$(STRIP_COMMAND) $(DISTCC_IPK_DIR)/opt/bin/*distcc*
-	$(STRIP_COMMAND) $(DISTCC_IPK_DIR)/opt/lib/python2.5/site-packages/include_server/*.so
+	$(STRIP_COMMAND) $(DISTCC_IPK_DIR)/opt/lib/python2.7/site-packages/include_server/*.so
 #	install -d $(DISTCC_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(DISTCC_SOURCE_DIR)/rc.distcc $(DISTCC_IPK_DIR)/opt/etc/init.d/SXXdistcc
 	$(MAKE) $(DISTCC_IPK_DIR)/CONTROL/control

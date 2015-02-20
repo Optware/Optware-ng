@@ -53,7 +53,7 @@ LOUDMOUTH_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 LOUDMOUTH_CPPFLAGS=
-LOUDMOUTH_LDFLAGS=
+LOUDMOUTH_LDFLAGS=-lgnutls
 
 #
 # LOUDMOUTH_BUILD_DIR is the directory in which the build is done.
@@ -115,6 +115,7 @@ $(LOUDMOUTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LOUDMOUTH_SOURCE) $(LOUDMOUTH_PA
 	if test "$(BUILD_DIR)/$(LOUDMOUTH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LOUDMOUTH_DIR) $(@D) ; \
 	fi
+	sed -i -e '/#include <glib\/gerror\.h>/s/^/#include <glib.h>\n/' $(@D)/loudmouth/lm-error.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LOUDMOUTH_CPPFLAGS)" \

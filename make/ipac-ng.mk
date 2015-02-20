@@ -5,22 +5,22 @@
 ###########################################################
 
 IPAC-NG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ipac-ng
-IPAC-NG_VERSION=1.31
-IPAC-NG_SOURCE=ipac-ng-$(IPAC-NG_VERSION).tar.gz
-IPAC-NG_DIR=ipac-ng-$(IPAC-NG_VERSION)
-IPAC-NG_UNZIP=zcat
+IPAC-NG_VERSION=1.34.2
+IPAC-NG_SOURCE=ipac-ng-$(IPAC-NG_VERSION).tar.bz2
+IPAC-NG_DIR=ipac-ng
+IPAC-NG_UNZIP=bzcat
 IPAC-NG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPAC-NG_DESCRIPTION=iptables/ipchains based IP accounting package for Linux.
 IPAC-NG_SECTION=net
 IPAC-NG_PRIORITY=optional
-IPAC-NG_DEPENDS=gdbm, sqlite2, iptables, perl, cron
+IPAC-NG_DEPENDS=gdbm, sqlite, iptables, perl, cron
 IPAC-NG_SUGGESTS=rrdtool, drraw
 IPAC-NG_CONFLICTS=
 
 #
 # IPAC-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-IPAC-NG_IPK_VERSION=3
+IPAC-NG_IPK_VERSION=1
 
 #
 # IPAC-NG_CONFFILES should be a list of user-editable files
@@ -70,7 +70,7 @@ IPAC-NG_IPK=$(BUILD_DIR)/ipac-ng_$(IPAC-NG_VERSION)-$(IPAC-NG_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IPAC-NG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IPAC-NG_SITE)/$(IPAC-NG_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(IPAC-NG_SITE)/$(@F) || \
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(IPAC-NG_SOURCE)
 
 #
@@ -99,17 +99,17 @@ ipac-ng-source: $(DL_DIR)/$(IPAC-NG_SOURCE) $(IPAC-NG_PATCHES)
 # shown below to make various patches to it.
 #
 $(IPAC-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(IPAC-NG_SOURCE) $(IPAC-NG_PATCHES) make/ipac-ng.mk
-#	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(IPAC-NG_DIR) $(IPAC-NG_BUILD_DIR)
+	$(MAKE) iptables-stage
+	rm -rf $(BUILD_DIR)/$(IPAC-NG_DIR) $(@D)
 	$(IPAC-NG_UNZIP) $(DL_DIR)/$(IPAC-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IPAC-NG_PATCHES)" ; \
 		then cat $(IPAC-NG_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(IPAC-NG_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(IPAC-NG_DIR)" != "$(IPAC-NG_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(IPAC-NG_DIR) $(IPAC-NG_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(IPAC-NG_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(IPAC-NG_DIR) $(@D) ; \
 	fi
-	(cd $(IPAC-NG_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPAC-NG_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(IPAC-NG_CPPFLAGS)" \
@@ -145,7 +145,7 @@ ipac-ng-unpack: $(IPAC-NG_BUILD_DIR)/.configured
 #
 $(IPAC-NG_BUILD_DIR)/.built: $(IPAC-NG_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(IPAC-NG_BUILD_DIR) HOSTCC=$(HOSTCC)
+	$(MAKE) -C $(@D) HOSTCC=$(HOSTCC)
 	touch $@
 
 #
@@ -226,4 +226,4 @@ ipac-ng-dirclean:
 # Some sanity check for the package.
 #
 ipac-ng-check: $(IPAC-NG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IPAC-NG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

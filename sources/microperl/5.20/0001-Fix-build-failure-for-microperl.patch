@@ -1,0 +1,37 @@
+From e7bc41c696909408a73d2b17cf69fde70aafe097 Mon Sep 17 00:00:00 2001
+From: Guo Yixuan <culu.gyx@gmail.com>
+Date: Fri, 5 Sep 2014 21:44:46 -0400
+Subject: [PATCH 1/4] Fix build failure for microperl
+
+Perl_set_caret_X was split to caretx.c,
+introduced in commit e205153.
+---
+ Makefile.micro | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile.micro b/Makefile.micro
+index cd9a9c5..aba9338 100644
+--- a/Makefile.micro
++++ b/Makefile.micro
+@@ -14,7 +14,7 @@ RUN =
+ 
+ all:	microperl
+ 
+-O = uav$(_O) udeb$(_O) udoio$(_O) udoop$(_O) udump$(_O) \
++O = uav$(_O) ucaretx$(_O) udeb$(_O) udoio$(_O) udoop$(_O) udump$(_O) \
+ 	uglobals$(_O) ugv$(_O) uhv$(_O) umro$(_O)\
+ 	umg$(_O) uperlmain$(_O) uop$(_O) ureentr$(_O) \
+ 	upad$(_O) uperl$(_O) uperlio$(_O) uperly$(_O) upp$(_O) \
+@@ -67,6 +67,9 @@ perly.h: perly.y
+ uav$(_O):	$(HE) av.c
+ 	$(CC) $(CCFLAGS) -o $@ $(CFLAGS) av.c
+ 
++ucaretx$(_O):	$(HE) caretx.c
++	$(CC) $(CCFLAGS) -o $@ $(CFLAGS) caretx.c
++
+ udeb$(_O):	$(HE) deb.c
+ 	$(CC) $(CCFLAGS) -o $@ $(CFLAGS) deb.c
+ 
+-- 
+2.1.0
+

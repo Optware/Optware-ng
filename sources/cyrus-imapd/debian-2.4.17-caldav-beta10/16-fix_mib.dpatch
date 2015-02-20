@@ -1,0 +1,29 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 16-fix_mib.dpatch by Sven Mueller <debian@incase.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix MIB file for cyrus
+
+@DPATCH@
+--- cyrus-imapd-2.4.orig/master/CYRUS-MASTER.mib
++++ cyrus-imapd-2.4/master/CYRUS-MASTER.mib
+@@ -1,12 +1,15 @@
+ CYRUS-MASTER-MIB DEFINITIONS ::= BEGIN
+ 
+ IMPORTS
+-    MODULE-IDENTITY, OBJECT-TYPE, Counter32
++    MODULE-IDENTITY, OBJECT-TYPE, Counter32, enterprises
+         FROM SNMPv2-SMI
+     DisplayString
+-        FROM SNMPv2-TC
+-    cmuCyrus
+-        FROM CMU-MIB;
++        FROM SNMPv2-TC;
++--    cmuCyrus
++--        FROM CMU-MIB;
++
++cmuMIB         OBJECT IDENTIFIER ::= { enterprises 3 }
++cmuCyrus       OBJECT IDENTIFIER ::= { cmuMIB 6 }
+ 
+ cyrusMasterMIB MODULE-IDENTITY
+     LAST-UPDATED "0010312300Z"		-- 2000 Oct 31

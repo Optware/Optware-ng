@@ -17,7 +17,7 @@ BZIP2_PRIORITY=optional
 BZIP2_DEPENDS=
 BZIP2_CONFLICTS=
 
-BZIP2_IPK_VERSION=1
+BZIP2_IPK_VERSION=2
 
 BZIP2_BUILD_DIR=$(BUILD_DIR)/bzip2
 BZIP2_SOURCE_DIR=$(SOURCE_DIR)/bzip2
@@ -50,6 +50,7 @@ $(BZIP2_BUILD_DIR)/.built: $(BZIP2_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS) $(BZIP2_LDFLAGS)" \
 		-f Makefile \
 		libbz2.a bzip2 bzip2recover
+	rm -f $(@D)/*.o
 	$(MAKE) -C $(@D) \
 		PREFIX=/opt \
 		$(TARGET_CONFIGURE_OPTS) \

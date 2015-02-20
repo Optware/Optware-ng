@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-CYRUS-IMAPD_SITE=ftp://ftp.andrew.cmu.edu/pub/cyrus-mail
-CYRUS-IMAPD_VERSION=2.2.12
+CYRUS-IMAPD_SITE=http://cyrusimap.org/releases
+CYRUS-IMAPD_VERSION=2.4.17-caldav-beta10
 CYRUS-IMAPD_SOURCE=cyrus-imapd-$(CYRUS-IMAPD_VERSION).tar.gz
 CYRUS-IMAPD_DIR=cyrus-imapd-$(CYRUS-IMAPD_VERSION)
 CYRUS-IMAPD_UNZIP=zcat
@@ -17,20 +17,62 @@ CYRUS-IMAPD_DEPENDS=openssl, libdb, cyrus-sasl, e2fsprogs, perl
 CYRUS-IMAPD_SUGGESTS=
 CYRUS-IMAPD_CONFLICTS=
 
-CYRUS-IMAPD_IPK_VERSION=15
+CYRUS-IMAPD_IPK_VERSION=1
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
-CYRUS-IMAPD_PATCHES=$(CYRUS-IMAPD_SOURCE_DIR)/cyrus.cross.patch \
+CYRUS-IMAPD_PATCHES= \
  $(CYRUS-IMAPD_SOURCE_DIR)/perl.Makefile.in.patch \
  $(CYRUS-IMAPD_SOURCE_DIR)/perl.Makefile.PL.patch \
- $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.2.12-autosievefolder-0.6.diff \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/03-fix_docs.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/05-fix_programnames.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/06-disable_runpath.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/07-add-warnings-are-errors-mode.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/08-clean_socket_closes.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/09-kerberos-ipv4-ipv6-kludge-removal.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/10-fix_potential_overflows.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/11-fix_syslog_prefix.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/12-fix_timeout_handling.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/13a-uid_t-cleanups \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/13b-MAXFD-cleanups \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/13c-master-reload \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/13e-master-janitor-delay \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/14-xmalloc.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/16-fix_mib.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/19-fix_tls_ssl.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/21-fix_config-parsing.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/30-update_perlcalling.sh.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/35-masssievec_remove_unused_variable.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/40-rehash_fix_pathes.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/50-fix-imclient-manpage.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/65-sieveshell-enhancements.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/75-update-imapd.conf-documentation.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/77-change-missing-sieve-notice.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/80-kbsd-no-psstrings.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/81-dont-test-for-long-names.dpatch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/82-fix_manpage_errors.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/cyrus-imapd-2.4.2-902-accept-invalid-from-header.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/cyrus-imapd-2.4.2-903-normalize-authorization-id.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/86-fix_PATH_MAX_on_hurd.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/cyrus-tls-1.2.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/91-fix-extra-libpci.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/parse-GUID-for-binary-appends-as-well.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/use-system-unicodedata.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/TLS-configuration.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/debian-2.4.17-caldav-beta10/fix-caldav-virtdomain-users.patch
+
+#$(CYRUS-IMAPD_SOURCE_DIR)/cyrus.cross.patch
+
+# $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.3.16-autosieve-0.6.0.diff \
+ $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.3.16-autocreate-0.10-0.diff \
+
+# $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.2.12-autosievefolder-0.6.diff \
  $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.2.12-autocreate-0.9.4.diff \
  $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.2.12-rmquota+deletemailbox-0.2-1.diff \
  $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.2.12-imapopts.h.patch \
 
-CYRUS-IMAPD_CPPFLAGS=
-CYRUS-IMAPD_LDFLAGS=
+CYRUS-IMAPD_CPPFLAGS=-fPIC -DLOCK_GIVEUP_TIMER_DEFAULT=100
+CYRUS-IMAPD_LDFLAGS=-lpthread
 
 CYRUS-IMAPD_BUILD_DIR=$(BUILD_DIR)/cyrus-imapd
 CYRUS-IMAPD_SOURCE_DIR=$(SOURCE_DIR)/cyrus-imapd
@@ -54,12 +96,13 @@ $(CYRUS-IMAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IM
 ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
-	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(@D)
 	$(CYRUS-IMAPD_UNZIP) $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CYRUS-IMAPD_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) -p1
-	mv $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR)
+	mv $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(@D)
+	find $(@D) -type f -name Makefile.in -exec sed -i -e 's/-s -m/-m/' {} \;
 	cp -f $(CYRUS-IMAPD_SOURCE_DIR)/config.* $(CYRUS-IMAPD_BUILD_DIR)
-	(cd $(CYRUS-IMAPD_BUILD_DIR); \
+	(cd $(@D); \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC_FOR_BUILD=$(HOSTCC) \
@@ -105,35 +148,39 @@ ifneq (,$(filter perl, $(PACKAGES)))
 	) \
 	done
 endif
-	touch $(CYRUS-IMAPD_BUILD_DIR)/.configured
+	touch $@
 
 cyrus-imapd-unpack: $(CYRUS-IMAPD_BUILD_DIR)/.configured
 
 $(CYRUS-IMAPD_BUILD_DIR)/.built: $(CYRUS-IMAPD_BUILD_DIR)/.configured
-	rm -f $(CYRUS-IMAPD_BUILD_DIR)/.built
+	rm -f $@
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)
+	$(MAKE) -C $(@D)
 ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/imap \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		LD_RUN_PATH=/opt/lib \
-		LDFLAGS="$(STAGING_LDFLAGS)"
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \
+		LD=$(TARGET_CC)
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/sieve \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		LD_RUN_PATH=/opt/lib \
-		LDFLAGS="$(STAGING_LDFLAGS)" 
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \
+		LD=$(TARGET_CC) 
 endif
-	touch $(CYRUS-IMAPD_BUILD_DIR)/.built
+	touch $@
 
 cyrus-imapd: $(CYRUS-IMAPD_BUILD_DIR)/.built
 
 $(CYRUS-IMAPD_BUILD_DIR)/.staged: $(CYRUS-IMAPD_BUILD_DIR)/.built
-	rm -f $(CYRUS-IMAPD_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	echo "Warning: the makefile target 'cyrus-imapd-stage' is not available."
-	touch $(CYRUS-IMAPD_BUILD_DIR)/.staged
+	touch $@
 
 cyrus-imapd-stage: $(CYRUS-IMAPD_BUILD_DIR)/.staged
 

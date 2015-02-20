@@ -20,16 +20,17 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MOD_WSGI_SITE=http://modwsgi.googlecode.com/files
-MOD_WSGI_VERSION=3.3
+MOD_WSGI_SITE=https://github.com/GrahamDumpleton/mod_wsgi/archive
+MOD_WSGI_VERSION=4.4.7
 MOD_WSGI_SOURCE=mod_wsgi-$(MOD_WSGI_VERSION).tar.gz
+MOD_WSGI_SOURCE_DL=$(MOD_WSGI_VERSION).tar.gz
 MOD_WSGI_DIR=mod_wsgi-$(MOD_WSGI_VERSION)
 MOD_WSGI_UNZIP=zcat
 MOD_WSGI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MOD_WSGI_DESCRIPTION=An Apache module that provides a WSGI compliant interface for hosting Python based web applications within Apache.
 MOD_WSGI_SECTION=web
 MOD_WSGI_PRIORITY=optional
-MOD_WSGI_DEPENDS=apache, python25
+MOD_WSGI_DEPENDS=apache, python27
 MOD_WSGI_SUGGESTS=
 MOD_WSGI_CONFLICTS=
 
@@ -52,7 +53,7 @@ MOD_WSGI_CONFFILES=/opt/etc/apache2/conf.d/mod_wsgi.conf
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MOD_WSGI_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.5
+MOD_WSGI_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.7
 MOD_WSGI_LDFLAGS=
 
 #
@@ -76,7 +77,7 @@ MOD_WSGI_IPK=$(BUILD_DIR)/mod-wsgi_$(MOD_WSGI_VERSION)-$(MOD_WSGI_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MOD_WSGI_SOURCE):
-	$(WGET) -P $(@D) $(MOD_WSGI_SITE)/$(@F) || \
+	$(WGET) -O $@ $(MOD_WSGI_SITE)/$(MOD_WSGI_SOURCE_DL) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -105,7 +106,7 @@ mod-wsgi-source: $(DL_DIR)/$(MOD_WSGI_SOURCE) $(MOD_WSGI_PATCHES)
 # shown below to make various patches to it.
 #
 $(MOD_WSGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_WSGI_SOURCE) $(MOD_WSGI_PATCHES) make/mod-wsgi.mk
-	$(MAKE) python25-stage apache-stage
+	$(MAKE) python27-stage apache-stage
 	rm -rf $(BUILD_DIR)/$(MOD_WSGI_DIR) $(@D)
 	$(MOD_WSGI_UNZIP) $(DL_DIR)/$(MOD_WSGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOD_WSGI_PATCHES)" ; \
@@ -125,8 +126,8 @@ $(MOD_WSGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_WSGI_SOURCE) $(MOD_WSGI_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-apxs=$(STAGING_PREFIX)/sbin/apxs \
-		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.5 \
+		--with-apxs=$(STAGING_PREFIX)/bin/apxs \
+		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.7 \
 		--disable-nls \
 		--disable-static \
 	)
@@ -174,7 +175,7 @@ $(MOD_WSGI_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(MOD_WSGI_SECTION)" >>$@
 	@echo "Version: $(MOD_WSGI_VERSION)-$(MOD_WSGI_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(MOD_WSGI_MAINTAINER)" >>$@
-	@echo "Source: $(MOD_WSGI_SITE)/$(MOD_WSGI_SOURCE)" >>$@
+	@echo "Source: $(MOD_WSGI_SITE)/$(MOD_WSGI_SOURCE_DL)" >>$@
 	@echo "Description: $(MOD_WSGI_DESCRIPTION)" >>$@
 	@echo "Depends: $(MOD_WSGI_DEPENDS)" >>$@
 	@echo "Suggests: $(MOD_WSGI_SUGGESTS)" >>$@
@@ -197,7 +198,7 @@ $(MOD_WSGI_IPK): $(MOD_WSGI_BUILD_DIR)/.built
 #	$(MAKE) -C $(MOD_WSGI_BUILD_DIR) DESTDIR=$(MOD_WSGI_IPK_DIR) install
 	install -d $(MOD_WSGI_IPK_DIR)/opt/libexec
 	cd $(MOD_WSGI_BUILD_DIR); \
-	install -m 755 $(MOD_WSGI_BUILD_DIR)/.libs/mod_wsgi.so $(MOD_WSGI_IPK_DIR)/opt/libexec
+	install -m 755 $(MOD_WSGI_BUILD_DIR)/src/server/.libs/mod_wsgi.so $(MOD_WSGI_IPK_DIR)/opt/libexec
 	$(STRIP_COMMAND) $(MOD_WSGI_IPK_DIR)/opt/libexec/mod_wsgi.so
 	install -d $(MOD_WSGI_IPK_DIR)/opt/etc/apache2/conf.d/
 	echo "LoadModule wsgi_module libexec/mod_wsgi.so" > $(MOD_WSGI_IPK_DIR)/opt/etc/apache2/conf.d/mod_wsgi.conf

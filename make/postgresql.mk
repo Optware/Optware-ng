@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=8.2.13
+POSTGRESQL_VERSION=9.3.5
 POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_SOURCE=postgresql-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
@@ -35,7 +35,7 @@ POSTGRESQL_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 POSTGRESQL_DESCRIPTION=PostgreSQL is a highly-scalable, SQL compliant, open source object-relational database management system
 POSTGRESQL_SECTION=misc
 POSTGRESQL_PRIORITY=optional
-POSTGRESQL_DEPENDS=readline, coreutils
+POSTGRESQL_DEPENDS=readline, coreutils, openssl
 
 #
 # POSTGRESQL_IPK_VERSION should be incremented when the ipk changes.
@@ -51,7 +51,7 @@ POSTGRESQL_IPK_VERSION=2
 # which they should be applied to the source code.
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
-POSTGRESQL_PATCHES=$(POSTGRESQL_SOURCE_DIR)/src-timezone-Makefile.patch $(POSTGRESQL_SOURCE_DIR)/disable-buildtime-test.patch
+#POSTGRESQL_PATCHES=$(POSTGRESQL_SOURCE_DIR)/src-timezone-Makefile.patch $(POSTGRESQL_SOURCE_DIR)/disable-buildtime-test.patch
 POSTGRESQL_CONFIG_ENV=pgac_cv_snprintf_long_long_int_format='%lld'
 endif
 
@@ -112,7 +112,7 @@ postgresql-source: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL_PATCHES) make/postgresql.mk
-	$(MAKE) readline-stage zlib-stage
+	$(MAKE) readline-stage zlib-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(POSTGRESQL_DIR) $(@D)
 	$(POSTGRESQL_UNZIP) $(DL_DIR)/$(POSTGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(POSTGRESQL_PATCHES)" ; then \
@@ -132,7 +132,42 @@ $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL
 		--disable-nls \
 		--with-includes=$(STAGING_INCLUDE_DIR) \
 		--with-libs=$(STAGING_LIB_DIR) \
+		--with-openssl \
 	)
+
+	(cd $(@D)/src/timezone; gcc -o ./zic-host  -I../include zic.c ialloc.c scheck.c localtime.c ../port/snprintf.c ../port/qsort.c)
+	sed -i -e "s|ZIC=.*|ZIC=\./zic-host|" $(@D)/src/timezone/Makefile
+
+ifeq ($(OPTWARE_TARGET), $(filter oleg shibby-tomato-arm, $(OPTWARE_TARGET)))
+# fix errors like
+### In file included from regcomp.c:2067:0:
+###  regc_pg_locale.c: In function ‘pg_wc_isdigit’:
+###  regc_pg_locale.c:312:6: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_isalpha’:
+###  regc_pg_locale.c:345:6: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_isalnum’:
+###  regc_pg_locale.c:378:6: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_isupper’:
+###  regc_pg_locale.c:411:6: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_islower’:
+###  regc_pg_locale.c:444:6: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_isgraph’:
+###  regc_pg_locale.c:477:6: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_isprint’:
+###  regc_pg_locale.c:510:6: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_ispunct’:
+###  regc_pg_locale.c:543:6: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_isspace’:
+###  regc_pg_locale.c:576:6: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_toupper’:
+###  regc_pg_locale.c:617:12: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c:617:12: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c: In function ‘pg_wc_tolower’:
+###  regc_pg_locale.c:658:12: error: dereferencing pointer to incomplete type
+###  regc_pg_locale.c:658:12: error: dereferencing pointer to incomplete type
+	sed -i -e "/#define HAVE_LOCALE_T/s|^|//|" $(@D)/src/include/pg_config.h
+endif
+
 	touch $@
 
 postgresql-unpack: $(POSTGRESQL_BUILD_DIR)/.configured

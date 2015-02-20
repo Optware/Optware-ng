@@ -1,0 +1,22 @@
+From: Henrique de Moraes Holschuh <hmh@debian.org>
+Subject: use uid_t and gid_t instead of int
+
+Origin: vendor, Debian Cyrus IMAPd 2.1.16-7 (2004-08-07)
+
+Use the proper types for UIDs and GIDs.
+
+--- cyrus-imapd-2.4.orig/lib/util.c
++++ cyrus-imapd-2.4/lib/util.c
+@@ -387,9 +387,10 @@ int cyrus_mkdir(const char *path, mode_t
+ int become_cyrus(void)
+ {
+     struct passwd *p;
+-    int newuid, newgid;
++    uid_t newuid;
++    gid_t newgid;
+     int result;
+-    static int uid = 0;
++    static uid_t uid = 0;
+ 
+     if (uid) return setuid(uid);
+ 
