@@ -96,6 +96,7 @@ $(TELLDUS-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(TELLDUS-CORE_SOURCE) $(TELLDU
 			-DGENERATE_MAN=0 \
 			-DUSE_QT_SETTINGS_BACKEND=0 \
 	)
+	sed -i -e 's/-lconfuse/-lgcc -lconfuse/' $(@D)/driver/libtelldus-core/CMakeFiles/telldus-core.dir/link.txt
 	touch $@
 
 telldus-core-unpack: $(TELLDUS-CORE_BUILD_DIR)/.configured
