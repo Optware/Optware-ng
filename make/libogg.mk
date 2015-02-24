@@ -103,7 +103,8 @@ $(LIBOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES) ma
 	$(LIBOGG_UNZIP) $(DL_DIR)/$(LIBOGG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBOGG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBOGG_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBOGG_DIR) $(@D)
-	rm -f $(@D)/config.cache; autoreconf -vif $(@D)
+	rm -f $(@D)/config.cache
+	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW)  autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBOGG_CPPFLAGS)" \
