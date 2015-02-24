@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 GETTEXT_SITE=http://ftp.gnu.org/gnu/gettext
-GETTEXT_VERSION=0.14.5
+GETTEXT_VERSION=0.19.4
 GETTEXT_SOURCE=gettext-$(GETTEXT_VERSION).tar.gz
 GETTEXT_DIR=gettext-$(GETTEXT_VERSION)
 GETTEXT_UNZIP=zcat
@@ -30,7 +30,7 @@ GETTEXT_CONFLICTS=
 #
 # GETTEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-GETTEXT_IPK_VERSION=2
+GETTEXT_IPK_VERSION=1
 
 #
 # GETTEXT_CONFFILES should be a list of user-editable files
@@ -40,7 +40,8 @@ GETTEXT_IPK_VERSION=2
 # GETTEXT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GETTEXT_PATCHES=$(GETTEXT_SOURCE_DIR)/Makefile.in.patch \
+GETTEXT_PATCHES=$(GETTEXT_SOURCE_DIR)/uClibc-error_print_progname.0.19.4.patch
+#GETTEXT_PATCHES=$(GETTEXT_SOURCE_DIR)/Makefile.in.patch \
 		$(GETTEXT_SOURCE_DIR)/uClibc-error_print_progname.patch \
 
 #
