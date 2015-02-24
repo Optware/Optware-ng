@@ -587,6 +587,13 @@ PATCH_LIBTOOL=sed -i \
 	-e 's|^hardcode_libdir_flag_spec=.*"$$|hardcode_libdir_flag_spec=""|' \
 	-e 's|nmedit |$(TARGET_CROSS)nmedit |' \
 
+# many optware packages need as old automake as 1.10, which is the recommended version for unsuffixed automake,
+# so we'll detect the latest automake installed on the build system and use it instead of the unsuffixed one
+# for packages that need newer automake (like newer libgd or vlc).
+# In case user set these variables, don't override them:
+ACLOCAL_NEW ?= aclocal-1.$(shell ls $$(dirname `which automake`)/automake-*|cut -d '.' -f 2-|sort -n|tail -n 1)
+AUTOMAKE_NEW ?= automake-1.$(shell ls $$(dirname `which automake`)/automake-*|cut -d '.' -f 2-|sort -n|tail -n 1)
+
 # Clear these variables to remove assumptions
 AR=
 AS=
