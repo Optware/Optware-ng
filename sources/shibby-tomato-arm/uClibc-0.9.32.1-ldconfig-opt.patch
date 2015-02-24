@@ -1,0 +1,27 @@
+--- uClibc-0.9.32.orig/utils/ldconfig.c
++++ uClibc-0.9.32/utils/ldconfig.c
+@@ -949,10 +949,10 @@
+ 
+ 		/* look ma, no defaults */
+ 		if (!nodefault) {
+-			scan_dir(UCLIBC_RUNTIME_PREFIX "lib");
+-			scan_dir(UCLIBC_RUNTIME_PREFIX "usr/lib");
++			scan_dir("/opt/lib");
++			scan_dir("/opt/usr/lib");
+ #ifndef __LDSO_CACHE_SUPPORT__
+-			scan_dir(UCLIBC_RUNTIME_PREFIX "usr/X11R6/lib");
++			scan_dir("opt/X11R6/lib");
+ #else
+ 			/* I guess the defaults aren't good enough */
+ 			if ((extpath = get_extpath())) {
+@@ -963,8 +963,8 @@
+ 						while (cp[--len] == '/' && len)
+ 							cp[len] = 0;
+ 					/* we do the redundancy check only if cache usage is enabled */
+-					if (strcmp(UCLIBC_RUNTIME_PREFIX "lib", cp) == 0
+-					    || strcmp(UCLIBC_RUNTIME_PREFIX "usr/lib", cp) == 0) {
++					if (strcmp("/opt/lib", cp) == 0
++					    || strcmp("/opt/usr/lib", cp) == 0) {
+ 						if (verbose >= 0)
+ 							warnx("You should remove `%s' from `%s'", cp, LDSO_CONF);
+ 						continue;
