@@ -139,6 +139,7 @@ xtrans: $(XTRANS_BUILD_DIR)/.built
 $(XTRANS_BUILD_DIR)/.staged: $(XTRANS_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(XTRANS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	mv -f $(STAGING_PREFIX)/share/pkgconfig/xtrans.pc  $(STAGING_LIB_DIR)/pkgconfig/
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xtrans.pc
 	touch $@
 
@@ -159,6 +160,8 @@ xtrans-stage: $(XTRANS_BUILD_DIR)/.staged
 $(XTRANS_IPK): $(XTRANS_BUILD_DIR)/.built
 	rm -rf $(XTRANS_IPK_DIR) $(BUILD_DIR)/xtrans_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XTRANS_BUILD_DIR) DESTDIR=$(XTRANS_IPK_DIR) install
+	mv -f $(XTRANS_IPK_DIR)/opt/share/pkgconfig/xtrans.pc  $(XTRANS_IPK_DIR)/opt/lib/pkgconfig/
+	rm -rf $(XTRANS_IPK_DIR)/opt/share/pkgconfig
 	$(MAKE) $(XTRANS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTRANS_IPK_DIR)
 
