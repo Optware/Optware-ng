@@ -38,6 +38,7 @@ GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_UCLIBC=uclibc-$(CROSS_CONFIGURATION_UCLIBC_VERSION)
 CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
+TARGET_CROSS_BUILD_DIR = $(BASE_DIR)/toolchain/buildroot-2012.02
 TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/hndtools-arm-linux-2.6.36-uclibc-4.5.3
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/arm-brcm-linux-uclibcgnueabi-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/arm-brcm-linux-uclibcgnueabi/sysroot/usr/lib
@@ -46,8 +47,6 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
-#TOOLCHAIN_SITE=https://bitbucket.org/pl_shibby/tomato-arm/get
-#TOOLCHAIN_BINARY=shibby-tomato-arm.git20140205.zip
 TOOLCHAIN_SITE=http://dl.lazyzhu.com/file/Toolchain/crosstool-NG
 TOOLCHAIN_BINARY=hndtools-arm-linux-2.6.36-uclibc-4.5.3.tar.bz2
 
@@ -55,26 +54,42 @@ UCLIBC-OPT_VERSION = 0.9.32.1
 UCLIBC-OPT_IPK_VERSION = 1
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-brcm-linux-uclibcgnueabi/sysroot/lib
 
-toolchain: $(TARGET_CROSS_TOP)/.unpacked
+SHIBBY-TOMATO-ARM_SOURCE_DIR=$(SOURCE_DIR)/shibby-tomato-arm
+
+#toolchain: $(TARGET_CROSS_TOP)/.unpacked
+toolchain: $(TARGET_CROSS_TOP)/.built
 
 $(DL_DIR)/$(TOOLCHAIN_BINARY):
-#	$(WGET) -O $@ $(TOOLCHAIN_SITE)/4e7f635c8c54.zip || \
-#	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 	$(WGET) -P $(@D) $(TOOLCHAIN_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+$(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_BINARY) $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+	rm -rf $(TARGET_CROSS_TOP) $(TARGET_CROSS_BUILD_DIR)
+	mkdir -p $(TARGET_CROSS_TOP)
+	tar -xjvOf $(DL_DIR)/$(TOOLCHAIN_BINARY) hndtools-arm-linux-2.6.36-uclibc-4.5.3/src/buildroot-2012.02.tar.bz2 | tar -xjvf - -C $(BASE_DIR)/toolchain
+	sed 's|^BR2_STAGING_DIR=.*|BR2_STAGING_DIR="$(TARGET_CROSS_TOP)"|' $(TARGET_CROSS_BUILD_DIR)/dl_save/defconfig-arm-uclibc > $(TARGET_CROSS_BUILD_DIR)/.config
+	cp -f $(SHIBBY-TOMATO-ARM_SOURCE_DIR)/uClibc-0.9.32.1-*.patch $(TARGET_CROSS_BUILD_DIR)/toolchain/uClibc/
+	cp -f $(SHIBBY-TOMATO-ARM_SOURCE_DIR)/m4-1.4.16-002-gets.patch $(TARGET_CROSS_BUILD_DIR)/package/m4/
+	cp -f $(SHIBBY-TOMATO-ARM_SOURCE_DIR)/gcc-4.5.3-no-building-info.patch $(TARGET_CROSS_BUILD_DIR)/toolchain/gcc/4.5.3/
+	touch $@
+
+$(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
+	rm -f $@
+	$(MAKE) -C $(TARGET_CROSS_BUILD_DIR)
+	rm -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libgcc_s.so
+	ln -s libgcc_s.so.1 $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libgcc_s.so
+	-for app in `cd $(TARGET_CROSS_TOP)/bin; ls arm-brcm-linux-uclibcgnueabi-*` ; do \
+		cd $(TARGET_CROSS_TOP)/bin; ln -s $$app `echo $$app|sed -e 's/arm-brcm-linux-uclibcgnueabi-/arm-linux-uclibc-/'` ; \
+		ln -s $$app `echo $$app|sed -e 's/arm-brcm-linux-uclibcgnueabi-/arm-linux-/'` ; done
+	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libnsl-0.9.32.1.so $(TARGET_LIBDIR)/
+	touch $@
 
 $(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP)
 	mkdir -p $(BASE_DIR)/toolchain
-#	unzip $(DL_DIR)/$(TOOLCHAIN_BINARY) 'pl_shibby-tomato-arm-4e7f635c8c54/release/src-rt-6.x.4708/toolchains/*' -d $(BASE_DIR)/toolchain
-#	mv -f $(BASE_DIR)/toolchain/pl_shibby-tomato-arm-4e7f635c8c54/release/src-rt-6.x.4708/toolchains/hndtools-arm-linux-2.6.36-uclibc-4.5.3 $(BASE_DIR)/toolchain/
-#	rm -rf $(BASE_DIR)/toolchain/pl_shibby-tomato-arm-4e7f635c8c54
 	tar -xjvf $(DL_DIR)/$(TOOLCHAIN_BINARY) -C $(BASE_DIR)/toolchain
 	rm -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libgcc_s.so
 	ln -s libgcc_s.so.1 $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libgcc_s.so
-#	### since toolchain's uclibc is missing getifaddrs and freeifaddrs implementations, we should remove the header with respective declarations,
-#	### otherwise it can be picked up by packages, e.g., sane-backends, leading to 'undefined reference' linking errors
-#	mv $(TARGET_CROSS_TOP)/arm-brcm-linux-uclibcgnueabi/sysroot/usr/include/ifaddrs.h $(TARGET_CROSS_TOP)/arm-brcm-linux-uclibcgnueabi/sysroot/usr/include/ifaddrs.h_
 	-for app in `cd $(TARGET_CROSS_TOP)/bin; ls arm-brcm-linux-uclibcgnueabi-*` ; do \
 		cd $(TARGET_CROSS_TOP)/bin; ln -s $$app `echo $$app|sed -e 's/arm-brcm-linux-uclibcgnueabi-/arm-linux-uclibc-/'` ; \
 		ln -s $$app `echo $$app|sed -e 's/arm-brcm-linux-uclibcgnueabi-/arm-linux-/'` ; done
