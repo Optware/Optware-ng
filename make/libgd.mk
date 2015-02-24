@@ -114,7 +114,7 @@ $(LIBGD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGD_SOURCE) $(LIBGD_PATCHES) make/
 	sed -i -e 's|libpng12-config --|$(STAGING_PREFIX)/bin/&|' \
 	       -e 's|libpng-config --|$(STAGING_PREFIX)/bin/&|' \
 	       -e 's|AM_INIT_AUTOMAKE(\[|AM_INIT_AUTOMAKE(\[subdir-objects |' $(@D)/configure.ac
-	autoreconf -vif $(@D)
+	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW) autoreconf -vif $(@D)
 	sed -i -e 's/ceill/ceil/g' $(@D)/src/gd_bmp.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

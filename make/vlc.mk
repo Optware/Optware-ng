@@ -72,14 +72,6 @@ endif
 VLC_CONFLICTS=
 
 #
-# VLC git needs recent automake version, but many optware packages need
-# automake-1.10, which is the recommended version for unprefixed automake,
-# so we'll detect latest automake installed on the build system and use it
-# instead of unprefixed one
-VLC_ACLOCAL=aclocal-1.$(shell ls $$(dirname `which automake`)/automake-*|cut -d '.' -f 2-|sort -n|tail -n 1)
-VLC_AUTOMAKE=automake-1.$(shell ls $$(dirname `which automake`)/automake-*|cut -d '.' -f 2-|sort -n|tail -n 1)
-
-#
 # VLC_CONFFILES should be a list of user-editable files
 #VLC_CONFFILES=/opt/etc/vlc.conf /opt/etc/init.d/SXXvlc
 
@@ -208,8 +200,8 @@ endif
 		then mv $(BUILD_DIR)/$(VLC_DIR) $(@D) ; \
 	fi
 	sed -i -e '/modules\/gui\//s/.*//' $(@D)/configure.ac
-	cd $(@D); libtoolize -c -f; $(VLC_ACLOCAL) -I m4; \
-		autoheader; autoconf; $(VLC_AUTOMAKE) -a -c
+	cd $(@D); libtoolize -c -f; $(ACLOCAL_NEW) -I m4; \
+		autoheader; autoconf; $(AUTOMAKE_NEW) -a -c
 	sed -i -e '/LIBEXT=/s/=.*/=".so"/' $(@D)/configure
 ifeq (uclibc, $(LIBC_STYLE))
 	sed -i -e '/# *if.*_POSIX_SPIN_LOCKS/s/.*/#if 0/' $(@D)/include/vlc_threads.h
