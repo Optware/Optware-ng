@@ -55,6 +55,10 @@ E2FSPROGS_CONFIG_ARGS=
 ifneq (, $(filter ddwrt oleg openwrt-ixp4xx, $(OPTWARE_TARGET)))
 E2FSPROGS_CONFIG_ARGS += --disable-tls
 endif
+ifneq (, $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
+# no fallocate64() and sync_file_range()
+E2FSPROGS_CONFIG_ARGS += --disable-defrag
+endif
 
 #
 # E2FSPROGS_BUILD_DIR is the directory in which the build is done.
