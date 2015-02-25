@@ -98,11 +98,14 @@ glib-source: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 
 
 $(GLIB_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GLIB_SOURCE) make/glib.mk
+	$(MAKE) libffi-host-stage zlib-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(GLIB_DIR) $(@D)
 	$(GLIB_UNZIP) $(DL_DIR)/$(GLIB_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(GLIB_DIR) $(@D)
 	(cd $(@D); \
 		CFLAGS="-fPIC" \
+		PKG_CONFIG_PATH="$(HOST_STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(HOST_STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--prefix=/opt \
 		--disable-shared \
