@@ -36,7 +36,7 @@ DAVTOOLS_CONFLICTS=
 #
 # DAVTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-DAVTOOLS_IPK_VERSION=1
+DAVTOOLS_IPK_VERSION=2
 
 #
 # DAVTOOLS_CONFFILES should be a list of user-editable files
@@ -106,17 +106,22 @@ davtools-source: $(DL_DIR)/$(DAVTOOLS_SOURCE) $(DAVTOOLS_PATCHES)
 #
 $(DAVTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(DAVTOOLS_SOURCE) $(DAVTOOLS_PATCHES) make/davtools.mk
 	$(MAKE) e2fsprogs-stage
-	rm -rf $(BUILD_DIR)/$(DAVTOOLS_DIR) $(DAVTOOLS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(DAVTOOLS_DIR) $(@D)
 	$(DAVTOOLS_UNZIP) $(DL_DIR)/$(DAVTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DAVTOOLS_PATCHES)" ; \
 		then cat $(DAVTOOLS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(DAVTOOLS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DAVTOOLS_DIR)" != "$(DAVTOOLS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DAVTOOLS_DIR) $(DAVTOOLS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DAVTOOLS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DAVTOOLS_DIR) $(@D) ; \
 	fi
 	sed -i -e '/^CC/d' -e 's/^CFLAGS =/CFLAGS +=/' \
-		$(DAVTOOLS_BUILD_DIR)/src/*/Makefile
+		$(@D)/src/*/Makefile
+	if [ `echo $(E2FSPROGS_VERSION) | cut -d '.' -f 2` -ge "42" ] || \
+		[ `echo $(E2FSPROGS_VERSION) | cut -d '.' -f 1` -ge "2" ]; then \
+		sed -i -e 's/s_log_frag_size/s_log_cluster_size/g' -e \
+		's/s_frags_per_group/s_clusters_per_group/g' $(@D)/src/cdavl/cdavl.c ;\
+	fi
 	touch $@
 
 davtools-unpack: $(DAVTOOLS_BUILD_DIR)/.configured
@@ -133,7 +138,7 @@ $(DAVTOOLS_BUILD_DIR)/.built: $(DAVTOOLS_BUILD_DIR)/.configured
 	$(TARGET_CONFIGURE_OPTS) \
 	CFLAGS="$(STAGING_CPPFLAGS) $(DAVTOOLS_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(DAVTOOLS_LDFLAGS)" \
-	$(MAKE) -C $(DAVTOOLS_BUILD_DIR)/src/cdavl
+	$(MAKE) -C $(@D)/src/cdavl
 	touch $@
 
 #
@@ -146,7 +151,7 @@ davtools: $(DAVTOOLS_BUILD_DIR)/.built
 #
 $(DAVTOOLS_BUILD_DIR)/.staged: $(DAVTOOLS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(DAVTOOLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 davtools-stage: $(DAVTOOLS_BUILD_DIR)/.staged
