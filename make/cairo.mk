@@ -21,12 +21,12 @@ CAIRO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CAIRO_DESCRIPTION=Cairo is a vector graphics library with cross-device output support.
 CAIRO_SECTION=lib
 CAIRO_PRIORITY=optional
-CAIRO_DEPENDS=freetype, fontconfig, libpng, pixman, xrender
+CAIRO_DEPENDS=freetype, fontconfig, libpng, pixman, xrender, xext
 
 #
 # CAIRO_IPK_VERSION should be incremented when the ipk changes.
 #
-CAIRO_IPK_VERSION=1
+CAIRO_IPK_VERSION=2
 
 #
 # CAIRO_LOCALES defines which locales get installed
@@ -112,7 +112,7 @@ cairo-source: $(DL_DIR)/$(CAIRO_SOURCE) $(CAIRO_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(CAIRO_SOURCE) $(CAIRO_PATCHES) make/cairo.mk
-	$(MAKE) freetype-stage fontconfig-stage libpng-stage pixman-stage xrender-stage
+	$(MAKE) freetype-stage fontconfig-stage libpng-stage pixman-stage xrender-stage xext-stage
 	rm -rf $(BUILD_DIR)/$(CAIRO_DIR) $(CAIRO_BUILD_DIR)
 	$(CAIRO_UNZIP) $(DL_DIR)/$(CAIRO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(CAIRO_DIR) $(CAIRO_BUILD_DIR)
@@ -133,6 +133,9 @@ $(CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(CAIRO_SOURCE) $(CAIRO_PATCHES) make/
 		--disable-static \
 		--enable-ft=yes \
 		--enable-fc=yes \
+		ac_cv_func_XRenderCreateLinearGradient=yes \
+		ac_cv_func_XRenderCreateRadialGradient=yes \
+		ac_cv_func_XRenderCreateConicalGradient=yes \
 	)
 	$(PATCH_LIBTOOL) $(CAIRO_BUILD_DIR)/libtool
 	touch $@
