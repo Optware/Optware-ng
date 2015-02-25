@@ -235,7 +235,7 @@ $(E2FSPROGS_IPK) $(E2FSLIBS_IPK) $(E2FSLIBS-DEV_IPK): $(E2FSPROGS_BUILD_DIR)/.bu
 	install -d $(E2FSPROGS_IPK_DIR)/opt/man/man8
 	install -d $(E2FSPROGS_IPK_DIR)/opt/man/man1
 	DESTDIR=$(E2FSPROGS_IPK_DIR) LDCONFIG=true \
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) install-strip
+	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) install
 	# Strip in the 3 executables - take both e2fsck versions for now
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/debugfs
 	-$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.shared -o $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsck
@@ -253,6 +253,7 @@ endif
 	# e2fslibs
 	install -d $(E2FSLIBS_IPK_DIR)/opt/share
 	mv $(E2FSPROGS_IPK_DIR)/opt/lib $(E2FSLIBS_IPK_DIR)/opt/
+	$(STRIP_COMMAND) $(E2FSLIBS_IPK_DIR)/opt/lib/*.so
 	mv $(E2FSPROGS_IPK_DIR)/opt/share/info $(E2FSLIBS_IPK_DIR)/opt/share/
 	$(MAKE) $(E2FSLIBS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(E2FSLIBS_IPK_DIR)
@@ -270,6 +271,8 @@ endif
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/dumpe2fs.8
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/lsattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/lsattr.1
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/chattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/chattr.1
+	# strip
+	$(STRIP_COMMAND) $(E2FSPROGS_IPK_DIR)/opt/sbin/*
 	# Package files
 	$(MAKE) $(E2FSPROGS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(E2FSPROGS_IPK_DIR)/CONTROL/postinst
