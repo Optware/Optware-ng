@@ -304,10 +304,10 @@ boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PA
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PATCHES)
+$(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PATCHES) make/boost.mk
 	$(MAKE) bzip2-stage expat-stage icu-stage libstdc++-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-	$(MAKE) libiconv-stage
+	$(MAKE) libiconv-stage python26-stage python27-stage python3-stage
 endif
 	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(BOOST_IPK_DIRS) $(BOOST_PYTHON26_IPK_DIR) $(BOOST_PYTHON27_IPK_DIR) $(BOOST_PYTHON3_IPK_DIR) $(@D)
 	rm -rf $(STAGING_INCLUDE_DIR)/boost $(STAGING_LIB_DIR)/libboost*
