@@ -206,7 +206,7 @@ $(PY-CRYPTOGRAPHY_BUILD_DIR)/.staged: $(PY-CRYPTOGRAPHY_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	(cd $(@D)/3; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup3.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
 $(PY-CRYPTOGRAPHY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) make/py-cryptography.mk

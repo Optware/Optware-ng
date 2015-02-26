@@ -215,9 +215,8 @@ $(PY-TWISTED_BUILD_DIR)/.built: $(PY-TWISTED_BUILD_DIR)/.configured
 		$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" build)
 	rm -rf $(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages/twisted
 	(cd $(@D)/3; \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup3.py build)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	touch $@
 
 #
@@ -241,8 +240,7 @@ $(PY-TWISTED_BUILD_DIR)/.staged: $(PY-TWISTED_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	(cd $(@D)/3; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages" \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup3.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
 $(PY-TWISTED_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-TWISTED_SOURCE) $(DL_DIR)/$(PY-TWISTED_SOURCE_OLD) make/py-twisted.mk
@@ -420,8 +418,7 @@ $(PY3-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 	rm -rf $(PY3-TWISTED_IPK_DIR) $(BUILD_DIR)/py3-twisted_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TWISTED_BUILD_DIR)/3; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages" \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup3.py install --root=$(PY3-TWISTED_IPK_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-TWISTED_IPK_DIR) --prefix=/opt)
 # not supported yet
 #	$(STRIP_COMMAND) `find $(PY3-TWISTED_IPK_DIR)/opt/lib -name '*.so'`
 #	for f in $(PY3-TWISTED_IPK_DIR)/opt/*bin/*; \
