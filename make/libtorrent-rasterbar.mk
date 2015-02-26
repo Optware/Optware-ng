@@ -155,7 +155,7 @@ endif
 	sed -i -e "s|namespace libtorrent|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent|" $(@D)/include/libtorrent/socket.hpp
 	sed -i -e "s|namespace libtorrent { namespace|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent { namespace|" $(@D)/src/enum_net.cpp
 #	sed -i -e "s/#include <vector>/#include <vector>\n#include <list>/" $(@D)/include/libtorrent/udp_socket.hpp
-	autoreconf -vif $(@D)
+	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW) autoreconf -vif $(@D)
 	sed -i -e "s|/usr/include|$(STAGING_DIR)/opt/include|" $(@D)/configure
 #	sed -i -e 's|#include <boost/multi_index/ordered_index\.hpp>|#include <boost/multi_index/ordered_index.hpp>\n#include <boost/noncopyable.hpp>|' $(@D)/src/storage.cpp
 	sed -i -e "s/-ftemplate-depth=120//" $(@D)/configure
