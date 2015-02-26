@@ -206,7 +206,6 @@ $(PY-CRYPTOGRAPHY_BUILD_DIR)/.staged: $(PY-CRYPTOGRAPHY_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	(cd $(@D)/3; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages" \
 		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup3.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
