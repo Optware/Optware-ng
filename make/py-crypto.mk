@@ -32,6 +32,8 @@ PY-CRYPTO_SECTION=misc
 PY-CRYPTO_PRIORITY=optional
 PY24-CRYPTO_DEPENDS=python24, libgmp
 PY25-CRYPTO_DEPENDS=python25, libgmp
+PY26-CRYPTO_DEPENDS=python26, libgmp
+PY27-CRYPTO_DEPENDS=python27, libgmp
 PY-CRYPTO_CONFLICTS=
 
 #
@@ -74,6 +76,12 @@ PY24-CRYPTO_IPK=$(BUILD_DIR)/py-crypto_$(PY-CRYPTO_VERSION)-$(PY-CRYPTO_IPK_VERS
 PY25-CRYPTO_IPK_DIR=$(BUILD_DIR)/py25-crypto-$(PY-CRYPTO_VERSION)-ipk
 PY25-CRYPTO_IPK=$(BUILD_DIR)/py25-crypto_$(PY-CRYPTO_VERSION)-$(PY-CRYPTO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PY26-CRYPTO_IPK_DIR=$(BUILD_DIR)/py26-crypto-$(PY-CRYPTO_VERSION)-ipk
+PY26-CRYPTO_IPK=$(BUILD_DIR)/py26-crypto_$(PY-CRYPTO_VERSION)-$(PY-CRYPTO_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY27-CRYPTO_IPK_DIR=$(BUILD_DIR)/py27-crypto-$(PY-CRYPTO_VERSION)-ipk
+PY27-CRYPTO_IPK=$(BUILD_DIR)/py27-crypto_$(PY-CRYPTO_VERSION)-$(PY-CRYPTO_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -105,12 +113,12 @@ py-crypto-source: $(DL_DIR)/$(PY-CRYPTO_SOURCE) $(PY-CRYPTO_PATCHES)
 #
 $(PY-CRYPTO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTO_SOURCE) $(PY-CRYPTO_PATCHES) make/py-crypto.mk
 	$(MAKE) py-setuptools-stage libgmp-stage
-	rm -rf $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(PY-CRYPTO_BUILD_DIR)
-	mkdir -p $(PY-CRYPTO_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(@D)
+	mkdir -p $(@D)
 	$(PY-CRYPTO_UNZIP) $(DL_DIR)/$(PY-CRYPTO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CRYPTO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CRYPTO_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(PY-CRYPTO_BUILD_DIR)/2.4
-	(cd $(PY-CRYPTO_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (\
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -121,8 +129,8 @@ $(PY-CRYPTO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTO_SOURCE) $(PY-CRYPTO_PA
 	)
 	$(PY-CRYPTO_UNZIP) $(DL_DIR)/$(PY-CRYPTO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CRYPTO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CRYPTO_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(PY-CRYPTO_BUILD_DIR)/2.5
-	(cd $(PY-CRYPTO_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (\
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -131,7 +139,31 @@ $(PY-CRYPTO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTO_SOURCE) $(PY-CRYPTO_PA
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg; \
 	)
-	touch $(PY-CRYPTO_BUILD_DIR)/.configured
+	$(PY-CRYPTO_UNZIP) $(DL_DIR)/$(PY-CRYPTO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CRYPTO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CRYPTO_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    (\
+	    echo "[build_ext]"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	    echo "rpath=/opt/lib"; \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.6") >> setup.cfg; \
+	)
+	$(PY-CRYPTO_UNZIP) $(DL_DIR)/$(PY-CRYPTO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CRYPTO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CRYPTO_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    (\
+	    echo "[build_ext]"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.7"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	    echo "rpath=/opt/lib"; \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.7") >> setup.cfg; \
+	)
+	touch $@
 
 py-crypto-unpack: $(PY-CRYPTO_BUILD_DIR)/.configured
 
@@ -139,7 +171,7 @@ py-crypto-unpack: $(PY-CRYPTO_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-CRYPTO_BUILD_DIR)/.built: $(PY-CRYPTO_BUILD_DIR)/.configured
-	rm -f $(PY-CRYPTO_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-CRYPTO_BUILD_DIR)/2.4; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
@@ -148,7 +180,15 @@ $(PY-CRYPTO_BUILD_DIR)/.built: $(PY-CRYPTO_BUILD_DIR)/.configured
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
-	touch $(PY-CRYPTO_BUILD_DIR)/.built
+	(cd $(PY-CRYPTO_BUILD_DIR)/2.6; \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build; \
+	)
+	(cd $(PY-CRYPTO_BUILD_DIR)/2.7; \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -159,9 +199,9 @@ py-crypto: $(PY-CRYPTO_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-CRYPTO_BUILD_DIR)/.staged: $(PY-CRYPTO_BUILD_DIR)/.built
-	rm -f $(PY-CRYPTO_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PY-CRYPTO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-CRYPTO_BUILD_DIR)/.staged
+	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 py-crypto-stage: $(PY-CRYPTO_BUILD_DIR)/.staged
 
@@ -195,6 +235,34 @@ $(PY25-CRYPTO_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PY-CRYPTO_SITE)/$(PY-CRYPTO_SOURCE)" >>$@
 	@echo "Description: $(PY-CRYPTO_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY25-CRYPTO_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-CRYPTO_CONFLICTS)" >>$@
+
+$(PY26-CRYPTO_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py26-crypto" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-CRYPTO_PRIORITY)" >>$@
+	@echo "Section: $(PY-CRYPTO_SECTION)" >>$@
+	@echo "Version: $(PY-CRYPTO_VERSION)-$(PY-CRYPTO_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-CRYPTO_MAINTAINER)" >>$@
+	@echo "Source: $(PY-CRYPTO_SITE)/$(PY-CRYPTO_SOURCE)" >>$@
+	@echo "Description: $(PY-CRYPTO_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY26-CRYPTO_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-CRYPTO_CONFLICTS)" >>$@
+
+$(PY27-CRYPTO_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-crypto" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-CRYPTO_PRIORITY)" >>$@
+	@echo "Section: $(PY-CRYPTO_SECTION)" >>$@
+	@echo "Version: $(PY-CRYPTO_VERSION)-$(PY-CRYPTO_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-CRYPTO_MAINTAINER)" >>$@
+	@echo "Source: $(PY-CRYPTO_SITE)/$(PY-CRYPTO_SOURCE)" >>$@
+	@echo "Description: $(PY-CRYPTO_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-CRYPTO_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-CRYPTO_CONFLICTS)" >>$@
 
 #
@@ -233,10 +301,34 @@ $(PY25-CRYPTO_IPK): $(PY-CRYPTO_BUILD_DIR)/.built
 #	echo $(PY-CRYPTO_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CRYPTO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CRYPTO_IPK_DIR)
 
+$(PY26-CRYPTO_IPK): $(PY-CRYPTO_BUILD_DIR)/.built
+	rm -rf $(PY26-CRYPTO_IPK_DIR) $(BUILD_DIR)/py26-crypto_*_$(TARGET_ARCH).ipk
+	(cd $(PY-CRYPTO_BUILD_DIR)/2.6; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
+		install --root=$(PY26-CRYPTO_IPK_DIR) --prefix=/opt)
+	$(STRIP_COMMAND) `find $(PY26-CRYPTO_IPK_DIR)/opt/lib/ -name '*.so'`
+	$(MAKE) $(PY26-CRYPTO_IPK_DIR)/CONTROL/control
+#	echo $(PY-CRYPTO_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CRYPTO_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CRYPTO_IPK_DIR)
+
+$(PY27-CRYPTO_IPK): $(PY-CRYPTO_BUILD_DIR)/.built
+	rm -rf $(PY27-CRYPTO_IPK_DIR) $(BUILD_DIR)/py27-crypto_*_$(TARGET_ARCH).ipk
+	(cd $(PY-CRYPTO_BUILD_DIR)/2.7; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" \
+		install --root=$(PY27-CRYPTO_IPK_DIR) --prefix=/opt)
+	$(STRIP_COMMAND) `find $(PY27-CRYPTO_IPK_DIR)/opt/lib/ -name '*.so'`
+	$(MAKE) $(PY27-CRYPTO_IPK_DIR)/CONTROL/control
+#	echo $(PY-CRYPTO_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CRYPTO_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-CRYPTO_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-crypto-ipk: $(PY24-CRYPTO_IPK) $(PY25-CRYPTO_IPK)
+py-crypto-ipk: $(PY24-CRYPTO_IPK) $(PY25-CRYPTO_IPK) $(PY26-CRYPTO_IPK) $(PY27-CRYPTO_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -252,4 +344,12 @@ py-crypto-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-CRYPTO_DIR) $(PY-CRYPTO_BUILD_DIR) \
 	$(PY24-CRYPTO_IPK_DIR) $(PY24-CRYPTO_IPK) \
 	$(PY25-CRYPTO_IPK_DIR) $(PY25-CRYPTO_IPK) \
+	$(PY26-CRYPTO_IPK_DIR) $(PY26-CRYPTO_IPK) \
+	$(PY27-CRYPTO_IPK_DIR) $(PY27-CRYPTO_IPK) \
+
+#
+# Some sanity check for the package.
+#
+py-crypto-check: $(PY24-CRYPTO_IPK) $(PY25-CRYPTO_IPK) $(PY26-CRYPTO_IPK) $(PY27-CRYPTO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
 

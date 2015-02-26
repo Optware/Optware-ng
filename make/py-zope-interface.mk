@@ -73,6 +73,7 @@ PY-ZOPE-INTERFACE_LDFLAGS=
 #
 PY-ZOPE-INTERFACE_BUILD_DIR=$(BUILD_DIR)/py-zope-interface
 PY-ZOPE-INTERFACE_SOURCE_DIR=$(SOURCE_DIR)/py-zope-interface
+PY-ZOPE-INTERFACE_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/py-zope-interface
 
 PY24-ZOPE-INTERFACE_IPK_DIR=$(BUILD_DIR)/py24-zope-interface-$(PY-ZOPE-INTERFACE_VERSION_OLD)-ipk
 PY24-ZOPE-INTERFACE_IPK=$(BUILD_DIR)/py24-zope-interface_$(PY-ZOPE-INTERFACE_VERSION_OLD)-$(PY-ZOPE-INTERFACE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -262,7 +263,40 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
 	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
+$(PY-ZOPE-INTERFACE_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE_OLD) make/py-zope-interface.mk
+	rm -rf $(HOST_BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) $(HOST_BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) $(@D)
+	$(MAKE) python24-host-stage python25-host-stage python26-host-stage python27-host-stage python3-host-stage
+	mkdir -p $(@D)/
+	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) $(@D)/2.4
+	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) $(@D)/2.5
+	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) $(@D)/2.6
+	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) $(@D)/2.7
+	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) $(@D)/3
+	(cd $(@D)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(@D)/2.4; \
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.5; \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
+	(cd $(@D)/2.6; \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
+	(cd $(@D)/2.7; \
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
+	(cd $(@D)/3; \
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	touch $@
+
 py-zope-interface-stage: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged
+
+py-zope-interface-host-stage: $(PY-ZOPE-INTERFACE_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer

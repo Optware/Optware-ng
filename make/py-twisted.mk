@@ -75,6 +75,7 @@ PY-TWISTED_LDFLAGS=
 #
 PY-TWISTED_BUILD_DIR=$(BUILD_DIR)/py-twisted
 PY-TWISTED_SOURCE_DIR=$(SOURCE_DIR)/py-twisted
+PY-TWISTED_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/py-twisted
 
 PY25-TWISTED_IPK_DIR=$(BUILD_DIR)/py25-twisted-$(PY-TWISTED_VERSION_OLD)-ipk
 PY25-TWISTED_IPK=$(BUILD_DIR)/py25-twisted_$(PY-TWISTED_VERSION_OLD)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -244,7 +245,67 @@ $(PY-TWISTED_BUILD_DIR)/.staged: $(PY-TWISTED_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup3.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
+$(PY-TWISTED_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-TWISTED_SOURCE) $(DL_DIR)/$(PY-TWISTED_SOURCE_OLD) make/py-twisted.mk
+	rm -rf $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR) $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR_OLD) $(@D)
+	$(MAKE) py-zope-interface-host-stage py-openssl-host-stage
+	mkdir -p $(@D)/
+	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR_OLD) $(@D)/2.5
+	(cd $(@D)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.7"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)/3
+	(cd $(@D)/3; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.5; \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
+	(cd $(@D)/2.6; \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
+	(cd $(@D)/2.7; \
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
+	(cd $(@D)/3; \
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	touch $@
+
 py-twisted-stage: $(PY-TWISTED_BUILD_DIR)/.staged
+
+py-twisted-host-stage: $(PY-TWISTED_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer

@@ -72,6 +72,7 @@ PY-OPENSSL_LDFLAGS=
 #
 PY-OPENSSL_BUILD_DIR=$(BUILD_DIR)/py-openssl
 PY-OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/py-openssl
+PY-OPENSSL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/py-openssl
 
 PY25-OPENSSL_IPK_DIR=$(BUILD_DIR)/py25-openssl-$(PY-OPENSSL_VERSION_OLD)-ipk
 PY25-OPENSSL_IPK=$(BUILD_DIR)/py25-openssl_$(PY-OPENSSL_VERSION_OLD)-$(PY-OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -229,11 +230,79 @@ py-openssl: $(PY-OPENSSL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-OPENSSL_BUILD_DIR)/.staged: $(PY-OPENSSL_BUILD_DIR)/.built
-#	rm -f $@
-#	$(MAKE) -C $(PY-OPENSSL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-#	touch $@
+	rm -f $@
+	(cd $(@D)/2.5; \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.6; \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.7; \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/3; \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		PYTHONPATH="$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages" \
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup3.py install --root=$(STAGING_DIR) --prefix=/opt)
+	touch $@
+
+$(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) make/py-openssl.mk
+	rm -rf $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR) $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)
+	$(MAKE) py-cryptography-host-stage py-six-host-stage
+	mkdir -p $(@D)/
+	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.5
+	(cd $(@D)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.7"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/3
+	(cd $(@D)/3; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	(cd $(@D)/2.5; \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.6; \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.7; \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/3; \
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	touch $@
 
 py-openssl-stage: $(PY-OPENSSL_BUILD_DIR)/.staged
+
+py-openssl-host-stage: $(PY-OPENSSL_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
