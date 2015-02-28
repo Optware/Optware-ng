@@ -42,6 +42,9 @@ TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with web inte
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl, libcurl, libevent, zlib
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+TRANSMISSION_DEPENDS+=, libiconv
+endif
 TRANSMISSION_SUGGESTS=
 TRANSMISSION_CONFLICTS=
 
@@ -69,6 +72,9 @@ TRANSMISSION-DBG_LDFLAGS=-lefence -lpthread
 ifeq (uclibc, $(LIBC_STYLE))
 TRANSMISSION_LDFLAGS+=-lintl
 TRANSMISSION-DBG_LDFLAGS+=-lintl
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+TRANSMISSION_LDFLAGS += -liconv
 endif
 ifeq ($(GETTEXT_NLS), enable)
 TRANSMISSION_DEPENDS+=, gettext
@@ -167,6 +173,9 @@ $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSM
 	$(MAKE) openssl-stage libcurl-stage libevent-stage zlib-stage
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
 endif
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D)
 ifndef TRANSMISSION_SVN_REV
