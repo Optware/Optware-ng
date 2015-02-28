@@ -129,7 +129,7 @@ $(TNFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTPD_SOURCE) $(TNFTPD_PATCHES) ma
 		--disable-static \
 		--without-pam \
 	)
-	echo '#if !defined(ARG_MAX)\n# define ARG_MAX _POSIX_ARG_MAX\n#endif' >> $(@D)/tnftpd.h
+	echo -e '#if !defined(ARG_MAX)\n# define ARG_MAX _POSIX_ARG_MAX\n#endif' >> $(@D)/tnftpd.h
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
