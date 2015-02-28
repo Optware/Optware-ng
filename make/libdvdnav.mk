@@ -154,7 +154,7 @@ $(LIBDVDNAV_BUILD_DIR)/.staged: $(LIBDVDNAV_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBDVDNAV_BUILD_DIR) DESTDIR=$(STAGING_DIR) transform="" install
 	rm -f $(STAGING_LIB_DIR)/libdvdnav.la
-	sed -ie 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|g' $(STAGING_PREFIX)/bin/dvdnav-config
+#	sed -ie 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|g' $(STAGING_PREFIX)/bin/dvdnav-config
 	touch $@
 
 libdvdnav-stage: $(LIBDVDNAV_BUILD_DIR)/.staged
