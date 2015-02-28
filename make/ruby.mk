@@ -207,6 +207,7 @@ $(RUBY_BUILD_DIR)/.staged: $(RUBY_BUILD_DIR)/.built
 	rm -f $@
 	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	-cp -f $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/*/ruby/config.h $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby
 	touch $@
 
 ruby-stage: $(RUBY_BUILD_DIR)/.staged
