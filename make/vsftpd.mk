@@ -28,8 +28,9 @@ VSFTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VSFTPD_DESCRIPTION=ftp daemon with an emphasis on speed and security
 VSFTPD_SECTION=net
 VSFTPD_PRIORITY=optional
+VSFTPD_DEPENDS=libcap
 ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
-VSFTPD_DEPENDS=openssl
+VSFTPD_DEPENDS+=, openssl
 endif
 VSFTPD_SUGGESTS=
 VSFTPD_CONFLICTS=
@@ -37,7 +38,7 @@ VSFTPD_CONFLICTS=
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=1
+VSFTPD_IPK_VERSION=2
 
 
 # VSFTPD_CONFFILES should be a list of user-editable files
@@ -54,7 +55,7 @@ VSFTPD_CONFFILES=/opt/etc/vsftpd.conf
 # compilation or linking flags, then list them here.
 #
 VSFTPD_CPPFLAGS=
-VSFTPD_LDFLAGS=-lcrypt
+VSFTPD_LDFLAGS=-lcrypt -lcap
 
 ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
 VSFTPD_CPPFLAGS+=-I$(STAGING_INCLUDE_DIR)/openssl
@@ -107,6 +108,7 @@ vsftpd-source: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES) make/vsftpd.mk
+	$(MAKE) libcap-stage
 ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
 	$(MAKE) openssl-stage
 endif
