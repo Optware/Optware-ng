@@ -215,6 +215,9 @@ endif
 	mv $(BUILD_DIR)/$(SAMBA36_DIR) $(@D)
 	cat $(SAMBA36_PATCHES) | patch -d $(@D) -p1
 	sed -i -e '/AC_PATH_PROG(CUPS_CONFIG, cups-config)/s|.*|CUPS_CONFIG=$(STAGING_PREFIX)/bin/cups-config|' $(@D)/source3/configure.in
+#	resolve linux/xattr.h and sys/xattr.h incompatibility leading to an error similar to this:
+#	.../sys/xattr.h:32:3: error: expected identifier before numeric constant
+	sed -i -e '/^#include <sys\/capability.h>/s/^/#define _SYS_XATTR_H	1\n/' $(@D)/lib/replace/system/capability.h
 	(cd $(@D)/source3/; ./autogen.sh)
 	(cd $(@D)/source3/; \
 		$(TARGET_CONFIGURE_OPTS) \
