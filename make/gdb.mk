@@ -42,8 +42,9 @@ GDB_CONFLICTS=
 
 ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
 GDB_VERSION=7.8.1
-GDB_IPK_VERSION=1
+GDB_IPK_VERSION=2
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
+GDB_DEPENDS+=, liblzma0
 GDB_UNZIP=xzcat
 endif
 
@@ -65,7 +66,7 @@ endif
 GDB_CPPFLAGS=
 # Note: added -s in here to strip binaries.
 #
-GDB_LDFLAGS=-s
+GDB_LDFLAGS=-s -lpthread
 ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
 GDB_LDFLAGS+= -lm
 endif
@@ -121,7 +122,7 @@ gdb-source: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
 # 
 
 $(GDB_BUILD_DIR)/.configured: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
-	$(MAKE) termcap-stage expat-stage ncurses-stage
+	$(MAKE) termcap-stage expat-stage ncurses-stage xz-utils-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
