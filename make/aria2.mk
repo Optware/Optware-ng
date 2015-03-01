@@ -42,7 +42,7 @@ ARIA2_CONFLICTS=
 #
 # ARIA2_IPK_VERSION should be incremented when the ipk changes.
 #
-ARIA2_IPK_VERSION=1
+ARIA2_IPK_VERSION=2
 
 #
 # ARIA2_CONFFILES should be a list of user-editable files
@@ -59,7 +59,7 @@ ARIA2_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 ARIA2_CPPFLAGS=
-ARIA2_LDFLAGS=
+ARIA2_LDFLAGS=-lpthread
 
 ifeq ($(HOSTCC), $(TARGET_CC))
 ARIA2_CONFIGURE_ENVS=
