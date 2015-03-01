@@ -36,7 +36,7 @@ DELUGE_CONFLICTS=
 #
 # DELUGE_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_IPK_VERSION=1
+DELUGE_IPK_VERSION=2
 
 #
 # DELUGE_CONFFILES should be a list of user-editable files
@@ -197,7 +197,7 @@ $(DELUGE_IPK): $(DELUGE_BUILD_DIR)/.built
 	install -d $(DELUGE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(DELUGE_SOURCE_DIR)/S80deluged $(DELUGE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(DELUGE_SOURCE_DIR)/S80deluge-web $(DELUGE_IPK_DIR)/opt/etc/init.d
-	chmod 755 $(DELUGE_IPK_DIR)/opt/etc/init.d/S80deluge-web
+	install -m 755 $(DELUGE_SOURCE_DIR)/deluge-web-reset_password $(DELUGE_IPK_DIR)/opt/bin
 	$(MAKE) $(DELUGE_IPK_DIR)/CONTROL/control
 	### post-install: change default deluge ui to console
 	install -m 755 $(DELUGE_SOURCE_DIR)/postinst $(DELUGE_IPK_DIR)/CONTROL/postinst
