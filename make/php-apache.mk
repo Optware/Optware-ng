@@ -111,32 +111,15 @@ php-apache-source: $(DL_DIR)/$(PHP_SOURCE)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_HOST_CLI) $(PHP_APACHE_PATCHES) make/php-apache.mk
-	$(MAKE) apache-stage
-	$(MAKE) bzip2-stage 
-	$(MAKE) gdbm-stage 
-	$(MAKE) libcurl-stage
-	$(MAKE) libdb-stage
-	$(MAKE) libgd-stage 
+	$(MAKE) apache-stage bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
+		libxslt-stage openssl-stage mysql-stage postgresql-stage freetds-stage \
+		unixodbc-stage imap-stage libpng-stage libjpeg-stage libzip-stage icu-stage \
+		libgmp-stage sqlite-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) libxml2-stage 
-	$(MAKE) libxslt-stage 
-	$(MAKE) openssl-stage 
-	$(MAKE) mysql-stage
-	$(MAKE) postgresql-stage
-	$(MAKE) freetds-stage
-	$(MAKE) unixodbc-stage
-	$(MAKE) imap-stage
-	$(MAKE) libpng-stage
-	$(MAKE) libjpeg-stage
-	$(MAKE) libzip-stage
-	$(MAKE) icu-stage
-	$(MAKE) libgmp-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
-	$(MAKE) openldap-stage
-	$(MAKE) cyrus-sasl-stage
-	$(MAKE) sqlite-stage
+	$(MAKE) openldap-stage cyrus-sasl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(@D)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -

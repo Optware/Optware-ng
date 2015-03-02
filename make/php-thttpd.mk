@@ -105,31 +105,15 @@ php-thttpd-source: $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_DIR)/$(PHP_THTTPD_LIBPHP_
 #
 
 $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_HOST_CLI) $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_DIR)/$(PHP_THTTPD_LIBPHP_SOURCE) $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES) make/php-thttpd.mk
-	$(MAKE) bzip2-stage 
-	$(MAKE) gdbm-stage 
-	$(MAKE) libcurl-stage
-	$(MAKE) libdb-stage
-	$(MAKE) libgd-stage 
+	$(MAKE) bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
+		libxslt-stage openssl-stage mysql-stage postgresql-stage freetds-stage \
+		unixodbc-stage imap-stage libpng-stage libjpeg-stage libzip-stage icu-stage \
+		libgmp-stage sqlite-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) libxml2-stage 
-	$(MAKE) libxslt-stage 
-	$(MAKE) openssl-stage 
-	$(MAKE) mysql-stage
-	$(MAKE) postgresql-stage
-	$(MAKE) freetds-stage
-	$(MAKE) unixodbc-stage
-	$(MAKE) imap-stage
-	$(MAKE) libpng-stage
-	$(MAKE) libjpeg-stage
-	$(MAKE) libzip-stage
-	$(MAKE) icu-stage
-	$(MAKE) libgmp-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
-	$(MAKE) openldap-stage
-	$(MAKE) cyrus-sasl-stage
-	$(MAKE) sqlite-stage
+	$(MAKE) openldap-stage cyrus-sasl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(BUILD_DIR)/$(THTTPD_DIR) $(PHP_THTTPD_BUILD_DIR)
 	$(PHP_THTTPD_UNZIP) $(DL_DIR)/$(PHP_THTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
