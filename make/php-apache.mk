@@ -294,7 +294,7 @@ $(PHP_APACHE_IPK): $(PHP_APACHE_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-php-apache-ipk: #$(PHP_APACHE_IPK)
+php-apache-ipk: $(PHP_APACHE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
