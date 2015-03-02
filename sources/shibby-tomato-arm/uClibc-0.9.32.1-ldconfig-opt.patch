@@ -10,7 +10,7 @@
 +			scan_dir("/opt/usr/lib");
  #ifndef __LDSO_CACHE_SUPPORT__
 -			scan_dir(UCLIBC_RUNTIME_PREFIX "usr/X11R6/lib");
-+			scan_dir("opt/X11R6/lib");
++			scan_dir("/opt/X11R6/lib");
  #else
  			/* I guess the defaults aren't good enough */
  			if ((extpath = get_extpath())) {
