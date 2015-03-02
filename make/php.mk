@@ -25,6 +25,9 @@ PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, sqlite
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 PHP_DEPENDS+=, cyrus-sasl-libs, openldap-libs
 endif
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+PHP_DEPENDS+=, libstdc++
+endif
 
 ### php host cli is needed for phar extension,
 ### so we have to build it first
