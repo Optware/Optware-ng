@@ -61,6 +61,7 @@ $(ZLIB_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(ZLIB_SOURCE) make/z
 	)
 	$(MAKE) -C $(@D)
 	install -d $(HOST_STAGING_INCLUDE_DIR)
+	install -d $(HOST_STAGING_LIB_DIR)
 	install -m 644 $(@D)/zlib.h $(HOST_STAGING_INCLUDE_DIR)
 	install -m 644 $(@D)/zconf.h $(HOST_STAGING_INCLUDE_DIR)
 	install -m 644 $(@D)/libz.a $(HOST_STAGING_LIB_DIR)
