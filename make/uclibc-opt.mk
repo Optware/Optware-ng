@@ -18,7 +18,14 @@ endif
 UCLIBC-OPT_DESCRIPTION=micro C library for embedded Linux systems
 UCLIBC-OPT_SECTION=base
 UCLIBC-OPT_PRIORITY=required
+ifneq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
 UCLIBC-OPT_DEPENDS=
+else
+#	to make feed firmware-independent, we make
+#	all packages dependent on uclibc-opt by hacking ipkg-build from ipkg-utils,
+#	so make uclibc-opt dependent on libnsl, which is a part of uClibc
+UCLIBC-OPT_DEPENDS=libnsl
+endif
 UCLIBC-OPT_SUGGESTS=ipkg-opt
 UCLIBC-OPT_CONFLICTS=
 

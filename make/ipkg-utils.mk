@@ -107,6 +107,13 @@ $(STAGING_DIR)/bin/ipkg-build: $(IPKG-UTILS_DIR)/.unpacked
 	install -m0755 $(IPKG-UTILS_DIR)/ipkg-build* $(STAGING_DIR)/bin
 	install -m0755 $(IPKG-UTILS_DIR)/ipkg-make-index $(STAGING_DIR)/bin
 	install -m0755 $(IPKG-UTILS_DIR)/ipkg.py $(STAGING_DIR)/bin
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
+#	to make feed firmware-independent, we make
+#	all packages (except uclibc-opt, libnsl and ipkg-fw)
+#	dependent on uclibc-opt by hacking ipkg-build
+	sed -i -e "/^version=/s~$$~\n\n# get last argument: IPK_DIR\nfor IPK_DIR; do true; done\nif [ -n \"\`cat $$\{IPK_DIR\}/CONTROL/control|egrep '^Package: uclibc-opt$$|^Package: libnsl$$|^Package: ipkg-fw$$'\`\" ]; then\nsed -i -e 's/^Depends:/Depends: uclibc-opt,/' \$$\{IPK_DIR\}/CONTROL/control\nfi~" \
+						$(STAGING_DIR)/bin/ipkg-build
+endif
 
 #
 # This is the build convenience target.

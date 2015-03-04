@@ -43,7 +43,13 @@ TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/hndtools-arm-linux-2.6.36-uclibc-4.5.3
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/arm-brcm-linux-uclibcgnueabi-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/arm-brcm-linux-uclibcgnueabi/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/arm-brcm-linux-uclibcgnueabi/sysroot/usr/include
-TARGET_LDFLAGS =
+
+#	to make feed firmware-independent, we make
+#	all packages dependent on uclibc-opt by hacking ipkg-build from ipkg-utils,
+#	and add following ld flag to hardcode /opt/lib/ld-uClibc.so.0
+#	into executables instead of firmware's /lib/ld-uClibc.so.0
+TARGET_LDFLAGS = -Wl,--dynamic-linker=/opt/lib/ld-uClibc.so.0
+
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
@@ -51,7 +57,7 @@ TOOLCHAIN_SITE=http://dl.lazyzhu.com/file/Toolchain/crosstool-NG
 TOOLCHAIN_BINARY=hndtools-arm-linux-2.6.36-uclibc-4.5.3.tar.bz2
 
 UCLIBC-OPT_VERSION = 0.9.32.1
-UCLIBC-OPT_IPK_VERSION = 1
+UCLIBC-OPT_IPK_VERSION = 2
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-brcm-linux-uclibcgnueabi/sysroot/lib
 
 SHIBBY-TOMATO-ARM_SOURCE_DIR=$(SOURCE_DIR)/shibby-tomato-arm
@@ -63,7 +69,7 @@ $(DL_DIR)/$(TOOLCHAIN_BINARY):
 	$(WGET) -P $(@D) $(TOOLCHAIN_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-$(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_BINARY) $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+$(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_BINARY) #$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP) $(TARGET_CROSS_BUILD_DIR)
 	mkdir -p $(TARGET_CROSS_TOP)
 	tar -xjvOf $(DL_DIR)/$(TOOLCHAIN_BINARY) hndtools-arm-linux-2.6.36-uclibc-4.5.3/src/buildroot-2012.02.tar.bz2 | tar -xjvf - -C $(BASE_DIR)/toolchain

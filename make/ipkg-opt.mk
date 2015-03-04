@@ -21,7 +21,7 @@ else
 IPKG-OPT_DEPENDS=
 endif
 IPKG-OPT_SUGGESTS=
-IPKG-OPT_CONFLICTS=
+IPKG-OPT_CONFLICTS=ipkg-fw
 
 #
 # Software downloaded from CVS repositories must either use a tag or a
