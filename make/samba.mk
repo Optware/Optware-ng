@@ -212,7 +212,7 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) cups-stage
+	$(MAKE) cups-stage libacl-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(@D)
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1

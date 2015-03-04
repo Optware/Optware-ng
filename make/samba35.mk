@@ -213,7 +213,7 @@ $(SAMBA35_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA35_SOURCE) $(SAMBA35_PATCHES)
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
-	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage e2fsprogs-stage
+	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage e2fsprogs-stage libacl-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA35_DIR) $(@D)
 	$(SAMBA35_UNZIP) $(DL_DIR)/$(SAMBA35_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA35_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA35_DIR) -p1
