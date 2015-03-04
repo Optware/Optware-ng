@@ -169,6 +169,7 @@ endif
 		patch -d $(BUILD_DIR)/$(SVN_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(SVN_DIR) $(@D)
+	cp -f $(@D)/subversion/bindings/swig/ruby/libsvn_swig_ruby/*.h $(@D)/subversion/bindings/swig/ruby/
 	sed -i -e 's/as_fn_error .* "cannot run test program while cross compiling/echo "cannot run test program while cross compiling/' \
 		$(@D)/configure
 	(cd $(@D); \
