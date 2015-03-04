@@ -21,7 +21,7 @@
 #
 SAMBA36_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA36_VERSION ?= 3.6.24
-SAMBA36_IPK_VERSION ?= 1
+SAMBA36_IPK_VERSION ?= 2
 SAMBA36_SOURCE=samba-$(SAMBA36_VERSION).tar.gz
 SAMBA36_DIR=samba-$(SAMBA36_VERSION)
 SAMBA36_UNZIP=zcat
@@ -29,7 +29,7 @@ SAMBA36_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA36_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients. This is a newer version.
 SAMBA36_SECTION=net
 SAMBA36_PRIORITY=optional
-SAMBA36_DEPENDS=avahi, popt, readline, zlib, e2fsprogs
+SAMBA36_DEPENDS=avahi, popt, readline, zlib, e2fsprogs, libacl, cups
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA36_DEPENDS +=, openldap-libs
 endif
@@ -38,7 +38,7 @@ SAMBA36_DEPENDS +=, gconv-modules
 endif
 SAMBA36-DEV_DEPENDS=samba36
 SAMBA36-SWAT_DEPENDS=samba36, xinetd
-SAMBA36_SUGGESTS=cups
+SAMBA36_SUGGESTS=
 SAMBA36-DEV_SUGGESTS=
 SAMBA36-SWAT_SUGGESTS=
 SAMBA36_CONFLICTS=samba2, samba, samba34,samba35
@@ -64,7 +64,7 @@ $(SAMBA36_SOURCE_DIR)/IPV6_V6ONLY.patch \
 # compilation or linking flags, then list them here.
 #
 SAMBA36_CPPFLAGS= -I$(STAGING_INCLUDE_DIR)/etc
-SAMBA36_LDFLAGS=
+SAMBA36_LDFLAGS=-lpthread
 
 #
 # SAMBA36_BUILD_DIR is the directory in which the build is done.

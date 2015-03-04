@@ -21,7 +21,7 @@
 #
 SAMBA35_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA35_VERSION ?= 3.5.22
-SAMBA35_IPK_VERSION ?= 2
+SAMBA35_IPK_VERSION ?= 3
 SAMBA35_SOURCE=samba-$(SAMBA35_VERSION).tar.gz
 SAMBA35_DIR=samba-$(SAMBA35_VERSION)
 SAMBA35_UNZIP=zcat
@@ -29,7 +29,7 @@ SAMBA35_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA35_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients. This is a newer version.
 SAMBA35_SECTION=net
 SAMBA35_PRIORITY=optional
-SAMBA35_DEPENDS=avahi, popt, readline, zlib, e2fsprogs
+SAMBA35_DEPENDS=avahi, popt, readline, zlib, e2fsprogs, libacl, cups
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA35_DEPENDS +=, openldap-libs
 endif
@@ -38,7 +38,7 @@ SAMBA35_DEPENDS +=, gconv-modules
 endif
 SAMBA35-DEV_DEPENDS=samba35
 SAMBA35-SWAT_DEPENDS=samba35, xinetd
-SAMBA35_SUGGESTS=cups
+SAMBA35_SUGGESTS=
 SAMBA35-DEV_SUGGESTS=
 SAMBA35-SWAT_SUGGESTS=
 SAMBA35_CONFLICTS=samba2, samba, samba34
@@ -70,7 +70,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 SAMBA35_CPPFLAGS= -I$(STAGING_INCLUDE_DIR)/et
-SAMBA35_LDFLAGS=
+SAMBA35_LDFLAGS=-lpthread
 
 #
 # SAMBA35_BUILD_DIR is the directory in which the build is done.

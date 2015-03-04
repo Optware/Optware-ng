@@ -21,7 +21,7 @@
 #
 SAMBA34_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA34_VERSION ?= 3.4.17
-SAMBA34_IPK_VERSION ?= 2
+SAMBA34_IPK_VERSION ?= 3
 SAMBA34_SOURCE=samba-$(SAMBA34_VERSION).tar.gz
 SAMBA34_DIR=samba-$(SAMBA34_VERSION)
 SAMBA34_UNZIP=zcat
@@ -29,7 +29,7 @@ SAMBA34_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA34_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients. This is a newer version.
 SAMBA34_SECTION=net
 SAMBA34_PRIORITY=optional
-SAMBA34_DEPENDS=avahi, popt, readline, zlib
+SAMBA34_DEPENDS=avahi, popt, readline, zlib, libacl, cups
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA34_DEPENDS +=, openldap-libs
 endif
@@ -38,7 +38,7 @@ SAMBA34_DEPENDS +=, gconv-modules
 endif
 SAMBA34-DEV_DEPENDS=samba34
 SAMBA34-SWAT_DEPENDS=samba34, xinetd
-SAMBA34_SUGGESTS=cups
+SAMBA34_SUGGESTS=
 SAMBA34-DEV_SUGGESTS=
 SAMBA34-SWAT_SUGGESTS=
 SAMBA34_CONFLICTS=samba2, samba, samba35, samba36
@@ -68,7 +68,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 SAMBA34_CPPFLAGS=
-SAMBA34_LDFLAGS=
+SAMBA34_LDFLAGS=-lpthread
 
 #
 # SAMBA34_BUILD_DIR is the directory in which the build is done.

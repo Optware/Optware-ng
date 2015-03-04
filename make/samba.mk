@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA_VERSION ?= 3.2.15
-SAMBA_IPK_VERSION ?= 6
+SAMBA_IPK_VERSION ?= 7
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
@@ -29,7 +29,7 @@ SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
-SAMBA_DEPENDS=popt, readline
+SAMBA_DEPENDS=popt, readline, libacl, cups
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA_DEPENDS +=, openldap-libs
 endif
@@ -41,7 +41,7 @@ SAMBA_DEPENDS +=, gconv-modules
 endif
 SAMBA3-DEV_DEPENDS=samba
 SAMBA3-SWAT_DEPENDS=samba, xinetd
-SAMBA_SUGGESTS=cups
+SAMBA_SUGGESTS=
 SAMBA3-DEV_SUGGESTS=
 SAMBA3-SWAT_SUGGESTS=
 SAMBA_CONFLICTS=samba2, samba34, samba35, samba36
@@ -82,7 +82,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 SAMBA_CPPFLAGS=
-SAMBA_LDFLAGS=
+SAMBA_LDFLAGS=-lpthread
 
 #
 # SAMBA_BUILD_DIR is the directory in which the build is done.
