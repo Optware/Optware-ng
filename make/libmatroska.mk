@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMATROSKA_SITE=http://bunkus.org/videotools/mkvtoolnix/sources
-LIBMATROSKA_VERSION=1.0.0
+LIBMATROSKA_VERSION=1.4.2
 LIBMATROSKA_SOURCE=libmatroska-$(LIBMATROSKA_VERSION).tar.bz2
 LIBMATROSKA_DIR=libmatroska-$(LIBMATROSKA_VERSION)
 LIBMATROSKA_UNZIP=bzcat
@@ -116,11 +116,13 @@ $(LIBMATROSKA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMATROSKA_SOURCE) $(LIBMATRO
 	if test "$(BUILD_DIR)/$(LIBMATROSKA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMATROSKA_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|-shared|$$(LDFLAGS) &|' $(@D)/make/linux/Makefile
-#	(cd $(@D); \
+#	sed -i -e 's|-shared|$$(LDFLAGS) &|' $(@D)/make/linux/Makefile
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMATROSKA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMATROSKA_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -129,7 +131,7 @@ $(LIBMATROSKA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMATROSKA_SOURCE) $(LIBMATRO
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libmatroska-unpack: $(LIBMATROSKA_BUILD_DIR)/.configured
@@ -139,12 +141,12 @@ libmatroska-unpack: $(LIBMATROSKA_BUILD_DIR)/.configured
 #
 $(LIBMATROSKA_BUILD_DIR)/.built: $(LIBMATROSKA_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)/make/linux \
+#	$(MAKE) -C $(@D)/make/linux \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMATROSKA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMATROSKA_LDFLAGS)" \
-		prefix=/opt \
-;
+		prefix=/opt
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -157,10 +159,12 @@ libmatroska: $(LIBMATROSKA_BUILD_DIR)/.built
 #
 $(LIBMATROSKA_BUILD_DIR)/.staged: $(LIBMATROSKA_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBMATROSKA_BUILD_DIR)/make/linux install_sharedlib install_headers \
+#	$(MAKE) -C $(@D)/make/linux install_sharedlib install_headers \
 		DESTDIR=$(STAGING_DIR) \
-		prefix=$(STAGING_PREFIX) \
-		;
+		prefix=$(STAGING_PREFIX)
+	$(MAKE) -C $(@D) install DESTDIR=$(STAGING_DIR)
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libmatroska.pc
+	rm -f $(STAGING_LIB_DIR)/libmatroska.la
 	touch $@
 
 libmatroska-stage: $(LIBMATROSKA_BUILD_DIR)/.staged
@@ -198,10 +202,11 @@ $(LIBMATROSKA_IPK_DIR)/CONTROL/control:
 #
 $(LIBMATROSKA_IPK): $(LIBMATROSKA_BUILD_DIR)/.built
 	rm -rf $(LIBMATROSKA_IPK_DIR) $(BUILD_DIR)/libmatroska_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBMATROSKA_BUILD_DIR)/make/linux install_sharedlib \
+#	$(MAKE) -C $(LIBMATROSKA_BUILD_DIR)/make/linux install_sharedlib \
 		DESTDIR=$(LIBMATROSKA_IPK_DIR) \
-		prefix=$(LIBMATROSKA_IPK_DIR)/opt \
-		;
+		prefix=$(LIBMATROSKA_IPK_DIR)/opt
+	$(MAKE) -C $(LIBMATROSKA_BUILD_DIR) install DESTDIR=$(LIBMATROSKA_IPK_DIR)
+	rm -f $(LIBMATROSKA_IPK_DIR)/opt/lib/libmatroska.la
 	$(STRIP_COMMAND) $(LIBMATROSKA_IPK_DIR)/opt/lib/libmatroska.so.*
 	$(MAKE) $(LIBMATROSKA_IPK_DIR)/CONTROL/control
 	echo $(LIBMATROSKA_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMATROSKA_IPK_DIR)/CONTROL/conffiles
