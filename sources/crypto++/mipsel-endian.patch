@@ -1,11 +1,11 @@
---- config.h.orig	2009-03-15 02:48:02.000000000 +0000
-+++ config.h	2009-04-08 23:52:52.137937832 +0000
+--- config.h.orig	2015-03-05 14:58:38.459500279 +0200
++++ config.h	2015-03-05 15:02:32.706171424 +0200
 @@ -4,7 +4,7 @@
  // ***************** Important Settings ********************
  
  // define this if running on a big-endian CPU
--#if !defined(IS_LITTLE_ENDIAN) && (defined(__BIG_ENDIAN__) || defined(__sparc) || defined(__sparc__) || defined(__hppa__) || defined(__mips__) || (defined(__MWERKS__) && !defined(__INTEL__)))
-+#if !defined(IS_LITTLE_ENDIAN) && !defined(__MIPSEL__) && (defined(__BIG_ENDIAN__) || defined(__sparc) || defined(__sparc__) || defined(__hppa__) || defined(__mips__) || (defined(__MWERKS__) && !defined(__INTEL__)))
+-#if !defined(IS_LITTLE_ENDIAN) && (defined(__BIG_ENDIAN__) || defined(__sparc) || defined(__sparc__) || defined(__hppa__) || defined(__MIPSEB__) || defined(__ARMEB__) || (defined(__MWERKS__) && !defined(__INTEL__)))
++#if !defined(IS_LITTLE_ENDIAN) && !defined(__MIPSEL__) && (defined(__BIG_ENDIAN__) || defined(__sparc) || defined(__sparc__) || defined(__hppa__) || defined(__MIPSEB__) || defined(__ARMEB__) || (defined(__MWERKS__) && !defined(__INTEL__)))
  #	define IS_BIG_ENDIAN
  #endif
  
