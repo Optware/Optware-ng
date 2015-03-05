@@ -176,8 +176,9 @@ $(LIBFFI_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(LIBFFI_SOURCE) ma
 		--disable-shared; \
 	    $(MAKE) DESTDIR=$(HOST_STAGING_DIR) install; \
 	)
-	mv $(HOST_STAGING_DIR)/opt/lib/libffi-$(LIBFFI_VERSION)/include/* $(HOST_STAGING_DIR)/opt/include
-	rm -rf $(HOST_STAGING_DIR)/opt/lib/libffi-$(LIBFFI_VERSION)
+	mkdir -p $(HOST_STAGING_INCLUDE_DIR)
+	mv $(HOST_STAGING_LIB_DIR)/libffi-$(LIBFFI_VERSION)/include/* $(HOST_STAGING_INCLUDE_DIR)
+	rm -rf $(HOST_STAGING_LIB_DIR)/libffi-$(LIBFFI_VERSION)
 	sed -i -e 's|^Libs:.*|Libs: -L$(HOST_STAGING_LIB_DIR) -lffi|' \
 		-e 's|^Cflags:.*|Cflags: -I$(HOST_STAGING_INCLUDE_DIR)|' $(HOST_STAGING_LIB_DIR)/pkgconfig/libffi.pc
 	rm -f $(HOST_STAGING_LIB_DIR)/libffi.la
