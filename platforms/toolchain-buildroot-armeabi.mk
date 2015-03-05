@@ -1,4 +1,4 @@
-# This toolchain is gcc 4.5.3 on uClibc 0.9.32.1
+# This toolchain is gcc 4.9.2 on uClibc 0.9.33.2
 
 GNU_TARGET_NAME = arm-linux
 EXACT_TARGET_NAME = arm-buildroot-linux-uclibcgnueabi
