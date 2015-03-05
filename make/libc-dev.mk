@@ -133,7 +133,7 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	rm -rf $(LIBC-DEV_IPK_DIR) $(BUILD_DIR)/libc-dev_*_$(TARGET_ARCH).ipk
 	install -d $(LIBC-DEV_IPK_DIR)/opt/
 	-rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
-ifeq (shibby-tomato-arm, $(OPTWARE_TARGET))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi shibby-tomato-arm, $(OPTWARE_TARGET)))
 	rm -f $(LIBC-DEV_IPK_DIR)/opt/include/zlib.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/zconf.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/iconv.h
