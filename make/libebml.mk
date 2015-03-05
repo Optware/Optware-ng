@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBEBML_SITE=http://bunkus.org/videotools/mkvtoolnix/sources
-LIBEBML_VERSION=1.0.0
+LIBEBML_VERSION=1.3.1
 LIBEBML_SOURCE=libebml-$(LIBEBML_VERSION).tar.bz2
 LIBEBML_DIR=libebml-$(LIBEBML_VERSION)
 LIBEBML_UNZIP=bzcat
@@ -116,8 +116,8 @@ $(LIBEBML_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEBML_SOURCE) $(LIBEBML_PATCHES)
 	if test "$(BUILD_DIR)/$(LIBEBML_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBEBML_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|-shared|$$(LDFLAGS) &|' $(@D)/make/linux/Makefile
-#	(cd $(@D); \
+#	sed -i -e 's|-shared|$$(LDFLAGS) &|' $(@D)/make/linux/Makefile
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBEBML_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBEBML_LDFLAGS)" \
@@ -129,7 +129,7 @@ $(LIBEBML_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEBML_SOURCE) $(LIBEBML_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libebml-unpack: $(LIBEBML_BUILD_DIR)/.configured
@@ -139,12 +139,12 @@ libebml-unpack: $(LIBEBML_BUILD_DIR)/.configured
 #
 $(LIBEBML_BUILD_DIR)/.built: $(LIBEBML_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)/make/linux \
+#	$(MAKE) -C $(@D)/make/linux \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBEBML_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBEBML_LDFLAGS)" \
-		prefix=/opt \
-;
+		prefix=/opt
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -157,10 +157,12 @@ libebml: $(LIBEBML_BUILD_DIR)/.built
 #
 $(LIBEBML_BUILD_DIR)/.staged: $(LIBEBML_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBEBML_BUILD_DIR)/make/linux install_sharedlib install_headers \
+#	$(MAKE) -C $(@D)/make/linux install_sharedlib install_headers \
 		DESTDIR=$(STAGING_DIR) \
-		prefix=$(STAGING_PREFIX) \
-		;
+		prefix=$(STAGING_PREFIX)
+	$(MAKE) -C $(@D) install DESTDIR=$(STAGING_DIR)
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libebml.pc
+	rm -f $(STAGING_LIB_DIR)/libebml.la
 	touch $@
 
 libebml-stage: $(LIBEBML_BUILD_DIR)/.staged
@@ -198,10 +200,11 @@ $(LIBEBML_IPK_DIR)/CONTROL/control:
 #
 $(LIBEBML_IPK): $(LIBEBML_BUILD_DIR)/.built
 	rm -rf $(LIBEBML_IPK_DIR) $(BUILD_DIR)/libebml_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBEBML_BUILD_DIR)/make/linux install_sharedlib \
+#	$(MAKE) -C $(LIBEBML_BUILD_DIR)/make/linux install_sharedlib \
 		DESTDIR=$(LIBEBML_IPK_DIR) \
-		prefix=$(LIBEBML_IPK_DIR)/opt \
-		;
+		prefix=$(LIBEBML_IPK_DIR)/opt
+	$(MAKE) -C $(LIBEBML_BUILD_DIR) install DESTDIR=$(LIBEBML_IPK_DIR)
+	rm -f $(LIBEBML_IPK_DIR)/opt/lib/libebml.la
 	$(STRIP_COMMAND) $(LIBEBML_IPK_DIR)/opt/lib/libebml.so.*
 	$(MAKE) $(LIBEBML_IPK_DIR)/CONTROL/control
 	echo $(LIBEBML_CONFFILES) | sed -e 's/ /\n/g' > $(LIBEBML_IPK_DIR)/CONTROL/conffiles
