@@ -18,7 +18,7 @@ endif
 UCLIBC-OPT_DESCRIPTION=micro C library for embedded Linux systems
 UCLIBC-OPT_SECTION=base
 UCLIBC-OPT_PRIORITY=required
-ifneq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
+ifneq ($(OPTWARE_TARGET), $(filter buildroot-armeabi shibby-tomato-arm, $(OPTWARE_TARGET)))
 UCLIBC-OPT_DEPENDS=
 else
 #	to make feed firmware-independent, we make
