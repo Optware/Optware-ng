@@ -13,10 +13,10 @@ NANO_MAINTAINER=Mark Donszelmann <mark@donszelmann.com>
 NANO_DESCRIPTION=A pico like editor
 NANO_SECTION=editor
 NANO_PRIORITY=optional
-NANO_DEPENDS=ncurses
+NANO_DEPENDS=ncurses, zlib
 NANO_CONFLICTS=
 
-NANO_IPK_VERSION=1
+NANO_IPK_VERSION=2
 
 #NANO_CONFFILES=/opt/etc/nanorc
 
@@ -39,7 +39,7 @@ $(DL_DIR)/$(NANO_SOURCE):
 nano-source: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES)
 
 $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nano.mk
-	$(MAKE) ncurses-stage
+	$(MAKE) ncurses-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(@D)
 	$(NANO_UNZIP) $(DL_DIR)/$(NANO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NANO_PATCHES)"; \
