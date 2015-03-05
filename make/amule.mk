@@ -164,6 +164,7 @@ $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 	if test "$(BUILD_DIR)/$(AMULE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AMULE_DIR) $(@D) ; \
 	fi
+	sed -i -e '/^\tNotifyObservers(/s/^\t/\tthis->/' $(@D)/src/ObservableQueue.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AMULE_CPPFLAGS)" \
