@@ -41,6 +41,9 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 MKVTOOLNIX_DEPENDS +=, libiconv
 endif
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi, $(OPTWARE_TARGET)))
+MKVTOOLNIX_DEPENDS +=, boost-date-time, libcurl
+endif
 MKVTOOLNIX_SUGGESTS=
 MKVTOOLNIX_CONFLICTS=
 
@@ -119,7 +122,7 @@ mkvtoolnix-source: $(DL_DIR)/$(MKVTOOLNIX_SOURCE) $(MKVTOOLNIX_PATCHES)
 # shown below to make various patches to it.
 #
 $(MKVTOOLNIX_BUILD_DIR)/.configured: $(DL_DIR)/$(MKVTOOLNIX_SOURCE) $(MKVTOOLNIX_PATCHES) make/mkvtoolnix.mk
-	$(MAKE) boost-stage bzip2-stage expat-stage file-stage flac-stage zlib-stage
+	$(MAKE) boost-stage bzip2-stage expat-stage file-stage flac-stage zlib-stage libcurl-stage
 	$(MAKE) libebml-stage libmatroska-stage libogg-stage libvorbis-stage lzo-stage
 ifeq (enable, $(GETTEXT_NLS))
 	$(MAKE) gettext-stage
@@ -141,6 +144,8 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MKVTOOLNIX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MKVTOOLNIX_LDFLAGS)" \
+		CURL_CFLAGS=-I$(STAGING_INCLUDE_DIR) \
+		CURL_LIBS="-L$(STAGING_LIB_DIR) -lcurl" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

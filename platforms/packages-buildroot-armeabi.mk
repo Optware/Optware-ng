@@ -49,5 +49,5 @@ BOOST_GCC_CONF := tools/build/src/tools/gcc
 BOOST_JAM_ROOT := tools/build
 BOOST_ADDITIONAL_LIBS := atomic chrono container locale log timer exception
 
-MKVTOOLNIX_VERSION := 5.0.1
+MKVTOOLNIX_VERSION := 7.7.0
 MKVTOOLNIX_IPK_VERSION := 1
