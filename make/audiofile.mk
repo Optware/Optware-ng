@@ -26,12 +26,18 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-#http://ftp.acc.umu.se/pub/GNOME/sources/audiofile/0.2/audiofile-0.2.6.tar.gz
-AUDIOFILE_SITE=http://ftp.acc.umu.se/pub/GNOME/sources/audiofile/0.3
+#http://ftp.acc.umu.se/pub/GNOME/sources/audiofile/0.3/audiofile-0.3.6.tar.xz
+AUDIOFILE_SITE=http://ftp.acc.umu.se/pub/GNOME/sources/audiofile/$(shell echo $(AUDIOFILE_VERSION)|cut -d '.' -f 1-2)
 AUDIOFILE_VERSION=0.3.6
+ifeq ($(shell test $(shell echo $(AUDIOFILE_VERSION) | cut -d '.' -f 2) -gt 2; echo $$?),0)
 AUDIOFILE_SOURCE=audiofile-$(AUDIOFILE_VERSION).tar.xz
-AUDIOFILE_DIR=audiofile-$(AUDIOFILE_VERSION)
 AUDIOFILE_UNZIP=xzcat
+else
+AUDIOFILE_SOURCE=audiofile-$(AUDIOFILE_VERSION).tar.gz
+AUDIOFILE_UNZIP=zcat
+endif
+AUDIOFILE_DIR=audiofile-$(AUDIOFILE_VERSION)
+
 AUDIOFILE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AUDIOFILE_DESCRIPTION=Misc Audio Libraries.
 AUDIOFILE_SECTION=misc
@@ -149,8 +155,10 @@ audiofile: $(AUDIOFILE_BUILD_DIR)/.built
 $(AUDIOFILE_BUILD_DIR)/.staged: $(AUDIOFILE_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+ifneq ($(shell test $(shell echo $(AUDIOFILE_VERSION) | cut -d '.' -f 2) -gt 2; echo $$?),0)
 	sed -i -e 's|echo $$includes|echo -I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/audiofile-config
 	cp $(STAGING_DIR)/opt/bin/audiofile-config $(STAGING_DIR)/bin/audiofile-config
+endif
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/audiofile.pc
 	rm -f $(STAGING_LIB_DIR)/libaudiofile.la
 	touch $@
