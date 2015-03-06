@@ -1,6 +1,6 @@
-diff -ruN CyberLink.orig/include/cybergarage/http/HTTPPacket.h CyberLink/include/cybergarage/http/HTTPPacket.h
+diff -ruNd CyberLink.orig/include/cybergarage/http/HTTPPacket.h CyberLink/include/cybergarage/http/HTTPPacket.h
 --- CyberLink.orig/include/cybergarage/http/HTTPPacket.h	1970-01-01 03:14:17.000000000 +0300
-+++ CyberLink/include/cybergarage/http/HTTPPacket.h	2015-01-16 20:14:57.081235330 +0200
++++ CyberLink/include/cybergarage/http/HTTPPacket.h	2015-03-06 14:52:08.755928842 +0200
 @@ -24,6 +24,7 @@
  #include <string>
  #include <vector>
@@ -36,9 +36,9 @@ diff -ruN CyberLink.orig/include/cybergarage/http/HTTPPacket.h CyberLink/include
  
  	const char *getHost()
  	{
-diff -ruN CyberLink.orig/include/cybergarage/upnp/Argument.h CyberLink/include/cybergarage/upnp/Argument.h
+diff -ruNd CyberLink.orig/include/cybergarage/upnp/Argument.h CyberLink/include/cybergarage/upnp/Argument.h
 --- CyberLink.orig/include/cybergarage/upnp/Argument.h	1970-01-01 03:14:17.000000000 +0300
-+++ CyberLink/include/cybergarage/upnp/Argument.h	2015-01-16 20:15:40.305236685 +0200
++++ CyberLink/include/cybergarage/upnp/Argument.h	2015-03-06 14:52:08.755928842 +0200
 @@ -20,6 +20,8 @@
  #include <cybergarage/xml/Node.h>
  #include <cybergarage/upnp/xml/ArgumentData.h>
@@ -57,9 +57,9 @@ diff -ruN CyberLink.orig/include/cybergarage/upnp/Argument.h CyberLink/include/c
  	}
  
  };
-diff -ruN CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentNode.h CyberLink/include/cybergarage/upnp/media/server/object/ContentNode.h
+diff -ruNd CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentNode.h CyberLink/include/cybergarage/upnp/media/server/object/ContentNode.h
 --- CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentNode.h	1970-01-01 03:14:18.000000000 +0300
-+++ CyberLink/include/cybergarage/upnp/media/server/object/ContentNode.h	2015-01-16 20:16:54.409239008 +0200
++++ CyberLink/include/cybergarage/upnp/media/server/object/ContentNode.h	2015-03-06 14:52:08.755928842 +0200
 @@ -19,6 +19,7 @@
  #include <string>
  #include <sstream>
@@ -96,9 +96,9 @@ diff -ruN CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentNod
  	}
  
  	////////////////////////////////////////////////
-diff -ruN CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentProperty.h CyberLink/include/cybergarage/upnp/media/server/object/ContentProperty.h
+diff -ruNd CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentProperty.h CyberLink/include/cybergarage/upnp/media/server/object/ContentProperty.h
 --- CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentProperty.h	1970-01-01 03:14:18.000000000 +0300
-+++ CyberLink/include/cybergarage/upnp/media/server/object/ContentProperty.h	2015-01-16 20:17:49.349240730 +0200
++++ CyberLink/include/cybergarage/upnp/media/server/object/ContentProperty.h	2015-03-06 14:52:08.755928842 +0200
 @@ -18,6 +18,7 @@
  
  #include <string>
@@ -116,9 +116,49 @@ diff -ruN CyberLink.orig/include/cybergarage/upnp/media/server/object/ContentPro
  	}
  };
  
-diff -ruN CyberLink.orig/include/cybergarage/xml/Parser.h CyberLink/include/cybergarage/xml/Parser.h
+diff -ruNd CyberLink.orig/include/cybergarage/util/Vector.h CyberLink/include/cybergarage/util/Vector.h
+--- CyberLink.orig/include/cybergarage/util/Vector.h	1970-01-01 03:14:19.000000000 +0300
++++ CyberLink/include/cybergarage/util/Vector.h	2015-03-06 14:53:52.351297831 +0200
+@@ -10,8 +10,8 @@
+ *
+ *	04/17/03
+ *		- first revision
+-*	08/04/04
+-*		- Changed indexOf() and get() not to use at().
++*	08/04/04
++*		- Changed indexOf() and get() not to use at().
+ *
+ ******************************************************************/
+ 
+@@ -19,6 +19,7 @@
+ #define _CUTIL_VECTOR_H_
+ 
+ #include <vector>
++#include <cstddef>
+ 
+ namespace CyberUtil {
+ 
+@@ -52,7 +53,7 @@
+ 		int cnt = size();
+ 		for (int n=0; n<cnt; n++) {
+ 			//if (obj == ((void *)at(n)))
+-			if (obj == (void *)((*this)[n]))
++			if (obj == (void *)((*this)[n]))
+ 				return n;
+ 		}
+ 		return -1;
+@@ -65,7 +66,7 @@
+ 		if ((int)size() < (index+1))
+ 			return NULL;
+ 		return (void *)((*this)[index]);
+-		//return (void *)at(index);
++		//return (void *)at(index);
+ 	}
+ 
+ 	bool insertAt(void *obj, int index)
+diff -ruNd CyberLink.orig/include/cybergarage/xml/Parser.h CyberLink/include/cybergarage/xml/Parser.h
 --- CyberLink.orig/include/cybergarage/xml/Parser.h	1970-01-01 03:14:19.000000000 +0300
-+++ CyberLink/include/cybergarage/xml/Parser.h	2015-01-16 20:19:16.069243448 +0200
++++ CyberLink/include/cybergarage/xml/Parser.h	2015-03-06 14:52:08.755928842 +0200
 @@ -18,6 +18,7 @@
  
  #include <stdio.h>
@@ -136,9 +176,9 @@ diff -ruN CyberLink.orig/include/cybergarage/xml/Parser.h CyberLink/include/cybe
  	}
  	
  	Node *parse(std::string *data)
-diff -ruN CyberLink.orig/sample/clock/ClockDevice.cpp CyberLink/sample/clock/ClockDevice.cpp
+diff -ruNd CyberLink.orig/sample/clock/ClockDevice.cpp CyberLink/sample/clock/ClockDevice.cpp
 --- CyberLink.orig/sample/clock/ClockDevice.cpp	1970-01-01 03:14:24.000000000 +0300
-+++ CyberLink/sample/clock/ClockDevice.cpp	2015-01-16 20:19:56.697244722 +0200
++++ CyberLink/sample/clock/ClockDevice.cpp	2015-03-06 14:52:08.755928842 +0200
 @@ -8,29 +8,30 @@
  *
  ******************************************************************/
@@ -218,9 +258,9 @@ diff -ruN CyberLink.orig/sample/clock/ClockDevice.cpp CyberLink/sample/clock/Clo
  	httpReq->getURI(uri);
  	if (uri.find(CLOCK_PRESENTATION_URI) == string::npos)  {
  		Device::httpRequestRecieved(httpReq);
-diff -ruN CyberLink.orig/sample/media/server/unix/MediaGateMain.cpp CyberLink/sample/media/server/unix/MediaGateMain.cpp
+diff -ruNd CyberLink.orig/sample/media/server/unix/MediaGateMain.cpp CyberLink/sample/media/server/unix/MediaGateMain.cpp
 --- CyberLink.orig/sample/media/server/unix/MediaGateMain.cpp	1970-01-01 03:14:34.000000000 +0300
-+++ CyberLink/sample/media/server/unix/MediaGateMain.cpp	2015-01-16 20:20:28.117245706 +0200
++++ CyberLink/sample/media/server/unix/MediaGateMain.cpp	2015-03-06 14:52:08.755928842 +0200
 @@ -18,6 +18,7 @@
  
  #include <string>
@@ -266,9 +306,9 @@ diff -ruN CyberLink.orig/sample/media/server/unix/MediaGateMain.cpp CyberLink/sa
  	gMediaGate->start();
  }
  
-diff -ruN CyberLink.orig/sample/tv/TvDevice.cpp CyberLink/sample/tv/TvDevice.cpp
+diff -ruNd CyberLink.orig/sample/tv/TvDevice.cpp CyberLink/sample/tv/TvDevice.cpp
 --- CyberLink.orig/sample/tv/TvDevice.cpp	1970-01-01 03:14:36.000000000 +0300
-+++ CyberLink/sample/tv/TvDevice.cpp	2015-01-16 20:20:56.277246589 +0200
++++ CyberLink/sample/tv/TvDevice.cpp	2015-03-06 14:52:08.755928842 +0200
 @@ -10,9 +10,10 @@
  
  #include "TvDevice.h"
@@ -283,9 +323,9 @@ diff -ruN CyberLink.orig/sample/tv/TvDevice.cpp CyberLink/sample/tv/TvDevice.cpp
  using namespace std;
  using namespace CyberLink;
  
-diff -ruN CyberLink.orig/src/cybergarage/http/HTTPHeader.cpp CyberLink/src/cybergarage/http/HTTPHeader.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/http/HTTPHeader.cpp CyberLink/src/cybergarage/http/HTTPHeader.cpp
 --- CyberLink.orig/src/cybergarage/http/HTTPHeader.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/http/HTTPHeader.cpp	2015-01-16 20:21:16.465247222 +0200
++++ CyberLink/src/cybergarage/http/HTTPHeader.cpp	2015-03-06 14:52:08.755928842 +0200
 @@ -17,6 +17,7 @@
  ******************************************************************/
  
@@ -294,9 +334,9 @@ diff -ruN CyberLink.orig/src/cybergarage/http/HTTPHeader.cpp CyberLink/src/cyber
  #include <cybergarage/http/HTTPHeader.h>
  #include <cybergarage/util/StringUtil.h>
  #include <cybergarage/io/StringReader.h>
-diff -ruN CyberLink.orig/src/cybergarage/http/HTTPPacket.cpp CyberLink/src/cybergarage/http/HTTPPacket.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/http/HTTPPacket.cpp CyberLink/src/cybergarage/http/HTTPPacket.cpp
 --- CyberLink.orig/src/cybergarage/http/HTTPPacket.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/http/HTTPPacket.cpp	2015-01-16 20:21:59.185248561 +0200
++++ CyberLink/src/cybergarage/http/HTTPPacket.cpp	2015-03-06 14:52:08.755928842 +0200
 @@ -68,9 +68,9 @@
  *	03/03/05
  *		- Changed the following methods not to use iostream for TRON.
@@ -365,9 +405,9 @@ diff -ruN CyberLink.orig/src/cybergarage/http/HTTPPacket.cpp CyberLink/src/cyber
  
  ////////////////////////////////////////////////
  //	ContentRange
-diff -ruN CyberLink.orig/src/cybergarage/http/HTTPRequest.cpp CyberLink/src/cybergarage/http/HTTPRequest.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/http/HTTPRequest.cpp CyberLink/src/cybergarage/http/HTTPRequest.cpp
 --- CyberLink.orig/src/cybergarage/http/HTTPRequest.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/http/HTTPRequest.cpp	2015-01-16 20:22:32.281249598 +0200
++++ CyberLink/src/cybergarage/http/HTTPRequest.cpp	2015-03-06 14:52:08.755928842 +0200
 @@ -39,9 +39,9 @@
  *		- Changed the status code for the Content-Range request in post().
  *	06/10/05
@@ -468,9 +508,9 @@ diff -ruN CyberLink.orig/src/cybergarage/http/HTTPRequest.cpp CyberLink/src/cybe
  	return httpRes;
  }
  
-diff -ruN CyberLink.orig/src/cybergarage/http/HTTPStatus.cpp CyberLink/src/cybergarage/http/HTTPStatus.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/http/HTTPStatus.cpp CyberLink/src/cybergarage/http/HTTPStatus.cpp
 --- CyberLink.orig/src/cybergarage/http/HTTPStatus.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/http/HTTPStatus.cpp	2015-01-16 20:23:11.845250838 +0200
++++ CyberLink/src/cybergarage/http/HTTPStatus.cpp	2015-03-06 14:52:08.755928842 +0200
 @@ -10,14 +10,14 @@
  *
  *	03/23/03
@@ -594,9 +634,9 @@ diff -ruN CyberLink.orig/src/cybergarage/http/HTTPStatus.cpp CyberLink/src/cyber
  }
 -
 +
-diff -ruN CyberLink.orig/src/cybergarage/io/File.cpp CyberLink/src/cybergarage/io/File.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/io/File.cpp CyberLink/src/cybergarage/io/File.cpp
 --- CyberLink.orig/src/cybergarage/io/File.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/io/File.cpp	2015-01-16 20:25:17.541254778 +0200
++++ CyberLink/src/cybergarage/io/File.cpp	2015-03-06 14:52:08.755928842 +0200
 @@ -40,7 +40,7 @@
  
  #if defined(WIN32)
@@ -739,9 +779,9 @@ diff -ruN CyberLink.orig/src/cybergarage/io/File.cpp CyberLink/src/cybergarage/i
  	struct dirent **namelist;
  	int n = scandir(dir.c_str(), &namelist, 0, alphasort);
  	if (0 <= n) {
-diff -ruN CyberLink.orig/src/cybergarage/io/StringBufferInputStream.cpp CyberLink/src/cybergarage/io/StringBufferInputStream.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/io/StringBufferInputStream.cpp CyberLink/src/cybergarage/io/StringBufferInputStream.cpp
 --- CyberLink.orig/src/cybergarage/io/StringBufferInputStream.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/io/StringBufferInputStream.cpp	2015-01-16 20:26:07.341256339 +0200
++++ CyberLink/src/cybergarage/io/StringBufferInputStream.cpp	2015-03-06 14:52:08.759928818 +0200
 @@ -14,7 +14,9 @@
  ******************************************************************/
  
@@ -753,9 +793,9 @@ diff -ruN CyberLink.orig/src/cybergarage/io/StringBufferInputStream.cpp CyberLin
  using namespace CyberIO;
  
  StringBufferInputStream::StringBufferInputStream(const char *str)
-diff -ruN CyberLink.orig/src/cybergarage/net/DatagramSocket.cpp CyberLink/src/cybergarage/net/DatagramSocket.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/net/DatagramSocket.cpp CyberLink/src/cybergarage/net/DatagramSocket.cpp
 --- CyberLink.orig/src/cybergarage/net/DatagramSocket.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/net/DatagramSocket.cpp	2015-01-16 20:26:38.077257303 +0200
++++ CyberLink/src/cybergarage/net/DatagramSocket.cpp	2015-03-06 14:52:08.759928818 +0200
 @@ -11,19 +11,19 @@
  *	03/27/03
  *		- first revision
@@ -812,9 +852,9 @@ diff -ruN CyberLink.orig/src/cybergarage/net/DatagramSocket.cpp CyberLink/src/cy
  
  	return true;
  }
-diff -ruN CyberLink.orig/src/cybergarage/net/HostInterface.cpp CyberLink/src/cybergarage/net/HostInterface.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/net/HostInterface.cpp CyberLink/src/cybergarage/net/HostInterface.cpp
 --- CyberLink.orig/src/cybergarage/net/HostInterface.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/net/HostInterface.cpp	2015-01-16 20:27:09.725258294 +0200
++++ CyberLink/src/cybergarage/net/HostInterface.cpp	2015-03-06 14:52:08.759928818 +0200
 @@ -30,7 +30,7 @@
  #include <cybergarage/net/Socket.h>
  #include <cybergarage/net/HostInterface.h>
@@ -930,9 +970,9 @@ diff -ruN CyberLink.orig/src/cybergarage/net/HostInterface.cpp CyberLink/src/cyb
  
  ////////////////////////////////////////////////
  //	IsIPv6Address
-diff -ruN CyberLink.orig/src/cybergarage/net/MulticastSocket.cpp CyberLink/src/cybergarage/net/MulticastSocket.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/net/MulticastSocket.cpp CyberLink/src/cybergarage/net/MulticastSocket.cpp
 --- CyberLink.orig/src/cybergarage/net/MulticastSocket.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/net/MulticastSocket.cpp	2015-01-16 20:27:40.269259252 +0200
++++ CyberLink/src/cybergarage/net/MulticastSocket.cpp	2015-03-06 14:52:08.759928818 +0200
 @@ -28,7 +28,9 @@
  #include <cybergarage/net/HostInterface.h>
  #include <cybergarage/util/StringUtil.h>
@@ -943,9 +983,9 @@ diff -ruN CyberLink.orig/src/cybergarage/net/MulticastSocket.cpp CyberLink/src/c
  using namespace CyberNet;
  
  ////////////////////////////////////////////////
-diff -ruN CyberLink.orig/src/cybergarage/net/SocketUtil.cpp CyberLink/src/cybergarage/net/SocketUtil.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/net/SocketUtil.cpp CyberLink/src/cybergarage/net/SocketUtil.cpp
 --- CyberLink.orig/src/cybergarage/net/SocketUtil.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/net/SocketUtil.cpp	2015-01-16 20:28:19.389260478 +0200
++++ CyberLink/src/cybergarage/net/SocketUtil.cpp	2015-03-06 14:52:08.759928818 +0200
 @@ -24,7 +24,9 @@
  #include <cybergarage/net/SocketUtil.h>
  
@@ -957,9 +997,9 @@ diff -ruN CyberLink.orig/src/cybergarage/net/SocketUtil.cpp CyberLink/src/cyberg
  using namespace CyberNet;
  
  ////////////////////////////////////////////////
-diff -ruN CyberLink.orig/src/cybergarage/upnp/event/SubscriptionRequest.cpp CyberLink/src/cybergarage/upnp/event/SubscriptionRequest.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/upnp/event/SubscriptionRequest.cpp CyberLink/src/cybergarage/upnp/event/SubscriptionRequest.cpp
 --- CyberLink.orig/src/cybergarage/upnp/event/SubscriptionRequest.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/upnp/event/SubscriptionRequest.cpp	2015-01-16 20:29:21.893262437 +0200
++++ CyberLink/src/cybergarage/upnp/event/SubscriptionRequest.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -29,6 +29,7 @@
  
  #include <string>
@@ -968,9 +1008,9 @@ diff -ruN CyberLink.orig/src/cybergarage/upnp/event/SubscriptionRequest.cpp Cybe
  
  using namespace std;
  using namespace CyberLink;
-diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/ContentDirectory.cpp CyberLink/src/cybergarage/upnp/media/server/ContentDirectory.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/upnp/media/server/ContentDirectory.cpp CyberLink/src/cybergarage/upnp/media/server/ContentDirectory.cpp
 --- CyberLink.orig/src/cybergarage/upnp/media/server/ContentDirectory.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/upnp/media/server/ContentDirectory.cpp	2015-01-16 20:29:44.629263150 +0200
++++ CyberLink/src/cybergarage/upnp/media/server/ContentDirectory.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -43,6 +43,7 @@
  #include <cybergarage/upnp/media/server/object/search/IdSearchCap.h>
  
@@ -979,9 +1019,9 @@ diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/ContentDirectory.cpp 
  
  using namespace std;
  using namespace CyberLink;
-diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp CyberLink/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp CyberLink/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp
 --- CyberLink.orig/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp	2015-01-16 20:30:09.145263918 +0200
++++ CyberLink/src/cybergarage/upnp/media/server/object/format/GIFFormat.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -16,6 +16,9 @@
  #include <stdio.h>
  #include <cybergarage/upnp/media/server/object/format/GIFFormat.h>
@@ -992,9 +1032,9 @@ diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/format/GIFForm
  using namespace CyberLink;
  
  ////////////////////////////////////////////////
-diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp CyberLink/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp CyberLink/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp
 --- CyberLink.orig/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp	2015-01-16 20:30:28.585264528 +0200
++++ CyberLink/src/cybergarage/upnp/media/server/object/format/ID3Frame.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -15,6 +15,8 @@
  
  #include <cybergarage/upnp/media/server/object/format/ID3Frame.h>
@@ -1004,9 +1044,9 @@ diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/format/ID3Fram
  using namespace std;
  using namespace CyberLink;
  
-diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp CyberLink/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp CyberLink/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp
 --- CyberLink.orig/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp	2015-01-16 20:30:54.601265343 +0200
++++ CyberLink/src/cybergarage/upnp/media/server/object/format/PNGFormat.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -16,6 +16,10 @@
  #include <stdio.h>
  #include <cybergarage/upnp/media/server/object/format/PNGFormat.h>
@@ -1018,9 +1058,9 @@ diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/format/PNGForm
  using namespace CyberLink;
  
  ////////////////////////////////////////////////
-diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp CyberLink/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp CyberLink/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp
 --- CyberLink.orig/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp	2015-01-16 20:31:28.273266398 +0200
++++ CyberLink/src/cybergarage/upnp/media/server/object/search/IdSearchCap.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -8,12 +8,13 @@
  *
  *	Revision;
@@ -1059,9 +1099,9 @@ diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/search/IdSearc
  	return false;
  }
  
-diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp CyberLink/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp CyberLink/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp
 --- CyberLink.orig/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp	1970-01-01 03:14:45.000000000 +0300
-+++ CyberLink/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp	2015-01-16 20:31:49.425267061 +0200
++++ CyberLink/src/cybergarage/upnp/media/server/object/search/TitleSearchCap.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -8,12 +8,13 @@
  *
  *	Revision;
@@ -1123,9 +1163,9 @@ diff -ruN CyberLink.orig/src/cybergarage/upnp/media/server/object/search/TitleSe
 +	return false;
  }
  
-diff -ruN CyberLink.orig/src/cybergarage/upnp/ssdp/SSDP.cpp CyberLink/src/cybergarage/upnp/ssdp/SSDP.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/upnp/ssdp/SSDP.cpp CyberLink/src/cybergarage/upnp/ssdp/SSDP.cpp
 --- CyberLink.orig/src/cybergarage/upnp/ssdp/SSDP.cpp	1970-01-01 03:14:46.000000000 +0300
-+++ CyberLink/src/cybergarage/upnp/ssdp/SSDP.cpp	2015-01-16 20:32:15.321267873 +0200
++++ CyberLink/src/cybergarage/upnp/ssdp/SSDP.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -16,6 +16,9 @@
  #include <string>
  #include <cybergarage/upnp/ssdp/SSDP.h>
@@ -1136,9 +1176,9 @@ diff -ruN CyberLink.orig/src/cybergarage/upnp/ssdp/SSDP.cpp CyberLink/src/cyberg
  using namespace std;
  using namespace CyberLink::SSDP;
  
-diff -ruN CyberLink.orig/src/cybergarage/xml/Node.cpp CyberLink/src/cybergarage/xml/Node.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/xml/Node.cpp CyberLink/src/cybergarage/xml/Node.cpp
 --- CyberLink.orig/src/cybergarage/xml/Node.cpp	1970-01-01 03:14:46.000000000 +0300
-+++ CyberLink/src/cybergarage/xml/Node.cpp	2015-01-16 20:32:35.933268519 +0200
++++ CyberLink/src/cybergarage/xml/Node.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -23,8 +23,8 @@
  *	12/16/04
  *		- Added support not to use ostringstream.
@@ -1160,9 +1200,9 @@ diff -ruN CyberLink.orig/src/cybergarage/xml/Node.cpp CyberLink/src/cybergarage/
  using namespace std;
  using namespace CyberXML;
  
-diff -ruN CyberLink.orig/src/cybergarage/xml/XML.cpp CyberLink/src/cybergarage/xml/XML.cpp
+diff -ruNd CyberLink.orig/src/cybergarage/xml/XML.cpp CyberLink/src/cybergarage/xml/XML.cpp
 --- CyberLink.orig/src/cybergarage/xml/XML.cpp	1970-01-01 04:02:17.000000000 +0300
-+++ CyberLink/src/cybergarage/xml/XML.cpp	2015-01-16 20:32:58.401269223 +0200
++++ CyberLink/src/cybergarage/xml/XML.cpp	2015-03-06 14:52:08.763928793 +0200
 @@ -23,9 +23,9 @@
  *		- Fixed EscapeXMLChars() to convert from "'" to "&apos;" instead of "\".
  *	12/16/04
