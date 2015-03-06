@@ -24,7 +24,7 @@ MPD_SITE=http://www.musicpd.org/download/mpd/$(shell echo $(MPD_VERSION)|cut -d 
 #MPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
-MPD_VERSION=0.17.6
+MPD_VERSION?=0.17.6
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.xz
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=xzcat
@@ -50,7 +50,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=1
+MPD_IPK_VERSION?=1
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -152,25 +152,24 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 	$(MAKE) avahi-stage
 endif
-	$(MAKE) faad2-stage ffmpeg-stage flac-stage lame-stage
-	$(MAKE) glib-stage libcurl-stage libmms-stage icu-stage
-	$(MAKE) audiofile-stage libao-stage libid3tag-stage
-	$(MAKE) libmad-stage libmpcdec-stage libshout-stage
+	$(MAKE) faad2-stage ffmpeg-stage flac-stage lame-stage \
+	glib-stage libcurl-stage libmms-stage icu-stage \
+	audiofile-stage libao-stage libid3tag-stage \
+	libmad-stage libmpcdec-stage libshout-stage \
+	wavpack-stage audiofile-stage expat-stage
 ifneq (, $(filter i686, $(TARGET_ARCH)))
 	$(MAKE) libsamplerate-stage libvorbis-stage
 else
 	$(MAKE) libvorbisidec-stage
 endif
-	$(MAKE) wavpack-stage audiofile-stage
-	$(MAKE) expat-stage
-	rm -rf $(BUILD_DIR)/$(MPD_DIR) $(MPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MPD_DIR) $(@D)
 	$(MPD_UNZIP) $(DL_DIR)/$(MPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPD_PATCHES)" ; \
 		then cat $(MPD_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MPD_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MPD_DIR)" != "$(MPD_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MPD_DIR) $(MPD_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MPD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MPD_DIR) $(@D) ; \
 	fi
 #	sed -i -e '/LIBFLAC_LIBS="$$LIBFLAC_LIBS/s|-lFLAC|-lFLAC -logg|' $(@D)/configure
 	(cd $(@D); \

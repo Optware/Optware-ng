@@ -51,3 +51,6 @@ BOOST_ADDITIONAL_LIBS := atomic chrono container locale log timer exception
 
 MKVTOOLNIX_VERSION := 7.7.0
 MKVTOOLNIX_IPK_VERSION := 1
+
+MPD_VERSION := 0.19.9
+MPD_IPK_VERSION := 1
