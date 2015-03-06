@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 #http://ftp.acc.umu.se/pub/GNOME/sources/audiofile/0.2/audiofile-0.2.6.tar.gz
-AUDIOFILE_SITE=http://ftp.acc.umu.se/pub/GNOME/sources/audiofile/0.2
-AUDIOFILE_VERSION=0.2.6
-AUDIOFILE_SOURCE=audiofile-$(AUDIOFILE_VERSION).tar.gz
+AUDIOFILE_SITE=http://ftp.acc.umu.se/pub/GNOME/sources/audiofile/0.3
+AUDIOFILE_VERSION=0.3.6
+AUDIOFILE_SOURCE=audiofile-$(AUDIOFILE_VERSION).tar.xz
 AUDIOFILE_DIR=audiofile-$(AUDIOFILE_VERSION)
-AUDIOFILE_UNZIP=zcat
+AUDIOFILE_UNZIP=xzcat
 AUDIOFILE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AUDIOFILE_DESCRIPTION=Misc Audio Libraries.
 AUDIOFILE_SECTION=misc
@@ -42,7 +42,7 @@ AUDIOFILE_CONFLICTS=
 #
 # AUDIOFILE_IPK_VERSION should be incremented when the ipk changes.
 #
-AUDIOFILE_IPK_VERSION=6
+AUDIOFILE_IPK_VERSION=1
 
 #
 # AUDIOFILE_CONFFILES should be a list of user-editable files
@@ -105,15 +105,15 @@ audiofile-source: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PATCHES) make/audiofile.mk
-	rm -rf $(BUILD_DIR)/$(AUDIOFILE_DIR) $(AUDIOFILE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(AUDIOFILE_DIR) $(@D)
 	$(AUDIOFILE_UNZIP) $(DL_DIR)/$(AUDIOFILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AUDIOFILE_PATCHES)" ; \
 		then cat $(AUDIOFILE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(AUDIOFILE_DIR) -p0 ; \
 	fi
-	mv $(BUILD_DIR)/$(AUDIOFILE_DIR) $(AUDIOFILE_BUILD_DIR)
-	cp -f $(SOURCE_DIR)/common/config.* $(AUDIOFILE_BUILD_DIR)/
-	(cd $(AUDIOFILE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(AUDIOFILE_DIR) $(@D)
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AUDIOFILE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AUDIOFILE_LDFLAGS)" \
@@ -125,8 +125,8 @@ $(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PA
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(AUDIOFILE_BUILD_DIR)/libtool
-	touch $(AUDIOFILE_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 audiofile-unpack: $(AUDIOFILE_BUILD_DIR)/.configured
 
@@ -134,9 +134,9 @@ audiofile-unpack: $(AUDIOFILE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(AUDIOFILE_BUILD_DIR)/.built: $(AUDIOFILE_BUILD_DIR)/.configured
-	rm -f $(AUDIOFILE_BUILD_DIR)/.built
-	$(MAKE) -C $(AUDIOFILE_BUILD_DIR)
-	touch $(AUDIOFILE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -147,13 +147,13 @@ audiofile: $(AUDIOFILE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(AUDIOFILE_BUILD_DIR)/.staged: $(AUDIOFILE_BUILD_DIR)/.built
-	rm -f $(AUDIOFILE_BUILD_DIR)/.staged
-	$(MAKE) -C $(AUDIOFILE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|echo $$includes|echo -I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/audiofile-config
 	cp $(STAGING_DIR)/opt/bin/audiofile-config $(STAGING_DIR)/bin/audiofile-config
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/audiofile.pc
 	rm -f $(STAGING_LIB_DIR)/libaudiofile.la
-	touch $(AUDIOFILE_BUILD_DIR)/.staged
+	touch $@
 
 audiofile-stage: $(AUDIOFILE_BUILD_DIR)/.staged
 
@@ -162,7 +162,7 @@ audiofile-stage: $(AUDIOFILE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/audiofile
 #
 $(AUDIOFILE_IPK_DIR)/CONTROL/control:
-	@install -d $(AUDIOFILE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: audiofile" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,3 +211,10 @@ audiofile-clean:
 #
 audiofile-dirclean:
 	rm -rf $(BUILD_DIR)/$(AUDIOFILE_DIR) $(AUDIOFILE_BUILD_DIR) $(AUDIOFILE_IPK_DIR) $(AUDIOFILE_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+audiofile-check: $(AUDIOFILE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
