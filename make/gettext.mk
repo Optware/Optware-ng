@@ -23,14 +23,18 @@ GETTEXT_SECTION=devel
 GETTEXT_PRIORITY=optional
 GETTEXT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GETTEXT_DESCRIPTION=Set of tools for producing multi-lingual messages
+ifneq (libiconv, $(filter libiconv, $(PACKAGES)))
 GETTEXT_DEPENDS=
+else
+GETTEXT_DEPENDS=libiconv
+endif
 GETTEXT_SUGGESTS=
 GETTEXT_CONFLICTS=
 
 #
 # GETTEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-GETTEXT_IPK_VERSION=1
+GETTEXT_IPK_VERSION=2
 
 #
 # GETTEXT_CONFFILES should be a list of user-editable files
@@ -50,6 +54,9 @@ GETTEXT_PATCHES=$(GETTEXT_SOURCE_DIR)/uClibc-error_print_progname.0.19.4.patch
 #
 GETTEXT_CPPFLAGS=
 GETTEXT_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GETTEXT_LDFLAGS += -liconv
+endif
 
 #
 # GETTEXT_BUILD_DIR is the directory in which the build is done.
@@ -125,7 +132,9 @@ gettext-host-stage: $(GETTEXT_HOST_BUILD_DIR)/.staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GETTEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GETTEXT_DIR) $(GETTEXT_BUILD_DIR)
 	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GETTEXT_PATCHES) | patch -d $(BUILD_DIR)/$(GETTEXT_DIR) -p1
