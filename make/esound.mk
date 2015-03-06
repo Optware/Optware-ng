@@ -122,9 +122,7 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES) ma
 	$(ESOUND_UNZIP) $(DL_DIR)/$(ESOUND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(ESOUND_PATCHES) | patch -d $(BUILD_DIR)/$(ESOUND_DIR) -p1
 	mv $(BUILD_DIR)/$(ESOUND_DIR) $(@D)
-	cd $(@D) && aclocal -I $(STAGING_PREFIX)/share/aclocal -I $(ESOUND_BUILD_DIR)/m4
-	cd $(@D) && autoconf 
-	cd $(@D) && automake  --add-missing --force-missing
+	autoreconf -vif $(@D)
 	sed -i -e 's/artsc-config --cflags |//' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
