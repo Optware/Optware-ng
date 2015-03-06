@@ -160,7 +160,9 @@ wavpack: $(WAVPACK_BUILD_DIR)/.built
 $(WAVPACK_BUILD_DIR)/.staged: $(WAVPACK_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/wavpack.pc
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e '/^exec_prefix=/d' \
+		-e '/^prefix=/s/$$/\nexec_prefix=\$${prefix}/' \
+					$(STAGING_LIB_DIR)/pkgconfig/wavpack.pc
 	touch $@
 
 wavpack-stage: $(WAVPACK_BUILD_DIR)/.staged
@@ -199,6 +201,8 @@ $(WAVPACK_IPK_DIR)/CONTROL/control:
 $(WAVPACK_IPK): $(WAVPACK_BUILD_DIR)/.built
 	rm -rf $(WAVPACK_IPK_DIR) $(BUILD_DIR)/wavpack_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WAVPACK_BUILD_DIR) DESTDIR=$(WAVPACK_IPK_DIR) install-strip
+	sed -i -e '/^exec_prefix=/d' -e '/^prefix=/s/$$/\nexec_prefix=\$${prefix}/' \
+					$(WAVPACK_IPK_DIR)/opt/lib/pkgconfig/wavpack.pc
 #	install -d $(WAVPACK_IPK_DIR)/opt/etc/
 #	install -m 644 $(WAVPACK_SOURCE_DIR)/wavpack.conf $(WAVPACK_IPK_DIR)/opt/etc/wavpack.conf
 #	install -d $(WAVPACK_IPK_DIR)/opt/etc/init.d
