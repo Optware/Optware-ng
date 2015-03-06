@@ -53,7 +53,7 @@ GNET_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 GNET_CPPFLAGS=
-GNET_LDFLAGS=
+GNET_LDFLAGS=-lglib-2.0
 
 #
 # GNET_BUILD_DIR is the directory in which the build is done.
