@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=9.3.5
+POSTGRESQL_VERSION=9.4.1
 POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_SOURCE=postgresql-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
@@ -40,7 +40,7 @@ POSTGRESQL_DEPENDS=readline, coreutils, openssl
 #
 # POSTGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-POSTGRESQL_IPK_VERSION=2
+POSTGRESQL_IPK_VERSION=1
 
 #
 # POSTGRESQL_CONFFILES should be a list of user-editable files
@@ -63,7 +63,7 @@ POSTGRESQL_CPPFLAGS=-D_GNU_SOURCE
 ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
 POSTGRESQL_CPPFLAGS+=-fno-builtin-rint
 endif
-POSTGRESQL_LDFLAGS=
+POSTGRESQL_LDFLAGS=-lpthread
 
 #
 # POSTGRESQL_BUILD_DIR is the directory in which the build is done.
@@ -138,7 +138,7 @@ $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL
 	(cd $(@D)/src/timezone; gcc -o ./zic-host  -I../include zic.c ialloc.c scheck.c localtime.c ../port/snprintf.c ../port/qsort.c)
 	sed -i -e "s|ZIC=.*|ZIC=\./zic-host|" $(@D)/src/timezone/Makefile
 
-ifeq ($(OPTWARE_TARGET), $(filter oleg shibby-tomato-arm, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter oleg shibby-tomato-arm buildroot-armeabi, $(OPTWARE_TARGET)))
 # fix errors like
 ### In file included from regcomp.c:2067:0:
 ###  regc_pg_locale.c: In function ‘pg_wc_isdigit’:
