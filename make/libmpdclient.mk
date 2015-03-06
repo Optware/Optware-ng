@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMPDCLIENT_SITE=http://www.musicpd.org/download/libmpdclient/2
-LIBMPDCLIENT_VERSION=2.9
+LIBMPDCLIENT_VERSION=2.10
 LIBMPDCLIENT_SOURCE=libmpdclient-$(LIBMPDCLIENT_VERSION).tar.xz
 LIBMPDCLIENT_DIR=libmpdclient-$(LIBMPDCLIENT_VERSION)
 LIBMPDCLIENT_UNZIP=xzcat
