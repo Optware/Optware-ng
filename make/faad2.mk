@@ -60,6 +60,9 @@ ifeq ($(TARGET_CPU), $(filter arm armeb mips mipsel, $(TARGET_CPU)))
 FAAD2_CPPFLAGS+=-DFIXED_POINT
 endif
 FAAD2_LDFLAGS=
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi, $(OPTWARE_TARGET)))
+FAAD2_LDFLAGS += -lm
+endif
 
 #
 # FAAD2_BUILD_DIR is the directory in which the build is done.
