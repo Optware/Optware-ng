@@ -63,6 +63,9 @@ ifdef NO_BUILTIN_MATH
 ESOUND_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin
 endif
 ESOUND_LDFLAGS=
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi, $(OPTWARE_TARGET)))
+ESOUND_LDFLAGS += -lm
+endif
 
 ifeq (no,$(IPV6))
 ESOUND_CONFIGURE_OPTIONS+=--disable-ipv6
