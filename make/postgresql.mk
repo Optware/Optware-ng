@@ -138,7 +138,7 @@ $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL
 	(cd $(@D)/src/timezone; gcc -o ./zic-host  -I../include zic.c ialloc.c scheck.c localtime.c ../port/snprintf.c ../port/qsort.c)
 	sed -i -e "s|ZIC=.*|ZIC=\./zic-host|" $(@D)/src/timezone/Makefile
 
-ifeq ($(OPTWARE_TARGET), $(filter oleg shibby-tomato-arm buildroot-armeabi, $(OPTWARE_TARGET)))
+ifeq (uclibc, $(LIBC_STYLE))
 # fix errors like
 ### In file included from regcomp.c:2067:0:
 ###  regc_pg_locale.c: In function ‘pg_wc_isdigit’:
