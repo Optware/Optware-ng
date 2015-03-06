@@ -133,6 +133,7 @@ $(LIBHID_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBHID_SOURCE) $(LIBHID_PATCHES) ma
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-swig \
+		--disable-werror \
 		--disable-nls \
 		--disable-static \
 	)
