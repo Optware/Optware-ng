@@ -55,7 +55,7 @@ $(FIREDRILL-HTTPTUNNEL_SOURCE_DIR)/find_if.patch \
 # compilation or linking flags, then list them here.
 #
 FIREDRILL-HTTPTUNNEL_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/openssl
-FIREDRILL-HTTPTUNNEL_LDFLAGS=
+FIREDRILL-HTTPTUNNEL_LDFLAGS=-lcrypto
 
 #
 # FIREDRILL-HTTPTUNNEL_BUILD_DIR is the directory in which the build is done.
