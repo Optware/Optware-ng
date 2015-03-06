@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WAVPACK_SITE=http://www.wavpack.com
-WAVPACK_VERSION=4.50.1
+WAVPACK_VERSION=4.70.0
 WAVPACK_SOURCE=wavpack-$(WAVPACK_VERSION).tar.bz2
 WAVPACK_DIR=wavpack-$(WAVPACK_VERSION)
 WAVPACK_UNZIP=bzcat
@@ -29,7 +29,11 @@ WAVPACK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WAVPACK_DESCRIPTION=WavPack is a completely open audio compression format providing lossless, high-quality lossy, and a unique hybrid compression mode.
 WAVPACK_SECTION=audio
 WAVPACK_PRIORITY=optional
+ifneq (libiconv, $(filter libiconv, $(PACKAGES)))
 WAVPACK_DEPENDS=
+else
+WAVPACK_DEPENDS=libiconv
+endif
 WAVPACK_SUGGESTS=
 WAVPACK_CONFLICTS=
 
@@ -54,6 +58,9 @@ WAVPACK_IPK_VERSION=1
 #
 WAVPACK_CPPFLAGS=
 WAVPACK_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+WAVPACK_LDFLAGS += -liconv
+endif
 
 #
 # WAVPACK_BUILD_DIR is the directory in which the build is done.
@@ -105,7 +112,9 @@ wavpack-source: $(DL_DIR)/$(WAVPACK_SOURCE) $(WAVPACK_PATCHES)
 # shown below to make various patches to it.
 #
 $(WAVPACK_BUILD_DIR)/.configured: $(DL_DIR)/$(WAVPACK_SOURCE) $(WAVPACK_PATCHES) make/wavpack.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(WAVPACK_DIR) $(@D)
 	$(WAVPACK_UNZIP) $(DL_DIR)/$(WAVPACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WAVPACK_PATCHES)" ; \
