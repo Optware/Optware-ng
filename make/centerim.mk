@@ -105,9 +105,9 @@ centerim-source: $(DL_DIR)/$(CENTERIM_SOURCE) $(CENTERIM_PATCHES)
 # shown below to make various patches to it.
 #
 $(CENTERIM_BUILD_DIR)/.configured: $(DL_DIR)/$(CENTERIM_SOURCE) $(CENTERIM_PATCHES) make/centerim.mk
-	$(MAKE) ncursesw-stage openssl-stage
-	$(MAKE) libcurl-stage libjpeg-stage libstdc++-stage
-	$(MAKE) gpgme-stage libgcrypt-stage libotr-stage
+	$(MAKE) ncursesw-stage openssl-stage \
+	libcurl-stage libjpeg-stage libstdc++-stage \
+	gpgme-stage libgcrypt-stage libotr-stage
 	rm -rf $(BUILD_DIR)/$(CENTERIM_DIR) $(@D)
 	$(CENTERIM_UNZIP) $(DL_DIR)/$(CENTERIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CENTERIM_PATCHES)" ; \
@@ -117,6 +117,8 @@ $(CENTERIM_BUILD_DIR)/.configured: $(DL_DIR)/$(CENTERIM_SOURCE) $(CENTERIM_PATCH
 	if test "$(BUILD_DIR)/$(CENTERIM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CENTERIM_DIR) $(@D) ; \
 	fi
+#	newer gcc: fix error: ‘NULL’ was not declared in this scope
+	sed -i -e '/^#define SIGSLOT_H__/s/$$/\n\n#include <cstddef>/' $(@D)/libicq2000/libicq2000/sigslot.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(CENTERIM_CPPFLAGS)" \
