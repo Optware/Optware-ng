@@ -43,7 +43,7 @@ GPHOTO2_CONFFILES=
 # compilation or linking flags, then list them here.
 #
 GPHOTO2_CPPFLAGS=
-GPHOTO2_LDFLAGS=
+GPHOTO2_LDFLAGS=-lgphoto2_port
 
 #
 # GPHOTO2_BUILD_DIR is the directory in which the build is done.
