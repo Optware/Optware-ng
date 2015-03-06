@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBMMS_VERSION=0.5
-LIBMMS_SITE=http://launchpad.net/libmms/trunk/$(LIBMMS_VERSION)/+download
+LIBMMS_VERSION=0.6.4
+LIBMMS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libmms
 LIBMMS_SOURCE=libmms-$(LIBMMS_VERSION).tar.gz
 LIBMMS_DIR=libmms-$(LIBMMS_VERSION)
 LIBMMS_UNZIP=zcat
