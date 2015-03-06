@@ -12,14 +12,10 @@
 IPKG-FW_REPOSITORY=:pserver:anoncvs@anoncvs.handhelds.org
 IPKG-FW_DIR=ipkg-opt
 IPKG-FW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-IPKG-FW_DESCRIPTION=ipkg that uses fw's dynamic linker (unlike ipkg-opt in case of shibby-tomato-arm target)
+IPKG-FW_DESCRIPTION=Static Itsy Package Manager for bootstraping
 IPKG-FW_SECTION=base
 IPKG-FW_PRIORITY=optional
-ifeq ($(OPTWARE_TARGET), $(filter oleg ddwrt, $(OPTWARE_TARGET)))
-IPKG-FW_DEPENDS=uclibc-opt
-else
 IPKG-FW_DEPENDS=
-endif
 IPKG-FW_SUGGESTS=
 IPKG-FW_CONFLICTS=ipkg-opt
 
@@ -34,7 +30,7 @@ IPKG-FW_CVS_OPTS=-r $(IPKG-FW_CVS_TAG)
 #
 # IPKG-FW_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG-FW_IPK_VERSION=1
+IPKG-FW_IPK_VERSION=2
 
 #
 # IPKG-FW_CONFFILES should be a list of user-editable files
@@ -115,7 +111,7 @@ ipkg-fw-source: #$(DL_DIR)/ipkg-fw-$(IPKG-FW_VERSION).tar.gz
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) ipkg-fw-stage <baz>-stage").
 #
-$(IPKG-FW_BUILD_DIR)/.configured: #$(DL_DIR)/ipkg-fw-$(IPKG-FW_VERSION).tar.gz
+$(IPKG-FW_BUILD_DIR)/.configured: make/ipkg-fw.mk #$(DL_DIR)/ipkg-fw-$(IPKG-FW_VERSION).tar.gz
 	$(MAKE) ipkg-opt-source
 	rm -rf $(BUILD_DIR)/$(IPKG-FW_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-opt-$(IPKG-FW_VERSION).tar.gz
@@ -129,8 +125,8 @@ $(IPKG-FW_BUILD_DIR)/.configured: #$(DL_DIR)/ipkg-fw-$(IPKG-FW_VERSION).tar.gz
 	rm -f $(@D)/etc/Makefile aclocal.m4
 	autoreconf -vif $(@D)
 	(cd $(@D); \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPKG-FW_CPPFLAGS)" \
-		LDFLAGS="-L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(STAGING_LIB_DIR) $(IPKG-FW_LDFLAGS)" \
+		CPPFLAGS="$(TARGET_CFLAGS) $(IPKG-FW_CPPFLAGS)" \
+		LDFLAGS="-Wl,--gc-sections --static $(IPKG-FW_LDFLAGS)" \
 		$(TARGET_CONFIGURE_OPTS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -139,6 +135,7 @@ $(IPKG-FW_BUILD_DIR)/.configured: #$(DL_DIR)/ipkg-fw-$(IPKG-FW_VERSION).tar.gz
 		--with-ipkglibdir=/opt/lib \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-shared \
 	)
 	touch $@
 
@@ -211,8 +208,7 @@ else
 	install -m 644 $(IPKG-FW_SOURCE_DIR)/ipkg.conf \
 		$(IPKG-FW_IPK_DIR)/opt/etc/ipkg.conf
 endif
-	rm $(IPKG-FW_IPK_DIR)/opt/lib/*.a
-	rm $(IPKG-FW_IPK_DIR)/opt/lib/*.la
+	rm -f $(IPKG-FW_IPK_DIR)/opt/lib/*.a $(IPKG-FW_IPK_DIR)/opt/lib/*.la
 	rm -rf $(IPKG-FW_IPK_DIR)/opt/include
 	mv $(IPKG-FW_IPK_DIR)/opt/bin/ipkg-cl $(IPKG-FW_IPK_DIR)/opt/bin/ipkg
 	ln -s ipkg $(IPKG-FW_IPK_DIR)/opt/bin/ipkg-fw
