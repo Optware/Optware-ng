@@ -16,7 +16,7 @@
 #
 INPUTPROTO_SITE=http://xorg.freedesktop.org/releases/individual/proto
 INPUTPROTO_SOURCE=inputproto-$(INPUTPROTO_VERSION).tar.gz
-INPUTPROTO_VERSION=2.3
+INPUTPROTO_VERSION=2.2
 INPUTPROTO_DIR=inputproto-$(INPUTPROTO_VERSION)
 INPUTPROTO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 INPUTPROTO_DESCRIPTION=X Input Extension
