@@ -12,11 +12,11 @@
 # LIBSIGC++_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-LIBSIGC++_SITE=http://ftp.gnome.org/pub/GNOME/sources/libsigc++/2.2
-LIBSIGC++_VERSION=2.2.3
-LIBSIGC++_SOURCE=libsigc++-$(LIBSIGC++_VERSION).tar.gz
+LIBSIGC++_SITE=http://ftp.gnome.org/pub/GNOME/sources/libsigc++/2.4
+LIBSIGC++_VERSION=2.4.1
+LIBSIGC++_SOURCE=libsigc++-$(LIBSIGC++_VERSION).tar.xz
 LIBSIGC++_DIR=libsigc++-$(LIBSIGC++_VERSION)
-LIBSIGC++_UNZIP=zcat
+LIBSIGC++_UNZIP=xzcat
 LIBSIGC++_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBSIGC++_DESCRIPTION=libsigc++ implements a typesafe callback system for standard C++.
 LIBSIGC++_SECTION=libs
@@ -38,7 +38,7 @@ LIBSIGC++_CONFFILES=
 # LIBSIGC++_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBSIGC++_PATCHES=$(LIBSIGC++_SOURCE_DIR)/Makefile.in.patch
+#LIBSIGC++_PATCHES=$(LIBSIGC++_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -109,6 +109,8 @@ $(LIBSIGC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSIGC++_SOURCE) $(LIBSIGC++_PA
 	if test "$(BUILD_DIR)/$(LIBSIGC++_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBSIGC++_DIR) $(@D) ; \
 	fi
+	sed -i -e '/^SUBDIRS =/s/=.*/= sigc++ \$$(doc_subdirs)/' -e '/^DIST_SUBDIRS =/s/=.*/= sigc++ docs/' \
+		$(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBSIGC++_CPPFLAGS)" \
