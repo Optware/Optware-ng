@@ -151,6 +151,10 @@ ifeq (0.4, $(LTRACE_VERSION))
 	sed -i -e 's/-o root -g root //' $(@D)/Makefile
 endif
 #	$(PATCH_LIBTOOL) $(@D)/libtool
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi, $(OPTWARE_TARGET)))
+#	no libiberty present or needed
+	sed -i -e 's/-liberty//' $(@D)/Makefile
+endif
 	touch $@
 
 ltrace-unpack: $(LTRACE_BUILD_DIR)/.configured
