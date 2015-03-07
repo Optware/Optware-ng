@@ -146,7 +146,7 @@ libtorrent-source: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT_PATCHES)
 #
 $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT_PATCHES) make/libtorrent.mk
 	$(MAKE) openssl-stage libsigc++-stage
-	rm -rf $(BUILD_DIR)/$(LIBTORRENT_DIR) $(LIBTORRENT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBTORRENT_DIR) $(@D)
 	$(LIBTORRENT_UNZIP) $(DL_DIR)/$(LIBTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBTORRENT_PATCHES)" ; \
 		then cat $(LIBTORRENT_PATCHES) | \
@@ -161,8 +161,11 @@ ifdef LIBTORRENT_SVN_REV
 	)
 endif
 	if test -n "$(LIBTORRENT_POST_AC_PATCHES)" ; then \
-		cat $(LIBTORRENT_POST_AC_PATCHES) | patch -d $(LIBTORRENT_BUILD_DIR) -p0 ; \
+		cat $(LIBTORRENT_POST_AC_PATCHES) | patch -d $(@D) -p0 ; \
 	fi
+# fix for newer gcc error: ‘NULL’ was not declared in this scope
+	sed -i -e '/^#define LIBTORRENT_COMMON_H/s/$$/\n\n#include <cstddef>/' \
+		$(@D)/src/torrent/common.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT_CPPFLAGS)" \
