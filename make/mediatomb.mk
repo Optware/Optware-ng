@@ -151,24 +151,19 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) file-stage
-	$(MAKE) ossp-js-stage
-	$(MAKE) libexif-stage
-	$(MAKE) sqlite-stage
-	$(MAKE) zlib-stage
-	$(MAKE) expat-stage
-	rm -rf $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR)
+	$(MAKE) file-stage ossp-js-stage libexif-stage sqlite-stage zlib-stage expat-stage
+	rm -rf $(BUILD_DIR)/$(MEDIATOMB_DIR) $(@D)
 	$(MEDIATOMB_UNZIP) $(DL_DIR)/$(MEDIATOMB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MEDIATOMB_PATCHES)" ; \
 		then cat $(MEDIATOMB_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MEDIATOMB_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(MEDIATOMB_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(@D) ; \
 	fi
-	cd $(MEDIATOMB_BUILD_DIR); \
-		autoreconf -vif
-	(cd $(MEDIATOMB_BUILD_DIR); \
+	sed -i -e 's/search(/this->search(/' $(@D)/src/hash/dbo_hash.h $(@D)/src/hash/dbr_hash.h
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEDIATOMB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MEDIATOMB_LDFLAGS)" \
@@ -199,7 +194,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MEDIATOMB_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mediatomb-unpack: $(MEDIATOMB_BUILD_DIR)/.configured
@@ -209,7 +204,7 @@ mediatomb-unpack: $(MEDIATOMB_BUILD_DIR)/.configured
 #
 $(MEDIATOMB_BUILD_DIR)/.built: $(MEDIATOMB_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MEDIATOMB_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -222,7 +217,7 @@ mediatomb: $(MEDIATOMB_BUILD_DIR)/.built
 #
 $(MEDIATOMB_BUILD_DIR)/.staged: $(MEDIATOMB_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MEDIATOMB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 mediatomb-stage: $(MEDIATOMB_BUILD_DIR)/.staged
@@ -302,4 +297,4 @@ mediatomb-dirclean:
 # Some sanity check for the package.
 #
 mediatomb-check: $(MEDIATOMB_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MEDIATOMB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
