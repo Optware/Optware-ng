@@ -111,7 +111,7 @@ ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi shibby-tomato-arm, $(OPTWARE
 #	to make feed firmware-independent, we make
 #	all packages (except uclibc-opt, libnsl and ipkg-fw)
 #	dependent on uclibc-opt by hacking ipkg-build
-	sed -i -e "/^version=/s~$$~\n\n# get last argument: IPK_DIR\nfor IPK_DIR; do true; done\nFILTEROUT=\`cat $$\{IPK_DIR\}/CONTROL/control|egrep '^Package: uclibc-opt$$|^Package: libnsl$$|^Package: ipkg-fw$$'|wc -l\`\nif [ \"\$$FILTEROUT\" -eq \"0\" ]; then\nsed -i -e 's/^Depends:/Depends: uclibc-opt,/' \$$\{IPK_DIR\}/CONTROL/control\nfi~" \
+	sed -i -e "/^version=/s~$$~\n\n# get last argument: IPK_DIR\nfor IPK_DIR; do true; done\nFILTEROUT=\`cat $$\{IPK_DIR\}/CONTROL/control|egrep '^Package: uclibc-opt$$|^Package: libnsl$$|^Package: ipkg-static$$'|wc -l\`\nif [ \"\$$FILTEROUT\" -eq \"0\" ]; then\nsed -i -e 's/^Depends:/Depends: uclibc-opt,/' \$$\{IPK_DIR\}/CONTROL/control\nfi~" \
 						$(STAGING_DIR)/bin/ipkg-build
 endif
 
