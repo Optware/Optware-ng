@@ -96,7 +96,7 @@ mdadm-source: $(DL_DIR)/$(MDADM_SOURCE) $(MDADM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MDADM_BUILD_DIR)/.configured: $(DL_DIR)/$(MDADM_SOURCE) $(MDADM_PATCHES) make/mdadm.mk
-	rm -rf $(BUILD_DIR)/$(MDADM_DIR) $(MDADM_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MDADM_DIR) $(@D)
 	$(MDADM_UNZIP) $(DL_DIR)/$(MDADM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MDADM_PATCHES)" ; \
 		then cat $(MDADM_PATCHES) | \
@@ -106,6 +106,7 @@ $(MDADM_BUILD_DIR)/.configured: $(DL_DIR)/$(MDADM_SOURCE) $(MDADM_PATCHES) make/
 		then mv $(BUILD_DIR)/$(MDADM_DIR) $(@D) ; \
 	fi
 	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/bswap_16\|bswap_32\|bswap_64/_&_/g' {} \;
+	sed -i -e 's/-Werror//g' $(@D)/Makefile
 	touch $@
 
 mdadm-unpack: $(MDADM_BUILD_DIR)/.configured
