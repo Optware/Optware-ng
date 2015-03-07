@@ -123,7 +123,7 @@ $(LINPHONE_BUILD_DIR)/.configured: $(DL_DIR)/$(LINPHONE_SOURCE) $(LINPHONE_PATCH
 	if test "$(BUILD_DIR)/$(LINPHONE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LINPHONE_DIR) $(@D) ; \
 	fi
-	sed -i -e '/CFLAGS.*$$CFLAGS/s/ -Werror//' $(@D)/configure $(@D)/*/configure
+#	sed -i -e '/CFLAGS.*$$CFLAGS/s/ -Werror//' $(@D)/configure $(@D)/*/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LINPHONE_CPPFLAGS)" \
@@ -141,6 +141,7 @@ $(LINPHONE_BUILD_DIR)/.configured: $(DL_DIR)/$(LINPHONE_SOURCE) $(LINPHONE_PATCH
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool $(@D)/*/libtool
+	find $(@D) -type f -name Makefile -exec sed -i -e 's/-Werror//g' {} \;
 	touch $@
 
 linphone-unpack: $(LINPHONE_BUILD_DIR)/.configured
