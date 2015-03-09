@@ -220,7 +220,7 @@ $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
 		GLIB_COMPILE_SCHEMAS=$(HOST_STAGING_PREFIX)/bin/glib-compile-schemas
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/gail-*.pc
-	rm -f $(addprefix $(STAGING_LIB_DIR), libgailutil-3.la libgdk-3.la libgtk-3.la)
+	rm -f $(addprefix $(STAGING_LIB_DIR)/, libgailutil-3.la libgdk-3.la libgtk-3.la)
 	find $(STAGING_LIB_DIR)/gtk-3.0 -type f -name *.la -exec rm -f {} \;
 	touch $@
 
