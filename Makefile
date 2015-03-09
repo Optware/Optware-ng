@@ -74,11 +74,11 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
-	gtk vte xchat \
+	vte xchat \
 	iozone \
 	bpalogin \
 	nemesis \
-	appweb atk bluez-utils bluez-hcidump libextractor sandbox \
+	appweb bluez-utils bluez-hcidump libextractor sandbox \
 	btg \
  
 # deluge is actually a python package, but it depends on perl package intltool
@@ -260,7 +260,7 @@ COMMON_CROSS_PACKAGES = \
 	apache apr apr-util \
 	arc aria2 arping arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
-	at atftp atop attr audiofile autoconf automake autossh avahi \
+	at at-spi2-core atftp atk atk-bridge atop attr audiofile autoconf automake autossh avahi \
 	bacula bash bash-completion bc bftpd \
 	bind bip bison bitchx bitlbee \
 	bogofilter boost bridge-utils \
@@ -298,7 +298,7 @@ COMMON_CROSS_PACKAGES = \
 	freecell freeradius freetds freetype freeze \
 	fribidi ftpcopy fslint ftpd-topfield fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
-	geoip gettext \
+	geoip gettext gdk-pixbuf \
 	ggrab ghostscript git gkrellmd glib gnet gnokii \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
@@ -306,7 +306,7 @@ COMMON_CROSS_PACKAGES = \
 	grep groff gsasl gsnmp gtmess gtypist gutenprint gzip \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
-	gift-openft gift-opennap \
+	gift-openft gift-opennap gtk \
 	haproxy harfbuzz haserl hd2u hdparm hello hexcurse heyu \
 	hiawatha hnb hpijs hping htop httping \
 	ice icecast ices0 icu icu54 \
@@ -338,7 +338,7 @@ COMMON_CROSS_PACKAGES = \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent libtorrent-rasterbar \
 	libunistring libupnp libusb libusb1 libvncserver \
-	libvorbis libvorbisidec libxml2 libxslt libzip \
+	libvorbis libvorbisidec libxkbcommon libxml2 libxslt libzip \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
 	lua luarocks \
@@ -383,7 +383,7 @@ COMMON_CROSS_PACKAGES = \
 	python python24 python25 python26 python27 python3 $(PYTHON_PACKAGES) \
 	qemacs qemu qemu-libc-i386 qpopper quagga quickie quilt \
 	radiusclient-ng rc rc5pipe rcs rdate \
-	readline re2c recode recordext \
+	readline re2c recode recordext recordprotos \
 	redir renderext renderproto rhtvision rkhunter \
 	rlfe rlwrap rrdcollect rrdtool \
 	rssh rsstail rsync rtorrent rtpproxy ruby rubygems rxtx \
@@ -414,11 +414,11 @@ COMMON_CROSS_PACKAGES = \
 	upx usbutils ushare utelnetd utf8proc util-linux util-linux-ng \
 	vblade vdr-mediamvp vim vitetris vlc \
 	vnstat vorbis-tools vpnc vsftpd vtun \
-	w3cam w3m wakelan wavpack webalizer weechat werc wget \
+	w3cam w3m wayland wakelan wavpack webalizer weechat werc wget \
 	which whois wizd wpa-supplicant wput wxbase \
 	xerces-c xmlrpc-c \
 	x11 xau xauth xaw xcursor xdmcp xdpyinfo xext \
-	xextensions xfixes xfixesproto xft xinetd \
+	xextensions xfixes xfixesproto xft xi xinetd \
 	xmu xpdf xpm xcb-proto xcb xextproto xorg-macros xproto xrender xt xterm xtrans xtst \
 	x264 xmail xvid xz-utils \
 	yafc yasm yawk yougrabber \
