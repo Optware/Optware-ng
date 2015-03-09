@@ -58,6 +58,7 @@ EXPAT_LDFLAGS=
 # You should not change any of these variables.
 #
 EXPAT_BUILD_DIR=$(BUILD_DIR)/expat
+EXPAT_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/expat
 EXPAT_SOURCE_DIR=$(SOURCE_DIR)/expat
 EXPAT_IPK_DIR=$(BUILD_DIR)/expat-$(EXPAT_VERSION)-ipk
 EXPAT_IPK=$(BUILD_DIR)/expat_$(EXPAT_VERSION)-$(EXPAT_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -144,6 +145,29 @@ $(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
 	touch $@
 
 expat-stage: $(EXPAT_BUILD_DIR)/.staged
+
+$(EXPAT_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(EXPAT_SOURCE)
+	rm -rf $(HOST_BUILD_DIR)/$(EXPAT_DIR) $(@D)
+	$(EXPAT_UNZIP) $(DL_DIR)/$(EXPAT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+#	cat $(EXPAT_PATCHES) | patch -d $(BUILD_DIR)/$(EXPAT_DIR) -p1
+	mv $(HOST_BUILD_DIR)/$(EXPAT_DIR) $(@D)
+	(cd $(@D); \
+		CPPFLAGS="-fPIC" \
+		./configure \
+		--disable-shared \
+		--prefix=$(HOST_STAGING_PREFIX) \
+		--disable-nls \
+	)
+	$(MAKE) -C $(@D)
+	mkdir -p $(HOST_STAGING_LIB_DIR) $(HOST_STAGING_INCLUDE_DIR)
+	(cd $(@D); \
+		./libtool --mode=install install -c libexpat.la $(HOST_STAGING_LIB_DIR)/libexpat.la ; \
+		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(HOST_STAGING_INCLUDE_DIR) ; \
+	)
+	rm -f $(HOST_STAGING_LIB_DIR)/libexpat.la
+	touch $@
+
+expat-host-stage: $(EXPAT_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer

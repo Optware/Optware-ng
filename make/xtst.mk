@@ -10,21 +10,21 @@
 # XTST_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XTST_SITE=http://freedesktop.org
-XTST_SOURCE=# none - available from CVS only
-XTST_VERSION=6.2.2+cvs20050130
-XTST_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
-XTST_DIR=Xtst
-XTST_CVS_OPTS=-D20050130
-XTST_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+XTST_SITE=http://xorg.freedesktop.org/releases/individual/lib
+XTST_SOURCE=libXtst-$(XTST_VERSION).tar.gz
+XTST_VERSION=1.2.2
+XTST_FULL_VERSION=release-$(XTST_VERSION)
+XTST_DIR=libXtst-$(XTST_VERSION)
+XTST_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XTST_DESCRIPTION=X test library
 XTST_SECTION=lib
 XTST_PRIORITY=optional
+XTST_DEPENDS=x11
 
 #
 # XTST_IPK_VERSION should be incremented when the ipk changes.
 #
-XTST_IPK_VERSION=2
+XTST_IPK_VERSION=1
 
 #
 # XTST_CONFFILES should be a list of user-editable files
@@ -34,7 +34,7 @@ XTST_CONFFILES=
 # XTST_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XTST_PATCHES=$(XTST_SOURCE_DIR)/pkgconfig.patch
+#XTST_PATCHES=$(XTST_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -54,8 +54,8 @@ XTST_LDFLAGS=
 #
 XTST_BUILD_DIR=$(BUILD_DIR)/xtst
 XTST_SOURCE_DIR=$(SOURCE_DIR)/xtst
-XTST_IPK_DIR=$(BUILD_DIR)/xtst-$(XTST_VERSION)-ipk
-XTST_IPK=$(BUILD_DIR)/xtst_$(XTST_VERSION)-$(XTST_IPK_VERSION)_$(TARGET_ARCH).ipk
+XTST_IPK_DIR=$(BUILD_DIR)/xtst-$(XTST_FULL_VERSION)-ipk
+XTST_IPK=$(BUILD_DIR)/xtst_$(XTST_FULL_VERSION)-$(XTST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -67,24 +67,21 @@ $(XTST_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XTST_PRIORITY)" >>$@
 	@echo "Section: $(XTST_SECTION)" >>$@
-	@echo "Version: $(XTST_VERSION)-$(XTST_IPK_VERSION)" >>$@
+	@echo "Version: $(XTST_FULL_VERSION)-$(XTST_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(XTST_MAINTAINER)" >>$@
 	@echo "Source: $(XTST_SITE)/$(XTST_SOURCE)" >>$@
 	@echo "Description: $(XTST_DESCRIPTION)" >>$@
+	@echo "Depends: $(XTST_DEPENDS)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/xtst-$(XTST_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XTST_DIR) && \
-		cvs -d $(XTST_REPOSITORY) -z3 co $(XTST_CVS_OPTS) $(XTST_DIR) && \
-		tar -czf $@ $(XTST_DIR) && \
-		rm -rf $(XTST_DIR) \
-	)
+$(DL_DIR)/$(XTST_SOURCE):
+	$(WGET) -P $(@D) $(XTST_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-xtst-source: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz $(XTST_PATCHES)
+xtst-source: $(DL_DIR)/$(XTST_SOURCE) $(XTST_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,34 +93,32 @@ xtst-source: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz $(XTST_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XTST_BUILD_DIR)/.configured: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz \
-		$(XTST_PATCHES) make/xtst.mk
-	$(MAKE) x11-stage
-	$(MAKE) xext-stage
-	$(MAKE) recordext-stage
-	rm -rf $(BUILD_DIR)/$(XTST_DIR) $(XTST_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz
+$(XTST_BUILD_DIR)/.configured: $(DL_DIR)/$(XTST_SOURCE) $(XTST_PATCHES) make/xtst.mk
+	$(MAKE) xorg-macros-stage x11-stage xext-stage xi-stage \
+		recordproto-stage xextproto-stage inputproto-stage
+	rm -rf $(BUILD_DIR)/$(XTST_DIR) $(@D)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XTST_SOURCE)
 	if test -n "$(XTST_PATCHES)" ; \
 		then cat $(XTST_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XTST_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(XTST_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XTST_DIR)" != "$(XTST_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XTST_DIR) $(XTST_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XTST_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XTST_DIR) $(@D) ; \
 	fi
-	(cd $(XTST_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XTST_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XTST_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-static \
+		--enable-malloc0returnsnull \
 	)
-	$(PATCH_LIBTOOL) $(XTST_BUILD_DIR)/libtool
 	touch $@
 
 xtst-unpack: $(XTST_BUILD_DIR)/.configured
@@ -133,7 +128,7 @@ xtst-unpack: $(XTST_BUILD_DIR)/.configured
 #
 $(XTST_BUILD_DIR)/.built: $(XTST_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XTST_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -146,7 +141,7 @@ xtst: $(XTST_BUILD_DIR)/.built
 #
 $(XTST_BUILD_DIR)/.staged: $(XTST_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XTST_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xtst.pc
 	rm -f $(STAGING_LIB_DIR)/libXtst.la
 	touch $@
@@ -168,8 +163,9 @@ xtst-stage: $(XTST_BUILD_DIR)/.staged
 $(XTST_IPK): $(XTST_BUILD_DIR)/.built
 	rm -rf $(XTST_IPK_DIR) $(BUILD_DIR)/xtst_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XTST_BUILD_DIR) DESTDIR=$(XTST_IPK_DIR) install-strip
-	rm -f $(XTST_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(XTST_IPK_DIR)/CONTROL/control
+#	install -m 644 $(XTST_SOURCE_DIR)/postinst $(XTST_IPK_DIR)/CONTROL/postinst
+	rm -f $(XTST_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTST_IPK_DIR)
 
 #
@@ -181,7 +177,6 @@ xtst-ipk: $(XTST_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 xtst-clean:
-	rm -f $(XTST_BUILD_DIR)/.built
 	-$(MAKE) -C $(XTST_BUILD_DIR) clean
 
 #

@@ -99,8 +99,10 @@ $(GETTEXT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GETTEXT_SOURCE) m
 	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(GETTEXT_DIR) $(@D)
 	(cd $(@D); \
+		CFLAGS="-fPIC" \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX)	\
+		--disable-shared \
 	)
 	$(MAKE) -C $(@D)
 	touch $@
@@ -111,6 +113,7 @@ gettext-host: $(GETTEXT_HOST_BUILD_DIR)/.built
 $(GETTEXT_HOST_BUILD_DIR)/.staged: $(GETTEXT_HOST_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
+	cp -f $(@D)/gettext-runtime/intl/.libs/libgnuintl.a $(HOST_STAGING_LIB_DIR)/libintl.a
 	touch $@
 
 gettext-host-stage: $(GETTEXT_HOST_BUILD_DIR)/.staged

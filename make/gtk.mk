@@ -12,16 +12,23 @@
 # GTK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GTK_SITE=http://ftp.gtk.org/pub/gtk/2.16
-GTK_VERSION=2.16.3
-GTK_SOURCE=gtk+-$(GTK_VERSION).tar.bz2
+GTK_SITE=http://ftp.gtk.org/pub/gtk/3.10
+GTK_VERSION=3.10.0
+GTK_SOURCE=gtk+-$(GTK_VERSION).tar.xz
 GTK_DIR=gtk+-$(GTK_VERSION)
-GTK_UNZIP=bzcat
+GTK_UNZIP=xzcat
 GTK_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
-GTK_DESCRIPTION=Gtk+ widget library
+GTK_DESCRIPTION=GTK+ widget library
+GTK_PRINT_DESCRIPTION=GTK+ printing files
+GTK_DOC_DESCRIPTION=GTK+ docs
 GTK_SECTION=lib
 GTK_PRIORITY=optional
-GTK_DEPENDS=pango, atk, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, xcursor, xft, ttf-bitstream-vera, gconv-modules
+GTK_DEPENDS=pango, atk, atk-bridge, gdk-pixbuf, libtiff, libjpeg (>= 6b-2), libpng, ttf-bitstream-vera, gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GTK_DEPENDS+=, libiconv
+endif
+GTK_PRINT_DEPENDS=gtk, cups
+
 
 #
 # GTK_IPK_VERSION should be incremented when the ipk changes.
@@ -41,7 +48,7 @@ GTK_LOCALES=
 # GTK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GTK_PATCHES=$(GTK_SOURCE_DIR)/configure.patch $(GTK_SOURCE_DIR)/no-update-icon-cache.patch
+GTK_PATCHES=$(GTK_SOURCE_DIR)/no-update-icon-cache.patch #$(GTK_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -49,6 +56,9 @@ GTK_PATCHES=$(GTK_SOURCE_DIR)/configure.patch $(GTK_SOURCE_DIR)/no-update-icon-c
 #
 GTK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include -I$(STAGING_INCLUDE_DIR)/pango-1.0 -I$(STAGING_INCLUDE_DIR)/atk-1.0 -I$(STAGING_INCLUDE_DIR)/freetype2
 GTK_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GTK_LDFLAGS += -liconv
+endif
 
 #
 # GTK_BUILD_DIR is the directory in which the build is done.
@@ -61,8 +71,15 @@ GTK_LDFLAGS=
 #
 GTK_BUILD_DIR=$(BUILD_DIR)/gtk
 GTK_SOURCE_DIR=$(SOURCE_DIR)/gtk
+
 GTK_IPK_DIR=$(BUILD_DIR)/gtk-$(GTK_VERSION)-ipk
 GTK_IPK=$(BUILD_DIR)/gtk_$(GTK_VERSION)-$(GTK_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+GTK_PRINT_IPK_DIR=$(BUILD_DIR)/gtk-print-$(GTK_VERSION)-ipk
+GTK_PRINT_IPK=$(BUILD_DIR)/gtk-print_$(GTK_VERSION)-$(GTK_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+GTK_DOC_IPK_DIR=$(BUILD_DIR)/gtk-doc-$(GTK_VERSION)-ipk
+GTK_DOC_IPK=$(BUILD_DIR)/gtk-doc_$(GTK_VERSION)-$(GTK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -79,6 +96,32 @@ $(GTK_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(GTK_SITE)/$(GTK_SOURCE)" >>$@
 	@echo "Description: $(GTK_DESCRIPTION)" >>$@
 	@echo "Depends: $(GTK_DEPENDS)" >>$@
+
+$(GTK_PRINT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: gtk-print" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GTK_PRIORITY)" >>$@
+	@echo "Section: $(GTK_SECTION)" >>$@
+	@echo "Version: $(GTK_VERSION)-$(GTK_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GTK_MAINTAINER)" >>$@
+	@echo "Source: $(GTK_SITE)/$(GTK_SOURCE)" >>$@
+	@echo "Description: $(GTK_PRINT_DESCRIPTION)" >>$@
+	@echo "Depends: $(GTK_PRINT_DEPENDS)" >>$@
+
+$(GTK_DOC_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: gtk-doc" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GTK_PRIORITY)" >>$@
+	@echo "Section: $(GTK_SECTION)" >>$@
+	@echo "Version: $(GTK_VERSION)-$(GTK_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GTK_MAINTAINER)" >>$@
+	@echo "Source: $(GTK_SITE)/$(GTK_SOURCE)" >>$@
+	@echo "Description: $(GTK_DOC_DESCRIPTION)" >>$@
+	@echo "Depends:" >>$@
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -111,9 +154,13 @@ gtk-source: $(DL_DIR)/$(GTK_SOURCE) $(GTK_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) $(GTK_PATCHES) make/gtk.mk
-	$(MAKE) libtiff-stage libpng-stage libjpeg-stage
-	$(MAKE) x11-stage xcursor-stage xfixes-stage xext-stage xft-stage
-	$(MAKE) pango-stage cairo-stage atk-stage
+	$(MAKE) glib-host-stage gettext-host-stage libtiff-stage libpng-stage libjpeg-stage \
+	pango-stage cairo-stage atk-stage atk-bridge-stage gdk-pixbuf-stage cups-stage \
+	xcursor-stage xfixes-stage xext-stage xft-stage xi-stage \
+	libxkbcommon-stage wayland-stage gettext-stage pango-stage cairo-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GTK_DIR) $(@D)
 	$(GTK_UNZIP) $(DL_DIR)/$(GTK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GTK_PATCHES)" ; \
@@ -127,6 +174,8 @@ $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) $(GTK_PATCHES) make/gtk.mk
 		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GTK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GTK_LDFLAGS)" \
+		CPPFLAGS_FOR_BUILD="$(HOST_STAGING_CPPFLAGS)" \
+		LDFLAGS_FOR_BUILD="$(HOST_STAGING_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_path_PERL=/usr/bin/perl \
@@ -153,7 +202,7 @@ gtk-unpack: $(GTK_BUILD_DIR)/.configured
 $(GTK_BUILD_DIR)/.built: $(GTK_BUILD_DIR)/.configured
 	rm -f $@
 	cp $(GTK_SOURCE_DIR)/test-inline-pixbufs.h $(@D)/demos
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) GLIB_COMPILE_SCHEMAS=$(HOST_STAGING_PREFIX)/bin/glib-compile-schemas
 	touch $@
 
 #
@@ -168,12 +217,10 @@ gtk: $(GTK_BUILD_DIR)/.built
 $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(GTK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc
-	rm -f $(STAGING_DIR)/opt/bin/gdk-pixbuf-csource
-	rm -f $(STAGING_DIR)/opt/lib/libgdk-x11-2.0.la
-	rm -f $(STAGING_DIR)/opt/lib/libgdk_pixbuf-2.0.la
-	rm -f $(STAGING_DIR)/opt/lib/libgdk_pixbuf_xlib-2.0.la
-	rm -f $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.la
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/gail-*.pc
+	rm -f $(addprefix $(STAGING_LIB_DIR), libgailutil-3.la libgdk-3.la libgtk-3.la)
+	find $(STAGING_LIB_DIR)/gtk-3.0 -type f -name *.la -exec rm -f {} \;
 	touch $@
 
 gtk-stage: $(GTK_BUILD_DIR)/.staged
@@ -190,12 +237,28 @@ gtk-stage: $(GTK_BUILD_DIR)/.staged
 #
 # You may need to patch your application to make it use these locations.
 #
-$(GTK_IPK): $(GTK_BUILD_DIR)/.built
-	rm -rf $(GTK_IPK_DIR) $(BUILD_DIR)/gtk_*_$(TARGET_ARCH).ipk
+$(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK): $(GTK_BUILD_DIR)/.built
+	rm -rf $(GTK_IPK_DIR) $(GTK_DOC_IPK_DIR) $(GTK_PRINT_IPK_DIR) \
+		$(BUILD_DIR)/gtk_*_$(TARGET_ARCH).ipk \
+		$(BUILD_DIR)/gtk-doc_*_$(TARGET_ARCH).ipk \
+		$(BUILD_DIR)/gtk-print_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTK_BUILD_DIR) DESTDIR=$(GTK_IPK_DIR) install-strip
-	install -d $(GTK_IPK_DIR)/opt/etc/gtk-2.0
-	rm -f $(GTK_IPK_DIR)/opt/lib/*.la
-	rm -rf $(GTK_IPK_DIR)/opt/share/gtk-doc
+	### make gtk-doc-ipk
+	install -d $(GTK_DOC_IPK_DIR)/opt/share
+	mv -f $(GTK_IPK_DIR)/opt/share/gtk-doc $(GTK_DOC_IPK_DIR)/opt/share/
+	$(MAKE) $(GTK_DOC_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_DOC_IPK_DIR)
+	### make gtk-print-ipk
+	find $(GTK_IPK_DIR) -type f -name *.la -exec rm -f {} \;
+	install -d $(GTK_PRINT_IPK_DIR)/opt/include/gtk-3.0 \
+		$(GTK_PRINT_IPK_DIR)/opt/lib/gtk-3.0/3.0.0
+	mv -f $(GTK_IPK_DIR)/opt/include/gtk-3.0/unix-print \
+		$(GTK_PRINT_IPK_DIR)/opt/include/gtk-3.0/
+	mv -f $(GTK_IPK_DIR)/opt/lib/gtk-3.0/3.0.0/printbackends \
+		$(GTK_PRINT_IPK_DIR)/opt/lib/gtk-3.0/3.0.0/
+	$(MAKE) $(GTK_PRINT_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_PRINT_IPK_DIR)
+	### make gtk-ipk
 	$(MAKE) $(GTK_IPK_DIR)/CONTROL/control
 	install -m 644 $(GTK_SOURCE_DIR)/postinst $(GTK_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_IPK_DIR)
@@ -216,4 +279,12 @@ gtk-clean:
 # directories.
 #
 gtk-dirclean:
-	rm -rf $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR) $(GTK_IPK_DIR) $(GTK_IPK)
+	rm -rf $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR) \
+		$(GTK_IPK_DIR) $(GTK_DOC_IPK_DIR) $(GTK_PRINT_IPK_DIR) \
+		$(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK)
+
+#
+# Some sanity check for the package.
+#
+gtk-check: $(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

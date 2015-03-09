@@ -95,7 +95,7 @@ xcursor-source: $(DL_DIR)/$(XCURSOR_SOURCE) $(XCURSOR_PATCHES)
 #
 $(XCURSOR_BUILD_DIR)/.configured: $(DL_DIR)/$(XCURSOR_SOURCE) \
 		$(XCURSOR_PATCHES) make/xcursor.mk
-	$(MAKE) x11-stage xrender-stage xfixesproto-stage xfixes-stage
+	$(MAKE) xorg-macros-stage x11-stage xrender-stage xfixesproto-stage xfixes-stage
 	rm -rf $(BUILD_DIR)/$(XCURSOR_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XCURSOR_SOURCE)
 	if test -n "$(XCURSOR_PATCHES)" ; \
@@ -144,7 +144,7 @@ $(XCURSOR_BUILD_DIR)/.staged: $(XCURSOR_BUILD_DIR)/.built
 	$(MAKE) -C $(XCURSOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/xcursor.pc
-	rm -f $(STAGING_LIB_DIR)/libXCURSOR.la
+	rm -f $(STAGING_LIB_DIR)/libXcursor.la
 	touch $@
 
 xcursor-stage: $(XCURSOR_BUILD_DIR)/.staged

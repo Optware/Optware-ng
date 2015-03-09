@@ -12,11 +12,11 @@
 # ATK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-ATK_SITE=http://ftp.gnome.org/pub/gnome/sources/atk/1.26
-ATK_VERSION=1.26.0
-ATK_SOURCE=atk-$(ATK_VERSION).tar.bz2
+ATK_SITE=http://ftp.gnome.org/pub/gnome/sources/atk/2.15
+ATK_VERSION=2.15.91
+ATK_SOURCE=atk-$(ATK_VERSION).tar.xz
 ATK_DIR=atk-$(ATK_VERSION)
-ATK_UNZIP=bzcat
+ATK_UNZIP=xzcat
 ATK_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 ATK_DESCRIPTION=GNOME accessibility toolkit
 ATK_SECTION=lib
