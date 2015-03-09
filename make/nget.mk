@@ -107,7 +107,9 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nge
 	case `$(TARGET_CC) -dumpversion` in \
 	  4.2.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch \
 	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
-	  4.[3-9].* | 4.10.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch \
+	  4.[3-8].*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch \
+	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
+	  4.9.* | [5-9].*.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch $(NGET_SOURCE_DIR)/nget-0.27.1-gcc49.patch \
 	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
 	esac
 	mv $(BUILD_DIR)/$(NGET_DIR) $(@D)

@@ -1,0 +1,33 @@
+diff -dup nget-0.27.1.orig/etree.cc nget-0.27.1/etree.cc
+--- nget-0.27.1.orig/etree.cc	2004-05-30 02:00:05.000000000 +0300
++++ nget-0.27.1/etree.cc	2015-03-09 19:02:39.508425000 +0200
+@@ -79,7 +79,7 @@ pred<ClassType> *new_comparison(RetType
+ 	return new Comparison<Op, MemGetter, RetType, ClassType>(member, v);
+ }
+ template <template <class A, class B> class Op, class ClassType, class RetType>
+-pred<ClassType> *new_comparison(RetType (ClassType::*memberf)(void), RetType v){
++pred<ClassType> *new_comparison(RetType (ClassType::*memberf)(void) const, RetType v){
+ 	return new Comparison<Op, MemfuncGetter, RetType, ClassType>(memberf, v);
+ }
+ template <class ClassType, class getterT, class T2>
+@@ -112,7 +112,7 @@ pred<ClassType> *new_comparison_re(RetTy
+ 	return new Comparison_re<Op, MemGetter, RetType, ClassType>(member, pattern, flags);
+ }
+ template <template <class A, class B> class Op, class ClassType, class RetType>
+-pred<ClassType> *new_comparison_re(RetType (ClassType::*memberf)(void), const char *pattern, int flags){
++pred<ClassType> *new_comparison_re(RetType (ClassType::*memberf)(void) const, const char *pattern, int flags){
+ 	return new Comparison_re<Op, MemfuncGetter, RetType, ClassType>(memberf, pattern, flags);
+ }
+ template <class ClassType, class getterT>
+diff -dup nget-0.27.1.orig/getter.h nget-0.27.1/getter.h
+--- nget-0.27.1.orig/getter.h	2004-05-30 02:00:08.000000000 +0300
++++ nget-0.27.1/getter.h	2015-03-09 18:52:35.687574000 +0200
+@@ -35,7 +35,7 @@ class MemGetter {
+ template <class RetType, class ClassType>
+ class MemfuncGetter {
+ 	private:
+-		typedef RetType (ClassType::*member_t)(void);
++		typedef RetType (ClassType::*member_t)(void) const;
+ 		member_t member;		
+ 	public:
+ 		typedef RetType T;
