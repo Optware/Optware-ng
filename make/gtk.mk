@@ -216,7 +216,8 @@ gtk: $(GTK_BUILD_DIR)/.built
 #
 $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GTK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	$(MAKE) -C $(GTK_BUILD_DIR) install prefix=$(STAGING_PREFIX) \
+		GLIB_COMPILE_SCHEMAS=$(HOST_STAGING_PREFIX)/bin/glib-compile-schemas
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/gail-*.pc
 	rm -f $(addprefix $(STAGING_LIB_DIR), libgailutil-3.la libgdk-3.la libgtk-3.la)
@@ -242,7 +243,8 @@ $(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK): $(GTK_BUILD_DIR)/.built
 		$(BUILD_DIR)/gtk_*_$(TARGET_ARCH).ipk \
 		$(BUILD_DIR)/gtk-doc_*_$(TARGET_ARCH).ipk \
 		$(BUILD_DIR)/gtk-print_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GTK_BUILD_DIR) DESTDIR=$(GTK_IPK_DIR) install-strip
+	$(MAKE) -C $(GTK_BUILD_DIR) DESTDIR=$(GTK_IPK_DIR) install-strip \
+		GLIB_COMPILE_SCHEMAS=$(HOST_STAGING_PREFIX)/bin/glib-compile-schemas
 	### make gtk-doc-ipk
 	install -d $(GTK_DOC_IPK_DIR)/opt/share
 	mv -f $(GTK_IPK_DIR)/opt/share/gtk-doc $(GTK_DOC_IPK_DIR)/opt/share/
