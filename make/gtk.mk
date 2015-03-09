@@ -253,11 +253,14 @@ $(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK): $(GTK_BUILD_DIR)/.built
 	### make gtk-print-ipk
 	find $(GTK_IPK_DIR) -type f -name *.la -exec rm -f {} \;
 	install -d $(GTK_PRINT_IPK_DIR)/opt/include/gtk-3.0 \
-		$(GTK_PRINT_IPK_DIR)/opt/lib/gtk-3.0/3.0.0
+		$(GTK_PRINT_IPK_DIR)/opt/lib/gtk-3.0/3.0.0 \
+		$(GTK_PRINT_IPK_DIR)/opt/lib/pkgconfig
 	mv -f $(GTK_IPK_DIR)/opt/include/gtk-3.0/unix-print \
 		$(GTK_PRINT_IPK_DIR)/opt/include/gtk-3.0/
 	mv -f $(GTK_IPK_DIR)/opt/lib/gtk-3.0/3.0.0/printbackends \
 		$(GTK_PRINT_IPK_DIR)/opt/lib/gtk-3.0/3.0.0/
+	mv -f $(GTK_IPK_DIR)/opt/lib/pkgconfig/gtk+-unix-print-3.0.pc \
+		$(GTK_PRINT_IPK_DIR)/opt/lib/pkgconfig/
 	$(MAKE) $(GTK_PRINT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_PRINT_IPK_DIR)
 	### make gtk-ipk
