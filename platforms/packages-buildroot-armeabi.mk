@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	rssh \
 	sandbox \
 	libopensync msynctool obexftp \
+	modutils
 
 PERL_MAJOR_VER := 5.20
 PERL_ARCH := armv7l-linux
