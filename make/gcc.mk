@@ -43,7 +43,7 @@ GCC_DEPENDS=binutils, libc-dev
 GCC_SUGGESTS=
 GCC_CONFLICTS=
 
-ifeq ($(GCC_VERSION), $(filter 4.5.3, $(GCC_VERSION)))
+ifeq ($(GCC_VERSION), $(filter 4.5.3 4.9.2, $(GCC_VERSION)))
 GCC_DEPENDS+=, libgmp, libmpfr, libmpc
 endif
 
@@ -156,7 +156,7 @@ gcc-host-stage: $(GCC_HOST_BUILD_DIR)/.staged
 # shown below to make various patches to it.
 #
 $(GCC_BUILD_DIR)/.configured: $(DL_DIR)/$(GCC_SOURCE) $(GCC_PATCHES) #make/gcc.mk
-ifeq ($(GCC_VERSION), $(filter 4.5.3, $(GCC_VERSION)))
+ifeq ($(GCC_VERSION), $(filter 4.5.3 4.9.2, $(GCC_VERSION)))
 	$(MAKE) libgmp-stage libmpfr-stage libmpc-stage
 endif
 	rm -rf $(BUILD_DIR)/$(GCC_DIR) $(@D)
