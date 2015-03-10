@@ -30,14 +30,14 @@ PLAYER_DESCRIPTION=Player provides a network interface to a variety of robot and
 Player''s client/server model allows robot control programs to be written in any programming language and to run on any computer with a network connection to the robot. Player supports multiple concurrent client connections to devices, creating new possibilities for distributed and collaborative sensing and control.
 PLAYER_SECTION=misc
 PLAYER_PRIORITY=optional
-PLAYER_DEPENDS=boost-thread, libjpeg, libstdc++, openssl
+PLAYER_DEPENDS=boost-thread, boost-system, libjpeg, openssl
 PLAYER_SUGGESTS=
 PLAYER_CONFLICTS=
 
 #
 # PLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-PLAYER_IPK_VERSION=4
+PLAYER_IPK_VERSION=5
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files
@@ -62,7 +62,7 @@ endif
 ifeq ($(shell test $(shell echo $(BOOST_VERSION) | cut -d '_' -f2) -ge 50; echo $$?),0)
 PLAYER_CPPFLAGS+=-DTIME_UTC=TIME_UTC_
 endif
-PLAYER_LDFLAGS=-lgcc
+PLAYER_LDFLAGS=-lboost_system -lgcc
 
 #
 # PLAYER_BUILD_DIR is the directory in which the build is done.
@@ -114,8 +114,8 @@ player-source: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES)
 # shown below to make various patches to it.
 #
 $(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) make/player.mk
-	$(MAKE) libstdc++-stage
-	$(MAKE) boost-stage libjpeg-stage openssl-stage
+	$(MAKE) libstdc++-stage \
+		boost-stage libjpeg-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(PLAYER_DIR) $(@D)
 	$(PLAYER_UNZIP) $(DL_DIR)/$(PLAYER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PLAYER_PATCHES)" ; \
