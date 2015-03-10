@@ -48,6 +48,18 @@ NGET_IPK_VERSION=5
 # which they should be applied to the source code.
 #
 NGET_PATCHES=$(NGET_SOURCE_DIR)/limits.patch
+ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 2) -gt 1 || \
+		test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -gt 4; echo $$?),0)
+NGET_PATCHES += $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch
+endif
+ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 2) -gt 2 || \
+		test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -gt 4; echo $$?),0)
+NGET_PATCHES += $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch
+endif
+ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 2) -gt 8 || \
+		test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -gt 4; echo $$?),0)
+NGET_PATCHES += $(NGET_SOURCE_DIR)/nget-0.27.1-gcc49.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -104,14 +116,10 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nge
 	$(MAKE) pcre-stage popt-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(NGET_DIR) $(@D)
 	$(NGET_UNZIP) $(DL_DIR)/$(NGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	case `$(TARGET_CC) -dumpversion` in \
-	  4.2.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch \
-	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
-	  4.[3-8].*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch \
-	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
-	  4.9.* | 4.10.* | [5-9].*.*) cat $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch $(NGET_SOURCE_DIR)/nget-0.27.1-gcc49.patch \
-	         | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ;; \
-	esac
+	if test -n "$(NGET_PATCHES)" ; \
+		then cat `echo $(NGET_PATCHES) | sort` | \
+		patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(NGET_DIR) $(@D)
 	(cd $(@D)/uulib; \
 		$(TARGET_CONFIGURE_OPTS) \
