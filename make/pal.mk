@@ -29,14 +29,14 @@ PAL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PAL_DESCRIPTION=pal is a command-line calendar program that can keep track of events.
 PAL_SECTION=utils
 PAL_PRIORITY=optional
-PAL_DEPENDS=glib, ncurses, readline
+PAL_DEPENDS=glib, ncurses, readline, gettext
 PAL_SUGGESTS=
 PAL_CONFLICTS=
 
 #
 # PAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PAL_IPK_VERSION=2
+PAL_IPK_VERSION=3
 
 #
 # PAL_CONFFILES should be a list of user-editable files
@@ -53,7 +53,7 @@ PAL_IPK_VERSION=2
 # compilation or linking flags, then list them here.
 #
 PAL_CPPFLAGS=
-PAL_LDFLAGS=-lglib-2.0 -lreadline -lncurses
+PAL_LDFLAGS=-lglib-2.0 -lreadline -lncurses -lintl
 
 #
 # PAL_BUILD_DIR is the directory in which the build is done.
@@ -105,7 +105,7 @@ pal-source: $(DL_DIR)/$(PAL_SOURCE) $(PAL_PATCHES)
 # shown below to make various patches to it.
 #
 $(PAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PAL_SOURCE) $(PAL_PATCHES) make/pal.mk
-	$(MAKE) glib-stage ncurses-stage readline-stage
+	$(MAKE) glib-stage ncurses-stage readline-stage gettext-stage
 	rm -rf $(BUILD_DIR)/$(PAL_DIR) $(@D)
 	$(PAL_UNZIP) $(DL_DIR)/$(PAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PAL_PATCHES)" ; \
