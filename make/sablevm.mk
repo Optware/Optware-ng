@@ -30,14 +30,14 @@ SABLEVM_DESCRIPTION=A robust, extremely portable, efficient, and specifications-
 SABLEVM_SECTION=lang
 SABLEVM_PRIORITY=optional
 # it really depends on libltdl
-SABLEVM_DEPENDS=libtool
+SABLEVM_DEPENDS=libtool, popt
 SABLEVM_SUGGESTS=
 SABLEVM_CONFLICTS=classpath
 
 #
 # SABLEVM_IPK_VERSION should be incremented when the ipk changes.
 #
-SABLEVM_IPK_VERSION=2
+SABLEVM_IPK_VERSION=3
 
 #
 # SABLEVM_CONFFILES should be a list of user-editable files
@@ -54,7 +54,7 @@ SABLEVM_IPK_VERSION=2
 # compilation or linking flags, then list them here.
 #
 SABLEVM_CPPFLAGS=
-SABLEVM_LDFLAGS=
+SABLEVM_LDFLAGS=-lpopt
 
 #
 # SABLEVM_BUILD_DIR is the directory in which the build is done.
@@ -106,8 +106,8 @@ sablevm-source: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(SABLEVM_BUILD_DIR)/.configured: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES) # make/sablevm.mk
-	$(MAKE) libtool-stage
+$(SABLEVM_BUILD_DIR)/.configured: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES) make/sablevm.mk
+	$(MAKE) libtool-stage popt-stage
 	rm -rf $(BUILD_DIR)/$(SABLEVM_DIR) $(@D)
 	$(SABLEVM_UNZIP) $(DL_DIR)/$(SABLEVM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SABLEVM_PATCHES)" ; \
