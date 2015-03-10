@@ -22,6 +22,7 @@ UCLIBC++_BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	boost \
 	btg \
+	cppunit \
 	libstdc++ \
 	libtorrent-rasterbar \
 	mkvtoolnix \

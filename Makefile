@@ -273,7 +273,7 @@ COMMON_CROSS_PACKAGES = \
 	cdrtools centerim cuetools \
 	cherokee chicken chillispot chrpath cksfv \
 	classpath clamav clearsilver climm clinkcc clips cmdftp \
-	confuse connect coreutils corkscrew cpio cpufrequtils cron cryptcat \
+	confuse connect coreutils corkscrew cpio cppunit cpufrequtils cron cryptcat \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \

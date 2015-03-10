@@ -36,6 +36,9 @@ RTORRENT_NCURSES=$(strip \
 RTORRENT_DEPENDS=libtorrent, $(RTORRENT_NCURSES), libcurl, xmlrpc-c, zlib
 RTORRENT_SUGGESTS=dtach, screen, adduser
 RTORRENT_CONFLICTS=
+ifeq ($(RTORRENT_CPPUNIT), yes)
+RTORRENT_DEPENDS+=, cppunit
+endif
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
@@ -65,6 +68,9 @@ RTORRENT_CONFIGURE += ac_cv_search_add_wch=no
 RTORRENT_CONFIGURE_OPTS = --without-ncursesw
 endif
 RTORRENT_CONFIGURE_OPTS += --with-xmlrpc-c
+
+RTORRENT_AUTOMAKE?=automake
+RTORRENT_ACLOCAL?=aclocal
 
 #
 # RTORRENT_BUILD_DIR is the directory in which the build is done.
@@ -124,8 +130,11 @@ rtorrent-source: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
 # to Make causes it to override the default search paths of the compiler.
 # 
 $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES) make/rtorrent.mk
-	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage
-	$(MAKE) libcurl-stage xmlrpc-c-stage zlib-stage
+	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage \
+	libcurl-stage xmlrpc-c-stage zlib-stage
+ifeq ($(RTORRENT_CPPUNIT), yes)
+	$(MAKE) cppunit-stage
+endif
 	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR)
 ifdef RTORRENT_SVN_REV
 	$(RTORRENT_UNZIP) $(DL_DIR)/$(RTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -150,7 +159,10 @@ else
 	sed -i -e '/TORRENT_CHECK_EXECINFO()/s/.*/AC_DEFINE(USE_EXECINFO, 1, Use execinfo.h)/' \
 		$(@D)/configure.ac
 endif
-	AUTOMAKE=automake ACLOCAL=aclocal autoreconf -i -f $(@D)
+ifeq ($(RTORRENT_CPPUNIT), yes)
+	cp -f $(STAGING_PREFIX)/share/aclocal/cppunit.m4 $(@D)/scripts/
+endif
+	AUTOMAKE=$(RTORRENT_AUTOMAKE) ACLOCAL=$(RTORRENT_ACLOCAL) autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
@@ -163,6 +175,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-cppunit-prefix=$(STAGING_PREFIX) \
 		$(RTORRENT_CONFIGURE_OPTS) \
 		--disable-nls \
 		--disable-static \

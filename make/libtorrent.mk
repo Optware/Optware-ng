@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.12.6
+LIBTORRENT_VERSION?=0.12.6
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
 #LIBTORRENT_SVN_REV=1037
 ifdef LIBTORRENT_SVN_REV
@@ -33,7 +33,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=1
+LIBTORRENT_IPK_VERSION?=1
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -166,10 +166,13 @@ endif
 # fix for newer gcc error: ‘NULL’ was not declared in this scope
 	sed -i -e '/^#define LIBTORRENT_COMMON_H/s/$$/\n\n#include <cstddef>/' \
 		$(@D)/src/torrent/common.h
+	sed -i -e 's/as_fn_error \$$? "cannot run/echo "cannot run/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTORRENT_LDFLAGS)" \
+		OPENSSL_CFLAGS="$(STAGING_CPPFLAGS)" \
+		OPENSSL_LIBS="$(STAGING_LDFLAGS) -lcrypto" \
 		PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/pkgconfig/" \
 		$(LIBTORRENT_CONFIGURE) \
 		PATH="$(PATH):$(STAGING_DIR)/opt/bin" \
