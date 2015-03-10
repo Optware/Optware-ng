@@ -40,7 +40,7 @@ POSTGRESQL_DEPENDS=readline, coreutils, openssl
 #
 # POSTGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-POSTGRESQL_IPK_VERSION=1
+POSTGRESQL_IPK_VERSION=2
 
 #
 # POSTGRESQL_CONFFILES should be a list of user-editable files
@@ -64,6 +64,10 @@ ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
 POSTGRESQL_CPPFLAGS+=-fno-builtin-rint
 endif
 POSTGRESQL_LDFLAGS=-lpthread
+ifeq (uclibc, $(LIBC_STYLE))
+### fix for undefined reference to `__isnan'
+POSTGRESQL_LDFLAGS += -lm
+endif
 
 #
 # POSTGRESQL_BUILD_DIR is the directory in which the build is done.
