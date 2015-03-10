@@ -16,7 +16,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	nmon \
 	qemu qemu-libc-i386 quickie \
 	syx \
-	gtk vte xchat \
+	vte xchat \
 
 UCLIBC++_BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
