@@ -26,6 +26,9 @@ NTPCLIENT_LDFLAGS=-lrt
 ifeq ($(OPTWARE_TARGET), $(filter vt4, $(OPTWARE_TARGET)))
 NTPCLIENT_LDFLAGS+=-lpthread
 endif
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi, $(OPTWARE_TARGET)))
+NTPCLIENT_CPPFLAGS += -D__adjtimex=adjtimex
+endif
 
 NTPCLIENT_BUILD_DIR=$(BUILD_DIR)/ntpclient
 NTPCLIENT_SOURCE_DIR=$(SOURCE_DIR)/ntpclient
