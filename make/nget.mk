@@ -48,17 +48,22 @@ NGET_IPK_VERSION=5
 # which they should be applied to the source code.
 #
 NGET_PATCHES=$(NGET_SOURCE_DIR)/limits.patch
+ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -gt 3; echo $$?),0)
 ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 2) -gt 1 || \
 		test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -gt 4; echo $$?),0)
+### apply starting from gcc-4.2
 NGET_PATCHES += $(NGET_SOURCE_DIR)/nget-0.27.1-gcc42.patch
 endif
 ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 2) -gt 2 || \
 		test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -gt 4; echo $$?),0)
+### apply starting from gcc-4.3
 NGET_PATCHES += $(NGET_SOURCE_DIR)/nget-0.27.1-gcc43.patch
 endif
 ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 2) -gt 8 || \
 		test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -gt 4; echo $$?),0)
+### apply starting from gcc-4.9
 NGET_PATCHES += $(NGET_SOURCE_DIR)/nget-0.27.1-gcc49.patch
+endif
 endif
 
 #

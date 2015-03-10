@@ -43,10 +43,12 @@ GCC_DEPENDS=binutils, libc-dev
 GCC_SUGGESTS=
 GCC_CONFLICTS=
 
+ifeq ($(shell test $(shell echo $(GCC_VERSION) | cut -d '.' -f 1) -gt 3; echo $$?),0)
 ifeq ($(shell test $(shell echo $(GCC_VERSION) | cut -d '.' -f 2) -gt 2 || \
 		test $(shell echo $(GCC_VERSION) | cut -d '.' -f 1) -gt 4; echo $$?),0)
 ### starting from gcc-4.3 gcc depends on libgmp, libmpfr and libmpc
 GCC_DEPENDS+=, libgmp, libmpfr, libmpc
+endif
 endif
 
 #
@@ -158,9 +160,11 @@ gcc-host-stage: $(GCC_HOST_BUILD_DIR)/.staged
 # shown below to make various patches to it.
 #
 $(GCC_BUILD_DIR)/.configured: $(DL_DIR)/$(GCC_SOURCE) $(GCC_PATCHES) #make/gcc.mk
+ifeq ($(shell test $(shell echo $(GCC_VERSION) | cut -d '.' -f 1) -gt 3; echo $$?),0)
 ifeq ($(shell test $(shell echo $(GCC_VERSION) | cut -d '.' -f 2) -gt 2 || \
 		test $(shell echo $(GCC_VERSION) | cut -d '.' -f 1) -gt 4; echo $$?),0)
 	$(MAKE) libgmp-stage libmpfr-stage libmpc-stage
+endif
 endif
 	rm -rf $(BUILD_DIR)/$(GCC_DIR) $(@D)
 	$(GCC_UNZIP) $(DL_DIR)/$(GCC_SOURCE) | tar -C $(BUILD_DIR) -xf -
