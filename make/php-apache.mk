@@ -110,8 +110,8 @@ php-apache-source: $(DL_DIR)/$(PHP_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_HOST_CLI) $(PHP_APACHE_PATCHES) make/php-apache.mk
-	$(MAKE) apache-stage bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
+$(PHP_APACHE_BUILD_DIR)/.configured: $(PHP_HOST_CLI) $(PHP_APACHE_PATCHES) make/php-apache.mk
+	$(MAKE) php-source apache-stage bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
 		libxslt-stage openssl-stage mysql-stage postgresql-stage freetds-stage \
 		unixodbc-stage imap-stage libpng-stage libjpeg-stage libzip-stage icu-stage \
 		libgmp-stage sqlite-stage

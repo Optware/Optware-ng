@@ -104,8 +104,8 @@ php-thttpd-source: $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_DIR)/$(PHP_THTTPD_LIBPHP_
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 
-$(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_HOST_CLI) $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_DIR)/$(PHP_THTTPD_LIBPHP_SOURCE) $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES) make/php-thttpd.mk
-	$(MAKE) bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
+$(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(PHP_HOST_CLI) $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES) make/php-thttpd.mk
+	$(MAKE) php-source bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
 		libxslt-stage openssl-stage mysql-stage postgresql-stage freetds-stage \
 		unixodbc-stage imap-stage libpng-stage libjpeg-stage libzip-stage icu-stage \
 		libgmp-stage sqlite-stage
