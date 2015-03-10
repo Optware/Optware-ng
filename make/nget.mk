@@ -122,7 +122,7 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nge
 	rm -rf $(BUILD_DIR)/$(NGET_DIR) $(@D)
 	$(NGET_UNZIP) $(DL_DIR)/$(NGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NGET_PATCHES)" ; \
-		then cat `echo $(NGET_PATCHES) | sort` | \
+		then cat $(NGET_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(NGET_DIR) $(@D)
