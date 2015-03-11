@@ -26,16 +26,16 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GNUTLS_SITE=http://ftp.gnu.org/pub/gnu/gnutls
-GNUTLS_VERSION=2.10.5
-GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
+GNUTLS_SITE=ftp://ftp.gnutls.org/gcrypt/gnutls/v3.3
+GNUTLS_VERSION=3.3.13
+GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.xz
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
-GNUTLS_UNZIP=bzcat
+GNUTLS_UNZIP=xzcat
 GNUTLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUTLS_DESCRIPTION=GNU Transport Layer Security Library.
 GNUTLS_SECTION=libs
 GNUTLS_PRIORITY=optional
-GNUTLS_DEPENDS=libtasn1, libgcrypt, libgpg-error, zlib
+GNUTLS_DEPENDS=libtasn1, libgcrypt, libgpg-error, zlib, libnettle
 GNUTLS_SUGGESTS=
 GNUTLS_CONFLICTS=
 
@@ -52,7 +52,7 @@ GNUTLS_CONFFILES=#/opt/etc/gnutls.conf /opt/etc/init.d/SXXgnutls
 # GNUTLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GNUTLS_PATCHES=$(GNUTLS_SOURCE_DIR)/x509.c.patch \
+#GNUTLS_PATCHES=$(GNUTLS_SOURCE_DIR)/x509.c.patch \
 		$(GNUTLS_SOURCE_DIR)/gdoc.patch
 
 #
@@ -112,7 +112,7 @@ gnutls-source: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES) make/gnutls.mk
-	$(MAKE) libgcrypt-stage libtasn1-stage
+	$(MAKE) libgcrypt-stage libtasn1-stage libnettle-stage
 	rm -rf $(BUILD_DIR)/$(GNUTLS_DIR) $(GNUTLS_BUILD_DIR)
 	$(GNUTLS_UNZIP) $(DL_DIR)/$(GNUTLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNUTLS_PATCHES)"; \
@@ -123,6 +123,8 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUTLS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNUTLS_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
