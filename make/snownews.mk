@@ -64,7 +64,7 @@ SNOWNEWS_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 SNOWNEWS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/ncurses
-SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm -lssl
+SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm -lssl -lcrypto
 ifeq ($(LIBC_STYLE), uclibc)
 SNOWNEWS_LDFLAGS+= -lintl
 endif
