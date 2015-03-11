@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBNETTLE_SITE=ftp://ftp.gnu.org/gnu/nettle
-LIBNETTLE_VERSION=3.0
+LIBNETTLE_VERSION=2.7.1
 LIBNETTLE_SOURCE=nettle-$(LIBNETTLE_VERSION).tar.gz
 LIBNETTLE_DIR=nettle-$(LIBNETTLE_VERSION)
 LIBNETTLE_UNZIP=zcat
@@ -127,7 +127,6 @@ $(LIBNETTLE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETTLE_SOURCE) $(LIBNETTLE_PA
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -153,6 +152,8 @@ libnettle: $(LIBNETTLE_BUILD_DIR)/.built
 $(LIBNETTLE_BUILD_DIR)/.staged: $(LIBNETTLE_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libnettle.a
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/nettle.pc
 	touch $@
 
 libnettle-stage: $(LIBNETTLE_BUILD_DIR)/.staged
@@ -192,6 +193,7 @@ $(LIBNETTLE_IPK): $(LIBNETTLE_BUILD_DIR)/.built
 	rm -rf $(LIBNETTLE_IPK_DIR) $(BUILD_DIR)/libnettle_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNETTLE_BUILD_DIR) DESTDIR=$(LIBNETTLE_IPK_DIR) install
 	$(STRIP_COMMAND) $(LIBNETTLE_IPK_DIR)/opt/lib/lib*.so $(LIBNETTLE_IPK_DIR)/opt/bin/*
+	rm -f $(LIBNETTLE_IPK_DIR)/opt/lib/libnettle.a
 #	install -d $(LIBNETTLE_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBNETTLE_SOURCE_DIR)/libnettle.conf $(LIBNETTLE_IPK_DIR)/opt/etc/libnettle.conf
 #	install -d $(LIBNETTLE_IPK_DIR)/opt/etc/init.d
