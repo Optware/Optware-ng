@@ -53,7 +53,7 @@ TCPDUMP_PATCHES=
 # compilation or linking flags, then list them here.
 #
 TCPDUMP_CPPFLAGS=
-TCPDUMP_LDFLAGS=
+TCPDUMP_LDFLAGS=-lpthread
 
 #
 # TCPDUMP_BUILD_DIR is the directory in which the build is done.
