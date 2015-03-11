@@ -74,13 +74,21 @@ TRANSMISSION-DBG_LDFLAGS=-lefence -lpthread
 ifeq (uclibc, $(LIBC_STYLE))
 TRANSMISSION_LDFLAGS+=-lintl
 TRANSMISSION-DBG_LDFLAGS+=-lintl
+TRANSMISSION_NLS=enable
 endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 TRANSMISSION_LDFLAGS += -liconv
 endif
 ifeq ($(GETTEXT_NLS), enable)
+TRANSMISSION_NLS=enable
+endif
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+TRANSMISSION_NLS=enable
+endif
+ifeq ($(TRANSMISSION_NLS), enable)
 TRANSMISSION_DEPENDS+=, gettext
 endif
+
 
 #
 # TRANSMISSION_BUILD_DIR is the directory in which the build is done.
@@ -251,7 +259,7 @@ endif
 
 $(TRANSMISSION-DBG_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) make/transmission.mk
 	$(MAKE) openssl-stage electric-fence-stage
-ifeq ($(GETTEXT_NLS), enable)
+ifeq ($(TRANSMISSION_NLS), enable)
 	$(MAKE) gettext-stage
 endif
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D)
@@ -410,12 +418,12 @@ ifeq (gtk, $(filter gtk, $(PACKAGES)))
 	mv -f $(TRANSMISSION_IPK_DIR)/opt/share/man/man1/transmission-gtk.1 $(TRANSMISSION_GTK_IPK_DIR)/opt/share/man/man1/
 	$(MAKE) $(TRANSMISSION_GTK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSION_GTK_IPK_DIR)
-#	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSION_GTK_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSION_GTK_IPK_DIR)
 endif
 	$(MAKE) $(TRANSMISSION_IPK_DIR)/CONTROL/control
 	echo $(TRANSMISSION_CONFFILES) | sed -e 's/ /\n/g' > $(TRANSMISSION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSION_IPK_DIR)
-#	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSION_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSION_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
