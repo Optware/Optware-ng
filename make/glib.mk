@@ -12,8 +12,8 @@
 # GLIB_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GLIB_SITE=http://ftp.gnome.org/pub/gnome/sources/glib/2.38
-GLIB_VERSION=2.38.2
+GLIB_SITE=http://ftp.gnome.org/pub/gnome/sources/glib/2.43
+GLIB_VERSION=2.43.91
 GLIB_SOURCE=glib-$(GLIB_VERSION).tar.xz
 GLIB_DIR=glib-$(GLIB_VERSION)
 GLIB_UNZIP=xzcat
@@ -163,6 +163,9 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GLIB_LDFLAGS)" \
+		glib_cv_stack_grows=no \
+		glib_cv_uscore=yes \
+		ac_cv_func_posix_getpwuid_r=yes \
 		ac_cv_func_posix_getgrgid_r=yes \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
