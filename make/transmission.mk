@@ -39,12 +39,14 @@ TRANSMISSION_DIR=transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
 TRANSMISSION_MAINTAINER=oleo@email.si
 TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with web interface bundled.
+TRANSMISSION_GTK_DESCRIPTION=transmission Gtk+ interface client
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl, libcurl, libevent, zlib
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 TRANSMISSION_DEPENDS+=, libiconv
 endif
+TRANSMISSION_GTK_DEPENDS=transmission, gtk
 TRANSMISSION_SUGGESTS=
 TRANSMISSION_CONFLICTS=
 
@@ -98,6 +100,20 @@ else
 TRANSMISSION_IPK=$(BUILD_DIR)/transmission_$(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)_$(TARGET_ARCH).ipk
 endif
 
+TRANSMISSION_GTK_IPK_DIR=$(BUILD_DIR)/transmission-gtk-$(TRANSMISSION_VERSION)-ipk
+ifdef TRANSMISSION_SVN_REV
+TRANSMISSION_GTK_IPK=$(BUILD_DIR)/transmission-gtk_$(TRANSMISSION_VERSION)+r$(TRANSMISSION_SVN_REV)-$(TRANSMISSION_IPK_VERSION)_$(TARGET_ARCH).ipk
+else
+TRANSMISSION_GTK_IPK=$(BUILD_DIR)/transmission-gtk_$(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)_$(TARGET_ARCH).ipk
+endif
+
+
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+TRANSMISSION_IPKS=$(TRANSMISSION_IPK) $(TRANSMISSION_GTK_IPK)
+else
+TRANSMISSION_IPKS=$(TRANSMISSION_IPK)
+endif
+
 #
 # TRANSMISSION-DBG_BUILD_DIR is the directory in which the build is done.
 # TRANSMISSION-DBG_SOURCE_DIR is the directory which holds all the
@@ -118,6 +134,11 @@ endif
 
 ifeq ($(TRANSMISSION_SOURCE), $(TRANSMISSIOND_SOURCE))
 TRANSMISSION_SKIP_FETCH=1
+endif
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+TRANSMISSION_CONFIGURE_ARGS=--with-gtk --enable-nls
+else
+TRANSMISSION_CONFIGURE_ARGS=--without-gtk --disable-nls
 endif
 
 #
@@ -177,6 +198,9 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+	$(MAKE) gtk-stage
+endif
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D)
 ifndef TRANSMISSION_SVN_REV
 	mkdir -p $(BUILD_DIR)/$(TRANSMISSION_DIR)
@@ -219,9 +243,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--datadir=/opt/share \
-		--disable-gtk \
-		--disable-wx \
-		--disable-nls \
+		$(TRANSMISSION_CONFIGURE_ARGS) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -333,6 +355,25 @@ endif
 	@echo "Suggests: $(TRANSMISSION_SUGGESTS)" >>$@
 	@echo "Conflicts: $(TRANSMISSION_CONFLICTS)" >>$@
 
+$(TRANSMISSION_GTK_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: transmission-gtk" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(TRANSMISSION_PRIORITY)" >>$@
+	@echo "Section: $(TRANSMISSION_SECTION)" >>$@
+ifdef TRANSMISSION_SVN_REV
+	@echo "Version: $(TRANSMISSION_VERSION)+r$(TRANSMISSION_SVN_REV)-$(TRANSMISSION_IPK_VERSION)" >>$@
+else
+	@echo "Version: $(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)" >>$@
+endif
+	@echo "Maintainer: $(TRANSMISSION_MAINTAINER)" >>$@
+	@echo "Source: $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE)" >>$@
+	@echo "Description: $(TRANSMISSION_GTK_DESCRIPTION)" >>$@
+	@echo "Depends: $(TRANSMISSION_GTK_DEPENDS)" >>$@
+	@echo "Suggests: $(TRANSMISSION_SUGGESTS)" >>$@
+	@echo "Conflicts: $(TRANSMISSION_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -346,12 +387,13 @@ endif
 # You may need to patch your application to make it use these locations.
 #
 ifdef TRANSMISSION_SVN_REV
-$(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built \
+$(TRANSMISSION_IPKS): $(TRANSMISSION_BUILD_DIR)/.built \
 # $(TRANSMISSION-DBG_BUILD_DIR)/.built
 else
-$(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
+$(TRANSMISSION_IPKS): $(TRANSMISSION_BUILD_DIR)/.built
 endif
-	rm -rf $(TRANSMISSION_IPK_DIR) $(BUILD_DIR)/transmission_*_$(TARGET_ARCH).ipk
+	rm -rf $(TRANSMISSION_IPK_DIR) $(BUILD_DIR)/transmission_*_$(TARGET_ARCH).ipk \
+		$(TRANSMISSION_GTK_IPK_DIR) $(BUILD_DIR)/transmission-gtk_*_$(TARGET_ARCH).ipk
 	install -d $(TRANSMISSION_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) DESTDIR=$(TRANSMISSION_IPK_DIR) install-strip
 #	install -d $(TRANSMISSION_IPK_DIR)/opt/etc
@@ -360,15 +402,25 @@ endif
 	install -m 666 $(TRANSMISSION_BUILD_DIR)/[CNR]*  $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	install -d $(TRANSMISSION_IPK_DIR)/opt/var/log
 	install -d $(TRANSMISSION_IPK_DIR)/opt/var/run
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+	install -d $(TRANSMISSION_GTK_IPK_DIR)/opt/bin $(TRANSMISSION_GTK_IPK_DIR)/opt/share/man/man1
+	mv -f $(TRANSMISSION_IPK_DIR)/opt/bin/transmission-gtk $(TRANSMISSION_GTK_IPK_DIR)/opt/bin/
+	mv -f $(addprefix $(TRANSMISSION_IPK_DIR)/opt/share/, applications icons pixmaps) \
+		$(TRANSMISSION_GTK_IPK_DIR)/opt/share/
+	mv -f $(TRANSMISSION_IPK_DIR)/opt/share/man/man1/transmission-gtk.1 $(TRANSMISSION_GTK_IPK_DIR)/opt/share/man/man1/
+	$(MAKE) $(TRANSMISSION_GTK_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSION_GTK_IPK_DIR)
+#	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSION_GTK_IPK_DIR)
+endif
 	$(MAKE) $(TRANSMISSION_IPK_DIR)/CONTROL/control
 	echo $(TRANSMISSION_CONFFILES) | sed -e 's/ /\n/g' > $(TRANSMISSION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSION_IPK_DIR)
-	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSION_IPK_DIR)
+#	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSION_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-transmission-ipk: $(TRANSMISSION_IPK)
+transmission-ipk: $(TRANSMISSION_IPKS)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -390,5 +442,5 @@ transmission-dirclean:
 #
 # Some sanity check for the package.
 # Non stripped transmissiond-dbg is intentional
-transmission-check: $(TRANSMISSION_IPK)
+transmission-check: $(TRANSMISSION_IPKS)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
