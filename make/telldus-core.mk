@@ -77,6 +77,12 @@ $(TELLDUS-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(TELLDUS-CORE_SOURCE) $(TELLDU
 		then cat $(TELLDUS-CORE_PATCHES) | \
 		patch -d $(@D) -p1 ; \
 	fi
+#	fix for:
+#	  error: 'write' was not declared in this scope
+#	  error: 'read' was not declared in this scope
+#	  error: 'usleep' was not declared in this scope
+#	  error: 'close' was not declared in this scope
+	sed -i -e '1 i #include <unistd.h>' $(@D)/driver/libtelldus-core/linux/Device.cpp
 	(cd $(@D) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TELLDUS-CORE_CPPFLAGS)" \
