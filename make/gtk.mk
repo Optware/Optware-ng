@@ -12,8 +12,8 @@
 # GTK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GTK_SITE=http://ftp.gtk.org/pub/gtk/3.10
-GTK_VERSION=3.10.0
+GTK_SITE=http://ftp.gnome.org/pub/gnome/sources/gtk+/3.14
+GTK_VERSION=3.14.9
 GTK_SOURCE=gtk+-$(GTK_VERSION).tar.xz
 GTK_DIR=gtk+-$(GTK_VERSION)
 GTK_UNZIP=xzcat
@@ -48,7 +48,7 @@ GTK_LOCALES=
 # GTK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GTK_PATCHES=$(GTK_SOURCE_DIR)/no-update-icon-cache.patch #$(GTK_SOURCE_DIR)/configure.patch
+#GTK_PATCHES=$(GTK_SOURCE_DIR)/no-update-icon-cache.patch #$(GTK_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -169,6 +169,7 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(GTK_DIR) $(@D)
 	sed -i -e '/SRC_SUBDIRS *=/s| demos||' $(@D)/Makefile.in
+	sed -i -e '/SUBDIRS *=/s| native||' $(@D)/gtk/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
@@ -179,6 +180,8 @@ endif
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_path_PERL=/usr/bin/perl \
+		GLIB_COMPILE_SCHEMAS=$(HOST_STAGING_PREFIX)/bin/glib-compile-schemas \
+		WAYLAND_SCANNER=$(HOST_STAGING_PREFIX)/bin/wayland-scanner \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -202,7 +205,7 @@ gtk-unpack: $(GTK_BUILD_DIR)/.configured
 $(GTK_BUILD_DIR)/.built: $(GTK_BUILD_DIR)/.configured
 	rm -f $@
 	cp $(GTK_SOURCE_DIR)/test-inline-pixbufs.h $(@D)/demos
-	$(MAKE) -C $(@D) GLIB_COMPILE_SCHEMAS=$(HOST_STAGING_PREFIX)/bin/glib-compile-schemas
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -216,8 +219,7 @@ gtk: $(GTK_BUILD_DIR)/.built
 #
 $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GTK_BUILD_DIR) install prefix=$(STAGING_PREFIX) \
-		GLIB_COMPILE_SCHEMAS=$(HOST_STAGING_PREFIX)/bin/glib-compile-schemas
+	$(MAKE) -C $(GTK_BUILD_DIR) install prefix=$(STAGING_PREFIX)
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/gail-*.pc
 	rm -f $(addprefix $(STAGING_LIB_DIR)/, libgailutil-3.la libgdk-3.la libgtk-3.la)
@@ -243,8 +245,7 @@ $(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK): $(GTK_BUILD_DIR)/.built
 		$(BUILD_DIR)/gtk_*_$(TARGET_ARCH).ipk \
 		$(BUILD_DIR)/gtk-doc_*_$(TARGET_ARCH).ipk \
 		$(BUILD_DIR)/gtk-print_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GTK_BUILD_DIR) DESTDIR=$(GTK_IPK_DIR) install-strip \
-		GLIB_COMPILE_SCHEMAS=$(HOST_STAGING_PREFIX)/bin/glib-compile-schemas
+	$(MAKE) -C $(GTK_BUILD_DIR) DESTDIR=$(GTK_IPK_DIR) install-strip
 	### make gtk-doc-ipk
 	install -d $(GTK_DOC_IPK_DIR)/opt/share
 	mv -f $(GTK_IPK_DIR)/opt/share/gtk-doc $(GTK_DOC_IPK_DIR)/opt/share/
