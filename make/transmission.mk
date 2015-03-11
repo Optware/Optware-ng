@@ -200,7 +200,7 @@ transmission-source transmission-dbg-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(
 #
 $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) make/transmission.mk
 	$(MAKE) openssl-stage libcurl-stage libevent-stage zlib-stage
-ifeq ($(GETTEXT_NLS), enable)
+ifeq ($(TRANSMISSION_NLS), enable)
 	$(MAKE) gettext-stage
 endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
@@ -258,9 +258,15 @@ endif
 
 
 $(TRANSMISSION-DBG_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) make/transmission.mk
-	$(MAKE) openssl-stage electric-fence-stage
+	$(MAKE) openssl-stage libcurl-stage libevent-stage zlib-stage
 ifeq ($(TRANSMISSION_NLS), enable)
 	$(MAKE) gettext-stage
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+	$(MAKE) gtk-stage
 endif
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D)
 ifndef TRANSMISSION_SVN_REV
@@ -299,9 +305,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-gtk \
-		--disable-wx \
-		--disable-nls \
+		$(TRANSMISSION_CONFIGURE_ARGS) \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
