@@ -12,16 +12,16 @@
 # VTE_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-VTE_SITE=http://ftp.gnome.org/pub/gnome/sources/vte/0.11/
-VTE_VERSION=0.11.21
-VTE_SOURCE=vte-$(VTE_VERSION).tar.bz2
+VTE_SITE=http://ftp.gnome.org/pub/gnome/sources/vte/$(shell echo $(VTE_VERSION)|cut -d '.' -f 1-2)/
+VTE_VERSION=0.36.3
+VTE_SOURCE=vte-$(VTE_VERSION).tar.xz
 VTE_DIR=vte-$(VTE_VERSION)
-VTE_UNZIP=bzcat
+VTE_UNZIP=xzcat
 VTE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 VTE_DESCRIPTION=Gtk+ terminal widget
 VTE_SECTION=lib
 VTE_PRIORITY=optional
-VTE_DEPENDS=gtk, ncurses, termcap, sm, dev-pts
+VTE_DEPENDS=gtk, ncurses, termcap, sm, dev-pts, gettext
 
 #
 # VTE_IPK_VERSION should be incremented when the ipk changes.
@@ -70,7 +70,7 @@ VTE_IPK=$(BUILD_DIR)/vte_$(VTE_VERSION)-$(VTE_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(VTE_IPK_DIR)/CONTROL/control:
-	@install -d $(VTE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: vte" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -111,18 +111,21 @@ vte-source: $(DL_DIR)/$(VTE_SOURCE) $(VTE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(VTE_BUILD_DIR)/.configured: $(DL_DIR)/$(VTE_SOURCE) \
-		$(VTE_PATCHES)
-	$(MAKE) gtk-stage sm-stage ncurses-stage termcap-stage
-	rm -rf $(BUILD_DIR)/$(VTE_DIR) $(VTE_BUILD_DIR)
+$(VTE_BUILD_DIR)/.configured: $(DL_DIR)/$(VTE_SOURCE) $(VTE_PATCHES) make/vte.mk
+	$(MAKE) gtk-stage sm-stage ncurses-stage termcap-stage \
+	gettext-stage gettext-host-stage
+	rm -rf $(BUILD_DIR)/$(VTE_DIR) $(@D)
 	$(VTE_UNZIP) $(DL_DIR)/$(VTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(VTE_DIR) $(VTE_BUILD_DIR)
+	mv $(BUILD_DIR)/$(VTE_DIR) $(@D)
 	if test -n "$(VTE_PATCHES)"; \
 		then cat $(VTE_PATCHES) |patch -p0 -d$(VTE_BUILD_DIR); \
 	fi
-	(cd $(VTE_BUILD_DIR); \
+#	for kernels without FS_NOCOW_FL support
+	sed -i -e '/^#include <linux\/fs\.h>/s/$$/\n#ifndef FS_NOCOW_FL\n# define FS_NOCOW_FL 0\n#endif/' \
+		$(@D)/src/vteutils.c
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
+		PATH="$(HOST_STAGING_DIR)/opt/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VTE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VTE_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
@@ -138,8 +141,8 @@ $(VTE_BUILD_DIR)/.configured: $(DL_DIR)/$(VTE_SOURCE) \
 		--disable-static \
 		--disable-glibtest \
 	)
-	$(PATCH_LIBTOOL) $(VTE_BUILD_DIR)/libtool
-	touch $(VTE_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 vte-unpack: $(VTE_BUILD_DIR)/.configured
 
@@ -148,9 +151,9 @@ vte-unpack: $(VTE_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(VTE_BUILD_DIR)/.built: $(VTE_BUILD_DIR)/.configured
-	rm -f $(VTE_BUILD_DIR)/.built
-	$(MAKE) -C $(VTE_BUILD_DIR)
-	touch $(VTE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -162,8 +165,10 @@ vte: $(VTE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(VTE_BUILD_DIR)/.staged: $(VTE_BUILD_DIR)/.built
-	$(MAKE) -C $(VTE_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
-	rm -rf $(STAGING_DIR)/opt/lib/libvte.la
+	rm -f $@
+	$(MAKE) -C $(@D) install prefix=$(STAGING_PREFIX)
+	rm -rf $(STAGING_LIB_DIR)/libvte.la
+	touch $@
 
 vte-stage: $(VTE_BUILD_DIR)/.staged
 
@@ -210,4 +215,4 @@ vte-dirclean:
 # Some sanity check for the package.
 #
 vte-check: $(VTE_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VTE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

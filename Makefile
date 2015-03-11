@@ -74,7 +74,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
-	vte xchat \
+	xchat \
 	iozone \
 	bpalogin \
 	nemesis \
@@ -413,7 +413,7 @@ COMMON_CROSS_PACKAGES = \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utelnetd utf8proc util-linux util-linux-ng \
 	vblade vdr-mediamvp vim vitetris vlc \
-	vnstat vorbis-tools vpnc vsftpd vtun \
+	vnstat vorbis-tools vpnc vsftpd vte vtun \
 	w3cam w3m wayland wakelan wavpack webalizer weechat werc wget \
 	which whois wizd wpa-supplicant wput wxbase \
 	xerces-c xmlrpc-c \
