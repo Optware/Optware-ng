@@ -27,7 +27,7 @@ diff -urN tesseract-2.03/viewer/svmnode.cpp tesseract-2.03-NEW/viewer/svmnode.cp
 diff -urN tesseract-2.03/viewer/svutil.cpp tesseract-2.03-NEW/viewer/svutil.cpp
 --- tesseract-2.03/viewer/svutil.cpp	2008-06-27 23:22:47.000000000 +0200
 +++ tesseract-2.03-NEW/viewer/svutil.cpp	2008-06-27 23:21:28.000000000 +0200
-@@ -37,7 +37,9 @@
+@@ -37,7 +37,10 @@
  #endif
  
  #include <iostream>
@@ -35,6 +35,7 @@ diff -urN tesseract-2.03/viewer/svutil.cpp tesseract-2.03-NEW/viewer/svutil.cpp
 +#include <string.h>
 +#include <stdlib.h>
 +#include <stdio.h>
++#include <unistd.h>
  
  const int kBufferSize = 65536;
  const int kMaxMsgSize = 4096;
