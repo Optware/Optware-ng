@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SILC_CLIENT_SITE=http://www.silcnet.org/download/client/sources
-SILC_CLIENT_VERSION=1.1.6
+SILC_CLIENT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/silc
+SILC_CLIENT_VERSION=1.1.11
 SILC_CLIENT_SOURCE=silc-client-$(SILC_CLIENT_VERSION).tar.bz2
 SILC_CLIENT_DIR=silc-client-$(SILC_CLIENT_VERSION)
 SILC_CLIENT_UNZIP=bzcat
@@ -30,6 +30,9 @@ SILC_CLIENT_DESCRIPTION=Secure Internet Live Conferencing client.
 SILC_CLIENT_SECTION=net
 SILC_CLIENT_PRIORITY=optional
 SILC_CLIENT_DEPENDS=glib, ncurses
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+SILC_DEPENDS+=, libiconv
+endif
 SILC_CLIENT_SUGGESTS=
 SILC_CLIENT_CONFLICTS=
 
@@ -54,6 +57,9 @@ SILC_CLIENT_IPK_VERSION=1
 #
 SILC_CLIENT_CPPFLAGS=
 SILC_CLIENT_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+SILC_CLIENT_LDFLAGS += -liconv
+endif
 
 #
 # SILC_CLIENT_BUILD_DIR is the directory in which the build is done.
@@ -106,6 +112,9 @@ silc-client-source: $(DL_DIR)/$(SILC_CLIENT_SOURCE) $(SILC_CLIENT_PATCHES)
 #
 $(SILC_CLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(SILC_CLIENT_SOURCE) $(SILC_CLIENT_PATCHES) make/silc-client.mk
 	$(MAKE) glib-stage ncurses-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(SILC_CLIENT_DIR) $(@D)
 	$(SILC_CLIENT_UNZIP) $(DL_DIR)/$(SILC_CLIENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SILC_CLIENT_PATCHES)" ; \
@@ -120,7 +129,7 @@ $(SILC_CLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(SILC_CLIENT_SOURCE) $(SILC_CLI
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SILC_CLIENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SILC_CLIENT_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
-ac_cv_func_epoll_wait=no \
+		ac_cv_func_epoll_wait=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
