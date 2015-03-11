@@ -59,7 +59,7 @@ SCROBBY_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 SCROBBY_CPPFLAGS=
-SCROBBY_LDFLAGS=
+SCROBBY_LDFLAGS=-lcrypto
 
 #
 # SCROBBY_BUILD_DIR is the directory in which the build is done.
@@ -121,6 +121,8 @@ $(SCROBBY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCROBBY_SOURCE) $(SCROBBY_PATCHES)
 	if test "$(BUILD_DIR)/$(SCROBBY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SCROBBY_DIR) $(@D) ; \
 	fi
+#	fix for error: 'getuid' was not declared in this scope
+	sed -i -e '/^#define _MISC_H/ a #include <unistd.h>' $(@D)/src/misc.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SCROBBY_CPPFLAGS)" \
