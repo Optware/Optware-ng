@@ -59,7 +59,7 @@ VSFTPD_LDFLAGS=-lcrypt -lcap
 
 ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
 VSFTPD_CPPFLAGS+=-I$(STAGING_INCLUDE_DIR)/openssl
-VSFTPD_LDFLAGS+=-lssl
+VSFTPD_LDFLAGS+=-lssl -lcrypto
 endif
 
 #
