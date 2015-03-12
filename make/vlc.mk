@@ -32,7 +32,7 @@ VLC_VERSION=2.1.5
 VLC_UNZIP=xzcat
 VLC_SOURCE_SUFFIX=tar.xz
 endif
-VLC_IPK_VERSION=1
+VLC_IPK_VERSION=2
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).$(VLC_SOURCE_SUFFIX)
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -40,7 +40,10 @@ VLC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VLC_DESCRIPTION=VLC is a cross-platform media player and streaming server.
 VLC_SECTION=video
 VLC_PRIORITY=optional
-VLC_DEPENDS=dbus, lua
+VLC_DEPENDS=dbus, libidn, gnutls
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+VLC_DEPENDS+=, libiconv
+endif
 VLC_SUGGESTS=\
 faad2, \
 ffmpeg, \
@@ -61,6 +64,7 @@ libshout, \
 libupnp, \
 libvorbis, \
 libxml2, \
+lua, \
 ncursesw, \
 speex
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
@@ -68,6 +72,12 @@ VLC_SUGGESTS+=, avahi
 endif
 ifeq (x264, $(filter x264, $(PACKAGES)))
 VLC_SUGGESTS+=, x264
+endif
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+VLC_SUGGESTS+=, wayland
+endif
+ifeq (xcb, $(filter xcb, $(PACKAGES)))
+VLC_SUGGESTS+=, xcb
 endif
 VLC_CONFLICTS=
 
@@ -100,6 +110,16 @@ ifeq ($(OPTWARE_TARGET), $(filter dns323 ts101, $(OPTWARE_TARGET)))
 VLC_CONFIG_OPTS += --disable-dvbpsi
 else
 VLC_CONFIG_OPTS += --enable-dvbpsi
+endif
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+VLC_CONFIG_OPTS += --enable-wayland
+else
+VLC_CONFIG_OPTS += --disable-wayland
+endif
+ifeq (xcb, $(filter xcb, $(PACKAGES)))
+VLC_CONFIG_OPTS += --with-x --enable-xcb
+else
+VLC_CONFIG_OPTS += --without-x --disable-xcb
 endif
 
 #
@@ -167,29 +187,38 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 	$(MAKE) avahi-stage
 endif
-	$(MAKE) dbus-stage
-	$(MAKE) faad2-stage ffmpeg-stage flac-stage
-	$(MAKE) freetype-stage
-	$(MAKE) fribidi-stage
-	$(MAKE) liba52-stage
-	$(MAKE) libdvbpsi-stage
-	$(MAKE) libdvdnav-stage libdvdread-stage
-	$(MAKE) libid3tag-stage
-	$(MAKE) libmad-stage
-	$(MAKE) libmpcdec-stage
-	$(MAKE) libmpeg2-stage
-	$(MAKE) libogg-stage
-	$(MAKE) libpng-stage
-	$(MAKE) libshout-stage
-	$(MAKE) libupnp-stage
-	$(MAKE) libvorbis-stage
-	$(MAKE) libxml2-stage
-	$(MAKE) ncurses-stage ncursesw-stage
-	$(MAKE) speex-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
+	$(MAKE) dbus-stage libidn-stage gnutls-stage \
+	faad2-stage ffmpeg-stage flac-stage \
+	freetype-stage \
+	fribidi-stage \
+	liba52-stage \
+	libdvbpsi-stage \
+	libdvdnav-stage libdvdread-stage \
+	libid3tag-stage \
+	libmad-stage \
+	libmpcdec-stage \
+	libmpeg2-stage \
+	libogg-stage \
+	libpng-stage \
+	libshout-stage \
+	libupnp-stage \
+	libvorbis-stage \
+	libxml2-stage \
+	ncurses-stage ncursesw-stage \
+	speex-stage \
+	lua-stage lua-host-stage
 ifeq (x264, $(filter x264, $(PACKAGES)))
 	$(MAKE) x264-stage
 endif
-	$(MAKE) lua-stage lua-host-stage
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+	$(MAKE) wayland-stage
+endif
+ifeq (xcb, $(filter xcb, $(PACKAGES)))
+	$(MAKE) xcb-stage
+endif
 	rm -rf $(BUILD_DIR)/$(VLC_DIR) $(@D)
 	$(VLC_UNZIP) $(DL_DIR)/$(VLC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VLC_PATCHES)" ; \
@@ -219,6 +248,7 @@ endif
 		ac_cv_header_sysfs_libsysfs_h=no \
 		NCURSES_CFLAGS="$(STAGING_CPPFLAGS)" \
 		NCURSES_LIBS="$(STAGING_LDFLAGS) -lncursesw" \
+		WAYLAND_SCANNER=$(HOST_STAGING_PREFIX)/bin/wayland-scanner \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -232,7 +262,7 @@ endif
 		--with-dvdnav-config-path=$(STAGING_PREFIX)/bin \
 		--enable-faad \
 		--enable-flac \
-		--disable-gnutls \
+		--enable-gnutls \
 		--enable-mpc \
 		--enable-ncurses \
 		--enable-ogg \
