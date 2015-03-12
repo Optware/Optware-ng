@@ -57,7 +57,7 @@ VPNC_PATCHES= \
 # compilation or linking flags, then list them here.
 #
 VPNC_CPPFLAGS=`$(STAGING_PREFIX)/bin/libgcrypt-config --cflags`
-VPNC_LDFLAGS=`$(STAGING_PREFIX)/bin/libgcrypt-config --libs` -lssl
+VPNC_LDFLAGS=`$(STAGING_PREFIX)/bin/libgcrypt-config --libs` -lssl -lcrypto
 
 #
 # VPNC_BUILD_DIR is the directory in which the build is done.
