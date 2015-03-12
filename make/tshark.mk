@@ -64,7 +64,7 @@ endif
 TSHARK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
 TSHARK_LDFLAGS=-lglib-2.0 -lgmodule-2.0
 ifeq ($(LIBC_STYLE), uclibc)
-TSHARK_LDFLAGS+=-lm
+TSHARK_LDFLAGS+=-lm -ldl
 endif
 
 #
