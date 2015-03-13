@@ -378,7 +378,7 @@ COMMON_CROSS_PACKAGES = \
 	php php-apache php-thttpd phpmyadmin \
 	picocom picolisp pkgconfig player plowshare polipo pop3proxy \
 	popt poptop portmap postgresql postfix pound powertop \
-	ppower ppp privoxy procmail \
+	ppower ppp printproto privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils pthread-stubs puppy pure-ftpd pv pwgen \
 	python python24 python25 python26 python27 python3 $(PYTHON_PACKAGES) \
 	qemacs qemu qemu-libc-i386 qpopper quagga quickie quilt \
