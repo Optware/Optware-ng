@@ -2,4 +2,5 @@
 
 ### configure pango modules
 rm -f /opt/etc/pango/pango.modules
+install -d /opt/etc/pango
 /opt/bin/pango-querymodules > /opt/etc/pango/pango.modules
