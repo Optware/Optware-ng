@@ -21,7 +21,7 @@ GDK-PIXBUF_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 GDK-PIXBUF_DESCRIPTION=GNOME accessibility toolkit
 GDK-PIXBUF_SECTION=lib
 GDK-PIXBUF_PRIORITY=optional
-GDK-PIXBUF_DEPENDS=glib, getetxt, libjpeg, libpng, libtiff, x11
+GDK-PIXBUF_DEPENDS=glib, gettext, libjpeg, libpng, libtiff, x11
 
 #
 # GDK-PIXBUF_IPK_VERSION should be incremented when the ipk changes.
