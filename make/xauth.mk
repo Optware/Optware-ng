@@ -158,6 +158,8 @@ xauth-stage: $(XAUTH_BUILD_DIR)/.staged
 $(XAUTH_IPK): $(XAUTH_BUILD_DIR)/.built
 	rm -rf $(XAUTH_IPK_DIR) $(BUILD_DIR)/xauth_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAUTH_BUILD_DIR) DESTDIR=$(XAUTH_IPK_DIR) install-strip
+	install -d $(XAUTH_IPK_DIR)/opt/X11R6/X11
+	ln -s /opt/bin/xauth $(XAUTH_IPK_DIR)/opt/X11R6/X11/xauth
 	$(MAKE) $(XAUTH_IPK_DIR)/CONTROL/control
 #	install -m 644 $(XAUTH_SOURCE_DIR)/postinst $(XAUTH_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAUTH_IPK_DIR)
