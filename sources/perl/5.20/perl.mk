@@ -38,7 +38,7 @@ PERL_ARCH ?= $(strip \
     $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
     $(TARGET_ARCH)-linux))))
 PERL_LIB_CORE_DIR=perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
-PERL_LDFLAGS="-Wl,-rpath,/opt/lib/$(PERL_LIB_CORE_DIR)"
+PERL_LDFLAGS=-Wl,-rpath,/opt/lib/$(PERL_LIB_CORE_DIR)
 ifeq (vt4, $(OPTWARE_TARGET))
 PERL_LDFLAGS_EXTRA+= -L$(TARGET_CROSS_TOP)/920t_le/lib/gcc/arm-linux/3.4.4
 endif
