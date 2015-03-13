@@ -35,7 +35,7 @@ XTERM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XTERM_DESCRIPTION=Terminal emulator for X.
 XTERM_SECTION=x11
 XTERM_PRIORITY=optional
-XTERM_DEPENDS=xaw, freeype
+XTERM_DEPENDS=xaw, freetype
 
 #
 # XTERM_IPK_VERSION should be incremented when the ipk changes.
