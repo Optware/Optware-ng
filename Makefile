@@ -419,7 +419,7 @@ COMMON_CROSS_PACKAGES = \
 	xerces-c xmlrpc-c \
 	x11 xau xauth xaw xcursor xdmcp xdpyinfo xext \
 	xextensions xfixes xfixesproto xft xi xinetd \
-	xmu xpdf xpm xcb-proto xcb xextproto xorg-macros xproto xrender xt xterm xtrans xtst \
+	xmu xp xpdf xpm xcb-proto xcb xextproto xorg-macros xproto xrender xt xterm xtrans xtst \
 	x264 xmail xvid xz-utils \
 	yafc yasm yawk yougrabber \
 	zile zip zlib znc zoo zsh \
