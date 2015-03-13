@@ -23,7 +23,7 @@ GTK_PRINT_DESCRIPTION=GTK+ printing files
 GTK_DOC_DESCRIPTION=GTK+ docs
 GTK_SECTION=lib
 GTK_PRIORITY=optional
-GTK_DEPENDS=pango, atk, atk-bridge, gdk-pixbuf, libtiff, libjpeg (>= 6b-2), libpng, ttf-bitstream-vera, gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo
+GTK_DEPENDS=pango, atk, atk-bridge, gdk-pixbuf, libtiff, libjpeg (>= 6b-2), libpng, ttf-bitstream-vera, gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo, wayland
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GTK_DEPENDS+=, libiconv
 endif
