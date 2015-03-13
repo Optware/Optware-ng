@@ -196,7 +196,10 @@ perl-unpack: $(PERL_BUILD_DIR)/.configured
 #
 $(PERL_BUILD_DIR)/.built: $(PERL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) \
+		LD=$(TARGET_CC) \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS) $(PERL_LDFLAGS_EXTRA) -lpthread -fstack-protector" \
+		LDDLFLAGS="-shared -O2 $(STAGING_LDFLAGS) $(PERL_LDFLAGS) $(PERL_LDFLAGS_EXTRA) -lpthread -fstack-protector"
 	touch $@
 
 #
