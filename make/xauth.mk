@@ -10,17 +10,15 @@
 # XAUTH_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XAUTH_SITE=http://freedesktop.org
-XAUTH_SOURCE=# none - available from CVS only
-XAUTH_VERSION=0.0cvs20050130
-XAUTH_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xorg
-XAUTH_DIR=xc/programs/xauth
-XAUTH_CVS_OPTS=-D20050130
-XAUTH_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+XAUTH_SITE=http://xorg.freedesktop.org/releases/individual/app
+XAUTH_SOURCE=xauth-$(XAUTH_VERSION).tar.gz
+XAUTH_VERSION=1.0.9
+XAUTH_DIR=xauth-$(XAUTH_VERSION)
+XAUTH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XAUTH_DESCRIPTION=X authority utility
-XAUTH_SECTION=utility
-XAUTH_PRIORITY=optional
-XAUTH_DEPENDS=x11, xext, xmu
+XAUTH_SECTION=lib
+XAUTH_PRIORITY=utility
+XAUTH_DEPENDS=x11, xau, xext, xmu
 
 #
 # XAUTH_IPK_VERSION should be incremented when the ipk changes.
@@ -35,14 +33,14 @@ XAUTH_CONFFILES=
 # XAUTH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XAUTH_PATCHES=$(XAUTH_SOURCE_DIR)/autofoo.patch
+#XAUTH_PATCHES=$(XAUTH_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 XAUTH_CPPFLAGS=
-XAUTH_LDFLAGS=-Wl,-rpath-link $(STAGING_LIB_DIR)
+XAUTH_LDFLAGS=
 
 #
 # XAUTH_BUILD_DIR is the directory in which the build is done.
@@ -75,18 +73,14 @@ $(XAUTH_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(XAUTH_DEPENDS)" >>$@
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XAUTH_DIR) && \
-		cvs -d $(XAUTH_REPOSITORY) -z3 co $(XAUTH_CVS_OPTS) $(XAUTH_DIR) && \
-		tar -czf $@ $(XAUTH_DIR) && \
-		rm -rf $(XAUTH_DIR) \
-	)
+$(DL_DIR)/$(XAUTH_SOURCE):
+	$(WGET) -P $(@D) $(XAUTH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-xauth-source: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz $(XAUTH_PATCHES)
+xauth-source: $(DL_DIR)/$(XAUTH_SOURCE) $(XAUTH_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,21 +92,18 @@ xauth-source: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz $(XAUTH_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XAUTH_BUILD_DIR)/.configured: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz \
-		$(XAUTH_PATCHES) make/xauth.mk
-	$(MAKE) xau-stage
-	$(MAKE) xmu-stage
-	rm -rf $(BUILD_DIR)/$(XAUTH_DIR) $(XAUTH_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz
-	if test "$(BUILD_DIR)/$(XAUTH_DIR)" != "$(XAUTH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XAUTH_DIR) $(XAUTH_BUILD_DIR) ; \
-	fi
+$(XAUTH_BUILD_DIR)/.configured: $(DL_DIR)/$(XAUTH_SOURCE) $(XAUTH_PATCHES) make/xauth.mk
+	$(MAKE) xorg-macros-stage x11-stage xau-stage xext-stage xmu-stage xproto-stage
+	rm -rf $(BUILD_DIR)/$(XAUTH_DIR) $(@D)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XAUTH_SOURCE)
 	if test -n "$(XAUTH_PATCHES)" ; \
 		then cat $(XAUTH_PATCHES) | \
-		patch -d $(XAUTH_BUILD_DIR) -p1 ; \
+		patch -d $(BUILD_DIR)/$(XAUTH_DIR) -p1 ; \
 	fi
-	(cd $(XAUTH_BUILD_DIR); \
-		autoreconf -v -i; \
+	if test "$(BUILD_DIR)/$(XAUTH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XAUTH_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XAUTH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XAUTH_LDFLAGS)" \
@@ -134,7 +125,7 @@ xauth-unpack: $(XAUTH_BUILD_DIR)/.configured
 #
 $(XAUTH_BUILD_DIR)/.built: $(XAUTH_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XAUTH_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -147,7 +138,7 @@ xauth: $(XAUTH_BUILD_DIR)/.built
 #
 $(XAUTH_BUILD_DIR)/.staged: $(XAUTH_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XAUTH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 xauth-stage: $(XAUTH_BUILD_DIR)/.staged
@@ -168,6 +159,7 @@ $(XAUTH_IPK): $(XAUTH_BUILD_DIR)/.built
 	rm -rf $(XAUTH_IPK_DIR) $(BUILD_DIR)/xauth_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAUTH_BUILD_DIR) DESTDIR=$(XAUTH_IPK_DIR) install-strip
 	$(MAKE) $(XAUTH_IPK_DIR)/CONTROL/control
+#	install -m 644 $(XAUTH_SOURCE_DIR)/postinst $(XAUTH_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAUTH_IPK_DIR)
 
 #
