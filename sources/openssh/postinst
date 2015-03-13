@@ -22,7 +22,19 @@ if [ ! -f /opt/etc/openssh/ssh_host_dsa_key ]; then
     echo Generating DSA Key...
     /opt/bin/ssh-keygen -t dsa -f /opt/etc/openssh/ssh_host_dsa_key -C '' -N ''
 fi
-                
+
+# Check for the SSH2 ECDSA key
+if [ ! -f /opt/etc/openssh/ssh_host_ecdsa_key ]; then
+    echo Generating ECDSA Key...
+    /opt/bin/ssh-keygen -t ecdsa -f /opt/etc/openssh/ssh_host_ecdsa_key -C '' -N ''
+fi
+
+# Check for the SSH2 ED25519 key
+if [ ! -f /opt/etc/openssh/ssh_host_ed25519_key ]; then
+    echo Generating ED25519 Key...
+    /opt/bin/ssh-keygen -t ed25519 -f /opt/etc/openssh/ssh_host_ed25519_key -C '' -N ''
+fi
+
 if [ ! -d /root -a -w / ];  then
     mkdir /root
 fi
