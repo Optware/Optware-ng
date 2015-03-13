@@ -31,7 +31,7 @@ MICROPERL_IPK=$(BUILD_DIR)/microperl_$(MICROPERL_VERSION)-$(MICROPERL_IPK_VERSIO
 
 .PHONY: microperl-unpack microperl microperl-ipk microperl-clean microperl-dirclean microperl-check
 
-$(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(MICROPERL_SOURCE) $(MICROPERL_PATCHES)
+$(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(MICROPERL_SOURCE) $(MICROPERL_PATCHES) make/microperl.mk
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MICROPERL_PATCHES)"; then \
@@ -55,6 +55,7 @@ else ifeq ($(PERL_MAJOR_VER),$(filter $(PERL_MAJOR_VER), 5.20))
 		;
 endif
 	$(MAKE) -C $(@D) -f Makefile.micro \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
 		CC=$(TARGET_CC) OPTIMIZE="$(TARGET_CFLAGS)" \
 		;
 	touch $@
