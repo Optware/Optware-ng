@@ -158,6 +158,7 @@ else
 	sed -i -e '/^GROUP/s|.*|GROUP ( /lib/libc.so.6 /opt/lib/libc_nonshared.a )|' \
 		$(LIBC-DEV_IPK_DIR)/opt/lib/libc.so
 endif
+ifneq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
 	for f in libcrypt libdl libm libpthread libresolv librt libutil \
 		$(if $(filter uclibc, $(LIBC_STYLE)), ld-uClibc, ) \
 		; \
@@ -171,6 +172,7 @@ endif
 		ln -sf $${f}.so.* $${f}.so; \
 	    fi; \
 	done
+endif
 endif
 	rm -rf $(LIBC-DEV_IPK_DIR)/opt/include/c++
 	$(MAKE) $(LIBC-DEV_IPK_DIR)/CONTROL/control
