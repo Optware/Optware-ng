@@ -17,7 +17,7 @@ LIBNSL_PRIORITY=optional
 LIBNSL_DEPENDS=
 LIBNSL_CONFLICTS=uclibc
 
-LIBNSL_IPK_VERSION=4
+LIBNSL_IPK_VERSION=5
 
 LIBNSL_BUILD_DIR=$(BUILD_DIR)/libnsl
 LIBNSL_SOURCE_DIR=$(SOURCE_DIR)/libnsl
@@ -52,7 +52,9 @@ $(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
 	 ln -nfs $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
                  $(LIBNSL_LIBNAME).so; \
 	 ln -nfs $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
-                 $(LIBNSL_LIBNAME).so.1 \
+                 $(LIBNSL_LIBNAME).so.1; \
+	 ln -nfs $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
+                 $(LIBNSL_LIBNAME).so.0 \
 	)
 	touch $@
 
