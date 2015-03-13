@@ -417,7 +417,7 @@ COMMON_CROSS_PACKAGES = \
 	w3cam w3m wayland wakelan wavpack webalizer weechat werc wget \
 	which whois wizd wpa-supplicant wput wxbase \
 	xerces-c xmlrpc-c \
-	x11 xau xauth xaw xcursor xdmcp xdpyinfo xext \
+	x11 xau xauth xaw xbitmaps xcursor xdmcp xdpyinfo xext \
 	xextensions xfixes xfixesproto xft xi xinetd \
 	xmu xp xpdf xpm xcb-proto xcb xextproto xorg-macros xproto xrender xt xterm xtrans xtst \
 	x264 xmail xvid xz-utils \
