@@ -349,7 +349,7 @@ COMMON_CROSS_PACKAGES = \
 	minicom minidlna minihttpd miniupnpd \
 	mini-sendmail mini-snmpd \
 	miscfiles mktemp mkvtoolnix mlocate moblock \
-	moc modutils monit most motion motor \
+	moc modutils monit most motif motion motor \
 	mod-fastcgi moe moreutils mp3blaster mp3info mpack mpage \
 	mpc mpd mpdscribble \
 	mpg123 mpop mrtg msmtp \

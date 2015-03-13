@@ -1,0 +1,68 @@
+--- motif-2.3.4/Makefile.am.orig	2012-10-22 17:50:38.000000000 +0300
++++ motif-2.3.4/Makefile.am		2015-03-13 12:52:20.071039670 +0200
+@@ -28,7 +28,6 @@ SUBDIRS	= bindings bitmaps \
+              include \
+              tools \
+              clients \
+-             doc \
+-             demos
++             doc
+ AUTOMAKE_OPTIONS = 1.4
+ ACLOCAL_AMFLAGS = -I .
+--- motif-2.3.4/lib/Xm/Makefile.am.orig	2012-10-22 17:50:34.000000000 +0300
++++ motif-2.3.4/lib/Xm/Makefile.am	2015-03-13 11:25:03.012330422 +0200
+@@ -290,7 +290,7 @@ $(STRING_FILES): Makefile $(XMSTRING_LIS
+ 	test -f XmStrDefs23.ht || $(LN_S) $(srcdir)/XmStrDefs23.ht XmStrDefs23.ht
+ 	test -f XmStrDefsI.ht || $(LN_S) $(srcdir)/XmStrDefsI.ht XmStrDefsI.ht
+ 	test -f XmStrDefs.ct || $(LN_S) $(srcdir)/XmStrDefs.ct XmStrDefs.ct
+-	$(top_builddir)/config/util/makestrs -f $(XMSTRING_LIST) >XmStrDefs.c
++	$(top_builddir)/config/util/makestrs.host -f $(XMSTRING_LIST) >XmStrDefs.c
+ 
+ if MessageCatalog
+ 
+--- motif-2.3.4/tools/wml/Makefile.am.orig	2012-10-22 17:50:39.000000000 +0300
++++ motif-2.3.4/tools/wml/Makefile.am		2015-03-13 11:57:44.256788758 +0200
+@@ -55,15 +55,15 @@ $(WMLTARGETS): wml-uil.mm
+ 
+ wml-uil.mm: wmluiltok wml UilLexPars.c $(TABLE)
+ 	$(RM) $(WMLTARGETS) wml.report wml-uil.mm
+-	./wmluiltok <$(srcdir)/Uil.y >tokens.dat
++	./wmluiltok.host <$(srcdir)/Uil.y >tokens.dat
+ 	$(RM) wml-uil.mm
+-	./wml $(srcdir)/$(TABLE)
++	./wml.host $(srcdir)/$(TABLE)
+ 	$(RM) tokens.dat
+ 
+ all: motif.wmd
+ 
+ motif.wmd: wmldbcreate
+-	./wmldbcreate -o motif.wmd
++	./wmldbcreate -o motif.wmd || touch motif.wmd
+ 
+ clean-local:
+ 	$(RM) $(WMLTARGETS) $(WMDTABLE) $(REPORT) lex.yy.c libwml.a wml \
+--- motif-2.3.4/demos/lib/Exm/wml/Makefile.am.orig	2012-10-22 17:50:38.000000000 +0300
++++ motif-2.3.4/demos/lib/Exm/wml/Makefile.am		2015-03-13 12:31:38.305632405 +0200
+@@ -27,7 +27,7 @@ all: Exm.wmd
+ WMDTABLE = Exm.wmd
+ 
+ $(WMDTABLE): wmldbcreate $(TARGETS)
+-	./wmldbcreate -o $@
++	./wmldbcreate -o $@ || touch $@
+ 
+ 
+ # INCLUDES = -I. -I$(INCLUDESRC) -I$(MINCLUDESRC) -I$(MLIBSRC) -I../../. -I$(MTOP)/include
+@@ -65,11 +65,11 @@ $(TARGETS):	$(TABLE) $(WMLDIR)/motif.wml
+ # 	$(YACC) -d $(YACCFLAGS) $(UILY)
+ # 	$(MV) y.tab.c UilLexPars.c
+ # 	$(MV) y.tab.h UilLexPars.h
+-	$(top_builddir)/tools/wml/wmluiltok < $(UILY) > tokens.dat
++	$(top_builddir)/tools/wml/wmluiltok.host < $(UILY) > tokens.dat
+ # 	$(RM) wml-uil.mm
+ 	$(RM) Exm.h
+ 	$(LN_S) $(srcdir)/$(TABLE) ./Exm.h
+-	$(CPP) -I$(WMLDIR) Exm.h | $(top_builddir)/tools/wml/wml
++	$(CPP) -I$(WMLDIR) Exm.h | $(top_builddir)/tools/wml/wml.host
+ 	$(RM) Exm.h
+ # 	$(RM) tokens.dat
+ # 
