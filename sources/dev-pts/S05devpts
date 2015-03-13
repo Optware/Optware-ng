@@ -50,7 +50,7 @@ mount_devpts() {
     DEV=$1
     upgrade_dev $DEV
     fixperms $DEV
-    if ! mount |grep -q "^none on $DEV/pts"; then
+    if ! mount |grep -q " on $DEV/pts"; then
 	mount -t devpts -o rw,gid=5,mode=620 none $DEV/pts
     fi
 }
