@@ -20,16 +20,18 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-XPDF_SITE=ftp://ftp.foolabs.com/pub/xpdf/
-XPDF_VERSION=3.02
+XPDF_SITE=ftp://ftp.foolabs.com/pub/xpdf
+XPDF_VERSION=3.04
 XPDF_SOURCE=xpdf-$(XPDF_VERSION).tar.gz
 XPDF_DIR=xpdf-$(XPDF_VERSION)
 XPDF_UNZIP=zcat
 XPDF_MAINTAINER=Bernhard Walle <bernhard.walle@gmx.de>
-XPDF_DESCRIPTION=Various PDF tools (no support for X11 compiled in)
+XPDF_DESCRIPTION=Various PDF tools (without xpdf X11 binaries)
+XPDF_X_DESCRIPTION=xpdf X11 binaries (xpdf and pdftoppm)
 XPDF_SECTION=tool
 XPDF_PRIORITY=optional
-XPDF_DEPENDS=libstdc++
+XPDF_DEPENDS=libstdc++, freetype
+XPDF_X_DEPENDS= xpdf, x11, xext, xpm, motif
 XPDF_SUGGESTS=
 XPDF_CONFLICTS=
 
@@ -52,7 +54,7 @@ XPDF_PATCHES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-XPDF_CPPFLAGS=
+XPDF_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
 XPDF_LDFLAGS=
 
 #
@@ -66,8 +68,20 @@ XPDF_LDFLAGS=
 #
 XPDF_BUILD_DIR=$(BUILD_DIR)/xpdf
 XPDF_SOURCE_DIR=$(SOURCE_DIR)/xpdf
+
 XPDF_IPK_DIR=$(BUILD_DIR)/xpdf-$(XPDF_VERSION)-ipk
 XPDF_IPK=$(BUILD_DIR)/xpdf_$(XPDF_VERSION)-$(XPDF_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+XPDF_X_IPK_DIR=$(BUILD_DIR)/xpdf-x-$(XPDF_VERSION)-ipk
+XPDF_X_IPK=$(BUILD_DIR)/xpdf-x_$(XPDF_VERSION)-$(XPDF_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ifeq (x11, $(filter x11, $(PACKAGES)))
+XPDF_IPKS=$(XPDF_IPK) $(XPDF_X_IPK)
+XPDF_ENV =
+else
+XPDF_IPKS=$(XPDF_IPK)
+XPDF_ENV = no_x=yes
+endif
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -101,15 +115,19 @@ xpdf-source: $(DL_DIR)/$(XPDF_SOURCE) $(XPDF_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(XPDF_BUILD_DIR)/.configured: $(DL_DIR)/$(XPDF_SOURCE) $(XPDF_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(XPDF_DIR) $(XPDF_BUILD_DIR)
+$(XPDF_BUILD_DIR)/.configured: $(DL_DIR)/$(XPDF_SOURCE) $(XPDF_PATCHES) make/xpdf.mk
+	$(MAKE) libstdc++-stage freetype-stage
+ifeq (x11, $(filter x11, $(PACKAGES)))
+	$(MAKE) x11-stage xext-stage xpm-stage motif-stage
+endif
+	rm -rf $(BUILD_DIR)/$(XPDF_DIR) $(@D)
 	$(XPDF_UNZIP) $(DL_DIR)/$(XPDF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(XPDF_PATCHES) | patch -d $(BUILD_DIR)/$(XPDF_DIR) -p1
-	mv $(BUILD_DIR)/$(XPDF_DIR) $(XPDF_BUILD_DIR)
-	(cd $(XPDF_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(XPDF_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		no_x=yes \
+		$(XPDF_ENV) \
+		CXXFLAGS="$(STAGING_CPPFLAGS) $(XPDF_CPPFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XPDF_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XPDF_LDFLAGS)" \
 		./configure \
@@ -120,8 +138,8 @@ $(XPDF_BUILD_DIR)/.configured: $(DL_DIR)/$(XPDF_SOURCE) $(XPDF_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	#$(PATCH_LIBTOOL) $(XPDF_BUILD_DIR)/libtool
-	touch $(XPDF_BUILD_DIR)/.configured
+	#$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 xpdf-unpack: $(XPDF_BUILD_DIR)/.configured
 
@@ -129,9 +147,9 @@ xpdf-unpack: $(XPDF_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XPDF_BUILD_DIR)/.built: $(XPDF_BUILD_DIR)/.configured
-	rm -f $(XPDF_BUILD_DIR)/.built
-	$(MAKE) -C $(XPDF_BUILD_DIR)
-	touch $(XPDF_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,7 +171,7 @@ xpdf-stage: $(XPDF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/xpdf
 #
 $(XPDF_IPK_DIR)/CONTROL/control:
-	@install -d $(XPDF_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: xpdf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -164,6 +182,21 @@ $(XPDF_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(XPDF_SITE)/$(XPDF_SOURCE)" >>$@
 	@echo "Description: $(XPDF_DESCRIPTION)" >>$@
 	@echo "Depends: $(XPDF_DEPENDS)" >>$@
+	@echo "Suggests: $(XPDF_SUGGESTS)" >>$@
+	@echo "Conflicts: $(XPDF_CONFLICTS)" >>$@
+
+$(XPDF_X_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: xpdf-x" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(XPDF_PRIORITY)" >>$@
+	@echo "Section: $(XPDF_SECTION)" >>$@
+	@echo "Version: $(XPDF_VERSION)-$(XPDF_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(XPDF_MAINTAINER)" >>$@
+	@echo "Source: $(XPDF_SITE)/$(XPDF_SOURCE)" >>$@
+	@echo "Description: $(XPDF_X_DESCRIPTION)" >>$@
+	@echo "Depends: $(XPDF_X_DEPENDS)" >>$@
 	@echo "Suggests: $(XPDF_SUGGESTS)" >>$@
 	@echo "Conflicts: $(XPDF_CONFLICTS)" >>$@
 
@@ -179,10 +212,18 @@ $(XPDF_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(XPDF_IPK): $(XPDF_BUILD_DIR)/.built
-	rm -rf $(XPDF_IPK_DIR) $(BUILD_DIR)/xpdf_*_$(TARGET_ARCH).ipk
+$(XPDF_IPKS): $(XPDF_BUILD_DIR)/.built
+	rm -rf $(XPDF_IPK_DIR) $(BUILD_DIR)/xpdf_*_$(TARGET_ARCH).ipk \
+		$(XPDF_X_IPK_DIR) $(BUILD_DIR)/xpdf-x_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XPDF_BUILD_DIR) DESTDIR=$(XPDF_IPK_DIR) install
 	$(STRIP_COMMAND) $(XPDF_IPK_DIR)/opt/bin/*
+ifeq (x11, $(filter x11, $(PACKAGES)))
+	install -d $(XPDF_X_IPK_DIR)/opt/bin
+	mv -f $(XPDF_IPK_DIR)/opt/bin/xpdf $(XPDF_IPK_DIR)/opt/bin/pdftoppm \
+							$(XPDF_X_IPK_DIR)/opt/bin/
+	$(MAKE) $(XPDF_X_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(XPDF_X_IPK_DIR)
+endif
 	#install -d $(XPDF_IPK_DIR)/opt/etc/
 	#install -m 644 $(XPDF_SOURCE_DIR)/xpdf.conf $(XPDF_IPK_DIR)/opt/etc/xpdf.conf
 	#install -d $(XPDF_IPK_DIR)/opt/etc/init.d
@@ -196,7 +237,7 @@ $(XPDF_IPK): $(XPDF_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-xpdf-ipk: $(XPDF_IPK)
+xpdf-ipk: $(XPDF_IPKS)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -210,4 +251,9 @@ xpdf-clean:
 # directories.
 #
 xpdf-dirclean:
-	rm -rf $(BUILD_DIR)/$(XPDF_DIR) $(XPDF_BUILD_DIR) $(XPDF_IPK_DIR) $(XPDF_IPK)
+	rm -rf $(BUILD_DIR)/$(XPDF_DIR) $(XPDF_BUILD_DIR) $(XPDF_IPK_DIR) $(XPDF_X_IPK_DIR) $(XPDF_IPK) $(XPDF_X_IPK)
+#
+# Some sanity check for the package.
+#
+xpdf-check: $(XPDF_IPKS)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
