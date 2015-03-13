@@ -82,7 +82,9 @@ $(LIBNSL_IPK): $(LIBNSL_BUILD_DIR)/.built
 	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
                $(LIBNSL_LIBNAME).so; \
 	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
-               $(LIBNSL_LIBNAME).so.1 \
+               $(LIBNSL_LIBNAME).so.1; \
+	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
+               $(LIBNSL_LIBNAME).so.0 \
 	)
 	$(MAKE) $(LIBNSL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNSL_IPK_DIR)
