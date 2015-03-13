@@ -55,7 +55,7 @@ $(PERL-CRYPT-OPENSSL-RSA_BUILD_DIR)/.built: $(PERL-CRYPT-OPENSSL-RSA_BUILD_DIR)/
 	$(MAKE) -C $(PERL-CRYPT-OPENSSL-RSA_BUILD_DIR) \
 	$(TARGET_CONFIGURE_OPTS) LD=$(TARGET_CC) \
 	CPPFLAGS="$(STAGING_CPPFLAGS)" \
-	LDDLFLAGS="-shared -rpath=/opt/lib" \
+	LDDLFLAGS="-shared -Wl,-rpath=/opt/lib" \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" 
 	touch $(PERL-CRYPT-OPENSSL-RSA_BUILD_DIR)/.built
 
