@@ -228,7 +228,6 @@ $(PY24-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py-4suite_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY24-4SUITE_IPK_DIR) $(BUILD_DIR)/py24-4suite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-4SUITE_BUILD_DIR)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	--root=$(PY24-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
 	$(STRIP_COMMAND) `find $(PY24-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
@@ -240,7 +239,6 @@ $(PY24-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
 $(PY25-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
 	rm -rf $(PY25-4SUITE_IPK_DIR) $(BUILD_DIR)/py25-4suite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-4SUITE_BUILD_DIR)/2.5; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	--root=$(PY25-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
 	$(STRIP_COMMAND) `find $(PY25-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
