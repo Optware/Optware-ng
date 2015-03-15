@@ -31,7 +31,7 @@ XPDF_X_DESCRIPTION=xpdf X11 binaries (xpdf and pdftoppm)
 XPDF_SECTION=tool
 XPDF_PRIORITY=optional
 XPDF_DEPENDS=libstdc++, freetype
-XPDF_X_DEPENDS= xpdf, x11, xext, xpm, motif
+XPDF_X_DEPENDS= xpdf, x11, xext, xpm, motif, ghostscript-fonts
 XPDF_SUGGESTS=
 XPDF_CONFLICTS=
 
@@ -124,6 +124,8 @@ endif
 	$(XPDF_UNZIP) $(DL_DIR)/$(XPDF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(XPDF_PATCHES) | patch -d $(BUILD_DIR)/$(XPDF_DIR) -p1
 	mv $(BUILD_DIR)/$(XPDF_DIR) $(@D)
+#	sed fonts root dir to /opt/share
+	sed -i -e 's~/usr/share\|/usr/local/share~/opt/share~g' $(@D)/xpdf/GlobalParams.cc
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		$(XPDF_ENV) \
