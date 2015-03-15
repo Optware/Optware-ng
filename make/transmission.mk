@@ -221,6 +221,9 @@ endif
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D) ; \
 	fi
+#	use '/opt/etc' instead of $HOME/.config as default transmission home
+	sed -i -e 's|return home;|return "/opt/etc";|' -e 's/".config"/""/' \
+		$(@D)/libtransmission/platform.c
 ifdef TRANSMISSION_SVN_REV
 	if test -x "$(@D)/autogen.sh"; \
 	then cd $(@D) && \
