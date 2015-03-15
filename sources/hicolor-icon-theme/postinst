@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#in case this install is an update with gtk already installed
+if test -x /opt/bin/gtk-update-icon-cache; then
+	echo "Update icon cache"
+	/opt/bin/gtk-update-icon-cache /opt/share/icons/hicolor
+fi

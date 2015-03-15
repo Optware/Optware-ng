@@ -308,7 +308,7 @@ COMMON_CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap gtk \
 	haproxy harfbuzz haserl hd2u hdparm hello hexcurse heyu \
-	hiawatha hnb hpijs hping htop httping \
+	hiawatha hicolor-icon-theme hnb hpijs hping htop httping \
 	ice icecast ices0 icu icu54 \
 	id3lib ifstat iftop ii iksemel imagemagick imap \
 	inadyn indent inetutils \
