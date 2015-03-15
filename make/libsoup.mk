@@ -36,7 +36,7 @@ LIBSOUP_CONFLICTS=
 #
 # LIBSOUP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSOUP_IPK_VERSION=1
+LIBSOUP_IPK_VERSION=2
 
 #
 # LIBSOUP_CONFFILES should be a list of user-editable files
@@ -46,14 +46,14 @@ LIBSOUP_IPK_VERSION=1
 # LIBSOUP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBSOUP_PATCHES=$(LIBSOUP_SOURCE_DIR)/configure.patch
+LIBSOUP_PATCHES=$(LIBSOUP_SOURCE_DIR)/gnutls.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 LIBSOUP_CPPFLAGS=
-LIBSOUP_LDFLAGS=-lgnutls
+LIBSOUP_LDFLAGS=-lgnutls -lgcrypt
 
 #
 # LIBSOUP_BUILD_DIR is the directory in which the build is done.

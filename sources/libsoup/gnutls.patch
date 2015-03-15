@@ -1,0 +1,14 @@
+--- libsoup/soup-gnutls.c.orig	2006-04-10 17:46:36.000000000 +0300
++++ libsoup/soup-gnutls.c	2015-03-15 20:19:00.048024106 +0200
+@@ -51,9 +51,9 @@ typedef struct {
+ static gboolean
+ verify_certificate (gnutls_session session, const char *hostname, GError **err)
+ {
+-	int status;
++	unsigned int status;
+ 
+-	status = gnutls_certificate_verify_peers (session);
++	gnutls_certificate_verify_peers2 (session, &status);
+ 
+ 	if (status == GNUTLS_E_NO_CERTIFICATE_FOUND) {
+ 		g_set_error (err, SOUP_SSL_ERROR,
