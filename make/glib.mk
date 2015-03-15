@@ -159,6 +159,8 @@ endif
 	cp $(SOURCE_DIR)/glib/glib.cache $(@D)/arm.cache
 #	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(GLIB_LOCALES)/;' $(@D)/configure
 	sed -i -e 's/^ *$$as_echo_n /echo -n /' $(@D)/configure
+#	fallback to "/opt/share" if XDG_DATA_DIRS env variable not given instead of "/usr/local/share:/usr/share"
+	sed -i -e 's|xdg_data_dirs = ".*|xdg_data_dirs = "/opt/share/";|' $(@D)/gio/xdgmime/xdgmime.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
@@ -259,6 +261,7 @@ $(GLIB_IPK): $(GLIB_BUILD_DIR)/.built
 	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(GLIB_IPK_DIR)/opt
 	rm -rf $(GLIB_IPK_DIR)/opt/share/gtk-doc
 	rm -rf $(GLIB_IPK_DIR)/opt/man
+	install -m 755 $(GLIB_SOURCE_DIR)/postinst $(GLIB_IPK_DIR)/CONTROL/postinst
 	$(MAKE) $(GLIB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GLIB_IPK_DIR)
 
