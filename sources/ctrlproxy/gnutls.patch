@@ -3,7 +3,8 @@
 @@ -48,8 +48,8 @@ static gboolean
  verify_certificate (gnutls_session session, const char *hostname, GError **err)
  {
- 	int status;
+-	int status;
++	unsigned int status;
  
 -	status = gnutls_certificate_verify_peers (session);
 +	gnutls_certificate_verify_peers2 (session, &status);
