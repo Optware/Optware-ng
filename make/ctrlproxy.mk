@@ -41,7 +41,7 @@ CTRLPROXY_SUGGESTS=readline
 #
 # CTRLPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-CTRLPROXY_IPK_VERSION=3
+CTRLPROXY_IPK_VERSION=4
 
 #
 # CTRLPROXY_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ CTRLPROXY_CONFFILES=
 # CTRLPROXY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CTRLPROXY_PATCHES=
+CTRLPROXY_PATCHES=$(CTRLPROXY_SOURCE_DIR)/gnutls.patch
 
 #
 # If the compilation of the package requires additional

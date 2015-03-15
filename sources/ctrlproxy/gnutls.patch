@@ -1,0 +1,12 @@
+--- src/gnutls.c.orig	2015-03-15 13:31:20.205824916 +0200
++++ src/gnutls.c	2015-03-15 13:30:40.066114395 +0200
+@@ -48,8 +48,8 @@ static gboolean
+ verify_certificate (gnutls_session session, const char *hostname, GError **err)
+ {
+ 	int status;
+ 
+-	status = gnutls_certificate_verify_peers (session);
++	gnutls_certificate_verify_peers2 (session, &status);
+ 
+ 	if (status == GNUTLS_E_NO_CERTIFICATE_FOUND) {
+ 		g_set_error (err, SSL_ERROR,
