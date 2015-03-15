@@ -26,10 +26,17 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GHOSTSCRIPT-FONTS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gs-fonts
-GHOSTSCRIPT-FONTS_VERSION=8.11
-GHOSTSCRIPT-FONTS_SOURCE=ghostscript-fonts-std-$(GHOSTSCRIPT-FONTS_VERSION).tar.gz
-GHOSTSCRIPT-FONTS_DIR=ghostscript-fonts-std-$(GHOSTSCRIPT-FONTS_VERSION)
+#https://launchpad.net/ubuntu/+archive/primary/+files/gsfonts_8.11%2Burwcyr1.0.7%7Epre44.orig.tar.gz
+GHOSTSCRIPT-FONTS_SITE=https://launchpad.net/ubuntu/+archive/primary/+files
+GHOSTSCRIPT-FONTS_VERSION1=8.11
+#+
+GHOSTSCRIPT-FONTS_VERSION2=urwcyr1.0.7
+#~
+GHOSTSCRIPT-FONTS_VERSION3=pre44
+GHOSTSCRIPT-FONTS_VERSION=$(GHOSTSCRIPT-FONTS_VERSION1)-$(GHOSTSCRIPT-FONTS_VERSION2)-$(GHOSTSCRIPT-FONTS_VERSION3)
+GHOSTSCRIPT-FONTS_VERSION_ORIG=$(GHOSTSCRIPT-FONTS_VERSION1)+$(GHOSTSCRIPT-FONTS_VERSION2)~$(GHOSTSCRIPT-FONTS_VERSION3)
+GHOSTSCRIPT-FONTS_SOURCE=gsfonts_$(GHOSTSCRIPT-FONTS_VERSION_ORIG).orig.tar.gz
+GHOSTSCRIPT-FONTS_DIR=gsfonts-$(GHOSTSCRIPT-FONTS_VERSION_ORIG)
 GHOSTSCRIPT-FONTS_UNZIP=zcat
 GHOSTSCRIPT-FONTS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GHOSTSCRIPT-FONTS_DESCRIPTION=Fonts and font metrics customarily distributed with Ghostscript. \
@@ -83,8 +90,8 @@ GHOSTSCRIPT-FONTS_IPK=$(BUILD_DIR)/ghostscript-fonts_$(GHOSTSCRIPT-FONTS_VERSION
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GHOSTSCRIPT-FONTS_SOURCE):
-	$(WGET) -P $(@D) $(GHOSTSCRIPT-FONTS_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GHOSTSCRIPT-FONTS_SITE)/$(shell echo $(@F)|sed -e 's/+/%2B/g' -e 's/~/%7E/') || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(shell echo $(@F)|sed -e 's/+/%2B/g' -e 's/~/%7E/')
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,13 +121,12 @@ ghostscript-fonts-source: $(DL_DIR)/$(GHOSTSCRIPT-FONTS_SOURCE) $(GHOSTSCRIPT-FO
 $(GHOSTSCRIPT-FONTS_BUILD_DIR)/.configured: $(DL_DIR)/$(GHOSTSCRIPT-FONTS_SOURCE) $(GHOSTSCRIPT-FONTS_PATCHES) make/ghostscript-fonts.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT-FONTS_DIR) $(@D)
-	install -d $(@D)
-	$(GHOSTSCRIPT-FONTS_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT-FONTS_SOURCE) | tar -C $(@D) -xvf -
+	$(GHOSTSCRIPT-FONTS_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT-FONTS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GHOSTSCRIPT-FONTS_PATCHES)" ; \
 		then cat $(GHOSTSCRIPT-FONTS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(GHOSTSCRIPT-FONTS_DIR) -p0 ; \
 	fi
-#	if test "$(BUILD_DIR)/$(GHOSTSCRIPT-FONTS_DIR)" != "$(@D)" ; \
+	if test "$(BUILD_DIR)/$(GHOSTSCRIPT-FONTS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GHOSTSCRIPT-FONTS_DIR) $(@D) ; \
 	fi
 #	(cd $(@D); \
@@ -197,8 +203,8 @@ $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/control:
 $(GHOSTSCRIPT-FONTS_IPK): $(GHOSTSCRIPT-FONTS_BUILD_DIR)/.configured
 	rm -rf $(GHOSTSCRIPT-FONTS_IPK_DIR) $(BUILD_DIR)/ghostscript-fonts_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(GHOSTSCRIPT-FONTS_BUILD_DIR) DESTDIR=$(GHOSTSCRIPT-FONTS_IPK_DIR) install
-	install -d $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/share/fonts
-	cp -f $(addprefix $(GHOSTSCRIPT-FONTS_BUILD_DIR)/fonts/*., afm pfb pfm) $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/share/fonts
+	install -d $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/share/fonts/default/Type1
+	cp -f $(addprefix $(GHOSTSCRIPT-FONTS_BUILD_DIR)/*., afm pfb pfm) $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/share/fonts/default/Type1
 #	install -m 644 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/ghostscript-fonts.conf $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/ghostscript-fonts.conf
 #	install -d $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/rc.ghostscript-fonts $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d/SXXghostscript-fonts
