@@ -178,6 +178,7 @@ $(GDK-PIXBUF_IPK): $(GDK-PIXBUF_BUILD_DIR)/.built
 	find $(GDK-PIXBUF_IPK_DIR) -type f -name *.la -exec rm -f {} \;
 	rm -rf $(GDK-PIXBUF_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(GDK-PIXBUF_IPK_DIR)/CONTROL/control
+	install -m 755 $(GDK-PIXBUF_SOURCE_DIR)/postinst $(GDK-PIXBUF_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GDK-PIXBUF_IPK_DIR)
 
 #

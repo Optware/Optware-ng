@@ -2,10 +2,12 @@
 
 mkdir -p /opt/etc/gtk-3.0
 
-### configure gdk-pixbuf
-rm -f /opt/etc/gtk-3.0/gdk-pixbuf.loaders
-/opt/bin/gdk-pixbuf-query-loaders > /opt/etc/gtk-3.0/gdk-pixbuf.loaders
-
-### configure input modules
+echo "Configure input modules"
 rm -f /opt/etc/gtk-3.0/gtk.immodules
 /opt/bin/gtk-query-immodules-3.0 > /opt/etc/gtk-3.0/gtk.immodules
+
+echo "Update icon cache: gnome-icon-theme"
+/opt/bin/gtk-update-icon-cache /opt/share/icons/gnome
+
+echo "Update icon cache: hicolor-icon-theme"
+/opt/bin/gtk-update-icon-cache /opt/share/icons/hicolor

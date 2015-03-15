@@ -24,7 +24,8 @@ GTK_DOC_DESCRIPTION=GTK+ docs
 GTK_SECTION=lib
 GTK_PRIORITY=optional
 GTK_DEPENDS=pango, atk, atk-bridge, gdk-pixbuf, libtiff, libjpeg (>= 6b-2), libpng, ttf-bitstream-vera, \
-	gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo, wayland, e2fsprogs
+	gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo, wayland, e2fsprogs, \
+	gnome-icon-theme, hicolor-icon-theme
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GTK_DEPENDS+=, libiconv
 endif
@@ -268,7 +269,7 @@ $(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK): $(GTK_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_PRINT_IPK_DIR)
 	### make gtk-ipk
 	$(MAKE) $(GTK_IPK_DIR)/CONTROL/control
-	install -m 644 $(GTK_SOURCE_DIR)/postinst $(GTK_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(GTK_SOURCE_DIR)/postinst $(GTK_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_IPK_DIR)
 
 #
