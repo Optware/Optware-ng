@@ -299,7 +299,7 @@ COMMON_CROSS_PACKAGES = \
 	fribidi ftpcopy fslint ftpd-topfield fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
 	geoip gettext gdk-pixbuf \
-	ggrab ghostscript git gkrellmd glib gnet gnokii \
+	ggrab ghostscript git gkrellmd glib gnet gnokii gnome-icon-theme \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
 	gloox golang gpsd \
