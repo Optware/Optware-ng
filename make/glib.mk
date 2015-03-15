@@ -161,6 +161,7 @@ endif
 	sed -i -e 's/^ *$$as_echo_n /echo -n /' $(@D)/configure
 #	fallback to "/opt/share" if XDG_DATA_DIRS env variable not given instead of "/usr/local/share:/usr/share"
 	sed -i -e 's|xdg_data_dirs = ".*|xdg_data_dirs = "/opt/share/";|' $(@D)/gio/xdgmime/xdgmime.c
+	sed -i -e 's|data_dirs = ".*|data_dirs = "/opt/share/";|' $(@D)/glib/gutils.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
