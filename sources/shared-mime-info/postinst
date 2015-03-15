@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "Generating /opt/share/mime/mime.cache"
+/opt/bin/update-mime-database /opt/share/mime
