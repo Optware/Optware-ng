@@ -261,8 +261,8 @@ $(GLIB_IPK): $(GLIB_BUILD_DIR)/.built
 	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(GLIB_IPK_DIR)/opt
 	rm -rf $(GLIB_IPK_DIR)/opt/share/gtk-doc
 	rm -rf $(GLIB_IPK_DIR)/opt/man
-	install -m 755 $(GLIB_SOURCE_DIR)/postinst $(GLIB_IPK_DIR)/CONTROL/postinst
 	$(MAKE) $(GLIB_IPK_DIR)/CONTROL/control
+	install -m 755 $(GLIB_SOURCE_DIR)/postinst $(GLIB_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GLIB_IPK_DIR)
 
 #
