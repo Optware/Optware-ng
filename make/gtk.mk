@@ -25,7 +25,7 @@ GTK_SECTION=lib
 GTK_PRIORITY=optional
 GTK_DEPENDS=pango, atk, atk-bridge, gdk-pixbuf, libtiff, libjpeg (>= 6b-2), libpng, ttf-bitstream-vera, \
 	gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo, wayland, e2fsprogs, \
-	gnome-icon-theme, hicolor-icon-theme
+	gnome-icon-theme, hicolor-icon-theme, shared-mime-info
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GTK_DEPENDS+=, libiconv
 endif
