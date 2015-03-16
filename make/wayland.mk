@@ -162,7 +162,8 @@ wayland: $(WAYLAND_BUILD_DIR)/.built
 #
 $(WAYLAND_BUILD_DIR)/.staged: $(WAYLAND_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_DIR)/opt
+	$(MAKE) -C $(@D) install prefix=$(STAGING_DIR)/opt \
+		wayland_scanner=$(HOST_STAGING_PREFIX)/bin/wayland-scanner
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/wayland-*.pc
 	rm -f $(STAGING_LIB_DIR)/libwayland-*.la
 	touch $@
@@ -233,7 +234,8 @@ $(WAYLAND_IPK_DIR)/CONTROL/control:
 #
 $(WAYLAND_IPK): $(WAYLAND_BUILD_DIR)/.built
 	rm -rf $(WAYLAND_IPK_DIR) $(BUILD_DIR)/wayland_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(WAYLAND_BUILD_DIR) DESTDIR=$(WAYLAND_IPK_DIR) install-strip
+	$(MAKE) -C $(WAYLAND_BUILD_DIR) DESTDIR=$(WAYLAND_IPK_DIR) install-strip \
+		 wayland_scanner=$(HOST_STAGING_PREFIX)/bin/wayland-scanner
 #	install -d $(WAYLAND_IPK_DIR)/opt/etc/
 #	install -m 644 $(WAYLAND_SOURCE_DIR)/wayland.conf $(WAYLAND_IPK_DIR)/opt/etc/wayland.conf
 #	install -d $(WAYLAND_IPK_DIR)/opt/etc/init.d
