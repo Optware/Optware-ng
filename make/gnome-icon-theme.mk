@@ -42,7 +42,7 @@ GNOME-ICON-THEME_CONFLICTS=
 #
 # GNOME-ICON-THEME_IPK_VERSION should be incremented when the ipk changes.
 #
-GNOME-ICON-THEME_IPK_VERSION=1
+GNOME-ICON-THEME_IPK_VERSION=2
 
 #
 # GNOME-ICON-THEME_CONFFILES should be a list of user-editable files

@@ -1,7 +1,10 @@
 #!/bin/sh
 
-#in case this install is an update with gtk already installed
+#in case this install is an update with gtk or gtk2 already installed
 if test -x /opt/bin/gtk-update-icon-cache; then
-	echo "Update icon cache"
+	echo "Update icon cache: gnome-icon-theme"
 	/opt/bin/gtk-update-icon-cache /opt/share/icons/gnome
+elif test -x /opt/bin/gtk-2.0/gtk-update-icon-cache; then
+	echo "Update icon cache: gnome-icon-theme"
+	/opt/bin/gtk-2.0/gtk-update-icon-cache /opt/share/icons/gnome
 fi
