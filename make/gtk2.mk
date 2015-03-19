@@ -28,7 +28,7 @@ GTK2_DEPENDS=pango, atk, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, 
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GTK2_DEPENDS+=, libiconv
 endif
-GTK2_PRINT_DEPENDS=gtk, cups
+GTK2_PRINT_DEPENDS=gtk2, cups
 
 #
 # GTK2_IPK_VERSION should be incremented when the ipk changes.
