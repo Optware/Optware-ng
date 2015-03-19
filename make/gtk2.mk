@@ -240,7 +240,10 @@ gtk2-stage: $(GTK2_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(GTK2_IPK) $(GTK2_DOC_IPK) $(GTK2_PRINT_IPK): $(GTK2_BUILD_DIR)/.built
-	rm -rf $(GTK2_IPK_DIR) $(BUILD_DIR)/gtk2_*_$(TARGET_ARCH).ipk
+	rm -rf $(GTK2_IPK_DIR) $(GTK2_DOC_IPK_DIR) $(GTK2_PRINT_IPK_DIR) \
+		$(BUILD_DIR)/gtk2_*_$(TARGET_ARCH).ipk \
+		$(BUILD_DIR)/gtk2-doc_*_$(TARGET_ARCH).ipk \
+		$(BUILD_DIR)/gtk2-print_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTK2_BUILD_DIR) DESTDIR=$(GTK2_IPK_DIR) install-strip
 	install -d $(GTK2_IPK_DIR)/opt/etc/gtk-2.0
 	### make gtk2-doc-ipk
