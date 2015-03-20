@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 GLIB_SITE=http://ftp.gnome.org/pub/gnome/sources/glib/2.43
-GLIB_VERSION=2.43.91
+GLIB_VERSION=2.43.92
 GLIB_SOURCE=glib-$(GLIB_VERSION).tar.xz
 GLIB_DIR=glib-$(GLIB_VERSION)
 GLIB_UNZIP=xzcat
@@ -107,7 +107,7 @@ $(GLIB_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GLIB_SOURCE) make/gl
 		PKG_CONFIG_PATH="$(HOST_STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(HOST_STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(HOST_STAGING_PREFIX) \
 		--disable-shared \
 	)
 	$(MAKE) -C $(@D)
@@ -118,7 +118,7 @@ glib-host: $(GLIB_HOST_BUILD_DIR)/.built
 
 $(GLIB_HOST_BUILD_DIR)/.staged: $(GLIB_HOST_BUILD_DIR)/.built host/.configured make/glib.mk
 	rm -f $@
-	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
+	$(MAKE) -C $(@D) install
 	cd $(HOST_STAGING_LIB_DIR); \
 		rm -f libgio*.la libglib*.la libgmodule*.la libgobject*.la libgthread*.la 
 	touch $@
