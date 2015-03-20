@@ -71,6 +71,7 @@ PY-MAKO_LDFLAGS=
 # You should not change any of these variables.
 #
 PY-MAKO_BUILD_DIR=$(BUILD_DIR)/py-mako
+PY-MAKO_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/py-mako
 PY-MAKO_SOURCE_DIR=$(SOURCE_DIR)/py-mako
 
 PY25-MAKO_IPK_DIR=$(BUILD_DIR)/py25-mako-$(PY-MAKO_VERSION_OLD)-ipk
@@ -200,6 +201,62 @@ $(PY-MAKO_BUILD_DIR)/.staged: $(PY-MAKO_BUILD_DIR)/.built
 #	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
+
+$(PY-MAKO_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-MAKO_SOURCE) make/py-mako.mk
+	rm -rf $(HOST_BUILD_DIR)/$(PY-MAKO_DIR) $(HOST_BUILD_DIR)/$(PY-MAKO_DIR_OLD) $(@D)
+	$(MAKE) py-beaker-host-stage
+	mkdir -p $(@D)/
+	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-MAKO_DIR_OLD) $(@D)/2.5
+	(cd $(@D)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.7"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/3
+	(cd $(@D)/3; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	(cd $(@D)/2.5; \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.6; \
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.7; \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/3; \
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	touch $@
+
+py-mako-host-stage: $(PY-MAKO_HOST_BUILD_DIR)/.staged
 
 py-mako-stage: $(PY-MAKO_BUILD_DIR)/.staged
 
