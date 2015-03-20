@@ -191,6 +191,7 @@ $(HOST_STAGING_PREFIX)/bin/python2.7: host/.configured make/python27.mk
 	$(MAKE) $(PYTHON27_BUILD_DIR)/.built
 	$(MAKE) -C $(PYTHON27_BUILD_DIR)/buildpython27 DESTDIR=$(HOST_STAGING_DIR) install
 	patch -b -p0 < $(PYTHON27_SOURCE_DIR)/disable-host-py_include.patch
+	sed -i -e '0,/^#!/s|^#!.*|#!$(HOST_STAGING_PREFIX)/bin/python2.7|' $(HOST_STAGING_PREFIX)/bin/python2.7-config
 	rm -f $(@D)/python
 
 python27-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.7
