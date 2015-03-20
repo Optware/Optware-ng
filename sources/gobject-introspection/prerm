@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Removing /opt/lib/girepository-1.0"
+
+rm -rf /opt/lib/girepository-1.0

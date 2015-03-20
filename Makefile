@@ -302,7 +302,7 @@ COMMON_CROSS_PACKAGES = \
 	ggrab ghostscript ghostscript-fonts git gkrellmd glib gnet gnokii gnome-icon-theme \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
-	gloox golang gpsd \
+	gloox gobject-introspection golang gpsd \
 	grep groff gsasl gsnmp gtmess gtypist gutenprint gzip \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \

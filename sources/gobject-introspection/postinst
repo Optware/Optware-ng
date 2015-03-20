@@ -1,0 +1,10 @@
+#!/bin/sh
+
+install -d /opt/lib/girepository-1.0
+
+cd /opt/share/gir-1.0
+
+for src in `ls *.gir|sed 's/\.gir$//g'`; do
+	echo "Generating /opt/lib/girepository-1.0/${src}.typelib"
+	PATH="/opt/bin:$PATH" g-ir-compiler --includedir=. ${src}.gir -o /opt/lib/girepository-1.0/${src}.typelib
+done
