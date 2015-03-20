@@ -166,10 +166,12 @@ $(GOBJECT-INTROSPECTION_BUILD_DIR)/.staged: $(GOBJECT-INTROSPECTION_BUILD_DIR)/.
 	rm -f $(STAGING_LIB_DIR)/libgirepository-1.0.la
 	install -d $(STAGING_LIB_DIR)/pkgconfig
 	sed -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e '/^bindir=/s|=.*|=$(HOST_STAGING_PREFIX)/bin|' \
-		-e '/^datarootdir=/s|=.*|=$(HOST_STAGING_PREFIX)/share|' $(@D)/gobject-introspection-1.0.pc > \
+		-e '/^datarootdir=/s|=.*|=$(HOST_STAGING_PREFIX)/share|' \
+		-e '/^typelibdir=/s|=.*|=$(HOST_STAGING_LIB_DIR)/girepository-1.0|' $(@D)/gobject-introspection-1.0.pc > \
 						$(STAGING_LIB_DIR)/pkgconfig/gobject-introspection-1.0.pc
 	sed -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e '/^bindir=/s|=.*|=$(HOST_STAGING_PREFIX)/bin|' \
-		-e '/^datarootdir=/s|=.*|=$(HOST_STAGING_PREFIX)/share|' $(@D)/gobject-introspection-no-export-1.0.pc > \
+		-e '/^datarootdir=/s|=.*|=$(HOST_STAGING_PREFIX)/share|' \
+		-e '/^typelibdir=/s|=.*|=$(HOST_STAGING_LIB_DIR)/girepository-1.0|' $(@D)/gobject-introspection-no-export-1.0.pc > \
 						$(STAGING_LIB_DIR)/pkgconfig/gobject-introspection-no-export-1.0.pc
 	touch $@
 
