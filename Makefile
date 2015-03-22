@@ -185,7 +185,7 @@ PYTHON_PACKAGES = \
 	stgit \
 	subvertpy \
 	py-4suite py-amara py-apsw \
-	py-asn1-modules py-asn1 py-cffi py-characteristic py-cparser \
+	py-asn1-modules py-asn1 py-cairo py-cffi py-characteristic py-cparser \
 	py-cryptography py-enum34 py-hgdistver py-ordereddict py-service-identity py-six \
 	py-beaker py-bittorrent py-bluez py-boto py-buildutils \
 	py-celementtree py-chardet py-cheetah py-cherrypy py-cherrytemplate py-cjson \
