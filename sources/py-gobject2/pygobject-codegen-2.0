@@ -1,0 +1,18 @@
+#!/bin/sh
+
+prefix=/opt
+datarootdir=${prefix}/share
+datadir=${datarootdir}
+codegendir=${datadir}/pygobject/2.0/codegen
+
+PYTHONPATH=$codegendir
+export PYTHONPATH
+
+if test -x /opt/bin/python2.7; then
+exec /opt/bin/python2.7 $codegendir/codegen.py "$@"
+elif test -x /opt/bin/python2.6; then
+exec /opt/bin/python2.6 $codegendir/codegen.py "$@"
+else
+echo "Error: need python2.7 or python 2.6 installed to run codegen" >&2
+exit 1
+fi
