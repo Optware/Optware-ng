@@ -317,7 +317,7 @@ $(PY2-CAIRO_DEV_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(PY-CAIRO_SECTION)" >>$@
 	@echo "Version: $(PY-CAIRO_VERSION)-$(PY-CAIRO_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-CAIRO_MAINTAINER)" >>$@
-	@echo "Source: $(PY-CAIRO_SITE)/$(PY-CAIRO_SOURCE3)" >>$@
+	@echo "Source: $(PY-CAIRO_SITE)/$(PY-CAIRO_SOURCE2)" >>$@
 	@echo "Description: $(PY2-CAIRO_DEV_DESCRIPTION)" >>$@
 	@echo "Depends:" >>$@
 	@echo "Suggests: $(PY2-CAIRO_DEV_SUGGESTS)" >>$@
