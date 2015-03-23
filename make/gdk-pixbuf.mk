@@ -180,7 +180,7 @@ $(GDK-PIXBUF_IPK): $(GDK-PIXBUF_BUILD_DIR)/.built
 	$(MAKE) -C $(GDK-PIXBUF_BUILD_DIR) DESTDIR=$(GDK-PIXBUF_IPK_DIR) install-strip
 	install -d $(GDK-PIXBUF_IPK_DIR)/opt/share/gir-1.0
 	install -m 644 $(GDK-PIXBUF_SOURCE_DIR)/$(GDK-PIXBUF_VERSION)/GdkPixbuf-2.0.gir \
-		$(LIBRSVG_IPK_DIR)/opt/share/gir-1.0/GdkPixbuf-2.0.gir
+		$(GDK-PIXBUF_IPK_DIR)/opt/share/gir-1.0/GdkPixbuf-2.0.gir
 	find $(GDK-PIXBUF_IPK_DIR) -type f -name *.la -exec rm -f {} \;
 	rm -rf $(GDK-PIXBUF_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(GDK-PIXBUF_IPK_DIR)/CONTROL/control
