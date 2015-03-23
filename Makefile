@@ -320,7 +320,7 @@ COMMON_CROSS_PACKAGES = \
 	kamailio kbproto keychain kismet kissdx knock \
 	lame launchtool lcd4linux ldconfig leafnode less lftp lha \
 	liba52 libacl libao libart libassuan libatomic-ops libbt libcap \
-	libcapi20 libcdio libcurl \
+	libcapi20 libcdio libcroco libcurl \
 	libdaemon libdb libdb52 libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libebml libexosip2 \
