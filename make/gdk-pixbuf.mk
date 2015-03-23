@@ -125,6 +125,7 @@ $(GDK-PIXBUF_BUILD_DIR)/.configured: $(DL_DIR)/$(GDK-PIXBUF_SOURCE) $(GDK-PIXBUF
 		--with-x11 \
 		--prefix=/opt \
 		--disable-static \
+		--disable-introspection \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -154,6 +155,7 @@ $(GDK-PIXBUF_BUILD_DIR)/.staged: $(GDK-PIXBUF_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_DIR)/opt
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gdk-pixbuf-2.0.pc \
 							$(STAGING_LIB_DIR)/pkgconfig/gdk-pixbuf-xlib-2.0.pc
+	sed -i -e 's|^gdk_pixbuf_binarydir=\$${exec_prefix}|gdk_pixbuf_binarydir=/opt|' $(STAGING_LIB_DIR)/pkgconfig/gdk-pixbuf-2.0.pc
 	rm -f $(STAGING_LIB_DIR)/libgdk_pixbuf-2.0.la $(STAGING_LIB_DIR)/libgdk_pixbuf_xlib-2.0.la \
 		$(STAGING_LIB_DIR)/gdk-pixbuf-2.0/2.10.0/loaders/*.la
 	touch $@
