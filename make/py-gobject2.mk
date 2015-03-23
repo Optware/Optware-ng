@@ -131,7 +131,8 @@ py-gobject2-source: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJECT2_PATCHES)
 #
 $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJECT2_PATCHES) make/py-gobject2.mk
 	$(MAKE) cairo-stage glib-stage libffi-stage python26-stage python27-stage python3-stage \
-		python26-host-stage python27-host-stage python3-host-stage
+		python26-host-stage python27-host-stage python3-host-stage \
+		py-cairo-stage
 	rm -rf $(BUILD_DIR)/$(PY-GOBJECT2_DIR) $(@D)
 	install -d $(@D)
 	$(PY-GOBJECT2_UNZIP) $(DL_DIR)/$(PY-GOBJECT2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
