@@ -23,7 +23,7 @@ GTK2_PRINT_DESCRIPTION=GTK+-2.0 printing files
 GTK2_DOC_DESCRIPTION=GTK+-2.0 docs
 GTK2_SECTION=lib
 GTK2_PRIORITY=optional
-GTK2_DEPENDS=pango, atk, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, xcursor, xft, ttf-bitstream-vera, gconv-modules, \
+GTK2_DEPENDS=pango, atk, gdk-pixbuf, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, xcursor, xft, ttf-bitstream-vera, gconv-modules, \
 	gnome-icon-theme, hicolor-icon-theme, shared-mime-info
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GTK2_DEPENDS+=, libiconv
@@ -156,7 +156,7 @@ gtk2-source: $(DL_DIR)/$(GTK2_SOURCE) $(GTK2_PATCHES)
 $(GTK2_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK2_SOURCE) $(GTK2_PATCHES) make/gtk2.mk
 	$(MAKE) libtiff-stage libpng-stage libjpeg-stage \
 	x11-stage xcursor-stage xfixes-stage xext-stage xft-stage \
-	pango-stage cairo-stage atk-stage cups-stage
+	pango-stage cairo-stage atk-stage gdk-pixbuf-stage cups-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
