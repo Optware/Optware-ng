@@ -160,7 +160,7 @@ $(LIBCROCO_BUILD_DIR)/.staged: $(LIBCROCO_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libcroco-0.6.la
-	sed -i -e '/^prefix=/s|=.*|=$(STAGING_LIB_DIR)|' $(STAGING_LIB_DIR)/pkgconfig/libcroco-0.6.pc
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcroco-0.6.pc
 	touch $@
 
 libcroco-stage: $(LIBCROCO_BUILD_DIR)/.staged
