@@ -1,8 +1,13 @@
 #!/bin/sh
 
+mkdir -p /opt/etc/gtk-3.0
+mkdir -p /opt/etc/gtk-2.0
+
 echo "Configure gdk-pixbuf loaders"
 rm -f /opt/etc/gtk-3.0/gdk-pixbuf.loaders
 /opt/bin/gdk-pixbuf-query-loaders > /opt/etc/gtk-3.0/gdk-pixbuf.loaders
+rm -f /opt/etc/gtk-2.0/gdk-pixbuf.loaders
+/opt/bin/gdk-pixbuf-query-loaders > /opt/etc/gtk-2.0/gdk-pixbuf.loaders
 
 cd /opt/share/gir-1.0
 
