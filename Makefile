@@ -327,7 +327,7 @@ COMMON_CROSS_PACKAGES = \
 	libevent \
 	libesmtp libexif libexplain libffi libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libgssapi \
-	libhid \
+	libglade libhid \
 	libical \
 	libid3tag libidn libieee1284 libijs libinklevel libjbigkit libjpeg \
 	libksba liblcms libmaa libmad libmatroska libmemcache libmicrohttpd \
