@@ -17,16 +17,16 @@ GDK-PIXBUF_VERSION=2.31.3
 GDK-PIXBUF_SOURCE=gdk-pixbuf-$(GDK-PIXBUF_VERSION).tar.xz
 GDK-PIXBUF_DIR=gdk-pixbuf-$(GDK-PIXBUF_VERSION)
 GDK-PIXBUF_UNZIP=xzcat
-GDK-PIXBUF_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+GDK-PIXBUF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GDK-PIXBUF_DESCRIPTION=GNOME accessibility toolkit
 GDK-PIXBUF_SECTION=lib
 GDK-PIXBUF_PRIORITY=optional
-GDK-PIXBUF_DEPENDS=glib, gettext, libjpeg, libpng, libtiff, x11
+GDK-PIXBUF_DEPENDS=glib, gettext, libjpeg, libpng, libtiff, x11, gobject-introspection
 
 #
 # GDK-PIXBUF_IPK_VERSION should be incremented when the ipk changes.
 #
-GDK-PIXBUF_IPK_VERSION=1
+GDK-PIXBUF_IPK_VERSION=2
 
 #
 # GDK-PIXBUF_LOCALES defines which locales get installed
@@ -100,7 +100,8 @@ gdk-pixbuf-source: $(DL_DIR)/$(GDK-PIXBUF_SOURCE) $(GDK-PIXBUF_PATCHES)
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
 #
-$(GDK-PIXBUF_BUILD_DIR)/.configured: $(DL_DIR)/$(GDK-PIXBUF_SOURCE) $(GDK-PIXBUF_PATCHES) make/gdk-pixbuf.mk
+$(GDK-PIXBUF_BUILD_DIR)/.configured: $(DL_DIR)/$(GDK-PIXBUF_SOURCE) $(GDK-PIXBUF_PATCHES) \
+		$(GDK-PIXBUF_SOURCE_DIR)/$(GDK-PIXBUF_VERSION)/GdkPixbuf-2.0.gir make/gdk-pixbuf.mk
 	$(MAKE) glib-stage libjpeg-stage libpng-stage libtiff-stage gettext-stage \
 		x11-stage
 	rm -rf $(BUILD_DIR)/$(GDK-PIXBUF_DIR) $(@D)
@@ -177,10 +178,14 @@ gdk-pixbuf-stage: $(GDK-PIXBUF_BUILD_DIR)/.staged
 $(GDK-PIXBUF_IPK): $(GDK-PIXBUF_BUILD_DIR)/.built
 	rm -rf $(GDK-PIXBUF_IPK_DIR) $(BUILD_DIR)/gdk-pixbuf_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GDK-PIXBUF_BUILD_DIR) DESTDIR=$(GDK-PIXBUF_IPK_DIR) install-strip
+	install -d $(GDK-PIXBUF_IPK_DIR)/opt/share/gir-1.0
+	install -m 644 $(GDK-PIXBUF_SOURCE_DIR)/$(GDK-PIXBUF_VERSION)/GdkPixbuf-2.0.gir \
+		$(LIBRSVG_IPK_DIR)/opt/share/gir-1.0/GdkPixbuf-2.0.gir
 	find $(GDK-PIXBUF_IPK_DIR) -type f -name *.la -exec rm -f {} \;
 	rm -rf $(GDK-PIXBUF_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(GDK-PIXBUF_IPK_DIR)/CONTROL/control
 	install -m 755 $(GDK-PIXBUF_SOURCE_DIR)/postinst $(GDK-PIXBUF_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(GDK-PIXBUF_SOURCE_DIR)/prerm $(GDK-PIXBUF_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GDK-PIXBUF_IPK_DIR)
 
 #
