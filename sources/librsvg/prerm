@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Removing /opt/lib/girepository-1.0/Rsvg-2.0.typelib"
+
+rm -f /opt/lib/girepository-1.0/Rsvg-2.0.typelib

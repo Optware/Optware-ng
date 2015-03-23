@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "Configure gdk-pixbuf loaders"
+rm -f /opt/etc/gtk-3.0/gdk-pixbuf.loaders
+/opt/bin/gdk-pixbuf-query-loaders > /opt/etc/gtk-3.0/gdk-pixbuf.loaders
+
+cd /opt/share/gir-1.0
+
+echo "Generating /opt/lib/girepository-1.0/Rsvg-2.0.typelib"
+PATH="/opt/bin:$PATH" g-ir-compiler --includedir=. Rsvg-2.0.gir -o /opt/lib/girepository-1.0/Rsvg-2.0.typelib

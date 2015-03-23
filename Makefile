@@ -334,7 +334,7 @@ COMMON_CROSS_PACKAGES = \
 	libmms libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnettle libnsl libnxml \
 	libol libogg libosip2 libopensync libotr \
-	libpar2 libpcap libpng libpth librsync \
+	libpar2 libpcap libpng libpth librsync librsvg \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent libtorrent-rasterbar \
 	libunistring libupnp libusb libusb1 libvncserver \
