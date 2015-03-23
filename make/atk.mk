@@ -12,8 +12,8 @@
 # ATK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-ATK_SITE=http://ftp.gnome.org/pub/gnome/sources/atk/2.15
-ATK_VERSION=2.15.91
+ATK_SITE=http://ftp.gnome.org/pub/gnome/sources/atk/2.16
+ATK_VERSION=2.16.0
 ATK_SOURCE=atk-$(ATK_VERSION).tar.xz
 ATK_DIR=atk-$(ATK_VERSION)
 ATK_UNZIP=xzcat
@@ -21,7 +21,7 @@ ATK_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 ATK_DESCRIPTION=GNOME accessibility toolkit
 ATK_SECTION=lib
 ATK_PRIORITY=optional
-ATK_DEPENDS=glib
+ATK_DEPENDS=glib, gobject-introspection
 
 #
 # ATK_IPK_VERSION should be incremented when the ipk changes.
@@ -100,7 +100,8 @@ atk-source: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES)
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
 #
-$(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES) make/atk.mk
+$(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES) \
+	$(ATK_SOURCE_DIR)/$(ATK_VERSION)/Atk-1.0.gir make/atk.mk
 	$(MAKE) glib-stage
 	rm -rf $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR)
 	$(ATK_UNZIP) $(DL_DIR)/$(ATK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -118,6 +119,7 @@ $(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES) make/atk.mk
 		--prefix=/opt \
 		--disable-static \
 		--disable-glibtest \
+		--disable-introspection \
 	)
 	$(PATCH_LIBTOOL) $(ATK_BUILD_DIR)/libtool
 	touch $(ATK_BUILD_DIR)/.configured
@@ -166,9 +168,14 @@ atk-stage: $(ATK_BUILD_DIR)/.staged
 $(ATK_IPK): $(ATK_BUILD_DIR)/.built
 	rm -rf $(ATK_IPK_DIR) $(BUILD_DIR)/atk_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ATK_BUILD_DIR) DESTDIR=$(ATK_IPK_DIR) install-strip
+	install -d $(ATK_IPK_DIR)/opt/share/gir-1.0
+	install -m 644 $(ATK_SOURCE_DIR)/$(ATK_VERSION)/Atk-1.0.gir \
+		$(ATK_IPK_DIR)/opt/share/gir-1.0/Atk-1.0.gir
 	rm -f $(ATK_IPK_DIR)/opt/lib/*.la
 	rm -rf $(ATK_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(ATK_IPK_DIR)/CONTROL/control
+	install -m 755 $(ATK_SOURCE_DIR)/postinst $(ATK_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(ATK_SOURCE_DIR)/prerm $(ATK_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ATK_IPK_DIR)
 
 #
