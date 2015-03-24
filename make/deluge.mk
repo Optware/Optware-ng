@@ -27,16 +27,18 @@ DELUGE_SOURCE=deluge-$(DELUGE_VERSION).tar.bz2
 DELUGE_DIR=deluge-$(DELUGE_VERSION)
 DELUGE_UNZIP=bzcat
 DELUGE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-DELUGE_DESCRIPTION=Deluge BitTorrent client.
+DELUGE_DESCRIPTION=Deluge BitTorrent client (without GTK+ client).
+DELUGE_GTK_DESCRIPTION=Deluge GTK+ client
 DELUGE_SECTION=misc
 DELUGE_PRIORITY=optional
 DELUGE_DEPENDS=python27, py27-twisted, py27-xdg, py27-chardet, py27-mako, py27-setuptools, py27-libtorrent-rasterbar-binding, intltool
+DELUGE_GTK_DEPENDS=deluge, py27-gtk, librsvg, xdg-utils
 DELUGE_CONFLICTS=
 
 #
 # DELUGE_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_IPK_VERSION=2
+DELUGE_IPK_VERSION=3
 
 #
 # DELUGE_CONFFILES should be a list of user-editable files
@@ -69,6 +71,15 @@ DELUGE_BUILD_DIR=$(BUILD_DIR)/deluge
 
 DELUGE_IPK_DIR=$(BUILD_DIR)/deluge-$(DELUGE_VERSION)-ipk
 DELUGE_IPK=$(BUILD_DIR)/deluge_$(DELUGE_VERSION)-$(DELUGE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+DELUGE_GTK_IPK_DIR=$(BUILD_DIR)/deluge-gtk-$(DELUGE_VERSION)-ipk
+DELUGE_GTK_IPK=$(BUILD_DIR)/deluge-gtk_$(DELUGE_VERSION)-$(DELUGE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ifeq (py-gtk, $(filter py-gtk, $(PACKAGES)))
+DELUGE_IPKS=$(DELUGE_IPK) $(DELUGE_GTK_IPK)
+else
+DELUGE_IPKS=$(DELUGE_IPK)
+endif
 
 .PHONY: deluge-source deluge-unpack deluge deluge-stage deluge-ipk deluge-clean deluge-dirclean deluge-check
 
@@ -124,6 +135,8 @@ $(DELUGE_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_SOURCE) $(DELUGE_PATCHES) ma
 		-e 's|return os\.path\.join(save_config_path("deluge"), filename)|return os.path.join("/opt/etc/deluge", filename)|' \
 		-e 's|return save_config_path("deluge")|return "/opt/etc/deluge"|' \
 									$(@D)/deluge/common.py
+	### usr /opt/share instead of /usr/share
+	find $(@D)/deluge -type f -name *.py -exec sed -i -e 's|/usr/share|/opt/share|g' {} \;
 	touch $@
 
 deluge-unpack: $(DELUGE_BUILD_DIR)/.configured
@@ -173,6 +186,20 @@ $(DELUGE_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(DELUGE_DEPENDS)" >>$@
 	@echo "Conflicts: $(DELUGE_CONFLICTS)" >>$@
 
+$(DELUGE_GTK_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: deluge-gtk" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(DELUGE_PRIORITY)" >>$@
+	@echo "Section: $(DELUGE_SECTION)" >>$@
+	@echo "Version: $(DELUGE_VERSION)-$(DELUGE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(DELUGE_MAINTAINER)" >>$@
+	@echo "Source: $(DELUGE_SITE)/$(DELUGE_SOURCE)" >>$@
+	@echo "Description: $(DELUGE_GTK_DESCRIPTION)" >>$@
+	@echo "Depends: $(DELUGE_GTK_DEPENDS)" >>$@
+	@echo "Conflicts: $(DELUGE_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -185,14 +212,25 @@ $(DELUGE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(DELUGE_IPK): $(DELUGE_BUILD_DIR)/.built
+$(DELUGE_IPKS): $(DELUGE_BUILD_DIR)/.built
 	$(MAKE) deluge-stage
-	rm -rf $(DELUGE_IPK_DIR) $(BUILD_DIR)/deluge_*_$(TARGET_ARCH).ipk
+	rm -rf $(DELUGE_IPK_DIR) $(BUILD_DIR)/deluge_*_$(TARGET_ARCH).ipk \
+		$(DELUGE_GTK_IPK_DIR) $(BUILD_DIR)/deluge-gtk_*_$(TARGET_ARCH).ipk
 	(cd $(DELUGE_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(DELUGE_IPK_DIR) --prefix=/opt)
+ifeq (py-gtk, $(filter py-gtk, $(PACKAGES)))
+	install -d $(DELUGE_GTK_IPK_DIR)/opt/bin $(DELUGE_GTK_IPK_DIR)/opt/share/man/man1
+	mv -f $(DELUGE_IPK_DIR)/opt/bin/deluge-gtk $(DELUGE_GTK_IPK_DIR)/opt/bin
+	mv -f $(DELUGE_IPK_DIR)/opt/share/man/man1/deluge-gtk.1 $(DELUGE_GTK_IPK_DIR)/opt/share/man/man1
+	mv -f $(DELUGE_IPK_DIR)/opt/share/applications $(DELUGE_IPK_DIR)/opt/share/icons $(DELUGE_IPK_DIR)/opt/share/pixmaps \
+		$(DELUGE_GTK_IPK_DIR)/opt/share
+	$(MAKE) $(DELUGE_GTK_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(DELUGE_GTK_IPK_DIR)
+else
 	rm -f $(DELUGE_IPK_DIR)/opt/bin/deluge-gtk $(DELUGE_IPK_DIR)/opt/share/man/man1/deluge-gtk.1
 	rm -rf $(DELUGE_IPK_DIR)/opt/share/applications $(DELUGE_IPK_DIR)/opt/share/icons $(DELUGE_IPK_DIR)/opt/share/pixmaps
+endif
 	### init scripts
 	install -d $(DELUGE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(DELUGE_SOURCE_DIR)/S80deluged $(DELUGE_IPK_DIR)/opt/etc/init.d
@@ -207,7 +245,7 @@ $(DELUGE_IPK): $(DELUGE_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-deluge-ipk: $(DELUGE_IPK)
+deluge-ipk: $(DELUGE_IPKS)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -226,5 +264,5 @@ deluge-dirclean:
 #
 # Some sanity check for the package.
 #
-deluge-check: $(DELUGE_IPK)
+deluge-check: $(DELUGE_IPKS)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
