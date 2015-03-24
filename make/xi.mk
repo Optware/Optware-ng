@@ -19,7 +19,7 @@ XI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XI_DESCRIPTION=library for the X Input Extension
 XI_SECTION=lib
 XI_PRIORITY=optional
-XI_DEPENDS=x11
+XI_DEPENDS=x11, xext
 
 #
 # XI_IPK_VERSION should be incremented when the ipk changes.
