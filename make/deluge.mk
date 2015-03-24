@@ -31,7 +31,7 @@ DELUGE_DESCRIPTION=Deluge BitTorrent client (without GTK+ client).
 DELUGE_GTK_DESCRIPTION=Deluge GTK+ client
 DELUGE_SECTION=misc
 DELUGE_PRIORITY=optional
-DELUGE_DEPENDS=python27, py27-twisted, py27-xdg, py27-chardet, py27-mako, py27-setuptools, py27-libtorrent-rasterbar-binding, intltool
+DELUGE_DEPENDS=python27, py27-twisted, py27-xdg, py27-chardet, py27-mako, py27-setuptools, py27-libtorrent-rasterbar-binding, geoip, intltool
 DELUGE_GTK_DEPENDS=deluge, py27-gtk, librsvg, xdg-utils
 DELUGE_CONFLICTS=
 
