@@ -68,8 +68,8 @@ endif
 ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
 ASTERISK16_SUGGESTS +=,iksemel
 endif
-ifeq (gtk, $(filter gtk, $(PACKAGES)))
-ASTERISK16_SUGGESTS +=,gtk
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
+ASTERISK16_SUGGESTS +=,gtk2
 endif
 ifeq (x11, $(filter x11, $(PACKAGES)))
 ASTERISK16_SUGGESTS +=,x11
@@ -81,7 +81,7 @@ ASTERISK16_CONFLICTS=asterisk,asterisk14,astersk18,asterisk-sounds,asterisk-chan
 #
 # ASTERISK16_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK16_IPK_VERSION=1
+ASTERISK16_IPK_VERSION=2
 
 #
 # ASTERISK16_CONFFILES should be a list of user-editable files
@@ -196,7 +196,7 @@ ASTERISK16_CONFIGURE_OPTS += --with-iksemel=$(STAGING_PREFIX)
 else
 ASTERISK16_CONFIGURE_OPTS += --without-iksemel
 endif
-ifeq (gtk, $(filter gtk, $(PACKAGES)))
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
 ASTERISK16_CONFIGURE_OPTS += --with-gtk2=$(STAGING_PREFIX)
 else
 ASTERISK16_CONFIGURE_OPTS += --without-gtk2
@@ -276,8 +276,8 @@ endif
 ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
 	$(MAKE) iksemel-stage
 endif
-ifeq (gtk, $(filter gtk, $(PACKAGES)))
-	$(MAKE) gtk-stage
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
+	$(MAKE) gtk2-stage
 endif
 ifeq (x11, $(filter x11, $(PACKAGES)))
 	$(MAKE) x11-stage
@@ -322,7 +322,6 @@ endif
 		--with-ltdl=$(STAGING_PREFIX) \
 		--without-postgres \
 		--without-sqlite3 \
-		--without-gtk \
 		--without-pwlib \
 		--without-usb \
 		--without-lua \

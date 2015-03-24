@@ -68,6 +68,9 @@ endif
 ifneq (, $(filter iksemel, $(PACKAGES)))
 ASTERISK14_SUGGESTS +=,iksemel
 endif
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
+ASTERISK16_SUGGESTS +=,gtk2
+endif
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 ASTERISK14_SUGGESTS +=,net-snmp
 endif
@@ -179,6 +182,11 @@ ASTERISK14_CONFIGURE_OPTS += --with-iksemel=$(STAGING_PREFIX)
 else
 ASTERISK14_CONFIGURE_OPTS += --without-iksemel
 endif
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
+ASTERISK16_CONFIGURE_OPTS += --with-gtk2=$(STAGING_PREFIX)
+else
+ASTERISK16_CONFIGURE_OPTS += --without-gtk2
+endif
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 ASTERISK14_CONFIGURE_OPTS += --with-netsnmp=$(STAGING_PREFIX)
 else
@@ -250,6 +258,9 @@ ifneq (, $(filter jabberd, $(PACKAGES)))
 endif
 ifneq (, $(filter iksemel, $(PACKAGES)))
 	$(MAKE) iksemel-stage
+endif
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
+	$(MAKE) gtk2-stage
 endif
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 	$(MAKE) net-snmp-stage

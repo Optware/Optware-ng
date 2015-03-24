@@ -69,8 +69,8 @@ endif
 ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
 ASTERISK18_DEPENDS +=,iksemel
 endif
-ifeq (gtk, $(filter gtk, $(PACKAGES)))
-ASTERISK18_SUGGESTS +=,gtk
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
+ASTERISK18_SUGGESTS +=,gtk2
 endif
 ifeq (x11, $(filter x11, $(PACKAGES)))
 ASTERISK18_SUGGESTS +=,x11
@@ -82,7 +82,7 @@ ASTERISK18_CONFLICTS=asterisk10,asterisk11
 #
 # ASTERISK18_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK18_IPK_VERSION=1
+ASTERISK18_IPK_VERSION=2
 
 #
 # ASTERISK18_CONFFILES should be a list of user-editable files
@@ -214,7 +214,7 @@ ASTERISK18_CONFIGURE_OPTS += --with-iksemel=$(STAGING_PREFIX)
 else
 ASTERISK18_CONFIGURE_OPTS += --without-iksemel
 endif
-ifeq (gtk, $(filter gtk, $(PACKAGES)))
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
 ASTERISK18_CONFIGURE_OPTS += --with-gtk2=$(STAGING_PREFIX)
 else
 ASTERISK18_CONFIGURE_OPTS += --without-gtk2
@@ -294,8 +294,8 @@ endif
 ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
 	$(MAKE) iksemel-stage
 endif
-ifeq (gtk, $(filter gtk, $(PACKAGES)))
-	$(MAKE) gtk-stage
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
+	$(MAKE) gtk2-stage
 endif
 ifeq (x11, $(filter x11, $(PACKAGES)))
 	$(MAKE) x11-stage
