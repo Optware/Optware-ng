@@ -43,7 +43,7 @@ SHARED-MIME-INFO_CONFLICTS=
 #
 # SHARED-MIME-INFO_IPK_VERSION should be incremented when the ipk changes.
 #
-SHARED-MIME-INFO_IPK_VERSION=1
+SHARED-MIME-INFO_IPK_VERSION=2
 
 #
 # SHARED-MIME-INFO_CONFFILES should be a list of user-editable files
@@ -162,7 +162,11 @@ shared-mime-info: $(SHARED-MIME-INFO_BUILD_DIR)/.built
 #
 $(SHARED-MIME-INFO_BUILD_DIR)/.staged: $(SHARED-MIME-INFO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	there's no real need to stage except for dependent packages
+#	to varify that it's available when configuring,
+#	so we just stage the .pc file
+	install -d $(STAGING_LIB_DIR)/pkgconfig
+	cp -f $(@D)/shared-mime-info.pc $(STAGING_LIB_DIR)/pkgconfig
 	touch $@
 
 shared-mime-info-stage: $(SHARED-MIME-INFO_BUILD_DIR)/.staged
@@ -202,6 +206,8 @@ $(SHARED-MIME-INFO_IPK): $(SHARED-MIME-INFO_BUILD_DIR)/.built
 	rm -rf $(SHARED-MIME-INFO_IPK_DIR) $(BUILD_DIR)/shared-mime-info_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SHARED-MIME-INFO_BUILD_DIR) DESTDIR=$(SHARED-MIME-INFO_IPK_DIR) install-strip
 	rm -f $(SHARED-MIME-INFO_IPK_DIR)/opt/share/mime/mime.cache
+	install -d $(SHARED-MIME-INFO_IPK_DIR)/opt/lib
+	mv -f $(SHARED-MIME-INFO_IPK_DIR)/opt/share/pkgconfig $(SHARED-MIME-INFO_IPK_DIR)/opt/lib
 #	install -d $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/
 #	install -m 644 $(SHARED-MIME-INFO_SOURCE_DIR)/shared-mime-info.conf $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/shared-mime-info.conf
 #	install -d $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d
