@@ -142,7 +142,7 @@ $(XEXT_BUILD_DIR)/.staged: $(XEXT_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xext.pc
-	rm -f $(STAGING_LIB_DIR)/libxext.la $(STAGING_LIB_DIR)/libxext-*.la
+	rm -f $(STAGING_LIB_DIR)/libXext.la
 	touch $@
 
 xext-stage: $(XEXT_BUILD_DIR)/.staged
