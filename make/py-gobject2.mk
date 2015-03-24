@@ -61,7 +61,8 @@ PY-GOBJECT2_IPK_VERSION=1
 # PY-GOBJECT2_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PY-GOBJECT2_PATCHES=$(PY-GOBJECT2_SOURCE_DIR)/pygobject-2.28.6-fixes.patch
+PY-GOBJECT2_PATCHES=$(PY-GOBJECT2_SOURCE_DIR)/pygobject-2.28.6-fixes.patch \
+$(PY-GOBJECT2_SOURCE_DIR)/py-compile.patch
 
 #
 # If the compilation of the package requires additional
@@ -216,7 +217,6 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 		--with-ffi \
 	)
 	$(PATCH_LIBTOOL) $(@D)/3/libtool
-	cp -f $(PY-GOBJECT2_SOURCE_DIR)/py3-compile $(@D)/3/py-compile
 	touch $@
 
 py-gobject2-unpack: $(PY-GOBJECT2_BUILD_DIR)/.configured
