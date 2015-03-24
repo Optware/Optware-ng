@@ -33,7 +33,7 @@ GTK2_PRINT_DEPENDS=gtk2, cups
 #
 # GTK2_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK2_IPK_VERSION=1
+GTK2_IPK_VERSION=2
 
 #
 # GTK2_LOCALES defines which locales get installed
@@ -172,7 +172,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GTK2_CPPFLAGS)" \
-		LDFLAGS="-Wl,-rpath,/opt/lib/gtk-2.0 $(STAGING_LDFLAGS) $(GTK2_LDFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(GTK2_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_path_PERL=/usr/bin/perl \
@@ -181,7 +181,6 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--libdir=\$${prefix}/lib/gtk-2.0 \
 		--bindir=\$${prefix}/bin/gtk-2.0 \
                 --without-libjasper \
 		--x-includes=$(STAGING_INCLUDE_DIR) \
@@ -189,6 +188,7 @@ endif
 		--disable-static \
 		--disable-glibtest \
 		--enable-cups \
+		--disable-introspection \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -217,12 +217,13 @@ gtk2: $(GTK2_BUILD_DIR)/.built
 $(GTK2_BUILD_DIR)/.staged: $(GTK2_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(GTK2_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/gtk-2.0/pkgconfig/*.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gail.pc $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*2.0.pc
 	rm -f $(STAGING_PREFIX)/bin/gtk-2.0/gdk-pixbuf-csource
-	rm -f $(STAGING_LIB_DIR)/gtk-2.0/libgdk-x11-2.0.la
-	rm -f $(STAGING_LIB_DIR)/gtk-2.0/libgdk_pixbuf-2.0.la
-	rm -f $(STAGING_LIB_DIR)/gtk-2.0/libgdk_pixbuf_xlib-2.0.la
-	rm -f $(STAGING_LIB_DIR)/gtk-2.0/libgtk2-x11-2.0.la
+	rm -f $(STAGING_LIB_DIR)/libgailutil.la
+	rm -f $(STAGING_LIB_DIR)/libgdk-x11-2.0.la
+	rm -f $(STAGING_LIB_DIR)/libgdk_pixbuf-2.0.la
+	rm -f $(STAGING_LIB_DIR)/libgdk_pixbuf_xlib-2.0.la
+	rm -f $(STAGING_LIB_DIR)/libgtk-x11-2.0.la
 	touch $@
 
 gtk2-stage: $(GTK2_BUILD_DIR)/.staged
@@ -254,14 +255,14 @@ $(GTK2_IPK) $(GTK2_DOC_IPK) $(GTK2_PRINT_IPK): $(GTK2_BUILD_DIR)/.built
 	### make gtk2-print-ipk
 	find $(GTK2_IPK_DIR) -type f -name *.la -exec rm -f {} \;
 	install -d $(GTK2_PRINT_IPK_DIR)/opt/include \
-		$(GTK2_PRINT_IPK_DIR)/opt/lib/gtk-2.0/gtk-2.0/2.10.0 \
-		$(GTK2_PRINT_IPK_DIR)/opt/lib/gtk-2.0/pkgconfig
+		$(GTK2_PRINT_IPK_DIR)/opt/lib/gtk-2.0/2.10.0 \
+		$(GTK2_PRINT_IPK_DIR)/opt/lib/pkgconfig
 	mv -f $(GTK2_IPK_DIR)/opt/include/gtk-unix-print-2.0 \
 		$(GTK2_PRINT_IPK_DIR)/opt/include/
-	mv -f $(GTK2_IPK_DIR)/opt/lib/gtk-2.0/gtk-2.0/2.10.0/printbackends \
-		$(GTK2_PRINT_IPK_DIR)/opt/lib/gtk-2.0/gtk-2.0/2.10.0/
-	mv -f $(GTK2_IPK_DIR)/opt/lib/gtk-2.0/pkgconfig/gtk+-unix-print-2.0.pc \
-		$(GTK2_PRINT_IPK_DIR)/opt/lib/gtk-2.0/pkgconfig/
+	mv -f $(GTK2_IPK_DIR)/opt/lib/gtk-2.0/2.10.0/printbackends \
+		$(GTK2_PRINT_IPK_DIR)/opt/lib/gtk-2.0/2.10.0/
+	mv -f $(GTK2_IPK_DIR)/opt/lib/pkgconfig/gtk+-unix-print-2.0.pc \
+		$(GTK2_PRINT_IPK_DIR)/opt/lib/pkgconfig/
 	$(MAKE) $(GTK2_PRINT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK2_PRINT_IPK_DIR)
 	### make gtk2-ipk

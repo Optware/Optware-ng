@@ -58,7 +58,7 @@ LIBGLADE_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBGLADE_CPPFLAGS=-L$(STAGING_LIB_DIR)/gtk-2.0 -Wl,-rpath,/opt/lib/gtk-2.0 -Wl,-rpath-link,$(STAGING_LIB_DIR)/gtk-2.0
+LIBGLADE_CPPFLAGS=
 LIBGLADE_LDFLAGS=
 
 #
@@ -125,8 +125,8 @@ $(LIBGLADE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGLADE_SOURCE) $(LIBGLADE_PATCH
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGLADE_CPPFLAGS)" \
 		LDFLAGS="$(LIBGLADE_LDFLAGS) $(STAGING_LDFLAGS)" \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/gtk-2.0/pkgconfig:$(STAGING_LIB_DIR)/pkgconfig" \
-		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/gtk-2.0/pkgconfig:$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

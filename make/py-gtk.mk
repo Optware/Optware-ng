@@ -66,7 +66,7 @@ PY-GTK_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 PY-GTK_CPPFLAGS=
-PY-GTK_LDFLAGS=-L$(STAGING_LIB_DIR)/gtk-2.0 -Wl,-rpath,/opt/lib/gtk-2.0 -Wl,-rpath-link,$(STAGING_LIB_DIR)/gtk-2.0
+PY-GTK_LDFLAGS=
 
 #
 # PY-GTK_BUILD_DIR is the directory in which the build is done.
@@ -149,8 +149,8 @@ $(PY-GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GTK_SOURCE) $(PY-GTK_PATCHES) ma
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.6 \
 		am_cv_python_pythondir=/opt/lib/python2.6/site-packages \
 		am_cv_python_pyexecdir=/opt/lib/python2.6/site-packages \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/gtk-2.0/pkgconfig:$(STAGING_LIB_DIR)/pkgconfig" \
-		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/gtk-2.0/pkgconfig:$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -171,8 +171,8 @@ $(PY-GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GTK_SOURCE) $(PY-GTK_PATCHES) ma
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7 \
 		am_cv_python_pythondir=/opt/lib/python2.7/site-packages \
 		am_cv_python_pyexecdir=/opt/lib/python2.7/site-packages \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/gtk-2.0/pkgconfig:$(STAGING_LIB_DIR)/pkgconfig" \
-		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/gtk-2.0/pkgconfig:$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
