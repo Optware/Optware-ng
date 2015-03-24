@@ -57,7 +57,11 @@ GLIB_LOCALES=
 # compilation or linking flags, then list them here.
 #
 GLIB_CPPFLAGS=
-GLIB_LDFLAGS=
+GLIB_LDFLAGS=-Wl,-rpath-link,$(GLIB_BUILD_DIR)/gio/.libs -Wl,-rpath-link,$(GLIB_BUILD_DIR)/glib/.libs \
+	-Wl,-rpath-link,$(GLIB_BUILD_DIR)/gmodule/.libs -Wl,-rpath-link,$(GLIB_BUILD_DIR)/gobject/.libs \
+	-Wl,-rpath-link,$(GLIB_BUILD_DIR)/gthread/.libs -L$(GLIB_BUILD_DIR)/gio/.libs \
+	-L$(GLIB_BUILD_DIR)/glib/.libs -L$(GLIB_BUILD_DIR)/gmodule/.libs -L$(GLIB_BUILD_DIR)/gobject/.libs \
+	-L$(GLIB_BUILD_DIR)/gthread/.libs
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GLIB_CONFIG_OPT=--with-libiconv=gnu
 endif
@@ -97,7 +101,7 @@ $(DL_DIR)/$(GLIB_SOURCE):
 glib-source: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 
 
-$(GLIB_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GLIB_SOURCE) make/glib.mk
+$(GLIB_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GLIB_SOURCE) #make/glib.mk
 	$(MAKE) libffi-host-stage zlib-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(GLIB_DIR) $(@D)
 	$(GLIB_UNZIP) $(DL_DIR)/$(GLIB_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
@@ -116,7 +120,7 @@ $(GLIB_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GLIB_SOURCE) make/gl
 glib-host: $(GLIB_HOST_BUILD_DIR)/.built
 
 
-$(GLIB_HOST_BUILD_DIR)/.staged: $(GLIB_HOST_BUILD_DIR)/.built host/.configured make/glib.mk
+$(GLIB_HOST_BUILD_DIR)/.staged: $(GLIB_HOST_BUILD_DIR)/.built host/.configured #make/glib.mk
 	rm -f $@
 	$(MAKE) -C $(@D) install
 	cd $(HOST_STAGING_LIB_DIR); \
@@ -165,7 +169,7 @@ endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(GLIB_LDFLAGS)" \
+		LDFLAGS="$(GLIB_LDFLAGS) $(STAGING_LDFLAGS)" \
 		glib_cv_stack_grows=no \
 		glib_cv_uscore=yes \
 		ac_cv_func_posix_getpwuid_r=yes \
