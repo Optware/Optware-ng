@@ -115,6 +115,7 @@ $(GEOIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GEOIP_SOURCE) $(GEOIP_PATCHES) make/
 	if test "$(BUILD_DIR)/$(GEOIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GEOIP_DIR) $(@D) ; \
 	fi
+	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW) autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GEOIP_CPPFLAGS)" \
