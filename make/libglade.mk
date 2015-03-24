@@ -59,7 +59,7 @@ LIBGLADE_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 LIBGLADE_CPPFLAGS=
-LIBGLADE_LDFLAGS=
+LIBGLADE_LDFLAGS=-lgmodule-2.0
 
 #
 # LIBGLADE_BUILD_DIR is the directory in which the build is done.
@@ -124,7 +124,7 @@ $(LIBGLADE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGLADE_SOURCE) $(LIBGLADE_PATCH
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGLADE_CPPFLAGS)" \
-		LDFLAGS="$(LIBGLADE_LDFLAGS) $(STAGING_LDFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGLADE_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
