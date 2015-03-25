@@ -5,12 +5,12 @@
 OPENSSL_SITE=http://www.openssl.org/source
 
 ifeq ($(OPENSSL_VERSION), 1.0.1)
-override OPENSSL_VERSION := 1.0.1l
+override OPENSSL_VERSION := 1.0.1m
 export OPENSSL_VERSION
 export OPENSSL_LIB_VERSION := 1.0.0
 export OPENSSL_IPK_VERSION := 1
 else ifeq ($(OPENSSL_VERSION), 1.0.0)
-override OPENSSL_VERSION = 1.0.0q
+override OPENSSL_VERSION = 1.0.0r
 export OPENSSL_VERSION
 export OPENSSL_LIB_VERSION := 1.0.0
 export OPENSSL_IPK_VERSION := 1
@@ -18,13 +18,13 @@ else ifneq ($(OPTWARE_TARGET), $(filter \
 	cs04q3armel cs05q3armel cs06q3armel ddwrt dns323 ds101 ds101g fsg3 fsg3v4 gumstix1151 mss \
 	nslu2 oleg openwrt-brcm24 openwrt-ixp4xx slugosbe slugosle syno-x07 ts101 ts72xx vt4 wl500g, \
 	$(OPTWARE_TARGET)))
-export OPENSSL_VERSION = 0.9.8ze
+export OPENSSL_VERSION = 0.9.8zf
 export OPENSSL_LIB_VERSION := 0.9.8
 export OPENSSL_IPK_VERSION := 1
 else
 export OPENSSL_VERSION = 0.9.7m
 export OPENSSL_LIB_VERSION := 0.9.7
-export OPENSSL_IPK_VERSION := 6
+export OPENSSL_IPK_VERSION := 7
 endif
 
 OPENSSL_SOURCE=openssl-$(OPENSSL_VERSION).tar.gz
@@ -99,6 +99,7 @@ endif
 
 $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
 	rm -rf $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(@D)
+	rm -f $(HOST_STAGING_LIB_DIR)/libssl.* $(HOST_STAGING_LIB_DIR)/libcrypto.*
 	$(OPENSSL_UNZIP) $(DL_DIR)/$(OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf - 
 	mv $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(@D)
 	(cd $(@D) && \
@@ -109,7 +110,8 @@ $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $
 			enable-md2 \
                         $(OPENSSL_HOST_ARCH) \
 	)
-	$(MAKE) -C $(@D)
+	sed -i -e 's|LIBDEPS=.|&-Wl,-rpath,$(HOST_STAGING_LIB_DIR) -L$(HOST_STAGING_LIB_DIR) |' $(@D)/Makefile
+	$(MAKE) -C $(@D) EX_LIBS="-ldl"
 	touch $@
 
 $(OPENSSL_HOST_BUILD_DIR)/.staged: $(OPENSSL_HOST_BUILD_DIR)/.built
@@ -123,6 +125,7 @@ openssl-host-stage: $(OPENSSL_HOST_BUILD_DIR)/.staged
 
 $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
 	rm -rf $(BUILD_DIR)/$(OPENSSL_DIR) $(@D)
+	rm -f $(STAGING_LIB_DIR)/libssl.* $(STAGING_LIB_DIR)/libcrypto.*
 	$(OPENSSL_UNZIP) $(DL_DIR)/$(OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf - 
 	if test -n "$(OPENSSL_PATCHES)"; then \
 		cat $(OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(OPENSSL_DIR) -p1; \
@@ -138,6 +141,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 			--prefix=/opt \
 			$(OPENSSL_ARCH) \
 	)
+	sed -i -e 's|LIBDEPS=.|&$(STAGING_LDFLAGS) |' $(@D)/Makefile
 	sed -i -e 's|$$(PERL) tools/c_rehash certs||' $(@D)/apps/Makefile
 	touch $@
 
