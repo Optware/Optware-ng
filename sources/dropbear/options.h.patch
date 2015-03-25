@@ -1,5 +1,5 @@
---- dropbear/options.h~	2014-10-23 16:43:38.000000000 +0300
-+++ dropbear/options.h	2015-01-16 18:26:42.797639179 +0200
+--- dropbear/options.h~	2015-01-28 16:57:37.000000000 +0200
++++ dropbear/options.h	2015-03-25 06:35:31.853245591 +0200
 @@ -21,13 +21,13 @@
  
  /* Default hostkey paths - these can be specified on the command line */
@@ -17,7 +17,16 @@
  #endif
  
  /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
-@@ -258,7 +258,7 @@
+@@ -188,7 +188,7 @@ much traffic. */
+ 
+ /* The MOTD file path */
+ #ifndef MOTD_FILENAME
+-#define MOTD_FILENAME "/etc/motd"
++#define MOTD_FILENAME "/opt/etc/motd"
+ #endif
+ 
+ /* Authentication Types - at least one required.
+@@ -271,25 +271,25 @@ much traffic. */
  /* The default file to store the daemon's process ID, for shutdown
     scripts etc. This can be overridden with the -P flag */
  #ifndef DROPBEAR_PIDFILE
@@ -26,7 +35,13 @@
  #endif
  
  /* The command to invoke for xauth when using X11 forwarding.
-@@ -271,12 +271,12 @@
+  * "-q" for quiet */
+ #ifndef XAUTH_COMMAND
+-#define XAUTH_COMMAND "/usr/bin/xauth -q"
++#define XAUTH_COMMAND "/opt/bin/xauth -q"
+ #endif
+ 
+ /* if you want to enable running an sftp server (such as the one included with
   * OpenSSH), set the path below. If the path isn't defined, sftp will not
   * be enabled */
  #ifndef SFTPSERVER_PATH
@@ -41,12 +56,12 @@
  
  /* Whether to log commands executed by a client. This only logs the 
   * (single) command sent to the server, not what a user did in a 
-@@ -318,7 +318,7 @@
+@@ -331,7 +331,7 @@ be overridden at runtime with -I. 0 disa
  #define DEFAULT_IDLE_TIMEOUT 0
  
  /* The default path. This will often get replaced by the shell */
 -#define DEFAULT_PATH "/usr/bin:/bin"
-+#define DEFAULT_PATH "/usr/bin:/bin:/opt/bin:/opt/sbin"
++#define DEFAULT_PATH "/opt/bin:/opt/sbin:/usr/bin:/bin"
  
  /* Some other defines (that mostly should be left alone) are defined
   * in sysoptions.h */
