@@ -31,13 +31,17 @@ Player''s client/server model allows robot control programs to be written in any
 PLAYER_SECTION=misc
 PLAYER_PRIORITY=optional
 PLAYER_DEPENDS=boost-thread, boost-system, libjpeg, openssl
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
+PLAYER_SUGGESTS=gtk2
+else
 PLAYER_SUGGESTS=
+endif
 PLAYER_CONFLICTS=
 
 #
 # PLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-PLAYER_IPK_VERSION=5
+PLAYER_IPK_VERSION=6
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files
@@ -62,7 +66,7 @@ endif
 ifeq ($(shell test $(shell echo $(BOOST_VERSION) | cut -d '_' -f2) -ge 50; echo $$?),0)
 PLAYER_CPPFLAGS+=-DTIME_UTC=TIME_UTC_
 endif
-PLAYER_LDFLAGS=-lboost_system -lgcc
+PLAYER_LDFLAGS=-lboost_system -lm -lgcc
 
 #
 # PLAYER_BUILD_DIR is the directory in which the build is done.
@@ -116,6 +120,9 @@ player-source: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES)
 $(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) make/player.mk
 	$(MAKE) libstdc++-stage \
 		boost-stage libjpeg-stage openssl-stage
+ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
+	$(MAKE) gtk2-stage
+endif
 	rm -rf $(BUILD_DIR)/$(PLAYER_DIR) $(@D)
 	$(PLAYER_UNZIP) $(DL_DIR)/$(PLAYER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PLAYER_PATCHES)" ; \
