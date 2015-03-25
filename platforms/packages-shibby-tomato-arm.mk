@@ -1,5 +1,5 @@
 SPECIFIC_PACKAGES = \
-	ipkg-opt libiconv uclibc-opt \
+	libiconv uclibc-opt \
 	$(PERL_PACKAGES) \
 	binutils libc-dev gcc \
 	ipkg-static \

@@ -26,7 +26,11 @@ else
 #	so make uclibc-opt dependent on libnsl, which is a part of uClibc
 UCLIBC-OPT_DEPENDS=libnsl
 endif
+ifeq (ipkg-opt, $(filter ipkg-opt, $(PACKAGES)))
 UCLIBC-OPT_SUGGESTS=ipkg-opt
+else
+UCLIBC-OPT_SUGGESTS=
+endif
 UCLIBC-OPT_CONFLICTS=
 
 
