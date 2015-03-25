@@ -298,7 +298,7 @@ COMMON_CROSS_PACKAGES = \
 	freecell freeradius freetds freetype freeze \
 	fribidi ftpcopy fslint ftpd-topfield fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
-	geoip gettext gdk-pixbuf \
+	ged geoip gettext gdk-pixbuf \
 	ggrab ghostscript ghostscript-fonts git gkrellmd glib gnet gnokii gnome-icon-theme \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
