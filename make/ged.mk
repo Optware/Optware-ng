@@ -26,9 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GED_REPOSITORY=https://github.com/8l/ged.git
+GED_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ged
+GED_VERSION=0.1
 GED_SOURCE=ged-$(GED_VERSION).tar.gz
-GED_DIR=ged-$(GED_VERSION)
+GED_DIR=ged
 GED_UNZIP=zcat
 GED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GED_DESCRIPTION=The ged lightweight GTK+ 2 text editor.
@@ -37,10 +38,6 @@ GED_PRIORITY=optional
 GED_DEPENDS=gtk2
 GED_SUGGESTS=
 GED_CONFLICTS=
-
-GED_GIT_DATE=20141019
-GED_VERSION=git$(GED_GIT_DATE)
-GED_TREEISH=`git rev-list --max-count=1 --until=2014-10-19 HEAD`
 
 #
 # GED_IPK_VERSION should be incremented when the ipk changes.
@@ -84,17 +81,12 @@ GED_IPK=$(BUILD_DIR)/ged_$(GED_VERSION)-$(GED_IPK_VERSION)_$(TARGET_ARCH).ipk
 .PHONY: ged-source ged-unpack ged ged-stage ged-ipk ged-clean ged-dirclean ged-check
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with GIT
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(GED_DIR).tar.gz:
-	(cd $(BUILD_DIR) ; \
-		rm -rf ged && \
-		git clone --bare $(GED_REPOSITORY) ged && \
-		cd ged && \
-		(git archive --format=tar --prefix=$(GED_DIR)/ $(GED_TREEISH) | gzip > $@) && \
-		rm -rf ged ; \
-	)
+$(DL_DIR)/$(GED_SOURCE):
+	$(WGET) -P $(@D) $(GED_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -188,7 +180,7 @@ $(GED_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(GED_SECTION)" >>$@
 	@echo "Version: $(GED_VERSION)-$(GED_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(GED_MAINTAINER)" >>$@
-	@echo "Source: $(GED_REPOSITORY)" >>$@
+	@echo "Source: $(GED_SITE)/$(GED_SOURCE)" >>$@
 	@echo "Description: $(GED_DESCRIPTION)" >>$@
 	@echo "Depends: $(GED_DEPENDS)" >>$@
 	@echo "Suggests: $(GED_SUGGESTS)" >>$@
@@ -210,6 +202,7 @@ $(GED_IPK): $(GED_BUILD_DIR)/.built
 	rm -rf $(GED_IPK_DIR) $(BUILD_DIR)/ged_*_$(TARGET_ARCH).ipk
 	install -d $(GED_IPK_DIR)/opt/bin
 	install -m 755 $(GED_BUILD_DIR)/ged $(GED_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(GED_IPK_DIR)/opt/bin/ged
 #	install -d $(GED_IPK_DIR)/opt/etc/
 #	install -m 644 $(GED_SOURCE_DIR)/ged.conf $(GED_IPK_DIR)/opt/etc/ged.conf
 #	install -d $(GED_IPK_DIR)/opt/etc/init.d
