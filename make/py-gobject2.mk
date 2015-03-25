@@ -196,6 +196,7 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 		--with-ffi \
 	)
 	$(PATCH_LIBTOOL) $(@D)/2.7/libtool
+	mv -f $(@D)/3/py-compile $(@D)/3/py3-compile
 	autoreconf -vif $(@D)/3
 	(cd $(@D)/3; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -217,6 +218,7 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 		--with-ffi \
 	)
 	$(PATCH_LIBTOOL) $(@D)/3/libtool
+	mv -f $(@D)/3/py3-compile $(@D)/3/py-compile
 	touch $@
 
 py-gobject2-unpack: $(PY-GOBJECT2_BUILD_DIR)/.configured
