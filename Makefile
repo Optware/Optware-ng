@@ -402,7 +402,7 @@ COMMON_CROSS_PACKAGES = \
 	swig syslog-ng sysstat syx \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
 	tcpdump tcpflow tcsh telldus-core termcap tesseract-ocr \
-	texinfo textutils thttpd \
+	texinfo textutils thttpd thunar \
 	tig tin tinyproxy tinyscheme tmsnc tmux tnef tnftp tnftpd \
 	toppyweb tor torsocks torrent torrentflux transcode \
 	transmission \
