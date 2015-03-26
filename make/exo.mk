@@ -35,7 +35,7 @@ EXO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 EXO_DESCRIPTION=Support library used in the Xfce desktop.
 EXO_SECTION=lib
 EXO_PRIORITY=optional
-EXO_DEPENDS=libxfce4ui, libxfce4util
+EXO_DEPENDS=libxfce4ui-1, libxfce4util
 ifeq (perl-uri, $(filter perl-uri, $(PACKAGES)))
 EXO_DEPENDS+=, perl-uri
 endif
