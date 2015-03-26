@@ -288,7 +288,7 @@ COMMON_CROSS_PACKAGES = \
 	emacs22 endian enhanced-ctorrent enscript esmtp esniper \
 	ettercap ettercap-ng \
 	$(ERLANG_PACKAGES) \
-	esound eggdrop eventlog exif expat extract-xiso ez-ipupdate \
+	esound eggdrop eventlog exif exo expat extract-xiso ez-ipupdate \
 	faad2 fann fatresize fatsort fbcat fcgi fconfig \
 	fdupes fetchmail ffmpeg \
 	ficy file finch findutils firedrill-httptunnel \
