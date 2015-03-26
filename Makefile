@@ -338,7 +338,7 @@ COMMON_CROSS_PACKAGES = \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent libtorrent-rasterbar \
 	libunistring libupnp libusb libusb1 libvncserver \
-	libvorbis libvorbisidec libxfce4util libxkbcommon libxml2 libxslt libzip \
+	libvorbis libvorbisidec libxfce4ui libxfce4util libxkbcommon libxml2 libxslt libzip \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
 	lua luarocks \
