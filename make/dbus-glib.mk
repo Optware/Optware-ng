@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DBUS-GLIB_SITE=http://dbus.freedesktop.org/releases/dbus-glib
-DBUS-GLIB_VERSION=0.82
+DBUS-GLIB_VERSION=0.104
 DBUS-GLIB_SOURCE=dbus-glib-$(DBUS-GLIB_VERSION).tar.gz
 DBUS-GLIB_DIR=dbus-glib-$(DBUS-GLIB_VERSION)
 DBUS-GLIB_UNZIP=zcat
