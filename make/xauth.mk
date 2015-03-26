@@ -16,8 +16,8 @@ XAUTH_VERSION=1.0.9
 XAUTH_DIR=xauth-$(XAUTH_VERSION)
 XAUTH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XAUTH_DESCRIPTION=X authority utility
-XAUTH_SECTION=lib
-XAUTH_PRIORITY=utility
+XAUTH_SECTION=utility
+XAUTH_PRIORITY=optional
 XAUTH_DEPENDS=x11, xau, xext, xmu
 
 #
