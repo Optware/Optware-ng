@@ -46,7 +46,7 @@ TRANSMISSION_DEPENDS=openssl, libcurl, libevent, zlib
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 TRANSMISSION_DEPENDS+=, libiconv
 endif
-TRANSMISSION_GTK_DEPENDS=transmission, gtk
+TRANSMISSION_GTK_DEPENDS=transmission, gtk, gnome-icon-theme, elementary-xfce-icon-theme, elementary-xfce-dark-icon-theme, elementary-xfce-darker-icon-theme
 TRANSMISSION_SUGGESTS=
 TRANSMISSION_CONFLICTS=
 

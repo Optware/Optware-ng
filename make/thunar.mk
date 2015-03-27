@@ -35,7 +35,7 @@ THUNAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 THUNAR_DESCRIPTION=Xfce file manager.
 THUNAR_SECTION=utilities
 THUNAR_PRIORITY=optional
-THUNAR_DEPENDS=exo, pcre
+THUNAR_DEPENDS=exo, pcre, elementary-xfce-icon-theme, elementary-xfce-dark-icon-theme, elementary-xfce-darker-icon-theme
 THUNAR_SUGGESTS=
 THUNAR_CONFLICTS=
 
