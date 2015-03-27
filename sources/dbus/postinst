@@ -15,6 +15,10 @@ else
 	echo done
 fi
 
+echo "Generating /opt/etc/machine-id"
+mkdir -p /opt/etc
+/opt/bin/dbus-uuidgen > /opt/etc/machine-id
+
 # echo ; echo
 # echo "A template configuration file is installed here : /opt/etc/dbus.conf"
 # echo "Please read the dbus documentation to create a configuration file matching you needs."

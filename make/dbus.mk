@@ -134,6 +134,7 @@ endif
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
 		sed -i -e '/CFLAGS=.* -Wno-pointer-sign/s/ -Wno-pointer-sign//' $(@D)/configure; \
 	fi
+	sed -i -e 's|/etc/machine-id|/opt/etc/machine-id|' $(@D)/dbus/dbus-sysdeps-unix.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS_CPPFLAGS)" \
