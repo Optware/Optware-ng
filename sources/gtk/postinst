@@ -2,12 +2,13 @@
 
 mkdir -p /opt/etc/gtk-3.0
 
-echo "Configure input modules"
+echo "Configuring input modules"
 rm -f /opt/etc/gtk-3.0/gtk.immodules
 /opt/bin/gtk-query-immodules-3.0 > /opt/etc/gtk-3.0/gtk.immodules
 
-echo "Update icon cache: gnome-icon-theme"
-/opt/bin/gtk-update-icon-cache /opt/share/icons/gnome
-
-echo "Update icon cache: hicolor-icon-theme"
-/opt/bin/gtk-update-icon-cache /opt/share/icons/hicolor
+echo "Updating icon cache"
+for dir in `ls -d /opt/share/icons/*`; do
+	if test -f ${dir}/index.theme; then
+		/opt/bin/gtk-update-icon-cache ${dir}
+	fi
+done

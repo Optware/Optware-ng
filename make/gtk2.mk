@@ -24,7 +24,7 @@ GTK2_DOC_DESCRIPTION=GTK+-2.0 docs
 GTK2_SECTION=lib
 GTK2_PRIORITY=optional
 GTK2_DEPENDS=pango, atk, gdk-pixbuf, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, xcursor, xft, ttf-bitstream-vera, gconv-modules, \
-	gnome-icon-theme, hicolor-icon-theme, shared-mime-info
+	hicolor-icon-theme, shared-mime-info
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GTK2_DEPENDS+=, libiconv
 endif
@@ -33,7 +33,7 @@ GTK2_PRINT_DEPENDS=gtk2, cups
 #
 # GTK2_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK2_IPK_VERSION=2
+GTK2_IPK_VERSION=3
 
 #
 # GTK2_LOCALES defines which locales get installed
