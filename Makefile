@@ -285,6 +285,7 @@ COMMON_CROSS_PACKAGES = \
 	dmsetup dnsmasq dnstracer dokuwiki dos2unix dosfstools dovecot \
 	dropbear drraw dspam dtach dump \
 	e2fsprogs e2tools eaccelerator easy-rsa ed ecl electric-fence elinks \
+	elementary-xfce-icon-theme \
 	emacs22 endian enhanced-ctorrent enscript esmtp esniper \
 	ettercap ettercap-ng \
 	$(ERLANG_PACKAGES) \
