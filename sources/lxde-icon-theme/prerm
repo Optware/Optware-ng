@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rm -f /opt/share/icons/nuoveXT2/icon-theme.cache
