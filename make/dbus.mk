@@ -22,7 +22,7 @@
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
 DBUS_VERSION ?= 1.9.14
-DBUS_IPK_VERSION ?= 1
+DBUS_IPK_VERSION ?= 2
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat
@@ -31,6 +31,9 @@ DBUS_DESCRIPTION=D-Bus is a message bus system, a simple way for applications to
 DBUS_SECTION=misc
 DBUS_PRIORITY=optional
 DBUS_DEPENDS=expat, adduser
+ifeq (x11, $(filter x11, $(PACKAGES)))
+DBUS_DEPENDS+=, x11
+endif
 DBUS_SUGGESTS=
 DBUS_CONFLICTS=
 
@@ -57,6 +60,12 @@ DBUS_CROSS_CONFIG_ENVS=ac_cv_have_abstract_sockets=yes
 ifeq ($(OPTWARE_TARGET), wl500g)
 DBUS_CROSS_CONFIG_ENVS+= ac_cv_func_posix_getpwnam_r=no ac_cv_func_nonposix_getpwnam_r=no
 endif
+endif
+
+ifeq (x11, $(filter x11, $(PACKAGES)))
+DBUS_CONFIG_ARGS=--with-x
+else
+DBUS_CONFIG_ARGS=--without-x
 endif
 
 #
@@ -110,6 +119,9 @@ dbus-source: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES)
 #
 $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbus.mk
 	$(MAKE) expat-stage
+ifeq (x11, $(filter x11, $(PACKAGES)))
+	$(MAKE) x11-stage
+endif
 	rm -rf $(BUILD_DIR)/$(DBUS_DIR) $(DBUS_BUILD_DIR)
 	$(DBUS_UNZIP) $(DL_DIR)/$(DBUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DBUS_PATCHES)" ; \
@@ -126,6 +138,8 @@ $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbu
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DBUS_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		$(DBUS_CROSS_CONFIG_ENVS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -134,7 +148,7 @@ $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbu
 		--prefix=/opt \
 		--enable-abstract-sockets \
 		--with-xml=expat \
-		--without-x \
+		$(DBUS_CONFIG_ARGS) \
 		--disable-doxygen-docs \
 		--disable-xml-docs \
 		--disable-nls \
