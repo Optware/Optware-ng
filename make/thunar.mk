@@ -35,7 +35,7 @@ THUNAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 THUNAR_DESCRIPTION=Xfce file manager.
 THUNAR_SECTION=utilities
 THUNAR_PRIORITY=optional
-THUNAR_DEPENDS=exo
+THUNAR_DEPENDS=exo, pcre
 THUNAR_SUGGESTS=
 THUNAR_CONFLICTS=
 
@@ -111,7 +111,7 @@ thunar-source: $(DL_DIR)/$(THUNAR_SOURCE) $(THUNAR_PATCHES)
 # shown below to make various patches to it.
 #
 $(THUNAR_BUILD_DIR)/.configured: $(DL_DIR)/$(THUNAR_SOURCE) $(THUNAR_PATCHES) make/thunar.mk
-	$(MAKE) exo-stage
+	$(MAKE) exo-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(THUNAR_DIR) $(@D)
 	$(THUNAR_UNZIP) $(DL_DIR)/$(THUNAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(THUNAR_PATCHES)" ; \
@@ -135,6 +135,7 @@ $(THUNAR_BUILD_DIR)/.configured: $(DL_DIR)/$(THUNAR_SOURCE) $(THUNAR_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 		--docdir=/opt/share/doc/Thunar-$(THUNAR_VERSION) \
+		--program-transform-name='s&^&&' \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
