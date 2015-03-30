@@ -342,7 +342,7 @@ COMMON_CROSS_PACKAGES = \
 	libvorbis libvorbisidec libxfce4ui libxfce4util libxkbcommon libxml2 libxslt libzip \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
-	lua luarocks lxde-icon-theme \
+	lua luarocks lxappearance lxde-icon-theme \
 	lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
