@@ -32,7 +32,7 @@ DELUGE_GTK_DESCRIPTION=Deluge GTK+ client
 DELUGE_SECTION=misc
 DELUGE_PRIORITY=optional
 DELUGE_DEPENDS=python27, py27-twisted, py27-xdg, py27-chardet, py27-mako, py27-setuptools, py27-libtorrent-rasterbar-binding, geoip, intltool
-DELUGE_GTK_DEPENDS=deluge, py27-gtk, librsvg, xdg-utils, gnome-icon-theme, elementary-xfce-icon-theme, elementary-xfce-dark-icon-theme, elementary-xfce-darker-icon-theme
+DELUGE_GTK_DEPENDS=deluge, py27-gtk, librsvg, xdg-utils, gnome-icon-theme
 DELUGE_CONFLICTS=
 
 #

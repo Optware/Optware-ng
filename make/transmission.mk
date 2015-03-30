@@ -39,14 +39,14 @@ TRANSMISSION_DIR=transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
 TRANSMISSION_MAINTAINER=oleo@email.si
 TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with web interface bundled.
-TRANSMISSION_GTK_DESCRIPTION=transmission Gtk+ interface client
+TRANSMISSION_GTK_DESCRIPTION=Transmission GTK+ torrent client
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl, libcurl, libevent, zlib
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 TRANSMISSION_DEPENDS+=, libiconv
 endif
-TRANSMISSION_GTK_DEPENDS=transmission, gtk, gnome-icon-theme, elementary-xfce-icon-theme, elementary-xfce-dark-icon-theme, elementary-xfce-darker-icon-theme
+TRANSMISSION_GTK_DEPENDS=$(TRANSMISSION_DEPENDS), gtk, gnome-icon-theme
 TRANSMISSION_SUGGESTS=
 TRANSMISSION_CONFLICTS=
 
