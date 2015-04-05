@@ -113,13 +113,18 @@ miniupnpd-source: $(DL_DIR)/$(MINIUPNPD_SOURCE) $(MINIUPNPD_PATCHES)
 #
 $(MINIUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINIUPNPD_SOURCE) $(MINIUPNPD_PATCHES) make/miniupnpd.mk
 	$(MAKE) iptables-stage openssl-stage libnfnetlink-stage
-	rm -rf $(BUILD_DIR)/$(MINIUPNPD_DIR) $(MINIUPNPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MINIUPNPD_DIR) $(@D)
 	$(MINIUPNPD_UNZIP) $(DL_DIR)/$(MINIUPNPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINIUPNPD_PATCHES)" ; \
 		then cat $(MINIUPNPD_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(MINIUPNPD_DIR) -p1 ; \
 	fi
-	mv $(BUILD_DIR)/$(MINIUPNPD_DIR) $(MINIUPNPD_BUILD_DIR)
+	if test "$(BUILD_DIR)/$(MINIUPNPD_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MINIUPNPD_DIR) $(@D) ; \
+	fi
+ifneq($(IPV6), yes)
+	sed -i -e '/#define ENABLE_IPV6/s|^|//|' $(@D)/config.h.optware
+endif
 	touch $@
 
 miniupnpd-unpack: $(MINIUPNPD_BUILD_DIR)/.configured
