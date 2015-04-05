@@ -30,14 +30,18 @@ IPERF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPERF_DESCRIPTION=A tool for measuring TCP and UDP bandwidth performance.
 IPERF_SECTION=net
 IPERF_PRIORITY=optional
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+IPERF_DEPENDS=libstdc++
+else
 IPERF_DEPENDS=
+endif
 IPERF_SUGGESTS=
 IPERF_CONFLICTS=
 
 #
 # IPERF_IPK_VERSION should be incremented when the ipk changes.
 #
-IPERF_IPK_VERSION=1
+IPERF_IPK_VERSION=2
 
 #
 # IPERF_CONFFILES should be a list of user-editable files

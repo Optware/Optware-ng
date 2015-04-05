@@ -35,13 +35,13 @@ MINIUPNPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MINIUPNPD_DESCRIPTION=A lightweight uPNP and NAT-PMP daemon
 MINIUPNPD_SECTION=net
 MINIUPNPD_PRIORITY=optional
-MINIUPNPD_DEPENDS=iptables, openssl, start-stop-daemon
+MINIUPNPD_DEPENDS=iptables, openssl, libnfnetlink, start-stop-daemon
 MINIUPNPD_CONFLICTS=
 
 #
 # MINIUPNPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIUPNPD_IPK_VERSION=1
+MINIUPNPD_IPK_VERSION=2
 
 #
 # MINIUPNPD_CONFFILES should be a list of user-editable files
@@ -112,7 +112,7 @@ miniupnpd-source: $(DL_DIR)/$(MINIUPNPD_SOURCE) $(MINIUPNPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(MINIUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINIUPNPD_SOURCE) $(MINIUPNPD_PATCHES) make/miniupnpd.mk
-	$(MAKE) iptables-stage openssl-stage
+	$(MAKE) iptables-stage openssl-stage libnfnetlink-stage
 	rm -rf $(BUILD_DIR)/$(MINIUPNPD_DIR) $(MINIUPNPD_BUILD_DIR)
 	$(MINIUPNPD_UNZIP) $(DL_DIR)/$(MINIUPNPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINIUPNPD_PATCHES)" ; \

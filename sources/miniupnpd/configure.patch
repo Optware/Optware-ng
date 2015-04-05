@@ -34,7 +34,7 @@ diff -Naur miniupnpd-1.9.20141209/config.h.optware miniupnpd-1.9.20141209-optwar
 +#define ENABLE_NATPMP
 +
 +/* Comment the following line to disable PCP operations */
-+/* #define ENABLE_PCP */
++#define ENABLE_PCP
 +
 +#ifdef ENABLE_PCP
 +/* Uncomment the following line to enable PCP PEER operation */
@@ -66,7 +66,7 @@ diff -Naur miniupnpd-1.9.20141209/config.h.optware miniupnpd-1.9.20141209-optwar
 +#define USE_DAEMON
 +
 +/* Uncomment the following line to enable lease file support */
-+/*#define ENABLE_LEASEFILE*/
++#define ENABLE_LEASEFILE
 +
 +/* Uncomment the following line to enable port in use check */
 +/*#define CHECK_PORTINUSE*/
@@ -79,7 +79,7 @@ diff -Naur miniupnpd-1.9.20141209/config.h.optware miniupnpd-1.9.20141209-optwar
 +#define ENABLE_L3F_SERVICE
 +
 +/* Enable IP v6 support */
-+/*#define ENABLE_IPV6*/
++#define ENABLE_IPV6
 +
 +/* Define V6SOCKETS_ARE_V6ONLY if AF_INET6 sockets are restricted
 + * to IPv6 communications only. */
@@ -132,7 +132,7 @@ diff -Naur miniupnpd-1.9.20141209/config.h.optware miniupnpd-1.9.20141209-optwar
 +/*#define DISABLE_CONFIG_FILE*/
 +
 +/* Uncomment the following line to configure all manufacturer infos through miniupnpd.conf */
-+/*#define ENABLE_MANUFACTURER_INFO_CONFIGURATION*/
++#define ENABLE_MANUFACTURER_INFO_CONFIGURATION
 +
 +#if defined(ENABLE_6FC_SERVICE) || (defined(ENABLE_PCP) && defined(ENABLE_IPV6))
 +#define ENABLE_UPNPPINHOLE
