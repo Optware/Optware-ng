@@ -122,7 +122,7 @@ $(MINIUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINIUPNPD_SOURCE) $(MINIUPNPD_PA
 	if test "$(BUILD_DIR)/$(MINIUPNPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MINIUPNPD_DIR) $(@D) ; \
 	fi
-ifneq($(IPV6), yes)
+ifneq ($(IPV6), yes)
 	sed -i -e '/#define ENABLE_IPV6/s|^|//|' $(@D)/config.h.optware
 endif
 	touch $@
