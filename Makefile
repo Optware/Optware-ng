@@ -325,7 +325,7 @@ COMMON_CROSS_PACKAGES = \
 	libdaemon libdb libdb52 libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libebml libexosip2 \
-	libevent \
+	libepoxy libevent \
 	libesmtp libexif libexplain libffi libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libgssapi \
 	libglade libhid \
