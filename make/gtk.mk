@@ -12,8 +12,8 @@
 # GTK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GTK_SITE=http://ftp.gnome.org/pub/gnome/sources/gtk+/3.14
-GTK_VERSION=3.14.9
+GTK_SITE=http://ftp.gnome.org/pub/gnome/sources/gtk+/3.16
+GTK_VERSION=3.16.1
 GTK_SOURCE=gtk+-$(GTK_VERSION).tar.xz
 GTK_DIR=gtk+-$(GTK_VERSION)
 GTK_UNZIP=xzcat
@@ -23,7 +23,7 @@ GTK_PRINT_DESCRIPTION=GTK+ printing files
 GTK_DOC_DESCRIPTION=GTK+ docs
 GTK_SECTION=lib
 GTK_PRIORITY=optional
-GTK_DEPENDS=pango, atk, atk-bridge, gdk-pixbuf, libtiff, libjpeg (>= 6b-2), libpng, ttf-bitstream-vera, \
+GTK_DEPENDS=pango, atk, atk-bridge, gdk-pixbuf, libtiff, libjpeg (>= 6b-2), libpng, libepoxy, ttf-bitstream-vera, \
 	gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo, wayland, e2fsprogs, \
 	hicolor-icon-theme, shared-mime-info
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
@@ -35,7 +35,7 @@ GTK_PRINT_DEPENDS=gtk, cups
 #
 # GTK_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK_IPK_VERSION=2
+GTK_IPK_VERSION=1
 
 #
 # GTK_LOCALES defines which locales get installed
@@ -160,7 +160,7 @@ $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) $(GTK_PATCHES) make/gtk.mk
 	pango-stage cairo-stage atk-stage atk-bridge-stage gdk-pixbuf-stage cups-stage \
 	xcursor-stage xfixes-stage xext-stage xft-stage xi-stage \
 	libxkbcommon-stage wayland-stage gettext-stage pango-stage cairo-stage \
-	e2fsprogs-stage
+	e2fsprogs-stage gettext-host-stage libepoxy-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -185,6 +185,8 @@ endif
 		ac_cv_path_PERL=/usr/bin/perl \
 		GLIB_COMPILE_SCHEMAS=$(HOST_STAGING_PREFIX)/bin/glib-compile-schemas \
 		WAYLAND_SCANNER=$(HOST_STAGING_PREFIX)/bin/wayland-scanner \
+		MSGFMT=$(HOST_STAGING_PREFIX)/bin/msgfmt \
+		ac_cv_path_XGETTEXT=$(HOST_STAGING_PREFIX)/bin/xgettext \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
