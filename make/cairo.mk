@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 CAIRO_SITE=http://cairographics.org/releases
-CAIRO_VERSION=1.12.18
+CAIRO_VERSION=1.14.2
 CAIRO_SOURCE=cairo-$(CAIRO_VERSION).tar.xz
 CAIRO_DIR=cairo-$(CAIRO_VERSION)
 CAIRO_UNZIP=xzcat
@@ -26,7 +26,7 @@ CAIRO_DEPENDS=freetype, fontconfig, libpng, pixman, xrender, xext
 #
 # CAIRO_IPK_VERSION should be incremented when the ipk changes.
 #
-CAIRO_IPK_VERSION=2
+CAIRO_IPK_VERSION=1
 
 #
 # CAIRO_LOCALES defines which locales get installed
