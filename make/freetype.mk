@@ -161,7 +161,8 @@ $(FREETYPE_BUILD_DIR)/.staged: $(FREETYPE_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/bin
 	cp $(STAGING_DIR)/opt/bin/freetype-config $(STAGING_DIR)/bin/freetype-config
 	rm -f $(STAGING_LIB_DIR)/libfreetype.la
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/freetype2.pc
+	sed -i -e '/^libdir=/s|=.*|=$(STAGING_LIB_DIR)|' -e '/^includedir=/s|=.*|=$(STAGING_INCLUDE_DIR)/freetype2|' \
+		-e '/prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/freetype2.pc
 	touch $@
 
 freetype-stage: $(FREETYPE_BUILD_DIR)/.staged

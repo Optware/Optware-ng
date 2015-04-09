@@ -225,7 +225,9 @@ gtk: $(GTK_BUILD_DIR)/.built
 $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(GTK_BUILD_DIR) install prefix=$(STAGING_PREFIX)
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc \
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		-e 's|-I/opt/include|-I$(STAGING_INCLUDE_DIR)|g' \
+		$(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/gail-*.pc
 	rm -f $(addprefix $(STAGING_LIB_DIR)/, libgailutil-3.la libgdk-3.la libgtk-3.la)
 	find $(STAGING_LIB_DIR)/gtk-3.0 -type f -name *.la -exec rm -f {} \;

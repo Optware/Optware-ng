@@ -139,7 +139,8 @@ xcb: $(XCB_BUILD_DIR)/.built
 $(XCB_BUILD_DIR)/.staged: $(XCB_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xcb.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/xcb.pc $(STAGING_LIB_DIR)/pkgconfig/xcb-*.pc
 	rm -f $(STAGING_LIB_DIR)/libxcb.la $(STAGING_LIB_DIR)/libxcb-*.la
 	touch $@
 
