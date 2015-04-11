@@ -307,7 +307,7 @@ COMMON_CROSS_PACKAGES = \
 	grep groff gsasl gsnmp gtmess gtypist gutenprint gzip \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
-	gift-openft gift-opennap gtk gtk2 \
+	gift-openft gift-opennap gtk gtk2 gtksourceview \
 	haproxy harfbuzz haserl hd2u hdparm hello hexcurse heyu \
 	hiawatha hicolor-icon-theme hnb hpijs hping htop httping \
 	ice icecast ices0 icu icu54 \
