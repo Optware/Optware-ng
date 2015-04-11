@@ -345,7 +345,7 @@ COMMON_CROSS_PACKAGES = \
 	lua luarocks lxappearance lxde-icon-theme \
 	lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
-	mediatomb mediawiki memcached metalog memtester \
+	mediatomb mediawiki memcached mesalib metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
 	minicom minidlna minihttpd miniupnpd \
 	mini-sendmail mini-snmpd \
