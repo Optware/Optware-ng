@@ -409,7 +409,7 @@ COMMON_CROSS_PACKAGES = \
 	transmission \
 	transmissiond tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
-	ucl uemacs ulogd unarj uncia unfs3 units unixodbc \
+	ucl udev uemacs ulogd unarj uncia unfs3 units unixodbc \
 	unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utelnetd utf8proc util-linux util-linux-ng \
