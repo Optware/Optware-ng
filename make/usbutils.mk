@@ -14,11 +14,11 @@
 #
 # You should change all these variables to suit your package.
 #
-USBUTILS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/usbutils
-USBUTILS_VERSION=0.73
-USBUTILS_SOURCE=usbutils-$(USBUTILS_VERSION).tar.gz
+USBUTILS_SITE=http://mirror.linux.org.au/linux/utils/usb/usbutils
+USBUTILS_VERSION=0.91
+USBUTILS_SOURCE=usbutils-$(USBUTILS_VERSION).tar.bz2
 USBUTILS_DIR=usbutils-$(USBUTILS_VERSION)
-USBUTILS_UNZIP=zcat
+USBUTILS_UNZIP=bzcat
 USBUTILS_PRIORITY=optional
 USBUTILS_DEPENDS=libusb,zlib
 USBUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -29,7 +29,7 @@ USBUTILS_DESCRIPTION=USB enumeration utilities
 #
 # USBUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-USBUTILS_IPK_VERSION=3
+USBUTILS_IPK_VERSION=1
 
 #
 # USBUTILS_CONFFILES should be a list of user-editable files
@@ -100,7 +100,7 @@ $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCH
 		cat $(USBUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(USBUTILS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(USBUTILS_DIR) $(@D)
-	sed -i 's|DEST=|&/opt/share/misc/|' $(@D)/update-usbids.sh
+#	sed -i 's|DEST=|&/opt/share/misc/|' $(@D)/update-usbids.sh
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USBUTILS_CPPFLAGS)" \
@@ -136,6 +136,8 @@ usbutils: $(USBUTILS_BUILD_DIR)/.built
 $(USBUTILS_BUILD_DIR)/.staged: $(USBUTILS_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	install -d $(STAGING_LIB_DIR)/pkgconfig
+	install -m 644 $(@D)/usbutils.pc $(STAGING_LIB_DIR)/pkgconfig
 	touch $@
 
 usbutils-stage: $(USBUTILS_BUILD_DIR)/.staged
@@ -173,6 +175,8 @@ $(USBUTILS_IPK): $(USBUTILS_BUILD_DIR)/.built
 	rm -rf $(USBUTILS_IPK_DIR) $(BUILD_DIR)/usbutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(USBUTILS_BUILD_DIR) DESTDIR=$(USBUTILS_IPK_DIR) install-strip
 	install -m 755 $(USBUTILS_BUILD_DIR)/update-usbids.sh $(USBUTILS_IPK_DIR)/opt/sbin/
+	install -d $(USBUTILS_IPK_DIR)/opt/lib/pkgconfig
+	install -m 644 $(USBUTILS_BUILD_DIR)/usbutils.pc $(USBUTILS_IPK_DIR)/opt/lib/pkgconfig
 	# don't want these as they conflict with real libusb
 	rm -rf $(USBUTILS_IPK_DIR)/opt/lib $(USBUTILS_IPK_DIR)/opt/include
 #	install -d $(USBUTILS_IPK_DIR)/opt/etc/
