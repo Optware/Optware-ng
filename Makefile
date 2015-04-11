@@ -301,6 +301,7 @@ COMMON_CROSS_PACKAGES = \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
 	ged geoip gettext gdk-pixbuf \
 	ggrab ghostscript ghostscript-fonts git gkrellmd glib gnet gnokii gnome-icon-theme \
+	gnome-icon-theme-symbolic \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
 	gloox gobject-introspection golang gpsd \
