@@ -126,7 +126,7 @@ libcap-unpack: $(LIBCAP_BUILD_DIR)/.configured
 #
 $(LIBCAP_BUILD_DIR)/.built: $(LIBCAP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS)/libcap LD="$(TARGET_CC) -shared" \
+	$(MAKE) -C $(@D)/libcap $(TARGET_CONFIGURE_OPTS) LD="$(TARGET_CC) -shared" \
 		BUILD_CC=gcc LIBATTR=yes \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBCAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBCAP_LDFLAGS)" \
