@@ -323,7 +323,7 @@ COMMON_CROSS_PACKAGES = \
 	liba52 libacl libao libart libassuan libatomic-ops libbt libcap \
 	libcapi20 libcdio libcroco libcurl \
 	libdaemon libdb libdb52 libdlna \
-	libdvb libdvbpsi libdvdnav libdvdread \
+	libdvb libdvbpsi libdvdnav libdvdread libdrm \
 	libebml libexosip2 \
 	libepoxy libevent \
 	libesmtp libexif libexplain libffi libftdi \
