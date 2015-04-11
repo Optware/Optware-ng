@@ -421,6 +421,7 @@ COMMON_CROSS_PACKAGES = \
 	x11 xau xauth xaw xbitmaps xcursor xdg-utils xdmcp xdpyinfo xext \
 	xextensions xfixes xfixesproto xft xi xinetd \
 	xmu xp xpdf xpm xcb-proto xcb xextproto xfconf xorg-macros xproto xrender xt xterm xtrans xtst \
+	damageproto dri2proto dri3proto glproto presentproto \
 	x264 xmail xvid xz-utils \
 	yafc yasm yawk yougrabber \
 	zile zip zlib znc zoo zsh \
