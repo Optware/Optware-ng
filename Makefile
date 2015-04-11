@@ -419,7 +419,7 @@ COMMON_CROSS_PACKAGES = \
 	which whois wizd wpa-supplicant wput wxbase \
 	xerces-c xmlrpc-c \
 	x11 xau xauth xaw xbitmaps xcursor xdg-utils xdmcp xdpyinfo xext \
-	xextensions xfixes xfixesproto xft xi xinetd \
+	xextensions xfixes xfixesproto xft xi xinetd pciaccess \
 	xmu xp xpdf xpm xcb-proto xcb xextproto xfconf xorg-macros xproto xrender xt xterm xtrans xtst \
 	damageproto dri2proto dri3proto glproto presentproto \
 	x264 xmail xvid xz-utils \
