@@ -35,7 +35,7 @@ LIBEPOXY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBEPOXY_DESCRIPTION=Library for handling OpenGL function pointer management.
 LIBEPOXY_SECTION=lib
 LIBEPOXY_PRIORITY=optional
-LIBEPOXY_DEPENDS=
+LIBEPOXY_DEPENDS=mesalib
 LIBEPOXY_SUGGESTS=
 LIBEPOXY_CONFLICTS=
 
@@ -111,7 +111,7 @@ libepoxy-source: $(DL_DIR)/$(LIBEPOXY_SOURCE) $(LIBEPOXY_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBEPOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEPOXY_SOURCE) $(LIBEPOXY_PATCHES) make/libepoxy.mk
-	$(MAKE) xorg-macros-stage x11-stage
+	$(MAKE) xorg-macros-stage x11-stage mesalib-stage
 	rm -rf $(BUILD_DIR)/$(LIBEPOXY_DIR) $(@D)
 	$(LIBEPOXY_UNZIP) $(DL_DIR)/$(LIBEPOXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEPOXY_PATCHES)" ; \
@@ -136,9 +136,6 @@ $(LIBEPOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEPOXY_SOURCE) $(LIBEPOXY_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e '/BUILD_EGL/s|^|//|' $(@D)/config.h
-	sed -i -e 's/#define PLATFORM_HAS_EGL 1/#define PLATFORM_HAS_EGL 0/' $(@D)/src/dispatch_common.h
-	sed -i -e '/dispatch_egl.lo/s/^/#/' $(@D)/src/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
