@@ -26,10 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NTFS-3G_SITE=http://www.ntfs-3g.org
-NTFS-3G_VERSION=2009.4.4
-NTFS-3G_SOURCE=ntfs-3g-$(NTFS-3G_VERSION).tgz
-NTFS-3G_DIR=ntfs-3g-$(NTFS-3G_VERSION)
+NTFS-3G_SITE=https://tuxera.com/opensource
+NTFS-3G_VERSION=2015.3.14
+NTFS-3G_SOURCE=ntfs-3g_ntfsprogs-$(NTFS-3G_VERSION).tgz
+NTFS-3G_DIR=ntfs-3g_ntfsprogs-$(NTFS-3G_VERSION)
 NTFS-3G_UNZIP=zcat
 NTFS-3G_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NTFS-3G_DESCRIPTION=ntfs-3g - Third Generation Read/Write NTFS Driver.
@@ -188,8 +188,10 @@ $(NTFS-3G_IPK_DIR)/CONTROL/control:
 $(NTFS-3G_IPK): $(NTFS-3G_BUILD_DIR)/.built
 	rm -rf $(NTFS-3G_IPK_DIR) $(BUILD_DIR)/ntfs-3g_*_$(TARGET_ARCH).ipk
 	mkdir -p $(NTFS-3G_IPK_DIR)/opt/sbin
-	$(MAKE) -C $(NTFS-3G_BUILD_DIR) install-strip
-	ln -s ../bin/ntfs-3g $(NTFS-3G_IPK_DIR)/opt/sbin/mount.ntfs-3g
+	$(MAKE) -C $(NTFS-3G_BUILD_DIR) install-strip LN_S=':'
+	rm -f $(NTFS-3G_IPK_DIR)/opt/lib/*.la
+	sed -i -e '/^prefix=\|^exec_prefix=/s|=.*|=/opt|' $(NTFS-3G_IPK_DIR)/opt/lib/pkgconfig/libntfs-3g.pc
+#	ln -s ../bin/ntfs-3g $(NTFS-3G_IPK_DIR)/opt/sbin/mount.ntfs-3g
 #	install -d $(NTFS-3G_IPK_DIR)/opt/etc/
 #	install -m 644 $(NTFS-3G_SOURCE_DIR)/ntfs-3g.conf $(NTFS-3G_IPK_DIR)/opt/etc/ntfs-3g.conf
 #	install -d $(NTFS-3G_IPK_DIR)/opt/etc/init.d
