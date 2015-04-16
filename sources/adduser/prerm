@@ -1,3 +1,11 @@
 #!/bin/sh
 
-update-alternatives --remove su /opt/bin/adduser-su
+update-alternatives --remove chpasswd /opt/bin/adduser 30
+update-alternatives --remove cryptpw /opt/bin/adduser 30
+update-alternatives --remove getty /opt/bin/adduser 30
+update-alternatives --remove login /opt/bin/adduser 30
+update-alternatives --remove mkpasswd /opt/bin/adduser 30
+update-alternatives --remove passwd /opt/bin/adduser 30
+update-alternatives --remove su /opt/bin/adduser 30
+update-alternatives --remove sulogin /opt/bin/adduser 30
+update-alternatives --remove vlock /opt/bin/adduser 30
