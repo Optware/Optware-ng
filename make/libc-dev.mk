@@ -37,7 +37,7 @@ ifeq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
 	LIBC-DEV_DEPENDS+=, uclibc-opt
 endif
 
-LIBC-DEV_IPK_VERSION=6
+LIBC-DEV_IPK_VERSION=7
 
 ifdef LIBNSL_VERSION
 LIBC-DEV_VERSION=$(LIBNSL_VERSION)
@@ -133,7 +133,7 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	rm -rf $(LIBC-DEV_IPK_DIR) $(BUILD_DIR)/libc-dev_*_$(TARGET_ARCH).ipk
 	install -d $(LIBC-DEV_IPK_DIR)/opt/
 	-rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi shibby-tomato-arm, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel shibby-tomato-arm, $(OPTWARE_TARGET)))
 	rm -f $(LIBC-DEV_IPK_DIR)/opt/include/zlib.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/zconf.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/iconv.h
@@ -172,6 +172,11 @@ ifneq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
 		ln -sf $${f}.so.* $${f}.so; \
 	    fi; \
 	done
+else
+	cd $(LIBC-DEV_IPK_DIR)/opt/lib; \
+		for f in libc.so libcrypt.so libdl.so libm.so libpthread.so libresolv.so librt.so libutil.so; do \
+			ln -s $${f}.0 $${f}; \
+		done
 endif
 endif
 	rm -rf $(LIBC-DEV_IPK_DIR)/opt/include/c++
