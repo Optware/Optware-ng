@@ -22,7 +22,7 @@
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
 DBUS_VERSION ?= 1.9.14
-DBUS_IPK_VERSION ?= 2
+DBUS_IPK_VERSION ?= 3
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat
@@ -32,7 +32,7 @@ DBUS_SECTION=misc
 DBUS_PRIORITY=optional
 DBUS_DEPENDS=expat, adduser
 ifeq (x11, $(filter x11, $(PACKAGES)))
-DBUS_DEPENDS+=, x11
+DBUS_DEPENDS+=, x11, sm
 endif
 DBUS_SUGGESTS=
 DBUS_CONFLICTS=
@@ -120,7 +120,7 @@ dbus-source: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES)
 $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbus.mk
 	$(MAKE) expat-stage
 ifeq (x11, $(filter x11, $(PACKAGES)))
-	$(MAKE) x11-stage
+	$(MAKE) x11-stage sm-stage
 endif
 	rm -rf $(BUILD_DIR)/$(DBUS_DIR) $(DBUS_BUILD_DIR)
 	$(DBUS_UNZIP) $(DL_DIR)/$(DBUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
