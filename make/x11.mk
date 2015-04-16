@@ -150,7 +150,7 @@ $(X11_BUILD_DIR)/.staged: $(X11_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/x11.pc
-	rm -f $(STAGING_LIB_DIR)/libX11.la
+	rm -f $(STAGING_LIB_DIR)/libX11.la $(STAGING_LIB_DIR)/libX11-xcb.la
 	touch $@
 
 x11-stage: $(X11_BUILD_DIR)/.staged
