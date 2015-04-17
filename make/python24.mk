@@ -32,7 +32,7 @@ PYTHON24_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON24_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON24_SECTION=misc
 PYTHON24_PRIORITY=optional
-PYTHON24_DEPENDS=readline, bzip2, openssl, libdb, zlib
+PYTHON24_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON24_DEPENDS+=, libstdc++
 endif
@@ -42,7 +42,7 @@ PYTHON24_SUGGESTS=
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=3
+PYTHON24_IPK_VERSION=4
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files
@@ -56,7 +56,7 @@ PYTHON24_CPPFLAGS=
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
 # as for -lgcc_s flag, see: http://bugs.python.org/issue23340
 ifeq ($(LIBC_STYLE),uclibc)
-PYTHON24_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
+PYTHON24_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz -lffi
 else
 PYTHON24_LDFLAGS=
 endif
@@ -130,8 +130,8 @@ $(PYTHON24_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON24_SOURCE) $(PYTHON24_PATCH
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
-	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage zlib-stage libffi-host-stage zlib-host-stage
-	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
+	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage zlib-stage libffi-host-stage \
+		zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage libffi-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.4
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON24_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1
@@ -159,6 +159,7 @@ endif
 		--mandir=/opt/man \
 		--enable-shared \
 		--enable-unicode=ucs4 \
+		--with-system-ffi \
 	)
 	### for linux3 build machines
 	sed -i -e 's/MACHDEP=.*/MACHDEP=\tlinux2/' $(@D)/Makefile

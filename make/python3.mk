@@ -32,7 +32,7 @@ PYTHON3_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON3_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON3_SECTION=misc
 PYTHON3_PRIORITY=optional
-PYTHON3_DEPENDS=readline, bzip2, openssl, libdb, zlib, sqlite, xz-utils
+PYTHON3_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite, xz-utils
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON3_DEPENDS+=, libstdc++
 endif
@@ -42,7 +42,7 @@ PYTHON3_SUGGESTS=
 #
 # PYTHON3_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON3_IPK_VERSION=1
+PYTHON3_IPK_VERSION=2
 
 #
 # PYTHON3_CONFFILES should be a list of user-editable files
@@ -59,7 +59,7 @@ endif
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
 # as for -lgcc_s flag, see: http://bugs.python.org/issue23340
 ifeq ($(LIBC_STYLE),uclibc)
-PYTHON3_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
+PYTHON3_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz -lffi
 else
 PYTHON3_LDFLAGS=
 endif
@@ -137,9 +137,9 @@ endif
 ifeq (enable, $(GETTEXT_NLS))
 	$(MAKE) gettext-stage
 endif
-	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage xz-utils-stage libffi-host-stage zlib-host-stage xz-utils-host-stage
-	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
-	$(MAKE) autoconf-host-stage
+	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage \
+		xz-utils-stage libffi-host-stage zlib-host-stage xz-utils-host-stage libffi-stage \
+		$(NCURSES_FOR_OPTWARE_TARGET)-stage autoconf-host-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON3_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python3
 	$(PYTHON3_UNZIP) $(DL_DIR)/$(PYTHON3_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON3_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
@@ -174,6 +174,7 @@ endif
 		--prefix=/opt \
 		--mandir=/opt/man \
 		--enable-shared \
+		--with-system-ffi \
 	)
 	touch $@
 

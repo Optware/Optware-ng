@@ -32,7 +32,7 @@ PYTHON26_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON26_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON26_SECTION=misc
 PYTHON26_PRIORITY=optional
-PYTHON26_DEPENDS=readline, bzip2, openssl, libdb, zlib, sqlite
+PYTHON26_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON26_DEPENDS+=, libstdc++
 endif
@@ -42,7 +42,7 @@ PYTHON26_SUGGESTS=
 #
 # PYTHON26_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON26_IPK_VERSION=1
+PYTHON26_IPK_VERSION=2
 
 #
 # PYTHON26_CONFFILES should be a list of user-editable files
@@ -56,7 +56,7 @@ PYTHON26_CPPFLAGS=
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
 # as for -lgcc_s flag, see: http://bugs.python.org/issue23340
 ifeq ($(LIBC_STYLE),uclibc)
-PYTHON26_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
+PYTHON26_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz -lffi
 else
 PYTHON26_LDFLAGS=
 endif
@@ -130,8 +130,8 @@ $(PYTHON26_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON26_SOURCE) $(PYTHON26_PATCH
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
-	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage libffi-host-stage zlib-host-stage
-	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
+	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage \
+		libffi-stage libffi-host-stage zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.6
 	$(PYTHON26_UNZIP) $(DL_DIR)/$(PYTHON26_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON26_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON26_DIR) -p1
@@ -160,6 +160,7 @@ endif
 		--mandir=/opt/man \
 		--enable-shared \
 		--enable-unicode=ucs4 \
+		--with-system-ffi \
 	)
 	### for linux3 build machines
 	sed -i -e 's/MACHDEP=.*/MACHDEP=\tlinux2/' $(@D)/Makefile
