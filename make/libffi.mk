@@ -47,7 +47,7 @@ LIBFFI_IPK_VERSION=1
 # LIBFFI_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBFFI_PATCHES=$(LIBFFI_SOURCE_DIR)/configure.patch
+LIBFFI_PATCHES=$(LIBFFI_SOURCE_DIR)/mips.softfloat.patch
 
 #
 # If the compilation of the package requires additional
@@ -112,7 +112,7 @@ $(LIBFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBFFI_SOURCE) $(LIBFFI_PATCHES) ma
 	$(LIBFFI_UNZIP) $(DL_DIR)/$(LIBFFI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBFFI_PATCHES)" ; \
 		then cat $(LIBFFI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBFFI_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(LIBFFI_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBFFI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBFFI_DIR) $(@D) ; \
