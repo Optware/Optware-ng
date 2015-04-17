@@ -1,15 +1,18 @@
---- Python-2.5.6/setup.py.orig	2008-10-16 11:58:19.000000000 -0700
-+++ Python-2.5.6/setup.py	2012-02-13 20:19:51.000000000 -0800
-@@ -15,7 +15,7 @@
+--- Python-2.5.6/setup.py.orig	2008-10-16 21:58:19.000000000 +0300
++++ Python-2.5.6/setup.py	2015-04-17 19:08:02.241272470 +0300
+@@ -14,8 +14,10 @@ from distutils.command.build_ext import
+ from distutils.command.install import install
  from distutils.command.install_lib import install_lib
  
++cross_compiling = ("CROSS_COMPILE" in os.environ) and (os.environ["CROSS_COMPILE"] == 'yes')
++
  # This global variable is used to hold the list of modules to be disabled.
 -disabled_module_list = []
-+disabled_module_list = ['_tkinter', '_ctypes'] # '_sqlite',
++disabled_module_list = ['_tkinter', 'nis'] # '_sqlite',
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -203,6 +203,10 @@
+@@ -203,6 +205,10 @@ class PyBuildExt(build_ext):
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -20,7 +23,7 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -243,10 +247,6 @@
+@@ -243,10 +249,6 @@ class PyBuildExt(build_ext):
          return sys.platform
  
      def detect_modules(self):
@@ -31,7 +34,16 @@
          # Add paths specified in the environment variables LDFLAGS and
          # CPPFLAGS for header and library files.
          # We must get the values from the Makefile and not the environment
-@@ -281,12 +281,6 @@
+@@ -258,7 +260,7 @@ class PyBuildExt(build_ext):
+                 ('LDFLAGS', '-L', self.compiler.library_dirs),
+                 ('CPPFLAGS', '-I', self.compiler.include_dirs)):
+             env_val = sysconfig.get_config_var(env_var)
+-            if env_val:
++            if env_val and (not cross_compiling):
+                 # To prevent optparse from raising an exception about any
+                 # options in env_val that is doesn't know about we strip out
+                 # all double dashes and any dashes followed by a character
+@@ -281,12 +283,6 @@ class PyBuildExt(build_ext):
                      for directory in reversed(options.dirs):
                          add_dir_to_list(dir_list, directory)
  
@@ -44,7 +56,21 @@
          try:
              have_unicode = unicode
          except NameError:
-@@ -588,7 +582,7 @@
+@@ -295,11 +291,8 @@ class PyBuildExt(build_ext):
+         # lib_dirs and inc_dirs are used to search for files;
+         # if a file is found in one of those directories, it can
+         # be assumed that no additional -I,-L directives are needed.
+-        lib_dirs = self.compiler.library_dirs + [
+-            '/lib64', '/usr/lib64',
+-            '/lib', '/usr/lib',
+-            ]
+-        inc_dirs = self.compiler.include_dirs + ['/usr/include']
++        lib_dirs = self.compiler.library_dirs
++        inc_dirs = self.compiler.include_dirs
+         exts = []
+ 
+         config_h = sysconfig.get_config_h_filename()
+@@ -588,7 +581,7 @@ class PyBuildExt(build_ext):
                              sources = ['md5module.c', 'md5.c'],
                              depends = ['md5.h']) )
  
@@ -53,7 +79,7 @@
              # OpenSSL doesn't do these until 0.9.8 so we'll bring our own hash
              exts.append( Extension('_sha256', ['sha256module.c']) )
              exts.append( Extension('_sha512', ['sha512module.c']) )
-@@ -746,7 +740,6 @@
+@@ -746,7 +739,6 @@ class PyBuildExt(build_ext):
              # is on an NFS server that goes away).
              exts.append(Extension('_bsddb', ['_bsddb.c'],
                                    library_dirs=dblib_dir,
@@ -61,7 +87,7 @@
                                    include_dirs=db_incs,
                                    libraries=dblibs))
          else:
-@@ -842,7 +835,6 @@
+@@ -842,7 +834,6 @@ class PyBuildExt(build_ext):
                                    include_dirs=["Modules/_sqlite",
                                                  sqlite_incdir],
                                    library_dirs=sqlite_libdir,

@@ -42,7 +42,7 @@ PYTHON25_SUGGESTS=
 #
 # PYTHON25_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON25_IPK_VERSION=4
+PYTHON25_IPK_VERSION=5
 
 #
 # PYTHON25_CONFFILES should be a list of user-editable files
@@ -170,10 +170,6 @@ endif
 
 	sed -e 's/-DSVNVERSION=\\"[^"]*"//' -e 's|PATH="`pwd`:\$$\$$PATH";|PATH="`pwd`/buildpython25:\$$\$$PATH";|' -i "$(@D)/Makefile"
 	sed -e 's/-DSVNVERSION=\\"[^"]*"//' -i "$(@D)/buildpython25/Makefile"
-
-	### make sure host default include and lib dirs aren't used
-	sed -i -e '/inc_dirs = self\.compiler\.include_dirs/s/^/        lib_dirs = self\.compiler\.library_dirs\n/' -e \
-		's/inc_dirs = self\.compiler\.include_dirs.*/inc_dirs = self\.compiler\.include_dirs/' $(BUILD_DIR)/$(PYTHON25_DIR)/setup.py
 	touch $@
 
 python25-unpack: $(PYTHON25_BUILD_DIR)/.configured

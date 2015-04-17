@@ -1,5 +1,5 @@
---- Python-2.5.2c1/Makefile.pre.in.orig	2007-12-05 12:43:57.000000000 -0800
-+++ Python-2.5.2c1/Makefile.pre.in	2008-02-15 13:39:38.000000000 -0800
+--- Python-2.5.6/Makefile.pre.in.orig	2008-09-22 03:22:44.000000000 +0300
++++ Python-2.5.6/Makefile.pre.in	2015-04-17 18:48:34.745002776 +0300
 @@ -36,6 +36,8 @@
  RANLIB=		@RANLIB@
  SVNVERSION=	@SVNVERSION@
@@ -18,6 +18,15 @@
  BLDSHARED=	@BLDSHARED@
  DESTSHARED=	$(BINLIBDEST)/lib-dynload
  
+@@ -126,7 +128,7 @@
+ OTHER_LIBTOOL_OPT=@OTHER_LIBTOOL_OPT@
+ 
+ # Environment to run shared python without installed libraries
+-RUNSHARED=       @RUNSHARED@
++RUNSHARED=       @RUNSHARED@ CROSS_COMPILE=@CROSS_COMPILE@
+ 
+ # Modes for directories, executables and data files created by the
+ # install process.  Default to user-only-writable for all file types.
 @@ -172,7 +174,8 @@
  UNICODE_OBJS=   @UNICODE_OBJS@
  
