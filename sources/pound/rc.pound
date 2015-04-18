@@ -1,0 +1,72 @@
+#! /bin/sh
+
+PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/opt/sbin/pound
+DESC="reverse proxy and load balancer"
+NAME=pound
+
+# Exit if the daemon does not exist (anymore)
+test -f $DAEMON || exit 0
+
+start_daemon () {
+    local force nice pidfile exec args OPTIND
+    force=""
+    nice=0
+    pidfile=/dev/null
+
+    OPTIND=1
+    while getopts fn:p: opt ; do
+        case "$opt" in
+            f)  force="force";;
+            n)  nice="$OPTARG";;
+            p)  pidfile="$OPTARG";;
+        esac
+    done
+    
+    shift $(($OPTIND - 1))
+    if [ "$1" = '--' ]; then
+        shift
+    fi
+
+    exec="$1"; shift
+
+    args="--start --nicelevel $nice --quiet --oknodo"
+    if [ "$force" ]; then
+        /opt/sbin/start-stop-daemon-start-stop-daemon $args \
+	    --chdir "$PWD" --startas $exec --pidfile /dev/null -- "$@"
+    elif [ $pidfile ]; then
+        /opt/sbin/start-stop-daemon-start-stop-daemon $args \
+	    --chdir "$PWD" --exec $exec --oknodo --pidfile "$pidfile" -- "$@"
+    else
+        /opt/sbin/start-stop-daemon-start-stop-daemon $args --chdir "$PWD" --exec $exec -- "$@"
+    fi
+}
+
+# The real work of an init script
+case "$1" in
+  start)
+	echo "Starting $DESC" "$NAME"
+    if [ ! -d "/opt/var/run" ]
+    then
+        mkdir -p /opt/var/run
+    fi
+	start_daemon $DAEMON $POUND_ARGS
+	;;
+  stop)
+	echo "Stopping $DESC" "$NAME"
+	killall $DAEMON
+	;;
+  restart)
+	echo "Restarting $DESC" "$NAME"
+	killall $DAEMON
+	start_daemon $DAEMON $POUND_ARGS
+	echo "."
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+	;;
+esac
+
+# Fallthrough if work done.
+exit 0

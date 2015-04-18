@@ -29,18 +29,18 @@ POUND_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 POUND_DESCRIPTION=Reverse-proxy and load-balancer.
 POUND_SECTION=web
 POUND_PRIORITY=optional
-POUND_DEPENDS=openssl, pcre
+POUND_DEPENDS=openssl, pcre, start-stop-daemon
 POUND_SUGGESTS=
 POUND_CONFLICTS=
 
 #
 # POUND_IPK_VERSION should be incremented when the ipk changes.
 #
-POUND_IPK_VERSION=1
+POUND_IPK_VERSION=2
 
 #
 # POUND_CONFFILES should be a list of user-editable files
-#POUND_CONFFILES=/opt/etc/pound.conf /opt/etc/init.d/SXXpound
+POUND_CONFFILES=/opt/etc/pound.cfg /opt/etc/init.d/pound
 
 #
 # POUND_PATCHES should list any patches, in the the order in
@@ -52,7 +52,7 @@ POUND_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-POUND_CPPFLAGS=
+POUND_CPPFLAGS=-DF_CONF='\"/opt/etc/pound.cfg\"' -DF_PID='\"/opt/var/run/pound.pid\"'
 POUND_LDFLAGS=
 
 #
@@ -195,14 +195,14 @@ $(POUND_IPK_DIR)/CONTROL/control:
 #
 $(POUND_IPK): $(POUND_BUILD_DIR)/.built
 	rm -rf $(POUND_IPK_DIR) $(BUILD_DIR)/pound_*_$(TARGET_ARCH).ipk
-	install -d $(POUND_IPK_DIR)/opt
+	install -d $(POUND_IPK_DIR)/opt/var/run $(POUND_IPK_DIR)/opt/etc/init.d
 	$(MAKE) -C $(POUND_BUILD_DIR) DESTDIR=$(POUND_IPK_DIR) install
 	$(STRIP_COMMAND) $(POUND_IPK_DIR)/opt/sbin/pound*
 	chmod 555 $(POUND_IPK_DIR)/opt/sbin/pound
 #	install -d $(POUND_IPK_DIR)/opt/etc/
-#	install -m 644 $(POUND_SOURCE_DIR)/pound.conf $(POUND_IPK_DIR)/opt/etc/pound.conf
+	install -m 644 $(POUND_SOURCE_DIR)/pound.cfg $(POUND_IPK_DIR)/opt/etc/pound.cfg
 #	install -d $(POUND_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(POUND_SOURCE_DIR)/rc.pound $(POUND_IPK_DIR)/opt/etc/init.d/SXXpound
+	install -m 755 $(POUND_SOURCE_DIR)/rc.pound $(POUND_IPK_DIR)/opt/etc/init.d/pound
 	$(MAKE) $(POUND_IPK_DIR)/CONTROL/control
 #	install -m 755 $(POUND_SOURCE_DIR)/postinst $(POUND_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(POUND_SOURCE_DIR)/prerm $(POUND_IPK_DIR)/CONTROL/prerm
