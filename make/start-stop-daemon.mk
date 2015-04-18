@@ -42,7 +42,7 @@ START-STOP-DAEMON_CONFLICTS=
 #
 # START-STOP-DAEMON_IPK_VERSION should be incremented when the ipk changes.
 #
-START-STOP-DAEMON_IPK_VERSION=1
+START-STOP-DAEMON_IPK_VERSION=2
 
 #
 # START-STOP-DAEMON_CONFFILES should be a list of user-editable files
@@ -220,9 +220,9 @@ $(START-STOP-DAEMON_IPK): $(START-STOP-DAEMON_BUILD_DIR)/.built
 			$(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(START-STOP-DAEMON_CONFFILES) | sed -e 's/ /\n/g' > $(START-STOP-DAEMON_IPK_DIR)/CONTROL/conffiles
-	echo "#!/bin/sh\n/opt/bin/update-alternatives --install '/opt/sbin/start-stop-daemon' 'start-stop-daemon' /opt/sbin/start-stop-daemon-start-stop-daemon 40" > \
+	echo -e "#!/bin/sh\n/opt/bin/update-alternatives --install '/opt/sbin/start-stop-daemon' 'start-stop-daemon' /opt/sbin/start-stop-daemon-start-stop-daemon 40" > \
 		$(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
-	echo "#!/bin/sh\n/opt/bin/update-alternatives --remove 'start-stop-daemon' /opt/sbin/start-stop-daemon-start-stop-daemon" > \
+	echo -e "#!/bin/sh\n/opt/bin/update-alternatives --remove 'start-stop-daemon' /opt/sbin/start-stop-daemon-start-stop-daemon" > \
 		$(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
 	chmod 755 $(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
 	chmod 755 $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
