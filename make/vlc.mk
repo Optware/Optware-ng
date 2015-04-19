@@ -32,7 +32,7 @@ VLC_VERSION=2.1.5
 VLC_UNZIP=xzcat
 VLC_SOURCE_SUFFIX=tar.xz
 endif
-VLC_IPK_VERSION=2
+VLC_IPK_VERSION=3
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).$(VLC_SOURCE_SUFFIX)
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -73,8 +73,9 @@ endif
 ifeq (x264, $(filter x264, $(PACKAGES)))
 VLC_SUGGESTS+=, x264
 endif
-ifeq (wayland, $(filter wayland, $(PACKAGES)))
-VLC_SUGGESTS+=, wayland
+ifeq (mesalib, $(filter mesalib, $(PACKAGES)))
+# libwayland-egl
+VLC_SUGGESTS+=, mesalib
 endif
 ifeq (xcb, $(filter xcb, $(PACKAGES)))
 VLC_SUGGESTS+=, xcb
@@ -111,7 +112,8 @@ VLC_CONFIG_OPTS += --disable-dvbpsi
 else
 VLC_CONFIG_OPTS += --enable-dvbpsi
 endif
-ifeq (wayland, $(filter wayland, $(PACKAGES)))
+ifeq (mesalib, $(filter mesalib, $(PACKAGES)))
+# libwayland-egl
 VLC_CONFIG_OPTS += --enable-wayland
 else
 VLC_CONFIG_OPTS += --disable-wayland
@@ -213,8 +215,9 @@ endif
 ifeq (x264, $(filter x264, $(PACKAGES)))
 	$(MAKE) x264-stage
 endif
-ifeq (wayland, $(filter wayland, $(PACKAGES)))
-	$(MAKE) wayland-stage
+ifeq (mesalib, $(filter mesalib, $(PACKAGES)))
+# libwayland-egl
+	$(MAKE) mesalib-stage
 endif
 ifeq (xcb, $(filter xcb, $(PACKAGES)))
 	$(MAKE) xcb-stage
@@ -280,7 +283,6 @@ endif
 		--disable-screen \
 		--disable-sdl \
 		--disable-wxwidgets --disable-skins2 \
-		--disable-x11 \
 		--disable-nls \
 		--disable-jpeg \
 		--disable-linsys \
