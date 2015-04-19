@@ -35,14 +35,14 @@ MESALIB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MESALIB_DESCRIPTION=OpenGL compatible 3D graphics library.
 MESALIB_SECTION=lib
 MESALIB_PRIORITY=optional
-MESALIB_DEPENDS=x11, xext, xcb, xdamage, xshmfence, libdrm, libudev
+MESALIB_DEPENDS=x11, xext, xcb, xdamage, xshmfence, libdrm, libudev, wayland
 MESALIB_SUGGESTS=
 MESALIB_CONFLICTS=
 
 #
 # MESALIB_IPK_VERSION should be incremented when the ipk changes.
 #
-MESALIB_IPK_VERSION=1
+MESALIB_IPK_VERSION=2
 
 #
 # MESALIB_CONFFILES should be a list of user-editable files
@@ -112,7 +112,7 @@ mesalib-source: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 #
 $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES) make/mesalib.mk
 	$(MAKE) x11-stage xext-stage xcb-stage xdamage-stage xshmfence-stage libdrm-stage \
-		udev-stage \
+		udev-stage wayland-stage wayland-host-stage \
 		glproto-stage presentproto-stage dri2proto-stage dri3proto-stage
 	rm -rf $(BUILD_DIR)/$(MESALIB_DIR) $(@D)
 	$(MESALIB_UNZIP) $(DL_DIR)/$(MESALIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -129,6 +129,7 @@ $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS) $(MESALIB_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		WAYLAND_SCANNER=$(HOST_STAGING_PREFIX)/bin/wayland-scanner \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -143,7 +144,7 @@ $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 		--enable-xa \
 		--disable-gbm \
 		--enable-glx-tls \
-		--with-egl-platforms="x11" \
+		--with-egl-platforms="x11,wayland" \
 		--enable-dri \
 		--enable-dri3 \
 		--with-gallium-drivers=no \
@@ -174,11 +175,11 @@ $(MESALIB_BUILD_DIR)/.staged: $(MESALIB_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(addprefix $(STAGING_LIB_DIR)/, libEGL.la \
 		libglapi.la libGLESv1_CM.la libGLESv2.la \
-		libGL.la ibOSMesa.la)
+		libGL.la ibOSMesa.la libwayland-egl.la)
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' \
 		$(addprefix $(STAGING_LIB_DIR)/pkgconfig/, \
 		dri.pc egl.pc gl.pc glesv1_cm.pc glesv2.pc \
-		osmesa.pc)
+		osmesa.pc wayland-egl.pc)
 	touch $@
 
 mesalib-stage: $(MESALIB_BUILD_DIR)/.staged
