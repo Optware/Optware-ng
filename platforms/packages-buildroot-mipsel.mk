@@ -11,7 +11,10 @@ BROKEN_PACKAGES = \
 	bluez-hcidump \
 	ficy \
 	fuppes \
+	golang \
 	gtmess \
+	inferno \
+	phoneme-advanced \
 	rssh \
 	sandbox \
 	libopensync msynctool obexftp \
@@ -34,7 +37,7 @@ RTORRENT_CPPUNIT := yes
 TSHARK_VERSION := 1.2.12
 TSHARK_IPK_VERSION := 1
 
-FFMPEG_CONFIG_OPTS := --disable-armv6
+#FFMPEG_CONFIG_OPTS :=
 
 ZNC_CONFIG_ARGS:=gl_cv_cc_visibility=true
 

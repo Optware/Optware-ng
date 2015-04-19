@@ -40,7 +40,7 @@ GDB_DEPENDS+=, libiconv
 endif
 GDB_CONFLICTS=
 
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi shibby-tomato-arm, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel shibby-tomato-arm, $(OPTWARE_TARGET)))
 GDB_VERSION=7.8.1
 GDB_IPK_VERSION=2
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
@@ -67,7 +67,7 @@ GDB_CPPFLAGS=
 # Note: added -s in here to strip binaries.
 #
 GDB_LDFLAGS=-s -lpthread
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi shibby-tomato-arm, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel shibby-tomato-arm, $(OPTWARE_TARGET)))
 GDB_LDFLAGS+= -lm
 endif
 

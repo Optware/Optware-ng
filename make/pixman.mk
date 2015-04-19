@@ -51,6 +51,11 @@ PIXMAN_PATCHES=
 PIXMAN_CPPFLAGS=
 PIXMAN_LDFLAGS=
 
+PIXMAN_CONF_ARGS=
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel, $(OPTWARE_TARGET)))
+PIXMAN_CONF_ARGS += --disable-mips-dspr2
+endif
+
 #
 # PIXMAN_BUILD_DIR is the directory in which the build is done.
 # PIXMAN_SOURCE_DIR is the directory which holds all the
@@ -133,6 +138,7 @@ $(PIXMAN_BUILD_DIR)/.configured: $(DL_DIR)/$(PIXMAN_SOURCE) $(PIXMAN_PATCHES) ma
 		--x-libraries=$(STAGING_LIB_DIR) \
 		--prefix=/opt \
 		--disable-static \
+		$(PIXMAN_CONF_ARGS) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@

@@ -113,7 +113,7 @@ gobject-introspection-source: $(DL_DIR)/$(GOBJECT-INTROSPECTION_SOURCE) $(GOBJEC
 #
 $(GOBJECT-INTROSPECTION_BUILD_DIR)/.configured: $(DL_DIR)/$(GOBJECT-INTROSPECTION_SOURCE) $(GOBJECT-INTROSPECTION_PATCHES) \
 						$(GOBJECT-INTROSPECTION_HOST_BUILD_DIR)/.staged make/gobject-introspection.mk
-	$(MAKE) glib-stage
+	$(MAKE) glib-stage python27-stage python27-host-stage
 	rm -rf $(BUILD_DIR)/$(GOBJECT-INTROSPECTION_DIR) $(@D)
 	$(GOBJECT-INTROSPECTION_UNZIP) $(DL_DIR)/$(GOBJECT-INTROSPECTION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GOBJECT-INTROSPECTION_PATCHES)" ; \

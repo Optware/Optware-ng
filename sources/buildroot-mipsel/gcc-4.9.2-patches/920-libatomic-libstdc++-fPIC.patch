@@ -1,0 +1,60 @@
+diff -dur gcc-4.9.2.orig/libatomic/Makefile.in gcc-4.9.2/libatomic/Makefile.in
+--- gcc-4.9.2.orig/libatomic/Makefile.in	2014-10-30 10:28:58.000000000 +0200
++++ gcc-4.9.2/libatomic/Makefile.in	2015-04-13 19:11:27.528117903 +0300
+@@ -149,7 +149,7 @@
+ CCDEPMODE = @CCDEPMODE@
+ CFLAGS = @CFLAGS@
+ CPP = @CPP@
+-CPPFLAGS = @CPPFLAGS@
++CPPFLAGS = -fPIC @CPPFLAGS@
+ CYGPATH_W = @CYGPATH_W@
+ DEFS = @DEFS@
+ DEPDIR = @DEPDIR@
+diff -dur gcc-4.9.2.orig/libstdc++-v3/libsupc++/Makefile.in gcc-4.9.2/libstdc++-v3/libsupc++/Makefile.in
+--- gcc-4.9.2.orig/libstdc++-v3/libsupc++/Makefile.in	2013-08-07 06:38:59.000000000 +0300
++++ gcc-4.9.2/libstdc++-v3/libsupc++/Makefile.in	2015-04-13 19:12:35.420044785 +0300
+@@ -159,7 +159,7 @@
+ CMONEY_CC = @CMONEY_CC@
+ CNUMERIC_CC = @CNUMERIC_CC@
+ CPP = @CPP@
+-CPPFLAGS = @CPPFLAGS@
++CPPFLAGS = -fPIC @CPPFLAGS@
+ CPU_DEFINES_SRCDIR = @CPU_DEFINES_SRCDIR@
+ CPU_OPT_BITS_RANDOM = @CPU_OPT_BITS_RANDOM@
+ CPU_OPT_EXT_RANDOM = @CPU_OPT_EXT_RANDOM@
+diff -dur gcc-4.9.2.orig/libstdc++-v3/src/c++11/Makefile.in gcc-4.9.2/libstdc++-v3/src/c++11/Makefile.in
+--- gcc-4.9.2.orig/libstdc++-v3/src/c++11/Makefile.in	2013-09-22 05:04:13.000000000 +0300
++++ gcc-4.9.2/libstdc++-v3/src/c++11/Makefile.in	2015-04-13 19:13:02.544022041 +0300
+@@ -114,7 +114,7 @@
+ CMONEY_CC = @CMONEY_CC@
+ CNUMERIC_CC = @CNUMERIC_CC@
+ CPP = @CPP@
+-CPPFLAGS = @CPPFLAGS@
++CPPFLAGS = -fPIC @CPPFLAGS@
+ CPU_DEFINES_SRCDIR = @CPU_DEFINES_SRCDIR@
+ CPU_OPT_BITS_RANDOM = @CPU_OPT_BITS_RANDOM@
+ CPU_OPT_EXT_RANDOM = @CPU_OPT_EXT_RANDOM@
+diff -dur gcc-4.9.2.orig/libstdc++-v3/src/c++98/Makefile.in gcc-4.9.2/libstdc++-v3/src/c++98/Makefile.in
+--- gcc-4.9.2.orig/libstdc++-v3/src/c++98/Makefile.in	2013-08-07 06:38:59.000000000 +0300
++++ gcc-4.9.2/libstdc++-v3/src/c++98/Makefile.in	2015-04-13 19:13:12.996012707 +0300
+@@ -129,7 +129,7 @@
+ CMONEY_CC = @CMONEY_CC@
+ CNUMERIC_CC = @CNUMERIC_CC@
+ CPP = @CPP@
+-CPPFLAGS = @CPPFLAGS@
++CPPFLAGS = -fPIC @CPPFLAGS@
+ CPU_DEFINES_SRCDIR = @CPU_DEFINES_SRCDIR@
+ CPU_OPT_BITS_RANDOM = @CPU_OPT_BITS_RANDOM@
+ CPU_OPT_EXT_RANDOM = @CPU_OPT_EXT_RANDOM@
+diff -dur gcc-4.9.2.orig/libstdc++-v3/src/Makefile.in gcc-4.9.2/libstdc++-v3/src/Makefile.in
+--- gcc-4.9.2.orig/libstdc++-v3/src/Makefile.in	2013-08-07 06:38:59.000000000 +0300
++++ gcc-4.9.2/libstdc++-v3/src/Makefile.in	2015-04-13 19:12:52.224031004 +0300
+@@ -147,7 +147,7 @@
+ CMONEY_CC = @CMONEY_CC@
+ CNUMERIC_CC = @CNUMERIC_CC@
+ CPP = @CPP@
+-CPPFLAGS = @CPPFLAGS@
++CPPFLAGS = -fPIC @CPPFLAGS@
+ CPU_DEFINES_SRCDIR = @CPU_DEFINES_SRCDIR@
+ CPU_OPT_BITS_RANDOM = @CPU_OPT_BITS_RANDOM@
+ CPU_OPT_EXT_RANDOM = @CPU_OPT_EXT_RANDOM@

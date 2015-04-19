@@ -61,7 +61,7 @@ LIBEXPLAIN_PATCHES=$(LIBEXPLAIN_SOURCE_DIR)/includes.patch
 # compilation or linking flags, then list them here.
 #
 LIBEXPLAIN_CPPFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-mipsel, $(OPTWARE_TARGET)))
 # not sure for which targets this should be applied
 # if compilation errors out with something like this:
 ### libexplain/buffer/ipc_perm.c: In function ‘explain_buffer_ipc_perm’:

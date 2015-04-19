@@ -110,7 +110,7 @@ $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $
 			enable-md2 \
                         $(OPENSSL_HOST_ARCH) \
 	)
-	sed -i -e 's|LIBDEPS=.|&-Wl,-rpath,$(HOST_STAGING_LIB_DIR) -L$(HOST_STAGING_LIB_DIR) |' $(@D)/Makefile
+	sed -i -e 's|LIBDEPS=.|&-Wl,-rpath,$(HOST_STAGING_LIB_DIR) |' $(@D)/Makefile
 	$(MAKE) -C $(@D) EX_LIBS="-ldl"
 	touch $@
 

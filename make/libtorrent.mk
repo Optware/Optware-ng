@@ -83,6 +83,9 @@ endif
 ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
 LIBTORRENT_CONFIG_ARGS+=--without-epoll
 endif
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel, $(OPTWARE_TARGET)))
+LIBTORRENT_CONFIG_ARGS+=--disable-instrumentation
+endif
 
 #
 # LIBTORRENT_BUILD_DIR is the directory in which the build is done.

@@ -247,7 +247,7 @@ $(PY-OPENSSL_BUILD_DIR)/.staged: $(PY-OPENSSL_BUILD_DIR)/.built
 
 $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) make/py-openssl.mk
 	rm -rf $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR) $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)
-	$(MAKE) py-cryptography-host-stage py-six-host-stage
+	$(MAKE) py-six-host-stage openssl-host-stage #py-cryptography-host-stage
 	mkdir -p $(@D)/
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.5
@@ -259,8 +259,8 @@ $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SO
 	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
 	    ) >> setup.cfg; \
 	)
-	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.6
+	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[build_ext]"; \
@@ -269,8 +269,8 @@ $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SO
 	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
 	    ) >> setup.cfg; \
 	)
-	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.7
+	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
 		echo "[build_ext]"; \
@@ -279,8 +279,8 @@ $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SO
 	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
 	    ) >> setup.cfg; \
 	)
-	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/3
+	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
 		echo "[build_ext]"; \

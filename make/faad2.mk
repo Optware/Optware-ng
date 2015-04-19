@@ -60,7 +60,7 @@ ifeq ($(TARGET_CPU), $(filter arm armeb mips mipsel, $(TARGET_CPU)))
 FAAD2_CPPFLAGS+=-DFIXED_POINT
 endif
 FAAD2_LDFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel, $(OPTWARE_TARGET)))
 FAAD2_LDFLAGS += -lm
 endif
 

@@ -45,7 +45,8 @@ LIBMAD_CONFFILES=
 # LIBMAD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBMAD_PATCHES=$(LIBMAD_SOURCE_DIR)/libmad-0.15.1b-pkgconfig.patch
+LIBMAD_PATCHES=$(LIBMAD_SOURCE_DIR)/libmad-0.15.1b-pkgconfig.patch \
+$(LIBMAD_SOURCE_DIR)/mips-gcc4.4.patch
 
 #
 # If the compilation of the package requires additional

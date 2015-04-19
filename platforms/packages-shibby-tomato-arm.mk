@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	libopensync msynctool obexftp \
 
 PERL_MAJOR_VER := 5.20
-PERL_ARCH := armv7l-linux
 PERL_LDFLAGS_EXTRA = -lgcc_s
 
 PSMISC_VERSION := 22.21

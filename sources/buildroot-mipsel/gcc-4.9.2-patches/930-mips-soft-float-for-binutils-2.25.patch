@@ -1,0 +1,130 @@
+--- gcc-4_9-branch/gcc/config/mips/mips.h	2015/02/26 04:03:22	220999
++++ gcc-4_9-branch/gcc/config/mips/mips.h	2015/02/26 10:40:06	221000
+@@ -1163,6 +1163,22 @@
+ #define SUBTARGET_ASM_SPEC ""
+ #endif
+ 
++/* FP_ASM_SPEC represents the floating-point options that must be passed
++   to the assembler when FPXX support exists.  Prior to that point the
++   assembler could accept the options but were not required for
++   correctness.  We only add the options when absolutely necessary
++   because passing -msoft-float to the assembler will cause it to reject
++   all hard-float instructions which may require some user code to be
++   updated.  */
++
++#ifdef HAVE_AS_DOT_MODULE
++#define FP_ASM_SPEC "\
++%{mhard-float} %{msoft-float} \
++%{msingle-float} %{mdouble-float}"
++#else
++#define FP_ASM_SPEC
++#endif
++
+ #undef ASM_SPEC
+ #define ASM_SPEC "\
+ %{G*} %(endian_spec) %{mips1} %{mips2} %{mips3} %{mips4} \
+@@ -1188,7 +1204,8 @@
+ %{mfp32} %{mfp64} %{mnan=*} \
+ %{mshared} %{mno-shared} \
+ %{msym32} %{mno-sym32} \
+-%{mtune=*} \
++%{mtune=*}" \
++FP_ASM_SPEC "\
+ %(subtarget_asm_spec)"
+ 
+ /* Extra switches sometimes passed to the linker.  */
+--- gcc-4_9-branch/gcc/config.in	2015/02/26 04:03:22	220999
++++ gcc-4_9-branch/gcc/config.in	2015/02/26 10:40:06	221000
+@@ -447,6 +447,12 @@
+ #endif
+ 
+ 
++/* Define if the assembler understands .module. */
++#ifndef USED_FOR_TARGET
++#undef HAVE_AS_DOT_MODULE
++#endif
++
++
+ /* Define if your assembler supports the -no-mul-bug-abort option. */
+ #ifndef USED_FOR_TARGET
+ #undef HAVE_AS_NO_MUL_BUG_ABORT_OPTION
+--- gcc-4_9-branch/gcc/configure	2015/02/26 04:03:22	220999
++++ gcc-4_9-branch/gcc/configure	2015/02/26 10:40:06	221000
+@@ -26140,6 +26140,38 @@
+ 
+ fi
+ 
++    { $as_echo "$as_me:${as_lineno-$LINENO}: checking assembler for .module support" >&5
++$as_echo_n "checking assembler for .module support... " >&6; }
++if test "${gcc_cv_as_mips_dot_module+set}" = set; then :
++  $as_echo_n "(cached) " >&6
++else
++  gcc_cv_as_mips_dot_module=no
++  if test x$gcc_cv_as != x; then
++    $as_echo '.module mips2
++       .module fp=xx' > conftest.s
++    if { ac_try='$gcc_cv_as $gcc_cv_as_flags -32 -o conftest.o conftest.s >&5'
++  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
++  test $ac_status = 0; }; }
++    then
++	gcc_cv_as_mips_dot_module=yes
++    else
++      echo "configure: failed program was" >&5
++      cat conftest.s >&5
++    fi
++    rm -f conftest.o conftest.s
++  fi
++fi
++{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $gcc_cv_as_mips_dot_module" >&5
++$as_echo "$gcc_cv_as_mips_dot_module" >&6; }
++if test $gcc_cv_as_mips_dot_module = yes; then
++
++$as_echo "#define HAVE_AS_DOT_MODULE 1" >>confdefs.h
++
++fi
++
+     { $as_echo "$as_me:${as_lineno-$LINENO}: checking assembler for .micromips support" >&5
+ $as_echo_n "checking assembler for .micromips support... " >&6; }
+ if test "${gcc_cv_as_micromips_support+set}" = set; then :
+--- gcc-4_9-branch/gcc/configure.ac	2015/02/26 04:03:22	220999
++++ gcc-4_9-branch/gcc/configure.ac	2015/02/26 10:40:06	221000
+@@ -4251,6 +4251,13 @@
+       [AC_DEFINE(HAVE_AS_GNU_ATTRIBUTE, 1,
+ 	  [Define if your assembler supports .gnu_attribute.])])
+ 
++    gcc_GAS_CHECK_FEATURE([.module support],
++      gcc_cv_as_mips_dot_module,,[-32],
++      [.module mips2
++       .module fp=xx],,
++      [AC_DEFINE(HAVE_AS_DOT_MODULE, 1,
++	  [Define if your assembler supports .module.])])
++
+     gcc_GAS_CHECK_FEATURE([.micromips support],
+       gcc_cv_as_micromips_support,,[--fatal-warnings],
+       [.set micromips],,
+--- gcc-4_9-branch/libgcc/config/mips/mips16.S	2015/02/26 04:03:22	220999
++++ gcc-4_9-branch/libgcc/config/mips/mips16.S	2015/02/26 10:40:06	221000
+@@ -21,8 +21,12 @@
+ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+ <http://www.gnu.org/licenses/>.  */
+ 
+-#ifdef __mips_micromips
+-  /* DO NOTHING */
++#if defined(__mips_micromips) || defined(__mips_soft_float)
++  /* Do nothing because this code is only needed when linking
++     against mips16 hard-float objects.  Neither micromips code
++     nor soft-float code can be linked against mips16 hard-float
++     objects so we do not need these routines when building libgcc
++     for those cases.  */
+ #else
+ 
+ /* This file contains mips16 floating point support functions.  These
+@@ -749,4 +753,4 @@
+ #endif /* !__mips_single_float */
+ 
+ #endif
+-#endif /* __mips_micromips */
++#endif /* defined(__mips_micromips) || defined(__mips_soft_float) */

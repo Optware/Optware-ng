@@ -194,7 +194,9 @@ endif
 	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) FLAVOUR=kamailio cfg $(KAMAILIO_MAKEFLAGS) \
 	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt \
 	modules_dirs="modules"
-
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel, $(OPTWARE_TARGET)))
+	sed -i -e 's/-minline-all-stringops//' $(@D)/Makefile.defs
+endif
 	touch $@
 
 kamailio-unpack: $(KAMAILIO_BUILD_DIR)/.configured
@@ -265,8 +267,8 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	CC_EXTRA_OPTS="$(KAMAILIO_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
-	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) DESTDIR=$(KAMAILIO_IPK_DIR) \
-	prefix=/opt cfg-prefix=$(KAMAILIO_IPK_DIR)/opt install
+	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) \
+	prefix=$(KAMAILIO_IPK_DIR)/opt cfg-prefix=$(KAMAILIO_IPK_DIR)/opt install
 
 	$(MAKE) $(KAMAILIO_IPK_DIR)/CONTROL/control
 	echo $(KAMAILIO_CONFFILES) | sed -e 's/ /\n/g' > $(KAMAILIO_IPK_DIR)/CONTROL/conffiles

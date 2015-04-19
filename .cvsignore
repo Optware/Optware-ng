@@ -1,6 +1,7 @@
 .configured
 .git
 buildroot-armeabi
+buildroot-mipsel
 builds
 cs04q3armel
 cs05q1armel

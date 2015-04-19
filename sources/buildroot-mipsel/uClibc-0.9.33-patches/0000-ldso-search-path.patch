@@ -1,0 +1,15 @@
+--- uClibc-0.9.33.2.orig/ldso/ldso/dl-elf.c
++++ uClibc-0.9.33.2/ldso/ldso/dl-elf.c
+@@ -296,10 +296,9 @@
+ 	   This list must exactly match the list in uClibc/ldso/util/ldd.c */
+ 	_dl_if_debug_dprint("\tsearching full lib path list\n");
+ 	tpnt1 = search_for_named_library(libname, rflags,
+-					UCLIBC_RUNTIME_PREFIX "lib:"
+-					UCLIBC_RUNTIME_PREFIX "usr/lib"
++					"/opt/lib"
+ #ifndef __LDSO_CACHE_SUPPORT__
+-					":" UCLIBC_RUNTIME_PREFIX "usr/X11R6/lib"
++					":" "/opt/X11R6/lib"
+ #endif
+ 					, rpnt);
+ 	if (tpnt1 != NULL)

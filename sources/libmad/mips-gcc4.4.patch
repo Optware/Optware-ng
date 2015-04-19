@@ -1,0 +1,25 @@
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: Different constraints for mips with gcc-4.4
+
+This asm constraints has been removed from gcc 4.4, that's why it was not
+failing before. See http://gcc.gnu.org/gcc-4.4/changes.html for more
+details, including a description of the new way to do it.
+
+--- libmad-0.15.1b.orig/fixed.h
++++ libmad-0.15.1b/fixed.h
+@@ -297,6 +297,14 @@
+ 
+ /* --- MIPS ---------------------------------------------------------------- */
+ 
++# elif defined(FPM_MIPS) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 4))
++   typedef unsigned int u64_di_t __attribute__ ((mode (DI))); 
++#  define MAD_F_MLX(hi, lo, x, y) \
++   do { \
++      u64_di_t __ll = (u64_di_t) (x) * (y); \
++      hi = __ll >> 32; \
++      lo = __ll; \
++   } while (0)
+ # elif defined(FPM_MIPS)
+ 
+ /*
+

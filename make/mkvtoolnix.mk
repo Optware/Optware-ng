@@ -41,7 +41,7 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 MKVTOOLNIX_DEPENDS +=, libiconv
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel, $(OPTWARE_TARGET)))
 MKVTOOLNIX_DEPENDS +=, boost-date-time, libcurl
 endif
 MKVTOOLNIX_SUGGESTS=

@@ -1,0 +1,62 @@
+From 328d392c54aa5dc2b8e7f398a419087de497de2b Mon Sep 17 00:00:00 2001
+From: Matthieu CASTET <castet.matthieu@free.fr>
+Date: Sun, 20 Dec 2009 21:12:12 +0100
+Subject: [PATCH] don't hide __errno_location and __h_errno_location thread can
+ overide it
+
+---
+ include/netdb.h                               | 2 +-
+ libc/misc/internals/__errno_location.c        | 2 +-
+ libc/misc/internals/__h_errno_location.c      | 2 +-
+ libc/misc/internals/__uClibc_main.c           | 4 ++-- #the relevant code piece missing from file in uClibc 0.9.33.2
+ libc/sysdeps/linux/common/bits/errno.h        | 2 +-
+ libc/sysdeps/linux/common/bits/uClibc_errno.h | 2 +-   #file missing in uClibc 0.9.33.2
+ 6 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/include/netdb.h b/include/netdb.h
+index 9d3807d..aeda977 100644
+--- a/include/netdb.h
++++ b/include/netdb.h
+@@ -59,7 +59,7 @@ __BEGIN_DECLS
+ 
+ /* Function to get address of global `h_errno' variable.  */
+ extern int *__h_errno_location (void) __THROW __attribute__ ((__const__));
+-libc_hidden_proto(__h_errno_location)
++//libc_hidden_proto(__h_errno_location)
+ 
+ /* Macros for accessing h_errno from inside libc.  */
+ #ifdef _LIBC
+diff --git a/libc/misc/internals/__errno_location.c b/libc/misc/internals/__errno_location.c
+index 487a9c2..514c4c8 100644
+--- a/libc/misc/internals/__errno_location.c
++++ b/libc/misc/internals/__errno_location.c
+@@ -12,5 +12,5 @@ int * weak_const_function __errno_location (void)
+     return &errno;
+ }
+ #ifdef IS_IN_libc /* not really need, only to keep in sync w/ libc_hidden_proto */
+-libc_hidden_weak(__errno_location)
++//libc_hidden_weak(__errno_location)
+ #endif
+diff --git a/libc/misc/internals/__h_errno_location.c b/libc/misc/internals/__h_errno_location.c
+index 213d398..b0e87d3 100644
+--- a/libc/misc/internals/__h_errno_location.c
++++ b/libc/misc/internals/__h_errno_location.c
+@@ -10,4 +10,4 @@ int * weak_const_function __h_errno_location (void)
+ {
+     return &h_errno;
+ }
+-libc_hidden_weak(__h_errno_location)
++//libc_hidden_weak(__h_errno_location)
+diff --git a/libc/sysdeps/linux/common/bits/errno.h b/libc/sysdeps/linux/common/bits/errno.h
+index 0bf6354..ba57a6e 100644
+--- a/libc/sysdeps/linux/common/bits/errno.h
++++ b/libc/sysdeps/linux/common/bits/errno.h
+@@ -43,7 +43,7 @@
+ # ifndef __ASSEMBLER__
+ /* Function to get address of global `errno' variable.  */
+ extern int *__errno_location (void) __THROW __attribute__ ((__const__));
+-libc_hidden_proto(__errno_location)
++//libc_hidden_proto(__errno_location)
+ 
+ #  ifdef __UCLIBC_HAS_THREADS__
+ /* When using threads, errno is a per-thread value.  */

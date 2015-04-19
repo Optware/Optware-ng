@@ -1,0 +1,11 @@
+--- uClibc-0.9.32.orig/utils/Makefile.in.orig
++++ uClibc-0.9.32/utils/Makefile.in
+@@ -31,7 +31,7 @@ else
+ CFLAGS-ldconfig += $(CFLAGS-utils-shared)
+ endif
+ 
+-CFLAGS-ldd := $(CFLAGS-utils-shared) -DBUILDING_LINKAGE
++CFLAGS-ldd := $(CFLAGS-utils-shared) -DBUILDING_LINKAGE -static
+ 
+ # Need CFLAGS-utils explicitly, because the source file is not located in utils
+ CFLAGS-iconv := $(CFLAGS-utils) \

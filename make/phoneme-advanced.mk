@@ -159,10 +159,10 @@ endif
 	( [ -e $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) ] && \
 	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile ) || \
 	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile $(PHONEME_ADVANCED_CDC_BUILD_DIR)
-ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-mipsel, $(OPTWARE_TARGET)))
 	sed -i -e 's|<asm/ucontext\.h>|<asm-generic/ucontext.h>|' $(@D)/cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c
 endif
-ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-mipsel, $(OPTWARE_TARGET)))
 #	uclibc built without sigignore() implementation
 	sed -i -e '/CVMBool CVMinitVMTargetGlobalState()/ i int sigignore (int sig)\n{\nstruct sigaction act;\nmemset(\&act, 0, sizeof(act));\nact.sa_handler = SIG_IGN;\nreturn sigaction (sig, \&act, NULL);\n}' $(@D)/cdc/src/linux/javavm/runtime/globals_md.c
 endif
