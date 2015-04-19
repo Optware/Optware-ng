@@ -35,14 +35,14 @@ THUNAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 THUNAR_DESCRIPTION=Xfce file manager.
 THUNAR_SECTION=utilities
 THUNAR_PRIORITY=optional
-THUNAR_DEPENDS=exo, pcre, gnome-icon-theme
+THUNAR_DEPENDS=exo, pcre, libgudev, gnome-icon-theme
 THUNAR_SUGGESTS=
 THUNAR_CONFLICTS=
 
 #
 # THUNAR_IPK_VERSION should be incremented when the ipk changes.
 #
-THUNAR_IPK_VERSION=1
+THUNAR_IPK_VERSION=2
 
 #
 # THUNAR_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ thunar-source: $(DL_DIR)/$(THUNAR_SOURCE) $(THUNAR_PATCHES)
 # shown below to make various patches to it.
 #
 $(THUNAR_BUILD_DIR)/.configured: $(DL_DIR)/$(THUNAR_SOURCE) $(THUNAR_PATCHES) make/thunar.mk
-	$(MAKE) exo-stage pcre-stage
+	$(MAKE) exo-stage pcre-stage udev-stage
 	rm -rf $(BUILD_DIR)/$(THUNAR_DIR) $(@D)
 	$(THUNAR_UNZIP) $(DL_DIR)/$(THUNAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(THUNAR_PATCHES)" ; \
