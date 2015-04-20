@@ -22,9 +22,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CURL_SITE=http://pycurl.sourceforge.net/download
-PY-CURL_VERSION=7.19.0
+PY-CURL_VERSION=7.19.5.1
+PY-CURL_VERSION_OLD=7.19.5.1
 PY-CURL_SOURCE=pycurl-$(PY-CURL_VERSION).tar.gz
+PY-CURL_SOURCE_OLD=pycurl-$(PY-CURL_VERSION_OLD).tar.gz
 PY-CURL_DIR=pycurl-$(PY-CURL_VERSION)
+PY-CURL_DIR_OLD=pycurl-$(PY-CURL_VERSION_OLD)
 PY-CURL_UNZIP=zcat
 PY-CURL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CURL_DESCRIPTION=PycURL is a Python interface to libcurl.
@@ -32,6 +35,8 @@ PY-CURL_SECTION=misc
 PY-CURL_PRIORITY=optional
 PY25-CURL_DEPENDS=python25, libcurl (>=7.19.0), openssl
 PY26-CURL_DEPENDS=python26, libcurl (>=7.19.0), openssl
+PY27-CURL_DEPENDS=python27, libcurl (>=7.19.0), openssl
+PY3-CURL_DEPENDS=python3, libcurl (>=7.19.0), openssl
 PY-CURL_CONFLICTS=
 
 #
@@ -68,11 +73,17 @@ PY-CURL_LDFLAGS=
 PY-CURL_BUILD_DIR=$(BUILD_DIR)/py-curl
 PY-CURL_SOURCE_DIR=$(SOURCE_DIR)/py-curl
 
-PY25-CURL_IPK_DIR=$(BUILD_DIR)/py25-curl-$(PY-CURL_VERSION)-ipk
-PY25-CURL_IPK=$(BUILD_DIR)/py25-curl_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY25-CURL_IPK_DIR=$(BUILD_DIR)/py25-curl-$(PY-CURL_VERSION_OLD)-ipk
+PY25-CURL_IPK=$(BUILD_DIR)/py25-curl_$(PY-CURL_VERSION_OLD)-$(PY-CURL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY26-CURL_IPK_DIR=$(BUILD_DIR)/py26-curl-$(PY-CURL_VERSION)-ipk
 PY26-CURL_IPK=$(BUILD_DIR)/py26-curl_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY27-CURL_IPK_DIR=$(BUILD_DIR)/py27-curl-$(PY-CURL_VERSION)-ipk
+PY27-CURL_IPK=$(BUILD_DIR)/py27-curl_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY3-CURL_IPK_DIR=$(BUILD_DIR)/py3-curl-$(PY-CURL_VERSION)-ipk
+PY3-CURL_IPK=$(BUILD_DIR)/py3-curl_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY-CURL-DOC_IPK_DIR=$(BUILD_DIR)/py-curl-doc-$(PY-CURL_VERSION)-ipk
 PY-CURL-DOC_IPK=$(BUILD_DIR)/py-curl-doc_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -86,6 +97,11 @@ PY-CURL-DOC_IPK=$(BUILD_DIR)/py-curl-doc_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSIO
 $(DL_DIR)/$(PY-CURL_SOURCE):
 	$(WGET) -P $(@D) $(PY-CURL_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+ifneq ($(PY-CURL_VERSION),$(PY-CURL_VERSION_OLD))
+$(DL_DIR)/$(PY-CURL_SOURCE_OLD):
+	$(WGET) -P $(@D) $(PY-OPENSSL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,16 +125,18 @@ py-curl-source: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES) make/py-curl.mk
-	$(MAKE) py-setuptools-stage openssl-stage libcurl-stage
+$(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(DL_DIR)/$(PY-CURL_SOURCE_OLD) \
+								$(PY-CURL_PATCHES) make/py-curl.mk
+	$(MAKE) py-setuptools-host-stage openssl-stage libcurl-stage
 	rm -rf $(PY-CURL_BUILD_DIR)
 	mkdir -p $(PY-CURL_BUILD_DIR)
 	# 2.5
-	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR)
-	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/2.5
-	sed -i.orig -e '/static-libs/s|.*|"")|' $(@D)/2.5/setup.py
+	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR_OLD)
+	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR_OLD) -p1
+	mv $(BUILD_DIR)/$(PY-CURL_DIR_OLD) $(@D)/2.5
+	sed -i.orig -e '/--static-libs" % CURL_CONFIG)\.read())/s|.*|"")|' \
+		-e 's/, "--static-libs"//' $(@D)/2.5/setup.py
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
@@ -134,7 +152,8 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
 	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/2.6
-	sed -i.orig -e '/static-libs/s|.*|"")|' $(@D)/2.6/setup.py
+	sed -i.orig -e '/--static-libs" % CURL_CONFIG)\.read())/s|.*|"")|' \
+		-e 's/, "--static-libs"//' $(@D)/2.6/setup.py
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[build_ext]"; \
@@ -143,6 +162,40 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python2.6" \
+	    ) >> setup.cfg; \
+	)
+	# 2.7
+	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR)
+	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/2.7
+	sed -i.orig -e '/--static-libs" % CURL_CONFIG)\.read())/s|.*|"")|' \
+		-e 's/, "--static-libs"//' $(@D)/2.7/setup.py
+	(cd $(@D)/2.7; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.7"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.7" \
+	    ) >> setup.cfg; \
+	)
+	# 3
+	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR)
+	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/3
+	sed -i.orig -e '/--static-libs" % CURL_CONFIG)\.read())/s|.*|"")|' \
+		-e 's/, "--static-libs"//' $(@D)/3/setup.py
+	(cd $(@D)/3; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)" \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -161,6 +214,14 @@ $(PY-CURL_BUILD_DIR)/.built: $(PY-CURL_BUILD_DIR)/.configured
 	cd $(@D)/2.6; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build \
+	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
+	cd $(@D)/2.7; \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build \
+	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
+	cd $(@D)/3; \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	touch $@
 
@@ -204,9 +265,9 @@ $(PY25-CURL_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-CURL_PRIORITY)" >>$@
 	@echo "Section: $(PY-CURL_SECTION)" >>$@
-	@echo "Version: $(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)" >>$@
+	@echo "Version: $(PY-CURL_VERSION_OLD)-$(PY-CURL_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-CURL_MAINTAINER)" >>$@
-	@echo "Source: $(PY-CURL_SITE)/$(PY-CURL_SOURCE)" >>$@
+	@echo "Source: $(PY-CURL_SITE)/$(PY-CURL_SOURCE_OLD)" >>$@
 	@echo "Description: $(PY-CURL_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY25-CURL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-CURL_CONFLICTS)" >>$@
@@ -225,6 +286,34 @@ $(PY26-CURL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PY26-CURL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-CURL_CONFLICTS)" >>$@
 
+$(PY27-CURL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-curl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-CURL_PRIORITY)" >>$@
+	@echo "Section: $(PY-CURL_SECTION)" >>$@
+	@echo "Version: $(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-CURL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-CURL_SITE)/$(PY-CURL_SOURCE)" >>$@
+	@echo "Description: $(PY-CURL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-CURL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-CURL_CONFLICTS)" >>$@
+
+$(PY3-CURL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py3-curl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-CURL_PRIORITY)" >>$@
+	@echo "Section: $(PY-CURL_SECTION)" >>$@
+	@echo "Version: $(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-CURL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-CURL_SITE)/$(PY-CURL_SOURCE)" >>$@
+	@echo "Description: $(PY-CURL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY3-CURL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-CURL_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -238,11 +327,9 @@ $(PY26-CURL_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py-curl_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-CURL_IPK_DIR) $(BUILD_DIR)/py25-curl_*_$(TARGET_ARCH).ipk
 	cd $(PY-CURL_BUILD_DIR)/2.5; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
 	    --root=$(PY25-CURL_IPK_DIR) --prefix=/opt \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
@@ -251,27 +338,50 @@ $(PY25-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
 	$(MAKE) $(PY25-CURL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CURL_IPK_DIR)
 
-$(PY26-CURL_IPK) $(PY-CURL-DOC_IPK): $(PY-CURL_BUILD_DIR)/.built
+$(PY26-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
 	rm -rf $(PY26-CURL_IPK_DIR) $(BUILD_DIR)/py26-curl_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY-CURL-DOC_IPK_DIR) $(BUILD_DIR)/py-curl-doc_*_$(TARGET_ARCH).ipk
 	cd $(PY-CURL_BUILD_DIR)/2.6; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install \
 	    --root=$(PY26-CURL_IPK_DIR) --prefix=/opt \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	$(STRIP_COMMAND) `find $(PY26-CURL_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
+	rm -rf $(PY26-CURL_IPK_DIR)/opt/share
 	$(MAKE) $(PY26-CURL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CURL_IPK_DIR)
+
+$(PY27-CURL_IPK) $(PY-CURL-DOC_IPK): $(PY-CURL_BUILD_DIR)/.built
+	rm -rf $(PY27-CURL_IPK_DIR) $(BUILD_DIR)/py27-curl_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY-CURL-DOC_IPK_DIR) $(BUILD_DIR)/py-curl-doc_*_$(TARGET_ARCH).ipk
+	cd $(PY-CURL_BUILD_DIR)/2.7; \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" install \
+	    --root=$(PY27-CURL_IPK_DIR) --prefix=/opt \
+	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
+	$(STRIP_COMMAND) `find $(PY27-CURL_IPK_DIR)/opt/lib/python2.7/site-packages -name '*.so'`
+	$(MAKE) $(PY27-CURL_IPK_DIR)/CONTROL/control
 	$(MAKE) $(PY-CURL-DOC_IPK_DIR)/CONTROL/control
 	install -d $(PY-CURL-DOC_IPK_DIR)/opt/
-	mv $(PY26-CURL_IPK_DIR)/opt/share $(PY-CURL-DOC_IPK_DIR)/opt/
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CURL_IPK_DIR)
+	mv $(PY27-CURL_IPK_DIR)/opt/share $(PY-CURL-DOC_IPK_DIR)/opt/
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-CURL_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-CURL-DOC_IPK_DIR)
+
+$(PY3-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
+	rm -rf $(PY3-CURL_IPK_DIR) $(BUILD_DIR)/py3-curl_*_$(TARGET_ARCH).ipk
+	cd $(PY-CURL_BUILD_DIR)/3; \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install \
+	    --root=$(PY3-CURL_IPK_DIR) --prefix=/opt \
+	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
+	$(STRIP_COMMAND) `find $(PY3-CURL_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages -name '*.so'`
+	rm -rf $(PY3-CURL_IPK_DIR)/opt/share
+	$(MAKE) $(PY3-CURL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-CURL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-curl-ipk: $(PY25-CURL_IPK) $(PY26-CURL_IPK) $(PY-CURL-DOC_IPK)
+py-curl-ipk: $(PY25-CURL_IPK) $(PY26-CURL_IPK) $(PY27-CURL_IPK) $(PY3-CURL_IPK) $(PY-CURL-DOC_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -288,9 +398,11 @@ py-curl-dirclean:
 	rm -rf $(PY-CURL-DOC_IPK_DIR) $(PY-CURL-DOC_IPK)
 	rm -rf $(PY25-CURL_IPK_DIR) $(PY25-CURL_IPK)
 	rm -rf $(PY26-CURL_IPK_DIR) $(PY26-CURL_IPK)
+	rm -rf $(PY27-CURL_IPK_DIR) $(PY27-CURL_IPK)
+	rm -rf $(PY3-CURL_IPK_DIR) $(PY3-CURL_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-curl-check: $(PY25-CURL_IPK) $(PY26-CURL_IPK)
+py-curl-check: $(PY25-CURL_IPK) $(PY26-CURL_IPK) $(PY27-CURL_IPK) $(PY3-CURL_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
