@@ -178,6 +178,7 @@ PYTHON_PACKAGES = \
 	ipython \
 	mailman \
 	mod-python mod-wsgi \
+	pyload \
 	pssh putmail \
 	pygments pyrex \
 	sabnzbd sabnzbdplus \

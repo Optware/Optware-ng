@@ -1,0 +1,50 @@
+#!/bin/sh
+export PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+COMMAND="/opt/bin/python2.7 pyLoadCore.py --configdir=/opt/etc/pyload"
+TOPDIR=/opt/share
+INSTALLDIR=$TOPDIR/pyload
+    
+func_start() {
+    echo "Starting PyLoad"
+    cd $INSTALLDIR
+    $COMMAND --daemon
+}
+
+func_status() {
+    echo -n "Status of PyLoad: "
+    cd $INSTALLDIR
+    STATUS=$($COMMAND --status)
+    if [[ $STATUS = "False" ]]; then
+        echo "Not running"
+    else
+        echo "Running as PID $STATUS"
+    fi
+}
+
+func_stop() {
+    echo "Stopping PyLoad"
+    cd $INSTALLDIR
+    $COMMAND --quit
+}
+
+case "$1" in
+    start)
+        func_start
+        ;;
+    stop)
+        func_stop
+        ;;
+    restart)
+        func_stop
+        sleep 4
+        func_start
+        ;;
+    status)
+        func_status
+        ;;
+    *)
+        echo "Usage: $0 (start|stop|restart|status)"
+        exit 1
+        ;;
+esac
+exit 0
