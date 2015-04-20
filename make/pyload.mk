@@ -185,6 +185,7 @@ $(PYLOAD_IPK): $(PYLOAD_BUILD_DIR)/.built
 	cp -af $(PYLOAD_BUILD_DIR)/* $(PYLOAD_IPK_DIR)/opt/share/pyload
 	install -d $(PYLOAD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(PYLOAD_SOURCE_DIR)/rc.pyload $(PYLOAD_IPK_DIR)/opt/etc/init.d/S98Pyload
+	ln -s S98Pyload $(PYLOAD_IPK_DIR)/opt/etc/init.d/K10Pyload
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PYLOAD_IPK_DIR)/opt/etc/init.d/SXXpyload
 	$(MAKE) $(PYLOAD_IPK_DIR)/CONTROL/control
 	install -m 755 $(PYLOAD_SOURCE_DIR)/postinst $(PYLOAD_IPK_DIR)/CONTROL/postinst
