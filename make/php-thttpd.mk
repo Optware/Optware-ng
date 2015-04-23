@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=1
+PHP_THTTPD_IPK_VERSION=2
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -227,6 +227,9 @@ endif
 		--with-thttpd=$(PHP_THTTPD_BUILD_DIR) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
+
+	echo "#define HAVE_DLOPEN 1" >> $(@D)/main/php_config.h
+	echo "#define HAVE_LIBDL 1" >> $(@D)/main/php_config.h
 
 	sed -i -e '/#define HAVE_GD_XPM/s|^|//|' \
 		-e '/#define HAVE_ATOMIC_H/s|^|//|' $(@D)/main/php_config.h

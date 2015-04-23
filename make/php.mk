@@ -37,7 +37,7 @@ PHP_HOST_CLI=$(HOST_STAGING_PREFIX)/bin/php
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=1
+PHP_IPK_VERSION=2
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -593,6 +593,9 @@ endif
 		--with-xmlrpc=shared \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
+
+	echo "#define HAVE_DLOPEN 1" >> $(@D)/main/php_config.h
+	echo "#define HAVE_LIBDL 1" >> $(@D)/main/php_config.h
 	
 	sed -i -e '/#define HAVE_GD_XPM/s|^|//|' \
 		-e '/#define HAVE_ATOMIC_H/s|^|//|' $(@D)/main/php_config.h

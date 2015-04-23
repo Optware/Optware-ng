@@ -23,7 +23,7 @@ PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=1
+PHP_APACHE_IPK_VERSION=2
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -230,6 +230,9 @@ endif
 		--with-apxs2=$(STAGING_DIR)/opt/bin/apxs \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
+
+	echo "#define HAVE_DLOPEN 1" >> $(@D)/main/php_config.h
+	echo "#define HAVE_LIBDL 1" >> $(@D)/main/php_config.h
 
 	sed -i -e '/#define HAVE_GD_XPM/s|^|//|' \
 		-e '/#define HAVE_ATOMIC_H/s|^|//|' $(@D)/main/php_config.h
