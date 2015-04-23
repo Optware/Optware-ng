@@ -174,8 +174,9 @@ udns: $(UDNS_BUILD_DIR)/.built
 $(UDNS_BUILD_DIR)/.staged: $(UDNS_BUILD_DIR)/.built
 	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	install -d $(STAGING_LIB_DIR)
+	install -d $(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR)
 	cp -af $(@D)/libudns*.so* $(STAGING_LIB_DIR)
+	cp -f $(@D)/udns.h $(STAGING_INCLUDE_DIR)
 	touch $@
 
 libudns-stage udns-stage: $(UDNS_BUILD_DIR)/.staged
@@ -254,9 +255,10 @@ $(UDNS_IPK): $(UDNS_BUILD_DIR)/.built
 
 $(LIBUDNS_IPK): $(UDNS_BUILD_DIR)/.built
 	rm -rf $(LIBUDNS_IPK_DIR) $(BUILD_DIR)/libudns_*_$(TARGET_ARCH).ipk
-	install -d $(LIBUDNS_IPK_DIR)/opt/lib
+	install -d $(LIBUDNS_IPK_DIR)/opt/lib $(LIBUDNS_IPK_DIR)/opt/include
 	cp -af $(UDNS_BUILD_DIR)/libudns*.so* $(LIBUDNS_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(LIBUDNS_IPK_DIR)/opt/lib/libudns.so.0
+	cp -f $(UDNS_BUILD_DIR)/udns.h $(LIBUDNS_IPK_DIR)/opt/include
 #	$(MAKE) -C $(UDNS_BUILD_DIR) DESTDIR=$(UDNS_IPK_DIR) install-strip
 #	install -d $(UDNS_IPK_DIR)/opt/etc/
 #	install -m 644 $(UDNS_SOURCE_DIR)/udns.conf $(UDNS_IPK_DIR)/opt/etc/udns.conf
