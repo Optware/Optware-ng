@@ -14,7 +14,7 @@ case "$rc" in
     start)
 	JABBER_USER=jabber
 
-	JABBER_DAEMON=/opt/sbin/jabberd
+	JABBER_DAEMON=/opt/bin/jabberd
 
 	if [ -f /opt/etc/jabber/jabber.conf ]; then
 		. /opt/etc/jabber/jabber.conf

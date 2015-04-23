@@ -45,7 +45,8 @@ JABBERD_IPK_VERSION=1
 
 #
 # JABBERD_CONFFILES should be a list of user-editable files
-JABBERD_CONFFILES=/opt/etc/jabber/jabber.xml /opt/etc/jabber/jabber.conf /opt/etc/init.d/S80jabber
+#JABBERD_CONFFILES=/opt/etc/jabber/jabber.xml /opt/etc/jabber/jabber.conf /opt/etc/init.d/S80jabber
+# We will generate this list automatically based on ipk content
 
 #
 # JABBERD_PATCHES should list any patches, in the the order in
@@ -201,13 +202,15 @@ $(JABBERD_IPK): $(JABBERD_BUILD_DIR)/.built
 	install -m 644 $(JABBERD_SOURCE_DIR)/jabber.conf $(JABBERD_IPK_DIR)/opt/etc/jabber/jabber.conf
 	install -d $(JABBERD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(JABBERD_SOURCE_DIR)/rc.jabber $(JABBERD_IPK_DIR)/opt/etc/init.d/S80jabber
+	sed -i -e 's|exec perl|exec /opt/bin/perl|' $(JABBERD_IPK_DIR)/opt/bin/jabberd
 	$(MAKE) $(JABBERD_IPK_DIR)/CONTROL/control
 	install -m 755 $(JABBERD_SOURCE_DIR)/postinst $(JABBERD_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(JABBERD_SOURCE_DIR)/prerm $(JABBERD_IPK_DIR)/CONTROL/prerm
 ifneq ($(OPTWARE_TARGET), nslu2)
 	sed -i -e '/share.hdd.conf/d' $(JABBERD_IPK_DIR)/CONTROL/postinst
 endif
-	echo $(JABBERD_CONFFILES) | sed -e 's/ /\n/g' > $(JABBERD_IPK_DIR)/CONTROL/conffiles
+#	echo $(JABBERD_CONFFILES) | sed -e 's/ /\n/g' > $(JABBERD_IPK_DIR)/CONTROL/conffiles
+	cd $(JABBERD_IPK_DIR)/opt/etc; find . -type f | sed 's|^\.|/opt/etc|' > $(JABBERD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JABBERD_IPK_DIR)
 
 #
