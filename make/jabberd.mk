@@ -26,22 +26,22 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-JABBERD_SITE=http://download.jabberd.org/jabberd14
-JABBERD_VERSION=1.6.1.1
-JABBERD_SOURCE=jabberd14-$(JABBERD_VERSION).tar.gz
-JABBERD_DIR=jabberd14-$(JABBERD_VERSION)
+JABBERD_SITE=https://github.com/jabberd2/jabberd2/releases/download/jabberd-$(JABBERD_VERSION)
+JABBERD_VERSION=2.3.3
+JABBERD_SOURCE=jabberd-$(JABBERD_VERSION).tar.gz
+JABBERD_DIR=jabberd-$(JABBERD_VERSION)
 JABBERD_UNZIP=zcat
 JABBERD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 JABBERD_DESCRIPTION=Jabber is an open-source IM platform designed to be open, fast, and easy to use and extend.
 JABBERD_SECTION=misc
 JABBERD_PRIORITY=optional
-JABBERD_DEPENDS=coreutils, libidn, libpth, gnutls, popt, expat
+JABBERD_DEPENDS=coreutils, libidn, libpth, gnutls, popt, expat, libgsasl, openssl, libdb, openldap-libs, libudns
 JABBERD_CONFLICTS=
 
 #
 # JABBERD_IPK_VERSION should be incremented when the ipk changes.
 #
-JABBERD_IPK_VERSION=2
+JABBERD_IPK_VERSION=1
 
 #
 # JABBERD_CONFFILES should be a list of user-editable files
@@ -51,7 +51,8 @@ JABBERD_CONFFILES=/opt/etc/jabber/jabber.xml /opt/etc/jabber/jabber.conf /opt/et
 # JABBERD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-JABBERD_PATCHES=$(JABBERD_SOURCE_DIR)/jabberd-1.6.1.1-gnutls2.patch
+JABBERD_PATCHES=$(JABBERD_SOURCE_DIR)/configure.patch \
+$(JABBERD_SOURCE_DIR)/missing_fnmatch.patch
 
 #
 # If the compilation of the package requires additional
@@ -107,19 +108,21 @@ jabberd-source: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES) make/jabberd.mk
-	$(MAKE) libidn-stage libpth-stage gnutls-stage popt-stage expat-stage
+	$(MAKE) libidn-stage libpth-stage gnutls-stage popt-stage expat-stage gsasl-stage \
+		openssl-stage libdb-stage openldap-stage udns-stage
 	rm -rf $(BUILD_DIR)/$(JABBERD_DIR) $(JABBERD_BUILD_DIR)
 	$(JABBERD_UNZIP) $(DL_DIR)/$(JABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(JABBERD_PATCHES)"; then \
-		cat $(JABBERD_PATCHES) | patch -d $(BUILD_DIR)/$(JABBERD_DIR) -p0; \
+		cat $(JABBERD_PATCHES) | patch -d $(BUILD_DIR)/$(JABBERD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(JABBERD_DIR) $(@D)
-	sed -i -e '/^localedir =/s|= @localedir@|= $$(DESTDIR)/@localedir@|' $(@D)/po/Makefile.in
+	sed -i -e 's/-ludns/-ludns_s/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(JABBERD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(JABBERD_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -128,6 +131,7 @@ $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 		--sysconfdir=/opt/etc/jabber \
 		--enable-debug \
 		--enable-ssl \
+		--enable-db \
 		--without-mysql \
 		--without-postgresql \
 		--disable-nls \

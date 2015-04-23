@@ -8,7 +8,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	bzflag \
 	delegate \
 	fish \
-	gnu-smalltalk jabberd \
+	gnu-smalltalk \
 	launchtool ldconfig \
 	moe mtr \
 	newsbeuter \
