@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLAMAV_SITE=http://$(SOURCEFORGE_MIRROR)/clamav
-CLAMAV_VERSION=0.96
+CLAMAV_VERSION=0.98.6
 CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
 CLAMAV_DIR=clamav-$(CLAMAV_VERSION)
 CLAMAV_UNZIP=zcat
@@ -52,7 +52,7 @@ CLAMAV_CONFFILES=/opt/etc/clamd.conf /opt/etc/freshclam.conf /opt/etc/init.d/S98
 # CLAMAV_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CLAMAV_PATCHES=
+CLAMAV_PATCHES=$(CLAMAV_SOURCE_DIR)/clamdscan-proto.c.patch
 ifeq ($(LIBC_STYLE), uclibc)
 CLAMAV_PATCHES+=$(CLAMAV_SOURCE_DIR)/uclibc-shared-output.c.patch
 endif
@@ -150,7 +150,7 @@ clamav-unpack: $(CLAMAV_BUILD_DIR)/.configured
 $(CLAMAV_BUILD_DIR)/.built: $(CLAMAV_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS) -DCLAMAV_tmpdir=\\\"/opt/tmp\\\""
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS) -DCLAMAV_tmpdir='\"/opt/tmp\"'"
 	touch $@
 
 #

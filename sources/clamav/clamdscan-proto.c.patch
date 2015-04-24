@@ -1,0 +1,11 @@
+--- clamav/clamdscan/proto.c.orig
++++ clamav/clamdscan/proto.c
+@@ -80,7 +80,7 @@
+     opt = optget(clamdopts, "LocalSocket");
+     if (opt->enabled) {
+         if ((sockd = socket(AF_UNIX, SOCK_STREAM, 0)) >= 0) {
+-            if (connect(sockd, (struct sockaddr *)&nixsock, sizeof(nixsock)) == 0)
++            if (connect(sockd, (struct sockaddr *)&nixsock, sizeof(struct sockaddr)) == 0)
+                 return sockd;
+             else
+                 close(sockd);
