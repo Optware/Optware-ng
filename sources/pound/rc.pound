@@ -2,6 +2,10 @@
 
 PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/opt/sbin/pound
+POUND_ARGS=
+force=""
+nice=0
+pidfile=/dev/null
 DESC="reverse proxy and load balancer"
 NAME=pound
 
@@ -9,27 +13,7 @@ NAME=pound
 test -f $DAEMON || exit 0
 
 start_daemon () {
-    local force nice pidfile exec args OPTIND
-    force=""
-    nice=0
-    pidfile=/dev/null
-
-    OPTIND=1
-    while getopts fn:p: opt ; do
-        case "$opt" in
-            f)  force="force";;
-            n)  nice="$OPTARG";;
-            p)  pidfile="$OPTARG";;
-        esac
-    done
-    
-    shift $(($OPTIND - 1))
-    if [ "$1" = '--' ]; then
-        shift
-    fi
-
     exec="$1"; shift
-
     args="--start --nicelevel $nice --quiet --oknodo"
     if [ "$force" ]; then
         /opt/sbin/start-stop-daemon-start-stop-daemon $args \
@@ -53,15 +37,17 @@ case "$1" in
 	start_daemon $DAEMON $POUND_ARGS
 	;;
   stop)
-	echo "Stopping $DESC" "$NAME"
-	killall pound
-	;;
+        if [ -n "`pidof $NAME`" ]; then
+            echo "Stopping $DESC" "$NAME"
+            killall $NAME 2> /dev/null
+        fi
+        ;;
   restart)
-	echo "Restarting $DESC" "$NAME"
-	killall pound
-	start_daemon $DAEMON $POUND_ARGS
-	echo "."
-	;;
+        echo "Restarting $DESC" "$NAME"
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
   *)
 	echo "Usage: $0 {start|stop|restart}"
 	exit 1
