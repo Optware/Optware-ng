@@ -54,11 +54,11 @@ case "$1" in
 	;;
   stop)
 	echo "Stopping $DESC" "$NAME"
-	killall $DAEMON
+	killall pound
 	;;
   restart)
 	echo "Restarting $DESC" "$NAME"
-	killall $DAEMON
+	killall pound
 	start_daemon $DAEMON $POUND_ARGS
 	echo "."
 	;;
