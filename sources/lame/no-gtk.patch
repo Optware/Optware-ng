@@ -1,0 +1,22 @@
+--- a/configure.in	2015-04-25 15:34:39.305327000 +0300
++++ b/configure.in	2015-04-25 15:37:01.497331133 +0300
+@@ -392,7 +392,7 @@
+ 
+ dnl configure use of features
+ 
+-AM_PATH_GTK(1.2.0, HAVE_GTK="yes", HAVE_GTK="no")
++HAVE_GTK="no"
+ 
+ dnl ElectricFence malloc debugging
+ AC_MSG_CHECKING(use of ElectricFence malloc debugging)
+--- a/frontend/Makefile.am	2011-10-16 16:09:01.000000000 +0300
++++ b/frontend/Makefile.am	2015-04-25 15:43:07.974396968 +0300
+@@ -35,7 +35,7 @@
+ mp3rtp_SOURCES = mp3rtp.c rtp.c $(common_sources)
+ mp3x_SOURCES = mp3x.c gtkanal.c gpkplotting.c $(common_sources)
+ 
+-CFLAGS = @CFLAGS@ @GTK_CFLAGS@ @FRONTEND_CFLAGS@ @SNDFILE_CFLAGS@
++CFLAGS = @CFLAGS@ @FRONTEND_CFLAGS@ @SNDFILE_CFLAGS@
+ LDFLAGS = @LDFLAGS@ @FRONTEND_LDFLAGS@ @SNDFILE_LIBS@
+ 
+ INCLUDES = -I$(top_srcdir)/libmp3lame -I$(top_srcdir)/include -I$(top_builddir)

@@ -21,7 +21,7 @@
 #
 LAME_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lame
 LAME_VERSION?=3.99.5
-LAME_IPK_VERSION?=1
+LAME_IPK_VERSION?=2
 LAME_SOURCE=lame-$(LAME_VERSION).tar.gz
 LAME_DIR=lame-$(LAME_VERSION)
 LAME_UNZIP=zcat
@@ -40,7 +40,18 @@ LAME_CONFFILES=/opt/etc/lame.conf /opt/etc/init.d/SXXlame
 ## LAME_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LAME_PATCHES=$(LAME_SOURCE_DIR)/configure.patch
+ifeq ($(LAME_VERSION), 3.99.5)
+LAME_PATCHES=\
+$(LAME_SOURCE_DIR)/07-field-width-fix.patch \
+$(LAME_SOURCE_DIR)/parallel-builds-fix.patch \
+$(LAME_SOURCE_DIR)/ansi2knr2devnull.patch \
+$(LAME_SOURCE_DIR)/privacy-breach.patch \
+$(LAME_SOURCE_DIR)/msse.patch \
+$(LAME_SOURCE_DIR)/0001-Add-check-for-invalid-input-sample-rate.patch \
+$(LAME_SOURCE_DIR)/bits_per_sample.patch \
+$(LAME_SOURCE_DIR)/int_resample_ratio.patch \
+$(LAME_SOURCE_DIR)/no-gtk.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -97,11 +108,16 @@ lame-source: $(DL_DIR)/$(LAME_SOURCE)
 #
 $(LAME_BUILD_DIR)/.configured: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES) make/lame.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(LAME_DIR) $(LAME_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LAME_DIR) $(@D)
 	$(LAME_UNZIP) $(DL_DIR)/$(LAME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LAME_PATCHES) | patch -d $(BUILD_DIR)/$(LAME_DIR) -p1
-	mv $(BUILD_DIR)/$(LAME_DIR) $(LAME_BUILD_DIR)
-	(cd $(LAME_BUILD_DIR); \
+	if test -n "$(LAME_PATCHES)"; \
+		then cat $(LAME_PATCHES) | patch -d $(BUILD_DIR)/$(LAME_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(LAME_DIR) $(@D)
+ifeq ($(LAME_VERSION), 3.99.5)
+	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW) autoreconf -vif $(@D)
+endif
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LAME_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LAME_LDFLAGS)" \

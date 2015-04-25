@@ -1,0 +1,29 @@
+Subject: Fix decision if sample rate ratio is an integer value or not
+ If the sample rate of the input file is sufficiently close to an
+ integer multiple of the output sample rate, the value of the intratio
+ variable is calculated incorrectly. This leads to further values
+ being miscalculated up to the joff variable which is used as an index
+ to dereference the esv->blackfilt array. This leads top an overflow
+ and causes a segmentation fault.
+Author: Fabian Greffrath <fabian+debian@greffrath.com>
+Bug-Debian: https://bugs.debian.org/778529
+
+--- a/libmp3lame/util.c
++++ b/libmp3lame/util.c
+@@ -26,6 +26,7 @@
+ # include <config.h>
+ #endif
+ 
++#include <float.h>
+ #include "lame.h"
+ #include "machine.h"
+ #include "encoder.h"
+@@ -544,7 +545,7 @@ fill_buffer_resample(lame_internal_flags
+     if (bpc > BPC)
+         bpc = BPC;
+ 
+-    intratio = (fabs(resample_ratio - floor(.5 + resample_ratio)) < .0001);
++    intratio = (fabs(resample_ratio - floor(.5 + resample_ratio)) < FLT_EPSILON);
+     fcn = 1.00 / resample_ratio;
+     if (fcn > 1.00)
+         fcn = 1.00;
