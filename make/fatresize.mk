@@ -36,7 +36,7 @@ FATRESIZE_CONFLICTS=
 #
 # FATRESIZE_IPK_VERSION should be incremented when the ipk changes.
 #
-FATRESIZE_IPK_VERSION=1
+FATRESIZE_IPK_VERSION=2
 
 #
 # FATRESIZE_CONFFILES should be a list of user-editable files
@@ -46,7 +46,10 @@ FATRESIZE_IPK_VERSION=1
 # FATRESIZE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FATRESIZE_PATCHES=$(FATRESIZE_SOURCE_DIR)/configure.patch
+FATRESIZE_PATCHES=\
+$(FATRESIZE_SOURCE_DIR)/ped_free.patch \
+$(FATRESIZE_SOURCE_DIR)/pkg-config.patch \
+$(FATRESIZE_SOURCE_DIR)/libparted-3.1.patch
 
 #
 # If the compilation of the package requires additional
@@ -110,15 +113,18 @@ $(FATRESIZE_BUILD_DIR)/.configured: $(DL_DIR)/$(FATRESIZE_SOURCE) $(FATRESIZE_PA
 	$(FATRESIZE_UNZIP) $(DL_DIR)/$(FATRESIZE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FATRESIZE_PATCHES)" ; \
 		then cat $(FATRESIZE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FATRESIZE_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(FATRESIZE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FATRESIZE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FATRESIZE_DIR) $(@D) ; \
 	fi
+	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FATRESIZE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FATRESIZE_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

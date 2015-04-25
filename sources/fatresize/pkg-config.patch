@@ -1,0 +1,30 @@
+From 43846decac85d808fd437624c4803f95f32f159f Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@ubuntu.com>
+Date: Fri, 11 Jul 2014 18:48:00 +0100
+Subject: Use pkg-config to check for libparted
+
+This is better than a home-grown macro that fails to parse 2.1 as a
+version string.
+
+Forwarded: no
+Last-Update: 2014-07-11
+
+Patch-Name: pkg-config.patch
+---
+ configure.ac | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 346f175..8a84658 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -29,8 +29,7 @@ CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=${ac_cv_sys_file_offset_bits}"
+ dnl libparted
+ # hack
+ LIBS="$LIBS -ldl"
+-PARTED_CHECK_LIBPARTED(1.6.0, ,
+-	[AC_MSG_ERROR([*** libparted >= 1.6.0 not installed - please install first ***])])
++PKG_CHECK_MODULES([PARTED], [libparted >= 1.6.0])
+ 
+ AC_SUBST(PARTED_LIBS)
+ 

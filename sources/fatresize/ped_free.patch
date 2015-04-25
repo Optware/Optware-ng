@@ -1,0 +1,44 @@
+From ef1e3969f020c37c9f926e78d5957261f5a53890 Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@ubuntu.com>
+Date: Fri, 11 Jul 2014 18:47:50 +0100
+Subject: Use free instead of ped_free, which no longer exists in current
+ parted
+
+Bug-Debian: http://bugs.debian.org/533963
+Forwarded: no
+Last-Update: 2014-07-11
+
+Patch-Name: ped_free.patch
+---
+ fatresize.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fatresize.c b/fatresize.c
+index 424d5d2..9a7d80e 100644
+--- a/fatresize.c
++++ b/fatresize.c
+@@ -320,11 +320,11 @@ partition_warn_busy(PedPartition* part)
+ 			("Partition %s is being used.  You must unmount it "
+ 			 "before you modify it with Parted."),
+ 			path);
+-	ped_free(path);
++	free(path);
+ 	return 0;
+     }
+ 
+-    ped_free(path);
++    free(path);
+     return 1;
+ }
+ 
+@@ -507,8 +507,8 @@ main(int argc, char **argv)
+     }
+     else if (!ped_unit_parse(def_str, dev, &end, &range_end))
+ 	return 1;
+-    ped_free(old_str);
+-    ped_free(def_str);
++    free(old_str);
++    free(def_str);
+ 
+     printd(3, "ped_geometry_duplicate()\n");
+     old_geom = ped_geometry_duplicate(&part->geom);

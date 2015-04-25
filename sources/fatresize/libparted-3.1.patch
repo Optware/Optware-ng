@@ -1,0 +1,68 @@
+From b2d3a670eb393a3c788642fdf24fd37e48cfa703 Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Sat, 12 Jul 2014 14:31:47 +0100
+Subject: Support libparted 3.1
+
+Adjust use of PED_ASSERT to cope with libparted >= 2.4, and link with
+-lparted-fs-resize for libparted >= 3.1.
+
+Forwarded: no
+Last-Update: 2014-07-12
+
+Patch-Name: libparted-3.1.patch
+---
+ configure.ac |  5 +++++
+ fatresize.c  | 10 ++++++++--
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 8a84658..4d1d861 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -30,6 +30,11 @@ dnl libparted
+ # hack
+ LIBS="$LIBS -ldl"
+ PKG_CHECK_MODULES([PARTED], [libparted >= 1.6.0])
++PKG_CHECK_EXISTS([libparted >= 2.4],
++		 [AC_DEFINE([LIBPARTED_GT_2_4], [1],
++			    [Define if you have at least libparted 2.4.])])
++PKG_CHECK_EXISTS([libparted >= 3.1],
++		 [PARTED_LIBS="-lparted-fs-resize $PARTED_LIBS"])
+ 
+ AC_SUBST(PARTED_LIBS)
+ 
+diff --git a/fatresize.c b/fatresize.c
+index 9a7d80e..50af16c 100644
+--- a/fatresize.c
++++ b/fatresize.c
+@@ -34,6 +34,12 @@
+ 
+ #include "config.h"
+ 
++#ifdef LIBPARTED_GT_2_4
++#define FAT_ASSERT(cond, action) PED_ASSERT(cond)
++#else
++#define FAT_ASSERT(cond, action) PED_ASSERT(cond, action)
++#endif
++
+ #define FAT32MIN	1024*1024*512
+ 
+ static struct {
+@@ -217,7 +223,7 @@ fatresize_handler(PedException *ex)
+ static int
+ snap(PedSector* sector, PedSector new_sector, PedGeometry* range)
+ {
+-    PED_ASSERT(ped_geometry_test_sector_inside (range, *sector), return 0);
++    FAT_ASSERT(ped_geometry_test_sector_inside (range, *sector), return 0);
+     if (!ped_geometry_test_sector_inside(range, new_sector))
+ 	return 0;
+ 
+@@ -281,7 +287,7 @@ snap_to_boundaries (PedGeometry* new_geom, PedGeometry* old_geom,
+ 			  end_part->geom.end, end_part->geom.start - 1, -1);
+ 	}
+ 
+-	PED_ASSERT (start <= end, return);
++	FAT_ASSERT (start <= end, return);
+ 	ped_geometry_set (new_geom, start, end - start + 1);
+ }
+ 
