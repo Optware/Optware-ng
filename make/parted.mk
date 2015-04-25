@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 PARTED_SITE=http://ftp.gnu.org/gnu/parted/
-PARTED_VERSION=1.7.1
-PARTED_SOURCE=parted-$(PARTED_VERSION).tar.gz
+PARTED_VERSION=3.1
+PARTED_SOURCE=parted-$(PARTED_VERSION).tar.xz
 PARTED_DIR=parted-$(PARTED_VERSION)
-PARTED_UNZIP=zcat
+PARTED_UNZIP=xzcat
 PARTED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PARTED_DESCRIPTION=GNU partition editor
 PARTED_SECTION=sys
@@ -118,6 +118,7 @@ $(PARTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES) ma
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--without-readline \
+		--disable-device-mapper \
 		--disable-Werror \
 		--disable-nls \
 		--disable-static \
@@ -147,7 +148,7 @@ $(PARTED_BUILD_DIR)/.staged: $(PARTED_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libparted.la $(STAGING_LIB_DIR)/libparted.a
-#	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libparted.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libparted.pc
 	touch $@
 
 parted-stage: $(PARTED_BUILD_DIR)/.staged
