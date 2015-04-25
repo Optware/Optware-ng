@@ -20,9 +20,15 @@
 # You should change all these variables to suit your package.
 #
 #TRANSCODE_REPOSITORY=:pserver:cvs@cvs.exit1.org:/cvstc
+ifeq ($(FFMPEG_OLD), yes)
 TRANSCODE_SITE=http://fromani.exit1.org
 TRANSCODE_VERSION=1.1.0
 TRANSCODE_SOURCE=transcode-$(TRANSCODE_VERSION).tar.bz2
+else
+TRANSCODE_SITE=https://launchpad.net/ubuntu/+archive/primary/+files
+TRANSCODE_VERSION=1.1.7
+TRANSCODE_SOURCE=transcode_$(TRANSCODE_VERSION).orig.tar.bz2
+endif
 #TRANSCODE_TAG=-D 2005-02-13
 #TRANSCODE_MODULE=transcode
 TRANSCODE_DIR=transcode-$(TRANSCODE_VERSION)
@@ -31,10 +37,7 @@ TRANSCODE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TRANSCODE_DESCRIPTION=Transcode is a suite of tools, all of which are command line utilities, for transcoding various video, audio, and container formats, running on a platform that supports shared libraries and threads.
 TRANSCODE_SECTION=tool
 TRANSCODE_PRIORITY=optional
-TRANSCODE_DEPENDS=freetype, lame, liba52, libdvdread, libmpeg2, libogg, libvorbis, lzo
-ifeq ($(FFMPEG_OLD), yes)
-TRANSCODE_DEPENDS+=, ffmpeg
-endif
+TRANSCODE_DEPENDS=freetype, lame, liba52, libdvdread, libmpeg2, libogg, libvorbis, lzo, ffmpeg
 TRANSCODE_SUGGESTS=
 TRANSCODE_CONFLICTS=
 
@@ -52,7 +55,24 @@ TRANSCODE_CONFFILES=/opt/etc/transcode.conf /opt/etc/init.d/SXXtranscode
 # which they should be applied to the source code.
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
+ifeq ($(FFMPEG_OLD), yes)
 TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/configure.cross.patch
+else
+TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/01_filter_pv.c.diff \
+$(TRANSCODE_SOURCE_DIR)/03_libav-api-fixes.diff \
+$(TRANSCODE_SOURCE_DIR)/04_ffmpeg_options.patch \
+$(TRANSCODE_SOURCE_DIR)/ac3-audio-track-number.patch \
+$(TRANSCODE_SOURCE_DIR)/05-libav9-gentoo.patch \
+$(TRANSCODE_SOURCE_DIR)/06_libav9-jmm.patch \
+$(TRANSCODE_SOURCE_DIR)/07_libav9-preset.patch \
+$(TRANSCODE_SOURCE_DIR)/08_libav9-opt.patch \
+$(TRANSCODE_SOURCE_DIR)/09_libav9-arch.patch \
+$(TRANSCODE_SOURCE_DIR)/10_freetype.patch \
+$(TRANSCODE_SOURCE_DIR)/11_libav10.patch \
+$(TRANSCODE_SOURCE_DIR)/12_underlinkage.patch \
+$(TRANSCODE_SOURCE_DIR)/13-fix-cross-configure.in.patch \
+$(TRANSCODE_SOURCE_DIR)/14-libavresample-conditional.patch
+endif
 endif
 
 #
@@ -125,18 +145,12 @@ transcode-source: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES) make/transcode.mk
-ifeq ($(FFMPEG_OLD), yes)
-	$(MAKE) ffmpeg-stage
-else
-#	transcode needs old ffmpeg
-#	Following command builds and stages headers and static ffmpeg libs to $(STAGING_PREFIX)/ffmpeg_old
-	$(MAKE) ffmpeg-old-stage
-endif
-	$(MAKE) freetype-stage lame-stage
-	$(MAKE) liba52-stage libdvdread-stage
-	$(MAKE) libjpeg-stage libmpeg2-stage
-	$(MAKE) libogg-stage libvorbis-stage
-	$(MAKE) libxml2-stage lzo-stage
+	$(MAKE) ffmpeg-stage \
+		freetype-stage lame-stage \
+		liba52-stage libdvdread-stage \
+		libjpeg-stage libmpeg2-stage \
+		libogg-stage libvorbis-stage \
+		libxml2-stage lzo-stage
 	rm -rf $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	$(TRANSCODE_UNZIP) $(DL_DIR)/$(TRANSCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSCODE_PATCHES)"; \
@@ -147,16 +161,17 @@ endif
 #	sed -ie '/static int verbose/d' $(TRANSCODE_BUILD_DIR)/import/dvd_reader.c
 #	sed -ie 's/static int verbose/extern int verbose/' $(TRANSCODE_BUILD_DIR)/import/tcextract.c
 ifneq ($(HOSTCC), $(TARGET_CC))
-#	cd $(TRANSCODE_BUILD_DIR); \
-		autoreconf -i -f;
+ifneq ($(FFMPEG_OLD), yes)
+	autoreconf -vif $(@D)
+endif
 endif
 	sed -ie 's|="-I/usr/include"|=""|g' $(TRANSCODE_BUILD_DIR)/configure
 	(cd $(TRANSCODE_BUILD_DIR); \
-		PKG_CONFIG_PATH="$(STAGING_PREFIX)/ffmpeg_old/lib/pkgconfig:$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
 		FT2_CONFIG="$(STAGING_DIR)/opt/bin/freetype-config";export FT2_CONFIG; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="-I$(STAGING_PREFIX)/ffmpeg_old/include $(STAGING_CPPFLAGS) $(TRANSCODE_CPPFLAGS)" \
-		LDFLAGS="-L$(STAGING_PREFIX)/ffmpeg_old/lib $(STAGING_LDFLAGS) $(TRANSCODE_LDFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSCODE_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSCODE_LDFLAGS)" \
 		$(TRANSCODE_CONFIG_ENV) \
 		./configure -C \
 		--build=$(GNU_HOST_NAME) \
@@ -182,6 +197,7 @@ endif
 		--enable-lzo \
 		--enable-ogg \
 		--enable-vorbis \
+		--disable-libavresample \
 		--disable-nls \
 		$(TRANSCODE_CONFIG_ARG) \
 		; \

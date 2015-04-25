@@ -1,0 +1,27 @@
+Description: Little hack to replace xterm calls by x-terminal-emulator.
+Origin: Ubuntu
+Forwarded: Francesco Romani <fromani@gmail.com>
+---
+ filter/preview/filter_pv.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- transcode.orig/filter/preview/filter_pv.c
++++ transcode/filter/preview/filter_pv.c
+@@ -488,7 +488,7 @@ void preview_filter(void)
+ 
+     // build commandline
+     tc_snprintf (buf, 1024,
+-	   "xterm -title \"Transcode Filter select\" -e %s/filter_list.awk %s %s &&  cat %s && rm -f %s",
++	   "x-terminal-emulator -title \"Transcode Filter select\" -e %s/filter_list.awk %s %s &&  cat %s && rm -f %s",
+ 	   vob->mod_path, vob->mod_path, tmpfile, tmpfile, tmpfile);
+     if ((f = popen (buf, "r")) == NULL) {
+ 	perror ("popen filter select");
+@@ -555,7 +555,7 @@ void preview_filter(void)
+     memset (buf, 0, 1024);
+ 
+     tc_snprintf (buf, 1024,
+-	  "xterm -title \"Transcode parameters\" -e %s/parse_csv.awk %s %s %s && cat %s && rm -f %s %s",
++	  "x-terminal-emulator -title \"Transcode parameters\" -e %s/parse_csv.awk %s %s %s && cat %s && rm -f %s %s",
+ 	  vob->mod_path, tmpfile, filter_name, infile, infile, tmpfile, infile);
+ 
+     if ((f = popen (buf, "r")) == NULL) {

@@ -1,0 +1,43 @@
+Description: Use presets from /usr/share/avconv and check for .avpreset
+ Preset files now have the extensions avpreset and are located in
+ /usr/share/avconv.
+Author: Sebastian Ramacher <sramacher@debian.org>
+Last-Update: 2013-09-11
+
+--- transcode-1.1.7.orig/export/export_ffmpeg.c
++++ transcode-1.1.7/export/export_ffmpeg.c
+@@ -306,11 +306,22 @@ static int opt_preset(const char *opt, c
+ 
+     if (*opt != 'f') {
+         for(i=!base[0]; i<2 && !f; i++){
+-            snprintf(filename, sizeof(filename), "%s%s/%s.ffpreset", base[i], i ? "" : "/.ffmpeg", arg);
++            snprintf(filename, sizeof(filename), "%s%s/%s.avpreset", base[i], i ? "" : "/.ffmpeg", arg);
+             f= fopen(filename, "r");
+             if(!f){
+                 char *codec_name= *opt == 'v' ? video_codec_name :
+                                   *opt == 'a' ? audio_codec_name :
++                                                subtitle_codec_name;
++                snprintf(filename, sizeof(filename), "%s%s/%s-%s.avpreset", base[i],  i ? "" : "/.ffmpeg", codec_name, arg);
++                f= fopen(filename, "r");
++            }
++            if(!f){
++                snprintf(filename, sizeof(filename), "%s%s/%s.ffpreset", base[i], i ? "" : "/.ffmpeg", arg);
++                f= fopen(filename, "r");
++            }
++            if(!f){
++                char *codec_name= *opt == 'v' ? video_codec_name :
++                                  *opt == 'a' ? audio_codec_name :
+                                                 subtitle_codec_name;
+                 snprintf(filename, sizeof(filename), "%s%s/%s-%s.ffpreset", base[i],  i ? "" : "/.ffmpeg", codec_name, arg);
+                 f= fopen(filename, "r");
+--- transcode-1.1.7.orig/export/ffmpeg_cfg.c
++++ transcode-1.1.7/export/ffmpeg_cfg.c
+@@ -127,7 +127,7 @@ int lavc_param_gmc = 0;
+ //int lavc_param_abitrate = 224;
+ 
+ char *lavc_param_video_preset = NULL;
+-char *lavc_param_ffmpeg_datadir = "/usr/share/ffmpeg";
++char *lavc_param_ffmpeg_datadir = "/usr/share/avconv";
+ 
+ TCConfigEntry lavcopts_conf[]={
+ //    {"acodec", &lavc_param_acodec, TCCONF_TYPE_STRING, 0, 0, 0},

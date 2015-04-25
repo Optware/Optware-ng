@@ -1,0 +1,42 @@
+--- a/configure.in	2015-04-25 20:17:24.457471000 +0300
++++ b/configure.in	2015-04-25 20:17:41.580121451 +0300
+@@ -586,6 +586,15 @@
+     *) AC_MSG_ERROR(bad value ${enableval} for --enable-ffmpeg) ;;
+   esac],
+   [enable_ffmpeg=yes])
++AC_ARG_ENABLE(libavresample,
++  AC_HELP_STRING([--disable-libavresample],
++    [disable support for FFmpeg libavresample library (no)]),
++  [case "${enableval}" in
++    yes) enable_libavresample=yes;;
++    no)  enable_libavresample=no;;
++    *) AC_MSG_ERROR(bad value ${enableval} for --disable-libavresample) ;;
++  esac],
++  [enable_libavresample=yes])
+ if test x"$enable_ffmpeg" = x"no" ; then
+   AC_MSG_RESULT(disabled)
+ else
+@@ -621,6 +630,7 @@
+ TC_PKG_HAVE(libavresample, LIBAVRESAMPLE)
+ 
+ AM_CONDITIONAL(HAVE_FFMPEG, test x"$enable_ffmpeg" = x"yes")
++AM_CONDITIONAL(HAVE_LIBAVRESAMPLE, test x"$enable_libavresample" = x"yes")
+ 
+ 
+ 
+--- a/filter/Makefile.am	2015-04-25 20:18:17.438934000 +0300
++++ b/filter/Makefile.am	2015-04-25 20:18:30.597179247 +0300
+@@ -22,11 +22,13 @@
+ endif
+ 
+ if HAVE_FFMPEG
++if HAVE_LIBAVRESAMPLE
+ FILTER_RESAMPLE = filter_resample.la
+ if HAVE_LIBPOSTPROC
+ FILTER_PP = filter_pp.la
+ endif
+ endif
++endif
+ 
+ if HAVE_FREETYPE2
+ FILTER_TEXT = filter_text.la

@@ -1,0 +1,323 @@
+Description: Fix build failure with libav 10
+Author: Anton Khirnov <anton@khirnov.net>
+Bug-Debian: https://bugs.debian.org/739428
+Last-Update: 2014-03-01
+
+--- a/export/aud_aux.c
++++ b/export/aud_aux.c
+@@ -326,10 +326,10 @@
+ 
+     switch (o_codec) {
+       case   0x50:
+-        codeid = CODEC_ID_MP2;
++        codeid = AV_CODEC_ID_MP2;
+         break;
+       case 0x2000:
+-        codeid = CODEC_ID_AC3;
++        codeid = AV_CODEC_ID_AC3;
+         break;
+       default:
+         tc_warn("cannot init ffmpeg with %x", o_codec);
+@@ -363,7 +363,7 @@
+     TC_UNLOCK_LIBAVCODEC;
+     if (ret < 0) {
+         tc_warn("tc_audio_init_ffmpeg: could not open %s codec !",
+-                (codeid == CODEC_ID_MP2) ?"mpa" :"ac3");
++                (codeid == AV_CODEC_ID_MP2) ?"mpa" :"ac3");
+         return(TC_EXPORT_ERROR);
+     }
+ 
+--- a/filter/filter_resample.c
++++ b/filter/filter_resample.c
+@@ -38,6 +38,9 @@
+ #include "libtc/tcavcodec.h"
+ #include "libtc/tcmodule-plugin.h"
+ 
++#include <libavresample/avresample.h>
++#include <libavutil/opt.h>
++
+ 
+ typedef struct {
+     uint8_t *resample_buf;
+@@ -45,7 +48,7 @@
+ 
+     int bytes_per_sample;
+ 
+-    ReSampleContext *resample_ctx;
++    AVAudioResampleContext *avr;
+ } ResamplePrivateData;
+ 
+ static const char resample_help[] = ""
+@@ -65,6 +68,7 @@
+ {
+     double samples_per_frame, ratio;
+     ResamplePrivateData *pd = NULL;
++    int ret;
+ 
+     TC_MODULE_SELF_CHECK(self, "configure");
+     TC_MODULE_SELF_CHECK(vob, "configure"); /* paranoia */
+@@ -110,12 +114,20 @@
+         goto abort;
+     }
+ 
+-    pd->resample_ctx = av_audio_resample_init(vob->a_chan, vob->a_chan,
+-                                           vob->mp3frequency, vob->a_rate,
+-                                           AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16,
+-                                           16, 10, 0, 0.8);
+-    if (pd->resample_ctx == NULL) {
+-        tc_log_error(MOD_NAME, "can't get a resample context");
++    pd->avr = avresample_alloc_context();
++    if (!pd->avr)
++        goto abort;
++
++    av_opt_set_int(pd->avr, "in_sample_fmt", AV_SAMPLE_FMT_S16, 0);
++    av_opt_set_int(pd->avr, "out_sample_fmt", AV_SAMPLE_FMT_S16, 0);
++    av_opt_set_int(pd->avr, "in_channel_layout", av_get_default_channel_layout(vob->a_chan), 0);
++    av_opt_set_int(pd->avr, "out_channel_layout", av_get_default_channel_layout(vob->a_chan), 0);
++    av_opt_set_int(pd->avr, "in_sample_rate", vob->mp3frequency, 0);
++    av_opt_set_int(pd->avr, "out_sample_rate", vob->a_rate, 0);
++
++    ret = avresample_open(pd->avr);
++    if (ret < 0) {
++        tc_log_error(MOD_NAME, "can't open a resample context");
+         goto abort;
+     }
+ 
+@@ -148,10 +160,8 @@
+ 
+     pd = self->userdata;
+ 
+-    if (pd->resample_ctx != NULL) {
+-        audio_resample_close(pd->resample_ctx);
+-        pd->resample_ctx = NULL;
+-    }
++    avresample_free(&pd->avr);
++
+     if (pd->resample_buf != NULL) {
+         tc_free(pd->resample_buf);
+         pd->resample_buf = NULL;
+@@ -186,10 +196,9 @@
+     if (verbose >= TC_STATS)
+         tc_log_info(MOD_NAME, "inbuf: %i, bufsize: %lu",
+                     frame->audio_size, (unsigned long)pd->resample_bufsize);
+-    frame->audio_size = audio_resample(pd->resample_ctx,
+-                                       (int16_t*)pd->resample_buf,
+-                                       (int16_t*)frame->audio_buf,
+-                                       frame->audio_size/pd->bytes_per_sample);
++    frame->audio_size = avresample_convert(pd->avr, &pd->resample_buf, pd->resample_bufsize,
++            pd->resample_bufsize / pd->bytes_per_sample,
++            (uint8_t**)&frame->audio_buf, frame->audio_size, frame->audio_size / pd->bytes_per_sample);
+     frame->audio_size *= pd->bytes_per_sample;
+     if (verbose >= TC_STATS)
+         tc_log_info(MOD_NAME, "outbuf: %i", frame->audio_size);
+--- a/import/decode_lavc.c
++++ b/import/decode_lavc.c
+@@ -58,37 +58,37 @@
+ 
+ // fourCC to ID mapping taken from MPlayer's codecs.conf
+ static struct ffmpeg_codec ffmpeg_codecs[] = {
+-  {CODEC_ID_MSMPEG4V1, TC_CODEC_ERROR, "mp41",
++  {AV_CODEC_ID_MSMPEG4V1, TC_CODEC_ERROR, "mp41",
+     {"MP41", "DIV1", ""}},
+-  {CODEC_ID_MSMPEG4V2, TC_CODEC_MP42, "mp42",
++  {AV_CODEC_ID_MSMPEG4V2, TC_CODEC_MP42, "mp42",
+     {"MP42", "DIV2", ""}},
+-  {CODEC_ID_MSMPEG4V3, TC_CODEC_DIVX3, "msmpeg4",
++  {AV_CODEC_ID_MSMPEG4V3, TC_CODEC_DIVX3, "msmpeg4",
+     {"DIV3", "DIV5", "AP41", "MPG3", "MP43", ""}},
+-  {CODEC_ID_MPEG4, TC_CODEC_DIVX4, "mpeg4",
++  {AV_CODEC_ID_MPEG4, TC_CODEC_DIVX4, "mpeg4",
+     {"DIVX", "XVID", "MP4S", "M4S2", "MP4V", "UMP4", "DX50", ""}},
+-  {CODEC_ID_MJPEG, TC_CODEC_MJPEG, "mjpeg",
++  {AV_CODEC_ID_MJPEG, TC_CODEC_MJPEG, "mjpeg",
+     {"MJPG", "AVRN", "AVDJ", "JPEG", "MJPA", "JFIF", ""}},
+-  {CODEC_ID_MPEG1VIDEO, TC_CODEC_MPEG1VIDEO, "mpeg1video",
++  {AV_CODEC_ID_MPEG1VIDEO, TC_CODEC_MPEG1VIDEO, "mpeg1video",
+     {"MPG1", ""}},
+-  {CODEC_ID_DVVIDEO, TC_CODEC_DV, "dvvideo",
++  {AV_CODEC_ID_DVVIDEO, TC_CODEC_DV, "dvvideo",
+     {"DVSD", ""}},
+-  {CODEC_ID_WMV1, TC_CODEC_WMV1, "wmv1",
++  {AV_CODEC_ID_WMV1, TC_CODEC_WMV1, "wmv1",
+     {"WMV1", ""}},
+-  {CODEC_ID_WMV2, TC_CODEC_WMV2, "wmv2",
++  {AV_CODEC_ID_WMV2, TC_CODEC_WMV2, "wmv2",
+     {"WMV2", ""}},
+-  {CODEC_ID_HUFFYUV, TC_CODEC_HUFFYUV, "hfyu",
++  {AV_CODEC_ID_HUFFYUV, TC_CODEC_HUFFYUV, "hfyu",
+     {"HFYU", ""}},
+-  {CODEC_ID_H263I, TC_CODEC_H263I, "h263i",
++  {AV_CODEC_ID_H263I, TC_CODEC_H263I, "h263i",
+     {"I263", ""}},
+-  {CODEC_ID_H263P, TC_CODEC_H263P, "h263p",
++  {AV_CODEC_ID_H263P, TC_CODEC_H263P, "h263p",
+     {"H263", "U263", "VIV1", ""}},
+-  {CODEC_ID_RV10, TC_CODEC_RV10, "rv10",
++  {AV_CODEC_ID_RV10, TC_CODEC_RV10, "rv10",
+     {"RV10", "RV13", ""}},
+-  {CODEC_ID_SVQ1, TC_CODEC_SVQ1, "svq1",
++  {AV_CODEC_ID_SVQ1, TC_CODEC_SVQ1, "svq1",
+     {"SVQ1", ""}},
+-  {CODEC_ID_SVQ3, TC_CODEC_SVQ3, "svq3",
++  {AV_CODEC_ID_SVQ3, TC_CODEC_SVQ3, "svq3",
+     {"SVQ3", ""}},
+-  {CODEC_ID_MPEG2VIDEO, TC_CODEC_MPEG2, "mpeg2video",
++  {AV_CODEC_ID_MPEG2VIDEO, TC_CODEC_MPEG2, "mpeg2video",
+     {"MPG2", ""}},
+   {0, TC_CODEC_UNKNOWN, NULL, {""}}};
+ 
+--- a/import/import_ffmpeg.c
++++ b/import/import_ffmpeg.c
+@@ -59,51 +59,51 @@
+ 
+ // fourCC to ID mapping taken from MPlayer's codecs.conf
+ static struct ffmpeg_codec ffmpeg_codecs[] = {
+-  {CODEC_ID_MSMPEG4V1, TC_CODEC_ERROR, "mp41",
++  {AV_CODEC_ID_MSMPEG4V1, TC_CODEC_ERROR, "mp41",
+     {"MP41", "DIV1", ""}},
+-  {CODEC_ID_MSMPEG4V2, TC_CODEC_MP42, "mp42",
++  {AV_CODEC_ID_MSMPEG4V2, TC_CODEC_MP42, "mp42",
+     {"MP42", "DIV2", ""}},
+-  {CODEC_ID_MSMPEG4V3, TC_CODEC_DIVX3, "msmpeg4",
++  {AV_CODEC_ID_MSMPEG4V3, TC_CODEC_DIVX3, "msmpeg4",
+     {"DIV3", "DIV5", "AP41", "MPG3", "MP43", ""}},
+-  {CODEC_ID_MPEG4, TC_CODEC_DIVX4, "mpeg4",
++  {AV_CODEC_ID_MPEG4, TC_CODEC_DIVX4, "mpeg4",
+     {"DIVX", "XVID", "MP4S", "M4S2", "MP4V", "UMP4", "DX50", ""}},
+-  {CODEC_ID_MJPEG, TC_CODEC_MJPEG, "mjpeg",
++  {AV_CODEC_ID_MJPEG, TC_CODEC_MJPEG, "mjpeg",
+     {"MJPG", "AVRN", "AVDJ", "JPEG", "MJPA", "JFIF", ""}},
+-  {CODEC_ID_MPEG1VIDEO, TC_CODEC_MPG1, "mpeg1video",
++  {AV_CODEC_ID_MPEG1VIDEO, TC_CODEC_MPG1, "mpeg1video",
+     {"MPG1", ""}},
+-  {CODEC_ID_DVVIDEO, TC_CODEC_DV, "dvvideo",
++  {AV_CODEC_ID_DVVIDEO, TC_CODEC_DV, "dvvideo",
+     {"DVSD", ""}},
+-  {CODEC_ID_WMV1, TC_CODEC_WMV1, "wmv1",
++  {AV_CODEC_ID_WMV1, TC_CODEC_WMV1, "wmv1",
+     {"WMV1", ""}},
+-  {CODEC_ID_WMV2, TC_CODEC_WMV2, "wmv2",
++  {AV_CODEC_ID_WMV2, TC_CODEC_WMV2, "wmv2",
+     {"WMV2", ""}},
+-  {CODEC_ID_HUFFYUV, TC_CODEC_HUFFYUV, "hfyu",
++  {AV_CODEC_ID_HUFFYUV, TC_CODEC_HUFFYUV, "hfyu",
+     {"HFYU", ""}},
+-  {CODEC_ID_H263I, TC_CODEC_H263I, "h263i",
++  {AV_CODEC_ID_H263I, TC_CODEC_H263I, "h263i",
+     {"I263", ""}},
+-  {CODEC_ID_H263P, TC_CODEC_H263P, "h263p",
++  {AV_CODEC_ID_H263P, TC_CODEC_H263P, "h263p",
+     {"H263", "U263", "VIV1", ""}},
+-  {CODEC_ID_H264, TC_CODEC_H264, "h264",
++  {AV_CODEC_ID_H264, TC_CODEC_H264, "h264",
+     {"H264", "h264", "X264", "x264", "avc1", ""}},
+-  {CODEC_ID_RV10, TC_CODEC_RV10, "rv10",
++  {AV_CODEC_ID_RV10, TC_CODEC_RV10, "rv10",
+     {"RV10", "RV13", ""}},
+-  {CODEC_ID_SVQ1, TC_CODEC_SVQ1, "svq1",
++  {AV_CODEC_ID_SVQ1, TC_CODEC_SVQ1, "svq1",
+     {"SVQ1", ""}},
+-  {CODEC_ID_SVQ3, TC_CODEC_SVQ3, "svq3",
++  {AV_CODEC_ID_SVQ3, TC_CODEC_SVQ3, "svq3",
+     {"SVQ3", ""}},
+-  {CODEC_ID_MPEG2VIDEO, TC_CODEC_MPEG2, "mpeg2video",
++  {AV_CODEC_ID_MPEG2VIDEO, TC_CODEC_MPEG2, "mpeg2video",
+     {"MPG2", ""}},
+-  {CODEC_ID_MPEG2VIDEO, TC_CODEC_MPEG, "mpeg2video",
++  {AV_CODEC_ID_MPEG2VIDEO, TC_CODEC_MPEG, "mpeg2video",
+     {"MPG2", ""}},
+-  {CODEC_ID_ASV1, TC_CODEC_ASV1, "asv1",
++  {AV_CODEC_ID_ASV1, TC_CODEC_ASV1, "asv1",
+     {"ASV1", ""}},
+-  {CODEC_ID_ASV2, TC_CODEC_ASV2, "asv2",
++  {AV_CODEC_ID_ASV2, TC_CODEC_ASV2, "asv2",
+     {"ASV2", ""}},
+-  {CODEC_ID_FFV1, TC_CODEC_FFV1, "ffv1",
++  {AV_CODEC_ID_FFV1, TC_CODEC_FFV1, "ffv1",
+     {"FFV1", ""}},
+-  {CODEC_ID_RAWVIDEO, TC_CODEC_YUV420P, "raw",
++  {AV_CODEC_ID_RAWVIDEO, TC_CODEC_YUV420P, "raw",
+     {"I420", "IYUV", ""}},
+-  {CODEC_ID_RAWVIDEO, TC_CODEC_YUV422P, "raw",
++  {AV_CODEC_ID_RAWVIDEO, TC_CODEC_YUV422P, "raw",
+     {"Y42B", ""}},
+   {0, TC_CODEC_UNKNOWN, NULL, {""}}};
+ 
+@@ -324,13 +324,13 @@
+     // XXX: some codecs need extra data
+     switch (codec->id)
+     {
+-      case CODEC_ID_MJPEG: extra_data_size  = 28; break;
+-      case CODEC_ID_LJPEG: extra_data_size  = 28; break;
+-      case CODEC_ID_HUFFYUV: extra_data_size = 1000; break;
+-      case CODEC_ID_ASV1: extra_data_size = 8; break;
+-      case CODEC_ID_ASV2: extra_data_size = 8; break;
+-      case CODEC_ID_WMV1: extra_data_size = 4; break;
+-      case CODEC_ID_WMV2: extra_data_size = 4; break;
++      case AV_CODEC_ID_MJPEG: extra_data_size  = 28; break;
++      case AV_CODEC_ID_LJPEG: extra_data_size  = 28; break;
++      case AV_CODEC_ID_HUFFYUV: extra_data_size = 1000; break;
++      case AV_CODEC_ID_ASV1: extra_data_size = 8; break;
++      case AV_CODEC_ID_ASV2: extra_data_size = 8; break;
++      case AV_CODEC_ID_WMV1: extra_data_size = 4; break;
++      case AV_CODEC_ID_WMV2: extra_data_size = 4; break;
+       default: extra_data_size = 0; break;
+     }
+ 
+@@ -360,7 +360,7 @@
+         frame_size = x_dim*y_dim + 2*UV_PLANE_SIZE(IMG_YUV_DEFAULT,x_dim,y_dim);
+ 
+ 	// we adapt the color space
+-        if(codec->id == CODEC_ID_MJPEG) {
++        if(codec->id == AV_CODEC_ID_MJPEG) {
+ 	  enable_levels_filter();
+         }
+         break;
+@@ -434,7 +434,7 @@
+       }
+ 
+       // we adapt the color space
+-      if(codec->id == CODEC_ID_MJPEG) {
++      if(codec->id == AV_CODEC_ID_MJPEG) {
+         enable_levels_filter();
+       }
+ 
+@@ -504,13 +504,13 @@
+       int bkey = 0;
+ 
+       // check for keyframes
+-      if (codec->id == CODEC_ID_MSMPEG4V3) {
++      if (codec->id == AV_CODEC_ID_MSMPEG4V3) {
+ 	if (divx3_is_key(buffer)) bkey = 1;
+       }
+-      else if (codec->id == CODEC_ID_MPEG4) {
++      else if (codec->id == AV_CODEC_ID_MPEG4) {
+ 	if (mpeg4_is_key(buffer, bytes_read)) bkey = 1;
+       }
+-      else if (codec->id == CODEC_ID_MJPEG) {
++      else if (codec->id == AV_CODEC_ID_MJPEG) {
+ 	bkey = 1;
+       }
+ 
+--- a/import/probe_ffmpeg.c
++++ b/import/probe_ffmpeg.c
+@@ -51,8 +51,8 @@
+             info->bitrate = st->codec->bit_rate / 1000;
+             info->width = st->codec->width;
+             info->height = st->codec->height;
+-            if (st->r_frame_rate.num > 0 && st->r_frame_rate.den > 0) {
+-                info->fps = av_q2d(st->r_frame_rate);
++            if (st->avg_frame_rate.num > 0 && st->avg_frame_rate.den > 0) {
++                info->fps = av_q2d(st->avg_frame_rate);
+             } else {
+                 /* watch out here */
+                 info->fps = 1.0/av_q2d(st->codec->time_base);
+@@ -120,7 +120,7 @@
+ 
+     translate_info(lavf_dmx_context, ipipe->probe_info);
+ 
+-    av_close_input_file(lavf_dmx_context);
++    avformat_close_input(&lavf_dmx_context);
+     return;
+ }
+ 

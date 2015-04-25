@@ -1,0 +1,16 @@
+Description: Fix building against recent versions of freetype
+Author: Sebastian Ramacher <sramacher@debian.org>
+Bug-Debian: http://bugs.debian.org/732142
+Last-Update: 2013-12-14
+
+--- transcode-1.1.7.orig/filter/subtitler/load_font.c
++++ transcode-1.1.7/filter/subtitler/load_font.c
+@@ -48,7 +48,7 @@ Artur Zaprzala <zybi@fanthom.irc.pl>
+ #include <ft2build.h>
+ #include FT_FREETYPE_H
+ 
+-#include <freetype/ftglyph.h>
++#include FT_GLYPH_H
+ 
+ /**
+  * @file bswap.h

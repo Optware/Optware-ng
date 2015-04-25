@@ -1,0 +1,42 @@
+Author: Reinhard Tartler <siretart@debian.org>
+Description: Update to libav 0.7 API
+Last-Modified: 2012-02-12
+Forwarded: Francesco Romani <fromani@gmail.com>
+---
+ filter/filter_pp.c   |    4 ++--
+ import/decode_lavc.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+--- transcode.orig/filter/filter_pp.c
++++ transcode/filter/filter_pp.c
+@@ -38,8 +38,8 @@
+ 
+ /* FIXME: these use the filter ID as an index--the ID can grow
+  * arbitrarily large, so this needs to be fixed */
+-static pp_mode_t *mode[100];
+-static pp_context_t *context[100];
++static pp_mode *mode[100];
++static pp_context *context[100];
+ static int width[100], height[100];
+ static int pre[100];
+ 
+--- transcode.orig/import/decode_lavc.c
++++ transcode/import/decode_lavc.c
+@@ -128,7 +128,7 @@ void decode_lavc(decode_t *decode)
+   char *mp4_ptr=NULL;
+   int flush = 0;
+   int mp4_size=0;
+-  int buf_len=0;
++  unsigned int buf_len=0;
+   int run=0;
+ 
+   // decoder
+@@ -186,7 +186,7 @@ void decode_lavc(decode_t *decode)
+   lavc_dec_context->error_concealment = 3;
+   lavc_dec_context->workaround_bugs = FF_BUG_AUTODETECT;
+ 
+-  if (avcodec_open(lavc_dec_context, lavc_dec_codec) < 0) {
++  if (avcodec_open2(lavc_dec_context, lavc_dec_codec, NULL) < 0) {
+       tc_log_error(__FILE__, "Could not initialize the '%s' codec.",
+ 		   codec->name);
+       goto decoder_error;

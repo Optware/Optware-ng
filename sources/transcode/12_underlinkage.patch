@@ -1,0 +1,96 @@
+Description: Fix underlinkage of some plugins
+Author: Sebastian Ramacher <sramacher@debian.org>
+Last-Update: 2013-12-21
+
+--- a/import/Makefile.am
++++ b/import/Makefile.am
+@@ -140,12 +140,12 @@
+ import_dvd_la_SOURCES = import_dvd.c ac3scan.c dvd_reader.c clone.c ioaux.c frame_info.c ivtc.c
+ import_dvd_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBDVDREAD_CFLAGS)
+ import_dvd_la_LDFLAGS = -module -avoid-version
+-import_dvd_la_LIBADD = $(LIBDVDREAD_LIBS)
++import_dvd_la_LIBADD = $(LIBDVDREAD_LIBS) $(PTHREAD_LIBS)
+ 
+ import_ffmpeg_la_SOURCES = import_ffmpeg.c
+-import_ffmpeg_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBAVFORMAT_CFLAGS)
++import_ffmpeg_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBAVFORMAT_CFLAGS) $(LIBAVCODEC_CFLAGS)
+ import_ffmpeg_la_LDFLAGS = -module -avoid-version
+-import_ffmpeg_la_LIBADD = $(LIBAVFORMAT_LIBS)
++import_ffmpeg_la_LIBADD = $(LIBAVFORMAT_LIBS) $(LIBAVCODEC_LIBS)
+ 
+ import_im_la_SOURCES = import_im.c
+ import_im_la_CPPFLAGS = $(AM_CPPFLAGS) $(IMAGEMAGICK_CFLAGS)
+@@ -208,6 +208,7 @@
+ import_vob_la_SOURCES = import_vob.c ac3scan.c clone.c ioaux.c frame_info.c ivtc.c
+ import_vob_la_CPPFLAGS = $(AM_CPPFLAGS)
+ import_vob_la_LDFLAGS =	-module -avoid-version
++import_vob_la_LIBADD = $(PTHREAD_LIBS)
+ 
+ import_xml_la_SOURCES = import_xml.c ioxml.c probe_xml.c
+ import_xml_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBXML2_CFLAGS)
+--- a/filter/extsub/Makefile.am
++++ b/filter/extsub/Makefile.am
+@@ -11,8 +11,10 @@
+ 
+ filter_extsub_la_SOURCES = filter_extsub.c subproc.c subtitle_buffer.c
+ filter_extsub_la_LDFLAGS = -module -avoid-version
++filter_extsub_la_LIBADD = $(PTHREAD_LIBS)
+ 
+ filter_extsub2_la_SOURCES = filter_extsub.c subproc.c subtitle_buffer.c
+ filter_extsub2_la_LDFLAGS = -module -avoid-version
++filter_extsub2_la_LIBADD = $(PTHREAD_LIBS)
+ 
+ EXTRA_DIST = subproc.h subtitle_buffer.h
+--- a/filter/subtitler/Makefile.am
++++ b/filter/subtitler/Makefile.am
+@@ -38,7 +38,8 @@
+ 	-lXt \
+ 	-lm \
+ 	$(FREETYPE2_LIBS) \
+-	$(ICONV_LIBS)
++	$(ICONV_LIBS) \
++	$(PTHREAD_LIBS)
+ 
+ EXTRA_DIST = \
+ 	CHANGES \
+--- a/configure.in
++++ b/configure.in
+@@ -601,11 +601,24 @@
+   dnl
+   TC_PKG_CONFIG_CHECK(libavformat, "$enable_ffmpeg", LIBAVFORMAT, libavformat, [http://www.ffmpeg.org/])
+ 
++  dnl
++  dnl libavutil
++  dnl
++  TC_PKG_CONFIG_CHECK(libavutil, "$enable_ffmpeg", LIBAVUTIL, libavutil, [http://www.ffmpeg.org/])
++
++  dnl
++  dnl libavresample
++  dnl
++  TC_PKG_CONFIG_CHECK(libavresample, "$enable_ffmpeg", LIBAVRESAMPLE, libavresample, [http://www.ffmpeg.org/])
++
++
+   AC_DEFINE([HAVE_FFMPEG], 1, [Have FFmpeg libraries support])
+ fi
+ 
+ TC_PKG_HAVE(libavcodec, LIBAVCODEC)
+ TC_PKG_HAVE(libavformat, LIBAVFORMAT)
++TC_PKG_HAVE(libavutil, LIBAVUTIL)
++TC_PKG_HAVE(libavresample, LIBAVRESAMPLE)
+ 
+ AM_CONDITIONAL(HAVE_FFMPEG, test x"$enable_ffmpeg" = x"yes")
+ 
+--- a/filter/Makefile.am
++++ b/filter/Makefile.am
+@@ -205,9 +205,9 @@
+ filter_skip_la_LDFLAGS = -module -avoid-version
+ 
+ filter_resample_la_SOURCES = filter_resample.c
+-filter_resample_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBAVCODEC_CFLAGS)
++filter_resample_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBAVCODEC_CFLAGS) $(LIBAVRESAMPLE_CFLAGS) $(LIBAVUTIL_CFLAGS)
+ filter_resample_la_LDFLAGS = -module -avoid-version
+-filter_resample_la_LIBADD = $(LIBAVCODEC_LIBS)
++filter_resample_la_LIBADD = $(LIBAVCODEC_LIBS) $(LIBAVRESAMPLE_LIBS) $(LIBAVUTIL_LIBS)
+ 
+ filter_slowmo_la_SOURCES = filter_slowmo.c
+ filter_slowmo_la_LDFLAGS = -module -avoid-version

@@ -1,0 +1,20 @@
+--- a/configure.in	2015-04-25 16:01:24.918325000 +0300
++++ b/configure.in	2015-04-25 16:04:42.779680138 +0300
+@@ -815,7 +815,7 @@
+     [lame_version="`./conftest$ac_exeext`"],
+     [AC_MSG_RESULT([failed])
+      TC_PKG_ERROR(lame, lame.h, yes, lame, [http://www.mp3dev.org/],
+-      [cannot compile and run a test program])],,
++      [cannot compile and run a test program])],
+     [AC_MSG_RESULT([cross compiling; assumed OK...])])
+   CFLAGS="$ac_save_CFLAGS"
+   LIBS="$ac_save_LIBS"
+@@ -847,7 +847,7 @@
+     [xvid_version_ok="`./conftest$ac_exeext`"],
+     [AC_MSG_RESULT([failed])
+      TC_PKG_ERROR(xvid, xvid.h, yes, xvid, [http://www.xvid.org/],
+-      [cannot compile and run a test program])],,
++      [cannot compile and run a test program])],
+     [AC_MSG_RESULT([cross compiling; assumed OK...])])
+   if test x"$xvid_version_ok" = x"yes"; then
+     XVID_LIBS="-lxvidcore"

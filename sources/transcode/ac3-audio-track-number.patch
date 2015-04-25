@@ -1,0 +1,15 @@
+Description: Fix extracting AC3 audio tracks when audio track number is not 0.
+Author: Fabian Greffrath <fabian+debian@greffrath.com>
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=714958
+
+--- a/import/import_vob.c
++++ b/import/import_vob.c
+@@ -157,7 +157,7 @@ MOD_open
+                       " | tcextract -t vob -a %d -x ac3 -d %d"
+                       " | tcextract -t raw -x ac3 -d %d",
+                       input_buf, demux_buf,
+-                      vob->verbose, vob->a_track, vob->verbose,
++                      vob->a_track, vob->verbose,
+                       vob->verbose) < 0) {
+         tc_log_perror(MOD_NAME, "command buffer overflow");
+         return(TC_IMPORT_ERROR);
