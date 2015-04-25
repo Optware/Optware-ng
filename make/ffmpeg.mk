@@ -301,15 +301,13 @@ ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel cs05q3armel fsg3v4, $(OPTWARE_TARG
 	$(MAKE) -C $(@D) OPTLEVEL=-O2 ffmpeg.o
 endif
 	$(MAKE) -C $(@D) OPTLEVEL=-O3 install
-	install -d $(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg $(STAGING_PREFIX)/ffmpeg_old/include/postproc
-	cp -p	$(STAGING_INCLUDE_DIR)/libavcodec/* \
-		$(STAGING_INCLUDE_DIR)/ffmpeg/
-	cp -p	$(STAGING_INCLUDE_DIR)/libavformat/* \
-		$(STAGING_INCLUDE_DIR)/ffmpeg/
-	cp -p	$(STAGING_INCLUDE_DIR)/libavutil/* \
-		$(STAGING_INCLUDE_DIR)/ffmpeg/
-	cp -p 	$(STAGING_INCLUDE_DIR)/libpostproc/* \
-		$(STAGING_INCLUDE_DIR)/postproc/
+	install -d $(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg
+	cp -p	$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/libavcodec/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/ffmpeg/
+	cp -p	$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/libavformat/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/ffmpeg/
+	cp -p	$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/libavutil/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/ffmpeg/
 	touch $@
 
 ffmpeg-old-stage: $(FFMPEG_BUILD_DIR_OLD)/.staged
