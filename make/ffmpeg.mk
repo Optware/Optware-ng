@@ -28,8 +28,8 @@ FFMPEG_SVN_REVISION=075178
 FFMPEG_VERSION=2.5.4+git$(FFMPEG_SVN_DATE)-rev$(FFMPEG_SVN_REVISION)
 
 ### version for old packages that need old ffmpeg
-FFMPEG_SVN_DATE_OLD=20081123
-FFMPEG_SVN_REVISION_OLD=016576
+FFMPEG_SVN_DATE_OLD=20120308
+FFMPEG_SVN_REVISION_OLD=040000
 FFMPEG_VERSION_OLD=0.svn$(FFMPEG_SVN_DATE_OLD)-git-rev$(FFMPEG_SVN_REVISION_OLD)
 FFMPEG_DIR_OLD=ffmpeg-$(FFMPEG_VERSION_OLD)
 FFMPEG_SOURCE_OLD=$(FFMPEG_DIR_OLD).tar.bz2
@@ -260,7 +260,7 @@ $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
 ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
 
 ifneq ($(FFMPEG_OLD), yes)
-$(FFMPEG_BUILD_DIR_OLD)/.staged:
+$(FFMPEG_BUILD_DIR_OLD)/.staged: $(DL_DIR)/$(FFMPEG_SOURCE_OLD)
 	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(@D) $(STAGING_PREFIX)/ffmpeg_old
 	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
 	if test "$(BUILD_DIR)/$(FFMPEG_DIR_OLD)" != "$(@D)" ; \
@@ -285,7 +285,6 @@ endif
 		--disable-shared \
 		--enable-static \
 		--enable-gpl \
-		--enable-postproc \
 		--prefix=$(STAGING_PREFIX)/ffmpeg_old \
 	)
 ifneq (, $(filter glibc shibby-tomato-arm, $(LIBC_STYLE) $(OPTWARE_TARGET)))
@@ -303,12 +302,14 @@ ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel cs05q3armel fsg3v4, $(OPTWARE_TARG
 endif
 	$(MAKE) -C $(@D) OPTLEVEL=-O3 install
 	install -d $(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg $(STAGING_PREFIX)/ffmpeg_old/include/postproc
-	cp -p	$(STAGING_PREFIX)/ffmpeg_old/include/libavcodec/* \
-		$(STAGING_PREFIX)/ffmpeg_old/include/libavformat/* \
-		$(STAGING_PREFIX)/ffmpeg_old/include/libavutil/* \
-		$(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg/
-	cp -p 	$(STAGING_PREFIX)/ffmpeg_old/include/libpostproc/* \
-		$(STAGING_PREFIX)/ffmpeg_old/include/postproc/
+	cp -p	$(STAGING_INCLUDE_DIR)/libavcodec/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg/
+	cp -p	$(STAGING_INCLUDE_DIR)/libavformat/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg/
+	cp -p	$(STAGING_INCLUDE_DIR)/libavutil/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg/
+	cp -p 	$(STAGING_INCLUDE_DIR)/libpostproc/* \
+		$(STAGING_INCLUDE_DIR)/postproc/
 	touch $@
 
 ffmpeg-old-stage: $(FFMPEG_BUILD_DIR_OLD)/.staged
