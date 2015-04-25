@@ -9,7 +9,6 @@ BROKEN_PACKAGES = \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	bluez-hcidump \
-	ficy \
 	fuppes \
 	golang \
 	gtmess \

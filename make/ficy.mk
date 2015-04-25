@@ -27,8 +27,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FICY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ficy
-FICY_VERSION=1.0.15
-FICY_VERSION_UNDERSCORE=1_0_15
+FICY_VERSION=1.0.17
+FICY_VERSION_UNDERSCORE=1_0_17
 FICY_SOURCE=fIcy-$(FICY_VERSION).tar.gz
 FICY_DIR=fIcy-$(FICY_VERSION)
 FICY_UNZIP=zcat
@@ -43,7 +43,7 @@ FICY_CONFLICTS=
 #
 # FICY_IPK_VERSION should be incremented when the ipk changes.
 #
-FICY_IPK_VERSION=2
+FICY_IPK_VERSION=1
 
 #
 # FICY_CONFFILES should be a list of user-editable files
@@ -53,11 +53,7 @@ FICY_CONFFILES=
 # FICY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(LIBC_STYLE), uclibc)
-FICY_PATCHES=$(FICY_SOURCE_DIR)/uclibc-readline.patch
-else
-FICY_PATCHES=
-endif
+FICY_PATCHES=$(FICY_SOURCE_DIR)/htfollow-snprintf.patch
 
 #
 # If the compilation of the package requires additional

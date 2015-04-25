@@ -1,0 +1,12 @@
+--- fIcy-1.0.17/htfollow.hh~	2009-08-10 13:59:18.000000000 +0300
++++ fIcy-1.0.17/htfollow.hh	2015-04-25 14:24:13.931752000 +0300
+@@ -17,6 +17,9 @@
+ // c system headers
+ #include <time.h>
+ 
++// for snprintf declaration
++#include <cstdio>
++
+ 
+ Socket*
+ htFollow(std::map<std::string, std::string>& pReply, const URL& url,
