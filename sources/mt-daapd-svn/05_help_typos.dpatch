@@ -1,0 +1,24 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 05_help_typos.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix two typos in the help text.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696~/src/main.c mt-daapd-0.9~r1696/src/main.c
+--- mt-daapd-0.9~r1696~/src/main.c	2007-10-23 06:58:25.000000000 +0200
++++ mt-daapd-0.9~r1696/src/main.c	2008-09-12 18:51:34.549422793 +0200
+@@ -182,11 +182,11 @@
+     printf("Usage: %s [options]\n\n",program);
+     printf("Options:\n");
+     printf("  -a             Set cwd to app dir before starting\n");
+-    printf("  -d <number>    Debuglevel (0-9)\n");
++    printf("  -d <number>    Debug level (0-9)\n");
+     printf("  -D <mod,mod..> Debug modules\n");
+     printf("  -m             Disable mDNS\n");
+     printf("  -c <file>      Use configfile specified\n");
+-    printf("  -P <file>      Write the PID ot specified file\n");
++    printf("  -P <file>      Write the PID to specified file\n");
+     printf("  -f             Run in foreground\n");
+     printf("  -y             Yes, go ahead and run as non-root user\n");
+     printf("  -b <id>        ffid to be broadcast\n");

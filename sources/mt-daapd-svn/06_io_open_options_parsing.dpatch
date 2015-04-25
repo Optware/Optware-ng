@@ -1,0 +1,32 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 06_io_open_options_parsing.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix io_open()'s handling of options in URI, fixing the "question mark bug".
+## DP: Patch by cpitchford, Firefly forum.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696~/src/io.c mt-daapd-0.9~r1696/src/io.c
+--- mt-daapd-0.9~r1696~/src/io.c	2007-10-29 07:02:27.000000000 +0100
++++ mt-daapd-0.9~r1696/src/io.c	2008-09-12 19:09:38.750421913 +0200
+@@ -664,16 +664,17 @@
+         proto_part = uri_copy;
+     }
+ 
+-    if(path_part)
+-        io_urldecode(path_part);
+-
+     /* find the start of the options */
+     options_part = strchr(path_part,'?');
+     if(options_part) {
+         *options_part = '\0';
+         options_part++;
++        io_urldecode(options_part);
+     }
+ 
++    if(path_part)
++        io_urldecode(path_part);
++
+     /* see if we can generate a list of options */
+     while(options_part) {
+         key = options_part;

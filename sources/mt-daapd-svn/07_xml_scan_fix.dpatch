@@ -1,0 +1,32 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 07_xml_scan_fix.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix indexing of multiple XML files by resetting path_found for each
+## DP: XML file.
+## DP: Fix by Neil Spring <nspring@cs.umd.edu>
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696~/src/scan-xml.c mt-daapd-0.9~r1696/src/scan-xml.c
+--- mt-daapd-0.9~r1696~/src/scan-xml.c	2007-08-10 06:07:26.000000000 +0200
++++ mt-daapd-0.9~r1696/src/scan-xml.c	2008-09-13 15:11:28.917279773 +0200
+@@ -184,8 +184,9 @@
+  * @param ppnew where the real physical path goes
+  * @returns 1 on success, 0 on failure
+  */
++static int path_found = 0;
++
+ int scan_xml_translate_path(char *pold, char *pnew) {
+-    static int path_found=0;
+     static int discard;
+     char base_path[PATH_MAX];
+     char working_path[PATH_MAX];
+@@ -424,6 +425,8 @@
+     MAYBEFREE(scan_xml_real_base_path);
+ 
+     scan_xml_file = filename;
++    /* reinitialize path_found for scan_xml_translate_path() */
++    path_found = 0;
+ 
+     /* initialize the redblack tree */
+     if((scan_xml_db = rbinit(scan_xml_rb_compare,NULL)) == NULL) {

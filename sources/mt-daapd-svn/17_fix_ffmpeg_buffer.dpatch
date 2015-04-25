@@ -1,0 +1,44 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 17_fix_ffmpeg_buffer.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix ffmpeg buffer alignment - allocate the buffer with av_malloc()
+## DP: instead of using a static buffer inside a struct where we can't
+## DP: control the alignment.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/plugins/ssc-ffmpeg.c mt-daapd-0.9~r1696.dfsg/src/plugins/ssc-ffmpeg.c
+--- mt-daapd-0.9~r1696.dfsg~/src/plugins/ssc-ffmpeg.c	2009-07-22 11:20:39.729138836 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/plugins/ssc-ffmpeg.c	2009-07-22 11:22:22.993223299 +0200
+@@ -52,7 +52,7 @@
+     int packet_size;
+     int audio_stream;
+ 
+-    char buffer[BUFFER_SIZE];
++    char *buffer;
+ 
+     char *buf_remainder;
+     int buf_remainder_len;
+@@ -149,6 +149,14 @@
+     handle=(SSCHANDLE *)malloc(sizeof(SSCHANDLE));
+     if(handle) {
+         memset(handle,0,sizeof(SSCHANDLE));
++
++	handle->buffer = (char *)av_malloc(BUFFER_SIZE);
++	if (!handle->buffer) {
++	  free(handle);
++	  return NULL;
++	}
++
++	memset(handle->buffer, 0, BUFFER_SIZE);
+     }
+ 
+     return (void*)handle;
+@@ -158,6 +166,7 @@
+     SSCHANDLE *handle = (SSCHANDLE *)vp;
+     ssc_ffmpeg_close(handle);
+     if(handle) {
++        av_free(handle->buffer);
+         free(handle);
+     }
+ 

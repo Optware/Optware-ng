@@ -1,0 +1,24 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 09_ws_copyfile_io_error_fix.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: ws_copyfile() can be called with bytes_copied == NULL but did not
+## DP: check for this condition before using bytes_copied after an IO error,
+## DP: leading to a segfault.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/webserver.c mt-daapd-0.9~r1696.dfsg/src/webserver.c
+--- mt-daapd-0.9~r1696.dfsg~/src/webserver.c	2009-02-17 15:01:13.000000000 +0100
++++ mt-daapd-0.9~r1696.dfsg/src/webserver.c	2009-02-17 15:02:44.218337818 +0100
+@@ -2042,7 +2042,10 @@
+         bytes_written = bytes_read;
+         if(!io_write(pwsc->hclient,buf,&bytes_written)) {
+             ws_dprintf(L_WS_LOG,"Write error: %s\n",io_errstr(pwsc->hclient));
+-            *bytes_copied = total_bytes;
++
++	    if (bytes_copied)
++	      *bytes_copied = total_bytes;
++
+             return FALSE;
+         }
+ 

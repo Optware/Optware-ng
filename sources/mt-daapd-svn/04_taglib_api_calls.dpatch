@@ -1,0 +1,48 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 04_taglib_api_calls.dpatch by Nico Golde <nion@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fixup taglib_tab_free_strings() invocation; the function never took an
+## DP: argument to start with, so fix that up as it now breaks the build.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696~/src/scan-mpc.c mt-daapd-0.9~r1696/src/scan-mpc.c
+--- mt-daapd-0.9~r1696~/src/scan-mpc.c	2007-08-10 06:07:26.000000000 +0200
++++ mt-daapd-0.9~r1696/src/scan-mpc.c	2008-08-27 14:53:27.000000000 +0200
+@@ -70,31 +70,31 @@
+         len = strlen(val);
+         if ((pmp3->title = calloc(len + 1, 1)) != NULL)
+             strncpy(pmp3->title, val, len);
+-        taglib_tag_free_strings(val);
++        taglib_tag_free_strings();
+     }
+     if ((val = taglib_tag_artist(tag)) != NULL) {
+         len = strlen(val);
+         if ((pmp3->artist = calloc(len + 1, 1)) != NULL)
+             strncpy(pmp3->artist, val, len);
+-        taglib_tag_free_strings(val);
++        taglib_tag_free_strings();
+     }
+     if ((val = taglib_tag_album(tag)) != NULL) {
+         len = strlen(val);
+         if ((pmp3->album = calloc(len + 1, 1)) != NULL)
+             strncpy(pmp3->album, val, len);
+-        taglib_tag_free_strings(val);
++        taglib_tag_free_strings();
+     }
+     if ((val = taglib_tag_comment(tag)) != NULL) {
+         len = strlen(val);
+         if ((pmp3->comment = calloc(len + 1, 1)) != NULL)
+             strncpy(pmp3->comment, val, len);
+-        taglib_tag_free_strings(val);
++        taglib_tag_free_strings();
+     }
+     if ((val = taglib_tag_genre(tag)) != NULL) {
+         len = strlen(val);
+         if ((pmp3->genre = calloc(len + 1, 1)) != NULL)
+             strncpy(pmp3->genre, val, len);
+-        taglib_tag_free_strings(val);
++        taglib_tag_free_strings();
+     }
+ 
+     if ((i = taglib_tag_year(tag)) != 0)

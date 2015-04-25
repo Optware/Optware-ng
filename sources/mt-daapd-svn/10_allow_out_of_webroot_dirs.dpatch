@@ -1,0 +1,32 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 10_allow_out_of_webroot_dirs.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Allow the web server to serve files out of the web root:
+## DP:  - in /usr/share/common-licenses for included files
+## DP:  - in /usr/share/javascript for other files
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696~/src/configfile.c mt-daapd-0.9~r1696/src/configfile.c
+--- mt-daapd-0.9~r1696~/src/configfile.c	2008-09-13 13:12:01.000000000 +0200
++++ mt-daapd-0.9~r1696/src/configfile.c	2008-09-13 13:13:02.876422506 +0200
+@@ -476,7 +476,8 @@
+     DPRINTF(E_DBG,L_CONF|L_WS,"Thread %d: Preparing to serve %s\n",
+             ws_threadno(pwsc), resolved_path);
+ 
+-    if(strncmp(resolved_path,web_root,strlen(web_root))) {
++    if(strncmp(resolved_path,web_root,strlen(web_root))
++       && strncmp(resolved_path, "/usr/share/javascript", strlen("/usr/share/javascript"))) {
+         pwsc->error=EINVAL;
+         DPRINTF(E_WARN,L_CONF|L_WS,"Thread %d: Requested file %s out of root\n",
+                 ws_threadno(pwsc),resolved_path);
+@@ -985,7 +986,8 @@
+     DPRINTF(E_DBG,L_CONF|L_WS,"Thread %d: Preparing to serve %s\n",
+             ws_threadno(pwsc), resolved_path);
+ 
+-    if(strncmp(resolved_path,web_root,strlen(web_root))) {
++    if(strncmp(resolved_path,web_root,strlen(web_root))
++       && strncmp(resolved_path, "/usr/share/common-licenses", strlen("/usr/share/common-licenses"))) {
+         pwsc->error=EINVAL;
+         DPRINTF(E_LOG,L_CONF|L_WS,"Thread %d: Requested file %s out of root\n",
+                 ws_threadno(pwsc),resolved_path);

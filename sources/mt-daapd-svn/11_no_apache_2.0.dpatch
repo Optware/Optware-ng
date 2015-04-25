@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 11_no_apache_2.0.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Remove Bonjour & Apache 2.0 license from about.html as we've got
+## DP: rid of that code.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696.dfsg~/admin-root/about.html mt-daapd-0.9~r1696.dfsg/admin-root/about.html
+--- mt-daapd-0.9~r1696.dfsg~/admin-root/about.html	2007-08-10 06:07:35.000000000 +0200
++++ mt-daapd-0.9~r1696.dfsg/admin-root/about.html	2008-09-13 15:57:31.103679348 +0200
+@@ -31,7 +31,6 @@
+ <p>
+ This program makes use of the following libraries and packages:
+ <ul>
+-<li>Apple's <a href="http://bonjour.macosforge.org/">Bonjour v107.3</a> licensed under the <a href="apache-2.0.html">Apache 2.0 License</a></li>
+ <li>Fabrice Bellard's <a href="http://ffmpeg.mplayerhq.hu/">FFmpeg</a>, licensed under the <a href="gpl-license.html">GPL License</a></li>
+ <li>D. Richard Hipp's <a href="http://sqlite.org">SQLite</a> database, dedicated to the public domain</li>
+ <li>Underbit Technologies' <a href="http://www.underbit.com/products/mad/">libid3tag</a>, licensed under the <a href="gpl-license.html">GPL License</a></li>

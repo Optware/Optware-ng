@@ -1,0 +1,30 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 14_ffmpeg_API.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Adapt mt-daapd for ffmpeg API changes.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/plugins/ssc-ffmpeg.c mt-daapd-0.9~r1696.dfsg/src/plugins/ssc-ffmpeg.c
+--- mt-daapd-0.9~r1696.dfsg~/src/plugins/ssc-ffmpeg.c	2009-04-05 18:00:34.000000000 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/plugins/ssc-ffmpeg.c	2009-04-05 18:01:38.986029272 +0200
+@@ -355,7 +355,8 @@
+             if(!handle->file_bytes_read)
+                 return 0;
+             
+-            len1 = avcodec_decode_audio(handle->pCodecCtx,(short*)buffer,
++	    out_size = len;
++            len1 = avcodec_decode_audio2(handle->pCodecCtx,(short*)buffer,
+                                         &out_size,
+                                         (uint8_t*)handle->file_buffer_ptr,
+                                         handle->file_bytes_read);
+@@ -380,7 +381,8 @@
+ 
+     while(1) {
+         while(handle->packet_size > 0) {
+-            len1=avcodec_decode_audio(handle->pCodecCtx,
++            data_size = len;
++            len1=avcodec_decode_audio2(handle->pCodecCtx,
+                                       (int16_t*)buffer,
+                                       &data_size,
+                                       handle->packet_data,

@@ -20,7 +20,7 @@ endif
 MT-DAAPD-SVN_SUGGESTS=ivorbis-tools
 MT-DAAPD-SVN_CONFLICTS=mt-daapd
 
-MT-DAAPD-SVN_IPK_VERSION=2
+MT-DAAPD-SVN_IPK_VERSION=3
 
 MT-DAAPD-SVN_CPPFLAGS=
 MT-DAAPD-SVN_LDFLAGS=
@@ -38,6 +38,25 @@ MT-DAAPD-SVN_CONFFILES=\
 /opt/etc/init.d/S60mt-daapd \
 
 #MT-DAAPD-SVN_PATCHES=$(MT-DAAPD-SVN_SOURCE_DIR)/itunes5.patch
+ifneq ($(FFMPEG_OLD), yes)
+MT-DAAPD-SVN_PATCHES=$(MT-DAAPD-SVN_SOURCE_DIR)/02_CVE-2008-1771.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/03_ws_addarg_retval_fix.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/04_taglib_api_calls.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/05_help_typos.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/06_io_open_options_parsing.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/07_xml_scan_fix.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/08_aac_scan_fix.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/09_ws_copyfile_io_error_fix.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/10_allow_out_of_webroot_dirs.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/11_no_apache_2.0.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/12_no_applet.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/13_avahi_fix_and_handle_restart.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/14_ffmpeg_API.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/15_compiler_warnings.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/16_enable_mpc_transcode_ffmpeg.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/17_fix_ffmpeg_buffer.dpatch \
+$(MT-DAAPD-SVN_SOURCE_DIR)/18_ffmpeg_API_2.patch
+endif
 
 .PHONY: mt-daapd-svn-source mt-daapd-svn-unpack mt-daapd-svn mt-daapd-svn-stage mt-daapd-svn-ipk mt-daapd-svn-clean mt-daapd-svn-dirclean mt-daapd-svn-check
 

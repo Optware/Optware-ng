@@ -1,0 +1,20 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 16_enable_mpc_transcode_ffmpeg.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Add mpc (Musepack) to the list of codecs that can be transcoded by
+## DP: the ffmpeg plugin.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/plugins/ssc-ffmpeg.c mt-daapd-0.9~r1696.dfsg/src/plugins/ssc-ffmpeg.c
+--- mt-daapd-0.9~r1696.dfsg~/src/plugins/ssc-ffmpeg.c	2009-04-30 12:06:46.187336156 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/plugins/ssc-ffmpeg.c	2009-04-30 12:07:18.804086308 +0200
+@@ -128,7 +128,7 @@
+     NULL,                  /* event fns */
+     &_ptfn,                /* fns */
+     NULL,                  /* rend info */
+-    "flac,alac,ogg,wma"    /* codeclist */
++    "flac,alac,ogg,wma,mpc"    /* codeclist */
+ };
+ 
+ char *ssc_ffmpeg_error(void *pv) {

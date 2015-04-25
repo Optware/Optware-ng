@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 12_no_applet.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Remove reference to applet.html, as we're not shipping DAAPApplet.jar.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696.dfsg~/admin-root/hdr.html mt-daapd-0.9~r1696.dfsg/admin-root/hdr.html
+--- mt-daapd-0.9~r1696.dfsg~/admin-root/hdr.html	2007-08-10 06:07:35.000000000 +0200
++++ mt-daapd-0.9~r1696.dfsg/admin-root/hdr.html	2008-09-13 16:00:02.970017779 +0200
+@@ -75,7 +75,6 @@
+ <div class="naviheader">Experimental</div>
+ <div class="navibox">
+  <div class="navilink"><a class="@ispage playlist.html:naviselected:navi@" href="playlist.html">playlists</a></div>
+- <div class="navilink"><a class="@ispage applet.html:naviselected:navi@" href="applet.html">applet</a></div>
+ </div>
+ -->
+ 

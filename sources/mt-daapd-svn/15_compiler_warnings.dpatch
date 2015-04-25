@@ -1,0 +1,136 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 15_compiler_warnings.dpatch by  <jblache@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix trivial compiler warnings.
+
+@DPATCH@
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/bsd-snprintf.c mt-daapd-0.9~r1696.dfsg/src/bsd-snprintf.c
+--- mt-daapd-0.9~r1696.dfsg~/src/bsd-snprintf.c	2009-04-07 13:56:58.000000000 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/bsd-snprintf.c	2009-04-07 13:57:06.763851415 +0200
+@@ -412,7 +412,7 @@
+             *dest++ = *current++;
+         } else if(*current == ' ') {
+             *dest++ = '+';
+-            *current++;
++            current++;
+         } else {
+             *dest++ = '%';
+             digit1=(*current)/16;
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/db-sql.c mt-daapd-0.9~r1696.dfsg/src/db-sql.c
+--- mt-daapd-0.9~r1696.dfsg~/src/db-sql.c	2009-04-07 13:56:58.000000000 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/db-sql.c	2009-04-07 13:57:06.763851415 +0200
+@@ -37,6 +37,7 @@
+ #ifdef HAVE_STDINT_H
+ # include <stdint.h>
+ #endif
++#include <inttypes.h>
+ 
+ #include "daapd.h"
+ #include "err.h"
+@@ -839,8 +840,8 @@
+     pmp3->time_played=0;
+ 
+     /* sqlite2 doesn't support 64 bit ints */
+-    sprintf(sample_count,"%lld",pmp3->sample_count);
+-    sprintf(file_size,"%lld",pmp3->file_size);
++    sprintf(sample_count, "%" PRIu64, pmp3->sample_count);
++    sprintf(file_size, "%" PRIu64, pmp3->file_size);
+ 
+     err=db_sql_exec_fn(pe,E_DBG,"INSERT INTO songs VALUES "
+                        "(NULL," // id
+@@ -965,8 +966,8 @@
+ 
+     pmp3->db_timestamp = (int)time(NULL);
+ 
+-    sprintf(sample_count,"%lld",pmp3->sample_count);
+-    sprintf(file_size,"%lld",pmp3->file_size);
++    sprintf(sample_count, "%" PRIu64, pmp3->sample_count);
++    sprintf(file_size, "%" PRIu64, pmp3->file_size);
+ 
+     strcpy(query,"UPDATE songs SET "
+            "title='%q',"  // title
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/io.c mt-daapd-0.9~r1696.dfsg/src/io.c
+--- mt-daapd-0.9~r1696.dfsg~/src/io.c	2009-04-07 13:57:06.242877315 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/io.c	2009-04-07 13:57:06.767851504 +0200
+@@ -8,7 +8,6 @@
+ #define _CRT_SECURE_NO_WARNINGS 1601
+ #define _CRT_SECURE_NO_DEPRECATE 1
+ #define _CRT_NONSTDC_NO_DEPRECATE 1
+-#pragma warning(disable: 4996)
+ 
+ #ifdef LARGE_FILE
+ # define _LARGEFILE_SOURCE
+@@ -412,7 +411,7 @@
+         switch(*current) {
+         case '+':
+             *dst++ = ' ';
+-            *current++;
++            current++;
+             break;
+         case '%':
+             /* This is rather brute force.  Maybe sscanf? */
+@@ -2286,7 +2285,6 @@
+     ssize_t byteswritten=0;
+     uint32_t totalbytes;
+     unsigned char *bufp;
+-    long blocking = 0;
+ 
+     ASSERT(phandle);
+     ASSERT(phandle->private);
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/plugins/out-daap.c mt-daapd-0.9~r1696.dfsg/src/plugins/out-daap.c
+--- mt-daapd-0.9~r1696.dfsg~/src/plugins/out-daap.c	2009-04-07 13:56:58.000000000 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/plugins/out-daap.c	2009-04-07 13:57:06.767851504 +0200
+@@ -347,6 +347,7 @@
+     }
+ 
+     pi_log(E_DBG,"Tokenizing url\n");
++    save = NULL;
+     while((ppi->uri_count < 10) && (token=strtok_r(string,"/",&save))) {
+         string=NULL;
+         ppi->uri_sections[ppi->uri_count++] = token;
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/plugins/rsp.c mt-daapd-0.9~r1696.dfsg/src/plugins/rsp.c
+--- mt-daapd-0.9~r1696.dfsg~/src/plugins/rsp.c	2009-04-07 13:56:58.000000000 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/plugins/rsp.c	2009-04-07 13:57:06.767851504 +0200
+@@ -200,6 +200,7 @@
+     memset((void*)&ppi->dq,0,sizeof(DB_QUERY));
+ 
+     pi_log(E_DBG,"Tokenizing url\n");
++    save = NULL;
+     while((ppi->uri_count < 10) && (token=strtok_r(string,"/",&save))) {
+         string=NULL;
+         ppi->uri_sections[ppi->uri_count++] = token;
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/plugins/ssc-ffmpeg.c mt-daapd-0.9~r1696.dfsg/src/plugins/ssc-ffmpeg.c
+--- mt-daapd-0.9~r1696.dfsg~/src/plugins/ssc-ffmpeg.c	2009-04-07 13:57:06.350852201 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/plugins/ssc-ffmpeg.c	2009-04-07 13:57:06.767851504 +0200
+@@ -248,7 +248,7 @@
+ 
+         }
+ 
+-        if(strncmp(id3.id,"ID3",3)==0) {
++        if(strncmp((char *)id3.id,"ID3",3)==0) {
+             /* found an ID3 header... */
+             pi_log(E_DBG,"Found ID3 header\n");
+             size = (id3.size[0] << 21 | id3.size[1] << 14 |
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/scan-flac.c mt-daapd-0.9~r1696.dfsg/src/scan-flac.c
+--- mt-daapd-0.9~r1696.dfsg~/src/scan-flac.c	2007-10-23 06:58:25.000000000 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/scan-flac.c	2009-04-07 13:57:14.079796848 +0200
+@@ -23,7 +23,6 @@
+ #  include "config.h"
+ #endif
+ 
+-#define _POSIX_PTHREAD_SEMANTICS
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff -urNad mt-daapd-0.9~r1696.dfsg~/src/scan-mpc.c mt-daapd-0.9~r1696.dfsg/src/scan-mpc.c
+--- mt-daapd-0.9~r1696.dfsg~/src/scan-mpc.c	2009-04-07 13:57:06.202851559 +0200
++++ mt-daapd-0.9~r1696.dfsg/src/scan-mpc.c	2009-04-07 13:57:06.767851504 +0200
+@@ -43,7 +43,6 @@
+  * @returns TRUE if file should be added to DB, FALSE otherwise
+  */
+ int scan_get_mpcinfo(char *filename, MP3FILE *pmp3) {
+-    FILE *f;
+     TagLib_File *file;
+     TagLib_Tag *tag;
+     const TagLib_AudioProperties *properties;
