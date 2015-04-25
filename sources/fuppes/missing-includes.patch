@@ -1,0 +1,24 @@
+diff -dur fuppes-0.660.orig/src/lib/Common/Common.cpp fuppes-0.660/src/lib/Common/Common.cpp
+--- fuppes-0.660.orig/src/lib/Common/Common.cpp	2009-12-20 22:26:29.000000000 +0200
++++ fuppes-0.660/src/lib/Common/Common.cpp	2015-04-25 14:48:37.912053000 +0300
+@@ -48,6 +48,7 @@
+ #include <fcntl.h>
+ #ifndef WIN32
+ #include <dlfcn.h>
++#include <unistd.h>
+ #endif
+ 
+ #ifdef HAVE_ICONV
+diff -dur fuppes-0.660.orig/src/plugins/database_sqlite3.cpp fuppes-0.660/src/plugins/database_sqlite3.cpp
+--- fuppes-0.660.orig/src/plugins/database_sqlite3.cpp	2009-12-19 11:34:11.000000000 +0200
++++ fuppes-0.660/src/plugins/database_sqlite3.cpp	2015-04-25 14:50:42.912056000 +0300
+@@ -29,6 +29,9 @@
+ #include <string>
+ #include <sstream>
+ #include <iostream>
++#ifndef WIN32
++#include <unistd.h>
++#endif
+ 
+ #include <sqlite3.h>
+ 

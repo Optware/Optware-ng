@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FUPPES_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/fuppes
-FUPPES_VERSION=SVN-578
+FUPPES_VERSION=0.660
 FUPPES_SOURCE=fuppes-$(FUPPES_VERSION).tar.gz
 FUPPES_DIR=fuppes-$(FUPPES_VERSION)
 FUPPES_UNZIP=zcat
@@ -30,7 +30,10 @@ FUPPES_DESCRIPTION=FUPPES is a free, multiplatform UPnP (TM) A/V MediaServer, \
 with optional on-the-fly audio transcondig from ogg/vorbis, mpc/musepack and FLAC to mp3.
 FUPPES_SECTION=audio
 FUPPES_PRIORITY=optional
-FUPPES_DEPENDS=e2fslibs, ffmpeg, libxml2, pcre, sqlite
+FUPPES_DEPENDS=e2fslibs, libxml2, pcre, sqlite
+ifeq ($(FFMPEG_OLD), yes)
+TRANSCODE_DEPENDS+=, ffmpeg
+endif
 ifeq (taglib, $(filter taglib, $(PACKAGES)))
 FUPPES_DEPENDS+=, taglib
 endif
@@ -43,7 +46,7 @@ FUPPES_CONFLICTS=
 #
 # FUPPES_IPK_VERSION should be incremented when the ipk changes.
 #
-FUPPES_IPK_VERSION=2
+FUPPES_IPK_VERSION=1
 
 #
 # FUPPES_CONFFILES should be a list of user-editable files
@@ -53,14 +56,10 @@ FUPPES_IPK_VERSION=2
 # FUPPES_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FUPPES_PATCHES=
-ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-#FUPPES_PATCHES=$(FUPPES_SOURCE_DIR)/libiconv.patch
+FUPPES_PATCHES=$(FUPPES_SOURCE_DIR)/missing-includes.patch
+ifneq ($(FFMPEG_OLD), yes)
+FUPPES_PATCHES+=$(FUPPES_SOURCE_DIR)/metadata_libavformat.patch
 endif
-ifneq ($(HOSTCC), $(TARGET_CC))
-FUPPES_PATCHES+=$(FUPPES_SOURCE_DIR)/configure.in.patch
-endif
-FUPPES_PATCHES+=$(FUPPES_SOURCE_DIR)/atoll-not-a-member-of-std.patch
 
 #
 # If the compilation of the package requires additional
@@ -128,11 +127,14 @@ fuppes-source: $(DL_DIR)/$(FUPPES_SOURCE) $(FUPPES_PATCHES)
 # shown below to make various patches to it.
 #
 $(FUPPES_BUILD_DIR)/.configured: $(DL_DIR)/$(FUPPES_SOURCE) $(FUPPES_PATCHES) make/fuppes.mk
-	$(MAKE) e2fsprogs-stage
-	$(MAKE) libxml2-stage
-	$(MAKE) pcre-stage
-	$(MAKE) sqlite-stage
+	$(MAKE) e2fsprogs-stage libxml2-stage pcre-stage sqlite-stage
+ifeq ($(FFMPEG_OLD), yes)
 	$(MAKE) ffmpeg-stage
+else
+#	fuppes needs old ffmpeg
+#	Following command builds and stages headers and static ffmpeg libs to $(STAGING_PREFIX)/ffmpeg_old
+	$(MAKE) ffmpeg-old-stage
+endif
 ifeq (taglib, $(filter taglib, $(PACKAGES)))
 	$(MAKE) taglib-stage
 endif
@@ -143,16 +145,15 @@ endif
 	$(FUPPES_UNZIP) $(DL_DIR)/$(FUPPES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FUPPES_PATCHES)" ; \
 		then cat $(FUPPES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FUPPES_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(FUPPES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FUPPES_DIR)" != "$(FUPPES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FUPPES_DIR) $(FUPPES_BUILD_DIR) ; \
 	fi
-	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(FUPPES_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(FUPPES_LDFLAGS)" \
+		CPPFLAGS="-I$(STAGING_PREFIX)/ffmpeg_old/include $(STAGING_CPPFLAGS) $(FUPPES_CPPFLAGS)" \
+		LDFLAGS="-L$(STAGING_PREFIX)/ffmpeg_old/lib $(STAGING_LDFLAGS) $(FUPPES_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		$(FUPPES_WITH_TAGLIB) \
 		./configure \
