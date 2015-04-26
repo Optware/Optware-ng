@@ -55,7 +55,7 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2015.02.tar.bz2
 
 UCLIBC-OPT_VERSION = 0.9.33.2
-UCLIBC-OPT_IPK_VERSION = 1
+UCLIBC-OPT_IPK_VERSION = 2
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/lib
 
 BUILDROOT-ARMEABI_SOURCE_DIR=$(SOURCE_DIR)/buildroot-armeabi
