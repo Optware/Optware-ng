@@ -78,8 +78,6 @@ $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
 	rm -f $@
 	$(MAKE) STAGING_DIR=$(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot -C $(TARGET_CROSS_BUILD_DIR)
 	cp -af $(TARGET_CROSS_BUILD_DIR)/output/host/usr/* $(TARGET_CROSS_TOP)/
-	rm -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libgcc_s.so
-	ln -s libgcc_s.so.1 $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libgcc_s.so
 	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libnsl-0.9.33.2.so $(TARGET_LIBDIR)/
 	touch $@
 

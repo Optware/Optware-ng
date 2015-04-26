@@ -119,7 +119,7 @@ endif
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/etc
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/lib
 	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)/opt/lib
-	$(TARGET_STRIP) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
+	-$(STRIP_COMMAND) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
 	### package non-stripped libpthread and libthread_db
 	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libpthread* $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libthread_db* \
 							$(UCLIBC-OPT_IPK_DIR)/opt/lib
