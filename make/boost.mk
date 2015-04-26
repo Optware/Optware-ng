@@ -64,7 +64,31 @@ BOOST_GCC_CONF ?= tools/build/v2/tools/gcc
 
 BOOST_JAM_ROOT ?= tools/build/v2
 
-BOOST_ADDITIONAL_LIBS ?=
+# boost libs that are expected to build always
+BOOST_LIBS = dev date-time filesystem function-types graph iostreams \
+		program-options random regex signals system test thread
+
+# boost python libs that are expected to build always
+BOOST_PYTHON_LIBS = python26 python27 python3
+
+# serialization and wave may fail to build for some targets:
+# override in platforms/packages-$(OPTWARE_TARGET).mk,
+# e.g., see platforms/packages-buildroot-armeabi.mk,
+# to skip them or add more additional libs;
+# available additional libs (starting from certain boost
+# versions and/or for certain arch(s)) are:
+# 	atomic \
+	chrono \
+	container \
+	context \
+	coroutine \
+	locale \
+	log \
+	timer \
+	exception \
+	serialization \
+	wave
+BOOST_ADDITIONAL_LIBS ?= serialization wave
 
 
 #
@@ -247,7 +271,8 @@ BOOST_IPK_DIRS= \
 	$(BOOST_COROUTINE_IPK_DIR) \
 	$(BOOST_LOCALE_IPK_DIR) \
 	$(BOOST_LOG_IPK_DIR) \
-	$(BOOST_TIMER_IPK_DIR)
+	$(BOOST_TIMER_IPK_DIR) \
+	$(BOOST_EXCEPTION_IPK_DIR)
 
 BOOST_LIB_IPKS= \
 	$(BOOST_DATE_TIME_IPK) \
@@ -255,15 +280,31 @@ BOOST_LIB_IPKS= \
 	$(BOOST_GRAPH_IPK) \
 	$(BOOST_IOSTREAMS_IPK) \
 	$(BOOST_PROGRAM_OPTIONS_IPK) \
-	$(BOOST_PYTHON26_IPK) \
-	$(BOOST_PYTHON27_IPK) \
-	$(BOOST_PYTHON3_IPK) \
 	$(BOOST_RANDOM_IPK) \
 	$(BOOST_REGEX_IPK) \
 	$(BOOST_SIGNALS_IPK) \
 	$(BOOST_SYSTEM_IPK) \
 	$(BOOST_THREAD_IPK) \
 	$(BOOST_TEST_IPK)
+
+ifneq ($(BOOST_ADDITIONAL_LIBS),)
+BOOST_LIB_IPKS += $(patsubst %, $(BUILD_DIR)/boost-%_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk, $(filter-out exception, $(BOOST_ADDITIONAL_LIBS)))
+ifeq (exception, $(filter exception, $(BOOST_ADDITIONAL_LIBS)))
+BOOST_LIB_IPKS += $(BOOST_EXCEPTION_IPK)
+endif
+endif
+
+BOOST_LIB_PYTHON_IPKS = \
+	$(BOOST_PYTHON26_IPK) \
+	$(BOOST_PYTHON27_IPK) \
+	$(BOOST_PYTHON3_IPK)
+
+# boost lib ipks mask used for cleaning previous ipk versions before
+# packaging all boost ipks except python ones
+BOOST_LIB_IPKS_MASK = $(patsubst %, $(BUILD_DIR)/boost-%_*_$(TARGET_ARCH).ipk, $(BOOST_LIBS) $(filter-out exception, $(BOOST_ADDITIONAL_LIBS)))
+ifeq (exception, $(filter exception, $(BOOST_ADDITIONAL_LIBS)))
+BOOST_LIB_IPKS_MASK += $(BUILD_DIR)/boost-exception-dev_*_$(TARGET_ARCH).ipk
+endif
 
 .PHONY: boost-source boost-unpack boost boost-stage boost-ipk boost-clean boost-dirclean boost-check
 
@@ -834,7 +875,7 @@ $(BOOST_EXCEPTION_IPK_DIR)/CONTROL/control:
 #
 $(BOOST_PYTHON26_IPK): $(BOOST_BUILD_DIR)/.py26built
 	### now make boost-python-py26
-	rm -rf $(BOOST_PYTHON26_IPK_DIR)
+	rm -rf $(BOOST_PYTHON26_IPK_DIR) $(BUILD_DIR)/boost-python26_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(BOOST_PYTHON26_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_PYTHON26_IPK_DIR)/opt/lib
 	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON26_IPK_DIR)/opt/lib
@@ -843,7 +884,7 @@ $(BOOST_PYTHON26_IPK): $(BOOST_BUILD_DIR)/.py26built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON26_IPK_DIR)
 
 $(BOOST_PYTHON27_IPK): $(BOOST_BUILD_DIR)/.py27built
-	rm -rf $(BOOST_PYTHON27_IPK_DIR)
+	rm -rf $(BOOST_PYTHON27_IPK_DIR) $(BUILD_DIR)/boost-python27_*_$(TARGET_ARCH).ipk
 	### now make boost-python-py27
 	$(MAKE) $(BOOST_PYTHON27_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_PYTHON27_IPK_DIR)/opt/lib
@@ -853,7 +894,7 @@ $(BOOST_PYTHON27_IPK): $(BOOST_BUILD_DIR)/.py27built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON27_IPK_DIR)
 
 $(BOOST_PYTHON3_IPK): $(BOOST_BUILD_DIR)/.py3built
-	rm -rf $(BOOST_PYTHON3_IPK_DIR)
+	rm -rf $(BOOST_PYTHON3_IPK_DIR) $(BUILD_DIR)/boost-python3_*_$(TARGET_ARCH).ipk
 	### now make boost-python-py3
 	$(MAKE) $(BOOST_PYTHON3_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_PYTHON3_IPK_DIR)/opt/lib
@@ -863,8 +904,8 @@ $(BOOST_PYTHON3_IPK): $(BOOST_BUILD_DIR)/.py3built
 	$(STRIP_COMMAND) $(BOOST_PYTHON3_IPK_DIR)/opt/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON3_IPK_DIR)
 
-$(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.mainbuilt
-	rm -rf $(BOOST_IPK_DIRS) $(BUILD_DIR)/boost*_$(TARGET_ARCH).ipk
+$(BOOST_DEV_IPK) $(BOOST_LIB_IPKS): $(BOOST_BUILD_DIR)/.mainbuilt
+	rm -rf $(BOOST_IPK_DIRS) $(BOOST_LIB_IPKS_MASK)
 	-(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --without-python --prefix=$(BOOST_DEV_IPK_DIR)/opt)
 	$(STRIP_COMMAND) $(BOOST_DEV_IPK_DIR)/opt/lib/*.so*
 	### now make boost-date_time
@@ -902,13 +943,6 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.mainbuilt
 	mkdir -p $(BOOST_REGEX_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*regex* $(BOOST_REGEX_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_REGEX_IPK_DIR)
-	### now make boost-serialization if it has been built
-	if ls $(BOOST_DEV_IPK_DIR)/opt/lib/*serialization* > /dev/null 2>&1; then \
-		$(MAKE) $(BOOST_SERIALIZATION_IPK_DIR)/CONTROL/control; \
-		mkdir -p $(BOOST_SERIALIZATION_IPK_DIR)/opt/lib; \
-		mv $(BOOST_DEV_IPK_DIR)/opt/lib/*serialization* $(BOOST_SERIALIZATION_IPK_DIR)/opt/lib; \
-		cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_SERIALIZATION_IPK_DIR); \
-	fi
 	### now make boost-signals
 	$(MAKE) $(BOOST_SIGNALS_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_SIGNALS_IPK_DIR)/opt/lib
@@ -930,13 +964,6 @@ $(BOOST_DEV_IPK): $(BOOST_BUILD_DIR)/.mainbuilt
 	mkdir -p $(BOOST_THREAD_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*thread* $(BOOST_THREAD_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_THREAD_IPK_DIR)
-	### now make boost-wave if it has been built
-	if ls $(BOOST_DEV_IPK_DIR)/opt/lib/*wave* > /dev/null 2>&1; then \
-		$(MAKE) $(BOOST_WAVE_IPK_DIR)/CONTROL/control; \
-		mkdir -p $(BOOST_WAVE_IPK_DIR)/opt/lib; \
-		mv $(BOOST_DEV_IPK_DIR)/opt/lib/*wave* $(BOOST_WAVE_IPK_DIR)/opt/lib; \
-		cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_WAVE_IPK_DIR); \
-	fi
 ifneq ($(BOOST_ADDITIONAL_LIBS),)
 	### make additional libs
 	for lib in $(BOOST_ADDITIONAL_LIBS); do \
@@ -954,7 +981,7 @@ endif
 #
 # This is called from the top level makefile to create the IPK file.
 #
-boost-ipk: $(BOOST_DEV_IPK) $(BOOST_PYTHON26_IPK) $(BOOST_PYTHON27_IPK) $(BOOST_PYTHON3_IPK)
+boost-ipk: $(BOOST_DEV_IPK) $(BOOST_LIB_IPKS) $(BOOST_LIB_PYTHON_IPKS)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -968,24 +995,12 @@ boost-clean:
 # directories.
 #
 boost-dirclean:
-	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(BOOST_BUILD_DIR) $(BOOST_IPK_DIRS) $(BOOST_PYTHON26_IPK_DIR) $(BOOST_PYTHON27_IPK_DIR) $(BOOST_PYTHON3_IPK_DIR) $(BUILD_DIR)/boost*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/$(BOOST_DIR) $(BOOST_BUILD_DIR) $(BOOST_IPK_DIRS) \
+		$(BOOST_PYTHON26_IPK_DIR) $(BOOST_PYTHON27_IPK_DIR) $(BOOST_PYTHON3_IPK_DIR) \
+		$(BOOST_LIB_IPKS) $(BOOST_LIB_PYTHON_IPKS)
 #
 #
 # Some sanity check for the package.
 #
-boost-check: $(BOOST_DEV_IPK) $(BOOST_PYTHON26_IPK) $(BOOST_PYTHON27_IPK) $(BOOST_PYTHON3_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_LIB_IPKS)
-	if ls $(BOOST_WAVE_IPK) > /dev/null 2>&1; then \
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_WAVE_IPK); \
-	fi
-	if ls $(BOOST_SERIALIZATION_IPK) > /dev/null 2>&1; then \
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_SERIALIZATION_IPK); \
-	fi
-ifneq ($(BOOST_ADDITIONAL_LIBS),)
-	for lib in $(filter-out exception, $(BOOST_ADDITIONAL_LIBS)); do \
-		perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BUILD_DIR)/boost-$${lib}_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk; \
-	done
-ifeq (exception, $(filter exception, $(BOOST_ADDITIONAL_LIBS)))
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_EXCEPTION_IPK)
-endif
-endif
+boost-check: $(BOOST_DEV_IPK) $(BOOST_LIB_IPKS) $(BOOST_LIB_PYTHON_IPKS)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOOST_LIB_IPKS) $(BOOST_LIB_PYTHON_IPKS)

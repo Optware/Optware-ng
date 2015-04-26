@@ -54,7 +54,15 @@ BOOST_IPK_VERSION := 1
 BOOST_EXTERNAL_JAM := no
 BOOST_GCC_CONF := tools/build/src/tools/gcc
 BOOST_JAM_ROOT := tools/build
-BOOST_ADDITIONAL_LIBS := atomic chrono container locale log timer exception
+BOOST_ADDITIONAL_LIBS:= atomic \
+			chrono \
+			container \
+			locale \
+			log \
+			timer \
+			exception \
+			serialization \
+			wave
 
 MKVTOOLNIX_VERSION := 7.7.0
 MKVTOOLNIX_IPK_VERSION := 1
