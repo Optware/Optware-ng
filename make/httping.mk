@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTTPING_SITE=http://www.vanheusden.com/httping
-HTTPING_VERSION=1.4.3
+HTTPING_VERSION=2.4
 HTTPING_SOURCE=httping-$(HTTPING_VERSION).tgz
 HTTPING_DIR=httping-$(HTTPING_VERSION)
 HTTPING_UNZIP=zcat
@@ -29,7 +29,7 @@ HTTPING_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HTTPING_DESCRIPTION=httping is a "ping"-like tool for HTTP requests. Give it a URL and it will show how long it takes to connect, send a request, and retrieve the reply (only the headers). It can be used for monitoring or statistical purposes (measuring latency).
 HTTPING_SECTION=web
 HTTPING_PRIORITY=optional
-HTTPING_DEPENDS=openssl
+HTTPING_DEPENDS=openssl, gettext
 HTTPING_SUGGESTS=
 HTTPING_CONFLICTS=
 
@@ -46,14 +46,14 @@ HTTPING_IPK_VERSION=1
 # HTTPING_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-HTTPING_PATCHES=$(HTTPING_SOURCE_DIR)/mem.c.patch
+#HTTPING_PATCHES=$(HTTPING_SOURCE_DIR)/mem.c.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 HTTPING_CPPFLAGS=
-HTTPING_LDFLAGS=-lssl -lcrypto
+HTTPING_LDFLAGS=-lssl -lcrypto -lm -lintl
 
 #
 # HTTPING_BUILD_DIR is the directory in which the build is done.
@@ -105,7 +105,7 @@ httping-source: $(DL_DIR)/$(HTTPING_SOURCE) $(HTTPING_PATCHES)
 # shown below to make various patches to it.
 #
 $(HTTPING_BUILD_DIR)/.configured: $(DL_DIR)/$(HTTPING_SOURCE) $(HTTPING_PATCHES) make/httping.mk
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage gettext-stage
 	rm -rf $(BUILD_DIR)/$(HTTPING_DIR) $(@D)
 	$(HTTPING_UNZIP) $(DL_DIR)/$(HTTPING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HTTPING_PATCHES)" ; \
