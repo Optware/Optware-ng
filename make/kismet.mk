@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 KISMET_SITE=http://www.kismetwireless.net/code
-KISMET_VERSION=2007-01-R1b
+KISMET_VERSION=2013-03-R1b
 KISMET_SOURCE=kismet-$(KISMET_VERSION).tar.gz
 KISMET_DIR=kismet-$(KISMET_VERSION)
 KISMET_UNZIP=zcat
@@ -29,14 +29,14 @@ KISMET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 KISMET_DESCRIPTION=An 802.11 layer2 wireless network detector, sniffer, and intrusion detection system.
 KISMET_SECTION=net
 KISMET_PRIORITY=optional
-KISMET_DEPENDS=ncurses, libstdc++, libpcap
+KISMET_DEPENDS=ncurses, libstdc++, libpcap, libnl, pcre
 KISMET_SUGGESTS=
 KISMET_CONFLICTS=
 
 #
 # KISMET_IPK_VERSION should be incremented when the ipk changes.
 #
-KISMET_IPK_VERSION=4
+KISMET_IPK_VERSION=1
 
 #
 # KISMET_CONFFILES should be a list of user-editable files
@@ -53,7 +53,7 @@ KISMET_CONFFILES=/opt/etc/kismet/ap_manuf \
 # which they should be applied to the source code.
 #
 KISMET_PATCHES=$(KISMET_SOURCE_DIR)/Makefile.in.patch \
-	$(KISMET_SOURCE_DIR)/100-200701r1b_iwfreq_24_kernel.diff
+#	$(KISMET_SOURCE_DIR)/100-200701r1b_iwfreq_24_kernel.diff
 
 #
 # If the compilation of the package requires additional
@@ -63,7 +63,7 @@ KISMET_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ifeq ($(OPTWARE_TARGET), $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)))
 KISMET_CPPFLAGS += -fno-builtin-rint
 endif
-KISMET_LDFLAGS=
+KISMET_LDFLAGS=-lpcre -ldl
 
 #
 # KISMET_BUILD_DIR is the directory in which the build is done.
@@ -115,7 +115,7 @@ kismet-source: $(DL_DIR)/$(KISMET_SOURCE) $(KISMET_PATCHES)
 # shown below to make various patches to it.
 #
 $(KISMET_BUILD_DIR)/.configured: $(DL_DIR)/$(KISMET_SOURCE) $(KISMET_PATCHES) make/kismet.mk
-	$(MAKE) libpcap-stage ncurses-stage
+	$(MAKE) libpcap-stage ncurses-stage libnl-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(KISMET_DIR) $(@D)
 	$(KISMET_UNZIP) $(DL_DIR)/$(KISMET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KISMET_PATCHES)" ; \
@@ -129,6 +129,8 @@ $(KISMET_BUILD_DIR)/.configured: $(DL_DIR)/$(KISMET_SOURCE) $(KISMET_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KISMET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(KISMET_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -207,9 +209,9 @@ $(KISMET_IPK): $(KISMET_BUILD_DIR)/.built
 	install -d $(KISMET_IPK_DIR)/opt/bin/
 	install -d $(KISMET_IPK_DIR)/opt/man/
 	$(MAKE) -C $(KISMET_BUILD_DIR) DESTDIR=$(KISMET_IPK_DIR) install
-	$(STRIP_COMMAND) $(KISMET_IPK_DIR)/opt/bin/kismet_server
-	$(STRIP_COMMAND) $(KISMET_IPK_DIR)/opt/bin/kismet_client
-	$(STRIP_COMMAND) $(KISMET_IPK_DIR)/opt/bin/kismet_drone
+	chmod +w $(addprefix $(KISMET_IPK_DIR)/opt/bin/, kismet_server kismet_client kismet_drone)
+	$(STRIP_COMMAND) $(addprefix $(KISMET_IPK_DIR)/opt/bin/, kismet_server kismet_client kismet_drone)
+	chmod -w $(addprefix $(KISMET_IPK_DIR)/opt/bin/, kismet_server kismet_client kismet_drone)
 	install -d $(KISMET_IPK_DIR)/opt/etc/kismet
 	install -m 644 $(KISMET_SOURCE_DIR)/kismet.conf $(KISMET_IPK_DIR)/opt/etc/kismet/
 	install -m 644 $(KISMET_SOURCE_DIR)/ap_manuf $(KISMET_IPK_DIR)/opt/etc/kismet/
