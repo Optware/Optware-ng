@@ -55,7 +55,7 @@ LCD4LINUX_CONFFILES=/opt/etc/lcd4linux.conf
 # LCD4LINUX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LCD4LINUX_PATCHES=$(LCD4LINUX_SOURCE_DIR)/parport-disable.patch
+LCD4LINUX_PATCHES=$(LCD4LINUX_SOURCE_DIR)/fix-no-io.h-build.patch
 
 #
 # If the compilation of the package requires additional

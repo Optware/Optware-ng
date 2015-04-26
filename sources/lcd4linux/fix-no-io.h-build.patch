@@ -1,0 +1,166 @@
+--- lcd4linux-0.11.0-SVN/drv_generic_parport.c~	2008-12-31 09:05:54.000000000 +0200
++++ lcd4linux-0.11.0-SVN/drv_generic_parport.c	2015-04-26 19:54:31.472069805 +0300
+@@ -371,16 +371,24 @@
+ 
+ void drv_generic_parport_direction(const int direction)
+ {
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++if (PPdev)
++#endif
+ #ifdef WITH_PPDEV
+-    if (PPdev) {
++    {
+ 	ioctl(PPfd, PPDATADIR, &direction);
+-    } else
++    }
++#endif
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++else
+ #endif
++#ifdef WITH_OUTB
+     {
+ 	/* code stolen from linux/parport_pc.h */
+ 	ctr = (ctr & ~0x20) ^ (direction ? 0x20 : 0x00);
+ 	outb(ctr, Port + 2);
+     }
++#endif
+ }
+ 
+ 
+@@ -392,14 +400,22 @@
+ 
+     unsigned char data;
+ 
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++if (PPdev)
++#endif
+ #ifdef WITH_PPDEV
+-    if (PPdev) {
++    {
+ 	ioctl(PPfd, PPRSTATUS, &data);
+-    } else
++    }
+ #endif
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++else
++#endif
++#ifdef WITH_OUTB
+     {
+ 	data = inb(Port + 1);
+     }
++#endif
+ 
+     /* clear unused bits */
+     data &= mask;
+@@ -420,19 +436,27 @@
+     /* Strobe, Select and AutoFeed are inverted! */
+     val = mask & (value ^ PARPORT_CONTROL_INVERTED ^ inverted_control_bits);
+ 
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++if (PPdev)
++#endif
+ #ifdef WITH_PPDEV
+-    if (PPdev) {
++    {
+ 	struct ppdev_frob_struct frob;
+ 	frob.mask = mask;
+ 	frob.val = val;
+ 	ioctl(PPfd, PPFCONTROL, &frob);
+-    } else
++    }
+ #endif
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++else
++#endif
++#ifdef WITH_OUTB
+     {
+ 	/* code stolen from linux/parport_pc.h */
+ 	ctr = (ctr & ~mask) ^ val;
+ 	outb(ctr, Port + 2);
+     }
++#endif
+ }
+ 
+ 
+@@ -453,8 +477,11 @@
+     value1 = bits & (value1 ^ PARPORT_CONTROL_INVERTED ^ inverted_control_bits);
+     value2 = bits & (value2 ^ PARPORT_CONTROL_INVERTED ^ inverted_control_bits);
+ 
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++if (PPdev)
++#endif
+ #ifdef WITH_PPDEV
+-    if (PPdev) {
++    {
+ 	struct ppdev_frob_struct frob;
+ 	frob.mask = bits;
+ 
+@@ -469,8 +496,12 @@
+ 	frob.val = value2;
+ 	ioctl(PPfd, PPFCONTROL, &frob);
+ 
+-    } else
++    }
++#endif
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++else
+ #endif
++#ifdef WITH_OUTB
+     {
+ 	/* rise */
+ 	ctr = (ctr & ~bits) ^ value1;
+@@ -483,33 +514,49 @@
+ 	ctr = (ctr & ~bits) ^ value2;
+ 	outb(ctr, Port + 2);
+     }
++#endif
+ }
+ 
+ 
+ void drv_generic_parport_data(const unsigned char data)
+ {
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++if (PPdev)
++#endif
+ #ifdef WITH_PPDEV
+-    if (PPdev) {
++    {
+ 	ioctl(PPfd, PPWDATA, &data);
+-    } else
++    }
+ #endif
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++else
++#endif
++#ifdef WITH_OUTB
+     {
+ 	outb(data, Port);
+     }
++#endif
+ }
+ 
+ unsigned char drv_generic_parport_read(void)
+ {
+     unsigned char data;
+-
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++if (PPdev)
++#endif
+ #ifdef WITH_PPDEV
+-    if (PPdev) {
++    {
+ 	ioctl(PPfd, PPRDATA, &data);
+-    } else
++    }
+ #endif
++#if (defined WITH_OUTB) && (defined WITH_PPDEV)
++else
++#endif
++#ifdef WITH_OUTB
+     {
+ 	data = inb(Port);
+     }
++#endif
+     return data;
+ }
+ 
