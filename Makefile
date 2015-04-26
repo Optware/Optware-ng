@@ -335,7 +335,7 @@ COMMON_CROSS_PACKAGES = \
 	libid3tag libidn libieee1284 libijs libinklevel libjbigkit libjpeg \
 	libksba liblcms libmaa libmad libmatroska libmemcache libmicrohttpd \
 	libmms libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
-	libnetfilter-queue libnfnetlink libnettle libnsl libnxml \
+	libnetfilter-queue libnfnetlink libnettle libnl libnsl libnxml \
 	libol libogg libosip2 libopensync libotr \
 	libpar2 libpcap libpeas libpng libpth librsync librsvg \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
