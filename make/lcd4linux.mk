@@ -20,13 +20,20 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LCD4LINUX_SITE=http://ssl.bulix.org/projects/lcd4linux
-LCD4LINUX_SVN=https://ssl.bulix.org/svn/lcd4linux/trunk
+LCD4LINUX_SITE=https://ssl.bulix.org/projects/lcd4linux/raw-attachment/wiki/Download
+#LCD4LINUX_SVN=https://ssl.bulix.org/svn/lcd4linux/trunk
 LCD4LINUX_SVN_REV=758
+ifdef LCD4LINUX_SVN
 LCD4LINUX_VERSION=0.10.0+r$(LCD4LINUX_SVN_REV)
 LCD4LINUX_SOURCE=lcd4linux-$(LCD4LINUX_VERSION).tar.gz
-LCD4LINUX_DIR=lcd4linux
 LCD4LINUX_UNZIP=zcat
+LCD4LINUX_DIR=lcd4linux
+else
+LCD4LINUX_VERSION=0.11.0-SVN
+LCD4LINUX_SOURCE=lcd4linux-$(LCD4LINUX_VERSION).tar.bz2
+LCD4LINUX_UNZIP=bzcat
+LCD4LINUX_DIR=lcd4linux-$(LCD4LINUX_VERSION)
+endif
 LCD4LINUX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LCD4LINUX_DESCRIPTION=Grabs information from the kernel and some subsystems and displays it on an external liquid crystal display
 LCD4LINUX_SECTION=comm
@@ -48,7 +55,7 @@ LCD4LINUX_CONFFILES=/opt/etc/lcd4linux.conf
 # LCD4LINUX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LCD4LINUX_PATCHES=$(LCD4LINUX_SOURCE_DIR)/parport-disable.patch
+#LCD4LINUX_PATCHES=$(LCD4LINUX_SOURCE_DIR)/parport-disable.patch
 
 #
 # If the compilation of the package requires additional
@@ -77,10 +84,11 @@ LCD4LINUX_IPK=$(BUILD_DIR)/lcd4linux_$(LCD4LINUX_VERSION)-$(LCD4LINUX_IPK_VERSIO
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-#$(DL_DIR)/$(LCD4LINUX_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(LCD4LINUX_SITE)/$(LCD4LINUX_SOURCE) || \
-#	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LCD4LINUX_SOURCE)
-
+ifndef LCD4LINUX_SVN
+$(DL_DIR)/$(LCD4LINUX_SOURCE):
+	$(WGET) -P $(DL_DIR) $(LCD4LINUX_SITE)/$(LCD4LINUX_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LCD4LINUX_SOURCE)
+else
 $(DL_DIR)/$(LCD4LINUX_SOURCE):
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(LCD4LINUX_DIR) && \
@@ -89,6 +97,7 @@ $(DL_DIR)/$(LCD4LINUX_SOURCE):
 		tar -czf $@ $(LCD4LINUX_DIR) && \
 		rm -rf $(LCD4LINUX_DIR) \
 	)
+endif
 
 
 
