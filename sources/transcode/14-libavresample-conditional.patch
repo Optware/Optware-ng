@@ -10,7 +10,7 @@
 +  [case "${enableval}" in
 +    yes) enable_libavresample=yes;;
 +    no)  enable_libavresample=no;;
-+    *) AC_MSG_ERROR(bad value ${enableval} for --disable-libavresample) ;;
++    *) AC_MSG_ERROR(bad value ${enableval} for --enable-libavresample) ;;
 +  esac],
 +  [enable_libavresample=yes])
  if test x"$enable_ffmpeg" = x"no" ; then
