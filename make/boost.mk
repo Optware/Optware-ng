@@ -94,7 +94,7 @@ BOOST_ADDITIONAL_LIBS ?= serialization wave
 #
 # BOOST_IPK_VERSION should be incremented when the ipk changes.
 #
-BOOST_IPK_VERSION ?= 1
+BOOST_IPK_VERSION ?= 2
 
 #
 # BOOST_CONFFILES should be a list of user-editable files
@@ -384,7 +384,7 @@ endif
 	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_PYTHON3_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_PYTHON3_LDFLAGS)" ;' > $(@D)/user-config-py$(PYTHON3_VERSION_MAJOR).jam
 ifeq ($(LIBC_STYLE),uclibc)
 	###uclibc portability issue
-	sed -i -e "s/get_nprocs()/1/" $(@D)/libs/thread/src/pthread/thread.cpp
+	sed -i -e "s/get_nprocs()/sysconf(_SC_NPROCESSORS_ONLN)/" $(@D)/libs/thread/src/pthread/thread.cpp
 	###another uclibc issue
 	sed -i -e 's/sizeof(tracking_type) == sizeof(bool)/1/' \
 		-e 's/sizeof(class_id_type) == sizeof(int_least16_t)/1/' \
