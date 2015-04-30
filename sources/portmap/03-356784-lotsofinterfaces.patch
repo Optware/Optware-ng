@@ -1,0 +1,54 @@
+--- a/from_local.c	2009-08-23 20:16:14.000000000 +1000
++++ b/from_local.c	2009-08-23 20:56:03.000000000 +1000
+@@ -97,7 +97,7 @@ find_local(void)
+     struct ifreq *ifr;
+     struct ifreq *the_end;
+     int     sock;
+-    char    buf[BUFSIZ];
++    char    *buf=NULL;
+ 
+     /*
+      * Get list of network interfaces. We use a huge buffer to allow for the
+@@ -108,13 +108,27 @@ find_local(void)
+ 	perror("socket");
+ 	return (0);
+     }
+-    ifc.ifc_len = sizeof(buf);
+-    ifc.ifc_buf = buf;
+-    if (ioctl(sock, SIOCGIFCONF, (char *) &ifc) < 0) {
+-	perror("SIOCGIFCONF");
+-	(void) close(sock);
+-	return (0);
+-    }
++
++    num_local=0;
++    do {
++	num_local++;
++	buf=realloc(buf,num_local * BUFSIZ);
++	if(buf == NULL) {
++	    perror("portmap: out of memory");
++	    (void) close(sock);
++	    num_local=0;
++	    return (0);
++	}
++	ifc.ifc_len = (num_local * BUFSIZ);
++	ifc.ifc_buf = buf;
++	if (ioctl(sock, SIOCGIFCONF, (char *) &ifc) < 0) {
++	    perror("SIOCGIFCONF");
++	    (void) close(sock);
++	    free(buf);
++	    num_local=0;
++	    return (0);
++	}
++    } while (ifc.ifc_len > ((num_local * BUFSIZ)-sizeof(struct ifreq)));
+     /* Get IP address of each active IP network interface. */
+ 
+     the_end = (struct ifreq *) (ifc.ifc_buf + ifc.ifc_len);
+@@ -143,6 +157,7 @@ find_local(void)
+ #endif
+     }
+     (void) close(sock);
++    free(buf);
+     return (num_local);
+ }
+ 

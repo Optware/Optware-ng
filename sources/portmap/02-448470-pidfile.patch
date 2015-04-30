@@ -1,0 +1,150 @@
+This patch implement pidfile support in portmap.  Upstream was notified about
+this patch 2008-05-24.
+
+--- a/portmap.c	2009-08-23 20:24:47.000000000 +1000
++++ b/portmap.c	2009-08-23 20:56:03.000000000 +1000
+@@ -97,6 +97,8 @@ static char sccsid[] = "@(#)portmap.c 1.
+ 
+ #include <stdlib.h>
+ #include <pwd.h>
++#include <stdarg.h>
++#include <sys/stat.h>
+ 
+ #ifndef LOG_PERROR
+ #define LOG_PERROR 0
+@@ -168,6 +170,126 @@ struct flagged_pml {
+ 	int priv;
+ };
+ 
++#ifndef PIDFILE
++#  define PIDFILE "/opt/var/run/portmap.pid"
++#endif
++
++/*
++ * Copied from the atd source
++ */
++static int
++lock_fd(int fd)
++{
++    struct flock lock;
++
++    lock.l_type = F_WRLCK;
++    lock.l_whence = SEEK_SET;
++    lock.l_start = 0;
++    lock.l_len = 0;
++
++    return fcntl(fd, F_SETLK, &lock);
++}
++
++void
++perr(const char *fmt,...)
++{
++    char buf[1024];
++    va_list args;
++
++    va_start(args, fmt);
++    vsnprintf(buf, sizeof(buf), fmt, args);
++    va_end(args);
++
++    if (debugging) {
++       perror(buf);
++    } else
++       syslog(LOG_ERR, "%s: %m", buf);
++
++    exit(EXIT_FAILURE);
++}
++
++void
++pabort(const char *fmt,...)
++{
++    char buf[1024];
++    va_list args;
++
++    va_start(args, fmt);
++    vsnprintf(buf, sizeof(buf), fmt, args);
++    va_end(args);
++
++    if (debugging) {
++       fprintf(stderr, "%s\n", buf);
++    } else
++       syslog(LOG_ERR, "%s", buf);
++
++    exit(EXIT_FAILURE);
++}
++
++FILE *
++save_pidfile(void) {
++    pid_t pid;
++    int fd;
++    FILE *fp;
++    fd = open(PIDFILE, O_RDWR | O_CREAT | O_EXCL,
++             S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH);
++
++    if (fd == -1) {
++
++       if (errno != EEXIST)
++           perr("Cannot open " PIDFILE);
++
++       if ((fd = open(PIDFILE, O_RDWR)) < 0)
++           perr("Cannot open " PIDFILE);
++
++       fp = fdopen(fd, "rw");
++       if (fp == NULL) {
++           perr("Cannot open " PIDFILE " for reading");
++       }
++       pid = -1;
++       if ((fscanf(fp, "%d", &pid) != 1) || (pid == getpid())
++           || (lock_fd(fileno(fp)) == 0)) {
++           int rc;
++
++           syslog(LOG_NOTICE, "Removing stale lockfile for pid %d", pid);
++
++           rc = unlink(PIDFILE);
++
++           if (rc == -1) {
++               perr("Cannot unlink " PIDFILE);
++           }
++       } else {
++           pabort("Another atd already running with pid %d", pid);
++       }
++       fclose(fp);
++
++       unlink(PIDFILE);
++       fd = open(PIDFILE, O_RDWR | O_CREAT | O_EXCL,
++                 S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH);
++
++
++       if (fd == -1)
++           perr("Cannot open " PIDFILE " the second time round");
++
++    }
++
++    if (lock_fd(fd) == -1)
++       perr("Cannot lock " PIDFILE);
++
++    fp = fdopen(fd, "w");
++    if (fp == NULL)
++       perr("Special weirdness: fdopen failed");
++
++    fprintf(fp, "%d\n", getpid());
++
++    /* We do NOT close fd, since we want to keep the lock. However, we don't
++     * want to keep the file descriptor in case of an exec().
++     */
++    fflush(fp);
++    fcntl(fd, F_SETFD, (long) 1);
++    return fp;
++}
++
+ int
+ main(int argc, char **argv)
+ {
+@@ -251,6 +373,8 @@ main(int argc, char **argv)
+ 		exit(1);
+ 	}
+ 
++       save_pidfile();
++
+ #ifdef LOG_DAEMON
+ 	openlog("portmap", LOG_PID|LOG_NDELAY | ( foreground ? LOG_PERROR : 0),
+ 	    FACILITY);

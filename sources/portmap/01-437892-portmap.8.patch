@@ -1,0 +1,11 @@
+--- a/portmap.8	2007-07-14 18:56:29.000000000 -0400
++++ b/portmap.8	2007-08-13 23:07:10.000000000 -0400
+@@ -125,7 +125,7 @@
+ into
+ .Ar dir .
+ .Ar dir
+-should be empty, not writeable by the daemon user, and preferably on a
++should be empty, not writable by the daemon user, and preferably on a
+ filesystem mounted read-only, noexec, nodev, and nosuid.
+ .It Fl u Ar uid
+ .It Fl g Ar gid

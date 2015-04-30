@@ -1,0 +1,11 @@
+--- portmap-6.0.orig/Makefile
++++ portmap-6.0/Makefile
+@@ -127,7 +127,7 @@
+ CPPFLAGS += $(HOSTS_ACCESS)
+ portmap: CFLAGS   += -fpie
+ portmap: LDLIBS   += $(WRAP_LIB)
+-portmap: LDFLAGS  += -pie
++#portmap: LDFLAGS  += -pie
+ portmap: portmap.o pmap_check.o from_local.o
+
+ from_local: CPPFLAGS += -DTEST

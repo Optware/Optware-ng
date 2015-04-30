@@ -19,10 +19,10 @@
 #
 # You should change all these variables to suit your package.
 #
-PORTMAP_SITE=http://ftp.surfnet.nl/security/tcpwrappers
-PORTMAP_VERSION=4
-PORTMAP_SOURCE=portmap_$(PORTMAP_VERSION).tar.gz
-PORTMAP_DIR=portmap_$(PORTMAP_VERSION)
+PORTMAP_SITE=https://launchpad.net/ubuntu/+archive/primary/+files
+PORTMAP_VERSION=6.0.0
+PORTMAP_SOURCE=portmap_$(PORTMAP_VERSION).orig.tar.gz
+PORTMAP_DIR=portmap-$(PORTMAP_VERSION)
 PORTMAP_UNZIP=zcat
 PORTMAP_MAINTAINER=Roy Silvernail <roy@rant-central.com>
 PORTMAP_DESCRIPTION=Portmap daemon for NFS
@@ -34,15 +34,21 @@ PORTMAP_CONFLICTS=
 #
 # PORTMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-PORTMAP_IPK_VERSION=5
+PORTMAP_IPK_VERSION=1
 
 #
 # PORTMAP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PORTMAP_PATCHES=$(PORTMAP_SOURCE_DIR)/Makefile.patch \
+#PORTMAP_PATCHES=$(PORTMAP_SOURCE_DIR)/Makefile.patch \
 		$(PORTMAP_SOURCE_DIR)/strerror.c.patch \
 		$(PORTMAP_SOURCE_DIR)/portmap-errno.patch
+PORTMAP_PATCHES=\
+$(PORTMAP_SOURCE_DIR)/00-420514.portmap.8.patch \
+$(PORTMAP_SOURCE_DIR)/01-437892-portmap.8.patch \
+$(PORTMAP_SOURCE_DIR)/02-448470-pidfile.patch \
+$(PORTMAP_SOURCE_DIR)/03-356784-lotsofinterfaces.patch \
+$(PORTMAP_SOURCE_DIR)/04-460156-no-pie.patch
 
 #
 # If the compilation of the package requires additional
@@ -94,26 +100,13 @@ portmap-source: $(DL_DIR)/$(PORTMAP_SOURCE) $(PORTMAP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PORTMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(PORTMAP_SOURCE) $(PORTMAP_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(PORTMAP_DIR) $(PORTMAP_BUILD_DIR)
+$(PORTMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(PORTMAP_SOURCE) $(PORTMAP_PATCHES) make/portmap.mk
+	$(MAKE) tcpwrappers-stage
+	rm -rf $(BUILD_DIR)/$(PORTMAP_DIR) $(@D)
 	$(PORTMAP_UNZIP) $(DL_DIR)/$(PORTMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PORTMAP_PATCHES) | patch -d $(BUILD_DIR)/$(PORTMAP_DIR) -p1
-	mv $(BUILD_DIR)/$(PORTMAP_DIR) $(PORTMAP_BUILD_DIR)
-#	(cd $(PORTMAP_BUILD_DIR); \
-#		$(TARGET_CONFIGURE_OPTS) \
-#		CPPFLAGS="$(STAGING_CPPFLAGS) $(PORTMAP_CPPFLAGS)" \
-#		LDFLAGS="$(STAGING_LDFLAGS) $(PORTMAP_LDFLAGS)" \
-#		./configure \
-#		--build=$(GNU_HOST_NAME) \
-#		--host=$(GNU_TARGET_NAME) \
-#		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
-#		--disable-nls \
-#	)
-	make -C $(PORTMAP_BUILD_DIR) CC=$(TARGET_CC) LD=$(TARGET_LD) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB)
-
-	touch $(PORTMAP_BUILD_DIR)/.configured
+	mv $(BUILD_DIR)/$(PORTMAP_DIR) $(@D)
+	touch $@
 
 portmap-unpack: $(PORTMAP_BUILD_DIR)/.configured
 
@@ -122,9 +115,12 @@ portmap-unpack: $(PORTMAP_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(PORTMAP_BUILD_DIR)/.built: $(PORTMAP_BUILD_DIR)/.configured
-	rm -f $(PORTMAP_BUILD_DIR)/.built
-	$(MAKE) -C $(PORTMAP_BUILD_DIR)
-	touch $(PORTMAP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PORTMAP_CPPFLAGS) -DFACILITY=LOG_DAEMON" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PORTMAP_LDFLAGS)"
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -151,7 +147,7 @@ portmap: $(PORTMAP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/portmap
 # 
 $(PORTMAP_IPK_DIR)/CONTROL/control:
-	@install -d $(PORTMAP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: portmap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

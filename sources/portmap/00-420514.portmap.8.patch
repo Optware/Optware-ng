@@ -1,0 +1,57 @@
+--- portmap-6.0.orig/portmap.8
++++ portmap-6.0/portmap.8
+@@ -153,7 +153,7 @@
+ to the loop-back address 127.0.0.1.  This is a shorthand for
+ specifying 127.0.0.1 with -i.
+ .El
+-
++.Pp
+ This
+ .Nm portmap
+ version is protected by the
+@@ -164,16 +164,16 @@
+ .if 'USE_DNS'yes' .ig
+ To allow connects from clients of the network 192.168. you could use
+ the following line in /etc/hosts.allow:
+-
++.Pp
+ portmap: 192.168.
+-
++.Pp
+ In order to avoid deadlocks, the
+ .Nm portmap
+ program does not attempt to look up the remote host name or user name, nor will
+ it try to match NIS netgroups. As a consequence only network number patterns
+ (or IP addresses) will work for portmap access control, do not use hostnames.
+ Notice that localhost will always be allowed access to the portmapper.
+-
++.Pp
+ You have to use the daemon name
+ .Nm portmap
+ for the daemon name (even if the binary has a different name). For the
+@@ -195,14 +195,13 @@
+ to deadlock.
+ Note that localhost will always be allowed access to the portmapper.
+ ..
+-
++.Pp
+ For further information please have a look at the
+ .Xr tcpd 8 ,
+ .Xr hosts_allow 5
+ and
+ .Xr hosts_access 5
+ manual pages.
+-
+ .Sh SEE ALSO
+ .Xr inetd.conf 5 ,
+ .Xr rpcinfo 8 ,
+@@ -216,7 +215,8 @@
+ The
+ .Nm
+ command appeared in
+-.Bx 4.3
++.Bx
++4.3
+ .Sh AUTHORS
+ This
+ manual page was changed by
