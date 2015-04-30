@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TSHARK_SITE=http://www.wireshark.org/download/src
-TSHARK_VERSION ?= 1.6.8
+TSHARK_SITE=https://www.wireshark.org/download/src/all-versions
+TSHARK_VERSION ?= 1.6.16
 TSHARK_SOURCE=wireshark-$(TSHARK_VERSION).tar.bz2
 TSHARK_DIR=wireshark-$(TSHARK_VERSION)
 TSHARK_UNZIP=bzcat
@@ -62,10 +62,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 TSHARK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
-TSHARK_LDFLAGS=-lglib-2.0 -lgmodule-2.0
-ifeq ($(LIBC_STYLE), uclibc)
-TSHARK_LDFLAGS+=-lm -ldl
-endif
+TSHARK_LDFLAGS=-lglib-2.0 -lgmodule-2.0 -lm -ldl
 
 #
 # TSHARK_BUILD_DIR is the directory in which the build is done.

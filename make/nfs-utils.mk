@@ -36,7 +36,7 @@ NFS-UTILS_IPK_VERSION=2
 # NFS-UTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NFS-UTILS_PATCHES=$(NFS-UTILS_SOURCE_DIR)/configure.patch
+NFS-UTILS_PATCHES=$(NFS-UTILS_SOURCE_DIR)/include-sys_stat_h.patch
 
 #
 # If the compilation of the package requires additional
@@ -88,7 +88,7 @@ nfs-utils-source: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NFS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PATCHES)
+$(NFS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PATCHES) make/nfs-utils.mk
 	$(MAKE) e2fsprogs-stage
 	rm -rf $(BUILD_DIR)/$(NFS-UTILS_DIR) $(NFS-UTILS_BUILD_DIR)
 	$(NFS-UTILS_UNZIP) $(DL_DIR)/$(NFS-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -167,8 +167,7 @@ $(NFS-UTILS_IPK): $(NFS-UTILS_BUILD_DIR)/.built
 	install -d $(NFS-UTILS_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/nfsd/nfsd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/nfsd
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/mountd/mountd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/mountd
-	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/lockd/lockd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/lockd
-	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/rquotad/rquotad -o $(NFS-UTILS_IPK_DIR)/opt/sbin/rquotad
+	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/mount/mount.nfs -o $(NFS-UTILS_IPK_DIR)/opt/sbin/mount.nfs
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/statd/statd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/statd
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/exportfs/exportfs -o $(NFS-UTILS_IPK_DIR)/opt/sbin/exportfs
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/showmount/showmount -o $(NFS-UTILS_IPK_DIR)/opt/sbin/showmount

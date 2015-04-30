@@ -1,0 +1,42 @@
+diff -dur mlocate-0.26.orig/gnulib/lib/mbchar.h mlocate-0.26/gnulib/lib/mbchar.h
+--- mlocate-0.26.orig/gnulib/lib/mbchar.h	2010-03-26 21:38:17.000000000 +0200
++++ mlocate-0.26/gnulib/lib/mbchar.h	2015-04-27 17:33:25.084399000 +0300
+@@ -145,6 +145,8 @@
+ #ifndef _MBCHAR_H
+ #define _MBCHAR_H 1
+ 
++#include <wchar.h>
++#include <wctype.h>
+ #include <stdbool.h>
+ #include <string.h>
+ 
+@@ -154,8 +156,6 @@
+    <wchar.h>.  */
+ #include <stdio.h>
+ #include <time.h>
+-#include <wchar.h>
+-#include <wctype.h>
+ 
+ #define MBCHAR_BUF_SIZE 24
+ 
+diff -dur mlocate-0.26.orig/src/locate.c mlocate-0.26/src/locate.c
+--- mlocate-0.26.orig/src/locate.c	2012-09-22 04:48:54.000000000 +0300
++++ mlocate-0.26/src/locate.c	2015-04-27 17:35:47.994542000 +0300
+@@ -16,6 +16,8 @@
+ Author: Miloslav Trmac <mitr@redhat.com> */
+ #include <config.h>
+ 
++#include <wchar.h>
++#include <wctype.h>
+ #include <arpa/inet.h>
+ #include <assert.h>
+ #include <ctype.h>
+@@ -33,8 +35,6 @@
+ #include <string.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+-#include <wchar.h>
+-#include <wctype.h>
+ 
+ #include <getopt.h>
+ #include "error.h"

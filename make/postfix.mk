@@ -35,7 +35,7 @@ POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch \
 		$(POSTFIX_SOURCE_DIR)/sys_defs.h.patch
 
 POSTFIX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/sasl
-POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2 -ldl -lssl -lpthread -lcrypto
+POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2 -ldl -lssl -lpthread -lcrypto -lresolv
 
 POSTFIX_BUILD_DIR=$(BUILD_DIR)/postfix
 POSTFIX_SOURCE_DIR=$(SOURCE_DIR)/postfix

@@ -1,5 +1,13 @@
 --- src/peer.c	2005-12-09 09:02:57.000000000 +0100
 +++ src/peer.c	2006-02-23 08:30:29.000000000 +0100
+@@ -35,6 +35,7 @@
+ #include <time.h>
+ #include <poll.h>
+ #include <assert.h>
++#include <limits.h>
+ 
+ #include "bterror.h"
+ #include "btmessage.h"
 @@ -339,11 +339,11 @@
      {
  	/* bad flags */

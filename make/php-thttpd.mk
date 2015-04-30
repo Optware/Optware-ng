@@ -126,6 +126,8 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(PHP_THTTPD_DIR) $(PHP_THTTPD_BUILD_DIR)
 	mv $(BUILD_DIR)/$(PHP_DIR) $(@D)
+	find $(PHP_THTTPD_BUILD_DIR) -type f -not -path "$(@D)/*" -exec chmod +w {} \;
+	find $(PHP_THTTPD_BUILD_DIR) -type f -name '*.[ch]' -not -path "$(@D)/*" -exec sed -i -e 's/getline/&_local/g' {} \;
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i \
 	    -e 's|`$$PG_CONFIG --includedir`|$(STAGING_INCLUDE_DIR)|' \
@@ -283,7 +285,6 @@ php-thttpd-unpack: $(PHP_THTTPD_BUILD_DIR)/.configured
 $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.built: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)
-	find $(PHP_THTTPD_BUILD_DIR) -type f -not -path "$(@D)/*" -exec chmod +w {} \;
 	sed -i -e "s/conection/connection/g" $(PHP_THTTPD_BUILD_DIR)/thttpd.c
 	$(MAKE) -C $(@D) INSTALL_ROOT=$(STAGING_DIR) install-sapi
 	touch $@

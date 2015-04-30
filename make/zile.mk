@@ -115,6 +115,7 @@ $(ZILE_BUILD_DIR)/.configured: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES) make/zil
 	if test "$(BUILD_DIR)/$(ZILE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ZILE_DIR) $(@D) ; \
 	fi
+	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZILE_CPPFLAGS)" \

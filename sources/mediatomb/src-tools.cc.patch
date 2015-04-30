@@ -1,0 +1,29 @@
+--- mediatomb-0.11.0/src/tools.cc~	2008-03-02 00:48:36.000000000 +0200
++++ mediatomb-0.11.0/src/tools.cc	2015-04-27 16:56:59.413003156 +0300
+@@ -303,8 +303,8 @@
+     Ref<StringBuffer> buf(new StringBuffer(len / 2));
+     for (int i = 0; i < len; i += 2)
+     {
+-        char *chi = strchr(HEX_CHARS, ptr[i]);
+-        char *clo = strchr(HEX_CHARS, ptr[i + 1]);
++        char *chi = strchr((char *)HEX_CHARS, ptr[i]);
++        char *clo = strchr((char *)HEX_CHARS, ptr[i + 1]);
+         int hi, lo;
+         
+         if (chi)
+@@ -399,13 +399,13 @@
+ 
+             char *pos;
+ 
+-            pos = strchr(hex, chi);
++            pos = strchr((char *)hex, chi);
+             if (!pos)
+                 hi = 0;
+             else
+                 hi = pos - hex;
+ 
+-            pos = strchr(hex, clo);
++            pos = strchr((char *)hex, clo);
+             if (!pos)
+                 lo = 0;
+             else

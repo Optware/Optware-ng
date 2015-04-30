@@ -1,0 +1,11 @@
+--- jfsutils-1.1.15/libfs/devices.h~	2005-11-22 22:43:55.000000000 +0200
++++ jfsutils-1.1.15/libfs/devices.h	2015-04-26 17:30:10.707054371 +0300
+@@ -18,6 +18,8 @@
+ #ifndef H_DEVICES
+ #define H_DEVICES
+ 
++#include <stdint.h>
++
+ #define GET	0
+ #define PUT	1
+ #define VRFY	2

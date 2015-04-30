@@ -49,7 +49,8 @@ MINIHTTPD_CONFFILES=/opt/etc/mini_httpd.conf /opt/etc/init.d/S80mini_httpd
 #
 MINIHTTPD_PATCHES=$(MINIHTTPD_SOURCE_DIR)/Makefile.patch \
 		$(MINIHTTPD_SOURCE_DIR)/port.h.patch \
-		$(MINIHTTPD_SOURCE_DIR)/scripts.patch
+		$(MINIHTTPD_SOURCE_DIR)/scripts.patch \
+		$(MINIHTTPD_SOURCE_DIR)/rename-getline-local_getline.patch
 
 #
 # If the compilation of the package requires additional

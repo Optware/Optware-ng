@@ -30,7 +30,6 @@ SENDMAIL_CONFFILES=\
 	/opt/etc/mail/helpfile \
 	/opt/etc/mail/relay-domains \
 	/opt/etc/mail/sendmail.cf \
-	/opt/etc/mail/submit.cf \
 	/opt/etc/init.d/S69sendmail
 
 #

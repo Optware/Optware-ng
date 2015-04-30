@@ -112,6 +112,7 @@ $(INETUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PA
 	rm -rf $(BUILD_DIR)/$(INETUTILS_DIR) $(@D)
 	$(INETUTILS_UNZIP) $(DL_DIR)/$(INETUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(INETUTILS_DIR) $(@D)
+	-sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
 	sed -i -e '/#include "\.\.\/ifconfig.h"/s|$$|\n\n#ifndef PATH_PROCNET_DEV\n  #define PATH_PROCNET_DEV "/proc/net/dev"\n#endif|' $(@D)/ifconfig/system/linux.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

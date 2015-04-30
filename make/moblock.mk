@@ -46,7 +46,9 @@ MOBLOCK_IPK_VERSION=1
 # MOBLOCK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MOBLOCK_PATCHES=$(MOBLOCK_SOURCE_DIR)/Makefile.patch
+MOBLOCK_PATCHES=\
+$(MOBLOCK_SOURCE_DIR)/Makefile.patch \
+$(MOBLOCK_SOURCE_DIR)/limits.h.patch
 
 #
 # If the compilation of the package requires additional

@@ -40,6 +40,7 @@ $(PERL-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCH
 	mv $(BUILD_DIR)/$(PERL-DBI_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
+		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
@@ -54,6 +55,7 @@ $(PERL-DBI_BUILD_DIR)/.built: $(PERL-DBI_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
+		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \

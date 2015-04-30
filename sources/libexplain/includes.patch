@@ -109,10 +109,10 @@ diff -pur libexplain-1.4.orig/libexplain/string_buffer.h libexplain-1.4/libexpla
  #ifndef LIBEXPLAIN_STRING_BUFFER_H
  #define LIBEXPLAIN_STRING_BUFFER_H
 +#include <sys/stat.h>
-+#ifdef AF_ROSE
++#if (defined AF_ROSE) && (!defined HAVE_NETROSE_ROSE_H)
 +#undef AF_ROSE
 +#endif
-+#ifdef AF_ASH
++#if (defined AF_ASH) && (!defined HAVE_NETASH_ASH_H)
 +#undef AF_ASH
 +#endif
  

@@ -1,0 +1,11 @@
+--- ctorrent-1.3.4/bencode.cpp~	2004-09-09 02:10:51.000000000 +0300
++++ ctorrent-1.3.4/bencode.cpp	2015-04-24 17:43:51.547830680 +0300
+@@ -206,7 +206,7 @@
+   if( bencode_begin_list(fp) != 1 ) return 0;
+   
+   for(; *p;){
+-    pn = strchr(p, PATH_SP);
++    pn = strchr((char *)p, PATH_SP);
+     if( pn ){
+       if( bencode_buf(p, pn - p, fp) != 1) return 0;
+       p = pn + 1;

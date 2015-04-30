@@ -140,6 +140,7 @@ endif
 	if test "$(BUILD_DIR)/$(LFTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LFTP_DIR) $(@D) ; \
 	fi
+	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
 	(cd $(@D); \
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
 		$(TARGET_CONFIGURE_OPTS) \

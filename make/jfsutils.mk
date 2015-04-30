@@ -36,8 +36,8 @@ JFSUTILS_IPK_VERSION=1
 # JFSUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-JFSUTILS_PATCHES=
-#
+JFSUTILS_PATCHES=$(JFSUTILS_SOURCE_DIR)/libfs-devices.h.patch
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -93,7 +93,13 @@ $(JFSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(JFSUTILS_SOURCE) $(JFSUTILS_PATCH
 	rm -rf $(BUILD_DIR)/$(JFSUTILS_DIR) $(@D)
 	$(JFSUTILS_UNZIP) $(DL_DIR)/$(JFSUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	chmod u+w $(BUILD_DIR)/$(JFSUTILS_DIR)/*
-	mv $(BUILD_DIR)/$(JFSUTILS_DIR) $(@D)
+	if test -n "$(JFSUTILS_PATCHES)" ; \
+		then cat $(JFSUTILS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(JFSUTILS_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(JFSUTILS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(JFSUTILS_DIR) $(@D) ; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) "  \

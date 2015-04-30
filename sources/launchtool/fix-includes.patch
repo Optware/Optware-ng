@@ -1,0 +1,66 @@
+diff -dur launchtool-0.7~/src/common/ChildProcess.cc launchtool-0.7/src/common/ChildProcess.cc
+--- launchtool-0.7~/src/common/ChildProcess.cc	2003-02-07 18:35:45.000000000 +0200
++++ launchtool-0.7/src/common/ChildProcess.cc	2015-04-26 18:57:38.014625000 +0300
+@@ -14,6 +14,7 @@
+ #include <pwd.h>			// getpw*
+ #include <grp.h>			// getgr*, initgroups
+ #include <errno.h>
++#include <stdlib.h>
+ 
+ #undef LOGTAG
+ #define LOGTAG "ChildProcess"
+diff -dur launchtool-0.7~/src/common/Config.cc launchtool-0.7/src/common/Config.cc
+--- launchtool-0.7~/src/common/Config.cc	2003-02-07 18:35:46.000000000 +0200
++++ launchtool-0.7/src/common/Config.cc	2015-04-26 18:59:20.406628000 +0300
+@@ -10,6 +10,7 @@
+ #include <stdio.h>
+ #include <unistd.h>	// access
+ #include <errno.h>	// errno
++#include <stdlib.h>
+ 
+ using namespace std;
+ using namespace stringf;
+diff -dur launchtool-0.7~/src/common/stringf.cc launchtool-0.7/src/common/stringf.cc
+--- launchtool-0.7~/src/common/stringf.cc	2002-09-20 17:28:15.000000000 +0300
++++ launchtool-0.7/src/common/stringf.cc	2015-04-26 18:56:14.126623000 +0300
+@@ -4,6 +4,7 @@
+ 
+ #include <stdio.h>
+ #include <stdarg.h>
++#include <stdlib.h>
+ 
+ int stringf::addf(std::string& str, const char* fmt, ...) throw() ATTR_PRINTF(2, 3)
+ {
+diff -dur launchtool-0.7~/src/launchtool.cc launchtool-0.7/src/launchtool.cc
+--- launchtool-0.7~/src/launchtool.cc	2002-10-08 12:56:45.000000000 +0300
++++ launchtool-0.7/src/launchtool.cc	2015-04-26 19:06:40.161478000 +0300
+@@ -33,7 +33,7 @@
+ #include <sys/wait.h>	// Exit status check functions
+ #include <ctype.h>
+ 
+-#include <string>
++#include <string.h>
+ #include <vector>
+ 
+ #undef LOGTAG
+diff -dur launchtool-0.7~/src/LaunchtoolCfg.h launchtool-0.7/src/LaunchtoolCfg.h
+--- launchtool-0.7~/src/LaunchtoolCfg.h	2002-10-03 23:38:23.000000000 +0300
++++ launchtool-0.7/src/LaunchtoolCfg.h	2015-04-26 19:04:19.786635000 +0300
+@@ -4,6 +4,7 @@
+ #include <string>
+ #include <vector>
+ #include <set>
++#include <sys/stat.h> // mode_t
+ 
+ // Singleton configuration data for this launchtool
+ class Cfg
+diff -dur launchtool-0.7~/src/test.cc launchtool-0.7/src/test.cc
+--- launchtool-0.7~/src/test.cc	2002-10-03 23:39:25.000000000 +0300
++++ launchtool-0.7/src/test.cc	2015-04-26 19:07:47.953480000 +0300
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-#include <stringf.h>
++#include <string.h>
+ #include <signal.h>
+ #include <unistd.h>
+ #include <errno.h>

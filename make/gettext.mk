@@ -94,7 +94,7 @@ $(DL_DIR)/$(GETTEXT_SOURCE):
 gettext-source: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
 
 
-$(GETTEXT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GETTEXT_SOURCE) make/gettext.mk
+$(GETTEXT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GETTEXT_SOURCE)
 	rm -rf $(HOST_BUILD_DIR)/$(GETTEXT_DIR) $(@D)
 	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(GETTEXT_DIR) $(@D)
@@ -113,7 +113,7 @@ gettext-host: $(GETTEXT_HOST_BUILD_DIR)/.built
 $(GETTEXT_HOST_BUILD_DIR)/.staged: $(GETTEXT_HOST_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
-	cp -f $(@D)/gettext-runtime/intl/.libs/libgnuintl.a $(HOST_STAGING_LIB_DIR)/libintl.a
+	cp -f $(@D)/gettext-tools/intl/.libs/libgnuintl.a $(HOST_STAGING_LIB_DIR)/libintl.a
 	touch $@
 
 gettext-host-stage: $(GETTEXT_HOST_BUILD_DIR)/.staged
@@ -138,11 +138,11 @@ $(GETTEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(GETTEXT_DIR) $(GETTEXT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GETTEXT_DIR) $(@D)
 	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GETTEXT_PATCHES) | patch -d $(BUILD_DIR)/$(GETTEXT_DIR) -p1
-	mv $(BUILD_DIR)/$(GETTEXT_DIR) $(GETTEXT_BUILD_DIR)
-	(cd $(GETTEXT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(GETTEXT_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GETTEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GETTEXT_LDFLAGS)" \
@@ -156,7 +156,7 @@ endif
 		--$(GETTEXT_NLS)-nls \
 		--disable-static \
 	)
-	touch $(GETTEXT_BUILD_DIR)/.configured
+	touch $@
 
 gettext-unpack: $(GETTEXT_BUILD_DIR)/.configured
 
@@ -164,9 +164,9 @@ gettext-unpack: $(GETTEXT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(GETTEXT_BUILD_DIR)/.built: $(GETTEXT_BUILD_DIR)/.configured
-	rm -f $(GETTEXT_BUILD_DIR)/.built
-	$(MAKE) -C $(GETTEXT_BUILD_DIR)
-	touch $(GETTEXT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -177,12 +177,23 @@ gettext: $(GETTEXT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GETTEXT_BUILD_DIR)/.staged: $(GETTEXT_BUILD_DIR)/.built
-	rm -f $(GETTEXT_BUILD_DIR)/.staged
-	$(MAKE) -C $(GETTEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	rm -f $(STAGING_LIB_DIR)/libgettext*.* \
+	      $(STAGING_LIB_DIR)/libintl.* \
+	      $(STAGING_LIB_DIR)/libgnuintl.* \
+	      $(STAGING_LIB_DIR)/libasprintf.*
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libgettext*.la \
 	      $(STAGING_LIB_DIR)/libintl.la \
+	      $(STAGING_LIB_DIR)/libgnuintl.la \
 	      $(STAGING_LIB_DIR)/libasprintf.la
-	touch $(GETTEXT_BUILD_DIR)/.staged
+	if [ ! -f $(STAGING_LIB_DIR)/libintl.so ]; then \
+		cp -af $(@D)/gettext-tools/intl/.libs/*.so* $(STAGING_LIB_DIR); \
+		if [ ! -f $(STAGING_LIB_DIR)/libintl.so ]; then \
+			ln -s libgnuintl.so $(STAGING_LIB_DIR)/libintl.so; \
+		fi; \
+	fi
+	touch $@
 
 gettext-stage: $(GETTEXT_BUILD_DIR)/.staged
 
@@ -221,6 +232,12 @@ $(GETTEXT_IPK_DIR)/CONTROL/control:
 $(GETTEXT_IPK): $(GETTEXT_BUILD_DIR)/.built
 	rm -rf $(GETTEXT_IPK_DIR) $(BUILD_DIR)/gettext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GETTEXT_BUILD_DIR) DESTDIR=$(GETTEXT_IPK_DIR) install
+	if [ ! -f $(GETTEXT_IPK_DIR)/opt/lib/libintl.so ]; then \
+		cp -af $(GETTEXT_BUILD_DIR)/gettext-tools/intl/.libs/*.so* $(GETTEXT_IPK_DIR)/opt/lib; \
+		if [ ! -f $(GETTEXT_IPK_DIR)/opt/lib/libintl.so ]; then \
+			ln -s libgnuintl.so $(GETTEXT_IPK_DIR)/opt/lib/libintl.so; \
+		fi; \
+	fi
 	$(STRIP_COMMAND) $(GETTEXT_IPK_DIR)/opt/lib/*.so*
 #	install -d $(GETTEXT_IPK_DIR)/opt/etc/
 #	install -m 755 $(GETTEXT_SOURCE_DIR)/gettext.conf $(GETTEXT_IPK_DIR)/opt/etc/gettext.conf

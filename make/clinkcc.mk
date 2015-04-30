@@ -55,7 +55,8 @@ CLINKCC_IPK_VERSION=1
 # CLINKCC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CLINKCC_PATCHES=$(CLINKCC_SOURCE_DIR)/missing-declarations.patch
+CLINKCC_PATCHES=$(CLINKCC_SOURCE_DIR)/missing-declarations.patch \
+$(CLINKCC_SOURCE_DIR)/upnp-SSDP.cpp.patch
 
 #
 # If the compilation of the package requires additional

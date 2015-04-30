@@ -46,6 +46,10 @@ Development and testing here is being done mostly for buildroot-armeabi.
 Now buildroot-mipsel target added. It is similar to buildroot-armeabi,
 but targets mipsel softfloat (mips32r2) devices.
 
+2015-04-30:
+New buildroot-i686 target added. This is a gcc-4.9.2, glibc-2.20, linux-3.2.66
+feed. It mainly targets modern Intel headless devices, such as NASes.
+
 
 Additional info:
 If you want to build packages using this build system, apart from usual

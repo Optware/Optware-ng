@@ -125,6 +125,7 @@ $(GCAL_BUILD_DIR)/.configured: $(DL_DIR)/$(GCAL_SOURCE) $(GCAL_PATCHES) make/gca
 	if test "$(BUILD_DIR)/$(GCAL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GCAL_DIR) $(@D) ; \
 	fi
+	-sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GCAL_CPPFLAGS)" \

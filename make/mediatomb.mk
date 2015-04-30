@@ -56,7 +56,10 @@ MEDIATOMB_CONFFILES=/opt/etc/mediatomb.conf \
 # MEDIATOMB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MEDIATOMB_PATCHES=$(MEDIATOMB_SOURCE_DIR)/mediatomb_nas.patch
+MEDIATOMB_PATCHES=\
+$(MEDIATOMB_SOURCE_DIR)/mediatomb_nas.patch \
+$(MEDIATOMB_SOURCE_DIR)/src-tools.cc.patch \
+$(MEDIATOMB_SOURCE_DIR)/src-zmm-object.h.patch
 
 #
 # If the compilation of the package requires additional

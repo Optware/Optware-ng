@@ -127,6 +127,7 @@ endif
 	if test "$(BUILD_DIR)/$(MOTOR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOTOR_DIR) $(@D) ; \
 	fi
+	find $(@D) -type f \( -name '*.[ch]' -o -name '*.cc' \) -exec sed -i -e 's/strndup/strndup_local/g' {} \;
 	sed -i -e '1 i #include <memory>' $(@D)/src/debugger/motordebugger.cc
 	find $(@D) -type f -name Makefile.in -exec sed -i -e '/^CPPFLAGS *=/s|$$| @CPPFLAGS@|' {} \;
 	(cd $(@D); \

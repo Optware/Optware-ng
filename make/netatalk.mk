@@ -51,9 +51,10 @@ NETATALK_IPK_VERSION=3
 # NETATALK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NETATALK_PATCHES = $(NETATALK_SOURCE_DIR)/dbd_def_AI_NUMERICSERV.patch
-NETATALK_PATCHES+= $(NETATALK_SOURCE_DIR)/afp_asp_include.patch
-NETATALK_PATCHES+=#$(NETATALK_SOURCE_DIR)/db3-check.patch
+NETATALK_PATCHES=\
+$(NETATALK_SOURCE_DIR)/dbd_def_AI_NUMERICSERV.patch \
+$(NETATALK_SOURCE_DIR)/afp_asp_include.patch \
+$(NETATALK_SOURCE_DIR)/cnid_metad.c.patch
 
 NETATALK_CONFIG_ARGS ?=
 

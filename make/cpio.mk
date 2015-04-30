@@ -80,13 +80,14 @@ cpio-source: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CPIO_BUILD_DIR)/.configured: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES) make/cpio.mk
-	rm -rf $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CPIO_DIR) $(@D)
 	$(CPIO_UNZIP) $(DL_DIR)/$(CPIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CPIO_PATCHES)"; then \
 		cat $(CPIO_PATCHES) | patch -d $(BUILD_DIR)/$(CPIO_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR)
-	(cd $(CPIO_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(CPIO_DIR) $(@D)
+	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/gnu/stdio.in.h
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CPIO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CPIO_LDFLAGS)" \
@@ -107,7 +108,7 @@ cpio-unpack: $(CPIO_BUILD_DIR)/.configured
 #
 $(CPIO_BUILD_DIR)/.built: $(CPIO_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(CPIO_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #

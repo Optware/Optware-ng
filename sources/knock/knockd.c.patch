@@ -1,0 +1,21 @@
+--- knock-0.5/src/knockd.c~	2005-06-27 08:11:34.000000000 +0300
++++ knock-0.5/src/knockd.c	2015-04-26 18:47:10.238610672 +0300
+@@ -19,6 +19,7 @@
+  *  USA.
+  */
+ 
++#include <limits.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <stdarg.h>
+@@ -131,8 +132,8 @@
+ int  o_daemon    = 0;
+ int  o_lookup    = 0;
+ char o_int[32]           = "";		/* default (eth0) is set after parseconfig() */
+-char o_cfg[PATH_MAX]     = "/etc/knockd.conf";
+-char o_pidfile[PATH_MAX] = "/var/run/knockd.pid";
++char o_cfg[PATH_MAX]     = "/opt/etc/knockd.conf";
++char o_pidfile[PATH_MAX] = "/opt/var/run/knockd.pid";
+ char o_logfile[PATH_MAX] = "";
+ 
+ int main(int argc, char **argv)

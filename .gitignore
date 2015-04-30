@@ -1,6 +1,7 @@
 /.configured
 /.svn/
 /buildroot-armeabi/
+/buildroot-i686/
 /buildroot-mipsel/
 /builds/
 /cs04q3armel/

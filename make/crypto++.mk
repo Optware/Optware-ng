@@ -46,7 +46,8 @@ CRYPTO++_CONFLICTS=
 # CRYPTO++_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CRYPTO++_PATCHES=$(CRYPTO++_SOURCE_DIR)/mipsel-endian.patch
+CRYPTO++_PATCHES=$(CRYPTO++_SOURCE_DIR)/mipsel-endian.patch \
+$(CRYPTO++_SOURCE_DIR)/config.h.patch
 
 #
 # If the compilation of the package requires additional

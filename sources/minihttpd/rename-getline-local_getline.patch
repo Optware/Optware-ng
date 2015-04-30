@@ -1,0 +1,38 @@
+From: Michael Olbrich <m.olbrich@pengutronix.de>
+Date: Sun, 13 Feb 2011 22:47:34 +0100
+Subject: [PATCH] rename getline -> local_getline
+
+fixes a compile error with new toolchain:
+
+htpasswd.c:52:12: error: conflicting types for 'getline'
+
+Signed-off-by: Michael Olbrich <m.olbrich@pengutronix.de>
+---
+ extras/htpasswd.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/extras/htpasswd.c b/extras/htpasswd.c
+index e01ea1d..9bcae4b 100644
+--- a/htpasswd.c
++++ b/htpasswd.c
+@@ -49,7 +49,7 @@ static void getword(char *word, char *line, char stop) {
+     while((line[y++] = line[x++]));
+ }
+ 
+-static int getline(char *s, int n, FILE *f) {
++static int local_getline(char *s, int n, FILE *f) {
+     register int i=0;
+ 
+     while(1) {
+@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
+     strcpy(user,argv[2]);
+ 
+     found = 0;
+-    while(!(getline(line,MAX_STRING_LEN,f))) {
++    while(!(local_getline(line,MAX_STRING_LEN,f))) {
+         if(found || (line[0] == '#') || (!line[0])) {
+             putline(tfp,line);
+             continue;
+-- 
+1.7.2.3
+

@@ -142,6 +142,7 @@ endif
 	$(COREUTILS_UNZIP) $(DL_DIR)/$(COREUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(COREUTILS_PATCHES) | patch -Z -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(COREUTILS_DIR) $(@D)
+	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
 	cp $(COREUTILS_AC_CACHE) $(@D)/config.cache
 	sed -i -e '/binPROGRAMS_INSTALL=\.\/ginstall/s|./ginstall|install|' $(@D)/src/Makefile.in
 ifeq ($(OPTWARE_TARGET), ts101)

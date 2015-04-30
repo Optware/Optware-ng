@@ -100,7 +100,7 @@ bluez2-libs-source: $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) $(BLUEZ2-LIBS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(BLUEZ2-LIBS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) $(BLUEZ2-LIBS_PATCHES)
+$(BLUEZ2-LIBS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) $(BLUEZ2-LIBS_PATCHES) make/bluez2-libs.mk
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) $(@D)
 	$(BLUEZ2-LIBS_UNZIP) $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -119,6 +119,7 @@ $(BLUEZ2-LIBS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) $(BLUEZ2-L
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
+	echo "#include <limits.h>" >> $(@D)/config.h
 	touch $@
 
 bluez2-libs-unpack: $(BLUEZ2-LIBS_BUILD_DIR)/.configured

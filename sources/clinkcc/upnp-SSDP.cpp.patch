@@ -1,0 +1,11 @@
+--- CyberLink/src/cybergarage/upnp/ssdp/SSDP.cpp.orig	2015-04-24 16:57:13.835763000 +0300
++++ CyberLink/src/cybergarage/upnp/ssdp/SSDP.cpp	2015-04-24 16:57:25.087764185 +0300
+@@ -46,7 +46,7 @@
+ 	
+ int CyberLink::SSDP::GetLeaseTime(const char *cacheCnt)
+ {
+-	char *eqStrPos = strchr(cacheCnt, '=');
++	char *eqStrPos = strchr((char *)cacheCnt, '=');
+ 	if (eqStrPos == NULL)
+ 		return 0;
+ 	return atoi((eqStrPos + 1));

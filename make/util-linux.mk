@@ -121,7 +121,7 @@ $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D) ; \
 	fi
-ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-mipsel, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-i686 buildroot-mipsel, $(OPTWARE_TARGET)))
 #	no <asm/page.h>
 	sed -i -e '/#include <asm\/page\.h>/s|^|//|' $(@D)/disk-utils/fsck.cramfs.c
 endif

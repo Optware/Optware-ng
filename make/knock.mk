@@ -18,11 +18,17 @@ KNOCK_PRIORITY=optional
 #
 # KNOCK_IPK_VERSION should be incremented when the ipk changes.
 #
-KNOCK_IPK_VERSION=5
+KNOCK_IPK_VERSION=6
 
 #
 # KNOCK_CONFFILES should be a list of user-editable files
 KNOCK_CONFFILES=/opt/etc/knockd.conf /opt/etc/init.d/S05knockd
+
+#
+# KNOCK_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+KNOCK_PATCHES=$(KNOCK_SOURCE_DIR)/knockd.c.patch
 
 
 #
@@ -85,10 +91,13 @@ $(KNOCK_BUILD_DIR)/.configured: $(DL_DIR)/$(KNOCK_SOURCE) make/knock.mk
 	$(MAKE) libpcap-stage
 	rm -rf $(BUILD_DIR)/$(KNOCK_DIR) $(@D)
 	$(KNOCK_UNZIP) $(DL_DIR)/$(KNOCK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(KNOCK_PATCHES)" ; \
+		then cat $(KNOCK_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(KNOCK_DIR) -p1 ; \
+	fi
 	if test "$(BUILD_DIR)/$(KNOCK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(KNOCK_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|/etc/knockd.conf|/opt&|' $(@D)/src/knockd.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(KNOCK_CPPFLAGS)" \

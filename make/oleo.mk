@@ -118,6 +118,7 @@ $(OLEO_BUILD_DIR)/.configured: $(DL_DIR)/$(OLEO_SOURCE) $(OLEO_PATCHES) make/ole
 	if test "$(BUILD_DIR)/$(OLEO_DIR)" != "$(OLEO_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OLEO_DIR) $(OLEO_BUILD_DIR) ; \
 	fi
+	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/__nan/__nan_oleo/' {} \;
 	(cd $(OLEO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OLEO_CPPFLAGS)" \

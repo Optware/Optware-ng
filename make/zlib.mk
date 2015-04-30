@@ -154,7 +154,11 @@ $(ZLIB_IPK): $(ZLIB_BUILD_DIR)/.built
 	install -d $(ZLIB_IPK_DIR)/opt/lib/pkgconfig
 	install -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(ZLIB_IPK_DIR)/opt/lib
 	install -m 644 $(ZLIB_BUILD_DIR)/zlib.pc $(ZLIB_IPK_DIR)/opt/lib/pkgconfig/zlib.pc
+ifneq ($(OPTWARE_TARGET), $(filter buildroot-i686, $(OPTWARE_TARGET)))
+# workaround for native gcc warning
+# as: /opt/lib/libz.so.1: no version information available (required by .../as)
 	$(STRIP_COMMAND) $(ZLIB_IPK_DIR)/opt/lib/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB)
+endif
 	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz$(SO).1$(DYLIB)
 	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz.$(SHLIB_EXT)
 	$(MAKE) $(ZLIB_IPK_DIR)/CONTROL/control

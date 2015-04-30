@@ -1,0 +1,20 @@
+--- cdc/src/linux/native/java/lang/UNIXProcess_md.c~	2008-11-18 01:22:20.000000000 +0200
++++ cdc/src/linux/native/java/lang/UNIXProcess_md.c	2015-04-30 11:54:00.641288000 +0300
+@@ -38,6 +38,7 @@
+ #include <signal.h>
+ #include <string.h>
+ #include <errno.h>
++#include <sys/stat.h>
+ 
+ #ifdef JDK
+ /* path in the environment */
+--- cdc/src/portlibs/unix/native/java/lang/UNIXProcess_md.c~	2008-11-18 01:22:20.000000000 +0200
++++ cdc/src/portlibs/unix/native/java/lang/UNIXProcess_md.c	2015-04-30 11:53:55.738196000 +0300
+@@ -41,6 +41,7 @@
+ #include <signal.h>
+ #include <string.h>
+ #include <errno.h>
++#include <sys/stat.h>
+ 
+ #ifndef __solaris__
+ #define fork1 fork

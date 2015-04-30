@@ -108,25 +108,23 @@ libopensync-source: $(DL_DIR)/$(LIBOPENSYNC_SOURCE) $(LIBOPENSYNC_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBOPENSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOPENSYNC_SOURCE) $(LIBOPENSYNC_PATCHES) make/libopensync.mk
-	$(MAKE) glib-stage
+	$(MAKE) glib-stage libxml2-stage sqlite-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) libxml2-stage
-	$(MAKE) sqlite-stage
-	rm -rf $(BUILD_DIR)/$(LIBOPENSYNC_DIR) $(LIBOPENSYNC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBOPENSYNC_DIR) $(@D)
 	$(LIBOPENSYNC_UNZIP) $(DL_DIR)/$(LIBOPENSYNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBOPENSYNC_PATCHES)" ; \
 		then cat $(LIBOPENSYNC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBOPENSYNC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBOPENSYNC_DIR)" != "$(LIBOPENSYNC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBOPENSYNC_DIR) $(LIBOPENSYNC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBOPENSYNC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBOPENSYNC_DIR) $(@D) ; \
 	fi
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-	sed -i -e 's/#ifdef SOLARIS/#if 1/' $(LIBOPENSYNC_BUILD_DIR)/formats/vformats-xml/vformat.c
+	sed -i -e 's/#ifdef SOLARIS/#if 1/' $(@D)/formats/vformats-xml/vformat.c
 endif
-	(cd $(LIBOPENSYNC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBOPENSYNC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBOPENSYNC_LDFLAGS)" \
@@ -140,7 +138,8 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBOPENSYNC_BUILD_DIR)/libtool
+	find $(@D) -type f -name Makefile -exec sed -i -e 's/-Werror//g' {} \;
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libopensync-unpack: $(LIBOPENSYNC_BUILD_DIR)/.configured
@@ -150,7 +149,7 @@ libopensync-unpack: $(LIBOPENSYNC_BUILD_DIR)/.configured
 #
 $(LIBOPENSYNC_BUILD_DIR)/.built: $(LIBOPENSYNC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBOPENSYNC_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -163,7 +162,7 @@ libopensync: $(LIBOPENSYNC_BUILD_DIR)/.built
 #
 $(LIBOPENSYNC_BUILD_DIR)/.staged: $(LIBOPENSYNC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBOPENSYNC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libopensync.la $(STAGING_LIB_DIR)/libosengine.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/opensync-*.pc \

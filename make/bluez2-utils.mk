@@ -105,13 +105,13 @@ bluez2-utils-source: $(DL_DIR)/$(BLUEZ2-UTILS_SOURCE) $(BLUEZ2-UTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(BLUEZ2-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-UTILS_SOURCE) $(BLUEZ2-UTILS_PATCHES)
+$(BLUEZ2-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-UTILS_SOURCE) $(BLUEZ2-UTILS_PATCHES) make/bluez2-utils.mk
 	$(MAKE) bluez2-libs-stage
-	rm -rf $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) $(BLUEZ2-UTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) $(@D)
 	$(BLUEZ2-UTILS_UNZIP) $(DL_DIR)/$(BLUEZ2-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(BLUEZ2-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) -p0
-	mv $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) $(BLUEZ2-UTILS_BUILD_DIR)
-	(cd $(BLUEZ2-UTILS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BLUEZ2-UTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BLUEZ2-UTILS_LDFLAGS)" \
@@ -122,8 +122,9 @@ $(BLUEZ2-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-UTILS_SOURCE) $(BLUEZ2
 		--prefix=/opt \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(BLUEZ2-UTILS_BUILD_DIR)/libtool
-	touch $(BLUEZ2-UTILS_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	echo "#include <limits.h>" >> $(@D)/config.h
+	touch $@
 
 bluez2-utils-unpack: $(BLUEZ2-UTILS_BUILD_DIR)/.configured
 
@@ -131,9 +132,9 @@ bluez2-utils-unpack: $(BLUEZ2-UTILS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BLUEZ2-UTILS_BUILD_DIR)/.built: $(BLUEZ2-UTILS_BUILD_DIR)/.configured
-	rm -f $(BLUEZ2-UTILS_BUILD_DIR)/.built
-	$(MAKE) -C $(BLUEZ2-UTILS_BUILD_DIR)
-	touch $(BLUEZ2-UTILS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,9 +145,9 @@ bluez2-utils: $(BLUEZ2-UTILS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BLUEZ2-UTILS_BUILD_DIR)/.staged: $(BLUEZ2-UTILS_BUILD_DIR)/.built
-	rm -f $(BLUEZ2-UTILS_BUILD_DIR)/.staged
-	$(MAKE) -C $(BLUEZ2-UTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-	touch $(BLUEZ2-UTILS_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
+	touch $@
 
 bluez2-utils-stage: $(BLUEZ2-UTILS_BUILD_DIR)/.staged
 

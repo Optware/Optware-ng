@@ -91,6 +91,7 @@ $(DIFFUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PA
 	rm -rf $(BUILD_DIR)/$(DIFFUTILS_DIR) $(@D)
 	$(DIFFUTILS_UNZIP) $(DL_DIR)/$(DIFFUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DIFFUTILS_DIR) $(@D)
+	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DIFFUTILS_CPPFLAGS)" \

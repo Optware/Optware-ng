@@ -1,0 +1,13 @@
+Index: Head.c
+===================================================================
+--- Head.c
++++ Head.c	2009-11-10 02:33:35.000000000 +0100
+@@ -55,7 +55,7 @@
+ 				hstrerror(h_errno));
+ 		exit(1);
+ 	}
+-	strncpy(req->ip, inet_ntoa(*(struct in_addr *)he->h_addr), MAXIPSIZ);
++	strncpy(req->ip, inet_ntoa(*(struct in_addr *)he->h_addr_list[0]), MAXIPSIZ);
+ 
+ 
+ 	time(&t_start);

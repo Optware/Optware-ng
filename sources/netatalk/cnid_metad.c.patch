@@ -1,0 +1,10 @@
+--- etc/cnid_dbd/cnid_metad.c~	2011-07-27 14:55:39.000000000 +0300
++++ etc/cnid_dbd/cnid_metad.c	2015-04-27 18:40:43.991625505 +0300
+@@ -47,6 +47,7 @@
+ #include <sys/socket.h>
+ #include <stdio.h>
+ #include <time.h>
++#include <sys/resource.h>
+ 
+ #ifndef WEXITSTATUS
+ #define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)

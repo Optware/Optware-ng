@@ -1,0 +1,11 @@
+--- mediatomb-0.11.0/src/zmm/object.h~	2008-03-02 00:48:35.000000000 +0200
++++ mediatomb-0.11.0/src/zmm/object.h	2015-04-27 16:50:35.844604059 +0300
+@@ -32,7 +32,7 @@
+ #ifndef __ZMM_OBJECT_H__
+ #define __ZMM_OBJECT_H__
+ 
+-#include <new> // for size_t
++#include <string.h> // for size_t
+ #include "atomic.h"
+ 
+ namespace zmm

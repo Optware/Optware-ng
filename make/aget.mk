@@ -46,7 +46,7 @@ AGET_IPK_VERSION=1
 # AGET_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#AGET_PATCHES=$(AGET_SOURCE_DIR)/configure.patch
+AGET_PATCHES=$(AGET_SOURCE_DIR)/aget-0.4-fix_build_hostent.patch
 
 #
 # If the compilation of the package requires additional

@@ -42,6 +42,7 @@ $(PERL-TERM-READLINE-GNU_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TERM-READLINE-
 	sed -i -e 's|$$Config{libpth}|"$(STAGING_LIB_DIR)"|' $(@D)/Makefile.PL
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
+		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
@@ -59,6 +60,7 @@ $(PERL-TERM-READLINE-GNU_BUILD_DIR)/.built: $(PERL-TERM-READLINE-GNU_BUILD_DIR)/
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
+		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"

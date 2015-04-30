@@ -1,0 +1,22 @@
+diff -dur nfs-utils-1.1.1~/utils/exportfs/exportfs.c nfs-utils-1.1.1/utils/exportfs/exportfs.c
+--- nfs-utils-1.1.1~/utils/exportfs/exportfs.c	2007-10-19 06:07:28.000000000 +0300
++++ nfs-utils-1.1.1/utils/exportfs/exportfs.c	2015-04-30 10:34:52.247532000 +0300
+@@ -19,6 +19,7 @@
+ #include <getopt.h>
+ #include <netdb.h>
+ #include <errno.h>
++#include <sys/stat.h>
+ #include "xmalloc.h"
+ #include "misc.h"
+ #include "nfslib.h"
+diff -dur nfs-utils-1.1.1~/utils/mount/mount.c nfs-utils-1.1.1/utils/mount/mount.c
+--- nfs-utils-1.1.1~/utils/mount/mount.c	2007-10-19 06:07:28.000000000 +0300
++++ nfs-utils-1.1.1/utils/mount/mount.c	2015-04-30 10:35:37.037917000 +0300
+@@ -30,6 +30,7 @@
+ #include <getopt.h>
+ #include <mntent.h>
+ #include <pwd.h>
++#include <sys/stat.h>
+ 
+ #include "fstab.h"
+ #include "xcommon.h"

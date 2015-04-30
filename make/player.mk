@@ -51,8 +51,10 @@ PLAYER_IPK_VERSION=6
 # PLAYER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PLAYER_PATCHES=$(PLAYER_SOURCE_DIR)/server-Makefile.in.patch
-PLAYER_PATCHES+=$(PLAYER_SOURCE_DIR)/uint.patch
+PLAYER_PATCHES=\
+$(PLAYER_SOURCE_DIR)/server-Makefile.in.patch \
+$(PLAYER_SOURCE_DIR)/uint.patch \
+$(PLAYER_SOURCE_DIR)/garminnmea.cc.patch
 
 #
 # If the compilation of the package requires additional
@@ -62,9 +64,6 @@ PLAYER_CPPFLAGS=
 ifdef NO_BUILTIN_MATH
 PLAYER_CPPFLAGS+=-fno-builtin-round -fno-builtin-rint \
 	-fno-builtin-cos -fno-builtin-sin -fno-builtin-exp
-endif
-ifeq ($(shell test $(shell echo $(BOOST_VERSION) | cut -d '_' -f2) -ge 50; echo $$?),0)
-PLAYER_CPPFLAGS+=-DTIME_UTC=TIME_UTC_
 endif
 PLAYER_LDFLAGS=-lboost_system -lm -lgcc
 
@@ -132,6 +131,9 @@ endif
 	if test "$(BUILD_DIR)/$(PLAYER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PLAYER_DIR) $(@D) ; \
 	fi
+ifeq ($(shell test $(shell echo $(BOOST_VERSION) | cut -d '_' -f2) -ge 50; echo $$?),0)
+	find $(@D) -type f -name '*.cc' -exec sed -i -e 's/TIME_UTC/TIME_UTC_/g' {} \;
+endif
 	sed -i -e '/^#include <stdio.h>/ i #include <stdlib.h>' $(@D)/server/drivers/mixed/erratic/erratic.cc
 	sed -i -e 's/gzseek(\|gzgets(/&(gzFile)/' $(@D)/server/drivers/shell/readlog.cc
 	sed -i -e '/^ *have_pkg_config=no/s/=no/=yes/' $(@D)/configure

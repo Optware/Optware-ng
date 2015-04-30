@@ -49,8 +49,8 @@ LAUNCHTOOL_IPK_VERSION=1
 # LAUNCHTOOL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# LAUNCHTOOL_PATCHES=$(LAUNCHTOOL_SOURCE_DIR)/src-common-LoggerMethods.cc.patch
-# $(LAUNCHTOOL_SOURCE_DIR)/sys_siglist.patch
+LAUNCHTOOL_PATCHES=$(LAUNCHTOOL_SOURCE_DIR)/fix-includes.patch
+
 
 #
 # If the compilation of the package requires additional
@@ -121,7 +121,7 @@ endif
 	$(LAUNCHTOOL_UNZIP) $(DL_DIR)/$(LAUNCHTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LAUNCHTOOL_PATCHES)" ; \
 		then cat $(LAUNCHTOOL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LAUNCHTOOL_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(LAUNCHTOOL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LAUNCHTOOL_DIR)" != "$(LAUNCHTOOL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LAUNCHTOOL_DIR) $(LAUNCHTOOL_BUILD_DIR) ; \

@@ -1,0 +1,11 @@
+--- w3m-0.5.3/main.c~	2015-04-30 20:08:42.811730000 +0300
++++ w3m-0.5.3/main.c	2015-04-30 20:13:58.679070632 +0300
+@@ -2262,7 +2262,7 @@
+ static wc_uint32
+ getChar(char *p)
+ {
+-    return wc_any_to_ucs(wtf_parse1(&p));
++    return wc_any_to_ucs(wtf_parse1((wc_uchar **)&p));
+ }
+ 
+ static int

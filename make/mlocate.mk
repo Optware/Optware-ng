@@ -18,7 +18,7 @@ MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.gz
 MLOCATE_UNZIP=zcat
 else
 MLOCATE_SITE=https://fedorahosted.org/releases/m/l/mlocate
-MLOCATE_VERSION=0.24
+MLOCATE_VERSION=0.26
 MLOCATE_IPK_VERSION=1
 MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.xz
 MLOCATE_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
@@ -45,7 +45,9 @@ MLOCATE_CONFFILES=/opt/etc/cron.d/updatedb-mlocate
 # MLOCATE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# MLOCATE_PATCHES=$(MLOCATE_SOURCE_DIR)/configure.patch
+ifeq ($(LIBC_STYLE), glibc)
+MLOCATE_PATCHES=$(MLOCATE_SOURCE_DIR)/mlocate-0.26-include-order-fix.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -121,7 +123,7 @@ endif
 	$(MLOCATE_UNZIP) $(DL_DIR)/$(MLOCATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MLOCATE_PATCHES)" ; \
 		then cat $(MLOCATE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MLOCATE_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(MLOCATE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MLOCATE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MLOCATE_DIR) $(@D) ; \
@@ -139,6 +141,9 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686, $(OPTWARE_TARGET)))
+	sed -i -e '/#define mbstate_t int/s|^|//|' $(@D)/src/config.h
+endif
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

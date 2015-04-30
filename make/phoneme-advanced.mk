@@ -54,7 +54,9 @@ PHONEME_ADVANCED_ARCH=$(strip \
 # PHONEME_ADVANCED_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PHONEME_ADVANCED_PATCHES=$(PHONEME_ADVANCED_SOURCE_DIR)/cdc-build-share-rules.mk.patch
+PHONEME_ADVANCED_PATCHES=\
+$(PHONEME_ADVANCED_SOURCE_DIR)/cdc-build-share-rules.mk.patch \
+$(PHONEME_ADVANCED_SOURCE_DIR)/include-sys_stat_h.patch
 ifeq ($(LIBC_STYLE), uclibc)
 ifeq ($(PHONEME_ADVANCED_ARCH), arm)
 PHONEME_ADVANCED_PATCHES+=$(PHONEME_ADVANCED_SOURCE_DIR)/asm-types.patch

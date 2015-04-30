@@ -106,16 +106,17 @@ tmsnc-source: $(DL_DIR)/$(TMSNC_SOURCE) $(TMSNC_PATCHES)
 $(TMSNC_BUILD_DIR)/.configured: $(DL_DIR)/$(TMSNC_SOURCE) $(TMSNC_PATCHES) make/tmsnc.mk
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(TMSNC_DIR) $(TMSNC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TMSNC_DIR) $(@D)
 	$(TMSNC_UNZIP) $(DL_DIR)/$(TMSNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TMSNC_PATCHES)" ; \
 		then cat $(TMSNC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TMSNC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TMSNC_DIR)" != "$(TMSNC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TMSNC_DIR) $(TMSNC_BUILD_DIR) ; \
+		then mv $(BUILD_DIR)/$(TMSNC_DIR) $(@D) ; \
 	fi
-	(cd $(TMSNC_BUILD_DIR); \
+	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/getline/&_local/g' {} \;
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TMSNC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TMSNC_LDFLAGS)" \
@@ -130,7 +131,7 @@ $(TMSNC_BUILD_DIR)/.configured: $(DL_DIR)/$(TMSNC_SOURCE) $(TMSNC_PATCHES) make/
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(TMSNC_BUILD_DIR)/libtool
-	touch $(TMSNC_BUILD_DIR)/.configured
+	touch $@
 
 tmsnc-unpack: $(TMSNC_BUILD_DIR)/.configured
 
@@ -138,9 +139,9 @@ tmsnc-unpack: $(TMSNC_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TMSNC_BUILD_DIR)/.built: $(TMSNC_BUILD_DIR)/.configured
-	rm -f $(TMSNC_BUILD_DIR)/.built
-	$(MAKE) -C $(TMSNC_BUILD_DIR)
-	touch $(TMSNC_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,9 +152,9 @@ tmsnc: $(TMSNC_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(TMSNC_BUILD_DIR)/.staged: $(TMSNC_BUILD_DIR)/.built
-	rm -f $(TMSNC_BUILD_DIR)/.staged
-	$(MAKE) -C $(TMSNC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(TMSNC_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 tmsnc-stage: $(TMSNC_BUILD_DIR)/.staged
 

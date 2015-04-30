@@ -51,7 +51,9 @@ W3M_IPK_VERSION=2
 # W3M_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-W3M_PATCHES=$(W3M_SOURCE_DIR)/Makefile.in.patch
+W3M_PATCHES=\
+$(W3M_SOURCE_DIR)/Makefile.in.patch \
+$(W3M_SOURCE_DIR)/main.c.patch
 ifneq ($(HOSTCC), $(TARGET_CC))
 W3M_PATCHES+=$(W3M_SOURCE_DIR)/configure.in.patch
 endif
@@ -116,6 +118,7 @@ $(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES) make/w3m.mk
 	$(W3M_UNZIP) $(DL_DIR)/$(W3M_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(W3M_PATCHES) | patch -b -d $(BUILD_DIR)/$(W3M_DIR) -p1
 	mv $(BUILD_DIR)/$(W3M_DIR) $(@D)
+	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/file_handle/_&_/g' {} \;
 #	GC_set_warn_proc in newer libgc returns void
 #	use GC_get_warn_proc() to get the old warning procedure
 	sed -i -e \

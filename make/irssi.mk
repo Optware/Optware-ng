@@ -194,6 +194,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 	for i in common irc ui textui; do \
 	    $(MAKE) -C $(@D)/src/perl/$$i \
 		$(TARGET_CONFIGURE_OPTS) \
+		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \

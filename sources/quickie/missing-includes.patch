@@ -1,0 +1,64 @@
+diff -dur quickie-1.1~/lib/arglex.cc lib/arglex.cc
+--- quickie-1.1~/lib/arglex.cc	2006-05-21 01:56:52.000000000 +0300
++++ lib/arglex.cc	2015-04-30 15:03:20.656195000 +0300
+@@ -20,6 +20,10 @@
+ #pragma implementation "arglex"
+ 
+ #include <cctype>
++#include <cstring>
++#include <cstdio>
++
++#include <unistd.h>
+ 
+ #include <arglex.h>
+ #include <progname.h>
+diff -dur quickie-1.1~/lib/file/regular.cc lib/file/regular.cc
+--- quickie-1.1~/lib/file/regular.cc	2006-05-21 01:56:52.000000000 +0300
++++ lib/file/regular.cc	2015-04-30 15:04:16.902701000 +0300
+@@ -28,6 +28,7 @@
+ #include <ctime>
+ #include <fcntl.h>
+ #include <unistd.h>
++#include <sys/stat.h>
+ 
+ #include <careful.h>
+ #include <cgi.h>
+diff -dur quickie-1.1~/lib/input/file.cc lib/input/file.cc
+--- quickie-1.1~/lib/input/file.cc	2006-05-21 01:56:52.000000000 +0300
++++ lib/input/file.cc	2015-04-30 15:05:26.225310801 +0300
+@@ -23,6 +23,8 @@
+ 
+ #include <cerrno>
+ #include <fcntl.h>
++#include <sys/types.h>
++#include <sys/stat.h>
+ #include <unistd.h>
+ 
+ #include <input/file.h>
+diff -dur quickie-1.1~/lib/output/file.cc lib/output/file.cc
+--- quickie-1.1~/lib/output/file.cc	2006-05-21 01:56:52.000000000 +0300
++++ lib/output/file.cc	2015-04-30 15:06:24.023456000 +0300
+@@ -24,9 +24,9 @@
+ #include <cerrno>
+ #include <cstring>
+ #include <fcntl.h>
++#include <sys/types.h>
++#include <sys/stat.h>
+ #include <unistd.h>
+-// #include <sys/types.h>
+-// #include <sys/stat.h>
+ 
+ #include <mkdir_p.h>
+ #include <output/file.h>
+diff -dur quickie-1.1~/quickie_svt/main.cc quickie_svt/main.cc
+--- quickie-1.1~/quickie_svt/main.cc	2006-05-21 01:56:52.000000000 +0300
++++ quickie_svt/main.cc	2015-04-30 15:07:12.518913000 +0300
+@@ -19,6 +19,8 @@
+ // MANIFEST: Simple Version Tool
+ //
+ 
++#include <cstring>
++
+ #include <arglex/svt.h>
+ #include <quit.h>
+ #include <rcstring.h>

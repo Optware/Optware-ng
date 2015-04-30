@@ -1,0 +1,38 @@
+--- server/drivers/gps/garminnmea.cc~	2007-04-25 01:20:20.000000000 +0300
++++ server/drivers/gps/garminnmea.cc	2015-04-30 12:47:16.656283000 +0300
+@@ -615,7 +615,7 @@
+   //printf("reading sentence\n");
+   //fflush(stdout);
+   
+-  while(!(ptr = strchr((const char*)nmea_buf, NMEA_START_CHAR)))
++  while(!(ptr = strchr((char*)nmea_buf, NMEA_START_CHAR)))
+   {
+     nmea_buf_len=0;
+     memset(nmea_buf,0,sizeof(nmea_buf));
+@@ -629,7 +629,7 @@
+   //printf("found start char:[%s]:[%d]\n", nmea_buf,nmea_buf_len);
+   //fflush(stdout);
+   
+-  while(!(ptr = strchr((const char*)nmea_buf, NMEA_END_CHAR)))
++  while(!(ptr = strchr((char*)nmea_buf, NMEA_END_CHAR)))
+   {
+     if(nmea_buf_len >= sizeof(nmea_buf) - 1)
+     {
+@@ -674,7 +674,7 @@
+ 
+   // verify the checksum, if present.  two hex digits are the XOR of all the 
+   // characters between the $ and *.
+-  if((ptr2 = strchr((const char*)buf,NMEA_CHKSUM_CHAR)) && (strlen(ptr2) == 3))
++  if((ptr2 = strchr((char*)buf,NMEA_CHKSUM_CHAR)) && (strlen(ptr2) == 3))
+   {
+     ////printf("ptr2 %s\n", ptr2);
+     ////fflush(stdout);
+@@ -803,7 +803,7 @@
+   char* end;
+   size_t fieldlen;
+ 
+-  if(strlen(ptr) < 2 || !(start = strchr(ptr, ',')))
++  if(strlen(ptr) < 2 || !(start = strchr((char*)ptr, ',')))
+   {
+     field[0]='\0';
+     return(NULL);

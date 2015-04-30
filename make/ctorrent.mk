@@ -43,7 +43,8 @@ CTORRENT_PATCHES=$(CTORRENT_SOURCE_DIR)/align.patch \
 		$(CTORRENT_SOURCE_DIR)/getcwd.patch \
 		$(CTORRENT_SOURCE_DIR)/stall.patch \
 		$(CTORRENT_SOURCE_DIR)/tracker.patch \
-		$(CTORRENT_SOURCE_DIR)/passkey.patch
+		$(CTORRENT_SOURCE_DIR)/passkey.patch \
+		$(CTORRENT_SOURCE_DIR)/bencode.patch
 
 #
 # If the compilation of the package requires additional
@@ -97,13 +98,13 @@ ctorrent-source: $(DL_DIR)/$(CTORRENT_SOURCE) $(CTORRENT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(CTORRENT_SOURCE) $(CTORRENT_PATCHES)
+$(CTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(CTORRENT_SOURCE) $(CTORRENT_PATCHES) make/ctorrent.mk
 	$(MAKE) openssl-stage libstdc++-stage
-	rm -rf $(BUILD_DIR)/$(CTORRENT_DIR) $(CTORRENT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CTORRENT_DIR) $(@D)
 	$(CTORRENT_UNZIP) $(DL_DIR)/$(CTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(CTORRENT_DIR) -p1
-	mv $(BUILD_DIR)/$(CTORRENT_DIR) $(CTORRENT_BUILD_DIR)
-	(cd $(CTORRENT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(CTORRENT_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CTORRENT_LDFLAGS)" \
@@ -115,7 +116,7 @@ $(CTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(CTORRENT_SOURCE) $(CTORRENT_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-	touch $(CTORRENT_BUILD_DIR)/.configured
+	touch $@
 
 ctorrent-unpack: $(CTORRENT_BUILD_DIR)/.configured
 
@@ -125,7 +126,7 @@ ctorrent-unpack: $(CTORRENT_BUILD_DIR)/.configured
 #
 $(CTORRENT_BUILD_DIR)/.built: $(CTORRENT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(CTORRENT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -139,7 +140,7 @@ ctorrent: $(CTORRENT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ctorrent
 #
 $(CTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(CTORRENT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ctorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
