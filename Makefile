@@ -334,6 +334,7 @@ COMMON_CROSS_PACKAGES = \
 	libical \
 	libid3tag libidn libieee1284 libijs libinklevel libjbigkit libjpeg \
 	libksba liblcms libmaa libmad libmatroska libmemcache libmicrohttpd \
+	libmcrypt \
 	libmms libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnettle libnl libnsl libnxml \
 	libol libogg libosip2 libopensync libotr \

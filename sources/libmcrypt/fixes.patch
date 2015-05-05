@@ -1,0 +1,61 @@
+These patches are originally taken from here:
+https://launchpad.net/ubuntu/+archive/primary/+files/libmcrypt_2.5.8-3.3.diff.gz
+
+--- libmcrypt-2.5.8.orig/lib/mcrypt_modules.h
++++ libmcrypt-2.5.8/lib/mcrypt_modules.h
+@@ -1,7 +1,7 @@
+-#define rotl32(x,n)   (((x) << ((word32)(n))) | ((x) >> (32 - (word32)(n))))
+-#define rotr32(x,n)   (((x) >> ((word32)(n))) | ((x) << (32 - (word32)(n))))
+-#define rotl16(x,n)   (((x) << ((word16)(n))) | ((x) >> (16 - (word16)(n))))
+-#define rotr16(x,n)   (((x) >> ((word16)(n))) | ((x) << (16 - (word16)(n))))
++#define rotl32(x,n)   (((x) << ((word32)(n & 31))) | ((x) >> (32 - (word32)(n & 31))))
++#define rotr32(x,n)   (((x) >> ((word32)(n & 31))) | ((x) << (32 - (word32)(n & 31))))
++#define rotl16(x,n)   (((x) << ((word16)(n & 15))) | ((x) >> (16 - (word16)(n & 15))))
++#define rotr16(x,n)   (((x) >> ((word16)(n & 15))) | ((x) << (16 - (word16)(n & 15))))
+ 
+ /* Use hardware rotations.. when available */
+ #ifdef swap32
+--- libmcrypt-2.5.8.orig/modules/algorithms/cast-128.c
++++ libmcrypt-2.5.8/modules/algorithms/cast-128.c
+@@ -317,7 +317,7 @@
+ 	return 16;
+ }
+ 
+-static const int key_sizes[] = { 16 };
++static const int key_sizes[] = { 5, 10, 16 };
+ WIN32DLL_DEFINE const int *_mcrypt_get_supported_key_sizes(int *len)
+ {
+ 	*len = sizeof(key_sizes)/sizeof(int);
+--- libmcrypt-2.5.8.orig/modules/algorithms/des.c
++++ libmcrypt-2.5.8/modules/algorithms/des.c
+@@ -35,9 +35,12 @@
+ 
+ /* #define	NULL	0 */
+ 
+-static void permute_ip(), permute_fp(), perminit_ip(), spinit(),
+-perminit_fp();
+-static word32 f();
++static void permute_ip(char *, DES_KEY *, char *);
++static void permute_fp(char *, DES_KEY *, char *);
++static void perminit_ip(DES_KEY *);
++static void spinit(DES_KEY *);
++static void perminit_fp(DES_KEY *);
++static word32 f(DES_KEY *, register word32, register char *);
+ 
+ 
+ /* Tables defined in the Data Encryption Standard documents */
+--- libmcrypt-2.5.8.orig/modules/algorithms/tripledes.c
++++ libmcrypt-2.5.8/modules/algorithms/tripledes.c
+@@ -36,8 +36,10 @@
+ 
+ /* #define	NULL	0 */
+ 
+-static void permute(), perminit(), spinit();
+-static word32 f();
++static void permute(char *, char[16][16][8], char *);
++static void perminit(char[16][16][8], char[64]);
++static void spinit(TRIPLEDES_KEY *, int);
++static word32 f(TRIPLEDES_KEY *, int, register word32, register char *);
+ 
+ 
+ /* Tables defined in the Data Encryption Standard documents */
