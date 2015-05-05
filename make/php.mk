@@ -37,7 +37,7 @@ PHP_HOST_CLI=$(HOST_STAGING_PREFIX)/bin/php
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=2
+PHP_IPK_VERSION=3
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -119,6 +119,9 @@ PHP_LDAP_IPK=$(BUILD_DIR)/php-ldap_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_AR
 
 PHP_MBSTRING_IPK_DIR=$(BUILD_DIR)/php-mbstring-$(PHP_VERSION)-ipk
 PHP_MBSTRING_IPK=$(BUILD_DIR)/php-mbstring_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PHP_MCRYPT_IPK_DIR=$(BUILD_DIR)/php-mcrypt-$(PHP_VERSION)-ipk
+PHP_MCRYPT_IPK=$(BUILD_DIR)/php-mcrypt_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PHP_MSSQL_IPK_DIR=$(BUILD_DIR)/php-mssql-$(PHP_VERSION)-ipk
 PHP_MSSQL_IPK=$(BUILD_DIR)/php-mssql_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -350,6 +353,19 @@ $(PHP_MBSTRING_IPK_DIR)/CONTROL/control:
 	@echo "Description: mbstring extension for php" >>$@
 	@echo "Depends: php" >>$@
 
+$(PHP_MCRYPT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: php-mcrypt" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: mcrypt extension for php" >>$@
+	@echo "Depends: php, libmcrypt" >>$@
+
 $(PHP_MYSQL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -479,7 +495,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_HOST_CLI) $(PHP_PATC
 	$(MAKE) bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
 		libxslt-stage openssl-stage mysql-stage postgresql-stage freetds-stage \
 		unixodbc-stage imap-stage libpng-stage libjpeg-stage libzip-stage icu-stage \
-		libgmp-stage sqlite-stage
+		libgmp-stage sqlite-stage libmcrypt-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -588,6 +604,7 @@ endif
 		--with-libzip=$(STAGING_PREFIX) \
 		--with-icu-dir=$(STAGING_PREFIX) \
 		--with-gmp=shared,$(STAGING_PREFIX) \
+		--with-mcrypt=shared,$(STAGING_PREFIX) \
 		$(PHP_CONFIGURE_ARGS) \
 		--without-pear \
 		--with-xmlrpc=shared \
@@ -601,9 +618,9 @@ endif
 		-e '/#define HAVE_ATOMIC_H/s|^|//|' $(@D)/main/php_config.h
 
 	sed -i -e 's|\$$(top_builddir)/\$$(SAPI_CLI_PATH)|$(PHP_HOST_CLI)|' \
-		-e 's|-Wl,-rpath,$(STAGING_DIR)/lib|-Wl,-rpath,/opt/lib|g' \
+		-e 's|-Wl,-rpath,$(STAGING_LIB_DIR)|-Wl,-rpath,/opt/lib|g' \
 		-e 's/###      or --detect-prefix//' \
-		-e 's|INTL_SHARED_LIBADD =.*|INTL_SHARED_LIBADD = -L$(STAGING_LIB_DIR) -licuuc -licui18n|' \
+		-e 's|INTL_SHARED_LIBADD =.*|INTL_SHARED_LIBADD = -L$(STAGING_LIB_DIR) -licuuc -licui18n -licuio|' \
 		-e 's|^program_prefix =.*|program_prefix =|' $(@D)/Makefile
 
 	touch $@
@@ -676,7 +693,7 @@ $(PHP_TARGET_IPKS): $(PHP_BUILD_DIR)/.built
 	rm -rf $(PHP_IPK_DIR) $(BUILD_DIR)/php_*_$(TARGET_ARCH).ipk
 	install -d $(PHP_IPK_DIR)/opt/var/lib/php/session
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
-	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) program_prefix="" install
+	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
 	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/bin/php
 	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/bin/php-cgi
 	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/lib/*.so
@@ -776,6 +793,14 @@ endif
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mbstring.so $(PHP_MBSTRING_IPK_DIR)/opt/lib/php/extensions/mbstring.so
 	echo extension=mbstring.so >$(PHP_MBSTRING_IPK_DIR)/opt/etc/php.d/mbstring.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MBSTRING_IPK_DIR)
+	### now make php-mcrypt
+	rm -rf $(PHP_MCRYPT_IPK_DIR) $(BUILD_DIR)/php-mcrypt_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_MCRYPT_IPK_DIR)/CONTROL/control
+	install -d $(PHP_MCRYPT_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_MCRYPT_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mcrypt.so $(PHP_MCRYPT_IPK_DIR)/opt/lib/php/extensions/mcrypt.so
+	echo extension=mcrypt.so >$(PHP_MCRYPT_IPK_DIR)/opt/etc/php.d/mcrypt.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MCRYPT_IPK_DIR)
 	### now make php-mysql
 	rm -rf $(PHP_MYSQL_IPK_DIR) $(BUILD_DIR)/php-mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_MYSQL_IPK_DIR)/CONTROL/control

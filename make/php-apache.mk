@@ -23,7 +23,7 @@ PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=2
+PHP_APACHE_IPK_VERSION=3
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -114,7 +114,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: $(PHP_HOST_CLI) $(PHP_APACHE_PATCHES) make/
 	$(MAKE) php-source apache-stage bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
 		libxslt-stage openssl-stage mysql-stage postgresql-stage freetds-stage \
 		unixodbc-stage imap-stage libpng-stage libjpeg-stage libzip-stage icu-stage \
-		libgmp-stage sqlite-stage
+		libgmp-stage sqlite-stage libmcrypt-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -224,6 +224,7 @@ endif
 		--with-libzip=$(STAGING_PREFIX) \
 		--with-icu-dir=$(STAGING_PREFIX) \
 		--with-gmp=shared,$(STAGING_PREFIX) \
+		--with-mcrypt=shared,$(STAGING_PREFIX) \
 		$(PHP_CONFIGURE_ARGS) \
 		--without-pear \
 		--with-xmlrpc=shared \
@@ -240,7 +241,7 @@ endif
 	sed -i -e 's|\$$(top_builddir)/\$$(SAPI_CLI_PATH)|$(PHP_HOST_CLI)|' \
 		-e 's|-Wl,-rpath,$(STAGING_DIR)/lib|-Wl,-rpath,/opt/lib|g' \
 		-e 's/###      or --detect-prefix//' \
-		-e 's|INTL_SHARED_LIBADD =.*|INTL_SHARED_LIBADD = -L$(STAGING_LIB_DIR) -licuuc -licui18n|' $(@D)/Makefile
+		-e 's|INTL_SHARED_LIBADD =.*|INTL_SHARED_LIBADD = -L$(STAGING_LIB_DIR) -licuuc -licui18n -licuio|' $(@D)/Makefile
 
 	touch $@
 
