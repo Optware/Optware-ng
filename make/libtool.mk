@@ -35,7 +35,7 @@ LIBTOOL_CONFLICTS=
 #
 # LIBTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTOOL_IPK_VERSION=1
+LIBTOOL_IPK_VERSION=2
 
 #
 # LIBTOOL_PATCHES should list any patches, in the the order in
@@ -201,7 +201,7 @@ $(LIBTOOL_IPK_DIR)/CONTROL/control:
 $(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/.built
 	rm -rf $(LIBTOOL_IPK_DIR) $(BUILD_DIR)/libtool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR) DESTDIR=$(LIBTOOL_IPK_DIR) install-strip
-	rm -f $(LIBTOOL_IPK_DIR)/opt/info/dir
+	rm -f $(LIBTOOL_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(LIBTOOL_IPK_DIR)/CONTROL/control
 #	install -d $(LIBTOOL_IPK_DIR)/CONTROL
 #	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBTOOL_VERSION)/" \
