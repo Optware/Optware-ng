@@ -1,5 +1,6 @@
 SPECIFIC_PACKAGES = \
 	glibc-opt \
+	glibc-locale \
 	$(PERL_PACKAGES) \
 	binutils libc-dev gcc \
 	ipkg-static \
