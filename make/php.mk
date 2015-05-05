@@ -364,7 +364,7 @@ $(PHP_MCRYPT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: mcrypt extension for php" >>$@
-	@echo "Depends: php, libmcrypt" >>$@
+	@echo "Depends: php, libmcrypt, libtool" >>$@
 
 $(PHP_MYSQL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -495,7 +495,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_HOST_CLI) $(PHP_PATC
 	$(MAKE) bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
 		libxslt-stage openssl-stage mysql-stage postgresql-stage freetds-stage \
 		unixodbc-stage imap-stage libpng-stage libjpeg-stage libzip-stage icu-stage \
-		libgmp-stage sqlite-stage libmcrypt-stage
+		libgmp-stage sqlite-stage libmcrypt-stage libtool-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
