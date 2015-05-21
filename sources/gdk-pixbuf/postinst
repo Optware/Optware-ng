@@ -8,6 +8,8 @@ rm -f /opt/etc/gtk-3.0/gdk-pixbuf.loaders
 /opt/bin/gdk-pixbuf-query-loaders > /opt/etc/gtk-3.0/gdk-pixbuf.loaders
 rm -f /opt/etc/gtk-2.0/gdk-pixbuf.loaders
 /opt/bin/gdk-pixbuf-query-loaders > /opt/etc/gtk-2.0/gdk-pixbuf.loaders
+rm -f /opt/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+/opt/bin/gdk-pixbuf-query-loaders > /opt/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
 
 cd /opt/share/gir-1.0
 
