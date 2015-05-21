@@ -36,7 +36,7 @@ SCREEN_CONFLICTS=
 #
 # SCREEN_IPK_VERSION should be incremented when the ipk changes.
 #
-SCREEN_IPK_VERSION=1
+SCREEN_IPK_VERSION=2
 
 #
 # SCREEN_PATCHES should list any patches, in the the order in
@@ -203,6 +203,7 @@ $(SCREEN_IPK): $(SCREEN_BUILD_DIR)/screen
 	$(MAKE) $(SCREEN_IPK_DIR)/CONTROL/control
 	install -m 644 $(SCREEN_SOURCE_DIR)/postinst $(SCREEN_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(SCREEN_SOURCE_DIR)/prerm $(SCREEN_IPK_DIR)/CONTROL/prerm
+	sed -i -e 's/@VERSION@/$(SCREEN_VERSION)/g' $(SCREEN_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCREEN_IPK_DIR)
 
 #
