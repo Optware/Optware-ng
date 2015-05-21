@@ -25,7 +25,7 @@ GTK_SECTION=lib
 GTK_PRIORITY=optional
 GTK_DEPENDS=pango, atk, atk-bridge, gdk-pixbuf, libtiff, libjpeg (>= 6b-2), libpng, libepoxy, ttf-bitstream-vera, \
 	gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo, wayland, e2fsprogs, \
-	hicolor-icon-theme, shared-mime-info
+	hicolor-icon-theme, shared-mime-info, gsettings-desktop-schemas
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GTK_DEPENDS+=, libiconv
 endif
@@ -35,7 +35,7 @@ GTK_PRINT_DEPENDS=gtk, cups
 #
 # GTK_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK_IPK_VERSION=1
+GTK_IPK_VERSION=2
 
 #
 # GTK_LOCALES defines which locales get installed
@@ -197,6 +197,7 @@ endif
 		--x-libraries=$(STAGING_LIB_DIR) \
 		--disable-static \
 		--disable-glibtest \
+		--disable-introspection \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
