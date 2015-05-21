@@ -1,0 +1,105 @@
+Author: Ivan Shmakov <oneingray@gmail.com>
+Description: Allow creating .torrent files without "announce URI's"
+
+Index: mktorrent-1.0/init.c
+===================================================================
+--- mktorrent-1.0.orig/init.c	2013-01-31 19:22:01.776671829 +0000
++++ mktorrent-1.0/init.c	2013-01-31 21:35:39.818858245 +0000
+@@ -277,7 +277,6 @@
+ 	  "Options:\n"
+ #ifdef USE_LONG_OPTIONS
+ 	  "-a, --announce=<url>[,<url>]* : specify the full announce URLs\n"
+-	  "                                at least one is required\n"
+ 	  "                                additional -a adds backup trackers\n"
+ 	  "-c, --comment=<comment>       : add a comment to the metainfo\n"
+ 	  "-d, --no-date                 : don't write the creation date\n"
+@@ -298,7 +297,6 @@
+ 	  "                                additional -w adds more URLs\n"
+ #else
+ 	  "-a <url>[,<url>]* : specify the full announce URLs\n"
+-	  "                    at least one is required\n"
+ 	  "                    additional -a adds backup trackers\n"
+ 	  "-c <comment>      : add a comment to the metainfo\n"
+ 	  "-d                : don't write the creation date\n"
+@@ -327,6 +325,12 @@
+  */
+ static void print_announce_list(llist_t *list)
+ {
++	if (list == 0) {
++		/* an empty list passed; return early */
++		puts("    (no announce URI's given)");
++		return;
++	}
++
+ 	unsigned int n;
+ 
+ 	for (n = 1; list; list = list->next, n++) {
+@@ -503,14 +507,20 @@
+ 	}
+ 	m->piece_length = 1 << m->piece_length;
+ 
+-	/* user must specify at least one announce URL as it wouldn't make
+-	 * any sense to have a default for this */
++	/* warn the user that the resulting .torrent implies reliance on
++	   an alternative peer discovery mechanism (DHT, as in BEP 5, or
++	   other Kademlia implementation; LPD; etc.) */
+ 	if (m->announce_list == NULL) {
+-		fprintf(stderr, "Must specify an announce URL. "
+-			"Use -h for help.\n");
+-		exit(EXIT_FAILURE);
+-	}
+-	announce_last->next = NULL;
++		fputs(("Warning: No announce URI's given.\n\n"
++		       "Please note that the resulting .torrent"
++		       " implies the use of alternative\n"
++		       "peer discovery mechanisms, such as those"
++		       " based on a Distributed Hash\n"
++		       "Table (DHT), LPD, etc.\n\n"),
++		      stderr);
++	} else {
++		announce_last->next = NULL;
++	}
+ 
+ 	/* ..and a file or directory from which to create the torrent */
+ 	if (optind >= argc) {
+Index: mktorrent-1.0/output.c
+===================================================================
+--- mktorrent-1.0.orig/output.c	2013-01-31 19:22:01.776671829 +0000
++++ mktorrent-1.0/output.c	2013-01-31 19:37:14.662969267 +0000
+@@ -38,6 +38,11 @@
+  */
+ static void write_announce_list(FILE *f, llist_t *list)
+ {
++	if (list == 0) {
++		/* an empty list passed; return early */
++		return;
++	}
++
+ 	/* the announce list is a list of lists of urls */
+ 	fprintf(f, "13:announce-listl");
+ 	/* go through them all.. */
+@@ -121,13 +126,17 @@
+ 
+ 	/* every metainfo file is one big dictonary
+ 	   and the first entry is the announce URL */
+-	fprintf(f, "d8:announce%lu:%s",
+-		(unsigned long)strlen(m->announce_list->l->s),
+-		m->announce_list->l->s);
+-	/* write the announce-list entry if we have
+-	   more than one announce URL */
+-	if (m->announce_list->next || m->announce_list->l->next)
+-		write_announce_list(f, m->announce_list);
++	/* ... Unless we're using DHT, LPD, etc., that is */
++	putc('d', f);
++	if (m->announce_list != 0) {
++		fprintf(f, "8:announce%lu:%s",
++			(unsigned long)strlen(m->announce_list->l->s),
++			m->announce_list->l->s);
++		/* write the announce-list entry if we have
++		   more than one announce URL */
++		if (m->announce_list->next || m->announce_list->l->next)
++			write_announce_list(f, m->announce_list);
++	}
+ 	/* add the comment if one is specified */
+ 	if (m->comment != NULL)
+ 		fprintf(f, "7:comment%lu:%s",

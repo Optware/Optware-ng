@@ -352,7 +352,7 @@ COMMON_CROSS_PACKAGES = \
 	mg miau microcom microdc2 microperl mimms \
 	minicom minidlna minihttpd miniupnpd \
 	mini-sendmail mini-snmpd \
-	miscfiles mktemp mkvtoolnix mlocate moblock \
+	miscfiles mktemp mktorrent mkvtoolnix mlocate moblock \
 	moc modutils monit most motif motion motor mousepad \
 	mod-fastcgi moe moreutils mp3blaster mp3info mpack mpage \
 	mpc mpd mpdscribble \
