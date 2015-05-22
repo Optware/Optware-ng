@@ -83,7 +83,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
  
 # deluge is actually a python package, but it depends on perl package intltool
 PERL_PACKAGES = \
-	deluge \
+	deluge deluge-develop \
 	intltool \
 	perl \
 	perl-algorithm-diff \
