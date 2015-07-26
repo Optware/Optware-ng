@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET_VERSION=12.0
+NZBGET_VERSION=15.0
 NZBGET_SOURCE=nzbget-$(NZBGET_VERSION).tar.gz
 NZBGET_DIR=nzbget-$(NZBGET_VERSION)
 NZBGET_UNZIP=zcat
@@ -107,18 +107,18 @@ nzbget-source: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
+$(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES) make/nzbget.mk
 	$(MAKE) libxml2-stage ncurses-stage libpar2-stage openssl-stage
-	rm -rf $(BUILD_DIR)/$(NZBGET_DIR) $(NZBGET_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NZBGET_DIR) $(@D)
 	$(NZBGET_UNZIP) $(DL_DIR)/$(NZBGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NZBGET_PATCHES)" ; \
 		then cat $(NZBGET_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NZBGET_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NZBGET_DIR)" != "$(NZBGET_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NZBGET_DIR) $(NZBGET_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NZBGET_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NZBGET_DIR) $(@D) ; \
 	fi
-	(cd $(NZBGET_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NZBGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NZBGET_LDFLAGS)" \
@@ -135,8 +135,8 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 		$(NZBGET_CONFIGURE_OPTS) \
 	)
 	sed -i -e '/^CPPFLAGS/s:-I/usr.*$$::' -e '/^LDFLAGS/s:-L/usr.*$$::' \
-		$(NZBGET_BUILD_DIR)/Makefile
-#	$(PATCH_LIBTOOL) $(NZBGET_BUILD_DIR)/libtool
+		$(@D)/Makefile
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 nzbget-unpack: $(NZBGET_BUILD_DIR)/.configured
@@ -146,7 +146,7 @@ nzbget-unpack: $(NZBGET_BUILD_DIR)/.configured
 #
 $(NZBGET_BUILD_DIR)/.built: $(NZBGET_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NZBGET_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -159,7 +159,7 @@ nzbget: $(NZBGET_BUILD_DIR)/.built
 #
 $(NZBGET_BUILD_DIR)/.staged: $(NZBGET_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NZBGET_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 nzbget-stage: $(NZBGET_BUILD_DIR)/.staged
@@ -231,4 +231,4 @@ nzbget-dirclean:
 # Some sanity check for the package.
 #
 nzbget-check: $(NZBGET_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NZBGET_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
