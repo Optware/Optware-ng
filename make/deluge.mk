@@ -33,12 +33,12 @@ DELUGE_SECTION=misc
 DELUGE_PRIORITY=optional
 DELUGE_DEPENDS=python27, py27-twisted, py27-xdg, py27-chardet, py27-mako, py27-setuptools, py27-libtorrent-rasterbar-binding, geoip, intltool
 DELUGE_GTK_DEPENDS=deluge, py27-gtk, librsvg, xdg-utils, gnome-icon-theme
-DELUGE_CONFLICTS=
+DELUGE_CONFLICTS=deluge-develop
 
 #
 # DELUGE_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_IPK_VERSION=3
+DELUGE_IPK_VERSION=4
 
 #
 # DELUGE_CONFFILES should be a list of user-editable files
