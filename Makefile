@@ -298,7 +298,7 @@ COMMON_CROSS_PACKAGES = \
 	fontconfig \
 	fossil-scm \
 	freecell freeradius freetds freetype freeze \
-	fribidi ftpcopy fslint ftpd-topfield fuppes \
+	fribidi ftpcopy fslint ftpd-topfield fuppes fuse \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
 	ged gedit geoip gettext gdk-pixbuf \
 	ggrab ghostscript ghostscript-fonts git gkrellmd glib gnet gnokii gnome-icon-theme \
