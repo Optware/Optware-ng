@@ -4,7 +4,7 @@ prefix="/opt"
 PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 NAME=deluge-web
 DAEMON=${prefix}/bin/${NAME}
-DAEMON_OPTS="-f -p 888"
+DAEMON_OPTS="-p 888"
 
 test -x $DAEMON || exit 0
 

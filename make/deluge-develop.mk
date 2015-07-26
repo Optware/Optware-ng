@@ -39,7 +39,7 @@ DELUGE_DEVELOP_CONFLICTS=deluge
 #
 # DELUGE_DEVELOP_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_DEVELOP_IPK_VERSION=1
+DELUGE_DEVELOP_IPK_VERSION=2
 
 #
 # DELUGE_DEVELOP_CONFFILES should be a list of user-editable files
@@ -90,11 +90,13 @@ endif
 #
 $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE):
 	(cd $(BUILD_DIR) ; \
-		rm -rf deluge-develop && \
-		git clone --bare $(DELUGE_DEVELOP_REPOSITORY) deluge-develop && \
-		cd deluge-develop && \
-		(git archive --format=tar --prefix=$(DELUGE_DEVELOP_DIR)/ $(DELUGE_DEVELOP_TREEISH) | bzip2 > $@) && \
-		rm -rf deluge-develop ; \
+		rm -rf $(DELUGE_DEVELOP_DIR) && \
+		git clone $(DELUGE_DEVELOP_REPOSITORY) $(DELUGE_DEVELOP_DIR) && \
+		(cd $(DELUGE_DEVELOP_DIR) && \
+		git checkout develop && \
+		git checkout $(DELUGE_DEVELOP_TREEISH)) && \
+		tar -cjvf $@ --exclude .git --exclude "*.log" $(DELUGE_DEVELOP_DIR) && \
+		rm -rf $(DELUGE_DEVELOP_DIR) ; \
 	)
 
 #
@@ -126,6 +128,22 @@ $(DELUGE_DEVELOP_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DE
 	$(DELUGE_DEVELOP_UNZIP) $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(DELUGE_DEVELOP_PATCHES) | patch -d $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) -p1
 	mv $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) $(@D)
+	install -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/build-js.sh $(@D)/deluge/ui/web/build
+	cd $(@D)/deluge/ui/web/js/deluge-all; \
+		echo '#!/bin/sh' > .build; \
+		for f in `find . -type f -name '*.js'|cut -d '/' -f 2-`; do \
+			echo "add_file \"$$f\"" >> .build; \
+		done; \
+		chmod 755 .build
+	cd $(@D)/deluge/ui/web/js/extjs; \
+		echo '#!/bin/sh' > .build; \
+		for f in `find . -type f -name '*.js'|cut -d '/' -f 2-`; do \
+			echo "add_file \"$$f\"" >> .build; \
+		done; \
+		chmod 755 .build
+	cd $(@D)/deluge/ui/web ;\
+		./build js/deluge-all; \
+		./build js/extjs
 	(cd $(@D); \
 	    ( \
 		echo "[install]"; \
@@ -207,7 +225,7 @@ $(DELUGE_DEVELOP_GTK_IPK_DIR)/CONTROL/control:
 #
 $(DELUGE_DEVELOP_IPKS): $(DELUGE_DEVELOP_BUILD_DIR)/.built
 	rm -rf $(DELUGE_DEVELOP_IPK_DIR) $(BUILD_DIR)/deluge-develop_*_$(TARGET_ARCH).ipk \
-		$(DELUGE_DEVELOP_GTK_IPK_DIR) $(BUILD_DIR)/delugev-gtk_*_$(TARGET_ARCH).ipk
+		$(DELUGE_DEVELOP_GTK_IPK_DIR) $(BUILD_DIR)/deluge-develop-gtk_*_$(TARGET_ARCH).ipk
 	(cd $(DELUGE_DEVELOP_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(DELUGE_DEVELOP_IPK_DIR) --prefix=/opt)
