@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET-TESTING_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET-TESTING_VER=13.0
-NZBGET-TESTING_REV=r963
+NZBGET-TESTING_VER=15.0
+NZBGET-TESTING_REV=r1286
 NZBGET-TESTING_VERSION=$(NZBGET-TESTING_VER)-$(NZBGET-TESTING_REV)
 NZBGET-TESTING_SOURCE=nzbget-$(NZBGET-TESTING_VER)-testing-$(NZBGET-TESTING_REV).tar.gz
 NZBGET-TESTING_DIR=nzbget-$(NZBGET-TESTING_VER)-testing
@@ -110,7 +110,7 @@ nzbget-testing-source: $(DL_DIR)/$(NZBGET-TESTING_SOURCE) $(NZBGET-TESTING_PATCH
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(NZBGET-TESTING_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET-TESTING_SOURCE) $(NZBGET-TESTING_PATCHES)
+$(NZBGET-TESTING_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET-TESTING_SOURCE) $(NZBGET-TESTING_PATCHES) make/nzbget-testing.mk
 	$(MAKE) libxml2-stage ncurses-stage libpar2-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(NZBGET-TESTING_DIR) $(@D)
 	$(NZBGET-TESTING_UNZIP) $(DL_DIR)/$(NZBGET-TESTING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
