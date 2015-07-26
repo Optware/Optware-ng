@@ -28,10 +28,12 @@ FUSE_UNZIP=zcat
 FUSE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FUSE_DESCRIPTION=FUSE mount/unmount program.
 LIBFUSE_DESCRIPTION=FUSE userspace library.
+LIBFUSE-DEV_DESCRIPTION=FUSE headers.
 LIBFUSE_SECTION=lib
 FUSE_SECTION=misc
 FUSE_PRIORITY=optional
 FUSE_DEPENDS=libfuse
+LIBFUSE-DEV_DEPENDS=libfuse
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 LIBFUSE_DEPENDS=libiconv
 else
@@ -87,6 +89,9 @@ FUSE_IPK=$(BUILD_DIR)/fuse_$(FUSE_VERSION)-$(FUSE_IPK_VERSION)_$(TARGET_ARCH).ip
 
 LIBFUSE_IPK_DIR=$(BUILD_DIR)/libfuse-$(FUSE_VERSION)-ipk
 LIBFUSE_IPK=$(BUILD_DIR)/libfuse_$(FUSE_VERSION)-$(FUSE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBFUSE-DEV_IPK_DIR=$(BUILD_DIR)/libfuse-dev-$(FUSE_VERSION)-ipk
+LIBFUSE-DEV_IPK=$(BUILD_DIR)/libfuse-dev_$(FUSE_VERSION)-$(FUSE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: fuse-source fuse-unpack fuse fuse-stage fuse-ipk fuse-clean fuse-dirclean fuse-check
 
@@ -179,6 +184,7 @@ fuse: $(FUSE_BUILD_DIR)/.built
 $(FUSE_BUILD_DIR)/.staged: $(FUSE_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D)/lib DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/include DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 fuse-stage: $(FUSE_BUILD_DIR)/.staged
@@ -216,6 +222,21 @@ $(LIBFUSE_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(LIBFUSE_DEPENDS)" >>$@
 	@echo "Suggests: $(LIBFUSE_SUGGESTS)" >>$@
 	@echo "Conflicts: $(LIBFUSE_CONFLICTS)" >>$@
+
+$(LIBFUSE-DEV_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: libfuse-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(FUSE_PRIORITY)" >>$@
+	@echo "Section: $(LIBFUSE_SECTION)" >>$@
+	@echo "Version: $(FUSE_VERSION)-$(FUSE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FUSE_MAINTAINER)" >>$@
+	@echo "Source: $(FUSE_SITE)/$(FUSE_SOURCE)" >>$@
+	@echo "Description: $(LIBFUSE-DEV_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBFUSE-DEV_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBFUSE-DEV_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBFUSE-DEV_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -275,10 +296,17 @@ $(FUSE_IPK): $(FUSE_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FUSE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(FUSE_IPK_DIR)
 
+$(LIBFUSE-DEV_IPK): $(FUSE_BUILD_DIR)/.built
+	rm -rf $(LIBFUSE_IPK_DIR) $(BUILD_DIR)/libfuse_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(FUSE_BUILD_DIR)/include DESTDIR=$(LIBFUSE_IPK_DIR) install
+	$(MAKE) $(LIBFUSE-DEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBFUSE-DEV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBFUSE-DEV_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-fuse-ipk: $(LIBFUSE_IPK) $(FUSE_IPK)
+fuse-ipk: $(LIBFUSE_IPK) $(FUSE_IPK) $(LIBFUSE-DEV_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -297,5 +325,5 @@ fuse-dirclean:
 #
 # Some sanity check for the package.
 #
-fuse-check: $(LIBFUSE_IPK) $(FUSE_IPK)
+fuse-check: $(LIBFUSE_IPK) $(FUSE_IPK) $(LIBFUSE-DEV_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
