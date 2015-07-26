@@ -205,6 +205,7 @@ $(LIBCDIO_IPK_DIR)/CONTROL/control:
 $(LIBCDIO_IPK): $(LIBCDIO_BUILD_DIR)/.built
 	rm -rf $(LIBCDIO_IPK_DIR) $(BUILD_DIR)/libcdio_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCDIO_BUILD_DIR) DESTDIR=$(LIBCDIO_IPK_DIR) install-strip
+	rm -f $(LIBCDIO_IPK_DIR)/opt/share/info/dir
 #	install -d $(LIBCDIO_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBCDIO_SOURCE_DIR)/libcdio.conf $(LIBCDIO_IPK_DIR)/opt/etc/libcdio.conf
 #	install -d $(LIBCDIO_IPK_DIR)/opt/etc/init.d

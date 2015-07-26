@@ -231,6 +231,7 @@ $(UTIL_LINUX_NG_IPK) $(GETOPT_IPK): $(UTIL_LINUX_NG_BUILD_DIR)/.built
 	rm -rf $(UTIL_LINUX_NG_IPK_DIR) $(BUILD_DIR)/util-linux-ng_*_$(TARGET_ARCH).ipk
 	rm -rf $(GETOPT_IPK_DIR) $(BUILD_DIR)/getopt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UTIL_LINUX_NG_BUILD_DIR) DESTDIR=$(UTIL_LINUX_NG_IPK_DIR) install
+	rm -f $(UTIL_LINUX_NG_IPK_DIR)/opt/share/info/dir
 	rm -f $(UTIL_LINUX_NG_IPK_DIR)/opt/bin/linux32 $(UTIL_LINUX_NG_IPK_DIR)/opt/bin/linux64
 	rm -f $(UTIL_LINUX_NG_IPK_DIR)/opt/sbin/swapoff
 

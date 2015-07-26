@@ -171,6 +171,7 @@ $(BISON_IPK): $(BISON_BUILD_DIR)/.built
 	rm -rf $(BISON_IPK_DIR) $(BUILD_DIR)/bison_*_$(TARGET_ARCH).ipk
 	install -d $(BISON_IPK_DIR)/opt/bin $(BISON_IPK_DIR)/opt/share/bison
 	$(MAKE) -C $(BISON_BUILD_DIR) DESTDIR=$(BISON_IPK_DIR) install-strip
+	rm -f $(BISON_IPK_DIR)/opt/share/info/dir
 # for now ignore the locale files
 #	$(STRIP_COMMAND) $(BISON_DIR)/src/bison -o $(BISON_IPK_DIR)/opt/bin/bison
 	cp $(BISON_BUILD_DIR)/src/yacc $(BISON_IPK_DIR)/opt/bin/yacc

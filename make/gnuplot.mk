@@ -224,6 +224,7 @@ $(GNUPLOT_IPK_DIR)/CONTROL/control:
 $(GNUPLOT_IPK): $(GNUPLOT_BUILD_DIR)/.built
 	rm -rf $(GNUPLOT_IPK_DIR) $(BUILD_DIR)/gnuplot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNUPLOT_BUILD_DIR) DESTDIR=$(GNUPLOT_IPK_DIR) install-strip
+	rm -f $(GNUPLOT_IPK_DIR)/opt/share/info/dir
 #	install -d $(GNUPLOT_IPK_DIR)/opt/etc/
 #	install -m 644 $(GNUPLOT_SOURCE_DIR)/gnuplot.conf $(GNUPLOT_IPK_DIR)/opt/etc/gnuplot.conf
 #	install -d $(GNUPLOT_IPK_DIR)/opt/etc/init.d

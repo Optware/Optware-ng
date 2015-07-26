@@ -187,6 +187,7 @@ $(PARTED_IPK_DIR)/CONTROL/control:
 $(PARTED_IPK): $(PARTED_BUILD_DIR)/.built
 	rm -rf $(PARTED_IPK_DIR) $(BUILD_DIR)/parted_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PARTED_BUILD_DIR) DESTDIR=$(PARTED_IPK_DIR) install-strip
+	rm -f $(PARTED_IPK_DIR)/opt/share/info/dir
 	rm -f $(PARTED_IPK_DIR)/opt/lib/libparted.a
 	$(MAKE) $(PARTED_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PARTED_IPK_DIR)

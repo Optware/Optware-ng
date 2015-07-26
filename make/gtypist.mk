@@ -200,6 +200,7 @@ $(GTYPIST_IPK_DIR)/CONTROL/control:
 $(GTYPIST_IPK): $(GTYPIST_BUILD_DIR)/.built
 	rm -rf $(GTYPIST_IPK_DIR) $(BUILD_DIR)/gtypist_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTYPIST_BUILD_DIR) DESTDIR=$(GTYPIST_IPK_DIR) install-strip
+	rm -f $(GTYPIST_IPK_DIR)/opt/share/info/dir
 	sed -i -e '/^#!/s|/usr/bin/perl|/opt/bin/perl|' $(GTYPIST_IPK_DIR)/opt/bin/typefortune
 	$(MAKE) $(GTYPIST_IPK_DIR)/CONTROL/control
 	echo $(GTYPIST_CONFFILES) | sed -e 's/ /\n/g' > $(GTYPIST_IPK_DIR)/CONTROL/conffiles

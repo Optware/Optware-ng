@@ -197,7 +197,7 @@ $(SCREEN_IPK): $(SCREEN_BUILD_DIR)/screen
 	rm -rf $(SCREEN_IPK_DIR) $(BUILD_DIR)/screen_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SCREEN_BUILD_DIR) DESTDIR=$(SCREEN_IPK_DIR) install
 	$(STRIP_COMMAND) $(SCREEN_IPK_DIR)/opt/bin/screen-$(SCREEN_VERSION)
-	rm -f $(SCREEN_IPK_DIR)/opt/info/dir{,.old}
+	rm -f $(SCREEN_IPK_DIR)/opt/{,share/}info/dir{,.old}
 #	install -d $(SCREEN_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(SCREEN_SOURCE_DIR)/rc.screen $(SCREEN_IPK_DIR)/opt/etc/init.d/SXXscreen
 	$(MAKE) $(SCREEN_IPK_DIR)/CONTROL/control

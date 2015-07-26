@@ -209,6 +209,7 @@ $(RECODE_IPK_DIR)/CONTROL/control:
 $(RECODE_IPK): $(RECODE_BUILD_DIR)/.built
 	rm -rf $(RECODE_IPK_DIR) $(BUILD_DIR)/recode_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RECODE_BUILD_DIR) DESTDIR=$(RECODE_IPK_DIR) install
+	rm -f $(RECODE_IPK_DIR)/opt/share/info/dir
 	$(STRIP_COMMAND) $(RECODE_IPK_DIR)/opt/bin/recode $(RECODE_IPK_DIR)/opt/lib/librecode.so.*.*.*
 #	install -d $(RECODE_IPK_DIR)/opt/etc/
 #	install -m 644 $(RECODE_SOURCE_DIR)/recode.conf $(RECODE_IPK_DIR)/opt/etc/recode.conf

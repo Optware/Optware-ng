@@ -179,6 +179,7 @@ $(MAKE_IPK_DIR)/CONTROL/control:
 $(MAKE_IPK): $(MAKE_BUILD_DIR)/.built
 	rm -rf $(MAKE_IPK_DIR) $(MAKE_IPK)
 	$(MAKE) -C $(MAKE_BUILD_DIR) DESTDIR=$(MAKE_IPK_DIR) install-strip
+	rm -f $(MAKE_IPK_DIR)/opt/share/info/dir
 #	install -d $(MAKE_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(MAKE_SOURCE_DIR)/rc.make $(MAKE_IPK_DIR)/opt/etc/init.d/SXXmake
 	$(MAKE) $(MAKE_IPK_DIR)/CONTROL/control

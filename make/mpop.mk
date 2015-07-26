@@ -203,6 +203,7 @@ $(MPOP_IPK_DIR)/CONTROL/control:
 $(MPOP_IPK): $(MPOP_BUILD_DIR)/.built
 	rm -rf $(MPOP_IPK_DIR) $(BUILD_DIR)/mpop_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPOP_BUILD_DIR) install-strip transform='' DESTDIR=$(MPOP_IPK_DIR)
+	rm -f $(MPOP_IPK_DIR)/opt/share/info/dir
 #	install -d $(MPOP_IPK_DIR)/opt/etc/
 #	install -m 644 $(MPOP_SOURCE_DIR)/mpop.conf $(MPOP_IPK_DIR)/opt/etc/mpop.conf
 #	install -d $(MPOP_IPK_DIR)/opt/etc/init.d

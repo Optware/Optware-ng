@@ -149,6 +149,7 @@ $(CVS_IPK_DIR)/CONTROL/control:
 $(CVS_IPK): $(CVS_BUILD_DIR)/.built
 	rm -rf $(CVS_IPK_DIR) $(BUILD_DIR)/ushare_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CVS_BUILD_DIR) DESTDIR=$(CVS_IPK_DIR) install-strip
+	rm -f $(CVS_IPK_DIR)/opt/share/info/dir
 #	$(STRIP_COMMAND) $(CVS_BUILD_DIR)/src/cvs -o $(CVS_IPK_DIR)/opt/bin/cvs
 	install -d $(CVS_IPK_DIR)/opt/bin/
 	$(MAKE) $(CVS_IPK_DIR)/CONTROL/control

@@ -179,6 +179,7 @@ $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 	install -d $(GZIP_IPK_DIR)/opt/info
 	install -d $(GZIP_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(GZIP_BUILD_DIR) prefix=$(GZIP_IPK_DIR)/opt install
+	rm -f $(GZIP_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(GZIP_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/prerm

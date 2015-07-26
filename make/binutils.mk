@@ -200,6 +200,7 @@ $(BINUTILS_IPK_DIR)/CONTROL/control:
 $(BINUTILS_IPK): $(BINUTILS_BUILD_DIR)/.built
 	rm -rf $(BINUTILS_IPK_DIR) $(BUILD_DIR)/binutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BINUTILS_BUILD_DIR) DESTDIR=$(BINUTILS_IPK_DIR) install
+	rm -f $(BINUTILS_IPK_DIR)/opt/share/info/dir
 	-$(STRIP_COMMAND) $(BINUTILS_IPK_DIR)/opt/bin/*
 	mv $(BINUTILS_IPK_DIR)/opt/bin/strings $(BINUTILS_IPK_DIR)/opt/bin/binutils-strings
 	$(MAKE) $(BINUTILS_IPK_DIR)/CONTROL/control

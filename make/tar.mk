@@ -158,6 +158,7 @@ $(TAR_IPK_DIR)/CONTROL/control:
 $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	rm -rf $(TAR_IPK_DIR) $(BUILD_DIR)/tar_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TAR_BUILD_DIR) DESTDIR=$(TAR_IPK_DIR) install-strip
+	rm -f $(TAR_IPK_DIR)/opt/share/info/dir
 	mv $(TAR_IPK_DIR)/opt/bin/tar $(TAR_IPK_DIR)/opt/bin/gnutar
 	mv $(TAR_IPK_DIR)/opt/libexec/rmt $(TAR_IPK_DIR)/opt/libexec/rmt-tar
 	$(MAKE) $(TAR_IPK_DIR)/CONTROL/control

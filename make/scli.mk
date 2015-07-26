@@ -191,6 +191,7 @@ $(SCLI_IPK_DIR)/CONTROL/control:
 $(SCLI_IPK): $(SCLI_BUILD_DIR)/.built
 	rm -rf $(SCLI_IPK_DIR) $(BUILD_DIR)/scli_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SCLI_BUILD_DIR) DESTDIR=$(SCLI_IPK_DIR) install-strip
+	rm -f $(SCLI_IPK_DIR)/opt/share/info/dir
 #	install -d $(SCLI_IPK_DIR)/opt/etc/
 #	install -m 644 $(SCLI_SOURCE_DIR)/scli.conf $(SCLI_IPK_DIR)/opt/etc/scli.conf
 #	install -d $(SCLI_IPK_DIR)/opt/etc/init.d

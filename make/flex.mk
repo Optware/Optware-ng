@@ -95,6 +95,7 @@ $(FLEX_IPK_DIR)/CONTROL/control:
 $(FLEX_IPK): $(FLEX_BUILD_DIR)/.built
 	rm -rf $(FLEX_IPK_DIR) $(BUILD_DIR)/flex_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FLEX_BUILD_DIR) DESTDIR=$(FLEX_IPK_DIR) install-strip
+	rm -f $(FLEX_IPK_DIR)/opt/info/dir
 	rm -rf $(FLEX_IPK_DIR)/opt/man
 	$(MAKE) $(FLEX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FLEX_IPK_DIR)

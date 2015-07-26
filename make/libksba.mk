@@ -192,6 +192,7 @@ $(LIBKSBA_IPK_DIR)/CONTROL/control:
 $(LIBKSBA_IPK): $(LIBKSBA_BUILD_DIR)/.built
 	rm -rf $(LIBKSBA_IPK_DIR) $(BUILD_DIR)/libksba_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBKSBA_BUILD_DIR) DESTDIR=$(LIBKSBA_IPK_DIR) install-strip
+	rm -f $(LIBKSBA_IPK_DIR)/opt/share/info/dir
 #	install -d $(LIBKSBA_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBKSBA_SOURCE_DIR)/libksba.conf $(LIBKSBA_IPK_DIR)/opt/etc/libksba.conf
 #	install -d $(LIBKSBA_IPK_DIR)/opt/etc/init.d

@@ -203,6 +203,7 @@ $(MSMTP_IPK_DIR)/CONTROL/control:
 $(MSMTP_IPK): $(MSMTP_BUILD_DIR)/.built
 	rm -rf $(MSMTP_IPK_DIR) $(BUILD_DIR)/msmtp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MSMTP_BUILD_DIR) install-strip transform='' DESTDIR=$(MSMTP_IPK_DIR)
+	rm -f $(MSMTP_IPK_DIR)/opt/share/info/dir
 #	install -d $(MSMTP_IPK_DIR)/opt/etc/
 #	install -m 644 $(MSMTP_SOURCE_DIR)/msmtp.conf $(MSMTP_IPK_DIR)/opt/etc/msmtp.conf
 #	install -d $(MSMTP_IPK_DIR)/opt/etc/init.d

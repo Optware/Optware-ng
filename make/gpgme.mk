@@ -197,6 +197,7 @@ $(GPGME_IPK_DIR)/CONTROL/control:
 $(GPGME_IPK): $(GPGME_BUILD_DIR)/.built
 	rm -rf $(GPGME_IPK_DIR) $(BUILD_DIR)/gpgme_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GPGME_BUILD_DIR) DESTDIR=$(GPGME_IPK_DIR) install-strip
+	rm -f $(GPGME_IPK_DIR)/opt/share/info/dir
 #	install -d $(GPGME_IPK_DIR)/opt/etc/
 #	install -m 644 $(GPGME_SOURCE_DIR)/gpgme.conf $(GPGME_IPK_DIR)/opt/etc/gpgme.conf
 #	install -d $(GPGME_IPK_DIR)/opt/etc/init.d

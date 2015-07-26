@@ -195,6 +195,7 @@ $(GNUPG1_IPK_DIR)/CONTROL/control:
 $(GNUPG1_IPK): $(GNUPG1_BUILD_DIR)/.built
 	rm -rf $(GNUPG1_IPK_DIR) $(BUILD_DIR)/gnupg1_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<D) DESTDIR=$(GNUPG1_IPK_DIR) install-strip
+	rm -f $(GNUPG1_IPK_DIR)/opt/share/info/dir
 	mv $(GNUPG1_IPK_DIR)/opt/share/gnupg $(GNUPG1_IPK_DIR)/opt/share/gnupg1
 	$(MAKE) $(GNUPG1_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNUPG1_IPK_DIR)

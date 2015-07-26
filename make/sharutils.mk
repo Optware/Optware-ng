@@ -190,6 +190,7 @@ $(SHARUTILS_IPK_DIR)/CONTROL/control:
 $(SHARUTILS_IPK): $(SHARUTILS_BUILD_DIR)/.built
 	rm -rf $(SHARUTILS_IPK_DIR) $(BUILD_DIR)/sharutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SHARUTILS_BUILD_DIR) DESTDIR=$(SHARUTILS_IPK_DIR) install-strip
+	rm -f $(SHARUTILS_IPK_DIR)/opt/share/info/dir
 	mv $(SHARUTILS_IPK_DIR)/opt/bin/uudecode $(SHARUTILS_IPK_DIR)/opt/bin/sharutils-uudecode
 	mv $(SHARUTILS_IPK_DIR)/opt/bin/uuencode $(SHARUTILS_IPK_DIR)/opt/bin/sharutils-uuencode
 	$(MAKE) $(SHARUTILS_IPK_DIR)/CONTROL/control

@@ -191,6 +191,7 @@ $(TEXINFO_IPK_DIR)/CONTROL/control:
 $(TEXINFO_IPK): $(TEXINFO_BUILD_DIR)/.built
 	rm -rf $(TEXINFO_IPK_DIR) $(BUILD_DIR)/texinfo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TEXINFO_BUILD_DIR) DESTDIR=$(TEXINFO_IPK_DIR) install-strip
+	rm -f $(TEXINFO_IPK_DIR)/opt/share/info/dir
 #	install -d $(TEXINFO_IPK_DIR)/opt/etc/
 #	install -m 644 $(TEXINFO_SOURCE_DIR)/texinfo.conf $(TEXINFO_IPK_DIR)/opt/etc/texinfo.conf
 #	install -d $(TEXINFO_IPK_DIR)/opt/etc/init.d

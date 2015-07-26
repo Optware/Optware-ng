@@ -192,6 +192,7 @@ $(ASPELL_IPK_DIR)/CONTROL/control:
 $(ASPELL_IPK): $(ASPELL_BUILD_DIR)/.built
 	rm -rf $(ASPELL_IPK_DIR) $(BUILD_DIR)/aspell_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ASPELL_BUILD_DIR) DESTDIR=$(ASPELL_IPK_DIR) install-strip
+	rm -f $(ASPELL_IPK_DIR)/opt/share/info/dir
 	install -d $(ASPELL_IPK_DIR)/opt/etc/
 	install -m 644 $(ASPELL_SOURCE_DIR)/aspell.conf $(ASPELL_IPK_DIR)/opt/etc/aspell.conf
 #	install -d $(ASPELL_IPK_DIR)/opt/etc/init.d

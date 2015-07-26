@@ -189,6 +189,7 @@ $(LIBUNISTRING_IPK_DIR)/CONTROL/control:
 $(LIBUNISTRING_IPK): $(LIBUNISTRING_BUILD_DIR)/.built
 	rm -rf $(LIBUNISTRING_IPK_DIR) $(BUILD_DIR)/libunistring_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBUNISTRING_BUILD_DIR) DESTDIR=$(LIBUNISTRING_IPK_DIR) install-strip
+	rm -f $(LIBUNISTRING_IPK_DIR)/opt/share/info/dir
 #	install -d $(LIBUNISTRING_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBUNISTRING_SOURCE_DIR)/libunistring.conf $(LIBUNISTRING_IPK_DIR)/opt/etc/libunistring.conf
 #	install -d $(LIBUNISTRING_IPK_DIR)/opt/etc/init.d

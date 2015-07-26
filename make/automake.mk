@@ -115,6 +115,7 @@ $(AUTOMAKE_IPK): $(AUTOMAKE_BUILD_DIR)/.built
 	install -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-$(AUTOMAKE_VER)/Automake
 	install -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-$(AUTOMAKE_VER)/am
 	$(MAKE) -C $(AUTOMAKE_BUILD_DIR) DESTDIR=$(AUTOMAKE_IPK_DIR) install
+	rm -f $(AUTOMAKE_IPK_DIR)/opt/share/info/dir
 	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOMAKE_IPK_DIR)/opt/bin/*
 	$(MAKE) $(AUTOMAKE_IPK_DIR)/CONTROL/control
 	rm -f $(AUTOMAKE_IPK_DIR)/opt/info/dir

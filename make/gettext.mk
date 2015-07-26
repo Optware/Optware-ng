@@ -232,6 +232,7 @@ $(GETTEXT_IPK_DIR)/CONTROL/control:
 $(GETTEXT_IPK): $(GETTEXT_BUILD_DIR)/.built
 	rm -rf $(GETTEXT_IPK_DIR) $(BUILD_DIR)/gettext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GETTEXT_BUILD_DIR) DESTDIR=$(GETTEXT_IPK_DIR) install
+	rm -f $(GETTEXT_IPK_DIR)/opt/share/info/dir
 	if [ ! -f $(GETTEXT_IPK_DIR)/opt/lib/libintl.so ]; then \
 		cp -af $(GETTEXT_BUILD_DIR)/gettext-tools/intl/.libs/*.so* $(GETTEXT_IPK_DIR)/opt/lib; \
 		if [ ! -f $(GETTEXT_IPK_DIR)/opt/lib/libintl.so ]; then \

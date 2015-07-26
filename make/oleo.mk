@@ -195,6 +195,7 @@ $(OLEO_IPK_DIR)/CONTROL/control:
 $(OLEO_IPK): $(OLEO_BUILD_DIR)/.built
 	rm -rf $(OLEO_IPK_DIR) $(BUILD_DIR)/oleo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OLEO_BUILD_DIR) prefix=$(OLEO_IPK_DIR)/opt install
+	rm -f $(OLEO_IPK_DIR)/opt/info/dir
 	$(STRIP_COMMAND) $(OLEO_IPK_DIR)/opt/bin/oleo
 #	install -d $(OLEO_IPK_DIR)/opt/etc/
 #	install -m 644 $(OLEO_SOURCE_DIR)/oleo.conf $(OLEO_IPK_DIR)/opt/etc/oleo.conf

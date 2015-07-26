@@ -201,6 +201,7 @@ $(GCAL_IPK_DIR)/CONTROL/control:
 $(GCAL_IPK): $(GCAL_BUILD_DIR)/.built
 	rm -rf $(GCAL_IPK_DIR) $(BUILD_DIR)/gcal_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GCAL_BUILD_DIR) prefix=$(GCAL_IPK_DIR)/opt install
+	rm -f $(GCAL_IPK_DIR)/opt/share/info/dir
 	$(STRIP_COMMAND) $(GCAL_IPK_DIR)/opt/bin/gcal \
 		$(GCAL_IPK_DIR)/opt/bin/gcal2txt \
 		$(GCAL_IPK_DIR)/opt/bin/tcal \

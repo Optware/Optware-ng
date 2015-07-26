@@ -86,7 +86,7 @@ $(STOW_IPK): $(STOW_BUILD_DIR)/.built
 	install -d $(STOW_IPK_DIR)/opt/man/man8
 	install -d $(STOW_IPK_DIR)/opt/local/stow
 	$(MAKE) -C $(STOW_BUILD_DIR) DESTDIR=$(STOW_IPK_DIR) install
-	rm -f $(STOW_IPK_DIR)/opt/info/dir.old
+	rm -f $(STOW_IPK_DIR)/opt/info/dir{,.old}
 	$(MAKE) $(STOW_IPK_DIR)/CONTROL/control
 #	install -m 755 $(STOW_SOURCE_DIR)/postinst $(STOW_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(STOW_SOURCE_DIR)/prerm $(STOW_IPK_DIR)/CONTROL/prerm

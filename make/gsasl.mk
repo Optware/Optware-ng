@@ -239,6 +239,7 @@ $(GSASL_IPK): $(GSASL_BUILD_DIR)/.built
 	$(MAKE) -C $(GSASL_BUILD_DIR) install-strip \
 		DESTDIR=$(GSASL_IPK_DIR)
 #		SUBDIRS=`sed -n -e '/^SUBDIRS *=/{s/^.*= //;s/lib //;p}' $(GSASL_BUILD_DIR)/Makefile`
+	rm -f $(GSASL_IPK_DIR)/opt/share/info/dir
 	rm -rf $(GSASL_IPK_DIR)/opt/include $(GSASL_IPK_DIR)/opt/lib
 	$(MAKE) $(GSASL_IPK_DIR)/CONTROL/control
 	echo $(GSASL_CONFFILES) | sed -e 's/ /\n/g' > $(GSASL_IPK_DIR)/CONTROL/conffiles

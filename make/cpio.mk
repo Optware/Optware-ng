@@ -155,6 +155,7 @@ $(CPIO_IPK): $(CPIO_BUILD_DIR)/.built
 	rm -rf $(CPIO_IPK_DIR) $(BUILD_DIR)/cpio_*_$(TARGET_ARCH).ipk
 	install -d $(CPIO_IPK_DIR)/opt/bin
 	$(MAKE) -C $(CPIO_BUILD_DIR) DESTDIR=$(CPIO_IPK_DIR) install-strip
+	rm -f $(CPIO_IPK_DIR)/opt/share/info/dir
 	mv $(CPIO_IPK_DIR)/opt/bin/cpio $(CPIO_IPK_DIR)/opt/bin/cpio-cpio
 	$(MAKE) $(CPIO_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \

@@ -193,6 +193,7 @@ $(IKSEMEL_IPK_DIR)/CONTROL/control:
 $(IKSEMEL_IPK): $(IKSEMEL_BUILD_DIR)/.built
 	rm -rf $(IKSEMEL_IPK_DIR) $(BUILD_DIR)/iksemel_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IKSEMEL_BUILD_DIR) DESTDIR=$(IKSEMEL_IPK_DIR) install
+	rm -f $(IKSEMEL_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(IKSEMEL_IPK_DIR)/CONTROL/control
 	for filetostrip in $(IKSEMEL_IPK_DIR)/opt/bin/ikslint \
 				$(IKSEMEL_IPK_DIR)/opt/bin/iksperf \

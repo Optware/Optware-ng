@@ -204,6 +204,7 @@ $(CLASSPATH_IPK_DIR)/CONTROL/control:
 $(CLASSPATH_IPK): $(CLASSPATH_BUILD_DIR)/.built
 	rm -rf $(CLASSPATH_IPK_DIR) $(BUILD_DIR)/classpath_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip transform="" prefix=$(CLASSPATH_IPK_DIR)/opt
+	rm -f $(CLASSPATH_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(CLASSPATH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLASSPATH_IPK_DIR)
 

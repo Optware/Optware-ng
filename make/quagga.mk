@@ -200,6 +200,7 @@ $(QUAGGA_IPK_DIR)/CONTROL/control:
 $(QUAGGA_IPK): $(QUAGGA_BUILD_DIR)/.built
 	rm -rf $(QUAGGA_IPK_DIR) $(BUILD_DIR)/quagga_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(QUAGGA_BUILD_DIR) DESTDIR=$(QUAGGA_IPK_DIR) install
+	rm -f $(QUAGGA_IPK_DIR)/opt/share/info/dir
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/lib/*.so*

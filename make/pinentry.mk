@@ -202,6 +202,7 @@ $(PINENTRY_IPK_DIR)/CONTROL/control:
 $(PINENTRY_IPK): $(PINENTRY_BUILD_DIR)/.built
 	rm -rf $(PINENTRY_IPK_DIR) $(BUILD_DIR)/pinentry_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PINENTRY_BUILD_DIR) DESTDIR=$(PINENTRY_IPK_DIR) install-strip
+	rm -f $(PINENTRY_IPK_DIR)/opt/share/info/dir
 #	install -d $(PINENTRY_IPK_DIR)/opt/etc/
 #	install -m 644 $(PINENTRY_SOURCE_DIR)/pinentry.conf $(PINENTRY_IPK_DIR)/opt/etc/pinentry.conf
 #	install -d $(PINENTRY_IPK_DIR)/opt/etc/init.d

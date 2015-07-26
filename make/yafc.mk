@@ -198,6 +198,7 @@ $(YAFC_IPK_DIR)/CONTROL/control:
 $(YAFC_IPK): $(YAFC_BUILD_DIR)/.built
 	rm -rf $(YAFC_IPK_DIR) $(BUILD_DIR)/yafc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(YAFC_BUILD_DIR) DESTDIR=$(YAFC_IPK_DIR) install-strip
+	rm -f $(YAFC_IPK_DIR)/opt/info/dir
 #	install -d $(YAFC_IPK_DIR)/opt/etc/
 #	install -m 644 $(YAFC_SOURCE_DIR)/yafc.conf $(YAFC_IPK_DIR)/opt/etc/yafc.conf
 #	install -d $(YAFC_IPK_DIR)/opt/etc/init.d

@@ -192,6 +192,7 @@ $(LIBASSUAN_IPK_DIR)/CONTROL/control:
 $(LIBASSUAN_IPK): $(LIBASSUAN_BUILD_DIR)/.built
 	rm -rf $(LIBASSUAN_IPK_DIR) $(BUILD_DIR)/libassuan_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBASSUAN_BUILD_DIR) DESTDIR=$(LIBASSUAN_IPK_DIR) install-strip
+	rm -f $(LIBASSUAN_IPK_DIR)/opt/share/info/dir
 #	install -d $(LIBASSUAN_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBASSUAN_SOURCE_DIR)/libassuan.conf $(LIBASSUAN_IPK_DIR)/opt/etc/libassuan.conf
 #	install -d $(LIBASSUAN_IPK_DIR)/opt/etc/init.d

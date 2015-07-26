@@ -173,6 +173,7 @@ $(SED_IPK_DIR)/CONTROL/control:
 $(SED_IPK): $(SED_BUILD_DIR)/.built
 	rm -rf $(SED_IPK_DIR) $(BUILD_DIR)/sed_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SED_BUILD_DIR) DESTDIR=$(SED_IPK_DIR) install-strip
+	rm -f $(SED_IPK_DIR)/opt/share/info/dir
 	mv $(SED_IPK_DIR)/opt/bin/sed $(SED_IPK_DIR)/opt/bin/gnu-sed
 	$(MAKE) $(SED_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \

@@ -178,6 +178,7 @@ $(HELLO_IPK_DIR)/CONTROL/control:
 $(HELLO_IPK): $(HELLO_BUILD_DIR)/.built
 	rm -rf $(HELLO_IPK_DIR) $(BUILD_DIR)/hello_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HELLO_BUILD_DIR) DESTDIR=$(HELLO_IPK_DIR) install-strip
+	rm -f $(HELLO_IPK_DIR)/opt/share/info/dir
 #	install -d $(HELLO_IPK_DIR)/opt/etc/
 #	install -m 644 $(HELLO_SOURCE_DIR)/hello.conf $(HELLO_IPK_DIR)/opt/etc/hello.conf
 #	install -d $(HELLO_IPK_DIR)/opt/etc/init.d

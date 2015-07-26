@@ -96,7 +96,8 @@ $(GREP_IPK): $(GREP_BUILD_DIR)/.built
 		top_distdir=$(GREP_IPK_DIR) \
 		DESTDIR=$(GREP_IPK_DIR) \
 		AM_MAKEFLAGS="DESTDIR=$(GREP_IPK_DIR)"
-	rm -f $(GREP_IPK_DIR)/opt/info/dir $(GREP_IPK_DIR)/opt/info/dir.old
+	rm -f 	$(GREP_IPK_DIR)/opt/info/dir $(GREP_IPK_DIR)/opt/share/info/dir \
+		$(GREP_IPK_DIR)/opt/info/dir.old
 	$(STRIP_COMMAND) $(GREP_IPK_DIR)/opt/bin/grep
 	$(STRIP_COMMAND) $(GREP_IPK_DIR)/opt/bin/egrep $(GREP_IPK_DIR)/opt/bin/fgrep
 	$(MAKE) $(GREP_IPK_DIR)/CONTROL/control
