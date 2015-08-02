@@ -45,7 +45,7 @@ MADPLAY_CONFFILES=
 # MADPLAY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MADPLAY_PATCHES=/dev/null
+#MADPLAY_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -100,11 +100,14 @@ madplay-source: $(DL_DIR)/$(MADPLAY_SOURCE) $(MADPLAY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MADPLAY_BUILD_DIR)/.configured: $(DL_DIR)/$(MADPLAY_SOURCE) $(MADPLAY_PATCHES)
+$(MADPLAY_BUILD_DIR)/.configured: $(DL_DIR)/$(MADPLAY_SOURCE) $(MADPLAY_PATCHES) make/madplay.mk
 	$(MAKE) libmad-stage libid3tag-stage esound-stage
-	rm -rf $(BUILD_DIR)/$(MADPLAY_DIR) $(MADPLAY_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MADPLAY_DIR) $(@D)
 	$(MADPLAY_UNZIP) $(DL_DIR)/$(MADPLAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MADPLAY_PATCHES) | patch -d $(BUILD_DIR)/$(MADPLAY_DIR) -p1
+	if test -n "$(MADPLAY_PATCHES)" ; \
+		then cat $(MADPLAY_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(MADPLAY_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(MADPLAY_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -128,9 +131,9 @@ madplay-unpack: $(MADPLAY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MADPLAY_BUILD_DIR)/.built: $(MADPLAY_BUILD_DIR)/.configured
-	rm -f $(MADPLAY_BUILD_DIR)/.built
-	$(MAKE) -C $(MADPLAY_BUILD_DIR)
-	touch $(MADPLAY_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,9 +144,9 @@ madplay: $(MADPLAY_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MADPLAY_BUILD_DIR)/.staged: $(MADPLAY_BUILD_DIR)/.built
-	rm -f $(MADPLAY_BUILD_DIR)/.staged
-	$(MAKE) -C $(MADPLAY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MADPLAY_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 madplay-stage: $(MADPLAY_BUILD_DIR)/.staged
 
@@ -199,4 +202,4 @@ madplay-dirclean:
 # Some sanity check for the package.
 #
 madplay-check: $(MADPLAY_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MADPLAY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
