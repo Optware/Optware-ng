@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ASN1_SITE=https://pypi.python.org/packages/source/p/pyasn1
-PY-ASN1_VERSION=0.1.7
-PY-ASN1_VERSION_OLD=0.1.7
+PY-ASN1_VERSION=0.1.8
+PY-ASN1_VERSION_OLD=0.1.8
 PY-ASN1_SOURCE=pyasn1-$(PY-ASN1_VERSION).tar.gz
 PY-ASN1_SOURCE_OLD=pyasn1-$(PY-ASN1_VERSION_OLD).tar.gz
 PY-ASN1_DIR=pyasn1-$(PY-ASN1_VERSION)
