@@ -54,5 +54,5 @@ ipk-indexer-dirclean:
 	rm -rf $(HOST_STAGING_DIR)/bin/ipk_indexer_*.sh
 
 
-IPK_INDEXER_MAKE_HTML_INDEX := $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh > index.html
+IPK_INDEXER_MAKE_HTML_INDEX := $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh > Packages.html
 

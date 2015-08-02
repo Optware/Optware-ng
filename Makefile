@@ -629,9 +629,9 @@ index: $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh $(PACKAGE_DIR)/Package
 
 ifeq ($(PACKAGE_DIR),$(BASE_DIR)/packages)
     ifeq (,$(findstring -bootstrap,$(SPECIFIC_PACKAGES)))
-$(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/index.html: $(BUILD_DIR)/*.ipk
+$(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/Packages.html: $(BUILD_DIR)/*.ipk
     else
-$(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/index.html: $(BUILD_DIR)/*.ipk $(BUILD_DIR)/*.xsh
+$(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/Packages.html: $(BUILD_DIR)/*.ipk $(BUILD_DIR)/*.xsh
     endif
 	if ls $(BUILD_DIR)/*_$(TARGET_ARCH).xsh > /dev/null 2>&1; then \
 		rm -f $(@D)/*_$(TARGET_ARCH).xsh ; \
@@ -640,7 +640,7 @@ $(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/index.html: $(BUILD_DIR)/*.ipk $(BUILD_DI
 	rm -f $(@D)/*_$(TARGET_ARCH).ipk
 	cp -fal $(BUILD_DIR)/*_$(TARGET_ARCH).ipk $(@D)/
 else
-$(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/index.html:
+$(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/Packages.html:
 endif
 	{ \
 		cd $(PACKAGE_DIR); \
