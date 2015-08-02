@@ -625,13 +625,13 @@ $(PACKAGES_IPKG) : directories toolchain ipkg-utils
 %-ipk : directories toolchain ipkg-utils
 
 .PHONY: index
-index: $(PACKAGE_DIR)/Packages
+index: $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh $(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/index.html
 
 ifeq ($(PACKAGE_DIR),$(BASE_DIR)/packages)
     ifeq (,$(findstring -bootstrap,$(SPECIFIC_PACKAGES)))
-$(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
+$(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/index.html: $(BUILD_DIR)/*.ipk
     else
-$(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk $(BUILD_DIR)/*.xsh
+$(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/index.html: $(BUILD_DIR)/*.ipk $(BUILD_DIR)/*.xsh
     endif
 	if ls $(BUILD_DIR)/*_$(TARGET_ARCH).xsh > /dev/null 2>&1; then \
 		rm -f $(@D)/*_$(TARGET_ARCH).xsh ; \
@@ -640,12 +640,13 @@ $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk $(BUILD_DIR)/*.xsh
 	rm -f $(@D)/*_$(TARGET_ARCH).ipk
 	cp -fal $(BUILD_DIR)/*_$(TARGET_ARCH).ipk $(@D)/
 else
-$(PACKAGE_DIR)/Packages:
+$(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/index.html:
 endif
 	{ \
 		cd $(PACKAGE_DIR); \
 		$(IPKG_MAKE_INDEX) . > Packages; \
 		gzip -c Packages > Packages.gz; \
+		$(IPK_INDEXER_MAKE_HTML_INDEX); \
 	}
 	@echo "ALL DONE."
 
