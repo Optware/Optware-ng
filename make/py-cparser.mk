@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CPARSER_SITE=https://pypi.python.org/packages/source/p/pycparser
-PY-CPARSER_VERSION=2.10
+PY-CPARSER_VERSION=2.14
 PY-CPARSER_SOURCE=pycparser-$(PY-CPARSER_VERSION).tar.gz
 PY-CPARSER_DIR=pycparser-$(PY-CPARSER_VERSION)
 PY-CPARSER_UNZIP=zcat
