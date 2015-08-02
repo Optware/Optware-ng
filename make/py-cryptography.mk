@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CRYPTOGRAPHY_VERSION=0.7.2
+PY-CRYPTOGRAPHY_VERSION=0.9.3
 PY-CRYPTOGRAPHY_SITE=https://pypi.python.org/packages/source/c/cryptography
 PY-CRYPTOGRAPHY_SOURCE=cryptography-$(PY-CRYPTOGRAPHY_VERSION).tar.gz
 PY-CRYPTOGRAPHY_DIR=cryptography-$(PY-CRYPTOGRAPHY_VERSION)
@@ -30,8 +30,8 @@ PY-CRYPTOGRAPHY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CRYPTOGRAPHY_DESCRIPTION=Cryptography is a package which provides cryptographic recipes and primitives to Python developers.
 PY-CRYPTOGRAPHY_SECTION=lib
 PY-CRYPTOGRAPHY_PRIORITY=optional
-PY26-CRYPTOGRAPHY_DEPENDS=python26, py26-enum34, py26-six, py26-asn1, py26-cffi, py26-setuptools, openssl
-PY27-CRYPTOGRAPHY_DEPENDS=python27, py27-enum34, py27-six, py27-asn1, py27-cffi, py27-setuptools, openssl
+PY26-CRYPTOGRAPHY_DEPENDS=python26, py26-enum34, py26-six, py26-asn1, py26-cffi, py26-setuptools, py26-idna, py26-ipaddress, openssl
+PY27-CRYPTOGRAPHY_DEPENDS=python27, py27-enum34, py27-six, py27-asn1, py27-cffi, py27-setuptools, py27-idna, py27-ipaddress, openssl
 PY3-CRYPTOGRAPHY_DEPENDS=python3, py3-six, py3-asn1, py3-setuptools, py3-cffi, openssl
 PY-CRYPTOGRAPHY_CONFLICTS=
 
@@ -114,7 +114,8 @@ py-cryptography-source: $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) $(PY-CRYPTOGRAPHY_PA
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CRYPTOGRAPHY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) $(PY-CRYPTOGRAPHY_PATCHES) make/py-cryptography.mk
-	$(MAKE) openssl-stage py-setuptools-host-stage py-six-host-stage py-enum34-host-stage py-asn1-host-stage py-cffi-host-stage
+	$(MAKE) openssl-stage py-setuptools-host-stage py-six-host-stage py-enum34-host-stage \
+		py-asn1-host-stage py-cffi-host-stage py-idna-host-stage py-ipaddress-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) $(@D)
 	mkdir -p $(@D)
 	# 2.6
