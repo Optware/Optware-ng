@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-OPENSSL_VERSION=0.14
+PY-OPENSSL_VERSION=0.15.1
 PY-OPENSSL_VERSION_OLD=0.13
 PY-OPENSSL_SITE=http://pypi.python.org/packages/source/p/pyOpenSSL
 PY-OPENSSL_SOURCE=pyOpenSSL-$(PY-OPENSSL_VERSION).tar.gz
@@ -134,6 +134,10 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) -p1
 	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.5
+ifeq ($(shell echo $(OPENSSL_VERSION)|sed 's/[a-z]//g'), 1.0.2)
+###	X509_REVOKED isn't static in OpenSSL 1.0.2
+	sed -i -e 's/^static X509_REVOKED/X509_REVOKED/' $(@D)/2.5/OpenSSL/crypto/crl.c
+endif
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
