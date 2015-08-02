@@ -32,7 +32,7 @@ PY-CRYPTOGRAPHY_SECTION=lib
 PY-CRYPTOGRAPHY_PRIORITY=optional
 PY26-CRYPTOGRAPHY_DEPENDS=python26, py26-enum34, py26-six, py26-asn1, py26-cffi, py26-setuptools, py26-idna, py26-ipaddress, openssl
 PY27-CRYPTOGRAPHY_DEPENDS=python27, py27-enum34, py27-six, py27-asn1, py27-cffi, py27-setuptools, py27-idna, py27-ipaddress, openssl
-PY3-CRYPTOGRAPHY_DEPENDS=python3, py3-six, py3-asn1, py3-setuptools, py3-cffi, openssl
+PY3-CRYPTOGRAPHY_DEPENDS=python3, py3-six, py3-asn1, py3-setuptools, py3-cffi, py3-idna, openssl
 PY-CRYPTOGRAPHY_CONFLICTS=
 
 #
