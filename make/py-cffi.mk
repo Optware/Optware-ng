@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CFFI_SITE=https://pypi.python.org/packages/source/c/cffi
-PY-CFFI_VERSION=0.8.6
+PY-CFFI_VERSION=1.1.2
 PY-CFFI_SOURCE=cffi-$(PY-CFFI_VERSION).tar.gz
 PY-CFFI_DIR=cffi-$(PY-CFFI_VERSION)
 PY-CFFI_UNZIP=zcat
