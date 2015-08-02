@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://archive.apache.org/dist/subversion/
-SVN_VERSION=1.8.11
+SVN_VERSION=1.8.13
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
