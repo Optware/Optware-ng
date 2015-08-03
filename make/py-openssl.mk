@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-OPENSSL_VERSION=0.15.1
-PY-OPENSSL_VERSION_OLD=0.13
+PY-OPENSSL_VERSION_OLD=0.13.1
 PY-OPENSSL_SITE=http://pypi.python.org/packages/source/p/pyOpenSSL
 PY-OPENSSL_SOURCE=pyOpenSSL-$(PY-OPENSSL_VERSION).tar.gz
 PY-OPENSSL_SOURCE_OLD=pyOpenSSL-$(PY-OPENSSL_VERSION_OLD).tar.gz
@@ -43,6 +43,7 @@ PY-OPENSSL_CONFLICTS=
 # PY-OPENSSL_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-OPENSSL_IPK_VERSION=1
+PY-OPENSSL_IPK_VERSION_OLD=1
 
 #
 # PY-OPENSSL_CONFFILES should be a list of user-editable files
@@ -53,6 +54,7 @@ PY-OPENSSL_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 #PY-OPENSSL_PATCHES=$(PY-OPENSSL_SOURCE_DIR)/configure.patch
+PY-OPENSSL_PATCHES_OLD=$(PY-OPENSSL_SOURCE_DIR)/010-openssl.patch
 
 #
 # If the compilation of the package requires additional
@@ -75,7 +77,7 @@ PY-OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/py-openssl
 PY-OPENSSL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/py-openssl
 
 PY25-OPENSSL_IPK_DIR=$(BUILD_DIR)/py25-openssl-$(PY-OPENSSL_VERSION_OLD)-ipk
-PY25-OPENSSL_IPK=$(BUILD_DIR)/py25-openssl_$(PY-OPENSSL_VERSION_OLD)-$(PY-OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY25-OPENSSL_IPK=$(BUILD_DIR)/py25-openssl_$(PY-OPENSSL_VERSION_OLD)-$(PY-OPENSSL_IPK_VERSION_OLD)_$(TARGET_ARCH).ipk
 
 PY26-OPENSSL_IPK_DIR=$(BUILD_DIR)/py26-openssl-$(PY-OPENSSL_VERSION)-ipk
 PY26-OPENSSL_IPK=$(BUILD_DIR)/py26-openssl_$(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -126,18 +128,18 @@ py-openssl-source: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(PY-OPENSSL_SOURCE_
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) $(PY-OPENSSL_PATCHES) make/py-openssl.mk
+$(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) \
+		$(PY-OPENSSL_PATCHES) $(PY-OPENSSL_PATCHES_OLD) make/py-openssl.mk
 	$(MAKE) openssl-stage py-setuptools-stage py-setuptools-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)
 	mkdir -p $(@D)
 	# 2.5
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) -p1
+	if test -n "$(PY-OPENSSL_PATCHES_OLD)" ; \
+		then cat $(PY-OPENSSL_PATCHES_OLD) | \
+		patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.5
-ifeq ($(shell echo $(OPENSSL_VERSION)|sed 's/[a-z]//g'), 1.0.2)
-###	X509_REVOKED isn't static in OpenSSL 1.0.2
-	sed -i -e 's/^static X509_REVOKED/X509_REVOKED/' $(@D)/2.5/OpenSSL/crypto/crl.c
-endif
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
@@ -152,7 +154,10 @@ endif
 	)
 	# 2.6
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1
+	if test -n "$(PY-OPENSSL_PATCHES)" ; \
+		then cat $(PY-OPENSSL_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -168,7 +173,10 @@ endif
 	)
 	# 2.7
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1
+	if test -n "$(PY-OPENSSL_PATCHES)" ; \
+		then cat $(PY-OPENSSL_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -184,7 +192,10 @@ endif
 	)
 	# 3
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1
+	if test -n "$(PY-OPENSSL_PATCHES)" ; \
+		then cat $(PY-OPENSSL_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -318,7 +329,7 @@ $(PY25-OPENSSL_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-OPENSSL_PRIORITY)" >>$@
 	@echo "Section: $(PY-OPENSSL_SECTION)" >>$@
-	@echo "Version: $(PY-OPENSSL_VERSION_OLD)-$(PY-OPENSSL_IPK_VERSION)" >>$@
+	@echo "Version: $(PY-OPENSSL_VERSION_OLD)-$(PY-OPENSSL_IPK_VERSION_OLD)" >>$@
 	@echo "Maintainer: $(PY-OPENSSL_MAINTAINER)" >>$@
 	@echo "Source: $(PY-OPENSSL_SITE)/$(PY-OPENSSL_SOURCE_OLD)" >>$@
 	@echo "Description: $(PY-OPENSSL_DESCRIPTION)" >>$@

@@ -1,0 +1,92 @@
+--- a/OpenSSL/crypto/crl.c
++++ b/OpenSSL/crypto/crl.c
+@@ -2,8 +2,18 @@
+ #define crypto_MODULE
+ #include "crypto.h"
+ 
++#if 1 /*OPENSSL_VERSION_NUMBER < 0x10002000L*/
+ 
+-static X509_REVOKED * X509_REVOKED_dup(X509_REVOKED *orig) {
++/* Home-grown implementation of the API for OpenSSL 1.0.1 and lower.
++
++   OpenSSL 1.0.2 comes with its own implementation, but this apparently works
++   differently and causes problems with pyOpenSSL which appear to be related
++   to stack issues. We'll therefore continue to use this version for the time
++   being. See #1574.
++
++*/
++
++static X509_REVOKED * crypto_X509_REVOKED_dup(X509_REVOKED *orig) {
+     X509_REVOKED *dupe = NULL;
+ 
+     dupe = X509_REVOKED_new();
+@@ -33,6 +43,13 @@
+     return dupe;
+ }
+ 
++#else
++
++/* Use the OpenSSL version for 1.0.2 and later */
++#define crypto_X509_REVOKED_dup X509_REVOKED_dup
++
++#endif
++
+ static char crypto_CRL_get_revoked_doc[] = "\n\
+ Return revoked portion of the CRL structure (by value\n\
+ not reference).\n\
+@@ -60,7 +77,7 @@
+ 
+     for (j = 0; j < num_rev; j++) {
+         r = sk_X509_REVOKED_value(self->crl->crl->revoked, j);
+-        r = X509_REVOKED_dup(r);
++        r = crypto_X509_REVOKED_dup(r);
+         if (r == NULL ) {
+             goto error;
+         }
+@@ -99,7 +116,7 @@
+         return NULL;
+     }
+ 
+-    dup = X509_REVOKED_dup( rev_obj->revoked );
++    dup = crypto_X509_REVOKED_dup( rev_obj->revoked );
+     if (dup == NULL) {
+         return NULL;
+     }
+@@ -137,7 +154,21 @@
+                                      &crypto_PKey_Type, &key, &type, &days)) {
+         return NULL;
+     }
+-    
++
++
++#if OPENSSL_VERSION_NUMBER >= 0x01000000L
++    /* Older versions of OpenSSL had no problem with trying to export using an
++     * uninitialized key.  Newer versions segfault, instead.  We can only check
++     * on the new versions, though, because the old versions don't even have the
++     * field that the segfault is triggered by.
++     */
++    if (!key->pkey->ameth) {
++        PyErr_SetString(
++            crypto_Error, "Cannot export with an unitialized key");
++        return NULL;
++    }
++#endif
++
+     bio = BIO_new(BIO_s_mem());
+     tmptm = ASN1_TIME_new();
+     if (!tmptm) {
+@@ -149,7 +180,13 @@
+     X509_CRL_set_nextUpdate(self->crl, tmptm);
+     ASN1_TIME_free(tmptm);
+     X509_CRL_set_issuer_name(self->crl, X509_get_subject_name(x509->x509));
+-    X509_CRL_sign(self->crl, key->pkey, EVP_md5());
++
++    if (!X509_CRL_sign(self->crl, key->pkey, EVP_md5())) {
++        exception_from_error_queue(crypto_Error);
++        BIO_free(bio);
++        return NULL;
++    }
++
+     switch (type) {
+         case X509_FILETYPE_PEM:
+             ret = PEM_write_bio_X509_CRL(bio, self->crl);
