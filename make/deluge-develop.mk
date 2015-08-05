@@ -39,7 +39,7 @@ DELUGE_DEVELOP_CONFLICTS=deluge
 #
 # DELUGE_DEVELOP_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_DEVELOP_IPK_VERSION=2
+DELUGE_DEVELOP_IPK_VERSION=3
 
 #
 # DELUGE_DEVELOP_CONFFILES should be a list of user-editable files
@@ -122,28 +122,14 @@ deluge-develop-source: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DELUGE_DEVELOP_PATCH
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(DELUGE_DEVELOP_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DELUGE_DEVELOP_PATCHES) make/deluge-develop.mk
-	$(MAKE) python27-host-stage py-setuptools-host-stage
+	$(MAKE) python27-host-stage py-setuptools-host-stage py-slimit-host-stage
 	rm -rf $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) $(@D)
 #	cd $(BUILD_DIR); $(DELUGE_DEVELOP_UNZIP) $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE)
 	$(DELUGE_DEVELOP_UNZIP) $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(DELUGE_DEVELOP_PATCHES) | patch -d $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) -p1
 	mv $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) $(@D)
-	install -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/build-js.sh $(@D)/deluge/ui/web/build
-	cd $(@D)/deluge/ui/web/js/deluge-all; \
-		echo '#!/bin/sh' > .build; \
-		for f in `find . -type f -name '*.js'|cut -d '/' -f 2-`; do \
-			echo "add_file \"$$f\"" >> .build; \
-		done; \
-		chmod 755 .build
-	cd $(@D)/deluge/ui/web/js/extjs; \
-		echo '#!/bin/sh' > .build; \
-		for f in `find . -type f -name '*.js'|cut -d '/' -f 2-`; do \
-			echo "add_file \"$$f\"" >> .build; \
-		done; \
-		chmod 755 .build
-	cd $(@D)/deluge/ui/web ;\
-		./build js/deluge-all; \
-		./build js/extjs
+	cd $(@D); $(HOST_STAGING_PREFIX)/bin/python2.7 $(DELUGE_DEVELOP_SOURCE_DIR)/minify_web_js.py deluge/ui/web/js/deluge-all
+	cd $(@D); $(HOST_STAGING_PREFIX)/bin/python2.7 $(DELUGE_DEVELOP_SOURCE_DIR)/minify_web_js.py deluge/ui/web/js/extjs
 	(cd $(@D); \
 	    ( \
 		echo "[install]"; \
