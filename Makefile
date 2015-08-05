@@ -208,7 +208,7 @@ PYTHON_PACKAGES = \
 	py-rdiff-backup py-redis \
 	py-reportlab py-routes py-roundup py-ruledispatch \
 	py-scgi py-selector py-serial py-setuptools \
-	py-silvercity py-simplejson py-simpy py-soappy \
+	py-silvercity py-simplejson py-simpy py-slimit py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject py-statlib \
 	py-tailor py-tgfastdata py-trac \
 	py-turbocheetah py-turbogears py-turbojson py-turbokid \
