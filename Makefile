@@ -625,7 +625,7 @@ $(PACKAGES_IPKG) : directories toolchain ipkg-utils
 %-ipk : directories toolchain ipkg-utils
 
 .PHONY: index
-index: $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh $(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/index.html
+index: $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh $(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/Packages.html
 
 ifeq ($(PACKAGE_DIR),$(BASE_DIR)/packages)
     ifeq (,$(findstring -bootstrap,$(SPECIFIC_PACKAGES)))
