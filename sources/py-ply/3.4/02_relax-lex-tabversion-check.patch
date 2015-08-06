@@ -1,0 +1,21 @@
+Description: Don't break already built packages with wrong _tabversion
+Author: Jakub Wilk <jwilk@debian.org>
+Forwarded: not-needed
+--- a/ply/lex.py
++++ b/ply/lex.py
+@@ -222,7 +222,14 @@
+                 exec("import %s as lextab" % tabfile, env,env)
+                 lextab = env['lextab']
+ 
+-        if getattr(lextab,"_tabversion","0.0") != __tabversion__:
++        # python-ply 3.3-1 is shipped by Debian since Squeeze, so
++        # to not break packages that were built with wrong
++        # _tabversion we need to explicitly fix it.
++        actual_tabversion = getattr(lextab, '_tabversion', '0.0')
++        if actual_tabversion in ('3.3', '3.4'):
++            actual_tabversion = '3.2'
++
++        if actual_tabversion != __tabversion__:
+             raise ImportError("Inconsistent PLY version")
+ 
+         self.lextokens      = lextab._lextokens

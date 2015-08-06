@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PLY_SITE=http://www.dabeaz.com/ply
-PY-PLY_VERSION=3.6
+PY-PLY_VERSION=3.4
 PY-PLY_SOURCE=ply-$(PY-PLY_VERSION).tar.gz
 PY-PLY_DIR=ply-$(PY-PLY_VERSION)
 PY-PLY_UNZIP=zcat
@@ -49,7 +49,12 @@ PY-PLY_IPK_VERSION=1
 # PY-PLY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PY-PLY_PATCHES=$(PY-PLY_SOURCE_DIR)/ply_lex-ply_yacc.patch
+#PY-PLY_PATCHES=$(PY-PLY_SOURCE_DIR)/ply_lex-ply_yacc.patch
+PY-PLY_PATCHES=$(PY-PLY_SOURCE_DIR)/3.4/01_fix-lex-tabversion.patch \
+$(PY-PLY_SOURCE_DIR)/3.4/02_relax-lex-tabversion-check.patch \
+$(PY-PLY_SOURCE_DIR)/3.4/0001-Fixed-yacc-tests-to-account-for-dict-hash-key-random.patch \
+$(PY-PLY_SOURCE_DIR)/3.4/0002-More-test-fixes.patch \
+$(PY-PLY_SOURCE_DIR)/3.4/0003-Fixed-lexer-line-tracking.patch
 
 #
 # If the compilation of the package requires additional

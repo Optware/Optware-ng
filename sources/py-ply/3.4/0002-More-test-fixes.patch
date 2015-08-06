@@ -1,0 +1,55 @@
+From 55ff3fb3608d6112b315c85acd5b4348aaa32e12 Mon Sep 17 00:00:00 2001
+From: David Beazley <dave@dabeaz.com>
+Date: Tue, 21 May 2013 21:26:59 -0500
+Subject: [PATCH 2/3] More test fixes
+
+---
+ ply/yacc.py      | 8 ++++++--
+ test/testyacc.py | 5 +++++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/ply/yacc.py b/ply/yacc.py
+index e9f5c65..a29c645 100644
+--- a/ply/yacc.py
++++ b/ply/yacc.py
+@@ -195,8 +195,12 @@ class YaccProduction:
+         self.lexer = None
+         self.parser= None
+     def __getitem__(self,n):
+-        if n >= 0: return self.slice[n].value
+-        else: return self.stack[n].value
++        if isinstance(n, slice):
++            return [s.value for s in self.slice[n]]
++        elif n >= 0: 
++            return self.slice[n].value
++        else: 
++            return self.stack[n].value
+ 
+     def __setitem__(self,n,v):
+         self.slice[n].value = v
+diff --git a/test/testyacc.py b/test/testyacc.py
+index 4462201..86c991a 100644
+--- a/test/testyacc.py
++++ b/test/testyacc.py
+@@ -9,6 +9,7 @@ except ImportError:
+ import sys
+ import os
+ import warnings
++import re
+ 
+ sys.path.insert(0,"..")
+ sys.tracebacklimit = 0
+@@ -57,6 +58,10 @@ def check_expected(result,expected):
+ # some variations in error message order that occurs due to dict hash table
+ # randomization that was introduced in Python 3.3
+ def check_expected(result, expected):
++    # Normalize 'state n' text to account for randomization effects in Python 3.3
++    expected = re.sub(r' state \d+', 'state <n>', expected)
++    result = re.sub(r' state \d+', 'state <n>', result)
++
+     resultlines = set()
+     for line in result.splitlines():
+         if line.startswith("WARNING: "):
+-- 
+1.8.5.2
+
