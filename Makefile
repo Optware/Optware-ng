@@ -195,7 +195,7 @@ PYTHON_PACKAGES = \
 	py-elementtree py-feedparser py-flup py-formencode \
 	py-gdchart2 py-gd py-genshi py-gnosis-utils py-gobject2 py-gtk \
 	py-idna py-ipaddress \
-	py-hgsubversion py-hgsvn py-kid py-lepl py-lxml \
+	py-hgsubversion py-hgsvn py-jsmin py-kid py-lepl py-lxml \
 	py-mako py-markdown py-mercurial \
 	py-moin py-mssql py-mx-base py-mysql \
 	py-myghty \
