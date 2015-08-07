@@ -39,7 +39,7 @@ DELUGE_DEVELOP_CONFLICTS=deluge
 #
 # DELUGE_DEVELOP_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_DEVELOP_IPK_VERSION=3
+DELUGE_DEVELOP_IPK_VERSION=4
 
 #
 # DELUGE_DEVELOP_CONFFILES should be a list of user-editable files
@@ -128,8 +128,10 @@ $(DELUGE_DEVELOP_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DE
 	$(DELUGE_DEVELOP_UNZIP) $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(DELUGE_DEVELOP_PATCHES) | patch -d $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) -p1
 	mv $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) $(@D)
-	cd $(@D); $(HOST_STAGING_PREFIX)/bin/python2.7 $(DELUGE_DEVELOP_SOURCE_DIR)/minify_web_js.py deluge/ui/web/js/deluge-all
-	cd $(@D); $(HOST_STAGING_PREFIX)/bin/python2.7 $(DELUGE_DEVELOP_SOURCE_DIR)/minify_web_js.py deluge/ui/web/js/extjs
+	cd $(@D)/deluge/ui/web/js/deluge-all; \
+		cat `cat $(DELUGE_DEVELOP_SOURCE_DIR)/deluge-all-js-cat-order` > ../deluge-all-debug.js
+	cd $(@D)/deluge/ui/web/js; \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 $(DELUGE_DEVELOP_SOURCE_DIR)/minify_file.py deluge-all-debug.js > deluge-all.js
 	(cd $(@D); \
 	    ( \
 		echo "[install]"; \
