@@ -8,7 +8,7 @@ Prepare USB drive, or other storage, as `/opt`, and type:
 
 ARM EABI:
 ```
-wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi//buildroot-armeabi-bootstrap.sh | sh
+wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi/buildroot-armeabi-bootstrap.sh | sh
 ```
 MIPSEL:
 ```
