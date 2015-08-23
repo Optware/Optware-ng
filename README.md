@@ -1,12 +1,14 @@
 # Description
 
-This is an Optware fork. It targets to be firmware-independent and currently supports I686 and soft-float ARM EABI and MIPSEL targets.
+This is an Optware fork. It targets to be firmware-independent and currently supports I686 and soft-float ARMv7 EABI and MIPSEL targets.
 
 # Getting started
 
-Prepare USB drive, or other storage, as `/opt`, and type:
+The instructions below only download, unpack and configure the package manager `ipkg`. You must previously make sure that `/opt` is writable, by preparing USB storage or router's `jffs` partition (for routers that support them), or symlink/mount-bind `/opt` to a location on your data volume (e.g., for a NAS). If you have MIPSEL/ARM Asus router running [Asuswrt-Merlin firmware](http://asuswrt.lostrealm.ca/download), check out [How To Install New Generation Optware]( https://www.hqt.ro/how-to-install-new-generation-optware) guide by @TeHashX.
 
-ARM EABI:
+To bootstrap the feed, connect over SSH/Telnet and type:
+
+ARMv7 EABI:
 ```
 wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi/buildroot-armeabi-bootstrap.sh | sh
 ```
@@ -30,7 +32,7 @@ Install desired ones:
 
 # Available packages
 
-* [ARM EABI](http://optware-ng.zyxmon.org/buildroot-armeabi/Packages.html)
+* [ARMv7 EABI](http://optware-ng.zyxmon.org/buildroot-armeabi/Packages.html)
 * [MIPSEL](http://optware-ng.zyxmon.org/buildroot-mipsel/Packages.html)
 * [I686](http://optware-ng.zyxmon.org/buildroot-i686/Packages.html)
 
