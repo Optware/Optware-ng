@@ -10,13 +10,16 @@
 # this cvs module is checked out.
 #
 
-MINIDLNA_REPOSITORY=:pserver:anonymous@minidlna.cvs.sourceforge.net:/cvsroot/minidlna
-MINIDLNA_DIR=minidlna
+MINIDLNA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/minidlna
+MINIDLNA_VERSION=1.1.4
+MINIDLNA_SOURCE=minidlna-$(MINIDLNA_VERSION).tar.gz
+MINIDLNA_DIR=minidlna-$(MINIDLNA_VERSION)
+MINIDLNA_UNZIP=zcat
 MINIDLNA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-MINIDLNA_DESCRIPTION=The MiniDLNA daemon is an UPnP-A/V and DLNA service which serves multimedia content to compatible clients on the network.
+MINIDLNA_DESCRIPTION=MiniDLNA (aka ReadyDLNA) is server software with the aim of being fully compliant with DLNA/UPnP-AV clients.
 MINIDLNA_SECTION=media
 MINIDLNA_PRIORITY=optional
-MINIDLNA_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite
+MINIDLNA_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, ffmpegthumbnailer
 ifneq (, $(filter libiconv, $(PACKAGES)))
 MINIDLNA_DEPENDS +=, libiconv
 endif
@@ -24,42 +27,19 @@ MINIDLNA_SUGGESTS=
 MINIDLNA_CONFLICTS=
 
 #
-# Software downloaded from CVS repositories must either use a tag or a
-# date to ensure that the same sources can be downloaded later.
-#
-
-#
-# If you want to use a date, uncomment the variables below and modify
-# MINIDLNA_CVS_DATE
-#
-
-MINIDLNA_CVS_DATE=20090413
-MINIDLNA_VERSION=cvs$(MINIDLNA_CVS_DATE)
-#MINIDLNA_CVS_OPTS=-D $(MINIDLNA_CVS_DATE)
-
-#
-# If you want to use a tag, uncomment the variables below and modify
-# MINIDLNA_CVS_TAG and MINIDLNA_CVS_VERSION
-#
-
-#MINIDLNA_CVS_TAG=version_1_2_3
-#MINIDLNA_VERSION=1.2.3
-#MINIDLNA_CVS_OPTS=-r $(MINIDLNA_CVS_TAG)
-
-#
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=2
+MINIDLNA_IPK_VERSION=1
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
-#MINIDLNA_CONFFILES=/opt/etc/init.d/S98minidlna
+#MINIDLNA_CONFFILES=/opt/etc/minidlna.conf /opt/etc/init.d/SXXminidlna
 
 #
 # MINIDLNA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MINIDLNA_PATCHES=$(MINIDLNA_SOURCE_DIR)/inotify-syscalls-mips.patch
+MINIDLNA_PATCHES=$(MINIDLNA_SOURCE_DIR)/video_thumbnail-1.1.4.patch
 
 #
 # If the compilation of the package requires additional
@@ -67,9 +47,6 @@ MINIDLNA_PATCHES=$(MINIDLNA_SOURCE_DIR)/inotify-syscalls-mips.patch
 #
 MINIDLNA_CPPFLAGS=
 MINIDLNA_LDFLAGS=
-ifneq (, $(filter libiconv, $(PACKAGES)))
-MINIDLNA_LDFLAGS= -liconv
-endif
 
 #
 # MINIDLNA_BUILD_DIR is the directory in which the build is done.
@@ -88,19 +65,25 @@ MINIDLNA_IPK=$(BUILD_DIR)/minidlna_$(MINIDLNA_VERSION)-$(MINIDLNA_IPK_VERSION)_$
 .PHONY: minidlna-source minidlna-unpack minidlna minidlna-stage minidlna-ipk minidlna-clean minidlna-dirclean minidlna-check
 
 #
-# In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
 #
-$(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(MINIDLNA_DIR) && \
-		cvs -d $(MINIDLNA_REPOSITORY) -z3 co $(MINIDLNA_CVS_OPTS) $(MINIDLNA_DIR) && \
-		tar -czf $@ $(MINIDLNA_DIR) --exclude CVS && \
-		rm -rf $(MINIDLNA_DIR) \
-	)
+$(DL_DIR)/$(MINIDLNA_SOURCE):
+	$(WGET) -P $(@D) $(MINIDLNA_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-minidlna-source: $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz
+#
+# The source code depends on it existing within the download directory.
+# This target will be called by the top level Makefile to download the
+# source code's archive (.tar.gz, .bz2, etc.)
+#
+minidlna-source: $(DL_DIR)/$(MINIDLNA_SOURCE) $(MINIDLNA_PATCHES)
 
+#
+# This target unpacks the source code in the build directory.
+# If the source archive is not .tar.gz or .tar.bz2, then you will need
+# to change the commands here.  Patches to the source code are also
+# applied in this target as required.
 #
 # This target also configures the build within the build directory.
 # Flags such as LDFLAGS and CPPFLAGS should be passed into configure
@@ -109,19 +92,22 @@ minidlna-source: $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz
 # to Make causes it to override the default search paths of the compiler.
 #
 # If the compilation of the package requires other packages to be staged
-# first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+#
+# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
+# shown below to make various patches to it.
 #
 $(MINIDLNA_BUILD_DIR)/.configured: $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz make/minidlna.mk
 ifneq (, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) libexif-stage libid3tag-stage libjpeg-stage libvorbis-stage
-	$(MAKE) e2fsprogs-stage ffmpeg-stage flac-stage sqlite-stage
+	$(MAKE) libexif-stage libid3tag-stage libjpeg-stage libvorbis-stage \
+		e2fsprogs-stage ffmpeg-stage flac-stage sqlite-stage ffmpegthumbnailer-stage
 	rm -rf $(BUILD_DIR)/$(MINIDLNA_DIR) $(MINIDLNA_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz
 	if test -n "$(MINIDLNA_PATCHES)" ; \
 		then cat $(MINIDLNA_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(MINIDLNA_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(MINIDLNA_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MINIDLNA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MINIDLNA_DIR) $(@D) ; \
@@ -132,12 +118,15 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIDLNA_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--enable-thumbnail \
 	)
 	sed -i.orig \
 		-e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|g' \
@@ -203,7 +192,7 @@ $(MINIDLNA_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(MINIDLNA_SECTION)" >>$@
 	@echo "Version: $(MINIDLNA_VERSION)-$(MINIDLNA_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(MINIDLNA_MAINTAINER)" >>$@
-	@echo "Source: $(MINIDLNA_REPOSITORY)" >>$@
+	@echo "Source: $(MINIDLNA_SITE)/$(MINIDLNA_SOURCE)" >>$@
 	@echo "Description: $(MINIDLNA_DESCRIPTION)" >>$@
 	@echo "Depends: $(MINIDLNA_DEPENDS)" >>$@
 	@echo "Suggests: $(MINIDLNA_SUGGESTS)" >>$@
