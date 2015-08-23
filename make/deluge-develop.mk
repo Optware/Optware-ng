@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DELUGE_DEVELOP_REPOSITORY=git://deluge-torrent.org/deluge.git
-DELUGE_DEVELOP_VERSION=20150223
-DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-02-23 HEAD`
+DELUGE_DEVELOP_VERSION=20150822
+DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-08-22 HEAD`
 DELUGE_DEVELOP_SOURCE=deluge-develop-$(DELUGE_DEVELOP_VERSION).tar.bz2
 DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
 DELUGE_DEVELOP_UNZIP=bzcat
@@ -39,7 +39,7 @@ DELUGE_DEVELOP_CONFLICTS=deluge
 #
 # DELUGE_DEVELOP_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_DEVELOP_IPK_VERSION=4
+DELUGE_DEVELOP_IPK_VERSION=1
 
 #
 # DELUGE_DEVELOP_CONFFILES should be a list of user-editable files
@@ -89,12 +89,15 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE):
+	$(MAKE) python27-host-stage
 	(cd $(BUILD_DIR) ; \
 		rm -rf $(DELUGE_DEVELOP_DIR) && \
 		git clone $(DELUGE_DEVELOP_REPOSITORY) $(DELUGE_DEVELOP_DIR) && \
 		(cd $(DELUGE_DEVELOP_DIR) && \
 		git checkout develop && \
-		git checkout $(DELUGE_DEVELOP_TREEISH)) && \
+		git checkout $(DELUGE_DEVELOP_TREEISH) && \
+		VERSION=`$(HOST_STAGING_PREFIX)/bin/python2.7 -c 'import msgfmt; from version import get_version; print get_version(prefix="deluge-", suffix=".dev0")'`; \
+		sed -i -e "/^    version=.*,$$/s/=.*/=\"$${VERSION}\",/" setup.py) && \
 		tar -cjvf $@ --exclude .git --exclude "*.log" $(DELUGE_DEVELOP_DIR) && \
 		rm -rf $(DELUGE_DEVELOP_DIR) ; \
 	)
@@ -128,18 +131,8 @@ $(DELUGE_DEVELOP_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DE
 	$(DELUGE_DEVELOP_UNZIP) $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(DELUGE_DEVELOP_PATCHES) | patch -d $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) -p1
 	mv $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) $(@D)
-	cd $(@D)/deluge/ui/web/js/deluge-all; \
-		cat `cat $(DELUGE_DEVELOP_SOURCE_DIR)/deluge-all-js-cat-order` > ../deluge-all-debug.js
-	cd $(@D)/deluge/ui/web/js; \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 $(DELUGE_DEVELOP_SOURCE_DIR)/minify_file.py deluge-all-debug.js > deluge-all.js
-	(cd $(@D); \
-	    ( \
-		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
-	    ) >> setup.cfg \
-	)
+	### generate minified .js
+	$(HOST_STAGING_PREFIX)/bin/python2.7 $(DELUGE_DEVELOP_SOURCE_DIR)/minify_web_js.py $(@D)/deluge/ui/web/js/deluge-all
 	### don't build rasterbar libtorrent
 	sed -i -e 's/build_libtorrent = True/build_libtorrent = False/' $(@D)/setup.py
 	### set default deluge config dir to /opt/etc
