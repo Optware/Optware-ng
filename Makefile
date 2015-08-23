@@ -293,7 +293,7 @@ COMMON_CROSS_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop eventlog exif exo expat extract-xiso ez-ipupdate \
 	faad2 fann fatresize fatsort fbcat fcgi fconfig \
-	fdupes fetchmail ffmpeg \
+	fdupes fetchmail ffmpeg ffmpegthumbnailer \
 	ficy file finch findutils firedrill-httptunnel \
 	fis fish fixesext flac flex flip \
 	fontconfig \
