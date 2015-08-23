@@ -25,7 +25,7 @@ DELUGE_DEVELOP_REPOSITORY=git://deluge-torrent.org/deluge.git
 DELUGE_DEVELOP_VERSION=20150822
 DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-08-22 HEAD`
 DELUGE_DEVELOP_SOURCE=deluge-develop-$(DELUGE_DEVELOP_VERSION).tar.bz2
-DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
+#DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
 DELUGE_DEVELOP_UNZIP=bzcat
 DELUGE_DEVELOP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DELUGE_DEVELOP_DESCRIPTION=Deluge BitTorrent client: development version (without GTK+ client).
@@ -39,7 +39,7 @@ DELUGE_DEVELOP_CONFLICTS=deluge
 #
 # DELUGE_DEVELOP_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_DEVELOP_IPK_VERSION=1
+DELUGE_DEVELOP_IPK_VERSION=2
 
 #
 # DELUGE_DEVELOP_CONFFILES should be a list of user-editable files
@@ -49,7 +49,7 @@ DELUGE_DEVELOP_CONFFILES=/opt/etc/init.d/S80deluged /opt/etc/init.d/S80deluge-we
 # DELUGE_DEVELOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#DELUGE_DEVELOP_PATCHES=$(DELUGE_DEVELOP_SOURCE_DIR)/configure.patch
+DELUGE_DEVELOP_PATCHES=$(DELUGE_DEVELOP_SOURCE_DIR)/version.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -89,17 +89,17 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE):
-	$(MAKE) python27-host-stage
+	$(MAKE) py-slimit-host-stage
 	(cd $(BUILD_DIR) ; \
-		rm -rf $(DELUGE_DEVELOP_DIR) && \
-		git clone $(DELUGE_DEVELOP_REPOSITORY) $(DELUGE_DEVELOP_DIR) && \
-		(cd $(DELUGE_DEVELOP_DIR) && \
+		rm -rf deluge-develop && \
+		git clone $(DELUGE_DEVELOP_REPOSITORY) deluge-develop && \
+		(cd deluge-develop && \
 		git checkout develop && \
 		git checkout $(DELUGE_DEVELOP_TREEISH) && \
-		VERSION=`$(HOST_STAGING_PREFIX)/bin/python2.7 -c 'import msgfmt; from version import get_version; print get_version(prefix="deluge-", suffix=".dev0")'`; \
-		sed -i -e "/^    version=.*,$$/s/=.*/=\"$${VERSION}\",/" setup.py) && \
-		tar -cjvf $@ --exclude .git --exclude "*.log" $(DELUGE_DEVELOP_DIR) && \
-		rm -rf $(DELUGE_DEVELOP_DIR) ; \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 minify_web_js.py deluge/ui/web/js/deluge-all && \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py sdist --formats=tar && \
+		bzip2 -ck dist/deluge-*.tar > $@) && \
+		rm -rf deluge-develop ; \
 	)
 
 #
@@ -125,14 +125,14 @@ deluge-develop-source: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DELUGE_DEVELOP_PATCH
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(DELUGE_DEVELOP_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DELUGE_DEVELOP_PATCHES) make/deluge-develop.mk
-	$(MAKE) python27-host-stage py-setuptools-host-stage py-slimit-host-stage
-	rm -rf $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) $(@D)
-#	cd $(BUILD_DIR); $(DELUGE_DEVELOP_UNZIP) $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE)
-	$(DELUGE_DEVELOP_UNZIP) $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(DELUGE_DEVELOP_PATCHES) | patch -d $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) -p1
-	mv $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) $(@D)
-	### generate minified .js
-	$(HOST_STAGING_PREFIX)/bin/python2.7 $(DELUGE_DEVELOP_SOURCE_DIR)/minify_web_js.py $(@D)/deluge/ui/web/js/deluge-all
+	$(MAKE) python27-host-stage py-setuptools-host-stage
+	rm -rf $(@D)
+	install -d $(@D)
+	$(DELUGE_DEVELOP_UNZIP) $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) | tar -C $(@D) -xvf - --strip-components=1
+	if test -n "$(DELUGE_DEVELOP_PATCHES)" ; \
+		then cat $(DELUGE_DEVELOP_PATCHES) | \
+		patch -d $(@D) -p1; \
+	fi
 	(cd $(@D); \
 	    ( \
 		echo "[install]"; \
@@ -141,8 +141,6 @@ $(DELUGE_DEVELOP_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DE
 		echo "executable=/opt/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
-	### don't build rasterbar libtorrent
-	sed -i -e 's/build_libtorrent = True/build_libtorrent = False/' $(@D)/setup.py
 	### set default deluge config dir to /opt/etc
 	sed  -i -e 's|return os\.path\.join(save_config_path("deluge"), filename)|return os.path.join("/opt/etc/deluge", filename)|' \
 		-e 's|return save_config_path("deluge")|return "/opt/etc/deluge"|' \
@@ -181,7 +179,7 @@ $(DELUGE_DEVELOP_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(DELUGE_DEVELOP_SECTION)" >>$@
 	@echo "Version: $(DELUGE_DEVELOP_VERSION)-$(DELUGE_DEVELOP_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(DELUGE_DEVELOP_MAINTAINER)" >>$@
-	@echo "Source: $(DELUGE_DEVELOP_SITE)/$(DELUGE_DEVELOP_SOURCE)" >>$@
+	@echo "Source: $(DELUGE_DEVELOP_REPOSITORY)" >>$@
 	@echo "Description: $(DELUGE_DEVELOP_DESCRIPTION)" >>$@
 	@echo "Depends: $(DELUGE_DEVELOP_DEPENDS)" >>$@
 	@echo "Conflicts: $(DELUGE_DEVELOP_CONFLICTS)" >>$@
@@ -195,7 +193,7 @@ $(DELUGE_DEVELOP_GTK_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(DELUGE_DEVELOP_SECTION)" >>$@
 	@echo "Version: $(DELUGE_DEVELOP_VERSION)-$(DELUGE_DEVELOP_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(DELUGE_DEVELOP_MAINTAINER)" >>$@
-	@echo "Source: $(DELUGE_DEVELOP_SITE)/$(DELUGE_DEVELOP_SOURCE)" >>$@
+	@echo "Source: $(DELUGE_DEVELOP_REPOSITORY)" >>$@
 	@echo "Description: $(DELUGE_DEVELOP_GTK_DESCRIPTION)" >>$@
 	@echo "Depends: $(DELUGE_DEVELOP_GTK_DEPENDS)" >>$@
 	@echo "Conflicts: $(DELUGE_DEVELOP_CONFLICTS)" >>$@
@@ -257,7 +255,7 @@ deluge-develop-clean:
 # directories.
 #
 deluge-develop-dirclean:
-	rm -rf $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) $(DELUGE_DEVELOP_BUILD_DIR) \
+	rm -rf $(DELUGE_DEVELOP_BUILD_DIR) \
 	$(DELUGE_DEVELOP_IPK_DIR) $(DELUGE_DEVELOP_IPK) \
 
 #
