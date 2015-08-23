@@ -133,6 +133,14 @@ $(DELUGE_DEVELOP_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DE
 	mv $(BUILD_DIR)/$(DELUGE_DEVELOP_DIR) $(@D)
 	### generate minified .js
 	$(HOST_STAGING_PREFIX)/bin/python2.7 $(DELUGE_DEVELOP_SOURCE_DIR)/minify_web_js.py $(@D)/deluge/ui/web/js/deluge-all
+	(cd $(@D); \
+	    ( \
+		echo "[install]"; \
+		echo "install_scripts = /opt/bin"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.7"; \
+	    ) >> setup.cfg \
+	)
 	### don't build rasterbar libtorrent
 	sed -i -e 's/build_libtorrent = True/build_libtorrent = False/' $(@D)/setup.py
 	### set default deluge config dir to /opt/etc
