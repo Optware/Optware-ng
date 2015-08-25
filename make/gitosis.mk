@@ -89,8 +89,8 @@ $(DL_DIR)/$(GITOSIS_DIR).tar.gz:
 	(cd $(BUILD_DIR) ; \
 		rm -rf gitosis && \
 		git clone --bare $(GITOSIS_REPOSITORY) gitosis && \
-		cd gitosis && \
-		(git archive --format=tar --prefix=$(GITOSIS_DIR)/ $(GITOSIS_TREEISH) | gzip > $@) && \
+		(cd gitosis && \
+		git archive --format=tar --prefix=$(GITOSIS_DIR)/ $(GITOSIS_TREEISH) | gzip > $@) && \
 		rm -rf gitosis ; \
 	)
 

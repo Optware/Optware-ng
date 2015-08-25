@@ -82,8 +82,8 @@ else
 	(cd $(BUILD_DIR) ; \
 		rm -rf minidlna && \
 		git clone --bare $(MINIDLNA_REPOSITORY) minidlna && \
-		cd minidlna && \
-		(git archive --format=tar --prefix=$(MINIDLNA_DIR)/ $(MINIDLNA_TREEISH) | gzip > $@) && \
+		(cd minidlna && \
+		git archive --format=tar --prefix=$(MINIDLNA_DIR)/ $(MINIDLNA_TREEISH) | gzip > $@) && \
 		rm -rf minidlna ; \
 	)
 endif
