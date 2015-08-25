@@ -33,7 +33,8 @@ MINIDLNA_DEPENDS +=, libiconv
 MINIDLNA_THUMBNAIL_DEPENDS +=, libiconv
 endif
 MINIDLNA_SUGGESTS=
-MINIDLNA_CONFLICTS=
+MINIDLNA_CONFLICTS=minidlna-thumbnail
+MINIDLNA_THUMBNAIL_CONFLICTS=minidlna
 
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
@@ -291,7 +292,7 @@ endif
 	@echo "Description: $(MINIDLNA_THUMBNAIL_DESCRIPTION)" >>$@
 	@echo "Depends: $(MINIDLNA_THUMBNAIL_DEPENDS)" >>$@
 	@echo "Suggests: $(MINIDLNA_SUGGESTS)" >>$@
-	@echo "Conflicts: $(MINIDLNA_CONFLICTS)" >>$@
+	@echo "Conflicts: $(MINIDLNA_THUMBNAIL_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
