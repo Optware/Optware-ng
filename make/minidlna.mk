@@ -10,8 +10,14 @@
 # this cvs module is checked out.
 #
 
+MINIDLNA_REPOSITORY=git://git.code.sf.net/u/eastcheap/minidlna
 MINIDLNA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/minidlna
+ifndef MINIDLNA_REPOSITORY
 MINIDLNA_VERSION=1.1.4
+else
+MINIDLNA_VERSION=1.1.4+git20150323
+MINIDLNA_TREEISH=`git rev-list --max-count=1 --until=2015-03-23 HEAD`
+endif
 MINIDLNA_SOURCE=minidlna-$(MINIDLNA_VERSION).tar.gz
 MINIDLNA_DIR=minidlna-$(MINIDLNA_VERSION)
 MINIDLNA_UNZIP=zcat
@@ -39,7 +45,7 @@ MINIDLNA_IPK_VERSION=1
 # MINIDLNA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MINIDLNA_PATCHES=$(MINIDLNA_SOURCE_DIR)/video_thumbnail-1.1.4.patch
+MINIDLNA_PATCHES=$(MINIDLNA_SOURCE_DIR)/video_thumbnail-1.1.4-git.patch
 
 #
 # If the compilation of the package requires additional
@@ -69,8 +75,18 @@ MINIDLNA_IPK=$(BUILD_DIR)/minidlna_$(MINIDLNA_VERSION)-$(MINIDLNA_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MINIDLNA_SOURCE):
+ifndef MINIDLNA_REPOSITORY
 	$(WGET) -P $(@D) $(MINIDLNA_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+else
+	(cd $(BUILD_DIR) ; \
+		rm -rf minidlna && \
+		git clone --bare $(MINIDLNA_REPOSITORY) minidlna && \
+		cd minidlna && \
+		(git archive --format=tar --prefix=$(MINIDLNA_DIR)/ $(MINIDLNA_TREEISH) | gzip > $@) && \
+		rm -rf minidlna ; \
+	)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -127,6 +143,7 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 		--enable-thumbnail \
+		--program-prefix='' \
 	)
 	sed -i.orig \
 		-e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|g' \
@@ -192,7 +209,11 @@ $(MINIDLNA_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(MINIDLNA_SECTION)" >>$@
 	@echo "Version: $(MINIDLNA_VERSION)-$(MINIDLNA_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(MINIDLNA_MAINTAINER)" >>$@
+ifndef MINIDLNA_REPOSITORY
 	@echo "Source: $(MINIDLNA_SITE)/$(MINIDLNA_SOURCE)" >>$@
+else
+	@echo "Source: $(MINIDLNA_REPOSITORY)" >>$@
+endif
 	@echo "Description: $(MINIDLNA_DESCRIPTION)" >>$@
 	@echo "Depends: $(MINIDLNA_DEPENDS)" >>$@
 	@echo "Suggests: $(MINIDLNA_SUGGESTS)" >>$@
