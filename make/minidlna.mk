@@ -10,13 +10,13 @@
 # this cvs module is checked out.
 #
 
-MINIDLNA_REPOSITORY=git://git.code.sf.net/u/eastcheap/minidlna
+MINIDLNA_REPOSITORY=git://git.code.sf.net/p/minidlna/git
 MINIDLNA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/minidlna
 ifndef MINIDLNA_REPOSITORY
 MINIDLNA_VERSION=1.1.4
 else
-MINIDLNA_VERSION=1.1.4+git20150323
-MINIDLNA_TREEISH=`git rev-list --max-count=1 --until=2015-03-23 HEAD`
+MINIDLNA_VERSION=1.1.4+git20150805
+MINIDLNA_TREEISH=`git rev-list --max-count=1 --until=2015-08-05 HEAD`
 endif
 MINIDLNA_SOURCE=minidlna-$(MINIDLNA_VERSION).tar.gz
 MINIDLNA_DIR=minidlna-$(MINIDLNA_VERSION)
@@ -39,7 +39,7 @@ MINIDLNA_THUMBNAIL_CONFLICTS=minidlna
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=2
+MINIDLNA_IPK_VERSION=1
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
@@ -158,22 +158,9 @@ endif
 		--disable-nls \
 		--program-prefix='' \
 	)
-	sed -i.orig \
-		-e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|g' \
-		-e '/$$(CFLAGS).*-c/s|$$(CFLAGS) |&$$(CPPFLAGS) |' \
-		-e '/$$(CFLAGS).*$$(LIBS)/s|$$(CFLAGS) |$$(LDFLAGS) |' \
-		-e '/^minidlna:/s| $$(LIBS)||' \
-		$(@D)/nothumbs/Makefile
 	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
 		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/nothumbs/Makefile; \
 	fi
-#	sed -i.orig \
-		-e 's|\[ *-f /usr/include/sys/inotify.h *\]|$(TARGET_CC) -E $(SOURCE_DIR)/common/have_inotify.c >/dev/null 2>\&1|' \
-		-e 's|/usr/include/|$(STAGING_INCLUDE_DIR)/|g' \
-		-e '/^echo.*#define/s|$$OS_NAME|Linux|' \
-		-e '/^echo.*#define/s|$$OS_VERSION|Cross_compiled|' \
-		-e '/^echo.*#define/s|$${OS_URL}|http://www.kernel.org/|' \
-		$(@D)/nothumbs/genconfig.sh
 	sed -i.orig \
 		 -e 's|/etc/|/opt&|' \
 		 -e 's|/usr/|/opt/|' \
@@ -196,22 +183,9 @@ endif
 		--enable-thumbnail \
 		--program-prefix='' \
 	)
-	sed -i.orig \
-		-e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|g' \
-		-e '/$$(CFLAGS).*-c/s|$$(CFLAGS) |&$$(CPPFLAGS) |' \
-		-e '/$$(CFLAGS).*$$(LIBS)/s|$$(CFLAGS) |$$(LDFLAGS) |' \
-		-e '/^minidlna:/s| $$(LIBS)||' \
-		$(@D)/thumbs/Makefile
 	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
 		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/thumbs/Makefile; \
 	fi
-#	sed -i.orig \
-		-e 's|\[ *-f /usr/include/sys/inotify.h *\]|$(TARGET_CC) -E $(SOURCE_DIR)/common/have_inotify.c >/dev/null 2>\&1|' \
-		-e 's|/usr/include/|$(STAGING_INCLUDE_DIR)/|g' \
-		-e '/^echo.*#define/s|$$OS_NAME|Linux|' \
-		-e '/^echo.*#define/s|$$OS_VERSION|Cross_compiled|' \
-		-e '/^echo.*#define/s|$${OS_URL}|http://www.kernel.org/|' \
-		$(@D)/thumbs/genconfig.sh
 	sed -i.orig \
 		 -e 's|/etc/|/opt&|' \
 		 -e 's|/usr/|/opt/|' \
