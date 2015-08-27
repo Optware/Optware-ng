@@ -26,9 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBTORRENT-RASTERBAR_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libtorrent
+LIBTORRENT-RASTERBAR_SITE=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_0_6
+#LIBTORRENT-RASTERBAR_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libtorrent
 #LIBTORRENT-RASTERBAR_SITE=http://libtorrent.googlecode.com/files
-LIBTORRENT-RASTERBAR_VERSION=1.0.5
+LIBTORRENT-RASTERBAR_VERSION=1.0.6
 LIBTORRENT-RASTERBAR_SOURCE=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION).tar.gz
 LIBTORRENT-RASTERBAR_DIR=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION)
 LIBTORRENT-RASTERBAR_UNZIP=zcat
