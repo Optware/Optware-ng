@@ -333,7 +333,7 @@ COMMON_CROSS_PACKAGES = \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libgssapi \
 	libglade libhid \
 	libical \
-	libid3tag libidn libieee1284 libijs libinklevel libjbigkit libjpeg \
+	libid3tag libidn libieee1284 libijs libinklevel libjansson libjbigkit libjpeg \
 	libksba liblcms libmaa libmad libmatroska libmemcache libmicrohttpd \
 	libmcrypt \
 	libmms libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
