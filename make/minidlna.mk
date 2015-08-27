@@ -26,11 +26,15 @@ MINIDLNA_DESCRIPTION=MiniDLNA (aka ReadyDLNA) is server software with the aim of
 MINIDLNA_THUMBNAIL_DESCRIPTION=MiniDLNA (aka ReadyDLNA) is server software with the aim of being fully compliant with DLNA/UPnP-AV clients. Version with thumbnail generation support.
 MINIDLNA_SECTION=media
 MINIDLNA_PRIORITY=optional
-MINIDLNA_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite
-MINIDLNA_THUMBNAIL_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, ffmpegthumbnailer
+MINIDLNA_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, daemonize
+MINIDLNA_THUMBNAIL_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, daemonize, ffmpegthumbnailer
 ifneq (, $(filter libiconv, $(PACKAGES)))
 MINIDLNA_DEPENDS +=, libiconv
 MINIDLNA_THUMBNAIL_DEPENDS +=, libiconv
+endif
+ifneq (, $(filter libstdc++, $(PACKAGES)))
+MINIDLNA_DEPENDS +=, libstdc++
+MINIDLNA_THUMBNAIL_DEPENDS +=, libstdc++
 endif
 MINIDLNA_SUGGESTS=
 MINIDLNA_CONFLICTS=minidlna-thumbnail
@@ -39,11 +43,11 @@ MINIDLNA_THUMBNAIL_CONFLICTS=minidlna
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=1
+MINIDLNA_IPK_VERSION=2
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
-#MINIDLNA_CONFFILES=/opt/etc/minidlna.conf /opt/etc/init.d/SXXminidlna
+MINIDLNA_CONFFILES=/opt/etc/minidlna.conf /opt/etc/init.d/S98minidlna
 
 #
 # MINIDLNA_PATCHES should list any patches, in the the order in
@@ -125,7 +129,10 @@ $(MINIDLNA_BUILD_DIR)/.configured: $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz
 ifneq (, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) libexif-stage libid3tag-stage libjpeg-stage libvorbis-stage \
+ifneq (, $(filter libstdc++, $(PACKAGES)))
+	$(MAKE) libstdc++-stage
+endif
+	$(MAKE) libexif-stage libid3tag-stage libjpeg-stage libvorbis-stage bzip2-stage xz-utils-stage \
 		e2fsprogs-stage ffmpeg-stage flac-stage sqlite-stage ffmpegthumbnailer-stage
 	rm -rf $(BUILD_DIR)/$(MINIDLNA_DIR) $(@D)
 	install -d $(@D)
@@ -289,9 +296,9 @@ $(MINIDLNA_IPK): $(MINIDLNA_BUILD_DIR)/.built
 		ETCINSTALLDIR=$(MINIDLNA_IPK_DIR)/opt/etc \
 		;
 	$(STRIP_COMMAND) $(MINIDLNA_IPK_DIR)/opt/sbin/*
-#	install -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.conf $(MINIDLNA_IPK_DIR)/opt/etc/minidlna.conf
-#	install -d $(MINIDLNA_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MINIDLNA_BUILD_DIR)/linux/minidlna.init.d.script $(MINIDLNA_IPK_DIR)/opt/etc/init.d/S98minidlna
+	install -d $(MINIDLNA_IPK_DIR)/opt/etc/init.d
+	install -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.conf $(MINIDLNA_IPK_DIR)/opt/etc/minidlna.conf
+	install -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_IPK_DIR)/opt/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_IPK_DIR)/CONTROL/control
 #	install -m 755 $(MINIDLNA_SOURCE_DIR)/postinst $(MINIDLNA_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(MINIDLNA_SOURCE_DIR)/prerm $(MINIDLNA_IPK_DIR)/CONTROL/prerm
@@ -307,9 +314,9 @@ $(MINIDLNA_THUMBNAIL_IPK): $(MINIDLNA_BUILD_DIR)/.built
 		ETCINSTALLDIR=$(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc \
 		;
 	$(STRIP_COMMAND) $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/sbin/*
-#	install -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.conf $(MINIDLNA_IPK_DIR)/opt/etc/minidlna.conf
-#	install -d $(MINIDLNA_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MINIDLNA_BUILD_DIR)/linux/minidlna.init.d.script $(MINIDLNA_IPK_DIR)/opt/etc/init.d/S98minidlna
+	install -d $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/init.d
+	install -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.thumbs.conf $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/minidlna.conf
+	install -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_THUMBNAIL_IPK_DIR)/CONTROL/control
 #	install -m 755 $(MINIDLNA_SOURCE_DIR)/postinst $(MINIDLNA_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(MINIDLNA_SOURCE_DIR)/prerm $(MINIDLNA_IPK_DIR)/CONTROL/prerm
