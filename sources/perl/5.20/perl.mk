@@ -35,7 +35,7 @@ PERL_CPPFLAGS=
 PERL_ARCH = $(strip \
     $(if $(filter openwrt-ixp4xx slugos5be, $(OPTWARE_TARGET)), armv5teb-linux, \
     $(if $(filter buildroot-armeabi shibby-tomato-arm, $(OPTWARE_TARGET)), armv7l-linux, \
-    $(if $(filter buildroot-mipsel, $(OPTWARE_TARGET)), mips-linux, \
+    $(if $(filter buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)), mips-linux, \
     $(if $(filter armeb, $(TARGET_ARCH)), armv5b-linux, \
     $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
     $(TARGET_ARCH)-linux))))))
