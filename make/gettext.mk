@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 GETTEXT_SITE=http://ftp.gnu.org/gnu/gettext
-GETTEXT_VERSION=0.19.4
+GETTEXT_VERSION=0.19.5.1
 GETTEXT_SOURCE=gettext-$(GETTEXT_VERSION).tar.gz
 GETTEXT_DIR=gettext-$(GETTEXT_VERSION)
 GETTEXT_UNZIP=zcat
@@ -34,7 +34,7 @@ GETTEXT_CONFLICTS=
 #
 # GETTEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-GETTEXT_IPK_VERSION=2
+GETTEXT_IPK_VERSION=1
 
 #
 # GETTEXT_CONFFILES should be a list of user-editable files
@@ -54,6 +54,9 @@ GETTEXT_PATCHES=$(GETTEXT_SOURCE_DIR)/uClibc-error_print_progname.0.19.4.patch
 #
 GETTEXT_CPPFLAGS=
 GETTEXT_LDFLAGS=
+ifeq ($(LIBC_STYLE), uclibc)
+GETTEXT_LDFLAGS += -lrt
+endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GETTEXT_LDFLAGS += -liconv
 endif
@@ -134,7 +137,7 @@ gettext-host-stage: $(GETTEXT_HOST_BUILD_DIR)/.staged
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GETTEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
+$(GETTEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES) make/gettext.mk
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
