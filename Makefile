@@ -279,7 +279,7 @@ COMMON_CROSS_PACKAGES = \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \
-	dansguardian dash davtools \
+	daemonize dansguardian dash davtools \
 	dbus dbus-glib dbus-python \
 	dcled dcraw delegate denyhosts dev-pts devio devmem2 dfu-util \
 	dhcp dialog dict digitemp dircproxy distcc \
