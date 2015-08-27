@@ -223,6 +223,7 @@ ERLANG_PACKAGES = \
 ASTERISK_PACKAGES = \
 	asterisk10 \
 	asterisk11 \
+	asterisk13 \
 	asterisk14-core-sounds-en-alaw \
 	asterisk14-core-sounds-en-g729 \
 	asterisk14-core-sounds-en-gsm \
