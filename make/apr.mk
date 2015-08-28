@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_SITE=http://www.apache.org/dist/apr
-APR_VERSION=1.5.1
+APR_VERSION=1.5.2
 APR_SOURCE=apr-$(APR_VERSION).tar.bz2
 APR_DIR=apr-$(APR_VERSION)
 APR_UNZIP=bzcat
@@ -104,7 +104,7 @@ apr-source: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES)
 # Build host binary to use during cross compilation
 #
 $(APR_HOST_GENTESTCHAR): $(DL_DIR)/$(APR_SOURCE)
-	rm -rf $(HOST_BUILD_DIR)/$(APR_DIR) $(@D)
+	rm -rf $(HOST_BUILD_DIR)/$(APR_DIR) $(APR_HOST_BUILD_DIR)
 	$(APR_UNZIP) $(DL_DIR)/$(APR_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(APR_DIR) $(APR_HOST_BUILD_DIR)
 	(cd $(APR_HOST_BUILD_DIR); \
