@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://archive.apache.org/dist/httpd
-APACHE_VERSION=2.4.12
+APACHE_VERSION=2.4.16
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -23,7 +23,7 @@ APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
 APACHE_DEPENDS=apr (>= $(APR_VERSION)), apr-util (>= $(APR_UTIL_VERSION)), \
-	e2fsprogs, expat, openssl, zlib $(APACHE_TARGET_DEPENDS), pcre
+	e2fsprogs, expat, openssl, zlib $(APACHE_TARGET_DEPENDS), pcre, libxml2
 
 APACHE_MPM=worker
 #APACHE_MPM=prefork
@@ -165,7 +165,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 	if test -d $(STAGING_INCLUDE_DIR)/apache2; then \
 		cd $(STAGING_INCLUDE_DIR)/apache2/ && rm -f `ls | egrep -v '^apr|^apu'`; \
 	fi
-	$(MAKE) zlib-stage e2fsprogs-stage expat-stage openssl-stage apr-util-stage pcre-stage
+	$(MAKE) zlib-stage e2fsprogs-stage expat-stage openssl-stage apr-util-stage pcre-stage libxml2-stage
 	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(@D)
 	$(APACHE_UNZIP) $(DL_DIR)/$(APACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APACHE_DIR) $(@D)
