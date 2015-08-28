@@ -26,8 +26,8 @@ MINIDLNA_DESCRIPTION=MiniDLNA (aka ReadyDLNA) is server software with the aim of
 MINIDLNA_THUMBNAIL_DESCRIPTION=MiniDLNA (aka ReadyDLNA) is server software with the aim of being fully compliant with DLNA/UPnP-AV clients. Version with thumbnail generation support.
 MINIDLNA_SECTION=media
 MINIDLNA_PRIORITY=optional
-MINIDLNA_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, daemonize
-MINIDLNA_THUMBNAIL_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, daemonize, ffmpegthumbnailer
+MINIDLNA_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, libpng, daemonize
+MINIDLNA_THUMBNAIL_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, libpng, daemonize, ffmpegthumbnailer
 ifneq (, $(filter libiconv, $(PACKAGES)))
 MINIDLNA_DEPENDS +=, libiconv
 MINIDLNA_THUMBNAIL_DEPENDS +=, libiconv
@@ -43,7 +43,7 @@ MINIDLNA_THUMBNAIL_CONFLICTS=minidlna
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=2
+MINIDLNA_IPK_VERSION=3
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
@@ -53,7 +53,9 @@ MINIDLNA_CONFFILES=/opt/etc/minidlna.conf /opt/etc/init.d/S98minidlna
 # MINIDLNA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MINIDLNA_PATCHES=$(MINIDLNA_SOURCE_DIR)/video_thumbnail-1.1.4-git.patch
+MINIDLNA_PATCHES=\
+$(MINIDLNA_SOURCE_DIR)/minidlna-1.1.4-git.R.L.Horn.patch \
+$(MINIDLNA_SOURCE_DIR)/video_thumbnail-1.1.4-R.L.Horn.patch
 
 #
 # If the compilation of the package requires additional
@@ -125,7 +127,7 @@ minidlna-source: $(DL_DIR)/$(MINIDLNA_SOURCE) $(MINIDLNA_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(MINIDLNA_BUILD_DIR)/.configured: $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz make/minidlna.mk
+$(MINIDLNA_BUILD_DIR)/.configured: $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz $(MINIDLNA_PATCHES) make/minidlna.mk
 ifneq (, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -133,7 +135,7 @@ ifneq (, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
 	$(MAKE) libexif-stage libid3tag-stage libjpeg-stage libvorbis-stage bzip2-stage xz-utils-stage \
-		e2fsprogs-stage ffmpeg-stage flac-stage sqlite-stage ffmpegthumbnailer-stage
+		e2fsprogs-stage ffmpeg-stage flac-stage sqlite-stage ffmpegthumbnailer-stage libpng-stage
 	rm -rf $(BUILD_DIR)/$(MINIDLNA_DIR) $(@D)
 	install -d $(@D)
 	tar -C $(@D) -xzf $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz
@@ -168,6 +170,7 @@ endif
 	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
 		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/nothumbs/Makefile; \
 	fi
+	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,/opt/lib|g' $(@D)/nothumbs/Makefile
 	sed -i.orig \
 		 -e 's|/etc/|/opt&|' \
 		 -e 's|/usr/|/opt/|' \
@@ -193,6 +196,7 @@ endif
 	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
 		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/thumbs/Makefile; \
 	fi
+	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,/opt/lib|g' $(@D)/thumbs/Makefile
 	sed -i.orig \
 		 -e 's|/etc/|/opt&|' \
 		 -e 's|/usr/|/opt/|' \
