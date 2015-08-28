@@ -326,7 +326,7 @@ endif
 ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
 	sed -i -e '/+= *-pipe/s/^/#/' $(@D)/Makefile
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 #	no res_nsearch() in uClibc 0.9.33.2
 	sed -i -e '/AC_DEFINE(\[HAVE_RES_NINIT\]/d' $(@D)/configure.ac
 endif
