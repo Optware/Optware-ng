@@ -53,11 +53,11 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=1
+TRANSMISSION_IPK_VERSION=2
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
-#TRANSMISSION_CONFFILES=/opt/etc/transmission.conf
+TRANSMISSION_CONFFILES=/opt/etc/transmission-daemon/settings.json /opt/etc/init.d/S95transmission
 
 TRANSMISSION_PATCHES = $(TRANSMISSION_SOURCE_DIR)/int64_switch.patch \
 
@@ -68,7 +68,7 @@ TRANSMISSION_CONFIG_ENV ?=
 # compilation or linking flags, then list them here.
 #
 TRANSMISSION_CPPFLAGS=-O3 -DTR_EMBEDDED
-TRANSMISSION_LDFLAGS=
+TRANSMISSION_LDFLAGS=-lcrypto
 TRANSMISSION-DBG_CPPFLAGS=-O0 -g -DTR_EMBEDDED
 TRANSMISSION-DBG_LDFLAGS=-lefence -lpthread
 ifeq (uclibc, $(LIBC_STYLE))
@@ -411,8 +411,9 @@ endif
 		$(TRANSMISSION_GTK_IPK_DIR) $(BUILD_DIR)/transmission-gtk_*_$(TARGET_ARCH).ipk
 	install -d $(TRANSMISSION_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) DESTDIR=$(TRANSMISSION_IPK_DIR) install-strip
-#	install -d $(TRANSMISSION_IPK_DIR)/opt/etc
-#	install -m 644 $(TRANSMISSION_SOURCE_DIR)/transmission.conf $(TRANSMISSION_IPK_DIR)/opt/etc/transmission.conf
+	install -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d $(TRANSMISSION_IPK_DIR)/opt/etc/transmission-daemon
+	install -m 755 $(TRANSMISSION_SOURCE_DIR)/rc.transmission $(TRANSMISSION_IPK_DIR)/opt/etc/init.d/S95transmission
+	install -m 644 $(TRANSMISSION_SOURCE_DIR)/settings.json $(TRANSMISSION_IPK_DIR)/opt/etc/transmission-daemon/
 	install -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	install -m 666 $(TRANSMISSION_BUILD_DIR)/[CNR]*  $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	install -d $(TRANSMISSION_IPK_DIR)/opt/var/log
