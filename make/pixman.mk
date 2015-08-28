@@ -52,7 +52,7 @@ PIXMAN_CPPFLAGS=
 PIXMAN_LDFLAGS=
 
 PIXMAN_CONF_ARGS=
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 PIXMAN_CONF_ARGS += --disable-mips-dspr2
 endif
 
