@@ -128,7 +128,15 @@ xi-unpack: $(XI_BUILD_DIR)/.configured
 #
 $(XI_BUILD_DIR)/.built: $(XI_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	### a very odd xi/inputproto bug:
+	### xi fails on intial build with lots of errors,
+	### but builds fine after re-building and
+	### re-staging inputproto
+	$(MAKE) -C $(@D) || \
+	( \
+		$(MAKE) inputproto-dirclean inputproto-stage && \
+		$(MAKE) -C $(@D) \
+	)
 	touch $@
 
 #
