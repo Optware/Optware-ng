@@ -1,5 +1,5 @@
---- host/staging/opt/lib/python2.6/distutils/command/build_ext.py.orig	2009-01-20 11:36:21.000000000 -0800
-+++ host/staging/opt/lib/python2.6/distutils/command/build_ext.py	2009-01-20 12:07:28.000000000 -0800
+--- python2.6/distutils/command/build_ext.py.orig	2009-01-20 11:36:21.000000000 -0800
++++ python2.6/distutils/command/build_ext.py	2009-01-20 12:07:28.000000000 -0800
 @@ -157,9 +157,9 @@
  
          # Put the Python "system" include dir at the end, so that

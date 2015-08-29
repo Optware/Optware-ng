@@ -198,7 +198,7 @@ python26-stage: $(PYTHON26_BUILD_DIR)/.staged
 $(HOST_STAGING_PREFIX)/bin/python2.6: host/.configured make/python26.mk
 	$(MAKE) $(PYTHON26_BUILD_DIR)/.built
 	$(MAKE) -C $(PYTHON26_BUILD_DIR)/buildpython26 DESTDIR=$(HOST_STAGING_DIR) install
-	patch -b -p0 < $(PYTHON26_SOURCE_DIR)/disable-host-py_include.patch
+	cd $(HOST_STAGING_LIB_DIR); patch -b -p0 < $(PYTHON26_SOURCE_DIR)/disable-host-py_include.patch
 	rm -f $(@D)/python
 
 python26-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.6
