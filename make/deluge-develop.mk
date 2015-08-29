@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DELUGE_DEVELOP_REPOSITORY=git://deluge-torrent.org/deluge.git
-DELUGE_DEVELOP_VERSION=20150822
-DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-08-22 HEAD`
+DELUGE_DEVELOP_VERSION=20150828
+DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-08-28 HEAD`
 DELUGE_DEVELOP_SOURCE=deluge-develop-$(DELUGE_DEVELOP_VERSION).tar.bz2
 #DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
 DELUGE_DEVELOP_UNZIP=bzcat
@@ -39,7 +39,7 @@ DELUGE_DEVELOP_CONFLICTS=deluge
 #
 # DELUGE_DEVELOP_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_DEVELOP_IPK_VERSION=2
+DELUGE_DEVELOP_IPK_VERSION=1
 
 #
 # DELUGE_DEVELOP_CONFFILES should be a list of user-editable files
@@ -49,7 +49,7 @@ DELUGE_DEVELOP_CONFFILES=/opt/etc/init.d/S80deluged /opt/etc/init.d/S80deluge-we
 # DELUGE_DEVELOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-DELUGE_DEVELOP_PATCHES=$(DELUGE_DEVELOP_SOURCE_DIR)/version.py.patch
+#DELUGE_DEVELOP_PATCHES=$(DELUGE_DEVELOP_SOURCE_DIR)/version.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -89,7 +89,7 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE):
-	$(MAKE) py-slimit-host-stage
+	$(MAKE) python27-host-stage py-slimit-host-stage
 	(cd $(BUILD_DIR) ; \
 		rm -rf deluge-develop && \
 		git clone $(DELUGE_DEVELOP_REPOSITORY) deluge-develop && \
