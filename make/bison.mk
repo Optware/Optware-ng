@@ -5,7 +5,7 @@
 ###########################################################
 
 BISON_SITE=http://ftp.gnu.org/gnu/bison
-BISON_VERSION=2.5.1
+BISON_VERSION=3.0.4
 BISON_SOURCE=bison-$(BISON_VERSION).tar.xz
 BISON_DIR=bison-$(BISON_VERSION)
 BISON_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
@@ -28,6 +28,10 @@ BISON_IPK_DIR=$(BUILD_DIR)/bison-$(BISON_VERSION)-ipk
 #
 BISON_CPPFLAGS=
 BISON_LDFLAGS=
+
+ifeq ($(LIBC_STYLE), uclibc)
+BISON_LDFLAGS += -lrt
+endif
 
 #
 # BISON_BUILD_DIR is the directory in which the build is done.
