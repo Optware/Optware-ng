@@ -1,6 +1,6 @@
---- cherokee/qa/conf.py.pre.orig	2011-01-28 08:28:46.000000000 +0000
-+++ cherokee/qa/conf.py.pre	2011-02-01 00:39:09.575811469 +0000
-@@ -29,18 +29,21 @@
+--- a/qa/conf.py.pre
++++ b/qa/conf.py.pre
+@@ -28,19 +28,22 @@
  PHPCGI_PATH       = "%phpcgi%"
  PHP_FCGI_PORT     = 1980
  
@@ -8,6 +8,7 @@
 +PHP_DIRS          = ["/opt/bin/",
 +                     "/usr/lib/cgi-bin/",
                       "/usr/bin/",
+                      "/usr/sbin/",
                       "/usr/local/bin/",
                       "/opt/csw/php5/bin/",
                       "/opt/local/bin"]
@@ -19,9 +20,9 @@
                       "/opt/csw/bin",
                       "/opt/local/bin"]
  
--PHP_NAMES         = ["php-fpm5",
+-PHP_NAMES         = ["php5-cgi",
 +PHP_NAMES         = ["php-fcgi",
-+                     "php-fpm5",
-                      "php-fpm",
-                      "php5-cgi",
++                     "php5-cgi",
                       "php-cgi",
+                      "php4-cgi",
+                      "php5",

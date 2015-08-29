@@ -21,11 +21,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=1.0.19
-CHEROKEE_SITE=http://www.cherokee-project.com/download/1.0/$(CHEROKEE_VERSION)
-CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
-CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
-CHEROKEE_UNZIP=zcat
+CHEROKEE_VERSION=1.2.103
+CHEROKEE_SITE=https://github.com/cherokee/webserver/archive
+CHEROKEE_SOURCE=v$(CHEROKEE_VERSION).zip
+CHEROKEE_SOURCE_SAVE=cherokee-$(CHEROKEE_VERSION).zip
+CHEROKEE_DIR=webserver-$(CHEROKEE_VERSION)
+CHEROKEE_UNZIP=unzip
 CHEROKEE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CHEROKEE_DESCRIPTION=A flexible, very fast, lightweight web server.
 CHEROKEE_SECTION=web
@@ -39,7 +40,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=2
+CHEROKEE_IPK_VERSION=1
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -54,6 +55,8 @@ CHEROKEE_CONFFILES=\
 # which they should be applied to the source code.
 #
 CHEROKEE_PATCHES=\
+$(CHEROKEE_SOURCE_DIR)/configure.ac.patch \
+$(CHEROKEE_SOURCE_DIR)/admin-Makefile.am.patch \
 $(CHEROKEE_SOURCE_DIR)/conf.py.patch \
 $(CHEROKEE_SOURCE_DIR)/array_param.patch \
 
@@ -102,8 +105,8 @@ CHEROKEE-DOC_IPK=$(BUILD_DIR)/cherokee-doc_$(CHEROKEE_VERSION)-$(CHEROKEE_IPK_VE
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(CHEROKEE_SOURCE):
-	$(WGET) -P $(@D) $(CHEROKEE_SITE)/$(@F) || \
+$(DL_DIR)/$(CHEROKEE_SOURCE_SAVE):
+	$(WGET) -O $@ $(CHEROKEE_SITE)/$(CHEROKEE_SOURCE) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -111,7 +114,7 @@ $(DL_DIR)/$(CHEROKEE_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-cherokee-source: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
+cherokee-source: $(DL_DIR)/$(CHEROKEE_SOURCE_SAVE) $(CHEROKEE_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -131,13 +134,14 @@ cherokee-source: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES) make/cherokee.mk
+$(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE_SAVE) $(CHEROKEE_PATCHES) make/cherokee.mk
 	$(MAKE) openssl-stage pcre-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
 	rm -rf $(BUILD_DIR)/$(CHEROKEE_DIR) $(CHEROKEE_BUILD_DIR)
-	$(CHEROKEE_UNZIP) $(DL_DIR)/$(CHEROKEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	$(CHEROKEE_UNZIP) $(DL_DIR)/$(CHEROKEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cd $(BUILD_DIR); unzip $(DL_DIR)/$(CHEROKEE_SOURCE_SAVE)
 	if test -n "$(CHEROKEE_PATCHES)"; then \
 	    cat $(CHEROKEE_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE_DIR) -p1; \
 	fi
@@ -145,6 +149,7 @@ endif
 	sed -i.orig -e '1s|#!.*|#!/opt/bin/python|' $(@D)/admin/server.py
 	sed -i.orig -e '/\/var\/run\/cherokee.pid/d' $(@D)/admin/PageNewConfig.py
 	(cd $(@D); \
+		./autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CHEROKEE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CHEROKEE_LDFLAGS)" \
