@@ -279,7 +279,7 @@ endif
 		--cross-prefix=$(TARGET_CROSS) \
 		--arch=$(FFMPEG_ARCH) \
 		--target-os=linux \
-		$(FFMPEG_CONFIG_OPTS) \
+		$(FFMPEG_OLD_CONFIG_OPTS) \
 		--disable-encoder=snow \
 		--disable-decoder=snow \
 		--disable-shared \
@@ -302,12 +302,12 @@ ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel cs05q3armel fsg3v4, $(OPTWARE_TARG
 endif
 	$(MAKE) -C $(@D) OPTLEVEL=-O3 install
 	install -d $(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg
-	cp -p	$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/libavcodec/* \
-		$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/ffmpeg/
-	cp -p	$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/libavformat/* \
-		$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/ffmpeg/
-	cp -p	$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/libavutil/* \
-		$(STAGING_INCLUDE_DIR)/ffmpeg_old/include/ffmpeg/
+	cp -p	$(STAGING_PREFIX)/ffmpeg_old/include/libavcodec/* \
+		$(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg/
+	cp -p	$(STAGING_PREFIX)/ffmpeg_old/include/libavformat/* \
+		$(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg/
+	cp -p	$(STAGING_PREFIX)/ffmpeg_old/include/libavutil/* \
+		$(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg/
 	touch $@
 
 ffmpeg-old-stage: $(FFMPEG_BUILD_DIR_OLD)/.staged
