@@ -165,6 +165,7 @@ endif
 		--disable-twolame \
 		--disable-nls \
 		--disable-static \
+		--disable-ffmpegthumbnailer \
 	)
 	sed -i -e 's|-I/opt/include | |g' $(@D)/Makefile $(@D)/src/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
