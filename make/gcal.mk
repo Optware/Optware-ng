@@ -24,7 +24,10 @@ GCAL_SITE=http://ftp.gnu.org/pub/gnu/gcal
 ifeq (uclibc, $(LIBC_STYLE))
 GCAL_VERSION=3.01
 else
-GCAL_VERSION=3.6
+GCAL_VERSION=4
+endif
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+GCAL_VERSION=4
 endif
 GCAL_SOURCE=gcal-$(GCAL_VERSION).tar.gz
 GCAL_DIR=gcal-$(GCAL_VERSION)
