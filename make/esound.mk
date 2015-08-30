@@ -63,7 +63,7 @@ ifdef NO_BUILTIN_MATH
 ESOUND_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin
 endif
 ESOUND_LDFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel buildroot-i686, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel buildroot-mipsel-ng buildroot-i686, $(OPTWARE_TARGET)))
 ESOUND_LDFLAGS += -lm
 endif
 
