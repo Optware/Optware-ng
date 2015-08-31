@@ -122,7 +122,7 @@ $(NTFS-3G_BUILD_DIR)/.configured: $(DL_DIR)/$(NTFS-3G_SOURCE) $(NTFS-3G_PATCHES)
 	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTFS-3G_CPPFLAGS)" \
+		CPPFLAGS="-I../include/fuse-lite $(STAGING_CPPFLAGS) $(NTFS-3G_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NTFS-3G_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
