@@ -43,7 +43,7 @@ MINIDLNA_THUMBNAIL_CONFLICTS=minidlna
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=3
+MINIDLNA_IPK_VERSION=4
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
@@ -55,7 +55,8 @@ MINIDLNA_CONFFILES=/opt/etc/minidlna.conf /opt/etc/init.d/S98minidlna
 #
 MINIDLNA_PATCHES=\
 $(MINIDLNA_SOURCE_DIR)/minidlna-1.1.4-git.R.L.Horn.patch \
-$(MINIDLNA_SOURCE_DIR)/video_thumbnail-1.1.4-R.L.Horn.patch
+$(MINIDLNA_SOURCE_DIR)/video_thumbnail-1.1.4-R.L.Horn.patch \
+$(MINIDLNA_SOURCE_DIR)/minidlna-1.1.4_video_album_art_samsung_f-series_fix.patch
 
 #
 # If the compilation of the package requires additional
@@ -300,7 +301,7 @@ $(MINIDLNA_IPK): $(MINIDLNA_BUILD_DIR)/.built
 		ETCINSTALLDIR=$(MINIDLNA_IPK_DIR)/opt/etc \
 		;
 	$(STRIP_COMMAND) $(MINIDLNA_IPK_DIR)/opt/sbin/*
-	install -d $(MINIDLNA_IPK_DIR)/opt/etc/init.d
+	install -d $(MINIDLNA_IPK_DIR)/opt/etc/init.d $(MINIDLNA_IPK_DIR)/opt/etc/minidlna
 	install -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.conf $(MINIDLNA_IPK_DIR)/opt/etc/minidlna.conf
 	install -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_IPK_DIR)/opt/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_IPK_DIR)/CONTROL/control

@@ -15,7 +15,7 @@ DAEMONIZE=/opt/sbin/daemonize
 ## '-d' minidlnad switch to overcome the
 ## issue of minidlnad not listening on some targets
 LOG_FILE=/dev/null
-#LOG_FILE=/opt/minidlna/minidlna.log
+#LOG_FILE=/opt/etc/minidlna/minidlna.log
 
 test -x $DAEMON || exit 0
 
