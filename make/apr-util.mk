@@ -22,13 +22,13 @@ APR_UTIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APR_UTIL_DESCRIPTION=Apache Portable Runtime utilities library
 APR_UTIL_SECTION=lib
 APR_UTIL_PRIORITY=optional
-APR_UTIL_DEPENDS=apr (>= 1.3.8), e2fslibs, expat, gdbm, libdb
+APR_UTIL_DEPENDS=apr (>= 1.3.8), e2fslibs, expat, gdbm, libdb, openssl
 APR_UTIL_SUGGESTS=sqlite
 
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=1
+APR_UTIL_IPK_VERSION=2
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -127,9 +127,7 @@ apr-util-source: $(DL_DIR)/$(APR_UTIL_SOURCE) $(APR_UTIL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) $(APR_UTIL_PATCHES) make/apr-util.mk
-	$(MAKE) gdbm-stage libdb-stage sqlite-stage
-	$(MAKE) expat-stage
-	$(MAKE) e2fsprogs-stage
+	$(MAKE) gdbm-stage libdb-stage sqlite-stage expat-stage e2fsprogs-stage openssl-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
@@ -158,6 +156,7 @@ endif
 		--without-freetds \
 		--without-mysql \
 		--without-odbc \
+		--with-openssl=$(STAGING_PREFIX) \
 		--without-pgsql \
 		--without-sqlite2 \
 		--with-sqlite3=$(STAGING_PREFIX) \
