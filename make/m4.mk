@@ -40,7 +40,10 @@ M4_IPK_VERSION=1
 # M4_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#M4_PATCHES=$(M4_SOURCE_DIR)/configure.patch
+M4_PATCHES=
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+M4_PATCHES+=$(M4_SOURCE_DIR)/$(M4_VERSION)/gnulib_fix_posixspawn.patch.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -128,7 +131,10 @@ $(M4_BUILD_DIR)/.configured: $(DL_DIR)/$(M4_SOURCE) $(M4_PATCHES) make/m4.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(M4_DIR) $(@D)
 	$(M4_UNZIP) $(DL_DIR)/$(M4_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(M4_PATCHES) | patch -d $(BUILD_DIR)/$(M4_DIR) -p1
+	if test -n "$(M4_PATCHES)" ; \
+		then cat $(M4_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(M4_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(M4_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
