@@ -41,14 +41,14 @@ LIBGUDEV_SECTION=lib
 UDEV_PRIORITY=optional
 UDEV_DEPENDS=usbutils
 LIBUDEV_DEPENDS=
-LIBGUDEV_DEPENDS=glib
+LIBGUDEV_DEPENDS=glib, libudev
 UDEV_SUGGESTS=
 UDEV_CONFLICTS=
 
 #
 # UDEV_IPK_VERSION should be incremented when the ipk changes.
 #
-UDEV_IPK_VERSION=1
+UDEV_IPK_VERSION=2
 
 #
 # UDEV_CONFFILES should be a list of user-editable files
