@@ -89,6 +89,7 @@ $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
 	$(MAKE) STAGING_DIR=$(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot -C $(TARGET_CROSS_BUILD_DIR)
 	cp -af $(TARGET_CROSS_BUILD_DIR)/output/host/usr/* $(TARGET_CROSS_TOP)/
 	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libnsl-$(CROSS_CONFIGURATION_UCLIBC_VERSION).so $(TARGET_LIBDIR)/
+	cp -f $(TARGET_CROSS_TOP)/lib/gcc/mipsel-buildroot-linux-uclibc/4.9.3/*.a $(UCLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
 GCC_TARGET_NAME := mipsel-buildroot-linux-uclibc
