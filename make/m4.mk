@@ -42,7 +42,7 @@ M4_IPK_VERSION=1
 #
 M4_PATCHES=
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
-M4_PATCHES+=$(M4_SOURCE_DIR)/$(M4_VERSION)/gnulib_fix_posixspawn.patch.patch
+M4_PATCHES+=$(M4_SOURCE_DIR)/$(M4_VERSION)/gnulib_fix_posixspawn.patch
 endif
 
 #
