@@ -1,0 +1,46 @@
+--- a/src/xupnpd.lua
++++ b/src/xupnpd.lua
+@@ -1,10 +1,10 @@
+ cfg={}
+ 
+ -- multicast interface for SSDP exchange, 'eth0', 'br0', 'br-lan' for example
+-cfg.ssdp_interface='lo'
++cfg.ssdp_interface='br0'
+ 
+ -- 'cfg.ssdp_loop' enables multicast loop (if player and server in one host)
+-cfg.ssdp_loop=1
++cfg.ssdp_loop=0
+ 
+ -- SSDP announcement interval
+ cfg.ssdp_notify_interval=15
+@@ -19,10 +19,10 @@
+ cfg.log_facility='local0'
+ 
+ -- 'cfg.daemon' detach server from terminal
+-cfg.daemon=false
++cfg.daemon=true
+ 
+ -- silent mode - no logs, no pid file
+-cfg.embedded=false
++cfg.embedded=true
+ 
+ -- 'cfg.debug' enables SSDP debug output to stdout (if cfg.daemon=false)
+ -- 0-off, 1-basic, 2-messages
+@@ -32,7 +32,7 @@
+ --cfg.udpxy_url='http://192.168.1.1:4022'
+ 
+ -- downstream interface for builtin multicast proxy (comment 'cfg.udpxy_url' for processing 'udp://@...' playlists)
+-cfg.mcast_interface='eth1'
++cfg.mcast_interface='vlan2'
+ 
+ -- 'cfg.proxy' enables proxy for injection DLNA headers to stream
+ -- 0-off, 1-radio, 2-radio/TV
+@@ -102,7 +102,7 @@
+ -- log ident, pid file end www root
+ cfg.version='1.033'
+ cfg.log_ident=arg[1] or 'xupnpd'
+-cfg.pid_file='/var/run/'..cfg.log_ident..'.pid'
++cfg.pid_file='/opt/var/run/'..cfg.log_ident..'.pid'
+ cfg.www_root='./www/'
+ cfg.tmp_path='/tmp/'
+ cfg.plugin_path='./plugins/'

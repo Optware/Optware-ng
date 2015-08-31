@@ -427,7 +427,7 @@ COMMON_CROSS_PACKAGES = \
 	xextensions xfixes xfixesproto xft xi xinetd pciaccess \
 	xmu xp xpdf xpm xcb-proto xcb xextproto xfconf xorg-macros xproto xrender xt xterm xtrans xtst \
 	damageproto dri2proto dri3proto glproto presentproto \
-	x264 xmail xvid xz-utils \
+	x264 xmail xupnpd xvid xz-utils \
 	yafc yasm yawk yougrabber \
 	zile zip zlib znc zoo zsh \
 
