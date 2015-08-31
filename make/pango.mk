@@ -26,7 +26,7 @@ PANGO_DEPENDS=glib, xft, freetype, fontconfig, ice, cairo, harfbuzz
 #
 # PANGO_IPK_VERSION should be incremented when the ipk changes.
 #
-PANGO_IPK_VERSION=1
+PANGO_IPK_VERSION=2
 
 #
 # PANGO_LOCALES defines which locales get installed
@@ -140,6 +140,7 @@ $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES) make/
 		--prefix=/opt \
 		--disable-static \
 		--disable-glibtest \
+		--disable-introspection \
 		--with-cairo \
 	)
 	$(PATCH_LIBTOOL) $(PANGO_BUILD_DIR)/libtool
