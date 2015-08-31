@@ -49,7 +49,6 @@ subvertpy slimserver squeezecenter SpamAssassin py-pyro \
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
-	udpxy \
 	py-btpd-webui \
 	cryptsetup \
 	unbound \
@@ -414,7 +413,7 @@ COMMON_CROSS_PACKAGES = \
 	transmission \
 	transmissiond tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
-	ucl udev udns uemacs ulogd unarj uncia unfs3 units unixodbc \
+	ucl udev udns udpxy uemacs ulogd unarj uncia unfs3 units unixodbc \
 	unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utelnetd utf8proc util-linux util-linux-ng \

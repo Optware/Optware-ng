@@ -26,13 +26,17 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UDPXY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/udpxy
-UDPXY_VERSION=1.0-Chipmunk-19
+#UDPXY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/udpxy
+#UDPXY_VERSION=1.0-Chipmunk-19
+UDPXY_REPOSITORY=git://github.com/pcherenkov/udpxy.git
+UDPXY_GIT_DATE=20140803
+UDPXY_VERSION=git$(UDPXY_GIT_DATE)
+UDPXY_TREEISH=`git rev-list --max-count=1 --until=2014-08-03 HEAD`
 UDPXY_SOURCE=udpxy.$(UDPXY_VERSION).tgz
 UDPXY_DIR=udpxy-$(UDPXY_VERSION)
 UDPXY_UNZIP=zcat
 UDPXY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-UDPXY_DESCRIPTION=udpxy is a small-footprint UNIX/Linux daemon to relay multicast UDP traffic to client's TCP (HTTP) connection. 
+UDPXY_DESCRIPTION=Convert UDP IPTV streams into HTTP streams. 
 UDPXY_SECTION=net
 UDPXY_PRIORITY=optional
 UDPXY_DEPENDS=
@@ -46,7 +50,7 @@ UDPXY_IPK_VERSION=1
 
 #
 # UDPXY_CONFFILES should be a list of user-editable files
-#UDPXY_CONFFILES=/opt/etc/udpxy.conf /opt/etc/init.d/SXXudpxy
+UDPXY_CONFFILES=/opt/etc/init.d/S29udpxy
 
 #
 # UDPXY_PATCHES should list any patches, in the the order in
@@ -79,11 +83,16 @@ UDPXY_IPK=$(BUILD_DIR)/udpxy_$(UDPXY_VERSION)-$(UDPXY_IPK_VERSION)_$(TARGET_ARCH
 
 #
 # This is the dependency on the source code.  If the source is missing,
-# then it will be fetched from the site using wget.
+# then it will be fetched from the site using git.
 #
 $(DL_DIR)/$(UDPXY_SOURCE):
-	$(WGET) -P $(@D) $(UDPXY_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+	(cd $(BUILD_DIR) ; \
+		rm -rf udpxy && \
+		git clone --bare $(UDPXY_REPOSITORY) udpxy && \
+		(cd udpxy && \
+		git archive --format=tar --prefix=$(UDPXY_DIR)/ $(UDPXY_TREEISH) | gzip > $@) && \
+		rm -rf udpxy ; \
+	)
 
 #
 # The source code depends on it existing within the download directory.
@@ -121,7 +130,7 @@ $(UDPXY_BUILD_DIR)/.configured: $(DL_DIR)/$(UDPXY_SOURCE) $(UDPXY_PATCHES) make/
 	if test "$(BUILD_DIR)/$(UDPXY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UDPXY_DIR) $(@D) ; \
 	fi
-	sed -i -e '/^CFLAGS +=/ s|^|CC := "$(TARGET_CC)"\nCFLAGS += $(STAGING_CPPFLAGS) $(UDPXY_CPPFLAGS) $(STAGING_LDFLAGS) $(UDPXY_LDFLAGS)\n|' $(@D)/Makefile
+	mv -f $(@D)/chipmunk/* $(@D)
 	#sometimes a large buffer is required to get decent video quality
 	sed -i -e 's|^static const ssize_t MAX_MCACHE_LEN    = 2048 |static const ssize_t MAX_MCACHE_LEN    = 20480 |' $(@D)/uopt.h 
 	#$(PATCH_LIBTOOL) $(@D)/libtool
@@ -134,7 +143,10 @@ udpxy-unpack: $(UDPXY_BUILD_DIR)/.configured
 #
 $(UDPXY_BUILD_DIR)/.built: $(UDPXY_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) \
+		CC=$(TARGET_CC) \
+		CFLAGS="$(STAGING_CPPFLAGS) $(UDPXY_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(UDPXY_LDFLAGS)"
 	touch $@
 
 #
@@ -147,8 +159,7 @@ udpxy: $(UDPXY_BUILD_DIR)/.built
 #
 $(UDPXY_BUILD_DIR)/.staged: $(UDPXY_BUILD_DIR)/.built
 	rm -f $@
-	sed -i -e '/^INSTALLROOT :=/ s|^.*|INSTALLROOT := $(STAGING_DIR)/opt|' $(UDPXY_BUILD_DIR)/Makefile
-	$(MAKE) -C $(@D) install
+#	$(MAKE) -C $(@D) install
 	touch $@
 
 udpxy-stage: $(UDPXY_BUILD_DIR)/.staged
@@ -166,7 +177,7 @@ $(UDPXY_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(UDPXY_SECTION)" >>$@
 	@echo "Version: $(UDPXY_VERSION)-$(UDPXY_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(UDPXY_MAINTAINER)" >>$@
-	@echo "Source: $(UDPXY_SITE)/$(UDPXY_SOURCE)" >>$@
+	@echo "Source: $(UDPXY_REPOSITORY)" >>$@
 	@echo "Description: $(UDPXY_DESCRIPTION)" >>$@
 	@echo "Depends: $(UDPXY_DEPENDS)" >>$@
 	@echo "Suggests: $(UDPXY_SUGGESTS)" >>$@
@@ -186,13 +197,14 @@ $(UDPXY_IPK_DIR)/CONTROL/control:
 #
 $(UDPXY_IPK): $(UDPXY_BUILD_DIR)/.built
 	rm -rf $(UDPXY_IPK_DIR) $(BUILD_DIR)/udpxy_*_$(TARGET_ARCH).ipk
-	sed -i -e '/^INSTALLROOT :=/ s|^.*|INSTALLROOT := $(UDPXY_IPK_DIR)/opt|' $(UDPXY_BUILD_DIR)/Makefile
-	$(MAKE) -C $(UDPXY_BUILD_DIR) install
-	$(STRIP_COMMAND) $(UDPXY_IPK_DIR)/opt/bin/udpxy
+	$(MAKE) -C $(UDPXY_BUILD_DIR) install \
+		INSTALLROOT=$(UDPXY_IPK_DIR)/opt \
+		MANPAGE_DIR=$(UDPXY_IPK_DIR)/opt/share/man/man1
+	$(STRIP_COMMAND) $(UDPXY_IPK_DIR)/opt/bin/{udpxy,udpxrec}
 #	install -d $(UDPXY_IPK_DIR)/opt/etc/
 #	install -m 644 $(UDPXY_SOURCE_DIR)/udpxy.conf $(UDPXY_IPK_DIR)/opt/etc/udpxy.conf
-#	install -d $(UDPXY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UDPXY_SOURCE_DIR)/rc.udpxy $(UDPXY_IPK_DIR)/opt/etc/init.d/SXXudpxy
+	install -d $(UDPXY_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(UDPXY_SOURCE_DIR)/rc.udpxy $(UDPXY_IPK_DIR)/opt/etc/init.d/S29udpxy
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDPXY_IPK_DIR)/opt/etc/init.d/SXXudpxy
 	$(MAKE) $(UDPXY_IPK_DIR)/CONTROL/control
 #	install -m 755 $(UDPXY_SOURCE_DIR)/postinst $(UDPXY_IPK_DIR)/CONTROL/postinst
@@ -205,6 +217,7 @@ $(UDPXY_IPK): $(UDPXY_BUILD_DIR)/.built
 	fi
 	echo $(UDPXY_CONFFILES) | sed -e 's/ /\n/g' > $(UDPXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UDPXY_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(UDPXY_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
