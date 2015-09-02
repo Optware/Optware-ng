@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DELUGE_DEVELOP_REPOSITORY=git://deluge-torrent.org/deluge.git
-DELUGE_DEVELOP_VERSION=20150828
-DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-08-28 HEAD`
+DELUGE_DEVELOP_VERSION=20150901
+DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-09-01 HEAD`
 DELUGE_DEVELOP_SOURCE=deluge-develop-$(DELUGE_DEVELOP_VERSION).tar.bz2
 #DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
 DELUGE_DEVELOP_UNZIP=bzcat
