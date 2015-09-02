@@ -37,13 +37,13 @@ MINIDLNA_DEPENDS +=, libstdc++
 MINIDLNA_THUMBNAIL_DEPENDS +=, libstdc++
 endif
 MINIDLNA_SUGGESTS=
-MINIDLNA_CONFLICTS=minidlna-thumbnail
-MINIDLNA_THUMBNAIL_CONFLICTS=minidlna
+MINIDLNA_CONFLICTS=minidlna-thumbnail, minidlna-rescan, minidlna-rescan-thumbnail
+MINIDLNA_THUMBNAIL_CONFLICTS=minidlna, minidlna-rescan, minidlna-rescan-thumbnail
 
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=4
+MINIDLNA_IPK_VERSION=5
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
