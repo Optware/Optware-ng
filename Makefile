@@ -351,7 +351,7 @@ COMMON_CROSS_PACKAGES = \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached mesalib metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
-	minicom minidlna minihttpd miniupnpd \
+	minicom minidlna minidlna-rescan minihttpd miniupnpd \
 	mini-sendmail mini-snmpd \
 	miscfiles mktemp mktorrent mkvtoolnix mlocate moblock \
 	moc modutils monit most motif motion motor mousepad \
