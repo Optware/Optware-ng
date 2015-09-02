@@ -59,7 +59,7 @@ NUT_PATCHES=$(NUT_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 NUT_CPPFLAGS=
-NUT_LDFLAGS=$(strip $(if $(filter uclibc, $(LIBC_STYLE)), -lm, ))
+NUT_LDFLAGS=$(strip $(if $(filter uclibc, $(LIBC_STYLE)), -lm, )) -lssl -lcrypto
 NUT_GD_LIBS=-L$(STAGING_LIB_DIR) -lgd -lbz2 -lfreetype -lfontconfig -ljpeg -lpng12 -lz -lexpat $(if $(filter libiconv, $(PACKAGES)), -liconv,)
 
 #
