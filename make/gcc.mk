@@ -51,6 +51,10 @@ GCC_DEPENDS+=, libgmp, libmpfr, libmpc
 endif
 endif
 
+ifdef NATIVE_GCC_ADDITIONAL_DEPS
+GCC_DEPENDS+=, $(NATIVE_GCC_ADDITIONAL_DEPS)
+endif
+
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -165,6 +169,9 @@ ifeq ($(shell test $(shell echo $(GCC_VERSION) | cut -d '.' -f 2) -gt 2 || \
 		test $(shell echo $(GCC_VERSION) | cut -d '.' -f 1) -gt 4; echo $$?),0)
 	$(MAKE) libgmp-stage libmpfr-stage libmpc-stage
 endif
+endif
+ifdef NATIVE_GCC_ADDITIONAL_STAGE
+	$(MAKE) $(NATIVE_GCC_ADDITIONAL_STAGE)
 endif
 	rm -rf $(BUILD_DIR)/$(GCC_DIR) $(@D)
 	$(GCC_UNZIP) $(DL_DIR)/$(GCC_SOURCE) | tar -C $(BUILD_DIR) -xf -
