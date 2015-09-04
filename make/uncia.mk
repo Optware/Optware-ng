@@ -105,7 +105,7 @@ uncia-source: $(DL_DIR)/$(UNCIA_SOURCE) $(UNCIA_PATCHES)
 # shown below to make various patches to it.
 #
 $(UNCIA_BUILD_DIR)/.configured: $(DL_DIR)/$(UNCIA_SOURCE) $(UNCIA_PATCHES) make/uncia.mk
-	$(MAKE) libstdc++-stage boost-stage libcurl-stage zlib-stage libexplain-stage libtool-stage
+	$(MAKE) libstdc++-stage libcurl-stage zlib-stage libexplain-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(UNCIA_DIR) $(@D)
 	$(UNCIA_UNZIP) $(DL_DIR)/$(UNCIA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNCIA_PATCHES)" ; \

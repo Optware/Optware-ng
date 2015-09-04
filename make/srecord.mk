@@ -105,7 +105,7 @@ srecord-source: $(DL_DIR)/$(SRECORD_SOURCE) $(SRECORD_PATCHES)
 # shown below to make various patches to it.
 #
 $(SRECORD_BUILD_DIR)/.configured: $(DL_DIR)/$(SRECORD_SOURCE) $(SRECORD_PATCHES) make/srecord.mk
-	$(MAKE) libstdc++-stage boost-stage libgcrypt-stage
+	$(MAKE) libstdc++-stage libgcrypt-stage
 	rm -rf $(BUILD_DIR)/$(SRECORD_DIR) $(@D)
 	$(SRECORD_UNZIP) $(DL_DIR)/$(SRECORD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SRECORD_PATCHES)" ; \
