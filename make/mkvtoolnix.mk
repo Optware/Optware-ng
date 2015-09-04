@@ -60,7 +60,7 @@ MKVTOOLNIX_IPK_VERSION?=1
 # MKVTOOLNIX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MKVTOOLNIX_PATCHES=$(MKVTOOLNIX_SOURCE_DIR)/va_list.patch
+MKVTOOLNIX_PATCHES=$(MKVTOOLNIX_SOURCE_DIR)/va_list.patch $(MKVTOOLNIX_ADDITIONAL_PATCHES)
 
 #
 # If the compilation of the package requires additional
@@ -134,7 +134,7 @@ endif
 	$(MKVTOOLNIX_UNZIP) $(DL_DIR)/$(MKVTOOLNIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MKVTOOLNIX_PATCHES)" ; \
 		then cat $(MKVTOOLNIX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MKVTOOLNIX_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(MKVTOOLNIX_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MKVTOOLNIX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MKVTOOLNIX_DIR) $(@D) ; \
