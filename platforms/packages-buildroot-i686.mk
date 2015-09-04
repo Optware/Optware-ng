@@ -39,7 +39,10 @@ E2FSPROGS_IPK_VERSION := 1
 
 M4_VERSION := 1.4.17
 
-BOOST_VERSION := 1_57_0
+TAR_VERSION := 1.28
+TAR_IPK_VERSION := 1
+
+BOOST_VERSION := 1_59_0
 BOOST_IPK_VERSION := 1
 BOOST_EXTERNAL_JAM := no
 BOOST_GCC_CONF := tools/build/src/tools/gcc
@@ -49,18 +52,33 @@ BOOST_ADDITIONAL_LIBS:= atomic \
 			container \
 			context \
 			coroutine \
+			coroutine2 \
+			graph-parallel \
 			locale \
 			log \
 			timer \
 			exception \
 			serialization \
+			test \
 			wave
 
-MKVTOOLNIX_VERSION := 7.7.0
+### boost packages
+## These are packages that depend
+## on boost. Since boost libraries SONAMEs
+## change with every new release,
+## ipk versions have to be bumped
+## and packages re-built on every
+## boost upgrade.
+## Use
+### make boost-packages-dirclean
+## to clean all boost packages build dirs
+
+LIBTORRENT-RASTERBAR_IPK_VERSION := 2
+
+MKVTOOLNIX_VERSION := 8.3.0
 MKVTOOLNIX_IPK_VERSION := 1
 
 MPD_VERSION := 0.19.9
-MPD_IPK_VERSION := 1
+MPD_IPK_VERSION := 2
 
-TAR_VERSION := 1.28
-TAR_IPK_VERSION := 1
+PLAYER_IPK_VERSION := 7
