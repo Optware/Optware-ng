@@ -45,7 +45,7 @@ ifeq (glibc-opt, $(filter glibc-opt, $(PACKAGES)))
 	LIBC-DEV_DEPENDS+=, glibc-opt
 endif
 
-LIBC-DEV_IPK_VERSION=8
+LIBC-DEV_IPK_VERSION?=8
 
 ifdef LIBNSL_VERSION
 LIBC-DEV_VERSION=$(LIBNSL_VERSION)
@@ -172,7 +172,7 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	install -d $(LIBC-DEV_IPK_DIR)/opt/lib
 	-rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
 	cp -f $(LIBC-DEV_LIBGCC_STATIC) $(LIBC-DEV_IPK_DIR)/opt/lib
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel shibby-tomato-arm, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel buildroot-mipsel-ng shibby-tomato-arm, $(OPTWARE_TARGET)))
 	rm -rf $(LIBC-DEV_IPK_DIR)/opt/include/zlib.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/zconf.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/iconv.h \
