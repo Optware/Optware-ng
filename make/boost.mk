@@ -65,13 +65,13 @@ BOOST_GCC_CONF ?= tools/build/v2/tools/gcc
 BOOST_JAM_ROOT ?= tools/build/v2
 
 # boost libs that are expected to build always
-BOOST_LIBS = dev date-time filesystem function-types graph iostreams \
-		program-options random regex signals system test thread
+BOOST_LIBS = dev date-time filesystem graph iostreams \
+		program-options random regex signals system thread
 
 # boost python libs that are expected to build always
 BOOST_PYTHON_LIBS = python26 python27 python3
 
-# serialization and wave may fail to build for some targets:
+# serialization, test and wave may fail to build for some targets:
 # override in platforms/packages-$(OPTWARE_TARGET).mk,
 # e.g., see platforms/packages-buildroot-armeabi.mk,
 # to skip them or add more additional libs;
@@ -82,13 +82,18 @@ BOOST_PYTHON_LIBS = python26 python27 python3
 	container \
 	context \
 	coroutine \
+	coroutine2 \
+	graph-parallel \
 	locale \
 	log \
 	timer \
 	exception \
 	serialization \
+	test \
 	wave
-BOOST_ADDITIONAL_LIBS ?= serialization wave
+# graph-parallel and coroutine2 aren't separate libs, but are extensions
+# to the graph and coroutine libraries, respectively
+BOOST_ADDITIONAL_LIBS ?= serialization test wave
 
 
 #
@@ -120,9 +125,7 @@ BOOST_JAM_ARGS= \
 	toolset=gcc \
 	link=shared \
 	--layout=system \
-	--without-mpi \
-	--without-math \
-	--without-python \
+	$(patsubst %, --with-%, $(shell echo $(BOOST_ADDITIONAL_LIBS) $(filter-out dev, $(BOOST_LIBS) | tr \- _))) \
 	-sICU_PATH=$(STAGING_PREFIX) \
 	--user-config=$(BOOST_BUILD_DIR)/user-config.jam
 BOOST_JAM_PYTHON26_ARGS= \
@@ -174,9 +177,6 @@ BOOST_DATE_TIME_IPK=$(BUILD_DIR)/boost-date-time_$(BOOST_VERSION)-$(BOOST_IPK_VE
 
 BOOST_FILESYSTEM_IPK_DIR=$(BUILD_DIR)/boost-filesystem-$(BOOST_VERSION)-ipk
 BOOST_FILESYSTEM_IPK=$(BUILD_DIR)/boost-filesystem_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
-
-BOOST_FUNCTION_TYPES_IPK_DIR=$(BUILD_DIR)/boost-function-types-$(BOOST_VERSION)-ipk
-BOOST_FUNCTION_TYPES_IPK=$(BUILD_DIR)/boost-function-types_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BOOST_GRAPH_IPK_DIR=$(BUILD_DIR)/boost-graph-$(BOOST_VERSION)-ipk
 BOOST_GRAPH_IPK=$(BUILD_DIR)/boost-graph_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -284,11 +284,10 @@ BOOST_LIB_IPKS= \
 	$(BOOST_REGEX_IPK) \
 	$(BOOST_SIGNALS_IPK) \
 	$(BOOST_SYSTEM_IPK) \
-	$(BOOST_THREAD_IPK) \
-	$(BOOST_TEST_IPK)
+	$(BOOST_THREAD_IPK)
 
 ifneq ($(BOOST_ADDITIONAL_LIBS),)
-BOOST_LIB_IPKS += $(patsubst %, $(BUILD_DIR)/boost-%_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk, $(filter-out exception, $(BOOST_ADDITIONAL_LIBS)))
+BOOST_LIB_IPKS += $(patsubst %, $(BUILD_DIR)/boost-%_$(BOOST_VERSION)-$(BOOST_IPK_VERSION)_$(TARGET_ARCH).ipk, $(filter-out exception graph-parallel coroutine2, $(BOOST_ADDITIONAL_LIBS)))
 ifeq (exception, $(filter exception, $(BOOST_ADDITIONAL_LIBS)))
 BOOST_LIB_IPKS += $(BOOST_EXCEPTION_IPK)
 endif
@@ -906,7 +905,7 @@ $(BOOST_PYTHON3_IPK): $(BOOST_BUILD_DIR)/.py3built
 
 $(BOOST_DEV_IPK) $(BOOST_LIB_IPKS): $(BOOST_BUILD_DIR)/.mainbuilt
 	rm -rf $(BOOST_IPK_DIRS) $(BOOST_LIB_IPKS_MASK)
-	-(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --without-python --prefix=$(BOOST_DEV_IPK_DIR)/opt)
+	-(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(BOOST_DEV_IPK_DIR)/opt)
 	$(STRIP_COMMAND) $(BOOST_DEV_IPK_DIR)/opt/lib/*.so*
 	### now make boost-date_time
 	$(MAKE) $(BOOST_DATE_TIME_IPK_DIR)/CONTROL/control
@@ -953,12 +952,14 @@ $(BOOST_DEV_IPK) $(BOOST_LIB_IPKS): $(BOOST_BUILD_DIR)/.mainbuilt
 	mkdir -p $(BOOST_SYSTEM_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*system* $(BOOST_SYSTEM_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_SYSTEM_IPK_DIR)
+ifeq (test, $(filter test, $(BOOST_ADDITIONAL_LIBS)))
 	### now make boost-test
 	$(MAKE) $(BOOST_TEST_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_TEST_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*unit_test_framework* $(BOOST_TEST_IPK_DIR)/opt/lib
 	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*prg_exec_monitor* $(BOOST_TEST_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_TEST_IPK_DIR)
+endif
 	### now make boost-thread
 	$(MAKE) $(BOOST_THREAD_IPK_DIR)/CONTROL/control
 	mkdir -p $(BOOST_THREAD_IPK_DIR)/opt/lib
@@ -966,10 +967,10 @@ $(BOOST_DEV_IPK) $(BOOST_LIB_IPKS): $(BOOST_BUILD_DIR)/.mainbuilt
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_THREAD_IPK_DIR)
 ifneq ($(BOOST_ADDITIONAL_LIBS),)
 	### make additional libs
-	for lib in $(BOOST_ADDITIONAL_LIBS); do \
+	for lib in $(filter-out coroutine2 graph-parallel test, $(BOOST_ADDITIONAL_LIBS)); do \
 		$(MAKE) $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/CONTROL/control; \
 		mkdir -p $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/opt/lib; \
-		mv $(BOOST_DEV_IPK_DIR)/opt/lib/libboost_$${lib}* $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/opt/lib; \
+		mv $(BOOST_DEV_IPK_DIR)/opt/lib/libboost_`echo $${lib} | tr \- _`* $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/opt/lib; \
 		(cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk); \
 	done
 endif
