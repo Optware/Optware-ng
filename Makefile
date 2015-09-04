@@ -253,6 +253,12 @@ PACKAGES_ONLY_WORK_ON_LINUX24 = \
 	modutils \
 	spindown \
 
+BOOST_PACKAGES = \
+	libtorrent-rasterbar \
+	mkvtoolnix \
+	mpd \
+	player \
+
 # libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
 	9base \
@@ -265,7 +271,7 @@ COMMON_CROSS_PACKAGES = \
 	at at-spi2-core atftp atk atk-bridge atop attr audiofile autoconf automake autossh avahi \
 	bacula bash bash-completion bc bftpd \
 	bind bip bison bitchx bitlbee \
-	bogofilter boost bridge-utils \
+	bogofilter boost $(BOOST_PACKAGES) bridge-utils \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
 	bluez-libs \
@@ -341,7 +347,7 @@ COMMON_CROSS_PACKAGES = \
 	libol libogg libosip2 libopensync libotr \
 	libpar2 libpcap libpeas libpng libpth librsync librsvg \
 	libsamplerate libshout libsigc++ libsoup libsndfile libstdc++ \
-	libtasn1 libtheora libtiff libtool libtorrent libtorrent-rasterbar \
+	libtasn1 libtheora libtiff libtool libtorrent \
 	libunistring libupnp libusb libusb1 libvncserver \
 	libvorbis libvorbisidec libxfce4ui libxfce4util libxkbcommon libxml2 libxslt libzip \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
@@ -353,10 +359,10 @@ COMMON_CROSS_PACKAGES = \
 	mg miau microcom microdc2 microperl mimms \
 	minicom minidlna minidlna-rescan minihttpd miniupnpd \
 	mini-sendmail mini-snmpd \
-	miscfiles mktemp mktorrent mkvtoolnix mlocate moblock \
+	miscfiles mktemp mktorrent mlocate moblock \
 	moc modutils monit most motif motion motor mousepad \
 	mod-fastcgi moe moreutils mp3blaster mp3info mpack mpage \
-	mpc mpd mpdscribble \
+	mpc mpdscribble \
 	mpg123 mpop mrtg msmtp \
 	msort msynctool mt-daapd mt-daapd-svn mtools \
 	mtr multitail mussh mutt mxml \
@@ -381,7 +387,7 @@ COMMON_CROSS_PACKAGES = \
 	pcal pcapsipdump pciutils pcre pen perltgd pinentry pixman \
 	phoneme-advanced \
 	php php-apache php-thttpd phpmyadmin \
-	picocom picolisp pkgconfig player plowshare polipo pop3proxy \
+	picocom picolisp pkgconfig plowshare polipo pop3proxy \
 	popt poptop portmap postgresql postfix pound powertop \
 	ppower ppp printproto privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils pthread-stubs puppy pure-ftpd pv pwgen \
@@ -626,6 +632,18 @@ $(PACKAGES_IPKG) : directories toolchain ipkg-utils
 
 .PHONY: index
 index: $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh $(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/Packages.html
+
+boost-packages:
+	@$(MAKE) $(BOOST_PACKAGES)
+
+boost-packages-ipk:
+	@$(MAKE) $(patsubst %, %-ipk, $(BOOST_PACKAGES))
+
+boost-packages-dirclean:
+	@$(MAKE) $(patsubst %, %-dirclean, $(BOOST_PACKAGES))
+
+boost-packages-check:
+	@$(MAKE) $(patsubst %, %-check, $(BOOST_PACKAGES))
 
 ifeq ($(PACKAGE_DIR),$(BASE_DIR)/packages)
     ifeq (,$(findstring -bootstrap,$(SPECIFIC_PACKAGES)))
