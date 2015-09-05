@@ -52,6 +52,10 @@ Now buildroot-mipsel target added. It is similar to buildroot-armeabi, but targe
 
 New buildroot-i686 target added. This is a gcc-4.9.2, glibc-2.20, linux-3.2.66 feed. It mainly targets modern Intel headless devices, such as NASes.
 
+## 2015-05-08
+
+Upgrade buildroot-armeabi, buildroot-i686 and buildroot-mipsel toolchains to gcc-5.2.0 to support all C++14 language features. libc versions and configs and kernel headers versions left the same to not brake compatibility with previously built binaries. Also use "--with-default-libstdcxx-abi=gcc4-compatible" libstdc++ configure switch for the same purpose. Buildroot-2015.08 is now used to build the toolchains.
+
 # Building from source
 
 For instructions on how to build packages using this build system, see:
