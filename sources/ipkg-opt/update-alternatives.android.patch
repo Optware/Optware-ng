@@ -1,0 +1,12 @@
+--- a/update-alternatives
++++ b/update-alternatives
+@@ -112,7 +112,8 @@
+ 		if [ ! -d $link_dir ]; then
+ 			mkdir -p $link_dir
+ 		fi
+-		ln -sf $path $link
++		rm -f $link
++		ln -s $path $link
+ 		echo "update-alternatives: Linking $link to $path"
+ 	else
+ 		echo "update-alternatives: Error: not linking $link to $path since $link exists and is not a link"

@@ -34,7 +34,7 @@ IPKG-OPT_CVS_OPTS=-r $(IPKG-OPT_CVS_TAG)
 #
 # IPKG-OPT_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG-OPT_IPK_VERSION=10
+IPKG-OPT_IPK_VERSION=11
 
 #
 # IPKG-OPT_CONFFILES should be a list of user-editable files
@@ -72,6 +72,7 @@ IPKG-OPT_PATCHES=$(IPKG-OPT_SOURCE_DIR)/args.h.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg_conf.h.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg_conf.c.patch \
 	$(IPKG-OPT_SOURCE_DIR)/update-alternatives.patch \
+	$(IPKG-STATIC_SOURCE_DIR)/update-alternatives.android.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg-va_start_segfault.diff \
 	$(IPKG-OPT_SOURCE_DIR)/list_installed.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg_install.c.patch
