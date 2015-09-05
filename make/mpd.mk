@@ -156,7 +156,7 @@ endif
 	glib-stage libcurl-stage libmms-stage icu-stage \
 	audiofile-stage libao-stage libid3tag-stage \
 	libmad-stage libmpcdec-stage libshout-stage \
-	wavpack-stage audiofile-stage expat-stage boost-stage
+	wavpack-stage audiofile-stage expat-stage
 ifneq (, $(filter i686, $(TARGET_ARCH)))
 	$(MAKE) libsamplerate-stage libvorbis-stage
 else

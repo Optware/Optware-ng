@@ -34,7 +34,10 @@ MKVTOOLNIX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MKVTOOLNIX_DESCRIPTION=A set of tools to create, alter and inspect Matroska files
 MKVTOOLNIX_SECTION=multimedia
 MKVTOOLNIX_PRIORITY=optional
-MKVTOOLNIX_DEPENDS=boost-system, boost-filesystem, boost-regex, expat, file, flac, libebml, libmatroska, libogg, libvorbis, lzo
+MKVTOOLNIX_DEPENDS=boost-system (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
+		boost-filesystem (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
+		boost-regex (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), expat, \
+		file, flac, libebml, libmatroska, libogg, libvorbis, lzo
 ifeq (enable, $(GETTEXT_NLS))
 MKVTOOLNIX_DEPENDS +=, gettext
 endif
@@ -42,7 +45,7 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 MKVTOOLNIX_DEPENDS +=, libiconv
 endif
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel, $(OPTWARE_TARGET)))
-MKVTOOLNIX_DEPENDS +=, boost-date-time, libcurl
+MKVTOOLNIX_DEPENDS +=, boost-date-time (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), libcurl
 endif
 MKVTOOLNIX_SUGGESTS=
 MKVTOOLNIX_CONFLICTS=

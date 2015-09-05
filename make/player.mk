@@ -30,7 +30,9 @@ PLAYER_DESCRIPTION=Player provides a network interface to a variety of robot and
 Player''s client/server model allows robot control programs to be written in any programming language and to run on any computer with a network connection to the robot. Player supports multiple concurrent client connections to devices, creating new possibilities for distributed and collaborative sensing and control.
 PLAYER_SECTION=misc
 PLAYER_PRIORITY=optional
-PLAYER_DEPENDS=boost-thread, boost-system, libjpeg, openssl
+PLAYER_DEPENDS=boost-thread (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
+		boost-system (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
+		libjpeg, openssl
 ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
 PLAYER_SUGGESTS=gtk2
 else

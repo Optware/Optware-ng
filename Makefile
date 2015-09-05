@@ -256,7 +256,6 @@ PACKAGES_ONLY_WORK_ON_LINUX24 = \
 BOOST_PACKAGES = \
 	libtorrent-rasterbar \
 	mkvtoolnix \
-	mpd \
 	player \
 
 # libao - has runtime trouble?
@@ -362,7 +361,7 @@ COMMON_CROSS_PACKAGES = \
 	miscfiles mktemp mktorrent mlocate moblock \
 	moc modutils monit most motif motion motor mousepad \
 	mod-fastcgi moe moreutils mp3blaster mp3info mpack mpage \
-	mpc mpdscribble \
+	mpc mpd mpdscribble \
 	mpg123 mpop mrtg msmtp \
 	msort msynctool mt-daapd mt-daapd-svn mtools \
 	mtr multitail mussh mutt mxml \
