@@ -37,7 +37,7 @@ XUPNPD_CONFLICTS=
 #
 # XUPNPD_IPK_VERSION should be incremented when the ipk changes.
 #
-XUPNPD_IPK_VERSION=1
+XUPNPD_IPK_VERSION=2
 
 #
 # XUPNPD_CONFFILES should be a list of user-editable files
@@ -127,7 +127,8 @@ xupnpd-source: $(DL_DIR)/$(XUPNPD_SOURCE) $(XUPNPD_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(XUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(XUPNPD_SOURCE) $(XUPNPD_PATCHES) make/xupnpd.mk
+$(XUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(XUPNPD_SOURCE) $(XUPNPD_PATCHES) \
+			$(XUPNPD_SOURCE_DIR)/xupnpd_youtube.lua make/xupnpd.mk
 	$(MAKE) lua-stage libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(XUPNPD_DIR) $(@D)
 	$(XUPNPD_UNZIP) $(DL_DIR)/$(XUPNPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -140,6 +141,7 @@ $(XUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(XUPNPD_SOURCE) $(XUPNPD_PATCHES) ma
 	fi
 	mv -f $(@D)/src/* $(@D)
 	sed -i -e 's|/usr/share|/opt/share|g' $(@D)/main.cpp
+	cp -f $(XUPNPD_SOURCE_DIR)/xupnpd_youtube.lua -f $(@D)/plugins
 	touch $@
 
 xupnpd-unpack: $(XUPNPD_BUILD_DIR)/.configured
