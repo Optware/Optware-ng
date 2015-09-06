@@ -1,5 +1,8 @@
 #!/bin/sh
 
-mv -f /opt/lib/python2.7/site-packages/deluge/ui/web/js/extjs/ext-extensions/tree/TreeGridRenderColumn.js0000664 /opt/lib/python2.7/site-packages/deluge/ui/web/js/extjs/ext-extensions/tree/TreeGridRenderColumn.js
-echo -n "Setting default deluge ui to console ... "
-/opt/bin/deluge -s console
+if [ ! -f /opt/etc/deluge/.configured ]; then
+	echo -n "Setting default deluge ui to console ... "
+	/opt/bin/deluge -s console
+	mkdir -p /opt/etc/deluge
+	touch /opt/etc/deluge/.configured
+fi

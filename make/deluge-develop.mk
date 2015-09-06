@@ -39,7 +39,7 @@ DELUGE_DEVELOP_CONFLICTS=deluge
 #
 # DELUGE_DEVELOP_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_DEVELOP_IPK_VERSION=1
+DELUGE_DEVELOP_IPK_VERSION=2
 
 #
 # DELUGE_DEVELOP_CONFFILES should be a list of user-editable files
