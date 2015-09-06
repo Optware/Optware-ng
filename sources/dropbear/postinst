@@ -34,10 +34,6 @@ if [ ! -f /opt/etc/dropbear/dropbear_ecdsa_host_key ]; then
     /opt/sbin/dropbearkey -t ecdsa -f /opt/etc/dropbear/dropbear_ecdsa_host_key
 fi
 
-if [ ! -d /root ] ;  then
-	mkdir /root
-fi
-
 if [ -z `pidof dropbear` ]; then
         /opt/etc/init.d/S51dropbear
 fi

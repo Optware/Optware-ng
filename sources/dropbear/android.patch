@@ -1,0 +1,277 @@
+--- a/loginrec.c
++++ b/loginrec.c
+@@ -157,6 +157,7 @@
+ #include "loginrec.h"
+ #include "dbutil.h"
+ #include "atomicio.h"
++#include "session.h"
+ 
+ /**
+  ** prototypes for helper functions in this file
+@@ -275,11 +276,13 @@ login_init_entry(struct logininfo *li, i
+ 
+ 	if (username) {
+ 		strlcpy(li->username, username, sizeof(li->username));
+-		pw = getpwnam(li->username);
+-		if (pw == NULL)
+-			dropbear_exit("login_init_entry: Cannot find user \"%s\"",
+-					li->username);
+-		li->uid = pw->pw_uid;
++		pw = getpwnam(li->username);
++		if (pw == NULL)
++			li->uid = ses.authstate.pw_uid;   
++			//dropbear_exit("login_init_entry: Cannot find user \"%s\"",
++			//      li->username);
++		else
++			li->uid = pw->pw_uid;
+ 	}
+ 
+ 	if (hostname)
+--- a/runopts.h
++++ b/runopts.h
+@@ -25,6 +25,7 @@
+ #ifndef DROPBEAR_RUNOPTS_H_
+ #define DROPBEAR_RUNOPTS_H_
+ 
++#include <pwd.h>
+ #include "includes.h"
+ #include "signkey.h"
+ #include "buffer.h"
+@@ -111,6 +112,12 @@ typedef struct svr_runopts {
+ 
+ 	buffer * banner;
+ 	char * pidfile;
++   
++	int android_mode;
++	char *user_name;
++	char *passwd;
++	uid_t uid;
++	gid_t gid;
+ 
+ } svr_runopts;
+ 
+--- a/svr-auth.c
++++ b/svr-auth.c
+@@ -176,6 +176,10 @@ void recv_msg_userauth_request() {
+ 		if (methodlen == AUTH_METHOD_PASSWORD_LEN &&
+ 				strncmp(methodname, AUTH_METHOD_PASSWORD,
+ 					AUTH_METHOD_PASSWORD_LEN) == 0) {
++			if (svr_opts.android_mode) {
++				svr_auth_android();
++				goto out;
++			}
+ 			if (valid_user) {
+ 				svr_auth_password();
+ 				goto out;
+@@ -236,7 +240,7 @@ static int checkusername(char *username,
+ 	if (userlen > MAX_USERNAME_LEN) {
+ 		return DROPBEAR_FAILURE;
+ 	}
+-
++   
+ 	/* new user or username has changed */
+ 	if (ses.authstate.username == NULL ||
+ 		strcmp(username, ses.authstate.username) != 0) {
+@@ -247,7 +251,21 @@ static int checkusername(char *username,
+ 				m_free(ses.authstate.username);
+ 			}
+ 			authclear();
+-			fill_passwd(username);
++			if (svr_opts.android_mode) {
++				ses.authstate.pw_uid = svr_opts.uid;
++				ses.authstate.pw_gid = svr_opts.gid;
++				if (svr_opts.user_name != NULL)
++					ses.authstate.pw_name = m_strdup(svr_opts.user_name);
++				else
++					ses.authstate.pw_name = m_strdup("nobody");
++				if (svr_opts.passwd != NULL)
++					ses.authstate.pw_passwd = m_strdup(svr_opts.passwd);
++				else
++					ses.authstate.pw_passwd = m_strdup("");
++				ses.authstate.pw_dir = m_strdup("/data/local");
++				ses.authstate.pw_shell = m_strdup("/system/bin/sh");
++			} else
++				fill_passwd(username);
+ 			ses.authstate.username = m_strdup(username);
+ 	}
+ 
+@@ -286,6 +304,9 @@ static int checkusername(char *username,
+ 		/* empty shell in /etc/passwd means /bin/sh according to passwd(5) */
+ 		usershell = "/bin/sh";
+ 	}
++   
++	if (svr_opts.android_mode)
++		goto goodshell;      
+ 
+ 	/* check the shell is valid. If /etc/shells doesn't exist, getusershell()
+ 	 * should return some standard shells like "/bin/sh" and "/bin/csh" (this
+--- a/svr-authpasswd.c
++++ b/svr-authpasswd.c
+@@ -33,6 +33,45 @@
+ 
+ #ifdef ENABLE_SVR_PASSWORD_AUTH
+ 
++void svr_auth_android() {
++	char *password;
++	unsigned int passwordlen;
++	unsigned int changepw;
++
++	/* check if client wants to change password */
++	changepw = buf_getbool(ses.payload);
++	if (changepw) {
++		/* not implemented by this server */
++		send_msg_userauth_failure(0, 1);
++		return;
++	}
++
++	password = buf_getstring(ses.payload, &passwordlen);
++
++	if (password[0] == '\0') {
++		dropbear_log(LOG_WARNING, "user '%s' has blank password, rejected",
++				ses.authstate.pw_name);
++		send_msg_userauth_failure(0, 1);
++		return;
++	}
++   
++	if (strcmp(password, svr_opts.passwd) == 0) {
++		/* successful authentication */
++		dropbear_log(LOG_NOTICE, 
++				"password auth succeeded for '%s' from %s",
++				ses.authstate.pw_name,
++				svr_ses.addrstring);
++		send_msg_userauth_success();
++	} else {
++		dropbear_log(LOG_WARNING,
++				"bad password attempt for '%s' from %s",
++				ses.authstate.pw_name,
++				svr_ses.addrstring);
++		send_msg_userauth_failure(0, 1);
++	}
++}
++
++
+ /* not constant time when strings are differing lengths. 
+  string content isn't leaked, and crypt hashes are predictable length. */
+ static int constant_time_strcmp(const char* a, const char* b) {
+--- a/svr-chansession.c
++++ b/svr-chansession.c
+@@ -588,10 +588,17 @@ static int sessionpty(struct ChanSess *
+ 		dropbear_exit("Out of memory"); /* TODO disconnect */
+ 	}
+ 
+-	pw = getpwnam(ses.authstate.pw_name);
++	if (svr_opts.android_mode) {
++		pw = malloc(sizeof(struct passwd));
++		pw->pw_uid = svr_opts.uid;
++		pw->pw_gid = svr_opts.gid;
++	} else
++	pw = getpwnam(ses.authstate.pw_name);
+ 	if (!pw)
+ 		dropbear_exit("getpwnam failed after succeeding previously");
+ 	pty_setowner(pw, chansess->tty);
++   if (svr_opts.android_mode)
++      free(pw);
+ 
+ 	/* Set up the rows/col counts */
+ 	sessionwinchange(chansess);
+@@ -948,7 +955,20 @@ static void execchild(void *user_data) {
+ 	addnewvar("LOGNAME", ses.authstate.pw_name);
+ 	addnewvar("HOME", ses.authstate.pw_dir);
+ 	addnewvar("SHELL", get_user_shell());
+-	addnewvar("PATH", DEFAULT_PATH);
++	if (svr_opts.android_mode) {
++		addnewvar("PATH", "/sbin:/system/sbin:/system/bin:/system/xbin:/bin:/opt/bin:/opt/sbin");
++		addnewvar("ANDROID_ASSETS", "/system/app");
++		addnewvar("ANDROID_BOOTLOGO", "1");
++		addnewvar("ANDROID_DATA", "/data");
++		addnewvar("ANDROID_PROPERTY_WORKSPACE", "10,32768");
++		addnewvar("ANDROID_ROOT", "/system");
++		addnewvar("BOOTCLASSPATH", "/system/framework/core.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar");
++		addnewvar("EDITOR", "/opt/bin/nano");
++		addnewvar("EXTERNAL_STORAGE", "/sdcard");
++		addnewvar("LC_ALL","en_US.UTF-8");
++		addnewvar("TERMINFO","/opt/share/terminfo");
++	} else
++		addnewvar("PATH", DEFAULT_PATH);
+ 	if (chansess->term != NULL) {
+ 		addnewvar("TERM", chansess->term);
+ 	}
+--- a/svr-runopts.c
++++ b/svr-runopts.c
+@@ -41,6 +41,18 @@ static void printhelp(const char * progn
+ 
+ 	fprintf(stderr, "Dropbear server v%s https://matt.ucc.asn.au/dropbear/dropbear.html\n"
+ 					"Usage: %s [options]\n"
++#ifdef ENABLE_SVR_PASSWORD_AUTH
++					"\nAndroid Mode:\n"
++					"-A	Enable Android Mode\n"
++					"-N UserName\n"
++					"	Login user name\n"
++					"-C Password\n"
++					"	Login password\n"            
++					"-U UID\n"
++					"	Login UID\n"
++					"-G GID\n"
++					"	Login GID\n\n"
++#endif
+ 					"-b bannerfile	Display the contents of bannerfile"
+ 					" before user login\n"
+ 					"		(default: none)\n"
+@@ -115,6 +127,7 @@ void svr_getopts(int argc, char ** argv)
+ 	unsigned int i;
+ 	char ** next = 0;
+ 	int nextisport = 0;
++	int nextisint = 0;
+ 	char* recv_window_arg = NULL;
+ 	char* keepalive_arg = NULL;
+ 	char* idle_timeout_arg = NULL;
+@@ -134,6 +147,11 @@ void svr_getopts(int argc, char ** argv)
+ 	svr_opts.hostkey = NULL;
+ 	svr_opts.delay_hostkey = 0;
+ 	svr_opts.pidfile = DROPBEAR_PIDFILE;
++	svr_opts.android_mode = 0;
++	svr_opts.user_name = NULL;
++	svr_opts.passwd = NULL;
++	svr_opts.uid = 0;
++	svr_opts.gid = 0;
+ #ifdef ENABLE_SVR_LOCALTCPFWD
+ 	svr_opts.nolocaltcp = 0;
+ #endif
+@@ -173,6 +191,13 @@ void svr_getopts(int argc, char ** argv)
+ 			nextisport = 0;
+ 			continue;
+ 		}
++      
++		if (nextisint) {
++			*next = atoi(argv[i]);
++			nextisint = 0;
++			next = 0x00;
++			continue;
++		}
+ 	  
+ 		if (next) {
+ 			*next = argv[i];
+@@ -190,6 +215,23 @@ void svr_getopts(int argc, char ** argv)
+ 
+ 		if (argv[i][0] == '-') {
+ 			switch (argv[i][1]) {
++				case 'A':
++					svr_opts.android_mode = 1;
++					break;
++				case 'N':
++					next = &svr_opts.user_name;
++					break;
++				case 'C':
++					next = &svr_opts.passwd;
++					break;
++				case 'U':
++					next = &svr_opts.uid;
++					nextisint = 1;
++					break;
++				case 'G':
++					next = &svr_opts.gid;
++					nextisint = 1;
++					break;
+ 				case 'b':
+ 					next = &svr_opts.bannerfile;
+ 					break;
