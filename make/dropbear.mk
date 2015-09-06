@@ -8,7 +8,7 @@
 #
 
 DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/releases
-DROPBEAR_VERSION=2015.67
+DROPBEAR_VERSION=2015.68
 DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.bz2
 DROPBEAR_DIR=dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_UNZIP=bzcat
@@ -25,6 +25,7 @@ DROPBEAR_IPK_VERSION=1
 
 DROPBEAR_PATCHES=$(DROPBEAR_SOURCE_DIR)/configure.patch \
 		 $(DROPBEAR_SOURCE_DIR)/options.h.patch \
+		 $(DROPBEAR_SOURCE_DIR)/auth_pubkey_path.patch \
 
 DROPBEAR_CONFFILES=/opt/etc/default/dropbear /opt/etc/init.d/S51dropbear
 
@@ -47,7 +48,7 @@ $(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH
 	$(DROPBEAR_UNZIP) $(DL_DIR)/$(DROPBEAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DROPBEAR_PATCHES)" ; \
 		then cat $(DROPBEAR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DROPBEAR_DIR) -p1 ; \
+		patch -bd $(BUILD_DIR)/$(DROPBEAR_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(DROPBEAR_DIR) $(@D)
 	(cd $(@D) && \

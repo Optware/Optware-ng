@@ -1,11 +1,10 @@
 #!/bin/sh
 
-update-alternatives --remove scp /opt/sbin/dropbearmulti
-update-alternatives --remove ssh /opt/sbin/dropbearmulti
+/opt/bin/update-alternatives --remove scp /opt/sbin/dropbearmulti
+/opt/bin/update-alternatives --remove ssh /opt/sbin/dropbearmulti
 
-killall /opt/sbin/dropbear
+killall dropbear
 
-/bin/rm -f /opt/etc/dropbear/dropbear_rsa_host_key
-/bin/rm -f /opt/etc/dropbear/dropbear_dss_host_key
-/bin/rmdir /opt/etc/dropbear
-
+rm -f /opt/etc/dropbear/dropbear_rsa_host_key
+rm -f /opt/etc/dropbear/dropbear_dss_host_key
+rm -f /opt/etc/dropbear/dropbear_ecdsa_host_key

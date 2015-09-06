@@ -1,5 +1,5 @@
---- dropbear/options.h~	2015-01-28 16:57:37.000000000 +0200
-+++ dropbear/options.h	2015-03-25 06:35:31.853245591 +0200
+--- a/options.h
++++ b/options.h
 @@ -21,13 +21,13 @@
  
  /* Default hostkey paths - these can be specified on the command line */
@@ -17,7 +17,7 @@
  #endif
  
  /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
-@@ -188,7 +188,7 @@ much traffic. */
+@@ -193,7 +193,7 @@
  
  /* The MOTD file path */
  #ifndef MOTD_FILENAME
@@ -26,7 +26,7 @@
  #endif
  
  /* Authentication Types - at least one required.
-@@ -271,25 +271,25 @@ much traffic. */
+@@ -276,25 +276,25 @@
  /* The default file to store the daemon's process ID, for shutdown
     scripts etc. This can be overridden with the -P flag */
  #ifndef DROPBEAR_PIDFILE
@@ -51,12 +51,12 @@
  
  /* This is used by the scp binary when used as a client binary. If you're
   * not using the Dropbear client, you'll need to change it */
--#define _PATH_SSH_PROGRAM "/usr/bin/dbclient"
-+#define _PATH_SSH_PROGRAM "/opt/bin/dbclient"
+-#define DROPBEAR_PATH_SSH_PROGRAM "/usr/bin/dbclient"
++#define DROPBEAR_PATH_SSH_PROGRAM "/opt/bin/dbclient"
  
  /* Whether to log commands executed by a client. This only logs the 
   * (single) command sent to the server, not what a user did in a 
-@@ -331,7 +331,7 @@ be overridden at runtime with -I. 0 disa
+@@ -336,7 +336,7 @@
  #define DEFAULT_IDLE_TIMEOUT 0
  
  /* The default path. This will often get replaced by the shell */
