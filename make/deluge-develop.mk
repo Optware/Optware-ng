@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DELUGE_DEVELOP_REPOSITORY=git://deluge-torrent.org/deluge.git
-DELUGE_DEVELOP_VERSION=20150902
-DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-09-02 HEAD`
+DELUGE_DEVELOP_VERSION=20150905
+DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-09-05 HEAD`
 DELUGE_DEVELOP_SOURCE=deluge-develop-$(DELUGE_DEVELOP_VERSION).tar.bz2
 #DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
 DELUGE_DEVELOP_UNZIP=bzcat
@@ -99,10 +99,7 @@ $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE):
 		git checkout $(DELUGE_DEVELOP_TREEISH) && \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 minify_web_js.py deluge/ui/web/js/deluge-all && \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py sdist --formats=tar && \
-		tar -C dist -xvf dist/deluge-*.tar && \
-		rm -f dist/deluge-*.tar && \
-		cp -f deluge/ui/web/js/extjs/ext-base-debug.js deluge/ui/web/js/extjs/ext-all-debug.js dist/deluge-*/deluge/ui/web/js/extjs && \
-		cd dist && tar -cjvf $@ deluge-*) && \
+		bzip2 -ck dist/deluge-*.tar > $@) && \
 		rm -rf deluge-develop ; \
 	)
 
