@@ -52,7 +52,7 @@ LIBNET11_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBNET11_CPPFLAGS=
+LIBNET11_CPPFLAGS=-std=gnu89
 LIBNET11_LDFLAGS=
 ifneq ($(HOSTCC), $(TARGET_CC))
 LIBNET11_CONFIGURE_ENV=ac_libnet_have_packet_socket=yes

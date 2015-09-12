@@ -49,7 +49,7 @@ $(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES) make/
 	mv $(BUILD_DIR)/$(ATFTP_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) -std=gnu89" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
