@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBDVBPSI_SITE=http://download.videolan.org/pub/libdvbpsi/$(LIBDVBPSI_VERSION)
-LIBDVBPSI_VERSION=1.2.0
+LIBDVBPSI_VERSION=1.3.0
 LIBDVBPSI_SOURCE=libdvbpsi-$(LIBDVBPSI_VERSION).tar.bz2
 LIBDVBPSI_DIR=libdvbpsi-$(LIBDVBPSI_VERSION)
 LIBDVBPSI_UNZIP=bzcat
