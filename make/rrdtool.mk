@@ -168,10 +168,11 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		$(TARGET_CONFIGURE_OPTS) \
+		LD=$(TARGET_CC) \
 		PREFIX=/opt \
 		; \
 	    sed -i -e '/^PERLRUN *=/s|$$| -I$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)|' \
-	           -e '/^LDDLFLAGS *=/s|=.*|= -shared -rpath /opt/lib -L$(STAGING_LIB_DIR) $(PERL_LDFLAGS_EXTRA)|' \
+	           -e '/^LDDLFLAGS *=/s|=.*|= -shared -Wl,-rpath -Wl,/opt/lib -L$(STAGING_LIB_DIR) $(PERL_LDFLAGS_EXTRA)|' \
 	    	Makefile; \
 	done
 endif   
