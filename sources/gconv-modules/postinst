@@ -1,4 +1,4 @@
 #!/bin/sh
 
 ### establish a symlink to missing glibc bits
-test -e /lib/gconv || ln -sf /opt/lib/gconv /lib
+test -e /lib/gconv || ln -s /opt/lib/gconv /lib/gconv || exit 0
