@@ -1,4 +1,4 @@
-# This toolchain is gcc 5.2.0 on glibc 2.21
+# This toolchain is gcc 5.2.0 on glibc 2.20
 
 GNU_TARGET_NAME = i686-buildroot-linux-gnu
 
@@ -15,22 +15,7 @@ GETTEXT_NLS=enable
 IPV6=yes
 
 CROSS_CONFIGURATION_GCC_VERSION=5.2.0
-CROSS_CONFIGURATION_GLIBC_VERSION=2.21
-
-ifeq ($(HOST_MACHINE), $(filter armv5tel armv5tejl, $(HOST_MACHINE)))
-
-HOSTCC = $(TARGET_CC)
-GNU_HOST_NAME = $(GNU_TARGET_NAME)
-TARGET_CROSS = /opt/bin/
-TARGET_LIBDIR = /opt/lib
-TARGET_INCDIR = /opt/include
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS=
-TARGET_CFLAGS= $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-
-toolchain:
-
-else
+CROSS_CONFIGURATION_GLIBC_VERSION=2.20
 
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
@@ -44,7 +29,7 @@ TARGET_LIBDIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/usr/include
 
 #	to make feed firmware-independent, we make
-#	all packages dependent on uclibc-opt by hacking ipkg-build from ipkg-utils,
+#	all packages dependent on glibc-opt by hacking ipkg-build from ipkg-utils,
 #	and add following ld flag to hardcode /opt/lib/ld-linux.so.2
 #	into executables
 TARGET_LDFLAGS = -Wl,--dynamic-linker=/opt/lib/ld-linux.so.2
@@ -96,5 +81,3 @@ NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-gxx-include-dir=/opt/include/c++/5.2.0 --dis
 NATIVE_GCC_ADDITIONAL_DEPS=zlib
 
 NATIVE_GCC_ADDITIONAL_STAGE=zlib-stage
-
-endif

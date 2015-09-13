@@ -80,7 +80,7 @@ BOOST_ADDITIONAL_LIBS:= atomic \
 ### make boost-packages-dirclean
 ## to clean all boost packages build dirs
 
-LIBTORRENT-RASTERBAR_IPK_VERSION := 3
+LIBTORRENT-RASTERBAR_IPK_VERSION := 4
 
 MKVTOOLNIX_VERSION := 8.3.0
 MKVTOOLNIX_IPK_VERSION := 2
