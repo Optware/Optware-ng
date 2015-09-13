@@ -52,7 +52,7 @@ CLEARSILVER_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CLEARSILVER_CPPFLAGS=
+CLEARSILVER_CPPFLAGS=-std=gnu89
 CLEARSILVER_LDFLAGS=
 
 #
