@@ -107,14 +107,14 @@ $(STAGING_DIR)/bin/ipkg-build: $(IPKG-UTILS_DIR)/.unpacked
 	install -m0755 $(IPKG-UTILS_DIR)/ipkg-build* $(STAGING_DIR)/bin
 	install -m0755 $(IPKG-UTILS_DIR)/ipkg-make-index $(STAGING_DIR)/bin
 	install -m0755 $(IPKG-UTILS_DIR)/ipkg.py $(STAGING_DIR)/bin
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel buildroot-mipsel-ng shibby-tomato-arm, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-mipsel buildroot-mipsel-ng shibby-tomato-arm, $(OPTWARE_TARGET)))
 #	to make feed firmware-independent, we make
 #	all packages (except uclibc-opt, libnsl and ipkg-static)
 #	dependent on uclibc-opt by hacking ipkg-build
 	sed -i -e "/^version=/s~$$~\n\n# get last argument: IPK_DIR\nfor IPK_DIR; do true; done\nFILTEROUT=\`cat $$\{IPK_DIR\}/CONTROL/control|egrep '^Package: uclibc-opt$$|^Package: libnsl$$|^Package: ipkg-static$$'|wc -l\`\nif [ \"\$$FILTEROUT\" -eq \"0\" ]; then\nsed -i -e 's/^Depends:/Depends: uclibc-opt,/' -e 's/, *$$//' \$$\{IPK_DIR\}/CONTROL/control\nfi~" \
 						$(STAGING_DIR)/bin/ipkg-build
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabihf buildroot-i686, $(OPTWARE_TARGET)))
 	sed -i -e "/^version=/s~$$~\n\n# get last argument: IPK_DIR\nfor IPK_DIR; do true; done\nFILTEROUT=\`cat $$\{IPK_DIR\}/CONTROL/control|egrep '^Package: glibc-opt$$|^Package: libnsl$$|^Package: ipkg-static$$'|wc -l\`\nif [ \"\$$FILTEROUT\" -eq \"0\" ]; then\nsed -i -e 's/^Depends:/Depends: glibc-opt,/' -e 's/, *$$//' \$$\{IPK_DIR\}/CONTROL/control\nfi~" \
 						$(STAGING_DIR)/bin/ipkg-build
 endif
