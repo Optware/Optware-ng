@@ -1,22 +1,17 @@
 SPECIFIC_PACKAGES = \
-	libiconv uclibc-opt \
+	glibc-opt \
+	glibc-locale \
 	$(PERL_PACKAGES) \
 	binutils libc-dev gcc \
 	ipkg-static \
 
-# iptraf: sys/types.h and linux/types.h conflicting
 BROKEN_PACKAGES = \
-	buildroot \
-	$(UCLIBC_BROKEN_PACKAGES) \
-	bluez-hcidump \
-	golang \
-	gtmess \
-	inferno \
-	phoneme-advanced \
-	rssh \
-	sandbox \
-	libopensync msynctool obexftp \
-	modutils
+	ecl \
+	gnu-smalltalk \
+	qemu \
+	qemu-libc-i386 \
+	syx \
+	ldconfig modutils samba2
 
 PERL_MAJOR_VER := 5.20
 PERL_LDFLAGS_EXTRA = -lgcc_s
@@ -31,11 +26,6 @@ RTORRENT_IPK_VERSION := 1
 RTORRENT_AUTOMAKE=$(AUTOMAKE_NEW)
 RTORRENT_ACLOCAL=$(ACLOCAL_NEW)
 RTORRENT_CPPUNIT := yes
-
-TSHARK_VERSION := 1.2.12
-TSHARK_IPK_VERSION := 1
-
-FFMPEG_CONFIG_OPTS := --disable-mipsfpu
 
 ZNC_CONFIG_ARGS:=gl_cv_cc_visibility=true
 
@@ -52,6 +42,9 @@ M4_VERSION := 1.4.17
 MPD_VERSION := 0.19.9
 MPD_IPK_VERSION := 1
 
+TAR_VERSION := 1.28
+TAR_IPK_VERSION := 1
+
 BOOST_VERSION := 1_59_0
 BOOST_IPK_VERSION := 1
 BOOST_EXTERNAL_JAM := no
@@ -66,6 +59,7 @@ BOOST_ADDITIONAL_LIBS:= atomic \
 			timer \
 			exception \
 			serialization \
+			test \
 			wave
 
 ### boost packages
@@ -83,6 +77,5 @@ LIBTORRENT-RASTERBAR_IPK_VERSION := 1
 
 MKVTOOLNIX_VERSION := 8.3.0
 MKVTOOLNIX_IPK_VERSION := 1
-MKVTOOLNIX_ADDITIONAL_PATCHES=$(SOURCE_DIR)/mkvtoolnix/8.3.0/llround.patch
 
 PLAYER_IPK_VERSION := 1

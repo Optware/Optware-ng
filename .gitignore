@@ -1,6 +1,8 @@
 /.configured
 /.svn/
 /buildroot-armeabi/
+/buildroot-armeabi-ng/
+/buildroot-armeabihf/
 /buildroot-i686/
 /buildroot-mipsel/
 /buildroot-mipsel-ng/
