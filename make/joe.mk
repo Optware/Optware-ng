@@ -14,7 +14,7 @@
 # You should change all these variables to suit your package.
 #
 JOE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/joe-editor
-JOE_VERSION=3.6
+JOE_VERSION=4.0
 JOE_SOURCE=joe-$(JOE_VERSION).tar.gz
 JOE_DIR=joe-$(JOE_VERSION)
 JOE_UNZIP=zcat
@@ -39,7 +39,7 @@ JOE_IPK_VERSION=1
 # JOE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-JOE_PATCHES=$(JOE_SOURCE_DIR)/umath-c99.patch
+#JOE_PATCHES=$(JOE_SOURCE_DIR)/umath-c99.patch
 
 #
 # If the compilation of the package requires additional
