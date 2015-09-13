@@ -1,0 +1,20 @@
+--- include/asterisk/inline_api.h
++++ include/asterisk/inline_api.h
+@@ -43,11 +45,15 @@
+   including the header file
+  */
+ 
+-#if !defined(LOW_MEMORY)
++#if !defined(LOW_MEMORY) && !defined(DISABLE_INLINE)
+ 
+ #if !defined(AST_API_MODULE)
++#if defined(__clang__) || defined(__GNUC_STDC_INLINE__)
++#define AST_INLINE_API(hdr, body) static hdr; static inline hdr body
++#else /* if defined(__clang__) */
+ #define AST_INLINE_API(hdr, body) hdr; extern inline hdr body
+-#else
++#endif
++#else /* if !defined(AST_API_MODULE) */
+ #define AST_INLINE_API(hdr, body) hdr; hdr body
+ #endif
+ 

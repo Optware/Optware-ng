@@ -192,7 +192,9 @@ ASTERISK11_CONFFILES=\
 # ASTERISK11_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK11_PATCHES = $(ASTERISK11_SOURCE_DIR)/roundf.patch
+ASTERISK11_PATCHES = \
+$(ASTERISK11_SOURCE_DIR)/roundf.patch \
+$(ASTERISK11_SOURCE_DIR)/inline_api.patch
 
 #
 # If the compilation of the package requires additional
@@ -318,7 +320,7 @@ endif
 ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
 	sed -i -e '/+= *-pipe/s/^/#/' $(@D)/Makefile
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 #	no res_nsearch() in uClibc 0.9.33.2
 	sed -i -e '/AC_DEFINE(\[HAVE_RES_NINIT\]/d' $(@D)/configure.ac
 endif

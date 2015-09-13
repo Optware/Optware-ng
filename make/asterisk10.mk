@@ -188,7 +188,9 @@ ASTERISK10_CONFFILES=\
 # ASTERISK10_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK10_PATCHES = $(ASTERISK10_SOURCE_DIR)/roundf.patch
+ASTERISK10_PATCHES = \
+$(ASTERISK10_SOURCE_DIR)/roundf.patch \
+$(ASTERISK10_SOURCE_DIR)/inline_api.patch
 
 #
 # If the compilation of the package requires additional
@@ -199,6 +201,14 @@ ASTERISK10_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR) \
 ifeq (slugosbe, $(OPTWARE_TARGET))
 ASTERISK10_CPPFLAGS+= -DPATH_MAX=4096
 endif
+
+ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -ge 5; echo $$?),0)
+# Workaround for numerous
+#  multiple definition of `ast_*
+# errors
+ASTERISK10_CPPFLAGS+= -DLOW_MEMORY
+endif
+
 ASTERISK10_LDFLAGS=
 ifeq ($(OPTWARE_TARGET), $(filter angstrombe angstromle cs05q3armel cs08q1armel syno-e500, $(OPTWARE_TARGET)))
 ASTERISK10_LDFLAGS+=-lpthread -ldl -lresolv
@@ -314,7 +324,7 @@ endif
 ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
 	sed -i -e '/+= *-pipe/s/^/#/' $(@D)/Makefile
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 #	no res_nsearch() in uClibc 0.9.33.2
 	sed -i -e '/AC_DEFINE(\[HAVE_RES_NINIT\]/d' $(@D)/configure.ac
 endif
