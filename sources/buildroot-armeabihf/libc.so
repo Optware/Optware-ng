@@ -2,4 +2,4 @@
    Use the shared library, but some functions are only in
    the static library, so try that secondarily.  */
 OUTPUT_FORMAT(elf32-littlearm)
-GROUP ( /opt/lib/libc.so.6 /opt/lib/libc_nonshared.a  AS_NEEDED ( /opt/lib/ld-linux.so.2 ) )
+GROUP ( /opt/lib/libc.so.6 /opt/lib/libc_nonshared.a  AS_NEEDED ( /opt/lib/ld-linux-armhf.so.3 ) )
