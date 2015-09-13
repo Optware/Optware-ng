@@ -172,13 +172,13 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	install -d $(LIBC-DEV_IPK_DIR)/opt/lib
 	-rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
 	cp -f $(LIBC-DEV_LIBGCC_STATIC) $(LIBC-DEV_IPK_DIR)/opt/lib
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-mipsel buildroot-mipsel-ng shibby-tomato-arm, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-mipsel buildroot-mipsel-ng shibby-tomato-arm, $(OPTWARE_TARGET)))
 	rm -rf $(LIBC-DEV_IPK_DIR)/opt/include/zlib.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/zconf.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/iconv.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/openssl
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabihf buildroot-i686, $(OPTWARE_TARGET)))
 	rm -rf $(LIBC-DEV_IPK_DIR)/opt/include/zlib.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/zconf.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/openssl
@@ -227,7 +227,11 @@ else
 ifeq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
 	cd $(LIBC-DEV_IPK_DIR)/opt/lib; \
 		for f in libc.so libcrypt.so libdl.so libm.so libpthread.so libresolv.so librt.so libutil.so; do \
-			ln -s $${f}.0 $${f}; \
+			if [ -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/$${f}.1 ]; then \
+				ln -s $${f}.1 $${f}; \
+			else \
+				ln -s $${f}.0 $${f}; \
+			fi \
 		done
 else
 	cd $(LIBC-DEV_IPK_DIR)/opt/lib; \
