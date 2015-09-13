@@ -27,8 +27,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 EGGDROP_SITE=ftp://ftp.eggheads.org/pub/eggdrop/source/1.6
-EGGDROP_VERSION=1.6.19
-EGGDROP_SOURCE=eggdrop$(EGGDROP_VERSION)+ctcpfix.tar.bz2
+EGGDROP_VERSION=1.6.21
+EGGDROP_SOURCE=eggdrop$(EGGDROP_VERSION).tar.bz2
 EGGDROP_DIR=eggdrop$(EGGDROP_VERSION)
 EGGDROP_UNZIP=bzcat
 EGGDROP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -42,7 +42,7 @@ EGGDROP_CONFLICTS=
 #
 # EGGDROP_IPK_VERSION should be incremented when the ipk changes.
 #
-EGGDROP_IPK_VERSION=3
+EGGDROP_IPK_VERSION=1
 
 #
 # EGGDROP_CONFFILES should be a list of user-editable files
@@ -52,13 +52,13 @@ EGGDROP_CONFFILES=/opt/etc/eggdrop.conf /opt/etc/init.d/S50eggdrop
 # EGGDROP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-EGGDROP_PATCHES=$(EGGDROP_SOURCE_DIR)/Makefile.in.patch $(EGGDROP_SOURCE_DIR)/003-language_c.patch
+EGGDROP_PATCHES=$(EGGDROP_SOURCE_DIR)/Makefile.in.patch $(EGGDROP_SOURCE_DIR)/004-main_c.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-EGGDROP_CPPFLAGS=-DHAVE_SOCKLEN_T
+EGGDROP_CPPFLAGS=-DHAVE_SOCKLEN_T -std=gnu89
 EGGDROP_LDFLAGS=-lresolv
 
 #

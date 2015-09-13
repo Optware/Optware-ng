@@ -1,0 +1,13 @@
+--- a/src/main.c
++++ b/src/main.c
+@@ -1040,8 +1040,8 @@
+    * This check isn't useful under cygwin and has been
+    * reported to cause trouble in some situations.
+    */
+-  if (((int) getuid() == 0) || ((int) geteuid() == 0))
+-    fatal("ERROR: Eggdrop will not run as root!", 0);
++  if (((int) getuid() == 666) || ((int) geteuid() == 66))
++    fatal("ERROR: Eggdrop will not run the devil!", 0);
+ #endif
+ 
+ #ifndef REPLACE_NOTIFIER

@@ -11,6 +11,6 @@ if grep -q ^eggdrop: /etc/passwd; then
 	echo There already is an eggdrop user on the system.
 else
 	echo -n "No eggdrop user found, creating it... "
-	adduser -h /opt/share/eggdrop -g "eggdrop daemon" -s /bin/false -D -H  $ADDUSER_OPT eggdrop > /dev/null 2>&1
+	adduser -h /opt/share/eggdrop -g "eggdrop daemon" -s /bin/false -D -H  $ADDUSER_OPT eggdrop > /dev/null 2>&1 || (echo "Warning! Failed to create eggdrop user/group"; exit 0)
 	echo done
 fi
