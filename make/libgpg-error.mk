@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGPG-ERROR_SITE=ftp://ftp.gnupg.org/gcrypt/libgpg-error
-LIBGPG-ERROR_VERSION=1.10
+LIBGPG-ERROR_VERSION?=1.20
 LIBGPG-ERROR_SOURCE=libgpg-error-$(LIBGPG-ERROR_VERSION).tar.gz
 LIBGPG-ERROR_DIR=libgpg-error-$(LIBGPG-ERROR_VERSION)
 LIBGPG-ERROR_UNZIP=zcat
@@ -42,7 +42,7 @@ LIBGPG-ERROR_CONFLICTS=
 #
 # LIBGPG-ERROR_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGPG-ERROR_IPK_VERSION=1
+LIBGPG-ERROR_IPK_VERSION?=1
 
 #
 # LIBGPG-ERROR_CONFFILES should be a list of user-editable files
@@ -53,6 +53,12 @@ LIBGPG-ERROR_CONFFILES=#/opt/etc/libgpg-error.conf /opt/etc/init.d/SXXlibgpg-err
 # which they should be applied to the source code.
 #
 LIBGPG-ERROR_PATCHES=#$(LIBGPG-ERROR_SOURCE_DIR)/configure.patch
+
+LIBGPG-ERROR_ARCH = $(strip \
+    $(if $(filter buildroot-armeabihf, $(OPTWARE_TARGET)), arm-unknown-linux-gnueabihf, \
+    $(if $(filter arm, $(TARGET_ARCH)), arm-unknown-linux-gnueabi, \
+    $(if $(filter i686, $(TARGET_ARCH)), i686-pc-linux-gnu, \
+    $(TARGET_ARCH)-unknown-linux-gnu))))
 
 #
 # If the compilation of the package requires additional
@@ -107,12 +113,15 @@ libgpg-error-source: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG-ERROR_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBGPG-ERROR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG-ERROR_PATCHES)
+$(LIBGPG-ERROR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG-ERROR_PATCHES) make/libgpg-error.mk
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(@D)
 	$(LIBGPG-ERROR_UNZIP) $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(LIBGPG-ERROR_PATCHES) | patch -d $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(@D)
+	if [ -f $(@D)/src/syscfg/lock-obj-pub.$(LIBGPG-ERROR_ARCH).h ]; then \
+		ln -s lock-obj-pub.$(LIBGPG-ERROR_ARCH).h $(@D)/src/syscfg/lock-obj-pub.linux-gnu.h; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGPG-ERROR_CPPFLAGS)" \
