@@ -47,6 +47,9 @@ $(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES) make/
 		cat $(ATFTP_PATCHES) | patch -d $(BUILD_DIR)/$(ATFTP_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(ATFTP_DIR) $(@D)
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabihf, $(OPTWARE_TARGET)))
+	sed -i -e 's/#ifdef __USE_EXTERN_INLINES/#if 0/' $(@D)/argz.h
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) -std=gnu89" \
