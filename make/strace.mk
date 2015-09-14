@@ -24,9 +24,9 @@ STRACE_VERSION ?= 4.5.20
 STRACE_IPK_VERSION ?= 1
 
 STRACE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/strace
-STRACE_SOURCE=strace-$(STRACE_VERSION).tar.bz2
+STRACE_SOURCE?=strace-$(STRACE_VERSION).tar.bz2
 STRACE_DIR=strace-$(STRACE_VERSION)
-STRACE_UNZIP=bzcat
+STRACE_UNZIP?=bzcat
 STRACE_MAINTAINER=Christopher <edmondsc@onid.orst.edu>
 STRACE_DESCRIPTION=Traces all system calls a program makes.
 STRACE_SECTION=utility
@@ -40,13 +40,14 @@ STRACE_CONFLICTS=
 # which they should be applied to the source code.
 #
 #
-STRACE_PATCHES=$(STRACE_SOURCE_DIR)/CTL_PROC.patch
+STRACE_PATCHES?=$(STRACE_SOURCE_DIR)/CTL_PROC.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 STRACE_CPPFLAGS=
+STRACE_CPPFLAGS_PRE?=
 STRACE_LDFLAGS=
 
 #
@@ -105,7 +106,7 @@ $(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES) ma
 	mv $(BUILD_DIR)/$(STRACE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(STRACE_CPPFLAGS)" \
+		CPPFLAGS="$(STRACE_CPPFLAGS_PRE) $(STAGING_CPPFLAGS) $(STRACE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(STRACE_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
