@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ULOGD_SITE=http://www.netfilter.org/projects/ulogd/files
-ULOGD_VERSION=1.24
+ULOGD_VERSION=2.0.5
 ULOGD_SOURCE=ulogd-$(ULOGD_VERSION).tar.bz2
 ULOGD_DIR=ulogd-$(ULOGD_VERSION)
 ULOGD_UNZIP=bzcat
@@ -29,7 +29,7 @@ ULOGD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ULOGD_DESCRIPTION=A userspace logging daemon for netfilter/iptables
 ULOGD_SECTION=utils
 ULOGD_PRIORITY=optional
-ULOGD_DEPENDS=
+ULOGD_DEPENDS=libnfnetlink, libnetfilter-log, libnetfilter-conntrack, libmnl, libnetfilter-acct
 ULOGD_SUGGESTS=
 ULOGD_CONFLICTS=
 
@@ -105,7 +105,8 @@ ulogd-source: $(DL_DIR)/$(ULOGD_SOURCE) $(ULOGD_PATCHES)
 # shown below to make various patches to it.
 #
 $(ULOGD_BUILD_DIR)/.configured: $(DL_DIR)/$(ULOGD_SOURCE) $(ULOGD_PATCHES) make/ulogd.mk
-	$(MAKE) libpcap-stage sqlite-stage
+	$(MAKE) libpcap-stage sqlite-stage libnfnetlink-stage libnetfilter-log-stage \
+		libnetfilter-conntrack-stage libmnl-stage libnetfilter-acct-stage
 	rm -rf $(BUILD_DIR)/$(ULOGD_DIR) $(@D)
 	$(ULOGD_UNZIP) $(DL_DIR)/$(ULOGD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ULOGD_PATCHES)" ; \
@@ -120,6 +121,8 @@ $(ULOGD_BUILD_DIR)/.configured: $(DL_DIR)/$(ULOGD_SOURCE) $(ULOGD_PATCHES) make/
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(ULOGD_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(ULOGD_LDFLAGS) $(STAGING_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -140,7 +143,8 @@ ulogd-unpack: $(ULOGD_BUILD_DIR)/.configured
 $(ULOGD_BUILD_DIR)/.built: $(ULOGD_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		LD="$(TARGET_LD) -L$(STAGING_LIB_DIR) -rpath /opt/lib"
+		LD="$(TARGET_CC) -L$(STAGING_LIB_DIR) -Wl,-rpath -Wl,/opt/lib" \
+		AR=$(TARGET_AR)
 	touch $@
 
 #
@@ -154,6 +158,7 @@ ulogd: $(ULOGD_BUILD_DIR)/.built
 $(ULOGD_BUILD_DIR)/.staged: $(ULOGD_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/ulogd/*.la
 	touch $@
 
 ulogd-stage: $(ULOGD_BUILD_DIR)/.staged
@@ -193,6 +198,7 @@ $(ULOGD_IPK): $(ULOGD_BUILD_DIR)/.built
 	rm -rf $(ULOGD_IPK_DIR) $(BUILD_DIR)/ulogd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ULOGD_BUILD_DIR) DESTDIR=$(ULOGD_IPK_DIR) install
 	$(STRIP_COMMAND) $(ULOGD_IPK_DIR)/opt/sbin/* $(ULOGD_IPK_DIR)/opt/lib/ulogd/*.so
+	find $(ULOGD_IPK_DIR)/opt -type f -name '*.la' -exec rm -f {} \;
 	$(MAKE) $(ULOGD_IPK_DIR)/CONTROL/control
 	echo $(ULOGD_CONFFILES) | sed -e 's/ /\n/g' > $(ULOGD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ULOGD_IPK_DIR)
