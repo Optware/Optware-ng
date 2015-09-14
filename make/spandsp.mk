@@ -22,9 +22,9 @@
 #
 SPANDSP_SITE=http://www.soft-switch.org/downloads/spandsp
 SPANDSP_PRE_VERSION=
-SPANDSP_INITIAL_VERSION=0.0.5
+SPANDSP_INITIAL_VERSION=0.0.6
 SPANDSP_VERSION=$(SPANDSP_INITIAL_VERSION)$(SPANDSP_PRE_VERSION)
-SPANDSP_SOURCE=spandsp-$(SPANDSP_VERSION).tgz
+SPANDSP_SOURCE=spandsp-$(SPANDSP_VERSION).tar.gz
 #SPANDSP_DIR=spandsp-$(SPANDSP_VERSION)
 SPANDSP_DIR=spandsp-$(SPANDSP_INITIAL_VERSION)
 SPANDSP_UNZIP=zcat
@@ -109,16 +109,16 @@ spandsp-source: $(DL_DIR)/$(SPANDSP_SOURCE) $(SPANDSP_PATCHES)
 #
 $(SPANDSP_BUILD_DIR)/.configured: $(DL_DIR)/$(SPANDSP_SOURCE) $(SPANDSP_PATCHES) make/spandsp.mk
 	$(MAKE) libtiff-stage libxml2-stage
-	rm -rf $(BUILD_DIR)/$(SPANDSP_DIR) $(SPANDSP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SPANDSP_DIR) $(@D)
 	$(SPANDSP_UNZIP) $(DL_DIR)/$(SPANDSP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPANDSP_PATCHES)" ; \
 		then cat $(SPANDSP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SPANDSP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SPANDSP_DIR)" != "$(SPANDSP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SPANDSP_DIR) $(SPANDSP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SPANDSP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SPANDSP_DIR) $(@D) ; \
 	fi
-	(cd $(SPANDSP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SPANDSP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SPANDSP_LDFLAGS)" \
@@ -130,7 +130,11 @@ $(SPANDSP_BUILD_DIR)/.configured: $(DL_DIR)/$(SPANDSP_SOURCE) $(SPANDSP_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(SPANDSP_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	sed -i -e '/\$$(CC_FOR_BUILD)/s/-DHAVE_CONFIG_H//' $(@D)/src/Makefile
+ifeq (uclibc, $(LIBC_STYLE))
+	sed -i -e '/^#define HAVE_TGMATH_H/s|^|//|' $(@D)/src/config.h
+endif
 	touch $@
 
 spandsp-unpack: $(SPANDSP_BUILD_DIR)/.configured
@@ -140,7 +144,7 @@ spandsp-unpack: $(SPANDSP_BUILD_DIR)/.configured
 #
 $(SPANDSP_BUILD_DIR)/.built: $(SPANDSP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SPANDSP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -153,7 +157,7 @@ spandsp: $(SPANDSP_BUILD_DIR)/.built
 #
 $(SPANDSP_BUILD_DIR)/.staged: $(SPANDSP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SPANDSP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 spandsp-stage: $(SPANDSP_BUILD_DIR)/.staged
@@ -218,4 +222,4 @@ spandsp-dirclean:
 # Some sanity check for the package.
 #
 spandsp-check: $(SPANDSP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SPANDSP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
