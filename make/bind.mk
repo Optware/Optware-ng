@@ -75,7 +75,7 @@ bind-unpack: $(BIND_BUILD_DIR)/.configured
 
 $(BIND_BUILD_DIR)/.built: $(BIND_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS) BUILD_CC=$(HOSTCC)
+	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS) BUILD_CC=$(HOSTCC) EXT_CFLAGS="$(STAGING_CPPFLAGS)"
 	touch $@
 
 bind: $(BIND_BUILD_DIR)/.built
