@@ -39,7 +39,7 @@ USHARE_CONFFILES=/opt/etc/ushare.conf
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-USHARE_CPPFLAGS=-I$(USHARE_BUILD_DIR)
+USHARE_CPPFLAGS=-I$(USHARE_BUILD_DIR) -std=gnu89
 USHARE_LDFLAGS=
 ifeq (uclibc, $(LIBC_STYLE))
 USHARE_LDFLAGS +=-lpthread
