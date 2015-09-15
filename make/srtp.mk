@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SRTP_SITE=http://srtp.sourceforge.net
-SRTP_VERSION=1.4.2
+SRTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/srtp
+SRTP_VERSION=1.4.4
 SRTP_SOURCE=srtp-$(SRTP_VERSION).tgz
 SRTP_DIR=srtp
 SRTP_UNZIP=zcat
@@ -36,7 +36,7 @@ SRTP_CONFLICTS=
 #
 # SRTP_IPK_VERSION should be incremented when the ipk changes.
 #
-SRTP_IPK_VERSION=2
+SRTP_IPK_VERSION=1
 
 #
 # SRTP_CONFFILES should be a list of user-editable files
@@ -106,6 +106,7 @@ srtp-source: $(DL_DIR)/$(SRTP_SOURCE) $(SRTP_PATCHES)
 #
 $(SRTP_BUILD_DIR)/.configured: $(DL_DIR)/$(SRTP_SOURCE) $(SRTP_PATCHES) make/srtp.mk
 	#$(MAKE) <bar>-stage <baz>-stage
+	-@$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) uninstall
 	rm -rf $(BUILD_DIR)/$(SRTP_DIR) $(@D)
 	$(SRTP_UNZIP) $(DL_DIR)/$(SRTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SRTP_PATCHES)" ; \
@@ -149,6 +150,7 @@ srtp: $(SRTP_BUILD_DIR)/.built
 #
 $(SRTP_BUILD_DIR)/.staged: $(SRTP_BUILD_DIR)/.built
 	rm -f $@
+	-@$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) uninstall
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
