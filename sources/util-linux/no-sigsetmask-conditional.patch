@@ -1,0 +1,46 @@
+--- a/login-utils/shutdown.c
++++ login-utils/shutdown.c
+@@ -150,7 +150,20 @@
+ 	    for (fd = 0; fd < 3; fd++) close (fd);
+ 	    while (1) wait (NULL);  /*  Grim reaper never stops  */
+ 	}
++#ifndef LIBC_HAS_NO_SIGSETMASK
+ 	sigsetmask (0); /*  simpleinit(8) blocks all signals: undo for ALRM  */
++#else
++	{
++		sigset_t set, oset;
++
++		if (_SIGSET_NWORDS == 2) /* typical */
++			set.__val[1] = 0;
++		if (_SIGSET_NWORDS > 2)
++			memset(&set, 0, sizeof(set));
++		set.__val[0] = (unsigned int) 0;
++		sigprocmask (SIG_SETMASK, &set, &oset);
++	}
++#endif
+ 	for (i = 1; i < NSIG; i++) signal (i, SIG_DFL);
+ 
+         setlocale(LC_ALL, "");
+--- a/login-utils/ttymsg.c
++++ login-utils/ttymsg.c
+@@ -153,7 +153,20 @@
+ 			/* wait at most tmout seconds */
+ 			(void) signal(SIGALRM, SIG_DFL);
+ 			(void) signal(SIGTERM, SIG_DFL); /* XXX */
++#ifndef LIBC_HAS_NO_SIGSETMASK
+ 			(void) sigsetmask(0);
++#else
++			{
++				sigset_t set, oset;
++
++				if (_SIGSET_NWORDS == 2) /* typical */
++					set.__val[1] = 0;
++				if (_SIGSET_NWORDS > 2)
++					memset(&set, 0, sizeof(set));
++				set.__val[0] = (unsigned int) 0;
++				sigprocmask (SIG_SETMASK, &set, &oset);
++			}
++#endif
+ 			(void) alarm((u_int)tmout);
+ 			(void) fcntl(fd, O_NONBLOCK, &off);
+ 			continue;

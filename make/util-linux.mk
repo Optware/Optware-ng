@@ -49,15 +49,19 @@ UTIL_LINUX_IPK_VERSION=6
 UTIL_LINUX_PATCHES=\
 	$(UTIL_LINUX_SOURCE_DIR)/llseek.patch \
 	$(UTIL_LINUX_SOURCE_DIR)/umount2.patch \
-	$(UTIL_LINUX_SOURCE_DIR)/loop-aes-util-linux-2.12r.patch
+	$(UTIL_LINUX_SOURCE_DIR)/loop-aes-util-linux-2.12r.patch \
+	$(UTIL_LINUX_SOURCE_DIR)/no-sigsetmask-conditional.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 UTIL_LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 UTIL_LINUX_CPPFLAGS+=-DOMAGIC=0407 -DNMAGIC=0410 -DZMAGIC=0413
+endif
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi-ng buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+UTIL_LINUX_CPPFLAGS+=-DLIBC_HAS_NO_SIGSETMASK
 endif
 UTIL_LINUX_LDFLAGS=
 
@@ -121,11 +125,11 @@ $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D) ; \
 	fi
-ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-i686 buildroot-mipsel, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-armeabi-ng buildroot-i686 buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 #	no <asm/page.h>
 	sed -i -e '/#include <asm\/page\.h>/s|^|//|' $(@D)/disk-utils/fsck.cramfs.c
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 #	no <linux/a.out.h>
 	sed -i -e '/#include <a\.out\.h>/s|^|//|' $(@D)/text-utils/more.c
 endif
