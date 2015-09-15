@@ -117,7 +117,7 @@ mdadm-unpack: $(MDADM_BUILD_DIR)/.configured
 #
 $(MDADM_BUILD_DIR)/.built: $(MDADM_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) CC=$(TARGET_CC) DESTDIR="$(MDADM_BUILD_DIR)/opt/" all mdadm.8
+	$(MAKE) -C $(@D) CC="$(TARGET_CC) -std=gnu89" DESTDIR="$(MDADM_BUILD_DIR)/opt/" all mdadm.8
 	touch $@
 
 #
