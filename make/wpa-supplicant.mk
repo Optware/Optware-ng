@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WPA_SUPPLICANT_SITE=http://hostap.epitest.fi/releases
-WPA_SUPPLICANT_VERSION=0.5.8
+WPA_SUPPLICANT_VERSION=2.4
 WPA_SUPPLICANT_SOURCE=wpa_supplicant-$(WPA_SUPPLICANT_VERSION).tar.gz
 WPA_SUPPLICANT_DIR=wpa_supplicant-$(WPA_SUPPLICANT_VERSION)
 WPA_SUPPLICANT_UNZIP=zcat
@@ -42,7 +42,7 @@ WPA_SUPPLICANT_CONFLICTS=
 #
 # WPA_SUPPLICANT_IPK_VERSION should be incremented when the ipk changes.
 #
-WPA_SUPPLICANT_IPK_VERSION=3
+WPA_SUPPLICANT_IPK_VERSION=1
 
 #
 # WPA_SUPPLICANT_CONFFILES should be a list of user-editable files
@@ -107,16 +107,16 @@ wpa-supplicant-source: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WPA_SUPPLICANT_PATCH
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(WPA_SUPPLICANT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WPA_SUPPLICANT_PATCHES)
+$(WPA_SUPPLICANT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WPA_SUPPLICANT_PATCHES) make/wpa-supplicant.mk
 	$(MAKE) openssl-stage readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(@D)
 	$(WPA_SUPPLICANT_UNZIP) $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WPA_SUPPLICANT_PATCHES)" ; \
 		then cat $(WPA_SUPPLICANT_PATCHES) | patch -d $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) -p1 ; \
 	fi
-	cp $(WPA_SUPPLICANT_SOURCE_DIR)/defconfig $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/.config
-	cp $(WPA_SUPPLICANT_SOURCE_DIR)/typedefs.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/typedefs.h
-	cp $(WPA_SUPPLICANT_SOURCE_DIR)/wlioctl.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wlioctl.h
+	cp $(WPA_SUPPLICANT_SOURCE_DIR)/defconfig $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/.config
+	cp $(WPA_SUPPLICANT_SOURCE_DIR)/typedefs.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/typedefs.h
+	cp $(WPA_SUPPLICANT_SOURCE_DIR)/wlioctl.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/wlioctl.h
 	cp -a $(WPA_SUPPLICANT_SOURCE_DIR)/proto $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)
 	mv $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(@D)
 	touch $@
@@ -131,9 +131,9 @@ $(WPA_SUPPLICANT_BUILD_DIR)/.built: $(WPA_SUPPLICANT_BUILD_DIR)/.configured
 	CC="$(TARGET_CC)" \
 	LDFLAGS="$(STAGING_LDFLAGS)" \
 	CPPFLAGS="$(STAGING_CPPFLAGS)"  \
-	CFLAGS="$(TARGET_CFLAGS)" \
+	CFLAGS="$(STAGING_CPPFLAGS)" \
 	LIBS="$(STAGING_LDFLAGS)" \
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D)/wpa_supplicant
 	touch $@
 
 #
@@ -185,11 +185,11 @@ $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/control:
 $(WPA_SUPPLICANT_IPK): $(WPA_SUPPLICANT_BUILD_DIR)/.built
 	rm -rf $(WPA_SUPPLICANT_IPK_DIR) $(BUILD_DIR)/wpa-supplicant_*_$(TARGET_ARCH).ipk
 	install -d $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin
-	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_cli $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_cli
+	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_cli $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_cli
 	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_cli
-	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_passphrase $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_passphrase
+	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_passphrase $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_passphrase
 	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_passphrase
-	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_supplicant
+	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_supplicant $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_supplicant
 	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_supplicant
 	install -d -d $(WPA_SUPPLICANT_IPK_DIR)/opt/etc
 	install -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/wpa-supplicant.conf $(WPA_SUPPLICANT_IPK_DIR)/opt/etc/wpa-supplicant.conf
