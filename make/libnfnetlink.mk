@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBNFNETLINK_SITE=ftp://ftp.netfilter.org/pub/libnfnetlink
-LIBNFNETLINK_VERSION=0.0.14
+LIBNFNETLINK_VERSION=1.0.1
 LIBNFNETLINK_SOURCE=libnfnetlink-$(LIBNFNETLINK_VERSION).tar.bz2
 LIBNFNETLINK_DIR=libnfnetlink-$(LIBNFNETLINK_VERSION)
 LIBNFNETLINK_UNZIP=bzcat
@@ -151,6 +151,8 @@ libnfnetlink: $(LIBNFNETLINK_BUILD_DIR)/.built
 $(LIBNFNETLINK_BUILD_DIR)/.staged: $(LIBNFNETLINK_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBNFNETLINK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libnfnetlink.pc
+	rm -f $(STAGING_LIB_DIR)/libnfnetlink.la
 	touch $@
 
 libnfnetlink-stage: $(LIBNFNETLINK_BUILD_DIR)/.staged
