@@ -26,10 +26,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBGC_SITE=https://launchpad.net/libgc/main/$(LIBGC_VERSION)/+download
-LIBGC_VERSION=7.4.0
-LIBGC_SOURCE=gc-$(LIBGC_VERSION).tar.gz
-LIBGC_DIR=gc-$(LIBGC_VERSION)
+LIBGC_SITE=https://github.com/ivmai/bdwgc/archive
+LIBGC_VERSION=7.4.2
+LIBGC_VERSION_UNDERSCORE=7_4_2
+LIBGC_SOURCE=gc$(LIBGC_VERSION_UNDERSCORE).tar.gz
+LIBGC_DIR=bdwgc-gc$(LIBGC_VERSION_UNDERSCORE)
 LIBGC_UNZIP=zcat
 LIBGC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBGC_DESCRIPTION=The Boehm-Demers-Weiser conservative garbage collector can be used as a garbage collecting replacement for C malloc or C++ new.
@@ -112,15 +113,18 @@ libgc-source: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
 #
 $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES) make/libgc.mk
 	$(MAKE) libatomic-ops-stage
-	rm -rf $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBGC_DIR) $(@D)
 	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGC_PATCHES)" ; \
 		then cat $(LIBGC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBGC_DIR) -p1 ; \
 	fi
-	mv $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR)
-	cp -f $(SOURCE_DIR)/common/config.* $(LIBGC_BUILD_DIR)/
-	(cd $(LIBGC_BUILD_DIR); \
+	if test "$(BUILD_DIR)/$(LIBGC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBGC_DIR) $(@D) ; \
+	fi
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	(cd $(@D); \
+		./autogen.sh && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGC_LDFLAGS)" \
@@ -134,8 +138,8 @@ $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES) make/
 		--disable-static \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(LIBGC_BUILD_DIR)/libtool
-	touch $(LIBGC_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libgc-unpack: $(LIBGC_BUILD_DIR)/.configured
 
@@ -156,10 +160,11 @@ libgc: $(LIBGC_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBGC_BUILD_DIR)/.staged: $(LIBGC_BUILD_DIR)/.built
-	rm -f $(LIBGC_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBGC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libgc.la
-	touch $(LIBGC_BUILD_DIR)/.staged
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/bdw-gc.pc
+	touch $@
 
 libgc-stage: $(LIBGC_BUILD_DIR)/.staged
 
@@ -168,7 +173,7 @@ libgc-stage: $(LIBGC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libgc
 #
 $(LIBGC_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBGC_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libgc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,6 +210,7 @@ $(LIBGC_IPK): $(LIBGC_BUILD_DIR)/.built
 #	install -m 755 $(LIBGC_SOURCE_DIR)/prerm $(LIBGC_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBGC_CONFFILES) | sed -e 's/ /\n/g' > $(LIBGC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGC_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(BDW_GC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
