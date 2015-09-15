@@ -38,6 +38,11 @@ play video with login youtube
 
 sysmer changes:
 new function youtube_updatefeed
+
+20150912 AnLeAl changes
+fixed search function for non english words with spaces
+fixed search order: date
+
 ]]
 --[[
 README
@@ -82,7 +87,7 @@ function youtube_updatefeed(feed,friendly_name)
 	local c = 'https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername='
 	local u = 'https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id='
 	local i = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId='
-	local s = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q='
+	local s = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&order=date&q='
 	local cn = 'https://www.googleapis.com/youtube/v3/channels?part=snippet&id='
 	local pl = 'https://www.googleapis.com/youtube/v3/playlists?part=snippet&id='
 	local mp = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular'
@@ -123,7 +128,7 @@ function youtube_updatefeed(feed,friendly_name)
 			region = '&regionCode='..tfeed[3]
 		end
 		if tfeed[1] == 'search' then
-			data = curl(s .. tfeed[2] .. '&maxResults=' .. num .. key .. '&videoDefinition=high&videoDimension=2d' .. region)
+			data = curl(s .. util.urlencode(tfeed[2]) .. '&maxResults=' .. num .. key .. '&videoDefinition=high&videoDimension=2d' .. region)
 			if string.find(data,'"totalResults": 0,') then
 				return rc
 			end
