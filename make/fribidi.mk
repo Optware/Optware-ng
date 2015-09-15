@@ -21,15 +21,15 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FRIBIDI_SITE=http://fribidi.org/download
-FRIBIDI_VERSION=0.10.9
-FRIBIDI_SOURCE=fribidi-$(FRIBIDI_VERSION).tar.gz
+FRIBIDI_VERSION=0.19.7
+FRIBIDI_SOURCE=fribidi-$(FRIBIDI_VERSION).tar.bz2
 FRIBIDI_DIR=fribidi-$(FRIBIDI_VERSION)
-FRIBIDI_UNZIP=zcat
+FRIBIDI_UNZIP=bzcat
 FRIBIDI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FRIBIDI_DESCRIPTION=An implementation of the Unicode Bidirectional Algorithm (bidi).
 FRIBIDI_SECTION=lib
 FRIBIDI_PRIORITY=optional
-FRIBIDI_DEPENDS=
+FRIBIDI_DEPENDS=glib
 FRIBIDI_SUGGESTS=
 FRIBIDI_CONFLICTS=
 
@@ -105,7 +105,7 @@ fribidi-source: $(DL_DIR)/$(FRIBIDI_SOURCE) $(FRIBIDI_PATCHES)
 # shown below to make various patches to it.
 #
 $(FRIBIDI_BUILD_DIR)/.configured: $(DL_DIR)/$(FRIBIDI_SOURCE) $(FRIBIDI_PATCHES) make/fribidi.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) glib-stage
 	rm -rf $(BUILD_DIR)/$(FRIBIDI_DIR) $(@D)
 	$(FRIBIDI_UNZIP) $(DL_DIR)/$(FRIBIDI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FRIBIDI_PATCHES)" ; \
@@ -119,6 +119,8 @@ $(FRIBIDI_BUILD_DIR)/.configured: $(DL_DIR)/$(FRIBIDI_SOURCE) $(FRIBIDI_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FRIBIDI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FRIBIDI_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
