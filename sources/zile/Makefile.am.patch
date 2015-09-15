@@ -1,0 +1,23 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -36,12 +36,10 @@
+ 
+ EXTRA_DIST =						\
+ 	FAQ						\
+-	build-aux/zile-help2man-wrapper			\
+ 	$(PERL_BUILDTIME)
+ 
+ doc_DATA = AUTHORS FAQ NEWS
+ 
+-include doc/Makefile.am
+ include src/Makefile.am
+ include tests/Makefile.am
+ 
+@@ -49,7 +47,6 @@
+ 	configure.ac					\
+ 	Makefile.am					\
+ 	$(PERL_BUILDTIME)				\
+-	doc/Makefile.am					\
+ 	src/Makefile.am					\
+ 	$(src_zile_base_SOURCE_FILES)			\
+ 	src/tbl_opts.h.in

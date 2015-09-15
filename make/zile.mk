@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZILE_SITE=http://ftp.gnu.org/gnu/zile
-ZILE_VERSION=2.4.6
+ZILE_VERSION=2.4.11
 ZILE_SOURCE=zile-$(ZILE_VERSION).tar.gz
 ZILE_DIR=zile-$(ZILE_VERSION)
 ZILE_UNZIP=zcat
@@ -29,7 +29,7 @@ ZILE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ZILE_DESCRIPTION=Zile is Lossy Emacs, a small, fast, and powerful Emacs clone.
 ZILE_SECTION=editor
 ZILE_PRIORITY=optional
-ZILE_DEPENDS=ncurses
+ZILE_DEPENDS=ncurses, libgc
 ZILE_SUGGESTS=
 ZILE_CONFLICTS=
 
@@ -46,7 +46,7 @@ ZILE_IPK_VERSION=1
 # ZILE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ZILE_PATCHES=$(ZILE_SOURCE_DIR)/configure.patch
+ZILE_PATCHES=$(ZILE_SOURCE_DIR)/Makefile.am.patch
 
 #
 # If the compilation of the package requires additional
@@ -54,6 +54,10 @@ ZILE_IPK_VERSION=1
 #
 ZILE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ZILE_LDFLAGS=
+
+ifeq ($(LIBC_STYLE), uclibc)
+ZILE_LDFLAGS += -lrt
+endif
 
 #
 # ZILE_BUILD_DIR is the directory in which the build is done.
@@ -105,22 +109,25 @@ zile-source: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES)
 # shown below to make various patches to it.
 #
 $(ZILE_BUILD_DIR)/.configured: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES) make/zile.mk
-	$(MAKE) ncurses-stage
+	$(MAKE) ncurses-stage libgc-stage
 	rm -rf $(BUILD_DIR)/$(ZILE_DIR) $(@D)
 	$(ZILE_UNZIP) $(DL_DIR)/$(ZILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZILE_PATCHES)" ; \
 		then cat $(ZILE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ZILE_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(ZILE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ZILE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ZILE_DIR) $(@D) ; \
 	fi
 	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
+	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZILE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZILE_LDFLAGS)" \
 		gl_cv_func_getopt_gnu=yes \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
