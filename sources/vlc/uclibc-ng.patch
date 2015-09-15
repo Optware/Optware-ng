@@ -1,0 +1,12 @@
+diff -Npur vlc-3.0.0-git20150218/src/posix/error.c vlc/src/posix/error.c
+--- vlc-3.0.0-git20150218/src/posix/error.c	2015-02-19 13:34:16.000000000 +0200
++++ vlc/src/posix/error.c	2015-02-19 16:12:15.980197428 +0200
+@@ -29,6 +29,8 @@
+ 
+ #include <vlc_common.h>
+ 
++#define strerror_l(err, locale) strerror(err)
++
+ static const char *vlc_strerror_l(int errnum, const char *lname)
+ {
+     int saved_errno = errno;

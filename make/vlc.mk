@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VLC_REPOSITORY=git://git.videolan.org/vlc.git
-VLC_GIT_DATE=20150218
-VLC_TREEISH=`git rev-list --max-count=1 --until=2015-02-18 HEAD`
+VLC_GIT_DATE=20150912
+VLC_TREEISH=`git rev-list --max-count=1 --until=2015-09-12 HEAD`
 ifdef VLC_REPOSITORY
-VLC_VERSION=2.2.0-git$(VLC_GIT_DATE)
+VLC_VERSION=2.2.1-git$(VLC_GIT_DATE)
 VLC_UNZIP=bzcat
 VLC_SOURCE_SUFFIX=tar.bz2
 else
@@ -32,7 +32,7 @@ VLC_VERSION=2.1.5
 VLC_UNZIP=xzcat
 VLC_SOURCE_SUFFIX=tar.xz
 endif
-VLC_IPK_VERSION=3
+VLC_IPK_VERSION=1
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).$(VLC_SOURCE_SUFFIX)
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -90,16 +90,22 @@ VLC_CONFLICTS=
 # VLC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VLC_PATCHES=$(VLC_SOURCE_DIR)/vlc_filter.h.patch
+VLC_PATCHES=\
+$(VLC_SOURCE_DIR)/vlc_filter.h.patch \
+$(VLC_SOURCE_DIR)/libvlc_media.h.patch
 ifeq ($(LIBC_STYLE), uclibc)
+ifeq (, $(filter buildroot-armeabi-ng buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 VLC_PATCHES += $(VLC_SOURCE_DIR)/uclibc.patch
+else
+VLC_PATCHES += $(VLC_SOURCE_DIR)/uclibc-ng.patch
+endif
 endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-VLC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+VLC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses -I$(STAGING_INCLUDE_DIR)/glib-2.0 -D__STDC_FORMAT_MACROS=1
 VLC_LDFLAGS=
 
 VLC_CONFIG_OPTS = $(if $(filter avahi, $(PACKAGES)),--enable-bonjour,--disable-bonjour)
@@ -249,6 +255,7 @@ endif
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_header_sysfs_libsysfs_h=no \
+		ac_cv_linux_dvb_5_1=no \
 		NCURSES_CFLAGS="$(STAGING_CPPFLAGS)" \
 		NCURSES_LIBS="$(STAGING_LDFLAGS) -lncursesw" \
 		WAYLAND_SCANNER=$(HOST_STAGING_PREFIX)/bin/wayland-scanner \

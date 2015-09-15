@@ -1,0 +1,11 @@
+--- a/include/vlc/libvlc_media.h
++++ b/include/vlc/libvlc_media.h
+@@ -30,6 +30,8 @@
+ extern "C" {
+ # endif
+ 
++#include <sys/types.h>
++
+ /** \defgroup libvlc_media LibVLC media
+  * \ingroup libvlc
+  * @ref libvlc_media_t is an abstract representation of a playable media.
