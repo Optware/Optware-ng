@@ -26,10 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BITCHX_SITE=ftp://ftp.FreeBSD.org/pub/FreeBSD/ports/distfiles
-BITCHX_VERSION=1.1a-final
-BITCHX_SOURCE=ircii-pana-$(BITCHX_VERSION).tar.gz
-BITCHX_DIR=BitchX
+BITCHX_SITE=http://www.bitchx.com/download
+BITCHX_VERSION=1.2.1
+BITCHX_SOURCE=bitchx-$(BITCHX_VERSION).tar.gz
+BITCHX_DIR=bitchx-$(BITCHX_VERSION)
 BITCHX_UNZIP=zcat
 BITCHX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BITCHX_DESCRIPTION=Text mode IRC client
@@ -103,7 +103,7 @@ bitchx-source: $(DL_DIR)/$(BITCHX_SOURCE) $(BITCHX_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(BITCHX_BUILD_DIR)/.configured: $(DL_DIR)/$(BITCHX_SOURCE) $(BITCHX_PATCHES)
+$(BITCHX_BUILD_DIR)/.configured: $(DL_DIR)/$(BITCHX_SOURCE) $(BITCHX_PATCHES) make/bitchx.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(BITCHX_DIR) $(BITCHX_BUILD_DIR)
 	$(BITCHX_UNZIP) $(DL_DIR)/$(BITCHX_SOURCE) | tar -C $(BUILD_DIR) -xvf -

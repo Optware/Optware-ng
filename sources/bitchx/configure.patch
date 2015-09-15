@@ -17,12 +17,3 @@
  	'HELPDIR=$(HELPDIR)'				\
          'INSTALL_WSERV=$(INSTALL_WSERV)'                \
  	'IRCPATH=$(IRCPATH)'				\
-@@ -226,7 +227,7 @@
- installirc: installdirs $(_VERSION_)
- 	$(INSTALL) source/$(_VERSION_)$(EXEEXT) $(bindir)/$(VERSION)$(EXEEXT)
- 	$(RM) $(INSTALL_IRC)
--	$(LN) $(bindir)/$(VERSION)$(EXEEXT) $(INSTALL_IRC)
-+	cd $(bindir); $(LN) $(VERSION)$(EXEEXT) $(INSTALL_IRC)
- 	$(INSTALL_DATA) $(top_srcdir)/BitchX.help $(IRCLIB)/$(DEFAULT_BITCHX_HELP_FILE)
- 	$(INSTALL_DATA) $(top_srcdir)/BitchX.ircnames $(IRCLIB)/$(DEFAULT_BITCHX_IRCNAME_FILE)
- 	$(INSTALL_DATA) $(top_srcdir)/BitchX.quit $(IRCLIB)/$(DEFAULT_BITCHX_QUIT_FILE)
