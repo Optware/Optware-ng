@@ -7,7 +7,7 @@
 # $Header$
 #
 NET_SNMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/net-snmp
-NET_SNMP_VERSION=5.4.2.1
+NET_SNMP_VERSION=5.7.3
 NET_SNMP_SOURCE=net-snmp-$(NET_SNMP_VERSION).tar.gz
 NET_SNMP_DIR=net-snmp-$(NET_SNMP_VERSION)
 NET_SNMP_UNZIP=zcat
@@ -92,7 +92,7 @@ net-snmp-source: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
+$(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES) make/net-snmp.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(@D)
 	$(NET_SNMP_UNZIP) $(DL_DIR)/$(NET_SNMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
