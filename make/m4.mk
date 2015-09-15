@@ -41,7 +41,7 @@ M4_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 M4_PATCHES=
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi-ng buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 M4_PATCHES+=$(M4_SOURCE_DIR)/$(M4_VERSION)/gnulib_fix_posixspawn.patch
 endif
 
