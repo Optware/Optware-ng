@@ -9,7 +9,6 @@ BROKEN_PACKAGES = \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	bluez-hcidump \
-	gtmess \
 	rssh \
 	sandbox \
 	libopensync msynctool obexftp \

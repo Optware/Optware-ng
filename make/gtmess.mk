@@ -21,12 +21,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GTMESS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gtmess
-GTMESS_VERSION=0.94
+GTMESS_VERSION=0.97
 GTMESS_SOURCE=gtmess-$(GTMESS_VERSION).tar.gz
 GTMESS_DIR=gtmess-$(GTMESS_VERSION)
 GTMESS_UNZIP=zcat
 GTMESS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-GTMESS_DESCRIPTION=Describe gtmess here.
+GTMESS_DESCRIPTION=Console MSN Messenger client for Linux and other unix systems.
 GTMESS_SECTION=net
 GTMESS_PRIORITY=optional
 GTMESS_DEPENDS=ncureses, openssl
@@ -57,6 +57,9 @@ GTMESS_IPK_VERSION=1
 #
 GTMESS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 GTMESS_LDFLAGS=
+ifneq (, $(filter libiconv, $(PACKAGES)))
+GTMESS_LDFLAGS+=-liconv
+endif
 
 #
 # GTMESS_BUILD_DIR is the directory in which the build is done.

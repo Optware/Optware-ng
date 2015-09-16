@@ -10,7 +10,6 @@ BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	bluez-hcidump \
 	golang \
-	gtmess \
 	inferno \
 	phoneme-advanced \
 	rssh \
