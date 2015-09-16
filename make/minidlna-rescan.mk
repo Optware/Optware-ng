@@ -25,8 +25,8 @@ MINIDLNA_RESCAN_DESCRIPTION=MiniDLNA (aka ReadyDLNA) is server software with the
 MINIDLNA_RESCAN_THUMBNAIL_DESCRIPTION=MiniDLNA (aka ReadyDLNA) is server software with the aim of being fully compliant with DLNA/UPnP-AV clients. Version with non-destructive update rescan patch and thumbnail generation support.
 MINIDLNA_RESCAN_SECTION=media
 MINIDLNA_RESCAN_PRIORITY=optional
-MINIDLNA_RESCAN_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, libpng, daemonize
-MINIDLNA_RESCAN_THUMBNAIL_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, libpng, daemonize, ffmpegthumbnailer
+MINIDLNA_RESCAN_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, libpng
+MINIDLNA_RESCAN_THUMBNAIL_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, libpng, ffmpegthumbnailer
 ifneq (, $(filter libiconv, $(PACKAGES)))
 MINIDLNA_RESCAN_DEPENDS +=, libiconv
 MINIDLNA_RESCAN_THUMBNAIL_DEPENDS +=, libiconv
@@ -42,7 +42,7 @@ MINIDLNA_RESCAN_THUMBNAIL_CONFLICTS=minidlna-rescan, minidlna, minidlna-thumbnai
 #
 # MINIDLNA_RESCAN_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_RESCAN_IPK_VERSION=1
+MINIDLNA_RESCAN_IPK_VERSION=2
 
 #
 # MINIDLNA_RESCAN_CONFFILES should be a list of user-editable files

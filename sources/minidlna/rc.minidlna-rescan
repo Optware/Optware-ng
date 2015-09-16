@@ -5,17 +5,6 @@ PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 NAME=minidlnad
 DAEMON=${prefix}/sbin/${NAME}
 DAEMON_OPTS="-f ${prefix}/etc/minidlna.conf -r"
-DAEMONIZE=/opt/sbin/daemonize
-
-## Note that regardless of the minidlna.conf content
-## the log level will be debug,
-## and the log file will be defined
-## by the LOG_FILE value below.
-## That happens because we use daemonize utility +
-## '-d' minidlnad switch to overcome the
-## issue of minidlnad not listening on some targets
-LOG_FILE=/dev/null
-#LOG_FILE=/opt/etc/minidlna/minidlna.log
 
 test -x $DAEMON || exit 0
 
@@ -32,15 +21,11 @@ fi
 case "$rc" in
     start)
         echo "Starting DLNA server: $NAME"
-        $DAEMONIZE -a -c /opt/sbin -e $LOG_FILE -o $LOG_FILE $DAEMON $DAEMON_OPTS -d
+        $DAEMON $DAEMON_OPTS
         ;;
     stop)
         echo "Stopping DLNA server: $NAME"
         killall $NAME 2> /dev/null
-        ### for some reason uclibc variants don't shutdown after SIGTERM,
-        ### so we force terminate using SIGKILL
-        sleep 1
-        killall -s SIGKILL $NAME 2> /dev/null
         ;;
     restart)
         "$0" stop
