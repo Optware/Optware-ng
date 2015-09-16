@@ -157,6 +157,8 @@ $(LIBGCRYPT_BUILD_DIR)/.staged: $(LIBGCRYPT_BUILD_DIR)/.built
 	sed -i -e '/_cflags=/s|-I/opt/include||g' \
 	       -e '/_cflags=/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' \
 	       -e 's|I$$includedir|I$(STAGING_INCLUDE_DIR)|' \
+	       -e 's|-L/opt/lib|-L$(STAGING_LIB_DIR)|g' \
+	       -e '/^prefix=/s|=.*|="$(STAGING_PREFIX)"|' \
 		$(STAGING_PREFIX)/bin/*libgcrypt-config
 	rm -f $(STAGING_LIB_DIR)/libgcrypt.la
 	touch $@
