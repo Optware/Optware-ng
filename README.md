@@ -44,13 +44,15 @@ Install desired ones:
 
 If you're running a deprecated uClibc 0.9.33.2 (ARMv7 or MIPSEL) feed, you can either start from scratch, or use this script that should work for most of the cases (don't forget to backup `/opt` before you proceed!):
 
+```
 wget -O - http://optware-ng.zyxmon.org/scripts/move-to-uclibc-ng.sh | sh
+```
 
 # News
 
 ## 2015-09-16
 
-New buildroot-armeabi-ng and buildroot-mipsel-ng should now be used for softfloat ARMv7 and MIPSEL devices. These are uClibc-ng 1.0.6 gcc 5.2.0 targets. Look above for instructions on migrating from now deprecated buildroot-armeabi and buildroot-mipsel feeds.
+New buildroot-armeabi-ng and buildroot-mipsel-ng feeds should now be used for softfloat ARMv7 and MIPSEL devices. These are uClibc-ng 1.0.6 gcc 5.2.0 targets. Look above for instructions on migrating from now deprecated buildroot-armeabi and buildroot-mipsel feeds.
 
 ## 2015-05-08
 
