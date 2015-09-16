@@ -36,7 +36,7 @@ DAEMONIZE_CONFLICTS=
 #
 # DAEMONIZE_IPK_VERSION should be incremented when the ipk changes.
 #
-DAEMONIZE_IPK_VERSION=1
+DAEMONIZE_IPK_VERSION=2
 
 #
 # DAEMONIZE_CONFFILES should be a list of user-editable files
@@ -138,7 +138,8 @@ daemonize-unpack: $(DAEMONIZE_BUILD_DIR)/.configured
 #
 $(DAEMONIZE_BUILD_DIR)/.built: $(DAEMONIZE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) \
+		CFLAGS="$(STAGING_CPPFLAGS) $(DAEMONIZE_CPPFLAGS) $(STAGING_LDFLAGS) $(DAEMONIZE_LDFLAGS)"
 	touch $@
 
 #
