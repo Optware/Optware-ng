@@ -4,7 +4,7 @@ GNU_TARGET_NAME = arm-linux
 EXACT_TARGET_NAME = arm-buildroot-linux-gnueabihf
 
 LIBC_STYLE=glibc
-TARGET_ARCH=i686
+TARGET_ARCH=arm
 TARGET_OS=linux
 
 LIBSTDC++_VERSION=6.0.21
