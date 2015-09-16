@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMICROHTTPD_SITE=ftp://ftp.gnu.org/gnu/libmicrohttpd/
-LIBMICROHTTPD_VERSION=0.9.27
+LIBMICROHTTPD_VERSION=0.9.43
 LIBMICROHTTPD_SOURCE=libmicrohttpd-$(LIBMICROHTTPD_VERSION).tar.gz
 LIBMICROHTTPD_DIR=libmicrohttpd-$(LIBMICROHTTPD_VERSION)
 LIBMICROHTTPD_UNZIP=zcat
@@ -29,7 +29,7 @@ LIBMICROHTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBMICROHTTPD_DESCRIPTION=Small C library for embedding HTTP server functionality into other applications
 LIBMICROHTTPD_SECTION=libs
 LIBMICROHTTPD_PRIORITY=optional
-LIBMICROHTTPD_DEPENDS=
+LIBMICROHTTPD_DEPENDS=gnutls, libgcrypt, openssl
 LIBMICROHTTPD_SUGGESTS=
 LIBMICROHTTPD_CONFLICTS=
 
@@ -105,7 +105,7 @@ libmicrohttpd-source: $(DL_DIR)/$(LIBMICROHTTPD_SOURCE) $(LIBMICROHTTPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBMICROHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMICROHTTPD_SOURCE) $(LIBMICROHTTPD_PATCHES) make/libmicrohttpd.mk
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) gnutls-stage libgcrypt-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(LIBMICROHTTPD_DIR) $(@D)
 	$(LIBMICROHTTPD_UNZIP) $(DL_DIR)/$(LIBMICROHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMICROHTTPD_PATCHES)" ; \
@@ -120,6 +120,8 @@ $(LIBMICROHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMICROHTTPD_SOURCE) $(LIBM
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMICROHTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMICROHTTPD_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -127,6 +129,8 @@ $(LIBMICROHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMICROHTTPD_SOURCE) $(LIBM
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
+		--with-openssl=$(STAGING_PREFIX) \
 	)
 	sed -i -e "s/define _FILE_OFFSET_BITS.*/undef _FILE_OFFSET_BITS/" $(@D)/MHD_config.h
 	$(PATCH_LIBTOOL) $(@D)/libtool
