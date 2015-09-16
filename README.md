@@ -2,6 +2,10 @@
 
 This is an Optware fork. It targets to be firmware-independent and currently supports I686 and soft-float ARMv7 EABI and MIPSEL targets.
 
+# Attention!
+
+uClibc 0.9.33.2 feeds: ARMv7 (buildroot-armeabi) and MIPSEL (buildroot-mipsel) are now DEPRECATED. These feeds will remain there on the server, but will not be developed further, since uClibc 0.9.33.2 is *very* outdated. New feeds that use uClibc-ng 1.0.6: buildroot-armeabi-ng and buildroot-mipsel-ng should be used instead. If you have previously bootstrapped one of the uClibc 0.9.33.2 feeds using `buildroot-armeabi-bootstrap.sh` or `buildroot-mipsel-bootstrap.sh` scripts, see below for migrating instructions.
+
 # Getting started
 
 The instructions below only download, unpack and configure the package manager `ipkg`. You must previously make sure that `/opt` is writable, by preparing USB storage or router's `jffs` partition (for routers that support them), or symlink/mount-bind `/opt` to a location on your data volume (e.g., for a NAS). If you have MIPSEL/ARM Asus router running [Asuswrt-Merlin firmware](http://asuswrt.lostrealm.ca/download), check out [How To Install New Generation Optware]( https://www.hqt.ro/how-to-install-new-generation-optware) guide by @TeHashX.
@@ -10,11 +14,11 @@ To bootstrap the feed, connect over SSH/Telnet and type:
 
 ARMv7 EABI:
 ```
-wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi/buildroot-armeabi-bootstrap.sh | sh
+wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi-ng/buildroot-armeabi-ng-bootstrap.sh | sh
 ```
 MIPSEL:
 ```
-wget -O - http://optware-ng.zyxmon.org/buildroot-mipsel/buildroot-mipsel-bootstrap.sh | sh
+wget -O - http://optware-ng.zyxmon.org/buildroot-mipsel-ng/buildroot-mipsel-ng-bootstrap.sh | sh
 ```
 I686:
 ```
@@ -32,11 +36,21 @@ Install desired ones:
 
 # Available packages
 
-* [ARMv7 EABI](http://optware-ng.zyxmon.org/buildroot-armeabi/Packages.html)
-* [MIPSEL](http://optware-ng.zyxmon.org/buildroot-mipsel/Packages.html)
+* [ARMv7 EABI](http://optware-ng.zyxmon.org/buildroot-armeabi-ng/Packages.html)
+* [MIPSEL](http://optware-ng.zyxmon.org/buildroot-mipsel-ng/Packages.html)
 * [I686](http://optware-ng.zyxmon.org/buildroot-i686/Packages.html)
 
+# Migrating to uClibc-ng feeds from deprecated uClibc ones
+
+If you're running a deprecated uClibc 0.9.33.2 (ARMv7 or MIPSEL) feed, you can either start from scratch, or use this script that should work for most of the cases (don't forget to backup `/opt` before you proceed!):
+
+wget -O - http://optware-ng.zyxmon.org/scripts/move-to-uclibc-ng.sh | sh
+
 # News
+
+## 2015-09-16
+
+New buildroot-armeabi-ng and buildroot-mipsel-ng should now be used for softfloat ARMv7 and MIPSEL devices. These are uClibc-ng 1.0.6 gcc 5.2.0 targets. Look above for instructions on migrating from now deprecated buildroot-armeabi and buildroot-mipsel feeds.
 
 ## 2015-05-08
 
