@@ -22,15 +22,25 @@
 #
 LTRACE_SITE=http://ftp.debian.org/debian/pool/main/l/ltrace
 LTRACE_VERSION?=$(strip \
-  $(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 0.4, 0.5.3))
+  $(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 0.4, 0.7.3))
+ifneq (0.4, $(LTRACE_VERSION))
+LTRACE_SOURCE=ltrace_$(LTRACE_VERSION).orig.tar.bz2
+LTRACE_UNZIP=bzcat
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+LTRACE_DEPENDS=libstdc++
+else # ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+LTRACE_DEPENDS=
+endif
+else # ifneq (0.4, $(LTRACE_VERSION))
 LTRACE_SOURCE=ltrace_$(LTRACE_VERSION).orig.tar.gz
-LTRACE_DIR=ltrace-$(LTRACE_VERSION)
 LTRACE_UNZIP=zcat
+LTRACE_DEPENDS=
+endif
+LTRACE_DIR=ltrace-$(LTRACE_VERSION)
 LTRACE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LTRACE_DESCRIPTION=Tracks runtime library calls in dynamically linked programs.
 LTRACE_SECTION=misc
 LTRACE_PRIORITY=optional
-LTRACE_DEPENDS=
 LTRACE_SUGGESTS=
 LTRACE_CONFLICTS=
 
@@ -49,7 +59,14 @@ LTRACE_IPK_VERSION=1
 #
 ifneq (0.4, $(LTRACE_VERSION))
 LTRACE_PATCHES=\
-$(LTRACE_SOURCE_DIR)/100-allow-cross-compile.patch \
+$(LTRACE_SOURCE_DIR)/02-printf-p \
+$(LTRACE_SOURCE_DIR)/03-alpha-debug.h \
+$(LTRACE_SOURCE_DIR)/04-compile-warning \
+$(LTRACE_SOURCE_DIR)/05-sparc-ftbfs \
+$(LTRACE_SOURCE_DIR)/06-unexpected-breakpoint \
+$(LTRACE_SOURCE_DIR)/gcc-5.diff \
+
+#$(LTRACE_SOURCE_DIR)/100-allow-cross-compile.patch \
 $(LTRACE_SOURCE_DIR)/110-alpha-support.patch \
 $(LTRACE_SOURCE_DIR)/120-debian-ltrace_0.5.3-2.patch \
 $(LTRACE_SOURCE_DIR)/130-add-sysdep.patch \
@@ -124,6 +141,9 @@ ltrace-source: $(DL_DIR)/$(LTRACE_SOURCE) $(LTRACE_PATCHES)
 #
 $(LTRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(LTRACE_SOURCE) $(LTRACE_PATCHES) make/ltrace.mk
 	$(MAKE) libelf-stage
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+	$(MAKE) libstdc++-stage
+endif
 	rm -rf $(BUILD_DIR)/$(LTRACE_DIR) $(@D)
 	$(LTRACE_UNZIP) $(DL_DIR)/$(LTRACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LTRACE_PATCHES)" ; \
