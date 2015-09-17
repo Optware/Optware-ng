@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DELUGE_DEVELOP_REPOSITORY=git://deluge-torrent.org/deluge.git
-DELUGE_DEVELOP_VERSION=20150905
-DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-09-05 HEAD`
+DELUGE_DEVELOP_VERSION=20150913
+DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-09-13 HEAD`
 DELUGE_DEVELOP_SOURCE=deluge-develop-$(DELUGE_DEVELOP_VERSION).tar.bz2
 #DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
 DELUGE_DEVELOP_UNZIP=bzcat
@@ -39,7 +39,7 @@ DELUGE_DEVELOP_CONFLICTS=deluge
 #
 # DELUGE_DEVELOP_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_DEVELOP_IPK_VERSION=2
+DELUGE_DEVELOP_IPK_VERSION=1
 
 #
 # DELUGE_DEVELOP_CONFFILES should be a list of user-editable files
