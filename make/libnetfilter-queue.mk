@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBNETFILTER_QUEUE_SITE=ftp://ftp.netfilter.org/pub/libnetfilter_queue
-LIBNETFILTER_QUEUE_VERSION=0.0.11
+LIBNETFILTER_QUEUE_VERSION=1.0.2
 LIBNETFILTER_QUEUE_SOURCE=libnetfilter_queue-$(LIBNETFILTER_QUEUE_VERSION).tar.bz2
 LIBNETFILTER_QUEUE_DIR=libnetfilter_queue-$(LIBNETFILTER_QUEUE_VERSION)
 LIBNETFILTER_QUEUE_UNZIP=bzcat
@@ -29,7 +29,7 @@ LIBNETFILTER_QUEUE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBNETFILTER_QUEUE_DESCRIPTION=API to packets that have been queued by the kernel packet filter.
 LIBNETFILTER_QUEUE_SECTION=kernel
 LIBNETFILTER_QUEUE_PRIORITY=optional
-LIBNETFILTER_QUEUE_DEPENDS=libnfnetlink
+LIBNETFILTER_QUEUE_DEPENDS=libnfnetlink, libmnl
 LIBNETFILTER_QUEUE_SUGGESTS=
 LIBNETFILTER_QUEUE_CONFLICTS=
 
@@ -105,20 +105,22 @@ libnetfilter-queue-source: $(DL_DIR)/$(LIBNETFILTER_QUEUE_SOURCE) $(LIBNETFILTER
 # shown below to make various patches to it.
 #
 $(LIBNETFILTER_QUEUE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETFILTER_QUEUE_SOURCE) $(LIBNETFILTER_QUEUE_PATCHES) make/libnetfilter-queue.mk
-	$(MAKE) libnfnetlink-stage
-	rm -rf $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) $(LIBNETFILTER_QUEUE_BUILD_DIR)
+	$(MAKE) libnfnetlink-stage libmnl-stage
+	rm -rf $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) $(@D)
 	$(LIBNETFILTER_QUEUE_UNZIP) $(DL_DIR)/$(LIBNETFILTER_QUEUE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNETFILTER_QUEUE_PATCHES)" ; \
 		then cat $(LIBNETFILTER_QUEUE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR)" != "$(LIBNETFILTER_QUEUE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) $(LIBNETFILTER_QUEUE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) $(@D) ; \
 	fi
 	(cd $(LIBNETFILTER_QUEUE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBNETFILTER_QUEUE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBNETFILTER_QUEUE_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -127,7 +129,7 @@ $(LIBNETFILTER_QUEUE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETFILTER_QUEUE_SOUR
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBNETFILTER_QUEUE_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libnetfilter-queue-unpack: $(LIBNETFILTER_QUEUE_BUILD_DIR)/.configured
@@ -137,7 +139,7 @@ libnetfilter-queue-unpack: $(LIBNETFILTER_QUEUE_BUILD_DIR)/.configured
 #
 $(LIBNETFILTER_QUEUE_BUILD_DIR)/.built: $(LIBNETFILTER_QUEUE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBNETFILTER_QUEUE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -150,7 +152,9 @@ libnetfilter-queue: $(LIBNETFILTER_QUEUE_BUILD_DIR)/.built
 #
 $(LIBNETFILTER_QUEUE_BUILD_DIR)/.staged: $(LIBNETFILTER_QUEUE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBNETFILTER_QUEUE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libnetfilter_queue.pc
+	rm -f $(STAGING_LIB_DIR)/libnetfilter_queue.la 
 	touch $@
 
 libnetfilter-queue-stage: $(LIBNETFILTER_QUEUE_BUILD_DIR)/.staged
