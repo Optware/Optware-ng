@@ -122,7 +122,6 @@ $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES) make/
 	if test "$(BUILD_DIR)/$(LIBGC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBGC_DIR) $(@D) ; \
 	fi
-	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
 	(cd $(@D); \
 		./autogen.sh && \
 		$(TARGET_CONFIGURE_OPTS) \
