@@ -89,6 +89,8 @@ $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
 	cp -f $(TARGET_CROSS_TOP)/lib/gcc/arm-buildroot-linux-gnueabihf/5.2.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
+GCC_TARGET_NAME := arm-buildroot-linux-gnueabihf
+
 GCC_CPPFLAGS := -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
 GCC_EXTRA_CONF_ENV := ac_cv_lbl_unaligned_fail=yes ac_cv_func_mmap_fixed_mapped=yes ac_cv_func_memcmp_working=yes ac_cv_have_decl_malloc=yes gl_cv_func_malloc_0_nonnull=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_calloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes lt_cv_sys_lib_search_path_spec="" ac_cv_c_bigendian=no
