@@ -29,17 +29,17 @@ WEECHAT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WEECHAT_DESCRIPTION=(Wee Enhanced Environment for Chat) is a fast and light IRC client.
 WEECHAT_SECTION=irc
 WEECHAT_PRIORITY=optional
-WEECHAT_DEPENDS=gnutls, libcurl, $(NCURSES_FOR_OPTWARE_TARGET)
+WEECHAT_DEPENDS=gnutls, libcurl, $(NCURSES_FOR_OPTWARE_TARGET), libgcrypt
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 WEECHAT_DEPENDS+=, libiconv
 endif
-WEECHAT_SUGGESTS=python26,lua
+WEECHAT_SUGGESTS=python27, lua
 WEECHAT_CONFLICTS=
 
 #
 # WEECHAT_IPK_VERSION should be incremented when the ipk changes.
 #
-WEECHAT_IPK_VERSION=2
+WEECHAT_IPK_VERSION=3
 
 #
 # WEECHAT_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ weechat-source: $(DL_DIR)/$(WEECHAT_SOURCE) $(WEECHAT_PATCHES)
 # shown below to make various patches to it.
 #
 $(WEECHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(WEECHAT_SOURCE) $(WEECHAT_PATCHES) make/weechat.mk
-	$(MAKE) gnutls-stage python26-stage lua-stage libcurl-stage
+	$(MAKE) gnutls-stage python27-stage lua-stage libcurl-stage libgcrypt-stage
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -127,13 +127,16 @@ endif
 #	ACLOCAL="aclocal -I $(STAGING_PREFIX)/share/aclocal"
 	autoreconf -vif $(@D)
 	sed -i	-e '/PYTHON_SYSPREFIX=/s|=.*|=$(STAGING_PREFIX)|' \
-		-e '/PYTHON_VERSION=/s|=.*|=2.6|' \
-		-e '/PYTHON_INCLUDE=/s|=.*|=$(STAGING_INCLUDE_DIR)/python2.6|' \
-		-e '/PYTHON_LIB=/s|`$$PYTHON.*`|$(STAGING_LIB_DIR)/python2.6/config|' \
+		-e '/PYTHON_VERSION=/s|=.*|=2.7|' \
+		-e '/PYTHON_INCLUDE=/s|=.*|=$(STAGING_INCLUDE_DIR)/python2.7|' \
+		-e '/PYTHON_LIB=/s|`$$PYTHON.*`|$(STAGING_LIB_DIR)/python2.7/config|' \
 		-e '/PYTHON_LFLAGS=/s|"`$$PYTHON.*`|-lpthread -ldl -lpthread -lutil -lm -Xlinker -export-dynamic"|' \
 		-e '/LUA_TEST=/s|=.*|=0|' \
 		$(@D)/configure
 	sed -i -e 's|$$(includedir)/$$(PACKAGE)|$$(DESTDIR)/&|' $(@D)/src/plugins/Makefile.in
+	sed -i 	-e '/GCRYPT_CFLAGS=/s|=.*|="$(shell $(STAGING_PREFIX)/bin/libgcrypt-config --cflags)"|' \
+		-e '/GCRYPT_LFLAGS=/s|=.*|="$(shell $(STAGING_PREFIX)/bin/libgcrypt-config --libs)"|' \
+												$(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WEECHAT_CPPFLAGS)" \
@@ -157,6 +160,7 @@ endif
 		--with-libgnutls-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
+		--enable-gcrypt \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
