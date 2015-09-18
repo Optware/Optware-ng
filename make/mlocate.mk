@@ -141,7 +141,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686 buildroot-armeabihf, $(OPTWARE_TARGET)))
 	sed -i -e '/#define mbstate_t int/s|^|//|' $(@D)/src/config.h
 endif
 #	$(PATCH_LIBTOOL) $(@D)/libtool
