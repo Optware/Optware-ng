@@ -62,7 +62,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-W3M_CPPFLAGS=-I$(STAGING_DIR)/opt/include/gc
+W3M_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/gc
 W3M_LDFLAGS=-ldl -lpthread
 
 #
@@ -124,6 +124,8 @@ $(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES) make/w3m.mk
 	sed -i -e \
 	's|orig_GC_warn_proc = GC_set_warn_proc(wrap_GC_warn_proc);|orig_GC_warn_proc = GC_get_warn_proc();\n    GC_set_warn_proc(wrap_GC_warn_proc);|' \
 				$(@D)/main.c
+	cd $(@D); \
+		libtoolize -c -f
 ifeq ($(HOSTCC), $(TARGET_CC))
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -142,15 +144,15 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 	)
 else
 	rm -rf $(W3M_LIBGC_HOSTBUILD_DIR)
-	mkdir $(W3M_LIBGC_HOSTBUILD_DIR)
-	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR) -xvf -
-	$(LIBATOMIC_OPS_UNZIP) $(DL_DIR)/$(LIBATOMIC_OPS_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR) -xvf -
-	mv $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR)/$(LIBATOMIC_OPS_DIR) $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR)/libatomic_ops
+	mkdir -p $(W3M_LIBGC_HOSTBUILD_DIR)/build/libatomic_ops
+	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR)/build -xvf - --strip-components=1
+	$(LIBATOMIC_OPS_UNZIP) $(DL_DIR)/$(LIBATOMIC_OPS_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR)/build/libatomic_ops -xvf - --strip-components=1
 	@echo "=============================== host libgc configure & build ============"
-	cd $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR); \
+	autoreconf -vif $(W3M_LIBGC_HOSTBUILD_DIR)/build
+	cd $(W3M_LIBGC_HOSTBUILD_DIR)/build; \
 		CPPFLAGS="-fPIC" \
 		LDFLAGS="-pthread" \
-		./configure --prefix=/opt --disable-shared; \
+		./configure --prefix=/opt --disable-shared && \
 		make DESTDIR=$(W3M_LIBGC_HOSTBUILD_DIR) install
 	mkdir $(@D)/hostbuild
 	@echo "=============================== host w3m configure ======================="
