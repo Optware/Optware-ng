@@ -26,13 +26,16 @@ WGET_SECTION=net
 WGET_PRIORITY=optional
 WGET_DEPENDS=
 WGET_CONFLICTS=wget-ssl
-WGET-SSL_DEPENDS=libidn, openssl, gnutls, libnettle
+WGET-SSL_DEPENDS=libidn, openssl, gnutls, libnettle, e2fslibs, pcre
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+WGET-SSL_DEPENDS+=, libiconv
+endif
 WGET-SSL_CONFLICTS=wget
 
 #
 # WGET_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET_IPK_VERSION=1
+WGET_IPK_VERSION=2
 
 #
 # WGET_CONFFILES should be a list of user-editable files
@@ -50,6 +53,16 @@ WGET_PATCHES=
 #
 WGET_CPPFLAGS=
 WGET_LDFLAGS=
+
+WGET-SSL_CPPFLAGS=
+WGET-SSL_LDFLAGS=
+
+WGET-SSL_CONFIGURE_ARGS=
+
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+WGET-SSL_CONFIGURE_ARGS+= --with-libiconv-prefix=$(STAGING_PREFIX)
+WGET-SSL_LDFLAGS+= -liconv
+endif
 
 #
 # WGET_BUILD_DIR is the directory in which the build is done.
@@ -78,7 +91,6 @@ WGET-SSL_BUILD_DIR=$(BUILD_DIR)/wget-ssl
 WGET-SSL_SOURCE_DIR=$(SOURCE_DIR)/wget-ssl
 WGET-SSL_IPK_DIR=$(BUILD_DIR)/wget-ssl-$(WGET_VERSION)-ipk
 WGET-SSL_IPK=$(BUILD_DIR)/wget-ssl_$(WGET_VERSION)-$(WGET_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -130,13 +142,24 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--without-ssl \
+		--without-zlib \
+		--without-openssl \
+		--without-libidn \
+		--without-libuuid \
+		--disable-pcre \
+		--disable-ntlm \
+		--disable-iri \
 		--prefix=/opt \
 		--disable-nls \
 	)
 	touch $@
 
 $(WGET-SSL_BUILD_DIR)/.configured: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES) make/wget.mk
-	$(MAKE) libidn-stage openssl-stage gnutls-stage libnettle-stage
+	$(MAKE) libidn-stage openssl-stage gnutls-stage \
+		libnettle-stage e2fslibs-stage pcre-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(@D)
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WGET_PATCHES) | patch -d $(BUILD_DIR)/$(WGET_DIR) -p1
@@ -146,16 +169,20 @@ ifeq ($(OPTWARE_TARGET), $(filter ts101 vt4, $(OPTWARE_TARGET)))
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(WGET_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(WGET_LDFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(WGET-SSL_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(WGET-SSL_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--disable-rpath \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--with-ssl \
+		--enable-iri \
 		--with-libssl-prefix=$(STAGING_PREFIX) \
 		--with-libidn-prefix=$(STAGING_PREFIX) \
+		$(WGET-SSL_CONFIGURE_ARGS) \
 		--prefix=/opt \
 		--disable-nls \
 	)
