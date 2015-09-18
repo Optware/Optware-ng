@@ -6,7 +6,7 @@
  
 +localedir = /opt/lib/locale
 +i18ndir = /opt/share/i18n
-+rtld-LDFLAGS = -Wl,--dynamic-linker=/opt/lib/ld-linux.so.2
++rtld-LDFLAGS = -Wl,--dynamic-linker=/opt/lib/ld-linux-armhf.so.3
 +LDFLAGS-locale = -Wl,-rpath,/opt/lib
 +LDFLAGS-localedef = -Wl,-rpath,/opt/lib
 +
