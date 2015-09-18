@@ -32,7 +32,7 @@ VLC_VERSION=2.1.5
 VLC_UNZIP=xzcat
 VLC_SOURCE_SUFFIX=tar.xz
 endif
-VLC_IPK_VERSION=1
+VLC_IPK_VERSION=2
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).$(VLC_SOURCE_SUFFIX)
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -54,6 +54,7 @@ liba52, \
 libdvbpsi, \
 libdvdnav, \
 libdvdread, \
+libgcrypt, \
 libid3tag, \
 libmad, \
 libmpcdec, \
@@ -65,6 +66,7 @@ libupnp, \
 libvorbis, \
 libxml2, \
 lua, \
+mkvtoolnix, \
 ncursesw, \
 speex
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
@@ -217,7 +219,8 @@ endif
 	libxml2-stage \
 	ncurses-stage ncursesw-stage \
 	speex-stage \
-	lua-stage lua-host-stage
+	lua-stage lua-host-stage \
+	libgcrypt-stage mkvtoolnix-stage
 ifeq (x264, $(filter x264, $(PACKAGES)))
 	$(MAKE) x264-stage
 endif
@@ -240,7 +243,10 @@ endif
 	sed -i -e '/modules\/gui\//s/.*//' $(@D)/configure.ac
 	cd $(@D); libtoolize -c -f; $(ACLOCAL_NEW) -I m4; \
 		autoheader; autoconf; $(AUTOMAKE_NEW) -a -c
-	sed -i -e '/LIBEXT=/s/=.*/=".so"/' $(@D)/configure
+	sed -i 	-e '/LIBEXT=/s/=.*/=".so"/' \
+		-e '/GCRYPT_CFLAGS=/s|=.*|="$(shell $(STAGING_PREFIX)/bin/libgcrypt-config --cflags)"|' \
+		-e '/GCRYPT_LIBS=/s|=.*|="$(shell $(STAGING_PREFIX)/bin/libgcrypt-config --libs)"|' \
+												$(@D)/configure
 ifeq (uclibc, $(LIBC_STYLE))
 	sed -i -e '/# *if.*_POSIX_SPIN_LOCKS/s/.*/#if 0/' $(@D)/include/vlc_threads.h
 endif
