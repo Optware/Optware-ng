@@ -141,7 +141,7 @@ $(ASTERISK16_ADDONS_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK16_ADDONS_SOURCE
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--includedir=$(STAGING_PREFIX)/include \
+		--includedir=$(STAGING_INCLUDE_DIR) \
 		--with-asterisk=$(STAGING_PREFIX) \
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \

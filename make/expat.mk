@@ -141,7 +141,7 @@ $(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
 		./libtool --mode=install install -c libexpat.la $(STAGING_LIB_DIR)/libexpat.la ; \
 		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_INCLUDE_DIR) ; \
 	)
-	rm -f $(STAGING_DIR)/opt/lib/libexpat.la
+	rm -f $(STAGING_LIB_DIR)/libexpat.la
 	touch $@
 
 expat-stage: $(EXPAT_BUILD_DIR)/.staged

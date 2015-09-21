@@ -228,7 +228,7 @@ endif
 		$(PHP_CONFIGURE_ARGS) \
 		--without-pear \
 		--with-xmlrpc=shared \
-		--with-apxs2=$(STAGING_DIR)/opt/bin/apxs \
+		--with-apxs2=$(STAGING_PREFIX)/bin/apxs \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 
@@ -267,7 +267,7 @@ php-apache: $(PHP_APACHE_BUILD_DIR)/.built
 #
 $(PHP_APACHE_BUILD_DIR)/.staged: $(PHP_APACHE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_DIR)/opt
+	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_PREFIX)
 	touch $@
 
 php-apache-stage: $(PHP_APACHE_BUILD_DIR)/.staged

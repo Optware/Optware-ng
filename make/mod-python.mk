@@ -123,7 +123,7 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-apxs=$(STAGING_DIR)/opt/bin/apxs \
+		--with-apxs=$(STAGING_PREFIX)/bin/apxs \
 		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.7 \
 		--disable-nls \
 	)

@@ -40,7 +40,7 @@ $(PERL-SCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-SCGI_SOURCE) $(PERL-SCGI_PA
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -55,7 +55,7 @@ $(PERL-SCGI_BUILD_DIR)/.built: $(PERL-SCGI_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-SCGI_BUILD_DIR)/.built
 
 perl-scgi: $(PERL-SCGI_BUILD_DIR)/.built

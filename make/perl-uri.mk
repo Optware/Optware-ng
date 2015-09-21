@@ -40,7 +40,7 @@ $(PERL-URI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-URI_SOURCE) $(PERL-URI_PATCH
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -51,7 +51,7 @@ perl-uri-unpack: $(PERL-URI_BUILD_DIR)/.configured
 $(PERL-URI_BUILD_DIR)/.built: $(PERL-URI_BUILD_DIR)/.configured
 	rm -f $(PERL-URI_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-URI_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-URI_BUILD_DIR)/.built
 
 perl-uri: $(PERL-URI_BUILD_DIR)/.built

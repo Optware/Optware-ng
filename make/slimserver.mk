@@ -180,7 +180,7 @@ $(SLIMSERVER_BUILD_DIR)/.built: $(SLIMSERVER_BUILD_DIR)/.configured
 		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_INC) \
 		STAGINGDIR="${STAGING_DIR}" \
 		$(PERL_HOSTPERL) build-perl-modules.pl \

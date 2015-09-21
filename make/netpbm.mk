@@ -94,10 +94,10 @@ $(NETPBM_BUILD_DIR)/.configured: $(DL_DIR)/$(NETPBM_SOURCE) $(NETPBM_PATCHES)
 	mv $(BUILD_DIR)/$(NETPBM_DIR) $(NETPBM_BUILD_DIR)
 	(cd $(NETPBM_BUILD_DIR); \
 		(echo; echo gnu; echo regular; echo shared; echo y; \
-		 echo libjpeg.so; echo $(STAGING_DIR)/opt/lib; \
-		 echo libtiff.so; echo $(STAGING_DIR)/opt/lib; \
-		 echo libpng.so; echo $(STAGING_DIR)/opt/lib; \
-		 echo libz.so; echo $(STAGING_DIR)/opt/lib; \
+		 echo libjpeg.so; echo $(STAGING_LIB_DIR); \
+		 echo libtiff.so; echo $(STAGING_LIB_DIR); \
+		 echo libpng.so; echo $(STAGING_LIB_DIR); \
+		 echo libz.so; echo $(STAGING_LIB_DIR); \
 		 echo none; echo "http://netpbm.sourceforge.net/doc" ) | \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NETPBM_CPPFLAGS)" \
@@ -131,16 +131,16 @@ netpbm: $(NETPBM_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libnetpbm.so.$(NETPBM_VERSION): $(NETPBM_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(NETPBM_BUILD_DIR)/netpbm.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(NETPBM_BUILD_DIR)/libnetpbm.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(NETPBM_BUILD_DIR)/libnetpbm.so.$(NETPBM_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libnetpbm.so.$(NETPBM_VERSION) libnetpbm.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libnetpbm.so.$(NETPBM_VERSION) libnetpbm.so
+$(STAGING_LIB_DIR)/libnetpbm.so.$(NETPBM_VERSION): $(NETPBM_BUILD_DIR)/.built
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(NETPBM_BUILD_DIR)/netpbm.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(NETPBM_BUILD_DIR)/libnetpbm.a $(STAGING_LIB_DIR)
+	install -m 644 $(NETPBM_BUILD_DIR)/libnetpbm.so.$(NETPBM_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libnetpbm.so.$(NETPBM_VERSION) libnetpbm.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libnetpbm.so.$(NETPBM_VERSION) libnetpbm.so
 
-netpbm-stage: $(STAGING_DIR)/opt/lib/libnetpbm.so.$(NETPBM_VERSION)
+netpbm-stage: $(STAGING_LIB_DIR)/libnetpbm.so.$(NETPBM_VERSION)
 
 #
 # This builds the IPK file.

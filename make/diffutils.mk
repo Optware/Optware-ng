@@ -127,13 +127,13 @@ diffutils: $(DIFFUTILS_BUILD_DIR)/.built
 #
 $(DIFFUTILS_BUILD_DIR)/.staged: $(DIFFUTILS_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(DIFFUTILS_BUILD_DIR)/diffutils.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(DIFFUTILS_BUILD_DIR)/libdiffutils.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(DIFFUTILS_BUILD_DIR)/libdiffutils.so.$(DIFFUTILS_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libdiffutils.so.$(DIFFUTILS_VERSION) libdiffutils.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libdiffutils.so.$(DIFFUTILS_VERSION) libdiffutils.so
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(DIFFUTILS_BUILD_DIR)/diffutils.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(DIFFUTILS_BUILD_DIR)/libdiffutils.a $(STAGING_LIB_DIR)
+	install -m 644 $(DIFFUTILS_BUILD_DIR)/libdiffutils.so.$(DIFFUTILS_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libdiffutils.so.$(DIFFUTILS_VERSION) libdiffutils.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libdiffutils.so.$(DIFFUTILS_VERSION) libdiffutils.so
 	touch $@
 
 diffutils-stage: $(DIFFUTILS_BUILD_DIR)/.staged

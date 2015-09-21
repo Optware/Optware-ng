@@ -108,7 +108,7 @@ $(GIFTGNUTELLA_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGN
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTGNUTELLA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTGNUTELLA_LDFLAGS)" \
 		./configure \
-		--with-zlib=$(STAGING_DIR)/opt \
+		--with-zlib=$(STAGING_PREFIX) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -139,13 +139,13 @@ gift-gnutella: $(GIFTGNUTELLA_BUILD_DIR)/.built
 #
 $(GIFTGNUTELLA_BUILD_DIR).staged: $(GIFTGNUTELLA_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/gift-gnutella.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/libgift-gnutella.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) libgift-gnutella.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) libgift-gnutella.so
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/gift-gnutella.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/libgift-gnutella.a $(STAGING_LIB_DIR)
+	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) libgift-gnutella.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) libgift-gnutella.so
 	touch $@
 
 gift-gnutella-stage: $(GIFTGNUTELLA_BUILD_DIR)/.built

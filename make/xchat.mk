@@ -118,7 +118,7 @@ $(XCHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(XCHAT_SOURCE) \
 	#cat $(XCHAT_PATCHES) |patch -p0 -d$(XCHAT_BUILD_DIR)
 	(cd $(XCHAT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
+		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XCHAT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XCHAT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
@@ -165,7 +165,7 @@ xchat: $(XCHAT_BUILD_DIR)/.built
 #
 $(XCHAT_BUILD_DIR)/.staged: $(XCHAT_BUILD_DIR)/.built
 	$(MAKE) -C $(XCHAT_BUILD_DIR) install-strip DESTDIR=$(STAGING_DIR)
-	rm -rf $(STAGING_DIR)/opt/lib/libxchat.la
+	rm -rf $(STAGING_LIB_DIR)/libxchat.la
 
 xchat-stage: $(XCHAT_BUILD_DIR)/.staged
 

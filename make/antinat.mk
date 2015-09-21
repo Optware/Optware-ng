@@ -149,8 +149,8 @@ antinat: $(ANTINAT_BUILD_DIR)/.built
 #
 $(ANTINAT_BUILD_DIR)/.staged: $(ANTINAT_BUILD_DIR)/.built
 	rm -f $(ANTINAT_BUILD_DIR)/.staged
-	$(MAKE) -C $(ANTINAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) prefix=$(STAGING_DIR)/opt install
-	rm -f $(STAGING_DIR)/opt/lib/libantinat.a $(STAGING_DIR)/opt/lib/libantinat.la
+	$(MAKE) -C $(ANTINAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) prefix=$(STAGING_PREFIX) install
+	rm -f $(STAGING_LIB_DIR)/libantinat.a $(STAGING_LIB_DIR)/libantinat.la
 	touch $(ANTINAT_BUILD_DIR)/.staged
 
 antinat-stage: $(ANTINAT_BUILD_DIR)/.staged

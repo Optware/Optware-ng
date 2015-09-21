@@ -162,7 +162,7 @@ wayland: $(WAYLAND_BUILD_DIR)/.built
 #
 $(WAYLAND_BUILD_DIR)/.staged: $(WAYLAND_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) install prefix=$(STAGING_DIR)/opt \
+	$(MAKE) -C $(@D) install prefix=$(STAGING_PREFIX) \
 		wayland_scanner=$(HOST_STAGING_PREFIX)/bin/wayland-scanner
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/wayland-*.pc
 	rm -f $(STAGING_LIB_DIR)/libwayland-*.la

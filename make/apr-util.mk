@@ -146,13 +146,13 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=$(STAGING_DIR)/opt \
+		--prefix=$(STAGING_PREFIX) \
 		--libdir=/opt/lib \
 		--disable-static \
 		--enable-layout=GNU \
-		--with-apr=$(STAGING_DIR)/opt \
-		--with-gdbm=$(STAGING_DIR)/opt \
-		--with-expat=$(STAGING_DIR)/opt \
+		--with-apr=$(STAGING_PREFIX) \
+		--with-gdbm=$(STAGING_PREFIX) \
+		--with-expat=$(STAGING_PREFIX) \
 		--without-freetds \
 		--without-mysql \
 		--without-odbc \
@@ -189,8 +189,8 @@ apr-util: $(APR_UTIL_BUILD_DIR)/.built
 #
 $(APR_UTIL_BUILD_DIR)/.staged: $(APR_UTIL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(APR_UTIL_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
-	rm -f $(STAGING_PREFIX)/lib/libaprutil.la
+	$(MAKE) -C $(APR_UTIL_BUILD_DIR) install libdir=$(STAGING_LIB_DIR)
+	rm -f $(STAGING_LIB_DIR)/libaprutil.la
 	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apu-1-config
 	rm -f $(STAGING_PREFIX)/bin/apu-config
 #	ln -s apu-1-config $(STAGING_PREFIX)/bin/apu-config

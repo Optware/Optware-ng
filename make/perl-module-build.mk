@@ -42,7 +42,7 @@ $(PERL-MODULE-BUILD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Build.PL \
 		--config CC=$(TARGET_CC) \
 	)
@@ -62,7 +62,7 @@ perl-module-build: $(PERL-MODULE-BUILD_BUILD_DIR)/.built
 $(PERL-MODULE-BUILD_BUILD_DIR)/.staged: $(PERL-MODULE-BUILD_BUILD_DIR)/.built
 	rm -f $(PERL-MODULE-BUILD_BUILD_DIR)/.staged
 	(cd $(PERL-MODULE-BUILD_BUILD_DIR); \
-	 	./Build --prefix $(STAGING_DIR)/opt install \
+	 	./Build --prefix $(STAGING_PREFIX) install \
 	)
 	touch $(PERL-MODULE-BUILD_BUILD_DIR)/.staged
 

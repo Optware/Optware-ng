@@ -190,7 +190,7 @@ proftpd: $(PROFTPD_BUILD_DIR)/.built
 #
 
 
-proftpd-stage: $(STAGING_DIR)/opt/lib/libproftpd.so.$(PROFTPD_VERSION)
+proftpd-stage: $(STAGING_LIB_DIR)/libproftpd.so.$(PROFTPD_VERSION)
 
 #
 # This builds the IPK file.

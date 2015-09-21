@@ -135,8 +135,8 @@ $(GIFT_BUILD_DIR)/.staged: $(GIFT_BUILD_DIR)/.built
 	rm -f $(GIFT_BUILD_DIR)/.staged
 	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=/opt|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libgift.pc
-	rm -f $(STAGING_DIR)/opt/lib/libgift.la $(STAGING_DIR)/opt/lib/libgiftproto.la
-	rm -f $(STAGING_DIR)/opt/bin/giftd $(STAGING_DIR)/opt/bin/gift-setup
+	rm -f $(STAGING_LIB_DIR)/libgift.la $(STAGING_LIB_DIR)/libgiftproto.la
+	rm -f $(STAGING_PREFIX)/bin/giftd $(STAGING_PREFIX)/bin/gift-setup
 	touch $(GIFT_BUILD_DIR)/.staged
 
 gift-stage: $(GIFT_BUILD_DIR)/.staged

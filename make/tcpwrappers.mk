@@ -54,10 +54,10 @@ tcpwrappers: $(TCPWRAPPERS_DIR)/.built
 #
 $(TCPWRAPPERS_DIR)/.staged: $(TCPWRAPPERS_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(TCPWRAPPERS_DIR)/tcpd.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(TCPWRAPPERS_DIR)/libwrap.a $(STAGING_DIR)/opt/lib
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(TCPWRAPPERS_DIR)/tcpd.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(TCPWRAPPERS_DIR)/libwrap.a $(STAGING_LIB_DIR)
 	touch $@
 
 tcpwrappers-stage: $(TCPWRAPPERS_DIR)/.staged

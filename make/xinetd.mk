@@ -152,10 +152,10 @@ xinetd: $(XINETD_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-# $(STAGING_DIR)/opt/lib/libxinetd.so.$(XINETD_VERSION): $(XINETD_BUILD_DIR)/.built
+# $(STAGING_LIB_DIR)/libxinetd.so.$(XINETD_VERSION): $(XINETD_BUILD_DIR)/.built
 
 
-# xinetd-stage: $(STAGING_DIR)/opt/lib/libxinetd.so.$(XINETD_VERSION)
+# xinetd-stage: $(STAGING_LIB_DIR)/libxinetd.so.$(XINETD_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

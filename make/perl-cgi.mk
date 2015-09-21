@@ -41,7 +41,7 @@ $(PERL-CGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CGI_SOURCE) $(PERL-CGI_PATCH
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-cgi-unpack: $(PERL-CGI_BUILD_DIR)/.configured
 $(PERL-CGI_BUILD_DIR)/.built: $(PERL-CGI_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-cgi: $(PERL-CGI_BUILD_DIR)/.built

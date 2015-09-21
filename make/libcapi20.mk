@@ -140,8 +140,8 @@ libcapi20: $(LIBCAPI20_BUILD_DIR)/.built
 $(LIBCAPI20_BUILD_DIR)/.staged: $(LIBCAPI20_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBCAPI20_BUILD_DIR) prefix=$(STAGING_PREFIX) install
-	rm -f $(STAGING_DIR)/opt/lib/libcapi20.la
-	rm -f $(STAGING_DIR)/opt/lib/libcapi2012.la
+	rm -f $(STAGING_LIB_DIR)/libcapi20.la
+	rm -f $(STAGING_LIB_DIR)/libcapi2012.la
 #	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcapi20*.pc
 #	sed -ie 's|-I$${includedir}|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/libcapi2012-config
 	touch $@

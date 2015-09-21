@@ -47,7 +47,7 @@ $(PERL-APPCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-APPCONFIG_SOURCE) $(PE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -58,7 +58,7 @@ perl-appconfig-unpack: $(PERL-APPCONFIG_BUILD_DIR)/.configured
 $(PERL-APPCONFIG_BUILD_DIR)/.built: $(PERL-APPCONFIG_BUILD_DIR)/.configured
 	rm -f $(PERL-APPCONFIG_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-APPCONFIG_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-APPCONFIG_BUILD_DIR)/.built
 
 perl-appconfig: $(PERL-APPCONFIG_BUILD_DIR)/.built

@@ -123,9 +123,9 @@ mod-fastcgi-unpack: $(MOD_FASTCGI_BUILD_DIR)/.configured
 $(MOD_FASTCGI_BUILD_DIR)/.built: $(MOD_FASTCGI_BUILD_DIR)/.configured
 	rm -f $(MOD_FASTCGI_BUILD_DIR)/.built
 	$(MAKE) -C $(MOD_FASTCGI_BUILD_DIR) \
-	    top_dir=$(STAGING_DIR)/opt/share/apache2 \
-#	    LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent" \
-	    SH_LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent"
+	    top_dir=$(STAGING_PREFIX)/share/apache2 \
+#	    LIBTOOL="/bin/sh $(STAGING_PREFIX)/share/apache2/build-1/libtool --silent" \
+	    SH_LIBTOOL="/bin/sh $(STAGING_PREFIX)/share/apache2/build-1/libtool --silent"
 	touch $(MOD_FASTCGI_BUILD_DIR)/.built
 
 #
@@ -177,7 +177,7 @@ $(MOD_FASTCGI_IPK): $(MOD_FASTCGI_BUILD_DIR)/.built
 	rm -rf $(MOD_FASTCGI_IPK_DIR) $(BUILD_DIR)/mod-fastcgi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOD_FASTCGI_BUILD_DIR) \
 	    DESTDIR=$(MOD_FASTCGI_IPK_DIR) \
-	    top_dir=$(STAGING_DIR)/opt/share/apache2 \
+	    top_dir=$(STAGING_PREFIX)/share/apache2 \
 	    install
 	$(STRIP_COMMAND) $(MOD_FASTCGI_IPK_DIR)/opt/libexec/mod_fastcgi.so
 	install -d $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/

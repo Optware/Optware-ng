@@ -114,7 +114,7 @@ $(GIFTCURS_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTCURS_SOURCE) $(GIFTCURS_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-ncurses=$(STAGING_DIR)/opt \
+		--with-ncurses=$(STAGING_PREFIX) \
 		--prefix=/opt \
 		--disable-nls \
 	)
@@ -138,16 +138,16 @@ giftcurs: $(GIFTCURS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libgiFTcurs.so.$(GIFTCURS_VERSION): $(GIFTCURS_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFTCURS_BUILD_DIR)/giFTcurs.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFTCURS_BUILD_DIR)/libgiFTcurs.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFTCURS_BUILD_DIR)/libgiFTcurs.so.$(GIFTCURS_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgiFTcurs.so.$(GIFTCURS_VERSION) libgiFTcurs.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgiFTcurs.so.$(GIFTCURS_VERSION) libgiFTcurs.so
+$(STAGING_LIB_DIR)/libgiFTcurs.so.$(GIFTCURS_VERSION): $(GIFTCURS_BUILD_DIR)/.built
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(GIFTCURS_BUILD_DIR)/giFTcurs.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(GIFTCURS_BUILD_DIR)/libgiFTcurs.a $(STAGING_LIB_DIR)
+	install -m 644 $(GIFTCURS_BUILD_DIR)/libgiFTcurs.so.$(GIFTCURS_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libgiFTcurs.so.$(GIFTCURS_VERSION) libgiFTcurs.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libgiFTcurs.so.$(GIFTCURS_VERSION) libgiFTcurs.so
 
-giFTcurs-stage: $(STAGING_DIR)/opt/lib/libgiFTcurs.so.$(GIFTCURS_VERSION)
+giFTcurs-stage: $(STAGING_LIB_DIR)/libgiFTcurs.so.$(GIFTCURS_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

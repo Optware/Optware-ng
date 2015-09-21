@@ -41,7 +41,7 @@ $(PERL-NET-IDENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-IDENT_SOURCE) $(PE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-net-ident-unpack: $(PERL-NET-IDENT_BUILD_DIR)/.configured
 $(PERL-NET-IDENT_BUILD_DIR)/.built: $(PERL-NET-IDENT_BUILD_DIR)/.configured
 	rm -f $(PERL-NET-IDENT_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-NET-IDENT_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-NET-IDENT_BUILD_DIR)/.built
 
 perl-net-ident: $(PERL-NET-IDENT_BUILD_DIR)/.built

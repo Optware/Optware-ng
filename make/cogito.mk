@@ -130,7 +130,7 @@ cogito: $(COGITO_BUILD_DIR)/.built
 #
 $(COGITO_BUILD_DIR)/.staged: $(COGITO_BUILD_DIR)/.built
 	rm -f $(COGITO_BUILD_DIR)/.staged
-	$(MAKE) -C $(COGITO_BUILD_DIR) HOME=$(STAGING_DIR)/opt install
+	$(MAKE) -C $(COGITO_BUILD_DIR) HOME=$(STAGING_PREFIX) install
 	touch $(COGITO_BUILD_DIR)/.staged
 
 cogito-stage: $(COGITO_BUILD_DIR)/.staged

@@ -48,7 +48,7 @@ $(PERL-TERM-READKEY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TERM-READKEY_SOURCE
 		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -64,7 +64,7 @@ $(PERL-TERM-READKEY_BUILD_DIR)/.built: $(PERL-TERM-READKEY_BUILD_DIR)/.configure
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-TERM-READKEY_BUILD_DIR)/.built
 
 perl-term-readkey: $(PERL-TERM-READKEY_BUILD_DIR)/.built

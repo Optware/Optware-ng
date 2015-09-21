@@ -40,7 +40,7 @@ $(PERL-IP-COUNTRY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IP-COUNTRY_SOURCE) $(
 #	cat $(PERL-IP-COUNTRY_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-IP-COUNTRY_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-IP-COUNTRY_DIR) $(PERL-IP-COUNTRY_BUILD_DIR)
 	(cd $(PERL-IP-COUNTRY_BUILD_DIR); \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
@@ -51,7 +51,7 @@ perl-ip-country-unpack: $(PERL-IP-COUNTRY_BUILD_DIR)/.configured
 $(PERL-IP-COUNTRY_BUILD_DIR)/.built: $(PERL-IP-COUNTRY_BUILD_DIR)/.configured
 	rm -f $(PERL-IP-COUNTRY_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-IP-COUNTRY_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" 
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" 
 	touch $(PERL-IP-COUNTRY_BUILD_DIR)/.built
 
 perl-ip-country: $(PERL-IP-COUNTRY_BUILD_DIR)/.built

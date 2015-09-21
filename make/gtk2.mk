@@ -170,7 +170,7 @@ endif
 	sed -i -e '/SRC_SUBDIRS *=/s| demos||' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
+		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GTK2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GTK2_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
@@ -216,7 +216,7 @@ gtk2: $(GTK2_BUILD_DIR)/.built
 #
 $(GTK2_BUILD_DIR)/.staged: $(GTK2_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GTK2_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	$(MAKE) -C $(GTK2_BUILD_DIR) install-strip prefix=$(STAGING_PREFIX)
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gail.pc $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*2.0.pc
 	rm -f $(STAGING_PREFIX)/bin/gtk-2.0/gdk-pixbuf-csource
 	rm -f $(STAGING_LIB_DIR)/libgailutil.la

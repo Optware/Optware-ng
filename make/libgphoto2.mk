@@ -111,12 +111,12 @@ $(LIBGPHOTO2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPHOTO2_SOURCE) $(LIBGPHOTO2
 		then mv $(BUILD_DIR)/$(LIBGPHOTO2_DIR) $(LIBGPHOTO2_BUILD_DIR) ; \
 	fi
 	(cd $(LIBGPHOTO2_BUILD_DIR); 					\
-		PATH=$(STAGING_DIR)/opt/bin:$${PATH}			\
+		PATH=$(STAGING_PREFIX)/bin:$${PATH}			\
 		$(TARGET_CONFIGURE_OPTS)				\
 		CFLAGS="$(STAGING_CPPFLAGS) $(LIBGPHOTO2_CPPFLAGS)"	\
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGPHOTO2_LDFLAGS)" 	\
-		PKG_CONFIG="$(STAGING_DIR)/opt/bin"			\
-		PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/pkgconfig"	\
+		PKG_CONFIG="$(STAGING_PREFIX)/bin"			\
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig"	\
 		LIBUSB_CFLAGS=-I$(STAGING_INCLUDE_DIR) \
 		LIBUSB_LIBS="-L$(STAGING_LIB_DIR) -lusb" \
 		./configure						\
@@ -153,15 +153,15 @@ $(LIBGPHOTO2_BUILD_DIR)/.staged: $(LIBGPHOTO2_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBGPHOTO2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(LIBGPHOTO2_BUILD_DIR)/.staged
 
-$(STAGING_DIR)/opt/lib/libgphoto2.so: $(LIBGPHOTO2_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -d $(STAGING_DIR)/opt/bin
-	install -d $(STAGING_DIR)/opt/man/man1
-	$(MAKE) -C $(LIBGPHOTO2_BUILD_DIR) prefix=$(STAGING_DIR)/opt install
-	rm -f $(STAGING_DIR)/opt/lib/libgphoto2.la $(STAGING_DIR)/opt/lib/libgphoto2_port.la
+$(STAGING_LIB_DIR)/libgphoto2.so: $(LIBGPHOTO2_BUILD_DIR)/.built
+	install -d $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -d $(STAGING_PREFIX)/bin
+	install -d $(STAGING_PREFIX)/man/man1
+	$(MAKE) -C $(LIBGPHOTO2_BUILD_DIR) prefix=$(STAGING_PREFIX) install
+	rm -f $(STAGING_LIB_DIR)/libgphoto2.la $(STAGING_LIB_DIR)/libgphoto2_port.la
 
-libgphoto2-stage: $(STAGING_DIR)/opt/lib/libgphoto2.so
+libgphoto2-stage: $(STAGING_LIB_DIR)/libgphoto2.so
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/libgphoto2

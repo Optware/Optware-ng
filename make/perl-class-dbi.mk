@@ -48,7 +48,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL -n \
 		PREFIX=/opt \
 	)
@@ -62,7 +62,7 @@ perl-class-dbi-unpack: $(PERL-CLASS-DBI_BUILD_DIR)/.configured
 $(PERL-CLASS-DBI_BUILD_DIR)/.built: $(PERL-CLASS-DBI_BUILD_DIR)/.configured
 	rm -f $(PERL-CLASS-DBI_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-CLASS-DBI_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-CLASS-DBI_BUILD_DIR)/.built
 
 perl-class-dbi: $(PERL-CLASS-DBI_BUILD_DIR)/.built

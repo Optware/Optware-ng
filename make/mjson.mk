@@ -129,7 +129,7 @@ $(MJSON_BUILD_DIR)/.staged: $(MJSON_BUILD_DIR)/.built
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(MJSON_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(MJSON_LDFLAGS)" \
 	CUSTOM_BUILD_TYPE=release CUSTOM_PLATFORM=arm \
-	$(MAKE) -C $(@D) -f Makefile.inc LUNA_STAGING=$(STAGING_DIR)/opt install
+	$(MAKE) -C $(@D) -f Makefile.inc LUNA_STAGING=$(STAGING_PREFIX) install
 	touch $@
 
 mjson-stage: $(MJSON_BUILD_DIR)/.staged

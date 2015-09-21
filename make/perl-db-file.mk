@@ -46,7 +46,7 @@ $(PERL-DB-FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DB-FILE_SOURCE) $(PERL-D
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		DB_FILE_INCLUDE=$(STAGING_INCLUDE_DIR) \
 		DB_FILE_LIB=$(STAGING_LIB_DIR) \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		LD_RUN_PATH=/opt/lib \
 		PREFIX=/opt \
@@ -64,7 +64,7 @@ $(PERL-DB-FILE_BUILD_DIR)/.built: $(PERL-DB-FILE_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		LD_RUN_PATH=/opt/lib \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-DB-FILE_BUILD_DIR)/.built
 
 perl-db-file: $(PERL-DB-FILE_BUILD_DIR)/.built

@@ -45,18 +45,18 @@ ts72xx-bootstrap: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
 
 $(TS72XX_BOOTSTRAP_BUILD_DIR)/.staged: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/lib
-	install -d $(STAGING_DIR)/opt/sbin
-	install -d $(STAGING_DIR)/opt/etc
+	install -d $(STAGING_LIB_DIR)
+	install -d $(STAGING_PREFIX)/sbin
+	install -d $(STAGING_PREFIX)/etc
 	install -d $(STAGING_DIR)/writeable/lib
-	install -d $(STAGING_DIR)/opt/lib/gconv
-	install -d $(STAGING_DIR)/opt/lib/ldscripts
-	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/*crt* $(STAGING_DIR)/opt/lib
-	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/lib* $(STAGING_DIR)/opt/lib
-	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/gconv/* $(STAGING_DIR)/opt/lib/gconv
-	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(STAGING_DIR)/opt/lib/ldscripts	
-	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/ldconfig $(STAGING_DIR)/opt/sbin
-	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/rc.optware $(STAGING_DIR)/opt/etc
+	install -d $(STAGING_LIB_DIR)/gconv
+	install -d $(STAGING_LIB_DIR)/ldscripts
+	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/*crt* $(STAGING_LIB_DIR)
+	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/lib* $(STAGING_LIB_DIR)
+	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/gconv/* $(STAGING_LIB_DIR)/gconv
+	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(STAGING_LIB_DIR)/ldscripts	
+	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/ldconfig $(STAGING_PREFIX)/sbin
+	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/rc.optware $(STAGING_PREFIX)/etc
 	touch $@
 
 ts72xx-bootstrap-stage: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.staged

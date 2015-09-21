@@ -146,16 +146,16 @@ libtiff: $(LIBTIFF_BUILD_DIR)/.built
 #
 $(LIBTIFF_BUILD_DIR)/.staged: $(LIBTIFF_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiff.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffio.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(STAGING_DIR)/opt/include
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.so.$(LIBTIFF_VERSION) $(STAGING_DIR)/opt/lib
-	rm -f $(STAGING_DIR)/opt/lib/libtiff*.la
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so.3
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiff.h $(STAGING_INCLUDE_DIR)
+	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffio.h $(STAGING_INCLUDE_DIR)
+	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(STAGING_INCLUDE_DIR)
+	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.so.$(LIBTIFF_VERSION) $(STAGING_LIB_DIR)
+	rm -f $(STAGING_LIB_DIR)/libtiff*.la
+	cd $(STAGING_LIB_DIR) && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so.3
+	cd $(STAGING_LIB_DIR) && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so
 	touch -f $@
 
 libtiff-stage: $(LIBTIFF_BUILD_DIR)/.staged

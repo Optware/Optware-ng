@@ -47,7 +47,7 @@ $(PERL-DATE-MANIP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DATE-MANIP_SOURCE) $(
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -61,7 +61,7 @@ $(PERL-DATE-MANIP_BUILD_DIR)/.built: $(PERL-DATE-MANIP_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-DATE-MANIP_BUILD_DIR)/.built
 
 perl-date-manip: $(PERL-DATE-MANIP_BUILD_DIR)/.built

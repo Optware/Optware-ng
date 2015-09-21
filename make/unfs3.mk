@@ -60,7 +60,7 @@ $(UNFS3_DIR)/.configured: $(DL_DIR)/$(UNFS3_SOURCE)
 unfs3-unpack: $(UNFS3_DIR)/.configured
 
 $(UNFS3_DIR)/unfsd: $(UNFS3_DIR)/.configured
-	make -C $(UNFS3_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) LDFLAGS="-L$(STAGING_DIR)/opt/lib -lfl"
+	make -C $(UNFS3_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) LDFLAGS="-L$(STAGING_LIB_DIR) -lfl"
 
 unfs3: $(UNFS3_DIR)/unfsd
 

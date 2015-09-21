@@ -126,7 +126,7 @@ $(CTRLPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--oldincludedir=$(STAGING_DIR)/opt/include \
+		--oldincludedir=$(STAGING_INCLUDE_DIR) \
 		--prefix=/opt \
 		--disable-gcov \
 		--disable-nls \

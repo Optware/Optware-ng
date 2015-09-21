@@ -52,7 +52,7 @@ $(PERL-DBD-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) $(PE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL-DBD-MYSQL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PERL-DBD-MYSQL_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL  \
 		PREFIX=/opt \
 		"--cflags=$(STAGING_CPPFLAGS) $(PERL-DBD-MYSQL_CPPFLAGS)" \
@@ -70,7 +70,7 @@ $(PERL-DBD-MYSQL_BUILD_DIR)/.built: $(PERL-DBD-MYSQL_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL-DBD-MYSQL_CPPFLAGS)" \
 		LDDLFLAGS="-shared $(STAGING_LDFLAGS) $(PERL-DBD-MYSQL_LDFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PERL-DBD-MYSQL_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		DBI_DRIVER_XST="$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/DBI/Driver.xst" \
 		;
 	touch $(PERL-DBD-MYSQL_BUILD_DIR)/.built
@@ -79,7 +79,7 @@ perl-dbd-mysql: $(PERL-DBD-MYSQL_BUILD_DIR)/.built
 
 perl-dbd-mysql-test: $(PERL-DBD-MYSQL_BUILD_DIR)/.staged
 	$(MAKE) -C $(PERL-DBD-MYSQL_BUILD_DIR) test\
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	
 $(PERL-DBD-MYSQL_BUILD_DIR)/.staged: $(PERL-DBD-MYSQL_BUILD_DIR)/.built
 	rm -f $(PERL-DBD-MYSQL_BUILD_DIR)/.staged

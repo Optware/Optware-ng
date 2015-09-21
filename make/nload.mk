@@ -151,13 +151,13 @@ nload: $(NLOAD_BUILD_DIR)/.built
 #
 #$(STAGING_DIR)/.staged: $(NLOAD_BUILD_DIR)/.built
 #	rm -f $@
-#	install -d $(STAGING_DIR)/opt/include
-#	install -m 644 $(NLOAD_BUILD_DIR)/nload.h $(STAGING_DIR)/opt/include
-#	install -d $(STAGING_DIR)/opt/lib
-#	install -m 644 $(NLOAD_BUILD_DIR)/libnload.a $(STAGING_DIR)/opt/lib
-#	install -m 644 $(NLOAD_BUILD_DIR)/libnload.so.$(NLOAD_VERSION) $(STAGING_DIR)/opt/lib
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so.1
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so
+#	install -d $(STAGING_INCLUDE_DIR)
+#	install -m 644 $(NLOAD_BUILD_DIR)/nload.h $(STAGING_INCLUDE_DIR)
+#	install -d $(STAGING_LIB_DIR)
+#	install -m 644 $(NLOAD_BUILD_DIR)/libnload.a $(STAGING_LIB_DIR)
+#	install -m 644 $(NLOAD_BUILD_DIR)/libnload.so.$(NLOAD_VERSION) $(STAGING_LIB_DIR)
+#	cd $(STAGING_LIB_DIR) && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so.1
+#	cd $(STAGING_LIB_DIR) && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so
 #	touch $@
 #
 #nload-stage: $(STAGING_DIR)/.staged

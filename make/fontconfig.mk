@@ -134,7 +134,7 @@ endif
 		--prefix=/opt \
 		--with-default-fonts=/opt/share/fonts \
 		--without-add-fonts \
-		--with-freetype-config=$(STAGING_DIR)/opt/bin/freetype-config \
+		--with-freetype-config=$(STAGING_PREFIX)/bin/freetype-config \
 		--disable-docs \
 		--disable-static \
 	)

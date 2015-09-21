@@ -231,7 +231,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-                --with-ssl=$(STAGING_DIR)/opt \
+                --with-ssl=$(STAGING_PREFIX) \
 		$(ERLANG_CONFIG_ARGS) \
 		--disable-nls \
 	)

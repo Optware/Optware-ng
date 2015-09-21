@@ -160,10 +160,10 @@ iptables-stage: $(IPTABLES_BUILD_DIR)/.staged $(IPTABLES_BUILD_DIR)/.staged-head
 iptables-stage-headers: $(IPTABLES_BUILD_DIR)/.staged-headers
 
 $(IPTABLES_BUILD_DIR)/.staged-headers: $(IPTABLES_BUILD_DIR)/.staged
-	cp -R $(IPTABLES_BUILD_DIR)/include $(STAGING_DIR)/opt
-	rm -f $(STAGING_DIR)/opt/include/Makefile*
-	rm -f $(STAGING_DIR)/opt/include/*.in
-	rm -fr $(STAGING_DIR)/opt/lib/*.la
+	cp -R $(IPTABLES_BUILD_DIR)/include $(STAGING_PREFIX)
+	rm -f $(STAGING_INCLUDE_DIR)/Makefile*
+	rm -f $(STAGING_INCLUDE_DIR)/*.in
+	rm -fr $(STAGING_LIB_DIR)/*.la
 	touch $@
 
 

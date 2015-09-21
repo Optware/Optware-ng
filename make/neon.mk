@@ -117,7 +117,7 @@ $(NEON_BUILD_DIR)/.configured: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES) make/neo
 		LDFLAGS="$(STAGING_LDFLAGS) $(NEON_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		XML2_CONFIG=$(STAGING_DIR)/opt/bin/xml2-config \
+		XML2_CONFIG=$(STAGING_PREFIX)/bin/xml2-config \
 		ac_cv_path_KRB5_CONFIG=none \
 		ne_cv_gai_addrconfig=no \
 		./configure \
@@ -153,7 +153,7 @@ neon: $(NEON_BUILD_DIR)/.built
 $(NEON_BUILD_DIR)/.staged: $(NEON_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(NEON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	sed -e "s:echo \$${libdir}/libneon.la:echo $(STAGING_DIR)/\$${libdir}/libneon.la:" <$(NEON_BUILD_DIR)/neon-config >$(STAGING_DIR)/opt/bin/neon-config
+	sed -e "s:echo \$${libdir}/libneon.la:echo $(STAGING_DIR)/\$${libdir}/libneon.la:" <$(NEON_BUILD_DIR)/neon-config >$(STAGING_PREFIX)/bin/neon-config
 	sed -i -e '/echo/s|-I$${includedir}/neon|-I$(STAGING_INCLUDE_DIR)/neon|' $(STAGING_PREFIX)/bin/neon-config
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/neon.pc
 	touch $@

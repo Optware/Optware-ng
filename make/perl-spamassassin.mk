@@ -48,7 +48,7 @@ $(PERL-SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-SPAMASSASSIN_SOURCE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		perl Makefile.PL \
 		PREFIX=/opt \
 		SYSCONFDIR=/opt/etc \
@@ -63,7 +63,7 @@ perl-spamassassin-unpack: $(PERL-SPAMASSASSIN_BUILD_DIR)/.configured
 $(PERL-SPAMASSASSIN_BUILD_DIR)/.built: $(PERL-SPAMASSASSIN_BUILD_DIR)/.configured
 	rm -f $(PERL-SPAMASSASSIN_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-SPAMASSASSIN_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-SPAMASSASSIN_BUILD_DIR)/.built
 
 perl-spamassassin: $(PERL-SPAMASSASSIN_BUILD_DIR)/.built

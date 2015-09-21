@@ -186,7 +186,7 @@ clinkcc: $(CLINKCC_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CLINKCC_BUILD_DIR)/.staged: $(CLINKCC_BUILD_DIR)/.built
-	rm -f $@ $(STAGING_DIR)/opt/lib/libclink.a
+	rm -f $@ $(STAGING_LIB_DIR)/libclink.a
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 

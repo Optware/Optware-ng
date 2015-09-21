@@ -50,7 +50,7 @@ MOTION_CPPFLAGS=-DFFMPEG_AVWRITEFRAME_NEWAPI
 ifeq ($(OPTWARE_TARGET),ds101g)
 MOTION_LDFLAGS="-Wl,-rpath,/usr/syno/mysql/lib/mysql"
 else
-MOTION_LDFLAGS="-Wl,-rpath,/opt/lib/mysql" -L$(STAGING_PREFIX)/lib/mysql
+MOTION_LDFLAGS="-Wl,-rpath,/opt/lib/mysql" -L$(STAGING_LIB_DIR)/mysql
 endif
 
 #

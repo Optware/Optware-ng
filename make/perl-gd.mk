@@ -46,7 +46,7 @@ $(PERL-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_PREFIX)/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 			-options "JPEG,FT,PNG,GIF,ANIMGIF,FONTCONFIG" \
 			-lib_gd_path $(STAGING_PREFIX) \
@@ -71,7 +71,7 @@ $(PERL-GD_BUILD_DIR)/.built: $(PERL-GD_BUILD_DIR)/.configured
 		LDLOADLIBS="`$(STAGING_PREFIX)/bin/gdlib-config --libs` -lgd" \
 		LD_RUN_PATH=/opt/lib \
 		$(PERL_INC) \
-		PERL5LIB="$(STAGING_PREFIX)/lib/perl5/site_perl"
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-GD_BUILD_DIR)/.built
 
 perl-gd: $(PERL-GD_BUILD_DIR)/.built

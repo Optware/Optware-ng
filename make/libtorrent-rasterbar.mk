@@ -151,13 +151,13 @@ endif
 	if test "$(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) $(@D) ; \
 	fi
-	sed -i -e "s|/usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr|$(STAGING_DIR)/opt|" $(@D)/m4/ax_check_openssl.m4
-	sed -i -e "s|/usr /usr/local /opt /opt/local|$(STAGING_DIR)/opt|" $(@D)/m4/ax_boost_base.m4 $(@D)/m4/ax_check_geoip.m4
+	sed -i -e "s|/usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr|$(STAGING_PREFIX)|" $(@D)/m4/ax_check_openssl.m4
+	sed -i -e "s|/usr /usr/local /opt /opt/local|$(STAGING_PREFIX)|" $(@D)/m4/ax_boost_base.m4 $(@D)/m4/ax_check_geoip.m4
 	sed -i -e "s|namespace libtorrent|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent|" $(@D)/include/libtorrent/socket.hpp
 	sed -i -e "s|namespace libtorrent { namespace|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent { namespace|" $(@D)/src/enum_net.cpp
 #	sed -i -e "s/#include <vector>/#include <vector>\n#include <list>/" $(@D)/include/libtorrent/udp_socket.hpp
 	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW) autoreconf -vif $(@D)
-	sed -i -e "s|/usr/include|$(STAGING_DIR)/opt/include|" $(@D)/configure
+	sed -i -e "s|/usr/include|$(STAGING_INCLUDE_DIR)|" $(@D)/configure
 #	sed -i -e 's|#include <boost/multi_index/ordered_index\.hpp>|#include <boost/multi_index/ordered_index.hpp>\n#include <boost/noncopyable.hpp>|' $(@D)/src/storage.cpp
 	sed -i -e "s/-ftemplate-depth=120//" $(@D)/configure
 	(cd $(@D); \
@@ -165,7 +165,7 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT-RASTERBAR_CPPFLAGS)" \
 		CXXFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT-RASTERBAR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTORRENT-RASTERBAR_LDFLAGS)" \
-		BOOST_ROOT="$(STAGING_DIR)/opt" \
+		BOOST_ROOT="$(STAGING_PREFIX)" \
 		PYTHON="$(HOST_STAGING_PREFIX)/bin/python2.6" \
 		PYTHON_CPPFLAGS="-I$(STAGING_INCLUDE_DIR)/python2.6" \
 		PYTHON_LDFLAGS="-L$(STAGING_LIB_DIR) -lpython2.6" \

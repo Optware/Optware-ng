@@ -167,7 +167,7 @@ $(PIXMAN_BUILD_DIR)/.staged: $(PIXMAN_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install DESTDIR=$(STAGING_DIR)
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/pixman*.pc
-	rm -f $(STAGING_DIR)/opt/lib/libpixman*.la
+	rm -f $(STAGING_LIB_DIR)/libpixman*.la
 	touch $@
 
 pixman-stage: $(PIXMAN_BUILD_DIR)/.staged

@@ -151,7 +151,7 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) $(APR_HOST_
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=$(STAGING_DIR)/opt \
+		--prefix=$(STAGING_PREFIX) \
 		--libdir=/opt/lib \
 		--disable-static \
 		--enable-layout=GNU \
@@ -185,8 +185,8 @@ apr: $(APR_BUILD_DIR)/.built
 #
 $(APR_BUILD_DIR)/.staged: $(APR_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
-	rm -f $(STAGING_PREFIX)/lib/libapr.la
+	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_LIB_DIR)
+	rm -f $(STAGING_LIB_DIR)/libapr.la
 	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apr-1-config
 	touch $@
 

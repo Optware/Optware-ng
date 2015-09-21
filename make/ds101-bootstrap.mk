@@ -58,26 +58,26 @@ ds101-bootstrap: $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 
 $(DS101_BOOTSTRAP_BUILD_DIR)/.staged: $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/lib
-	install -d $(STAGING_DIR)/opt/sbin
-	install -d $(STAGING_DIR)/opt/etc
+	install -d $(STAGING_LIB_DIR)
+	install -d $(STAGING_PREFIX)/sbin
+	install -d $(STAGING_PREFIX)/etc
 	install -d $(STAGING_DIR)/writeable/lib
 ifeq ($(OPTWARE_TARGET),ds101)
-	install -d $(STAGING_DIR)/opt/lib/gconv
-	install -d $(STAGING_DIR)/opt/lib/ldscripts
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/*crt* $(STAGING_DIR)/opt/lib
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/lib* $(STAGING_DIR)/opt/lib
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/gconv/* $(STAGING_DIR)/opt/lib/gconv
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(STAGING_DIR)/opt/lib/ldscripts	
-	rm -f $(STAGING_DIR)/opt/lib/libc\.* $(STAGING_DIR)/opt/lib/libpthread* $(STAGING_DIR)/opt/lib/libnss_files*
+	install -d $(STAGING_LIB_DIR)/gconv
+	install -d $(STAGING_LIB_DIR)/ldscripts
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/*crt* $(STAGING_LIB_DIR)
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/lib* $(STAGING_LIB_DIR)
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/gconv/* $(STAGING_LIB_DIR)/gconv
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(STAGING_LIB_DIR)/ldscripts	
+	rm -f $(STAGING_LIB_DIR)/libc\.* $(STAGING_LIB_DIR)/libpthread* $(STAGING_LIB_DIR)/libnss_files*
 else
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(STAGING_DIR)/opt/lib
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc_s.so.1 $(STAGING_DIR)/opt/lib
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(STAGING_LIB_DIR)
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(STAGING_LIB_DIR)
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(STAGING_LIB_DIR)
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc_s.so.1 $(STAGING_LIB_DIR)
 endif
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldconfig $(STAGING_DIR)/opt/sbin
-	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/rc.optware $(STAGING_DIR)/opt/etc
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldconfig $(STAGING_PREFIX)/sbin
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/rc.optware $(STAGING_PREFIX)/etc
 	touch $@
 
 ds101-bootstrap-stage: $(DS101_BOOTSTRAP_BUILD_DIR)/.staged

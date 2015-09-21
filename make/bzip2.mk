@@ -68,8 +68,8 @@ $(BZIP2_BUILD_DIR)/.staged: $(BZIP2_BUILD_DIR)/.built
 	install -d $(STAGING_LIB_DIR)
 	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.a $(STAGING_LIB_DIR)
 	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.so.$(BZIP2_LIB_VERSION) $(STAGING_LIB_DIR)
-	cd $(STAGING_DIR)/opt/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so.1.0
-	cd $(STAGING_DIR)/opt/lib && ln -fs libbz2.so.1.0 libbz2.so
+	cd $(STAGING_LIB_DIR) && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so.1.0
+	cd $(STAGING_LIB_DIR) && ln -fs libbz2.so.1.0 libbz2.so
 	touch $@
 
 bzip2-stage: $(BZIP2_BUILD_DIR)/.staged

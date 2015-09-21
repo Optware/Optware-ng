@@ -133,8 +133,8 @@ $(XERCES-C_BUILD_DIR)/.configured: $(DL_DIR)/$(XERCES-C_SOURCE) $(XERCES-C_PATCH
 		--disable-nls \
 		--disable-static \
 		--disable-pretty-make \
-		--with-curl=$(STAGING_DIR)/opt \
-		--with-icu=$(STAGING_DIR)/opt \
+		--with-curl=$(STAGING_PREFIX) \
+		--with-icu=$(STAGING_PREFIX) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@

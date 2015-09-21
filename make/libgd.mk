@@ -132,10 +132,10 @@ $(LIBGD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGD_SOURCE) $(LIBGD_PATCHES) make/
 		--disable-static \
 		--without-x \
 		--without-libiconv-prefix \
-		--with-png=$(STAGING_DIR)/opt \
-		--with-jpeg=$(STAGING_DIR)/opt \
-		--with-freetype=$(STAGING_DIR)/opt \
-		--with-fontconfig=$(STAGING_DIR)/opt \
+		--with-png=$(STAGING_PREFIX) \
+		--with-jpeg=$(STAGING_PREFIX) \
+		--with-freetype=$(STAGING_PREFIX) \
+		--with-fontconfig=$(STAGING_PREFIX) \
 		--without-xpm \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool

@@ -43,7 +43,7 @@ $(PERL-CRYPT-SSLEAY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CRYPT-SSLEAY_SOURCE
 		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
                 -lib=$(STAGING_PREFIX) \
 		PREFIX=/opt \
@@ -61,7 +61,7 @@ $(PERL-CRYPT-SSLEAY_BUILD_DIR)/.built: $(PERL-CRYPT-SSLEAY_BUILD_DIR)/.configure
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		LD_RUN_PATH=/opt/lib \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-CRYPT-SSLEAY_BUILD_DIR)/.built
 
 perl-crypt-ssleay: $(PERL-CRYPT-SSLEAY_BUILD_DIR)/.built

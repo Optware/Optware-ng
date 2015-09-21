@@ -184,11 +184,11 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-neon=$(STAGING_DIR)/opt \
-		--with-apr=$(STAGING_DIR)/opt \
+		--with-neon=$(STAGING_PREFIX) \
+		--with-apr=$(STAGING_PREFIX) \
 		--with-ruby-sitedir=/opt/local/lib/ruby/site_ruby/$(RUBY_VERSION) \
-		--with-apr-util=$(STAGING_DIR)/opt \
-		--with-apxs=$(STAGING_DIR)/opt/bin/apxs \
+		--with-apr-util=$(STAGING_PREFIX) \
+		--with-apxs=$(STAGING_PREFIX)/bin/apxs \
 		--without-swig \
 		--enable-shared \
 		--disable-static \
@@ -243,7 +243,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SVN_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		;
 	sed -i \
@@ -259,7 +259,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		LDDLFLAGS="-shared -L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(STAGING_LIB_DIR)" \
 		OTHERLDFLAGS="-L$(SVN_BUILD_DIR)/subversion/bindings/swig/perl/libsvn_swig_perl/.libs" \
 		$(PERL_INC) \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		SWIG_LDFLAGS="" \
 		;
 endif

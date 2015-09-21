@@ -40,7 +40,7 @@ $(PERL-IO-SOCKET-SSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-SOCKET-SSL_SOUR
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		NO_NETWORK_TESTING='y' \
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
@@ -56,7 +56,7 @@ $(PERL-IO-SOCKET-SSL_BUILD_DIR)/.built: $(PERL-IO-SOCKET-SSL_BUILD_DIR)/.configu
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-IO-SOCKET-SSL_BUILD_DIR)/.built
 
 perl-io-socket-ssl: $(PERL-IO-SOCKET-SSL_BUILD_DIR)/.built

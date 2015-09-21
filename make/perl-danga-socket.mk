@@ -41,7 +41,7 @@ $(PERL-DANGA-SOCKET_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DANGA-SOCKET_SOURCE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -56,7 +56,7 @@ $(PERL-DANGA-SOCKET_BUILD_DIR)/.built: $(PERL-DANGA-SOCKET_BUILD_DIR)/.configure
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-DANGA-SOCKET_BUILD_DIR)/.built
 
 perl-danga-socket: $(PERL-DANGA-SOCKET_BUILD_DIR)/.built

@@ -149,8 +149,8 @@ lua50: $(LUA50_BUILD_DIR)/.built
 $(LUA50_BUILD_DIR)/.staged: $(LUA50_BUILD_DIR)/.built
 	rm -f $(LUA50_BUILD_DIR)/.staged
 	(cd $(LUA50_BUILD_DIR); \
-		install -m 0644 include/*.h $(STAGING_DIR)/opt/include; \
-		install -m 0644 lib/*.a $(STAGING_DIR)/opt/lib; \
+		install -m 0644 include/*.h $(STAGING_INCLUDE_DIR); \
+		install -m 0644 lib/*.a $(STAGING_LIB_DIR); \
 	)
 	touch $(LUA50_BUILD_DIR)/.staged
 

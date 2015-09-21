@@ -41,7 +41,7 @@ $(PERL-FILE-NEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE) $(PE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-file-next-unpack: $(PERL-FILE-NEXT_BUILD_DIR)/.configured
 $(PERL-FILE-NEXT_BUILD_DIR)/.built: $(PERL-FILE-NEXT_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-file-next: $(PERL-FILE-NEXT_BUILD_DIR)/.built

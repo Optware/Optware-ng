@@ -104,8 +104,8 @@ $(MONIT_BUILD_DIR)/.configured: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES) make/
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--with-ssl-incl-dir=$(STAGING_PREFIX)/include \
-		--with-ssl-lib-dir=$(STAGING_PREFIX)/lib \
+		--with-ssl-incl-dir=$(STAGING_INCLUDE_DIR) \
+		--with-ssl-lib-dir=$(STAGING_LIB_DIR) \
 		--with-pam=$(STAGING_PREFIX) \
 		libmonit_cv_setjmp_available=yes \
 		libmonit_cv_vsnprintf_c99_conformant=yes \

@@ -41,7 +41,7 @@ $(PERL-VERSION_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-VERSION_SOURCE) $(PERL-V
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Build.PL \
 		--config cc=$(TARGET_CC) \
 		--config ld=$(TARGET_CC) \
@@ -53,7 +53,7 @@ perl-version-unpack: $(PERL-VERSION_BUILD_DIR)/.configured
 $(PERL-VERSION_BUILD_DIR)/.built: $(PERL-VERSION_BUILD_DIR)/.configured
 	rm -f $@
 	(cd $(@D); \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		./Build \
 	)
 	touch $@
@@ -63,8 +63,8 @@ perl-version: $(PERL-VERSION_BUILD_DIR)/.built
 $(PERL-VERSION_BUILD_DIR)/.staged: $(PERL-VERSION_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D); \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		./Build --prefix $(STAGING_DIR)/opt install \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
+		./Build --prefix $(STAGING_PREFIX) install \
 	)
 	touch $@
 
@@ -88,7 +88,7 @@ $(PERL-VERSION_IPK_DIR)/CONTROL/control:
 $(PERL-VERSION_IPK): $(PERL-VERSION_BUILD_DIR)/.built
 	rm -rf $(PERL-VERSION_IPK_DIR) $(BUILD_DIR)/perl-version_*_$(TARGET_ARCH).ipk
 	(cd $(PERL-VERSION_BUILD_DIR); \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		./Build --prefix $(PERL-VERSION_IPK_DIR)/opt install \
 	)
 	find $(PERL-VERSION_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;

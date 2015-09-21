@@ -125,7 +125,7 @@ $(VTE_BUILD_DIR)/.configured: $(DL_DIR)/$(VTE_SOURCE) $(VTE_PATCHES) make/vte.mk
 		$(@D)/src/vteutils.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(HOST_STAGING_DIR)/opt/bin:$$PATH" \
+		PATH="$(HOST_STAGING_PREFIX)/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VTE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VTE_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \

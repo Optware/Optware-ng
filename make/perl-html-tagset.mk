@@ -40,7 +40,7 @@ $(PERL-HTML-TAGSET_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-HTML-TAGSET_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -51,7 +51,7 @@ perl-html-tagset-unpack: $(PERL-HTML-TAGSET_BUILD_DIR)/.configured
 $(PERL-HTML-TAGSET_BUILD_DIR)/.built: $(PERL-HTML-TAGSET_BUILD_DIR)/.configured
 	rm -f $(PERL-HTML-TAGSET_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-HTML-TAGSET_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-HTML-TAGSET_BUILD_DIR)/.built
 
 perl-html-tagset: $(PERL-HTML-TAGSET_BUILD_DIR)/.built

@@ -126,10 +126,10 @@ $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSQL_CONNECTOR_ODBC_
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--with-mysql-path=$(STAGING_DIR)/opt \
-		--with-unixODBC=$(STAGING_DIR)/opt \
-		--with-unixODBC-includes=$(STAGING_DIR)/opt/include \
-		--with-unixODBC-libs=$(STAGING_DIR)/opt/lib \
+		--with-mysql-path=$(STAGING_PREFIX) \
+		--with-unixODBC=$(STAGING_PREFIX) \
+		--with-unixODBC-includes=$(STAGING_INCLUDE_DIR) \
+		--with-unixODBC-libs=$(STAGING_LIB_DIR) \
 		--enable-thread-safe \
 		--enable-gui=no \
 	)

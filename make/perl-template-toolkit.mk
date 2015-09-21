@@ -49,7 +49,7 @@ $(PERL-TEMPLATE-TOOLKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TEMPLATE-TOOLKI
 		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 		TT_DOCS=n \
@@ -74,7 +74,7 @@ $(PERL-TEMPLATE-TOOLKIT_BUILD_DIR)/.built: $(PERL-TEMPLATE-TOOLKIT_BUILD_DIR)/.c
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-template-toolkit: $(PERL-TEMPLATE-TOOLKIT_BUILD_DIR)/.built

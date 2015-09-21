@@ -135,7 +135,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.4
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON24_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1
-	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_PREFIX)/lib" CPPFLAGS="-I$(HOST_STAGING_PREFIX)/include" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON24_DIR)/configure.in
+	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON24_DIR)/configure.in
 	cd $(BUILD_DIR)/$(PYTHON24_DIR); autoconf configure.in > configure
 	mkdir $(@D)
 	(cd $(@D); \
@@ -190,7 +190,7 @@ python24: $(PYTHON24_BUILD_DIR)/.built
 $(PYTHON24_BUILD_DIR)/.staged: $(PYTHON24_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	install $(@D)/buildpython/python $(STAGING_DIR)/opt/bin/
+	install $(@D)/buildpython/python $(STAGING_PREFIX)/bin/
 	touch $@
 
 python24-stage: $(PYTHON24_BUILD_DIR)/.staged

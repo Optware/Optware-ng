@@ -41,7 +41,7 @@ $(PERL-ALGORITHM-DIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-ALGORITHM-DIFF_SO
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-algorithm-diff-unpack: $(PERL-ALGORITHM-DIFF_BUILD_DIR)/.configured
 $(PERL-ALGORITHM-DIFF_BUILD_DIR)/.built: $(PERL-ALGORITHM-DIFF_BUILD_DIR)/.configured
 	rm -f $(PERL-ALGORITHM-DIFF_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-ALGORITHM-DIFF_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-ALGORITHM-DIFF_BUILD_DIR)/.built
 
 perl-algorithm-diff: $(PERL-ALGORITHM-DIFF_BUILD_DIR)/.built

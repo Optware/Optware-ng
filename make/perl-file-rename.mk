@@ -41,7 +41,7 @@ $(PERL-FILE-RENAME_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-FILE-RENAME_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-file-rename-unpack: $(PERL-FILE-RENAME_BUILD_DIR)/.configured
 $(PERL-FILE-RENAME_BUILD_DIR)/.built: $(PERL-FILE-RENAME_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-file-rename: $(PERL-FILE-RENAME_BUILD_DIR)/.built

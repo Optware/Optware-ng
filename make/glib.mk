@@ -212,13 +212,13 @@ glib: $(GLIB_BUILD_DIR)/.built
 #
 $(GLIB_BUILD_DIR)/.staged: $(GLIB_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_DIR)/opt
+	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_PREFIX)
 	install $(@D)/glib/glibconfig.h $(STAGING_INCLUDE_DIR)/glib-2.0/
-	rm -rf $(STAGING_DIR)/opt/lib/libgio-2.0.la
-	rm -rf $(STAGING_DIR)/opt/lib/libglib-2.0.la
-	rm -rf $(STAGING_DIR)/opt/lib/libgmodule-2.0.la
-	rm -rf $(STAGING_DIR)/opt/lib/libgobject-2.0.la
-	rm -rf $(STAGING_DIR)/opt/lib/libgthread-2.0.la
+	rm -rf $(STAGING_LIB_DIR)/libgio-2.0.la
+	rm -rf $(STAGING_LIB_DIR)/libglib-2.0.la
+	rm -rf $(STAGING_LIB_DIR)/libgmodule-2.0.la
+	rm -rf $(STAGING_LIB_DIR)/libgobject-2.0.la
+	rm -rf $(STAGING_LIB_DIR)/libgthread-2.0.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
                -e 's|glib_mkenums=.*|glib_mkenums=$${prefix}/bin/glib-mkenums|' \
 		$(STAGING_LIB_DIR)/pkgconfig/gio*-2.0.pc \

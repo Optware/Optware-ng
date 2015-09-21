@@ -162,9 +162,9 @@ cairo: $(CAIRO_BUILD_DIR)/.built
 #
 $(CAIRO_BUILD_DIR)/.staged: $(CAIRO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_DIR)/opt
+	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_PREFIX)
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/cairo*.pc
-	rm -f $(STAGING_DIR)/opt/lib/libcairo*.la
+	rm -f $(STAGING_LIB_DIR)/libcairo*.la
 	touch $@
 
 cairo-stage: $(CAIRO_BUILD_DIR)/.staged

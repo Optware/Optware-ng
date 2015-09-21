@@ -40,7 +40,7 @@ $(PERL-FILE-RSYNCP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-FILE-RSYNCP_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -48,7 +48,7 @@ $(PERL-FILE-RSYNCP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-FILE-RSYNCP_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		rsync_cv_HAVE_SOCKETPAIR=yes \
 		rsync_cv_HAVE_LONGLONG=yes \
 		rsync_cv_HAVE_OFF64_T=no \
@@ -81,7 +81,7 @@ $(PERL-FILE-RSYNCP_BUILD_DIR)/.built: $(PERL-FILE-RSYNCP_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		BYTEORDER=$$BYTEORDER \
 		; \
 	)

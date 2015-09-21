@@ -41,7 +41,7 @@ $(PERL-EXTUTILS-CBUILDER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-EXTUTILS-CBUIL
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-extutils-cbuilder-unpack: $(PERL-EXTUTILS-CBUILDER_BUILD_DIR)/.configured
 $(PERL-EXTUTILS-CBUILDER_BUILD_DIR)/.built: $(PERL-EXTUTILS-CBUILDER_BUILD_DIR)/.configured
 	rm -f $(PERL-EXTUTILS-CBUILDER_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-EXTUTILS-CBUILDER_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-EXTUTILS-CBUILDER_BUILD_DIR)/.built
 
 perl-extutils-cbuilder: $(PERL-EXTUTILS-CBUILDER_BUILD_DIR)/.built

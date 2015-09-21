@@ -47,7 +47,7 @@ $(PERL-DBD-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-SQLITE_SOURCE) $(
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(PERL-DBD-SQLITE_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL  \
 		$(TARGET_CONFIGURE_OPTS) \
 		PREFIX=/opt \
@@ -70,14 +70,14 @@ $(PERL-DBD-SQLITE_BUILD_DIR)/.built: $(PERL-DBD-SQLITE_BUILD_DIR)/.configured
 	    LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \
 	    LD="$(TARGET_CC)" \
 	    $(PERL_INC) \
-	    PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	    PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-dbd-sqlite: $(PERL-DBD-SQLITE_BUILD_DIR)/.built
 
 perl-dbd-sqlite-test: $(PERL-DBD-SQLITE_BUILD_DIR)/.staged
 	$(MAKE) -C $(PERL-DBD-SQLITE_BUILD_DIR) test\
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	
 $(PERL-DBD-SQLITE_BUILD_DIR)/.staged: $(PERL-DBD-SQLITE_BUILD_DIR)/.built
 	rm -f $@

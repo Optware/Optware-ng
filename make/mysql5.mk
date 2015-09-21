@@ -203,7 +203,7 @@ mysql5: $(MYSQL5_BUILD_DIR)/.built
 $(MYSQL5_BUILD_DIR)/.staged: $(MYSQL5_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(MYSQL5_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-	rm -f $(STAGING_PREFIX)/lib/mysql/*.la
+	rm -f $(STAGING_LIB_DIR)/mysql/*.la
 	touch $@
 
 mysql5-stage: $(MYSQL5_BUILD_DIR)/.staged

@@ -231,9 +231,9 @@ $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
 	rm -f $@
 	rm -rf $(STAGING_INCLUDE_DIR)/ffmpeg $(STAGING_INCLUDE_DIR)/postproc
 	$(MAKE) -C $(@D) install \
-		mandir=$(STAGING_DIR)/opt/share/man \
-		bindir=$(STAGING_DIR)/opt/bin \
-		prefix=$(STAGING_DIR)/opt
+		mandir=$(STAGING_PREFIX)/share/man \
+		bindir=$(STAGING_PREFIX)/bin \
+		prefix=$(STAGING_PREFIX)
 	if [ -f $(STAGING_INCLUDE_DIR)/libavutil/time.h ]; then \
 		mv -f $(STAGING_INCLUDE_DIR)/libavutil/time.h $(STAGING_INCLUDE_DIR)/libavutil/time.h_; \
 	fi

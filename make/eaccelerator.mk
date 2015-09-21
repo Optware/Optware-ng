@@ -147,7 +147,7 @@ make/eaccelerator.mk make/php.mk
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-eaccelerator=shared \
-		--with-php-config=$(STAGING_DIR)/opt/bin/php-config \
+		--with-php-config=$(STAGING_PREFIX)/bin/php-config \
 		--with-eaccelerator-userid='"nobody"' \
 	)
 	sed -i -e '/^CPPFLAGS/s|-I/opt/include/php ||' $(@D)/Makefile

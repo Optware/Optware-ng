@@ -40,7 +40,7 @@ $(PERL-SYS-SYSCALL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-SYS-SYSCALL_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -55,7 +55,7 @@ $(PERL-SYS-SYSCALL_BUILD_DIR)/.built: $(PERL-SYS-SYSCALL_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-SYS-SYSCALL_BUILD_DIR)/.built
 
 perl-sys-syscall: $(PERL-SYS-SYSCALL_BUILD_DIR)/.built

@@ -177,7 +177,7 @@ id3lib: $(ID3LIB_BUILD_DIR)/.built
 $(ID3LIB_BUILD_DIR)/.staged: $(ID3LIB_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(ID3LIB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	rm -f $(STAGING_DIR)/opt/lib/libid3.la
+	rm -f $(STAGING_LIB_DIR)/libid3.la
 	touch $@
 
 id3lib-stage: $(ID3LIB_BUILD_DIR)/.staged

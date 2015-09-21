@@ -141,12 +141,12 @@ libjpeg: $(LIBJPEG_BUILD_DIR)/.built
 #
 $(LIBJPEG_BUILD_DIR)/.staged: $(LIBJPEG_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -d $(STAGING_DIR)/opt/bin
-	install -d $(STAGING_DIR)/opt/man/man1
+	install -d $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -d $(STAGING_PREFIX)/bin
+	install -d $(STAGING_PREFIX)/man/man1
 	$(MAKE) -C $(@D) prefix=$(STAGING_PREFIX) install
-	rm -f $(STAGING_DIR)/opt/lib/libjpeg.la
+	rm -f $(STAGING_LIB_DIR)/libjpeg.la
 	touch $@
 
 libjpeg-stage: $(LIBJPEG_BUILD_DIR)/.staged

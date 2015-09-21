@@ -40,7 +40,7 @@ $(PERL-DEVEL-LEXALIAS_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DEVEL-LEXALIAS_SO
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -54,7 +54,7 @@ $(PERL-DEVEL-LEXALIAS_BUILD_DIR)/.built: $(PERL-DEVEL-LEXALIAS_BUILD_DIR)/.confi
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-devel-lexalias: $(PERL-DEVEL-LEXALIAS_BUILD_DIR)/.built

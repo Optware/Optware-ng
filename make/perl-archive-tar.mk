@@ -41,7 +41,7 @@ $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-archive-tar-unpack: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured
 $(PERL-ARCHIVE-TAR_BUILD_DIR)/.built: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-archive-tar: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.built

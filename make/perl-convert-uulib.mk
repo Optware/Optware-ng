@@ -42,7 +42,7 @@ $(PERL-CONVERT-UULIB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CONVERT-UULIB_SOUR
 		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
@@ -58,7 +58,7 @@ $(PERL-CONVERT-UULIB_BUILD_DIR)/.built: $(PERL-CONVERT-UULIB_BUILD_DIR)/.configu
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-CONVERT-UULIB_BUILD_DIR)/.built
 
 perl-convert-uulib: $(PERL-CONVERT-UULIB_BUILD_DIR)/.built

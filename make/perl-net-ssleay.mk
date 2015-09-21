@@ -41,9 +41,9 @@ $(PERL-NET-SSLEAY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) $(
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-                $(STAGING_DIR)/opt -- \
+                $(STAGING_PREFIX) -- \
 		PREFIX=/opt \
 	)
 	touch $(PERL-NET-SSLEAY_BUILD_DIR)/.configured
@@ -62,7 +62,7 @@ $(PERL-NET-SSLEAY_BUILD_DIR)/.built: $(PERL-NET-SSLEAY_BUILD_DIR)/.configured
 		EXTRALIBS="-lssl -lcrypto -lz" \
 		LDLOADLIBS="-lssl -lcrypto -lz" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-NET-SSLEAY_BUILD_DIR)/.built
 
 perl-net-ssleay: $(PERL-NET-SSLEAY_BUILD_DIR)/.built

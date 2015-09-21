@@ -130,7 +130,7 @@ $(YADIFA_BUILD_DIR)/.configured: $(DL_DIR)/$(YADIFA_SOURCE) $(YADIFA_PATCHES) ma
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-openssl=$(STAGING_DIR)/opt \
+		--with-openssl=$(STAGING_PREFIX) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@

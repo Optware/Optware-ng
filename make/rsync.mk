@@ -98,7 +98,7 @@ rsync: $(RSYNC_BUILD_DIR)/.built
 $(RSYNC_BUILD_DIR)/.staged: $(RSYNC_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	$(STRIP_COMMAND) $(STAGING_DIR)/opt/bin/rsync
+	$(STRIP_COMMAND) $(STAGING_PREFIX)/bin/rsync
 	touch $@
 
 rsync-stage: $(RSYNC_BUILD_DIR)/.staged

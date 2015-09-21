@@ -159,8 +159,8 @@ endif
 		--prefix=/opt \
 		--program-prefix="" \
 		--disable-static \
-		--with-openssl=$(STAGING_DIR)/opt \
-		--with-zlib-dir=$(STAGING_DIR)/opt \
+		--with-openssl=$(STAGING_PREFIX) \
+		--with-zlib-dir=$(STAGING_PREFIX) \
 		--without-readline \
 		--enable-thread-safe-client \
 		--with-comment="optware distribution $(MYSQL_VERSION)-$(MYSQL_IPK_VERSION)" \
@@ -207,7 +207,7 @@ mysql: $(MYSQL_BUILD_DIR)/.built
 $(MYSQL_BUILD_DIR)/.staged: $(MYSQL_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
-	rm -f $(STAGING_PREFIX)/lib/mysql/*.la
+	rm -f $(STAGING_LIB_DIR)/mysql/*.la
 	touch $@
 
 mysql-stage: $(MYSQL_BUILD_DIR)/.staged

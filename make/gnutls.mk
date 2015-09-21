@@ -130,13 +130,13 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES) ma
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-libgcrypt-prefix=$(STAGING_DIR)/opt \
-		--with-libtasn1-prefix=$(STAGING_DIR)/opt \
+		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
+		--with-libtasn1-prefix=$(STAGING_PREFIX) \
 		--without-p11-kit \
 		--disable-nls \
 		--disable-static \
 	)
-	find $(@D) -type f -name Makefile -exec sed -i -e "s|-Wl,-rpath -Wl,$(STAGING_DIR)/opt/lib||g" -e "s|-R$(STAGING_DIR)/opt/lib||g" {} \;
+	find $(@D) -type f -name Makefile -exec sed -i -e "s|-Wl,-rpath -Wl,$(STAGING_LIB_DIR)||g" -e "s|-R$(STAGING_LIB_DIR)||g" {} \;
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

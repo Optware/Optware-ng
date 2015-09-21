@@ -173,7 +173,7 @@ icu: $(ICU_BUILD_DIR)/.built
 $(ICU_BUILD_DIR)/.staged: $(ICU_BUILD_DIR)/.built
 	cp -f $(ICU_HOST_BUILD_DIR)/bin/pkgdata $(@D)/source/bin
 	$(MAKE) -C $(@D)/source DESTDIR=$(STAGING_DIR) install
-	cp -f $(@D)/source/bin.cross/pkgdata $(STAGING_DIR)/opt/bin
+	cp -f $(@D)/source/bin.cross/pkgdata $(STAGING_PREFIX)/bin
 	cp -f $(@D)/source/bin.cross/pkgdata $(@D)/source/bin
 	touch $@
 

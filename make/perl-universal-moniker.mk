@@ -41,7 +41,7 @@ $(PERL-UNIVERSAL-MONIKER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-UNIVERSAL-MONI
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-universal-moniker-unpack: $(PERL-UNIVERSAL-MONIKER_BUILD_DIR)/.configured
 $(PERL-UNIVERSAL-MONIKER_BUILD_DIR)/.built: $(PERL-UNIVERSAL-MONIKER_BUILD_DIR)/.configured
 	rm -f $(PERL-UNIVERSAL-MONIKER_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-UNIVERSAL-MONIKER_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-UNIVERSAL-MONIKER_BUILD_DIR)/.built
 
 perl-universal-moniker: $(PERL-UNIVERSAL-MONIKER_BUILD_DIR)/.built

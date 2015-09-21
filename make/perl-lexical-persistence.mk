@@ -40,7 +40,7 @@ $(PERL-LEXICAL-PERSISTENCE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LEXICAL-PERS
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -51,7 +51,7 @@ perl-lexical-persistence-unpack: $(PERL-LEXICAL-PERSISTENCE_BUILD_DIR)/.configur
 $(PERL-LEXICAL-PERSISTENCE_BUILD_DIR)/.built: $(PERL-LEXICAL-PERSISTENCE_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(PERL-LEXICAL-PERSISTENCE_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-lexical-persistence: $(PERL-LEXICAL-PERSISTENCE_BUILD_DIR)/.built

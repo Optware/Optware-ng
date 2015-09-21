@@ -125,11 +125,11 @@ $(GNUPG1_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG1_SOURCE) $(GNUPG1_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-libusb=$(STAGING_DIR)/opt \
-		--with-zlib=$(STAGING_DIR)/opt \
-		--with-readline=$(STAGING_DIR)/opt \
-		--with-libcurl=$(STAGING_DIR)/opt \
-		--with-ldap=$(STAGING_DIR)/opt \
+		--with-libusb=$(STAGING_PREFIX) \
+		--with-zlib=$(STAGING_PREFIX) \
+		--with-readline=$(STAGING_PREFIX) \
+		--with-libcurl=$(STAGING_PREFIX) \
+		--with-ldap=$(STAGING_PREFIX) \
 		--prefix=/opt \
 		--disable-nls \
 		$(GNUPG1_CFG_OPTS) \

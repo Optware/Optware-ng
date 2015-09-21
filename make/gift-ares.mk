@@ -131,7 +131,7 @@ $(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTARES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTARES_LDFLAGS)" \
 		./configure \
-		--with-zlib=$(STAGING_DIR)/opt \
+		--with-zlib=$(STAGING_PREFIX) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -160,13 +160,13 @@ gift-ares: $(GIFTARES_BUILD_DIR)/.built
 #
 $(GIFTARES_BUILD_DIR)/.staged: $(GIFTARES_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFTARES_BUILD_DIR)/gift-ares.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFTARES_BUILD_DIR)/libgift-ares.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFTARES_BUILD_DIR)/libgift-ares.so.$(GIFTARES_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-ares.so.$(GIFTARES_VERSION) libgift-ares.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-ares.so.$(GIFTARES_VERSION) libgift-ares.so
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(GIFTARES_BUILD_DIR)/gift-ares.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(GIFTARES_BUILD_DIR)/libgift-ares.a $(STAGING_LIB_DIR)
+	install -m 644 $(GIFTARES_BUILD_DIR)/libgift-ares.so.$(GIFTARES_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libgift-ares.so.$(GIFTARES_VERSION) libgift-ares.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libgift-ares.so.$(GIFTARES_VERSION) libgift-ares.so
 	touch $@
 
 gift-ares-stage:$(GIFTARES_BUILD_DIR)/.staged

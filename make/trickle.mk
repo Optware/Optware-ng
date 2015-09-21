@@ -126,16 +126,16 @@ trickle: $(TRICKLE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libtrickle.so.$(TRICKLE_VERSION): $(TRICKLE_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(TRICKLE_BUILD_DIR)/trickle.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(TRICKLE_BUILD_DIR)/libtrickle.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(TRICKLE_BUILD_DIR)/libtrickle.so.$(TRICKLE_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtrickle.so.$(TRICKLE_VERSION) libtrickle.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtrickle.so.$(TRICKLE_VERSION) libtrickle.so
+$(STAGING_LIB_DIR)/libtrickle.so.$(TRICKLE_VERSION): $(TRICKLE_BUILD_DIR)/.built
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(TRICKLE_BUILD_DIR)/trickle.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(TRICKLE_BUILD_DIR)/libtrickle.a $(STAGING_LIB_DIR)
+	install -m 644 $(TRICKLE_BUILD_DIR)/libtrickle.so.$(TRICKLE_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libtrickle.so.$(TRICKLE_VERSION) libtrickle.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libtrickle.so.$(TRICKLE_VERSION) libtrickle.so
 
-trickle-stage: $(STAGING_DIR)/opt/lib/libtrickle.so.$(TRICKLE_VERSION)
+trickle-stage: $(STAGING_LIB_DIR)/libtrickle.so.$(TRICKLE_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

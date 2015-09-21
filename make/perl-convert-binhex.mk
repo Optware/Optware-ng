@@ -40,7 +40,7 @@ $(PERL-CONVERT-BINHEX_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CONVERT-BINHEX_SO
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
@@ -51,7 +51,7 @@ perl-convert-binhex-unpack: $(PERL-CONVERT-BINHEX_BUILD_DIR)/.configured
 $(PERL-CONVERT-BINHEX_BUILD_DIR)/.built: $(PERL-CONVERT-BINHEX_BUILD_DIR)/.configured
 	rm -f $(PERL-CONVERT-BINHEX_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-CONVERT-BINHEX_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-CONVERT-BINHEX_BUILD_DIR)/.built
 
 perl-convert-binhex: $(PERL-CONVERT-BINHEX_BUILD_DIR)/.built

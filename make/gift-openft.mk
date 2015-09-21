@@ -106,7 +106,7 @@ $(GIFTOPENFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTOPENFT_SOURCE) $(GIFTOPENFT
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTOPENFT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTOPENFT_LDFLAGS)" \
 		./configure \
-		--with-zlib=$(STAGING_DIR)/opt \
+		--with-zlib=$(STAGING_PREFIX) \
 		--disable-libdb \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -136,16 +136,16 @@ gift-openft: $(GIFTOPENFT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libgift-openft.so.$(GIFTOPENFT_VERSION): $(GIFTOPENFT_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFTOPENFT_BUILD_DIR)/gift-openft.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFTOPENFT_BUILD_DIR)/libgift-openft.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFTOPENFT_BUILD_DIR)/libgift-openft.so.$(GIFTOPENFT_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-openft.so.$(GIFTOPENFT_VERSION) libgift-openft.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-openft.so.$(GIFTOPENFT_VERSION) libgift-openft.so
+$(STAGING_LIB_DIR)/libgift-openft.so.$(GIFTOPENFT_VERSION): $(GIFTOPENFT_BUILD_DIR)/.built
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(GIFTOPENFT_BUILD_DIR)/gift-openft.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(GIFTOPENFT_BUILD_DIR)/libgift-openft.a $(STAGING_LIB_DIR)
+	install -m 644 $(GIFTOPENFT_BUILD_DIR)/libgift-openft.so.$(GIFTOPENFT_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libgift-openft.so.$(GIFTOPENFT_VERSION) libgift-openft.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libgift-openft.so.$(GIFTOPENFT_VERSION) libgift-openft.so
 
-gift-openft-stage: $(STAGING_DIR)/opt/lib/libgift-openft.so.$(GIFTOPENFT_VERSION)
+gift-openft-stage: $(STAGING_LIB_DIR)/libgift-openft.so.$(GIFTOPENFT_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

@@ -118,7 +118,7 @@ $(CENTERICQ_BUILD_DIR)/.configured: $(DL_DIR)/$(CENTERICQ_SOURCE) $(CENTERICQ_PA
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--with-openssl=$(STAGING_DIR)/opt \
+		--with-openssl=$(STAGING_PREFIX) \
 		--without-gpgme \
 		--disable-gg \
 		--with-curl=$(STAGING_DIR)/bin/curl-config \

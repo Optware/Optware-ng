@@ -161,16 +161,16 @@ nail: $(NAIL_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-#$(STAGING_DIR)/opt/lib/libnail.so.$(NAIL_VERSION): $(NAIL_BUILD_DIR)/.built
-#	install -d $(STAGING_DIR)/opt/include
-#	install -m 644 $(NAIL_BUILD_DIR)/nail.h $(STAGING_DIR)/opt/include
-#	install -d $(STAGING_DIR)/opt/lib
-#	install -m 644 $(NAIL_BUILD_DIR)/libnail.a $(STAGING_DIR)/opt/lib
-#	install -m 644 $(NAIL_BUILD_DIR)/libnail.so.$(NAIL_VERSION) $(STAGING_DIR)/opt/lib
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libnail.so.$(NAIL_VERSION) libnail.so.1
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libnail.so.$(NAIL_VERSION) libnail.so
+#$(STAGING_LIB_DIR)/libnail.so.$(NAIL_VERSION): $(NAIL_BUILD_DIR)/.built
+#	install -d $(STAGING_INCLUDE_DIR)
+#	install -m 644 $(NAIL_BUILD_DIR)/nail.h $(STAGING_INCLUDE_DIR)
+#	install -d $(STAGING_LIB_DIR)
+#	install -m 644 $(NAIL_BUILD_DIR)/libnail.a $(STAGING_LIB_DIR)
+#	install -m 644 $(NAIL_BUILD_DIR)/libnail.so.$(NAIL_VERSION) $(STAGING_LIB_DIR)
+#	cd $(STAGING_LIB_DIR) && ln -fs libnail.so.$(NAIL_VERSION) libnail.so.1
+#	cd $(STAGING_LIB_DIR) && ln -fs libnail.so.$(NAIL_VERSION) libnail.so
 
-#nail-stage: $(STAGING_DIR)/opt/lib/libnail.so.$(NAIL_VERSION)
+#nail-stage: $(STAGING_LIB_DIR)/libnail.so.$(NAIL_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

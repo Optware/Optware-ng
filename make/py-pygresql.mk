@@ -118,7 +118,7 @@ $(PY-PYGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYGRESQL_SOURCE) $(PY-PYGRE
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4:$(STAGING_INCLUDE_DIR)/postgresql:$(STAGING_INCLUDE_DIR)/postgresql/server"; \
-	        echo "library_dirs=$(STAGING_DIR)/opt/lib"; \
+	        echo "library_dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python2.4"; \
@@ -135,7 +135,7 @@ $(PY-PYGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYGRESQL_SOURCE) $(PY-PYGRE
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5:$(STAGING_INCLUDE_DIR)/postgresql:$(STAGING_INCLUDE_DIR)/postgresql/server"; \
-	        echo "library_dirs=$(STAGING_DIR)/opt/lib"; \
+	        echo "library_dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python2.5"; \

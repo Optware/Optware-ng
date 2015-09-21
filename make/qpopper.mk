@@ -112,7 +112,7 @@ $(QPOPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(QPOPPER_SOURCE) $(QPOPPER_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-openssl=$(STAGING_DIR)/opt \
+		--with-openssl=$(STAGING_PREFIX) \
 		--prefix=/opt \
 		--disable-nls \
 	)

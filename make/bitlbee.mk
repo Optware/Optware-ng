@@ -133,7 +133,7 @@ endif
                 PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
                 PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		STAGING_DIR=$(STAGING_DIR) \
-		PATH=$(STAGING_DIR)/opt/bin:$(PATH) \
+		PATH=$(STAGING_PREFIX)/bin:$(PATH) \
 		./configure \
 		--prefix=/opt \
 		--cpu=$(TARGET_ARCH) \

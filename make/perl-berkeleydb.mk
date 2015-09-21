@@ -41,7 +41,7 @@ $(PERL-BERKELEYDB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-BERKELEYDB_SOURCE) $(
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) -lpthread" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		BERKELEYDB_INCLUDE=$(STAGING_INCLUDE_DIR) \
 		BERKELEYDB_LIB=$(STAGING_LIB_DIR) \
 		$(PERL_HOSTPERL) Makefile.PL \
@@ -58,7 +58,7 @@ $(PERL-BERKELEYDB_BUILD_DIR)/.built: $(PERL-BERKELEYDB_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) -lpthread" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-berkeleydb: $(PERL-BERKELEYDB_BUILD_DIR)/.built

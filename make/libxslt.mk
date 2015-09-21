@@ -145,7 +145,7 @@ $(LIBXSLT_BUILD_DIR)/.staged: $(LIBXSLT_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' $(STAGING_PREFIX)/bin/xslt-config
 	# follow libxml's convention in putting -config bins in STAGING/bin
-	cp $(STAGING_DIR)/opt/bin/xslt-config $(STAGING_DIR)/bin
+	cp $(STAGING_PREFIX)/bin/xslt-config $(STAGING_DIR)/bin
 	# remove .la to avoid libtool problems
 	rm $(STAGING_LIB_DIR)/libxslt.la
 	rm $(STAGING_LIB_DIR)/libexslt.la

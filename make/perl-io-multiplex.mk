@@ -40,7 +40,7 @@ $(PERL-IO-MULTIPLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-MULTIPLEX_SOURCE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
@@ -55,7 +55,7 @@ $(PERL-IO-MULTIPLEX_BUILD_DIR)/.built: $(PERL-IO-MULTIPLEX_BUILD_DIR)/.configure
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-io-multiplex: $(PERL-IO-MULTIPLEX_BUILD_DIR)/.built

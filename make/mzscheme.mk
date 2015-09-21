@@ -179,7 +179,7 @@ $(MZSCHEME_IPK_DIR)/CONTROL/control:
 #
 $(MZSCHEME_IPK): $(MZSCHEME_BUILD_DIR)/.built
 	rm -rf $(MZSCHEME_IPK_DIR) $(BUILD_DIR)/mzscheme_*_$(TARGET_ARCH).ipk
-	umask 022; PLT_EXTENSION_LIB_PATHS=$(STAGING_DIR)/opt \
+	umask 022; PLT_EXTENSION_LIB_PATHS=$(STAGING_PREFIX) \
             $(MAKE) -C $(MZSCHEME_BUILD_DIR)/src prefix=$(MZSCHEME_IPK_DIR)/opt/lib/plt install
 	sed -i \
 	    -e '/^CC=/s:^.*$$:CC=/opt/bin/gcc:' \

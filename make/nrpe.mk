@@ -124,7 +124,7 @@ $(NRPE_BUILD_DIR)/.configured: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES)
 		--disable-static \
 		--enable-ssl \
 		--with-ssl-inc=$(STAGING_PREFIX) \
-		--with-ssl-lib=$(STAGING_PREFIX)/lib \
+		--with-ssl-lib=$(STAGING_LIB_DIR) \
 		--with-nrpe-user=nobody \
 		--with-nrpe-group=nobody \
 	)

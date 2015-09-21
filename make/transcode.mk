@@ -168,7 +168,7 @@ endif
 	sed -ie 's|="-I/usr/include"|=""|g' $(TRANSCODE_BUILD_DIR)/configure
 	(cd $(TRANSCODE_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
-		FT2_CONFIG="$(STAGING_DIR)/opt/bin/freetype-config";export FT2_CONFIG; \
+		FT2_CONFIG="$(STAGING_PREFIX)/bin/freetype-config";export FT2_CONFIG; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSCODE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSCODE_LDFLAGS)" \
@@ -214,7 +214,7 @@ transcode-unpack: $(TRANSCODE_BUILD_DIR)/.configured
 #
 $(TRANSCODE_BUILD_DIR)/.built: $(TRANSCODE_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) 'CFLAGS=-I$(STAGING_DIR)/opt/include/freetype2' -C $(TRANSCODE_BUILD_DIR)
+#	$(MAKE) 'CFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2' -C $(TRANSCODE_BUILD_DIR)
 	$(MAKE) -C $(TRANSCODE_BUILD_DIR)
 	touch $@
 

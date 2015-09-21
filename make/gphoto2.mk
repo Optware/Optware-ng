@@ -105,12 +105,12 @@ $(GPHOTO2_BUILD_DIR)/.configured: $(DL_DIR)/$(GPHOTO2_SOURCE) $(GPHOTO2_PATCHES)
 		then mv $(BUILD_DIR)/$(GPHOTO2_DIR) $(GPHOTO2_BUILD_DIR) ; \
 	fi
 	(cd $(GPHOTO2_BUILD_DIR);					\
-		PATH=$(STAGING_DIR)/opt/bin:$${PATH}			\
+		PATH=$(STAGING_PREFIX)/bin:$${PATH}			\
 		$(TARGET_CONFIGURE_OPTS)				\
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GPHOTO2_CPPFLAGS)"	\
 		LDFLAGS="$(STAGING_LDFLAGS) $(GPHOTO2_LDFLAGS)"		\
-		POPT_CFLAGS=-I$(STAGING_DIR)/opt/include		\
-		POPT_LIBS="-I$(STAGING_DIR)/opt/lib -lpopt"		\
+		POPT_CFLAGS=-I$(STAGING_INCLUDE_DIR)		\
+		POPT_LIBS="-I$(STAGING_LIB_DIR) -lpopt"		\
 		./configure						\
 		--build=$(GNU_HOST_NAME)				\
 		--host=$(GNU_TARGET_NAME)				\

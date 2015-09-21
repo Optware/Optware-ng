@@ -144,7 +144,7 @@ libzip: $(LIBZIP_BUILD_DIR)/.built
 $(LIBZIP_BUILD_DIR)/.staged: $(LIBZIP_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install DESTDIR=$(STAGING_DIR)
-	cp -f $(LIBZIP_BUILD_DIR)/lib/*.h $(STAGING_PREFIX)/include/
+	cp -f $(LIBZIP_BUILD_DIR)/lib/*.h $(STAGING_INCLUDE_DIR)/
 	rm -f $(STAGING_LIB_DIR)/libzip.la
 	rm -rf $(STAGING_LIB_DIR)/libzip
 	sed -i -e 's|libincludedir=.*||' -e 's|Cflags:.*|Cflags: -I\$${includedir}|' \

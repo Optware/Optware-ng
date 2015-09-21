@@ -151,16 +151,16 @@ screen: $(SCREEN_BUILD_DIR)/screen
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libscreen.so.$(SCREEN_VERSION): $(SCREEN_BUILD_DIR)/libscreen.so.$(SCREEN_VERSION)
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(SCREEN_BUILD_DIR)/screen.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(SCREEN_BUILD_DIR)/libscreen.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(SCREEN_BUILD_DIR)/libscreen.so.$(SCREEN_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libscreen.so.$(SCREEN_VERSION) libscreen.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libscreen.so.$(SCREEN_VERSION) libscreen.so
+$(STAGING_LIB_DIR)/libscreen.so.$(SCREEN_VERSION): $(SCREEN_BUILD_DIR)/libscreen.so.$(SCREEN_VERSION)
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(SCREEN_BUILD_DIR)/screen.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(SCREEN_BUILD_DIR)/libscreen.a $(STAGING_LIB_DIR)
+	install -m 644 $(SCREEN_BUILD_DIR)/libscreen.so.$(SCREEN_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libscreen.so.$(SCREEN_VERSION) libscreen.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libscreen.so.$(SCREEN_VERSION) libscreen.so
 
-screen-stage: $(STAGING_DIR)/opt/lib/libscreen.so.$(SCREEN_VERSION)
+screen-stage: $(STAGING_LIB_DIR)/libscreen.so.$(SCREEN_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

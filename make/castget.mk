@@ -106,7 +106,7 @@ castget-source: $(DL_DIR)/$(CASTGET_SOURCE) $(CASTGET_PATCHES)
 # shown below to make various patches to it.
 #
 # PKG_CONFIG_PATH is set so that pkg-config will locate the correct 
-# libs for configure. In a similar way, $(STAGING_DIR)/opt/bin is added 
+# libs for configure. In a similar way, $(STAGING_PREFIX)/bin is added 
 # to PATH in order to find the correct curl-config script.
 # Finally, ac_cv_func_malloc_0_nonnull=yes is needed to force detection
 # of a GNU-compatible malloc even when cross compiling.
@@ -126,8 +126,8 @@ $(CASTGET_BUILD_DIR)/.configured: $(DL_DIR)/$(CASTGET_SOURCE) $(CASTGET_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CASTGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CASTGET_LDFLAGS)" \
-		PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/pkgconfig" \
-		PATH="$(STAGING_DIR)/opt/bin:$(PATH)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PATH="$(STAGING_PREFIX)/bin:$(PATH)" \
 		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \

@@ -70,8 +70,8 @@ $(FLEX_BUILD_DIR)/.staged: $(FLEX_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 ifneq ($(HOSTCC), $(TARGET_CC)) # prevent PATH=staging/opt/bin problems
-	if test -x $(STAGING_DIR)/opt/bin/flex ;\
-		 then rm $(STAGING_DIR)/opt/bin/flex ;\
+	if test -x $(STAGING_PREFIX)/bin/flex ;\
+		 then rm $(STAGING_PREFIX)/bin/flex ;\
 	fi
 endif
 	touch $@

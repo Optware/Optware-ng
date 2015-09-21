@@ -159,7 +159,7 @@ $(WXBASE_BUILD_DIR)/.staged: $(WXBASE_BUILD_DIR)/.built
 	rm -rf $(STAGING_INCLUDE_DIR)/wx $(STAGING_INCLUDE_DIR)/wx-*
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	install -d $(STAGING_INCLUDE_DIR)/wx-2.8
-	cp $(STAGING_PREFIX)/lib/wx/include/$(GNU_TARGET_NAME)-base-unicode*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx-2.8/wx/
+	cp $(STAGING_LIB_DIR)/wx/include/$(GNU_TARGET_NAME)-base-unicode*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx-2.8/wx/
 	cd $(STAGING_PREFIX)/bin; rm -rf wx-config; \
 		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)*-unicode-release-* wx-config
 	touch $@

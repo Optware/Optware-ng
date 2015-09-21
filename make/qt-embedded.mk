@@ -45,14 +45,14 @@ QT-EMBEDDED_SUGGESTS=openssl, mysql5, sqlite, dbus, postgresql
 QT-EMBEDDED_CONFLICTS=
 QT-EMBEDDED_TOOLS=lrelease qmake uic moc rcc
 QT-EMBEDDED_CFLAGS=$(TARGET_CFLAGS)
-QT-EMBEDDED_CFLAGS+='"-I$(STAGING_DIR)/opt/include"'
-QT-EMBEDDED_CFLAGS+='"-I$(STAGING_DIR)/opt/include/mysql"'
-QT-EMBEDDED_LFLAGS+='"-L$(STAGING_DIR)/opt/lib"'
-QT-EMBEDDED_LFLAGS+='"-L$(STAGING_DIR)/opt/lib/mysql"'
+QT-EMBEDDED_CFLAGS+='"-I$(STAGING_INCLUDE_DIR)"'
+QT-EMBEDDED_CFLAGS+='"-I$(STAGING_INCLUDE_DIR)/mysql"'
+QT-EMBEDDED_LFLAGS+='"-L$(STAGING_LIB_DIR)"'
+QT-EMBEDDED_LFLAGS+='"-L$(STAGING_LIB_DIR)/mysql"'
 QT-EMBEDDED_LFLAGS+='"-Wl,-rpath=/opt/lib"'
 QT-EMBEDDED_LFLAGS+='"-Wl,-rpath=/opt/lib/mysql"'
-QT-EMBEDDED_LFLAGS+='"-Wl,-rpath-link=$(STAGING_DIR)/opt/lib"'
-QT-EMBEDDED_LFLAGS+='"-Wl,-rpath-link=$(STAGING_DIR)/opt/lib/mysql"'
+QT-EMBEDDED_LFLAGS+='"-Wl,-rpath-link=$(STAGING_LIB_DIR)"'
+QT-EMBEDDED_LFLAGS+='"-Wl,-rpath-link=$(STAGING_LIB_DIR)/mysql"'
 ifeq (yes, $(TARGET_CC_PROBE))
 QT-EMBEDDED_PLATFORM=-platform linux-g++-custom
 else
@@ -178,7 +178,7 @@ endif
 		cp -a qmake qmake-target ; \
 		echo 'yes' | \
 		$(QT-EMBEDDED_PATH) \
-		PKG_CONFIG_PATH=$(STAGING_DIR)/opt/lib/pkgconfig \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		PKG_CONFIG_SYSROOT=$(STAGING_DIR) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(QT-EMBEDDED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(QT-EMBEDDED_LDFLAGS)" \
@@ -240,7 +240,7 @@ $(QT-EMBEDDED_BUILD_DIR)/.staged: $(QT-EMBEDDED_BUILD_DIR)/.built
 	$(QT-EMBEDDED_PATH) $(MAKE) -C $(@D) INSTALL_ROOT=$(STAGING_DIR) install
 ifneq (yes, $(TARGET_CC_PROBE))
 	(cd $(@D) ; \
-		install -m 755 target-bin/uic target-bin/moc target-bin/rcc target-bin/lrelease target-bin/qmake $(STAGING_DIR)/opt/bin \
+		install -m 755 target-bin/uic target-bin/moc target-bin/rcc target-bin/lrelease target-bin/qmake $(STAGING_PREFIX)/bin \
 	)
 endif
 	touch $@

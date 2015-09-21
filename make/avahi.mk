@@ -133,7 +133,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AVAHI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AVAHI_LDFLAGS)" \
-		DBUS_CFLAGS="-I$(STAGING_INCLUDE_DIR)/dbus-1.0 -I$(STAGING_PREFIX)/lib/dbus-1.0/include -Ddbus_connection_disconnect=dbus_connection_close" \
+		DBUS_CFLAGS="-I$(STAGING_INCLUDE_DIR)/dbus-1.0 -I$(STAGING_LIB_DIR)/dbus-1.0/include -Ddbus_connection_disconnect=dbus_connection_close" \
 		DBUS_LIBS="-ldbus-1" \
 		LIBDAEMON_CFLAGS="" \
 		LIBDAEMON_LIBS="-ldaemon" \

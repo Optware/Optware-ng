@@ -259,12 +259,12 @@ ntop-dirclean:
 	rm -rf $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR) $(NTOP_IPK_DIR) $(NTOP_IPK)
 
 
-#		--with-pcap-root=$(STAGING_DIR)/opt \
-#		--with-gdbm-root=$(STAGING_DIR)/opt \
-#		--with-gd-root=$(STAGING_DIR)/opt \
-#		--with-zlib-root=$(STAGING_DIR)/opt \
-#		--with-libpng-root=$(STAGING_DIR)/opt \
-#		--with-ossl-root=$(STAGING_DIR)/opt \
+#		--with-pcap-root=$(STAGING_PREFIX) \
+#		--with-gdbm-root=$(STAGING_PREFIX) \
+#		--with-gd-root=$(STAGING_PREFIX) \
+#		--with-zlib-root=$(STAGING_PREFIX) \
+#		--with-libpng-root=$(STAGING_PREFIX) \
+#		--with-ossl-root=$(STAGING_PREFIX) \
 
 
 #		CVSROOT="$(NTOP_REPOSITORY)" ;\

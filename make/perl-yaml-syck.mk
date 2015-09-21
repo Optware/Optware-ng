@@ -43,7 +43,7 @@ $(PERL-YAML-SYCK_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-YAML-SYCK_SOURCE) $(PE
 		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -59,7 +59,7 @@ $(PERL-YAML-SYCK_BUILD_DIR)/.built: $(PERL-YAML-SYCK_BUILD_DIR)/.configured
 		$(PERL_INC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-yaml-syck: $(PERL-YAML-SYCK_BUILD_DIR)/.built

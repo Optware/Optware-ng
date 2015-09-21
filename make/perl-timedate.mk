@@ -41,7 +41,7 @@ $(PERL-TIMEDATE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TIMEDATE_SOURCE) $(PERL
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-timedate-unpack: $(PERL-TIMEDATE_BUILD_DIR)/.configured
 $(PERL-TIMEDATE_BUILD_DIR)/.built: $(PERL-TIMEDATE_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $@
 
 perl-timedate: $(PERL-TIMEDATE_BUILD_DIR)/.built

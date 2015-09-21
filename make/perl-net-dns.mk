@@ -41,7 +41,7 @@ $(PERL-NET-DNS_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-DNS_SOURCE) $(PERL-N
 		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL --no-online-tests \
 		LD_RUN_PATH=/opt/lib \
 		PREFIX=/opt \
@@ -59,7 +59,7 @@ $(PERL-NET-DNS_BUILD_DIR)/.built: $(PERL-NET-DNS_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		LD_RUN_PATH=/opt/lib \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-NET-DNS_BUILD_DIR)/.built
 
 perl-net-dns: $(PERL-NET-DNS_BUILD_DIR)/.built

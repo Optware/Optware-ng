@@ -40,7 +40,7 @@ $(PERL-MODULE-REFRESH_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MODULE-REFRESH_SO
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -51,7 +51,7 @@ perl-module-refresh-unpack: $(PERL-MODULE-REFRESH_BUILD_DIR)/.configured
 $(PERL-MODULE-REFRESH_BUILD_DIR)/.built: $(PERL-MODULE-REFRESH_BUILD_DIR)/.configured
 	rm -f $(PERL-MODULE-REFRESH_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-MODULE-REFRESH_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-MODULE-REFRESH_BUILD_DIR)/.built
 
 perl-module-refresh: $(PERL-MODULE-REFRESH_BUILD_DIR)/.built

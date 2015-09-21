@@ -143,7 +143,7 @@ $(RKHUNTER_BUILD_DIR)/.staged: $(RKHUNTER_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D); \
 		./installer.sh \
-		--layout custom $(STAGING_DIR)/opt \
+		--layout custom $(STAGING_PREFIX) \
 		--install \
 	)
 	touch $@

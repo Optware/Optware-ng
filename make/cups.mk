@@ -230,8 +230,8 @@ endif
 		--disable-nls \
 		--disable-dbus \
 		$(CUPS_CONFIG_OPTS) \
-		--with-openssl-libs=$(STAGING_DIR)/opt/lib \
-		--with-openssl-includes=$(STAGING_DIR)/opt/include \
+		--with-openssl-libs=$(STAGING_LIB_DIR) \
+		--with-openssl-includes=$(STAGING_INCLUDE_DIR) \
 		--without-java \
 		--without-perl \
 		--without-php \
@@ -279,29 +279,29 @@ cups: $(CUPS_BUILD_DIR)/.built
 #
 $(CUPS_BUILD_DIR)/.staged: $(CUPS_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/include/cups
-	install -d $(STAGING_DIR)/opt/include/filter
+	install -d $(STAGING_INCLUDE_DIR)/cups
+	install -d $(STAGING_INCLUDE_DIR)/filter
 	install -m 644 $(CUPS_BUILD_DIR)/cups/*.h \
-		$(STAGING_DIR)/opt/include/cups
+		$(STAGING_INCLUDE_DIR)/cups
 	install -m 644 $(CUPS_BUILD_DIR)/filter/*.h \
-		$(STAGING_DIR)/opt/include/cups
-	install -d $(STAGING_DIR)/opt/lib
+		$(STAGING_INCLUDE_DIR)/cups
+	install -d $(STAGING_LIB_DIR)
 	install -m 755 $(CUPS_BUILD_DIR)/install/opt/bin/cups-config \
 		$(STAGING_PREFIX)/bin
 	sed -i -e 's|^prefix=/opt|prefix=$(STAGING_PREFIX)|' \
 	       -e 's|^libdir=/opt|libdir=$${prefix}|' \
 		$(STAGING_PREFIX)/bin/cups-config
 	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.a \
-		$(STAGING_DIR)/opt/lib
-	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.a $(STAGING_DIR)/opt/lib
+		$(STAGING_LIB_DIR)
+	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.a $(STAGING_LIB_DIR)
 	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.so.2 \
-		$(STAGING_DIR)/opt/lib
+		$(STAGING_LIB_DIR)
 	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.so.2 \
-		$(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcupsimage.so.2 libcupsimage.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcupsimage.so.2 libcupsimage.so
+		$(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libcupsimage.so.2 libcupsimage.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libcups.so.2 libcups.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libcups.so.2 libcups.so
+	cd $(STAGING_LIB_DIR) && ln -fs libcupsimage.so.2 libcupsimage.so
 	touch $@
 
 cups-stage: $(CUPS_BUILD_DIR)/.staged

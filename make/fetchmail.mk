@@ -122,7 +122,7 @@ $(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-ssl=$(STAGING_DIR)/opt \
+		--with-ssl=$(STAGING_PREFIX) \
 		--without-kerberos5 \
 		--without-kerberos \
 		--without-hesiod \

@@ -41,7 +41,7 @@ $(PERL-MIME-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MIME-TOOLS_SOURCE) $(
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-mime-tools-unpack: $(PERL-MIME-TOOLS_BUILD_DIR)/.configured
 $(PERL-MIME-TOOLS_BUILD_DIR)/.built: $(PERL-MIME-TOOLS_BUILD_DIR)/.configured
 	rm -f $(PERL-MIME-TOOLS_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-MIME-TOOLS_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-MIME-TOOLS_BUILD_DIR)/.built
 
 perl-mime-tools: $(PERL-MIME-TOOLS_BUILD_DIR)/.built

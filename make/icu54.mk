@@ -166,7 +166,7 @@ $(ICU54_BUILD_DIR)/.staged: $(ICU54_BUILD_DIR)/.built
 	$(MAKE) -C $(@D)/source bindir=/opt/bin/icu54 libdir=/opt/lib/icu54 DESTDIR=$(STAGING_DIR) install
 	mv -f $(STAGING_LIB_DIR)/icu54/lib*.so* $(STAGING_LIB_DIR)
 	rm -rf $(STAGING_LIB_DIR)/icu54
-	cp -f $(ICU54_HOST_BUILD_DIR)/bin/pkgdata $(STAGING_DIR)/opt/bin/pkgdata54
+	cp -f $(ICU54_HOST_BUILD_DIR)/bin/pkgdata $(STAGING_PREFIX)/bin/pkgdata54
 	touch $@
 
 icu54-stage: $(ICU54_BUILD_DIR)/.staged

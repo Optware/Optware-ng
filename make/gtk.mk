@@ -175,7 +175,7 @@ endif
 	sed -i -e '/SUBDIRS *=/s| native||' $(@D)/gtk/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
+		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GTK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GTK_LDFLAGS)" \
 		CPPFLAGS_FOR_BUILD="$(HOST_STAGING_CPPFLAGS)" \

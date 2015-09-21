@@ -79,7 +79,7 @@ $(LIBSTDC++_BUILD_DIR)/.staged: $(LIBSTDC++_BUILD_DIR)/.built
 ifdef LIBSTDC++_USED
 	install -d $(STAGING_LIB_DIR)
 	install -m 644 $(@D)/$(LIBSTDC++_LIBNAME_FULL) $(STAGING_LIB_DIR)
-	(cd $(STAGING_DIR)/opt/lib; \
+	(cd $(STAGING_LIB_DIR); \
 	 ln -sf $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME); \
 	 ln -sf $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME_MAJOR) \
 	)

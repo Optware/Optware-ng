@@ -186,16 +186,16 @@ coreutils: $(COREUTILS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-#$(STAGING_DIR)/opt/lib/libcoreutils.so.$(COREUTILS_VERSION): $(COREUTILS_BUILD_DIR)/.built
-#	install -d $(STAGING_DIR)/opt/include
-#	install -m 644 $(COREUTILS_BUILD_DIR)/coreutils.h $(STAGING_DIR)/opt/include
-#	install -d $(STAGING_DIR)/opt/lib
-#	install -m 644 $(COREUTILS_BUILD_DIR)/libcoreutils.a $(STAGING_DIR)/opt/lib
-#	install -m 644 $(COREUTILS_BUILD_DIR)/libcoreutils.so.$(COREUTILS_VERSION) $(STAGING_DIR)/opt/lib
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libcoreutils.so.$(COREUTILS_VERSION) libcoreutils.so.1
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libcoreutils.so.$(COREUTILS_VERSION) libcoreutils.so
+#$(STAGING_LIB_DIR)/libcoreutils.so.$(COREUTILS_VERSION): $(COREUTILS_BUILD_DIR)/.built
+#	install -d $(STAGING_INCLUDE_DIR)
+#	install -m 644 $(COREUTILS_BUILD_DIR)/coreutils.h $(STAGING_INCLUDE_DIR)
+#	install -d $(STAGING_LIB_DIR)
+#	install -m 644 $(COREUTILS_BUILD_DIR)/libcoreutils.a $(STAGING_LIB_DIR)
+#	install -m 644 $(COREUTILS_BUILD_DIR)/libcoreutils.so.$(COREUTILS_VERSION) $(STAGING_LIB_DIR)
+#	cd $(STAGING_LIB_DIR) && ln -fs libcoreutils.so.$(COREUTILS_VERSION) libcoreutils.so.1
+#	cd $(STAGING_LIB_DIR) && ln -fs libcoreutils.so.$(COREUTILS_VERSION) libcoreutils.so
 #
-#coreutils-stage: $(STAGING_DIR)/opt/lib/libcoreutils.so.$(COREUTILS_VERSION)
+#coreutils-stage: $(STAGING_LIB_DIR)/libcoreutils.so.$(COREUTILS_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

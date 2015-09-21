@@ -142,16 +142,16 @@ gawk: $(GAWK_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-#$(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION): $(GAWK_BUILD_DIR)/.built
-#	install -d $(STAGING_DIR)/opt/include
-#	install -m 644 $(GAWK_BUILD_DIR)/gawk.h $(STAGING_DIR)/opt/include
-#	install -d $(STAGING_DIR)/opt/lib
-#	install -m 644 $(GAWK_BUILD_DIR)/libgawk.a $(STAGING_DIR)/opt/lib
-#	install -m 644 $(GAWK_BUILD_DIR)/libgawk.so.$(GAWK_VERSION) $(STAGING_DIR)/opt/lib
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so.1
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so
+#$(STAGING_LIB_DIR)/libgawk.so.$(GAWK_VERSION): $(GAWK_BUILD_DIR)/.built
+#	install -d $(STAGING_INCLUDE_DIR)
+#	install -m 644 $(GAWK_BUILD_DIR)/gawk.h $(STAGING_INCLUDE_DIR)
+#	install -d $(STAGING_LIB_DIR)
+#	install -m 644 $(GAWK_BUILD_DIR)/libgawk.a $(STAGING_LIB_DIR)
+#	install -m 644 $(GAWK_BUILD_DIR)/libgawk.so.$(GAWK_VERSION) $(STAGING_LIB_DIR)
+#	cd $(STAGING_LIB_DIR) && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so.1
+#	cd $(STAGING_LIB_DIR) && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so
 #
-#gawk-stage: $(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION)
+#gawk-stage: $(STAGING_LIB_DIR)/libgawk.so.$(GAWK_VERSION)
 
 $(GAWK_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)

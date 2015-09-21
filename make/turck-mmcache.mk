@@ -119,7 +119,7 @@ $(TURCK_MMCACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(TURCK_MMCACHE_SOURCE) $(TURC
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-php-config=$(STAGING_DIR)/opt/bin/php-config \
+		--with-php-config=$(STAGING_PREFIX)/bin/php-config \
 	)
 	touch $(TURCK_MMCACHE_BUILD_DIR)/.configured
 

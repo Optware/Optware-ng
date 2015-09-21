@@ -41,7 +41,7 @@ $(PERL-BUSINESS-ISBN-DATA_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-BUSINESS-ISBN
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-business-isbn-data-unpack: $(PERL-BUSINESS-ISBN-DATA_BUILD_DIR)/.configured
 $(PERL-BUSINESS-ISBN-DATA_BUILD_DIR)/.built: $(PERL-BUSINESS-ISBN-DATA_BUILD_DIR)/.configured
 	rm -f $(PERL-BUSINESS-ISBN-DATA_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-BUSINESS-ISBN-DATA_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-BUSINESS-ISBN-DATA_BUILD_DIR)/.built
 
 perl-business-isbn-data: $(PERL-BUSINESS-ISBN-DATA_BUILD_DIR)/.built

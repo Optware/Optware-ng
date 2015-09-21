@@ -137,7 +137,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUPLOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNUPLOT_LDFLAGS)" \
-		PATH="$(STAGING_DIR)/opt/bin:${PATH}" \
+		PATH="$(STAGING_PREFIX)/bin:${PATH}" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
@@ -149,9 +149,9 @@ endif
 		--disable-nls \
 		--disable-static \
 		--without-x   \
-		--with-readline=$(STAGING_DIR)/opt \
-		--with-png=$(STAGING_DIR)/opt \
-		--with-gd=$(STAGING_DIR)/opt \
+		--with-readline=$(STAGING_PREFIX) \
+		--with-png=$(STAGING_PREFIX) \
+		--with-gd=$(STAGING_PREFIX) \
 		--without-lisp-files \
 		--without-tutorial \
 		--disable-wxwidgets \

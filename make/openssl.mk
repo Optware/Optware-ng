@@ -184,9 +184,9 @@ else
 	) > $(STAGING_PREFIX)/bin/openssl
 	chmod 755 $(STAGING_PREFIX)/bin/openssl
 endif
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(@D)/libcrypto.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(@D)/libssl.a $(STAGING_DIR)/opt/lib
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(@D)/libcrypto.a $(STAGING_LIB_DIR)
+	install -m 644 $(@D)/libssl.a $(STAGING_LIB_DIR)
 	install -m 644 $(@D)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(STAGING_LIB_DIR)
 	install -m 644 $(@D)/libssl.so.$(OPENSSL_LIB_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0

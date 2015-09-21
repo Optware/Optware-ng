@@ -148,10 +148,10 @@ lunaservice: $(LUNASERVICE_BUILD_DIR)/.built
 #
 $(LUNASERVICE_BUILD_DIR)/.staged: $(LUNASERVICE_BUILD_DIR)/.built
 	rm -f $@
-	mkdir -p $(STAGING_DIR)/opt/include $(STAGING_DIR)/opt/lib
-	install -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice.h $(STAGING_DIR)/opt/include/
-	install -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice-errors.h $(STAGING_DIR)/opt/include/
-	install -m 644 $(LUNASERVICE_BUILD_DIR)/liblunaservice.so $(STAGING_DIR)/opt/lib/
+	mkdir -p $(STAGING_INCLUDE_DIR) $(STAGING_LIB_DIR)
+	install -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice.h $(STAGING_INCLUDE_DIR)/
+	install -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice-errors.h $(STAGING_INCLUDE_DIR)/
+	install -m 644 $(LUNASERVICE_BUILD_DIR)/liblunaservice.so $(STAGING_LIB_DIR)/
 	touch $@
 
 lunaservice-stage: $(LUNASERVICE_BUILD_DIR)/.staged

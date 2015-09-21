@@ -46,9 +46,9 @@ libnsl: $(LIBNSL_BUILD_DIR)/.built
 
 $(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(STAGING_DIR)/opt/lib
-	(cd $(STAGING_DIR)/opt/lib; \
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(STAGING_LIB_DIR)
+	(cd $(STAGING_LIB_DIR); \
 	 ln -nfs $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
                  $(LIBNSL_LIBNAME).so; \
 	 ln -nfs $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \

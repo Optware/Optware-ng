@@ -135,16 +135,16 @@ jamvm: $(JAMVM_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libjamvm.so.$(JAMVM_VERSION): $(JAMVM_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(JAMVM_BUILD_DIR)/jamvm.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(JAMVM_BUILD_DIR)/libjamvm.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(JAMVM_BUILD_DIR)/libjamvm.so.$(JAMVM_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libjamvm.so.$(JAMVM_VERSION) libjamvm.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libjamvm.so.$(JAMVM_VERSION) libjamvm.so
+$(STAGING_LIB_DIR)/libjamvm.so.$(JAMVM_VERSION): $(JAMVM_BUILD_DIR)/.built
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(JAMVM_BUILD_DIR)/jamvm.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(JAMVM_BUILD_DIR)/libjamvm.a $(STAGING_LIB_DIR)
+	install -m 644 $(JAMVM_BUILD_DIR)/libjamvm.so.$(JAMVM_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libjamvm.so.$(JAMVM_VERSION) libjamvm.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libjamvm.so.$(JAMVM_VERSION) libjamvm.so
 
-jamvm-stage: $(STAGING_DIR)/opt/lib/libjamvm.so.$(JAMVM_VERSION)
+jamvm-stage: $(STAGING_LIB_DIR)/libjamvm.so.$(JAMVM_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

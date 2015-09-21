@@ -41,7 +41,7 @@ $(PERL-TEXT-DIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TEXT-DIFF_SOURCE) $(PE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -52,7 +52,7 @@ perl-text-diff-unpack: $(PERL-TEXT-DIFF_BUILD_DIR)/.configured
 $(PERL-TEXT-DIFF_BUILD_DIR)/.built: $(PERL-TEXT-DIFF_BUILD_DIR)/.configured
 	rm -f $(PERL-TEXT-DIFF_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-TEXT-DIFF_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-TEXT-DIFF_BUILD_DIR)/.built
 
 perl-text-diff: $(PERL-TEXT-DIFF_BUILD_DIR)/.built

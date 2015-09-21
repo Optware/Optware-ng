@@ -176,9 +176,9 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTORRENT_LDFLAGS)" \
 		OPENSSL_CFLAGS="$(STAGING_CPPFLAGS)" \
 		OPENSSL_LIBS="$(STAGING_LDFLAGS) -lcrypto" \
-		PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/pkgconfig/" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig/" \
 		$(LIBTORRENT_CONFIGURE) \
-		PATH="$(PATH):$(STAGING_DIR)/opt/bin" \
+		PATH="$(PATH):$(STAGING_PREFIX)/bin" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

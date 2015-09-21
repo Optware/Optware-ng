@@ -145,9 +145,9 @@ electric-fence: $(ELECTRIC_FENCE_BUILD_DIR)/.built
 #
 $(ELECTRIC_FENCE_BUILD_DIR)/.staged: $(ELECTRIC_FENCE_BUILD_DIR)/.built
 	rm -f $(ELECTRIC_FENCE_BUILD_DIR)/.staged
-	install -d $(STAGING_PREFIX)/lib
+	install -d $(STAGING_LIB_DIR)
 	install -d $(STAGING_PREFIX)/man/man3
-	install -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.a  $(STAGING_PREFIX)/lib
+	install -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.a  $(STAGING_LIB_DIR)
 	install -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.3  $(STAGING_PREFIX)/man/man3
 
 	touch $(ELECTRIC_FENCE_BUILD_DIR)/.staged

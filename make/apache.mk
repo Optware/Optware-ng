@@ -170,7 +170,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 	$(APACHE_UNZIP) $(DL_DIR)/$(APACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APACHE_DIR) $(@D)
 	cat $(APACHE_PATCHES) |patch -p0 -d $(@D)
-	sed -i -e "s% *installbuilddir: .*% installbuilddir: $(STAGING_DIR)/opt/share/apache2/build%" \
+	sed -i -e "s% *installbuilddir: .*% installbuilddir: $(STAGING_PREFIX)/share/apache2/build%" \
 		-e 's%[ \t]\{1,\}prefix: .*%    prefix: /opt%' \
 		-e "s% *htdocsdir: .*% htdocsdir: /opt/share/www%" \
 		$(@D)/config.layout
@@ -233,9 +233,9 @@ apache: $(APACHE_BUILD_DIR)/.built
 #
 $(APACHE_BUILD_DIR)/.staged: $(APACHE_BUILD_DIR)/.built
 	rm -f $@
-	rm -f $(STAGING_PREFIX)/libexec/mod_*.so
+	rm -f $(STAGING_LIB_DIR)exec/mod_*.so
 	$(MAKE) -C $(@D) install installbuilddir=/opt/share/apache2/build DESTDIR=$(STAGING_DIR)
-	sed -i -e 's!includedir = .*!includedir = $(STAGING_DIR)/opt/include/apache2!' $(STAGING_PREFIX)/share/apache2/build/config_vars.mk
+	sed -i -e 's!includedir = .*!includedir = $(STAGING_INCLUDE_DIR)/apache2!' $(STAGING_PREFIX)/share/apache2/build/config_vars.mk
 	touch $@
 
 apache-stage: $(APACHE_BUILD_DIR)/.staged

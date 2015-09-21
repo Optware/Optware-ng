@@ -141,7 +141,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		BDB_LIB=-ldb-$(LIBDB_LIB_VERSION) \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		$(TARGET_CONFIGURE_OPTS) \
 		PREFIX=/opt \
@@ -159,14 +159,14 @@ $(CYRUS-IMAPD_BUILD_DIR)/.built: $(CYRUS-IMAPD_BUILD_DIR)/.configured
 ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/imap \
 		$(PERL_INC) \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		LD_RUN_PATH=/opt/lib \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \
 		LD=$(TARGET_CC)
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/sieve \
 		$(PERL_INC) \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		LD_RUN_PATH=/opt/lib \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \

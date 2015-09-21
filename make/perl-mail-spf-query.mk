@@ -41,9 +41,9 @@ $(PERL-MAIL-SPF-QUERY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MAIL-SPF-QUERY_SO
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-                $(STAGING_DIR)/opt -- \
+                $(STAGING_PREFIX) -- \
 		PREFIX=/opt \
 	)
 	touch $(PERL-MAIL-SPF-QUERY_BUILD_DIR)/.configured
@@ -57,7 +57,7 @@ $(PERL-MAIL-SPF-QUERY_BUILD_DIR)/.built: $(PERL-MAIL-SPF-QUERY_BUILD_DIR)/.confi
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-MAIL-SPF-QUERY_BUILD_DIR)/.built
 
 perl-mail-spf-query: $(PERL-MAIL-SPF-QUERY_BUILD_DIR)/.built

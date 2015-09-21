@@ -167,9 +167,9 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RTORRENT_LDFLAGS)" \
-		PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/pkgconfig/" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig/" \
 		$(RTORRENT_CONFIGURE) \
-		PATH="$(PATH):$(STAGING_DIR)/opt/bin" \
+		PATH="$(PATH):$(STAGING_PREFIX)/bin" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

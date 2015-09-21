@@ -144,16 +144,16 @@ gift-opennap: $(GIFT_OPENNAP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libgift-opennap.so.$(GIFT_OPENNAP_VERSION): $(GIFT_OPENNAP_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_OPENNAP_BUILD_DIR)/gift-opennap.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFT_OPENNAP_BUILD_DIR)/libgift-opennap.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFT_OPENNAP_BUILD_DIR)/libgift-opennap.so.$(GIFT_OPENNAP_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-opennap.so.$(GIFT_OPENNAP_VERSION) libgift-opennap.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift-opennap.so.$(GIFT_OPENNAP_VERSION) libgift-opennap.so
+$(STAGING_LIB_DIR)/libgift-opennap.so.$(GIFT_OPENNAP_VERSION): $(GIFT_OPENNAP_BUILD_DIR)/.built
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(GIFT_OPENNAP_BUILD_DIR)/gift-opennap.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(GIFT_OPENNAP_BUILD_DIR)/libgift-opennap.a $(STAGING_LIB_DIR)
+	install -m 644 $(GIFT_OPENNAP_BUILD_DIR)/libgift-opennap.so.$(GIFT_OPENNAP_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libgift-opennap.so.$(GIFT_OPENNAP_VERSION) libgift-opennap.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libgift-opennap.so.$(GIFT_OPENNAP_VERSION) libgift-opennap.so
 
-gift-opennap-stage: $(STAGING_DIR)/opt/lib/libgift-opennap.so.$(GIFT_OPENNAP_VERSION)
+gift-opennap-stage: $(STAGING_LIB_DIR)/libgift-opennap.so.$(GIFT_OPENNAP_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

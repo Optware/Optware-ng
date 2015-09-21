@@ -136,7 +136,7 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES) ma
 		--disable-clamav \
 		--disable-static \
 		--sysconfdir=/opt/etc \
-		--with-zlib=$(STAGING_DIR)/opt \
+		--with-zlib=$(STAGING_PREFIX) \
 		--mandir=/opt/man	\
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool

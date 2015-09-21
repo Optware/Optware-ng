@@ -157,7 +157,7 @@ $(AUDIOFILE_BUILD_DIR)/.staged: $(AUDIOFILE_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 ifneq ($(shell test $(shell echo $(AUDIOFILE_VERSION) | cut -d '.' -f 2) -gt 2; echo $$?),0)
 	sed -i -e 's|echo $$includes|echo -I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/audiofile-config
-	cp $(STAGING_DIR)/opt/bin/audiofile-config $(STAGING_DIR)/bin/audiofile-config
+	cp $(STAGING_PREFIX)/bin/audiofile-config $(STAGING_DIR)/bin/audiofile-config
 endif
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/audiofile.pc
 	rm -f $(STAGING_LIB_DIR)/libaudiofile.la

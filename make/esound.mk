@@ -169,7 +169,7 @@ esound: $(ESOUND_BUILD_DIR)/.built
 $(ESOUND_BUILD_DIR)/.staged: $(ESOUND_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-#	cp $(STAGING_DIR)/opt/bin/esd-config $(STAGING_DIR)/bin/esd-config
+#	cp $(STAGING_PREFIX)/bin/esd-config $(STAGING_DIR)/bin/esd-config
 	touch $@
 
 esound-stage: $(ESOUND_BUILD_DIR)/.staged

@@ -142,8 +142,8 @@ libpng: $(LIBPNG_BUILD_DIR)/.built
 $(LIBPNG_BUILD_DIR)/.staged: $(LIBPNG_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) prefix=$(STAGING_PREFIX) install
-	rm -f $(STAGING_DIR)/opt/lib/libpng.la
-	rm -f $(STAGING_DIR)/opt/lib/libpng12.la
+	rm -f $(STAGING_LIB_DIR)/libpng.la
+	rm -f $(STAGING_LIB_DIR)/libpng12.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libpng*.pc
 	sed -i -e 's|-I$${includedir}|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/libpng12-config
 	touch $@

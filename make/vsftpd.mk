@@ -163,13 +163,13 @@ vsftpd: $(VSFTPD_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 #$(VSFTPD_BUILD_DIR)/.staged: $(VSFTPD_BUILD_DIR)/.built
-#	install -d $(STAGING_DIR)/opt/include
-#	install -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.h $(STAGING_DIR)/opt/include
-#	install -d $(STAGING_DIR)/opt/lib
-#	install -m 644 $(VSFTPD_BUILD_DIR)/libvsftpd.a $(STAGING_DIR)/opt/lib
-#	install -m 644 $(VSFTPD_BUILD_DIR)/libvsftpd.so.$(VSFTPD_VERSION) $(STAGING_DIR)/opt/lib
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so.1
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so
+#	install -d $(STAGING_INCLUDE_DIR)
+#	install -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.h $(STAGING_INCLUDE_DIR)
+#	install -d $(STAGING_LIB_DIR)
+#	install -m 644 $(VSFTPD_BUILD_DIR)/libvsftpd.a $(STAGING_LIB_DIR)
+#	install -m 644 $(VSFTPD_BUILD_DIR)/libvsftpd.so.$(VSFTPD_VERSION) $(STAGING_LIB_DIR)
+#	cd $(STAGING_LIB_DIR) && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so.1
+#	cd $(STAGING_LIB_DIR) && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so
 #
 #vsftpd-stage: $(VSFTPD_BUILD_DIR)/.staged
 

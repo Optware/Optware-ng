@@ -150,7 +150,7 @@ libutf: $(LIBUTF_BUILD_DIR)/.built
 #
 $(LIBUTF_BUILD_DIR)/.staged: $(LIBUTF_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) prefix=$(STAGING_DIR)/opt install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) prefix=$(STAGING_PREFIX) install
 	touch $@
 
 libutf-stage: $(LIBUTF_BUILD_DIR)/.staged

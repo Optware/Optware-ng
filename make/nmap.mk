@@ -130,7 +130,7 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nma
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--with-openssl=$(STAGING_DIR)/opt \
+		--with-openssl=$(STAGING_PREFIX) \
 		--with-pcap=linux \
 		--with-nmapfe=no \
 		--without-zenmap \

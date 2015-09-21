@@ -168,13 +168,13 @@ pango: $(PANGO_BUILD_DIR)/.built
 #
 $(PANGO_BUILD_DIR)/.staged: $(PANGO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PANGO_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	$(MAKE) -C $(PANGO_BUILD_DIR) install-strip prefix=$(STAGING_PREFIX)
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/pango*.pc
-	rm -f $(STAGING_DIR)/opt/lib/libpango-1.0.la
-	rm -f $(STAGING_DIR)/opt/lib/libpangox-1.0.la
-	rm -f $(STAGING_DIR)/opt/lib/libpangoxft-1.0.la
-	rm -f $(STAGING_DIR)/opt/lib/libpangoft2-1.0.la
-	rm -f $(STAGING_DIR)/opt/lib/libpangocairo-1.0.la
+	rm -f $(STAGING_LIB_DIR)/libpango-1.0.la
+	rm -f $(STAGING_LIB_DIR)/libpangox-1.0.la
+	rm -f $(STAGING_LIB_DIR)/libpangoxft-1.0.la
+	rm -f $(STAGING_LIB_DIR)/libpangoft2-1.0.la
+	rm -f $(STAGING_LIB_DIR)/libpangocairo-1.0.la
 	touch $@
 
 pango-stage: $(PANGO_BUILD_DIR)/.staged

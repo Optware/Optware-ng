@@ -41,7 +41,7 @@ $(PERL-IO-STRINGY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-STRINGY_SOURCE) $(
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -55,7 +55,7 @@ $(PERL-IO-STRINGY_BUILD_DIR)/.built: $(PERL-IO-STRINGY_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-IO-STRINGY_BUILD_DIR)/.built
 
 perl-io-stringy: $(PERL-IO-STRINGY_BUILD_DIR)/.built

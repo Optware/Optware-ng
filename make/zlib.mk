@@ -111,8 +111,8 @@ $(ZLIB_BUILD_DIR)/.staged: $(ZLIB_BUILD_DIR)/.built
 	install -d $(STAGING_LIB_DIR)/pkgconfig
 	install -m 644 $(ZLIB_BUILD_DIR)/libz.a $(STAGING_LIB_DIR)
 	install -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(STAGING_LIB_DIR)
-	cd $(STAGING_DIR)/opt/lib && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz$(SO).1$(DYLIB)
-	cd $(STAGING_DIR)/opt/lib && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz.$(SHLIB_EXT)
+	cd $(STAGING_LIB_DIR) && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz$(SO).1$(DYLIB)
+	cd $(STAGING_LIB_DIR) && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz.$(SHLIB_EXT)
 	sed -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(@D)/zlib.pc > $(STAGING_LIB_DIR)/pkgconfig/zlib.pc
 	touch $@
 

@@ -120,7 +120,7 @@ cpio: $(CPIO_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 
-cpio-stage: $(STAGING_DIR)/opt/lib/libcpio.so.$(CPIO_VERSION)
+cpio-stage: $(STAGING_LIB_DIR)/libcpio.so.$(CPIO_VERSION)
 
 #
 # This rule creates a control file for ipkg.  It is no longer

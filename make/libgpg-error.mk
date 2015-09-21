@@ -159,7 +159,7 @@ $(LIBGPG-ERROR_BUILD_DIR)/.staged: $(LIBGPG-ERROR_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|-I$$includedir|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/gpg-error-config
-	rm -f $(STAGING_DIR)/opt/lib/libgpg-error.la
+	rm -f $(STAGING_LIB_DIR)/libgpg-error.la
 	touch $@
 
 libgpg-error-stage: $(LIBGPG-ERROR_BUILD_DIR)/.staged

@@ -119,8 +119,8 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--with-prngd-socket=/opt/var/run/egd-pool \
 		--with-privsep-path=/opt/var/empty \
 		--sysconfdir=/opt/etc/openssh \
-		--with-zlib=$(STAGING_DIR)/opt \
-		--with-ssl-dir=$(STAGING_DIR)/opt \
+		--with-zlib=$(STAGING_PREFIX) \
+		--with-ssl-dir=$(STAGING_PREFIX) \
 		--with-md5-passwords \
 		--disable-etc-default-login \
 		--with-default-path="/opt/sbin:/opt/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
@@ -128,7 +128,7 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--disable-lastlog --disable-utmp \
 		--disable-utmpx --disable-wtmp --disable-wtmpx \
 		--without-x \
-		--with-tcp-wrappers=$(STAGING_DIR)/opt \
+		--with-tcp-wrappers=$(STAGING_PREFIX) \
 		--with-xauth=/opt/bin/xauth \
 	)
 	touch $@

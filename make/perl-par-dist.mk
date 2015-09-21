@@ -42,7 +42,7 @@ $(PERL-PAR-DIST_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-PAR-DIST_SOURCE) $(PERL
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -53,7 +53,7 @@ perl-par-dist-unpack: $(PERL-PAR-DIST_BUILD_DIR)/.configured
 $(PERL-PAR-DIST_BUILD_DIR)/.built: $(PERL-PAR-DIST_BUILD_DIR)/.configured
 	rm -f $(PERL-PAR-DIST_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-PAR-DIST_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-PAR-DIST_BUILD_DIR)/.built
 
 perl-par-dist: $(PERL-PAR-DIST_BUILD_DIR)/.built

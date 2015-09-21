@@ -40,9 +40,9 @@ $(PERL-SYS-HOSTNAME-LONG_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-SYS-HOSTNAME-L
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-                $(STAGING_DIR)/opt -- \
+                $(STAGING_PREFIX) -- \
 		PREFIX=/opt \
 	)
 	touch $(PERL-SYS-HOSTNAME-LONG_BUILD_DIR)/.configured
@@ -56,7 +56,7 @@ $(PERL-SYS-HOSTNAME-LONG_BUILD_DIR)/.built: $(PERL-SYS-HOSTNAME-LONG_BUILD_DIR)/
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-SYS-HOSTNAME-LONG_BUILD_DIR)/.built
 
 perl-sys-hostname-long: $(PERL-SYS-HOSTNAME-LONG_BUILD_DIR)/.built

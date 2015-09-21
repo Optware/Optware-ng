@@ -121,7 +121,7 @@ $(STUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-ssl=$(STAGING_DIR)/opt \
+		--with-ssl=$(STAGING_PREFIX) \
 	)
 	touch $@
 
@@ -147,13 +147,13 @@ stunnel: $(STUNNEL_BUILD_DIR)/.built
 #
 $(STUNNEL_BUILD_DIR)/.staged: $(STUNNEL_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(@D)/stunnel.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(@D)/libstunnel.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(@D)/libstunnel.so.$(STUNNEL_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(@D)/stunnel.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(@D)/libstunnel.a $(STAGING_LIB_DIR)
+	install -m 644 $(@D)/libstunnel.so.$(STUNNEL_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so
 	touch $@
 
 stunnel-stage: $(STUNNEL_BUILD_DIR)/.staged

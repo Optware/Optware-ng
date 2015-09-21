@@ -42,7 +42,7 @@ $(PERL-XML-DOM_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-XML-DOM_SOURCE) $(PERL-X
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -61,7 +61,7 @@ $(PERL-XML-DOM_BUILD_DIR)/.built: $(PERL-XML-DOM_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		LD_RUN_PATH=/opt/lib \
 		$(PERL_INC) \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	$(MAKE) -C $(@D)
 	touch $@
 

@@ -44,7 +44,7 @@ $(PERL-POD-README_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-POD-README_SOURCE) $(
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -55,7 +55,7 @@ perl-pod-readme-unpack: $(PERL-POD-README_BUILD_DIR)/.configured
 $(PERL-POD-README_BUILD_DIR)/.built: $(PERL-POD-README_BUILD_DIR)/.configured
 	rm -f $(PERL-POD-README_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-POD-README_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-POD-README_BUILD_DIR)/.built
 
 perl-pod-readme: $(PERL-POD-README_BUILD_DIR)/.built
