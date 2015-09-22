@@ -1,0 +1,20 @@
+--- daemon/remote.c.orig	2011-10-09 17:13:38.000000000 +0400
++++ daemon/remote.c	2011-10-10 20:59:37.807063086 +0400
+@@ -1646,6 +1646,7 @@
+     else
+     {
+         int64_t      tag = -1;
++	int          itag;
+         const char * str;
+ 
+         if(tr_bencDictFindStr(&top, "result", &str))
+@@ -1659,7 +1660,8 @@
+             {
+         tr_bencDictFindInt( &top, "tag", &tag );
+ 
+-        switch( tag )
++	itag = tag;
++	switch( itag )
+         {
+             case TAG_SESSION:
+                 printSession( &top ); break;

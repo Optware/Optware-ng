@@ -416,7 +416,7 @@ COMMON_CROSS_PACKAGES = \
 	tig tin tinyproxy tinyscheme tmsnc tmux tnef tnftp tnftpd \
 	toppyweb tor torsocks torrent torrentflux transcode \
 	transmission \
-	transmissiond tre tree trickle \
+	transmissiond transmissiondcfp tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
 	ucl udev udns udpxy uemacs ulogd unarj uncia unfs3 units unixodbc \
 	unrar unrtf \
