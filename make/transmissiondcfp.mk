@@ -37,6 +37,12 @@ TRANSMISSIONDCFP_DESCRIPTION=Lightweight BitTorrent daemon.
 TRANSMISSIONDCFP_SECTION=net
 TRANSMISSIONDCFP_PRIORITY=optional
 TRANSMISSIONDCFP_DEPENDS=openssl, libcurl, libevent, zlib
+ifeq ($(GETTEXT_NLS), enable)
+TRANSMISSIONDCFP_DEPENDS+=, gettext
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+TRANSMISSIONDCFP_DEPENDS+=, libiconv
+endif
 TRANSMISSIONDCFP_SUGGESTS=
 TRANSMISSIONDCFP_CONFLICTS=
 
@@ -65,8 +71,9 @@ ifeq (uclibc, $(LIBC_STYLE))
 TRANSMISSIONDCFP_LDFLAGS+=-lintl
 TRANSMISSIONDCFP-DBG_LDFLAGS+=-lintl
 endif
-ifeq ($(GETTEXT_NLS), enable)
-TRANSMISSIONDCFP_DEPENDS+=, gettext
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+TRANSMISSIONDCFP_LDFLAGS+=-liconv
+TRANSMISSIONDCFP-DBG_LDFLAGS+=-liconv
 endif
 
 #
@@ -149,6 +156,9 @@ $(TRANSMISSIONDCFP_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSIONDCFP_SOURCE) 
 	$(MAKE) openssl-stage libcurl-stage libevent-stage zlib-stage
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
 endif
 	rm -rf $(BUILD_DIR)/$(TRANSMISSIONDCFP_DIR) $(@D)
 
