@@ -46,9 +46,9 @@ TARGET_INCDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/us
 
 #	to make feed firmware-independent, we make
 #	all packages dependent on uclibc-opt by hacking ipkg-build from ipkg-utils,
-#	and add following ld flag to hardcode /opt/lib/ld-uClibc.so.0
-#	into executables instead of firmware's /lib/ld-uClibc.so.0
-TARGET_LDFLAGS = -Wl,--dynamic-linker=/opt/lib/ld-uClibc.so.0
+#	and add following ld flag to hardcode /opt/lib/ld-uClibc.so.1
+#	into executables instead of firmware's /lib/ld-uClibc.so.1
+TARGET_LDFLAGS = -Wl,--dynamic-linker=/opt/lib/ld-uClibc.so.1
 
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
