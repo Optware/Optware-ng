@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DELUGE_DEVELOP_REPOSITORY=git://deluge-torrent.org/deluge.git
-DELUGE_DEVELOP_VERSION=20150913
-DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-09-13 HEAD`
+DELUGE_DEVELOP_VERSION=20150922
+DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-09-22 HEAD`
 DELUGE_DEVELOP_SOURCE=deluge-develop-$(DELUGE_DEVELOP_VERSION).tar.bz2
 #DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
 DELUGE_DEVELOP_UNZIP=bzcat
@@ -90,7 +90,6 @@ endif
 #
 $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE):
 	$(MAKE) python27-host-stage py-slimit-host-stage
-	### also add missing ext-base-debug.js and ext-all-debug.js not packaged by sdist
 	(cd $(BUILD_DIR) ; \
 		rm -rf deluge-develop && \
 		git clone $(DELUGE_DEVELOP_REPOSITORY) deluge-develop && \
