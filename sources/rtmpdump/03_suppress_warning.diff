@@ -1,0 +1,14 @@
+Description: Suppress warning
+Author: William King <william.ling@quentustech.com>
+Last-Update: 2015-03-29
+
+--- rtmpdump-2.4+20150115.gita107cef.orig/librtmp/rtmp.c
++++ rtmpdump-2.4+20150115.gita107cef/librtmp/rtmp.c
+@@ -3969,7 +3969,6 @@ RTMP_SendPacket(RTMP *r, RTMPPacket *pac
+     {
+       header -= 4;
+       hSize += 4;
+-      RTMP_Log(RTMP_LOGWARNING, "Larger timestamp than 24-bit: 0x%x", t);
+     }
+ 
+   hptr = header;

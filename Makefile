@@ -396,7 +396,7 @@ COMMON_CROSS_PACKAGES = \
 	readline re2c recode recordext recordprotos \
 	redir renderext renderproto rhtvision rkhunter \
 	rlfe rlwrap rox-filer rrdcollect rrdtool \
-	rssh rsstail rsync rtorrent rtpproxy ruby rubygems rxtx \
+	rssh rsstail rsync rtmpdump rtorrent rtpproxy ruby rubygems rxtx \
 	sablevm samba samba2 samba34 samba35 samba36 sane-backends \
 	scli scponly screen scrobby scsi-idle sdl sdparm \
 	sed sendmail ser ser2net setserial setpwc sg3-utils shared-mime-info \

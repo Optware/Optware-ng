@@ -1,0 +1,30 @@
+Description: Move gnutls/nettle/hogweed to .private
+ librtmp'headers do not expose gnutls' headers (or its dependencies), move
+ them from Requires to Requires.private.
+ .
+ Upstream agrees that this is correct but wants to support for broken
+ archs and static-lib-only installations:
+ * 0d44da9f5f5a4aa7cd64566c64d89d2fb392e3ef
+    "Include the nettle/hogweed crypto libraries in the pkg-config file
+ .
+    These libraries are linked and used as directly as we use gnutls
+    itself. This fixes linking for callers if librtmp is built
+    statically or if the linker doesn't support transitive linking."
+ .
+Author: Andreas Metzler <ametzler@debian.org>
+Origin: vendor
+Bug-Debian: http://bugs.debian.org/745216
+Forwarded: not-needed
+Last-Update: 2014-04-26
+
+--- rtmpdump-2.4+20131018.git79459a2.orig/librtmp/librtmp.pc.in
++++ rtmpdump-2.4+20131018.git79459a2/librtmp/librtmp.pc.in
+@@ -6,7 +6,7 @@ incdir=${prefix}/include
+ Name: librtmp
+ Description: RTMP implementation
+ Version: @VERSION@
+-Requires: @CRYPTO_REQ@
++Requires.private: @CRYPTO_REQ@
+ URL: http://rtmpdump.mplayerhq.hu
+ Libs: -L${libdir} -lrtmp -lz @PUBLIC_LIBS@
+ Libs.private: @PRIVATE_LIBS@

@@ -1,0 +1,41 @@
+From: siretart@tauware.de
+Subject: allow package to build via debian/rules
+Forwarded: not-needed
+
+Upstream objects to this:
+
+13:57 <siretart> hyc: this allows building rtmpdump when your makefile is executed via
+                 another makefile
+13:57 <hyc> siretart: the BSD guys will object
+13:57 <siretart> hyc: this is the case for debian packages, debian/rules, the main
+                 buildscript, is implementd in make
+13:57 <hyc> make -C only works with gnumake
+13:57 <hyc> look in the svn history, you'll see that it used to use make -C
+13:57 <siretart> hm, then I'll probably need to carry a local distro patch
+13:59 <hyc> and why doesn't $(MAKE) $(MAKEFLAGS) work?
+14:00 <siretart> symptom: 'no rule to make target "w"'
+14:01 <hyc> that's a gmake bug
+14:04 <siretart> hm. probably. the use of MAKEFLAGS is at least described in the gmake manual
+                 5.7.3
+
+
+---
+ Makefile |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- rtmpdump.orig/Makefile
++++ rtmpdump/Makefile
+@@ -64,11 +64,11 @@ install:	$(PROGS)
+ 	cp rtmpgw$(EXT) rtmpsrv$(EXT) rtmpsuck$(EXT) $(SBINDIR)
+ 	cp rtmpdump.1 $(MANDIR)/man1
+ 	cp rtmpgw.8 $(MANDIR)/man8
+-	@cd librtmp; $(MAKE) install
++	$(MAKE) -C librtmp install
+ 
+ clean:
+ 	rm -f *.o rtmpdump$(EXT) rtmpgw$(EXT) rtmpsrv$(EXT) rtmpsuck$(EXT)
+-	@cd librtmp; $(MAKE) clean
++	$(MAKE) -C librtmp clean
+ 
+ FORCE:
+ 
