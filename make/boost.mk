@@ -60,6 +60,13 @@ BOOST_JAM_SOURCE=boost-jam-$(BOOST_JAM_VERSION).tgz
 BOOST_JAM_DIR=boost-jam-$(BOOST_JAM_VERSION)
 BOOST_JAM_UNZIP=zcat
 
+ifeq ($(BOOST_EXTERNAL_JAM), yes)
+BOOST_SOURCES=	$(DL_DIR)/$(BOOST_SOURCE) \
+		$(DL_DIR)/$(BOOST_JAM_SOURCE)
+else
+BOOST_SOURCES=	$(DL_DIR)/$(BOOST_SOURCE)
+endif
+
 BOOST_GCC_CONF ?= tools/build/v2/tools/gcc
 
 BOOST_JAM_ROOT ?= tools/build/v2
@@ -119,7 +126,7 @@ BOOST_CPPFLAGS=
 BOOST_PYTHON26_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.6
 BOOST_PYTHON27_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.7
 BOOST_PYTHON3_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m
-BOOST_LDFLAGS=-lgcc
+BOOST_LDFLAGS=
 BOOST_JAM_ARGS= \
 	-d+2 \
 	toolset=gcc \
@@ -344,7 +351,7 @@ boost-source: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PA
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(BOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(BOOST_SOURCE) $(DL_DIR)/$(BOOST_JAM_SOURCE) $(BOOST_PATCHES) make/boost.mk
+$(BOOST_BUILD_DIR)/.configured: $(BOOST_SOURCES) $(BOOST_PATCHES) make/boost.mk
 	$(MAKE) bzip2-stage expat-stage icu-stage libstdc++-stage python26-stage python27-stage python3-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -373,7 +380,6 @@ else
 endif
 	sed -i -e 's|: ar :|: $(TARGET_AR) :|' -e 's/-Wl,\$$(RPATH_OPTION:E=-R)\$$(SPACE)-Wl,\$$(RPATH)//' $(@D)/$(BOOST_GCC_CONF).jam
 	sed -i -e 's/-Wl,\$$(RPATH_OPTION:E=-R)\$$(SPACE)-Wl,"\$$(RPATH)" //' $(@D)/$(BOOST_GCC_CONF).py
-
 	### add PYVER env variable to libboost_python soname, e.g.: libboost_python.so.1.45.0 --> libboost_python${PYVER}.so.1.45.0
 	sed -i -e 's;\$$(SONAME_OPTION)\$$(SPACE)-Wl,\$$(<\[-1\]:D=);\$$(SONAME_OPTION)\$$(SPACE)-Wl,`echo \$$(<\[-1\]:D=)|sed s/python/python\$${PYVER}/`;' $(@D)/$(BOOST_GCC_CONF).jam
 	### set compilation and linking flags
@@ -396,11 +402,6 @@ ifeq ($(OPTWARE_TARGET), $(filter gumstix1151, $(OPTWARE_TARGET)))
 	echo '#define BOOST_THREAD_POSIX' >> $(@D)/boost/config.hpp ; \
 	sed -i -e '/#  error "Threading support unavaliable: it has been explicitly disabled with BOOST_DISABLE_THREADS"/s|^|// |' $(@D)/boost/config/requires_threads.hpp
 endif
-	###compiler bug - no need for this anymore
-	#case `$(TARGET_CC) -dumpversion` in \
-	#    3.4.[34]) \
-	#	patch -d $(BUILD_DIR) -p0 < $(BOOST_SOURCE_DIR)/gcc.bug.patch ;; \
-	#esac
 	###'No WCHAR_MIN and WCHAR_MAX present' issue
 	sed -i -e 's/namespace boost {/#ifndef WCHAR_MAX\n#define WCHAR_MAX 2147483647\n#endif\n#ifndef WCHAR_MIN\n#define WCHAR_MIN (-2147483647-1)\n#endif\nnamespace boost {/' $(@D)/boost/integer_traits.hpp
 	touch $@
@@ -412,7 +413,6 @@ boost-unpack: $(BOOST_BUILD_DIR)/.configured
 #
 $(BOOST_BUILD_DIR)/.mainbuilt: $(BOOST_BUILD_DIR)/.configured
 	rm -f $@
-	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/user-config.jam
 	### building serialization can give '#error "wide char i/o not supported on this platform"', which means no libboost_wserialization*, and yet build libboost_serialization* fine.
 	-cd $(@D); $(BOOST_JAM) $(BOOST_JAM_ARGS)
 	touch $@
@@ -458,7 +458,7 @@ boost: $(BOOST_BUILD_DIR)/.mainbuilt $(BOOST_BUILD_DIR)/.py26built $(BOOST_BUILD
 $(BOOST_BUILD_DIR)/.staged: $(BOOST_BUILD_DIR)/.mainbuilt $(BOOST_BUILD_DIR)/.py26built $(BOOST_BUILD_DIR)/.py27built $(BOOST_BUILD_DIR)/.py3built
 	rm -f $@ $(STAGING_LIB_DIR)/libboost_*
 	-cd $(@D); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(STAGING_PREFIX)
-	cp -f $(@D)/stage/lib/libboost_python-py*.so* $(STAGING_LIB_DIR)
+	cp -af $(@D)/stage/lib/libboost_python-py*.so* $(STAGING_LIB_DIR)
 	touch $@
 
 boost-stage: $(BOOST_BUILD_DIR)/.staged
