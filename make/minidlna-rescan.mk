@@ -10,7 +10,7 @@
 # this cvs module is checked out.
 #
 
-MINIDLNA_RESCAN_REPOSITORY=git://git.code.sf.net/p/minidlna/git
+#MINIDLNA_RESCAN_REPOSITORY=git://git.code.sf.net/p/minidlna/git
 MINIDLNA_RESCAN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/minidlna
 ifndef MINIDLNA_RESCAN_REPOSITORY
 MINIDLNA_RESCAN_VERSION:=$(shell sed -n -e 's/^MINIDLNA_VERSION *=//p' make/minidlna.mk | head -1)
@@ -42,7 +42,7 @@ MINIDLNA_RESCAN_THUMBNAIL_CONFLICTS=minidlna-rescan, minidlna, minidlna-thumbnai
 #
 # MINIDLNA_RESCAN_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_RESCAN_IPK_VERSION=2
+MINIDLNA_RESCAN_IPK_VERSION=1
 
 #
 # MINIDLNA_RESCAN_CONFFILES should be a list of user-editable files

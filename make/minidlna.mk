@@ -10,10 +10,10 @@
 # this cvs module is checked out.
 #
 
-MINIDLNA_REPOSITORY=git://git.code.sf.net/p/minidlna/git
+#MINIDLNA_REPOSITORY=git://git.code.sf.net/p/minidlna/git
 MINIDLNA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/minidlna
 ifndef MINIDLNA_REPOSITORY
-MINIDLNA_VERSION=1.1.4
+MINIDLNA_VERSION=1.1.5
 else
 MINIDLNA_VERSION=1.1.4+git20150805
 MINIDLNA_TREEISH=`git rev-list --max-count=1 --until=2015-08-05 HEAD`
@@ -43,7 +43,7 @@ MINIDLNA_THUMBNAIL_CONFLICTS=minidlna, minidlna-rescan, minidlna-rescan-thumbnai
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=6
+MINIDLNA_IPK_VERSION=1
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files

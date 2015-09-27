@@ -1,24 +1,17 @@
 --- a/upnpsoap.c
 +++ b/upnpsoap.c
-@@ -1079,10 +1079,17 @@
+@@ -1079,10 +1079,14 @@
  		{
  			/* Video and audio album art is handled differently */
  			if( *mime == 'v' && (passed_args->filter & FILTER_RES) && !(passed_args->flags & FLAG_MS_PFS) ) {
--				ret = strcatf(str, "&lt;res protocolInfo=\"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN\"&gt;"
--				                   "http://%s:%d/AlbumArt/%s-%s.jpg"
--				                   "&lt;/res&gt;",
--				                   lan_addr[passed_args->iface].str, runtime_vars.port, album_art, detailID);
-+				if( passed_args->client == ESamsungSeriesCDE){
-+					ret = strcatf(str, "&lt;res protocolInfo=\"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM\"&gt;"
-+							   "http://%s:%d/AlbumArt/%s-%s.jpg"
-+							   "&lt;/res&gt;",
-+							   lan_addr[passed_args->iface].str, runtime_vars.port, album_art, detailID);
-+				} else {
-+					ret = strcatf(str, "&lt;res protocolInfo=\"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN\"&gt;"
-+							   "http://%s:%d/AlbumArt/%s-%s.jpg"
-+							   "&lt;/res&gt;",
-+							   lan_addr[passed_args->iface].str, runtime_vars.port, album_art, detailID);
-+				}
+ 				ret = strcatf(str, "&lt;res protocolInfo=\"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN\"&gt;"
+ 				                   "http://%s:%d/AlbumArt/%s-%s.jpg"
++				                   "&lt;/res&gt;\n\n"
++						   "&lt;res protocolInfo=\"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM\"&gt;"
++				                   "http://%s:%d/AlbumArt/%s-%s.jpg"
+ 				                   "&lt;/res&gt;",
++				                   lan_addr[passed_args->iface].str, runtime_vars.port, album_art, detailID,
+ 				                   lan_addr[passed_args->iface].str, runtime_vars.port, album_art, detailID);
  			} else if( passed_args->filter & FILTER_UPNP_ALBUMARTURI ) {
  				ret = strcatf(str, "&lt;upnp:albumArtURI");
  				if( passed_args->filter & FILTER_UPNP_ALBUMARTURI_DLNA_PROFILEID ) {
