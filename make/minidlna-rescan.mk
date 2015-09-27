@@ -56,7 +56,7 @@ MINIDLNA_RESCAN_PATCHES=\
 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna-1.1.4-git.R.L.Horn.patch \
 $(MINIDLNA_RESCAN_SOURCE_DIR)/video_thumbnail-1.1.4-R.L.Horn.patch \
 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna-1.1.4_video_album_art_samsung_f-series_fix.patch \
-$(MINIDLNA_SOURCE_DIR)/lg_searchlim.patch \
+$(MINIDLNA_RESCAN_SOURCE_DIR)/lg_searchlim.patch \
 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna-1.1.4-git.non_destructive_update_rescan.patch
 
 #
