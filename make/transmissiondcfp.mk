@@ -26,9 +26,12 @@
 #
 TRANSMISSIONDCFP_SITE=http://master.dl.sourceforge.net/project/transmissiondaemon/optware-ng-source
 TRANSMISSIONDCFP_VERSION=2.77+
+TRANSMISSIONDCFP_ALT_VERSION=2.77plus
+TRANSMISSIONDCFP_ALT_SITE=https://github.com/cfpp2p/transmission/releases/download/$(TRANSMISSIONDCFP_ALT_VERSION)
 
 
 TRANSMISSIONDCFP_SOURCE=transmissiondcfp-$(TRANSMISSIONDCFP_VERSION).tar.bz2
+TRANSMISSIONDCFP_ALT_SOURCE=transmissiondcfp-$(TRANSMISSIONDCFP_ALT_VERSION).tar.bz2
 
 TRANSMISSIONDCFP_DIR=transmissiondcfp-$(TRANSMISSIONDCFP_VERSION)
 TRANSMISSIONDCFP_UNZIP=bzcat
@@ -120,7 +123,8 @@ ifndef TRANSMISSIONDCFP_SKIP_FETCH
 $(DL_DIR)/$(TRANSMISSIONDCFP_SOURCE):
 #	rm -fv	$(DL_DIR)/transmissiondcfp*.tar.bz2
 
-	$(WGET) -P $(@D) $(TRANSMISSIONDCFP_SITE)/$(@F)
+	$(WGET) -P $(@D) $(TRANSMISSIONDCFP_SITE)/$(@F) || \
+	$(WGET) --no-check-certificate -O $@ $(TRANSMISSIONDCFP_ALT_SITE)/$(TRANSMISSIONDCFP_ALT_SOURCE)
 
 endif
 
