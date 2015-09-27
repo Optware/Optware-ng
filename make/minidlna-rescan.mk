@@ -42,7 +42,7 @@ MINIDLNA_RESCAN_THUMBNAIL_CONFLICTS=minidlna-rescan, minidlna, minidlna-thumbnai
 #
 # MINIDLNA_RESCAN_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_RESCAN_IPK_VERSION=1
+MINIDLNA_RESCAN_IPK_VERSION=2
 
 #
 # MINIDLNA_RESCAN_CONFFILES should be a list of user-editable files
@@ -56,6 +56,7 @@ MINIDLNA_RESCAN_PATCHES=\
 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna-1.1.4-git.R.L.Horn.patch \
 $(MINIDLNA_RESCAN_SOURCE_DIR)/video_thumbnail-1.1.4-R.L.Horn.patch \
 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna-1.1.4_video_album_art_samsung_f-series_fix.patch \
+$(MINIDLNA_SOURCE_DIR)/lg_searchlim.patch \
 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna-1.1.4-git.non_destructive_update_rescan.patch
 
 #

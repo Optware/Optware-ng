@@ -43,7 +43,7 @@ MINIDLNA_THUMBNAIL_CONFLICTS=minidlna, minidlna-rescan, minidlna-rescan-thumbnai
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=1
+MINIDLNA_IPK_VERSION=2
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
@@ -56,7 +56,8 @@ MINIDLNA_CONFFILES=/opt/etc/minidlna.conf /opt/etc/init.d/S98minidlna
 MINIDLNA_PATCHES=\
 $(MINIDLNA_SOURCE_DIR)/minidlna-1.1.4-git.R.L.Horn.patch \
 $(MINIDLNA_SOURCE_DIR)/video_thumbnail-1.1.4-R.L.Horn.patch \
-$(MINIDLNA_SOURCE_DIR)/minidlna-1.1.4_video_album_art_samsung_f-series_fix.patch
+$(MINIDLNA_SOURCE_DIR)/minidlna-1.1.4_video_album_art_samsung_f-series_fix.patch \
+$(MINIDLNA_SOURCE_DIR)/lg_searchlim.patch
 
 #
 # If the compilation of the package requires additional
