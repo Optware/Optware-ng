@@ -1,6 +1,6 @@
 # Description
 
-This is an Optware fork. It targets to be firmware-independent and currently supports I686 and soft-float ARMv7 EABI and MIPSEL targets.
+This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686 and soft-float ARMv7 EABI and MIPSEL targets.
 
 # Attention!
 
@@ -12,7 +12,11 @@ The instructions below only download, unpack and configure the package manager `
 
 To bootstrap the feed, connect over SSH/Telnet and type:
 
-ARMv7 EABI:
+ARMv7 EABI hardfloat:
+```
+wget -O - http://optware-ng.zyxmon.org/buildroot-armeabihf/buildroot-armeabihf-bootstrap.sh | sh
+```
+ARMv7 EABI softfloat:
 ```
 wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi-ng/buildroot-armeabi-ng-bootstrap.sh | sh
 ```
@@ -26,6 +30,7 @@ wget -O - http://optware-ng.zyxmon.org/buildroot-i686/buildroot-i686-bootstrap.s
 ```
 ipkg package manager will be bootstrapped and configured. See available packages:
 ```
+export PATH=$PATH:/opt/bin:/opt/sbin
 /opt/bin/ipkg update
 /opt/bin/ipkg list
 ```
@@ -36,19 +41,24 @@ Install desired ones:
 
 # Available packages
 
-* [ARMv7 EABI](http://optware-ng.zyxmon.org/buildroot-armeabi-ng/Packages.html)
+* [ARMv7 EABI hardfloat](http://optware-ng.zyxmon.org/buildroot-armeabihf/Packages.html)
+* [ARMv7 EABI softfloat](http://optware-ng.zyxmon.org/buildroot-armeabi-ng/Packages.html)
 * [MIPSEL](http://optware-ng.zyxmon.org/buildroot-mipsel-ng/Packages.html)
 * [I686](http://optware-ng.zyxmon.org/buildroot-i686/Packages.html)
 
 # Migrating to uClibc-ng feeds from deprecated uClibc ones
 
-If you're running a deprecated uClibc-0.9.33.2 (ARMv7 or MIPSEL) feed, you can either start from scratch, or use this script that should work for most of the cases (don't forget to backup `/opt` before you proceed!):
+If you're running a deprecated uClibc-0.9.33.2 (ARMv7 softfloat or MIPSEL) feed, you can either start from scratch, or use this script that should work for most of the cases (don't forget to backup `/opt` before you proceed!):
 
 ```
 wget -O - http://optware-ng.zyxmon.org/scripts/move-to-uclibc-ng.sh | sh
 ```
 
 # News
+
+## 2015-09-29
+
+New buildroot-armeabihf feed is now online. This is a hardfloat ARMv7 gcc-5.2.0, glibc-2.21, linux-3.2.66 feed. It targets ARMv7 devices with FPUs, like most modern android devices or ARM NASes, and gives significant performance boost on such devices compared to softfloat.
 
 ## 2015-09-16
 
