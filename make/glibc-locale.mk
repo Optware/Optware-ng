@@ -8,12 +8,12 @@ TARGET_BIN ?= $(shell cd $(TARGET_LIBDIR)/../bin; pwd)
 TARGET_SHARE ?= $(shell cd $(TARGET_LIBDIR)/../share; pwd)
 
 GLIBC_LOCALE_VERSION=$(GLIBC-OPT_VERSION)
-GLIBC_LOCALE_IPK_VERSION=1
+GLIBC_LOCALE_IPK_VERSION=2
 
 GLIBC_LOCALE_SOURCE=toolchain
 GLIBC_LOCALE_DIR=glibc-locale-$(GLIBC_LOCALE_VERSION)
 GLIBC_LOCALE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-GLIBC_LOCALE_DESCRIPTION=glibc locale tools and data. Usefule for targets with glibc patched to use /opt/lib/locale and /opt/share/i18n
+GLIBC_LOCALE_DESCRIPTION=glibc locale tools and data. Useful for targets with glibc patched to use /opt/lib/locale and /opt/share/i18n
 GLIBC_LOCALE_SECTION=lib
 GLIBC_LOCALE_PRIORITY=optional
 GLIBC_LOCALE_DEPENDS=gconv-modules
