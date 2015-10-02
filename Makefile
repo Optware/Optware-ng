@@ -504,6 +504,8 @@ TARGET_DEBUGGING= #-g
 
 include $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 
+DEFAULT_TARGET_PREFIX ?= /opt
+
 TARGET_PREFIX ?= /opt
 
 INSTALL = TARGET_PREFIX=$(TARGET_PREFIX) sh scripts/install.sh
@@ -759,8 +761,13 @@ host/.configured:
 	)
 	[ -e $@ ] || touch $@
 
+ifeq ($(DEFAULT_TARGET_PREFIX), $(TARGET_PREFIX))
 %-target %/.configured:
+else
+%-target %$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g')/.configured:
+endif
 	[ -e ${DL_DIR} ] || mkdir -p ${DL_DIR}
+ifeq ($(DEFAULT_TARGET_PREFIX), $(TARGET_PREFIX))
 	[ -e $*/Makefile ] || ( \
 		mkdir -p $* ; \
 		echo "OPTWARE_TARGET=$*" > $*/Makefile ; \
@@ -771,6 +778,20 @@ host/.configured:
 		ln -s ../sources $*/sources ; \
 	)
 	touch $*/.configured
+else
+	[ -e $*$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g')/Makefile ] || ( \
+		mkdir -p $*$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g') ; \
+		cd $*$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g') ; \
+		echo "OPTWARE_TARGET=$*" > Makefile ; \
+		echo "TARGET_PREFIX=$(TARGET_PREFIX)" >> Makefile ; \
+		echo "include ../Makefile" >> Makefile ; \
+		ln -s ../downloads downloads ; \
+		ln -s ../make make ; \
+		ln -s ../scripts scripts ; \
+		ln -s ../sources sources ; \
+	)
+	touch $*$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g')/.configured
+endif
 
 
 make/%.mk:

@@ -3,6 +3,9 @@
 GNU_TARGET_NAME = mipsel-linux
 EXACT_TARGET_NAME = mipsel-buildroot-linux-uclibc
 
+DEFAULT_TARGET_PREFIX=/opt
+TARGET_PREFIX ?= /opt
+
 LIBC_STYLE=uclibc
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
@@ -22,9 +25,9 @@ ifeq ($(HOST_MACHINE),mips)
 
 HOSTCC = $(TARGET_CC)
 GNU_HOST_NAME = $(GNU_TARGET_NAME)
-TARGET_CROSS = /opt/bin/
-TARGET_LIBDIR = /opt/lib
-TARGET_INCDIR = /opt/include
+TARGET_CROSS = $(TARGET_PREFIX)/bin/
+TARGET_LIBDIR = $(TARGET_PREFIX)/lib
+TARGET_INCDIR = $(TARGET_PREFIX)/include
 TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS=
 TARGET_CFLAGS= $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
@@ -46,9 +49,9 @@ TARGET_INCDIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot/usr/in
 
 #	to make feed firmware-independent, we make
 #	all packages dependent on uclibc-opt by hacking ipkg-build from ipkg-utils,
-#	and add following ld flag to hardcode /opt/lib/ld-uClibc.so.1
+#	and add following ld flag to hardcode $(TARGET_PREFIX)/lib/ld-uClibc.so.1
 #	into executables instead of firmware's /lib/ld-uClibc.so.1
-TARGET_LDFLAGS = -Wl,--dynamic-linker=/opt/lib/ld-uClibc.so.1
+TARGET_LDFLAGS = -Wl,--dynamic-linker=$(TARGET_PREFIX)/lib/ld-uClibc.so.1
 
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
@@ -82,7 +85,7 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) #$(OPTWARE_TOP)/p
 		patch -bd $(TARGET_CROSS_BUILD_DIR) -p1 ; \
 	fi
 	sed 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
-	sed -i.orig -e '/^RUNTIME_PREFIX=\|^DEVEL_PREFIX=/s|=.*|="/opt/"|' $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
+	sed -i.orig -e '/^RUNTIME_PREFIX=\|^DEVEL_PREFIX=/s|=.*|="$(TARGET_PREFIX)/"|' $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
 #	cp -f $(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/gcc-5.2.0-patches/*.patch $(TARGET_CROSS_BUILD_DIR)/package/gcc/5.2.0/
 #	cp -f $(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/uClibc-0.9.33-patches/*.patch $(TARGET_CROSS_BUILD_DIR)/package/uclibc/0.9.33.2/
 	touch $@
@@ -101,7 +104,7 @@ GCC_CPPFLAGS := -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
 GCC_EXTRA_CONF_ENV := ac_cv_lbl_unaligned_fail=yes ac_cv_func_mmap_fixed_mapped=yes ac_cv_func_memcmp_working=yes ac_cv_have_decl_malloc=yes gl_cv_func_malloc_0_nonnull=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_calloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes lt_cv_sys_lib_search_path_spec="" ac_cv_c_bigendian=no
 
-NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-gxx-include-dir=/opt/include/c++/5.2.0 --disable-__cxa_atexit --with-gnu-ld --disable-libssp --enable-target-optspace --disable-libsanitizer --enable-tls --disable-libmudflap --enable-threads --without-isl --without-cloog --with-float=soft --disable-decimal-float --with-arch=mips32r2 --with-abi=32 --enable-shared --disable-libgomp --with-gmp=$(STAGING_PREFIX) --with-mpfr=$(STAGING_PREFIX) --with-mpc=$(STAGING_PREFIX) --with-default-libstdcxx-abi=gcc4-compatible --with-system-zlib
+NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-gxx-include-dir=$(TARGET_PREFIX)/include/c++/5.2.0 --disable-__cxa_atexit --with-gnu-ld --disable-libssp --enable-target-optspace --disable-libsanitizer --enable-tls --disable-libmudflap --enable-threads --without-isl --without-cloog --with-float=soft --disable-decimal-float --with-arch=mips32r2 --with-abi=32 --enable-shared --disable-libgomp --with-gmp=$(STAGING_PREFIX) --with-mpfr=$(STAGING_PREFIX) --with-mpc=$(STAGING_PREFIX) --with-default-libstdcxx-abi=gcc4-compatible --with-system-zlib
 
 NATIVE_GCC_ADDITIONAL_DEPS=zlib
 
