@@ -64,7 +64,9 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) #$(OPTWARE_TOP)/p
 	mkdir -p $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot
 	tar -xjvf $(DL_DIR)/$(TOOLCHAIN_SOURCE) -C $(BASE_DIR)/toolchain
 	sed 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT-I686_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
-	cp -f $(BUILDROOT-I686_SOURCE_DIR)/glibc-2.20-patches/* $(TARGET_CROSS_BUILD_DIR)/package/glibc/2.20/
+	for file in `ls $(BUILDROOT-I686_SOURCE_DIR)/glibc-2.20-patches/*`; do \
+		sed -e "s|%OPTWARE_TARGET_PREFIX%|$(TARGET_PREFIX)|g" $$file > $(TARGET_CROSS_BUILD_DIR)/package/glibc/2.20/`basename $$file`; \
+	done
 	touch $@
 
 $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured

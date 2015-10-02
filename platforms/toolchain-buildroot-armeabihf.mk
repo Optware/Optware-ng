@@ -81,7 +81,9 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) #$(OPTWARE_TOP)/p
 	tar -xjvf $(DL_DIR)/$(TOOLCHAIN_SOURCE) -C $(BASE_DIR)/toolchain
 	sed 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
 	mkdir -p $(TARGET_CROSS_BUILD_DIR)/package/glibc/2.21
-	cp -f $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/glibc-patches/* $(TARGET_CROSS_BUILD_DIR)/package/glibc/2.21/
+	for file in `ls $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/glibc-patches/*`; do \
+		sed -e "s|%OPTWARE_TARGET_PREFIX%|$(TARGET_PREFIX)|g" $$file > $(TARGET_CROSS_BUILD_DIR)/package/glibc/2.21/`basename $$file`; \
+	done
 	touch $@
 
 $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
