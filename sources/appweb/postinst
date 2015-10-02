@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo ; echo
-echo "To complete the installation, you must edit /opt/var/appWeb/appWeb.conf,"
+echo "To complete the installation, you must edit %OPTWARE_TARGET_PREFIX%/var/appWeb/appWeb.conf,"
 echo ""
 echo "NOTE: That for version 2.0.3 the location of appWeb.conf has moved."
 echo "      You will need to edit any existing appWeb.conf to upgrade it for"
@@ -10,9 +10,9 @@ echo ""
 echo "      e.g. the libejsModule has now been embedded into the main build and"
 echo "      needs to be removed as a loadable module from the appWeb.conf file."
 echo ""
-echo "      Use /opt/var/appWeb/logs/errors.log to debug it."
+echo "      Use %OPTWARE_TARGET_PREFIX%/var/appWeb/logs/errors.log to debug it."
 echo ""
-echo "Run /opt/etc/init.d/S81appweb to restart AppWeb."
+echo "Run %OPTWARE_TARGET_PREFIX%/etc/init.d/S81appweb to restart AppWeb."
 echo
 
-/opt/etc/init.d/S81appweb
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S81appweb

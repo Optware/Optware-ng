@@ -7,7 +7,7 @@
 #		directory, gathering data and storing it inside RRDtool's \
 #		database files.
 # processname: rrdcollect
-# pidfile: /opt/var/run/rrdcollect.pid
+# pidfile: %OPTWARE_TARGET_PREFIX%/var/run/rrdcollect.pid
 # config: /etc/rrdcollect.conf
 
 # Source function library.
@@ -17,14 +17,14 @@
 
 # [ -f /etc/sysconfig/rrdcollect ] && . /etc/sysconfig/rrdcollect
 
-[ -x /opt/sbin/rrdcollect ] || exit 0
+[ -x %OPTWARE_TARGET_PREFIX%/sbin/rrdcollect ] || exit 0
 
 RETVAL=0
 prog="rrdcollect"
 
 start() {
         echo -n $"Starting $prog: "
-        /opt/sbin/rrdcollect $RRDCOLLECTOPTS
+        %OPTWARE_TARGET_PREFIX%/sbin/rrdcollect $RRDCOLLECTOPTS
         RETVAL=$?
         echo
 #        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/rrdcollect

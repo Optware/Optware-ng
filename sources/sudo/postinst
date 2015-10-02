@@ -1,8 +1,8 @@
 #!/bin/sh
 
-/bin/chown 0:0 /opt/bin/sudo
-/bin/chown 0:0 /opt/sbin/visudo
-/bin/chmod 4755 /opt/bin/sudo
-/bin/chmod 755 /opt/sbin/visudo
+/bin/chown 0:0 %OPTWARE_TARGET_PREFIX%/bin/sudo
+/bin/chown 0:0 %OPTWARE_TARGET_PREFIX%/sbin/visudo
+/bin/chmod 4755 %OPTWARE_TARGET_PREFIX%/bin/sudo
+/bin/chmod 755 %OPTWARE_TARGET_PREFIX%/sbin/visudo
 
-chmod 440 /opt/etc/sudoers
+chmod 440 %OPTWARE_TARGET_PREFIX%/etc/sudoers

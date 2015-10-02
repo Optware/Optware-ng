@@ -5,7 +5,7 @@
  
  function update_sysinfo(){
 -	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", onSuccess = function() { 
-+	parent.astmanEngine.run_tool("sh /opt/etc/asterisk/gui_sysinfo", onSuccess = function() { 
++	parent.astmanEngine.run_tool("sh %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo", onSuccess = function() { 
  					$('status_message').style.display='none';
  					parent.astmanEngine.config2list("gui_sysinfo.conf", $('sysinfo'), new Array(), sysinfocallbacks);
  				}

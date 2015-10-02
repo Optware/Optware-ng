@@ -111,7 +111,7 @@ $(LIBPTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPTH_SOURCE) $(LIBPTH_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBPTH_DIR) $(@D)
 	$(LIBPTH_UNZIP) $(DL_DIR)/$(LIBPTH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPTH_PATCHES)"; then \
-		cat $(LIBPTH_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPTH_DIR) -p1; \
+		cat $(LIBPTH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBPTH_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LIBPTH_DIR) $(@D)
 	(cd $(@D); \
@@ -160,7 +160,7 @@ libpth-stage: $(LIBPTH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libpth
 #
 $(LIBPTH_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBPTH_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBPTH_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libpth" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

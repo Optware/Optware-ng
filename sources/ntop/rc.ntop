@@ -1,9 +1,9 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof ntop`" ]; then 
-    /opt/bin/killall ntop 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof ntop`" ]; then 
+    %OPTWARE_TARGET_PREFIX%/bin/killall ntop 2>/dev/null
 fi
 
-mkdir -p /opt/var/ntop/log
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/ntop/log
 
-/opt/bin/ntop -a /opt/var/ntop/log/access_log -d -L -M --skip-version-check -u0 -w 3000 -W 3001
+%OPTWARE_TARGET_PREFIX%/bin/ntop -a %OPTWARE_TARGET_PREFIX%/var/ntop/log/access_log -d -L -M --skip-version-check -u0 -w 3000 -W 3001

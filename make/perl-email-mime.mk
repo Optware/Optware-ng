@@ -35,7 +35,7 @@ perl-email-mime-source: $(DL_DIR)/$(PERL-EMAIL-MIME_SOURCE) $(PERL-EMAIL-MIME_PA
 $(PERL-EMAIL-MIME_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-EMAIL-MIME_SOURCE) $(PERL-EMAIL-MIME_PATCHES) make/perl-email-mime.mk
 	rm -rf $(BUILD_DIR)/$(PERL-EMAIL-MIME_DIR) $(@D)
 	$(PERL-EMAIL-MIME_UNZIP) $(DL_DIR)/$(PERL-EMAIL-MIME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-EMAIL-MIME_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-EMAIL-MIME_DIR) -p1
+#	cat $(PERL-EMAIL-MIME_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-EMAIL-MIME_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-EMAIL-MIME_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-EMAIL-MIME_BUILD_DIR)/.staged: $(PERL-EMAIL-MIME_BUILD_DIR)/.built
 perl-email-mime-stage: $(PERL-EMAIL-MIME_BUILD_DIR)/.staged
 
 $(PERL-EMAIL-MIME_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-email-mime" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

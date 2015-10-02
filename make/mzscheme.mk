@@ -107,7 +107,7 @@ $(MZSCHEME_BUILD_DIR)/.configured: $(DL_DIR)/$(MZSCHEME_SOURCE) $(MZSCHEME_PATCH
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(MZSCHEME_DIR) $(MZSCHEME_BUILD_DIR)
 	$(MZSCHEME_UNZIP) $(DL_DIR)/$(MZSCHEME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MZSCHEME_PATCHES) | patch -d $(BUILD_DIR)/$(MZSCHEME_DIR) -p1
+	cat $(MZSCHEME_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MZSCHEME_DIR) -p1
 	mv $(BUILD_DIR)/$(MZSCHEME_DIR) $(MZSCHEME_BUILD_DIR)
 	(cd $(MZSCHEME_BUILD_DIR)/src; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -153,7 +153,7 @@ mzscheme-stage: $(MZSCHEME_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mzscheme
 #
 $(MZSCHEME_IPK_DIR)/CONTROL/control:
-	@install -d $(MZSCHEME_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(MZSCHEME_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: mzscheme" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,7 +190,7 @@ $(MZSCHEME_IPK): $(MZSCHEME_BUILD_DIR)/.built
             `ls $(MZSCHEME_IPK_DIR)/opt/lib/plt/bin/*  | grep -v plt/bin/mzscheme`
 	$(STRIP_COMMAND) $(MZSCHEME_IPK_DIR)/opt/lib/plt/bin/mzscheme
 	$(STRIP_COMMAND) `find $(MZSCHEME_IPK_DIR)/opt/lib/plt -name '*.so'`
-	install -d $(MZSCHEME_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(MZSCHEME_IPK_DIR)/opt/bin/
 	cd $(MZSCHEME_IPK_DIR)/opt/bin/; \
             for f in ../lib/plt/bin/*; do ln -s $$f .; done
 	# a hack to work around POSIX tar 100 character limitation

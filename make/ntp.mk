@@ -110,7 +110,7 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES) make/ntp.mk
 	$(NTP_UNZIP) $(DL_DIR)/$(NTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NTP_PATCHES)" ; \
 		then cat $(NTP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HARFBUZZ_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HARFBUZZ_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(NTP_DIR) $(@D)
 	sed -i -e 's/ac_cv_make_ntptime=.*/ac_cv_make_ntptime=yes/' $(@D)/configure
@@ -152,7 +152,7 @@ ntp: $(NTP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ntp
 #
 $(NTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ntp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,20 +181,20 @@ $(NTP_IPK_DIR)/CONTROL/control:
 #
 $(NTP_IPK): $(NTP_BUILD_DIR)/.built
 	rm -rf $(NTP_IPK_DIR) $(NTP_IPK)
-	install -d $(NTP_IPK_DIR)/opt/bin
-	install -d $(NTP_IPK_DIR)/opt/etc/ntp/keys
-	install -d $(NTP_IPK_DIR)/var/spool/ntp
+	$(INSTALL) -d $(NTP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(NTP_IPK_DIR)/opt/etc/ntp/keys
+	$(INSTALL) -d $(NTP_IPK_DIR)/var/spool/ntp
 	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpd/ntpd -o $(NTP_IPK_DIR)/opt/bin/ntpd
 	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpq/ntpq -o $(NTP_IPK_DIR)/opt/bin/ntpq
 	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpdc/ntpdc -o $(NTP_IPK_DIR)/opt/bin/ntpdc
 	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/util/ntptime -o $(NTP_IPK_DIR)/opt/bin/ntptime
 	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/util/tickadj -o $(NTP_IPK_DIR)/opt/bin/tickadj
 	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpdate/ntpdate -o $(NTP_IPK_DIR)/opt/bin/ntpdate
-	install -m 644 $(NTP_SOURCE_DIR)/ntp.conf $(NTP_IPK_DIR)/opt/etc/ntp/ntp.conf
-	install -d $(NTP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NTP_SOURCE_DIR)/rc.ntpd $(NTP_IPK_DIR)/opt/etc/init.d/S77ntp
+	$(INSTALL) -m 644 $(NTP_SOURCE_DIR)/ntp.conf $(NTP_IPK_DIR)/opt/etc/ntp/ntp.conf
+	$(INSTALL) -d $(NTP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NTP_SOURCE_DIR)/rc.ntpd $(NTP_IPK_DIR)/opt/etc/init.d/S77ntp
 	$(MAKE) $(NTP_IPK_DIR)/CONTROL/control
-	install -m 644 $(NTP_SOURCE_DIR)/postinst $(NTP_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(NTP_SOURCE_DIR)/postinst $(NTP_IPK_DIR)/CONTROL/postinst
 	echo $(NTP_CONFFILES) | sed -e 's/ /\n/g' > $(NTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTP_IPK_DIR)
 

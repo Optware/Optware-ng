@@ -2,7 +2,7 @@
 +++ perltgdcli.pl	2008-03-16 20:17:39.000000000 +1030
 @@ -1,4 +1,4 @@
 -#!/usr/bin/perl
-+#!/opt/bin/perl
++#!%OPTWARE_TARGET_PREFIX%/bin/perl
  
  #	  perltgd jim16 Thu 14 Dec 13:13:00
  #

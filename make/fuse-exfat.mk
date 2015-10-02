@@ -110,7 +110,7 @@ $(FUSE_EXFAT_BUILD_DIR)/.configured: $(DL_DIR)/$(FUSE_EXFAT_SOURCE) $(FUSE_EXFAT
 	$(FUSE_EXFAT_UNZIP) $(DL_DIR)/$(FUSE_EXFAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FUSE_EXFAT_PATCHES)" ; \
 		then cat $(FUSE_EXFAT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FUSE_EXFAT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FUSE_EXFAT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FUSE_EXFAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FUSE_EXFAT_DIR) $(@D) ; \
@@ -152,7 +152,7 @@ fuse-exfat-stage: $(FUSE_EXFAT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fuse-exfat
 #
 $(FUSE_EXFAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fuse-exfat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,19 +181,19 @@ $(FUSE_EXFAT_IPK_DIR)/CONTROL/control:
 $(FUSE_EXFAT_IPK): $(FUSE_EXFAT_BUILD_DIR)/.built
 	rm -rf $(FUSE_EXFAT_IPK_DIR) $(BUILD_DIR)/fuse-exfat_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(FUSE_EXFAT_BUILD_DIR) DESTDIR=$(FUSE_EXFAT_IPK_DIR) install-strip
-	install -d $(FUSE_EXFAT_IPK_DIR)/opt/sbin
-	install -m 755 $(FUSE_EXFAT_BUILD_DIR)/fuse/mount.exfat-fuse $(FUSE_EXFAT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(FUSE_EXFAT_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(FUSE_EXFAT_BUILD_DIR)/fuse/mount.exfat-fuse $(FUSE_EXFAT_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(FUSE_EXFAT_IPK_DIR)/opt/sbin/mount.exfat-fuse
 	ln -s mount.exfat-fuse $(FUSE_EXFAT_IPK_DIR)/opt/sbin/mount.exfat
-#	install -d $(FUSE_EXFAT_IPK_DIR)/opt/etc/
-#	install -m 644 $(FUSE_EXFAT_SOURCE_DIR)/fuse-exfat.conf $(FUSE_EXFAT_IPK_DIR)/opt/etc/fuse-exfat.conf
-#	install -d $(FUSE_EXFAT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FUSE_EXFAT_SOURCE_DIR)/rc.fuse-exfat $(FUSE_EXFAT_IPK_DIR)/opt/etc/init.d/SXXfuse-exfat
+#	$(INSTALL) -d $(FUSE_EXFAT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FUSE_EXFAT_SOURCE_DIR)/fuse-exfat.conf $(FUSE_EXFAT_IPK_DIR)/opt/etc/fuse-exfat.conf
+#	$(INSTALL) -d $(FUSE_EXFAT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FUSE_EXFAT_SOURCE_DIR)/rc.fuse-exfat $(FUSE_EXFAT_IPK_DIR)/opt/etc/init.d/SXXfuse-exfat
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_EXFAT_IPK_DIR)/opt/etc/init.d/SXXfuse-exfat
 	$(MAKE) $(FUSE_EXFAT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FUSE_EXFAT_SOURCE_DIR)/postinst $(FUSE_EXFAT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FUSE_EXFAT_SOURCE_DIR)/postinst $(FUSE_EXFAT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_EXFAT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FUSE_EXFAT_SOURCE_DIR)/prerm $(FUSE_EXFAT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FUSE_EXFAT_SOURCE_DIR)/prerm $(FUSE_EXFAT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_EXFAT_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

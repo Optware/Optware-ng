@@ -119,7 +119,7 @@ $(PY-IDNA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-IDNA_SOURCE) $(PY-IDNA_PATCHES)
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-IDNA_UNZIP) $(DL_DIR)/$(PY-IDNA_SOURCE)
 	$(PY-IDNA_UNZIP) $(DL_DIR)/$(PY-IDNA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-IDNA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-IDNA_DIR) -p1
+#	cat $(PY-IDNA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-IDNA_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-IDNA_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -131,7 +131,7 @@ $(PY-IDNA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-IDNA_SOURCE) $(PY-IDNA_PATCHES)
 	)
 #	cd $(BUILD_DIR); $(PY-IDNA_UNZIP) $(DL_DIR)/$(PY-IDNA_SOURCE)
 	$(PY-IDNA_UNZIP) $(DL_DIR)/$(PY-IDNA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-IDNA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-IDNA_DIR) -p1
+#	cat $(PY-IDNA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-IDNA_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-IDNA_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -143,7 +143,7 @@ $(PY-IDNA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-IDNA_SOURCE) $(PY-IDNA_PATCHES)
 	)
 #	cd $(BUILD_DIR); $(PY-IDNA_UNZIP) $(DL_DIR)/$(PY-IDNA_SOURCE)
 	$(PY-IDNA_UNZIP) $(DL_DIR)/$(PY-IDNA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-IDNA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-IDNA_DIR) -p1
+#	cat $(PY-IDNA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-IDNA_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-IDNA_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -216,7 +216,7 @@ py-idna-host-stage: $(PY-IDNA_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-idna
 #
 $(PY26-IDNA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-idna" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -230,7 +230,7 @@ $(PY26-IDNA_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-IDNA_CONFLICTS)" >>$@
 
 $(PY27-IDNA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-idna" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -244,7 +244,7 @@ $(PY27-IDNA_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-IDNA_CONFLICTS)" >>$@
 
 $(PY3-IDNA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-idna" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

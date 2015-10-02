@@ -110,7 +110,7 @@ $(PURE-FTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PURE-FTPD_SOURCE) $(PURE-FTPD_PA
 	$(PURE-FTPD_UNZIP) $(DL_DIR)/$(PURE-FTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PURE-FTPD_PATCHES)" ; \
 		then cat $(PURE-FTPD_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(PURE-FTPD_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(PURE-FTPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PURE-FTPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PURE-FTPD_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ pure-ftpd: $(PURE-FTPD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/pure-ftpd
 #
 $(PURE-FTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pure-ftpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,15 +199,15 @@ $(PURE-FTPD_IPK_DIR)/CONTROL/control:
 $(PURE-FTPD_IPK): $(PURE-FTPD_BUILD_DIR)/.built
 	rm -rf $(PURE-FTPD_IPK_DIR) $(BUILD_DIR)/pure-ftpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PURE-FTPD_BUILD_DIR) DESTDIR=$(PURE-FTPD_IPK_DIR) install-strip
-#	install -d $(PURE-FTPD_IPK_DIR)/opt/etc/
-#	install -m 644 $(PURE-FTPD_SOURCE_DIR)/pure-ftpd.conf $(PURE-FTPD_IPK_DIR)/opt/etc/pure-ftpd.conf
-#	install -d $(PURE-FTPD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PURE-FTPD_SOURCE_DIR)/rc.pure-ftpd $(PURE-FTPD_IPK_DIR)/opt/etc/init.d/SXXpure-ftpd
+#	$(INSTALL) -d $(PURE-FTPD_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(PURE-FTPD_SOURCE_DIR)/pure-ftpd.conf $(PURE-FTPD_IPK_DIR)/opt/etc/pure-ftpd.conf
+#	$(INSTALL) -d $(PURE-FTPD_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PURE-FTPD_SOURCE_DIR)/rc.pure-ftpd $(PURE-FTPD_IPK_DIR)/opt/etc/init.d/SXXpure-ftpd
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PURE-FTPD_IPK_DIR)/opt/etc/init.d/SXXpure-ftpd
 	$(MAKE) $(PURE-FTPD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PURE-FTPD_SOURCE_DIR)/postinst $(PURE-FTPD_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PURE-FTPD_SOURCE_DIR)/postinst $(PURE-FTPD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PURE-FTPD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PURE-FTPD_SOURCE_DIR)/prerm $(PURE-FTPD_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PURE-FTPD_SOURCE_DIR)/prerm $(PURE-FTPD_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PURE-FTPD_IPK_DIR)/CONTROL/prerm
 	echo $(PURE-FTPD_CONFFILES) | sed -e 's/ /\n/g' > $(PURE-FTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PURE-FTPD_IPK_DIR)

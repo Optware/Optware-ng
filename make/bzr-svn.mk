@@ -113,7 +113,7 @@ $(BZR-SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(BZR-SVN_SOURCE) $(BZR-SVN_PATCHES)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(BZR-SVN_DIR)
 	$(BZR-SVN_UNZIP) $(DL_DIR)/$(BZR-SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BZR-SVN_PATCHES) | patch -d $(BUILD_DIR)/$(BZR-SVN_DIR) -p1
+#	cat $(BZR-SVN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BZR-SVN_DIR) -p1
 	mv $(BUILD_DIR)/$(BZR-SVN_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -130,7 +130,7 @@ $(BZR-SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(BZR-SVN_SOURCE) $(BZR-SVN_PATCHES)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(BZR-SVN_DIR)
 	$(BZR-SVN_UNZIP) $(DL_DIR)/$(BZR-SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BZR-SVN_PATCHES) | patch -d $(BUILD_DIR)/$(BZR-SVN_DIR) -p1
+#	cat $(BZR-SVN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BZR-SVN_DIR) -p1
 	mv $(BUILD_DIR)/$(BZR-SVN_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -183,7 +183,7 @@ bzr-svn: $(BZR-SVN_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bzr-svn
 #
 $(PY25-BZR-SVN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-bzr-svn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,7 +197,7 @@ $(PY25-BZR-SVN_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BZR-SVN_CONFLICTS)" >>$@
 
 $(PY26-BZR-SVN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-bzr-svn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

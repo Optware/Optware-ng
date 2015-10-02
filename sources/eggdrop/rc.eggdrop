@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
 if grep -q ^eggdrop: /etc/group; then
 	echo There already is an eggdrop group on the system.
@@ -11,6 +11,6 @@ if grep -q ^eggdrop: /etc/passwd; then
 	echo There already is an eggdrop user on the system.
 else
 	echo -n "No eggdrop user found, creating it... "
-	adduser -h /opt/share/eggdrop -g "eggdrop daemon" -s /bin/false -D -H  $ADDUSER_OPT eggdrop > /dev/null 2>&1 || (echo "Warning! Failed to create eggdrop user/group"; exit 0)
+	adduser -h %OPTWARE_TARGET_PREFIX%/share/eggdrop -g "eggdrop daemon" -s /bin/false -D -H  $ADDUSER_OPT eggdrop > /dev/null 2>&1 || (echo "Warning! Failed to create eggdrop user/group"; exit 0)
 	echo done
 fi

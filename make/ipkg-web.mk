@@ -52,7 +52,7 @@ ipkg-web:
 # necessary to create a seperate control file under sources/ipkg-web
 #
 $(IPKG_WEB_IPK_DIR)/CONTROL/control:
-	@install -d $(IPKG_WEB_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(IPKG_WEB_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ipkg-web" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -80,9 +80,9 @@ $(IPKG_WEB_IPK_DIR)/CONTROL/control:
 #
 $(IPKG_WEB_IPK): $(IPKG_WEB_SOURCE_DIR)/package.cgi
 	rm -rf $(IPKG_WEB_IPK_DIR) $(BUILD_DIR)/ipkg-web_*_$(TARGET_ARCH).ipk
-	install -d $(IPKG_WEB_IPK_DIR)/home/httpd/html/Management
-	install -m 755 $(IPKG_WEB_SOURCE_DIR)/package.cgi $(IPKG_WEB_IPK_DIR)/home/httpd/html/Management/package.cgi
-	install -m 755 $(IPKG_WEB_SOURCE_DIR)/sluginfo.cgi $(IPKG_WEB_IPK_DIR)/home/httpd/html/Management/sluginfo.cgi
+	$(INSTALL) -d $(IPKG_WEB_IPK_DIR)/home/httpd/html/Management
+	$(INSTALL) -m 755 $(IPKG_WEB_SOURCE_DIR)/package.cgi $(IPKG_WEB_IPK_DIR)/home/httpd/html/Management/package.cgi
+	$(INSTALL) -m 755 $(IPKG_WEB_SOURCE_DIR)/sluginfo.cgi $(IPKG_WEB_IPK_DIR)/home/httpd/html/Management/sluginfo.cgi
 	$(MAKE) $(IPKG_WEB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPKG_WEB_IPK_DIR)
 

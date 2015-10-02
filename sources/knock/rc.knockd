@@ -1,9 +1,9 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof knockd`" ]; then 
-    /opt/bin/killall knockd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof knockd`" ]; then 
+    %OPTWARE_TARGET_PREFIX%/bin/killall knockd 2>/dev/null
 fi
 
 umask 077
 
-/opt/bin/knockd -d -i ixp0 -v
+%OPTWARE_TARGET_PREFIX%/bin/knockd -d -i ixp0 -v

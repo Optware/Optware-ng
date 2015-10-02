@@ -171,7 +171,7 @@ endif
 	$(GIT_UNZIP) $(DL_DIR)/$(GIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GIT_PATCHES)" ; \
 		then cat $(GIT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GIT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GIT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GIT_DIR)" != "$(GIT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(GIT_DIR) $(GIT_BUILD_DIR) ; \
@@ -230,7 +230,7 @@ endif
 	$(GIT_UNZIP) $(DL_DIR)/$(GIT-LITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GIT_PATCHES)" ; \
 		then cat $(GIT-LITE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GIT-LITE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GIT-LITE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GIT-LITE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GIT-LITE_DIR) $(@D) ; \
@@ -264,7 +264,7 @@ git-stage: $(GIT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/git
 #
 $(GIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: git" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -279,7 +279,7 @@ $(GIT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(GIT_CONFLICTS)" >>$@
 
 $(GIT-LITE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: git-lite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -294,7 +294,7 @@ $(GIT-LITE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(GIT-LITE_CONFLICTS)" >>$@
 
 $(GIT-MANPAGES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: git-manpages" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -309,7 +309,7 @@ $(GIT-MANPAGES_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: " >>$@
 
 $(GIT-SVN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: git-svn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -349,15 +349,15 @@ $(GIT_IPK): $(GIT_BUILD_DIR)/.built
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
 		prefix=/opt \
-		install
+		$(INSTALL)
 ifneq (,$(filter perl, $(PACKAGES)))
 	for f in `find $(GIT_IPK_DIR)/opt/lib -name perllocal.pod`; \
 		do mv $$f $$f.git; done
 endif
 	rm -f $(GIT_IPK_DIR)/opt/bin/git
 	ln -s ../libexec/git-core/git $(GIT_IPK_DIR)/opt/bin/git
-	install -d $(GIT_IPK_DIR)/opt/etc/bash_completion.d
-	install $(<D)/contrib/completion/*.bash \
+	$(INSTALL) -d $(GIT_IPK_DIR)/opt/etc/bash_completion.d
+	$(INSTALL) $(<D)/contrib/completion/*.bash \
 		$(<D)/contrib/completion/*.sh \
 		$(GIT_IPK_DIR)/opt/etc/bash_completion.d
 	$(MAKE) $(GIT_IPK_DIR)/CONTROL/control
@@ -381,7 +381,7 @@ $(GIT-LITE_IPK): $(GIT-LITE_BUILD_DIR)/.built
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
 		prefix=/opt \
-		install
+		$(INSTALL)
 	( cd $(GIT-LITE_IPK_DIR)/opt/bin ; \
 	  rm -f git-cvsserver git-receive-pack git-shell git-upload-archive git-upload-pack git-remote-* )
 	rm -f $(GIT-LITE_IPK_DIR)/opt/bin/git
@@ -394,7 +394,7 @@ $(GIT-LITE_IPK): $(GIT-LITE_BUILD_DIR)/.built
 
 $(GIT-MANPAGES_IPK): $(DL_DIR)/$(GIT-MANPAGES_SOURCE)
 	rm -rf $(GIT-MANPAGES_IPK_DIR) $(BUILD_DIR)/git-manpages_*_$(TARGET_ARCH).ipk
-	install -d $(GIT-MANPAGES_IPK_DIR)/opt/man
+	$(INSTALL) -d $(GIT-MANPAGES_IPK_DIR)/opt/man
 	tar -xzvf $(DL_DIR)/$(GIT-MANPAGES_SOURCE) -C $(GIT-MANPAGES_IPK_DIR)/opt/man
 	$(MAKE) $(GIT-MANPAGES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-MANPAGES_IPK_DIR)

@@ -98,7 +98,7 @@ libevent-stage: $(LIBEVENT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libevent
 #
 $(LIBEVENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libevent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

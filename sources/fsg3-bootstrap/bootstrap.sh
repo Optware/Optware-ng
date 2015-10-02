@@ -26,16 +26,16 @@ rm /tmp/ipkg
 rm -rf /usr/lib/ipkg
 
 echo "Installing OpenSSL..."
-/opt/bin/ipkg install openssl.ipk || exit 1
+%OPTWARE_TARGET_PREFIX%/bin/ipkg install openssl.ipk || exit 1
 
 echo "Installing wget..."
-/opt/bin/ipkg install wget-ssl.ipk || exit 1
+%OPTWARE_TARGET_PREFIX%/bin/ipkg install wget-ssl.ipk || exit 1
 
-[ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
-if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
+[ ! -d %OPTWARE_TARGET_PREFIX%/etc/ipkg ] && mkdir -p %OPTWARE_TARGET_PREFIX%/etc/ipkg
+if [ ! -e %OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf ]
 then
-	echo "Creating /opt/etc/ipkg/cross-feed.conf..."
-	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/fsg3/cross/stable" >/opt/etc/ipkg/cross-feed.conf
+	echo "Creating %OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf..."
+	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/fsg3/cross/stable" >%OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf
 fi
 
 echo "Setup complete."

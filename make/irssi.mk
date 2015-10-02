@@ -137,7 +137,7 @@ endif
 	$(IRSSI_UNZIP) $(DL_DIR)/$(IRSSI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IRSSI_PATCHES)" ; \
 		then cat $(IRSSI_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(IRSSI_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(IRSSI_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IRSSI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IRSSI_DIR) $(@D) ; \
@@ -225,7 +225,7 @@ irssi-stage: $(IRSSI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/irssi
 #
 $(IRSSI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: irssi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -240,7 +240,7 @@ $(IRSSI_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(IRSSI_CONFLICTS)" >>$@
 
 $(IRSSI-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: irssi-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -270,10 +270,10 @@ $(IRSSI_IPK) $(IRSSI-DEV_IPK): $(IRSSI_BUILD_DIR)/.built
 	rm -rf $(IRSSI_IPK_DIR) $(BUILD_DIR)/irssi_*_$(TARGET_ARCH).ipk
 	rm -rf $(IRSSI-DEV_IPK_DIR) $(BUILD_DIR)/irssi-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(IRSSI_IPK_DIR) install-strip
-	install -d $(IRSSI_IPK_DIR)/opt/etc/
-#	install -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf
-#	install -d $(IRSSI_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(IRSSI_SOURCE_DIR)/rc.irssi $(IRSSI_IPK_DIR)/opt/etc/init.d/SXXirssi
+	$(INSTALL) -d $(IRSSI_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf
+#	$(INSTALL) -d $(IRSSI_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(IRSSI_SOURCE_DIR)/rc.irssi $(IRSSI_IPK_DIR)/opt/etc/init.d/SXXirssi
 ifneq (,$(filter perl, $(PACKAGES)))
 	(cd $(IRSSI_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
@@ -284,11 +284,11 @@ ifneq (,$(filter perl, $(PACKAGES)))
 	   $(IRSSI_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.irssi
 endif
 	$(MAKE) $(IRSSI_IPK_DIR)/CONTROL/control
-	install -d $(IRSSI-DEV_IPK_DIR)/opt
+	$(INSTALL) -d $(IRSSI-DEV_IPK_DIR)/opt
 	mv $(IRSSI_IPK_DIR)/opt/include $(IRSSI-DEV_IPK_DIR)/opt/
 	$(MAKE) $(IRSSI-DEV_IPK_DIR)/CONTROL/control
-#	install -m 755 $(IRSSI_SOURCE_DIR)/postinst $(IRSSI_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(IRSSI_SOURCE_DIR)/prerm $(IRSSI_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(IRSSI_SOURCE_DIR)/postinst $(IRSSI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(IRSSI_SOURCE_DIR)/prerm $(IRSSI_IPK_DIR)/CONTROL/prerm
 	echo $(IRSSI_CONFFILES) | sed -e 's/ /\n/g' > $(IRSSI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IRSSI_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IRSSI-DEV_IPK_DIR)

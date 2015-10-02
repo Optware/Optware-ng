@@ -109,7 +109,7 @@ $(ESMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ESMTP_SOURCE) $(ESMTP_PATCHES) make/
 	$(MAKE) libesmtp-stage
 	rm -rf $(BUILD_DIR)/$(ESMTP_DIR) $(@D)
 	$(ESMTP_UNZIP) $(DL_DIR)/$(ESMTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(ESMTP_PATCHES) | patch -d $(BUILD_DIR)/$(ESMTP_DIR) -p1
+	#cat $(ESMTP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ESMTP_DIR) -p1
 	mv $(BUILD_DIR)/$(ESMTP_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -156,7 +156,7 @@ esmtp: $(ESMTP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/esmtp
 #
 $(ESMTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: esmtp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,13 +185,13 @@ $(ESMTP_IPK_DIR)/CONTROL/control:
 $(ESMTP_IPK): $(ESMTP_BUILD_DIR)/.built
 	rm -rf $(ESMTP_IPK_DIR) $(BUILD_DIR)/esmtp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ESMTP_BUILD_DIR) DESTDIR=$(ESMTP_IPK_DIR) install-strip
-	install -d $(ESMTP_IPK_DIR)/opt/etc/
-	#install -m 644 $(ESMTP_SOURCE_DIR)/esmtp.conf $(ESMTP_IPK_DIR)/opt/etc/esmtp.conf
-	#install -d $(ESMTP_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(ESMTP_SOURCE_DIR)/rc.esmtp $(ESMTP_IPK_DIR)/opt/etc/init.d/SXXesmtp
+	$(INSTALL) -d $(ESMTP_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(ESMTP_SOURCE_DIR)/esmtp.conf $(ESMTP_IPK_DIR)/opt/etc/esmtp.conf
+	#$(INSTALL) -d $(ESMTP_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(ESMTP_SOURCE_DIR)/rc.esmtp $(ESMTP_IPK_DIR)/opt/etc/init.d/SXXesmtp
 	$(MAKE) $(ESMTP_IPK_DIR)/CONTROL/control
-	#install -m 755 $(ESMTP_SOURCE_DIR)/postinst $(ESMTP_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(ESMTP_SOURCE_DIR)/prerm $(ESMTP_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(ESMTP_SOURCE_DIR)/postinst $(ESMTP_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(ESMTP_SOURCE_DIR)/prerm $(ESMTP_IPK_DIR)/CONTROL/prerm
 	#echo $(ESMTP_CONFFILES) | sed -e 's/ /\n/g' > $(ESMTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESMTP_IPK_DIR)
 

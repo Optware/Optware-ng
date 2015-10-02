@@ -49,7 +49,7 @@ $(XZ_UTILS_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(XZ_UTILS_SOURCE
 	$(XZ_UTILS_UNZIP) $(DL_DIR)/$(XZ_UTILS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(XZ_UTILS_PATCHES)" ; \
 		then cat $(XZ_UTILS_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(XZ_UTILS_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(XZ_UTILS_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(XZ_UTILS_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(XZ_UTILS_DIR) $(@D) ; \
@@ -79,7 +79,7 @@ $(XZ_UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(XZ_UTILS_SOURCE) $(XZ_UTILS_PATCH
 	$(XZ_UTILS_UNZIP) $(DL_DIR)/$(XZ_UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(XZ_UTILS_PATCHES)" ; \
 		then cat $(XZ_UTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XZ_UTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XZ_UTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XZ_UTILS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XZ_UTILS_DIR) $(@D) ; \
@@ -118,7 +118,7 @@ $(XZ_UTILS_BUILD_DIR)/.staged: $(XZ_UTILS_BUILD_DIR)/.built
 xz-utils-stage: $(XZ_UTILS_BUILD_DIR)/.staged
 
 $(XZ_UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xz-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -133,7 +133,7 @@ $(XZ_UTILS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(XZ_UTILS_CONFLICTS)" >>$@
 
 $(LIBLZMA0_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: liblzma0" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -152,7 +152,7 @@ $(XZ_UTILS_IPK) $(LIBLZMA0_IPK): $(XZ_UTILS_BUILD_DIR)/.built
 		$(BUILD_DIR)/xz-utils_*_$(TARGET_ARCH).ipk \
 		$(BUILD_DIR)/liblzma0_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XZ_UTILS_BUILD_DIR) DESTDIR=$(XZ_UTILS_IPK_DIR) install-strip
-	install -d $(LIBLZMA0_IPK_DIR)/opt
+	$(INSTALL) -d $(LIBLZMA0_IPK_DIR)/opt
 	mv $(XZ_UTILS_IPK_DIR)/opt/include $(XZ_UTILS_IPK_DIR)/opt/lib $(LIBLZMA0_IPK_DIR)/opt/
 	$(MAKE) $(XZ_UTILS_IPK_DIR)/CONTROL/control $(LIBLZMA0_IPK_DIR)/CONTROL/control
 #	echo $(XZ_UTILS_CONFFILES) | sed -e 's/ /\n/g' > $(XZ_UTILS_IPK_DIR)/CONTROL/conffiles

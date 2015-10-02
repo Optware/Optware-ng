@@ -109,7 +109,7 @@ $(LIBATOMIC_OPS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBATOMIC_OPS_SOURCE) $(LIBA
 	$(LIBATOMIC_OPS_UNZIP) $(DL_DIR)/$(LIBATOMIC_OPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBATOMIC_OPS_PATCHES)" ; \
 		then cat $(LIBATOMIC_OPS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBATOMIC_OPS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBATOMIC_OPS_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(LIBATOMIC_OPS_DIR) $(@D)
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
@@ -162,7 +162,7 @@ libatomic-ops-stage: $(LIBATOMIC_OPS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libatomic-ops
 #
 $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBATOMIC_OPS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBATOMIC_OPS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libatomic-ops" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,13 +190,13 @@ $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/control:
 $(LIBATOMIC_OPS_IPK): $(LIBATOMIC_OPS_BUILD_DIR)/.built
 	rm -rf $(LIBATOMIC_OPS_IPK_DIR) $(BUILD_DIR)/libatomic-ops_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBATOMIC_OPS_BUILD_DIR) DESTDIR=$(LIBATOMIC_OPS_IPK_DIR) install-strip
-#	install -d $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBATOMIC_OPS_SOURCE_DIR)/libatomic-ops.conf $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/libatomic-ops.conf
-#	install -d $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/rc.libatomic-ops $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/init.d/SXXlibatomic-ops
+#	$(INSTALL) -d $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBATOMIC_OPS_SOURCE_DIR)/libatomic-ops.conf $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/libatomic-ops.conf
+#	$(INSTALL) -d $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/rc.libatomic-ops $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/init.d/SXXlibatomic-ops
 	$(MAKE) $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/postinst $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/prerm $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/postinst $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/prerm $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBATOMIC_OPS_CONFFILES) | sed -e 's/ /\n/g' > $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBATOMIC_OPS_IPK_DIR)
 

@@ -167,7 +167,7 @@ which-stage: $(WHICH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/which
 #
 $(WHICH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: which" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

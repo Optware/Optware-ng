@@ -126,7 +126,7 @@ endif
 	$(GNUPLOT_UNZIP) $(DL_DIR)/$(GNUPLOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNUPLOT_PATCHES)" ; \
 		then cat $(GNUPLOT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GNUPLOT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GNUPLOT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GNUPLOT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GNUPLOT_DIR) $(@D) ; \
@@ -195,7 +195,7 @@ gnuplot-stage: $(GNUPLOT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnuplot
 #
 $(GNUPLOT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnuplot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -225,13 +225,13 @@ $(GNUPLOT_IPK): $(GNUPLOT_BUILD_DIR)/.built
 	rm -rf $(GNUPLOT_IPK_DIR) $(BUILD_DIR)/gnuplot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNUPLOT_BUILD_DIR) DESTDIR=$(GNUPLOT_IPK_DIR) install-strip
 	rm -f $(GNUPLOT_IPK_DIR)/opt/share/info/dir
-#	install -d $(GNUPLOT_IPK_DIR)/opt/etc/
-#	install -m 644 $(GNUPLOT_SOURCE_DIR)/gnuplot.conf $(GNUPLOT_IPK_DIR)/opt/etc/gnuplot.conf
-#	install -d $(GNUPLOT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GNUPLOT_SOURCE_DIR)/rc.gnuplot $(GNUPLOT_IPK_DIR)/opt/etc/init.d/SXXgnuplot
+#	$(INSTALL) -d $(GNUPLOT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GNUPLOT_SOURCE_DIR)/gnuplot.conf $(GNUPLOT_IPK_DIR)/opt/etc/gnuplot.conf
+#	$(INSTALL) -d $(GNUPLOT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GNUPLOT_SOURCE_DIR)/rc.gnuplot $(GNUPLOT_IPK_DIR)/opt/etc/init.d/SXXgnuplot
 	$(MAKE) $(GNUPLOT_IPK_DIR)/CONTROL/control
-#install -m 755 $(GNUPLOT_SOURCE_DIR)/postinst $(GNUPLOT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GNUPLOT_SOURCE_DIR)/prerm $(GNUPLOT_IPK_DIR)/CONTROL/prerm
+#$(INSTALL) -m 755 $(GNUPLOT_SOURCE_DIR)/postinst $(GNUPLOT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GNUPLOT_SOURCE_DIR)/prerm $(GNUPLOT_IPK_DIR)/CONTROL/prerm
 #	echo $(GNUPLOT_CONFFILES) | sed -e 's/ /\n/g' > $(GNUPLOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNUPLOT_IPK_DIR)
 

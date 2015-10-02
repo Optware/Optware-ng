@@ -110,7 +110,7 @@ $(NETRIK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETRIK_SOURCE) $(NETRIK_PATCHES) ma
 	$(NETRIK_UNZIP) $(DL_DIR)/$(NETRIK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETRIK_PATCHES)" ; \
 		then cat $(NETRIK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NETRIK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NETRIK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NETRIK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NETRIK_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ netrik-stage: $(NETRIK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/netrik
 #
 $(NETRIK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: netrik" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,15 +189,15 @@ $(NETRIK_IPK_DIR)/CONTROL/control:
 $(NETRIK_IPK): $(NETRIK_BUILD_DIR)/.built
 	rm -rf $(NETRIK_IPK_DIR) $(BUILD_DIR)/netrik_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NETRIK_BUILD_DIR) DESTDIR=$(NETRIK_IPK_DIR) install-strip
-#	install -d $(NETRIK_IPK_DIR)/opt/etc/
-#	install -m 644 $(NETRIK_SOURCE_DIR)/netrik.conf $(NETRIK_IPK_DIR)/opt/etc/netrik.conf
-#	install -d $(NETRIK_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NETRIK_SOURCE_DIR)/rc.netrik $(NETRIK_IPK_DIR)/opt/etc/init.d/SXXnetrik
+#	$(INSTALL) -d $(NETRIK_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NETRIK_SOURCE_DIR)/netrik.conf $(NETRIK_IPK_DIR)/opt/etc/netrik.conf
+#	$(INSTALL) -d $(NETRIK_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NETRIK_SOURCE_DIR)/rc.netrik $(NETRIK_IPK_DIR)/opt/etc/init.d/SXXnetrik
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETRIK_IPK_DIR)/opt/etc/init.d/SXXnetrik
 	$(MAKE) $(NETRIK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NETRIK_SOURCE_DIR)/postinst $(NETRIK_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NETRIK_SOURCE_DIR)/postinst $(NETRIK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETRIK_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NETRIK_SOURCE_DIR)/prerm $(NETRIK_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NETRIK_SOURCE_DIR)/prerm $(NETRIK_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETRIK_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

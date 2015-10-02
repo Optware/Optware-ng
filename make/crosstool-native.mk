@@ -84,7 +84,7 @@ CROSSTOOL-NATIVE-LIB_IPK=$(BUILD_DIR)/crosstool-native-lib_$(CROSSTOOL-NATIVE_VE
 CROSSTOOL-NATIVE_IPK_DIR=$(BUILD_DIR)/crosstool-native-$(CROSSTOOL-NATIVE_VERSION)-ipk
 
 $(CROSSTOOL-NATIVE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: crosstool-native" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(CROSSTOOL-NATIVE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(CROSSTOOL-NATIVE_CONFLICTS)" >>$@
 
 $(CROSSTOOL-NATIVE_IPK_DIR)-arch-bin/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: crosstool-native-arch-bin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -114,7 +114,7 @@ $(CROSSTOOL-NATIVE_IPK_DIR)-arch-bin/CONTROL/control:
 	@echo "Conflicts: $(CROSSTOOL-NATIVE_CONFLICTS)" >>$@
 
 $(CROSSTOOL-NATIVE_IPK_DIR)-arch-inc/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: crosstool-native-arch-inc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -129,7 +129,7 @@ $(CROSSTOOL-NATIVE_IPK_DIR)-arch-inc/CONTROL/control:
 	@echo "Conflicts: $(CROSSTOOL-NATIVE_CONFLICTS)" >>$@
 
 $(CROSSTOOL-NATIVE_IPK_DIR)-arch-lib/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: crosstool-native-arch-lib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -144,7 +144,7 @@ $(CROSSTOOL-NATIVE_IPK_DIR)-arch-lib/CONTROL/control:
 	@echo "Conflicts: $(CROSSTOOL-NATIVE_CONFLICTS)" >>$@
 
 $(CROSSTOOL-NATIVE_IPK_DIR)-bin/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: crosstool-native-bin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -159,7 +159,7 @@ $(CROSSTOOL-NATIVE_IPK_DIR)-bin/CONTROL/control:
 	@echo "Conflicts: $(CROSSTOOL-NATIVE_CONFLICTS)" >>$@
 
 $(CROSSTOOL-NATIVE_IPK_DIR)-inc/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: crosstool-native-inc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,7 +174,7 @@ $(CROSSTOOL-NATIVE_IPK_DIR)-inc/CONTROL/control:
 	@echo "Conflicts: $(CROSSTOOL-NATIVE_CONFLICTS)" >>$@
 
 $(CROSSTOOL-NATIVE_IPK_DIR)-lib/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: crosstool-native-lib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -222,7 +222,7 @@ $(CROSSTOOL-NATIVE_PATCHES) make/crosstool-native.mk
 	rm -rf $(BUILD_DIR)/$(CROSSTOOL-NATIVE_DIR) $(CROSSTOOL-NATIVE_BUILD_DIR)
 	$(CROSSTOOL-NATIVE_UNZIP) $(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CROSSTOOL-NATIVE_PATCHES)"; then \
-		cat $(CROSSTOOL-NATIVE_PATCHES) | patch -d $(BUILD_DIR)/$(CROSSTOOL-NATIVE_DIR) -p1; \
+		cat $(CROSSTOOL-NATIVE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CROSSTOOL-NATIVE_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(CROSSTOOL-NATIVE_DIR) $(CROSSTOOL-NATIVE_BUILD_DIR)
 	cp $(CROSSTOOL-NATIVE_SOURCE_DIR)/$(CROSSTOOL-NATIVE_SCRIPT) \
@@ -289,13 +289,13 @@ crosstool-native: $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 #
 $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)* $(BUILD_DIR)/crosstool-native*_$(TARGET_ARCH).ipk
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)
+	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)
 	( cd $(CROSSTOOL-NATIVE_PREFIX) ; tar cf - . ) | \
 		( cd $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX) ; tar xvf - )
 # For some reason, syslimits.h is missing; copy it from the toolchain
-	install -m 644 $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/lib/gcc-lib/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION_GCC_VERSION)/include/syslimits.h $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib\/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION_GCC_VERSION)/include/syslimits.h
+	$(INSTALL) -m 644 $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/lib/gcc-lib/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION_GCC_VERSION)/include/syslimits.h $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib\/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION_GCC_VERSION)/include/syslimits.h
 # Install symlinks for common toolchain programs
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
 	for f in ar as c++ g++ gcc ld nm ranlib strip ; do \
 	  rm -f $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f ; \
 	  ln -s $(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin/$$f \
@@ -310,14 +310,14 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	ln -s ./c++ $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin/g++
 # Package into bite-sized chunks
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)-bin
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)-bin$(CROSSTOOL-NATIVE_PREFIX)
+	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)-bin$(CROSSTOOL-NATIVE_PREFIX)
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/bin \
 		$(CROSSTOOL-NATIVE_IPK_DIR)-bin$(CROSSTOOL-NATIVE_PREFIX)/bin
 	$(MAKE) $(CROSSTOOL-NATIVE_IPK_DIR)-bin/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL-NATIVE_IPK_DIR)-bin
 
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)-lib
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)-lib$(CROSSTOOL-NATIVE_PREFIX)
+	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)-lib$(CROSSTOOL-NATIVE_PREFIX)
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib \
 		$(CROSSTOOL-NATIVE_IPK_DIR)-lib$(CROSSTOOL-NATIVE_PREFIX)/lib
 	-mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/libexec \
@@ -326,7 +326,7 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL-NATIVE_IPK_DIR)-lib
 
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)-inc
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)-inc$(CROSSTOOL-NATIVE_PREFIX)
+	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)-inc$(CROSSTOOL-NATIVE_PREFIX)
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/include \
 		$(CROSSTOOL-NATIVE_IPK_DIR)-inc$(CROSSTOOL-NATIVE_PREFIX)/include
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/info \
@@ -339,7 +339,7 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL-NATIVE_IPK_DIR)-inc
 
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)-arch-bin
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)-arch-bin$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)
+	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)-arch-bin$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin \
 		$(CROSSTOOL-NATIVE_IPK_DIR)-arch-bin$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/sbin \
@@ -348,7 +348,7 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL-NATIVE_IPK_DIR)-arch-bin
 
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)-arch-lib
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)-arch-lib$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)
+	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)-arch-lib$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/lib \
 		$(CROSSTOOL-NATIVE_IPK_DIR)-arch-lib$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/lib
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/libexec \
@@ -357,7 +357,7 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL-NATIVE_IPK_DIR)-arch-lib
 
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)-arch-inc
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)-arch-inc$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)
+	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)-arch-inc$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/include \
 		$(CROSSTOOL-NATIVE_IPK_DIR)-arch-inc$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/include
 	mv $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/sys-include \

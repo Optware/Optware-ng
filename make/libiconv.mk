@@ -112,7 +112,7 @@ endif
 	$(LIBICONV_UNZIP) $(DL_DIR)/$(LIBICONV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBICONV_PATCHES)" ; \
 		then cat $(LIBICONV_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBICONV_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBICONV_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBICONV_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBICONV_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ libiconv-stage: $(LIBICONV_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libiconv
 #
 $(LIBICONV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libiconv" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,15 +196,15 @@ $(LIBICONV_IPK): $(LIBICONV_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)/opt/lib/libcharset.so.[0-9]*.[0-9]*.[0-9]*
 	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)/opt/lib/libiconv.so.[0-9]*.[0-9]*.[0-9]*
 	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)/opt/lib/preloadable_libiconv.so
-#	install -d $(LIBICONV_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBICONV_SOURCE_DIR)/libiconv.conf $(LIBICONV_IPK_DIR)/opt/etc/libiconv.conf
-#	install -d $(LIBICONV_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBICONV_SOURCE_DIR)/rc.libiconv $(LIBICONV_IPK_DIR)/opt/etc/init.d/SXXlibiconv
+#	$(INSTALL) -d $(LIBICONV_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBICONV_SOURCE_DIR)/libiconv.conf $(LIBICONV_IPK_DIR)/opt/etc/libiconv.conf
+#	$(INSTALL) -d $(LIBICONV_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBICONV_SOURCE_DIR)/rc.libiconv $(LIBICONV_IPK_DIR)/opt/etc/init.d/SXXlibiconv
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICONV_IPK_DIR)/opt/etc/init.d/SXXlibiconv
 	$(MAKE) $(LIBICONV_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBICONV_SOURCE_DIR)/postinst $(LIBICONV_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBICONV_SOURCE_DIR)/postinst $(LIBICONV_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICONV_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBICONV_SOURCE_DIR)/prerm $(LIBICONV_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBICONV_SOURCE_DIR)/prerm $(LIBICONV_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICONV_IPK_DIR)/CONTROL/prerm
 	echo $(LIBICONV_CONFFILES) | sed -e 's/ /\n/g' > $(LIBICONV_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBICONV_IPK_DIR)

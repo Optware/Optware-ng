@@ -116,7 +116,7 @@ endif
 	$(DANSGUARDIAN_UNZIP) $(DL_DIR)/$(DANSGUARDIAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DANSGUARDIAN_PATCHES)" ; \
 		then cat $(DANSGUARDIAN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DANSGUARDIAN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DANSGUARDIAN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DANSGUARDIAN_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DANSGUARDIAN_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ dansguardian-stage: $(DANSGUARDIAN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dansguardian
 #
 $(DANSGUARDIAN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dansguardian" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,15 +199,15 @@ $(DANSGUARDIAN_IPK_DIR)/CONTROL/control:
 $(DANSGUARDIAN_IPK): $(DANSGUARDIAN_BUILD_DIR)/.built
 	rm -rf $(DANSGUARDIAN_IPK_DIR) $(BUILD_DIR)/dansguardian_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DANSGUARDIAN_BUILD_DIR) DESTDIR=$(DANSGUARDIAN_IPK_DIR) install-strip
-#	install -d $(DANSGUARDIAN_IPK_DIR)/opt/etc/
-#	install -m 644 $(DANSGUARDIAN_SOURCE_DIR)/dansguardian.conf $(DANSGUARDIAN_IPK_DIR)/opt/etc/dansguardian.conf
-#	install -d $(DANSGUARDIAN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DANSGUARDIAN_SOURCE_DIR)/rc.dansguardian $(DANSGUARDIAN_IPK_DIR)/opt/etc/init.d/SXXdansguardian
+#	$(INSTALL) -d $(DANSGUARDIAN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DANSGUARDIAN_SOURCE_DIR)/dansguardian.conf $(DANSGUARDIAN_IPK_DIR)/opt/etc/dansguardian.conf
+#	$(INSTALL) -d $(DANSGUARDIAN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DANSGUARDIAN_SOURCE_DIR)/rc.dansguardian $(DANSGUARDIAN_IPK_DIR)/opt/etc/init.d/SXXdansguardian
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DANSGUARDIAN_IPK_DIR)/opt/etc/init.d/SXXdansguardian
 	$(MAKE) $(DANSGUARDIAN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DANSGUARDIAN_SOURCE_DIR)/postinst $(DANSGUARDIAN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DANSGUARDIAN_SOURCE_DIR)/postinst $(DANSGUARDIAN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DANSGUARDIAN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DANSGUARDIAN_SOURCE_DIR)/prerm $(DANSGUARDIAN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DANSGUARDIAN_SOURCE_DIR)/prerm $(DANSGUARDIAN_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DANSGUARDIAN_IPK_DIR)/CONTROL/prerm
 	echo $(DANSGUARDIAN_CONFFILES) | sed -e 's/ /\n/g' > $(DANSGUARDIAN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DANSGUARDIAN_IPK_DIR)

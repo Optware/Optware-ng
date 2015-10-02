@@ -121,7 +121,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR)
 	$(PCRE_UNZIP) $(DL_DIR)/$(PCRE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PCRE_PATCHES)"; then \
-		cat $(PCRE_PATCHES) | patch -d $(BUILD_DIR)/$(PCRE_DIR) -p1; \
+		cat $(PCRE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PCRE_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PCRE_DIR) $(@D)
 	(cd $(@D); \
@@ -177,7 +177,7 @@ pcre-stage: $(PCRE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pcre
 #
 $(PCRE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pcre" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,7 +191,7 @@ $(PCRE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PCRE_CONFLICTS)" >>$@
 
 $(PCRE-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pcre-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -225,14 +225,14 @@ $(PCRE_IPK) $(PCRE-DEV_IPK): $(PCRE_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/bin/pcretest
 	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/lib/*.so
 	rm -f $(PCRE_IPK_DIR)/opt/lib/*.la
-	install -d $(PCRE-DEV_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(PCRE-DEV_IPK_DIR)/opt/bin
 	mv $(PCRE_IPK_DIR)/opt/bin/pcre-config $(PCRE-DEV_IPK_DIR)/opt/bin/
-	install -d $(PCRE-DEV_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(PCRE-DEV_IPK_DIR)/opt/lib
 	mv $(PCRE_IPK_DIR)/opt/share $(PCRE_IPK_DIR)/opt/include $(PCRE-DEV_IPK_DIR)/opt/
 	mv $(PCRE_IPK_DIR)/opt/lib/pkgconfig $(PCRE-DEV_IPK_DIR)/opt/lib/
-	install -d $(PCRE_IPK_DIR)/opt/share/doc/pcre
+	$(INSTALL) -d $(PCRE_IPK_DIR)/opt/share/doc/pcre
 	mv $(PCRE-DEV_IPK_DIR)/opt/share/doc/pcre/[ACLNR]* $(PCRE_IPK_DIR)/opt/share/doc/pcre/
-	install -d $(PCRE_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(PCRE_IPK_DIR)/opt/share/man/man1
 	mv $(PCRE-DEV_IPK_DIR)/opt/share/man/man1/pcre[gt]* $(PCRE_IPK_DIR)/opt/share/man/man1/
 	$(MAKE) $(PCRE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCRE_IPK_DIR)

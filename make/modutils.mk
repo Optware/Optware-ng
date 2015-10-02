@@ -102,7 +102,7 @@ modutils-source: $(DL_DIR)/$(MODUTILS_SOURCE) $(MODUTILS_PATCHES)
 $(MODUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(MODUTILS_SOURCE) $(MODUTILS_PATCHES)
 	rm -rf $(BUILD_DIR)/$(MODUTILS_DIR) $(MODUTILS_BUILD_DIR)
 	$(MODUTILS_UNZIP) $(DL_DIR)/$(MODUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MODUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(MODUTILS_DIR) -p1 
+	cat $(MODUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MODUTILS_DIR) -p1 
 	if test "$(BUILD_DIR)/$(MODUTILS_DIR)" != "$(MODUTILS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MODUTILS_DIR) $(MODUTILS_BUILD_DIR) ; \
 	fi
@@ -153,7 +153,7 @@ modutils-stage: $(MODUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/modutils
 #
 $(MODUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(MODUTILS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(MODUTILS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: modutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,12 +189,12 @@ $(MODUTILS_IPK): $(MODUTILS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/genksyms
 	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/insmod
 	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/modinfo
-	install -d $(MODUTILS_IPK_DIR)/opt/etc/
-	install -d $(MODUTILS_IPK_DIR)/opt/etc/init.d
-	install -d $(MODUTILS_IPK_DIR)/opt/lib/
-	install -m 755 $(MODUTILS_SOURCE_DIR)/rc.modutils $(MODUTILS_IPK_DIR)/opt/etc/init.d/S01modutils
+	$(INSTALL) -d $(MODUTILS_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(MODUTILS_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(MODUTILS_IPK_DIR)/opt/lib/
+	$(INSTALL) -m 755 $(MODUTILS_SOURCE_DIR)/rc.modutils $(MODUTILS_IPK_DIR)/opt/etc/init.d/S01modutils
 	$(MAKE) $(MODUTILS_IPK_DIR)/CONTROL/control
-	install -m 755 $(MODUTILS_SOURCE_DIR)/postinst $(MODUTILS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(MODUTILS_SOURCE_DIR)/postinst $(MODUTILS_IPK_DIR)/CONTROL/postinst
 	echo $(MODUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(MODUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MODUTILS_IPK_DIR)
 

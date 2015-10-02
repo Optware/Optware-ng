@@ -103,7 +103,7 @@ $(IOZONE_BUILD_DIR)/.configured: $(DL_DIR)/$(IOZONE_SOURCE) $(IOZONE_PATCHES) ma
 	$(IOZONE_UNZIP) $(DL_DIR)/$(IOZONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IOZONE_PATCHES)" ; \
 		then cat $(IOZONE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IOZONE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IOZONE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IOZONE_DIR)" != "$(IOZONE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(IOZONE_DIR) $(IOZONE_BUILD_DIR) ; \
@@ -133,7 +133,7 @@ iozone: $(IOZONE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/iozone
 #
 $(IOZONE_IPK_DIR)/CONTROL/control:
-	@install -d $(IOZONE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(IOZONE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: iozone" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,22 +161,22 @@ $(IOZONE_IPK_DIR)/CONTROL/control:
 #
 $(IOZONE_IPK): $(IOZONE_BUILD_DIR)/.built
 	rm -rf $(IOZONE_IPK_DIR) $(BUILD_DIR)/iozone_*_$(TARGET_ARCH).ipk
-	install -d $(IOZONE_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(IOZONE_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(IOZONE_BUILD_DIR)/src/current/iozone
-	install -m 755 $(IOZONE_BUILD_DIR)/src/current/iozone $(IOZONE_IPK_DIR)/opt/bin
-	install -d $(IOZONE_IPK_DIR)/opt/lib/iozone/
-	install -m 755 $(IOZONE_BUILD_DIR)/src/current/Generate_Graphs $(IOZONE_IPK_DIR)/opt/lib/iozone
-	install -m 755 $(IOZONE_BUILD_DIR)/src/current/gengnuplot.sh $(IOZONE_IPK_DIR)/opt/lib/iozone
-	install -m 755 $(IOZONE_BUILD_DIR)/src/current/gnu3d.dem $(IOZONE_IPK_DIR)/opt/lib/iozone
-	install -d $(IOZONE_IPK_DIR)/opt/share/doc/iozone
-	install -m 644 $(IOZONE_BUILD_DIR)/docs/IOzone_msword_98.pdf $(IOZONE_IPK_DIR)/opt/share/doc/iozone
-	install -m 644 $(IOZONE_BUILD_DIR)/docs/Run_rules.doc $(IOZONE_IPK_DIR)/opt/share/doc/iozone
-	install -m 644 $(IOZONE_BUILD_DIR)/docs/Iozone_ps.gz $(IOZONE_IPK_DIR)/opt/share/doc/iozone
-	install -d $(IOZONE_IPK_DIR)/opt/man1/
-	install -m 644 $(IOZONE_BUILD_DIR)/docs/iozone.1 $(IOZONE_IPK_DIR)/opt/man1
+	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/iozone $(IOZONE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(IOZONE_IPK_DIR)/opt/lib/iozone/
+	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/Generate_Graphs $(IOZONE_IPK_DIR)/opt/lib/iozone
+	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/gengnuplot.sh $(IOZONE_IPK_DIR)/opt/lib/iozone
+	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/gnu3d.dem $(IOZONE_IPK_DIR)/opt/lib/iozone
+	$(INSTALL) -d $(IOZONE_IPK_DIR)/opt/share/doc/iozone
+	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/IOzone_msword_98.pdf $(IOZONE_IPK_DIR)/opt/share/doc/iozone
+	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/Run_rules.doc $(IOZONE_IPK_DIR)/opt/share/doc/iozone
+	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/Iozone_ps.gz $(IOZONE_IPK_DIR)/opt/share/doc/iozone
+	$(INSTALL) -d $(IOZONE_IPK_DIR)/opt/man1/
+	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/iozone.1 $(IOZONE_IPK_DIR)/opt/man1
 	$(MAKE) $(IOZONE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(IOZONE_BUILD_DIR)/postinst $(IOZONE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(IOZONE_BUILD_DIR)/prerm $(IOZONE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/postinst $(IOZONE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/prerm $(IOZONE_IPK_DIR)/CONTROL/prerm
 #	echo $(IOZONE_CONFFILES) | sed -e 's/ /\n/g' > $(IOZONE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IOZONE_IPK_DIR)
 

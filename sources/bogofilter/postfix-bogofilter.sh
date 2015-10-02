@@ -1,9 +1,9 @@
 #!/bin/sh
 
-BOGOFILTER=/opt/bin/bogofilter
-SPOOL_DIR=/opt/var/spool/bogofilter
-POSTFIX=/opt/sbin/sendmail
-export BOGOFILTER_DIR=/opt/var/spool/bogofilter
+BOGOFILTER=%OPTWARE_TARGET_PREFIX%/bin/bogofilter
+SPOOL_DIR=%OPTWARE_TARGET_PREFIX%/var/spool/bogofilter
+POSTFIX=%OPTWARE_TARGET_PREFIX%/sbin/sendmail
+export BOGOFILTER_DIR=%OPTWARE_TARGET_PREFIX%/var/spool/bogofilter
 
 # Exit codes from <sysexits.h>
 EX_TEMPFAIL=75

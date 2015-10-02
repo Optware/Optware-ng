@@ -5,7 +5,7 @@
  
  
 -char	tmpdir[200] =		"/tmp";
-+char	tmpdir[200] =		"/opt/tmp";
++char	tmpdir[200] =		"%OPTWARE_TARGET_PREFIX%/tmp";
  
  static struct _tmpfile {
      char	filename[200];

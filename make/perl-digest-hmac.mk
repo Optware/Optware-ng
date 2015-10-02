@@ -64,7 +64,7 @@ $(PERL-DIGEST-HMAC_BUILD_DIR)/.staged: $(PERL-DIGEST-HMAC_BUILD_DIR)/.built
 perl-digest-hmac-stage: $(PERL-DIGEST-HMAC_BUILD_DIR)/.staged
 
 $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-digest-hmac" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

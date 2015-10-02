@@ -1,4 +1,4 @@
-# Example /opt/etc/quilt.quiltrc
+# Example %OPTWARE_TARGET_PREFIX%/etc/quilt.quiltrc
 
 # Options passed to GNU diff when generating patches
 QUILT_DIFF_OPTS="--show-c-function"

@@ -110,7 +110,7 @@ $(TEXINFO_BUILD_DIR)/.configured: $(DL_DIR)/$(TEXINFO_SOURCE) $(TEXINFO_PATCHES)
 	$(TEXINFO_UNZIP) $(DL_DIR)/$(TEXINFO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TEXINFO_PATCHES)" ; \
 		then cat $(TEXINFO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TEXINFO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TEXINFO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TEXINFO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TEXINFO_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ texinfo-stage: $(TEXINFO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/texinfo
 #
 $(TEXINFO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: texinfo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,15 @@ $(TEXINFO_IPK): $(TEXINFO_BUILD_DIR)/.built
 	rm -rf $(TEXINFO_IPK_DIR) $(BUILD_DIR)/texinfo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TEXINFO_BUILD_DIR) DESTDIR=$(TEXINFO_IPK_DIR) install-strip
 	rm -f $(TEXINFO_IPK_DIR)/opt/share/info/dir
-#	install -d $(TEXINFO_IPK_DIR)/opt/etc/
-#	install -m 644 $(TEXINFO_SOURCE_DIR)/texinfo.conf $(TEXINFO_IPK_DIR)/opt/etc/texinfo.conf
-#	install -d $(TEXINFO_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TEXINFO_SOURCE_DIR)/rc.texinfo $(TEXINFO_IPK_DIR)/opt/etc/init.d/SXXtexinfo
+#	$(INSTALL) -d $(TEXINFO_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(TEXINFO_SOURCE_DIR)/texinfo.conf $(TEXINFO_IPK_DIR)/opt/etc/texinfo.conf
+#	$(INSTALL) -d $(TEXINFO_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(TEXINFO_SOURCE_DIR)/rc.texinfo $(TEXINFO_IPK_DIR)/opt/etc/init.d/SXXtexinfo
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TEXINFO_IPK_DIR)/opt/etc/init.d/SXXtexinfo
 	$(MAKE) $(TEXINFO_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TEXINFO_SOURCE_DIR)/postinst $(TEXINFO_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TEXINFO_SOURCE_DIR)/postinst $(TEXINFO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TEXINFO_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TEXINFO_SOURCE_DIR)/prerm $(TEXINFO_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TEXINFO_SOURCE_DIR)/prerm $(TEXINFO_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TEXINFO_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

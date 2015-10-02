@@ -112,15 +112,15 @@ $(NETCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(NETCAT_SOURCE) $(DL_DIR)/$(NETCAT_D
 	$(NETCAT_UNZIP) $(DL_DIR)/$(NETCAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETCAT_PATCHES)" ; \
 		then cat $(NETCAT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NETCAT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NETCAT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NETCAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NETCAT_DIR) $(@D) ; \
 	fi
 	(cd $(@D); \
 		mkdir -p debian; \
-		zcat $(DL_DIR)/$(NETCAT_DEBIAN_PATCH) | patch -d debian; \
-		for i in `cat debian/series`; do cat debian/$$i | patch -p1; done; \
+		zcat $(DL_DIR)/$(NETCAT_DEBIAN_PATCH) | $(PATCH) -d debian; \
+		for i in `cat debian/series`; do cat debian/$$i | $(PATCH) -p1; done; \
 		sed -i -e 's|/usr/share|/opt/share|g' debian/nc.1; \
 	)
 	touch $@
@@ -158,7 +158,7 @@ netcat: $(NETCAT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/netcat
 #
 $(NETCAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: netcat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -186,11 +186,11 @@ $(NETCAT_IPK_DIR)/CONTROL/control:
 #
 $(NETCAT_IPK): $(NETCAT_BUILD_DIR)/.built
 	rm -rf $(NETCAT_IPK_DIR) $(BUILD_DIR)/netcat_*_$(TARGET_ARCH).ipk
-	install -d $(NETCAT_IPK_DIR)/opt/bin
-	install $(NETCAT_BUILD_DIR)/nc $(NETCAT_IPK_DIR)/opt/bin/netcat-nc
-	install -d $(NETCAT_IPK_DIR)/opt/man/man1
-	install $(NETCAT_BUILD_DIR)/debian/nc.1 $(NETCAT_IPK_DIR)/opt/man/man1
-	install -d $(NETCAT_IPK_DIR)/opt/share/doc/netcat
+	$(INSTALL) -d $(NETCAT_IPK_DIR)/opt/bin
+	$(INSTALL) $(NETCAT_BUILD_DIR)/nc $(NETCAT_IPK_DIR)/opt/bin/netcat-nc
+	$(INSTALL) -d $(NETCAT_IPK_DIR)/opt/man/man1
+	$(INSTALL) $(NETCAT_BUILD_DIR)/debian/nc.1 $(NETCAT_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(NETCAT_IPK_DIR)/opt/share/doc/netcat
 	gzip -c $(NETCAT_BUILD_DIR)/README > $(NETCAT_IPK_DIR)/opt/share/doc/netcat/README.gz
 	$(STRIP_COMMAND) $(NETCAT_IPK_DIR)/opt/bin/netcat-nc
 	$(MAKE) $(NETCAT_IPK_DIR)/CONTROL/control

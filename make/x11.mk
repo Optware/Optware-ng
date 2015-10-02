@@ -65,7 +65,7 @@ X11_IPK=$(BUILD_DIR)/x11_$(X11_FULL_VERSION)-$(X11_IPK_VERSION)_$(TARGET_ARCH).i
 # Automatically create a ipkg control file
 #
 $(X11_IPK_DIR)/CONTROL/control:
-	@install -d $(X11_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(X11_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: x11" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -107,7 +107,7 @@ $(X11_BUILD_DIR)/.configured: $(DL_DIR)/$(X11_SOURCE) $(X11_PATCHES) make/x11.mk
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(X11_SOURCE)
 	if test -n "$(X11_PATCHES)" ; \
 		then cat $(X11_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(X11_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(X11_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(X11_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(X11_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ $(X11_IPK): $(X11_BUILD_DIR)/.built
 	rm -rf $(X11_IPK_DIR) $(BUILD_DIR)/x11_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(X11_BUILD_DIR) DESTDIR=$(X11_IPK_DIR) install-strip
 	$(MAKE) $(X11_IPK_DIR)/CONTROL/control
-	install -m 644 $(X11_SOURCE_DIR)/postinst $(X11_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(X11_SOURCE_DIR)/postinst $(X11_IPK_DIR)/CONTROL/postinst
 	rm -f $(X11_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(X11_IPK_DIR)
 

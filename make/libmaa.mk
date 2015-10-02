@@ -110,7 +110,7 @@ $(LIBMAA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAA_SOURCE) $(LIBMAA_PATCHES) ma
 	$(LIBMAA_UNZIP) $(DL_DIR)/$(LIBMAA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMAA_PATCHES)" ; \
 		then cat $(LIBMAA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMAA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMAA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMAA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMAA_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ libmaa-stage: $(LIBMAA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmaa
 #
 $(LIBMAA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmaa" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

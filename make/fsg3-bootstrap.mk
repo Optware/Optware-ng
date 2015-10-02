@@ -45,7 +45,7 @@ fsg3-bootstrap: $(FSG3_BOOTSTRAP_BUILD_DIR)/.built
 fsg3-bootstrap-stage:
 
 $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fsg3-bootstrap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -60,26 +60,26 @@ $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/control:
 
 $(FSG3_BOOTSTRAP_IPK): $(FSG3_BOOTSTRAP_BUILD_DIR)/.built
 	rm -rf $(FSG3_BOOTSTRAP_IPK_DIR) $(BUILD_DIR)/fsg3-bootstrap_*_$(TARGET_ARCH).ipk
-	install -d $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib
-	install -m 755 $(FSG3_BOOTSTRAP_BUILD_DIR)/*.so* $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/
-	install -m 644 $(FSG3_BOOTSTRAP_BUILD_DIR)/*.a $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/
-	install -m 644 $(FSG3_BOOTSTRAP_BUILD_DIR)/*.o $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/
-	install -d $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/gconv
-	install -m 755 $(FSG3_BOOTSTRAP_BUILD_DIR)/gconv/*.so $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/gconv/
-	install -m 644 $(FSG3_BOOTSTRAP_BUILD_DIR)/gconv/gconv-modules $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/gconv/
-	install -d $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/ldscripts
-	install -m 644 $(FSG3_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/ldscripts/
+	$(INSTALL) -d $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib
+	$(INSTALL) -m 755 $(FSG3_BOOTSTRAP_BUILD_DIR)/*.so* $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/
+	$(INSTALL) -m 644 $(FSG3_BOOTSTRAP_BUILD_DIR)/*.a $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/
+	$(INSTALL) -m 644 $(FSG3_BOOTSTRAP_BUILD_DIR)/*.o $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/gconv
+	$(INSTALL) -m 755 $(FSG3_BOOTSTRAP_BUILD_DIR)/gconv/*.so $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/gconv/
+	$(INSTALL) -m 644 $(FSG3_BOOTSTRAP_BUILD_DIR)/gconv/gconv-modules $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/gconv/
+	$(INSTALL) -d $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/ldscripts
+	$(INSTALL) -m 644 $(FSG3_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/ldscripts/
 	cd $(FSG3_BOOTSTRAP_BUILD_DIR) ; cp -P `find . -type l -print` $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/
 
-	install -d $(FSG3_BOOTSTRAP_IPK_DIR)/opt/etc
-	install -m 755 $(IPKG-OPT_SOURCE_DIR)/rc.optware $(FSG3_BOOTSTRAP_IPK_DIR)/opt/etc
-	install -d $(FSG3_BOOTSTRAP_IPK_DIR)/etc/init.d
-	install -m 755 $(FSG3_BOOTSTRAP_SOURCE_DIR)/optware $(FSG3_BOOTSTRAP_IPK_DIR)/etc/init.d/optware
+	$(INSTALL) -d $(FSG3_BOOTSTRAP_IPK_DIR)/opt/etc
+	$(INSTALL) -m 755 $(IPKG-OPT_SOURCE_DIR)/rc.optware $(FSG3_BOOTSTRAP_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(FSG3_BOOTSTRAP_IPK_DIR)/etc/init.d
+	$(INSTALL) -m 755 $(FSG3_BOOTSTRAP_SOURCE_DIR)/optware $(FSG3_BOOTSTRAP_IPK_DIR)/etc/init.d/optware
 
 #	$(STRIP_COMMAND) $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/*.so
 	$(MAKE) $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/control
-	install -m 644 $(FSG3_BOOTSTRAP_SOURCE_DIR)/preinst $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/preinst
-	install -m 644 $(FSG3_BOOTSTRAP_SOURCE_DIR)/postinst $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(FSG3_BOOTSTRAP_SOURCE_DIR)/preinst $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(FSG3_BOOTSTRAP_SOURCE_DIR)/postinst $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3_BOOTSTRAP_IPK_DIR)
 
 $(FSG3_BOOTSTRAP_XSH): $(FSG3_BOOTSTRAP_IPK) \

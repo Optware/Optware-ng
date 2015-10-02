@@ -144,7 +144,7 @@ ifneq (, $(filter libstdc++, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(@D)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MYSQL_PATCHES) | patch -bd $(BUILD_DIR)/$(MYSQL_DIR) -p1
+	cat $(MYSQL_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
 	autoreconf --install --force -v $(@D)
 	(cd $(@D); \
@@ -217,7 +217,7 @@ mysql-stage: $(MYSQL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mysql
 #
 $(MYSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mysql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -246,18 +246,18 @@ $(MYSQL_IPK): $(MYSQL_BUILD_DIR)/.built
 	rm -rf $(MYSQL_IPK_DIR) $(BUILD_DIR)/mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MYSQL_BUILD_DIR) DESTDIR=$(MYSQL_IPK_DIR) install-strip
 	rm -rf $(MYSQL_IPK_DIR)/opt/mysql-test
-	install -d $(MYSQL_IPK_DIR)/opt/var/lib/mysql
-	install -d $(MYSQL_IPK_DIR)/opt/var/log
-	install -d $(MYSQL_IPK_DIR)/opt/etc/
-	install -m 644 $(MYSQL_SOURCE_DIR)/my.cnf $(MYSQL_IPK_DIR)/opt/etc/my.cnf
-	install -d $(MYSQL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(MYSQL_IPK_DIR)/opt/var/lib/mysql
+	$(INSTALL) -d $(MYSQL_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(MYSQL_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(MYSQL_SOURCE_DIR)/my.cnf $(MYSQL_IPK_DIR)/opt/etc/my.cnf
+	$(INSTALL) -d $(MYSQL_IPK_DIR)/opt/etc/init.d
 	( cd $(MYSQL_IPK_DIR)/opt/etc/init.d ; \
 		ln -s ../../share/mysql/mysql.server S70mysqld ; \
 		ln -s ../../share/mysql/mysql.server K70mysqld ; \
 	)
 	$(MAKE) $(MYSQL_IPK_DIR)/CONTROL/control
-	install -m 755 $(MYSQL_SOURCE_DIR)/postinst $(MYSQL_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(MYSQL_SOURCE_DIR)/prerm $(MYSQL_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/postinst $(MYSQL_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/prerm $(MYSQL_IPK_DIR)/CONTROL/prerm
 	echo $(MYSQL_CONFFILES) | sed -e 's/ /\n/g' > $(MYSQL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MYSQL_IPK_DIR)
 

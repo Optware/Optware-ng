@@ -6,7 +6,7 @@
 
 #
 # PERL_CONFFILES should be a list of user-editable files
-#PERL_CONFFILES=/opt/etc/perl.conf /opt/etc/init.d/SXXperl
+#PERL_CONFFILES=$(TARGET_PREFIX)/etc/perl.conf $(TARGET_PREFIX)/etc/init.d/SXXperl
 
 #
 # PERL_PATCHES should list any patches, in the the order in
@@ -28,7 +28,7 @@ PERL_ARCH=$(strip \
     $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
     $(TARGET_ARCH)-linux))))
 PERL_LIB_CORE_DIR=perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
-PERL_LDFLAGS="-Wl,-rpath,/opt/lib/$(PERL_LIB_CORE_DIR)"
+PERL_LDFLAGS="-Wl,-rpath,$(TARGET_PREFIX)/lib/$(PERL_LIB_CORE_DIR)"
 ifeq (vt4, $(OPTWARE_TARGET))
 PERL_LDFLAGS_EXTRA=-L$(TARGET_CROSS_TOP)/920t_le/lib/gcc/arm-linux/3.4.4
 endif
@@ -73,7 +73,7 @@ $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE) # make/perl.mk
 		sh ./Configure -des \
 			-Dinstallstyle='lib/perl5' \
 			-Darchname=$(PERL_ARCH) \
-			-Dstartperl='#!/opt/bin/perl' \
+			-Dstartperl='#!$(TARGET_PREFIX)/bin/perl' \
 			-Dprefix=$(@D)/staging-install; \
 	)
 	$(MAKE) -C $(@D) install
@@ -105,7 +105,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \
-		cat $(PERL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
+		cat $(PERL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	sed -i -e '/LIBS/s|-L/usr/local/lib|-L$(STAGING_LIB_DIR)|' $(@D)/ext/*/Makefile.PL
@@ -122,7 +122,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
 		./Configure \
 		-Dcc=gcc \
-		-Dprefix=/opt \
+		-Dprefix=$(TARGET_PREFIX) \
 		-Duseshrplib \
 		-Dd_dlopen \
 		-de \
@@ -155,7 +155,7 @@ endif
 	)
 endif
 	if test -n "$(PERL_POST_CONFIGURE_PATCHES)" ; then \
-		cat $(PERL_POST_CONFIGURE_PATCHES) | patch -d $(@D) -p0 ; \
+		cat $(PERL_POST_CONFIGURE_PATCHES) | $(PATCH) -d $(@D) -p0 ; \
 	fi
 	touch $@
 
@@ -176,7 +176,7 @@ else
 	PATH="`dirname $(TARGET_CC)`:$(@D):$$PATH" \
 		$(MAKE) -C $(@D)/Cross perl \
 	PASTHRU_INC="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
-	OTHERLDFLAGS="-L$(STAGING_LIB_DIR) -rpath /opt/lib" \
+	OTHERLDFLAGS="-L$(STAGING_LIB_DIR) -rpath $(TARGET_PREFIX)/lib" \
 	GEN_UUDMAP_DIR=$(PERL_HOST_BUILD_DIR) \
 	;
 endif
@@ -199,7 +199,7 @@ else
 		$(MAKE) -C $(@D) install.perl \
 		DESTDIR=$(STAGING_DIR) INSTALL_DEPENDENCE="" INSTALLFLAGS=-f
 endif
-	(cd $(STAGING_DIR)/opt/bin; \
+	(cd $(STAGING_DIR)$(TARGET_PREFIX)/bin; \
 		rm -f perl; \
 		ln -s perl$(PERL_VERSION) perl; \
 	)
@@ -210,12 +210,12 @@ perl-stage: $(PERL_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PERL_IPK_DIR)/opt/sbin or $(PERL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PERL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PERL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PERL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PERL_IPK_DIR)/opt/etc/perl/...
-# Documentation files should be installed in $(PERL_IPK_DIR)/opt/doc/perl/...
-# Daemon startup scripts should be installed in $(PERL_IPK_DIR)/opt/etc/init.d/S??perl
+# Libraries and include files should be installed into $(PERL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PERL_IPK_DIR)$(TARGET_PREFIX)/etc/perl/...
+# Documentation files should be installed in $(PERL_IPK_DIR)$(TARGET_PREFIX)/doc/perl/...
+# Daemon startup scripts should be installed in $(PERL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??perl
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -229,27 +229,27 @@ else
 		$(MAKE) -C $(PERL_BUILD_DIR) install.perl \
 		DESTDIR=$(PERL_IPK_DIR) INSTALL_DEPENDENCE="" \
 		;
-	for f in $(PERL_IPK_DIR)/opt/bin/perl$(PERL_VERSION) \
-		$(PERL_IPK_DIR)/opt/bin/a2p \
-		`find $(PERL_IPK_DIR)/opt/lib/perl5/ -name '*.so'`; \
+	for f in $(PERL_IPK_DIR)$(TARGET_PREFIX)/bin/perl$(PERL_VERSION) \
+		$(PERL_IPK_DIR)$(TARGET_PREFIX)/bin/a2p \
+		`find $(PERL_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/ -name '*.so'`; \
 		do chmod u+w $$f; $(STRIP_COMMAND) $$f; done
 endif
-	(cd $(PERL_IPK_DIR)/opt/bin; \
+	(cd $(PERL_IPK_DIR)$(TARGET_PREFIX)/bin; \
 		rm -f perl; \
 		ln -s perl$(PERL_VERSION) perl; \
 	)
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
-	install -d $(PERL_IPK_DIR)/usr/bin
-	ln -s /opt/bin/perl $(PERL_IPK_DIR)/usr/bin/perl
+	$(INSTALL) -d $(PERL_IPK_DIR)/usr/bin
+	ln -s $(TARGET_PREFIX)/bin/perl $(PERL_IPK_DIR)/usr/bin/perl
 endif
 	$(MAKE) $(PERL_IPK_DIR)/CONTROL/control
 	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
 	$(MAKE) $(PERL-DOC_IPK_DIR)/CONTROL/control
-	install -d $(PERL-DOC_IPK_DIR)/opt/bin
-	mv $(PERL_IPK_DIR)/opt/bin/perldoc $(PERL-DOC_IPK_DIR)/opt/bin
-	install -d $(PERL-DOC_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)
-	mv $(PERL_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/pod $(PERL-DOC_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/
-	cp -rp $(PERL_HOST_BUILD_DIR)/staging-install/man $(PERL-DOC_IPK_DIR)/opt/
+	$(INSTALL) -d $(PERL-DOC_IPK_DIR)$(TARGET_PREFIX)/bin
+	mv $(PERL_IPK_DIR)$(TARGET_PREFIX)/bin/perldoc $(PERL-DOC_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(PERL-DOC_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/$(PERL_VERSION)
+	mv $(PERL_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/$(PERL_VERSION)/pod $(PERL-DOC_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/$(PERL_VERSION)/
+	cp -rp $(PERL_HOST_BUILD_DIR)/staging-install/man $(PERL-DOC_IPK_DIR)$(TARGET_PREFIX)/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-DOC_IPK_DIR)
 

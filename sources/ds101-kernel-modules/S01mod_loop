@@ -15,4 +15,4 @@ done
 
 # insert all additional modules 
 
-insmod -f /opt/lib/modules/loop.o
+insmod -f %OPTWARE_TARGET_PREFIX%/lib/modules/loop.o

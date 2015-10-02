@@ -68,7 +68,7 @@ ATK_IPK=$(BUILD_DIR)/atk_$(ATK_VERSION)-$(ATK_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(ATK_IPK_DIR)/CONTROL/control:
-	@install -d $(ATK_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ATK_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: atk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -168,14 +168,14 @@ atk-stage: $(ATK_BUILD_DIR)/.staged
 $(ATK_IPK): $(ATK_BUILD_DIR)/.built
 	rm -rf $(ATK_IPK_DIR) $(BUILD_DIR)/atk_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ATK_BUILD_DIR) DESTDIR=$(ATK_IPK_DIR) install-strip
-	install -d $(ATK_IPK_DIR)/opt/share/gir-1.0
-	install -m 644 $(ATK_SOURCE_DIR)/$(ATK_VERSION)/Atk-1.0.gir \
+	$(INSTALL) -d $(ATK_IPK_DIR)/opt/share/gir-1.0
+	$(INSTALL) -m 644 $(ATK_SOURCE_DIR)/$(ATK_VERSION)/Atk-1.0.gir \
 		$(ATK_IPK_DIR)/opt/share/gir-1.0/Atk-1.0.gir
 	rm -f $(ATK_IPK_DIR)/opt/lib/*.la
 	rm -rf $(ATK_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(ATK_IPK_DIR)/CONTROL/control
-	install -m 755 $(ATK_SOURCE_DIR)/postinst $(ATK_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(ATK_SOURCE_DIR)/prerm $(ATK_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(ATK_SOURCE_DIR)/postinst $(ATK_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(ATK_SOURCE_DIR)/prerm $(ATK_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ATK_IPK_DIR)
 
 #

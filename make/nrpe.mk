@@ -102,7 +102,7 @@ $(NRPE_BUILD_DIR)/.configured: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES)
 	$(NRPE_UNZIP) $(DL_DIR)/$(NRPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NRPE_PATCHES)" ; \
 		then cat $(NRPE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NRPE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NRPE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NRPE_DIR)" != "$(NRPE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NRPE_DIR) $(NRPE_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ nrpe-stage: $(NRPE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nrpe
 #
 $(NRPE_IPK_DIR)/CONTROL/control:
-	@install -d $(NRPE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(NRPE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: nrpe" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,17 +189,17 @@ $(NRPE_IPK_DIR)/CONTROL/control:
 #
 $(NRPE_IPK): $(NRPE_BUILD_DIR)/.built
 	rm -rf $(NRPE_IPK_DIR) $(BUILD_DIR)/nrpe_*_$(TARGET_ARCH).ipk
-	install -d $(NRPE_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(NRPE_IPK_DIR)/opt/sbin/
 	cp $(NRPE_BUILD_DIR)/src/nrpe $(NRPE_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(NRPE_IPK_DIR)/opt/sbin/*
-	install -d $(NRPE_IPK_DIR)/opt/etc/
-	install -m 644 $(NRPE_BUILD_DIR)/sample-config/nrpe.cfg $(NRPE_IPK_DIR)/opt/etc/nrpe.cfg
-	install -d $(NRPE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NRPE_BUILD_DIR)/init-script $(NRPE_IPK_DIR)/opt/etc/init.d/S99nrpe
+	$(INSTALL) -d $(NRPE_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(NRPE_BUILD_DIR)/sample-config/nrpe.cfg $(NRPE_IPK_DIR)/opt/etc/nrpe.cfg
+	$(INSTALL) -d $(NRPE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NRPE_BUILD_DIR)/init-script $(NRPE_IPK_DIR)/opt/etc/init.d/S99nrpe
 	sed -i 's#/opt/bin#/opt/sbin#' $(NRPE_IPK_DIR)/opt/etc/init.d/S99nrpe
 	$(MAKE) $(NRPE_IPK_DIR)/CONTROL/control
-	# install -m 755 $(NRPE_SOURCE_DIR)/postinst $(NRPE_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(NRPE_SOURCE_DIR)/prerm $(NRPE_IPK_DIR)/CONTROL/prerm
+	# $(INSTALL) -m 755 $(NRPE_SOURCE_DIR)/postinst $(NRPE_IPK_DIR)/CONTROL/postinst
+	# $(INSTALL) -m 755 $(NRPE_SOURCE_DIR)/prerm $(NRPE_IPK_DIR)/CONTROL/prerm
 	echo $(NRPE_CONFFILES) | sed -e 's/ /\n/g' > $(NRPE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NRPE_IPK_DIR)
 

@@ -106,7 +106,7 @@ $(ASTERISK_GUI_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK_GUI_SOURCE) $(ASTERI
 	$(ASTERISK_GUI_UNZIP) $(DL_DIR)/$(ASTERISK_GUI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK_GUI_PATCHES)" ; \
 		then cat $(ASTERISK_GUI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK_GUI_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASTERISK_GUI_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK_GUI_DIR)" != "$(ASTERISK_GUI_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK_GUI_DIR) $(ASTERISK_GUI_BUILD_DIR) ; \
@@ -157,7 +157,7 @@ asterisk-gui-stage: $(ASTERISK_GUI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/asterisk-gui
 #
 $(ASTERISK_GUI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: asterisk-gui" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

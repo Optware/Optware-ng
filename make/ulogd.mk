@@ -111,7 +111,7 @@ $(ULOGD_BUILD_DIR)/.configured: $(DL_DIR)/$(ULOGD_SOURCE) $(ULOGD_PATCHES) make/
 	$(ULOGD_UNZIP) $(DL_DIR)/$(ULOGD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ULOGD_PATCHES)" ; \
 		then cat $(ULOGD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ULOGD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ULOGD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ULOGD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ULOGD_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ ulogd-stage: $(ULOGD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ulogd
 #
 $(ULOGD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ulogd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

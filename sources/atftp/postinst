@@ -1,10 +1,10 @@
 #!/bin/sh
 
-mkdir -p /opt/tftpboot
+mkdir -p %OPTWARE_TARGET_PREFIX%/tftpboot
 
 # TSx09 devices have admin instead of root
 if grep -v root /etc/passwd > /dev/null ; then
-    sed -i -e 's/root/admin/' /opt/etc/xinetd.d/atftp
+    sed -i -e 's/root/admin/' %OPTWARE_TARGET_PREFIX%/etc/xinetd.d/atftp
 fi
 
 killall -HUP xinetd 2>/dev/null

@@ -112,7 +112,7 @@ $(LRZSZ_BUILD_DIR)/.configured: $(DL_DIR)/$(LRZSZ_SOURCE) $(LRZSZ_PATCHES) make/
 	$(LRZSZ_UNZIP) $(DL_DIR)/$(LRZSZ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LRZSZ_PATCHES)" ; \
 		then cat $(LRZSZ_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LRZSZ_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LRZSZ_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LRZSZ_DIR)" != "$(LRZSZ_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LRZSZ_DIR) $(LRZSZ_BUILD_DIR) ; \
@@ -151,7 +151,7 @@ lrzsz: $(LRZSZ_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/lrzsz
 #
 $(LRZSZ_IPK_DIR)/CONTROL/control:
-	@install -d $(LRZSZ_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LRZSZ_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: lrzsz" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -123,7 +123,7 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 	$(NETATALK_UNZIP) $(DL_DIR)/$(NETATALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETATALK_PATCHES)" ; \
 		then cat $(NETATALK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NETATALK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NETATALK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NETATALK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NETATALK_DIR) $(@D) ; \
@@ -194,7 +194,7 @@ netatalk-stage: $(NETATALK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/netatalk
 #
 $(NETATALK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: netatalk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -228,15 +228,15 @@ $(NETATALK_IPK): $(NETATALK_BUILD_DIR)/.built
 	rm -f $(NETATALK_IPK_DIR)/opt/lib/*.la \
 	      $(NETATALK_IPK_DIR)/opt/etc/netatalk/uams/*.la \
 	      $(NETATALK_IPK_DIR)/opt/lib/libatalk.a
-#	install -d $(NETATALK_IPK_DIR)/opt/etc/
-#	install -m 644 $(NETATALK_SOURCE_DIR)/netatalk.conf $(NETATALK_IPK_DIR)/opt/etc/netatalk.conf
-#	install -d $(NETATALK_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NETATALK_SOURCE_DIR)/rc.netatalk $(NETATALK_IPK_DIR)/opt/etc/init.d/SXXnetatalk
+#	$(INSTALL) -d $(NETATALK_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NETATALK_SOURCE_DIR)/netatalk.conf $(NETATALK_IPK_DIR)/opt/etc/netatalk.conf
+#	$(INSTALL) -d $(NETATALK_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NETATALK_SOURCE_DIR)/rc.netatalk $(NETATALK_IPK_DIR)/opt/etc/init.d/SXXnetatalk
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETATALK_IPK_DIR)/opt/etc/init.d/SXXnetatalk
 	$(MAKE) $(NETATALK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NETATALK_SOURCE_DIR)/postinst $(NETATALK_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NETATALK_SOURCE_DIR)/postinst $(NETATALK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETATALK_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NETATALK_SOURCE_DIR)/prerm $(NETATALK_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NETATALK_SOURCE_DIR)/prerm $(NETATALK_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETATALK_IPK_DIR)/CONTROL/prerm
 	echo $(NETATALK_CONFFILES) | sed -e 's/ /\n/g' > $(NETATALK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETATALK_IPK_DIR)

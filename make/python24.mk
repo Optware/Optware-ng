@@ -134,7 +134,7 @@ endif
 		zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage libffi-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.4
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
-	cat $(PYTHON24_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1
+	cat $(PYTHON24_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1
 	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON24_DIR)/configure.in
 	cd $(BUILD_DIR)/$(PYTHON24_DIR); autoconf configure.in > configure
 	mkdir $(@D)
@@ -190,7 +190,7 @@ python24: $(PYTHON24_BUILD_DIR)/.built
 $(PYTHON24_BUILD_DIR)/.staged: $(PYTHON24_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	install $(@D)/buildpython/python $(STAGING_PREFIX)/bin/
+	$(INSTALL) $(@D)/buildpython/python $(STAGING_PREFIX)/bin/
 	touch $@
 
 python24-stage: $(PYTHON24_BUILD_DIR)/.staged
@@ -207,7 +207,7 @@ python24-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.4
 # necessary to create a seperate control file under sources/python
 #
 $(PYTHON24_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: python24" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -245,16 +245,16 @@ $(PYTHON24_IPK): $(PYTHON24_BUILD_DIR)/.built
 		mv smtpd.py smtpd$(PYTHON24_VERSION_MAJOR).py; \
 	)
 	rm $(PYTHON24_IPK_DIR)/opt/bin/python
-	install -d $(PYTHON24_IPK_DIR)/opt/local/bin
-	install -d $(PYTHON24_IPK_DIR)/opt/local/lib/python$(PYTHON24_VERSION_MAJOR)/site-packages
+	$(INSTALL) -d $(PYTHON24_IPK_DIR)/opt/local/bin
+	$(INSTALL) -d $(PYTHON24_IPK_DIR)/opt/local/lib/python$(PYTHON24_VERSION_MAJOR)/site-packages
 	sed -i -e 's|$(TARGET_CROSS)|/opt/bin/|g' \
 	       -e 's|$(STAGING_INCLUDE_DIR)|/opt/include|g' \
 	       -e 's|$(STAGING_LIB_DIR)|/opt/lib|g' \
 	       -e '/^RUNSHARED=/s|=.*|=|' \
 	       $(PYTHON24_IPK_DIR)/opt/lib/python2.4/config/Makefile
 	$(MAKE) $(PYTHON24_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PYTHON24_SOURCE_DIR)/postinst $(PYTHON24_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PYTHON24_SOURCE_DIR)/prerm $(PYTHON24_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PYTHON24_SOURCE_DIR)/postinst $(PYTHON24_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PYTHON24_SOURCE_DIR)/prerm $(PYTHON24_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON24_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(PYTHON24_IPK_DIR)
 

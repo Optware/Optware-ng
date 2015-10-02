@@ -114,7 +114,7 @@ $(HIAWATHA_BUILD_DIR)/.configured: $(DL_DIR)/$(HIAWATHA_SOURCE) $(HIAWATHA_PATCH
 	$(HIAWATHA_UNZIP) $(DL_DIR)/$(HIAWATHA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HIAWATHA_PATCHES)" ; \
 		then cat $(HIAWATHA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HIAWATHA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HIAWATHA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HIAWATHA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HIAWATHA_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ hiawatha-stage: $(HIAWATHA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/hiawatha
 #
 $(HIAWATHA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: hiawatha" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(HIAWATHA_IPK_DIR)/CONTROL/control:
 $(HIAWATHA_IPK): $(HIAWATHA_BUILD_DIR)/.built
 	rm -rf $(HIAWATHA_IPK_DIR) $(BUILD_DIR)/hiawatha_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HIAWATHA_BUILD_DIR) DESTDIR=$(HIAWATHA_IPK_DIR) program_transform_name='' install-strip
-#	install -d $(HIAWATHA_IPK_DIR)/opt/etc/
-#	install -m 644 $(HIAWATHA_SOURCE_DIR)/hiawatha.conf $(HIAWATHA_IPK_DIR)/opt/etc/hiawatha.conf
-#	install -d $(HIAWATHA_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(HIAWATHA_SOURCE_DIR)/rc.hiawatha $(HIAWATHA_IPK_DIR)/opt/etc/init.d/SXXhiawatha
+#	$(INSTALL) -d $(HIAWATHA_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(HIAWATHA_SOURCE_DIR)/hiawatha.conf $(HIAWATHA_IPK_DIR)/opt/etc/hiawatha.conf
+#	$(INSTALL) -d $(HIAWATHA_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(HIAWATHA_SOURCE_DIR)/rc.hiawatha $(HIAWATHA_IPK_DIR)/opt/etc/init.d/SXXhiawatha
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HIAWATHA_IPK_DIR)/opt/etc/init.d/SXXhiawatha
 	$(MAKE) $(HIAWATHA_IPK_DIR)/CONTROL/control
-#	install -m 755 $(HIAWATHA_SOURCE_DIR)/postinst $(HIAWATHA_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(HIAWATHA_SOURCE_DIR)/postinst $(HIAWATHA_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HIAWATHA_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(HIAWATHA_SOURCE_DIR)/prerm $(HIAWATHA_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(HIAWATHA_SOURCE_DIR)/prerm $(HIAWATHA_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HIAWATHA_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

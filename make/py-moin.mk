@@ -118,7 +118,7 @@ $(PY-MOIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MOIN_SOURCE) $(PY-MOIN_PATCHES)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-MOIN_DIR)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-MOIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
+	cat $(PY-MOIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.6
 	sed -i -e 's|/usr/lib/python/|/opt/lib/python2.6/|' $(@D)/2.6/setup.py
 	(echo "[build_scripts]"; \
@@ -126,7 +126,7 @@ $(PY-MOIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MOIN_SOURCE) $(PY-MOIN_PATCHES)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MOIN_DIR)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-MOIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
+	cat $(PY-MOIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.5
 	sed -i -e 's|/usr/lib/python/|/opt/lib/python2.5/|' $(@D)/2.5/setup.py
 	(echo "[build_scripts]"; \
@@ -166,7 +166,7 @@ py-moin-stage: $(PY-MOIN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-moin
 #
 $(PY-MOIN-COMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-moin-common" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +180,7 @@ $(PY-MOIN-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MOIN_CONFLICTS)" >>$@
 
 $(PY26-MOIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-moin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,7 +194,7 @@ $(PY26-MOIN_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MOIN_CONFLICTS)" >>$@
 
 $(PY25-MOIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-moin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -248,7 +248,7 @@ $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK): $(PY-MOIN_BUILD_DIR)/.built
 	chmod 755 $(PY25-MOIN_IPK_DIR)/opt/bin/py25-moin-createinstance.sh
 	$(MAKE) $(PY25-MOIN_IPK_DIR)/CONTROL/control
 	$(MAKE) $(PY-MOIN-COMMON_IPK_DIR)/CONTROL/control
-	install -d $(PY-MOIN-COMMON_IPK_DIR)/opt/
+	$(INSTALL) -d $(PY-MOIN-COMMON_IPK_DIR)/opt/
 	mv $(PY25-MOIN_IPK_DIR)/opt/share $(PY-MOIN-COMMON_IPK_DIR)/opt/
 #	chmod o+r $(PY-MOIN-COMMON_IPK_DIR)/opt/share/moin/data/*-log
 	for f in wikiserver.py wikiserverconfig.py wikiserverlogging.conf; \

@@ -112,7 +112,7 @@ $(IFTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(IFTOP_SOURCE) $(IFTOP_PATCHES) make/
 	$(IFTOP_UNZIP) $(DL_DIR)/$(IFTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IFTOP_PATCHES)" ; \
 		then cat $(IFTOP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IFTOP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IFTOP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IFTOP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IFTOP_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ iftop-stage: $(IFTOP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/iftop
 #
 $(IFTOP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: iftop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,16 +192,16 @@ $(IFTOP_IPK_DIR)/CONTROL/control:
 $(IFTOP_IPK): $(IFTOP_BUILD_DIR)/.built
 	rm -rf $(IFTOP_IPK_DIR) $(BUILD_DIR)/iftop_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IFTOP_BUILD_DIR) DESTDIR=$(IFTOP_IPK_DIR) install-strip transform=''
-	install -d $(IFTOP_IPK_DIR)/opt/etc/
-#	install -m 644 $(IFTOP_SOURCE_DIR)/iftop.conf $(IFTOP_IPK_DIR)/opt/etc/iftop.conf
-	install -d $(IFTOP_IPK_DIR)/opt/man/man8
-	install -m 644 $(IFTOP_BUILD_DIR)/iftop.8 $(IFTOP_IPK_DIR)/opt/man/man8
-#	install -m 755 $(IFTOP_SOURCE_DIR)/rc.iftop $(IFTOP_IPK_DIR)/opt/etc/init.d/SXXiftop
+	$(INSTALL) -d $(IFTOP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(IFTOP_SOURCE_DIR)/iftop.conf $(IFTOP_IPK_DIR)/opt/etc/iftop.conf
+	$(INSTALL) -d $(IFTOP_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 644 $(IFTOP_BUILD_DIR)/iftop.8 $(IFTOP_IPK_DIR)/opt/man/man8
+#	$(INSTALL) -m 755 $(IFTOP_SOURCE_DIR)/rc.iftop $(IFTOP_IPK_DIR)/opt/etc/init.d/SXXiftop
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IFTOP_IPK_DIR)/opt/etc/init.d/SXXiftop
 	$(MAKE) $(IFTOP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(IFTOP_SOURCE_DIR)/postinst $(IFTOP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(IFTOP_SOURCE_DIR)/postinst $(IFTOP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IFTOP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(IFTOP_SOURCE_DIR)/prerm $(IFTOP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(IFTOP_SOURCE_DIR)/prerm $(IFTOP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IFTOP_IPK_DIR)/CONTROL/prerm
 #	echo $(IFTOP_CONFFILES) | sed -e 's/ /\n/g' > $(IFTOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IFTOP_IPK_DIR)

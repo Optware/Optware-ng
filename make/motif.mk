@@ -117,7 +117,7 @@ $(MOTIF_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTIF_SOURCE) $(MOTIF_PATCHES) make/
 	$(MOTIF_UNZIP) $(DL_DIR)/$(MOTIF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOTIF_PATCHES)" ; \
 		then cat $(MOTIF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MOTIF_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MOTIF_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MOTIF_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOTIF_DIR) $(@D) ; \
@@ -194,7 +194,7 @@ motif-stage: $(MOTIF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/motif
 #
 $(MOTIF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: motif" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,15 +224,15 @@ $(MOTIF_IPK): $(MOTIF_BUILD_DIR)/.built
 	rm -rf $(MOTIF_IPK_DIR) $(BUILD_DIR)/motif_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOTIF_BUILD_DIR) DESTDIR=$(MOTIF_IPK_DIR) install-strip program_transform_name='s&^&&'
 	rm -f $(MOTIF_IPK_DIR)/opt/lib/*.la
-#	install -d $(MOTIF_IPK_DIR)/opt/etc/
-#	install -m 644 $(MOTIF_SOURCE_DIR)/motif.conf $(MOTIF_IPK_DIR)/opt/etc/motif.conf
-#	install -d $(MOTIF_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MOTIF_SOURCE_DIR)/rc.motif $(MOTIF_IPK_DIR)/opt/etc/init.d/SXXmotif
+#	$(INSTALL) -d $(MOTIF_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MOTIF_SOURCE_DIR)/motif.conf $(MOTIF_IPK_DIR)/opt/etc/motif.conf
+#	$(INSTALL) -d $(MOTIF_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MOTIF_SOURCE_DIR)/rc.motif $(MOTIF_IPK_DIR)/opt/etc/init.d/SXXmotif
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOTIF_IPK_DIR)/opt/etc/init.d/SXXmotif
 	$(MAKE) $(MOTIF_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MOTIF_SOURCE_DIR)/postinst $(MOTIF_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MOTIF_SOURCE_DIR)/postinst $(MOTIF_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOTIF_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MOTIF_SOURCE_DIR)/prerm $(MOTIF_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MOTIF_SOURCE_DIR)/prerm $(MOTIF_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOTIF_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

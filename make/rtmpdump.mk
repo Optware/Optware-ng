@@ -113,11 +113,11 @@ rtmpdump-source: $(DL_DIR)/$(RTMPDUMP_SOURCE) $(RTMPDUMP_PATCHES)
 $(RTMPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(RTMPDUMP_SOURCE) $(RTMPDUMP_PATCHES) make/rtmpdump.mk
 	$(MAKE) openssl-stage zlib-stage
 	rm -rf $(@D)
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	$(RTMPDUMP_UNZIP) $(DL_DIR)/$(RTMPDUMP_SOURCE) | tar -C $(@D) -xvf - --strip-components=1
 	if test -n "$(RTMPDUMP_PATCHES)" ; \
 		then cat $(RTMPDUMP_PATCHES) | \
-		patch -d $(@D) -p1 ; \
+		$(PATCH) -d $(@D) -p1 ; \
 	fi
 	touch $@
 
@@ -157,7 +157,7 @@ rtmpdump-stage: $(RTMPDUMP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rtmpdump
 #
 $(RTMPDUMP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rtmpdump" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,15 +188,15 @@ $(RTMPDUMP_IPK): $(RTMPDUMP_BUILD_DIR)/.built
 	$(MAKE) -C $(RTMPDUMP_BUILD_DIR) prefix=/opt DESTDIR=$(RTMPDUMP_IPK_DIR) install
 	rm -f $(RTMPDUMP_IPK_DIR)/opt/lib/*.a
 	$(STRIP_COMMAND) $(RTMPDUMP_IPK_DIR)/opt/{{bin,sbin}/*,lib/*.so}
-#	install -d $(RTMPDUMP_IPK_DIR)/opt/etc/
-#	install -m 644 $(RTMPDUMP_SOURCE_DIR)/rtmpdump.conf $(RTMPDUMP_IPK_DIR)/opt/etc/rtmpdump.conf
-#	install -d $(RTMPDUMP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(RTMPDUMP_SOURCE_DIR)/rc.rtmpdump $(RTMPDUMP_IPK_DIR)/opt/etc/init.d/SXXrtmpdump
+#	$(INSTALL) -d $(RTMPDUMP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(RTMPDUMP_SOURCE_DIR)/rtmpdump.conf $(RTMPDUMP_IPK_DIR)/opt/etc/rtmpdump.conf
+#	$(INSTALL) -d $(RTMPDUMP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(RTMPDUMP_SOURCE_DIR)/rc.rtmpdump $(RTMPDUMP_IPK_DIR)/opt/etc/init.d/SXXrtmpdump
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTMPDUMP_IPK_DIR)/opt/etc/init.d/SXXrtmpdump
 	$(MAKE) $(RTMPDUMP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RTMPDUMP_SOURCE_DIR)/postinst $(RTMPDUMP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RTMPDUMP_SOURCE_DIR)/postinst $(RTMPDUMP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTMPDUMP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RTMPDUMP_SOURCE_DIR)/prerm $(RTMPDUMP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(RTMPDUMP_SOURCE_DIR)/prerm $(RTMPDUMP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTMPDUMP_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

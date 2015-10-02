@@ -6,14 +6,14 @@
  
 -PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 -DAEMON=/usr/bin/ushare
-+PATH=/opt/bin:/opt/sbin:/usr/sbin:/usr/bin:/sbin:/bin
-+DAEMON=/opt/bin/ushare
++PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/usr/sbin:/usr/bin:/sbin:/bin
++DAEMON=%OPTWARE_TARGET_PREFIX%/bin/ushare
  NAME=ushare
  DESC="uShare UPnP A/V Media Server"
  PIDFILE=/var/run/ushare.pid
  
 -[ -r "/etc/ushare.conf" ] && . /etc/ushare.conf
-+[ -r "/opt/etc/ushare.conf" ] && . /opt/etc/ushare.conf
++[ -r "%OPTWARE_TARGET_PREFIX%/etc/ushare.conf" ] && . %OPTWARE_TARGET_PREFIX%/etc/ushare.conf
  
  # abort if no executable exists
  [ -x $DAEMON ] || exit 0

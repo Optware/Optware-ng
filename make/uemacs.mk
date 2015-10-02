@@ -116,7 +116,7 @@ $(UEMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(UEMACS_SOURCE) $(UEMACS_PATCHES) ma
 	$(UEMACS_UNZIP) $(DL_DIR)/$(UEMACS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UEMACS_PATCHES)" ; \
 		then cat $(UEMACS_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(UEMACS_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(UEMACS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UEMACS_DIR)" != "$(UEMACS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(UEMACS_DIR) $(UEMACS_BUILD_DIR) ; \
@@ -172,7 +172,7 @@ uemacs-stage: $(UEMACS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/uemacs
 #
 $(UEMACS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: uemacs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,23 +200,23 @@ $(UEMACS_IPK_DIR)/CONTROL/control:
 #
 $(UEMACS_IPK): $(UEMACS_BUILD_DIR)/.built
 	rm -rf $(UEMACS_IPK_DIR) $(BUILD_DIR)/uemacs_*_$(TARGET_ARCH).ipk
-	install -d $(UEMACS_IPK_DIR)/opt/bin $(UEMACS_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(UEMACS_IPK_DIR)/opt/bin $(UEMACS_IPK_DIR)/opt/etc
 	$(MAKE) -C $(UEMACS_BUILD_DIR) \
 		BINDIR=$(UEMACS_IPK_DIR)/opt/bin \
 		LIBDIR=$(UEMACS_IPK_DIR)/opt/etc \
-		install
+		$(INSTALL)
 	cd $(UEMACS_IPK_DIR)/opt/bin; ln -s em uemacs
 	mv $(UEMACS_IPK_DIR)/opt/etc/.emacsrc $(UEMACS_IPK_DIR)/opt/etc/.uemacsrc
 	mv $(UEMACS_IPK_DIR)/opt/etc/emacs.hlp $(UEMACS_IPK_DIR)/opt/etc/uemacs.hlp
-#	install -d $(UEMACS_IPK_DIR)/opt/etc/
-#	install -m 644 $(UEMACS_SOURCE_DIR)/uemacs.conf $(UEMACS_IPK_DIR)/opt/etc/uemacs.conf
-#	install -d $(UEMACS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UEMACS_SOURCE_DIR)/rc.uemacs $(UEMACS_IPK_DIR)/opt/etc/init.d/SXXuemacs
+#	$(INSTALL) -d $(UEMACS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(UEMACS_SOURCE_DIR)/uemacs.conf $(UEMACS_IPK_DIR)/opt/etc/uemacs.conf
+#	$(INSTALL) -d $(UEMACS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(UEMACS_SOURCE_DIR)/rc.uemacs $(UEMACS_IPK_DIR)/opt/etc/init.d/SXXuemacs
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UEMACS_IPK_DIR)/opt/etc/init.d/SXXuemacs
 	$(MAKE) $(UEMACS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UEMACS_SOURCE_DIR)/postinst $(UEMACS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UEMACS_SOURCE_DIR)/postinst $(UEMACS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UEMACS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UEMACS_SOURCE_DIR)/prerm $(UEMACS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UEMACS_SOURCE_DIR)/prerm $(UEMACS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UEMACS_IPK_DIR)/CONTROL/prerm
 	echo $(UEMACS_CONFFILES) | sed -e 's/ /\n/g' > $(UEMACS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UEMACS_IPK_DIR)

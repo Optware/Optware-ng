@@ -5,7 +5,7 @@
 
 set -e
 
-PATH=/opt/bin:/opt/sbin:/usr/bin:/usr/sbin:/bin:/sbin
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 NAME=bluetooth
 DESC="Bluetooth subsystem"
 
@@ -33,14 +33,14 @@ RFCOMM_ENABLE=true
 DUND_ENABLE=false
 PAND_ENABLE=false
 
-HCID_CONFIG="/opt/etc/bluetooth/hcid.conf"
-RFCOMM_CONFIG="/opt/etc/bluetooth/rfcomm.conf"
+HCID_CONFIG="%OPTWARE_TARGET_PREFIX%/etc/bluetooth/hcid.conf"
+RFCOMM_CONFIG="%OPTWARE_TARGET_PREFIX%/etc/bluetooth/rfcomm.conf"
 
 HIDD_OPTIONS=""
 DUND_OPTIONS=""
 PAND_OPTIONS=""
 
-[ -e /opt/etc/default/bluetooth ] && . /opt/etc/default/bluetooth
+[ -e %OPTWARE_TARGET_PREFIX%/etc/default/bluetooth ] && . %OPTWARE_TARGET_PREFIX%/etc/default/bluetooth
 
 case "$1" in
   start)
@@ -94,7 +94,7 @@ case "$1" in
 	echo "."
 	;;
   *)
-	N=/opt/etc/init.d/$NAME
+	N=%OPTWARE_TARGET_PREFIX%/etc/init.d/$NAME
 	echo "Usage: $N {start|stop}" >&2
 	exit 1
 	;;

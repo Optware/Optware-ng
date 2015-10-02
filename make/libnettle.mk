@@ -112,7 +112,7 @@ $(LIBNETTLE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETTLE_SOURCE) $(LIBNETTLE_PA
 	$(LIBNETTLE_UNZIP) $(DL_DIR)/$(LIBNETTLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNETTLE_PATCHES)" ; \
 		then cat $(LIBNETTLE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBNETTLE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNETTLE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNETTLE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBNETTLE_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ libnettle-stage: $(LIBNETTLE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libnettle
 #
 $(LIBNETTLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libnettle" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,14 +194,14 @@ $(LIBNETTLE_IPK): $(LIBNETTLE_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBNETTLE_BUILD_DIR) DESTDIR=$(LIBNETTLE_IPK_DIR) install
 	$(STRIP_COMMAND) $(LIBNETTLE_IPK_DIR)/opt/lib/lib*.so $(LIBNETTLE_IPK_DIR)/opt/bin/*
 	rm -f $(LIBNETTLE_IPK_DIR)/opt/lib/libnettle.a
-#	install -d $(LIBNETTLE_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBNETTLE_SOURCE_DIR)/libnettle.conf $(LIBNETTLE_IPK_DIR)/opt/etc/libnettle.conf
-#	install -d $(LIBNETTLE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBNETTLE_SOURCE_DIR)/rc.libnettle $(LIBNETTLE_IPK_DIR)/opt/etc/init.d/SXXlibnettle
+#	$(INSTALL) -d $(LIBNETTLE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBNETTLE_SOURCE_DIR)/libnettle.conf $(LIBNETTLE_IPK_DIR)/opt/etc/libnettle.conf
+#	$(INSTALL) -d $(LIBNETTLE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNETTLE_SOURCE_DIR)/rc.libnettle $(LIBNETTLE_IPK_DIR)/opt/etc/init.d/SXXlibnettle
 	rm -f $(LIBNETTLE_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(LIBNETTLE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBNETTLE_SOURCE_DIR)/postinst $(LIBNETTLE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBNETTLE_SOURCE_DIR)/prerm $(LIBNETTLE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBNETTLE_SOURCE_DIR)/postinst $(LIBNETTLE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBNETTLE_SOURCE_DIR)/prerm $(LIBNETTLE_IPK_DIR)/CONTROL/prerm
 	echo $(LIBNETTLE_CONFFILES) | sed -e 's/ /\n/g' > $(LIBNETTLE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETTLE_IPK_DIR)
 

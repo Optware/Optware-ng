@@ -112,7 +112,7 @@ $(PY-SELECTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SELECTOR_SOURCE) $(PY-SELEC
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-SELECTOR_DIR)
 	$(PY-SELECTOR_UNZIP) $(DL_DIR)/$(PY-SELECTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SELECTOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SELECTOR_DIR) -p1
+#	cat $(PY-SELECTOR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SELECTOR_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SELECTOR_DIR) $(PY-SELECTOR_BUILD_DIR)/2.4
 	(cd $(PY-SELECTOR_BUILD_DIR)/2.4; \
 	    sed -i -e '/use_setuptools/d' setup.py; \
@@ -122,7 +122,7 @@ $(PY-SELECTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SELECTOR_SOURCE) $(PY-SELEC
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-SELECTOR_DIR)
 	$(PY-SELECTOR_UNZIP) $(DL_DIR)/$(PY-SELECTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SELECTOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SELECTOR_DIR) -p1
+#	cat $(PY-SELECTOR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SELECTOR_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SELECTOR_DIR) $(PY-SELECTOR_BUILD_DIR)/2.5
 	(cd $(PY-SELECTOR_BUILD_DIR)/2.5; \
 	    sed -i -e '/use_setuptools/d' setup.py; \
@@ -166,7 +166,7 @@ py-selector-stage: $(PY-SELECTOR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-selector
 #
 $(PY24-SELECTOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-selector" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +180,7 @@ $(PY24-SELECTOR_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SELECTOR_CONFLICTS)" >>$@
 
 $(PY25-SELECTOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-selector" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

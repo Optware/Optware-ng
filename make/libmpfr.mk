@@ -111,7 +111,7 @@ $(LIBMPFR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMPFR_SOURCE) $(LIBMPFR_PATCHES)
 	$(LIBMPFR_UNZIP) $(DL_DIR)/$(LIBMPFR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMPFR_PATCHES)" ; \
 		then cat $(LIBMPFR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMPFR_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMPFR_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMPFR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMPFR_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ libmpfr-stage: $(LIBMPFR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmpfr
 #
 $(LIBMPFR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmpfr" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,14 +193,14 @@ $(LIBMPFR_IPK): $(LIBMPFR_BUILD_DIR)/.built
 	rm -rf $(LIBMPFR_IPK_DIR) $(BUILD_DIR)/libmpfr_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMPFR_BUILD_DIR) DESTDIR=$(LIBMPFR_IPK_DIR) install-strip
 	$(STRIP_COMMAND) $(LIBMPFR_IPK_DIR)/opt/lib/libmpfr.so.*
-#	install -d $(LIBMPFR_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBMPFR_SOURCE_DIR)/libmpfr.conf $(LIBMPFR_IPK_DIR)/opt/etc/libmpfr.conf
-#	install -d $(LIBMPFR_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBMPFR_SOURCE_DIR)/rc.libmpfr $(LIBMPFR_IPK_DIR)/opt/etc/init.d/SXXlibmpfr
+#	$(INSTALL) -d $(LIBMPFR_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBMPFR_SOURCE_DIR)/libmpfr.conf $(LIBMPFR_IPK_DIR)/opt/etc/libmpfr.conf
+#	$(INSTALL) -d $(LIBMPFR_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMPFR_SOURCE_DIR)/rc.libmpfr $(LIBMPFR_IPK_DIR)/opt/etc/init.d/SXXlibmpfr
 	rm -f $(LIBMPFR_IPK_DIR)/opt/share/info/dir $(LIBMPFR_IPK_DIR)/opt/lib/libmpfr.la
 	$(MAKE) $(LIBMPFR_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBMPFR_SOURCE_DIR)/postinst $(LIBMPFR_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBMPFR_SOURCE_DIR)/prerm $(LIBMPFR_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBMPFR_SOURCE_DIR)/postinst $(LIBMPFR_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBMPFR_SOURCE_DIR)/prerm $(LIBMPFR_IPK_DIR)/CONTROL/prerm
 	echo $(LIBMPFR_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMPFR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMPFR_IPK_DIR)
 

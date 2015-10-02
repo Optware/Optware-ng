@@ -63,7 +63,7 @@ $(ARC_BUILD_DIR)/.configured: $(DL_DIR)/$(ARC_SOURCE) $(ARC_PATCHES) make/arc.mk
 	$(ARC_UNZIP) $(DL_DIR)/$(ARC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ARC_PATCHES)" ; \
 		then cat $(ARC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ARC_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ARC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ARC_DIR)" != "$(ARC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ARC_DIR) $(ARC_BUILD_DIR) ; \
@@ -91,7 +91,7 @@ arc: $(ARC_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/arc
 #
 $(ARC_IPK_DIR)/CONTROL/control:
-	@install -d $(ARC_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ARC_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: arc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -107,11 +107,11 @@ $(ARC_IPK_DIR)/CONTROL/control:
 
 $(ARC_IPK): $(ARC_BUILD_DIR)/.built
 	rm -rf $(ARC_IPK_DIR) $(BUILD_DIR)/arc_*_$(TARGET_ARCH).ipk
-	install -d $(ARC_IPK_DIR)/opt/bin
-	install -m 755 $(ARC_BUILD_DIR)/arc $(ARC_IPK_DIR)/opt/bin
-	install -m 755 $(ARC_BUILD_DIR)/marc $(ARC_IPK_DIR)/opt/bin
-	install -d $(ARC_IPK_DIR)/opt/share/man/man1
-	install -m 644 $(ARC_BUILD_DIR)/arc.1 $(ARC_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(ARC_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ARC_BUILD_DIR)/arc $(ARC_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ARC_BUILD_DIR)/marc $(ARC_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ARC_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -m 644 $(ARC_BUILD_DIR)/arc.1 $(ARC_IPK_DIR)/opt/share/man/man1
 	$(STRIP_COMMAND) $(ARC_IPK_DIR)/opt/bin/arc
 	$(STRIP_COMMAND) $(ARC_IPK_DIR)/opt/bin/marc
 	$(MAKE) $(ARC_IPK_DIR)/CONTROL/control

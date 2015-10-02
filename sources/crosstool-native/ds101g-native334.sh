@@ -9,7 +9,7 @@ export GCC_LANGUAGES
 HOST=$GCC_HOST
 
 # Really, you should do the mkdir before running this,
-# and chown /opt/crosstool to yourself so you don't need to run as root.
+# and chown %OPTWARE_TARGET_PREFIX%/crosstool to yourself so you don't need to run as root.
 mkdir -p $RESULT_TOP
 
 export GCC_HOST AR AS LD NM CC GCC CXX RANLIB PATH GPROF HOST

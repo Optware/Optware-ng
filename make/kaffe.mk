@@ -113,7 +113,7 @@ $(KAFFE_BUILD_DIR)/.unpacked: $(DL_DIR)/$(KAFFE_SOURCE)
 	$(KAFFE_UNZIP) $(DL_DIR)/$(KAFFE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KAFFE_PATCHES)" ; \
 		then cat $(KAFFE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(KAFFE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(KAFFE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(KAFFE_DIR)" != "$(KAFFE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_BUILD_DIR) ; \
@@ -189,7 +189,7 @@ kaffe-stage: $(KAFFE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/kaffe
 #
 $(KAFFE_IPK_DIR)/CONTROL/control:
-	@install -d $(KAFFE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(KAFFE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: kaffe" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -218,13 +218,13 @@ $(KAFFE_IPK_DIR)/CONTROL/control:
 $(KAFFE_IPK): $(KAFFE_BUILD_DIR)/.built
 	rm -rf $(KAFFE_IPK_DIR) $(BUILD_DIR)/kaffe_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(KAFFE_BUILD_DIR) DESTDIR=$(KAFFE_IPK_DIR) install-strip
-#	install -d $(KAFFE_IPK_DIR)/opt/etc/
-#	install -m 644 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)/opt/etc/kaffe.conf
-#	install -d $(KAFFE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(KAFFE_SOURCE_DIR)/rc.kaffe $(KAFFE_IPK_DIR)/opt/etc/init.d/SXXkaffe
+#	$(INSTALL) -d $(KAFFE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)/opt/etc/kaffe.conf
+#	$(INSTALL) -d $(KAFFE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(KAFFE_SOURCE_DIR)/rc.kaffe $(KAFFE_IPK_DIR)/opt/etc/init.d/SXXkaffe
 	$(MAKE) $(KAFFE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(KAFFE_SOURCE_DIR)/postinst $(KAFFE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(KAFFE_SOURCE_DIR)/prerm $(KAFFE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(KAFFE_SOURCE_DIR)/postinst $(KAFFE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(KAFFE_SOURCE_DIR)/prerm $(KAFFE_IPK_DIR)/CONTROL/prerm
 	echo $(KAFFE_CONFFILES) | sed -e 's/ /\n/g' > $(KAFFE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KAFFE_IPK_DIR)
 

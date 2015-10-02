@@ -5,14 +5,14 @@
  			configpath = buffer;
  			if ((f = fopen(configpath, "r")) == NULL) {
 -				configpath = "/etc/kissdx.conf";
-+				configpath = "/opt/etc/kissdx.conf";
++				configpath = "%OPTWARE_TARGET_PREFIX%/etc/kissdx.conf";
  				if ((f = fopen(configpath, "r")) == NULL) {
 -					configpath = "/etc/kissd.conf";
-+					configpath = "/opt/etc/kissd.conf";
++					configpath = "%OPTWARE_TARGET_PREFIX%/etc/kissd.conf";
  					if ((f = fopen(configpath, "r")) == NULL) {
  						log0("config file not found!");
 -						log0("searched $HOME/ and /etc/ for kissdx.conf and kissd.conf");
-+						log0("searched $HOME/ and /opt/etc/ for kissdx.conf and kissd.conf");
++						log0("searched $HOME/ and %OPTWARE_TARGET_PREFIX%/etc/ for kissdx.conf and kissd.conf");
  						return 1;
  					}
  				}

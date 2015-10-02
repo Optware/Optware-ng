@@ -147,7 +147,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	$(NGINX_UNZIP) $(DL_DIR)/$(NGINX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NGINX_PATCHES)" ; \
 		then cat $(NGINX_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(NGINX_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(NGINX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NGINX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NGINX_DIR) $(@D) ; \
@@ -227,7 +227,7 @@ nginx-stage: $(NGINX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nginx
 #
 $(NGINX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nginx" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -258,16 +258,16 @@ $(NGINX_IPK): $(NGINX_BUILD_DIR)/.built
 	$(MAKE) -C $(NGINX_BUILD_DIR) -f objs/Makefile DESTDIR=$(NGINX_IPK_DIR) install
 	sed -i -e "/^[ 	]*listen/s|listen.*80;|listen\t8082;|" $(NGINX_IPK_DIR)/opt/etc/nginx/nginx.conf
 	$(STRIP_COMMAND) $(NGINX_IPK_DIR)/opt/sbin/nginx
-	install -d $(NGINX_IPK_DIR)/opt/var/nginx/tmp
-	install -d $(NGINX_IPK_DIR)/opt/share/www
+	$(INSTALL) -d $(NGINX_IPK_DIR)/opt/var/nginx/tmp
+	$(INSTALL) -d $(NGINX_IPK_DIR)/opt/share/www
 	ln -s /opt/share/nginx/html $(NGINX_IPK_DIR)/opt/share/www/nginx
-	install -d $(NGINX_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NGINX_SOURCE_DIR)/rc.nginx $(NGINX_IPK_DIR)/opt/etc/init.d/S80nginx
-	install -d $(NGINX_IPK_DIR)/opt/etc/default
-	install -m 755 $(NGINX_SOURCE_DIR)/default $(NGINX_IPK_DIR)/opt/etc/default/nginx
+	$(INSTALL) -d $(NGINX_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/rc.nginx $(NGINX_IPK_DIR)/opt/etc/init.d/S80nginx
+	$(INSTALL) -d $(NGINX_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/default $(NGINX_IPK_DIR)/opt/etc/default/nginx
 	$(MAKE) $(NGINX_IPK_DIR)/CONTROL/control
-	install -m 755 $(NGINX_SOURCE_DIR)/postinst $(NGINX_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(NGINX_SOURCE_DIR)/prerm $(NGINX_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/postinst $(NGINX_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/prerm $(NGINX_IPK_DIR)/CONTROL/prerm
 	echo $(NGINX_CONFFILES) | sed -e 's/ /\n/g' > $(NGINX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NGINX_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(NGINX_IPK_DIR)

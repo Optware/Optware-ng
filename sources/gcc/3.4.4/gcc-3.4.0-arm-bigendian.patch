@@ -3,7 +3,7 @@ Adds support for arm*b-linux* big-endian ARM targets
 
 Fixes build error
 
-/opt/crosstool/armeb-unknown-linux-gnu/gcc-3.4.2-glibc-2.3.3/armeb-unknown-linux-gnu/bin/ld: unrecognised emulation mode: armelf_linux
+%OPTWARE_TARGET_PREFIX%/crosstool/armeb-unknown-linux-gnu/gcc-3.4.2-glibc-2.3.3/armeb-unknown-linux-gnu/bin/ld: unrecognised emulation mode: armelf_linux
 Supported emulations: armelfb_linux armelfb
 collect2: ld returned 1 exit status
 make[2]: *** [/home/dank/wk/crosstool-0.28-rc36/build/armeb-unknown-linux-gnu/gcc-3.4.2-glibc-2.3.3/build-glibc/csu/crt1.o] Error 1

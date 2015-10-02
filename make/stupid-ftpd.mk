@@ -111,7 +111,7 @@ $(STUPID-FTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(STUPID-FTPD_SOURCE) $(STUPID-F
 	$(STUPID-FTPD_UNZIP) $(DL_DIR)/$(STUPID-FTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(STUPID-FTPD_PATCHES)" ; \
 		then cat $(STUPID-FTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(STUPID-FTPD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(STUPID-FTPD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(STUPID-FTPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(STUPID-FTPD_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ stupid-ftpd-stage: $(STUPID-FTPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/stupid-ftpd
 #
 $(STUPID-FTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: stupid-ftpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,20 +190,20 @@ $(STUPID-FTPD_IPK_DIR)/CONTROL/control:
 #
 $(STUPID-FTPD_IPK): $(STUPID-FTPD_BUILD_DIR)/.built
 	rm -rf $(STUPID-FTPD_IPK_DIR) $(BUILD_DIR)/STUPID-FTPD_*_$(TARGET_ARCH).ipk
-	install -d $(STUPID-FTPD_IPK_DIR)/opt/sbin/
-	install -m 755 $(STUPID-FTPD_BUILD_DIR)/stupid-ftpd.Linux6 \
+	$(INSTALL) -d $(STUPID-FTPD_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(STUPID-FTPD_BUILD_DIR)/stupid-ftpd.Linux6 \
 		$(STUPID-FTPD_IPK_DIR)/opt/sbin/stupid-ftpd
 	$(STRIP_COMMAND) $(STUPID-FTPD_IPK_DIR)/opt/sbin/stupid-ftpd
-	install -d $(STUPID-FTPD_IPK_DIR)/opt/etc/
-	install -m 644 $(STUPID-FTPD_BUILD_DIR)/stupid-ftpd.conf \
+	$(INSTALL) -d $(STUPID-FTPD_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(STUPID-FTPD_BUILD_DIR)/stupid-ftpd.conf \
 		$(STUPID-FTPD_IPK_DIR)/opt/etc/stupid-ftpd.conf
-#	install -d $(STUPID-FTPD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(STUPID-FTPD_SOURCE_DIR)/rc.stupid-ftpd $(STUPID-FTPD_IPK_DIR)/opt/etc/init.d/SXXstupid-ftpd
+#	$(INSTALL) -d $(STUPID-FTPD_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(STUPID-FTPD_SOURCE_DIR)/rc.stupid-ftpd $(STUPID-FTPD_IPK_DIR)/opt/etc/init.d/SXXstupid-ftpd
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STUPID-FTPD_IPK_DIR)/opt/etc/init.d/SXXstupid-ftpd
 	$(MAKE) $(STUPID-FTPD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(STUPID-FTPD_SOURCE_DIR)/postinst $(STUPID-FTPD_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(STUPID-FTPD_SOURCE_DIR)/postinst $(STUPID-FTPD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STUPID-FTPD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(STUPID-FTPD_SOURCE_DIR)/prerm $(STUPID-FTPD_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(STUPID-FTPD_SOURCE_DIR)/prerm $(STUPID-FTPD_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STUPID-FTPD_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

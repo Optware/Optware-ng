@@ -123,7 +123,7 @@ endif
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(NEWT_SOURCE)
 	if test -n "$(NEWT_PATCHES)" ; \
 		then cat $(NEWT_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(NEWT_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(NEWT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NEWT_DIR)" != "$(NEWT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NEWT_DIR) $(NEWT_BUILD_DIR) ; \
@@ -176,7 +176,7 @@ newt-stage: $(NEWT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/newt
 #
 $(NEWT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: newt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,13 +211,13 @@ $(NEWT_IPK): $(NEWT_BUILD_DIR)/.built
 		$(NEWT_IPK_DIR)/opt/lib/libnewt.so.[0-9]*.[0-9]*.[0-9]* \
 		$(NEWT_IPK_DIR)/opt/lib/python*/site-packages/_snackmodule.so \
 		;
-#	install -d $(NEWT_IPK_DIR)/opt/etc/
-#	install -m 644 $(NEWT_SOURCE_DIR)/newt.conf $(NEWT_IPK_DIR)/opt/etc/newt.conf
-#	install -d $(NEWT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NEWT_SOURCE_DIR)/rc.newt $(NEWT_IPK_DIR)/opt/etc/init.d/SXXnewt
+#	$(INSTALL) -d $(NEWT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NEWT_SOURCE_DIR)/newt.conf $(NEWT_IPK_DIR)/opt/etc/newt.conf
+#	$(INSTALL) -d $(NEWT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NEWT_SOURCE_DIR)/rc.newt $(NEWT_IPK_DIR)/opt/etc/init.d/SXXnewt
 	$(MAKE) $(NEWT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NEWT_SOURCE_DIR)/postinst $(NEWT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NEWT_SOURCE_DIR)/prerm $(NEWT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NEWT_SOURCE_DIR)/postinst $(NEWT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NEWT_SOURCE_DIR)/prerm $(NEWT_IPK_DIR)/CONTROL/prerm
 	echo $(NEWT_CONFFILES) | sed -e 's/ /\n/g' > $(NEWT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NEWT_IPK_DIR)
 

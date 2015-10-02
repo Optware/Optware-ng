@@ -35,7 +35,7 @@ perl-xml-regexp-source: $(DL_DIR)/$(PERL-XML-REGEXP_SOURCE) $(PERL-XML-REGEXP_PA
 $(PERL-XML-REGEXP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-XML-REGEXP_SOURCE) $(PERL-XML-REGEXP_PATCHES) make/perl-xml-regexp.mk
 	rm -rf $(BUILD_DIR)/$(PERL-XML-REGEXP_DIR) $(@D)
 	$(PERL-XML-REGEXP_UNZIP) $(DL_DIR)/$(PERL-XML-REGEXP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-XML-REGEXP_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-XML-REGEXP_DIR) -p1
+#	cat $(PERL-XML-REGEXP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-XML-REGEXP_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-XML-REGEXP_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-XML-REGEXP_BUILD_DIR)/.staged: $(PERL-XML-REGEXP_BUILD_DIR)/.built
 perl-xml-regexp-stage: $(PERL-XML-REGEXP_BUILD_DIR)/.staged
 
 $(PERL-XML-REGEXP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-xml-regexp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

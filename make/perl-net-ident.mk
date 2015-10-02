@@ -35,7 +35,7 @@ $(PERL-NET-IDENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-IDENT_SOURCE) $(PE
 	make perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-NET-IDENT_DIR) $(PERL-NET-IDENT_BUILD_DIR)
 	$(PERL-NET-IDENT_UNZIP) $(DL_DIR)/$(PERL-NET-IDENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-NET-IDENT_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-NET-IDENT_DIR) -p1
+#	cat $(PERL-NET-IDENT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-NET-IDENT_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-NET-IDENT_DIR) $(PERL-NET-IDENT_BUILD_DIR)
 	(cd $(PERL-NET-IDENT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-NET-IDENT_BUILD_DIR)/.staged: $(PERL-NET-IDENT_BUILD_DIR)/.built
 perl-net-ident-stage: $(PERL-NET-IDENT_BUILD_DIR)/.staged
 
 $(PERL-NET-IDENT_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-NET-IDENT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-NET-IDENT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-net-ident" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

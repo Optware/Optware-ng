@@ -111,7 +111,7 @@ $(PY-GNOSIS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GNOSIS-UTILS_SOURCE) $(
 	mkdir -p $(PY-GNOSIS-UTILS_BUILD_DIR)
 	# 2.4
 	$(PY-GNOSIS-UTILS_UNZIP) $(DL_DIR)/$(PY-GNOSIS-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-GNOSIS-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GNOSIS-UTILS_DIR) -p1
+#	cat $(PY-GNOSIS-UTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GNOSIS-UTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-GNOSIS-UTILS_DIR) $(PY-GNOSIS-UTILS_BUILD_DIR)/2.4
 	(cd $(PY-GNOSIS-UTILS_BUILD_DIR)/2.4; \
 	    ( \
@@ -127,7 +127,7 @@ $(PY-GNOSIS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GNOSIS-UTILS_SOURCE) $(
 	)
 	# 2.5
 	$(PY-GNOSIS-UTILS_UNZIP) $(DL_DIR)/$(PY-GNOSIS-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-GNOSIS-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GNOSIS-UTILS_DIR) -p1
+#	cat $(PY-GNOSIS-UTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GNOSIS-UTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-GNOSIS-UTILS_DIR) $(PY-GNOSIS-UTILS_BUILD_DIR)/2.5
 	(cd $(PY-GNOSIS-UTILS_BUILD_DIR)/2.5; \
 	    ( \
@@ -178,7 +178,7 @@ py-gnosis-utils-stage: $(PY-GNOSIS-UTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-gnosis-utils
 #
 $(PY24-GNOSIS-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-gnosis-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,7 +192,7 @@ $(PY24-GNOSIS-UTILS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-GNOSIS-UTILS_CONFLICTS)" >>$@
 
 $(PY25-GNOSIS-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-gnosis-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

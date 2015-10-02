@@ -110,7 +110,7 @@ $(LOUDMOUTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LOUDMOUTH_SOURCE) $(LOUDMOUTH_PA
 	$(LOUDMOUTH_UNZIP) $(DL_DIR)/$(LOUDMOUTH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LOUDMOUTH_PATCHES)" ; \
 		then cat $(LOUDMOUTH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LOUDMOUTH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LOUDMOUTH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LOUDMOUTH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LOUDMOUTH_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ loudmouth-stage: $(LOUDMOUTH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/loudmouth
 #
 $(LOUDMOUTH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: loudmouth" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,15 +196,15 @@ $(LOUDMOUTH_IPK): $(LOUDMOUTH_BUILD_DIR)/.built
 	rm -rf $(LOUDMOUTH_IPK_DIR) $(BUILD_DIR)/loudmouth_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LOUDMOUTH_BUILD_DIR) DESTDIR=$(LOUDMOUTH_IPK_DIR) install-strip
 	rm -f $(LOUDMOUTH_IPK_DIR)/opt/lib/libloudmouth*.la
-#	install -d $(LOUDMOUTH_IPK_DIR)/opt/etc/
-#	install -m 644 $(LOUDMOUTH_SOURCE_DIR)/loudmouth.conf $(LOUDMOUTH_IPK_DIR)/opt/etc/loudmouth.conf
-#	install -d $(LOUDMOUTH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LOUDMOUTH_SOURCE_DIR)/rc.loudmouth $(LOUDMOUTH_IPK_DIR)/opt/etc/init.d/SXXloudmouth
+#	$(INSTALL) -d $(LOUDMOUTH_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LOUDMOUTH_SOURCE_DIR)/loudmouth.conf $(LOUDMOUTH_IPK_DIR)/opt/etc/loudmouth.conf
+#	$(INSTALL) -d $(LOUDMOUTH_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LOUDMOUTH_SOURCE_DIR)/rc.loudmouth $(LOUDMOUTH_IPK_DIR)/opt/etc/init.d/SXXloudmouth
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LOUDMOUTH_IPK_DIR)/opt/etc/init.d/SXXloudmouth
 	$(MAKE) $(LOUDMOUTH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LOUDMOUTH_SOURCE_DIR)/postinst $(LOUDMOUTH_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LOUDMOUTH_SOURCE_DIR)/postinst $(LOUDMOUTH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LOUDMOUTH_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LOUDMOUTH_SOURCE_DIR)/prerm $(LOUDMOUTH_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LOUDMOUTH_SOURCE_DIR)/prerm $(LOUDMOUTH_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LOUDMOUTH_IPK_DIR)/CONTROL/prerm
 	echo $(LOUDMOUTH_CONFFILES) | sed -e 's/ /\n/g' > $(LOUDMOUTH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LOUDMOUTH_IPK_DIR)

@@ -57,7 +57,7 @@ endif
 
 $(MIAU_BUILD_DIR)/.configured: $(DL_DIR)/$(MIAU_SOURCE)
 	$(MIAU_UNZIP) $(DL_DIR)/$(MIAU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MIAU_PATCHES) | patch -d $(BUILD_DIR)/$(MIAU_DIR) -p1
+	cat $(MIAU_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MIAU_DIR) -p1
 	mv $(BUILD_DIR)/$(MIAU_DIR) $(MIAU_BUILD_DIR)
 	(cd $(MIAU_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -94,7 +94,7 @@ $(MIAU_BUILD_DIR)/src/miau: $(MIAU_BUILD_DIR)/.configured
 miau: $(MIAU_BUILD_DIR)/src/miau
 
 $(MIAU_IPK_DIR)/CONTROL/control:
-	@install -d $(MIAU_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(MIAU_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: miau" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -109,18 +109,18 @@ $(MIAU_IPK_DIR)/CONTROL/control:
 
 $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
 	rm -rf $(MIAU_IPK_DIR) $(BUILD_DIR)/miau_*_$(TARGET_ARCH).ipk
-	install -d $(MIAU_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(MIAU_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(MIAU_BUILD_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
-	install -d $(MIAU_IPK_DIR)/opt/etc
-#	install -m 644 $(MIAU_SOURCE_DIR)/miau.conf $(MIAU_IPK_DIR)/opt/etc/miau.conf
-	install -m 644 $(MIAU_SOURCE_DIR)/miau.conf.0.6 $(MIAU_IPK_DIR)/opt/etc/miau.conf
-	install -d $(MIAU_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(MIAU_SOURCE_DIR)/rc.miau $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
-	install -d $(MIAU_IPK_DIR)/opt/etc/logrotate.d
-	install -m 755 $(MIAU_SOURCE_DIR)/logrotate.miau $(MIAU_IPK_DIR)/opt/etc/logrotate.d/miau
+	$(INSTALL) -d $(MIAU_IPK_DIR)/opt/etc
+#	$(INSTALL) -m 644 $(MIAU_SOURCE_DIR)/miau.conf $(MIAU_IPK_DIR)/opt/etc/miau.conf
+	$(INSTALL) -m 644 $(MIAU_SOURCE_DIR)/miau.conf.0.6 $(MIAU_IPK_DIR)/opt/etc/miau.conf
+	$(INSTALL) -d $(MIAU_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(MIAU_SOURCE_DIR)/rc.miau $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
+	$(INSTALL) -d $(MIAU_IPK_DIR)/opt/etc/logrotate.d
+	$(INSTALL) -m 755 $(MIAU_SOURCE_DIR)/logrotate.miau $(MIAU_IPK_DIR)/opt/etc/logrotate.d/miau
 	$(MAKE) $(MIAU_IPK_DIR)/CONTROL/control
-	install -m 644 $(MIAU_SOURCE_DIR)/postinst $(MIAU_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(MIAU_SOURCE_DIR)/prerm $(MIAU_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(MIAU_SOURCE_DIR)/postinst $(MIAU_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(MIAU_SOURCE_DIR)/prerm $(MIAU_IPK_DIR)/CONTROL/prerm
 	echo $(MIAU_CONFFILES) | sed -e 's/ /\n/g' > $(MIAU_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MIAU_IPK_DIR)
 

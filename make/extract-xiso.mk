@@ -113,7 +113,7 @@ $(EXTRACT-XISO_BUILD_DIR)/.configured: $(DL_DIR)/$(EXTRACT-XISO_SOURCE) $(EXTRAC
 	$(EXTRACT-XISO_UNZIP) $(DL_DIR)/$(EXTRACT-XISO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EXTRACT-XISO_PATCHES)" ; \
 		then cat $(EXTRACT-XISO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(EXTRACT-XISO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(EXTRACT-XISO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(EXTRACT-XISO_DIR)" != "$(EXTRACT-XISO_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(EXTRACT-XISO_DIR) $(EXTRACT-XISO_BUILD_DIR) ; \
@@ -154,7 +154,7 @@ extract-xiso-stage: $(EXTRACT-XISO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/extract-xiso
 #
 $(EXTRACT-XISO_IPK_DIR)/CONTROL/control:
-	@install -d $(EXTRACT-XISO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(EXTRACT-XISO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: extract-xiso" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,8 +182,8 @@ $(EXTRACT-XISO_IPK_DIR)/CONTROL/control:
 #
 $(EXTRACT-XISO_IPK): $(EXTRACT-XISO_BUILD_DIR)/.built
 	rm -rf $(EXTRACT-XISO_IPK_DIR) $(BUILD_DIR)/extract-xiso_*_$(TARGET_ARCH).ipk
-	install -d $(EXTRACT-XISO_IPK_DIR)/opt/bin/
-	install -m 755 $(EXTRACT-XISO_BUILD_DIR)/extract-xiso $(EXTRACT-XISO_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(EXTRACT-XISO_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 755 $(EXTRACT-XISO_BUILD_DIR)/extract-xiso $(EXTRACT-XISO_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(EXTRACT-XISO_BUILD_DIR)/extract-xiso -o $(EXTRACT-XISO_IPK_DIR)/opt/bin/extract-xiso
 	$(MAKE) $(EXTRACT-XISO_IPK_DIR)/CONTROL/control
 	echo $(EXTRACT-XISO_CONFFILES) | sed -e 's/ /\n/g' > $(EXTRACT-XISO_IPK_DIR)/CONTROL/conffiles

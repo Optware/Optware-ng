@@ -116,7 +116,7 @@ $(THUNAR_BUILD_DIR)/.configured: $(DL_DIR)/$(THUNAR_SOURCE) $(THUNAR_PATCHES) ma
 	$(THUNAR_UNZIP) $(DL_DIR)/$(THUNAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(THUNAR_PATCHES)" ; \
 		then cat $(THUNAR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(THUNAR_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(THUNAR_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(THUNAR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(THUNAR_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ thunar: $(THUNAR_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/thunar
 #
 $(THUNAR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: thunar" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,15 +200,15 @@ $(THUNAR_IPK): $(THUNAR_BUILD_DIR)/.built
 	rm -rf $(THUNAR_IPK_DIR) $(BUILD_DIR)/thunar_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(THUNAR_BUILD_DIR) DESTDIR=$(THUNAR_IPK_DIR) install-strip
 	rm -f $(THUNAR_IPK_DIR)/opt/lib/*.la
-#	install -d $(THUNAR_IPK_DIR)/opt/etc/
-#	install -m 644 $(THUNAR_SOURCE_DIR)/thunar.conf $(THUNAR_IPK_DIR)/opt/etc/thunar.conf
-#	install -d $(THUNAR_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(THUNAR_SOURCE_DIR)/rc.thunar $(THUNAR_IPK_DIR)/opt/etc/init.d/SXXthunar
+#	$(INSTALL) -d $(THUNAR_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(THUNAR_SOURCE_DIR)/thunar.conf $(THUNAR_IPK_DIR)/opt/etc/thunar.conf
+#	$(INSTALL) -d $(THUNAR_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(THUNAR_SOURCE_DIR)/rc.thunar $(THUNAR_IPK_DIR)/opt/etc/init.d/SXXthunar
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(THUNAR_IPK_DIR)/opt/etc/init.d/SXXthunar
 	$(MAKE) $(THUNAR_IPK_DIR)/CONTROL/control
-#	install -m 755 $(THUNAR_SOURCE_DIR)/postinst $(THUNAR_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(THUNAR_SOURCE_DIR)/postinst $(THUNAR_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(THUNAR_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(THUNAR_SOURCE_DIR)/prerm $(THUNAR_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(THUNAR_SOURCE_DIR)/prerm $(THUNAR_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(THUNAR_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

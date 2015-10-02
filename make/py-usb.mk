@@ -113,7 +113,7 @@ $(PY-USB_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-USB_SOURCE) $(PY-USB_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-USB_DIR)
 	$(PY-USB_UNZIP) $(DL_DIR)/$(PY-USB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-USB_PATCHES)"; then \
-	    cat $(PY-USB_PATCHES) | patch -d $(BUILD_DIR)/$(PY-USB_DIR) -p1; \
+	    cat $(PY-USB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-USB_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-USB_DIR) $(PY-USB_BUILD_DIR)/2.4
 	(cd $(PY-USB_BUILD_DIR)/2.4; \
@@ -132,7 +132,7 @@ $(PY-USB_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-USB_SOURCE) $(PY-USB_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-USB_DIR)
 	$(PY-USB_UNZIP) $(DL_DIR)/$(PY-USB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-USB_PATCHES)"; then \
-	    cat $(PY-USB_PATCHES) | patch -d $(BUILD_DIR)/$(PY-USB_DIR) -p1; \
+	    cat $(PY-USB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-USB_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-USB_DIR) $(PY-USB_BUILD_DIR)/2.5
 	(cd $(PY-USB_BUILD_DIR)/2.5; \
@@ -186,7 +186,7 @@ py-usb-stage: $(PY-USB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-usb
 #
 $(PY24-USB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-usb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,7 +200,7 @@ $(PY24-USB_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-USB_CONFLICTS)" >>$@
 
 $(PY25-USB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-usb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -230,7 +230,7 @@ $(PY24-USB_IPK): $(PY-USB_BUILD_DIR)/.built
 	(cd $(PY-USB_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY24-USB_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY24-USB_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) $(PY24-USB_IPK_DIR)/opt/lib/python2.4/site-packages/usb.so
 	$(MAKE) $(PY24-USB_IPK_DIR)/CONTROL/control
 #	echo $(PY-USB_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-USB_IPK_DIR)/CONTROL/conffiles
@@ -241,7 +241,7 @@ $(PY25-USB_IPK): $(PY-USB_BUILD_DIR)/.built
 	(cd $(PY-USB_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY25-USB_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY25-USB_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) $(PY25-USB_IPK_DIR)/opt/lib/python2.5/site-packages/usb.so
 	$(MAKE) $(PY25-USB_IPK_DIR)/CONTROL/control
 #	echo $(PY-USB_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-USB_IPK_DIR)/CONTROL/conffiles

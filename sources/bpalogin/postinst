@@ -1,5 +1,5 @@
 #!/bin/sh
 
 echo ; echo
-echo "To complete the installation, you should check /opt/etc/bpalogin.conf,"
-echo "and then run /opt/etc/init.d/S05bpalogin to start bpalogin."
+echo "To complete the installation, you should check %OPTWARE_TARGET_PREFIX%/etc/bpalogin.conf,"
+echo "and then run %OPTWARE_TARGET_PREFIX%/etc/init.d/S05bpalogin to start bpalogin."

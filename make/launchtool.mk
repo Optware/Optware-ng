@@ -121,7 +121,7 @@ endif
 	$(LAUNCHTOOL_UNZIP) $(DL_DIR)/$(LAUNCHTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LAUNCHTOOL_PATCHES)" ; \
 		then cat $(LAUNCHTOOL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LAUNCHTOOL_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LAUNCHTOOL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LAUNCHTOOL_DIR)" != "$(LAUNCHTOOL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LAUNCHTOOL_DIR) $(LAUNCHTOOL_BUILD_DIR) ; \
@@ -172,7 +172,7 @@ launchtool-stage: $(LAUNCHTOOL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/launchtool
 #
 $(LAUNCHTOOL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: launchtool" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,17 +202,17 @@ $(LAUNCHTOOL_IPK): $(LAUNCHTOOL_BUILD_DIR)/.built
 	rm -rf $(LAUNCHTOOL_IPK_DIR) $(BUILD_DIR)/launchtool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LAUNCHTOOL_BUILD_DIR) DESTDIR=$(LAUNCHTOOL_IPK_DIR) install
 	$(STRIP_COMMAND) $(LAUNCHTOOL_IPK_DIR)/opt/bin/launchtool
-	install -d $(LAUNCHTOOL_IPK_DIR)/opt/man/man1
-	install -m 644 $(LAUNCHTOOL_BUILD_DIR)/launchtool.1 $(LAUNCHTOOL_IPK_DIR)/opt/man/man1/
-#	install -d $(LAUNCHTOOL_IPK_DIR)/opt/etc/
-#	install -m 644 $(LAUNCHTOOL_SOURCE_DIR)/launchtool.conf $(LAUNCHTOOL_IPK_DIR)/opt/etc/launchtool.conf
-#	install -d $(LAUNCHTOOL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LAUNCHTOOL_SOURCE_DIR)/rc.launchtool $(LAUNCHTOOL_IPK_DIR)/opt/etc/init.d/SXXlaunchtool
+	$(INSTALL) -d $(LAUNCHTOOL_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(LAUNCHTOOL_BUILD_DIR)/launchtool.1 $(LAUNCHTOOL_IPK_DIR)/opt/man/man1/
+#	$(INSTALL) -d $(LAUNCHTOOL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LAUNCHTOOL_SOURCE_DIR)/launchtool.conf $(LAUNCHTOOL_IPK_DIR)/opt/etc/launchtool.conf
+#	$(INSTALL) -d $(LAUNCHTOOL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LAUNCHTOOL_SOURCE_DIR)/rc.launchtool $(LAUNCHTOOL_IPK_DIR)/opt/etc/init.d/SXXlaunchtool
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LAUNCHTOOL_IPK_DIR)/opt/etc/init.d/SXXlaunchtool
 	$(MAKE) $(LAUNCHTOOL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LAUNCHTOOL_SOURCE_DIR)/postinst $(LAUNCHTOOL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LAUNCHTOOL_SOURCE_DIR)/postinst $(LAUNCHTOOL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LAUNCHTOOL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LAUNCHTOOL_SOURCE_DIR)/prerm $(LAUNCHTOOL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LAUNCHTOOL_SOURCE_DIR)/prerm $(LAUNCHTOOL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LAUNCHTOOL_IPK_DIR)/CONTROL/prerm
 	echo $(LAUNCHTOOL_CONFFILES) | sed -e 's/ /\n/g' > $(LAUNCHTOOL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LAUNCHTOOL_IPK_DIR)

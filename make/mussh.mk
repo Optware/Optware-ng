@@ -110,7 +110,7 @@ $(MUSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(MUSSH_SOURCE) $(MUSSH_PATCHES) make/
 	$(MUSSH_UNZIP) $(DL_DIR)/$(MUSSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MUSSH_PATCHES)" ; \
 		then cat $(MUSSH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MUSSH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MUSSH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MUSSH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MUSSH_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ mussh: $(MUSSH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mussh
 #
 $(MUSSH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mussh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,10 +189,10 @@ $(MUSSH_IPK_DIR)/CONTROL/control:
 #
 $(MUSSH_IPK): $(MUSSH_BUILD_DIR)/.built
 	rm -rf $(MUSSH_IPK_DIR) $(BUILD_DIR)/mussh_*_$(TARGET_ARCH).ipk
-	install -d $(MUSSH_IPK_DIR)/opt/bin
-	install -m 755 $(MUSSH_BUILD_DIR)/mussh $(MUSSH_IPK_DIR)/opt/bin/
-	install -d $(MUSSH_IPK_DIR)/opt/share/man/man1
-	install -m 644 $(MUSSH_BUILD_DIR)/mussh.1 $(MUSSH_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(MUSSH_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(MUSSH_BUILD_DIR)/mussh $(MUSSH_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(MUSSH_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -m 644 $(MUSSH_BUILD_DIR)/mussh.1 $(MUSSH_IPK_DIR)/opt/share/man/man1
 	$(MAKE) $(MUSSH_IPK_DIR)/CONTROL/control
 	echo $(MUSSH_CONFFILES) | sed -e 's/ /\n/g' > $(MUSSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MUSSH_IPK_DIR)

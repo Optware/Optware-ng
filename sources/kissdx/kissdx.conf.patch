@@ -5,7 +5,7 @@
  # The [Recently used] feature and the picture caching feature will store data here.
  # If option is omitted, kissdx will use picturepath, etc. for such storage.
 -#persistentstoragepath	= /var/kissdx
-+#persistentstoragepath	= /opt/var/kissdx
++#persistentstoragepath	= %OPTWARE_TARGET_PREFIX%/var/kissdx
  
  # Allowed extensions for media files (comma separated, no spaces, case insensitive)
  # Omit a setting to send ALL files to the player in the corresponding directory listing.

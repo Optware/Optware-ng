@@ -111,7 +111,7 @@ $(LIBPCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPCAP_SOURCE) $(LIBPCAP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBPCAP_DIR) $(@D)
 	$(LIBPCAP_UNZIP) $(DL_DIR)/$(LIBPCAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPCAP_PATCHES)"; then \
-	cat $(LIBPCAP_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPCAP_DIR) -p1; \
+	cat $(LIBPCAP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBPCAP_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LIBPCAP_DIR) $(@D)
 	(cd $(@D); \
@@ -169,7 +169,7 @@ libpcap-stage: $(LIBPCAP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libpcap
 #
 $(LIBPCAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libpcap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,7 +184,7 @@ $(LIBPCAP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBPCAP_CONFLICTS)" >>$@
 
 $(LIBPCAP-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libpcap-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -213,13 +213,13 @@ $(LIBPCAP-DEV_IPK_DIR)/CONTROL/control:
 $(LIBPCAP_IPK) $(LIBPCAP-DEV_IPK): $(LIBPCAP_BUILD_DIR)/.built
 	rm -rf $(LIBPCAP_IPK_DIR) $(BUILD_DIR)/libpcap_*_$(TARGET_ARCH).ipk
 	rm -rf $(LIBPCAP-DEV_IPK_DIR) $(BUILD_DIR)/libpcap-dev_*_$(TARGET_ARCH).ipk
-	install -d $(LIBPCAP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(LIBPCAP_IPK_DIR)/opt/bin
 	$(MAKE) -C $(LIBPCAP_BUILD_DIR) DESTDIR=$(LIBPCAP_IPK_DIR) install
 	$(STRIP_COMMAND) $(LIBPCAP_IPK_DIR)/opt/lib/libpcap.so.[0-9]*.[0-9]*.[0-9]*
 	rm -f $(LIBPCAP_IPK_DIR)/opt/lib/libpcap.a
 	$(MAKE) $(LIBPCAP_IPK_DIR)/CONTROL/control
 	$(MAKE) $(LIBPCAP-DEV_IPK_DIR)/CONTROL/control
-	install -d $(LIBPCAP-DEV_IPK_DIR)/opt/
+	$(INSTALL) -d $(LIBPCAP-DEV_IPK_DIR)/opt/
 	mv $(LIBPCAP_IPK_DIR)/opt/bin $(LIBPCAP-DEV_IPK_DIR)/opt/
 	mv $(LIBPCAP_IPK_DIR)/opt/include $(LIBPCAP-DEV_IPK_DIR)/opt/
 	mv $(LIBPCAP_IPK_DIR)/opt/share $(LIBPCAP-DEV_IPK_DIR)/opt/

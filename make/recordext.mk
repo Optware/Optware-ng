@@ -61,7 +61,7 @@ RECORDEXT_IPK=$(BUILD_DIR)/recordext_$(RECORDEXT_VERSION)-$(RECORDEXT_IPK_VERSIO
 # Automatically create a ipkg control file
 #
 $(RECORDEXT_IPK_DIR)/CONTROL/control:
-	@install -d $(RECORDEXT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(RECORDEXT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: recordext" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -103,7 +103,7 @@ $(RECORDEXT_BUILD_DIR)/.configured: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz
 	if test -n "$(RECORDEXT_PATCHES)" ; \
 		then cat $(RECORDEXT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RECORDEXT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RECORDEXT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RECORDEXT_DIR)" != "$(RECORDEXT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RECORDEXT_DIR) $(RECORDEXT_BUILD_DIR) ; \

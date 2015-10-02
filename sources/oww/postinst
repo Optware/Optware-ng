@@ -1,44 +1,44 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
-mkdir -p /opt/etc/oww -m 755
+mkdir -p %OPTWARE_TARGET_PREFIX%/etc/oww -m 755
 
 # Move any existing setup files
-if ! test -e /opt/etc/oww/setupNG
+if ! test -e %OPTWARE_TARGET_PREFIX%/etc/oww/setupNG
 then
-	if test -e /opt/share/setupNG
+	if test -e %OPTWARE_TARGET_PREFIX%/share/setupNG
 	then 
-		mv /opt/share/setupNG /opt/etc/oww
+		mv %OPTWARE_TARGET_PREFIX%/share/setupNG %OPTWARE_TARGET_PREFIX%/etc/oww
 	fi
 fi
 
-if ! test -e /opt/etc/oww/devices
+if ! test -e %OPTWARE_TARGET_PREFIX%/etc/oww/devices
 then
-	if test -e /opt/share/devices
+	if test -e %OPTWARE_TARGET_PREFIX%/share/devices
 	then  
-		mv /opt/share/devices /opt/etc/oww
+		mv %OPTWARE_TARGET_PREFIX%/share/devices %OPTWARE_TARGET_PREFIX%/etc/oww
 	fi
 fi
 
-if ! test -e /opt/etc/oww/stats
+if ! test -e %OPTWARE_TARGET_PREFIX%/etc/oww/stats
 then
-	if test -e /opt/share/stats
+	if test -e %OPTWARE_TARGET_PREFIX%/share/stats
 	then  
-		mv /opt/share/stats /opt/etc/oww
+		mv %OPTWARE_TARGET_PREFIX%/share/stats %OPTWARE_TARGET_PREFIX%/etc/oww
 	fi
 fi
 
 echo ; echo
 echo "Oww (owwnogui) has been installed."
 
-if ! test -e /opt/etc/oww/devices
+if ! test -e %OPTWARE_TARGET_PREFIX%/etc/oww/devices
 then
 echo "Set up your devices interactively by running owwnogui -i"
-echo "Then quit and run /opt/etc/init.d/S80oww"
+echo "Then quit and run %OPTWARE_TARGET_PREFIX%/etc/init.d/S80oww"
 else
 echo "Devices were already configured."
-echo "Go ahead and run /opt/etc/init.d/S80oww"
+echo "Go ahead and run %OPTWARE_TARGET_PREFIX%/etc/init.d/S80oww"
 fi
 echo
 

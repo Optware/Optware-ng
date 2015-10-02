@@ -108,7 +108,7 @@ $(E2TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2TOOLS_SOURCE) $(E2TOOLS_PATCHES)
 	$(E2TOOLS_UNZIP) $(DL_DIR)/$(E2TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(E2TOOLS_PATCHES)" ; \
 		then cat $(E2TOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(E2TOOLS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(E2TOOLS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(E2TOOLS_DIR)" != "$(E2TOOLS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(E2TOOLS_DIR) $(E2TOOLS_BUILD_DIR) ; \
@@ -158,7 +158,7 @@ e2tools-stage: $(E2TOOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/e2tools
 #
 $(E2TOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(E2TOOLS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(E2TOOLS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: e2tools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

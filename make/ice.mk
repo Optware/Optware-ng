@@ -61,7 +61,7 @@ ICE_IPK=$(BUILD_DIR)/ice_$(ICE_FULL_VERSION)-$(ICE_IPK_VERSION)_$(TARGET_ARCH).i
 # Automatically create a ipkg control file
 #
 $(ICE_IPK_DIR)/CONTROL/control:
-	@install -d $(ICE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ICE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ice" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -102,7 +102,7 @@ $(ICE_BUILD_DIR)/.configured: $(DL_DIR)/$(ICE_SOURCE) \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(ICE_SOURCE)
 	if test -n "$(ICE_PATCHES)" ; \
 		then cat $(ICE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ICE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ICE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ICE_DIR)" != "$(ICE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ICE_DIR) $(ICE_BUILD_DIR) ; \

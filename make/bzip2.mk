@@ -63,11 +63,11 @@ bzip2: $(BZIP2_BUILD_DIR)/.built
 
 $(BZIP2_BUILD_DIR)/.staged: $(BZIP2_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.a $(STAGING_LIB_DIR)
-	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.so.$(BZIP2_LIB_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/libbz2.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/libbz2.so.$(BZIP2_LIB_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so.1.0
 	cd $(STAGING_LIB_DIR) && ln -fs libbz2.so.1.0 libbz2.so
 	touch $@
@@ -79,7 +79,7 @@ bzip2-stage: $(BZIP2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bzip2
 #
 $(BZIP2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bzip2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -94,18 +94,18 @@ $(BZIP2_IPK_DIR)/CONTROL/control:
 
 $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/.built
 	rm -rf $(BZIP2_IPK_DIR) $(BUILD_DIR)/bzip2_*_$(TARGET_ARCH).ipk
-	install -d $(BZIP2_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(BZIP2_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2 -o $(BZIP2_IPK_DIR)/opt/bin/bzip2-bzip2
 	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2recover -o $(BZIP2_IPK_DIR)/opt/bin/bzip2recover
-	install -d $(BZIP2_IPK_DIR)/opt/include
-	install -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(BZIP2_IPK_DIR)/opt/include
-	install -d $(BZIP2_IPK_DIR)/opt/lib
-	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.so.$(BZIP2_LIB_VERSION) $(BZIP2_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(BZIP2_IPK_DIR)/opt/include
+	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(BZIP2_IPK_DIR)/opt/include
+	$(INSTALL) -d $(BZIP2_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/libbz2.so.$(BZIP2_LIB_VERSION) $(BZIP2_IPK_DIR)/opt/lib
 	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so.1.0
 	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.1.0 libbz2.so
 	$(STRIP_COMMAND) $(BZIP2_IPK_DIR)/opt/lib/libbz2.so.$(BZIP2_LIB_VERSION)
-	install -d $(BZIP2_IPK_DIR)/opt/doc/bzip2
-	install -m 644 $(BZIP2_BUILD_DIR)/manual*.html $(BZIP2_IPK_DIR)/opt/doc/bzip2
+	$(INSTALL) -d $(BZIP2_IPK_DIR)/opt/doc/bzip2
+	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/manual*.html $(BZIP2_IPK_DIR)/opt/doc/bzip2
 	cd $(BZIP2_IPK_DIR)/opt/bin && ln -fs bzip2 bzcat
 	$(MAKE) $(BZIP2_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \

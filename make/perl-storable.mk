@@ -71,7 +71,7 @@ $(PERL-STORABLE_BUILD_DIR)/.staged: $(PERL-STORABLE_BUILD_DIR)/.built
 perl-storable-stage: $(PERL-STORABLE_BUILD_DIR)/.staged
 
 $(PERL-STORABLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-storable" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -116,7 +116,7 @@ $(LIBNL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNL_SOURCE) $(LIBNL_PATCHES) make/
 	$(LIBNL_UNZIP) $(DL_DIR)/$(LIBNL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNL_PATCHES)" ; \
 		then cat $(LIBNL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBNL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBNL_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ libnl-stage: $(LIBNL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libnl
 #
 $(LIBNL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libnl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(LIBNL_IPK): $(LIBNL_BUILD_DIR)/.built
 	rm -rf $(LIBNL_IPK_DIR) $(BUILD_DIR)/libnl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNL_BUILD_DIR) DESTDIR=$(LIBNL_IPK_DIR) install-strip
 	find $(LIBNL_IPK_DIR) -type f -name '*.la' -exec rm -f {} \;
-#	install -d $(LIBNL_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBNL_SOURCE_DIR)/libnl.conf $(LIBNL_IPK_DIR)/opt/etc/libnl.conf
-#	install -d $(LIBNL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBNL_SOURCE_DIR)/rc.libnl $(LIBNL_IPK_DIR)/opt/etc/init.d/SXXlibnl
+#	$(INSTALL) -d $(LIBNL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBNL_SOURCE_DIR)/libnl.conf $(LIBNL_IPK_DIR)/opt/etc/libnl.conf
+#	$(INSTALL) -d $(LIBNL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNL_SOURCE_DIR)/rc.libnl $(LIBNL_IPK_DIR)/opt/etc/init.d/SXXlibnl
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNL_IPK_DIR)/opt/etc/init.d/SXXlibnl
 	$(MAKE) $(LIBNL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBNL_SOURCE_DIR)/postinst $(LIBNL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBNL_SOURCE_DIR)/postinst $(LIBNL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBNL_SOURCE_DIR)/prerm $(LIBNL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBNL_SOURCE_DIR)/prerm $(LIBNL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNL_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

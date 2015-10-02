@@ -110,7 +110,7 @@ $(PY-PEXPECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PEXPECT_SOURCE) $(PY-PEXPECT
 	rm -rf $(BUILD_DIR)/$(PY-PEXPECT_DIR)
 	$(PY-PEXPECT_UNZIP) $(DL_DIR)/$(PY-PEXPECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PEXPECT_PATCHES)"; then \
-	    cat $(PY-PEXPECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PEXPECT_DIR) -p1; \
+	    cat $(PY-PEXPECT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PEXPECT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PEXPECT_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
@@ -125,7 +125,7 @@ $(PY-PEXPECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PEXPECT_SOURCE) $(PY-PEXPECT
 	rm -rf $(BUILD_DIR)/$(PY-PEXPECT_DIR)
 	$(PY-PEXPECT_UNZIP) $(DL_DIR)/$(PY-PEXPECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PEXPECT_PATCHES)"; then \
-	    cat $(PY-PEXPECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PEXPECT_DIR) -p1; \
+	    cat $(PY-PEXPECT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PEXPECT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PEXPECT_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -173,7 +173,7 @@ py-pexpect-stage: $(PY-PEXPECT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-pexpect
 #
 $(PY24-PEXPECT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-pexpect" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,7 +187,7 @@ $(PY24-PEXPECT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PEXPECT_CONFLICTS)" >>$@
 
 $(PY25-PEXPECT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pexpect" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

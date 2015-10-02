@@ -116,7 +116,7 @@ $(DEVMEM2_BUILD_DIR)/.configured: $(DL_DIR)/$(DEVMEM2_SOURCE) $(DEVMEM2_PATCHES)
 	cp -p $(<) $(@D)
 	if test -n "$(DEVMEM2_PATCHES)" ; \
 		then cat $(DEVMEM2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DEVMEM2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DEVMEM2_DIR) -p0 ; \
 	fi
 	touch $@
 
@@ -151,7 +151,7 @@ devmem2: $(DEVMEM2_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/devmem2
 #
 $(DEVMEM2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: devmem2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,8 +179,8 @@ $(DEVMEM2_IPK_DIR)/CONTROL/control:
 #
 $(DEVMEM2_IPK): $(DEVMEM2_BUILD_DIR)/.built
 	rm -rf $(DEVMEM2_IPK_DIR) $(BUILD_DIR)/devmem2_*_$(TARGET_ARCH).ipk
-	install -d $(DEVMEM2_IPK_DIR)/opt/bin
-	install -m 755 $(<D)/devmem2 $(DEVMEM2_IPK_DIR)/opt/bin/devmem2
+	$(INSTALL) -d $(DEVMEM2_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(<D)/devmem2 $(DEVMEM2_IPK_DIR)/opt/bin/devmem2
 	$(STRIP_COMMAND) $(DEVMEM2_IPK_DIR)/opt/bin/devmem2
 	$(MAKE) $(DEVMEM2_IPK_DIR)/CONTROL/control
 #	echo $(DEVMEM2_CONFFILES) | sed -e 's/ /\n/g' > $(DEVMEM2_IPK_DIR)/CONTROL/conffiles

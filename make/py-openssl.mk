@@ -137,7 +137,7 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-OPENSSL_PATCHES_OLD)" ; \
 		then cat $(PY-OPENSSL_PATCHES_OLD) | \
-		patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -156,7 +156,7 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-OPENSSL_PATCHES)" ; \
 		then cat $(PY-OPENSSL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -175,7 +175,7 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-OPENSSL_PATCHES)" ; \
 		then cat $(PY-OPENSSL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -194,7 +194,7 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-OPENSSL_PATCHES)" ; \
 		then cat $(PY-OPENSSL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-OPENSSL_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-OPENSSL_DIR) $(@D)/3
 	(cd $(@D)/3; \
@@ -323,7 +323,7 @@ py-openssl-host-stage: $(PY-OPENSSL_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-openssl
 #
 $(PY25-OPENSSL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-openssl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -337,7 +337,7 @@ $(PY25-OPENSSL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-OPENSSL_CONFLICTS)" >>$@
 
 $(PY26-OPENSSL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-openssl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -351,7 +351,7 @@ $(PY26-OPENSSL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-OPENSSL_CONFLICTS)" >>$@
 
 $(PY27-OPENSSL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-openssl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -365,7 +365,7 @@ $(PY27-OPENSSL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-OPENSSL_CONFLICTS)" >>$@
 
 $(PY3-OPENSSL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-openssl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

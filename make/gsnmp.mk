@@ -110,7 +110,7 @@ $(GSNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(GSNMP_SOURCE) $(GSNMP_PATCHES) make/
 	$(GSNMP_UNZIP) $(DL_DIR)/$(GSNMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GSNMP_PATCHES)" ; \
 		then cat $(GSNMP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GSNMP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GSNMP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GSNMP_DIR)" != "$(GSNMP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(GSNMP_DIR) $(GSNMP_BUILD_DIR) ; \
@@ -162,7 +162,7 @@ gsnmp-stage: $(GSNMP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gsnmp
 #
 $(GSNMP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gsnmp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,15 +193,15 @@ $(GSNMP_IPK): $(GSNMP_BUILD_DIR)/.built
 	$(MAKE) -C $(GSNMP_BUILD_DIR) DESTDIR=$(GSNMP_IPK_DIR) install
 	$(STRIP_COMMAND) $(GSNMP_IPK_DIR)/opt/bin/gsnmp-get \
 	    $(GSNMP_IPK_DIR)/opt/lib/libgsnmp.so.[0-9]*.[0-9]*.[0-9]*
-#	install -d $(GSNMP_IPK_DIR)/opt/etc/
-#	install -m 644 $(GSNMP_SOURCE_DIR)/gsnmp.conf $(GSNMP_IPK_DIR)/opt/etc/gsnmp.conf
-#	install -d $(GSNMP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GSNMP_SOURCE_DIR)/rc.gsnmp $(GSNMP_IPK_DIR)/opt/etc/init.d/SXXgsnmp
+#	$(INSTALL) -d $(GSNMP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GSNMP_SOURCE_DIR)/gsnmp.conf $(GSNMP_IPK_DIR)/opt/etc/gsnmp.conf
+#	$(INSTALL) -d $(GSNMP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GSNMP_SOURCE_DIR)/rc.gsnmp $(GSNMP_IPK_DIR)/opt/etc/init.d/SXXgsnmp
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GSNMP_IPK_DIR)/opt/etc/init.d/SXXgsnmp
 	$(MAKE) $(GSNMP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GSNMP_SOURCE_DIR)/postinst $(GSNMP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GSNMP_SOURCE_DIR)/postinst $(GSNMP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GSNMP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GSNMP_SOURCE_DIR)/prerm $(GSNMP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GSNMP_SOURCE_DIR)/prerm $(GSNMP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GSNMP_IPK_DIR)/CONTROL/prerm
 	echo $(GSNMP_CONFFILES) | sed -e 's/ /\n/g' > $(GSNMP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GSNMP_IPK_DIR)

@@ -110,7 +110,7 @@ $(DNSTRACER_BUILD_DIR)/.configured: $(DL_DIR)/$(DNSTRACER_SOURCE) $(DNSTRACER_PA
 	$(DNSTRACER_UNZIP) $(DL_DIR)/$(DNSTRACER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DNSTRACER_PATCHES)" ; \
 		then cat $(DNSTRACER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DNSTRACER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DNSTRACER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DNSTRACER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DNSTRACER_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ dnstracer-stage: $(DNSTRACER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dnstracer
 #
 $(DNSTRACER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dnstracer" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

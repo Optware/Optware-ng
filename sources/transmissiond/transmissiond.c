@@ -5,7 +5,7 @@
  * and http://transmission.m0k.org/forum/viewtopic.php?p=3757#3757
  *
  * Sample usage: export HOME=/tmp/harddisk/tmp
- * transmissiond -p 65534 -w 1800 -u 40 -i /opt/var/run/transmission.pid  \
+ * transmissiond -p 65534 -w 1800 -u 40 -i %OPTWARE_TARGET_PREFIX%/var/run/transmission.pid  \
  *                /tmp/harddisk/tmp/active-torrents.txt
  *
  * Always use full paths to facilitate reload_active.

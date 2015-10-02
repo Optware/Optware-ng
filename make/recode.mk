@@ -122,7 +122,7 @@ $(RECODE_BUILD_DIR)/.configured: $(DL_DIR)/$(RECODE_SOURCE) $(RECODE_PATCHES) ma
 	$(RECODE_UNZIP) $(DL_DIR)/$(RECODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RECODE_PATCHES)" ; \
 		then cat $(RECODE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RECODE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RECODE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RECODE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RECODE_DIR) $(@D) ; \
@@ -180,7 +180,7 @@ recode-stage: $(RECODE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/recode
 #
 $(RECODE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: recode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,13 +211,13 @@ $(RECODE_IPK): $(RECODE_BUILD_DIR)/.built
 	$(MAKE) -C $(RECODE_BUILD_DIR) DESTDIR=$(RECODE_IPK_DIR) install
 	rm -f $(RECODE_IPK_DIR)/opt/share/info/dir
 	$(STRIP_COMMAND) $(RECODE_IPK_DIR)/opt/bin/recode $(RECODE_IPK_DIR)/opt/lib/librecode.so.*.*.*
-#	install -d $(RECODE_IPK_DIR)/opt/etc/
-#	install -m 644 $(RECODE_SOURCE_DIR)/recode.conf $(RECODE_IPK_DIR)/opt/etc/recode.conf
-#	install -d $(RECODE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(RECODE_SOURCE_DIR)/rc.recode $(RECODE_IPK_DIR)/opt/etc/init.d/SXXrecode
+#	$(INSTALL) -d $(RECODE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(RECODE_SOURCE_DIR)/recode.conf $(RECODE_IPK_DIR)/opt/etc/recode.conf
+#	$(INSTALL) -d $(RECODE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(RECODE_SOURCE_DIR)/rc.recode $(RECODE_IPK_DIR)/opt/etc/init.d/SXXrecode
 	$(MAKE) $(RECODE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RECODE_SOURCE_DIR)/postinst $(RECODE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RECODE_SOURCE_DIR)/prerm $(RECODE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(RECODE_SOURCE_DIR)/postinst $(RECODE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RECODE_SOURCE_DIR)/prerm $(RECODE_IPK_DIR)/CONTROL/prerm
 	echo $(RECODE_CONFFILES) | sed -e 's/ /\n/g' > $(RECODE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RECODE_IPK_DIR)
 

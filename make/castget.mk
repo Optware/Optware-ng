@@ -117,7 +117,7 @@ $(CASTGET_BUILD_DIR)/.configured: $(DL_DIR)/$(CASTGET_SOURCE) $(CASTGET_PATCHES)
 	$(CASTGET_UNZIP) $(DL_DIR)/$(CASTGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CASTGET_PATCHES)" ; \
 		then cat $(CASTGET_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CASTGET_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CASTGET_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CASTGET_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CASTGET_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ castget-stage: $(CASTGET_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/castget
 #
 $(CASTGET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: castget" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,12 +200,12 @@ $(CASTGET_IPK_DIR)/CONTROL/control:
 $(CASTGET_IPK): $(CASTGET_BUILD_DIR)/.built
 	rm -rf $(CASTGET_IPK_DIR) $(BUILD_DIR)/castget_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CASTGET_BUILD_DIR) DESTDIR=$(CASTGET_IPK_DIR) install-strip
-	install -d $(CASTGET_IPK_DIR)/opt/doc/castget
-	install -m 644 $(CASTGET_BUILD_DIR)/castgetrc.example $(CASTGET_IPK_DIR)/opt/doc/castget
+	$(INSTALL) -d $(CASTGET_IPK_DIR)/opt/doc/castget
+	$(INSTALL) -m 644 $(CASTGET_BUILD_DIR)/castgetrc.example $(CASTGET_IPK_DIR)/opt/doc/castget
 	$(MAKE) $(CASTGET_IPK_DIR)/CONTROL/control
-	#install -m 755 $(CASTGET_SOURCE_DIR)/postinst $(CASTGET_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(CASTGET_SOURCE_DIR)/postinst $(CASTGET_IPK_DIR)/CONTROL/postinst
 	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CASTGET_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(CASTGET_SOURCE_DIR)/prerm $(CASTGET_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(CASTGET_SOURCE_DIR)/prerm $(CASTGET_IPK_DIR)/CONTROL/prerm
 	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CASTGET_IPK_DIR)/CONTROL/prerm
 	echo $(CASTGET_CONFFILES) | sed -e 's/ /\n/g' > $(CASTGET_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CASTGET_IPK_DIR)

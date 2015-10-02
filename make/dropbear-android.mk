@@ -44,7 +44,7 @@ $(DROPBEAR_ANDROID_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_ANDROID_SOURCE) 
 	$(DROPBEAR_ANDROID_UNZIP) $(DL_DIR)/$(DROPBEAR_ANDROID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DROPBEAR_ANDROID_PATCHES)" ; \
 		then cat $(DROPBEAR_ANDROID_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DROPBEAR_ANDROID_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DROPBEAR_ANDROID_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(DROPBEAR_ANDROID_DIR) $(@D)
 	(cd $(@D) && \
@@ -80,7 +80,7 @@ dropbear-android: $(DROPBEAR_ANDROID_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/dropbear
 #
 $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dropbear-android" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -96,19 +96,19 @@ $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/control:
 
 $(DROPBEAR_ANDROID_IPK): $(DROPBEAR_ANDROID_BUILD_DIR)/.built
 	rm -rf $(DROPBEAR_ANDROID_IPK_DIR) $(BUILD_DIR)/dropbear-android_*_$(TARGET_ARCH).ipk
-	install -d $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin $(DROPBEAR_ANDROID_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin $(DROPBEAR_ANDROID_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(DROPBEAR_ANDROID_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin/dropbearmulti
 	cd $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbear
 	cd $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearkey
 	cd $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearconvert
 	cd $(DROPBEAR_ANDROID_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti dbclient
-	install -d $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DROPBEAR_ANDROID_SOURCE_DIR)/rc.dropbear-android $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/init.d/S51dropbear
-	install -d $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/default
-	install -m 755 $(DROPBEAR_ANDROID_SOURCE_DIR)/dropbear-android.default $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/default/dropbear
+	$(INSTALL) -d $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DROPBEAR_ANDROID_SOURCE_DIR)/rc.dropbear-android $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/init.d/S51dropbear
+	$(INSTALL) -d $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 755 $(DROPBEAR_ANDROID_SOURCE_DIR)/dropbear-android.default $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/default/dropbear
 	$(MAKE) $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/control
-	install -m 644 $(DROPBEAR_ANDROID_SOURCE_DIR)/postinst $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(DROPBEAR_ANDROID_SOURCE_DIR)/prerm    $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(DROPBEAR_ANDROID_SOURCE_DIR)/postinst $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(DROPBEAR_ANDROID_SOURCE_DIR)/prerm    $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
                 sed -i -e '/^[  ]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
                         $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/postinst $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/prerm; \

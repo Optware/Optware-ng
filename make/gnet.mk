@@ -110,7 +110,7 @@ $(GNET_BUILD_DIR)/.configured: $(DL_DIR)/$(GNET_SOURCE) $(GNET_PATCHES) make/gne
 	$(GNET_UNZIP) $(DL_DIR)/$(GNET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNET_PATCHES)" ; \
 		then cat $(GNET_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GNET_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GNET_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GNET_DIR)" != "$(GNET_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(GNET_DIR) $(GNET_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ gnet-stage: $(GNET_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnet
 #
 $(GNET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnet" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,15 +193,15 @@ $(GNET_IPK_DIR)/CONTROL/control:
 $(GNET_IPK): $(GNET_BUILD_DIR)/.built
 	rm -rf $(GNET_IPK_DIR) $(BUILD_DIR)/gnet_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNET_BUILD_DIR) DESTDIR=$(GNET_IPK_DIR) install-strip
-#	install -d $(GNET_IPK_DIR)/opt/etc/
-#	install -m 644 $(GNET_SOURCE_DIR)/gnet.conf $(GNET_IPK_DIR)/opt/etc/gnet.conf
-#	install -d $(GNET_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GNET_SOURCE_DIR)/rc.gnet $(GNET_IPK_DIR)/opt/etc/init.d/SXXgnet
+#	$(INSTALL) -d $(GNET_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GNET_SOURCE_DIR)/gnet.conf $(GNET_IPK_DIR)/opt/etc/gnet.conf
+#	$(INSTALL) -d $(GNET_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GNET_SOURCE_DIR)/rc.gnet $(GNET_IPK_DIR)/opt/etc/init.d/SXXgnet
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNET_IPK_DIR)/opt/etc/init.d/SXXgnet
 	$(MAKE) $(GNET_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GNET_SOURCE_DIR)/postinst $(GNET_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GNET_SOURCE_DIR)/postinst $(GNET_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNET_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GNET_SOURCE_DIR)/prerm $(GNET_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GNET_SOURCE_DIR)/prerm $(GNET_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNET_IPK_DIR)/CONTROL/prerm
 	echo $(GNET_CONFFILES) | sed -e 's/ /\n/g' > $(GNET_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNET_IPK_DIR)

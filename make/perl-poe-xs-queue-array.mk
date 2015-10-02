@@ -36,7 +36,7 @@ $(PERL-POE-XS-QUEUE-ARRAY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-POE-XS-QUEUE-
 #	$(MAKE) <foo>-stage
 	rm -rf $(BUILD_DIR)/$(PERL-POE-XS-QUEUE-ARRAY_DIR) $(@D)
 	$(PERL-POE-XS-QUEUE-ARRAY_UNZIP) $(DL_DIR)/$(PERL-POE-XS-QUEUE-ARRAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-POE-XS-QUEUE-ARRAY_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-POE-XS-QUEUE-ARRAY_DIR) -p1
+#	cat $(PERL-POE-XS-QUEUE-ARRAY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-POE-XS-QUEUE-ARRAY_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-POE-XS-QUEUE-ARRAY_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -70,7 +70,7 @@ $(PERL-POE-XS-QUEUE-ARRAY_BUILD_DIR)/.staged: $(PERL-POE-XS-QUEUE-ARRAY_BUILD_DI
 perl-poe-xs-queue-array-stage: $(PERL-POE-XS-QUEUE-ARRAY_BUILD_DIR)/.staged
 
 $(PERL-POE-XS-QUEUE-ARRAY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-poe-xs-queue-array" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

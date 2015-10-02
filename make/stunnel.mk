@@ -109,7 +109,7 @@ $(STUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
 	$(STUNNEL_UNZIP) $(DL_DIR)/$(STUNNEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(STUNNEL_PATCHES)" ; \
 		then cat $(STUNNEL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(STUNNEL_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(STUNNEL_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(STUNNEL_DIR) $(@D)
 	(cd $(@D); \
@@ -147,11 +147,11 @@ stunnel: $(STUNNEL_BUILD_DIR)/.built
 #
 $(STUNNEL_BUILD_DIR)/.staged: $(STUNNEL_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(@D)/stunnel.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(@D)/libstunnel.a $(STAGING_LIB_DIR)
-	install -m 644 $(@D)/libstunnel.so.$(STUNNEL_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(@D)/stunnel.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(@D)/libstunnel.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(@D)/libstunnel.so.$(STUNNEL_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so
 	touch $@
@@ -163,7 +163,7 @@ stunnel-stage: $(STUNNEL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/stunnel
 #
 $(STUNNEL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: stunnel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,19 +190,19 @@ $(STUNNEL_IPK_DIR)/CONTROL/control:
 #
 $(STUNNEL_IPK): $(STUNNEL_BUILD_DIR)/.built
 	rm -rf $(STUNNEL_IPK_DIR) $(BUILD_DIR)/stunnel_*_$(TARGET_ARCH).ipk
-	install -d $(STUNNEL_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(STUNNEL_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(STUNNEL_BUILD_DIR)/src/stunnel -o $(STUNNEL_IPK_DIR)/opt/sbin/stunnel
-	install -d $(STUNNEL_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(STUNNEL_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(STUNNEL_BUILD_DIR)/src/.libs/libstunnel.so -o $(STUNNEL_IPK_DIR)/opt/lib/libstunnel.so
-	install -d $(STUNNEL_IPK_DIR)/opt/var/stunnel
-	install -d $(STUNNEL_IPK_DIR)/opt/etc/stunnel
-	install -m 644 $(STUNNEL_BUILD_DIR)/tools/stunnel.cnf $(STUNNEL_IPK_DIR)/opt/etc/stunnel/stunnel-cert.cnf
-	install -m 644 $(STUNNEL_SOURCE_DIR)/stunnel.conf $(STUNNEL_IPK_DIR)/opt/etc/stunnel/stunnel.conf
-	install -d $(STUNNEL_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(STUNNEL_SOURCE_DIR)/rc.stunnel $(STUNNEL_IPK_DIR)/opt/etc/init.d/S68stunnel
+	$(INSTALL) -d $(STUNNEL_IPK_DIR)/opt/var/stunnel
+	$(INSTALL) -d $(STUNNEL_IPK_DIR)/opt/etc/stunnel
+	$(INSTALL) -m 644 $(STUNNEL_BUILD_DIR)/tools/stunnel.cnf $(STUNNEL_IPK_DIR)/opt/etc/stunnel/stunnel-cert.cnf
+	$(INSTALL) -m 644 $(STUNNEL_SOURCE_DIR)/stunnel.conf $(STUNNEL_IPK_DIR)/opt/etc/stunnel/stunnel.conf
+	$(INSTALL) -d $(STUNNEL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(STUNNEL_SOURCE_DIR)/rc.stunnel $(STUNNEL_IPK_DIR)/opt/etc/init.d/S68stunnel
 	$(MAKE) $(STUNNEL_IPK_DIR)/CONTROL/control
-	install -m 644 $(STUNNEL_SOURCE_DIR)/postinst $(STUNNEL_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(STUNNEL_SOURCE_DIR)/prerm $(STUNNEL_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(STUNNEL_SOURCE_DIR)/postinst $(STUNNEL_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(STUNNEL_SOURCE_DIR)/prerm $(STUNNEL_IPK_DIR)/CONTROL/prerm
 	echo $(STUNNEL_CONFFILES) | sed -e 's/ /\n/g' > $(STUNNEL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STUNNEL_IPK_DIR)
 

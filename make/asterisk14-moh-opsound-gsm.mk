@@ -111,7 +111,7 @@ $(ASTERISK14_MOH_OPSOUND_GSM_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_MOH_
 	mkdir -p $(BUILD_DIR)/$(ASTERISK14_MOH_OPSOUND_GSM_DIR); $(ASTERISK14_MOH_OPSOUND_GSM_UNZIP) $(DL_DIR)/$(ASTERISK14_MOH_OPSOUND_GSM_SOURCE) | tar -C $(BUILD_DIR)/$(ASTERISK14_MOH_OPSOUND_GSM_DIR) -xvf -
 	if test -n "$(ASTERISK14_MOH_OPSOUND_GSM_PATCHES)" ; \
 		then cat $(ASTERISK14_MOH_OPSOUND_GSM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK14_MOH_OPSOUND_GSM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASTERISK14_MOH_OPSOUND_GSM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK14_MOH_OPSOUND_GSM_DIR)" != "$(ASTERISK14_MOH_OPSOUND_GSM_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_MOH_OPSOUND_GSM_DIR) $(ASTERISK14_MOH_OPSOUND_GSM_BUILD_DIR) ; \
@@ -146,7 +146,7 @@ asterisk14-moh-opsound-gsm-stage: $(ASTERISK14_MOH_OPSOUND_GSM_BUILD_DIR)/.stage
 # necessary to create a seperate control file under sources/asterisk14-moh-opsound-gsm
 #
 $(ASTERISK14_MOH_OPSOUND_GSM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: asterisk14-moh-opsound-gsm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,8 +175,8 @@ $(ASTERISK14_MOH_OPSOUND_GSM_IPK_DIR)/CONTROL/control:
 $(ASTERISK14_MOH_OPSOUND_GSM_IPK): $(ASTERISK14_MOH_OPSOUND_GSM_BUILD_DIR)/.built
 	rm -rf $(ASTERISK14_MOH_OPSOUND_GSM_IPK_DIR) $(BUILD_DIR)/asterisk14-moh-opsound-gsm_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(ASTERISK14_MOH_OPSOUND_GSM_IPK_DIR)/CONTROL/control
-	install -d $(ASTERISK14_MOH_OPSOUND_GSM_IPK_DIR)/opt/var/lib/asterisk/moh
-	install -m 644 $(ASTERISK14_MOH_OPSOUND_GSM_BUILD_DIR)/*gsm $(ASTERISK14_MOH_OPSOUND_GSM_IPK_DIR)/opt/var/lib/asterisk/moh
+	$(INSTALL) -d $(ASTERISK14_MOH_OPSOUND_GSM_IPK_DIR)/opt/var/lib/asterisk/moh
+	$(INSTALL) -m 644 $(ASTERISK14_MOH_OPSOUND_GSM_BUILD_DIR)/*gsm $(ASTERISK14_MOH_OPSOUND_GSM_IPK_DIR)/opt/var/lib/asterisk/moh
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_MOH_OPSOUND_GSM_IPK_DIR)
 
 #

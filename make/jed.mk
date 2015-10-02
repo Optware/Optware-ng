@@ -111,7 +111,7 @@ $(JED_BUILD_DIR)/.configured: $(DL_DIR)/$(JED_SOURCE) $(JED_PATCHES) make/jed.mk
 	$(JED_UNZIP) $(DL_DIR)/$(JED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(JED_PATCHES)" ; \
 		then cat $(JED_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(JED_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(JED_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(JED_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(JED_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ jed: $(JED_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/jed
 #
 $(JED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: jed" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,15 +200,15 @@ $(JED_IPK): $(JED_BUILD_DIR)/.built
 	$(MAKE) -C $(JED_BUILD_DIR) install \
 		DESTDIR=$(JED_IPK_DIR) JED_ROOT=/opt/share/jed
 	$(STRIP_COMMAND) $(JED_IPK_DIR)/opt/bin/jed
-#	install -d $(JED_IPK_DIR)/opt/etc/
-#	install -m 644 $(JED_SOURCE_DIR)/jed.conf $(JED_IPK_DIR)/opt/etc/jed.conf
-#	install -d $(JED_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(JED_SOURCE_DIR)/rc.jed $(JED_IPK_DIR)/opt/etc/init.d/SXXjed
+#	$(INSTALL) -d $(JED_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(JED_SOURCE_DIR)/jed.conf $(JED_IPK_DIR)/opt/etc/jed.conf
+#	$(INSTALL) -d $(JED_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(JED_SOURCE_DIR)/rc.jed $(JED_IPK_DIR)/opt/etc/init.d/SXXjed
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(JED_IPK_DIR)/opt/etc/init.d/SXXjed
 	$(MAKE) $(JED_IPK_DIR)/CONTROL/control
-#	install -m 755 $(JED_SOURCE_DIR)/postinst $(JED_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(JED_SOURCE_DIR)/postinst $(JED_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(JED_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(JED_SOURCE_DIR)/prerm $(JED_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(JED_SOURCE_DIR)/prerm $(JED_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(JED_IPK_DIR)/CONTROL/prerm
 	echo $(JED_CONFFILES) | sed -e 's/ /\n/g' > $(JED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JED_IPK_DIR)

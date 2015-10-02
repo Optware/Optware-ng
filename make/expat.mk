@@ -98,7 +98,7 @@ $(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES) make/
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(EXPAT_DIR) $(@D)
 	$(EXPAT_UNZIP) $(DL_DIR)/$(EXPAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(EXPAT_PATCHES) | patch -d $(BUILD_DIR)/$(EXPAT_DIR) -p1
+#	cat $(EXPAT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(EXPAT_DIR) -p1
 	mv $(BUILD_DIR)/$(EXPAT_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -139,7 +139,7 @@ $(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
 	mkdir -p $(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR)
 	(cd $(@D); \
 		./libtool --mode=install install -c libexpat.la $(STAGING_LIB_DIR)/libexpat.la ; \
-		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_INCLUDE_DIR) ; \
+		$(INSTALL) -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_INCLUDE_DIR) ; \
 	)
 	rm -f $(STAGING_LIB_DIR)/libexpat.la
 	touch $@
@@ -149,7 +149,7 @@ expat-stage: $(EXPAT_BUILD_DIR)/.staged
 $(EXPAT_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(EXPAT_SOURCE)
 	rm -rf $(HOST_BUILD_DIR)/$(EXPAT_DIR) $(@D)
 	$(EXPAT_UNZIP) $(DL_DIR)/$(EXPAT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-#	cat $(EXPAT_PATCHES) | patch -d $(BUILD_DIR)/$(EXPAT_DIR) -p1
+#	cat $(EXPAT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(EXPAT_DIR) -p1
 	mv $(HOST_BUILD_DIR)/$(EXPAT_DIR) $(@D)
 	(cd $(@D); \
 		CPPFLAGS="-fPIC" \
@@ -162,7 +162,7 @@ $(EXPAT_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(EXPAT_SOURCE)
 	mkdir -p $(HOST_STAGING_LIB_DIR) $(HOST_STAGING_INCLUDE_DIR)
 	(cd $(@D); \
 		./libtool --mode=install install -c libexpat.la $(HOST_STAGING_LIB_DIR)/libexpat.la ; \
-		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(HOST_STAGING_INCLUDE_DIR) ; \
+		$(INSTALL) -c -m 644 ./lib/expat.h ./lib/expat_external.h $(HOST_STAGING_INCLUDE_DIR) ; \
 	)
 	rm -f $(HOST_STAGING_LIB_DIR)/libexpat.la
 	touch $@
@@ -174,7 +174,7 @@ expat-host-stage: $(EXPAT_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/expat
 #
 $(EXPAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: expat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,10 +201,10 @@ $(EXPAT_IPK_DIR)/CONTROL/control:
 #
 $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
 	rm -rf $(EXPAT_IPK_DIR) $(BUILD_DIR)/expat_*_$(TARGET_ARCH).ipk
-	install -d $(EXPAT_IPK_DIR)/opt/lib $(EXPAT_IPK_DIR)/opt/include
+	$(INSTALL) -d $(EXPAT_IPK_DIR)/opt/lib $(EXPAT_IPK_DIR)/opt/include
 	(cd $(EXPAT_BUILD_DIR); \
 		./libtool --mode=install install -c libexpat.la $(EXPAT_IPK_DIR)/opt/lib/libexpat.la ; \
-		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(EXPAT_IPK_DIR)/opt/include ; \
+		$(INSTALL) -c -m 644 ./lib/expat.h ./lib/expat_external.h $(EXPAT_IPK_DIR)/opt/include ; \
 	)
 	$(STRIP_COMMAND) $(EXPAT_IPK_DIR)/opt/lib/libexpat.so
 	# avoid problems with libtool later

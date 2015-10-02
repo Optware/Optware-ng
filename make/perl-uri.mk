@@ -34,7 +34,7 @@ perl-uri-source: $(DL_DIR)/$(PERL-URI_SOURCE) $(PERL-URI_PATCHES)
 $(PERL-URI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-URI_SOURCE) $(PERL-URI_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERL-URI_DIR) $(PERL-URI_BUILD_DIR)
 	$(PERL-URI_UNZIP) $(DL_DIR)/$(PERL-URI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-URI_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-URI_DIR) -p1
+#	cat $(PERL-URI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-URI_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-URI_DIR) $(PERL-URI_BUILD_DIR)
 	(cd $(PERL-URI_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -64,7 +64,7 @@ $(PERL-URI_BUILD_DIR)/.staged: $(PERL-URI_BUILD_DIR)/.built
 perl-uri-stage: $(PERL-URI_BUILD_DIR)/.staged
 
 $(PERL-URI_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-URI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-URI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-uri" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

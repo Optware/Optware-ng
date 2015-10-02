@@ -52,9 +52,9 @@ CREATE TABLE tf_settings (
   tf_value      TEXT     NOT NULL
 );
 
-INSERT INTO tf_settings VALUES ('path', '/opt/var/torrentflux/downloads/');
-INSERT INTO tf_settings VALUES ('btphpbin', '/opt/share/www/torrentflux/TF_BitTornado/btphptornado.py');
-INSERT INTO tf_settings VALUES ('btshowmetainfo', '/opt/share/www/torrentflux/TF_BitTornado/btshowmetainfo.py');
+INSERT INTO tf_settings VALUES ('path', '%OPTWARE_TARGET_PREFIX%/var/torrentflux/downloads/');
+INSERT INTO tf_settings VALUES ('btphpbin', '%OPTWARE_TARGET_PREFIX%/share/www/torrentflux/TF_BitTornado/btphptornado.py');
+INSERT INTO tf_settings VALUES ('btshowmetainfo', '%OPTWARE_TARGET_PREFIX%/share/www/torrentflux/TF_BitTornado/btshowmetainfo.py');
 INSERT INTO tf_settings VALUES ('advanced_start', '1');
 INSERT INTO tf_settings VALUES ('max_upload_rate', '10');
 INSERT INTO tf_settings VALUES ('max_download_rate', '0');
@@ -78,19 +78,19 @@ INSERT INTO tf_settings VALUES ('default_language', 'lang-english.php');
 INSERT INTO tf_settings VALUES ('debug_sql', '1');
 INSERT INTO tf_settings VALUES ('torrent_dies_when_done', 'False');
 INSERT INTO tf_settings VALUES ('sharekill', '150');
-INSERT INTO tf_settings VALUES ('tfQManager', '/opt/share/www/torrentflux/TF_BitTornado/tfQManager.py');
+INSERT INTO tf_settings VALUES ('tfQManager', '%OPTWARE_TARGET_PREFIX%/share/www/torrentflux/TF_BitTornado/tfQManager.py');
 INSERT INTO tf_settings VALUES ('AllowQueing', '0');
 INSERT INTO tf_settings VALUES ('maxServerThreads', '5');
 INSERT INTO tf_settings VALUES ('maxUserThreads', '2');
 INSERT INTO tf_settings VALUES ('sleepInterval', '10');
 INSERT INTO tf_settings VALUES ('debugTorrents', '0');
-INSERT INTO tf_settings VALUES ('pythonCmd', '/opt/bin/python');
+INSERT INTO tf_settings VALUES ('pythonCmd', '%OPTWARE_TARGET_PREFIX%/bin/python');
 INSERT INTO tf_settings VALUES ('searchEngine', 'isoHunt');
 INSERT INTO tf_settings VALUES ('TorrentSpyGenreFilter', 'a:3:{i:0;s:2:"11";i:1;s:1:"6";i:2;s:1:"7";}');
 INSERT INTO tf_settings VALUES ('TorrentBoxGenreFilter', 'a:3:{i:0;s:1:"0";i:1;s:1:"9";i:2;s:2:"10";}');
 INSERT INTO tf_settings VALUES ('TorrentPortalGenreFilter', 'a:3:{i:0;s:1:"0";i:1;s:1:"6";i:2;s:2:"10";}');
 INSERT INTO tf_settings VALUES ('enable_maketorrent','0');
-INSERT INTO tf_settings VALUES ('btmakemetafile','/opt/share/www/torrentflux/TF_BitTornado/btmakemetafile.py');
+INSERT INTO tf_settings VALUES ('btmakemetafile','%OPTWARE_TARGET_PREFIX%/share/www/torrentflux/TF_BitTornado/btmakemetafile.py');
 INSERT INTO tf_settings VALUES ('enable_torrent_download','1');
 INSERT INTO tf_settings VALUES ('enable_file_priority','1');
 INSERT INTO tf_settings VALUES ('security_code','0');

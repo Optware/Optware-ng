@@ -128,7 +128,7 @@ endif
 	$(KISSDX_UNZIP) $(DL_DIR)/$(KISSDX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KISSDX_PATCHES)" ; \
 		then cat $(KISSDX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(KISSDX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(KISSDX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(KISSDX_DIR)" != "$(KISSDX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(KISSDX_DIR) $(KISSDX_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ kissdx: $(KISSDX_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/kissdx
 #
 $(KISSDX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: kissdx" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,19 +193,19 @@ $(KISSDX_IPK_DIR)/CONTROL/control:
 $(KISSDX_IPK): $(KISSDX_BUILD_DIR)/.built
 	rm -rf $(KISSDX_IPK_DIR) $(BUILD_DIR)/kissdx_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(KISSDX_BUILD_DIR) DESTDIR=$(KISSDX_IPK_DIR)
-	install -d $(KISSDX_IPK_DIR)/opt/bin/
-	install -m 755 $(KISSDX_BUILD_DIR)/kissdx $(KISSDX_IPK_DIR)/opt/bin/kissdx
-	install -d $(KISSDX_IPK_DIR)/opt/etc/
-	install -m 644 $(KISSDX_BUILD_DIR)/kissdx.conf $(KISSDX_IPK_DIR)/opt/etc/kissdx.conf
-	install -d $(KISSDX_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(KISSDX_SOURCE_DIR)/rc.kissdx $(KISSDX_IPK_DIR)/opt/etc/init.d/S83kissdx
+	$(INSTALL) -d $(KISSDX_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 755 $(KISSDX_BUILD_DIR)/kissdx $(KISSDX_IPK_DIR)/opt/bin/kissdx
+	$(INSTALL) -d $(KISSDX_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(KISSDX_BUILD_DIR)/kissdx.conf $(KISSDX_IPK_DIR)/opt/etc/kissdx.conf
+	$(INSTALL) -d $(KISSDX_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(KISSDX_SOURCE_DIR)/rc.kissdx $(KISSDX_IPK_DIR)/opt/etc/init.d/S83kissdx
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(KISSDX_IPK_DIR)/opt/etc/init.d/S83kissdx
-	install -d $(KISSDX_IPK_DIR)/opt/man/man1/
-	install -m 644 $(KISSDX_BUILD_DIR)/kissdx.1 $(KISSDX_IPK_DIR)/opt/man/man1/kissdx.1
+	$(INSTALL) -d $(KISSDX_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -m 644 $(KISSDX_BUILD_DIR)/kissdx.1 $(KISSDX_IPK_DIR)/opt/man/man1/kissdx.1
 	$(MAKE) $(KISSDX_IPK_DIR)/CONTROL/control
-	install -m 755 $(KISSDX_SOURCE_DIR)/postinst $(KISSDX_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(KISSDX_SOURCE_DIR)/postinst $(KISSDX_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(KISSDX_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(KISSDX_SOURCE_DIR)/prerm $(KISSDX_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(KISSDX_SOURCE_DIR)/prerm $(KISSDX_IPK_DIR)/CONTROL/prerm
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(KISSDX_IPK_DIR)/CONTROL/prerm
 	echo $(KISSDX_CONFFILES) | sed -e 's/ /\n/g' > $(KISSDX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KISSDX_IPK_DIR)

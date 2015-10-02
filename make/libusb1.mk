@@ -108,7 +108,7 @@ $(LIBUSB1_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB1_SOURCE) $(LIBUSB1_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBUSB1_DIR) $(@D)
 	$(LIBUSB1_UNZIP) $(DL_DIR)/$(LIBUSB1_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(LIBUSB1_PATCHES)"; then \
-		cat $(LIBUSB1_PATCHES) | patch -d $(BUILD_DIR)/$(LIBUSB1_DIR) -p0; \
+		cat $(LIBUSB1_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBUSB1_DIR) -p0; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBUSB1_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBUSB1_DIR) $(@D) ; \
@@ -155,7 +155,7 @@ libusb1-stage: $(LIBUSB1_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libusb1
 #
 $(LIBUSB1_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libusb1" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

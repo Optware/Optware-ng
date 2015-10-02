@@ -82,7 +82,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(MT-DAAPD-SVN_DIR) $(@D)
 	$(MT-DAAPD-SVN_UNZIP) $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MT-DAAPD-SVN_PATCHES)"; then \
-		cat $(MT-DAAPD-SVN_PATCHES) | patch -d $(BUILD_DIR)/$(MT-DAAPD-SVN_DIR) -p1; \
+		cat $(MT-DAAPD-SVN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MT-DAAPD-SVN_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(MT-DAAPD-SVN_DIR) $(@D)
 	(cd $(@D); \
@@ -126,7 +126,7 @@ mt-daapd-svn: $(MT-DAAPD-SVN_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mt-daapd-svn
 #
 $(MT-DAAPD-SVN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mt-daapd-svn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -144,15 +144,15 @@ $(MT-DAAPD-SVN_IPK): $(MT-DAAPD-SVN_BUILD_DIR)/.built
 	rm -rf $(MT-DAAPD-SVN_IPK_DIR) $(BUILD_DIR)/mt-daapd-svn_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MT-DAAPD-SVN_BUILD_DIR) DESTDIR=$(MT-DAAPD-SVN_IPK_DIR) install-strip
 	$(MAKE) $(MT-DAAPD-SVN_IPK_DIR)/CONTROL/control
-	install -d $(MT-DAAPD-SVN_IPK_DIR)/opt/var/log
-	install -d $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/init.d
-	install -d $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/mt-daapd
-	install -m 644 $(MT-DAAPD-SVN_BUILD_DIR)/contrib/mt-daapd.conf $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/mt-daapd/mt-daapd.conf
+	$(INSTALL) -d $(MT-DAAPD-SVN_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/mt-daapd
+	$(INSTALL) -m 644 $(MT-DAAPD-SVN_BUILD_DIR)/contrib/mt-daapd.conf $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/mt-daapd/mt-daapd.conf
 	sed -i -e '/^db_type/s/=.*/= sqlite3/' $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/mt-daapd/mt-daapd.conf
-	install -d $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(MT-DAAPD-SVN_SOURCE_DIR)/rc.mt-daapd $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/init.d/S60mt-daapd
-	install -m 644 $(MT-DAAPD-SVN_SOURCE_DIR)/postinst $(MT-DAAPD-SVN_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(MT-DAAPD-SVN_SOURCE_DIR)/prerm $(MT-DAAPD-SVN_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -d $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(MT-DAAPD-SVN_SOURCE_DIR)/rc.mt-daapd $(MT-DAAPD-SVN_IPK_DIR)/opt/etc/init.d/S60mt-daapd
+	$(INSTALL) -m 644 $(MT-DAAPD-SVN_SOURCE_DIR)/postinst $(MT-DAAPD-SVN_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(MT-DAAPD-SVN_SOURCE_DIR)/prerm $(MT-DAAPD-SVN_IPK_DIR)/CONTROL/prerm
 	echo $(MT-DAAPD-SVN_CONFFILES) | sed -e 's/ /\n/g' > $(MT-DAAPD-SVN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MT-DAAPD-SVN_IPK_DIR)
 

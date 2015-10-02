@@ -109,7 +109,7 @@ $(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES) make/
 	rm -rf $(BUILD_DIR)/$(NCFTP_DIR) $(@D)
 	$(NCFTP_UNZIP) $(DL_DIR)/$(NCFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NCFTP_PATCHES)"; \
-		then cat $(NCFTP_PATCHES) | patch -bd $(BUILD_DIR)/$(NCFTP_DIR) -p1; \
+		then cat $(NCFTP_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(NCFTP_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(NCFTP_DIR) $(@D)
 	(cd $(@D); \
@@ -150,7 +150,7 @@ ncftp: $(NCFTP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ncftp
 #
 $(NCFTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ncftp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -177,10 +177,10 @@ $(NCFTP_IPK_DIR)/CONTROL/control:
 #
 $(NCFTP_IPK): $(NCFTP_BUILD_DIR)/.built
 	rm -rf $(NCFTP_IPK_DIR) $(BUILD_DIR)/ncftp_*_$(TARGET_ARCH).ipk
-	install -d $(NCFTP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(NCFTP_IPK_DIR)/opt/bin
 	$(MAKE) -C $(NCFTP_BUILD_DIR) DESTDIR=$(NCFTP_IPK_DIR) prefix=/opt install
 	$(MAKE) $(NCFTP_IPK_DIR)/CONTROL/control
-#	install -m 644 $(NCFTP_SOURCE_DIR)/postinst $(NCFTP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(NCFTP_SOURCE_DIR)/postinst $(NCFTP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCFTP_IPK_DIR)
 
 #

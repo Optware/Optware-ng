@@ -110,7 +110,7 @@ $(PAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PAL_SOURCE) $(PAL_PATCHES) make/pal.mk
 	$(PAL_UNZIP) $(DL_DIR)/$(PAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PAL_PATCHES)" ; \
 		then cat $(PAL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PAL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PAL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PAL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PAL_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ pal: $(PAL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/pal
 #
 $(PAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pal" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -204,15 +204,15 @@ $(PAL_IPK): $(PAL_BUILD_DIR)/.built
 		prefix=/opt \
 		;
 	$(STRIP_COMMAND) $(PAL_IPK_DIR)/opt/bin/pal
-#	install -d $(PAL_IPK_DIR)/opt/etc/
-#	install -m 644 $(PAL_SOURCE_DIR)/pal.conf $(PAL_IPK_DIR)/opt/etc/pal.conf
-#	install -d $(PAL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PAL_SOURCE_DIR)/rc.pal $(PAL_IPK_DIR)/opt/etc/init.d/SXXpal
+#	$(INSTALL) -d $(PAL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(PAL_SOURCE_DIR)/pal.conf $(PAL_IPK_DIR)/opt/etc/pal.conf
+#	$(INSTALL) -d $(PAL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PAL_SOURCE_DIR)/rc.pal $(PAL_IPK_DIR)/opt/etc/init.d/SXXpal
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PAL_IPK_DIR)/opt/etc/init.d/SXXpal
 	$(MAKE) $(PAL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PAL_SOURCE_DIR)/postinst $(PAL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PAL_SOURCE_DIR)/postinst $(PAL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PAL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PAL_SOURCE_DIR)/prerm $(PAL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PAL_SOURCE_DIR)/prerm $(PAL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PAL_IPK_DIR)/CONTROL/prerm
 	echo $(PAL_CONFFILES) | sed -e 's/ /\n/g' > $(PAL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PAL_IPK_DIR)

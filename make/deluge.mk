@@ -118,7 +118,7 @@ $(DELUGE_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_SOURCE) $(DELUGE_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(DELUGE_DIR) $(@D)
 #	cd $(BUILD_DIR); $(DELUGE_UNZIP) $(DL_DIR)/$(DELUGE_SOURCE)
 	$(DELUGE_UNZIP) $(DL_DIR)/$(DELUGE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(DELUGE_PATCHES) | patch -d $(BUILD_DIR)/$(DELUGE_DIR) -p1
+#	cat $(DELUGE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DELUGE_DIR) -p1
 	mv $(BUILD_DIR)/$(DELUGE_DIR) $(@D)
 	(cd $(@D); \
 	    ( \
@@ -173,7 +173,7 @@ deluge-stage: $(DELUGE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/deluge
 #
 $(DELUGE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: deluge" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,7 +187,7 @@ $(DELUGE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DELUGE_CONFLICTS)" >>$@
 
 $(DELUGE_GTK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: deluge-gtk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -220,7 +220,7 @@ $(DELUGE_IPKS): $(DELUGE_BUILD_DIR)/.built
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(DELUGE_IPK_DIR) --prefix=/opt)
 ifeq (py-gtk, $(filter py-gtk, $(PACKAGES)))
-	install -d $(DELUGE_GTK_IPK_DIR)/opt/bin $(DELUGE_GTK_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(DELUGE_GTK_IPK_DIR)/opt/bin $(DELUGE_GTK_IPK_DIR)/opt/share/man/man1
 	mv -f $(DELUGE_IPK_DIR)/opt/bin/deluge-gtk $(DELUGE_GTK_IPK_DIR)/opt/bin
 	mv -f $(DELUGE_IPK_DIR)/opt/share/man/man1/deluge-gtk.1 $(DELUGE_GTK_IPK_DIR)/opt/share/man/man1
 	mv -f $(DELUGE_IPK_DIR)/opt/share/applications $(DELUGE_IPK_DIR)/opt/share/icons $(DELUGE_IPK_DIR)/opt/share/pixmaps \
@@ -232,13 +232,13 @@ else
 	rm -rf $(DELUGE_IPK_DIR)/opt/share/applications $(DELUGE_IPK_DIR)/opt/share/icons $(DELUGE_IPK_DIR)/opt/share/pixmaps
 endif
 	### init scripts
-	install -d $(DELUGE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DELUGE_SOURCE_DIR)/S80deluged $(DELUGE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DELUGE_SOURCE_DIR)/S80deluge-web $(DELUGE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DELUGE_SOURCE_DIR)/deluge-web-reset_password $(DELUGE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(DELUGE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/S80deluged $(DELUGE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/S80deluge-web $(DELUGE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/deluge-web-reset_password $(DELUGE_IPK_DIR)/opt/bin
 	$(MAKE) $(DELUGE_IPK_DIR)/CONTROL/control
 	### post-install: change default deluge ui to console
-	install -m 755 $(DELUGE_SOURCE_DIR)/postinst $(DELUGE_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/postinst $(DELUGE_IPK_DIR)/CONTROL/postinst
 	echo $(DELUGE_CONFFILES) | sed -e 's/ /\n/g' > $(DELUGE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DELUGE_IPK_DIR)
 

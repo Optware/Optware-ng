@@ -117,7 +117,7 @@ $(MINIUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINIUPNPD_SOURCE) $(MINIUPNPD_PA
 	$(MINIUPNPD_UNZIP) $(DL_DIR)/$(MINIUPNPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINIUPNPD_PATCHES)" ; \
 		then cat $(MINIUPNPD_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(MINIUPNPD_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(MINIUPNPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MINIUPNPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MINIUPNPD_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ miniupnpd-stage: $(MINIUPNPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/miniupnpd
 #
 $(MINIUPNPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: miniupnpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

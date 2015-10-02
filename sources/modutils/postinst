@@ -4,21 +4,21 @@
 set -e
 
 # Create the /etc/modules file if it does not exist
-if [ ! -e /opt/etc/modules ] ; then
-	cat <<EOF > /opt/etc/modules
-# /opt/etc/modules: kernel modules to load at boot time.
+if [ ! -e %OPTWARE_TARGET_PREFIX%/etc/modules ] ; then
+	cat <<EOF > %OPTWARE_TARGET_PREFIX%/etc/modules
+# %OPTWARE_TARGET_PREFIX%/etc/modules: kernel modules to load at boot time.
 #
 # This file should contain the names of kernel modules that are
 # to be loaded at boot time, one per line.  Comments begin with
 # a "#", and everything on the line after them are ignored.
 
 EOF
-	chmod 644 /opt/etc/modules
+	chmod 644 %OPTWARE_TARGET_PREFIX%/etc/modules
 fi
 
 
-if [ ! -e /opt/lib/modules/`uname -r` ] ; then
-	mkdir -p /opt/lib/modules/`uname -r`
+if [ ! -e %OPTWARE_TARGET_PREFIX%/lib/modules/`uname -r` ] ; then
+	mkdir -p %OPTWARE_TARGET_PREFIX%/lib/modules/`uname -r`
 fi
 
 exit 0

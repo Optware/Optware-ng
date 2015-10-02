@@ -1,4 +1,4 @@
 #!/bin/sh
 
-/opt/etc/init.d/S80nginx start
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S80nginx start
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-chown nobody.nobody /opt/var/spool/cron/atjobs
-chown nobody.nobody /opt/var/spool/cron/atspool
+chown nobody.nobody %OPTWARE_TARGET_PREFIX%/var/spool/cron/atjobs
+chown nobody.nobody %OPTWARE_TARGET_PREFIX%/var/spool/cron/atspool
 
-/opt/etc/init.d/S20at
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S20at

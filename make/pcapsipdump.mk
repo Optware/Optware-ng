@@ -110,7 +110,7 @@ $(PCAPSIPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(PCAPSIPDUMP_SOURCE) $(PCAPSIPD
 	$(PCAPSIPDUMP_UNZIP) $(DL_DIR)/$(PCAPSIPDUMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PCAPSIPDUMP_PATCHES)" ; \
 		then cat $(PCAPSIPDUMP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PCAPSIPDUMP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) $(@D) ; \
@@ -149,7 +149,7 @@ pcapsipdump-stage: $(PCAPSIPDUMP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pcapsipdump
 #
 $(PCAPSIPDUMP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pcapsipdump" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,8 +179,8 @@ $(PCAPSIPDUMP_IPK): $(PCAPSIPDUMP_BUILD_DIR)/.built
 	rm -rf $(PCAPSIPDUMP_IPK_DIR) $(BUILD_DIR)/pcapsipdump_*_$(TARGET_ARCH).ipk
 	#$(MAKE) -C $(PCAPSIPDUMP_BUILD_DIR) DESTDIR=$(PCAPSIPDUMP_IPK_DIR) install-strip
 	$(STRIP_COMMAND) $(PCAPSIPDUMP_BUILD_DIR)/pcapsipdump
-	install -d $(PCAPSIPDUMP_IPK_DIR)/opt/sbin/
-	install -m 755 $(PCAPSIPDUMP_BUILD_DIR)/pcapsipdump $(PCAPSIPDUMP_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(PCAPSIPDUMP_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(PCAPSIPDUMP_BUILD_DIR)/pcapsipdump $(PCAPSIPDUMP_IPK_DIR)/opt/sbin/
 	$(MAKE) $(PCAPSIPDUMP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCAPSIPDUMP_IPK_DIR)
 

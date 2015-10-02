@@ -103,7 +103,7 @@ $(PY-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PA
 	$(MAKE) py-setuptools-stage sqlite-stage
 	rm -rf $(BUILD_DIR)/$(PY-SQLITE_DIR) $(@D)
 	$(PY-SQLITE_UNZIP) $(DL_DIR)/$(PY-SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLITE_DIR) -p1
+#	cat $(PY-SQLITE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SQLITE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SQLITE_DIR) $(@D)
 	(cd $(@D); \
 	    ( \
@@ -152,7 +152,7 @@ py-sqlite-stage: $(PY-SQLITE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-sqlite
 #
 $(PY-SQLITE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-sqlite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

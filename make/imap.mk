@@ -115,7 +115,7 @@ $(IMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAP_SOURCE) $(IMAP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(IMAP_DIR) $(IMAP_BUILD_DIR)
 	$(IMAP_UNZIP) $(DL_DIR)/$(IMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(IMAP_DIR) $(IMAP_BUILD_DIR)
-	cat $(IMAP_PATCHES) | patch -d $(IMAP_BUILD_DIR) -p1
+	cat $(IMAP_PATCHES) | $(PATCH) -d $(IMAP_BUILD_DIR) -p1
 	sed -i -e 's!/usr!/opt!g' $(IMAP_BUILD_DIR)/src/osdep/unix/Makefile
 	sed -i -e 's!/var!/opt/var!g' $(IMAP_BUILD_DIR)/src/osdep/unix/Makefile
 	touch $(IMAP_BUILD_DIR)/.configured
@@ -140,7 +140,7 @@ imap: $(IMAP_BUILD_DIR)/.built
 #
 $(IMAP_BUILD_DIR)/.staged: $(IMAP_BUILD_DIR)/.built
 	rm -f $(IMAP_BUILD_DIR)/.staged
-	install -d $(STAGING_INCLUDE_DIR)/imap
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)/imap
 	cp $(IMAP_BUILD_DIR)/c-client/*.h $(STAGING_INCLUDE_DIR)/imap
 	rm -f $(STAGING_LIB_DIR)/libc-client.so*
 	cp -a $(IMAP_BUILD_DIR)/c-client/libc-client.so* $(STAGING_LIB_DIR)
@@ -149,7 +149,7 @@ $(IMAP_BUILD_DIR)/.staged: $(IMAP_BUILD_DIR)/.built
 imap-stage: $(IMAP_BUILD_DIR)/.staged
 
 $(IMAP_IPK_DIR)/CONTROL/control:
-	@install -d $(IMAP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(IMAP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: imap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -164,7 +164,7 @@ $(IMAP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(IMAP_CONFLICTS)" >>$@
 
 $(IMAP_LIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(IMAP_LIBS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(IMAP_LIBS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: imap-libs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,7 +194,7 @@ $(IMAP_IPK): $(IMAP_BUILD_DIR)/.built
 	# make imap-libs ipk
 	rm -rf $(IMAP_LIBS_IPK_DIR) $(BUILD_DIR)/imap-libs_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(IMAP_LIBS_IPK_DIR)/CONTROL/control
-	install -d $(IMAP_LIBS_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(IMAP_LIBS_IPK_DIR)/opt/lib
 	cp -a $(IMAP_BUILD_DIR)/c-client/libc-client.so* $(IMAP_LIBS_IPK_DIR)/opt/lib
 	chmod a+rx $(IMAP_LIBS_IPK_DIR)/opt/lib/*
 	$(TARGET_STRIP) $(IMAP_LIBS_IPK_DIR)/opt/lib/libc-client.so.0
@@ -202,19 +202,19 @@ $(IMAP_IPK): $(IMAP_BUILD_DIR)/.built
 	# make main ipk
 	rm -rf $(IMAP_IPK_DIR) $(BUILD_DIR)/imap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(IMAP_IPK_DIR)/CONTROL/control
-	install -d $(IMAP_IPK_DIR)/opt/bin
-	install -m 755 $(IMAP_BUILD_DIR)/tmail/tmail $(IMAP_IPK_DIR)/opt/bin
-	install -m 755 $(IMAP_BUILD_DIR)/dmail/dmail $(IMAP_IPK_DIR)/opt/bin
-	install -d $(IMAP_IPK_DIR)/opt/sbin
-	install -m 755 $(IMAP_BUILD_DIR)/imapd/imapd $(IMAP_IPK_DIR)/opt/sbin
-	install -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop2d $(IMAP_IPK_DIR)/opt/sbin
-	install -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop3d $(IMAP_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(IMAP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/tmail/tmail $(IMAP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/dmail/dmail $(IMAP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(IMAP_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/imapd/imapd $(IMAP_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop2d $(IMAP_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop3d $(IMAP_IPK_DIR)/opt/sbin
 	$(TARGET_STRIP) $(IMAP_IPK_DIR)/opt/sbin/* $(IMAP_IPK_DIR)/opt/bin/*
 	### FIXME: could do with some setting up of the daemons here
-	#install -d $(IMAP_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(IMAP_SOURCE_DIR)/rc.imap $(IMAP_IPK_DIR)/opt/etc/init.d/SXXimap
-	#install -m 755 $(IMAP_SOURCE_DIR)/postinst $(IMAP_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(IMAP_SOURCE_DIR)/prerm $(IMAP_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -d $(IMAP_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(IMAP_SOURCE_DIR)/rc.imap $(IMAP_IPK_DIR)/opt/etc/init.d/SXXimap
+	#$(INSTALL) -m 755 $(IMAP_SOURCE_DIR)/postinst $(IMAP_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(IMAP_SOURCE_DIR)/prerm $(IMAP_IPK_DIR)/CONTROL/prerm
 	#echo $(IMAP_CONFFILES) | sed -e 's/ /\n/g' > $(IMAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IMAP_IPK_DIR)
 

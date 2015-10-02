@@ -117,7 +117,7 @@ endif
 	$(RE2C_UNZIP) $(DL_DIR)/$(RE2C_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RE2C_PATCHES)" ; \
 		then cat $(RE2C_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RE2C_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RE2C_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RE2C_DIR)" != "$(RE2C_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RE2C_DIR) $(RE2C_BUILD_DIR) ; \
@@ -168,7 +168,7 @@ re2c-stage: $(RE2C_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/re2c
 #
 $(RE2C_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: re2c" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

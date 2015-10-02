@@ -123,7 +123,7 @@ endif
 	$(NUT_UNZIP) $(DL_DIR)/$(NUT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NUT_PATCHES)" ; \
 		then cat $(NUT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NUT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NUT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NUT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NUT_DIR) $(@D) ; \
@@ -184,7 +184,7 @@ nut-stage: $(NUT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nut
 #
 $(NUT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nut" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,15 +214,15 @@ $(NUT_IPK): $(NUT_BUILD_DIR)/.built
 	rm -rf $(NUT_IPK_DIR) $(BUILD_DIR)/nut_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NUT_BUILD_DIR) install-strip \
 		DESTDIR=$(NUT_IPK_DIR) transform=''
-#	install -d $(NUT_IPK_DIR)/opt/etc/
-#	install -m 644 $(NUT_SOURCE_DIR)/nut.conf $(NUT_IPK_DIR)/opt/etc/nut.conf
-#	install -d $(NUT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NUT_SOURCE_DIR)/rc.nut $(NUT_IPK_DIR)/opt/etc/init.d/SXXnut
+#	$(INSTALL) -d $(NUT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NUT_SOURCE_DIR)/nut.conf $(NUT_IPK_DIR)/opt/etc/nut.conf
+#	$(INSTALL) -d $(NUT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NUT_SOURCE_DIR)/rc.nut $(NUT_IPK_DIR)/opt/etc/init.d/SXXnut
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NUT_IPK_DIR)/opt/etc/init.d/SXXnut
 	$(MAKE) $(NUT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NUT_SOURCE_DIR)/postinst $(NUT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NUT_SOURCE_DIR)/postinst $(NUT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NUT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NUT_SOURCE_DIR)/prerm $(NUT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NUT_SOURCE_DIR)/prerm $(NUT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NUT_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

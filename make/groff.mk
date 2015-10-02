@@ -85,7 +85,7 @@ groff-source: $(DL_DIR)/$(GROFF_SOURCE) $(GROFF_PATCHES)
 $(GROFF_BUILD_DIR)/.configured: $(DL_DIR)/$(GROFF_SOURCE) $(GROFF_PATCHES)
 	rm -rf $(BUILD_DIR)/$(GROFF_DIR) $(GROFF_BUILD_DIR)
 	$(GROFF_UNZIP) $(DL_DIR)/$(GROFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(GROFF_PATCHES) | patch -d $(BUILD_DIR)/$(GROFF_DIR) -p1
+	cat $(GROFF_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GROFF_DIR) -p1
 	mv $(BUILD_DIR)/$(GROFF_DIR) $(GROFF_BUILD_DIR)
 	(cd $(GROFF_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -115,7 +115,7 @@ groff: $(GROFF_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/groff
 #
 $(GROFF_IPK_DIR)/CONTROL/control:
-	@install -d $(GROFF_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GROFF_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: groff" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -130,8 +130,8 @@ $(GROFF_IPK_DIR)/CONTROL/control:
 
 $(GROFF_IPK): $(GROFF_BUILD_DIR)/.built
 	rm -rf $(GROFF_IPK_DIR) $(BUILD_DIR)/groff_*_$(TARGET_ARCH).ipk
-	install -d $(GROFF_IPK_DIR)/opt
-	install -d $(GROFF_IPK_DIR)/opt/info
+	$(INSTALL) -d $(GROFF_IPK_DIR)/opt
+	$(INSTALL) -d $(GROFF_IPK_DIR)/opt/info
 	$(MAKE) -C $(GROFF_BUILD_DIR) DESTDIR=$(GROFF_IPK_DIR) install
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/addftinfo
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/eqn

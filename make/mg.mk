@@ -112,7 +112,7 @@ $(MG_BUILD_DIR)/.configured: $(DL_DIR)/$(MG_SOURCE) $(MG_PATCHES) make/mg.mk
 	$(MG_UNZIP) $(DL_DIR)/$(MG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MG_PATCHES)" ; \
 		then cat $(MG_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(MG_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(MG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MG_DIR) $(@D) ; \
@@ -179,7 +179,7 @@ mg: $(MG_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mg
 #
 $(MG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,15 +211,15 @@ $(MG_IPK): $(MG_BUILD_DIR)/.built
 		prefix=$(MG_IPK_DIR)/opt \
 		;
 	$(STRIP_COMMAND) $(MG_IPK_DIR)/opt/bin/mg
-#	install -d $(MG_IPK_DIR)/opt/etc/
-#	install -m 644 $(MG_SOURCE_DIR)/mg.conf $(MG_IPK_DIR)/opt/etc/mg.conf
-#	install -d $(MG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MG_SOURCE_DIR)/rc.mg $(MG_IPK_DIR)/opt/etc/init.d/SXXmg
+#	$(INSTALL) -d $(MG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MG_SOURCE_DIR)/mg.conf $(MG_IPK_DIR)/opt/etc/mg.conf
+#	$(INSTALL) -d $(MG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MG_SOURCE_DIR)/rc.mg $(MG_IPK_DIR)/opt/etc/init.d/SXXmg
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MG_IPK_DIR)/opt/etc/init.d/SXXmg
 	$(MAKE) $(MG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MG_SOURCE_DIR)/postinst $(MG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MG_SOURCE_DIR)/postinst $(MG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MG_SOURCE_DIR)/prerm $(MG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MG_SOURCE_DIR)/prerm $(MG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MG_IPK_DIR)/CONTROL/prerm
 	echo $(MG_CONFFILES) | sed -e 's/ /\n/g' > $(MG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MG_IPK_DIR)

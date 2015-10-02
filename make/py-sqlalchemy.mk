@@ -142,7 +142,7 @@ else
 	)
 endif
 	if test -n "$(PY-SQLALCHEMY_PATCHES)"; then \
-	    cat $(PY-SQLALCHEMY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) -p1; \
+	    cat $(PY-SQLALCHEMY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -167,7 +167,7 @@ else
 	)
 endif
 	if test -n "$(PY-SQLALCHEMY_PATCHES)"; then \
-	    cat $(PY-SQLALCHEMY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) -p1; \
+	    cat $(PY-SQLALCHEMY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -215,7 +215,7 @@ py-sqlalchemy: $(PY-SQLALCHEMY_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-sqlalchemy
 #
 $(PY25-SQLALCHEMY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-sqlalchemy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -229,7 +229,7 @@ $(PY25-SQLALCHEMY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SQLALCHEMY_CONFLICTS)" >>$@
 
 $(PY26-SQLALCHEMY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-sqlalchemy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

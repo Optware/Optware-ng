@@ -102,7 +102,7 @@ $(PY-CHERRYTEMPLATE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHERRYTEMPLATE_SOURCE
 	$(MAKE) python24-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-CHERRYTEMPLATE_DIR) $(PY-CHERRYTEMPLATE_BUILD_DIR)
 	$(PY-CHERRYTEMPLATE_UNZIP) $(DL_DIR)/$(PY-CHERRYTEMPLATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHERRYTEMPLATE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHERRYTEMPLATE_DIR) -p1
+#	cat $(PY-CHERRYTEMPLATE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHERRYTEMPLATE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHERRYTEMPLATE_DIR) $(PY-CHERRYTEMPLATE_BUILD_DIR)
 	(cd $(PY-CHERRYTEMPLATE_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -140,7 +140,7 @@ py-cherrytemplate-stage: $(PY-CHERRYTEMPLATE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-cherrytemplate
 #
 $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-cherrytemplate" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -170,13 +170,13 @@ $(PY-CHERRYTEMPLATE_IPK): $(PY-CHERRYTEMPLATE_BUILD_DIR)/.built
 #	$(MAKE) -C $(PY-CHERRYTEMPLATE_BUILD_DIR) DESTDIR=$(PY-CHERRYTEMPLATE_IPK_DIR) install
 	(cd $(PY-CHERRYTEMPLATE_BUILD_DIR); \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-CHERRYTEMPLATE_IPK_DIR) --prefix=/opt)
-#	install -d $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/
-#	install -m 644 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/py-cherrytemplate.conf $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/py-cherrytemplate.conf
-#	install -d $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/rc.py-cherrytemplate $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/init.d/SXXpy-cherrytemplate
+#	$(INSTALL) -d $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/py-cherrytemplate.conf $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/py-cherrytemplate.conf
+#	$(INSTALL) -d $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/rc.py-cherrytemplate $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/init.d/SXXpy-cherrytemplate
 	$(MAKE) $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/postinst $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/prerm $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/postinst $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/prerm $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL/prerm
 #	echo $(PY-CHERRYTEMPLATE_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CHERRYTEMPLATE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-CHERRYTEMPLATE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY-CHERRYTEMPLATE_IPK_DIR)

@@ -63,7 +63,7 @@ KBPROTO_IPK=$(BUILD_DIR)/kbproto_$(KBPROTO_VERSION)-$(KBPROTO_IPK_VERSION)_$(TAR
 # Automatically create a ipkg control file
 #
 $(KBPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(KBPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(KBPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: kbproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(KBPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(KBPROTO_SOURCE) $(KBPROTO_PATCHES)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(KBPROTO_SOURCE)
 	if test -n "$(KBPROTO_PATCHES)" ; \
 		then cat $(KBPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(KBPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(KBPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(KBPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(KBPROTO_DIR) $(@D) ; \

@@ -1,22 +1,22 @@
 #!/bin/sh
 
-mkdir -p /opt/var/stunnel
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/stunnel
 
-chmod 777 /opt/var/stunnel
+chmod 777 %OPTWARE_TARGET_PREFIX%/var/stunnel
 
-if [ ! -f /opt/etc/stunnel/stunnel.pem ] ;  then
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/stunnel/stunnel.pem ] ;  then
 
     echo
-    echo "Creating /opt/etc/stunnel/stunnel.pem (server certificate) ..."
+    echo "Creating %OPTWARE_TARGET_PREFIX%/etc/stunnel/stunnel.pem (server certificate) ..."
 
-    mkdir -p /opt/etc/stunnel
+    mkdir -p %OPTWARE_TARGET_PREFIX%/etc/stunnel
 
-    /opt/bin/openssl req -new -x509 -days 365 -nodes -rand /dev/urandom \
-	-config /opt/etc/stunnel/stunnel-cert.cnf \
-	-out /opt/etc/stunnel/stunnel.pem -keyout /opt/etc/stunnel/stunnel.pem
+    %OPTWARE_TARGET_PREFIX%/bin/openssl req -new -x509 -days 365 -nodes -rand /dev/urandom \
+	-config %OPTWARE_TARGET_PREFIX%/etc/stunnel/stunnel-cert.cnf \
+	-out %OPTWARE_TARGET_PREFIX%/etc/stunnel/stunnel.pem -keyout %OPTWARE_TARGET_PREFIX%/etc/stunnel/stunnel.pem
 
-    /opt/bin/openssl x509 -subject -dates -fingerprint -noout -in /opt/etc/stunnel/stunnel.pem
+    %OPTWARE_TARGET_PREFIX%/bin/openssl x509 -subject -dates -fingerprint -noout -in %OPTWARE_TARGET_PREFIX%/etc/stunnel/stunnel.pem
 
 fi
 
-/opt/etc/init.d/S68stunnel
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S68stunnel

@@ -5,7 +5,7 @@
  #define HCID_PIN_FILE    CONFIGDIR "/pin"
  #define HCID_KEY_FILE    CONFIGDIR "/link_key"
 -#define HCID_PIN_HELPER  "/usr/bin/bluepin"
-+#define HCID_PIN_HELPER  "/opt/etc/bluetooth/pin-helper"
++#define HCID_PIN_HELPER  "%OPTWARE_TARGET_PREFIX%/etc/bluetooth/pin-helper"
  
  enum {
  	HCID_SET_NAME,

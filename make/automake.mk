@@ -94,7 +94,7 @@ $(AUTOMAKE_BUILD_DIR)/.staged: $(AUTOMAKE_BUILD_DIR)/.built
 automake-stage: $(AUTOMAKE_BUILD_DIR)/.staged
 
 $(AUTOMAKE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: automake" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -109,11 +109,11 @@ $(AUTOMAKE_IPK_DIR)/CONTROL/control:
 
 $(AUTOMAKE_IPK): $(AUTOMAKE_BUILD_DIR)/.built
 	rm -rf $(AUTOMAKE_IPK_DIR) $(BUILD_DIR)/automake_*_$(TARGET_ARCH).ipk
-	install -d $(AUTOMAKE_IPK_DIR)/opt/bin
-	install -d $(AUTOMAKE_IPK_DIR)/opt/info
-	install -d $(AUTOMAKE_IPK_DIR)/opt/share/aclocal-$(AUTOMAKE_VER)
-	install -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-$(AUTOMAKE_VER)/Automake
-	install -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-$(AUTOMAKE_VER)/am
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/info
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/share/aclocal-$(AUTOMAKE_VER)
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-$(AUTOMAKE_VER)/Automake
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-$(AUTOMAKE_VER)/am
 	$(MAKE) -C $(AUTOMAKE_BUILD_DIR) DESTDIR=$(AUTOMAKE_IPK_DIR) install
 	rm -f $(AUTOMAKE_IPK_DIR)/opt/share/info/dir
 	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOMAKE_IPK_DIR)/opt/bin/*

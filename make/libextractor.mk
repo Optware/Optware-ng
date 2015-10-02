@@ -140,7 +140,7 @@ endif
 	$(LIBEXTRACTOR_UNZIP) $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEXTRACTOR_PATCHES)" ; \
 		then cat $(LIBEXTRACTOR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBEXTRACTOR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(@D) ; \
@@ -222,7 +222,7 @@ libextractor-stage: $(LIBEXTRACTOR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libextractor
 #
 $(LIBEXTRACTOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libextractor" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -252,13 +252,13 @@ $(LIBEXTRACTOR_IPK): $(LIBEXTRACTOR_BUILD_DIR)/.built
 	rm -rf $(LIBEXTRACTOR_IPK_DIR) $(BUILD_DIR)/libextractor_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEXTRACTOR_BUILD_DIR) DESTDIR=$(LIBEXTRACTOR_IPK_DIR) install-strip
 	rm -f $(LIBEXTRACTOR_IPK_DIR)/opt/lib/libextractor.la $(LIBEXTRACTOR_IPK_DIR)/opt/lib/libextractor/*.la
-#	install -d $(LIBEXTRACTOR_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBEXTRACTOR_SOURCE_DIR)/libextractor.conf $(LIBEXTRACTOR_IPK_DIR)/opt/etc/libextractor.conf
-#	install -d $(LIBEXTRACTOR_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/rc.libextractor $(LIBEXTRACTOR_IPK_DIR)/opt/etc/init.d/SXXlibextractor
+#	$(INSTALL) -d $(LIBEXTRACTOR_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBEXTRACTOR_SOURCE_DIR)/libextractor.conf $(LIBEXTRACTOR_IPK_DIR)/opt/etc/libextractor.conf
+#	$(INSTALL) -d $(LIBEXTRACTOR_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/rc.libextractor $(LIBEXTRACTOR_IPK_DIR)/opt/etc/init.d/SXXlibextractor
 	$(MAKE) $(LIBEXTRACTOR_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/postinst $(LIBEXTRACTOR_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/prerm $(LIBEXTRACTOR_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/postinst $(LIBEXTRACTOR_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/prerm $(LIBEXTRACTOR_IPK_DIR)/CONTROL/prerm
 	echo $(LIBEXTRACTOR_CONFFILES) | sed -e 's/ /\n/g' > $(LIBEXTRACTOR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBEXTRACTOR_IPK_DIR)
 

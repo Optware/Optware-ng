@@ -121,7 +121,7 @@ endif
 	$(STFL_UNZIP) $(DL_DIR)/$(STFL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(STFL_PATCHES)" ; \
 		then cat $(STFL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(STFL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(STFL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(STFL_DIR)" != "$(STFL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(STFL_DIR) $(STFL_BUILD_DIR) ; \
@@ -180,7 +180,7 @@ stfl-stage: $(STFL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/stfl
 #
 $(STFL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: stfl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -209,15 +209,15 @@ $(STFL_IPK_DIR)/CONTROL/control:
 $(STFL_IPK): $(STFL_BUILD_DIR)/.built
 	rm -rf $(STFL_IPK_DIR) $(BUILD_DIR)/stfl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(STFL_BUILD_DIR) DESTDIR=$(STFL_IPK_DIR) prefix=/opt install
-#	install -d $(STFL_IPK_DIR)/opt/etc/
-#	install -m 644 $(STFL_SOURCE_DIR)/stfl.conf $(STFL_IPK_DIR)/opt/etc/stfl.conf
-#	install -d $(STFL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(STFL_SOURCE_DIR)/rc.stfl $(STFL_IPK_DIR)/opt/etc/init.d/SXXstfl
+#	$(INSTALL) -d $(STFL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(STFL_SOURCE_DIR)/stfl.conf $(STFL_IPK_DIR)/opt/etc/stfl.conf
+#	$(INSTALL) -d $(STFL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(STFL_SOURCE_DIR)/rc.stfl $(STFL_IPK_DIR)/opt/etc/init.d/SXXstfl
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STFL_IPK_DIR)/opt/etc/init.d/SXXstfl
 	$(MAKE) $(STFL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(STFL_SOURCE_DIR)/postinst $(STFL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(STFL_SOURCE_DIR)/postinst $(STFL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STFL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(STFL_SOURCE_DIR)/prerm $(STFL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(STFL_SOURCE_DIR)/prerm $(STFL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STFL_IPK_DIR)/CONTROL/prerm
 	echo $(STFL_CONFFILES) | sed -e 's/ /\n/g' > $(STFL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STFL_IPK_DIR)

@@ -110,7 +110,7 @@ $(RSSTAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(RSSTAIL_SOURCE) $(RSSTAIL_PATCHES)
 	$(RSSTAIL_UNZIP) $(DL_DIR)/$(RSSTAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RSSTAIL_PATCHES)" ; \
 		then cat $(RSSTAIL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RSSTAIL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RSSTAIL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RSSTAIL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RSSTAIL_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ rsstail-stage: $(RSSTAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rsstail
 #
 $(RSSTAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rsstail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,11 +193,11 @@ $(RSSTAIL_IPK_DIR)/CONTROL/control:
 $(RSSTAIL_IPK): $(RSSTAIL_BUILD_DIR)/.built
 	rm -rf $(RSSTAIL_IPK_DIR) $(BUILD_DIR)/rsstail_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(RSSTAIL_BUILD_DIR) DESTDIR=$(RSSTAIL_IPK_DIR) install-strip
-	install -d $(RSSTAIL_IPK_DIR)/opt/bin/
-	install $(RSSTAIL_BUILD_DIR)/rsstail $(RSSTAIL_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(RSSTAIL_IPK_DIR)/opt/bin/
+	$(INSTALL) $(RSSTAIL_BUILD_DIR)/rsstail $(RSSTAIL_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(RSSTAIL_IPK_DIR)/opt/bin/rsstail
-	install -d $(RSSTAIL_IPK_DIR)/opt/share/man/man1
-	install $(RSSTAIL_BUILD_DIR)/rsstail.1 $(RSSTAIL_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(RSSTAIL_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) $(RSSTAIL_BUILD_DIR)/rsstail.1 $(RSSTAIL_IPK_DIR)/opt/share/man/man1
 	$(MAKE) $(RSSTAIL_IPK_DIR)/CONTROL/control
 #	echo $(RSSTAIL_CONFFILES) | sed -e 's/ /\n/g' > $(RSSTAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RSSTAIL_IPK_DIR)

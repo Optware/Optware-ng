@@ -1,12 +1,12 @@
 #!/bin/sh
 
-mkdir -p /opt/var/lib/perltgd
-chmod 755 /opt/var/lib/perltgd
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/lib/perltgd
+chmod 755 %OPTWARE_TARGET_PREFIX%/var/lib/perltgd
 
-mkdir -p /opt/var/log
-chmod 755 /opt/var/log
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/log
+chmod 755 %OPTWARE_TARGET_PREFIX%/var/log
 
 # TSx09 devices have admin instead of root
 if grep -v root /etc/passwd > /dev/null ; then
-    sed -i -e 's/root/admin/' /opt/etc/cron.d/perltgd
+    sed -i -e 's/root/admin/' %OPTWARE_TARGET_PREFIX%/etc/cron.d/perltgd
 fi

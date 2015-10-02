@@ -1,4 +1,4 @@
-#! /opt/bin/bash
+#! %OPTWARE_TARGET_PREFIX%/bin/bash
 #
 # Copyright (c) 2002 Benjamin Scott <bscott@chiark.greenend.org.uk>
 #
@@ -16,7 +16,7 @@
 # System startup script for the SlimServer.
 
 # get site config
-. /opt/etc/squeezecenter.conf
+. %OPTWARE_TARGET_PREFIX%/etc/squeezecenter.conf
 
 
 case "$1" in

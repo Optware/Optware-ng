@@ -23,7 +23,7 @@
  # backslashes when you make changes.
  
 -TABLES	= -DHOSTS_DENY=\"/etc/hosts.deny\" -DHOSTS_ALLOW=\"/etc/hosts.allow\"
-+TABLES	= -DHOSTS_DENY=\"/opt/etc/hosts.deny\" -DHOSTS_ALLOW=\"/opt/etc/hosts.allow\" -DSYS_ERRLIST_DEFINED
++TABLES	= -DHOSTS_DENY=\"%OPTWARE_TARGET_PREFIX%/etc/hosts.deny\" -DHOSTS_ALLOW=\"%OPTWARE_TARGET_PREFIX%/etc/hosts.allow\" -DSYS_ERRLIST_DEFINED
  
  ####################################################
  # Optional: dealing with host name/address conflicts

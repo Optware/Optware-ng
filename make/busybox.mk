@@ -97,7 +97,7 @@ $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if ls $(BUSYBOX_SOURCE_DIR)/$(OPTWARE_TARGET)*.patch >/dev/null 2>&1; \
 		then cat $(BUSYBOX_SOURCE_DIR)/$(OPTWARE_TARGET)*.patch | \
-		patch -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BUSYBOX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ busybox-stage: $(BUSYBOX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources
 #
 $(BUSYBOX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: busybox" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -186,7 +186,7 @@ $(BUSYBOX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BUSYBOX_CONFLICTS)" >>$@
 
 $(BUSYBOX_IPK_DIR)-base/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: busybox-base" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,7 +200,7 @@ $(BUSYBOX_IPK_DIR)-base/CONTROL/control:
 	@echo "Conflicts: $(BUSYBOX_CONFLICTS)" >>$@
 
 $(BUSYBOX_IPK_DIR)-links/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: busybox-links" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -227,7 +227,7 @@ $(BUSYBOX_IPK_DIR)-links/CONTROL/control:
 #
 $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 	rm -rf $(BUSYBOX_IPK_DIR) $(BUILD_DIR)/busybox_*_$(TARGET_ARCH).ipk
-	install -d $(BUSYBOX_IPK_DIR)/opt
+	$(INSTALL) -d $(BUSYBOX_IPK_DIR)/opt
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(BUSYBOX_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(BUSYBOX_LDFLAGS)" \
 	$(BUSYBOX_BUILD_EXTRA_ENV) \
@@ -235,14 +235,14 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 		HOSTCC=$(HOSTCC) CC=$(TARGET_CC) STRIP=$(TARGET_STRIP) \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(BUSYBOX_BUILD_DIR) install
 	rm -rf $(BUSYBOX_IPK_DIR)-base
-	install -d $(BUSYBOX_IPK_DIR)-base/opt/bin
+	$(INSTALL) -d $(BUSYBOX_IPK_DIR)-base/opt/bin
 	mv $(BUSYBOX_IPK_DIR)/opt/bin/busybox $(BUSYBOX_IPK_DIR)-base/opt/bin
 	$(MAKE) $(BUSYBOX_IPK_DIR)-base/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUSYBOX_IPK_DIR)-base
 	rm -rf $(BUSYBOX_IPK_DIR)-links
-	install -d $(BUSYBOX_IPK_DIR)-links/opt/bin
-	install -d $(BUSYBOX_IPK_DIR)-links/opt/libexec
-	install -d $(BUSYBOX_IPK_DIR)-links/opt/sbin
+	$(INSTALL) -d $(BUSYBOX_IPK_DIR)-links/opt/bin
+	$(INSTALL) -d $(BUSYBOX_IPK_DIR)-links/opt/libexec
+	$(INSTALL) -d $(BUSYBOX_IPK_DIR)-links/opt/sbin
 	mv $(BUSYBOX_IPK_DIR)/opt/bin/* $(BUSYBOX_IPK_DIR)-links/opt/bin
 	mv $(BUSYBOX_IPK_DIR)/opt/sbin/* $(BUSYBOX_IPK_DIR)-links/opt/sbin
 	mv $(BUSYBOX_IPK_DIR)-links/opt/sbin/chroot $(BUSYBOX_IPK_DIR)-links/opt/bin/
@@ -267,9 +267,9 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 			$(BUSYBOX_IPK_DIR)-links/CONTROL/postinst $(BUSYBOX_IPK_DIR)-links/CONTROL/prerm; \
 	fi
 	rm -rf $(BUSYBOX_IPK_DIR)-links/opt
-	install -d $(BUSYBOX_IPK_DIR)-links/opt/bin
-	install -d $(BUSYBOX_IPK_DIR)-links/opt/libexec
-	install -d $(BUSYBOX_IPK_DIR)-links/opt/sbin
+	$(INSTALL) -d $(BUSYBOX_IPK_DIR)-links/opt/bin
+	$(INSTALL) -d $(BUSYBOX_IPK_DIR)-links/opt/libexec
+	$(INSTALL) -d $(BUSYBOX_IPK_DIR)-links/opt/sbin
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUSYBOX_IPK_DIR)-links
 	rm -rf $(BUSYBOX_IPK_DIR)/opt
 	$(MAKE) $(BUSYBOX_IPK_DIR)/CONTROL/control

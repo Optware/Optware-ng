@@ -111,7 +111,7 @@ $(LIBDLNA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDLNA_SOURCE) $(LIBDLNA_PATCHES)
 	$(LIBDLNA_UNZIP) $(DL_DIR)/$(LIBDLNA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDLNA_PATCHES)" ; \
 		then cat $(LIBDLNA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBDLNA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBDLNA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBDLNA_DIR)" != "$(LIBDLNA_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBDLNA_DIR) $(@D) ; \
@@ -176,7 +176,7 @@ libdlna-stage: $(LIBDLNA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdlna
 #
 $(LIBDLNA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libdlna" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

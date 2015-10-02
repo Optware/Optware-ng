@@ -63,7 +63,7 @@ $(PERL-MIME-BASE64_BUILD_DIR)/.staged: $(PERL-MIME-BASE64_BUILD_DIR)/.built
 perl-mime-base64-stage: $(PERL-MIME-BASE64_BUILD_DIR)/.staged
 
 $(PERL-MIME-BASE64_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-MIME-BASE64_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-MIME-BASE64_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-mime-base64" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

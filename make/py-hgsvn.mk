@@ -117,7 +117,7 @@ $(PY-HGSVN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGSVN_SOURCE) $(PY-HGSVN_PATCH
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-HGSVN_DIR)
 	$(PY-HGSVN_UNZIP) $(DL_DIR)/$(PY-HGSVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-HGSVN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-HGSVN_DIR) -p1
+#	cat $(PY-HGSVN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-HGSVN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-HGSVN_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -132,7 +132,7 @@ $(PY-HGSVN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGSVN_SOURCE) $(PY-HGSVN_PATCH
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-HGSVN_DIR)
 	$(PY-HGSVN_UNZIP) $(DL_DIR)/$(PY-HGSVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-HGSVN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-HGSVN_DIR) -p1
+#	cat $(PY-HGSVN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-HGSVN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-HGSVN_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -187,7 +187,7 @@ py-hgsvn: $(PY-HGSVN_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-hgsvn
 #
 $(PY25-HGSVN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-hgsvn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,7 +201,7 @@ $(PY25-HGSVN_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-HGSVN_CONFLICTS)" >>$@
 
 $(PY26-HGSVN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-hgsvn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -36,7 +36,7 @@ $(PERL-PAR-DIST_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-PAR-DIST_SOURCE) $(PERL
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-PAR-DIST_DIR) $(PERL-PAR-DIST_BUILD_DIR)
 	$(PERL-PAR-DIST_UNZIP) $(DL_DIR)/$(PERL-PAR-DIST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-PAR-DIST_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-PAR-DIST_DIR) -p1
+#	cat $(PERL-PAR-DIST_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-PAR-DIST_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-PAR-DIST_DIR) $(PERL-PAR-DIST_BUILD_DIR)
 	(cd $(PERL-PAR-DIST_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -66,7 +66,7 @@ $(PERL-PAR-DIST_BUILD_DIR)/.staged: $(PERL-PAR-DIST_BUILD_DIR)/.built
 perl-par-dist-stage: $(PERL-PAR-DIST_BUILD_DIR)/.staged
 
 $(PERL-PAR-DIST_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-PAR-DIST_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-PAR-DIST_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-par-dist" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

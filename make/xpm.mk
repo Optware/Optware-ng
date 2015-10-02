@@ -61,7 +61,7 @@ XPM_IPK=$(BUILD_DIR)/xpm_$(XPM_VERSION)-$(XPM_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XPM_IPK_DIR)/CONTROL/control:
-	@install -d $(XPM_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XPM_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xpm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -104,7 +104,7 @@ $(XPM_BUILD_DIR)/.configured: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz
 	if test -n "$(XPM_PATCHES)" ; \
 		then cat $(XPM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XPM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XPM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XPM_DIR)" != "$(XPM_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XPM_DIR) $(XPM_BUILD_DIR) ; \

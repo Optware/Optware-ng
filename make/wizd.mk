@@ -126,7 +126,7 @@ $(WIZD_BUILD_DIR)/.configured: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES)
 	$(WIZD_UNZIP) $(DL_DIR)/$(WIZD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	sed -i -e 's/\r//' $(BUILD_DIR)/$(WIZD_DIR)/wizd.conf
 	mv $(BUILD_DIR)/$(WIZD_DIR)/makefile $(BUILD_DIR)/$(WIZD_DIR)/Makefile
-	cat $(WIZD_PATCHES) | patch -d $(BUILD_DIR)/$(WIZD_DIR) -p1
+	cat $(WIZD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WIZD_DIR) -p1
 	mv $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR)
 	touch $(WIZD_BUILD_DIR)/.configured
 
@@ -165,7 +165,7 @@ wizd-stage: $(WIZD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/wizd
 #
 $(WIZD_IPK_DIR)/CONTROL/control:
-	@install -d $(WIZD_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(WIZD_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: wizd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,19 +193,19 @@ $(WIZD_IPK_DIR)/CONTROL/control:
 #
 $(WIZD_IPK): $(WIZD_BUILD_DIR)/.built
 	rm -rf $(WIZD_IPK_DIR) $(BUILD_DIR)/wizd_*_$(TARGET_ARCH).ipk
-	install -d $(WIZD_IPK_DIR)/opt/sbin/
-	install -m 755 $(WIZD_BUILD_DIR)/wizd $(WIZD_IPK_DIR)/opt/sbin/wizd
-	install -d $(WIZD_IPK_DIR)/opt/etc/
-	install -m 644 $(WIZD_SOURCE_DIR)/wizd.conf $(WIZD_IPK_DIR)/opt/etc/wizd.conf
-	install -d $(WIZD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(WIZD_SOURCE_DIR)/rc.wizd $(WIZD_IPK_DIR)/opt/etc/init.d/S84wizd
-	install -d $(WIZD_IPK_DIR)/opt/share/wizd
+	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(WIZD_BUILD_DIR)/wizd $(WIZD_IPK_DIR)/opt/sbin/wizd
+	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(WIZD_SOURCE_DIR)/wizd.conf $(WIZD_IPK_DIR)/opt/etc/wizd.conf
+	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(WIZD_SOURCE_DIR)/rc.wizd $(WIZD_IPK_DIR)/opt/etc/init.d/S84wizd
+	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/share/wizd
 	#cp -rip $(WIZD_BUILD_DIR)/docroot $(WIZD_IPK_DIR)/opt/share/wizd
-	install -d $(WIZD_IPK_DIR)/opt/share/wizd/docroot
+	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/share/wizd/docroot
 	cp -rip $(WIZD_BUILD_DIR)/skin $(WIZD_IPK_DIR)/opt/share/wizd
 	$(MAKE) $(WIZD_IPK_DIR)/CONTROL/control
-	install -m 755 $(WIZD_SOURCE_DIR)/postinst $(WIZD_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(WIZD_SOURCE_DIR)/prerm $(WIZD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(WIZD_SOURCE_DIR)/postinst $(WIZD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(WIZD_SOURCE_DIR)/prerm $(WIZD_IPK_DIR)/CONTROL/prerm
 	echo $(WIZD_CONFFILES) | sed -e 's/ /\n/g' > $(WIZD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WIZD_IPK_DIR)
 

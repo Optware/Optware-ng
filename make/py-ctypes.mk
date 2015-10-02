@@ -107,7 +107,7 @@ $(PY-CTYPES_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CTYPES_SOURCE) $(PY-CTYPES_PA
 	$(MAKE) python24-stage python24-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-CTYPES_DIR) $(PY-CTYPES_BUILD_DIR)
 	$(PY-CTYPES_UNZIP) $(DL_DIR)/$(PY-CTYPES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CTYPES_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CTYPES_DIR) -p1
+#	cat $(PY-CTYPES_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CTYPES_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CTYPES_DIR) $(PY-CTYPES_BUILD_DIR)
 	(cd $(PY-CTYPES_BUILD_DIR); \
 	    ( \
@@ -161,7 +161,7 @@ py-ctypes-stage: $(PY-CTYPES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-ctypes
 #
 $(PY-CTYPES_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-CTYPES_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-CTYPES_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-ctypes" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -60,7 +60,7 @@ XAUTH_IPK=$(BUILD_DIR)/xauth_$(XAUTH_VERSION)-$(XAUTH_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(XAUTH_IPK_DIR)/CONTROL/control:
-	@install -d $(XAUTH_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XAUTH_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xauth" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -98,7 +98,7 @@ $(XAUTH_BUILD_DIR)/.configured: $(DL_DIR)/$(XAUTH_SOURCE) $(XAUTH_PATCHES) make/
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XAUTH_SOURCE)
 	if test -n "$(XAUTH_PATCHES)" ; \
 		then cat $(XAUTH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XAUTH_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XAUTH_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XAUTH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XAUTH_DIR) $(@D) ; \
@@ -158,10 +158,10 @@ xauth-stage: $(XAUTH_BUILD_DIR)/.staged
 $(XAUTH_IPK): $(XAUTH_BUILD_DIR)/.built
 	rm -rf $(XAUTH_IPK_DIR) $(BUILD_DIR)/xauth_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAUTH_BUILD_DIR) DESTDIR=$(XAUTH_IPK_DIR) install-strip
-	install -d $(XAUTH_IPK_DIR)/opt/X11R6/X11
+	$(INSTALL) -d $(XAUTH_IPK_DIR)/opt/X11R6/X11
 	ln -s /opt/bin/xauth $(XAUTH_IPK_DIR)/opt/X11R6/X11/xauth
 	$(MAKE) $(XAUTH_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XAUTH_SOURCE_DIR)/postinst $(XAUTH_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XAUTH_SOURCE_DIR)/postinst $(XAUTH_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAUTH_IPK_DIR)
 
 #

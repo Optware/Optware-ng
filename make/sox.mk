@@ -134,7 +134,7 @@ endif
 	$(SOX_UNZIP) $(DL_DIR)/$(SOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SOX_PATCHES)" ; \
 		then cat $(SOX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SOX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SOX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SOX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SOX_DIR) $(@D) ; \
@@ -188,7 +188,7 @@ sox-stage: $(SOX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sox
 #
 $(SOX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sox" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

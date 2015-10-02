@@ -2,10 +2,10 @@
 #
 # $Id$
 #
-if [ "${BASH_CHECK}" != 1 -a -f /opt/bin/bash ]
+if [ "${BASH_CHECK}" != 1 -a -f %OPTWARE_TARGET_PREFIX%/bin/bash ]
 then
 	BASH_CHECK=1; export BASH_CHECK
-	/opt/bin/bash $0
+	%OPTWARE_TARGET_PREFIX%/bin/bash $0
 	exit $$
 fi
 
@@ -64,7 +64,7 @@ Content-type: text/html
 EOF
 echo '<a id="sys" /><h2>System</h2>'
 showfile /etc/motd 
-runprog /opt/bin/uname -a
+runprog %OPTWARE_TARGET_PREFIX%/bin/uname -a
 showfile /proc/cpuinfo
 showfile /proc/meminfo
 showfile /proc/bus/usb/devices
@@ -84,7 +84,7 @@ echo '<a id="network" /><h2>Network</h2>'
 runprog /sbin/ifconfig
 runprog /sbin/route
 showfile /etc/resolv.conf
-runprog /opt/bin/host ipkg.nslu2-linux.org
+runprog %OPTWARE_TARGET_PREFIX%/bin/host ipkg.nslu2-linux.org
 runprog /bin/ping -c 2 ipkg.nslu2-linux.org
 runprog /usr/bin/wget http://ipkg.nslu2-linux.org
 echo '<a id="samba" /><h2>Samba</h2>'

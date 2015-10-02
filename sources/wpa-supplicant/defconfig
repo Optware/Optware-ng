@@ -19,15 +19,15 @@
 
 #### sveasoft (e.g., for Linksys WRT54G) ######################################
 #CC=mipsel-uclibc-gcc
-#CC=/opt/brcm/hndtools-mipsel-uclibc/bin/mipsel-uclibc-gcc
+#CC=%OPTWARE_TARGET_PREFIX%/brcm/hndtools-mipsel-uclibc/bin/mipsel-uclibc-gcc
 #CFLAGS += -Os
 #CPPFLAGS += $(STAGING_CPPFLAGS)
-#LIBS += -L/opt/brcm/hndtools-mipsel-uclibc-0.9.19/lib -lssl
+#LIBS += -L%OPTWARE_TARGET_PREFIX%/brcm/hndtools-mipsel-uclibc-0.9.19/lib -lssl
 ###############################################################################
 
 #### openwrt (e.g., for Linksys WRT54G) #######################################
 #CC=mipsel-uclibc-gcc
-#CC=/opt/brcm/hndtools-mipsel-uclibc/bin/mipsel-uclibc-gcc
+#CC=%OPTWARE_TARGET_PREFIX%/brcm/hndtools-mipsel-uclibc/bin/mipsel-uclibc-gcc
 #CFLAGS += -Os
 #CPPFLAGS=-I../src/include -I../openssl-0.9.7d/include \
 #	-I../WRT54GS/release/src/include
@@ -82,8 +82,8 @@ CONFIG_DRIVER_WEXT=y
 # For native build using mingw
 #CONFIG_NATIVE_WINDOWS=y
 # Additional directories for cross-compilation on Linux host for mingw target
-#CFLAGS += -I/opt/mingw/mingw32/include/ddk
-#LIBS += -L/opt/mingw/mingw32/lib
+#CFLAGS += -I%OPTWARE_TARGET_PREFIX%/mingw/mingw32/include/ddk
+#LIBS += -L%OPTWARE_TARGET_PREFIX%/mingw/mingw32/lib
 #CC=mingw32-gcc
 
 # Driver interface for development testing

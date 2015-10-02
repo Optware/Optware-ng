@@ -93,7 +93,7 @@ $(KNOCK_BUILD_DIR)/.configured: $(DL_DIR)/$(KNOCK_SOURCE) make/knock.mk
 	$(KNOCK_UNZIP) $(DL_DIR)/$(KNOCK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KNOCK_PATCHES)" ; \
 		then cat $(KNOCK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(KNOCK_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(KNOCK_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(KNOCK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(KNOCK_DIR) $(@D) ; \
@@ -144,7 +144,7 @@ knock-stage: $(KNOCK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/knock
 #
 $(KNOCK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: knock" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -173,8 +173,8 @@ $(KNOCK_IPK): $(KNOCK_BUILD_DIR)/.built
 	$(MAKE) -C $(KNOCK_BUILD_DIR) DESTDIR=$(KNOCK_IPK_DIR) install
 	$(STRIP_COMMAND) $(KNOCK_IPK_DIR)/opt/*bin/*
 	mv $(KNOCK_IPK_DIR)/etc $(KNOCK_IPK_DIR)/opt/
-	install -d $(KNOCK_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(KNOCK_SOURCE_DIR)/rc.knockd $(KNOCK_IPK_DIR)/opt/etc/init.d/S05knockd
+	$(INSTALL) -d $(KNOCK_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(KNOCK_SOURCE_DIR)/rc.knockd $(KNOCK_IPK_DIR)/opt/etc/init.d/S05knockd
 ifneq (nslu2, $(OPTWARE_TARGET))
 	sed -i -e 's/ -i ixp0//' $(KNOCK_IPK_DIR)/opt/etc/init.d/S05knockd
 endif

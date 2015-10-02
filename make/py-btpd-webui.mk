@@ -167,7 +167,7 @@ py-btpd-webui-stage: $(PY-BTPD-WEBUI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-btpd-webui
 #
 $(PY-BTPD-WEBUI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-btpd-webui" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

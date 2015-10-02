@@ -110,7 +110,7 @@ $(LUMIKKI_BUILD_DIR)/.configured: $(DL_DIR)/$(LUMIKKI_SOURCE) $(LUMIKKI_PATCHES)
 	$(LUMIKKI_UNZIP) $(DL_DIR)/$(LUMIKKI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LUMIKKI_PATCHES)" ; \
 		then cat $(LUMIKKI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LUMIKKI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LUMIKKI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LUMIKKI_DIR)" != "$(LUMIKKI_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LUMIKKI_DIR) $(LUMIKKI_BUILD_DIR) ; \
@@ -154,7 +154,7 @@ $(LUMIKKI_BUILD_DIR)/.staged: $(LUMIKKI_BUILD_DIR)/.built
 	$(MAKE) -C $(LUMIKKI_BUILD_DIR) DESTDIR=$(STAGING_DIR) \
 		TRUE_DESTDIR=/opt MANDIR=$(DESTDIR)/man/man1 \
 		DOCDIR=$(STAGING_DIR)/shared/docs \
-		install
+		$(INSTALL)
 	touch $(LUMIKKI_BUILD_DIR)/.staged
 
 lumikki-stage: $(LUMIKKI_BUILD_DIR)/.staged
@@ -164,7 +164,7 @@ lumikki-stage: $(LUMIKKI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lumikki
 #
 $(LUMIKKI_IPK_DIR)/CONTROL/control:
-	@install -d $(LUMIKKI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LUMIKKI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: lumikki" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,13 +195,13 @@ $(LUMIKKI_IPK): $(LUMIKKI_BUILD_DIR)/.built
 	$(MAKE) -C $(LUMIKKI_BUILD_DIR) DESTDIR=$(LUMIKKI_IPK_DIR) \
 		TRUE_DESTDIR=/opt MANDIR=$(LUMIKKI_IPK_DIR)/man/man1 \
 		DOCDIR=$(LUMIKKI_IPK_DIR)/share/docs install-strip
-	#install -d $(LUMIKKI_IPK_DIR)/opt/etc/
-	#install -m 644 $(LUMIKKI_SOURCE_DIR)/lumikki.conf $(LUMIKKI_IPK_DIR)/opt/etc/lumikki.conf
-	#install -d $(LUMIKKI_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(LUMIKKI_SOURCE_DIR)/rc.lumikki $(LUMIKKI_IPK_DIR)/opt/etc/init.d/SXXlumikki
+	#$(INSTALL) -d $(LUMIKKI_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(LUMIKKI_SOURCE_DIR)/lumikki.conf $(LUMIKKI_IPK_DIR)/opt/etc/lumikki.conf
+	#$(INSTALL) -d $(LUMIKKI_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(LUMIKKI_SOURCE_DIR)/rc.lumikki $(LUMIKKI_IPK_DIR)/opt/etc/init.d/SXXlumikki
 	$(MAKE) $(LUMIKKI_IPK_DIR)/CONTROL/control
-	#install -m 755 $(LUMIKKI_SOURCE_DIR)/postinst $(LUMIKKI_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(LUMIKKI_SOURCE_DIR)/prerm $(LUMIKKI_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(LUMIKKI_SOURCE_DIR)/postinst $(LUMIKKI_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(LUMIKKI_SOURCE_DIR)/prerm $(LUMIKKI_IPK_DIR)/CONTROL/prerm
 	#echo $(LUMIKKI_CONFFILES) | sed -e 's/ /\n/g' > $(LUMIKKI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUMIKKI_IPK_DIR)
 

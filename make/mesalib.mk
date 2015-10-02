@@ -118,7 +118,7 @@ $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 	$(MESALIB_UNZIP) $(DL_DIR)/$(MESALIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MESALIB_PATCHES)" ; \
 		then cat $(MESALIB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MESALIB_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MESALIB_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MESALIB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MESALIB_DIR) $(@D) ; \
@@ -189,7 +189,7 @@ mesalib-stage: $(MESALIB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mesalib
 #
 $(MESALIB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mesalib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -219,15 +219,15 @@ $(MESALIB_IPK): $(MESALIB_BUILD_DIR)/.built
 	rm -rf $(MESALIB_IPK_DIR) $(BUILD_DIR)/mesalib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MESALIB_BUILD_DIR) DESTDIR=$(MESALIB_IPK_DIR) install-strip
 	rm -f $(MESALIB_IPK_DIR)/opt/lib/*.la
-#	install -d $(MESALIB_IPK_DIR)/opt/etc/
-#	install -m 644 $(MESALIB_SOURCE_DIR)/mesalib.conf $(MESALIB_IPK_DIR)/opt/etc/mesalib.conf
-#	install -d $(MESALIB_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MESALIB_SOURCE_DIR)/rc.mesalib $(MESALIB_IPK_DIR)/opt/etc/init.d/SXXmesalib
+#	$(INSTALL) -d $(MESALIB_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MESALIB_SOURCE_DIR)/mesalib.conf $(MESALIB_IPK_DIR)/opt/etc/mesalib.conf
+#	$(INSTALL) -d $(MESALIB_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MESALIB_SOURCE_DIR)/rc.mesalib $(MESALIB_IPK_DIR)/opt/etc/init.d/SXXmesalib
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MESALIB_IPK_DIR)/opt/etc/init.d/SXXmesalib
 	$(MAKE) $(MESALIB_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MESALIB_SOURCE_DIR)/postinst $(MESALIB_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MESALIB_SOURCE_DIR)/postinst $(MESALIB_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MESALIB_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MESALIB_SOURCE_DIR)/prerm $(MESALIB_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MESALIB_SOURCE_DIR)/prerm $(MESALIB_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MESALIB_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

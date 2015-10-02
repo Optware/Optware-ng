@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof atd`" ]; then
-    /opt/bin/killall atd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof atd`" ]; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall atd 2>/dev/null
 fi
 
 exit 0

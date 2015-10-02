@@ -119,7 +119,7 @@ $(PY-CHARACTERISTIC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHARACTERISTIC_SOURCE
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-CHARACTERISTIC_UNZIP) $(DL_DIR)/$(PY-CHARACTERISTIC_SOURCE)
 	$(PY-CHARACTERISTIC_UNZIP) $(DL_DIR)/$(PY-CHARACTERISTIC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHARACTERISTIC_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHARACTERISTIC_DIR) -p1
+#	cat $(PY-CHARACTERISTIC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHARACTERISTIC_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHARACTERISTIC_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -131,7 +131,7 @@ $(PY-CHARACTERISTIC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHARACTERISTIC_SOURCE
 	)
 #	cd $(BUILD_DIR); $(PY-CHARACTERISTIC_UNZIP) $(DL_DIR)/$(PY-CHARACTERISTIC_SOURCE)
 	$(PY-CHARACTERISTIC_UNZIP) $(DL_DIR)/$(PY-CHARACTERISTIC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHARACTERISTIC_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHARACTERISTIC_DIR) -p1
+#	cat $(PY-CHARACTERISTIC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHARACTERISTIC_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHARACTERISTIC_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -143,7 +143,7 @@ $(PY-CHARACTERISTIC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHARACTERISTIC_SOURCE
 	)
 #	cd $(BUILD_DIR); $(PY-CHARACTERISTIC_UNZIP) $(DL_DIR)/$(PY-CHARACTERISTIC_SOURCE)
 	$(PY-CHARACTERISTIC_UNZIP) $(DL_DIR)/$(PY-CHARACTERISTIC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHARACTERISTIC_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHARACTERISTIC_DIR) -p1
+#	cat $(PY-CHARACTERISTIC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHARACTERISTIC_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHARACTERISTIC_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -219,7 +219,7 @@ py-characteristic-host-stage: $(PY-CHARACTERISTIC_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-characteristic
 #
 $(PY26-CHARACTERISTIC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-characteristic" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -233,7 +233,7 @@ $(PY26-CHARACTERISTIC_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CHARACTERISTIC_CONFLICTS)" >>$@
 
 $(PY27-CHARACTERISTIC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-characteristic" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -247,7 +247,7 @@ $(PY27-CHARACTERISTIC_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CHARACTERISTIC_CONFLICTS)" >>$@
 
 $(PY3-CHARACTERISTIC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-characteristic" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -116,7 +116,7 @@ $(HARFBUZZ_BUILD_DIR)/.configured: $(DL_DIR)/$(HARFBUZZ_SOURCE) $(HARFBUZZ_PATCH
 	$(HARFBUZZ_UNZIP) $(DL_DIR)/$(HARFBUZZ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HARFBUZZ_PATCHES)" ; \
 		then cat $(HARFBUZZ_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HARFBUZZ_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HARFBUZZ_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HARFBUZZ_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HARFBUZZ_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ harfbuzz-stage: $(HARFBUZZ_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/harfbuzz
 #
 $(HARFBUZZ_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: harfbuzz" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,15 +200,15 @@ $(HARFBUZZ_IPK_DIR)/CONTROL/control:
 $(HARFBUZZ_IPK): $(HARFBUZZ_BUILD_DIR)/.built
 	rm -rf $(HARFBUZZ_IPK_DIR) $(BUILD_DIR)/harfbuzz_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HARFBUZZ_BUILD_DIR) DESTDIR=$(HARFBUZZ_IPK_DIR) install-strip
-#	install -d $(HARFBUZZ_IPK_DIR)/opt/etc/
-#	install -m 644 $(HARFBUZZ_SOURCE_DIR)/harfbuzz.conf $(HARFBUZZ_IPK_DIR)/opt/etc/harfbuzz.conf
-#	install -d $(HARFBUZZ_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(HARFBUZZ_SOURCE_DIR)/rc.harfbuzz $(HARFBUZZ_IPK_DIR)/opt/etc/init.d/SXXharfbuzz
+#	$(INSTALL) -d $(HARFBUZZ_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(HARFBUZZ_SOURCE_DIR)/harfbuzz.conf $(HARFBUZZ_IPK_DIR)/opt/etc/harfbuzz.conf
+#	$(INSTALL) -d $(HARFBUZZ_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(HARFBUZZ_SOURCE_DIR)/rc.harfbuzz $(HARFBUZZ_IPK_DIR)/opt/etc/init.d/SXXharfbuzz
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HARFBUZZ_IPK_DIR)/opt/etc/init.d/SXXharfbuzz
 	$(MAKE) $(HARFBUZZ_IPK_DIR)/CONTROL/control
-#	install -m 755 $(HARFBUZZ_SOURCE_DIR)/postinst $(HARFBUZZ_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(HARFBUZZ_SOURCE_DIR)/postinst $(HARFBUZZ_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HARFBUZZ_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(HARFBUZZ_SOURCE_DIR)/prerm $(HARFBUZZ_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(HARFBUZZ_SOURCE_DIR)/prerm $(HARFBUZZ_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HARFBUZZ_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

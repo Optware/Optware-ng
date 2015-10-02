@@ -28,8 +28,8 @@ diff -Naur tftp-hpa.old/tftp-xinetd tftp-hpa/tftp-xinetd
 +       instances        = 30
 +       wait             = yes
 +       user             = root
-+       server           = /opt/sbin/in.tftpd
-+       server_args	= -s /opt/tftpboot
++       server           = %OPTWARE_TARGET_PREFIX%/sbin/in.tftpd
++       server_args	= -s %OPTWARE_TARGET_PREFIX%/tftpboot
 +       cps		= 100 2
 +       log_on_success   = HOST PID
 +       log_on_failure   = HOST

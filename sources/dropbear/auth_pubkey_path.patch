@@ -28,7 +28,7 @@
 +		/* open the file */
 +		authfile = fopen(filename, "r");
 +	} else {
-+		authfile = fopen("/opt/etc/dropbear/authorized_keys","r");
++		authfile = fopen("%OPTWARE_TARGET_PREFIX%/etc/dropbear/authorized_keys","r");
 +	}
  	if (authfile == NULL) {
  		goto out;
@@ -58,10 +58,10 @@
 -	if (checkfileperm(filename) != DROPBEAR_SUCCESS) {
 -		goto out;
 +	if (ses.authstate.pw_uid == 0) {
-+		if (checkfileperm("/opt/etc/dropbear") != DROPBEAR_SUCCESS) {
++		if (checkfileperm("%OPTWARE_TARGET_PREFIX%/etc/dropbear") != DROPBEAR_SUCCESS) {
 +			goto out;
 +		}
-+		if (checkfileperm("/opt/etc/dropbear/authorized_keys") != DROPBEAR_SUCCESS) {
++		if (checkfileperm("%OPTWARE_TARGET_PREFIX%/etc/dropbear/authorized_keys") != DROPBEAR_SUCCESS) {
 +			goto out;
 +		}
 +	} else {

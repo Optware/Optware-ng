@@ -89,7 +89,7 @@ $(LZMA_BUILD_DIR)/.configured: $(DL_DIR)/$(LZMA_SOURCE) $(LZMA_PATCHES) make/lzm
 	$(LZMA_UNZIP) $(DL_DIR)/$(LZMA_SOURCE) | tar -C $(BUILD_DIR)/$(LZMA_DIR) -xvf -
 	if test -n "$(LZMA_PATCHES)" ; \
 		then cat $(LZMA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LZMA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LZMA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LZMA_DIR)" != "$(LZMA_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LZMA_DIR) $(LZMA_BUILD_DIR) ; \
@@ -126,7 +126,7 @@ lzma-stage: $(LZMA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lzma
 #
 $(LZMA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lzma" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -155,15 +155,15 @@ $(LZMA_IPK_DIR)/CONTROL/control:
 $(LZMA_IPK): $(LZMA_BUILD_DIR)/.built
 	rm -rf $(LZMA_IPK_DIR) $(BUILD_DIR)/lzma_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LZMA_BUILD_DIR) DESTDIR=$(LZMA_IPK_DIR) install-strip
-#	install -d $(LZMA_IPK_DIR)/opt/etc/
-#	install -m 644 $(LZMA_SOURCE_DIR)/lzma.conf $(LZMA_IPK_DIR)/opt/etc/lzma.conf
-#	install -d $(LZMA_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LZMA_SOURCE_DIR)/rc.lzma $(LZMA_IPK_DIR)/opt/etc/init.d/SXXlzma
+#	$(INSTALL) -d $(LZMA_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LZMA_SOURCE_DIR)/lzma.conf $(LZMA_IPK_DIR)/opt/etc/lzma.conf
+#	$(INSTALL) -d $(LZMA_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LZMA_SOURCE_DIR)/rc.lzma $(LZMA_IPK_DIR)/opt/etc/init.d/SXXlzma
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LZMA_IPK_DIR)/opt/etc/init.d/SXXlzma
 	$(MAKE) $(LZMA_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LZMA_SOURCE_DIR)/postinst $(LZMA_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LZMA_SOURCE_DIR)/postinst $(LZMA_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LZMA_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LZMA_SOURCE_DIR)/prerm $(LZMA_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LZMA_SOURCE_DIR)/prerm $(LZMA_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LZMA_IPK_DIR)/CONTROL/prerm
 	echo $(LZMA_CONFFILES) | sed -e 's/ /\n/g' > $(LZMA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LZMA_IPK_DIR)

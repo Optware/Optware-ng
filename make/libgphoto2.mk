@@ -105,7 +105,7 @@ $(LIBGPHOTO2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPHOTO2_SOURCE) $(LIBGPHOTO2
 	$(LIBGPHOTO2_UNZIP) $(DL_DIR)/$(LIBGPHOTO2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGPHOTO2_PATCHES)" ; \
 		then cat $(LIBGPHOTO2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBGPHOTO2_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBGPHOTO2_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBGPHOTO2_DIR)" != "$(LIBGPHOTO2_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBGPHOTO2_DIR) $(LIBGPHOTO2_BUILD_DIR) ; \
@@ -154,10 +154,10 @@ $(LIBGPHOTO2_BUILD_DIR)/.staged: $(LIBGPHOTO2_BUILD_DIR)/.built
 	touch $(LIBGPHOTO2_BUILD_DIR)/.staged
 
 $(STAGING_LIB_DIR)/libgphoto2.so: $(LIBGPHOTO2_BUILD_DIR)/.built
-	install -d $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -d $(STAGING_PREFIX)/bin
-	install -d $(STAGING_PREFIX)/man/man1
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_PREFIX)/bin
+	$(INSTALL) -d $(STAGING_PREFIX)/man/man1
 	$(MAKE) -C $(LIBGPHOTO2_BUILD_DIR) prefix=$(STAGING_PREFIX) install
 	rm -f $(STAGING_LIB_DIR)/libgphoto2.la $(STAGING_LIB_DIR)/libgphoto2_port.la
 
@@ -167,7 +167,7 @@ libgphoto2-stage: $(STAGING_LIB_DIR)/libgphoto2.so
 # necessary to create a seperate control file under sources/libgphoto2
 #
 $(LIBGPHOTO2_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBGPHOTO2_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBGPHOTO2_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libgphoto2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,13 +196,13 @@ $(LIBGPHOTO2_IPK_DIR)/CONTROL/control:
 $(LIBGPHOTO2_IPK): $(LIBGPHOTO2_BUILD_DIR)/.built
 	rm -rf $(LIBGPHOTO2_IPK_DIR) $(BUILD_DIR)/libgphoto2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGPHOTO2_BUILD_DIR) DESTDIR=$(LIBGPHOTO2_IPK_DIR) install-strip
-#	install -d $(LIBGPHOTO2_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBGPHOTO2_SOURCE_DIR)/libgphoto2.conf $(LIBGPHOTO2_IPK_DIR)/opt/etc/libgphoto2.conf
-#	install -d $(LIBGPHOTO2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBGPHOTO2_SOURCE_DIR)/rc.libgphoto2 $(LIBGPHOTO2_IPK_DIR)/opt/etc/init.d/SXXlibgphoto2
+#	$(INSTALL) -d $(LIBGPHOTO2_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBGPHOTO2_SOURCE_DIR)/libgphoto2.conf $(LIBGPHOTO2_IPK_DIR)/opt/etc/libgphoto2.conf
+#	$(INSTALL) -d $(LIBGPHOTO2_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBGPHOTO2_SOURCE_DIR)/rc.libgphoto2 $(LIBGPHOTO2_IPK_DIR)/opt/etc/init.d/SXXlibgphoto2
 	$(MAKE) $(LIBGPHOTO2_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBGPHOTO2_SOURCE_DIR)/postinst $(LIBGPHOTO2_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBGPHOTO2_SOURCE_DIR)/prerm $(LIBGPHOTO2_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBGPHOTO2_SOURCE_DIR)/postinst $(LIBGPHOTO2_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBGPHOTO2_SOURCE_DIR)/prerm $(LIBGPHOTO2_IPK_DIR)/CONTROL/prerm
 	echo $(LIBGPHOTO2_CONFFILES) | sed -e 's/ /\n/g' > $(LIBGPHOTO2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGPHOTO2_IPK_DIR)
 

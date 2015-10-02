@@ -118,7 +118,7 @@ $(LINPHONE_BUILD_DIR)/.configured: $(DL_DIR)/$(LINPHONE_SOURCE) $(LINPHONE_PATCH
 	$(LINPHONE_UNZIP) $(DL_DIR)/$(LINPHONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LINPHONE_PATCHES)" ; \
 		then cat $(LINPHONE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LINPHONE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LINPHONE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LINPHONE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LINPHONE_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ linphone-stage: $(LINPHONE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/linphone
 #
 $(LINPHONE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: linphone" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

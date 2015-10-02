@@ -116,7 +116,7 @@ endif
 	$(MTOOLS_UNZIP) $(DL_DIR)/$(MTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MTOOLS_PATCHES)" ; \
 		then cat $(MTOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MTOOLS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MTOOLS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MTOOLS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MTOOLS_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ mtools: $(MTOOLS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mtools
 #
 $(MTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mtools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(MTOOLS_IPK): $(MTOOLS_BUILD_DIR)/.built
 	rm -rf $(MTOOLS_IPK_DIR) $(BUILD_DIR)/mtools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MTOOLS_BUILD_DIR) prefix=$(MTOOLS_IPK_DIR)/opt install INSTALL_INFO=:
 	$(STRIP_COMMAND) $(MTOOLS_IPK_DIR)/opt/bin/mtools $(MTOOLS_IPK_DIR)/opt/bin/mkmanifest
-#	install -d $(MTOOLS_IPK_DIR)/opt/etc/
-#	install -m 644 $(MTOOLS_SOURCE_DIR)/mtools.conf $(MTOOLS_IPK_DIR)/opt/etc/mtools.conf
-#	install -d $(MTOOLS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MTOOLS_SOURCE_DIR)/rc.mtools $(MTOOLS_IPK_DIR)/opt/etc/init.d/SXXmtools
+#	$(INSTALL) -d $(MTOOLS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MTOOLS_SOURCE_DIR)/mtools.conf $(MTOOLS_IPK_DIR)/opt/etc/mtools.conf
+#	$(INSTALL) -d $(MTOOLS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MTOOLS_SOURCE_DIR)/rc.mtools $(MTOOLS_IPK_DIR)/opt/etc/init.d/SXXmtools
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXmtools
 	$(MAKE) $(MTOOLS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MTOOLS_SOURCE_DIR)/postinst $(MTOOLS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MTOOLS_SOURCE_DIR)/postinst $(MTOOLS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MTOOLS_SOURCE_DIR)/prerm $(MTOOLS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MTOOLS_SOURCE_DIR)/prerm $(MTOOLS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(MTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(MTOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MTOOLS_IPK_DIR)

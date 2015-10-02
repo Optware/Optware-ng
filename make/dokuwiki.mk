@@ -123,7 +123,7 @@ dokuwiki: $(DOKUWIKI_BUILD_DIR)/.configured
 # necessary to create a seperate control file under sources/dokuwiki
 #
 $(DOKUWIKI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dokuwiki" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -151,11 +151,11 @@ $(DOKUWIKI_IPK_DIR)/CONTROL/control:
 #
 $(DOKUWIKI_IPK): $(DOKUWIKI_BUILD_DIR)/.configured
 	rm -rf $(DOKUWIKI_IPK_DIR) $(BUILD_DIR)/dokuwiki_*_$(TARGET_ARCH).ipk
-	install -d $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki/data/changes.log
+	$(INSTALL) -d $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki/data/changes.log
 	cp -a $(DOKUWIKI_BUILD_DIR)/* $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki	
 	$(MAKE) $(DOKUWIKI_IPK_DIR)/CONTROL/control
-	install -m 755 $(DOKUWIKI_SOURCE_DIR)/postinst $(DOKUWIKI_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(DOKUWIKI_SOURCE_DIR)/prerm $(DOKUWIKI_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(DOKUWIKI_SOURCE_DIR)/postinst $(DOKUWIKI_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(DOKUWIKI_SOURCE_DIR)/prerm $(DOKUWIKI_IPK_DIR)/CONTROL/prerm
 	#echo $(DOKUWIKI_CONFFILES) | sed -e 's/ /\n/g' > $(DOKUWIKI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOKUWIKI_IPK_DIR)
 

@@ -2,15 +2,15 @@
 
 # create default cache dir
 echo "create default cache and logs dir"
-mkdir -p /opt/var/squid/cache
-chown nobody.nobody /opt/var/squid/cache
-mkdir -p /opt/var/squid/logs
-chown nobody.nobody /opt/var/squid/logs
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/squid/cache
+chown nobody.nobody %OPTWARE_TARGET_PREFIX%/var/squid/cache
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/squid/logs
+chown nobody.nobody %OPTWARE_TARGET_PREFIX%/var/squid/logs
 
-/opt/sbin/squid -z
+%OPTWARE_TARGET_PREFIX%/sbin/squid -z
 
 echo
-echo "You should review the configuration file /opt/etc/squid/squid.conf,"
+echo "You should review the configuration file %OPTWARE_TARGET_PREFIX%/etc/squid/squid.conf,"
 echo "make any necessary change, and complete the install by running - "
-echo "/opt/etc/init.d/S80squid start"
+echo "%OPTWARE_TARGET_PREFIX%/etc/init.d/S80squid start"
 echo

@@ -103,7 +103,7 @@ $(RCS_BUILD_DIR)/.configured: $(DL_DIR)/$(RCS_SOURCE) $(RCS_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(RCS_DIR) $(RCS_BUILD_DIR)
 	$(RCS_UNZIP) $(DL_DIR)/$(RCS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(RCS_PATCHES) | patch -d $(BUILD_DIR)/$(RCS_DIR) -p1
+	#cat $(RCS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(RCS_DIR) -p1
 	mv $(BUILD_DIR)/$(RCS_DIR) $(RCS_BUILD_DIR)
 	(cd $(RCS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -155,7 +155,7 @@ rcs-stage: $(RCS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rcs
 #
 $(RCS_IPK_DIR)/CONTROL/control:
-	@install -d $(RCS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(RCS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: rcs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

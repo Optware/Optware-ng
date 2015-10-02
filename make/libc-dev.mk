@@ -141,7 +141,7 @@ LIBC-DEV_IPK=$(BUILD_DIR)/libc-dev_$(LIBC-DEV_VERSION)-$(LIBC-DEV_IPK_VERSION)_$
 # necessary to create a seperate control file under sources/libc-dev
 #
 $(BUILD_DIR)/libc-dev-$(LIBC-DEV_VERSION)-ipk/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libc-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -169,7 +169,7 @@ $(BUILD_DIR)/libc-dev-$(LIBC-DEV_VERSION)-ipk/CONTROL/control:
 #
 $(LIBC-DEV_IPK): make/libc-dev.mk
 	rm -rf $(LIBC-DEV_IPK_DIR) $(BUILD_DIR)/libc-dev_*_$(TARGET_ARCH).ipk
-	install -d $(LIBC-DEV_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(LIBC-DEV_IPK_DIR)/opt/lib
 	-rsync  -rlpgoD --copy-unsafe-links $(TARGET_INCDIR) $(LIBC-DEV_IPK_DIR)/opt/
 	cp -f $(LIBC-DEV_LIBGCC_STATIC) $(LIBC-DEV_IPK_DIR)/opt/lib
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-mipsel buildroot-mipsel-ng shibby-tomato-arm, $(OPTWARE_TARGET)))
@@ -183,9 +183,9 @@ ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabihf buildroot-i686, $(OPTWARE_
 		$(LIBC-DEV_IPK_DIR)/opt/include/zconf.h \
 		$(LIBC-DEV_IPK_DIR)/opt/include/openssl
 endif
-	install -d $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
+	$(INSTALL) -d $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
-	install -d $(LIBC-DEV_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(LIBC-DEV_IPK_DIR)/opt/lib/
 ifeq (wdtv, $(OPTWARE_TARGET))
 	rm -f $(LIBC-DEV_IPK_DIR)/opt/include/z*.h
 else
@@ -241,7 +241,7 @@ endif
 endif
 	if [ -f $(SOURCE_DIR)/$(OPTWARE_TARGET)/libc.so ]; then \
 		rm -f $(LIBC-DEV_IPK_DIR)/opt/lib/libc.so; \
-		install -m 644 $(SOURCE_DIR)/$(OPTWARE_TARGET)/libc.so $(LIBC-DEV_IPK_DIR)/opt/lib; \
+		$(INSTALL) -m 644 $(SOURCE_DIR)/$(OPTWARE_TARGET)/libc.so $(LIBC-DEV_IPK_DIR)/opt/lib; \
 	fi
 	rm -rf $(LIBC-DEV_IPK_DIR)/opt/include/c++
 	$(MAKE) $(LIBC-DEV_IPK_DIR)/CONTROL/control

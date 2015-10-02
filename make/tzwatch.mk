@@ -113,7 +113,7 @@ $(TZWATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(TZWATCH_SOURCE) $(TZWATCH_PATCHES)
 	$(TZWATCH_UNZIP) $(DL_DIR)/$(TZWATCH_SOURCE) | tar -C $(BUILD_DIR) --wildcards -xvf - $(TZWATCH_DIR)/tzwatch*
 	if test -n "$(TZWATCH_PATCHES)" ; \
 		then cat $(TZWATCH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TZWATCH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TZWATCH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TZWATCH_DIR)" != "$(TZWATCH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TZWATCH_DIR) $(TZWATCH_BUILD_DIR) ; \
@@ -167,7 +167,7 @@ tzwatch-stage: $(TZWATCH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tzwatch
 #
 $(TZWATCH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tzwatch" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,13 +195,13 @@ $(TZWATCH_IPK_DIR)/CONTROL/control:
 #
 $(TZWATCH_IPK): $(TZWATCH_BUILD_DIR)/.built
 	rm -rf $(TZWATCH_IPK_DIR) $(BUILD_DIR)/tzwatch_*_$(TARGET_ARCH).ipk
-	install -d $(TZWATCH_IPK_DIR)/opt/bin/ $(TZWATCH_IPK_DIR)/opt/man/man1/
-	install $(TZWATCH_BUILD_DIR)/tzwatch $(TZWATCH_IPK_DIR)/opt/bin/
-	install $(TZWATCH_BUILD_DIR)/tzwatch.1 $(TZWATCH_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -d $(TZWATCH_IPK_DIR)/opt/bin/ $(TZWATCH_IPK_DIR)/opt/man/man1/
+	$(INSTALL) $(TZWATCH_BUILD_DIR)/tzwatch $(TZWATCH_IPK_DIR)/opt/bin/
+	$(INSTALL) $(TZWATCH_BUILD_DIR)/tzwatch.1 $(TZWATCH_IPK_DIR)/opt/man/man1/
 	$(MAKE) $(TZWATCH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TZWATCH_SOURCE_DIR)/postinst $(TZWATCH_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TZWATCH_SOURCE_DIR)/postinst $(TZWATCH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TZWATCH_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TZWATCH_SOURCE_DIR)/prerm $(TZWATCH_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TZWATCH_SOURCE_DIR)/prerm $(TZWATCH_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TZWATCH_IPK_DIR)/CONTROL/prerm
 #	echo $(TZWATCH_CONFFILES) | sed -e 's/ /\n/g' > $(TZWATCH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TZWATCH_IPK_DIR)

@@ -109,7 +109,7 @@ $(TINYPY_BUILD_DIR)/.configured: $(DL_DIR)/$(TINYPY_SOURCE) $(TINYPY_PATCHES) ma
 	$(TINYPY_UNZIP) $(DL_DIR)/$(TINYPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TINYPY_PATCHES)" ; \
 		then cat $(TINYPY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TINYPY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TINYPY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TINYPY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TINYPY_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ tinypy-stage: $(TINYPY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tinypy
 #
 $(TINYPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tinypy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,7 +195,7 @@ $(TINYPY_IPK_DIR)/CONTROL/control:
 $(TINYPY_IPK): $(TINYPY_BUILD_DIR)/.built
 	rm -rf $(TINYPY_IPK_DIR) $(BUILD_DIR)/tinypy_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(TINYPY_BUILD_DIR) DESTDIR=$(TINYPY_IPK_DIR) install-strip
-	install -d $(TINYPY_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(TINYPY_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TINYPY_BUILD_DIR)/build/tinypy -o $(TINYPY_IPK_DIR)/opt/bin/tinypy
 	$(MAKE) $(TINYPY_IPK_DIR)/CONTROL/control
 	echo $(TINYPY_CONFFILES) | sed -e 's/ /\n/g' > $(TINYPY_IPK_DIR)/CONTROL/conffiles

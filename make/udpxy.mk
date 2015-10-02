@@ -125,7 +125,7 @@ $(UDPXY_BUILD_DIR)/.configured: $(DL_DIR)/$(UDPXY_SOURCE) $(UDPXY_PATCHES) make/
 	$(UDPXY_UNZIP) $(DL_DIR)/$(UDPXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UDPXY_PATCHES)" ; \
 		then cat $(UDPXY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UDPXY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UDPXY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UDPXY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UDPXY_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ udpxy-stage: $(UDPXY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/udpxy
 #
 $(UDPXY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: udpxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(UDPXY_IPK): $(UDPXY_BUILD_DIR)/.built
 		INSTALLROOT=$(UDPXY_IPK_DIR)/opt \
 		MANPAGE_DIR=$(UDPXY_IPK_DIR)/opt/share/man/man1
 	$(STRIP_COMMAND) $(UDPXY_IPK_DIR)/opt/bin/{udpxy,udpxrec}
-#	install -d $(UDPXY_IPK_DIR)/opt/etc/
-#	install -m 644 $(UDPXY_SOURCE_DIR)/udpxy.conf $(UDPXY_IPK_DIR)/opt/etc/udpxy.conf
-	install -d $(UDPXY_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(UDPXY_SOURCE_DIR)/rc.udpxy $(UDPXY_IPK_DIR)/opt/etc/init.d/S29udpxy
+#	$(INSTALL) -d $(UDPXY_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(UDPXY_SOURCE_DIR)/udpxy.conf $(UDPXY_IPK_DIR)/opt/etc/udpxy.conf
+	$(INSTALL) -d $(UDPXY_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(UDPXY_SOURCE_DIR)/rc.udpxy $(UDPXY_IPK_DIR)/opt/etc/init.d/S29udpxy
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDPXY_IPK_DIR)/opt/etc/init.d/SXXudpxy
 	$(MAKE) $(UDPXY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UDPXY_SOURCE_DIR)/postinst $(UDPXY_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UDPXY_SOURCE_DIR)/postinst $(UDPXY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDPXY_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UDPXY_SOURCE_DIR)/prerm $(UDPXY_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UDPXY_SOURCE_DIR)/prerm $(UDPXY_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDPXY_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

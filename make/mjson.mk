@@ -94,7 +94,7 @@ $(MJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(MJSON_SOURCE) $(MJSON_PATCHES) make/
 	$(MJSON_UNZIP) $(DL_DIR)/$(MJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MJSON_PATCHES)" ; \
 		then cat $(MJSON_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MJSON_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MJSON_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MJSON_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MJSON_DIR) $(@D) ; \
@@ -139,7 +139,7 @@ mjson-stage: $(MJSON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mjson
 #
 $(MJSON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mjson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

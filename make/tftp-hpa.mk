@@ -97,7 +97,7 @@ $(TFTP_HPA_BUILD_DIR)/.configured: $(DL_DIR)/$(TFTP_HPA_SOURCE) $(TFTP_HPA_PATCH
 #	$(MAKE)  tftp_hpa-stage tftp-hpa-stage
 	rm -rf $(BUILD_DIR)/$(TFTP_HPA_DIR) $(@D)
 	$(TFTP_HPA_UNZIP) $(DL_DIR)/$(TFTP_HPA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(TFTP_HPA_PATCHES) | patch -d $(BUILD_DIR)/$(TFTP_HPA_DIR) -p1
+	cat $(TFTP_HPA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TFTP_HPA_DIR) -p1
 	mv $(BUILD_DIR)/$(TFTP_HPA_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -144,7 +144,7 @@ tftp-hpa: $(TFTP_HPA_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/tftp-hpa
 #
 $(TFTP_HPA_IPK_DIR)/CONTROL/control:
-	@install -d $(TFTP_HPA_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TFTP_HPA_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: tftp-hpa" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -165,11 +165,11 @@ $(TFTP_HPA_IPK): $(TFTP_HPA_BUILD_DIR)/.built
 	rm -rf $(TFTP_HPA_IPK_DIR) $(BUILD_DIR)/tftp-hpa_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TFTP_HPA_BUILD_DIR) INSTALLROOT=$(TFTP_HPA_IPK_DIR) install
 	mv $(TFTP_HPA_IPK_DIR)/man $(TFTP_HPA_IPK_DIR)/opt/
-	install -d $(TFTP_HPA_IPK_DIR)/opt/etc/xinetd.d
-	install -d $(TFTP_HPA_IPK_DIR)/opt/tftpboot
-	install -m 644 $(TFTP_HPA_BUILD_DIR)/tftp-xinetd $(TFTP_HPA_IPK_DIR)/opt/etc/xinetd.d/tftp
+	$(INSTALL) -d $(TFTP_HPA_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -d $(TFTP_HPA_IPK_DIR)/opt/tftpboot
+	$(INSTALL) -m 644 $(TFTP_HPA_BUILD_DIR)/tftp-xinetd $(TFTP_HPA_IPK_DIR)/opt/etc/xinetd.d/tftp
 	$(MAKE) $(TFTP_HPA_IPK_DIR)/CONTROL/control
-	install -m 755 $(TFTP_HPA_SOURCE_DIR)/postinst $(TFTP_HPA_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(TFTP_HPA_SOURCE_DIR)/postinst $(TFTP_HPA_IPK_DIR)/CONTROL/postinst
 	$(STRIP_COMMAND) $(TFTP_HPA_IPK_DIR)/opt/sbin/* $(TFTP_HPA_IPK_DIR)/opt/bin/*
 	echo $(TFTP_HPA_CONFFILES) | sed -e 's/ /\n/g' > $(TFTP_HPA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TFTP_HPA_IPK_DIR)

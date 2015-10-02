@@ -104,7 +104,7 @@ $(CENTERICQ_BUILD_DIR)/.configured: $(DL_DIR)/$(CENTERICQ_SOURCE) $(CENTERICQ_PA
 	$(MAKE) ncurses-stage openssl-stage libcurl-stage libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(CENTERICQ_DIR) $(CENTERICQ_BUILD_DIR)
 	$(CENTERICQ_UNZIP) $(DL_DIR)/$(CENTERICQ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CENTERICQ_PATCHES) | patch -d $(BUILD_DIR)/$(CENTERICQ_DIR) -p1
+#	cat $(CENTERICQ_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CENTERICQ_DIR) -p1
 	mv $(BUILD_DIR)/$(CENTERICQ_DIR) $(CENTERICQ_BUILD_DIR)
 	(cd $(CENTERICQ_BUILD_DIR); \
 		sh -x $(CENTERICQ_SOURCE_DIR)/Makefile.in.sh ; \
@@ -155,7 +155,7 @@ centericq-stage: $(CENTERICQ_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/centericq
 #
 $(CENTERICQ_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: centericq" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -186,15 +186,15 @@ $(CENTERICQ_IPK): $(CENTERICQ_BUILD_DIR)/.built
 	$(MAKE) -C $(CENTERICQ_BUILD_DIR) DESTDIR=$(CENTERICQ_IPK_DIR) install
 	# Strip the executables
 	$(STRIP_COMMAND) $(CENTERICQ_IPK_DIR)/opt/bin/centericq
-#	install -d $(CENTERICQ_IPK_DIR)/opt/etc/
-#	install -m 644 $(CENTERICQ_SOURCE_DIR)/centericq.conf $(CENTERICQ_IPK_DIR)/opt/etc/centericq.conf
-#	install -d $(CENTERICQ_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CENTERICQ_SOURCE_DIR)/rc.centericq $(CENTERICQ_IPK_DIR)/opt/etc/init.d/SXXcentericq
+#	$(INSTALL) -d $(CENTERICQ_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CENTERICQ_SOURCE_DIR)/centericq.conf $(CENTERICQ_IPK_DIR)/opt/etc/centericq.conf
+#	$(INSTALL) -d $(CENTERICQ_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CENTERICQ_SOURCE_DIR)/rc.centericq $(CENTERICQ_IPK_DIR)/opt/etc/init.d/SXXcentericq
 	$(MAKE) $(CENTERICQ_IPK_DIR)/CONTROL/control
-#	install -d $(CENTERICQ_IPK_DIR)/CONTROL
-#	install -m 644 $(CENTERICQ_SOURCE_DIR)/control $(CENTERICQ_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CENTERICQ_SOURCE_DIR)/postinst $(CENTERICQ_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CENTERICQ_SOURCE_DIR)/prerm $(CENTERICQ_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -d $(CENTERICQ_IPK_DIR)/CONTROL
+#	$(INSTALL) -m 644 $(CENTERICQ_SOURCE_DIR)/control $(CENTERICQ_IPK_DIR)/CONTROL/control
+#	$(INSTALL) -m 755 $(CENTERICQ_SOURCE_DIR)/postinst $(CENTERICQ_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CENTERICQ_SOURCE_DIR)/prerm $(CENTERICQ_IPK_DIR)/CONTROL/prerm
 #	echo $(CENTERICQ_CONFFILES) | sed -e 's/ /\n/g' > $(CENTERICQ_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CENTERICQ_IPK_DIR)
 

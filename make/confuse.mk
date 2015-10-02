@@ -110,7 +110,7 @@ $(CONFUSE_BUILD_DIR)/.configured: $(DL_DIR)/$(CONFUSE_SOURCE) $(CONFUSE_PATCHES)
 	$(CONFUSE_UNZIP) $(DL_DIR)/$(CONFUSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CONFUSE_PATCHES)" ; \
 		then cat $(CONFUSE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CONFUSE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CONFUSE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CONFUSE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CONFUSE_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ confuse-stage: $(CONFUSE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/confuse
 #
 $(CONFUSE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: confuse" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,15 +190,15 @@ $(CONFUSE_IPK_DIR)/CONTROL/control:
 $(CONFUSE_IPK): $(CONFUSE_BUILD_DIR)/.built
 	rm -rf $(CONFUSE_IPK_DIR) $(BUILD_DIR)/confuse_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CONFUSE_BUILD_DIR) DESTDIR=$(CONFUSE_IPK_DIR) install-strip
-#	install -d $(CONFUSE_IPK_DIR)/opt/etc/
-#	install -m 644 $(CONFUSE_SOURCE_DIR)/confuse.conf $(CONFUSE_IPK_DIR)/opt/etc/confuse.conf
-#	install -d $(CONFUSE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CONFUSE_SOURCE_DIR)/rc.confuse $(CONFUSE_IPK_DIR)/opt/etc/init.d/SXXconfuse
+#	$(INSTALL) -d $(CONFUSE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CONFUSE_SOURCE_DIR)/confuse.conf $(CONFUSE_IPK_DIR)/opt/etc/confuse.conf
+#	$(INSTALL) -d $(CONFUSE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CONFUSE_SOURCE_DIR)/rc.confuse $(CONFUSE_IPK_DIR)/opt/etc/init.d/SXXconfuse
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CONFUSE_IPK_DIR)/opt/etc/init.d/SXXconfuse
 	$(MAKE) $(CONFUSE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CONFUSE_SOURCE_DIR)/postinst $(CONFUSE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CONFUSE_SOURCE_DIR)/postinst $(CONFUSE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CONFUSE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CONFUSE_SOURCE_DIR)/prerm $(CONFUSE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CONFUSE_SOURCE_DIR)/prerm $(CONFUSE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CONFUSE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

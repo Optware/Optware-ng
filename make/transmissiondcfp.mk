@@ -174,7 +174,7 @@ endif
 	$(TRANSMISSIONDCFP_UNZIP) $(DL_DIR)/$(TRANSMISSIONDCFP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSIONDCFP_PATCHES)" ; \
 		then cat $(TRANSMISSIONDCFP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TRANSMISSIONDCFP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TRANSMISSIONDCFP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TRANSMISSIONDCFP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSIONDCFP_DIR) $(@D) ; \
@@ -219,7 +219,7 @@ endif
 	$(TRANSMISSIONDCFP_UNZIP) $(DL_DIR)/$(TRANSMISSIONDCFP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSIONDCFP_PATCHES)" ; \
 		then cat $(TRANSMISSIONDCFP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TRANSMISSIONDCFP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TRANSMISSIONDCFP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TRANSMISSIONDCFP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSIONDCFP_DIR) $(@D) ; \
@@ -284,7 +284,7 @@ transmissiondcfp-stage: $(TRANSMISSIONDCFP_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  
 #
 $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: transmissiondcfp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -316,16 +316,16 @@ $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/control:
 $(TRANSMISSIONDCFP_IPK): $(TRANSMISSIONDCFP_BUILD_DIR)/.built
 
 	rm -rf $(TRANSMISSIONDCFP_IPK_DIR) $(BUILD_DIR)/transmissiondcfp_*_$(TARGET_ARCH).ipk
-	install -d $(TRANSMISSIONDCFP_IPK_DIR)/opt
+	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSIONDCFP_BUILD_DIR) DESTDIR=$(TRANSMISSIONDCFP_IPK_DIR) install-strip
-#	install -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/etc
-#	install -m 644 $(TRANSMISSIONDCFP_SOURCE_DIR)/transmissiondcfp.conf $(TRANSMISSIONDCFP_IPK_DIR)/opt/etc/transmissiondcfp.conf
-	install -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/share/doc/transmissiondcfp
-	install -m 666 $(TRANSMISSIONDCFP_BUILD_DIR)/[CNR]*  $(TRANSMISSIONDCFP_IPK_DIR)/opt/share/doc/transmissiondcfp
-	install -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/var/log
-	install -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/var/run
+#	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/etc
+#	$(INSTALL) -m 644 $(TRANSMISSIONDCFP_SOURCE_DIR)/transmissiondcfp.conf $(TRANSMISSIONDCFP_IPK_DIR)/opt/etc/transmissiondcfp.conf
+	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/share/doc/transmissiondcfp
+	$(INSTALL) -m 666 $(TRANSMISSIONDCFP_BUILD_DIR)/[CNR]*  $(TRANSMISSIONDCFP_IPK_DIR)/opt/share/doc/transmissiondcfp
+	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/var/run
 	$(MAKE) $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/control
-	install -m 755 $(TRANSMISSIONDCFP_SOURCE_DIR)/postinst $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(TRANSMISSIONDCFP_SOURCE_DIR)/postinst $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/postinst
 	echo $(TRANSMISSIONDCFP_CONFFILES) | sed -e 's/ /\n/g' > $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSIONDCFP_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSIONDCFP_IPK_DIR)

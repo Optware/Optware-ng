@@ -110,7 +110,7 @@ $(LIBEXOSIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEXOSIP2_SOURCE) $(LIBEXOSIP2
 	$(LIBEXOSIP2_UNZIP) $(DL_DIR)/$(LIBEXOSIP2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEXOSIP2_PATCHES)" ; \
 		then cat $(LIBEXOSIP2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBEXOSIP2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBEXOSIP2_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBEXOSIP2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBEXOSIP2_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ libexosip2-stage: $(LIBEXOSIP2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libexosip2
 #
 $(LIBEXOSIP2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libexosip2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

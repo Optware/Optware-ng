@@ -241,7 +241,7 @@ diff -ruN a/minidlna.conf b/minidlna.conf
  #   + "V" for video  (eg. media_dir=V,/home/jmaggard/Videos)
  #   + "P" for images (eg. media_dir=P,/home/jmaggard/Pictures)
  #   + "PV" for pictures and video (eg. media_dir=PV,/home/jmaggard/digital_camera)
--media_dir=/opt
+-media_dir=%OPTWARE_TARGET_PREFIX%
 +media_dir=/tmp/mnt
  
  # set this to merge all media_dir base contents into the root container
@@ -255,11 +255,11 @@ diff -ruN a/minidlna.conf b/minidlna.conf
  
  # set this if you would like to specify the directory where you want MiniDLNA to store its database and album art cache
 -#db_dir=/var/cache/minidlna
-+db_dir=/opt/minidlna
++db_dir=%OPTWARE_TARGET_PREFIX%/minidlna
  
  # set this if you would like to specify the directory where you want MiniDLNA to store its log file
 -#log_dir=/var/log
-+log_dir=/opt/minidlna
++log_dir=%OPTWARE_TARGET_PREFIX%/minidlna
  
  # set this to change the verbosity of the information that is logged
  # each section can use a different level: off, fatal, error, warn, info, or debug

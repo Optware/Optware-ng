@@ -120,7 +120,7 @@ $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL
 	rm -rf $(BUILD_DIR)/$(POSTGRESQL_DIR) $(@D)
 	$(POSTGRESQL_UNZIP) $(DL_DIR)/$(POSTGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(POSTGRESQL_PATCHES)" ; then \
-		cat $(POSTGRESQL_PATCHES) | patch -d $(BUILD_DIR)/$(POSTGRESQL_DIR) -p1 ; \
+		cat $(POSTGRESQL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(POSTGRESQL_DIR) -p1 ; \
         fi
 	mv $(BUILD_DIR)/$(POSTGRESQL_DIR) $(@D)
 	(cd $(@D); \
@@ -206,7 +206,7 @@ postgresql-stage: $(POSTGRESQL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/postgresql
 #
 $(POSTGRESQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: postgresql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -235,10 +235,10 @@ $(POSTGRESQL_IPK): $(POSTGRESQL_BUILD_DIR)/.built
 	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(POSTGRESQL_IPK_DIR) install-strip
 	rm -f $(POSTGRESQL_IPK_DIR)/opt/lib/libpq.a $(POSTGRESQL_IPK_DIR)/opt/lib/libecpg*.a $(POSTGRESQL_IPK_DIR)/opt/lib/libpgtypes*.a
 	$(STRIP_COMMAND) $(POSTGRESQL_IPK_DIR)/opt/bin/pg_config
-#	install -d $(POSTGRESQL_IPK_DIR)/opt/etc/
-#	install -m 644 $(POSTGRESQL_SOURCE_DIR)/postgresql.conf $(POSTGRESQL_IPK_DIR)/opt/etc/postgresql.conf
-	install -d $(POSTGRESQL_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(POSTGRESQL_SOURCE_DIR)/rc.postgresql $(POSTGRESQL_IPK_DIR)/opt/etc/init.d/S98postgresql
+#	$(INSTALL) -d $(POSTGRESQL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(POSTGRESQL_SOURCE_DIR)/postgresql.conf $(POSTGRESQL_IPK_DIR)/opt/etc/postgresql.conf
+	$(INSTALL) -d $(POSTGRESQL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(POSTGRESQL_SOURCE_DIR)/rc.postgresql $(POSTGRESQL_IPK_DIR)/opt/etc/init.d/S98postgresql
 	sed \
 	    -e '/^#max_connections = /{s|^#||;s|= [0-9]*|= 8|}' \
 	    -e '/^#shared_buffers = /{s|^#||;s|= [0-9]*MB|= 128kB|}' \
@@ -254,11 +254,11 @@ $(POSTGRESQL_IPK): $(POSTGRESQL_BUILD_DIR)/.built
 		$(POSTGRESQL_IPK_DIR)/opt/share/postgresql/postgresql.conf.sample > \
 		$(POSTGRESQL_IPK_DIR)/opt/share/postgresql/postgresql.conf.small
 	$(MAKE) $(POSTGRESQL_IPK_DIR)/CONTROL/control
-	install -m 755 $(POSTGRESQL_SOURCE_DIR)/postinst $(POSTGRESQL_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(POSTGRESQL_SOURCE_DIR)/postinst $(POSTGRESQL_IPK_DIR)/CONTROL/postinst
 ifneq ($(OPTWARE_TARGET), nslu2)
 	sed -i -e '/cp.*\/share\/hdd/d' $(POSTGRESQL_IPK_DIR)/CONTROL/postinst
 endif
-	install -m 755 $(POSTGRESQL_SOURCE_DIR)/prerm $(POSTGRESQL_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(POSTGRESQL_SOURCE_DIR)/prerm $(POSTGRESQL_IPK_DIR)/CONTROL/prerm
 	echo $(POSTGRESQL_CONFFILES) | sed -e 's/ /\n/g' > $(POSTGRESQL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTGRESQL_IPK_DIR)
 

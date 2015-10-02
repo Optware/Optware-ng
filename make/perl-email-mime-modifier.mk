@@ -35,7 +35,7 @@ perl-email-mime-modifier-source: $(DL_DIR)/$(PERL-EMAIL-MIME-MODIFIER_SOURCE) $(
 $(PERL-EMAIL-MIME-MODIFIER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-EMAIL-MIME-MODIFIER_SOURCE) $(PERL-EMAIL-MIME-MODIFIER_PATCHES) make/perl-email-mime-modifier.mk
 	rm -rf $(BUILD_DIR)/$(PERL-EMAIL-MIME-MODIFIER_DIR) $(@D)
 	$(PERL-EMAIL-MIME-MODIFIER_UNZIP) $(DL_DIR)/$(PERL-EMAIL-MIME-MODIFIER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-EMAIL-MIME-MODIFIER_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-EMAIL-MIME-MODIFIER_DIR) -p1
+#	cat $(PERL-EMAIL-MIME-MODIFIER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-EMAIL-MIME-MODIFIER_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-EMAIL-MIME-MODIFIER_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-EMAIL-MIME-MODIFIER_BUILD_DIR)/.staged: $(PERL-EMAIL-MIME-MODIFIER_BUILD_
 perl-email-mime-modifier-stage: $(PERL-EMAIL-MIME-MODIFIER_BUILD_DIR)/.staged
 
 $(PERL-EMAIL-MIME-MODIFIER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-email-mime-modifier" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

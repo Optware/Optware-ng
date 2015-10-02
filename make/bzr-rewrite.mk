@@ -112,7 +112,7 @@ $(BZR-REWRITE_BUILD_DIR)/.configured: $(DL_DIR)/$(BZR-REWRITE_SOURCE) $(BZR-REWR
 	mkdir -p $(@D)
 	# 2.5
 	$(BZR-REWRITE_UNZIP) $(DL_DIR)/$(BZR-REWRITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BZR-REWRITE_PATCHES) | patch -d $(BUILD_DIR)/$(BZR-REWRITE_DIR) -p1
+#	cat $(BZR-REWRITE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BZR-REWRITE_DIR) -p1
 	mv $(BUILD_DIR)/$(BZR-REWRITE_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -128,7 +128,7 @@ $(BZR-REWRITE_BUILD_DIR)/.configured: $(DL_DIR)/$(BZR-REWRITE_SOURCE) $(BZR-REWR
 	)
 	# 2.6
 	$(BZR-REWRITE_UNZIP) $(DL_DIR)/$(BZR-REWRITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BZR-REWRITE_PATCHES) | patch -d $(BUILD_DIR)/$(BZR-REWRITE_DIR) -p1
+#	cat $(BZR-REWRITE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BZR-REWRITE_DIR) -p1
 	mv $(BUILD_DIR)/$(BZR-REWRITE_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -181,7 +181,7 @@ bzr-rewrite: $(BZR-REWRITE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bzr-rewrite
 #
 $(PY25-BZR-REWRITE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-bzr-rewrite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,7 +195,7 @@ $(PY25-BZR-REWRITE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BZR-REWRITE_CONFLICTS)" >>$@
 
 $(PY26-BZR-REWRITE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-bzr-rewrite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -116,7 +116,7 @@ $(NET-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(NET-TOOLS_SOURCE) $(NET-TOOLS_PA
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(NET-TOOLS_DIR) $(NET-TOOLS_BUILD_DIR)
 	$(NET-TOOLS_UNZIP) $(DL_DIR)/$(NET-TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NET-TOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(NET-TOOLS_DIR) -p1
+	cat $(NET-TOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NET-TOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(NET-TOOLS_DIR) $(NET-TOOLS_BUILD_DIR)
 	touch $@
 
@@ -150,7 +150,7 @@ net-tools-stage: $(NET-TOOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/net-tools
 #
 $(NET-TOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: net-tools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,7 +181,7 @@ $(NET-TOOLS_IPK): $(NET-TOOLS_BUILD_DIR)/.built
 	$(MAKE) -C $(NET-TOOLS_BUILD_DIR) BASEDIR=$(NET-TOOLS_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)/opt/sbin/*
-	install -d $(NET-TOOLS_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(NET-TOOLS_IPK_DIR)/opt/etc/
 	$(MAKE) $(NET-TOOLS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(NET-TOOLS_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(NET-TOOLS_IPK_DIR)/CONTROL/prerm

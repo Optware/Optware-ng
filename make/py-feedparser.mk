@@ -113,14 +113,14 @@ $(PY-FEEDPARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FEEDPARSER_SOURCE) $(PY-F
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-FEEDPARSER_DIR)
 	$(PY-FEEDPARSER_UNZIP) $(DL_DIR)/$(PY-FEEDPARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-FEEDPARSER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) -p1
+#	cat $(PY-FEEDPARSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) $(@D)/2.4
 	(echo "[build_scripts]"; \
          echo "executable=/opt/bin/python2.4") >> $(@D)/2.4/setup.cfg
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-FEEDPARSER_DIR)
 	$(PY-FEEDPARSER_UNZIP) $(DL_DIR)/$(PY-FEEDPARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-FEEDPARSER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) -p1
+#	cat $(PY-FEEDPARSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) $(@D)/2.5
 	(echo "[build_scripts]"; \
          echo "executable=/opt/bin/python2.5") >> $(@D)/2.4/setup.cfg
@@ -161,7 +161,7 @@ py-feedparser: $(PY-FEEDPARSER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-feedparser
 #
 $(PY24-FEEDPARSER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-feedparser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,7 +175,7 @@ $(PY24-FEEDPARSER_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-FEEDPARSER_CONFLICTS)" >>$@
 
 $(PY25-FEEDPARSER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-feedparser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

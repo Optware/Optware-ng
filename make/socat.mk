@@ -110,7 +110,7 @@ $(SOCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SOCAT_SOURCE) $(SOCAT_PATCHES) make/
 	$(SOCAT_UNZIP) $(DL_DIR)/$(SOCAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SOCAT_PATCHES)" ; \
 		then cat $(SOCAT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SOCAT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SOCAT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SOCAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SOCAT_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ socat-stage: $(SOCAT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/socat
 #
 $(SOCAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: socat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,13 +200,13 @@ $(SOCAT_IPK): $(SOCAT_BUILD_DIR)/.built
 	rm -rf $(SOCAT_IPK_DIR) $(BUILD_DIR)/socat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SOCAT_BUILD_DIR) DESTDIR=$(SOCAT_IPK_DIR) install
 	$(STRIP_COMMAND) $(SOCAT_IPK_DIR)/opt/bin/*
-#	install -d $(SOCAT_IPK_DIR)/opt/etc/
-#	install -m 644 $(SOCAT_SOURCE_DIR)/socat.conf $(SOCAT_IPK_DIR)/opt/etc/socat.conf
-#	install -d $(SOCAT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SOCAT_SOURCE_DIR)/rc.socat $(SOCAT_IPK_DIR)/opt/etc/init.d/SXXsocat
+#	$(INSTALL) -d $(SOCAT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SOCAT_SOURCE_DIR)/socat.conf $(SOCAT_IPK_DIR)/opt/etc/socat.conf
+#	$(INSTALL) -d $(SOCAT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SOCAT_SOURCE_DIR)/rc.socat $(SOCAT_IPK_DIR)/opt/etc/init.d/SXXsocat
 	$(MAKE) $(SOCAT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SOCAT_SOURCE_DIR)/postinst $(SOCAT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SOCAT_SOURCE_DIR)/prerm $(SOCAT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SOCAT_SOURCE_DIR)/postinst $(SOCAT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SOCAT_SOURCE_DIR)/prerm $(SOCAT_IPK_DIR)/CONTROL/prerm
 	echo $(SOCAT_CONFFILES) | sed -e 's/ /\n/g' > $(SOCAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SOCAT_IPK_DIR)
 

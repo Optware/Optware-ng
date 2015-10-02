@@ -110,7 +110,7 @@ $(LIBNFNETLINK_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNFNETLINK_SOURCE) $(LIBNFN
 	$(LIBNFNETLINK_UNZIP) $(DL_DIR)/$(LIBNFNETLINK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNFNETLINK_PATCHES)" ; \
 		then cat $(LIBNFNETLINK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBNFNETLINK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNFNETLINK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNFNETLINK_DIR)" != "$(LIBNFNETLINK_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBNFNETLINK_DIR) $(LIBNFNETLINK_BUILD_DIR) ; \
@@ -162,7 +162,7 @@ libnfnetlink-stage: $(LIBNFNETLINK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libnfnetlink
 #
 $(LIBNFNETLINK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libnfnetlink" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,15 @@ $(LIBNFNETLINK_IPK): $(LIBNFNETLINK_BUILD_DIR)/.built
 	rm -rf $(LIBNFNETLINK_IPK_DIR) $(BUILD_DIR)/libnfnetlink_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNFNETLINK_BUILD_DIR) DESTDIR=$(LIBNFNETLINK_IPK_DIR) install-strip
 	rm -rf $(LIBNFNETLINK_IPK_DIR)/opt/include
-#	install -d $(LIBNFNETLINK_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBNFNETLINK_SOURCE_DIR)/libnfnetlink.conf $(LIBNFNETLINK_IPK_DIR)/opt/etc/libnfnetlink.conf
-#	install -d $(LIBNFNETLINK_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBNFNETLINK_SOURCE_DIR)/rc.libnfnetlink $(LIBNFNETLINK_IPK_DIR)/opt/etc/init.d/SXXlibnfnetlink
+#	$(INSTALL) -d $(LIBNFNETLINK_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBNFNETLINK_SOURCE_DIR)/libnfnetlink.conf $(LIBNFNETLINK_IPK_DIR)/opt/etc/libnfnetlink.conf
+#	$(INSTALL) -d $(LIBNFNETLINK_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNFNETLINK_SOURCE_DIR)/rc.libnfnetlink $(LIBNFNETLINK_IPK_DIR)/opt/etc/init.d/SXXlibnfnetlink
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNFNETLINK_IPK_DIR)/opt/etc/init.d/SXXlibnfnetlink
 	$(MAKE) $(LIBNFNETLINK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBNFNETLINK_SOURCE_DIR)/postinst $(LIBNFNETLINK_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBNFNETLINK_SOURCE_DIR)/postinst $(LIBNFNETLINK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNFNETLINK_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBNFNETLINK_SOURCE_DIR)/prerm $(LIBNFNETLINK_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBNFNETLINK_SOURCE_DIR)/prerm $(LIBNFNETLINK_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNFNETLINK_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBNFNETLINK_CONFFILES) | sed -e 's/ /\n/g' > $(LIBNFNETLINK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNFNETLINK_IPK_DIR)

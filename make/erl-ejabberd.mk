@@ -120,7 +120,7 @@ endif
 	$(ERL_EJABBERD_UNZIP) $(DL_DIR)/$(ERL_EJABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ERL_EJABBERD_PATCHES)" ; \
 		then cat $(ERL_EJABBERD_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(ERL_EJABBERD_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(ERL_EJABBERD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ERL_EJABBERD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(@D) ; \
@@ -176,7 +176,7 @@ erl-ejabberd: $(ERL_EJABBERD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/erl-ejabberd
 #
 $(ERL_EJABBERD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: erl-ejabberd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,18 +206,18 @@ $(ERL_EJABBERD_IPK): $(ERL_EJABBERD_BUILD_DIR)/.built
 	rm -rf $(ERL_EJABBERD_IPK_DIR) $(BUILD_DIR)/erl-ejabberd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ERL_EJABBERD_BUILD_DIR)/src DESTDIR=$(ERL_EJABBERD_IPK_DIR) install
 	sed -i -e '/^ERL=/s|=.*|=/opt/bin/erl|' $(ERL_EJABBERD_IPK_DIR)/opt/sbin/ejabberdctl
-#	install -d $(ERL_EJABBERD_IPK_DIR)/opt/etc/
-#	install -m 644 $(ERL_EJABBERD_SOURCE_DIR)/erl-ejabberd.conf $(ERL_EJABBERD_IPK_DIR)/opt/etc/erl-ejabberd.conf
-#	install -d $(ERL_EJABBERD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ERL_EJABBERD_SOURCE_DIR)/rc.erl-ejabberd $(ERL_EJABBERD_IPK_DIR)/opt/etc/init.d/SXXerl-ejabberd
+#	$(INSTALL) -d $(ERL_EJABBERD_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ERL_EJABBERD_SOURCE_DIR)/erl-ejabberd.conf $(ERL_EJABBERD_IPK_DIR)/opt/etc/erl-ejabberd.conf
+#	$(INSTALL) -d $(ERL_EJABBERD_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ERL_EJABBERD_SOURCE_DIR)/rc.erl-ejabberd $(ERL_EJABBERD_IPK_DIR)/opt/etc/init.d/SXXerl-ejabberd
 	(cd $(ERL_EJABBERD_IPK_DIR)/opt/ ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	$(MAKE) $(ERL_EJABBERD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ERL_EJABBERD_SOURCE_DIR)/postinst $(ERL_EJABBERD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ERL_EJABBERD_SOURCE_DIR)/prerm $(ERL_EJABBERD_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ERL_EJABBERD_SOURCE_DIR)/postinst $(ERL_EJABBERD_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ERL_EJABBERD_SOURCE_DIR)/prerm $(ERL_EJABBERD_IPK_DIR)/CONTROL/prerm
 	echo $(ERL_EJABBERD_CONFFILES) | sed -e 's/ /\n/g' > $(ERL_EJABBERD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERL_EJABBERD_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(ERL_EJABBERD_IPK_DIR)

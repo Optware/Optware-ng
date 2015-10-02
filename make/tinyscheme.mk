@@ -110,7 +110,7 @@ $(TINYSCHEME_BUILD_DIR)/.configured: $(DL_DIR)/$(TINYSCHEME_SOURCE) $(TINYSCHEME
 	cd $(TINYSCHEME_BUILD_DIR) && $(TINYSCHEME_UNZIP) $(DL_DIR)/$(TINYSCHEME_SOURCE)
 	if test -n "$(TINYSCHEME_PATCHES)" ; \
 		then cat $(TINYSCHEME_PATCHES) | \
-		patch -d $(TINYSCHEME_BUILD_DIR) -p0 ; \
+		$(PATCH) -d $(TINYSCHEME_BUILD_DIR) -p0 ; \
 	fi
 #	(cd $(TINYSCHEME_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -164,7 +164,7 @@ tinyscheme-stage: $(TINYSCHEME_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tinyscheme
 #
 $(TINYSCHEME_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tinyscheme" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,16 +193,16 @@ $(TINYSCHEME_IPK_DIR)/CONTROL/control:
 $(TINYSCHEME_IPK): $(TINYSCHEME_BUILD_DIR)/.built
 	rm -rf $(TINYSCHEME_IPK_DIR) $(BUILD_DIR)/tinyscheme_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(TINYSCHEME_BUILD_DIR) DESTDIR=$(TINYSCHEME_IPK_DIR) install-strip
-	install -d $(TINYSCHEME_IPK_DIR)/opt/lib/tinyscheme/
-	install $(TINYSCHEME_BUILD_DIR)/libtinyscheme.so $(TINYSCHEME_IPK_DIR)/opt/lib/
-	install $(TINYSCHEME_BUILD_DIR)/init.scm $(TINYSCHEME_IPK_DIR)/opt/lib/tinyscheme/
-	install -d $(TINYSCHEME_IPK_DIR)/opt/bin/
-	install $(TINYSCHEME_BUILD_DIR)/scheme $(TINYSCHEME_IPK_DIR)/opt/bin/tinyscheme
-	install -d $(TINYSCHEME_IPK_DIR)/opt/share/doc/tinyscheme/
+	$(INSTALL) -d $(TINYSCHEME_IPK_DIR)/opt/lib/tinyscheme/
+	$(INSTALL) $(TINYSCHEME_BUILD_DIR)/libtinyscheme.so $(TINYSCHEME_IPK_DIR)/opt/lib/
+	$(INSTALL) $(TINYSCHEME_BUILD_DIR)/init.scm $(TINYSCHEME_IPK_DIR)/opt/lib/tinyscheme/
+	$(INSTALL) -d $(TINYSCHEME_IPK_DIR)/opt/bin/
+	$(INSTALL) $(TINYSCHEME_BUILD_DIR)/scheme $(TINYSCHEME_IPK_DIR)/opt/bin/tinyscheme
+	$(INSTALL) -d $(TINYSCHEME_IPK_DIR)/opt/share/doc/tinyscheme/
 	for f in BUILDING CHANGES COPYING hack.txt Manual.txt MiniSCHEMETribute.txt; \
 		do install $(TINYSCHEME_BUILD_DIR)/$$f $(TINYSCHEME_IPK_DIR)/opt/share/doc/tinyscheme/; done
-	install -d $(TINYSCHEME_IPK_DIR)/opt/include/tinyscheme/
-	install $(TINYSCHEME_BUILD_DIR)/scheme.h $(TINYSCHEME_IPK_DIR)/opt/include/tinyscheme/
+	$(INSTALL) -d $(TINYSCHEME_IPK_DIR)/opt/include/tinyscheme/
+	$(INSTALL) $(TINYSCHEME_BUILD_DIR)/scheme.h $(TINYSCHEME_IPK_DIR)/opt/include/tinyscheme/
 	$(STRIP_COMMAND) $(TINYSCHEME_IPK_DIR)/opt/lib/libtinyscheme.so
 	$(STRIP_COMMAND) $(TINYSCHEME_IPK_DIR)/opt/bin/tinyscheme
 	$(MAKE) $(TINYSCHEME_IPK_DIR)/CONTROL/control

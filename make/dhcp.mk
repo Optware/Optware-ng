@@ -55,7 +55,7 @@ $(DHCP_BUILD_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE) make/dhcp.mk
 	$(DHCP_UNZIP) $(DL_DIR)/$(DHCP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DHCP_PATCHES)" ; \
 		then cat $(DHCP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DHCP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DHCP_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(DHCP_DIR) $(@D)
 	sed -i -e 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\/opt\/var\/run\/dhcpd.pid"/' $(@D)/includes/site.h
@@ -92,7 +92,7 @@ dhcp: $(DHCP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/dhcp
 #
 $(DHCP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dhcp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -108,10 +108,10 @@ $(DHCP_IPK_DIR)/CONTROL/control:
 
 $(DHCP_IPK): $(DHCP_BUILD_DIR)/.built
 	rm -rf $(DHCP_IPK_DIR) $(BUILD_DIR)/dhcp_*_$(TARGET_ARCH).ipk
-	install -d $(DHCP_IPK_DIR)/CONTROL
-	install -d $(DHCP_IPK_DIR)/opt/sbin $(DHCP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(DHCP_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(DHCP_IPK_DIR)/opt/sbin $(DHCP_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(DHCP_BUILD_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)/opt/sbin/dhcpd
-	install -m 755 $(SOURCE_DIR)/dhcp.rc $(DHCP_IPK_DIR)/opt/etc/init.d/S56dhcp
+	$(INSTALL) -m 755 $(SOURCE_DIR)/dhcp.rc $(DHCP_IPK_DIR)/opt/etc/init.d/S56dhcp
 	touch $(DHCP_IPK_DIR)/opt/etc/dhcpd.leases
 	cp $(DHCP_BUILD_DIR)/server/dhcpd.conf $(DHCP_IPK_DIR)/opt/etc/
 	echo $(DHCP_CONFFILES) | sed -e 's/ /\n/g' > $(DHCP_IPK_DIR)/CONTROL/conffiles

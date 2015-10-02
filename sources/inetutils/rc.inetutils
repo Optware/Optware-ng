@@ -3,4 +3,4 @@
 # Start INETD
 killall inetd
 sleep 1
-/opt/libexec/inetd /opt/etc/inetd.conf
+%OPTWARE_TARGET_PREFIX%/libexec/inetd %OPTWARE_TARGET_PREFIX%/etc/inetd.conf

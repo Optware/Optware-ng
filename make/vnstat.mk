@@ -112,7 +112,7 @@ $(VNSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(VNSTAT_SOURCE) $(VNSTAT_PATCHES) ma
 	$(VNSTAT_UNZIP) $(DL_DIR)/$(VNSTAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VNSTAT_PATCHES)" ; \
 		then cat $(VNSTAT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(VNSTAT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(VNSTAT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(VNSTAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(VNSTAT_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ vnstat-stage: $(VNSTAT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/vnstat
 #
 $(VNSTAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: vnstat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,19 +189,19 @@ $(VNSTAT_IPK_DIR)/CONTROL/control:
 #
 $(VNSTAT_IPK): $(VNSTAT_BUILD_DIR)/.built
 	rm -rf $(VNSTAT_IPK_DIR) $(BUILD_DIR)/vnstat_*_$(TARGET_ARCH).ipk
-	install -d $(VNSTAT_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(VNSTAT_IPK_DIR)/opt/etc/
 	$(MAKE) -C $(VNSTAT_BUILD_DIR) DESTDIR=$(VNSTAT_IPK_DIR) install
 	$(STRIP_COMMAND) $(VNSTAT_IPK_DIR)/opt/bin/vnstat $(VNSTAT_IPK_DIR)/opt/sbin/vnstatd
-	install -d $(VNSTAT_IPK_DIR)/opt/etc/cron.d
-	install -m 600 $(<D)/examples/vnstat.cron $(VNSTAT_IPK_DIR)/opt/etc/cron.d/vnstat
-#	install -m 644 $(VNSTAT_SOURCE_DIR)/vnstat.conf $(VNSTAT_IPK_DIR)/opt/etc/vnstat.conf
-#	install -d $(VNSTAT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(VNSTAT_SOURCE_DIR)/rc.vnstat $(VNSTAT_IPK_DIR)/opt/etc/init.d/SXXvnstat
+	$(INSTALL) -d $(VNSTAT_IPK_DIR)/opt/etc/cron.d
+	$(INSTALL) -m 600 $(<D)/examples/vnstat.cron $(VNSTAT_IPK_DIR)/opt/etc/cron.d/vnstat
+#	$(INSTALL) -m 644 $(VNSTAT_SOURCE_DIR)/vnstat.conf $(VNSTAT_IPK_DIR)/opt/etc/vnstat.conf
+#	$(INSTALL) -d $(VNSTAT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(VNSTAT_SOURCE_DIR)/rc.vnstat $(VNSTAT_IPK_DIR)/opt/etc/init.d/SXXvnstat
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXvnstat
 	$(MAKE) $(VNSTAT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(VNSTAT_SOURCE_DIR)/postinst $(VNSTAT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(VNSTAT_SOURCE_DIR)/postinst $(VNSTAT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(VNSTAT_SOURCE_DIR)/prerm $(VNSTAT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(VNSTAT_SOURCE_DIR)/prerm $(VNSTAT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(VNSTAT_CONFFILES) | sed -e 's/ /\n/g' > $(VNSTAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VNSTAT_IPK_DIR)

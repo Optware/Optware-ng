@@ -110,7 +110,7 @@ $(GEOIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GEOIP_SOURCE) $(GEOIP_PATCHES) make/
 	$(GEOIP_UNZIP) $(DL_DIR)/$(GEOIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GEOIP_PATCHES)" ; \
 		then cat $(GEOIP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GEOIP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GEOIP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GEOIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GEOIP_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ geoip-stage: $(GEOIP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/geoip
 #
 $(GEOIP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: geoip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

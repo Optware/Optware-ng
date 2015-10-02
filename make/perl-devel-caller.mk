@@ -35,7 +35,7 @@ $(PERL-DEVEL-CALLER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DEVEL-CALLER_SOURCE
 	$(MAKE) perl-module-build-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DEVEL-CALLER_DIR) $(PERL-DEVEL-CALLER_BUILD_DIR)
 	$(PERL-DEVEL-CALLER_UNZIP) $(DL_DIR)/$(PERL-DEVEL-CALLER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-DEVEL-CALLER_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DEVEL-CALLER_DIR) -p1
+#	cat $(PERL-DEVEL-CALLER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-DEVEL-CALLER_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-DEVEL-CALLER_DIR) $(PERL-DEVEL-CALLER_BUILD_DIR)
 	(cd $(PERL-DEVEL-CALLER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -73,7 +73,7 @@ $(PERL-DEVEL-CALLER_BUILD_DIR)/.staged: $(PERL-DEVEL-CALLER_BUILD_DIR)/.built
 perl-devel-caller-stage: $(PERL-DEVEL-CALLER_BUILD_DIR)/.staged
 
 $(PERL-DEVEL-CALLER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-devel-caller" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

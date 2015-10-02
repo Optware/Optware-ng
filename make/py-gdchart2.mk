@@ -113,7 +113,7 @@ $(PY-GDCHART2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GDCHART2_SOURCE) $(PY-GDCHA
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-GDCHART2_DIR)
 	$(PY-GDCHART2_UNZIP) $(DL_DIR)/$(PY-GDCHART2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-GDCHART2_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GDCHART2_DIR) -p1
+	cat $(PY-GDCHART2_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GDCHART2_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-GDCHART2_DIR) $(PY-GDCHART2_BUILD_DIR)/2.4
 	(cd $(PY-GDCHART2_BUILD_DIR)/2.4; \
 	    ( \
@@ -128,7 +128,7 @@ $(PY-GDCHART2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GDCHART2_SOURCE) $(PY-GDCHA
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-GDCHART2_DIR)
 	$(PY-GDCHART2_UNZIP) $(DL_DIR)/$(PY-GDCHART2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-GDCHART2_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GDCHART2_DIR) -p1
+	cat $(PY-GDCHART2_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GDCHART2_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-GDCHART2_DIR) $(PY-GDCHART2_BUILD_DIR)/2.5
 	(cd $(PY-GDCHART2_BUILD_DIR)/2.5; \
 	    ( \
@@ -179,7 +179,7 @@ py-gdchart2-stage: $(PY-GDCHART2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-gdchart2
 #
 $(PY24-GDCHART2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-gdchart2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,7 +193,7 @@ $(PY24-GDCHART2_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-GDCHART2_CONFLICTS)" >>$@
 
 $(PY25-GDCHART2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-gdchart2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

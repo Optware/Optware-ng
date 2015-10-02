@@ -36,7 +36,7 @@ $(PERL-LIBWWW_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LIBWWW_SOURCE) $(PERL-LIB
 	$(MAKE) perl-uri-stage perl-compress-zlib-stage perl-html-parser-stage
 	rm -rf $(BUILD_DIR)/$(PERL-LIBWWW_DIR) $(PERL-LIBWWW_BUILD_DIR)
 	$(PERL-LIBWWW_UNZIP) $(DL_DIR)/$(PERL-LIBWWW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-LIBWWW_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-LIBWWW_DIR) -p1
+#	cat $(PERL-LIBWWW_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-LIBWWW_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-LIBWWW_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-LIBWWW_BUILD_DIR)/.staged: $(PERL-LIBWWW_BUILD_DIR)/.built
 perl-libwww-stage: $(PERL-LIBWWW_BUILD_DIR)/.staged
 
 $(PERL-LIBWWW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-libwww" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

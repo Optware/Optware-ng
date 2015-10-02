@@ -115,7 +115,7 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(@D)
 	$(CLAMAV_UNZIP) $(DL_DIR)/$(CLAMAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLAMAV_PATCHES)"; \
-		then cat $(CLAMAV_PATCHES) | patch -bd $(BUILD_DIR)/$(CLAMAV_DIR) -p1; \
+		then cat $(CLAMAV_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(CLAMAV_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(CLAMAV_DIR) $(@D)
 	find $(@D) -name '*.[ch]' | xargs sed -i -e 's|P_tmpdir|CLAMAV_tmpdir|g'
@@ -173,7 +173,7 @@ clamav-stage: $(CLAMAV_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/clamav
 #
 $(CLAMAV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: clamav" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,15 +203,15 @@ $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	rm -rf $(CLAMAV_IPK_DIR) $(BUILD_DIR)/clamav_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLAMAV_BUILD_DIR) install-strip \
 		DESTDIR=$(CLAMAV_IPK_DIR) transform=""
-	install -d $(CLAMAV_IPK_DIR)/opt/tmp/
-	install -d $(CLAMAV_IPK_DIR)/opt/etc/
-	install -m 644 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)/opt/etc/clamd.conf
-	install -m 644 $(CLAMAV_SOURCE_DIR)/freshclam.conf $(CLAMAV_IPK_DIR)/opt/etc/freshclam.conf
-	install -d $(CLAMAV_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(CLAMAV_SOURCE_DIR)/rc.clamav $(CLAMAV_IPK_DIR)/opt/etc/init.d/S98clamav
+	$(INSTALL) -d $(CLAMAV_IPK_DIR)/opt/tmp/
+	$(INSTALL) -d $(CLAMAV_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)/opt/etc/clamd.conf
+	$(INSTALL) -m 644 $(CLAMAV_SOURCE_DIR)/freshclam.conf $(CLAMAV_IPK_DIR)/opt/etc/freshclam.conf
+	$(INSTALL) -d $(CLAMAV_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(CLAMAV_SOURCE_DIR)/rc.clamav $(CLAMAV_IPK_DIR)/opt/etc/init.d/S98clamav
 	$(MAKE) $(CLAMAV_IPK_DIR)/CONTROL/control
-	install -m 755 $(CLAMAV_SOURCE_DIR)/postinst $(CLAMAV_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CLAMAV_SOURCE_DIR)/prerm $(CLAMAV_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(CLAMAV_SOURCE_DIR)/postinst $(CLAMAV_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CLAMAV_SOURCE_DIR)/prerm $(CLAMAV_IPK_DIR)/CONTROL/prerm
 	echo $(CLAMAV_CONFFILES) | sed -e 's/ /\n/g' > $(CLAMAV_IPK_DIR)/CONTROL/conffiles
 	rm $(CLAMAV_IPK_DIR)/opt/bin/clamav-config # contains staging paths
 	rm $(CLAMAV_IPK_DIR)/opt/lib/libclamav.la # contains staging paths

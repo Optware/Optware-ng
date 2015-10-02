@@ -126,7 +126,7 @@ endif
 	$(CLINKCC_UNZIP) $(DL_DIR)/$(CLINKCC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLINKCC_PATCHES)" ; \
 		then cat $(CLINKCC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CLINKCC_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CLINKCC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CLINKCC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CLINKCC_DIR) $(@D) ; \
@@ -197,7 +197,7 @@ clinkcc-stage: $(CLINKCC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/clinkcc
 #
 $(CLINKCC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: clinkcc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -226,15 +226,15 @@ $(CLINKCC_IPK_DIR)/CONTROL/control:
 $(CLINKCC_IPK): $(CLINKCC_BUILD_DIR)/.built
 	rm -rf $(CLINKCC_IPK_DIR) $(BUILD_DIR)/clinkcc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLINKCC_BUILD_DIR) DESTDIR=$(CLINKCC_IPK_DIR) install-strip
-#	install -d $(CLINKCC_IPK_DIR)/opt/etc/
-#	install -m 644 $(CLINKCC_SOURCE_DIR)/clinkcc.conf $(CLINKCC_IPK_DIR)/opt/etc/clinkcc.conf
-#	install -d $(CLINKCC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CLINKCC_SOURCE_DIR)/rc.clinkcc $(CLINKCC_IPK_DIR)/opt/etc/init.d/SXXclinkcc
+#	$(INSTALL) -d $(CLINKCC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CLINKCC_SOURCE_DIR)/clinkcc.conf $(CLINKCC_IPK_DIR)/opt/etc/clinkcc.conf
+#	$(INSTALL) -d $(CLINKCC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CLINKCC_SOURCE_DIR)/rc.clinkcc $(CLINKCC_IPK_DIR)/opt/etc/init.d/SXXclinkcc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLINKCC_IPK_DIR)/opt/etc/init.d/SXXclinkcc
 	$(MAKE) $(CLINKCC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CLINKCC_SOURCE_DIR)/postinst $(CLINKCC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CLINKCC_SOURCE_DIR)/postinst $(CLINKCC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLINKCC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CLINKCC_SOURCE_DIR)/prerm $(CLINKCC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CLINKCC_SOURCE_DIR)/prerm $(CLINKCC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLINKCC_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

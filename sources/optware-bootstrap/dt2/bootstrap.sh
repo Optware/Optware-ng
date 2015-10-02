@@ -43,20 +43,20 @@ rm -rf $BSDIR
 rm /tmp/ipkg
 
 echo "Installing wget..."
-/opt/bin/ipkg install wget.ipk
+%OPTWARE_TARGET_PREFIX%/bin/ipkg install wget.ipk
 
 echo "Installing coreutils..."
-/opt/bin/ipkg install coreutils.ipk
+%OPTWARE_TARGET_PREFIX%/bin/ipkg install coreutils.ipk
 
 echo "Installing diffutils..."
-/opt/bin/ipkg install diffutils.ipk
+%OPTWARE_TARGET_PREFIX%/bin/ipkg install diffutils.ipk
 
-[ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
-if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
+[ ! -d %OPTWARE_TARGET_PREFIX%/etc/ipkg ] && mkdir -p %OPTWARE_TARGET_PREFIX%/etc/ipkg
+if [ ! -e %OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf ]
 then
-	echo "Creating /opt/etc/ipkg/cross-feed.conf..."
-	echo "src/gz ${OPTWARE_TARGET} http://ipkg.nslu2-linux.org/feeds/optware/${OPTWARE_TARGET}/cross/stable" >/opt/etc/ipkg/cross-feed.conf
-	echo "src/gz cs05q3armel http://ipkg.nslu2-linux.org/feeds/optware/cs05q3armel/cross/stable">>/opt/etc/ipkg/cross-feed.conf
+	echo "Creating %OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf..."
+	echo "src/gz ${OPTWARE_TARGET} http://ipkg.nslu2-linux.org/feeds/optware/${OPTWARE_TARGET}/cross/stable" >%OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf
+	echo "src/gz cs05q3armel http://ipkg.nslu2-linux.org/feeds/optware/cs05q3armel/cross/stable">>%OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf
 fi
 
 echo "Setup complete."

@@ -110,7 +110,7 @@ $(PCAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PCAL_SOURCE) $(PCAL_PATCHES) make/pca
 	$(PCAL_UNZIP) $(DL_DIR)/$(PCAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PCAL_PATCHES)" ; \
 		then cat $(PCAL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PCAL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PCAL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PCAL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PCAL_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ pcal-stage: $(PCAL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pcal
 #
 $(PCAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pcal" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

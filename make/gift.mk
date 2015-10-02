@@ -99,7 +99,7 @@ $(GIFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_SOURCE) $(GIFT_PATCHES)
 	$(MAKE) libogg-stage libvorbis-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(GIFT_DIR) $(GIFT_BUILD_DIR)
 	$(GIFT_UNZIP) $(DL_DIR)/$(GIFT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GIFT_PATCHES) | patch -d $(BUILD_DIR)/$(GIFT_DIR) -p1
+#	cat $(GIFT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIFT_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFT_DIR) $(GIFT_BUILD_DIR)
 	(cd $(GIFT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -146,7 +146,7 @@ gift-stage: $(GIFT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gift
 #
 $(GIFT_IPK_DIR)/CONTROL/control:
-	@install -d $(GIFT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GIFT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: gift" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,11 +174,11 @@ $(GIFT_IPK_DIR)/CONTROL/control:
 $(GIFT_IPK): $(GIFT_BUILD_DIR)/.built
 	rm -rf $(GIFT_IPK_DIR) $(BUILD_DIR)/gift_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(GIFT_IPK_DIR) install-strip
-	install -d $(GIFT_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(GIFT_SOURCE_DIR)/S30giftd $(GIFT_IPK_DIR)/opt/etc/init.d/S30giftd
-	install -d $(GIFT_IPK_DIR)/opt/sbin
-	install -m 755 $(GIFT_SOURCE_DIR)/giftd_wrapper $(GIFT_IPK_DIR)/opt/sbin
-	install -d $(GIFT_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(GIFT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(GIFT_SOURCE_DIR)/S30giftd $(GIFT_IPK_DIR)/opt/etc/init.d/S30giftd
+	$(INSTALL) -d $(GIFT_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(GIFT_SOURCE_DIR)/giftd_wrapper $(GIFT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(GIFT_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_IPK_DIR)
 

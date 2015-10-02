@@ -4,7 +4,7 @@
  #!/bin/sh
  
 -pid=/var/run/vpnc/pid
-+pid=/opt/var/run/vpnc/pid
++pid=%OPTWARE_TARGET_PREFIX%/var/run/vpnc/pid
  
  if [ $# -ne 0 ]; then
  	echo "Usage: $0" 1>&2

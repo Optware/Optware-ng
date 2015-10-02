@@ -110,7 +110,7 @@ $(LIBUTF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUTF_SOURCE) $(LIBUTF_PATCHES) ma
 	$(LIBUTF_UNZIP) $(DL_DIR)/$(LIBUTF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBUTF_PATCHES)" ; \
 		then cat $(LIBUTF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBUTF_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBUTF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBUTF_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBUTF_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ libutf-stage: $(LIBUTF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libutf
 #
 $(LIBUTF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libutf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

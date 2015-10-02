@@ -102,7 +102,7 @@ $(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 		$(STAGING_LIB_DIR)/libjpeg*so*
 	rm -rf $(BUILD_DIR)/$(LIBJPEG_DIR) $(@D)
 	$(LIBJPEG_UNZIP) $(DL_DIR)/$(LIBJPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBJPEG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBJPEG_DIR) -p1
+#	cat $(LIBJPEG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBJPEG_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBJPEG_DIR) $(@D)
 	cp $(LIBJPEG_SOURCE_DIR)/config.* $(@D)
 	(cd $(@D); \
@@ -141,10 +141,10 @@ libjpeg: $(LIBJPEG_BUILD_DIR)/.built
 #
 $(LIBJPEG_BUILD_DIR)/.staged: $(LIBJPEG_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -d $(STAGING_PREFIX)/bin
-	install -d $(STAGING_PREFIX)/man/man1
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_PREFIX)/bin
+	$(INSTALL) -d $(STAGING_PREFIX)/man/man1
 	$(MAKE) -C $(@D) prefix=$(STAGING_PREFIX) install
 	rm -f $(STAGING_LIB_DIR)/libjpeg.la
 	touch $@
@@ -156,7 +156,7 @@ libjpeg-stage: $(LIBJPEG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libjpeg
 #
 $(LIBJPEG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libjpeg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -183,19 +183,19 @@ $(LIBJPEG_IPK_DIR)/CONTROL/control:
 #
 $(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/.built
 	rm -rf $(LIBJPEG_IPK_DIR) $(LIBJPEG_IPK)
-	install -d $(LIBJPEG_IPK_DIR)/opt/include
-	install -d $(LIBJPEG_IPK_DIR)/opt/lib
-	install -d $(LIBJPEG_IPK_DIR)/opt/bin
-	install -d $(LIBJPEG_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(LIBJPEG_IPK_DIR)/opt/include
+	$(INSTALL) -d $(LIBJPEG_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(LIBJPEG_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(LIBJPEG_IPK_DIR)/opt/share/man/man1
 	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(LIBJPEG_IPK_DIR)/opt mandir=$(LIBJPEG_IPK_DIR)/opt/share/man/man1 install
 	rm -f $(LIBJPEG_IPK_DIR)/opt/lib/libjpeg.la
 	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)/opt/bin/*
 	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)/opt/lib/*.so
-#	install -d $(LIBJPEG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBJPEG_SOURCE_DIR)/rc.libjpeg $(LIBJPEG_IPK_DIR)/opt/etc/init.d/SXXlibjpeg
+#	$(INSTALL) -d $(LIBJPEG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBJPEG_SOURCE_DIR)/rc.libjpeg $(LIBJPEG_IPK_DIR)/opt/etc/init.d/SXXlibjpeg
 	$(MAKE) $(LIBJPEG_IPK_DIR)/CONTROL/control
-#	install -m 644 $(LIBJPEG_SOURCE_DIR)/postinst $(LIBJPEG_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(LIBJPEG_SOURCE_DIR)/prerm $(LIBJPEG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(LIBJPEG_SOURCE_DIR)/postinst $(LIBJPEG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(LIBJPEG_SOURCE_DIR)/prerm $(LIBJPEG_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBJPEG_IPK_DIR)
 
 #

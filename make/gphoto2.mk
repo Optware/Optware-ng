@@ -99,7 +99,7 @@ $(GPHOTO2_BUILD_DIR)/.configured: $(DL_DIR)/$(GPHOTO2_SOURCE) $(GPHOTO2_PATCHES)
 	$(GPHOTO2_UNZIP) $(DL_DIR)/$(GPHOTO2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GPHOTO2_PATCHES)" ; \
 		then cat $(GPHOTO2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GPHOTO2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GPHOTO2_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GPHOTO2_DIR)" != "$(GPHOTO2_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(GPHOTO2_DIR) $(GPHOTO2_BUILD_DIR) ; \
@@ -153,7 +153,7 @@ gphoto2-stage: $(GPHOTO2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gphoto2
 #
 $(GPHOTO2_IPK_DIR)/CONTROL/control:
-	@install -d $(GPHOTO2_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GPHOTO2_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: gphoto2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,13 +182,13 @@ $(GPHOTO2_IPK_DIR)/CONTROL/control:
 $(GPHOTO2_IPK): $(GPHOTO2_BUILD_DIR)/.built
 	rm -rf $(GPHOTO2_IPK_DIR) $(BUILD_DIR)/gphoto2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GPHOTO2_BUILD_DIR) DESTDIR=$(GPHOTO2_IPK_DIR) install-strip
-	install -d $(GPHOTO2_IPK_DIR)/opt/etc/
-#	install -m 644 $(GPHOTO2_SOURCE_DIR)/gphoto2.conf $(GPHOTO2_IPK_DIR)/opt/etc/gphoto2.conf
-#	install -d $(GPHOTO2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GPHOTO2_SOURCE_DIR)/rc.gphoto2 $(GPHOTO2_IPK_DIR)/opt/etc/init.d/SXXgphoto2
+	$(INSTALL) -d $(GPHOTO2_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GPHOTO2_SOURCE_DIR)/gphoto2.conf $(GPHOTO2_IPK_DIR)/opt/etc/gphoto2.conf
+#	$(INSTALL) -d $(GPHOTO2_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GPHOTO2_SOURCE_DIR)/rc.gphoto2 $(GPHOTO2_IPK_DIR)/opt/etc/init.d/SXXgphoto2
 	$(MAKE) $(GPHOTO2_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GPHOTO2_SOURCE_DIR)/postinst $(GPHOTO2_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GPHOTO2_SOURCE_DIR)/prerm $(GPHOTO2_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GPHOTO2_SOURCE_DIR)/postinst $(GPHOTO2_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GPHOTO2_SOURCE_DIR)/prerm $(GPHOTO2_IPK_DIR)/CONTROL/prerm
 	echo $(GPHOTO2_CONFFILES) | sed -e 's/ /\n/g' > $(GPHOTO2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GPHOTO2_IPK_DIR)
 

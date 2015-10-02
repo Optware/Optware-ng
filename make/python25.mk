@@ -135,7 +135,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PYTHON25_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.5
 	$(PYTHON25_UNZIP) $(DL_DIR)/$(PYTHON25_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cd $(BUILD_DIR)/$(PYTHON25_DIR); \
-	    cat $(PYTHON25_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON25_DIR) -p1
+	    cat $(PYTHON25_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON25_DIR) -p1
 	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON25_DIR)/configure.in
 	cd $(BUILD_DIR)/$(PYTHON25_DIR); \
 	    autoconf configure.in > configure
@@ -209,7 +209,7 @@ python25-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.5
 # necessary to create a seperate control file under sources/python
 #
 $(PYTHON25_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: python25" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -245,20 +245,20 @@ $(PYTHON25_IPK): $(PYTHON25_BUILD_DIR)/.built
 #	cd $(PYTHON25_IPK_DIR)/opt/bin; ln -s python$(PYTHON25_VERSION_MAJOR) python
 	for f in bin/pydoc bin/idle bin/smtpd.py man/man1/python.1; \
 	    do mv $(PYTHON25_IPK_DIR)/opt/$$f $(PYTHON25_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/2.5\1/'`; done
-	install -d $(PYTHON25_IPK_DIR)/opt/local/bin
-	install -d $(PYTHON25_IPK_DIR)/opt/local/lib/python$(PYTHON25_VERSION_MAJOR)/site-packages
+	$(INSTALL) -d $(PYTHON25_IPK_DIR)/opt/local/bin
+	$(INSTALL) -d $(PYTHON25_IPK_DIR)/opt/local/lib/python$(PYTHON25_VERSION_MAJOR)/site-packages
 	sed -i -e 's|$(TARGET_CROSS)|/opt/bin/|g' \
 	       -e 's|$(STAGING_INCLUDE_DIR)|/opt/include|g' \
 	       -e 's|$(STAGING_LIB_DIR)|/opt/lib|g' \
 	       -e '/^RUNSHARED=/s|=.*|=|' \
 	       $(PYTHON25_IPK_DIR)/opt/lib/python2.5/config/Makefile
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
-#	install -d $(PYTHON25_IPK_DIR)/usr/bin
+#	$(INSTALL) -d $(PYTHON25_IPK_DIR)/usr/bin
 #	ln -s /opt/bin/python $(PYTHON25_IPK_DIR)/usr/bin/python
 endif
 	$(MAKE) $(PYTHON25_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PYTHON25_SOURCE_DIR)/postinst $(PYTHON25_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PYTHON25_SOURCE_DIR)/prerm $(PYTHON25_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PYTHON25_SOURCE_DIR)/postinst $(PYTHON25_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PYTHON25_SOURCE_DIR)/prerm $(PYTHON25_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON25_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(PYTHON25_IPK_DIR)
 

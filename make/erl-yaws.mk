@@ -110,7 +110,7 @@ $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCH
 	$(ERL-YAWS_UNZIP) $(DL_DIR)/$(ERL-YAWS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ERL-YAWS_PATCHES)" ; \
 		then cat $(ERL-YAWS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ERL-YAWS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ERL-YAWS_DIR) -p0 ; \
 	fi
 	test -h $(BUILD_DIR)/yaws && rm $(BUILD_DIR)/yaws
 	if test "$(BUILD_DIR)/$(ERL-YAWS_DIR)" != "$(@D)" ; \
@@ -173,7 +173,7 @@ erl-yaws-stage: $(ERL-YAWS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/erl-yaws
 #
 $(ERL-YAWS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: erl-yaws" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,8 +214,8 @@ $(ERL-YAWS_IPK): $(ERL-YAWS_BUILD_DIR)/.built
 	    -e 's/<server.*>/<server localhost>/' \
 	    $(ERL-YAWS_IPK_DIR)/opt/etc/yaws/yaws.conf
 	$(MAKE) $(ERL-YAWS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ERL-YAWS_SOURCE_DIR)/postinst $(ERL-YAWS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ERL-YAWS_SOURCE_DIR)/prerm $(ERL-YAWS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ERL-YAWS_SOURCE_DIR)/postinst $(ERL-YAWS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ERL-YAWS_SOURCE_DIR)/prerm $(ERL-YAWS_IPK_DIR)/CONTROL/prerm
 	echo $(ERL-YAWS_CONFFILES) | sed -e 's/ /\n/g' > $(ERL-YAWS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERL-YAWS_IPK_DIR)
 

@@ -6,8 +6,8 @@
  
 -#define	PIDFILE			"/var/run/pop3.proxy.pid"
 -#define	SPAMC			"/usr/bin/spamc -c"
-+#define	PIDFILE			"/opt/var/run/pop3.proxy.pid"
-+#define	SPAMC			"/opt/bin/spamc -c"
++#define	PIDFILE			"%OPTWARE_TARGET_PREFIX%/var/run/pop3.proxy.pid"
++#define	SPAMC			"%OPTWARE_TARGET_PREFIX%/bin/spamc -c"
  
  
  extern char *program;

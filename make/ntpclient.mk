@@ -64,7 +64,7 @@ $(NTPCLIENT_BUILD_DIR)/.built: $(NTPCLIENT_BUILD_DIR)/.configured make/ntpclient
 ntpclient: $(NTPCLIENT_BUILD_DIR)/.built
 
 $(NTPCLIENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ntpclient" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -78,22 +78,22 @@ $(NTPCLIENT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(NTPCLIENT_CONFLICTS)" >>$@
 
 $(NTPCLIENT_IPK): $(NTPCLIENT_BUILD_DIR)/.built
-	install -d $(NTPCLIENT_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(NTPCLIENT_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(NTPCLIENT_BUILD_DIR)/ntpclient -o $(NTPCLIENT_IPK_DIR)/opt/bin/ntpclient
-	install -d $(NTPCLIENT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(NTPCLIENT_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(NTPCLIENT_BUILD_DIR)/adjtimex -o $(NTPCLIENT_IPK_DIR)/opt/sbin/adjtimex
-	install -d $(NTPCLIENT_IPK_DIR)/opt/share/man/man1
-	install $(NTPCLIENT_BUILD_DIR)/ntpclient.1 $(NTPCLIENT_IPK_DIR)/opt/share/man/man1
-	install $(NTPCLIENT_BUILD_DIR)/adjtimex.1 $(NTPCLIENT_IPK_DIR)/opt/share/man/man1
-	install -d $(NTPCLIENT_IPK_DIR)/opt/share/doc/ntpclient
-	install $(NTPCLIENT_BUILD_DIR)/[RH]* \
+	$(INSTALL) -d $(NTPCLIENT_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) $(NTPCLIENT_BUILD_DIR)/ntpclient.1 $(NTPCLIENT_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) $(NTPCLIENT_BUILD_DIR)/adjtimex.1 $(NTPCLIENT_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(NTPCLIENT_IPK_DIR)/opt/share/doc/ntpclient
+	$(INSTALL) $(NTPCLIENT_BUILD_DIR)/[RH]* \
 		$(NTPCLIENT_BUILD_DIR)/*.awk \
 		$(NTPCLIENT_BUILD_DIR)/*.pl \
 		$(NTPCLIENT_BUILD_DIR)/test.dat \
 		$(NTPCLIENT_IPK_DIR)/opt/share/doc/ntpclient
 	$(MAKE) $(NTPCLIENT_IPK_DIR)/CONTROL/control
-	install -m 755 $(NTPCLIENT_SOURCE_DIR)/postinst $(NTPCLIENT_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(NTPCLIENT_SOURCE_DIR)/prerm $(NTPCLIENT_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(NTPCLIENT_SOURCE_DIR)/postinst $(NTPCLIENT_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(NTPCLIENT_SOURCE_DIR)/prerm $(NTPCLIENT_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTPCLIENT_IPK_DIR)
 
 ntpclient-ipk: $(NTPCLIENT_IPK)

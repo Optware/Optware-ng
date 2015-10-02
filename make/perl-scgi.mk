@@ -68,7 +68,7 @@ $(PERL-SCGI_BUILD_DIR)/.staged: $(PERL-SCGI_BUILD_DIR)/.built
 perl-scgi-stage: $(PERL-SCGI_BUILD_DIR)/.staged
 
 $(PERL-SCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-SCGI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-SCGI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-scgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -103,7 +103,7 @@ $(PY-TGFASTDATA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TGFASTDATA_SOURCE) $(PY-T
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) $(PY-TGFASTDATA_BUILD_DIR)
 	cd $(BUILD_DIR) && $(PY-TGFASTDATA_UNZIP) $(DL_DIR)/$(PY-TGFASTDATA_SOURCE)
-#	cat $(PY-TGFASTDATA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) -p1
+#	cat $(PY-TGFASTDATA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) $(PY-TGFASTDATA_BUILD_DIR)
 	(cd $(PY-TGFASTDATA_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -141,7 +141,7 @@ py-tgfastdata-stage: $(PY-TGFASTDATA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-tgfastdata
 #
 $(PY-TGFASTDATA_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-TGFASTDATA_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-TGFASTDATA_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-tgfastdata" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

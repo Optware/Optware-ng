@@ -106,7 +106,7 @@ $(PY-JSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSON_EGG) $(PY-JSON_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PY-JSON_DIR) $(PY-JSON_BUILD_DIR)
 	cd $(BUILD_DIR) && $(PY-JSON_UNZIP) -d $(PY-JSON_BUILD_DIR) $(DL_DIR)/$(PY-JSON_EGG)
-#	cat $(PY-JSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-JSON_DIR) -p1
+#	cat $(PY-JSON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-JSON_DIR) -p1
 #	mv $(BUILD_DIR)/$(PY-JSON_DIR) $(PY-JSON_BUILD_DIR)
 #	(cd $(PY-JSON_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -144,7 +144,7 @@ py-json-stage: $(PY-JSON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-json
 #
 $(PY-JSON_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-JSON_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-JSON_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-json" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,10 +174,10 @@ $(PY-JSON_IPK): $(PY-JSON_BUILD_DIR)/.built
 #	$(MAKE) -C $(PY-JSON_BUILD_DIR) DESTDIR=$(PY-JSON_IPK_DIR) install
 #	(cd $(PY-JSON_BUILD_DIR); \
 		python2.4 setup.py install --root=$(PY-JSON_IPK_DIR) --prefix=/opt)
-	install -d $(PY-JSON_PYLIBDIR)
-	install $(PY-JSON_BUILD_DIR)/*.py* $(PY-JSON_PYLIBDIR)
-	install -d $(PY-JSON_PYLIBDIR)/$(PY-JSON_EGG)-info
-	install $(PY-JSON_BUILD_DIR)/EGG-INFO/* $(PY-JSON_PYLIBDIR)/$(PY-JSON_EGG)-info
+	$(INSTALL) -d $(PY-JSON_PYLIBDIR)
+	$(INSTALL) $(PY-JSON_BUILD_DIR)/*.py* $(PY-JSON_PYLIBDIR)
+	$(INSTALL) -d $(PY-JSON_PYLIBDIR)/$(PY-JSON_EGG)-info
+	$(INSTALL) $(PY-JSON_BUILD_DIR)/EGG-INFO/* $(PY-JSON_PYLIBDIR)/$(PY-JSON_EGG)-info
 	$(MAKE) $(PY-JSON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-JSON_IPK_DIR)
 

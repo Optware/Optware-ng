@@ -114,7 +114,7 @@ $(CATDOC_BUILD_DIR)/.configured: $(DL_DIR)/$(CATDOC_SOURCE) $(CATDOC_PATCHES) ma
 	$(CATDOC_UNZIP) $(DL_DIR)/$(CATDOC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CATDOC_PATCHES)" ; \
 		then cat $(CATDOC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CATDOC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CATDOC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CATDOC_DIR)" != "$(CATDOC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CATDOC_DIR) $(CATDOC_BUILD_DIR) ; \
@@ -166,7 +166,7 @@ catdoc-stage: $(CATDOC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/catdoc
 #
 $(CATDOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: catdoc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,15 +197,15 @@ $(CATDOC_IPK): $(CATDOC_BUILD_DIR)/.built
 	$(MAKE) -C $(CATDOC_BUILD_DIR) prefix=$(CATDOC_IPK_DIR)/opt install
 	rm -f $(CATDOC_IPK_DIR)/opt/bin/wordview
 	$(STRIP_COMMAND) $(CATDOC_IPK_DIR)/opt/bin/*
-#	install -d $(CATDOC_IPK_DIR)/opt/etc/
-#	install -m 644 $(CATDOC_SOURCE_DIR)/catdoc.conf $(CATDOC_IPK_DIR)/opt/etc/catdoc.conf
-#	install -d $(CATDOC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CATDOC_SOURCE_DIR)/rc.catdoc $(CATDOC_IPK_DIR)/opt/etc/init.d/SXXcatdoc
+#	$(INSTALL) -d $(CATDOC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CATDOC_SOURCE_DIR)/catdoc.conf $(CATDOC_IPK_DIR)/opt/etc/catdoc.conf
+#	$(INSTALL) -d $(CATDOC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CATDOC_SOURCE_DIR)/rc.catdoc $(CATDOC_IPK_DIR)/opt/etc/init.d/SXXcatdoc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXcatdoc
 	$(MAKE) $(CATDOC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CATDOC_SOURCE_DIR)/postinst $(CATDOC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CATDOC_SOURCE_DIR)/postinst $(CATDOC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CATDOC_SOURCE_DIR)/prerm $(CATDOC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CATDOC_SOURCE_DIR)/prerm $(CATDOC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(CATDOC_CONFFILES) | sed -e 's/ /\n/g' > $(CATDOC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CATDOC_IPK_DIR)

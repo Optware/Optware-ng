@@ -133,7 +133,7 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(DL_DIR)/$(PY-CUR
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR_OLD)
 	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR_OLD) -p1
+#	cat $(PY-CURL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CURL_DIR_OLD) -p1
 	mv $(BUILD_DIR)/$(PY-CURL_DIR_OLD) $(@D)/2.5
 	sed -i.orig -e '/--static-libs" % CURL_CONFIG)\.read())/s|.*|"")|' \
 		-e 's/, "--static-libs"//' $(@D)/2.5/setup.py
@@ -150,7 +150,7 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(DL_DIR)/$(PY-CUR
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR)
 	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
+#	cat $(PY-CURL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/2.6
 	sed -i.orig -e '/--static-libs" % CURL_CONFIG)\.read())/s|.*|"")|' \
 		-e 's/, "--static-libs"//' $(@D)/2.6/setup.py
@@ -167,7 +167,7 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(DL_DIR)/$(PY-CUR
 	# 2.7
 	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR)
 	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
+#	cat $(PY-CURL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/2.7
 	sed -i.orig -e '/--static-libs" % CURL_CONFIG)\.read())/s|.*|"")|' \
 		-e 's/, "--static-libs"//' $(@D)/2.7/setup.py
@@ -184,7 +184,7 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(DL_DIR)/$(PY-CUR
 	# 3
 	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR)
 	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
+#	cat $(PY-CURL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/3
 	sed -i.orig -e '/--static-libs" % CURL_CONFIG)\.read())/s|.*|"")|' \
 		-e 's/, "--static-libs"//' $(@D)/3/setup.py
@@ -245,7 +245,7 @@ py-curl-stage: $(PY-CURL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-curl
 #
 $(PY-CURL-DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-curl-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -259,7 +259,7 @@ $(PY-CURL-DOC_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CURL_CONFLICTS)" >>$@
 
 $(PY25-CURL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-curl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -273,7 +273,7 @@ $(PY25-CURL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CURL_CONFLICTS)" >>$@
 
 $(PY26-CURL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-curl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -287,7 +287,7 @@ $(PY26-CURL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CURL_CONFLICTS)" >>$@
 
 $(PY27-CURL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-curl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -301,7 +301,7 @@ $(PY27-CURL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CURL_CONFLICTS)" >>$@
 
 $(PY3-CURL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-curl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -361,7 +361,7 @@ $(PY27-CURL_IPK) $(PY-CURL-DOC_IPK): $(PY-CURL_BUILD_DIR)/.built
 	$(STRIP_COMMAND) `find $(PY27-CURL_IPK_DIR)/opt/lib/python2.7/site-packages -name '*.so'`
 	$(MAKE) $(PY27-CURL_IPK_DIR)/CONTROL/control
 	$(MAKE) $(PY-CURL-DOC_IPK_DIR)/CONTROL/control
-	install -d $(PY-CURL-DOC_IPK_DIR)/opt/
+	$(INSTALL) -d $(PY-CURL-DOC_IPK_DIR)/opt/
 	mv $(PY27-CURL_IPK_DIR)/opt/share $(PY-CURL-DOC_IPK_DIR)/opt/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-CURL_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-CURL-DOC_IPK_DIR)

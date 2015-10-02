@@ -97,7 +97,7 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(@D)
 	$(NET_SNMP_UNZIP) $(DL_DIR)/$(NET_SNMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NET_SNMP_PATCHES)"; then \
-		cat $(NET_SNMP_PATCHES) | patch -d $(BUILD_DIR)/$(NET_SNMP_DIR) -p0; \
+		cat $(NET_SNMP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NET_SNMP_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(NET_SNMP_DIR) $(@D)
 	(cd $(@D); \
@@ -162,7 +162,7 @@ net-snmp-stage: $(NET_SNMP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/net-snmp
 #
 $(NET_SNMP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: net-snmp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,13 +194,13 @@ $(NET_SNMP_IPK): $(NET_SNMP_BUILD_DIR)/.built
 	for F in $(NET_SNMP_IPK_DIR)/opt/bin/* ; do (file $$F |fgrep -vq ELF) || $(STRIP_COMMAND) $$F ; done
 	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)/opt/lib/*.so
-	install -d $(NET_SNMP_IPK_DIR)/opt/etc/
-	install -m 644 $(NET_SNMP_SOURCE_DIR)/snmpd.conf $(NET_SNMP_IPK_DIR)/opt/etc/snmpd.conf
-	install -d $(NET_SNMP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NET_SNMP_SOURCE_DIR)/rc.net-snmp $(NET_SNMP_IPK_DIR)/opt/etc/init.d/S70net-snmp
+	$(INSTALL) -d $(NET_SNMP_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(NET_SNMP_SOURCE_DIR)/snmpd.conf $(NET_SNMP_IPK_DIR)/opt/etc/snmpd.conf
+	$(INSTALL) -d $(NET_SNMP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/rc.net-snmp $(NET_SNMP_IPK_DIR)/opt/etc/init.d/S70net-snmp
 	$(MAKE) $(NET_SNMP_IPK_DIR)/CONTROL/control
-	install -m 755 $(NET_SNMP_SOURCE_DIR)/postinst $(NET_SNMP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NET_SNMP_SOURCE_DIR)/prerm $(NET_SNMP_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/postinst $(NET_SNMP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/prerm $(NET_SNMP_IPK_DIR)/CONTROL/prerm
 	echo $(NET_SNMP_CONFFILES) | sed -e 's/ /\n/g' > $(NET_SNMP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NET_SNMP_IPK_DIR)
 

@@ -11,13 +11,13 @@
 -INIPATH = /etc/rc.d/init.d
 -CRNPATH = /etc/cron.d
 -ROTPATH = /etc/logrotate.d
-+BINPATH = /opt/bin
-+SCRPATH = /opt/etc/atop
-+LOGPATH = /opt/var/log/atop
-+MANPATH = /opt/man/man1
-+INIPATH = /opt/etc/init.d
-+CRNPATH = /opt/etc/cron.d
-+ROTPATH = /opt/etc/logrotate.d
++BINPATH = %OPTWARE_TARGET_PREFIX%/bin
++SCRPATH = %OPTWARE_TARGET_PREFIX%/etc/atop
++LOGPATH = %OPTWARE_TARGET_PREFIX%/var/log/atop
++MANPATH = %OPTWARE_TARGET_PREFIX%/man/man1
++INIPATH = %OPTWARE_TARGET_PREFIX%/etc/init.d
++CRNPATH = %OPTWARE_TARGET_PREFIX%/etc/cron.d
++ROTPATH = %OPTWARE_TARGET_PREFIX%/etc/logrotate.d
  
 -CFLAGS  = -O -I. -Wall
 -LDFLAGS = -lncurses -lm -lz

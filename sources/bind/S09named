@@ -5,28 +5,28 @@
 
 start() {
     echo -n "Starting DNS Services: "
-    if [ -n "`/opt/bin/pidof named`" ]; then
+    if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof named`" ]; then
 	echo "already running..."
 	false; 
 	return
     fi
-    cd /opt/etc/named
-    /opt/sbin/named -c /opt/etc/named/named.conf 
+    cd %OPTWARE_TARGET_PREFIX%/etc/named
+    %OPTWARE_TARGET_PREFIX%/sbin/named -c %OPTWARE_TARGET_PREFIX%/etc/named/named.conf 
     echo "started"
     return
 }
 stop() {
     echo "Shutting down DNS Services: "
-    /opt/sbin/rndc -s 127.0.0.1 stop
+    %OPTWARE_TARGET_PREFIX%/sbin/rndc -s 127.0.0.1 stop
     sleep 5
-    if [ -n "`/opt/bin/pidof named`" ]; then
+    if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof named`" ]; then
         echo -n "Failed, killing process"
-	/opt/bin/killall named 2>/dev/null
+	%OPTWARE_TARGET_PREFIX%/bin/killall named 2>/dev/null
     fi
     return
 }
 bindstatus() {
-    /opt/sbin/rndc -s 127.0.0.1 status
+    %OPTWARE_TARGET_PREFIX%/sbin/rndc -s 127.0.0.1 status
     return
 }
 restart() {
@@ -48,7 +48,7 @@ case "$1" in
 	restart
 	;;
   condrestart)
-	[ -n "`/opt/bin/pidof named`" ] && restart
+	[ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof named`" ] && restart
 	;;
   *)
 	echo "Usage: $0 {start|stop|status|restart|condrestart}"

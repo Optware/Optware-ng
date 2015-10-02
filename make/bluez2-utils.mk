@@ -109,7 +109,7 @@ $(BLUEZ2-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-UTILS_SOURCE) $(BLUEZ2
 	$(MAKE) bluez2-libs-stage
 	rm -rf $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) $(@D)
 	$(BLUEZ2-UTILS_UNZIP) $(DL_DIR)/$(BLUEZ2-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(BLUEZ2-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) -p0
+	cat $(BLUEZ2-UTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) -p0
 	mv $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -156,7 +156,7 @@ bluez2-utils-stage: $(BLUEZ2-UTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bluez2-utils
 #
 $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(BLUEZ2-UTILS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: bluez2-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,14 +185,14 @@ $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/control:
 $(BLUEZ2-UTILS_IPK): $(BLUEZ2-UTILS_BUILD_DIR)/.built
 	rm -rf $(BLUEZ2-UTILS_IPK_DIR) $(BUILD_DIR)/bluez2-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BLUEZ2-UTILS_BUILD_DIR) DESTDIR=$(BLUEZ2-UTILS_IPK_DIR) install-strip
-	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth
-	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/hcid.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/hcid.conf
-	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/rfcomm.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/rfcomm.conf
-	install -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/pin-helper $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/pin-helper
-	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default
-	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.default $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default/bluetooth
-	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d
-	install -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.init $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d/S75bluez-utils
+	$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth
+	$(INSTALL) -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/hcid.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/hcid.conf
+	$(INSTALL) -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/rfcomm.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/rfcomm.conf
+	$(INSTALL) -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/pin-helper $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/pin-helper
+	$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.default $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default/bluetooth
+	$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.init $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d/S75bluez-utils
 	$(MAKE) $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/control
 	echo $(BLUEZ2-UTILS_CONFFILES) | sed -e 's/ /\n/g' > $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BLUEZ2-UTILS_IPK_DIR)

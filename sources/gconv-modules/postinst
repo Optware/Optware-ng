@@ -1,4 +1,4 @@
 #!/bin/sh
 
 ### establish a symlink to missing glibc bits
-test -e /lib/gconv || ln -s /opt/lib/gconv /lib/gconv || exit 0
+test -e /lib/gconv || ln -s %OPTWARE_TARGET_PREFIX%/lib/gconv /lib/gconv || exit 0

@@ -104,7 +104,7 @@ $(LIBDVDREAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVDREAD_SOURCE) $(LIBDVDREAD
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBDVDREAD_DIR) $(@D)
 	$(LIBDVDREAD_UNZIP) $(DL_DIR)/$(LIBDVDREAD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBDVDREAD_PATCHES) | patch -d $(BUILD_DIR)/$(LIBDVDREAD_DIR) -p1
+#	cat $(LIBDVDREAD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBDVDREAD_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBDVDREAD_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -150,7 +150,7 @@ libdvdread-stage: $(LIBDVDREAD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdvdread
 #
 $(LIBDVDREAD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libdvdread" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

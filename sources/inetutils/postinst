@@ -1,9 +1,9 @@
 #!/bin/sh
-chown root /opt/bin/inetutils-rcp
-chown root /opt/bin/inetutils-rsh
-chown root /opt/bin/inetutils-rlogin
-chown root /opt/bin/inetutils-ping
-chmod 4755 /opt/bin/inetutils-rcp
-chmod 4755 /opt/bin/inetutils-rsh
-chmod 4755 /opt/bin/inetutils-rlogin
-chmod 4755 /opt/bin/inetutils-ping
+chown root %OPTWARE_TARGET_PREFIX%/bin/inetutils-rcp
+chown root %OPTWARE_TARGET_PREFIX%/bin/inetutils-rsh
+chown root %OPTWARE_TARGET_PREFIX%/bin/inetutils-rlogin
+chown root %OPTWARE_TARGET_PREFIX%/bin/inetutils-ping
+chmod 4755 %OPTWARE_TARGET_PREFIX%/bin/inetutils-rcp
+chmod 4755 %OPTWARE_TARGET_PREFIX%/bin/inetutils-rsh
+chmod 4755 %OPTWARE_TARGET_PREFIX%/bin/inetutils-rlogin
+chmod 4755 %OPTWARE_TARGET_PREFIX%/bin/inetutils-ping

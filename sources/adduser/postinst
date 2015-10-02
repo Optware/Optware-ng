@@ -1,11 +1,11 @@
 #!/bin/sh
 
-update-alternatives --install /opt/bin/chpasswd chpasswd /opt/bin/adduser 30
-update-alternatives --install /opt/bin/cryptpw cryptpw /opt/bin/adduser 30
-update-alternatives --install /opt/bin/getty getty /opt/bin/adduser 30
-update-alternatives --install /opt/bin/login login /opt/bin/adduser 30
-update-alternatives --install /opt/bin/mkpasswd mkpasswd /opt/bin/adduser 30
-update-alternatives --install /opt/bin/passwd passwd /opt/bin/adduser 30
-update-alternatives --install /opt/bin/su su /opt/bin/adduser 30
-update-alternatives --install /opt/bin/sulogin sulogin /opt/bin/adduser 30
-update-alternatives --install /opt/bin/vlock vlock /opt/bin/adduser 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/chpasswd chpasswd %OPTWARE_TARGET_PREFIX%/bin/adduser 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/cryptpw cryptpw %OPTWARE_TARGET_PREFIX%/bin/adduser 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/getty getty %OPTWARE_TARGET_PREFIX%/bin/adduser 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/login login %OPTWARE_TARGET_PREFIX%/bin/adduser 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/mkpasswd mkpasswd %OPTWARE_TARGET_PREFIX%/bin/adduser 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/passwd passwd %OPTWARE_TARGET_PREFIX%/bin/adduser 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/su su %OPTWARE_TARGET_PREFIX%/bin/adduser 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/sulogin sulogin %OPTWARE_TARGET_PREFIX%/bin/adduser 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/vlock vlock %OPTWARE_TARGET_PREFIX%/bin/adduser 30

@@ -1,7 +1,7 @@
 #!/bin/sh
-export PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin
-COMMAND="/opt/bin/python2.7 pyLoadCore.py --configdir=/opt/etc/pyload"
-TOPDIR=/opt/share
+export PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+COMMAND="%OPTWARE_TARGET_PREFIX%/bin/python2.7 pyLoadCore.py --configdir=%OPTWARE_TARGET_PREFIX%/etc/pyload"
+TOPDIR=%OPTWARE_TARGET_PREFIX%/share
 INSTALLDIR=$TOPDIR/pyload
     
 func_start() {

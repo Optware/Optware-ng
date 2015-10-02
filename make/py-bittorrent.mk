@@ -125,7 +125,7 @@ $(PY-BITTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BITTORRENT_SOURCE) $(PY-B
 	mkdir -p $(@D)
 	$(PY-BITTORRENT_UNZIP) $(DL_DIR)/$(PY-BITTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BITTORRENT_PATCHES)"; then \
-		cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p0; \
+		cat $(PY-BITTORRENT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -134,7 +134,7 @@ $(PY-BITTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BITTORRENT_SOURCE) $(PY-B
 	)
 	$(PY-BITTORRENT_UNZIP) $(DL_DIR)/$(PY-BITTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BITTORRENT_PATCHES)"; then \
-		cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p0; \
+		cat $(PY-BITTORRENT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -143,7 +143,7 @@ $(PY-BITTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BITTORRENT_SOURCE) $(PY-B
 	)
 	$(PY-BITTORRENT_UNZIP) $(DL_DIR)/$(PY-BITTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BITTORRENT_PATCHES)"; then \
-		cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p0; \
+		cat $(PY-BITTORRENT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -187,7 +187,7 @@ py-bittorrent: $(PY-BITTORRENT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-bittorrent
 #
 $(PY-BITTORRENT-COMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-bittorrent-common" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,7 +201,7 @@ $(PY-BITTORRENT-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-BITTORRENT_CONFLICTS)" >>$@
 
 $(PY25-BITTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-bittorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -215,7 +215,7 @@ $(PY25-BITTORRENT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-BITTORRENT_CONFLICTS)" >>$@
 
 $(PY26-BITTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-bittorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -229,7 +229,7 @@ $(PY26-BITTORRENT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-BITTORRENT_CONFLICTS)" >>$@
 
 $(PY27-BITTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-bittorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -281,7 +281,7 @@ $(PY27-BITTORRENT_IPK) $(PY-BITTORRENT-COMMON_IPK): $(PY-BITTORRENT_BUILD_DIR)/.
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-BITTORRENT_IPK_DIR) --prefix=/opt)
 	for f in $(PY27-BITTORRENT_IPK_DIR)/opt/*bin/*; \
 	    do mv $$f `echo $$f | sed 's|$$|-2.7|'`; done
-	install -d $(PY-BITTORRENT-COMMON_IPK_DIR)/opt
+	$(INSTALL) -d $(PY-BITTORRENT-COMMON_IPK_DIR)/opt
 	mv $(PY27-BITTORRENT_IPK_DIR)/opt/share $(PY-BITTORRENT-COMMON_IPK_DIR)/opt
 	$(MAKE) $(PY27-BITTORRENT_IPK_DIR)/CONTROL/control
 	$(MAKE) $(PY-BITTORRENT-COMMON_IPK_DIR)/CONTROL/control

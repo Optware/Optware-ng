@@ -288,7 +288,7 @@ endif
 	$(ASTERISK16_UNZIP) $(DL_DIR)/$(ASTERISK16_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK16_PATCHES)" ; \
 		then cat $(ASTERISK16_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK16_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASTERISK16_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK16_DIR)" != "$(ASTERISK16_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK16_DIR) $(ASTERISK16_BUILD_DIR) ; \
@@ -370,7 +370,7 @@ asterisk16-stage: $(ASTERISK16_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/asterisk16
 #
 $(ASTERISK16_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: asterisk16" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

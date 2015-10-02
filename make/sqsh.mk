@@ -110,7 +110,7 @@ $(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES) make/sqs
 	rm -rf $(BUILD_DIR)/$(SQSH_DIR) $(@D)
 	$(SQSH_UNZIP) $(DL_DIR)/$(SQSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQSH_PATCHES)"; then \
-		cat $(SQSH_PATCHES) | patch -d $(BUILD_DIR)/$(SQSH_DIR) -p0; \
+		cat $(SQSH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SQSH_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(SQSH_DIR) $(@D)
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/autoconf/
@@ -179,7 +179,7 @@ sqsh: $(SQSH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/sqsh
 #
 $(SQSH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sqsh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -209,13 +209,13 @@ $(SQSH_IPK): $(SQSH_BUILD_DIR)/.built
 	rm -rf $(SQSH_IPK_DIR) $(BUILD_DIR)/sqsh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQSH_BUILD_DIR) prefix=$(SQSH_IPK_DIR)/opt install install.man
 	$(STRIP_COMMAND) $(SQSH_IPK_DIR)/opt/bin/sqsh
-#	install -d $(SQSH_IPK_DIR)/opt/etc/
-#	install -m 644 $(SQSH_SOURCE_DIR)/sqsh.conf $(SQSH_IPK_DIR)/opt/etc/sqsh.conf
-#	install -d $(SQSH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SQSH_SOURCE_DIR)/rc.sqsh $(SQSH_IPK_DIR)/opt/etc/init.d/SXXsqsh
+#	$(INSTALL) -d $(SQSH_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SQSH_SOURCE_DIR)/sqsh.conf $(SQSH_IPK_DIR)/opt/etc/sqsh.conf
+#	$(INSTALL) -d $(SQSH_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SQSH_SOURCE_DIR)/rc.sqsh $(SQSH_IPK_DIR)/opt/etc/init.d/SXXsqsh
 	$(MAKE) $(SQSH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SQSH_SOURCE_DIR)/postinst $(SQSH_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SQSH_SOURCE_DIR)/prerm $(SQSH_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SQSH_SOURCE_DIR)/postinst $(SQSH_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SQSH_SOURCE_DIR)/prerm $(SQSH_IPK_DIR)/CONTROL/prerm
 	echo $(SQSH_CONFFILES) | sed -e 's/ /\n/g' > $(SQSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQSH_IPK_DIR)
 

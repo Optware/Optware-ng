@@ -40,7 +40,7 @@
  cfg.version='1.033'
  cfg.log_ident=arg[1] or 'xupnpd'
 -cfg.pid_file='/var/run/'..cfg.log_ident..'.pid'
-+cfg.pid_file='/opt/var/run/'..cfg.log_ident..'.pid'
++cfg.pid_file='%OPTWARE_TARGET_PREFIX%/var/run/'..cfg.log_ident..'.pid'
  cfg.www_root='./www/'
  cfg.tmp_path='/tmp/'
  cfg.plugin_path='./plugins/'

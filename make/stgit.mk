@@ -111,7 +111,7 @@ $(STGIT_BUILD_DIR)/.configured: $(DL_DIR)/$(STGIT_SOURCE) $(STGIT_PATCHES) make/
 	$(STGIT_UNZIP) $(DL_DIR)/$(STGIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(STGIT_PATCHES)" ; \
 		then cat $(STGIT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(STGIT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(STGIT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(STGIT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(STGIT_DIR) $(@D) ; \
@@ -158,7 +158,7 @@ stgit-stage: $(STGIT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/stgit
 #
 $(STGIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: stgit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

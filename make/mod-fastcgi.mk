@@ -108,7 +108,7 @@ $(MOD_FASTCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_FASTCGI_SOURCE) $(MOD_FAST
 	$(MAKE) apache-stage
 	rm -rf $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(MOD_FASTCGI_BUILD_DIR)
 	$(MOD_FASTCGI_UNZIP) $(DL_DIR)/$(MOD_FASTCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MOD_FASTCGI_PATCHES) | patch -d $(BUILD_DIR)/$(MOD_FASTCGI_DIR) -p1
+	cat $(MOD_FASTCGI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MOD_FASTCGI_DIR) -p1
 	mv $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(MOD_FASTCGI_BUILD_DIR)
 	(cd $(MOD_FASTCGI_BUILD_DIR); \
 		cp Makefile.AP2 Makefile \
@@ -147,7 +147,7 @@ mod-fastcgi-stage: $(MOD_FASTCGI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mod-fastcgi
 #
 $(MOD_FASTCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(MOD_FASTCGI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(MOD_FASTCGI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: mod-fastcgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -178,10 +178,10 @@ $(MOD_FASTCGI_IPK): $(MOD_FASTCGI_BUILD_DIR)/.built
 	$(MAKE) -C $(MOD_FASTCGI_BUILD_DIR) \
 	    DESTDIR=$(MOD_FASTCGI_IPK_DIR) \
 	    top_dir=$(STAGING_PREFIX)/share/apache2 \
-	    install
+	    $(INSTALL)
 	$(STRIP_COMMAND) $(MOD_FASTCGI_IPK_DIR)/opt/libexec/mod_fastcgi.so
-	install -d $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/
-	install -m 644 $(MOD_FASTCGI_SOURCE_DIR)/mod_fastcgi.conf $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/mod_fastcgi.conf
+	$(INSTALL) -d $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/
+	$(INSTALL) -m 644 $(MOD_FASTCGI_SOURCE_DIR)/mod_fastcgi.conf $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/mod_fastcgi.conf
 	$(MAKE) $(MOD_FASTCGI_IPK_DIR)/CONTROL/control
 	echo $(MOD_FASTCGI_CONFFILES) | sed -e 's/ /\n/g' > $(MOD_FASTCGI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOD_FASTCGI_IPK_DIR)

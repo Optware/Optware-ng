@@ -110,7 +110,7 @@ $(THTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(THTTPD_SOURCE) $(THTTPD_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(THTTPD_DIR) $(THTTPD_BUILD_DIR)
 	$(THTTPD_UNZIP) $(DL_DIR)/$(THTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(THTTPD_PATCHES) | patch -d $(BUILD_DIR)/$(THTTPD_DIR) -p1
+	cat $(THTTPD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(THTTPD_DIR) -p1
 	mv $(BUILD_DIR)/$(THTTPD_DIR) $(THTTPD_BUILD_DIR)
 	(cd $(THTTPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -156,7 +156,7 @@ thttpd-stage: $(THTTPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/thttpd
 #
 $(THTTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(THTTPD_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(THTTPD_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: thttpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,13 +190,13 @@ $(THTTPD_IPK): $(THTTPD_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/makeweb
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/htpasswd
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/share/www/cgi-bin/*
-	install -d $(THTTPD_IPK_DIR)/opt/etc/
-	install -m 644 $(THTTPD_SOURCE_DIR)/thttpd.conf $(THTTPD_IPK_DIR)/opt/etc/thttpd.conf
-	install -d $(THTTPD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(THTTPD_SOURCE_DIR)/rc.thttpd $(THTTPD_IPK_DIR)/opt/etc/init.d/S80thttpd
+	$(INSTALL) -d $(THTTPD_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(THTTPD_SOURCE_DIR)/thttpd.conf $(THTTPD_IPK_DIR)/opt/etc/thttpd.conf
+	$(INSTALL) -d $(THTTPD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(THTTPD_SOURCE_DIR)/rc.thttpd $(THTTPD_IPK_DIR)/opt/etc/init.d/S80thttpd
 	$(MAKE) $(THTTPD_IPK_DIR)/CONTROL/control
-	install -m 755 $(THTTPD_SOURCE_DIR)/postinst $(THTTPD_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(THTTPD_SOURCE_DIR)/prerm $(THTTPD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(THTTPD_SOURCE_DIR)/postinst $(THTTPD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(THTTPD_SOURCE_DIR)/prerm $(THTTPD_IPK_DIR)/CONTROL/prerm
 	echo $(THTTPD_CONFFILES) | sed -e 's/ /\n/g' > $(THTTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(THTTPD_IPK_DIR)
 

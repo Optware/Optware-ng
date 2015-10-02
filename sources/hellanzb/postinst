@@ -1,8 +1,8 @@
 #!/bin/sh
-echo "Please edit config (/opt/etc/hellanzb.conf)"
+echo "Please edit config (%OPTWARE_TARGET_PREFIX%/etc/hellanzb.conf)"
 echo ""
-echo "Configure your news-servers and optionally change directory prefix. (now is /opt/tmp)"
+echo "Configure your news-servers and optionally change directory prefix. (now is %OPTWARE_TARGET_PREFIX%/tmp)"
 echo ""
-echo "You can start hellanzb by /opt/etc/init.d/S71hellanzb or a reboot."
-echo "To monitor progress, you can watch /opt/var/log/hellanzb.log"
+echo "You can start hellanzb by %OPTWARE_TARGET_PREFIX%/etc/init.d/S71hellanzb or a reboot."
+echo "To monitor progress, you can watch %OPTWARE_TARGET_PREFIX%/var/log/hellanzb.log"
 echo "Or you can install a webinterface, like zussaweb"

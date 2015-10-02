@@ -43,7 +43,7 @@ $(PAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(PAR2_SOURCE) make/par2cmdline.mk
 	tar -C $(BUILD_DIR) -xzvf $(DL_DIR)/$(PAR2_SOURCE)
 	if test -n "$(PAR2CMDLINE_PATCHES)" ; \
 		then cat $(PAR2CMDLINE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PAR2_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PAR2_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PAR2_DIR)" != "$(PAR2_BUILD_DIR)" ; \
                 then mv $(BUILD_DIR)/$(PAR2_DIR) $(PAR2_BUILD_DIR) ; \
@@ -88,7 +88,7 @@ par2cmdline: $(PAR2_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/par2cmdline
 #
 $(PAR2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: par2cmdline" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -103,8 +103,8 @@ $(PAR2_IPK_DIR)/CONTROL/control:
 
 $(PAR2_IPK): $(PAR2_BUILD_DIR)/.built
 	rm -rf $(PAR2_IPK_DIR) $(BUILD_DIR)/par2cmdline_*_$(TARGET_ARCH).ipk
-	install -d $(PAR2_IPK_DIR)/opt/bin
-	install -m 755 $(PAR2_BUILD_DIR)/par2 $(PAR2_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(PAR2_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(PAR2_BUILD_DIR)/par2 $(PAR2_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PAR2_IPK_DIR)/opt/bin/par2
 	cd $(PAR2_IPK_DIR)/opt/bin; ln -s par2 par2create; ln -s par2 par2repair; ln -s par2 par2verify
 	$(MAKE) $(PAR2_IPK_DIR)/CONTROL/control

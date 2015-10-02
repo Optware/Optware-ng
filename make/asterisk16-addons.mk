@@ -113,7 +113,7 @@ $(ASTERISK16_ADDONS_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK16_ADDONS_SOURCE
 	$(ASTERISK16_ADDONS_UNZIP) $(DL_DIR)/$(ASTERISK16_ADDONS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK16_ADDONS_PATCHES)" ; \
 		then cat $(ASTERISK16_ADDONS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK16_ADDONS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASTERISK16_ADDONS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK16_ADDONS_DIR)" != "$(ASTERISK16_ADDONS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK16_ADDONS_DIR) $(ASTERISK16_ADDONS_BUILD_DIR) ; \
@@ -187,7 +187,7 @@ asterisk16-addons-stage: $(ASTERISK16_ADDONS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/asterisk16-addons
 #
 $(ASTERISK16_ADDONS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: asterisk16-addons" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -215,7 +215,7 @@ $(ASTERISK16_ADDONS_IPK_DIR)/CONTROL/control:
 #
 $(ASTERISK16_ADDONS_IPK): $(ASTERISK16_ADDONS_BUILD_DIR)/.built
 	rm -rf $(ASTERISK16_ADDONS_IPK_DIR) $(BUILD_DIR)/asterisk16-addons_*_$(TARGET_ARCH).ipk
-	install -d $(ASTERISK16_ADDONS_IPK_DIR)/opt/var/lib/asterisk/documentation
+	$(INSTALL) -d $(ASTERISK16_ADDONS_IPK_DIR)/opt/var/lib/asterisk/documentation
 	ASTCFLAGS="$(ASTERISK16_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK16_LDFLAGS)" \
 	$(MAKE) -C $(ASTERISK16_ADDONS_BUILD_DIR) DESTDIR=$(ASTERISK16_ADDONS_IPK_DIR) install

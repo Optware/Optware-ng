@@ -23,7 +23,7 @@
   */
 -#define PR_FTPUSERS_PATH	"/etc/ftpusers"
 +#ifndef PR_FTPUSERS_PATH
-+#define PR_FTPUSERS_PATH	"/opt/etc/ftpusers"
++#define PR_FTPUSERS_PATH	"%OPTWARE_TARGET_PREFIX%/etc/ftpusers"
 +#endif
  
  #endif /* PROFTPD_PATHS_H */

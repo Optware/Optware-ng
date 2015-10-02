@@ -1,18 +1,18 @@
 #!/bin/sh
 
-update-alternatives --remove scp /opt/bin/openssh-scp
-update-alternatives --remove ssh /opt/bin/openssh-ssh
+update-alternatives --remove scp %OPTWARE_TARGET_PREFIX%/bin/openssh-scp
+update-alternatives --remove ssh %OPTWARE_TARGET_PREFIX%/bin/openssh-ssh
 
-[ -e /opt/etc/default/openssh ] && . /opt/etc/default/openssh
+[ -e %OPTWARE_TARGET_PREFIX%/etc/default/openssh ] && . %OPTWARE_TARGET_PREFIX%/etc/default/openssh
 
-if [ -f /opt/var/run/sshd.pid ] ; then
-  kill `cat /opt/var/run/sshd.pid`
+if [ -f %OPTWARE_TARGET_PREFIX%/var/run/sshd.pid ] ; then
+  kill `cat %OPTWARE_TARGET_PREFIX%/var/run/sshd.pid`
 else
   if [ -n "$SSHD_NO_PID_KILLALL" ] ; then
     killall $SSHD_NO_PID_KILLALL
   else
-    killall /opt/sbin/sshd
+    killall %OPTWARE_TARGET_PREFIX%/sbin/sshd
   fi
 fi
 
-rm -f /opt/var/run/sshd.pid
+rm -f %OPTWARE_TARGET_PREFIX%/var/run/sshd.pid

@@ -110,7 +110,7 @@ $(OPEN2300_BUILD_DIR)/.configured: $(DL_DIR)/$(OPEN2300_SOURCE) $(OPEN2300_PATCH
 	$(OPEN2300_UNZIP) $(DL_DIR)/$(OPEN2300_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPEN2300_PATCHES)" ; \
 		then cat $(OPEN2300_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPEN2300_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPEN2300_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPEN2300_DIR)" != "$(OPEN2300_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPEN2300_DIR) $(OPEN2300_BUILD_DIR) ; \
@@ -168,7 +168,7 @@ open2300-stage: $(OPEN2300_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/open2300
 #
 $(OPEN2300_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: open2300" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,19 +199,19 @@ $(OPEN2300_IPK): $(OPEN2300_BUILD_DIR)/.built
 	$(MAKE) -C $(OPEN2300_BUILD_DIR) install \
 		prefix=$(OPEN2300_IPK_DIR)/opt \
 		;
-	install -m 755 $(OPEN2300_BUILD_DIR)/mysql2300 $(OPEN2300_IPK_DIR)/opt/bin
-	install -m 755 $(OPEN2300_BUILD_DIR)/pgsql2300 $(OPEN2300_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(OPEN2300_BUILD_DIR)/mysql2300 $(OPEN2300_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(OPEN2300_BUILD_DIR)/pgsql2300 $(OPEN2300_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(OPEN2300_IPK_DIR)/opt/bin/*2300
-	install -d $(OPEN2300_IPK_DIR)/opt/etc/
-	install -m 644 $(OPEN2300_BUILD_DIR)/open2300-dist.conf $(OPEN2300_IPK_DIR)/opt/etc/
-#	install -m 644 $(OPEN2300_SOURCE_DIR)/open2300.conf $(OPEN2300_IPK_DIR)/opt/etc/open2300.conf
-#	install -d $(OPEN2300_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(OPEN2300_SOURCE_DIR)/rc.open2300 $(OPEN2300_IPK_DIR)/opt/etc/init.d/SXXopen2300
+	$(INSTALL) -d $(OPEN2300_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(OPEN2300_BUILD_DIR)/open2300-dist.conf $(OPEN2300_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(OPEN2300_SOURCE_DIR)/open2300.conf $(OPEN2300_IPK_DIR)/opt/etc/open2300.conf
+#	$(INSTALL) -d $(OPEN2300_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(OPEN2300_SOURCE_DIR)/rc.open2300 $(OPEN2300_IPK_DIR)/opt/etc/init.d/SXXopen2300
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPEN2300_IPK_DIR)/opt/etc/init.d/SXXopen2300
 	$(MAKE) $(OPEN2300_IPK_DIR)/CONTROL/control
-#	install -m 755 $(OPEN2300_SOURCE_DIR)/postinst $(OPEN2300_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(OPEN2300_SOURCE_DIR)/postinst $(OPEN2300_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPEN2300_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(OPEN2300_SOURCE_DIR)/prerm $(OPEN2300_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(OPEN2300_SOURCE_DIR)/prerm $(OPEN2300_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPEN2300_IPK_DIR)/CONTROL/prerm
 	echo $(OPEN2300_CONFFILES) | sed -e 's/ /\n/g' > $(OPEN2300_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPEN2300_IPK_DIR)

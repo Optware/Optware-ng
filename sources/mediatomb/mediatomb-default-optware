@@ -5,4 +5,4 @@
 
 MT_ENABLE=false
 
-# further mediatomb daemon configuration is done in /opt/etc/mediatomb.conf
+# further mediatomb daemon configuration is done in %OPTWARE_TARGET_PREFIX%/etc/mediatomb.conf

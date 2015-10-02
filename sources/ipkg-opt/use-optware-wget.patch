@@ -5,7 +5,7 @@
  
      /* XXX: BUG rewrite to use execvp or else busybox's internal wget -Jamey 7/23/2002 */ 
 -    sprintf_alloc(&cmd, "wget --passive-ftp %s %s%s %s%s %s -P %s %s",
-+    sprintf_alloc(&cmd, "/opt/bin/wget --passive-ftp %s %s%s %s%s %s -P %s %s",
++    sprintf_alloc(&cmd, "%OPTWARE_TARGET_PREFIX%/bin/wget --passive-ftp %s %s%s %s%s %s -P %s %s",
  		  (conf->http_proxy || conf->ftp_proxy) ? "--proxy=on" : "",
  		  conf->proxy_user ? "--proxy-user=" : "",
  		  conf->proxy_user ? conf->proxy_user : "",

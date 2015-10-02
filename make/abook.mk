@@ -106,7 +106,7 @@ $(ABOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(ABOOK_SOURCE) $(ABOOK_PATCHES) make/
 	rm -rf $(BUILD_DIR)/$(ABOOK_DIR) $(ABOOK_BUILD_DIR)
 	$(ABOOK_UNZIP) $(DL_DIR)/$(ABOOK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ABOOK_PATCHES)"; \
-		then cat $(ABOOK_PATCHES) | patch -d $(BUILD_DIR)/$(ABOOK_DIR) -p0; \
+		then cat $(ABOOK_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ABOOK_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(ABOOK_DIR) $(@D)
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
@@ -153,7 +153,7 @@ abook: $(ABOOK_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/abook
 #
 $(ABOOK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: abook" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

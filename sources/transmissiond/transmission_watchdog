@@ -1,8 +1,8 @@
 #!/bin/sh 
 
-. /opt/etc/transmission.conf
+. %OPTWARE_TARGET_PREFIX%/etc/transmission.conf
 
-PATH=/bin:/sbin:/usr/bin:/opt/sbin:/opt/bin:/usr/sbin
+PATH=/bin:/sbin:/usr/bin:%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/bin:/usr/sbin
 export PATH
 
 DEBUG=

@@ -69,7 +69,7 @@ PHP_APACHE_IPK=$(BUILD_DIR)/php-apache_$(PHP_APACHE_VERSION)-$(PHP_APACHE_IPK_VE
 # Automatically create a ipkg control file
 #
 $(PHP_APACHE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-apache" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -125,7 +125,7 @@ endif
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(@D)
 	if test -n "$(PHP_PATCHES)"; \
-	    then cat $(PHP_PATCHES) | patch -p0 -bd $(@D); \
+	    then cat $(PHP_PATCHES) | $(PATCH) -p0 -bd $(@D); \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i \
@@ -286,10 +286,10 @@ php-apache-stage: $(PHP_APACHE_BUILD_DIR)/.staged
 #
 $(PHP_APACHE_IPK): $(PHP_APACHE_BUILD_DIR)/.built
 	rm -rf $(PHP_APACHE_IPK_DIR) $(BUILD_DIR)/php-apache_*_$(TARGET_ARCH).ipk
-	install -d $(PHP_APACHE_IPK_DIR)/opt/etc/apache2/conf.d
-	install -m 644 $(PHP_APACHE_SOURCE_DIR)/php.conf $(PHP_APACHE_IPK_DIR)/opt/etc/apache2/conf.d/php.conf
-	install -d $(PHP_APACHE_IPK_DIR)/opt/libexec
-	install -m 755 $(PHP_APACHE_BUILD_DIR)/libs/libphp5.so $(PHP_APACHE_IPK_DIR)/opt/libexec/libphp5.so
+	$(INSTALL) -d $(PHP_APACHE_IPK_DIR)/opt/etc/apache2/conf.d
+	$(INSTALL) -m 644 $(PHP_APACHE_SOURCE_DIR)/php.conf $(PHP_APACHE_IPK_DIR)/opt/etc/apache2/conf.d/php.conf
+	$(INSTALL) -d $(PHP_APACHE_IPK_DIR)/opt/libexec
+	$(INSTALL) -m 755 $(PHP_APACHE_BUILD_DIR)/libs/libphp5.so $(PHP_APACHE_IPK_DIR)/opt/libexec/libphp5.so
 	$(STRIP_COMMAND) $(PHP_APACHE_IPK_DIR)/opt/libexec/libphp5.so
 	$(MAKE) $(PHP_APACHE_IPK_DIR)/CONTROL/control
 	echo $(PHP_APACHE_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_APACHE_IPK_DIR)/CONTROL/conffiles

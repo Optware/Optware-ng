@@ -110,7 +110,7 @@ $(NCMPC_BUILD_DIR)/.configured: $(DL_DIR)/$(NCMPC_SOURCE) $(NCMPC_PATCHES) make/
 	$(NCMPC_UNZIP) $(DL_DIR)/$(NCMPC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NCMPC_PATCHES)" ; \
 		then cat $(NCMPC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NCMPC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NCMPC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NCMPC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NCMPC_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ ncmpc: $(NCMPC_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ncmpc
 #
 $(NCMPC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ncmpc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

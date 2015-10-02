@@ -116,7 +116,7 @@ $(LIBDVB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVB_SOURCE) $(DL_DIR)/$(LIBDVB_H
 	rm -rf $(BUILD_DIR)/$(LIBDVB_DIR) $(@D)
 	$(LIBDVB_UNZIP) $(DL_DIR)/$(LIBDVB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	$(LIBDVB_UNZIP) $(DL_DIR)/$(LIBDVB_HEADERS_SOURCE) | tar -C $(BUILD_DIR)/$(LIBDVB_DIR) -xvf -
-	cat $(LIBDVB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBDVB_DIR) -p1
+	cat $(LIBDVB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBDVB_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBDVB_DIR) $(@D)
 	sed -i -e '1 i #include <string.h>' $(@D)/sample_progs/cam_menu.hh
 	touch $@
@@ -159,7 +159,7 @@ libdvb-stage: $(LIBDVB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdvb
 #
 $(LIBDVB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libdvb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

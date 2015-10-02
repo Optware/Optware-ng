@@ -129,7 +129,7 @@ $(MOC_BUILD_DIR)/.configured: $(DL_DIR)/$(MOC_SOURCE) $(MOC_PATCHES) make/moc.mk
 	$(MOC_UNZIP) $(DL_DIR)/$(MOC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOC_PATCHES)" ; \
 		then cat $(MOC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MOC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MOC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MOC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOC_DIR) $(@D) ; \
@@ -187,7 +187,7 @@ moc-stage: $(MOC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/moc
 #
 $(MOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: moc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,15 +216,15 @@ $(MOC_IPK_DIR)/CONTROL/control:
 $(MOC_IPK): $(MOC_BUILD_DIR)/.built
 	rm -rf $(MOC_IPK_DIR) $(BUILD_DIR)/moc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOC_BUILD_DIR) DESTDIR=$(MOC_IPK_DIR) install-strip
-#	install -d $(MOC_IPK_DIR)/opt/etc/
-#	install -m 644 $(MOC_SOURCE_DIR)/moc.conf $(MOC_IPK_DIR)/opt/etc/moc.conf
-#	install -d $(MOC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MOC_SOURCE_DIR)/rc.moc $(MOC_IPK_DIR)/opt/etc/init.d/SXXmoc
+#	$(INSTALL) -d $(MOC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MOC_SOURCE_DIR)/moc.conf $(MOC_IPK_DIR)/opt/etc/moc.conf
+#	$(INSTALL) -d $(MOC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MOC_SOURCE_DIR)/rc.moc $(MOC_IPK_DIR)/opt/etc/init.d/SXXmoc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOC_IPK_DIR)/opt/etc/init.d/SXXmoc
 	$(MAKE) $(MOC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MOC_SOURCE_DIR)/postinst $(MOC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MOC_SOURCE_DIR)/postinst $(MOC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MOC_SOURCE_DIR)/prerm $(MOC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MOC_SOURCE_DIR)/prerm $(MOC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOC_IPK_DIR)/CONTROL/prerm
 	echo $(MOC_CONFFILES) | sed -e 's/ /\n/g' > $(MOC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOC_IPK_DIR)

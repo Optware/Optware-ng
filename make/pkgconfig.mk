@@ -73,7 +73,7 @@ PKGCONFIG_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/pkgconfig
 # Automatically create a ipkg control file
 #
 $(PKGCONFIG_IPK_DIR)/CONTROL/control:
-	@install -d $(PKGCONFIG_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PKGCONFIG_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: pkgconfig" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -104,7 +104,7 @@ $(PKGCONFIG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(PKGCONFIG_SOURC
 	rm -rf $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PKGCONFIG_PATCHES)"; then \
-		cat $(PKGCONFIG_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) -p1; \
+		cat $(PKGCONFIG_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) -p1; \
 	fi
 	mv $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	(cd $(@D); \
@@ -141,7 +141,7 @@ $(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PA
 	rm -rf $(BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PKGCONFIG_PATCHES)"; then \
-		cat $(PKGCONFIG_PATCHES) | patch -d $(BUILD_DIR)/$(PKGCONFIG_DIR) -p1; \
+		cat $(PKGCONFIG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PKGCONFIG_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	sed -i -e '/AM_SILENT_RULES/s/^/dnl /' -e '/AM_INIT_AUTOMAKE/s/.*/AM_INIT_AUTOMAKE/' $(@D)/configure.ac $(@D)/glib/configure.ac

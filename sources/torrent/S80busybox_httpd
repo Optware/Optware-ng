@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
 # Uncomment path to busybox httpd to enable startup
 BUSYBOX_HTTPD=/usr/sbin/busybox_httpd
@@ -77,7 +77,7 @@ start() {
   fi
   check_config
   echo -n "Starting busybox httpd at port ${LISTENING_PORT} ... "
-  ${BUSYBOX_HTTPD} -c ${HTTPD_CONFIG} -p ${LISTENING_PORT} -h /opt/share/www
+  ${BUSYBOX_HTTPD} -c ${HTTPD_CONFIG} -p ${LISTENING_PORT} -h %OPTWARE_TARGET_PREFIX%/share/www
   echo "done"
 }
 

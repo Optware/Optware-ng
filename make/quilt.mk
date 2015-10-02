@@ -115,7 +115,7 @@ $(QUILT_BUILD_DIR)/.configured: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES) make/
 	rm -rf $(BUILD_DIR)/$(QUILT_DIR) $(@D)
 	$(QUILT_UNZIP) $(DL_DIR)/$(QUILT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(QUILT_PATCHES)" ; \
-		then cat $(QUILT_PATCHES) | patch -d $(BUILD_DIR)/$(QUILT_DIR) -p0 ; \
+		then cat $(QUILT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(QUILT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(QUILT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(QUILT_DIR) $(@D) ; \
@@ -125,7 +125,7 @@ $(QUILT_BUILD_DIR)/.configured: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES) make/
 		-e '/@PERL/s|$$(PERL)|/opt/bin/perl|' \
 		-e '/@PATCH/s|$$(PATCH)|/opt/bin/patch|' \
 		$(@D)/Makefile.in
-	sed -i -e 's|patch_version=\$$2|patch_version=$(shell patch --version|head -n 1|sed 's/.* //')|' $(@D)/configure
+	sed -i -e 's|patch_version=\$$2|patch_version=$(shell $(PATCH) --version|head -n 1|sed 's/.* //')|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(QUILT_CPPFLAGS)" \
@@ -171,7 +171,7 @@ quilt-stage: $(QUILT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/quilt
 #
 $(QUILT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: quilt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,7 +190,7 @@ $(QUILT_IPK_DIR)/CONTROL/control:
 # necessary to create a seperate control file under sources/quilt
 #
 $(QUILT-LITE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: quilt-lite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -220,15 +220,15 @@ $(QUILT_IPK): $(QUILT_BUILD_DIR)/.built
 	rm -rf $(QUILT_IPK_DIR) $(BUILD_DIR)/quilt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(QUILT_BUILD_DIR) install BUILD_ROOT=$(QUILT_IPK_DIR) COMPAT_SYMLINKS=""
 	$(STRIP_COMMAND) $(QUILT_IPK_DIR)/opt/lib/quilt/backup-files
-	install -d $(QUILT_IPK_DIR)/opt/etc/
-	install -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT_IPK_DIR)/opt/etc/quilt.quiltrc
-#	install -d $(QUILT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(QUILT_SOURCE_DIR)/rc.quilt $(QUILT_IPK_DIR)/opt/etc/init.d/SXXquilt
+	$(INSTALL) -d $(QUILT_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT_IPK_DIR)/opt/etc/quilt.quiltrc
+#	$(INSTALL) -d $(QUILT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(QUILT_SOURCE_DIR)/rc.quilt $(QUILT_IPK_DIR)/opt/etc/init.d/SXXquilt
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXquilt
 	$(MAKE) $(QUILT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(QUILT_SOURCE_DIR)/postinst $(QUILT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(QUILT_SOURCE_DIR)/postinst $(QUILT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(QUILT_SOURCE_DIR)/prerm $(QUILT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(QUILT_SOURCE_DIR)/prerm $(QUILT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(QUILT_CONFFILES) | sed -e 's/ /\n/g' > $(QUILT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QUILT_IPK_DIR)
@@ -243,10 +243,10 @@ $(QUILT-LITE_IPK): $(QUILT_BUILD_DIR)/.built
 	  rm -f annotate )
 	( cd $(QUILT-LITE_IPK_DIR)/opt/share/quilt/scripts ; \
 	  rm -f dependency-graph edmail parse-patch remove-trailing-ws )
-	( cd $(QUILT-LITE_IPK_DIR) ; patch -p0 < $(QUILT_SOURCE_DIR)/quilt-lite.patch )
+	( cd $(QUILT-LITE_IPK_DIR) ; $(PATCH) -p0 < $(QUILT_SOURCE_DIR)/quilt-lite.patch )
 	$(STRIP_COMMAND) $(QUILT-LITE_IPK_DIR)/opt/lib/quilt/backup-files
-	install -d $(QUILT-LITE_IPK_DIR)/opt/etc/
-	install -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT-LITE_IPK_DIR)/opt/etc/quilt.quiltrc
+	$(INSTALL) -d $(QUILT-LITE_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT-LITE_IPK_DIR)/opt/etc/quilt.quiltrc
 	$(MAKE) $(QUILT-LITE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QUILT-LITE_IPK_DIR)
 

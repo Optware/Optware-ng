@@ -75,7 +75,7 @@
  	my $version  = $Config{'version'};
  
 -	print "Welcome to the SlimServer perl module installer.\n\n";
-+	$packageOptions{'@DBD-mysql@'}->{'Makefile.PL'} = " --mysql_config=$ENV{STAGINGDIR}/opt/bin/mysql_config ";
++	$packageOptions{'@DBD-mysql@'}->{'Makefile.PL'} = " --mysql_config=$ENV{STAGINGDIR}%OPTWARE_TARGET_PREFIX%/bin/mysql_config ";
 +
 +	print "Welcome to the Slim Devices perl module installer.\n\n";
  	print "These packages are needed for SlimServer to function.\n";
@@ -161,7 +161,7 @@
  		print "Configuring..\n";
 -		print "$env $perlBinary Makefile.PL $options\n";
 -		`$env $perlBinary Makefile.PL $options`;
-+		print "$env$targetconfigureopts $perlBinary Makefile.PL $options  PREFIX=/opt\n";
++		print "$env$targetconfigureopts $perlBinary Makefile.PL $options  PREFIX=%OPTWARE_TARGET_PREFIX%\n";
 +
 +		if ( $package eq  "@DBD-mysql@.tar.gz" ) { 
 +		`cp ../../DBD-mysql-Makefile.PL Makefile.PL`;
@@ -170,7 +170,7 @@
 +		`cp ../../Time-HiRes-Makefile.PL Makefile.PL`;
 +		}
 +
-+		` $env $targetconfigureopts $perlBinary Makefile.PL $options  PREFIX=/opt`;
++		` $env $targetconfigureopts $perlBinary Makefile.PL $options  PREFIX=%OPTWARE_TARGET_PREFIX%`;
  
  		unless (-f 'Makefile') {
  			die "There was a problem creating Makefile - exiting!\n";
@@ -180,7 +180,7 @@
 +		`sed -i -e '/buffer->error/s|^|//|' $downloadPath/$packageDir/dbdimp.c`;
 +# This code relies on DBI being processed before DBDSqlite.
 +		`sed -e "s/~DRIVER~/mysql/g"  $dbipackagedir/Driver.xst > mysql.xsi`;
-+		  $pasthruinc="\"$ENV{CPPFLAGS} -I$dbipackagedir -I$ENV{STAGINGDIR}/opt/include/mysql -L$ENV{STAGINGDIR}/opt/lib/mysql\"";
++		  $pasthruinc="\"$ENV{CPPFLAGS} -I$dbipackagedir -I$ENV{STAGINGDIR}%OPTWARE_TARGET_PREFIX%/include/mysql -L$ENV{STAGINGDIR}%OPTWARE_TARGET_PREFIX%/lib/mysql\"";
 +
 +		} else {
 +		  $pasthruinc = "\"$ENV{CPPFLAGS}\"";
@@ -196,9 +196,9 @@
 +                 } ;
 +
 +		if ( $package eq  "@DBD-mysql@.tar.gz" ) { 
-+		         $ldopts = $ldopts . " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS} -Wl,-rpath,/opt/lib/mysql\"";
++		         $ldopts = $ldopts . " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS} -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib/mysql\"";
 +		} ;
-+		$ldopts = $ldopts . " LD_RUN_PATH=/opt/lib" ;
++		$ldopts = $ldopts . " LD_RUN_PATH=%OPTWARE_TARGET_PREFIX%/lib" ;
 +		if ( defined($ENV{PERL_INC}) && $ENV{PERL_INC} ne "") { $ldopts = $ldopts . " PERL_INC=$ENV{PERL_INC}" ;  }; 
 +
  

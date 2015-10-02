@@ -110,7 +110,7 @@ $(WERC_BUILD_DIR)/.configured: $(DL_DIR)/$(WERC_SOURCE) $(WERC_PATCHES) make/wer
 	$(WERC_UNZIP) $(DL_DIR)/$(WERC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WERC_PATCHES)" ; \
 		then cat $(WERC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(WERC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(WERC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(WERC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WERC_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ werc-stage: $(WERC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/werc
 #
 $(WERC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: werc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,7 +190,7 @@ $(WERC_IPK_DIR)/CONTROL/control:
 $(WERC_IPK): $(WERC_BUILD_DIR)/.built
 	rm -rf $(WERC_IPK_DIR) $(BUILD_DIR)/werc_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(WERC_BUILD_DIR) DESTDIR=$(WERC_IPK_DIR) install-strip
-	install -d $(WERC_IPK_DIR)/opt/share/www
+	$(INSTALL) -d $(WERC_IPK_DIR)/opt/share/www
 	rsync -av $(WERC_BUILD_DIR) $(WERC_IPK_DIR)/opt/share/www/
 	rm -f $(WERC_IPK_DIR)/opt/share/www/werc/.configured \
 	      $(WERC_IPK_DIR)/opt/share/www/werc/.built

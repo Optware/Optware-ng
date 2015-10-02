@@ -110,7 +110,7 @@ $(LIBELF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBELF_SOURCE) $(LIBELF_PATCHES) ma
 	$(LIBELF_UNZIP) $(DL_DIR)/$(LIBELF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBELF_PATCHES)" ; \
 		then cat $(LIBELF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBELF_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBELF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBELF_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBELF_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ libelf-stage: $(LIBELF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libelf
 #
 $(LIBELF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libelf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,17 +192,17 @@ $(LIBELF_IPK_DIR)/CONTROL/control:
 #
 $(LIBELF_IPK): $(LIBELF_BUILD_DIR)/.built
 	rm -rf $(LIBELF_IPK_DIR) $(BUILD_DIR)/libelf_*_$(TARGET_ARCH).ipk
-#	install -d $(LIBELF_IPK_DIR)/opt
+#	$(INSTALL) -d $(LIBELF_IPK_DIR)/opt
 	$(MAKE) -C $(LIBELF_BUILD_DIR) prefix=$(LIBELF_IPK_DIR)/opt install
-#	install -d $(LIBELF_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBELF_SOURCE_DIR)/libelf.conf $(LIBELF_IPK_DIR)/opt/etc/libelf.conf
-#	install -d $(LIBELF_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBELF_SOURCE_DIR)/rc.libelf $(LIBELF_IPK_DIR)/opt/etc/init.d/SXXlibelf
+#	$(INSTALL) -d $(LIBELF_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBELF_SOURCE_DIR)/libelf.conf $(LIBELF_IPK_DIR)/opt/etc/libelf.conf
+#	$(INSTALL) -d $(LIBELF_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBELF_SOURCE_DIR)/rc.libelf $(LIBELF_IPK_DIR)/opt/etc/init.d/SXXlibelf
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBELF_IPK_DIR)/opt/etc/init.d/SXXlibelf
 	$(MAKE) $(LIBELF_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBELF_SOURCE_DIR)/postinst $(LIBELF_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBELF_SOURCE_DIR)/postinst $(LIBELF_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBELF_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBELF_SOURCE_DIR)/prerm $(LIBELF_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBELF_SOURCE_DIR)/prerm $(LIBELF_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBELF_IPK_DIR)/CONTROL/prerm
 	echo $(LIBELF_CONFFILES) | sed -e 's/ /\n/g' > $(LIBELF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBELF_IPK_DIR)

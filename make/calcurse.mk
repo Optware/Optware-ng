@@ -116,7 +116,7 @@ $(CALCURSE_BUILD_DIR)/.configured: $(DL_DIR)/$(CALCURSE_SOURCE) $(CALCURSE_PATCH
 	$(CALCURSE_UNZIP) $(DL_DIR)/$(CALCURSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CALCURSE_PATCHES)" ; \
 		then cat $(CALCURSE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CALCURSE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CALCURSE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CALCURSE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CALCURSE_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ calcurse: $(CALCURSE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/calcurse
 #
 $(CALCURSE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: calcurse" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

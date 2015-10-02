@@ -117,7 +117,7 @@ $(SCONS_BUILD_DIR)/.configured: $(DL_DIR)/$(SCONS_SOURCE) $(SCONS_PATCHES) make/
 	$(SCONS_UNZIP) $(DL_DIR)/$(SCONS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCONS_PATCHES)" ; \
 		then cat $(SCONS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SCONS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SCONS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SCONS_DIR)" != "$(SCONS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SCONS_DIR) $(@D) ; \
@@ -201,7 +201,7 @@ scons-host-stage: $(SCONS_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/scons
 #
 $(SCONS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: scons" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -234,7 +234,7 @@ $(SCONS_IPK): $(SCONS_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 			--root=$(SCONS_IPK_DIR) --prefix=/opt; \
         )
-	install -d $(SCONS_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(SCONS_IPK_DIR)/opt/etc/
 	$(MAKE) $(SCONS_IPK_DIR)/CONTROL/control
 	echo $(SCONS_CONFFILES) | sed -e 's/ /\n/g' > $(SCONS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCONS_IPK_DIR)

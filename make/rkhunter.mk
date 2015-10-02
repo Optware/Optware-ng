@@ -115,7 +115,7 @@ $(RKHUNTER_BUILD_DIR)/.configured: $(DL_DIR)/$(RKHUNTER_SOURCE) $(RKHUNTER_PATCH
 	$(RKHUNTER_UNZIP) $(DL_DIR)/$(RKHUNTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RKHUNTER_PATCHES)" ; \
 		then cat $(RKHUNTER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RKHUNTER_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RKHUNTER_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RKHUNTER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RKHUNTER_DIR) $(@D) ; \
@@ -142,9 +142,9 @@ rkhunter: $(RKHUNTER_BUILD_DIR)/.built
 $(RKHUNTER_BUILD_DIR)/.staged: $(RKHUNTER_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D); \
-		./installer.sh \
+		./$(INSTALL)er.sh \
 		--layout custom $(STAGING_PREFIX) \
-		--install \
+		--$(INSTALL) \
 	)
 	touch $@
 
@@ -155,7 +155,7 @@ rkhunter-stage: $(RKHUNTER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rkhunter
 #
 $(RKHUNTER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rkhunter" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,10 +185,10 @@ $(RKHUNTER_IPK): $(RKHUNTER_BUILD_DIR)/.built
 	rm -rf $(RKHUNTER_IPK_DIR) $(BUILD_DIR)/rkhunter_*_$(TARGET_ARCH).ipk
 	mkdir -p $(RKHUNTER_IPK_DIR)/opt
 	(cd $(RKHUNTER_BUILD_DIR); \
-		./installer.sh --layout custom $(RKHUNTER_IPK_DIR)/opt --striproot $(RKHUNTER_IPK_DIR) --install \
+		./$(INSTALL)er.sh --layout custom $(RKHUNTER_IPK_DIR)/opt --striproot $(RKHUNTER_IPK_DIR) --install \
 	)
 	$(MAKE) $(RKHUNTER_IPK_DIR)/CONTROL/control
-	install -m 755 $(RKHUNTER_SOURCE_DIR)/postinst $(RKHUNTER_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(RKHUNTER_SOURCE_DIR)/postinst $(RKHUNTER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RKHUNTER_IPK_DIR)/CONTROL/postinst
 	echo $(RKHUNTER_CONFFILES) | sed -e 's/ /\n/g' > $(RKHUNTER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RKHUNTER_IPK_DIR)

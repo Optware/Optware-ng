@@ -128,7 +128,7 @@ $(PY-ORDEREDDICT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE) $(DL
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-ORDEREDDICT_UNZIP) $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE)
 	$(PY-ORDEREDDICT_UNZIP) $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ORDEREDDICT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ORDEREDDICT_DIR) -p1
+#	cat $(PY-ORDEREDDICT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ORDEREDDICT_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ORDEREDDICT_DIR_OLD) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    ( \
@@ -140,7 +140,7 @@ $(PY-ORDEREDDICT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE) $(DL
 	)
 #	cd $(BUILD_DIR); $(PY-ORDEREDDICT_UNZIP) $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE)
 	$(PY-ORDEREDDICT_UNZIP) $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ORDEREDDICT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ORDEREDDICT_DIR) -p1
+#	cat $(PY-ORDEREDDICT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ORDEREDDICT_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ORDEREDDICT_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -152,7 +152,7 @@ $(PY-ORDEREDDICT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE) $(DL
 	)
 #	cd $(BUILD_DIR); $(PY-ORDEREDDICT_UNZIP) $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE)
 	$(PY-ORDEREDDICT_UNZIP) $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ORDEREDDICT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ORDEREDDICT_DIR) -p1
+#	cat $(PY-ORDEREDDICT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ORDEREDDICT_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ORDEREDDICT_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -227,7 +227,7 @@ py-ordereddict-host-stage: $(PY-ORDEREDDICT_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-ordereddict
 #
 $(PY24-ORDEREDDICT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-ordereddict" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -241,7 +241,7 @@ $(PY24-ORDEREDDICT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ORDEREDDICT_CONFLICTS)" >>$@
 
 $(PY25-ORDEREDDICT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-ordereddict" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -255,7 +255,7 @@ $(PY25-ORDEREDDICT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ORDEREDDICT_CONFLICTS)" >>$@
 
 $(PY26-ORDEREDDICT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-ordereddict" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

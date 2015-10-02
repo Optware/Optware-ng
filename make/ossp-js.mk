@@ -109,7 +109,7 @@ $(OSSP_JS_BUILD_DIR)/.configured: $(DL_DIR)/$(OSSP_JS_SOURCE) $(OSSP_JS_PATCHES)
 	$(OSSP_JS_UNZIP) $(DL_DIR)/$(OSSP_JS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OSSP_JS_PATCHES)" ; \
 		then cat $(OSSP_JS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OSSP_JS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OSSP_JS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OSSP_JS_DIR)" != "$(OSSP_JS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OSSP_JS_DIR) $(OSSP_JS_BUILD_DIR) ; \
@@ -171,7 +171,7 @@ ossp-js-stage: $(OSSP_JS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ossp-js
 #
 $(OSSP_JS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ossp-js" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(OSSP_JS_IPK): $(OSSP_JS_BUILD_DIR)/.built
 	rm -rf $(OSSP_JS_IPK_DIR) $(BUILD_DIR)/ossp-js_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OSSP_JS_BUILD_DIR) DESTDIR=$(OSSP_JS_IPK_DIR) install
 	$(STRIP_COMMAND) $(OSSP_JS_IPK_DIR)/opt/bin/js $(OSSP_JS_IPK_DIR)/opt/lib/libjs.so.*
-#	install -d $(OSSP_JS_IPK_DIR)/opt/etc/
-#	install -m 644 $(OSSP_JS_SOURCE_DIR)/ossp-js.conf $(OSSP_JS_IPK_DIR)/opt/etc/ossp-js.conf
-#	install -d $(OSSP_JS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(OSSP_JS_SOURCE_DIR)/rc.ossp-js $(OSSP_JS_IPK_DIR)/opt/etc/init.d/SXXossp-js
+#	$(INSTALL) -d $(OSSP_JS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(OSSP_JS_SOURCE_DIR)/ossp-js.conf $(OSSP_JS_IPK_DIR)/opt/etc/ossp-js.conf
+#	$(INSTALL) -d $(OSSP_JS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(OSSP_JS_SOURCE_DIR)/rc.ossp-js $(OSSP_JS_IPK_DIR)/opt/etc/init.d/SXXossp-js
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXossp-js
 	$(MAKE) $(OSSP_JS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(OSSP_JS_SOURCE_DIR)/postinst $(OSSP_JS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(OSSP_JS_SOURCE_DIR)/postinst $(OSSP_JS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(OSSP_JS_SOURCE_DIR)/prerm $(OSSP_JS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(OSSP_JS_SOURCE_DIR)/prerm $(OSSP_JS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(OSSP_JS_CONFFILES) | sed -e 's/ /\n/g' > $(OSSP_JS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OSSP_JS_IPK_DIR)

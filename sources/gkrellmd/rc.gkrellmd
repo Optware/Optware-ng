@@ -5,4 +5,4 @@ if [ -n "`pidof gkrellmd`" ] ; then
 fi
 
 # start the program
-/opt/sbin/gkrellmd -P 19150 -m 5 -u 1 --io-timeout 5 --reconnect-timeout 5 &
+%OPTWARE_TARGET_PREFIX%/sbin/gkrellmd -P 19150 -m 5 -u 1 --io-timeout 5 --reconnect-timeout 5 &

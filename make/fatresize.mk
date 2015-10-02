@@ -113,7 +113,7 @@ $(FATRESIZE_BUILD_DIR)/.configured: $(DL_DIR)/$(FATRESIZE_SOURCE) $(FATRESIZE_PA
 	$(FATRESIZE_UNZIP) $(DL_DIR)/$(FATRESIZE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FATRESIZE_PATCHES)" ; \
 		then cat $(FATRESIZE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FATRESIZE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FATRESIZE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FATRESIZE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FATRESIZE_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ fatresize-stage: $(FATRESIZE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fatresize
 #
 $(FATRESIZE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fatresize" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,15 +195,15 @@ $(FATRESIZE_IPK_DIR)/CONTROL/control:
 $(FATRESIZE_IPK): $(FATRESIZE_BUILD_DIR)/.built
 	rm -rf $(FATRESIZE_IPK_DIR) $(BUILD_DIR)/fatresize_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FATRESIZE_BUILD_DIR) DESTDIR=$(FATRESIZE_IPK_DIR) install-strip
-#	install -d $(FATRESIZE_IPK_DIR)/opt/etc/
-#	install -m 644 $(FATRESIZE_SOURCE_DIR)/fatresize.conf $(FATRESIZE_IPK_DIR)/opt/etc/fatresize.conf
-#	install -d $(FATRESIZE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FATRESIZE_SOURCE_DIR)/rc.fatresize $(FATRESIZE_IPK_DIR)/opt/etc/init.d/SXXfatresize
+#	$(INSTALL) -d $(FATRESIZE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FATRESIZE_SOURCE_DIR)/fatresize.conf $(FATRESIZE_IPK_DIR)/opt/etc/fatresize.conf
+#	$(INSTALL) -d $(FATRESIZE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FATRESIZE_SOURCE_DIR)/rc.fatresize $(FATRESIZE_IPK_DIR)/opt/etc/init.d/SXXfatresize
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FATRESIZE_IPK_DIR)/opt/etc/init.d/SXXfatresize
 	$(MAKE) $(FATRESIZE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FATRESIZE_SOURCE_DIR)/postinst $(FATRESIZE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FATRESIZE_SOURCE_DIR)/postinst $(FATRESIZE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FATRESIZE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FATRESIZE_SOURCE_DIR)/prerm $(FATRESIZE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FATRESIZE_SOURCE_DIR)/prerm $(FATRESIZE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FATRESIZE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

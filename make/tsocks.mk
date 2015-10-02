@@ -108,7 +108,7 @@ $(TSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES)
 	$(TSOCKS_UNZIP) $(DL_DIR)/$(TSOCKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TSOCKS_PATCHES)" ; \
 		then cat $(TSOCKS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TSOCKS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TSOCKS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TSOCKS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TSOCKS_DIR) $(@D) ; \
@@ -157,7 +157,7 @@ tsocks-stage: $(TSOCKS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tsocks
 #
 $(TSOCKS_IPK_DIR)/CONTROL/control:
-	@install -d $(TSOCKS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TSOCKS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: tsocks" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,10 +187,10 @@ $(TSOCKS_IPK): $(TSOCKS_BUILD_DIR)/.built
 	rm -rf $(TSOCKS_IPK_DIR) $(BUILD_DIR)/tsocks_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TSOCKS_BUILD_DIR) DESTDIR=$(TSOCKS_IPK_DIR) install
 	sed -i -e 's:/usr/:/opt/:g' $(TSOCKS_IPK_DIR)/opt/bin/tsocks
-	install -d $(TSOCKS_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(TSOCKS_IPK_DIR)/opt/etc/
 	mv $(TSOCKS_IPK_DIR)/lib $(TSOCKS_IPK_DIR)/opt/
 	$(STRIP_COMMAND) $(TSOCKS_IPK_DIR)/opt/lib/libtsocks.so.1.8
-	#install -m 644 $(TSOCKS_SOURCE_DIR)/tsocks.conf $(TSOCKS_IPK_DIR)/opt/etc/tsocks.conf
+	#$(INSTALL) -m 644 $(TSOCKS_SOURCE_DIR)/tsocks.conf $(TSOCKS_IPK_DIR)/opt/etc/tsocks.conf
 	$(MAKE) $(TSOCKS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TSOCKS_IPK_DIR)
 

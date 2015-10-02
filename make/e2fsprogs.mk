@@ -114,7 +114,7 @@ e2fsprogs-source: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PATCHES)
 $(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PATCHES) make/e2fsprogs.mk
 	rm -rf $(BUILD_DIR)/$(E2FSPROGS_DIR) $(@D)
 	$(E2FSPROGS_UNZIP) $(DL_DIR)/$(E2FSPROGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(E2FSPROGS_PATCHES) | patch -d $(BUILD_DIR)/$(E2FSPROGS_DIR) -p1
+#	cat $(E2FSPROGS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(E2FSPROGS_DIR) -p1
 	mv $(BUILD_DIR)/$(E2FSPROGS_DIR) $(@D)
 	sed -i -e 's|(DESTDIR)/etc|(DESTDIR)/opt/etc|g' $(@D)/misc/Makefile.in
 	(cd $(@D); \
@@ -171,7 +171,7 @@ e2fsprogs-stage e2fslibs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/e2fsprogs
 #
 $(E2FSPROGS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: e2fsprogs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,7 +185,7 @@ $(E2FSPROGS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(E2FSPROGS_CONFLICTS)" >>$@
 
 $(E2FSLIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: e2fslibs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,7 +199,7 @@ $(E2FSLIBS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(E2FSPROGS_CONFLICTS)" >>$@
 
 $(E2FSLIBS-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: e2fslibs-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -228,12 +228,12 @@ $(E2FSPROGS_IPK) $(E2FSLIBS_IPK) $(E2FSLIBS-DEV_IPK): $(E2FSPROGS_BUILD_DIR)/.bu
 	rm -rf $(E2FSPROGS_IPK_DIR) $(BUILD_DIR)/e2fsprogs_*_$(TARGET_ARCH).ipk
 	rm -rf $(E2FSLIBS_IPK_DIR) $(BUILD_DIR)/e2fslibs_*_$(TARGET_ARCH).ipk
 	# We place files in /opt/lib and /opt/sbin only
-	install -d $(E2FSPROGS_IPK_DIR)/opt/etc
-	install -d $(E2FSPROGS_IPK_DIR)/opt/lib
-	install -d $(E2FSPROGS_IPK_DIR)/opt/sbin
-	install -d $(E2FSPROGS_IPK_DIR)/opt/bin
-	install -d $(E2FSPROGS_IPK_DIR)/opt/man/man8
-	install -d $(E2FSPROGS_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/man/man1
 	DESTDIR=$(E2FSPROGS_IPK_DIR) LDCONFIG=true \
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) install
 	# Strip in the 3 executables - take both e2fsck versions for now
@@ -251,7 +251,7 @@ else
 	rm -f $(E2FSPROGS_IPK_DIR)/opt/sbin/mke2fs
 endif
 	# e2fslibs
-	install -d $(E2FSLIBS_IPK_DIR)/opt/share
+	$(INSTALL) -d $(E2FSLIBS_IPK_DIR)/opt/share
 	mv $(E2FSPROGS_IPK_DIR)/opt/lib $(E2FSLIBS_IPK_DIR)/opt/
 	$(STRIP_COMMAND) $(E2FSLIBS_IPK_DIR)/opt/lib/*.so
 	mv $(E2FSPROGS_IPK_DIR)/opt/share/info $(E2FSLIBS_IPK_DIR)/opt/share/
@@ -264,13 +264,13 @@ endif
 	$(MAKE) $(E2FSLIBS-DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(E2FSLIBS-DEV_IPK_DIR)
 	# e2fsprogs
-	install -m 644  $(E2FSPROGS_BUILD_DIR)/resize/resize2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/resize2fs.8
-	install -m 644  $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/e2fsck.8
-	install -m 644  $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/debugfs.8
-	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/tune2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/tune2fs.8
-	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/dumpe2fs.8
-	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/lsattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/lsattr.1
-	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/chattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/chattr.1
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/resize/resize2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/resize2fs.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/e2fsck.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/debugfs.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/tune2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/tune2fs.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/dumpe2fs.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/lsattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/lsattr.1
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/chattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/chattr.1
 	# strip
 	$(STRIP_COMMAND) $(E2FSPROGS_IPK_DIR)/opt/sbin/*
 	# Package files

@@ -131,7 +131,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 	$(DOVECOT_UNZIP) $(DL_DIR)/$(DOVECOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DOVECOT_PATCHES)" ; \
 		then cat $(DOVECOT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DOVECOT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DOVECOT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DOVECOT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DOVECOT_DIR) $(@D) ; \
@@ -192,7 +192,7 @@ dovecot-stage: $(DOVECOT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dovecot
 #
 $(DOVECOT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dovecot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,7 +207,7 @@ $(DOVECOT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DOVECOT_CONFLICTS)" >>$@
 
 $(DOVECOT_DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dovecot-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -236,16 +236,16 @@ $(DOVECOT_DOC_IPK_DIR)/CONTROL/control:
 $(DOVECOT_IPK): $(DOVECOT_BUILD_DIR)/.built
 	rm -rf $(DOVECOT_IPK_DIR) $(BUILD_DIR)/dovecot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DOVECOT_BUILD_DIR) DESTDIR=$(DOVECOT_IPK_DIR) install-strip
-	install -d $(DOVECOT_IPK_DIR)/opt/etc/dovecot
-	install -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
-	install -m 644 $(DOVECOT_BUILD_DIR)/doc/dovecot-openssl.cnf $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
-	install -m 755 $(DOVECOT_BUILD_DIR)/doc/mkcert.sh $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
-	install -m 700 -d $(DOVECOT_IPK_DIR)/opt/var/run/dovecot
-	install -d $(DOVECOT_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DOVECOT_SOURCE_DIR)/rc.dovecot $(DOVECOT_IPK_DIR)/opt/etc/init.d/S90dovecot
+	$(INSTALL) -d $(DOVECOT_IPK_DIR)/opt/etc/dovecot
+	$(INSTALL) -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
+	$(INSTALL) -m 644 $(DOVECOT_BUILD_DIR)/doc/dovecot-openssl.cnf $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
+	$(INSTALL) -m 755 $(DOVECOT_BUILD_DIR)/doc/mkcert.sh $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
+	$(INSTALL) -m 700 -d $(DOVECOT_IPK_DIR)/opt/var/run/dovecot
+	$(INSTALL) -d $(DOVECOT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DOVECOT_SOURCE_DIR)/rc.dovecot $(DOVECOT_IPK_DIR)/opt/etc/init.d/S90dovecot
 	$(MAKE) $(DOVECOT_IPK_DIR)/CONTROL/control
-	install -m 755 $(DOVECOT_SOURCE_DIR)/postinst $(DOVECOT_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(DOVECOT_SOURCE_DIR)/prerm $(DOVECOT_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(DOVECOT_SOURCE_DIR)/postinst $(DOVECOT_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(DOVECOT_SOURCE_DIR)/prerm $(DOVECOT_IPK_DIR)/CONTROL/prerm
 	echo $(DOVECOT_CONFFILES) | sed -e 's/ /\n/g' > $(DOVECOT_IPK_DIR)/CONTROL/conffiles
 	rm -rf $(DOVECOT_IPK_DIR)/opt/share/doc/dovecot
 	echo $(DOVECOT_CONFFILES) | sed -e 's/ /\n/g' > $(DOVECOT_IPK_DIR)/CONTROL/conffiles

@@ -97,7 +97,7 @@ $(NTFSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(NTFSPROGS_SOURCE) $(NTFSPROGS_PA
 	$(NTFSPROGS_UNZIP) $(DL_DIR)/$(NTFSPROGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NTFSPROGS_PATCHES)" ; \
 		then cat $(NTFSPROGS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NTFSPROGS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NTFSPROGS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NTFSPROGS_DIR)" != "$(NTFSPROGS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NTFSPROGS_DIR) $(NTFSPROGS_BUILD_DIR) ; \
@@ -150,7 +150,7 @@ ntfsprogs-stage: $(NTFSPROGS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ntfsprogs
 #
 $(NTFSPROGS_IPK_DIR)/CONTROL/control:
-	@install -d $(NTFSPROGS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(NTFSPROGS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ntfsprogs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,13 +179,13 @@ $(NTFSPROGS_IPK_DIR)/CONTROL/control:
 $(NTFSPROGS_IPK): $(NTFSPROGS_BUILD_DIR)/.built
 	rm -rf $(NTFSPROGS_IPK_DIR) $(BUILD_DIR)/ntfsprogs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NTFSPROGS_BUILD_DIR) DESTDIR=$(NTFSPROGS_IPK_DIR) install-strip
-#	install -d $(NTFSPROGS_IPK_DIR)/opt/etc/
-#	install -m 644 $(NTFSPROGS_SOURCE_DIR)/ntfsprogs.conf $(NTFSPROGS_IPK_DIR)/opt/etc/ntfsprogs.conf
-#	install -d $(NTFSPROGS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NTFSPROGS_SOURCE_DIR)/rc.ntfsprogs $(NTFSPROGS_IPK_DIR)/opt/etc/init.d/SXXntfsprogs
+#	$(INSTALL) -d $(NTFSPROGS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NTFSPROGS_SOURCE_DIR)/ntfsprogs.conf $(NTFSPROGS_IPK_DIR)/opt/etc/ntfsprogs.conf
+#	$(INSTALL) -d $(NTFSPROGS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NTFSPROGS_SOURCE_DIR)/rc.ntfsprogs $(NTFSPROGS_IPK_DIR)/opt/etc/init.d/SXXntfsprogs
 	$(MAKE) $(NTFSPROGS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NTFSPROGS_SOURCE_DIR)/postinst $(NTFSPROGS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NTFSPROGS_SOURCE_DIR)/prerm $(NTFSPROGS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NTFSPROGS_SOURCE_DIR)/postinst $(NTFSPROGS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NTFSPROGS_SOURCE_DIR)/prerm $(NTFSPROGS_IPK_DIR)/CONTROL/prerm
 #	echo $(NTFSPROGS_CONFFILES) | sed -e 's/ /\n/g' > $(NTFSPROGS_IPK_DIR)/CONTROL/conffiles
 	rm -f $(NTFSPROGS_IPK_DIR)/opt/lib/*.la
 	rm -rf $(NTFSPROGS_IPK_DIR)/sbin

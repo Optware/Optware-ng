@@ -110,7 +110,7 @@ $(LIBMNL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMNL_SOURCE) $(LIBMNL_PATCHES) ma
 	$(LIBMNL_UNZIP) $(DL_DIR)/$(LIBMNL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMNL_PATCHES)" ; \
 		then cat $(LIBMNL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMNL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMNL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMNL_DIR)" != "$(LIBMNL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBMNL_DIR) $(LIBMNL_BUILD_DIR) ; \
@@ -162,7 +162,7 @@ libmnl-stage: $(LIBMNL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmnl
 #
 $(LIBMNL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmnl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,15 @@ $(LIBMNL_IPK): $(LIBMNL_BUILD_DIR)/.built
 	rm -rf $(LIBMNL_IPK_DIR) $(BUILD_DIR)/libmnl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMNL_BUILD_DIR) DESTDIR=$(LIBMNL_IPK_DIR) install-strip
 	rm -rf $(LIBMNL_IPK_DIR)/opt/include
-#	install -d $(LIBMNL_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBMNL_SOURCE_DIR)/libmnl.conf $(LIBMNL_IPK_DIR)/opt/etc/libmnl.conf
-#	install -d $(LIBMNL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBMNL_SOURCE_DIR)/rc.libmnl $(LIBMNL_IPK_DIR)/opt/etc/init.d/SXXlibmnl
+#	$(INSTALL) -d $(LIBMNL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBMNL_SOURCE_DIR)/libmnl.conf $(LIBMNL_IPK_DIR)/opt/etc/libmnl.conf
+#	$(INSTALL) -d $(LIBMNL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMNL_SOURCE_DIR)/rc.libmnl $(LIBMNL_IPK_DIR)/opt/etc/init.d/SXXlibmnl
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMNL_IPK_DIR)/opt/etc/init.d/SXXlibmnl
 	$(MAKE) $(LIBMNL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBMNL_SOURCE_DIR)/postinst $(LIBMNL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBMNL_SOURCE_DIR)/postinst $(LIBMNL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMNL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBMNL_SOURCE_DIR)/prerm $(LIBMNL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBMNL_SOURCE_DIR)/prerm $(LIBMNL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMNL_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBMNL_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMNL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMNL_IPK_DIR)

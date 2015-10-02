@@ -111,7 +111,7 @@ $(MOD_WSGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_WSGI_SOURCE) $(MOD_WSGI_PATCH
 	$(MOD_WSGI_UNZIP) $(DL_DIR)/$(MOD_WSGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOD_WSGI_PATCHES)" ; \
 		then cat $(MOD_WSGI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MOD_WSGI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MOD_WSGI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MOD_WSGI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOD_WSGI_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ mod-wsgi-stage: $(MOD_WSGI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mod-wsgi
 #
 $(MOD_WSGI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mod-wsgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,21 +196,21 @@ $(MOD_WSGI_IPK_DIR)/CONTROL/control:
 $(MOD_WSGI_IPK): $(MOD_WSGI_BUILD_DIR)/.built
 	rm -rf $(MOD_WSGI_IPK_DIR) $(BUILD_DIR)/mod-wsgi_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(MOD_WSGI_BUILD_DIR) DESTDIR=$(MOD_WSGI_IPK_DIR) install
-	install -d $(MOD_WSGI_IPK_DIR)/opt/libexec
+	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)/opt/libexec
 	cd $(MOD_WSGI_BUILD_DIR); \
-	install -m 755 $(MOD_WSGI_BUILD_DIR)/src/server/.libs/mod_wsgi.so $(MOD_WSGI_IPK_DIR)/opt/libexec
+	$(INSTALL) -m 755 $(MOD_WSGI_BUILD_DIR)/src/server/.libs/mod_wsgi.so $(MOD_WSGI_IPK_DIR)/opt/libexec
 	$(STRIP_COMMAND) $(MOD_WSGI_IPK_DIR)/opt/libexec/mod_wsgi.so
-	install -d $(MOD_WSGI_IPK_DIR)/opt/etc/apache2/conf.d/
+	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)/opt/etc/apache2/conf.d/
 	echo "LoadModule wsgi_module libexec/mod_wsgi.so" > $(MOD_WSGI_IPK_DIR)/opt/etc/apache2/conf.d/mod_wsgi.conf
-#	install -d $(MOD_WSGI_IPK_DIR)/opt/etc/
-#	install -m 644 $(MOD_WSGI_SOURCE_DIR)/mod-wsgi.conf $(MOD_WSGI_IPK_DIR)/opt/etc/mod-wsgi.conf
-#	install -d $(MOD_WSGI_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MOD_WSGI_SOURCE_DIR)/rc.mod-wsgi $(MOD_WSGI_IPK_DIR)/opt/etc/init.d/SXXmod-wsgi
+#	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MOD_WSGI_SOURCE_DIR)/mod-wsgi.conf $(MOD_WSGI_IPK_DIR)/opt/etc/mod-wsgi.conf
+#	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MOD_WSGI_SOURCE_DIR)/rc.mod-wsgi $(MOD_WSGI_IPK_DIR)/opt/etc/init.d/SXXmod-wsgi
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOD_WSGI_IPK_DIR)/opt/etc/init.d/SXXmod-wsgi
 	$(MAKE) $(MOD_WSGI_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MOD_WSGI_SOURCE_DIR)/postinst $(MOD_WSGI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MOD_WSGI_SOURCE_DIR)/postinst $(MOD_WSGI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOD_WSGI_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MOD_WSGI_SOURCE_DIR)/prerm $(MOD_WSGI_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MOD_WSGI_SOURCE_DIR)/prerm $(MOD_WSGI_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOD_WSGI_IPK_DIR)/CONTROL/prerm
 	echo $(MOD_WSGI_CONFFILES) | sed -e 's/ /\n/g' > $(MOD_WSGI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOD_WSGI_IPK_DIR)

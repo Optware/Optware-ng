@@ -5,7 +5,7 @@
  ** The name is specified here.
  */
 -char *inpath="NNET.DAT";
-+char *inpath="/opt/share/nbench-byte.dat";
++char *inpath="%OPTWARE_TARGET_PREFIX%/share/nbench-byte.dat";
  
  /*
  ** PROTOTYPES

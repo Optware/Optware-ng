@@ -14,10 +14,10 @@ case "$rc" in
     start)
 	JABBER_USER=jabber
 
-	JABBER_DAEMON=/opt/bin/jabberd
+	JABBER_DAEMON=%OPTWARE_TARGET_PREFIX%/bin/jabberd
 
-	if [ -f /opt/etc/jabber/jabber.conf ]; then
-		. /opt/etc/jabber/jabber.conf
+	if [ -f %OPTWARE_TARGET_PREFIX%/etc/jabber/jabber.conf ]; then
+		. %OPTWARE_TARGET_PREFIX%/etc/jabber/jabber.conf
 	fi
 
 	if [ x"$JABBER_ENABLED" != x"yes" ]; then

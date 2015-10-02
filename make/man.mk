@@ -96,7 +96,7 @@ $(MAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAN_SOURCE) $(MAN_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(MAN_DIR) $(MAN_BUILD_DIR)
 	$(MAN_UNZIP) $(DL_DIR)/$(MAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MAN_PATCHES) | patch -d $(BUILD_DIR)/$(MAN_DIR) -p1
+	cat $(MAN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MAN_DIR) -p1
 	mv $(BUILD_DIR)/$(MAN_DIR) $(MAN_BUILD_DIR)
 	(cd $(MAN_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -139,7 +139,7 @@ man-stage: $(MAN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/man
 # 
 $(MAN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: man" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -169,13 +169,13 @@ $(MAN_IPK): $(MAN_BUILD_DIR)/.built
 	rm -rf $(MAN_IPK_DIR) $(BUILD_DIR)/man_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MAN_BUILD_DIR) DESTDIR=$(MAN_IPK_DIR) install
 	$(STRIP_COMMAND) $(MAN_IPK_DIR)/opt/bin/man2html
-	install -d $(MAN_IPK_DIR)/opt/etc/
-	install -m 644 $(MAN_SOURCE_DIR)/man.conf $(MAN_IPK_DIR)/opt/etc/man.conf
-#	install -d $(MAN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MAN_SOURCE_DIR)/rc.man $(MAN_IPK_DIR)/opt/etc/init.d/SXXman
+	$(INSTALL) -d $(MAN_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(MAN_SOURCE_DIR)/man.conf $(MAN_IPK_DIR)/opt/etc/man.conf
+#	$(INSTALL) -d $(MAN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MAN_SOURCE_DIR)/rc.man $(MAN_IPK_DIR)/opt/etc/init.d/SXXman
 	$(MAKE) $(MAN_IPK_DIR)/CONTROL/control
-#	install -m 644 $(MAN_SOURCE_DIR)/postinst $(MAN_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(MAN_SOURCE_DIR)/prerm $(MAN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(MAN_SOURCE_DIR)/postinst $(MAN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(MAN_SOURCE_DIR)/prerm $(MAN_IPK_DIR)/CONTROL/prerm
 	echo $(MAN_CONFFILES) | sed -e 's/ /\n/g' > $(MAN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MAN_IPK_DIR)
 

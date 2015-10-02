@@ -110,7 +110,7 @@ $(PUTMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PUTMAIL_SOURCE) $(PUTMAIL_PATCHES)
 	rm -rf $(PUTMAIL_BUILD_DIR)
 	rm -rf $(BUILD_DIR)/$(PUTMAIL_DIR)
 	$(PUTMAIL_UNZIP) $(DL_DIR)/$(PUTMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PUTMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(PUTMAIL_DIR) -p1
+#	cat $(PUTMAIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PUTMAIL_DIR) -p1
 	mv $(BUILD_DIR)/$(PUTMAIL_DIR) $(PUTMAIL_BUILD_DIR)
 	touch $@
 
@@ -143,7 +143,7 @@ putmail-stage: $(PUTMAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/putmail
 #
 $(PUTMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: putmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

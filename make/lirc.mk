@@ -129,7 +129,7 @@ endif
 	$(LIRC_UNZIP) $(DL_DIR)/$(LIRC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIRC_PATCHES)" ; \
 		then cat $(LIRC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIRC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIRC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIRC_DIR)" != "$(LIRC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIRC_DIR) $(LIRC_BUILD_DIR) ; \
@@ -196,7 +196,7 @@ lirc-stage: $(LIRC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lirc
 #
 $(LIRC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lirc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -228,15 +228,15 @@ $(LIRC_IPK): $(LIRC_BUILD_DIR)/.built
 	$(MAKE) -C $(LIRC_BUILD_DIR) DESTDIR=$(LIRC_IPK_DIR) install-strip
 	rm -rf $(LIRC_IPK_DIR)/dev
 	$(STRIP_COMMAND) $(LIRC_IPK_DIR)/opt/lib/*.so.*
-#	install -d $(LIRC_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIRC_SOURCE_DIR)/lirc.conf $(LIRC_IPK_DIR)/opt/etc/lirc.conf
-#	install -d $(LIRC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIRC_SOURCE_DIR)/rc.lirc $(LIRC_IPK_DIR)/opt/etc/init.d/SXXlirc
+#	$(INSTALL) -d $(LIRC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIRC_SOURCE_DIR)/lirc.conf $(LIRC_IPK_DIR)/opt/etc/lirc.conf
+#	$(INSTALL) -d $(LIRC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIRC_SOURCE_DIR)/rc.lirc $(LIRC_IPK_DIR)/opt/etc/init.d/SXXlirc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIRC_IPK_DIR)/opt/etc/init.d/SXXlirc
 	$(MAKE) $(LIRC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIRC_SOURCE_DIR)/postinst $(LIRC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIRC_SOURCE_DIR)/postinst $(LIRC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIRC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIRC_SOURCE_DIR)/prerm $(LIRC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIRC_SOURCE_DIR)/prerm $(LIRC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIRC_IPK_DIR)/CONTROL/prerm
 	echo $(LIRC_CONFFILES) | sed -e 's/ /\n/g' > $(LIRC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIRC_IPK_DIR)

@@ -1,11 +1,11 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof radiusd`" ]; then 
-    /opt/bin/killall radiusd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof radiusd`" ]; then 
+    %OPTWARE_TARGET_PREFIX%/bin/killall radiusd 2>/dev/null
 fi
 
 if [ ! -d /var/spool/log/radius ] ;  then
     mkdir -p /var/spool/log/radius
 fi
 
-/opt/sbin/radiusd
+%OPTWARE_TARGET_PREFIX%/sbin/radiusd

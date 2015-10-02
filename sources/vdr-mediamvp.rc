@@ -3,11 +3,11 @@
 # make sure our shared libraries are in the path.
 # if we get /etc/ld.so.conf working, this export
 # can be removed
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%OPTWARE_TARGET_PREFIX%/lib
 
 if [ -n "`pidof mediamvp`" ] ; then
     killall mediamvp 2>/dev/null
 fi
 
 sleep 2
-/opt/sbin/mediamvp -c /opt/etc/mediamvp -d --main::pidfile=/var/run/mediamvp.pid  2>/dev/null
+%OPTWARE_TARGET_PREFIX%/sbin/mediamvp -c %OPTWARE_TARGET_PREFIX%/etc/mediamvp -d --main::pidfile=/var/run/mediamvp.pid  2>/dev/null

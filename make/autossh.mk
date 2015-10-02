@@ -110,7 +110,7 @@ $(AUTOSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOSSH_SOURCE) $(AUTOSSH_PATCHES)
 	$(AUTOSSH_UNZIP) $(DL_DIR)/$(AUTOSSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AUTOSSH_PATCHES)" ; \
 		then cat $(AUTOSSH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(AUTOSSH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(AUTOSSH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AUTOSSH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AUTOSSH_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ autossh-stage: $(AUTOSSH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/autossh
 #
 $(AUTOSSH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: autossh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

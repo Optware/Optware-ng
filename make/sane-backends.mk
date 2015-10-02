@@ -141,7 +141,7 @@ $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE
 	$(SANE_BACKENDS_UNZIP) $(DL_DIR)/$(SANE_BACKENDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SANE_BACKENDS_PATCHES)" ; \
 		then cat $(SANE_BACKENDS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SANE_BACKENDS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SANE_BACKENDS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SANE_BACKENDS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(@D) ; \
@@ -200,7 +200,7 @@ sane-backends-stage: $(SANE_BACKENDS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sane-backends
 #
 $(SANE_BACKENDS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sane-backends" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -237,11 +237,11 @@ $(SANE_BACKENDS_IPK): $(SANE_BACKENDS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/lib/sane/*.so.*
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/lib/*.so.*
 	rm -rf $(SANE_BACKENDS_IPK_DIR)/opt/lib/sane/*.la
-	install -d $(SANE_BACKENDS_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SANE_BACKENDS_SOURCE_DIR)/rc.sane-backends $(SANE_BACKENDS_IPK_DIR)/opt/etc/init.d/S01sane-backends
+	$(INSTALL) -d $(SANE_BACKENDS_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SANE_BACKENDS_SOURCE_DIR)/rc.sane-backends $(SANE_BACKENDS_IPK_DIR)/opt/etc/init.d/S01sane-backends
 	$(MAKE) $(SANE_BACKENDS_IPK_DIR)/CONTROL/control
-	install -m 755 $(SANE_BACKENDS_SOURCE_DIR)/postinst $(SANE_BACKENDS_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(SANE_BACKENDS_SOURCE_DIR)/prerm $(SANE_BACKENDS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(SANE_BACKENDS_SOURCE_DIR)/postinst $(SANE_BACKENDS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(SANE_BACKENDS_SOURCE_DIR)/prerm $(SANE_BACKENDS_IPK_DIR)/CONTROL/prerm
 	echo $(SANE_BACKENDS_CONFFILES) | sed -e 's/ /\n/g' > $(SANE_BACKENDS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SANE_BACKENDS_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(SANE_BACKENDS_IPK_DIR)

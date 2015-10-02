@@ -117,7 +117,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
 	$(FREERADIUS_UNZIP) $(DL_DIR)/$(FREERADIUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FREERADIUS_PATCHES)"; \
-		then cat $(FREERADIUS_PATCHES) | patch -d $(BUILD_DIR)/$(FREERADIUS_DIR) -p1; \
+		then cat $(FREERADIUS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(FREERADIUS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
 	sed -i.orig -e '/rlm_perl\|rlm_pam/d' $(@D)/src/modules/stable
@@ -171,11 +171,11 @@ freeradius: $(FREERADIUS_BUILD_DIR)/.built
 #
 $(FREERADIUS_BUILD_DIR)/.staged: $(FREERADIUS_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(@D)/freeradius.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)/freeradius
-	install -m 644 $(@D)/libfreeradius.a $(STAGING_LIB_DIR)/freeradius
-	install -m 644 $(@D)/libfreeradius.so.$(FREERADIUS_VERSION) $(STAGING_LIB_DIR)/freeradius
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(@D)/freeradius.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)/freeradius
+	$(INSTALL) -m 644 $(@D)/libfreeradius.a $(STAGING_LIB_DIR)/freeradius
+	$(INSTALL) -m 644 $(@D)/libfreeradius.so.$(FREERADIUS_VERSION) $(STAGING_LIB_DIR)/freeradius
 	cd $(STAGING_LIB_DIR) && ln -fs libfreeradius.so.$(FREERADIUS_VERSION) libfreeradius.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libfreeradius.so.$(FREERADIUS_VERSION) libfreeradius.so
 	cp -rf $(@D)/install/lib/* $(STAGING_LIB_DIR)/freeradius/
@@ -184,7 +184,7 @@ $(FREERADIUS_BUILD_DIR)/.staged: $(FREERADIUS_BUILD_DIR)/.built
 freeradius-stage: $(FREERADIUS_BUILD_DIR)/.staged
 
 $(FREERADIUS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: freeradius" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,7 +199,7 @@ $(FREERADIUS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(FREERADIUS_CONFLICTS)" >>$@
 
 $(FREERADIUS_DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: freeradius-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,35 +224,35 @@ $(FREERADIUS_DOC_IPK_DIR)/CONTROL/control:
 #
 $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/.built
 	rm -rf $(FREERADIUS_IPK_DIR) $(FREERADIUS_IPK)
-	install -d $(FREERADIUS_IPK_DIR)/opt
+	$(INSTALL) -d $(FREERADIUS_IPK_DIR)/opt
 	cp -rf $(FREERADIUS_BUILD_DIR)/install/* $(FREERADIUS_IPK_DIR)/
 	rm -rf $(FREERADIUS_IPK_DIR)/opt/share/doc
-	install -d $(FREERADIUS_IPK_DIR)/opt/doc/.radius
+	$(INSTALL) -d $(FREERADIUS_IPK_DIR)/opt/doc/.radius
 	rm -rf $(FREERADIUS_IPK_DIR)/opt/lib/*.a
 	rm -rf $(FREERADIUS_IPK_DIR)/opt/man/*
 	rm -rf $(FREERADIUS_IPK_DIR)/opt/share/man/*
 	mv $(FREERADIUS_IPK_DIR)/opt/etc/* $(FREERADIUS_IPK_DIR)/opt/doc/.radius/
 	cp -f $(FREERADIUS_SOURCE_DIR)/radiusd.conf $(FREERADIUS_IPK_DIR)/opt/doc/.radius/raddb/radiusd.conf
-	install -d $(FREERADIUS_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(FREERADIUS_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/sbin/radiusd
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radclient
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radeapclient $(FREERADIUS_IPK_DIR)/opt/bin/radwho
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radsniff $(FREERADIUS_IPK_DIR)/opt/bin/rlm_*
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/lib/lib*.so $(FREERADIUS_IPK_DIR)/opt/lib/rlm_*.so
-	install -m 755 $(FREERADIUS_SOURCE_DIR)/rc.freeradius $(FREERADIUS_IPK_DIR)/opt/etc/init.d/S55freeradius
+	$(INSTALL) -m 755 $(FREERADIUS_SOURCE_DIR)/rc.freeradius $(FREERADIUS_IPK_DIR)/opt/etc/init.d/S55freeradius
 	$(MAKE) $(FREERADIUS_IPK_DIR)/CONTROL/control
-	install -m 644 $(FREERADIUS_SOURCE_DIR)/postinst $(FREERADIUS_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(FREERADIUS_SOURCE_DIR)/prerm $(FREERADIUS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(FREERADIUS_SOURCE_DIR)/postinst $(FREERADIUS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(FREERADIUS_SOURCE_DIR)/prerm $(FREERADIUS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREERADIUS_IPK_DIR)
 
 $(FREERADIUS_DOC_IPK): $(FREERADIUS_BUILD_DIR)/.built
 	rm -rf $(FREERADIUS_DOC_IPK_DIR) $(FREERADIUS_DOC_IPK)
-	install -d $(FREERADIUS_DOC_IPK_DIR)/opt/doc
-	install -d $(FREERADIUS_DOC_IPK_DIR)/opt/man
+	$(INSTALL) -d $(FREERADIUS_DOC_IPK_DIR)/opt/doc
+	$(INSTALL) -d $(FREERADIUS_DOC_IPK_DIR)/opt/man
 	cp -rf $(FREERADIUS_BUILD_DIR)/install/opt/share/man/* $(FREERADIUS_DOC_IPK_DIR)/opt/man/
 	cp -rf $(FREERADIUS_BUILD_DIR)/install/opt/share/doc/* $(FREERADIUS_DOC_IPK_DIR)/opt/doc/
-	install -d $(FREERADIUS_DOC_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(FREERADIUS_DOC_IPK_DIR)/CONTROL
 	$(MAKE) $(FREERADIUS_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREERADIUS_DOC_IPK_DIR)
 

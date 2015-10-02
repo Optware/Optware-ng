@@ -42,7 +42,7 @@ $(LYNX_BUILD_DIR)/.configured: $(DL_DIR)/$(LYNX_SOURCE) $(LYNX_PATCHES)
 	$(MAKE) ncurses-stage openssl-stage bzip2-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(LYNX_DIR) $(LYNX_BUILD_DIR)
 	$(LYNX_UNZIP) $(DL_DIR)/$(LYNX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(LYNX_PATCHES) | patch -d $(BUILD_DIR)/$(LYNX_DIR) -p1
+	cat $(LYNX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LYNX_DIR) -p1
 	mv $(BUILD_DIR)/$(LYNX_DIR) $(LYNX_BUILD_DIR)
 	(cd $(LYNX_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -88,7 +88,7 @@ $(LYNX_BUILD_DIR)/.built: $(LYNX_BUILD_DIR)/.configured
 lynx: $(LYNX_BUILD_DIR)/.built
 
 $(LYNX_IPK_DIR)/CONTROL/control:
-	@install -d $(LYNX_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LYNX_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: lynx" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

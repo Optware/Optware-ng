@@ -87,7 +87,7 @@ qemu-gnemul: $(QEMU_GNEMUL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/qemu
 #
 $(QEMU_GNEMUL_IPK_DIR)/CONTROL/control:
-	@install -d $(QEMU_GNEMUL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(QEMU_GNEMUL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: qemu-gnemul" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

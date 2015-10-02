@@ -117,7 +117,7 @@ $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES) make/
 	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGC_PATCHES)" ; \
 		then cat $(LIBGC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBGC_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBGC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBGC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBGC_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ libgc-stage: $(LIBGC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libgc
 #
 $(LIBGC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libgc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,13 +200,13 @@ $(LIBGC_IPK_DIR)/CONTROL/control:
 $(LIBGC_IPK): $(LIBGC_BUILD_DIR)/.built
 	rm -rf $(LIBGC_IPK_DIR) $(BUILD_DIR)/libgc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGC_BUILD_DIR) DESTDIR=$(LIBGC_IPK_DIR) install-strip
-#	install -d $(LIBGC_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBGC_SOURCE_DIR)/libgc.conf $(LIBGC_IPK_DIR)/opt/etc/libgc.conf
-#	install -d $(LIBGC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBGC_SOURCE_DIR)/rc.libgc $(LIBGC_IPK_DIR)/opt/etc/init.d/SXXlibgc
+#	$(INSTALL) -d $(LIBGC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBGC_SOURCE_DIR)/libgc.conf $(LIBGC_IPK_DIR)/opt/etc/libgc.conf
+#	$(INSTALL) -d $(LIBGC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBGC_SOURCE_DIR)/rc.libgc $(LIBGC_IPK_DIR)/opt/etc/init.d/SXXlibgc
 	$(MAKE) $(LIBGC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBGC_SOURCE_DIR)/postinst $(LIBGC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBGC_SOURCE_DIR)/prerm $(LIBGC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBGC_SOURCE_DIR)/postinst $(LIBGC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBGC_SOURCE_DIR)/prerm $(LIBGC_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBGC_CONFFILES) | sed -e 's/ /\n/g' > $(LIBGC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGC_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(BDW_GC_IPK_DIR)

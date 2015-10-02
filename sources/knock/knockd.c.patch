@@ -14,8 +14,8 @@
  char o_int[32]           = "";		/* default (eth0) is set after parseconfig() */
 -char o_cfg[PATH_MAX]     = "/etc/knockd.conf";
 -char o_pidfile[PATH_MAX] = "/var/run/knockd.pid";
-+char o_cfg[PATH_MAX]     = "/opt/etc/knockd.conf";
-+char o_pidfile[PATH_MAX] = "/opt/var/run/knockd.pid";
++char o_cfg[PATH_MAX]     = "%OPTWARE_TARGET_PREFIX%/etc/knockd.conf";
++char o_pidfile[PATH_MAX] = "%OPTWARE_TARGET_PREFIX%/var/run/knockd.pid";
  char o_logfile[PATH_MAX] = "";
  
  int main(int argc, char **argv)

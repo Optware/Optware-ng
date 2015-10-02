@@ -85,7 +85,7 @@ GTK2_DOC_IPK=$(BUILD_DIR)/gtk2-doc_$(GTK2_VERSION)-$(GTK2_IPK_VERSION)_$(TARGET_
 # Automatically create a ipkg control file
 #
 $(GTK2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gtk2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -98,7 +98,7 @@ $(GTK2_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(GTK2_DEPENDS)" >>$@
 
 $(GTK2_PRINT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gtk2-print" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -111,7 +111,7 @@ $(GTK2_PRINT_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(GTK2_PRINT_DEPENDS)" >>$@
 
 $(GTK2_DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gtk2-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -164,7 +164,7 @@ endif
 	$(GTK2_UNZIP) $(DL_DIR)/$(GTK2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GTK2_PATCHES)" ; \
 		then cat $(GTK2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GTK2_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GTK2_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(GTK2_DIR) $(@D)
 	sed -i -e '/SRC_SUBDIRS *=/s| demos||' $(@D)/Makefile.in
@@ -246,15 +246,15 @@ $(GTK2_IPK) $(GTK2_DOC_IPK) $(GTK2_PRINT_IPK): $(GTK2_BUILD_DIR)/.built
 		$(BUILD_DIR)/gtk2-doc_*_$(TARGET_ARCH).ipk \
 		$(BUILD_DIR)/gtk2-print_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTK2_BUILD_DIR) DESTDIR=$(GTK2_IPK_DIR) install-strip
-	install -d $(GTK2_IPK_DIR)/opt/etc/gtk-2.0
+	$(INSTALL) -d $(GTK2_IPK_DIR)/opt/etc/gtk-2.0
 	### make gtk2-doc-ipk
-	install -d $(GTK2_DOC_IPK_DIR)/opt/share
+	$(INSTALL) -d $(GTK2_DOC_IPK_DIR)/opt/share
 	mv -f $(GTK2_IPK_DIR)/opt/share/gtk-doc $(GTK2_DOC_IPK_DIR)/opt/share/
 	$(MAKE) $(GTK2_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK2_DOC_IPK_DIR)
 	### make gtk2-print-ipk
 	find $(GTK2_IPK_DIR) -type f -name *.la -exec rm -f {} \;
-	install -d $(GTK2_PRINT_IPK_DIR)/opt/include \
+	$(INSTALL) -d $(GTK2_PRINT_IPK_DIR)/opt/include \
 		$(GTK2_PRINT_IPK_DIR)/opt/lib/gtk-2.0/2.10.0 \
 		$(GTK2_PRINT_IPK_DIR)/opt/lib/pkgconfig
 	mv -f $(GTK2_IPK_DIR)/opt/include/gtk-unix-print-2.0 \
@@ -267,7 +267,7 @@ $(GTK2_IPK) $(GTK2_DOC_IPK) $(GTK2_PRINT_IPK): $(GTK2_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK2_PRINT_IPK_DIR)
 	### make gtk2-ipk
 	$(MAKE) $(GTK2_IPK_DIR)/CONTROL/control
-	install -m 644 $(GTK2_SOURCE_DIR)/postinst $(GTK2_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(GTK2_SOURCE_DIR)/postinst $(GTK2_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK2_IPK_DIR)
 
 #

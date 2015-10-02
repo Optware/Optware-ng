@@ -61,7 +61,7 @@ TTF_BITSTREAM_VERA_IPK=$(BUILD_DIR)/ttf-bitstream-vera_$(TTF_BITSTREAM_VERA_VERS
 # Automatically create a ipkg control file
 #
 $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/control:
-	@install -d $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ttf-bitstream-vera" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -130,11 +130,11 @@ ttf-bitstream-vera: $(TTF_BITSTREAM_VERA_BUILD_DIR)/.configured
 #
 $(TTF_BITSTREAM_VERA_IPK): $(TTF_BITSTREAM_VERA_BUILD_DIR)/.configured
 	rm -rf $(TTF_BITSTREAM_VERA_IPK_DIR) $(BUILD_DIR)/ttf-bitstream-vera_*_$(TARGET_ARCH).ipk
-	install -d $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
-	install -m 644 $(TTF_BITSTREAM_VERA_BUILD_DIR)/*.ttf $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
+	$(INSTALL) -d $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
+	$(INSTALL) -m 644 $(TTF_BITSTREAM_VERA_BUILD_DIR)/*.ttf $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
 	$(MAKE) $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/control
-	install -m 644 $(TTF_BITSTREAM_VERA_SOURCE_DIR)/postinst $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(TTF_BITSTREAM_VERA_SOURCE_DIR)/postrm $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/postrm
+	$(INSTALL) -m 644 $(TTF_BITSTREAM_VERA_SOURCE_DIR)/postinst $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(TTF_BITSTREAM_VERA_SOURCE_DIR)/postrm $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/postrm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TTF_BITSTREAM_VERA_IPK_DIR)
 
 #

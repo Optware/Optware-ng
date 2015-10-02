@@ -9,12 +9,12 @@ case "$1" in
     start)
         echo "Starting Optware."
         if test -n "${REAL_OPT_DIR}"; then
-            if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
-                mkdir -p /opt
-                mount -o bind ${REAL_OPT_DIR} /opt
+            if ! grep ' %OPTWARE_TARGET_PREFIX% ' /proc/mounts >/dev/null 2>&1 ; then
+                mkdir -p %OPTWARE_TARGET_PREFIX%
+                mount -o bind ${REAL_OPT_DIR} %OPTWARE_TARGET_PREFIX%
             fi	
         fi
-	[ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware >/dev/null 2>/dev/null </dev/null
+	[ -x %OPTWARE_TARGET_PREFIX%/etc/rc.optware ] && %OPTWARE_TARGET_PREFIX%/etc/rc.optware >/dev/null 2>/dev/null </dev/null
     ;;
     reconfig)
 	true

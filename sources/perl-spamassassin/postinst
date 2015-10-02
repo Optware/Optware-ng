@@ -8,17 +8,17 @@
 /bin/echo
 /bin/echo You may want to create a new user and group,
 /bin/echo -e "\t\$ vi /etc/passwd"
-/bin/echo -e "\t+spamd:x:40:40:spamd:/opt/var/spool/spamd:"
+/bin/echo -e "\t+spamd:x:40:40:spamd:%OPTWARE_TARGET_PREFIX%/var/spool/spamd:"
 /bin/echo -e "\t\$ vi /etc/group"
 /bin/echo -e "\t+spamd:x:40:spamd"
-/bin/echo -e "\t\$ mkdir -p /opt/var/spool/spamd/.spamassassin"
-/bin/echo -e "\t\$ chown -R spamd:spamd /opt/var/spool/spamd/.spamassassin"
+/bin/echo -e "\t\$ mkdir -p %OPTWARE_TARGET_PREFIX%/var/spool/spamd/.spamassassin"
+/bin/echo -e "\t\$ chown -R spamd:spamd %OPTWARE_TARGET_PREFIX%/var/spool/spamd/.spamassassin"
 /bin/echo
 /bin/echo and integrate perl-spamassassin into your mail server.
 /bin/echo Postfix users can find a patch for master.cf in
-/bin/echo "/opt/etc/doc/perl-spamassassin"
+/bin/echo "%OPTWARE_TARGET_PREFIX%/etc/doc/perl-spamassassin"
 /bin/echo
 /bin/echo Finally you can start the spamd-server:
-/bin/echo -e "\t\$ /opt/etc/init.d/S62spamd"
+/bin/echo -e "\t\$ %OPTWARE_TARGET_PREFIX%/etc/init.d/S62spamd"
 /bin/echo
 

@@ -98,7 +98,7 @@ $(GIFTOPENFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTOPENFT_SOURCE) $(GIFTOPENFT
 	$(MAKE) gift-stage
 	rm -rf $(BUILD_DIR)/$(GIFTOPENFT_DIR) $(GIFTOPENFT_BUILD_DIR)
 	$(GIFTOPENFT_UNZIP) $(DL_DIR)/$(GIFTOPENFT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GIFTOPENFT_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTOPENFT_DIR) -p1
+#	cat $(GIFTOPENFT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIFTOPENFT_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFTOPENFT_DIR) $(GIFTOPENFT_BUILD_DIR)
 	(cd $(GIFTOPENFT_BUILD_DIR);  \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
@@ -137,11 +137,11 @@ gift-openft: $(GIFTOPENFT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_LIB_DIR)/libgift-openft.so.$(GIFTOPENFT_VERSION): $(GIFTOPENFT_BUILD_DIR)/.built
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(GIFTOPENFT_BUILD_DIR)/gift-openft.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTOPENFT_BUILD_DIR)/libgift-openft.a $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTOPENFT_BUILD_DIR)/libgift-openft.so.$(GIFTOPENFT_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/gift-openft.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/libgift-openft.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/libgift-openft.so.$(GIFTOPENFT_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libgift-openft.so.$(GIFTOPENFT_VERSION) libgift-openft.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libgift-openft.so.$(GIFTOPENFT_VERSION) libgift-openft.so
 
@@ -152,7 +152,7 @@ gift-openft-stage: $(STAGING_LIB_DIR)/libgift-openft.so.$(GIFTOPENFT_VERSION)
 # necessary to create a seperate control file under sources/gift-openft
 #
 $(GIFTOPENFT_IPK_DIR)/CONTROL/control:
-	@install -d $(GIFTOPENFT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GIFTOPENFT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: gift-openft" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,13 +179,13 @@ $(GIFTOPENFT_IPK_DIR)/CONTROL/control:
 #
 $(GIFTOPENFT_IPK): $(GIFTOPENFT_BUILD_DIR)/.built
 	rm -rf $(GIFTOPENFT_IPK_DIR) $(BUILD_DIR)/gift-openft_*_$(TARGET_ARCH).ipk
-	install -d $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT
+	$(INSTALL) -d $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT
 	$(STRIP_COMMAND) $(GIFTOPENFT_BUILD_DIR)/src/.libs/libOpenFT.so -o $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT/libOpenFT.so
-	install -m 644 $(GIFTOPENFT_BUILD_DIR)/src/.libs/libOpenFT.la $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT/libOpenFT.la
-	install -d $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT
-	install -m 644 $(GIFTOPENFT_BUILD_DIR)/etc/OpenFT.conf.template $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT/OpenFT.conf.template
-	install -m 644 $(GIFTOPENFT_BUILD_DIR)/data/nodes $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT/nodes
-	install -d $(GIFTOPENFT_IPK_DIR)/CONTROL
+	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/src/.libs/libOpenFT.la $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT/libOpenFT.la
+	$(INSTALL) -d $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT
+	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/etc/OpenFT.conf.template $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT/OpenFT.conf.template
+	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/data/nodes $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT/nodes
+	$(INSTALL) -d $(GIFTOPENFT_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFTOPENFT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTOPENFT_IPK_DIR)
 

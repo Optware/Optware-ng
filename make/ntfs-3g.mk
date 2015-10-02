@@ -115,7 +115,7 @@ $(NTFS-3G_BUILD_DIR)/.configured: $(DL_DIR)/$(NTFS-3G_SOURCE) $(NTFS-3G_PATCHES)
 	$(NTFS-3G_UNZIP) $(DL_DIR)/$(NTFS-3G_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NTFS-3G_PATCHES)" ; \
 		then cat $(NTFS-3G_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NTFS-3G_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NTFS-3G_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NTFS-3G_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NTFS-3G_DIR) $(@D) ; \
@@ -159,7 +159,7 @@ ntfs-3g: $(NTFS-3G_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ntfs-3g
 #
 $(NTFS-3G_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ntfs-3g" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,15 @@ $(NTFS-3G_IPK): $(NTFS-3G_BUILD_DIR)/.built
 	rm -f $(NTFS-3G_IPK_DIR)/opt/lib/*.la
 	sed -i -e '/^prefix=\|^exec_prefix=/s|=.*|=/opt|' $(NTFS-3G_IPK_DIR)/opt/lib/pkgconfig/libntfs-3g.pc
 #	ln -s ../bin/ntfs-3g $(NTFS-3G_IPK_DIR)/opt/sbin/mount.ntfs-3g
-#	install -d $(NTFS-3G_IPK_DIR)/opt/etc/
-#	install -m 644 $(NTFS-3G_SOURCE_DIR)/ntfs-3g.conf $(NTFS-3G_IPK_DIR)/opt/etc/ntfs-3g.conf
-#	install -d $(NTFS-3G_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NTFS-3G_SOURCE_DIR)/rc.ntfs-3g $(NTFS-3G_IPK_DIR)/opt/etc/init.d/SXXntfs-3g
+#	$(INSTALL) -d $(NTFS-3G_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NTFS-3G_SOURCE_DIR)/ntfs-3g.conf $(NTFS-3G_IPK_DIR)/opt/etc/ntfs-3g.conf
+#	$(INSTALL) -d $(NTFS-3G_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NTFS-3G_SOURCE_DIR)/rc.ntfs-3g $(NTFS-3G_IPK_DIR)/opt/etc/init.d/SXXntfs-3g
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NTFS-3G_IPK_DIR)/opt/etc/init.d/SXXntfs-3g
 	$(MAKE) $(NTFS-3G_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NTFS-3G_SOURCE_DIR)/postinst $(NTFS-3G_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NTFS-3G_SOURCE_DIR)/postinst $(NTFS-3G_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NTFS-3G_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NTFS-3G_SOURCE_DIR)/prerm $(NTFS-3G_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NTFS-3G_SOURCE_DIR)/prerm $(NTFS-3G_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NTFS-3G_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

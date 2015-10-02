@@ -63,7 +63,7 @@ GLPROTO_IPK=$(BUILD_DIR)/glproto_$(GLPROTO_VERSION)-$(GLPROTO_IPK_VERSION)_$(TAR
 # Automatically create a ipkg control file
 #
 $(GLPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(GLPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GLPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: glproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(GLPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(GLPROTO_SOURCE) $(GLPROTO_PATCHES)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(GLPROTO_SOURCE)
 	if test -n "$(GLPROTO_PATCHES)" ; \
 		then cat $(GLPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GLPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GLPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GLPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GLPROTO_DIR) $(@D) ; \

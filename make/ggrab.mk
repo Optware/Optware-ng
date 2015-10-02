@@ -104,7 +104,7 @@ $(GGRAB_BUILD_DIR)/.configured: $(DL_DIR)/$(GGRAB_SOURCE) $(GGRAB_PATCHES)
 	$(GGRAB_UNZIP) $(DL_DIR)/$(GGRAB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GGRAB_PATCHES)" ; \
 		then cat $(GGRAB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GGRAB_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GGRAB_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GGRAB_DIR)" != "$(GGRAB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(GGRAB_DIR) $(GGRAB_BUILD_DIR) ; \
@@ -159,7 +159,7 @@ ggrab-stage: $(GGRAB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ggrab
 #
 $(GGRAB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ggrab" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,16 +188,16 @@ $(GGRAB_IPK_DIR)/CONTROL/control:
 $(GGRAB_IPK): $(GGRAB_BUILD_DIR)/.built
 	rm -rf $(GGRAB_IPK_DIR) $(BUILD_DIR)/ggrab_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(GGRAB_BUILD_DIR) DESTDIR=$(GGRAB_IPK_DIR) install-strip
-	install -d $(GGRAB_IPK_DIR)/opt/bin
-	install -m 755 $(GGRAB_BUILD_DIR)/ggrab $(GGRAB_IPK_DIR)/opt/bin/ggrab
-	install -m 755 $(GGRAB_BUILD_DIR)/sserver $(GGRAB_IPK_DIR)/opt/bin/sserver
-#	install -d $(GGRAB_IPK_DIR)/opt/etc/
-#	install -m 644 $(GGRAB_SOURCE_DIR)/ggrab.conf $(GGRAB_IPK_DIR)/opt/etc/ggrab.conf
-#	install -d $(GGRAB_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GGRAB_SOURCE_DIR)/rc.ggrab $(GGRAB_IPK_DIR)/opt/etc/init.d/SXXggrab
+	$(INSTALL) -d $(GGRAB_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(GGRAB_BUILD_DIR)/ggrab $(GGRAB_IPK_DIR)/opt/bin/ggrab
+	$(INSTALL) -m 755 $(GGRAB_BUILD_DIR)/sserver $(GGRAB_IPK_DIR)/opt/bin/sserver
+#	$(INSTALL) -d $(GGRAB_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GGRAB_SOURCE_DIR)/ggrab.conf $(GGRAB_IPK_DIR)/opt/etc/ggrab.conf
+#	$(INSTALL) -d $(GGRAB_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GGRAB_SOURCE_DIR)/rc.ggrab $(GGRAB_IPK_DIR)/opt/etc/init.d/SXXggrab
 	$(MAKE) $(GGRAB_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GGRAB_SOURCE_DIR)/postinst $(GGRAB_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GGRAB_SOURCE_DIR)/prerm $(GGRAB_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GGRAB_SOURCE_DIR)/postinst $(GGRAB_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GGRAB_SOURCE_DIR)/prerm $(GGRAB_IPK_DIR)/CONTROL/prerm
 	echo $(GGRAB_CONFFILES) | sed -e 's/ /\n/g' > $(GGRAB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GGRAB_IPK_DIR)
 

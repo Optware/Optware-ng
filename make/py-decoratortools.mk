@@ -113,7 +113,7 @@ $(PY-DECORATORTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR)
 	cd $(BUILD_DIR) && $(PY-DECORATORTOOLS_UNZIP) $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE)
-#	cat $(PY-DECORATORTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) -p1
+#	cat $(PY-DECORATORTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
@@ -122,7 +122,7 @@ $(PY-DECORATORTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR)
 	cd $(BUILD_DIR) && $(PY-DECORATORTOOLS_UNZIP) $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE)
-#	cat $(PY-DECORATORTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) -p1
+#	cat $(PY-DECORATORTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -165,7 +165,7 @@ py-decoratortools-stage: $(PY-DECORATORTOOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-decoratortools
 #
 $(PY24-DECORATORTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-decoratortools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,7 +179,7 @@ $(PY24-DECORATORTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-DECORATORTOOLS_CONFLICTS)" >>$@
 
 $(PY25-DECORATORTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-decoratortools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -79,7 +79,7 @@ $(AMAVISD-NEW_BUILD_DIR)/.configured: $(DL_DIR)/$(AMAVISD-NEW_SOURCE) $(AMAVISD-
 	$(AMAVISD-NEW_UNZIP) $(DL_DIR)/$(AMAVISD-NEW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AMAVISD-NEW_PATCHES)" ; \
 		then cat $(AMAVISD-NEW_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(AMAVISD-NEW_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(AMAVISD-NEW_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AMAVISD-NEW_DIR)" != "$(AMAVISD-NEW_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(AMAVISD-NEW_DIR) $(AMAVISD-NEW_BUILD_DIR) ; \
@@ -120,7 +120,7 @@ amavisd-new-stage: $(AMAVISD-NEW_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/amavisd-new
 #
 $(AMAVISD-NEW_IPK_DIR)/CONTROL/control:
-	@install -d $(AMAVISD-NEW_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: amavisd-new" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -148,44 +148,44 @@ $(AMAVISD-NEW_IPK_DIR)/CONTROL/control:
 #
 $(AMAVISD-NEW_IPK): $(AMAVISD-NEW_BUILD_DIR)/.built
 	rm -rf $(AMAVISD-NEW_IPK_DIR) $(BUILD_DIR)/amavisd-new_*_$(TARGET_ARCH).ipk
-	install -d $(AMAVISD-NEW_IPK_DIR)/opt/sbin/
-	install -m 755 $(AMAVISD-NEW_BUILD_DIR)/amavisd $(AMAVISD-NEW_IPK_DIR)/opt/sbin/amavisd
-	install -d $(AMAVISD-NEW_IPK_DIR)/opt/etc/
-	install -m 644 $(AMAVISD-NEW_SOURCE_DIR)/amavisd.conf $(AMAVISD-NEW_IPK_DIR)/opt/etc/amavisd.conf
-	install -d \
+	$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(AMAVISD-NEW_BUILD_DIR)/amavisd $(AMAVISD-NEW_IPK_DIR)/opt/sbin/amavisd
+	$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(AMAVISD-NEW_SOURCE_DIR)/amavisd.conf $(AMAVISD-NEW_IPK_DIR)/opt/etc/amavisd.conf
+	$(INSTALL) -d \
 	  $(AMAVISD-NEW_IPK_DIR)/opt/lib/perl5/site_perl/$(PERL_VERSION)
-	install -m 755 $(AMAVISD-NEW_BUILD_DIR)/JpegTester.pm \
+	$(INSTALL) -m 755 $(AMAVISD-NEW_BUILD_DIR)/JpegTester.pm \
 	  $(AMAVISD-NEW_IPK_DIR)/opt/lib/perl5/site_perl/$(PERL_VERSION)
-	install -d $(AMAVISD-NEW_IPK_DIR)/opt/etc/init.d
-	install -d -m 0755 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool
-	install -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis
-	install -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis/db
-	install -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis/virusmails
+	$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d -m 0755 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool
+	$(INSTALL) -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis
+	$(INSTALL) -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis/db
+	$(INSTALL) -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis/virusmails
 
-	install -m 755 $(AMAVISD-NEW_SOURCE_DIR)/rc.amavisd $(AMAVISD-NEW_IPK_DIR)/opt/etc/init.d/S60amavisd
+	$(INSTALL) -m 755 $(AMAVISD-NEW_SOURCE_DIR)/rc.amavisd $(AMAVISD-NEW_IPK_DIR)/opt/etc/init.d/S60amavisd
 	rm -rf $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/
-	install -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/
-	install -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/helper-prog
-	install -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/README_FILES
-	install -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/test-messages
+	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/
+	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/helper-prog
+	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/README_FILES
+	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/test-messages
 	(cd $(AMAVISD-NEW_BUILD_DIR); \
-	  install -m 644 amavisd.conf* \
+	  $(INSTALL) -m 644 amavisd.conf* \
 	    $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
-	  install -m 644 LICENSE $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
-	  install -m 644 MANIFEST $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
-	  install -m 644 RELEASE_NOTES \
+	  $(INSTALL) -m 644 LICENSE $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
+	  $(INSTALL) -m 644 MANIFEST $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
+	  $(INSTALL) -m 644 RELEASE_NOTES \
              $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
-	  install -m 644 TODO $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
-	  install -m 644 helper-progs/* \
+	  $(INSTALL) -m 644 TODO $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
+	  $(INSTALL) -m 644 helper-progs/* \
 	    $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/helper-progs/; \
-	  install -m 644 README_FILES/* \
+	  $(INSTALL) -m 644 README_FILES/* \
 	    $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/README_FILES/; \
-	  install -m 644 test-messages/* \
+	  $(INSTALL) -m 644 test-messages/* \
 	    $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/test-messages/; \
         )
 	$(MAKE) $(AMAVISD-NEW_IPK_DIR)/CONTROL/control
-	install -m 755 $(AMAVISD-NEW_SOURCE_DIR)/postinst $(AMAVISD-NEW_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(AMAVISD-NEW_SOURCE_DIR)/prerm $(AMAVISD-NEW_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(AMAVISD-NEW_SOURCE_DIR)/postinst $(AMAVISD-NEW_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(AMAVISD-NEW_SOURCE_DIR)/prerm $(AMAVISD-NEW_IPK_DIR)/CONTROL/prerm
 	echo $(AMAVISD-NEW_CONFFILES) | sed -e 's/ /\n/g' > $(AMAVISD-NEW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AMAVISD-NEW_IPK_DIR)
 

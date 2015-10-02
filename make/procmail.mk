@@ -105,7 +105,7 @@ $(PROCMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PROCMAIL_SOURCE) $(PROCMAIL_PATCH
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PROCMAIL_DIR) $(PROCMAIL_BUILD_DIR)
 	$(PROCMAIL_UNZIP) $(DL_DIR)/$(PROCMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PROCMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(PROCMAIL_DIR) -p1
+	cat $(PROCMAIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PROCMAIL_DIR) -p1
 	mv $(BUILD_DIR)/$(PROCMAIL_DIR) $(PROCMAIL_BUILD_DIR)
 	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/getline/&_local/g' {} \;
 	cp $(PROCMAIL_SOURCE_DIR)/autoconf.h $(PROCMAIL_BUILD_DIR)
@@ -148,7 +148,7 @@ procmail-stage: $(PROCMAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/procmail
 #
 $(PROCMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(PROCMAIL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PROCMAIL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: procmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,13 +184,13 @@ $(PROCMAIL_IPK): $(PROCMAIL_BUILD_DIR)/.built
 		LDFLAGS="$(STAGING_LDFLAGS) $(PROCMAIL_LDFLAGS)" \
 		INSTALL=install \
 		MKDIRS="install -d"
-	#install -d $(PROCMAIL_IPK_DIR)/opt/etc/
-	#install -m 644 $(PROCMAIL_SOURCE_DIR)/procmail.conf $(PROCMAIL_IPK_DIR)/opt/etc/procmail.conf
-	#install -d $(PROCMAIL_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(PROCMAIL_SOURCE_DIR)/rc.procmail $(PROCMAIL_IPK_DIR)/opt/etc/init.d/SXXprocmail
+	#$(INSTALL) -d $(PROCMAIL_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(PROCMAIL_SOURCE_DIR)/procmail.conf $(PROCMAIL_IPK_DIR)/opt/etc/procmail.conf
+	#$(INSTALL) -d $(PROCMAIL_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(PROCMAIL_SOURCE_DIR)/rc.procmail $(PROCMAIL_IPK_DIR)/opt/etc/init.d/SXXprocmail
 	$(MAKE) $(PROCMAIL_IPK_DIR)/CONTROL/control
-	#install -m 755 $(PROCMAIL_SOURCE_DIR)/postinst $(PROCMAIL_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(PROCMAIL_SOURCE_DIR)/prerm $(PROCMAIL_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(PROCMAIL_SOURCE_DIR)/postinst $(PROCMAIL_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(PROCMAIL_SOURCE_DIR)/prerm $(PROCMAIL_IPK_DIR)/CONTROL/prerm
 	#echo $(PROCMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(PROCMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROCMAIL_IPK_DIR)
 

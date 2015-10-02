@@ -101,7 +101,7 @@ $(QEMU_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMU_SOURCE) $(QEMU_PATCHES)
 	$(MAKE) sdl-stage
 	rm -rf $(BUILD_DIR)/$(QEMU_DIR) $(QEMU_BUILD_DIR)
 	$(QEMU_UNZIP) $(DL_DIR)/$(QEMU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(QEMU_PATCHES) | patch -d $(BUILD_DIR)/$(QEMU_DIR) -p1
+	cat $(QEMU_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(QEMU_DIR) -p1
 	mv $(BUILD_DIR)/$(QEMU_DIR) $(QEMU_BUILD_DIR)
 	(cd $(QEMU_BUILD_DIR); \
 		./configure \
@@ -140,7 +140,7 @@ qemu: $(QEMU_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/qemu
 #
 $(QEMU_IPK_DIR)/CONTROL/control:
-	@install -d $(QEMU_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(QEMU_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: qemu" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -155,7 +155,7 @@ $(QEMU_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(QEMU_CONFLICTS)" >>$@
 
 $(QEMU_USER_IPK_DIR)/CONTROL/control:
-	@install -d $(QEMU_USER_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(QEMU_USER_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: qemu-user" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +180,7 @@ $(QEMU_IPK) $(QEMU_USER_IPK): $(QEMU_BUILD_DIR)/.built
 		mandir=$(QEMU_IPK_DIR)/opt/share/man \
 		datadir=$(QEMU_IPK_DIR)/opt/share/qemu \
 		docdir=$(QEMU_IPK_DIR)/opt/share/doc/qemu \
-		install
+		$(INSTALL)
 	$(STRIP_COMMAND) $(QEMU_IPK_DIR)/opt/bin/*
 	mkdir $(QEMU_IPK_DIR)/opt/tmp
 	chmod a+rwxt $(QEMU_IPK_DIR)/opt/tmp
@@ -193,9 +193,9 @@ $(QEMU_IPK) $(QEMU_USER_IPK): $(QEMU_BUILD_DIR)/.built
 			$(QEMU_USER_IPK_DIR)/opt/bin ; \
 		fi ; done
 	$(MAKE) $(QEMU_USER_IPK_DIR)/CONTROL/control
-	install -m 755 $(QEMU_SOURCE_DIR)/rc.qemu-user \
+	$(INSTALL) -m 755 $(QEMU_SOURCE_DIR)/rc.qemu-user \
 		$(QEMU_USER_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(QEMU_SOURCE_DIR)/rc.qemu-user \
+	$(INSTALL) -m 755 $(QEMU_SOURCE_DIR)/rc.qemu-user \
 		$(QEMU_USER_IPK_DIR)/opt/etc/init.d/S10qemu-user
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMU_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMU_USER_IPK_DIR)

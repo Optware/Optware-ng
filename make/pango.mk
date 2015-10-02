@@ -68,7 +68,7 @@ PANGO_IPK=$(BUILD_DIR)/pango_$(PANGO_VERSION)-$(PANGO_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(PANGO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pango" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,7 +197,7 @@ $(PANGO_IPK): $(PANGO_BUILD_DIR)/.built
 	find $(PANGO_IPK_DIR) -type f -name '*.la' -exec rm -f {} \;
 	rm -rf $(PANGO_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(PANGO_IPK_DIR)/CONTROL/control
-	install -m 644 $(PANGO_SOURCE_DIR)/postinst $(PANGO_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(PANGO_SOURCE_DIR)/postinst $(PANGO_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PANGO_IPK_DIR)
 
 #

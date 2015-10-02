@@ -97,7 +97,7 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 	$(OPENSSH_UNZIP) $(DL_DIR)/$(OPENSSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPENSSH_PATCHES)" ; \
 		then cat $(OPENSSH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENSSH_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPENSSH_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENSSH_DIR)" != "$(OPENSSH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENSSH_DIR) $(OPENSSH_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ openssh: $(OPENSSH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/openssh
 #
 $(OPENSSH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openssh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,7 +179,7 @@ $(OPENSSH_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(OPENSSH_CONFLICTS)" >>$@
 
 $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openssh-sftp-server" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,20 +203,20 @@ $(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK): $(OPENSSH_BUILD_DIR)/.built
 	mv $(OPENSSH_IPK_DIR)/opt/bin/ssh $(OPENSSH_IPK_DIR)/opt/bin/openssh-ssh
 	rm -rf $(OPENSSH_IPK_DIR)/opt/share
 	rm -rf $(OPENSSH_IPK_DIR)/opt/man
-	install -d $(OPENSSH_IPK_DIR)/opt/etc/init.d/
-	install -d $(OPENSSH_IPK_DIR)/opt/var/run/
+	$(INSTALL) -d $(OPENSSH_IPK_DIR)/opt/etc/init.d/
+	$(INSTALL) -d $(OPENSSH_IPK_DIR)/opt/var/run/
 	rm -rf $(OPENSSH_SFTP_SERVER_IPK_DIR) \
 		$(BUILD_DIR)/openssh-sftp-server_*_$(TARGET_ARCH).ipk
-	install -d $(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
-	install -m 775 $(OPENSSH_IPK_DIR)/opt/libexec/sftp-server \
+	$(INSTALL) -d $(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
+	$(INSTALL) -m 775 $(OPENSSH_IPK_DIR)/opt/libexec/sftp-server \
 		$(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
 	rm -f $(OPENSSH_IPK_DIR)/opt/libexec/sftp-server
-	install -m 755 $(OPENSSH_SOURCE_DIR)/rc.openssh $(OPENSSH_IPK_DIR)/opt/etc/init.d/S40sshd
-	install -d $(OPENSSH_IPK_DIR)/opt/etc/default
-	install -m 755 $(OPENSSH_SOURCE_DIR)/openssh.default $(OPENSSH_IPK_DIR)/opt/etc/default/openssh
+	$(INSTALL) -m 755 $(OPENSSH_SOURCE_DIR)/rc.openssh $(OPENSSH_IPK_DIR)/opt/etc/init.d/S40sshd
+	$(INSTALL) -d $(OPENSSH_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 755 $(OPENSSH_SOURCE_DIR)/openssh.default $(OPENSSH_IPK_DIR)/opt/etc/default/openssh
 	$(MAKE) $(OPENSSH_IPK_DIR)/CONTROL/control
-	install -m 755 $(OPENSSH_SOURCE_DIR)/postinst $(OPENSSH_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(OPENSSH_SOURCE_DIR)/prerm $(OPENSSH_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(OPENSSH_SOURCE_DIR)/postinst $(OPENSSH_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(OPENSSH_SOURCE_DIR)/prerm $(OPENSSH_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
                 sed -i -e '/^[  ]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
                         $(OPENSSH_IPK_DIR)/CONTROL/postinst $(OPENSSH_IPK_DIR)/CONTROL/prerm; \

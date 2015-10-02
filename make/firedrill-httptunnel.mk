@@ -113,7 +113,7 @@ $(FIREDRILL-HTTPTUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(FIREDRILL-HTTPTUNNEL_
 	$(FIREDRILL-HTTPTUNNEL_UNZIP) $(DL_DIR)/$(FIREDRILL-HTTPTUNNEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FIREDRILL-HTTPTUNNEL_PATCHES)" ; \
 		then cat $(FIREDRILL-HTTPTUNNEL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FIREDRILL-HTTPTUNNEL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FIREDRILL-HTTPTUNNEL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FIREDRILL-HTTPTUNNEL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FIREDRILL-HTTPTUNNEL_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ firedrill-httptunnel-stage: $(FIREDRILL-HTTPTUNNEL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/firedrill-httptunnel
 #
 $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: firedrill-httptunnel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,10 +203,10 @@ $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/CONTROL/control:
 $(FIREDRILL-HTTPTUNNEL_IPK): $(FIREDRILL-HTTPTUNNEL_BUILD_DIR)/.built
 	rm -rf $(FIREDRILL-HTTPTUNNEL_IPK_DIR) $(BUILD_DIR)/firedrill-httptunnel_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(FIREDRILL-HTTPTUNNEL_BUILD_DIR) DESTDIR=$(FIREDRILL-HTTPTUNNEL_IPK_DIR) install-strip
-	install -d $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/bin
-	install -m 755 $(FIREDRILL-HTTPTUNNEL_BUILD_DIR)/src/httptunnel $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(FIREDRILL-HTTPTUNNEL_BUILD_DIR)/src/httptunnel $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/bin/httptunnel
-	install -d $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/share/doc/firedrill-httptunnel
+	$(INSTALL) -d $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/share/doc/firedrill-httptunnel
 	cp -rp $(<D)/docs/* $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/opt/share/doc/firedrill-httptunnel
 	$(MAKE) $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/CONTROL/control
 	echo $(FIREDRILL-HTTPTUNNEL_CONFFILES) | sed -e 's/ /\n/g' > $(FIREDRILL-HTTPTUNNEL_IPK_DIR)/CONTROL/conffiles

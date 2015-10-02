@@ -1,16 +1,16 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof byRequest`" ] ; then
-    /opt/bin/killall byRequest 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof byRequest`" ] ; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall byRequest 2>/dev/null
 fi
 
-if [ ! -f /opt/etc/byRequest.conf ] ;  then
-    cp /opt/usr/doc/byRequest/byRequest.conf /opt/etc/byRequest.conf
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/byRequest.conf ] ;  then
+    cp %OPTWARE_TARGET_PREFIX%/usr/doc/byRequest/byRequest.conf %OPTWARE_TARGET_PREFIX%/etc/byRequest.conf
     echo ; echo
-    echo "To complete the installation, you must edit /opt/etc/byRequest.conf,"
-    echo "and then run /opt/etc/init.d/S99byRequest to start the byRequest daemon."
+    echo "To complete the installation, you must edit %OPTWARE_TARGET_PREFIX%/etc/byRequest.conf,"
+    echo "and then run %OPTWARE_TARGET_PREFIX%/etc/init.d/S99byRequest to start the byRequest daemon."
     echo "e.g. You might want to set the logfile to /dev/null."
     echo
 else
-    /opt/etc/init.d/S99byRequest
+    %OPTWARE_TARGET_PREFIX%/etc/init.d/S99byRequest
 fi

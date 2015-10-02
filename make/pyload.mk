@@ -117,7 +117,7 @@ $(PYLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(PYLOAD_SOURCE) $(PYLOAD_PATCHES) ma
 	cd $(BUILD_DIR); $(PYLOAD_UNZIP) $(DL_DIR)/$(PYLOAD_SOURCE)
 	if test -n "$(PYLOAD_PATCHES)" ; \
 		then cat $(PYLOAD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PYLOAD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PYLOAD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PYLOAD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PYLOAD_DIR) $(@D) ; \
@@ -152,7 +152,7 @@ pyload-stage: $(PYLOAD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pyload
 #
 $(PYLOAD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pyload" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,16 +181,16 @@ $(PYLOAD_IPK_DIR)/CONTROL/control:
 $(PYLOAD_IPK): $(PYLOAD_BUILD_DIR)/.built
 	rm -rf $(PYLOAD_IPK_DIR) $(BUILD_DIR)/pyload_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PYLOAD_BUILD_DIR) DESTDIR=$(PYLOAD_IPK_DIR) install-strip
-	install -d $(PYLOAD_IPK_DIR)/opt/share/pyload
+	$(INSTALL) -d $(PYLOAD_IPK_DIR)/opt/share/pyload
 	cp -af $(PYLOAD_BUILD_DIR)/* $(PYLOAD_IPK_DIR)/opt/share/pyload
-	install -d $(PYLOAD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(PYLOAD_SOURCE_DIR)/rc.pyload $(PYLOAD_IPK_DIR)/opt/etc/init.d/S98Pyload
+	$(INSTALL) -d $(PYLOAD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(PYLOAD_SOURCE_DIR)/rc.pyload $(PYLOAD_IPK_DIR)/opt/etc/init.d/S98Pyload
 	ln -s S98Pyload $(PYLOAD_IPK_DIR)/opt/etc/init.d/K10Pyload
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PYLOAD_IPK_DIR)/opt/etc/init.d/SXXpyload
 	$(MAKE) $(PYLOAD_IPK_DIR)/CONTROL/control
-	install -m 755 $(PYLOAD_SOURCE_DIR)/postinst $(PYLOAD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(PYLOAD_SOURCE_DIR)/postinst $(PYLOAD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PYLOAD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PYLOAD_SOURCE_DIR)/prerm $(PYLOAD_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PYLOAD_SOURCE_DIR)/prerm $(PYLOAD_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PYLOAD_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

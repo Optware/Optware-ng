@@ -39,15 +39,15 @@ ntppatches: $(NTPPATCHES_BUILD_DIR)/.built
 $(NTPPATCHES_IPK): $(NTPPATCHES_BUILD_DIR)/.built
 	rm -rf $(NTPPATCHES_IPK_DIR) $(NTPPATCHES_IPK)
 	mkdir -p $(NTPPATCHES_IPK_DIR)
-	install -d $(NTPPATCHES_IPK_DIR)/unslung
-	install -m 755 $(NTPPATCHES_SOURCE_DIR)/rc.crond $(NTPPATCHES_IPK_DIR)/unslung/rc.crond
-	install -m 755 $(NTPPATCHES_SOURCE_DIR)/rc.rstimezone $(NTPPATCHES_IPK_DIR)/unslung/rc.rstimezone
-	install -d $(NTPPATCHES_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NTPPATCHES_SOURCE_DIR)/S10ntpclient $(NTPPATCHES_IPK_DIR)/opt/etc/init.d/S10ntpclient
-	install -d $(NTPPATCHES_IPK_DIR)/CONTROL
-	install -m 644 $(NTPPATCHES_SOURCE_DIR)/control  $(NTPPATCHES_IPK_DIR)/CONTROL/control
-	install -m 755 $(NTPPATCHES_SOURCE_DIR)/postinst $(NTPPATCHES_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(NTPPATCHES_SOURCE_DIR)/prerm    $(NTPPATCHES_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -d $(NTPPATCHES_IPK_DIR)/unslung
+	$(INSTALL) -m 755 $(NTPPATCHES_SOURCE_DIR)/rc.crond $(NTPPATCHES_IPK_DIR)/unslung/rc.crond
+	$(INSTALL) -m 755 $(NTPPATCHES_SOURCE_DIR)/rc.rstimezone $(NTPPATCHES_IPK_DIR)/unslung/rc.rstimezone
+	$(INSTALL) -d $(NTPPATCHES_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NTPPATCHES_SOURCE_DIR)/S10ntpclient $(NTPPATCHES_IPK_DIR)/opt/etc/init.d/S10ntpclient
+	$(INSTALL) -d $(NTPPATCHES_IPK_DIR)/CONTROL
+	$(INSTALL) -m 644 $(NTPPATCHES_SOURCE_DIR)/control  $(NTPPATCHES_IPK_DIR)/CONTROL/control
+	$(INSTALL) -m 755 $(NTPPATCHES_SOURCE_DIR)/postinst $(NTPPATCHES_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(NTPPATCHES_SOURCE_DIR)/prerm    $(NTPPATCHES_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTPPATCHES_IPK_DIR)
 
 ntppatches-ipk: $(NTPPATCHES_IPK)

@@ -2,16 +2,16 @@
 # (C) 2000 Sebastien GODARD (sysstat <at> wanadoo.fr)
 
 # Directories
-PREFIX = /opt
-SA_LIB_DIR = /opt/lib/sa
+PREFIX = %OPTWARE_TARGET_PREFIX%
+SA_LIB_DIR = %OPTWARE_TARGET_PREFIX%/lib/sa
 SADC_PATH = ${SA_LIB_DIR}/sadc
-SA_DIR = /opt/var/log/sa
-MAN_DIR = /opt/man
+SA_DIR = %OPTWARE_TARGET_PREFIX%/var/log/sa
+MAN_DIR = %OPTWARE_TARGET_PREFIX%/man
 CLEAN_SA_DIR = n
 YESTERDAY = 
 HISTORY = 7
 
-SYSCONFIG_DIR = /opt/etc/sysconfig
+SYSCONFIG_DIR = %OPTWARE_TARGET_PREFIX%/etc/sysconfig
 
 DFLAGS =
 SAS_DFLAGS =
@@ -43,8 +43,8 @@ MAN_GROUP =
 CRON_OWNER = root
 
 # Run-command directories
-RC_DIR = /opt/etc
-INIT_DIR = /opt/etc/init.d
+RC_DIR = %OPTWARE_TARGET_PREFIX%/etc
+INIT_DIR = %OPTWARE_TARGET_PREFIX%/etc/init.d
 INITD_DIR = init.d
 
 INSTALL_CRON = n

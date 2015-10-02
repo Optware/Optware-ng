@@ -18,7 +18,7 @@
  	$(INSTALL_BIN) $(BINS) $(DESTDIR)$(PREFIX)/bin
 +	cd  $(DESTDIR)$(PREFIX)/bin; $(STRIP_COMMAND) $(BINS)
  	install $(PERLSCRIPTS) $(DESTDIR)$(PREFIX)/bin
-+	cd  $(DESTDIR)$(PREFIX)/bin; sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(PERLSCRIPTS)
++	cd  $(DESTDIR)$(PREFIX)/bin; sed -i -e 's|/usr/bin/perl|%OPTWARE_TARGET_PREFIX%/bin/perl|g' $(PERLSCRIPTS)
  	
  	mkdir -p $(DESTDIR)$(PREFIX)/share/man/man1
  	install $(MANS) $(DESTDIR)$(PREFIX)/share/man/man1

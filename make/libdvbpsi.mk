@@ -109,7 +109,7 @@ $(LIBDVBPSI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVBPSI_SOURCE) $(LIBDVBPSI_PA
 	$(LIBDVBPSI_UNZIP) $(DL_DIR)/$(LIBDVBPSI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDVBPSI_PATCHES)" ; \
 		then cat $(LIBDVBPSI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBDVBPSI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBDVBPSI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBDVBPSI_DIR)" != "$(LIBDVBPSI_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBDVBPSI_DIR) $(LIBDVBPSI_BUILD_DIR) ; \
@@ -159,7 +159,7 @@ libdvbpsi-stage: $(LIBDVBPSI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdvbpsi
 #
 $(LIBDVBPSI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libdvbpsi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,15 +188,15 @@ $(LIBDVBPSI_IPK_DIR)/CONTROL/control:
 $(LIBDVBPSI_IPK): $(LIBDVBPSI_BUILD_DIR)/.built
 	rm -rf $(LIBDVBPSI_IPK_DIR) $(BUILD_DIR)/libdvbpsi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDVBPSI_BUILD_DIR) DESTDIR=$(LIBDVBPSI_IPK_DIR) install-strip
-#	install -d $(LIBDVBPSI_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBDVBPSI_SOURCE_DIR)/libdvbpsi.conf $(LIBDVBPSI_IPK_DIR)/opt/etc/libdvbpsi.conf
-#	install -d $(LIBDVBPSI_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBDVBPSI_SOURCE_DIR)/rc.libdvbpsi $(LIBDVBPSI_IPK_DIR)/opt/etc/init.d/SXXlibdvbpsi
+#	$(INSTALL) -d $(LIBDVBPSI_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBDVBPSI_SOURCE_DIR)/libdvbpsi.conf $(LIBDVBPSI_IPK_DIR)/opt/etc/libdvbpsi.conf
+#	$(INSTALL) -d $(LIBDVBPSI_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBDVBPSI_SOURCE_DIR)/rc.libdvbpsi $(LIBDVBPSI_IPK_DIR)/opt/etc/init.d/SXXlibdvbpsi
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXlibdvbpsi
 	$(MAKE) $(LIBDVBPSI_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBDVBPSI_SOURCE_DIR)/postinst $(LIBDVBPSI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBDVBPSI_SOURCE_DIR)/postinst $(LIBDVBPSI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBDVBPSI_SOURCE_DIR)/prerm $(LIBDVBPSI_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBDVBPSI_SOURCE_DIR)/prerm $(LIBDVBPSI_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(LIBDVBPSI_CONFFILES) | sed -e 's/ /\n/g' > $(LIBDVBPSI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDVBPSI_IPK_DIR)

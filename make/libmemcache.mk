@@ -108,7 +108,7 @@ $(LIBMEMCACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMEMCACHE_SOURCE) $(LIBMEMCA
 	$(LIBMEMCACHE_UNZIP) $(DL_DIR)/$(LIBMEMCACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMEMCACHE_PATCHES)" ; \
 		then cat $(LIBMEMCACHE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMEMCACHE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMEMCACHE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMEMCACHE_DIR)" != "$(LIBMEMCACHE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBMEMCACHE_DIR) $(LIBMEMCACHE_BUILD_DIR) ; \
@@ -165,7 +165,7 @@ libmemcache-stage: $(LIBMEMCACHE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmemcache
 #
 $(LIBMEMCACHE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmemcache" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,13 +196,13 @@ $(LIBMEMCACHE_IPK): $(LIBMEMCACHE_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBMEMCACHE_BUILD_DIR) DESTDIR=$(LIBMEMCACHE_IPK_DIR) install
 	rm -f $(LIBMEMCACHE_IPK_DIR)/opt/lib/*.la
 	$(STRIP_COMMAND) $(LIBMEMCACHE_IPK_DIR)/opt/lib/libmemcache.so.[0-9]*.[0-9]*.[0-9]*
-#	install -d $(LIBMEMCACHE_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBMEMCACHE_SOURCE_DIR)/libmemcache.conf $(LIBMEMCACHE_IPK_DIR)/opt/etc/libmemcache.conf
-#	install -d $(LIBMEMCACHE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBMEMCACHE_SOURCE_DIR)/rc.libmemcache $(LIBMEMCACHE_IPK_DIR)/opt/etc/init.d/SXXlibmemcache
+#	$(INSTALL) -d $(LIBMEMCACHE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBMEMCACHE_SOURCE_DIR)/libmemcache.conf $(LIBMEMCACHE_IPK_DIR)/opt/etc/libmemcache.conf
+#	$(INSTALL) -d $(LIBMEMCACHE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMEMCACHE_SOURCE_DIR)/rc.libmemcache $(LIBMEMCACHE_IPK_DIR)/opt/etc/init.d/SXXlibmemcache
 	$(MAKE) $(LIBMEMCACHE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBMEMCACHE_SOURCE_DIR)/postinst $(LIBMEMCACHE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBMEMCACHE_SOURCE_DIR)/prerm $(LIBMEMCACHE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBMEMCACHE_SOURCE_DIR)/postinst $(LIBMEMCACHE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBMEMCACHE_SOURCE_DIR)/prerm $(LIBMEMCACHE_IPK_DIR)/CONTROL/prerm
 	echo $(LIBMEMCACHE_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMEMCACHE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMEMCACHE_IPK_DIR)
 

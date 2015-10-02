@@ -1,3 +1,3 @@
 #!/bin/sh
-cat /opt/doc/cups/cups-install.doc
+cat %OPTWARE_TARGET_PREFIX%/doc/cups/cups-install.doc
 exit 0

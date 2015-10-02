@@ -83,7 +83,7 @@ $(CPIO_BUILD_DIR)/.configured: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES) make/cpi
 	rm -rf $(BUILD_DIR)/$(CPIO_DIR) $(@D)
 	$(CPIO_UNZIP) $(DL_DIR)/$(CPIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CPIO_PATCHES)"; then \
-		cat $(CPIO_PATCHES) | patch -d $(BUILD_DIR)/$(CPIO_DIR) -p1; \
+		cat $(CPIO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CPIO_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(CPIO_DIR) $(@D)
 	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/gnu/stdio.in.h
@@ -127,7 +127,7 @@ cpio-stage: $(STAGING_LIB_DIR)/libcpio.so.$(CPIO_VERSION)
 # necessary to create a seperate control file under sources/cpio
 #
 $(CPIO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cpio" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -153,7 +153,7 @@ $(CPIO_IPK_DIR)/CONTROL/control:
 #
 $(CPIO_IPK): $(CPIO_BUILD_DIR)/.built
 	rm -rf $(CPIO_IPK_DIR) $(BUILD_DIR)/cpio_*_$(TARGET_ARCH).ipk
-	install -d $(CPIO_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(CPIO_IPK_DIR)/opt/bin
 	$(MAKE) -C $(CPIO_BUILD_DIR) DESTDIR=$(CPIO_IPK_DIR) install-strip
 	rm -f $(CPIO_IPK_DIR)/opt/share/info/dir
 	mv $(CPIO_IPK_DIR)/opt/bin/cpio $(CPIO_IPK_DIR)/opt/bin/cpio-cpio

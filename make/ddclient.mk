@@ -35,7 +35,7 @@ ddclient-source: $(DL_DIR)/$(DDCLIENT_SOURCE) $(DDCLIENT_PATCHES)
 $(DDCLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(DDCLIENT_SOURCE) $(DDCLIENT_PATCHES) make/ddclient.mk
 	rm -rf $(BUILD_DIR)/$(DDCLIENT_DIR) $(DDCLIENT_BUILD_DIR)
 	$(DDCLIENT_UNZIP) $(DL_DIR)/$(DDCLIENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(DDCLIENT_PATCHES) | patch -d $(BUILD_DIR)/$(DDCLIENT_DIR) -p0
+	cat $(DDCLIENT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DDCLIENT_DIR) -p0
 	mv $(BUILD_DIR)/$(DDCLIENT_DIR) $(@D)
 #	(cd $(DDCLIENT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(DDCLIENT_BUILD_DIR)/.staged: $(DDCLIENT_BUILD_DIR)/.built
 ddclient-stage: $(DDCLIENT_BUILD_DIR)/.staged
 
 $(DDCLIENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ddclient" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -82,14 +82,14 @@ $(DDCLIENT_IPK_DIR)/CONTROL/control:
 $(DDCLIENT_IPK): $(DDCLIENT_BUILD_DIR)/.built
 	rm -rf $(DDCLIENT_IPK_DIR) $(BUILD_DIR)/ddclient_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(DDCLIENT_BUILD_DIR) DESTDIR=$(DDCLIENT_IPK_DIR) install
-	install -d $(DDCLIENT_IPK_DIR)/opt/sbin
-	install -m 755 $(DDCLIENT_BUILD_DIR)/ddclient $(DDCLIENT_IPK_DIR)/opt/sbin
-	install -d $(DDCLIENT_IPK_DIR)/opt/etc/ddclient
-	install -m 644 $(DDCLIENT_BUILD_DIR)/sample-etc_ddclient.conf $(DDCLIENT_IPK_DIR)/opt/etc/ddclient/ddclient.conf-dist
-	install -d $(DDCLIENT_IPK_DIR)/opt/var/cache/ddclient
-	install -d $(DDCLIENT_IPK_DIR)/opt/tmp
-	install -d $(DDCLIENT_IPK_DIR)/opt/share/doc/ddclient
-	install $(DDCLIENT_BUILD_DIR)/README* $(DDCLIENT_IPK_DIR)/opt/share/doc/ddclient
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(DDCLIENT_BUILD_DIR)/ddclient $(DDCLIENT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/etc/ddclient
+	$(INSTALL) -m 644 $(DDCLIENT_BUILD_DIR)/sample-etc_ddclient.conf $(DDCLIENT_IPK_DIR)/opt/etc/ddclient/ddclient.conf-dist
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/var/cache/ddclient
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/tmp
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/share/doc/ddclient
+	$(INSTALL) $(DDCLIENT_BUILD_DIR)/README* $(DDCLIENT_IPK_DIR)/opt/share/doc/ddclient
 #	find $(DDCLIENT_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 #	(cd $(DDCLIENT_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \

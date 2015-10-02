@@ -148,13 +148,13 @@ diff -Naur miniupnpd-1.9.20141209/linux/miniupnpd.init.d.script miniupnpd-1.9.20
  
 -MINIUPNPD=/usr/sbin/miniupnpd
 -ARGS='-f /etc/miniupnpd/miniupnpd.conf'
-+MINIUPNPD=/opt/sbin/miniupnpd
-+ARGS='-f /opt/etc/miniupnpd/miniupnpd.conf'
++MINIUPNPD=%OPTWARE_TARGET_PREFIX%/sbin/miniupnpd
++ARGS='-f %OPTWARE_TARGET_PREFIX%/etc/miniupnpd/miniupnpd.conf'
  
 -IPTABLES_CREATE=/etc/miniupnpd/iptables_init.sh
 -IPTABLES_REMOVE=/etc/miniupnpd/iptables_removeall.sh
-+IPTABLES_CREATE=/opt/etc/miniupnpd/iptables_init.sh
-+IPTABLES_REMOVE=/opt/etc/miniupnpd/iptables_removeall.sh
++IPTABLES_CREATE=%OPTWARE_TARGET_PREFIX%/etc/miniupnpd/iptables_init.sh
++IPTABLES_REMOVE=%OPTWARE_TARGET_PREFIX%/etc/miniupnpd/iptables_removeall.sh
  
  test -f $MINIUPNPD || exit 0
  
@@ -199,7 +199,7 @@ diff -Naur miniupnpd-1.9.20141209/linux/miniupnpd.init.d.script miniupnpd-1.9.20
 +	$IPTABLES_REMOVE > /dev/null 2>&1                                          
 +	$IPTABLES_CREATE > /dev/null 2>&1                                  
 +	start-stop-daemon -S -q -p /var/run/miniupnpd.pid -x $MINIUPNPD -- $ARGS   
-+*)      log_action_msg "Usage: /opt/etc/init.d/miniupnpd {start|stop|restart|reload|force-reload}"
++*)      log_action_msg "Usage: %OPTWARE_TARGET_PREFIX%/etc/init.d/miniupnpd {start|stop|restart|reload|force-reload}"
  	exit 2
  	;;
  esac
@@ -497,7 +497,7 @@ diff -Naur miniupnpd-1.4.20100921/miniupnpd.c miniupnpd-1.4.20100921-optware/min
  
  #ifndef DEFAULT_CONFIG
 -#define DEFAULT_CONFIG "/etc/miniupnpd.conf"
-+#define DEFAULT_CONFIG "/opt/etc/miniupnpd/miniupnpd.conf"
++#define DEFAULT_CONFIG "%OPTWARE_TARGET_PREFIX%/etc/miniupnpd/miniupnpd.conf"
  #endif
  
  #ifdef USE_MINIUPNPDCTL

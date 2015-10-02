@@ -110,7 +110,7 @@ $(OPENOBEX_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENOBEX_SOURCE) $(OPENOBEX_PATCH
 	$(OPENOBEX_UNZIP) $(DL_DIR)/$(OPENOBEX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPENOBEX_PATCHES)" ; \
 		then cat $(OPENOBEX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENOBEX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPENOBEX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENOBEX_DIR)" != "$(OPENOBEX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENOBEX_DIR) $(OPENOBEX_BUILD_DIR) ; \
@@ -167,7 +167,7 @@ openobex-stage: $(OPENOBEX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/openobex
 #
 $(OPENOBEX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openobex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,15 +197,15 @@ $(OPENOBEX_IPK): $(OPENOBEX_BUILD_DIR)/.built
 	rm -rf $(OPENOBEX_IPK_DIR) $(BUILD_DIR)/openobex_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENOBEX_BUILD_DIR) DESTDIR=$(OPENOBEX_IPK_DIR) install-strip
 	rm -f $(OPENOBEX_IPK_DIR)/opt/lib/libopenobex.la
-#	install -d $(OPENOBEX_IPK_DIR)/opt/etc/
-#	install -m 644 $(OPENOBEX_SOURCE_DIR)/openobex.conf $(OPENOBEX_IPK_DIR)/opt/etc/openobex.conf
-#	install -d $(OPENOBEX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(OPENOBEX_SOURCE_DIR)/rc.openobex $(OPENOBEX_IPK_DIR)/opt/etc/init.d/SXXopenobex
+#	$(INSTALL) -d $(OPENOBEX_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(OPENOBEX_SOURCE_DIR)/openobex.conf $(OPENOBEX_IPK_DIR)/opt/etc/openobex.conf
+#	$(INSTALL) -d $(OPENOBEX_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(OPENOBEX_SOURCE_DIR)/rc.openobex $(OPENOBEX_IPK_DIR)/opt/etc/init.d/SXXopenobex
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPENOBEX_IPK_DIR)/opt/etc/init.d/SXXopenobex
 	$(MAKE) $(OPENOBEX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(OPENOBEX_SOURCE_DIR)/postinst $(OPENOBEX_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(OPENOBEX_SOURCE_DIR)/postinst $(OPENOBEX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPENOBEX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(OPENOBEX_SOURCE_DIR)/prerm $(OPENOBEX_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(OPENOBEX_SOURCE_DIR)/prerm $(OPENOBEX_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPENOBEX_IPK_DIR)/CONTROL/prerm
 	echo $(OPENOBEX_CONFFILES) | sed -e 's/ /\n/g' > $(OPENOBEX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENOBEX_IPK_DIR)

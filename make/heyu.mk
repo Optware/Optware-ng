@@ -116,7 +116,7 @@ $(HEYU_BUILD_DIR)/.configured: $(DL_DIR)/$(HEYU_SOURCE) $(HEYU_PATCHES) make/hey
 	$(HEYU_UNZIP) $(DL_DIR)/$(HEYU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HEYU_PATCHES)" ; \
 		then cat $(HEYU_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HEYU_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HEYU_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HEYU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HEYU_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ heyu: $(HEYU_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/heyu
 #
 $(HEYU_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: heyu" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,23 +191,23 @@ $(HEYU_IPK_DIR)/CONTROL/control:
 #
 $(HEYU_IPK): $(HEYU_BUILD_DIR)/.built
 	rm -rf $(HEYU_IPK_DIR) $(BUILD_DIR)/heyu_*_$(TARGET_ARCH).ipk
-	install -d $(HEYU_IPK_DIR)/opt/bin
-	install -d $(HEYU_IPK_DIR)/opt/man/man1
-	install -d $(HEYU_IPK_DIR)/opt/man/man5
-	install -d -m0777 $(HEYU_IPK_DIR)/opt/etc/heyu
-	install -d -m1777 $(HEYU_IPK_DIR)/opt/var/spool/heyu
-	install -d -m0777 $(HEYU_IPK_DIR)/opt/var/run/heyu
-	install -m0644 $(HEYU_BUILD_DIR)/x10config.sample $(HEYU_IPK_DIR)/opt/etc/heyu/x10.conf.sample
-	install -m0644 $(HEYU_BUILD_DIR)/x10.sched.sample $(HEYU_IPK_DIR)/opt/etc/heyu/
-	install -m0755 $(HEYU_BUILD_DIR)/heyu $(HEYU_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(HEYU_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(HEYU_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(HEYU_IPK_DIR)/opt/man/man5
+	$(INSTALL) -d -m0777 $(HEYU_IPK_DIR)/opt/etc/heyu
+	$(INSTALL) -d -m1777 $(HEYU_IPK_DIR)/opt/var/spool/heyu
+	$(INSTALL) -d -m0777 $(HEYU_IPK_DIR)/opt/var/run/heyu
+	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/x10config.sample $(HEYU_IPK_DIR)/opt/etc/heyu/x10.conf.sample
+	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/x10.sched.sample $(HEYU_IPK_DIR)/opt/etc/heyu/
+	$(INSTALL) -m0755 $(HEYU_BUILD_DIR)/heyu $(HEYU_IPK_DIR)/opt/bin
 	$(TARGET_STRIP) $(HEYU_IPK_DIR)/opt/bin/heyu
-	install -m0644 $(HEYU_BUILD_DIR)/*.1 $(HEYU_IPK_DIR)/opt/man/man1/
-	install -m0644 $(HEYU_BUILD_DIR)/*.5 $(HEYU_IPK_DIR)/opt/man/man5/
-	install -d $(HEYU_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(HEYU_SOURCE_DIR)/rc.heyu $(HEYU_IPK_DIR)/opt/etc/init.d/S99heyu
+	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/*.1 $(HEYU_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/*.5 $(HEYU_IPK_DIR)/opt/man/man5/
+	$(INSTALL) -d $(HEYU_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(HEYU_SOURCE_DIR)/rc.heyu $(HEYU_IPK_DIR)/opt/etc/init.d/S99heyu
 	$(MAKE) $(HEYU_IPK_DIR)/CONTROL/control
-	install -m 755 $(HEYU_SOURCE_DIR)/postinst $(HEYU_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(HEYU_SOURCE_DIR)/prerm $(HEYU_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(HEYU_SOURCE_DIR)/postinst $(HEYU_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(HEYU_SOURCE_DIR)/prerm $(HEYU_IPK_DIR)/CONTROL/prerm
 	echo $(HEYU_CONFFILES) | sed -e 's/ /\n/g' > $(HEYU_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HEYU_IPK_DIR)
 

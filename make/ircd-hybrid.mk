@@ -122,7 +122,7 @@ $(IRCD-HYBRID_BUILD_DIR)/.configured: $(DL_DIR)/$(IRCD-HYBRID_SOURCE) $(IRCD-HYB
 	$(IRCD-HYBRID_UNZIP) $(DL_DIR)/$(IRCD-HYBRID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IRCD-HYBRID_PATCHES)" ; \
 		then cat $(IRCD-HYBRID_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IRCD-HYBRID_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IRCD-HYBRID_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IRCD-HYBRID_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IRCD-HYBRID_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ ircd-hybrid-stage: #$(IRCD-HYBRID_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ircd-hybrid
 #
 $(IRCD-HYBRID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ircd-hybrid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,21 +203,21 @@ $(IRCD-HYBRID_IPK): $(IRCD-HYBRID_BUILD_DIR)/.built
 	rm -rf $(IRCD-HYBRID_IPK_DIR) $(BUILD_DIR)/ircd-hybrid_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IRCD-HYBRID_BUILD_DIR) DESTDIR=$(IRCD-HYBRID_IPK_DIR) install-strip
 	mv -f $(IRCD-HYBRID_IPK_DIR)/opt/etc/reference.conf $(IRCD-HYBRID_IPK_DIR)/opt/etc/ircd.conf
-	install -d $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(IRCD-HYBRID_SOURCE_DIR)/S98ircd-hybrid $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d/
-#	install -d $(IRCD-HYBRID_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(IRCD-HYBRID_SOURCE_DIR)/S98ircd-hybrid $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d/
+#	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)/opt/bin
 #	$(STRIP_COMMAND) $(IRCD-HYBRID_BUILD_DIR)/src/ircd -o $(IRCD-HYBRID_IPK_DIR)/opt/bin/ircd
-#	install -d $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid
-#	install -m 644 $(IRCD-HYBRID_BUILD_DIR)/etc/simple.conf $(IRCD-HYBRID_IPK_DIR)/opt/doc/ircd-hybrid/simple.conf
-#	install -d $(IRCD-HYBRID_IPK_DIR)/opt/etc/
-#	install -m 644 $(IRCD-HYBRID_SOURCE_DIR)/ircd-hybrid.conf $(IRCD-HYBRID_IPK_DIR)/opt/etc/ircd-hybrid.conf
-#	install -d $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(IRCD-HYBRID_SOURCE_DIR)/rc.ircd-hybrid $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d/SXXircd-hybrid
+#	$(INSTALL) -d $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid
+#	$(INSTALL) -m 644 $(IRCD-HYBRID_BUILD_DIR)/etc/simple.conf $(IRCD-HYBRID_IPK_DIR)/opt/doc/ircd-hybrid/simple.conf
+#	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(IRCD-HYBRID_SOURCE_DIR)/ircd-hybrid.conf $(IRCD-HYBRID_IPK_DIR)/opt/etc/ircd-hybrid.conf
+#	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(IRCD-HYBRID_SOURCE_DIR)/rc.ircd-hybrid $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d/SXXircd-hybrid
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d/SXXircd-hybrid
 	$(MAKE) $(IRCD-HYBRID_IPK_DIR)/CONTROL/control
-#	install -m 755 $(IRCD-HYBRID_SOURCE_DIR)/postinst $(IRCD-HYBRID_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(IRCD-HYBRID_SOURCE_DIR)/postinst $(IRCD-HYBRID_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IRCD-HYBRID_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(IRCD-HYBRID_SOURCE_DIR)/prerm $(IRCD-HYBRID_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(IRCD-HYBRID_SOURCE_DIR)/prerm $(IRCD-HYBRID_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IRCD-HYBRID_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

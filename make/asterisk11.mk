@@ -312,7 +312,7 @@ endif
 	$(ASTERISK11_UNZIP) $(DL_DIR)/$(ASTERISK11_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK11_PATCHES)" ; \
 		then cat $(ASTERISK11_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK11_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASTERISK11_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK11_DIR)" != "$(ASTERISK11_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK11_DIR) $(ASTERISK11_BUILD_DIR) ; \
@@ -447,7 +447,7 @@ asterisk11-stage: $(ASTERISK11_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/asterisk
 #
 $(ASTERISK11_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: asterisk11" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

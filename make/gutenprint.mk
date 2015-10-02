@@ -94,7 +94,7 @@ $(GUTENPRINT_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(GUTENPRINT_SOURCE) make/gutenpr
 	$(GUTENPRINT_UNZIP) $(DL_DIR)/$(GUTENPRINT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(GUTENPRINT_PATCHES)" ; \
 		then cat $(GUTENPRINT_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(GUTENPRINT_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(GUTENPRINT_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(GUTENPRINT_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(GUTENPRINT_DIR) $(@D) ; \
@@ -129,7 +129,7 @@ $(GUTENPRINT_BUILD_DIR)/.configured: $(DL_DIR)/$(GUTENPRINT_SOURCE) $(GUTENPRINT
 	$(GUTENPRINT_UNZIP) $(DL_DIR)/$(GUTENPRINT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GUTENPRINT_PATCHES)" ; \
 		then cat $(GUTENPRINT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GUTENPRINT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GUTENPRINT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GUTENPRINT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GUTENPRINT_DIR) $(@D) ; \
@@ -175,7 +175,7 @@ $(GUTENPRINT_BUILD_DIR)/.staged: $(GUTENPRINT_BUILD_DIR)/.built
 gutenprint-stage: $(GUTENPRINT_BUILD_DIR)/.staged
 
 $(GUTENPRINT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gutenprint" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,7 +190,7 @@ $(GUTENPRINT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(GUTENPRINT_CONFLICTS)" >>$@
 
 $(GUTENPRINT-FOOMATIC-DB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: foomatic-db-gutenprint" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,7 +205,7 @@ $(GUTENPRINT-FOOMATIC-DB_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: " >>$@
 
 $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cups-driver-gutenprint" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -228,15 +228,15 @@ $(GUTENPRINT_IPK): $(GUTENPRINT_BUILD_DIR)/.built
 
 $(GUTENPRINT-CUPS-DRIVER_IPK): $(GUTENPRINT_HOST_BUILD_DIR)/.built
 	rm -rf $(GUTENPRINT-CUPS-DRIVER_IPK_DIR) $(BUILD_DIR)/cups-driver-gutenprint_*_$(TARGET_ARCH).ipk
-	install -d $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/opt/share/cups/model
+	$(INSTALL) -d $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/opt/share/cups/model
 	cd $(GUTENPRINT_HOST_BUILD_DIR)/src/cups/ppd/C; \
-		install *ppd.gz $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/opt/share/cups/model/
+		$(INSTALL) *ppd.gz $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/opt/share/cups/model/
 	$(MAKE) $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)
 
 $(GUTENPRINT-FOOMATIC-DB_IPK): $(GUTENPRINT_HOST_BUILD_DIR)/.built
 	rm -rf $(GUTENPRINT-FOOMATIC-DB_IPK_DIR) $(BUILD_DIR)/foomatic-db-gutenprint_*_$(TARGET_ARCH).ipk
-	install -d $(GUTENPRINT-FOOMATIC-DB_IPK_DIR)/opt/share/foomatic
+	$(INSTALL) -d $(GUTENPRINT-FOOMATIC-DB_IPK_DIR)/opt/share/foomatic
 	cp -rp $(GUTENPRINT_HOST_BUILD_DIR)/src/foomatic/foomatic-db \
 		$(GUTENPRINT-FOOMATIC-DB_IPK_DIR)/opt/share/foomatic/db
 	$(MAKE) $(GUTENPRINT-FOOMATIC-DB_IPK_DIR)/CONTROL/control

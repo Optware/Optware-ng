@@ -104,7 +104,7 @@ mediawiki-source: $(DL_DIR)/$(MEDIAWIKI_SOURCE) $(MEDIAWIKI_PATCHES)
 $(MEDIAWIKI_BUILD_DIR)/.configured: $(DL_DIR)/$(MEDIAWIKI_SOURCE) $(MEDIAWIKI_PATCHES)
 	rm -rf $(BUILD_DIR)/$(MEDIAWIKI_DIR) $(MEDIAWIKI_BUILD_DIR)
 	$(MEDIAWIKI_UNZIP) $(DL_DIR)/$(MEDIAWIKI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(MEDIAWIKI_PATCHES) | patch -d $(BUILD_DIR)/$(MEDIAWIKI_DIR) -p1
+	#cat $(MEDIAWIKI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MEDIAWIKI_DIR) -p1
 	mv $(BUILD_DIR)/$(MEDIAWIKI_DIR) $(MEDIAWIKI_BUILD_DIR)
 	( cd $(MEDIAWIKI_BUILD_DIR) ; \
 		sed -i -e 's/mmcache_/eaccelerator_/g' \
@@ -143,7 +143,7 @@ mediawiki-stage: $(MEDIAWIKI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mediawiki
 #
 $(MEDIAWIKI_IPK_DIR)/CONTROL/control:
-	@install -d $(MEDIAWIKI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(MEDIAWIKI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: mediawiki" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -171,12 +171,12 @@ $(MEDIAWIKI_IPK_DIR)/CONTROL/control:
 #
 $(MEDIAWIKI_IPK): $(MEDIAWIKI_BUILD_DIR)/.built
 	rm -rf $(MEDIAWIKI_IPK_DIR) $(BUILD_DIR)/mediawiki_*_$(TARGET_ARCH).ipk
-	install -d $(MEDIAWIKI_IPK_DIR)$(MEDIAWIKI_INSTALL_DIR)
+	$(INSTALL) -d $(MEDIAWIKI_IPK_DIR)$(MEDIAWIKI_INSTALL_DIR)
 	cp -a $(MEDIAWIKI_BUILD_DIR)/* $(MEDIAWIKI_IPK_DIR)$(MEDIAWIKI_INSTALL_DIR)/
 	chmod a+rwx $(MEDIAWIKI_IPK_DIR)$(MEDIAWIKI_INSTALL_DIR)/config
 	$(MAKE) $(MEDIAWIKI_IPK_DIR)/CONTROL/control
-	install -m 755 $(MEDIAWIKI_SOURCE_DIR)/postinst $(MEDIAWIKI_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(MEDIAWIKI_SOURCE_DIR)/prerm $(MEDIAWIKI_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(MEDIAWIKI_SOURCE_DIR)/postinst $(MEDIAWIKI_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(MEDIAWIKI_SOURCE_DIR)/prerm $(MEDIAWIKI_IPK_DIR)/CONTROL/prerm
 	#echo $(MEDIAWIKI_CONFFILES) | sed -e 's/ /\n/g' > $(MEDIAWIKI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MEDIAWIKI_IPK_DIR)
 

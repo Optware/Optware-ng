@@ -115,7 +115,7 @@ $(DNSSEC-TRIGGER_BUILD_DIR)/.configured: $(DL_DIR)/$(DNSSEC-TRIGGER_SOURCE) $(DN
 	$(DNSSEC-TRIGGER_UNZIP) $(DL_DIR)/$(DNSSEC-TRIGGER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DNSSEC-TRIGGER_PATCHES)" ; \
 		then cat $(DNSSEC-TRIGGER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DNSSEC-TRIGGER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DNSSEC-TRIGGER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DNSSEC-TRIGGER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DNSSEC-TRIGGER_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ dnssec-trigger-stage: $(DNSSEC-TRIGGER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dnssec-trigger
 #
 $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dnssec-trigger" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,17 +195,17 @@ $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/control:
 $(DNSSEC-TRIGGER_IPK): $(DNSSEC-TRIGGER_BUILD_DIR)/.built
 	rm -rf $(DNSSEC-TRIGGER_IPK_DIR) $(BUILD_DIR)/dnssec-trigger_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DNSSEC-TRIGGER_BUILD_DIR) DESTDIR=$(DNSSEC-TRIGGER_IPK_DIR) install
-	install -d $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/
-	install -m 644 $(DNSSEC-TRIGGER_BUILD_DIR)/example.conf $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/dnssec-trigger.conf
+	$(INSTALL) -d $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(DNSSEC-TRIGGER_BUILD_DIR)/example.conf $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/dnssec-trigger.conf
 	$(STRIP_COMMAND) \
 		$(DNSSEC-TRIGGER_IPK_DIR)/opt/sbin/dnssec-trigger-control \
 		$(DNSSEC-TRIGGER_IPK_DIR)/opt/sbin/dnssec-triggerd
-#	install -m 755 $(DNSSEC-TRIGGER_SOURCE_DIR)/rc.dnssec-trigger $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/init.d/SXXdnssec-trigger
+#	$(INSTALL) -m 755 $(DNSSEC-TRIGGER_SOURCE_DIR)/rc.dnssec-trigger $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/init.d/SXXdnssec-trigger
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/init.d/SXXdnssec-trigger
 	$(MAKE) $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DNSSEC-TRIGGER_SOURCE_DIR)/postinst $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DNSSEC-TRIGGER_SOURCE_DIR)/postinst $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DNSSEC-TRIGGER_SOURCE_DIR)/prerm $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DNSSEC-TRIGGER_SOURCE_DIR)/prerm $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

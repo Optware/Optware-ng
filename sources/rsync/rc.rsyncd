@@ -8,8 +8,8 @@ fi
 
 rm -f /var/run/rsyncd.pid
 
-[ -e /opt/etc/default/rsync ] && . /opt/etc/default/rsync
+[ -e %OPTWARE_TARGET_PREFIX%/etc/default/rsync ] && . %OPTWARE_TARGET_PREFIX%/etc/default/rsync
 
 if ${RSYNC_ENABLE} ; then
-  /opt/bin/rsync --daemon ${RSYNC_OPTS}
+  %OPTWARE_TARGET_PREFIX%/bin/rsync --daemon ${RSYNC_OPTS}
 fi

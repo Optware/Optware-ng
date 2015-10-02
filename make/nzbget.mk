@@ -113,7 +113,7 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES) ma
 	$(NZBGET_UNZIP) $(DL_DIR)/$(NZBGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NZBGET_PATCHES)" ; \
 		then cat $(NZBGET_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NZBGET_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NZBGET_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NZBGET_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NZBGET_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ nzbget-stage: $(NZBGET_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nzbget
 #
 $(NZBGET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nzbget" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,11 +199,11 @@ $(NZBGET_IPK): $(NZBGET_BUILD_DIR)/.built
 	rm -rf $(NZBGET_IPK_DIR) $(BUILD_DIR)/nzbget_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NZBGET_BUILD_DIR) DESTDIR=$(NZBGET_IPK_DIR) install
 	$(STRIP_COMMAND) $(NZBGET_IPK_DIR)/opt/bin/nzbget
-#	install -d $(NZBGET_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NZBGET_SOURCE_DIR)/rc.nzbget $(NZBGET_IPK_DIR)/opt/etc/init.d/SXXnzbget
+#	$(INSTALL) -d $(NZBGET_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NZBGET_SOURCE_DIR)/rc.nzbget $(NZBGET_IPK_DIR)/opt/etc/init.d/SXXnzbget
 	$(MAKE) $(NZBGET_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NZBGET_SOURCE_DIR)/postinst $(NZBGET_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NZBGET_SOURCE_DIR)/prerm $(NZBGET_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NZBGET_SOURCE_DIR)/postinst $(NZBGET_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NZBGET_SOURCE_DIR)/prerm $(NZBGET_IPK_DIR)/CONTROL/prerm
 #	echo $(NZBGET_CONFFILES) | sed -e 's/ /\n/g' > $(NZBGET_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NZBGET_IPK_DIR)
 

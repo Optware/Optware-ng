@@ -61,7 +61,7 @@ FIXESEXT_IPK=$(BUILD_DIR)/fixesext_$(FIXESEXT_VERSION)-$(FIXESEXT_IPK_VERSION)_$
 # Automatically create a ipkg control file
 #
 $(FIXESEXT_IPK_DIR)/CONTROL/control:
-	@install -d $(FIXESEXT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(FIXESEXT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: fixesext" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -104,7 +104,7 @@ $(FIXESEXT_PATCHES) make/fixesext.mk
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz
 	if test -n "$(FIXESEXT_PATCHES)" ; \
 		then cat $(FIXESEXT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FIXESEXT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FIXESEXT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FIXESEXT_DIR)" != "$(FIXESEXT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FIXESEXT_DIR) $(FIXESEXT_BUILD_DIR) ; \

@@ -98,7 +98,7 @@ $(LIBXML2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIBXML2_DIR) $(@D)
 	$(LIBXML2_UNZIP) $(DL_DIR)/$(LIBXML2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(LIBXML2_PATCHES) | patch -d $(BUILD_DIR)/$(LIBXML2_DIR) -p1
+	cat $(LIBXML2_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBXML2_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBXML2_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -153,7 +153,7 @@ libxml2-stage: $(LIBXML2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libxml2
 #
 $(LIBXML2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libxml2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

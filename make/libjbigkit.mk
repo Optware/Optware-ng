@@ -57,9 +57,9 @@ $(LIBJBIGKIT_BUILD_DIR)/.built: $(LIBJBIGKIT_BUILD_DIR)/.configured
 libjbigkit: $(LIBJBIGKIT_BUILD_DIR)/.built
 
 $(LIBJBIGKIT_BUILD_DIR)/.staged: $(LIBJBIGKIT_BUILD_DIR)/.built
-	install -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
 	cp $(LIBJBIGKIT_BUILD_DIR)/libjbig/*.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
 	cp $(LIBJBIGKIT_BUILD_DIR)/libjbig/*.so $(STAGING_LIB_DIR)
 	touch $@
 
@@ -71,7 +71,7 @@ libjbigkit-stage: $(LIBJBIGKIT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nylon
 #
 $(LIBJBIGKIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libjbigkit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -86,9 +86,9 @@ $(LIBJBIGKIT_IPK_DIR)/CONTROL/control:
 
 $(LIBJBIGKIT_IPK): $(LIBJBIGKIT_BUILD_DIR)/.built
 	rm -rf $(LIBJBIGKIT_IPK_DIR) $(BUILD_DIR)/libjbigkit_*_$(TARGET_ARCH).ipk
-	install -d $(LIBJBIGKIT_IPK_DIR)/opt/include
+	$(INSTALL) -d $(LIBJBIGKIT_IPK_DIR)/opt/include
 	cp $(LIBJBIGKIT_BUILD_DIR)/libjbig/*.h $(LIBJBIGKIT_IPK_DIR)/opt/include
-	install -d $(LIBJBIGKIT_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(LIBJBIGKIT_IPK_DIR)/opt/lib
 	cp $(LIBJBIGKIT_BUILD_DIR)/libjbig/*.so $(LIBJBIGKIT_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(LIBJBIGKIT_IPK_DIR)/opt/lib/*.so
 	$(MAKE) $(LIBJBIGKIT_IPK_DIR)/CONTROL/control

@@ -108,7 +108,7 @@ $(TAGED_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGED_SOURCE) $(TAGED_PATCHES)
 	$(MAKE) libid3tag-stage readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(TAGED_DIR) $(@D)
 	$(TAGED_UNZIP) $(DL_DIR)/$(TAGED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(TAGED_PATCHES) | patch -d $(BUILD_DIR)/$(TAGED_DIR) -p1
+	cat $(TAGED_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TAGED_DIR) -p1
 	mv $(BUILD_DIR)/$(TAGED_DIR) $(@D)
 	autoreconf -vif $(@D)/confuse
 	(cd $(@D); \
@@ -157,7 +157,7 @@ taged-stage: $(TAGED_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/taged
 #
 $(TAGED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: taged" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

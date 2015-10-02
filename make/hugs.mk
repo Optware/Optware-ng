@@ -112,7 +112,7 @@ $(HUGS_BUILD_DIR)/.configured: $(DL_DIR)/$(HUGS_SOURCE) $(HUGS_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(HUGS_DIR) $(HUGS_BUILD_DIR)
 	$(HUGS_UNZIP) $(DL_DIR)/$(HUGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(HUGS_PATCHES) | patch -d $(BUILD_DIR)/$(HUGS_DIR) -p1
+	cat $(HUGS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(HUGS_DIR) -p1
 	mv $(BUILD_DIR)/$(HUGS_DIR) $(HUGS_BUILD_DIR)
 	(cd $(HUGS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -157,7 +157,7 @@ hugs-stage: $(HUGS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/hugs
 #
 $(HUGS_IPK_DIR)/CONTROL/control:
-	@install -d $(HUGS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(HUGS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: hugs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

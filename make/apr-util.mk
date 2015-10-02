@@ -83,7 +83,7 @@ APR_UTIL_IPK=$(BUILD_DIR)/apr-util_$(APR_UTIL_VERSION)-$(APR_UTIL_IPK_VERSION)_$
 # Automatically create a ipkg control file
 #
 $(APR_UTIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: apr-util" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -135,7 +135,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(APR_UTIL_DIR) $(@D)
 	$(APR_UTIL_UNZIP) $(DL_DIR)/$(APR_UTIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APR_UTIL_DIR) $(@D)
-	cat $(APR_UTIL_PATCHES) |patch -p0 -d$(@D)
+	cat $(APR_UTIL_PATCHES) |$(PATCH) -p0 -d$(@D)
 	autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

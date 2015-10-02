@@ -114,7 +114,7 @@ $(DBUS-GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-GLIB_SOURCE) $(DBUS-GLIB_PA
 	$(DBUS-GLIB_UNZIP) $(DL_DIR)/$(DBUS-GLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DBUS-GLIB_PATCHES)" ; \
 		then cat $(DBUS-GLIB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DBUS-GLIB_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DBUS-GLIB_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DBUS-GLIB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DBUS-GLIB_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ dbus-glib-stage: $(DBUS-GLIB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dbus-glib
 #
 $(DBUS-GLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dbus-glib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,17 +202,17 @@ $(DBUS-GLIB_IPK_DIR)/CONTROL/control:
 $(DBUS-GLIB_IPK): $(DBUS-GLIB_BUILD_DIR)/.built
 	rm -rf $(DBUS-GLIB_IPK_DIR) $(BUILD_DIR)/dbus-glib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DBUS-GLIB_BUILD_DIR) DESTDIR=$(DBUS-GLIB_IPK_DIR) transform='' install-strip
-#	install -d $(DBUS-GLIB_IPK_DIR)/opt/etc/
-#	install -m 644 $(DBUS-GLIB_SOURCE_DIR)/dbus-glib.conf $(DBUS-GLIB_IPK_DIR)/opt/etc/dbus-glib.conf
-#	install -d $(DBUS-GLIB_IPK_DIR)/opt/etc/default
-#	install -m 644 $(DBUS-GLIB_SOURCE_DIR)/dbus-glib.default $(DBUS-GLIB_IPK_DIR)/opt/etc/default/dbus-glib
-#	install -d $(DBUS-GLIB_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DBUS-GLIB_SOURCE_DIR)/dbus-glib.init $(DBUS-GLIB_IPK_DIR)/opt/etc/init.d/S20dbus-glib
+#	$(INSTALL) -d $(DBUS-GLIB_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DBUS-GLIB_SOURCE_DIR)/dbus-glib.conf $(DBUS-GLIB_IPK_DIR)/opt/etc/dbus-glib.conf
+#	$(INSTALL) -d $(DBUS-GLIB_IPK_DIR)/opt/etc/default
+#	$(INSTALL) -m 644 $(DBUS-GLIB_SOURCE_DIR)/dbus-glib.default $(DBUS-GLIB_IPK_DIR)/opt/etc/default/dbus-glib
+#	$(INSTALL) -d $(DBUS-GLIB_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DBUS-GLIB_SOURCE_DIR)/dbus-glib.init $(DBUS-GLIB_IPK_DIR)/opt/etc/init.d/S20dbus-glib
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS-GLIB_IPK_DIR)/opt/etc/init.d/S20dbus-glib
 	$(MAKE) $(DBUS-GLIB_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DBUS-GLIB_SOURCE_DIR)/postinst $(DBUS-GLIB_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DBUS-GLIB_SOURCE_DIR)/postinst $(DBUS-GLIB_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS-GLIB_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DBUS-GLIB_SOURCE_DIR)/prerm $(DBUS-GLIB_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DBUS-GLIB_SOURCE_DIR)/prerm $(DBUS-GLIB_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS-GLIB_IPK_DIR)/CONTROL/prerm
 	echo $(DBUS-GLIB_CONFFILES) | sed -e 's/ /\n/g' > $(DBUS-GLIB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DBUS-GLIB_IPK_DIR)

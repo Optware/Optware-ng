@@ -14,32 +14,32 @@ else
 fi
 
 /bin/echo -n "set saslpasswd2 for user 'mail' ... "
-if [ -n "`/opt/sbin/sasldblistusers2 | /bin/grep \"^mail@\"`" ] ; then
+if [ -n "`%OPTWARE_TARGET_PREFIX%/sbin/sasldblistusers2 | /bin/grep \"^mail@\"`" ] ; then
     /bin/echo
-    /opt/sbin/saslpasswd2 mail
+    %OPTWARE_TARGET_PREFIX%/sbin/saslpasswd2 mail
 else
     /bin/echo "failed"
 fi
 
 /bin/echo "changing permission ... "
-/bin/chown mail:root /opt/etc/sasl2
-/bin/chmod 640 /opt/etc/sasl2
+/bin/chown mail:root %OPTWARE_TARGET_PREFIX%/etc/sasl2
+/bin/chmod 640 %OPTWARE_TARGET_PREFIX%/etc/sasl2
 
-/bin/chown mail:mail /opt/var/lib/imap
-/bin/chown -R mail:root /opt/var/lib/imap/db
-/bin/chown -R mail:root /opt/var/lib/imap/log
-/bin/chown -R mail:root /opt/var/lib/imap/msg
-/bin/chown -R mail:root /opt/var/lib/imap/proc
-/bin/chown -R mail:root /opt/var/lib/imap/ptclient
-/bin/chown -R mail:root /opt/var/lib/imap/socket
-/bin/chown -R mail:root /opt/var/lib/imap/ssl
-/bin/chown -R mail:mail /opt/var/lib/imap/quota
-/bin/chown -R mail:mail /opt/var/lib/imap/sieve
-/bin/chown -R mail:mail /opt/var/lib/imap/user
-/bin/chown mail:mail /opt/var/spool/imap/mail
-/bin/chown mail:mail /opt/var/spool/imap/news
-/bin/chown mail:mail /opt/var/spool/imap/stage.
-/bin/chown mail:mail /opt/var/spool/imap/user
+/bin/chown mail:mail %OPTWARE_TARGET_PREFIX%/var/lib/imap
+/bin/chown -R mail:root %OPTWARE_TARGET_PREFIX%/var/lib/imap/db
+/bin/chown -R mail:root %OPTWARE_TARGET_PREFIX%/var/lib/imap/log
+/bin/chown -R mail:root %OPTWARE_TARGET_PREFIX%/var/lib/imap/msg
+/bin/chown -R mail:root %OPTWARE_TARGET_PREFIX%/var/lib/imap/proc
+/bin/chown -R mail:root %OPTWARE_TARGET_PREFIX%/var/lib/imap/ptclient
+/bin/chown -R mail:root %OPTWARE_TARGET_PREFIX%/var/lib/imap/socket
+/bin/chown -R mail:root %OPTWARE_TARGET_PREFIX%/var/lib/imap/ssl
+/bin/chown -R mail:mail %OPTWARE_TARGET_PREFIX%/var/lib/imap/quota
+/bin/chown -R mail:mail %OPTWARE_TARGET_PREFIX%/var/lib/imap/sieve
+/bin/chown -R mail:mail %OPTWARE_TARGET_PREFIX%/var/lib/imap/user
+/bin/chown mail:mail %OPTWARE_TARGET_PREFIX%/var/spool/imap/mail
+/bin/chown mail:mail %OPTWARE_TARGET_PREFIX%/var/spool/imap/news
+/bin/chown mail:mail %OPTWARE_TARGET_PREFIX%/var/spool/imap/stage.
+/bin/chown mail:mail %OPTWARE_TARGET_PREFIX%/var/spool/imap/user
 
 /bin/echo
 /bin/echo You may want to update your Perl modules first:
@@ -48,18 +48,18 @@ fi
 /bin/echo -e "\t> install HTTP::Date"
 /bin/echo
 /bin/echo Please read the man-pages and docs carefully,
-/bin/echo -e "\t\$ less /opt/share/docs/cyrus-imapd/README"
+/bin/echo -e "\t\$ less %OPTWARE_TARGET_PREFIX%/share/docs/cyrus-imapd/README"
 /bin/echo -e "\t\$ man cyrus_master"
-/bin/echo -e "\t\$ lynx /opt/share/docs/cyrus-imapd/html/index.html"
+/bin/echo -e "\t\$ lynx %OPTWARE_TARGET_PREFIX%/share/docs/cyrus-imapd/html/index.html"
 /bin/echo
 /bin/echo then configure cyrus-imapd,
-/bin/echo -e "\t\$ vi /opt/etc/cyrus.conf"
-/bin/echo -e "\t\$ vi /opt/etc/imapd.conf"
+/bin/echo -e "\t\$ vi %OPTWARE_TARGET_PREFIX%/etc/cyrus.conf"
+/bin/echo -e "\t\$ vi %OPTWARE_TARGET_PREFIX%/etc/imapd.conf"
 /bin/echo
 /bin/echo create users with cyradm
 /bin/echo -e "\t\$ cyradm -u mail localhost"
 /bin/echo
 /bin/echo and start the server
-/bin/echo -e "\t\$ /opt/etc/init.d/S59cyrus-imapd"
+/bin/echo -e "\t\$ %OPTWARE_TARGET_PREFIX%/etc/init.d/S59cyrus-imapd"
 /bin/echo
  

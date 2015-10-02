@@ -110,7 +110,7 @@ $(MP3BLASTER_BUILD_DIR)/.configured: $(DL_DIR)/$(MP3BLASTER_SOURCE) $(MP3BLASTER
 	$(MP3BLASTER_UNZIP) $(DL_DIR)/$(MP3BLASTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MP3BLASTER_PATCHES)" ; \
 		then cat $(MP3BLASTER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MP3BLASTER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MP3BLASTER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MP3BLASTER_DIR)" != "$(MP3BLASTER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MP3BLASTER_DIR) $(MP3BLASTER_BUILD_DIR) ; \
@@ -166,7 +166,7 @@ mp3blaster-stage: $(MP3BLASTER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mp3blaster
 #
 $(MP3BLASTER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mp3blaster" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,15 +195,15 @@ $(MP3BLASTER_IPK_DIR)/CONTROL/control:
 $(MP3BLASTER_IPK): $(MP3BLASTER_BUILD_DIR)/.built
 	rm -rf $(MP3BLASTER_IPK_DIR) $(BUILD_DIR)/mp3blaster_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MP3BLASTER_BUILD_DIR) DESTDIR=$(MP3BLASTER_IPK_DIR) install-strip
-#	install -d $(MP3BLASTER_IPK_DIR)/opt/etc/
-#	install -m 644 $(MP3BLASTER_SOURCE_DIR)/mp3blaster.conf $(MP3BLASTER_IPK_DIR)/opt/etc/mp3blaster.conf
-#	install -d $(MP3BLASTER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MP3BLASTER_SOURCE_DIR)/rc.mp3blaster $(MP3BLASTER_IPK_DIR)/opt/etc/init.d/SXXmp3blaster
+#	$(INSTALL) -d $(MP3BLASTER_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MP3BLASTER_SOURCE_DIR)/mp3blaster.conf $(MP3BLASTER_IPK_DIR)/opt/etc/mp3blaster.conf
+#	$(INSTALL) -d $(MP3BLASTER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MP3BLASTER_SOURCE_DIR)/rc.mp3blaster $(MP3BLASTER_IPK_DIR)/opt/etc/init.d/SXXmp3blaster
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXmp3blaster
 	$(MAKE) $(MP3BLASTER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MP3BLASTER_SOURCE_DIR)/postinst $(MP3BLASTER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MP3BLASTER_SOURCE_DIR)/postinst $(MP3BLASTER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MP3BLASTER_SOURCE_DIR)/prerm $(MP3BLASTER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MP3BLASTER_SOURCE_DIR)/prerm $(MP3BLASTER_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(MP3BLASTER_CONFFILES) | sed -e 's/ /\n/g' > $(MP3BLASTER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MP3BLASTER_IPK_DIR)

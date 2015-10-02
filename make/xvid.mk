@@ -106,7 +106,7 @@ $(XVID_BUILD_DIR)/.configured: $(DL_DIR)/$(XVID_SOURCE) $(XVID_PATCHES) make/xvi
 	rm -rf $(BUILD_DIR)/$(XVID_DIR) $(@D)
 	$(XVID_UNZIP) $(DL_DIR)/$(XVID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(XVID_PATCHES)"; then \
-	    cat $(XVID_PATCHES) | patch -d $(BUILD_DIR)/$(XVID_DIR) -p1; \
+	    cat $(XVID_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(XVID_DIR) -p1; \
 	fi
 	if test "$(BUILD_DIR)/$(XVID_DIR)" != "$(@D)" ; then \
 	    mv $(BUILD_DIR)/$(XVID_DIR) $(@D); \
@@ -169,7 +169,7 @@ xvid-stage: $(XVID_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/xvid
 # 
 $(XVID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xvid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

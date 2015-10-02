@@ -72,7 +72,7 @@ $(TS209-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(TS209-KERNEL-MODULES_
 		tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TS209-KERNEL-MODULES_PATCHES)" ; \
 		then cat $(TS209-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TS209-KERNEL-MODULES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TS209-KERNEL-MODULES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TS209-KERNEL-MODULES_DIR)" != "$(TS209-KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TS209-KERNEL-MODULES_DIR) $(TS209-KERNEL-MODULES_BUILD_DIR) ; \
@@ -105,7 +105,7 @@ ts209-kernel-modules: $(TS209-KERNEL-MODULES_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ts209-kernel-modules
 #
 $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
-	install -d $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL
 	( \
 	  echo "Package: ts209-kernel-modules"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
@@ -120,7 +120,7 @@ $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(TS209-KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
 	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
-	  install -d $(TS209-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
+	  $(INSTALL) -d $(TS209-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
 	  rm -f $(TS209-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL/control; \
           ( \
 	    echo -n ", ts209-kernel-module-$$n" >> $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
@@ -149,7 +149,7 @@ $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	echo "" >> $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 
 $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
-	install -d $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL
 	rm -f $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
 	( \
 	  echo "Package: ts209-kernel-image"; \
@@ -181,7 +181,7 @@ $(TS209-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(TS209-KERNEL-MODULES_BUILD_DIR)/.b
 	# Package the kernel image first
 	rm -rf $(TS209-KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/ts209-kernel-image_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
-	install -m 644 $(TS209-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(TS209-KERNEL-IMAGE_IPK_DIR)
+	$(INSTALL) -m 644 $(TS209-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(TS209-KERNEL-IMAGE_IPK_DIR)
 	( cd $(BUILD_DIR); $(IPKG_BUILD) $(TS209-KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules
 	rm -rf $(TS209-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/ts209-kernel-modules_*_$(TARGET_ARCH).ipk

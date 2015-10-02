@@ -110,7 +110,7 @@ $(HTTPING_BUILD_DIR)/.configured: $(DL_DIR)/$(HTTPING_SOURCE) $(HTTPING_PATCHES)
 	$(HTTPING_UNZIP) $(DL_DIR)/$(HTTPING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HTTPING_PATCHES)" ; \
 		then cat $(HTTPING_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HTTPING_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HTTPING_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HTTPING_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HTTPING_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ httping: $(HTTPING_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/httping
 #
 $(HTTPING_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: httping" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

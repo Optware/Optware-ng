@@ -113,14 +113,14 @@ $(PY-MARKDOWN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MARKDOWN_SOURCE) $(PY-MARKD
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MARKDOWN_DIR)
 	$(PY-MARKDOWN_UNZIP) $(DL_DIR)/$(PY-MARKDOWN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-MARKDOWN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
+#	cat $(PY-MARKDOWN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MARKDOWN_DIR) $(@D)/2.5
 	(echo "[build_scripts]"; \
          echo "executable=/opt/bin/python2.5") >> $(@D)/2.5/setup.cfg
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-MARKDOWN_DIR)
 	$(PY-MARKDOWN_UNZIP) $(DL_DIR)/$(PY-MARKDOWN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-MARKDOWN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
+#	cat $(PY-MARKDOWN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MARKDOWN_DIR) $(@D)/2.6
 	(echo "[build_scripts]"; \
          echo "executable=/opt/bin/python2.6") >> $(@D)/2.6/setup.cfg
@@ -159,7 +159,7 @@ py-markdown-stage: $(PY-MARKDOWN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-markdown
 #
 $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-markdown" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -173,7 +173,7 @@ $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MARKDOWN_CONFLICTS)" >>$@
 
 $(PY26-MARKDOWN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-markdown" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -113,7 +113,7 @@ $(PY-AXIOM_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-AXIOM_SOURCE) $(PY-AXIOM_PATCH
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-AXIOM_DIR)
 	$(PY-AXIOM_UNZIP) $(DL_DIR)/$(PY-AXIOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-AXIOM_PATCHES) | patch -d $(BUILD_DIR)/$(PY-AXIOM_DIR) -p1
+#	cat $(PY-AXIOM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-AXIOM_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-AXIOM_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -126,7 +126,7 @@ $(PY-AXIOM_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-AXIOM_SOURCE) $(PY-AXIOM_PATCH
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-AXIOM_DIR)
 	$(PY-AXIOM_UNZIP) $(DL_DIR)/$(PY-AXIOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-AXIOM_PATCHES) | patch -d $(BUILD_DIR)/$(PY-AXIOM_DIR) -p1
+#	cat $(PY-AXIOM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-AXIOM_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-AXIOM_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -173,7 +173,7 @@ py-axiom-stage: $(PY-AXIOM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-axiom
 #
 $(PY25-AXIOM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-axiom" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,7 +187,7 @@ $(PY25-AXIOM_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-AXIOM_CONFLICTS)" >>$@
 
 $(PY26-AXIOM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-axiom" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

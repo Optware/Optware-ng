@@ -116,7 +116,7 @@ $(HICOLOR-ICON-THEME_BUILD_DIR)/.configured: $(DL_DIR)/$(HICOLOR-ICON-THEME_SOUR
 	$(HICOLOR-ICON-THEME_UNZIP) $(DL_DIR)/$(HICOLOR-ICON-THEME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HICOLOR-ICON-THEME_PATCHES)" ; \
 		then cat $(HICOLOR-ICON-THEME_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HICOLOR-ICON-THEME_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HICOLOR-ICON-THEME_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HICOLOR-ICON-THEME_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HICOLOR-ICON-THEME_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ hicolor-icon-theme-stage: $(HICOLOR-ICON-THEME_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/hicolor-icon-theme
 #
 $(HICOLOR-ICON-THEME_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: hicolor-icon-theme" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,15 +195,15 @@ $(HICOLOR-ICON-THEME_IPK_DIR)/CONTROL/control:
 $(HICOLOR-ICON-THEME_IPK): $(HICOLOR-ICON-THEME_BUILD_DIR)/.built
 	rm -rf $(HICOLOR-ICON-THEME_IPK_DIR) $(BUILD_DIR)/hicolor-icon-theme_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HICOLOR-ICON-THEME_BUILD_DIR) DESTDIR=$(HICOLOR-ICON-THEME_IPK_DIR) install
-#	install -d $(HICOLOR-ICON-THEME_IPK_DIR)/opt/etc/
-#	install -m 644 $(HICOLOR-ICON-THEME_SOURCE_DIR)/hicolor-icon-theme.conf $(HICOLOR-ICON-THEME_IPK_DIR)/opt/etc/hicolor-icon-theme.conf
-#	install -d $(HICOLOR-ICON-THEME_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(HICOLOR-ICON-THEME_SOURCE_DIR)/rc.hicolor-icon-theme $(HICOLOR-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXhicolor-icon-theme
+#	$(INSTALL) -d $(HICOLOR-ICON-THEME_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(HICOLOR-ICON-THEME_SOURCE_DIR)/hicolor-icon-theme.conf $(HICOLOR-ICON-THEME_IPK_DIR)/opt/etc/hicolor-icon-theme.conf
+#	$(INSTALL) -d $(HICOLOR-ICON-THEME_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(HICOLOR-ICON-THEME_SOURCE_DIR)/rc.hicolor-icon-theme $(HICOLOR-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXhicolor-icon-theme
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HICOLOR-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXhicolor-icon-theme
 	$(MAKE) $(HICOLOR-ICON-THEME_IPK_DIR)/CONTROL/control
-	install -m 755 $(HICOLOR-ICON-THEME_SOURCE_DIR)/postinst $(HICOLOR-ICON-THEME_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(HICOLOR-ICON-THEME_SOURCE_DIR)/postinst $(HICOLOR-ICON-THEME_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HICOLOR-ICON-THEME_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(HICOLOR-ICON-THEME_SOURCE_DIR)/prerm $(HICOLOR-ICON-THEME_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(HICOLOR-ICON-THEME_SOURCE_DIR)/prerm $(HICOLOR-ICON-THEME_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HICOLOR-ICON-THEME_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

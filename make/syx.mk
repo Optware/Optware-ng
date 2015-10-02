@@ -114,7 +114,7 @@ $(SYX_BUILD_DIR)/.configured: $(DL_DIR)/$(SYX_SOURCE) $(SYX_PATCHES) make/syx.mk
 	$(SYX_UNZIP) $(DL_DIR)/$(SYX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SYX_PATCHES)" ; \
 		then cat $(SYX_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(SYX_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(SYX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SYX_DIR)" != "$(SYX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SYX_DIR) $(SYX_BUILD_DIR) ; \
@@ -198,7 +198,7 @@ syx-stage: $(SYX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/syx
 #
 $(SYX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: syx" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -235,7 +235,7 @@ $(SYX_IPK): $(SYX_BUILD_DIR)/.built
 		prefix=/opt \
 		GTK=false \
 		bdist
-	install -d $(SYX_IPK_DIR)
+	$(INSTALL) -d $(SYX_IPK_DIR)
 	cp -rp $(SYX_BUILD_DIR)/syx-$(SYX_VERSION)/opt $(SYX_IPK_DIR)/
 	rm -f $(SYX_IPK_DIR)/opt/lib/libsyx.a
 	$(STRIP_COMMAND) $(SYX_IPK_DIR)/opt/lib/libsyx.so $(SYX_IPK_DIR)/opt/bin/syx

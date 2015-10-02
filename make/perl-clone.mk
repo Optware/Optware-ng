@@ -36,7 +36,7 @@ $(PERL-CLONE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLONE_SOURCE) $(PERL-CLONE
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-CLONE_DIR) $(@D)
 	$(PERL-CLONE_UNZIP) $(DL_DIR)/$(PERL-CLONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-CLONE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-CLONE_DIR) -p1
+#	cat $(PERL-CLONE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-CLONE_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-CLONE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -70,7 +70,7 @@ $(PERL-CLONE_BUILD_DIR)/.staged: $(PERL-CLONE_BUILD_DIR)/.built
 perl-clone-stage: $(PERL-CLONE_BUILD_DIR)/.staged
 
 $(PERL-CLONE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-clone" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

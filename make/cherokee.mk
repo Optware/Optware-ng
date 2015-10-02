@@ -143,7 +143,7 @@ endif
 #	$(CHEROKEE_UNZIP) $(DL_DIR)/$(CHEROKEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cd $(BUILD_DIR); unzip $(DL_DIR)/$(CHEROKEE_SOURCE_SAVE)
 	if test -n "$(CHEROKEE_PATCHES)"; then \
-	    cat $(CHEROKEE_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE_DIR) -p1; \
+	    cat $(CHEROKEE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CHEROKEE_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(CHEROKEE_DIR) $(@D)
 	sed -i.orig -e '1s|#!.*|#!/opt/bin/python|' $(@D)/admin/server.py
@@ -202,7 +202,7 @@ cherokee-stage: $(CHEROKEE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cherokee
 #
 $(CHEROKEE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cherokee" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -217,7 +217,7 @@ $(CHEROKEE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(CHEROKEE_CONFLICTS)" >>$@
 
 $(CHEROKEE-ADMIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cherokee-admin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -232,7 +232,7 @@ $(CHEROKEE-ADMIN_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: " >>$@
 
 $(CHEROKEE-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cherokee-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -247,7 +247,7 @@ $(CHEROKEE-DEV_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: " >>$@
 
 $(CHEROKEE-DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cherokee-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -281,45 +281,45 @@ $(CHEROKEE_IPK) $(CHEROKEE-ADMIN_IPK) $(CHEROKEE-DEV_IPK) $(CHEROKEE-DOC_IPK): $
 	#
 	$(MAKE) -C $(CHEROKEE_BUILD_DIR) DESTDIR=$(CHEROKEE_IPK_DIR) install-strip
 	rm $(CHEROKEE_IPK_DIR)/opt/lib/*.la $(CHEROKEE_IPK_DIR)/opt/lib/cherokee/*.la
-	install -d $(CHEROKEE_IPK_DIR)/opt/share/cherokee/cgi-bin
+	$(INSTALL) -d $(CHEROKEE_IPK_DIR)/opt/share/cherokee/cgi-bin
 	sed -i \
 		-e '/server.*port =/s|=.*|= 8008|'\
 		-e 's|= php-cgi |= /opt/bin/php-fcgi |' \
 		$(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
-	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/S80cherokee
-	install -d $(CHEROKEE_IPK_DIR)/opt/etc/default
+	$(INSTALL) -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/S80cherokee
+	$(INSTALL) -d $(CHEROKEE_IPK_DIR)/opt/etc/default
 	echo "CHEROKEE_ENABLE=yes" > $(CHEROKEE_IPK_DIR)/opt/etc/default/cherokee
 	# -admin
-	install -d $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee
+	$(INSTALL) -d $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee
 	mv $(CHEROKEE_IPK_DIR)/opt/share/cherokee/admin $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee/admin
-	install -d $(CHEROKEE-ADMIN_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(CHEROKEE-ADMIN_IPK_DIR)/opt/sbin
 	mv $(CHEROKEE_IPK_DIR)/opt/sbin/cherokee-admin $(CHEROKEE-ADMIN_IPK_DIR)/opt/sbin/
 	$(MAKE) $(CHEROKEE-ADMIN_IPK_DIR)/CONTROL/control
-	install -m 755 $(CHEROKEE_SOURCE_DIR)/postinst-admin $(CHEROKEE-ADMIN_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(CHEROKEE_SOURCE_DIR)/postinst-admin $(CHEROKEE-ADMIN_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CHEROKEE-ADMIN_IPK_DIR)
 	# -dev
-	install -d $(CHEROKEE-DEV_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(CHEROKEE-DEV_IPK_DIR)/opt/bin
 	mv $(CHEROKEE_IPK_DIR)/opt/bin/cherokee-config $(CHEROKEE-DEV_IPK_DIR)/opt/bin/
-	install -d $(CHEROKEE-DEV_IPK_DIR)/opt/include
+	$(INSTALL) -d $(CHEROKEE-DEV_IPK_DIR)/opt/include
 	mv $(CHEROKEE_IPK_DIR)/opt/include/cherokee $(CHEROKEE-DEV_IPK_DIR)/opt/include/cherokee
-	install -d $(CHEROKEE-DEV_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(CHEROKEE-DEV_IPK_DIR)/opt/lib
 	mv $(CHEROKEE_IPK_DIR)/opt/lib/pkgconfig $(CHEROKEE-DEV_IPK_DIR)/opt/lib/pkgconfig
-	install -d $(CHEROKEE-DEV_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(CHEROKEE-DEV_IPK_DIR)/opt/share/man/man1
 	mv $(CHEROKEE_IPK_DIR)/opt/share/man/man1/cherokee-config.1 $(CHEROKEE-DEV_IPK_DIR)/opt/share/man/man1/
 	mv $(CHEROKEE_IPK_DIR)/opt/share/aclocal $(CHEROKEE-DEV_IPK_DIR)/opt/share/aclocal
 	$(MAKE) $(CHEROKEE-DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CHEROKEE-DEV_IPK_DIR)
 	# -doc
-	install -d $(CHEROKEE-DOC_IPK_DIR)/opt/share
+	$(INSTALL) -d $(CHEROKEE-DOC_IPK_DIR)/opt/share
 	mv $(CHEROKEE_IPK_DIR)/opt/share/doc $(CHEROKEE-DOC_IPK_DIR)/opt/share/doc
 	$(MAKE) $(CHEROKEE-DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CHEROKEE-DOC_IPK_DIR)
 	# main
 	$(MAKE) $(CHEROKEE_IPK_DIR)/CONTROL/control
-	install -m 755 $(CHEROKEE_SOURCE_DIR)/preinst $(CHEROKEE_IPK_DIR)/CONTROL/
-	install -m 755 $(CHEROKEE_SOURCE_DIR)/postinst $(CHEROKEE_IPK_DIR)/CONTROL/
-	install -m 755 $(CHEROKEE_SOURCE_DIR)/prerm $(CHEROKEE_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 755 $(CHEROKEE_SOURCE_DIR)/preinst $(CHEROKEE_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 755 $(CHEROKEE_SOURCE_DIR)/postinst $(CHEROKEE_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 755 $(CHEROKEE_SOURCE_DIR)/prerm $(CHEROKEE_IPK_DIR)/CONTROL/
 	echo $(CHEROKEE_CONFFILES) | sed -e 's/ /\n/g' > $(CHEROKEE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CHEROKEE_IPK_DIR)
 

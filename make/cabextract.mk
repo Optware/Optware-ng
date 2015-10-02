@@ -65,7 +65,7 @@ $(CABEXTRACT_BUILD_DIR)/.configured: $(DL_DIR)/$(CABEXTRACT_SOURCE) $(CABEXTRACT
 	$(CABEXTRACT_UNZIP) $(DL_DIR)/$(CABEXTRACT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CABEXTRACT_PATCHES)" ; \
 		then cat $(CABEXTRACT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CABEXTRACT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CABEXTRACT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CABEXTRACT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CABEXTRACT_DIR) $(@D) ; \
@@ -105,7 +105,7 @@ cabextract: $(CABEXTRACT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/cabextract
 #
 $(CABEXTRACT_IPK_DIR)/CONTROL/control:
-	@install -d $(CABEXTRACT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(CABEXTRACT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: cabextract" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

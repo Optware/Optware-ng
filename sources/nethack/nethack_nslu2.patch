@@ -5873,7 +5873,7 @@ diff -Nur nethack-orig/include/config.h nethack-new/include/config.h
 -#  define HACKDIR "/usr/games/lib/nethackdir"
 -# endif
 +//# ifndef HACKDIR
-+# define HACKDIR "/opt/share/nethackdir"
++# define HACKDIR "%OPTWARE_TARGET_PREFIX%/share/nethackdir"
 +//# endif
  
  /*
@@ -7030,9 +7030,9 @@ diff -Nur nethack-orig/sys/unix/nethack.sh nethack-new/sys/unix/nethack.sh
  #	SCCS Id: @(#)nethack.sh	3.4	1990/02/26
  
 -HACKDIR=/usr/games/lib/nethackdir
-+TERMINFO=/opt/share/terminfo/
++TERMINFO=%OPTWARE_TARGET_PREFIX%/share/terminfo/
 +export TERMINFO
-+HACKDIR=/opt/share/nethackdir
++HACKDIR=%OPTWARE_TARGET_PREFIX%/share/nethackdir
  export HACKDIR
  HACK=$HACKDIR/nethack
  MAXNROFPLAYERS=4

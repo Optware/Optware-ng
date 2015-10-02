@@ -17,8 +17,8 @@ service openvpn_1
         protocol        = udp
         wait            = yes
         user            = root
-        server          = /opt/sbin/openvpn
-        server_args     = --cd /opt/etc/openvpn --config openvpn.conf --inetd
+        server          = %OPTWARE_TARGET_PREFIX%/sbin/openvpn
+        server_args     = --cd %OPTWARE_TARGET_PREFIX%/etc/openvpn --config openvpn.conf --inetd
         log_on_success  += HOST PID
         log_on_failure  += HOST
 #        only_from       += 0.0.0.0

@@ -136,7 +136,7 @@ endif
 	$(FUSE_UNZIP) $(DL_DIR)/$(FUSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FUSE_PATCHES)" ; \
 		then cat $(FUSE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FUSE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FUSE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FUSE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FUSE_DIR) $(@D) ; \
@@ -194,7 +194,7 @@ fuse-stage: $(FUSE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fuse
 #
 $(FUSE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fuse" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -209,7 +209,7 @@ $(FUSE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(FUSE_CONFLICTS)" >>$@
 
 $(LIBFUSE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libfuse" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,7 +224,7 @@ $(LIBFUSE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBFUSE_CONFLICTS)" >>$@
 
 $(LIBFUSE-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libfuse-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -255,15 +255,15 @@ $(LIBFUSE_IPK): $(FUSE_BUILD_DIR)/.built
 	$(MAKE) -C $(FUSE_BUILD_DIR)/lib DESTDIR=$(LIBFUSE_IPK_DIR) install
 	rm -f $(LIBFUSE_IPK_DIR)/opt/lib/*.la
 	$(STRIP_COMMAND) $(LIBFUSE_IPK_DIR)/opt/lib/*
-#	install -d $(FUSE_IPK_DIR)/opt/etc/
-#	install -m 644 $(FUSE_SOURCE_DIR)/fuse.conf $(FUSE_IPK_DIR)/opt/etc/fuse.conf
-#	install -d $(FUSE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FUSE_SOURCE_DIR)/rc.fuse $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
+#	$(INSTALL) -d $(FUSE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FUSE_SOURCE_DIR)/fuse.conf $(FUSE_IPK_DIR)/opt/etc/fuse.conf
+#	$(INSTALL) -d $(FUSE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/rc.fuse $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
 	$(MAKE) $(LIBFUSE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FUSE_SOURCE_DIR)/postinst $(FUSE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/postinst $(FUSE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FUSE_SOURCE_DIR)/prerm $(FUSE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/prerm $(FUSE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
@@ -278,15 +278,15 @@ $(FUSE_IPK): $(FUSE_BUILD_DIR)/.built
 	$(MAKE) -C $(FUSE_BUILD_DIR)/util DESTDIR=$(FUSE_IPK_DIR) install
 	rm -rf $(FUSE_IPK_DIR)/dev
 	$(STRIP_COMMAND) $(FUSE_IPK_DIR)/opt/bin/* $(FUSE_IPK_DIR)/opt/sbin/*
-#	install -d $(FUSE_IPK_DIR)/opt/etc/
-#	install -m 644 $(FUSE_SOURCE_DIR)/fuse.conf $(FUSE_IPK_DIR)/opt/etc/fuse.conf
-#	install -d $(FUSE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FUSE_SOURCE_DIR)/rc.fuse $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
+#	$(INSTALL) -d $(FUSE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FUSE_SOURCE_DIR)/fuse.conf $(FUSE_IPK_DIR)/opt/etc/fuse.conf
+#	$(INSTALL) -d $(FUSE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/rc.fuse $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
 	$(MAKE) $(FUSE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FUSE_SOURCE_DIR)/postinst $(FUSE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/postinst $(FUSE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FUSE_SOURCE_DIR)/prerm $(FUSE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/prerm $(FUSE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

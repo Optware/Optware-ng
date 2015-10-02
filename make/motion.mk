@@ -97,7 +97,7 @@ $(MOTION_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES) ma
 	$(MOTION_UNZIP) $(DL_DIR)/$(MOTION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOTION_PATCHES)" ; \
 		then cat $(MOTION_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MOTION_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MOTION_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MOTION_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOTION_DIR) $(@D) ; \
@@ -151,7 +151,7 @@ motion-stage: $(MOTION_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/motion
 #
 $(MOTION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: motion" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,13 +184,13 @@ $(MOTION_IPK): $(MOTION_BUILD_DIR)/.built
 	rm -rf $(MOTION_IPK_DIR) $(BUILD_DIR)/motion_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOTION_BUILD_DIR) DESTDIR=$(MOTION_IPK_DIR) install
 	$(STRIP_COMMAND) $(MOTION_IPK_DIR)/opt/bin/motion
-	install -d $(MOTION_IPK_DIR)/opt/etc/
-	install -m 644 $(MOTION_SOURCE_DIR)/motion.conf $(MOTION_IPK_DIR)/opt/etc/motion.conf
-	install -d $(MOTION_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(MOTION_SOURCE_DIR)/rc.motion $(MOTION_IPK_DIR)/opt/etc/init.d/S99motion
+	$(INSTALL) -d $(MOTION_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(MOTION_SOURCE_DIR)/motion.conf $(MOTION_IPK_DIR)/opt/etc/motion.conf
+	$(INSTALL) -d $(MOTION_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(MOTION_SOURCE_DIR)/rc.motion $(MOTION_IPK_DIR)/opt/etc/init.d/S99motion
 	$(MAKE) $(MOTION_IPK_DIR)/CONTROL/control
-	install -m 755 $(MOTION_SOURCE_DIR)/postinst $(MOTION_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(MOTION_SOURCE_DIR)/prerm $(MOTION_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(MOTION_SOURCE_DIR)/postinst $(MOTION_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(MOTION_SOURCE_DIR)/prerm $(MOTION_IPK_DIR)/CONTROL/prerm
 	echo $(MOTION_CONFFILES) | sed -e 's/ /\n/g' > $(MOTION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOTION_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(MOTION_IPK_DIR)

@@ -27,14 +27,14 @@
  
  ifeq ($(ISSINGLE),1)
 -	DEFINES=-DHOME="\"$(JHOME)\"" -DSINGLE -DSTATIC
-+	DEFINES=-DHOME="\"/opt/lib/jabber\"" -DSINGLE -DSTATIC
++	DEFINES=-DHOME="\"%OPTWARE_TARGET_PREFIX%/lib/jabber\"" -DSINGLE -DSTATIC
  else
 -	DEFINES=-DHOME="\"$(JHOME)\"" -DCONFIGXML="\"jabber.xml\""
-+	DEFINES=-DHOME="\"/opt/lib/jabber\"" -DCONFIGXML="\"/opt/etc/jabber/jabber.xml\""
++	DEFINES=-DHOME="\"%OPTWARE_TARGET_PREFIX%/lib/jabber\"" -DCONFIGXML="\"%OPTWARE_TARGET_PREFIX%/etc/jabber/jabber.xml\""
  endif
  ifeq ($(ISSTATIC),1)
 -	DEFINES=-DHOME="\"$(JHOME)\"" -DSTATIC
-+	DEFINES=-DHOME="\"/opt/lib/jabber\"" -DSTATIC
++	DEFINES=-DHOME="\"%OPTWARE_TARGET_PREFIX%/lib/jabber\"" -DSTATIC
  endif
  
  CFLAGS=$(CCFLAGS) $(DEFINES)

@@ -95,7 +95,7 @@ $(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL
 	$(MAKE) libdb-stage openssl-stage 
 	rm -rf $(BUILD_DIR)/$(CYRUS-SASL_DIR) $(@D)
 	$(CYRUS-SASL_UNZIP) $(DL_DIR)/$(CYRUS-SASL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(CYRUS-SASL_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-SASL_DIR) -p1
+	cat $(CYRUS-SASL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CYRUS-SASL_DIR) -p1
 	mv $(BUILD_DIR)/$(CYRUS-SASL_DIR) $(@D)
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/config/
 # We have to remove double blanks. Otherwise configure of saslauthd fails.
@@ -157,7 +157,7 @@ cyrus-sasl-stage cyrus-sasl-libs-stage: $(CYRUS-SASL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cyrus-sasl
 #
 $(CYRUS-SASL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cyrus-sasl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,7 +175,7 @@ $(CYRUS-SASL_IPK_DIR)/CONTROL/control:
 # necessary to create a seperate control file under sources/cyrus-sasl
 #
 $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cyrus-sasl-libs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -209,23 +209,23 @@ $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/lib/*.so
 	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/lib/sasl2/*.so
-	install -d $(CYRUS-SASL_IPK_DIR)/opt/var/state/saslauthd
-	install -d $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(CYRUS-SASL_IPK_DIR)/opt/var/state/saslauthd
+	$(INSTALL) -d $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d
 ifeq ($(OPTWARE_TARGET),ds101g)
-	install -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd.ds101g $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
+	$(INSTALL) -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd.ds101g $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
 else
-	install -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
+	$(INSTALL) -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
 endif
 	### build cyrus-sasl-libs
 	$(MAKE) $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control
-	install -d $(CYRUS-SASL-LIBS_IPK_DIR)/opt
+	$(INSTALL) -d $(CYRUS-SASL-LIBS_IPK_DIR)/opt
 	mv $(CYRUS-SASL_IPK_DIR)/opt/include $(CYRUS-SASL-LIBS_IPK_DIR)/opt
 	mv $(CYRUS-SASL_IPK_DIR)/opt/lib $(CYRUS-SASL-LIBS_IPK_DIR)/opt
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-SASL-LIBS_IPK_DIR)
 	### build the main ipk
 	$(MAKE) $(CYRUS-SASL_IPK_DIR)/CONTROL/control
-	install -m 644 $(CYRUS-SASL_SOURCE_DIR)/postinst $(CYRUS-SASL_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(CYRUS-SASL_SOURCE_DIR)/prerm $(CYRUS-SASL_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(CYRUS-SASL_SOURCE_DIR)/postinst $(CYRUS-SASL_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(CYRUS-SASL_SOURCE_DIR)/prerm $(CYRUS-SASL_IPK_DIR)/CONTROL/prerm
 	echo $(CYRUS-SASL_CONFFILES) | sed -e 's/ /\n/g' > $(CYRUS-SASL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-SASL_IPK_DIR)
 #

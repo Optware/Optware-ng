@@ -113,7 +113,7 @@ $(PY-BOTO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BOTO_SOURCE) $(PY-BOTO_PATCHES)
 	mkdir -p $(@D)
 	# 2.5
 	$(PY-BOTO_UNZIP) $(DL_DIR)/$(PY-BOTO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-BOTO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BOTO_DIR) -p1
+#	cat $(PY-BOTO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BOTO_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-BOTO_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -129,7 +129,7 @@ $(PY-BOTO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BOTO_SOURCE) $(PY-BOTO_PATCHES)
 	)
 	# 2.6
 	$(PY-BOTO_UNZIP) $(DL_DIR)/$(PY-BOTO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-BOTO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BOTO_DIR) -p1
+#	cat $(PY-BOTO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BOTO_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-BOTO_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -182,7 +182,7 @@ py-boto: $(PY-BOTO_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-boto
 #
 $(PY25-BOTO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-boto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,7 +197,7 @@ $(PY25-BOTO_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-BOTO_CONFLICTS)" >>$@
 
 $(PY26-BOTO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-boto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

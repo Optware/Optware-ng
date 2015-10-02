@@ -1,6 +1,6 @@
 #!/bin/sh
 
 # Create start up and shut down symbolic links
-ln -sf /opt/var/MailRoot/xmail /opt/etc/init.d/K27xmail
-ln -sf /opt/var/MailRoot/xmail /opt/etc/init.d/S43xmail
+ln -sf %OPTWARE_TARGET_PREFIX%/var/MailRoot/xmail %OPTWARE_TARGET_PREFIX%/etc/init.d/K27xmail
+ln -sf %OPTWARE_TARGET_PREFIX%/var/MailRoot/xmail %OPTWARE_TARGET_PREFIX%/etc/init.d/S43xmail
 

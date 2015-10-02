@@ -125,7 +125,7 @@ endif
 	$(MXML_UNZIP) $(DL_DIR)/$(MXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MXML_PATCHES)" ; \
 		then cat $(MXML_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(MXML_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(MXML_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MXML_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MXML_DIR) $(@D) ; \
@@ -176,7 +176,7 @@ mxml-stage: $(MXML_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mxml
 #
 $(MXML_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mxml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -8,7 +8,7 @@ umask 077
 
 rm -f /var/run/denyhosts.pid
 
-touch /opt/etc/hosts.allow
-touch /opt/etc/hosts.deny
+touch %OPTWARE_TARGET_PREFIX%/etc/hosts.allow
+touch %OPTWARE_TARGET_PREFIX%/etc/hosts.deny
 
-/opt/share/denyhosts/denyhosts.py --daemon  -c /opt/etc/denyhosts.cfg
+%OPTWARE_TARGET_PREFIX%/share/denyhosts/denyhosts.py --daemon  -c %OPTWARE_TARGET_PREFIX%/etc/denyhosts.cfg

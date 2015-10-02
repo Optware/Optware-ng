@@ -110,7 +110,7 @@ $(NICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(NICKLE_SOURCE) $(NICKLE_PATCHES) ma
 	$(NICKLE_UNZIP) $(DL_DIR)/$(NICKLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NICKLE_PATCHES)" ; \
 		then cat $(NICKLE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NICKLE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NICKLE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NICKLE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NICKLE_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ nickle-stage: $(NICKLE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nickle
 #
 $(NICKLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nickle" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,9 +193,9 @@ $(NICKLE_IPK): $(NICKLE_BUILD_DIR)/.built
 	rm -rf $(NICKLE_IPK_DIR) $(BUILD_DIR)/nickle_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NICKLE_BUILD_DIR) DESTDIR=$(NICKLE_IPK_DIR) install-strip
 	$(MAKE) $(NICKLE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NICKLE_SOURCE_DIR)/postinst $(NICKLE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NICKLE_SOURCE_DIR)/postinst $(NICKLE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NICKLE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NICKLE_SOURCE_DIR)/prerm $(NICKLE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NICKLE_SOURCE_DIR)/prerm $(NICKLE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NICKLE_IPK_DIR)/CONTROL/prerm
 	echo $(NICKLE_CONFFILES) | sed -e 's/ /\n/g' > $(NICKLE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NICKLE_IPK_DIR)

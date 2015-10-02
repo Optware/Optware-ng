@@ -143,7 +143,7 @@ $(LIBUCLIBC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(LIBUCLIB
 	$(LIBUCLIBC++_UNZIP) $(DL_DIR)/$(LIBUCLIBC++_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBUCLIBC++_PATCHES)" ; \
 		then cat $(LIBUCLIBC++_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBUCLIBC++_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBUCLIBC++_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBUCLIBC++_DIR)" != "$(LIBUCLIBC++_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBUCLIBC++_DIR) $(LIBUCLIBC++_BUILD_DIR) ; \
@@ -188,7 +188,7 @@ endif
 	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) \
 		DESTDIR=$(LIBUCLIBC++_INSTALL_DIR)/uClibc++ install
 	if test ! -d $(LIBUCLIBC++_INSTALL_DIR)/nowrap ; then \
-		install -d $(LIBUCLIBC++_INSTALL_DIR)/nowrap && \
+		$(INSTALL) -d $(LIBUCLIBC++_INSTALL_DIR)/nowrap && \
 		if test -h $(TARGET_CXX) ; then \
 			SRC=`readlink $(TARGET_CXX)`; \
 			DST=`basename $(TARGET_CXX)`; \
@@ -218,7 +218,7 @@ libuclibc++-toolchain: $(LIBUCLIBC++_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libuclibc++
 #
 $(LIBUCLIBC++_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBUCLIBC++_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBUCLIBC++_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libuclibc++" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -247,12 +247,12 @@ $(LIBUCLIBC++_IPK_DIR)/CONTROL/control:
 #
 $(LIBUCLIBC++_IPK): $(LIBUCLIBC++_BUILD_DIR)/.built
 	rm -rf $(LIBUCLIBC++_IPK_DIR) $(BUILD_DIR)/libuclibc++_*_$(TARGET_ARCH).ipk
-	install -d $(LIBUCLIBC++_IPK_DIR)/opt
+	$(INSTALL) -d $(LIBUCLIBC++_IPK_DIR)/opt
 	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR)/src DESTDIR=$(LIBUCLIBC++_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(LIBUCLIBC++_IPK_DIR)/opt/lib/*.so
 	$(MAKE) $(LIBUCLIBC++_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBUCLIBC++_SOURCE_DIR)/postinst $(LIBUCLIBC++_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBUCLIBC++_SOURCE_DIR)/prerm $(LIBUCLIBC++_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBUCLIBC++_SOURCE_DIR)/postinst $(LIBUCLIBC++_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBUCLIBC++_SOURCE_DIR)/prerm $(LIBUCLIBC++_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBUCLIBC++_CONFFILES) | sed -e 's/ /\n/g' > $(LIBUCLIBC++_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUCLIBC++_IPK_DIR)
 

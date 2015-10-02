@@ -119,7 +119,7 @@ endif
 	$(WAVPACK_UNZIP) $(DL_DIR)/$(WAVPACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WAVPACK_PATCHES)" ; \
 		then cat $(WAVPACK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(WAVPACK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(WAVPACK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(WAVPACK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WAVPACK_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ wavpack-stage: $(WAVPACK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/wavpack
 #
 $(WAVPACK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: wavpack" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,15 +203,15 @@ $(WAVPACK_IPK): $(WAVPACK_BUILD_DIR)/.built
 	$(MAKE) -C $(WAVPACK_BUILD_DIR) DESTDIR=$(WAVPACK_IPK_DIR) install-strip
 	sed -i -e '/^exec_prefix=/d' -e '/^prefix=/s/$$/\nexec_prefix=\$${prefix}/' \
 					$(WAVPACK_IPK_DIR)/opt/lib/pkgconfig/wavpack.pc
-#	install -d $(WAVPACK_IPK_DIR)/opt/etc/
-#	install -m 644 $(WAVPACK_SOURCE_DIR)/wavpack.conf $(WAVPACK_IPK_DIR)/opt/etc/wavpack.conf
-#	install -d $(WAVPACK_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(WAVPACK_SOURCE_DIR)/rc.wavpack $(WAVPACK_IPK_DIR)/opt/etc/init.d/SXXwavpack
+#	$(INSTALL) -d $(WAVPACK_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(WAVPACK_SOURCE_DIR)/wavpack.conf $(WAVPACK_IPK_DIR)/opt/etc/wavpack.conf
+#	$(INSTALL) -d $(WAVPACK_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(WAVPACK_SOURCE_DIR)/rc.wavpack $(WAVPACK_IPK_DIR)/opt/etc/init.d/SXXwavpack
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAVPACK_IPK_DIR)/opt/etc/init.d/SXXwavpack
 	$(MAKE) $(WAVPACK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(WAVPACK_SOURCE_DIR)/postinst $(WAVPACK_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(WAVPACK_SOURCE_DIR)/postinst $(WAVPACK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAVPACK_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(WAVPACK_SOURCE_DIR)/prerm $(WAVPACK_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(WAVPACK_SOURCE_DIR)/prerm $(WAVPACK_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAVPACK_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

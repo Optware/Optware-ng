@@ -216,7 +216,7 @@ endif
 	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
 		then cat $(TRANSMISSION_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D) ; \
@@ -278,7 +278,7 @@ endif
 	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
 		then cat $(TRANSMISSION_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D) ; \
@@ -352,7 +352,7 @@ transmission-stage: $(TRANSMISSION_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  
 #
 $(TRANSMISSION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: transmission" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -371,7 +371,7 @@ endif
 	@echo "Conflicts: $(TRANSMISSION_CONFLICTS)" >>$@
 
 $(TRANSMISSION_GTK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: transmission-gtk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -409,17 +409,17 @@ $(TRANSMISSION_IPKS): $(TRANSMISSION_BUILD_DIR)/.built
 endif
 	rm -rf $(TRANSMISSION_IPK_DIR) $(BUILD_DIR)/transmission_*_$(TARGET_ARCH).ipk \
 		$(TRANSMISSION_GTK_IPK_DIR) $(BUILD_DIR)/transmission-gtk_*_$(TARGET_ARCH).ipk
-	install -d $(TRANSMISSION_IPK_DIR)/opt
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) DESTDIR=$(TRANSMISSION_IPK_DIR) install-strip
-	install -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d $(TRANSMISSION_IPK_DIR)/opt/etc/transmission-daemon
-	install -m 755 $(TRANSMISSION_SOURCE_DIR)/rc.transmission $(TRANSMISSION_IPK_DIR)/opt/etc/init.d/S95transmission
-	install -m 644 $(TRANSMISSION_SOURCE_DIR)/settings.json $(TRANSMISSION_IPK_DIR)/opt/etc/transmission-daemon/
-	install -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
-	install -m 666 $(TRANSMISSION_BUILD_DIR)/[CNR]*  $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
-	install -d $(TRANSMISSION_IPK_DIR)/opt/var/log
-	install -d $(TRANSMISSION_IPK_DIR)/opt/var/run
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d $(TRANSMISSION_IPK_DIR)/opt/etc/transmission-daemon
+	$(INSTALL) -m 755 $(TRANSMISSION_SOURCE_DIR)/rc.transmission $(TRANSMISSION_IPK_DIR)/opt/etc/init.d/S95transmission
+	$(INSTALL) -m 644 $(TRANSMISSION_SOURCE_DIR)/settings.json $(TRANSMISSION_IPK_DIR)/opt/etc/transmission-daemon/
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
+	$(INSTALL) -m 666 $(TRANSMISSION_BUILD_DIR)/[CNR]*  $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt/var/run
 ifeq (gtk, $(filter gtk, $(PACKAGES)))
-	install -d $(TRANSMISSION_GTK_IPK_DIR)/opt/bin $(TRANSMISSION_GTK_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(TRANSMISSION_GTK_IPK_DIR)/opt/bin $(TRANSMISSION_GTK_IPK_DIR)/opt/share/man/man1
 	mv -f $(TRANSMISSION_IPK_DIR)/opt/bin/transmission-gtk $(TRANSMISSION_GTK_IPK_DIR)/opt/bin/
 	mv -f $(addprefix $(TRANSMISSION_IPK_DIR)/opt/share/, applications icons pixmaps) \
 		$(TRANSMISSION_GTK_IPK_DIR)/opt/share/

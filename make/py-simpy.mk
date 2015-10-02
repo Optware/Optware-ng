@@ -117,7 +117,7 @@ $(PY-SIMPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCH
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR)
 	cd $(BUILD_DIR); $(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE)
-#	cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
+#	cat $(PY-SIMPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -128,7 +128,7 @@ $(PY-SIMPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCH
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR)
 	cd $(BUILD_DIR); $(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE)
-#	cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
+#	cat $(PY-SIMPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -171,7 +171,7 @@ py-simpy: $(PY-SIMPY_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-simpy
 #
 $(PY25-SIMPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-simpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -186,7 +186,7 @@ $(PY25-SIMPY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SIMPY_CONFLICTS)" >>$@
 
 $(PY26-SIMPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-simpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,7 +201,7 @@ $(PY26-SIMPY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SIMPY_CONFLICTS)" >>$@
 
 $(PY-SIMPY-DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-simpy-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -246,8 +246,8 @@ $(PY26-SIMPY_IPK): $(PY-SIMPY_BUILD_DIR)/.built
 
 $(PY-SIMPY-DOC_IPK): $(PY-SIMPY_BUILD_DIR)/.built
 	rm -rf $(PY-SIMPY-DOC_IPK_DIR) $(BUILD_DIR)/py-simpy-doc_*_$(TARGET_ARCH).ipk
-	install -d $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
-	install -m 644 $(PY-SIMPY_BUILD_DIR)/2.6/PKG-INFO $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
+	$(INSTALL) -d $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
+	$(INSTALL) -m 644 $(PY-SIMPY_BUILD_DIR)/2.6/PKG-INFO $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
 	cp -rp $(PY-SIMPY_BUILD_DIR)/2.6/LGPLlicense_files $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
 	cp -rp $(PY-SIMPY_BUILD_DIR)/2.6/SimPyDocs $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/
 	cp -rp $(PY-SIMPY_BUILD_DIR)/2.6/SimPyModels $(PY-SIMPY-DOC_IPK_DIR)/opt/share/doc/SimPy/

@@ -110,7 +110,7 @@ $(MTR_BUILD_DIR)/.configured: $(DL_DIR)/$(MTR_SOURCE) $(MTR_PATCHES) make/mtr.mk
 	$(MTR_UNZIP) $(DL_DIR)/$(MTR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MTR_PATCHES)" ; \
 		then cat $(MTR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MTR_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MTR_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MTR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MTR_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ mtr: $(MTR_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mtr
 #
 $(MTR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mtr" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,13 +197,13 @@ $(MTR_IPK): $(MTR_BUILD_DIR)/.built
 	rm -rf $(MTR_IPK_DIR) $(BUILD_DIR)/mtr_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MTR_BUILD_DIR) DESTDIR=$(MTR_IPK_DIR) install
 	$(STRIP_COMMAND) $(MTR_IPK_DIR)/opt/sbin/mtr
-#	install -d $(MTR_IPK_DIR)/opt/etc/
-#	install -m 644 $(MTR_SOURCE_DIR)/mtr.conf $(MTR_IPK_DIR)/opt/etc/mtr.conf
-#	install -d $(MTR_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MTR_SOURCE_DIR)/rc.mtr $(MTR_IPK_DIR)/opt/etc/init.d/SXXmtr
+#	$(INSTALL) -d $(MTR_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MTR_SOURCE_DIR)/mtr.conf $(MTR_IPK_DIR)/opt/etc/mtr.conf
+#	$(INSTALL) -d $(MTR_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MTR_SOURCE_DIR)/rc.mtr $(MTR_IPK_DIR)/opt/etc/init.d/SXXmtr
 	$(MAKE) $(MTR_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MTR_SOURCE_DIR)/postinst $(MTR_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MTR_SOURCE_DIR)/prerm $(MTR_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MTR_SOURCE_DIR)/postinst $(MTR_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MTR_SOURCE_DIR)/prerm $(MTR_IPK_DIR)/CONTROL/prerm
 	echo $(MTR_CONFFILES) | sed -e 's/ /\n/g' > $(MTR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MTR_IPK_DIR)
 

@@ -134,7 +134,7 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_D
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
+#	cat $(PY-SETUPTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    ( \
@@ -146,7 +146,7 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_D
 	)
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
+#	cat $(PY-SETUPTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -158,7 +158,7 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_D
 	)
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
+#	cat $(PY-SETUPTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -170,7 +170,7 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_D
 	)
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
+#	cat $(PY-SETUPTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -182,7 +182,7 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_D
 	)
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
+#	cat $(PY-SETUPTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -275,7 +275,7 @@ py-setuptools-host-stage: $(PY-SETUPTOOLS_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-setuptools
 #
 $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-setuptools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -289,7 +289,7 @@ $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
 
 $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-setuptools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -303,7 +303,7 @@ $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
 
 $(PY26-SETUPTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-setuptools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -317,7 +317,7 @@ $(PY26-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
 
 $(PY27-SETUPTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-setuptools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -331,7 +331,7 @@ $(PY27-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
 
 $(PY3-SETUPTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-setuptools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

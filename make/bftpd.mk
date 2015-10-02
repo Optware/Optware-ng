@@ -110,7 +110,7 @@ $(BFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(BFTPD_SOURCE) $(BFTPD_PATCHES) make/
 	$(BFTPD_UNZIP) $(DL_DIR)/$(BFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BFTPD_PATCHES)" ; \
 		then cat $(BFTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BFTPD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BFTPD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BFTPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BFTPD_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ bftpd-stage: $(BFTPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bftpd
 #
 $(BFTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bftpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,23 +202,23 @@ $(BFTPD_IPK_DIR)/CONTROL/control:
 #
 $(BFTPD_IPK): $(BFTPD_BUILD_DIR)/.built
 	rm -rf $(BFTPD_IPK_DIR) $(BUILD_DIR)/bftpd_*_$(TARGET_ARCH).ipk
-	install -d $(BFTPD_IPK_DIR)/opt/etc
-	install -d $(BFTPD_IPK_DIR)/opt/sbin
-	install -d $(BFTPD_IPK_DIR)/opt/man/man8
-	install -d $(BFTPD_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/var/log
 	touch $(BFTPD_IPK_DIR)/opt/etc/bftpd.conf
 	$(MAKE) -C $(BFTPD_BUILD_DIR) DESTDIR=$(BFTPD_IPK_DIR) install
 	$(STRIP_COMMAND) $(BFTPD_IPK_DIR)/opt/sbin/bftpd
 	rm -f $(BFTPD_IPK_DIR)/opt/var/log/bftpd.log
-#	install -d $(BFTPD_IPK_DIR)/opt/etc/
-#	install -m 644 $(BFTPD_SOURCE_DIR)/bftpd.conf $(BFTPD_IPK_DIR)/opt/etc/bftpd.conf
-#	install -d $(BFTPD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(BFTPD_SOURCE_DIR)/rc.bftpd $(BFTPD_IPK_DIR)/opt/etc/init.d/SXXbftpd
+#	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(BFTPD_SOURCE_DIR)/bftpd.conf $(BFTPD_IPK_DIR)/opt/etc/bftpd.conf
+#	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(BFTPD_SOURCE_DIR)/rc.bftpd $(BFTPD_IPK_DIR)/opt/etc/init.d/SXXbftpd
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(BFTPD_IPK_DIR)/opt/etc/init.d/SXXbftpd
 	$(MAKE) $(BFTPD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(BFTPD_SOURCE_DIR)/postinst $(BFTPD_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(BFTPD_SOURCE_DIR)/postinst $(BFTPD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(BFTPD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(BFTPD_SOURCE_DIR)/prerm $(BFTPD_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(BFTPD_SOURCE_DIR)/prerm $(BFTPD_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(BFTPD_IPK_DIR)/CONTROL/prerm
 	echo $(BFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(BFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BFTPD_IPK_DIR)

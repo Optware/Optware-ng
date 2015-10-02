@@ -76,7 +76,7 @@ $(DELEGATE_HOST_BUILD_DIR)/.configured: host/.configured $(DL_DIR)/$(DELEGATE_SO
 	$(DELEGATE_UNZIP) $(DL_DIR)/$(DELEGATE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(DELEGATE_PATCHES)" ; \
 		then cat $(DELEGATE_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(DELEGATE_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(DELEGATE_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(DELEGATE_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(DELEGATE_DIR) $(@D) ; \
@@ -117,7 +117,7 @@ $(DELEGATE_BUILD_DIR)/.configured: $(DELEGATE_HOST_BUILD_DIR)/.built $(DL_DIR)/$
 	$(DELEGATE_UNZIP) $(DL_DIR)/$(DELEGATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DELEGATE_PATCHES)" ; \
 		then cat $(DELEGATE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DELEGATE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DELEGATE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DELEGATE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DELEGATE_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ delegate-stage: $(DELEGATE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/delegate
 #
 $(DELEGATE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: delegate" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,18 +188,18 @@ $(DELEGATE_IPK_DIR)/CONTROL/control:
 #
 $(DELEGATE_IPK): $(DELEGATE_BUILD_DIR)/.built
 	rm -rf $(DELEGATE_IPK_DIR) $(BUILD_DIR)/delegate_*_$(TARGET_ARCH).ipk
-	install -d $(DELEGATE_IPK_DIR)/opt/sbin/
-	install -m 0755 $(DELEGATE_BUILD_DIR)/src/delegated $(DELEGATE_IPK_DIR)/opt/sbin/delegated
+	$(INSTALL) -d $(DELEGATE_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 0755 $(DELEGATE_BUILD_DIR)/src/delegated $(DELEGATE_IPK_DIR)/opt/sbin/delegated
 #	$(MAKE) -C $(DELEGATE_BUILD_DIR) DESTDIR=$(DELEGATE_IPK_DIR) install-strip
-#	install -d $(DELEGATE_IPK_DIR)/opt/etc/
-#	install -m 644 $(DELEGATE_SOURCE_DIR)/delegate.conf $(DELEGATE_IPK_DIR)/opt/etc/delegate.conf
-#	install -d $(DELEGATE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DELEGATE_SOURCE_DIR)/rc.delegate $(DELEGATE_IPK_DIR)/opt/etc/init.d/SXXdelegate
+#	$(INSTALL) -d $(DELEGATE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DELEGATE_SOURCE_DIR)/delegate.conf $(DELEGATE_IPK_DIR)/opt/etc/delegate.conf
+#	$(INSTALL) -d $(DELEGATE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DELEGATE_SOURCE_DIR)/rc.delegate $(DELEGATE_IPK_DIR)/opt/etc/init.d/SXXdelegate
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DELEGATE_IPK_DIR)/opt/etc/init.d/SXXdelegate
 	$(MAKE) $(DELEGATE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DELEGATE_SOURCE_DIR)/postinst $(DELEGATE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DELEGATE_SOURCE_DIR)/postinst $(DELEGATE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DELEGATE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DELEGATE_SOURCE_DIR)/prerm $(DELEGATE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DELEGATE_SOURCE_DIR)/prerm $(DELEGATE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DELEGATE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -116,7 +116,7 @@ $(SCROBBY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCROBBY_SOURCE) $(SCROBBY_PATCHES)
 	$(SCROBBY_UNZIP) $(DL_DIR)/$(SCROBBY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCROBBY_PATCHES)" ; \
 		then cat $(SCROBBY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SCROBBY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SCROBBY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SCROBBY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SCROBBY_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ scrobby-stage: $(SCROBBY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/scrobby
 #
 $(SCROBBY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: scrobby" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(SCROBBY_IPK_DIR)/CONTROL/control:
 $(SCROBBY_IPK): $(SCROBBY_BUILD_DIR)/.built
 	rm -rf $(SCROBBY_IPK_DIR) $(BUILD_DIR)/scrobby_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SCROBBY_BUILD_DIR) DESTDIR=$(SCROBBY_IPK_DIR) install-strip
-#	install -d $(SCROBBY_IPK_DIR)/opt/etc/
-#	install -m 644 $(SCROBBY_SOURCE_DIR)/scrobby.conf $(SCROBBY_IPK_DIR)/opt/etc/scrobby.conf
-#	install -d $(SCROBBY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SCROBBY_SOURCE_DIR)/rc.scrobby $(SCROBBY_IPK_DIR)/opt/etc/init.d/SXXscrobby
+#	$(INSTALL) -d $(SCROBBY_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SCROBBY_SOURCE_DIR)/scrobby.conf $(SCROBBY_IPK_DIR)/opt/etc/scrobby.conf
+#	$(INSTALL) -d $(SCROBBY_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SCROBBY_SOURCE_DIR)/rc.scrobby $(SCROBBY_IPK_DIR)/opt/etc/init.d/SXXscrobby
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCROBBY_IPK_DIR)/opt/etc/init.d/SXXscrobby
 	$(MAKE) $(SCROBBY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SCROBBY_SOURCE_DIR)/postinst $(SCROBBY_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SCROBBY_SOURCE_DIR)/postinst $(SCROBBY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCROBBY_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SCROBBY_SOURCE_DIR)/prerm $(SCROBBY_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SCROBBY_SOURCE_DIR)/prerm $(SCROBBY_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCROBBY_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

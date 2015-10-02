@@ -110,7 +110,7 @@ $(TAGLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGLIB_SOURCE) $(TAGLIB_PATCHES) ma
 	$(TAGLIB_UNZIP) $(DL_DIR)/$(TAGLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TAGLIB_PATCHES)" ; \
 		then cat $(TAGLIB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TAGLIB_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TAGLIB_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TAGLIB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TAGLIB_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ taglib-stage: $(TAGLIB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/taglib
 #
 $(TAGLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: taglib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,15 +191,15 @@ $(TAGLIB_IPK_DIR)/CONTROL/control:
 $(TAGLIB_IPK): $(TAGLIB_BUILD_DIR)/.built
 	rm -rf $(TAGLIB_IPK_DIR) $(BUILD_DIR)/taglib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TAGLIB_BUILD_DIR) DESTDIR=$(TAGLIB_IPK_DIR) transform="" install-strip
-#	install -d $(TAGLIB_IPK_DIR)/opt/etc/
-#	install -m 644 $(TAGLIB_SOURCE_DIR)/taglib.conf $(TAGLIB_IPK_DIR)/opt/etc/taglib.conf
-#	install -d $(TAGLIB_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TAGLIB_SOURCE_DIR)/rc.taglib $(TAGLIB_IPK_DIR)/opt/etc/init.d/SXXtaglib
+#	$(INSTALL) -d $(TAGLIB_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(TAGLIB_SOURCE_DIR)/taglib.conf $(TAGLIB_IPK_DIR)/opt/etc/taglib.conf
+#	$(INSTALL) -d $(TAGLIB_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(TAGLIB_SOURCE_DIR)/rc.taglib $(TAGLIB_IPK_DIR)/opt/etc/init.d/SXXtaglib
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TAGLIB_IPK_DIR)/opt/etc/init.d/SXXtaglib
 	$(MAKE) $(TAGLIB_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TAGLIB_SOURCE_DIR)/postinst $(TAGLIB_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TAGLIB_SOURCE_DIR)/postinst $(TAGLIB_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TAGLIB_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TAGLIB_SOURCE_DIR)/prerm $(TAGLIB_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TAGLIB_SOURCE_DIR)/prerm $(TAGLIB_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TAGLIB_IPK_DIR)/CONTROL/prerm
 	echo $(TAGLIB_CONFFILES) | sed -e 's/ /\n/g' > $(TAGLIB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TAGLIB_IPK_DIR)

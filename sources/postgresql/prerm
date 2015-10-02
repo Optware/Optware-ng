@@ -1,4 +1,4 @@
 #!/bin/sh
 
-/opt/etc/init.d/S98postgresql dumpall
-/opt/etc/init.d/S98postgresql stop
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S98postgresql dumpall
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S98postgresql stop

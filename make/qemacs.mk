@@ -110,7 +110,7 @@ $(QEMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMACS_SOURCE) $(QEMACS_PATCHES) ma
 	$(QEMACS_UNZIP) $(DL_DIR)/$(QEMACS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(QEMACS_PATCHES)" ; \
 		then cat $(QEMACS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(QEMACS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(QEMACS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(QEMACS_DIR)" != "$(QEMACS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(QEMACS_DIR) $(QEMACS_BUILD_DIR) ; \
@@ -177,7 +177,7 @@ qemacs-stage: $(QEMACS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/qemacs
 #
 $(QEMACS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: qemacs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,20 +205,20 @@ $(QEMACS_IPK_DIR)/CONTROL/control:
 #
 $(QEMACS_IPK): $(QEMACS_BUILD_DIR)/.built
 	rm -rf $(QEMACS_IPK_DIR) $(BUILD_DIR)/qemacs_*_$(TARGET_ARCH).ipk
-	install -d $(QEMACS_IPK_DIR)/opt/bin/ $(QEMACS_IPK_DIR)/opt/share/ $(QEMACS_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(QEMACS_IPK_DIR)/opt/bin/ $(QEMACS_IPK_DIR)/opt/share/ $(QEMACS_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(QEMACS_BUILD_DIR) install \
 		DESTDIR=$(QEMACS_IPK_DIR) \
 		prefix=$(QEMACS_IPK_DIR)/opt \
 		;
-#	install -d $(QEMACS_IPK_DIR)/opt/etc/
-#	install -m 644 $(QEMACS_SOURCE_DIR)/qemacs.conf $(QEMACS_IPK_DIR)/opt/etc/qemacs.conf
-#	install -d $(QEMACS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(QEMACS_SOURCE_DIR)/rc.qemacs $(QEMACS_IPK_DIR)/opt/etc/init.d/SXXqemacs
+#	$(INSTALL) -d $(QEMACS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(QEMACS_SOURCE_DIR)/qemacs.conf $(QEMACS_IPK_DIR)/opt/etc/qemacs.conf
+#	$(INSTALL) -d $(QEMACS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(QEMACS_SOURCE_DIR)/rc.qemacs $(QEMACS_IPK_DIR)/opt/etc/init.d/SXXqemacs
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(QEMACS_IPK_DIR)/opt/etc/init.d/SXXqemacs
 	$(MAKE) $(QEMACS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(QEMACS_SOURCE_DIR)/postinst $(QEMACS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(QEMACS_SOURCE_DIR)/postinst $(QEMACS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(QEMACS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(QEMACS_SOURCE_DIR)/prerm $(QEMACS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(QEMACS_SOURCE_DIR)/prerm $(QEMACS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(QEMACS_IPK_DIR)/CONTROL/prerm
 	echo $(QEMACS_CONFFILES) | sed -e 's/ /\n/g' > $(QEMACS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMACS_IPK_DIR)

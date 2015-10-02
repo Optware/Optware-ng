@@ -113,7 +113,7 @@ $(PY-BUILDUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BUILDUTILS_SOURCE) $(PY-B
 	rm -rf $(BUILD_DIR)/$(PY-BUILDUTILS_DIR)
 	$(PY-BUILDUTILS_UNZIP) $(DL_DIR)/$(PY-BUILDUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BUILDUTILS_PATCHES)" ; then \
-	    cat $(PY-BUILDUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BUILDUTILS_DIR) -p0 ; \
+	    cat $(PY-BUILDUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BUILDUTILS_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-BUILDUTILS_DIR) $(PY-BUILDUTILS_BUILD_DIR)/2.4
 	(cd $(PY-BUILDUTILS_BUILD_DIR)/2.4; \
@@ -123,7 +123,7 @@ $(PY-BUILDUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BUILDUTILS_SOURCE) $(PY-B
 	rm -rf $(BUILD_DIR)/$(PY-BUILDUTILS_DIR)
 	$(PY-BUILDUTILS_UNZIP) $(DL_DIR)/$(PY-BUILDUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BUILDUTILS_PATCHES)" ; then \
-	    cat $(PY-BUILDUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BUILDUTILS_DIR) -p0 ; \
+	    cat $(PY-BUILDUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BUILDUTILS_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-BUILDUTILS_DIR) $(PY-BUILDUTILS_BUILD_DIR)/2.5
 	(cd $(PY-BUILDUTILS_BUILD_DIR)/2.5; \
@@ -161,7 +161,7 @@ py-buildutils-stage: $(PY-BUILDUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-buildutils
 #
 $(PY24-BUILDUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-buildutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,7 +175,7 @@ $(PY24-BUILDUTILS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-BUILDUTILS_CONFLICTS)" >>$@
 
 $(PY25-BUILDUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-buildutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

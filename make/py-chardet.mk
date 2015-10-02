@@ -117,7 +117,7 @@ $(PY-CHARDET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHARDET_SOURCE) $(PY-CHARDET
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-CHARDET_UNZIP) $(DL_DIR)/$(PY-CHARDET_SOURCE)
 	$(PY-CHARDET_UNZIP) $(DL_DIR)/$(PY-CHARDET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHARDET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHARDET_DIR) -p1
+#	cat $(PY-CHARDET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHARDET_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHARDET_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -129,7 +129,7 @@ $(PY-CHARDET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHARDET_SOURCE) $(PY-CHARDET
 	)
 #	cd $(BUILD_DIR); $(PY-CHARDET_UNZIP) $(DL_DIR)/$(PY-CHARDET_SOURCE)
 	$(PY-CHARDET_UNZIP) $(DL_DIR)/$(PY-CHARDET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHARDET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHARDET_DIR) -p1
+#	cat $(PY-CHARDET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHARDET_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHARDET_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -141,7 +141,7 @@ $(PY-CHARDET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHARDET_SOURCE) $(PY-CHARDET
 	)
 #	cd $(BUILD_DIR); $(PY-CHARDET_UNZIP) $(DL_DIR)/$(PY-CHARDET_SOURCE)
 	$(PY-CHARDET_UNZIP) $(DL_DIR)/$(PY-CHARDET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHARDET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHARDET_DIR) -p1
+#	cat $(PY-CHARDET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHARDET_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHARDET_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -194,7 +194,7 @@ py-chardet-stage: $(PY-CHARDET_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-chardet
 #
 $(PY26-CHARDET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-chardet" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -208,7 +208,7 @@ $(PY26-CHARDET_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CHARDET_CONFLICTS)" >>$@
 
 $(PY27-CHARDET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-chardet" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -222,7 +222,7 @@ $(PY27-CHARDET_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CHARDET_CONFLICTS)" >>$@
 
 $(PY3-CHARDET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-chardet" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -115,7 +115,7 @@ $(TMUX_BUILD_DIR)/.configured: $(DL_DIR)/$(TMUX_SOURCE) $(TMUX_PATCHES) make/tmu
 	$(TMUX_UNZIP) $(DL_DIR)/$(TMUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TMUX_PATCHES)" ; \
 		then cat $(TMUX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TMUX_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TMUX_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TMUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TMUX_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ tmux-stage: $(TMUX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tmux
 #
 $(TMUX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tmux" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(TMUX_IPK_DIR)/CONTROL/control:
 $(TMUX_IPK): $(TMUX_BUILD_DIR)/.built
 	rm -rf $(TMUX_IPK_DIR) $(BUILD_DIR)/tmux_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TMUX_BUILD_DIR) DESTDIR=$(TMUX_IPK_DIR) install-strip
-#	install -d $(TMUX_IPK_DIR)/opt/etc/
-#	install -m 644 $(TMUX_SOURCE_DIR)/tmux.conf $(TMUX_IPK_DIR)/opt/etc/tmux.conf
-#	install -d $(TMUX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TMUX_SOURCE_DIR)/rc.tmux $(TMUX_IPK_DIR)/opt/etc/init.d/SXXtmux
+#	$(INSTALL) -d $(TMUX_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(TMUX_SOURCE_DIR)/tmux.conf $(TMUX_IPK_DIR)/opt/etc/tmux.conf
+#	$(INSTALL) -d $(TMUX_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(TMUX_SOURCE_DIR)/rc.tmux $(TMUX_IPK_DIR)/opt/etc/init.d/SXXtmux
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TMUX_IPK_DIR)/opt/etc/init.d/SXXtmux
 	$(MAKE) $(TMUX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TMUX_SOURCE_DIR)/postinst $(TMUX_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TMUX_SOURCE_DIR)/postinst $(TMUX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TMUX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TMUX_SOURCE_DIR)/prerm $(TMUX_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TMUX_SOURCE_DIR)/prerm $(TMUX_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TMUX_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

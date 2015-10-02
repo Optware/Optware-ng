@@ -119,7 +119,7 @@ endif
 	$(GTYPIST_UNZIP) $(DL_DIR)/$(GTYPIST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GTYPIST_PATCHES)" ; \
 		then cat $(GTYPIST_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GTYPIST_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GTYPIST_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GTYPIST_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GTYPIST_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ gtypist-stage: $(GTYPIST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gtypist
 #
 $(GTYPIST_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gtypist" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -91,7 +91,7 @@ ldconfig: $(LDCONFIG_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ldconfig
 #
 $(LDCONFIG_IPK_DIR)/CONTROL/control:
-	@install -d $(LDCONFIG_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LDCONFIG_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ldconfig" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -119,18 +119,18 @@ $(LDCONFIG_IPK_DIR)/CONTROL/control:
 #
 $(LDCONFIG_IPK): $(LDCONFIG_BUILD_DIR)/.built
 	rm -rf $(LDCONFIG_IPK_DIR) $(BUILD_DIR)/ldconfig_*_$(TARGET_ARCH).ipk
-	install -d $(LDCONFIG_IPK_DIR)/opt/bin
-	install -d $(LDCONFIG_IPK_DIR)/opt/sbin
-	install -m 755 $(LDCONFIG_BUILD_DIR)/ldd $(LDCONFIG_IPK_DIR)/opt/bin/ldd
-	install -m 755 $(LDCONFIG_SOURCE_DIR)/ldconfig.wrapper $(LDCONFIG_IPK_DIR)/opt/sbin/ldconfig
+	$(INSTALL) -d $(LDCONFIG_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(LDCONFIG_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(LDCONFIG_BUILD_DIR)/ldd $(LDCONFIG_IPK_DIR)/opt/bin/ldd
+	$(INSTALL) -m 755 $(LDCONFIG_SOURCE_DIR)/ldconfig.wrapper $(LDCONFIG_IPK_DIR)/opt/sbin/ldconfig
 	$(STRIP_COMMAND) $(LDCONFIG_BUILD_DIR)/ldconfig -o $(LDCONFIG_IPK_DIR)/opt/sbin/ldconfig.bin
 	$(STRIP_COMMAND) $(LDCONFIG_BUILD_DIR)/sprof -o $(LDCONFIG_IPK_DIR)/opt/bin/sprof
-	install -d $(LDCONFIG_IPK_DIR)/opt/etc/
-	install -m 644 $(LDCONFIG_SOURCE_DIR)/ld.so.conf $(LDCONFIG_IPK_DIR)/opt/etc/ld.so.conf
-	install -d $(LDCONFIG_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(LDCONFIG_SOURCE_DIR)/postinst $(LDCONFIG_IPK_DIR)/opt/etc/init.d/S03ldconfig
+	$(INSTALL) -d $(LDCONFIG_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(LDCONFIG_SOURCE_DIR)/ld.so.conf $(LDCONFIG_IPK_DIR)/opt/etc/ld.so.conf
+	$(INSTALL) -d $(LDCONFIG_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(LDCONFIG_SOURCE_DIR)/postinst $(LDCONFIG_IPK_DIR)/opt/etc/init.d/S03ldconfig
 	$(MAKE) $(LDCONFIG_IPK_DIR)/CONTROL/control
-	install -m 755 $(LDCONFIG_SOURCE_DIR)/postinst $(LDCONFIG_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(LDCONFIG_SOURCE_DIR)/postinst $(LDCONFIG_IPK_DIR)/CONTROL/postinst
 	echo $(LDCONFIG_CONFFILES) | sed -e 's/ /\n/g' > $(LDCONFIG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LDCONFIG_IPK_DIR)
 

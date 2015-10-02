@@ -6,14 +6,14 @@
 # Source defaults file; edit that file to configure this script.
 ENABLED=1
 PARAMS=""
-if [ -e /opt/etc/default/bip ]; then
-  . /opt/etc/default/bip
+if [ -e %OPTWARE_TARGET_PREFIX%/etc/default/bip ]; then
+  . %OPTWARE_TARGET_PREFIX%/etc/default/bip
 fi
 
 test "$ENABLED" != "0" || exit 0
 
-if [ -n "`/opt/bin/pidof bip`" ]; then
-    /opt/bin/killall bip 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof bip`" ]; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall bip 2>/dev/null
 fi
 
-/opt/bin/bip -f /opt/etc/bip.conf $PARAMS
+%OPTWARE_TARGET_PREFIX%/bin/bip -f %OPTWARE_TARGET_PREFIX%/etc/bip.conf $PARAMS

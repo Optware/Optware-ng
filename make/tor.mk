@@ -110,7 +110,7 @@ $(TOR_BUILD_DIR)/.configured: $(DL_DIR)/$(TOR_SOURCE) $(TOR_PATCHES) make/tor.mk
 	$(TOR_UNZIP) $(DL_DIR)/$(TOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TOR_PATCHES)" ; \
 		then cat $(TOR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TOR_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TOR_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TOR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TOR_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ tor-stage: $(TOR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tor
 #
 $(TOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tor" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

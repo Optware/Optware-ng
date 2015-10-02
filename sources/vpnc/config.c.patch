@@ -5,7 +5,7 @@
  static const char *config_ca_dir(void)
  {
 -	return "/etc/ssl/certs";
-+	return "/opt/etc/ssl/certs";
++	return "%OPTWARE_TARGET_PREFIX%/etc/ssl/certs";
  }
  
  static const char *config_def_auth_mode(void)
@@ -14,13 +14,13 @@
  static const char *config_def_script(void)
  {
 -	return "/etc/vpnc/vpnc-script";
-+	return "/opt/etc/vpnc/vpnc-script";
++	return "%OPTWARE_TARGET_PREFIX%/etc/vpnc/vpnc-script";
  }
  
  static const char *config_def_pid_file(void)
  {
 -	return "/var/run/vpnc/pid";
-+	return "/opt/var/run/vpnc/pid";
++	return "%OPTWARE_TARGET_PREFIX%/var/run/vpnc/pid";
  }
  
  static const char *config_def_vendor(void)
@@ -29,7 +29,7 @@
  	char *realname;
  	
 -	asprintf(&realname, "%s%s%s", index(name, '/') ? "" : "/etc/vpnc/", name, add_dot_conf ? ".conf" : "");
-+	asprintf(&realname, "%s%s%s", index(name, '/') ? "" : "/opt/etc/vpnc/", name, add_dot_conf ? ".conf" : "");
++	asprintf(&realname, "%s%s%s", index(name, '/') ? "" : "%OPTWARE_TARGET_PREFIX%/etc/vpnc/", name, add_dot_conf ? ".conf" : "");
  	return realname;
  }
  
@@ -39,8 +39,8 @@
  	if (!got_conffile) {
 -		read_config_file("/etc/vpnc/default.conf", config, 1);
 -		read_config_file("/etc/vpnc.conf", config, 1);
-+		read_config_file("/opt/etc/vpnc/default.conf", config, 1);
-+		read_config_file("/opt/etc/vpnc.conf", config, 1);
++		read_config_file("%OPTWARE_TARGET_PREFIX%/etc/vpnc/default.conf", config, 1);
++		read_config_file("%OPTWARE_TARGET_PREFIX%/etc/vpnc.conf", config, 1);
  	}
  	
  	if (!print_config) {

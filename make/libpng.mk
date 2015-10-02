@@ -100,7 +100,7 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(LIBPNG_DIR) $(@D)
 	$(LIBPNG_UNZIP) $(DL_DIR)/$(LIBPNG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPNG_PATCHES)"; \
-		then cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1; \
+		then cat $(LIBPNG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LIBPNG_DIR) $(@D)
 #	autoreconf -vif $(@D)
@@ -155,7 +155,7 @@ libpng-stage: $(LIBPNG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libpng
 #
 $(LIBPNG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libpng" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,7 +182,7 @@ $(LIBPNG_IPK_DIR)/CONTROL/control:
 #
 $(LIBPNG_IPK): $(LIBPNG_BUILD_DIR)/.built
 	rm -rf $(LIBPNG_IPK_DIR) $(LIBPNG_IPK)
-	install -d $(LIBPNG_IPK_DIR)/opt
+	$(INSTALL) -d $(LIBPNG_IPK_DIR)/opt
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(LIBPNG_IPK_DIR)/opt install-strip
 	rm -f $(LIBPNG_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(LIBPNG_IPK_DIR)/CONTROL/control

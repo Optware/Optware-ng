@@ -110,7 +110,7 @@ $(SPINDOWN_BUILD_DIR)/.configured: $(DL_DIR)/$(SPINDOWN_SOURCE) $(SPINDOWN_PATCH
 	$(SPINDOWN_UNZIP) $(DL_DIR)/$(SPINDOWN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPINDOWN_PATCHES)" ; \
 		then cat $(SPINDOWN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SPINDOWN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SPINDOWN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SPINDOWN_DIR)" != "$(SPINDOWN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SPINDOWN_DIR) $(SPINDOWN_BUILD_DIR) ; \
@@ -160,7 +160,7 @@ spindown-stage: $(SPINDOWN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/spindown
 #
 $(SPINDOWN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: spindown" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,17 +189,17 @@ $(SPINDOWN_IPK_DIR)/CONTROL/control:
 $(SPINDOWN_IPK): $(SPINDOWN_BUILD_DIR)/.built
 	rm -rf $(SPINDOWN_IPK_DIR) $(BUILD_DIR)/spindown_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SPINDOWN_BUILD_DIR) DESTDIR=$(SPINDOWN_IPK_DIR) install-strip
-	install -d $(SPINDOWN_IPK_DIR)/opt/share/doc/spindown
-	install $(SPINDOWN_BUILD_DIR)/README $(SPINDOWN_IPK_DIR)/opt/share/doc/spindown/
-#	install -d $(SPINDOWN_IPK_DIR)/opt/etc/
-#	install -m 644 $(SPINDOWN_SOURCE_DIR)/spindown.conf $(SPINDOWN_IPK_DIR)/opt/etc/spindown.conf
-#	install -d $(SPINDOWN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SPINDOWN_SOURCE_DIR)/rc.spindown $(SPINDOWN_IPK_DIR)/opt/etc/init.d/SXXspindown
+	$(INSTALL) -d $(SPINDOWN_IPK_DIR)/opt/share/doc/spindown
+	$(INSTALL) $(SPINDOWN_BUILD_DIR)/README $(SPINDOWN_IPK_DIR)/opt/share/doc/spindown/
+#	$(INSTALL) -d $(SPINDOWN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SPINDOWN_SOURCE_DIR)/spindown.conf $(SPINDOWN_IPK_DIR)/opt/etc/spindown.conf
+#	$(INSTALL) -d $(SPINDOWN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SPINDOWN_SOURCE_DIR)/rc.spindown $(SPINDOWN_IPK_DIR)/opt/etc/init.d/SXXspindown
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPINDOWN_IPK_DIR)/opt/etc/init.d/SXXspindown
 	$(MAKE) $(SPINDOWN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SPINDOWN_SOURCE_DIR)/postinst $(SPINDOWN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SPINDOWN_SOURCE_DIR)/postinst $(SPINDOWN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPINDOWN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SPINDOWN_SOURCE_DIR)/prerm $(SPINDOWN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SPINDOWN_SOURCE_DIR)/prerm $(SPINDOWN_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPINDOWN_IPK_DIR)/CONTROL/prerm
 	echo $(SPINDOWN_CONFFILES) | sed -e 's/ /\n/g' > $(SPINDOWN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SPINDOWN_IPK_DIR)

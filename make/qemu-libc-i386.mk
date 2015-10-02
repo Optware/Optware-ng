@@ -128,7 +128,7 @@ qemu-libc-i386: $(QEMU_LIBC_I386_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/qemu-libc-i386
 #
 $(QEMU_LIBC_I386_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: qemu-libc-i386" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -143,7 +143,7 @@ $(QEMU_LIBC_I386_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(QEMU_LIBC_I386_CONFLICTS)" >>$@
 
 $(QEMU_LIBC_I386_IPK_DIR)/CONTROL/postinst:
-	@install -d $(QEMU_LIBC_I386_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(QEMU_LIBC_I386_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "#!/bin/sh" >>$@
 	@echo "mkdir -p /opt/$(QEMU_LIBC_I386_TARGET)/etc" >>$@

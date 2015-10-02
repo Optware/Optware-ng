@@ -36,7 +36,7 @@ $(PERL-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES)
 	$(MAKE) perl-stage libgd-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PERL-GD_DIR) $(PERL-GD_BUILD_DIR)
 	$(PERL-GD_UNZIP) $(DL_DIR)/$(PERL-GD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-GD_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-GD_DIR) -p1
+#	cat $(PERL-GD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-GD_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-GD_DIR) $(PERL-GD_BUILD_DIR)
 	find $(@D) -type f -exec chmod +w {} \;
 #	some very odd bug workaround
@@ -84,7 +84,7 @@ $(PERL-GD_BUILD_DIR)/.staged: $(PERL-GD_BUILD_DIR)/.built
 perl-gd-stage: $(PERL-GD_BUILD_DIR)/.staged
 
 $(PERL-GD_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-GD_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-GD_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-gd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

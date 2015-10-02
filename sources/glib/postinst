@@ -1,5 +1,5 @@
 #!/bin/sh
 
-echo "Generating /opt/share/glib-2.0/schemas/gschemas.compiled"
-rm -f /opt/share/glib-2.0/schemas/gschemas.compiled
-/opt/bin/glib-compile-schemas /opt/share/glib-2.0/schemas/
+echo "Generating %OPTWARE_TARGET_PREFIX%/share/glib-2.0/schemas/gschemas.compiled"
+rm -f %OPTWARE_TARGET_PREFIX%/share/glib-2.0/schemas/gschemas.compiled
+%OPTWARE_TARGET_PREFIX%/bin/glib-compile-schemas %OPTWARE_TARGET_PREFIX%/share/glib-2.0/schemas/

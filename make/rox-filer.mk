@@ -116,7 +116,7 @@ $(ROX-FILER_BUILD_DIR)/.configured: $(DL_DIR)/$(ROX-FILER_SOURCE) $(ROX-FILER_PA
 	$(ROX-FILER_UNZIP) $(DL_DIR)/$(ROX-FILER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ROX-FILER_PATCHES)" ; \
 		then cat $(ROX-FILER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ROX-FILER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ROX-FILER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ROX-FILER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ROX-FILER_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ rox-filer: $(ROX-FILER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/rox-filer
 #
 $(ROX-FILER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rox-filer" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,7 +202,7 @@ $(ROX-FILER_IPK_DIR)/CONTROL/control:
 #
 $(ROX-FILER_IPK): $(ROX-FILER_BUILD_DIR)/.built
 	rm -rf $(ROX-FILER_IPK_DIR) $(BUILD_DIR)/rox-filer_*_$(TARGET_ARCH).ipk
-	install -d $(ROX-FILER_IPK_DIR)/opt/bin $(ROX-FILER_IPK_DIR)/opt/share/rox \
+	$(INSTALL) -d $(ROX-FILER_IPK_DIR)/opt/bin $(ROX-FILER_IPK_DIR)/opt/share/rox \
 			$(ROX-FILER_IPK_DIR)/opt/man/man1
 	$(STRIP_COMMAND) $(ROX-FILER_BUILD_DIR)/ROX-Filer/ROX-Filer
 	cp -f $(ROX-FILER_BUILD_DIR)/ROX-Filer/ROX-Filer $(ROX-FILER_IPK_DIR)/opt/bin/rox
@@ -225,15 +225,15 @@ $(ROX-FILER_IPK): $(ROX-FILER_BUILD_DIR)/.built
 	ln -s application-x-{gzip,lzma}.png                 && \
 	ln -s application-{msword,rtf}.png
 #	$(MAKE) -C $(ROX-FILER_BUILD_DIR)/ROX-Filer DESTDIR=$(ROX-FILER_IPK_DIR) install-strip
-#	install -d $(ROX-FILER_IPK_DIR)/opt/etc/
-#	install -m 644 $(ROX-FILER_SOURCE_DIR)/rox-filer.conf $(ROX-FILER_IPK_DIR)/opt/etc/rox-filer.conf
-#	install -d $(ROX-FILER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ROX-FILER_SOURCE_DIR)/rc.rox-filer $(ROX-FILER_IPK_DIR)/opt/etc/init.d/SXXrox-filer
+#	$(INSTALL) -d $(ROX-FILER_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ROX-FILER_SOURCE_DIR)/rox-filer.conf $(ROX-FILER_IPK_DIR)/opt/etc/rox-filer.conf
+#	$(INSTALL) -d $(ROX-FILER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ROX-FILER_SOURCE_DIR)/rc.rox-filer $(ROX-FILER_IPK_DIR)/opt/etc/init.d/SXXrox-filer
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ROX-FILER_IPK_DIR)/opt/etc/init.d/SXXrox-filer
 	$(MAKE) $(ROX-FILER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ROX-FILER_SOURCE_DIR)/postinst $(ROX-FILER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ROX-FILER_SOURCE_DIR)/postinst $(ROX-FILER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ROX-FILER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ROX-FILER_SOURCE_DIR)/prerm $(ROX-FILER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ROX-FILER_SOURCE_DIR)/prerm $(ROX-FILER_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ROX-FILER_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

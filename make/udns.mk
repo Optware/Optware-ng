@@ -124,7 +124,7 @@ $(UDNS_BUILD_DIR)/.configured: $(DL_DIR)/$(UDNS_SOURCE) $(UDNS_PATCHES) make/udn
 	$(UDNS_UNZIP) $(DL_DIR)/$(UDNS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UDNS_PATCHES)" ; \
 		then cat $(UDNS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UDNS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UDNS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UDNS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UDNS_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ udns: $(UDNS_BUILD_DIR)/.built
 $(UDNS_BUILD_DIR)/.staged: $(UDNS_BUILD_DIR)/.built
 	rm -f $@
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	install -d $(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR)
 	cp -af $(@D)/libudns*.so* $(STAGING_LIB_DIR)
 	cp -f $(@D)/udns.h $(STAGING_INCLUDE_DIR)
 	touch $@
@@ -186,7 +186,7 @@ libudns-stage udns-stage: $(UDNS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/udns
 #
 $(UDNS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: udns" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,7 +201,7 @@ $(UDNS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(UDNS_CONFLICTS)" >>$@
 
 $(LIBUDNS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libudns" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -229,21 +229,21 @@ $(LIBUDNS_IPK_DIR)/CONTROL/control:
 #
 $(UDNS_IPK): $(UDNS_BUILD_DIR)/.built
 	rm -rf $(UDNS_IPK_DIR) $(BUILD_DIR)/udns_*_$(TARGET_ARCH).ipk
-	install -d $(UDNS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/bin
 	for app in dnsget ex-rdns rblcheck; do \
-		install -m 755 $(UDNS_BUILD_DIR)/$${app}_s $(UDNS_IPK_DIR)/opt/bin/$${app}; \
+		$(INSTALL) -m 755 $(UDNS_BUILD_DIR)/$${app}_s $(UDNS_IPK_DIR)/opt/bin/$${app}; \
 		$(STRIP_COMMAND) $(UDNS_IPK_DIR)/opt/bin/$${app}; \
 	done
 #	$(MAKE) -C $(UDNS_BUILD_DIR) DESTDIR=$(UDNS_IPK_DIR) install-strip
-#	install -d $(UDNS_IPK_DIR)/opt/etc/
-#	install -m 644 $(UDNS_SOURCE_DIR)/udns.conf $(UDNS_IPK_DIR)/opt/etc/udns.conf
-#	install -d $(UDNS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UDNS_SOURCE_DIR)/rc.udns $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
+#	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(UDNS_SOURCE_DIR)/udns.conf $(UDNS_IPK_DIR)/opt/etc/udns.conf
+#	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/rc.udns $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
 	$(MAKE) $(UDNS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UDNS_SOURCE_DIR)/postinst $(UDNS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/postinst $(UDNS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UDNS_SOURCE_DIR)/prerm $(UDNS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/prerm $(UDNS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
@@ -255,20 +255,20 @@ $(UDNS_IPK): $(UDNS_BUILD_DIR)/.built
 
 $(LIBUDNS_IPK): $(UDNS_BUILD_DIR)/.built
 	rm -rf $(LIBUDNS_IPK_DIR) $(BUILD_DIR)/libudns_*_$(TARGET_ARCH).ipk
-	install -d $(LIBUDNS_IPK_DIR)/opt/lib $(LIBUDNS_IPK_DIR)/opt/include
+	$(INSTALL) -d $(LIBUDNS_IPK_DIR)/opt/lib $(LIBUDNS_IPK_DIR)/opt/include
 	cp -af $(UDNS_BUILD_DIR)/libudns*.so* $(LIBUDNS_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(LIBUDNS_IPK_DIR)/opt/lib/libudns.so.0
 	cp -f $(UDNS_BUILD_DIR)/udns.h $(LIBUDNS_IPK_DIR)/opt/include
 #	$(MAKE) -C $(UDNS_BUILD_DIR) DESTDIR=$(UDNS_IPK_DIR) install-strip
-#	install -d $(UDNS_IPK_DIR)/opt/etc/
-#	install -m 644 $(UDNS_SOURCE_DIR)/udns.conf $(UDNS_IPK_DIR)/opt/etc/udns.conf
-#	install -d $(UDNS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UDNS_SOURCE_DIR)/rc.udns $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
+#	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(UDNS_SOURCE_DIR)/udns.conf $(UDNS_IPK_DIR)/opt/etc/udns.conf
+#	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/rc.udns $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
 	$(MAKE) $(LIBUDNS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UDNS_SOURCE_DIR)/postinst $(UDNS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/postinst $(UDNS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UDNS_SOURCE_DIR)/prerm $(UDNS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/prerm $(UDNS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

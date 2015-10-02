@@ -110,7 +110,7 @@ $(PSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(PSSH_SOURCE) $(PSSH_PATCHES) make/pss
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PSSH_DIR)
 	$(PSSH_UNZIP) $(DL_DIR)/$(PSSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PSSH_PATCHES) | patch -d $(BUILD_DIR)/$(PSSH_DIR) -p1
+#	cat $(PSSH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PSSH_DIR) -p1
 	mv $(BUILD_DIR)/$(PSSH_DIR) $(@D)/2.5
 	sed -i -e '1s|#!.*|#!/opt/bin/python2.5|' $(@D)/2.5/bin/p*
 	(cd $(@D)/2.5; \
@@ -161,7 +161,7 @@ pssh: $(PSSH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/pssh
 #
 $(PSSH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pssh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

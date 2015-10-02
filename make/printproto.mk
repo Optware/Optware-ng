@@ -63,7 +63,7 @@ PRINTPROTO_IPK=$(BUILD_DIR)/printproto_$(PRINTPROTO_VERSION)-$(PRINTPROTO_IPK_VE
 # Automatically create a ipkg control file
 #
 $(PRINTPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(PRINTPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PRINTPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: printproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(PRINTPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(PRINTPROTO_SOURCE) $(PRINTPROTO
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(PRINTPROTO_SOURCE)
 	if test -n "$(PRINTPROTO_PATCHES)" ; \
 		then cat $(PRINTPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PRINTPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PRINTPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PRINTPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PRINTPROTO_DIR) $(@D) ; \

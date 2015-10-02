@@ -117,7 +117,7 @@ $(ICU_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.mk
 	$(ICU_UNZIP) $(DL_DIR)/$(ICU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ICU_PATCHES)" ; \
 		then cat $(ICU_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ICU_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ICU_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ICU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ICU_DIR) $(@D) ; \
@@ -201,7 +201,7 @@ $(ICU_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ICU_SOURCE)
 # necessary to create a seperate control file under sources/icu
 #
 $(ICU_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: icu" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -237,15 +237,15 @@ $(ICU_IPK): $(ICU_BUILD_DIR)/.built
 		`ls $(ICU_IPK_DIR)/opt/bin/* | grep -v icu-config` \
 		$(ICU_IPK_DIR)/opt/sbin/* \
 		$(ICU_IPK_DIR)/opt/lib/lib*.so.*.*
-#	install -d $(ICU_IPK_DIR)/opt/etc/
-#	install -m 644 $(ICU_SOURCE_DIR)/icu.conf $(ICU_IPK_DIR)/opt/etc/icu.conf
-#	install -d $(ICU_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ICU_SOURCE_DIR)/rc.icu $(ICU_IPK_DIR)/opt/etc/init.d/SXXicu
+#	$(INSTALL) -d $(ICU_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ICU_SOURCE_DIR)/icu.conf $(ICU_IPK_DIR)/opt/etc/icu.conf
+#	$(INSTALL) -d $(ICU_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ICU_SOURCE_DIR)/rc.icu $(ICU_IPK_DIR)/opt/etc/init.d/SXXicu
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU_IPK_DIR)/opt/etc/init.d/SXXicu
 	$(MAKE) $(ICU_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ICU_SOURCE_DIR)/postinst $(ICU_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ICU_SOURCE_DIR)/postinst $(ICU_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ICU_SOURCE_DIR)/prerm $(ICU_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ICU_SOURCE_DIR)/prerm $(ICU_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -111,7 +111,7 @@ $(YAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(YAWK_SOURCE) $(YAWK_PATCHES) make/yaw
 	$(YAWK_UNZIP) $(DL_DIR)/$(YAWK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(YAWK_PATCHES)" ; \
 		then cat $(YAWK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(YAWK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(YAWK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(YAWK_DIR)" != "$(YAWK_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(YAWK_DIR) $(YAWK_BUILD_DIR) ; \
@@ -181,7 +181,7 @@ yawk-stage: $(YAWK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/yawk
 #
 $(YAWK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: yawk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -209,20 +209,20 @@ $(YAWK_IPK_DIR)/CONTROL/control:
 #
 $(YAWK_IPK): $(YAWK_BUILD_DIR)/.built
 	rm -rf $(YAWK_IPK_DIR) $(BUILD_DIR)/yawk_*_$(TARGET_ARCH).ipk
-	install -d \
+	$(INSTALL) -d \
 		$(YAWK_IPK_DIR)/opt/etc/yawk \
 		$(YAWK_IPK_DIR)/opt/share/www/cgi-bin \
 		$(YAWK_IPK_DIR)/opt/lib/yawk \
 		;
-	install $(YAWK_BUILD_DIR)/yawk.conf \
+	$(INSTALL) $(YAWK_BUILD_DIR)/yawk.conf \
 		$(YAWK_IPK_DIR)/opt/etc/yawk
-	install $(YAWK_BUILD_DIR)/wiki.cgi \
+	$(INSTALL) $(YAWK_BUILD_DIR)/wiki.cgi \
 		$(YAWK_IPK_DIR)/opt/share/www/cgi-bin/
-	install $(YAWK_BUILD_DIR)/wiki-parser \
+	$(INSTALL) $(YAWK_BUILD_DIR)/wiki-parser \
 		$(YAWK_BUILD_DIR)/wiki-receiver \
 		$(YAWK_BUILD_DIR)/wiki-relsearch \
 		$(YAWK_IPK_DIR)/opt/lib/yawk/
-	install -d $(YAWK_IPK_DIR)/opt/share/yawk-wikispace/wiki-wiki
+	$(INSTALL) -d $(YAWK_IPK_DIR)/opt/share/yawk-wikispace/wiki-wiki
 	echo "dir	/opt/share/yawk-wikispace/wiki-wiki" \
 		> $(YAWK_IPK_DIR)/opt/etc/yawk/wiki-wiki.conf
 	chmod -R 777 $(YAWK_IPK_DIR)/opt/share/yawk-wikispace

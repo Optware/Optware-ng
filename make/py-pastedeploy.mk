@@ -136,7 +136,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTEDEPLOY_PATCHES)" ; then \
-	    cat $(PY-PASTEDEPLOY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
+	    cat $(PY-PASTEDEPLOY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
@@ -152,7 +152,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTEDEPLOY_PATCHES)" ; then \
-	    cat $(PY-PASTEDEPLOY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
+	    cat $(PY-PASTEDEPLOY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -168,7 +168,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTEDEPLOY_PATCHES)" ; then \
-	    cat $(PY-PASTEDEPLOY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
+	    cat $(PY-PASTEDEPLOY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -184,7 +184,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTEDEPLOY_PATCHES)" ; then \
-	    cat $(PY-PASTEDEPLOY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
+	    cat $(PY-PASTEDEPLOY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -248,7 +248,7 @@ py-pastedeploy-stage: $(PY-PASTEDEPLOY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-pastedeploy
 #
 $(PY24-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-pastedeploy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -262,7 +262,7 @@ $(PY24-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTEDEPLOY_CONFLICTS)" >>$@
 
 $(PY25-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pastedeploy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -276,7 +276,7 @@ $(PY25-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTEDEPLOY_CONFLICTS)" >>$@
 
 $(PY26-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-pastedeploy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -290,7 +290,7 @@ $(PY26-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTEDEPLOY_CONFLICTS)" >>$@
 
 $(PY27-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-pastedeploy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

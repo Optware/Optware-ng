@@ -82,7 +82,7 @@ $(JOVE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOVE_SOURCE) $(JOVE_PATCHES) make/jov
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(JOVE_DIR) $(@D)
 	$(JOVE_UNZIP) $(DL_DIR)/$(JOVE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(JOVE_PATCHES) | patch -d $(BUILD_DIR)/$(JOVE_DIR) -p1
+	cat $(JOVE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(JOVE_DIR) -p1
 	mv $(BUILD_DIR)/$(JOVE_DIR) $(@D)
 	find $(@D) -type f -name "*.[ch]" -exec sed -i -e 's/getline/_getline_/g' {} \;
 	touch $@
@@ -111,7 +111,7 @@ jove: $(JOVE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/jove
 #
 $(JOVE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: jove" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -139,7 +139,7 @@ $(JOVE_IPK_DIR)/CONTROL/control:
 #
 $(JOVE_IPK): $(JOVE_BUILD_DIR)/.built
 	rm -rf $(JOVE_IPK_DIR) $(JOVE_IPK)
-	install -d $(JOVE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(JOVE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(JOVE_BUILD_DIR)/jjove -o $(JOVE_IPK_DIR)/opt/bin/jove
 	$(MAKE) $(JOVE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JOVE_IPK_DIR)

@@ -39,7 +39,7 @@ $(ACK_BUILD_DIR)/.configured: $(DL_DIR)/$(ACK_SOURCE) $(ACK_PATCHES) make/ack.mk
 	rm -rf $(BUILD_DIR)/$(ACK_DIR) $(@D)
 	$(ACK_UNZIP) $(DL_DIR)/$(ACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ACK_PATCHES)"; then \
-		cat $(ACK_PATCHES) | patch -d $(BUILD_DIR)/$(ACK_DIR) -p0; \
+		cat $(ACK_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ACK_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(ACK_DIR) $(@D)
 	(cd $(@D); \
@@ -69,7 +69,7 @@ ack: $(ACK_BUILD_DIR)/.built
 #ack-stage: $(ACK_BUILD_DIR)/.staged
 
 $(ACK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ack" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

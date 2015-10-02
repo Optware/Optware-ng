@@ -106,7 +106,7 @@ unslung-feeds-unstable: $(UNSLUNG-FEEDS-UNSTABLE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/unslung-feeds-unstable
 #
 $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: unslung-feeds-unstable" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -134,12 +134,12 @@ $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/CONTROL/control:
 #
 $(UNSLUNG-FEEDS-UNSTABLE_IPK): $(UNSLUNG-FEEDS-UNSTABLE_BUILD_DIR)/.built
 	rm -rf $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR) $(BUILD_DIR)/unslung-feeds-unstable_*_$(TARGET_ARCH).ipk
-	install -d $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/etc/ipkg
-	install -m 755 $(UNSLUNG-FEEDS-UNSTABLE_SOURCE_DIR)/optware-nslu2-cross-unstable.conf $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/etc/ipkg/optware-nslu2-cross-unstable.conf
-	install -m 755 $(UNSLUNG-FEEDS-UNSTABLE_SOURCE_DIR)/optware-nslu2-native-unstable.conf $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/etc/ipkg/optware-nslu2-native-unstable.conf
+	$(INSTALL) -d $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/etc/ipkg
+	$(INSTALL) -m 755 $(UNSLUNG-FEEDS-UNSTABLE_SOURCE_DIR)/optware-nslu2-cross-unstable.conf $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/etc/ipkg/optware-nslu2-cross-unstable.conf
+	$(INSTALL) -m 755 $(UNSLUNG-FEEDS-UNSTABLE_SOURCE_DIR)/optware-nslu2-native-unstable.conf $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/etc/ipkg/optware-nslu2-native-unstable.conf
 	$(MAKE) $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/CONTROL/control
-#	install -m 644 $(UNSLUNG-FEEDS-UNSTABLE_SOURCE_DIR)/postinst $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(UNSLUNG-FEEDS-UNSTABLE_SOURCE_DIR)/prerm $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(UNSLUNG-FEEDS-UNSTABLE_SOURCE_DIR)/postinst $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(UNSLUNG-FEEDS-UNSTABLE_SOURCE_DIR)/prerm $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/CONTROL/prerm
 	echo $(UNSLUNG-FEEDS-UNSTABLE_CONFFILES) | sed -e 's/ /\n/g' > $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNSLUNG-FEEDS-UNSTABLE_IPK_DIR)
 

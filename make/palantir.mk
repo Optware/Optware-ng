@@ -108,7 +108,7 @@ $(PALANTIR_BUILD_DIR)/.configured: $(DL_DIR)/$(PALANTIR_SOURCE) $(PALANTIR_PATCH
 	$(PALANTIR_UNZIP) $(DL_DIR)/$(PALANTIR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PALANTIR_PATCHES)" ; \
 		then cat $(PALANTIR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PALANTIR_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PALANTIR_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PALANTIR_DIR)" != "$(PALANTIR_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PALANTIR_DIR) $(PALANTIR_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ palantir-stage: $(PALANTIR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/palantir
 #
 $(PALANTIR_IPK_DIR)/CONTROL/control:
-	@install -d $(PALANTIR_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PALANTIR_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: palantir" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,25 +191,25 @@ $(PALANTIR_IPK_DIR)/CONTROL/control:
 #
 $(PALANTIR_IPK): $(PALANTIR_BUILD_DIR)/.built
 	rm -rf $(PALANTIR_IPK_DIR) $(BUILD_DIR)/palantir_*_$(TARGET_ARCH).ipk
-	install -d $(PALANTIR_IPK_DIR)/opt/bin
-	install -m 755 $(PALANTIR_BUILD_DIR)/server/palantir $(PALANTIR_IPK_DIR)/opt/bin
-	install -m 755 $(PALANTIR_BUILD_DIR)/server/tools/sysfeed $(PALANTIR_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(PALANTIR_BUILD_DIR)/server/palantir $(PALANTIR_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(PALANTIR_BUILD_DIR)/server/tools/sysfeed $(PALANTIR_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PALANTIR_IPK_DIR)/opt/bin/palantir
 	$(STRIP_COMMAND) $(PALANTIR_IPK_DIR)/opt/bin/sysfeed
-	install -d $(PALANTIR_IPK_DIR)/opt/etc/
-	install -m 644 $(PALANTIR_BUILD_DIR)/server/palantir-mips.conf.sample $(PALANTIR_IPK_DIR)/opt/etc/palantir.conf
-	install -d $(PALANTIR_IPK_DIR)/opt/share/palantir
-	install -m 644 $(PALANTIR_BUILD_DIR)/server/pict/unavail.jpg $(PALANTIR_IPK_DIR)/opt/share/palantir
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/palantir-mips.conf.sample $(PALANTIR_IPK_DIR)/opt/etc/palantir.conf
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/share/palantir
+	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/pict/unavail.jpg $(PALANTIR_IPK_DIR)/opt/share/palantir
 	mkfifo $(PALANTIR_IPK_DIR)/opt/share/palantir/telmu_pipe
-	install -d $(PALANTIR_IPK_DIR)/opt/man/man1
-	install -d $(PALANTIR_IPK_DIR)/opt/man/man5
-	install -m 644 $(PALANTIR_BUILD_DIR)/server/man/palantir.1 $(PALANTIR_IPK_DIR)/opt/man/man1
-	install -m 644 $(PALANTIR_BUILD_DIR)/server/man/palantir.conf.5 $(PALANTIR_IPK_DIR)/opt/man/man5
-#	install -d $(PALANTIR_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PALANTIR_SOURCE_DIR)/rc.palantir $(PALANTIR_IPK_DIR)/opt/etc/init.d/SXXpalantir
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/man/man5
+	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/man/palantir.1 $(PALANTIR_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/man/palantir.conf.5 $(PALANTIR_IPK_DIR)/opt/man/man5
+#	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PALANTIR_SOURCE_DIR)/rc.palantir $(PALANTIR_IPK_DIR)/opt/etc/init.d/SXXpalantir
 	$(MAKE) $(PALANTIR_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PALANTIR_SOURCE_DIR)/postinst $(PALANTIR_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PALANTIR_SOURCE_DIR)/prerm $(PALANTIR_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PALANTIR_SOURCE_DIR)/postinst $(PALANTIR_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PALANTIR_SOURCE_DIR)/prerm $(PALANTIR_IPK_DIR)/CONTROL/prerm
 	echo $(PALANTIR_CONFFILES) | sed -e 's/ /\n/g' > $(PALANTIR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PALANTIR_IPK_DIR)
 

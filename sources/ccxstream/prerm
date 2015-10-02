@@ -1,4 +1,4 @@
 #!/bin/sh
 
-/opt/bin/killall ccxstream
+%OPTWARE_TARGET_PREFIX%/bin/killall ccxstream
 

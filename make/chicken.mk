@@ -110,7 +110,7 @@ $(CHICKEN_BUILD_DIR)/.configured: $(DL_DIR)/$(CHICKEN_SOURCE) $(CHICKEN_PATCHES)
 	$(CHICKEN_UNZIP) $(DL_DIR)/$(CHICKEN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CHICKEN_PATCHES)" ; \
 		then cat $(CHICKEN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CHICKEN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CHICKEN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CHICKEN_DIR)" != "$(CHICKEN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CHICKEN_DIR) $(CHICKEN_BUILD_DIR) ; \
@@ -160,7 +160,7 @@ chicken-stage: $(CHICKEN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/chicken
 #
 $(CHICKEN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: chicken" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,15 +189,15 @@ $(CHICKEN_IPK_DIR)/CONTROL/control:
 $(CHICKEN_IPK): $(CHICKEN_BUILD_DIR)/.built
 	rm -rf $(CHICKEN_IPK_DIR) $(BUILD_DIR)/chicken_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CHICKEN_BUILD_DIR) DESTDIR=$(CHICKEN_IPK_DIR) install-strip
-#	install -d $(CHICKEN_IPK_DIR)/opt/etc/
-#	install -m 644 $(CHICKEN_SOURCE_DIR)/chicken.conf $(CHICKEN_IPK_DIR)/opt/etc/chicken.conf
-#	install -d $(CHICKEN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CHICKEN_SOURCE_DIR)/rc.chicken $(CHICKEN_IPK_DIR)/opt/etc/init.d/SXXchicken
+#	$(INSTALL) -d $(CHICKEN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CHICKEN_SOURCE_DIR)/chicken.conf $(CHICKEN_IPK_DIR)/opt/etc/chicken.conf
+#	$(INSTALL) -d $(CHICKEN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CHICKEN_SOURCE_DIR)/rc.chicken $(CHICKEN_IPK_DIR)/opt/etc/init.d/SXXchicken
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CHICKEN_IPK_DIR)/opt/etc/init.d/SXXchicken
 	$(MAKE) $(CHICKEN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CHICKEN_SOURCE_DIR)/postinst $(CHICKEN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CHICKEN_SOURCE_DIR)/postinst $(CHICKEN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CHICKEN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CHICKEN_SOURCE_DIR)/prerm $(CHICKEN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CHICKEN_SOURCE_DIR)/prerm $(CHICKEN_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CHICKEN_IPK_DIR)/CONTROL/prerm
 	echo $(CHICKEN_CONFFILES) | sed -e 's/ /\n/g' > $(CHICKEN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CHICKEN_IPK_DIR)

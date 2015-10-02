@@ -35,7 +35,7 @@ perl-file-rename-source: $(DL_DIR)/$(PERL-FILE-RENAME_SOURCE) $(PERL-FILE-RENAME
 $(PERL-FILE-RENAME_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-FILE-RENAME_SOURCE) $(PERL-FILE-RENAME_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERL-FILE-RENAME_DIR) $(@D)
 	$(PERL-FILE-RENAME_UNZIP) $(DL_DIR)/$(PERL-FILE-RENAME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-FILE-RENAME_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-FILE-RENAME_DIR) -p1
+#	cat $(PERL-FILE-RENAME_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-FILE-RENAME_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-FILE-RENAME_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-FILE-RENAME_BUILD_DIR)/.staged: $(PERL-FILE-RENAME_BUILD_DIR)/.built
 perl-file-rename-stage: $(PERL-FILE-RENAME_BUILD_DIR)/.staged
 
 $(PERL-FILE-RENAME_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-file-rename" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

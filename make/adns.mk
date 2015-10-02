@@ -97,7 +97,7 @@ adns-source: $(DL_DIR)/$(ADNS_SOURCE) $(ADNS_PATCHES)
 $(ADNS_BUILD_DIR)/.configured: $(DL_DIR)/$(ADNS_SOURCE) $(ADNS_PATCHES) make/adns.mk
 	rm -rf $(BUILD_DIR)/$(ADNS_DIR) $(ADNS_BUILD_DIR)
 	$(ADNS_UNZIP) $(DL_DIR)/$(ADNS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(ADNS_PATCHES) | patch -d $(BUILD_DIR)/$(ADNS_DIR) -p1
+#	cat $(ADNS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ADNS_DIR) -p1
 	mv $(BUILD_DIR)/$(ADNS_DIR) $(ADNS_BUILD_DIR)
 	(cd $(ADNS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -134,13 +134,13 @@ adns: $(ADNS_BUILD_DIR)/.built
 $(ADNS_BUILD_DIR)/.staged: $(ADNS_BUILD_DIR)/.built
 	rm -f $(ADNS_BUILD_DIR)/.staged
 	(cd $(ADNS_BUILD_DIR); \
-#		install -c -m 644 src/libadns.a $(STAGING_LIB_DIR)/libadns.a ; \
-		install -c -m 755 dynamic/libadns.so.1.3 \
+#		$(INSTALL) -c -m 644 src/libadns.a $(STAGING_LIB_DIR)/libadns.a ; \
+		$(INSTALL) -c -m 755 dynamic/libadns.so.1.3 \
 			 $(STAGING_LIB_DIR)/libadns.so.1.3 ; \
 		ln -sf libadns.so.1.3 \
 			$(STAGING_LIB_DIR)/libadns.so.1 ; \
 		ln -sf libadns.so.1 $(STAGING_LIB_DIR)/libadns.so ; \
-		install -c -m 644 src/adns.h $(STAGING_INCLUDE_DIR)/adns.h ; \
+		$(INSTALL) -c -m 644 src/adns.h $(STAGING_INCLUDE_DIR)/adns.h ; \
 	)
 	touch $(ADNS_BUILD_DIR)/.staged
 
@@ -151,7 +151,7 @@ adns-stage: $(ADNS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/adns
 #
 $(ADNS_IPK_DIR)/CONTROL/control:
-	@install -d $(ADNS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ADNS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: adns" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,21 +179,21 @@ $(ADNS_IPK_DIR)/CONTROL/control:
 #
 $(ADNS_IPK): $(ADNS_BUILD_DIR)/.built
 	rm -rf $(ADNS_IPK_DIR) $(BUILD_DIR)/adns_*_$(TARGET_ARCH).ipk
-	install -d $(ADNS_IPK_DIR)/opt/lib/
-	#install -m 644 $(ADNS_BUILD_DIR)/src/libadns.a $(ADNS_IPK_DIR)/opt/lib/libadns.a
-	install -m 755 $(ADNS_BUILD_DIR)/dynamic/libadns.so.[0-9]*.[0-9]* \
+	$(INSTALL) -d $(ADNS_IPK_DIR)/opt/lib/
+	#$(INSTALL) -m 644 $(ADNS_BUILD_DIR)/src/libadns.a $(ADNS_IPK_DIR)/opt/lib/libadns.a
+	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/dynamic/libadns.so.[0-9]*.[0-9]* \
 		 $(ADNS_IPK_DIR)/opt/lib/
 	cd $(ADNS_IPK_DIR)/opt/lib && ln -sf libadns.so.[0-9]*.[0-9]* libadns.so.1
 	ln -sf libadns.so.1 $(ADNS_IPK_DIR)/opt/lib/libadns.so
 	$(STRIP_COMMAND) $(ADNS_IPK_DIR)/opt/lib/libadns.so.[0-9]*.[0-9]*
-	install -d $(ADNS_IPK_DIR)/opt/include/
-	install -m 644 $(ADNS_BUILD_DIR)/src/adns.h $(ADNS_IPK_DIR)/opt/include/adns.h
-	install -d $(ADNS_IPK_DIR)/opt/bin/
-	install -m 755 $(ADNS_BUILD_DIR)/client/adnslogres    $(ADNS_IPK_DIR)/opt/bin/adnslogres
-	install -m 755 $(ADNS_BUILD_DIR)/client/adnshost      $(ADNS_IPK_DIR)/opt/bin/adnshost
-	install -m 755 $(ADNS_BUILD_DIR)/client/adnsresfilter $(ADNS_IPK_DIR)/opt/bin/adnsresfilter
+	$(INSTALL) -d $(ADNS_IPK_DIR)/opt/include/
+	$(INSTALL) -m 644 $(ADNS_BUILD_DIR)/src/adns.h $(ADNS_IPK_DIR)/opt/include/adns.h
+	$(INSTALL) -d $(ADNS_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/client/adnslogres    $(ADNS_IPK_DIR)/opt/bin/adnslogres
+	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/client/adnshost      $(ADNS_IPK_DIR)/opt/bin/adnshost
+	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/client/adnsresfilter $(ADNS_IPK_DIR)/opt/bin/adnsresfilter
 	$(STRIP_COMMAND) $(ADNS_IPK_DIR)/opt/bin/*
-	install -d $(ADNS_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(ADNS_IPK_DIR)/CONTROL
 	$(MAKE) $(ADNS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ADNS_IPK_DIR)
 

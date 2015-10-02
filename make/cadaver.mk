@@ -110,7 +110,7 @@ $(CADAVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CADAVER_SOURCE) $(CADAVER_PATCHES)
 	$(CADAVER_UNZIP) $(DL_DIR)/$(CADAVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CADAVER_PATCHES)" ; \
 		then cat $(CADAVER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CADAVER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CADAVER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CADAVER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CADAVER_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ cadaver-stage: $(CADAVER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cadaver
 #
 $(CADAVER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cadaver" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

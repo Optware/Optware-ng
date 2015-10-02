@@ -111,7 +111,7 @@ $(NAGG_BUILD_DIR)/.configured: $(DL_DIR)/$(NAGG_SOURCE) $(NAGG_PATCHES) make/nag
 	$(NAGG_UNZIP) $(DL_DIR)/$(NAGG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NAGG_PATCHES)" ; \
 		then cat $(NAGG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NAGG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NAGG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NAGG_DIR)" != "$(NAGG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NAGG_DIR) $(NAGG_BUILD_DIR) ; \
@@ -153,7 +153,7 @@ nagg-stage: $(NAGG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nagg
 #
 $(NAGG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nagg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,15 +182,15 @@ $(NAGG_IPK_DIR)/CONTROL/control:
 $(NAGG_IPK): $(NAGG_BUILD_DIR)/.built
 	rm -rf $(NAGG_IPK_DIR) $(BUILD_DIR)/nagg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NAGG_BUILD_DIR) DESTDIR=$(NAGG_IPK_DIR)/opt install
-#	install -d $(NAGG_IPK_DIR)/opt/etc/
-#	install -m 644 $(NAGG_SOURCE_DIR)/nagg.conf $(NAGG_IPK_DIR)/opt/etc/nagg.conf
-#	install -d $(NAGG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NAGG_SOURCE_DIR)/rc.nagg $(NAGG_IPK_DIR)/opt/etc/init.d/SXXnagg
+#	$(INSTALL) -d $(NAGG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NAGG_SOURCE_DIR)/nagg.conf $(NAGG_IPK_DIR)/opt/etc/nagg.conf
+#	$(INSTALL) -d $(NAGG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NAGG_SOURCE_DIR)/rc.nagg $(NAGG_IPK_DIR)/opt/etc/init.d/SXXnagg
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NAGG_IPK_DIR)/opt/etc/init.d/SXXnagg
 	$(MAKE) $(NAGG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NAGG_SOURCE_DIR)/postinst $(NAGG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NAGG_SOURCE_DIR)/postinst $(NAGG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NAGG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NAGG_SOURCE_DIR)/prerm $(NAGG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NAGG_SOURCE_DIR)/prerm $(NAGG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NAGG_IPK_DIR)/CONTROL/prerm
 	echo $(NAGG_CONFFILES) | sed -e 's/ /\n/g' > $(NAGG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NAGG_IPK_DIR)

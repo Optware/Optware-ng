@@ -123,7 +123,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-MX-BASE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	#cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
             ( \
@@ -138,7 +138,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-MX-BASE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	#cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
             ( \
@@ -153,7 +153,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-MX-BASE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	#cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
             ( \
@@ -168,7 +168,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	# 2.7
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-MX-BASE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	#cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
             ( \
@@ -248,7 +248,7 @@ py-mx-base-stage: $(PY-MX-BASE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-mx-base
 #
 $(PY24-MX-BASE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-mx-base" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -262,7 +262,7 @@ $(PY24-MX-BASE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MX-BASE_CONFLICTS)" >>$@
 
 $(PY25-MX-BASE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-mx-base" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -276,7 +276,7 @@ $(PY25-MX-BASE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MX-BASE_CONFLICTS)" >>$@
 
 $(PY26-MX-BASE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-mx-base" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -290,7 +290,7 @@ $(PY26-MX-BASE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MX-BASE_CONFLICTS)" >>$@
 
 $(PY27-MX-BASE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-mx-base" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

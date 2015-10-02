@@ -110,7 +110,7 @@ $(P910ND_BUILD_DIR)/.configured: $(DL_DIR)/$(P910ND_SOURCE) $(P910ND_PATCHES) ma
 	$(P910ND_UNZIP) $(DL_DIR)/$(P910ND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(P910ND_PATCHES)" ; \
 		then cat $(P910ND_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(P910ND_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(P910ND_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(P910ND_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(P910ND_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ p910nd: $(P910ND_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/p910nd
 #
 $(P910ND_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: p910nd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

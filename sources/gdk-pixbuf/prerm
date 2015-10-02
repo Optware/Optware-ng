@@ -1,5 +1,5 @@
 #!/bin/sh
 
-echo "Removing /opt/lib/girepository-1.0/GdkPixbuf-2.0.typelib"
+echo "Removing %OPTWARE_TARGET_PREFIX%/lib/girepository-1.0/GdkPixbuf-2.0.typelib"
 
-rm -f /opt/lib/girepository-1.0/GdkPixbuf-2.0.typelib
+rm -f %OPTWARE_TARGET_PREFIX%/lib/girepository-1.0/GdkPixbuf-2.0.typelib

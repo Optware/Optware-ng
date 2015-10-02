@@ -11,7 +11,7 @@
 -then
 -	piddir="/etc"
 -fi
-+piddir=/opt/var/run
++piddir=%OPTWARE_TARGET_PREFIX%/var/run
  
  
  cat >>confdefs.h <<_ACEOF

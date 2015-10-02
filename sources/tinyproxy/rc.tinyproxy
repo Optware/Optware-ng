@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof tinyproxy`" ] ; then
-    /opt/bin/killall tinyproxy 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof tinyproxy`" ] ; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall tinyproxy 2>/dev/null
 fi
 
 sleep 2
-/opt/sbin/tinyproxy
+%OPTWARE_TARGET_PREFIX%/sbin/tinyproxy

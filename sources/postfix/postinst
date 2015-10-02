@@ -24,30 +24,30 @@ else
     /bin/echo "failed"
 fi
         
-/bin/echo -n "changing permissions of /opt/var/spool/postfix/* ... "
-/bin/chown -R $mail_owner.$mail_group /opt/var/spool/postfix/*
-/bin/chown -R $mail_owner.$setgid_group /opt/var/spool/postfix/public
-/bin/chown -R $mail_owner.$setgid_group /opt/var/spool/postfix/maildrop
+/bin/echo -n "changing permissions of %OPTWARE_TARGET_PREFIX%/var/spool/postfix/* ... "
+/bin/chown -R $mail_owner.$mail_group %OPTWARE_TARGET_PREFIX%/var/spool/postfix/*
+/bin/chown -R $mail_owner.$setgid_group %OPTWARE_TARGET_PREFIX%/var/spool/postfix/public
+/bin/chown -R $mail_owner.$setgid_group %OPTWARE_TARGET_PREFIX%/var/spool/postfix/maildrop
 /bin/echo "ok"
 
-/bin/echo -n "changing permissions of /opt/sbin/post* ... "
-/bin/chown root.$setgid_group /opt/sbin/postqueue
-/bin/chown root.$setgid_group /opt/sbin/postdrop
-/bin/chmod 02755 /opt/sbin/postqueue
-/bin/chmod 02755 /opt/sbin/postdrop
+/bin/echo -n "changing permissions of %OPTWARE_TARGET_PREFIX%/sbin/post* ... "
+/bin/chown root.$setgid_group %OPTWARE_TARGET_PREFIX%/sbin/postqueue
+/bin/chown root.$setgid_group %OPTWARE_TARGET_PREFIX%/sbin/postdrop
+/bin/chmod 02755 %OPTWARE_TARGET_PREFIX%/sbin/postqueue
+/bin/chmod 02755 %OPTWARE_TARGET_PREFIX%/sbin/postdrop
 /bin/echo "ok"
 
 /bin/echo
 /bin/echo Please read the man-pages and docs carefully,
 /bin/echo -e "\t\$ ipkg install postfix-doc"
-/bin/echo -e "\t\$ less /opt/share/doc/postfix/readme/BASIC_CONFIGURATION_README"
+/bin/echo -e "\t\$ less %OPTWARE_TARGET_PREFIX%/share/doc/postfix/readme/BASIC_CONFIGURATION_README"
 /bin/echo
 /bin/echo then configure postfix,
-/bin/echo -e "\t\$ vi /opt/etc/postfix/main.cf"
-/bin/echo -e "\t\$ vi /opt/etc/aliasas"
+/bin/echo -e "\t\$ vi %OPTWARE_TARGET_PREFIX%/etc/postfix/main.cf"
+/bin/echo -e "\t\$ vi %OPTWARE_TARGET_PREFIX%/etc/aliasas"
 /bin/echo -e "\t\$ newaliasas"
 /bin/echo
 /bin/echo and start the server
-/bin/echo -e "\t\$ /opt/etc/init.d/S69postfix"
+/bin/echo -e "\t\$ %OPTWARE_TARGET_PREFIX%/etc/init.d/S69postfix"
 /bin/echo
 

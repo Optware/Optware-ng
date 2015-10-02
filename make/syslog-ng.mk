@@ -105,7 +105,7 @@ $(SYSLOG-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PA
 	rm -rf $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(@D)
 	$(SYSLOG-NG_UNZIP) $(DL_DIR)/$(SYSLOG-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SYSLOG-NG_PATCHES)"; then \
-		cat $(SYSLOG-NG_PATCHES) | patch -d $(BUILD_DIR)/$(SYSLOG-NG_DIR) -p0; \
+		cat $(SYSLOG-NG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SYSLOG-NG_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(@D)
 	(cd $(@D); \
@@ -156,7 +156,7 @@ syslog-ng-stage: $(SYSLOG-NG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/syslog-ng
 #
 $(SYSLOG-NG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: syslog-ng" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,16 +185,16 @@ $(SYSLOG-NG_IPK): $(SYSLOG-NG_BUILD_DIR)/.built
 	rm -rf $(SYSLOG-NG_IPK_DIR) $(BUILD_DIR)/syslog-ng_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SYSLOG-NG_BUILD_DIR) DESTDIR=$(SYSLOG-NG_IPK_DIR) install
 	$(STRIP_COMMAND) $(SYSLOG-NG_IPK_DIR)/opt/sbin/syslog-ng $(SYSLOG-NG_IPK_DIR)/opt/bin/loggen
-	install -d $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
-	install -m 644 $(SYSLOG-NG_SOURCE_DIR)/syslog-ng.conf $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
-	install -d $(SYSLOG-NG_IPK_DIR)/opt/doc/syslog-ng
-	install -m 755 $(SYSLOG-NG_SOURCE_DIR)/README.optware $(SYSLOG-NG_IPK_DIR)/opt/doc/syslog-ng
-	install -d $(SYSLOG-NG_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SYSLOG-NG_SOURCE_DIR)/rc.syslog-ng $(SYSLOG-NG_IPK_DIR)/opt/etc/init.d/S01syslog-ng
-	install -d $(SYSLOG-NG_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
+	$(INSTALL) -m 644 $(SYSLOG-NG_SOURCE_DIR)/syslog-ng.conf $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
+	$(INSTALL) -d $(SYSLOG-NG_IPK_DIR)/opt/doc/syslog-ng
+	$(INSTALL) -m 755 $(SYSLOG-NG_SOURCE_DIR)/README.optware $(SYSLOG-NG_IPK_DIR)/opt/doc/syslog-ng
+	$(INSTALL) -d $(SYSLOG-NG_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SYSLOG-NG_SOURCE_DIR)/rc.syslog-ng $(SYSLOG-NG_IPK_DIR)/opt/etc/init.d/S01syslog-ng
+	$(INSTALL) -d $(SYSLOG-NG_IPK_DIR)/opt/var/log
 	$(MAKE) $(SYSLOG-NG_IPK_DIR)/CONTROL/control
-	install -m 755 $(SYSLOG-NG_SOURCE_DIR)/postinst $(SYSLOG-NG_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(SYSLOG-NG_SOURCE_DIR)/prerm $(SYSLOG-NG_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(SYSLOG-NG_SOURCE_DIR)/postinst $(SYSLOG-NG_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(SYSLOG-NG_SOURCE_DIR)/prerm $(SYSLOG-NG_IPK_DIR)/CONTROL/prerm
 	echo $(SYSLOG-NG_CONFFILES) | sed -e 's/ /\n/g' > $(SYSLOG-NG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SYSLOG-NG_IPK_DIR)
 

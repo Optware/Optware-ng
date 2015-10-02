@@ -17,7 +17,7 @@ OPTWARE-BOOTSTRAP_TARGETS=\
 	vt4 \
 
 OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
-	$(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), /volume1/opt, \
+	$(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), /volume1%OPTWARE_TARGET_PREFIX%, \
 	$(if $(filter syno-e500 syno-i686 syno-mvkw syno-x07, $(OPTWARE_TARGET)), /volume1/@optware, \
 	$(if $(filter fsg3 fsg3v4 dt2 vt4, $(OPTWARE_TARGET)), /home/.optware, \
 	$(if $(filter syno-mvkw, $(OPTWARE-BOOTSTRAP_TARGET)), /volume1/@optware, \

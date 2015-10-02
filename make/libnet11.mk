@@ -116,7 +116,7 @@ $(LIBNET11_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNET11_SOURCE) $(LIBNET11_PATCH
 	$(LIBNET11_UNZIP) $(DL_DIR)/$(LIBNET11_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNET11_PATCHES)" ; \
 		then cat $(LIBNET11_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBNET11_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNET11_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNET11_DIR)" != "$(LIBNET11_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBNET11_DIR) $(LIBNET11_BUILD_DIR) ; \
@@ -182,7 +182,7 @@ libnet11-stage: $(LIBNET11_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libnet11
 #
 $(LIBNET11_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libnet11" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

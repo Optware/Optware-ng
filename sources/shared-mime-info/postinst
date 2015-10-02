@@ -1,4 +1,4 @@
 #!/bin/sh
 
-echo "Generating /opt/share/mime/mime.cache"
-/opt/bin/update-mime-database /opt/share/mime
+echo "Generating %OPTWARE_TARGET_PREFIX%/share/mime/mime.cache"
+%OPTWARE_TARGET_PREFIX%/bin/update-mime-database %OPTWARE_TARGET_PREFIX%/share/mime

@@ -1,4 +1,4 @@
 #!/bin/sh
-echo "Installation and startup information can be found in /opt/doc/proftpd/proftpd-install.doc"
+echo "Installation and startup information can be found in %OPTWARE_TARGET_PREFIX%/doc/proftpd/proftpd-install.doc"
 
 exit 0

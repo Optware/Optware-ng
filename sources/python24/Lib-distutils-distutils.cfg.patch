@@ -2,7 +2,7 @@
 +++ Python-2.4.2/Lib/distutils/distutils.cfg	2005-12-27 21:19:06.000000000 -0800
 @@ -0,0 +1,5 @@
 +[install]
-+prefix = /opt/local
++prefix = %OPTWARE_TARGET_PREFIX%/local
 +
 +[easy_install]
-+site-dirs  = /opt/local/lib/python2.4/site-packages
++site-dirs  = %OPTWARE_TARGET_PREFIX%/local/lib/python2.4/site-packages

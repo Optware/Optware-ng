@@ -17,15 +17,15 @@ ac_cv_c_const=${ac_cv_c_const=yes}
 ac_cv_c_inline=${ac_cv_c_inline=inline}
 ac_cv_c_volatile=${ac_cv_c_volatile=yes}
 ac_cv_env_CC_set=set
-ac_cv_env_CC_value=/opt/bin/gcc
+ac_cv_env_CC_value=%OPTWARE_TARGET_PREFIX%/bin/gcc
 ac_cv_env_CFLAGS_set=
 ac_cv_env_CFLAGS_value=
 ac_cv_env_CPPFLAGS_set=set
-ac_cv_env_CPPFLAGS_value='-I/opt/include -O2    -I/tmp/harddisk/tmp/optware/staging/opt/include '
+ac_cv_env_CPPFLAGS_value='-I%OPTWARE_TARGET_PREFIX%/include -O2    -I/tmp/harddisk/tmp/optware/staging%OPTWARE_TARGET_PREFIX%/include '
 ac_cv_env_CPP_set=set
-ac_cv_env_CPP_value='/opt/bin/gcc -E'
+ac_cv_env_CPP_value='%OPTWARE_TARGET_PREFIX%/bin/gcc -E'
 ac_cv_env_LDFLAGS_set=set
-ac_cv_env_LDFLAGS_value='-L/opt/lib -L/tmp/harddisk/tmp/optware/staging/opt/lib -Wl,-rpath,/opt/lib -Wl,-rpath-link,/tmp/harddisk/tmp/optware/staging/opt/lib '
+ac_cv_env_LDFLAGS_value='-L%OPTWARE_TARGET_PREFIX%/lib -L/tmp/harddisk/tmp/optware/staging%OPTWARE_TARGET_PREFIX%/lib -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib -Wl,-rpath-link,/tmp/harddisk/tmp/optware/staging%OPTWARE_TARGET_PREFIX%/lib '
 ac_cv_env_PERL_set=
 ac_cv_env_PERL_value=
 ac_cv_env_PYTHON_set=
@@ -191,11 +191,11 @@ ac_cv_member_struct_tm_tm_zone=${ac_cv_member_struct_tm_tm_zone=yes}
 ac_cv_objext=${ac_cv_objext=o}
 ac_cv_path_PERL=${ac_cv_path_PERL='/usr/bin/env perl'}
 ac_cv_path_PYTHON=${ac_cv_path_PYTHON='/usr/bin/env python'}
-ac_cv_path_install=${ac_cv_path_install='/opt/bin/install -c'}
+ac_cv_path_install=${ac_cv_path_install='%OPTWARE_TARGET_PREFIX%/bin/install -c'}
 ac_cv_prog_AWK=${ac_cv_prog_AWK=gawk}
-ac_cv_prog_CPP=${ac_cv_prog_CPP='/opt/bin/gcc -E'}
-ac_cv_prog_ac_ct_CC=${ac_cv_prog_ac_ct_CC=/opt/bin/gcc}
-ac_cv_prog_ac_ct_RANLIB=${ac_cv_prog_ac_ct_RANLIB=/opt/bin/ranlib}
+ac_cv_prog_CPP=${ac_cv_prog_CPP='%OPTWARE_TARGET_PREFIX%/bin/gcc -E'}
+ac_cv_prog_ac_ct_CC=${ac_cv_prog_ac_ct_CC=%OPTWARE_TARGET_PREFIX%/bin/gcc}
+ac_cv_prog_ac_ct_RANLIB=${ac_cv_prog_ac_ct_RANLIB=%OPTWARE_TARGET_PREFIX%/bin/ranlib}
 ac_cv_prog_cc_g=${ac_cv_prog_cc_g=yes}
 ac_cv_prog_cc_stdc=${ac_cv_prog_cc_stdc=}
 ac_cv_prog_egrep=${ac_cv_prog_egrep='grep -E'}

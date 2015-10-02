@@ -1,5 +1,5 @@
 #!/bin/sh
 
-/opt/bin/killall stunnel
+%OPTWARE_TARGET_PREFIX%/bin/killall stunnel
 
-rm -f /opt/etc/stunnel/stunnel.pem
+rm -f %OPTWARE_TARGET_PREFIX%/etc/stunnel/stunnel.pem

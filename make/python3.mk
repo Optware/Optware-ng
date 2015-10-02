@@ -142,7 +142,7 @@ endif
 		$(NCURSES_FOR_OPTWARE_TARGET)-stage autoconf-host-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON3_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python3
 	$(PYTHON3_UNZIP) $(DL_DIR)/$(PYTHON3_SOURCE) | tar -C $(BUILD_DIR) -xf -
-	cat $(PYTHON3_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
+	cat $(PYTHON3_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
 	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON3_DIR)/Modules/_ctypes/libffi/configure.ac
 	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON3_DIR)/configure.ac
 	$(HOST_STAGING_PREFIX)/bin/autoreconf -vif $(BUILD_DIR)/$(PYTHON3_DIR)
@@ -215,7 +215,7 @@ python3-host-stage: $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)
 # necessary to create a seperate control file under sources/python
 #
 $(PYTHON3_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: python3" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -248,11 +248,11 @@ $(PYTHON3_IPK): $(PYTHON3_BUILD_DIR)/.built
 		do chmod 755 $$f; $(STRIP_COMMAND) $$f; chmod 555 $$f; done
 	for f in bin/2to3 ; \
 	    do mv $(PYTHON3_IPK_DIR)/opt/$$f $(PYTHON3_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-3.1\1/'`; done
-	install -d $(PYTHON3_IPK_DIR)/opt/local/bin
-	install -d $(PYTHON3_IPK_DIR)/opt/local/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages
+	$(INSTALL) -d $(PYTHON3_IPK_DIR)/opt/local/bin
+	$(INSTALL) -d $(PYTHON3_IPK_DIR)/opt/local/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages
 	$(MAKE) $(PYTHON3_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PYTHON3_SOURCE_DIR)/postinst $(PYTHON3_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PYTHON3_SOURCE_DIR)/prerm $(PYTHON3_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/postinst $(PYTHON3_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/prerm $(PYTHON3_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON3_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(PYTHON3_IPK_DIR)
 

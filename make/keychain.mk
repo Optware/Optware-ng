@@ -110,7 +110,7 @@ $(KEYCHAIN_BUILD_DIR)/.configured: $(DL_DIR)/$(KEYCHAIN_SOURCE) $(KEYCHAIN_PATCH
 	$(KEYCHAIN_UNZIP) $(DL_DIR)/$(KEYCHAIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KEYCHAIN_PATCHES)" ; \
 		then cat $(KEYCHAIN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(KEYCHAIN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(KEYCHAIN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(KEYCHAIN_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(KEYCHAIN_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ keychain: $(KEYCHAIN_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/keychain
 #
 $(KEYCHAIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: keychain" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,10 +190,10 @@ $(KEYCHAIN_IPK_DIR)/CONTROL/control:
 $(KEYCHAIN_IPK): $(KEYCHAIN_BUILD_DIR)/.built
 	rm -rf $(KEYCHAIN_IPK_DIR) $(BUILD_DIR)/keychain_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(KEYCHAIN_BUILD_DIR) DESTDIR=$(KEYCHAIN_IPK_DIR) install-strip
-	install -d $(KEYCHAIN_IPK_DIR)/opt/bin/
-	install $(KEYCHAIN_BUILD_DIR)/keychain $(KEYCHAIN_IPK_DIR)/opt/bin/
-	install -d $(KEYCHAIN_IPK_DIR)/opt/man/man1/
-	install $(KEYCHAIN_BUILD_DIR)/keychain.1 $(KEYCHAIN_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -d $(KEYCHAIN_IPK_DIR)/opt/bin/
+	$(INSTALL) $(KEYCHAIN_BUILD_DIR)/keychain $(KEYCHAIN_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(KEYCHAIN_IPK_DIR)/opt/man/man1/
+	$(INSTALL) $(KEYCHAIN_BUILD_DIR)/keychain.1 $(KEYCHAIN_IPK_DIR)/opt/man/man1/
 	$(MAKE) $(KEYCHAIN_IPK_DIR)/CONTROL/control
 	echo $(KEYCHAIN_CONFFILES) | sed -e 's/ /\n/g' > $(KEYCHAIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KEYCHAIN_IPK_DIR)

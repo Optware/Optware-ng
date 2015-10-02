@@ -111,7 +111,7 @@ $(MAILMAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAILMAN_SOURCE) $(MAILMAN_PATCHES)
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(MAILMAN_DIR) $(@D)
 	$(MAILMAN_UNZIP) $(DL_DIR)/$(MAILMAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MAILMAN_PATCHES) | patch -d $(BUILD_DIR)/$(MAILMAN_DIR) -p1
+	cat $(MAILMAN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MAILMAN_DIR) -p1
 	mv $(BUILD_DIR)/$(MAILMAN_DIR) $(@D)
 	sed -i -e '/isfile.*Python\.h/s|if .*|if True:|' $(@D)/configure.in
 	cd $(@D); autoconf configure.in > configure
@@ -174,7 +174,7 @@ mailman-stage: $(MAILMAN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mailman
 #
 $(MAILMAN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mailman" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -209,13 +209,13 @@ $(MAILMAN_IPK): $(MAILMAN_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)/opt/lib/mailman/cgi-bin/*
 	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)/opt/lib/mailman/mail/mailman
 	$(STRIP_COMMAND) `find $(MAILMAN_IPK_DIR)/opt/lib/mailman/ -name '*.so'`
-#	install -d $(MAILMAN_IPK_DIR)/opt/etc/
-#	install -m 644 $(MAILMAN_SOURCE_DIR)/mailman.conf $(MAILMAN_IPK_DIR)/opt/etc/mailman.conf
-#	install -d $(MAILMAN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MAILMAN_SOURCE_DIR)/rc.mailman $(MAILMAN_IPK_DIR)/opt/etc/init.d/SXXmailman
+#	$(INSTALL) -d $(MAILMAN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MAILMAN_SOURCE_DIR)/mailman.conf $(MAILMAN_IPK_DIR)/opt/etc/mailman.conf
+#	$(INSTALL) -d $(MAILMAN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MAILMAN_SOURCE_DIR)/rc.mailman $(MAILMAN_IPK_DIR)/opt/etc/init.d/SXXmailman
 	$(MAKE) $(MAILMAN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MAILMAN_SOURCE_DIR)/postinst $(MAILMAN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MAILMAN_SOURCE_DIR)/prerm $(MAILMAN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MAILMAN_SOURCE_DIR)/postinst $(MAILMAN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MAILMAN_SOURCE_DIR)/prerm $(MAILMAN_IPK_DIR)/CONTROL/prerm
 #	echo $(MAILMAN_CONFFILES) | sed -e 's/ /\n/g' > $(MAILMAN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MAILMAN_IPK_DIR)
 

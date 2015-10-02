@@ -5,7 +5,7 @@
  
  COMMON_FLAGS=	-DPREFIX="\"$(prefix)\"" \
 -		-DPYTHON="\"$(PYTHON)\"" \
-+		-DPYTHON="\"/opt/bin/python\"" \
++		-DPYTHON="\"%OPTWARE_TARGET_PREFIX%/bin/python\"" \
  		$(HELPFUL)
  
  

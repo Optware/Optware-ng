@@ -72,7 +72,7 @@ $(PERL-NET-DNS_BUILD_DIR)/.staged: $(PERL-NET-DNS_BUILD_DIR)/.built
 perl-net-dns-stage: $(PERL-NET-DNS_BUILD_DIR)/.staged
 
 $(PERL-NET-DNS_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-NET-DNS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-NET-DNS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-net-dns" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

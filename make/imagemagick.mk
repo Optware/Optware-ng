@@ -109,7 +109,7 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IMAGEMAGICK_PATCHES)" ; \
 		then cat $(IMAGEMAGICK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IMAGEMAGICK_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IMAGEMAGICK_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IMAGEMAGICK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(@D) ; \
@@ -144,11 +144,11 @@ imagemagick-unpack: $(IMAGEMAGICK_BUILD_DIR)/.configured
 # If you are building a library, then you need to stage it too.
 #
 #$(STAGING_LIB_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION): $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION)
-#	install -d $(STAGING_INCLUDE_DIR)
-#	install -m 644 $(IMAGEMAGICK_BUILD_DIR)/imagemagick.h $(STAGING_INCLUDE_DIR)
-#	install -d $(STAGING_LIB_DIR)
-#	install -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.a $(STAGING_LIB_DIR)
-#	install -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION) $(STAGING_LIB_DIR)
+#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -m 644 $(IMAGEMAGICK_BUILD_DIR)/imagemagick.h $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -d $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.a $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION) $(STAGING_LIB_DIR)
 #	cd $(STAGING_LIB_DIR) && ln -fs libimagemagick.so.$(IMAGEMAGICK_VERSION) libimagemagick.so.1
 #	cd $(STAGING_LIB_DIR) && ln -fs libimagemagick.so.$(IMAGEMAGICK_VERSION) libimagemagick.so
 # 
@@ -175,7 +175,7 @@ imagemagick: $(IMAGEMAGICK_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/imagemagick
 #
 $(IMAGEMAGICK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: imagemagick" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -110,7 +110,7 @@ $(ALSA-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-UTILS_SOURCE) $(ALSA-UTILS
 	$(ALSA-UTILS_UNZIP) $(DL_DIR)/$(ALSA-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ALSA-UTILS_PATCHES)" ; \
 		then cat $(ALSA-UTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ALSA-UTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ALSA-UTILS_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(ALSA-UTILS_DIR) $(ALSA-UTILS_BUILD_DIR)
 	(cd $(ALSA-UTILS_BUILD_DIR); \
@@ -159,7 +159,7 @@ alsa-utils-stage: $(ALSA-UTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/alsa-utils
 #
 $(ALSA-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: alsa-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

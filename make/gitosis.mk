@@ -115,7 +115,7 @@ $(GITOSIS_BUILD_DIR)/.configured: $(DL_DIR)/gitosis-$(GITOSIS_VERSION).tar.gz ma
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/gitosis-$(GITOSIS_VERSION).tar.gz
 	if test -n "$(GITOSIS_PATCHES)" ; \
 		then cat $(GITOSIS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GITOSIS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GITOSIS_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(GITOSIS_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -160,7 +160,7 @@ gitosis: $(GITOSIS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/gitosis
 #
 $(GITOSIS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gitosis" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,10 +192,10 @@ $(GITOSIS_IPK): $(GITOSIS_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 		--root=$(GITOSIS_IPK_DIR) --prefix=/opt
-	install -d $(GITOSIS_IPK_DIR)/opt/share/doc/gitosis
-	install $(<D)/2.5/[CMRT]* $(<D)/2.5/example.conf $(GITOSIS_IPK_DIR)/opt/share/doc/gitosis/
+	$(INSTALL) -d $(GITOSIS_IPK_DIR)/opt/share/doc/gitosis
+	$(INSTALL) $(<D)/2.5/[CMRT]* $(<D)/2.5/example.conf $(GITOSIS_IPK_DIR)/opt/share/doc/gitosis/
 	$(MAKE) $(GITOSIS_IPK_DIR)/CONTROL/control
-	install -m 755 $(GITOSIS_SOURCE_DIR)/postinst $(GITOSIS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(GITOSIS_SOURCE_DIR)/postinst $(GITOSIS_IPK_DIR)/CONTROL/postinst
 	echo $(GITOSIS_CONFFILES) | sed -e 's/ /\n/g' > $(GITOSIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GITOSIS_IPK_DIR)
 

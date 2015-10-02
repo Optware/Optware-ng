@@ -114,7 +114,7 @@ $(VPNC_BUILD_DIR)/.configured: $(DL_DIR)/$(VPNC_SOURCE) $(VPNC_PATCHES) make/vpn
 	$(VPNC_UNZIP) $(DL_DIR)/$(VPNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VPNC_PATCHES)" ; \
 		then cat $(VPNC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(VPNC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(VPNC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(VPNC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(VPNC_DIR) $(@D) ; \
@@ -157,7 +157,7 @@ vpnc-stage: $(VPNC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/vpnc
 #
 $(VPNC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: vpnc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,8 +189,8 @@ $(VPNC_IPK): $(VPNC_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(VPNC_IPK_DIR)/opt/sbin/vpnc
 	$(STRIP_COMMAND) $(VPNC_IPK_DIR)/opt/bin/cisco-decrypt
 	sed -i -e 's|/var/|/opt&|' $(VPNC_IPK_DIR)/opt/etc/vpnc/vpnc-script
-	install -d $(VPNC_IPK_DIR)/opt/man/man8
-	install -m 644 $(VPNC_SOURCE_DIR)/vpnc.8 $(VPNC_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(VPNC_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 644 $(VPNC_SOURCE_DIR)/vpnc.8 $(VPNC_IPK_DIR)/opt/man/man8
 	$(MAKE) $(VPNC_IPK_DIR)/CONTROL/control
 	echo $(VPNC_CONFFILES) | sed -e 's/ /\n/g' > $(VPNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VPNC_IPK_DIR)

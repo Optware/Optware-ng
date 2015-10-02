@@ -104,7 +104,7 @@ $(TIGHTVNC_BUILD_DIR)/.configured: $(DL_DIR)/$(TIGHTVNC_SOURCE) $(TIGHTVNC_PATCH
 	$(MAKE) x11-stage xdmcp-stage libjpeg-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(TIGHTVNC_DIR) $(TIGHTVNC_BUILD_DIR)
 	$(TIGHTVNC_UNZIP) $(DL_DIR)/$(TIGHTVNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(TIGHTVNC_PATCHES) | patch -d $(BUILD_DIR)/$(TIGHTVNC_DIR) -p1
+	cat $(TIGHTVNC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TIGHTVNC_DIR) -p1
 		#echo "#define __arm__ 1"; \
 		#echo "#define CrossCompiling 1"; 
 	mv $(BUILD_DIR)/$(TIGHTVNC_DIR) $(TIGHTVNC_BUILD_DIR)
@@ -170,7 +170,7 @@ tightvnc-stage: $(TIGHTVNC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tightvnc
 #
 $(TIGHTVNC_IPK_DIR)/CONTROL/control:
-	@install -d $(TIGHTVNC_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TIGHTVNC_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: tightvnc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,16 +200,16 @@ $(TIGHTVNC_IPK): $(TIGHTVNC_BUILD_DIR)/.built
 	rm -rf $(TIGHTVNC_IPK_DIR) $(BUILD_DIR)/tightvnc_*_$(TARGET_ARCH).ipk
 	( \
 	    cd $(TIGHTVNC_BUILD_DIR); \
-	    install -d $(TIGHTVNC_IPK_DIR)/opt/bin $(TIGHTVNC_IPK_DIR)/opt/man/man1; \
+	    $(INSTALL) -d $(TIGHTVNC_IPK_DIR)/opt/bin $(TIGHTVNC_IPK_DIR)/opt/man/man1; \
 	    ./vncinstall $(TIGHTVNC_IPK_DIR)/opt/bin $(TIGHTVNC_IPK_DIR)/opt/man; \
 	)
-	#install -d $(TIGHTVNC_IPK_DIR)/opt/etc/
-	#install -m 644 $(TIGHTVNC_SOURCE_DIR)/tightvnc.conf $(TIGHTVNC_IPK_DIR)/opt/etc/tightvnc.conf
-	#install -d $(TIGHTVNC_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(TIGHTVNC_SOURCE_DIR)/rc.tightvnc $(TIGHTVNC_IPK_DIR)/opt/etc/init.d/SXXtightvnc
+	#$(INSTALL) -d $(TIGHTVNC_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(TIGHTVNC_SOURCE_DIR)/tightvnc.conf $(TIGHTVNC_IPK_DIR)/opt/etc/tightvnc.conf
+	#$(INSTALL) -d $(TIGHTVNC_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(TIGHTVNC_SOURCE_DIR)/rc.tightvnc $(TIGHTVNC_IPK_DIR)/opt/etc/init.d/SXXtightvnc
 	$(MAKE) $(TIGHTVNC_IPK_DIR)/CONTROL/control
-	#install -m 755 $(TIGHTVNC_SOURCE_DIR)/postinst $(TIGHTVNC_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(TIGHTVNC_SOURCE_DIR)/prerm $(TIGHTVNC_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(TIGHTVNC_SOURCE_DIR)/postinst $(TIGHTVNC_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(TIGHTVNC_SOURCE_DIR)/prerm $(TIGHTVNC_IPK_DIR)/CONTROL/prerm
 	#echo $(TIGHTVNC_CONFFILES) | sed -e 's/ /\n/g' > $(TIGHTVNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TIGHTVNC_IPK_DIR)
 

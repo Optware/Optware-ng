@@ -113,7 +113,7 @@ $(PY-MYGHTY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYGHTY_SOURCE) $(PY-MYGHTY_PA
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MYGHTY_DIR)
 	$(PY-MYGHTY_UNZIP) $(DL_DIR)/$(PY-MYGHTY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-MYGHTY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYGHTY_DIR) -p1
+#	cat $(PY-MYGHTY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MYGHTY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -122,7 +122,7 @@ $(PY-MYGHTY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYGHTY_SOURCE) $(PY-MYGHTY_PA
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-MYGHTY_DIR)
 	$(PY-MYGHTY_UNZIP) $(DL_DIR)/$(PY-MYGHTY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-MYGHTY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYGHTY_DIR) -p1
+#	cat $(PY-MYGHTY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MYGHTY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
@@ -165,7 +165,7 @@ py-myghty-stage: $(PY-MYGHTY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-myghty
 #
 $(PY25-MYGHTY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-myghty" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,7 +179,7 @@ $(PY25-MYGHTY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MYGHTY_CONFLICTS)" >>$@
 
 $(PY26-MYGHTY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-myghty" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

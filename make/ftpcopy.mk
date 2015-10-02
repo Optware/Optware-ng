@@ -125,7 +125,7 @@ $(FTPCOPY_BUILD_DIR)/.configured: $(DL_DIR)/$(FTPCOPY_SOURCE) $(FTPCOPY_PATCHES)
 	mv $(BUILD_DIR)/web/$(FTPCOPY_DIR) $(BUILD_DIR)/ && rmdir $(BUILD_DIR)/web
 	if test -n "$(FTPCOPY_PATCHES)" ; \
 		then cat $(FTPCOPY_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(FTPCOPY_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(FTPCOPY_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FTPCOPY_DIR)" != "$(FTPCOPY_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FTPCOPY_DIR) $(FTPCOPY_BUILD_DIR) ; \
@@ -190,7 +190,7 @@ ftpcopy-stage: $(FTPCOPY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ftpcopy
 #
 $(FTPCOPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ftpcopy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -219,8 +219,8 @@ $(FTPCOPY_IPK_DIR)/CONTROL/control:
 $(FTPCOPY_IPK): $(FTPCOPY_BUILD_DIR)/.built
 	rm -rf $(FTPCOPY_IPK_DIR) $(BUILD_DIR)/ftpcopy_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(FTPCOPY_BUILD_DIR) DESTDIR=$(FTPCOPY_IPK_DIR) install-strip
-	install -d $(FTPCOPY_IPK_DIR)/opt/bin/
-	install $(FTPCOPY_BUILD_DIR)/command/* $(FTPCOPY_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(FTPCOPY_IPK_DIR)/opt/bin/
+	$(INSTALL) $(FTPCOPY_BUILD_DIR)/command/* $(FTPCOPY_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(FTPCOPY_IPK_DIR)/opt/bin/ftpcopy $(FTPCOPY_IPK_DIR)/opt/bin/ftpls
 	$(MAKE) $(FTPCOPY_IPK_DIR)/CONTROL/control
 	echo $(FTPCOPY_CONFFILES) | sed -e 's/ /\n/g' > $(FTPCOPY_IPK_DIR)/CONTROL/conffiles

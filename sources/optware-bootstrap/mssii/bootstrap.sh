@@ -38,18 +38,18 @@ rm -rf $BSDIR
 rm /tmp/ipkg
 
 echo "Installing wget..."
-/opt/bin/ipkg install wget.ipk || exit 1
+%OPTWARE_TARGET_PREFIX%/bin/ipkg install wget.ipk || exit 1
 
-[ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
-if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
+[ ! -d %OPTWARE_TARGET_PREFIX%/etc/ipkg ] && mkdir -p %OPTWARE_TARGET_PREFIX%/etc/ipkg
+if [ ! -e %OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf ]
 then
-	echo "Creating /opt/etc/ipkg/armel-feed.conf..."
-	echo "src/gz armel http://ipkg.nslu2-linux.org/feeds/optware/cs05q3armel/cross/stable" >/opt/etc/ipkg/armel-feed.conf
+	echo "Creating %OPTWARE_TARGET_PREFIX%/etc/ipkg/armel-feed.conf..."
+	echo "src/gz armel http://ipkg.nslu2-linux.org/feeds/optware/cs05q3armel/cross/stable" >%OPTWARE_TARGET_PREFIX%/etc/ipkg/armel-feed.conf
 fi
-if [ ! -e /opt/etc/ipkg/mssii-feed.conf ]
+if [ ! -e %OPTWARE_TARGET_PREFIX%/etc/ipkg/mssii-feed.conf ]
 then
-	echo "Creating /opt/etc/ipkg/mssii-feed.conf..."
-	echo "src/gz mssii http://ipkg.nslu2-linux.org/feeds/optware/mssii/cross/stable" >/opt/etc/ipkg/mssii-feed.conf
+	echo "Creating %OPTWARE_TARGET_PREFIX%/etc/ipkg/mssii-feed.conf..."
+	echo "src/gz mssii http://ipkg.nslu2-linux.org/feeds/optware/mssii/cross/stable" >%OPTWARE_TARGET_PREFIX%/etc/ipkg/mssii-feed.conf
 fi
 
 echo "Setup complete."

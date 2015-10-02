@@ -113,7 +113,7 @@ $(SLANG1_BUILD_DIR)/.configured: $(DL_DIR)/$(SLANG1_SOURCE) $(SLANG1_PATCHES) ma
 	$(SLANG1_UNZIP) $(DL_DIR)/$(SLANG1_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SLANG1_PATCHES)" ; \
 		then cat $(SLANG1_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SLANG1_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SLANG1_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SLANG1_DIR)" != "$(SLANG1_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SLANG1_DIR) $(SLANG1_BUILD_DIR) ; \
@@ -166,7 +166,7 @@ slang1-stage: $(SLANG1_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/slang1
 #
 $(SLANG1_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: slang1" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

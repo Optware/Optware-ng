@@ -33,7 +33,7 @@ $(TCPWRAPPERS_DIR)/.configured: $(DL_DIR)/$(TCPWRAPPERS_SOURCE) make/tcpwrappers
 	@rm -rf $(BUILD_DIR)/$(TCPWRAPPERS) $(TCPWRAPPERS_DIR)
 	$(TCPWRAPPERS_UNZIP) $(DL_DIR)/$(TCPWRAPPERS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(TCPWRAPPERS) $(TCPWRAPPERS_DIR)
-	patch -d $(TCPWRAPPERS_DIR) < $(TCPWRAPPERS_PATCH)
+	$(PATCH) -d $(TCPWRAPPERS_DIR) < $(TCPWRAPPERS_PATCH)
 	sed -ie '/char \*malloc()/d' $(TCPWRAPPERS_DIR)/scaffold.c
 	touch $(TCPWRAPPERS_DIR)/.configured
 
@@ -54,10 +54,10 @@ tcpwrappers: $(TCPWRAPPERS_DIR)/.built
 #
 $(TCPWRAPPERS_DIR)/.staged: $(TCPWRAPPERS_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(TCPWRAPPERS_DIR)/tcpd.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(TCPWRAPPERS_DIR)/libwrap.a $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(TCPWRAPPERS_DIR)/tcpd.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(TCPWRAPPERS_DIR)/libwrap.a $(STAGING_LIB_DIR)
 	touch $@
 
 tcpwrappers-stage: $(TCPWRAPPERS_DIR)/.staged
@@ -67,7 +67,7 @@ tcpwrappers-stage: $(TCPWRAPPERS_DIR)/.staged
 # necessary to create a seperate control file under sources/tcpwrappers
 #
 $(TCPWRAPPERS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tcpwrappers" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -82,21 +82,21 @@ $(TCPWRAPPERS_IPK_DIR)/CONTROL/control:
 
 $(TCPWRAPPERS_IPK): $(TCPWRAPPERS_DIR)/.built
 	rm -rf $(TCPWRAPPERS_IPK_DIR) $(BUILD_DIR)/tcpwrappers_*_$(TARGET_ARCH).ipk
-	install -d $(TCPWRAPPERS_IPK_DIR)/CONTROL
-	install -d $(TCPWRAPPERS_IPK_DIR)/opt/lib
-	install -d $(TCPWRAPPERS_IPK_DIR)/opt/sbin
-	install -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man3
-	install -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man5
-	install -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man8
-	install -d $(TCPWRAPPERS_IPK_DIR)/opt/libexec
+	$(INSTALL) -d $(TCPWRAPPERS_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(TCPWRAPPERS_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(TCPWRAPPERS_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man3
+	$(INSTALL) -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man5
+	$(INSTALL) -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(TCPWRAPPERS_IPK_DIR)/opt/libexec
 	$(MAKE) $(TCPWRAPPERS_IPK_DIR)/CONTROL/control
-	install -m 755 $(TCPWRAPPERS_DIR)/tcpd  $(TCPWRAPPERS_IPK_DIR)/opt/libexec
-	install -m 755 $(TCPWRAPPERS_DIR)/tcpdchk $(TCPWRAPPERS_IPK_DIR)/opt/sbin
-	install -m 755 $(TCPWRAPPERS_DIR)/tcpdmatch $(TCPWRAPPERS_IPK_DIR)/opt/sbin
-	install -m 755 $(TCPWRAPPERS_DIR)/tcpd*.8 $(TCPWRAPPERS_IPK_DIR)/opt/man/man8
-	install -m 755 $(TCPWRAPPERS_DIR)/hosts_access.3 $(TCPWRAPPERS_IPK_DIR)/opt/man/man3
-	install -m 755 $(TCPWRAPPERS_DIR)/hosts_access.5 $(TCPWRAPPERS_IPK_DIR)/opt/man/man5
-	install -m 755 $(TCPWRAPPERS_DIR)/libwrap.a $(TCPWRAPPERS_IPK_DIR)/opt/lib
+	$(INSTALL) -m 755 $(TCPWRAPPERS_DIR)/tcpd  $(TCPWRAPPERS_IPK_DIR)/opt/libexec
+	$(INSTALL) -m 755 $(TCPWRAPPERS_DIR)/tcpdchk $(TCPWRAPPERS_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(TCPWRAPPERS_DIR)/tcpdmatch $(TCPWRAPPERS_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(TCPWRAPPERS_DIR)/tcpd*.8 $(TCPWRAPPERS_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 755 $(TCPWRAPPERS_DIR)/hosts_access.3 $(TCPWRAPPERS_IPK_DIR)/opt/man/man3
+	$(INSTALL) -m 755 $(TCPWRAPPERS_DIR)/hosts_access.5 $(TCPWRAPPERS_IPK_DIR)/opt/man/man5
+	$(INSTALL) -m 755 $(TCPWRAPPERS_DIR)/libwrap.a $(TCPWRAPPERS_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(TCPWRAPPERS_IPK_DIR)/opt/libexec/tcpd \
 			 $(TCPWRAPPERS_IPK_DIR)/opt/sbin/tcpdchk \
 			 $(TCPWRAPPERS_IPK_DIR)/opt/sbin/tcpdmatch

@@ -112,7 +112,7 @@ $(LIBSNDFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSNDFILE_SOURCE) $(LIBSNDFILE
 	$(LIBSNDFILE_UNZIP) $(DL_DIR)/$(LIBSNDFILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBSNDFILE_PATCHES)" ; \
 		then cat $(LIBSNDFILE_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(LIBSNDFILE_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(LIBSNDFILE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBSNDFILE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBSNDFILE_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ libsndfile-stage: $(LIBSNDFILE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libsndfile
 #
 $(LIBSNDFILE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libsndfile" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(LIBSNDFILE_IPK_DIR)/CONTROL/control:
 $(LIBSNDFILE_IPK): $(LIBSNDFILE_BUILD_DIR)/.built
 	rm -rf $(LIBSNDFILE_IPK_DIR) $(BUILD_DIR)/libsndfile_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBSNDFILE_BUILD_DIR) DESTDIR=$(LIBSNDFILE_IPK_DIR) install-strip transform=''
-#	install -d $(LIBSNDFILE_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBSNDFILE_SOURCE_DIR)/libsndfile.conf $(LIBSNDFILE_IPK_DIR)/opt/etc/libsndfile.conf
-#	install -d $(LIBSNDFILE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBSNDFILE_SOURCE_DIR)/rc.libsndfile $(LIBSNDFILE_IPK_DIR)/opt/etc/init.d/SXXlibsndfile
+#	$(INSTALL) -d $(LIBSNDFILE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBSNDFILE_SOURCE_DIR)/libsndfile.conf $(LIBSNDFILE_IPK_DIR)/opt/etc/libsndfile.conf
+#	$(INSTALL) -d $(LIBSNDFILE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBSNDFILE_SOURCE_DIR)/rc.libsndfile $(LIBSNDFILE_IPK_DIR)/opt/etc/init.d/SXXlibsndfile
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBSNDFILE_IPK_DIR)/opt/etc/init.d/SXXlibsndfile
 	$(MAKE) $(LIBSNDFILE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBSNDFILE_SOURCE_DIR)/postinst $(LIBSNDFILE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBSNDFILE_SOURCE_DIR)/postinst $(LIBSNDFILE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBSNDFILE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBSNDFILE_SOURCE_DIR)/prerm $(LIBSNDFILE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBSNDFILE_SOURCE_DIR)/prerm $(LIBSNDFILE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBSNDFILE_IPK_DIR)/CONTROL/prerm
 	echo $(LIBSNDFILE_CONFFILES) | sed -e 's/ /\n/g' > $(LIBSNDFILE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBSNDFILE_IPK_DIR)

@@ -124,7 +124,7 @@ endif
 	$(MPC_UNZIP) $(DL_DIR)/$(MPC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPC_PATCHES)" ; \
 		then cat $(MPC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MPC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MPC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MPC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MPC_DIR) $(@D) ; \
@@ -176,7 +176,7 @@ mpc: $(MPC_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mpc
 #
 $(MPC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mpc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,10 +205,10 @@ $(MPC_IPK_DIR)/CONTROL/control:
 $(MPC_IPK): $(MPC_BUILD_DIR)/.built
 	rm -rf $(MPC_IPK_DIR) $(BUILD_DIR)/mpc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPC_BUILD_DIR) DESTDIR=$(MPC_IPK_DIR) install-strip
-#	install -d $(MPC_IPK_DIR)/opt/etc/
-#	install -m 644 $(MPC_SOURCE_DIR)/mpc.conf $(MPC_IPK_DIR)/opt/etc/mpc.conf
-#	install -d $(MPC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MPC_SOURCE_DIR)/rc.mpc $(MPC_IPK_DIR)/opt/etc/init.d/SXXmpc
+#	$(INSTALL) -d $(MPC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MPC_SOURCE_DIR)/mpc.conf $(MPC_IPK_DIR)/opt/etc/mpc.conf
+#	$(INSTALL) -d $(MPC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MPC_SOURCE_DIR)/rc.mpc $(MPC_IPK_DIR)/opt/etc/init.d/SXXmpc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXmpc
 	$(MAKE) $(MPC_IPK_DIR)/CONTROL/control
 	echo $(MPC_CONFFILES) | sed -e 's/ /\n/g' > $(MPC_IPK_DIR)/CONTROL/conffiles

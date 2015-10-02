@@ -110,7 +110,7 @@ $(EXIF_BUILD_DIR)/.configured: $(DL_DIR)/$(EXIF_SOURCE) $(EXIF_PATCHES) make/exi
 	$(EXIF_UNZIP) $(DL_DIR)/$(EXIF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EXIF_PATCHES)" ; \
 		then cat $(EXIF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(EXIF_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(EXIF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(EXIF_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(EXIF_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ exif-stage: $(EXIF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/exif
 #
 $(EXIF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: exif" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(EXIF_IPK_DIR)/CONTROL/control:
 $(EXIF_IPK): $(EXIF_BUILD_DIR)/.built
 	rm -rf $(EXIF_IPK_DIR) $(BUILD_DIR)/exif_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(EXIF_BUILD_DIR) DESTDIR=$(EXIF_IPK_DIR) install-strip
-#	install -d $(EXIF_IPK_DIR)/opt/etc/
-#	install -m 644 $(EXIF_SOURCE_DIR)/exif.conf $(EXIF_IPK_DIR)/opt/etc/exif.conf
-#	install -d $(EXIF_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(EXIF_SOURCE_DIR)/rc.exif $(EXIF_IPK_DIR)/opt/etc/init.d/SXXexif
+#	$(INSTALL) -d $(EXIF_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(EXIF_SOURCE_DIR)/exif.conf $(EXIF_IPK_DIR)/opt/etc/exif.conf
+#	$(INSTALL) -d $(EXIF_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(EXIF_SOURCE_DIR)/rc.exif $(EXIF_IPK_DIR)/opt/etc/init.d/SXXexif
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EXIF_IPK_DIR)/opt/etc/init.d/SXXexif
 	$(MAKE) $(EXIF_IPK_DIR)/CONTROL/control
-#	install -m 755 $(EXIF_SOURCE_DIR)/postinst $(EXIF_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(EXIF_SOURCE_DIR)/postinst $(EXIF_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EXIF_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(EXIF_SOURCE_DIR)/prerm $(EXIF_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(EXIF_SOURCE_DIR)/prerm $(EXIF_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EXIF_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

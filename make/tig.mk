@@ -110,7 +110,7 @@ $(TIG_BUILD_DIR)/.configured: $(DL_DIR)/$(TIG_SOURCE) $(TIG_PATCHES) make/tig.mk
 	$(TIG_UNZIP) $(DL_DIR)/$(TIG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TIG_PATCHES)" ; \
 		then cat $(TIG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TIG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TIG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TIG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TIG_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ tig-stage: $(TIG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tig
 #
 $(TIG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tig" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

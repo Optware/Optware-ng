@@ -11,13 +11,13 @@ if [ "`md5sum < NSLU2_V23R63.zip`" != "423f65fb2121bbf9855d060dce29b3af  -" ] ; 
   exit 1
 fi
 echo "Extracting the firmware binary ..."
-/opt/bin/unzip -o NSLU2_V23R63.zip
+%OPTWARE_TARGET_PREFIX%/bin/unzip -o NSLU2_V23R63.zip
 echo "Extracting the ramdisk image ..."
 dd if=NSLU2_V23R63.bin of=ramdisk.gz bs=16 skip=90113 count=288898
 gunzip ramdisk.gz
 echo "Extracting the ufsd kernel module ..."
-/opt/bin/e2cp ramdisk:/lib/modules/ufsd.o /lib/modules/ufsd.o
-/opt/bin/e2cp ramdisk:/lib/modules/ufsd.o /initrd/lib/modules/ufsd.o
+%OPTWARE_TARGET_PREFIX%/bin/e2cp ramdisk:/lib/modules/ufsd.o /lib/modules/ufsd.o
+%OPTWARE_TARGET_PREFIX%/bin/e2cp ramdisk:/lib/modules/ufsd.o /initrd/lib/modules/ufsd.o
 echo "Cleaning up ..."
 rm -rf NSLU2_V23R63.bin ramdisk ramdisk.gz
 echo "Done."

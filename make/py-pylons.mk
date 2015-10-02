@@ -139,7 +139,7 @@ $(PY-PYLONS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYLONS_SOURCE) $(PY-PYLONS_PA
 	rm -rf $(BUILD_DIR)/$(PY-PYLONS_DIR)
 	$(PY-PYLONS_UNZIP) $(DL_DIR)/$(PY-PYLONS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PYLONS_PATCHES)"; \
-		then cat $(PY-PYLONS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PYLONS_DIR) -p1; \
+		then cat $(PY-PYLONS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PYLONS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PYLONS_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -156,7 +156,7 @@ $(PY-PYLONS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYLONS_SOURCE) $(PY-PYLONS_PA
 	rm -rf $(BUILD_DIR)/$(PY-PYLONS_DIR)
 	$(PY-PYLONS_UNZIP) $(DL_DIR)/$(PY-PYLONS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PYLONS_PATCHES)"; \
-		then cat $(PY-PYLONS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PYLONS_DIR) -p1; \
+		then cat $(PY-PYLONS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PYLONS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PYLONS_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -208,7 +208,7 @@ py-pylons: $(PY-PYLONS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-pylons
 #
 $(PY25-PYLONS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pylons" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -222,7 +222,7 @@ $(PY25-PYLONS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PYLONS_CONFLICTS)" >>$@
 
 $(PY26-PYLONS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-pylons" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

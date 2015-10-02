@@ -112,7 +112,7 @@ $(PY-LEPL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LEPL_SOURCE) $(PY-LEPL_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-LEPL_DIR)
 	$(PY-LEPL_UNZIP) $(DL_DIR)/$(PY-LEPL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-LEPL_PATCHES)"; then \
-	    cat $(PY-LEPL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-LEPL_DIR) -p1; \
+	    cat $(PY-LEPL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-LEPL_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-LEPL_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -127,7 +127,7 @@ $(PY-LEPL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LEPL_SOURCE) $(PY-LEPL_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-LEPL_DIR)
 	$(PY-LEPL_UNZIP) $(DL_DIR)/$(PY-LEPL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-LEPL_PATCHES)"; then \
-	    cat $(PY-LEPL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-LEPL_DIR) -p1; \
+	    cat $(PY-LEPL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-LEPL_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-LEPL_DIR) $(@D)/3.1
 	(cd $(@D)/3.1; \
@@ -175,7 +175,7 @@ py-lepl: $(PY-LEPL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-lepl
 #
 $(PY26-LEPL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-lepl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,7 +189,7 @@ $(PY26-LEPL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-LEPL_CONFLICTS)" >>$@
 
 $(PY31-LEPL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py31-lepl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

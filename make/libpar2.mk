@@ -127,7 +127,7 @@ $(LIBPAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPAR2_SOURCE) $(LIBPAR2_PATCHES)
 	$(LIBPAR2_UNZIP) $(DL_DIR)/$(LIBPAR2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPAR2_PATCHES)" ; \
 		then cat $(LIBPAR2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBPAR2_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBPAR2_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBPAR2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBPAR2_DIR) $(@D) ; \
@@ -181,7 +181,7 @@ libpar2-stage: $(LIBPAR2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libpar2
 #
 $(LIBPAR2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libpar2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Start all init scripts in /opt/etc/init.d
+# Start all init scripts in %OPTWARE_TARGET_PREFIX%/etc/init.d
 # executing them in numerical order.
 #
-for i in /opt/etc/init.d/S??* ;do
+for i in %OPTWARE_TARGET_PREFIX%/etc/init.d/S??* ;do
 
 	# Ignore dangling symlinks (if any).
 	[ ! -f "$i" ] && continue

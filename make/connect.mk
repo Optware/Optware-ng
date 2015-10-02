@@ -111,7 +111,7 @@ $(CONNECT_BUILD_DIR)/.configured: $(DL_DIR)/$(CONNECT_SOURCE) $(CONNECT_PATCHES)
 	rm -rf $(BUILD_DIR)/$(CONNECT_DIR) $(CONNECT_BUILD_DIR)
 #	$(CONNECT_UNZIP) $(DL_DIR)/$(CONNECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	if test -n "$(CONNECT_PATCHES)"; then \
-		cat $(CONNECT_PATCHES) | patch -d $(BUILD_DIR)/$(CONNECT_DIR) -p0 ; \
+		cat $(CONNECT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CONNECT_DIR) -p0 ; \
 	fi
 #	if test "$(BUILD_DIR)/$(CONNECT_DIR)" != "$(CONNECT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CONNECT_DIR) $(CONNECT_BUILD_DIR) ; \
@@ -169,7 +169,7 @@ connect: $(CONNECT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/connect
 #
 $(CONNECT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: connect" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,8 +198,8 @@ $(CONNECT_IPK_DIR)/CONTROL/control:
 $(CONNECT_IPK): $(CONNECT_BUILD_DIR)/.built
 	rm -rf $(CONNECT_IPK_DIR) $(BUILD_DIR)/connect_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(CONNECT_BUILD_DIR) DESTDIR=$(CONNECT_IPK_DIR) install-strip
-	install -d $(CONNECT_IPK_DIR)/opt/bin/
-	install $(CONNECT_BUILD_DIR)/connect $(CONNECT_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(CONNECT_IPK_DIR)/opt/bin/
+	$(INSTALL) $(CONNECT_BUILD_DIR)/connect $(CONNECT_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(CONNECT_IPK_DIR)/opt/bin/connect
 	$(MAKE) $(CONNECT_IPK_DIR)/CONTROL/control
 #	echo $(CONNECT_CONFFILES) | sed -e 's/ /\n/g' > $(CONNECT_IPK_DIR)/CONTROL/conffiles

@@ -101,7 +101,7 @@ $(ION_BUILD_DIR)/.configured: $(DL_DIR)/$(ION_SOURCE) $(ION_PATCHES)
 	$(MAKE) lua-stage xau-stage xext-stage sm-stage
 	rm -rf $(BUILD_DIR)/$(ION_DIR) $(ION_BUILD_DIR)
 	$(ION_UNZIP) $(DL_DIR)/$(ION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ION_PATCHES) | patch -d $(BUILD_DIR)/$(ION_DIR) -p1
+	cat $(ION_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ION_DIR) -p1
 	mv $(BUILD_DIR)/$(ION_DIR) $(ION_BUILD_DIR)
 	(cd $(ION_BUILD_DIR); \
 		autoreconf; \
@@ -152,7 +152,7 @@ ion-stage: $(ION_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ion
 #
 $(ION_IPK_DIR)/CONTROL/control:
-	@install -d $(ION_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ION_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ion" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -99,7 +99,7 @@ wakelan-source: $(DL_DIR)/$(WAKELAN_SOURCE) $(WAKELAN_PATCHES)
 $(WAKELAN_BUILD_DIR)/.configured: $(DL_DIR)/$(WAKELAN_SOURCE) $(WAKELAN_PATCHES)
 	rm -rf $(BUILD_DIR)/$(WAKELAN_DIR) $(WAKELAN_BUILD_DIR)
 	$(WAKELAN_UNZIP) $(DL_DIR)/$(WAKELAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(WAKELAN_PATCHES) | patch -d $(BUILD_DIR)/$(WAKELAN_DIR) -p1
+#	cat $(WAKELAN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WAKELAN_DIR) -p1
 	mv $(BUILD_DIR)/$(WAKELAN_DIR) $(WAKELAN_BUILD_DIR)
 	(cd $(WAKELAN_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -134,7 +134,7 @@ wakelan: $(WAKELAN_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/wakelan
 #
 $(WAKELAN_IPK_DIR)/CONTROL/control:
-	@install -d $(WAKELAN_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(WAKELAN_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: wakelan" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,8 +161,8 @@ $(WAKELAN_IPK_DIR)/CONTROL/control:
 #
 $(WAKELAN_IPK): $(WAKELAN_BUILD_DIR)/.built
 	rm -rf $(WAKELAN_IPK_DIR) $(BUILD_DIR)/wakelan_*_$(TARGET_ARCH).ipk
-	install -d $(WAKELAN_IPK_DIR)/opt/bin
-	install -d $(WAKELAN_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(WAKELAN_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(WAKELAN_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(WAKELAN_BUILD_DIR) prefix=$(WAKELAN_IPK_DIR)/opt install
 	$(MAKE) $(WAKELAN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WAKELAN_IPK_DIR)

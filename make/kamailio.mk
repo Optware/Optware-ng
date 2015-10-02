@@ -177,7 +177,7 @@ endif
 	$(KAMAILIO_UNZIP) $(DL_DIR)/$(KAMAILIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KAMAILIO_PATCHES)" ; \
 		then cat $(KAMAILIO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(KAMAILIO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(KAMAILIO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(KAMAILIO_DIR)" != "$(KAMAILIO_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(KAMAILIO_DIR) $(KAMAILIO_BUILD_DIR) ; \
@@ -235,7 +235,7 @@ kamailio-stage: $(KAMAILIO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/kamailio
 #
 $(KAMAILIO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: kamailio" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -292,7 +292,7 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(KAMAILIO_IPK_DIR)/opt/lib/kamailio/kamctl/kamdbctl.base
 
 	############################
-	# installing example files #
+	# $(INSTALL)ing example files #
 	############################
 	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/kamailio.cfg
 	cp -r $(KAMAILIO_BUILD_DIR)/examples $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/

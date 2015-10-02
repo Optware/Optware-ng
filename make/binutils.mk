@@ -121,7 +121,7 @@ $(BINUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BINUTILS_SOURCE) $(BINUTILS_PATCH
 	$(BINUTILS_UNZIP) $(DL_DIR)/$(BINUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BINUTILS_PATCHES)" ; \
 		then cat $(BINUTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BINUTILS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BINUTILS_DIR) -p1 ; \
 	fi
 	mkdir -p $(@D)
 	(cd $(@D); \
@@ -171,7 +171,7 @@ binutils-stage: $(BINUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/binutils
 #
 $(BINUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: binutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -123,7 +123,7 @@ endif
 	$(HPLIP_UNZIP) $(DL_DIR)/$(HPLIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HPLIP_PATCHES)" ; \
 		then cat $(HPLIP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HPLIP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HPLIP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HPLIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HPLIP_DIR) $(@D) ; \
@@ -222,7 +222,7 @@ hplip-stage: $(HPLIP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/hplip
 #
 $(HPLIP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: hplip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -252,15 +252,15 @@ $(HPLIP_IPK): $(HPLIP_BUILD_DIR)/.built
 	rm -rf $(HPLIP_IPK_DIR) $(BUILD_DIR)/hplip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HPLIP_BUILD_DIR) DESTDIR=$(HPLIP_IPK_DIR) install-strip
 	rm -rf $(HPLIP_IPK_DIR)/opt/lib/*.la $(HPLIP_IPK_DIR)/opt/lib/*/*.la
-#	install -d $(HPLIP_IPK_DIR)/opt/etc/
-#	install -m 644 $(HPLIP_SOURCE_DIR)/hplip.conf $(HPLIP_IPK_DIR)/opt/etc/hplip.conf
-#	install -d $(HPLIP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(HPLIP_SOURCE_DIR)/rc.hplip $(HPLIP_IPK_DIR)/opt/etc/init.d/SXXhplip
+#	$(INSTALL) -d $(HPLIP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(HPLIP_SOURCE_DIR)/hplip.conf $(HPLIP_IPK_DIR)/opt/etc/hplip.conf
+#	$(INSTALL) -d $(HPLIP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(HPLIP_SOURCE_DIR)/rc.hplip $(HPLIP_IPK_DIR)/opt/etc/init.d/SXXhplip
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HPLIP_IPK_DIR)/opt/etc/init.d/SXXhplip
 	$(MAKE) $(HPLIP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(HPLIP_SOURCE_DIR)/postinst $(HPLIP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(HPLIP_SOURCE_DIR)/postinst $(HPLIP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HPLIP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(HPLIP_SOURCE_DIR)/prerm $(HPLIP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(HPLIP_SOURCE_DIR)/prerm $(HPLIP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HPLIP_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

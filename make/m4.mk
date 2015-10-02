@@ -133,7 +133,7 @@ $(M4_BUILD_DIR)/.configured: $(DL_DIR)/$(M4_SOURCE) $(M4_PATCHES) make/m4.mk
 	$(M4_UNZIP) $(DL_DIR)/$(M4_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(M4_PATCHES)" ; \
 		then cat $(M4_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(M4_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(M4_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(M4_DIR) $(@D)
 	(cd $(@D); \
@@ -170,7 +170,7 @@ m4: $(M4_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/m4
 #
 $(M4_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: m4" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,12 +198,12 @@ $(M4_IPK_DIR)/CONTROL/control:
 $(M4_IPK): $(M4_BUILD_DIR)/.built
 	rm -rf $(M4_IPK_DIR) $(M4_IPK)
 	$(MAKE) -C $(M4_BUILD_DIR) DESTDIR=$(M4_IPK_DIR) install-strip
-#	install -d $(M4_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(M4_SOURCE_DIR)/rc.m4 $(M4_IPK_DIR)/opt/etc/init.d/SXXm4
+#	$(INSTALL) -d $(M4_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(M4_SOURCE_DIR)/rc.m4 $(M4_IPK_DIR)/opt/etc/init.d/SXXm4
 	rm -f $(M4_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(M4_IPK_DIR)/CONTROL/control
-#	install -m 644 $(M4_SOURCE_DIR)/postinst $(M4_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(M4_SOURCE_DIR)/prerm $(M4_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(M4_SOURCE_DIR)/postinst $(M4_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(M4_SOURCE_DIR)/prerm $(M4_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(M4_IPK_DIR)
 
 #

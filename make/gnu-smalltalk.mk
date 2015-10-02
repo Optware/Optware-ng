@@ -149,7 +149,7 @@ endif
 	$(GNU_SMALLTALK_UNZIP) $(DL_DIR)/$(GNU_SMALLTALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNU_SMALLTALK_PATCHES)" ; \
 		then cat $(GNU_SMALLTALK_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GNU_SMALLTALK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(@D) ; \
@@ -206,7 +206,7 @@ gnu-smalltalk: $(GNU_SMALLTALK_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/gnu-smalltalk
 #
 $(GNU_SMALLTALK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnu-smalltalk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -242,9 +242,9 @@ $(GNU_SMALLTALK_IPK): $(GNU_SMALLTALK_BUILD_DIR)/.built
 #	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/lib/libsigsegv*
 #	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/include/sigsegv*
 	$(MAKE) $(GNU_SMALLTALK_IPK_DIR)/CONTROL/control
-	install -m 755 $(GNU_SMALLTALK_SOURCE_DIR)/postinst $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(GNU_SMALLTALK_SOURCE_DIR)/postinst $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GNU_SMALLTALK_SOURCE_DIR)/prerm $(GNU_SMALLTALK_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GNU_SMALLTALK_SOURCE_DIR)/prerm $(GNU_SMALLTALK_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_SMALLTALK_IPK_DIR)/CONTROL/prerm
 	echo $(GNU_SMALLTALK_CONFFILES) | sed -e 's/ /\n/g' > $(GNU_SMALLTALK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNU_SMALLTALK_IPK_DIR)

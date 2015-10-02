@@ -101,11 +101,11 @@ $(BZFLAG_BUILD_DIR)/.configured: $(DL_DIR)/$(BZFLAG_SOURCE) $(BZFLAG_PATCHES) ma
 	$(MAKE) zlib-stage libcurl-stage ncurses-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(BZFLAG_DIR) $(BZFLAG_BUILD_DIR)
 	$(BZFLAG_UNZIP) $(DL_DIR)/$(BZFLAG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BZFLAG_PATCHES) | patch -d $(BUILD_DIR)/$(BZFLAG_DIR) -p1
+#	cat $(BZFLAG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BZFLAG_DIR) -p1
 	mv $(BUILD_DIR)/$(BZFLAG_DIR) $(@D)
-	# install gl headers needed by bzadmin
-#	install -d $(@D)/include/GL
-#	install -m 644 $(BZFLAG_SOURCE_DIR)/*.h $(@D)/include/GL
+	# $(INSTALL) gl headers needed by bzadmin
+#	$(INSTALL) -d $(@D)/include/GL
+#	$(INSTALL) -m 644 $(BZFLAG_SOURCE_DIR)/*.h $(@D)/include/GL
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_DIR)/bin:$(PATH)" \
@@ -154,7 +154,7 @@ bzflag: $(BZFLAG_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bzflag
 #
 $(BZFLAG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bzflag" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,13 +187,13 @@ $(BZFLAG_IPK): $(BZFLAG_BUILD_DIR)/.built
 	rm -rf $(BZFLAG_IPK_DIR)/opt/share
 	# strip binaries
 	$(STRIP_COMMAND) $(BZFLAG_IPK_DIR)/opt/bin/bzfs $(BZFLAG_IPK_DIR)/opt/bin/bzadmin
-#	install -d $(BZFLAG_IPK_DIR)/opt/etc/
-#	install -m 755 $(BZFLAG_SOURCE_DIR)/bzflag.conf $(BZFLAG_IPK_DIR)/opt/etc/bzflag.conf
-#	install -d $(BZFLAG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(BZFLAG_SOURCE_DIR)/rc.bzflag $(BZFLAG_IPK_DIR)/opt/etc/init.d/SXXbzflag
+#	$(INSTALL) -d $(BZFLAG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 755 $(BZFLAG_SOURCE_DIR)/bzflag.conf $(BZFLAG_IPK_DIR)/opt/etc/bzflag.conf
+#	$(INSTALL) -d $(BZFLAG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(BZFLAG_SOURCE_DIR)/rc.bzflag $(BZFLAG_IPK_DIR)/opt/etc/init.d/SXXbzflag
 	$(MAKE) $(BZFLAG_IPK_DIR)/CONTROL/control
-#	install -m 644 $(BZFLAG_SOURCE_DIR)/postinst $(BZFLAG_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(BZFLAG_SOURCE_DIR)/prerm $(BZFLAG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(BZFLAG_SOURCE_DIR)/postinst $(BZFLAG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(BZFLAG_SOURCE_DIR)/prerm $(BZFLAG_IPK_DIR)/CONTROL/prerm
 #	echo $(BZFLAG_CONFFILES) | sed -e 's/ /\n/g' > $(BZFLAG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BZFLAG_IPK_DIR)
 

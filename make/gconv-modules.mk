@@ -67,7 +67,7 @@ gconv-modules-stage: $(GCONV_MODULES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gconv-modules
 #
 $(GCONV_MODULES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gconv-modules" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -86,7 +86,7 @@ ifeq ($(LIBC_STYLE),uclibc)
 else
     ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle slugos5be slugos5le, $(OPTWARE_TARGET)))
     else
-	install -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
+	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
 	cp $(GCONV_MODULES_LIB_DIR)/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/EUC-*.so
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/ISO-2022-*.so
@@ -94,14 +94,14 @@ else
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/UHC.so
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/*.so
     ifneq ($(OPTWARE_TARGET), fsg3v4)
-	install -d $(GCONV_MODULES_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)/opt/bin
 	cp $(GCONV_MODULES_ICONV) $(GCONV_MODULES_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/bin/*
     endif
-	install -d $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d/S05gconv-modules
-	install -d $(GCONV_MODULES_IPK_DIR)/CONTROL/
-	install -m 644 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d/S05gconv-modules
+	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 644 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/CONTROL/postinst
     endif
 endif
 	$(MAKE) $(GCONV_MODULES_IPK_DIR)/CONTROL/control

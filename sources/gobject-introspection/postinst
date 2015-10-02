@@ -1,10 +1,10 @@
 #!/bin/sh
 
-mkdir -p /opt/lib/girepository-1.0
+mkdir -p %OPTWARE_TARGET_PREFIX%/lib/girepository-1.0
 
-cd /opt/share/gir-1.0
+cd %OPTWARE_TARGET_PREFIX%/share/gir-1.0
 
 for src in `ls *.gir|sed 's/\.gir$//g'`; do
-	echo "Generating /opt/lib/girepository-1.0/${src}.typelib"
-	PATH="/opt/bin:$PATH" g-ir-compiler --includedir=. ${src}.gir -o /opt/lib/girepository-1.0/${src}.typelib
+	echo "Generating %OPTWARE_TARGET_PREFIX%/lib/girepository-1.0/${src}.typelib"
+	PATH="%OPTWARE_TARGET_PREFIX%/bin:$PATH" g-ir-compiler --includedir=. ${src}.gir -o %OPTWARE_TARGET_PREFIX%/lib/girepository-1.0/${src}.typelib
 done

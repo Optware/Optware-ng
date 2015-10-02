@@ -110,7 +110,7 @@ $(NINVADERS_BUILD_DIR)/.configured: $(DL_DIR)/$(NINVADERS_SOURCE) $(NINVADERS_PA
 	$(NINVADERS_UNZIP) $(DL_DIR)/$(NINVADERS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NINVADERS_PATCHES)" ; \
 		then cat $(NINVADERS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NINVADERS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NINVADERS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NINVADERS_DIR)" != "$(NINVADERS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NINVADERS_DIR) $(NINVADERS_BUILD_DIR) ; \
@@ -153,7 +153,7 @@ ninvaders-stage: $(NINVADERS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ninvaders
 #
 $(NINVADERS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ninvaders" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,8 +181,8 @@ $(NINVADERS_IPK_DIR)/CONTROL/control:
 #
 $(NINVADERS_IPK): $(NINVADERS_BUILD_DIR)/.built
 	rm -rf $(NINVADERS_IPK_DIR) $(BUILD_DIR)/ninvaders_*_$(TARGET_ARCH).ipk
-	install -d $(NINVADERS_IPK_DIR)/opt/bin/
-	install -m 755 $(NINVADERS_BUILD_DIR)/nInvaders $(NINVADERS_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(NINVADERS_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 755 $(NINVADERS_BUILD_DIR)/nInvaders $(NINVADERS_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(NINVADERS_IPK_DIR)/opt/bin/nInvaders
 	$(MAKE) $(NINVADERS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NINVADERS_IPK_DIR)

@@ -114,7 +114,7 @@ $(COLLECTD_BUILD_DIR)/.configured: $(DL_DIR)/$(COLLECTD_SOURCE) $(COLLECTD_PATCH
 	$(COLLECTD_UNZIP) $(DL_DIR)/$(COLLECTD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(COLLECTD_PATCHES)" ; \
 		then cat $(COLLECTD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(COLLECTD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(COLLECTD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(COLLECTD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(COLLECTD_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ collectd-stage: $(COLLECTD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/collectd
 #
 $(COLLECTD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: collectd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,12 +201,12 @@ $(COLLECTD_IPK_DIR)/CONTROL/control:
 $(COLLECTD_IPK): $(COLLECTD_BUILD_DIR)/.built
 	rm -rf $(COLLECTD_IPK_DIR) $(BUILD_DIR)/collectd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(COLLECTD_BUILD_DIR) DESTDIR=$(COLLECTD_IPK_DIR) install-strip
-	install -d $(COLLECTD_IPK_DIR)/opt/etc/
-	install -m 644 $(COLLECTD_SOURCE_DIR)/collectd.conf $(COLLECTD_IPK_DIR)/opt/etc/collectd.conf
-	install -d $(COLLECTD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(COLLECTD_SOURCE_DIR)/rc.collectd $(COLLECTD_IPK_DIR)/opt/etc/init.d/S70collectd
+	$(INSTALL) -d $(COLLECTD_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(COLLECTD_SOURCE_DIR)/collectd.conf $(COLLECTD_IPK_DIR)/opt/etc/collectd.conf
+	$(INSTALL) -d $(COLLECTD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(COLLECTD_SOURCE_DIR)/rc.collectd $(COLLECTD_IPK_DIR)/opt/etc/init.d/S70collectd
 	$(MAKE) $(COLLECTD_IPK_DIR)/CONTROL/control
-	install -m 755 $(COLLECTD_SOURCE_DIR)/postinst $(COLLECTD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(COLLECTD_SOURCE_DIR)/postinst $(COLLECTD_IPK_DIR)/CONTROL/postinst
 	echo $(COLLECTD_CONFFILES) | sed -e 's/ /\n/g' > $(COLLECTD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COLLECTD_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(COLLECTD_IPK_DIR)

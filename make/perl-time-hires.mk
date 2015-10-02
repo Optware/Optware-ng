@@ -69,7 +69,7 @@ $(PERL-TIME-HIRES_BUILD_DIR)/.staged: $(PERL-TIME-HIRES_BUILD_DIR)/.built
 perl-time-hires-stage: $(PERL-TIME-HIRES_BUILD_DIR)/.staged
 
 $(PERL-TIME-HIRES_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-TIME-HIRES_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-TIME-HIRES_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-time-hires" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

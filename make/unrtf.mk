@@ -110,7 +110,7 @@ $(UNRTF_BUILD_DIR)/.configured: $(DL_DIR)/$(UNRTF_SOURCE) $(UNRTF_PATCHES) make/
 	$(UNRTF_UNZIP) $(DL_DIR)/$(UNRTF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNRTF_PATCHES)" ; \
 		then cat $(UNRTF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UNRTF_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UNRTF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UNRTF_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UNRTF_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ unrtf-stage: $(UNRTF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/unrtf
 #
 $(UNRTF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: unrtf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,15 +190,15 @@ $(UNRTF_IPK_DIR)/CONTROL/control:
 $(UNRTF_IPK): $(UNRTF_BUILD_DIR)/.built
 	rm -rf $(UNRTF_IPK_DIR) $(BUILD_DIR)/unrtf_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UNRTF_BUILD_DIR) DESTDIR=$(UNRTF_IPK_DIR) install-strip
-#	install -d $(UNRTF_IPK_DIR)/opt/etc/
-#	install -m 644 $(UNRTF_SOURCE_DIR)/unrtf.conf $(UNRTF_IPK_DIR)/opt/etc/unrtf.conf
-#	install -d $(UNRTF_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UNRTF_SOURCE_DIR)/rc.unrtf $(UNRTF_IPK_DIR)/opt/etc/init.d/SXXunrtf
+#	$(INSTALL) -d $(UNRTF_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(UNRTF_SOURCE_DIR)/unrtf.conf $(UNRTF_IPK_DIR)/opt/etc/unrtf.conf
+#	$(INSTALL) -d $(UNRTF_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(UNRTF_SOURCE_DIR)/rc.unrtf $(UNRTF_IPK_DIR)/opt/etc/init.d/SXXunrtf
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UNRTF_IPK_DIR)/opt/etc/init.d/SXXunrtf
 	$(MAKE) $(UNRTF_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UNRTF_SOURCE_DIR)/postinst $(UNRTF_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UNRTF_SOURCE_DIR)/postinst $(UNRTF_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UNRTF_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UNRTF_SOURCE_DIR)/prerm $(UNRTF_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UNRTF_SOURCE_DIR)/prerm $(UNRTF_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UNRTF_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

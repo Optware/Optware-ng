@@ -5,7 +5,7 @@
  #define DATABASEDIR "/var/db/vnstat"
  #else
 -#define DATABASEDIR "/var/lib/vnstat"
-+#define DATABASEDIR "/opt/var/lib/vnstat"
++#define DATABASEDIR "%OPTWARE_TARGET_PREFIX%/var/lib/vnstat"
  #endif
  
  /* on which day should months change */

@@ -113,7 +113,7 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(DL_DIR)/$(CL
 	rm -rf $(BUILD_DIR)/$(CLASSPATH_DIR) $(@D)
 	$(CLASSPATH_UNZIP) $(DL_DIR)/$(CLASSPATH_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(CLASSPATH_PATCHES)"; then \
-		cat $(CLASSPATH_PATCHES) | patch -d $(BUILD_DIR)/$(CLASSPATH_DIR) -p0; \
+		cat $(CLASSPATH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CLASSPATH_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(CLASSPATH_DIR) $(@D)
 	sed -i -e 's/$$JAVAC conftest/$$JAVAC $$JAVAC_OPTS conftest/' \
@@ -176,7 +176,7 @@ classpath-stage: $(CLASSPATH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/classpath
 #
 $(CLASSPATH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: classpath" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

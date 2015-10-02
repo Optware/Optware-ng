@@ -11,7 +11,7 @@ diff -ur torrentflux.old/html/config.php torrentflux/html/config.php
 -$cfg["db_user"] = "root";        // username for your MySQL database
 -$cfg["db_pass"] = "";            // password for database
 +$cfg["db_type"] = "sqlite";     // mysql, postgres7, postgres8 view adodb/drivers/
-+$cfg["db_host"] = "/opt/var/torrentflux/db/torrentflux.db"; // DB file, when using sqlite
++$cfg["db_host"] = "%OPTWARE_TARGET_PREFIX%/var/torrentflux/db/torrentflux.db"; // DB file, when using sqlite
 +$cfg["db_name"] = ""; 		// Name of the Database
 +$cfg["db_user"] = "";           // username for your MySQL database
 +$cfg["db_pass"] = "";           // password for database

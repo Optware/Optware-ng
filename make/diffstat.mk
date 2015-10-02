@@ -110,7 +110,7 @@ $(DIFFSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFSTAT_SOURCE) $(DIFFSTAT_PATCH
 	$(DIFFSTAT_UNZIP) $(DL_DIR)/$(DIFFSTAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DIFFSTAT_PATCHES)" ; \
 		then cat $(DIFFSTAT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DIFFSTAT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DIFFSTAT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DIFFSTAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DIFFSTAT_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ diffstat-stage: $(DIFFSTAT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/diffstat
 #
 $(DIFFSTAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: diffstat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,15 +190,15 @@ $(DIFFSTAT_IPK): $(DIFFSTAT_BUILD_DIR)/.built
 	rm -rf $(DIFFSTAT_IPK_DIR) $(BUILD_DIR)/diffstat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DIFFSTAT_BUILD_DIR) DESTDIR=$(DIFFSTAT_IPK_DIR) install
 	$(STRIP_COMMAND) $(DIFFSTAT_IPK_DIR)/opt/bin/diffstat
-#	install -d $(DIFFSTAT_IPK_DIR)/opt/etc/
-#	install -m 644 $(DIFFSTAT_SOURCE_DIR)/diffstat.conf $(DIFFSTAT_IPK_DIR)/opt/etc/diffstat.conf
-#	install -d $(DIFFSTAT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DIFFSTAT_SOURCE_DIR)/rc.diffstat $(DIFFSTAT_IPK_DIR)/opt/etc/init.d/SXXdiffstat
+#	$(INSTALL) -d $(DIFFSTAT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DIFFSTAT_SOURCE_DIR)/diffstat.conf $(DIFFSTAT_IPK_DIR)/opt/etc/diffstat.conf
+#	$(INSTALL) -d $(DIFFSTAT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DIFFSTAT_SOURCE_DIR)/rc.diffstat $(DIFFSTAT_IPK_DIR)/opt/etc/init.d/SXXdiffstat
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DIFFSTAT_IPK_DIR)/opt/etc/init.d/SXXdiffstat
 	$(MAKE) $(DIFFSTAT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DIFFSTAT_SOURCE_DIR)/postinst $(DIFFSTAT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DIFFSTAT_SOURCE_DIR)/postinst $(DIFFSTAT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DIFFSTAT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DIFFSTAT_SOURCE_DIR)/prerm $(DIFFSTAT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DIFFSTAT_SOURCE_DIR)/prerm $(DIFFSTAT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DIFFSTAT_IPK_DIR)/CONTROL/prerm
 	echo $(DIFFSTAT_CONFFILES) | sed -e 's/ /\n/g' > $(DIFFSTAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DIFFSTAT_IPK_DIR)

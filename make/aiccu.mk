@@ -117,7 +117,7 @@ endif
 	$(AICCU_UNZIP) $(DL_DIR)/$(AICCU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AICCU_PATCHES)" ; \
 		then cat $(AICCU_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(AICCU_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(AICCU_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AICCU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AICCU_DIR) $(@D) ; \
@@ -179,7 +179,7 @@ aiccu-stage: $(AICCU_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/aiccu
 #
 $(AICCU_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: aiccu" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,7 +207,7 @@ $(AICCU_IPK_DIR)/CONTROL/control:
 #
 $(AICCU_IPK): $(AICCU_BUILD_DIR)/.built
 	rm -rf $(AICCU_IPK_DIR) $(BUILD_DIR)/aiccu_*_$(TARGET_ARCH).ipk
-	install -d $(AICCU_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(AICCU_IPK_DIR)/opt/etc
 	$(MAKE) -C $(AICCU_BUILD_DIR) install \
 		DESTDIR=$(AICCU_IPK_DIR) \
 		dirsbin=/opt/sbin/ \
@@ -216,7 +216,7 @@ $(AICCU_IPK): $(AICCU_BUILD_DIR)/.built
 		dirdoc=/opt/share/doc/aiccu/ \
 		;
 	rm -f $(AICCU_IPK_DIR)/opt/etc/init.d/aiccu
-	install -m 755 $(AICCU_SOURCE_DIR)/rc.aiccu $(AICCU_IPK_DIR)/opt/etc/init.d/S50aiccu
+	$(INSTALL) -m 755 $(AICCU_SOURCE_DIR)/rc.aiccu $(AICCU_IPK_DIR)/opt/etc/init.d/S50aiccu
 	$(MAKE) $(AICCU_IPK_DIR)/CONTROL/control
 	echo $(AICCU_CONFFILES) | sed -e 's/ /\n/g' > $(AICCU_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AICCU_IPK_DIR)

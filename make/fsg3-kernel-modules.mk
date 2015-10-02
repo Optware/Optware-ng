@@ -76,7 +76,7 @@ $(FSG3-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(FSG3-KERNEL-MODULES_SO
 		tar -C $(BUILD_DIR) -xvf - fcsnap/Makefile fcsnap/linux-2.4.x fcsnap/freeswan
 	if test -n "$(FSG3-KERNEL-MODULES_PATCHES)" ; \
 		then cat $(FSG3-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FSG3-KERNEL-MODULES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FSG3-KERNEL-MODULES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FSG3-KERNEL-MODULES_DIR)" != "$(FSG3-KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FSG3-KERNEL-MODULES_DIR) $(FSG3-KERNEL-MODULES_BUILD_DIR) ; \
@@ -110,7 +110,7 @@ fsg3-kernel-modules: $(FSG3-KERNEL-MODULES_BUILD_DIR)/.built
 #
 $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(FSG3-KERNEL-MODULES); do \
-	  install -d $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
+	  $(INSTALL) -d $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
 	  rm -f $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
           ( \
 	    echo "Package: kernel-module-`echo $$m|sed -e 's/_/-/g'`"; \
@@ -134,7 +134,7 @@ $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Conflicts: $(FSG3-KERNEL-MODULES_CONFLICTS)"; \
 	  ) >> $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
 	done
-	install -d $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL; \
+	$(INSTALL) -d $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL; \
 	touch $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 #
 # This builds the IPK file.
@@ -155,8 +155,8 @@ $(FSG3-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(FSG3-KERNEL-MODULES_BUILD_DIR)/.bui
 	$(MAKE) -C $(FSG3-KERNEL-MODULES_BUILD_DIR)/linux-2.4.x $(FSG3-KERNEL-MODULES-FLAGS) \
 		INSTALL_MOD_PATH=$(FSG3-KERNEL-MODULES_IPK_DIR) DEPMOD=true modules_install
 	for m in $(FSG3-KERNEL-MODULES); do \
-	  install -d $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
-	  install -m 644 `find $(FSG3-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -d $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -m 644 `find $(FSG3-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
 	done
 	$(MAKE) $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 	for m in $(FSG3-KERNEL-MODULES); do \

@@ -143,7 +143,7 @@ endif
 	$(MONO_UNZIP) $(DL_DIR)/$(MONO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MONO_PATCHES)" ; \
 		then cat $(MONO_PATCHES) | \
-		patch -l -d $(BUILD_DIR)/$(MONO_DIR) -p0 ; \
+		$(PATCH) -l -d $(BUILD_DIR)/$(MONO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MONO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MONO_DIR) $(@D) ; \
@@ -203,7 +203,7 @@ mono-stage: $(MONO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mono
 #
 $(MONO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mono" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -242,8 +242,8 @@ endif
 	tar --remove-files -cvzf long-symlinks.tar.gz \
 		`find . -type l -ls | awk '{ if (length($$13) > 100) { print $$11}}'`
 	$(MAKE) $(MONO_IPK_DIR)/CONTROL/control
-	install -m755 $(MONO_SOURCE_DIR)/postinst $(MONO_IPK_DIR)/CONTROL/postinst
-	install -m755 $(MONO_SOURCE_DIR)/prerm $(MONO_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m755 $(MONO_SOURCE_DIR)/postinst $(MONO_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m755 $(MONO_SOURCE_DIR)/prerm $(MONO_IPK_DIR)/CONTROL/prerm
 	echo $(MONO_CONFFILES) | sed -e 's/ /\n/g' > $(MONO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MONO_IPK_DIR)
 

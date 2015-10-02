@@ -62,7 +62,7 @@ XFIXES_IPK=$(BUILD_DIR)/xfixes_$(XFIXES_VERSION)-$(XFIXES_IPK_VERSION)_$(TARGET_
 # Automatically create a ipkg control file
 #
 $(XFIXES_IPK_DIR)/CONTROL/control:
-	@install -d $(XFIXES_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XFIXES_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xfixes" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -106,7 +106,7 @@ $(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz
 	if test -n "$(XFIXES_PATCHES)" ; \
 		then cat $(XFIXES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XFIXES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XFIXES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XFIXES_DIR)" != "$(XFIXES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR) ; \

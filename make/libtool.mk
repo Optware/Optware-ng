@@ -172,7 +172,7 @@ libtool-stage: $(LIBTOOL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libtool
 #
 $(LIBTOOL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libtool" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,7 +203,7 @@ $(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR) DESTDIR=$(LIBTOOL_IPK_DIR) install-strip
 	rm -f $(LIBTOOL_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(LIBTOOL_IPK_DIR)/CONTROL/control
-#	install -d $(LIBTOOL_IPK_DIR)/CONTROL
+#	$(INSTALL) -d $(LIBTOOL_IPK_DIR)/CONTROL
 #	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBTOOL_VERSION)/" \
 #		-e "s/@RELEASE@/$(LIBTOOL_IPK_VERSION)/" $(LIBTOOL_SOURCE_DIR)/control > $(LIBTOOL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTOOL_IPK_DIR)

@@ -23,7 +23,7 @@
 -$as_echo "$as_me: WARNING: iptables library directory not found, define
 -				it at config.h" >&2;}
 -	fi
-+	XTABLES_LIBDIR=/opt/lib/xtables
++	XTABLES_LIBDIR=%OPTWARE_TARGET_PREFIX%/lib/xtables
  	IPTSLIBS=""
  	IPTSINC=""
  	IPTSSRC=""

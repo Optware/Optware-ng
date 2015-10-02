@@ -86,7 +86,7 @@ procps: ncurses $(PROCPS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/procps
 #
 $(PROCPS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: procps" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -126,8 +126,8 @@ $(PROCPS_IPK): $(PROCPS_BUILD_DIR)/.built
 	mkdir -p $(PROCPS_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/proc/libproc-$(PROCPS_VERSION).so -o $(PROCPS_IPK_DIR)/opt/lib/libproc-$(PROCPS_VERSION).so
 	$(MAKE) $(PROCPS_IPK_DIR)/CONTROL/control
-	install -m 644 $(PROCPS_SOURCE_DIR)/postinst $(PROCPS_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(PROCPS_SOURCE_DIR)/prerm $(PROCPS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(PROCPS_SOURCE_DIR)/postinst $(PROCPS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(PROCPS_SOURCE_DIR)/prerm $(PROCPS_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(PROCPS_IPK_DIR)/CONTROL/postinst $(PROCPS_IPK_DIR)/CONTROL/prerm; \

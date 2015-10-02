@@ -37,7 +37,7 @@ $(PERL-IP-COUNTRY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IP-COUNTRY_SOURCE) $(
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-IP-COUNTRY_DIR) $(PERL-IP-COUNTRY_BUILD_DIR)
 	$(PERL-IP-COUNTRY_UNZIP) $(DL_DIR)/$(PERL-IP-COUNTRY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-IP-COUNTRY_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-IP-COUNTRY_DIR) -p1
+#	cat $(PERL-IP-COUNTRY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-IP-COUNTRY_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-IP-COUNTRY_DIR) $(PERL-IP-COUNTRY_BUILD_DIR)
 	(cd $(PERL-IP-COUNTRY_BUILD_DIR); \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
@@ -64,7 +64,7 @@ $(PERL-IP-COUNTRY_BUILD_DIR)/.staged: $(PERL-IP-COUNTRY_BUILD_DIR)/.built
 perl-ip-country-stage: $(PERL-IP-COUNTRY_BUILD_DIR)/.staged
 
 $(PERL-IP-COUNTRY_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-IP-COUNTRY_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-IP-COUNTRY_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-ip-country" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

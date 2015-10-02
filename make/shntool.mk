@@ -110,7 +110,7 @@ $(SHNTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(SHNTOOL_SOURCE) $(SHNTOOL_PATCHES)
 	$(SHNTOOL_UNZIP) $(DL_DIR)/$(SHNTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SHNTOOL_PATCHES)" ; \
 		then cat $(SHNTOOL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SHNTOOL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SHNTOOL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SHNTOOL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SHNTOOL_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ shntool-stage: $(SHNTOOL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/shntool
 #
 $(SHNTOOL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: shntool" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,15 +189,15 @@ $(SHNTOOL_IPK_DIR)/CONTROL/control:
 $(SHNTOOL_IPK): $(SHNTOOL_BUILD_DIR)/.built
 	rm -rf $(SHNTOOL_IPK_DIR) $(BUILD_DIR)/shntool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SHNTOOL_BUILD_DIR) DESTDIR=$(SHNTOOL_IPK_DIR) install-strip
-#	install -d $(SHNTOOL_IPK_DIR)/opt/etc/
-#	install -m 644 $(SHNTOOL_SOURCE_DIR)/shntool.conf $(SHNTOOL_IPK_DIR)/opt/etc/shntool.conf
-#	install -d $(SHNTOOL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SHNTOOL_SOURCE_DIR)/rc.shntool $(SHNTOOL_IPK_DIR)/opt/etc/init.d/SXXshntool
+#	$(INSTALL) -d $(SHNTOOL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SHNTOOL_SOURCE_DIR)/shntool.conf $(SHNTOOL_IPK_DIR)/opt/etc/shntool.conf
+#	$(INSTALL) -d $(SHNTOOL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SHNTOOL_SOURCE_DIR)/rc.shntool $(SHNTOOL_IPK_DIR)/opt/etc/init.d/SXXshntool
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHNTOOL_IPK_DIR)/opt/etc/init.d/SXXshntool
 	$(MAKE) $(SHNTOOL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SHNTOOL_SOURCE_DIR)/postinst $(SHNTOOL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SHNTOOL_SOURCE_DIR)/postinst $(SHNTOOL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHNTOOL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SHNTOOL_SOURCE_DIR)/prerm $(SHNTOOL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SHNTOOL_SOURCE_DIR)/prerm $(SHNTOOL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHNTOOL_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -113,7 +113,7 @@ $(PY-NOSE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NOSE_SOURCE) $(PY-NOSE_PATCHES)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-NOSE_DIR)
 	$(PY-NOSE_UNZIP) $(DL_DIR)/$(PY-NOSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-NOSE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NOSE_DIR) -p1
+#	cat $(PY-NOSE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-NOSE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-NOSE_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -122,7 +122,7 @@ $(PY-NOSE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NOSE_SOURCE) $(PY-NOSE_PATCHES)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-NOSE_DIR)
 	$(PY-NOSE_UNZIP) $(DL_DIR)/$(PY-NOSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-NOSE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NOSE_DIR) -p1
+#	cat $(PY-NOSE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-NOSE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-NOSE_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
@@ -165,7 +165,7 @@ py-nose-stage: $(PY-NOSE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-nose
 #
 $(PY25-NOSE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-nose" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,7 +179,7 @@ $(PY25-NOSE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-NOSE_CONFLICTS)" >>$@
 
 $(PY26-NOSE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-nose" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

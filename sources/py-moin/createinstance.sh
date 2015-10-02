@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # path of MoinMoin shared files
-SHARE=/opt/share/moin
+SHARE=%OPTWARE_TARGET_PREFIX%/share/moin
 
 # path to target instance location
 INSTANCE=$1
 
-USER=`/opt/bin/id -un`
-GROUP=`/opt/bin/id -gn`
+USER=`%OPTWARE_TARGET_PREFIX%/bin/id -un`
+GROUP=`%OPTWARE_TARGET_PREFIX%/bin/id -gn`
 
 if [ ! $1 ]
 then
@@ -24,11 +24,11 @@ fi
 mkdir -p $INSTANCE
 
 cp -R $SHARE/data $INSTANCE
-/opt/bin/tar -C $INSTANCE -xf $SHARE/underlay.tar.gz
+%OPTWARE_TARGET_PREFIX%/bin/tar -C $INSTANCE -xf $SHARE/underlay.tar.gz
 cp $SHARE/config/wikiconfig.py $INSTANCE
 
 cp $SHARE/wikiserver.py $INSTANCE
-sed -i -e '1s|#!.*|#!/opt/bin/python2.5|' $INSTANCE/wikiserver.py
+sed -i -e '1s|#!.*|#!%OPTWARE_TARGET_PREFIX%/bin/python2.5|' $INSTANCE/wikiserver.py
 cp $SHARE/wikiserverconfig.py $INSTANCE
 cp $SHARE/wikiserverlogging.conf $INSTANCE
 

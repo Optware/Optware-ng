@@ -13,7 +13,7 @@ fi
 case "$rc" in
     start)
 	echo "starting service qpopper"
-	/opt/sbin/popper
+	%OPTWARE_TARGET_PREFIX%/sbin/popper
 	;;
     stop)
 	echo "stopping service qpopper"

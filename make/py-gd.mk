@@ -112,7 +112,7 @@ $(PY-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GD_SOURCE) $(PY-GD_PATCHES)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-GD_DIR)
 	$(PY-GD_UNZIP) $(DL_DIR)/$(PY-GD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-GD_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GD_DIR) -p1
+	cat $(PY-GD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GD_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-GD_DIR) $(PY-GD_BUILD_DIR)/2.4
 	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(PY-GD_BUILD_DIR)/2.4/Setup.py
 	(cd $(PY-GD_BUILD_DIR)/2.4; \
@@ -128,7 +128,7 @@ $(PY-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GD_SOURCE) $(PY-GD_PATCHES)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-GD_DIR)
 	$(PY-GD_UNZIP) $(DL_DIR)/$(PY-GD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-GD_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GD_DIR) -p1
+	cat $(PY-GD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GD_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-GD_DIR) $(PY-GD_BUILD_DIR)/2.5
 	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(PY-GD_BUILD_DIR)/2.5/Setup.py
 	(cd $(PY-GD_BUILD_DIR)/2.5; \
@@ -180,7 +180,7 @@ py-gd-stage: $(PY-GD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-gd
 #
 $(PY24-GD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-gd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,7 +194,7 @@ $(PY24-GD_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-GD_CONFLICTS)" >>$@
 
 $(PY25-GD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-gd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

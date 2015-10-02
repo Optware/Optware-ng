@@ -1,5 +1,5 @@
 #!/bin/sh
-PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PATH=%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 #######################################################################
 # (1) run process from superuser root (less security)
 # (0) run process from unprivileged user "nobody" (more security)
@@ -16,8 +16,8 @@ REL_DLPATH="Transmission"
 #######################################################################
 
 SVC_NAME="transmission-daemon"
-SVC_PATH="/opt/bin/transmission-daemon"
-DIR_CONF="/opt/etc/transmission-daemon"
+SVC_PATH="%OPTWARE_TARGET_PREFIX%/bin/transmission-daemon"
+DIR_CONF="%OPTWARE_TARGET_PREFIX%/etc/transmission-daemon"
 
 func_start()
 {
@@ -56,7 +56,7 @@ func_start()
 	DIR_DL1="${DIR_DL}/Complete"
 	DIR_DL2="${DIR_DL}/Incomplete"
 	DIR_DL3="${DIR_DL}/Watch"
-	DIR_LOG="/opt/var/log"
+	DIR_LOG="%OPTWARE_TARGET_PREFIX%/var/log"
 	
 	[ ! -d "$DIR_CONF" ] && mkdir -p "$DIR_CONF"
 	[ ! -d "$DIR_DL1" ] && mkdir -p "$DIR_DL1"
@@ -64,7 +64,7 @@ func_start()
 	[ ! -d "$DIR_DL3" ] && mkdir -p "$DIR_DL3"
 	[ ! -d "$DIR_LOG" ] && mkdir -p "$DIR_LOG"
 	
-	export TRANSMISSION_WEB_HOME="/opt/share/transmission/web"
+	export TRANSMISSION_WEB_HOME="%OPTWARE_TARGET_PREFIX%/share/transmission/web"
 	
 	# full acces for watch dir
 	chmod 777 "$DIR_DL3"

@@ -111,7 +111,7 @@ $(OWW_BUILD_DIR)/.configured: $(DL_DIR)/$(OWW_SOURCE) $(OWW_PATCHES)
 	$(MAKE) libcurl-stage libusb-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(OWW_DIR) $(OWW_BUILD_DIR)
 	$(OWW_UNZIP) $(DL_DIR)/$(OWW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(OWW_PATCHES) | patch -d $(BUILD_DIR)/$(OWW_DIR) -p0
+#	cat $(OWW_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(OWW_DIR) -p0
 	mv $(BUILD_DIR)/$(OWW_DIR) $(OWW_BUILD_DIR)
 	(cd $(OWW_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -161,7 +161,7 @@ oww-stage: $(OWW_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/oww
 #
 $(OWW_IPK_DIR)/CONTROL/control:
-	@install -d $(OWW_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(OWW_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: oww" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,13 +190,13 @@ $(OWW_IPK_DIR)/CONTROL/control:
 $(OWW_IPK): $(OWW_BUILD_DIR)/.built
 	rm -rf $(OWW_IPK_DIR) $(BUILD_DIR)/oww_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OWW_BUILD_DIR) DESTDIR=$(OWW_IPK_DIR) install-strip
-#	install -d $(OWW_IPK_DIR)/opt/etc/
-#	install -m 644 $(OWW_SOURCE_DIR)/oww.conf $(OWW_IPK_DIR)/opt/etc/oww.conf
-	install -d $(OWW_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(OWW_SOURCE_DIR)/rc.oww $(OWW_IPK_DIR)/opt/etc/init.d/S80oww
+#	$(INSTALL) -d $(OWW_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(OWW_SOURCE_DIR)/oww.conf $(OWW_IPK_DIR)/opt/etc/oww.conf
+	$(INSTALL) -d $(OWW_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(OWW_SOURCE_DIR)/rc.oww $(OWW_IPK_DIR)/opt/etc/init.d/S80oww
 	$(MAKE) $(OWW_IPK_DIR)/CONTROL/control
-	install -m 755 $(OWW_SOURCE_DIR)/postinst $(OWW_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(OWW_SOURCE_DIR)/prerm $(OWW_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(OWW_SOURCE_DIR)/postinst $(OWW_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(OWW_SOURCE_DIR)/prerm $(OWW_IPK_DIR)/CONTROL/prerm
 	echo $(OWW_CONFFILES) | sed -e 's/ /\n/g' > $(OWW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OWW_IPK_DIR)
 

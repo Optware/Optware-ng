@@ -111,7 +111,7 @@ $(TORRENTFLUX_BUILD_DIR)/.configured: $(DL_DIR)/$(TORRENTFLUX_SOURCE) $(TORRENTF
 	$(TORRENTFLUX_UNZIP) $(DL_DIR)/$(TORRENTFLUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TORRENTFLUX_PATCHES)" ; \
 		then cat $(TORRENTFLUX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TORRENTFLUX_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TORRENTFLUX_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TORRENTFLUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TORRENTFLUX_DIR) $(@D) ; \
@@ -139,7 +139,7 @@ torrentflux: $(TORRENTFLUX_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/torrentflux
 #
 $(TORRENTFLUX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: torrentflux" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -167,22 +167,22 @@ $(TORRENTFLUX_IPK_DIR)/CONTROL/control:
 #
 $(TORRENTFLUX_IPK): $(TORRENTFLUX_BUILD_DIR)/.built
 	rm -rf $(TORRENTFLUX_IPK_DIR) $(BUILD_DIR)/torrentflux_*_$(TARGET_ARCH).ipk
-	install -d $(TORRENTFLUX_IPK_DIR)$(TORRENTFLUX_INSTALL_DIR)
+	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)$(TORRENTFLUX_INSTALL_DIR)
 	cp -a $(TORRENTFLUX_BUILD_DIR)/html/* $(TORRENTFLUX_IPK_DIR)$(TORRENTFLUX_INSTALL_DIR)
 	# fixes permissions, leaves execute bits only for .php files
 	find $(TORRENTFLUX_IPK_DIR)$(TORRENTFLUX_INSTALL_DIR) -type f ! -name \*php -exec chmod -x {} \;
-	install -d $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	install -m 755 $(TORRENTFLUX_BUILD_DIR)/README $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	install -m 755 $(TORRENTFLUX_BUILD_DIR)/COPYING $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	install -m 755 $(TORRENTFLUX_BUILD_DIR)/CHANGELOG $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	install -m 755 $(TORRENTFLUX_BUILD_DIR)/INSTALL $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	install -m 755 $(TORRENTFLUX_SOURCE_DIR)/README.Optware $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	install -m 755 $(TORRENTFLUX_SOURCE_DIR)/sqlite_torrentflux.sql $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	install -d $(TORRENTFLUX_IPK_DIR)/opt/var/torrentflux/db
-	install -d $(TORRENTFLUX_IPK_DIR)/opt/var/torrentflux/downloads
-	install -m 755 $(TORRENTFLUX_BUILD_DIR)/html/downloads/index.html $(TORRENTFLUX_IPK_DIR)/opt/var/torrentflux/downloads
+	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/README $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/COPYING $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/CHANGELOG $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/INSTALL $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_SOURCE_DIR)/README.Optware $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_SOURCE_DIR)/sqlite_torrentflux.sql $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
+	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)/opt/var/torrentflux/db
+	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)/opt/var/torrentflux/downloads
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/html/downloads/index.html $(TORRENTFLUX_IPK_DIR)/opt/var/torrentflux/downloads
 	$(MAKE) $(TORRENTFLUX_IPK_DIR)/CONTROL/control
-	install -m 755 $(TORRENTFLUX_SOURCE_DIR)/postinst $(TORRENTFLUX_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(TORRENTFLUX_SOURCE_DIR)/postinst $(TORRENTFLUX_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TORRENTFLUX_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TORRENTFLUX_IPK_DIR)
 

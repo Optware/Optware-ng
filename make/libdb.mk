@@ -114,7 +114,7 @@ libdb-source: $(DL_DIR)/$(LIBDB_SOURCE) $(LIBDB_PATCHES)
 $(LIBDB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDB_SOURCE) $(LIBDB_PATCHES) make/libdb.mk
 	rm -rf $(BUILD_DIR)/$(LIBDB_DIR) $(LIBDB_BUILD_DIR)
 	$(LIBDB_UNZIP) $(DL_DIR)/$(LIBDB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(LIBDB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBDB_DIR) -p1
+	#cat $(LIBDB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBDB_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBDB_DIR) $(LIBDB_BUILD_DIR)
 	(cd $(LIBDB_BUILD_DIR)/build_unix; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -161,7 +161,7 @@ libdb-stage: $(LIBDB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdb
 #
 $(LIBDB_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBDB_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBDB_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libdb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

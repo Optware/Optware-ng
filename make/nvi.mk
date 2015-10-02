@@ -123,7 +123,7 @@ $(NVI_BUILD_DIR)/.configured: $(DL_DIR)/$(NVI_SOURCE) $(NVI_PATCHES) # make/nvi.
 	$(NVI_UNZIP) $(DL_DIR)/$(NVI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NVI_PATCHES)" ; \
 		then cat $(NVI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NVI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NVI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NVI_DIR)" != "$(NVI_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NVI_DIR) $(NVI_BUILD_DIR) ; \
@@ -176,7 +176,7 @@ nvi-stage: $(NVI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nvi
 #
 $(NVI_IPK_DIR)/CONTROL/control:
-	@install -d $(NVI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(NVI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: nvi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -204,7 +204,7 @@ $(NVI_IPK_DIR)/CONTROL/control:
 #
 $(NVI_IPK): $(NVI_BUILD_DIR)/.built
 	rm -rf $(NVI_IPK_DIR) $(BUILD_DIR)/nvi_*_$(TARGET_ARCH).ipk
-	install -d $(NVI_IPK_DIR)/opt
+	$(INSTALL) -d $(NVI_IPK_DIR)/opt
 	$(MAKE) -C $(NVI_BUILD_DIR) prefix=$(NVI_IPK_DIR)/opt transform=s/^/n/ strip=$(TARGET_STRIP) install
 	mv $(NVI_IPK_DIR)/opt/share/vi $(NVI_IPK_DIR)/opt/share/nvi
 	$(MAKE) $(NVI_IPK_DIR)/CONTROL/control

@@ -35,7 +35,7 @@ $(PERL-IO-STRINGY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-STRINGY_SOURCE) $(
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-IO-STRINGY_DIR) $(PERL-IO-STRINGY_BUILD_DIR)
 	$(PERL-IO-STRINGY_UNZIP) $(DL_DIR)/$(PERL-IO-STRINGY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-IO-STRINGY_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-IO-STRINGY_DIR) -p1
+#	cat $(PERL-IO-STRINGY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-IO-STRINGY_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-IO-STRINGY_DIR) $(PERL-IO-STRINGY_BUILD_DIR)
 	(cd $(PERL-IO-STRINGY_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -68,7 +68,7 @@ $(PERL-IO-STRINGY_BUILD_DIR)/.staged: $(PERL-IO-STRINGY_BUILD_DIR)/.built
 perl-io-stringy-stage: $(PERL-IO-STRINGY_BUILD_DIR)/.staged
 
 $(PERL-IO-STRINGY_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-IO-STRINGY_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-IO-STRINGY_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-io-stringy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

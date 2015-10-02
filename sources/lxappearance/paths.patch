@@ -5,20 +5,20 @@
      };
  
 -    char* file_path = g_build_filename(g_get_home_dir(), ".gtkrc-2.0", NULL);
-+    char* file_path = g_build_filename("/opt/etc/gtk-2.0/gtkrc", NULL);
++    char* file_path = g_build_filename("%OPTWARE_TARGET_PREFIX%/etc/gtk-2.0/gtkrc", NULL);
      GString* content = g_string_sized_new(512);
      g_string_append(content,
          "# DO NOT EDIT! This file will be overwritten by LXAppearance.\n"
 -        "# Any customization should be done in ~/.gtkrc-2.0.mine instead.\n\n");
-+        "# Any customization should be done in /opt/etc/gtk-2.0/gtkrc.user instead.\n\n");
++        "# Any customization should be done in %OPTWARE_TARGET_PREFIX%/etc/gtk-2.0/gtkrc.user instead.\n\n");
  
 -    /* include ~/.gtkrc-2.0.mine first to be able to apply changes done
-+    /* include /opt/etc/gtk-2.0/gtkrc.user first to be able to apply changes done
++    /* include %OPTWARE_TARGET_PREFIX%/etc/gtk-2.0/gtkrc.user first to be able to apply changes done
         by LXAppearance if the same settings exist in that file */
      g_string_append_printf(content,
 -        "include \"%s/.gtkrc-2.0.mine\"\n",
 -        g_get_home_dir());
-+        "include \"/opt/etc/gtk-2.0/gtkrc.user\"\n");
++        "include \"%OPTWARE_TARGET_PREFIX%/etc/gtk-2.0/gtkrc.user\"\n");
  
      if(app.widget_theme)
          g_string_append_printf(content,
@@ -27,7 +27,7 @@
      */
      GKeyFile *content_gtk3 = g_key_file_new();
 -    char* file_path_gtk3 = g_build_filename(g_get_user_config_dir(), "gtk-3.0", NULL);
-+    char* file_path_gtk3 = g_build_filename("/opt/etc/gtk-3.0", NULL);
++    char* file_path_gtk3 = g_build_filename("%OPTWARE_TARGET_PREFIX%/etc/gtk-3.0", NULL);
      char* file_path_settings = g_build_filename(file_path_gtk3, "settings.ini", NULL);
  
      if (!g_file_test(file_path_gtk3, G_FILE_TEST_IS_DIR))
@@ -36,7 +36,7 @@
      else
      {
 -        char* gtkrc_file = g_build_filename(g_get_home_dir(), ".gtkrc-2.0", NULL);
-+        char* gtkrc_file = "/opt/etc/gtk-2.0/gtkrc";
++        char* gtkrc_file = "%OPTWARE_TARGET_PREFIX%/etc/gtk-2.0/gtkrc";
          gtkrc_file_get_color_scheme(gtkrc_file, app.color_scheme_hash);
          g_free(gtkrc_file);
          if(g_hash_table_size(app.color_scheme_hash) > 0)

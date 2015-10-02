@@ -30,7 +30,7 @@ KERNEL-MODULES_IPK_VERSION=1
 
 #
 # KERNEL-MODULES_CONFFILES should be a list of user-editable files
-#KERNEL-MODULES_CONFFILES=/opt/etc/kernel-modules.conf /opt/etc/init.d/SXXkernel-modules
+#KERNEL-MODULES_CONFFILES=%OPTWARE_TARGET_PREFIX%/etc/kernel-modules.conf %OPTWARE_TARGET_PREFIX%/etc/init.d/SXXkernel-modules
 
 #
 # KERNEL-MODULES_PATCHES should list any patches, in the the order in
@@ -156,7 +156,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Description: $(KERNEL-MODULE_DESCRIPTION) $$m"; \
 	    echo -n "Depends: "; \
             DEPS="$(KERNEL-MODULES_DEPENDS)"; \
-	    for i in `grep "/$$m.ko:" $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules/$(KERNEL_VERSION)*/modules.dep|cut -d ":" -f 2`; do \
+	    for i in `grep "/$$m.ko:" $(KERNEL-MODULES_IPK_DIR)%OPTWARE_TARGET_PREFIX%/lib/modules/$(KERNEL_VERSION)*/modules.dep|cut -d ":" -f 2`; do \
 	      if test -n "$$DEPS"; then DEPS="$$DEPS,"; fi; \
 	      j=`basename $$i .ko | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
 	      DEPS="$$DEPS kernel-module-$$j"; \
@@ -198,9 +198,9 @@ $(KERNEL_BUILD_DIR)/.ipkdone: $(KERNEL_BUILD_DIR)/.built
 	( cd $(BUILD_DIR); $(IPKG_BUILD) $(KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules
 	rm -rf $(KERNEL-MODULES_IPK_DIR)* $(KERNEL-MODULE_IPKS_DIR)
-	mkdir -p $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules
+	mkdir -p $(KERNEL-MODULES_IPK_DIR)%OPTWARE_TARGET_PREFIX%/lib/modules
 	$(MAKE) -C $(KERNEL_BUILD_DIR) $(KERNEL_BUILD_FLAGS) \
-		INSTALL_MOD_PATH=$(KERNEL-MODULES_IPK_DIR)/opt modules_install
+		INSTALL_MOD_PATH=$(KERNEL-MODULES_IPK_DIR)%OPTWARE_TARGET_PREFIX% modules_install
 	for m in $(KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
 	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
@@ -212,9 +212,9 @@ $(KERNEL_BUILD_DIR)/.ipkdone: $(KERNEL_BUILD_DIR)/.built
 	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
 	  cd $(BUILD_DIR); $(IPKG_BUILD) $(KERNEL-MODULE_IPKS_DIR)/$$n; \
 	done
-	rm -f $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules/$(KERNEL_VERSION)/build
-	rm -f $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules/$(KERNEL_VERSION)/source
-	rm -rf $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules/$(KERNEL_VERSION)/kernel
+	rm -f $(KERNEL-MODULES_IPK_DIR)%OPTWARE_TARGET_PREFIX%/lib/modules/$(KERNEL_VERSION)/build
+	rm -f $(KERNEL-MODULES_IPK_DIR)%OPTWARE_TARGET_PREFIX%/lib/modules/$(KERNEL_VERSION)/source
+	rm -rf $(KERNEL-MODULES_IPK_DIR)%OPTWARE_TARGET_PREFIX%/lib/modules/$(KERNEL_VERSION)/kernel
 	( cd $(BUILD_DIR); $(IPKG_BUILD) $(KERNEL-MODULES_IPK_DIR) )
 	touch $@
 

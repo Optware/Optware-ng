@@ -118,7 +118,7 @@ $(HRKTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(HRKTORRENT_SOURCE) $(HRKTORRENT
 	$(HRKTORRENT_UNZIP) $(DL_DIR)/$(HRKTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HRKTORRENT_PATCHES)" ; \
 		then cat $(HRKTORRENT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HRKTORRENT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HRKTORRENT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HRKTORRENT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HRKTORRENT_DIR) $(@D) ; \
@@ -158,7 +158,7 @@ hrktorrent-stage: $(HRKTORRENT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/hrktorrent
 #
 $(HRKTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: hrktorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,15 +187,15 @@ $(HRKTORRENT_IPK_DIR)/CONTROL/control:
 $(HRKTORRENT_IPK): $(HRKTORRENT_BUILD_DIR)/.built
 	rm -rf $(HRKTORRENT_IPK_DIR) $(BUILD_DIR)/hrktorrent_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HRKTORRENT_BUILD_DIR) DESTDIR=$(HRKTORRENT_IPK_DIR) install-strip
-#	install -d $(HRKTORRENT_IPK_DIR)/opt/etc/
-#	install -m 644 $(HRKTORRENT_SOURCE_DIR)/hrktorrent.conf $(HRKTORRENT_IPK_DIR)/opt/etc/hrktorrent.conf
-#	install -d $(HRKTORRENT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(HRKTORRENT_SOURCE_DIR)/rc.hrktorrent $(HRKTORRENT_IPK_DIR)/opt/etc/init.d/SXXhrktorrent
+#	$(INSTALL) -d $(HRKTORRENT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(HRKTORRENT_SOURCE_DIR)/hrktorrent.conf $(HRKTORRENT_IPK_DIR)/opt/etc/hrktorrent.conf
+#	$(INSTALL) -d $(HRKTORRENT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(HRKTORRENT_SOURCE_DIR)/rc.hrktorrent $(HRKTORRENT_IPK_DIR)/opt/etc/init.d/SXXhrktorrent
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HRKTORRENT_IPK_DIR)/opt/etc/init.d/SXXhrktorrent
 	$(MAKE) $(HRKTORRENT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(HRKTORRENT_SOURCE_DIR)/postinst $(HRKTORRENT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(HRKTORRENT_SOURCE_DIR)/postinst $(HRKTORRENT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HRKTORRENT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(HRKTORRENT_SOURCE_DIR)/prerm $(HRKTORRENT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(HRKTORRENT_SOURCE_DIR)/prerm $(HRKTORRENT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HRKTORRENT_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

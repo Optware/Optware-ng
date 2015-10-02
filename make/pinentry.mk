@@ -116,7 +116,7 @@ endif
 	$(PINENTRY_UNZIP) $(DL_DIR)/$(PINENTRY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PINENTRY_PATCHES)" ; \
 		then cat $(PINENTRY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PINENTRY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PINENTRY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PINENTRY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PINENTRY_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ pinentry: $(PINENTRY_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/pinentry
 #
 $(PINENTRY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pinentry" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,15 +203,15 @@ $(PINENTRY_IPK): $(PINENTRY_BUILD_DIR)/.built
 	rm -rf $(PINENTRY_IPK_DIR) $(BUILD_DIR)/pinentry_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PINENTRY_BUILD_DIR) DESTDIR=$(PINENTRY_IPK_DIR) install-strip
 	rm -f $(PINENTRY_IPK_DIR)/opt/share/info/dir
-#	install -d $(PINENTRY_IPK_DIR)/opt/etc/
-#	install -m 644 $(PINENTRY_SOURCE_DIR)/pinentry.conf $(PINENTRY_IPK_DIR)/opt/etc/pinentry.conf
-#	install -d $(PINENTRY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PINENTRY_SOURCE_DIR)/rc.pinentry $(PINENTRY_IPK_DIR)/opt/etc/init.d/SXXpinentry
+#	$(INSTALL) -d $(PINENTRY_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(PINENTRY_SOURCE_DIR)/pinentry.conf $(PINENTRY_IPK_DIR)/opt/etc/pinentry.conf
+#	$(INSTALL) -d $(PINENTRY_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PINENTRY_SOURCE_DIR)/rc.pinentry $(PINENTRY_IPK_DIR)/opt/etc/init.d/SXXpinentry
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PINENTRY_IPK_DIR)/opt/etc/init.d/SXXpinentry
 	$(MAKE) $(PINENTRY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PINENTRY_SOURCE_DIR)/postinst $(PINENTRY_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PINENTRY_SOURCE_DIR)/postinst $(PINENTRY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PINENTRY_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PINENTRY_SOURCE_DIR)/prerm $(PINENTRY_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PINENTRY_SOURCE_DIR)/prerm $(PINENTRY_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PINENTRY_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

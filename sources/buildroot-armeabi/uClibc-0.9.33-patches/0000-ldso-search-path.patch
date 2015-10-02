@@ -6,10 +6,10 @@
  	tpnt1 = search_for_named_library(libname, rflags,
 -					UCLIBC_RUNTIME_PREFIX "lib:"
 -					UCLIBC_RUNTIME_PREFIX "usr/lib"
-+					"/opt/lib"
++					"%OPTWARE_TARGET_PREFIX%/lib"
  #ifndef __LDSO_CACHE_SUPPORT__
 -					":" UCLIBC_RUNTIME_PREFIX "usr/X11R6/lib"
-+					":" "/opt/X11R6/lib"
++					":" "%OPTWARE_TARGET_PREFIX%/X11R6/lib"
  #endif
  					, rpnt);
  	if (tpnt1 != NULL)

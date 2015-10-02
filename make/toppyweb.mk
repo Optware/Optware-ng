@@ -94,7 +94,7 @@ $(TOPPYWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(TOPPYWEB_SOURCE) $(TOPPYWEB_PATCH
 	cd $(BUILD_DIR)/$(TOPPYWEB_DIR) ; $(TOPPYWEB_UNZIP) $(DL_DIR)/$(TOPPYWEB_SOURCE)
 	if test -n "$(TOPPYWEB_PATCHES)" ; \
 		then cat $(TOPPYWEB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TOPPYWEB_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TOPPYWEB_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TOPPYWEB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TOPPYWEB_DIR) $(@D) ; \
@@ -129,7 +129,7 @@ toppyweb-stage: $(TOPPYWEB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/toppyweb
 #
 $(TOPPYWEB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: toppyweb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -157,18 +157,18 @@ $(TOPPYWEB_IPK_DIR)/CONTROL/control:
 #
 $(TOPPYWEB_IPK): $(TOPPYWEB_BUILD_DIR)/.built
 	rm -rf $(TOPPYWEB_IPK_DIR) $(BUILD_DIR)/toppyweb_*_$(TARGET_ARCH).ipk
-	install -d $(TOPPYWEB_IPK_DIR)/opt/share/www/toppyweb
+	$(INSTALL) -d $(TOPPYWEB_IPK_DIR)/opt/share/www/toppyweb
 	cp -r $(TOPPYWEB_BUILD_DIR)/* $(TOPPYWEB_IPK_DIR)/opt/share/www/toppyweb/
 	rm -f $(TOPPYWEB_IPK_DIR)/opt/share/www/toppyweb/config*.ini
-	install -d $(TOPPYWEB_IPK_DIR)/opt/etc/toppyweb/
+	$(INSTALL) -d $(TOPPYWEB_IPK_DIR)/opt/etc/toppyweb/
 	echo "[General]" > $(TOPPYWEB_IPK_DIR)/opt/share/www/toppyweb/config.ini
 	echo "ConfigFolder=/opt/etc/toppyweb" >> $(TOPPYWEB_IPK_DIR)/opt/share/www/toppyweb/config.ini
-	install -m 644 $(TOPPYWEB_SOURCE_DIR)/config.ini $(TOPPYWEB_IPK_DIR)/opt/etc/toppyweb/config.ini
-	install -d $(TOPPYWEB_IPK_DIR)/opt/var/toppyweb/
+	$(INSTALL) -m 644 $(TOPPYWEB_SOURCE_DIR)/config.ini $(TOPPYWEB_IPK_DIR)/opt/etc/toppyweb/config.ini
+	$(INSTALL) -d $(TOPPYWEB_IPK_DIR)/opt/var/toppyweb/
 	$(MAKE) $(TOPPYWEB_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TOPPYWEB_SOURCE_DIR)/postinst $(TOPPYWEB_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TOPPYWEB_SOURCE_DIR)/postinst $(TOPPYWEB_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TOPPYWEB_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TOPPYWEB_SOURCE_DIR)/prerm $(TOPPYWEB_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TOPPYWEB_SOURCE_DIR)/prerm $(TOPPYWEB_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TOPPYWEB_IPK_DIR)/CONTROL/prerm
 	echo $(TOPPYWEB_CONFFILES) | sed -e 's/ /\n/g' > $(TOPPYWEB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TOPPYWEB_IPK_DIR)

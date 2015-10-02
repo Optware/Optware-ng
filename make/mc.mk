@@ -90,7 +90,7 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
 	$(MC_UNZIP) $(DL_DIR)/$(MC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MC_PATCHES)" ; \
 		then cat $(MC_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(MC_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(MC_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(MC_DIR) $(@D)
 #	sed -i -e 's|/man2hlp |/man2hlp.host |' $(@D)/doc/hlp/Makefile.am $(@D)/doc/hlp/*/Makefile.am
@@ -141,7 +141,7 @@ mc: $(MC_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mc
 #
 $(MC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

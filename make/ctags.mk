@@ -106,7 +106,7 @@ ctags-source: $(DL_DIR)/$(CTAGS_SOURCE) $(CTAGS_PATCHES)
 $(CTAGS_BUILD_DIR)/.configured: $(DL_DIR)/$(CTAGS_SOURCE) $(CTAGS_PATCHES)
 	rm -rf $(BUILD_DIR)/$(CTAGS_DIR) $(@D)
 	$(CTAGS_UNZIP) $(DL_DIR)/$(CTAGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(CTAGS_PATCHES) | patch -d $(BUILD_DIR)/$(CTAGS_DIR) -p2
+	cat $(CTAGS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CTAGS_DIR) -p2
 	mv $(BUILD_DIR)/$(CTAGS_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -151,7 +151,7 @@ ctags: $(CTAGS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ctags
 #
 $(CTAGS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ctags" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

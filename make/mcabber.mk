@@ -115,7 +115,7 @@ $(MCABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(MCABBER_SOURCE) $(MCABBER_PATCHES)
 	$(MCABBER_UNZIP) $(DL_DIR)/$(MCABBER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MCABBER_PATCHES)" ; \
 		then cat $(MCABBER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MCABBER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MCABBER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MCABBER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MCABBER_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ mcabber: $(MCABBER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mcabber
 #
 $(MCABBER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mcabber" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,15 +202,15 @@ $(MCABBER_IPK_DIR)/CONTROL/control:
 $(MCABBER_IPK): $(MCABBER_BUILD_DIR)/.built
 	rm -rf $(MCABBER_IPK_DIR) $(BUILD_DIR)/mcabber_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MCABBER_BUILD_DIR) DESTDIR=$(MCABBER_IPK_DIR) install-strip
-#	install -d $(MCABBER_IPK_DIR)/opt/etc/
-#	install -m 644 $(MCABBER_SOURCE_DIR)/mcabber.conf $(MCABBER_IPK_DIR)/opt/etc/mcabber.conf
-#	install -d $(MCABBER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MCABBER_SOURCE_DIR)/rc.mcabber $(MCABBER_IPK_DIR)/opt/etc/init.d/SXXmcabber
+#	$(INSTALL) -d $(MCABBER_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MCABBER_SOURCE_DIR)/mcabber.conf $(MCABBER_IPK_DIR)/opt/etc/mcabber.conf
+#	$(INSTALL) -d $(MCABBER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MCABBER_SOURCE_DIR)/rc.mcabber $(MCABBER_IPK_DIR)/opt/etc/init.d/SXXmcabber
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MCABBER_IPK_DIR)/opt/etc/init.d/SXXmcabber
 	$(MAKE) $(MCABBER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MCABBER_SOURCE_DIR)/postinst $(MCABBER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MCABBER_SOURCE_DIR)/postinst $(MCABBER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MCABBER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MCABBER_SOURCE_DIR)/prerm $(MCABBER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MCABBER_SOURCE_DIR)/prerm $(MCABBER_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MCABBER_IPK_DIR)/CONTROL/prerm
 	echo $(MCABBER_CONFFILES) | sed -e 's/ /\n/g' > $(MCABBER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MCABBER_IPK_DIR)

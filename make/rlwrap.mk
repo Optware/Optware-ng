@@ -114,7 +114,7 @@ $(RLWRAP_BUILD_DIR)/.configured: $(DL_DIR)/$(RLWRAP_SOURCE) $(RLWRAP_PATCHES) ma
 	$(RLWRAP_UNZIP) $(DL_DIR)/$(RLWRAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RLWRAP_PATCHES)" ; \
 		then cat $(RLWRAP_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(RLWRAP_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(RLWRAP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RLWRAP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RLWRAP_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ rlwrap: $(RLWRAP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/rlwrap
 #
 $(RLWRAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rlwrap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

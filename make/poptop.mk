@@ -107,7 +107,7 @@ poptop-source: $(DL_DIR)/$(POPTOP_SOURCE) $(POPTOP_PATCHES)
 $(POPTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(POPTOP_SOURCE)
 	rm -rf $(BUILD_DIR)/$(POPTOP_DIR) $(POPTOP_BUILD_DIR)
 	$(POPTOP_UNZIP) $(DL_DIR)/$(POPTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(POPTOP_PATCHES) | patch -d $(BUILD_DIR)/$(POPTOP_DIR) -p1
+	cat $(POPTOP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(POPTOP_DIR) -p1
 	mv $(BUILD_DIR)/$(POPTOP_DIR) $(POPTOP_BUILD_DIR)
 	(cd $(POPTOP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -155,7 +155,7 @@ poptop-stage: $(POPTOP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/poptop
 #
 $(POPTOP_IPK_DIR)/CONTROL/control:
-	@install -d $(POPTOP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(POPTOP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: poptop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,15 +188,15 @@ $(POPTOP_IPK): $(POPTOP_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)/opt/sbin/pptpd
 	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)/opt/sbin/pptpctrl
 	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)/opt/lib/pptpd/*.so
-	install -d $(POPTOP_IPK_DIR)/opt/etc/
-	install -m 644 $(POPTOP_SOURCE_DIR)/pptpd.conf $(POPTOP_IPK_DIR)/opt/etc/pptpd.conf
-	install -d $(POPTOP_IPK_DIR)/opt/etc/ppp
-	install -m 644 $(POPTOP_SOURCE_DIR)/options.pptpd $(POPTOP_IPK_DIR)/opt/etc/ppp/options.pptpd
-	install -d $(POPTOP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(POPTOP_SOURCE_DIR)/rc.poptop $(POPTOP_IPK_DIR)/opt/etc/init.d/S20poptop
+	$(INSTALL) -d $(POPTOP_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(POPTOP_SOURCE_DIR)/pptpd.conf $(POPTOP_IPK_DIR)/opt/etc/pptpd.conf
+	$(INSTALL) -d $(POPTOP_IPK_DIR)/opt/etc/ppp
+	$(INSTALL) -m 644 $(POPTOP_SOURCE_DIR)/options.pptpd $(POPTOP_IPK_DIR)/opt/etc/ppp/options.pptpd
+	$(INSTALL) -d $(POPTOP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(POPTOP_SOURCE_DIR)/rc.poptop $(POPTOP_IPK_DIR)/opt/etc/init.d/S20poptop
 	$(MAKE) $(POPTOP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(POPTOP_SOURCE_DIR)/postinst $(POPTOP_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(POPTOP_SOURCE_DIR)/prerm $(POPTOP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(POPTOP_SOURCE_DIR)/postinst $(POPTOP_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(POPTOP_SOURCE_DIR)/prerm $(POPTOP_IPK_DIR)/CONTROL/prerm
 	echo $(POPTOP_CONFFILES) | sed -e 's/ /\n/g' > $(POPTOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POPTOP_IPK_DIR)
 

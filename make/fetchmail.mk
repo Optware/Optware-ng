@@ -110,7 +110,7 @@ $(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PA
 	rm -rf $(BUILD_DIR)/$(FETCHMAIL_DIR) $(@D)
 	$(FETCHMAIL_UNZIP) $(DL_DIR)/$(FETCHMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FETCHMAIL_PATCHES)"; then \
-		cat $(FETCHMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(FETCHMAIL_DIR) -p1; \
+		cat $(FETCHMAIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(FETCHMAIL_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(FETCHMAIL_DIR) $(@D)
 	(cd $(@D); \
@@ -170,7 +170,7 @@ fetchmail-stage: $(FETCHMAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fetchmail
 #
 $(FETCHMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fetchmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,14 +200,14 @@ $(FETCHMAIL_IPK): $(FETCHMAIL_BUILD_DIR)/.built
 	$(MAKE) -C $(FETCHMAIL_BUILD_DIR) DESTDIR=$(FETCHMAIL_IPK_DIR) install
 	$(STRIP_COMMAND) $(FETCHMAIL_IPK_DIR)/opt/bin/fetchmail
 	find $(FETCHMAIL_IPK_DIR) -type d -exec chmod go+rx {} \;
-	install -d $(FETCHMAIL_IPK_DIR)/opt/etc/
-	install -m 600 $(FETCHMAIL_SOURCE_DIR)/fetchmailrc $(FETCHMAIL_IPK_DIR)/opt/etc/fetchmailrc
-	install -d $(FETCHMAIL_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(FETCHMAIL_SOURCE_DIR)/rc.fetchmail $(FETCHMAIL_IPK_DIR)/opt/etc/init.d/S52fetchmail
+	$(INSTALL) -d $(FETCHMAIL_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 600 $(FETCHMAIL_SOURCE_DIR)/fetchmailrc $(FETCHMAIL_IPK_DIR)/opt/etc/fetchmailrc
+	$(INSTALL) -d $(FETCHMAIL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(FETCHMAIL_SOURCE_DIR)/rc.fetchmail $(FETCHMAIL_IPK_DIR)/opt/etc/init.d/S52fetchmail
 	sed -i -e 's|@LOGGING@|${FETCHMAIL_LOGGING}|' $(FETCHMAIL_IPK_DIR)/opt/etc/init.d/S52fetchmail
 	$(MAKE) $(FETCHMAIL_IPK_DIR)/CONTROL/control
-	install -m 644 $(FETCHMAIL_SOURCE_DIR)/postinst $(FETCHMAIL_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(FETCHMAIL_SOURCE_DIR)/prerm $(FETCHMAIL_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(FETCHMAIL_SOURCE_DIR)/postinst $(FETCHMAIL_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(FETCHMAIL_SOURCE_DIR)/prerm $(FETCHMAIL_IPK_DIR)/CONTROL/prerm
 	echo $(FETCHMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(FETCHMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FETCHMAIL_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(FETCHMAIL_IPK_DIR)

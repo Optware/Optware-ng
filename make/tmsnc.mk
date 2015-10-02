@@ -110,7 +110,7 @@ $(TMSNC_BUILD_DIR)/.configured: $(DL_DIR)/$(TMSNC_SOURCE) $(TMSNC_PATCHES) make/
 	$(TMSNC_UNZIP) $(DL_DIR)/$(TMSNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TMSNC_PATCHES)" ; \
 		then cat $(TMSNC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TMSNC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TMSNC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TMSNC_DIR)" != "$(TMSNC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TMSNC_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ tmsnc-stage: $(TMSNC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tmsnc
 #
 $(TMSNC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tmsnc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,15 +193,15 @@ $(TMSNC_IPK): $(TMSNC_BUILD_DIR)/.built
 	rm -rf $(TMSNC_IPK_DIR) $(BUILD_DIR)/tmsnc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TMSNC_BUILD_DIR) DESTDIR=$(TMSNC_IPK_DIR) install
 	$(STRIP_COMMAND) $(TMSNC_IPK_DIR)/opt/bin/tmsnc
-#	install -d $(TMSNC_IPK_DIR)/opt/etc/
-#	install -m 644 $(TMSNC_SOURCE_DIR)/tmsnc.conf $(TMSNC_IPK_DIR)/opt/etc/tmsnc.conf
-#	install -d $(TMSNC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TMSNC_SOURCE_DIR)/rc.tmsnc $(TMSNC_IPK_DIR)/opt/etc/init.d/SXXtmsnc
+#	$(INSTALL) -d $(TMSNC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(TMSNC_SOURCE_DIR)/tmsnc.conf $(TMSNC_IPK_DIR)/opt/etc/tmsnc.conf
+#	$(INSTALL) -d $(TMSNC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(TMSNC_SOURCE_DIR)/rc.tmsnc $(TMSNC_IPK_DIR)/opt/etc/init.d/SXXtmsnc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXtmsnc
 	$(MAKE) $(TMSNC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TMSNC_SOURCE_DIR)/postinst $(TMSNC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TMSNC_SOURCE_DIR)/postinst $(TMSNC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TMSNC_SOURCE_DIR)/prerm $(TMSNC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TMSNC_SOURCE_DIR)/prerm $(TMSNC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(TMSNC_CONFFILES) | sed -e 's/ /\n/g' > $(TMSNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TMSNC_IPK_DIR)

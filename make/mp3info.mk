@@ -110,7 +110,7 @@ $(MP3INFO_BUILD_DIR)/.configured: $(DL_DIR)/$(MP3INFO_SOURCE) $(MP3INFO_PATCHES)
 	$(MP3INFO_UNZIP) $(DL_DIR)/$(MP3INFO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MP3INFO_PATCHES)" ; \
 		then cat $(MP3INFO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MP3INFO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MP3INFO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MP3INFO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MP3INFO_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ mp3info-stage: $(MP3INFO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mp3info
 #
 $(MP3INFO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mp3info" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,20 +194,20 @@ $(MP3INFO_IPK_DIR)/CONTROL/control:
 #
 $(MP3INFO_IPK): $(MP3INFO_BUILD_DIR)/.built
 	rm -rf $(MP3INFO_IPK_DIR) $(BUILD_DIR)/mp3info_*_$(TARGET_ARCH).ipk
-	install -d $(MP3INFO_IPK_DIR)/opt/bin $(MP3INFO_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(MP3INFO_IPK_DIR)/opt/bin $(MP3INFO_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(<D) install-mp3info \
 		prefix=$(MP3INFO_IPK_DIR)/opt \
 		$(TARGET_CONFIGURE_OPTS) \
 		;
-#	install -d $(MP3INFO_IPK_DIR)/opt/etc/
-#	install -m 644 $(MP3INFO_SOURCE_DIR)/mp3info.conf $(MP3INFO_IPK_DIR)/opt/etc/mp3info.conf
-#	install -d $(MP3INFO_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MP3INFO_SOURCE_DIR)/rc.mp3info $(MP3INFO_IPK_DIR)/opt/etc/init.d/SXXmp3info
+#	$(INSTALL) -d $(MP3INFO_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MP3INFO_SOURCE_DIR)/mp3info.conf $(MP3INFO_IPK_DIR)/opt/etc/mp3info.conf
+#	$(INSTALL) -d $(MP3INFO_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MP3INFO_SOURCE_DIR)/rc.mp3info $(MP3INFO_IPK_DIR)/opt/etc/init.d/SXXmp3info
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MP3INFO_IPK_DIR)/opt/etc/init.d/SXXmp3info
 	$(MAKE) $(MP3INFO_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MP3INFO_SOURCE_DIR)/postinst $(MP3INFO_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MP3INFO_SOURCE_DIR)/postinst $(MP3INFO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MP3INFO_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MP3INFO_SOURCE_DIR)/prerm $(MP3INFO_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MP3INFO_SOURCE_DIR)/prerm $(MP3INFO_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MP3INFO_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

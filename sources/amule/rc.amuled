@@ -1,12 +1,12 @@
 #!/bin/sh
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
 start() {
 	set backup=$HOME
 	echo "Starting amuled..."
-	echo "Configuration's setting are located in /opt/share/amule"
-	export HOME=/opt/share/amule
-	/opt/bin/amuled -f
+	echo "Configuration's setting are located in %OPTWARE_TARGET_PREFIX%/share/amule"
+	export HOME=%OPTWARE_TARGET_PREFIX%/share/amule
+	%OPTWARE_TARGET_PREFIX%/bin/amuled -f
 	export HOME=$backup
 	echo "done"
 }

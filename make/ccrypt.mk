@@ -110,7 +110,7 @@ $(CCRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(CCRYPT_SOURCE) $(CCRYPT_PATCHES) ma
 	$(CCRYPT_UNZIP) $(DL_DIR)/$(CCRYPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CCRYPT_PATCHES)" ; \
 		then cat $(CCRYPT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CCRYPT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CCRYPT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CCRYPT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CCRYPT_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ ccrypt-stage: $(CCRYPT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ccrypt
 #
 $(CCRYPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ccrypt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,8 +189,8 @@ $(CCRYPT_IPK_DIR)/CONTROL/control:
 $(CCRYPT_IPK): $(CCRYPT_BUILD_DIR)/.built
 	rm -rf $(CCRYPT_IPK_DIR) $(BUILD_DIR)/ccrypt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CCRYPT_BUILD_DIR) DESTDIR=$(CCRYPT_IPK_DIR) install-strip
-	install -d $(CCRYPT_IPK_DIR)/opt/share/doc/ccrypt
-	install $(CCRYPT_BUILD_DIR)/[ACNR]* $(CCRYPT_IPK_DIR)/opt/share/doc/ccrypt
+	$(INSTALL) -d $(CCRYPT_IPK_DIR)/opt/share/doc/ccrypt
+	$(INSTALL) $(CCRYPT_BUILD_DIR)/[ACNR]* $(CCRYPT_IPK_DIR)/opt/share/doc/ccrypt
 	$(MAKE) $(CCRYPT_IPK_DIR)/CONTROL/control
 	echo $(CCRYPT_CONFFILES) | sed -e 's/ /\n/g' > $(CCRYPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CCRYPT_IPK_DIR)

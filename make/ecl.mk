@@ -136,7 +136,7 @@ $(ECL_BUILD_DIR)/.configured: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES) $(ECL_HOST_
 	rm -rf $(BUILD_DIR)/$(ECL_DIR) $(@D)
 	$(ECL_UNZIP) $(DL_DIR)/$(ECL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ECL_PATCHES)" ; then \
-		cat $(ECL_PATCHES) | patch -d $(BUILD_DIR)/$(ECL_DIR) -p1 ; \
+		cat $(ECL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ECL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ECL_DIR)" != "$(ECL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ECL_DIR) $(ECL_BUILD_DIR) ; \
@@ -199,7 +199,7 @@ ecl-stage: $(ECL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ecl
 #
 $(ECL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ecl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -230,13 +230,13 @@ $(ECL_IPK): $(ECL_BUILD_DIR)/.built
 	$(MAKE) -C $(ECL_BUILD_DIR) DESTDIR=$(ECL_IPK_DIR) install
 	$(STRIP_COMMAND) $(ECL_IPK_DIR)/opt/bin/ecl
 	$(STRIP_COMMAND) $(ECL_IPK_DIR)/opt/lib/ecl/*.so $(ECL_IPK_DIR)/opt/lib/ecl/*.fas
-#	install -d $(ECL_IPK_DIR)/opt/etc/
-#	install -m 644 $(ECL_SOURCE_DIR)/ecl.conf $(ECL_IPK_DIR)/opt/etc/ecl.conf
-#	install -d $(ECL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ECL_SOURCE_DIR)/rc.ecl $(ECL_IPK_DIR)/opt/etc/init.d/SXXecl
+#	$(INSTALL) -d $(ECL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ECL_SOURCE_DIR)/ecl.conf $(ECL_IPK_DIR)/opt/etc/ecl.conf
+#	$(INSTALL) -d $(ECL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ECL_SOURCE_DIR)/rc.ecl $(ECL_IPK_DIR)/opt/etc/init.d/SXXecl
 	$(MAKE) $(ECL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ECL_SOURCE_DIR)/postinst $(ECL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ECL_SOURCE_DIR)/prerm $(ECL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ECL_SOURCE_DIR)/postinst $(ECL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ECL_SOURCE_DIR)/prerm $(ECL_IPK_DIR)/CONTROL/prerm
 	echo $(ECL_CONFFILES) | sed -e 's/ /\n/g' > $(ECL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ECL_IPK_DIR)
 

@@ -114,7 +114,7 @@ $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 	rm -rf $(BUILD_DIR)/$(JABBERD_DIR) $(JABBERD_BUILD_DIR)
 	$(JABBERD_UNZIP) $(DL_DIR)/$(JABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(JABBERD_PATCHES)"; then \
-		cat $(JABBERD_PATCHES) | patch -d $(BUILD_DIR)/$(JABBERD_DIR) -p1; \
+		cat $(JABBERD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(JABBERD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(JABBERD_DIR) $(@D)
 	sed -i -e 's/-ludns/-ludns_s/' $(@D)/configure
@@ -171,7 +171,7 @@ jabberd-stage: $(JABBERD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/jabberd
 #
 $(JABBERD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: jabberd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,13 +199,13 @@ $(JABBERD_IPK_DIR)/CONTROL/control:
 $(JABBERD_IPK): $(JABBERD_BUILD_DIR)/.built
 	rm -rf $(JABBERD_IPK_DIR) $(BUILD_DIR)/jabberd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JABBERD_BUILD_DIR) DESTDIR=$(JABBERD_IPK_DIR) install-strip
-	install -m 644 $(JABBERD_SOURCE_DIR)/jabber.conf $(JABBERD_IPK_DIR)/opt/etc/jabber/jabber.conf
-	install -d $(JABBERD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(JABBERD_SOURCE_DIR)/rc.jabber $(JABBERD_IPK_DIR)/opt/etc/init.d/S80jabber
+	$(INSTALL) -m 644 $(JABBERD_SOURCE_DIR)/jabber.conf $(JABBERD_IPK_DIR)/opt/etc/jabber/jabber.conf
+	$(INSTALL) -d $(JABBERD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(JABBERD_SOURCE_DIR)/rc.jabber $(JABBERD_IPK_DIR)/opt/etc/init.d/S80jabber
 	sed -i -e 's|exec perl|exec /opt/bin/perl|' $(JABBERD_IPK_DIR)/opt/bin/jabberd
 	$(MAKE) $(JABBERD_IPK_DIR)/CONTROL/control
-	install -m 755 $(JABBERD_SOURCE_DIR)/postinst $(JABBERD_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(JABBERD_SOURCE_DIR)/prerm $(JABBERD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(JABBERD_SOURCE_DIR)/postinst $(JABBERD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(JABBERD_SOURCE_DIR)/prerm $(JABBERD_IPK_DIR)/CONTROL/prerm
 ifneq ($(OPTWARE_TARGET), nslu2)
 	sed -i -e '/share.hdd.conf/d' $(JABBERD_IPK_DIR)/CONTROL/postinst
 endif

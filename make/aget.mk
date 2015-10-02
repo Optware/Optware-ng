@@ -110,7 +110,7 @@ $(AGET_BUILD_DIR)/.configured: $(DL_DIR)/$(AGET_SOURCE) $(AGET_PATCHES) make/age
 	$(AGET_UNZIP) $(DL_DIR)/$(AGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AGET_PATCHES)" ; \
 		then cat $(AGET_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(AGET_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(AGET_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AGET_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AGET_DIR) $(@D) ; \
@@ -156,7 +156,7 @@ aget: $(AGET_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/aget
 #
 $(AGET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: aget" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,10 +185,10 @@ $(AGET_IPK_DIR)/CONTROL/control:
 $(AGET_IPK): $(AGET_BUILD_DIR)/.built
 	rm -rf $(AGET_IPK_DIR) $(BUILD_DIR)/aget_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(AGET_BUILD_DIR) DESTDIR=$(AGET_IPK_DIR) install-strip
-	install -d $(AGET_IPK_DIR)/opt/bin
-	install -m755 $(<D)/aget $(AGET_IPK_DIR)/opt/bin/
-	install -d $(AGET_IPK_DIR)/opt/share/doc/aget
-	install $(<D)/AUTHORS $(<D)/COPYING $(<D)/ChangeLog $(<D)/INSTALL \
+	$(INSTALL) -d $(AGET_IPK_DIR)/opt/bin
+	$(INSTALL) -m755 $(<D)/aget $(AGET_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(AGET_IPK_DIR)/opt/share/doc/aget
+	$(INSTALL) $(<D)/AUTHORS $(<D)/COPYING $(<D)/ChangeLog $(<D)/INSTALL \
 		$(<D)/README* $(<D)/THANKS $(<D)/TODO $(AGET_IPK_DIR)/opt/share/doc/aget/
 	$(STRIP_COMMAND) $(AGET_IPK_DIR)/opt/bin/aget
 	$(MAKE) $(AGET_IPK_DIR)/CONTROL/control

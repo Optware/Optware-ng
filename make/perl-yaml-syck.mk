@@ -36,7 +36,7 @@ $(PERL-YAML-SYCK_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-YAML-SYCK_SOURCE) $(PE
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-YAML-SYCK_DIR) $(@D)
 	$(PERL-YAML-SYCK_UNZIP) $(DL_DIR)/$(PERL-YAML-SYCK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-YAML-SYCK_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-YAML-SYCK_DIR) -p1
+#	cat $(PERL-YAML-SYCK_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-YAML-SYCK_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-YAML-SYCK_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -72,7 +72,7 @@ $(PERL-YAML-SYCK_BUILD_DIR)/.staged: $(PERL-YAML-SYCK_BUILD_DIR)/.built
 perl-yaml-syck-stage: $(PERL-YAML-SYCK_BUILD_DIR)/.staged
 
 $(PERL-YAML-SYCK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-yaml-syck" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

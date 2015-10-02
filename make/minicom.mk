@@ -119,7 +119,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(MINICOM_DIR) $(@D)
 	$(MINICOM_UNZIP) $(DL_DIR)/$(MINICOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINICOM_PATCHES)"; \
-		then cat $(MINICOM_PATCHES) | patch -d $(BUILD_DIR)/$(MINICOM_DIR) -p1; \
+		then cat $(MINICOM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MINICOM_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(MINICOM_DIR) $(@D)
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
@@ -169,7 +169,7 @@ minicom: $(MINICOM_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/minicom
 #
 $(MINICOM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: minicom" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,8 +200,8 @@ $(MINICOM_IPK): $(MINICOM_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(MINICOM_IPK_DIR)/opt/bin/ascii-xfr
 	$(TARGET_STRIP) $(MINICOM_IPK_DIR)/opt/bin/minicom
 	$(TARGET_STRIP) $(MINICOM_IPK_DIR)/opt/bin/runscript
-	install -d $(MINICOM_IPK_DIR)/opt/etc/
-	install -m 755 $(MINICOM_BUILD_DIR)/doc/minirc.dfl $(MINICOM_IPK_DIR)/opt/etc/minirc.dfl
+	$(INSTALL) -d $(MINICOM_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 755 $(MINICOM_BUILD_DIR)/doc/minirc.dfl $(MINICOM_IPK_DIR)/opt/etc/minirc.dfl
 	$(MAKE) $(MINICOM_IPK_DIR)/CONTROL/control
 	echo $(MINICOM_CONFFILES) | sed -e 's/ /\n/g' > $(MINICOM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINICOM_IPK_DIR)

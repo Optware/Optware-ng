@@ -121,7 +121,7 @@ less: $(LESS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/less
 #
 $(LESS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: less" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -148,7 +148,7 @@ $(LESS_IPK_DIR)/CONTROL/control:
 #
 $(LESS_IPK): $(LESS_BUILD_DIR)/.built
 	rm -rf $(LESS_IPK_DIR) $(BUILD_DIR)/less_*_$(TARGET_ARCH).ipk
-	install -d $(LESS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(LESS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(LESS_BUILD_DIR)/less -o $(LESS_IPK_DIR)/opt/bin/less-less
 	$(MAKE) $(LESS_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \

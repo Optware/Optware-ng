@@ -129,7 +129,7 @@ $(PLOWSHARE_BUILD_DIR)/.configured: $(DL_DIR)/$(PLOWSHARE_SOURCE) $(PLOWSHARE_PA
 	$(PLOWSHARE_UNZIP) $(DL_DIR)/$(PLOWSHARE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PLOWSHARE_PATCHES)" ; \
 		then cat $(PLOWSHARE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PLOWSHARE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PLOWSHARE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PLOWSHARE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PLOWSHARE_DIR) $(@D) ; \
@@ -182,7 +182,7 @@ plowshare: $(PLOWSHARE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/plowshare
 #
 $(PLOWSHARE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: plowshare" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,7 +216,7 @@ $(PLOWSHARE_IPK): $(PLOWSHARE_BUILD_DIR)/.built
 	rm -rf $(PLOWSHARE_IPK_DIR) $(BUILD_DIR)/plowshare_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<D) DESTDIR=$(PLOWSHARE_IPK_DIR) PREFIX=/opt install
 	$(MAKE) $(PLOWSHARE_IPK_DIR)/CONTROL/control
-	install -m755 $(PLOWSHARE_SOURCE_DIR)/postinst $(PLOWSHARE_IPK_DIR)/CONTROL/
+	$(INSTALL) -m755 $(PLOWSHARE_SOURCE_DIR)/postinst $(PLOWSHARE_IPK_DIR)/CONTROL/
 	echo $(PLOWSHARE_CONFFILES) | sed -e 's/ /\n/g' > $(PLOWSHARE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PLOWSHARE_IPK_DIR)
 

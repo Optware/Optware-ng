@@ -110,7 +110,7 @@ $(LIBVNCSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVNCSERVER_SOURCE) $(LIBVNC
 	$(LIBVNCSERVER_UNZIP) $(DL_DIR)/$(LIBVNCSERVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBVNCSERVER_PATCHES)" ; \
 		then cat $(LIBVNCSERVER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBVNCSERVER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBVNCSERVER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBVNCSERVER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBVNCSERVER_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ libvncserver-stage: $(LIBVNCSERVER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libvncserver
 #
 $(LIBVNCSERVER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libvncserver" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,7 +196,7 @@ $(LIBVNCSERVER_IPK): $(LIBVNCSERVER_BUILD_DIR)/.built
 	rm -rf $(LIBVNCSERVER_IPK_DIR) $(BUILD_DIR)/libvncserver_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBVNCSERVER_BUILD_DIR) DESTDIR=$(LIBVNCSERVER_IPK_DIR) install-strip
 	rm -f $(LIBVNCSERVER_IPK_DIR)/opt/lib/*.la
-	install -d $(LIBVNCSERVER_IPK_DIR)/opt/share/libvncserver/examples
+	$(INSTALL) -d $(LIBVNCSERVER_IPK_DIR)/opt/share/libvncserver/examples
 	cd $(LIBVNCSERVER_BUILD_DIR)/examples/.libs/; \
 	for f in *; do \
 		$(STRIP_COMMAND) $$f -o $(LIBVNCSERVER_IPK_DIR)/opt/share/libvncserver/examples/$$f; \

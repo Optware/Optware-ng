@@ -91,7 +91,7 @@ $(AUTOMAKE14_BUILD_DIR)/.staged: $(AUTOMAKE14_BUILD_DIR)/.built
 automake14-stage: $(AUTOMAKE14_BUILD_DIR)/.staged
 
 $(AUTOMAKE14_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: automake14" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -106,11 +106,11 @@ $(AUTOMAKE14_IPK_DIR)/CONTROL/control:
 
 $(AUTOMAKE14_IPK): $(AUTOMAKE14_BUILD_DIR)/.built
 	rm -rf $(AUTOMAKE14_IPK_DIR) $(BUILD_DIR)/automake14_*_$(TARGET_ARCH).ipk
-	install -d $(AUTOMAKE14_IPK_DIR)/opt/bin
-	install -d $(AUTOMAKE14_IPK_DIR)/opt/info
-	install -d $(AUTOMAKE14_IPK_DIR)/opt/share/aclocal-1.4
-	install -d $(AUTOMAKE14_IPK_DIR)/opt/share/automake-1.4/Automake
-	install -d $(AUTOMAKE14_IPK_DIR)/opt/share/automake-1.4/am
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/info
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/share/aclocal-1.4
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/share/automake-1.4/Automake
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/share/automake-1.4/am
 	$(MAKE) -C $(AUTOMAKE14_BUILD_DIR) DESTDIR=$(AUTOMAKE14_IPK_DIR) install
 	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOMAKE14_IPK_DIR)/opt/bin/*
 	$(MAKE) $(AUTOMAKE14_IPK_DIR)/CONTROL/control

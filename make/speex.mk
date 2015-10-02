@@ -128,7 +128,7 @@ $(SPEEX_BUILD_DIR)/.configured: $(DL_DIR)/$(SPEEX_SOURCE) $(SPEEX_PATCHES) make/
 	$(SPEEX_UNZIP) $(DL_DIR)/$(SPEEX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPEEX_PATCHES)" ; \
 		then cat $(SPEEX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SPEEX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SPEEX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SPEEX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SPEEX_DIR) $(@D) ; \
@@ -183,7 +183,7 @@ speex-stage: $(SPEEX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/speex
 #
 $(SPEEX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: speex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -212,15 +212,15 @@ $(SPEEX_IPK_DIR)/CONTROL/control:
 $(SPEEX_IPK): $(SPEEX_BUILD_DIR)/.built
 	rm -rf $(SPEEX_IPK_DIR) $(BUILD_DIR)/speex_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SPEEX_BUILD_DIR) DESTDIR=$(SPEEX_IPK_DIR) install-strip
-#	install -d $(SPEEX_IPK_DIR)/opt/etc/
-#	install -m 644 $(SPEEX_SOURCE_DIR)/speex.conf $(SPEEX_IPK_DIR)/opt/etc/speex.conf
-#	install -d $(SPEEX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SPEEX_SOURCE_DIR)/rc.speex $(SPEEX_IPK_DIR)/opt/etc/init.d/SXXspeex
+#	$(INSTALL) -d $(SPEEX_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SPEEX_SOURCE_DIR)/speex.conf $(SPEEX_IPK_DIR)/opt/etc/speex.conf
+#	$(INSTALL) -d $(SPEEX_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SPEEX_SOURCE_DIR)/rc.speex $(SPEEX_IPK_DIR)/opt/etc/init.d/SXXspeex
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPEEX_IPK_DIR)/opt/etc/init.d/SXXspeex
 	$(MAKE) $(SPEEX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SPEEX_SOURCE_DIR)/postinst $(SPEEX_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SPEEX_SOURCE_DIR)/postinst $(SPEEX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPEEX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SPEEX_SOURCE_DIR)/prerm $(SPEEX_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SPEEX_SOURCE_DIR)/prerm $(SPEEX_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPEEX_IPK_DIR)/CONTROL/prerm
 	echo $(SPEEX_CONFFILES) | sed -e 's/ /\n/g' > $(SPEEX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SPEEX_IPK_DIR)

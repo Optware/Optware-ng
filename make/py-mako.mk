@@ -130,7 +130,7 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(DL_DIR)/$(PY-MAK
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR_OLD)
 	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-MAKO_PATCHES)" ; then \
-	    cat $(PY-MAKO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MAKO_DIR_OLD) -p0 ; \
+	    cat $(PY-MAKO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MAKO_DIR_OLD) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-MAKO_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -140,7 +140,7 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(DL_DIR)/$(PY-MAK
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR)
 	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-MAKO_PATCHES)" ; then \
-	    cat $(PY-MAKO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MAKO_DIR) -p0 ; \
+	    cat $(PY-MAKO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MAKO_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -150,7 +150,7 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(DL_DIR)/$(PY-MAK
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR)
 	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-MAKO_PATCHES)" ; then \
-	    cat $(PY-MAKO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MAKO_DIR) -p0 ; \
+	    cat $(PY-MAKO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MAKO_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -160,7 +160,7 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(DL_DIR)/$(PY-MAK
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR)
 	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-MAKO_PATCHES)" ; then \
-	    cat $(PY-MAKO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MAKO_DIR) -p0 ; \
+	    cat $(PY-MAKO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MAKO_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/3
 	(cd $(@D)/3; \
@@ -265,7 +265,7 @@ py-mako-stage: $(PY-MAKO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-mako
 #
 $(PY25-MAKO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-mako" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -279,7 +279,7 @@ $(PY25-MAKO_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MAKO_CONFLICTS)" >>$@
 
 $(PY26-MAKO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-mako" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -293,7 +293,7 @@ $(PY26-MAKO_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MAKO_CONFLICTS)" >>$@
 
 $(PY27-MAKO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-mako" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -307,7 +307,7 @@ $(PY27-MAKO_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MAKO_CONFLICTS)" >>$@
 
 $(PY3-MAKO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-mako" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -103,7 +103,7 @@ $(GIMP-PRINT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIMP-PRINT_SOURCE) $(GIMP-PRINT
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(GIMP-PRINT_DIR) $(GIMP-PRINT_BUILD_DIR)
 	$(GIMP-PRINT_UNZIP) $(DL_DIR)/$(GIMP-PRINT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GIMP-PRINT_PATCHES) | patch -d $(BUILD_DIR)/$(GIMP-PRINT_DIR) -p1
+#	cat $(GIMP-PRINT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIMP-PRINT_DIR) -p1
 	mv $(BUILD_DIR)/$(GIMP-PRINT_DIR) $(GIMP-PRINT_BUILD_DIR)
 	(cd $(GIMP-PRINT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -149,7 +149,7 @@ gimp-print-stage: $(GIMP-PRINT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gimp-print
 #
 $(GIMP-PRINT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gimp-print" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,8 +179,8 @@ $(GIMP-PRINT_IPK): $(GIMP-PRINT_BUILD_DIR)/.built
 	rm -rf $(GIMP-PRINT_IPK_DIR) $(BUILD_DIR)/gimp-print_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GIMP-PRINT_BUILD_DIR) DESTDIR=$(GIMP-PRINT_IPK_DIR) install-strip
 	$(MAKE) $(GIMP-PRINT_IPK_DIR)/CONTROL/control
-#	install -d $(GIMP-PRINT_IPK_DIR)/CONTROL
-#	install -m 644 $(GIMP-PRINT_SOURCE_DIR)/control $(GIMP-PRINT_IPK_DIR)/CONTROL/control
+#	$(INSTALL) -d $(GIMP-PRINT_IPK_DIR)/CONTROL
+#	$(INSTALL) -m 644 $(GIMP-PRINT_SOURCE_DIR)/control $(GIMP-PRINT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIMP-PRINT_IPK_DIR)
 
 #

@@ -110,7 +110,7 @@ $(LIBIJS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIJS_SOURCE) $(LIBIJS_PATCHES) ma
 	$(LIBIJS_UNZIP) $(DL_DIR)/$(LIBIJS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBIJS_PATCHES)" ; \
 		then cat $(LIBIJS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBIJS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBIJS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBIJS_DIR)" != "$(LIBIJS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBIJS_DIR) $(LIBIJS_BUILD_DIR) ; \
@@ -162,7 +162,7 @@ libijs-stage: $(LIBIJS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libijs
 #
 $(LIBIJS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libijs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

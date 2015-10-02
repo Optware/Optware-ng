@@ -116,7 +116,7 @@ $(LXAPPEARANCE_BUILD_DIR)/.configured: $(DL_DIR)/$(LXAPPEARANCE_SOURCE) $(LXAPPE
 	$(LXAPPEARANCE_UNZIP) $(DL_DIR)/$(LXAPPEARANCE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LXAPPEARANCE_PATCHES)" ; \
 		then cat $(LXAPPEARANCE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LXAPPEARANCE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LXAPPEARANCE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LXAPPEARANCE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LXAPPEARANCE_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ lxappearance-stage: $(LXAPPEARANCE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lxappearance
 #
 $(LXAPPEARANCE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lxappearance" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,15 +197,15 @@ $(LXAPPEARANCE_IPK_DIR)/CONTROL/control:
 $(LXAPPEARANCE_IPK): $(LXAPPEARANCE_BUILD_DIR)/.built
 	rm -rf $(LXAPPEARANCE_IPK_DIR) $(BUILD_DIR)/lxappearance_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LXAPPEARANCE_BUILD_DIR) DESTDIR=$(LXAPPEARANCE_IPK_DIR) install-strip
-#	install -d $(LXAPPEARANCE_IPK_DIR)/opt/etc/
-#	install -m 644 $(LXAPPEARANCE_SOURCE_DIR)/lxappearance.conf $(LXAPPEARANCE_IPK_DIR)/opt/etc/lxappearance.conf
-#	install -d $(LXAPPEARANCE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LXAPPEARANCE_SOURCE_DIR)/rc.lxappearance $(LXAPPEARANCE_IPK_DIR)/opt/etc/init.d/SXXlxappearance
+#	$(INSTALL) -d $(LXAPPEARANCE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LXAPPEARANCE_SOURCE_DIR)/lxappearance.conf $(LXAPPEARANCE_IPK_DIR)/opt/etc/lxappearance.conf
+#	$(INSTALL) -d $(LXAPPEARANCE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LXAPPEARANCE_SOURCE_DIR)/rc.lxappearance $(LXAPPEARANCE_IPK_DIR)/opt/etc/init.d/SXXlxappearance
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXAPPEARANCE_IPK_DIR)/opt/etc/init.d/SXXlxappearance
 	$(MAKE) $(LXAPPEARANCE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LXAPPEARANCE_SOURCE_DIR)/postinst $(LXAPPEARANCE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LXAPPEARANCE_SOURCE_DIR)/postinst $(LXAPPEARANCE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXAPPEARANCE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LXAPPEARANCE_SOURCE_DIR)/prerm $(LXAPPEARANCE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LXAPPEARANCE_SOURCE_DIR)/prerm $(LXAPPEARANCE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXAPPEARANCE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

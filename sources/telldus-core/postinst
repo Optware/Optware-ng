@@ -3,5 +3,5 @@
 # $Id$
 #
 
-/opt/etc/init.d/S50tellstick
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S50tellstick
 

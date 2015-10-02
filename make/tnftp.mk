@@ -116,7 +116,7 @@ $(TNFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTP_SOURCE) $(TNFTP_PATCHES) make/
 	$(TNFTP_UNZIP) $(DL_DIR)/$(TNFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TNFTP_PATCHES)" ; \
 		then cat $(TNFTP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TNFTP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TNFTP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TNFTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TNFTP_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ tnftp: $(TNFTP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/tnftp
 #
 $(TNFTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tnftp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -204,15 +204,15 @@ $(TNFTP_IPK): $(TNFTP_BUILD_DIR)/.built
 	chmod +w $(TNFTP_IPK_DIR)/opt/bin/tnftp && \
 	$(STRIP_COMMAND) $(TNFTP_IPK_DIR)/opt/bin/tnftp && \
 	chmod -w $(TNFTP_IPK_DIR)/opt/bin/tnftp
-#	install -d $(TNFTP_IPK_DIR)/opt/etc/
-#	install -m 644 $(TNFTP_SOURCE_DIR)/tnftp.conf $(TNFTP_IPK_DIR)/opt/etc/tnftp.conf
-#	install -d $(TNFTP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TNFTP_SOURCE_DIR)/rc.tnftp $(TNFTP_IPK_DIR)/opt/etc/init.d/SXXtnftp
+#	$(INSTALL) -d $(TNFTP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(TNFTP_SOURCE_DIR)/tnftp.conf $(TNFTP_IPK_DIR)/opt/etc/tnftp.conf
+#	$(INSTALL) -d $(TNFTP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(TNFTP_SOURCE_DIR)/rc.tnftp $(TNFTP_IPK_DIR)/opt/etc/init.d/SXXtnftp
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXtnftp
 	$(MAKE) $(TNFTP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TNFTP_SOURCE_DIR)/postinst $(TNFTP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TNFTP_SOURCE_DIR)/postinst $(TNFTP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TNFTP_SOURCE_DIR)/prerm $(TNFTP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TNFTP_SOURCE_DIR)/prerm $(TNFTP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(TNFTP_CONFFILES) | sed -e 's/ /\n/g' > $(TNFTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TNFTP_IPK_DIR)

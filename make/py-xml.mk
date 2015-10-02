@@ -113,7 +113,7 @@ $(PY-XML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-XML_SOURCE) $(PY-XML_PATCHES)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-XML_DIR)
 	$(PY-XML_UNZIP) $(DL_DIR)/$(PY-XML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-XML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-XML_DIR) -p1
+#	cat $(PY-XML_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-XML_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR)/2.4
 	(cd $(PY-XML_BUILD_DIR)/2.4; \
 	    ( \
@@ -129,7 +129,7 @@ $(PY-XML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-XML_SOURCE) $(PY-XML_PATCHES)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-XML_DIR)
 	$(PY-XML_UNZIP) $(DL_DIR)/$(PY-XML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-XML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-XML_DIR) -p1
+#	cat $(PY-XML_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-XML_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR)/2.5
 	(cd $(PY-XML_BUILD_DIR)/2.5; \
 	    ( \
@@ -181,7 +181,7 @@ py-xml-stage: $(PY-XML_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-xml
 #
 $(PY24-XML_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-xml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,7 +196,7 @@ $(PY24-XML_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-XML_CONFLICTS)" >>$@
 
 $(PY25-XML_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-xml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

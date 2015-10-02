@@ -117,7 +117,7 @@ $(PY-WEATHERGET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEATHERGET_SOURCE) $(PY-W
 	# 2.5
 	$(PY-WEATHERGET_UNZIP) $(DL_DIR)/$(PY-WEATHERGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	sed -i -e 's|/usr/|/opt/|g' $(BUILD_DIR)/$(PY-WEATHERGET_DIR)/setup.py
-#	cat $(PY-WEATHERGET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEATHERGET_DIR) -p1
+#	cat $(PY-WEATHERGET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-WEATHERGET_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-WEATHERGET_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -134,7 +134,7 @@ $(PY-WEATHERGET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEATHERGET_SOURCE) $(PY-W
 	# 2.6
 	$(PY-WEATHERGET_UNZIP) $(DL_DIR)/$(PY-WEATHERGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	sed -i -e 's|/usr/|/opt/|g' $(BUILD_DIR)/$(PY-WEATHERGET_DIR)/setup.py
-#	cat $(PY-WEATHERGET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEATHERGET_DIR) -p1
+#	cat $(PY-WEATHERGET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-WEATHERGET_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-WEATHERGET_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -185,7 +185,7 @@ py-weatherget-stage: $(PY-WEATHERGET_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-weatherget
 #
 $(PY-WEATHERGET-DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-weatherget-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,7 +199,7 @@ $(PY-WEATHERGET-DOC_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-WEATHERGET_CONFLICTS)" >>$@
 
 $(PY25-WEATHERGET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-weatherget" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,7 +214,7 @@ $(PY25-WEATHERGET_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-WEATHERGET_CONFLICTS)" >>$@
 
 $(PY26-WEATHERGET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-weatherget" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -245,7 +245,7 @@ $(PY25-WEATHERGET_IPK) $(PY26-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK): $(PY-WEA
 	rm -rf $(PY26-WEATHERGET_IPK_DIR) $(BUILD_DIR)/py26-weatherget_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY-WEATHERGET-DOC_IPK_DIR) $(BUILD_DIR)/py-weatherget-doc_*_$(TARGET_ARCH).ipk
 	# 2.5
-	install -d $(PY25-WEATHERGET_IPK_DIR)/opt/lib/python2.5/site-packages
+	$(INSTALL) -d $(PY25-WEATHERGET_IPK_DIR)/opt/lib/python2.5/site-packages
 	cd $(PY-WEATHERGET_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-WEATHERGET_IPK_DIR) --prefix=/opt
@@ -253,13 +253,13 @@ $(PY25-WEATHERGET_IPK) $(PY26-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK): $(PY-WEA
 	$(MAKE) $(PY25-WEATHERGET_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-WEATHERGET_IPK_DIR)
 	# 2.6
-	install -d $(PY26-WEATHERGET_IPK_DIR)/opt/lib/python2.6/site-packages
+	$(INSTALL) -d $(PY26-WEATHERGET_IPK_DIR)/opt/lib/python2.6/site-packages
 	cd $(PY-WEATHERGET_BUILD_DIR)/2.6; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
 	    --root=$(PY26-WEATHERGET_IPK_DIR) --prefix=/opt
 	for f in $(PY26-WEATHERGET_IPK_DIR)/opt/*bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-py2.6|'`; done
-	install -d $(PY-WEATHERGET-DOC_IPK_DIR)/opt/
+	$(INSTALL) -d $(PY-WEATHERGET-DOC_IPK_DIR)/opt/
 	mv $(PY26-WEATHERGET_IPK_DIR)/opt/share $(PY-WEATHERGET-DOC_IPK_DIR)/opt/
 	$(MAKE) $(PY26-WEATHERGET_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-WEATHERGET_IPK_DIR)

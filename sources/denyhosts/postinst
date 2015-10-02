@@ -1,5 +1,5 @@
 #!/bin/sh
 
-/opt/etc/init.d/S01denyhosts
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S01denyhosts
 
 

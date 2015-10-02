@@ -102,7 +102,7 @@ $(PY-PYRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYRO_SOURCE) $(PY-PYRO_PATCHES)
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-PYRO_DIR) $(PY-PYRO_BUILD_DIR)
 	$(PY-PYRO_UNZIP) $(DL_DIR)/$(PY-PYRO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-PYRO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PYRO_DIR) -p1
+#	cat $(PY-PYRO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PYRO_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PYRO_DIR) $(PY-PYRO_BUILD_DIR)
 	(cd $(PY-PYRO_BUILD_DIR); \
 	    ( \
@@ -149,7 +149,7 @@ py-pyro-stage: $(PY-PYRO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-pyro
 #
 $(PY-PYRO_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-PYRO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-PYRO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-pyro" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,7 +179,7 @@ $(PY-PYRO_IPK): $(PY-PYRO_BUILD_DIR)/.built
 	(cd $(PY-PYRO_BUILD_DIR); \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-		install --root=$(PY-PYRO_IPK_DIR) --prefix=/opt; \
+		$(INSTALL) --root=$(PY-PYRO_IPK_DIR) --prefix=/opt; \
 	)
 	$(MAKE) $(PY-PYRO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PYRO_IPK_DIR)

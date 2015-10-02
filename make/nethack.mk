@@ -95,10 +95,10 @@ $(NETHACK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETHACK_SOURCE) $(NETHACK_PATCHES)
 	rm -rf $(BUILD_DIR)/$(NETHACK_DIR) $(NETHACK_BUILD_DIR)
 	$(NETHACK_UNZIP) $(DL_DIR)/$(NETHACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(NETHACK_DIR) $(NETHACK_BUILD_DIR)
-	patch -f -d $(NETHACK_BUILD_DIR)/sys/unix/ -p1 < $(NETHACK_SOURCE_DIR)/nethack_setup.patch
+	$(PATCH) -f -d $(NETHACK_BUILD_DIR)/sys/unix/ -p1 < $(NETHACK_SOURCE_DIR)/nethack_setup.patch
 	chmod 766 $(NETHACK_BUILD_DIR)/sys/unix/setup.sh
 	$(NETHACK_BUILD_DIR)/sys/unix/setup.sh
-	patch -f -d $(NETHACK_BUILD_DIR) -p1 < $(NETHACK_SOURCE_DIR)/nethack_nslu2.patch
+	$(PATCH) -f -d $(NETHACK_BUILD_DIR) -p1 < $(NETHACK_SOURCE_DIR)/nethack_nslu2.patch
 	touch $(NETHACK_BUILD_DIR)/.configured
 
 nethack-unpack: $(NETHACK_BUILD_DIR)/.configured
@@ -125,7 +125,7 @@ $(NETHACK_BUILD_DIR)/.built: $(NETHACK_BUILD_DIR)/.configured
 nethack: $(NETHACK_BUILD_DIR)/.built
 
 $(NETHACK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nethack" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -153,16 +153,16 @@ $(NETHACK_IPK_DIR)/CONTROL/control:
 #
 $(NETHACK_IPK): $(NETHACK_BUILD_DIR)/.built
 	rm -rf $(NETHACK_IPK_DIR) $(BUILD_DIR)/nethack_*_$(TARGET_ARCH).ipk
-	install -d $(NETHACK_IPK_DIR)/opt/bin
-	install -m 755 $(NETHACK_BUILD_DIR)/install/nethack $(NETHACK_IPK_DIR)/opt/bin/
-	install -d $(NETHACK_IPK_DIR)/opt/share/nethackdir/
+	$(INSTALL) -d $(NETHACK_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(NETHACK_BUILD_DIR)/install/nethack $(NETHACK_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(NETHACK_IPK_DIR)/opt/share/nethackdir/
 	cp -r $(NETHACK_BUILD_DIR)/install/nethackdir/* $(NETHACK_IPK_DIR)/opt/share/nethackdir/
 	$(STRIP_COMMAND) \
 		$(NETHACK_IPK_DIR)/opt/share/nethackdir/nethack \
 		$(NETHACK_IPK_DIR)/opt/share/nethackdir/recover \
 		$(NETHACK_IPK_DIR)/opt/share/nethackdir/util/*
 	$(MAKE) $(NETHACK_IPK_DIR)/CONTROL/control
-	install -m 755 $(NETHACK_SOURCE_DIR)/postinst $(NETHACK_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(NETHACK_SOURCE_DIR)/postinst $(NETHACK_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETHACK_IPK_DIR)
 
 #

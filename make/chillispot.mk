@@ -111,7 +111,7 @@ $(CHILLISPOT_BUILD_DIR)/.configured: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT
 	rm -rf $(BUILD_DIR)/$(CHILLISPOT_DIR) $(@D)
 	$(CHILLISPOT_UNZIP) $(DL_DIR)/$(CHILLISPOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CHILLISPOT_PATCHES)"; \
-		then cat $(CHILLISPOT_PATCHES) | patch -d $(BUILD_DIR)/$(CHILLISPOT_DIR) -p1; \
+		then cat $(CHILLISPOT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CHILLISPOT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(CHILLISPOT_DIR) $(@D)
 	sed -i -e 's/(__FreeBSD__) defined (__OpenBSD__)/(__FreeBSD__) \|\| defined (__OpenBSD__)/' $(@D)/src/tun.c
@@ -160,7 +160,7 @@ chillispot-stage: $(CHILLISPOT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/chillispot
 #
 $(CHILLISPOT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: chillispot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,20 +189,20 @@ $(CHILLISPOT_IPK): $(CHILLISPOT_BUILD_DIR)/.built
 	rm -rf $(CHILLISPOT_IPK_DIR) $(BUILD_DIR)/chillispot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CHILLISPOT_BUILD_DIR) DESTDIR=$(CHILLISPOT_IPK_DIR) install
 	$(STRIP_COMMAND) $(CHILLISPOT_IPK_DIR)/opt/sbin/chilli
-	install -d $(CHILLISPOT_IPK_DIR)/opt/etc/
-	install -m 644 $(CHILLISPOT_SOURCE_DIR)/chilli.conf $(CHILLISPOT_IPK_DIR)/opt/etc/chilli.conf
-	install -d $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot
-	install -m 644 $(CHILLISPOT_SOURCE_DIR)/hotspotlogin.cgi $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/hotspotlogin.cgi
-	install -m 644 $(CHILLISPOT_SOURCE_DIR)/firewall.iptables $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/firewall.iptables
-	install -m 644 $(CHILLISPOT_SOURCE_DIR)/firewall.openwrt $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/firewall.openwrt
-	install -m 644 $(CHILLISPOT_SOURCE_DIR)/freeradius.users $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/freeradius.users
-	install -m 644 $(CHILLISPOT_SOURCE_DIR)/dictionary.chillispot $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/dictionary.chillispot
-	install -d $(CHILLISPOT_IPK_DIR)/opt/var/lib/chilli
-	install -d $(CHILLISPOT_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(CHILLISPOT_SOURCE_DIR)/rc.chilli $(CHILLISPOT_IPK_DIR)/opt/etc/init.d/S80chillispot
+	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/chilli.conf $(CHILLISPOT_IPK_DIR)/opt/etc/chilli.conf
+	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/hotspotlogin.cgi $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/hotspotlogin.cgi
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/firewall.iptables $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/firewall.iptables
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/firewall.openwrt $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/firewall.openwrt
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/freeradius.users $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/freeradius.users
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/dictionary.chillispot $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/dictionary.chillispot
+	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)/opt/var/lib/chilli
+	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(CHILLISPOT_SOURCE_DIR)/rc.chilli $(CHILLISPOT_IPK_DIR)/opt/etc/init.d/S80chillispot
 	$(MAKE) $(CHILLISPOT_IPK_DIR)/CONTROL/control
-	install -m 755 $(CHILLISPOT_SOURCE_DIR)/postinst $(CHILLISPOT_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(CHILLISPOT_SOURCE_DIR)/prerm $(CHILLISPOT_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(CHILLISPOT_SOURCE_DIR)/postinst $(CHILLISPOT_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(CHILLISPOT_SOURCE_DIR)/prerm $(CHILLISPOT_IPK_DIR)/CONTROL/prerm
 	echo $(CHILLISPOT_CONFFILES) | sed -e 's/ /\n/g' > $(CHILLISPOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CHILLISPOT_IPK_DIR)
 

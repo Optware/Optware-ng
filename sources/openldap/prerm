@@ -1,8 +1,8 @@
 #!/bin/sh
 
-/opt/bin/killall slapd
+%OPTWARE_TARGET_PREFIX%/bin/killall slapd
 
-/bin/rm -rf /opt/etc/openldap
-/bin/rm -rf /opt/var/openldap-slurp
-/bin/rm -rf /opt/var/openldap-data
+/bin/rm -rf %OPTWARE_TARGET_PREFIX%/etc/openldap
+/bin/rm -rf %OPTWARE_TARGET_PREFIX%/var/openldap-slurp
+/bin/rm -rf %OPTWARE_TARGET_PREFIX%/var/openldap-data
 

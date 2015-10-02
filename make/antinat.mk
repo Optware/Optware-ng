@@ -160,7 +160,7 @@ antinat-stage: $(ANTINAT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/antinat
 #
 $(ANTINAT_IPK_DIR)/CONTROL/control:
-	@install -d $(ANTINAT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ANTINAT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: antinat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,8 +193,8 @@ $(ANTINAT_IPK): $(ANTINAT_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)/opt/lib/libantinat.so.0.0.0
 	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)/opt/bin/antinat
 	$(MAKE) $(ANTINAT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ANTINAT_SOURCE_DIR)/postinst $(ANTINAT_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(ANTINAT_SOURCE_DIR)/prerm $(ANTINAT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ANTINAT_SOURCE_DIR)/postinst $(ANTINAT_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(ANTINAT_SOURCE_DIR)/prerm $(ANTINAT_IPK_DIR)/CONTROL/prerm
 	echo $(ANTINAT_CONFFILES) | sed -e 's/ /\n/g' > $(ANTINAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ANTINAT_IPK_DIR)
 

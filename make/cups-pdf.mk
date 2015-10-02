@@ -109,7 +109,7 @@ $(CUPS-PDF_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS-PDF_SOURCE) $(CUPS-PDF_PATCH
 	$(CUPS-PDF_UNZIP) $(DL_DIR)/$(CUPS-PDF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CUPS-PDF_PATCHES)" ; \
 		then cat $(CUPS-PDF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CUPS-PDF_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CUPS-PDF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CUPS-PDF_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CUPS-PDF_DIR) $(@D) ; \
@@ -150,7 +150,7 @@ cups-pdf: $(CUPS-PDF_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/cups-pdf
 #
 $(CUPS-PDF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cups-pdf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,20 +179,20 @@ $(CUPS-PDF_IPK_DIR)/CONTROL/control:
 $(CUPS-PDF_IPK): $(CUPS-PDF_BUILD_DIR)/.built
 	rm -rf $(CUPS-PDF_IPK_DIR) $(BUILD_DIR)/cups-pdf_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(CUPS-PDF_BUILD_DIR) DESTDIR=$(CUPS-PDF_IPK_DIR) install-strip
-	install -d $(CUPS-PDF_IPK_DIR)/opt/lib/cups/backend
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/lib/cups/backend
 	$(STRIP_COMMAND) $(CUPS-PDF_BUILD_DIR)/src/cups-pdf \
 		-o $(CUPS-PDF_IPK_DIR)/opt/lib/cups/backend/cups-pdf
-	install -d $(CUPS-PDF_IPK_DIR)/opt/etc/cups
-	install -m 644 $(CUPS-PDF_BUILD_DIR)/extra/cups-pdf.conf $(CUPS-PDF_IPK_DIR)/opt/etc/cups
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/etc/cups
+	$(INSTALL) -m 644 $(CUPS-PDF_BUILD_DIR)/extra/cups-pdf.conf $(CUPS-PDF_IPK_DIR)/opt/etc/cups
 	sed -i -e 's| /var/| /opt/var/|g' \
 	       -e 's|/usr/bin/gs|/opt/bin/gs|' \
 		$(CUPS-PDF_IPK_DIR)/opt/etc/cups/cups-pdf.conf
-	install -d $(CUPS-PDF_IPK_DIR)/opt/var/tmp
-	install -d $(CUPS-PDF_IPK_DIR)/opt/share/cups/model
-	install -m 644 $(CUPS-PDF_BUILD_DIR)/extra/CUPS-PDF.ppd \
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/var/tmp
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/share/cups/model
+	$(INSTALL) -m 644 $(CUPS-PDF_BUILD_DIR)/extra/CUPS-PDF.ppd \
 		$(CUPS-PDF_IPK_DIR)/opt/share/cups/model/
-	install -d $(CUPS-PDF_IPK_DIR)/opt/share/doc/cups-pdf/examples/
-	install \
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/share/doc/cups-pdf/examples/
+	$(INSTALL) \
 		$(CUPS-PDF_BUILD_DIR)/ChangeLog \
 		$(CUPS-PDF_BUILD_DIR)/COPYING \
 		$(CUPS-PDF_BUILD_DIR)/README \

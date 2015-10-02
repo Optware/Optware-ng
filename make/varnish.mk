@@ -119,7 +119,7 @@ $(VARNISH_BUILD_DIR)/.configured: $(DL_DIR)/$(VARNISH_SOURCE) $(VARNISH_PATCHES)
 	$(VARNISH_UNZIP) $(DL_DIR)/$(VARNISH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VARNISH_PATCHES)" ; \
 		then cat $(VARNISH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(VARNISH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(VARNISH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(VARNISH_DIR)" != "$(VARNISH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(VARNISH_DIR) $(VARNISH_BUILD_DIR) ; \
@@ -174,7 +174,7 @@ varnish-stage: $(VARNISH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/varnish
 #
 $(VARNISH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: varnish" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,15 +203,15 @@ $(VARNISH_IPK_DIR)/CONTROL/control:
 $(VARNISH_IPK): $(VARNISH_BUILD_DIR)/.built
 	rm -rf $(VARNISH_IPK_DIR) $(BUILD_DIR)/varnish_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(VARNISH_BUILD_DIR) DESTDIR=$(VARNISH_IPK_DIR) transform='' install-strip
-#	install -d $(VARNISH_IPK_DIR)/opt/etc/
-#	install -m 644 $(VARNISH_SOURCE_DIR)/varnish.conf $(VARNISH_IPK_DIR)/opt/etc/varnish.conf
-#	install -d $(VARNISH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(VARNISH_SOURCE_DIR)/rc.varnish $(VARNISH_IPK_DIR)/opt/etc/init.d/SXXvarnish
+#	$(INSTALL) -d $(VARNISH_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(VARNISH_SOURCE_DIR)/varnish.conf $(VARNISH_IPK_DIR)/opt/etc/varnish.conf
+#	$(INSTALL) -d $(VARNISH_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(VARNISH_SOURCE_DIR)/rc.varnish $(VARNISH_IPK_DIR)/opt/etc/init.d/SXXvarnish
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VARNISH_IPK_DIR)/opt/etc/init.d/SXXvarnish
 	$(MAKE) $(VARNISH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(VARNISH_SOURCE_DIR)/postinst $(VARNISH_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(VARNISH_SOURCE_DIR)/postinst $(VARNISH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VARNISH_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(VARNISH_SOURCE_DIR)/prerm $(VARNISH_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(VARNISH_SOURCE_DIR)/prerm $(VARNISH_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VARNISH_IPK_DIR)/CONTROL/prerm
 	echo $(VARNISH_CONFFILES) | sed -e 's/ /\n/g' > $(VARNISH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VARNISH_IPK_DIR)

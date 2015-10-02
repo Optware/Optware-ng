@@ -110,7 +110,7 @@ $(LUAROCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(LUAROCKS_SOURCE) $(LUAROCKS_PATCH
 	$(LUAROCKS_UNZIP) $(DL_DIR)/$(LUAROCKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LUAROCKS_PATCHES)" ; \
 		then cat $(LUAROCKS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LUAROCKS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LUAROCKS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LUAROCKS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LUAROCKS_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ luarocks-stage: $(LUAROCKS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/luarocks
 #
 $(LUAROCKS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: luarocks" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,7 +195,7 @@ $(LUAROCKS_IPK): $(LUAROCKS_BUILD_DIR)/.built
 	rm -rf $(LUAROCKS_IPK_DIR) $(BUILD_DIR)/luarocks_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LUAROCKS_BUILD_DIR) DESTDIR=$(LUAROCKS_IPK_DIR) install
 	sed -i -e '1s:#!.*:#!/opt/bin/lua:' $(LUAROCKS_IPK_DIR)/opt/bin/luarocks*
-	install -d $(LUAROCKS_IPK_DIR)/opt/local/bin $(LUAROCKS_IPK_DIR)/opt/local/lib/luarocks
+	$(INSTALL) -d $(LUAROCKS_IPK_DIR)/opt/local/bin $(LUAROCKS_IPK_DIR)/opt/local/lib/luarocks
 	$(MAKE) $(LUAROCKS_IPK_DIR)/CONTROL/control
 	echo $(LUAROCKS_CONFFILES) | sed -e 's/ /\n/g' > $(LUAROCKS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUAROCKS_IPK_DIR)

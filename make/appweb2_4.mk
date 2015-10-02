@@ -113,7 +113,7 @@ $(APPWEB2_4_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB2_4_SOURCE) $(APPWEB2_4_PA
 	$(APPWEB2_4_UNZIP) $(DL_DIR)/$(APPWEB2_4_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(APPWEB2_4_PATCHES)" ; \
 		then cat $(APPWEB2_4_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(APPWEB2_4_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(APPWEB2_4_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(APPWEB2_4_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(APPWEB2_4_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ appweb2_4-stage: $(APPWEB2_4_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/appweb2_4
 #
 $(APPWEB2_4_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: appweb2_4" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,15 +189,15 @@ $(APPWEB2_4_IPK_DIR)/CONTROL/control:
 $(APPWEB2_4_IPK): $(APPWEB2_4_BUILD_DIR)/.built
 	rm -rf $(APPWEB2_4_IPK_DIR) $(BUILD_DIR)/appweb2_4_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APPWEB2_4_BUILD_DIR) DESTDIR=$(APPWEB2_4_IPK_DIR) install-package
-#	install -d $(APPWEB2_4_IPK_DIR)/opt/etc/
-#	install -m 644 $(APPWEB2_4_SOURCE_DIR)/appweb2_4.conf $(APPWEB2_4_IPK_DIR)/opt/etc/appweb2_4.conf
-#	install -d $(APPWEB2_4_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(APPWEB2_4_SOURCE_DIR)/rc.appweb2_4 $(APPWEB2_4_IPK_DIR)/opt/etc/init.d/SXXappweb2_4
+#	$(INSTALL) -d $(APPWEB2_4_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(APPWEB2_4_SOURCE_DIR)/appweb2_4.conf $(APPWEB2_4_IPK_DIR)/opt/etc/appweb2_4.conf
+#	$(INSTALL) -d $(APPWEB2_4_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(APPWEB2_4_SOURCE_DIR)/rc.appweb2_4 $(APPWEB2_4_IPK_DIR)/opt/etc/init.d/SXXappweb2_4
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(APPWEB2_4_IPK_DIR)/opt/etc/init.d/SXXappweb2_4
 	$(MAKE) $(APPWEB2_4_IPK_DIR)/CONTROL/control
-#	install -m 755 $(APPWEB2_4_SOURCE_DIR)/postinst $(APPWEB2_4_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(APPWEB2_4_SOURCE_DIR)/postinst $(APPWEB2_4_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(APPWEB2_4_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(APPWEB2_4_SOURCE_DIR)/prerm $(APPWEB2_4_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(APPWEB2_4_SOURCE_DIR)/prerm $(APPWEB2_4_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(APPWEB2_4_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

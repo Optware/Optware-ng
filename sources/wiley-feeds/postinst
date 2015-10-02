@@ -1,16 +1,16 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
-if [ -f /opt/etc/ipkg.conf ] ;  then
-	if !( grep -q ".* unslung" /opt/etc/ipkg.conf ) ; then
-		echo "src/gz unslung http://ipkg.nslu2-linux.org/feeds/unslung/wl500g" >> /opt/etc/ipkg.conf	
+if [ -f %OPTWARE_TARGET_PREFIX%/etc/ipkg.conf ] ;  then
+	if !( grep -q ".* unslung" %OPTWARE_TARGET_PREFIX%/etc/ipkg.conf ) ; then
+		echo "src/gz unslung http://ipkg.nslu2-linux.org/feeds/unslung/wl500g" >> %OPTWARE_TARGET_PREFIX%/etc/ipkg.conf	
 	fi
 	
-	if !( grep -q ".* wl500g" /opt/etc/ipkg.conf ) ; then
-		echo "src/gz wl500g http://wl500g.dyndns.org/ipkg" >> /opt/etc/ipkg.conf	
+	if !( grep -q ".* wl500g" %OPTWARE_TARGET_PREFIX%/etc/ipkg.conf ) ; then
+		echo "src/gz wl500g http://wl500g.dyndns.org/ipkg" >> %OPTWARE_TARGET_PREFIX%/etc/ipkg.conf	
 	fi
-	if !( grep -q "dest root /" /opt/etc/ipkg.conf ) ; then
-		echo "dest root /" >> /opt/etc/ipkg.conf
+	if !( grep -q "dest root /" %OPTWARE_TARGET_PREFIX%/etc/ipkg.conf ) ; then
+		echo "dest root /" >> %OPTWARE_TARGET_PREFIX%/etc/ipkg.conf
 	fi
 fi

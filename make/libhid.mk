@@ -114,7 +114,7 @@ $(LIBHID_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBHID_SOURCE) $(LIBHID_PATCHES) ma
 	$(LIBHID_UNZIP) $(DL_DIR)/$(LIBHID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBHID_PATCHES)" ; \
 		then cat $(LIBHID_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBHID_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBHID_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBHID_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBHID_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ libhid-stage: $(LIBHID_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libhid
 #
 $(LIBHID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libhid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(LIBHID_IPK_DIR)/CONTROL/control:
 $(LIBHID_IPK): $(LIBHID_BUILD_DIR)/.built
 	rm -rf $(LIBHID_IPK_DIR) $(BUILD_DIR)/libhid_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBHID_BUILD_DIR) DESTDIR=$(LIBHID_IPK_DIR) install-strip
-#	install -d $(LIBHID_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBHID_SOURCE_DIR)/libhid.conf $(LIBHID_IPK_DIR)/opt/etc/libhid.conf
-#	install -d $(LIBHID_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBHID_SOURCE_DIR)/rc.libhid $(LIBHID_IPK_DIR)/opt/etc/init.d/SXXlibhid
+#	$(INSTALL) -d $(LIBHID_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBHID_SOURCE_DIR)/libhid.conf $(LIBHID_IPK_DIR)/opt/etc/libhid.conf
+#	$(INSTALL) -d $(LIBHID_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBHID_SOURCE_DIR)/rc.libhid $(LIBHID_IPK_DIR)/opt/etc/init.d/SXXlibhid
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBHID_IPK_DIR)/opt/etc/init.d/SXXlibhid
 	$(MAKE) $(LIBHID_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBHID_SOURCE_DIR)/postinst $(LIBHID_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBHID_SOURCE_DIR)/postinst $(LIBHID_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBHID_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBHID_SOURCE_DIR)/prerm $(LIBHID_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBHID_SOURCE_DIR)/prerm $(LIBHID_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBHID_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -127,11 +127,11 @@ diffutils: $(DIFFUTILS_BUILD_DIR)/.built
 #
 $(DIFFUTILS_BUILD_DIR)/.staged: $(DIFFUTILS_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(DIFFUTILS_BUILD_DIR)/diffutils.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(DIFFUTILS_BUILD_DIR)/libdiffutils.a $(STAGING_LIB_DIR)
-	install -m 644 $(DIFFUTILS_BUILD_DIR)/libdiffutils.so.$(DIFFUTILS_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(DIFFUTILS_BUILD_DIR)/diffutils.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(DIFFUTILS_BUILD_DIR)/libdiffutils.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(DIFFUTILS_BUILD_DIR)/libdiffutils.so.$(DIFFUTILS_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libdiffutils.so.$(DIFFUTILS_VERSION) libdiffutils.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libdiffutils.so.$(DIFFUTILS_VERSION) libdiffutils.so
 	touch $@
@@ -143,7 +143,7 @@ diffutils-stage: $(DIFFUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/diffutils
 #
 $(DIFFUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: diffutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -170,7 +170,7 @@ $(DIFFUTILS_IPK_DIR)/CONTROL/control:
 #
 $(DIFFUTILS_IPK): $(DIFFUTILS_BUILD_DIR)/.built
 	rm -rf $(DIFFUTILS_IPK_DIR) $(BUILD_DIR)/diffutils_*_$(TARGET_ARCH).ipk
-	install -d $(DIFFUTILS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(DIFFUTILS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/cmp -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-cmp
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-diff
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff3 -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-diff3

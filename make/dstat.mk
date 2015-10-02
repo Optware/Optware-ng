@@ -100,7 +100,7 @@ $(DSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(DSTAT_SOURCE) $(DSTAT_PATCHES) make/
 	$(DSTAT_UNZIP) $(DL_DIR)/$(DSTAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DSTAT_PATCHES)" ; \
 		then cat $(DSTAT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DSTAT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DSTAT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DSTAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DSTAT_DIR) $(@D) ; \
@@ -138,7 +138,7 @@ dstat: $(DSTAT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/dstat
 #
 $(DSTAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dstat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

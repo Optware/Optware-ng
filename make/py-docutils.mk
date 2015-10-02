@@ -113,7 +113,7 @@ $(PY-DOCUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DOCUTILS_SOURCE) $(PY-DOCUT
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-DOCUTILS_DIR)
 	$(PY-DOCUTILS_UNZIP) $(DL_DIR)/$(PY-DOCUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-DOCUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DOCUTILS_DIR) -p1
+#	cat $(PY-DOCUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-DOCUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-DOCUTILS_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -124,7 +124,7 @@ $(PY-DOCUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DOCUTILS_SOURCE) $(PY-DOCUT
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-DOCUTILS_DIR)
 	$(PY-DOCUTILS_UNZIP) $(DL_DIR)/$(PY-DOCUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-DOCUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DOCUTILS_DIR) -p1
+#	cat $(PY-DOCUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-DOCUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-DOCUTILS_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -167,7 +167,7 @@ py-docutils: $(PY-DOCUTILS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-docutils
 #
 $(PY25-DOCUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-docutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,7 +181,7 @@ $(PY25-DOCUTILS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-DOCUTILS_CONFLICTS)" >>$@
 
 $(PY26-DOCUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-docutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

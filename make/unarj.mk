@@ -73,7 +73,7 @@ $(UNARJ_BUILD_DIR)/.configured: $(DL_DIR)/$(UNARJ_SOURCE) $(UNARJ_PATCHES) make/
 	$(UNARJ_UNZIP) $(DL_DIR)/$(UNARJ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNARJ_PATCHES)" ; \
 		then cat $(UNARJ_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UNARJ_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UNARJ_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UNARJ_DIR)" != "$(UNARJ_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(UNARJ_DIR) $(UNARJ_BUILD_DIR) ; \
@@ -101,7 +101,7 @@ unarj: $(UNARJ_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/unarj
 #
 $(UNARJ_IPK_DIR)/CONTROL/control:
-	@install -d $(UNARJ_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(UNARJ_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: unarj" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -117,8 +117,8 @@ $(UNARJ_IPK_DIR)/CONTROL/control:
 
 $(UNARJ_IPK): $(UNARJ_BUILD_DIR)/.built
 	rm -rf $(UNARJ_IPK_DIR) $(BUILD_DIR)/unarj_*_$(TARGET_ARCH).ipk
-	install -d $(UNARJ_IPK_DIR)/opt/bin
-	install -m 755 $(UNARJ_BUILD_DIR)/unarj $(UNARJ_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(UNARJ_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(UNARJ_BUILD_DIR)/unarj $(UNARJ_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(UNARJ_IPK_DIR)/opt/bin/unarj
 	$(MAKE) $(UNARJ_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNARJ_IPK_DIR)

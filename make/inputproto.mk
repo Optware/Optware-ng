@@ -63,7 +63,7 @@ INPUTPROTO_IPK=$(BUILD_DIR)/inputproto_$(INPUTPROTO_VERSION)-$(INPUTPROTO_IPK_VE
 # Automatically create a ipkg control file
 #
 $(INPUTPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(INPUTPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(INPUTPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: inputproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(INPUTPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(INPUTPROTO_SOURCE) $(INPUTPROTO
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(INPUTPROTO_SOURCE)
 	if test -n "$(INPUTPROTO_PATCHES)" ; \
 		then cat $(INPUTPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(INPUTPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(INPUTPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(INPUTPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(INPUTPROTO_DIR) $(@D) ; \

@@ -110,7 +110,7 @@ $(CKSFV_BUILD_DIR)/.configured: $(DL_DIR)/$(CKSFV_SOURCE) $(CKSFV_PATCHES) make/
 	$(CKSFV_UNZIP) $(DL_DIR)/$(CKSFV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CKSFV_PATCHES)" ; \
 		then cat $(CKSFV_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CKSFV_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CKSFV_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CKSFV_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CKSFV_DIR) $(@D) ; \
@@ -157,7 +157,7 @@ cksfv: $(CKSFV_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/cksfv
 #
 $(CKSFV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cksfv" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

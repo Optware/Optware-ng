@@ -116,7 +116,7 @@ $(LIBPEAS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPEAS_SOURCE) $(LIBPEAS_PATCHES)
 	$(LIBPEAS_UNZIP) $(DL_DIR)/$(LIBPEAS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPEAS_PATCHES)" ; \
 		then cat $(LIBPEAS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBPEAS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBPEAS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBPEAS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBPEAS_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ libpeas-stage: $(LIBPEAS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libpeas
 #
 $(LIBPEAS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libpeas" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,15 +203,15 @@ $(LIBPEAS_IPK): $(LIBPEAS_BUILD_DIR)/.built
 	rm -rf $(LIBPEAS_IPK_DIR) $(BUILD_DIR)/libpeas_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBPEAS_BUILD_DIR) DESTDIR=$(LIBPEAS_IPK_DIR) install-strip
 	rm -f $(LIBPEAS_IPK_DIR)/opt/lib/*.la
-#	install -d $(LIBPEAS_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBPEAS_SOURCE_DIR)/libpeas.conf $(LIBPEAS_IPK_DIR)/opt/etc/libpeas.conf
-#	install -d $(LIBPEAS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBPEAS_SOURCE_DIR)/rc.libpeas $(LIBPEAS_IPK_DIR)/opt/etc/init.d/SXXlibpeas
+#	$(INSTALL) -d $(LIBPEAS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBPEAS_SOURCE_DIR)/libpeas.conf $(LIBPEAS_IPK_DIR)/opt/etc/libpeas.conf
+#	$(INSTALL) -d $(LIBPEAS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBPEAS_SOURCE_DIR)/rc.libpeas $(LIBPEAS_IPK_DIR)/opt/etc/init.d/SXXlibpeas
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBPEAS_IPK_DIR)/opt/etc/init.d/SXXlibpeas
 	$(MAKE) $(LIBPEAS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBPEAS_SOURCE_DIR)/postinst $(LIBPEAS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBPEAS_SOURCE_DIR)/postinst $(LIBPEAS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBPEAS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBPEAS_SOURCE_DIR)/prerm $(LIBPEAS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBPEAS_SOURCE_DIR)/prerm $(LIBPEAS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBPEAS_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

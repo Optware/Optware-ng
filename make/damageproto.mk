@@ -63,7 +63,7 @@ DAMAGEPROTO_IPK=$(BUILD_DIR)/damageproto_$(DAMAGEPROTO_VERSION)-$(DAMAGEPROTO_IP
 # Automatically create a ipkg control file
 #
 $(DAMAGEPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(DAMAGEPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(DAMAGEPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: damageproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(DAMAGEPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(DAMAGEPROTO_SOURCE) $(DAMAGEPR
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(DAMAGEPROTO_SOURCE)
 	if test -n "$(DAMAGEPROTO_PATCHES)" ; \
 		then cat $(DAMAGEPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DAMAGEPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DAMAGEPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DAMAGEPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DAMAGEPROTO_DIR) $(@D) ; \

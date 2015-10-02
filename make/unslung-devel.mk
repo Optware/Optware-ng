@@ -24,7 +24,7 @@ unslung-devel-unpack:
 unslung-devel:
 
 $(UNSLUNG-DEVEL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: unslung-devel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -41,8 +41,8 @@ $(UNSLUNG-DEVEL_IPK_DIR)/CONTROL/control:
 $(UNSLUNG-DEVEL_IPK):
 	rm -rf $(UNSLUNG-DEVEL_IPK_DIR) $(BUILD_DIR)/unslung-devel_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(UNSLUNG-DEVEL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UNSLUNG-DEVEL_SOURCE_DIR)/postinst $(UNSLUNG-DEVEL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UNSLUNG-DEVEL_SOURCE_DIR)/prerm $(UNSLUNG-DEVEL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UNSLUNG-DEVEL_SOURCE_DIR)/postinst $(UNSLUNG-DEVEL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UNSLUNG-DEVEL_SOURCE_DIR)/prerm $(UNSLUNG-DEVEL_IPK_DIR)/CONTROL/prerm
 #	echo $(UNSLUNG-DEVEL_CONFFILES) | sed -e 's/ /\n/g' > $(UNSLUNG-DEVEL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNSLUNG-DEVEL_IPK_DIR)
 

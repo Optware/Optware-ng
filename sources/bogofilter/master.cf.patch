@@ -14,11 +14,11 @@
  # Interfaces to non-Postfix software. Be sure to examine the manual
  # pages of the non-Postfix software to find out what options it wants.
  #
-+# bogofilter. Read /opt/doc/bogofilter/integrating-with-postfix
++# bogofilter. Read %OPTWARE_TARGET_PREFIX%/doc/bogofilter/integrating-with-postfix
 +#
 +bogofilter
 +          unix  -       n       n       -       -       pipe
-+  flags=R user=bogo argv=/opt/sbin/postfix-bogofilter.sh -f ${sender} -- ${recipient}
++  flags=R user=bogo argv=%OPTWARE_TARGET_PREFIX%/sbin/postfix-bogofilter.sh -f ${sender} -- ${recipient}
 +#
  # maildrop. See the Postfix MAILDROP_README file for details.
  #

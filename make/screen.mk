@@ -103,7 +103,7 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES) ma
 	$(SCREEN_UNZIP) $(DL_DIR)/$(SCREEN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCREEN_PATCHES)" ; \
 		then cat $(SCREEN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SCREEN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SCREEN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SCREEN_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SCREEN_DIR) $(@D) ; \
@@ -152,11 +152,11 @@ screen: $(SCREEN_BUILD_DIR)/screen
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_LIB_DIR)/libscreen.so.$(SCREEN_VERSION): $(SCREEN_BUILD_DIR)/libscreen.so.$(SCREEN_VERSION)
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(SCREEN_BUILD_DIR)/screen.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(SCREEN_BUILD_DIR)/libscreen.a $(STAGING_LIB_DIR)
-	install -m 644 $(SCREEN_BUILD_DIR)/libscreen.so.$(SCREEN_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(SCREEN_BUILD_DIR)/screen.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(SCREEN_BUILD_DIR)/libscreen.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(SCREEN_BUILD_DIR)/libscreen.so.$(SCREEN_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libscreen.so.$(SCREEN_VERSION) libscreen.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libscreen.so.$(SCREEN_VERSION) libscreen.so
 
@@ -167,7 +167,7 @@ screen-stage: $(STAGING_LIB_DIR)/libscreen.so.$(SCREEN_VERSION)
 # necessary to create a seperate control file under sources/screen
 #
 $(SCREEN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: screen" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,11 +198,11 @@ $(SCREEN_IPK): $(SCREEN_BUILD_DIR)/screen
 	$(MAKE) -C $(SCREEN_BUILD_DIR) DESTDIR=$(SCREEN_IPK_DIR) install
 	$(STRIP_COMMAND) $(SCREEN_IPK_DIR)/opt/bin/screen-$(SCREEN_VERSION)
 	rm -f $(SCREEN_IPK_DIR)/opt/{,share/}info/dir{,.old}
-#	install -d $(SCREEN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SCREEN_SOURCE_DIR)/rc.screen $(SCREEN_IPK_DIR)/opt/etc/init.d/SXXscreen
+#	$(INSTALL) -d $(SCREEN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SCREEN_SOURCE_DIR)/rc.screen $(SCREEN_IPK_DIR)/opt/etc/init.d/SXXscreen
 	$(MAKE) $(SCREEN_IPK_DIR)/CONTROL/control
-	install -m 644 $(SCREEN_SOURCE_DIR)/postinst $(SCREEN_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(SCREEN_SOURCE_DIR)/prerm $(SCREEN_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(SCREEN_SOURCE_DIR)/postinst $(SCREEN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(SCREEN_SOURCE_DIR)/prerm $(SCREEN_IPK_DIR)/CONTROL/prerm
 	sed -i -e 's/@VERSION@/$(SCREEN_VERSION)/g' $(SCREEN_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCREEN_IPK_DIR)
 

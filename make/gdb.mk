@@ -128,7 +128,7 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(GDB_DIR) $(GDB_BUILD_DIR)
 	$(GDB_UNZIP) $(DL_DIR)/$(GDB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GDB_PATCHES) | patch -d $(BUILD_DIR)/$(GDB_DIR) -p1
+#	cat $(GDB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GDB_DIR) -p1
 	mv $(BUILD_DIR)/$(GDB_DIR) $(GDB_BUILD_DIR)
 	for f in `find $(GDB_BUILD_DIR) -name config.rpath`; do \
 		sed -i.orig -e 's|^hardcode_libdir_flag_spec=.*"$$|hardcode_libdir_flag_spec=""|' $$f; \
@@ -195,7 +195,7 @@ gdb: $(GDB_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/gdb
 #
 $(GDB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gdb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -255,8 +255,8 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 	do rm -f $(GDB_IPK_DIR)/$$f; done
 	rm -f $(GDB_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(GDB_IPK_DIR)/CONTROL/control
-#	install -m 644 $(GDB_SOURCE_DIR)/postinst $(GDB_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(GDB_SOURCE_DIR)/prerm $(GDB_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(GDB_SOURCE_DIR)/postinst $(GDB_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(GDB_SOURCE_DIR)/prerm $(GDB_IPK_DIR)/CONTROL/prerm
 #	echo $(GDB_CONFFILES) | sed -e 's/ /\n/g' > $(GDB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GDB_IPK_DIR)
 

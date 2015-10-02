@@ -120,7 +120,7 @@ $(PY-CRYPTOGRAPHY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) $(
 	mkdir -p $(@D)
 	# 2.6
 	$(PY-CRYPTOGRAPHY_UNZIP) $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CRYPTOGRAPHY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) -p1
+#	cat $(PY-CRYPTOGRAPHY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -136,7 +136,7 @@ $(PY-CRYPTOGRAPHY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) $(
 	)
 	# 2.7
 	$(PY-CRYPTOGRAPHY_UNZIP) $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CRYPTOGRAPHY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) -p1
+#	cat $(PY-CRYPTOGRAPHY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -152,7 +152,7 @@ $(PY-CRYPTOGRAPHY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) $(
 	)
 	# 3
 	$(PY-CRYPTOGRAPHY_UNZIP) $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CRYPTOGRAPHY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) -p1
+#	cat $(PY-CRYPTOGRAPHY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CRYPTOGRAPHY_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -261,7 +261,7 @@ py-cryptography-host-stage: $(PY-CRYPTOGRAPHY_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-cryptography
 #
 $(PY26-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-cryptography" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -275,7 +275,7 @@ $(PY26-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CRYPTOGRAPHY_CONFLICTS)" >>$@
 
 $(PY27-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-cryptography" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -289,7 +289,7 @@ $(PY27-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CRYPTOGRAPHY_CONFLICTS)" >>$@
 
 $(PY3-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-cryptography" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

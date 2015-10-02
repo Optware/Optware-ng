@@ -114,7 +114,7 @@ $(HELLANZB_BUILD_DIR)/.configured: $(DL_DIR)/$(HELLANZB_SOURCE) $(HELLANZB_PATCH
 	mkdir -p $(HELLANZB_BUILD_DIR) 
 	# 2.4 
 	$(HELLANZB_UNZIP) $(DL_DIR)/$(HELLANZB_SOURCE) | tar -C $(BUILD_DIR) -xvf - 
-	#cat $(HELLANZB_PATCHES) | patch -d $(BUILD_DIR)/$(HELLANZB_DIR) -p1 
+	#cat $(HELLANZB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(HELLANZB_DIR) -p1 
 	mv $(BUILD_DIR)/$(HELLANZB_DIR) $(HELLANZB_BUILD_DIR)/2.4 
 	(cd $(HELLANZB_BUILD_DIR)/2.4; \
 	    ( \
@@ -130,7 +130,7 @@ $(HELLANZB_BUILD_DIR)/.configured: $(DL_DIR)/$(HELLANZB_SOURCE) $(HELLANZB_PATCH
 	) 
 	# 2.5 
 	$(HELLANZB_UNZIP) $(DL_DIR)/$(HELLANZB_SOURCE) | tar -C $(BUILD_DIR) -xvf - 
-	#cat $(HELLANZB_PATCHES) | patch -d $(BUILD_DIR)/$(HELLANZB_DIR) -p1 
+	#cat $(HELLANZB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(HELLANZB_DIR) -p1 
 	mv $(BUILD_DIR)/$(HELLANZB_DIR) $(HELLANZB_BUILD_DIR)/2.5 
 	(cd $(HELLANZB_BUILD_DIR)/2.5; \
 	    ( \
@@ -181,7 +181,7 @@ hellanzb-stage: $(HELLANZB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/hellanzb
 #
 $(PY24-HELLANZB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-hellanzb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,7 +196,7 @@ $(PY24-HELLANZB_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(HELLANZB_PY24_CONFLICTS)" >>$@
 
 $(PY25-HELLANZB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-hellanzb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -228,12 +228,12 @@ $(PY24-HELLANZB_IPK): $(HELLANZB_BUILD_DIR)/.built
 	cd $(HELLANZB_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-HELLANZB_IPK_DIR) --prefix=/opt 
-	install -d $(PY24-HELLANZB_IPK_DIR)/opt/etc/
-	install -m 644 $(HELLANZB_SOURCE_DIR)/hellanzb.conf $(PY24-HELLANZB_IPK_DIR)/opt/etc/hellanzb.conf
-	install -d $(PY24-HELLANZB_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(HELLANZB_SOURCE_DIR)/rc.hellanzb $(PY24-HELLANZB_IPK_DIR)/opt/etc/init.d/S71hellanzb
+	$(INSTALL) -d $(PY24-HELLANZB_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(HELLANZB_SOURCE_DIR)/hellanzb.conf $(PY24-HELLANZB_IPK_DIR)/opt/etc/hellanzb.conf
+	$(INSTALL) -d $(PY24-HELLANZB_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(HELLANZB_SOURCE_DIR)/rc.hellanzb $(PY24-HELLANZB_IPK_DIR)/opt/etc/init.d/S71hellanzb
 	$(MAKE) $(PY24-HELLANZB_IPK_DIR)/CONTROL/control 
-	install -m 644 $(HELLANZB_SOURCE_DIR)/postinst $(PY24-HELLANZB_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(HELLANZB_SOURCE_DIR)/postinst $(PY24-HELLANZB_IPK_DIR)/CONTROL/postinst
 	echo $(HELLANZB_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-HELLANZB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-HELLANZB_IPK_DIR) 
 
@@ -242,12 +242,12 @@ $(PY25-HELLANZB_IPK): $(HELLANZB_BUILD_DIR)/.built
 	cd $(HELLANZB_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-HELLANZB_IPK_DIR) --prefix=/opt 
-	install -d $(PY25-HELLANZB_IPK_DIR)/opt/etc/
-	install -m 644 $(HELLANZB_SOURCE_DIR)/hellanzb.conf $(PY25-HELLANZB_IPK_DIR)/opt/etc/hellanzb.conf
-	install -d $(PY25-HELLANZB_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(HELLANZB_SOURCE_DIR)/rc.hellanzb $(PY25-HELLANZB_IPK_DIR)/opt/etc/init.d/S71hellanzb
+	$(INSTALL) -d $(PY25-HELLANZB_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(HELLANZB_SOURCE_DIR)/hellanzb.conf $(PY25-HELLANZB_IPK_DIR)/opt/etc/hellanzb.conf
+	$(INSTALL) -d $(PY25-HELLANZB_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(HELLANZB_SOURCE_DIR)/rc.hellanzb $(PY25-HELLANZB_IPK_DIR)/opt/etc/init.d/S71hellanzb
 	$(MAKE) $(PY25-HELLANZB_IPK_DIR)/CONTROL/control
-	install -m 644 $(HELLANZB_SOURCE_DIR)/postinst $(PY25-HELLANZB_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(HELLANZB_SOURCE_DIR)/postinst $(PY25-HELLANZB_IPK_DIR)/CONTROL/postinst
 	echo $(HELLANZB_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-HELLANZB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-HELLANZB_IPK_DIR) 
 

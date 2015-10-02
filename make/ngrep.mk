@@ -113,7 +113,7 @@ $(NGREP_BUILD_DIR)/.configured: $(DL_DIR)/$(NGREP_SOURCE) $(NGREP_PATCHES) make/
 	$(NGREP_UNZIP) $(DL_DIR)/$(NGREP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NGREP_PATCHES)" ; \
 		then cat $(NGREP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NGREP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NGREP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NGREP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NGREP_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ ngrep-stage: $(NGREP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ngrep
 #
 $(NGREP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ngrep" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(NGREP_IPK_DIR)/CONTROL/control:
 $(NGREP_IPK): $(NGREP_BUILD_DIR)/.built
 	rm -rf $(NGREP_IPK_DIR) $(BUILD_DIR)/ngrep_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NGREP_BUILD_DIR) DESTDIR=$(NGREP_IPK_DIR) install
-#	install -d $(NGREP_IPK_DIR)/opt/etc/
-#	install -m 644 $(NGREP_SOURCE_DIR)/ngrep.conf $(NGREP_IPK_DIR)/opt/etc/ngrep.conf
-#	install -d $(NGREP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NGREP_SOURCE_DIR)/rc.ngrep $(NGREP_IPK_DIR)/opt/etc/init.d/SXXngrep
+#	$(INSTALL) -d $(NGREP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NGREP_SOURCE_DIR)/ngrep.conf $(NGREP_IPK_DIR)/opt/etc/ngrep.conf
+#	$(INSTALL) -d $(NGREP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NGREP_SOURCE_DIR)/rc.ngrep $(NGREP_IPK_DIR)/opt/etc/init.d/SXXngrep
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NGREP_IPK_DIR)/opt/etc/init.d/SXXngrep
 	$(MAKE) $(NGREP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NGREP_SOURCE_DIR)/postinst $(NGREP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NGREP_SOURCE_DIR)/postinst $(NGREP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NGREP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NGREP_SOURCE_DIR)/prerm $(NGREP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NGREP_SOURCE_DIR)/prerm $(NGREP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NGREP_IPK_DIR)/CONTROL/prerm
 	echo $(NGREP_CONFFILES) | sed -e 's/ /\n/g' > $(NGREP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NGREP_IPK_DIR)

@@ -1,7 +1,7 @@
 #!/bin/sh
 
-[ -e /opt ] || mkdir /opt
-chmod 755 /opt
+[ -e %OPTWARE_TARGET_PREFIX% ] || mkdir %OPTWARE_TARGET_PREFIX%
+chmod 755 %OPTWARE_TARGET_PREFIX%
 if test -z "${REAL_OPT_DIR}"; then
 # next line to be replaced according to OPTWARE_TARGET
 REAL_OPT_DIR=
@@ -9,18 +9,18 @@ fi
 if test -n "${REAL_OPT_DIR}"; then
     [ -e ${REAL_OPT_DIR} ] || mkdir -p ${REAL_OPT_DIR}
     chmod 755 ${REAL_OPT_DIR}
-    if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
-        mount -o bind ${REAL_OPT_DIR} /opt
+    if ! grep ' %OPTWARE_TARGET_PREFIX% ' /proc/mounts >/dev/null 2>&1 ; then
+        mount -o bind ${REAL_OPT_DIR} %OPTWARE_TARGET_PREFIX%
     fi
 fi
-[ -d /opt/etc ] || mkdir -p /opt/etc
-chmod 755 /opt/etc
-[ -d /opt/var/lib ] || mkdir -p /opt/var/lib
-chmod 755 /opt/var
-[ -d /opt/tmp ] || mkdir -p /opt/tmp
-chmod 1777 /opt/tmp
-[ -d /opt/lib ] || mkdir -p /opt/lib
-chmod 755 /opt/lib
+[ -d %OPTWARE_TARGET_PREFIX%/etc ] || mkdir -p %OPTWARE_TARGET_PREFIX%/etc
+chmod 755 %OPTWARE_TARGET_PREFIX%/etc
+[ -d %OPTWARE_TARGET_PREFIX%/var/lib ] || mkdir -p %OPTWARE_TARGET_PREFIX%/var/lib
+chmod 755 %OPTWARE_TARGET_PREFIX%/var
+[ -d %OPTWARE_TARGET_PREFIX%/tmp ] || mkdir -p %OPTWARE_TARGET_PREFIX%/tmp
+chmod 1777 %OPTWARE_TARGET_PREFIX%/tmp
+[ -d %OPTWARE_TARGET_PREFIX%/lib ] || mkdir -p %OPTWARE_TARGET_PREFIX%/lib
+chmod 755 %OPTWARE_TARGET_PREFIX%/lib
 
 
 

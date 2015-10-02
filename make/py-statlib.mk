@@ -114,7 +114,7 @@ $(PY-STATLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-STATLIB_SOURCE) $(PY-STATLIB
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-STATLIB_DIR)
 	$(PY-STATLIB_UNZIP) $(DL_DIR)/$(PY-STATLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-STATLIB_PATCHES) | patch -d $(BUILD_DIR)/$(PY-STATLIB_DIR) -p1
+#	cat $(PY-STATLIB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-STATLIB_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-STATLIB_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -131,7 +131,7 @@ $(PY-STATLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-STATLIB_SOURCE) $(PY-STATLIB
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-STATLIB_DIR)
 	$(PY-STATLIB_UNZIP) $(DL_DIR)/$(PY-STATLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-STATLIB_PATCHES) | patch -d $(BUILD_DIR)/$(PY-STATLIB_DIR) -p1
+#	cat $(PY-STATLIB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-STATLIB_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-STATLIB_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -184,7 +184,7 @@ py-statlib-stage: $(PY-STATLIB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-statlib
 #
 $(PY25-STATLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-statlib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,7 +198,7 @@ $(PY25-STATLIB_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-STATLIB_CONFLICTS)" >>$@
 
 $(PY26-STATLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-statlib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

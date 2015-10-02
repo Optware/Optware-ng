@@ -37,7 +37,7 @@ $(PERL-TERM-READLINE-GNU_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TERM-READLINE-
 	$(MAKE) termcap-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(PERL-TERM-READLINE-GNU_DIR) $(@D)
 	$(PERL-TERM-READLINE-GNU_UNZIP) $(DL_DIR)/$(PERL-TERM-READLINE-GNU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PERL-TERM-READLINE-GNU_PATCHES) | patch -bd $(BUILD_DIR)/$(PERL-TERM-READLINE-GNU_DIR) -p0
+	cat $(PERL-TERM-READLINE-GNU_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PERL-TERM-READLINE-GNU_DIR) -p0
 	mv $(BUILD_DIR)/$(PERL-TERM-READLINE-GNU_DIR) $(@D)
 	sed -i -e 's|$$Config{libpth}|"$(STAGING_LIB_DIR)"|' $(@D)/Makefile.PL
 	(cd $(@D); \
@@ -76,7 +76,7 @@ $(PERL-TERM-READLINE-GNU_BUILD_DIR)/.staged: $(PERL-TERM-READLINE-GNU_BUILD_DIR)
 perl-term-readline-gnu-stage: $(PERL-TERM-READLINE-GNU_BUILD_DIR)/.staged
 
 $(PERL-TERM-READLINE-GNU_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-term-readline-gnu" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

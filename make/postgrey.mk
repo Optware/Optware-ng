@@ -34,7 +34,7 @@ postgrey-source: $(DL_DIR)/$(POSTGREY_SOURCE) $(POSTGREY_PATCHES)
 $(POSTGREY_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGREY_SOURCE) $(POSTGREY_PATCHES) make/postgrey.mk
 	rm -rf $(BUILD_DIR)/$(POSTGREY_DIR) $(POSTGREY_BUILD_DIR)
 	$(POSTGREY_UNZIP) $(DL_DIR)/$(POSTGREY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(POSTGREY_PATCHES) | patch -d $(BUILD_DIR)/$(POSTGREY_DIR) -p1
+#	cat $(POSTGREY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(POSTGREY_DIR) -p1
 	mv $(BUILD_DIR)/$(POSTGREY_DIR) $(@D)
 	sed -i	-e '1s|#! */usr/bin/perl|#!/opt/bin/perl|' \
 		-e "s|/etc/postfix|/opt&|" \
@@ -67,7 +67,7 @@ $(POSTGREY_BUILD_DIR)/.staged: $(POSTGREY_BUILD_DIR)/.built
 postgrey-stage: $(POSTGREY_BUILD_DIR)/.staged
 
 $(POSTGREY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: postgrey" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -84,17 +84,17 @@ $(POSTGREY_IPK_DIR)/CONTROL/control:
 $(POSTGREY_IPK): $(POSTGREY_BUILD_DIR)/.built
 	rm -rf $(POSTGREY_IPK_DIR) $(BUILD_DIR)/postgrey_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(POSTGREY_BUILD_DIR) DESTDIR=$(POSTGREY_IPK_DIR) install
-	install -d $(POSTGREY_IPK_DIR)/opt/sbin $(POSTGREY_IPK_DIR)/opt/bin
-	install -m 755 $(POSTGREY_BUILD_DIR)/postgrey $(POSTGREY_IPK_DIR)/opt/sbin
-	install -m 755 $(POSTGREY_BUILD_DIR)/contrib/postgreyreport $(POSTGREY_IPK_DIR)/opt/bin
-	install -d $(POSTGREY_IPK_DIR)/opt/share/postgrey
-	install $(POSTGREY_BUILD_DIR)/README* \
+	$(INSTALL) -d $(POSTGREY_IPK_DIR)/opt/sbin $(POSTGREY_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(POSTGREY_BUILD_DIR)/postgrey $(POSTGREY_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(POSTGREY_BUILD_DIR)/contrib/postgreyreport $(POSTGREY_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(POSTGREY_IPK_DIR)/opt/share/postgrey
+	$(INSTALL) $(POSTGREY_BUILD_DIR)/README* \
 		$(POSTGREY_BUILD_DIR)/COPYING \
 		$(POSTGREY_BUILD_DIR)/Changes \
 		$(POSTGREY_BUILD_DIR)/policy-test \
 		$(POSTGREY_BUILD_DIR)/postgrey_whitelist_* \
 		$(POSTGREY_IPK_DIR)/opt/share/postgrey/
-	install -d $(POSTGREY_IPK_DIR)/opt/var/spool/postfix/postgrey
+	$(INSTALL) -d $(POSTGREY_IPK_DIR)/opt/var/spool/postfix/postgrey
 	$(MAKE) $(POSTGREY_IPK_DIR)/CONTROL/control
 	echo $(POSTGREY_CONFFILES) | sed -e 's/ /\n/g' > $(POSTGREY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTGREY_IPK_DIR)

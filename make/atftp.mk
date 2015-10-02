@@ -44,7 +44,7 @@ $(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES) make/
 	rm -rf $(BUILD_DIR)/$(ATFTP_DIR) $(@D)
 	$(ATFTP_UNZIP) $(DL_DIR)/$(ATFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ATFTP_PATCHES)" ; then \
-		cat $(ATFTP_PATCHES) | patch -d $(BUILD_DIR)/$(ATFTP_DIR) -p0 ; \
+		cat $(ATFTP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ATFTP_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(ATFTP_DIR) $(@D)
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabihf, $(OPTWARE_TARGET)))
@@ -72,7 +72,7 @@ $(ATFTP_BUILD_DIR)/.built: $(ATFTP_BUILD_DIR)/.configured
 atftp: $(ATFTP_BUILD_DIR)/.built
 
 $(ATFTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: atftp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -87,14 +87,14 @@ $(ATFTP_IPK_DIR)/CONTROL/control:
 
 $(ATFTP_IPK): $(ATFTP_BUILD_DIR)/.built
 	rm -rf $(ATFTP_IPK_DIR) $(BUILD_DIR)/atftp_*_$(TARGET_ARCH).ipk
-	install -d $(ATFTP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ATFTP_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
-	install -d $(ATFTP_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(ATFTP_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
-	install -d $(ATFTP_IPK_DIR)/opt/etc/xinetd.d
-	install -m 644 $(ATFTP_SOURCE_DIR)/atftp $(ATFTP_IPK_DIR)/opt/etc/xinetd.d/atftp
+	$(INSTALL) -d $(ATFTP_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 644 $(ATFTP_SOURCE_DIR)/atftp $(ATFTP_IPK_DIR)/opt/etc/xinetd.d/atftp
 	$(MAKE) $(ATFTP_IPK_DIR)/CONTROL/control
-	install -m 644 $(ATFTP_SOURCE_DIR)/postinst $(ATFTP_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(ATFTP_SOURCE_DIR)/postinst $(ATFTP_IPK_DIR)/CONTROL/postinst
 	echo $(ATFTP_CONFFILES) | sed -e 's/ /\n/g' > $(ATFTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ATFTP_IPK_DIR)
 

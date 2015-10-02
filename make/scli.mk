@@ -110,7 +110,7 @@ $(SCLI_BUILD_DIR)/.configured: $(DL_DIR)/$(SCLI_SOURCE) $(SCLI_PATCHES) make/scl
 	$(SCLI_UNZIP) $(DL_DIR)/$(SCLI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCLI_PATCHES)" ; \
 		then cat $(SCLI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SCLI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SCLI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SCLI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SCLI_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ scli-stage: $(SCLI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/scli
 #
 $(SCLI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: scli" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,15 @@ $(SCLI_IPK): $(SCLI_BUILD_DIR)/.built
 	rm -rf $(SCLI_IPK_DIR) $(BUILD_DIR)/scli_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SCLI_BUILD_DIR) DESTDIR=$(SCLI_IPK_DIR) install-strip
 	rm -f $(SCLI_IPK_DIR)/opt/share/info/dir
-#	install -d $(SCLI_IPK_DIR)/opt/etc/
-#	install -m 644 $(SCLI_SOURCE_DIR)/scli.conf $(SCLI_IPK_DIR)/opt/etc/scli.conf
-#	install -d $(SCLI_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SCLI_SOURCE_DIR)/rc.scli $(SCLI_IPK_DIR)/opt/etc/init.d/SXXscli
+#	$(INSTALL) -d $(SCLI_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SCLI_SOURCE_DIR)/scli.conf $(SCLI_IPK_DIR)/opt/etc/scli.conf
+#	$(INSTALL) -d $(SCLI_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SCLI_SOURCE_DIR)/rc.scli $(SCLI_IPK_DIR)/opt/etc/init.d/SXXscli
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCLI_IPK_DIR)/opt/etc/init.d/SXXscli
 	$(MAKE) $(SCLI_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SCLI_SOURCE_DIR)/postinst $(SCLI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SCLI_SOURCE_DIR)/postinst $(SCLI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCLI_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SCLI_SOURCE_DIR)/prerm $(SCLI_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SCLI_SOURCE_DIR)/prerm $(SCLI_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCLI_IPK_DIR)/CONTROL/prerm
 	echo $(SCLI_CONFFILES) | sed -e 's/ /\n/g' > $(SCLI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCLI_IPK_DIR)

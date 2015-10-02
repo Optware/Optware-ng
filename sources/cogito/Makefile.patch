@@ -33,7 +33,7 @@
  	$(MAKE) -C Documentation/ all
  
 -sedlibdir=$(shell echo $(libdir) | sed 's/\//\\\//g')
-+sedlibdir=$(shell echo "/opt/lib/cogito" | sed 's/\//\\\//g')
++sedlibdir=$(shell echo "%OPTWARE_TARGET_PREFIX%/lib/cogito" | sed 's/\//\\\//g')
  
  .PHONY: install install-git install-cogito
  install: install-git install-cogito

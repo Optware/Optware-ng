@@ -110,7 +110,7 @@ $(ENDIAN_BUILD_DIR)/.configured: $(DL_DIR)/$(ENDIAN_SOURCE) $(ENDIAN_PATCHES) ma
 	$(ENDIAN_UNZIP) $(DL_DIR)/$(ENDIAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ENDIAN_PATCHES)" ; \
 		then cat $(ENDIAN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ENDIAN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ENDIAN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ENDIAN_DIR)" != "$(ENDIAN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ENDIAN_DIR) $(ENDIAN_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ endian-stage: $(ENDIAN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/endian
 #
 $(ENDIAN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: endian" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,8 +192,8 @@ $(ENDIAN_IPK_DIR)/CONTROL/control:
 #
 $(ENDIAN_IPK): $(ENDIAN_BUILD_DIR)/.built
 	rm -rf $(ENDIAN_IPK_DIR) $(BUILD_DIR)/endian_*_$(TARGET_ARCH).ipk
-	install -d $(ENDIAN_IPK_DIR)/opt/bin
-	install -d $(ENDIAN_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(ENDIAN_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ENDIAN_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(ENDIAN_BUILD_DIR) install \
 		DESTDIR=$(ENDIAN_IPK_DIR) PREFIX=$(ENDIAN_IPK_DIR)/opt
 	$(STRIP_COMMAND) $(ENDIAN_IPK_DIR)/opt/bin/endian

@@ -75,7 +75,7 @@ $(LHA_BUILD_DIR)/.configured: $(DL_DIR)/$(LHA_SOURCE) $(LHA_PATCHES) make/lha.mk
 	$(LHA_UNZIP) $(DL_DIR)/$(LHA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LHA_PATCHES)" ; \
 		then cat $(LHA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LHA_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LHA_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LHA_DIR)" != "$(LHA_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LHA_DIR) $(LHA_BUILD_DIR) ; \
@@ -103,7 +103,7 @@ lha: $(LHA_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/lha
 #
 $(LHA_IPK_DIR)/CONTROL/control:
-	@install -d $(LHA_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LHA_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: lha" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -119,8 +119,8 @@ $(LHA_IPK_DIR)/CONTROL/control:
 
 $(LHA_IPK): $(LHA_BUILD_DIR)/.built
 	rm -rf $(LHA_IPK_DIR) $(BUILD_DIR)/lha_*_$(TARGET_ARCH).ipk
-	install -d $(LHA_IPK_DIR)/opt/bin
-	install -m 755 $(LHA_BUILD_DIR)/src/lha $(LHA_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(LHA_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(LHA_BUILD_DIR)/src/lha $(LHA_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(LHA_IPK_DIR)/opt/bin/lha
 	$(MAKE) $(LHA_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LHA_IPK_DIR)

@@ -110,7 +110,7 @@ $(SCSI_IDLE_BUILD_DIR)/.configured: $(DL_DIR)/$(SCSI_IDLE_SOURCE) $(SCSI_IDLE_PA
 	$(SCSI_IDLE_UNZIP) $(DL_DIR)/$(SCSI_IDLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCSI_IDLE_PATCHES)" ; \
 		then cat $(SCSI_IDLE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SCSI_IDLE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SCSI_IDLE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SCSI_IDLE_DIR)" != "$(SCSI_IDLE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SCSI_IDLE_DIR) $(SCSI_IDLE_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ scsi-idle-stage: $(SCSI_IDLE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/scsi-idle
 #
 $(SCSI_IDLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: scsi-idle" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,21 +192,21 @@ $(SCSI_IDLE_IPK_DIR)/CONTROL/control:
 #
 $(SCSI_IDLE_IPK): $(SCSI_IDLE_BUILD_DIR)/.built
 	rm -rf $(SCSI_IDLE_IPK_DIR) $(BUILD_DIR)/scsi-idle_*_$(TARGET_ARCH).ipk
-	install -d $(SCSI_IDLE_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(SCSI_IDLE_IPK_DIR)/opt/sbin
 	$(MAKE) -C $(SCSI_IDLE_BUILD_DIR) DESTDIR=$(SCSI_IDLE_IPK_DIR) install
 	$(STRIP_COMMAND) $(SCSI_IDLE_IPK_DIR)/opt/sbin/scsi-idle
 	$(STRIP_COMMAND) $(SCSI_IDLE_IPK_DIR)/opt/sbin/scsi-start
 	$(STRIP_COMMAND) $(SCSI_IDLE_IPK_DIR)/opt/sbin/scsi-stop
-	install -d $(SCSI_IDLE_IPK_DIR)/opt/share/doc/
-	install -m 644 $(SCSI_IDLE_BUILD_DIR)/scsi-idle.README $(SCSI_IDLE_IPK_DIR)/opt/share/doc/
-#	install -m 644 $(SCSI_IDLE_SOURCE_DIR)/scsi-idle.conf $(SCSI_IDLE_IPK_DIR)/opt/etc/scsi-idle.conf
-#	install -d $(SCSI_IDLE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SCSI_IDLE_SOURCE_DIR)/rc.scsi-idle $(SCSI_IDLE_IPK_DIR)/opt/etc/init.d/SXXscsi-idle
+	$(INSTALL) -d $(SCSI_IDLE_IPK_DIR)/opt/share/doc/
+	$(INSTALL) -m 644 $(SCSI_IDLE_BUILD_DIR)/scsi-idle.README $(SCSI_IDLE_IPK_DIR)/opt/share/doc/
+#	$(INSTALL) -m 644 $(SCSI_IDLE_SOURCE_DIR)/scsi-idle.conf $(SCSI_IDLE_IPK_DIR)/opt/etc/scsi-idle.conf
+#	$(INSTALL) -d $(SCSI_IDLE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SCSI_IDLE_SOURCE_DIR)/rc.scsi-idle $(SCSI_IDLE_IPK_DIR)/opt/etc/init.d/SXXscsi-idle
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCSI_IDLE_IPK_DIR)/opt/etc/init.d/SXXscsi-idle
 	$(MAKE) $(SCSI_IDLE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SCSI_IDLE_SOURCE_DIR)/postinst $(SCSI_IDLE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SCSI_IDLE_SOURCE_DIR)/postinst $(SCSI_IDLE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCSI_IDLE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SCSI_IDLE_SOURCE_DIR)/prerm $(SCSI_IDLE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SCSI_IDLE_SOURCE_DIR)/prerm $(SCSI_IDLE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCSI_IDLE_IPK_DIR)/CONTROL/prerm
 #	echo $(SCSI_IDLE_CONFFILES) | sed -e 's/ /\n/g' > $(SCSI_IDLE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCSI_IDLE_IPK_DIR)

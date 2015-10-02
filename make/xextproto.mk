@@ -63,7 +63,7 @@ XEXTPROTO_IPK=$(BUILD_DIR)/xextproto_$(XEXTPROTO_VERSION)-$(XEXTPROTO_IPK_VERSIO
 # Automatically create a ipkg control file
 #
 $(XEXTPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(XEXTPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XEXTPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xextproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(XEXTPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(XEXTPROTO_SOURCE) $(XEXTPROTO_PA
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XEXTPROTO_SOURCE)
 	if test -n "$(XEXTPROTO_PATCHES)" ; \
 		then cat $(XEXTPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XEXTPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XEXTPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XEXTPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XEXTPROTO_DIR) $(@D) ; \

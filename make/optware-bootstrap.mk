@@ -62,7 +62,7 @@ optware-bootstrap: $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.built
 optware-bootstrap-stage:
 
 $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: optware-bootstrap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -78,47 +78,47 @@ $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/control:
 $(OPTWARE-BOOTSTRAP_XSH): $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.built $(OPTWARE-BOOTSTRAP_IPKS_DONE)
 	# build optware-bootstrap.ipk first
 	rm -rf $(OPTWARE-BOOTSTRAP_IPK_DIR) $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_*_$(TARGET_ARCH).ipk
-	install -d -m 755 \
+	$(INSTALL) -d -m 755 \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/lib \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/var
 ifneq ($(OPTWARE-BOOTSTRAP_LIBS),)
 	cp -rip $(OPTWARE-BOOTSTRAP_LIBS) $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/lib
 endif
-	install -d $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/var/lib
-	install -d $(OPTWARE-BOOTSTRAP_IPK_DIR)/etc/init.d
-	install -d -m 1755 $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/tmp
-	install -m 755 $(IPKG-OPT_SOURCE_DIR)/rc.optware $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/var/lib
+	$(INSTALL) -d $(OPTWARE-BOOTSTRAP_IPK_DIR)/etc/init.d
+	$(INSTALL) -d -m 1755 $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/tmp
+	$(INSTALL) -m 755 $(IPKG-OPT_SOURCE_DIR)/rc.optware $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc/
 ifneq (, $(filter fsg3 fsg3v4, $(OPTWARE_TARGET)))
-	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/optware \
+	$(INSTALL) -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/optware \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)$(OPTWARE-BOOTSTRAP_RC)
 else
-	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/optware $(OPTWARE-BOOTSTRAP_IPK_DIR)$(OPTWARE-BOOTSTRAP_RC)
+	$(INSTALL) -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/optware $(OPTWARE-BOOTSTRAP_IPK_DIR)$(OPTWARE-BOOTSTRAP_RC)
 endif
-	install -d $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc/init.d
 	if [ -e $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/S00optware ] ; then \
-		install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/S00optware \
+		$(INSTALL) -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/S00optware \
 			$(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc/init.d/ ; \
 	fi
 ifneq (, $(filter yes, $(OPTWARE-BOOTSTRAP_UPDATE_ALTERNATIVES)))
-	install -d $(OPTWARE-BOOTSTRAP_IPK_DIR)$(UPD-ALT_PREFIX)/bin
-	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/update-alternatives \
+	$(INSTALL) -d $(OPTWARE-BOOTSTRAP_IPK_DIR)$(UPD-ALT_PREFIX)/bin
+	$(INSTALL) -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/update-alternatives \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)$(UPD-ALT_PREFIX)/bin/
 endif
 	$(MAKE) $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/control
-	install -m 644 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/preinst $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 644 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/preinst $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/
 ifneq ($(OPTWARE-BOOTSTRAP_REAL_OPT_DIR),)
 	sed -i -e '/^[ 	]*REAL_OPT_DIR=$$/s|=.*|=$(OPTWARE-BOOTSTRAP_REAL_OPT_DIR)|' \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)$(OPTWARE-BOOTSTRAP_RC) \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/preinst
 endif
-	install -m 644 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)/postinst \
+	$(INSTALL) -m 644 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)/postinst \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPTWARE-BOOTSTRAP_IPK_DIR)
 	# build optware-bootstrap.xsh next
 	rm -rf $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_*_$(TARGET_ARCH).xsh
 	rm -rf $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap
-	install -d $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap
+	$(INSTALL) -d $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap
 	#	move the ipk, so it will not be in the feed
 	mv $(OPTWARE-BOOTSTRAP_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/optware-bootstrap.ipk
 	#	additional ipk's we require
@@ -128,7 +128,7 @@ endif
 		cp $$ipkfile $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/$${i}.ipk; \
 	done
 	#	bootstrap scripts
-	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)/bootstrap.sh \
+	$(INSTALL) -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)/bootstrap.sh \
 	   $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/ipkg.sh \
 	   $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/
 ifneq (OPTWARE-BOOTSTRAP_REAL_OPT_DIR,)

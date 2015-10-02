@@ -220,7 +220,7 @@ $(SAMBA2_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SAMBA2_SOURCE) mak
 $(SAMBA2_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA2_SOURCE) $(SAMBA2_PATCHES)
 	rm -rf $(BUILD_DIR)/$(SAMBA2_DIR) $(SAMBA2_BUILD_DIR)
 	$(SAMBA2_UNZIP) $(DL_DIR)/$(SAMBA2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SAMBA2_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA2_DIR) -p1
+	cat $(SAMBA2_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SAMBA2_DIR) -p1
 	mv $(BUILD_DIR)/$(SAMBA2_DIR) $(SAMBA2_BUILD_DIR)
 	(cd $(SAMBA2_BUILD_DIR)/source; \
 		autoconf configure.in > configure; \
@@ -272,7 +272,7 @@ samba2-stage: $(SAMBA2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/samba2
 #
 $(SAMBA2_IPK_DIR)/CONTROL/control:
-	@install -d $(SAMBA2_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(SAMBA2_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: samba2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -300,7 +300,7 @@ $(SAMBA2_IPK_DIR)/CONTROL/control:
 #
 $(SAMBA2_IPK): $(SAMBA2_BUILD_DIR)/.built
 	rm -rf $(SAMBA2_IPK_DIR) $(BUILD_DIR)/samba2_*_$(TARGET_ARCH).ipk
-	install -d $(SAMBA2_IPK_DIR)/opt/share/
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/share/
 	$(MAKE) -C $(SAMBA2_BUILD_DIR) DESTDIR=$(SAMBA2_IPK_DIR) install
 	###in case install creates usr/local/samba/private dir for some reason
 	rm -rf $(SAMBA2_IPK_DIR)/usr
@@ -308,17 +308,17 @@ $(SAMBA2_IPK): $(SAMBA2_BUILD_DIR)/.built
 	chmod +s $(SAMBA2_IPK_DIR)/opt/bin/smbmount $(SAMBA2_IPK_DIR)/opt/bin/smbumount
 	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
 	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
-	install -d $(SAMBA2_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SAMBA2_SOURCE_DIR)/rc.samba $(SAMBA2_IPK_DIR)/opt/etc/init.d/S80samba
-	install -d $(SAMBA2_IPK_DIR)/opt/etc/samba
-	install -d $(SAMBA2_IPK_DIR)/opt/etc/xinetd.d
-	install -m 644 $(SAMBA2_SOURCE_DIR)/swat $(SAMBA2_IPK_DIR)/opt/etc/xinetd.d
-	install -m 644 $(SAMBA2_SOURCE_DIR)/smb.conf $(SAMBA2_IPK_DIR)/opt/etc/samba/
-	install -d $(SAMBA2_IPK_DIR)/opt/var/log/samba
-	install -d $(SAMBA2_IPK_DIR)/opt/var/spool/samba
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA2_SOURCE_DIR)/rc.samba $(SAMBA2_IPK_DIR)/opt/etc/init.d/S80samba
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/etc/samba
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/swat $(SAMBA2_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/smb.conf $(SAMBA2_IPK_DIR)/opt/etc/samba/
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/var/log/samba
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/var/spool/samba
 	$(MAKE) $(SAMBA2_IPK_DIR)/CONTROL/control
-	install -m 644 $(SAMBA2_SOURCE_DIR)/postinst $(SAMBA2_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA2_SOURCE_DIR)/preinst $(SAMBA2_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/postinst $(SAMBA2_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/preinst $(SAMBA2_IPK_DIR)/CONTROL/preinst
 	echo $(SAMBA2_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA2_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(SAMBA2_IPK_DIR)

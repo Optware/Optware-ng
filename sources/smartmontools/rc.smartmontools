@@ -20,7 +20,7 @@
 # Uncomment the line below to enable smartd startup
 #ENABLE_SMARTD=1
 
-SMARTD_BIN=/opt/sbin/smartd
+SMARTD_BIN=%OPTWARE_TARGET_PREFIX%/sbin/smartd
 
 [ "$ENABLE_SMARTD" = 1 ] || exit 0
 [ -x $SMARTD_BIN ] || exit 0
@@ -38,19 +38,19 @@ case "$1" in
 		;;
 	stop)
 		echo -n "Shutting down $PROG: "
-		/opt/bin/killall $PROG
+		%OPTWARE_TARGET_PREFIX%/bin/killall $PROG
 		RETVAL=$?
 		echo
 		;;
 	reload)
 		echo -n "Reloading $PROG daemon configuration: "
-		/opt/bin/killall -HUP $PROG
+		%OPTWARE_TARGET_PREFIX%/bin/killall -HUP $PROG
 		RETVAL=$?
 		echo
 		;;
 	report)
 		echo -n "Checking SMART devices now: "
-		/opt/bin/killall -USR1 $PROG
+		%OPTWARE_TARGET_PREFIX%/bin/killall -USR1 $PROG
 		RETVAL=$?
 		echo
 		;;

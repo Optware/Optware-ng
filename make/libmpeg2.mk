@@ -115,7 +115,7 @@ $(LIBMPEG2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMPEG2_SOURCE) $(LIBMPEG2_PATCH
 	$(LIBMPEG2_UNZIP) $(DL_DIR)/$(LIBMPEG2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMPEG2_PATCHES)" ; \
 		then cat $(LIBMPEG2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMPEG2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMPEG2_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMPEG2_DIR)" != "$(LIBMPEG2_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBMPEG2_DIR) $(LIBMPEG2_BUILD_DIR) ; \
@@ -169,7 +169,7 @@ libmpeg2-stage: $(LIBMPEG2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmpeg2
 #
 $(LIBMPEG2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmpeg2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,7 +184,7 @@ $(LIBMPEG2_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBMPEG2_CONFLICTS)" >>$@
 
 $(MPEG2DEC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mpeg2dec" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,7 +214,7 @@ $(LIBMPEG2_IPK): $(LIBMPEG2_BUILD_DIR)/.built
 	rm -rf $(LIBMPEG2_IPK_DIR) $(BUILD_DIR)/libmpeg2_*_$(TARGET_ARCH).ipk
 	rm -rf $(MPEG2DEC_IPK_DIR) $(BUILD_DIR)/mpeg2dec_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMPEG2_BUILD_DIR) DESTDIR=$(LIBMPEG2_IPK_DIR) install-strip
-	install -d $(MPEG2DEC_IPK_DIR)/opt/share
+	$(INSTALL) -d $(MPEG2DEC_IPK_DIR)/opt/share
 	mv $(LIBMPEG2_IPK_DIR)/opt/bin $(MPEG2DEC_IPK_DIR)/opt/
 	mv $(LIBMPEG2_IPK_DIR)/opt/man $(MPEG2DEC_IPK_DIR)/opt/share/
 	$(MAKE) $(LIBMPEG2_IPK_DIR)/CONTROL/control

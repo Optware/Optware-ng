@@ -116,7 +116,7 @@ $(LIBXFCE4UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXFCE4UTIL_SOURCE) $(LIBXFC
 	$(LIBXFCE4UTIL_UNZIP) $(DL_DIR)/$(LIBXFCE4UTIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBXFCE4UTIL_PATCHES)" ; \
 		then cat $(LIBXFCE4UTIL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBXFCE4UTIL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBXFCE4UTIL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBXFCE4UTIL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBXFCE4UTIL_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ libxfce4util-stage: $(LIBXFCE4UTIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libxfce4util
 #
 $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libxfce4util" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(LIBXFCE4UTIL_IPK): $(LIBXFCE4UTIL_BUILD_DIR)/.built
 	rm -rf $(LIBXFCE4UTIL_IPK_DIR) $(BUILD_DIR)/libxfce4util_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBXFCE4UTIL_BUILD_DIR) DESTDIR=$(LIBXFCE4UTIL_IPK_DIR) install-strip
 	rm -f $(LIBXFCE4UTIL_IPK_DIR)/opt/lib/*.la
-#	install -d $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBXFCE4UTIL_SOURCE_DIR)/libxfce4util.conf $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/libxfce4util.conf
-#	install -d $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBXFCE4UTIL_SOURCE_DIR)/rc.libxfce4util $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/init.d/SXXlibxfce4util
+#	$(INSTALL) -d $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBXFCE4UTIL_SOURCE_DIR)/libxfce4util.conf $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/libxfce4util.conf
+#	$(INSTALL) -d $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBXFCE4UTIL_SOURCE_DIR)/rc.libxfce4util $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/init.d/SXXlibxfce4util
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/init.d/SXXlibxfce4util
 	$(MAKE) $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBXFCE4UTIL_SOURCE_DIR)/postinst $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBXFCE4UTIL_SOURCE_DIR)/postinst $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBXFCE4UTIL_SOURCE_DIR)/prerm $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBXFCE4UTIL_SOURCE_DIR)/prerm $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

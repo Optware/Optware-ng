@@ -61,7 +61,7 @@ XCURSOR_IPK=$(BUILD_DIR)/xcursor_$(XCURSOR_FULL_VERSION)-$(XCURSOR_IPK_VERSION)_
 # Automatically create a ipkg control file
 #
 $(XCURSOR_IPK_DIR)/CONTROL/control:
-	@install -d $(XCURSOR_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XCURSOR_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xcursor" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -100,7 +100,7 @@ $(XCURSOR_BUILD_DIR)/.configured: $(DL_DIR)/$(XCURSOR_SOURCE) \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XCURSOR_SOURCE)
 	if test -n "$(XCURSOR_PATCHES)" ; \
 		then cat $(XCURSOR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XCURSOR_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XCURSOR_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XCURSOR_DIR)" != "$(XCURSOR_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XCURSOR_DIR) $(XCURSOR_BUILD_DIR) ; \

@@ -116,7 +116,7 @@ $(FBCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(FBCAT_SOURCE) $(FBCAT_PATCHES) make/
 	$(FBCAT_UNZIP) $(DL_DIR)/$(FBCAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FBCAT_PATCHES)" ; \
 		then cat $(FBCAT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FBCAT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FBCAT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FBCAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FBCAT_DIR) $(@D) ; \
@@ -143,7 +143,7 @@ fbcat: $(FBCAT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/fbcat
 #
 $(FBCAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fbcat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -171,9 +171,9 @@ $(FBCAT_IPK_DIR)/CONTROL/control:
 #
 $(FBCAT_IPK): $(FBCAT_BUILD_DIR)/.built
 	rm -rf $(FBCAT_IPK_DIR) $(BUILD_DIR)/fbcat_*_$(TARGET_ARCH).ipk
-	install -d $(FBCAT_IPK_DIR)/opt/bin/
-	install -m 755 $(FBCAT_BUILD_DIR)/fbcat $(FBCAT_IPK_DIR)/opt/bin/
-	install -m 755 $(FBCAT_BUILD_DIR)/fbgrab $(FBCAT_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(FBCAT_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 755 $(FBCAT_BUILD_DIR)/fbcat $(FBCAT_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 755 $(FBCAT_BUILD_DIR)/fbgrab $(FBCAT_IPK_DIR)/opt/bin/
 	$(MAKE) $(FBCAT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FBCAT_IPK_DIR)
 

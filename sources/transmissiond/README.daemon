@@ -56,17 +56,17 @@ Before running transmission user should carefully inspect variables in
 transmission.conf and create SOURCE, WORK, and TARGET directories
 
 transmission_watchdog cares for queue processing and should be run every
-30 minutes with cron. /opt/etc/crontab entry should look like:
+30 minutes with cron. %OPTWARE_TARGET_PREFIX%/etc/crontab entry should look like:
 
 # m  h dom mon dow user command
 */30 *    * * *   admin nice transmission_watchdog 
 
 For graphing to work properly, gnuplot and syslog is required. As log can
 accumulate it is recommended that logrotate is used for flushing old logs.
-/opt/etc/logrotate.conf recommended config is:
+%OPTWARE_TARGET_PREFIX%/etc/logrotate.conf recommended config is:
 compress
 
-/opt/var/log/messages {
+%OPTWARE_TARGET_PREFIX%/var/log/messages {
         size 1024k
         weekly
         rotate 9
@@ -75,10 +75,10 @@ compress
         endscript
 }
 
-include /opt/etc/logrotate.d
+include %OPTWARE_TARGET_PREFIX%/etc/logrotate.d
 
 For syslog on Asus - Oleg firmware it is recommended that
-/opt/etc/init.d/S05syslogd is created with the following content:
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S05syslogd is created with the following content:
 
 #!/bin/sh
 #
@@ -91,8 +91,8 @@ fi
 # remove old syslog.log
 rm /tmp/syslog.log
 # add symlink so log is available at old location (e.g. for webinterface)
-ln -s /opt/var/log/messages /tmp/syslog.log
-/sbin/syslogd -m 0 -O /opt/var/log/messages -S -l 7
+ln -s %OPTWARE_TARGET_PREFIX%/var/log/messages /tmp/syslog.log
+/sbin/syslogd -m 0 -O %OPTWARE_TARGET_PREFIX%/var/log/messages -S -l 7
 
 To disable rate control set upload/download limit to -1 in transmission.conf
 Ratecontrol counts only good transferred packets. Handshaking and other
@@ -111,11 +111,11 @@ info.
 Troubleshooting daemon & CGI interface
 
 Very helpful command for debugging shell script is "sh -x
-/opt/share/www/cgi-bin/transmission.cgi" This will print out every line and
+%OPTWARE_TARGET_PREFIX%/share/www/cgi-bin/transmission.cgi" This will print out every line and
 its content.
 
 I suggest to install procps package and then use
-/opt/bin/ps axf to see output like this:
+%OPTWARE_TARGET_PREFIX%/bin/ps axf to see output like this:
 
 9179 ? SNs 0:01 transmissiond -p 65534 -w 600 -u -1 -d -1 -i ..
 9180 ? SN  0:00  \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i  ...
@@ -216,13 +216,13 @@ echo "</pre>"
 
 
    
-   /opt/etc/transmission.conf changes:
+   %OPTWARE_TARGET_PREFIX%/etc/transmission.conf changes:
    SYSLOG=/var/log/messages
 
    Using OpenWRT cron daemon for watchdog purposes
    Create the following /etc/crontab contents:
    SHELL=/bin/sh
-   PATH=/sbin:/bin:/usr/sbin:/usr/bin:/opt/bin:/opt/sbin
+   PATH=/sbin:/bin:/usr/sbin:/usr/bin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
    MAILTO=""
    HOME=/
    # ---------- ---------- Default is Empty ---------- ---------- #
@@ -259,11 +259,11 @@ No. torrent package conflict is intentional.
 
 6. I am getting some errors
 
-cat: /opt/var/run/transmission.pid: No such file or directory
-/opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec
+cat: %OPTWARE_TARGET_PREFIX%/var/run/transmission.pid: No such file or directory
+%OPTWARE_TARGET_PREFIX%/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec
 | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]getting some
-errors cat: /opt/var/run/transmission.pid: No such file or directory
-/opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec
+errors cat: %OPTWARE_TARGET_PREFIX%/var/run/transmission.pid: No such file or directory
+%OPTWARE_TARGET_PREFIX%/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec
 | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]
 
   This means that Transmisison daemon is not running. Use Watchdog button
@@ -272,7 +272,7 @@ errors cat: /opt/var/run/transmission.pid: No such file or directory
 7. Tried manually pressing watchdog for nothing. Im still having that text
  under the buttons on the script page :
 
- /opt/share/www/cgi-bin/transmission.cgi: kill: 624: (249) - No such process .
+ %OPTWARE_TARGET_PREFIX%/share/www/cgi-bin/transmission.cgi: kill: 624: (249) - No such process .
 
  It looks like daemon died for some reason. Take a look into syslog
  messages. The recommended way for running is using "Oleg" feed and not
@@ -329,7 +329,7 @@ chmod a+rw /tmp/harddisk/torrent/work
 
 14. Is there an easy way to open ports for transmission? Yes. If your
     router soupports traversal using NAT-PMP or UPnP IGD services just
-    uncomment NAT_TRAVERSAL line in /opt/etc/transmission.conf
+    uncomment NAT_TRAVERSAL line in %OPTWARE_TARGET_PREFIX%/etc/transmission.conf
 
 15. I'm trying to get the graph to work for transmission the cron is
    running and everything is logging to syslog but the only thing that is
@@ -376,7 +376,7 @@ chmod a+rw /tmp/harddisk/torrent/work
  useless convenience.
 
 19. Well, it does not work at all When i choose push on a torrent i just
-get the infamous "/opt/share/www/cgi-bin/transmission.cgi: kill: 9: (335) -
+get the infamous "%OPTWARE_TARGET_PREFIX%/share/www/cgi-bin/transmission.cgi: kill: 9: (335) -
 No such process" error .. It is assumed that transmssiond is started
 through transmission_watchdog when you are using transmission.cgi. If
 transmissiond is stopped/paused/not running then you get informational
@@ -403,7 +403,7 @@ stats should be updated correctly.
 21. How can I install the new version ?  Cos by doing ipkg update it will 
 erase my configuration.
 Transmisison will not erase your configuration during upgrade!
-It will always ask you what to do with /opt/etc/transmission.conf
+It will always ask you what to do with %OPTWARE_TARGET_PREFIX%/etc/transmission.conf
 Use ipkg update and ipkg upgrade for package upgrade!
 
 22. The interface PAUSE button is missinterpreted. If I click on the PAUSE button, I have to click again on the same button to resume the transfers. Took me about 1 hour to find out this.
@@ -422,7 +422,7 @@ setting DBG=-dbg in transmission.conf
 When crash occurs you will find a coredump in $HOME/.config/transmission 
 directory. Then just run
 
-gdb /opt/bin/transmissiond-dbg core.PID
+gdb %OPTWARE_TARGET_PREFIX%/bin/transmissiond-dbg core.PID
 
 and type
 
@@ -439,12 +439,12 @@ just post this stack in a similar or new ticket.
 It is better to run gdb by attaching to the process and to mask signals that we 
 do not want to follow. If it fail at startup it will show location like the following example:
 export HOME=/home/torrent
-gdb /opt/bin/transmissiond-dbg
+gdb %OPTWARE_TARGET_PREFIX%/bin/transmissiond-dbg
 handle SIG32 noprint
 handle SIGHUP noprint
 handle SIGUSR1 noprint
 handle SIGUSR2 noprint
-run -p 65534 -e -w 300 -u 35 -d 180 -i /opt/var/run/transmission.pid /home/torrent/active-torrents.txt
+run -p 65534 -e -w 300 -u 35 -d 180 -i %OPTWARE_TARGET_PREFIX%/var/run/transmission.pid /home/torrent/active-torrents.txt
 attach 25403
 where
 #0  memalign (alignment=4, userSize=24) at efence.c:503
@@ -469,7 +469,7 @@ Try something like the following line in your crontab.
 12  23 * * * /bin/rm  /tmp/harddisk/torrent/work/.paused
 
 28. I (and several other users) have the problem that the transmission.cgi is hanging when listing the torrents. At this point it consumes 100% cpu.
-This looks like busybox /bin/sh problem. Install bash and replace first line of transmission.cgi with #!/opt/bin/bash
+This looks like busybox /bin/sh problem. Install bash and replace first line of transmission.cgi with #!%OPTWARE_TARGET_PREFIX%/bin/bash
 
 29. Where is transmission.conf? CGI interface with its daemon is now shipped as separate pakage.
    You need to install package transmissiond to get it back. 

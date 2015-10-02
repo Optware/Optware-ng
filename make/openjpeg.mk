@@ -115,7 +115,7 @@ endif
 	$(OPENJPEG_UNZIP) $(DL_DIR)/$(OPENJPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPENJPEG_PATCHES)" ; \
 		then cat $(OPENJPEG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENJPEG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPENJPEG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENJPEG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(OPENJPEG_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ openjpeg-stage: $(OPENJPEG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/openjpeg
 #
 $(OPENJPEG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openjpeg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -101,7 +101,7 @@ $(GOLANG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GOLANG_SOURCE) $(G
 	$(GOLANG_UNZIP) $(DL_DIR)/$(GOLANG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xf -
 	if test -n "$(GOLANG_HOST_PATCHES)" ; \
 		then cat $(GOLANG_HOST_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(GOLANG_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(GOLANG_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(GOLANG_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(GOLANG_DIR) $(@D) ; \
@@ -127,7 +127,7 @@ $(GOLANG_BUILD_DIR)/.configured: $(GOLANG_PATCHES) make/golang.mk #$(GOLANG_HOST
 	$(GOLANG_UNZIP) $(DL_DIR)/$(GOLANG_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(GOLANG_PATCHES)" ; \
 		then cat $(GOLANG_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(GOLANG_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(GOLANG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GOLANG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GOLANG_DIR) $(@D) ; \
@@ -182,7 +182,7 @@ golang: $(GOLANG_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/golang
 #
 $(GOLANG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: golang" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,11 +211,11 @@ $(GOLANG_IPK_DIR)/CONTROL/control:
 $(GOLANG_IPK): $(GOLANG_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/golang*_*_$(TARGET_ARCH).ipk $(BUILD_DIR)/golang*-ipk
 	# golang
-#	install -d $(GOLANG_IPK_DIR)/opt/share/go
+#	$(INSTALL) -d $(GOLANG_IPK_DIR)/opt/share/go
 	# $(STRIP_COMMAND) $(GOLANG_IPK_DIR)/opt/bin/*
 #	rsync -av $(<D)/bin $(<D)/pkg $(<D)/[ACLR]* $(GOLANG_IPK_DIR)/opt/share/go/
-	install -d $(GOLANG_IPK_DIR)/opt/bin
-	install -d $(GOLANG_IPK_DIR)/opt/lib/go/pkg/tool
+	$(INSTALL) -d $(GOLANG_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(GOLANG_IPK_DIR)/opt/lib/go/pkg/tool
 	cp -af $(GOLANG_BUILD_DIR)/bin/linux_$(GOLANG_ARCH)/* $(GOLANG_IPK_DIR)/opt/bin
 	cp -af $(GOLANG_BUILD_DIR)/pkg/linux_$(GOLANG_ARCH) $(GOLANG_IPK_DIR)/opt/lib/go/pkg
 	cp -af $(GOLANG_BUILD_DIR)/pkg/tool/linux_$(GOLANG_ARCH) $(GOLANG_IPK_DIR)/opt/lib/go/pkg/tool

@@ -1,9 +1,9 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof mpd`" ]; then 
-    /opt/bin/killall mpd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof mpd`" ]; then 
+    %OPTWARE_TARGET_PREFIX%/bin/killall mpd 2>/dev/null
 fi
 
 umask 077
 
-/opt/bin/mpd /opt/etc/mpd.conf &
+%OPTWARE_TARGET_PREFIX%/bin/mpd %OPTWARE_TARGET_PREFIX%/etc/mpd.conf &

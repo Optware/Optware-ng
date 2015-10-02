@@ -8,5 +8,5 @@ if [ -n "`pidof rpc.mountd`" ] ; then
 fi
 
 sleep 2
-/opt/sbin/rpc.nfsd  -f /opt/etc/exports
-/opt/sbin/rpc.mountd  -f /opt/etc/exports
+%OPTWARE_TARGET_PREFIX%/sbin/rpc.nfsd  -f %OPTWARE_TARGET_PREFIX%/etc/exports
+%OPTWARE_TARGET_PREFIX%/sbin/rpc.mountd  -f %OPTWARE_TARGET_PREFIX%/etc/exports

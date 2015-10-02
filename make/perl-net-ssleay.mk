@@ -35,7 +35,7 @@ $(PERL-NET-SSLEAY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) $(
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) $(PERL-NET-SSLEAY_BUILD_DIR)
 	$(PERL-NET-SSLEAY_UNZIP) $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-NET-SSLEAY_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) -p1
+#	cat $(PERL-NET-SSLEAY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) $(PERL-NET-SSLEAY_BUILD_DIR)
 	(cd $(PERL-NET-SSLEAY_BUILD_DIR); echo 'n'| \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -75,7 +75,7 @@ $(PERL-NET-SSLEAY_BUILD_DIR)/.staged: $(PERL-NET-SSLEAY_BUILD_DIR)/.built
 perl-net-ssleay-stage: $(PERL-NET-SSLEAY_BUILD_DIR)/.staged
 
 $(PERL-NET-SSLEAY_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-NET-SSLEAY_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-NET-SSLEAY_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-net-ssleay" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

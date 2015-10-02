@@ -116,7 +116,7 @@ $(XFCONF_BUILD_DIR)/.configured: $(DL_DIR)/$(XFCONF_SOURCE) $(XFCONF_PATCHES) ma
 	$(XFCONF_UNZIP) $(DL_DIR)/$(XFCONF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(XFCONF_PATCHES)" ; \
 		then cat $(XFCONF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XFCONF_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XFCONF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XFCONF_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XFCONF_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ xfconf-stage: $(XFCONF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/xfconf
 #
 $(XFCONF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xfconf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,15 +200,15 @@ $(XFCONF_IPK): $(XFCONF_BUILD_DIR)/.built
 	rm -rf $(XFCONF_IPK_DIR) $(BUILD_DIR)/xfconf_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XFCONF_BUILD_DIR) DESTDIR=$(XFCONF_IPK_DIR) install-strip
 	rm -f $(XFCONF_IPK_DIR)/opt/lib/*.la
-#	install -d $(XFCONF_IPK_DIR)/opt/etc/
-#	install -m 644 $(XFCONF_SOURCE_DIR)/xfconf.conf $(XFCONF_IPK_DIR)/opt/etc/xfconf.conf
-#	install -d $(XFCONF_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(XFCONF_SOURCE_DIR)/rc.xfconf $(XFCONF_IPK_DIR)/opt/etc/init.d/SXXxfconf
+#	$(INSTALL) -d $(XFCONF_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(XFCONF_SOURCE_DIR)/xfconf.conf $(XFCONF_IPK_DIR)/opt/etc/xfconf.conf
+#	$(INSTALL) -d $(XFCONF_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(XFCONF_SOURCE_DIR)/rc.xfconf $(XFCONF_IPK_DIR)/opt/etc/init.d/SXXxfconf
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XFCONF_IPK_DIR)/opt/etc/init.d/SXXxfconf
 	$(MAKE) $(XFCONF_IPK_DIR)/CONTROL/control
-#	install -m 755 $(XFCONF_SOURCE_DIR)/postinst $(XFCONF_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(XFCONF_SOURCE_DIR)/postinst $(XFCONF_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XFCONF_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(XFCONF_SOURCE_DIR)/prerm $(XFCONF_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(XFCONF_SOURCE_DIR)/prerm $(XFCONF_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XFCONF_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

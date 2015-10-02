@@ -104,7 +104,7 @@ $(LIBSIGC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSIGC++_SOURCE) $(LIBSIGC++_PA
 	$(LIBSIGC++_UNZIP) $(DL_DIR)/$(LIBSIGC++_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBSIGC++_PATCHES)" ; \
 		then cat $(LIBSIGC++_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBSIGC++_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBSIGC++_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBSIGC++_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBSIGC++_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ libsigc++-stage: $(LIBSIGC++_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libsigc++
 #
 $(LIBSIGC++_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libsigc++" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

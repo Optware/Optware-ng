@@ -60,11 +60,11 @@ $(ZLIB_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(ZLIB_SOURCE) make/z
 		--shared \
 	)
 	$(MAKE) -C $(@D)
-	install -d $(HOST_STAGING_INCLUDE_DIR)
-	install -d $(HOST_STAGING_LIB_DIR)
-	install -m 644 $(@D)/zlib.h $(HOST_STAGING_INCLUDE_DIR)
-	install -m 644 $(@D)/zconf.h $(HOST_STAGING_INCLUDE_DIR)
-	install -m 644 $(@D)/libz.a $(HOST_STAGING_LIB_DIR)
+	$(INSTALL) -d $(HOST_STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(HOST_STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(@D)/zlib.h $(HOST_STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(@D)/zconf.h $(HOST_STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(@D)/libz.a $(HOST_STAGING_LIB_DIR)
 	touch $@
 
 zlib-host-stage: $(ZLIB_HOST_BUILD_DIR)/.staged
@@ -105,12 +105,12 @@ zlib: $(ZLIB_BUILD_DIR)/.built
 
 $(ZLIB_BUILD_DIR)/.staged: $(ZLIB_BUILD_DIR)/.built
 	rm -f $@ $(ZLIB_BUILD_DIR)/.unstaged
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(STAGING_INCLUDE_DIR)
-	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)/pkgconfig
-	install -m 644 $(ZLIB_BUILD_DIR)/libz.a $(STAGING_LIB_DIR)
-	install -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/libz.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz$(SO).1$(DYLIB)
 	cd $(STAGING_LIB_DIR) && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz.$(SHLIB_EXT)
 	sed -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(@D)/zlib.pc > $(STAGING_LIB_DIR)/pkgconfig/zlib.pc
@@ -133,7 +133,7 @@ zlib-unstage: $(ZLIB_BUILD_DIR)/.unstaged
 # necessary to create a seperate control file under sources/nylon
 #
 $(ZLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: zlib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -148,12 +148,12 @@ $(ZLIB_IPK_DIR)/CONTROL/control:
 
 $(ZLIB_IPK): $(ZLIB_BUILD_DIR)/.built
 	rm -rf $(ZLIB_IPK_DIR) $(BUILD_DIR)/zlib_*_$(TARGET_ARCH).ipk
-	install -d $(ZLIB_IPK_DIR)/opt/include
-	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)/opt/include
-	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)/opt/include
-	install -d $(ZLIB_IPK_DIR)/opt/lib/pkgconfig
-	install -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(ZLIB_IPK_DIR)/opt/lib
-	install -m 644 $(ZLIB_BUILD_DIR)/zlib.pc $(ZLIB_IPK_DIR)/opt/lib/pkgconfig/zlib.pc
+	$(INSTALL) -d $(ZLIB_IPK_DIR)/opt/include
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)/opt/include
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)/opt/include
+	$(INSTALL) -d $(ZLIB_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(ZLIB_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.pc $(ZLIB_IPK_DIR)/opt/lib/pkgconfig/zlib.pc
 ifneq ($(OPTWARE_TARGET), $(filter buildroot-i686, $(OPTWARE_TARGET)))
 # workaround for native gcc warning
 # as: /opt/lib/libz.so.1: no version information available (required by .../as)

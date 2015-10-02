@@ -90,7 +90,7 @@ $(NETPBM_BUILD_DIR)/.configured: $(DL_DIR)/$(NETPBM_SOURCE) $(NETPBM_PATCHES)
 	$(MAKE) libjpeg-stage libpng-stage zlib-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(NETPBM_DIR) $(NETPBM_BUILD_DIR)
 	$(NETPBM_UNZIP) $(DL_DIR)/$(NETPBM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(NETPBM_PATCHES) | patch -d $(BUILD_DIR)/$(NETPBM_DIR) -p1
+#	cat $(NETPBM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NETPBM_DIR) -p1
 	mv $(BUILD_DIR)/$(NETPBM_DIR) $(NETPBM_BUILD_DIR)
 	(cd $(NETPBM_BUILD_DIR); \
 		(echo; echo gnu; echo regular; echo shared; echo y; \
@@ -132,11 +132,11 @@ netpbm: $(NETPBM_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_LIB_DIR)/libnetpbm.so.$(NETPBM_VERSION): $(NETPBM_BUILD_DIR)/.built
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(NETPBM_BUILD_DIR)/netpbm.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(NETPBM_BUILD_DIR)/libnetpbm.a $(STAGING_LIB_DIR)
-	install -m 644 $(NETPBM_BUILD_DIR)/libnetpbm.so.$(NETPBM_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(NETPBM_BUILD_DIR)/netpbm.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(NETPBM_BUILD_DIR)/libnetpbm.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(NETPBM_BUILD_DIR)/libnetpbm.so.$(NETPBM_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libnetpbm.so.$(NETPBM_VERSION) libnetpbm.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libnetpbm.so.$(NETPBM_VERSION) libnetpbm.so
 
@@ -156,14 +156,14 @@ netpbm-stage: $(STAGING_LIB_DIR)/libnetpbm.so.$(NETPBM_VERSION)
 #
 $(NETPBM_IPK): $(NETPBM_BUILD_DIR)/.built
 	rm -rf $(NETPBM_IPK_DIR) $(NETPBM_IPK)
-	install -d $(NETPBM_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(NETPBM_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(NETPBM_BUILD_DIR)/netpbm -o $(NETPBM_IPK_DIR)/opt/bin/netpbm
-	install -d $(NETPBM_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NETPBM_SOURCE_DIR)/rc.netpbm $(NETPBM_IPK_DIR)/opt/etc/init.d/SXXnetpbm
-	install -d $(NETPBM_IPK_DIR)/CONTROL
-	install -m 644 $(NETPBM_SOURCE_DIR)/control $(NETPBM_IPK_DIR)/CONTROL/control
-	install -m 644 $(NETPBM_SOURCE_DIR)/postinst $(NETPBM_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(NETPBM_SOURCE_DIR)/prerm $(NETPBM_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -d $(NETPBM_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NETPBM_SOURCE_DIR)/rc.netpbm $(NETPBM_IPK_DIR)/opt/etc/init.d/SXXnetpbm
+	$(INSTALL) -d $(NETPBM_IPK_DIR)/CONTROL
+	$(INSTALL) -m 644 $(NETPBM_SOURCE_DIR)/control $(NETPBM_IPK_DIR)/CONTROL/control
+	$(INSTALL) -m 644 $(NETPBM_SOURCE_DIR)/postinst $(NETPBM_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(NETPBM_SOURCE_DIR)/prerm $(NETPBM_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETPBM_IPK_DIR)
 
 #

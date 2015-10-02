@@ -110,7 +110,7 @@ $(LIBTHEORA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTHEORA_SOURCE) $(LIBTHEORA_PA
 	$(LIBTHEORA_UNZIP) $(DL_DIR)/$(LIBTHEORA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBTHEORA_PATCHES)" ; \
 		then cat $(LIBTHEORA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBTHEORA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBTHEORA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBTHEORA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBTHEORA_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ libtheora-stage: $(LIBTHEORA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libtheora
 #
 $(LIBTHEORA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libtheora" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(LIBTHEORA_IPK_DIR)/CONTROL/control:
 $(LIBTHEORA_IPK): $(LIBTHEORA_BUILD_DIR)/.built
 	rm -rf $(LIBTHEORA_IPK_DIR) $(BUILD_DIR)/libtheora_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTHEORA_BUILD_DIR) DESTDIR=$(LIBTHEORA_IPK_DIR) install-strip
-#	install -d $(LIBTHEORA_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBTHEORA_SOURCE_DIR)/libtheora.conf $(LIBTHEORA_IPK_DIR)/opt/etc/libtheora.conf
-#	install -d $(LIBTHEORA_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBTHEORA_SOURCE_DIR)/rc.libtheora $(LIBTHEORA_IPK_DIR)/opt/etc/init.d/SXXlibtheora
+#	$(INSTALL) -d $(LIBTHEORA_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBTHEORA_SOURCE_DIR)/libtheora.conf $(LIBTHEORA_IPK_DIR)/opt/etc/libtheora.conf
+#	$(INSTALL) -d $(LIBTHEORA_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBTHEORA_SOURCE_DIR)/rc.libtheora $(LIBTHEORA_IPK_DIR)/opt/etc/init.d/SXXlibtheora
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTHEORA_IPK_DIR)/opt/etc/init.d/SXXlibtheora
 	$(MAKE) $(LIBTHEORA_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBTHEORA_SOURCE_DIR)/postinst $(LIBTHEORA_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBTHEORA_SOURCE_DIR)/postinst $(LIBTHEORA_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTHEORA_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBTHEORA_SOURCE_DIR)/prerm $(LIBTHEORA_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBTHEORA_SOURCE_DIR)/prerm $(LIBTHEORA_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTHEORA_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -177,7 +177,7 @@ endif
 	$(GCC_UNZIP) $(DL_DIR)/$(GCC_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(GCC_PATCHES)" ; \
 		then cat `echo $(GCC_PATCHES) | sort` | \
-		patch -d $(BUILD_DIR)/$(GCC_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GCC_DIR) -p1 ; \
 	fi
 	mkdir -p $(@D)
 	(cd $(@D); \
@@ -239,7 +239,7 @@ gcc-stage: $(GCC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gcc
 #
 $(GCC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gcc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

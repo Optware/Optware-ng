@@ -40,7 +40,7 @@ $(PERL-CLASS-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE) $(PE
 ifneq ($(TARGET_CC),$(HOSTCC))
 	cp -p $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR)/lib/Class/DBI.pm $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR)/DBI.pm.orig
 	if test -n "$(PERL-CLASS-DBI_CROSS_PATCHES)" ; then \
-		cat $(PERL-CLASS-DBI_CROSS_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR) -p1; \
+		cat $(PERL-CLASS-DBI_CROSS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR) -p1; \
 	fi
 endif
 	mv $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR) $(PERL-CLASS-DBI_BUILD_DIR)
@@ -75,7 +75,7 @@ $(PERL-CLASS-DBI_BUILD_DIR)/.staged: $(PERL-CLASS-DBI_BUILD_DIR)/.built
 perl-class-dbi-stage: $(PERL-CLASS-DBI_BUILD_DIR)/.staged
 
 $(PERL-CLASS-DBI_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-CLASS-DBI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-CLASS-DBI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-class-dbi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

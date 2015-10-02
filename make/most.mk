@@ -110,7 +110,7 @@ $(MOST_BUILD_DIR)/.configured: $(DL_DIR)/$(MOST_SOURCE) $(MOST_PATCHES) make/mos
 	$(MOST_UNZIP) $(DL_DIR)/$(MOST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOST_PATCHES)" ; \
 		then cat $(MOST_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MOST_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MOST_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MOST_DIR)" != "$(MOST_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MOST_DIR) $(MOST_BUILD_DIR) ; \
@@ -167,7 +167,7 @@ most-stage: $(MOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/most
 #
 $(MOST_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: most" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,15 +197,15 @@ $(MOST_IPK): $(MOST_BUILD_DIR)/.built
 	rm -rf $(MOST_IPK_DIR) $(BUILD_DIR)/most_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOST_BUILD_DIR) DESTDIR=$(MOST_IPK_DIR) install
 	$(STRIP_COMMAND) $(MOST_IPK_DIR)/opt/bin/most
-#	install -d $(MOST_IPK_DIR)/opt/etc/
-#	install -m 644 $(MOST_SOURCE_DIR)/most.conf $(MOST_IPK_DIR)/opt/etc/most.conf
-#	install -d $(MOST_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MOST_SOURCE_DIR)/rc.most $(MOST_IPK_DIR)/opt/etc/init.d/SXXmost
+#	$(INSTALL) -d $(MOST_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MOST_SOURCE_DIR)/most.conf $(MOST_IPK_DIR)/opt/etc/most.conf
+#	$(INSTALL) -d $(MOST_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MOST_SOURCE_DIR)/rc.most $(MOST_IPK_DIR)/opt/etc/init.d/SXXmost
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOST_IPK_DIR)/opt/etc/init.d/SXXmost
 	$(MAKE) $(MOST_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MOST_SOURCE_DIR)/postinst $(MOST_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MOST_SOURCE_DIR)/postinst $(MOST_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOST_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MOST_SOURCE_DIR)/prerm $(MOST_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MOST_SOURCE_DIR)/prerm $(MOST_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOST_IPK_DIR)/CONTROL/prerm
 	echo $(MOST_CONFFILES) | sed -e 's/ /\n/g' > $(MOST_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOST_IPK_DIR)

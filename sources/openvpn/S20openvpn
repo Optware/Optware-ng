@@ -17,7 +17,7 @@ fi
 
 # Make sure the tunnel driver is loaded
 if ( !(lsmod | grep -q "^tun") ); then
-	insmod /opt/lib/modules/tun.o
+	insmod %OPTWARE_TARGET_PREFIX%/lib/modules/tun.o
 fi
 
 # If you want a standalone server (not xinetd), then comment out the return statement below
@@ -26,12 +26,12 @@ return 0
 
 ## This is for standalone servers only!!!!
 # Kill old server if still there
-if [ -n "`/opt/bin/pidof openvpn`" ]; then
-    /opt/bin/killall openvpn 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof openvpn`" ]; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall openvpn 2>/dev/null
 fi
 
 # Start the openvpn daemon - add as many daemons as you want
-/opt/sbin/openvpn --daemon --cd /opt/etc/openvpn --config openvpn.conf 
+%OPTWARE_TARGET_PREFIX%/sbin/openvpn --daemon --cd %OPTWARE_TARGET_PREFIX%/etc/openvpn --config openvpn.conf 
 
 # [EOF]
 

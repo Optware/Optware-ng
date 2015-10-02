@@ -114,7 +114,7 @@ $(INDENT_BUILD_DIR)/.configured: $(DL_DIR)/$(INDENT_SOURCE) $(INDENT_PATCHES) ma
 	$(INDENT_UNZIP) $(DL_DIR)/$(INDENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(INDENT_PATCHES)" ; \
 		then cat $(INDENT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(INDENT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(INDENT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(INDENT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(INDENT_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ indent: $(INDENT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/indent
 #
 $(INDENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: indent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

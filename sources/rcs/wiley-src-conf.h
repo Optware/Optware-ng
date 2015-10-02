@@ -210,18 +210,18 @@ typedef void *malloc_type; /* type returned by malloc() */
 /* Do struct stat s and t describe the same file?  Answer d if unknown.  */
 #define same_file(s,t,d) ((s).st_ino==(t).st_ino && (s).st_dev==(t).st_dev)
 #define has_utimbuf 1 /* Does struct utimbuf work?  */
-#define CO "/opt/bin/co" /* name of 'co' program */
+#define CO "%OPTWARE_TARGET_PREFIX%/bin/co" /* name of 'co' program */
 #define COMPAT2 0 /* Are version 2 files supported?  */
-#define DIFF "/opt/bin/diff" /* name of 'diff' program */
-#define DIFF3 "/opt/bin/diff3" /* name of 'diff3' program */
+#define DIFF "%OPTWARE_TARGET_PREFIX%/bin/diff" /* name of 'diff' program */
+#define DIFF3 "%OPTWARE_TARGET_PREFIX%/bin/diff3" /* name of 'diff3' program */
 #define DIFF3_BIN 1 /* Is diff3 user-visible (not the /usr/lib auxiliary)?  */
 #define DIFFFLAGS "-an" /* Make diff output suitable for RCS.  */
 #define DIFF_L 1 /* Does diff -L work?  */
 #define DIFF_SUCCESS 0 /* DIFF status if no differences are found */
 #define DIFF_FAILURE 1 /* DIFF status if differences are found */
 #define DIFF_TROUBLE 2 /* DIFF status if trouble */
-#define ED "/opt/bin/ed" /* name of 'ed' program (used only if !DIFF3_BIN) */
-#define MERGE "/opt/bin/merge" /* name of 'merge' program */
+#define ED "%OPTWARE_TARGET_PREFIX%/bin/ed" /* name of 'ed' program (used only if !DIFF3_BIN) */
+#define MERGE "%OPTWARE_TARGET_PREFIX%/bin/merge" /* name of 'merge' program */
 #define TMPDIR "/tmp" /* default directory for temporary files */
 #define SLASH '/' /* principal filename separator */
 #define SLASHes '/' /* `case SLASHes:' labels all filename separators */
@@ -231,7 +231,7 @@ typedef void *malloc_type; /* type returned by malloc() */
 #define SLASHSLASH_is_SLASH 1 /* Are // and / the same directory?  */
 #define ALL_ABSOLUTE 1 /* Do all subprograms satisfy ROOTPATH?  */
 #define DIFF_ABSOLUTE 1 /* Is ROOTPATH(DIFF) true?  */
-#define SENDMAIL "/opt/sbin/sendmail" /* how to send mail */
+#define SENDMAIL "%OPTWARE_TARGET_PREFIX%/sbin/sendmail" /* how to send mail */
 #define TZ_must_be_set 0 /* Must TZ be set for gmtime() to work?  */
 
 

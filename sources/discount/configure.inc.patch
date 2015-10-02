@@ -5,7 +5,7 @@
  # interesting things off the command line.
  #
 -ac_default_path="/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin"
-+ac_default_path="/sbin:/usr/sbin:/opt/bin:/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin"
++ac_default_path="/sbin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin"
  
  ac_standard="--src=DIR		where the source lives (.)
  --prefix=DIR		where to install the final product (/usr/local)

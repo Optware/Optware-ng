@@ -113,7 +113,7 @@ $(NE_BUILD_DIR)/.configured: $(DL_DIR)/$(NE_SOURCE) $(NE_PATCHES) make/ne.mk
 	$(NE_UNZIP) $(DL_DIR)/$(NE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NE_PATCHES)" ; \
 		then cat $(NE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NE_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ ne: $(NE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ne
 #
 $(NE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ne" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,14 +199,14 @@ $(NE_IPK_DIR)/CONTROL/control:
 $(NE_IPK): $(NE_BUILD_DIR)/.built
 	rm -rf $(NE_IPK_DIR) $(BUILD_DIR)/ne_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(NE_BUILD_DIR) DESTDIR=$(NE_IPK_DIR) install-strip
-	install -d $(NE_IPK_DIR)/opt/bin
-	install -m 755 $(NE_BUILD_DIR)/src/ne $(NE_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(NE_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(NE_BUILD_DIR)/src/ne $(NE_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(NE_IPK_DIR)/opt/bin/ne
-	install -d $(NE_IPK_DIR)/opt/share/doc/ne
+	$(INSTALL) -d $(NE_IPK_DIR)/opt/share/doc/ne
 	cp -rp $(NE_BUILD_DIR)/doc/* $(NE_IPK_DIR)/opt/share/doc/ne
-	install -d $(NE_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(NE_IPK_DIR)/opt/share/man/man1
 	mv $(NE_IPK_DIR)/opt/share/doc/ne/*.1 $(NE_IPK_DIR)/opt/share/man/man1/
-	install -d $(NE_IPK_DIR)/opt/share/info
+	$(INSTALL) -d $(NE_IPK_DIR)/opt/share/info
 	mv $(NE_IPK_DIR)/opt/share/doc/ne/*.info.gz $(NE_IPK_DIR)/opt/share/info/
 	$(MAKE) $(NE_IPK_DIR)/CONTROL/control
 	echo $(NE_CONFFILES) | sed -e 's/ /\n/g' > $(NE_IPK_DIR)/CONTROL/conffiles

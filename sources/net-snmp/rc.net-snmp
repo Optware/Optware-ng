@@ -8,4 +8,4 @@ if [ -n "`pidof snmpd`" ] ; then
 fi
 
 sleep 2
-/opt/sbin/snmpd -c /opt/etc/snmpd.conf
+%OPTWARE_TARGET_PREFIX%/sbin/snmpd -c %OPTWARE_TARGET_PREFIX%/etc/snmpd.conf

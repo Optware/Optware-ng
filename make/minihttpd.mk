@@ -112,7 +112,7 @@ $(MINIHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINIHTTPD_SOURCE) $(MINIHTTPD_PA
 	$(MINIHTTPD_UNZIP) $(DL_DIR)/$(MINIHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINIHTTPD_PATCHES)" ; \
 		then cat $(MINIHTTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MINIHTTPD_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MINIHTTPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MINIHTTPD_DIR)" != "$(MINIHTTPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MINIHTTPD_DIR) $(MINIHTTPD_BUILD_DIR) ; \
@@ -162,7 +162,7 @@ minihttpd-stage: $(MINIHTTPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/minihttpd
 #
 $(MINIHTTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: minihttpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,21 +190,21 @@ $(MINIHTTPD_IPK_DIR)/CONTROL/control:
 #
 $(MINIHTTPD_IPK): $(MINIHTTPD_BUILD_DIR)/.built
 	rm -rf $(MINIHTTPD_IPK_DIR) $(BUILD_DIR)/minihttpd_*_$(TARGET_ARCH).ipk
-	install -d $(MINIHTTPD_IPK_DIR)/opt/sbin
-	install -m 755 $(MINIHTTPD_BUILD_DIR)/mini_httpd $(MINIHTTPD_IPK_DIR)/opt/sbin
-	install -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd_wrapper $(MINIHTTPD_IPK_DIR)/opt/sbin
-	install -d $(MINIHTTPD_IPK_DIR)/opt/bin
-	install -m 755 $(MINIHTTPD_BUILD_DIR)/htpasswd	$(MINIHTTPD_IPK_DIR)/opt/bin/mini_httpd-htpasswd
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(MINIHTTPD_BUILD_DIR)/mini_httpd $(MINIHTTPD_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd_wrapper $(MINIHTTPD_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(MINIHTTPD_BUILD_DIR)/htpasswd	$(MINIHTTPD_IPK_DIR)/opt/bin/mini_httpd-htpasswd
 	$(STRIP_COMMAND) $(MINIHTTPD_IPK_DIR)/opt/sbin/mini_httpd
 	$(STRIP_COMMAND) $(MINIHTTPD_IPK_DIR)/opt/bin/mini_httpd-htpasswd
-	install -d $(MINIHTTPD_IPK_DIR)/opt/etc/init.d
-	install -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd.sh $(MINIHTTPD_IPK_DIR)/opt/etc/init.d/S80mini_httpd
-	install -d $(MINIHTTPD_IPK_DIR)/opt/share/www/cgi-bin
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd.sh $(MINIHTTPD_IPK_DIR)/opt/etc/init.d/S80mini_httpd
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/share/www/cgi-bin
 	$(MAKE)	$(MINIHTTPD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD)		$(MINIHTTPD_IPK_DIR)
-	install -d $(MINIHTTPD_IPK_DIR)/opt/etc/
-	install -m 644 $(MINIHTTPD_SOURCE_DIR)/mini_httpd.conf $(MINIHTTPD_IPK_DIR)/opt/etc
-	install -d $(MINIHTTPD_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(MINIHTTPD_SOURCE_DIR)/mini_httpd.conf $(MINIHTTPD_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/var/log
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIHTTPD_IPK_DIR)
 
 #

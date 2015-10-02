@@ -1,5 +1,5 @@
 #!/bin/sh
 
-echo "Removing /opt/lib/girepository-1.0"
+echo "Removing %OPTWARE_TARGET_PREFIX%/lib/girepository-1.0"
 
-rm -rf /opt/lib/girepository-1.0
+rm -rf %OPTWARE_TARGET_PREFIX%/lib/girepository-1.0

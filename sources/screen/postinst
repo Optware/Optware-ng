@@ -4,7 +4,7 @@
 #
 
 VERSION=@VERSION@
-SCREEN=/opt/bin/screen-@VERSION@
+SCREEN=%OPTWARE_TARGET_PREFIX%/bin/screen-@VERSION@
 
 chown root:root $SCREEN
 chmod 4711 $SCREEN

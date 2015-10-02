@@ -1,4 +1,4 @@
-#!/opt/bin/bash
+#!%OPTWARE_TARGET_PREFIX%/bin/bash
 
 ############################################################################
 #Optware package of rtorrent uses non-standard layout of directories.     ##
@@ -43,13 +43,13 @@ user="root"
 # the system group to run as, not implemented, see d_start for beginning implementation
 # group=`id -ng "$user"`
 
-prefix="/opt"
+prefix="%OPTWARE_TARGET_PREFIX%"
 
 # the full path to the filename where you store your rtorrent configuration
 if [ "${dirlayout}" = "RTORRENT_DEFAULT" ] ; then
   config="${prefix}/home/${user}/.rtorrent.rc"
 else
-  config="/opt/etc/rtorrent.conf"
+  config="%OPTWARE_TARGET_PREFIX%/etc/rtorrent.conf"
 fi
 
 # set of options to run with
@@ -63,27 +63,27 @@ fi
 if [ "${dirlayout}" = "RTORRENT_DEFAULT" ] ; then
   base="${prefix}/home/${user}"
 else
-  base="/opt/share/torrent"
+  base="%OPTWARE_TARGET_PREFIX%/share/torrent"
 fi
 
 # name of screen session
 srnname="rtorrent"
 
 # file to log to (makes for easier debugging if something goes wrong)
-logfile="/opt/var/log/rtorrentInit.log"
+logfile="%OPTWARE_TARGET_PREFIX%/var/log/rtorrentInit.log"
 
 #######################
 ###END CONFIGURATION###
 #######################
-PATH=/opt/bin:/opt/sbin:/usr/bin:/sbin:/bin:/usr/sbin
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/usr/bin:/sbin:/bin:/usr/sbin
 DESC="rtorrent"
 NAME=rtorrent
 DAEMON=$NAME
 SCRIPTNAME=/etc/init.d/$NAME
 
 # Do not proceed unless some apps are available.
-test -x /opt/bin/screen || ( echo "screen not found." | tee -a "$logfile" >&2 ; exit 2 )
-test -x /opt/bin/su -o -x /bin/su || ( echo "su not found." | tee -a "$logfile" >&2 ; exit 2 )
+test -x %OPTWARE_TARGET_PREFIX%/bin/screen || ( echo "screen not found." | tee -a "$logfile" >&2 ; exit 2 )
+test -x %OPTWARE_TARGET_PREFIX%/bin/su -o -x /bin/su || ( echo "su not found." | tee -a "$logfile" >&2 ; exit 2 )
 
 checkcnfg() {
 	exists=0

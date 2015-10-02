@@ -106,7 +106,7 @@ $(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) $(LIBMAD_PATCHES) ma
 	$(LIBMAD_UNZIP) $(DL_DIR)/$(LIBMAD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMAD_PATCHES)" ; \
 		then cat $(LIBMAD_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(LIBMAD_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(LIBMAD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMAD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMAD_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ libmad-stage: $(LIBMAD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/<foo>
 #
 $(LIBMAD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmad" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,8 +188,8 @@ $(LIBMAD_IPK): $(LIBMAD_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBMAD_BUILD_DIR) DESTDIR=$(LIBMAD_IPK_DIR) install
 	$(STRIP_COMMAND) $(LIBMAD_IPK_DIR)/opt/lib/libmad.so.0.*
 	rm -f $(LIBMAD_IPK_DIR)/opt/lib/libmad.la
-	install -d $(LIBMAD_IPK_DIR)/opt/lib/pkgconfig
-	install $(<D)/mad.pc $(LIBMAD_IPK_DIR)/opt/lib/pkgconfig/mad.pc
+	$(INSTALL) -d $(LIBMAD_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) $(<D)/mad.pc $(LIBMAD_IPK_DIR)/opt/lib/pkgconfig/mad.pc
 	$(MAKE) $(LIBMAD_IPK_DIR)/CONTROL/control
 	echo $(LIBMAD_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMAD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMAD_IPK_DIR)

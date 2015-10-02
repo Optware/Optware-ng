@@ -1,6 +1,6 @@
 #!/bin/sh
 
-prefix="/opt"
+prefix="%OPTWARE_TARGET_PREFIX%"
 PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 NAME=udpxy
 DAEMON=${prefix}/bin/${NAME}

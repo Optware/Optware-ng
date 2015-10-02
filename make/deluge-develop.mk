@@ -127,11 +127,11 @@ deluge-develop-source: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DELUGE_DEVELOP_PATCH
 $(DELUGE_DEVELOP_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) $(DELUGE_DEVELOP_PATCHES) make/deluge-develop.mk
 	$(MAKE) python27-host-stage py-setuptools-host-stage
 	rm -rf $(@D)
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	$(DELUGE_DEVELOP_UNZIP) $(DL_DIR)/$(DELUGE_DEVELOP_SOURCE) | tar -C $(@D) -xvf - --strip-components=1
 	if test -n "$(DELUGE_DEVELOP_PATCHES)" ; \
 		then cat $(DELUGE_DEVELOP_PATCHES) | \
-		patch -d $(@D) -p1; \
+		$(PATCH) -d $(@D) -p1; \
 	fi
 	(cd $(@D); \
 	    ( \
@@ -173,7 +173,7 @@ deluge-develop: $(DELUGE_DEVELOP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/deluge-develop
 #
 $(DELUGE_DEVELOP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: deluge-develop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,7 +187,7 @@ $(DELUGE_DEVELOP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DELUGE_DEVELOP_CONFLICTS)" >>$@
 
 $(DELUGE_DEVELOP_GTK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: deluge-develop-gtk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -219,7 +219,7 @@ $(DELUGE_DEVELOP_IPKS): $(DELUGE_DEVELOP_BUILD_DIR)/.built
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(DELUGE_DEVELOP_IPK_DIR) --prefix=/opt)
 ifeq (py-gtk, $(filter py-gtk, $(PACKAGES)))
-	install -d $(DELUGE_DEVELOP_GTK_IPK_DIR)/opt/bin $(DELUGE_DEVELOP_GTK_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(DELUGE_DEVELOP_GTK_IPK_DIR)/opt/bin $(DELUGE_DEVELOP_GTK_IPK_DIR)/opt/share/man/man1
 	mv -f $(DELUGE_DEVELOP_IPK_DIR)/opt/bin/deluge-gtk $(DELUGE_DEVELOP_GTK_IPK_DIR)/opt/bin
 	mv -f $(DELUGE_DEVELOP_IPK_DIR)/opt/share/man/man1/deluge-gtk.1 $(DELUGE_DEVELOP_GTK_IPK_DIR)/opt/share/man/man1
 	mv -f $(DELUGE_DEVELOP_IPK_DIR)/opt/share/applications $(DELUGE_DEVELOP_IPK_DIR)/opt/share/icons $(DELUGE_DEVELOP_IPK_DIR)/opt/share/pixmaps \
@@ -231,13 +231,13 @@ else
 	rm -rf $(DELUGE_DEVELOP_IPK_DIR)/opt/share/applications $(DELUGE_DEVELOP_IPK_DIR)/opt/share/icons $(DELUGE_DEVELOP_IPK_DIR)/opt/share/pixmaps
 endif
 	### init scripts
-	install -d $(DELUGE_DEVELOP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/S80deluged $(DELUGE_DEVELOP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/S80deluge-web $(DELUGE_DEVELOP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/deluge-web-reset_password $(DELUGE_DEVELOP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(DELUGE_DEVELOP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/S80deluged $(DELUGE_DEVELOP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/S80deluge-web $(DELUGE_DEVELOP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/deluge-web-reset_password $(DELUGE_DEVELOP_IPK_DIR)/opt/bin
 	$(MAKE) $(DELUGE_DEVELOP_IPK_DIR)/CONTROL/control
 	### post-install: change default deluge ui to console
-	install -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/postinst $(DELUGE_DEVELOP_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(DELUGE_DEVELOP_SOURCE_DIR)/postinst $(DELUGE_DEVELOP_IPK_DIR)/CONTROL/postinst
 	echo $(DELUGE_DEVELOP_CONFFILES) | sed -e 's/ /\n/g' > $(DELUGE_DEVELOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DELUGE_DEVELOP_IPK_DIR)
 

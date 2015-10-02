@@ -149,7 +149,7 @@ $(NAGIOS_PLUGINS_BUILD_DIR)/.configured: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NA
 	$(NAGIOS_PLUGINS_UNZIP) $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NAGIOS_PLUGINS_PATCHES)" ; \
 		then cat $(NAGIOS_PLUGINS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NAGIOS_PLUGINS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NAGIOS_PLUGINS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NAGIOS_PLUGINS_DIR)" != "$(NAGIOS_PLUGINS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NAGIOS_PLUGINS_DIR) $(NAGIOS_PLUGINS_BUILD_DIR) ; \
@@ -207,7 +207,7 @@ nagios-plugins-stage: $(NAGIOS_PLUGINS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nagios-plugins
 #
 $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL/control:
-	@install -d $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: nagios-plugins" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -237,13 +237,13 @@ $(NAGIOS_PLUGINS_IPK): $(NAGIOS_PLUGINS_BUILD_DIR)/.built
 	rm -rf $(NAGIOS_PLUGINS_IPK_DIR) $(BUILD_DIR)/nagios-plugins_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NAGIOS_PLUGINS_BUILD_DIR) DESTDIR=$(NAGIOS_PLUGINS_IPK_DIR) install-strip
 	(cd $(NAGIOS_PLUGINS_IPK_DIR)/opt/libexec; rm -f $(PLUGINS_REMOVE)) 
-#	install -d $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/
-#	install -m 644 $(NAGIOS_PLUGINS_SOURCE_DIR)/nagios-plugins.conf $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/nagios-plugins.conf
-#	install -d $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NAGIOS_PLUGINS_SOURCE_DIR)/rc.nagios-plugins $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/init.d/SXXnagios-plugins
+#	$(INSTALL) -d $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NAGIOS_PLUGINS_SOURCE_DIR)/nagios-plugins.conf $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/nagios-plugins.conf
+#	$(INSTALL) -d $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NAGIOS_PLUGINS_SOURCE_DIR)/rc.nagios-plugins $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/init.d/SXXnagios-plugins
 	$(MAKE) $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NAGIOS_PLUGINS_SOURCE_DIR)/postinst $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NAGIOS_PLUGINS_SOURCE_DIR)/prerm $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NAGIOS_PLUGINS_SOURCE_DIR)/postinst $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NAGIOS_PLUGINS_SOURCE_DIR)/prerm $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL/prerm
 #	echo $(NAGIOS_PLUGINS_CONFFILES) | sed -e 's/ /\n/g' > $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NAGIOS_PLUGINS_IPK_DIR)
 

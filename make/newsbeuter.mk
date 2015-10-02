@@ -131,7 +131,7 @@ endif
 	$(NEWSBEUTER_UNZIP) $(DL_DIR)/$(NEWSBEUTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NEWSBEUTER_PATCHES)" ; \
 		then cat $(NEWSBEUTER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NEWSBEUTER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NEWSBEUTER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NEWSBEUTER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NEWSBEUTER_DIR) $(@D) ; \
@@ -200,7 +200,7 @@ newsbeuter: $(NEWSBEUTER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/newsbeuter
 #
 $(NEWSBEUTER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: newsbeuter" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -232,15 +232,15 @@ $(NEWSBEUTER_IPK): $(NEWSBEUTER_BUILD_DIR)/.built
 		DESTDIR=$(NEWSBEUTER_IPK_DIR) \
 		prefix=$(if $(filter 1.2,$(NEWSBEUTER_VERSION)),$(NEWSBEUTER_IPK_DIR),)/opt
 	$(STRIP_COMMAND) $(NEWSBEUTER_IPK_DIR)/opt/bin/*
-#	install -d $(NEWSBEUTER_IPK_DIR)/opt/etc/
-#	install -m 644 $(NEWSBEUTER_SOURCE_DIR)/newsbeuter.conf $(NEWSBEUTER_IPK_DIR)/opt/etc/newsbeuter.conf
-#	install -d $(NEWSBEUTER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NEWSBEUTER_SOURCE_DIR)/rc.newsbeuter $(NEWSBEUTER_IPK_DIR)/opt/etc/init.d/SXXnewsbeuter
+#	$(INSTALL) -d $(NEWSBEUTER_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NEWSBEUTER_SOURCE_DIR)/newsbeuter.conf $(NEWSBEUTER_IPK_DIR)/opt/etc/newsbeuter.conf
+#	$(INSTALL) -d $(NEWSBEUTER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NEWSBEUTER_SOURCE_DIR)/rc.newsbeuter $(NEWSBEUTER_IPK_DIR)/opt/etc/init.d/SXXnewsbeuter
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NEWSBEUTER_IPK_DIR)/opt/etc/init.d/SXXnewsbeuter
 	$(MAKE) $(NEWSBEUTER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NEWSBEUTER_SOURCE_DIR)/postinst $(NEWSBEUTER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NEWSBEUTER_SOURCE_DIR)/postinst $(NEWSBEUTER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NEWSBEUTER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NEWSBEUTER_SOURCE_DIR)/prerm $(NEWSBEUTER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NEWSBEUTER_SOURCE_DIR)/prerm $(NEWSBEUTER_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NEWSBEUTER_IPK_DIR)/CONTROL/prerm
 	echo $(NEWSBEUTER_CONFFILES) | sed -e 's/ /\n/g' > $(NEWSBEUTER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NEWSBEUTER_IPK_DIR)

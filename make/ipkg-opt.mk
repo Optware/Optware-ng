@@ -120,7 +120,7 @@ $(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 	if test -n "$(IPKG-OPT_PATCHES)" ; \
 		then cat $(IPKG-OPT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IPKG-OPT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IPKG-OPT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IPKG-OPT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IPKG-OPT_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ ipkg-opt: $(IPKG-OPT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ipkg-opt
 #
 $(IPKG-OPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ipkg-opt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,7 +196,7 @@ $(IPKG-OPT_IPK): $(IPKG-OPT_BUILD_DIR)/.built
 	rm -rf $(IPKG-OPT_IPK_DIR) $(BUILD_DIR)/ipkg-opt_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG-OPT_BUILD_DIR) DESTDIR=$(IPKG-OPT_IPK_DIR) install-strip
-	install -d $(IPKG-OPT_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(IPKG-OPT_IPK_DIR)/opt/etc/
 ifneq (, $(filter ddwrt ds101 ds101g fsg3 gumstix1151 mss nas100d nslu2 oleg slugosbe slugosle ts72xx wl500g, $(OPTWARE_TARGET)))
 	echo "#Uncomment the following line for native packages feed (if any)" \
 		> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
@@ -207,7 +207,7 @@ ifneq (, $(filter ddwrt ds101 ds101g fsg3 gumstix1151 mss nas100d nslu2 oleg slu
 	echo "dest /opt/ /" >> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
 	echo "#option verbose-wget" >> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
 else
-	install -m 644 $(IPKG-OPT_SOURCE_DIR)/ipkg.conf \
+	$(INSTALL) -m 644 $(IPKG-OPT_SOURCE_DIR)/ipkg.conf \
 		$(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
 endif
 	rm $(IPKG-OPT_IPK_DIR)/opt/lib/*.a

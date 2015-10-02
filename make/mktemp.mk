@@ -108,7 +108,7 @@ $(MKTEMP_BUILD_DIR)/.configured: $(DL_DIR)/$(MKTEMP_SOURCE) $(MKTEMP_PATCHES) ma
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(MKTEMP_DIR) $(@D)
 	$(MKTEMP_UNZIP) $(DL_DIR)/$(MKTEMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(MKTEMP_PATCHES) | patch -d $(BUILD_DIR)/$(MKTEMP_DIR) -p1
+#	cat $(MKTEMP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MKTEMP_DIR) -p1
 	mv $(BUILD_DIR)/$(MKTEMP_DIR) $(@D)
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
 	(cd $(@D); \
@@ -155,7 +155,7 @@ mktemp: $(MKTEMP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mktemp
 #
 $(MKTEMP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mktemp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,8 +182,8 @@ $(MKTEMP_IPK_DIR)/CONTROL/control:
 #
 $(MKTEMP_IPK): $(MKTEMP_BUILD_DIR)/.built
 	rm -rf $(MKTEMP_IPK_DIR) $(BUILD_DIR)/mktemp_*_$(TARGET_ARCH).ipk
-	install -d $(MKTEMP_IPK_DIR)/opt/bin
-	install -m 755 $(MKTEMP_BUILD_DIR)/mktemp $(MKTEMP_IPK_DIR)/opt/bin/mktemp-mktemp
+	$(INSTALL) -d $(MKTEMP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(MKTEMP_BUILD_DIR)/mktemp $(MKTEMP_IPK_DIR)/opt/bin/mktemp-mktemp
 	$(STRIP_COMMAND) $(MKTEMP_IPK_DIR)/opt/bin/mktemp-mktemp
 	$(MAKE) $(MKTEMP_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh" ; \

@@ -60,7 +60,7 @@ XAU_IPK=$(BUILD_DIR)/xau_$(XAU_VERSION)-$(XAU_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XAU_IPK_DIR)/CONTROL/control:
-	@install -d $(XAU_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XAU_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xau" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -98,7 +98,7 @@ $(XAU_BUILD_DIR)/.configured: $(DL_DIR)/$(XAU_SOURCE) $(XAU_PATCHES) make/xau.mk
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XAU_SOURCE)
 	if test -n "$(XAU_PATCHES)" ; \
 		then cat $(XAU_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XAU_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XAU_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XAU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XAU_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ $(XAU_IPK): $(XAU_BUILD_DIR)/.built
 	rm -rf $(XAU_IPK_DIR) $(BUILD_DIR)/xau_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAU_BUILD_DIR) DESTDIR=$(XAU_IPK_DIR) install-strip
 	$(MAKE) $(XAU_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XAU_SOURCE_DIR)/postinst $(XAU_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XAU_SOURCE_DIR)/postinst $(XAU_IPK_DIR)/CONTROL/postinst
 	rm -f $(XAU_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAU_IPK_DIR)
 

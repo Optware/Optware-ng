@@ -7,7 +7,7 @@ chmod ugo+x /mnt/config/K01optware.sh
 
 echo '#!/bin/sh' > /mnt/config/K01profile.sh
 echo >> /mnt/config/K01profile.sh
-echo 'echo "PATH=$PATH:/opt/bin:/opt/sbin" >> /etc/profile' >> /mnt/config/K01profile.sh
+echo 'echo "PATH=$PATH:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin" >> /etc/profile' >> /mnt/config/K01profile.sh
 chmod ugo+x /mnt/config/K01profile.sh
 
 /bin/sync

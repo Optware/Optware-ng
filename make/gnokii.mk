@@ -126,7 +126,7 @@ $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) ma
 	$(GNOKII_UNZIP) $(DL_DIR)/$(GNOKII_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNOKII_PATCHES)" ; \
 		then cat $(GNOKII_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GNOKII_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GNOKII_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GNOKII_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GNOKII_DIR) $(@D) ; \
@@ -194,7 +194,7 @@ gnokii-stage: $(GNOKII_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnokii
 #
 $(GNOKII_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnokii" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -209,7 +209,7 @@ $(GNOKII_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(GNOKII_CONFLICTS)" >>$@
 
 $(GNOKII_SMSD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnokii-smsd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,7 +224,7 @@ $(GNOKII_SMSD_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(GNOKII_SMSD_CONFLICTS)" >>$@
 
 $(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnokii-smsd-mysql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -263,15 +263,15 @@ $(GNOKII_IPK): $(GNOKII_BUILD_DIR)/.built
 	rmdir $(GNOKII_IPK_DIR)/opt/share/doc
 	rm -rf $(GNOKII_IPK_DIR)/opt/include/gnokii*
 	rmdir  $(GNOKII_IPK_DIR)/opt/include
-	install -d $(GNOKII_IPK_DIR)/opt/etc/
-#	install -m 644 $(GNOKII_SOURCE_DIR)/gnokii.conf $(GNOKII_IPK_DIR)/opt/etc/gnokii.conf
-#	install -d $(GNOKII_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GNOKII_SOURCE_DIR)/rc.gnokii $(GNOKII_IPK_DIR)/opt/etc/init.d/SXXgnokii
+	$(INSTALL) -d $(GNOKII_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GNOKII_SOURCE_DIR)/gnokii.conf $(GNOKII_IPK_DIR)/opt/etc/gnokii.conf
+#	$(INSTALL) -d $(GNOKII_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/rc.gnokii $(GNOKII_IPK_DIR)/opt/etc/init.d/SXXgnokii
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXgnokii
 	$(MAKE) $(GNOKII_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GNOKII_SOURCE_DIR)/prerm $(GNOKII_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/prerm $(GNOKII_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(GNOKII_CONFFILES) | sed -e 's/ /\n/g' > $(GNOKII_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNOKII_IPK_DIR)
@@ -282,9 +282,9 @@ $(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/.smsd-built
 	rm -f $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_file.la
 	rm -f $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_mysql.*
 	$(MAKE) $(GNOKII_SMSD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GNOKII_SOURCE_DIR)/prerm $(GNOKII_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/prerm $(GNOKII_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(GNOKII_SMSD_CONFFILES) | sed -e 's/ /\n/g' > $(GNOKII_SMSD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNOKII_SMSD_IPK_DIR)
@@ -299,9 +299,9 @@ $(GNOKII_SMSD_MYSQL_IPK): $(GNOKII_BUILD_DIR)/.smsd-built
 	mkdir -p $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/share/doc/gnokii-smsd
 	cp $(GNOKII_BUILD_DIR)/smsd/sms.tables.mysql.sql $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/share/doc/gnokii-smsd
 	$(MAKE) $(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GNOKII_SOURCE_DIR)/prerm $(GNOKII_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/prerm $(GNOKII_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(GNOKII_SMSD_MYSQL_CONFFILES) | sed -e 's/ /\n/g' > $(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNOKII_SMSD_MYSQL_IPK_DIR)

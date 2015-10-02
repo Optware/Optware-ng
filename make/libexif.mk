@@ -117,7 +117,7 @@ $(LIBEXIF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEXIF_SOURCE) $(LIBEXIF_PATCHES)
 	$(LIBEXIF_UNZIP) $(DL_DIR)/$(LIBEXIF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEXIF_PATCHES)" ; \
 		then cat $(LIBEXIF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBEXIF_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBEXIF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBEXIF_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBEXIF_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ libexif-stage: $(LIBEXIF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libexif
 #
 $(LIBEXIF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libexif" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,13 +197,13 @@ $(LIBEXIF_IPK_DIR)/CONTROL/control:
 $(LIBEXIF_IPK): $(LIBEXIF_BUILD_DIR)/.built
 	rm -rf $(LIBEXIF_IPK_DIR) $(BUILD_DIR)/libexif_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEXIF_BUILD_DIR)/libexif DESTDIR=$(LIBEXIF_IPK_DIR) install-strip
-#	install -d $(LIBEXIF_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBEXIF_SOURCE_DIR)/libexif.conf $(LIBEXIF_IPK_DIR)/opt/etc/libexif.conf
-#	install -d $(LIBEXIF_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBEXIF_SOURCE_DIR)/rc.libexif $(LIBEXIF_IPK_DIR)/opt/etc/init.d/SXXlibexif
+#	$(INSTALL) -d $(LIBEXIF_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBEXIF_SOURCE_DIR)/libexif.conf $(LIBEXIF_IPK_DIR)/opt/etc/libexif.conf
+#	$(INSTALL) -d $(LIBEXIF_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBEXIF_SOURCE_DIR)/rc.libexif $(LIBEXIF_IPK_DIR)/opt/etc/init.d/SXXlibexif
 	$(MAKE) $(LIBEXIF_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBEXIF_SOURCE_DIR)/postinst $(LIBEXIF_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBEXIF_SOURCE_DIR)/prerm $(LIBEXIF_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBEXIF_SOURCE_DIR)/postinst $(LIBEXIF_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBEXIF_SOURCE_DIR)/prerm $(LIBEXIF_IPK_DIR)/CONTROL/prerm
 	echo $(LIBEXIF_CONFFILES) | sed -e 's/ /\n/g' > $(LIBEXIF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBEXIF_IPK_DIR)
 

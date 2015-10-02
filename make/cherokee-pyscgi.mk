@@ -113,12 +113,12 @@ $(CHEROKEE-PYSCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) $(
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR)
 	$(CHEROKEE-PYSCGI_UNZIP) $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CHEROKEE-PYSCGI_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) -p1
+#	cat $(CHEROKEE-PYSCGI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) -p1
 	mv $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) $(@D)/2.5
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR)
 	$(CHEROKEE-PYSCGI_UNZIP) $(DL_DIR)/$(CHEROKEE-PYSCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CHEROKEE-PYSCGI_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) -p1
+#	cat $(CHEROKEE-PYSCGI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) -p1
 	mv $(BUILD_DIR)/$(CHEROKEE-PYSCGI_DIR) $(@D)/2.6
 	touch $@
 
@@ -157,7 +157,7 @@ cherokee-pyscgi-stage: $(CHEROKEE-PYSCGI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cherokee-pyscgi
 #
 $(PY25-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-cherokee-scgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -171,7 +171,7 @@ $(PY25-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(CHEROKEE-PYSCGI_CONFLICTS)" >>$@
 
 $(PY26-CHEROKEE-SCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-cherokee-scgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

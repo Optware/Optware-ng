@@ -94,7 +94,7 @@ $(IPKG-UTILS_DIR)/.unpacked: $(DL_DIR)/$(IPKG-UTILS_SOURCE) make/ipkg-utils.mk
 	mkdir -p $(TOOL_BUILD_DIR)
 	mkdir -p $(DL_DIR)
 	zcat $(DL_DIR)/$(IPKG-UTILS_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
-	cd $(SOURCE_DIR); cat $(IPKG-UTILS_PATCHES) | patch -p1 -d $(IPKG-UTILS_DIR)
+	cd $(SOURCE_DIR); cat $(IPKG-UTILS_PATCHES) | $(PATCH) -p1 -d $(IPKG-UTILS_DIR)
 	touch $@
 
 ipkg-utils-unpack: $(IPKG-UTILS_BUILD_DIR)/.unpacked
@@ -104,9 +104,9 @@ ipkg-utils-unpack: $(IPKG-UTILS_BUILD_DIR)/.unpacked
 #
 $(STAGING_DIR)/bin/ipkg-build: $(IPKG-UTILS_DIR)/.unpacked
 	mkdir -p $(STAGING_DIR)/bin
-	install -m0755 $(IPKG-UTILS_DIR)/ipkg-build* $(STAGING_DIR)/bin
-	install -m0755 $(IPKG-UTILS_DIR)/ipkg-make-index $(STAGING_DIR)/bin
-	install -m0755 $(IPKG-UTILS_DIR)/ipkg.py $(STAGING_DIR)/bin
+	$(INSTALL) -m0755 $(IPKG-UTILS_DIR)/ipkg-build* $(STAGING_DIR)/bin
+	$(INSTALL) -m0755 $(IPKG-UTILS_DIR)/ipkg-make-index $(STAGING_DIR)/bin
+	$(INSTALL) -m0755 $(IPKG-UTILS_DIR)/ipkg.py $(STAGING_DIR)/bin
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-mipsel buildroot-mipsel-ng shibby-tomato-arm, $(OPTWARE_TARGET)))
 #	to make feed firmware-independent, we make
 #	all packages (except uclibc-opt, libnsl and ipkg-static)

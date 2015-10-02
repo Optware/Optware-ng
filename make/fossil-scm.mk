@@ -111,7 +111,7 @@ $(FOSSIL-SCM_BUILD_DIR)/.configured: $(DL_DIR)/$(FOSSIL-SCM_SOURCE) $(FOSSIL-SCM
 	cd $(BUILD_DIR) && $(FOSSIL-SCM_UNZIP) $(DL_DIR)/$(FOSSIL-SCM_SOURCE)
 	if test -n "$(FOSSIL-SCM_PATCHES)" ; \
 		then cat $(FOSSIL-SCM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FOSSIL-SCM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FOSSIL-SCM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FOSSIL-SCM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FOSSIL-SCM_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ fossil-scm: $(FOSSIL-SCM_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/fossil-scm
 #
 $(FOSSIL-SCM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fossil-scm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,8 +193,8 @@ $(FOSSIL-SCM_IPK_DIR)/CONTROL/control:
 $(FOSSIL-SCM_IPK): $(FOSSIL-SCM_BUILD_DIR)/.built
 	rm -rf $(FOSSIL-SCM_IPK_DIR) $(BUILD_DIR)/fossil-scm_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(FOSSIL-SCM_BUILD_DIR) DESTDIR=$(FOSSIL-SCM_IPK_DIR) install-strip
-	install -d $(FOSSIL-SCM_IPK_DIR)/opt/bin
-	install -m755 $(<D)/fossil $(FOSSIL-SCM_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(FOSSIL-SCM_IPK_DIR)/opt/bin
+	$(INSTALL) -m755 $(<D)/fossil $(FOSSIL-SCM_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(FOSSIL-SCM_IPK_DIR)/opt/bin/fossil
 	$(MAKE) $(FOSSIL-SCM_IPK_DIR)/CONTROL/control
 	echo $(FOSSIL-SCM_CONFFILES) | sed -e 's/ /\n/g' > $(FOSSIL-SCM_IPK_DIR)/CONTROL/conffiles

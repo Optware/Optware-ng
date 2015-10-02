@@ -74,7 +74,7 @@ $(TNEF_BUILD_DIR)/.configured: $(DL_DIR)/$(TNEF_SOURCE) $(TNEF_PATCHES) make/tne
 	$(TNEF_UNZIP) $(DL_DIR)/$(TNEF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TNEF_PATCHES)" ; \
 		then cat $(TNEF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TNEF_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TNEF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TNEF_DIR)" != "$(TNEF_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TNEF_DIR) $(TNEF_BUILD_DIR) ; \
@@ -124,7 +124,7 @@ tnef-stage: $(TNEF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tnef
 #
 $(TNEF_IPK_DIR)/CONTROL/control:
-	@install -d $(TNEF_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TNEF_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: tnef" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

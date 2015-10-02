@@ -113,7 +113,7 @@ $(EMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS_SOURCE) $(EMACS_PATCHES)
 	rm -rf $(BUILD_DIR)/$(EMACS_DIR) $(EMACS_BUILD_DIR)
 	$(EMACS_UNZIP) $(DL_DIR)/$(EMACS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(EMACS_DIR) $(EMACS_BUILD_DIR)
-	#cat $(EMACS_PATCHES) | patch -d $(EMACS_BUILD_DIR) -p1
+	#cat $(EMACS_PATCHES) | $(PATCH) -d $(EMACS_BUILD_DIR) -p1
 	(cd $(EMACS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(EMACS_CPPFLAGS)" \
@@ -155,7 +155,7 @@ emacs: $(EMACS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/emacs
 #
 $(EMACS_IPK_DIR)/CONTROL/control:
-	@install -d $(EMACS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(EMACS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: emacs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -170,7 +170,7 @@ $(EMACS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(EMACS_CONFLICTS)" >>$@
 
 $(EMACS_LISP_IPK_DIR)/CONTROL/control:
-	@install -d $(EMACS_LISP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(EMACS_LISP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: emacs-lisp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,7 +182,7 @@ $(EMACS_LISP_IPK_DIR)/CONTROL/control:
 	@echo "Description: Lisp files - part of emacs" >>$@
 
 $(EMACS_LISP_SRC_IPK_DIR)/CONTROL/control:
-	@install -d $(EMACS_LISP_SRC_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(EMACS_LISP_SRC_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: emacs-lisp-src" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -221,10 +221,10 @@ $(EMACS_IPK): $(EMACS_BUILD_DIR)/.built
 			done ; \
 	)
 	$(MAKE) $(EMACS_LISP_IPK_DIR)/CONTROL/control
-	install -d $(EMACS_LISP_IPK_DIR)/opt/share/emacs/$(EMACS_VERSION)
+	$(INSTALL) -d $(EMACS_LISP_IPK_DIR)/opt/share/emacs/$(EMACS_VERSION)
 	mv $(EMACS_IPK_DIR)/opt/share/emacs/$(EMACS_VERSION)/lisp $(EMACS_LISP_IPK_DIR)/opt/share/emacs/$(EMACS_VERSION)
-#	install -m 644 $(EMACS_SOURCE_DIR)/postinst $(EMACS_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(EMACS_SOURCE_DIR)/prerm $(EMACS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(EMACS_SOURCE_DIR)/postinst $(EMACS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(EMACS_SOURCE_DIR)/prerm $(EMACS_IPK_DIR)/CONTROL/prerm
 #	echo $(EMACS_CONFFILES) | sed -e 's/ /\n/g' > $(EMACS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EMACS_LISP_SRC_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EMACS_LISP_IPK_DIR)

@@ -111,7 +111,7 @@ $(FFMPEGTHUMBNAILER_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEGTHUMBNAILER_SOURCE
 	$(FFMPEGTHUMBNAILER_UNZIP) $(DL_DIR)/$(FFMPEGTHUMBNAILER_SOURCE_SAVE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FFMPEGTHUMBNAILER_PATCHES)" ; \
 		then cat $(FFMPEGTHUMBNAILER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FFMPEGTHUMBNAILER_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FFMPEGTHUMBNAILER_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FFMPEGTHUMBNAILER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FFMPEGTHUMBNAILER_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ ffmpegthumbnailer-stage: $(FFMPEGTHUMBNAILER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ffmpegthumbnailer
 #
 $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ffmpegthumbnailer" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(FFMPEGTHUMBNAILER_IPK): $(FFMPEGTHUMBNAILER_BUILD_DIR)/.built
 	$(MAKE) -C $(FFMPEGTHUMBNAILER_BUILD_DIR) DESTDIR=$(FFMPEGTHUMBNAILER_IPK_DIR) install
 	$(STRIP_COMMAND) $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/{bin/*,lib/*.so}
 	rm -f $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/lib/*.la
-#	install -d $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/
-#	install -m 644 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/ffmpegthumbnailer.conf $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/ffmpegthumbnailer.conf
-#	install -d $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/rc.ffmpegthumbnailer $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/init.d/SXXffmpegthumbnailer
+#	$(INSTALL) -d $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/ffmpegthumbnailer.conf $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/ffmpegthumbnailer.conf
+#	$(INSTALL) -d $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/rc.ffmpegthumbnailer $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/init.d/SXXffmpegthumbnailer
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/init.d/SXXffmpegthumbnailer
 	$(MAKE) $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/postinst $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/postinst $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/prerm $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/prerm $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

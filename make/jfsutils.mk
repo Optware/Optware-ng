@@ -95,7 +95,7 @@ $(JFSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(JFSUTILS_SOURCE) $(JFSUTILS_PATCH
 	chmod u+w $(BUILD_DIR)/$(JFSUTILS_DIR)/*
 	if test -n "$(JFSUTILS_PATCHES)" ; \
 		then cat $(JFSUTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(JFSUTILS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(JFSUTILS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(JFSUTILS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(JFSUTILS_DIR) $(@D) ; \
@@ -140,7 +140,7 @@ jfsutils: $(JFSUTILS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/jfsutils
 #
 $(JFSUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: jfsutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -166,7 +166,7 @@ $(JFSUTILS_IPK_DIR)/CONTROL/control:
 #
 $(JFSUTILS_IPK): $(JFSUTILS_BUILD_DIR)/.built
 	rm -rf $(JFSUTILS_IPK_DIR) $(BUILD_DIR)/jfsutils_*_$(TARGET_ARCH).ipk
-	install -d $(JFSUTILS_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(JFSUTILS_IPK_DIR)/opt/sbin
 	$(MAKE) -C $(JFSUTILS_BUILD_DIR) DESTDIR=$(JFSUTILS_IPK_DIR) install-strip
 	$(MAKE) $(JFSUTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JFSUTILS_IPK_DIR)

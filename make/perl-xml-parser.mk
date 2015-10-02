@@ -35,7 +35,7 @@ $(PERL-XML-PARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-XML-PARSER_SOURCE) $(
 	$(MAKE) perl-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(PERL-XML-PARSER_DIR) $(PERL-XML-PARSER_BUILD_DIR)
 	$(PERL-XML-PARSER_UNZIP) $(DL_DIR)/$(PERL-XML-PARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-XML-PARSER_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-XML-PARSER_DIR) -p1
+#	cat $(PERL-XML-PARSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-XML-PARSER_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-XML-PARSER_DIR) $(PERL-XML-PARSER_BUILD_DIR)
 	(cd $(PERL-XML-PARSER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -74,7 +74,7 @@ $(PERL-XML-PARSER_BUILD_DIR)/.staged: $(PERL-XML-PARSER_BUILD_DIR)/.built
 perl-xml-parser-stage: $(PERL-XML-PARSER_BUILD_DIR)/.staged
 
 $(PERL-XML-PARSER_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-XML-PARSER_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-XML-PARSER_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-xml-parser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

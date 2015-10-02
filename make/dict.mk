@@ -154,7 +154,7 @@ dict-stage: $(DICT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dict
 #
 $(DICT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dict" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,8 +182,8 @@ $(DICT_IPK): $(DICT_BUILD_DIR)/.built
 	rm -rf $(DICT_IPK_DIR) $(BUILD_DIR)/dict_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DICT_BUILD_DIR) DESTDIR=$(DICT_IPK_DIR) install.dict
 	$(STRIP_COMMAND) $(DICT_IPK_DIR)/opt/bin/dict
-	install -d $(DICT_IPK_DIR)/opt/etc/
-	install -m 644 $(DICT_SOURCE_DIR)/dict.conf $(DICT_IPK_DIR)/opt/etc/dict.conf
+	$(INSTALL) -d $(DICT_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(DICT_SOURCE_DIR)/dict.conf $(DICT_IPK_DIR)/opt/etc/dict.conf
 	$(MAKE) $(DICT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DICT_IPK_DIR)
 

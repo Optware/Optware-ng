@@ -1,4 +1,4 @@
 #!/bin/sh
 
-/opt/bin/killall fetchmail 2>&1
+%OPTWARE_TARGET_PREFIX%/bin/killall fetchmail 2>&1
 

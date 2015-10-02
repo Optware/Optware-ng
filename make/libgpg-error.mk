@@ -117,7 +117,7 @@ $(LIBGPG-ERROR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(@D)
 	$(LIBGPG-ERROR_UNZIP) $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(LIBGPG-ERROR_PATCHES) | patch -d $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) -p1
+	#cat $(LIBGPG-ERROR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(@D)
 	if [ -f $(@D)/src/syscfg/lock-obj-pub.$(LIBGPG-ERROR_ARCH).h ]; then \
 		ln -s lock-obj-pub.$(LIBGPG-ERROR_ARCH).h $(@D)/src/syscfg/lock-obj-pub.linux-gnu.h; \
@@ -169,7 +169,7 @@ libgpg-error-stage: $(LIBGPG-ERROR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libgpg-error
 #
 $(LIBGPG-ERROR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libgpg-error" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,13 +198,13 @@ $(LIBGPG-ERROR_IPK_DIR)/CONTROL/control:
 $(LIBGPG-ERROR_IPK): $(LIBGPG-ERROR_BUILD_DIR)/.built
 	rm -rf $(LIBGPG-ERROR_IPK_DIR) $(BUILD_DIR)/libgpg-error_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGPG-ERROR_BUILD_DIR) DESTDIR=$(LIBGPG-ERROR_IPK_DIR) install-strip
-	#install -d $(LIBGPG-ERROR_IPK_DIR)/opt/etc/
-	#install -m 644 $(LIBGPG-ERROR_SOURCE_DIR)/libgpg-error.conf $(LIBGPG-ERROR_IPK_DIR)/opt/etc/libgpg-error.conf
-	#install -d $(LIBGPG-ERROR_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(LIBGPG-ERROR_SOURCE_DIR)/rc.libgpg-error $(LIBGPG-ERROR_IPK_DIR)/opt/etc/init.d/SXXlibgpg-error
+	#$(INSTALL) -d $(LIBGPG-ERROR_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(LIBGPG-ERROR_SOURCE_DIR)/libgpg-error.conf $(LIBGPG-ERROR_IPK_DIR)/opt/etc/libgpg-error.conf
+	#$(INSTALL) -d $(LIBGPG-ERROR_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(LIBGPG-ERROR_SOURCE_DIR)/rc.libgpg-error $(LIBGPG-ERROR_IPK_DIR)/opt/etc/init.d/SXXlibgpg-error
 	$(MAKE) $(LIBGPG-ERROR_IPK_DIR)/CONTROL/control
-	#install -m 755 $(LIBGPG-ERROR_SOURCE_DIR)/postinst $(LIBGPG-ERROR_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(LIBGPG-ERROR_SOURCE_DIR)/prerm $(LIBGPG-ERROR_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(LIBGPG-ERROR_SOURCE_DIR)/postinst $(LIBGPG-ERROR_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(LIBGPG-ERROR_SOURCE_DIR)/prerm $(LIBGPG-ERROR_IPK_DIR)/CONTROL/prerm
 	echo $(LIBGPG-ERROR_CONFFILES) | sed -e 's/ /\n/g' > $(LIBGPG-ERROR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGPG-ERROR_IPK_DIR)
 

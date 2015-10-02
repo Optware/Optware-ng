@@ -115,7 +115,7 @@ $(PY-CJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CJSON_SOURCE) $(PY-CJSON_PATCH
 	mkdir -p $(PY-CJSON_BUILD_DIR)
 	# 2.4
 	$(PY-CJSON_UNZIP) $(DL_DIR)/$(PY-CJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CJSON_DIR) -p1
+#	cat $(PY-CJSON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CJSON_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CJSON_DIR) $(PY-CJSON_BUILD_DIR)/2.4
 	(cd $(PY-CJSON_BUILD_DIR)/2.4; \
 	    ( \
@@ -131,7 +131,7 @@ $(PY-CJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CJSON_SOURCE) $(PY-CJSON_PATCH
 	)
 	# 2.5
 	$(PY-CJSON_UNZIP) $(DL_DIR)/$(PY-CJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CJSON_DIR) -p1
+#	cat $(PY-CJSON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CJSON_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CJSON_DIR) $(PY-CJSON_BUILD_DIR)/2.5
 	(cd $(PY-CJSON_BUILD_DIR)/2.5; \
 	    ( \
@@ -147,7 +147,7 @@ $(PY-CJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CJSON_SOURCE) $(PY-CJSON_PATCH
 	)
 	# 2.5
 	$(PY-CJSON_UNZIP) $(DL_DIR)/$(PY-CJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CJSON_DIR) -p1
+#	cat $(PY-CJSON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CJSON_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CJSON_DIR) $(PY-CJSON_BUILD_DIR)/2.6
 	(cd $(PY-CJSON_BUILD_DIR)/2.6; \
 	    ( \
@@ -204,7 +204,7 @@ py-cjson-stage: $(PY-CJSON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-cjson
 #
 $(PY24-CJSON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-cjson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -218,7 +218,7 @@ $(PY24-CJSON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CJSON_CONFLICTS)" >>$@
 
 $(PY25-CJSON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-cjson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -232,7 +232,7 @@ $(PY25-CJSON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CJSON_CONFLICTS)" >>$@
 
 $(PY26-CJSON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-cjson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

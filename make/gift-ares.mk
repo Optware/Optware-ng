@@ -115,7 +115,7 @@ $(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCH
 	$(MAKE) gift-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(GIFTARES_DIR) $(@D)
 	$(GIFTARES_UNZIP) $(DL_DIR)/$(GIFTARES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GIFTARES_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTARES_DIR) -p1
+#	cat $(GIFTARES_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIFTARES_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFTARES_DIR) $(GIFTARES_BUILD_DIR)
 	(cd `aclocal --print-ac-dir`; \
 		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
@@ -160,11 +160,11 @@ gift-ares: $(GIFTARES_BUILD_DIR)/.built
 #
 $(GIFTARES_BUILD_DIR)/.staged: $(GIFTARES_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(GIFTARES_BUILD_DIR)/gift-ares.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTARES_BUILD_DIR)/libgift-ares.a $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTARES_BUILD_DIR)/libgift-ares.so.$(GIFTARES_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/gift-ares.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/libgift-ares.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/libgift-ares.so.$(GIFTARES_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libgift-ares.so.$(GIFTARES_VERSION) libgift-ares.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libgift-ares.so.$(GIFTARES_VERSION) libgift-ares.so
 	touch $@
@@ -176,7 +176,7 @@ gift-ares-stage:$(GIFTARES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gift-ares
 #
 $(GIFTARES_IPK_DIR)/CONTROL/control:
-	@install -d $(GIFTARES_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GIFTARES_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: gift-ares" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,13 +203,13 @@ $(GIFTARES_IPK_DIR)/CONTROL/control:
 #
 $(GIFTARES_IPK): $(GIFTARES_BUILD_DIR)/.built
 	rm -rf $(GIFTARES_IPK_DIR) $(BUILD_DIR)/gift-ares_*_$(TARGET_ARCH).ipk
-	install -d $(GIFTARES_IPK_DIR)/opt/lib/giFT
+	$(INSTALL) -d $(GIFTARES_IPK_DIR)/opt/lib/giFT
 	$(STRIP_COMMAND) $(GIFTARES_BUILD_DIR)/gift/.libs/libAres.so -o $(GIFTARES_IPK_DIR)/opt/lib/giFT/libAres.so
-	install -m 644 $(GIFTARES_BUILD_DIR)/gift/.libs/libAres.la $(GIFTARES_IPK_DIR)/opt/lib/giFT/libAres.la
-	install -d $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares
-	install -m 644 $(GIFTARES_BUILD_DIR)/data/Ares.conf.template $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares/Ares.conf.template
-	install -m 644 $(GIFTARES_BUILD_DIR)/data/nodes $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares/nodes
-	install -d $(GIFTARES_IPK_DIR)/CONTROL
+	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/gift/.libs/libAres.la $(GIFTARES_IPK_DIR)/opt/lib/giFT/libAres.la
+	$(INSTALL) -d $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares
+	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/data/Ares.conf.template $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares/Ares.conf.template
+	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/data/nodes $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares/nodes
+	$(INSTALL) -d $(GIFTARES_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFTARES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTARES_IPK_DIR)
 

@@ -119,7 +119,7 @@ pwgen: $(PWGEN_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/pwgen
 #
 $(PWGEN_IPK_DIR)/CONTROL/control:
-	@install -d $(PWGEN_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PWGEN_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: pwgen" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -140,11 +140,11 @@ $(PWGEN_IPK_DIR)/CONTROL/control:
 #
 $(PWGEN_IPK): $(PWGEN_BUILD_DIR)/.built
 	rm -rf $(PWGEN_IPK_DIR) $(BUILD_DIR)/pwgen_*_$(TARGET_ARCH).ipk
-	install -d $(PWGEN_IPK_DIR)/opt/bin
-	install -m 755 $(PWGEN_BUILD_DIR)/pwgen $(PWGEN_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(PWGEN_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(PWGEN_BUILD_DIR)/pwgen $(PWGEN_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PWGEN_IPK_DIR)/opt/bin/*
-	install -d $(PWGEN_IPK_DIR)/opt/man/man1
-	install -m 644 $(PWGEN_BUILD_DIR)/pwgen.1 $(PWGEN_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(PWGEN_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(PWGEN_BUILD_DIR)/pwgen.1 $(PWGEN_IPK_DIR)/opt/man/man1
 	$(MAKE) $(PWGEN_IPK_DIR)/CONTROL/control
 	echo $(PWGEN_CONFFILES) | sed -e 's/ /\n/g' > $(PWGEN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PWGEN_IPK_DIR)

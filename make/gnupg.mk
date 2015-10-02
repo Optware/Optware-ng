@@ -121,7 +121,7 @@ ifneq (, $(filter libiconv, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(@D)
 	$(GNUPG_UNZIP) $(DL_DIR)/$(GNUPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GNUPG_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
+#	cat $(GNUPG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
 	mv $(BUILD_DIR)/$(GNUPG_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -179,7 +179,7 @@ gnupg-stage: $(GNUPG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnupg
 #
 $(GNUPG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnupg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

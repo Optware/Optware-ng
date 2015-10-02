@@ -63,7 +63,7 @@ $(IPCALC_BUILD_DIR)/.staged: $(IPCALC_BUILD_DIR)/.built
 ipcalc-stage: $(IPCALC_BUILD_DIR)/.staged
 
 $(IPCALC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ipcalc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -79,12 +79,12 @@ $(IPCALC_IPK_DIR)/CONTROL/control:
 
 $(IPCALC_IPK): $(IPCALC_BUILD_DIR)/.built
 	rm -rf $(IPCALC_IPK_DIR) $(BUILD_DIR)/ipcalc_*_$(TARGET_ARCH).ipk
-	install -d $(IPCALC_IPK_DIR)/opt/bin \
+	$(INSTALL) -d $(IPCALC_IPK_DIR)/opt/bin \
 		$(IPCALC_IPK_DIR)/opt/lib/cgi-bin \
 		$(IPCALC_IPK_DIR)/opt/share/doc/ipcalc
-	install $(IPCALC_BUILD_DIR)/ipcalc $(IPCALC_IPK_DIR)/opt/bin
-	install $(IPCALC_BUILD_DIR)/ipcalc.cgi $(IPCALC_IPK_DIR)/opt/lib/cgi-bin
-	install $(IPCALC_BUILD_DIR)/contributors \
+	$(INSTALL) $(IPCALC_BUILD_DIR)/ipcalc $(IPCALC_IPK_DIR)/opt/bin
+	$(INSTALL) $(IPCALC_BUILD_DIR)/ipcalc.cgi $(IPCALC_IPK_DIR)/opt/lib/cgi-bin
+	$(INSTALL) $(IPCALC_BUILD_DIR)/contributors \
 		$(IPCALC_BUILD_DIR)/changelog \
 		$(IPCALC_BUILD_DIR)/license \
 		$(IPCALC_IPK_DIR)/opt/share/doc/ipcalc

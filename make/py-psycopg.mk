@@ -113,7 +113,7 @@ $(PY-PSYCOPG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG_DIR)
 	$(PY-PSYCOPG_UNZIP) $(DL_DIR)/$(PY-PSYCOPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-PSYCOPG_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG_DIR) -p1
+	#cat $(PY-PSYCOPG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PSYCOPG_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PSYCOPG_DIR) $(@D)/2.4
 	sed -i -e '/py_makefile=/s|=.*|=$(STAGING_LIB_DIR)/python2.4/config/Makefile|' $(@D)/2.4/configure
 	(cd $(@D)/2.4; \
@@ -135,7 +135,7 @@ $(PY-PSYCOPG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG_DIR)
 	$(PY-PSYCOPG_UNZIP) $(DL_DIR)/$(PY-PSYCOPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-PSYCOPG_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG_DIR) -p1
+	#cat $(PY-PSYCOPG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PSYCOPG_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PSYCOPG_DIR) $(@D)/2.5
 	sed -i -e '/py_makefile=/s|=.*|=$(STAGING_LIB_DIR)/python2.5/config/Makefile|' $(@D)/2.5/configure
 	(cd $(@D)/2.5; \
@@ -193,7 +193,7 @@ py-psycopg-stage: $(PY-PSYCOPG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-psycopg
 #
 $(PY24-PSYCOPG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-psycopg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,7 +207,7 @@ $(PY24-PSYCOPG_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PSYCOPG_CONFLICTS)" >>$@
 
 $(PY25-PSYCOPG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-psycopg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -235,7 +235,7 @@ $(PY25-PSYCOPG_IPK_DIR)/CONTROL/control:
 $(PY24-PSYCOPG_IPK): $(PY-PSYCOPG_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py-psycopg_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY24-PSYCOPG_IPK_DIR) $(BUILD_DIR)/py24-psycopg_*_$(TARGET_ARCH).ipk
-	install -d $(PY24-PSYCOPG_IPK_DIR)/opt/lib/python2.4/site-packages
+	$(INSTALL) -d $(PY24-PSYCOPG_IPK_DIR)/opt/lib/python2.4/site-packages
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 	$(MAKE) -C $(PY-PSYCOPG_BUILD_DIR)/2.4 \
 		prefix=$(PY24-PSYCOPG_IPK_DIR)/opt \
@@ -244,14 +244,14 @@ $(PY24-PSYCOPG_IPK): $(PY-PSYCOPG_BUILD_DIR)/.built
 	for f in `find $(PY24-PSYCOPG_IPK_DIR)/opt/lib -name '*.so'`; do \
 		chmod u+w $$f; $(STRIP_COMMAND) $$f; chmod u-w $$f; \
 	done
-#	install -d $(PY24-PSYCOPG_IPK_DIR)/opt/share/doc/
+#	$(INSTALL) -d $(PY24-PSYCOPG_IPK_DIR)/opt/share/doc/
 #	cp -rp $(PY-PSYCOPG_BUILD_DIR)/2.4/doc $(PY24-PSYCOPG_IPK_DIR)/opt/share/doc/py-psycopg
 	$(MAKE) $(PY24-PSYCOPG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PSYCOPG_IPK_DIR)
 
 $(PY25-PSYCOPG_IPK): $(PY-PSYCOPG_BUILD_DIR)/.built
 	rm -rf $(PY25-PSYCOPG_IPK_DIR) $(BUILD_DIR)/py25-psycopg_*_$(TARGET_ARCH).ipk
-	install -d $(PY25-PSYCOPG_IPK_DIR)/opt/lib/python2.5/site-packages
+	$(INSTALL) -d $(PY25-PSYCOPG_IPK_DIR)/opt/lib/python2.5/site-packages
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 	$(MAKE) -C $(PY-PSYCOPG_BUILD_DIR)/2.5 \
 		prefix=$(PY25-PSYCOPG_IPK_DIR)/opt \
@@ -260,7 +260,7 @@ $(PY25-PSYCOPG_IPK): $(PY-PSYCOPG_BUILD_DIR)/.built
 	for f in `find $(PY25-PSYCOPG_IPK_DIR)/opt/lib -name '*.so'`; do \
 		chmod u+w $$f; $(STRIP_COMMAND) $$f; chmod u-w $$f; \
 	done
-	install -d $(PY25-PSYCOPG_IPK_DIR)/opt/share/doc/
+	$(INSTALL) -d $(PY25-PSYCOPG_IPK_DIR)/opt/share/doc/
 	cp -rp $(PY-PSYCOPG_BUILD_DIR)/2.5/doc $(PY25-PSYCOPG_IPK_DIR)/opt/share/doc/py-psycopg
 	$(MAKE) $(PY25-PSYCOPG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PSYCOPG_IPK_DIR)

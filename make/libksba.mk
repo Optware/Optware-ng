@@ -110,7 +110,7 @@ $(LIBKSBA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBKSBA_SOURCE) $(LIBKSBA_PATCHES)
 	$(LIBKSBA_UNZIP) $(DL_DIR)/$(LIBKSBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBKSBA_PATCHES)" ; \
 		then cat $(LIBKSBA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBKSBA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBKSBA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBKSBA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBKSBA_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ libksba-stage: $(LIBKSBA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libksba
 #
 $(LIBKSBA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libksba" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,15 +193,15 @@ $(LIBKSBA_IPK): $(LIBKSBA_BUILD_DIR)/.built
 	rm -rf $(LIBKSBA_IPK_DIR) $(BUILD_DIR)/libksba_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBKSBA_BUILD_DIR) DESTDIR=$(LIBKSBA_IPK_DIR) install-strip
 	rm -f $(LIBKSBA_IPK_DIR)/opt/share/info/dir
-#	install -d $(LIBKSBA_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBKSBA_SOURCE_DIR)/libksba.conf $(LIBKSBA_IPK_DIR)/opt/etc/libksba.conf
-#	install -d $(LIBKSBA_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBKSBA_SOURCE_DIR)/rc.libksba $(LIBKSBA_IPK_DIR)/opt/etc/init.d/SXXlibksba
+#	$(INSTALL) -d $(LIBKSBA_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBKSBA_SOURCE_DIR)/libksba.conf $(LIBKSBA_IPK_DIR)/opt/etc/libksba.conf
+#	$(INSTALL) -d $(LIBKSBA_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBKSBA_SOURCE_DIR)/rc.libksba $(LIBKSBA_IPK_DIR)/opt/etc/init.d/SXXlibksba
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBKSBA_IPK_DIR)/opt/etc/init.d/SXXlibksba
 	$(MAKE) $(LIBKSBA_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBKSBA_SOURCE_DIR)/postinst $(LIBKSBA_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBKSBA_SOURCE_DIR)/postinst $(LIBKSBA_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBKSBA_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBKSBA_SOURCE_DIR)/prerm $(LIBKSBA_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBKSBA_SOURCE_DIR)/prerm $(LIBKSBA_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBKSBA_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

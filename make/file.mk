@@ -130,7 +130,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(FILE_DIR) $(@D)
 	$(FILE_UNZIP) $(DL_DIR)/$(FILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FILE_PATCHES)"; \
-		then cat $(FILE_PATCHES) | patch -d $(BUILD_DIR)/$(FILE_DIR) -p0; \
+		then cat $(FILE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(FILE_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(FILE_DIR) $(@D)
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3 ; \
@@ -186,7 +186,7 @@ file-stage: $(FILE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/file
 #
 $(FILE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: file" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -218,11 +218,11 @@ $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 		FILE_COMPILE=$(FILE_HOST_BUILD_DIR)/src/file
 	rm -f $(FILE_IPK_DIR)/opt/lib/libmagic.la
 	rm -f $(FILE_IPK_DIR)/opt/share/file/magic.mgc
-	install -d $(FILE_IPK_DIR)/opt/share/file
+	$(INSTALL) -d $(FILE_IPK_DIR)/opt/share/file
 	cp -rp $(FILE_BUILD_DIR)/magic/Magdir $(FILE_IPK_DIR)/opt/share/file/magic
 	$(MAKE) $(FILE_IPK_DIR)/CONTROL/control
-	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FILE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(FILE_IPK_DIR)
 

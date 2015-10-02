@@ -112,7 +112,7 @@ $(HASERL_BUILD_DIR)/.configured: $(DL_DIR)/$(HASERL_SOURCE) $(HASERL_PATCHES) ma
 	$(HASERL_UNZIP) $(DL_DIR)/$(HASERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HASERL_PATCHES)" ; \
 		then cat $(HASERL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HASERL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HASERL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HASERL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HASERL_DIR) $(@D)/with-lua ; \
@@ -135,7 +135,7 @@ $(HASERL_BUILD_DIR)/.configured: $(DL_DIR)/$(HASERL_SOURCE) $(HASERL_PATCHES) ma
 	$(HASERL_UNZIP) $(DL_DIR)/$(HASERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HASERL_PATCHES)" ; \
 		then cat $(HASERL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HASERL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HASERL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HASERL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HASERL_DIR) $(@D)/without-lua ; \
@@ -191,7 +191,7 @@ haserl-stage: $(HASERL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/haserl
 #
 $(HASERL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: haserl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -221,7 +221,7 @@ $(HASERL_IPK): $(HASERL_BUILD_DIR)/.built
 	rm -rf $(HASERL_IPK_DIR) $(BUILD_DIR)/haserl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HASERL_BUILD_DIR)/with-lua DESTDIR=$(HASERL_IPK_DIR) install-strip
 	mv $(HASERL_IPK_DIR)/opt/bin/haserl $(HASERL_IPK_DIR)/opt/bin/haserl-with-lua
-	install $(HASERL_BUILD_DIR)/without-lua/src/haserl $(HASERL_IPK_DIR)/opt/bin/haserl-without-lua
+	$(INSTALL) $(HASERL_BUILD_DIR)/without-lua/src/haserl $(HASERL_IPK_DIR)/opt/bin/haserl-without-lua
 	$(STRIP_COMMAND) $(HASERL_IPK_DIR)/opt/bin/haserl-without-lua
 	cd $(HASERL_IPK_DIR)/opt/bin && ln -sf haserl-without-lua haserl
 	$(MAKE) $(HASERL_IPK_DIR)/CONTROL/control

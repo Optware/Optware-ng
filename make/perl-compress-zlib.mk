@@ -36,7 +36,7 @@ $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-COMPRESS-ZLIB_SOUR
 	$(MAKE) perl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PERL-COMPRESS-ZLIB_DIR) $(PERL-COMPRESS-ZLIB_BUILD_DIR)
 	$(PERL-COMPRESS-ZLIB_UNZIP) $(DL_DIR)/$(PERL-COMPRESS-ZLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-COMPRESS-ZLIB_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-COMPRESS-ZLIB_DIR) -p1
+#	cat $(PERL-COMPRESS-ZLIB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-COMPRESS-ZLIB_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-COMPRESS-ZLIB_DIR) $(PERL-COMPRESS-ZLIB_BUILD_DIR)
 	(cd $(PERL-COMPRESS-ZLIB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -72,7 +72,7 @@ $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.staged: $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.built
 perl-compress-zlib-stage: $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.staged
 
 $(PERL-COMPRESS-ZLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-compress-zlib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

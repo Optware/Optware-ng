@@ -68,7 +68,7 @@ GDK-PIXBUF_IPK=$(BUILD_DIR)/gdk-pixbuf_$(GDK-PIXBUF_VERSION)-$(GDK-PIXBUF_IPK_VE
 # Automatically create a ipkg control file
 #
 $(GDK-PIXBUF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gdk-pixbuf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -108,7 +108,7 @@ $(GDK-PIXBUF_BUILD_DIR)/.configured: $(DL_DIR)/$(GDK-PIXBUF_SOURCE) $(GDK-PIXBUF
 	$(GDK-PIXBUF_UNZIP) $(DL_DIR)/$(GDK-PIXBUF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GDK-PIXBUF_PATCHES)" ; \
 		then cat $(GDK-PIXBUF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GDK-PIXBUF_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GDK-PIXBUF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GDK-PIXBUF_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GDK-PIXBUF_DIR) $(@D) ; \
@@ -178,14 +178,14 @@ gdk-pixbuf-stage: $(GDK-PIXBUF_BUILD_DIR)/.staged
 $(GDK-PIXBUF_IPK): $(GDK-PIXBUF_BUILD_DIR)/.built
 	rm -rf $(GDK-PIXBUF_IPK_DIR) $(BUILD_DIR)/gdk-pixbuf_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GDK-PIXBUF_BUILD_DIR) DESTDIR=$(GDK-PIXBUF_IPK_DIR) install-strip
-	install -d $(GDK-PIXBUF_IPK_DIR)/opt/share/gir-1.0
-	install -m 644 $(GDK-PIXBUF_SOURCE_DIR)/$(GDK-PIXBUF_VERSION)/GdkPixbuf-2.0.gir \
+	$(INSTALL) -d $(GDK-PIXBUF_IPK_DIR)/opt/share/gir-1.0
+	$(INSTALL) -m 644 $(GDK-PIXBUF_SOURCE_DIR)/$(GDK-PIXBUF_VERSION)/GdkPixbuf-2.0.gir \
 		$(GDK-PIXBUF_IPK_DIR)/opt/share/gir-1.0/GdkPixbuf-2.0.gir
 	find $(GDK-PIXBUF_IPK_DIR) -type f -name *.la -exec rm -f {} \;
 	rm -rf $(GDK-PIXBUF_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(GDK-PIXBUF_IPK_DIR)/CONTROL/control
-	install -m 755 $(GDK-PIXBUF_SOURCE_DIR)/postinst $(GDK-PIXBUF_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(GDK-PIXBUF_SOURCE_DIR)/prerm $(GDK-PIXBUF_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(GDK-PIXBUF_SOURCE_DIR)/postinst $(GDK-PIXBUF_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(GDK-PIXBUF_SOURCE_DIR)/prerm $(GDK-PIXBUF_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GDK-PIXBUF_IPK_DIR)
 
 #

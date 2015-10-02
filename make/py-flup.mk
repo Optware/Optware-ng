@@ -118,7 +118,7 @@ $(PY-FLUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FLUP_SOURCE) $(PY-FLUP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR)
 	$(PY-FLUP_UNZIP) $(DL_DIR)/$(PY-FLUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-FLUP_PATCHES)"; then \
-	    cat $(PY-FLUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
+	    cat $(PY-FLUP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
@@ -133,7 +133,7 @@ $(PY-FLUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FLUP_SOURCE) $(PY-FLUP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR)
 	$(PY-FLUP_UNZIP) $(DL_DIR)/$(PY-FLUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-FLUP_PATCHES)"; then \
-	    cat $(PY-FLUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
+	    cat $(PY-FLUP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -148,7 +148,7 @@ $(PY-FLUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FLUP_SOURCE) $(PY-FLUP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR)
 	$(PY-FLUP_UNZIP) $(DL_DIR)/$(PY-FLUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-FLUP_PATCHES)"; then \
-	    cat $(PY-FLUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
+	    cat $(PY-FLUP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -199,7 +199,7 @@ py-flup-stage: $(PY-FLUP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-flup
 #
 $(PY24-FLUP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-flup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -213,7 +213,7 @@ $(PY24-FLUP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-FLUP_CONFLICTS)" >>$@
 
 $(PY25-FLUP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-flup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -227,7 +227,7 @@ $(PY25-FLUP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-FLUP_CONFLICTS)" >>$@
 
 $(PY26-FLUP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-flup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

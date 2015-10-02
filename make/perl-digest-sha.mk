@@ -36,7 +36,7 @@ $(PERL-DIGEST-SHA_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DIGEST-SHA_SOURCE) $(
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DIGEST-SHA_DIR) $(@D)
 	$(PERL-DIGEST-SHA_UNZIP) $(DL_DIR)/$(PERL-DIGEST-SHA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-DIGEST-SHA_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DIGEST-SHA_DIR) -p1
+#	cat $(PERL-DIGEST-SHA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-DIGEST-SHA_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-DIGEST-SHA_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -72,7 +72,7 @@ $(PERL-DIGEST-SHA_BUILD_DIR)/.staged: $(PERL-DIGEST-SHA_BUILD_DIR)/.built
 perl-digest-sha-stage: $(PERL-DIGEST-SHA_BUILD_DIR)/.staged
 
 $(PERL-DIGEST-SHA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-digest-sha" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

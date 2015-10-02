@@ -98,7 +98,7 @@ $(MAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(MAKE_SOURCE) $(MAKE_PATCHES) make/mak
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(MAKE_DIR) $(@D)
 	$(MAKE_UNZIP) $(DL_DIR)/$(MAKE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(MAKE_PATCHES) | patch -d $(BUILD_DIR)/$(MAKE_DIR) -p1
+#	cat $(MAKE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MAKE_DIR) -p1
 	mv $(BUILD_DIR)/$(MAKE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -136,11 +136,11 @@ make: $(MAKE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 #$(STAGING_LIB_DIR)/libmake.so.$(MAKE_VERSION): $(MAKE_BUILD_DIR)/libmake.so.$(MAKE_VERSION)
-#	install -d $(STAGING_INCLUDE_DIR)
-#	install -m 644 $(MAKE_BUILD_DIR)/make.h $(STAGING_INCLUDE_DIR)
-#	install -d $(STAGING_LIB_DIR)
-#	install -m 644 $(MAKE_BUILD_DIR)/libmake.a $(STAGING_LIB_DIR)
-#	install -m 644 $(MAKE_BUILD_DIR)/libmake.so.$(MAKE_VERSION) $(STAGING_LIB_DIR)
+#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -m 644 $(MAKE_BUILD_DIR)/make.h $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -d $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(MAKE_BUILD_DIR)/libmake.a $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(MAKE_BUILD_DIR)/libmake.so.$(MAKE_VERSION) $(STAGING_LIB_DIR)
 #	cd $(STAGING_LIB_DIR) && ln -fs libmake.so.$(MAKE_VERSION) libmake.so.1
 #	cd $(STAGING_LIB_DIR) && ln -fs libmake.so.$(MAKE_VERSION) libmake.so
 #
@@ -151,7 +151,7 @@ make: $(MAKE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/make
 # 
 $(MAKE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: make" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,11 +180,11 @@ $(MAKE_IPK): $(MAKE_BUILD_DIR)/.built
 	rm -rf $(MAKE_IPK_DIR) $(MAKE_IPK)
 	$(MAKE) -C $(MAKE_BUILD_DIR) DESTDIR=$(MAKE_IPK_DIR) install-strip
 	rm -f $(MAKE_IPK_DIR)/opt/share/info/dir
-#	install -d $(MAKE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MAKE_SOURCE_DIR)/rc.make $(MAKE_IPK_DIR)/opt/etc/init.d/SXXmake
+#	$(INSTALL) -d $(MAKE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MAKE_SOURCE_DIR)/rc.make $(MAKE_IPK_DIR)/opt/etc/init.d/SXXmake
 	$(MAKE) $(MAKE_IPK_DIR)/CONTROL/control
-#	install -m 644 $(MAKE_SOURCE_DIR)/postinst $(MAKE_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(MAKE_SOURCE_DIR)/prerm $(MAKE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(MAKE_SOURCE_DIR)/postinst $(MAKE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(MAKE_SOURCE_DIR)/prerm $(MAKE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MAKE_IPK_DIR)
 
 #

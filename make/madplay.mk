@@ -106,7 +106,7 @@ $(MADPLAY_BUILD_DIR)/.configured: $(DL_DIR)/$(MADPLAY_SOURCE) $(MADPLAY_PATCHES)
 	$(MADPLAY_UNZIP) $(DL_DIR)/$(MADPLAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MADPLAY_PATCHES)" ; \
 		then cat $(MADPLAY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MADPLAY_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MADPLAY_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(MADPLAY_DIR) $(@D)
 	(cd $(@D); \
@@ -155,7 +155,7 @@ madplay-stage: $(MADPLAY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/madplay
 #
 $(MADPLAY_IPK_DIR)/CONTROL/control:
-	@install -d $(MADPLAY_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(MADPLAY_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: madplay" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -112,7 +112,7 @@ $(PY-PGSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PGSQL_SOURCE) $(PY-PGSQL_PATCH
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-PGSQL_DIR)
 	$(PY-PGSQL_UNZIP) $(DL_DIR)/$(PY-PGSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-PGSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PGSQL_DIR) -p1
+#	cat $(PY-PGSQL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PGSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PGSQL_DIR) $(PY-PGSQL_BUILD_DIR)/2.4
 	(cd $(PY-PGSQL_BUILD_DIR)/2.4; \
 	    ( \
@@ -128,7 +128,7 @@ $(PY-PGSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PGSQL_SOURCE) $(PY-PGSQL_PATCH
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-PGSQL_DIR)
 	$(PY-PGSQL_UNZIP) $(DL_DIR)/$(PY-PGSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-PGSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PGSQL_DIR) -p1
+#	cat $(PY-PGSQL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PGSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PGSQL_DIR) $(PY-PGSQL_BUILD_DIR)/2.5
 	(cd $(PY-PGSQL_BUILD_DIR)/2.5; \
 	    ( \
@@ -180,7 +180,7 @@ py-pgsql-stage: $(PY-PGSQL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-pgsql
 #
 $(PY24-PGSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-pgsql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,7 +194,7 @@ $(PY24-PGSQL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PGSQL_CONFLICTS)" >>$@
 
 $(PY25-PGSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pgsql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -1,14 +1,14 @@
 #!/bin/sh
-# httpd.conf for busybox_httpd -p 8008 -c /opt/etc/httpd.conf -h /opt/share/www
+# httpd.conf for busybox_httpd -p 8008 -c %OPTWARE_TARGET_PREFIX%/etc/httpd.conf -h %OPTWARE_TARGET_PREFIX%/share/www
 # A:*
 # /cgi-bin:admin:admin
 # For thttpd.conf add cgipat=/cgi-bin/* and user=admin
 # replace standard "admin" on wl500gx with "root" for other systems
 # /bin/sh can be BusyBox v1.1.3 applet
 
-. /opt/etc/transmission.conf
+. %OPTWARE_TARGET_PREFIX%/etc/transmission.conf
 
-PATH=/bin:/sbin:/usr/bin:/opt/sbin:/opt/bin:/usr/sbin
+PATH=/bin:/sbin:/usr/bin:%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/bin:/usr/sbin
 export PATH
 
 
@@ -625,14 +625,14 @@ This is quick explanation of the buttons:
 Transmission daemon wiki page</a>.</p>
 
 __EOF__
-if [ -r /opt/share/doc/transmission/NEWS ]; then 
+if [ -r %OPTWARE_TARGET_PREFIX%/share/doc/transmission/NEWS ]; then 
 	echo "<pre>" 
-	cat /opt/share/doc/transmission/NEWS
+	cat %OPTWARE_TARGET_PREFIX%/share/doc/transmission/NEWS
 	echo "</pre>" 
 fi                                         
-if [ -r /opt/share/doc/transmission/README.daemon ]; then 
+if [ -r %OPTWARE_TARGET_PREFIX%/share/doc/transmission/README.daemon ]; then 
 	echo "<pre>" 
-	cat /opt/share/doc/transmission/README.daemon
+	cat %OPTWARE_TARGET_PREFIX%/share/doc/transmission/README.daemon
 	echo "</pre>" 
 fi                                         
 _root_check
@@ -776,7 +776,7 @@ __EOF__
 QUERY_STRING=`echo "$QUERY_STRING" | sed 's/&/;/g'`
 eval ${QUERY_STRING}
 #export ACTION
-#/opt/bin/printenv
+#%OPTWARE_TARGET_PREFIX%/bin/printenv
 #set
 
 [ -n "${FETCH}" ] && _fetch

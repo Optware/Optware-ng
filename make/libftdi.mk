@@ -107,7 +107,7 @@ $(LIBFTDI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBFTDI_SOURCE) $(LIBFTDI_PATCHES)
 	$(LIBFTDI_UNZIP) $(DL_DIR)/$(LIBFTDI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBFTDI_PATCHES)" ; \
 		then cat $(LIBFTDI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBFTDI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBFTDI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBFTDI_DIR)" != "$(LIBFTDI_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBFTDI_DIR) $(LIBFTDI_BUILD_DIR) ; \
@@ -160,7 +160,7 @@ libftdi-stage: $(LIBFTDI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libftdi
 #
 $(LIBFTDI_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBFTDI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBFTDI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libftdi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

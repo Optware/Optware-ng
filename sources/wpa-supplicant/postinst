@@ -1,6 +1,6 @@
 #!/bin/sh
 
 echo ; echo
-echo "To complete the installation, you must edit /opt/etc/wpa-supplicant.conf."
+echo "To complete the installation, you must edit %OPTWARE_TARGET_PREFIX%/etc/wpa-supplicant.conf."
 echo
 

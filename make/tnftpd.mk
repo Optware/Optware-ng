@@ -110,7 +110,7 @@ $(TNFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTPD_SOURCE) $(TNFTPD_PATCHES) ma
 	$(TNFTPD_UNZIP) $(DL_DIR)/$(TNFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TNFTPD_PATCHES)" ; \
 		then cat $(TNFTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TNFTPD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TNFTPD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TNFTPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TNFTPD_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ tnftpd-stage: $(TNFTPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tnftpd
 #
 $(TNFTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tnftpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

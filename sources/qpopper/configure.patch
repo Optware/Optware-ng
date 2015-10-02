@@ -25,11 +25,11 @@
 -    cat >>confdefs.h <<\_ACEOF
 -#define MAIL_COMMAND "/usr/lib/sendmail"
 +cat >>confdefs.h <<\_ACEOF
-+#define MAIL_COMMAND "/opt/sbin/sendmail"
++#define MAIL_COMMAND "%OPTWARE_TARGET_PREFIX%/sbin/sendmail"
  _ACEOF
  
 -    { echo "$as_me:$LINENO: result: found at /usr/lib/sendmail" >&5
-+{ echo "$as_me:$LINENO: result: Hack! Set to /opt/sbin/sendmail" >&5
++{ echo "$as_me:$LINENO: result: Hack! Set to %OPTWARE_TARGET_PREFIX%/sbin/sendmail" >&5
  echo "${ECHO_T}found at /usr/lib/sendmail" >&6; }
 -elif test -f /usr/ucblib/sendmail
 -then
@@ -66,7 +66,7 @@
 -        exit 1
 -    fi
 -    { echo "$as_me:$LINENO: result: \"found at $pop_maildir\"" >&5
-+    pop_maildir="/opt/var/spool/mail"
++    pop_maildir="%OPTWARE_TARGET_PREFIX%/var/spool/mail"
 +
 +{ echo "$as_me:$LINENO: result: \"Hach! Set to $pop_maildir\"" >&5
  echo "${ECHO_T}\"found at $pop_maildir\"" >&6; }

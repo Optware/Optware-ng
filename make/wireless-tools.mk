@@ -109,7 +109,7 @@ $(WIRELESS-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(WIRELESS-TOOLS_SOURCE) $(WI
 	$(WIRELESS-TOOLS_UNZIP) $(DL_DIR)/$(WIRELESS-TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WIRELESS-TOOLS_PATCHES)" ; \
 		then cat $(WIRELESS-TOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(WIRELESS-TOOLS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(WIRELESS-TOOLS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(WIRELESS-TOOLS_DIR)" != "$(WIRELESS-TOOLS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(WIRELESS-TOOLS_DIR) $(WIRELESS-TOOLS_BUILD_DIR) ; \
@@ -159,7 +159,7 @@ wireless-tools-stage: $(WIRELESS-TOOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/wireless-tools
 #
 $(WIRELESS-TOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(WIRELESS-TOOLS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(WIRELESS-TOOLS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: wireless-tools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,13 +191,13 @@ $(WIRELESS-TOOLS_IPK): $(WIRELESS-TOOLS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(WIRELESS-TOOLS_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(WIRELESS-TOOLS_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) $(WIRELESS-TOOLS_IPK_DIR)/opt/lib/*
-	#install -d $(WIRELESS-TOOLS_IPK_DIR)/opt/etc/
-	#install -m 644 $(WIRELESS-TOOLS_SOURCE_DIR)/wireless-tools.conf $(WIRELESS-TOOLS_IPK_DIR)/opt/etc/wireless-tools.conf
-	#install -d $(WIRELESS-TOOLS_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(WIRELESS-TOOLS_SOURCE_DIR)/rc.wireless-tools $(WIRELESS-TOOLS_IPK_DIR)/opt/etc/init.d/SXXwireless-tools
+	#$(INSTALL) -d $(WIRELESS-TOOLS_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(WIRELESS-TOOLS_SOURCE_DIR)/wireless-tools.conf $(WIRELESS-TOOLS_IPK_DIR)/opt/etc/wireless-tools.conf
+	#$(INSTALL) -d $(WIRELESS-TOOLS_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(WIRELESS-TOOLS_SOURCE_DIR)/rc.wireless-tools $(WIRELESS-TOOLS_IPK_DIR)/opt/etc/init.d/SXXwireless-tools
 	$(MAKE) $(WIRELESS-TOOLS_IPK_DIR)/CONTROL/control
-	#install -m 755 $(WIRELESS-TOOLS_SOURCE_DIR)/postinst $(WIRELESS-TOOLS_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(WIRELESS-TOOLS_SOURCE_DIR)/prerm $(WIRELESS-TOOLS_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(WIRELESS-TOOLS_SOURCE_DIR)/postinst $(WIRELESS-TOOLS_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(WIRELESS-TOOLS_SOURCE_DIR)/prerm $(WIRELESS-TOOLS_IPK_DIR)/CONTROL/prerm
 	echo $(WIRELESS-TOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(WIRELESS-TOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WIRELESS-TOOLS_IPK_DIR)
 

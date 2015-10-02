@@ -35,7 +35,7 @@ perl-timedate-source: $(DL_DIR)/$(PERL-TIMEDATE_SOURCE) $(PERL-TIMEDATE_PATCHES)
 $(PERL-TIMEDATE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TIMEDATE_SOURCE) $(PERL-TIMEDATE_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERL-TIMEDATE_DIR) $(@D)
 	$(PERL-TIMEDATE_UNZIP) $(DL_DIR)/$(PERL-TIMEDATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-TIMEDATE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-TIMEDATE_DIR) -p1
+#	cat $(PERL-TIMEDATE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-TIMEDATE_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-TIMEDATE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-TIMEDATE_BUILD_DIR)/.staged: $(PERL-TIMEDATE_BUILD_DIR)/.built
 perl-timedate-stage: $(PERL-TIMEDATE_BUILD_DIR)/.staged
 
 $(PERL-TIMEDATE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-timedate" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -6,7 +6,7 @@ diff -ruNp rshd.orig/rshd.c rshd/rshd.c
  #endif
  
 +#ifdef _PATH_DEFPATH
-+#define _PATH_DEFPATH "/opt/bin:/usr/bin:/bin"
++#define _PATH_DEFPATH "%OPTWARE_TARGET_PREFIX%/bin:/usr/bin:/bin"
 +#endif /* _PATH_DEFPATH */
 +
  #ifdef USE_PAM

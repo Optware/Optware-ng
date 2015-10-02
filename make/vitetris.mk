@@ -110,7 +110,7 @@ $(VITETRIS_BUILD_DIR)/.configured: $(DL_DIR)/$(VITETRIS_SOURCE) $(VITETRIS_PATCH
 	$(VITETRIS_UNZIP) $(DL_DIR)/$(VITETRIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VITETRIS_PATCHES)" ; \
 		then cat $(VITETRIS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(VITETRIS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(VITETRIS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(VITETRIS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(VITETRIS_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ vitetris-stage: $(VITETRIS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/vitetris
 #
 $(VITETRIS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: vitetris" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,9 +191,9 @@ $(VITETRIS_IPK_DIR)/CONTROL/control:
 $(VITETRIS_IPK): $(VITETRIS_BUILD_DIR)/.built
 	rm -rf $(VITETRIS_IPK_DIR) $(BUILD_DIR)/vitetris_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(VITETRIS_BUILD_DIR) DESTDIR=$(VITETRIS_IPK_DIR) install
-	install -d $(VITETRIS_IPK_DIR)/opt/bin $(VITETRIS_IPK_DIR)/opt/share/doc/vitetris
+	$(INSTALL) -d $(VITETRIS_IPK_DIR)/opt/bin $(VITETRIS_IPK_DIR)/opt/share/doc/vitetris
 	$(STRIP_COMMAND) $(<D)/tetris -o $(VITETRIS_IPK_DIR)/opt/bin/vitetris
-	install -m 644 $(<D)/README $(<D)/lice*.txt \
+	$(INSTALL) -m 644 $(<D)/README $(<D)/lice*.txt \
 		$(VITETRIS_IPK_DIR)/opt/share/doc/vitetris/
 	$(MAKE) $(VITETRIS_IPK_DIR)/CONTROL/control
 	echo $(VITETRIS_CONFFILES) | sed -e 's/ /\n/g' > $(VITETRIS_IPK_DIR)/CONTROL/conffiles

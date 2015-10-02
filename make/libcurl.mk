@@ -114,7 +114,7 @@ $(LIBCURL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBCURL_DIR) $(@D)
 	$(LIBCURL_UNZIP) $(DL_DIR)/$(LIBCURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBCURL_PATCHES)"; then \
-		cat $(LIBCURL_PATCHES) | patch -d $(BUILD_DIR)/$(LIBCURL_DIR) -p1 ; \
+		cat $(LIBCURL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBCURL_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(LIBCURL_DIR) $(@D)
 ifeq (vt4, $(OPTWARE_TARGET))
@@ -184,7 +184,7 @@ $(LIBCURL_BUILD_DIR)/.staged: $(LIBCURL_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/curl-config
 	sed -i -e 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/curl-config
-	install -d $(STAGING_DIR)/bin
+	$(INSTALL) -d $(STAGING_DIR)/bin
 	cp $(STAGING_PREFIX)/bin/curl-config $(STAGING_DIR)/bin/curl-config
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcurl.pc
 	rm -f $(STAGING_LIB_DIR)/libcurl.la
@@ -197,7 +197,7 @@ libcurl-stage: $(LIBCURL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libcurl
 #
 $(LIBCURL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libcurl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,7 +211,7 @@ $(LIBCURL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBCURL_CONFLICTS)" >>$@
 
 $(LIBCURL-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libcurl-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -241,11 +241,11 @@ $(LIBCURL_IPK) $(LIBCURL-DEV_IPK): $(LIBCURL_BUILD_DIR)/.built
 	rm -rf $(LIBCURL-DEV_IPK_DIR) $(BUILD_DIR)/libcurl-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(LIBCURL_IPK_DIR) install-strip
 	rm -f $(LIBCURL_IPK_DIR)/opt/lib/libcurl.a $(LIBCURL_IPK_DIR)/opt/lib/libcurl.la
-	install -d $(LIBCURL_IPK_DIR)/opt/share/curl
-	install $(LIBCURL_BUILD_DIR)/lib/ca-bundle.crt $(LIBCURL_IPK_DIR)/opt/share/curl/curl-ca-bundle.crt
+	$(INSTALL) -d $(LIBCURL_IPK_DIR)/opt/share/curl
+	$(INSTALL) $(LIBCURL_BUILD_DIR)/lib/ca-bundle.crt $(LIBCURL_IPK_DIR)/opt/share/curl/curl-ca-bundle.crt
 	$(MAKE) $(LIBCURL_IPK_DIR)/CONTROL/control
 	echo $(LIBCURL_CONFFILES) | sed -e 's/ /\n/g' > $(LIBCURL_IPK_DIR)/CONTROL/conffiles
-	install -d $(LIBCURL-DEV_IPK_DIR)/opt/share/man $(LIBCURL-DEV_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(LIBCURL-DEV_IPK_DIR)/opt/share/man $(LIBCURL-DEV_IPK_DIR)/opt/lib
 	mv $(LIBCURL_IPK_DIR)/opt/share/man/man3 $(LIBCURL-DEV_IPK_DIR)/opt/share/man/
 	mv $(LIBCURL_IPK_DIR)/opt/include $(LIBCURL-DEV_IPK_DIR)/opt/
 	mv $(LIBCURL_IPK_DIR)/opt/lib/pkgconfig $(LIBCURL-DEV_IPK_DIR)/opt/lib/

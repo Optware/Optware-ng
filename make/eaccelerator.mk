@@ -125,7 +125,7 @@ make/eaccelerator.mk make/php.mk
 	$(EACCELERATOR_UNZIP) $(DL_DIR)/$(EACCELERATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EACCELERATOR_PATCHES)" ; \
 		then cat $(EACCELERATOR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(EACCELERATOR_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(EACCELERATOR_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(EACCELERATOR_DIR) $(@D)
 #	WANT_AUTOMAKE=1.6 
@@ -183,7 +183,7 @@ eaccelerator-stage: $(EACCELERATOR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/eaccelerator
 #
 $(EACCELERATOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: eaccelerator" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -212,9 +212,9 @@ $(EACCELERATOR_IPK): $(EACCELERATOR_BUILD_DIR)/.built
 	rm -rf $(EACCELERATOR_IPK_DIR) $(BUILD_DIR)/eaccelerator_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(EACCELERATOR_BUILD_DIR) INSTALL_ROOT=$(EACCELERATOR_IPK_DIR) install
 	$(STRIP_COMMAND) $(EACCELERATOR_IPK_DIR)/opt/lib/php/extensions/eaccelerator.so
-	install -d $(EACCELERATOR_IPK_DIR)/opt/tmp/eaccelerator
-	install -d $(EACCELERATOR_IPK_DIR)/opt/etc/php.d
-	install -m 644 $(EACCELERATOR_SOURCE_DIR)/eaccelerator.ini $(EACCELERATOR_IPK_DIR)/opt/etc/php.d/eaccelerator.ini
+	$(INSTALL) -d $(EACCELERATOR_IPK_DIR)/opt/tmp/eaccelerator
+	$(INSTALL) -d $(EACCELERATOR_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -m 644 $(EACCELERATOR_SOURCE_DIR)/eaccelerator.ini $(EACCELERATOR_IPK_DIR)/opt/etc/php.d/eaccelerator.ini
 	$(MAKE) $(EACCELERATOR_IPK_DIR)/CONTROL/control
 	echo $(EACCELERATOR_CONFFILES) | sed -e 's/ /\n/g' > $(EACCELERATOR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EACCELERATOR_IPK_DIR)

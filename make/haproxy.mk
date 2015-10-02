@@ -112,7 +112,7 @@ $(HAPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(HAPROXY_SOURCE) $(HAPROXY_PATCHES)
 	$(HAPROXY_UNZIP) $(DL_DIR)/$(HAPROXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HAPROXY_PATCHES)" ; \
 		then cat $(HAPROXY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HAPROXY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HAPROXY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HAPROXY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HAPROXY_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ haproxy-stage: $(HAPROXY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/haproxy
 #
 $(HAPROXY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: haproxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,10 +198,10 @@ $(HAPROXY_IPK_DIR)/CONTROL/control:
 $(HAPROXY_IPK): $(HAPROXY_BUILD_DIR)/.built
 	rm -rf $(HAPROXY_IPK_DIR) $(BUILD_DIR)/haproxy_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(HAPROXY_BUILD_DIR) DESTDIR=$(HAPROXY_IPK_DIR) install-strip
-	install -d $(HAPROXY_IPK_DIR)/opt/sbin/
-	install -m 755 $(HAPROXY_BUILD_DIR)/haproxy $(HAPROXY_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(HAPROXY_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(HAPROXY_BUILD_DIR)/haproxy $(HAPROXY_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(HAPROXY_IPK_DIR)/opt/sbin/haproxy
-	install -d $(HAPROXY_IPK_DIR)/opt/share/haproxy/
+	$(INSTALL) -d $(HAPROXY_IPK_DIR)/opt/share/haproxy/
 	cp -r $(HAPROXY_BUILD_DIR)/doc $(HAPROXY_IPK_DIR)/opt/share/haproxy/
 	cp -r $(HAPROXY_BUILD_DIR)/examples $(HAPROXY_IPK_DIR)/opt/share/haproxy/
 	$(MAKE) $(HAPROXY_IPK_DIR)/CONTROL/control

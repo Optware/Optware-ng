@@ -94,7 +94,7 @@ $(EASY-RSA_BUILD_DIR)/.configured: $(DL_DIR)/$(EASY-RSA_SOURCE) $(EASY-RSA_PATCH
 	$(EASY-RSA_UNZIP) $(DL_DIR)/$(EASY-RSA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EASY-RSA_PATCHES)" ; \
 		then cat $(EASY-RSA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(EASY-RSA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(EASY-RSA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(EASY-RSA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(EASY-RSA_DIR) $(@D) ; \
@@ -128,7 +128,7 @@ easy-rsa: $(EASY-RSA_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/easy-rsa
 #
 $(EASY-RSA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: easy-rsa" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

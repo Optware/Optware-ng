@@ -1,38 +1,38 @@
 #!/bin/sh
 
-update-alternatives --install /opt/bin/scp scp /opt/bin/openssh-scp 80
-update-alternatives --install /opt/bin/ssh ssh /opt/bin/openssh-ssh 80
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/scp scp %OPTWARE_TARGET_PREFIX%/bin/openssh-scp 80
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/ssh ssh %OPTWARE_TARGET_PREFIX%/bin/openssh-ssh 80
 
 echo
 
 # Check for the SSH1 RSA key
-if [ ! -f /opt/etc/openssh/ssh_host_key ]; then
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_key ]; then
     echo Generating RSA Key...
-    /opt/bin/ssh-keygen -t rsa1 -f /opt/etc/openssh/ssh_host_key -C '' -N ''
+    %OPTWARE_TARGET_PREFIX%/bin/ssh-keygen -t rsa1 -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_key -C '' -N ''
 fi
 
 # Check for the SSH2 RSA key
-if [ ! -f /opt/etc/openssh/ssh_host_rsa_key ]; then
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_rsa_key ]; then
     echo Generating RSA Key...
-    /opt/bin/ssh-keygen -t rsa -f /opt/etc/openssh/ssh_host_rsa_key -C '' -N ''
+    %OPTWARE_TARGET_PREFIX%/bin/ssh-keygen -t rsa -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_rsa_key -C '' -N ''
 fi
 
 # Check for the SSH2 DSA key
-if [ ! -f /opt/etc/openssh/ssh_host_dsa_key ]; then
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_dsa_key ]; then
     echo Generating DSA Key...
-    /opt/bin/ssh-keygen -t dsa -f /opt/etc/openssh/ssh_host_dsa_key -C '' -N ''
+    %OPTWARE_TARGET_PREFIX%/bin/ssh-keygen -t dsa -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_dsa_key -C '' -N ''
 fi
 
 # Check for the SSH2 ECDSA key
-if [ ! -f /opt/etc/openssh/ssh_host_ecdsa_key ]; then
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_ecdsa_key ]; then
     echo Generating ECDSA Key...
-    /opt/bin/ssh-keygen -t ecdsa -f /opt/etc/openssh/ssh_host_ecdsa_key -C '' -N ''
+    %OPTWARE_TARGET_PREFIX%/bin/ssh-keygen -t ecdsa -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_ecdsa_key -C '' -N ''
 fi
 
 # Check for the SSH2 ED25519 key
-if [ ! -f /opt/etc/openssh/ssh_host_ed25519_key ]; then
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_ed25519_key ]; then
     echo Generating ED25519 Key...
-    /opt/bin/ssh-keygen -t ed25519 -f /opt/etc/openssh/ssh_host_ed25519_key -C '' -N ''
+    %OPTWARE_TARGET_PREFIX%/bin/ssh-keygen -t ed25519 -f %OPTWARE_TARGET_PREFIX%/etc/openssh/ssh_host_ed25519_key -C '' -N ''
 fi
 
 if [ ! -d /root -a -w / ];  then
@@ -41,10 +41,10 @@ fi
 
 # Some devices do not have a nobody user for priviledge separation
 if grep -v nobody /etc/passwd > /dev/null ; then
-    sed -i -e 's/\#UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' /opt/etc/openssh/sshd_config
+    sed -i -e 's/\#UsePrivilegeSeparation yes/UsePrivilegeSeparation no/' %OPTWARE_TARGET_PREFIX%/etc/openssh/sshd_config
 fi
 
 echo Fixing permissions on the /tmp directory...
 chmod 1777 /tmp
 
-/opt/etc/init.d/S40sshd
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S40sshd

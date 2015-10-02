@@ -110,7 +110,7 @@ $(LIBICAL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBICAL_SOURCE) $(LIBICAL_PATCHES)
 	$(LIBICAL_UNZIP) $(DL_DIR)/$(LIBICAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBICAL_PATCHES)" ; \
 		then cat $(LIBICAL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBICAL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBICAL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBICAL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBICAL_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ libical-stage: $(LIBICAL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libical
 #
 $(LIBICAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libical" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,15 +189,15 @@ $(LIBICAL_IPK_DIR)/CONTROL/control:
 $(LIBICAL_IPK): $(LIBICAL_BUILD_DIR)/.built
 	rm -rf $(LIBICAL_IPK_DIR) $(BUILD_DIR)/libical_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBICAL_BUILD_DIR) DESTDIR=$(LIBICAL_IPK_DIR) install-strip
-#	install -d $(LIBICAL_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBICAL_SOURCE_DIR)/libical.conf $(LIBICAL_IPK_DIR)/opt/etc/libical.conf
-#	install -d $(LIBICAL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBICAL_SOURCE_DIR)/rc.libical $(LIBICAL_IPK_DIR)/opt/etc/init.d/SXXlibical
+#	$(INSTALL) -d $(LIBICAL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBICAL_SOURCE_DIR)/libical.conf $(LIBICAL_IPK_DIR)/opt/etc/libical.conf
+#	$(INSTALL) -d $(LIBICAL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBICAL_SOURCE_DIR)/rc.libical $(LIBICAL_IPK_DIR)/opt/etc/init.d/SXXlibical
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICAL_IPK_DIR)/opt/etc/init.d/SXXlibical
 	$(MAKE) $(LIBICAL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBICAL_SOURCE_DIR)/postinst $(LIBICAL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBICAL_SOURCE_DIR)/postinst $(LIBICAL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICAL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBICAL_SOURCE_DIR)/prerm $(LIBICAL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBICAL_SOURCE_DIR)/prerm $(LIBICAL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICAL_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

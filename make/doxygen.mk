@@ -113,7 +113,7 @@ $(DOXYGEN_BUILD_DIR)/.configured: $(DL_DIR)/$(DOXYGEN_SOURCE) $(DOXYGEN_PATCHES)
 	$(DOXYGEN_UNZIP) $(DL_DIR)/$(DOXYGEN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DOXYGEN_PATCHES)" ; \
 		then cat $(DOXYGEN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DOXYGEN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DOXYGEN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DOXYGEN_DIR)" != "$(DOXYGEN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DOXYGEN_DIR) $(DOXYGEN_BUILD_DIR) ; \
@@ -158,7 +158,7 @@ doxygen-stage: $(DOXYGEN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/doxygen
 #
 $(DOXYGEN_IPK_DIR)/CONTROL/control:
-	@install -d $(DOXYGEN_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(DOXYGEN_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: doxygen" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,13 +187,13 @@ $(DOXYGEN_IPK_DIR)/CONTROL/control:
 $(DOXYGEN_IPK): $(DOXYGEN_BUILD_DIR)/.built
 	rm -rf $(DOXYGEN_IPK_DIR) $(BUILD_DIR)/doxygen_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DOXYGEN_BUILD_DIR) DESTDIR=$(DOXYGEN_IPK_DIR) install
-#	install -d $(DOXYGEN_IPK_DIR)/opt/etc/
-#	install -m 644 $(DOXYGEN_SOURCE_DIR)/doxygen.conf $(DOXYGEN_IPK_DIR)/opt/etc/doxygen.conf
-#	install -d $(DOXYGEN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DOXYGEN_SOURCE_DIR)/rc.doxygen $(DOXYGEN_IPK_DIR)/opt/etc/init.d/SXXdoxygen
+#	$(INSTALL) -d $(DOXYGEN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DOXYGEN_SOURCE_DIR)/doxygen.conf $(DOXYGEN_IPK_DIR)/opt/etc/doxygen.conf
+#	$(INSTALL) -d $(DOXYGEN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DOXYGEN_SOURCE_DIR)/rc.doxygen $(DOXYGEN_IPK_DIR)/opt/etc/init.d/SXXdoxygen
 	$(MAKE) $(DOXYGEN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DOXYGEN_SOURCE_DIR)/postinst $(DOXYGEN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DOXYGEN_SOURCE_DIR)/prerm $(DOXYGEN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DOXYGEN_SOURCE_DIR)/postinst $(DOXYGEN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DOXYGEN_SOURCE_DIR)/prerm $(DOXYGEN_IPK_DIR)/CONTROL/prerm
 	echo $(DOXYGEN_CONFFILES) | sed -e 's/ /\n/g' > $(DOXYGEN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOXYGEN_IPK_DIR)
 

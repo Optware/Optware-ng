@@ -1,5 +1,5 @@
 --- devel/unslung/sources/postfix/master.cf	2005-02-14 20:45:22.000000000 +0100
-+++ /opt/etc/postfix/master.cf	2005-02-25 19:36:27.000000000 +0100
++++ %OPTWARE_TARGET_PREFIX%/etc/postfix/master.cf	2005-02-25 19:36:27.000000000 +0100
 @@ -77,7 +77,8 @@
  # service type  private unpriv  chroot  wakeup  maxproc command + args
  #               (yes)   (yes)   (yes)   (never) (100)
@@ -18,7 +18,7 @@
 +#
 +spamassassin
 +          unix  -       n       n       -       -       pipe
-+  user=spamd argv=/opt/bin/spamc -f -e /opt/sbin/sendmail -oi -f ${sender} ${recipient}
++  user=spamd argv=%OPTWARE_TARGET_PREFIX%/bin/spamc -f -e %OPTWARE_TARGET_PREFIX%/sbin/sendmail -oi -f ${sender} ${recipient}
 +#
  # maildrop. See the Postfix MAILDROP_README file for details.
  #

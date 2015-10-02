@@ -111,7 +111,7 @@ $(MSYNCTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(MSYNCTOOL_SOURCE) $(MSYNCTOOL_PA
 	$(MSYNCTOOL_UNZIP) $(DL_DIR)/$(MSYNCTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MSYNCTOOL_PATCHES)" ; \
 		then cat $(MSYNCTOOL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MSYNCTOOL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MSYNCTOOL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MSYNCTOOL_DIR)" != "$(MSYNCTOOL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MSYNCTOOL_DIR) $(MSYNCTOOL_BUILD_DIR) ; \
@@ -165,7 +165,7 @@ msynctool-stage: $(MSYNCTOOL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/msynctool
 #
 $(MSYNCTOOL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: msynctool" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(MSYNCTOOL_IPK_DIR)/CONTROL/control:
 $(MSYNCTOOL_IPK): $(MSYNCTOOL_BUILD_DIR)/.built
 	rm -rf $(MSYNCTOOL_IPK_DIR) $(BUILD_DIR)/msynctool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MSYNCTOOL_BUILD_DIR) DESTDIR=$(MSYNCTOOL_IPK_DIR) install-strip
-#	install -d $(MSYNCTOOL_IPK_DIR)/opt/etc/
-#	install -m 644 $(MSYNCTOOL_SOURCE_DIR)/msynctool.conf $(MSYNCTOOL_IPK_DIR)/opt/etc/msynctool.conf
-#	install -d $(MSYNCTOOL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MSYNCTOOL_SOURCE_DIR)/rc.msynctool $(MSYNCTOOL_IPK_DIR)/opt/etc/init.d/SXXmsynctool
+#	$(INSTALL) -d $(MSYNCTOOL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MSYNCTOOL_SOURCE_DIR)/msynctool.conf $(MSYNCTOOL_IPK_DIR)/opt/etc/msynctool.conf
+#	$(INSTALL) -d $(MSYNCTOOL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MSYNCTOOL_SOURCE_DIR)/rc.msynctool $(MSYNCTOOL_IPK_DIR)/opt/etc/init.d/SXXmsynctool
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSYNCTOOL_IPK_DIR)/opt/etc/init.d/SXXmsynctool
 	$(MAKE) $(MSYNCTOOL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MSYNCTOOL_SOURCE_DIR)/postinst $(MSYNCTOOL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MSYNCTOOL_SOURCE_DIR)/postinst $(MSYNCTOOL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSYNCTOOL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MSYNCTOOL_SOURCE_DIR)/prerm $(MSYNCTOOL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MSYNCTOOL_SOURCE_DIR)/prerm $(MSYNCTOOL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSYNCTOOL_IPK_DIR)/CONTROL/prerm
 	echo $(MSYNCTOOL_CONFFILES) | sed -e 's/ /\n/g' > $(MSYNCTOOL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MSYNCTOOL_IPK_DIR)

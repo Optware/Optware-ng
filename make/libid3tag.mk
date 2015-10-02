@@ -68,7 +68,7 @@ $(LIBID3TAG_BUILD_DIR)/.staged: $(LIBID3TAG_BUILD_DIR)/.built
 libid3tag-stage: $(LIBID3TAG_BUILD_DIR)/.staged
 
 $(LIBID3TAG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libid3tag" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -88,7 +88,7 @@ $(LIBID3TAG_IPK): $(LIBID3TAG_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(LIBID3TAG_IPK_DIR)/opt/lib/*.so.*
 	rm -f $(LIBID3TAG_IPK_DIR)/opt/lib/*.{la,a}
 	$(MAKE) $(LIBID3TAG_IPK_DIR)/CONTROL/control
-#	install -d $(LIBID3TAG_IPK_DIR)/CONTROL
+#	$(INSTALL) -d $(LIBID3TAG_IPK_DIR)/CONTROL
 #	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBID3TAG_VERSION)/" \
 #		-e "s/@RELEASE@/$(LIBID3TAG_IPK_VERSION)/" $(LIBID3TAG_SOURCE_DIR)/control > $(LIBID3TAG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBID3TAG_IPK_DIR)

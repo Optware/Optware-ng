@@ -35,7 +35,7 @@ perl-email-mime-encodings-source: $(DL_DIR)/$(PERL-EMAIL-MIME-ENCODINGS_SOURCE) 
 $(PERL-EMAIL-MIME-ENCODINGS_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-EMAIL-MIME-ENCODINGS_SOURCE) $(PERL-EMAIL-MIME-ENCODINGS_PATCHES) make/perl-email-mime-encodings.mk
 	rm -rf $(BUILD_DIR)/$(PERL-EMAIL-MIME-ENCODINGS_DIR) $(@D)
 	$(PERL-EMAIL-MIME-ENCODINGS_UNZIP) $(DL_DIR)/$(PERL-EMAIL-MIME-ENCODINGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-EMAIL-MIME-ENCODINGS_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-EMAIL-MIME-ENCODINGS_DIR) -p1
+#	cat $(PERL-EMAIL-MIME-ENCODINGS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-EMAIL-MIME-ENCODINGS_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-EMAIL-MIME-ENCODINGS_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-EMAIL-MIME-ENCODINGS_BUILD_DIR)/.staged: $(PERL-EMAIL-MIME-ENCODINGS_BUIL
 perl-email-mime-encodings-stage: $(PERL-EMAIL-MIME-ENCODINGS_BUILD_DIR)/.staged
 
 $(PERL-EMAIL-MIME-ENCODINGS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-email-mime-encodings" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

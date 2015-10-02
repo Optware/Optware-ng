@@ -116,7 +116,7 @@ $(ZNC_BUILD_DIR)/.configured: $(DL_DIR)/$(ZNC_SOURCE) $(ZNC_PATCHES) make/znc.mk
 	$(ZNC_UNZIP) $(DL_DIR)/$(ZNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZNC_PATCHES)" ; \
 		then cat $(ZNC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ZNC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ZNC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ZNC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ZNC_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ znc-stage: $(ZNC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/znc
 #
 $(ZNC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: znc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,13 +197,13 @@ $(ZNC_IPK_DIR)/CONTROL/control:
 $(ZNC_IPK): $(ZNC_BUILD_DIR)/.built
 	rm -rf $(ZNC_IPK_DIR) $(BUILD_DIR)/znc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ZNC_BUILD_DIR) DESTDIR=$(ZNC_IPK_DIR) install
-	install -d $(ZNC_IPK_DIR)/opt/etc/init.d
-	install -d $(ZNC_IPK_DIR)/opt/etc/default
-	install -m 644 $(ZNC_SOURCE_DIR)/znc.default $(ZNC_IPK_DIR)/opt/etc/default/znc
-	install -m 755 $(ZNC_SOURCE_DIR)/rc.znc $(ZNC_IPK_DIR)/opt/etc/init.d/S91znc
+	$(INSTALL) -d $(ZNC_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(ZNC_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 644 $(ZNC_SOURCE_DIR)/znc.default $(ZNC_IPK_DIR)/opt/etc/default/znc
+	$(INSTALL) -m 755 $(ZNC_SOURCE_DIR)/rc.znc $(ZNC_IPK_DIR)/opt/etc/init.d/S91znc
 	$(MAKE) $(ZNC_IPK_DIR)/CONTROL/control
-	install -m 755 $(ZNC_SOURCE_DIR)/postinst $(ZNC_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(ZNC_SOURCE_DIR)/prerm $(ZNC_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(ZNC_SOURCE_DIR)/postinst $(ZNC_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(ZNC_SOURCE_DIR)/prerm $(ZNC_IPK_DIR)/CONTROL/prerm
 	echo $(ZNC_CONFFILES) | sed -e 's/ /\n/g' > $(ZNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZNC_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(ZNC_IPK_DIR)

@@ -157,7 +157,7 @@ endif
 	$(GLIB_UNZIP) $(DL_DIR)/$(GLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	if test -n "$(GLIB_PATCHES)" ; \
 #		then cat $(GLIB_PATCHES) | \
-#		patch -d $(BUILD_DIR)/$(GLIB_DIR) -p1 ; \
+#		$(PATCH) -d $(BUILD_DIR)/$(GLIB_DIR) -p1 ; \
 #	fi
 	mv $(BUILD_DIR)/$(GLIB_DIR) $(@D)
 	cp $(SOURCE_DIR)/glib/glib.cache $(@D)/arm.cache
@@ -213,7 +213,7 @@ glib: $(GLIB_BUILD_DIR)/.built
 $(GLIB_BUILD_DIR)/.staged: $(GLIB_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_PREFIX)
-	install $(@D)/glib/glibconfig.h $(STAGING_INCLUDE_DIR)/glib-2.0/
+	$(INSTALL) $(@D)/glib/glibconfig.h $(STAGING_INCLUDE_DIR)/glib-2.0/
 	rm -rf $(STAGING_LIB_DIR)/libgio-2.0.la
 	rm -rf $(STAGING_LIB_DIR)/libglib-2.0.la
 	rm -rf $(STAGING_LIB_DIR)/libgmodule-2.0.la
@@ -235,7 +235,7 @@ glib-stage: $(GLIB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/glib
 #
 $(GLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: glib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -267,7 +267,7 @@ $(GLIB_IPK): $(GLIB_BUILD_DIR)/.built
 	rm -rf $(GLIB_IPK_DIR)/opt/share/gtk-doc
 	rm -rf $(GLIB_IPK_DIR)/opt/man
 	$(MAKE) $(GLIB_IPK_DIR)/CONTROL/control
-	install -m 755 $(GLIB_SOURCE_DIR)/postinst $(GLIB_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(GLIB_SOURCE_DIR)/postinst $(GLIB_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GLIB_IPK_DIR)
 
 #

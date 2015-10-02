@@ -27,18 +27,18 @@
 # See the files in examples/chroot-setup for setting up Postfix chroot
 # environments on different UNIX systems.
 #
-queue_directory = /opt/var/spool/postfix
+queue_directory = %OPTWARE_TARGET_PREFIX%/var/spool/postfix
 
 # The command_directory parameter specifies the location of all
 # postXXX commands.
 #
-command_directory = /opt/sbin
+command_directory = %OPTWARE_TARGET_PREFIX%/sbin
 
 # The daemon_directory parameter specifies the location of all Postfix
 # daemon programs (i.e. programs listed in the master.cf file). This
 # directory must be owned by root.
 #
-daemon_directory = /opt/libexec/postfix
+daemon_directory = %OPTWARE_TARGET_PREFIX%/libexec/postfix
 
 # QUEUE AND PROCESS OWNERSHIP
 #
@@ -375,7 +375,7 @@ unknown_local_recipient_reject_code = 550
 #alias_maps = hash:/etc/aliases
 #alias_maps = hash:/etc/aliases, nis:mail.aliases
 #alias_maps = netinfo:/aliases
-alias_maps = hash:/opt/etc/aliases
+alias_maps = hash:%OPTWARE_TARGET_PREFIX%/etc/aliases
 
 # The alias_database parameter specifies the alias database(s) that
 # are built with "newaliases" or "sendmail -bi".  This is a separate
@@ -385,8 +385,8 @@ alias_maps = hash:/opt/etc/aliases
 #alias_database = dbm:/etc/aliases
 #alias_database = dbm:/etc/mail/aliases
 #alias_database = hash:/etc/aliases
-#alias_database = hash:/etc/aliases, hash:/opt/majordomo/aliases
-alias_database = hash:/opt/etc/aliases
+#alias_database = hash:/etc/aliases, hash:%OPTWARE_TARGET_PREFIX%/majordomo/aliases
+alias_database = hash:%OPTWARE_TARGET_PREFIX%/etc/aliases
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
 #
@@ -455,7 +455,7 @@ alias_database = hash:/opt/etc/aliases
 #
 #mailbox_transport = lmtp:unix:/file/name
 #mailbox_transport = cyrus
-mailbox_transport = lmtp:unix:/opt/var/lib/imap/socket/lmtp
+mailbox_transport = lmtp:unix:%OPTWARE_TARGET_PREFIX%/var/lib/imap/socket/lmtp
 
 # The fallback_transport specifies the optional transport in master.cf
 # to use for recipients that are not found in the UNIX passwd database.
@@ -598,17 +598,17 @@ debugger_command =
 # sendmail_path: The full pathname of the Postfix sendmail command.
 # This is the Sendmail-compatible mail posting interface.
 # 
-sendmail_path = /opt/sbin/sendmail
+sendmail_path = %OPTWARE_TARGET_PREFIX%/sbin/sendmail
 
 # newaliases_path: The full pathname of the Postfix newaliases command.
 # This is the Sendmail-compatible command to build alias databases.
 #
-newaliases_path = /opt/bin/newaliases
+newaliases_path = %OPTWARE_TARGET_PREFIX%/bin/newaliases
 
 # mailq_path: The full pathname of the Postfix mailq command.  This
 # is the Sendmail-compatible mail queue listing command.
 # 
-mailq_path = /opt/bin/mailq
+mailq_path = %OPTWARE_TARGET_PREFIX%/bin/mailq
 
 # setgid_group: The group for mail submission and queue management
 # commands.  This must be a group name with a numerical group ID that
@@ -618,20 +618,20 @@ setgid_group = maildrop
 
 # html_directory: The location of the Postfix HTML documentation.
 #
-html_directory = /opt/share/doc/postfix/html
+html_directory = %OPTWARE_TARGET_PREFIX%/share/doc/postfix/html
 
 # manpage_directory: The location of the Postfix on-line manual pages.
 #
-manpage_directory = /opt/man
+manpage_directory = %OPTWARE_TARGET_PREFIX%/man
 
 # sample_directory: The location of the Postfix sample configuration files.
 # This parameter is obsolete as of Postfix 2.1.
 #
-sample_directory = /opt/etc/postfix
+sample_directory = %OPTWARE_TARGET_PREFIX%/etc/postfix
 
 # readme_directory: The location of the Postfix README files.
 #
-readme_directory = /opt/share/doc/postfix/readme
+readme_directory = %OPTWARE_TARGET_PREFIX%/share/doc/postfix/readme
 
 # local configuration goes here
 smtpd_sasl_auth_enable = yes

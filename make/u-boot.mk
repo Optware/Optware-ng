@@ -44,14 +44,14 @@ $(HOST_STAGING_PREFIX)/bin/mkimage: host/.configured $(DL_DIR)/$(U-BOOT_SOURCE) 
 	$(U-BOOT_UNZIP) $(DL_DIR)/$(U-BOOT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(U-BOOT_PATCHES)" ; \
 		then cat $(U-BOOT_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(U-BOOT_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(U-BOOT_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(U-BOOT_DIR)" != "$(U-BOOT_HOST_BUILD_DIR)" ; \
 		then mv $(HOST_BUILD_DIR)/$(U-BOOT_DIR) $(U-BOOT_HOST_BUILD_DIR) ; \
 	fi
 	cd $(U-BOOT_HOST_BUILD_DIR)/tools; \
 	$(HOSTCC) -DUSE_HOSTCC -I../include -o mkimage mkimage.c ../lib_generic/crc32.c
-	install -d $(HOST_STAGING_PREFIX)/bin
+	$(INSTALL) -d $(HOST_STAGING_PREFIX)/bin
 	strip $(U-BOOT_HOST_BUILD_DIR)/tools/mkimage -o $@
 
 u-boot-mkimage: $(HOST_STAGING_PREFIX)/bin/mkimage
@@ -66,7 +66,7 @@ $(U-BOOT_BUILD_DIR)/.configured: $(DL_DIR)/$(U-BOOT_SOURCE) $(U-BOOT_PATCHES) ma
 	$(U-BOOT_UNZIP) $(DL_DIR)/$(U-BOOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(U-BOOT_PATCHES)" ; \
 		then cat $(U-BOOT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(U-BOOT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(U-BOOT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(U-BOOT_DIR)" != "$(U-BOOT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(U-BOOT_DIR) $(U-BOOT_BUILD_DIR) ; \
@@ -90,7 +90,7 @@ $(U-BOOT_BUILD_DIR)/.staged: $(U-BOOT_BUILD_DIR)/.built
 u-boot-stage: $(U-BOOT_BUILD_DIR)/.staged
 
 $(U-BOOT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: u-boot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

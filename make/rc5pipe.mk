@@ -110,7 +110,7 @@ $(RC5PIPE_BUILD_DIR)/.configured: $(DL_DIR)/$(RC5PIPE_SOURCE) $(RC5PIPE_PATCHES)
 	$(RC5PIPE_UNZIP) $(DL_DIR)/$(RC5PIPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RC5PIPE_PATCHES)" ; \
 		then cat $(RC5PIPE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RC5PIPE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RC5PIPE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RC5PIPE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RC5PIPE_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ rc5pipe: $(RC5PIPE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/rc5pipe
 #
 $(RC5PIPE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rc5pipe" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,11 +195,11 @@ $(RC5PIPE_IPK_DIR)/CONTROL/control:
 $(RC5PIPE_IPK): $(RC5PIPE_BUILD_DIR)/.built
 	rm -rf $(RC5PIPE_IPK_DIR) $(BUILD_DIR)/rc5pipe_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(RC5PIPE_BUILD_DIR) DESTDIR=$(RC5PIPE_IPK_DIR) install-strip
-	install -d $(RC5PIPE_IPK_DIR)/opt/bin/
-	install -m 755 $(RC5PIPE_BUILD_DIR)/rc5pipe $(RC5PIPE_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(RC5PIPE_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 755 $(RC5PIPE_BUILD_DIR)/rc5pipe $(RC5PIPE_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(RC5PIPE_IPK_DIR)/opt/bin/rc5pipe
-	install -d $(RC5PIPE_IPK_DIR)/opt/share/doc/rc5pipe
-	install -m 644 $(RC5PIPE_BUILD_DIR)/[CLR]* $(RC5PIPE_IPK_DIR)/opt/share/doc/rc5pipe/
+	$(INSTALL) -d $(RC5PIPE_IPK_DIR)/opt/share/doc/rc5pipe
+	$(INSTALL) -m 644 $(RC5PIPE_BUILD_DIR)/[CLR]* $(RC5PIPE_IPK_DIR)/opt/share/doc/rc5pipe/
 	$(MAKE) $(RC5PIPE_IPK_DIR)/CONTROL/control
 	echo $(RC5PIPE_CONFFILES) | sed -e 's/ /\n/g' > $(RC5PIPE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RC5PIPE_IPK_DIR)

@@ -112,7 +112,7 @@ $(LIBCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCAP_SOURCE) $(LIBCAP_PATCHES) ma
 	$(LIBCAP_UNZIP) $(DL_DIR)/$(LIBCAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBCAP_PATCHES)" ; \
 		then cat $(LIBCAP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBCAP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBCAP_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(LIBCAP_DIR) $(@D)
 #	fix for error: ‘XATTR_NAME_CAPS’ undeclared
@@ -155,7 +155,7 @@ libcap-stage: $(LIBCAP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libcap
 #
 $(LIBCAP_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBCAP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBCAP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libcap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,13 +185,13 @@ $(LIBCAP_IPK): $(LIBCAP_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBCAP_BUILD_DIR)/libcap FAKEROOT=$(LIBCAP_IPK_DIR) prefix=/opt lib=lib install
 	rm -f $(LIBCAP_IPK_DIR)/opt/lib/libcap.a
 	$(STRIP_COMMAND) $(LIBCAP_IPK_DIR)/opt/lib/*.so
-#	install -d $(LIBCAP_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBCAP_SOURCE_DIR)/libcap.conf $(LIBCAP_IPK_DIR)/opt/etc/libcap.conf
-#	install -d $(LIBCAP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBCAP_SOURCE_DIR)/rc.libcap $(LIBCAP_IPK_DIR)/opt/etc/init.d/SXXlibcap
+#	$(INSTALL) -d $(LIBCAP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBCAP_SOURCE_DIR)/libcap.conf $(LIBCAP_IPK_DIR)/opt/etc/libcap.conf
+#	$(INSTALL) -d $(LIBCAP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBCAP_SOURCE_DIR)/rc.libcap $(LIBCAP_IPK_DIR)/opt/etc/init.d/SXXlibcap
 	$(MAKE) $(LIBCAP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBCAP_SOURCE_DIR)/postinst $(LIBCAP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBCAP_SOURCE_DIR)/prerm $(LIBCAP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBCAP_SOURCE_DIR)/postinst $(LIBCAP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBCAP_SOURCE_DIR)/prerm $(LIBCAP_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBCAP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBCAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCAP_IPK_DIR)
 

@@ -1,12 +1,12 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof miau`" ]; then 
-    /opt/bin/killall miau 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof miau`" ]; then 
+    %OPTWARE_TARGET_PREFIX%/bin/killall miau 2>/dev/null
 fi
 
-if [ ! -d /opt/var/spool/miau ] ;  then
-    mkdir -p /opt/var/spool/miau
+if [ ! -d %OPTWARE_TARGET_PREFIX%/var/spool/miau ] ;  then
+    mkdir -p %OPTWARE_TARGET_PREFIX%/var/spool/miau
 fi
 
-/opt/bin/miau -d /opt/var/spool/miau
+%OPTWARE_TARGET_PREFIX%/bin/miau -d %OPTWARE_TARGET_PREFIX%/var/spool/miau
 

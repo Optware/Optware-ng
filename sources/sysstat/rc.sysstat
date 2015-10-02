@@ -1,5 +1,5 @@
 #!/bin/sh
 #
 
-/opt/lib/sa/sadc -F -L -
+%OPTWARE_TARGET_PREFIX%/lib/sa/sadc -F -L -
 

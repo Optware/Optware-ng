@@ -1,10 +1,10 @@
 #!/bin/sh
 
-/opt/bin/update-alternatives --remove scp /opt/sbin/dropbearmulti
-/opt/bin/update-alternatives --remove ssh /opt/sbin/dropbearmulti
+%OPTWARE_TARGET_PREFIX%/bin/update-alternatives --remove scp %OPTWARE_TARGET_PREFIX%/sbin/dropbearmulti
+%OPTWARE_TARGET_PREFIX%/bin/update-alternatives --remove ssh %OPTWARE_TARGET_PREFIX%/sbin/dropbearmulti
 
 killall dropbear
 
-rm -f /opt/etc/dropbear/dropbear_rsa_host_key
-rm -f /opt/etc/dropbear/dropbear_dss_host_key
-rm -f /opt/etc/dropbear/dropbear_ecdsa_host_key
+rm -f %OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_rsa_host_key
+rm -f %OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_dss_host_key
+rm -f %OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_ecdsa_host_key

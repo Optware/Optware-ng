@@ -4,4 +4,4 @@ if [ -n "`pidof motion`" ]; then
     killall motion 2>/dev/null
 fi
 
-/opt/bin/motion
+%OPTWARE_TARGET_PREFIX%/bin/motion

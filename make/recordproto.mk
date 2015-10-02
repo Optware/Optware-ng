@@ -63,7 +63,7 @@ RECORDPROTO_IPK=$(BUILD_DIR)/recordproto_$(RECORDPROTO_VERSION)-$(RECORDPROTO_IP
 # Automatically create a ipkg control file
 #
 $(RECORDPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(RECORDPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(RECORDPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: recordproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(RECORDPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(RECORDPROTO_SOURCE) $(RECORDPR
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(RECORDPROTO_SOURCE)
 	if test -n "$(RECORDPROTO_PATCHES)" ; \
 		then cat $(RECORDPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RECORDPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RECORDPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RECORDPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RECORDPROTO_DIR) $(@D) ; \

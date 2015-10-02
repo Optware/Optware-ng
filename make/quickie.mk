@@ -112,7 +112,7 @@ $(QUICKIE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(QUICKIE_SOURCE) m
 	rm -f $(QUICKIE_HOST_BUILD_DIR)/.built
 	rm -rf $(HOST_BUILD_DIR)/$(QUICKIE_DIR) $(QUICKIE_HOST_BUILD_DIR)
 	$(QUICKIE_UNZIP) $(DL_DIR)/$(QUICKIE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	cat $(QUICKIE_SOURCE_DIR)/gcc4.patch $(QUICKIE_SOURCE_DIR)/missing-includes.patch | patch -d $(HOST_BUILD_DIR)/$(QUICKIE_DIR) -p0
+	cat $(QUICKIE_SOURCE_DIR)/gcc4.patch $(QUICKIE_SOURCE_DIR)/missing-includes.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(QUICKIE_DIR) -p0
 	mv $(HOST_BUILD_DIR)/$(QUICKIE_DIR) $(QUICKIE_HOST_BUILD_DIR)
 	(cd $(QUICKIE_HOST_BUILD_DIR); \
 		./configure \
@@ -133,7 +133,7 @@ endif
 	$(QUICKIE_UNZIP) $(DL_DIR)/$(QUICKIE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(QUICKIE_PATCHES)" ; \
 		then cat $(QUICKIE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(QUICKIE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(QUICKIE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(QUICKIE_DIR)" != "$(QUICKIE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(QUICKIE_DIR) $(QUICKIE_BUILD_DIR) ; \
@@ -186,7 +186,7 @@ quickie-stage: $(QUICKIE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/quickie
 #
 $(QUICKIE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: quickie" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,15 +216,15 @@ $(QUICKIE_IPK): $(QUICKIE_BUILD_DIR)/.built
 	rm -rf $(QUICKIE_IPK_DIR) $(BUILD_DIR)/quickie_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(QUICKIE_BUILD_DIR) RPM_BUILD_ROOT=$(QUICKIE_IPK_DIR) install
 	$(STRIP_COMMAND) $(QUICKIE_IPK_DIR)/opt/bin/*
-#	install -d $(QUICKIE_IPK_DIR)/opt/etc/
-#	install -m 644 $(QUICKIE_SOURCE_DIR)/quickie.conf $(QUICKIE_IPK_DIR)/opt/etc/quickie.conf
-#	install -d $(QUICKIE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(QUICKIE_SOURCE_DIR)/rc.quickie $(QUICKIE_IPK_DIR)/opt/etc/init.d/SXXquickie
+#	$(INSTALL) -d $(QUICKIE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(QUICKIE_SOURCE_DIR)/quickie.conf $(QUICKIE_IPK_DIR)/opt/etc/quickie.conf
+#	$(INSTALL) -d $(QUICKIE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(QUICKIE_SOURCE_DIR)/rc.quickie $(QUICKIE_IPK_DIR)/opt/etc/init.d/SXXquickie
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXquickie
 	$(MAKE) $(QUICKIE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(QUICKIE_SOURCE_DIR)/postinst $(QUICKIE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(QUICKIE_SOURCE_DIR)/postinst $(QUICKIE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(QUICKIE_SOURCE_DIR)/prerm $(QUICKIE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(QUICKIE_SOURCE_DIR)/prerm $(QUICKIE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(QUICKIE_CONFFILES) | sed -e 's/ /\n/g' > $(QUICKIE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QUICKIE_IPK_DIR)

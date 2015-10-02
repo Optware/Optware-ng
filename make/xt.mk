@@ -62,7 +62,7 @@ XT_IPK=$(BUILD_DIR)/xt_$(XT_VERSION)-$(XT_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XT_IPK_DIR)/CONTROL/control:
-	@install -d $(XT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -106,7 +106,7 @@ $(XT_BUILD_DIR)/.configured: $(DL_DIR)/xt-$(XT_VERSION).tar.gz \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xt-$(XT_VERSION).tar.gz
 	if test -n "$(XT_PATCHES)" ; \
 		then cat $(XT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XT_DIR)" != "$(XT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XT_DIR) $(XT_BUILD_DIR) ; \

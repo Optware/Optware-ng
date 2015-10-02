@@ -2,8 +2,8 @@
 
 if [ `uname -m` = armv5teb ]; then
 echo "Setting up ipkg arch-file"
-mkdir -p /opt/etc/ipkg
-cat >> /opt/etc/ipkg/arch.conf << EOF
+mkdir -p %OPTWARE_TARGET_PREFIX%/etc/ipkg
+cat >> %OPTWARE_TARGET_PREFIX%/etc/ipkg/arch.conf << EOF
 arch all 1
 arch any 6
 arch noarch 11
@@ -15,6 +15,6 @@ EOF
 fi
 
 touch /etc/profile
-if ! grep '^PATH=.*/opt/bin' /etc/profile >/dev/null 2>&1 ; then
-  echo "PATH=\$PATH:/opt/bin:/opt/sbin" >> /etc/profile
+if ! grep '^PATH=.*%OPTWARE_TARGET_PREFIX%/bin' /etc/profile >/dev/null 2>&1 ; then
+  echo "PATH=\$PATH:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin" >> /etc/profile
 fi

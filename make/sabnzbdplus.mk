@@ -112,7 +112,7 @@ $(SABNZBDPLUS_BUILD_DIR)/.configured: $(DL_DIR)/$(SABNZBDPLUS_SOURCE) $(SABNZBDP
 	# 2.5
 	$(SABNZBDPLUS_UNZIP) $(DL_DIR)/$(SABNZBDPLUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SABNZBDPLUS_PATCHES)"; then \
-		cat $(SABNZBDPLUS_PATCHES) | patch -d $(BUILD_DIR)/$(SABNZBDPLUS_DIR) -p1; \
+		cat $(SABNZBDPLUS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SABNZBDPLUS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(SABNZBDPLUS_DIR) $(@D)/2.5
 #	(cd $(@D)/2.5; \
@@ -159,7 +159,7 @@ sabnzbdplus: $(SABNZBDPLUS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/sabnzbdplus
 #
 $(SABNZBDPLUS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sabnzbdplus" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,21 +192,21 @@ $(SABNZBDPLUS_IPK): $(SABNZBDPLUS_BUILD_DIR)/.built
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(SABNZBDPLUS_IPK_DIR) --prefix=/opt
-	install -d $(SABNZBDPLUS_IPK_DIR)/opt/share/SABnzbd
+	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/share/SABnzbd
 	cp -rp $(SABNZBDPLUS_BUILD_DIR)/2.5/* $(SABNZBDPLUS_IPK_DIR)/opt/share/SABnzbd
 	#
-#	install -d $(SABNZBDPLUS_IPK_DIR)/opt/etc
-#	install -m 644 $(SABNZBDPLUS_SOURCE_DIR)/SABnzbd.ini $(SABNZBDPLUS_IPK_DIR)/opt/etc/SABnzbd.ini
-#	install -d $(SABNZBDPLUS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SABNZBDPLUS_SOURCE_DIR)/rc.sabnzbdplus $(SABNZBDPLUS_IPK_DIR)/opt/etc/init.d/S70sabnzbdplus
-#	install -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/downloads
-#	install -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/cache
-#	install -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/tmp
-#	install -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/nzb
-#	install -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/nzb/backup
-#	install -d $(SABNZBDPLUS_IPK_DIR)/opt/var/log
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/etc
+#	$(INSTALL) -m 644 $(SABNZBDPLUS_SOURCE_DIR)/SABnzbd.ini $(SABNZBDPLUS_IPK_DIR)/opt/etc/SABnzbd.ini
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SABNZBDPLUS_SOURCE_DIR)/rc.sabnzbdplus $(SABNZBDPLUS_IPK_DIR)/opt/etc/init.d/S70sabnzbdplus
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/downloads
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/cache
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/tmp
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/nzb
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/nzb/backup
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/var/log
 	$(MAKE) $(SABNZBDPLUS_IPK_DIR)/CONTROL/control
-#	install -m 644 $(SABNZBDPLUS_SOURCE_DIR)/postinst $(SABNZBDPLUS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(SABNZBDPLUS_SOURCE_DIR)/postinst $(SABNZBDPLUS_IPK_DIR)/CONTROL/postinst
 #	echo $(SABNZBDPLUS_CONFFILES) | sed -e 's/ /\n/g' > $(SABNZBDPLUS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SABNZBDPLUS_IPK_DIR)
 

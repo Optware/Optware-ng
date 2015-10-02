@@ -6,11 +6,11 @@
  	{
 -	    scan_dir(UCLIBC_RUNTIME_PREFIX "lib");
 -	    scan_dir(UCLIBC_RUNTIME_PREFIX "usr/lib");
-+	    scan_dir("/opt/lib");
-+	    scan_dir("/opt/usr/lib");
++	    scan_dir("%OPTWARE_TARGET_PREFIX%/lib");
++	    scan_dir("%OPTWARE_TARGET_PREFIX%/usr/lib");
  #ifndef __LDSO_CACHE_SUPPORT__
 -	    scan_dir(UCLIBC_RUNTIME_PREFIX "usr/X11R6/lib");
-+	    scan_dir("/opt/X11R6/lib");
++	    scan_dir("%OPTWARE_TARGET_PREFIX%/X11R6/lib");
  #else
  	    /* I guess the defaults aren't good enough */
  	    if ((extpath = get_extpath()))
@@ -20,8 +20,8 @@
  			/* we do the redundancy check only if cache usage is enabled */
 -			if (strcmp(UCLIBC_RUNTIME_PREFIX "lib", cp) == 0 ||
 -			    strcmp(UCLIBC_RUNTIME_PREFIX "usr/lib", cp) == 0) {
-+			if (strcmp("/opt/lib", cp) == 0 ||
-+			    strcmp("/opt/usr/lib", cp) == 0) {
++			if (strcmp("%OPTWARE_TARGET_PREFIX%/lib", cp) == 0 ||
++			    strcmp("%OPTWARE_TARGET_PREFIX%/usr/lib", cp) == 0) {
  				if (verbose >= 0)
  					warnx("Remove `%s' from `%s'\n", cp, LDSO_CONF);
  				continue;

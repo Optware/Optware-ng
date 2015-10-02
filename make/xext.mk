@@ -61,7 +61,7 @@ XEXT_IPK=$(BUILD_DIR)/xext_$(XEXT_FULL_VERSION)-$(XEXT_IPK_VERSION)_$(TARGET_ARC
 # Automatically create a ipkg control file
 #
 $(XEXT_IPK_DIR)/CONTROL/control:
-	@install -d $(XEXT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XEXT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xext" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(XEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(XEXT_SOURCE) $(XEXT_PATCHES) make/xex
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XEXT_SOURCE)
 	if test -n "$(XEXT_PATCHES)" ; \
 		then cat $(XEXT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XEXT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XEXT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XEXT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XEXT_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ $(XEXT_IPK): $(XEXT_BUILD_DIR)/.built
 	rm -rf $(XEXT_IPK_DIR) $(BUILD_DIR)/xext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XEXT_BUILD_DIR) DESTDIR=$(XEXT_IPK_DIR) install-strip
 	$(MAKE) $(XEXT_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XEXT_SOURCE_DIR)/postinst $(XEXT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XEXT_SOURCE_DIR)/postinst $(XEXT_IPK_DIR)/CONTROL/postinst
 	rm -f $(XEXT_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XEXT_IPK_DIR)
 

@@ -1,11 +1,11 @@
 #!/bin/sh
 
-if [ ! -f /opt/etc/raddb/radiusd.conf ] ;  then
-    cp -rf /opt/doc/.radius/* /opt/etc/
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/raddb/radiusd.conf ] ;  then
+    cp -rf %OPTWARE_TARGET_PREFIX%/doc/.radius/* %OPTWARE_TARGET_PREFIX%/etc/
     echo ; echo
-    echo "To complete the installation, you must edit /opt/etc/raddb/radiusd.conf,"
-    echo "and then run /opt/etc/init.d/S55freeradius to start the radius daemon."
+    echo "To complete the installation, you must edit %OPTWARE_TARGET_PREFIX%/etc/raddb/radiusd.conf,"
+    echo "and then run %OPTWARE_TARGET_PREFIX%/etc/init.d/S55freeradius to start the radius daemon."
     echo
 else
-    /opt/etc/init.d/S55freeradius
+    %OPTWARE_TARGET_PREFIX%/etc/init.d/S55freeradius
 fi

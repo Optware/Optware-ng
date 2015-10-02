@@ -110,7 +110,7 @@ $(SYSFSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSFSUTILS_SOURCE) $(SYSFSUTILS
 	$(SYSFSUTILS_UNZIP) $(DL_DIR)/$(SYSFSUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SYSFSUTILS_PATCHES)" ; \
 		then cat $(SYSFSUTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SYSFSUTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SYSFSUTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SYSFSUTILS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SYSFSUTILS_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ sysfsutils-stage: $(SYSFSUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sysfsutils
 #
 $(SYSFSUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sysfsutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -108,7 +108,7 @@ $(SDL_BUILD_DIR)/.configured: $(DL_DIR)/$(SDL_SOURCE) $(SDL_PATCHES) make/sdl.mk
 	$(MAKE) xext-stage
 	rm -rf $(BUILD_DIR)/$(SDL_DIR) $(SDL_BUILD_DIR)
 	$(SDL_UNZIP) $(DL_DIR)/$(SDL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(SDL_PATCHES) | patch -d $(BUILD_DIR)/$(SDL_DIR) -p1
+	#cat $(SDL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SDL_DIR) -p1
 	mv $(BUILD_DIR)/$(SDL_DIR) $(SDL_BUILD_DIR)
 	(cd $(SDL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -175,7 +175,7 @@ sdl-stage: $(SDL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sdl
 #
 $(SDL_IPK_DIR)/CONTROL/control:
-	@install -d $(SDL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(SDL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: sdl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,7 +190,7 @@ $(SDL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SDL_CONFLICTS)" >>$@
 
 $(SDL_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(SDL_DEV_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(SDL_DEV_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: sdl-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

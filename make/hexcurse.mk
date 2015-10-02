@@ -106,7 +106,7 @@ $(HEXCURSE_BUILD_DIR)/.configured: $(DL_DIR)/$(HEXCURSE_SOURCE) $(HEXCURSE_PATCH
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(HEXCURSE_DIR) $(HEXCURSE_BUILD_DIR)
 	$(HEXCURSE_UNZIP) $(DL_DIR)/$(HEXCURSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(HEXCURSE_PATCHES) | patch -d $(BUILD_DIR)/$(HEXCURSE_DIR) -p1
+	cat $(HEXCURSE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(HEXCURSE_DIR) -p1
 	mv $(BUILD_DIR)/$(HEXCURSE_DIR) $(HEXCURSE_BUILD_DIR)
 	cp -f $(SOURCE_DIR)/common/config.* $(HEXCURSE_BUILD_DIR)/
 	(cd $(HEXCURSE_BUILD_DIR); \
@@ -152,7 +152,7 @@ hexcurse-stage: $(HEXCURSE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/hexcurse
 #
 $(HEXCURSE_IPK_DIR)/CONTROL/control:
-	@install -d $(HEXCURSE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(HEXCURSE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: hexcurse" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

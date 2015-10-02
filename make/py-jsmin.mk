@@ -121,7 +121,7 @@ $(PY-JSMIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSMIN_SOURCE) $(PY-JSMIN_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-JSMIN_DIR)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-JSMIN_PATCHES)"; then \
-	    cat $(PY-JSMIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
+	    cat $(PY-JSMIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-JSMIN_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -136,7 +136,7 @@ $(PY-JSMIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSMIN_SOURCE) $(PY-JSMIN_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-JSMIN_DIR)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-JSMIN_PATCHES)"; then \
-	    cat $(PY-JSMIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
+	    cat $(PY-JSMIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-JSMIN_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -151,7 +151,7 @@ $(PY-JSMIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSMIN_SOURCE) $(PY-JSMIN_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-JSMIN_DIR)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-JSMIN_PATCHES)"; then \
-	    cat $(PY-JSMIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
+	    cat $(PY-JSMIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-JSMIN_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -166,7 +166,7 @@ $(PY-JSMIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSMIN_SOURCE) $(PY-JSMIN_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-JSMIN_DIR)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-JSMIN_PATCHES)"; then \
-	    cat $(PY-JSMIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
+	    cat $(PY-JSMIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-JSMIN_DIR) $(@D)/3
 	(cd $(@D)/3; \
@@ -215,7 +215,7 @@ $(PY-JSMIN_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-JSMIN_SOURCE
 	mkdir -p $(@D)/
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PY-JSMIN_PATCHES)"; then \
-	    cat $(PY-JSMIN_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
+	    cat $(PY-JSMIN_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
 	fi
 	mv $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -228,7 +228,7 @@ $(PY-JSMIN_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-JSMIN_SOURCE
 	)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PY-JSMIN_PATCHES)"; then \
-	    cat $(PY-JSMIN_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
+	    cat $(PY-JSMIN_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
 	fi
 	mv $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -241,7 +241,7 @@ $(PY-JSMIN_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-JSMIN_SOURCE
 	)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PY-JSMIN_PATCHES)"; then \
-	    cat $(PY-JSMIN_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
+	    cat $(PY-JSMIN_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
 	fi
 	mv $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -254,7 +254,7 @@ $(PY-JSMIN_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-JSMIN_SOURCE
 	)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PY-JSMIN_PATCHES)"; then \
-	    cat $(PY-JSMIN_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
+	    cat $(PY-JSMIN_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) -p1; \
 	fi
 	mv $(HOST_BUILD_DIR)/$(PY-JSMIN_DIR) $(@D)/3
 	(cd $(@D)/3; \
@@ -284,7 +284,7 @@ py-jsmin-stage: $(PY-JSMIN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-jsmin
 #
 $(PY25-JSMIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-jsmin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -298,7 +298,7 @@ $(PY25-JSMIN_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-JSMIN_CONFLICTS)" >>$@
 
 $(PY26-JSMIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-jsmin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -312,7 +312,7 @@ $(PY26-JSMIN_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-JSMIN_CONFLICTS)" >>$@
 
 $(PY27-JSMIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-jsmin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -326,7 +326,7 @@ $(PY27-JSMIN_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-JSMIN_CONFLICTS)" >>$@
 
 $(PY3-JSMIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-jsmin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

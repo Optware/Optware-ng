@@ -109,7 +109,7 @@ $(WEBALIZER_BUILD_DIR)/.configured: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PA
 	$(MAKE) bzip2-stage geoip-stage libgd-stage libpng-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(WEBALIZER_DIR) $(@D)
 	$(WEBALIZER_UNZIP) $(DL_DIR)/$(WEBALIZER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(WEBALIZER_PATCHES) | patch -d $(BUILD_DIR)/$(WEBALIZER_DIR) -p1
+#	cat $(WEBALIZER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WEBALIZER_DIR) -p1
 	mv $(BUILD_DIR)/$(WEBALIZER_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -167,7 +167,7 @@ webalizer-stage: $(WEBALIZER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/webalizer
 #
 $(WEBALIZER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: webalizer" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,14 +195,14 @@ $(WEBALIZER_IPK_DIR)/CONTROL/control:
 #
 $(WEBALIZER_IPK): $(WEBALIZER_BUILD_DIR)/.built
 	rm -rf $(WEBALIZER_IPK_DIR) $(BUILD_DIR)/webalizer_*_$(TARGET_ARCH).ipk
-	install -d $(WEBALIZER_IPK_DIR)/opt/etc/
-	install -d $(WEBALIZER_IPK_DIR)/opt/bin/
-	install -m 644 $(WEBALIZER_BUILD_DIR)/sample.conf $(WEBALIZER_IPK_DIR)/opt/etc/webalizer.conf.sample
-	install -m 755 $(WEBALIZER_BUILD_DIR)/webalizer $(WEBALIZER_IPK_DIR)/opt/bin/webalizer
+	$(INSTALL) -d $(WEBALIZER_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(WEBALIZER_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 644 $(WEBALIZER_BUILD_DIR)/sample.conf $(WEBALIZER_IPK_DIR)/opt/etc/webalizer.conf.sample
+	$(INSTALL) -m 755 $(WEBALIZER_BUILD_DIR)/webalizer $(WEBALIZER_IPK_DIR)/opt/bin/webalizer
 	$(STRIP_COMMAND) $(WEBALIZER_IPK_DIR)/opt/bin/webalizer
 	ln -s ./webalizer $(WEBALIZER_IPK_DIR)/opt/bin/webazolver
 	$(MAKE) $(WEBALIZER_IPK_DIR)/CONTROL/control
-	install -m 755 $(WEBALIZER_SOURCE_DIR)/postinst $(WEBALIZER_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(WEBALIZER_SOURCE_DIR)/postinst $(WEBALIZER_IPK_DIR)/CONTROL/postinst
 	echo $(WEBALIZER_CONFFILES) | sed -e 's/ /\n/g' > $(WEBALIZER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WEBALIZER_IPK_DIR)
 

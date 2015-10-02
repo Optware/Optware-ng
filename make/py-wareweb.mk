@@ -117,7 +117,7 @@ else
 	)
 endif
 	if test -n "$(PY-WAREWEB_PATCHES)" ; then \
-	    cat $(PY-WAREWEB_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WAREWEB_DIR) -p0 ; \
+	    cat $(PY-WAREWEB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-WAREWEB_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-WAREWEB_DIR) $(PY-WAREWEB_BUILD_DIR)
 	(cd $(PY-WAREWEB_BUILD_DIR); \
@@ -155,7 +155,7 @@ py-wareweb-stage: $(PY-WAREWEB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-wareweb
 #
 $(PY-WAREWEB_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-WAREWEB_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-WAREWEB_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py24-wareweb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

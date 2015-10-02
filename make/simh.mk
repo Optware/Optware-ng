@@ -115,7 +115,7 @@ $(SIMH_BUILD_DIR)/.configured: $(DL_DIR)/$(SIMH_SOURCE) $(SIMH_PATCHES) make/sim
 	cd $(BUILD_DIR)/$(SIMH_DIR) && \
 	$(SIMH_UNZIP) -a $(DL_DIR)/$(SIMH_SOURCE)
 	if test -n "$(SIMH_PATCHES)" ; \
-		then cat $(SIMH_PATCHES) | patch -bd $(BUILD_DIR)/$(SIMH_DIR) -p0 ; \
+		then cat $(SIMH_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(SIMH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SIMH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SIMH_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ simh: $(SIMH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/simh
 #
 $(SIMH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: simh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,13 +202,13 @@ $(SIMH_IPK_DIR)/CONTROL/control:
 $(SIMH_IPK): $(SIMH_BUILD_DIR)/.built
 	rm -rf $(SIMH_IPK_DIR) $(BUILD_DIR)/simh_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(SIMH_BUILD_DIR) DESTDIR=$(SIMH_IPK_DIR) install-strip
-	install -d $(SIMH_IPK_DIR)/opt/bin/
-	install $(SIMH_BUILD_DIR)/BIN/* $(SIMH_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(SIMH_IPK_DIR)/opt/bin/
+	$(INSTALL) $(SIMH_BUILD_DIR)/BIN/* $(SIMH_IPK_DIR)/opt/bin/
 	mv $(SIMH_IPK_DIR)/opt/bin/eclipse $(SIMH_IPK_DIR)/opt/bin/eclipseemu
 	$(STRIP_COMMAND) $(SIMH_IPK_DIR)/opt/bin/*
-	install -d $(SIMH_IPK_DIR)/opt/share/doc/simh/
+	$(INSTALL) -d $(SIMH_IPK_DIR)/opt/share/doc/simh/
 	for f in `find $(SIMH_BUILD_DIR) -name '*.txt'`; do \
-		install $$f $(SIMH_IPK_DIR)/opt/share/doc/simh/; \
+		$(INSTALL) $$f $(SIMH_IPK_DIR)/opt/share/doc/simh/; \
 	done
 	$(MAKE) $(SIMH_IPK_DIR)/CONTROL/control
 #	echo $(SIMH_CONFFILES) | sed -e 's/ /\n/g' > $(SIMH_IPK_DIR)/CONTROL/conffiles

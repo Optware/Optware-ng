@@ -120,7 +120,7 @@ $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-C
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR)
 	$(PY-CLIPS_UNZIP) $(DL_DIR)/$(PY-CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CLIPS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
+#	cat $(PY-CLIPS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    ( \
@@ -140,7 +140,7 @@ $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-C
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR)
 	$(PY-CLIPS_UNZIP) $(DL_DIR)/$(PY-CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CLIPS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
+#	cat $(PY-CLIPS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -196,7 +196,7 @@ py-clips-stage: $(PY-CLIPS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-clips
 #
 $(PY24-CLIPS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-clips" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,7 +211,7 @@ $(PY24-CLIPS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CLIPS_CONFLICTS)" >>$@
 
 $(PY25-CLIPS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-clips" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -243,7 +243,7 @@ $(PY24-CLIPS_IPK): $(PY-CLIPS_BUILD_DIR)/.built
 	(cd $(PY-CLIPS_BUILD_DIR)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py \
-	    install --root=$(PY24-CLIPS_IPK_DIR) --prefix=/opt; \
+	    $(INSTALL) --root=$(PY24-CLIPS_IPK_DIR) --prefix=/opt; \
         )
 	$(STRIP_COMMAND) $(PY24-CLIPS_IPK_DIR)/opt/lib/python2.4/site-packages/clips/_clips.so
 	$(MAKE) $(PY24-CLIPS_IPK_DIR)/CONTROL/control
@@ -255,7 +255,7 @@ $(PY25-CLIPS_IPK): $(PY-CLIPS_BUILD_DIR)/.built
 	(cd $(PY-CLIPS_BUILD_DIR)/2.5; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
-	    install --root=$(PY25-CLIPS_IPK_DIR) --prefix=/opt; \
+	    $(INSTALL) --root=$(PY25-CLIPS_IPK_DIR) --prefix=/opt; \
         )
 	$(STRIP_COMMAND) $(PY25-CLIPS_IPK_DIR)/opt/lib/python2.5/site-packages/clips/_clips.so
 	$(MAKE) $(PY25-CLIPS_IPK_DIR)/CONTROL/control

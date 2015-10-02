@@ -127,7 +127,7 @@ $(PY-TRAC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TRAC_SOURCE) $(PY-TRAC_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-TRAC_DIR)
 	$(PY-TRAC_UNZIP) $(DL_DIR)/$(PY-TRAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-TRAC_PATCHES)"; then \
-	    cat $(PY-TRAC_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TRAC_DIR) -p1; \
+	    cat $(PY-TRAC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TRAC_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-TRAC_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -142,7 +142,7 @@ $(PY-TRAC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TRAC_SOURCE) $(PY-TRAC_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-TRAC_DIR)
 	$(PY-TRAC_UNZIP) $(DL_DIR)/$(PY-TRAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-TRAC_PATCHES)"; then \
-	    cat $(PY-TRAC_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TRAC_DIR) -p1; \
+	    cat $(PY-TRAC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TRAC_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-TRAC_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -190,7 +190,7 @@ py-trac-stage: $(PY-TRAC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-trac
 #
 $(PY25-TRAC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-trac" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -204,7 +204,7 @@ $(PY25-TRAC_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY25-TRAC_CONFLICTS)" >>$@
 
 $(PY26-TRAC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-trac" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

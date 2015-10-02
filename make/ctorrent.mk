@@ -102,7 +102,7 @@ $(CTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(CTORRENT_SOURCE) $(CTORRENT_PATCH
 	$(MAKE) openssl-stage libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(CTORRENT_DIR) $(@D)
 	$(CTORRENT_UNZIP) $(DL_DIR)/$(CTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(CTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(CTORRENT_DIR) -p1
+	cat $(CTORRENT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CTORRENT_DIR) -p1
 	mv $(BUILD_DIR)/$(CTORRENT_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -140,7 +140,7 @@ ctorrent: $(CTORRENT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ctorrent
 #
 $(CTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ctorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -168,13 +168,13 @@ $(CTORRENT_IPK_DIR)/CONTROL/control:
 #
 $(CTORRENT_IPK): $(CTORRENT_BUILD_DIR)/.built
 	rm -rf $(CTORRENT_IPK_DIR) $(CTORRENT_IPK)
-	install -d $(CTORRENT_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(CTORRENT_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(CTORRENT_BUILD_DIR)/ctorrent -o $(CTORRENT_IPK_DIR)/opt/bin/ctorrent
-#	install -d $(CTORRENT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CTORRENT_SOURCE_DIR)/rc.ctorrent $(CTORRENT_IPK_DIR)/opt/etc/init.d/SXXctorrent
+#	$(INSTALL) -d $(CTORRENT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CTORRENT_SOURCE_DIR)/rc.ctorrent $(CTORRENT_IPK_DIR)/opt/etc/init.d/SXXctorrent
 	$(MAKE) $(CTORRENT_IPK_DIR)/CONTROL/control
-#	install -m 644 $(CTORRENT_SOURCE_DIR)/postinst $(CTORRENT_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(CTORRENT_SOURCE_DIR)/prerm $(CTORRENT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(CTORRENT_SOURCE_DIR)/postinst $(CTORRENT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(CTORRENT_SOURCE_DIR)/prerm $(CTORRENT_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CTORRENT_IPK_DIR)
 
 #

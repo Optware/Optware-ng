@@ -110,7 +110,7 @@ $(MULTITAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(MULTITAIL_SOURCE) $(MULTITAIL_PA
 	$(MULTITAIL_UNZIP) $(DL_DIR)/$(MULTITAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MULTITAIL_PATCHES)" ; \
 		then cat $(MULTITAIL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MULTITAIL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MULTITAIL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MULTITAIL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MULTITAIL_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ multitail-stage: $(MULTITAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/multitail
 #
 $(MULTITAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: multitail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,13 +199,13 @@ $(MULTITAIL_IPK_DIR)/CONTROL/control:
 #
 $(MULTITAIL_IPK): $(MULTITAIL_BUILD_DIR)/.built
 	rm -rf $(MULTITAIL_IPK_DIR) $(BUILD_DIR)/multitail_*_$(TARGET_ARCH).ipk
-	install -d $(MULTITAIL_IPK_DIR)/opt/bin
-	install -m 755 $(MULTITAIL_BUILD_DIR)/multitail $(MULTITAIL_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(MULTITAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(MULTITAIL_BUILD_DIR)/multitail $(MULTITAIL_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(MULTITAIL_IPK_DIR)/opt/bin/multitail
-	install -d $(MULTITAIL_IPK_DIR)/opt/etc
-	install -m 644 $(MULTITAIL_BUILD_DIR)/multitail.conf $(MULTITAIL_IPK_DIR)/opt/etc/
-	install -d $(MULTITAIL_IPK_DIR)/opt/man/man1
-	install -m 644 $(MULTITAIL_BUILD_DIR)/multitail.1 $(MULTITAIL_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -d $(MULTITAIL_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(MULTITAIL_BUILD_DIR)/multitail.conf $(MULTITAIL_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(MULTITAIL_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(MULTITAIL_BUILD_DIR)/multitail.1 $(MULTITAIL_IPK_DIR)/opt/man/man1/
 	$(MAKE) $(MULTITAIL_IPK_DIR)/CONTROL/control
 	echo $(MULTITAIL_CONFFILES) | sed -e 's/ /\n/g' > $(MULTITAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MULTITAIL_IPK_DIR)

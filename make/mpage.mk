@@ -109,7 +109,7 @@ $(MPAGE_BUILD_DIR)/.configured: $(DL_DIR)/$(MPAGE_SOURCE) $(MPAGE_PATCHES) make/
 	$(MPAGE_UNZIP) $(DL_DIR)/$(MPAGE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPAGE_PATCHES)" ; \
 		then cat $(MPAGE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MPAGE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MPAGE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MPAGE_DIR)" != "$(MPAGE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MPAGE_DIR) $(MPAGE_BUILD_DIR) ; \
@@ -151,7 +151,7 @@ mpage-stage: $(MPAGE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mpage
 #
 $(MPAGE_IPK_DIR)/CONTROL/control:
-	@install -d $(MPAGE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(MPAGE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: mpage" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,13 +181,13 @@ $(MPAGE_IPK): $(MPAGE_BUILD_DIR)/.built
 	rm -rf $(MPAGE_IPK_DIR) $(BUILD_DIR)/mpage_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPAGE_BUILD_DIR) PREFIX=$(MPAGE_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(MPAGE_IPK_DIR)/opt/bin/mpage
-#	install -d $(MPAGE_IPK_DIR)/opt/etc/
-#	install -m 644 $(MPAGE_SOURCE_DIR)/mpage.conf $(MPAGE_IPK_DIR)/opt/etc/mpage.conf
-#	install -d $(MPAGE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MPAGE_SOURCE_DIR)/rc.mpage $(MPAGE_IPK_DIR)/opt/etc/init.d/SXXmpage
+#	$(INSTALL) -d $(MPAGE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MPAGE_SOURCE_DIR)/mpage.conf $(MPAGE_IPK_DIR)/opt/etc/mpage.conf
+#	$(INSTALL) -d $(MPAGE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MPAGE_SOURCE_DIR)/rc.mpage $(MPAGE_IPK_DIR)/opt/etc/init.d/SXXmpage
 	$(MAKE) $(MPAGE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MPAGE_SOURCE_DIR)/postinst $(MPAGE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MPAGE_SOURCE_DIR)/prerm $(MPAGE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MPAGE_SOURCE_DIR)/postinst $(MPAGE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MPAGE_SOURCE_DIR)/prerm $(MPAGE_IPK_DIR)/CONTROL/prerm
 	echo $(MPAGE_CONFFILES) | sed -e 's/ /\n/g' > $(MPAGE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MPAGE_IPK_DIR)
 

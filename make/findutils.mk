@@ -73,7 +73,7 @@ FINDUTILS_DOC_IPK=$(BUILD_DIR)/findutils-doc_$(FINDUTILS_VERSION)-$(FINDUTILS_IP
 # Automatically create a ipkg control file
 #
 $(FINDUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: findutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -90,7 +90,7 @@ $(FINDUTILS_IPK_DIR)/CONTROL/control:
 # Automatically create a ipkg control file
 #
 $(FINDUTILS_DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: findutils-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -137,7 +137,7 @@ $(FINDUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(FINDUTILS_SOURCE) $(FINDUTILS_PA
 	$(FINDUTILS_UNZIP) $(DL_DIR)/$(FINDUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FINDUTILS_PATCHES)" ; \
 		then cat $(FINDUTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FINDUTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FINDUTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FINDUTILS_DIR)" != "$(FINDUTILS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FINDUTILS_DIR) $(FINDUTILS_BUILD_DIR) ; \
@@ -190,12 +190,12 @@ findutils: $(FINDUTILS_BUILD_DIR)/.built
 #
 $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	rm -rf $(FINDUTILS_IPK_DIR) $(BUILD_DIR)/findutils_*_$(TARGET_ARCH).ipk
-	install -d $(FINDUTILS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(FINDUTILS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)/opt/bin/findutils-find
 	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)/opt/bin/findutils-xargs
-	install -d $(FINDUTILS_IPK_DIR)/opt/man/man1
-	install -m 644 $(FINDUTILS_BUILD_DIR)/find/find.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
-	install -m 644 $(FINDUTILS_BUILD_DIR)/xargs/xargs.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(FINDUTILS_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(FINDUTILS_BUILD_DIR)/find/find.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(FINDUTILS_BUILD_DIR)/xargs/xargs.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
 	make  $(FINDUTILS_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --install /opt/bin/find find /opt/bin/findutils-find 80"; \
@@ -213,8 +213,8 @@ $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 
 $(FINDUTILS_DOC_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	rm -rf $(FINDUTILS_DOC_IPK_DIR) $(BUILD_DIR)/findutils-doc_*_$(TARGET_ARCH).ipk
-	install -d $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
-	install -m 644 $(FINDUTILS_BUILD_DIR)/doc/find.i* $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
+	$(INSTALL) -d $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
+	$(INSTALL) -m 644 $(FINDUTILS_BUILD_DIR)/doc/find.i* $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
 	make  $(FINDUTILS_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_DOC_IPK_DIR)
 

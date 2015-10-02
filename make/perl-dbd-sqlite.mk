@@ -40,7 +40,7 @@ $(PERL-DBD-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-SQLITE_SOURCE) $(
 	rm -rf $(BUILD_DIR)/$(PERL-DBD-SQLITE_DIR) $(PERL-DBD-SQLITE_BUILD_DIR)
 	$(PERL-DBD-SQLITE_UNZIP) $(DL_DIR)/$(PERL-DBD-SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL-DBD-SQLITE_PATCHES)"; then \
-		cat $(PERL-DBD-SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DBD-SQLITE_DIR) -p0; \
+		cat $(PERL-DBD-SQLITE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-DBD-SQLITE_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PERL-DBD-SQLITE_DIR) $(PERL-DBD-SQLITE_BUILD_DIR)
 	(cd $(PERL-DBD-SQLITE_BUILD_DIR); \
@@ -87,7 +87,7 @@ $(PERL-DBD-SQLITE_BUILD_DIR)/.staged: $(PERL-DBD-SQLITE_BUILD_DIR)/.built
 perl-dbd-sqlite-stage: $(PERL-DBD-SQLITE_BUILD_DIR)/.staged
 
 $(PERL-DBD-SQLITE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-dbd-sqlite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

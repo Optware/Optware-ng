@@ -116,7 +116,7 @@ $(LIBCROCO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCROCO_SOURCE) $(LIBCROCO_PATCH
 	$(LIBCROCO_UNZIP) $(DL_DIR)/$(LIBCROCO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBCROCO_PATCHES)" ; \
 		then cat $(LIBCROCO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBCROCO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBCROCO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBCROCO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBCROCO_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ libcroco-stage: $(LIBCROCO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libcroco
 #
 $(LIBCROCO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libcroco" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,15 +200,15 @@ $(LIBCROCO_IPK): $(LIBCROCO_BUILD_DIR)/.built
 	rm -rf $(LIBCROCO_IPK_DIR) $(BUILD_DIR)/libcroco_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCROCO_BUILD_DIR) DESTDIR=$(LIBCROCO_IPK_DIR) install-strip
 	rm -f $(LIBCROCO_IPK_DIR)/opt/lib/libcroco-0.6.la
-#	install -d $(LIBCROCO_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBCROCO_SOURCE_DIR)/libcroco.conf $(LIBCROCO_IPK_DIR)/opt/etc/libcroco.conf
-#	install -d $(LIBCROCO_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBCROCO_SOURCE_DIR)/rc.libcroco $(LIBCROCO_IPK_DIR)/opt/etc/init.d/SXXlibcroco
+#	$(INSTALL) -d $(LIBCROCO_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBCROCO_SOURCE_DIR)/libcroco.conf $(LIBCROCO_IPK_DIR)/opt/etc/libcroco.conf
+#	$(INSTALL) -d $(LIBCROCO_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBCROCO_SOURCE_DIR)/rc.libcroco $(LIBCROCO_IPK_DIR)/opt/etc/init.d/SXXlibcroco
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBCROCO_IPK_DIR)/opt/etc/init.d/SXXlibcroco
 	$(MAKE) $(LIBCROCO_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBCROCO_SOURCE_DIR)/postinst $(LIBCROCO_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBCROCO_SOURCE_DIR)/postinst $(LIBCROCO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBCROCO_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBCROCO_SOURCE_DIR)/prerm $(LIBCROCO_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBCROCO_SOURCE_DIR)/prerm $(LIBCROCO_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBCROCO_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

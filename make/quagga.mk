@@ -112,7 +112,7 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(QUAGGA_DIR) $(@D)
 	$(QUAGGA_UNZIP) $(DL_DIR)/$(QUAGGA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(QUAGGA_PATCHES)"; then \
-		cat $(QUAGGA_PATCHES) | patch -d $(BUILD_DIR)/$(QUAGGA_DIR) -p1; \
+		cat $(QUAGGA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(QUAGGA_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(QUAGGA_DIR) $(@D)
 	# Cross compilation requires checks for include files to point to target include dirictory
@@ -171,7 +171,7 @@ quagga-stage: $(QUAGGA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/quagga
 #
 $(QUAGGA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: quagga" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -204,11 +204,11 @@ $(QUAGGA_IPK): $(QUAGGA_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/lib/*.so*
-	install -d $(QUAGGA_IPK_DIR)/opt/var/run/quagga
-	install -d $(QUAGGA_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(QUAGGA_SOURCE_DIR)/rc.quagga $(QUAGGA_IPK_DIR)/opt/etc/init.d/S50quagga
+	$(INSTALL) -d $(QUAGGA_IPK_DIR)/opt/var/run/quagga
+	$(INSTALL) -d $(QUAGGA_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(QUAGGA_SOURCE_DIR)/rc.quagga $(QUAGGA_IPK_DIR)/opt/etc/init.d/S50quagga
 	$(MAKE) $(QUAGGA_IPK_DIR)/CONTROL/control
-	install -m 755 $(QUAGGA_SOURCE_DIR)/postinst $(QUAGGA_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(QUAGGA_SOURCE_DIR)/postinst $(QUAGGA_IPK_DIR)/CONTROL/postinst
 	#echo $(QUAGGA_CONFFILES) | sed -e 's/ /\n/g' > $(QUAGGA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QUAGGA_IPK_DIR)
 

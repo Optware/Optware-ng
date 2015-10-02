@@ -122,7 +122,7 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(XPDF_DIR) $(@D)
 	$(XPDF_UNZIP) $(DL_DIR)/$(XPDF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(XPDF_PATCHES) | patch -d $(BUILD_DIR)/$(XPDF_DIR) -p1
+	#cat $(XPDF_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(XPDF_DIR) -p1
 	mv $(BUILD_DIR)/$(XPDF_DIR) $(@D)
 #	sed fonts root dir to /opt/share
 	sed -i -e 's~/usr/share\|/usr/local/share~/opt/share~g' $(@D)/xpdf/GlobalParams.cc
@@ -173,7 +173,7 @@ xpdf-stage: $(XPDF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/xpdf
 #
 $(XPDF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xpdf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,7 +188,7 @@ $(XPDF_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(XPDF_CONFLICTS)" >>$@
 
 $(XPDF_X_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xpdf-x" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -220,19 +220,19 @@ $(XPDF_IPKS): $(XPDF_BUILD_DIR)/.built
 	$(MAKE) -C $(XPDF_BUILD_DIR) DESTDIR=$(XPDF_IPK_DIR) install
 	$(STRIP_COMMAND) $(XPDF_IPK_DIR)/opt/bin/*
 ifeq (x11, $(filter x11, $(PACKAGES)))
-	install -d $(XPDF_X_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(XPDF_X_IPK_DIR)/opt/bin
 	mv -f $(XPDF_IPK_DIR)/opt/bin/xpdf $(XPDF_IPK_DIR)/opt/bin/pdftoppm \
 							$(XPDF_X_IPK_DIR)/opt/bin/
 	$(MAKE) $(XPDF_X_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XPDF_X_IPK_DIR)
 endif
-	#install -d $(XPDF_IPK_DIR)/opt/etc/
-	#install -m 644 $(XPDF_SOURCE_DIR)/xpdf.conf $(XPDF_IPK_DIR)/opt/etc/xpdf.conf
-	#install -d $(XPDF_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(XPDF_SOURCE_DIR)/rc.xpdf $(XPDF_IPK_DIR)/opt/etc/init.d/SXXxpdf
+	#$(INSTALL) -d $(XPDF_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(XPDF_SOURCE_DIR)/xpdf.conf $(XPDF_IPK_DIR)/opt/etc/xpdf.conf
+	#$(INSTALL) -d $(XPDF_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(XPDF_SOURCE_DIR)/rc.xpdf $(XPDF_IPK_DIR)/opt/etc/init.d/SXXxpdf
 	$(MAKE) $(XPDF_IPK_DIR)/CONTROL/control
-	#install -m 755 $(XPDF_SOURCE_DIR)/postinst $(XPDF_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(XPDF_SOURCE_DIR)/prerm $(XPDF_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(XPDF_SOURCE_DIR)/postinst $(XPDF_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(XPDF_SOURCE_DIR)/prerm $(XPDF_IPK_DIR)/CONTROL/prerm
 	echo $(XPDF_CONFFILES) | sed -e 's/ /\n/g' > $(XPDF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XPDF_IPK_DIR)
 

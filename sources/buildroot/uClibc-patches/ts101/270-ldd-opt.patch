@@ -6,10 +6,10 @@
  	   This list must exactly match the list in uClibc/ldso/ldso/dl-elf.c */
 -	path =	UCLIBC_RUNTIME_PREFIX "lib:"
 -		UCLIBC_RUNTIME_PREFIX "usr/lib"
-+	path =	"/opt/lib"
++	path =	"%OPTWARE_TARGET_PREFIX%/lib"
  #ifndef __LDSO_CACHE_SUPPORT__
 -		":" UCLIBC_RUNTIME_PREFIX "usr/X11R6/lib"
-+		"/opt/X11R6/lib"
++		"%OPTWARE_TARGET_PREFIX%/X11R6/lib"
  #endif
  		;
  	search_for_named_library(lib->name, buf, path);
@@ -18,7 +18,7 @@
  			int status;
  			static const char * const environment[] = {
 -				"PATH=/usr/bin:/bin:/usr/sbin:/sbin",
-+				"PATH=/opt/bin:/opt/sbin:/usr/bin:/bin:/usr/sbin:/sbin",
++				"PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/usr/bin:/bin:/usr/sbin:/sbin",
  				"SHELL=/bin/sh",
  				"LD_TRACE_LOADED_OBJECTS=1",
  				NULL

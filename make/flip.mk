@@ -110,7 +110,7 @@ $(FLIP_BUILD_DIR)/.configured: $(DL_DIR)/$(FLIP_SOURCE) $(FLIP_PATCHES) make/fli
 	cp $(DL_DIR)/$(FLIP_SOURCE) $(BUILD_DIR)/$(FLIP_DIR)
 	if test -n "$(FLIP_PATCHES)" ; \
 		then cat $(FLIP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FLIP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FLIP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FLIP_DIR)" != "$(FLIP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FLIP_DIR) $(FLIP_BUILD_DIR) ; \
@@ -151,7 +151,7 @@ flip-stage: $(FLIP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/flip
 #
 $(FLIP_IPK_DIR)/CONTROL/control:
-	@install -d $(FLIP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(FLIP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: flip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,19 +179,19 @@ $(FLIP_IPK_DIR)/CONTROL/control:
 #
 $(FLIP_IPK): $(FLIP_BUILD_DIR)/.built
 	rm -rf $(FLIP_IPK_DIR) $(BUILD_DIR)/flip_*_$(TARGET_ARCH).ipk
-	install -d $(FLIP_IPK_DIR)/opt/bin/
-	install $(FLIP_BUILD_DIR)/flip $(FLIP_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(FLIP_IPK_DIR)/opt/bin/
+	$(INSTALL) $(FLIP_BUILD_DIR)/flip $(FLIP_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(FLIP_IPK_DIR)/opt/bin/flip
-	install -d $(FLIP_IPK_DIR)/opt/share/doc/flip/
+	$(INSTALL) -d $(FLIP_IPK_DIR)/opt/share/doc/flip/
 	echo $(FLIP_SITE) > $(FLIP_IPK_DIR)/opt/share/doc/flip/url.txt
 #	$(MAKE) -C $(FLIP_BUILD_DIR) DESTDIR=$(FLIP_IPK_DIR) install-strip
-#	install -d $(FLIP_IPK_DIR)/opt/etc/
-#	install -m 644 $(FLIP_SOURCE_DIR)/flip.conf $(FLIP_IPK_DIR)/opt/etc/flip.conf
-#	install -d $(FLIP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FLIP_SOURCE_DIR)/rc.flip $(FLIP_IPK_DIR)/opt/etc/init.d/SXXflip
+#	$(INSTALL) -d $(FLIP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FLIP_SOURCE_DIR)/flip.conf $(FLIP_IPK_DIR)/opt/etc/flip.conf
+#	$(INSTALL) -d $(FLIP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FLIP_SOURCE_DIR)/rc.flip $(FLIP_IPK_DIR)/opt/etc/init.d/SXXflip
 	$(MAKE) $(FLIP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FLIP_SOURCE_DIR)/postinst $(FLIP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FLIP_SOURCE_DIR)/prerm $(FLIP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FLIP_SOURCE_DIR)/postinst $(FLIP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FLIP_SOURCE_DIR)/prerm $(FLIP_IPK_DIR)/CONTROL/prerm
 	echo $(FLIP_CONFFILES) | sed -e 's/ /\n/g' > $(FLIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FLIP_IPK_DIR)
 

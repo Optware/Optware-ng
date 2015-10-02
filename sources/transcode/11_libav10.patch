@@ -34,7 +34,7 @@ Last-Update: 2014-03-01
  #include "libtc/tcmodule-plugin.h"
  
 +#include <libavresample/avresample.h>
-+#include <libavutil/opt.h>
++#include <libavutil%OPTWARE_TARGET_PREFIX%.h>
 +
  
  typedef struct {

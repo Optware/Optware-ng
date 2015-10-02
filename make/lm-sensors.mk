@@ -113,7 +113,7 @@ $(LM_SENSORS_BUILD_DIR)/.configured: $(DL_DIR)/$(LM_SENSORS_SOURCE) $(LM_SENSORS
 	$(LM_SENSORS_UNZIP) $(DL_DIR)/$(LM_SENSORS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LM_SENSORS_PATCHES)" ; \
 		then cat $(LM_SENSORS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LM_SENSORS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LM_SENSORS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LM_SENSORS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LM_SENSORS_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ lm-sensors-stage: $(LM_SENSORS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lm-sensors
 #
 $(LM_SENSORS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lm-sensors" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

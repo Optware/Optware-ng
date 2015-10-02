@@ -110,7 +110,7 @@ $(PY-SOAPPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(DL_DIR)/$(PY
 	$(MAKE) python24-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-SOAPPY_DIR) $(PY-SOAPPY_BUILD_DIR)
 	$(PY-SOAPPY_UNZIP) $(DL_DIR)/$(PY-SOAPPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-SOAPPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SOAPPY_DIR) -p1
+	#cat $(PY-SOAPPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SOAPPY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SOAPPY_DIR) $(PY-SOAPPY_BUILD_DIR)
 	$(PY-SOAPPY_UNZIP) $(DL_DIR)/$(PY-SOAPPY_FPCONST_SOURCE) | tar -C $(PY-SOAPPY_BUILD_DIR) -xvf -
 	cp $(PY-SOAPPY_BUILD_DIR)/$(PY-SOAPPY_FPCONST_DIR)/fpconst.py $(PY-SOAPPY_BUILD_DIR)/SOAPpy/
@@ -150,7 +150,7 @@ py-soappy: $(PY-SOAPPY_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-soappy
 #
 $(PY-SOAPPY_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-SOAPPY_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-SOAPPY_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-soappy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,11 +181,11 @@ $(PY-SOAPPY_IPK): $(PY-SOAPPY_BUILD_DIR)/.built
 	(cd $(PY-SOAPPY_BUILD_DIR); \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-SOAPPY_IPK_DIR) --prefix=/opt)
 	for d in bid contrib docs tests tools validate fpconst; do \
-		install -d $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/$$d; \
-		install $(PY-SOAPPY_BUILD_DIR)/$$d*/* $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/$$d; \
+		$(INSTALL) -d $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/$$d; \
+		$(INSTALL) $(PY-SOAPPY_BUILD_DIR)/$$d*/* $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/$$d; \
 	done
 	for f in LICENSE README RELEASE_INFO ChangeLog TODO; do \
-		install $(PY-SOAPPY_BUILD_DIR)/$$f $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/; \
+		$(INSTALL) $(PY-SOAPPY_BUILD_DIR)/$$f $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/; \
 	done
 	$(MAKE) $(PY-SOAPPY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SOAPPY_IPK_DIR)

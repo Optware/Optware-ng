@@ -96,7 +96,7 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 	$(SCPONLY_UNZIP) $(DL_DIR)/$(SCPONLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCPONLY_PATCHES)" ; \
 		then cat $(SCPONLY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SCPONLY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SCPONLY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SCPONLY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SCPONLY_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ scponly-stage: $(SCPONLY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/scponly
 #
 $(SCPONLY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: scponly" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,16 +192,16 @@ $(SCPONLY_IPK): $(SCPONLY_BUILD_DIR)/.built
 	sed -i '/INSTALL/s/ -o 0 -g 0 / /' $(SCPONLY_BUILD_DIR)/Makefile
 	$(MAKE) -C $(SCPONLY_BUILD_DIR) DESTDIR=$(SCPONLY_IPK_DIR) install
 	$(STRIP_COMMAND) $(SCPONLY_IPK_DIR)/opt/*bin/*
-	install -d $(SCPONLY_IPK_DIR)/opt/etc/
-	install -m 755 $(SCPONLY_SOURCE_DIR)/mkscproot $(SCPONLY_IPK_DIR)/opt/sbin/mkscproot
-#	install -m 644 $(SCPONLY_SOURCE_DIR)/scponly.conf $(SCPONLY_IPK_DIR)/opt/etc/scponly.conf
-#	install -d $(SCPONLY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SCPONLY_SOURCE_DIR)/rc.scponly $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
+	$(INSTALL) -d $(SCPONLY_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 755 $(SCPONLY_SOURCE_DIR)/mkscproot $(SCPONLY_IPK_DIR)/opt/sbin/mkscproot
+#	$(INSTALL) -m 644 $(SCPONLY_SOURCE_DIR)/scponly.conf $(SCPONLY_IPK_DIR)/opt/etc/scponly.conf
+#	$(INSTALL) -d $(SCPONLY_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SCPONLY_SOURCE_DIR)/rc.scponly $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
 	$(MAKE) $(SCPONLY_IPK_DIR)/CONTROL/control
-	# install -m 755 $(SCPONLY_SOURCE_DIR)/postinst $(SCPONLY_IPK_DIR)/CONTROL/postinst
+	# $(INSTALL) -m 755 $(SCPONLY_SOURCE_DIR)/postinst $(SCPONLY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(SCPONLY_SOURCE_DIR)/prerm $(SCPONLY_IPK_DIR)/CONTROL/prerm
+	# $(INSTALL) -m 755 $(SCPONLY_SOURCE_DIR)/prerm $(SCPONLY_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/CONTROL/prerm
 	echo $(SCPONLY_CONFFILES) | sed -e 's/ /\n/g' > $(SCPONLY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCPONLY_IPK_DIR)

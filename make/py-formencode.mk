@@ -117,7 +117,7 @@ $(PY-FORMENCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-F
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR)
 	$(PY-FORMENCODE_UNZIP) $(DL_DIR)/$(PY-FORMENCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-FORMENCODE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
+#	cat $(PY-FORMENCODE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
@@ -126,7 +126,7 @@ $(PY-FORMENCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-F
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR)
 	$(PY-FORMENCODE_UNZIP) $(DL_DIR)/$(PY-FORMENCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-FORMENCODE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
+#	cat $(PY-FORMENCODE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -135,7 +135,7 @@ $(PY-FORMENCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-F
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR)
 	$(PY-FORMENCODE_UNZIP) $(DL_DIR)/$(PY-FORMENCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-FORMENCODE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
+#	cat $(PY-FORMENCODE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
@@ -181,7 +181,7 @@ py-formencode-stage: $(PY-FORMENCODE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-formencode
 #
 $(PY24-FORMENCODE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-formencode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,7 +195,7 @@ $(PY24-FORMENCODE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-FORMENCODE_CONFLICTS)" >>$@
 
 $(PY25-FORMENCODE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-formencode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -209,7 +209,7 @@ $(PY25-FORMENCODE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-FORMENCODE_CONFLICTS)" >>$@
 
 $(PY26-FORMENCODE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-formencode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -113,7 +113,7 @@ $(PY-EPSILON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-EPSILON_DIR)
 	$(PY-EPSILON_UNZIP) $(DL_DIR)/$(PY-EPSILON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-EPSILON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-EPSILON_DIR) -p1
+#	cat $(PY-EPSILON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-EPSILON_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-EPSILON_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -126,7 +126,7 @@ $(PY-EPSILON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-EPSILON_DIR)
 	$(PY-EPSILON_UNZIP) $(DL_DIR)/$(PY-EPSILON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-EPSILON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-EPSILON_DIR) -p1
+#	cat $(PY-EPSILON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-EPSILON_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-EPSILON_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -180,7 +180,7 @@ py-epsilon-stage: $(PY-EPSILON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-epsilon
 #
 $(PY25-EPSILON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-epsilon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,7 +194,7 @@ $(PY25-EPSILON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-EPSILON_CONFLICTS)" >>$@
 
 $(PY26-EPSILON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-epsilon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -129,7 +129,7 @@ $(PY-PROTOCOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PROTOCOLS_SOURCE) $(PY-PRO
 	rm -rf $(BUILD_DIR)/$(PY-PROTOCOLS_DIR)
 	$(PY-PROTOCOLS_UNZIP) $(DL_DIR)/$(PY-PROTOCOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PROTOCOLS_PATCHES)" ; then \
-	    cat $(PY-PROTOCOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) -p0 ; \
+	    cat $(PY-PROTOCOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) $(PY-PROTOCOLS_BUILD_DIR)/2.4
 	(cd $(PY-PROTOCOLS_BUILD_DIR)/2.4; \
@@ -139,7 +139,7 @@ $(PY-PROTOCOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PROTOCOLS_SOURCE) $(PY-PRO
 	rm -rf $(BUILD_DIR)/$(PY-PROTOCOLS_DIR)
 	$(PY-PROTOCOLS_UNZIP) $(DL_DIR)/$(PY-PROTOCOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PROTOCOLS_PATCHES)" ; then \
-	    cat $(PY-PROTOCOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) -p0 ; \
+	    cat $(PY-PROTOCOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) $(PY-PROTOCOLS_BUILD_DIR)/2.5
 	(cd $(PY-PROTOCOLS_BUILD_DIR)/2.5; \
@@ -182,7 +182,7 @@ py-protocols-stage: $(PY-PROTOCOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-protocols
 #
 $(PY24-PROTOCOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-protocols" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,7 +196,7 @@ $(PY24-PROTOCOLS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PROTOCOLS_CONFLICTS)" >>$@
 
 $(PY25-PROTOCOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-protocols" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

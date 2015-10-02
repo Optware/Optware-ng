@@ -117,7 +117,7 @@ $(LIBRSVG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBRSVG_SOURCE) $(LIBRSVG_PATCHES)
 	$(LIBRSVG_UNZIP) $(DL_DIR)/$(LIBRSVG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBRSVG_PATCHES)" ; \
 		then cat $(LIBRSVG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBRSVG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBRSVG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBRSVG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBRSVG_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ librsvg-stage: $(LIBRSVG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/librsvg
 #
 $(LIBRSVG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: librsvg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,20 +202,20 @@ $(LIBRSVG_IPK): $(LIBRSVG_BUILD_DIR)/.built
 	rm -rf $(LIBRSVG_IPK_DIR) $(BUILD_DIR)/librsvg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBRSVG_BUILD_DIR) DESTDIR=$(LIBRSVG_IPK_DIR) install-strip
 	find $(LIBRSVG_IPK_DIR)/opt -type f -name *.la -exec rm -f {} \;
-	install -d $(LIBRSVG_IPK_DIR)/opt/share/gir-1.0
-	install -m 644 $(LIBRSVG_SOURCE_DIR)/$(LIBRSVG_VERSION)/Rsvg-2.0.gir \
+	$(INSTALL) -d $(LIBRSVG_IPK_DIR)/opt/share/gir-1.0
+	$(INSTALL) -m 644 $(LIBRSVG_SOURCE_DIR)/$(LIBRSVG_VERSION)/Rsvg-2.0.gir \
 		$(LIBRSVG_IPK_DIR)/opt/share/gir-1.0/Rsvg-2.0.gir
-#	install -d $(LIBRSVG_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBRSVG_SOURCE_DIR)/librsvg.conf $(LIBRSVG_IPK_DIR)/opt/etc/librsvg.conf
-#	install -d $(LIBRSVG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBRSVG_SOURCE_DIR)/rc.librsvg $(LIBRSVG_IPK_DIR)/opt/etc/init.d/SXXlibrsvg
+#	$(INSTALL) -d $(LIBRSVG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBRSVG_SOURCE_DIR)/librsvg.conf $(LIBRSVG_IPK_DIR)/opt/etc/librsvg.conf
+#	$(INSTALL) -d $(LIBRSVG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBRSVG_SOURCE_DIR)/rc.librsvg $(LIBRSVG_IPK_DIR)/opt/etc/init.d/SXXlibrsvg
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBRSVG_IPK_DIR)/opt/etc/init.d/SXXlibrsvg
 	$(MAKE) $(LIBRSVG_IPK_DIR)/CONTROL/control
-	install -m 755 $(LIBRSVG_SOURCE_DIR)/postinst $(LIBRSVG_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(LIBRSVG_SOURCE_DIR)/postinst $(LIBRSVG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBRSVG_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(LIBRSVG_SOURCE_DIR)/prerm $(LIBRSVG_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(LIBRSVG_SOURCE_DIR)/prerm $(LIBRSVG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBRSVG_IPK_DIR)/CONTROL/prerm
-	install -m 755 $(LIBRSVG_SOURCE_DIR)/postrm $(LIBRSVG_IPK_DIR)/CONTROL/postrm
+	$(INSTALL) -m 755 $(LIBRSVG_SOURCE_DIR)/postrm $(LIBRSVG_IPK_DIR)/CONTROL/postrm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(LIBRSVG_IPK_DIR)/CONTROL/postinst $(LIBRSVG_IPK_DIR)/CONTROL/prerm; \

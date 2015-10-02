@@ -108,7 +108,7 @@ $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 	$(WXBASE_UNZIP) $(DL_DIR)/$(WXBASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WXBASE_PATCHES)" ; \
 		then cat $(WXBASE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(WXBASE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(WXBASE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(WXBASE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WXBASE_DIR) $(@D) ; \
@@ -158,7 +158,7 @@ $(WXBASE_BUILD_DIR)/.staged: $(WXBASE_BUILD_DIR)/.built
 	rm -f $@
 	rm -rf $(STAGING_INCLUDE_DIR)/wx $(STAGING_INCLUDE_DIR)/wx-*
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	install -d $(STAGING_INCLUDE_DIR)/wx-2.8
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)/wx-2.8
 	cp $(STAGING_LIB_DIR)/wx/include/$(GNU_TARGET_NAME)-base-unicode*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx-2.8/wx/
 	cd $(STAGING_PREFIX)/bin; rm -rf wx-config; \
 		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)*-unicode-release-* wx-config
@@ -173,7 +173,7 @@ wxbase-stage: $(WXBASE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/wxbase
 #
 $(WXBASE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: wxbase" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

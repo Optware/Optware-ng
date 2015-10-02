@@ -117,7 +117,7 @@ $(NMON_BUILD_DIR)/.configured: $(DL_DIR)/$(NMON_SOURCE) $(NMON_PATCHES) make/nmo
 	cp $(DL_DIR)/$(NMON_SOURCE) $(@D)/
 	if test -n "$(NMON_PATCHES)" ; \
 		then cat $(NMON_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NMON_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NMON_DIR) -p0 ; \
 	fi
 	touch $@
 
@@ -152,7 +152,7 @@ nmon-stage: $(NMON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nmon
 #
 $(NMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nmon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,8 +180,8 @@ $(NMON_IPK_DIR)/CONTROL/control:
 #
 $(NMON_IPK): $(NMON_BUILD_DIR)/.built
 	rm -rf $(NMON_IPK_DIR) $(BUILD_DIR)/nmon_*_$(TARGET_ARCH).ipk
-	install -d $(NMON_IPK_DIR)/opt/bin
-	install -m 755 $(NMON_BUILD_DIR)/nmon $(NMON_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(NMON_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(NMON_BUILD_DIR)/nmon $(NMON_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(NMON_IPK_DIR)/opt/bin/nmon
 	$(MAKE) $(NMON_IPK_DIR)/CONTROL/control
 	echo $(NMON_CONFFILES) | sed -e 's/ /\n/g' > $(NMON_IPK_DIR)/CONTROL/conffiles

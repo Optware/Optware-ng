@@ -75,7 +75,7 @@ $(TELLDUS-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(TELLDUS-CORE_SOURCE) $(TELLDU
 	fi
 	if test -n "$(TELLDUS-CORE_PATCHES)" ; \
 		then cat $(TELLDUS-CORE_PATCHES) | \
-		patch -d $(@D) -p1 ; \
+		$(PATCH) -d $(@D) -p1 ; \
 	fi
 #	fix for:
 #	  error: 'write' was not declared in this scope
@@ -136,7 +136,7 @@ telldus-core-stage: $(TELLDUS-CORE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/telldus-core
 #
 $(TELLDUS-CORE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: telldus-core" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -158,14 +158,14 @@ $(TELLDUS-CORE_IPK): $(TELLDUS-CORE_BUILD_DIR)/.built
 	$(MAKE) -C $(TELLDUS-CORE_BUILD_DIR) DESTDIR=$(TELLDUS-CORE_IPK_DIR) install
 	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)/opt/bin/tdtool
 	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)/opt/lib/libtelldus-core.so.2.0.4
-	install -d $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d
-	install -d $(TELLDUS-CORE_IPK_DIR)/opt/var/state
-	install -m 755 $(TELLDUS-CORE_SOURCE_DIR)/rc.tellstick.sh $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d/S50tellstick
-	install -d $(TELLDUS-CORE_IPK_DIR)/opt/var/state
+	$(INSTALL) -d $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(TELLDUS-CORE_IPK_DIR)/opt/var/state
+	$(INSTALL) -m 755 $(TELLDUS-CORE_SOURCE_DIR)/rc.tellstick.sh $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d/S50tellstick
+	$(INSTALL) -d $(TELLDUS-CORE_IPK_DIR)/opt/var/state
 	touch $(TELLDUS-CORE_IPK_DIR)/opt/var/state/telldus-core.conf
 	chmod 666 $(TELLDUS-CORE_IPK_DIR)/opt/var/state/telldus-core.conf
 	$(MAKE) $(TELLDUS-CORE_IPK_DIR)/CONTROL/control
-	install -m 755 $(TELLDUS-CORE_SOURCE_DIR)/postinst $(TELLDUS-CORE_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(TELLDUS-CORE_SOURCE_DIR)/postinst $(TELLDUS-CORE_IPK_DIR)/CONTROL/postinst
 	echo $(TELLDUS-CORE_CONFFILES) | sed -e 's/ /\n/g' > $(TELLDUS-CORE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TELLDUS-CORE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(TELLDUS-CORE_IPK_DIR)

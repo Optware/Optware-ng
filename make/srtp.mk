@@ -111,7 +111,7 @@ $(SRTP_BUILD_DIR)/.configured: $(DL_DIR)/$(SRTP_SOURCE) $(SRTP_PATCHES) make/srt
 	$(SRTP_UNZIP) $(DL_DIR)/$(SRTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SRTP_PATCHES)" ; \
 		then cat $(SRTP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SRTP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SRTP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SRTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SRTP_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ srtp-stage: $(SRTP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/srtp
 #
 $(SRTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: srtp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,9 +191,9 @@ $(SRTP_IPK): $(SRTP_BUILD_DIR)/.built
 	rm -rf $(SRTP_IPK_DIR) $(BUILD_DIR)/srtp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SRTP_BUILD_DIR) DESTDIR=$(SRTP_IPK_DIR) install
 	$(MAKE) $(SRTP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SRTP_SOURCE_DIR)/postinst $(SRTP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SRTP_SOURCE_DIR)/postinst $(SRTP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SRTP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SRTP_SOURCE_DIR)/prerm $(SRTP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SRTP_SOURCE_DIR)/prerm $(SRTP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SRTP_IPK_DIR)/CONTROL/prerm
 	echo $(SRTP_CONFFILES) | sed -e 's/ /\n/g' > $(SRTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SRTP_IPK_DIR)

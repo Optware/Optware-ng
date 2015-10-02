@@ -110,7 +110,7 @@ $(LIBJANSSON_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJANSSON_SOURCE) $(LIBJANSSON
 	$(LIBJANSSON_UNZIP) $(DL_DIR)/$(LIBJANSSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBJANSSON_PATCHES)" ; \
 		then cat $(LIBJANSSON_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBJANSSON_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBJANSSON_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBJANSSON_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBJANSSON_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ libjansson-stage: $(LIBJANSSON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libjansson
 #
 $(LIBJANSSON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libjansson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,15 +193,15 @@ $(LIBJANSSON_IPK): $(LIBJANSSON_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBJANSSON_BUILD_DIR) DESTDIR=$(LIBJANSSON_IPK_DIR) install
 	$(STRIP_COMMAND) $(LIBJANSSON_IPK_DIR)/opt/lib/*.so
 	rm -f $(LIBJANSSON_IPK_DIR)/opt/lib/*.la
-#	install -d $(LIBJANSSON_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBJANSSON_SOURCE_DIR)/libjansson.conf $(LIBJANSSON_IPK_DIR)/opt/etc/libjansson.conf
-#	install -d $(LIBJANSSON_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBJANSSON_SOURCE_DIR)/rc.libjansson $(LIBJANSSON_IPK_DIR)/opt/etc/init.d/SXXlibjansson
+#	$(INSTALL) -d $(LIBJANSSON_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBJANSSON_SOURCE_DIR)/libjansson.conf $(LIBJANSSON_IPK_DIR)/opt/etc/libjansson.conf
+#	$(INSTALL) -d $(LIBJANSSON_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBJANSSON_SOURCE_DIR)/rc.libjansson $(LIBJANSSON_IPK_DIR)/opt/etc/init.d/SXXlibjansson
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBJANSSON_IPK_DIR)/opt/etc/init.d/SXXlibjansson
 	$(MAKE) $(LIBJANSSON_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBJANSSON_SOURCE_DIR)/postinst $(LIBJANSSON_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBJANSSON_SOURCE_DIR)/postinst $(LIBJANSSON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBJANSSON_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBJANSSON_SOURCE_DIR)/prerm $(LIBJANSSON_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBJANSSON_SOURCE_DIR)/prerm $(LIBJANSSON_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBJANSSON_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

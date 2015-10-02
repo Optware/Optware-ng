@@ -135,23 +135,23 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 		python26-host-stage python27-host-stage python3-host-stage \
 		py-cairo-stage
 	rm -rf $(BUILD_DIR)/$(PY-GOBJECT2_DIR) $(@D)
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	$(PY-GOBJECT2_UNZIP) $(DL_DIR)/$(PY-GOBJECT2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-GOBJECT2_PATCHES)" ; \
 		then cat $(PY-GOBJECT2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-GOBJECT2_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-GOBJECT2_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-GOBJECT2_DIR) $(@D)/2.6
 	$(PY-GOBJECT2_UNZIP) $(DL_DIR)/$(PY-GOBJECT2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-GOBJECT2_PATCHES)" ; \
 		then cat $(PY-GOBJECT2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-GOBJECT2_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-GOBJECT2_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-GOBJECT2_DIR) $(@D)/2.7
 	$(PY-GOBJECT2_UNZIP) $(DL_DIR)/$(PY-GOBJECT2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-GOBJECT2_PATCHES)" ; \
 		then cat $(PY-GOBJECT2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-GOBJECT2_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-GOBJECT2_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-GOBJECT2_DIR) $(@D)/3
 	autoreconf -vif $(@D)/2.6
@@ -257,7 +257,7 @@ py-gobject2-stage: $(PY-GOBJECT2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-gobject2
 #
 $(PY26-GOBJECT2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-gobject2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -272,7 +272,7 @@ $(PY26-GOBJECT2_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY26-GOBJECT2_CONFLICTS)" >>$@
 
 $(PY27-GOBJECT2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-gobject2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -287,7 +287,7 @@ $(PY27-GOBJECT2_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY27-GOBJECT2_CONFLICTS)" >>$@
 
 $(PY3-GOBJECT2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-gobject2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -302,7 +302,7 @@ $(PY3-GOBJECT2_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY3-GOBJECT2_CONFLICTS)" >>$@
 
 $(PY-GOBJECT2_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-gobject2-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -332,8 +332,8 @@ $(PY26-GOBJECT2_IPK) $(PY-GOBJECT2_DEV_IPK): $(PY-GOBJECT2_BUILD_DIR)/.built
 	rm -rf $(PY26-GOBJECT2_IPK_DIR) $(BUILD_DIR)/py26-gobject2_*_$(TARGET_ARCH).ipk \
 		$(PY-GOBJECT2_DEV_IPK_DIR) $(BUILD_DIR)/py-gobject2-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-GOBJECT2_BUILD_DIR)/2.6 DESTDIR=$(PY26-GOBJECT2_IPK_DIR) install-strip
-	install -d $(PY-GOBJECT2_DEV_IPK_DIR)/opt/lib $(PY-GOBJECT2_DEV_IPK_DIR)/opt/bin
-	install -m 755 $(PY-GOBJECT2_SOURCE_DIR)/pygobject-codegen-2.0 $(PY-GOBJECT2_DEV_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(PY-GOBJECT2_DEV_IPK_DIR)/opt/lib $(PY-GOBJECT2_DEV_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(PY-GOBJECT2_SOURCE_DIR)/pygobject-codegen-2.0 $(PY-GOBJECT2_DEV_IPK_DIR)/opt/bin/
 	rm -rf $(PY26-GOBJECT2_IPK_DIR)/opt/bin
 	mv -f $(PY26-GOBJECT2_IPK_DIR)/opt/include $(PY-GOBJECT2_DEV_IPK_DIR)/opt/
 	mv -f $(PY26-GOBJECT2_IPK_DIR)/opt/share $(PY-GOBJECT2_DEV_IPK_DIR)/opt/

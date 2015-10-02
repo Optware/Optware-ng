@@ -110,7 +110,7 @@ $(PATCHUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCHUTILS_SOURCE) $(PATCHUTILS
 	$(PATCHUTILS_UNZIP) $(DL_DIR)/$(PATCHUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PATCHUTILS_PATCHES)" ; \
 		then cat $(PATCHUTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PATCHUTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PATCHUTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PATCHUTILS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PATCHUTILS_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ patchutils-stage: $(PATCHUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/patchutils
 #
 $(PATCHUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: patchutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -185,7 +185,7 @@ endif
 	$(TRANSMISSIOND_UNZIP) $(DL_DIR)/$(TRANSMISSIOND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSIOND_PATCHES)" ; \
 		then cat $(TRANSMISSIOND_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TRANSMISSIOND_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TRANSMISSIOND_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TRANSMISSIOND_DIR)" != "$(TRANSMISSIOND_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSIOND_DIR) $(TRANSMISSIOND_BUILD_DIR) ; \
@@ -234,7 +234,7 @@ endif
 	$(TRANSMISSIOND_UNZIP) $(DL_DIR)/$(TRANSMISSIOND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSIOND_PATCHES)" ; \
 		then cat $(TRANSMISSIOND_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TRANSMISSIOND_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TRANSMISSIOND_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TRANSMISSIOND_DIR)" != "$(TRANSMISSIOND-DBG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSIOND_DIR) $(TRANSMISSIOND-DBG_BUILD_DIR) ; \
@@ -310,7 +310,7 @@ transmissiond-stage: $(TRANSMISSIOND_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  
 #
 $(TRANSMISSIOND_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: transmissiond" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -346,30 +346,30 @@ else
 $(TRANSMISSIOND_IPK): $(TRANSMISSIOND_BUILD_DIR)/.built
 endif
 	rm -rf $(TRANSMISSIOND_IPK_DIR) $(BUILD_DIR)/transmissiond_*_$(TARGET_ARCH).ipk
-	install -d $(TRANSMISSIOND_IPK_DIR)/opt
+	$(INSTALL) -d $(TRANSMISSIOND_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSIOND_BUILD_DIR) DESTDIR=$(TRANSMISSIOND_IPK_DIR) install-strip
 	rm -f $(TRANSMISSIOND_IPK_DIR)/opt/bin/transmission-*
 	rm -rf $(TRANSMISSIOND_IPK_DIR)/opt/share/man
 	rm -rf $(TRANSMISSIOND_IPK_DIR)/opt/share/transmission
-	install -d $(TRANSMISSIOND_IPK_DIR)/opt/etc
-	install -m 644 $(TRANSMISSIOND_SOURCE_DIR)/transmission.conf $(TRANSMISSIOND_IPK_DIR)/opt/etc/transmission.conf
-	install -d $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
-	install -d $(TRANSMISSIOND_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/S80busybox_httpd $(TRANSMISSIOND_IPK_DIR)/opt/etc/init.d
-	install -d $(TRANSMISSIOND_IPK_DIR)/opt/share/www/cgi-bin
-	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/transmission.cgi $(TRANSMISSIOND_IPK_DIR)/opt/share/www/cgi-bin
+	$(INSTALL) -d $(TRANSMISSIOND_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(TRANSMISSIOND_SOURCE_DIR)/transmission.conf $(TRANSMISSIOND_IPK_DIR)/opt/etc/transmission.conf
+	$(INSTALL) -d $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
+	$(INSTALL) -d $(TRANSMISSIOND_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(TRANSMISSIOND_SOURCE_DIR)/S80busybox_httpd $(TRANSMISSIOND_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(TRANSMISSIOND_IPK_DIR)/opt/share/www/cgi-bin
+	$(INSTALL) -m 755 $(TRANSMISSIOND_SOURCE_DIR)/transmission.cgi $(TRANSMISSIOND_IPK_DIR)/opt/share/www/cgi-bin
 ifdef TRANSMISSIOND-DBG_INCLUDED
-	install -m 755 $(TRANSMISSIOND-DBG_BUILD_DIR)/cli/transmissiond $(TRANSMISSIOND_IPK_DIR)/opt/bin/transmissiond-dbg
+	$(INSTALL) -m 755 $(TRANSMISSIOND-DBG_BUILD_DIR)/cli/transmissiond $(TRANSMISSIOND_IPK_DIR)/opt/bin/transmissiond-dbg
 endif
-	install -d $(TRANSMISSIOND_IPK_DIR)/opt/sbin
-	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/transmission_watchdog $(TRANSMISSIOND_IPK_DIR)/opt/sbin
-	install -m 666 $(TRANSMISSIOND_SOURCE_DIR)/README.daemon $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
-	install -m 666 $(TRANSMISSIOND_BUILD_DIR)/NEWS $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
-	install -d $(TRANSMISSIOND_IPK_DIR)/opt/var/log
-	install -d $(TRANSMISSIOND_IPK_DIR)/opt/var/run
+	$(INSTALL) -d $(TRANSMISSIOND_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(TRANSMISSIOND_SOURCE_DIR)/transmission_watchdog $(TRANSMISSIOND_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 666 $(TRANSMISSIOND_SOURCE_DIR)/README.daemon $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
+	$(INSTALL) -m 666 $(TRANSMISSIOND_BUILD_DIR)/NEWS $(TRANSMISSIOND_IPK_DIR)/opt/share/doc/transmissiond
+	$(INSTALL) -d $(TRANSMISSIOND_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(TRANSMISSIOND_IPK_DIR)/opt/var/run
 	$(MAKE) $(TRANSMISSIOND_IPK_DIR)/CONTROL/control
-	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/postinst $(TRANSMISSIOND_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TRANSMISSIOND_SOURCE_DIR)/prerm $(TRANSMISSIOND_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(TRANSMISSIOND_SOURCE_DIR)/postinst $(TRANSMISSIOND_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TRANSMISSIOND_SOURCE_DIR)/prerm $(TRANSMISSIOND_IPK_DIR)/CONTROL/prerm
 	echo $(TRANSMISSIOND_CONFFILES) | sed -e 's/ /\n/g' > $(TRANSMISSIOND_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSIOND_IPK_DIR)
 

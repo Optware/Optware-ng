@@ -107,7 +107,7 @@ $(FREETDS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
 	$(MAKE) unixodbc-stage ncurses-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(FREETDS_DIR) $(@D)
 	$(FREETDS_UNZIP) $(DL_DIR)/$(FREETDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(FREETDS_PATCHES) | patch -d $(BUILD_DIR)/$(FREETDS_DIR) -p1
+#	cat $(FREETDS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(FREETDS_DIR) -p1
 	mv $(BUILD_DIR)/$(FREETDS_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -165,7 +165,7 @@ freetds-stage: $(FREETDS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/freetds
 #
 $(FREETDS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: freetds" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,13 +195,13 @@ $(FREETDS_IPK): $(FREETDS_BUILD_DIR)/.built
 	rm -rf $(FREETDS_IPK_DIR) $(BUILD_DIR)/freetds_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FREETDS_BUILD_DIR) DESTDIR=$(FREETDS_IPK_DIR) install-strip
 	rm -f $(FREETDS_IPK_DIR)/opt/lib/*.la
-#	install -d $(FREETDS_IPK_DIR)/opt/etc/
-#	install -m 644 $(FREETDS_SOURCE_DIR)/freetds.conf $(FREETDS_IPK_DIR)/opt/etc/freetds.conf
-#	install -d $(FREETDS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FREETDS_SOURCE_DIR)/rc.freetds $(FREETDS_IPK_DIR)/opt/etc/init.d/SXXfreetds
+#	$(INSTALL) -d $(FREETDS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FREETDS_SOURCE_DIR)/freetds.conf $(FREETDS_IPK_DIR)/opt/etc/freetds.conf
+#	$(INSTALL) -d $(FREETDS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FREETDS_SOURCE_DIR)/rc.freetds $(FREETDS_IPK_DIR)/opt/etc/init.d/SXXfreetds
 	$(MAKE) $(FREETDS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FREETDS_SOURCE_DIR)/postinst $(FREETDS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FREETDS_SOURCE_DIR)/prerm $(FREETDS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FREETDS_SOURCE_DIR)/postinst $(FREETDS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FREETDS_SOURCE_DIR)/prerm $(FREETDS_IPK_DIR)/CONTROL/prerm
 	echo $(FREETDS_CONFFILES) | sed -e 's/ /\n/g' > $(FREETDS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREETDS_IPK_DIR)
 

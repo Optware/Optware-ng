@@ -113,7 +113,7 @@ $(II_BUILD_DIR)/.configured: $(DL_DIR)/$(II_SOURCE) $(II_PATCHES) make/ii.mk
 	$(II_UNZIP) $(DL_DIR)/$(II_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(II_PATCHES)" ; \
 		then cat $(II_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(II_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(II_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(II_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(II_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ ii: $(II_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ii
 #
 $(II_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ii" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

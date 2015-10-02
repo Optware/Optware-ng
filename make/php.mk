@@ -194,7 +194,7 @@ endif
 # Automatically create a ipkg control file
 #
 $(PHP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,7 +207,7 @@ $(PHP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PHP_DEPENDS)" >>$@
 
 $(PHP_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -220,7 +220,7 @@ $(PHP_DEV_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php" >>$@
 
 $(PHP_EMBED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-embed" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -233,7 +233,7 @@ $(PHP_EMBED_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php" >>$@
 
 $(PHP_CURL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-curl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -246,7 +246,7 @@ $(PHP_CURL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, libcurl" >>$@
 
 $(PHP_FCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-fcgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -259,7 +259,7 @@ $(PHP_FCGI_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php" >>$@
 
 $(PHP_GD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-gd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -272,7 +272,7 @@ $(PHP_GD_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, libgd" >>$@
 
 $(PHP_GMP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-gmp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -285,7 +285,7 @@ $(PHP_GMP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, libgmp" >>$@
 
 $(PHP_ICONV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-iconv" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -302,7 +302,7 @@ else
 endif
 
 $(PHP_IMAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-imap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -315,7 +315,7 @@ $(PHP_IMAP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, imap-libs" >>$@
 
 $(PHP_INTL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-intl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -328,7 +328,7 @@ $(PHP_INTL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, icu" >>$@
 
 $(PHP_LDAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-ldap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -341,7 +341,7 @@ $(PHP_LDAP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, openldap-libs" >>$@
 
 $(PHP_MBSTRING_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-mbstring" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -354,7 +354,7 @@ $(PHP_MBSTRING_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php" >>$@
 
 $(PHP_MCRYPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-mcrypt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -367,7 +367,7 @@ $(PHP_MCRYPT_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, libmcrypt, libtool" >>$@
 
 $(PHP_MYSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-mysql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -380,7 +380,7 @@ $(PHP_MYSQL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, mysql" >>$@
 
 $(PHP_PEAR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-pear" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -393,7 +393,7 @@ $(PHP_PEAR_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php" >>$@
 
 $(PHP_PGSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-pgsql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -406,7 +406,7 @@ $(PHP_PGSQL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, postgresql" >>$@
 
 $(PHP_MSSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-mssql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -419,7 +419,7 @@ $(PHP_MSSQL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, freetds" >>$@
 
 $(PHP_ODBC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-odbc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -432,7 +432,7 @@ $(PHP_ODBC_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, unixodbc" >>$@
 
 $(PHP_XMLRPC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-xmlrpc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -449,7 +449,7 @@ else
 endif
 
 $(PHP_ZIP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: php-zip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -509,7 +509,7 @@ endif
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(@D)
 	if test -n "$(PHP_PATCHES)"; \
-	    then cat $(PHP_PATCHES) | patch -p0 -bd $(@D); \
+	    then cat $(PHP_PATCHES) | $(PATCH) -p0 -bd $(@D); \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i \
@@ -691,7 +691,7 @@ php-host-dirclean:
 #
 $(PHP_TARGET_IPKS): $(PHP_BUILD_DIR)/.built
 	rm -rf $(PHP_IPK_DIR) $(BUILD_DIR)/php_*_$(TARGET_ARCH).ipk
-	install -d $(PHP_IPK_DIR)/opt/var/lib/php/session
+	$(INSTALL) -d $(PHP_IPK_DIR)/opt/var/lib/php/session
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
 	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/bin/php
@@ -699,53 +699,53 @@ $(PHP_TARGET_IPKS): $(PHP_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/lib/*.so
 	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/lib/php/extensions/*.so
 	rm -f $(PHP_IPK_DIR)/opt/lib/php/extensions/*.a
-	install -d $(PHP_IPK_DIR)/opt/etc
-	install -d $(PHP_IPK_DIR)/opt/etc/php.d
-	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
+	$(INSTALL) -d $(PHP_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(PHP_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
 	### now make php-dev
 	rm -rf $(PHP_DEV_IPK_DIR) $(BUILD_DIR)/php-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_DEV_IPK_DIR)/CONTROL/control
-	install -d $(PHP_DEV_IPK_DIR)/opt/lib/php
+	$(INSTALL) -d $(PHP_DEV_IPK_DIR)/opt/lib/php
 	mv $(PHP_IPK_DIR)/opt/lib/php/build $(PHP_DEV_IPK_DIR)/opt/lib/php/
 	mv $(PHP_IPK_DIR)/opt/include $(PHP_DEV_IPK_DIR)/opt/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_DEV_IPK_DIR)
 	### now make php-embed
 	rm -rf $(PHP_EMBED_IPK_DIR) $(BUILD_DIR)/php-embed_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_EMBED_IPK_DIR)/CONTROL/control
-	install -d $(PHP_EMBED_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(PHP_EMBED_IPK_DIR)/opt/lib/
 	mv $(PHP_IPK_DIR)/opt/lib/libphp5.so $(PHP_EMBED_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_EMBED_IPK_DIR)
 	### now make php-curl
 	rm -rf $(PHP_CURL_IPK_DIR) $(BUILD_DIR)/php-curl_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_CURL_IPK_DIR)/CONTROL/control
-	install -d $(PHP_CURL_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_CURL_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_CURL_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_CURL_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/curl.so $(PHP_CURL_IPK_DIR)/opt/lib/php/extensions/curl.so
 	echo extension=curl.so >$(PHP_CURL_IPK_DIR)/opt/etc/php.d/curl.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_CURL_IPK_DIR)
 	### now make php-fcgi
 	rm -rf $(PHP_FCGI_IPK_DIR) $(BUILD_DIR)/php-fcgi_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_FCGI_IPK_DIR)/CONTROL/control
-	install -d $(PHP_FCGI_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(PHP_FCGI_IPK_DIR)/opt/bin
 	mv $(PHP_IPK_DIR)/opt/bin/php-cgi $(PHP_FCGI_IPK_DIR)/opt/bin/php-fcgi
 	$(STRIP_COMMAND) $(PHP_FCGI_IPK_DIR)/opt/bin/php-fcgi
-	install -d $(PHP_FCGI_IPK_DIR)/opt/etc/lighttpd/conf.d
-	install -m 644 $(PHP_SOURCE_DIR)/php-fcgi-lighttpd.conf $(PHP_FCGI_IPK_DIR)/opt/etc/lighttpd/conf.d/10-php-fcgi.conf
+	$(INSTALL) -d $(PHP_FCGI_IPK_DIR)/opt/etc/lighttpd/conf.d
+	$(INSTALL) -m 644 $(PHP_SOURCE_DIR)/php-fcgi-lighttpd.conf $(PHP_FCGI_IPK_DIR)/opt/etc/lighttpd/conf.d/10-php-fcgi.conf
 	echo $(PHP_FCGI_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_FCGI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_FCGI_IPK_DIR)
 	### now make php-gd
 	rm -rf $(PHP_GD_IPK_DIR) $(BUILD_DIR)/php-gd_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_GD_IPK_DIR)/CONTROL/control
-	install -d $(PHP_GD_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_GD_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_GD_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_GD_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/gd.so $(PHP_GD_IPK_DIR)/opt/lib/php/extensions/gd.so
 	echo extension=gd.so >$(PHP_GD_IPK_DIR)/opt/etc/php.d/gd.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_GD_IPK_DIR)
 	### now make php-gmp
 	rm -rf $(PHP_GMP_IPK_DIR) $(BUILD_DIR)/php-gmp_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_GMP_IPK_DIR)/CONTROL/control
-	install -d $(PHP_GMP_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_GMP_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_GMP_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_GMP_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/gmp.so $(PHP_GMP_IPK_DIR)/opt/lib/php/extensions/gmp.so
 	echo extension=gmp.so >$(PHP_GMP_IPK_DIR)/opt/etc/php.d/gmp.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_GMP_IPK_DIR)
@@ -753,8 +753,8 @@ ifeq (, $(filter --without-iconv, $(PHP_CONFIGURE_ARGS)))
 	### now make php-iconv
 	rm -rf $(PHP_ICONV_IPK_DIR) $(BUILD_DIR)/php-iconv_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_ICONV_IPK_DIR)/CONTROL/control
-	install -d $(PHP_ICONV_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_ICONV_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_ICONV_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_ICONV_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/iconv.so $(PHP_ICONV_IPK_DIR)/opt/lib/php/extensions/iconv.so
 	echo extension=iconv.so >$(PHP_ICONV_IPK_DIR)/opt/etc/php.d/iconv.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_ICONV_IPK_DIR)
@@ -762,16 +762,16 @@ endif
 	### now make php-imap
 	rm -rf $(PHP_IMAP_IPK_DIR) $(BUILD_DIR)/php-imap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_IMAP_IPK_DIR)/CONTROL/control
-	install -d $(PHP_IMAP_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_IMAP_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_IMAP_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_IMAP_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/imap.so $(PHP_IMAP_IPK_DIR)/opt/lib/php/extensions/imap.so
 	echo extension=imap.so >$(PHP_IMAP_IPK_DIR)/opt/etc/php.d/imap.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_IMAP_IPK_DIR)
 	### now make php-intl
 	rm -rf $(PHP_INTL_IPK_DIR) $(BUILD_DIR)/php-intl_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_INTL_IPK_DIR)/CONTROL/control
-	install -d $(PHP_INTL_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_INTL_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_INTL_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_INTL_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/intl.so $(PHP_INTL_IPK_DIR)/opt/lib/php/extensions/intl.so
 	echo extension=intl.so >$(PHP_INTL_IPK_DIR)/opt/etc/php.d/intl.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_INTL_IPK_DIR)
@@ -779,8 +779,8 @@ ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	### now make php-ldap
 	rm -rf $(PHP_LDAP_IPK_DIR) $(BUILD_DIR)/php-ldap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_LDAP_IPK_DIR)/CONTROL/control
-	install -d $(PHP_LDAP_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_LDAP_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_LDAP_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_LDAP_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/ldap.so $(PHP_LDAP_IPK_DIR)/opt/lib/php/extensions/ldap.so
 	echo extension=ldap.so >$(PHP_LDAP_IPK_DIR)/opt/etc/php.d/ldap.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_LDAP_IPK_DIR)
@@ -788,24 +788,24 @@ endif
 	### now make php-mbstring
 	rm -rf $(PHP_MBSTRING_IPK_DIR) $(BUILD_DIR)/php-mbstring_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_MBSTRING_IPK_DIR)/CONTROL/control
-	install -d $(PHP_MBSTRING_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_MBSTRING_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_MBSTRING_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_MBSTRING_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mbstring.so $(PHP_MBSTRING_IPK_DIR)/opt/lib/php/extensions/mbstring.so
 	echo extension=mbstring.so >$(PHP_MBSTRING_IPK_DIR)/opt/etc/php.d/mbstring.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MBSTRING_IPK_DIR)
 	### now make php-mcrypt
 	rm -rf $(PHP_MCRYPT_IPK_DIR) $(BUILD_DIR)/php-mcrypt_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_MCRYPT_IPK_DIR)/CONTROL/control
-	install -d $(PHP_MCRYPT_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_MCRYPT_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_MCRYPT_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_MCRYPT_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mcrypt.so $(PHP_MCRYPT_IPK_DIR)/opt/lib/php/extensions/mcrypt.so
 	echo extension=mcrypt.so >$(PHP_MCRYPT_IPK_DIR)/opt/etc/php.d/mcrypt.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MCRYPT_IPK_DIR)
 	### now make php-mysql
 	rm -rf $(PHP_MYSQL_IPK_DIR) $(BUILD_DIR)/php-mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_MYSQL_IPK_DIR)/CONTROL/control
-	install -d $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_MYSQL_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_MYSQL_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/*mysql*.so $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=mysql.so >$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	echo extension=mysqli.so >>$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
@@ -813,51 +813,51 @@ endif
 	### now make php-pear
 	rm -rf $(PHP_PEAR_IPK_DIR) $(BUILD_DIR)/php-pear_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_PEAR_IPK_DIR)/CONTROL/control
-	install -m 644 $(PHP_SOURCE_DIR)/postinst.pear $(PHP_PEAR_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(PHP_SOURCE_DIR)/prerm.pear $(PHP_PEAR_IPK_DIR)/CONTROL/prerm
-	install -d $(PHP_PEAR_IPK_DIR)/opt/etc
-	install -m 644 $(PHP_SOURCE_DIR)/pear.conf $(PHP_PEAR_IPK_DIR)/opt/etc/pear.conf.new
-	install -d $(PHP_PEAR_IPK_DIR)/opt/etc/pearkeys
-	install -d $(PHP_PEAR_IPK_DIR)/opt/tmp
+	$(INSTALL) -m 644 $(PHP_SOURCE_DIR)/postinst.pear $(PHP_PEAR_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(PHP_SOURCE_DIR)/prerm.pear $(PHP_PEAR_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -d $(PHP_PEAR_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(PHP_SOURCE_DIR)/pear.conf $(PHP_PEAR_IPK_DIR)/opt/etc/pear.conf.new
+	$(INSTALL) -d $(PHP_PEAR_IPK_DIR)/opt/etc/pearkeys
+	$(INSTALL) -d $(PHP_PEAR_IPK_DIR)/opt/tmp
 	cp -a $(PHP_BUILD_DIR)/pear $(PHP_PEAR_IPK_DIR)/opt/tmp
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_PEAR_IPK_DIR)
 	### now make php-pgsql
 	rm -rf $(PHP_PGSQL_IPK_DIR) $(BUILD_DIR)/php-pgsql_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_PGSQL_IPK_DIR)/CONTROL/control
-	install -d $(PHP_PGSQL_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_PGSQL_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_PGSQL_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_PGSQL_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/*pgsql*.so $(PHP_PGSQL_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=pgsql.so >$(PHP_PGSQL_IPK_DIR)/opt/etc/php.d/pgsql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_PGSQL_IPK_DIR)
 	### now make php-mssql
 	rm -rf $(PHP_MSSQL_IPK_DIR) $(BUILD_DIR)/php-mssql_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_MSSQL_IPK_DIR)/CONTROL/control
-	install -d $(PHP_MSSQL_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_MSSQL_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_MSSQL_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_MSSQL_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mssql.so $(PHP_MSSQL_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=mssql.so >$(PHP_MSSQL_IPK_DIR)/opt/etc/php.d/mssql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MSSQL_IPK_DIR)
 	### now make php-odbc
 	rm -rf $(PHP_ODBC_IPK_DIR) $(BUILD_DIR)/php-odbc_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_ODBC_IPK_DIR)/CONTROL/control
-	install -d $(PHP_ODBC_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_ODBC_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_ODBC_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_ODBC_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/odbc.so $(PHP_ODBC_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=odbc.so >$(PHP_ODBC_IPK_DIR)/opt/etc/php.d/odbc.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_ODBC_IPK_DIR)
 	### now make php-xmlrpc
 	rm -rf $(PHP_XMLRPC_IPK_DIR) $(BUILD_DIR)/php-xmlrpc_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_XMLRPC_IPK_DIR)/CONTROL/control
-	install -d $(PHP_XMLRPC_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_XMLRPC_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_XMLRPC_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_XMLRPC_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/xmlrpc.so $(PHP_XMLRPC_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=xmlrpc.so >$(PHP_XMLRPC_IPK_DIR)/opt/etc/php.d/xmlrpc.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_XMLRPC_IPK_DIR)
 	### now make php-zip
 	rm -rf $(PHP_ZIP_IPK_DIR) $(BUILD_DIR)/php-zip_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_ZIP_IPK_DIR)/CONTROL/control
-	install -d $(PHP_ZIP_IPK_DIR)/opt/lib/php/extensions
-	install -d $(PHP_ZIP_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -d $(PHP_ZIP_IPK_DIR)/opt/lib/php/extensions
+	$(INSTALL) -d $(PHP_ZIP_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/zip.so $(PHP_ZIP_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=zip.so >$(PHP_ZIP_IPK_DIR)/opt/etc/php.d/zip.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_ZIP_IPK_DIR)

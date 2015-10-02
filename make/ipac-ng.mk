@@ -104,7 +104,7 @@ $(IPAC-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(IPAC-NG_SOURCE) $(IPAC-NG_PATCHES)
 	$(IPAC-NG_UNZIP) $(DL_DIR)/$(IPAC-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IPAC-NG_PATCHES)" ; \
 		then cat $(IPAC-NG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IPAC-NG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IPAC-NG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IPAC-NG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IPAC-NG_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ ipac-ng-stage:
 # necessary to create a seperate control file under sources/ipac-ng
 #
 $(IPAC-NG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ipac-ng" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,15 +190,15 @@ $(IPAC-NG_IPK): $(IPAC-NG_BUILD_DIR)/.built
 	rm -rf $(IPAC-NG_IPK_DIR) $(BUILD_DIR)/ipac-ng_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IPAC-NG_BUILD_DIR) DESTDIR=$(IPAC-NG_IPK_DIR) doinstall
 	sed -i -e 's|^#!/usr/bin/perl|#!/opt/bin/perl|' $(IPAC-NG_IPK_DIR)/opt/sbin/ipacsum
-	install -d $(IPAC-NG_IPK_DIR)/opt/etc/ipac-ng
-	install -m 644 $(IPAC-NG_SOURCE_DIR)/ipac.conf $(IPAC-NG_IPK_DIR)/opt/etc/ipac-ng/
-	install -m 644 $(IPAC-NG_SOURCE_DIR)/rules.conf $(IPAC-NG_IPK_DIR)/opt/etc/ipac-ng/
-	install -d $(IPAC-NG_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(IPAC-NG_SOURCE_DIR)/init $(IPAC-NG_IPK_DIR)/opt/etc/init.d/S25ipac-ng
-	install -d $(IPAC-NG_IPK_DIR)/opt/etc/cron.d
-	install -m 600 $(IPAC-NG_SOURCE_DIR)/crontab $(IPAC-NG_IPK_DIR)/opt/etc/cron.d/ipac-ng
+	$(INSTALL) -d $(IPAC-NG_IPK_DIR)/opt/etc/ipac-ng
+	$(INSTALL) -m 644 $(IPAC-NG_SOURCE_DIR)/ipac.conf $(IPAC-NG_IPK_DIR)/opt/etc/ipac-ng/
+	$(INSTALL) -m 644 $(IPAC-NG_SOURCE_DIR)/rules.conf $(IPAC-NG_IPK_DIR)/opt/etc/ipac-ng/
+	$(INSTALL) -d $(IPAC-NG_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(IPAC-NG_SOURCE_DIR)/init $(IPAC-NG_IPK_DIR)/opt/etc/init.d/S25ipac-ng
+	$(INSTALL) -d $(IPAC-NG_IPK_DIR)/opt/etc/cron.d
+	$(INSTALL) -m 600 $(IPAC-NG_SOURCE_DIR)/crontab $(IPAC-NG_IPK_DIR)/opt/etc/cron.d/ipac-ng
 	$(MAKE) $(IPAC-NG_IPK_DIR)/CONTROL/control
-	install -m 755 $(IPAC-NG_SOURCE_DIR)/postinst $(IPAC-NG_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(IPAC-NG_SOURCE_DIR)/postinst $(IPAC-NG_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IPAC-NG_IPK_DIR)/CONTROL/postinst
 	echo $(IPAC-NG_CONFFILES) | sed -e 's/ /\n/g' > $(IPAC-NG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPAC-NG_IPK_DIR)

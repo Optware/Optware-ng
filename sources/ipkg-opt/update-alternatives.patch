@@ -5,7 +5,7 @@
  
  # admin dir
 -ad="$IPKG_OFFLINE_ROOT/usr/lib/ipkg/alternatives"
-+ad="$IPKG_OFFLINE_ROOT/opt/lib/ipkg/alternatives"
++ad="$IPKG_OFFLINE_ROOT%OPTWARE_TARGET_PREFIX%/lib/ipkg/alternatives"
  
  usage() {
  	echo "update-alternatives: $*

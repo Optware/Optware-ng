@@ -73,7 +73,7 @@ $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(FSG3V4-KERNEL-MODULE
 		tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FSG3V4-KERNEL-MODULES_PATCHES)" ; \
 		then cat $(FSG3V4-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FSG3V4-KERNEL-MODULES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FSG3V4-KERNEL-MODULES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FSG3V4-KERNEL-MODULES_DIR)" != "$(FSG3V4-KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FSG3V4-KERNEL-MODULES_DIR) $(FSG3V4-KERNEL-MODULES_BUILD_DIR) ; \
@@ -106,7 +106,7 @@ fsg3v4-kernel-modules: $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/fsg3v4-kernel-modules
 #
 $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
-	install -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL
 	( \
 	  echo "Package: kernel-modules"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
@@ -121,7 +121,7 @@ $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(FSG3V4-KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
 	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
-	  install -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
+	  $(INSTALL) -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
 	  rm -f $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL/control; \
           ( \
 	    echo -n ", kernel-module-$$n" >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
@@ -150,7 +150,7 @@ $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	echo "" >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 
 $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
-	install -d $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL
 	rm -f $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
 	( \
 	  echo "Package: kernel-image"; \
@@ -182,7 +182,7 @@ $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/
 	# Package the kernel image first
 	rm -rf $(FSG3V4-KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/fsg3v4-kernel-image_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
-	install -m 644 $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(FSG3V4-KERNEL-IMAGE_IPK_DIR)
+	$(INSTALL) -m 644 $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(FSG3V4-KERNEL-IMAGE_IPK_DIR)
 	( cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3V4-KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules
 	rm -rf $(FSG3V4-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/fsg3v4-kernel-modules_*_$(TARGET_ARCH).ipk

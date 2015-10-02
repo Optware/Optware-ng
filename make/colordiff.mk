@@ -65,7 +65,7 @@ colordiff: $(COLORDIFF_BUILD_DIR)/.built
 #colordiff-stage: $(COLORDIFF_BUILD_DIR)/.staged
 
 $(COLORDIFF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: colordiff" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -81,7 +81,7 @@ $(COLORDIFF_IPK_DIR)/CONTROL/control:
 
 $(COLORDIFF_IPK): $(COLORDIFF_BUILD_DIR)/.built
 	rm -rf $(COLORDIFF_IPK_DIR) $(BUILD_DIR)/colordiff_*_$(TARGET_ARCH).ipk
-	install -d $(COLORDIFF_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(COLORDIFF_IPK_DIR)/opt/etc
 	$(MAKE) -C $(COLORDIFF_BUILD_DIR) install \
 		DESTDIR=$(COLORDIFF_IPK_DIR) \
 		INSTALL_DIR=/opt/bin \

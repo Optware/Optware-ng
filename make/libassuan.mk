@@ -110,7 +110,7 @@ $(LIBASSUAN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBASSUAN_SOURCE) $(LIBASSUAN_PA
 	$(LIBASSUAN_UNZIP) $(DL_DIR)/$(LIBASSUAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBASSUAN_PATCHES)" ; \
 		then cat $(LIBASSUAN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBASSUAN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBASSUAN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBASSUAN_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBASSUAN_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ libassuan-stage: $(LIBASSUAN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libassuan
 #
 $(LIBASSUAN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libassuan" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,15 +193,15 @@ $(LIBASSUAN_IPK): $(LIBASSUAN_BUILD_DIR)/.built
 	rm -rf $(LIBASSUAN_IPK_DIR) $(BUILD_DIR)/libassuan_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBASSUAN_BUILD_DIR) DESTDIR=$(LIBASSUAN_IPK_DIR) install-strip
 	rm -f $(LIBASSUAN_IPK_DIR)/opt/share/info/dir
-#	install -d $(LIBASSUAN_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBASSUAN_SOURCE_DIR)/libassuan.conf $(LIBASSUAN_IPK_DIR)/opt/etc/libassuan.conf
-#	install -d $(LIBASSUAN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBASSUAN_SOURCE_DIR)/rc.libassuan $(LIBASSUAN_IPK_DIR)/opt/etc/init.d/SXXlibassuan
+#	$(INSTALL) -d $(LIBASSUAN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBASSUAN_SOURCE_DIR)/libassuan.conf $(LIBASSUAN_IPK_DIR)/opt/etc/libassuan.conf
+#	$(INSTALL) -d $(LIBASSUAN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBASSUAN_SOURCE_DIR)/rc.libassuan $(LIBASSUAN_IPK_DIR)/opt/etc/init.d/SXXlibassuan
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBASSUAN_IPK_DIR)/opt/etc/init.d/SXXlibassuan
 	$(MAKE) $(LIBASSUAN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBASSUAN_SOURCE_DIR)/postinst $(LIBASSUAN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBASSUAN_SOURCE_DIR)/postinst $(LIBASSUAN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBASSUAN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBASSUAN_SOURCE_DIR)/prerm $(LIBASSUAN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBASSUAN_SOURCE_DIR)/prerm $(LIBASSUAN_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBASSUAN_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -1,15 +1,15 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof statd`" ]; then 
-    /opt/bin/killall statd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof statd`" ]; then 
+    %OPTWARE_TARGET_PREFIX%/bin/killall statd 2>/dev/null
 fi
 
-if [ -n "`/opt/bin/pidof nfsd`" ]; then 
-    /opt/bin/killall nfsd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof nfsd`" ]; then 
+    %OPTWARE_TARGET_PREFIX%/bin/killall nfsd 2>/dev/null
 fi
 
-if [ -n "`/opt/bin/pidof mountd`" ]; then 
-    /opt/bin/killall mountd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof mountd`" ]; then 
+    %OPTWARE_TARGET_PREFIX%/bin/killall mountd 2>/dev/null
 fi
 
 if [ ! -d /var/lib/nfs ] ;  then
@@ -17,12 +17,12 @@ if [ ! -d /var/lib/nfs ] ;  then
 fi
 
 /bin/rm -f /etc/exports
-/bin/ln -s /opt/etc/exports /etc/exports
+/bin/ln -s %OPTWARE_TARGET_PREFIX%/etc/exports /etc/exports
 
 touch /var/lib/nfs/etab
 touch /var/lib/nfs/rmtab
 
-/opt/sbin/statd
-/opt/sbin/exportfs -r
-/opt/sbin/nfsd
-/opt/sbin/mountd
+%OPTWARE_TARGET_PREFIX%/sbin/statd
+%OPTWARE_TARGET_PREFIX%/sbin/exportfs -r
+%OPTWARE_TARGET_PREFIX%/sbin/nfsd
+%OPTWARE_TARGET_PREFIX%/sbin/mountd

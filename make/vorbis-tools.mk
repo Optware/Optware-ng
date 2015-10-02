@@ -109,7 +109,7 @@ $(VORBIS-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(VORBIS-TOOLS_SOURCE) $(VORBIS
 	$(VORBIS-TOOLS_UNZIP) $(DL_DIR)/$(VORBIS-TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VORBIS-TOOLS_PATCHES)" ; \
 		then cat $(VORBIS-TOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(VORBIS-TOOLS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(VORBIS-TOOLS_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(VORBIS-TOOLS_DIR) $(VORBIS-TOOLS_BUILD_DIR)
 	(cd $(VORBIS-TOOLS_BUILD_DIR); \
@@ -134,7 +134,7 @@ $(VORBIS-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(VORBIS-TOOLS_SOURCE) $(VORBIS
 	       	--with-curl-includes=$(STAGING_INCLUDE_DIR) \
 	)
 	sed -ie '/CURLOPT_MUTE/d' $(VORBIS-TOOLS_BUILD_DIR)/ogg123/http_transport.c
-#	cat $(VORBIS-TOOLS_PATCHES) | patch -d $(VORBIS-TOOLS_BUILD_DIR) -p1
+#	cat $(VORBIS-TOOLS_PATCHES) | $(PATCH) -d $(VORBIS-TOOLS_BUILD_DIR) -p1
 	touch $(VORBIS-TOOLS_BUILD_DIR)/.configured
 
 vorbis-tools-unpack: $(VORBIS-TOOLS_BUILD_DIR)/.configured
@@ -167,7 +167,7 @@ vorbis-tools-stage: $(VORBIS-TOOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/vorbis-tools
 #
 $(VORBIS-TOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(VORBIS-TOOLS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(VORBIS-TOOLS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: vorbis-tools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

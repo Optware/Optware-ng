@@ -61,7 +61,7 @@ XEXTENSIONS_IPK=$(BUILD_DIR)/xextensions_$(XEXTENSIONS_VERSION)-$(XEXTENSIONS_IP
 # Automatically create a ipkg control file
 #
 $(XEXTENSIONS_IPK_DIR)/CONTROL/control:
-	@install -d $(XEXTENSIONS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XEXTENSIONS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xextensions" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -103,7 +103,7 @@ $(XEXTENSIONS_BUILD_DIR)/.configured: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSIO
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz
 	if test -n "$(XEXTENSIONS_PATCHES)" ; \
 		then cat $(XEXTENSIONS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XEXTENSIONS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XEXTENSIONS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XEXTENSIONS_DIR)" != "$(XEXTENSIONS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XEXTENSIONS_DIR) $(XEXTENSIONS_BUILD_DIR) ; \

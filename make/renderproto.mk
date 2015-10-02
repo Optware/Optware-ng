@@ -63,7 +63,7 @@ RENDERPROTO_IPK=$(BUILD_DIR)/renderproto_$(RENDERPROTO_VERSION)-$(RENDERPROTO_IP
 # Automatically create a ipkg control file
 #
 $(RENDERPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(RENDERPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(RENDERPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: renderproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(RENDERPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(RENDERPROTO_SOURCE) $(RENDERPR
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(RENDERPROTO_SOURCE)
 	if test -n "$(RENDERPROTO_PATCHES)" ; \
 		then cat $(RENDERPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RENDERPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RENDERPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RENDERPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RENDERPROTO_DIR) $(@D) ; \

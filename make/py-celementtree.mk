@@ -113,7 +113,7 @@ $(PY-CELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR)
 	$(PY-CELEMENTTREE_UNZIP) $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CELEMENTTREE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) -p1
+#	cat $(PY-CELEMENTTREE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) $(PY-CELEMENTTREE_BUILD_DIR)/2.4
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.4; \
 	    (\
@@ -127,7 +127,7 @@ $(PY-CELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR)
 	$(PY-CELEMENTTREE_UNZIP) $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CELEMENTTREE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) -p1
+#	cat $(PY-CELEMENTTREE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) $(PY-CELEMENTTREE_BUILD_DIR)/2.5
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.5; \
 	    (\
@@ -178,7 +178,7 @@ py-celementtree-stage: $(PY-CELEMENTTREE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-celementtree
 #
 $(PY24-CELEMENTTREE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-celementtree" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,7 +192,7 @@ $(PY24-CELEMENTTREE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CELEMENTTREE_CONFLICTS)" >>$@
 
 $(PY25-CELEMENTTREE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-celementtree" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -223,7 +223,7 @@ $(PY24-CELEMENTTREE_IPK): $(PY-CELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY24-CELEMENTTREE_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY24-CELEMENTTREE_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) $(PY24-CELEMENTTREE_IPK_DIR)/opt/lib/python2.4/site-packages/*.so
 	$(MAKE) $(PY24-CELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-CELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-CELEMENTTREE_IPK_DIR)/CONTROL/conffiles
@@ -234,7 +234,7 @@ $(PY25-CELEMENTTREE_IPK): $(PY-CELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY25-CELEMENTTREE_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY25-CELEMENTTREE_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) $(PY25-CELEMENTTREE_IPK_DIR)/opt/lib/python2.5/site-packages/*.so
 	$(MAKE) $(PY25-CELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-CELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CELEMENTTREE_IPK_DIR)/CONTROL/conffiles

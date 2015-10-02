@@ -108,7 +108,7 @@ $(TORSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TORSOCKS_SOURCE) $(TORSOCKS_PATCH
 	$(TORSOCKS_UNZIP) $(DL_DIR)/$(TORSOCKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TORSOCKS_PATCHES)" ; \
 		then cat $(TORSOCKS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TORSOCKS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TORSOCKS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TORSOCKS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TORSOCKS_DIR) $(@D) ; \
@@ -158,7 +158,7 @@ torsocks: $(TORSOCKS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/torsocks
 #
 $(TORSOCKS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: torsocks" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,10 +190,10 @@ $(TORSOCKS_IPK): $(TORSOCKS_BUILD_DIR)/.built
 	sed -i -e 's:/usr/:/opt/:g' $(TORSOCKS_IPK_DIR)/opt/bin/torsocks
 	rm -f $(TORSOCKS_IPK_DIR)/opt/lib/torsocks/libtorsocks*.a
 	$(STRIP_COMMAND) $(TORSOCKS_IPK_DIR)/opt/lib/torsocks/libtorsocks.so.[0-9].[0-9].[0-9]
-#	install -d $(TORSOCKS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -d $(TORSOCKS_IPK_DIR)/opt/etc/
 #	mv $(TORSOCKS_IPK_DIR)/lib $(TORSOCKS_IPK_DIR)/opt/
 #	$(STRIP_COMMAND) $(TORSOCKS_IPK_DIR)/opt/lib/libtorsocks.so.1.8
-	#install -m 644 $(TORSOCKS_SOURCE_DIR)/torsocks.conf $(TORSOCKS_IPK_DIR)/opt/etc/torsocks.conf
+	#$(INSTALL) -m 644 $(TORSOCKS_SOURCE_DIR)/torsocks.conf $(TORSOCKS_IPK_DIR)/opt/etc/torsocks.conf
 	$(MAKE) $(TORSOCKS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TORSOCKS_IPK_DIR)
 

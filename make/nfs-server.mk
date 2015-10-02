@@ -109,7 +109,7 @@ $(NFS_SERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS_SERVER_SOURCE) $(NFS_SERVER
 		--exports-uid=0 \
 		--exports-gid=0 \
 		--log-mounts=yes)
-	cat $(NFS_SERVER_PATCHES) | patch -d $(NFS_SERVER_BUILD_DIR) -p1
+	cat $(NFS_SERVER_PATCHES) | $(PATCH) -d $(NFS_SERVER_BUILD_DIR) -p1
 	@if [ -a /usr/bin/hdiutil ]; \
 	then \
 	rm $(NFS_SERVER_BUILD_DIR)/config.h; \
@@ -138,7 +138,7 @@ nfs-server: $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 # necessary to create a seperate control file under sources/nfs_server
 #
 $(NFS_SERVER_IPK_DIR)/CONTROL/control:
-	@install -d $(NFS_SERVER_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(NFS_SERVER_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: nfs-server" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -166,11 +166,11 @@ $(NFS_SERVER_IPK_DIR)/CONTROL/control:
 #
 $(NFS_SERVER_IPK): $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 	rm -rf $(NFS_SERVER_IPK_DIR) $(NFS_SERVER_IPK)
-	install -d $(NFS_SERVER_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(NFS_SERVER_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(NFS_SERVER_BUILD_DIR)/rpc.nfsd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.nfsd
 	$(STRIP_COMMAND) $(NFS_SERVER_BUILD_DIR)/rpc.mountd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.mountd
-	install -d $(NFS_SERVER_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NFS_SERVER_SOURCE_DIR)/rc.nfs-server $(NFS_SERVER_IPK_DIR)/opt/etc/init.d/S56nfsd
+	$(INSTALL) -d $(NFS_SERVER_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NFS_SERVER_SOURCE_DIR)/rc.nfs-server $(NFS_SERVER_IPK_DIR)/opt/etc/init.d/S56nfsd
 	$(MAKE) $(NFS_SERVER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NFS_SERVER_IPK_DIR)
 

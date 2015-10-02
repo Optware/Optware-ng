@@ -118,7 +118,7 @@ $(PPOWER_BUILD_DIR)/.configured: $(DL_DIR)/$(PPOWER_SOURCE) $(PPOWER_PATCHES) ma
 	$(PPOWER_UNZIP) $(DL_DIR)/$(PPOWER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PPOWER_PATCHES)" ; \
 		then cat $(PPOWER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PPOWER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PPOWER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PPOWER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PPOWER_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ ppower-stage: $(PPOWER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ppower
 #
 $(PPOWER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ppower" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(PPOWER_IPK): $(PPOWER_BUILD_DIR)/.built
 	rm -rf $(PPOWER_IPK_DIR) $(BUILD_DIR)/ppower_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PPOWER_BUILD_DIR) DESTDIR=$(PPOWER_IPK_DIR) install
 	$(STRIP_COMMAND) $(PPOWER_IPK_DIR)/opt/*bin/*
-	install -d $(PPOWER_IPK_DIR)/opt/etc/
-	install -m 644 $(PPOWER_BUILD_DIR)/etc/ppower.conf $(PPOWER_IPK_DIR)/opt/etc/ppower.conf
-#	install -d $(PPOWER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PPOWER_SOURCE_DIR)/rc.ppower $(PPOWER_IPK_DIR)/opt/etc/init.d/SXXppower
+	$(INSTALL) -d $(PPOWER_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(PPOWER_BUILD_DIR)/etc/ppower.conf $(PPOWER_IPK_DIR)/opt/etc/ppower.conf
+#	$(INSTALL) -d $(PPOWER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PPOWER_SOURCE_DIR)/rc.ppower $(PPOWER_IPK_DIR)/opt/etc/init.d/SXXppower
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PPOWER_IPK_DIR)/opt/etc/init.d/SXXppower
 	$(MAKE) $(PPOWER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PPOWER_SOURCE_DIR)/postinst $(PPOWER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PPOWER_SOURCE_DIR)/postinst $(PPOWER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PPOWER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PPOWER_SOURCE_DIR)/prerm $(PPOWER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PPOWER_SOURCE_DIR)/prerm $(PPOWER_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PPOWER_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -107,7 +107,7 @@ $(LIBAO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBAO_SOURCE) $(LIBAO_PATCHES) make/
 	$(MAKE) audiofile-stage esound-stage
 	rm -rf $(BUILD_DIR)/$(LIBAO_DIR) $(LIBAO_BUILD_DIR)
 	$(LIBAO_UNZIP) $(DL_DIR)/$(LIBAO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBAO_PATCHES) | patch -d $(BUILD_DIR)/$(LIBAO_DIR) -p1
+#	cat $(LIBAO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBAO_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBAO_DIR) $(LIBAO_BUILD_DIR)
 	(cd $(LIBAO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -159,7 +159,7 @@ libao-stage: $(LIBAO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libao
 #
 $(LIBAO_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBAO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBAO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libao" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,13 +189,13 @@ $(LIBAO_IPK): $(LIBAO_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBAO_BUILD_DIR) DESTDIR=$(LIBAO_IPK_DIR) install
 	$(STRIP_COMMAND) $(LIBAO_IPK_DIR)/opt/lib/libao.so.[0-9]*.[0-9]*.[0-9]*
 	$(STRIP_COMMAND) $(LIBAO_IPK_DIR)/opt/lib/ao/plugins-2/*.so
-	#install -d $(LIBAO_IPK_DIR)/opt/etc/
-	#install -m 644 $(LIBAO_SOURCE_DIR)/libao.conf $(LIBAO_IPK_DIR)/opt/etc/libao.conf
-	#install -d $(LIBAO_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(LIBAO_SOURCE_DIR)/rc.libao $(LIBAO_IPK_DIR)/opt/etc/init.d/SXXlibao
+	#$(INSTALL) -d $(LIBAO_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(LIBAO_SOURCE_DIR)/libao.conf $(LIBAO_IPK_DIR)/opt/etc/libao.conf
+	#$(INSTALL) -d $(LIBAO_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(LIBAO_SOURCE_DIR)/rc.libao $(LIBAO_IPK_DIR)/opt/etc/init.d/SXXlibao
 	$(MAKE) $(LIBAO_IPK_DIR)/CONTROL/control
-	#install -m 755 $(LIBAO_SOURCE_DIR)/postinst $(LIBAO_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(LIBAO_SOURCE_DIR)/prerm $(LIBAO_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(LIBAO_SOURCE_DIR)/postinst $(LIBAO_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(LIBAO_SOURCE_DIR)/prerm $(LIBAO_IPK_DIR)/CONTROL/prerm
 	echo $(LIBAO_CONFFILES) | sed -e 's/ /\n/g' > $(LIBAO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBAO_IPK_DIR)
 

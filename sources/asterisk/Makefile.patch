@@ -32,10 +32,10 @@
  
  # Determine by a grep 'DocumentRoot' of your httpd.conf file
 -HTTP_DOCSDIR=/var/www/html
-+HTTP_DOCSDIR=/opt/share/www/html
++HTTP_DOCSDIR=%OPTWARE_TARGET_PREFIX%/share/www/html
  # Determine by a grep 'ScriptAlias' of your httpd.conf file
 -HTTP_CGIDIR=/var/www/cgi-bin
-+HTTP_CGIDIR=/opt/share/www/cgi-bin
++HTTP_CGIDIR=%OPTWARE_TARGET_PREFIX%/share/www/cgi-bin
  
  # If the file .asterisk.makeopts is present in your home directory, you can
  # include all of your favorite Makefile options so that every time you download

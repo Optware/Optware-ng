@@ -90,7 +90,7 @@ ghostscript-source: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE)
 $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) make/ghostscript.mk
 	rm -rf $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	cat $(GHOSTSCRIPT_SOURCE_DIR)/base-time_.h.patch | patch -d $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p1
+	cat $(GHOSTSCRIPT_SOURCE_DIR)/base-time_.h.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p1
 	mv $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 #	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(@D)/Makefile.in
 	(cd $(@D); \
@@ -133,7 +133,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GHOSTSCRIPT_PATCHES)"; then \
-		cat $(GHOSTSCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p1; \
+		cat $(GHOSTSCRIPT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(@D)/Makefile.in
@@ -212,7 +212,7 @@ ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ghostscript
 #
 $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ghostscript" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

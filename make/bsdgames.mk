@@ -122,7 +122,7 @@ $(BSDGAMES_BUILD_DIR)/.configured: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCH
 	$(BSDGAMES_UNZIP) $(DL_DIR)/$(BSDGAMES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BSDGAMES_PATCHES)" ; \
 		then cat $(BSDGAMES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BSDGAMES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BSDGAMES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BSDGAMES_DIR)" != "$(BSDGAMES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(BSDGAMES_DIR) $(BSDGAMES_BUILD_DIR) ; \
@@ -195,7 +195,7 @@ bsdgames-stage: $(BSDGAMES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bsdgames
 #
 $(BSDGAMES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bsdgames" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

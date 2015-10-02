@@ -34,7 +34,7 @@ $(STOW_BUILD_DIR)/.configured: $(DL_DIR)/$(STOW_SOURCE) $(STOW_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(STOW_DIR) $(STOW_BUILD_DIR)
 	$(STOW_UNZIP) $(DL_DIR)/$(STOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(STOW_PATCHES) | patch -d $(BUILD_DIR)/$(STOW_DIR) -p1
+#	cat $(STOW_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(STOW_DIR) -p1
 	mv $(BUILD_DIR)/$(STOW_DIR) $(STOW_BUILD_DIR)
 	(cd $(STOW_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -66,7 +66,7 @@ $(STOW_BUILD_DIR)/.staged: $(STOW_BUILD_DIR)/.built
 stow-stage: $(STOW_BUILD_DIR)/.staged
 
 $(STOW_IPK_DIR)/CONTROL/control:
-	@install -d $(STOW_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(STOW_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: stow" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -81,15 +81,15 @@ $(STOW_IPK_DIR)/CONTROL/control:
 
 $(STOW_IPK): $(STOW_BUILD_DIR)/.built
 	rm -rf $(STOW_IPK_DIR) $(BUILD_DIR)/stow_*_$(TARGET_ARCH).ipk
-	install -d $(STOW_IPK_DIR)/opt/bin
-	install -d $(STOW_IPK_DIR)/opt/info
-	install -d $(STOW_IPK_DIR)/opt/man/man8
-	install -d $(STOW_IPK_DIR)/opt/local/stow
+	$(INSTALL) -d $(STOW_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(STOW_IPK_DIR)/opt/info
+	$(INSTALL) -d $(STOW_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(STOW_IPK_DIR)/opt/local/stow
 	$(MAKE) -C $(STOW_BUILD_DIR) DESTDIR=$(STOW_IPK_DIR) install
 	rm -f $(STOW_IPK_DIR)/opt/info/dir{,.old}
 	$(MAKE) $(STOW_IPK_DIR)/CONTROL/control
-#	install -m 755 $(STOW_SOURCE_DIR)/postinst $(STOW_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(STOW_SOURCE_DIR)/prerm $(STOW_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(STOW_SOURCE_DIR)/postinst $(STOW_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(STOW_SOURCE_DIR)/prerm $(STOW_IPK_DIR)/CONTROL/prerm
 #	echo $(STOW_CONFFILES) | sed -e 's/ /\n/g' > $(STOW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STOW_IPK_DIR)
 

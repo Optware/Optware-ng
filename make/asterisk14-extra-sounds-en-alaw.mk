@@ -109,7 +109,7 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14
 	mkdir -p $(BUILD_DIR)/$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_DIR); $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_UNZIP) $(DL_DIR)/$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_SOURCE) | tar -C $(BUILD_DIR)/$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_DIR) -xvf -
 	if test -n "$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_PATCHES)" ; \
 		then cat $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_DIR)" != "$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_DIR) $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR) ; \
@@ -144,7 +144,7 @@ asterisk14-extra-sounds-en-alaw-stage: $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_D
 # necessary to create a seperate control file under sources/asterisk14-extra-sounds-en-alaw
 #
 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: asterisk14-extra-sounds-en-alaw" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -173,12 +173,12 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/CONTROL/control:
 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/.built
 	rm -rf $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR) $(BUILD_DIR)/asterisk14-extra-sounds-en-alaw_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/CONTROL/control
-	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds
-	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds
-	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
-	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/ha/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
-	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
-	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/wx/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
+	$(INSTALL) -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds
+	$(INSTALL) -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds
+	$(INSTALL) -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
+	$(INSTALL) -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/ha/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
+	$(INSTALL) -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
+	$(INSTALL) -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/wx/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)
 
 #

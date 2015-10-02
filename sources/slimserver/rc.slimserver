@@ -16,7 +16,7 @@
 # System startup script for the SlimServer.
 
 # get site config
-. /opt/etc/slimserver.conf
+. %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
 
 
 case "$1" in

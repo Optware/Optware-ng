@@ -145,7 +145,7 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(DL_DIR)/$(IPYTHO
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
 	$(IPYTHON_UNZIP) $(DL_DIR)/$(IPYTHON_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(IPYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(IPYTHON_DIR_OLD) -p1
+#	cat $(IPYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(IPYTHON_DIR_OLD) -p1
 	mv $(BUILD_DIR)/$(IPYTHON_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -154,7 +154,7 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(DL_DIR)/$(IPYTHO
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
 	$(IPYTHON_UNZIP) $(DL_DIR)/$(IPYTHON_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(IPYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(IPYTHON_DIR_OLD) -p1
+#	cat $(IPYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(IPYTHON_DIR_OLD) -p1
 	mv $(BUILD_DIR)/$(IPYTHON_DIR_OLD) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
@@ -163,7 +163,7 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(DL_DIR)/$(IPYTHO
 	# 2.7
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
 	$(IPYTHON_UNZIP) $(DL_DIR)/$(IPYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(IPYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(IPYTHON_DIR) -p1
+#	cat $(IPYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(IPYTHON_DIR) -p1
 	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    (echo "[build_scripts]"; \
@@ -172,7 +172,7 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(DL_DIR)/$(IPYTHO
 	# 3
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
 	$(IPYTHON_UNZIP) $(DL_DIR)/$(IPYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(IPYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(IPYTHON_DIR) -p1
+#	cat $(IPYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(IPYTHON_DIR) -p1
 	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    (echo "[build_scripts]"; \
@@ -219,7 +219,7 @@ ipython: $(IPYTHON_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ipython
 #
 $(IPYTHON-COMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ipython-common" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -234,7 +234,7 @@ $(IPYTHON-COMMON_IPK_DIR)/CONTROL/control:
 
 ifneq ($(IPYTHON_VERSION), $(IPYTHON_VERSION_OLD))
 $(IPYTHON-COMMON-OLD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ipython-common-old" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -249,7 +249,7 @@ $(IPYTHON-COMMON-OLD_IPK_DIR)/CONTROL/control:
 endif
 
 $(IPYTHON_PY25_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-ipython" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -264,7 +264,7 @@ $(IPYTHON_PY25_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(IPYTHON_CONFLICTS)" >>$@
 
 $(IPYTHON_PY26_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-ipython" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -279,7 +279,7 @@ $(IPYTHON_PY26_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(IPYTHON_CONFLICTS)" >>$@
 
 $(IPYTHON_PY27_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-ipython" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -294,7 +294,7 @@ $(IPYTHON_PY27_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(IPYTHON_CONFLICTS)" >>$@
 
 $(IPYTHON_PY3_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-ipython" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -325,7 +325,7 @@ $(IPYTHON_PY25_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON_PY25_IPK_DIR) $(BUILD_DIR)/py25-ipython_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.5; \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-		install --root=$(IPYTHON_PY25_IPK_DIR) --prefix=/opt)
+		$(INSTALL) --root=$(IPYTHON_PY25_IPK_DIR) --prefix=/opt)
 	rm -rf $(IPYTHON_PY25_IPK_DIR)/opt/share
 	for f in $(IPYTHON_PY25_IPK_DIR)/opt/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
@@ -338,7 +338,7 @@ $(IPYTHON_PY26_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.6; \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
-		install --root=$(IPYTHON_PY26_IPK_DIR) --prefix=/opt)
+		$(INSTALL) --root=$(IPYTHON_PY26_IPK_DIR) --prefix=/opt)
 	rm -rf $(IPYTHON_PY26_IPK_DIR)/opt/share
 	$(MAKE) $(IPYTHON_PY26_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY26_IPK_DIR)
@@ -349,7 +349,7 @@ $(IPYTHON_PY27_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.7; \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" \
-		install --root=$(IPYTHON_PY27_IPK_DIR) --prefix=/opt)
+		$(INSTALL) --root=$(IPYTHON_PY27_IPK_DIR) --prefix=/opt)
 	rm -rf $(IPYTHON_PY27_IPK_DIR)/opt/share
 	$(MAKE) $(IPYTHON_PY27_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY27_IPK_DIR)
@@ -360,7 +360,7 @@ $(IPYTHON_PY3_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/3; \
 		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py \
-		install --root=$(IPYTHON_PY3_IPK_DIR) --prefix=/opt)
+		$(INSTALL) --root=$(IPYTHON_PY3_IPK_DIR) --prefix=/opt)
 	rm -rf $(IPYTHON_PY3_IPK_DIR)/opt/share
 	$(MAKE) $(IPYTHON_PY3_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY3_IPK_DIR)
@@ -369,7 +369,7 @@ $(IPYTHON_PY3_IPK): $(IPYTHON_BUILD_DIR)/.built
 $(IPYTHON-COMMON_IPK): $(IPYTHON_BUILD_DIR)/.built
 	(cd $(IPYTHON_BUILD_DIR)/2.7; \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py \
-		install --root=$(IPYTHON-COMMON_IPK_DIR) --prefix=/opt)
+		$(INSTALL) --root=$(IPYTHON-COMMON_IPK_DIR) --prefix=/opt)
 	rm -rf $(IPYTHON-COMMON_IPK_DIR)/opt/bin $(IPYTHON-COMMON_IPK_DIR)/opt/lib
 	$(MAKE) $(IPYTHON-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON-COMMON_IPK_DIR)
@@ -379,7 +379,7 @@ ifneq ($(IPYTHON_VERSION), $(IPYTHON_VERSION_OLD))
 $(IPYTHON-COMMON-OLD_IPK): $(IPYTHON_BUILD_DIR)/.built
 	(cd $(IPYTHON_BUILD_DIR)/2.6; \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py \
-		install --root=$(IPYTHON-COMMON-OLD_IPK_DIR) --prefix=/opt)
+		$(INSTALL) --root=$(IPYTHON-COMMON-OLD_IPK_DIR) --prefix=/opt)
 	rm -rf $(IPYTHON-COMMON-OLD_IPK_DIR)/opt/bin $(IPYTHON-COMMON-OLD_IPK_DIR)/opt/lib
 	$(MAKE) $(IPYTHON-COMMON-OLD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON-COMMON-OLD_IPK_DIR)

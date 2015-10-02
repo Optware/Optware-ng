@@ -119,7 +119,7 @@ $(EXO_BUILD_DIR)/.configured: $(DL_DIR)/$(EXO_SOURCE) $(EXO_PATCHES) make/exo.mk
 	$(EXO_UNZIP) $(DL_DIR)/$(EXO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EXO_PATCHES)" ; \
 		then cat $(EXO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(EXO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(EXO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(EXO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(EXO_DIR) $(@D) ; \
@@ -175,7 +175,7 @@ exo-stage: $(EXO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/exo
 #
 $(EXO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: exo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,15 +205,15 @@ $(EXO_IPK): $(EXO_BUILD_DIR)/.built
 	rm -rf $(EXO_IPK_DIR) $(BUILD_DIR)/exo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(EXO_BUILD_DIR) DESTDIR=$(EXO_IPK_DIR) install-strip
 	rm -f $(EXO_IPK_DIR)/opt/lib/*.la
-#	install -d $(EXO_IPK_DIR)/opt/etc/
-#	install -m 644 $(EXO_SOURCE_DIR)/exo.conf $(EXO_IPK_DIR)/opt/etc/exo.conf
-#	install -d $(EXO_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(EXO_SOURCE_DIR)/rc.exo $(EXO_IPK_DIR)/opt/etc/init.d/SXXexo
+#	$(INSTALL) -d $(EXO_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(EXO_SOURCE_DIR)/exo.conf $(EXO_IPK_DIR)/opt/etc/exo.conf
+#	$(INSTALL) -d $(EXO_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(EXO_SOURCE_DIR)/rc.exo $(EXO_IPK_DIR)/opt/etc/init.d/SXXexo
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EXO_IPK_DIR)/opt/etc/init.d/SXXexo
 	$(MAKE) $(EXO_IPK_DIR)/CONTROL/control
-#	install -m 755 $(EXO_SOURCE_DIR)/postinst $(EXO_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(EXO_SOURCE_DIR)/postinst $(EXO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EXO_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(EXO_SOURCE_DIR)/prerm $(EXO_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(EXO_SOURCE_DIR)/prerm $(EXO_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EXO_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

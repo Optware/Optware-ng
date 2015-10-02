@@ -103,7 +103,7 @@ $(ELINKS_BUILD_DIR)/.configured: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES) ma
 	$(ELINKS_UNZIP) $(DL_DIR)/$(ELINKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ELINKS_PATCHES)" ; \
 		then cat $(ELINKS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ELINKS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ELINKS_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(ELINKS_DIR) $(@D)
 	(cd $(@D); \
@@ -155,7 +155,7 @@ elinks-stage: $(ELINKS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/elinks
 #
 $(ELINKS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: elinks" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

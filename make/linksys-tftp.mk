@@ -94,7 +94,7 @@ $(LINKSYS-TFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LINKSYS-TFTP_SOURCE) $(LINKSY
 	$(LINKSYS-TFTP_UNZIP) $(DL_DIR)/$(LINKSYS-TFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LINKSYS-TFTP_PATCHES)" ; \
 		then cat $(LINKSYS-TFTP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LINKSYS-TFTP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LINKSYS-TFTP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LINKSYS-TFTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LINKSYS-TFTP_DIR) $(@D) ; \
@@ -121,7 +121,7 @@ linksys-tftp: $(LINKSYS-TFTP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/linksys-tftp
 #
 $(LINKSYS-TFTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: linksys-tftp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -149,8 +149,8 @@ $(LINKSYS-TFTP_IPK_DIR)/CONTROL/control:
 #
 $(LINKSYS-TFTP_IPK): $(LINKSYS-TFTP_BUILD_DIR)/.built
 	rm -rf $(LINKSYS-TFTP_IPK_DIR) $(BUILD_DIR)/linksys-tftp_*_$(TARGET_ARCH).ipk
-	install -d $(LINKSYS-TFTP_IPK_DIR)/opt/bin/
-	install -m 755 $(LINKSYS-TFTP_BUILD_DIR)/linksys-tftp $(LINKSYS-TFTP_IPK_DIR)/opt/bin/linksys-tftp
+	$(INSTALL) -d $(LINKSYS-TFTP_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 755 $(LINKSYS-TFTP_BUILD_DIR)/linksys-tftp $(LINKSYS-TFTP_IPK_DIR)/opt/bin/linksys-tftp
 	$(MAKE) $(LINKSYS-TFTP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LINKSYS-TFTP_IPK_DIR)
 

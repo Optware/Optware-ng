@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ -e /opt/etc/default/dropbear ] && . /opt/etc/default/dropbear
+[ -e %OPTWARE_TARGET_PREFIX%/etc/default/dropbear ] && . %OPTWARE_TARGET_PREFIX%/etc/default/dropbear
 
 if [ "$DROPBEAR_ENABLE" = "no" ]; then
     exit
@@ -11,7 +11,7 @@ if [ -n "`pidof dropbear`" ]; then
 fi
 
 if [ -n "$DROPBEAR_PORT" ]; then
-    /opt/sbin/dropbear -A -N root -U 0 -G 0 -C "$DROPBEAR_PASSWORD" -p $DROPBEAR_PORT
+    %OPTWARE_TARGET_PREFIX%/sbin/dropbear -A -N root -U 0 -G 0 -C "$DROPBEAR_PASSWORD" -p $DROPBEAR_PORT
 else
-    /opt/sbin/dropbear
+    %OPTWARE_TARGET_PREFIX%/sbin/dropbear
 fi

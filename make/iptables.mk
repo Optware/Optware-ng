@@ -172,7 +172,7 @@ $(IPTABLES_BUILD_DIR)/.staged-headers: $(IPTABLES_BUILD_DIR)/.staged
 # necessary to create a separate control file under sources/iptables
 #
 $(IPTABLES_IPK_DIR)/CONTROL/control:
-	@install -d $(IPTABLES_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(IPTABLES_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: iptables" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

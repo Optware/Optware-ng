@@ -115,7 +115,7 @@ $(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PA
 	$(AUDIOFILE_UNZIP) $(DL_DIR)/$(AUDIOFILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AUDIOFILE_PATCHES)" ; \
 		then cat $(AUDIOFILE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(AUDIOFILE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(AUDIOFILE_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(AUDIOFILE_DIR) $(@D)
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
@@ -170,7 +170,7 @@ audiofile-stage: $(AUDIOFILE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/audiofile
 #
 $(AUDIOFILE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: audiofile" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -62,7 +62,7 @@ $(SQUEEZECENTER_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEEZECENTER_SOURCE) $(SQUE
 	$(SQUEEZECENTER_UNZIP) $(DL_DIR)/$(SQUEEZECENTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQUEEZECENTER_PATCHES)" ; \
 		then cat $(SQUEEZECENTER_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(SQUEEZECENTER_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(SQUEEZECENTER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SQUEEZECENTER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SQUEEZECENTER_DIR) $(@D) ; \
@@ -128,7 +128,7 @@ squeezecenter: $(SQUEEZECENTER_BUILD_DIR)/.built
 #squeezecenter-stage: $(SQUEEZECENTER_BUILD_DIR)/.staged
 
 $(SQUEEZECENTER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: squeezecenter" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -144,7 +144,7 @@ $(SQUEEZECENTER_IPK_DIR)/CONTROL/control:
 
 $(SQUEEZECENTER_IPK): $(SQUEEZECENTER_BUILD_DIR)/.built
 	rm -rf $(SQUEEZECENTER_IPK_DIR) $(BUILD_DIR)/squeezecenter_*_$(TARGET_ARCH).ipk
-	install -d $(SQUEEZECENTER_IPK_DIR)/opt/etc/ $(SQUEEZECENTER_IPK_DIR)/opt/share/squeezecenter
+	$(INSTALL) -d $(SQUEEZECENTER_IPK_DIR)/opt/etc/ $(SQUEEZECENTER_IPK_DIR)/opt/share/squeezecenter
 	cp -rp $(SQUEEZECENTER_BUILD_DIR)/ $(SQUEEZECENTER_IPK_DIR)/opt/share
 	rm -rf	$(SQUEEZECENTER_IPK_DIR)/opt/share/squeezecenter/.configured \
 		$(SQUEEZECENTER_IPK_DIR)/opt/share/squeezecenter/.built
@@ -163,17 +163,17 @@ endif
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	install -m 755 $(SQUEEZECENTER_SOURCE_DIR)/squeezecenter.conf $(SQUEEZECENTER_IPK_DIR)/opt/etc/squeezecenter.conf
-	install -d $(SQUEEZECENTER_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SQUEEZECENTER_SOURCE_DIR)/squeezecenter.conf $(SQUEEZECENTER_IPK_DIR)/opt/etc/squeezecenter.conf
+	$(INSTALL) -d $(SQUEEZECENTER_IPK_DIR)/opt/etc/init.d
 #ifeq ($(OPTWARE_TARGET),fsg3)
-#	install -m 755 $(SQUEEZECENTER_SOURCE_DIR)/rc.squeezecenter.fsg3 $(SQUEEZECENTER_IPK_DIR)/opt/etc/init.d/S99squeezecenter
+#	$(INSTALL) -m 755 $(SQUEEZECENTER_SOURCE_DIR)/rc.squeezecenter.fsg3 $(SQUEEZECENTER_IPK_DIR)/opt/etc/init.d/S99squeezecenter
 #else
-	install -m 755 $(SQUEEZECENTER_SOURCE_DIR)/rc.squeezecenter $(SQUEEZECENTER_IPK_DIR)/opt/etc/init.d/S99squeezecenter
+	$(INSTALL) -m 755 $(SQUEEZECENTER_SOURCE_DIR)/rc.squeezecenter $(SQUEEZECENTER_IPK_DIR)/opt/etc/init.d/S99squeezecenter
 #endif
 	$(MAKE) $(SQUEEZECENTER_IPK_DIR)/CONTROL/control
-	install -m 755 $(SQUEEZECENTER_SOURCE_DIR)/postinst $(SQUEEZECENTER_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(SQUEEZECENTER_SOURCE_DIR)/prerm $(SQUEEZECENTER_IPK_DIR)/CONTROL/prerm
-	install -m 755 $(SQUEEZECENTER_SOURCE_DIR)/postrm $(SQUEEZECENTER_IPK_DIR)/CONTROL/postrm
+	$(INSTALL) -m 755 $(SQUEEZECENTER_SOURCE_DIR)/postinst $(SQUEEZECENTER_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(SQUEEZECENTER_SOURCE_DIR)/prerm $(SQUEEZECENTER_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(SQUEEZECENTER_SOURCE_DIR)/postrm $(SQUEEZECENTER_IPK_DIR)/CONTROL/postrm
 	echo $(SQUEEZECENTER_CONFFILES) | sed -e 's/ /\n/g' > $(SQUEEZECENTER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQUEEZECENTER_IPK_DIR)
 

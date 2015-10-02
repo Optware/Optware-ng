@@ -117,7 +117,7 @@ $(MODULE_INIT_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(MODULE_INIT_TOOLS_SOURCE
 	$(MODULE_INIT_TOOLS_UNZIP) $(DL_DIR)/$(MODULE_INIT_TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MODULE_INIT_TOOLS_PATCHES)" ; \
 		then cat $(MODULE_INIT_TOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MODULE_INIT_TOOLS_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ module-init-tools-stage: $(MODULE_INIT_TOOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/module-init-tools
 #
 $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: module-init-tools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

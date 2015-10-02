@@ -116,7 +116,7 @@ $(GNOME-ICON-THEME-SYMBOLIC_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOME-ICON-THEME
 	$(GNOME-ICON-THEME-SYMBOLIC_UNZIP) $(DL_DIR)/$(GNOME-ICON-THEME-SYMBOLIC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNOME-ICON-THEME-SYMBOLIC_PATCHES)" ; \
 		then cat $(GNOME-ICON-THEME-SYMBOLIC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GNOME-ICON-THEME-SYMBOLIC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GNOME-ICON-THEME-SYMBOLIC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GNOME-ICON-THEME-SYMBOLIC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GNOME-ICON-THEME-SYMBOLIC_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ gnome-icon-theme-symbolic-stage: $(GNOME-ICON-THEME-SYMBOLIC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnome-icon-theme-symbolic
 #
 $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnome-icon-theme-symbolic" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,15 +195,15 @@ $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/control:
 $(GNOME-ICON-THEME-SYMBOLIC_IPK): $(GNOME-ICON-THEME-SYMBOLIC_BUILD_DIR)/.built
 	rm -rf $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR) $(BUILD_DIR)/gnome-icon-theme-symbolic_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOME-ICON-THEME-SYMBOLIC_BUILD_DIR) DESTDIR=$(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR) install
-#	install -d $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/
-#	install -m 644 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/gnome-icon-theme-symbolic.conf $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/gnome-icon-theme-symbolic.conf
-#	install -d $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/rc.gnome-icon-theme-symbolic $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/init.d/SXXgnome-icon-theme-symbolic
+#	$(INSTALL) -d $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/gnome-icon-theme-symbolic.conf $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/gnome-icon-theme-symbolic.conf
+#	$(INSTALL) -d $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/rc.gnome-icon-theme-symbolic $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/init.d/SXXgnome-icon-theme-symbolic
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/init.d/SXXgnome-icon-theme-symbolic
 	$(MAKE) $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/control
-	install -m 755 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/postinst $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/postinst $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/prerm $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/prerm $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

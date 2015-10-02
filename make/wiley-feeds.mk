@@ -92,7 +92,7 @@ $(WILEY-FEEDS_BUILD_DIR)/.built: $(WILEY-FEEDS_BUILD_DIR)/.configured
 wiley-feeds: $(WILEY-FEEDS_BUILD_DIR)/.built
 
 $(WILEY-FEEDS_IPK_DIR)/CONTROL/control:
-	@install -d $(WILEY-FEEDS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(WILEY-FEEDS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: wiley-feeds" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -118,10 +118,10 @@ $(WILEY-FEEDS_IPK_DIR)/CONTROL/control:
 #
 $(WILEY-FEEDS_IPK): $(WILEY-FEEDS_BUILD_DIR)/.built
 	rm -rf $(WILEY-FEEDS_IPK_DIR) $(BUILD_DIR)/wiley-feeds_*_$(TARGET_ARCH).ipk
-	install -d $(WILEY-FEEDS_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(WILEY-FEEDS_IPK_DIR)/opt/etc
 	$(MAKE) $(WILEY-FEEDS_IPK_DIR)/CONTROL/control
-	install -m 644 $(WILEY-FEEDS_SOURCE_DIR)/postinst $(WILEY-FEEDS_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(WILEY-FEEDS_SOURCE_DIR)/prerm $(WILEY-FEEDS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(WILEY-FEEDS_SOURCE_DIR)/postinst $(WILEY-FEEDS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(WILEY-FEEDS_SOURCE_DIR)/prerm $(WILEY-FEEDS_IPK_DIR)/CONTROL/prerm
 	#echo $(WILEY-FEEDS_CONFFILES) | sed -e 's/ /\n/g' > $(WILEY-FEEDS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WILEY-FEEDS_IPK_DIR)
 

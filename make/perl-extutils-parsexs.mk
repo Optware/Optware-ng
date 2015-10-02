@@ -36,7 +36,7 @@ $(PERL-EXTUTILS-PARSEXS_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-EXTUTILS-PARSEX
 	$(MAKE) perl-extutils-cbuilder-stage
 	rm -rf $(BUILD_DIR)/$(PERL-EXTUTILS-PARSEXS_DIR) $(@D)
 	$(PERL-EXTUTILS-PARSEXS_UNZIP) $(DL_DIR)/$(PERL-EXTUTILS-PARSEXS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-EXTUTILS-PARSEXS_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-EXTUTILS-PARSEXS_DIR) -p1
+#	cat $(PERL-EXTUTILS-PARSEXS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-EXTUTILS-PARSEXS_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-EXTUTILS-PARSEXS_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -67,7 +67,7 @@ $(PERL-EXTUTILS-PARSEXS_BUILD_DIR)/.staged: $(PERL-EXTUTILS-PARSEXS_BUILD_DIR)/.
 perl-extutils-parsexs-stage: $(PERL-EXTUTILS-PARSEXS_BUILD_DIR)/.staged
 
 $(PERL-EXTUTILS-PARSEXS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-extutils-parsexs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -114,7 +114,7 @@ $(PY-REDIS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-REDIS_SOURCE) $(PY-REDIS_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-REDIS_DIR)
 	$(PY-REDIS_UNZIP) $(DL_DIR)/$(PY-REDIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-REDIS_PATCHES)"; then \
-	    cat $(PY-REDIS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-REDIS_DIR) -p1; \
+	    cat $(PY-REDIS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-REDIS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-REDIS_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -129,7 +129,7 @@ $(PY-REDIS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-REDIS_SOURCE) $(PY-REDIS_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-REDIS_DIR)
 	$(PY-REDIS_UNZIP) $(DL_DIR)/$(PY-REDIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-REDIS_PATCHES)"; then \
-	    cat $(PY-REDIS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-REDIS_DIR) -p1; \
+	    cat $(PY-REDIS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-REDIS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-REDIS_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -177,7 +177,7 @@ py-redis: $(PY-REDIS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-redis
 #
 $(PY26-REDIS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-redis" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,7 +191,7 @@ $(PY26-REDIS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-REDIS_CONFLICTS)" >>$@
 
 $(PY27-REDIS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-redis" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

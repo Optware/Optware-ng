@@ -82,7 +82,7 @@ $(TCL_BUILD_DIR)/.configured: $(DL_DIR)/$(TCL_SOURCE) $(TCL_PATCHES)
 #       $(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(TCL_DIR) $(TCL_BUILD_DIR)
 	$(TCL_UNZIP) $(DL_DIR)/$(TCL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(TCL_PATCHES) | patch -d $(BUILD_DIR)/$(TCL_DIR) -p1
+	cat $(TCL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TCL_DIR) -p1
 	mv $(BUILD_DIR)/$(TCL_DIR) $(TCL_BUILD_DIR)
 	(cd $(TCL_BUILD_DIR)/unix; \
 		autoconf configure.in > configure; \
@@ -107,7 +107,7 @@ tcl-unpack: $(TCL_BUILD_DIR)/.configured
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/tcl # #
 $(TCL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tcl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

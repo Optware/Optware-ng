@@ -132,7 +132,7 @@ else
 	)
 endif
 	if test -n "$(PY-SQLOBJECT_PATCHES)" ; then \
-	    cat $(PY-SQLOBJECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) -p0 ; \
+	    cat $(PY-SQLOBJECT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)/2.5
 	(cd $(PY-SQLOBJECT_BUILD_DIR); \
@@ -149,7 +149,7 @@ else
 	)
 endif
 	if test -n "$(PY-SQLOBJECT_PATCHES)" ; then \
-	    cat $(PY-SQLOBJECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) -p0 ; \
+	    cat $(PY-SQLOBJECT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)/2.6
 	(cd $(PY-SQLOBJECT_BUILD_DIR); \
@@ -193,7 +193,7 @@ py-sqlobject-stage: $(PY-SQLOBJECT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-sqlobject
 #
 $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-sqlobject" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -208,7 +208,7 @@ $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SQLOBJECT_CONFLICTS)" >>$@
 
 $(PY26-SQLOBJECT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-sqlobject" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

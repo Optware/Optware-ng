@@ -35,6 +35,6 @@
  
  install:
 -	install -m 755 moblock $(DESTDIR)/usr/bin
-+	install -m 755 moblock $(DESTDIR)/opt/bin
++	install -m 755 moblock $(DESTDIR)%OPTWARE_TARGET_PREFIX%/bin
  
  .PHONY: clean

@@ -31,7 +31,7 @@ slingbox-source: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
 $(SLINGBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
 	rm -rf $(BUILD_DIR)/$(SLINGBOX_DIR) $(BUILD_DIR)/slingbox
 	$(SLINGBOX_UNZIP) $(DL_DIR)/$(SLINGBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	patch -d $(BUILD_DIR)/$(SLINGBOX_DIR) -p1 < $(SLINGBOX_SOURCE_DIR)/slingbox.patch
+	$(PATCH) -d $(BUILD_DIR)/$(SLINGBOX_DIR) -p1 < $(SLINGBOX_SOURCE_DIR)/slingbox.patch
 	mv $(BUILD_DIR)/$(SLINGBOX_DIR) $(BUILD_DIR)/slingbox
 	cp $(SLINGBOX_CONFIG) $(SLINGBOX_BUILD_DIR)/.config
 #ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
@@ -51,7 +51,7 @@ $(SLINGBOX_BUILD_DIR)/busybox: $(SLINGBOX_BUILD_DIR)/.configured
 slingbox: $(SLINGBOX_BUILD_DIR)/busybox
 
 $(FIRMWARE_DIR)/slingbox: $(SLINGBOX_BUILD_DIR)/busybox
-	install -m 755 $(SLINGBOX_BUILD_DIR)/busybox $(FIRMWARE_DIR)/slingbox
+	$(INSTALL) -m 755 $(SLINGBOX_BUILD_DIR)/busybox $(FIRMWARE_DIR)/slingbox
 
 slingbox-install: $(FIRMWARE_DIR)/slingbox
 

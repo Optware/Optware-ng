@@ -96,7 +96,7 @@ $(9BASE_BUILD_DIR)/.configured: $(9BASE_HOST_BUILD_DIR)/.staged $(9BASE_PATCHES)
 	$(9BASE_UNZIP) $(DL_DIR)/$(9BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(9BASE_PATCHES)" ; \
 		then cat $(9BASE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(9BASE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(9BASE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(9BASE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(9BASE_DIR) $(@D) ; \
@@ -145,7 +145,7 @@ $(9BASE_BUILD_DIR)/.built: $(9BASE_BUILD_DIR)/.configured
 # necessary to create a seperate control file under sources/9base
 #
 $(9BASE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: 9base" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,7 +179,7 @@ $(9BASE_IPK): $(9BASE_BUILD_DIR)/.built
 		STRIP="true" \
 		;
 	$(STRIP_COMMAND) $(9BASE_IPK_DIR)/opt/lib/9base/bin/*
-	install -d $(9BASE_IPK_DIR)/opt/share
+	$(INSTALL) -d $(9BASE_IPK_DIR)/opt/share
 	mv $(9BASE_IPK_DIR)/opt/lib/9base/share/man $(9BASE_IPK_DIR)/opt/share/
 	rmdir $(9BASE_IPK_DIR)/opt/lib/9base/share
 	for d in man1; do \

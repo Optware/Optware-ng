@@ -110,7 +110,7 @@ $(SSAM_BUILD_DIR)/.configured: $(DL_DIR)/$(SSAM_SOURCE) $(SSAM_PATCHES) make/ssa
 	$(SSAM_UNZIP) $(DL_DIR)/$(SSAM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SSAM_PATCHES)" ; \
 		then cat $(SSAM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SSAM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SSAM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SSAM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SSAM_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ ssam: $(SSAM_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ssam
 #
 $(SSAM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ssam" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

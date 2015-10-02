@@ -117,7 +117,7 @@ $(CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIPS_SOURCE) $(DL_DIR)/$(CLIPS_SOUR
 	mv $(BUILD_DIR)/$(CLIPS_DIR) $(CLIPS_BUILD_DIR)
 	cd $(@D); unzip $(DL_DIR)/$(CLIPS_SOURCE2); cp makefile.gcc clipssrc/Makefile
 	if test -n "$(CLIPS_PATCHES)"; then \
-		cat $(CLIPS_PATCHES) | patch -bd $(@D) -p0; \
+		cat $(CLIPS_PATCHES) | $(PATCH) -bd $(@D) -p0; \
 	fi
 	sed -i -e '/soname/s/libclips.so/&.6/' $(@D)/clipssrc/Makefile
 	sed -i -e '/HELP_DEFAULT/s|clips.hlp|/opt/share/doc/clips/&|' $(@D)/clipssrc/setup.h
@@ -156,7 +156,7 @@ clips-stage: $(CLIPS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/clips
 #
 $(CLIPS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: clips" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -171,7 +171,7 @@ $(CLIPS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(CLIPS_CONFLICTS)" >>$@
 
 $(CLIPS-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: clips-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,13 +205,13 @@ $(CLIPS_IPK) $(CLIPS-DEV_IPK): $(CLIPS_BUILD_DIR)/.built
 	mv libclips.so libclips.so.$(CLIPS_VERSION) && \
 	ln -s libclips.so.$(CLIPS_VERSION) libclips.so.6 && \
 	ln -s libclips.so.6 libclips.so
-	install -d $(CLIPS_IPK_DIR)/opt/share/doc/clips
-	install $(CLIPS_BUILD_DIR)/clips.hlp $(CLIPS_IPK_DIR)/opt/share/doc/clips/
+	$(INSTALL) -d $(CLIPS_IPK_DIR)/opt/share/doc/clips
+	$(INSTALL) $(CLIPS_BUILD_DIR)/clips.hlp $(CLIPS_IPK_DIR)/opt/share/doc/clips/
 	$(MAKE) $(CLIPS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLIPS_IPK_DIR)
 	# header files
-	install -d $(CLIPS-DEV_IPK_DIR)/opt/include/clips
-	install $(CLIPS_BUILD_DIR)/clipssrc/*.h $(CLIPS-DEV_IPK_DIR)/opt/include/clips/
+	$(INSTALL) -d $(CLIPS-DEV_IPK_DIR)/opt/include/clips
+	$(INSTALL) $(CLIPS_BUILD_DIR)/clipssrc/*.h $(CLIPS-DEV_IPK_DIR)/opt/include/clips/
 	$(MAKE) $(CLIPS-DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLIPS-DEV_IPK_DIR)
 

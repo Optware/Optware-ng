@@ -107,7 +107,7 @@ $(TURCK_MMCACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(TURCK_MMCACHE_SOURCE) $(TURC
 	$(MAKE) php-stage
 	rm -rf $(BUILD_DIR)/$(TURCK_MMCACHE_DIR) $(TURCK_MMCACHE_BUILD_DIR)
 	$(TURCK_MMCACHE_UNZIP) $(DL_DIR)/$(TURCK_MMCACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(TURCK_MMCACHE_PATCHES) | patch -d $(BUILD_DIR)/$(TURCK_MMCACHE_DIR) -p1
+	#cat $(TURCK_MMCACHE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TURCK_MMCACHE_DIR) -p1
 	mv $(BUILD_DIR)/$(TURCK_MMCACHE_DIR) $(TURCK_MMCACHE_BUILD_DIR)
 	(cd $(TURCK_MMCACHE_BUILD_DIR); \
 		$(STAGING_DIR)/bin/phpize; \
@@ -153,7 +153,7 @@ turck-mmcache-stage: $(TURCK_MMCACHE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/turck-mmcache
 #
 $(TURCK_MMCACHE_IPK_DIR)/CONTROL/control:
-	@install -d $(TURCK_MMCACHE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TURCK_MMCACHE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: turck-mmcache" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,9 +181,9 @@ $(TURCK_MMCACHE_IPK_DIR)/CONTROL/control:
 $(TURCK_MMCACHE_IPK): $(TURCK_MMCACHE_BUILD_DIR)/.built
 	rm -rf $(TURCK_MMCACHE_IPK_DIR) $(BUILD_DIR)/turck-mmcache_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TURCK_MMCACHE_BUILD_DIR) INSTALL_ROOT=$(TURCK_MMCACHE_IPK_DIR) install
-	install -d $(TURCK_MMCACHE_IPK_DIR)/opt/tmp/mmcache
-	install -d $(TURCK_MMCACHE_IPK_DIR)/opt/etc/php.d
-	install -m 644 $(TURCK_MMCACHE_SOURCE_DIR)/turck-mmcache.ini $(TURCK_MMCACHE_IPK_DIR)/opt/etc\/php.d/turck-mmcache.ini
+	$(INSTALL) -d $(TURCK_MMCACHE_IPK_DIR)/opt/tmp/mmcache
+	$(INSTALL) -d $(TURCK_MMCACHE_IPK_DIR)/opt/etc/php.d
+	$(INSTALL) -m 644 $(TURCK_MMCACHE_SOURCE_DIR)/turck-mmcache.ini $(TURCK_MMCACHE_IPK_DIR)/opt/etc\/php.d/turck-mmcache.ini
 	$(MAKE) $(TURCK_MMCACHE_IPK_DIR)/CONTROL/control
 	echo $(TURCK_MMCACHE_CONFFILES) | sed -e 's/ /\n/g' > $(TURCK_MMCACHE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TURCK_MMCACHE_IPK_DIR)

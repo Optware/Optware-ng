@@ -68,7 +68,7 @@ XCHAT_IPK=$(BUILD_DIR)/xchat_$(XCHAT_VERSION)-$(XCHAT_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(XCHAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xchat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -115,7 +115,7 @@ $(XCHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(XCHAT_SOURCE) \
 	rm -rf $(BUILD_DIR)/$(XCHAT_DIR) $(XCHAT_BUILD_DIR)
 	$(XCHAT_UNZIP) $(DL_DIR)/$(XCHAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(XCHAT_DIR) $(XCHAT_BUILD_DIR)
-	#cat $(XCHAT_PATCHES) |patch -p0 -d$(XCHAT_BUILD_DIR)
+	#cat $(XCHAT_PATCHES) |$(PATCH) -p0 -d$(XCHAT_BUILD_DIR)
 	(cd $(XCHAT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_PREFIX)/bin:$$PATH" \

@@ -116,7 +116,7 @@ $(CPPUNIT_BUILD_DIR)/.configured: $(DL_DIR)/$(CPPUNIT_SOURCE) $(CPPUNIT_PATCHES)
 	$(CPPUNIT_UNZIP) $(DL_DIR)/$(CPPUNIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CPPUNIT_PATCHES)" ; \
 		then cat $(CPPUNIT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CPPUNIT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CPPUNIT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CPPUNIT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CPPUNIT_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ cppunit-stage: $(CPPUNIT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cppunit
 #
 $(CPPUNIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cppunit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,15 +199,15 @@ $(CPPUNIT_IPK): $(CPPUNIT_BUILD_DIR)/.built
 	rm -rf $(CPPUNIT_IPK_DIR) $(BUILD_DIR)/cppunit_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CPPUNIT_BUILD_DIR) DESTDIR=$(CPPUNIT_IPK_DIR) install-strip
 	rm -f $(CPPUNIT_IPK_DIR)/opt/lib/*.la
-#	install -d $(CPPUNIT_IPK_DIR)/opt/etc/
-#	install -m 644 $(CPPUNIT_SOURCE_DIR)/cppunit.conf $(CPPUNIT_IPK_DIR)/opt/etc/cppunit.conf
-#	install -d $(CPPUNIT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CPPUNIT_SOURCE_DIR)/rc.cppunit $(CPPUNIT_IPK_DIR)/opt/etc/init.d/SXXcppunit
+#	$(INSTALL) -d $(CPPUNIT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CPPUNIT_SOURCE_DIR)/cppunit.conf $(CPPUNIT_IPK_DIR)/opt/etc/cppunit.conf
+#	$(INSTALL) -d $(CPPUNIT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CPPUNIT_SOURCE_DIR)/rc.cppunit $(CPPUNIT_IPK_DIR)/opt/etc/init.d/SXXcppunit
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CPPUNIT_IPK_DIR)/opt/etc/init.d/SXXcppunit
 	$(MAKE) $(CPPUNIT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CPPUNIT_SOURCE_DIR)/postinst $(CPPUNIT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CPPUNIT_SOURCE_DIR)/postinst $(CPPUNIT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CPPUNIT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CPPUNIT_SOURCE_DIR)/prerm $(CPPUNIT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CPPUNIT_SOURCE_DIR)/prerm $(CPPUNIT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CPPUNIT_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

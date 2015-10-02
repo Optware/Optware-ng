@@ -70,7 +70,7 @@ LIBZIP_IPK=$(BUILD_DIR)/libzip_$(LIBZIP_VERSION)-$(LIBZIP_IPK_VERSION)_$(TARGET_
 # Automatically create a ipkg control file
 #
 $(LIBZIP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libzip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

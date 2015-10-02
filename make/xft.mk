@@ -62,7 +62,7 @@ XFT_IPK=$(BUILD_DIR)/xft_$(XFT_VERSION)-$(XFT_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XFT_IPK_DIR)/CONTROL/control:
-	@install -d $(XFT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XFT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xft" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -108,7 +108,7 @@ $(XFT_BUILD_DIR)/.configured: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xft-$(XFT_VERSION).tar.gz
 	if test -n "$(XFT_PATCHES)" ; \
 		then cat $(XFT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XFT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XFT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XFT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XFT_DIR) $(@D) ; \

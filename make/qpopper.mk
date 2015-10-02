@@ -99,7 +99,7 @@ $(QPOPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(QPOPPER_SOURCE) $(QPOPPER_PATCHES)
 	$(MAKE) openssl-stage 
 	rm -rf $(BUILD_DIR)/$(QPOPPER_DIR) $(@D)
 	$(QPOPPER_UNZIP) $(DL_DIR)/$(QPOPPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(QPOPPER_PATCHES) | patch -d $(BUILD_DIR)/$(QPOPPER_DIR) -p0
+	cat $(QPOPPER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(QPOPPER_DIR) -p0
 	mv $(BUILD_DIR)/$(QPOPPER_DIR) $(@D)
 	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/sys_errlist/&_qpopper/' {} \;
 	(cd $(@D); \
@@ -144,7 +144,7 @@ qpopper: $(QPOPPER_BUILD_DIR)/.built
 #qpopper-stage: $(QPOPPER_BUILD_DIR)/.staged
 
 $(QPOPPER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: qpopper" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -172,25 +172,25 @@ $(QPOPPER_IPK_DIR)/CONTROL/control:
 #
 $(QPOPPER_IPK): $(QPOPPER_BUILD_DIR)/.built
 	rm -rf $(QPOPPER_IPK_DIR) $(BUILD_DIR)/qpopper_*_${TARGET_ARCH}.ipk
-	install -d $(QPOPPER_IPK_DIR)/opt/man/man8
-	install -m 644 $(QPOPPER_BUILD_DIR)/man/popper.8 $(QPOPPER_IPK_DIR)/opt/man/man8
-	install -d $(QPOPPER_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(QPOPPER_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 644 $(QPOPPER_BUILD_DIR)/man/popper.8 $(QPOPPER_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(QPOPPER_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(QPOPPER_BUILD_DIR)/popper/popper -o $(QPOPPER_IPK_DIR)/opt/sbin/popper
-	install -d $(QPOPPER_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(QPOPPER_SOURCE_DIR)/rc.qpopper $(QPOPPER_IPK_DIR)/opt/etc/init.d/S70qpopper
+	$(INSTALL) -d $(QPOPPER_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(QPOPPER_SOURCE_DIR)/rc.qpopper $(QPOPPER_IPK_DIR)/opt/etc/init.d/S70qpopper
 	( cd $(QPOPPER_IPK_DIR)/opt/etc/init.d ; ln -s S70qpopper K30qpopper)
-	install -d $(QPOPPER_IPK_DIR)/opt/doc/qpopper
-	install -m 644 $(QPOPPER_BUILD_DIR)/README  $(QPOPPER_IPK_DIR)/opt/doc/qpopper
-	install -m 644 $(QPOPPER_BUILD_DIR)/License.txt  $(QPOPPER_IPK_DIR)/opt/doc/qpopper
-	install -m 644 $(QPOPPER_BUILD_DIR)/GUIDE.pdf  $(QPOPPER_IPK_DIR)/opt/doc/qpopper
+	$(INSTALL) -d $(QPOPPER_IPK_DIR)/opt/doc/qpopper
+	$(INSTALL) -m 644 $(QPOPPER_BUILD_DIR)/README  $(QPOPPER_IPK_DIR)/opt/doc/qpopper
+	$(INSTALL) -m 644 $(QPOPPER_BUILD_DIR)/License.txt  $(QPOPPER_IPK_DIR)/opt/doc/qpopper
+	$(INSTALL) -m 644 $(QPOPPER_BUILD_DIR)/GUIDE.pdf  $(QPOPPER_IPK_DIR)/opt/doc/qpopper
 #	$(MAKE) -C $(QPOPPER_BUILD_DIR) prefix=$(QPOPPER_IPK_DIR)/opt install
-#	install -d $(QPOPPER_IPK_DIR)/opt/etc/
-#	install -m 644 $(QPOPPER_SOURCE_DIR)/qpopper.conf $(QPOPPER_IPK_DIR)/opt/etc/qpopper.conf
-#	install -d $(QPOPPER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(QPOPPER_SOURCE_DIR)/rc.qpopper $(QPOPPER_IPK_DIR)/opt/etc/init.d/SXXqpopper
+#	$(INSTALL) -d $(QPOPPER_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(QPOPPER_SOURCE_DIR)/qpopper.conf $(QPOPPER_IPK_DIR)/opt/etc/qpopper.conf
+#	$(INSTALL) -d $(QPOPPER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(QPOPPER_SOURCE_DIR)/rc.qpopper $(QPOPPER_IPK_DIR)/opt/etc/init.d/SXXqpopper
 	$(MAKE) $(QPOPPER_IPK_DIR)/CONTROL/control
-	install -m 755 $(QPOPPER_SOURCE_DIR)/postinst $(QPOPPER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(QPOPPER_SOURCE_DIR)/prerm $(QPOPPER_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(QPOPPER_SOURCE_DIR)/postinst $(QPOPPER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(QPOPPER_SOURCE_DIR)/prerm $(QPOPPER_IPK_DIR)/CONTROL/prerm
 #	echo $(QPOPPER_CONFFILES) | sed -e 's/ /\n/g' > $(QPOPPER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QPOPPER_IPK_DIR)
 

@@ -109,7 +109,7 @@ $(HNB_BUILD_DIR)/.configured: $(DL_DIR)/$(HNB_SOURCE) $(HNB_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(HNB_DIR) $(HNB_BUILD_DIR)
 	$(HNB_UNZIP) $(DL_DIR)/$(HNB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(HNB_PATCHES) | patch -d $(BUILD_DIR)/$(HNB_DIR) -p1
+	cat $(HNB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(HNB_DIR) -p1
 	mv $(BUILD_DIR)/$(HNB_DIR) $(HNB_BUILD_DIR)
 #	(cd $(HNB_BUILD_DIR); \
 #		$(TARGET_CONFIGURE_OPTS) \
@@ -158,7 +158,7 @@ hnb-stage: $(HNB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/hnb
 #
 $(HNB_IPK_DIR)/CONTROL/control:
-	@install -d $(HNB_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(HNB_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: hnb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

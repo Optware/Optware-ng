@@ -35,7 +35,7 @@ $(PERL-IMA-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IMA-DBI_SOURCE) $(PERL-I
 	$(MAKE) perl-dbi-stage perl-class-data-inheritable-stage perl-dbix-contextualfetch-stage
 	rm -rf $(BUILD_DIR)/$(PERL-IMA-DBI_DIR) $(PERL-IMA-DBI_BUILD_DIR)
 	$(PERL-IMA-DBI_UNZIP) $(DL_DIR)/$(PERL-IMA-DBI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-IMA-DBI_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-IMA-DBI_DIR) -p1
+#	cat $(PERL-IMA-DBI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-IMA-DBI_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-IMA-DBI_DIR) $(PERL-IMA-DBI_BUILD_DIR)
 	(cd $(PERL-IMA-DBI_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-IMA-DBI_BUILD_DIR)/.staged: $(PERL-IMA-DBI_BUILD_DIR)/.built
 perl-ima-dbi-stage: $(PERL-IMA-DBI_BUILD_DIR)/.staged
 
 $(PERL-IMA-DBI_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-IMA-DBI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-IMA-DBI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-ima-dbi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

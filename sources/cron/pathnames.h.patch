@@ -5,7 +5,7 @@
  			 * are all relative to this directory.
  			 */
 -#define CRONDIR		"/var/cron"
-+#define CRONDIR		"/opt/var/cron"
++#define CRONDIR		"%OPTWARE_TARGET_PREFIX%/var/cron"
  #endif
  
  			/* SPOOLDIR is where the crontabs live.
@@ -34,14 +34,14 @@
 -#else
 -# define PIDDIR "/etc/"
 -#endif
-+#define PIDDIR "/opt/var/run/"
++#define PIDDIR "%OPTWARE_TARGET_PREFIX%/var/run/"
  #define PIDFILE		"cron.pid"
  #define _PATH_CRON_PID	PIDDIR PIDFILE
  
  			/* 4.3BSD-style crontab */
 -#define SYSCRONTAB	"/etc/crontab"
-+#define SYSCRONTAB	"/opt/etc/crontab"
-+#define CROND_DIR	"/opt/etc/cron.d"
++#define SYSCRONTAB	"%OPTWARE_TARGET_PREFIX%/etc/crontab"
++#define CROND_DIR	"%OPTWARE_TARGET_PREFIX%/etc/cron.d"
  
  			/* what editor to use if no EDITOR or VISUAL
  			 * environment variable specified.

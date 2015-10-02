@@ -113,7 +113,7 @@ $(SPANDSP_BUILD_DIR)/.configured: $(DL_DIR)/$(SPANDSP_SOURCE) $(SPANDSP_PATCHES)
 	$(SPANDSP_UNZIP) $(DL_DIR)/$(SPANDSP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPANDSP_PATCHES)" ; \
 		then cat $(SPANDSP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SPANDSP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SPANDSP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SPANDSP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SPANDSP_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ spandsp-stage: $(SPANDSP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/spandsp
 #
 $(SPANDSP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: spandsp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -67,7 +67,7 @@ ifneq (, $(filter libiconv, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(RSYNC_DIR) $(@D)
 	$(RSYNC_UNZIP) $(DL_DIR)/$(RSYNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(RSYNC_PATCHES) | patch -d $(BUILD_DIR)/$(RSYNC_DIR) -p1
+	cat $(RSYNC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(RSYNC_DIR) -p1
 	mv $(BUILD_DIR)/$(RSYNC_DIR) $(@D)
 	sed -i -e '/-o rounding/s|$$(CFLAGS) |&$$(CPPFLAGS) |' $(@D)/Makefile.in
 	(cd $(@D); \
@@ -104,7 +104,7 @@ $(RSYNC_BUILD_DIR)/.staged: $(RSYNC_BUILD_DIR)/.built
 rsync-stage: $(RSYNC_BUILD_DIR)/.staged
 
 $(RSYNC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rsync" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -122,17 +122,17 @@ $(RSYNC_IPK): $(RSYNC_BUILD_DIR)/.built
 	$(MAKE) -C $(RSYNC_BUILD_DIR) DESTDIR=$(RSYNC_IPK_DIR) install
 	$(STRIP_COMMAND) $(RSYNC_IPK_DIR)/opt/bin/rsync
 	find $(RSYNC_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-	install -d $(RSYNC_IPK_DIR)/opt/etc
-	install -m 644 $(RSYNC_SOURCE_DIR)/rsyncd.conf $(RSYNC_IPK_DIR)/opt/etc/rsyncd.conf
-	install -d $(RSYNC_IPK_DIR)/opt/etc/default
-	install -m 644 $(RSYNC_SOURCE_DIR)/rsync.default $(RSYNC_IPK_DIR)/opt/etc/default/rsync
+	$(INSTALL) -d $(RSYNC_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(RSYNC_SOURCE_DIR)/rsyncd.conf $(RSYNC_IPK_DIR)/opt/etc/rsyncd.conf
+	$(INSTALL) -d $(RSYNC_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 644 $(RSYNC_SOURCE_DIR)/rsync.default $(RSYNC_IPK_DIR)/opt/etc/default/rsync
 	touch $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
 	chmod 600 $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
-	install -d $(RSYNC_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(RSYNC_SOURCE_DIR)/rc.rsyncd $(RSYNC_IPK_DIR)/opt/etc/init.d/S57rsyncd
+	$(INSTALL) -d $(RSYNC_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(RSYNC_SOURCE_DIR)/rc.rsyncd $(RSYNC_IPK_DIR)/opt/etc/init.d/S57rsyncd
 	$(MAKE) $(RSYNC_IPK_DIR)/CONTROL/control
-	install -m 755 $(RSYNC_SOURCE_DIR)/postinst $(RSYNC_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(RSYNC_SOURCE_DIR)/prerm $(RSYNC_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(RSYNC_SOURCE_DIR)/postinst $(RSYNC_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(RSYNC_SOURCE_DIR)/prerm $(RSYNC_IPK_DIR)/CONTROL/prerm
 	echo $(RSYNC_CONFFILES) | sed -e 's/ /\n/g' > $(RSYNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RSYNC_IPK_DIR)
 

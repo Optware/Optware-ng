@@ -110,7 +110,7 @@ $(SER2NET_BUILD_DIR)/.configured: $(DL_DIR)/$(SER2NET_SOURCE) $(SER2NET_PATCHES)
 	$(SER2NET_UNZIP) $(DL_DIR)/$(SER2NET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SER2NET_PATCHES)" ; \
 		then cat $(SER2NET_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SER2NET_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SER2NET_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SER2NET_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SER2NET_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ ser2net-stage: $(SER2NET_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ser2net
 #
 $(SER2NET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ser2net" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,15 @@ $(SER2NET_IPK): $(SER2NET_BUILD_DIR)/.built
 	rm -rf $(SER2NET_IPK_DIR) $(BUILD_DIR)/ser2net_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SER2NET_BUILD_DIR) DESTDIR=$(SER2NET_IPK_DIR) install-am
 	$(STRIP_COMMAND) $(SER2NET_IPK_DIR)/opt/sbin/ser2net
-	install -d $(SER2NET_IPK_DIR)/opt/etc/
-	install -m 644 $(SER2NET_BUILD_DIR)/ser2net.conf $(SER2NET_IPK_DIR)/opt/etc/ser2net.conf
-	install -d $(SER2NET_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SER2NET_BUILD_DIR)/ser2net.init $(SER2NET_IPK_DIR)/opt/etc/init.d/S95ser2net
+	$(INSTALL) -d $(SER2NET_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(SER2NET_BUILD_DIR)/ser2net.conf $(SER2NET_IPK_DIR)/opt/etc/ser2net.conf
+	$(INSTALL) -d $(SER2NET_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SER2NET_BUILD_DIR)/ser2net.init $(SER2NET_IPK_DIR)/opt/etc/init.d/S95ser2net
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SER2NET_IPK_DIR)/opt/etc/init.d/SXXser2net
 	$(MAKE) $(SER2NET_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SER2NET_SOURCE_DIR)/postinst $(SER2NET_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SER2NET_SOURCE_DIR)/postinst $(SER2NET_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SER2NET_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SER2NET_SOURCE_DIR)/prerm $(SER2NET_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SER2NET_SOURCE_DIR)/prerm $(SER2NET_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SER2NET_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -132,7 +132,7 @@ $(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL
 	$(UTIL_LINUX_NG_UNZIP) $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UTIL_LINUX_NG_PATCHES)" ; \
 		then cat $(UTIL_LINUX_NG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UTIL_LINUX_NG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UTIL_LINUX_NG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_NG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_NG_DIR) $(@D) ; \
@@ -186,7 +186,7 @@ util-linux-ng-stage: $(UTIL_LINUX_NG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/util-linux-ng
 #
 $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: util-linux-ng" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,7 +201,7 @@ $(UTIL_LINUX_NG_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(UTIL_LINUX_NG_CONFLICTS)" >>$@
 
 $(GETOPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: getopt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

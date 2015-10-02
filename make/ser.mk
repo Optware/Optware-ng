@@ -110,7 +110,7 @@ $(SER_BUILD_DIR)/.configured: $(DL_DIR)/$(SER_SOURCE) $(SER_PATCHES)
 	$(MAKE) flex-stage
 	rm -rf $(BUILD_DIR)/$(SER_DIR) $(SER_BUILD_DIR)
 	$(SER_UNZIP) $(DL_DIR)/$(SER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SER_PATCHES) | patch -d $(BUILD_DIR)/$(SER_DIR) -p1
+	cat $(SER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SER_DIR) -p1
 	mv $(BUILD_DIR)/$(SER_DIR) $(SER_BUILD_DIR)
 #	(cd $(SER_BUILD_DIR); \
 #		$(TARGET_CONFIGURE_OPTS) \
@@ -164,7 +164,7 @@ ser-stage: $(SER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ser
 #
 $(SER_IPK_DIR)/CONTROL/control:
-	@install -d $(SER_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(SER_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,13 +199,13 @@ $(SER_IPK): $(SER_BUILD_DIR)/.built
 		$(SER_MAKEFLAGS) install
 	$(STRIP_COMMAND) $(SER_IPK_DIR)/opt/sbin/ser $(SER_IPK_DIR)/opt/sbin/gen_ha1
 	$(STRIP_COMMAND) $(SER_IPK_DIR)/opt/lib/ser/modules/*.so
-#	install -d $(SER_IPK_DIR)/opt/etc/
-#	install -m 644 $(SER_SOURCE_DIR)/ser.conf $(SER_IPK_DIR)/opt/etc/ser.conf
-#	install -d $(SER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SER_SOURCE_DIR)/rc.ser $(SER_IPK_DIR)/opt/etc/init.d/SXXser
+#	$(INSTALL) -d $(SER_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SER_SOURCE_DIR)/ser.conf $(SER_IPK_DIR)/opt/etc/ser.conf
+#	$(INSTALL) -d $(SER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SER_SOURCE_DIR)/rc.ser $(SER_IPK_DIR)/opt/etc/init.d/SXXser
 	$(MAKE) $(SER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SER_SOURCE_DIR)/postinst $(SER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SER_SOURCE_DIR)/prerm $(SER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SER_SOURCE_DIR)/postinst $(SER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SER_SOURCE_DIR)/prerm $(SER_IPK_DIR)/CONTROL/prerm
 #	echo $(SER_CONFFILES) | sed -e 's/ /\n/g' > $(SER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SER_IPK_DIR)
 

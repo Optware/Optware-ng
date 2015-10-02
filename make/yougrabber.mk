@@ -110,7 +110,7 @@ $(YOUGRABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(YOUGRABBER_SOURCE) $(YOUGRABBER
 	$(YOUGRABBER_UNZIP) $(DL_DIR)/$(YOUGRABBER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(YOUGRABBER_PATCHES)" ; \
 		then cat $(YOUGRABBER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(YOUGRABBER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(YOUGRABBER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(YOUGRABBER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(YOUGRABBER_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ yougrabber-stage: $(YOUGRABBER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/yougrabber
 #
 $(YOUGRABBER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: yougrabber" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,12 +194,12 @@ $(YOUGRABBER_IPK_DIR)/CONTROL/control:
 #
 $(YOUGRABBER_IPK): $(YOUGRABBER_BUILD_DIR)/.built
 	rm -rf $(YOUGRABBER_IPK_DIR) $(BUILD_DIR)/yougrabber_*_$(TARGET_ARCH).ipk
-	install -d $(YOUGRABBER_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(YOUGRABBER_IPK_DIR)/opt/bin
 	$(MAKE) -C $(YOUGRABBER_BUILD_DIR)/src install \
 		PREFIX=$(YOUGRABBER_IPK_DIR)/opt \
 		COPY=install
 	$(STRIP_COMMAND) $(YOUGRABBER_IPK_DIR)/opt/bin/yg
-	install $(YOUGRABBER_BUILD_DIR)/CHANGELOG \
+	$(INSTALL) $(YOUGRABBER_BUILD_DIR)/CHANGELOG \
 		$(YOUGRABBER_BUILD_DIR)/CONTRIBUTORS \
 		$(YOUGRABBER_BUILD_DIR)/INSTALL \
 		$(YOUGRABBER_BUILD_DIR)/LICENSE \

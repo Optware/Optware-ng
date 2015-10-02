@@ -116,7 +116,7 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(GNUTLS_DIR) $(GNUTLS_BUILD_DIR)
 	$(GNUTLS_UNZIP) $(DL_DIR)/$(GNUTLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNUTLS_PATCHES)"; \
-		then cat $(GNUTLS_PATCHES) | patch -d $(BUILD_DIR)/$(GNUTLS_DIR) -p1; \
+		then cat $(GNUTLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GNUTLS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(GNUTLS_DIR) $(@D)
 	(cd $(@D); \
@@ -175,7 +175,7 @@ gnutls-stage: $(GNUTLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnutls
 #
 $(GNUTLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnutls" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,7 +190,7 @@ $(GNUTLS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(GNUTLS_CONFLICTS)" >>$@
 
 $(GNUTLS-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnutls-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -220,22 +220,22 @@ $(GNUTLS_IPK) $(GNUTLS-DEV_IPK): $(GNUTLS_BUILD_DIR)/.built
 	rm -rf $(GNUTLS_IPK_DIR) $(BUILD_DIR)/gnutls_*_$(TARGET_ARCH).ipk
 	rm -rf $(GNUTLS-DEV_IPK_DIR) $(BUILD_DIR)/gnutls-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(GNUTLS_IPK_DIR) program_transform_name="" install-strip
-	install -d $(GNUTLS-DEV_IPK_DIR)/opt
+	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)/opt
 	mv $(GNUTLS_IPK_DIR)/opt/include $(GNUTLS-DEV_IPK_DIR)/opt/
-	install -d $(GNUTLS-DEV_IPK_DIR)/opt/share/man
+	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)/opt/share/man
 	mv $(GNUTLS_IPK_DIR)/opt/share/man/man3 $(GNUTLS-DEV_IPK_DIR)/opt/share/man/
 	rm -rf $(GNUTLS_IPK_DIR)/opt/share/info/dir
 	mv $(GNUTLS_IPK_DIR)/opt/share/info $(GNUTLS-DEV_IPK_DIR)/opt/share/
 #	mv $(GNUTLS_IPK_DIR)/opt/share/aclocal $(GNUTLS-DEV_IPK_DIR)/opt/share/
-	install -d $(GNUTLS-DEV_IPK_DIR)/opt/bin $(GNUTLS-DEV_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)/opt/bin $(GNUTLS-DEV_IPK_DIR)/opt/lib
 #	mv $(GNUTLS_IPK_DIR)/opt/bin/libgnutls*-config $(GNUTLS-DEV_IPK_DIR)/opt/bin/
 	mv $(GNUTLS_IPK_DIR)/opt/lib/pkgconfig $(GNUTLS-DEV_IPK_DIR)/opt/lib/
-#	install -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)/opt/etc/gnutls.conf
-#	install -d $(GNUTLS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GNUTLS_SOURCE_DIR)/rc.gnutls $(GNUTLS_IPK_DIR)/opt/etc/init.d/SXXgnutls
+#	$(INSTALL) -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)/opt/etc/gnutls.conf
+#	$(INSTALL) -d $(GNUTLS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GNUTLS_SOURCE_DIR)/rc.gnutls $(GNUTLS_IPK_DIR)/opt/etc/init.d/SXXgnutls
 	$(MAKE) $(GNUTLS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GNUTLS_SOURCE_DIR)/postinst $(GNUTLS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GNUTLS_SOURCE_DIR)/prerm $(GNUTLS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GNUTLS_SOURCE_DIR)/postinst $(GNUTLS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GNUTLS_SOURCE_DIR)/prerm $(GNUTLS_IPK_DIR)/CONTROL/prerm
 	echo $(GNUTLS_CONFFILES) | sed -e 's/ /\n/g' > $(GNUTLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNUTLS_IPK_DIR)
 	$(MAKE) $(GNUTLS-DEV_IPK_DIR)/CONTROL/control

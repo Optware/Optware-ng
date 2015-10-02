@@ -110,7 +110,7 @@ $(PROXYTUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(PROXYTUNNEL_SOURCE) $(PROXYTUN
 	$(PROXYTUNNEL_UNZIP) $(DL_DIR)/$(PROXYTUNNEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PROXYTUNNEL_PATCHES)" ; \
 		then cat $(PROXYTUNNEL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PROXYTUNNEL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PROXYTUNNEL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PROXYTUNNEL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PROXYTUNNEL_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ proxytunnel-stage: $(PROXYTUNNEL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/proxytunnel
 #
 $(PROXYTUNNEL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: proxytunnel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,8 +197,8 @@ $(PROXYTUNNEL_IPK): $(PROXYTUNNEL_BUILD_DIR)/.built
 	rm -rf $(PROXYTUNNEL_IPK_DIR) $(BUILD_DIR)/proxytunnel_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PROXYTUNNEL_BUILD_DIR) DESTDIR=$(PROXYTUNNEL_IPK_DIR) PREFIX=/opt install
 	$(STRIP_COMMAND) $(PROXYTUNNEL_IPK_DIR)/opt/bin/proxytunnel
-	install -d $(PROXYTUNNEL_IPK_DIR)/opt/share/doc/proxytunnel
-	install $(PROXYTUNNEL_BUILD_DIR)/[CIKLRT]* $(PROXYTUNNEL_IPK_DIR)/opt/share/doc/proxytunnel
+	$(INSTALL) -d $(PROXYTUNNEL_IPK_DIR)/opt/share/doc/proxytunnel
+	$(INSTALL) $(PROXYTUNNEL_BUILD_DIR)/[CIKLRT]* $(PROXYTUNNEL_IPK_DIR)/opt/share/doc/proxytunnel
 	$(MAKE) $(PROXYTUNNEL_IPK_DIR)/CONTROL/control
 	echo $(PROXYTUNNEL_CONFFILES) | sed -e 's/ /\n/g' > $(PROXYTUNNEL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROXYTUNNEL_IPK_DIR)

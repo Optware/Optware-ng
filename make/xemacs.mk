@@ -95,7 +95,7 @@ $(XEMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(XEMACS_SOURCE) $(XEMACS_PATCHES)
 	rm -rf $(BUILD_DIR)/$(XEMACS_DIR) $(XEMACS_BUILD_DIR)
 	$(XEMACS_UNZIP) $(DL_DIR)/$(XEMACS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(XEMACS_DIR) $(XEMACS_BUILD_DIR)
-	cat $(XEMACS_PATCHES) | patch -d $(XEMACS_BUILD_DIR) -p1
+	cat $(XEMACS_PATCHES) | $(PATCH) -d $(XEMACS_BUILD_DIR) -p1
 	(cd $(XEMACS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XEMACS_CPPFLAGS)" \
@@ -126,7 +126,7 @@ xemacs: $(XEMACS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/xemacs
 # 
 $(XEMACS_IPK_DIR)/CONTROL/control:
-	@install -d $(XEMACS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XEMACS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xemacs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -154,7 +154,7 @@ $(XEMACS_IPK_DIR)/CONTROL/control:
 #
 $(XEMACS_IPK): $(XEMACS_BUILD_DIR)/.built
 	rm -rf $(XEMACS_IPK_DIR) $(BUILD_DIR)/xemacs_*_$(TARGET_ARCH).ipk
-	install -d $(XEMACS_IPK_DIR)/opt
+	$(INSTALL) -d $(XEMACS_IPK_DIR)/opt
 	$(MAKE) -C $(XEMACS_BUILD_DIR) prefix=$(XEMACS_IPK_DIR)/opt install
 	rm -f $(XEMACS_IPK_DIR)/opt/bin/xemacs
 	ln -s /opt/bin/xemacs-$(XEMACS_VERSION) $(XEMACS_IPK_DIR)/opt/bin/xemacs

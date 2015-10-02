@@ -116,7 +116,7 @@ $(LIBGLADE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGLADE_SOURCE) $(LIBGLADE_PATCH
 	$(LIBGLADE_UNZIP) $(DL_DIR)/$(LIBGLADE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGLADE_PATCHES)" ; \
 		then cat $(LIBGLADE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBGLADE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBGLADE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBGLADE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBGLADE_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ libglade-stage: $(LIBGLADE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libglade
 #
 $(LIBGLADE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libglade" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,15 +200,15 @@ $(LIBGLADE_IPK): $(LIBGLADE_BUILD_DIR)/.built
 	rm -rf $(LIBGLADE_IPK_DIR) $(BUILD_DIR)/libglade_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGLADE_BUILD_DIR) DESTDIR=$(LIBGLADE_IPK_DIR) install-strip
 	rm -rf $(LIBGLADE_IPK_DIR)/opt/bin $(LIBGLADE_IPK_DIR)/opt/share/gtk-doc $(LIBGLADE_IPK_DIR)/opt/lib/libglade-2.0.la
-#	install -d $(LIBGLADE_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBGLADE_SOURCE_DIR)/libglade.conf $(LIBGLADE_IPK_DIR)/opt/etc/libglade.conf
-#	install -d $(LIBGLADE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBGLADE_SOURCE_DIR)/rc.libglade $(LIBGLADE_IPK_DIR)/opt/etc/init.d/SXXlibglade
+#	$(INSTALL) -d $(LIBGLADE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBGLADE_SOURCE_DIR)/libglade.conf $(LIBGLADE_IPK_DIR)/opt/etc/libglade.conf
+#	$(INSTALL) -d $(LIBGLADE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBGLADE_SOURCE_DIR)/rc.libglade $(LIBGLADE_IPK_DIR)/opt/etc/init.d/SXXlibglade
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBGLADE_IPK_DIR)/opt/etc/init.d/SXXlibglade
 	$(MAKE) $(LIBGLADE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBGLADE_SOURCE_DIR)/postinst $(LIBGLADE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBGLADE_SOURCE_DIR)/postinst $(LIBGLADE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBGLADE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBGLADE_SOURCE_DIR)/prerm $(LIBGLADE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBGLADE_SOURCE_DIR)/prerm $(LIBGLADE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBGLADE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

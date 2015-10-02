@@ -110,7 +110,7 @@ $(LIBNET10_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNET10_SOURCE) $(LIBNET10_PATCH
 	$(LIBNET10_UNZIP) $(DL_DIR)/$(LIBNET10_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNET10_PATCHES)" ; \
 		then cat $(LIBNET10_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBNET10_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNET10_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNET10_DIR)" != "$(LIBNET10_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBNET10_DIR) $(LIBNET10_BUILD_DIR) ; \
@@ -165,7 +165,7 @@ libnet10-stage: $(LIBNET10_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libnet10
 #
 $(LIBNET10_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libnet10" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(LIBNET10_IPK_DIR)/CONTROL/control:
 $(LIBNET10_IPK): $(LIBNET10_BUILD_DIR)/.built
 	rm -rf $(LIBNET10_IPK_DIR) $(BUILD_DIR)/libnet10_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNET10_BUILD_DIR) DESTDIR=$(LIBNET10_IPK_DIR) install-strip
-#	install -d $(LIBNET10_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBNET10_SOURCE_DIR)/libnet10.conf $(LIBNET10_IPK_DIR)/opt/etc/libnet10.conf
-#	install -d $(LIBNET10_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBNET10_SOURCE_DIR)/rc.libnet10 $(LIBNET10_IPK_DIR)/opt/etc/init.d/SXXlibnet10
+#	$(INSTALL) -d $(LIBNET10_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBNET10_SOURCE_DIR)/libnet10.conf $(LIBNET10_IPK_DIR)/opt/etc/libnet10.conf
+#	$(INSTALL) -d $(LIBNET10_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNET10_SOURCE_DIR)/rc.libnet10 $(LIBNET10_IPK_DIR)/opt/etc/init.d/SXXlibnet10
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNET10_IPK_DIR)/opt/etc/init.d/SXXlibnet10
 	$(MAKE) $(LIBNET10_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBNET10_SOURCE_DIR)/postinst $(LIBNET10_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBNET10_SOURCE_DIR)/postinst $(LIBNET10_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNET10_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBNET10_SOURCE_DIR)/prerm $(LIBNET10_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBNET10_SOURCE_DIR)/prerm $(LIBNET10_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNET10_IPK_DIR)/CONTROL/prerm
 	echo $(LIBNET10_CONFFILES) | sed -e 's/ /\n/g' > $(LIBNET10_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNET10_IPK_DIR)

@@ -5,6 +5,6 @@ service swat
         socket_type     = stream
         wait            = no
         user            = root
-        server          = /opt/sbin/swat
+        server          = %OPTWARE_TARGET_PREFIX%/sbin/swat
         log_on_failure  += USERID
 }

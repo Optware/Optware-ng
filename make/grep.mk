@@ -77,7 +77,7 @@ grep: $(GREP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/grep
 #
 $(GREP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: grep" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

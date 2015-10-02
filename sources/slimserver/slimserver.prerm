@@ -1,6 +1,6 @@
 #!/bin/sh 
-. /opt/etc/slimserver.conf
-cp /opt/etc/slimserver.conf /opt/etc/slimserverrm.conf
+. %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
+cp %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf %OPTWARE_TARGET_PREFIX%/etc/slimserverrm.conf
 if test  -r ${SLIMSERVER_PIDFILE} ; then
  SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
  if test  -d /proc/${SLIMSERVER_PID} ; then

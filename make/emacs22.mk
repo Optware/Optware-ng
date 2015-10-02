@@ -151,7 +151,7 @@ endif
 	$(EMACS22_UNZIP) $(DL_DIR)/$(EMACS22_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EMACS22_PATCHES)" ; \
 		then cat $(EMACS22_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(EMACS22_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(EMACS22_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(EMACS22_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(EMACS22_DIR) $(EMACS22_BUILD_DIR) ; \
@@ -210,7 +210,7 @@ emacs22-stage: $(EMACS22_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/emacs22
 #
 $(EMACS22_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: emacs22" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -257,9 +257,9 @@ $(EMACS22_IPK): $(EMACS22_BUILD_DIR)/.built
 	rm -rf $(EMACS22_IPK_DIR)/opt/share/emacs/$(EMACS22_VERSION)/etc/tree-widget
 	rm -rf $(EMACS22_IPK_DIR)/opt/share/emacs/$(EMACS22_VERSION)/lisp/obsolete
 	$(MAKE) $(EMACS22_IPK_DIR)/CONTROL/control
-	install -m 644 $(EMACS22_SOURCE_DIR)/postinst $(EMACS22_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 644 $(EMACS22_SOURCE_DIR)/postinst $(EMACS22_IPK_DIR)/CONTROL/
 	sed -i -e 's/$${EMACS_VERSION}/$(EMACS22_VERSION)/g' $(EMACS22_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(EMACS22_SOURCE_DIR)/prerm $(EMACS22_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 644 $(EMACS22_SOURCE_DIR)/prerm $(EMACS22_IPK_DIR)/CONTROL/
 	sed -i -e 's/$${EMACS_VERSION}/$(EMACS22_VERSION)/g' $(EMACS22_IPK_DIR)/CONTROL/prerm
 	echo $(EMACS22_CONFFILES) | sed -e 's/ /\n/g' > $(EMACS22_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EMACS22_IPK_DIR)

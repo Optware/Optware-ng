@@ -63,7 +63,7 @@ XCB-PROTO_IPK=$(BUILD_DIR)/xcb-proto_$(XCB-PROTO_VERSION)-$(XCB-PROTO_IPK_VERSIO
 # Automatically create a ipkg control file
 #
 $(XCB-PROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(XCB-PROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XCB-PROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xcb-proto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(XCB-PROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(XCB-PROTO_SOURCE) $(XCB-PROTO_PA
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XCB-PROTO_SOURCE)
 	if test -n "$(XCB-PROTO_PATCHES)" ; \
 		then cat $(XCB-PROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XCB-PROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XCB-PROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XCB-PROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XCB-PROTO_DIR) $(@D) ; \

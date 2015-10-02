@@ -120,7 +120,7 @@ $(PY-NEVOW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NEVOW_SOURCE) $(PY-NEVOW_PATCH
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR)
 	$(PY-NEVOW_UNZIP) $(DL_DIR)/$(PY-NEVOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-NEVOW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
+#	cat $(PY-NEVOW_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-NEVOW_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -133,7 +133,7 @@ $(PY-NEVOW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NEVOW_SOURCE) $(PY-NEVOW_PATCH
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR)
 	$(PY-NEVOW_UNZIP) $(DL_DIR)/$(PY-NEVOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-NEVOW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
+#	cat $(PY-NEVOW_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-NEVOW_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -146,7 +146,7 @@ $(PY-NEVOW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NEVOW_SOURCE) $(PY-NEVOW_PATCH
 	# 2.7
 	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR)
 	$(PY-NEVOW_UNZIP) $(DL_DIR)/$(PY-NEVOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-NEVOW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
+#	cat $(PY-NEVOW_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-NEVOW_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -196,7 +196,7 @@ py-nevow-stage: $(PY-NEVOW_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-nevow
 #
 $(PY-NEVOW-COMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-nevow-common" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -210,7 +210,7 @@ $(PY-NEVOW-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-NEVOW_CONFLICTS)" >>$@
 
 $(PY25-NEVOW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-nevow" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,7 +224,7 @@ $(PY25-NEVOW_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-NEVOW_CONFLICTS)" >>$@
 
 $(PY26-NEVOW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-nevow" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -238,7 +238,7 @@ $(PY26-NEVOW_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-NEVOW_CONFLICTS)" >>$@
 
 $(PY27-NEVOW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-nevow" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -294,7 +294,7 @@ $(PY27-NEVOW_IPK) $(PY-NEVOW-COMMON_IPK): $(PY-NEVOW_BUILD_DIR)/.built
 		--root=$(PY27-NEVOW_IPK_DIR) --prefix=/opt)
 	for f in $(PY27-NEVOW_IPK_DIR)/opt/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.7|'`; done
-	install -d $(PY-NEVOW-COMMON_IPK_DIR)/opt/share
+	$(INSTALL) -d $(PY-NEVOW-COMMON_IPK_DIR)/opt/share
 	mv $(PY27-NEVOW_IPK_DIR)/opt/doc $(PY-NEVOW-COMMON_IPK_DIR)/opt/share
 	$(MAKE) $(PY27-NEVOW_IPK_DIR)/CONTROL/control
 	$(MAKE) $(PY-NEVOW-COMMON_IPK_DIR)/CONTROL/control

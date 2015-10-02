@@ -5,4 +5,4 @@
 # Stop myself if running
 PIDFILE=/var/run/atd.pid
 [ -f ${PIDFILE} ] && kill `cat ${PIDFILE}`
-/opt/sbin/atd
+%OPTWARE_TARGET_PREFIX%/sbin/atd

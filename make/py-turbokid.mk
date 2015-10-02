@@ -115,7 +115,7 @@ $(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBO
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
 	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
+#	cat $(PY-TURBOKID_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -124,7 +124,7 @@ $(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBO
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
 	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
+#	cat $(PY-TURBOKID_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
@@ -167,7 +167,7 @@ py-turbokid-stage: $(PY-TURBOKID_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-turbokid
 #
 $(PY25-TURBOKID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-turbokid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,7 +181,7 @@ $(PY25-TURBOKID_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-TURBOKID_CONFLICTS)" >>$@
 
 $(PY26-TURBOKID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-turbokid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

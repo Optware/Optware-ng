@@ -216,7 +216,7 @@ endif
 	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage e2fsprogs-stage libacl-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA35_DIR) $(@D)
 	$(SAMBA35_UNZIP) $(DL_DIR)/$(SAMBA35_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SAMBA35_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA35_DIR) -p1
+	cat $(SAMBA35_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SAMBA35_DIR) -p1
 	mv $(BUILD_DIR)/$(SAMBA35_DIR) $(@D)
 ifeq (3.0.14a, $(SAMBA35_VERSION))
 	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(@D)/source/aclocal.m4
@@ -302,7 +302,7 @@ samba35-stage: $(SAMBA35_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/samba
 #
 $(SAMBA35_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)/
+	@$(INSTALL) -d $(@D)/
 	@rm -f $@
 	@echo "Package: samba35" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -317,7 +317,7 @@ $(SAMBA35_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SAMBA35_CONFLICTS)" >>$@
 
 $(SAMBA35-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)/
+	@$(INSTALL) -d $(@D)/
 	@rm -f $@
 	@echo "Package: samba35-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -332,7 +332,7 @@ $(SAMBA35-DEV_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SAMBA35-DEV_CONFLICTS)" >>$@
 
 $(SAMBA35-SWAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)/
+	@$(INSTALL) -d $(@D)/
 	@rm -f $@
 	@echo "Package: samba35-swat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -369,25 +369,25 @@ $(SAMBA35_IPK) $(SAMBA35-DEV_IPK) $(SAMBA35-SWAT_IPK): $(SAMBA35_BUILD_DIR)/.bui
 	cd $(SAMBA35_BUILD_DIR)/source3/bin/; for f in lib*.so.[01]; \
 		do cp -a $$f $(SAMBA35_IPK_DIR)/opt/lib/$$f; done
 	$(STRIP_COMMAND) `find $(SAMBA35_IPK_DIR)/opt/lib -name '*.so'`
-	install -d $(SAMBA35_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SAMBA35_SOURCE_DIR)/rc.samba $(SAMBA35_IPK_DIR)/opt/etc/init.d/S08samba
+	$(INSTALL) -d $(SAMBA35_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA35_SOURCE_DIR)/rc.samba $(SAMBA35_IPK_DIR)/opt/etc/init.d/S08samba
 	$(MAKE) $(SAMBA35_IPK_DIR)/CONTROL/control
-	install -m 644 $(SAMBA35_SOURCE_DIR)/postinst $(SAMBA35_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA35_SOURCE_DIR)/preinst $(SAMBA35_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SAMBA35_SOURCE_DIR)/postinst $(SAMBA35_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SAMBA35_SOURCE_DIR)/preinst $(SAMBA35_IPK_DIR)/CONTROL/preinst
 ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g, $(OPTWARE_TARGET)))
-	install -m 644 $(SAMBA35_SOURCE_DIR)/postinst.$(OPTWARE_TARGET) $(SAMBA35_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA35_SOURCE_DIR)/preinst.$(OPTWARE_TARGET) $(SAMBA35_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SAMBA35_SOURCE_DIR)/postinst.$(OPTWARE_TARGET) $(SAMBA35_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SAMBA35_SOURCE_DIR)/preinst.$(OPTWARE_TARGET) $(SAMBA35_IPK_DIR)/CONTROL/preinst
 endif
 	echo $(SAMBA35_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA35_IPK_DIR)/CONTROL/conffiles
 	# samba3-dev
-	install -d $(SAMBA35-DEV_IPK_DIR)/opt
+	$(INSTALL) -d $(SAMBA35-DEV_IPK_DIR)/opt
 	mv $(SAMBA35_IPK_DIR)/opt/include $(SAMBA35-DEV_IPK_DIR)/opt/
 	# samba3-swat
-	install -d $(SAMBA35-SWAT_IPK_DIR)/opt/share $(SAMBA35-SWAT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(SAMBA35-SWAT_IPK_DIR)/opt/share $(SAMBA35-SWAT_IPK_DIR)/opt/sbin
 	mv $(SAMBA35_IPK_DIR)/opt/share/swat $(SAMBA35-SWAT_IPK_DIR)/opt/share/
 	mv $(SAMBA35_IPK_DIR)/opt/sbin/swat $(SAMBA35-SWAT_IPK_DIR)/opt/sbin/
-	install -d $(SAMBA35-SWAT_IPK_DIR)/opt/etc/xinetd.d
-	install -m 755 $(SAMBA35_SOURCE_DIR)/swat $(SAMBA35-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
+	$(INSTALL) -d $(SAMBA35-SWAT_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 755 $(SAMBA35_SOURCE_DIR)/swat $(SAMBA35-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA35_IPK_DIR)
 	$(MAKE) $(SAMBA35-DEV_IPK_DIR)/CONTROL/control

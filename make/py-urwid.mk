@@ -117,7 +117,7 @@ $(PY-URWID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-URWID_SOURCE) $(PY-URWID_PATCH
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-URWID_DIR)
 	$(PY-URWID_UNZIP) $(DL_DIR)/$(PY-URWID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-URWID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-URWID_DIR) -p1
+#	cat $(PY-URWID_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-URWID_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-URWID_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -132,7 +132,7 @@ $(PY-URWID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-URWID_SOURCE) $(PY-URWID_PATCH
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-URWID_DIR)
 	$(PY-URWID_UNZIP) $(DL_DIR)/$(PY-URWID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-URWID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-URWID_DIR) -p1
+#	cat $(PY-URWID_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-URWID_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-URWID_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -185,7 +185,7 @@ py-urwid: $(PY-URWID_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-urwid
 #
 $(PY-URWID-COMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-urwid-common" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,7 +199,7 @@ $(PY-URWID-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-URWID_CONFLICTS)" >>$@
 
 $(PY25-URWID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-urwid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -213,7 +213,7 @@ $(PY25-URWID_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-URWID_CONFLICTS)" >>$@
 
 $(PY26-URWID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-urwid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -262,11 +262,11 @@ $(PY26-URWID_IPK): $(PY-URWID_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-URWID_IPK_DIR)
 #
 	rm -rf $(PY-URWID-COMMON_IPK_DIR) $(BUILD_DIR)/py-urwid-common_*_$(TARGET_ARCH).ipk
-	install -d $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid
+	$(INSTALL) -d $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid
 	echo "http://excess.org/urwid/" > $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/url.txt
-	install -m 644 $(PY-URWID_BUILD_DIR)/2.6/*.html $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid
-	install -d $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/examples
-	install -m 644 $(PY-URWID_BUILD_DIR)/2.6/*.py $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/examples
+	$(INSTALL) -m 644 $(PY-URWID_BUILD_DIR)/2.6/*.html $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid
+	$(INSTALL) -d $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/examples
+	$(INSTALL) -m 644 $(PY-URWID_BUILD_DIR)/2.6/*.py $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/examples
 	rm -f $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/examples/setup.py
 	$(MAKE) $(PY-URWID-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-URWID-COMMON_IPK_DIR)

@@ -235,7 +235,7 @@ endif
 	$(VLC_UNZIP) $(DL_DIR)/$(VLC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VLC_PATCHES)" ; \
 		then cat $(VLC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(VLC_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(VLC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(VLC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(VLC_DIR) $(@D) ; \
@@ -340,7 +340,7 @@ vlc-stage: $(VLC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/vlc
 #
 $(VLC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: vlc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -374,15 +374,15 @@ $(VLC_IPK): $(VLC_BUILD_DIR)/.built
 	rm -rf $(VLC_IPK_DIR) $(BUILD_DIR)/vlc_*_$(TARGET_ARCH).ipk
 	env STRIPPROG=$(TARGET_STRIP) \
 	$(MAKE) -C $(VLC_BUILD_DIR) DESTDIR=$(VLC_IPK_DIR) install-strip program_transform_name=""
-#	install -d $(VLC_IPK_DIR)/opt/etc/
-#	install -m 644 $(VLC_SOURCE_DIR)/vlc.conf $(VLC_IPK_DIR)/opt/etc/vlc.conf
-#	install -d $(VLC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(VLC_SOURCE_DIR)/rc.vlc $(VLC_IPK_DIR)/opt/etc/init.d/SXXvlc
+#	$(INSTALL) -d $(VLC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(VLC_SOURCE_DIR)/vlc.conf $(VLC_IPK_DIR)/opt/etc/vlc.conf
+#	$(INSTALL) -d $(VLC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(VLC_SOURCE_DIR)/rc.vlc $(VLC_IPK_DIR)/opt/etc/init.d/SXXvlc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXvlc
 	$(MAKE) $(VLC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(VLC_SOURCE_DIR)/postinst $(VLC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(VLC_SOURCE_DIR)/postinst $(VLC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(VLC_SOURCE_DIR)/prerm $(VLC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(VLC_SOURCE_DIR)/prerm $(VLC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(VLC_CONFFILES) | sed -e 's/ /\n/g' > $(VLC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VLC_IPK_DIR)

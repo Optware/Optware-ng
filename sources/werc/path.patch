@@ -5,7 +5,7 @@
  # Path, make sure the plan9port /bin directory is included before /bin
  # Keep '.' in path! It is needed.
 -path=($plan9port/bin . ./bin ./bin/contrib /bin /usr/bin)
-+path=($plan9port/bin . ./bin ./bin/contrib /opt/bin /bin /usr/bin)
++path=($plan9port/bin . ./bin ./bin/contrib %OPTWARE_TARGET_PREFIX%/bin /bin /usr/bin)
  
  # Set this to your favorite markdown formatter, eg., markdown.pl (fltr_cache
  # takes as an argument a filter, in the default configuration markdown.pl, that
@@ -16,7 +16,7 @@
  
  # Careful, the proper p9p path might not be set until initrc.local is sourced
 -path=(. $PLAN9/bin ./bin /bin /usr/bin) 
-+path=(. $PLAN9/bin ./bin /opt/bin /bin /usr/bin)
++path=(. $PLAN9/bin ./bin %OPTWARE_TARGET_PREFIX%/bin /bin /usr/bin)
  
  headers=lib/headers.tpl
  res_tail='</body></html>'

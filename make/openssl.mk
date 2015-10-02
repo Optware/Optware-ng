@@ -133,7 +133,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 	rm -f $(STAGING_LIB_DIR)/libssl.* $(STAGING_LIB_DIR)/libcrypto.*
 	$(OPENSSL_UNZIP) $(DL_DIR)/$(OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf - 
 	if test -n "$(OPENSSL_PATCHES)"; then \
-		cat $(OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(OPENSSL_DIR) -p1; \
+		cat $(OPENSSL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(OPENSSL_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(OPENSSL_DIR) $(@D)
 	(cd $(@D) && \
@@ -170,11 +170,11 @@ openssl: $(OPENSSL_BUILD_DIR)/.built
 $(OPENSSL_BUILD_DIR)/.staged: $(OPENSSL_BUILD_DIR)/.built
 	rm -f $@
 	rm -rf $(STAGING_INCLUDE_DIR)/openssl
-	install -d $(STAGING_INCLUDE_DIR)/openssl
-	install -m 644 $(@D)/include/openssl/*.h $(STAGING_INCLUDE_DIR)/openssl
-	install -d $(STAGING_PREFIX)/bin
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)/openssl
+	$(INSTALL) -m 644 $(@D)/include/openssl/*.h $(STAGING_INCLUDE_DIR)/openssl
+	$(INSTALL) -d $(STAGING_PREFIX)/bin
 ifeq ($(HOSTCC), $(TARGET_CC))
-	install -m 755 $(@D)/apps/openssl $(STAGING_PREFIX)/bin/openssl
+	$(INSTALL) -m 755 $(@D)/apps/openssl $(STAGING_PREFIX)/bin/openssl
 else
 #	a fake /opt/bin/openssl in $STAGING_DIR)
 	( \
@@ -184,24 +184,24 @@ else
 	) > $(STAGING_PREFIX)/bin/openssl
 	chmod 755 $(STAGING_PREFIX)/bin/openssl
 endif
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(@D)/libcrypto.a $(STAGING_LIB_DIR)
-	install -m 644 $(@D)/libssl.a $(STAGING_LIB_DIR)
-	install -m 644 $(@D)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(STAGING_LIB_DIR)
-	install -m 644 $(@D)/libssl.so.$(OPENSSL_LIB_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(@D)/libcrypto.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(@D)/libssl.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(@D)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(@D)/libssl.so.$(OPENSSL_LIB_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0
 	cd $(STAGING_LIB_DIR) && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
 	cd $(STAGING_LIB_DIR) && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
 	cd $(STAGING_LIB_DIR) && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
-	install -d $(STAGING_LIB_DIR)/pkgconfig
-	install -m 644 $(@D)/openssl.pc $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -m 644 $(@D)/openssl.pc $(STAGING_LIB_DIR)/pkgconfig
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/openssl.pc
 	touch $@
 
 openssl-stage: $(OPENSSL_BUILD_DIR)/.staged
 
 $(OPENSSL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openssl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -215,7 +215,7 @@ $(OPENSSL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(OPENSSL_CONFLICTS)" >>$@
 
 $(OPENSSL_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openssl-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -230,14 +230,14 @@ $(OPENSSL_DEV_IPK_DIR)/CONTROL/control:
 
 $(OPENSSL_IPK) $(OPENSSL_DEV_IPK): $(OPENSSL_BUILD_DIR)/.built
 	rm -rf $(OPENSSL_IPK_DIR) $(BUILD_DIR)/openssl_*_$(TARGET_ARCH).ipk
-	install -d $(OPENSSL_IPK_DIR)/opt/bin
-	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(OPENSSL_IPK_DIR)/opt/bin/openssl
+	$(INSTALL) -d $(OPENSSL_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(OPENSSL_IPK_DIR)/opt/bin/openssl
 	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)/opt/bin/openssl
-	install -d $(OPENSSL_IPK_DIR)/opt/share/openssl
-	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl.cnf $(OPENSSL_IPK_DIR)/opt/share/openssl/openssl.cnf
-	install -d $(OPENSSL_IPK_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(OPENSSL_IPK_DIR)/opt/share/openssl
+	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl.cnf $(OPENSSL_IPK_DIR)/opt/share/openssl/openssl.cnf
+	$(INSTALL) -d $(OPENSSL_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)/opt/lib/libcrypto.so*
 	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)/opt/lib/libssl.so*
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0
@@ -248,10 +248,10 @@ $(OPENSSL_IPK) $(OPENSSL_DEV_IPK): $(OPENSSL_BUILD_DIR)/.built
 	echo $(OPENSSL_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_IPK_DIR)
 	rm -rf $(OPENSSL_DEV_IPK_DIR) $(BUILD_DIR)/openssl-dev_*_$(TARGET_ARCH).ipk
-	install -d $(OPENSSL_DEV_IPK_DIR)/opt/include/openssl
-	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(OPENSSL_DEV_IPK_DIR)/opt/include/openssl
-	install -d $(OPENSSL_DEV_IPK_DIR)/opt/lib/pkgconfig
-	install -m 644 $(OPENSSL_BUILD_DIR)/openssl.pc $(OPENSSL_DEV_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) -d $(OPENSSL_DEV_IPK_DIR)/opt/include/openssl
+	$(INSTALL) -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(OPENSSL_DEV_IPK_DIR)/opt/include/openssl
+	$(INSTALL) -d $(OPENSSL_DEV_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) -m 644 $(OPENSSL_BUILD_DIR)/openssl.pc $(OPENSSL_DEV_IPK_DIR)/opt/lib/pkgconfig
 	sed -i '/^Libs:/s|-lcrypto .* -ldl|-lcrypto -ldl|' $(OPENSSL_DEV_IPK_DIR)/opt/lib/pkgconfig/openssl.pc
 	$(MAKE) $(OPENSSL_DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_DEV_IPK_DIR)

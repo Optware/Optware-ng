@@ -112,7 +112,7 @@ $(SNORT_BUILD_DIR)/.configured: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES) make/
 	$(SNORT_UNZIP) $(DL_DIR)/$(SNORT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SNORT_PATCHES)" ; \
 		then cat $(SNORT_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(SNORT_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(SNORT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SNORT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SNORT_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ snort: $(SNORT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/snort
 #
 $(SNORT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: snort" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(SNORT_IPK_DIR)/CONTROL/control:
 $(SNORT_IPK): $(SNORT_BUILD_DIR)/.built
 	rm -rf $(SNORT_IPK_DIR) $(BUILD_DIR)/snort_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SNORT_BUILD_DIR) DESTDIR=$(SNORT_IPK_DIR) install-strip
-#	install -d $(SNORT_IPK_DIR)/opt/etc/
-#	install -m 644 $(SNORT_SOURCE_DIR)/snort.conf $(SNORT_IPK_DIR)/opt/etc/snort.conf
-#	install -d $(SNORT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SNORT_SOURCE_DIR)/rc.snort $(SNORT_IPK_DIR)/opt/etc/init.d/SXXsnort
+#	$(INSTALL) -d $(SNORT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SNORT_SOURCE_DIR)/snort.conf $(SNORT_IPK_DIR)/opt/etc/snort.conf
+#	$(INSTALL) -d $(SNORT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SNORT_SOURCE_DIR)/rc.snort $(SNORT_IPK_DIR)/opt/etc/init.d/SXXsnort
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SNORT_IPK_DIR)/opt/etc/init.d/SXXsnort
 	$(MAKE) $(SNORT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SNORT_SOURCE_DIR)/postinst $(SNORT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SNORT_SOURCE_DIR)/postinst $(SNORT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SNORT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SNORT_SOURCE_DIR)/prerm $(SNORT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SNORT_SOURCE_DIR)/prerm $(SNORT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SNORT_IPK_DIR)/CONTROL/prerm
 	echo $(SNORT_CONFFILES) | sed -e 's/ /\n/g' > $(SNORT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SNORT_IPK_DIR)

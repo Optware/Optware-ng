@@ -116,7 +116,7 @@ $(START-STOP-DAEMON_BUILD_DIR)/.configured: $(DL_DIR)/$(START-STOP-DAEMON_SOURCE
 	$(START-STOP-DAEMON_UNZIP) $(DL_DIR)/$(START-STOP-DAEMON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(START-STOP-DAEMON_PATCHES)" ; \
 		then cat $(START-STOP-DAEMON_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(START-STOP-DAEMON_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(START-STOP-DAEMON_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(START-STOP-DAEMON_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(START-STOP-DAEMON_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ start-stop-daemon-stage: #$(START-STOP-DAEMON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/start-stop-daemon
 #
 $(START-STOP-DAEMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: start-stop-daemon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,18 +202,18 @@ $(START-STOP-DAEMON_IPK_DIR)/CONTROL/control:
 $(START-STOP-DAEMON_IPK): $(START-STOP-DAEMON_BUILD_DIR)/.built
 	rm -rf $(START-STOP-DAEMON_IPK_DIR) $(BUILD_DIR)/start-stop-daemon_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(START-STOP-DAEMON_BUILD_DIR) DESTDIR=$(START-STOP-DAEMON_IPK_DIR) install-strip
-	install -d $(START-STOP-DAEMON_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(START-STOP-DAEMON_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(START-STOP-DAEMON_BUILD_DIR)/utils/start-stop-daemon -o \
 		$(START-STOP-DAEMON_IPK_DIR)/opt/sbin/start-stop-daemon-start-stop-daemon
-#	install -d $(START-STOP-DAEMON_IPK_DIR)/opt/etc/
-#	install -m 644 $(START-STOP-DAEMON_SOURCE_DIR)/start-stop-daemon.conf $(START-STOP-DAEMON_IPK_DIR)/opt/etc/start-stop-daemon.conf
-#	install -d $(START-STOP-DAEMON_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/rc.start-stop-daemon $(START-STOP-DAEMON_IPK_DIR)/opt/etc/init.d/SXXstart-stop-daemon
+#	$(INSTALL) -d $(START-STOP-DAEMON_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(START-STOP-DAEMON_SOURCE_DIR)/start-stop-daemon.conf $(START-STOP-DAEMON_IPK_DIR)/opt/etc/start-stop-daemon.conf
+#	$(INSTALL) -d $(START-STOP-DAEMON_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/rc.start-stop-daemon $(START-STOP-DAEMON_IPK_DIR)/opt/etc/init.d/SXXstart-stop-daemon
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(START-STOP-DAEMON_IPK_DIR)/opt/etc/init.d/SXXstart-stop-daemon
 	$(MAKE) $(START-STOP-DAEMON_IPK_DIR)/CONTROL/control
-#	install -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/postinst $(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/postinst $(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/prerm $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/prerm $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

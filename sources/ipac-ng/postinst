@@ -1,5 +1,5 @@
 #!/bin/sh
 
-mkdir -p /opt/var/lib/ipac
-mkdir -p /opt/var/run
-mkdir -p /opt/var/lock
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/lib/ipac
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/run
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/lock

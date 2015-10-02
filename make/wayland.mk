@@ -117,7 +117,7 @@ $(WAYLAND_BUILD_DIR)/.configured: $(DL_DIR)/$(WAYLAND_SOURCE) $(WAYLAND_PATCHES)
 	$(WAYLAND_UNZIP) $(DL_DIR)/$(WAYLAND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WAYLAND_PATCHES)" ; \
 		then cat $(WAYLAND_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(WAYLAND_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(WAYLAND_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(WAYLAND_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WAYLAND_DIR) $(@D) ; \
@@ -176,7 +176,7 @@ $(WAYLAND_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(WAYLAND_SOURCE)
 	$(WAYLAND_UNZIP) $(DL_DIR)/$(WAYLAND_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(WAYLAND_PATCHES)" ; \
 		then cat $(WAYLAND_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(WAYLAND_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(WAYLAND_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(WAYLAND_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(WAYLAND_DIR) $(@D) ; \
@@ -206,7 +206,7 @@ wayland-stage: $(WAYLAND_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/wayland
 #
 $(WAYLAND_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: wayland" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -236,15 +236,15 @@ $(WAYLAND_IPK): $(WAYLAND_BUILD_DIR)/.built
 	rm -rf $(WAYLAND_IPK_DIR) $(BUILD_DIR)/wayland_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WAYLAND_BUILD_DIR) DESTDIR=$(WAYLAND_IPK_DIR) install-strip \
 		 wayland_scanner=$(HOST_STAGING_PREFIX)/bin/wayland-scanner
-#	install -d $(WAYLAND_IPK_DIR)/opt/etc/
-#	install -m 644 $(WAYLAND_SOURCE_DIR)/wayland.conf $(WAYLAND_IPK_DIR)/opt/etc/wayland.conf
-#	install -d $(WAYLAND_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(WAYLAND_SOURCE_DIR)/rc.wayland $(WAYLAND_IPK_DIR)/opt/etc/init.d/SXXwayland
+#	$(INSTALL) -d $(WAYLAND_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(WAYLAND_SOURCE_DIR)/wayland.conf $(WAYLAND_IPK_DIR)/opt/etc/wayland.conf
+#	$(INSTALL) -d $(WAYLAND_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(WAYLAND_SOURCE_DIR)/rc.wayland $(WAYLAND_IPK_DIR)/opt/etc/init.d/SXXwayland
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAYLAND_IPK_DIR)/opt/etc/init.d/SXXwayland
 	$(MAKE) $(WAYLAND_IPK_DIR)/CONTROL/control
-#	install -m 755 $(WAYLAND_SOURCE_DIR)/postinst $(WAYLAND_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(WAYLAND_SOURCE_DIR)/postinst $(WAYLAND_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAYLAND_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(WAYLAND_SOURCE_DIR)/prerm $(WAYLAND_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(WAYLAND_SOURCE_DIR)/prerm $(WAYLAND_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAYLAND_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

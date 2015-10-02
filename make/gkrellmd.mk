@@ -127,7 +127,7 @@ $(GKRELLMD_BUILD_DIR)/.configured: $(DL_DIR)/$(GKRELLMD_SOURCE) $(GKRELLMD_PATCH
 	$(GKRELLMD_UNZIP) $(DL_DIR)/$(GKRELLMD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GKRELLMD_PATCHES)" ; \
 		then cat $(GKRELLMD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GKRELLMD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GKRELLMD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GKRELLMD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GKRELLMD_DIR) $(@D) ; \
@@ -155,7 +155,7 @@ gkrellmd: $(GKRELLMD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/gkrellmd
 #
 $(GKRELLMD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gkrellmd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -183,18 +183,18 @@ $(GKRELLMD_IPK_DIR)/CONTROL/control:
 #
 $(GKRELLMD_IPK): $(GKRELLMD_BUILD_DIR)/.built
 	rm -rf $(GKRELLMD_IPK_DIR) $(BUILD_DIR)/gkrellmd_*_$(TARGET_ARCH).ipk
-	install -d $(GKRELLMD_IPK_DIR)/opt/sbin $(GKRELLMD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(GKRELLMD_IPK_DIR)/opt/sbin $(GKRELLMD_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(GKRELLMD_BUILD_DIR)/server/gkrellmd -o $(GKRELLMD_IPK_DIR)/opt/sbin/gkrellmd
-	install -m 755 $(GKRELLMD_SOURCE_DIR)/rc.gkrellmd $(GKRELLMD_IPK_DIR)/opt/etc/init.d/S60gkrellmd
-#	install -d $(GKRELLMD_IPK_DIR)/opt/etc/
-#	install -m 644 $(GKRELLMD_SOURCE_DIR)/gkrellmd.conf $(GKRELLMD_IPK_DIR)/opt/etc/gkrellmd.conf
-#	install -d $(GKRELLMD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GKRELLMD_SOURCE_DIR)/rc.gkrellmd $(GKRELLMD_IPK_DIR)/opt/etc/init.d/SXXgkrellmd
+	$(INSTALL) -m 755 $(GKRELLMD_SOURCE_DIR)/rc.gkrellmd $(GKRELLMD_IPK_DIR)/opt/etc/init.d/S60gkrellmd
+#	$(INSTALL) -d $(GKRELLMD_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GKRELLMD_SOURCE_DIR)/gkrellmd.conf $(GKRELLMD_IPK_DIR)/opt/etc/gkrellmd.conf
+#	$(INSTALL) -d $(GKRELLMD_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GKRELLMD_SOURCE_DIR)/rc.gkrellmd $(GKRELLMD_IPK_DIR)/opt/etc/init.d/SXXgkrellmd
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GKRELLMD_IPK_DIR)/opt/etc/init.d/SXXgkrellmd
 	$(MAKE) $(GKRELLMD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GKRELLMD_SOURCE_DIR)/postinst $(GKRELLMD_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GKRELLMD_SOURCE_DIR)/postinst $(GKRELLMD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GKRELLMD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GKRELLMD_SOURCE_DIR)/prerm $(GKRELLMD_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GKRELLMD_SOURCE_DIR)/prerm $(GKRELLMD_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GKRELLMD_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

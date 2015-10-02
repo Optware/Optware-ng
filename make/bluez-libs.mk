@@ -105,7 +105,7 @@ $(BLUEZ-LIBS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-LIBS_SOURCE) $(BLUEZ-LIBS
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(BLUEZ-LIBS_DIR) $(BLUEZ-LIBS_BUILD_DIR)
 	$(BLUEZ-LIBS_UNZIP) $(DL_DIR)/$(BLUEZ-LIBS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(BLUEZ-LIBS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ-LIBS_DIR) -p1
+	#cat $(BLUEZ-LIBS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BLUEZ-LIBS_DIR) -p1
 	mv $(BUILD_DIR)/$(BLUEZ-LIBS_DIR) $(BLUEZ-LIBS_BUILD_DIR)
 	(cd $(BLUEZ-LIBS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -154,7 +154,7 @@ bluez-libs-stage: $(BLUEZ-LIBS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bluez-libs
 #
 $(BLUEZ-LIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(BLUEZ-LIBS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(BLUEZ-LIBS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: bluez-libs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

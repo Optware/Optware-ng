@@ -69,7 +69,7 @@ CAIRO_IPK=$(BUILD_DIR)/cairo_$(CAIRO_VERSION)-$(CAIRO_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(CAIRO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cairo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

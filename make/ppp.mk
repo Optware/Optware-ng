@@ -116,7 +116,7 @@ $(PPP_BUILD_DIR)/.configured: $(DL_DIR)/$(PPP_SOURCE) $(PPP_PATCHES) make/ppp.mk
 	$(PPP_UNZIP) $(DL_DIR)/$(PPP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PPP_PATCHES)" ; \
 		then cat $(PPP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PPP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PPP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PPP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PPP_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ ppp: $(PPP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ppp
 #
 $(PPP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ppp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,11 +190,11 @@ $(PPP_IPK_DIR)/CONTROL/control:
 #
 $(PPP_IPK): $(PPP_BUILD_DIR)/.built
 	rm -rf $(PPP_IPK_DIR) $(BUILD_DIR)/ppp_*_$(TARGET_ARCH).ipk
-	install -d $(PPP_IPK_DIR)/opt/sbin/
-	install -m 755 $(PPP_BUILD_DIR)/pppd/pppd $(PPP_IPK_DIR)/opt/sbin/pppd
+	$(INSTALL) -d $(PPP_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(PPP_BUILD_DIR)/pppd/pppd $(PPP_IPK_DIR)/opt/sbin/pppd
 	$(STRIP_COMMAND) $(PPP_IPK_DIR)/opt/sbin/pppd
-	install -d $(PPP_IPK_DIR)/opt/etc/ppp
-	install -m 644 $(PPP_BUILD_DIR)/etc.ppp/options $(PPP_IPK_DIR)/opt/etc/ppp/options
+	$(INSTALL) -d $(PPP_IPK_DIR)/opt/etc/ppp
+	$(INSTALL) -m 644 $(PPP_BUILD_DIR)/etc.ppp/options $(PPP_IPK_DIR)/opt/etc/ppp/options
 	$(MAKE) $(PPP_IPK_DIR)/CONTROL/control
 	echo $(PPP_CONFFILES) | sed -e 's/ /\n/g' > $(PPP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PPP_IPK_DIR)

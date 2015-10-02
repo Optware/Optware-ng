@@ -110,7 +110,7 @@ $(SRECORD_BUILD_DIR)/.configured: $(DL_DIR)/$(SRECORD_SOURCE) $(SRECORD_PATCHES)
 	$(SRECORD_UNZIP) $(DL_DIR)/$(SRECORD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SRECORD_PATCHES)" ; \
 		then cat $(SRECORD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SRECORD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SRECORD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SRECORD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SRECORD_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ srecord-stage: $(SRECORD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/srecord
 #
 $(SRECORD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: srecord" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

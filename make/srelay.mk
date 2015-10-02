@@ -109,7 +109,7 @@ $(SRELAY_BUILD_DIR)/.configured: $(DL_DIR)/$(SRELAY_SOURCE) $(SRELAY_PATCHES) ma
 	$(SRELAY_UNZIP) $(DL_DIR)/$(SRELAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SRELAY_PATCHES)" ; \
 		then cat $(SRELAY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SRELAY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SRELAY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SRELAY_DIR)" != "$(SRELAY_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SRELAY_DIR) $(SRELAY_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ srelay-stage: $(SRELAY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/srelay
 #
 $(SRELAY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: srelay" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,18 +190,18 @@ $(SRELAY_IPK_DIR)/CONTROL/control:
 $(SRELAY_IPK): $(SRELAY_BUILD_DIR)/.built
 	rm -rf $(SRELAY_IPK_DIR) $(BUILD_DIR)/srelay_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(SRELAY_BUILD_DIR) DESTDIR=$(SRELAY_IPK_DIR) install
-	install -d $(SRELAY_IPK_DIR)/opt/etc/ $(SRELAY_IPK_DIR)/opt/bin/ $(SRELAY_IPK_DIR)/opt/share/man/man8/
-	install -m 644 $(SRELAY_BUILD_DIR)/srelay.conf $(SRELAY_IPK_DIR)/opt/etc/
-	install -m 755 $(SRELAY_BUILD_DIR)/srelay $(SRELAY_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(SRELAY_IPK_DIR)/opt/etc/ $(SRELAY_IPK_DIR)/opt/bin/ $(SRELAY_IPK_DIR)/opt/share/man/man8/
+	$(INSTALL) -m 644 $(SRELAY_BUILD_DIR)/srelay.conf $(SRELAY_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 755 $(SRELAY_BUILD_DIR)/srelay $(SRELAY_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(SRELAY_IPK_DIR)/opt/bin/srelay
-	install -m 644 $(SRELAY_BUILD_DIR)/srelay.8 $(SRELAY_IPK_DIR)/opt/share/man/man8/
-#	install -d $(SRELAY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SRELAY_SOURCE_DIR)/rc.srelay $(SRELAY_IPK_DIR)/opt/etc/init.d/SXXsrelay
+	$(INSTALL) -m 644 $(SRELAY_BUILD_DIR)/srelay.8 $(SRELAY_IPK_DIR)/opt/share/man/man8/
+#	$(INSTALL) -d $(SRELAY_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SRELAY_SOURCE_DIR)/rc.srelay $(SRELAY_IPK_DIR)/opt/etc/init.d/SXXsrelay
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXsrelay
 	$(MAKE) $(SRELAY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SRELAY_SOURCE_DIR)/postinst $(SRELAY_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SRELAY_SOURCE_DIR)/postinst $(SRELAY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SRELAY_SOURCE_DIR)/prerm $(SRELAY_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SRELAY_SOURCE_DIR)/prerm $(SRELAY_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(SRELAY_CONFFILES) | sed -e 's/ /\n/g' > $(SRELAY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SRELAY_IPK_DIR)

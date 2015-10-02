@@ -180,17 +180,17 @@
  	addnewvar("SHELL", get_user_shell());
 -	addnewvar("PATH", DEFAULT_PATH);
 +	if (svr_opts.android_mode) {
-+		addnewvar("PATH", "/sbin:/system/sbin:/system/bin:/system/xbin:/bin:/opt/bin:/opt/sbin");
++		addnewvar("PATH", "/sbin:/system/sbin:/system/bin:/system/xbin:/bin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin");
 +		addnewvar("ANDROID_ASSETS", "/system/app");
 +		addnewvar("ANDROID_BOOTLOGO", "1");
 +		addnewvar("ANDROID_DATA", "/data");
 +		addnewvar("ANDROID_PROPERTY_WORKSPACE", "10,32768");
 +		addnewvar("ANDROID_ROOT", "/system");
 +		addnewvar("BOOTCLASSPATH", "/system/framework/core.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar");
-+		addnewvar("EDITOR", "/opt/bin/nano");
++		addnewvar("EDITOR", "%OPTWARE_TARGET_PREFIX%/bin/nano");
 +		addnewvar("EXTERNAL_STORAGE", "/sdcard");
 +		addnewvar("LC_ALL","en_US.UTF-8");
-+		addnewvar("TERMINFO","/opt/share/terminfo");
++		addnewvar("TERMINFO","%OPTWARE_TARGET_PREFIX%/share/terminfo");
 +	} else
 +		addnewvar("PATH", DEFAULT_PATH);
  	if (chansess->term != NULL) {

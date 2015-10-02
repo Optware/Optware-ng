@@ -68,7 +68,7 @@ $(PERL-SYS-SYSCALL_BUILD_DIR)/.staged: $(PERL-SYS-SYSCALL_BUILD_DIR)/.built
 perl-sys-syscall-stage: $(PERL-SYS-SYSCALL_BUILD_DIR)/.staged
 
 $(PERL-SYS-SYSCALL_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-SYS-SYSCALL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-SYS-SYSCALL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-sys-syscall" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -570,7 +570,7 @@
 #define PACKAGE_VERSION ""
 
 /* Program to run the C preprocessor */
-#define PROG_CPP "/opt/armeb/bin/armv5b-softfloat-linux-gcc -E"
+#define PROG_CPP "%OPTWARE_TARGET_PREFIX%/armeb/bin/armv5b-softfloat-linux-gcc -E"
 
 /* Name of the SWI-Prolog executable (normally pl) */
 #define PROG_PL "swipl"
@@ -606,7 +606,7 @@
 #define SO_EXT "so"
 
 /* Program to use for linking shared objects */
-#define SO_LD "/opt/armeb/bin/armv5b-softfloat-linux-gcc"
+#define SO_LD "%OPTWARE_TARGET_PREFIX%/armeb/bin/armv5b-softfloat-linux-gcc"
 
 /* Flags to use for linking shared objects */
 #define SO_LDFLAGS "-shared"

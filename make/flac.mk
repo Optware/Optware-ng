@@ -109,7 +109,7 @@ $(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES) make/fla
 	rm -rf $(BUILD_DIR)/$(FLAC_DIR) $(@D)
 	$(FLAC_UNZIP) $(DL_DIR)/$(FLAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FLAC_PATCHES)"; \
-		then cat $(FLAC_PATCHES) | patch -d $(BUILD_DIR)/$(FLAC_DIR) -p0; \
+		then cat $(FLAC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(FLAC_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(FLAC_DIR) $(@D)
 	sed -i -e '/LOCAL_EXTRA_LDFLAGS.*read_only_relocs/d' $(@D)/src/libFLAC/Makefile.in
@@ -163,7 +163,7 @@ flac-stage: $(FLAC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/flac
 #
 $(FLAC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: flac" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

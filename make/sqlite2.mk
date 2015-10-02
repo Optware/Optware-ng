@@ -101,7 +101,7 @@ $(SQLITE2_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE2_SOURCE) $(SQLITE2_PATCHES)
 	rm -rf $(BUILD_DIR)/$(SQLITE2_DIR) $(@D)
 	$(SQLITE2_UNZIP) $(DL_DIR)/$(SQLITE2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQLITE2_PATCHES)"; \
-		then cat $(SQLITE2_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE2_DIR) -p1; \
+		then cat $(SQLITE2_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SQLITE2_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(SQLITE2_DIR) $(@D)
 	(cd $(@D); \
@@ -151,7 +151,7 @@ sqlite2-stage: $(SQLITE2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sqlite2
 #
 $(SQLITE2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sqlite2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

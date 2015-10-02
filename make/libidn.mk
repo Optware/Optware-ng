@@ -111,7 +111,7 @@ $(LIBIDN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES) ma
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBIDN_DIR) $(@D)
 	$(LIBIDN_UNZIP) $(DL_DIR)/$(LIBIDN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBIDN_PATCHES) | patch -d $(BUILD_DIR)/$(LIBIDN_DIR) -p1
+#	cat $(LIBIDN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBIDN_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBIDN_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -161,7 +161,7 @@ libidn-stage: $(LIBIDN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libidn
 #
 $(LIBIDN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libidn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

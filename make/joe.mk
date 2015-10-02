@@ -100,7 +100,7 @@ $(JOE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOE_SOURCE) $(JOE_PATCHES) make/joe.mk
 	$(JOE_UNZIP) $(DL_DIR)/$(JOE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(JOE_PATCHES)" ; \
 		then cat $(JOE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(JOE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(JOE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(JOE_DIR)" != "$(JOE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(JOE_DIR) $(JOE_BUILD_DIR) ; \
@@ -147,7 +147,7 @@ joe-stage: $(JOE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/joe
 #
 $(JOE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: joe" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,7 +175,7 @@ $(JOE_IPK_DIR)/CONTROL/control:
 $(JOE_IPK): $(JOE_BUILD_DIR)/.built
 	rm -rf $(JOE_IPK_DIR) $(BUILD_DIR)/joe_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JOE_BUILD_DIR) DESTDIR=$(JOE_IPK_DIR) install-strip
-	install -d $(JOE_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(JOE_IPK_DIR)/opt/etc/
 	$(MAKE) $(JOE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JOE_IPK_DIR)
 

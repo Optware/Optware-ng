@@ -116,7 +116,7 @@ endif
 	$(BASH_UNZIP) $(DL_DIR)/$(BASH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BASH_PATCHES)" ; \
 		then cat $(BASH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BASH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BASH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BASH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BASH_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ bash: $(BASH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bash
 #
 $(BASH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bash" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,14 +189,14 @@ $(BASH_IPK_DIR)/CONTROL/control:
 #
 $(BASH_IPK): $(BASH_BUILD_DIR)/.built
 	rm -rf $(BASH_IPK_DIR) $(BUILD_DIR)/bash_*_$(TARGET_ARCH).ipk
-	install -d $(BASH_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(BASH_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
-	install -d $(BASH_IPK_DIR)/opt/etc 
-	install -m 644 $(BASH_SOURCE_DIR)/profile $(BASH_IPK_DIR)/opt/etc/profile
+	$(INSTALL) -d $(BASH_IPK_DIR)/opt/etc 
+	$(INSTALL) -m 644 $(BASH_SOURCE_DIR)/profile $(BASH_IPK_DIR)/opt/etc/profile
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
-	install -d $(BASH_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(BASH_SOURCE_DIR)/rc.bash $(BASH_IPK_DIR)/opt/etc/init.d/S05bash
-	install -d $(BASH_IPK_DIR)/bin
+	$(INSTALL) -d $(BASH_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(BASH_SOURCE_DIR)/rc.bash $(BASH_IPK_DIR)/opt/etc/init.d/S05bash
+	$(INSTALL) -d $(BASH_IPK_DIR)/bin
 	ln -s /opt/bin/bash $(BASH_IPK_DIR)/bin/bash
 endif
 	$(MAKE) $(BASH_IPK_DIR)/CONTROL/control

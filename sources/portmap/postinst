@@ -5,4 +5,4 @@ if [ -n "`pidof portmap`" ] ; then
 fi
 
 sleep 2
-/opt/etc/init.d/S55portmap
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S55portmap

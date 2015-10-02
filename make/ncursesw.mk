@@ -93,7 +93,7 @@ $(NCURSESW_DIR)/.staged: $(NCURSESW_DIR)/.built
 ncursesw-stage: $(NCURSESW_DIR)/.staged
 
 $(NCURSESW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ncursesw" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -107,7 +107,7 @@ $(NCURSESW_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(NCURSESW_CONFLICTS)" >>$@
 
 $(NCURSESW-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ncursesw-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -130,7 +130,7 @@ $(NCURSESW_IPK) $(NCURSESW-DEV_IPK): $(NCURSESW_DIR)/.built
 	$(STRIP_COMMAND) $(NCURSESW_IPK_DIR)/opt/lib/*.so
 	$(MAKE) $(NCURSESW_IPK_DIR)/CONTROL/control
 	# ncursesw-dev
-	install -d $(NCURSESW-DEV_IPK_DIR)/opt/include/ncursesw
+	$(INSTALL) -d $(NCURSESW-DEV_IPK_DIR)/opt/include/ncursesw
 	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(NCURSESW-DEV_IPK_DIR) install.includes
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSESW_IPK_DIR)

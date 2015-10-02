@@ -32,12 +32,12 @@
 +	$(GCC) -shared -Wl,-soname,libclips.so -o $(SHLIB) $(OBJS)
 +
 +install:
-+	install -d $(DESTDIR)/opt/bin/
-+	install clips $(DESTDIR)/opt/bin
-+	$(STRIP) $(DESTDIR)/opt/bin/clips
-+	install -d $(DESTDIR)/opt/lib/
-+	install $(SHLIB) $(DESTDIR)/opt/lib/
-+	$(STRIP) $(DESTDIR)/opt/lib/$(SHLIB)
++	install -d $(DESTDIR)%OPTWARE_TARGET_PREFIX%/bin/
++	install clips $(DESTDIR)%OPTWARE_TARGET_PREFIX%/bin
++	$(STRIP) $(DESTDIR)%OPTWARE_TARGET_PREFIX%/bin/clips
++	install -d $(DESTDIR)%OPTWARE_TARGET_PREFIX%/lib/
++	install $(SHLIB) $(DESTDIR)%OPTWARE_TARGET_PREFIX%/lib/
++	$(STRIP) $(DESTDIR)%OPTWARE_TARGET_PREFIX%/lib/$(SHLIB)
  
  # Dependencies generated using "gcc -MM *.c"
  

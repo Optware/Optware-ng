@@ -121,7 +121,7 @@ $(RHTVISION_BUILD_DIR)/.configured: $(DL_DIR)/$(RHTVISION_SOURCE) $(RHTVISION_PA
 	$(RHTVISION_UNZIP) $(DL_DIR)/$(RHTVISION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RHTVISION_PATCHES)" ; \
 		then cat $(RHTVISION_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(RHTVISION_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(RHTVISION_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RHTVISION_DIR)" != "$(RHTVISION_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RHTVISION_DIR) $(RHTVISION_BUILD_DIR) ; \
@@ -186,7 +186,7 @@ rhtvision-stage: $(RHTVISION_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rhtvision
 #
 $(RHTVISION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rhtvision" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -217,20 +217,20 @@ $(RHTVISION_IPK): $(RHTVISION_BUILD_DIR)/.built
 	$(MAKE) -C $(RHTVISION_BUILD_DIR) install \
 		prefix=$(RHTVISION_IPK_DIR)/opt
 	rm -f $(RHTVISION_IPK_DIR)/opt/lib/librhtv.a
-	install $(RHTVISION_BUILD_DIR)/examples/demo/demo.exe $(RHTVISION_IPK_DIR)/opt/bin/rhtv-demo
+	$(INSTALL) $(RHTVISION_BUILD_DIR)/examples/demo/demo.exe $(RHTVISION_IPK_DIR)/opt/bin/rhtv-demo
 	$(STRIP_COMMAND) \
 		$(RHTVISION_IPK_DIR)/opt/bin/rhtv-config \
 		$(RHTVISION_IPK_DIR)/opt/bin/rhtv-demo \
 		$(RHTVISION_IPK_DIR)/opt/lib/librhtv.so.[0-9]*.[0-9]*.[0-9]*
-#	install -d $(RHTVISION_IPK_DIR)/opt/etc/
-#	install -m 644 $(RHTVISION_SOURCE_DIR)/rhtvision.conf $(RHTVISION_IPK_DIR)/opt/etc/rhtvision.conf
-#	install -d $(RHTVISION_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(RHTVISION_SOURCE_DIR)/rc.rhtvision $(RHTVISION_IPK_DIR)/opt/etc/init.d/SXXrhtvision
+#	$(INSTALL) -d $(RHTVISION_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(RHTVISION_SOURCE_DIR)/rhtvision.conf $(RHTVISION_IPK_DIR)/opt/etc/rhtvision.conf
+#	$(INSTALL) -d $(RHTVISION_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(RHTVISION_SOURCE_DIR)/rc.rhtvision $(RHTVISION_IPK_DIR)/opt/etc/init.d/SXXrhtvision
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RHTVISION_IPK_DIR)/opt/etc/init.d/SXXrhtvision
 	$(MAKE) $(RHTVISION_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RHTVISION_SOURCE_DIR)/postinst $(RHTVISION_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RHTVISION_SOURCE_DIR)/postinst $(RHTVISION_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RHTVISION_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RHTVISION_SOURCE_DIR)/prerm $(RHTVISION_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(RHTVISION_SOURCE_DIR)/prerm $(RHTVISION_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RHTVISION_IPK_DIR)/CONTROL/prerm
 	echo $(RHTVISION_CONFFILES) | sed -e 's/ /\n/g' > $(RHTVISION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RHTVISION_IPK_DIR)

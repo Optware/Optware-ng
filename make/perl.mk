@@ -37,7 +37,7 @@ include $(SOURCE_DIR)/perl/$(PERL_MAJOR_VER)/perl.mk
 # the following two targets are here to not confuse autoclean
 
 $(PERL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -52,7 +52,7 @@ $(PERL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
 
 $(PERL-DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

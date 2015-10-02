@@ -100,7 +100,7 @@ $(GIFTGNUTELLA_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGN
 	$(MAKE) gift-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) $(@D)
 	$(GIFTGNUTELLA_UNZIP) $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GIFTGNUTELLA_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) -p1
+#	cat $(GIFTGNUTELLA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) $(@D)
 	(cd $(@D); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
@@ -139,11 +139,11 @@ gift-gnutella: $(GIFTGNUTELLA_BUILD_DIR)/.built
 #
 $(GIFTGNUTELLA_BUILD_DIR).staged: $(GIFTGNUTELLA_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/gift-gnutella.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/libgift-gnutella.a $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/gift-gnutella.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/libgift-gnutella.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) libgift-gnutella.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libgift-gnutella.so.$(GIFTGNUTELLA_VERSION) libgift-gnutella.so
 	touch $@
@@ -155,7 +155,7 @@ gift-gnutella-stage: $(GIFTGNUTELLA_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/gift-gnutella
 #
 $(GIFTGNUTELLA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gift-gnutella" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,14 +182,14 @@ $(GIFTGNUTELLA_IPK_DIR)/CONTROL/control:
 #
 $(GIFTGNUTELLA_IPK): $(GIFTGNUTELLA_BUILD_DIR)/.built
 	rm -rf $(GIFTGNUTELLA_IPK_DIR) $(BUILD_DIR)/gift-gnutella_*_$(TARGET_ARCH).ipk
-	install -d $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT
+	$(INSTALL) -d $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT
 	$(STRIP_COMMAND) $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.so -o $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT/libGnutella.so
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.la $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT/libGnutella.la
-	install -d $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/Gnutella.conf.template $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/Gnutella.conf.template
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/hostiles.txt $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/hostiles.txt
-	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/gwebcaches $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/gwebcaches
-	install -d $(GIFTGNUTELLA_IPK_DIR)/CONTROL
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.la $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT/libGnutella.la
+	$(INSTALL) -d $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/Gnutella.conf.template $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/Gnutella.conf.template
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/hostiles.txt $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/hostiles.txt
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/gwebcaches $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/gwebcaches
+	$(INSTALL) -d $(GIFTGNUTELLA_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFTGNUTELLA_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTGNUTELLA_IPK_DIR)
 # This is called from the top level makefile to create the IPK file.

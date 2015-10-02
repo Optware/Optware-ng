@@ -132,7 +132,7 @@ $(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UT
 	rm -rf $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) $(@D)
 	$(BLUEZ-UTILS_UNZIP) $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BLUEZ-UTILS_PATCHES)"; then \
-		cat $(BLUEZ-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) -p0; \
+		cat $(BLUEZ-UTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) $(@D)
 	(cd $(@D); \
@@ -183,7 +183,7 @@ bluez-utils: $(BLUEZ-UTILS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bluez-utils
 #
 $(BLUEZ-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bluez-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

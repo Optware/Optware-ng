@@ -98,7 +98,7 @@ endif
 	$(USHARE_UNZIP) $(DL_DIR)/$(USHARE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(USHARE_PATCHES)" ; \
 		then cat $(USHARE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(USHARE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(USHARE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(USHARE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(USHARE_DIR) $(@D) ; \
@@ -158,7 +158,7 @@ ushare-stage: $(USHARE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ushare
 #
 $(USHARE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ushare" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,13 +187,13 @@ $(USHARE_IPK_DIR)/CONTROL/control:
 $(USHARE_IPK): $(USHARE_BUILD_DIR)/.built
 	rm -rf $(USHARE_IPK_DIR) $(BUILD_DIR)/ushare_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(USHARE_BUILD_DIR) DESTDIR=$(USHARE_IPK_DIR) install
-	install -d $(USHARE_IPK_DIR)/opt/etc/
-	install -m 644 $(USHARE_BUILD_DIR)/scripts/ushare.conf $(USHARE_IPK_DIR)/opt/etc/ushare.conf
-	install -d $(USHARE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(USHARE_SOURCE_DIR)/ushare $(USHARE_IPK_DIR)/opt/etc/init.d/S99ushare
+	$(INSTALL) -d $(USHARE_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(USHARE_BUILD_DIR)/scripts/ushare.conf $(USHARE_IPK_DIR)/opt/etc/ushare.conf
+	$(INSTALL) -d $(USHARE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(USHARE_SOURCE_DIR)/ushare $(USHARE_IPK_DIR)/opt/etc/init.d/S99ushare
 	$(MAKE) $(USHARE_IPK_DIR)/CONTROL/control
-	install -m 755 $(USHARE_SOURCE_DIR)/postinst $(USHARE_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(USHARE_SOURCE_DIR)/prerm $(USHARE_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(USHARE_SOURCE_DIR)/postinst $(USHARE_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(USHARE_SOURCE_DIR)/prerm $(USHARE_IPK_DIR)/CONTROL/prerm
 	echo $(USHARE_CONFFILES) | sed -e 's/ /\n/g' > $(USHARE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(USHARE_IPK_DIR)
 

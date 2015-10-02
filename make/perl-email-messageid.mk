@@ -35,7 +35,7 @@ perl-email-messageid-source: $(DL_DIR)/$(PERL-EMAIL-MESSAGEID_SOURCE) $(PERL-EMA
 $(PERL-EMAIL-MESSAGEID_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-EMAIL-MESSAGEID_SOURCE) $(PERL-EMAIL-MESSAGEID_PATCHES) make/perl-email-messageid.mk
 	rm -rf $(BUILD_DIR)/$(PERL-EMAIL-MESSAGEID_DIR) $(@D)
 	$(PERL-EMAIL-MESSAGEID_UNZIP) $(DL_DIR)/$(PERL-EMAIL-MESSAGEID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-EMAIL-MESSAGEID_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-EMAIL-MESSAGEID_DIR) -p1
+#	cat $(PERL-EMAIL-MESSAGEID_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-EMAIL-MESSAGEID_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-EMAIL-MESSAGEID_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-EMAIL-MESSAGEID_BUILD_DIR)/.staged: $(PERL-EMAIL-MESSAGEID_BUILD_DIR)/.bu
 perl-email-messageid-stage: $(PERL-EMAIL-MESSAGEID_BUILD_DIR)/.staged
 
 $(PERL-EMAIL-MESSAGEID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-email-messageid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

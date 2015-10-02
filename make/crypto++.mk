@@ -116,7 +116,7 @@ $(CRYPTO++_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTO++_SOURCE) $(CRYPTO++_PATCH
 	cd $(BUILD_DIR)/$(CRYPTO++_DIR) && $(CRYPTO++_UNZIP) $(DL_DIR)/$(CRYPTO++_SOURCE)
 	if test -n "$(CRYPTO++_PATCHES)" ; \
 		then cat $(CRYPTO++_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CRYPTO++_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CRYPTO++_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CRYPTO++_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CRYPTO++_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ crypto++-stage: $(CRYPTO++_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/crypto++
 #
 $(CRYPTO++_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: crypto++" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,15 +203,15 @@ $(CRYPTO++_IPK_DIR)/CONTROL/control:
 $(CRYPTO++_IPK): $(CRYPTO++_BUILD_DIR)/.built
 	rm -rf $(CRYPTO++_IPK_DIR) $(BUILD_DIR)/crypto++_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CRYPTO++_BUILD_DIR) DESTDIR=$(CRYPTO++_IPK_DIR) install-strip
-#	install -d $(CRYPTO++_IPK_DIR)/opt/etc/
-#	install -m 644 $(CRYPTO++_SOURCE_DIR)/crypto++.conf $(CRYPTO++_IPK_DIR)/opt/etc/crypto++.conf
-#	install -d $(CRYPTO++_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CRYPTO++_SOURCE_DIR)/rc.crypto++ $(CRYPTO++_IPK_DIR)/opt/etc/init.d/SXXcrypto++
+#	$(INSTALL) -d $(CRYPTO++_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CRYPTO++_SOURCE_DIR)/crypto++.conf $(CRYPTO++_IPK_DIR)/opt/etc/crypto++.conf
+#	$(INSTALL) -d $(CRYPTO++_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CRYPTO++_SOURCE_DIR)/rc.crypto++ $(CRYPTO++_IPK_DIR)/opt/etc/init.d/SXXcrypto++
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CRYPTO++_IPK_DIR)/opt/etc/init.d/SXXcrypto++
 	$(MAKE) $(CRYPTO++_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CRYPTO++_SOURCE_DIR)/postinst $(CRYPTO++_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CRYPTO++_SOURCE_DIR)/postinst $(CRYPTO++_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CRYPTO++_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CRYPTO++_SOURCE_DIR)/prerm $(CRYPTO++_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CRYPTO++_SOURCE_DIR)/prerm $(CRYPTO++_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CRYPTO++_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

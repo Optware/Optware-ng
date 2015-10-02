@@ -6,11 +6,11 @@
  
 -XMAIL_ROOT=/var/MailRoot
 -XMAIL_CMD_LINE=""
-+XMAIL_ROOT=/opt/var/MailRoot
++XMAIL_ROOT=%OPTWARE_TARGET_PREFIX%/var/MailRoot
 +XMAIL_CMD_LINE="-SX 1 -Qn 1 -Yt 1 -Ln 1 -PX 1 -CX 1"
  PATH=$XMAIL_ROOT/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 -DAEMON=$XMAIL_ROOT/bin/XMail
-+DAEMON=/opt/bin/XMail
++DAEMON=%OPTWARE_TARGET_PREFIX%/bin/XMail
  NAME=XMail
  DESC="XMail Server"
  

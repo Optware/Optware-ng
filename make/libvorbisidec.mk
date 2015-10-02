@@ -107,7 +107,7 @@ $(LIBVORBISIDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) $(LIBV
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBVORBISIDEC_DIR) $(LIBVORBISIDEC_BUILD_DIR)
 	$(LIBVORBISIDEC_UNZIP) $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBVORBISIDEC_PATCHES) | patch -d $(BUILD_DIR)/$(LIBVORBISIDEC_DIR) -p1
+#	cat $(LIBVORBISIDEC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBVORBISIDEC_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBVORBISIDEC_DIR) $(LIBVORBISIDEC_BUILD_DIR)
 	(cd $(LIBVORBISIDEC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -154,7 +154,7 @@ libvorbisidec-stage: $(LIBVORBISIDEC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/<foo>
 #
 $(LIBVORBISIDEC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libvorbisidec" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

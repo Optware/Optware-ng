@@ -106,7 +106,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(OCAML_DIR) $(OCAML_BUILD_DIR)
 	$(OCAML_UNZIP) $(DL_DIR)/$(OCAML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OCAML_PATCHES)"; then \
-		cat $(OCAML_PATCHES) | patch -bd $(BUILD_DIR)/$(OCAML_DIR) -p1; \
+		cat $(OCAML_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(OCAML_DIR) -p1; \
         fi
 	mv $(BUILD_DIR)/$(OCAML_DIR) $(@D)
 	(cd $(@D); \
@@ -154,7 +154,7 @@ $(OCAML_BUILD_DIR)/.staged: $(OCAML_BUILD_DIR)/.built
 ocaml-stage: $(OCAML_BUILD_DIR)/.staged
 
 $(OCAML_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ocaml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -110,7 +110,7 @@ $(DISCOUNT_BUILD_DIR)/.configured: $(DL_DIR)/$(DISCOUNT_SOURCE) $(DISCOUNT_PATCH
 	$(DISCOUNT_UNZIP) $(DL_DIR)/$(DISCOUNT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DISCOUNT_PATCHES)" ; \
 		then cat $(DISCOUNT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DISCOUNT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DISCOUNT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DISCOUNT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DISCOUNT_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ discount: $(DISCOUNT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/discount
 #
 $(DISCOUNT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: discount" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,7 +199,7 @@ $(DISCOUNT_IPK_DIR)/CONTROL/control:
 #
 $(DISCOUNT_IPK): $(DISCOUNT_BUILD_DIR)/.built
 	rm -rf $(DISCOUNT_IPK_DIR) $(BUILD_DIR)/discount_*_$(TARGET_ARCH).ipk
-	install -d $(DISCOUNT_IPK_DIR)/opt/bin $(DISCOUNT_IPK_DIR)/opt/include $(DISCOUNT_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(DISCOUNT_IPK_DIR)/opt/bin $(DISCOUNT_IPK_DIR)/opt/include $(DISCOUNT_IPK_DIR)/opt/lib
 	$(MAKE) -C $(DISCOUNT_BUILD_DIR) DESTDIR=$(DISCOUNT_IPK_DIR) install.everything
 	$(STRIP_COMMAND) $(DISCOUNT_IPK_DIR)/opt/bin/*
 	$(MAKE) $(DISCOUNT_IPK_DIR)/CONTROL/control

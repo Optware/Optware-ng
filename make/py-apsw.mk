@@ -112,7 +112,7 @@ $(PY-APSW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-APSW_SOURCE) $(PY-APSW_PATCHES)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-APSW_DIR)
 	$(PY-APSW_UNZIP) $(DL_DIR)/$(PY-APSW_SOURCE) -d $(BUILD_DIR)
-#	cat $(PY-APSW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-APSW_DIR) -p1
+#	cat $(PY-APSW_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-APSW_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-APSW_DIR) $(PY-APSW_BUILD_DIR)/2.4
 	(cd $(PY-APSW_BUILD_DIR)/2.4; \
 	    ( \
@@ -129,7 +129,7 @@ $(PY-APSW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-APSW_SOURCE) $(PY-APSW_PATCHES)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-APSW_DIR)
 	$(PY-APSW_UNZIP) $(DL_DIR)/$(PY-APSW_SOURCE) -d $(BUILD_DIR)
-#	cat $(PY-APSW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-APSW_DIR) -p1
+#	cat $(PY-APSW_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-APSW_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-APSW_DIR) $(PY-APSW_BUILD_DIR)/2.5
 	(cd $(PY-APSW_BUILD_DIR)/2.5; \
 	    ( \
@@ -182,7 +182,7 @@ py-apsw-stage: $(PY-APSW_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-apsw
 #
 $(PY24-APSW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-apsw" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,7 +196,7 @@ $(PY24-APSW_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-APSW_CONFLICTS)" >>$@
 
 $(PY25-APSW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-apsw" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

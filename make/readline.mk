@@ -110,7 +110,7 @@ $(READLINE_BUILD_DIR)/.configured: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCH
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(READLINE_DIR) $(@D)
 	$(READLINE_UNZIP) $(DL_DIR)/$(READLINE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(READLINE_PATCHES) | patch -d $(BUILD_DIR)/$(READLINE_DIR) -p1
+#	cat $(READLINE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(READLINE_DIR) -p1
 	if test "$(BUILD_DIR)/$(READLINE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(READLINE_DIR) $(@D) ; \
 	fi
@@ -167,7 +167,7 @@ readline-stage: $(READLINE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/readline
 #
 $(READLINE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: readline" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

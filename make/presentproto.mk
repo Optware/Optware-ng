@@ -63,7 +63,7 @@ PRESENTPROTO_IPK=$(BUILD_DIR)/presentproto_$(PRESENTPROTO_VERSION)-$(PRESENTPROT
 # Automatically create a ipkg control file
 #
 $(PRESENTPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(PRESENTPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PRESENTPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: presentproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(PRESENTPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(PRESENTPROTO_SOURCE) $(PRESEN
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(PRESENTPROTO_SOURCE)
 	if test -n "$(PRESENTPROTO_PATCHES)" ; \
 		then cat $(PRESENTPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PRESENTPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PRESENTPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PRESENTPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PRESENTPROTO_DIR) $(@D) ; \

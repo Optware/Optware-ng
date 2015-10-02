@@ -116,7 +116,7 @@ $(LIBEPOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEPOXY_SOURCE) $(LIBEPOXY_PATCH
 	$(LIBEPOXY_UNZIP) $(DL_DIR)/$(LIBEPOXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEPOXY_PATCHES)" ; \
 		then cat $(LIBEPOXY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBEPOXY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBEPOXY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBEPOXY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBEPOXY_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ libepoxy-stage: $(LIBEPOXY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libepoxy
 #
 $(LIBEPOXY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libepoxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(LIBEPOXY_IPK): $(LIBEPOXY_BUILD_DIR)/.built
 	rm -rf $(LIBEPOXY_IPK_DIR) $(BUILD_DIR)/libepoxy_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEPOXY_BUILD_DIR) DESTDIR=$(LIBEPOXY_IPK_DIR) install-strip
 	rm -f $(LIBEPOXY_IPK_DIR)/opt/lib/*.la
-#	install -d $(LIBEPOXY_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBEPOXY_SOURCE_DIR)/libepoxy.conf $(LIBEPOXY_IPK_DIR)/opt/etc/libepoxy.conf
-#	install -d $(LIBEPOXY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBEPOXY_SOURCE_DIR)/rc.libepoxy $(LIBEPOXY_IPK_DIR)/opt/etc/init.d/SXXlibepoxy
+#	$(INSTALL) -d $(LIBEPOXY_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBEPOXY_SOURCE_DIR)/libepoxy.conf $(LIBEPOXY_IPK_DIR)/opt/etc/libepoxy.conf
+#	$(INSTALL) -d $(LIBEPOXY_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBEPOXY_SOURCE_DIR)/rc.libepoxy $(LIBEPOXY_IPK_DIR)/opt/etc/init.d/SXXlibepoxy
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBEPOXY_IPK_DIR)/opt/etc/init.d/SXXlibepoxy
 	$(MAKE) $(LIBEPOXY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBEPOXY_SOURCE_DIR)/postinst $(LIBEPOXY_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBEPOXY_SOURCE_DIR)/postinst $(LIBEPOXY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBEPOXY_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBEPOXY_SOURCE_DIR)/prerm $(LIBEPOXY_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBEPOXY_SOURCE_DIR)/prerm $(LIBEPOXY_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBEPOXY_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -126,7 +126,7 @@ endif
 	$(ID3LIB_UNZIP) $(DL_DIR)/$(ID3LIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ID3LIB_PATCHES)" ; \
 		then cat $(ID3LIB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ID3LIB_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ID3LIB_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ID3LIB_DIR)" != "$(ID3LIB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ID3LIB_DIR) $(ID3LIB_BUILD_DIR) ; \
@@ -187,7 +187,7 @@ id3lib-stage: $(ID3LIB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/id3lib
 #
 $(ID3LIB_IPK_DIR)/CONTROL/control:
-	@install -d $(ID3LIB_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ID3LIB_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: id3lib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,13 +216,13 @@ $(ID3LIB_IPK_DIR)/CONTROL/control:
 $(ID3LIB_IPK): $(ID3LIB_BUILD_DIR)/.built
 	rm -rf $(ID3LIB_IPK_DIR) $(BUILD_DIR)/id3lib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ID3LIB_BUILD_DIR) DESTDIR=$(ID3LIB_IPK_DIR) install-strip
-#	install -d $(ID3LIB_IPK_DIR)/opt/etc/
-#	install -m 644 $(ID3LIB_SOURCE_DIR)/id3lib.conf $(ID3LIB_IPK_DIR)/opt/etc/id3lib.conf
-#	install -d $(ID3LIB_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ID3LIB_SOURCE_DIR)/rc.id3lib $(ID3LIB_IPK_DIR)/opt/etc/init.d/SXXid3lib
+#	$(INSTALL) -d $(ID3LIB_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ID3LIB_SOURCE_DIR)/id3lib.conf $(ID3LIB_IPK_DIR)/opt/etc/id3lib.conf
+#	$(INSTALL) -d $(ID3LIB_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ID3LIB_SOURCE_DIR)/rc.id3lib $(ID3LIB_IPK_DIR)/opt/etc/init.d/SXXid3lib
 	$(MAKE) $(ID3LIB_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ID3LIB_SOURCE_DIR)/postinst $(ID3LIB_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ID3LIB_SOURCE_DIR)/prerm $(ID3LIB_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ID3LIB_SOURCE_DIR)/postinst $(ID3LIB_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ID3LIB_SOURCE_DIR)/prerm $(ID3LIB_IPK_DIR)/CONTROL/prerm
 	echo $(ID3LIB_CONFFILES) | sed -e 's/ /\n/g' > $(ID3LIB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ID3LIB_IPK_DIR)
 

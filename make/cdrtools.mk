@@ -144,7 +144,7 @@ $(CDRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCH
 	$(CDRTOOLS_UNZIP) $(DL_DIR)/$(CDRTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CDRTOOLS_PATCHES)" ; \
 		then cat $(CDRTOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CDRTOOLS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CDRTOOLS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CDRTOOLS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CDRTOOLS_DIR) $(@D) ; \
@@ -214,7 +214,7 @@ cdrtools: $(CDRTOOLS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/cdrtools
 #
 $(CDRTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cdrtools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

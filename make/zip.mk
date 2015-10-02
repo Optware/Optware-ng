@@ -101,7 +101,7 @@ $(ZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(ZIP_SOURCE) $(ZIP_PATCHES) make/zip.mk
 	$(ZIP_UNZIP) $(DL_DIR)/$(ZIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZIP_PATCHES)" ; \
 		then cat $(ZIP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ZIP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ZIP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ZIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ZIP_DIR) $(@D) ; \
@@ -156,7 +156,7 @@ zip: $(ZIP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/zip
 #
 $(ZIP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: zip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,15 +184,15 @@ $(ZIP_IPK_DIR)/CONTROL/control:
 #
 $(ZIP_IPK): $(ZIP_BUILD_DIR)/.built
 	rm -rf $(ZIP_IPK_DIR) $(BUILD_DIR)/zip_*_$(TARGET_ARCH).ipk
-	install -d $(ZIP_IPK_DIR)/opt/bin
-	install -m 755 $(ZIP_BUILD_DIR)/zip $(ZIP_IPK_DIR)/opt/bin
-	install -m 755 $(ZIP_BUILD_DIR)/zipsplit $(ZIP_IPK_DIR)/opt/bin
-	install -m 755 $(ZIP_BUILD_DIR)/zipnote $(ZIP_IPK_DIR)/opt/bin
-	install -m 755 $(ZIP_BUILD_DIR)/zipcloak $(ZIP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ZIP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zip $(ZIP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zipsplit $(ZIP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zipnote $(ZIP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zipcloak $(ZIP_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND)  $(ZIP_IPK_DIR)/opt/bin/*
 	$(MAKE) $(ZIP_IPK_DIR)/CONTROL/control
-	# install -m 755 $(ZIP_SOURCE_DIR)/postinst $(ZIP_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(ZIP_SOURCE_DIR)/prerm $(ZIP_IPK_DIR)/CONTROL/prerm
+	# $(INSTALL) -m 755 $(ZIP_SOURCE_DIR)/postinst $(ZIP_IPK_DIR)/CONTROL/postinst
+	# $(INSTALL) -m 755 $(ZIP_SOURCE_DIR)/prerm $(ZIP_IPK_DIR)/CONTROL/prerm
 	echo $(ZIP_CONFFILES) | sed -e 's/ /\n/g' > $(ZIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZIP_IPK_DIR)
 

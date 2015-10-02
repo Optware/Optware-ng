@@ -124,7 +124,7 @@ $(GHOSTSCRIPT-FONTS_BUILD_DIR)/.configured: $(DL_DIR)/$(GHOSTSCRIPT-FONTS_SOURCE
 	$(GHOSTSCRIPT-FONTS_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT-FONTS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GHOSTSCRIPT-FONTS_PATCHES)" ; \
 		then cat $(GHOSTSCRIPT-FONTS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GHOSTSCRIPT-FONTS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GHOSTSCRIPT-FONTS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GHOSTSCRIPT-FONTS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GHOSTSCRIPT-FONTS_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ ghostscript-fonts-stage: #$(GHOSTSCRIPT-FONTS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ghostscript-fonts
 #
 $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ghostscript-fonts" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,16 +203,16 @@ $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/control:
 $(GHOSTSCRIPT-FONTS_IPK): $(GHOSTSCRIPT-FONTS_BUILD_DIR)/.configured
 	rm -rf $(GHOSTSCRIPT-FONTS_IPK_DIR) $(BUILD_DIR)/ghostscript-fonts_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(GHOSTSCRIPT-FONTS_BUILD_DIR) DESTDIR=$(GHOSTSCRIPT-FONTS_IPK_DIR) install
-	install -d $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/share/fonts/default/Type1
+	$(INSTALL) -d $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/share/fonts/default/Type1
 	cp -f $(addprefix $(GHOSTSCRIPT-FONTS_BUILD_DIR)/*., afm pfb pfm) $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/share/fonts/default/Type1
-#	install -m 644 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/ghostscript-fonts.conf $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/ghostscript-fonts.conf
-#	install -d $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/rc.ghostscript-fonts $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d/SXXghostscript-fonts
+#	$(INSTALL) -m 644 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/ghostscript-fonts.conf $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/ghostscript-fonts.conf
+#	$(INSTALL) -d $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/rc.ghostscript-fonts $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d/SXXghostscript-fonts
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d/SXXghostscript-fonts
 	$(MAKE) $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/postinst $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/postinst $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/prerm $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/prerm $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

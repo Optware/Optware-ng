@@ -123,7 +123,7 @@ $(PY-BEAKER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BEAKER_SOURCE) $(PY-BEAKER_PA
 	rm -rf $(BUILD_DIR)/$(PY-BEAKER_DIR)
 	$(PY-BEAKER_UNZIP) $(DL_DIR)/$(PY-BEAKER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BEAKER_PATCHES)" ; then \
-	    cat $(PY-BEAKER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
+	    cat $(PY-BEAKER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -133,7 +133,7 @@ $(PY-BEAKER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BEAKER_SOURCE) $(PY-BEAKER_PA
 	rm -rf $(BUILD_DIR)/$(PY-BEAKER_DIR)
 	$(PY-BEAKER_UNZIP) $(DL_DIR)/$(PY-BEAKER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BEAKER_PATCHES)" ; then \
-	    cat $(PY-BEAKER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
+	    cat $(PY-BEAKER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -143,7 +143,7 @@ $(PY-BEAKER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BEAKER_SOURCE) $(PY-BEAKER_PA
 	rm -rf $(BUILD_DIR)/$(PY-BEAKER_DIR)
 	$(PY-BEAKER_UNZIP) $(DL_DIR)/$(PY-BEAKER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BEAKER_PATCHES)" ; then \
-	    cat $(PY-BEAKER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
+	    cat $(PY-BEAKER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -153,7 +153,7 @@ $(PY-BEAKER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BEAKER_SOURCE) $(PY-BEAKER_PA
 	rm -rf $(BUILD_DIR)/$(PY-BEAKER_DIR)
 	$(PY-BEAKER_UNZIP) $(DL_DIR)/$(PY-BEAKER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-BEAKER_PATCHES)" ; then \
-	    cat $(PY-BEAKER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
+	    cat $(PY-BEAKER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BEAKER_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-BEAKER_DIR) $(@D)/3
 	(cd $(@D)/3; \
@@ -247,7 +247,7 @@ py-beaker-host-stage: $(PY-BEAKER_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-beaker
 #
 $(PY25-BEAKER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-beaker" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -261,7 +261,7 @@ $(PY25-BEAKER_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-BEAKER_CONFLICTS)" >>$@
 
 $(PY26-BEAKER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-beaker" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -275,7 +275,7 @@ $(PY26-BEAKER_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-BEAKER_CONFLICTS)" >>$@
 
 $(PY27-BEAKER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-beaker" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -289,7 +289,7 @@ $(PY27-BEAKER_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-BEAKER_CONFLICTS)" >>$@
 
 $(PY3-BEAKER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-beaker" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

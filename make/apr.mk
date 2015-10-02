@@ -73,7 +73,7 @@ APR_IPK=$(BUILD_DIR)/apr_$(APR_VERSION)-$(APR_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(APR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: apr" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

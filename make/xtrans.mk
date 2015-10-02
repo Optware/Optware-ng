@@ -62,7 +62,7 @@ XTRANS_IPK=$(BUILD_DIR)/xtrans_$(XTRANS_FULL_VERSION)-$(XTRANS_IPK_VERSION)_$(TA
 # Automatically create a ipkg control file
 #
 $(XTRANS_IPK_DIR)/CONTROL/control:
-	@install -d $(XTRANS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XTRANS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xtrans" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -98,7 +98,7 @@ $(XTRANS_BUILD_DIR)/.configured: $(DL_DIR)/$(XTRANS_SOURCE) $(XTRANS_PATCHES) ma
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XTRANS_SOURCE)
 	if test -n "$(XTRANS_PATCHES)" ; \
 		then cat $(XTRANS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XTRANS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XTRANS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XTRANS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XTRANS_DIR) $(@D) ; \

@@ -115,7 +115,7 @@ $(PY-IPADDRESS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-IPADDRESS_SOURCE) $(PY-IPA
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-IPADDRESS_UNZIP) $(DL_DIR)/$(PY-IPADDRESS_SOURCE)
 	$(PY-IPADDRESS_UNZIP) $(DL_DIR)/$(PY-IPADDRESS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-IPADDRESS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-IPADDRESS_DIR) -p1
+#	cat $(PY-IPADDRESS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-IPADDRESS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-IPADDRESS_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -127,7 +127,7 @@ $(PY-IPADDRESS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-IPADDRESS_SOURCE) $(PY-IPA
 	)
 #	cd $(BUILD_DIR); $(PY-IPADDRESS_UNZIP) $(DL_DIR)/$(PY-IPADDRESS_SOURCE)
 	$(PY-IPADDRESS_UNZIP) $(DL_DIR)/$(PY-IPADDRESS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-IPADDRESS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-IPADDRESS_DIR) -p1
+#	cat $(PY-IPADDRESS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-IPADDRESS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-IPADDRESS_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -192,7 +192,7 @@ py-ipaddress-host-stage: $(PY-IPADDRESS_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-ipaddress
 #
 $(PY26-IPADDRESS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-ipaddress" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,7 +206,7 @@ $(PY26-IPADDRESS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-IPADDRESS_CONFLICTS)" >>$@
 
 $(PY27-IPADDRESS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-ipaddress" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -110,7 +110,7 @@ $(SG3-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(SG3-UTILS_SOURCE) $(SG3-UTILS_PA
 	$(SG3-UTILS_UNZIP) $(DL_DIR)/$(SG3-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SG3-UTILS_PATCHES)" ; \
 		then cat $(SG3-UTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SG3-UTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SG3-UTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SG3-UTILS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SG3-UTILS_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ sg3-utils-stage: $(SG3-UTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sg3-utils
 #
 $(SG3-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sg3-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,15 +189,15 @@ $(SG3-UTILS_IPK_DIR)/CONTROL/control:
 $(SG3-UTILS_IPK): $(SG3-UTILS_BUILD_DIR)/.built
 	rm -rf $(SG3-UTILS_IPK_DIR) $(BUILD_DIR)/sg3-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SG3-UTILS_BUILD_DIR) DESTDIR=$(SG3-UTILS_IPK_DIR) install-strip
-#	install -d $(SG3-UTILS_IPK_DIR)/opt/etc/
-#	install -m 644 $(SG3-UTILS_SOURCE_DIR)/sg3-utils.conf $(SG3-UTILS_IPK_DIR)/opt/etc/sg3-utils.conf
-#	install -d $(SG3-UTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SG3-UTILS_SOURCE_DIR)/rc.sg3-utils $(SG3-UTILS_IPK_DIR)/opt/etc/init.d/SXXsg3-utils
+#	$(INSTALL) -d $(SG3-UTILS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SG3-UTILS_SOURCE_DIR)/sg3-utils.conf $(SG3-UTILS_IPK_DIR)/opt/etc/sg3-utils.conf
+#	$(INSTALL) -d $(SG3-UTILS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SG3-UTILS_SOURCE_DIR)/rc.sg3-utils $(SG3-UTILS_IPK_DIR)/opt/etc/init.d/SXXsg3-utils
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SG3-UTILS_IPK_DIR)/opt/etc/init.d/SXXsg3-utils
 	$(MAKE) $(SG3-UTILS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SG3-UTILS_SOURCE_DIR)/postinst $(SG3-UTILS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SG3-UTILS_SOURCE_DIR)/postinst $(SG3-UTILS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SG3-UTILS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SG3-UTILS_SOURCE_DIR)/prerm $(SG3-UTILS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SG3-UTILS_SOURCE_DIR)/prerm $(SG3-UTILS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SG3-UTILS_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

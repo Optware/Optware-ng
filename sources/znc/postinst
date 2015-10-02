@@ -1,9 +1,9 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 ZNC_USER=znc
 ZNC_GROUP=znc
-ZNC_HOME=/opt/var/lib/znc
+ZNC_HOME=%OPTWARE_TARGET_PREFIX%/var/lib/znc
 
 # group creation
 if grep -q ^$ZNC_GROUP: /etc/group; then
@@ -36,6 +36,6 @@ fi
 
 echo ; echo
 echo "Before launching znc for the first time, you must run 'znc -c' as $ZNC_USER to generate the configuration."
-echo "Then, you can launch znc by using /opt/etc/init.d/S91znc"
+echo "Then, you can launch znc by using %OPTWARE_TARGET_PREFIX%/etc/init.d/S91znc"
 echo
 

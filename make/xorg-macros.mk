@@ -63,7 +63,7 @@ XORG-MACROS_IPK=$(BUILD_DIR)/xorg-macros_$(XORG-MACROS_VERSION)-$(XORG-MACROS_IP
 # Automatically create a ipkg control file
 #
 $(XORG-MACROS_IPK_DIR)/CONTROL/control:
-	@install -d $(XORG-MACROS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XORG-MACROS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xorg-macros" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(XORG-MACROS_BUILD_DIR)/.configured: $(DL_DIR)/$(XORG-MACROS_SOURCE) $(XORG-MAC
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XORG-MACROS_SOURCE)
 	if test -n "$(XORG-MACROS_PATCHES)" ; \
 		then cat $(XORG-MACROS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XORG-MACROS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XORG-MACROS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XORG-MACROS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XORG-MACROS_DIR) $(@D) ; \
@@ -138,7 +138,7 @@ $(XORG-MACROS_BUILD_DIR)/.staged: $(XORG-MACROS_BUILD_DIR)/.built
 	rm -f $@
 #	rm -rf $(STAGING_INCLUDE_DIR)/X11
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	install -d $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
 	mv -f $(STAGING_PREFIX)/share/pkgconfig/xorg-macros.pc $(STAGING_LIB_DIR)/pkgconfig
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xorg-macros.pc
 	touch $@

@@ -112,7 +112,7 @@ $(MOBLOCK_BUILD_DIR)/.configured: $(DL_DIR)/$(MOBLOCK_SOURCE) $(MOBLOCK_PATCHES)
 	$(MOBLOCK_UNZIP) $(DL_DIR)/$(MOBLOCK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOBLOCK_PATCHES)" ; \
 		then cat $(MOBLOCK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MOBLOCK_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MOBLOCK_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MOBLOCK_DIR)" != "$(MOBLOCK_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MOBLOCK_DIR) $(MOBLOCK_BUILD_DIR) ; \
@@ -153,7 +153,7 @@ moblock-stage: $(MOBLOCK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/moblock
 #
 $(MOBLOCK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: moblock" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,19 +181,19 @@ $(MOBLOCK_IPK_DIR)/CONTROL/control:
 #
 $(MOBLOCK_IPK): $(MOBLOCK_BUILD_DIR)/.built
 	rm -rf $(MOBLOCK_IPK_DIR) $(BUILD_DIR)/moblock_*_$(TARGET_ARCH).ipk
-	install -d $(MOBLOCK_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(MOBLOCK_IPK_DIR)/opt/bin
 	$(MAKE) -C $(MOBLOCK_BUILD_DIR) DESTDIR=$(MOBLOCK_IPK_DIR) install
-	install -d $(MOBLOCK_IPK_DIR)/opt/share/doc/moblock
-	install -m 644 $(MOBLOCK_BUILD_DIR)/README $(MOBLOCK_IPK_DIR)/opt/share/doc/moblock
-	install -m 644 $(MOBLOCK_BUILD_DIR)/MoBlock-nfq.sh $(MOBLOCK_IPK_DIR)/opt/bin
-#	install -m 644 $(MOBLOCK_SOURCE_DIR)/moblock.conf $(MOBLOCK_IPK_DIR)/opt/etc/moblock.conf
-#	install -d $(MOBLOCK_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MOBLOCK_SOURCE_DIR)/rc.moblock $(MOBLOCK_IPK_DIR)/opt/etc/init.d/SXXmoblock
+	$(INSTALL) -d $(MOBLOCK_IPK_DIR)/opt/share/doc/moblock
+	$(INSTALL) -m 644 $(MOBLOCK_BUILD_DIR)/README $(MOBLOCK_IPK_DIR)/opt/share/doc/moblock
+	$(INSTALL) -m 644 $(MOBLOCK_BUILD_DIR)/MoBlock-nfq.sh $(MOBLOCK_IPK_DIR)/opt/bin
+#	$(INSTALL) -m 644 $(MOBLOCK_SOURCE_DIR)/moblock.conf $(MOBLOCK_IPK_DIR)/opt/etc/moblock.conf
+#	$(INSTALL) -d $(MOBLOCK_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MOBLOCK_SOURCE_DIR)/rc.moblock $(MOBLOCK_IPK_DIR)/opt/etc/init.d/SXXmoblock
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOBLOCK_IPK_DIR)/opt/etc/init.d/SXXmoblock
 	$(MAKE) $(MOBLOCK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MOBLOCK_SOURCE_DIR)/postinst $(MOBLOCK_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MOBLOCK_SOURCE_DIR)/postinst $(MOBLOCK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOBLOCK_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MOBLOCK_SOURCE_DIR)/prerm $(MOBLOCK_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MOBLOCK_SOURCE_DIR)/prerm $(MOBLOCK_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOBLOCK_IPK_DIR)/CONTROL/prerm
 	echo $(MOBLOCK_CONFFILES) | sed -e 's/ /\n/g' > $(MOBLOCK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOBLOCK_IPK_DIR)

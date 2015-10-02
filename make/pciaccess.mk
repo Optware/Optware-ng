@@ -61,7 +61,7 @@ PCIACCESS_IPK=$(BUILD_DIR)/pciaccess_$(PCIACCESS_FULL_VERSION)-$(PCIACCESS_IPK_V
 # Automatically create a ipkg control file
 #
 $(PCIACCESS_IPK_DIR)/CONTROL/control:
-	@install -d $(PCIACCESS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PCIACCESS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: pciaccess" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(PCIACCESS_BUILD_DIR)/.configured: $(DL_DIR)/$(PCIACCESS_SOURCE) $(PCIACCESS_PA
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(PCIACCESS_SOURCE)
 	if test -n "$(PCIACCESS_PATCHES)" ; \
 		then cat $(PCIACCESS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PCIACCESS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PCIACCESS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PCIACCESS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PCIACCESS_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ $(PCIACCESS_IPK): $(PCIACCESS_BUILD_DIR)/.built
 	rm -rf $(PCIACCESS_IPK_DIR) $(BUILD_DIR)/pciaccess_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PCIACCESS_BUILD_DIR) DESTDIR=$(PCIACCESS_IPK_DIR) install-strip
 	$(MAKE) $(PCIACCESS_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PCIACCESS_SOURCE_DIR)/postinst $(PCIACCESS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(PCIACCESS_SOURCE_DIR)/postinst $(PCIACCESS_IPK_DIR)/CONTROL/postinst
 	rm -f $(PCIACCESS_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCIACCESS_IPK_DIR)
 

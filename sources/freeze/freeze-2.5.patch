@@ -9,7 +9,7 @@
 -.IR /etc/default/
 -directory, choose another - in MS-DOS it is FREEZE.CNF in
 -the directory of FREEZE.EXE), which has the following format:
-+.IR /opt/etc/freeze.cnf
++.IR %OPTWARE_TARGET_PREFIX%/etc/freeze.cnf
 +file, which has the following format:
  .in +8
  .I name
@@ -21,7 +21,7 @@
  of the file's type can give up to 2% of additional compression.
  The list of types is stored in file
 -.IR /usr/local/lib/freeze.cnf .
-+.IR /opt/etc/freeze.cnf .
++.IR %OPTWARE_TARGET_PREFIX%/etc/freeze.cnf .
  Types may be abbreviated while not ambigious. You can also determine
  values for the static Huffman table by using a list of 8 numbers
  separated by commas instead of
@@ -32,7 +32,7 @@
  
  # Added the prefix macro, so that it was easier to change installation place.
 -prefix        = /usr/local
-+prefix        = /opt
++prefix        = %OPTWARE_TARGET_PREFIX%
  DEST          = $(prefix)/bin
 -MANDEST       = $(prefix)/man/man1
 +MANDEST       = $(prefix)/share/man/man1
@@ -44,11 +44,11 @@
  
  # define DEFFILE as a filename with freeze's default Huffman values
 -# e.g. -DDEFFILE=\"/etc/default/freeze\"
-+# e.g. -DDEFFILE=\"/opt/etc/default/freeze\"
++# e.g. -DDEFFILE=\"%OPTWARE_TARGET_PREFIX%/etc/default/freeze\"
  # !!!! NOTE !!!! default is now $(prefix)/lib/freeze.cnf !!!!!
  
 -OPTIONS       = -DDEFFILE=\"$(prefix)/lib/freeze.cnf\"
-+OPTIONS       = -DDEFFILE=\"/opt/etc/freeze.cnf\"
++OPTIONS       = -DDEFFILE=\"%OPTWARE_TARGET_PREFIX%/etc/freeze.cnf\"
  
  LINTFLAGS     = -DDEBUG -DGATHER_STAT -x -h
  

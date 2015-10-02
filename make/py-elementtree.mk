@@ -112,7 +112,7 @@ $(PY-ELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) $(PY
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR)
 	$(PY-ELEMENTTREE_UNZIP) $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ELEMENTTREE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) -p1
+#	cat $(PY-ELEMENTTREE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR)/2.4
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
@@ -121,7 +121,7 @@ $(PY-ELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) $(PY
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR)
 	$(PY-ELEMENTTREE_UNZIP) $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ELEMENTTREE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) -p1
+#	cat $(PY-ELEMENTTREE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR)/2.5
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -152,7 +152,7 @@ $(PY-ELEMENTTREE_BUILD_DIR)/.staged: $(PY-ELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(STAGING_DIR) --prefix=/opt)
+	    $(INSTALL) --root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
 py-elementtree-stage: $(PY-ELEMENTTREE_BUILD_DIR)/.staged
@@ -162,7 +162,7 @@ py-elementtree-stage: $(PY-ELEMENTTREE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-elementtree
 #
 $(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-elementtree" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -176,7 +176,7 @@ $(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ELEMENTTREE_CONFLICTS)" >>$@
 
 $(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-elementtree" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,7 +207,7 @@ $(PY24-ELEMENTTREE_IPK): $(PY-ELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY24-ELEMENTTREE_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY24-ELEMENTTREE_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-ELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-ELEMENTTREE_IPK_DIR)
@@ -217,7 +217,7 @@ $(PY25-ELEMENTTREE_IPK): $(PY-ELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY25-ELEMENTTREE_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY25-ELEMENTTREE_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-ELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-ELEMENTTREE_IPK_DIR)

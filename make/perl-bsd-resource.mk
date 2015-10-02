@@ -68,7 +68,7 @@ $(PERL-BSD-RESOURCE_BUILD_DIR)/.staged: $(PERL-BSD-RESOURCE_BUILD_DIR)/.built
 perl-bsd-resource-stage: $(PERL-BSD-RESOURCE_BUILD_DIR)/.staged
 
 $(PERL-BSD-RESOURCE_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-BSD-RESOURCE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-BSD-RESOURCE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-bsd-resource" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

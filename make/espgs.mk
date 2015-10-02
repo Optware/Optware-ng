@@ -104,7 +104,7 @@ $(ESPGS_BUILD_DIR)/.configured: $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
 	$(MAKE) glib-stage
 	rm -rf $(BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_BUILD_DIR)
 	$(ESPGS_UNZIP) $(DL_DIR)/$(ESPGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ESPGS_PATCHES) | patch -d $(BUILD_DIR)/$(ESPGS_DIR) -p1
+	cat $(ESPGS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ESPGS_DIR) -p1
 	mv $(BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_BUILD_DIR)
 #	sed -i \
 	       -e '/-mkdir -p $$(datadir)/s|mkdir -p |mkdir -p $$(install_prefix)|' \
@@ -170,7 +170,7 @@ $(ESPGS_BUILD_DIR)/.staged: $(ESPGS_BUILD_DIR)/.built
 espgs-stage: $(ESPGS_BUILD_DIR)/.staged
 
 $(ESPGS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: espgs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,7 +189,7 @@ $(ESPGS_IPK): $(ESPGS_BUILD_DIR)/.built
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
 	$(MAKE) -C $(ESPGS_BUILD_DIR) install \
 		DESTDIR=$(ESPGS_IPK_DIR) \
-		install_prefix=$(ESPGS_IPK_DIR) \
+		$(INSTALL)_prefix=$(ESPGS_IPK_DIR) \
 		prefix=/opt \
 		ECHOGS_XE=$(ESPGS_BUILD_DIR)/obj/echogs.build \
 		GENARCH_XE=$(ESPGS_BUILD_DIR)/obj/genarch.build \

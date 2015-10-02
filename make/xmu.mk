@@ -62,7 +62,7 @@ XMU_IPK=$(BUILD_DIR)/xmu_$(XMU_VERSION)-$(XMU_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XMU_IPK_DIR)/CONTROL/control:
-	@install -d $(XMU_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XMU_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xmu" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -106,7 +106,7 @@ $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz
 	if test -n "$(XMU_PATCHES)" ; \
 		then cat $(XMU_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XMU_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XMU_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XMU_DIR)" != "$(XMU_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XMU_DIR) $(XMU_BUILD_DIR) ; \

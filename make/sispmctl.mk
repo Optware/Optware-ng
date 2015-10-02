@@ -100,7 +100,7 @@ $(SISPMCTL_BUILD_DIR)/.configured: $(DL_DIR)/$(SISPMCTL_SOURCE) $(SISPMCTL_PATCH
 	$(SISPMCTL_UNZIP) $(DL_DIR)/$(SISPMCTL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SISPMCTL_PATCHES)" ; \
 		then cat $(SISPMCTL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SISPMCTL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SISPMCTL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SISPMCTL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SISPMCTL_DIR) $(@D) ; \
@@ -153,7 +153,7 @@ sispmctl-stage: $(SISPMCTL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sispmctl
 #
 $(SISPMCTL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sispmctl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -183,15 +183,15 @@ $(SISPMCTL_IPK): $(SISPMCTL_BUILD_DIR)/.built
 	rm -rf $(SISPMCTL_IPK_DIR) $(BUILD_DIR)/sispmctl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SISPMCTL_BUILD_DIR) transform='' \
 		DESTDIR=$(SISPMCTL_IPK_DIR) install-strip
-	install -d $(SISPMCTL_IPK_DIR)/opt/etc/
-	# install -m 644 $(SISPMCTL_SOURCE_DIR)/sispmctl.conf $(SISPMCTL_IPK_DIR)/opt/etc/sispmctl.conf
-	# install -d $(SISPMCTL_IPK_DIR)/opt/etc/init.d
-	# install -m 755 $(SISPMCTL_SOURCE_DIR)/rc.sispmctl $(SISPMCTL_IPK_DIR)/opt/etc/init.d/SXXsispmctl
+	$(INSTALL) -d $(SISPMCTL_IPK_DIR)/opt/etc/
+	# $(INSTALL) -m 644 $(SISPMCTL_SOURCE_DIR)/sispmctl.conf $(SISPMCTL_IPK_DIR)/opt/etc/sispmctl.conf
+	# $(INSTALL) -d $(SISPMCTL_IPK_DIR)/opt/etc/init.d
+	# $(INSTALL) -m 755 $(SISPMCTL_SOURCE_DIR)/rc.sispmctl $(SISPMCTL_IPK_DIR)/opt/etc/init.d/SXXsispmctl
 	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SISPMCTL_IPK_DIR)/opt/etc/init.d/SXXsispmctl
 	$(MAKE) $(SISPMCTL_IPK_DIR)/CONTROL/control
-	# install -m 755 $(SISPMCTL_SOURCE_DIR)/postinst $(SISPMCTL_IPK_DIR)/CONTROL/postinst
+	# $(INSTALL) -m 755 $(SISPMCTL_SOURCE_DIR)/postinst $(SISPMCTL_IPK_DIR)/CONTROL/postinst
 	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SISPMCTL_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(SISPMCTL_SOURCE_DIR)/prerm $(SISPMCTL_IPK_DIR)/CONTROL/prerm
+	# $(INSTALL) -m 755 $(SISPMCTL_SOURCE_DIR)/prerm $(SISPMCTL_IPK_DIR)/CONTROL/prerm
 	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SISPMCTL_IPK_DIR)/CONTROL/prerm
 	# echo $(SISPMCTL_CONFFILES) | sed -e 's/ /\n/g' > $(SISPMCTL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SISPMCTL_IPK_DIR)

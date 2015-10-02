@@ -108,7 +108,7 @@ $(LIBLCMS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBLCMS_SOURCE) $(LIBLCMS_PATCHES)
 	$(LIBLCMS_UNZIP) $(DL_DIR)/$(LIBLCMS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBLCMS_PATCHES)" ; \
 		then cat $(LIBLCMS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBLCMS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBLCMS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBLCMS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBLCMS_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ liblcms-stage: $(LIBLCMS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/liblcms
 #
 $(LIBLCMS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: liblcms" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,13 +189,13 @@ $(LIBLCMS_IPK_DIR)/CONTROL/control:
 $(LIBLCMS_IPK): $(LIBLCMS_BUILD_DIR)/.built
 	rm -rf $(LIBLCMS_IPK_DIR) $(BUILD_DIR)/liblcms_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBLCMS_BUILD_DIR) DESTDIR=$(LIBLCMS_IPK_DIR) install-strip
-#	install -d $(LIBLCMS_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBLCMS_SOURCE_DIR)/liblcms.conf $(LIBLCMS_IPK_DIR)/opt/etc/liblcms.conf
-#	install -d $(LIBLCMS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBLCMS_SOURCE_DIR)/rc.liblcms $(LIBLCMS_IPK_DIR)/opt/etc/init.d/SXXliblcms
+#	$(INSTALL) -d $(LIBLCMS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBLCMS_SOURCE_DIR)/liblcms.conf $(LIBLCMS_IPK_DIR)/opt/etc/liblcms.conf
+#	$(INSTALL) -d $(LIBLCMS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBLCMS_SOURCE_DIR)/rc.liblcms $(LIBLCMS_IPK_DIR)/opt/etc/init.d/SXXliblcms
 	$(MAKE) $(LIBLCMS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBLCMS_SOURCE_DIR)/postinst $(LIBLCMS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBLCMS_SOURCE_DIR)/prerm $(LIBLCMS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBLCMS_SOURCE_DIR)/postinst $(LIBLCMS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBLCMS_SOURCE_DIR)/prerm $(LIBLCMS_IPK_DIR)/CONTROL/prerm
 	echo $(LIBLCMS_CONFFILES) | sed -e 's/ /\n/g' > $(LIBLCMS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBLCMS_IPK_DIR)
 

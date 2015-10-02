@@ -14,13 +14,13 @@ case "$rc" in
     start)
 	echo "starting service cyrus-imapd"
 	
-	/opt/libexec/cyrus/bin/master -p /opt/var/run/cyrus.pid -d > /dev/null 2>&1
+	%OPTWARE_TARGET_PREFIX%/libexec/cyrus/bin/master -p %OPTWARE_TARGET_PREFIX%/var/run/cyrus.pid -d > /dev/null 2>&1
 	;;
     stop)
 	echo "stopping service cyrus-imapd"
 	
-	if [ -f "/opt/var/run/cyrus.pid" ]; then 
-	    /bin/kill -TERM `cat /opt/var/run/cyrus.pid` 2>/dev/null
+	if [ -f "%OPTWARE_TARGET_PREFIX%/var/run/cyrus.pid" ]; then 
+	    /bin/kill -TERM `cat %OPTWARE_TARGET_PREFIX%/var/run/cyrus.pid` 2>/dev/null
 	fi
 	;;
     restart)

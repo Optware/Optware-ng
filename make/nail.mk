@@ -128,7 +128,7 @@ $(NAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(NAIL_SOURCE) $(NAIL_PATCHES) make/nai
 	$(NAIL_UNZIP) $(DL_DIR)/$(NAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NAIL_PATCHES)" ; \
 		then cat $(NAIL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NAIL_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NAIL_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(NAIL_DIR) $(NAIL_BUILD_DIR)
 	(cd $(NAIL_BUILD_DIR); \
@@ -162,11 +162,11 @@ nail: $(NAIL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 #$(STAGING_LIB_DIR)/libnail.so.$(NAIL_VERSION): $(NAIL_BUILD_DIR)/.built
-#	install -d $(STAGING_INCLUDE_DIR)
-#	install -m 644 $(NAIL_BUILD_DIR)/nail.h $(STAGING_INCLUDE_DIR)
-#	install -d $(STAGING_LIB_DIR)
-#	install -m 644 $(NAIL_BUILD_DIR)/libnail.a $(STAGING_LIB_DIR)
-#	install -m 644 $(NAIL_BUILD_DIR)/libnail.so.$(NAIL_VERSION) $(STAGING_LIB_DIR)
+#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -m 644 $(NAIL_BUILD_DIR)/nail.h $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -d $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(NAIL_BUILD_DIR)/libnail.a $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(NAIL_BUILD_DIR)/libnail.so.$(NAIL_VERSION) $(STAGING_LIB_DIR)
 #	cd $(STAGING_LIB_DIR) && ln -fs libnail.so.$(NAIL_VERSION) libnail.so.1
 #	cd $(STAGING_LIB_DIR) && ln -fs libnail.so.$(NAIL_VERSION) libnail.so
 
@@ -177,7 +177,7 @@ nail: $(NAIL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/nail
 #
 $(NAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(NAIL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(NAIL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: nail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -210,18 +210,18 @@ endif
 #
 $(NAIL_IPK): $(NAIL_BUILD_DIR)/.built
 	rm -rf $(NAIL_IPK_DIR) $(BUILD_DIR)/nail_*_$(TARGET_ARCH).ipk
-	install -d $(NAIL_IPK_DIR)/opt/bin
-	install -d $(NAIL_IPK_DIR)/opt/etc
-	install -d $(NAIL_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(NAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(NAIL_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(NAIL_IPK_DIR)/opt/share/man/man1
 	$(STRIP_COMMAND) $(NAIL_BUILD_DIR)/mailx -o $(NAIL_IPK_DIR)/opt/bin/mailx
-	install -m 644 $(NAIL_BUILD_DIR)/mailx.1 $(NAIL_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -m 644 $(NAIL_BUILD_DIR)/mailx.1 $(NAIL_IPK_DIR)/opt/share/man/man1
 	ln -s mailx $(NAIL_IPK_DIR)/opt/bin/nail
-	install -m 644 $(NAIL_BUILD_DIR)/nail.rc $(NAIL_IPK_DIR)/opt/etc/nail.rc
-#	install -d $(NAIL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NAIL_SOURCE_DIR)/rc.nail $(NAIL_IPK_DIR)/opt/etc/init.d/SXXnail
+	$(INSTALL) -m 644 $(NAIL_BUILD_DIR)/nail.rc $(NAIL_IPK_DIR)/opt/etc/nail.rc
+#	$(INSTALL) -d $(NAIL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NAIL_SOURCE_DIR)/rc.nail $(NAIL_IPK_DIR)/opt/etc/init.d/SXXnail
 	$(MAKE) $(NAIL_IPK_DIR)/CONTROL/control
-#	install -m 644 $(NAIL_SOURCE_DIR)/postinst $(NAIL_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(NAIL_SOURCE_DIR)/prerm $(NAIL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(NAIL_SOURCE_DIR)/postinst $(NAIL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(NAIL_SOURCE_DIR)/prerm $(NAIL_IPK_DIR)/CONTROL/prerm
 	echo $(NAIL_CONFFILES) | sed -e 's/ /\n/g' > $(NAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NAIL_IPK_DIR)
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/opt/bin:/opt/sbin:/opt/libexec:/bin:/usr/sbin:/usr/bin:/usr/local/bin:
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/libexec:/bin:/usr/sbin:/usr/bin:/usr/local/bin:
 export PATH
 
 #
@@ -12,17 +12,17 @@ if ! grep -q "^gitosis:" /etc/passwd ; then
 		-s /bin/sh \
 		-g 'gitosis git hosting user' \
 		-D \
-		-h /opt/share/gitosis \
+		-h %OPTWARE_TARGET_PREFIX%/share/gitosis \
 		gitosis
 fi
 
-# chown gitosis:gitosis /opt/share/gitosis
+# chown gitosis:gitosis %OPTWARE_TARGET_PREFIX%/share/gitosis
 
 echo
 echo "To complete the gitosis setup:"
 echo
 echo "1. Copy a SSH pubkey from SSH client to this gitosis server"
-echo "2. [server]$ sudo -H -u gitosis /opt/bin/gitosis-init < /tmp/transfered-SSH-key.pub"
+echo "2. [server]$ sudo -H -u gitosis %OPTWARE_TARGET_PREFIX%/bin/gitosis-init < /tmp/transfered-SSH-key.pub"
 echo "3. [client]$ git clone gitosis@server:gitosis-admin.git"
 echo "4. Manage gitosis-admin by editing, committing & pushing"
 echo

@@ -100,7 +100,7 @@ $(GAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES) make/gaw
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(GAWK_DIR) $(@D)
 	$(GAWK_UNZIP) $(DL_DIR)/$(GAWK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GAWK_PATCHES) | patch -d $(BUILD_DIR)/$(GAWK_DIR) -p1
+#	cat $(GAWK_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GAWK_DIR) -p1
 	mv $(BUILD_DIR)/$(GAWK_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -143,18 +143,18 @@ gawk: $(GAWK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 #$(STAGING_LIB_DIR)/libgawk.so.$(GAWK_VERSION): $(GAWK_BUILD_DIR)/.built
-#	install -d $(STAGING_INCLUDE_DIR)
-#	install -m 644 $(GAWK_BUILD_DIR)/gawk.h $(STAGING_INCLUDE_DIR)
-#	install -d $(STAGING_LIB_DIR)
-#	install -m 644 $(GAWK_BUILD_DIR)/libgawk.a $(STAGING_LIB_DIR)
-#	install -m 644 $(GAWK_BUILD_DIR)/libgawk.so.$(GAWK_VERSION) $(STAGING_LIB_DIR)
+#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -m 644 $(GAWK_BUILD_DIR)/gawk.h $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -d $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(GAWK_BUILD_DIR)/libgawk.a $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(GAWK_BUILD_DIR)/libgawk.so.$(GAWK_VERSION) $(STAGING_LIB_DIR)
 #	cd $(STAGING_LIB_DIR) && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so.1
 #	cd $(STAGING_LIB_DIR) && ln -fs libgawk.so.$(GAWK_VERSION) libgawk.so
 #
 #gawk-stage: $(STAGING_LIB_DIR)/libgawk.so.$(GAWK_VERSION)
 
 $(GAWK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gawk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,7 +182,7 @@ $(GAWK_IPK_DIR)/CONTROL/control:
 #
 $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
 	rm -rf $(GAWK_IPK_DIR) $(BUILD_DIR)/gawk_*_$(TARGET_ARCH).ipk
-	install -d $(GAWK_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(GAWK_IPK_DIR)/opt/bin
 	$(MAKE) -C $(GAWK_BUILD_DIR) DESTDIR=$(GAWK_IPK_DIR) install-strip
 	rm -f $(GAWK_IPK_DIR)/opt/info/dir $(GAWK_IPK_DIR)/opt/share/info/dir
 	rm -f $(GAWK_IPK_DIR)/opt/bin/gawk-$(GAWK_VERSION)

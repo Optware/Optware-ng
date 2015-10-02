@@ -166,7 +166,7 @@ endif
 	$(MPD_UNZIP) $(DL_DIR)/$(MPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPD_PATCHES)" ; \
 		then cat $(MPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MPD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MPD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MPD_DIR) $(@D) ; \
@@ -257,7 +257,7 @@ mpd-stage: $(MPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mpd
 #
 $(MPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -290,15 +290,15 @@ endif
 $(MPD_IPK): $(MPD_BUILD_DIR)/.built
 	rm -rf $(MPD_IPK_DIR) $(BUILD_DIR)/mpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPD_BUILD_DIR) DESTDIR=$(MPD_IPK_DIR) install-strip
-#	install -d $(MPD_IPK_DIR)/opt/etc/
-#	install -m 644 $(MPD_SOURCE_DIR)/mpd.conf $(MPD_IPK_DIR)/opt/etc/mpd.conf
-#	install -d $(MPD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MPD_SOURCE_DIR)/rc.mpd $(MPD_IPK_DIR)/opt/etc/init.d/SXXmpd
+#	$(INSTALL) -d $(MPD_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MPD_SOURCE_DIR)/mpd.conf $(MPD_IPK_DIR)/opt/etc/mpd.conf
+#	$(INSTALL) -d $(MPD_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MPD_SOURCE_DIR)/rc.mpd $(MPD_IPK_DIR)/opt/etc/init.d/SXXmpd
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXmpd
 	$(MAKE) $(MPD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MPD_SOURCE_DIR)/postinst $(MPD_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MPD_SOURCE_DIR)/postinst $(MPD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MPD_SOURCE_DIR)/prerm $(MPD_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MPD_SOURCE_DIR)/prerm $(MPD_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(MPD_CONFFILES) | sed -e 's/ /\n/g' > $(MPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MPD_IPK_DIR)

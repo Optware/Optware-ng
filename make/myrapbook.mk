@@ -116,7 +116,7 @@ $(MYRAPBOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(MYRAPBOOK_SOURCE) $(MYRAPBOOK_PA
 	$(MYRAPBOOK_UNZIP) $(DL_DIR)/$(MYRAPBOOK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MYRAPBOOK_PATCHES)" ; \
 		then cat $(MYRAPBOOK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MYRAPBOOK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MYRAPBOOK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MYRAPBOOK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MYRAPBOOK_DIR) $(@D) ; \
@@ -152,7 +152,7 @@ myrapbook: $(MYRAPBOOK_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/myrapbook
 #
 $(MYRAPBOOK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: myrapbook" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -183,18 +183,18 @@ $(MYRAPBOOK_IPK): $(MYRAPBOOK_BUILD_DIR)/.built
 	mkdir -p $(MYRAPBOOK_IPK_DIR)/opt/bin $(MYRAPBOOK_IPK_DIR)/opt/share/myrapbook
 	cp -f $(MYRAPBOOK_BUILD_DIR)/web_interface/* $(MYRAPBOOK_IPK_DIR)/opt/share/myrapbook
 	$(STRIP_COMMAND) $(MYRAPBOOK_BUILD_DIR)/myrapbook-daemon -o $(MYRAPBOOK_IPK_DIR)/opt/bin/myrapbook-daemon
-	install -d $(MYRAPBOOK_IPK_DIR)/opt/etc/
-	install -m 644 $(MYRAPBOOK_SOURCE_DIR)/myrapbook.conf $(MYRAPBOOK_IPK_DIR)/opt/etc/myrapbook.conf
-	install -d $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(MYRAPBOOK_SOURCE_DIR)/myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/myrapbookd
+	$(INSTALL) -d $(MYRAPBOOK_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(MYRAPBOOK_SOURCE_DIR)/myrapbook.conf $(MYRAPBOOK_IPK_DIR)/opt/etc/myrapbook.conf
+	$(INSTALL) -d $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(MYRAPBOOK_SOURCE_DIR)/myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/myrapbookd
 	ln -s myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/S92myrapbookd
 	ln -s myrapbookd $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/K12myrapbookd
-	install -d $(MYRAPBOOK_IPK_DIR)/opt/tmp/myrapbook
+	$(INSTALL) -d $(MYRAPBOOK_IPK_DIR)/opt/tmp/myrapbook
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MYRAPBOOK_IPK_DIR)/opt/etc/init.d/SXXmyrapbook
 	$(MAKE) $(MYRAPBOOK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MYRAPBOOK_SOURCE_DIR)/postinst $(MYRAPBOOK_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MYRAPBOOK_SOURCE_DIR)/postinst $(MYRAPBOOK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MYRAPBOOK_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MYRAPBOOK_SOURCE_DIR)/prerm $(MYRAPBOOK_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MYRAPBOOK_SOURCE_DIR)/prerm $(MYRAPBOOK_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MYRAPBOOK_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

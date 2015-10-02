@@ -119,7 +119,7 @@ $(PY-SERVICE-IDENTITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERVICE-IDENTITY_SO
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-SERVICE-IDENTITY_UNZIP) $(DL_DIR)/$(PY-SERVICE-IDENTITY_SOURCE)
 	$(PY-SERVICE-IDENTITY_UNZIP) $(DL_DIR)/$(PY-SERVICE-IDENTITY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SERVICE-IDENTITY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) -p1
+#	cat $(PY-SERVICE-IDENTITY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -131,7 +131,7 @@ $(PY-SERVICE-IDENTITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERVICE-IDENTITY_SO
 	)
 #	cd $(BUILD_DIR); $(PY-SERVICE-IDENTITY_UNZIP) $(DL_DIR)/$(PY-SERVICE-IDENTITY_SOURCE)
 	$(PY-SERVICE-IDENTITY_UNZIP) $(DL_DIR)/$(PY-SERVICE-IDENTITY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SERVICE-IDENTITY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) -p1
+#	cat $(PY-SERVICE-IDENTITY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -143,7 +143,7 @@ $(PY-SERVICE-IDENTITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERVICE-IDENTITY_SO
 	)
 #	cd $(BUILD_DIR); $(PY-SERVICE-IDENTITY_UNZIP) $(DL_DIR)/$(PY-SERVICE-IDENTITY_SOURCE)
 	$(PY-SERVICE-IDENTITY_UNZIP) $(DL_DIR)/$(PY-SERVICE-IDENTITY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SERVICE-IDENTITY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) -p1
+#	cat $(PY-SERVICE-IDENTITY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -219,7 +219,7 @@ py-service-identity-host-stage: $(PY-SERVICE-IDENTITY_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-service-identity
 #
 $(PY26-SERVICE-IDENTITY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-service-identity" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -233,7 +233,7 @@ $(PY26-SERVICE-IDENTITY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SERVICE-IDENTITY_CONFLICTS)" >>$@
 
 $(PY27-SERVICE-IDENTITY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-service-identity" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -247,7 +247,7 @@ $(PY27-SERVICE-IDENTITY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SERVICE-IDENTITY_CONFLICTS)" >>$@
 
 $(PY3-SERVICE-IDENTITY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-service-identity" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

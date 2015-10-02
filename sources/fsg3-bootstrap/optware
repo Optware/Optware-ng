@@ -3,11 +3,11 @@
 case "$1" in
     start)
         echo "Starting Optware."
-	if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
-	    mkdir -p /opt
-	    mount -o bind /home/.optware /opt
+	if ! grep ' %OPTWARE_TARGET_PREFIX% ' /proc/mounts >/dev/null 2>&1 ; then
+	    mkdir -p %OPTWARE_TARGET_PREFIX%
+	    mount -o bind /home/.optware %OPTWARE_TARGET_PREFIX%
 	fi	
-	[ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware
+	[ -x %OPTWARE_TARGET_PREFIX%/etc/rc.optware ] && %OPTWARE_TARGET_PREFIX%/etc/rc.optware
     ;;
     reconfig)
 	true

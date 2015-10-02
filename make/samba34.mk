@@ -209,7 +209,7 @@ endif
 	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage libacl-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA34_DIR) $(@D)
 	$(SAMBA34_UNZIP) $(DL_DIR)/$(SAMBA34_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SAMBA34_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA34_DIR) -p1
+	cat $(SAMBA34_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SAMBA34_DIR) -p1
 	mv $(BUILD_DIR)/$(SAMBA34_DIR) $(@D)
 ifeq (3.0.14a, $(SAMBA34_VERSION))
 	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(@D)/source/aclocal.m4
@@ -300,7 +300,7 @@ samba34-stage: $(SAMBA34_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/samba
 #
 $(SAMBA34_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)/
+	@$(INSTALL) -d $(@D)/
 	@rm -f $@
 	@echo "Package: samba34" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -315,7 +315,7 @@ $(SAMBA34_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SAMBA34_CONFLICTS)" >>$@
 
 $(SAMBA34-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)/
+	@$(INSTALL) -d $(@D)/
 	@rm -f $@
 	@echo "Package: samba34-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -330,7 +330,7 @@ $(SAMBA34-DEV_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SAMBA34-DEV_CONFLICTS)" >>$@
 
 $(SAMBA34-SWAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)/
+	@$(INSTALL) -d $(@D)/
 	@rm -f $@
 	@echo "Package: samba34-swat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -367,25 +367,25 @@ $(SAMBA34_IPK) $(SAMBA34-DEV_IPK) $(SAMBA34-SWAT_IPK): $(SAMBA34_BUILD_DIR)/.bui
 	cd $(SAMBA34_BUILD_DIR)/source3/bin/; for f in lib*.so.[01]; \
 		do cp -a $$f $(SAMBA34_IPK_DIR)/opt/lib/$$f; done
 	$(STRIP_COMMAND) `find $(SAMBA34_IPK_DIR)/opt/lib -name '*.so'`
-	install -d $(SAMBA34_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SAMBA34_SOURCE_DIR)/rc.samba $(SAMBA34_IPK_DIR)/opt/etc/init.d/S08samba
+	$(INSTALL) -d $(SAMBA34_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA34_SOURCE_DIR)/rc.samba $(SAMBA34_IPK_DIR)/opt/etc/init.d/S08samba
 	$(MAKE) $(SAMBA34_IPK_DIR)/CONTROL/control
-	install -m 644 $(SAMBA34_SOURCE_DIR)/postinst $(SAMBA34_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA34_SOURCE_DIR)/preinst $(SAMBA34_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SAMBA34_SOURCE_DIR)/postinst $(SAMBA34_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SAMBA34_SOURCE_DIR)/preinst $(SAMBA34_IPK_DIR)/CONTROL/preinst
 ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g, $(OPTWARE_TARGET)))
-	install -m 644 $(SAMBA34_SOURCE_DIR)/postinst.$(OPTWARE_TARGET) $(SAMBA34_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA34_SOURCE_DIR)/preinst.$(OPTWARE_TARGET) $(SAMBA34_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SAMBA34_SOURCE_DIR)/postinst.$(OPTWARE_TARGET) $(SAMBA34_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SAMBA34_SOURCE_DIR)/preinst.$(OPTWARE_TARGET) $(SAMBA34_IPK_DIR)/CONTROL/preinst
 endif
 	echo $(SAMBA34_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA34_IPK_DIR)/CONTROL/conffiles
 	# samba3-dev
-	install -d $(SAMBA34-DEV_IPK_DIR)/opt
+	$(INSTALL) -d $(SAMBA34-DEV_IPK_DIR)/opt
 	mv $(SAMBA34_IPK_DIR)/opt/include $(SAMBA34-DEV_IPK_DIR)/opt/
 	# samba3-swat
-	install -d $(SAMBA34-SWAT_IPK_DIR)/opt/share $(SAMBA34-SWAT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(SAMBA34-SWAT_IPK_DIR)/opt/share $(SAMBA34-SWAT_IPK_DIR)/opt/sbin
 	mv $(SAMBA34_IPK_DIR)/opt/share/swat $(SAMBA34-SWAT_IPK_DIR)/opt/share/
 	mv $(SAMBA34_IPK_DIR)/opt/sbin/swat $(SAMBA34-SWAT_IPK_DIR)/opt/sbin/
-	install -d $(SAMBA34-SWAT_IPK_DIR)/opt/etc/xinetd.d
-	install -m 755 $(SAMBA34_SOURCE_DIR)/swat $(SAMBA34-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
+	$(INSTALL) -d $(SAMBA34-SWAT_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 755 $(SAMBA34_SOURCE_DIR)/swat $(SAMBA34-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA34_IPK_DIR)
 	$(MAKE) $(SAMBA34-DEV_IPK_DIR)/CONTROL/control

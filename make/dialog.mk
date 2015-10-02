@@ -110,7 +110,7 @@ $(DIALOG_BUILD_DIR)/.configured: $(DL_DIR)/$(DIALOG_SOURCE) $(DIALOG_PATCHES) ma
 	$(DIALOG_UNZIP) $(DL_DIR)/$(DIALOG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DIALOG_PATCHES)" ; \
 		then cat $(DIALOG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DIALOG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DIALOG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DIALOG_DIR)" != "$(DIALOG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DIALOG_DIR) $(DIALOG_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ dialog-stage: $(DIALOG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dialog
 #
 $(DIALOG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dialog" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,15 +191,15 @@ $(DIALOG_IPK): $(DIALOG_BUILD_DIR)/.built
 	rm -rf $(DIALOG_IPK_DIR) $(BUILD_DIR)/dialog_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DIALOG_BUILD_DIR) DESTDIR=$(DIALOG_IPK_DIR) install
 	$(STRIP_COMMAND) $(DIALOG_IPK_DIR)/opt/bin/dialog
-#	install -d $(DIALOG_IPK_DIR)/opt/etc/
-#	install -m 644 $(DIALOG_SOURCE_DIR)/dialog.conf $(DIALOG_IPK_DIR)/opt/etc/dialog.conf
-#	install -d $(DIALOG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DIALOG_SOURCE_DIR)/rc.dialog $(DIALOG_IPK_DIR)/opt/etc/init.d/SXXdialog
+#	$(INSTALL) -d $(DIALOG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DIALOG_SOURCE_DIR)/dialog.conf $(DIALOG_IPK_DIR)/opt/etc/dialog.conf
+#	$(INSTALL) -d $(DIALOG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DIALOG_SOURCE_DIR)/rc.dialog $(DIALOG_IPK_DIR)/opt/etc/init.d/SXXdialog
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DIALOG_IPK_DIR)/opt/etc/init.d/SXXdialog
 	$(MAKE) $(DIALOG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DIALOG_SOURCE_DIR)/postinst $(DIALOG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DIALOG_SOURCE_DIR)/postinst $(DIALOG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DIALOG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DIALOG_SOURCE_DIR)/prerm $(DIALOG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DIALOG_SOURCE_DIR)/prerm $(DIALOG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DIALOG_IPK_DIR)/CONTROL/prerm
 	echo $(DIALOG_CONFFILES) | sed -e 's/ /\n/g' > $(DIALOG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DIALOG_IPK_DIR)

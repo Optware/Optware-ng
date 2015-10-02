@@ -6,7 +6,7 @@
  # as drraw itself.  You may customize this to be elsewhere.
 -my $config = (dirname($0) =~ /(.*)/)[0] . "/drraw.conf"; # Untaint
 +# my $config = (dirname($0) =~ /(.*)/)[0] . "/drraw.conf"; # Untaint
-+my $config = "/opt/etc/drraw.conf";
++my $config = "%OPTWARE_TARGET_PREFIX%/etc/drraw.conf";
  
  # This needs to be manually set for stupid stupid File::Find to work
  # in tainted mode.

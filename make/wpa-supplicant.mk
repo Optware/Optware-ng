@@ -112,7 +112,7 @@ $(WPA_SUPPLICANT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WP
 	rm -rf $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(@D)
 	$(WPA_SUPPLICANT_UNZIP) $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WPA_SUPPLICANT_PATCHES)" ; \
-		then cat $(WPA_SUPPLICANT_PATCHES) | patch -d $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) -p1 ; \
+		then cat $(WPA_SUPPLICANT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) -p1 ; \
 	fi
 	cp $(WPA_SUPPLICANT_SOURCE_DIR)/defconfig $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/.config
 	cp $(WPA_SUPPLICANT_SOURCE_DIR)/typedefs.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/typedefs.h
@@ -156,7 +156,7 @@ wpa-supplicant: $(WPA_SUPPLICANT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/wpa-supplicant
 #
 $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: wpa-supplicant" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,18 +184,18 @@ $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/control:
 #
 $(WPA_SUPPLICANT_IPK): $(WPA_SUPPLICANT_BUILD_DIR)/.built
 	rm -rf $(WPA_SUPPLICANT_IPK_DIR) $(BUILD_DIR)/wpa-supplicant_*_$(TARGET_ARCH).ipk
-	install -d $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin
-	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_cli $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_cli
+	$(INSTALL) -d $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_cli $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_cli
 	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_cli
-	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_passphrase $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_passphrase
+	$(INSTALL) -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_passphrase $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_passphrase
 	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_passphrase
-	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_supplicant $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_supplicant
+	$(INSTALL) -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_supplicant $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_supplicant
 	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_supplicant
-	install -d -d $(WPA_SUPPLICANT_IPK_DIR)/opt/etc
-	install -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/wpa-supplicant.conf $(WPA_SUPPLICANT_IPK_DIR)/opt/etc/wpa-supplicant.conf
+	$(INSTALL) -d -d $(WPA_SUPPLICANT_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/wpa-supplicant.conf $(WPA_SUPPLICANT_IPK_DIR)/opt/etc/wpa-supplicant.conf
 	$(MAKE) $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/control
-	install -m 755 $(WPA_SUPPLICANT_SOURCE_DIR)/postinst $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(WPA_SUPPLICANT_SOURCE_DIR)/prerm $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(WPA_SUPPLICANT_SOURCE_DIR)/postinst $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(WPA_SUPPLICANT_SOURCE_DIR)/prerm $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/prerm
 	echo $(WPA_SUPPLICANT_CONFFILES) | sed -e 's/ /\n/g' > $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WPA_SUPPLICANT_IPK_DIR)
 

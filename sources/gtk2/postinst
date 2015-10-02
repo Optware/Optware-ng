@@ -1,14 +1,14 @@
 #!/bin/sh
 
-mkdir -p /opt/etc/gtk-2.0
+mkdir -p %OPTWARE_TARGET_PREFIX%/etc/gtk-2.0
 
 echo "Configuring input modules"
-rm -f /opt/etc/gtk-2.0/gtk.immodules
-/opt/bin/gtk-2.0/gtk-query-immodules-2.0 > /opt/etc/gtk-2.0/gtk.immodules
+rm -f %OPTWARE_TARGET_PREFIX%/etc/gtk-2.0/gtk.immodules
+%OPTWARE_TARGET_PREFIX%/bin/gtk-2.0/gtk-query-immodules-2.0 > %OPTWARE_TARGET_PREFIX%/etc/gtk-2.0/gtk.immodules
 
 echo "Updating icon cache"
-for dir in `ls -d /opt/share/icons/*`; do
+for dir in `ls -d %OPTWARE_TARGET_PREFIX%/share/icons/*`; do
 	if test -f ${dir}/index.theme; then
-		/opt/bin/gtk-2.0/gtk-update-icon-cache ${dir}
+		%OPTWARE_TARGET_PREFIX%/bin/gtk-2.0/gtk-update-icon-cache ${dir}
 	fi
 done

@@ -99,7 +99,7 @@ $(LIBCAPI20_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCAPI20_SOURCE) $(LIBCAPI20_PA
 	rm -rf $(BUILD_DIR)/$(LIBCAPI20_DIR) $(@D)
 	$(LIBCAPI20_UNZIP) $(DL_DIR)/$(LIBCAPI20_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBCAPI20_PATCHES)"; \
-		then cat $(LIBCAPI20_PATCHES) | patch -d $(BUILD_DIR)/$(LIBCAPI20_DIR) -p1; \
+		then cat $(LIBCAPI20_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBCAPI20_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LIBCAPI20_DIR) $(LIBCAPI20_BUILD_DIR)
 	(cd $(LIBCAPI20_BUILD_DIR); \
@@ -153,7 +153,7 @@ libcapi20-stage: $(LIBCAPI20_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libcapi20
 #
 $(LIBCAPI20_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libcapi20" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +180,7 @@ $(LIBCAPI20_IPK_DIR)/CONTROL/control:
 #
 $(LIBCAPI20_IPK): $(LIBCAPI20_BUILD_DIR)/.built
 	rm -rf $(LIBCAPI20_IPK_DIR) $(LIBCAPI20_IPK)
-	install -d $(LIBCAPI20_IPK_DIR)/opt
+	$(INSTALL) -d $(LIBCAPI20_IPK_DIR)/opt
 	$(MAKE) -C $(LIBCAPI20_BUILD_DIR) prefix=$(LIBCAPI20_IPK_DIR)/opt install-strip
 	rm -f $(LIBCAPI20_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(LIBCAPI20_IPK_DIR)/CONTROL/control

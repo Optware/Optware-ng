@@ -112,7 +112,7 @@ $(VTUN_BUILD_DIR)/.configured: $(DL_DIR)/$(VTUN_SOURCE) $(VTUN_PATCHES) make/vtu
 	$(VTUN_UNZIP) $(DL_DIR)/$(VTUN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VTUN_PATCHES)" ; \
 		then cat $(VTUN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(VTUN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(VTUN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(VTUN_DIR)" != "$(VTUN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(VTUN_DIR) $(VTUN_BUILD_DIR) ; \
@@ -170,7 +170,7 @@ vtun-stage: $(VTUN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/vtun
 #
 $(VTUN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: vtun" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,15 +200,15 @@ $(VTUN_IPK): $(VTUN_BUILD_DIR)/.built
 	rm -rf $(VTUN_IPK_DIR) $(BUILD_DIR)/vtun_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(VTUN_BUILD_DIR) DESTDIR=$(VTUN_IPK_DIR) INSTALL_OWNER="" install
 	$(STRIP_COMMAND) $(VTUN_IPK_DIR)/opt/sbin/vtund
-#	install -d $(VTUN_IPK_DIR)/opt/etc/
-#	install -m 644 $(VTUN_SOURCE_DIR)/vtun.conf $(VTUN_IPK_DIR)/opt/etc/vtun.conf
-#	install -d $(VTUN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(VTUN_SOURCE_DIR)/rc.vtun $(VTUN_IPK_DIR)/opt/etc/init.d/SXXvtun
+#	$(INSTALL) -d $(VTUN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(VTUN_SOURCE_DIR)/vtun.conf $(VTUN_IPK_DIR)/opt/etc/vtun.conf
+#	$(INSTALL) -d $(VTUN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(VTUN_SOURCE_DIR)/rc.vtun $(VTUN_IPK_DIR)/opt/etc/init.d/SXXvtun
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VTUN_IPK_DIR)/opt/etc/init.d/SXXvtun
 	$(MAKE) $(VTUN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(VTUN_SOURCE_DIR)/postinst $(VTUN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(VTUN_SOURCE_DIR)/postinst $(VTUN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VTUN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(VTUN_SOURCE_DIR)/prerm $(VTUN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(VTUN_SOURCE_DIR)/prerm $(VTUN_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VTUN_IPK_DIR)/CONTROL/prerm
 	echo $(VTUN_CONFFILES) | sed -e 's/ /\n/g' > $(VTUN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VTUN_IPK_DIR)

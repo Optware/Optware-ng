@@ -110,7 +110,7 @@ $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
 	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-LXML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
+#	cat $(PY-LXML_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (\
@@ -125,7 +125,7 @@ $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
 	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-LXML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
+#	cat $(PY-LXML_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (\
@@ -180,7 +180,7 @@ py-lxml: $(PY-LXML_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-lxml
 #
 $(PY25-LXML_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-lxml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,7 +194,7 @@ $(PY25-LXML_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-LXML_CONFLICTS)" >>$@
 
 $(PY26-LXML_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-lxml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -226,7 +226,7 @@ $(PY25-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
-		install --root=$(PY25-LXML_IPK_DIR) --prefix=/opt \
+		$(INSTALL) --root=$(PY25-LXML_IPK_DIR) --prefix=/opt \
 		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
 	$(STRIP_COMMAND) `find $(PY25-LXML_IPK_DIR)/opt/lib/ -name '*.so'`
 	$(MAKE) $(PY25-LXML_IPK_DIR)/CONTROL/control
@@ -239,7 +239,7 @@ $(PY26-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py \
-		install --root=$(PY26-LXML_IPK_DIR) --prefix=/opt \
+		$(INSTALL) --root=$(PY26-LXML_IPK_DIR) --prefix=/opt \
 		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
 	$(STRIP_COMMAND) `find $(PY26-LXML_IPK_DIR)/opt/lib/ -name '*.so'`
 	$(MAKE) $(PY26-LXML_IPK_DIR)/CONTROL/control

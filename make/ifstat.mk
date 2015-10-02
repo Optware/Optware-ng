@@ -109,7 +109,7 @@ $(IFSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(IFSTAT_SOURCE) $(IFSTAT_PATCHES) ma
 	$(IFSTAT_UNZIP) $(DL_DIR)/$(IFSTAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IFSTAT_PATCHES)" ; \
 		then cat $(IFSTAT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IFSTAT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IFSTAT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IFSTAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IFSTAT_DIR) $(@D) ; \
@@ -159,7 +159,7 @@ ifstat-stage: $(IFSTAT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ifstat
 #
 $(IFSTAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ifstat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

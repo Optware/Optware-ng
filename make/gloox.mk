@@ -112,7 +112,7 @@ $(GLOOX_BUILD_DIR)/.configured: $(DL_DIR)/$(GLOOX_SOURCE) $(GLOOX_PATCHES) make/
 	$(GLOOX_UNZIP) $(DL_DIR)/$(GLOOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GLOOX_PATCHES)" ; \
 		then cat $(GLOOX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GLOOX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GLOOX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GLOOX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GLOOX_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ gloox-stage: $(GLOOX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gloox
 #
 $(GLOOX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gloox" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +180,7 @@ $(GLOOX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(GLOOX_CONFLICTS)" >>$@
 
 $(GLOOX-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gloox-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -208,7 +208,7 @@ $(GLOOX_IPK): $(GLOOX_BUILD_DIR)/.built
 	rm -rf $(GLOOX_IPK_DIR) $(BUILD_DIR)/gloox_*_$(TARGET_ARCH).ipk
 	rm -rf $(GLOOX-DEV_IPK_DIR) $(BUILD_DIR)/gloox-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GLOOX_BUILD_DIR) DESTDIR=$(GLOOX_IPK_DIR) install-strip
-	install -d $(GLOOX-DEV_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(GLOOX-DEV_IPK_DIR)/opt/lib
 	mv $(GLOOX_IPK_DIR)/opt/include $(GLOOX-DEV_IPK_DIR)/opt/
 	mv $(GLOOX_IPK_DIR)/opt/lib/pkgconfig $(GLOOX-DEV_IPK_DIR)/opt/lib/
 	mv $(GLOOX_IPK_DIR)/opt/lib/*.la $(GLOOX-DEV_IPK_DIR)/opt/lib/

@@ -66,7 +66,7 @@ FONTCONFIG_IPK=$(BUILD_DIR)/fontconfig_$(FONTCONFIG_VERSION)-$(FONTCONFIG_IPK_VE
 # Automatically create a ipkg control file
 #
 $(FONTCONFIG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fontconfig" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -108,7 +108,7 @@ endif
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz
 	if test -n "$(FONTCONFIG_PATCHES)" ; \
 		then cat $(FONTCONFIG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FONTCONFIG_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FONTCONFIG_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FONTCONFIG_DIR)" != "$(FONTCONFIG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) ; \

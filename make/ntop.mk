@@ -98,7 +98,7 @@ NTOP_IPK=$(BUILD_DIR)/ntop_$(NTOP_VERSION)-$(NTOP_IPK_VERSION)_$(TARGET_ARCH).ip
 # Automatically create a ipkg control file
 #
 $(NTOP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ntop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -155,7 +155,7 @@ endif
 	$(NTOP_UNZIP) $(DL_DIR)/$(NTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NTOP_PATCHES)" ; \
 		then cat $(NTOP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NTOP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NTOP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NTOP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NTOP_DIR) $(@D) ; \
@@ -232,11 +232,11 @@ $(NTOP_IPK): $(NTOP_BUILD_DIR)/.built
 	$(MAKE) -C $(NTOP_BUILD_DIR) DESTDIR=$(NTOP_IPK_DIR) transform='' install-strip
 	rm -f $(NTOP_IPK_DIR)/opt/lib/lib*.a $(NTOP_IPK_DIR)/opt/lib/lib*.la
 	$(STRIP_COMMAND) $(NTOP_IPK_DIR)/opt/lib/ntop/plugins/*.so
-	install -d $(NTOP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NTOP_SOURCE_DIR)/rc.ntop $(NTOP_IPK_DIR)/opt/etc/init.d/S01ntop
+	$(INSTALL) -d $(NTOP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NTOP_SOURCE_DIR)/rc.ntop $(NTOP_IPK_DIR)/opt/etc/init.d/S01ntop
 	$(MAKE) $(NTOP_IPK_DIR)/CONTROL/control
-	install -m 755 $(NTOP_SOURCE_DIR)/postinst $(NTOP_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(NTOP_SOURCE_DIR)/prerm $(NTOP_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(NTOP_SOURCE_DIR)/postinst $(NTOP_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(NTOP_SOURCE_DIR)/prerm $(NTOP_IPK_DIR)/CONTROL/prerm
 #	echo $(NTOP_CONFFILES) | sed -e 's/ /\n/g' > $(NTOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTOP_IPK_DIR)
 

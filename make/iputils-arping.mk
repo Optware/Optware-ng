@@ -110,7 +110,7 @@ $(IPUTILS_ARPING_BUILD_DIR)/.configured: $(DL_DIR)/$(IPUTILS_ARPING_SOURCE) $(IP
 	$(IPUTILS_ARPING_UNZIP) $(DL_DIR)/$(IPUTILS_ARPING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IPUTILS_ARPING_PATCHES)" ; \
 		then cat $(IPUTILS_ARPING_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IPUTILS_ARPING_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IPUTILS_ARPING_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IPUTILS_ARPING_DIR)" != "$(IPUTILS_ARPING_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(IPUTILS_ARPING_DIR) $(IPUTILS_ARPING_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ iputils-arping-stage: $(IPUTILS_ARPING_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/iputils-arping
 #
 $(IPUTILS_ARPING_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: iputils-arping" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,12 +192,12 @@ $(IPUTILS_ARPING_IPK_DIR)/CONTROL/control:
 #
 $(IPUTILS_ARPING_IPK): $(IPUTILS_ARPING_BUILD_DIR)/.built
 	rm -rf $(IPUTILS_ARPING_IPK_DIR) $(BUILD_DIR)/iputils-arping_*_$(TARGET_ARCH).ipk
-	install -d $(IPUTILS_ARPING_IPK_DIR)/opt/bin
-	install $(IPUTILS_ARPING_BUILD_DIR)/arping $(IPUTILS_ARPING_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(IPUTILS_ARPING_IPK_DIR)/opt/bin
+	$(INSTALL) $(IPUTILS_ARPING_BUILD_DIR)/arping $(IPUTILS_ARPING_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(IPUTILS_ARPING_IPK_DIR)/opt/bin/arping
 	$(MAKE) $(IPUTILS_ARPING_IPK_DIR)/CONTROL/control
-#	install -m 755 $(IPUTILS_ARPING_SOURCE_DIR)/postinst $(IPUTILS_ARPING_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(IPUTILS_ARPING_SOURCE_DIR)/prerm $(IPUTILS_ARPING_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(IPUTILS_ARPING_SOURCE_DIR)/postinst $(IPUTILS_ARPING_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(IPUTILS_ARPING_SOURCE_DIR)/prerm $(IPUTILS_ARPING_IPK_DIR)/CONTROL/prerm
 	echo $(IPUTILS_ARPING_CONFFILES) | sed -e 's/ /\n/g' > $(IPUTILS_ARPING_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPUTILS_ARPING_IPK_DIR)
 

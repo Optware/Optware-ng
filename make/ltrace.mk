@@ -148,7 +148,7 @@ endif
 	$(LTRACE_UNZIP) $(DL_DIR)/$(LTRACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LTRACE_PATCHES)" ; \
 		then cat $(LTRACE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LTRACE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LTRACE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LTRACE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LTRACE_DIR) $(@D) ; \
@@ -208,7 +208,7 @@ ltrace-stage: $(LTRACE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ltrace
 #
 $(LTRACE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ltrace" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -238,17 +238,17 @@ $(LTRACE_IPK): $(LTRACE_BUILD_DIR)/.built
 	rm -rf $(LTRACE_IPK_DIR) $(BUILD_DIR)/ltrace_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LTRACE_BUILD_DIR) \
 		DESTDIR=$(LTRACE_IPK_DIR) ARCH=$(LTRACE_ARCH) OS=linux-gnu \
-		install
+		$(INSTALL)
 	$(STRIP_COMMAND) $(LTRACE_IPK_DIR)/opt/bin/ltrace
-#	install -d $(LTRACE_IPK_DIR)/opt/etc/
-#	install -m 644 $(LTRACE_SOURCE_DIR)/ltrace.conf $(LTRACE_IPK_DIR)/opt/etc/ltrace.conf
-#	install -d $(LTRACE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LTRACE_SOURCE_DIR)/rc.ltrace $(LTRACE_IPK_DIR)/opt/etc/init.d/SXXltrace
+#	$(INSTALL) -d $(LTRACE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LTRACE_SOURCE_DIR)/ltrace.conf $(LTRACE_IPK_DIR)/opt/etc/ltrace.conf
+#	$(INSTALL) -d $(LTRACE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LTRACE_SOURCE_DIR)/rc.ltrace $(LTRACE_IPK_DIR)/opt/etc/init.d/SXXltrace
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LTRACE_IPK_DIR)/opt/etc/init.d/SXXltrace
 	$(MAKE) $(LTRACE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LTRACE_SOURCE_DIR)/postinst $(LTRACE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LTRACE_SOURCE_DIR)/postinst $(LTRACE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LTRACE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LTRACE_SOURCE_DIR)/prerm $(LTRACE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LTRACE_SOURCE_DIR)/prerm $(LTRACE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LTRACE_IPK_DIR)/CONTROL/prerm
 	echo $(LTRACE_CONFFILES) | sed -e 's/ /\n/g' > $(LTRACE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LTRACE_IPK_DIR)

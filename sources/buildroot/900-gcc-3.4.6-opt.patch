@@ -6,8 +6,8 @@
  static const char *const standard_exec_prefix = STANDARD_EXEC_PREFIX;
 -static const char *const standard_exec_prefix_1 = "/usr/libexec/gcc/";
 -static const char *const standard_exec_prefix_2 = "/usr/lib/gcc/";
-+static const char *const standard_exec_prefix_1 = "/opt/libexec/gcc/";
-+static const char *const standard_exec_prefix_2 = "/opt/lib/gcc/";
++static const char *const standard_exec_prefix_1 = "%OPTWARE_TARGET_PREFIX%/libexec/gcc/";
++static const char *const standard_exec_prefix_2 = "%OPTWARE_TARGET_PREFIX%/lib/gcc/";
  static const char *md_exec_prefix = MD_EXEC_PREFIX;
  
  static const char *md_startfile_prefix = MD_STARTFILE_PREFIX;
@@ -15,8 +15,8 @@
  static const char *const standard_startfile_prefix = STANDARD_STARTFILE_PREFIX;
 -static const char *const standard_startfile_prefix_1 = "/lib/";
 -static const char *const standard_startfile_prefix_2 = "/usr/lib/";
-+static const char *const standard_startfile_prefix_1 = "/opt/lib/";
-+static const char *const standard_startfile_prefix_2 = "/opt/usr/lib/";
++static const char *const standard_startfile_prefix_1 = "%OPTWARE_TARGET_PREFIX%/lib/";
++static const char *const standard_startfile_prefix_2 = "%OPTWARE_TARGET_PREFIX%/usr/lib/";
  
  static const char *const tooldir_base_prefix = TOOLDIR_BASE_PREFIX;
  static const char *tooldir_prefix;
@@ -25,17 +25,17 @@
        int len = strlen (gcc_exec_prefix);
  
 -      if (len > (int) sizeof ("/lib/gcc/") - 1
-+      if (len > (int) sizeof ("/opt/lib/gcc/") - 1
++      if (len > (int) sizeof ("%OPTWARE_TARGET_PREFIX%/lib/gcc/") - 1
  	  && (IS_DIR_SEPARATOR (gcc_exec_prefix[len-1])))
  	{
 -	  temp = gcc_exec_prefix + len - sizeof ("/lib/gcc/") + 1;
-+	  temp = gcc_exec_prefix + len - sizeof ("/opt/lib/gcc/") + 1;
++	  temp = gcc_exec_prefix + len - sizeof ("%OPTWARE_TARGET_PREFIX%/lib/gcc/") + 1;
  	  if (IS_DIR_SEPARATOR (*temp)
  	      && strncmp (temp + 1, "lib", 3) == 0
  	      && IS_DIR_SEPARATOR (temp[4])
  	      && strncmp (temp + 5, "gcc", 3) == 0)
 -	    len -= sizeof ("/lib/gcc/") - 1;
-+	    len -= sizeof ("/opt/lib/gcc/") - 1;
++	    len -= sizeof ("%OPTWARE_TARGET_PREFIX%/lib/gcc/") - 1;
  	}
  
        set_std_prefix (gcc_exec_prefix, len);

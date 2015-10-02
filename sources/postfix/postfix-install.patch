@@ -18,7 +18,7 @@ diff -Nru postfix-2.1.5-orig/postfix-install postfix-2.1.5/postfix-install
  : ${install_root=/}
  : ${tempdir=`pwd`}
 -: ${config_directory=`bin/postconf -h -d config_directory`}
-+: ${config_directory=/opt/etc/postfix}
++: ${config_directory=%OPTWARE_TARGET_PREFIX%/etc/postfix}
  
  # Find out the location of installed configuration files.
  

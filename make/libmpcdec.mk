@@ -130,7 +130,7 @@ $(LIBMPCDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMPCDEC_SOURCE) $(LIBMPCDEC_PA
 	$(LIBMPCDEC_UNZIP) $(DL_DIR)/$(LIBMPCDEC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMPCDEC_PATCHES)" ; \
 		then cat $(LIBMPCDEC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMPCDEC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMPCDEC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMPCDEC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMPCDEC_DIR) $(@D) ; \
@@ -188,7 +188,7 @@ libmpcdec-stage: $(LIBMPCDEC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmpcdec
 #
 $(LIBMPCDEC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmpcdec" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -223,15 +223,15 @@ $(LIBMPCDEC_IPK): $(LIBMPCDEC_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBMPCDEC_BUILD_DIR) DESTDIR=$(LIBMPCDEC_IPK_DIR) install-strip
 	ln -s mpc $(LIBMPCDEC_IPK_DIR)/opt/include/mpcdec
 	rm -f $(LIBMPCDEC_IPK_DIR)/opt/lib/libmpcdec.la
-#	install -d $(LIBMPCDEC_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBMPCDEC_SOURCE_DIR)/libmpcdec.conf $(LIBMPCDEC_IPK_DIR)/opt/etc/libmpcdec.conf
-#	install -d $(LIBMPCDEC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBMPCDEC_SOURCE_DIR)/rc.libmpcdec $(LIBMPCDEC_IPK_DIR)/opt/etc/init.d/SXXlibmpcdec
+#	$(INSTALL) -d $(LIBMPCDEC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBMPCDEC_SOURCE_DIR)/libmpcdec.conf $(LIBMPCDEC_IPK_DIR)/opt/etc/libmpcdec.conf
+#	$(INSTALL) -d $(LIBMPCDEC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMPCDEC_SOURCE_DIR)/rc.libmpcdec $(LIBMPCDEC_IPK_DIR)/opt/etc/init.d/SXXlibmpcdec
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMPCDEC_IPK_DIR)/opt/etc/init.d/SXXlibmpcdec
 	$(MAKE) $(LIBMPCDEC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBMPCDEC_SOURCE_DIR)/postinst $(LIBMPCDEC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBMPCDEC_SOURCE_DIR)/postinst $(LIBMPCDEC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMPCDEC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBMPCDEC_SOURCE_DIR)/prerm $(LIBMPCDEC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBMPCDEC_SOURCE_DIR)/prerm $(LIBMPCDEC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMPCDEC_IPK_DIR)/CONTROL/prerm
 	echo $(LIBMPCDEC_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMPCDEC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMPCDEC_IPK_DIR)

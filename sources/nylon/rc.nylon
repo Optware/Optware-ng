@@ -1,9 +1,9 @@
 #!/bin/sh
 
-PIDFILE=/opt/var/run/nylon.pid
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
-NYLON=/opt/bin/nylon
-NYLONCONF=/opt/etc/nylon.conf
+PIDFILE=%OPTWARE_TARGET_PREFIX%/var/run/nylon.pid
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
+NYLON=%OPTWARE_TARGET_PREFIX%/bin/nylon
+NYLONCONF=%OPTWARE_TARGET_PREFIX%/etc/nylon.conf
 
 if ! [ -f $NYLON -a -f $NYLONCONF ] ; then
 	echo "nylon was not found on your system!"

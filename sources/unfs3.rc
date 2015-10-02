@@ -5,4 +5,4 @@ if [ -n "`pidof unfsd`" ] ; then
 fi
 
 sleep 2
-/opt/sbin/unfsd
+%OPTWARE_TARGET_PREFIX%/sbin/unfsd

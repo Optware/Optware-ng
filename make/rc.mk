@@ -116,7 +116,7 @@ $(RC_BUILD_DIR)/.configured: $(DL_DIR)/$(RC_SOURCE) $(RC_PATCHES) make/rc.mk
 	$(RC_UNZIP) $(DL_DIR)/$(RC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RC_PATCHES)" ; \
 		then cat $(RC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RC_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ rc: $(RC_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/rc
 #
 $(RC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,15 +199,15 @@ $(RC_IPK_DIR)/CONTROL/control:
 $(RC_IPK): $(RC_BUILD_DIR)/.built
 	rm -rf $(RC_IPK_DIR) $(BUILD_DIR)/rc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RC_BUILD_DIR) DESTDIR=$(RC_IPK_DIR) install-strip
-#	install -d $(RC_IPK_DIR)/opt/etc/
-#	install -m 644 $(RC_SOURCE_DIR)/rc.conf $(RC_IPK_DIR)/opt/etc/rc.conf
-#	install -d $(RC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(RC_SOURCE_DIR)/rc.rc $(RC_IPK_DIR)/opt/etc/init.d/SXXrc
+#	$(INSTALL) -d $(RC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(RC_SOURCE_DIR)/rc.conf $(RC_IPK_DIR)/opt/etc/rc.conf
+#	$(INSTALL) -d $(RC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(RC_SOURCE_DIR)/rc.rc $(RC_IPK_DIR)/opt/etc/init.d/SXXrc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXrc
 	$(MAKE) $(RC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RC_SOURCE_DIR)/postinst $(RC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RC_SOURCE_DIR)/postinst $(RC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RC_SOURCE_DIR)/prerm $(RC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(RC_SOURCE_DIR)/prerm $(RC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(RC_CONFFILES) | sed -e 's/ /\n/g' > $(RC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RC_IPK_DIR)

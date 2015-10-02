@@ -15,8 +15,8 @@
  #endif
 -	"/usr/local/",
 -	"/usr/lib/",
-+	"/opt/etc/",
-+	"/opt/lib/",
++	"%OPTWARE_TARGET_PREFIX%/etc/",
++	"%OPTWARE_TARGET_PREFIX%/lib/",
  	""
  };
  #endif

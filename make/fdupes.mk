@@ -110,7 +110,7 @@ $(FDUPES_BUILD_DIR)/.configured: $(DL_DIR)/$(FDUPES_SOURCE) $(FDUPES_PATCHES) ma
 	$(FDUPES_UNZIP) $(DL_DIR)/$(FDUPES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FDUPES_PATCHES)" ; \
 		then cat $(FDUPES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FDUPES_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FDUPES_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FDUPES_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FDUPES_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ fdupes-stage: $(FDUPES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fdupes
 #
 $(FDUPES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fdupes" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,22 +193,22 @@ $(FDUPES_IPK_DIR)/CONTROL/control:
 #
 $(FDUPES_IPK): $(FDUPES_BUILD_DIR)/.built
 	rm -rf $(FDUPES_IPK_DIR) $(BUILD_DIR)/fdupes_*_$(TARGET_ARCH).ipk
-	install -d $(FDUPES_IPK_DIR)/opt/bin $(FDUPES_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(FDUPES_IPK_DIR)/opt/bin $(FDUPES_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(FDUPES_BUILD_DIR) install \
 		INSTALLDIR=$(FDUPES_IPK_DIR)/opt/bin \
 		MANPAGEDIR=$(FDUPES_IPK_DIR)/opt/man \
 		;
 	$(STRIP_COMMAND) $(FDUPES_IPK_DIR)/opt/bin/*
-	install -d $(FDUPES_IPK_DIR)/opt/share/doc/fdupes
-	install -m644 $(FDUPES_BUILD_DIR)/[CIRT]* $(FDUPES_IPK_DIR)/opt/share/doc/fdupes/
-#	install -m 644 $(FDUPES_SOURCE_DIR)/fdupes.conf $(FDUPES_IPK_DIR)/opt/etc/fdupes.conf
-#	install -d $(FDUPES_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FDUPES_SOURCE_DIR)/rc.fdupes $(FDUPES_IPK_DIR)/opt/etc/init.d/SXXfdupes
+	$(INSTALL) -d $(FDUPES_IPK_DIR)/opt/share/doc/fdupes
+	$(INSTALL) -m644 $(FDUPES_BUILD_DIR)/[CIRT]* $(FDUPES_IPK_DIR)/opt/share/doc/fdupes/
+#	$(INSTALL) -m 644 $(FDUPES_SOURCE_DIR)/fdupes.conf $(FDUPES_IPK_DIR)/opt/etc/fdupes.conf
+#	$(INSTALL) -d $(FDUPES_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FDUPES_SOURCE_DIR)/rc.fdupes $(FDUPES_IPK_DIR)/opt/etc/init.d/SXXfdupes
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FDUPES_IPK_DIR)/opt/etc/init.d/SXXfdupes
 	$(MAKE) $(FDUPES_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FDUPES_SOURCE_DIR)/postinst $(FDUPES_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FDUPES_SOURCE_DIR)/postinst $(FDUPES_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FDUPES_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FDUPES_SOURCE_DIR)/prerm $(FDUPES_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FDUPES_SOURCE_DIR)/prerm $(FDUPES_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FDUPES_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

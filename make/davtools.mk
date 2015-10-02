@@ -110,7 +110,7 @@ $(DAVTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(DAVTOOLS_SOURCE) $(DAVTOOLS_PATCH
 	$(DAVTOOLS_UNZIP) $(DL_DIR)/$(DAVTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DAVTOOLS_PATCHES)" ; \
 		then cat $(DAVTOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DAVTOOLS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DAVTOOLS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DAVTOOLS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DAVTOOLS_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ davtools-stage: $(DAVTOOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/davtools
 #
 $(DAVTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: davtools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,17 +190,17 @@ $(DAVTOOLS_IPK_DIR)/CONTROL/control:
 $(DAVTOOLS_IPK): $(DAVTOOLS_BUILD_DIR)/.built
 	rm -rf $(DAVTOOLS_IPK_DIR) $(BUILD_DIR)/davtools_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(DAVTOOLS_BUILD_DIR) DESTDIR=$(DAVTOOLS_IPK_DIR) install-strip
-	install -d $(DAVTOOLS_IPK_DIR)/opt/bin
-	install -m 755 $(DAVTOOLS_BUILD_DIR)/src/cdavl/cdavl $(DAVTOOLS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(DAVTOOLS_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(DAVTOOLS_BUILD_DIR)/src/cdavl/cdavl $(DAVTOOLS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(DAVTOOLS_IPK_DIR)/opt/bin/cdavl
-	install -d $(DAVTOOLS_IPK_DIR)/opt/man/man8
-	install -m 644 $(DAVTOOLS_BUILD_DIR)/doc/cdavl.8 $(DAVTOOLS_IPK_DIR)/opt/man/man8/
-#	install -m 755 $(DAVTOOLS_SOURCE_DIR)/rc.davtools $(DAVTOOLS_IPK_DIR)/opt/etc/init.d/SXXdavtools
+	$(INSTALL) -d $(DAVTOOLS_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 644 $(DAVTOOLS_BUILD_DIR)/doc/cdavl.8 $(DAVTOOLS_IPK_DIR)/opt/man/man8/
+#	$(INSTALL) -m 755 $(DAVTOOLS_SOURCE_DIR)/rc.davtools $(DAVTOOLS_IPK_DIR)/opt/etc/init.d/SXXdavtools
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAVTOOLS_IPK_DIR)/opt/etc/init.d/SXXdavtools
 	$(MAKE) $(DAVTOOLS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DAVTOOLS_SOURCE_DIR)/postinst $(DAVTOOLS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DAVTOOLS_SOURCE_DIR)/postinst $(DAVTOOLS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAVTOOLS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DAVTOOLS_SOURCE_DIR)/prerm $(DAVTOOLS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DAVTOOLS_SOURCE_DIR)/prerm $(DAVTOOLS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAVTOOLS_IPK_DIR)/CONTROL/prerm
 #	echo $(DAVTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(DAVTOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DAVTOOLS_IPK_DIR)

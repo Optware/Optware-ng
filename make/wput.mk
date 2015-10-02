@@ -110,7 +110,7 @@ $(WPUT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES) make/wpu
 	$(WPUT_UNZIP) $(DL_DIR)/$(WPUT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WPUT_PATCHES)" ; \
 		then cat $(WPUT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(WPUT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(WPUT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(WPUT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WPUT_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ wput-stage: $(WPUT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/wput
 #
 $(WPUT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: wput" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,21 +198,21 @@ $(WPUT_IPK_DIR)/CONTROL/control:
 #
 $(WPUT_IPK): $(WPUT_BUILD_DIR)/.built
 	rm -rf $(WPUT_IPK_DIR) $(BUILD_DIR)/wput_*_$(TARGET_ARCH).ipk
-	install -d $(WPUT_IPK_DIR)/opt/bin/
-	install -d $(WPUT_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(WPUT_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(WPUT_IPK_DIR)/opt/share/man/man1
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WPUT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WPUT_LDFLAGS)" \
 	$(MAKE) -C $(WPUT_BUILD_DIR) prefix=$(WPUT_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(WPUT_IPK_DIR)/opt/bin/*
-#	install -d $(WPUT_IPK_DIR)/opt/etc/
-#	install -m 644 $(WPUT_SOURCE_DIR)/wput.conf $(WPUT_IPK_DIR)/opt/etc/wput.conf
-#	install -d $(WPUT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(WPUT_SOURCE_DIR)/rc.wput $(WPUT_IPK_DIR)/opt/etc/init.d/SXXwput
+#	$(INSTALL) -d $(WPUT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(WPUT_SOURCE_DIR)/wput.conf $(WPUT_IPK_DIR)/opt/etc/wput.conf
+#	$(INSTALL) -d $(WPUT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(WPUT_SOURCE_DIR)/rc.wput $(WPUT_IPK_DIR)/opt/etc/init.d/SXXwput
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXwput
 	$(MAKE) $(WPUT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(WPUT_SOURCE_DIR)/postinst $(WPUT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(WPUT_SOURCE_DIR)/postinst $(WPUT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(WPUT_SOURCE_DIR)/prerm $(WPUT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(WPUT_SOURCE_DIR)/prerm $(WPUT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(WPUT_CONFFILES) | sed -e 's/ /\n/g' > $(WPUT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WPUT_IPK_DIR)

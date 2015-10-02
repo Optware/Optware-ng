@@ -109,7 +109,7 @@ $(EGGDROP_BUILD_DIR)/.configured: $(DL_DIR)/$(EGGDROP_SOURCE) $(EGGDROP_PATCHES)
 	$(MAKE) tcl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(EGGDROP_DIR) $(@D)
 	$(EGGDROP_UNZIP) $(DL_DIR)/$(EGGDROP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(EGGDROP_PATCHES) | patch -bd $(BUILD_DIR)/$(EGGDROP_DIR) -p1
+	cat $(EGGDROP_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(EGGDROP_DIR) -p1
 	mv $(BUILD_DIR)/$(EGGDROP_DIR) $(@D)
 	autoreconf -vif $(@D)
 	(cd $(@D); \
@@ -149,7 +149,7 @@ eggdrop: $(EGGDROP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/eggdrop
 #
 $(EGGDROP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: eggdrop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,10 +182,10 @@ $(EGGDROP_IPK): $(EGGDROP_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(EGGDROP_IPK_DIR)/opt/share/eggdrop/modules-$(EGGDROP_VERSION)/*.so
 	mv $(EGGDROP_IPK_DIR)/opt/share/eggdrop/eggdrop.conf $(EGGDROP_IPK_DIR)/opt/share/eggdrop/eggdrop-orig.conf
 	$(MAKE) $(EGGDROP_IPK_DIR)/CONTROL/control
-	install -d $(EGGDROP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(EGGDROP_SOURCE_DIR)/rc.eggdrop $(EGGDROP_IPK_DIR)/opt/etc/init.d/S50eggdrop
-	install -m 644 $(EGGDROP_BUILD_DIR)/eggdrop.conf $(EGGDROP_IPK_DIR)/opt/etc/
-	install -m 755 $(EGGDROP_SOURCE_DIR)/postinst $(EGGDROP_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -d $(EGGDROP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(EGGDROP_SOURCE_DIR)/rc.eggdrop $(EGGDROP_IPK_DIR)/opt/etc/init.d/S50eggdrop
+	$(INSTALL) -m 644 $(EGGDROP_BUILD_DIR)/eggdrop.conf $(EGGDROP_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 755 $(EGGDROP_SOURCE_DIR)/postinst $(EGGDROP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EGGDROP_IPK_DIR)
 
 #

@@ -114,7 +114,7 @@ $(NBD_BUILD_DIR)/.configured: $(DL_DIR)/$(NBD_SOURCE) $(NBD_PATCHES) make/nbd.mk
 	$(NBD_UNZIP) $(DL_DIR)/$(NBD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NBD_PATCHES)" ; \
 		then cat $(NBD_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(NBD_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(NBD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NBD_DIR)" != "$(NBD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NBD_DIR) $(NBD_BUILD_DIR) ; \
@@ -165,7 +165,7 @@ nbd-stage: $(NBD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nbd
 #
 $(NBD-CLIENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nbd-client" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +180,7 @@ $(NBD-CLIENT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(NBD_CONFLICTS)" >>$@
 
 $(NBD-SERVER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nbd-server" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

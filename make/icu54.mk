@@ -118,7 +118,7 @@ $(ICU54_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU54_SOURCE) $(ICU54_PATCHES) make/
 	$(ICU54_UNZIP) $(DL_DIR)/$(ICU54_SOURCE) | tar -C $(@D) -xvf - --strip 1
 	if test -n "$(ICU54_PATCHES)" ; \
 		then cat $(ICU54_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ICU54_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ICU54_DIR) -p0 ; \
 	fi
 	(cd $(@D)/source; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -189,7 +189,7 @@ $(ICU54_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ICU54_SOURCE)
 # necessary to create a seperate control file under sources/icu
 #
 $(ICU54_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: icu54" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,15 +224,15 @@ $(ICU54_IPK): $(ICU54_BUILD_DIR)/.built
 	rm -rf $(ICU54_IPK_DIR)/opt/sbin $(ICU54_IPK_DIR)/opt/share/man $(ICU54_IPK_DIR)/opt/lib/pkgconfig
 	mv -f $(ICU54_IPK_DIR)/opt/bin/icu54/icu-config $(ICU54_IPK_DIR)/opt/bin/icu54-config
 	rm -rf $(ICU54_IPK_DIR)/opt/bin/icu54
-#	install -d $(ICU54_IPK_DIR)/opt/etc/
-#	install -m 644 $(ICU54_SOURCE_DIR)/icu.conf $(ICU54_IPK_DIR)/opt/etc/icu.conf
-#	install -d $(ICU54_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ICU54_SOURCE_DIR)/rc.icu $(ICU54_IPK_DIR)/opt/etc/init.d/SXXicu
+#	$(INSTALL) -d $(ICU54_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ICU54_SOURCE_DIR)/icu.conf $(ICU54_IPK_DIR)/opt/etc/icu.conf
+#	$(INSTALL) -d $(ICU54_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ICU54_SOURCE_DIR)/rc.icu $(ICU54_IPK_DIR)/opt/etc/init.d/SXXicu
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU54_IPK_DIR)/opt/etc/init.d/SXXicu
 	$(MAKE) $(ICU54_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ICU54_SOURCE_DIR)/postinst $(ICU54_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ICU54_SOURCE_DIR)/postinst $(ICU54_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU54_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ICU54_SOURCE_DIR)/prerm $(ICU54_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ICU54_SOURCE_DIR)/prerm $(ICU54_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU54_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

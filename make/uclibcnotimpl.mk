@@ -94,7 +94,7 @@ uclibcnotimpl-source: $(UCLIBCNOTIMPL_PATCHES)
 $(UCLIBCNOTIMPL_BUILD_DIR)/.configured: $(UCLIBCNOTIMPL_PATCHES) make/uclibcnotimpl.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(UCLIBCNOTIMPL_DIR) $(UCLIBCNOTIMPL_BUILD_DIR)
-	install -d  $(UCLIBCNOTIMPL_BUILD_DIR)
+	$(INSTALL) -d  $(UCLIBCNOTIMPL_BUILD_DIR)
 	if test -n "$(UCLIBCNOTIMPL_PATCHES)" ; \
 	   then cp $(UCLIBCNOTIMPL_PATCHES) $(UCLIBCNOTIMPL_BUILD_DIR) ; \
 	fi
@@ -125,7 +125,7 @@ uclibcnotimpl: $(UCLIBCNOTIMPL_BUILD_DIR)/.built
 #
 $(UCLIBCNOTIMPL_BUILD_DIR)/.staged: $(UCLIBCNOTIMPL_BUILD_DIR)/.built
 	rm -f $@
-	install -m 644 $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
+	$(INSTALL) -m 644 $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
 		$(STAGING_LIB_DIR)
 	touch $@
 
@@ -137,7 +137,7 @@ uclibcnotimpl-toolchain: $(UCLIBCNOTIMPL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/uclibcnotimpl
 #
 $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: uclibcnotimpl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -166,17 +166,17 @@ $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/control:
 $(UCLIBCNOTIMPL_IPK): $(UCLIBCNOTIMPL_BUILD_DIR)/.built
 	rm -rf $(UCLIBCNOTIMPL_IPK_DIR) $(BUILD_DIR)/uclibcnotimpl_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(UCLIBCNOTIMPL_BUILD_DIR) DESTDIR=$(UCLIBCNOTIMPL_IPK_DIR) install-strip
-	install -d $(UCLIBCNOTIMPL_IPK_DIR)/opt/lib
-	install -m 644  $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
+	$(INSTALL) -d $(UCLIBCNOTIMPL_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644  $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
 		$(UCLIBCNOTIMPL_IPK_DIR)/opt/lib/
-#	install -m 644 $(UCLIBCNOTIMPL_SOURCE_DIR)/uclibcnotimpl.conf $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/uclibcnotimpl.conf
-#	install -d $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/rc.uclibcnotimpl $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d/SXXuclibcnotimpl
+#	$(INSTALL) -m 644 $(UCLIBCNOTIMPL_SOURCE_DIR)/uclibcnotimpl.conf $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/uclibcnotimpl.conf
+#	$(INSTALL) -d $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/rc.uclibcnotimpl $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d/SXXuclibcnotimpl
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d/SXXuclibcnotimpl
 	$(MAKE) $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/postinst $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/postinst $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/prerm $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/prerm $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/prerm
 #	echo $(UCLIBCNOTIMPL_CONFFILES) | sed -e 's/ /\n/g' > $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UCLIBCNOTIMPL_IPK_DIR)

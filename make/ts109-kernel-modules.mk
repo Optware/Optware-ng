@@ -74,7 +74,7 @@ $(TS109-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(TS109-KERNEL-MODULES_
 		tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TS109-KERNEL-MODULES_PATCHES)" ; \
 		then cat $(TS109-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TS109-KERNEL-MODULES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TS109-KERNEL-MODULES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TS109-KERNEL-MODULES_DIR)" != "$(TS109-KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TS109-KERNEL-MODULES_DIR) $(TS109-KERNEL-MODULES_BUILD_DIR) ; \
@@ -107,7 +107,7 @@ ts109-kernel-modules: $(TS109-KERNEL-MODULES_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ts109-kernel-modules
 #
 $(TS109-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
-	install -d $(TS109-KERNEL-MODULES_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(TS109-KERNEL-MODULES_IPK_DIR)/CONTROL
 	( \
 	  echo "Package: ts109-kernel-modules"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
@@ -122,7 +122,7 @@ $(TS109-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(TS109-KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
 	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
-	  install -d $(TS109-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
+	  $(INSTALL) -d $(TS109-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
 	  rm -f $(TS109-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL/control; \
           ( \
 	    echo -n ", ts109-kernel-module-$$n" >> $(TS109-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
@@ -151,7 +151,7 @@ $(TS109-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	echo "" >> $(TS109-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 
 $(TS109-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
-	install -d $(TS109-KERNEL-IMAGE_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(TS109-KERNEL-IMAGE_IPK_DIR)/CONTROL
 	rm -f $(TS109-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
 	( \
 	  echo "Package: ts109-kernel-image"; \
@@ -183,7 +183,7 @@ $(TS109-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(TS109-KERNEL-MODULES_BUILD_DIR)/.b
 	# Package the kernel image first
 	rm -rf $(TS109-KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/ts109-kernel-image_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(TS109-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
-	install -m 644 $(TS109-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(TS109-KERNEL-IMAGE_IPK_DIR)
+	$(INSTALL) -m 644 $(TS109-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(TS109-KERNEL-IMAGE_IPK_DIR)
 	( cd $(BUILD_DIR); $(IPKG_BUILD) $(TS109-KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules
 	rm -rf $(TS109-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/ts109-kernel-modules_*_$(TARGET_ARCH).ipk

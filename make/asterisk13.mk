@@ -318,7 +318,7 @@ endif
 	$(ASTERISK13_UNZIP) $(DL_DIR)/$(ASTERISK13_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK13_PATCHES)" ; \
 		then cat $(ASTERISK13_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK13_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASTERISK13_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK13_DIR)" != "$(ASTERISK13_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK13_DIR) $(ASTERISK13_BUILD_DIR) ; \
@@ -427,7 +427,7 @@ asterisk13-stage: $(ASTERISK13_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/asterisk
 #
 $(ASTERISK13_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: asterisk13" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

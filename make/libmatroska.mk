@@ -111,7 +111,7 @@ $(LIBMATROSKA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMATROSKA_SOURCE) $(LIBMATRO
 	$(LIBMATROSKA_UNZIP) $(DL_DIR)/$(LIBMATROSKA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMATROSKA_PATCHES)" ; \
 		then cat $(LIBMATROSKA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMATROSKA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMATROSKA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMATROSKA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMATROSKA_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ libmatroska-stage: $(LIBMATROSKA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmatroska
 #
 $(LIBMATROSKA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmatroska" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

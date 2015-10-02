@@ -115,7 +115,7 @@ $(INFERNO_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(INFERNO_SOURCE) $
 	$(INFERNO_UNZIP) $(DL_DIR)/$(INFERNO_SOURCE) | tar -C $(HOST_BUILD_DIR) -xf -
 	if test -n "$(INFERNO_HOST_PATCHES)" ; \
 		then cat $(INFERNO_HOST_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(INFERNO_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(INFERNO_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(INFERNO_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(INFERNO_DIR) $(@D) ; \
@@ -146,11 +146,11 @@ $(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PAT
 	$(INFERNO_UNZIP) $(DL_DIR)/$(INFERNO_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(INFERNO_PATCHES)" ; \
 		then cat $(INFERNO_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(INFERNO_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(INFERNO_DIR) -p0 ; \
 	fi
 	if test -n "$(INFERNO_PATCHES2)" ; \
 		then cat $(INFERNO_PATCHES2) | \
-		patch -bd $(BUILD_DIR)/$(INFERNO_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(INFERNO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(INFERNO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(INFERNO_DIR) $(@D) ; \
@@ -221,7 +221,7 @@ inferno: $(INFERNO_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/inferno
 #
 $(INFERNO-SMALL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: inferno-small" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -236,7 +236,7 @@ $(INFERNO-SMALL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(INFERNO_CONFLICTS)" >>$@
 
 $(INFERNO-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: inferno-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -251,7 +251,7 @@ $(INFERNO-UTILS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(INFERNO_CONFLICTS)" >>$@
 
 $(INFERNO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: inferno" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -280,12 +280,12 @@ $(INFERNO_IPK_DIR)/CONTROL/control:
 $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK) $(INFERNO_IPK): $(INFERNO_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/inferno*_*_$(TARGET_ARCH).ipk $(BUILD_DIR)/inferno*-ipk
 	# inferno
-	install -d $(INFERNO_IPK_DIR)/opt/bin $(INFERNO_IPK_DIR)/opt/share/inferno
-	install $(<D)/Linux/$(INFERNO_ARCH)/bin/* $(INFERNO_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(INFERNO_IPK_DIR)/opt/bin $(INFERNO_IPK_DIR)/opt/share/inferno
+	$(INSTALL) $(<D)/Linux/$(INFERNO_ARCH)/bin/* $(INFERNO_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(INFERNO_IPK_DIR)/opt/bin/*
 	rsync -av $(<D)/dis $(INFERNO_IPK_DIR)/opt/share/inferno/
 	# inferno-small
-	install -d $(INFERNO-SMALL_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(INFERNO-SMALL_IPK_DIR)/opt/bin
 	mv $(INFERNO_IPK_DIR)/opt/bin/emu-g $(INFERNO-SMALL_IPK_DIR)/opt/bin/
 	for f in \
 		dis/lib/arg.dis \
@@ -386,14 +386,14 @@ $(INFERNO-SMALL_IPK) $(INFERNO-UTILS_IPK) $(INFERNO_IPK): $(INFERNO_BUILD_DIR)/.
 		; \
 	do \
 		d=`dirname $$f`; \
-		install -d $(INFERNO-SMALL_IPK_DIR)/opt/share/inferno/$$d; \
+		$(INSTALL) -d $(INFERNO-SMALL_IPK_DIR)/opt/share/inferno/$$d; \
 		mv $(INFERNO_IPK_DIR)/opt/share/inferno/$$f \
 		   $(INFERNO-SMALL_IPK_DIR)/opt/share/inferno/$$d; \
 	done
 	$(MAKE) $(INFERNO-SMALL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO-SMALL_IPK_DIR)
 	# inferno-utils
-	install -d $(INFERNO-UTILS_IPK_DIR)/opt/share/inferno
+	$(INSTALL) -d $(INFERNO-UTILS_IPK_DIR)/opt/share/inferno
 	mv $(INFERNO_IPK_DIR)/opt/bin $(INFERNO-UTILS_IPK_DIR)/opt/share/inferno
 	$(MAKE) $(INFERNO-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INFERNO-UTILS_IPK_DIR)

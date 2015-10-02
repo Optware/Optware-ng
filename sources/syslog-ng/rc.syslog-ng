@@ -5,9 +5,9 @@
 
 # Stop itself if running
 if [ -n "`pidof syslog-ng`" ]; then
-    /opt/bin/killall syslog-ng 2>/dev/null
+    %OPTWARE_TARGET_PREFIX%/bin/killall syslog-ng 2>/dev/null
 fi
 
 sleep 2
 
-/opt/sbin/syslog-ng
+%OPTWARE_TARGET_PREFIX%/sbin/syslog-ng

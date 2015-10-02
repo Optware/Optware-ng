@@ -117,7 +117,7 @@ $(PY-DUPLICITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUP
 	mkdir -p $(@D)
 	# 2.5
 	$(PY-DUPLICITY_UNZIP) $(DL_DIR)/$(PY-DUPLICITY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-DUPLICITY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DUPLICITY_DIR) -p1
+#	cat $(PY-DUPLICITY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-DUPLICITY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -133,7 +133,7 @@ $(PY-DUPLICITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUP
 	)
 	# 2.6
 	$(PY-DUPLICITY_UNZIP) $(DL_DIR)/$(PY-DUPLICITY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-DUPLICITY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DUPLICITY_DIR) -p1
+#	cat $(PY-DUPLICITY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-DUPLICITY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -186,7 +186,7 @@ py-duplicity-stage: $(PY-DUPLICITY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-duplicity
 #
 $(PY25-DUPLICITY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-duplicity" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,7 +201,7 @@ $(PY25-DUPLICITY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-DUPLICITY_CONFLICTS)" >>$@
 
 $(PY26-DUPLICITY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-duplicity" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,7 +216,7 @@ $(PY26-DUPLICITY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-DUPLICITY_CONFLICTS)" >>$@
 
 $(PY-DUPLICITY-DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-duplicity-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -265,7 +265,7 @@ $(PY25-DUPLICITY_IPK) $(PY26-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLIC
 	$(MAKE) $(PY26-DUPLICITY_IPK_DIR)/CONTROL/control
 	# doc
 	rm -rf $(PY-DUPLICITY-DOC_IPK_DIR) $(BUILD_DIR)/py-duplicity-doc_*_$(TARGET_ARCH).ipk
-	install -d $(PY-DUPLICITY-DOC_IPK_DIR)/opt
+	$(INSTALL) -d $(PY-DUPLICITY-DOC_IPK_DIR)/opt
 	mv $(PY26-DUPLICITY_IPK_DIR)/opt/share $(PY-DUPLICITY-DOC_IPK_DIR)/opt
 	$(MAKE) $(PY-DUPLICITY-DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-DUPLICITY_IPK_DIR)

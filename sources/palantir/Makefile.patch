@@ -5,7 +5,7 @@
  # most installation directories are relative to this one.
  # Some might want to choose "/usr" instead.
 -BASE_DIR=	/usr/local
-+BASE_DIR=	/opt
++BASE_DIR=	%OPTWARE_TARGET_PREFIX%
  
  # the owner of the system directory and of the named pipe contained therein.
  # Note that since pipe has permission 600, all processes which interface to

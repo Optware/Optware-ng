@@ -2,5 +2,5 @@
 
 echo Starting OpenLDAP
 
-/opt/etc/init.d/S58slapd
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S58slapd
 

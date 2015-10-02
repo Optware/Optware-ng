@@ -35,7 +35,7 @@ $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) 
 	$(MAKE) perl-io-zlib-stage perl-io-string-stage perl-text-diff-stage
 	rm -rf $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) $(PERL-ARCHIVE-TAR_BUILD_DIR)
 	$(PERL-ARCHIVE-TAR_UNZIP) $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-ARCHIVE-TAR_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) -p1
+#	cat $(PERL-ARCHIVE-TAR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-ARCHIVE-TAR_BUILD_DIR)/.staged: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.built
 perl-archive-tar-stage: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.staged
 
 $(PERL-ARCHIVE-TAR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-archive-tar" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -123,7 +123,7 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES) ma
 	$(MAKE) audiofile-stage
 	rm -rf $(BUILD_DIR)/$(ESOUND_DIR) $(@D)
 	$(ESOUND_UNZIP) $(DL_DIR)/$(ESOUND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(ESOUND_PATCHES) | patch -d $(BUILD_DIR)/$(ESOUND_DIR) -p1
+#	cat $(ESOUND_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ESOUND_DIR) -p1
 	mv $(BUILD_DIR)/$(ESOUND_DIR) $(@D)
 	autoreconf -vif $(@D)
 	sed -i -e 's/artsc-config --cflags |//' $(@D)/configure
@@ -179,7 +179,7 @@ esound-stage: $(ESOUND_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/esound
 #
 $(ESOUND_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: esound" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -208,13 +208,13 @@ $(ESOUND_IPK_DIR)/CONTROL/control:
 $(ESOUND_IPK): $(ESOUND_BUILD_DIR)/.built
 	rm -rf $(ESOUND_IPK_DIR) $(BUILD_DIR)/esound_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ESOUND_BUILD_DIR) DESTDIR=$(ESOUND_IPK_DIR) install-strip
-	#install -d $(ESOUND_IPK_DIR)/opt/etc/
-	#install -m 644 $(ESOUND_SOURCE_DIR)/esound.conf $(ESOUND_IPK_DIR)/opt/etc/esound.conf
-	#install -d $(ESOUND_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(ESOUND_SOURCE_DIR)/rc.esound $(ESOUND_IPK_DIR)/opt/etc/init.d/SXXesound
+	#$(INSTALL) -d $(ESOUND_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(ESOUND_SOURCE_DIR)/esound.conf $(ESOUND_IPK_DIR)/opt/etc/esound.conf
+	#$(INSTALL) -d $(ESOUND_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(ESOUND_SOURCE_DIR)/rc.esound $(ESOUND_IPK_DIR)/opt/etc/init.d/SXXesound
 	$(MAKE) $(ESOUND_IPK_DIR)/CONTROL/control
-	#install -m 755 $(ESOUND_SOURCE_DIR)/postinst $(ESOUND_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(ESOUND_SOURCE_DIR)/prerm $(ESOUND_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(ESOUND_SOURCE_DIR)/postinst $(ESOUND_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(ESOUND_SOURCE_DIR)/prerm $(ESOUND_IPK_DIR)/CONTROL/prerm
 	echo $(ESOUND_CONFFILES) | sed -e 's/ /\n/g' > $(ESOUND_IPK_DIR)/CONTROL/conffiles
 	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesd.la
 	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesddsp.la

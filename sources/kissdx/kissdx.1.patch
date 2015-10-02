@@ -5,7 +5,7 @@
  .B \-c, --config=FILE
  Use the specified configuration file instead of searching for
 -kissdx.conf or kissd.conf in $HOME/ and /etc/.
-+kissdx.conf or kissd.conf in $HOME/ and /opt/etc/.
++kissdx.conf or kissd.conf in $HOME/ and %OPTWARE_TARGET_PREFIX%/etc/.
  .TP
  .B \-d, --daemon
  Start in daemon mode (fork into background and redirect all logs
@@ -14,7 +14,7 @@
  .B $HOME/.kissdx.conf
  .br
 -.B /etc/kissdx.conf
-+.B /opt/etc/kissdx.conf
++.B %OPTWARE_TARGET_PREFIX%/etc/kissdx.conf
  .br
  configuration file for kissdx (searched in this order)
  .SH AUTHOR

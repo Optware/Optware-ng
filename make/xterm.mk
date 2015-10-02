@@ -108,7 +108,7 @@ $(XTERM_BUILD_DIR)/.configured: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES) make/
 	$(MAKE) x11-stage xaw-stage xt-stage freetype-stage
 	rm -rf $(BUILD_DIR)/$(XTERM_DIR) $(@D)
 	$(XTERM_UNZIP) $(DL_DIR)/$(XTERM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(XTERM_PATCHES) | patch -d $(BUILD_DIR)/$(XTERM_DIR) -p1
+	#cat $(XTERM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(XTERM_DIR) -p1
 	mv $(BUILD_DIR)/$(XTERM_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -155,7 +155,7 @@ xterm-stage: $(XTERM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/xterm
 #
 $(XTERM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xterm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

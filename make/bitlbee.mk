@@ -119,7 +119,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(BITLBEE_DIR) $(@D)
 	$(BITLBEE_UNZIP) $(DL_DIR)/$(BITLBEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BITLBEE_PATCHES)"; \
-		then cat $(BITLBEE_PATCHES) | patch -d $(BUILD_DIR)/$(BITLBEE_DIR) -p1; \
+		then cat $(BITLBEE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BITLBEE_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(BITLBEE_DIR) $(@D)
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
@@ -178,7 +178,7 @@ bitlbee-stage: $(BITLBEE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bitlbee
 #
 $(BITLBEE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bitlbee" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,13 +207,13 @@ $(BITLBEE_IPK_DIR)/CONTROL/control:
 $(BITLBEE_IPK): $(BITLBEE_BUILD_DIR)/.built
 	rm -rf $(BITLBEE_IPK_DIR) $(BUILD_DIR)/bitlbee_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BITLBEE_BUILD_DIR) DESTDIR=$(BITLBEE_IPK_DIR) install
-	install -d $(BITLBEE_IPK_DIR)/opt/etc/bitlbee
-	install -m 644 $(BITLBEE_BUILD_DIR)/bitlbee.conf $(BITLBEE_IPK_DIR)/opt/etc/bitlbee/bitlbee.conf
-	install -d $(BITLBEE_IPK_DIR)/opt/etc/xinetd.d
-	install -m 755 $(BITLBEE_SOURCE_DIR)/xinetd.bitlbee $(BITLBEE_IPK_DIR)/opt/etc/xinetd.d/bitlbee
+	$(INSTALL) -d $(BITLBEE_IPK_DIR)/opt/etc/bitlbee
+	$(INSTALL) -m 644 $(BITLBEE_BUILD_DIR)/bitlbee.conf $(BITLBEE_IPK_DIR)/opt/etc/bitlbee/bitlbee.conf
+	$(INSTALL) -d $(BITLBEE_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 755 $(BITLBEE_SOURCE_DIR)/xinetd.bitlbee $(BITLBEE_IPK_DIR)/opt/etc/xinetd.d/bitlbee
 	$(MAKE) $(BITLBEE_IPK_DIR)/CONTROL/control
-	install -m 755 $(BITLBEE_SOURCE_DIR)/postinst $(BITLBEE_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(BITLBEE_SOURCE_DIR)/prerm $(BITLBEE_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(BITLBEE_SOURCE_DIR)/postinst $(BITLBEE_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(BITLBEE_SOURCE_DIR)/prerm $(BITLBEE_IPK_DIR)/CONTROL/prerm
 	echo $(BITLBEE_CONFFILES) | sed -e 's/ /\n/g' > $(BITLBEE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BITLBEE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(BITLBEE_IPK_DIR)

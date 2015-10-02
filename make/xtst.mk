@@ -61,7 +61,7 @@ XTST_IPK=$(BUILD_DIR)/xtst_$(XTST_FULL_VERSION)-$(XTST_IPK_VERSION)_$(TARGET_ARC
 # Automatically create a ipkg control file
 #
 $(XTST_IPK_DIR)/CONTROL/control:
-	@install -d $(XTST_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XTST_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xtst" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -100,7 +100,7 @@ $(XTST_BUILD_DIR)/.configured: $(DL_DIR)/$(XTST_SOURCE) $(XTST_PATCHES) make/xts
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XTST_SOURCE)
 	if test -n "$(XTST_PATCHES)" ; \
 		then cat $(XTST_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XTST_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XTST_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XTST_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XTST_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ $(XTST_IPK): $(XTST_BUILD_DIR)/.built
 	rm -rf $(XTST_IPK_DIR) $(BUILD_DIR)/xtst_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XTST_BUILD_DIR) DESTDIR=$(XTST_IPK_DIR) install-strip
 	$(MAKE) $(XTST_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XTST_SOURCE_DIR)/postinst $(XTST_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XTST_SOURCE_DIR)/postinst $(XTST_IPK_DIR)/CONTROL/postinst
 	rm -f $(XTST_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTST_IPK_DIR)
 

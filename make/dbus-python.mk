@@ -114,7 +114,7 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 	rm -rf $(BUILD_DIR)/$(DBUS-PYTHON_DIR)
 	$(DBUS-PYTHON_UNZIP) $(DL_DIR)/$(DBUS-PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DBUS-PYTHON_PATCHES)"; then \
-		cat $(DBUS-PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
+		cat $(DBUS-PYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(DBUS-PYTHON_DIR) $(@D)/2.5
 	autoreconf -vif $(@D)/2.5
@@ -138,7 +138,7 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 	rm -rf $(BUILD_DIR)/$(DBUS-PYTHON_DIR)
 	$(DBUS-PYTHON_UNZIP) $(DL_DIR)/$(DBUS-PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DBUS-PYTHON_PATCHES)"; then \
-		cat $(DBUS-PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
+		cat $(DBUS-PYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(DBUS-PYTHON_DIR) $(@D)/2.6
 	autoreconf -vif $(@D)/2.6
@@ -191,7 +191,7 @@ dbus-python: $(DBUS-PYTHON_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/dbus-python
 #
 $(PY25-DBUS-PYTHON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-dbus-python" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,7 +205,7 @@ $(PY25-DBUS-PYTHON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DBUS-PYTHON_CONFLICTS)" >>$@
 
 $(PY26-DBUS-PYTHON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-dbus-python" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

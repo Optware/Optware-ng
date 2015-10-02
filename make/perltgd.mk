@@ -123,7 +123,7 @@ $(PERLTGD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLTGD_SOURCE) $(PERLTGD_PATCHES)
 	$(PERLTGD_UNZIP) $(DL_DIR)/$(PERLTGD_SOURCE) | tar -C $(BUILD_DIR)/$(PERLTGD_DIR) -xvf -
 	if test -n "$(PERLTGD_PATCHES)" ; \
 		then cat $(PERLTGD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PERLTGD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PERLTGD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PERLTGD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PERLTGD_DIR) $(@D) ; \
@@ -158,7 +158,7 @@ perltgd-stage: $(PERLTGD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/perltgd
 #
 $(PERLTGD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perltgd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -186,22 +186,22 @@ $(PERLTGD_IPK_DIR)/CONTROL/control:
 #
 $(PERLTGD_IPK): $(PERLTGD_BUILD_DIR)/.built
 	rm -rf $(PERLTGD_IPK_DIR) $(BUILD_DIR)/perltgd_*_$(TARGET_ARCH).ipk
-	install -d $(PERLTGD_IPK_DIR)/opt/bin
-	install -m 755 $(PERLTGD_BUILD_DIR)/perltgdcli.pl $(PERLTGD_IPK_DIR)/opt/bin/perltgd
-	install -m 755 $(PERLTGD_BUILD_DIR)/xmltv2tgd.pl $(PERLTGD_IPK_DIR)/opt/bin/xmltv2tgd
-	install -d $(PERLTGD_IPK_DIR)/opt/etc/perltgd
-	install -m 644 $(PERLTGD_SOURCE_DIR)/perltgd.settings $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
-	install -m 644 $(PERLTGD_SOURCE_DIR)/xmltv2tgd.settings $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
-	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/append.timers $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
-	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/favourites.ini $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
-	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/overrun.shows $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
-	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/shows.repeat $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
-	install -d $(PERLTGD_IPK_DIR)/opt/etc/cron.d
-	install -m 600 $(PERLTGD_SOURCE_DIR)/cron.perltgd $(PERLTGD_IPK_DIR)/opt/etc/cron.d/perltgd
+	$(INSTALL) -d $(PERLTGD_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(PERLTGD_BUILD_DIR)/perltgdcli.pl $(PERLTGD_IPK_DIR)/opt/bin/perltgd
+	$(INSTALL) -m 755 $(PERLTGD_BUILD_DIR)/xmltv2tgd.pl $(PERLTGD_IPK_DIR)/opt/bin/xmltv2tgd
+	$(INSTALL) -d $(PERLTGD_IPK_DIR)/opt/etc/perltgd
+	$(INSTALL) -m 644 $(PERLTGD_SOURCE_DIR)/perltgd.settings $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
+	$(INSTALL) -m 644 $(PERLTGD_SOURCE_DIR)/xmltv2tgd.settings $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
+	$(INSTALL) -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/append.timers $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
+	$(INSTALL) -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/favourites.ini $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
+	$(INSTALL) -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/overrun.shows $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
+	$(INSTALL) -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/shows.repeat $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
+	$(INSTALL) -d $(PERLTGD_IPK_DIR)/opt/etc/cron.d
+	$(INSTALL) -m 600 $(PERLTGD_SOURCE_DIR)/cron.perltgd $(PERLTGD_IPK_DIR)/opt/etc/cron.d/perltgd
 	$(MAKE) $(PERLTGD_IPK_DIR)/CONTROL/control
-	install -m 755 $(PERLTGD_SOURCE_DIR)/postinst $(PERLTGD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(PERLTGD_SOURCE_DIR)/postinst $(PERLTGD_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PERLTGD_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(PERLTGD_SOURCE_DIR)/prerm $(PERLTGD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(PERLTGD_SOURCE_DIR)/prerm $(PERLTGD_IPK_DIR)/CONTROL/prerm
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PERLTGD_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

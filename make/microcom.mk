@@ -110,7 +110,7 @@ $(MICROCOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MICROCOM_SOURCE) $(MICROCOM_PATCH
 	$(MICROCOM_UNZIP) $(DL_DIR)/$(MICROCOM_SOURCE) | tar -C $(BUILD_DIR)/$(MICROCOM_DIR) -xvf -
 	if test -n "$(MICROCOM_PATCHES)" ; \
 		then cat $(MICROCOM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MICROCOM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MICROCOM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MICROCOM_DIR)" != "$(MICROCOM_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MICROCOM_DIR) $(MICROCOM_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ microcom-stage: $(MICROCOM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/microcom
 #
 $(MICROCOM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: microcom" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,11 +190,11 @@ $(MICROCOM_IPK_DIR)/CONTROL/control:
 $(MICROCOM_IPK): $(MICROCOM_BUILD_DIR)/.built
 	rm -rf $(MICROCOM_IPK_DIR) $(BUILD_DIR)/microcom_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(MICROCOM_BUILD_DIR) DESTDIR=$(MICROCOM_IPK_DIR) install-strip
-	install -d $(MICROCOM_IPK_DIR)/opt/bin
-	install $(MICROCOM_BUILD_DIR)/microcom $(MICROCOM_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(MICROCOM_IPK_DIR)/opt/bin
+	$(INSTALL) $(MICROCOM_BUILD_DIR)/microcom $(MICROCOM_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(MICROCOM_IPK_DIR)/opt/bin/microcom
-#	install -d $(MICROCOM_IPK_DIR)/opt/etc/
-#	install -m 644 $(MICROCOM_SOURCE_DIR)/microcom.conf $(MICROCOM_IPK_DIR)/opt/etc/microcom.conf
+#	$(INSTALL) -d $(MICROCOM_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MICROCOM_SOURCE_DIR)/microcom.conf $(MICROCOM_IPK_DIR)/opt/etc/microcom.conf
 	$(MAKE) $(MICROCOM_IPK_DIR)/CONTROL/control
 #	echo $(MICROCOM_CONFFILES) | sed -e 's/ /\n/g' > $(MICROCOM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MICROCOM_IPK_DIR)

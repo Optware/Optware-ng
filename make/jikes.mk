@@ -96,7 +96,7 @@ $(JIKES_BUILD_DIR)/.configured: $(DL_DIR)/$(JIKES_SOURCE) $(JIKES_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(JIKES_DIR) $(JIKES_BUILD_DIR)
 	$(JIKES_UNZIP) $(DL_DIR)/$(JIKES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(JIKES_PATCHES) | patch -d $(BUILD_DIR)/$(JIKES_DIR) -p1
+#	cat $(JIKES_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(JIKES_DIR) -p1
 	mv $(BUILD_DIR)/$(JIKES_DIR) $(JIKES_BUILD_DIR)
 	(cd $(JIKES_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -141,7 +141,7 @@ jikes-stage: $(JIKES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/jikes
 #
 $(JIKES_IPK_DIR)/CONTROL/control:
-	@install -d $(JIKES_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(JIKES_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: jikes" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -171,13 +171,13 @@ $(JIKES_IPK): $(JIKES_BUILD_DIR)/.built
 	rm -rf $(JIKES_IPK_DIR) $(BUILD_DIR)/jikes_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JIKES_BUILD_DIR) DESTDIR=$(JIKES_IPK_DIR) install
 	$(STRIP_COMMAND) $(JIKES_IPK_DIR)/opt/bin/jikes
-#	install -d $(JIKES_IPK_DIR)/opt/etc/
-#	install -m 755 $(JIKES_SOURCE_DIR)/jikes.conf $(JIKES_IPK_DIR)/opt/etc/jikes.conf
-#	install -d $(JIKES_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(JIKES_SOURCE_DIR)/rc.jikes $(JIKES_IPK_DIR)/opt/etc/init.d/SXXjikes
+#	$(INSTALL) -d $(JIKES_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 755 $(JIKES_SOURCE_DIR)/jikes.conf $(JIKES_IPK_DIR)/opt/etc/jikes.conf
+#	$(INSTALL) -d $(JIKES_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(JIKES_SOURCE_DIR)/rc.jikes $(JIKES_IPK_DIR)/opt/etc/init.d/SXXjikes
 	$(MAKE) $(JIKES_IPK_DIR)/CONTROL/control
-#	install -m 644 $(JIKES_SOURCE_DIR)/postinst $(JIKES_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(JIKES_SOURCE_DIR)/prerm $(JIKES_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(JIKES_SOURCE_DIR)/postinst $(JIKES_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(JIKES_SOURCE_DIR)/prerm $(JIKES_IPK_DIR)/CONTROL/prerm
 #	echo $(JIKES_CONFFILES) | sed -e 's/ /\n/g' > $(JIKES_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JIKES_IPK_DIR)
 

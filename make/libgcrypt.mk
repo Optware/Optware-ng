@@ -110,10 +110,10 @@ $(LIBGCRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGCRYPT_SOURCE) $(LIBGCRYPT_PA
 	$(LIBGCRYPT_UNZIP) $(DL_DIR)/$(LIBGCRYPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGCRYPT_PATCHES)" ; then \
 		cat $(LIBGCRYPT_PATCHES) | \
-        	 patch -d $(BUILD_DIR)/$(LIBGCRYPT_DIR) -p1 ; \
+        	 $(PATCH) -d $(BUILD_DIR)/$(LIBGCRYPT_DIR) -p1 ; \
 	fi
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
-		cat $(LIBGCRYPT_SOURCE_DIR)/gcc3-workaround.patch | patch -d $(BUILD_DIR)/$(LIBGCRYPT_DIR) -p1 ; \
+		cat $(LIBGCRYPT_SOURCE_DIR)/gcc3-workaround.patch | $(PATCH) -d $(BUILD_DIR)/$(LIBGCRYPT_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(@D)
 	(cd $(@D); \
@@ -170,7 +170,7 @@ libgcrypt-stage: $(LIBGCRYPT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libgcrypt
 #
 $(LIBGCRYPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libgcrypt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,14 +199,14 @@ $(LIBGCRYPT_IPK_DIR)/CONTROL/control:
 $(LIBGCRYPT_IPK): $(LIBGCRYPT_BUILD_DIR)/.built
 	rm -rf $(LIBGCRYPT_IPK_DIR) $(BUILD_DIR)/libgcrypt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(LIBGCRYPT_IPK_DIR) transform='' install-strip
-	#install -d $(LIBGCRYPT_IPK_DIR)/opt/etc/
-	#install -m 644 $(LIBGCRYPT_SOURCE_DIR)/libgcrypt.conf $(LIBGCRYPT_IPK_DIR)/opt/etc/libgcrypt.conf
-	#install -d $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(LIBGCRYPT_SOURCE_DIR)/rc.libgcrypt $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d/SXXlibgcrypt
+	#$(INSTALL) -d $(LIBGCRYPT_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(LIBGCRYPT_SOURCE_DIR)/libgcrypt.conf $(LIBGCRYPT_IPK_DIR)/opt/etc/libgcrypt.conf
+	#$(INSTALL) -d $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(LIBGCRYPT_SOURCE_DIR)/rc.libgcrypt $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d/SXXlibgcrypt
 	rm -f $(LIBGCRYPT_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(LIBGCRYPT_IPK_DIR)/CONTROL/control
-	#install -m 755 $(LIBGCRYPT_SOURCE_DIR)/postinst $(LIBGCRYPT_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(LIBGCRYPT_SOURCE_DIR)/prerm $(LIBGCRYPT_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(LIBGCRYPT_SOURCE_DIR)/postinst $(LIBGCRYPT_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(LIBGCRYPT_SOURCE_DIR)/prerm $(LIBGCRYPT_IPK_DIR)/CONTROL/prerm
 	echo $(LIBGCRYPT_CONFFILES) | sed -e 's/ /\n/g' > $(LIBGCRYPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGCRYPT_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBGCRYPT_IPK_DIR)

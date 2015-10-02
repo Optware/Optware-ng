@@ -117,7 +117,7 @@ endif
 	$(OPENDCHUB_UNZIP) $(DL_DIR)/$(OPENDCHUB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPENDCHUB_PATCHES)" ; \
 		then cat $(OPENDCHUB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENDCHUB_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPENDCHUB_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENDCHUB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(OPENDCHUB_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ opendchub-stage: $(OPENDCHUB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/opendchub
 #
 $(OPENDCHUB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: opendchub" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(OPENDCHUB_IPK): $(OPENDCHUB_BUILD_DIR)/.built
 	rm -rf $(OPENDCHUB_IPK_DIR) $(BUILD_DIR)/opendchub_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENDCHUB_BUILD_DIR) DESTDIR=$(OPENDCHUB_IPK_DIR) install
 	$(STRIP_COMMAND) $(OPENDCHUB_IPK_DIR)/opt/*bin/*
-	install -d $(OPENDCHUB_IPK_DIR)/opt/share/doc/opendchub
-	install $(OPENDCHUB_BUILD_DIR)/[ACRN]* \
+	$(INSTALL) -d $(OPENDCHUB_IPK_DIR)/opt/share/doc/opendchub
+	$(INSTALL) $(OPENDCHUB_BUILD_DIR)/[ACRN]* \
 		$(OPENDCHUB_BUILD_DIR)/Documentation/* \
 		$(OPENDCHUB_BUILD_DIR)/Samplescripts/* \
 		$(OPENDCHUB_IPK_DIR)/opt/share/doc/opendchub/
-#	install -d $(OPENDCHUB_IPK_DIR)/opt/etc/
-#	install -m 644 $(OPENDCHUB_SOURCE_DIR)/opendchub.conf $(OPENDCHUB_IPK_DIR)/opt/etc/opendchub.conf
-#	install -d $(OPENDCHUB_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(OPENDCHUB_SOURCE_DIR)/rc.opendchub $(OPENDCHUB_IPK_DIR)/opt/etc/init.d/SXXopendchub
+#	$(INSTALL) -d $(OPENDCHUB_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(OPENDCHUB_SOURCE_DIR)/opendchub.conf $(OPENDCHUB_IPK_DIR)/opt/etc/opendchub.conf
+#	$(INSTALL) -d $(OPENDCHUB_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(OPENDCHUB_SOURCE_DIR)/rc.opendchub $(OPENDCHUB_IPK_DIR)/opt/etc/init.d/SXXopendchub
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPENDCHUB_IPK_DIR)/opt/etc/init.d/SXXopendchub
 	$(MAKE) $(OPENDCHUB_IPK_DIR)/CONTROL/control
 	echo $(OPENDCHUB_CONFFILES) | sed -e 's/ /\n/g' > $(OPENDCHUB_IPK_DIR)/CONTROL/conffiles

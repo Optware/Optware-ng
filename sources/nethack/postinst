@@ -2,7 +2,7 @@
 #
 # $Id$
 
-cd /opt/share/nethackdir/dat
+cd %OPTWARE_TARGET_PREFIX%/share/nethackdir/dat
 ../util/dgn_comp dungeon.pdf
 ../util/lev_comp bigroom.des
 ../util/lev_comp castle.des
@@ -28,16 +28,16 @@ cd /opt/share/nethackdir/dat
 ../util/lev_comp Tourist.des
 ../util/lev_comp Valkyrie.des
 ../util/lev_comp Wizard.des
-cp *.lev /opt/share/nethackdir/
-cp dungeon /opt/share/nethackdir/dungeon
-cd /opt/share/nethackdir/util
+cp *.lev %OPTWARE_TARGET_PREFIX%/share/nethackdir/
+cp dungeon %OPTWARE_TARGET_PREFIX%/share/nethackdir/dungeon
+cd %OPTWARE_TARGET_PREFIX%/share/nethackdir/util
 ./makedefs -q
-cp /opt/share/nethackdir/dat/quest.dat /opt/share/nethackdir/quest.dat
+cp %OPTWARE_TARGET_PREFIX%/share/nethackdir/dat/quest.dat %OPTWARE_TARGET_PREFIX%/share/nethackdir/quest.dat
 #
 # This should be solved with a sgid games!
 #
-chmod 777 /opt/share/nethackdir
-chmod 777 /opt/share/nethackdir/record
-chmod 777 /opt/share/nethackdir/logfile
-chmod 777 /opt/share/nethackdir/perm
-chmod 1777 /opt/share/nethackdir/save
+chmod 777 %OPTWARE_TARGET_PREFIX%/share/nethackdir
+chmod 777 %OPTWARE_TARGET_PREFIX%/share/nethackdir/record
+chmod 777 %OPTWARE_TARGET_PREFIX%/share/nethackdir/logfile
+chmod 777 %OPTWARE_TARGET_PREFIX%/share/nethackdir/perm
+chmod 1777 %OPTWARE_TARGET_PREFIX%/share/nethackdir/save

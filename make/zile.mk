@@ -114,7 +114,7 @@ $(ZILE_BUILD_DIR)/.configured: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES) make/zil
 	$(ZILE_UNZIP) $(DL_DIR)/$(ZILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZILE_PATCHES)" ; \
 		then cat $(ZILE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ZILE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ZILE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ZILE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ZILE_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ zile-stage: $(ZILE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/zile
 #
 $(ZILE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: zile" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

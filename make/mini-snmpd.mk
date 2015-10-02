@@ -117,7 +117,7 @@ $(MINI-SNMPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINI-SNMPD_SOURCE) $(MINI-SNMPD
 	$(MINI-SNMPD_UNZIP) $(DL_DIR)/$(MINI-SNMPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINI-SNMPD_PATCHES)" ; \
 		then cat $(MINI-SNMPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MINI-SNMPD_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MINI-SNMPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MINI-SNMPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MINI-SNMPD_DIR) $(@D) ; \
@@ -159,7 +159,7 @@ mini-snmpd: $(MINI-SNMPD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mini-snmpd
 #
 $(MINI-SNMPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mini-snmpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

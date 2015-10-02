@@ -74,7 +74,7 @@ $(PERLBAL_BUILD_DIR)/.staged: $(PERLBAL_BUILD_DIR)/.built
 perlbal-stage: $(PERLBAL_BUILD_DIR)/.staged
 
 $(PERLBAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perlbal" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

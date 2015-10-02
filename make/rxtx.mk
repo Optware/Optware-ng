@@ -115,7 +115,7 @@ $(RXTX_BUILD_DIR)/.configured: $(DL_DIR)/$(RXTX_SOURCE) $(RXTX_PATCHES) make/rxt
 	cd $(BUILD_DIR) && $(RXTX_UNZIP) $(DL_DIR)/$(RXTX_SOURCE)
 	if test -n "$(RXTX_PATCHES)" ; \
 		then cat $(RXTX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RXTX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RXTX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RXTX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RXTX_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ rxtx-stage: $(RXTX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rxtx
 #
 $(RXTX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rxtx" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,22 +199,22 @@ $(RXTX_IPK_DIR)/CONTROL/control:
 #
 $(RXTX_IPK): $(RXTX_BUILD_DIR)/.built
 	rm -rf $(RXTX_IPK_DIR) $(BUILD_DIR)/rxtx_*_$(TARGET_ARCH).ipk
-	install -d $(RXTX_IPK_DIR)/opt/lib/java
+	$(INSTALL) -d $(RXTX_IPK_DIR)/opt/lib/java
 	$(MAKE) -C $(RXTX_BUILD_DIR) install \
 		DESTDIR=$(RXTX_IPK_DIR) \
 		JHOME=$(RXTX_IPK_DIR)/opt/lib/java \
 		RXTX_PATH=$(RXTX_IPK_DIR)/opt/lib \
 		;
 	$(STRIP_COMMAND) $(RXTX_IPK_DIR)/opt/lib/*.so
-#	install -d $(RXTX_IPK_DIR)/opt/etc/
-#	install -m 644 $(RXTX_SOURCE_DIR)/rxtx.conf $(RXTX_IPK_DIR)/opt/etc/rxtx.conf
-#	install -d $(RXTX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(RXTX_SOURCE_DIR)/rc.rxtx $(RXTX_IPK_DIR)/opt/etc/init.d/SXXrxtx
+#	$(INSTALL) -d $(RXTX_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(RXTX_SOURCE_DIR)/rxtx.conf $(RXTX_IPK_DIR)/opt/etc/rxtx.conf
+#	$(INSTALL) -d $(RXTX_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(RXTX_SOURCE_DIR)/rc.rxtx $(RXTX_IPK_DIR)/opt/etc/init.d/SXXrxtx
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RXTX_IPK_DIR)/opt/etc/init.d/SXXrxtx
 	$(MAKE) $(RXTX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RXTX_SOURCE_DIR)/postinst $(RXTX_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RXTX_SOURCE_DIR)/postinst $(RXTX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RXTX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RXTX_SOURCE_DIR)/prerm $(RXTX_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(RXTX_SOURCE_DIR)/prerm $(RXTX_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RXTX_IPK_DIR)/CONTROL/prerm
 	echo $(RXTX_CONFFILES) | sed -e 's/ /\n/g' > $(RXTX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RXTX_IPK_DIR)

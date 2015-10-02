@@ -1,12 +1,12 @@
 #!/bin/sh
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
-grep -q 'setup = 1' /opt/share/giFT/giftd.conf
+grep -q 'setup = 1' %OPTWARE_TARGET_PREFIX%/share/giFT/giftd.conf
 setup=$?
 
 if [ ${setup} = 1 ]; then
-	echo "Please edit /opt/sbin/giftd_wrapper and"
-	echo "/opt/share/giFT/giftd.conf from template provided"
+	echo "Please edit %OPTWARE_TARGET_PREFIX%/sbin/giftd_wrapper and"
+	echo "%OPTWARE_TARGET_PREFIX%/share/giFT/giftd.conf from template provided"
 	exit 1
 fi
 
@@ -23,7 +23,7 @@ fi
 
 start() {
         echo -n "Starting giFTd... "
-	/opt/sbin/giftd_wrapper &
+	%OPTWARE_TARGET_PREFIX%/sbin/giftd_wrapper &
         echo "done"
 }
 

@@ -140,7 +140,7 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(COREUTILS_DIR) $(@D)
 	$(COREUTILS_UNZIP) $(DL_DIR)/$(COREUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(COREUTILS_PATCHES) | patch -Z -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
+	cat $(COREUTILS_PATCHES) | $(PATCH) -Z -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(COREUTILS_DIR) $(@D)
 	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
 	cp $(COREUTILS_AC_CACHE) $(@D)/config.cache
@@ -187,11 +187,11 @@ coreutils: $(COREUTILS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 #$(STAGING_LIB_DIR)/libcoreutils.so.$(COREUTILS_VERSION): $(COREUTILS_BUILD_DIR)/.built
-#	install -d $(STAGING_INCLUDE_DIR)
-#	install -m 644 $(COREUTILS_BUILD_DIR)/coreutils.h $(STAGING_INCLUDE_DIR)
-#	install -d $(STAGING_LIB_DIR)
-#	install -m 644 $(COREUTILS_BUILD_DIR)/libcoreutils.a $(STAGING_LIB_DIR)
-#	install -m 644 $(COREUTILS_BUILD_DIR)/libcoreutils.so.$(COREUTILS_VERSION) $(STAGING_LIB_DIR)
+#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -m 644 $(COREUTILS_BUILD_DIR)/coreutils.h $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -d $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(COREUTILS_BUILD_DIR)/libcoreutils.a $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(COREUTILS_BUILD_DIR)/libcoreutils.so.$(COREUTILS_VERSION) $(STAGING_LIB_DIR)
 #	cd $(STAGING_LIB_DIR) && ln -fs libcoreutils.so.$(COREUTILS_VERSION) libcoreutils.so.1
 #	cd $(STAGING_LIB_DIR) && ln -fs libcoreutils.so.$(COREUTILS_VERSION) libcoreutils.so
 #
@@ -202,7 +202,7 @@ coreutils: $(COREUTILS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/coreutils
 #
 $(COREUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: coreutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -230,12 +230,12 @@ $(COREUTILS_IPK_DIR)/CONTROL/control:
 $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	rm -rf $(COREUTILS_IPK_DIR) $(BUILD_DIR)/coreutils_*_$(TARGET_ARCH).ipk
 	# Install binaries
-	install -d $(COREUTILS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(COREUTILS_IPK_DIR)/opt/bin
 	$(MAKE) -C $(COREUTILS_BUILD_DIR) DESTDIR=$(COREUTILS_IPK_DIR) install-exec
 	# copy su - can't install it as install only works for root
 	cp -p $(COREUTILS_BUILD_DIR)/src/su $(COREUTILS_IPK_DIR)/opt/bin/su
 	# Install makefiles
-	install -d $(COREUTILS_IPK_DIR)/opt/man/man1	
+	$(INSTALL) -d $(COREUTILS_IPK_DIR)/opt/man/man1	
 	$(MAKE) -C $(COREUTILS_BUILD_DIR)/man DESTDIR=$(COREUTILS_IPK_DIR) install
 	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/* $(COREUTILS_IPK_DIR)/opt/lib/coreutils/lib*.so
 	$(MAKE) $(COREUTILS_IPK_DIR)/CONTROL/control
@@ -262,9 +262,9 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 			$(COREUTILS_IPK_DIR)/CONTROL/postinst $(COREUTILS_IPK_DIR)/CONTROL/prerm; \
 	fi
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
-	install -d $(COREUTILS_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(COREUTILS_SOURCE_DIR)/rc.coreutils $(COREUTILS_IPK_DIR)/opt/etc/init.d/S05coreutils
-	install -d $(COREUTILS_IPK_DIR)/usr/bin
+	$(INSTALL) -d $(COREUTILS_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(COREUTILS_SOURCE_DIR)/rc.coreutils $(COREUTILS_IPK_DIR)/opt/etc/init.d/S05coreutils
+	$(INSTALL) -d $(COREUTILS_IPK_DIR)/usr/bin
 	ln -s /opt/bin/env $(COREUTILS_IPK_DIR)/usr/bin/env
 endif
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COREUTILS_IPK_DIR)

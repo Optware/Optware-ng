@@ -149,8 +149,8 @@ lua50: $(LUA50_BUILD_DIR)/.built
 $(LUA50_BUILD_DIR)/.staged: $(LUA50_BUILD_DIR)/.built
 	rm -f $(LUA50_BUILD_DIR)/.staged
 	(cd $(LUA50_BUILD_DIR); \
-		install -m 0644 include/*.h $(STAGING_INCLUDE_DIR); \
-		install -m 0644 lib/*.a $(STAGING_LIB_DIR); \
+		$(INSTALL) -m 0644 include/*.h $(STAGING_INCLUDE_DIR); \
+		$(INSTALL) -m 0644 lib/*.a $(STAGING_LIB_DIR); \
 	)
 	touch $(LUA50_BUILD_DIR)/.staged
 
@@ -161,7 +161,7 @@ lua50-stage: $(LUA50_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lua50
 #
 $(LUA50_IPK_DIR)/CONTROL/control:
-	@install -d $(LUA50_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LUA50_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: lua50" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,14 +190,14 @@ $(LUA50_IPK): $(LUA50_BUILD_DIR)/.built
 	(cd $(LUA50_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS); export STRIP; \
 		$${STRIP} bin/*; \
-		install -d $(LUA50_IPK_DIR)/opt/bin \
+		$(INSTALL) -d $(LUA50_IPK_DIR)/opt/bin \
 			$(LUA50_IPK_DIR)/opt/include \
 			$(LUA50_IPK_DIR)/opt/lib \
 			$(LUA50_IPK_DIR)/opt/man/man1; \
-		install -m 0755 bin/* $(LUA50_IPK_DIR)/opt/bin; \
-		install -m 0644 include/*.h $(LUA50_IPK_DIR)/opt/include; \
-		install -m 0644 lib/*.a $(LUA50_IPK_DIR)/opt/lib; \
-		install -m 0644 doc/*.1 $(LUA50_IPK_DIR)/opt/man/man1; \
+		$(INSTALL) -m 0755 bin/* $(LUA50_IPK_DIR)/opt/bin; \
+		$(INSTALL) -m 0644 include/*.h $(LUA50_IPK_DIR)/opt/include; \
+		$(INSTALL) -m 0644 lib/*.a $(LUA50_IPK_DIR)/opt/lib; \
+		$(INSTALL) -m 0644 doc/*.1 $(LUA50_IPK_DIR)/opt/man/man1; \
 	)
 	for f in `find $(LUA50_IPK_DIR)/opt -type f`; do \
 		d=`dirname $$f`; \

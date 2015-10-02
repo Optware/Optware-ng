@@ -125,7 +125,7 @@ endif
 	$(LIBEXPLAIN_UNZIP) $(DL_DIR)/$(LIBEXPLAIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEXPLAIN_PATCHES)" ; \
 		then cat $(LIBEXPLAIN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBEXPLAIN_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBEXPLAIN_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(LIBEXPLAIN_DIR) $(@D)
 	sed -i -e 's/as_fn_error .*\("cannot run test program\)/echo \1/' $(@D)/configure
@@ -182,7 +182,7 @@ libexplain-stage: $(LIBEXPLAIN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libexplain
 #
 $(LIBEXPLAIN_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBEXPLAIN_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBEXPLAIN_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libexplain" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -212,13 +212,13 @@ $(LIBEXPLAIN_IPK): $(LIBEXPLAIN_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBEXPLAIN_BUILD_DIR) DESTDIR=$(LIBEXPLAIN_IPK_DIR) clean-misc install
 	$(STRIP_COMMAND) $(LIBEXPLAIN_IPK_DIR)/opt/bin/* $(LIBEXPLAIN_IPK_DIR)/opt/lib/*.so
 	rm -f $(LIBEXPLAIN_IPK_DIR)/opt/lib/*.la
-#	install -d $(LIBEXPLAIN_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBEXPLAIN_SOURCE_DIR)/libexplain.conf $(LIBEXPLAIN_IPK_DIR)/opt/etc/libexplain.conf
-#	install -d $(LIBEXPLAIN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBEXPLAIN_SOURCE_DIR)/rc.libexplain $(LIBEXPLAIN_IPK_DIR)/opt/etc/init.d/SXXlibexplain
+#	$(INSTALL) -d $(LIBEXPLAIN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBEXPLAIN_SOURCE_DIR)/libexplain.conf $(LIBEXPLAIN_IPK_DIR)/opt/etc/libexplain.conf
+#	$(INSTALL) -d $(LIBEXPLAIN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBEXPLAIN_SOURCE_DIR)/rc.libexplain $(LIBEXPLAIN_IPK_DIR)/opt/etc/init.d/SXXlibexplain
 	$(MAKE) $(LIBEXPLAIN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBEXPLAIN_SOURCE_DIR)/postinst $(LIBEXPLAIN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBEXPLAIN_SOURCE_DIR)/prerm $(LIBEXPLAIN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBEXPLAIN_SOURCE_DIR)/postinst $(LIBEXPLAIN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBEXPLAIN_SOURCE_DIR)/prerm $(LIBEXPLAIN_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBEXPLAIN_CONFFILES) | sed -e 's/ /\n/g' > $(LIBEXPLAIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBEXPLAIN_IPK_DIR)
 

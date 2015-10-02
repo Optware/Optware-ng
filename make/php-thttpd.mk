@@ -119,10 +119,10 @@ endif
 	$(PHP_THTTPD_UNZIP) $(DL_DIR)/$(PHP_THTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PHP_PATCHES)"; \
-	    then cat $(PHP_PATCHES) | patch -p0 -bd $(BUILD_DIR)/$(PHP_DIR); \
+	    then cat $(PHP_PATCHES) | $(PATCH) -p0 -bd $(BUILD_DIR)/$(PHP_DIR); \
 	fi
 	if test -n "$(PHP_THTTPD_LIBPHP_PATCHES)"; \
-	    then cat $(PHP_THTTPD_LIBPHP_PATCHES) | patch -p1 -bd $(BUILD_DIR)/$(PHP_DIR); \
+	    then cat $(PHP_THTTPD_LIBPHP_PATCHES) | $(PATCH) -p1 -bd $(BUILD_DIR)/$(PHP_DIR); \
 	fi
 	mv $(BUILD_DIR)/$(PHP_THTTPD_DIR) $(PHP_THTTPD_BUILD_DIR)
 	mv $(BUILD_DIR)/$(PHP_DIR) $(@D)
@@ -247,7 +247,7 @@ endif
 $(PHP_THTTPD_BUILD_DIR)/.configured: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.built $(PHP_THTTPD_PATCHES)
 	rm -f $(@D)/php_thttpd.c
 	cp $(PHP_THTTPD_LIBPHP_BUILD_DIR)/sapi/thttpd/thttpd.c $(@D)/php_thttpd.c
-	cat $(PHP_THTTPD_PATCHES) | patch -d $(@D) -p1
+	cat $(PHP_THTTPD_PATCHES) | $(PATCH) -d $(@D) -p1
 	sed -i -e "s/#define CGI_TIMELIMIT .*/#define CGI_TIMELIMIT 600/" \
 		-e "s/#define IDLE_READ_TIMELIMIT .*/#define IDLE_READ_TIMELIMIT 120/" \
 		-e "/#define STATS_TIME/s/^/#ifdef notdef\n/" -e "/#define STATS_TIME/s/$$/#\n#endif/" $(@D)/config.h
@@ -305,7 +305,7 @@ php-thttpd: $(PHP_THTTPD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/php-thttpd
 #
 $(PHP_THTTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_THTTPD_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PHP_THTTPD_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: php-thttpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -340,17 +340,17 @@ $(PHP_THTTPD_IPK): $(PHP_THTTPD_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(PHP_THTTPD_IPK_DIR)/opt/sbin/htpasswd
 	$(STRIP_COMMAND) $(PHP_THTTPD_IPK_DIR)/opt/share/www/cgi-bin/*
 	mv $(PHP_THTTPD_IPK_DIR)/opt/sbin/htpasswd $(PHP_THTTPD_IPK_DIR)/opt/sbin/php-thttpd-htpasswd
-	install -d $(PHP_THTTPD_IPK_DIR)/opt/var/run/
-	install -d $(PHP_THTTPD_IPK_DIR)/opt/var/log/
-	install -d $(PHP_THTTPD_IPK_DIR)/opt/etc/
-	#install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_THTTPD_IPK_DIR)/opt/etc/php.ini
+	$(INSTALL) -d $(PHP_THTTPD_IPK_DIR)/opt/var/run/
+	$(INSTALL) -d $(PHP_THTTPD_IPK_DIR)/opt/var/log/
+	$(INSTALL) -d $(PHP_THTTPD_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_THTTPD_IPK_DIR)/opt/etc/php.ini
 	#sed -i  -e 's/extension=dom.so/; extension=dom.so/' $(PHP_THTTPD_IPK_DIR)/opt/etc/php.ini
-	install -m 644 $(PHP_THTTPD_SOURCE_DIR)/thttpd.conf $(PHP_THTTPD_IPK_DIR)/opt/etc/thttpd.conf
-	install -d $(PHP_THTTPD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(PHP_THTTPD_SOURCE_DIR)/rc.thttpd $(PHP_THTTPD_IPK_DIR)/opt/etc/init.d/S80thttpd
+	$(INSTALL) -m 644 $(PHP_THTTPD_SOURCE_DIR)/thttpd.conf $(PHP_THTTPD_IPK_DIR)/opt/etc/thttpd.conf
+	$(INSTALL) -d $(PHP_THTTPD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(PHP_THTTPD_SOURCE_DIR)/rc.thttpd $(PHP_THTTPD_IPK_DIR)/opt/etc/init.d/S80thttpd
 	$(MAKE) $(PHP_THTTPD_IPK_DIR)/CONTROL/control
-	install -m 755 $(PHP_THTTPD_SOURCE_DIR)/postinst $(PHP_THTTPD_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(PHP_THTTPD_SOURCE_DIR)/prerm $(PHP_THTTPD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(PHP_THTTPD_SOURCE_DIR)/postinst $(PHP_THTTPD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(PHP_THTTPD_SOURCE_DIR)/prerm $(PHP_THTTPD_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(PHP_THTTPD_IPK_DIR)/CONTROL/postinst $(PHP_THTTPD_IPK_DIR)/CONTROL/prerm; \

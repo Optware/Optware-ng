@@ -41,7 +41,7 @@ $(PERL-DATE-CALC_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DATE-CALC_SOURCE) $(PE
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DATE-CALC_DIR) $(@D)
 	$(PERL-DATE-CALC_UNZIP) $(DL_DIR)/$(PERL-DATE-CALC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-DATE-CALC_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DATE-CALC_DIR) -p1
+#	cat $(PERL-DATE-CALC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-DATE-CALC_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-DATE-CALC_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -74,7 +74,7 @@ $(PERL-DATE-CALC_BUILD_DIR)/.staged: $(PERL-DATE-CALC_BUILD_DIR)/.built
 perl-date-calc-stage: $(PERL-DATE-CALC_BUILD_DIR)/.staged
 
 $(PERL-DATE-CALC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-date-calc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -97,8 +97,8 @@ $(PERL-DATE-CALC_IPK): $(PERL-DATE-CALC_BUILD_DIR)/.built
 	)
 	find $(PERL-DATE-CALC_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-DATE-CALC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PERL-DATE-CALC_SOURCE_DIR)/postinst $(PERL-DATE-CALC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PERL-DATE-CALC_SOURCE_DIR)/prerm $(PERL-DATE-CALC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PERL-DATE-CALC_SOURCE_DIR)/postinst $(PERL-DATE-CALC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PERL-DATE-CALC_SOURCE_DIR)/prerm $(PERL-DATE-CALC_IPK_DIR)/CONTROL/prerm
 	echo $(PERL-DATE-CALC_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-DATE-CALC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-DATE-CALC_IPK_DIR)
 

@@ -114,7 +114,7 @@ $(PY-CONFIGOBJ_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) $(PY-CON
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR)
 	$(PY-CONFIGOBJ_UNZIP) $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CONFIGOBJ_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) -p1
+#	cat $(PY-CONFIGOBJ_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -123,7 +123,7 @@ $(PY-CONFIGOBJ_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) $(PY-CON
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR)
 	$(PY-CONFIGOBJ_UNZIP) $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CONFIGOBJ_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) -p1
+#	cat $(PY-CONFIGOBJ_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CONFIGOBJ_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
@@ -166,7 +166,7 @@ py-configobj: $(PY-CONFIGOBJ_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-configobj
 #
 $(PY25-CONFIGOBJ_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-configobj" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +180,7 @@ $(PY25-CONFIGOBJ_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CONFIGOBJ_CONFLICTS)" >>$@
 
 $(PY26-CONFIGOBJ_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-configobj" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,7 +211,7 @@ $(PY25-CONFIGOBJ_IPK): $(PY-CONFIGOBJ_BUILD_DIR)/.built
 	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(PY25-CONFIGOBJ_IPK_DIR) --prefix=/opt)
+	    $(INSTALL) --root=$(PY25-CONFIGOBJ_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY25-CONFIGOBJ_IPK_DIR)/CONTROL/control
 	echo $(PY-CONFIGOBJ_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CONFIGOBJ_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CONFIGOBJ_IPK_DIR)
@@ -221,7 +221,7 @@ $(PY26-CONFIGOBJ_IPK): $(PY-CONFIGOBJ_BUILD_DIR)/.built
 	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(PY26-CONFIGOBJ_IPK_DIR) --prefix=/opt)
+	    $(INSTALL) --root=$(PY26-CONFIGOBJ_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY26-CONFIGOBJ_IPK_DIR)/CONTROL/control
 	echo $(PY-CONFIGOBJ_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-CONFIGOBJ_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CONFIGOBJ_IPK_DIR)

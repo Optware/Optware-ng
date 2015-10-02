@@ -63,7 +63,7 @@ DRI3PROTO_IPK=$(BUILD_DIR)/dri3proto_$(DRI3PROTO_VERSION)-$(DRI3PROTO_IPK_VERSIO
 # Automatically create a ipkg control file
 #
 $(DRI3PROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(DRI3PROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(DRI3PROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: dri3proto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(DRI3PROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(DRI3PROTO_SOURCE) $(DRI3PROTO_PA
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(DRI3PROTO_SOURCE)
 	if test -n "$(DRI3PROTO_PATCHES)" ; \
 		then cat $(DRI3PROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DRI3PROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DRI3PROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DRI3PROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DRI3PROTO_DIR) $(@D) ; \

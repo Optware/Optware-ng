@@ -110,7 +110,7 @@ $(DOS2UNIX_BUILD_DIR)/.configured: $(DL_DIR)/$(DOS2UNIX_SOURCE) $(DOS2UNIX_PATCH
 	$(DOS2UNIX_UNZIP) $(DL_DIR)/$(DOS2UNIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DOS2UNIX_PATCHES)" ; \
 		then cat $(DOS2UNIX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DOS2UNIX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DOS2UNIX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DOS2UNIX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DOS2UNIX_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ dos2unix: $(DOS2UNIX_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/dos2unix
 #
 $(DOS2UNIX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dos2unix" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

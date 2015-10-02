@@ -99,7 +99,7 @@ $(DISTCC_BUILD_DIR)/.configured: $(DL_DIR)/$(DISTCC_SOURCE) $(DISTCC_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(DISTCC_DIR) $(@D)
 	$(DISTCC_UNZIP) $(DL_DIR)/$(DISTCC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DISTCC_PATCHES)"; then \
-		cat $(DISTCC_PATCHES) | patch -d $(BUILD_DIR)/$(DISTCC_DIR) -p0; \
+		cat $(DISTCC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DISTCC_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(DISTCC_DIR) $(@D)
 	(cd $(@D); \
@@ -142,7 +142,7 @@ distcc: $(DISTCC_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/distcc
 #
 $(DISTCC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: distcc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,11 +174,11 @@ $(DISTCC_IPK): $(DISTCC_BUILD_DIR)/.built
 		INCLUDESERVER_PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7
 	$(STRIP_COMMAND) $(DISTCC_IPK_DIR)/opt/bin/*distcc*
 	$(STRIP_COMMAND) $(DISTCC_IPK_DIR)/opt/lib/python2.7/site-packages/include_server/*.so
-#	install -d $(DISTCC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DISTCC_SOURCE_DIR)/rc.distcc $(DISTCC_IPK_DIR)/opt/etc/init.d/SXXdistcc
+#	$(INSTALL) -d $(DISTCC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DISTCC_SOURCE_DIR)/rc.distcc $(DISTCC_IPK_DIR)/opt/etc/init.d/SXXdistcc
 	$(MAKE) $(DISTCC_IPK_DIR)/CONTROL/control
-#	install -m 644 $(DISTCC_SOURCE_DIR)/postinst $(DISTCC_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(DISTCC_SOURCE_DIR)/prerm $(DISTCC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(DISTCC_SOURCE_DIR)/postinst $(DISTCC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(DISTCC_SOURCE_DIR)/prerm $(DISTCC_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DISTCC_IPK_DIR)
 
 #

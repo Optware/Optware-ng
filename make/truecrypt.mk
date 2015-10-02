@@ -112,7 +112,7 @@ $(TRUECRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(TRUECRYPT_SOURCE) $(TRUECRYPT_PA
 	$(TRUECRYPT_UNZIP) $(DL_DIR)/$(TRUECRYPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRUECRYPT_PATCHES)" ; \
 		then cat $(TRUECRYPT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TRUECRYPT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TRUECRYPT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TRUECRYPT_DIR)" != "$(TRUECRYPT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRUECRYPT_DIR) $(TRUECRYPT_BUILD_DIR) ; \
@@ -163,7 +163,7 @@ truecrypt-stage: $(TRUECRYPT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/truecrypt
 #
 $(TRUECRYPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: truecrypt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,25 +191,25 @@ $(TRUECRYPT_IPK_DIR)/CONTROL/control:
 #
 $(TRUECRYPT_IPK): $(TRUECRYPT_BUILD_DIR)/.built
 	rm -rf $(TRUECRYPT_IPK_DIR) $(BUILD_DIR)/truecrypt_*_$(TARGET_ARCH).ipk
-	install -d $(TRUECRYPT_MODDIR)
+	$(INSTALL) -d $(TRUECRYPT_MODDIR)
 	$(STRIP_COMMAND) $(TRUECRYPT_BUILD_DIR)/Linux/Kernel/truecrypt.ko \
 		-o $(TRUECRYPT_MODDIR)/truecrypt.ko
-	install -d $(TRUECRYPT_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(TRUECRYPT_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TRUECRYPT_BUILD_DIR)/Linux/Cli/truecrypt \
 		-o $(TRUECRYPT_IPK_DIR)/opt/bin/truecrypt
-	install -d $(TRUECRYPT_IPK_DIR)/opt/share/man/man1
-	install $(TRUECRYPT_BUILD_DIR)/Linux/Cli/Man/truecrypt.1 $(TRUECRYPT_IPK_DIR)/opt/share/man/man1/
-	install -d $(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc
-	install -m 644 \
+	$(INSTALL) -d $(TRUECRYPT_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) $(TRUECRYPT_BUILD_DIR)/Linux/Cli/Man/truecrypt.1 $(TRUECRYPT_IPK_DIR)/opt/share/man/man1/
+	$(INSTALL) -d $(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc
+	$(INSTALL) -m 644 \
 		$(TRUECRYPT_BUILD_DIR)/License.txt \
 		$(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc/
-	install -m 644 \
+	$(INSTALL) -m 644 \
 		"$(TRUECRYPT_BUILD_DIR)/Release/Setup Files/TrueCrypt User Guide.pdf" \
 		$(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc/TrueCrypt-User-Guide.pdf
 #	$(MAKE) -C $(TRUECRYPT_BUILD_DIR) DESTDIR=$(TRUECRYPT_IPK_DIR) install-strip
 	$(MAKE) $(TRUECRYPT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TRUECRYPT_SOURCE_DIR)/postinst $(TRUECRYPT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TRUECRYPT_SOURCE_DIR)/prerm $(TRUECRYPT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TRUECRYPT_SOURCE_DIR)/postinst $(TRUECRYPT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TRUECRYPT_SOURCE_DIR)/prerm $(TRUECRYPT_IPK_DIR)/CONTROL/prerm
 	echo $(TRUECRYPT_CONFFILES) | sed -e 's/ /\n/g' > $(TRUECRYPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRUECRYPT_IPK_DIR)
 

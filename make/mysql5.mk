@@ -142,7 +142,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(MYSQL5_DIR) $(MYSQL5_BUILD_DIR)
 	$(MYSQL5_UNZIP) $(DL_DIR)/$(MYSQL5_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MYSQL5_PATCHES)"; \
-		then cat $(MYSQL5_PATCHES) | patch -bd $(BUILD_DIR)/$(MYSQL5_DIR) -p1; \
+		then cat $(MYSQL5_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(MYSQL5_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(MYSQL5_DIR) $(MYSQL5_BUILD_DIR)
 	autoreconf --install --force -v $(@D)
@@ -213,7 +213,7 @@ mysql5-stage: $(MYSQL5_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mysql
 #
 $(MYSQL5_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mysql5" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -242,18 +242,18 @@ $(MYSQL5_IPK): $(MYSQL5_BUILD_DIR)/.built
 	rm -rf $(MYSQL5_IPK_DIR) $(BUILD_DIR)/mysql5_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MYSQL5_BUILD_DIR) DESTDIR=$(MYSQL5_IPK_DIR) install-strip
 	rm -rf $(MYSQL5_IPK_DIR)/opt/mysql5-test
-	install -d $(MYSQL5_IPK_DIR)/opt/var/lib/mysql
-	install -d $(MYSQL5_IPK_DIR)/opt/var/log
-	install -d $(MYSQL5_IPK_DIR)/opt/etc/
-	install -m 644 $(MYSQL5_SOURCE_DIR)/my.cnf $(MYSQL5_IPK_DIR)/opt/etc/my.cnf
-	install -d $(MYSQL5_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(MYSQL5_IPK_DIR)/opt/var/lib/mysql
+	$(INSTALL) -d $(MYSQL5_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(MYSQL5_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(MYSQL5_SOURCE_DIR)/my.cnf $(MYSQL5_IPK_DIR)/opt/etc/my.cnf
+	$(INSTALL) -d $(MYSQL5_IPK_DIR)/opt/etc/init.d
 	( cd $(MYSQL5_IPK_DIR)/opt/etc/init.d ; \
 		ln -s ../../share/mysql/mysql.server S70mysqld ; \
 		ln -s ../../share/mysql/mysql.server K70mysqld ; \
 	)
 	$(MAKE) $(MYSQL5_IPK_DIR)/CONTROL/control
-	install -m 755 $(MYSQL5_SOURCE_DIR)/postinst $(MYSQL5_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(MYSQL5_SOURCE_DIR)/prerm $(MYSQL5_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(MYSQL5_SOURCE_DIR)/postinst $(MYSQL5_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(MYSQL5_SOURCE_DIR)/prerm $(MYSQL5_IPK_DIR)/CONTROL/prerm
 	echo $(MYSQL5_CONFFILES) | sed -e 's/ /\n/g' > $(MYSQL5_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MYSQL5_IPK_DIR)
 

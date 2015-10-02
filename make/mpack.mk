@@ -109,7 +109,7 @@ $(MPACK_BUILD_DIR)/.configured: $(DL_DIR)/$(MPACK_SOURCE) $(MPACK_PATCHES) make/
 	$(MPACK_UNZIP) $(DL_DIR)/$(MPACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPACK_PATCHES)" ; \
 		then cat $(MPACK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MPACK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MPACK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MPACK_DIR)" != "$(MPACK_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MPACK_DIR) $(MPACK_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ mpack-stage: $(MPACK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mpack
 #
 $(MPACK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mpack" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,15 +191,15 @@ $(MPACK_IPK): $(MPACK_BUILD_DIR)/.built
 	rm -rf $(MPACK_IPK_DIR) $(BUILD_DIR)/mpack_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPACK_BUILD_DIR) DESTDIR=$(MPACK_IPK_DIR) install
 	$(STRIP_COMMAND) $(MPACK_IPK_DIR)/opt/bin/*
-#	install -d $(MPACK_IPK_DIR)/opt/etc/
-#	install -m 644 $(MPACK_SOURCE_DIR)/mpack.conf $(MPACK_IPK_DIR)/opt/etc/mpack.conf
-#	install -d $(MPACK_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MPACK_SOURCE_DIR)/rc.mpack $(MPACK_IPK_DIR)/opt/etc/init.d/SXXmpack
+#	$(INSTALL) -d $(MPACK_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MPACK_SOURCE_DIR)/mpack.conf $(MPACK_IPK_DIR)/opt/etc/mpack.conf
+#	$(INSTALL) -d $(MPACK_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MPACK_SOURCE_DIR)/rc.mpack $(MPACK_IPK_DIR)/opt/etc/init.d/SXXmpack
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXmpack
 	$(MAKE) $(MPACK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MPACK_SOURCE_DIR)/postinst $(MPACK_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MPACK_SOURCE_DIR)/postinst $(MPACK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MPACK_SOURCE_DIR)/prerm $(MPACK_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MPACK_SOURCE_DIR)/prerm $(MPACK_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(MPACK_CONFFILES) | sed -e 's/ /\n/g' > $(MPACK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MPACK_IPK_DIR)

@@ -114,7 +114,7 @@ $(IOTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(IOTOP_SOURCE) $(IOTOP_PATCHES) make/
 	rm -rf $(BUILD_DIR)/$(IOTOP_DIR)
 	$(IOTOP_UNZIP) $(DL_DIR)/$(IOTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IOTOP_PATCHES)"; \
-		then cat $(IOTOP_PATCHES) | patch -d $(BUILD_DIR)/$(IOTOP_DIR) -p1; \
+		then cat $(IOTOP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(IOTOP_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(IOTOP_DIR) $(IOTOP_BUILD_DIR)
 	(cd $(@D); \
@@ -162,7 +162,7 @@ iotop: $(IOTOP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/iotop
 #
 $(IOTOP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: iotop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

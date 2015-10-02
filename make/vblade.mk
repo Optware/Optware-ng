@@ -94,7 +94,7 @@ $(VBLADE_BUILD_DIR)/.configured: $(DL_DIR)/$(VBLADE_SOURCE) $(VBLADE_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(VBLADE_DIR) $(@D)
 	$(VBLADE_UNZIP) $(DL_DIR)/$(VBLADE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VBLADE_PATCHES)"; then \
-		cat $(VBLADE_PATCHES) | patch -d $(BUILD_DIR)/$(VBLADE_DIR) -p1; \
+		cat $(VBLADE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(VBLADE_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(VBLADE_DIR) $(@D)
 #	(cd $(@D); \
@@ -144,7 +144,7 @@ vblade-stage: $(VBLADE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/vblade
 #
 $(VBLADE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: vblade" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -173,13 +173,13 @@ $(VBLADE_IPK_DIR)/CONTROL/control:
 $(VBLADE_IPK): $(VBLADE_BUILD_DIR)/.built
 	rm -rf $(VBLADE_IPK_DIR) $(BUILD_DIR)/vblade_*_$(TARGET_ARCH).ipk
 	mkdir -p $(VBLADE_IPK_DIR)/opt/sbin
-	install -m 755 $(VBLADE_BUILD_DIR)/vblade $(VBLADE_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(VBLADE_BUILD_DIR)/vblade $(VBLADE_IPK_DIR)/opt/sbin
 	$(MAKE) $(VBLADE_IPK_DIR)/CONTROL/control
 	$(STRIP_COMMAND) $(VBLADE_IPK_DIR)/opt/sbin/vblade
-	install -d $(VBLADE_IPK_DIR)/opt/share/man/man8
-	install -m644 $(VBLADE_BUILD_DIR)/vblade.8 $(VBLADE_IPK_DIR)/opt/share/man/man8
-	install -d $(VBLADE_IPK_DIR)/opt/share/doc/vblade
-	install -m644 $(VBLADE_BUILD_DIR)/[CNR]* $(VBLADE_IPK_DIR)/opt/share/doc/vblade
+	$(INSTALL) -d $(VBLADE_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -m644 $(VBLADE_BUILD_DIR)/vblade.8 $(VBLADE_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -d $(VBLADE_IPK_DIR)/opt/share/doc/vblade
+	$(INSTALL) -m644 $(VBLADE_BUILD_DIR)/[CNR]* $(VBLADE_IPK_DIR)/opt/share/doc/vblade
 	echo $(VBLADE_CONFFILES) | sed -e 's/ /\n/g' > $(VBLADE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VBLADE_IPK_DIR)
 

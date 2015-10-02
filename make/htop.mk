@@ -127,7 +127,7 @@ $(HTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(HTOP_SOURCE) $(HTOP_PATCHES) make/hto
 	$(HTOP_UNZIP) $(DL_DIR)/$(HTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HTOP_PATCHES)" ; \
 		then cat $(HTOP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HTOP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HTOP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HTOP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HTOP_DIR) $(@D) ; \
@@ -185,7 +185,7 @@ htop: $(HTOP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/htop
 #
 $(HTOP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: htop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

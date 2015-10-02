@@ -18,5 +18,5 @@ do
 done
 
 echo "start squid:"
-/opt/sbin/squid -f /opt/etc/squid/squid.conf
+%OPTWARE_TARGET_PREFIX%/sbin/squid -f %OPTWARE_TARGET_PREFIX%/etc/squid/squid.conf
 

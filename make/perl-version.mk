@@ -35,7 +35,7 @@ $(PERL-VERSION_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-VERSION_SOURCE) $(PERL-V
 	$(MAKE) perl-module-build-stage
 	rm -rf $(BUILD_DIR)/$(PERL-VERSION_DIR) $(PERL-VERSION_BUILD_DIR)
 	$(PERL-VERSION_UNZIP) $(DL_DIR)/$(PERL-VERSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-VERSION_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-VERSION_DIR) -p1
+#	cat $(PERL-VERSION_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-VERSION_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-VERSION_DIR) $(PERL-VERSION_BUILD_DIR)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -71,7 +71,7 @@ $(PERL-VERSION_BUILD_DIR)/.staged: $(PERL-VERSION_BUILD_DIR)/.built
 perl-version-stage: $(PERL-VERSION_BUILD_DIR)/.staged
 
 $(PERL-VERSION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-version" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

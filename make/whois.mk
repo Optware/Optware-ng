@@ -114,7 +114,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(WHOIS_DIR) $(@D)
 	$(WHOIS_UNZIP) $(DL_DIR)/$(WHOIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WHOIS_PATCHES)"; \
-		then cat $(WHOIS_PATCHES) | patch -bd $(BUILD_DIR)/$(WHOIS_DIR) -p1; \
+		then cat $(WHOIS_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(WHOIS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(WHOIS_DIR) $(@D)
 	sed -i -e '/^CFLAGS/s|$$| $$(CPPFLAGS)|' $(@D)/Makefile
@@ -155,7 +155,7 @@ whois: $(WHOIS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/whois
 #
 $(WHOIS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: whois" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -183,11 +183,11 @@ $(WHOIS_IPK_DIR)/CONTROL/control:
 #
 $(WHOIS_IPK): $(WHOIS_BUILD_DIR)/.built
 	rm -rf $(WHOIS_IPK_DIR) $(BUILD_DIR)/whois_*_$(TARGET_ARCH).ipk
-	install -d $(WHOIS_IPK_DIR)/opt/bin/
-	install -d $(WHOIS_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(WHOIS_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(WHOIS_IPK_DIR)/opt/share/man/man1
 	$(MAKE) -C $(WHOIS_BUILD_DIR) BASEDIR=$(WHOIS_IPK_DIR) prefix=/opt install
 	$(STRIP_COMMAND) $(WHOIS_IPK_DIR)/opt/bin/*
-#	install -d $(WHOIS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -d $(WHOIS_IPK_DIR)/opt/etc/init.d
 	$(MAKE) $(WHOIS_IPK_DIR)/CONTROL/control
 	echo $(WHOIS_CONFFILES) | sed -e 's/ /\n/g' > $(WHOIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WHOIS_IPK_DIR)

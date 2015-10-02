@@ -144,7 +144,7 @@ else
 endif
 	if test -n "$(RTORRENT_PATCHES)" ; \
 		then cat $(RTORRENT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RTORRENT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RTORRENT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RTORRENT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RTORRENT_DIR) $(@D) ; \
@@ -213,7 +213,7 @@ rtorrent: $(RTORRENT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/rtorrent
 #
 $(RTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rtorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -247,18 +247,18 @@ $(RTORRENT_IPK): $(RTORRENT_BUILD_DIR)/.built
 	rm -rf $(RTORRENT_IPK_DIR) $(BUILD_DIR)/rtorrent_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RTORRENT_BUILD_DIR) DESTDIR=$(RTORRENT_IPK_DIR) install-strip
 	$(MAKE) $(RTORRENT_IPK_DIR)/CONTROL/control
-	install -d $(RTORRENT_IPK_DIR)/opt/share/torrent
-	install -d $(RTORRENT_IPK_DIR)/opt/share/torrent/work
-	install -d $(RTORRENT_IPK_DIR)/opt/share/torrent/dl
-	install -d $(RTORRENT_IPK_DIR)/opt/etc
-	install -m 644 $(RTORRENT_SOURCE_DIR)/rtorrent.conf $(RTORRENT_IPK_DIR)/opt/etc/
-	install -m 755 $(RTORRENT_SOURCE_DIR)/rtor $(RTORRENT_IPK_DIR)/opt/bin
-	install -d $(RTORRENT_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(RTORRENT_SOURCE_DIR)/rc.rtorrent $(RTORRENT_IPK_DIR)/opt/etc/init.d/S99rtorrent
+	$(INSTALL) -d $(RTORRENT_IPK_DIR)/opt/share/torrent
+	$(INSTALL) -d $(RTORRENT_IPK_DIR)/opt/share/torrent/work
+	$(INSTALL) -d $(RTORRENT_IPK_DIR)/opt/share/torrent/dl
+	$(INSTALL) -d $(RTORRENT_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(RTORRENT_SOURCE_DIR)/rtorrent.conf $(RTORRENT_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 755 $(RTORRENT_SOURCE_DIR)/rtor $(RTORRENT_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(RTORRENT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(RTORRENT_SOURCE_DIR)/rc.rtorrent $(RTORRENT_IPK_DIR)/opt/etc/init.d/S99rtorrent
 	$(MAKE) $(RTORRENT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RTORRENT_SOURCE_DIR)/postinst $(RTORRENT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RTORRENT_SOURCE_DIR)/postinst $(RTORRENT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTORRENT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RTORRENT_SOURCE_DIR)/prerm $(RTORRENT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(RTORRENT_SOURCE_DIR)/prerm $(RTORRENT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTORRENT_IPK_DIR)/CONTROL/prerm
 	echo $(RTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(RTORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RTORRENT_IPK_DIR)

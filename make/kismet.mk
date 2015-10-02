@@ -120,7 +120,7 @@ $(KISMET_BUILD_DIR)/.configured: $(DL_DIR)/$(KISMET_SOURCE) $(KISMET_PATCHES) ma
 	$(KISMET_UNZIP) $(DL_DIR)/$(KISMET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KISMET_PATCHES)" ; \
 		then cat $(KISMET_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(KISMET_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(KISMET_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(KISMET_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(KISMET_DIR) $(@D) ; \
@@ -178,7 +178,7 @@ kismet-stage: $(KISMET_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/kismet
 #
 $(KISMET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: kismet" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,25 +206,25 @@ $(KISMET_IPK_DIR)/CONTROL/control:
 #
 $(KISMET_IPK): $(KISMET_BUILD_DIR)/.built
 	rm -rf $(KISMET_IPK_DIR) $(BUILD_DIR)/kismet_*_$(TARGET_ARCH).ipk
-	install -d $(KISMET_IPK_DIR)/opt/bin/
-	install -d $(KISMET_IPK_DIR)/opt/man/
+	$(INSTALL) -d $(KISMET_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(KISMET_IPK_DIR)/opt/man/
 	$(MAKE) -C $(KISMET_BUILD_DIR) DESTDIR=$(KISMET_IPK_DIR) install
 	chmod +w $(addprefix $(KISMET_IPK_DIR)/opt/bin/, kismet_server kismet_client kismet_drone)
 	$(STRIP_COMMAND) $(addprefix $(KISMET_IPK_DIR)/opt/bin/, kismet_server kismet_client kismet_drone)
 	chmod -w $(addprefix $(KISMET_IPK_DIR)/opt/bin/, kismet_server kismet_client kismet_drone)
-	install -d $(KISMET_IPK_DIR)/opt/etc/kismet
-	install -m 644 $(KISMET_SOURCE_DIR)/kismet.conf $(KISMET_IPK_DIR)/opt/etc/kismet/
-	install -m 644 $(KISMET_SOURCE_DIR)/ap_manuf $(KISMET_IPK_DIR)/opt/etc/kismet/
-	install -m 644 $(KISMET_SOURCE_DIR)/client_manuf $(KISMET_IPK_DIR)/opt/etc/kismet/
-	install -m 644 $(KISMET_SOURCE_DIR)/kismet_ui.conf $(KISMET_IPK_DIR)/opt/etc/kismet/
-	install -m 644 $(KISMET_SOURCE_DIR)/kismet_drone.conf $(KISMET_IPK_DIR)/opt/etc/kismet/
-#	install -d $(KISMET_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(KISMET_SOURCE_DIR)/rc.kismet $(KISMET_IPK_DIR)/opt/etc/init.d/SXXkismet
+	$(INSTALL) -d $(KISMET_IPK_DIR)/opt/etc/kismet
+	$(INSTALL) -m 644 $(KISMET_SOURCE_DIR)/kismet.conf $(KISMET_IPK_DIR)/opt/etc/kismet/
+	$(INSTALL) -m 644 $(KISMET_SOURCE_DIR)/ap_manuf $(KISMET_IPK_DIR)/opt/etc/kismet/
+	$(INSTALL) -m 644 $(KISMET_SOURCE_DIR)/client_manuf $(KISMET_IPK_DIR)/opt/etc/kismet/
+	$(INSTALL) -m 644 $(KISMET_SOURCE_DIR)/kismet_ui.conf $(KISMET_IPK_DIR)/opt/etc/kismet/
+	$(INSTALL) -m 644 $(KISMET_SOURCE_DIR)/kismet_drone.conf $(KISMET_IPK_DIR)/opt/etc/kismet/
+#	$(INSTALL) -d $(KISMET_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(KISMET_SOURCE_DIR)/rc.kismet $(KISMET_IPK_DIR)/opt/etc/init.d/SXXkismet
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXkismet
 	$(MAKE) $(KISMET_IPK_DIR)/CONTROL/control
-#	install -m 755 $(KISMET_SOURCE_DIR)/postinst $(KISMET_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(KISMET_SOURCE_DIR)/postinst $(KISMET_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(KISMET_SOURCE_DIR)/prerm $(KISMET_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(KISMET_SOURCE_DIR)/prerm $(KISMET_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(KISMET_CONFFILES) | sed -e 's/ /\n/g' > $(KISMET_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KISMET_IPK_DIR)

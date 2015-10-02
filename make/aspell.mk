@@ -112,7 +112,7 @@ $(ASPELL_BUILD_DIR)/.configured: $(DL_DIR)/$(ASPELL_SOURCE) $(ASPELL_PATCHES) ma
 	$(ASPELL_UNZIP) $(DL_DIR)/$(ASPELL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASPELL_PATCHES)" ; \
 		then cat $(ASPELL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASPELL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASPELL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASPELL_DIR)" != "$(ASPELL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASPELL_DIR) $(ASPELL_BUILD_DIR) ; \
@@ -163,7 +163,7 @@ aspell-stage: $(ASPELL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/aspell
 #
 $(ASPELL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: aspell" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,15 +193,15 @@ $(ASPELL_IPK): $(ASPELL_BUILD_DIR)/.built
 	rm -rf $(ASPELL_IPK_DIR) $(BUILD_DIR)/aspell_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ASPELL_BUILD_DIR) DESTDIR=$(ASPELL_IPK_DIR) install-strip
 	rm -f $(ASPELL_IPK_DIR)/opt/share/info/dir
-	install -d $(ASPELL_IPK_DIR)/opt/etc/
-	install -m 644 $(ASPELL_SOURCE_DIR)/aspell.conf $(ASPELL_IPK_DIR)/opt/etc/aspell.conf
-#	install -d $(ASPELL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ASPELL_SOURCE_DIR)/rc.aspell $(ASPELL_IPK_DIR)/opt/etc/init.d/SXXaspell
+	$(INSTALL) -d $(ASPELL_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(ASPELL_SOURCE_DIR)/aspell.conf $(ASPELL_IPK_DIR)/opt/etc/aspell.conf
+#	$(INSTALL) -d $(ASPELL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ASPELL_SOURCE_DIR)/rc.aspell $(ASPELL_IPK_DIR)/opt/etc/init.d/SXXaspell
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ASPELL_IPK_DIR)/opt/etc/init.d/SXXaspell
 	$(MAKE) $(ASPELL_IPK_DIR)/CONTROL/control
-	install -m 755 $(ASPELL_SOURCE_DIR)/postinst $(ASPELL_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(ASPELL_SOURCE_DIR)/postinst $(ASPELL_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ASPELL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ASPELL_SOURCE_DIR)/prerm $(ASPELL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ASPELL_SOURCE_DIR)/prerm $(ASPELL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ASPELL_IPK_DIR)/CONTROL/prerm
 	echo $(ASPELL_CONFFILES) | sed -e 's/ /\n/g' > $(ASPELL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASPELL_IPK_DIR)

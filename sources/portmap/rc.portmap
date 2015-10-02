@@ -5,4 +5,4 @@ if [ -n "`pidof portmap`" ] ; then
 fi
 
 sleep 2
-/opt/sbin/portmap
+%OPTWARE_TARGET_PREFIX%/sbin/portmap

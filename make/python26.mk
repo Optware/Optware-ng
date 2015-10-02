@@ -134,7 +134,7 @@ endif
 		libffi-stage libffi-host-stage zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.6
 	$(PYTHON26_UNZIP) $(DL_DIR)/$(PYTHON26_SOURCE) | tar -C $(BUILD_DIR) -xf -
-	cat $(PYTHON26_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON26_DIR) -p1
+	cat $(PYTHON26_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON26_DIR) -p1
 	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON26_DIR)/configure.in
 	autoreconf -vif $(BUILD_DIR)/$(PYTHON26_DIR)
 	mkdir -p $(@D)
@@ -198,7 +198,7 @@ python26-stage: $(PYTHON26_BUILD_DIR)/.staged
 $(HOST_STAGING_PREFIX)/bin/python2.6: host/.configured make/python26.mk
 	$(MAKE) $(PYTHON26_BUILD_DIR)/.built
 	$(MAKE) -C $(PYTHON26_BUILD_DIR)/buildpython26 DESTDIR=$(HOST_STAGING_DIR) install
-	cd $(HOST_STAGING_LIB_DIR); patch -b -p0 < $(PYTHON26_SOURCE_DIR)/disable-host-py_include.patch
+	cd $(HOST_STAGING_LIB_DIR); $(PATCH) -b -p0 < $(PYTHON26_SOURCE_DIR)/disable-host-py_include.patch
 	rm -f $(@D)/python
 
 python26-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.6
@@ -208,7 +208,7 @@ python26-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.6
 # necessary to create a seperate control file under sources/python
 #
 $(PYTHON26_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: python26" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -244,20 +244,20 @@ $(PYTHON26_IPK): $(PYTHON26_BUILD_DIR)/.built
 #	cd $(PYTHON26_IPK_DIR)/opt/bin; ln -s python$(PYTHON26_VERSION_MAJOR) python
 	for f in bin/pydoc bin/idle bin/smtpd.py bin/2to3 man/man1/python.1; \
 	    do mv $(PYTHON26_IPK_DIR)/opt/$$f $(PYTHON26_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-2.6\1/'`; done
-	install -d $(PYTHON26_IPK_DIR)/opt/local/bin
-	install -d $(PYTHON26_IPK_DIR)/opt/local/lib/python$(PYTHON26_VERSION_MAJOR)/site-packages
+	$(INSTALL) -d $(PYTHON26_IPK_DIR)/opt/local/bin
+	$(INSTALL) -d $(PYTHON26_IPK_DIR)/opt/local/lib/python$(PYTHON26_VERSION_MAJOR)/site-packages
 	sed -i -e 's|$(TARGET_CROSS)|/opt/bin/|g' \
 	       -e 's|$(STAGING_INCLUDE_DIR)|/opt/include|g' \
 	       -e 's|$(STAGING_LIB_DIR)|/opt/lib|g' \
 	       -e '/^RUNSHARED=/s|=.*|=|' \
 	       $(PYTHON26_IPK_DIR)/opt/lib/python2.6/config/Makefile
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
-#	install -d $(PYTHON26_IPK_DIR)/usr/bin
+#	$(INSTALL) -d $(PYTHON26_IPK_DIR)/usr/bin
 #	ln -s /opt/bin/python $(PYTHON26_IPK_DIR)/usr/bin/python
 endif
 	$(MAKE) $(PYTHON26_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PYTHON26_SOURCE_DIR)/postinst $(PYTHON26_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PYTHON26_SOURCE_DIR)/prerm $(PYTHON26_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PYTHON26_SOURCE_DIR)/postinst $(PYTHON26_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PYTHON26_SOURCE_DIR)/prerm $(PYTHON26_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON26_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(PYTHON26_IPK_DIR)
 

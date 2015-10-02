@@ -114,7 +114,7 @@ $(ASTERISK-CHAN-CAPI_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK-CHAN-CAPI_SOUR
 	$(ASTERISK-CHAN-CAPI_UNZIP) $(DL_DIR)/$(ASTERISK-CHAN-CAPI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK-CHAN-CAPI_PATCHES)" ; \
 		then cat $(ASTERISK-CHAN-CAPI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK-CHAN-CAPI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASTERISK-CHAN-CAPI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK-CHAN-CAPI_DIR)" != "$(ASTERISK-CHAN-CAPI_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK-CHAN-CAPI_DIR) $(ASTERISK-CHAN-CAPI_BUILD_DIR) ; \
@@ -158,7 +158,7 @@ asterisk-chan-capi-stage: $(ASTERISK-CHAN-CAPI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/asterisk-chan-capi
 #
 $(ASTERISK-CHAN-CAPI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: asterisk-chan-capi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,12 +188,12 @@ $(ASTERISK-CHAN-CAPI_IPK): $(ASTERISK-CHAN-CAPI_BUILD_DIR)/.built
 	rm -rf $(ASTERISK-CHAN-CAPI_IPK_DIR) $(BUILD_DIR)/asterisk-chan-capi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ASTERISK-CHAN-CAPI_BUILD_DIR) MODULES_DIR=$(ASTERISK-CHAN-CAPI_IPK_DIR)/opt/lib/asterisk/modules install
 	$(STRIP_COMMAND) $(ASTERISK-CHAN-CAPI_IPK_DIR)/opt/lib/asterisk/modules/*.so
-	install -d $(ASTERISK-CHAN-CAPI_IPK_DIR)/opt/etc/asterisk/sample/
-	install -m 644 $(ASTERISK-CHAN-CAPI_BUILD_DIR)/capi.conf $(ASTERISK-CHAN-CAPI_IPK_DIR)/opt/etc/asterisk/sample/capi.conf
+	$(INSTALL) -d $(ASTERISK-CHAN-CAPI_IPK_DIR)/opt/etc/asterisk/sample/
+	$(INSTALL) -m 644 $(ASTERISK-CHAN-CAPI_BUILD_DIR)/capi.conf $(ASTERISK-CHAN-CAPI_IPK_DIR)/opt/etc/asterisk/sample/capi.conf
 	$(MAKE) $(ASTERISK-CHAN-CAPI_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ASTERISK-CHAN-CAPI_SOURCE_DIR)/postinst $(ASTERISK-CHAN-CAPI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ASTERISK-CHAN-CAPI_SOURCE_DIR)/postinst $(ASTERISK-CHAN-CAPI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ASTERISK-CHAN-CAPI_SOURCE_DIR)/prerm $(ASTERISK-CHAN-CAPI_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ASTERISK-CHAN-CAPI_SOURCE_DIR)/prerm $(ASTERISK-CHAN-CAPI_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(ASTERISK-CHAN-CAPI_CONFFILES) | sed -e 's/ /\n/g' > $(ASTERISK-CHAN-CAPI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK-CHAN-CAPI_IPK_DIR)

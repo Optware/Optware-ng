@@ -6,7 +6,7 @@ diff -Naur rkhunter.old/files/rkhunter.conf rkhunter/files/rkhunter.conf
  # NOTE: This option should be present in the configuration file.
  #
 -LOGFILE=/var/log/rkhunter.log
-+LOGFILE=/opt/var/log/rkhunter.log
++LOGFILE=%OPTWARE_TARGET_PREFIX%/var/log/rkhunter.log
  
  #
  # Set the following option to 1 if the log file is to be appended to

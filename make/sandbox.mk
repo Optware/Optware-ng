@@ -116,7 +116,7 @@ $(SANDBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(SANDBOX_SOURCE) $(SANDBOX_PATCHES)
 	$(SANDBOX_UNZIP) $(DL_DIR)/$(SANDBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SANDBOX_PATCHES)" ; \
 		then cat $(SANDBOX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SANDBOX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SANDBOX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SANDBOX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SANDBOX_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ sandbox-stage: $(SANDBOX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sandbox
 #
 $(SANDBOX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sandbox" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(SANDBOX_IPK_DIR)/CONTROL/control:
 $(SANDBOX_IPK): $(SANDBOX_BUILD_DIR)/.built
 	rm -rf $(SANDBOX_IPK_DIR) $(BUILD_DIR)/sandbox_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SANDBOX_BUILD_DIR) DESTDIR=$(SANDBOX_IPK_DIR) install-strip
-#	install -d $(SANDBOX_IPK_DIR)/opt/etc/
-#	install -m 644 $(SANDBOX_SOURCE_DIR)/sandbox.conf $(SANDBOX_IPK_DIR)/opt/etc/sandbox.conf
-#	install -d $(SANDBOX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SANDBOX_SOURCE_DIR)/rc.sandbox $(SANDBOX_IPK_DIR)/opt/etc/init.d/SXXsandbox
+#	$(INSTALL) -d $(SANDBOX_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SANDBOX_SOURCE_DIR)/sandbox.conf $(SANDBOX_IPK_DIR)/opt/etc/sandbox.conf
+#	$(INSTALL) -d $(SANDBOX_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SANDBOX_SOURCE_DIR)/rc.sandbox $(SANDBOX_IPK_DIR)/opt/etc/init.d/SXXsandbox
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SANDBOX_IPK_DIR)/opt/etc/init.d/SXXsandbox
 	$(MAKE) $(SANDBOX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SANDBOX_SOURCE_DIR)/postinst $(SANDBOX_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SANDBOX_SOURCE_DIR)/postinst $(SANDBOX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SANDBOX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SANDBOX_SOURCE_DIR)/prerm $(SANDBOX_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SANDBOX_SOURCE_DIR)/prerm $(SANDBOX_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SANDBOX_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

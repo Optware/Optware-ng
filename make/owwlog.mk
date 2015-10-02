@@ -116,7 +116,7 @@ $(OWWLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(OWWLOG_SOURCE) $(OWWLOG_PATCHES) ma
 	$(OWWLOG_UNZIP) $(DL_DIR)/$(OWWLOG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OWWLOG_PATCHES)" ; \
 		then cat $(OWWLOG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OWWLOG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OWWLOG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OWWLOG_DIR)" != "$(OWWLOG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OWWLOG_DIR) $(OWWLOG_BUILD_DIR) ; \
@@ -166,7 +166,7 @@ owwlog-stage: $(OWWLOG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/owwlog
 #
 $(OWWLOG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: owwlog" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,15 +195,15 @@ $(OWWLOG_IPK_DIR)/CONTROL/control:
 $(OWWLOG_IPK): $(OWWLOG_BUILD_DIR)/.built
 	rm -rf $(OWWLOG_IPK_DIR) $(BUILD_DIR)/owwlog_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OWWLOG_BUILD_DIR) DESTDIR=$(OWWLOG_IPK_DIR) install-strip
-#	install -d $(OWWLOG_IPK_DIR)/opt/etc/
-#	install -m 644 $(OWWLOG_SOURCE_DIR)/owwlog.conf $(OWWLOG_IPK_DIR)/opt/etc/owwlog.conf
-#	install -d $(OWWLOG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(OWWLOG_SOURCE_DIR)/rc.owwlog $(OWWLOG_IPK_DIR)/opt/etc/init.d/SXXowwlog
+#	$(INSTALL) -d $(OWWLOG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(OWWLOG_SOURCE_DIR)/owwlog.conf $(OWWLOG_IPK_DIR)/opt/etc/owwlog.conf
+#	$(INSTALL) -d $(OWWLOG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(OWWLOG_SOURCE_DIR)/rc.owwlog $(OWWLOG_IPK_DIR)/opt/etc/init.d/SXXowwlog
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXowwlog
 	$(MAKE) $(OWWLOG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(OWWLOG_SOURCE_DIR)/postinst $(OWWLOG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(OWWLOG_SOURCE_DIR)/postinst $(OWWLOG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(OWWLOG_SOURCE_DIR)/prerm $(OWWLOG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(OWWLOG_SOURCE_DIR)/prerm $(OWWLOG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(OWWLOG_CONFFILES) | sed -e 's/ /\n/g' > $(OWWLOG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OWWLOG_IPK_DIR)

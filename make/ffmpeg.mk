@@ -164,7 +164,7 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) ma
 	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FFMPEG_PATCHES)" ; \
 		then cat $(FFMPEG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FFMPEG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FFMPEG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FFMPEG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FFMPEG_DIR) $(@D) ; \
@@ -237,7 +237,7 @@ $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
 	if [ -f $(STAGING_INCLUDE_DIR)/libavutil/time.h ]; then \
 		mv -f $(STAGING_INCLUDE_DIR)/libavutil/time.h $(STAGING_INCLUDE_DIR)/libavutil/time.h_; \
 	fi
-	install -d $(STAGING_INCLUDE_DIR)/ffmpeg $(STAGING_INCLUDE_DIR)/postproc
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)/ffmpeg $(STAGING_INCLUDE_DIR)/postproc
 #	cp -p	$(STAGING_INCLUDE_DIR)/libavcodec/* \
 		$(STAGING_INCLUDE_DIR)/libavformat/* \
 		$(STAGING_INCLUDE_DIR)/libavutil/* \
@@ -301,7 +301,7 @@ ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel cs05q3armel fsg3v4, $(OPTWARE_TARG
 	$(MAKE) -C $(@D) OPTLEVEL=-O2 ffmpeg.o
 endif
 	$(MAKE) -C $(@D) OPTLEVEL=-O3 install
-	install -d $(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg
+	$(INSTALL) -d $(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg
 	cp -p	$(STAGING_PREFIX)/ffmpeg_old/include/libavcodec/* \
 		$(STAGING_PREFIX)/ffmpeg_old/include/ffmpeg/
 	cp -p	$(STAGING_PREFIX)/ffmpeg_old/include/libavformat/* \
@@ -318,7 +318,7 @@ endif
 # necessary to create a seperate control file under sources/ffmpeg
 #
 $(FFMPEG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ffmpeg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

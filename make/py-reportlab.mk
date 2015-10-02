@@ -131,7 +131,7 @@ $(PY-REPORTLAB_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-REPORTLAB_DIR)
 	$(PY-REPORTLAB_UNZIP) $(DL_DIR)/$(PY-REPORTLAB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-REPORTLAB_PATCHES)"; then \
-	    cat $(PY-REPORTLAB_PATCHES) | patch -d $(BUILD_DIR)/$(PY-REPORTLAB_DIR) -p1; \
+	    cat $(PY-REPORTLAB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-REPORTLAB_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-REPORTLAB_DIR) $(@D)/2.4
 	(cd $(@D)/2.4/reportlab; \
@@ -155,7 +155,7 @@ $(PY-REPORTLAB_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-REPORTLAB_DIR)
 	$(PY-REPORTLAB_UNZIP) $(DL_DIR)/$(PY-REPORTLAB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-REPORTLAB_PATCHES)"; then \
-	    cat $(PY-REPORTLAB_PATCHES) | patch -d $(BUILD_DIR)/$(PY-REPORTLAB_DIR) -p1; \
+	    cat $(PY-REPORTLAB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-REPORTLAB_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-REPORTLAB_DIR) $(@D)/2.5
 	(cd $(@D)/2.5/reportlab; \
@@ -214,7 +214,7 @@ py-reportlab: $(PY-REPORTLAB_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-reportlab
 #
 $(PY-REPORTLAB-COMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-reportlab-common" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -228,7 +228,7 @@ $(PY-REPORTLAB-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-REPORTLAB_CONFLICTS)" >>$@
 
 $(PY24-REPORTLAB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-reportlab" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -242,7 +242,7 @@ $(PY24-REPORTLAB_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-REPORTLAB_CONFLICTS)" >>$@
 
 $(PY25-REPORTLAB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-reportlab" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -272,7 +272,7 @@ $(PY24-REPORTLAB_IPK): $(PY-REPORTLAB_BUILD_DIR)/.built
 	(cd $(PY-REPORTLAB_BUILD_DIR)/2.4/reportlab; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY24-REPORTLAB_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY24-REPORTLAB_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY24-REPORTLAB_IPK_DIR)/opt/lib -name '*.so'`
 	rm -rf $(PY24-REPORTLAB_IPK_DIR)/opt/share
 	$(MAKE) $(PY24-REPORTLAB_IPK_DIR)/CONTROL/control
@@ -285,9 +285,9 @@ $(PY25-REPORTLAB_IPK) $(PY-REPORTLAB-COMMON_IPK): $(PY-REPORTLAB_BUILD_DIR)/.bui
 	(cd $(PY-REPORTLAB_BUILD_DIR)/2.5/reportlab; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY25-REPORTLAB_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY25-REPORTLAB_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY25-REPORTLAB_IPK_DIR)/opt/lib -name '*.so'`
-	install -d $(PY-REPORTLAB-COMMON_IPK_DIR)/opt/
+	$(INSTALL) -d $(PY-REPORTLAB-COMMON_IPK_DIR)/opt/
 	mv $(PY25-REPORTLAB_IPK_DIR)/opt/share $(PY-REPORTLAB-COMMON_IPK_DIR)/opt/
 #	echo $(PY-REPORTLAB_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-REPORTLAB_IPK_DIR)/CONTROL/conffiles
 	$(MAKE) $(PY-REPORTLAB-COMMON_IPK_DIR)/CONTROL/control

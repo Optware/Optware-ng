@@ -116,7 +116,7 @@ $(AT-SPI2-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(AT-SPI2-CORE_SOURCE) $(AT-SPI
 	$(AT-SPI2-CORE_UNZIP) $(DL_DIR)/$(AT-SPI2-CORE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AT-SPI2-CORE_PATCHES)" ; \
 		then cat $(AT-SPI2-CORE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(AT-SPI2-CORE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(AT-SPI2-CORE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AT-SPI2-CORE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AT-SPI2-CORE_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ at-spi2-core-stage: $(AT-SPI2-CORE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/at-spi2-core
 #
 $(AT-SPI2-CORE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: at-spi2-core" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,15 +203,15 @@ $(AT-SPI2-CORE_IPK): $(AT-SPI2-CORE_BUILD_DIR)/.built
 	rm -rf $(AT-SPI2-CORE_IPK_DIR) $(BUILD_DIR)/at-spi2-core_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AT-SPI2-CORE_BUILD_DIR) DESTDIR=$(AT-SPI2-CORE_IPK_DIR) install-strip
 	rm -f $(AT-SPI2-CORE_IPK_DIR)/opt/lib/*.la
-#	install -d $(AT-SPI2-CORE_IPK_DIR)/opt/etc/
-#	install -m 644 $(AT-SPI2-CORE_SOURCE_DIR)/at-spi2-core.conf $(AT-SPI2-CORE_IPK_DIR)/opt/etc/at-spi2-core.conf
-#	install -d $(AT-SPI2-CORE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(AT-SPI2-CORE_SOURCE_DIR)/rc.at-spi2-core $(AT-SPI2-CORE_IPK_DIR)/opt/etc/init.d/SXXat-spi2-core
+#	$(INSTALL) -d $(AT-SPI2-CORE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(AT-SPI2-CORE_SOURCE_DIR)/at-spi2-core.conf $(AT-SPI2-CORE_IPK_DIR)/opt/etc/at-spi2-core.conf
+#	$(INSTALL) -d $(AT-SPI2-CORE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(AT-SPI2-CORE_SOURCE_DIR)/rc.at-spi2-core $(AT-SPI2-CORE_IPK_DIR)/opt/etc/init.d/SXXat-spi2-core
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AT-SPI2-CORE_IPK_DIR)/opt/etc/init.d/SXXat-spi2-core
 	$(MAKE) $(AT-SPI2-CORE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(AT-SPI2-CORE_SOURCE_DIR)/postinst $(AT-SPI2-CORE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(AT-SPI2-CORE_SOURCE_DIR)/postinst $(AT-SPI2-CORE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AT-SPI2-CORE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(AT-SPI2-CORE_SOURCE_DIR)/prerm $(AT-SPI2-CORE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(AT-SPI2-CORE_SOURCE_DIR)/prerm $(AT-SPI2-CORE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AT-SPI2-CORE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -149,7 +149,7 @@ $(QT-EMBEDDED_BUILD_DIR)/.configured: $(DL_DIR)/$(QT-EMBEDDED_SOURCE) $(QT-EMBED
 	$(QT-EMBEDDED_UNZIP) $(DL_DIR)/$(QT-EMBEDDED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(QT-EMBEDDED_PATCHES)" ; \
 		then cat $(QT-EMBEDDED_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(QT-EMBEDDED_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(QT-EMBEDDED_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(QT-EMBEDDED_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(QT-EMBEDDED_DIR) $(@D) ; \
@@ -240,7 +240,7 @@ $(QT-EMBEDDED_BUILD_DIR)/.staged: $(QT-EMBEDDED_BUILD_DIR)/.built
 	$(QT-EMBEDDED_PATH) $(MAKE) -C $(@D) INSTALL_ROOT=$(STAGING_DIR) install
 ifneq (yes, $(TARGET_CC_PROBE))
 	(cd $(@D) ; \
-		install -m 755 target-bin/uic target-bin/moc target-bin/rcc target-bin/lrelease target-bin/qmake $(STAGING_PREFIX)/bin \
+		$(INSTALL) -m 755 target-bin/uic target-bin/moc target-bin/rcc target-bin/lrelease target-bin/qmake $(STAGING_PREFIX)/bin \
 	)
 endif
 	touch $@
@@ -252,7 +252,7 @@ qt-embedded-stage: $(QT-EMBEDDED_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/qt-embedded
 #
 $(QT-EMBEDDED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: qt-embedded" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -283,19 +283,19 @@ $(QT-EMBEDDED_IPK): $(QT-EMBEDDED_BUILD_DIR)/.built
 	$(QT-EMBEDDED_PATH) $(MAKE) -C $(QT-EMBEDDED_BUILD_DIR) INSTALL_ROOT=$(QT-EMBEDDED_IPK_DIR) install
 ifneq (yes, $(TARGET_CC_PROBE))
 	(cd $(QT-EMBEDDED_BUILD_DIR) ; \
-		install -m 755 target-bin/uic target-bin/moc target-bin/rcc target-bin/lrelease target-bin/qmake $(QT-EMBEDDED_IPK_DIR)/opt/bin \
+		$(INSTALL) -m 755 target-bin/uic target-bin/moc target-bin/rcc target-bin/lrelease target-bin/qmake $(QT-EMBEDDED_IPK_DIR)/opt/bin \
 	)
 endif
 #	$(MAKE) -C $(QT-EMBEDDED_BUILD_DIR) DESTDIR=$(QT-EMBEDDED_IPK_DIR) install-strip
-#	install -d $(QT-EMBEDDED_IPK_DIR)/opt/etc/
-#	install -m 644 $(QT-EMBEDDED_SOURCE_DIR)/qt-embedded.conf $(QT-EMBEDDED_IPK_DIR)/opt/etc/qt-embedded.conf
-#	install -d $(QT-EMBEDDED_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(QT-EMBEDDED_SOURCE_DIR)/rc.qt-embedded $(QT-EMBEDDED_IPK_DIR)/opt/etc/init.d/SXXqt-embedded
+#	$(INSTALL) -d $(QT-EMBEDDED_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(QT-EMBEDDED_SOURCE_DIR)/qt-embedded.conf $(QT-EMBEDDED_IPK_DIR)/opt/etc/qt-embedded.conf
+#	$(INSTALL) -d $(QT-EMBEDDED_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(QT-EMBEDDED_SOURCE_DIR)/rc.qt-embedded $(QT-EMBEDDED_IPK_DIR)/opt/etc/init.d/SXXqt-embedded
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(QT-EMBEDDED_IPK_DIR)/opt/etc/init.d/SXXqt-embedded
 	$(MAKE) $(QT-EMBEDDED_IPK_DIR)/CONTROL/control
-#	install -m 755 $(QT-EMBEDDED_SOURCE_DIR)/postinst $(QT-EMBEDDED_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(QT-EMBEDDED_SOURCE_DIR)/postinst $(QT-EMBEDDED_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(QT-EMBEDDED_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(QT-EMBEDDED_SOURCE_DIR)/prerm $(QT-EMBEDDED_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(QT-EMBEDDED_SOURCE_DIR)/prerm $(QT-EMBEDDED_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(QT-EMBEDDED_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

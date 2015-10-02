@@ -119,7 +119,7 @@ $(TZ_BUILD_DIR)/.configured: $(DL_DIR)/$(TZ_CODE_SOURCE) $(DL_DIR)/$(TZ_DATA_SOU
 	$(TZ_UNZIP) $(DL_DIR)/$(TZ_DATA_SOURCE) | tar -C $(BUILD_DIR)/$(TZ_DIR) -xvf -
 	if test -n "$(TZ_PATCHES)" ; \
 		then cat $(TZ_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TZ_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TZ_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TZ_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TZ_DIR) $(@D) ; \
@@ -178,7 +178,7 @@ tz-stage: $(TZ_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tz
 #
 $(TZ_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tz" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,7 +206,7 @@ $(TZ_IPK_DIR)/CONTROL/control:
 #
 $(TZ_IPK): $(TZ_BUILD_DIR)/.built
 	rm -rf $(TZ_IPK_DIR) $(BUILD_DIR)/tz_*_$(TARGET_ARCH).ipk
-	install -d $(TZ_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(TZ_IPK_DIR)/opt/sbin
 	$(MAKE) -C $(TZ_BUILD_DIR) TOPDIR=$(TZ_IPK_DIR)/opt install zic=/usr/sbin/zic
 	rm -f $(TZ_IPK_DIR)/opt/etc/tzselect $(TZ_IPK_DIR)/opt/man/man8/tzselect.8
 	rm -rf $(TZ_IPK_DIR)/opt/lib

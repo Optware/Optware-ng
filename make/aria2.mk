@@ -131,7 +131,7 @@ endif
 	$(ARIA2_UNZIP) $(DL_DIR)/$(ARIA2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ARIA2_PATCHES)" ; \
 		then cat $(ARIA2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ARIA2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ARIA2_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ARIA2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ARIA2_DIR) $(@D) ; \
@@ -193,7 +193,7 @@ aria2-stage: $(ARIA2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/aria2
 #
 $(ARIA2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: aria2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -222,15 +222,15 @@ $(ARIA2_IPK_DIR)/CONTROL/control:
 $(ARIA2_IPK): $(ARIA2_BUILD_DIR)/.built
 	rm -rf $(ARIA2_IPK_DIR) $(BUILD_DIR)/aria2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ARIA2_BUILD_DIR) DESTDIR=$(ARIA2_IPK_DIR) transform='' install-strip
-#	install -d $(ARIA2_IPK_DIR)/opt/etc/
-#	install -m 644 $(ARIA2_SOURCE_DIR)/aria2.conf $(ARIA2_IPK_DIR)/opt/etc/aria2.conf
-#	install -d $(ARIA2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ARIA2_SOURCE_DIR)/rc.aria2 $(ARIA2_IPK_DIR)/opt/etc/init.d/SXXaria2
+#	$(INSTALL) -d $(ARIA2_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ARIA2_SOURCE_DIR)/aria2.conf $(ARIA2_IPK_DIR)/opt/etc/aria2.conf
+#	$(INSTALL) -d $(ARIA2_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ARIA2_SOURCE_DIR)/rc.aria2 $(ARIA2_IPK_DIR)/opt/etc/init.d/SXXaria2
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ARIA2_IPK_DIR)/opt/etc/init.d/SXXaria2
 	$(MAKE) $(ARIA2_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ARIA2_SOURCE_DIR)/postinst $(ARIA2_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ARIA2_SOURCE_DIR)/postinst $(ARIA2_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ARIA2_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ARIA2_SOURCE_DIR)/prerm $(ARIA2_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ARIA2_SOURCE_DIR)/prerm $(ARIA2_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ARIA2_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

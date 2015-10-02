@@ -102,7 +102,7 @@ $(PY-HTCONSOLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HTCONSOLE_SOURCE) $(PY-HTC
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-HTCONSOLE_DIR) $(PY-HTCONSOLE_BUILD_DIR)
 	$(PY-HTCONSOLE_UNZIP) $(DL_DIR)/$(PY-HTCONSOLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-HTCONSOLE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-HTCONSOLE_DIR) -p1
+#	cat $(PY-HTCONSOLE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-HTCONSOLE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-HTCONSOLE_DIR) $(PY-HTCONSOLE_BUILD_DIR)
 	(cd $(PY-HTCONSOLE_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -142,7 +142,7 @@ py-htconsole-stage: $(PY-HTCONSOLE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-htconsole
 #
 $(PY-HTCONSOLE_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-HTCONSOLE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-HTCONSOLE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-htconsole" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

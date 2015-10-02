@@ -113,7 +113,7 @@ $(MYSECURESHELL_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSECURESHELL_SOURCE) $(MYSE
 	$(MYSECURESHELL_UNZIP) $(DL_DIR)/$(MYSECURESHELL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MYSECURESHELL_PATCHES)" ; \
 		then cat $(MYSECURESHELL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MYSECURESHELL_DIR) -p1 -b ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MYSECURESHELL_DIR) -p1 -b ; \
 	fi
 	if test "$(BUILD_DIR)/$(MYSECURESHELL_DIR)" != "$(MYSECURESHELL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MYSECURESHELL_DIR) $(MYSECURESHELL_BUILD_DIR) ; \
@@ -167,7 +167,7 @@ mysecureshell-stage: $(MYSECURESHELL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mysecureshell
 #
 $(MYSECURESHELL_IPK_DIR)/CONTROL/control:
-	@install -d $(MYSECURESHELL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: mysecureshell" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,19 +195,19 @@ $(MYSECURESHELL_IPK_DIR)/CONTROL/control:
 #
 $(MYSECURESHELL_IPK): $(MYSECURESHELL_BUILD_DIR)/.built
 	rm -rf $(MYSECURESHELL_IPK_DIR) $(BUILD_DIR)/mysecureshell_*_$(TARGET_ARCH).ipk
-	install -d $(MYSECURESHELL_IPK_DIR)/opt/etc/
-	install -d $(MYSECURESHELL_IPK_DIR)/opt/bin/
-	install -d $(MYSECURESHELL_IPK_DIR)/opt/libexec/
+	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/libexec/
 	DESTDIR="$(MYSECURESHELL_IPK_DIR)" ; $(MAKE) -C $(MYSECURESHELL_BUILD_DIR)  install
-	install -d $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/
-	install -m 644 $(MYSECURESHELL_BUILD_DIR)/README-en $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/
-	install -m 644 $(MYSECURESHELL_BUILD_DIR)/README-fr $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/
-# 	install -m 644 $(MYSECURESHELL_SOURCE_DIR)/mysecureshell.conf $(MYSECURESHELL_IPK_DIR)/opt/etc/mysecureshell.conf
-#	install -d $(MYSECURESHELL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MYSECURESHELL_SOURCE_DIR)/rc.mysecureshell $(MYSECURESHELL_IPK_DIR)/opt/etc/init.d/SXXmysecureshell
+	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/
+	$(INSTALL) -m 644 $(MYSECURESHELL_BUILD_DIR)/README-en $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/
+	$(INSTALL) -m 644 $(MYSECURESHELL_BUILD_DIR)/README-fr $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/
+# 	$(INSTALL) -m 644 $(MYSECURESHELL_SOURCE_DIR)/mysecureshell.conf $(MYSECURESHELL_IPK_DIR)/opt/etc/mysecureshell.conf
+#	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MYSECURESHELL_SOURCE_DIR)/rc.mysecureshell $(MYSECURESHELL_IPK_DIR)/opt/etc/init.d/SXXmysecureshell
 	$(MAKE) $(MYSECURESHELL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MYSECURESHELL_SOURCE_DIR)/postinst $(MYSECURESHELL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MYSECURESHELL_SOURCE_DIR)/prerm $(MYSECURESHELL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MYSECURESHELL_SOURCE_DIR)/postinst $(MYSECURESHELL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MYSECURESHELL_SOURCE_DIR)/prerm $(MYSECURESHELL_IPK_DIR)/CONTROL/prerm
 #	echo $(MYSECURESHELL_CONFFILES) | sed -e 's/ /\n/g' > $(MYSECURESHELL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MYSECURESHELL_IPK_DIR)
 

@@ -74,7 +74,7 @@ PIXMAN_IPK=$(BUILD_DIR)/pixman_$(PIXMAN_VERSION)-$(PIXMAN_IPK_VERSION)_$(TARGET_
 # Automatically create a ipkg control file
 #
 $(PIXMAN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pixman" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -120,7 +120,7 @@ $(PIXMAN_BUILD_DIR)/.configured: $(DL_DIR)/$(PIXMAN_SOURCE) $(PIXMAN_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(PIXMAN_DIR) $(@D)
 	$(PIXMAN_UNZIP) $(DL_DIR)/$(PIXMAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PIXMAN_PATCHES)" ; \
-		then cat $(PIXMAN_PATCHES) | patch -d $(BUILD_DIR)/$(PIXMAN_DIR) -p1 ; \
+		then cat $(PIXMAN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PIXMAN_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PIXMAN_DIR) $(@D)
 	(cd $(@D); \

@@ -146,7 +146,7 @@ endif
 	$(LIBTORRENT-RASTERBAR_UNZIP) $(DL_DIR)/$(LIBTORRENT-RASTERBAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBTORRENT-RASTERBAR_PATCHES)" ; \
 		then cat $(LIBTORRENT-RASTERBAR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) $(@D) ; \
@@ -245,7 +245,7 @@ libtorrent-rasterbar-stage: $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libtorrent-rasterbar
 #
 $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libtorrent-rasterbar" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -260,7 +260,7 @@ $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBTORRENT-RASTERBAR_CONFLICTS)" >>$@
 
 $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-libtorrent-rasterbar-binding" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -275,7 +275,7 @@ $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBTORRENT-RASTERBAR_CONFLICTS)" >>$@
 
 $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-libtorrent-rasterbar-binding" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -290,7 +290,7 @@ $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBTORRENT-RASTERBAR_CONFLICTS)" >>$@
 
 $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-libtorrent-rasterbar-binding" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -320,19 +320,19 @@ $(LIBTORRENT-RASTERBAR_IPK) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK): $(LIBT
 	rm -rf $(LIBTORRENT-RASTERBAR_IPK_DIR) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)
 	rm -f $(BUILD_DIR)/libtorrent-rasterbar_*_$(TARGET_ARCH).ipk $(BUILD_DIR)/py26-libtorrent-rasterbar-binding_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTORRENT-RASTERBAR_BUILD_DIR) DESTDIR=$(LIBTORRENT-RASTERBAR_IPK_DIR) install-strip
-#	install -d $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/libtorrent-rasterbar.conf $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/libtorrent-rasterbar.conf
-#	install -d $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/rc.libtorrent-rasterbar $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/init.d/SXXlibtorrent-rasterbar
+#	$(INSTALL) -d $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/libtorrent-rasterbar.conf $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/libtorrent-rasterbar.conf
+#	$(INSTALL) -d $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/rc.libtorrent-rasterbar $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/init.d/SXXlibtorrent-rasterbar
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/init.d/SXXlibtorrent-rasterbar
 	mkdir -p $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/opt/lib
 	mv -f $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/lib/python2.6 $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/opt/lib/python2.6/site-packages/*.so
 	$(MAKE) $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/control
 	$(MAKE) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/postinst $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/postinst $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/prerm $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/prerm $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

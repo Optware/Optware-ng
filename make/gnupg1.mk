@@ -114,7 +114,7 @@ $(GNUPG1_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG1_SOURCE) $(GNUPG1_PATCHES) ma
 	$(MAKE) libusb-stage bzip2-stage zlib-stage readline-stage libcurl-stage openldap-stage
 	rm -rf $(BUILD_DIR)/$(GNUPG1_DIR) $(@D)
 	$(GNUPG1_UNZIP) $(DL_DIR)/$(GNUPG1_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GNUPG1_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG1_DIR) -p1
+#	cat $(GNUPG1_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GNUPG1_DIR) -p1
 	mv $(BUILD_DIR)/$(GNUPG1_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -166,7 +166,7 @@ gnupg1-stage: $(GNUPG1_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnupg1
 #
 $(GNUPG1_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnupg1" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

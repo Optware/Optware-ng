@@ -125,7 +125,7 @@ $(PY-RULEDISPATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) $(
 	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR)
 	$(PY-RULEDISPATCH_UNZIP) $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-RULEDISPATCH_PATCHES)" ; then \
-	    cat $(PY-RULEDISPATCH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) -p0 ; \
+	    cat $(PY-RULEDISPATCH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR)/2.4
 	(cd $(PY-RULEDISPATCH_BUILD_DIR)/2.4; \
@@ -135,7 +135,7 @@ $(PY-RULEDISPATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) $(
 	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR)
 	$(PY-RULEDISPATCH_UNZIP) $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-RULEDISPATCH_PATCHES)" ; then \
-	    cat $(PY-RULEDISPATCH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) -p0 ; \
+	    cat $(PY-RULEDISPATCH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR)/2.5
 	(cd $(PY-RULEDISPATCH_BUILD_DIR)/2.5; \
@@ -178,7 +178,7 @@ py-ruledispatch-stage: $(PY-RULEDISPATCH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-ruledispatch
 #
 $(PY24-RULEDISPATCH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-ruledispatch" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,7 +192,7 @@ $(PY24-RULEDISPATCH_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-RULEDISPATCH_CONFLICTS)" >>$@
 
 $(PY25-RULEDISPATCH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-ruledispatch" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

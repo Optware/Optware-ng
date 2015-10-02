@@ -102,7 +102,7 @@ $(PY-WSGIREF_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WSGIREF_SOURCE) $(PY-WSGIREF
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-WSGIREF_DIR) $(PY-WSGIREF_BUILD_DIR)
 	cd $(BUILD_DIR) && $(PY-WSGIREF_UNZIP) $(DL_DIR)/$(PY-WSGIREF_SOURCE)
-#	cat $(PY-WSGIREF_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WSGIREF_DIR) -p1
+#	cat $(PY-WSGIREF_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-WSGIREF_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-WSGIREF_DIR) $(PY-WSGIREF_BUILD_DIR)
 	(cd $(PY-WSGIREF_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -143,7 +143,7 @@ py-wsgiref-stage: $(PY-WSGIREF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-wsgiref
 #
 $(PY-WSGIREF_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-WSGIREF_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-WSGIREF_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-wsgiref" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

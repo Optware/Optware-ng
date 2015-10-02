@@ -107,7 +107,7 @@ $(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 	rm -rf $(BUILD_DIR)/$(NLOAD_DIR) $(NLOAD_BUILD_DIR)
 	$(NLOAD_UNZIP) $(DL_DIR)/$(NLOAD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NLOAD_PATCHES)"; then \
-		cat $(NLOAD_PATCHES) | patch -d $(BUILD_DIR)/$(NLOAD_DIR) -p1; \
+		cat $(NLOAD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NLOAD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(NLOAD_DIR) $(@D)
 	autoreconf -vif $(@D)
@@ -151,11 +151,11 @@ nload: $(NLOAD_BUILD_DIR)/.built
 #
 #$(STAGING_DIR)/.staged: $(NLOAD_BUILD_DIR)/.built
 #	rm -f $@
-#	install -d $(STAGING_INCLUDE_DIR)
-#	install -m 644 $(NLOAD_BUILD_DIR)/nload.h $(STAGING_INCLUDE_DIR)
-#	install -d $(STAGING_LIB_DIR)
-#	install -m 644 $(NLOAD_BUILD_DIR)/libnload.a $(STAGING_LIB_DIR)
-#	install -m 644 $(NLOAD_BUILD_DIR)/libnload.so.$(NLOAD_VERSION) $(STAGING_LIB_DIR)
+#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -m 644 $(NLOAD_BUILD_DIR)/nload.h $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -d $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(NLOAD_BUILD_DIR)/libnload.a $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(NLOAD_BUILD_DIR)/libnload.so.$(NLOAD_VERSION) $(STAGING_LIB_DIR)
 #	cd $(STAGING_LIB_DIR) && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so.1
 #	cd $(STAGING_LIB_DIR) && ln -fs libnload.so.$(NLOAD_VERSION) libnload.so
 #	touch $@
@@ -166,7 +166,7 @@ nload: $(NLOAD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/nload
 #
 $(NLOAD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nload" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

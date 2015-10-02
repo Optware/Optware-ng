@@ -110,7 +110,7 @@ $(SLRN_BUILD_DIR)/.configured: $(DL_DIR)/$(SLRN_SOURCE) $(SLRN_PATCHES) make/slr
 	$(SLRN_UNZIP) $(DL_DIR)/$(SLRN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SLRN_PATCHES)" ; \
 		then cat $(SLRN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SLRN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SLRN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SLRN_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SLRN_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ slrn-stage: $(SLRN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/slrn
 #
 $(SLRN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: slrn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

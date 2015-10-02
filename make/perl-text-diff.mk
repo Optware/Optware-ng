@@ -35,7 +35,7 @@ $(PERL-TEXT-DIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TEXT-DIFF_SOURCE) $(PE
 	$(MAKE) perl-algorithm-diff-stage
 	rm -rf $(BUILD_DIR)/$(PERL-TEXT-DIFF_DIR) $(PERL-TEXT-DIFF_BUILD_DIR)
 	$(PERL-TEXT-DIFF_UNZIP) $(DL_DIR)/$(PERL-TEXT-DIFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-TEXT-DIFF_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-TEXT-DIFF_DIR) -p1
+#	cat $(PERL-TEXT-DIFF_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-TEXT-DIFF_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-TEXT-DIFF_DIR) $(PERL-TEXT-DIFF_BUILD_DIR)
 	(cd $(PERL-TEXT-DIFF_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-TEXT-DIFF_BUILD_DIR)/.staged: $(PERL-TEXT-DIFF_BUILD_DIR)/.built
 perl-text-diff-stage: $(PERL-TEXT-DIFF_BUILD_DIR)/.staged
 
 $(PERL-TEXT-DIFF_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-TEXT-DIFF_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-TEXT-DIFF_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-text-diff" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

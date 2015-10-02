@@ -7,4 +7,4 @@ fi
 rm -f /var/run/dnsmasq.pid
 
 sleep 2
-/opt/sbin/dnsmasq
+%OPTWARE_TARGET_PREFIX%/sbin/dnsmasq

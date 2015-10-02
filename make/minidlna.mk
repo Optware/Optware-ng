@@ -139,17 +139,17 @@ endif
 	$(MAKE) libexif-stage libid3tag-stage libjpeg-stage libvorbis-stage bzip2-stage xz-utils-stage \
 		e2fsprogs-stage ffmpeg-stage flac-stage sqlite-stage ffmpegthumbnailer-stage libpng-stage
 	rm -rf $(BUILD_DIR)/$(MINIDLNA_DIR) $(@D)
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	tar -C $(@D) -xzf $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz
 	if test -n "$(MINIDLNA_PATCHES)" ; \
 		then cat $(MINIDLNA_PATCHES) | \
-		patch -bd $(@D)/$(MINIDLNA_DIR) -p1 ; \
+		$(PATCH) -bd $(@D)/$(MINIDLNA_DIR) -p1 ; \
 	fi
 	mv $(@D)/$(MINIDLNA_DIR) $(@D)/nothumbs
 	tar -C $(@D) -xzf $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz
 	if test -n "$(MINIDLNA_PATCHES)" ; \
 		then cat $(MINIDLNA_PATCHES) | \
-		patch -bd $(@D)/$(MINIDLNA_DIR) -p1 ; \
+		$(PATCH) -bd $(@D)/$(MINIDLNA_DIR) -p1 ; \
 	fi
 	mv $(@D)/$(MINIDLNA_DIR) $(@D)/thumbs
 	### configure version without thumbnails
@@ -244,7 +244,7 @@ minidlna-stage: $(MINIDLNA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/minidlna
 #
 $(MINIDLNA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: minidlna" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -263,7 +263,7 @@ endif
 	@echo "Conflicts: $(MINIDLNA_CONFLICTS)" >>$@
 
 $(MINIDLNA_THUMBNAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: minidlna-thumbnail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -302,12 +302,12 @@ $(MINIDLNA_IPK): $(MINIDLNA_BUILD_DIR)/.built
 		ETCINSTALLDIR=$(MINIDLNA_IPK_DIR)/opt/etc \
 		;
 	$(STRIP_COMMAND) $(MINIDLNA_IPK_DIR)/opt/sbin/*
-	install -d $(MINIDLNA_IPK_DIR)/opt/etc/init.d $(MINIDLNA_IPK_DIR)/opt/etc/minidlna
-	install -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.conf $(MINIDLNA_IPK_DIR)/opt/etc/minidlna.conf
-	install -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_IPK_DIR)/opt/etc/init.d/S98minidlna
+	$(INSTALL) -d $(MINIDLNA_IPK_DIR)/opt/etc/init.d $(MINIDLNA_IPK_DIR)/opt/etc/minidlna
+	$(INSTALL) -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.conf $(MINIDLNA_IPK_DIR)/opt/etc/minidlna.conf
+	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_IPK_DIR)/opt/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MINIDLNA_SOURCE_DIR)/postinst $(MINIDLNA_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MINIDLNA_SOURCE_DIR)/prerm $(MINIDLNA_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/postinst $(MINIDLNA_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/prerm $(MINIDLNA_IPK_DIR)/CONTROL/prerm
 	echo $(MINIDLNA_CONFFILES) | sed -e 's/ /\n/g' > $(MINIDLNA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIDLNA_IPK_DIR)
 
@@ -320,12 +320,12 @@ $(MINIDLNA_THUMBNAIL_IPK): $(MINIDLNA_BUILD_DIR)/.built
 		ETCINSTALLDIR=$(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc \
 		;
 	$(STRIP_COMMAND) $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/sbin/*
-	install -d $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/init.d
-	install -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.thumbs.conf $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/minidlna.conf
-	install -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/init.d/S98minidlna
+	$(INSTALL) -d $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.thumbs.conf $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/minidlna.conf
+	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_THUMBNAIL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MINIDLNA_SOURCE_DIR)/postinst $(MINIDLNA_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MINIDLNA_SOURCE_DIR)/prerm $(MINIDLNA_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/postinst $(MINIDLNA_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/prerm $(MINIDLNA_IPK_DIR)/CONTROL/prerm
 	echo $(MINIDLNA_CONFFILES) | sed -e 's/ /\n/g' > $(MINIDLNA_THUMBNAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIDLNA_THUMBNAIL_IPK_DIR)
 

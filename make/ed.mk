@@ -98,7 +98,7 @@ $(ED_BUILD_DIR)/.configured: $(DL_DIR)/$(ED_SOURCE) $(ED_PATCHES) make/ed.mk
 	rm -rf $(BUILD_DIR)/$(ED_DIR) $(@D)
 	$(ED_UNZIP) $(DL_DIR)/$(ED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ED_PATCHES)"; then \
-		cat $(ED_PATCHES) | patch -d $(BUILD_DIR)/$(ED_DIR) -p0; \
+		cat $(ED_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ED_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(ED_DIR) $(@D)
 	sed -i -e '/-install-info/d' $(@D)/Makefile.in
@@ -137,7 +137,7 @@ ed: $(ED_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ed
 #
 $(ED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ed" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

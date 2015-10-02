@@ -110,7 +110,7 @@ $(LIBACL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBACL_SOURCE) $(LIBACL_PATCHES) ma
 	$(LIBACL_UNZIP) $(DL_DIR)/$(LIBACL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBACL_PATCHES)" ; \
 		then cat $(LIBACL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBACL_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBACL_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(LIBACL_DIR) $(@D)
 	(cd $(@D); \
@@ -161,7 +161,7 @@ libacl-stage: $(LIBACL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libacl
 #
 $(LIBACL_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBACL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBACL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libacl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,13 +191,13 @@ $(LIBACL_IPK): $(LIBACL_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBACL_BUILD_DIR) DIST_ROOT=$(LIBACL_IPK_DIR) install-lib install-dev
 	rm -f $(LIBACL_IPK_DIR)/opt/lib/libacl.la
 	$(STRIP_COMMAND) $(LIBACL_IPK_DIR)/opt/lib/*.so
-#	install -d $(LIBACL_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBACL_SOURCE_DIR)/libacl.conf $(LIBACL_IPK_DIR)/opt/etc/libacl.conf
-#	install -d $(LIBACL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBACL_SOURCE_DIR)/rc.libacl $(LIBACL_IPK_DIR)/opt/etc/init.d/SXXlibacl
+#	$(INSTALL) -d $(LIBACL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBACL_SOURCE_DIR)/libacl.conf $(LIBACL_IPK_DIR)/opt/etc/libacl.conf
+#	$(INSTALL) -d $(LIBACL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBACL_SOURCE_DIR)/rc.libacl $(LIBACL_IPK_DIR)/opt/etc/init.d/SXXlibacl
 	$(MAKE) $(LIBACL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBACL_SOURCE_DIR)/postinst $(LIBACL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBACL_SOURCE_DIR)/prerm $(LIBACL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBACL_SOURCE_DIR)/postinst $(LIBACL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBACL_SOURCE_DIR)/prerm $(LIBACL_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBACL_CONFFILES) | sed -e 's/ /\n/g' > $(LIBACL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBACL_IPK_DIR)
 

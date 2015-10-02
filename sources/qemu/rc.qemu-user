@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-QEMU_BIN_DIR=/opt/bin
+QEMU_BIN_DIR=%OPTWARE_TARGET_PREFIX%/bin
 BINFMT_MISC_DIR=""
 MOUNT_AT=""
 
@@ -30,8 +30,8 @@ if grep -Fq binfmt_misc /proc/modules
 then true ;
 elif [ -x /sbin/modprobe ]
 then /sbin/modprobe binfmt_misc
-elif [ -x /opt/sbin/modprobe ]
-then /opt/sbin/modprobe binfmt_misc
+elif [ -x %OPTWARE_TARGET_PREFIX%/sbin/modprobe ]
+then %OPTWARE_TARGET_PREFIX%/sbin/modprobe binfmt_misc
 elif [ -r /lib/modules/`uname -r`/kernel/fs/binfmt_misc.o ]
 then insmod /lib/modules/`uname -r`/kernel/fs/binfmt_misc.o
 else exit 0 # no binfmt_misc module

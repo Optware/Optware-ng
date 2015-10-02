@@ -110,7 +110,7 @@ $(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES) make/
 	rm -rf $(BUILD_DIR)/$(UNITS_DIR) $(@D)
 	$(UNITS_UNZIP) $(DL_DIR)/$(UNITS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNITS_PATCHES)"; \
-		then cat $(UNITS_PATCHES) | patch -d $(BUILD_DIR)/$(UNITS_DIR) -p1; \
+		then cat $(UNITS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(UNITS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(UNITS_DIR) $(@D)
 #	autoreconf -vif $(@D)
@@ -158,7 +158,7 @@ units: $(UNITS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/units
 #
 $(UNITS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: units" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

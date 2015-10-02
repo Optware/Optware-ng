@@ -106,7 +106,7 @@ $(PARTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES) ma
 	$(MAKE) e2fsprogs-stage
 	rm -rf $(BUILD_DIR)/$(PARTED_DIR) $(@D)
 	$(PARTED_UNZIP) $(DL_DIR)/$(PARTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PARTED_PATCHES) | patch -d $(BUILD_DIR)/$(PARTED_DIR) -p1
+#	cat $(PARTED_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PARTED_DIR) -p1
 	mv $(BUILD_DIR)/$(PARTED_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -158,7 +158,7 @@ parted-stage: $(PARTED_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/parted
 #
 $(PARTED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: parted" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

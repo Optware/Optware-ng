@@ -114,7 +114,7 @@ $(YAFC_BUILD_DIR)/.configured: $(DL_DIR)/$(YAFC_SOURCE) $(YAFC_PATCHES) make/yaf
 	$(YAFC_UNZIP) $(DL_DIR)/$(YAFC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(YAFC_PATCHES)" ; \
 		then cat $(YAFC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(YAFC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(YAFC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(YAFC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(YAFC_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ yafc: $(YAFC_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/yafc
 #
 $(YAFC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: yafc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,15 +199,15 @@ $(YAFC_IPK): $(YAFC_BUILD_DIR)/.built
 	rm -rf $(YAFC_IPK_DIR) $(BUILD_DIR)/yafc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(YAFC_BUILD_DIR) DESTDIR=$(YAFC_IPK_DIR) install-strip
 	rm -f $(YAFC_IPK_DIR)/opt/info/dir
-#	install -d $(YAFC_IPK_DIR)/opt/etc/
-#	install -m 644 $(YAFC_SOURCE_DIR)/yafc.conf $(YAFC_IPK_DIR)/opt/etc/yafc.conf
-#	install -d $(YAFC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(YAFC_SOURCE_DIR)/rc.yafc $(YAFC_IPK_DIR)/opt/etc/init.d/SXXyafc
+#	$(INSTALL) -d $(YAFC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(YAFC_SOURCE_DIR)/yafc.conf $(YAFC_IPK_DIR)/opt/etc/yafc.conf
+#	$(INSTALL) -d $(YAFC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(YAFC_SOURCE_DIR)/rc.yafc $(YAFC_IPK_DIR)/opt/etc/init.d/SXXyafc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YAFC_IPK_DIR)/opt/etc/init.d/SXXyafc
 	$(MAKE) $(YAFC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(YAFC_SOURCE_DIR)/postinst $(YAFC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(YAFC_SOURCE_DIR)/postinst $(YAFC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YAFC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(YAFC_SOURCE_DIR)/prerm $(YAFC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(YAFC_SOURCE_DIR)/prerm $(YAFC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YAFC_IPK_DIR)/CONTROL/prerm
 	echo $(YAFC_CONFFILES) | sed -e 's/ /\n/g' > $(YAFC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(YAFC_IPK_DIR)

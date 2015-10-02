@@ -9,8 +9,8 @@ service tftp
        instances        = 30
        wait             = yes
        user             = root
-       server           = /opt/sbin/atftpd
-       server_args	= /opt/tftpboot
+       server           = %OPTWARE_TARGET_PREFIX%/sbin/atftpd
+       server_args	= %OPTWARE_TARGET_PREFIX%/tftpboot
        log_on_success   = HOST PID
        log_on_failure   = HOST
        disable          = no

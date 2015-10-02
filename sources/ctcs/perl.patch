@@ -3,7 +3,7 @@ diff -u ctcs.old/ctcs ctcs/ctcs
 +++ ctcs/ctcs	2008-08-05 15:13:19.000000000 -0300
 @@ -1,4 +1,4 @@
 -#!/usr/bin/perl -Tw
-+#!/opt/bin/perl -Tw
++#!%OPTWARE_TARGET_PREFIX%/bin/perl -Tw
  ###############################################################################
  #
  # CTorrent Control Server (CTCS) version 1.4.1

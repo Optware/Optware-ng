@@ -7,8 +7,8 @@
 -BINDIR =	/usr/local/sbin
 -MANDIR =	/usr/local/man
 -CC =		gcc
-+BINDIR =	/opt/sbin
-+MANDIR =	/opt/man
++BINDIR =	%OPTWARE_TARGET_PREFIX%/sbin
++MANDIR =	%OPTWARE_TARGET_PREFIX%/man
 +#CC =		gcc
  CDEFS =		${SSL_DEFS} ${SSL_INC}
  CFLAGS =	-O ${CDEFS}

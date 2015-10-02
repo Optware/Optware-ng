@@ -1,10 +1,10 @@
 #!/bin/sh
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
 RTORRENT_SOCKET=/tmp/rtorrent
-RTORRENT_CONF=/opt/etc/rtorrent.conf
+RTORRENT_CONF=%OPTWARE_TARGET_PREFIX%/etc/rtorrent.conf
 
-test -x /opt/bin/dtach || ipkg install dtach
+test -x %OPTWARE_TARGET_PREFIX%/bin/dtach || ipkg install dtach
 
 start() {
 	if [ -e ${RTORRENT_SOCKET} ]; then

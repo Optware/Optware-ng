@@ -107,7 +107,7 @@ $(SETPWC_BUILD_DIR)/.configured: $(DL_DIR)/$(SETPWC_SOURCE) $(SETPWC_PATCHES) ma
 	$(SETPWC_UNZIP) $(DL_DIR)/$(SETPWC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SETPWC_PATCHES)" ; \
 		then cat $(SETPWC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SETPWC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SETPWC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SETPWC_DIR)" != "$(SETPWC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SETPWC_DIR) $(SETPWC_BUILD_DIR) ; \
@@ -145,7 +145,7 @@ setpwc-stage: $(SETPWC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/setpwc
 #
 $(SETPWC_IPK_DIR)/CONTROL/control:
-	@install -d $(SETPWC_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(SETPWC_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: setpwc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -173,11 +173,11 @@ $(SETPWC_IPK_DIR)/CONTROL/control:
 #
 $(SETPWC_IPK): $(SETPWC_BUILD_DIR)/.built
 	rm -rf $(SETPWC_IPK_DIR) $(BUILD_DIR)/setpwc_*_$(TARGET_ARCH).ipk
-	install -d $(SETPWC_IPK_DIR)/opt/bin
-	install -m 755 $(SETPWC_BUILD_DIR)/setpwc $(SETPWC_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(SETPWC_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(SETPWC_BUILD_DIR)/setpwc $(SETPWC_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(SETPWC_IPK_DIR)/opt/bin/setpwc
-	install -d $(SETPWC_IPK_DIR)/opt/man/man1
-	install -m 644 $(SETPWC_BUILD_DIR)/setpwc.1 $(SETPWC_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(SETPWC_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(SETPWC_BUILD_DIR)/setpwc.1 $(SETPWC_IPK_DIR)/opt/man/man1
 	$(MAKE) $(SETPWC_IPK_DIR)/CONTROL/control
 	echo $(SETPWC_CONFFILES) | sed -e 's/ /\n/g' > $(SETPWC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SETPWC_IPK_DIR)

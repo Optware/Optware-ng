@@ -111,7 +111,7 @@ $(<BAR>_BUILD_DIR)/.configured: $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz
 	if test -n "$(<BAR>_PATCHES)" ; \
 		then cat $(<BAR>_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(<BAR>_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(<BAR>_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(<BAR>_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(<BAR>_DIR) $(@D) ; \
@@ -159,7 +159,7 @@ $(<BAR>_BUILD_DIR)/.staged: $(<BAR>_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/<bar>
 #
 $(<BAR>_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: <bar>" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,13 +188,13 @@ $(<BAR>_IPK_DIR)/CONTROL/control:
 $(<BAR>_IPK): $(<BAR>_BUILD_DIR)/.built
 	rm -rf $(<BAR>_IPK_DIR) $(BUILD_DIR)/<bar>_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<BAR>_BUILD_DIR) DESTDIR=$(<BAR>_IPK_DIR) install
-	install -d $(<BAR>_IPK_DIR)/opt/etc/
-	install -m 644 $(<BAR>_SOURCE_DIR)/<bar>.conf $(<BAR>_IPK_DIR)/opt/etc/<bar>.conf
-	install -d $(<BAR>_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(<BAR>_SOURCE_DIR)/rc.<bar> $(<BAR>_IPK_DIR)/opt/etc/init.d/SXX<bar>
+	$(INSTALL) -d $(<BAR>_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(<BAR>_SOURCE_DIR)/<bar>.conf $(<BAR>_IPK_DIR)/opt/etc/<bar>.conf
+	$(INSTALL) -d $(<BAR>_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(<BAR>_SOURCE_DIR)/rc.<bar> $(<BAR>_IPK_DIR)/opt/etc/init.d/SXX<bar>
 	$(MAKE) $(<BAR>_IPK_DIR)/CONTROL/control
-	install -m 755 $(<BAR>_SOURCE_DIR)/postinst $(<BAR>_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(<BAR>_SOURCE_DIR)/prerm $(<BAR>_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(<BAR>_SOURCE_DIR)/postinst $(<BAR>_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(<BAR>_SOURCE_DIR)/prerm $(<BAR>_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(<BAR>_IPK_DIR)/CONTROL/postinst $(<BAR>_IPK_DIR)/CONTROL/prerm; \

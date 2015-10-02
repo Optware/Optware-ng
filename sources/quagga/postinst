@@ -1,2 +1,2 @@
 #!/bin/sh
-/opt/etc/init.d/S50quagga
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S50quagga

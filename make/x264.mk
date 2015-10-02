@@ -147,7 +147,7 @@ endif
 	$(X264_UNZIP) $(DL_DIR)/$(X264_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(X264_PATCHES)" ; \
 		then cat $(X264_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(X264_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(X264_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(X264_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(X264_DIR) $(@D) ; \
@@ -201,7 +201,7 @@ x264-stage: $(X264_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/x264
 #
 $(X264_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: x264" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -231,13 +231,13 @@ $(X264_IPK): $(X264_BUILD_DIR)/.built
 	rm -rf $(X264_IPK_DIR) $(BUILD_DIR)/x264_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(X264_BUILD_DIR) DESTDIR=$(X264_IPK_DIR) install
 	rm -f $(X264_IPK_DIR)/opt/lib/libx264.a
-#	install -d $(X264_IPK_DIR)/opt/etc/
-#	install -m 644 $(X264_SOURCE_DIR)/x264.conf $(X264_IPK_DIR)/opt/etc/x264.conf
-#	install -d $(X264_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(X264_SOURCE_DIR)/rc.x264 $(X264_IPK_DIR)/opt/etc/init.d/SXXx264
+#	$(INSTALL) -d $(X264_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(X264_SOURCE_DIR)/x264.conf $(X264_IPK_DIR)/opt/etc/x264.conf
+#	$(INSTALL) -d $(X264_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/rc.x264 $(X264_IPK_DIR)/opt/etc/init.d/SXXx264
 	$(MAKE) $(X264_IPK_DIR)/CONTROL/control
-#	install -m 755 $(X264_SOURCE_DIR)/postinst $(X264_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(X264_SOURCE_DIR)/prerm $(X264_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/postinst $(X264_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/prerm $(X264_IPK_DIR)/CONTROL/prerm
 	echo $(X264_CONFFILES) | sed -e 's/ /\n/g' > $(X264_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(X264_IPK_DIR)
 

@@ -110,7 +110,7 @@ $(FCRON_BUILD_DIR)/.configured: $(DL_DIR)/$(FCRON_SOURCE) $(FCRON_PATCHES) make/
 	$(FCRON_UNZIP) $(DL_DIR)/$(FCRON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FCRON_PATCHES)" ; \
 		then cat $(FCRON_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FCRON_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FCRON_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FCRON_DIR)" != "$(FCRON_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FCRON_DIR) $(FCRON_BUILD_DIR) ; \
@@ -162,7 +162,7 @@ fcron-stage: $(FCRON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fcron
 #
 $(FCRON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fcron" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,15 @@ $(FCRON_IPK): $(FCRON_BUILD_DIR)/.built
 	rm -rf $(FCRON_IPK_DIR) $(BUILD_DIR)/fcron_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FCRON_BUILD_DIR) DESTDIR=$(FCRON_IPK_DIR) install-staged
 	$(STRIP_COMMAND) $(FCRON_IPK_DIR)/opt/*bin/fcron*
-#	install -d $(FCRON_IPK_DIR)/opt/etc/
-#	install -m 644 $(FCRON_SOURCE_DIR)/fcron.conf $(FCRON_IPK_DIR)/opt/etc/fcron.conf
-#	install -d $(FCRON_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FCRON_SOURCE_DIR)/rc.fcron $(FCRON_IPK_DIR)/opt/etc/init.d/SXXfcron
+#	$(INSTALL) -d $(FCRON_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FCRON_SOURCE_DIR)/fcron.conf $(FCRON_IPK_DIR)/opt/etc/fcron.conf
+#	$(INSTALL) -d $(FCRON_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FCRON_SOURCE_DIR)/rc.fcron $(FCRON_IPK_DIR)/opt/etc/init.d/SXXfcron
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCRON_IPK_DIR)/opt/etc/init.d/SXXfcron
 	$(MAKE) $(FCRON_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FCRON_SOURCE_DIR)/postinst $(FCRON_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FCRON_SOURCE_DIR)/postinst $(FCRON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCRON_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FCRON_SOURCE_DIR)/prerm $(FCRON_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FCRON_SOURCE_DIR)/prerm $(FCRON_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCRON_IPK_DIR)/CONTROL/prerm
 	echo $(FCRON_CONFFILES) | sed -e 's/ /\n/g' > $(FCRON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FCRON_IPK_DIR)

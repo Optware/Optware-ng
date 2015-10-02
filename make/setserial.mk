@@ -114,7 +114,7 @@ $(SETSERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(SETSERIAL_SOURCE) $(SETSERIAL_PA
 	$(SETSERIAL_UNZIP) $(DL_DIR)/$(SETSERIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SETSERIAL_PATCHES)" ; \
 		then cat $(SETSERIAL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SETSERIAL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SETSERIAL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SETSERIAL_DIR)" != "$(SETSERIAL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SETSERIAL_DIR) $(SETSERIAL_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ setserial-stage: $(SETSERIAL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/setserial
 #
 $(SETSERIAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: setserial" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,20 +193,20 @@ $(SETSERIAL_IPK_DIR)/CONTROL/control:
 $(SETSERIAL_IPK): $(SETSERIAL_BUILD_DIR)/.built
 	rm -rf $(SETSERIAL_IPK_DIR) $(BUILD_DIR)/setserial_*_$(TARGET_ARCH).ipk
 # setserial's install rule can't easily be made to follow the rules above
-	install -d $(SETSERIAL_IPK_DIR)/opt/sbin
-	install -d $(SETSERIAL_IPK_DIR)/opt/man/man8
-	install -m 755 $(SETSERIAL_BUILD_DIR)/setserial $(SETSERIAL_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(SETSERIAL_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(SETSERIAL_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 755 $(SETSERIAL_BUILD_DIR)/setserial $(SETSERIAL_IPK_DIR)/opt/sbin
 	$(TARGET_STRIP) $(SETSERIAL_IPK_DIR)/opt/sbin/setserial
-	install $(SETSERIAL_BUILD_DIR)/setserial.8 $(SETSERIAL_IPK_DIR)/opt/man/man8
+	$(INSTALL) $(SETSERIAL_BUILD_DIR)/setserial.8 $(SETSERIAL_IPK_DIR)/opt/man/man8
 
 #	$(MAKE) -C $(SETSERIAL_BUILD_DIR) DESTDIR=$(SETSERIAL_IPK_DIR)/opt install
-#	install -d $(SETSERIAL_IPK_DIR)/opt/etc/
-#	install -m 644 $(SETSERIAL_SOURCE_DIR)/setserial.conf $(SETSERIAL_IPK_DIR)/opt/etc/setserial.conf
-#	install -d $(SETSERIAL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SETSERIAL_SOURCE_DIR)/rc.setserial $(SETSERIAL_IPK_DIR)/opt/etc/init.d/SXXsetserial
+#	$(INSTALL) -d $(SETSERIAL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SETSERIAL_SOURCE_DIR)/setserial.conf $(SETSERIAL_IPK_DIR)/opt/etc/setserial.conf
+#	$(INSTALL) -d $(SETSERIAL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SETSERIAL_SOURCE_DIR)/rc.setserial $(SETSERIAL_IPK_DIR)/opt/etc/init.d/SXXsetserial
 	$(MAKE) $(SETSERIAL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SETSERIAL_SOURCE_DIR)/postinst $(SETSERIAL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SETSERIAL_SOURCE_DIR)/prerm $(SETSERIAL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SETSERIAL_SOURCE_DIR)/postinst $(SETSERIAL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SETSERIAL_SOURCE_DIR)/prerm $(SETSERIAL_IPK_DIR)/CONTROL/prerm
 	echo $(SETSERIAL_CONFFILES) | sed -e 's/ /\n/g' > $(SETSERIAL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SETSERIAL_IPK_DIR)
 

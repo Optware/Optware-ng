@@ -111,7 +111,7 @@ $(MPDSCRIBBLE_BUILD_DIR)/.configured: $(DL_DIR)/$(MPDSCRIBBLE_SOURCE) $(MPDSCRIB
 	$(MPDSCRIBBLE_UNZIP) $(DL_DIR)/$(MPDSCRIBBLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPDSCRIBBLE_PATCHES)" ; \
 		then cat $(MPDSCRIBBLE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MPDSCRIBBLE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MPDSCRIBBLE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MPDSCRIBBLE_DIR)" != "$(MPDSCRIBBLE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MPDSCRIBBLE_DIR) $(MPDSCRIBBLE_BUILD_DIR) ; \
@@ -162,7 +162,7 @@ mpdscribble-stage: $(MPDSCRIBBLE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mpdscribble
 #
 $(MPDSCRIBBLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mpdscribble" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

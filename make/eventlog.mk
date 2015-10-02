@@ -94,7 +94,7 @@ $(EVENTLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(EVENTLOG_SOURCE) $(EVENTLOG_PATCH
 	$(EVENTLOG_UNZIP) $(DL_DIR)/$(EVENTLOG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EVENTLOG_PATCHES)" ; \
 		then cat $(EVENTLOG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(EVENTLOG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(EVENTLOG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(EVENTLOG_DIR)" != "$(EVENTLOG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(EVENTLOG_DIR) $(EVENTLOG_BUILD_DIR) ; \
@@ -145,7 +145,7 @@ eventlog-stage: $(EVENTLOG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/eventlog
 #
 $(EVENTLOG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: eventlog" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

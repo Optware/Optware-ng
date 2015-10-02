@@ -8,12 +8,12 @@ if [ ! -d /var/lib/nfs ] ;  then
     mkdir /var/lib/nfs
 fi
 
-if [ ! -f /opt/etc/exports ] ;  then
-    cp /opt/doc/nfs-utils/exports /opt/etc/exports
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/exports ] ;  then
+    cp %OPTWARE_TARGET_PREFIX%/doc/nfs-utils/exports %OPTWARE_TARGET_PREFIX%/etc/exports
     echo ; echo
-    echo "To complete the installation, you must edit /opt/etc/exports,"
-    echo "and then run /opt/etc/init.d/S56nfs-utils to start the nfs server."
+    echo "To complete the installation, you must edit %OPTWARE_TARGET_PREFIX%/etc/exports,"
+    echo "and then run %OPTWARE_TARGET_PREFIX%/etc/init.d/S56nfs-utils to start the nfs server."
     echo
 else
-    /opt/etc/init.d/S56nfs-utils
+    %OPTWARE_TARGET_PREFIX%/etc/init.d/S56nfs-utils
 fi

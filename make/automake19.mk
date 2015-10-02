@@ -92,7 +92,7 @@ $(AUTOMAKE19_BUILD_DIR)/.staged: $(AUTOMAKE19_BUILD_DIR)/.built
 automake19-stage: $(AUTOMAKE19_BUILD_DIR)/.staged
 
 $(AUTOMAKE19_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: automake19" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -107,11 +107,11 @@ $(AUTOMAKE19_IPK_DIR)/CONTROL/control:
 
 $(AUTOMAKE19_IPK): $(AUTOMAKE19_BUILD_DIR)/.built
 	rm -rf $(AUTOMAKE19_IPK_DIR) $(BUILD_DIR)/automake19_*_$(TARGET_ARCH).ipk
-	install -d $(AUTOMAKE19_IPK_DIR)/opt/bin
-	install -d $(AUTOMAKE19_IPK_DIR)/opt/info
-	install -d $(AUTOMAKE19_IPK_DIR)/opt/share/aclocal-1.9
-	install -d $(AUTOMAKE19_IPK_DIR)/opt/share/automake-1.9/Automake
-	install -d $(AUTOMAKE19_IPK_DIR)/opt/share/automake-1.9/am
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/info
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/share/aclocal-1.9
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/share/automake-1.9/Automake
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/share/automake-1.9/am
 	$(MAKE) -C $(AUTOMAKE19_BUILD_DIR) DESTDIR=$(AUTOMAKE19_IPK_DIR) install
 	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOMAKE19_IPK_DIR)/opt/bin/*
 	$(MAKE) $(AUTOMAKE19_IPK_DIR)/CONTROL/control

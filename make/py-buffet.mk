@@ -108,7 +108,7 @@ $(PY-BUFFET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BUFFET_SOURCE) $(PY-BUFFET_PA
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-BUFFET_DIR) $(PY-BUFFET_BUILD_DIR)
 	cd $(BUILD_DIR) && $(PY-BUFFET_UNZIP) $(DL_DIR)/$(PY-BUFFET_SOURCE)
-#	cat $(PY-BUFFET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BUFFET_DIR) -p1
+#	cat $(PY-BUFFET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BUFFET_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-BUFFET_DIR) $(PY-BUFFET_BUILD_DIR)
 	(cd $(PY-BUFFET_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -149,7 +149,7 @@ py-buffet-stage: $(PY-BUFFET_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-buffet
 #
 $(PY24-BUFFET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-buffet" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -74,7 +74,7 @@ $(ZOO_BUILD_DIR)/.configured: $(DL_DIR)/$(ZOO_SOURCE) $(ZOO_PATCHES) make/zoo.mk
 	$(ZOO_UNZIP) $(DL_DIR)/$(ZOO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZOO_PATCHES)" ; \
 		then cat $(ZOO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ZOO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ZOO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ZOO_DIR)" != "$(ZOO_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ZOO_DIR) $(ZOO_BUILD_DIR) ; \
@@ -103,7 +103,7 @@ zoo: $(ZOO_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/zoo
 #
 $(ZOO_IPK_DIR)/CONTROL/control:
-	@install -d $(ZOO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ZOO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: zoo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -119,14 +119,14 @@ $(ZOO_IPK_DIR)/CONTROL/control:
 
 $(ZOO_IPK): $(ZOO_BUILD_DIR)/.built
 	rm -rf $(ZOO_IPK_DIR) $(BUILD_DIR)/zoo_*_$(TARGET_ARCH).ipk
-	install -d $(ZOO_IPK_DIR)/opt/bin
-	install -m 755 $(ZOO_BUILD_DIR)/zoo $(ZOO_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ZOO_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ZOO_BUILD_DIR)/zoo $(ZOO_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(ZOO_IPK_DIR)/opt/bin/zoo
-	install -m 755 $(ZOO_BUILD_DIR)/fiz $(ZOO_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ZOO_BUILD_DIR)/fiz $(ZOO_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(ZOO_IPK_DIR)/opt/bin/fiz
-	install -d $(ZOO_IPK_DIR)/opt/share/man/man1
-	install -m 644 $(ZOO_BUILD_DIR)/fiz.1  $(ZOO_IPK_DIR)/opt/share/man/man1
-	install -m 644 $(ZOO_BUILD_DIR)/zoo.1  $(ZOO_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(ZOO_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -m 644 $(ZOO_BUILD_DIR)/fiz.1  $(ZOO_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -m 644 $(ZOO_BUILD_DIR)/zoo.1  $(ZOO_IPK_DIR)/opt/share/man/man1
 	$(MAKE) $(ZOO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZOO_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(ZOO_IPK_DIR)

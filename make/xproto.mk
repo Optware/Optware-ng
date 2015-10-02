@@ -63,7 +63,7 @@ XPROTO_IPK=$(BUILD_DIR)/xproto_$(XPROTO_VERSION)-$(XPROTO_IPK_VERSION)_$(TARGET_
 # Automatically create a ipkg control file
 #
 $(XPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(XPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(XPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(XPROTO_SOURCE) $(XPROTO_PATCHES) ma
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XPROTO_SOURCE)
 	if test -n "$(XPROTO_PATCHES)" ; \
 		then cat $(XPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XPROTO_DIR) $(@D) ; \

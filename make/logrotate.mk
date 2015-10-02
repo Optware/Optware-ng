@@ -112,7 +112,7 @@ $(LOGROTATE_BUILD_DIR)/.configured: $(DL_DIR)/$(LOGROTATE_SOURCE) $(LOGROTATE_PA
 	$(MAKE) popt-stage
 	rm -rf $(BUILD_DIR)/$(LOGROTATE_DIR) $(LOGROTATE_BUILD_DIR)
 	$(LOGROTATE_UNZIP) $(DL_DIR)/$(LOGROTATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(LOGROTATE_PATCHES) | patch -d $(BUILD_DIR)/$(LOGROTATE_DIR) -p1
+	cat $(LOGROTATE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LOGROTATE_DIR) -p1
 	mv $(BUILD_DIR)/$(LOGROTATE_DIR) $(LOGROTATE_BUILD_DIR)
 	touch $@
 
@@ -141,7 +141,7 @@ logrotate: $(LOGROTATE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/logrotate
 #
 $(LOGROTATE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: logrotate" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -167,17 +167,17 @@ $(LOGROTATE_IPK_DIR)/CONTROL/control:
 #
 $(LOGROTATE_IPK): $(LOGROTATE_BUILD_DIR)/.built
 	rm -rf $(LOGROTATE_IPK_DIR) $(BUILD_DIR)/logrotate_*_$(TARGET_ARCH).ipk
-	install -d $(LOGROTATE_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(LOGROTATE_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(LOGROTATE_BUILD_DIR)/logrotate -o $(LOGROTATE_IPK_DIR)/opt/sbin/logrotate
-	install -d $(LOGROTATE_IPK_DIR)/opt/etc/logrotate.d
-	install -d $(LOGROTATE_IPK_DIR)/opt/etc/cron.d
-	install -m 644 $(LOGROTATE_SOURCE_DIR)/logrotate.conf $(LOGROTATE_IPK_DIR)/opt/etc/logrotate.conf
-	install -d $(LOGROTATE_IPK_DIR)/opt/man/man8
-	install -m 644 $(LOGROTATE_BUILD_DIR)/logrotate.8 $(LOGROTATE_IPK_DIR)/opt/man/man8
-	install -d $(LOGROTATE_IPK_DIR)/opt/var/lib
+	$(INSTALL) -d $(LOGROTATE_IPK_DIR)/opt/etc/logrotate.d
+	$(INSTALL) -d $(LOGROTATE_IPK_DIR)/opt/etc/cron.d
+	$(INSTALL) -m 644 $(LOGROTATE_SOURCE_DIR)/logrotate.conf $(LOGROTATE_IPK_DIR)/opt/etc/logrotate.conf
+	$(INSTALL) -d $(LOGROTATE_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 644 $(LOGROTATE_BUILD_DIR)/logrotate.8 $(LOGROTATE_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(LOGROTATE_IPK_DIR)/opt/var/lib
 	$(MAKE) $(LOGROTATE_IPK_DIR)/CONTROL/control
-	install -m 644 $(LOGROTATE_SOURCE_DIR)/postinst $(LOGROTATE_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(LOGROTATE_SOURCE_DIR)/prerm $(LOGROTATE_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(LOGROTATE_SOURCE_DIR)/postinst $(LOGROTATE_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(LOGROTATE_SOURCE_DIR)/prerm $(LOGROTATE_IPK_DIR)/CONTROL/prerm
 	echo $(LOGROTATE_CONFFILES) | sed -e 's/ /\n/g' > $(LOGROTATE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LOGROTATE_IPK_DIR)
 

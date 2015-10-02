@@ -110,7 +110,7 @@ $(PICOLISP_BUILD_DIR)/.configured: $(DL_DIR)/$(PICOLISP_SOURCE) $(PICOLISP_PATCH
 	$(PICOLISP_UNZIP) $(DL_DIR)/$(PICOLISP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PICOLISP_PATCHES)" ; \
 		then cat $(PICOLISP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PICOLISP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PICOLISP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PICOLISP_DIR)" != "$(PICOLISP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PICOLISP_DIR) $(PICOLISP_BUILD_DIR) ; \
@@ -165,7 +165,7 @@ picolisp-stage: $(PICOLISP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/picolisp
 #
 $(PICOLISP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: picolisp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,7 +194,7 @@ $(PICOLISP_IPK_DIR)/CONTROL/control:
 $(PICOLISP_IPK): $(PICOLISP_BUILD_DIR)/.built
 	rm -rf $(PICOLISP_IPK_DIR) $(BUILD_DIR)/picolisp_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PICOLISP_BUILD_DIR) DESTDIR=$(PICOLISP_IPK_DIR) install-strip
-	install -d $(PICOLISP_IPK_DIR)/opt/lib/picolisp
+	$(INSTALL) -d $(PICOLISP_IPK_DIR)/opt/lib/picolisp
 	cp -a $(PICOLISP_BUILD_DIR)/* $(PICOLISP_IPK_DIR)/opt/lib/picolisp/
 	rm -rf $(PICOLISP_IPK_DIR)/opt/lib/picolisp/cygwin
 	rm -rf $(PICOLISP_IPK_DIR)/opt/lib/picolisp/src

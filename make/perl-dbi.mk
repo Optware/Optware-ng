@@ -36,7 +36,7 @@ $(PERL-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCH
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DBI_DIR) $(@D)
 	$(PERL-DBI_UNZIP) $(DL_DIR)/$(PERL-DBI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-DBI_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DBI_DIR) -p1
+#	cat $(PERL-DBI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-DBI_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-DBI_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -72,7 +72,7 @@ $(PERL-DBI_BUILD_DIR)/.staged: $(PERL-DBI_BUILD_DIR)/.built
 perl-dbi-stage: $(PERL-DBI_BUILD_DIR)/.staged
 
 $(PERL-DBI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-dbi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -261,7 +261,7 @@ ac_cv_libpre=${ac_cv_libpre=lib}
 ac_cv_link_nofollow=${ac_cv_link_nofollow=yes}
 ac_cv_mingw32=${ac_cv_mingw32=no}
 ac_cv_no_user_malloc=${ac_cv_no_user_malloc=no}
-ac_cv_prog_CPP=${ac_cv_prog_CPP='/opt/bin/gcc -E'}
+ac_cv_prog_CPP=${ac_cv_prog_CPP='%OPTWARE_TARGET_PREFIX%/bin/gcc -E'}
 ac_cv_prog_RANLIB=${ac_cv_prog_RANLIB='@echo "	==> RANDOMIZING ARCHIVE \"incs/arch-linux-gcc/rules.cnf\""; true'}
 ac_cv_prog_cc_cross=${ac_cv_prog_cc_cross=yes}
 ac_cv_prog_make_make_set=${ac_cv_prog_make_make_set=yes}

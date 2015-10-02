@@ -16,7 +16,7 @@
 # System startup script for the SlimServer.
 
 # get site config
-. /opt/etc/slimserver.conf
+. %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
 
 setupfirewall() {
         WAN_TYPE=$(grep wan_type  /etc/master.conf | cut -d= -f2)
@@ -142,24 +142,24 @@ case "$1" in
 	;;
     enable)
 	echo -n "Enabling SlimServer start "
-	sed -i "s|^SLIMSERVER_START=.*$|SLIMSERVER_START=yes|" /opt/etc/slimserver.conf
+	sed -i "s|^SLIMSERVER_START=.*$|SLIMSERVER_START=yes|" %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
 	exit 0
 	;;
 
     disable)
 	echo -n "Disabling SlimServer start "
-	sed -i "s|^SLIMSERVER_START=.*$|SLIMSERVER_START=no|" /opt/etc/slimserver.conf
+	sed -i "s|^SLIMSERVER_START=.*$|SLIMSERVER_START=no|" %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
 	exit 0
 	;;
     wanenable)
 	echo -n "Enabling SlimServer on WAN "
-	sed -i "s|^SLIMSERVER_EXTERN=.*$|SLIMSERVER_EXTERN=yes|" /opt/etc/slimserver.conf
+	sed -i "s|^SLIMSERVER_EXTERN=.*$|SLIMSERVER_EXTERN=yes|" %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
 	exit 0
 	;;
 
     wandisable)
 	echo -n "Disabling SlimServer on WAN "
-	sed -i "s|^SLIMSERVER_EXTERN=.*$|SLIMSERVER_EXTERN=no|" /opt/etc/slimserver.conf
+	sed -i "s|^SLIMSERVER_EXTERN=.*$|SLIMSERVER_EXTERN=no|" %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
 	exit 0
 	;;
 

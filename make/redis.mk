@@ -110,7 +110,7 @@ $(REDIS_BUILD_DIR)/.configured: $(DL_DIR)/$(REDIS_SOURCE) $(REDIS_PATCHES) make/
 	$(REDIS_UNZIP) $(DL_DIR)/$(REDIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(REDIS_PATCHES)" ; \
 		then cat $(REDIS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(REDIS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(REDIS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(REDIS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(REDIS_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ redis: $(REDIS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/redis
 #
 $(REDIS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: redis" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,8 +195,8 @@ $(REDIS_IPK_DIR)/CONTROL/control:
 $(REDIS_IPK): $(REDIS_BUILD_DIR)/.built
 	rm -rf $(REDIS_IPK_DIR) $(BUILD_DIR)/redis_*_$(TARGET_ARCH).ipk
 ifeq (2.0.4, $(REDIS_VERSION))
-	install -d $(REDIS_IPK_DIR)/opt/bin
-	install -m 755 $(<D)/redis-benchmark $(<D)/redis-cli $(<D)/redis-server $(REDIS_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(REDIS_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(<D)/redis-benchmark $(<D)/redis-cli $(<D)/redis-server $(REDIS_IPK_DIR)/opt/bin/
 else
 	$(MAKE) -C $(REDIS_BUILD_DIR) PREFIX=$(REDIS_IPK_DIR)/opt install \
 		FORCE_LIBC_MALLOC=yes \
@@ -206,8 +206,8 @@ else
 		;
 endif
 	$(STRIP_COMMAND) $(REDIS_IPK_DIR)/opt/bin/*
-	install -d $(REDIS_IPK_DIR)/opt/share/doc/redis/examples
-	install -m 755 $(<D)/redis.conf $(REDIS_IPK_DIR)/opt/share/doc/redis/examples/
+	$(INSTALL) -d $(REDIS_IPK_DIR)/opt/share/doc/redis/examples
+	$(INSTALL) -m 755 $(<D)/redis.conf $(REDIS_IPK_DIR)/opt/share/doc/redis/examples/
 	$(MAKE) $(REDIS_IPK_DIR)/CONTROL/control
 	echo $(REDIS_CONFFILES) | sed -e 's/ /\n/g' > $(REDIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(REDIS_IPK_DIR)

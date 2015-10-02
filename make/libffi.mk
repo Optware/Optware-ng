@@ -112,7 +112,7 @@ $(LIBFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBFFI_SOURCE) $(LIBFFI_PATCHES) ma
 	$(LIBFFI_UNZIP) $(DL_DIR)/$(LIBFFI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBFFI_PATCHES)" ; \
 		then cat $(LIBFFI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBFFI_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBFFI_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBFFI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBFFI_DIR) $(@D) ; \
@@ -191,7 +191,7 @@ libffi-host-stage: $(LIBFFI_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libffi
 #
 $(LIBFFI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libffi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -221,17 +221,17 @@ $(LIBFFI_IPK): $(LIBFFI_BUILD_DIR)/.built
 	rm -rf $(LIBFFI_IPK_DIR) $(BUILD_DIR)/libffi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBFFI_BUILD_DIR) DESTDIR=$(LIBFFI_IPK_DIR) install-strip
 	$(STRIP_COMMAND) $(LIBFFI_IPK_DIR)/opt/lib/libffi.so.*
-#	install -d $(LIBFFI_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBFFI_SOURCE_DIR)/libffi.conf $(LIBFFI_IPK_DIR)/opt/etc/libffi.conf
-#	install -d $(LIBFFI_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBFFI_SOURCE_DIR)/rc.libffi $(LIBFFI_IPK_DIR)/opt/etc/init.d/SXXlibffi
+#	$(INSTALL) -d $(LIBFFI_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBFFI_SOURCE_DIR)/libffi.conf $(LIBFFI_IPK_DIR)/opt/etc/libffi.conf
+#	$(INSTALL) -d $(LIBFFI_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBFFI_SOURCE_DIR)/rc.libffi $(LIBFFI_IPK_DIR)/opt/etc/init.d/SXXlibffi
 	rm -f $(LIBFFI_IPK_DIR)/opt/share/info/dir $(LIBFFI_IPK_DIR)/opt/lib/libffi.la
 	mkdir -p $(LIBFFI_IPK_DIR)/opt/include
 	mv $(LIBFFI_IPK_DIR)/opt/lib/libffi-$(LIBFFI_VERSION)/include/* $(LIBFFI_IPK_DIR)/opt/include
 	rm -rf $(LIBFFI_IPK_DIR)/opt/lib/libffi-$(LIBFFI_VERSION)
 	$(MAKE) $(LIBFFI_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBFFI_SOURCE_DIR)/postinst $(LIBFFI_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBFFI_SOURCE_DIR)/prerm $(LIBFFI_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBFFI_SOURCE_DIR)/postinst $(LIBFFI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBFFI_SOURCE_DIR)/prerm $(LIBFFI_IPK_DIR)/CONTROL/prerm
 	echo $(LIBFFI_CONFFILES) | sed -e 's/ /\n/g' > $(LIBFFI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBFFI_IPK_DIR)
 

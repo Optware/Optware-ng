@@ -2,4 +2,4 @@
 
 # clean out any uninstalled configuration that was left over 
 # from a previous install
-rm -f /opt/share/www/mediawiki/config/LocalSettings.php
+rm -f %OPTWARE_TARGET_PREFIX%/share/www/mediawiki/config/LocalSettings.php

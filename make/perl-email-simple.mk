@@ -35,7 +35,7 @@ perl-email-simple-source: $(DL_DIR)/$(PERL-EMAIL-SIMPLE_SOURCE) $(PERL-EMAIL-SIM
 $(PERL-EMAIL-SIMPLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-EMAIL-SIMPLE_SOURCE) $(PERL-EMAIL-SIMPLE_PATCHES) make/perl-email-simple.mk
 	rm -rf $(BUILD_DIR)/$(PERL-EMAIL-SIMPLE_DIR) $(@D)
 	$(PERL-EMAIL-SIMPLE_UNZIP) $(DL_DIR)/$(PERL-EMAIL-SIMPLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-EMAIL-SIMPLE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-EMAIL-SIMPLE_DIR) -p1
+#	cat $(PERL-EMAIL-SIMPLE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-EMAIL-SIMPLE_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-EMAIL-SIMPLE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-EMAIL-SIMPLE_BUILD_DIR)/.staged: $(PERL-EMAIL-SIMPLE_BUILD_DIR)/.built
 perl-email-simple-stage: $(PERL-EMAIL-SIMPLE_BUILD_DIR)/.staged
 
 $(PERL-EMAIL-SIMPLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-email-simple" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

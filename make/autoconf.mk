@@ -93,7 +93,7 @@ $(AUTOCONF_BUILD_DIR)/.staged: $(AUTOCONF_BUILD_DIR)/.built
 autoconf-stage: $(AUTOCONF_BUILD_DIR)/.staged
 
 $(AUTOCONF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: autoconf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -108,14 +108,14 @@ $(AUTOCONF_IPK_DIR)/CONTROL/control:
 
 $(AUTOCONF_IPK): $(AUTOCONF_BUILD_DIR)/.built
 	rm -rf $(AUTOCONF_IPK_DIR) $(BUILD_DIR)/autoconf_*_$(TARGET_ARCH).ipk
-	install -d $(AUTOCONF_IPK_DIR)/opt/bin
-	install -d $(AUTOCONF_IPK_DIR)/opt/info
-	install -d $(AUTOCONF_IPK_DIR)/opt/man/man1
-	install -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/Autom4te
-	install -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autoconf
-	install -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autoscan
-	install -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autotest
-	install -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/m4sugar
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/info
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/Autom4te
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autoconf
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autoscan
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autotest
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/m4sugar
 	$(MAKE) -C $(AUTOCONF_BUILD_DIR) DESTDIR=$(AUTOCONF_IPK_DIR) install
 	sed -i -e 's|/usr/bin/m4|/opt/bin/m4|g' $(AUTOCONF_IPK_DIR)/opt/bin/*
 	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOCONF_IPK_DIR)/opt/bin/*

@@ -34,7 +34,7 @@ perl-io-multiplex-source: $(DL_DIR)/$(PERL-IO-MULTIPLEX_SOURCE) $(PERL-IO-MULTIP
 $(PERL-IO-MULTIPLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-MULTIPLEX_SOURCE) $(PERL-IO-MULTIPLEX_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERL-IO-MULTIPLEX_DIR) $(@D)
 	$(PERL-IO-MULTIPLEX_UNZIP) $(DL_DIR)/$(PERL-IO-MULTIPLEX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-IO-MULTIPLEX_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-IO-MULTIPLEX_DIR) -p1
+#	cat $(PERL-IO-MULTIPLEX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-IO-MULTIPLEX_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-IO-MULTIPLEX_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -68,7 +68,7 @@ $(PERL-IO-MULTIPLEX_BUILD_DIR)/.staged: $(PERL-IO-MULTIPLEX_BUILD_DIR)/.built
 perl-io-multiplex-stage: $(PERL-IO-MULTIPLEX_BUILD_DIR)/.staged
 
 $(PERL-IO-MULTIPLEX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-io-multiplex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

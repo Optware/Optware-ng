@@ -7,8 +7,8 @@ diff -Naur digitemp-3.4.0.org/Makefile digitemp-3.4.0/Makefile
  
 -CC	= gcc
 -CFLAGS	= -I./src -I./userial -O2 -Wall # -g
-+CFLAGS	= -I$(STAGING_DIR)/opt/include -I./src -I./userial -O2 # -g -Wall
-+LDFLAGS = -L$(STAGING_DIR)/opt/lib -Wl,-rpath=/opt/lib
++CFLAGS	= -I$(STAGING_DIR)%OPTWARE_TARGET_PREFIX%/include -I./src -I./userial -O2 # -g -Wall
++LDFLAGS = -L$(STAGING_DIR)%OPTWARE_TARGET_PREFIX%/lib -Wl,-rpath=%OPTWARE_TARGET_PREFIX%/lib
  
  OBJS		=	src/digitemp.o src/device_name.o src/ds2438.o
  HDRS		= 	src/digitemp.h src/device_name.h

@@ -61,7 +61,7 @@ XI_IPK=$(BUILD_DIR)/xi_$(XI_FULL_VERSION)-$(XI_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XI_IPK_DIR)/CONTROL/control:
-	@install -d $(XI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -100,7 +100,7 @@ $(XI_BUILD_DIR)/.configured: $(DL_DIR)/$(XI_SOURCE) $(XI_PATCHES) make/xi.mk
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XI_SOURCE)
 	if test -n "$(XI_PATCHES)" ; \
 		then cat $(XI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XI_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XI_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XI_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ $(XI_IPK): $(XI_BUILD_DIR)/.built
 	rm -rf $(XI_IPK_DIR) $(BUILD_DIR)/xi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XI_BUILD_DIR) DESTDIR=$(XI_IPK_DIR) install-strip
 	$(MAKE) $(XI_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XI_SOURCE_DIR)/postinst $(XI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XI_SOURCE_DIR)/postinst $(XI_IPK_DIR)/CONTROL/postinst
 	rm -f $(XI_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XI_IPK_DIR)
 

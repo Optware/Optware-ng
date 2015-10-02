@@ -110,7 +110,7 @@ $(INADYN_BUILD_DIR)/.configured: $(DL_DIR)/$(INADYN_SOURCE) $(INADYN_PATCHES) ma
 	$(INADYN_UNZIP) $(DL_DIR)/$(INADYN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(INADYN_PATCHES)" ; \
 		then cat $(INADYN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(INADYN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(INADYN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(INADYN_DIR)" != "$(INADYN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(INADYN_DIR) $(INADYN_BUILD_DIR) ; \
@@ -169,7 +169,7 @@ inadyn: $(INADYN_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/inadyn
 #
 $(INADYN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: inadyn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,21 +198,21 @@ $(INADYN_IPK_DIR)/CONTROL/control:
 $(INADYN_IPK): $(INADYN_BUILD_DIR)/.built
 	rm -rf $(INADYN_IPK_DIR) $(BUILD_DIR)/inadyn_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(INADYN_BUILD_DIR) DESTDIR=$(INADYN_IPK_DIR) install-strip
-	install -d $(INADYN_IPK_DIR)/opt/bin
-	install -m 755 $(<D)/src/inadyn $(INADYN_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(INADYN_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(<D)/src/inadyn $(INADYN_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(INADYN_IPK_DIR)/opt/bin/inadyn
-	install -d $(INADYN_IPK_DIR)/opt/man/man5
-	install -m 644 $(<D)/man/*.5 $(INADYN_IPK_DIR)/opt/man/man5
-	install -d $(INADYN_IPK_DIR)/opt/man/man8
-	install -m 644 $(<D)/man/*.8 $(INADYN_IPK_DIR)/opt/man/man8
-	install -d $(INADYN_IPK_DIR)/opt/share/doc/inadyn
-	install -m 644 $(<D)/[CLR]* $(<D)/debian/inadyn.conf $(INADYN_IPK_DIR)/opt/share/doc/inadyn/
-#	install -d $(INADYN_IPK_DIR)/opt/etc/
-#	install -m 644 $(INADYN_SOURCE_DIR)/inadyn.conf $(INADYN_IPK_DIR)/opt/etc/inadyn.conf
+	$(INSTALL) -d $(INADYN_IPK_DIR)/opt/man/man5
+	$(INSTALL) -m 644 $(<D)/man/*.5 $(INADYN_IPK_DIR)/opt/man/man5
+	$(INSTALL) -d $(INADYN_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 644 $(<D)/man/*.8 $(INADYN_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(INADYN_IPK_DIR)/opt/share/doc/inadyn
+	$(INSTALL) -m 644 $(<D)/[CLR]* $(<D)/debian/inadyn.conf $(INADYN_IPK_DIR)/opt/share/doc/inadyn/
+#	$(INSTALL) -d $(INADYN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(INADYN_SOURCE_DIR)/inadyn.conf $(INADYN_IPK_DIR)/opt/etc/inadyn.conf
 	$(MAKE) $(INADYN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(INADYN_SOURCE_DIR)/postinst $(INADYN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(INADYN_SOURCE_DIR)/postinst $(INADYN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(INADYN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(INADYN_SOURCE_DIR)/prerm $(INADYN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(INADYN_SOURCE_DIR)/prerm $(INADYN_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(INADYN_IPK_DIR)/CONTROL/prerm
 	echo $(INADYN_CONFFILES) | sed -e 's/ /\n/g' > $(INADYN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INADYN_IPK_DIR)

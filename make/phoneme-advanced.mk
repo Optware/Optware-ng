@@ -143,7 +143,7 @@ $(PHONEME_ADVANCED_PATCHES)
 	cd $(BUILD_DIR) && $(PHONEME_ADVANCED_UNZIP) $(DL_DIR)/$(PHONEME_ADVANCED_SOURCE)
 	if test -n "$(PHONEME_ADVANCED_PATCHES)" ; \
 		then cat $(PHONEME_ADVANCED_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PHONEME_ADVANCED_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PHONEME_ADVANCED_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PHONEME_ADVANCED_DIR)" != "$(PHONEME_ADVANCED_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PHONEME_ADVANCED_DIR) $(PHONEME_ADVANCED_BUILD_DIR) ; \
@@ -213,7 +213,7 @@ phoneme-advanced-stage: $(PHONEME_ADVANCED_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/phoneme-advanced
 #
 $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: phoneme-advanced" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -241,11 +241,11 @@ $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/control:
 #
 $(PHONEME_ADVANCED_IPK): $(PHONEME_ADVANCED_BUILD_DIR)/.built
 	rm -rf $(PHONEME_ADVANCED_IPK_DIR) $(BUILD_DIR)/phoneme-advanced_*_$(TARGET_ARCH).ipk
-	install -d $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java
+	$(INSTALL) -d $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java
 	cd $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java && \
 	unzip $(PHONEME_ADVANCED_BUILD_DIR)/cdc/install/phoneme-advanced.zip
 	$(STRIP_COMMAND) $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java/phoneme-advanced/bin/cvm
-	install -d $(PHONEME_ADVANCED_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(PHONEME_ADVANCED_IPK_DIR)/opt/bin
 	cd $(PHONEME_ADVANCED_IPK_DIR)/opt/bin; ln -s ../lib/java/phoneme-advanced/bin/cvm .
 	$(MAKE) $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/control
 	echo $(PHONEME_ADVANCED_CONFFILES) | sed -e 's/ /\n/g' > $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/conffiles

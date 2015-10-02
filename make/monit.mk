@@ -88,7 +88,7 @@ $(MONIT_BUILD_DIR)/.configured: $(DL_DIR)/$(MONIT_SOURCE) $(MONIT_PATCHES) make/
 	$(MONIT_UNZIP) $(DL_DIR)/$(MONIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MONIT_PATCHES)" ; \
 		then cat $(MONIT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MONIT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MONIT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MONIT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MONIT_DIR) $(@D) ; \
@@ -132,7 +132,7 @@ monit: $(MONIT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/monit
 #
 $(MONIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: monit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -155,14 +155,14 @@ $(MONIT_IPK): $(MONIT_BUILD_DIR)/.built
 	chmod 755 $(MONIT_IPK_DIR)/opt/bin/monit
 	$(STRIP_COMMAND) $(MONIT_IPK_DIR)/opt/bin/monit
 	rm -rf $(MONIT_IPK_DIR)/opt/man
-	install -d $(MONIT_IPK_DIR)/opt/etc/
-	install -d $(MONIT_IPK_DIR)/opt/var/run
-	install -d $(MONIT_IPK_DIR)/opt/etc/init.d
-	install -m 700 $(MONIT_BUILD_DIR)/monitrc $(MONIT_IPK_DIR)/opt/etc/monitrc
-	install -m 755 $(MONIT_SOURCE_DIR)/rc.monit $(MONIT_IPK_DIR)/opt/etc/init.d/S99monit
+	$(INSTALL) -d $(MONIT_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(MONIT_IPK_DIR)/opt/var/run
+	$(INSTALL) -d $(MONIT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 700 $(MONIT_BUILD_DIR)/monitrc $(MONIT_IPK_DIR)/opt/etc/monitrc
+	$(INSTALL) -m 755 $(MONIT_SOURCE_DIR)/rc.monit $(MONIT_IPK_DIR)/opt/etc/init.d/S99monit
 	$(MAKE) $(MONIT_IPK_DIR)/CONTROL/control
-	install -m 755 $(MONIT_SOURCE_DIR)/postinst $(MONIT_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(MONIT_SOURCE_DIR)/prerm $(MONIT_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(MONIT_SOURCE_DIR)/postinst $(MONIT_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(MONIT_SOURCE_DIR)/prerm $(MONIT_IPK_DIR)/CONTROL/prerm
 	echo $(MONIT_CONFFILES) | sed -e 's/ /\n/g' > $(MONIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MONIT_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(MONIT_IPK_DIR)

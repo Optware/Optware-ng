@@ -116,7 +116,7 @@ $(XDG-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(XDG-UTILS_SOURCE) $(XDG-UTILS_PA
 	$(XDG-UTILS_UNZIP) $(DL_DIR)/$(XDG-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(XDG-UTILS_PATCHES)" ; \
 		then cat $(XDG-UTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XDG-UTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XDG-UTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XDG-UTILS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XDG-UTILS_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ xdg-utils: $(XDG-UTILS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/xdg-utils
 #
 $(XDG-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xdg-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,15 +196,15 @@ $(XDG-UTILS_IPK): $(XDG-UTILS_BUILD_DIR)/.built
 	rm -rf $(XDG-UTILS_IPK_DIR) $(BUILD_DIR)/xdg-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XDG-UTILS_BUILD_DIR) DESTDIR=$(XDG-UTILS_IPK_DIR) install
 	sed -i -e 's|/usr/local/share:/usr/share|/opt/share|g' -e 's|\$$PATH|/opt/bin:/opt/sbin:&|g' $(XDG-UTILS_IPK_DIR)/opt/bin/*
-#	install -d $(XDG-UTILS_IPK_DIR)/opt/etc/
-#	install -m 644 $(XDG-UTILS_SOURCE_DIR)/xdg-utils.conf $(XDG-UTILS_IPK_DIR)/opt/etc/xdg-utils.conf
-#	install -d $(XDG-UTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(XDG-UTILS_SOURCE_DIR)/rc.xdg-utils $(XDG-UTILS_IPK_DIR)/opt/etc/init.d/SXXxdg-utils
+#	$(INSTALL) -d $(XDG-UTILS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(XDG-UTILS_SOURCE_DIR)/xdg-utils.conf $(XDG-UTILS_IPK_DIR)/opt/etc/xdg-utils.conf
+#	$(INSTALL) -d $(XDG-UTILS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(XDG-UTILS_SOURCE_DIR)/rc.xdg-utils $(XDG-UTILS_IPK_DIR)/opt/etc/init.d/SXXxdg-utils
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XDG-UTILS_IPK_DIR)/opt/etc/init.d/SXXxdg-utils
 	$(MAKE) $(XDG-UTILS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(XDG-UTILS_SOURCE_DIR)/postinst $(XDG-UTILS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(XDG-UTILS_SOURCE_DIR)/postinst $(XDG-UTILS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XDG-UTILS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(XDG-UTILS_SOURCE_DIR)/prerm $(XDG-UTILS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(XDG-UTILS_SOURCE_DIR)/prerm $(XDG-UTILS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XDG-UTILS_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

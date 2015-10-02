@@ -110,7 +110,7 @@ $(SSLWRAP_BUILD_DIR)/.configured: $(DL_DIR)/$(SSLWRAP_SOURCE) $(SSLWRAP_PATCHES)
 	$(SSLWRAP_UNZIP) $(DL_DIR)/$(SSLWRAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SSLWRAP_PATCHES)" ; \
 		then cat $(SSLWRAP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SSLWRAP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SSLWRAP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SSLWRAP_DIR)" != "$(SSLWRAP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SSLWRAP_DIR) $(SSLWRAP_BUILD_DIR) ; \
@@ -171,7 +171,7 @@ sslwrap-stage: $(SSLWRAP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sslwrap
 #
 $(SSLWRAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sslwrap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,17 +200,17 @@ $(SSLWRAP_IPK_DIR)/CONTROL/control:
 $(SSLWRAP_IPK): $(SSLWRAP_BUILD_DIR)/.built
 	rm -rf $(SSLWRAP_IPK_DIR) $(BUILD_DIR)/sslwrap_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(SSLWRAP_BUILD_DIR) DESTDIR=$(SSLWRAP_IPK_DIR) install-strip
-	install -d $(SSLWRAP_IPK_DIR)/opt/bin
-	install -m 755 $(SSLWRAP_BUILD_DIR)/sslwrap $(SSLWRAP_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(SSLWRAP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(SSLWRAP_BUILD_DIR)/sslwrap $(SSLWRAP_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(SSLWRAP_IPK_DIR)/opt/bin/sslwrap
-#	install -m 644 $(SSLWRAP_SOURCE_DIR)/sslwrap.conf $(SSLWRAP_IPK_DIR)/opt/etc/sslwrap.conf
-#	install -d $(SSLWRAP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SSLWRAP_SOURCE_DIR)/rc.sslwrap $(SSLWRAP_IPK_DIR)/opt/etc/init.d/SXXsslwrap
+#	$(INSTALL) -m 644 $(SSLWRAP_SOURCE_DIR)/sslwrap.conf $(SSLWRAP_IPK_DIR)/opt/etc/sslwrap.conf
+#	$(INSTALL) -d $(SSLWRAP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SSLWRAP_SOURCE_DIR)/rc.sslwrap $(SSLWRAP_IPK_DIR)/opt/etc/init.d/SXXsslwrap
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SSLWRAP_IPK_DIR)/opt/etc/init.d/SXXsslwrap
 	$(MAKE) $(SSLWRAP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SSLWRAP_SOURCE_DIR)/postinst $(SSLWRAP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SSLWRAP_SOURCE_DIR)/postinst $(SSLWRAP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SSLWRAP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SSLWRAP_SOURCE_DIR)/prerm $(SSLWRAP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SSLWRAP_SOURCE_DIR)/prerm $(SSLWRAP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SSLWRAP_IPK_DIR)/CONTROL/prerm
 	echo $(SSLWRAP_CONFFILES) | sed -e 's/ /\n/g' > $(SSLWRAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SSLWRAP_IPK_DIR)

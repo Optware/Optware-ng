@@ -1,6 +1,6 @@
 #!/bin/sh
 
-pghome="/opt/var/pgsql"
+pghome="%OPTWARE_TARGET_PREFIX%/var/pgsql"
 pgdata="$pghome/data"
 pgver="$pghome/8.2"
 pgdumpground="$pgver/dump"
@@ -40,18 +40,18 @@ if [ -d $pgdata ]; then
     echo The $pgdata directory already exists
 else
     echo "Initialize database ... "
-    /opt/bin/coreutils-su - postgres -c "/opt/bin/initdb -D $pgdata"
+    %OPTWARE_TARGET_PREFIX%/bin/coreutils-su - postgres -c "%OPTWARE_TARGET_PREFIX%/bin/initdb -D $pgdata"
     [ -f $pgdata/PG_VERSION ] && echo "... database initialization done"
     dbinited=1
 fi
 
 # compatibility check and start db
-/opt/etc/init.d/S98postgresql
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S98postgresql
 
 if [ "$dbinited." = "1." -a -n "`pidof postmaster`" ]; then
     echo "Now database server is ready, you can test the connection by:"
     echo "	# su - postgres"
-    echo "	$ /opt/bin/psql template1"
+    echo "	$ %OPTWARE_TARGET_PREFIX%/bin/psql template1"
     echo "To allow access from other user, see http://www.postgresql.org/docs/8.2/interactive/sql-createuser.html"
     echo "To allow access from network, see http://developer.postgresql.org/docs/postgres/runtime-config.html#RUNTIME-CONFIG-CONNECTION"
 fi

@@ -112,7 +112,7 @@ $(PY-BLUEZ_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BLUEZ_SOURCE) $(PY-BLUEZ_PATCH
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-BLUEZ_DIR)
 	$(PY-BLUEZ_UNZIP) $(DL_DIR)/$(PY-BLUEZ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-BLUEZ_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BLUEZ_DIR) -p1
+	#cat $(PY-BLUEZ_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BLUEZ_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-BLUEZ_DIR) $(PY-BLUEZ_BUILD_DIR)/2.4
 	(cd $(PY-BLUEZ_BUILD_DIR)/2.4; \
 	    ( \
@@ -129,7 +129,7 @@ $(PY-BLUEZ_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BLUEZ_SOURCE) $(PY-BLUEZ_PATCH
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-BLUEZ_DIR)
 	$(PY-BLUEZ_UNZIP) $(DL_DIR)/$(PY-BLUEZ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-BLUEZ_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BLUEZ_DIR) -p1
+	#cat $(PY-BLUEZ_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-BLUEZ_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-BLUEZ_DIR) $(PY-BLUEZ_BUILD_DIR)/2.5
 	(cd $(PY-BLUEZ_BUILD_DIR)/2.5; \
 	    ( \
@@ -182,7 +182,7 @@ py-bluez-stage: $(PY-BLUEZ_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-bluez
 #
 $(PY24-BLUEZ_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-bluez" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,7 +196,7 @@ $(PY24-BLUEZ_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-BLUEZ_CONFLICTS)" >>$@
 
 $(PY25-BLUEZ_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-bluez" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

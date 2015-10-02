@@ -110,7 +110,7 @@ $(BRIDGE-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BRIDGE-UTILS_SOURCE) $(BRIDGE
 	$(BRIDGE-UTILS_UNZIP) $(DL_DIR)/$(BRIDGE-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BRIDGE-UTILS_PATCHES)" ; \
 		then cat $(BRIDGE-UTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BRIDGE-UTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BRIDGE-UTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BRIDGE-UTILS_DIR)" != "$(BRIDGE-UTILS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(BRIDGE-UTILS_DIR) $(BRIDGE-UTILS_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ bridge-utils-stage: $(BRIDGE-UTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bridge-utils
 #
 $(BRIDGE-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bridge-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

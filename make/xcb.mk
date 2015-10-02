@@ -60,7 +60,7 @@ XCB_IPK=$(BUILD_DIR)/xcb_$(XCB_VERSION)-$(XCB_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XCB_IPK_DIR)/CONTROL/control:
-	@install -d $(XCB_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XCB_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xcb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -98,7 +98,7 @@ $(XCB_BUILD_DIR)/.configured: $(DL_DIR)/$(XCB_SOURCE) $(XCB_PATCHES) make/xcb.mk
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XCB_SOURCE)
 	if test -n "$(XCB_PATCHES)" ; \
 		then cat $(XCB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XCB_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XCB_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XCB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XCB_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ $(XCB_IPK): $(XCB_BUILD_DIR)/.built
 	rm -rf $(XCB_IPK_DIR) $(BUILD_DIR)/xcb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XCB_BUILD_DIR) DESTDIR=$(XCB_IPK_DIR) install-strip
 	$(MAKE) $(XCB_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XCB_SOURCE_DIR)/postinst $(XCB_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XCB_SOURCE_DIR)/postinst $(XCB_IPK_DIR)/CONTROL/postinst
 	rm -f $(XCB_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XCB_IPK_DIR)
 

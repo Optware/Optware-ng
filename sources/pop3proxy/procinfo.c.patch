@@ -5,7 +5,7 @@
  {
  	if (pidfile == NULL  ||  *pidfile == 0)
 -		snprintf (pi.pidfile, sizeof(pi.pidfile) - 2, "/var/run/%s.pid", program);
-+		snprintf (pi.pidfile, sizeof(pi.pidfile) - 2, "/opt/var/run/%s.pid", program);
++		snprintf (pi.pidfile, sizeof(pi.pidfile) - 2, "%OPTWARE_TARGET_PREFIX%/var/run/%s.pid", program);
  	else
  		copy_string(pi.pidfile, pidfile, sizeof(pi.pidfile));
  

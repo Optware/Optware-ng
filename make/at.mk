@@ -119,7 +119,7 @@ $(AT_BUILD_DIR)/.configured: $(DL_DIR)/$(AT_SOURCE) $(AT_PATCHES) make/at.mk
 	$(AT_UNZIP) $(DL_DIR)/$(AT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AT_PATCHES)" ; \
 		then cat $(AT_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(AT_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(AT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AT_DIR)" != "$(AT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(AT_DIR) $(AT_BUILD_DIR) ; \
@@ -178,7 +178,7 @@ at-stage: $(AT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/at
 #
 $(AT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: at" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -208,14 +208,14 @@ $(AT_IPK): $(AT_BUILD_DIR)/.built
 	rm -rf $(AT_IPK_DIR) $(BUILD_DIR)/at_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AT_BUILD_DIR) IROOT=$(AT_IPK_DIR) install
 	$(STRIP_COMMAND) $(AT_IPK_DIR)/opt/bin/at $(AT_IPK_DIR)/opt/sbin/atd
-#	install -d $(AT_IPK_DIR)/opt/etc/
-#	install -m 644 $(AT_SOURCE_DIR)/at.conf $(AT_IPK_DIR)/opt/etc/at.conf
-	install -d $(AT_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(AT_SOURCE_DIR)/rc.at $(AT_IPK_DIR)/opt/etc/init.d/S20at
+#	$(INSTALL) -d $(AT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(AT_SOURCE_DIR)/at.conf $(AT_IPK_DIR)/opt/etc/at.conf
+	$(INSTALL) -d $(AT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(AT_SOURCE_DIR)/rc.at $(AT_IPK_DIR)/opt/etc/init.d/S20at
 	$(MAKE) $(AT_IPK_DIR)/CONTROL/control
-	install -m 755 $(AT_SOURCE_DIR)/postinst $(AT_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(AT_SOURCE_DIR)/postinst $(AT_IPK_DIR)/CONTROL/postinst
 	sed -ie 's/nobody/$(AT_DAEMON)/g' $(AT_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(AT_SOURCE_DIR)/prerm $(AT_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(AT_SOURCE_DIR)/prerm $(AT_IPK_DIR)/CONTROL/prerm
 	echo $(AT_CONFFILES) | sed -e 's/ /\n/g' > $(AT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AT_IPK_DIR)
 

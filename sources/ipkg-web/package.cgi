@@ -3,10 +3,10 @@
 # $Id$
 #
 
-if [ "${BASH_CHECK}" != 1 -a -f /opt/bin/bash ]
+if [ "${BASH_CHECK}" != 1 -a -f %OPTWARE_TARGET_PREFIX%/bin/bash ]
 then
 	BASH_CHECK=1; export BASH_CHECK
-	/opt/bin/bash $0
+	%OPTWARE_TARGET_PREFIX%/bin/bash $0
 	exit $$
 fi
 
@@ -144,7 +144,7 @@ do
 	esac
 done
 
-if [ ! -f /opt/bin/bash ]
+if [ ! -f %OPTWARE_TARGET_PREFIX%/bin/bash ]
 then
 	echo "<h2>Please install bash</h2>"
 	echo "<p>I recomend to install bash because this cgi script will"

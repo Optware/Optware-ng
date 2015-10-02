@@ -116,7 +116,7 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 	$(APCUPSD_UNZIP) $(DL_DIR)/$(APCUPSD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(APCUPSD_PATCHES)" ; \
 		then cat $(APCUPSD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(APCUPSD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(APCUPSD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(APCUPSD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(APCUPSD_DIR) $(@D) ; \
@@ -188,7 +188,7 @@ apcupsd-stage: $(APCUPSD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/apcupsd
 #
 $(APCUPSD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: apcupsd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,7 +203,7 @@ $(APCUPSD_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(APCUPSD_CONFLICTS)" >>$@
 
 $(APCUPSD-CGI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: apcupsd-cgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -234,7 +234,7 @@ $(APCUPSD_IPK) $(APCUPSD-CGI_IPK): $(APCUPSD_BUILD_DIR)/.built
 	rm -rf $(APCUPSD-CGI_IPK_DIR) $(BUILD_DIR)/apcupsd-cgi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APCUPSD_BUILD_DIR) DESTDIR=$(APCUPSD_IPK_DIR) install
 	$(STRIP_COMMAND) $(APCUPSD_IPK_DIR)/opt/sbin/* $(APCUPSD_IPK_DIR)/opt/share/www/cgi-bin/*
-	install -d $(APCUPSD-CGI_IPK_DIR)/opt/share $(APCUPSD-CGI_IPK_DIR)/opt/etc/apcupsd
+	$(INSTALL) -d $(APCUPSD-CGI_IPK_DIR)/opt/share $(APCUPSD-CGI_IPK_DIR)/opt/etc/apcupsd
 	mv $(APCUPSD_IPK_DIR)/opt/share/www $(APCUPSD-CGI_IPK_DIR)/opt/share/
 	mv $(APCUPSD_IPK_DIR)/opt/etc/apcupsd/*.css $(APCUPSD-CGI_IPK_DIR)/opt/etc/apcupsd/
 	$(MAKE) $(APCUPSD_IPK_DIR)/CONTROL/control

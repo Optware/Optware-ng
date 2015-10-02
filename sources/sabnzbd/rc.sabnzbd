@@ -1,4 +1,4 @@
 #!/bin/sh
 
-export PATH=/opt/sbin:/opt/bin:${PATH}
-/opt/bin/SABnzbd.py -f /opt/etc/SABnzbd.ini -d
+export PATH=%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/bin:${PATH}
+%OPTWARE_TARGET_PREFIX%/bin/SABnzbd.py -f %OPTWARE_TARGET_PREFIX%/etc/SABnzbd.ini -d

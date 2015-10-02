@@ -35,7 +35,7 @@ perl-libxml-source: $(DL_DIR)/$(PERL-LIBXML_SOURCE) $(PERL-LIBXML_PATCHES)
 $(PERL-LIBXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LIBXML_SOURCE) $(PERL-LIBXML_PATCHES) make/perl-libxml.mk
 	rm -rf $(BUILD_DIR)/$(PERL-LIBXML_DIR) $(@D)
 	$(PERL-LIBXML_UNZIP) $(DL_DIR)/$(PERL-LIBXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-LIBXML_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-LIBXML_DIR) -p1
+#	cat $(PERL-LIBXML_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-LIBXML_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-LIBXML_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-LIBXML_BUILD_DIR)/.staged: $(PERL-LIBXML_BUILD_DIR)/.built
 perl-libxml-stage: $(PERL-LIBXML_BUILD_DIR)/.staged
 
 $(PERL-LIBXML_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-libxml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

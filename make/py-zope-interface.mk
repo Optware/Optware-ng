@@ -131,7 +131,7 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE
 	rm -rf $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) $(@D)
 	mkdir -p $(PY-ZOPE-INTERFACE_BUILD_DIR)
 	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ZOPE-INTERFACE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) -p1
+#	cat $(PY-ZOPE-INTERFACE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) -p1
 	mv $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    ( \
@@ -146,7 +146,7 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE
 	    ) >> setup.cfg \
 	)
 	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ZOPE-INTERFACE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) -p1
+#	cat $(PY-ZOPE-INTERFACE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) -p1
 	mv $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -161,7 +161,7 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE
 	    ) >> setup.cfg \
 	)
 	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ZOPE-INTERFACE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) -p1
+#	cat $(PY-ZOPE-INTERFACE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -176,7 +176,7 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE
 	    ) >> setup.cfg \
 	)
 	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ZOPE-INTERFACE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) -p1
+#	cat $(PY-ZOPE-INTERFACE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -191,7 +191,7 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE
 	    ) >> setup.cfg \
 	)
 	$(PY-ZOPE-INTERFACE_UNZIP) $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ZOPE-INTERFACE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) -p1
+#	cat $(PY-ZOPE-INTERFACE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -303,7 +303,7 @@ py-zope-interface-host-stage: $(PY-ZOPE-INTERFACE_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-zope-interface
 #
 $(PY24-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-zope-interface" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -317,7 +317,7 @@ $(PY24-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ZOPE-INTERFACE_CONFLICTS)" >>$@
 
 $(PY25-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-zope-interface" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -331,7 +331,7 @@ $(PY25-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ZOPE-INTERFACE_CONFLICTS)" >>$@
 
 $(PY26-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-zope-interface" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -345,7 +345,7 @@ $(PY26-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ZOPE-INTERFACE_CONFLICTS)" >>$@
 
 $(PY27-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-zope-interface" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -359,7 +359,7 @@ $(PY27-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ZOPE-INTERFACE_CONFLICTS)" >>$@
 
 $(PY3-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-zope-interface" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

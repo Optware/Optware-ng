@@ -120,7 +120,7 @@ $(LIBGMP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGMP_SOURCE) $(LIBGMP_PATCHES) ma
 	$(LIBGMP_UNZIP) $(DL_DIR)/$(LIBGMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGMP_PATCHES)" ; \
 		then cat $(LIBGMP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBGMP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBGMP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBGMP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBGMP_DIR) $(@D) ; \
@@ -189,7 +189,7 @@ libgmp-host-stage: $(LIBGMP_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libgmp
 #
 $(LIBGMP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libgmp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -219,14 +219,14 @@ $(LIBGMP_IPK): $(LIBGMP_BUILD_DIR)/.built
 	rm -rf $(LIBGMP_IPK_DIR) $(BUILD_DIR)/libgmp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGMP_BUILD_DIR) DESTDIR=$(LIBGMP_IPK_DIR) install-strip
 	$(STRIP_COMMAND) $(LIBGMP_IPK_DIR)/opt/lib/libgmp.so.*
-#	install -d $(LIBGMP_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBGMP_SOURCE_DIR)/libgmp.conf $(LIBGMP_IPK_DIR)/opt/etc/libgmp.conf
-#	install -d $(LIBGMP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBGMP_SOURCE_DIR)/rc.libgmp $(LIBGMP_IPK_DIR)/opt/etc/init.d/SXXlibgmp
+#	$(INSTALL) -d $(LIBGMP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBGMP_SOURCE_DIR)/libgmp.conf $(LIBGMP_IPK_DIR)/opt/etc/libgmp.conf
+#	$(INSTALL) -d $(LIBGMP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBGMP_SOURCE_DIR)/rc.libgmp $(LIBGMP_IPK_DIR)/opt/etc/init.d/SXXlibgmp
 	rm -f $(LIBGMP_IPK_DIR)/opt/share/info/dir $(LIBGMP_IPK_DIR)/opt/lib/libgmp.la
 	$(MAKE) $(LIBGMP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBGMP_SOURCE_DIR)/postinst $(LIBGMP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBGMP_SOURCE_DIR)/prerm $(LIBGMP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBGMP_SOURCE_DIR)/postinst $(LIBGMP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBGMP_SOURCE_DIR)/prerm $(LIBGMP_IPK_DIR)/CONTROL/prerm
 	echo $(LIBGMP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBGMP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGMP_IPK_DIR)
 

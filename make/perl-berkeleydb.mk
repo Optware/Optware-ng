@@ -35,7 +35,7 @@ $(PERL-BERKELEYDB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-BERKELEYDB_SOURCE) $(
 	$(MAKE) perl-stage openssl-stage zlib-stage libdb-stage
 	rm -rf $(BUILD_DIR)/$(PERL-BERKELEYDB_DIR) $(@D)
 	$(PERL-BERKELEYDB_UNZIP) $(DL_DIR)/$(PERL-BERKELEYDB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-BERKELEYDB_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-BERKELEYDB_DIR) -p1
+#	cat $(PERL-BERKELEYDB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-BERKELEYDB_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-BERKELEYDB_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -71,7 +71,7 @@ $(PERL-BERKELEYDB_BUILD_DIR)/.staged: $(PERL-BERKELEYDB_BUILD_DIR)/.built
 perl-berkeleydb-stage: $(PERL-BERKELEYDB_BUILD_DIR)/.staged
 
 $(PERL-BERKELEYDB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-berkeleydb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

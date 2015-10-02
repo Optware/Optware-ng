@@ -118,7 +118,7 @@ $(PY-HGSUBVERSION_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGSUBVERSION_SOURCE) $(
 	rm -rf $(BUILD_DIR)/$(PY-HGSUBVERSION_DIR)
 	$(PY-HGSUBVERSION_UNZIP) $(DL_DIR)/$(PY-HGSUBVERSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-HGSUBVERSION_PATCHES)"; then \
-		cat $(PY-HGSUBVERSION_PATCHES) | patch -d $(BUILD_DIR)/$(PY-HGSUBVERSION_DIR) -p1; \
+		cat $(PY-HGSUBVERSION_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-HGSUBVERSION_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-HGSUBVERSION_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -135,7 +135,7 @@ $(PY-HGSUBVERSION_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGSUBVERSION_SOURCE) $(
 	rm -rf $(BUILD_DIR)/$(PY-HGSUBVERSION_DIR)
 	$(PY-HGSUBVERSION_UNZIP) $(DL_DIR)/$(PY-HGSUBVERSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-HGSUBVERSION_PATCHES)"; then \
-		cat $(PY-HGSUBVERSION_PATCHES) | patch -d $(BUILD_DIR)/$(PY-HGSUBVERSION_DIR) -p1; \
+		cat $(PY-HGSUBVERSION_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-HGSUBVERSION_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-HGSUBVERSION_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -191,7 +191,7 @@ py-hgsubversion: $(PY-HGSUBVERSION_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-hgsubversion
 #
 $(PY25-HGSUBVERSION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-hgsubversion" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,7 +205,7 @@ $(PY25-HGSUBVERSION_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-HGSUBVERSION_CONFLICTS)" >>$@
 
 $(PY26-HGSUBVERSION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-hgsubversion" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

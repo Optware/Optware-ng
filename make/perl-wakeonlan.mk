@@ -68,7 +68,7 @@ $(PERL-WAKEONLAN_BUILD_DIR)/.staged: $(PERL-WAKEONLAN_BUILD_DIR)/.built
 perl-wakeonlan-stage: $(PERL-WAKEONLAN_BUILD_DIR)/.staged
 
 $(PERL-WAKEONLAN_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-WAKEONLAN_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-WAKEONLAN_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-wakeonlan" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

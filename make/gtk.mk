@@ -87,7 +87,7 @@ GTK_DOC_IPK=$(BUILD_DIR)/gtk-doc_$(GTK_VERSION)-$(GTK_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(GTK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gtk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -100,7 +100,7 @@ $(GTK_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(GTK_DEPENDS)" >>$@
 
 $(GTK_PRINT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gtk-print" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -113,7 +113,7 @@ $(GTK_PRINT_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(GTK_PRINT_DEPENDS)" >>$@
 
 $(GTK_DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gtk-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -168,7 +168,7 @@ endif
 	$(GTK_UNZIP) $(DL_DIR)/$(GTK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GTK_PATCHES)" ; \
 		then cat $(GTK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GTK_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GTK_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(GTK_DIR) $(@D)
 	sed -i -e '/SRC_SUBDIRS *=/s| demos||' $(@D)/Makefile.in
@@ -255,13 +255,13 @@ $(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK): $(GTK_BUILD_DIR)/.built
 		$(BUILD_DIR)/gtk-print_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTK_BUILD_DIR) DESTDIR=$(GTK_IPK_DIR) install-strip
 	### make gtk-doc-ipk
-	install -d $(GTK_DOC_IPK_DIR)/opt/share
+	$(INSTALL) -d $(GTK_DOC_IPK_DIR)/opt/share
 	mv -f $(GTK_IPK_DIR)/opt/share/gtk-doc $(GTK_DOC_IPK_DIR)/opt/share/
 	$(MAKE) $(GTK_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_DOC_IPK_DIR)
 	### make gtk-print-ipk
 	find $(GTK_IPK_DIR) -type f -name *.la -exec rm -f {} \;
-	install -d $(GTK_PRINT_IPK_DIR)/opt/include/gtk-3.0 \
+	$(INSTALL) -d $(GTK_PRINT_IPK_DIR)/opt/include/gtk-3.0 \
 		$(GTK_PRINT_IPK_DIR)/opt/lib/gtk-3.0/3.0.0 \
 		$(GTK_PRINT_IPK_DIR)/opt/lib/pkgconfig
 	mv -f $(GTK_IPK_DIR)/opt/include/gtk-3.0/unix-print \
@@ -274,7 +274,7 @@ $(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK): $(GTK_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_PRINT_IPK_DIR)
 	### make gtk-ipk
 	$(MAKE) $(GTK_IPK_DIR)/CONTROL/control
-	install -m 755 $(GTK_SOURCE_DIR)/postinst $(GTK_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(GTK_SOURCE_DIR)/postinst $(GTK_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_IPK_DIR)
 
 #

@@ -116,7 +116,7 @@ $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PA
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
 	$(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
+#	cat $(PY-SERIAL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -125,7 +125,7 @@ $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PA
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
 	$(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
+#	cat $(PY-SERIAL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
@@ -164,7 +164,7 @@ py-serial-stage: $(PY-SERIAL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-serial
 #
 $(PY-SERIAL-COMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-serial-common" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -178,7 +178,7 @@ $(PY-SERIAL-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SERIAL_CONFLICTS)" >>$@
 
 $(PY25-SERIAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-serial" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,7 +192,7 @@ $(PY25-SERIAL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SERIAL_CONFLICTS)" >>$@
 
 $(PY26-SERIAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-serial" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -234,9 +234,9 @@ $(PY26-SERIAL_IPK) $(PY-SERIAL-COMMON_IPK): $(PY-SERIAL_BUILD_DIR)/.built
 	--root=$(PY26-SERIAL_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY26-SERIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-SERIAL_IPK_DIR)
-	install -d $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples
-	install $(PY-SERIAL_BUILD_DIR)/2.6/[CLR]*.txt $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/
-	install $(PY-SERIAL_BUILD_DIR)/2.6/examples/* $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples/
+	$(INSTALL) -d $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples
+	$(INSTALL) $(PY-SERIAL_BUILD_DIR)/2.6/[CLR]*.txt $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/
+	$(INSTALL) $(PY-SERIAL_BUILD_DIR)/2.6/examples/* $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples/
 	mv $(PY26-SERIAL_IPK_DIR)/opt/bin/miniterm.py $(PY26-SERIAL_IPK_DIR)/opt/bin/miniterm.py26
 	$(MAKE) $(PY-SERIAL-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SERIAL-COMMON_IPK_DIR)

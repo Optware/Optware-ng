@@ -6,8 +6,8 @@
  DESTDIR=
 -PREFIX=/usr/local
 -ETCDIR=/etc/vpnc
-+PREFIX=/opt
-+ETCDIR=/opt/etc/vpnc
++PREFIX=%OPTWARE_TARGET_PREFIX%
++ETCDIR=%OPTWARE_TARGET_PREFIX%/etc/vpnc
  BINDIR=$(PREFIX)/bin
  SBINDIR=$(PREFIX)/sbin
  MANDIR=$(PREFIX)/share/man

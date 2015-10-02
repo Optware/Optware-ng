@@ -14,7 +14,7 @@ fi
 
 case "$rc" in
     start)
-	/opt/sbin/dovecot
+	%OPTWARE_TARGET_PREFIX%/sbin/dovecot
 	;;
     stop)
 	killall dovecot > /dev/null 2>&1

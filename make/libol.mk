@@ -104,7 +104,7 @@ $(LIBOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOL_SOURCE) $(LIBOL_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBOL_DIR) $(LIBOL_BUILD_DIR)
 	$(LIBOL_UNZIP) $(DL_DIR)/$(LIBOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBOL_PATCHES) | patch -d $(BUILD_DIR)/$(LIBOL_DIR) -p1
+#	cat $(LIBOL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBOL_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBOL_DIR) $(LIBOL_BUILD_DIR)
 	(cd $(LIBOL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -150,7 +150,7 @@ libol-stage: $(LIBOL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libol
 #
 $(LIBOL_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBOL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBOL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libol" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,8 +179,8 @@ $(LIBOL_IPK): $(LIBOL_BUILD_DIR)/.built
 	rm -rf $(LIBOL_IPK_DIR) $(BUILD_DIR)/libol_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBOL_BUILD_DIR) DESTDIR=$(LIBOL_IPK_DIR) install-strip
 	$(MAKE) $(LIBOL_IPK_DIR)/CONTROL/control
-#	install -m 644 $(LIBOL_SOURCE_DIR)/postinst $(LIBOL_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(LIBOL_SOURCE_DIR)/prerm $(LIBOL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(LIBOL_SOURCE_DIR)/postinst $(LIBOL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(LIBOL_SOURCE_DIR)/prerm $(LIBOL_IPK_DIR)/CONTROL/prerm
 	echo $(LIBOL_CONFFILES) | sed -e 's/ /\n/g' > $(LIBOL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBOL_IPK_DIR)
 

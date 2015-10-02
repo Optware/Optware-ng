@@ -111,7 +111,7 @@ $(RADIUSCLIENT_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(RADIUSCLIENT_NG_SOURCE) $(
 	$(RADIUSCLIENT_NG_UNZIP) $(DL_DIR)/$(RADIUSCLIENT_NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RADIUSCLIENT_NG_PATCHES)" ; \
 		then cat $(RADIUSCLIENT_NG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RADIUSCLIENT_NG_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RADIUSCLIENT_NG_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RADIUSCLIENT_NG_DIR)" != "$(RADIUSCLIENT_NG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RADIUSCLIENT_NG_DIR) $(RADIUSCLIENT_NG_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ radiusclient-ng-stage: $(RADIUSCLIENT_NG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/radiusclient-ng
 #
 $(RADIUSCLIENT_NG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: radiusclient-ng" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

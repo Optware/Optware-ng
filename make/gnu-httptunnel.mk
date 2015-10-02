@@ -110,7 +110,7 @@ $(GNU_HTTPTUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(GNU_HTTPTUNNEL_SOURCE) $(GN
 	$(GNU_HTTPTUNNEL_UNZIP) $(DL_DIR)/$(GNU_HTTPTUNNEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNU_HTTPTUNNEL_PATCHES)" ; \
 		then cat $(GNU_HTTPTUNNEL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GNU_HTTPTUNNEL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GNU_HTTPTUNNEL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GNU_HTTPTUNNEL_DIR)" != "$(GNU_HTTPTUNNEL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(GNU_HTTPTUNNEL_DIR) $(GNU_HTTPTUNNEL_BUILD_DIR) ; \
@@ -160,7 +160,7 @@ gnu-httptunnel-stage: $(GNU_HTTPTUNNEL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnu-httptunnel
 #
 $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnu-httptunnel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,15 +190,15 @@ $(GNU_HTTPTUNNEL_IPK): $(GNU_HTTPTUNNEL_BUILD_DIR)/.built
 	rm -rf $(GNU_HTTPTUNNEL_IPK_DIR) $(BUILD_DIR)/gnu-httptunnel_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNU_HTTPTUNNEL_BUILD_DIR) DESTDIR=$(GNU_HTTPTUNNEL_IPK_DIR) install
 	$(STRIP_COMMAND) $(GNU_HTTPTUNNEL_IPK_DIR)/opt/bin/ht*
-#	install -d $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/
-#	install -m 644 $(GNU_HTTPTUNNEL_SOURCE_DIR)/gnu-httptunnel.conf $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/gnu-httptunnel.conf
-#	install -d $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GNU_HTTPTUNNEL_SOURCE_DIR)/rc.gnu-httptunnel $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/init.d/SXXgnu-httptunnel
+#	$(INSTALL) -d $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GNU_HTTPTUNNEL_SOURCE_DIR)/gnu-httptunnel.conf $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/gnu-httptunnel.conf
+#	$(INSTALL) -d $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GNU_HTTPTUNNEL_SOURCE_DIR)/rc.gnu-httptunnel $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/init.d/SXXgnu-httptunnel
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/init.d/SXXgnu-httptunnel
 	$(MAKE) $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GNU_HTTPTUNNEL_SOURCE_DIR)/postinst $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GNU_HTTPTUNNEL_SOURCE_DIR)/postinst $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GNU_HTTPTUNNEL_SOURCE_DIR)/prerm $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GNU_HTTPTUNNEL_SOURCE_DIR)/prerm $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/prerm
 	echo $(GNU_HTTPTUNNEL_CONFFILES) | sed -e 's/ /\n/g' > $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNU_HTTPTUNNEL_IPK_DIR)

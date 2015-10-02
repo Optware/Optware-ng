@@ -111,7 +111,7 @@ $(TEXTUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(TEXTUTILS_SOURCE) $(TEXTUTILS_PA
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(TEXTUTILS_DIR) $(TEXTUTILS_BUILD_DIR)
 	$(TEXTUTILS_UNZIP) $(DL_DIR)/$(TEXTUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(TEXTUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(TEXTUTILS_DIR) -p1
+#	cat $(TEXTUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TEXTUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(TEXTUTILS_DIR) $(TEXTUTILS_BUILD_DIR)
 	sed -i -e '/\*malloc *()/d' $(TEXTUTILS_BUILD_DIR)/lib/putenv.c
 	(cd $(TEXTUTILS_BUILD_DIR); \
@@ -157,7 +157,7 @@ textutils-stage: $(TEXTUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/textutils
 #
 $(TEXTUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(TEXTUTILS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TEXTUTILS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: textutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

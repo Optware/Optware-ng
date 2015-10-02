@@ -113,7 +113,7 @@ $(PY-PARAMIKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PARAMIKO_SOURCE) $(PY-PARAM
 	# 2.5
 	$(PY-PARAMIKO_UNZIP) $(DL_DIR)/$(PY-PARAMIKO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PARAMIKO_PATCHES)"; then \
-		cat $(PY-PARAMIKO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PARAMIKO_DIR) -p1; \
+		cat $(PY-PARAMIKO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PARAMIKO_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PARAMIKO_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -131,7 +131,7 @@ $(PY-PARAMIKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PARAMIKO_SOURCE) $(PY-PARAM
 	# 2.6
 	$(PY-PARAMIKO_UNZIP) $(DL_DIR)/$(PY-PARAMIKO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PARAMIKO_PATCHES)"; then \
-		cat $(PY-PARAMIKO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PARAMIKO_DIR) -p1; \
+		cat $(PY-PARAMIKO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PARAMIKO_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PARAMIKO_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -185,7 +185,7 @@ py-paramiko: $(PY-PARAMIKO_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-paramiko
 #
 $(PY25-PARAMIKO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-paramiko" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,7 +199,7 @@ $(PY25-PARAMIKO_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PARAMIKO_CONFLICTS)" >>$@
 
 $(PY26-PARAMIKO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-paramiko" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

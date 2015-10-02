@@ -5,15 +5,15 @@
  /* Default hostkey paths - these can be specified on the command line */
  #ifndef DSS_PRIV_FILENAME
 -#define DSS_PRIV_FILENAME "/etc/dropbear/dropbear_dss_host_key"
-+#define DSS_PRIV_FILENAME "/opt/etc/dropbear/dropbear_dss_host_key"
++#define DSS_PRIV_FILENAME "%OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_dss_host_key"
  #endif
  #ifndef RSA_PRIV_FILENAME
 -#define RSA_PRIV_FILENAME "/etc/dropbear/dropbear_rsa_host_key"
-+#define RSA_PRIV_FILENAME "/opt/etc/dropbear/dropbear_rsa_host_key"
++#define RSA_PRIV_FILENAME "%OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_rsa_host_key"
  #endif
  #ifndef ECDSA_PRIV_FILENAME
 -#define ECDSA_PRIV_FILENAME "/etc/dropbear/dropbear_ecdsa_host_key"
-+#define ECDSA_PRIV_FILENAME "/opt/etc/dropbear/dropbear_ecdsa_host_key"
++#define ECDSA_PRIV_FILENAME "%OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_ecdsa_host_key"
  #endif
  
  /* Set NON_INETD_MODE if you require daemon functionality (ie Dropbear listens
@@ -22,7 +22,7 @@
  /* The MOTD file path */
  #ifndef MOTD_FILENAME
 -#define MOTD_FILENAME "/etc/motd"
-+#define MOTD_FILENAME "/opt/etc/motd"
++#define MOTD_FILENAME "%OPTWARE_TARGET_PREFIX%/etc/motd"
  #endif
  
  /* Authentication Types - at least one required.
@@ -31,14 +31,14 @@
     scripts etc. This can be overridden with the -P flag */
  #ifndef DROPBEAR_PIDFILE
 -#define DROPBEAR_PIDFILE "/var/run/dropbear.pid"
-+#define DROPBEAR_PIDFILE "/opt/var/run/dropbear.pid"
++#define DROPBEAR_PIDFILE "%OPTWARE_TARGET_PREFIX%/var/run/dropbear.pid"
  #endif
  
  /* The command to invoke for xauth when using X11 forwarding.
   * "-q" for quiet */
  #ifndef XAUTH_COMMAND
 -#define XAUTH_COMMAND "/usr/bin/xauth -q"
-+#define XAUTH_COMMAND "/opt/bin/xauth -q"
++#define XAUTH_COMMAND "%OPTWARE_TARGET_PREFIX%/bin/xauth -q"
  #endif
  
  /* if you want to enable running an sftp server (such as the one included with
@@ -46,13 +46,13 @@
   * be enabled */
  #ifndef SFTPSERVER_PATH
 -#define SFTPSERVER_PATH "/usr/libexec/sftp-server"
-+#define SFTPSERVER_PATH "/opt/libexec/sftp-server"
++#define SFTPSERVER_PATH "%OPTWARE_TARGET_PREFIX%/libexec/sftp-server"
  #endif
  
  /* This is used by the scp binary when used as a client binary. If you're
   * not using the Dropbear client, you'll need to change it */
 -#define DROPBEAR_PATH_SSH_PROGRAM "/usr/bin/dbclient"
-+#define DROPBEAR_PATH_SSH_PROGRAM "/opt/bin/dbclient"
++#define DROPBEAR_PATH_SSH_PROGRAM "%OPTWARE_TARGET_PREFIX%/bin/dbclient"
  
  /* Whether to log commands executed by a client. This only logs the 
   * (single) command sent to the server, not what a user did in a 
@@ -61,7 +61,7 @@
  
  /* The default path. This will often get replaced by the shell */
 -#define DEFAULT_PATH "/usr/bin:/bin"
-+#define DEFAULT_PATH "/opt/bin:/opt/sbin:/usr/bin:/bin"
++#define DEFAULT_PATH "%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/usr/bin:/bin"
  
  /* Some other defines (that mostly should be left alone) are defined
   * in sysoptions.h */

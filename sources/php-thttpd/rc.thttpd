@@ -1,7 +1,7 @@
 #!/bin/sh
 
-PIDFILE=/opt/var/run/thttpd.pid
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PIDFILE=%OPTWARE_TARGET_PREFIX%/var/run/thttpd.pid
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
 start() {
 	if [ -f $PIDFILE ]; then
@@ -10,7 +10,7 @@ start() {
 		rm -f $PIDFILE 2>/dev/null
 	fi
 	echo -n "Starting thttpd... "
-	/opt/sbin/thttpd -C /opt/etc/thttpd.conf
+	%OPTWARE_TARGET_PREFIX%/sbin/thttpd -C %OPTWARE_TARGET_PREFIX%/etc/thttpd.conf
 	echo "done"
 }
 

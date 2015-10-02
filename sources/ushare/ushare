@@ -1,11 +1,11 @@
 #!/bin/sh
 
-PATH=/opt/bin:/opt/sbin:/usr/sbin:/usr/bin:/sbin:/bin
-DAEMON=/opt/bin/ushare
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+DAEMON=%OPTWARE_TARGET_PREFIX%/bin/ushare
 NAME=ushare
 DESC="uShare UPnP A/V Media Server"
 PIDFILE=/var/run/ushare.pid
-CONFFILE=/opt/etc/ushare.conf
+CONFFILE=%OPTWARE_TARGET_PREFIX%/etc/ushare.conf
 
 [ -r "$CONFFILE" ] && . $CONFFILE
 

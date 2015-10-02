@@ -110,7 +110,7 @@ $(SIPROXD_BUILD_DIR)/.configured: $(DL_DIR)/$(SIPROXD_SOURCE) $(SIPROXD_PATCHES)
 	$(MAKE) libosip2-stage
 	rm -rf $(BUILD_DIR)/$(SIPROXD_DIR) $(@D)
 	$(SIPROXD_UNZIP) $(DL_DIR)/$(SIPROXD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#       cat $(SIPROXD_PATCHES) | patch -d $(BUILD_DIR)/$(SIPROXD_DIR) -p1
+#       cat $(SIPROXD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SIPROXD_DIR) -p1
 	mv $(BUILD_DIR)/$(SIPROXD_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -157,7 +157,7 @@ siproxd: $(SIPROXD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/siproxd
 #
 $(SIPROXD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: siproxd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,13 +185,13 @@ $(SIPROXD_IPK_DIR)/CONTROL/control:
 $(SIPROXD_IPK): $(SIPROXD_BUILD_DIR)/.built
 	rm -rf $(SIPROXD_IPK_DIR) $(BUILD_DIR)/siproxd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SIPROXD_BUILD_DIR) DESTDIR=$(SIPROXD_IPK_DIR) install-strip
-#	install -d $(SIPROXD_IPK_DIR)/opt/etc/
-#	install -m 644 $(SIPROXD_SOURCE_DIR)/siproxd.conf $(SIPROXD_IPK_DIR)/opt/etc/siproxd.conf
-	install -d $(SIPROXD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SIPROXD_SOURCE_DIR)/rc.siproxd $(SIPROXD_IPK_DIR)/opt/etc/init.d/S98siproxd
+#	$(INSTALL) -d $(SIPROXD_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SIPROXD_SOURCE_DIR)/siproxd.conf $(SIPROXD_IPK_DIR)/opt/etc/siproxd.conf
+	$(INSTALL) -d $(SIPROXD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SIPROXD_SOURCE_DIR)/rc.siproxd $(SIPROXD_IPK_DIR)/opt/etc/init.d/S98siproxd
 	$(MAKE) $(SIPROXD_IPK_DIR)/CONTROL/control
-	install -m 755 $(SIPROXD_SOURCE_DIR)/postinst $(SIPROXD_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(SIPROXD_SOURCE_DIR)/prerm $(SIPROXD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(SIPROXD_SOURCE_DIR)/postinst $(SIPROXD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(SIPROXD_SOURCE_DIR)/prerm $(SIPROXD_IPK_DIR)/CONTROL/prerm
 	echo $(SIPROXD_CONFFILES) | sed -e 's/ /\n/g' > $(SIPROXD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SIPROXD_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(SIPROXD_IPK_DIR)

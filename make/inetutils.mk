@@ -161,7 +161,7 @@ inetutils-stage: $(INETUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/inetutils
 #
 $(INETUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: $(INETUTILS_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,11 +196,11 @@ $(INETUTILS_IPK): $(INETUTILS_BUILD_DIR)/.built
 	rm -f $(INETUTILS_IPK_DIR)/opt/share/man/man8/ftpd.8
 	rm -f $(INETUTILS_IPK_DIR)/opt/libexec/ftpd
 	$(STRIP_COMMAND) $(INETUTILS_IPK_DIR)/opt/bin/* $(INETUTILS_IPK_DIR)/opt/libexec/*
-#	install -d $(INETUTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(INETUTILS_SOURCE_DIR)/rc.inetutils $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
+#	$(INSTALL) -d $(INETUTILS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(INETUTILS_SOURCE_DIR)/rc.inetutils $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
 	$(MAKE) $(INETUTILS_IPK_DIR)/CONTROL/control
 	# Setuid stuff doesn't work as non-root, but we fix it in the postinst script.
-	install -m 644 $(INETUTILS_SOURCE_DIR)/postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
+	$(INSTALL) -m 644 $(INETUTILS_SOURCE_DIR)/postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
 	echo "#!/bin/sh" > $(INETUTILS_IPK_DIR)/CONTROL/prerm
 	for d in /opt/bin /opt/libexec /opt/share/man/man1 /opt/share/man/man8; do \
 	    cd $(INETUTILS_IPK_DIR)/$$d; \

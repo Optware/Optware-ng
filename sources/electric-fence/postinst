@@ -1,6 +1,6 @@
 #!/bin/sh
 echo "Testing Electric Fence."
-if /opt/bin/eftest && /opt/bin/tstheap 3072 ; then
+if %OPTWARE_TARGET_PREFIX%/bin/eftest && %OPTWARE_TARGET_PREFIX%/bin/tstheap 3072 ; then
   echo ""
   echo "Electric Fence confidence test PASSED." 
   echo ""

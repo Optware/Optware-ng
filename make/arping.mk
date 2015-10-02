@@ -112,7 +112,7 @@ $(ARPING_BUILD_DIR)/.configured: $(DL_DIR)/$(ARPING_SOURCE) $(ARPING_PATCHES) ma
 	$(ARPING_UNZIP) $(DL_DIR)/$(ARPING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ARPING_PATCHES)" ; \
 		then cat $(ARPING_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ARPING_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ARPING_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ARPING_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ARPING_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ arping: $(ARPING_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/arping
 #
 $(ARPING_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: arping" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

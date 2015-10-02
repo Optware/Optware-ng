@@ -110,7 +110,7 @@ $(CORKSCREW_BUILD_DIR)/.configured: $(DL_DIR)/$(CORKSCREW_SOURCE) $(CORKSCREW_PA
 	$(CORKSCREW_UNZIP) $(DL_DIR)/$(CORKSCREW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CORKSCREW_PATCHES)" ; \
 		then cat $(CORKSCREW_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CORKSCREW_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CORKSCREW_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CORKSCREW_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CORKSCREW_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ corkscrew-stage: $(CORKSCREW_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/corkscrew
 #
 $(CORKSCREW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: corkscrew" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,8 +190,8 @@ $(CORKSCREW_IPK): $(CORKSCREW_BUILD_DIR)/.built
 	rm -rf $(CORKSCREW_IPK_DIR) $(BUILD_DIR)/corkscrew_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CORKSCREW_BUILD_DIR) DESTDIR=$(CORKSCREW_IPK_DIR) install
 	$(STRIP_COMMAND) $(CORKSCREW_IPK_DIR)/opt/bin/corkscrew
-	install -d $(CORKSCREW_IPK_DIR)/opt/share/doc/corkscrew
-	install $(CORKSCREW_BUILD_DIR)/[ACINRT]* $(CORKSCREW_IPK_DIR)/opt/share/doc/corkscrew
+	$(INSTALL) -d $(CORKSCREW_IPK_DIR)/opt/share/doc/corkscrew
+	$(INSTALL) $(CORKSCREW_BUILD_DIR)/[ACINRT]* $(CORKSCREW_IPK_DIR)/opt/share/doc/corkscrew
 	$(MAKE) $(CORKSCREW_IPK_DIR)/CONTROL/control
 	echo $(CORKSCREW_CONFFILES) | sed -e 's/ /\n/g' > $(CORKSCREW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CORKSCREW_IPK_DIR)

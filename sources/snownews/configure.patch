@@ -4,7 +4,7 @@
 -PREFIX=  /usr/local
 -CFLAGS=  -Wall -Wno-format-y2k -O2 -DLOCALEPATH="\"$(LOCALEPATH)\"" -DOS=\"$(shell uname)\" `xml2-config --cflags` $(EXTRA_CFLAGS)  -DSTATIC_CONST_ICONV -I/usr/local/include
 -LDFLAGS= -lncurses `xml2-config --libs` $(EXTRA_LDFLAGS)  -lintl -liconv
-+PREFIX=/opt
++PREFIX=%OPTWARE_TARGET_PREFIX%
 +CC=@CC@
 +CFLAGS=  -Wall -Wno-format-y2k -O2 -DLOCALEPATH="\"$(LOCALEPATH)\"" -DOS=\"$(shell uname)\" -pipe @CPPFLAGS@ $(EXTRA_CFLAGS) -DSTATIC_CONST_ICONV
 +LDFLAGS= @LDFLAGS@ $(EXTRA_LDFLAGS)

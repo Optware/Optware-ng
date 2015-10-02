@@ -110,7 +110,7 @@ $(LIBNETFILTER_ACCT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETFILTER_ACCT_SOURCE
 	$(LIBNETFILTER_ACCT_UNZIP) $(DL_DIR)/$(LIBNETFILTER_ACCT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNETFILTER_ACCT_PATCHES)" ; \
 		then cat $(LIBNETFILTER_ACCT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR)" != "$(LIBNETFILTER_ACCT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) $(LIBNETFILTER_ACCT_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ libnetfilter-acct-stage: $(LIBNETFILTER_ACCT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libnetfilter-acct
 #
 $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libnetfilter-acct" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(LIBNETFILTER_ACCT_IPK): $(LIBNETFILTER_ACCT_BUILD_DIR)/.built
 	rm -rf $(LIBNETFILTER_ACCT_IPK_DIR) $(BUILD_DIR)/libnetfilter-acct_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNETFILTER_ACCT_BUILD_DIR) DESTDIR=$(LIBNETFILTER_ACCT_IPK_DIR) install-strip
 	rm -rf $(LIBNETFILTER_ACCT_IPK_DIR)/opt/include
-#	install -d $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBNETFILTER_ACCT_SOURCE_DIR)/libnetfilter-acct.conf $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/libnetfilter-acct.conf
-#	install -d $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBNETFILTER_ACCT_SOURCE_DIR)/rc.libnetfilter-acct $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-acct
+#	$(INSTALL) -d $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBNETFILTER_ACCT_SOURCE_DIR)/libnetfilter-acct.conf $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/libnetfilter-acct.conf
+#	$(INSTALL) -d $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNETFILTER_ACCT_SOURCE_DIR)/rc.libnetfilter-acct $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-acct
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-acct
 	$(MAKE) $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBNETFILTER_ACCT_SOURCE_DIR)/postinst $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBNETFILTER_ACCT_SOURCE_DIR)/postinst $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBNETFILTER_ACCT_SOURCE_DIR)/prerm $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBNETFILTER_ACCT_SOURCE_DIR)/prerm $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBNETFILTER_ACCT_CONFFILES) | sed -e 's/ /\n/g' > $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETFILTER_ACCT_IPK_DIR)

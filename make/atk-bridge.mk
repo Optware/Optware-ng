@@ -116,7 +116,7 @@ $(ATK-BRIDGE_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK-BRIDGE_SOURCE) $(ATK-BRIDGE
 	$(ATK-BRIDGE_UNZIP) $(DL_DIR)/$(ATK-BRIDGE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ATK-BRIDGE_PATCHES)" ; \
 		then cat $(ATK-BRIDGE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ATK-BRIDGE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ATK-BRIDGE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ATK-BRIDGE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ATK-BRIDGE_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ atk-bridge-stage: $(ATK-BRIDGE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/atk-bridge
 #
 $(ATK-BRIDGE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: atk-bridge" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,15 +202,15 @@ $(ATK-BRIDGE_IPK): $(ATK-BRIDGE_BUILD_DIR)/.built
 	rm -rf $(ATK-BRIDGE_IPK_DIR) $(BUILD_DIR)/atk-bridge_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ATK-BRIDGE_BUILD_DIR) DESTDIR=$(ATK-BRIDGE_IPK_DIR) install-strip
 	rm -f $(ATK-BRIDGE-CORE_IPK_DIR)/opt/lib/*.la
-#	install -d $(ATK-BRIDGE_IPK_DIR)/opt/etc/
-#	install -m 644 $(ATK-BRIDGE_SOURCE_DIR)/atk-bridge.conf $(ATK-BRIDGE_IPK_DIR)/opt/etc/atk-bridge.conf
-#	install -d $(ATK-BRIDGE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ATK-BRIDGE_SOURCE_DIR)/rc.atk-bridge $(ATK-BRIDGE_IPK_DIR)/opt/etc/init.d/SXXatk-bridge
+#	$(INSTALL) -d $(ATK-BRIDGE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ATK-BRIDGE_SOURCE_DIR)/atk-bridge.conf $(ATK-BRIDGE_IPK_DIR)/opt/etc/atk-bridge.conf
+#	$(INSTALL) -d $(ATK-BRIDGE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ATK-BRIDGE_SOURCE_DIR)/rc.atk-bridge $(ATK-BRIDGE_IPK_DIR)/opt/etc/init.d/SXXatk-bridge
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ATK-BRIDGE_IPK_DIR)/opt/etc/init.d/SXXatk-bridge
 	$(MAKE) $(ATK-BRIDGE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ATK-BRIDGE_SOURCE_DIR)/postinst $(ATK-BRIDGE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ATK-BRIDGE_SOURCE_DIR)/postinst $(ATK-BRIDGE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ATK-BRIDGE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ATK-BRIDGE_SOURCE_DIR)/prerm $(ATK-BRIDGE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ATK-BRIDGE_SOURCE_DIR)/prerm $(ATK-BRIDGE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ATK-BRIDGE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

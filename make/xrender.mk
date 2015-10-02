@@ -60,7 +60,7 @@ XRENDER_IPK=$(BUILD_DIR)/xrender_$(XRENDER_VERSION)-$(XRENDER_IPK_VERSION)_$(TAR
 # Automatically create a ipkg control file
 #
 $(XRENDER_IPK_DIR)/CONTROL/control:
-	@install -d $(XRENDER_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XRENDER_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xrender" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -98,7 +98,7 @@ $(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/$(XRENDER_SOURCE) $(XRENDER_PATCHES)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XRENDER_SOURCE)
 	if test -n "$(XRENDER_PATCHES)" ; \
 		then cat $(XRENDER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XRENDER_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XRENDER_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XRENDER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XRENDER_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ $(XRENDER_IPK): $(XRENDER_BUILD_DIR)/.built
 	rm -rf $(XRENDER_IPK_DIR) $(BUILD_DIR)/xrender_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XRENDER_BUILD_DIR) DESTDIR=$(XRENDER_IPK_DIR) install-strip
 	$(MAKE) $(XRENDER_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XRENDER_SOURCE_DIR)/postinst $(XRENDER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XRENDER_SOURCE_DIR)/postinst $(XRENDER_IPK_DIR)/CONTROL/postinst
 	rm -f $(XRENDER_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XRENDER_IPK_DIR)
 

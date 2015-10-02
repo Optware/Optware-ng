@@ -120,7 +120,7 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 	# 2.5
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-MERCURIAL_PATCHES)"; then \
-		cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0; \
+		cat $(PY-MERCURIAL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -140,7 +140,7 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 	# 2.6
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-MERCURIAL_PATCHES)"; then \
-		cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0; \
+		cat $(PY-MERCURIAL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -160,7 +160,7 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 	# 2.7
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-MERCURIAL_PATCHES)"; then \
-		cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0; \
+		cat $(PY-MERCURIAL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -220,7 +220,7 @@ py-mercurial: $(PY-MERCURIAL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-mercurial
 #
 $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-mercurial" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -234,7 +234,7 @@ $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MERCURIAL_CONFLICTS)" >>$@
 
 $(PY26-MERCURIAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-mercurial" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -248,7 +248,7 @@ $(PY26-MERCURIAL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MERCURIAL_CONFLICTS)" >>$@
 
 $(PY27-MERCURIAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-mercurial" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -110,7 +110,7 @@ $(NOSTROMO_BUILD_DIR)/.configured: $(DL_DIR)/$(NOSTROMO_SOURCE) $(NOSTROMO_PATCH
 	$(NOSTROMO_UNZIP) $(DL_DIR)/$(NOSTROMO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NOSTROMO_PATCHES)" ; \
 		then cat $(NOSTROMO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NOSTROMO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NOSTROMO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NOSTROMO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NOSTROMO_DIR) $(@D) ; \
@@ -184,7 +184,7 @@ nostromo-stage: $(NOSTROMO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nostromo
 #
 $(NOSTROMO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nostromo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -212,18 +212,18 @@ $(NOSTROMO_IPK_DIR)/CONTROL/control:
 #
 $(NOSTROMO_IPK): $(NOSTROMO_BUILD_DIR)/.built
 	rm -rf $(NOSTROMO_IPK_DIR) $(BUILD_DIR)/nostromo_*_$(TARGET_ARCH).ipk
-	install -d $(NOSTROMO_IPK_DIR)/opt/sbin
-	install -d $(NOSTROMO_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -d $(NOSTROMO_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(NOSTROMO_IPK_DIR)/opt/share/man/man8
 	$(MAKE) -C $(NOSTROMO_BUILD_DIR) DESTDIR=$(NOSTROMO_IPK_DIR) install
-#	install -d $(NOSTROMO_IPK_DIR)/opt/etc/
-#	install -m 644 $(NOSTROMO_SOURCE_DIR)/nostromo.conf $(NOSTROMO_IPK_DIR)/opt/etc/nostromo.conf
-#	install -d $(NOSTROMO_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NOSTROMO_SOURCE_DIR)/rc.nostromo $(NOSTROMO_IPK_DIR)/opt/etc/init.d/SXXnostromo
+#	$(INSTALL) -d $(NOSTROMO_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NOSTROMO_SOURCE_DIR)/nostromo.conf $(NOSTROMO_IPK_DIR)/opt/etc/nostromo.conf
+#	$(INSTALL) -d $(NOSTROMO_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NOSTROMO_SOURCE_DIR)/rc.nostromo $(NOSTROMO_IPK_DIR)/opt/etc/init.d/SXXnostromo
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NOSTROMO_IPK_DIR)/opt/etc/init.d/SXXnostromo
 	$(MAKE) $(NOSTROMO_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NOSTROMO_SOURCE_DIR)/postinst $(NOSTROMO_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NOSTROMO_SOURCE_DIR)/postinst $(NOSTROMO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NOSTROMO_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NOSTROMO_SOURCE_DIR)/prerm $(NOSTROMO_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NOSTROMO_SOURCE_DIR)/prerm $(NOSTROMO_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NOSTROMO_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

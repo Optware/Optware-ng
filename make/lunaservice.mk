@@ -117,7 +117,7 @@ $(LUNASERVICE_BUILD_DIR)/.configured: $(DL_DIR)/$(LUNASERVICE_SOURCE) $(LUNASERV
 	$(LUNASERVICE_UNZIP) $(DL_DIR)/$(LUNASERVICE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LUNASERVICE_PATCHES)" ; \
 		then cat $(LUNASERVICE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LUNASERVICE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LUNASERVICE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LUNASERVICE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LUNASERVICE_DIR) $(@D) ; \
@@ -149,9 +149,9 @@ lunaservice: $(LUNASERVICE_BUILD_DIR)/.built
 $(LUNASERVICE_BUILD_DIR)/.staged: $(LUNASERVICE_BUILD_DIR)/.built
 	rm -f $@
 	mkdir -p $(STAGING_INCLUDE_DIR) $(STAGING_LIB_DIR)
-	install -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice.h $(STAGING_INCLUDE_DIR)/
-	install -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice-errors.h $(STAGING_INCLUDE_DIR)/
-	install -m 644 $(LUNASERVICE_BUILD_DIR)/liblunaservice.so $(STAGING_LIB_DIR)/
+	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice.h $(STAGING_INCLUDE_DIR)/
+	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice-errors.h $(STAGING_INCLUDE_DIR)/
+	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/liblunaservice.so $(STAGING_LIB_DIR)/
 	touch $@
 
 lunaservice-stage: $(LUNASERVICE_BUILD_DIR)/.staged
@@ -161,7 +161,7 @@ lunaservice-stage: $(LUNASERVICE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lunaservice
 #
 $(LUNASERVICE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lunaservice" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,9 +190,9 @@ $(LUNASERVICE_IPK_DIR)/CONTROL/control:
 $(LUNASERVICE_IPK): $(LUNASERVICE_BUILD_DIR)/.built
 	rm -rf $(LUNASERVICE_IPK_DIR) $(BUILD_DIR)/lunaservice_*_$(TARGET_ARCH).ipk
 	mkdir -p $(LUNASERVICE_IPK_DIR)/opt/include $(LUNASERVICE_IPK_DIR)/opt/lib
-	install -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice.h $(LUNASERVICE_IPK_DIR)/opt/include/
-	install -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice-errors.h $(LUNASERVICE_IPK_DIR)/opt/include/
-	install -m 644 $(LUNASERVICE_BUILD_DIR)/liblunaservice.so $(LUNASERVICE_IPK_DIR)/opt/lib/
+	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice.h $(LUNASERVICE_IPK_DIR)/opt/include/
+	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice-errors.h $(LUNASERVICE_IPK_DIR)/opt/include/
+	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/liblunaservice.so $(LUNASERVICE_IPK_DIR)/opt/lib/
 	$(MAKE) $(LUNASERVICE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUNASERVICE_IPK_DIR)
 

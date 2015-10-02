@@ -31,7 +31,7 @@ RSNAPSHOT_IPK_DIR=$(BUILD_DIR)/rsnapshot-$(RSNAPSHOT_VERSION)-ipk
 RSNAPSHOT_IPK=$(BUILD_DIR)/rsnapshot_$(RSNAPSHOT_VERSION)-$(RSNAPSHOT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(RSNAPSHOT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rsnapshot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -53,7 +53,7 @@ $(RSNAPSHOT_BUILD_DIR)/.configured: $(DL_DIR)/$(RSNAPSHOT_SOURCE) $(RSNAPSHOT_PA
 #	$(MAKE) rsync-stage
 	rm -rf $(BUILD_DIR)/$(RSNAPSHOT_DIR) $(@D)
 	$(RSNAPSHOT_UNZIP) $(DL_DIR)/$(RSNAPSHOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(RSNAPSHOT_PATCHES) | patch -d $(BUILD_DIR)/$(RSNAPSHOT_DIR) -p1
+#	cat $(RSNAPSHOT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(RSNAPSHOT_DIR) -p1
 	mv $(BUILD_DIR)/$(RSNAPSHOT_DIR) $(@D)
 	sed -i 's#/usr/bin/pod2man#pod2man#' $(@D)/Makefile.in
 	(cd $(@D); \
@@ -99,13 +99,13 @@ $(RSNAPSHOT_IPK): $(RSNAPSHOT_BUILD_DIR)/.built
 	$(MAKE) -C $(RSNAPSHOT_BUILD_DIR) DESTDIR=$(RSNAPSHOT_IPK_DIR) install
 	sed -i -e '/\/usr\/bin\/perl -w/d' -e 's|/usr/local/|/opt/|g' $(RSNAPSHOT_IPK_DIR)/opt/bin/*
 	find $(RSNAPSHOT_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-	install -m 644 $(RSNAPSHOT_SOURCE_DIR)/rsnapshot.conf $(RSNAPSHOT_IPK_DIR)/opt/etc/rsnapshot.conf
-	install -d $(RSNAPSHOT_IPK_DIR)/opt/var/rsnapshot/
-	install -d $(RSNAPSHOT_IPK_DIR)/opt/var/run/
-	install -d $(RSNAPSHOT_IPK_DIR)/opt/var/log/
+	$(INSTALL) -m 644 $(RSNAPSHOT_SOURCE_DIR)/rsnapshot.conf $(RSNAPSHOT_IPK_DIR)/opt/etc/rsnapshot.conf
+	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)/opt/var/rsnapshot/
+	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)/opt/var/run/
+	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)/opt/var/log/
 	$(MAKE) $(RSNAPSHOT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RSNAPSHOT_SOURCE_DIR)/postinst $(RSNAPSHOT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RSNAPSHOT_SOURCE_DIR)/prerm $(RSNAPSHOT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(RSNAPSHOT_SOURCE_DIR)/postinst $(RSNAPSHOT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RSNAPSHOT_SOURCE_DIR)/prerm $(RSNAPSHOT_IPK_DIR)/CONTROL/prerm
 	echo $(RSNAPSHOT_CONFFILES) | sed -e 's/ /\n/g' > $(RSNAPSHOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RSNAPSHOT_IPK_DIR)
 

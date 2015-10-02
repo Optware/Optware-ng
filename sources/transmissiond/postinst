@@ -2,12 +2,12 @@
 
 # Add a rule to the crontab
 
-# grep -q torrent_watchdog /etc/crontab || echo "0-59/20 * * * * root /opt/sbin/torrent_watchdog &>/dev/null" >> /etc/crontab
+# grep -q torrent_watchdog /etc/crontab || echo "0-59/20 * * * * root %OPTWARE_TARGET_PREFIX%/sbin/torrent_watchdog &>/dev/null" >> /etc/crontab
 # m h dom mon dow user  command
-grep -q transmission_watchdog /opt/etc/crontab || echo "*/30 * * * * admin nice /opt/sbin/transmission_watchdog" >> /opt/etc/crontab
+grep -q transmission_watchdog %OPTWARE_TARGET_PREFIX%/etc/crontab || echo "*/30 * * * * admin nice %OPTWARE_TARGET_PREFIX%/sbin/transmission_watchdog" >> %OPTWARE_TARGET_PREFIX%/etc/crontab
 
 # Install default page if none exists 
-INDEX=/opt/share/www/index.html
+INDEX=%OPTWARE_TARGET_PREFIX%/share/www/index.html
 if [ ! -e ${INDEX} ]; then
    cat > ${INDEX} << __EOF__
 <html>
@@ -31,7 +31,7 @@ interface), Linux/NetBSD/FreeBSD/OpenBSD (GTK+ interface) and BeOS
 
 <h2>Support</h2>
 
-<p>Need help? Read <tt>/opt/share/doc/transmission/README.daemon</tt> notes.
+<p>Need help? Read <tt>%OPTWARE_TARGET_PREFIX%/share/doc/transmission/README.daemon</tt> notes.
 Try the <a href="forum/">forums</a> or the
 <a href="irc://irc.freenode.net/transmission">IRC channel</a>.</p>
 
@@ -48,7 +48,7 @@ __EOF__
 fi
 
 
-echo "Please note that /opt/etc/init.d/S80busybox_httpd is installed for"
+echo "Please note that %OPTWARE_TARGET_PREFIX%/etc/init.d/S80busybox_httpd is installed for"
 echo "running CGI interface at http://localhost:8008/cgi-bin/transmission.cgi"
-echo "See instructions for daemon and WWW interface in /opt/share/doc/transmission"
-echo "Configure daemon with /opt/etc/transmission.conf"
+echo "See instructions for daemon and WWW interface in %OPTWARE_TARGET_PREFIX%/share/doc/transmission"
+echo "Configure daemon with %OPTWARE_TARGET_PREFIX%/etc/transmission.conf"

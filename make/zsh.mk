@@ -110,7 +110,7 @@ $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) make/zsh.mk
 	$(ZSH_UNZIP) $(DL_DIR)/$(ZSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZSH_PATCHES)" ; \
 		then cat $(ZSH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ZSH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ZSH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ZSH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ZSH_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ zsh-stage: $(ZSH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/zsh
 #
 $(ZSH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: zsh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,15 +196,15 @@ $(ZSH_IPK): $(ZSH_BUILD_DIR)/.built
 	$(MAKE) -C $(ZSH_BUILD_DIR) DESTDIR=$(ZSH_IPK_DIR) install
 	rm -f $(ZSH_IPK_DIR)/opt/bin/zsh-[0-9]*
 	$(STRIP_COMMAND) $(ZSH_IPK_DIR)/opt/bin/zsh
-	install -d $(ZSH_IPK_DIR)/opt/etc/
-#	install -m 644 $(ZSH_SOURCE_DIR)/zsh.conf $(ZSH_IPK_DIR)/opt/etc/zsh.conf
-#	install -d $(ZSH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ZSH_SOURCE_DIR)/rc.zsh $(ZSH_IPK_DIR)/opt/etc/init.d/SXXzsh
+	$(INSTALL) -d $(ZSH_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ZSH_SOURCE_DIR)/zsh.conf $(ZSH_IPK_DIR)/opt/etc/zsh.conf
+#	$(INSTALL) -d $(ZSH_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ZSH_SOURCE_DIR)/rc.zsh $(ZSH_IPK_DIR)/opt/etc/init.d/SXXzsh
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXzsh
 	$(MAKE) $(ZSH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ZSH_SOURCE_DIR)/postinst $(ZSH_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ZSH_SOURCE_DIR)/postinst $(ZSH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ZSH_SOURCE_DIR)/prerm $(ZSH_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ZSH_SOURCE_DIR)/prerm $(ZSH_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(ZSH_CONFFILES) | sed -e 's/ /\n/g' > $(ZSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZSH_IPK_DIR)

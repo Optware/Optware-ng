@@ -3,8 +3,8 @@
 # Remove the broken vendor ipkg installation
 rm -rf /bin/ipkg /etc/ipkg.conf* /usr/lib/ipkg
 
-# Add /opt/bin and /opt/sbin to the path
+# Add %OPTWARE_TARGET_PREFIX%/bin and %OPTWARE_TARGET_PREFIX%/sbin to the path
 touch /etc/profile
-if ! grep '^PATH=.*/opt/bin' /etc/profile >/dev/null 2>&1 ; then
-  echo "PATH=\$PATH:/opt/bin:/opt/sbin" >> /etc/profile
+if ! grep '^PATH=.*%OPTWARE_TARGET_PREFIX%/bin' /etc/profile >/dev/null 2>&1 ; then
+  echo "PATH=\$PATH:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin" >> /etc/profile
 fi

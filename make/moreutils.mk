@@ -109,7 +109,7 @@ $(MOREUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(MOREUTILS_SOURCE) $(MOREUTILS_PA
 	$(MOREUTILS_UNZIP) $(DL_DIR)/$(MOREUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOREUTILS_PATCHES)" ; \
 		then cat $(MOREUTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MOREUTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MOREUTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MOREUTILS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOREUTILS_DIR) $(@D) ; \
@@ -146,7 +146,7 @@ moreutils-stage: $(MOREUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/moreutils
 #
 $(MOREUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: moreutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -134,7 +134,7 @@ endif
 	$(SLANG_UNZIP) $(DL_DIR)/$(SLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SLANG_PATCHES)" ; \
 		then cat $(SLANG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SLANG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SLANG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SLANG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SLANG_DIR) $(@D) ; \
@@ -188,7 +188,7 @@ slang-stage: $(SLANG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/slang
 #
 $(SLANG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: slang" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -221,15 +221,15 @@ $(SLANG_IPK): $(SLANG_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(SLANG_IPK_DIR)/opt/bin/slsh \
 		$(SLANG_IPK_DIR)/opt/lib/libslang.so.$(SLANG_VERSION) \
 		$(SLANG_IPK_DIR)/opt/lib/slang/v2/modules/*.so
-#	install -d $(SLANG_IPK_DIR)/opt/etc/
-#	install -m 644 $(SLANG_SOURCE_DIR)/slang.conf $(SLANG_IPK_DIR)/opt/etc/slang.conf
-#	install -d $(SLANG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SLANG_SOURCE_DIR)/rc.slang $(SLANG_IPK_DIR)/opt/etc/init.d/SXXslang
+#	$(INSTALL) -d $(SLANG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SLANG_SOURCE_DIR)/slang.conf $(SLANG_IPK_DIR)/opt/etc/slang.conf
+#	$(INSTALL) -d $(SLANG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SLANG_SOURCE_DIR)/rc.slang $(SLANG_IPK_DIR)/opt/etc/init.d/SXXslang
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SLANG_IPK_DIR)/opt/etc/init.d/SXXslang
 	$(MAKE) $(SLANG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SLANG_SOURCE_DIR)/postinst $(SLANG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SLANG_SOURCE_DIR)/postinst $(SLANG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SLANG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SLANG_SOURCE_DIR)/prerm $(SLANG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SLANG_SOURCE_DIR)/prerm $(SLANG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SLANG_IPK_DIR)/CONTROL/prerm
 	echo $(SLANG_CONFFILES) | sed -e 's/ /\n/g' > $(SLANG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SLANG_IPK_DIR)

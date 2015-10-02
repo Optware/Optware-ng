@@ -99,7 +99,7 @@ $(PATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES) make/
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PATCH_DIR) $(@D)
 	$(PATCH_UNZIP) $(DL_DIR)/$(PATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PATCH_PATCHES) | patch -d $(BUILD_DIR)/$(PATCH_DIR) -p1
+#	cat $(PATCH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PATCH_DIR) -p1
 	mv $(BUILD_DIR)/$(PATCH_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -144,7 +144,7 @@ patch: $(PATCH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/patch
 # 
 $(PATCH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: patch" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -14,7 +14,7 @@ case "$rc" in
     start)
 	echo "starting service postfix"
 	
-	/opt/sbin/postfix -c /opt/etc/postfix start
+	%OPTWARE_TARGET_PREFIX%/sbin/postfix -c %OPTWARE_TARGET_PREFIX%/etc/postfix start
 
 	# waiting for qmgr
 	( i=60
@@ -22,18 +22,18 @@ case "$rc" in
 		i=$(( $i - 1 ))
 		sleep 1
 	    done
-	    echo /opt/sbin/postfix flush
+	    echo %OPTWARE_TARGET_PREFIX%/sbin/postfix flush
 	) > /dev/null 2>&1 &
 	;;
     stop)
 	echo "stopping service postfix"
 	
-	#if [ -f "/opt/var/spool/postfix/pid/master.pid" ]; then
-	#    /bin/kill -TERM `cat /opt/var/spool/postfix/pid/master.pid` 2>/dev/null
+	#if [ -f "%OPTWARE_TARGET_PREFIX%/var/spool/postfix/pid/master.pid" ]; then
+	#    /bin/kill -TERM `cat %OPTWARE_TARGET_PREFIX%/var/spool/postfix/pid/master.pid` 2>/dev/null
 	#fi
 	
 	if [ -n "`pidof master`" ]; then
-	    /opt/sbin/postfix -c /opt/etc/postfix stop > /dev/null 2>&1
+	    %OPTWARE_TARGET_PREFIX%/sbin/postfix -c %OPTWARE_TARGET_PREFIX%/etc/postfix stop > /dev/null 2>&1
 	fi
 	;;
     restart)

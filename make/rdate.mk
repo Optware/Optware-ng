@@ -110,7 +110,7 @@ $(RDATE_BUILD_DIR)/.configured: $(DL_DIR)/$(RDATE_SOURCE) $(RDATE_PATCHES) make/
 	$(RDATE_UNZIP) $(DL_DIR)/$(RDATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RDATE_PATCHES)" ; \
 		then cat $(RDATE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RDATE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RDATE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RDATE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RDATE_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ rdate: $(RDATE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/rdate
 #
 $(RDATE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rdate" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

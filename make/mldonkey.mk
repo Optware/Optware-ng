@@ -108,7 +108,7 @@ $(MLDONKEY_BUILD_DIR)/.configured: $(DL_DIR)/$(MLDONKEY_SOURCE) $(MLDONKEY_PATCH
 	$(MLDONKEY_UNZIP) $(DL_DIR)/$(MLDONKEY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MLDONKEY_PATCHES)" ; \
 		then cat $(MLDONKEY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MLDONKEY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MLDONKEY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MLDONKEY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MLDONKEY_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ mldonkey: $(MLDONKEY_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mldonkey
 #
 $(MLDONKEY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mldonkey" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,7 +192,7 @@ $(MLDONKEY_IPK_DIR)/CONTROL/control:
 $(MLDONKEY_IPK): $(MLDONKEY_BUILD_DIR)/.built
 	rm -rf $(MLDONKEY_IPK_DIR) $(BUILD_DIR)/mldonkey_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(MLDONKEY_BUILD_DIR) DESTDIR=$(MLDONKEY_IPK_DIR) install
-	install -d $(MLDONKEY_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(MLDONKEY_IPK_DIR)/opt/bin
 	for f in mlnet copysources get_range make_torrent mld_hash subconv; \
 		do install $(MLDONKEY_BUILD_DIR)/$${f}.byte $(MLDONKEY_IPK_DIR)/opt/bin/; done
 	for l in mlslsk mldonkey mlgnut mldc mlbt; \

@@ -110,7 +110,7 @@ $(TCPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES)
 	$(TCPDUMP_UNZIP) $(DL_DIR)/$(TCPDUMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TCPDUMP_PATCHES)" ; \
 		then cat $(TCPDUMP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TCPDUMP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TCPDUMP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TCPDUMP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TCPDUMP_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ tcpdump-stage: $(TCPDUMP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tcpdump
 #
 $(TCPDUMP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tcpdump" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,15 +196,15 @@ $(TCPDUMP_IPK): $(TCPDUMP_BUILD_DIR)/.built
 	$(MAKE) -C $(TCPDUMP_BUILD_DIR) DESTDIR=$(TCPDUMP_IPK_DIR) install
 	rm -f $(TCPDUMP_IPK_DIR)/opt/sbin/tcpdump.$(TCPDUMP_VERSION)
 	$(STRIP_COMMAND) $(TCPDUMP_IPK_DIR)/opt/sbin/tcpdump
-#	install -d $(TCPDUMP_IPK_DIR)/opt/etc/
-#	install -m 644 $(TCPDUMP_SOURCE_DIR)/tcpdump.conf $(TCPDUMP_IPK_DIR)/opt/etc/tcpdump.conf
-#	install -d $(TCPDUMP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TCPDUMP_SOURCE_DIR)/rc.tcpdump $(TCPDUMP_IPK_DIR)/opt/etc/init.d/SXXtcpdump
+#	$(INSTALL) -d $(TCPDUMP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(TCPDUMP_SOURCE_DIR)/tcpdump.conf $(TCPDUMP_IPK_DIR)/opt/etc/tcpdump.conf
+#	$(INSTALL) -d $(TCPDUMP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(TCPDUMP_SOURCE_DIR)/rc.tcpdump $(TCPDUMP_IPK_DIR)/opt/etc/init.d/SXXtcpdump
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPDUMP_IPK_DIR)/opt/etc/init.d/SXXtcpdump
 	$(MAKE) $(TCPDUMP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TCPDUMP_SOURCE_DIR)/postinst $(TCPDUMP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TCPDUMP_SOURCE_DIR)/postinst $(TCPDUMP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPDUMP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TCPDUMP_SOURCE_DIR)/prerm $(TCPDUMP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TCPDUMP_SOURCE_DIR)/prerm $(TCPDUMP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPDUMP_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -361,7 +361,7 @@ endif
 	$(BOOST_UNZIP) $(DL_DIR)/$(BOOST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BOOST_PATCHES)" ; \
 		then cat $(BOOST_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BOOST_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BOOST_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BOOST_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BOOST_DIR) $(@D) ; \
@@ -469,7 +469,7 @@ boost-stage: $(BOOST_BUILD_DIR)/.staged
 #
 
 $(BOOST_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -484,7 +484,7 @@ $(BOOST_DEV_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_DATE_TIME_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-date-time" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -499,7 +499,7 @@ $(BOOST_DATE_TIME_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_FILESYSTEM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-filesystem" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -514,7 +514,7 @@ $(BOOST_FILESYSTEM_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_GRAPH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-graph" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -529,7 +529,7 @@ $(BOOST_GRAPH_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_IOSTREAMS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-iostreams" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -544,7 +544,7 @@ $(BOOST_IOSTREAMS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_PROGRAM_OPTIONS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-program-options" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -559,7 +559,7 @@ $(BOOST_PROGRAM_OPTIONS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_PYTHON26_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-python26" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -574,7 +574,7 @@ $(BOOST_PYTHON26_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_PYTHON27_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-python27" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -589,7 +589,7 @@ $(BOOST_PYTHON27_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_PYTHON3_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-python3" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -604,7 +604,7 @@ $(BOOST_PYTHON3_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_RANDOM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-random" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -619,7 +619,7 @@ $(BOOST_RANDOM_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_REGEX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-regex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -634,7 +634,7 @@ $(BOOST_REGEX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_SERIALIZATION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-serialization" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -649,7 +649,7 @@ $(BOOST_SERIALIZATION_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_SIGNALS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-signals" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -664,7 +664,7 @@ $(BOOST_SIGNALS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_SYSTEM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-system" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -679,7 +679,7 @@ $(BOOST_SYSTEM_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_TEST_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-test" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -694,7 +694,7 @@ $(BOOST_TEST_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_THREAD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-thread" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -709,7 +709,7 @@ $(BOOST_THREAD_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_WAVE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-wave" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -726,7 +726,7 @@ $(BOOST_WAVE_IPK_DIR)/CONTROL/control:
 ### additional libs that can be built starting from certain boost version
 
 $(BOOST_ATOMIC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-atomic" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -741,7 +741,7 @@ $(BOOST_ATOMIC_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_CHRONO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-chrono" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -756,7 +756,7 @@ $(BOOST_CHRONO_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_CONTAINER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-container" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -771,7 +771,7 @@ $(BOOST_CONTAINER_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_CONTEXT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-context" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -786,7 +786,7 @@ $(BOOST_CONTEXT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_COROUTINE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-coroutine" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -801,7 +801,7 @@ $(BOOST_COROUTINE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_LOCALE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-locale" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -816,7 +816,7 @@ $(BOOST_LOCALE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_LOG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-log" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -831,7 +831,7 @@ $(BOOST_LOG_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_TIMER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-timer" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -846,7 +846,7 @@ $(BOOST_TIMER_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BOOST_CONFLICTS)" >>$@
 
 $(BOOST_EXCEPTION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: boost-exception-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

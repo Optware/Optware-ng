@@ -1,8 +1,8 @@
 #!/bin/sh
 #
 
-MONIT=/opt/bin/monit
-MONITRC=/opt/etc/monitrc
+MONIT=%OPTWARE_TARGET_PREFIX%/bin/monit
+MONITRC=%OPTWARE_TARGET_PREFIX%/etc/monitrc
 INTERVAL=120
 
 [ -f $MONIT ] || exit 0
@@ -18,7 +18,7 @@ case "$1" in
 	;;
   stop)
 	echo -n "Stopping monit: "
-	/opt/bin/killall monit
+	%OPTWARE_TARGET_PREFIX%/bin/killall monit
 	;;
   restart)
   	$0 stop

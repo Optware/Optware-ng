@@ -46,8 +46,8 @@ libnsl: $(LIBNSL_BUILD_DIR)/.built
 
 $(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(STAGING_LIB_DIR)
 	(cd $(STAGING_LIB_DIR); \
 	 ln -nfs $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
                  $(LIBNSL_LIBNAME).so; \
@@ -61,7 +61,7 @@ $(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
 libnsl-stage: $(LIBNSL_BUILD_DIR)/.staged
 
 $(LIBNSL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libnsl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -76,8 +76,8 @@ $(LIBNSL_IPK_DIR)/CONTROL/control:
 
 $(LIBNSL_IPK): $(LIBNSL_BUILD_DIR)/.built
 	rm -rf $(LIBNSL_IPK_DIR) $(BUILD_DIR)/libnsl_*_$(TARGET_ARCH).ipk
-	install -d $(LIBNSL_IPK_DIR)/opt/lib
-	install -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(LIBNSL_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_IPK_DIR)/opt/lib
 	(cd $(LIBNSL_IPK_DIR)/opt/lib; \
 	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
                $(LIBNSL_LIBNAME).so; \

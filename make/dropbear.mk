@@ -48,7 +48,7 @@ $(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH
 	$(DROPBEAR_UNZIP) $(DL_DIR)/$(DROPBEAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DROPBEAR_PATCHES)" ; \
 		then cat $(DROPBEAR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DROPBEAR_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DROPBEAR_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(DROPBEAR_DIR) $(@D)
 	(cd $(@D) && \
@@ -83,7 +83,7 @@ dropbear: $(DROPBEAR_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/dropbear
 #
 $(DROPBEAR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dropbear" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,19 +99,19 @@ $(DROPBEAR_IPK_DIR)/CONTROL/control:
 
 $(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/.built
 	rm -rf $(DROPBEAR_IPK_DIR) $(BUILD_DIR)/dropbear_*_$(TARGET_ARCH).ipk
-	install -d $(DROPBEAR_IPK_DIR)/opt/sbin $(DROPBEAR_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(DROPBEAR_IPK_DIR)/opt/sbin $(DROPBEAR_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(DROPBEAR_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_IPK_DIR)/opt/sbin/dropbearmulti
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbear
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearkey
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearconvert
 	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti dbclient
-	install -d $(DROPBEAR_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DROPBEAR_SOURCE_DIR)/rc.dropbear $(DROPBEAR_IPK_DIR)/opt/etc/init.d/S51dropbear
-	install -d $(DROPBEAR_IPK_DIR)/opt/etc/default
-	install -m 755 $(DROPBEAR_SOURCE_DIR)/dropbear.default $(DROPBEAR_IPK_DIR)/opt/etc/default/dropbear
+	$(INSTALL) -d $(DROPBEAR_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DROPBEAR_SOURCE_DIR)/rc.dropbear $(DROPBEAR_IPK_DIR)/opt/etc/init.d/S51dropbear
+	$(INSTALL) -d $(DROPBEAR_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 755 $(DROPBEAR_SOURCE_DIR)/dropbear.default $(DROPBEAR_IPK_DIR)/opt/etc/default/dropbear
 	$(MAKE) $(DROPBEAR_IPK_DIR)/CONTROL/control
-	install -m 644 $(DROPBEAR_SOURCE_DIR)/postinst $(DROPBEAR_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(DROPBEAR_SOURCE_DIR)/prerm    $(DROPBEAR_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(DROPBEAR_SOURCE_DIR)/postinst $(DROPBEAR_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(DROPBEAR_SOURCE_DIR)/prerm    $(DROPBEAR_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
                 sed -i -e '/^[  ]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
                         $(DROPBEAR_IPK_DIR)/CONTROL/postinst $(DROPBEAR_IPK_DIR)/CONTROL/prerm; \

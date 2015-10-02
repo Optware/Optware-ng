@@ -109,7 +109,7 @@ $(NEON_BUILD_DIR)/.configured: $(DL_DIR)/$(NEON_SOURCE) $(NEON_PATCHES) make/neo
 	$(MAKE) expat-stage libxml2-stage openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(NEON_DIR) $(@D)
 	$(NEON_UNZIP) $(DL_DIR)/$(NEON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(NEON_PATCHES) | patch -d $(BUILD_DIR)/$(NEON_DIR) -p1
+	#cat $(NEON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NEON_DIR) -p1
 	mv $(BUILD_DIR)/$(NEON_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -165,7 +165,7 @@ neon-stage: $(NEON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/neon
 #
 $(NEON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: neon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

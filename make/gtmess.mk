@@ -119,7 +119,7 @@ endif
 	$(GTMESS_UNZIP) $(DL_DIR)/$(GTMESS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GTMESS_PATCHES)" ; \
 		then cat $(GTMESS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GTMESS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GTMESS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GTMESS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GTMESS_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ gtmess-stage: $(GTMESS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gtmess
 #
 $(GTMESS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gtmess" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(GTMESS_IPK_DIR)/CONTROL/control:
 $(GTMESS_IPK): $(GTMESS_BUILD_DIR)/.built
 	rm -rf $(GTMESS_IPK_DIR) $(BUILD_DIR)/gtmess_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTMESS_BUILD_DIR) DESTDIR=$(GTMESS_IPK_DIR) install-strip
-#	install -d $(GTMESS_IPK_DIR)/opt/etc/
-#	install -m 644 $(GTMESS_SOURCE_DIR)/gtmess.conf $(GTMESS_IPK_DIR)/opt/etc/gtmess.conf
-#	install -d $(GTMESS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GTMESS_SOURCE_DIR)/rc.gtmess $(GTMESS_IPK_DIR)/opt/etc/init.d/SXXgtmess
+#	$(INSTALL) -d $(GTMESS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GTMESS_SOURCE_DIR)/gtmess.conf $(GTMESS_IPK_DIR)/opt/etc/gtmess.conf
+#	$(INSTALL) -d $(GTMESS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GTMESS_SOURCE_DIR)/rc.gtmess $(GTMESS_IPK_DIR)/opt/etc/init.d/SXXgtmess
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GTMESS_IPK_DIR)/opt/etc/init.d/SXXgtmess
 	$(MAKE) $(GTMESS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GTMESS_SOURCE_DIR)/postinst $(GTMESS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GTMESS_SOURCE_DIR)/postinst $(GTMESS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GTMESS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GTMESS_SOURCE_DIR)/prerm $(GTMESS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GTMESS_SOURCE_DIR)/prerm $(GTMESS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GTMESS_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

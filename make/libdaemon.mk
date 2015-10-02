@@ -110,7 +110,7 @@ $(LIBDAEMON_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDAEMON_SOURCE) $(LIBDAEMON_PA
 	$(LIBDAEMON_UNZIP) $(DL_DIR)/$(LIBDAEMON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDAEMON_PATCHES)" ; \
 		then cat $(LIBDAEMON_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBDAEMON_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBDAEMON_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBDAEMON_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBDAEMON_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ libdaemon-stage: $(LIBDAEMON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdaemon
 #
 $(LIBDAEMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libdaemon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(LIBDAEMON_IPK): $(LIBDAEMON_BUILD_DIR)/.built
 	rm -rf $(LIBDAEMON_IPK_DIR) $(BUILD_DIR)/libdaemon_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDAEMON_BUILD_DIR) DESTDIR=$(LIBDAEMON_IPK_DIR) install-strip
 	rm -f $(LIBDAEMON_IPK_DIR)/opt/lib/libdaemon.la
-#	install -d $(LIBDAEMON_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBDAEMON_SOURCE_DIR)/libdaemon.conf $(LIBDAEMON_IPK_DIR)/opt/etc/libdaemon.conf
-#	install -d $(LIBDAEMON_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBDAEMON_SOURCE_DIR)/rc.libdaemon $(LIBDAEMON_IPK_DIR)/opt/etc/init.d/SXXlibdaemon
+#	$(INSTALL) -d $(LIBDAEMON_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBDAEMON_SOURCE_DIR)/libdaemon.conf $(LIBDAEMON_IPK_DIR)/opt/etc/libdaemon.conf
+#	$(INSTALL) -d $(LIBDAEMON_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBDAEMON_SOURCE_DIR)/rc.libdaemon $(LIBDAEMON_IPK_DIR)/opt/etc/init.d/SXXlibdaemon
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDAEMON_IPK_DIR)/opt/etc/init.d/SXXlibdaemon
 	$(MAKE) $(LIBDAEMON_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBDAEMON_SOURCE_DIR)/postinst $(LIBDAEMON_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBDAEMON_SOURCE_DIR)/postinst $(LIBDAEMON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDAEMON_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBDAEMON_SOURCE_DIR)/prerm $(LIBDAEMON_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBDAEMON_SOURCE_DIR)/prerm $(LIBDAEMON_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDAEMON_IPK_DIR)/CONTROL/prerm
 	echo $(LIBDAEMON_CONFFILES) | sed -e 's/ /\n/g' > $(LIBDAEMON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDAEMON_IPK_DIR)

@@ -153,7 +153,7 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 	$(LIBTORRENT_UNZIP) $(DL_DIR)/$(LIBTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBTORRENT_PATCHES)" ; \
 		then cat $(LIBTORRENT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBTORRENT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBTORRENT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBTORRENT_DIR)" != "$(LIBTORRENT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBTORRENT_DIR) $(LIBTORRENT_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ ifdef LIBTORRENT_SVN_REV
 	)
 endif
 	if test -n "$(LIBTORRENT_POST_AC_PATCHES)" ; then \
-		cat $(LIBTORRENT_POST_AC_PATCHES) | patch -d $(@D) -p0 ; \
+		cat $(LIBTORRENT_POST_AC_PATCHES) | $(PATCH) -d $(@D) -p0 ; \
 	fi
 # fix for newer gcc error: ‘NULL’ was not declared in this scope
 	sed -i -e '/^#define LIBTORRENT_COMMON_H/s/$$/\n\n#include <cstddef>/' \
@@ -228,7 +228,7 @@ libtorrent-stage: $(LIBTORRENT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libtorrent
 #
 $(LIBTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libtorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

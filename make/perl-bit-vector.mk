@@ -41,7 +41,7 @@ $(PERL-BIT-VECTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-BIT-VECTOR_SOURCE) $(
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-BIT-VECTOR_DIR) $(@D)
 	$(PERL-BIT-VECTOR_UNZIP) $(DL_DIR)/$(PERL-BIT-VECTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-BIT-VECTOR_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-BIT-VECTOR_DIR) -p1
+#	cat $(PERL-BIT-VECTOR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-BIT-VECTOR_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-BIT-VECTOR_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -74,7 +74,7 @@ $(PERL-BIT-VECTOR_BUILD_DIR)/.staged: $(PERL-BIT-VECTOR_BUILD_DIR)/.built
 perl-bit-vector-stage: $(PERL-BIT-VECTOR_BUILD_DIR)/.staged
 
 $(PERL-BIT-VECTOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-bit-vector" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -97,8 +97,8 @@ $(PERL-BIT-VECTOR_IPK): $(PERL-BIT-VECTOR_BUILD_DIR)/.built
 	)
 	find $(PERL-BIT-VECTOR_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-BIT-VECTOR_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PERL-BIT-VECTOR_SOURCE_DIR)/postinst $(PERL-BIT-VECTOR_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PERL-BIT-VECTOR_SOURCE_DIR)/prerm $(PERL-BIT-VECTOR_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PERL-BIT-VECTOR_SOURCE_DIR)/postinst $(PERL-BIT-VECTOR_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PERL-BIT-VECTOR_SOURCE_DIR)/prerm $(PERL-BIT-VECTOR_IPK_DIR)/CONTROL/prerm
 	echo $(PERL-BIT-VECTOR_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-BIT-VECTOR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-BIT-VECTOR_IPK_DIR)
 

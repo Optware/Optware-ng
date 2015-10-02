@@ -37,7 +37,7 @@ GLIBC-OPT_IPK=$(BUILD_DIR)/glibc-opt_$(GLIBC-OPT_VERSION)-$(GLIBC-OPT_IPK_VERSIO
 # necessary to create a seperate control file under sources/buildroot
 #
 $(GLIBC-OPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: glibc-opt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -71,7 +71,7 @@ GLIBC-OPT_LIBS_PATTERN=$(patsubst %,$(GLIBC-OPT_LIBS_SOURCE_DIR)/%*so*,$(GLIBC-O
 
 $(GLIBC-OPT_BUILD_DIR)/.staged: make/glibc-opt.mk
 	rm -rf $(@D)
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	cp -af $(GLIBC-OPT_LIBS_PATTERN) $(STAGING_LIB_DIR)
 	touch $@
 
@@ -79,19 +79,19 @@ glibc-opt-stage: $(GLIBC-OPT_BUILD_DIR)/.staged
 
 $(GLIBC-OPT_IPK): make/glibc-opt.mk
 	rm -rf $(GLIBC-OPT_IPK_DIR) $(BUILD_DIR)/glibc-opt_*_$(TARGET_ARCH).ipk
-	install -d $(GLIBC-OPT_IPK_DIR)
+	$(INSTALL) -d $(GLIBC-OPT_IPK_DIR)
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(GLIBC-OPT_IPK_DIR) install-strip
 #	tar -xv -C $(GLIBC-OPT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
 #		--wildcards $(GLIBC-OPT_LIBS_PATTERN) ./opt/sbin/ldconfig
-	install -d $(GLIBC-OPT_IPK_DIR)/opt/etc
-	install -d $(GLIBC-OPT_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(GLIBC-OPT_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(GLIBC-OPT_IPK_DIR)/opt/lib
 	cp -af $(GLIBC-OPT_LIBS_PATTERN) $(GLIBC-OPT_IPK_DIR)/opt/lib
 	-$(STRIP_COMMAND) $(patsubst %, $(GLIBC-OPT_IPK_DIR)/opt/lib/%*so*, $(GLIBC-OPT_LIBS))
 	### package non-stripped libpthread and libthread_db
 	cp -f $(GLIBC-OPT_LIBS_SOURCE_DIR)/libpthread* $(GLIBC-OPT_LIBS_SOURCE_DIR)/libthread_db* \
 							$(GLIBC-OPT_IPK_DIR)/opt/lib
 	$(MAKE) $(GLIBC-OPT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(GLIBC-OPT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(GLIBC-OPT_IPK_DIR)/CONTROL/prerm
 #	echo $(GLIBC-OPT_CONFFILES) | sed -e 's/ /\n/g' > $(GLIBC-OPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GLIBC-OPT_IPK_DIR)
 

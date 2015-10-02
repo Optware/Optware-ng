@@ -1,7 +1,7 @@
 #!/bin/sh
-chown nobody /opt/var/bitlbee
+chown nobody %OPTWARE_TARGET_PREFIX%/var/bitlbee
 echo bitlbee is configured to run as user nobody
-echo to change this change the ownership of /opt/var/bitlbee and change
-echo the user in /opt/etc/xinetd.d/bitlbee
+echo to change this change the ownership of %OPTWARE_TARGET_PREFIX%/var/bitlbee and change
+echo the user in %OPTWARE_TARGET_PREFIX%/etc/xinetd.d/bitlbee
 echo
-echo The configuration  file is /opt/etc/bitlbee/bitlbee.conf
+echo The configuration  file is %OPTWARE_TARGET_PREFIX%/etc/bitlbee/bitlbee.conf

@@ -1,15 +1,15 @@
 #!/bin/sh
 
-adduser -S -s /dev/null -H -h /opt/share/clamav -D clamav
+adduser -S -s /dev/null -H -h %OPTWARE_TARGET_PREFIX%/share/clamav -D clamav
 
-chown clamav:clamav /opt/share/clamav
-chown clamav:clamav /opt/share/clamav/*
+chown clamav:clamav %OPTWARE_TARGET_PREFIX%/share/clamav
+chown clamav:clamav %OPTWARE_TARGET_PREFIX%/share/clamav/*
 
-mkdir -p /opt/tmp
-chmod 1777 /opt/tmp
+mkdir -p %OPTWARE_TARGET_PREFIX%/tmp
+chmod 1777 %OPTWARE_TARGET_PREFIX%/tmp
 
-mkdir -p /opt/var/log
-chmod 755 /opt/var/log
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/log
+chmod 755 %OPTWARE_TARGET_PREFIX%/var/log
 
-touch /opt/var/log/freshclam.log
-chown clamav:clamav /opt/var/log/freshclam.log 
+touch %OPTWARE_TARGET_PREFIX%/var/log/freshclam.log
+chown clamav:clamav %OPTWARE_TARGET_PREFIX%/var/log/freshclam.log 

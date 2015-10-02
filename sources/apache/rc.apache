@@ -4,4 +4,4 @@ if [ ! -e /etc/nsswitch.conf ]; then
     echo "hosts: files dns" >/etc/nsswitch.conf
 fi
 
-/opt/sbin/httpd -k restart
+%OPTWARE_TARGET_PREFIX%/sbin/httpd -k restart

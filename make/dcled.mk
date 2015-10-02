@@ -111,7 +111,7 @@ $(DCLED_BUILD_DIR)/.configured: $(DL_DIR)/$(DCLED_SOURCE) $(DCLED_PATCHES) make/
 	$(DCLED_UNZIP) $(DL_DIR)/$(DCLED_SOURCE) | tar -C $(@D) -xvf -
 	if test -n "$(DCLED_PATCHES)" ; \
 		then cat $(DCLED_PATCHES) | \
-		patch -d $(@D) -p0 ; \
+		$(PATCH) -d $(@D) -p0 ; \
 	fi
 #	if test "$(BUILD_DIR)/$(DCLED_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DCLED_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ dcled: $(DCLED_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/dcled
 #
 $(DCLED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dcled" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,11 +192,11 @@ $(DCLED_IPK_DIR)/CONTROL/control:
 $(DCLED_IPK): $(DCLED_BUILD_DIR)/.built
 	rm -rf $(DCLED_IPK_DIR) $(BUILD_DIR)/dcled_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(DCLED_BUILD_DIR) DESTDIR=$(DCLED_IPK_DIR) install-strip
-	install -d $(DCLED_IPK_DIR)/opt/bin
-	install $(<D)/dcled $(DCLED_IPK_DIR)/opt/bin/dcled
+	$(INSTALL) -d $(DCLED_IPK_DIR)/opt/bin
+	$(INSTALL) $(<D)/dcled $(DCLED_IPK_DIR)/opt/bin/dcled
 	$(STRIP_COMMAND) $(DCLED_IPK_DIR)/opt/bin/dcled
-	install -d $(DCLED_IPK_DIR)/opt/share/doc/dcled
-	install $(<D)/README $(DCLED_IPK_DIR)/opt/share/doc/dcled/
+	$(INSTALL) -d $(DCLED_IPK_DIR)/opt/share/doc/dcled
+	$(INSTALL) $(<D)/README $(DCLED_IPK_DIR)/opt/share/doc/dcled/
 	$(MAKE) $(DCLED_IPK_DIR)/CONTROL/control
 	echo $(DCLED_CONFFILES) | sed -e 's/ /\n/g' > $(DCLED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DCLED_IPK_DIR)

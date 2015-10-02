@@ -1,5 +1,5 @@
 #!/bin/sh
 
-if [ ! -f /opt/etc/nail.rc ] ;  then
-    cp /opt/doc/nail/nail.rc /opt/etc/nail.rc
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/nail.rc ] ;  then
+    cp %OPTWARE_TARGET_PREFIX%/doc/nail/nail.rc %OPTWARE_TARGET_PREFIX%/etc/nail.rc
 fi

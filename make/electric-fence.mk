@@ -111,7 +111,7 @@ $(ELECTRIC_FENCE_BUILD_DIR)/.configured: $(DL_DIR)/$(ELECTRIC_FENCE_SOURCE) $(EL
 	$(ELECTRIC_FENCE_UNZIP) $(DL_DIR)/$(ELECTRIC_FENCE_SOURCE) | tar -C $(BUILD_DIR)/$(ELECTRIC_FENCE_DIR) -xvf - --strip 1
 	if test -n "$(ELECTRIC_FENCE_PATCHES)" ; \
 		then cat $(ELECTRIC_FENCE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ELECTRIC_FENCE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ELECTRIC_FENCE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ELECTRIC_FENCE_DIR)" != "$(ELECTRIC_FENCE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ELECTRIC_FENCE_DIR) $(ELECTRIC_FENCE_BUILD_DIR) ; \
@@ -145,10 +145,10 @@ electric-fence: $(ELECTRIC_FENCE_BUILD_DIR)/.built
 #
 $(ELECTRIC_FENCE_BUILD_DIR)/.staged: $(ELECTRIC_FENCE_BUILD_DIR)/.built
 	rm -f $(ELECTRIC_FENCE_BUILD_DIR)/.staged
-	install -d $(STAGING_LIB_DIR)
-	install -d $(STAGING_PREFIX)/man/man3
-	install -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.a  $(STAGING_LIB_DIR)
-	install -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.3  $(STAGING_PREFIX)/man/man3
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_PREFIX)/man/man3
+	$(INSTALL) -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.a  $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.3  $(STAGING_PREFIX)/man/man3
 
 	touch $(ELECTRIC_FENCE_BUILD_DIR)/.staged
 
@@ -159,7 +159,7 @@ electric-fence-stage: $(ELECTRIC_FENCE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/electric-fence
 #
 $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: electric-fence" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,16 +187,16 @@ $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/control:
 #
 $(ELECTRIC_FENCE_IPK): $(ELECTRIC_FENCE_BUILD_DIR)/.built
 	rm -rf $(ELECTRIC_FENCE_IPK_DIR) $(BUILD_DIR)/electric-fence_*_$(TARGET_ARCH).ipk
-	install -d $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
-	install -m 755 $(ELECTRIC_FENCE_BUILD_DIR)/eftest $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
-	install -m 755 $(ELECTRIC_FENCE_BUILD_DIR)/tstheap $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
-	install -d $(ELECTRIC_FENCE_IPK_DIR)/opt/lib
-	install -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.a  $(ELECTRIC_FENCE_IPK_DIR)/opt/lib/
-	install -d $(ELECTRIC_FENCE_IPK_DIR)/opt/man/man3
-	install -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.3 $(ELECTRIC_FENCE_IPK_DIR)/opt/man/man3
+	$(INSTALL) -d $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ELECTRIC_FENCE_BUILD_DIR)/eftest $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ELECTRIC_FENCE_BUILD_DIR)/tstheap $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ELECTRIC_FENCE_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.a  $(ELECTRIC_FENCE_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(ELECTRIC_FENCE_IPK_DIR)/opt/man/man3
+	$(INSTALL) -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.3 $(ELECTRIC_FENCE_IPK_DIR)/opt/man/man3
 	$(MAKE) $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/control
-	install -m 755 $(ELECTRIC_FENCE_SOURCE_DIR)/postinst $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ELECTRIC_FENCE_SOURCE_DIR)/prerm $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(ELECTRIC_FENCE_SOURCE_DIR)/postinst $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ELECTRIC_FENCE_SOURCE_DIR)/prerm $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/prerm
 #	echo $(ELECTRIC_FENCE_CONFFILES) | sed -e 's/ /\n/g' > $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ELECTRIC_FENCE_IPK_DIR)
 

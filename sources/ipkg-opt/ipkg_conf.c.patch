@@ -5,7 +5,7 @@
       char * lists_dir =NULL;
       glob_t globbuf;
 -     char *etc_ipkg_conf_pattern = "/etc/ipkg/*.conf";
-+     char *etc_ipkg_conf_pattern = "/opt/etc/ipkg/*.conf";
++     char *etc_ipkg_conf_pattern = "%OPTWARE_TARGET_PREFIX%/etc/ipkg/*.conf";
       char *pending_dir  =NULL;
  
       memset(conf, 0, sizeof(ipkg_conf_t));
@@ -14,7 +14,7 @@
  
       if (args->offline_root) 
 -	  sprintf_alloc(&etc_ipkg_conf_pattern, "%s/etc/ipkg/*.conf", args->offline_root);
-+	  sprintf_alloc(&etc_ipkg_conf_pattern, "%s/opt/etc/ipkg/*.conf", args->offline_root);
++	  sprintf_alloc(&etc_ipkg_conf_pattern, "%s%OPTWARE_TARGET_PREFIX%/etc/ipkg/*.conf", args->offline_root);
       memset(&globbuf, 0, sizeof(globbuf));
       err = glob(etc_ipkg_conf_pattern, 0, NULL, &globbuf);
       if (!err) {

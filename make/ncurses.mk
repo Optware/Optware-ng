@@ -114,7 +114,7 @@ $(NCURSES_DIR)/.staged: $(NCURSES_DIR)/.built
 ncurses-stage: $(NCURSES_DIR)/.staged
 
 $(NCURSES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ncurses" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -128,7 +128,7 @@ $(NCURSES_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(NCURSES_CONFLICTS)" >>$@
 
 $(NCURSES-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ncurses-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -146,7 +146,7 @@ $(NCURSES_IPK) $(NCURSES-DEV_IPK): $(NCURSES_DIR)/.built
 	rm -rf $(NCURSES-DEV_IPK_DIR) $(BUILD_DIR)/ncurses-dev_*_$(TARGET_ARCH).ipk
 	$(if $(filter $(HOSTCC), $(TARGET_CC)),,PATH=$(NCURSES_HOST_BUILD_DIR)/progs:$$PATH) \
 		$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
-		install.libs install.progs install.data
+		$(INSTALL).libs install.progs install.data
 	rm -rf $(NCURSES_IPK_DIR)/opt/include
 	rm -f $(NCURSES_IPK_DIR)/opt/lib/*.a
 	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/bin/clear \
@@ -170,7 +170,7 @@ endif
 			$(NCURSES_IPK_DIR)/CONTROL/postinst $(NCURSES_IPK_DIR)/CONTROL/prerm; \
 	fi
 	# ncurses-dev
-	install -d $(NCURSES-DEV_IPK_DIR)/opt/include/ncurses
+	$(INSTALL) -d $(NCURSES-DEV_IPK_DIR)/opt/include/ncurses
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES-DEV_IPK_DIR) install.includes
 	ln -sf ncurses/ncurses.h $(NCURSES-DEV_IPK_DIR)/opt/include/
 	ln -sf ncurses/curses.h $(NCURSES-DEV_IPK_DIR)/opt/include/

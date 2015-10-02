@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/opt/sbin/httpd -k stop
+%OPTWARE_TARGET_PREFIX%/sbin/httpd -k stop
 
-update-alternatives --remove htpasswd /opt/sbin/apache-htpasswd
-update-alternatives --remove httpd /opt/sbin/apache-httpd
+update-alternatives --remove htpasswd %OPTWARE_TARGET_PREFIX%/sbin/apache-htpasswd
+update-alternatives --remove httpd %OPTWARE_TARGET_PREFIX%/sbin/apache-httpd

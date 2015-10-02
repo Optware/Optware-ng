@@ -113,7 +113,7 @@ $(PYOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(PYOGG_SOURCE) $(PYOGG_PATCHES) make/
 	$(PYOGG_UNZIP) $(DL_DIR)/$(PYOGG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PYOGG_PATCHES)" ; \
 		then cat $(PYOGG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PYOGG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PYOGG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PYOGG_DIR)" != "$(PYOGG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PYOGG_DIR) $(PYOGG_BUILD_DIR) ; \
@@ -160,7 +160,7 @@ pyogg-stage: $(PYOGG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pyogg
 #
 $(PYOGG_IPK_DIR)/CONTROL/control:
-	@install -d $(PYOGG_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PYOGG_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: pyogg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

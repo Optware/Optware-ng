@@ -117,7 +117,7 @@ endif
 	$(OPENVPN_UNZIP) $(DL_DIR)/$(OPENVPN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPENVPN_PATCHES)" ; \
 		then cat $(OPENVPN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENVPN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPENVPN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENVPN_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(OPENVPN_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ openvpn-stage: $(OPENVPN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/openvpn
 #
 $(OPENVPN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openvpn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,45 +195,45 @@ $(OPENVPN_IPK_DIR)/CONTROL/control:
 $(OPENVPN_IPK): $(OPENVPN_BUILD_DIR)/.built
 	rm -rf $(OPENVPN_IPK_DIR) $(BUILD_DIR)/openvpn_*_$(TARGET_ARCH).ipk
 	# Install server to /opt/sbin
-	install -d $(OPENVPN_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(OPENVPN_BUILD_DIR)/openvpn -o $(OPENVPN_IPK_DIR)/opt/sbin/openvpn
 
 	# xinetd startup file
-	install -d $(OPENVPN_IPK_DIR)/opt/etc/xinetd.d
-	install -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.xinetd $(OPENVPN_IPK_DIR)/opt/etc/xinetd.d/openvpn
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.xinetd $(OPENVPN_IPK_DIR)/opt/etc/xinetd.d/openvpn
 
 	# init.d startup file
-	install -d $(OPENVPN_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(OPENVPN_SOURCE_DIR)/S20openvpn $(OPENVPN_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(OPENVPN_SOURCE_DIR)/S20openvpn $(OPENVPN_IPK_DIR)/opt/etc/init.d
 
 	# openvpn config files
-	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn
-	install -m 644 $(OPENVPN_SOURCE_DIR)/openvpn.conf $(OPENVPN_IPK_DIR)/opt/etc/openvpn
-	install -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.up $(OPENVPN_IPK_DIR)/opt/etc/openvpn
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn
+	$(INSTALL) -m 644 $(OPENVPN_SOURCE_DIR)/openvpn.conf $(OPENVPN_IPK_DIR)/opt/etc/openvpn
+	$(INSTALL) -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.up $(OPENVPN_IPK_DIR)/opt/etc/openvpn
 
 	# openvpn loopback test 
-	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-config-files/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
+	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/sample-config-files/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
 
 	# openvpn sample keys
-	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
+	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
 
 	# openvpn sample scripts
-	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-scripts
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-scripts/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-scripts
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-scripts
+	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/sample-scripts/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-scripts
 
 	# Install man pages
-	install -d $(OPENVPN_IPK_DIR)/opt/man/man8
-	install -m 644 $(OPENVPN_BUILD_DIR)/openvpn.8 $(OPENVPN_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/openvpn.8 $(OPENVPN_IPK_DIR)/opt/man/man8
 
 	# Create log directory
-	install -d $(OPENVPN_IPK_DIR)/opt/var/log/openvpn
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/var/log/openvpn
 
 	# Install control files
 	make  $(OPENVPN_IPK_DIR)/CONTROL/control
-#	install -m 644 $(OPENVPN_SOURCE_DIR)/postinst $(OPENVPN_IPK_DIR)/CONTROL
-#	install -m 644 $(OPENVPN_SOURCE_DIR)/prerm $(OPENVPN_IPK_DIR)/CONTROL
+#	$(INSTALL) -m 644 $(OPENVPN_SOURCE_DIR)/postinst $(OPENVPN_IPK_DIR)/CONTROL
+#	$(INSTALL) -m 644 $(OPENVPN_SOURCE_DIR)/prerm $(OPENVPN_IPK_DIR)/CONTROL
 	echo $(OPENVPN_CONFFILES) | sed -e 's/ /\n/g' > $(OPENVPN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENVPN_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(OPENVPN_IPK_DIR)

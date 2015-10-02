@@ -5,4 +5,4 @@ if [ -n "`pidof mt-daapd`" ] ; then
 fi
 
 sleep 2
-/opt/sbin/mt-daapd -c /opt/etc/mt-daapd/mt-daapd.conf
+%OPTWARE_TARGET_PREFIX%/sbin/mt-daapd -c %OPTWARE_TARGET_PREFIX%/etc/mt-daapd/mt-daapd.conf

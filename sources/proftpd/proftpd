@@ -8,8 +8,8 @@ service ftp
        instances        = 30
        wait             = no
        user             = root
-       server           = /opt/sbin/proftpd
-       server_args	= --config /opt/etc/proftpd.conf
+       server           = %OPTWARE_TARGET_PREFIX%/sbin/proftpd
+       server_args	= --config %OPTWARE_TARGET_PREFIX%/etc/proftpd.conf
        log_on_success   = HOST PID
        log_on_failure   = HOST
        disable          = no

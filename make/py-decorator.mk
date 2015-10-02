@@ -115,7 +115,7 @@ $(PY-DECORATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DEC
 	mkdir -p $(BUILD_DIR)/$(PY-DECORATOR_DIR)
 	$(PY-DECORATOR_UNZIP) $(DL_DIR)/$(PY-DECORATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-DECORATOR_PATCHES)" ; then \
-	    cat $(PY-DECORATOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
+	    cat $(PY-DECORATOR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-DECORATOR_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -126,7 +126,7 @@ $(PY-DECORATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATOR_SOURCE) $(PY-DEC
 	mkdir -p $(BUILD_DIR)/$(PY-DECORATOR_DIR)
 	$(PY-DECORATOR_UNZIP) $(DL_DIR)/$(PY-DECORATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-DECORATOR_PATCHES)" ; then \
-	    cat $(PY-DECORATOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
+	    cat $(PY-DECORATOR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-DECORATOR_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-DECORATOR_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -164,7 +164,7 @@ py-decorator-stage: $(PY-DECORATOR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-decorator
 #
 $(PY25-DECORATOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-decorator" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -178,7 +178,7 @@ $(PY25-DECORATOR_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-DECORATOR_CONFLICTS)" >>$@
 
 $(PY26-DECORATOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-decorator" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

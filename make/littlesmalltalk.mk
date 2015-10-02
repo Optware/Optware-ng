@@ -130,7 +130,7 @@ $(LITTLESMALLTALK_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LITTLESMA
 	$(LITTLESMALLTALK_UNZIP) $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(LITTLESMALLTALK_PATCHES)" ; \
 		then cat $(LITTLESMALLTALK_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(@D) ; \
@@ -148,7 +148,7 @@ endif
 	$(LITTLESMALLTALK_UNZIP) $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LITTLESMALLTALK_PATCHES)" ; \
 		then cat $(LITTLESMALLTALK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LITTLESMALLTALK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LITTLESMALLTALK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LITTLESMALLTALK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(@D) ; \
@@ -191,7 +191,7 @@ littlesmalltalk-stage: $(LITTLESMALLTALK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/littlesmalltalk
 #
 $(LITTLESMALLTALK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: littlesmalltalk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -220,14 +220,14 @@ $(LITTLESMALLTALK_IPK_DIR)/CONTROL/control:
 $(LITTLESMALLTALK_IPK): $(LITTLESMALLTALK_BUILD_DIR)/.built
 	rm -rf $(LITTLESMALLTALK_IPK_DIR) $(BUILD_DIR)/littlesmalltalk_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(LITTLESMALLTALK_BUILD_DIR) DESTDIR=$(LITTLESMALLTALK_IPK_DIR) install-strip
-	install -d $(LITTLESMALLTALK_IPK_DIR)/opt/bin
-	install -m 755 $(LITTLESMALLTALK_BUILD_DIR)/bin/st $(LITTLESMALLTALK_IPK_DIR)/opt/bin/lst5
+	$(INSTALL) -d $(LITTLESMALLTALK_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(LITTLESMALLTALK_BUILD_DIR)/bin/st $(LITTLESMALLTALK_IPK_DIR)/opt/bin/lst5
 	$(STRIP_COMMAND) $(LITTLESMALLTALK_IPK_DIR)/opt/bin/lst5
-	install -d $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk
-	install -m 777 $(LITTLESMALLTALK_IMAGE) $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk/LittleSmalltalk.image
-	install -m 444 $(LITTLESMALLTALK_IMAGE) $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk/LittleSmalltalk-dist.image
-	install -m 444 $(LITTLESMALLTALK_BUILD_DIR)/README $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk/
-	install -m 444 $(LITTLESMALLTALK_BUILD_DIR)/LICENSE $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk/
+	$(INSTALL) -d $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk
+	$(INSTALL) -m 777 $(LITTLESMALLTALK_IMAGE) $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk/LittleSmalltalk.image
+	$(INSTALL) -m 444 $(LITTLESMALLTALK_IMAGE) $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk/LittleSmalltalk-dist.image
+	$(INSTALL) -m 444 $(LITTLESMALLTALK_BUILD_DIR)/README $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk/
+	$(INSTALL) -m 444 $(LITTLESMALLTALK_BUILD_DIR)/LICENSE $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk/
 	cp -rp $(LITTLESMALLTALK_BUILD_DIR)/examples/ $(LITTLESMALLTALK_IPK_DIR)/opt/share/littlesmalltalk/
 	$(MAKE) $(LITTLESMALLTALK_IPK_DIR)/CONTROL/control
 	echo $(LITTLESMALLTALK_CONFFILES) | sed -e 's/ /\n/g' > $(LITTLESMALLTALK_IPK_DIR)/CONTROL/conffiles

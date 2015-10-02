@@ -39,7 +39,7 @@ $(PERL-LIBNET_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LIBNET_SOURCE) $(PERL-LIB
 	rm -rf $(BUILD_DIR)/$(PERL-LIBNET_DIR) $(@D)
 	$(PERL-LIBNET_UNZIP) $(DL_DIR)/$(PERL-LIBNET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL-LIBNET_PATCHES)"; then \
-		cat $(PERL-LIBNET_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-LIBNET_DIR) -p1; \
+		cat $(PERL-LIBNET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-LIBNET_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PERL-LIBNET_DIR) $(@D)
 	touch $(@D)/libnet.cfg
@@ -71,7 +71,7 @@ $(PERL-LIBNET_BUILD_DIR)/.staged: $(PERL-LIBNET_BUILD_DIR)/.built
 perl-libnet-stage: $(PERL-LIBNET_BUILD_DIR)/.staged
 
 $(PERL-LIBNET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-libnet" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

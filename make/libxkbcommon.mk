@@ -116,7 +116,7 @@ $(LIBXKBCOMMON_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXKBCOMMON_SOURCE) $(LIBXKB
 	$(LIBXKBCOMMON_UNZIP) $(DL_DIR)/$(LIBXKBCOMMON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBXKBCOMMON_PATCHES)" ; \
 		then cat $(LIBXKBCOMMON_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBXKBCOMMON_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBXKBCOMMON_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBXKBCOMMON_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBXKBCOMMON_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ libxkbcommon-stage: $(LIBXKBCOMMON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libxkbcommon
 #
 $(LIBXKBCOMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libxkbcommon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(LIBXKBCOMMON_IPK): $(LIBXKBCOMMON_BUILD_DIR)/.built
 	rm -rf $(LIBXKBCOMMON_IPK_DIR) $(BUILD_DIR)/libxkbcommon_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBXKBCOMMON_BUILD_DIR) DESTDIR=$(LIBXKBCOMMON_IPK_DIR) install-strip
 	rm -f $(LIBXKBCOMMON_IPK_DIR)/opt/lib/*.la
-#	install -d $(LIBXKBCOMMON_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBXKBCOMMON_SOURCE_DIR)/libxkbcommon.conf $(LIBXKBCOMMON_IPK_DIR)/opt/etc/libxkbcommon.conf
-#	install -d $(LIBXKBCOMMON_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBXKBCOMMON_SOURCE_DIR)/rc.libxkbcommon $(LIBXKBCOMMON_IPK_DIR)/opt/etc/init.d/SXXlibxkbcommon
+#	$(INSTALL) -d $(LIBXKBCOMMON_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBXKBCOMMON_SOURCE_DIR)/libxkbcommon.conf $(LIBXKBCOMMON_IPK_DIR)/opt/etc/libxkbcommon.conf
+#	$(INSTALL) -d $(LIBXKBCOMMON_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBXKBCOMMON_SOURCE_DIR)/rc.libxkbcommon $(LIBXKBCOMMON_IPK_DIR)/opt/etc/init.d/SXXlibxkbcommon
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXKBCOMMON_IPK_DIR)/opt/etc/init.d/SXXlibxkbcommon
 	$(MAKE) $(LIBXKBCOMMON_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBXKBCOMMON_SOURCE_DIR)/postinst $(LIBXKBCOMMON_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBXKBCOMMON_SOURCE_DIR)/postinst $(LIBXKBCOMMON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXKBCOMMON_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBXKBCOMMON_SOURCE_DIR)/prerm $(LIBXKBCOMMON_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBXKBCOMMON_SOURCE_DIR)/prerm $(LIBXKBCOMMON_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXKBCOMMON_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

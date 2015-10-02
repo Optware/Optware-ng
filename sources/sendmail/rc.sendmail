@@ -16,7 +16,7 @@ case "$rc" in
         # Is it only my setup that has group-writeable root dir?
         # sendmail does not like at all.
         chmod og-w /
-	/opt/sbin/sendmail -L sm-mta -bd -q1h
+	%OPTWARE_TARGET_PREFIX%/sbin/sendmail -L sm-mta -bd -q1h
         echo ok
 	;;
     stop)

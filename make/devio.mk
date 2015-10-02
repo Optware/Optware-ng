@@ -110,7 +110,7 @@ $(DEVIO_BUILD_DIR)/.configured: $(DL_DIR)/$(DEVIO_SOURCE) $(DEVIO_PATCHES) make/
 	$(DEVIO_UNZIP) $(DL_DIR)/$(DEVIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DEVIO_PATCHES)" ; \
 		then cat $(DEVIO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DEVIO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DEVIO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DEVIO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DEVIO_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ devio-stage: $(DEVIO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/devio
 #
 $(DEVIO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: devio" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

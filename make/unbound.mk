@@ -119,7 +119,7 @@ $(UNBOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(UNBOUND_SOURCE) $(UNBOUND_PATCHES)
 	$(UNBOUND_UNZIP) $(DL_DIR)/$(UNBOUND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNBOUND_PATCHES)" ; \
 		then cat $(UNBOUND_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UNBOUND_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UNBOUND_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UNBOUND_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UNBOUND_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ unbound-stage: $(UNBOUND_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/unbound
 #
 $(UNBOUND_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: unbound" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,12 +201,12 @@ $(UNBOUND_IPK_DIR)/CONTROL/control:
 $(UNBOUND_IPK): $(UNBOUND_BUILD_DIR)/.built
 	rm -rf $(UNBOUND_IPK_DIR) $(BUILD_DIR)/unbound_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UNBOUND_BUILD_DIR) DESTDIR=$(UNBOUND_IPK_DIR) install
-	install -d $(UNBOUND_IPK_DIR)/opt/etc/
-	install -m 644 $(UNBOUND_SOURCE_DIR)/named.cache $(UNBOUND_IPK_DIR)/opt/etc/unbound/named.cache
-	install -m 644 $(UNBOUND_SOURCE_DIR)/root.key $(UNBOUND_IPK_DIR)/opt/etc/unbound/root.key
-	install -d $(UNBOUND_IPK_DIR)/opt/var/unbound
-	install -m 755 $(UNBOUND_SOURCE_DIR)/start.sh $(UNBOUND_IPK_DIR)/opt/var/unbound/start.sh
-	install -d $(UNBOUND_IPK_DIR)/opt/usr/lib
+	$(INSTALL) -d $(UNBOUND_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(UNBOUND_SOURCE_DIR)/named.cache $(UNBOUND_IPK_DIR)/opt/etc/unbound/named.cache
+	$(INSTALL) -m 644 $(UNBOUND_SOURCE_DIR)/root.key $(UNBOUND_IPK_DIR)/opt/etc/unbound/root.key
+	$(INSTALL) -d $(UNBOUND_IPK_DIR)/opt/var/unbound
+	$(INSTALL) -m 755 $(UNBOUND_SOURCE_DIR)/start.sh $(UNBOUND_IPK_DIR)/opt/var/unbound/start.sh
+	$(INSTALL) -d $(UNBOUND_IPK_DIR)/opt/usr/lib
 	cd $(UNBOUND_IPK_DIR)/opt/usr/lib; ln -s libldns.so.1.6.12 libldns.so.1
 	$(STRIP_COMMAND) \
 		$(UNBOUND_IPK_DIR)/opt/sbin/unbound \
@@ -217,9 +217,9 @@ $(UNBOUND_IPK): $(UNBOUND_BUILD_DIR)/.built
 	$(STRIP_COMMAND) \
 		$(UNBOUND_IPK_DIR)/opt/lib/libunbound.so.2.1.1
 	$(MAKE) $(UNBOUND_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UNBOUND_SOURCE_DIR)/postinst $(UNBOUND_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UNBOUND_SOURCE_DIR)/postinst $(UNBOUND_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UNBOUND_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UNBOUND_SOURCE_DIR)/prerm $(UNBOUND_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UNBOUND_SOURCE_DIR)/prerm $(UNBOUND_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UNBOUND_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 #		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

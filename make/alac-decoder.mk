@@ -109,7 +109,7 @@ $(ALAC_DECODER_BUILD_DIR)/.configured: $(DL_DIR)/$(ALAC_DECODER_SOURCE) $(ALAC_D
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(ALAC_DECODER_DIR) $(ALAC_DECODER_BUILD_DIR)
 	$(ALAC_DECODER_UNZIP) $(DL_DIR)/$(ALAC_DECODER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ALAC_DECODER_PATCHES) | patch -d $(BUILD_DIR)/$(ALAC_DECODER_DIR) -p1
+	cat $(ALAC_DECODER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ALAC_DECODER_DIR) -p1
 	mv $(BUILD_DIR)/$(ALAC_DECODER_DIR) $(ALAC_DECODER_BUILD_DIR)
 	(cd $(ALAC_DECODER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -150,7 +150,7 @@ alac-decoder: $(ALAC_DECODER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/alac_decoder
 #
 $(ALAC_DECODER_IPK_DIR)/CONTROL/control:
-	@install -d $(ALAC_DECODER_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ALAC_DECODER_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: alac-decoder" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -178,8 +178,8 @@ $(ALAC_DECODER_IPK_DIR)/CONTROL/control:
 $(ALAC_DECODER_IPK): $(ALAC_DECODER_BUILD_DIR)/.built
 	rm -rf $(ALAC_DECODER_IPK_DIR) $(BUILD_DIR)/alac-decoder_*_$(TARGET_ARCH).ipk
 	$(STRIP_COMMAND) $(ALAC_DECODER_BUILD_DIR)/alac
-	install -d $(ALAC_DECODER_IPK_DIR)/opt/bin
-	install -m 755 $(ALAC_DECODER_BUILD_DIR)/alac $(ALAC_DECODER_IPK_DIR)/opt/bin/alac
+	$(INSTALL) -d $(ALAC_DECODER_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ALAC_DECODER_BUILD_DIR)/alac $(ALAC_DECODER_IPK_DIR)/opt/bin/alac
 
 	$(MAKE) $(ALAC_DECODER_IPK_DIR)/CONTROL/control
 

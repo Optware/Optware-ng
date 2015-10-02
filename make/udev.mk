@@ -129,7 +129,7 @@ $(UDEV_BUILD_DIR)/.configured: $(DL_DIR)/$(UDEV_SOURCE) $(UDEV_PATCHES) make/ude
 	$(UDEV_UNZIP) $(DL_DIR)/$(UDEV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UDEV_PATCHES)" ; \
 		then cat $(UDEV_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UDEV_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UDEV_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UDEV_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UDEV_DIR) $(@D) ; \
@@ -186,7 +186,7 @@ udev-stage: $(UDEV_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/udev
 #
 $(UDEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: udev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,7 +201,7 @@ $(UDEV_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(UDEV_CONFLICTS)" >>$@
 
 $(LIBUDEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libudev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,7 +216,7 @@ $(LIBUDEV_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBUDEV_CONFLICTS)" >>$@
 
 $(LIBGUDEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libgudev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -248,19 +248,19 @@ $(UDEV_IPK) $(LIBUDEV_IPK) $(LIBGUDEV_IPK): $(UDEV_BUILD_DIR)/.built
 		$(LIBGUDEV_IPK_DIR) $(BUILD_DIR)/libgudev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UDEV_BUILD_DIR) DESTDIR=$(UDEV_IPK_DIR) install-strip
 	rm -f $(UDEV_IPK_DIR)/opt/lib/*.la
-	install -d $(LIBUDEV_IPK_DIR)/opt $(LIBGUDEV_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) -d $(LIBUDEV_IPK_DIR)/opt $(LIBGUDEV_IPK_DIR)/opt/lib/pkgconfig
 	mv -f $(UDEV_IPK_DIR)/opt/lib $(LIBUDEV_IPK_DIR)/opt
 	mv -f $(LIBUDEV_IPK_DIR)/opt/lib/libgudev-1.0.* $(LIBGUDEV_IPK_DIR)/opt/lib
 	mv -f $(LIBUDEV_IPK_DIR)/opt/lib/pkgconfig/gudev-1.0.pc $(LIBGUDEV_IPK_DIR)/opt/lib/pkgconfig
-#	install -d $(UDEV_IPK_DIR)/opt/etc/
-#	install -m 644 $(UDEV_SOURCE_DIR)/udev.conf $(UDEV_IPK_DIR)/opt/etc/udev.conf
-#	install -d $(UDEV_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UDEV_SOURCE_DIR)/rc.udev $(UDEV_IPK_DIR)/opt/etc/init.d/SXXudev
+#	$(INSTALL) -d $(UDEV_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(UDEV_SOURCE_DIR)/udev.conf $(UDEV_IPK_DIR)/opt/etc/udev.conf
+#	$(INSTALL) -d $(UDEV_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(UDEV_SOURCE_DIR)/rc.udev $(UDEV_IPK_DIR)/opt/etc/init.d/SXXudev
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDEV_IPK_DIR)/opt/etc/init.d/SXXudev
 	$(MAKE) $(UDEV_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UDEV_SOURCE_DIR)/postinst $(UDEV_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UDEV_SOURCE_DIR)/postinst $(UDEV_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDEV_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UDEV_SOURCE_DIR)/prerm $(UDEV_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UDEV_SOURCE_DIR)/prerm $(UDEV_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDEV_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

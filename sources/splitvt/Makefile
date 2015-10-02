@@ -12,7 +12,7 @@ LIBS =  -ltermcap -lnsl
 OBJS = splitvt.o misc.o utmp.o vt100.o videomem.o terminal.o vttest.o vtmouse.o \
        parserc.o lock.o cut-paste.o
 
-prefix=/opt
+prefix=%OPTWARE_TARGET_PREFIX%
 
 splitvt: $(OBJS)
 	$(CC) -s -o $@ $(OBJS) $(LDFLAGS) $(LIBS)

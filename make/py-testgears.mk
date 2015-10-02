@@ -102,7 +102,7 @@ $(PY-TESTGEARS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TESTGEARS_SOURCE) $(PY-TES
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TESTGEARS_DIR) $(PY-TESTGEARS_BUILD_DIR)
 	$(PY-TESTGEARS_UNZIP) $(DL_DIR)/$(PY-TESTGEARS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-TESTGEARS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TESTGEARS_DIR) -p1
+#	cat $(PY-TESTGEARS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TESTGEARS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TESTGEARS_DIR) $(PY-TESTGEARS_BUILD_DIR)
 	(cd $(PY-TESTGEARS_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -140,7 +140,7 @@ py-testgears-stage: $(PY-TESTGEARS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-testgears
 #
 $(PY-TESTGEARS_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-TESTGEARS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PY-TESTGEARS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-testgears" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

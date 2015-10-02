@@ -79,7 +79,7 @@ endif
 flex-stage: $(FLEX_BUILD_DIR)/.staged
 
 $(FLEX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: flex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

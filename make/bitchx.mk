@@ -107,7 +107,7 @@ $(BITCHX_BUILD_DIR)/.configured: $(DL_DIR)/$(BITCHX_SOURCE) $(BITCHX_PATCHES) ma
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(BITCHX_DIR) $(BITCHX_BUILD_DIR)
 	$(BITCHX_UNZIP) $(DL_DIR)/$(BITCHX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(BITCHX_PATCHES) | patch -d $(BUILD_DIR)/$(BITCHX_DIR) -p1
+	cat $(BITCHX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BITCHX_DIR) -p1
 	mv $(BUILD_DIR)/$(BITCHX_DIR) $(BITCHX_BUILD_DIR)
 	(cd $(BITCHX_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -153,7 +153,7 @@ bitchx-stage: $(BITCHX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bitchx
 #
 $(BITCHX_IPK_DIR)/CONTROL/control:
-	@install -d $(BITCHX_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(BITCHX_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: bitchx" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

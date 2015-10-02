@@ -46,7 +46,7 @@ $(PLAN9PORT_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PLAN9PORT_SOUR
 	$(PLAN9PORT_UNZIP) $(DL_DIR)/$(PLAN9PORT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PLAN9PORT_HOST_BUILD_PATCHES)" ; \
 		then cat $(PLAN9PORT_HOST_BUILD_PATCHES) | \
-		patch -bd $(HOST_BUILD_DIR)/$(PLAN9PORT_DIR) -p0 ; \
+		$(PATCH) -bd $(HOST_BUILD_DIR)/$(PLAN9PORT_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(PLAN9PORT_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(PLAN9PORT_DIR) $(@D) ; \
@@ -71,7 +71,7 @@ $(PLAN9PORT_BUILD_DIR)/.configured: $(PLAN9PORT_HOST_BUILD_DIR)/.staged $(PLAN9P
 	$(PLAN9PORT_UNZIP) $(DL_DIR)/$(PLAN9PORT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PLAN9PORT_PATCHES)" ; \
 		then cat $(PLAN9PORT_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(PLAN9PORT_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(PLAN9PORT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PLAN9PORT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PLAN9PORT_DIR) $(@D) ; \
@@ -116,7 +116,7 @@ $(PLAN9PORT_BUILD_DIR)/.staged: $(PLAN9PORT_BUILD_DIR)/.built
 plan9port-stage: $(PLAN9PORT_BUILD_DIR)/.staged
 
 $(PLAN9PORT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: plan9port" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -133,7 +133,7 @@ $(PLAN9PORT_IPK_DIR)/CONTROL/control:
 $(PLAN9PORT_IPK): $(PLAN9PORT_BUILD_DIR)/.built
 	rm -rf $(PLAN9PORT_IPK_DIR) $(BUILD_DIR)/plan9port_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PLAN9PORT_BUILD_DIR) DESTDIR=$(PLAN9PORT_IPK_DIR) install-strip
-	install -d $(PLAN9PORT_IPK_DIR)/opt
+	$(INSTALL) -d $(PLAN9PORT_IPK_DIR)/opt
 	cp -rp $(PLAN9PORT_BUILD_DIR) $(PLAN9PORT_IPK_DIR)/opt/plan9
 	$(MAKE) $(PLAN9PORT_IPK_DIR)/CONTROL/control
 	sed -e '/moveplan9.sh/s|$$| $(PLAN9PORT_BUILD_DIR)|' $(PLAN9PORT_SOURCE_DIR)/postinst \

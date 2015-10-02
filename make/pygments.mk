@@ -113,7 +113,7 @@ $(PYGMENTS_BUILD_DIR)/.configured: $(DL_DIR)/$(PYGMENTS_SOURCE) $(PYGMENTS_PATCH
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PYGMENTS_DIR)
 	$(PYGMENTS_UNZIP) $(DL_DIR)/$(PYGMENTS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PYGMENTS_PATCHES) | patch -d $(BUILD_DIR)/$(PYGMENTS_DIR) -p1
+#	cat $(PYGMENTS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PYGMENTS_DIR) -p1
 	mv $(BUILD_DIR)/$(PYGMENTS_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -130,7 +130,7 @@ $(PYGMENTS_BUILD_DIR)/.configured: $(DL_DIR)/$(PYGMENTS_SOURCE) $(PYGMENTS_PATCH
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PYGMENTS_DIR)
 	$(PYGMENTS_UNZIP) $(DL_DIR)/$(PYGMENTS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PYGMENTS_PATCHES) | patch -d $(BUILD_DIR)/$(PYGMENTS_DIR) -p1
+#	cat $(PYGMENTS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PYGMENTS_DIR) -p1
 	mv $(BUILD_DIR)/$(PYGMENTS_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -183,7 +183,7 @@ pygments-stage: $(PYGMENTS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pygments
 #
 $(PY25-PYGMENTS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pygments" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,7 +197,7 @@ $(PY25-PYGMENTS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PYGMENTS_CONFLICTS)" >>$@
 
 $(PY26-PYGMENTS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-pygments" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

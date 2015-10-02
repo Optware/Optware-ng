@@ -190,7 +190,7 @@ endif
 ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 	if test -n "$(OPENSIPS_PATCHES)" ; \
 		then cat $(OPENSIPS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENSIPS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPENSIPS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENSIPS_DIR)-tls" != "$(OPENSIPS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENSIPS_DIR)-tls $(OPENSIPS_BUILD_DIR) ; \
@@ -198,7 +198,7 @@ ifeq ($(OPENSIPS_SOURCE_TYPE), tarball)
 else
 	if test -n "$(OPENSIPS_PATCHES)" ; \
 		then cat $(OPENSIPS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENSIPS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPENSIPS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENSIPS_DIR)" != "$(OPENSIPS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENSIPS_DIR) $(OPENSIPS_BUILD_DIR) ; \
@@ -251,7 +251,7 @@ opensips-stage: $(OPENSIPS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/opensips
 #
 $(OPENSIPS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: opensips" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -332,7 +332,7 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 
 
 	############################
-	# installing example files #
+	# $(INSTALL)ing example files #
 	############################
 	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSIPS_IPK_DIR)/opt/etc/opensips/opensips.cfg
 	cp -r $(OPENSIPS_BUILD_DIR)/examples $(OPENSIPS_IPK_DIR)/opt/etc/opensips/

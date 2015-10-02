@@ -25,8 +25,8 @@ SQLite, so the overall functionality remains the same.
 
 In order to follow the standard guidelines for Optware packages and
 also to be compatible with some web server packages, the TorrentFlux
-web application is installed at /opt/share/www/torrentflux, while the
-database and the downloaded files are kept at /opt/var/torrentflux.
+web application is installed at %OPTWARE_TARGET_PREFIX%/share/www/torrentflux, while the
+database and the downloaded files are kept at %OPTWARE_TARGET_PREFIX%/var/torrentflux.
 
 ----------------------------------------------------------------------
 3. Web server
@@ -38,13 +38,13 @@ small appliances like the NSLU2 and other Optware targets. If you have
 lighttpd installed, you can access TorrentFlux at 
 http://nas_address:8083/torrentflux. Otherwise, you will need to
 configure your web server to serve pages from the directory at
-/opt/share/www/torrentflux.
+%OPTWARE_TARGET_PREFIX%/share/www/torrentflux.
 
 ----------------------------------------------------------------------
 4. PHP settings
 
 TorrentFlux may require some changes in PHP settings. Check your
-/opt/etc/php.ini file to make sure that these settings are in place:
+%OPTWARE_TARGET_PREFIX%/etc/php.ini file to make sure that these settings are in place:
 
   safe_mode = Off
   allow_url_fopen = On
@@ -64,9 +64,9 @@ action is needed. If your previous installation was somehow damaged,
 or if you are in doubt, you can backup the existing database and
 create a new one with the following commands:
 
-  cd /opt/var/torrentflux/db
+  cd %OPTWARE_TARGET_PREFIX%/var/torrentflux/db
   cp torrentflux.db backup.db
-  sqlite torrentflux.db < /opt/doc/torrentflux/sqlite_torrentflux.sql
+  sqlite torrentflux.db < %OPTWARE_TARGET_PREFIX%/doc/torrentflux/sqlite_torrentflux.sql
 
 ----------------------------------------------------------------------
 6. Wiki page

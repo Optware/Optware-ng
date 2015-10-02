@@ -103,7 +103,7 @@ $(GIFTCURS_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTCURS_SOURCE) $(GIFTCURS_PATCH
 	$(MAKE) gift-stage glib-stage
 	rm -rf $(BUILD_DIR)/$(GIFTCURS_DIR) $(GIFTCURS_BUILD_DIR)
 	$(GIFTCURS_UNZIP) $(DL_DIR)/$(GIFTCURS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(GIFTCURS_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTCURS_DIR) -p1
+	cat $(GIFTCURS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIFTCURS_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFTCURS_DIR) $(GIFTCURS_BUILD_DIR)
 	(cd $(GIFTCURS_BUILD_DIR); rm -rf config.cache; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -139,11 +139,11 @@ giftcurs: $(GIFTCURS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_LIB_DIR)/libgiFTcurs.so.$(GIFTCURS_VERSION): $(GIFTCURS_BUILD_DIR)/.built
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(GIFTCURS_BUILD_DIR)/giFTcurs.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTCURS_BUILD_DIR)/libgiFTcurs.a $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTCURS_BUILD_DIR)/libgiFTcurs.so.$(GIFTCURS_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(GIFTCURS_BUILD_DIR)/giFTcurs.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTCURS_BUILD_DIR)/libgiFTcurs.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTCURS_BUILD_DIR)/libgiFTcurs.so.$(GIFTCURS_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libgiFTcurs.so.$(GIFTCURS_VERSION) libgiFTcurs.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libgiFTcurs.so.$(GIFTCURS_VERSION) libgiFTcurs.so
 
@@ -154,7 +154,7 @@ giFTcurs-stage: $(STAGING_LIB_DIR)/libgiFTcurs.so.$(GIFTCURS_VERSION)
 # necessary to create a seperate control file under sources/giftcurs
 #
 $(GIFTCURS_IPK_DIR)/CONTROL/control:
-	@install -d $(GIFTCURS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GIFTCURS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: giftcurs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,7 +182,7 @@ $(GIFTCURS_IPK_DIR)/CONTROL/control:
 #
 $(GIFTCURS_IPK): $(GIFTCURS_BUILD_DIR)/.built
 	rm -rf $(GIFTCURS_IPK_DIR) $(BUILD_DIR)/giftcurs_*_$(TARGET_ARCH).ipk
-	install -d $(GIFTCURS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(GIFTCURS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GIFTCURS_BUILD_DIR)/src/giFTcurs -o $(GIFTCURS_IPK_DIR)/opt/bin/giFTcurs
 	$(MAKE) $(GIFTCURS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTCURS_IPK_DIR)

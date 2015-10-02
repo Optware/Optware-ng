@@ -124,7 +124,7 @@ $(LSOF_BUILD_DIR)/.configured: $(DL_DIR)/$(LSOF_SOURCE) $(LSOF_PATCHES) make/lso
 	)
 	if test -n "$(LSOF_PATCHES)" ; \
 		then cat $(LSOF_PATCHES) | \
-		patch -d $(@D) -p1 ; \
+		$(PATCH) -d $(@D) -p1 ; \
 	fi
 	sed -i.orig -e '/^CFGL/s|$$| $$(LDFLAGS)|' $(@D)/Makefile
 	touch $@
@@ -162,7 +162,7 @@ lsof: $(LSOF_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/lsof
 #
 $(LSOF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lsof" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,10 +191,10 @@ $(LSOF_IPK_DIR)/CONTROL/control:
 $(LSOF_IPK): $(LSOF_BUILD_DIR)/.built
 	rm -rf $(LSOF_IPK_DIR) $(BUILD_DIR)/lsof_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(LSOF_BUILD_DIR) DESTDIR=$(LSOF_IPK_DIR) install-strip
-	install -d $(LSOF_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(LSOF_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(LSOF_BUILD_DIR)/lsof -o $(LSOF_IPK_DIR)/opt/sbin/lsof
-	install -d $(LSOF_IPK_DIR)/opt/share/man/man8
-	install $(LSOF_BUILD_DIR)/lsof.8 $(LSOF_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -d $(LSOF_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) $(LSOF_BUILD_DIR)/lsof.8 $(LSOF_IPK_DIR)/opt/share/man/man8
 	$(MAKE) $(LSOF_IPK_DIR)/CONTROL/control
 	echo $(LSOF_CONFFILES) | sed -e 's/ /\n/g' > $(LSOF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LSOF_IPK_DIR)

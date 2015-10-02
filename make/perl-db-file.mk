@@ -37,7 +37,7 @@ $(PERL-DB-FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DB-FILE_SOURCE) $(PERL-D
 	$(MAKE) libdb-stage perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DB-FILE_DIR) $(PERL-DB-FILE_BUILD_DIR)
 	$(PERL-DB-FILE_UNZIP) $(DL_DIR)/$(PERL-DB-FILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PERL-DB-FILE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DB-FILE_DIR) -p1
+	cat $(PERL-DB-FILE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-DB-FILE_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-DB-FILE_DIR) $(PERL-DB-FILE_BUILD_DIR)
 	(cd $(PERL-DB-FILE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -77,7 +77,7 @@ $(PERL-DB-FILE_BUILD_DIR)/.staged: $(PERL-DB-FILE_BUILD_DIR)/.built
 perl-db-file-stage: $(PERL-DB-FILE_BUILD_DIR)/.staged
 
 $(PERL-DB-FILE_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-DB-FILE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-DB-FILE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-db-file" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -102,10 +102,10 @@ $(PERL-DB-FILE_IPK): $(PERL-DB-FILE_BUILD_DIR)/.built
 	)
 	find $(PERL-DB-FILE_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-DB-FILE_IPK_DIR)/CONTROL/control
-#	install -d $(PERL-DB-FILE_IPK_DIR)/CONTROL
-#	install -m 644 $(PERL-DB-FILE_SOURCE_DIR)/control $(PERL-DB-FILE_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PERL-DB-FILE_SOURCE_DIR)/postinst $(PERL-DB-FILE_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PERL-DB-FILE_SOURCE_DIR)/prerm $(PERL-DB-FILE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -d $(PERL-DB-FILE_IPK_DIR)/CONTROL
+#	$(INSTALL) -m 644 $(PERL-DB-FILE_SOURCE_DIR)/control $(PERL-DB-FILE_IPK_DIR)/CONTROL/control
+#	$(INSTALL) -m 644 $(PERL-DB-FILE_SOURCE_DIR)/postinst $(PERL-DB-FILE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(PERL-DB-FILE_SOURCE_DIR)/prerm $(PERL-DB-FILE_IPK_DIR)/CONTROL/prerm
 	echo $(PERL-DB-FILE_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-DB-FILE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-DB-FILE_IPK_DIR)
 

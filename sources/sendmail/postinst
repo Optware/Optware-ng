@@ -17,12 +17,12 @@ else
     /bin/echo "$setgid_group group already present."
 fi
         
-/bin/chown -R root.$setgid_group /opt/var/spool/clientmqueue
-/bin/chown root.$setgid_group /opt/sbin/sendmail
-/bin/chmod 2755       /opt/sbin/sendmail
+/bin/chown -R root.$setgid_group %OPTWARE_TARGET_PREFIX%/var/spool/clientmqueue
+/bin/chown root.$setgid_group %OPTWARE_TARGET_PREFIX%/sbin/sendmail
+/bin/chmod 2755       %OPTWARE_TARGET_PREFIX%/sbin/sendmail
 # newaliases will complain if / is writeable to anybody.
 chmod og-w /
-/opt/bin/newaliases
+%OPTWARE_TARGET_PREFIX%/bin/newaliases
 echo "sendmail will run as a daemon now. Alternatively, execute:"
-echo "echo 'smtp    stream  tcp     nowait  root    /opt/sbin/sendmail -bs' >> /etc/inetd.conf"
-echo "echo '0-59/15 * * * * root /opt/sbin/sendmail -q  & > /dev/null 2>&1' >> /etc/crontab"
+echo "echo 'smtp    stream  tcp     nowait  root    %OPTWARE_TARGET_PREFIX%/sbin/sendmail -bs' >> /etc/inetd.conf"
+echo "echo '0-59/15 * * * * root %OPTWARE_TARGET_PREFIX%/sbin/sendmail -q  & > /dev/null 2>&1' >> /etc/crontab"

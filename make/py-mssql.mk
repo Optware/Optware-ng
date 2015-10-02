@@ -118,7 +118,7 @@ $(PY-MSSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MSSQL_SOURCE) $(PY-MSSQL_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-MSSQL_DIR)
 	$(PY-MSSQL_UNZIP) $(DL_DIR)/$(PY-MSSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	sed -i -e 's/\x0d$$//' $(BUILD_DIR)/$(PY-MSSQL_DIR)/setup.py
-	cat $(PY-MSSQL_PATCHES) | patch --ignore-whitespace -bd $(BUILD_DIR)/$(PY-MSSQL_DIR) -p1
+	cat $(PY-MSSQL_PATCHES) | $(PATCH) --ignore-whitespace -bd $(BUILD_DIR)/$(PY-MSSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MSSQL_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    ( \
@@ -135,7 +135,7 @@ $(PY-MSSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MSSQL_SOURCE) $(PY-MSSQL_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-MSSQL_DIR)
 	$(PY-MSSQL_UNZIP) $(DL_DIR)/$(PY-MSSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	sed -i -e 's/\x0d$$//' $(BUILD_DIR)/$(PY-MSSQL_DIR)/setup.py
-	cat $(PY-MSSQL_PATCHES) | patch --ignore-whitespace -bd $(BUILD_DIR)/$(PY-MSSQL_DIR) -p1
+	cat $(PY-MSSQL_PATCHES) | $(PATCH) --ignore-whitespace -bd $(BUILD_DIR)/$(PY-MSSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MSSQL_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -152,7 +152,7 @@ $(PY-MSSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MSSQL_SOURCE) $(PY-MSSQL_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-MSSQL_DIR)
 	$(PY-MSSQL_UNZIP) $(DL_DIR)/$(PY-MSSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	sed -i -e 's/\x0d$$//' $(BUILD_DIR)/$(PY-MSSQL_DIR)/setup.py
-	cat $(PY-MSSQL_PATCHES) | patch --ignore-whitespace -bd $(BUILD_DIR)/$(PY-MSSQL_DIR) -p1
+	cat $(PY-MSSQL_PATCHES) | $(PATCH) --ignore-whitespace -bd $(BUILD_DIR)/$(PY-MSSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MSSQL_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -208,7 +208,7 @@ py-mssql: $(PY-MSSQL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-mssql
 #
 $(PY24-MSSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-mssql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -222,7 +222,7 @@ $(PY24-MSSQL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MSSQL_CONFLICTS)" >>$@
 
 $(PY25-MSSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-mssql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -236,7 +236,7 @@ $(PY25-MSSQL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-MSSQL_CONFLICTS)" >>$@
 
 $(PY26-MSSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-mssql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

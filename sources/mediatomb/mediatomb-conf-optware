@@ -14,12 +14,12 @@ MT_USER="root"
 MT_GROUP="root"
 
 ## Location of the PID file
-MT_PIDFILE="/opt/var/run/mediatomb.pid"
+MT_PIDFILE="%OPTWARE_TARGET_PREFIX%/var/run/mediatomb.pid"
 
 ## Location of the log file
-MT_LOGFILE="/opt/var/log/mediatomb"
+MT_LOGFILE="%OPTWARE_TARGET_PREFIX%/var/log/mediatomb"
 
 ## Location of the config file/database
-MT_HOME="/opt/etc"
+MT_HOME="%OPTWARE_TARGET_PREFIX%/etc"
 MT_CFGDIR="mediatomb"
 

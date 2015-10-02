@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /opt/etc/clutch.conf
+. %OPTWARE_TARGET_PREFIX%/etc/clutch.conf
 
 if [ -z "$1" ] ; then
     case `echo "$0" | sed 's:^.*/\(.*\):\1:g'` in
@@ -16,8 +16,8 @@ case "$rc" in
     start)
 	echo "Starting transmission-daemon"
 	echo "${HOME}/.transmission/daemon/socket" > \
-	 /opt/share/www/lighttpd/clutch/remote/data/socket.txt
-	/opt/bin/transmission-daemon -p ${PIDFILE}
+	 %OPTWARE_TARGET_PREFIX%/share/www/lighttpd/clutch/remote/data/socket.txt
+	%OPTWARE_TARGET_PREFIX%/bin/transmission-daemon -p ${PIDFILE}
         ;;
     stop)
         if [ -n "`pidof transmission-daemon`" ]; then

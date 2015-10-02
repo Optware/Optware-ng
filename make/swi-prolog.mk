@@ -117,7 +117,7 @@ $(SWI-PROLOG_BUILD_DIR)/.unpacked: $(DL_DIR)/$(LIBGMP_SOURCE) $(DL_DIR)/$(SWI-PR
 		then mv $(BUILD_DIR)/$(SWI-PROLOG_DIR) $(@D) ; \
 	fi
 	if test -n "$(SWI-PROLOG_PATCHES)" ; then \
-		cat $(SWI-PROLOG_PATCHES) | patch -d $(@D) -p1 ; \
+		cat $(SWI-PROLOG_PATCHES) | $(PATCH) -d $(@D) -p1 ; \
 	fi
 	touch $@
 
@@ -260,7 +260,7 @@ swi-prolog-stage: $(SWI-PROLOG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/swi-prolog
 #
 $(SWI-PROLOG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: swi-prolog" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -297,15 +297,15 @@ $(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.built
 			chmod +w $$f; $(STRIP_COMMAND) $$f; chmod -w $$f; \
 		done; \
 	)
-	install -d $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
-	install -m 644 $(SWI-PROLOG_BUILD_DIR)/demo/* $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
-#	install -d $(SWI-PROLOG_IPK_DIR)/opt/etc/
-#	install -m 644 $(SWI-PROLOG_SOURCE_DIR)/swi-prolog.conf $(SWI-PROLOG_IPK_DIR)/opt/etc/swi-prolog.conf
-#	install -d $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SWI-PROLOG_SOURCE_DIR)/rc.swi-prolog $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d/SXXswi-prolog
+	$(INSTALL) -d $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
+	$(INSTALL) -m 644 $(SWI-PROLOG_BUILD_DIR)/demo/* $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
+#	$(INSTALL) -d $(SWI-PROLOG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SWI-PROLOG_SOURCE_DIR)/swi-prolog.conf $(SWI-PROLOG_IPK_DIR)/opt/etc/swi-prolog.conf
+#	$(INSTALL) -d $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SWI-PROLOG_SOURCE_DIR)/rc.swi-prolog $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d/SXXswi-prolog
 	$(MAKE) $(SWI-PROLOG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SWI-PROLOG_SOURCE_DIR)/postinst $(SWI-PROLOG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SWI-PROLOG_SOURCE_DIR)/prerm $(SWI-PROLOG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SWI-PROLOG_SOURCE_DIR)/postinst $(SWI-PROLOG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SWI-PROLOG_SOURCE_DIR)/prerm $(SWI-PROLOG_IPK_DIR)/CONTROL/prerm
 	echo $(SWI-PROLOG_CONFFILES) | sed -e 's/ /\n/g' > $(SWI-PROLOG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SWI-PROLOG_IPK_DIR)
 

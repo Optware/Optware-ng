@@ -87,7 +87,7 @@ $(LIBNSS-LDAP_BUILD_DIR)/.staged: $(LIBNSS-LDAP_BUILD_DIR)/.built
 libnss-ldap-stage: $(LIBNSS-LDAP_BUILD_DIR)/.staged
 
 $(LIBNSS-LDAP_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBNSS-LDAP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBNSS-LDAP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libnss-ldap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -105,8 +105,8 @@ $(LIBNSS-LDAP_IPK_DIR)/CONTROL/control:
 $(LIBNSS-LDAP_IPK): $(LIBNSS-LDAP_BUILD_DIR)/.built
 	rm -rf $(LIBNSS-LDAP_IPK_DIR) $(BUILD_DIR)/libnss-ldap_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNSS-LDAP_BUILD_DIR) DESTDIR=$(LIBNSS-LDAP_IPK_DIR) install
-	install -d $(LIBNSS-LDAP_IPK_DIR)/opt/etc/
-	install -m 600 $(LIBNSS-LDAP_BUILD_DIR)/ldap.secret $(LIBNSS-LDAP_IPK_DIR)/opt/etc/ldap.secret
+	$(INSTALL) -d $(LIBNSS-LDAP_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 600 $(LIBNSS-LDAP_BUILD_DIR)/ldap.secret $(LIBNSS-LDAP_IPK_DIR)/opt/etc/ldap.secret
 	$(MAKE) $(LIBNSS-LDAP_IPK_DIR)/CONTROL/control
 	echo $(LIBNSS-LDAP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBNSS-LDAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNSS-LDAP_IPK_DIR)

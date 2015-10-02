@@ -110,7 +110,7 @@ $(LEAFNODE_BUILD_DIR)/.configured: $(DL_DIR)/$(LEAFNODE_SOURCE) $(LEAFNODE_PATCH
 	$(LEAFNODE_UNZIP) $(DL_DIR)/$(LEAFNODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LEAFNODE_PATCHES)" ; \
 		then cat $(LEAFNODE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LEAFNODE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LEAFNODE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LEAFNODE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LEAFNODE_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ leafnode-stage: $(LEAFNODE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/leafnode
 #
 $(LEAFNODE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: leafnode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -146,7 +146,7 @@ $(ERLANG_HOST_BUILD_DIR)/.configured: host/.configured \
 		$(ERLANG_PATCHES) make/erlang.mk
 	rm -rf $(HOST_BUILD_DIR)/$(ERLANG_DIR) $(@D)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	cat $(ERLANG_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(ERLANG_DIR) -p1
+	cat $(ERLANG_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(ERLANG_DIR) -p1
 	mv $(HOST_BUILD_DIR)/$(ERLANG_DIR) $(@D)
 #	hack to reduce build host dependency on ncurses-dev
 	$(MAKE) termcap-source
@@ -204,7 +204,7 @@ $(ERLANG_BUILD_DIR)/.unpacked: \
 	$(MAKE) ncurses-stage openssl-stage unixodbc-stage
 	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(@D)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ERLANG_CROSS_PATCHES) | patch -bd $(BUILD_DIR)/$(ERLANG_DIR) -p1
+	cat $(ERLANG_CROSS_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(ERLANG_DIR) -p1
 	mv $(BUILD_DIR)/$(ERLANG_DIR) $(@D)
 	sed -i -e "s:HOST_HIPE_MKLITERAL_PATH:$(ERLANG_HOST_BUILD_DIR)/bin/`sources/common/config.guess`:" $(@D)/erts/emulator/Makefile.in
 	touch $@
@@ -306,7 +306,7 @@ erlang-stage: $(ERLANG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/erlang
 #
 $(ERLANG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: erlang" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -321,7 +321,7 @@ $(ERLANG_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(ERLANG_CONFLICTS)" >>$@
 
 $(ERLANG-LIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: erlang-libs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -336,7 +336,7 @@ $(ERLANG-LIBS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(ERLANG_CONFLICTS)" >>$@
 
 $(ERLANG-MANPAGES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: erlang-manpages" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -351,7 +351,7 @@ $(ERLANG-MANPAGES_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(ERLANG_CONFLICTS)" >>$@
 
 $(ERLANG-DOC-HTML_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: erlang-doc-html" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -384,7 +384,7 @@ $(ERLANG_IPK) $(ERLANG-LIBS_IPK) $(ERLANG-MANPAGES_IPK) $(ERLANG-DOC-HTML_IPK): 
 	rm -rf $(ERLANG-DOC-HTML_IPK_DIR) $(BUILD_DIR)/erlang-doc-html_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ERLANG_HOST_BUILD_DIR) \
 		INSTALL_PREFIX=$(ERLANG_HOST_BUILD_DIR) $(ERLANG_MAKE_OPTION) install
-	install -d $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/
+	$(INSTALL) -d $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/
 ifeq ($(HOSTCC), $(TARGET_CC))
 	TARGET=$(ERLANG_TARGET) \
 		OVERRIDE_TARGET=$(ERLANG_TARGET) \
@@ -453,12 +453,12 @@ endif
         	ln -s ../lib/erlang/bin/$$f .; \
         done
 
-	install -d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/lib
+	$(INSTALL) -d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/lib
 	for d in `ls $(ERLANG_IPK_DIR)/opt/lib/erlang/lib | egrep -v '^compiler-|^kernel-|^sasl-|^stdlib-|^tools-|^hipe-'`; \
 		do mv $(ERLANG_IPK_DIR)/opt/lib/erlang/lib/$$d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/lib; done
-	install -d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/bin
+	$(INSTALL) -d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/bin
 	mv $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/dialyzer $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/bin/dialyzer
-	install -d $(ERLANG-LIBS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ERLANG-LIBS_IPK_DIR)/opt/bin
 	mv $(ERLANG_IPK_DIR)/opt/bin/dialyzer $(ERLANG-LIBS_IPK_DIR)/opt/bin/
 
 	$(MAKE) $(ERLANG_IPK_DIR)/CONTROL/control
@@ -467,13 +467,13 @@ endif
 	$(MAKE) $(ERLANG-LIBS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERLANG-LIBS_IPK_DIR)
 
-	install -d $(ERLANG-MANPAGES_IPK_DIR)/opt/share/
+	$(INSTALL) -d $(ERLANG-MANPAGES_IPK_DIR)/opt/share/
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) | \
 		tar -C $(ERLANG-MANPAGES_IPK_DIR)/opt/share/ -xvf -
 	$(MAKE) $(ERLANG-MANPAGES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERLANG-MANPAGES_IPK_DIR)
 
-	install -d $(ERLANG-DOC-HTML_IPK_DIR)/opt/share/doc/erlang-doc-html
+	$(INSTALL) -d $(ERLANG-DOC-HTML_IPK_DIR)/opt/share/doc/erlang-doc-html
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) | \
 		tar -C $(ERLANG-DOC-HTML_IPK_DIR)/opt/share/doc/erlang-doc-html -xvf -
 	$(MAKE) $(ERLANG-DOC-HTML_IPK_DIR)/CONTROL/control

@@ -103,7 +103,7 @@ alsa-lib-source: $(DL_DIR)/$(ALSA-LIB_SOURCE) $(ALSA-LIB_PATCHES)
 $(ALSA-LIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-LIB_SOURCE) $(ALSA-LIB_PATCHES) make/alsa-lib.mk
 	rm -rf $(BUILD_DIR)/$(ALSA-LIB_DIR) $(ALSA-LIB_BUILD_DIR)
 	$(ALSA-LIB_UNZIP) $(DL_DIR)/$(ALSA-LIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(ALSA-LIB_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-LIB_DIR) -p1
+#	cat $(ALSA-LIB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ALSA-LIB_DIR) -p1
 	mv $(BUILD_DIR)/$(ALSA-LIB_DIR) $(ALSA-LIB_BUILD_DIR)
 	(cd $(ALSA-LIB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -151,7 +151,7 @@ alsa-lib-stage: $(ALSA-LIB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/alsa-lib
 #
 $(ALSA-LIB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: alsa-lib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,7 +181,7 @@ $(ALSA-LIB_IPK): $(ALSA-LIB_BUILD_DIR)/.built
 	rm -rf $(ALSA-LIB_IPK_DIR) $(BUILD_DIR)/alsa-lib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ALSA-LIB_BUILD_DIR) DESTDIR=$(ALSA-LIB_IPK_DIR) install-strip
 	$(MAKE) $(ALSA-LIB_IPK_DIR)/CONTROL/control
-#	install -m 644 $(ALSA-LIB_SOURCE_DIR)/control $(ALSA-LIB_IPK_DIR)/CONTROL/control
+#	$(INSTALL) -m 644 $(ALSA-LIB_SOURCE_DIR)/control $(ALSA-LIB_IPK_DIR)/CONTROL/control
 	echo $(ALSA-LIB_CONFFILES) | sed -e 's/ /\n/g' > $(ALSA-LIB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ALSA-LIB_IPK_DIR)
 

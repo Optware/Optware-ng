@@ -5,7 +5,7 @@
  
  
 -#define DEFAULT_CONFIG_FILE			"/etc/xinetd.conf"
-+#define DEFAULT_CONFIG_FILE			"/opt/etc/xinetd.conf"
++#define DEFAULT_CONFIG_FILE			"%OPTWARE_TARGET_PREFIX%/etc/xinetd.conf"
  
  /*
   * This is the facility used by xinetd to log syslog messages
@@ -14,7 +14,7 @@
   */
  #ifndef DUMP_FILE
 -#define DUMP_FILE		"/var/run/xinetd.dump"
-+#define DUMP_FILE		"/opt/var/run/xinetd.dump"
++#define DUMP_FILE		"%OPTWARE_TARGET_PREFIX%/var/run/xinetd.dump"
  #endif
  
  /*

@@ -1,4 +1,4 @@
 echo "If you want to run sysstat periodicaly, then you should add the content of the "
-echo "/opt/share/doc/sysstat-*/sysstat.crond to your crontab, and then restart crond"
+echo "%OPTWARE_TARGET_PREFIX%/share/doc/sysstat-*/sysstat.crond to your crontab, and then restart crond"
 echo "(run /etc/rc.d/rc.crond on unslung)"
 exit 0

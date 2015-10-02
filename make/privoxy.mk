@@ -114,7 +114,7 @@ $(PRIVOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES)
 	$(PRIVOXY_UNZIP) $(DL_DIR)/$(PRIVOXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PRIVOXY_PATCHES)" ; \
 		then cat $(PRIVOXY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PRIVOXY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PRIVOXY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PRIVOXY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PRIVOXY_DIR) $(@D) ; \
@@ -182,7 +182,7 @@ privoxy-stage: $(PRIVOXY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/privoxy
 #
 $(PRIVOXY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: privoxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -212,13 +212,13 @@ $(PRIVOXY_IPK): $(PRIVOXY_BUILD_DIR)/.built
 	rm -rf $(PRIVOXY_IPK_DIR) $(BUILD_DIR)/privoxy_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PRIVOXY_BUILD_DIR) prefix=$(PRIVOXY_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(PRIVOXY_IPK_DIR)/opt/sbin/privoxy
-#	install -d $(PRIVOXY_IPK_DIR)/opt/etc/
-#	install -m 644 $(PRIVOXY_SOURCE_DIR)/privoxy.conf $(PRIVOXY_IPK_DIR)/opt/etc/privoxy.conf
-#	install -d $(PRIVOXY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PRIVOXY_SOURCE_DIR)/rc.privoxy $(PRIVOXY_IPK_DIR)/opt/etc/init.d/SXXprivoxy
+#	$(INSTALL) -d $(PRIVOXY_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(PRIVOXY_SOURCE_DIR)/privoxy.conf $(PRIVOXY_IPK_DIR)/opt/etc/privoxy.conf
+#	$(INSTALL) -d $(PRIVOXY_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PRIVOXY_SOURCE_DIR)/rc.privoxy $(PRIVOXY_IPK_DIR)/opt/etc/init.d/SXXprivoxy
 	$(MAKE) $(PRIVOXY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PRIVOXY_SOURCE_DIR)/postinst $(PRIVOXY_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PRIVOXY_SOURCE_DIR)/prerm $(PRIVOXY_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PRIVOXY_SOURCE_DIR)/postinst $(PRIVOXY_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PRIVOXY_SOURCE_DIR)/prerm $(PRIVOXY_IPK_DIR)/CONTROL/prerm
 	echo $(PRIVOXY_CONFFILES) | sed -e 's/ /\n/g' > $(PRIVOXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PRIVOXY_IPK_DIR)
 

@@ -57,15 +57,15 @@ $(TERMCAP_BUILD_DIR)/libtermcap.a: $(TERMCAP_BUILD_DIR)/.configured
 termcap: $(TERMCAP_BUILD_DIR)/libtermcap.a
 
 $(STAGING_LIB_DIR)/libtermcap.a: $(TERMCAP_BUILD_DIR)/libtermcap.a
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(TERMCAP_BUILD_DIR)/termcap.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(TERMCAP_BUILD_DIR)/libtermcap.a $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/termcap.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/libtermcap.a $(STAGING_LIB_DIR)
 
 termcap-stage: $(STAGING_LIB_DIR)/libtermcap.a
 
 $(TERMCAP_IPK_DIR)/CONTROL/control:
-	@install -d $(TERMCAP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TERMCAP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: termcap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -79,12 +79,12 @@ $(TERMCAP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(TERMCAP_CONFLICTS)" >>$@
 
 $(TERMCAP_IPK): $(TERMCAP_BUILD_DIR)/libtermcap.a
-	install -d $(TERMCAP_IPK_DIR)/opt/include
-	install -m 644 $(TERMCAP_BUILD_DIR)/termcap.h $(TERMCAP_IPK_DIR)/opt/include/termcap.h
-	install -d $(TERMCAP_IPK_DIR)/opt/lib
-	install -m 644 $(TERMCAP_BUILD_DIR)/libtermcap.a $(TERMCAP_IPK_DIR)/opt/lib/libtermcap.a
-	install -d $(TERMCAP_IPK_DIR)/opt/etc
-	install -m 644 $(TERMCAP_BUILD_DIR)/termcap.src $(TERMCAP_IPK_DIR)/opt/etc/termcap
+	$(INSTALL) -d $(TERMCAP_IPK_DIR)/opt/include
+	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/termcap.h $(TERMCAP_IPK_DIR)/opt/include/termcap.h
+	$(INSTALL) -d $(TERMCAP_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/libtermcap.a $(TERMCAP_IPK_DIR)/opt/lib/libtermcap.a
+	$(INSTALL) -d $(TERMCAP_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/termcap.src $(TERMCAP_IPK_DIR)/opt/etc/termcap
 	$(MAKE) $(TERMCAP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TERMCAP_IPK_DIR)
 

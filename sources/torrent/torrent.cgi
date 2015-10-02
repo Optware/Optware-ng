@@ -1,13 +1,13 @@
 #!/bin/sh
-# httpd.conf for busybox_httpd -p 8008 -c /opt/etc/httpd.conf -h /opt/share/www
+# httpd.conf for busybox_httpd -p 8008 -c %OPTWARE_TARGET_PREFIX%/etc/httpd.conf -h %OPTWARE_TARGET_PREFIX%/share/www
 # A:*
 # /cgi-bin:admin:admin
 # For thttpd.conf add cgipat=/cgi-bin/* and user=admin
 # replace standard "admin" on wl500gx with "root" for other systems
 
-. /opt/etc/torrent.conf
+. %OPTWARE_TARGET_PREFIX%/etc/torrent.conf
 
-PATH=/bin:/sbin:/usr/bin:/opt/sbin:/opt/bin
+PATH=/bin:/sbin:/usr/bin:%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/bin
 export PATH
 
 
@@ -394,8 +394,8 @@ _log ()
     tail -10 "${DIR}/current.log"
     echo "</pre>"
     SECONDS=`tail -10 "${DIR}/current.log" | tr '\r' '\n' | grep Time | tail -1 | cut -d " " -f 2`
-    if [ -n "${SECONDS}" -a -x /opt/bin/date ]; then
-      DATE=`/opt/bin/date -d "1970-01-01 UTC ${SECONDS} seconds" +"${DATE_FORMAT}"`
+    if [ -n "${SECONDS}" -a -x %OPTWARE_TARGET_PREFIX%/bin/date ]; then
+      DATE=`%OPTWARE_TARGET_PREFIX%/bin/date -d "1970-01-01 UTC ${SECONDS} seconds" +"${DATE_FORMAT}"`
       echo "<p>Last timestamp seen at ${DATE}</p>"
     fi
 }
@@ -483,7 +483,7 @@ __EOF__
 QUERY_STRING=`echo "$QUERY_STRING" | sed 's/&/;/g'`
 eval ${QUERY_STRING}
 #export ACTION
-#/opt/bin/printenv
+#%OPTWARE_TARGET_PREFIX%/bin/printenv
 
 case "${ACTION}" in
 	Update) _update_progress ; _list ;;

@@ -2,8 +2,8 @@
 
 cat <<EOF
 
-  monit has been installed sucessfully. Now edit /opt/etc/monitrc
-  and start the daemon by invoking /opt/etc/init.d/S99monit start.
+  monit has been installed sucessfully. Now edit %OPTWARE_TARGET_PREFIX%/etc/monitrc
+  and start the daemon by invoking %OPTWARE_TARGET_PREFIX%/etc/init.d/S99monit start.
 
 EOF
 

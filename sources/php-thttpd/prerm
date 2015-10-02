@@ -2,4 +2,4 @@
 
 killall thttpd
 
-update-alternatives --remove htpasswd /opt/sbin/php-thttpd-htpasswd
+update-alternatives --remove htpasswd %OPTWARE_TARGET_PREFIX%/sbin/php-thttpd-htpasswd

@@ -6,7 +6,7 @@
  INCLUDEDIR = /usr/local/share/psutils
 -PERL = /usr/local/bin/perl
 +PERL = /usr/bin/perl
-+PERL_TARGET = /opt/bin/perl
++PERL_TARGET = %OPTWARE_TARGET_PREFIX%/bin/perl
  
  BINMODE = 0755
  MANMODE = 0644

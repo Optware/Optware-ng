@@ -110,7 +110,7 @@ $(REDIR_BUILD_DIR)/.configured: $(DL_DIR)/$(REDIR_SOURCE) $(REDIR_PATCHES) make/
 	$(REDIR_UNZIP) $(DL_DIR)/$(REDIR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(REDIR_PATCHES)" ; \
 		then cat $(REDIR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(REDIR_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(REDIR_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(REDIR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(REDIR_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ redir-stage: $(REDIR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/redir
 #
 $(REDIR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: redir" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,12 +193,12 @@ $(REDIR_IPK_DIR)/CONTROL/control:
 $(REDIR_IPK): $(REDIR_BUILD_DIR)/.built
 	rm -rf $(REDIR_IPK_DIR) $(BUILD_DIR)/redir_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(REDIR_BUILD_DIR) DESTDIR=$(REDIR_IPK_DIR) install-strip
-	install -d $(REDIR_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(REDIR_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(REDIR_BUILD_DIR)/redir -o $(REDIR_IPK_DIR)/opt/bin/redir
-	install -d $(REDIR_IPK_DIR)/opt/share/man/man1
-	install -m 644 $(REDIR_BUILD_DIR)/redir.man $(REDIR_IPK_DIR)/opt/share/man/man1/
-	install -d $(REDIR_IPK_DIR)/opt/share/doc/redir
-	install -m644 $(REDIR_BUILD_DIR)/[CR]* $(REDIR_BUILD_DIR)/transproxy.txt $(REDIR_IPK_DIR)/opt/share/doc/redir
+	$(INSTALL) -d $(REDIR_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -m 644 $(REDIR_BUILD_DIR)/redir.man $(REDIR_IPK_DIR)/opt/share/man/man1/
+	$(INSTALL) -d $(REDIR_IPK_DIR)/opt/share/doc/redir
+	$(INSTALL) -m644 $(REDIR_BUILD_DIR)/[CR]* $(REDIR_BUILD_DIR)/transproxy.txt $(REDIR_IPK_DIR)/opt/share/doc/redir
 	$(MAKE) $(REDIR_IPK_DIR)/CONTROL/control
 	echo $(REDIR_CONFFILES) | sed -e 's/ /\n/g' > $(REDIR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(REDIR_IPK_DIR)

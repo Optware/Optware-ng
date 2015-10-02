@@ -98,7 +98,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(@D)
 	$(CYRUS-IMAPD_UNZIP) $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(CYRUS-IMAPD_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) -p1
+	cat $(CYRUS-IMAPD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) -p1
 	mv $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(@D)
 	find $(@D) -type f -name Makefile.in -exec sed -i -e 's/-s -m/-m/' {} \;
 	cp -f $(CYRUS-IMAPD_SOURCE_DIR)/config.* $(CYRUS-IMAPD_BUILD_DIR)
@@ -185,7 +185,7 @@ $(CYRUS-IMAPD_BUILD_DIR)/.staged: $(CYRUS-IMAPD_BUILD_DIR)/.built
 cyrus-imapd-stage: $(CYRUS-IMAPD_BUILD_DIR)/.staged
 
 $(CYRUS-IMAPD_IPK_DIR)/CONTROL/control:
-	@install -d $(CYRUS-IMAPD_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: cyrus-imapd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,7 +200,7 @@ $(CYRUS-IMAPD_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(CYRUS-IMAPD_CONFLICTS)" >>$@
 
 $(CYRUS-IMAPD_IPK_DIR)-doc/CONTROL/control:
-	@install -d $(CYRUS-IMAPD_IPK_DIR)-doc/CONTROL
+	@$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)-doc/CONTROL
 	@rm -f $@
 	@echo "Package: cyrus-imapd-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -215,7 +215,7 @@ $(CYRUS-IMAPD_IPK_DIR)-doc/CONTROL/control:
 	@echo "Conflicts: " >>$@
 
 $(CYRUS-IMAPD_IPK_DIR)-devel/CONTROL/control:
-	@install -d $(CYRUS-IMAPD_IPK_DIR)-devel/CONTROL
+	@$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)-devel/CONTROL
 	@rm -f $@
 	@echo "Package: cyrus-imapd-devel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -231,26 +231,26 @@ $(CYRUS-IMAPD_IPK_DIR)-devel/CONTROL/control:
 
 $(CYRUS-IMAPD_IPK) $(CYRUS-IMAPD-DOC_IPK) $(CYRUS-IMAPD-DEVEL_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
 	rm -rf $(CYRUS-IMAPD_IPK_DIR)* $(BUILD_DIR)/cyrus-imapd_*_$(TARGET_ARCH).ipk
-	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/bin
-	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/etc
-	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/imapd.conf $(CYRUS-IMAPD_IPK_DIR)/opt/etc/imapd.conf
-	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/cyrus.conf $(CYRUS-IMAPD_IPK_DIR)/opt/etc/cyrus.conf
-	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/include/cyrus
-	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/libexec/cyrus/bin
-	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/var/run
-	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib
-	install -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/db
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/log
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/msg
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/proc
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/ptclient
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/quota
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/sieve
-	install -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/ssl/certs
-	install -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/ssl/CA
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/socket
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/user
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/imapd.conf $(CYRUS-IMAPD_IPK_DIR)/opt/etc/imapd.conf
+	$(INSTALL) -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/cyrus.conf $(CYRUS-IMAPD_IPK_DIR)/opt/etc/cyrus.conf
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)/opt/include/cyrus
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)/opt/libexec/cyrus/bin
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)/opt/var/run
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib
+	$(INSTALL) -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/db
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/log
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/msg
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/proc
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/ptclient
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/quota
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/sieve
+	$(INSTALL) -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/ssl/certs
+	$(INSTALL) -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/ssl/CA
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/socket
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/user
 	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/quota ; \
 		for i in a b c d e f g h i j k l m n o p q r s t u v w x y z ; do install -d -m 755 $$i ; done \
 	)
@@ -260,11 +260,11 @@ $(CYRUS-IMAPD_IPK) $(CYRUS-IMAPD-DOC_IPK) $(CYRUS-IMAPD-DEVEL_IPK): $(CYRUS-IMAP
 	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/var/lib/imap/user ; \
 		for i in a b c d e f g h i j k l m n o p q r s t u v w x y z ; do install -d -m 755 $$i ; done \
 	)
-	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap
-	install -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap/mail
-	install -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap/news
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap/stage.
-	install -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap/user
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap
+	$(INSTALL) -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap/mail
+	$(INSTALL) -d -m 750 $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap/news
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap/stage.
+	$(INSTALL) -d -m 755 $(CYRUS-IMAPD_IPK_DIR)/opt/var/spool/imap/user
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR) DESTDIR=$(CYRUS-IMAPD_IPK_DIR) install
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/libexec/cyrus/bin/*
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/lib/*.a
@@ -284,19 +284,19 @@ ifneq (,$(filter perl, $(PACKAGES)))
 endif
 	find $(CYRUS-IMAPD_IPK_DIR)/opt/lib -type d -exec chmod go+rx {} \;
 	find $(CYRUS-IMAPD_IPK_DIR)/opt/man -type d -exec chmod go+rx {} \;
-	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(CYRUS-IMAPD_SOURCE_DIR)/rc.cyrus-imapd $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d/S59cyrus-imapd
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(CYRUS-IMAPD_SOURCE_DIR)/rc.cyrus-imapd $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d/S59cyrus-imapd
 	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d; \
 		ln -s S59cyrus-imapd K41cyrus-imapd \
 	)
 
 # Split into the different packages
 	rm -rf $(CYRUS-IMAPD_IPK_DIR)-doc
-	install -d $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/html
-	install -m 644 $(CYRUS-IMAPD_BUILD_DIR)/README $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/README
-	install -m 644 $(CYRUS-IMAPD_BUILD_DIR)/doc/*.html $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/html/
-	install -m 644 $(CYRUS-IMAPD_BUILD_DIR)/doc/murder.* $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/html/
-	install -d install -d $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/html
+	$(INSTALL) -m 644 $(CYRUS-IMAPD_BUILD_DIR)/README $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/README
+	$(INSTALL) -m 644 $(CYRUS-IMAPD_BUILD_DIR)/doc/*.html $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/html/
+	$(INSTALL) -m 644 $(CYRUS-IMAPD_BUILD_DIR)/doc/murder.* $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/html/
+	$(INSTALL) -d install -d $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man
 	mv $(CYRUS-IMAPD_IPK_DIR)/opt/man/* $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/
 	mv $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/idled.8 $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/cyrus_idled.8
 	mv $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/master.8 $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/cyrus_master.8
@@ -304,7 +304,7 @@ endif
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-IMAPD_IPK_DIR)-doc
 
 	rm -rf $(CYRUS-IMAPD_IPK_DIR)-devel
-	install -d $(CYRUS-IMAPD_IPK_DIR)-devel/opt/lib
+	$(INSTALL) -d $(CYRUS-IMAPD_IPK_DIR)-devel/opt/lib
 	mv $(CYRUS-IMAPD_IPK_DIR)/opt/lib/*.a $(CYRUS-IMAPD_IPK_DIR)-devel/opt/lib
 	mv $(CYRUS-IMAPD_IPK_DIR)/opt/include $(CYRUS-IMAPD_IPK_DIR)-devel/opt/include
 	$(MAKE) $(CYRUS-IMAPD_IPK_DIR)-devel/CONTROL/control
@@ -312,11 +312,11 @@ endif
 
 	$(MAKE) $(CYRUS-IMAPD_IPK_DIR)/CONTROL/control
 ifeq ($(OPTWARE_TARGET),ds101g)
-	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/postinst.ds101g $(CYRUS-IMAPD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/postinst.ds101g $(CYRUS-IMAPD_IPK_DIR)/CONTROL/postinst
 else
-	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/postinst $(CYRUS-IMAPD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/postinst $(CYRUS-IMAPD_IPK_DIR)/CONTROL/postinst
 endif
-#	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/prerm $(CYRUS-IMAPD_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/prerm $(CYRUS-IMAPD_IPK_DIR)/CONTROL/prerm
 	echo $(CYRUS-IMAPD_CONFFILES) | sed -e 's/ /\n/g' > $(CYRUS-IMAPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-IMAPD_IPK_DIR)
 

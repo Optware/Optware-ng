@@ -1,7 +1,7 @@
 #! /bin/sh
 
-PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/opt/sbin/pound
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/pound
 POUND_ARGS=
 force=""
 nice=0
@@ -16,13 +16,13 @@ start_daemon () {
     exec="$1"; shift
     args="--start --nicelevel $nice --quiet --oknodo"
     if [ "$force" ]; then
-        /opt/sbin/start-stop-daemon-start-stop-daemon $args \
+        %OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon $args \
 	    --chdir "$PWD" --startas $exec --pidfile /dev/null -- "$@"
     elif [ $pidfile ]; then
-        /opt/sbin/start-stop-daemon-start-stop-daemon $args \
+        %OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon $args \
 	    --chdir "$PWD" --exec $exec --oknodo --pidfile "$pidfile" -- "$@"
     else
-        /opt/sbin/start-stop-daemon-start-stop-daemon $args --chdir "$PWD" --exec $exec -- "$@"
+        %OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon $args --chdir "$PWD" --exec $exec -- "$@"
     fi
 }
 
@@ -30,9 +30,9 @@ start_daemon () {
 case "$1" in
   start)
 	echo "Starting $DESC" "$NAME"
-    if [ ! -d "/opt/var/run" ]
+    if [ ! -d "%OPTWARE_TARGET_PREFIX%/var/run" ]
     then
-        mkdir -p /opt/var/run
+        mkdir -p %OPTWARE_TARGET_PREFIX%/var/run
     fi
 	start_daemon $DAEMON $POUND_ARGS
 	;;

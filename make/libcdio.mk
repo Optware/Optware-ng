@@ -117,7 +117,7 @@ endif
 	$(LIBCDIO_UNZIP) $(DL_DIR)/$(LIBCDIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBCDIO_PATCHES)" ; \
 		then cat $(LIBCDIO_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(LIBCDIO_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(LIBCDIO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBCDIO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBCDIO_DIR) $(@D) ; \
@@ -176,7 +176,7 @@ libcdio-stage: $(LIBCDIO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libcdio
 #
 $(LIBCDIO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libcdio" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,15 +206,15 @@ $(LIBCDIO_IPK): $(LIBCDIO_BUILD_DIR)/.built
 	rm -rf $(LIBCDIO_IPK_DIR) $(BUILD_DIR)/libcdio_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCDIO_BUILD_DIR) DESTDIR=$(LIBCDIO_IPK_DIR) install-strip
 	rm -f $(LIBCDIO_IPK_DIR)/opt/share/info/dir
-#	install -d $(LIBCDIO_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBCDIO_SOURCE_DIR)/libcdio.conf $(LIBCDIO_IPK_DIR)/opt/etc/libcdio.conf
-#	install -d $(LIBCDIO_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBCDIO_SOURCE_DIR)/rc.libcdio $(LIBCDIO_IPK_DIR)/opt/etc/init.d/SXXlibcdio
+#	$(INSTALL) -d $(LIBCDIO_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBCDIO_SOURCE_DIR)/libcdio.conf $(LIBCDIO_IPK_DIR)/opt/etc/libcdio.conf
+#	$(INSTALL) -d $(LIBCDIO_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBCDIO_SOURCE_DIR)/rc.libcdio $(LIBCDIO_IPK_DIR)/opt/etc/init.d/SXXlibcdio
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBCDIO_IPK_DIR)/opt/etc/init.d/SXXlibcdio
 	$(MAKE) $(LIBCDIO_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBCDIO_SOURCE_DIR)/postinst $(LIBCDIO_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBCDIO_SOURCE_DIR)/postinst $(LIBCDIO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBCDIO_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBCDIO_SOURCE_DIR)/prerm $(LIBCDIO_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBCDIO_SOURCE_DIR)/prerm $(LIBCDIO_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBCDIO_IPK_DIR)/CONTROL/prerm
 	echo $(LIBCDIO_CONFFILES) | sed -e 's/ /\n/g' > $(LIBCDIO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCDIO_IPK_DIR)

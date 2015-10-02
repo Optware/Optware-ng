@@ -58,7 +58,7 @@ glibc-locale-stage: $(GLIBC_LOCALE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/glibc-locale
 #
 $(GLIBC_LOCALE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: glibc-locale" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -74,14 +74,14 @@ $(GLIBC_LOCALE_IPK_DIR)/CONTROL/control:
 $(GLIBC_LOCALE_IPK): $(GLIBC_LOCALE_BUILD_DIR)/.built
 	rm -rf $(GLIBC_LOCALE_IPK_DIR) $(BUILD_DIR)/glibc-locale_*_$(TARGET_ARCH).ipk
 ifneq ($(LIBC_STYLE),uclibc)
-	install -d $(GLIBC_LOCALE_IPK_DIR)/opt/lib/locale \
+	$(INSTALL) -d $(GLIBC_LOCALE_IPK_DIR)/opt/lib/locale \
 		$(GLIBC_LOCALE_IPK_DIR)/opt/share/i18n \
 		$(GLIBC_LOCALE_IPK_DIR)/opt/bin
-	install -m 755 $(GLIBC_LOCALE_BIN)/locale $(GLIBC_LOCALE_IPK_DIR)/opt/bin
-	install -m 755 $(GLIBC_LOCALE_BIN)/localedef $(GLIBC_LOCALE_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(GLIBC_LOCALE_BIN)/locale $(GLIBC_LOCALE_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(GLIBC_LOCALE_BIN)/localedef $(GLIBC_LOCALE_IPK_DIR)/opt/bin
 	cp -af $(GLIBC_LOCALE_SHARE)/i18n/* $(GLIBC_LOCALE_IPK_DIR)/opt/share/i18n
-	install -d $(GLIBC_LOCALE_IPK_DIR)/CONTROL
-	install -m 755 $(GLIBC_LOCALE_SOURCE_DIR)/postinst $(GLIBC_LOCALE_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -d $(GLIBC_LOCALE_IPK_DIR)/CONTROL
+	$(INSTALL) -m 755 $(GLIBC_LOCALE_SOURCE_DIR)/postinst $(GLIBC_LOCALE_IPK_DIR)/CONTROL/postinst
 endif
 	$(MAKE) $(GLIBC_LOCALE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GLIBC_LOCALE_IPK_DIR)

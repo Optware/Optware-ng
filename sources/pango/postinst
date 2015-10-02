@@ -1,6 +1,6 @@
 #!/bin/sh
 
 ### configure pango modules
-rm -f /opt/etc/pango/pango.modules
-mkdir -p /opt/etc/pango
-/opt/bin/pango-querymodules > /opt/etc/pango/pango.modules
+rm -f %OPTWARE_TARGET_PREFIX%/etc/pango/pango.modules
+mkdir -p %OPTWARE_TARGET_PREFIX%/etc/pango
+%OPTWARE_TARGET_PREFIX%/bin/pango-querymodules > %OPTWARE_TARGET_PREFIX%/etc/pango/pango.modules

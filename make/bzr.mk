@@ -114,7 +114,7 @@ $(BZR_BUILD_DIR)/.configured: $(DL_DIR)/$(BZR_SOURCE) $(BZR_PATCHES) make/bzr.mk
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(BZR_DIR)
 	$(BZR_UNZIP) $(DL_DIR)/$(BZR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BZR_PATCHES) | patch -d $(BUILD_DIR)/$(BZR_DIR) -p1
+#	cat $(BZR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BZR_DIR) -p1
 	mv $(BUILD_DIR)/$(BZR_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -131,7 +131,7 @@ $(BZR_BUILD_DIR)/.configured: $(DL_DIR)/$(BZR_SOURCE) $(BZR_PATCHES) make/bzr.mk
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(BZR_DIR)
 	$(BZR_UNZIP) $(DL_DIR)/$(BZR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BZR_PATCHES) | patch -d $(BUILD_DIR)/$(BZR_DIR) -p1
+#	cat $(BZR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BZR_DIR) -p1
 	mv $(BUILD_DIR)/$(BZR_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -184,7 +184,7 @@ bzr: $(BZR_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bzr
 #
 $(PY25-BZR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-bzr" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,7 +198,7 @@ $(PY25-BZR_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BZR_CONFLICTS)" >>$@
 
 $(PY26-BZR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-bzr" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

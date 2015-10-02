@@ -111,7 +111,7 @@ $(LIBMPC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMPC_SOURCE) $(LIBMPC_PATCHES) ma
 	$(LIBMPC_UNZIP) $(DL_DIR)/$(LIBMPC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMPC_PATCHES)" ; \
 		then cat $(LIBMPC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMPC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMPC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMPC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMPC_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ libmpc-stage: $(LIBMPC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmpc
 #
 $(LIBMPC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmpc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,14 +193,14 @@ $(LIBMPC_IPK): $(LIBMPC_BUILD_DIR)/.built
 	rm -rf $(LIBMPC_IPK_DIR) $(BUILD_DIR)/libmpc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMPC_BUILD_DIR) DESTDIR=$(LIBMPC_IPK_DIR) install-strip
 	$(STRIP_COMMAND) $(LIBMPC_IPK_DIR)/opt/lib/libmpc.so.*
-#	install -d $(LIBMPC_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBMPC_SOURCE_DIR)/libmpc.conf $(LIBMPC_IPK_DIR)/opt/etc/libmpc.conf
-#	install -d $(LIBMPC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBMPC_SOURCE_DIR)/rc.libmpc $(LIBMPC_IPK_DIR)/opt/etc/init.d/SXXlibmpc
+#	$(INSTALL) -d $(LIBMPC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBMPC_SOURCE_DIR)/libmpc.conf $(LIBMPC_IPK_DIR)/opt/etc/libmpc.conf
+#	$(INSTALL) -d $(LIBMPC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMPC_SOURCE_DIR)/rc.libmpc $(LIBMPC_IPK_DIR)/opt/etc/init.d/SXXlibmpc
 	rm -f $(LIBMPC_IPK_DIR)/opt/share/info/dir $(LIBMPC_IPK_DIR)/opt/lib/libmpc.la
 	$(MAKE) $(LIBMPC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBMPC_SOURCE_DIR)/postinst $(LIBMPC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBMPC_SOURCE_DIR)/prerm $(LIBMPC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBMPC_SOURCE_DIR)/postinst $(LIBMPC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBMPC_SOURCE_DIR)/prerm $(LIBMPC_IPK_DIR)/CONTROL/prerm
 	echo $(LIBMPC_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMPC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMPC_IPK_DIR)
 

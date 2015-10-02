@@ -137,7 +137,7 @@ endif
 	$(MKVTOOLNIX_UNZIP) $(DL_DIR)/$(MKVTOOLNIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MKVTOOLNIX_PATCHES)" ; \
 		then cat $(MKVTOOLNIX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MKVTOOLNIX_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MKVTOOLNIX_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MKVTOOLNIX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MKVTOOLNIX_DIR) $(@D) ; \
@@ -200,7 +200,7 @@ mkvtoolnix-stage: $(MKVTOOLNIX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mkvtoolnix
 #
 $(MKVTOOLNIX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mkvtoolnix" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

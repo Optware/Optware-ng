@@ -5,7 +5,7 @@
  if [ -z "$QUILTRC" ]
  then
 -	for QUILTRC in $HOME/.quiltrc /etc/quilt.quiltrc; do
-+	for QUILTRC in $HOME/.quiltrc /opt/etc/quilt.quiltrc; do
++	for QUILTRC in $HOME/.quiltrc %OPTWARE_TARGET_PREFIX%/etc/quilt.quiltrc; do
  		[ -e $QUILTRC ] && break
  	done
  	export QUILTRC
@@ -14,7 +14,7 @@
  --quiltrc file
  	Use the specified configuration file instead of ~/.quiltrc (or
 -	/etc/quilt.quiltrc if ~/.quiltrc does not exist).  See the pdf
-+	/opt/etc/quilt.quiltrc if ~/.quiltrc does not exist).  See the pdf
++	%OPTWARE_TARGET_PREFIX%/etc/quilt.quiltrc if ~/.quiltrc does not exist).  See the pdf
  	documentation for details about its possible contents.  The
  	special value \"-\" causes quilt not to read any configuration
  	file.
@@ -25,7 +25,7 @@
  	fi
  
 -	diff $QUILT_DIFF_OPTS $old_file $new_file \
-+	/opt/bin/diff $QUILT_DIFF_OPTS $old_file $new_file \
++	%OPTWARE_TARGET_PREFIX%/bin/diff $QUILT_DIFF_OPTS $old_file $new_file \
  	     --label "$old_hdr$old_date" --label "$new_hdr$new_date" \
  	| if read line
  	then
@@ -34,7 +34,7 @@
  	then
  		if ! cat_file $patch_file \
 -		     | patch -d $workdir $QUILT_PATCH_OPTS $patch_args \
-+		     | /opt/bin/patch -d $workdir $QUILT_PATCH_OPTS $patch_args \
++		     | %OPTWARE_TARGET_PREFIX%/bin/patch -d $workdir $QUILT_PATCH_OPTS $patch_args \
  		     	     --no-backup-if-mismatch -Ef \
  			     >/dev/null 2>/dev/null
  		then

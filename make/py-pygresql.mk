@@ -112,7 +112,7 @@ $(PY-PYGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYGRESQL_SOURCE) $(PY-PYGRE
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-PYGRESQL_DIR)
 	$(PY-PYGRESQL_UNZIP) $(DL_DIR)/$(PY-PYGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-PYGRESQL_PATCHES) | patch -b -d $(BUILD_DIR)/$(PY-PYGRESQL_DIR) -p1
+	cat $(PY-PYGRESQL_PATCHES) | $(PATCH) -b -d $(BUILD_DIR)/$(PY-PYGRESQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    ( \
@@ -129,7 +129,7 @@ $(PY-PYGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYGRESQL_SOURCE) $(PY-PYGRE
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-PYGRESQL_DIR)
 	$(PY-PYGRESQL_UNZIP) $(DL_DIR)/$(PY-PYGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-PYGRESQL_PATCHES) | patch -b -d $(BUILD_DIR)/$(PY-PYGRESQL_DIR) -p1
+	cat $(PY-PYGRESQL_PATCHES) | $(PATCH) -b -d $(BUILD_DIR)/$(PY-PYGRESQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -182,7 +182,7 @@ py-pygresql: $(PY-PYGRESQL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-pygresql
 #
 $(PY24-PYGRESQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-pygresql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,7 +196,7 @@ $(PY24-PYGRESQL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PYGRESQL_CONFLICTS)" >>$@
 
 $(PY25-PYGRESQL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pygresql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

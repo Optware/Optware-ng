@@ -130,7 +130,7 @@ $(PERL_ASSP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_ASSP_SOURCE) $(PERL_ASSP_PA
 #	| tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_ASSP_PATCHES)" ; \
 		then cat $(PERL_ASSP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PERL_ASSP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PERL_ASSP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PERL_ASSP_DIR)" != "$(PERL_ASSP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PERL_ASSP_DIR) $(PERL_ASSP_BUILD_DIR) ; \
@@ -172,7 +172,7 @@ perl-assp-stage: $(PERL_ASSP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/perl-assp
 #
 $(PERL_ASSP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-assp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,33 +200,33 @@ $(PERL_ASSP_IPK_DIR)/CONTROL/control:
 #
 $(PERL_ASSP_IPK): $(PERL_ASSP_BUILD_DIR)/.built
 	rm -rf $(PERL_ASSP_IPK_DIR) $(BUILD_DIR)/perl-assp_*_$(TARGET_ARCH).ipk
-	install -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	install -d $(PERL_ASSP_IPK_DIR)/opt/sbin
-	install -m 755 $(PERL_ASSP_BUILD_DIR)/*.pl $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	install -m 755 $(PERL_ASSP_BUILD_DIR)/stats.sh $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	install -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	install -m 755 $(PERL_ASSP_BUILD_DIR)/*.pl $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	install -m 755 $(PERL_ASSP_BUILD_DIR)/stats.sh $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	install -m 644 $(PERL_ASSP_BUILD_DIR)/nodelay.txt $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	install -m 644 $(PERL_ASSP_BUILD_DIR)/redre.txt $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	install -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp/reports
-	install -m 644 $(PERL_ASSP_BUILD_DIR)/*report.txt $(PERL_ASSP_IPK_DIR)/opt/lib/assp/reports
-	install -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp/images
-	install -m 644 $(PERL_ASSP_BUILD_DIR)/images/* $(PERL_ASSP_IPK_DIR)/opt/lib/assp/images
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/*.pl $(PERL_ASSP_IPK_DIR)/opt/lib/assp
+	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/stats.sh $(PERL_ASSP_IPK_DIR)/opt/lib/assp
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp
+	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/*.pl $(PERL_ASSP_IPK_DIR)/opt/lib/assp
+	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/stats.sh $(PERL_ASSP_IPK_DIR)/opt/lib/assp
+	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/nodelay.txt $(PERL_ASSP_IPK_DIR)/opt/lib/assp
+	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/redre.txt $(PERL_ASSP_IPK_DIR)/opt/lib/assp
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp/reports
+	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/*report.txt $(PERL_ASSP_IPK_DIR)/opt/lib/assp/reports
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp/images
+	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/images/* $(PERL_ASSP_IPK_DIR)/opt/lib/assp/images
 	ln -s $(PERL_ASSP_IPK_DIR)/opt/lib/assp/assp.pl $(PERL_ASSP_IPK_DIR)/opt/sbin/assp
 	ln -s $(PERL_ASSP_IPK_DIR)/opt/lib/assp/stats.sh $(PERL_ASSP_IPK_DIR)/opt/sbin/assplog
-#	install -d $(PERL_ASSP_IPK_DIR)/opt/man/man8
-#	install -m 644 $(PERL_ASSP_BUILD_DIR)/assp.8 $(PERL_ASSP_IPK_DIR)/opt/man/man8
-#	install -m 644 $(PERL_ASSP_BUILD_DIR)/assplog.8 $(PERL_ASSP_IPK_DIR)/opt/man/man8
-#	install -d $(PERL_ASSP_IPK_DIR)/opt/etc/
-#	install -m 644 $(PERL_ASSP_SOURCE_DIR)/perl-assp.conf $(PERL_ASSP_IPK_DIR)/opt/etc/perl-assp.conf
-#	install -d $(PERL_ASSP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PERL_ASSP_SOURCE_DIR)/rc.perl-assp $(PERL_ASSP_IPK_DIR)/opt/etc/init.d/SXXperl-assp
+#	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/man/man8
+#	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/assp.8 $(PERL_ASSP_IPK_DIR)/opt/man/man8
+#	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/assplog.8 $(PERL_ASSP_IPK_DIR)/opt/man/man8
+#	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(PERL_ASSP_SOURCE_DIR)/perl-assp.conf $(PERL_ASSP_IPK_DIR)/opt/etc/perl-assp.conf
+#	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PERL_ASSP_SOURCE_DIR)/rc.perl-assp $(PERL_ASSP_IPK_DIR)/opt/etc/init.d/SXXperl-assp
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXperl-assp
 	$(MAKE) $(PERL_ASSP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PERL_ASSP_SOURCE_DIR)/postinst $(PERL_ASSP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PERL_ASSP_SOURCE_DIR)/postinst $(PERL_ASSP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PERL_ASSP_SOURCE_DIR)/prerm $(PERL_ASSP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PERL_ASSP_SOURCE_DIR)/prerm $(PERL_ASSP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(PERL_ASSP_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_ASSP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_ASSP_IPK_DIR)

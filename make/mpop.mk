@@ -122,7 +122,7 @@ endif
 	$(MPOP_UNZIP) $(DL_DIR)/$(MPOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPOP_PATCHES)" ; \
 		then cat $(MPOP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MPOP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MPOP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MPOP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MPOP_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ mpop: $(MPOP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mpop
 #
 $(MPOP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mpop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -204,15 +204,15 @@ $(MPOP_IPK): $(MPOP_BUILD_DIR)/.built
 	rm -rf $(MPOP_IPK_DIR) $(BUILD_DIR)/mpop_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPOP_BUILD_DIR) install-strip transform='' DESTDIR=$(MPOP_IPK_DIR)
 	rm -f $(MPOP_IPK_DIR)/opt/share/info/dir
-#	install -d $(MPOP_IPK_DIR)/opt/etc/
-#	install -m 644 $(MPOP_SOURCE_DIR)/mpop.conf $(MPOP_IPK_DIR)/opt/etc/mpop.conf
-#	install -d $(MPOP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MPOP_SOURCE_DIR)/rc.mpop $(MPOP_IPK_DIR)/opt/etc/init.d/SXXmpop
+#	$(INSTALL) -d $(MPOP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MPOP_SOURCE_DIR)/mpop.conf $(MPOP_IPK_DIR)/opt/etc/mpop.conf
+#	$(INSTALL) -d $(MPOP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MPOP_SOURCE_DIR)/rc.mpop $(MPOP_IPK_DIR)/opt/etc/init.d/SXXmpop
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MPOP_IPK_DIR)/opt/etc/init.d/SXXmpop
 	$(MAKE) $(MPOP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MPOP_SOURCE_DIR)/postinst $(MPOP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MPOP_SOURCE_DIR)/postinst $(MPOP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MPOP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MPOP_SOURCE_DIR)/prerm $(MPOP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MPOP_SOURCE_DIR)/prerm $(MPOP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MPOP_IPK_DIR)/CONTROL/prerm
 	echo $(MPOP_CONFFILES) | sed -e 's/ /\n/g' > $(MPOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MPOP_IPK_DIR)

@@ -116,7 +116,7 @@ $(YADIFA_BUILD_DIR)/.configured: $(DL_DIR)/$(YADIFA_SOURCE) $(YADIFA_PATCHES) ma
 	$(YADIFA_UNZIP) $(DL_DIR)/$(YADIFA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(YADIFA_PATCHES)" ; \
 		then cat $(YADIFA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(YADIFA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(YADIFA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(YADIFA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(YADIFA_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ yadifa-stage: $(YADIFA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/yadifa
 #
 $(YADIFA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: yadifa" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(YADIFA_IPK_DIR)/CONTROL/control:
 $(YADIFA_IPK): $(YADIFA_BUILD_DIR)/.built
 	rm -rf $(YADIFA_IPK_DIR) $(BUILD_DIR)/yadifa_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(YADIFA_BUILD_DIR) DESTDIR=$(YADIFA_IPK_DIR) install-strip
-#	install -d $(YADIFA_IPK_DIR)/opt/etc/
-#	install -m 644 $(YADIFA_SOURCE_DIR)/yadifa.conf $(YADIFA_IPK_DIR)/opt/etc/yadifa.conf
-#	install -d $(YADIFA_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(YADIFA_SOURCE_DIR)/rc.yadifa $(YADIFA_IPK_DIR)/opt/etc/init.d/SXXyadifa
+#	$(INSTALL) -d $(YADIFA_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(YADIFA_SOURCE_DIR)/yadifa.conf $(YADIFA_IPK_DIR)/opt/etc/yadifa.conf
+#	$(INSTALL) -d $(YADIFA_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(YADIFA_SOURCE_DIR)/rc.yadifa $(YADIFA_IPK_DIR)/opt/etc/init.d/SXXyadifa
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YADIFA_IPK_DIR)/opt/etc/init.d/SXXyadifa
 	$(MAKE) $(YADIFA_IPK_DIR)/CONTROL/control
-#	install -m 755 $(YADIFA_SOURCE_DIR)/postinst $(YADIFA_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(YADIFA_SOURCE_DIR)/postinst $(YADIFA_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YADIFA_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(YADIFA_SOURCE_DIR)/prerm $(YADIFA_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(YADIFA_SOURCE_DIR)/prerm $(YADIFA_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YADIFA_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

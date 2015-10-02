@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ -n "`pidof syslog-ng`" ]; then
-    /opt/bin/killall syslog-ng 2>/dev/null
+    %OPTWARE_TARGET_PREFIX%/bin/killall syslog-ng 2>/dev/null
 fi
 
 exit 0

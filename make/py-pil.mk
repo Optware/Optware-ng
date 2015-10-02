@@ -117,7 +117,7 @@ $(PY-PIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PIL_SOURCE) $(PY-PIL_PATCHES) ma
 	# 2.5
 	$(PY-PIL_UNZIP) $(DL_DIR)/$(PY-PIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PIL_PATCHES)"; then \
-		cat $(PY-PIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PIL_DIR) -p1; \
+		cat $(PY-PIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PIL_DIR) -p1; \
 	fi
 	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(BUILD_DIR)/$(PY-PIL_DIR)/setup.py
 	mv $(BUILD_DIR)/$(PY-PIL_DIR) $(@D)/2.5
@@ -134,7 +134,7 @@ $(PY-PIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PIL_SOURCE) $(PY-PIL_PATCHES) ma
 	# 2.6
 	$(PY-PIL_UNZIP) $(DL_DIR)/$(PY-PIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PIL_PATCHES)"; then \
-		cat $(PY-PIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PIL_DIR) -p1; \
+		cat $(PY-PIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PIL_DIR) -p1; \
 	fi
 	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(BUILD_DIR)/$(PY-PIL_DIR)/setup.py
 	mv $(BUILD_DIR)/$(PY-PIL_DIR) $(@D)/2.6
@@ -151,7 +151,7 @@ $(PY-PIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PIL_SOURCE) $(PY-PIL_PATCHES) ma
 	# 2.7
 	$(PY-PIL_UNZIP) $(DL_DIR)/$(PY-PIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PIL_PATCHES)"; then \
-		cat $(PY-PIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PIL_DIR) -p1; \
+		cat $(PY-PIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PIL_DIR) -p1; \
 	fi
 	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(BUILD_DIR)/$(PY-PIL_DIR)/setup.py
 	mv $(BUILD_DIR)/$(PY-PIL_DIR) $(@D)/2.7
@@ -209,7 +209,7 @@ py-pil: $(PY-PIL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-pil
 #
 $(PY25-PIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pil" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -223,7 +223,7 @@ $(PY25-PIL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PIL_CONFLICTS)" >>$@
 
 $(PY26-PIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-pil" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -237,7 +237,7 @@ $(PY26-PIL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PIL_CONFLICTS)" >>$@
 
 $(PY27-PIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-pil" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

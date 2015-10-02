@@ -1,9 +1,9 @@
 #!/bin/sh
 
-PATH=/opt/bin:/opt/sbin:/opt/libexec:/bin:/usr/sbin:/usr/bin:/usr/local/bin:
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/libexec:/bin:/usr/sbin:/usr/bin:/usr/local/bin:
 export PATH
 
-. /opt/etc/slimserver.conf
+. %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
 
 #
 #  Check if user/group slimserver exists
@@ -21,8 +21,8 @@ export PATH
                     -e "s|^SLIMSERVER_PREF=.*|SLIMSERVER_PREF=${SLIMSERVER_HOME}/slimserver.pref|" \
                     -e "s|^SLIMSERVER_PIDFILE=.*|SLIMSERVER_PIDFILE=${SLIMSERVER_HOME}/slimserver.pid|" \
                     -e "s|^SLIMSERVER_CACHEDIR=.*|SLIMSERVER_CACHEDIR=${SLIMSERVER_HOME}/cache|" \
-                    /opt/etc/slimserver.conf
-                . /opt/etc/slimserver.conf
+                    %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
+                . %OPTWARE_TARGET_PREFIX%/etc/slimserver.conf
             fi
 	fi
         touch  ${SLIMSERVER_PREF} 
@@ -37,10 +37,10 @@ export PATH
 # Slimserver expects an mysqld in its Bin directory - on fsg3 mysqld is pre-installed.
 # on other systems copy or link from another directory.
 	if test -e /usr/local/mysql/bin/mysqld ; then
-		ln -sf /usr/local/mysql/bin/mysqld /opt/share/slimserver/Bin/mysqld
+		ln -sf /usr/local/mysql/bin/mysqld %OPTWARE_TARGET_PREFIX%/share/slimserver/Bin/mysqld
 	fi
-	if test -e /opt/libexec/mysqld ; then
-		ln -sf /opt/libexec/mysqld /opt/share/slimserver/Bin/mysqld
+	if test -e %OPTWARE_TARGET_PREFIX%/libexec/mysqld ; then
+		ln -sf %OPTWARE_TARGET_PREFIX%/libexec/mysqld %OPTWARE_TARGET_PREFIX%/share/slimserver/Bin/mysqld
 	fi
 
         
@@ -48,7 +48,7 @@ export PATH
 # The firmware bin files cannot be distributed and will be downloadd by slimserver
 # on first startup so user slimserver has to be able to write files into Firmware directory
 
-	chmod a+rw /opt/share/slimserver/Firmware
+	chmod a+rw %OPTWARE_TARGET_PREFIX%/share/slimserver/Firmware
 
 exit 0
 	

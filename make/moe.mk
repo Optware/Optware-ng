@@ -116,7 +116,7 @@ endif
 	$(MOE_UNZIP) $(DL_DIR)/$(MOE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOE_PATCHES)" ; \
 		then cat $(MOE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MOE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MOE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MOE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOE_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ moe: $(MOE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/moe
 #
 $(MOE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: moe" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

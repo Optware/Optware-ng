@@ -1,20 +1,20 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
-ZEBRA="/opt/sbin/zebra"
-RIPD="/opt/sbin/ripd"
-RIPNGD="/opt/sbin/ripngd"
-OSPFD="/opt/sbin/ospfd"
-OSPF6D="/opt/sbin/ospf6d"
-BGPD="/opt/sbin/bgpd"
+ZEBRA="%OPTWARE_TARGET_PREFIX%/sbin/zebra"
+RIPD="%OPTWARE_TARGET_PREFIX%/sbin/ripd"
+RIPNGD="%OPTWARE_TARGET_PREFIX%/sbin/ripngd"
+OSPFD="%OPTWARE_TARGET_PREFIX%/sbin/ospfd"
+OSPF6D="%OPTWARE_TARGET_PREFIX%/sbin/ospf6d"
+BGPD="%OPTWARE_TARGET_PREFIX%/sbin/bgpd"
 
-ZEBRA_CONF="/opt/etc/quagga/zebra.conf"
-RIPD_CONF="/opt/etc/quagga/ripd.conf"
-RIPNGD_CONF="/opt/etc/quagga/ripngd.conf"
-OSPFD_CONF="/opt/etc/quagga/ospfd.conf"
-OSPF6D_CONF="/opt/etc/quagga/ospf6d.conf"
-BGPD_CONF="/opt/etc/quagga/bgpd.conf"
+ZEBRA_CONF="%OPTWARE_TARGET_PREFIX%/etc/quagga/zebra.conf"
+RIPD_CONF="%OPTWARE_TARGET_PREFIX%/etc/quagga/ripd.conf"
+RIPNGD_CONF="%OPTWARE_TARGET_PREFIX%/etc/quagga/ripngd.conf"
+OSPFD_CONF="%OPTWARE_TARGET_PREFIX%/etc/quagga/ospfd.conf"
+OSPF6D_CONF="%OPTWARE_TARGET_PREFIX%/etc/quagga/ospf6d.conf"
+BGPD_CONF="%OPTWARE_TARGET_PREFIX%/etc/quagga/bgpd.conf"
 
 ZEBRA_OPTS="-d -A127.0.0.1"
 RIPD_OPTS="-d -A127.0.0.1"
@@ -42,7 +42,7 @@ if grep -q ^quagga: /etc/passwd; then
         echo There already is an quagga user on the system.
 else
 	echo -n "No quagga user found, creating it... "
-	adduser -h /opt/var/log/quagga -g "quagga daemon" -s /bin/false -D  $ADDUSER_OPT quagga > /dev/null 2>&1
+	adduser -h %OPTWARE_TARGET_PREFIX%/var/log/quagga -g "quagga daemon" -s /bin/false -D  $ADDUSER_OPT quagga > /dev/null 2>&1
 echo done
 fi
 
@@ -50,7 +50,7 @@ fi
 # these may fail (files may not yet exist), so discard output
 #
 
-chown -R quagga.quagga /opt/var/run/quagga /opt/var/log/quagga /opt/etc/quagga > /dev/null 2>&1
+chown -R quagga.quagga %OPTWARE_TARGET_PREFIX%/var/run/quagga %OPTWARE_TARGET_PREFIX%/var/log/quagga %OPTWARE_TARGET_PREFIX%/etc/quagga > /dev/null 2>&1
 
 
 $ZEBRA $ZEBRA_OPTS &

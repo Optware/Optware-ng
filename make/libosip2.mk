@@ -110,7 +110,7 @@ $(LIBOSIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOSIP2_SOURCE) $(LIBOSIP2_PATCH
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBOSIP2_DIR) $(LIBOSIP2_BUILD_DIR)
 	$(LIBOSIP2_UNZIP) $(DL_DIR)/$(LIBOSIP2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBOSIP2_PATCHES) | patch -d $(BUILD_DIR)/$(LIBOSIP2_DIR) -p1
+#	cat $(LIBOSIP2_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBOSIP2_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBOSIP2_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -159,7 +159,7 @@ libosip2-stage: $(LIBOSIP2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libosip2
 #
 $(LIBOSIP2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libosip2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,13 +187,13 @@ $(LIBOSIP2_IPK_DIR)/CONTROL/control:
 $(LIBOSIP2_IPK): $(LIBOSIP2_BUILD_DIR)/.built
 	rm -rf $(LIBOSIP2_IPK_DIR) $(BUILD_DIR)/libosip2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBOSIP2_BUILD_DIR) DESTDIR=$(LIBOSIP2_IPK_DIR) install-strip
-#	install -d $(LIBOSIP2_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBOSIP2_SOURCE_DIR)/libosip2.conf $(LIBOSIP2_IPK_DIR)/opt/etc/libosip2.conf
-#	install -d $(LIBOSIP2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBOSIP2_SOURCE_DIR)/rc.libosip2 $(LIBOSIP2_IPK_DIR)/opt/etc/init.d/SXXlibosip2
+#	$(INSTALL) -d $(LIBOSIP2_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBOSIP2_SOURCE_DIR)/libosip2.conf $(LIBOSIP2_IPK_DIR)/opt/etc/libosip2.conf
+#	$(INSTALL) -d $(LIBOSIP2_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBOSIP2_SOURCE_DIR)/rc.libosip2 $(LIBOSIP2_IPK_DIR)/opt/etc/init.d/SXXlibosip2
 	$(MAKE) $(LIBOSIP2_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBOSIP2_SOURCE_DIR)/postinst $(LIBOSIP2_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBOSIP2_SOURCE_DIR)/prerm $(LIBOSIP2_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBOSIP2_SOURCE_DIR)/postinst $(LIBOSIP2_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBOSIP2_SOURCE_DIR)/prerm $(LIBOSIP2_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBOSIP2_CONFFILES) | sed -e 's/ /\n/g' > $(LIBOSIP2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBOSIP2_IPK_DIR)
 

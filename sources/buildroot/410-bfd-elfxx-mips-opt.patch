@@ -7,9 +7,9 @@
 -   (ABI_N32_P (abfd) ? "/usr/lib32/libc.so.1" 	\
 -    : ABI_64_P (abfd) ? "/usr/lib64/libc.so.1" 	\
 -    : "/usr/lib/libc.so.1")
-+   (ABI_N32_P (abfd) ? "/opt/lib32/libc.so.0" 	\
-+    : ABI_64_P (abfd) ? "/opt/lib64/libc.so.0" 	\
-+    : "/opt/lib/ld-uClibc.so.0")
++   (ABI_N32_P (abfd) ? "%OPTWARE_TARGET_PREFIX%/lib32/libc.so.0" 	\
++    : ABI_64_P (abfd) ? "%OPTWARE_TARGET_PREFIX%/lib64/libc.so.0" 	\
++    : "%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0")
  
  #ifdef BFD64
  #define MNAME(bfd,pre,pos) \

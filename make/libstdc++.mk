@@ -77,8 +77,8 @@ libstdc++: $(LIBSTDC++_BUILD_DIR)/.built
 $(LIBSTDC++_BUILD_DIR)/.staged: $(LIBSTDC++_BUILD_DIR)/.built
 	rm -f $@
 ifdef LIBSTDC++_USED
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(@D)/$(LIBSTDC++_LIBNAME_FULL) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(@D)/$(LIBSTDC++_LIBNAME_FULL) $(STAGING_LIB_DIR)
 	(cd $(STAGING_LIB_DIR); \
 	 ln -sf $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME); \
 	 ln -sf $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME_MAJOR) \
@@ -89,7 +89,7 @@ endif
 libstdc++-stage: $(LIBSTDC++_BUILD_DIR)/.staged
 
 $(LIBSTDC++_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libstdc++" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -105,8 +105,8 @@ $(LIBSTDC++_IPK_DIR)/CONTROL/control:
 $(LIBSTDC++_IPK): $(LIBSTDC++_BUILD_DIR)/.built
 	rm -rf $(LIBSTDC++_IPK_DIR) $(BUILD_DIR)/libstdc++_*_$(TARGET_ARCH).ipk
 ifdef LIBSTDC++_USED
-	install -d $(LIBSTDC++_IPK_DIR)/opt/lib
-	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(LIBSTDC++_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_IPK_DIR)/opt/lib
 	(cd $(LIBSTDC++_IPK_DIR)/opt/lib; \
 	 ln -s $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME); \
 	 ln -s $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME_MAJOR) \

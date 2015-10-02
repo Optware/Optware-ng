@@ -116,7 +116,7 @@ $(GSETTINGS-DESKTOP-SCHEMAS_BUILD_DIR)/.configured: $(DL_DIR)/$(GSETTINGS-DESKTO
 	$(GSETTINGS-DESKTOP-SCHEMAS_UNZIP) $(DL_DIR)/$(GSETTINGS-DESKTOP-SCHEMAS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GSETTINGS-DESKTOP-SCHEMAS_PATCHES)" ; \
 		then cat $(GSETTINGS-DESKTOP-SCHEMAS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GSETTINGS-DESKTOP-SCHEMAS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GSETTINGS-DESKTOP-SCHEMAS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GSETTINGS-DESKTOP-SCHEMAS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GSETTINGS-DESKTOP-SCHEMAS_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ gsettings-desktop-schemas-stage: $(GSETTINGS-DESKTOP-SCHEMAS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gsettings-desktop-schemas
 #
 $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gsettings-desktop-schemas" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,17 +201,17 @@ $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/control:
 $(GSETTINGS-DESKTOP-SCHEMAS_IPK): $(GSETTINGS-DESKTOP-SCHEMAS_BUILD_DIR)/.built
 	rm -rf $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR) $(BUILD_DIR)/gsettings-desktop-schemas_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GSETTINGS-DESKTOP-SCHEMAS_BUILD_DIR) DESTDIR=$(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR) install-strip
-	install -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/lib
 	mv -f $(addprefix $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/, share/pkgconfig lib/)
-#	install -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/
-#	install -m 644 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/gsettings-desktop-schemas.conf $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/gsettings-desktop-schemas.conf
-#	install -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/rc.gsettings-desktop-schemas $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/init.d/SXXgsettings-desktop-schemas
+#	$(INSTALL) -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/gsettings-desktop-schemas.conf $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/gsettings-desktop-schemas.conf
+#	$(INSTALL) -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/rc.gsettings-desktop-schemas $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/init.d/SXXgsettings-desktop-schemas
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/init.d/SXXgsettings-desktop-schemas
 	$(MAKE) $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/control
-	install -m 755 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/postinst $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/postinst $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/prerm $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/prerm $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

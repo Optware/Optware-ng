@@ -116,7 +116,7 @@ $(LIBDB52_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDB52_SOURCE) $(LIBDB52_PATCHES)
 	$(LIBDB52_UNZIP) $(DL_DIR)/$(LIBDB52_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDB52_PATCHES)" ; \
 		then cat $(LIBDB52_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBDB52_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBDB52_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBDB52_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBDB52_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ libdb52: $(LIBDB52_BUILD_DIR)/.built
 $(LIBDB52_BUILD_DIR)/.staged: $(LIBDB52_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D)/build_unix DESTDIR=$(STAGING_DIR) \
-		install_setup install_include install_lib # install_utilities
+		$(INSTALL)_setup install_include install_lib # install_utilities
 	rm -f $(STAGING_LIB_DIR)/libdb-5.2.la
 	touch $@
 
@@ -173,7 +173,7 @@ libdb52-stage: $(LIBDB52_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdb52
 #
 $(LIBDB52_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libdb52" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,7 +202,7 @@ $(LIBDB52_IPK_DIR)/CONTROL/control:
 $(LIBDB52_IPK): $(LIBDB52_BUILD_DIR)/.built
 	rm -rf $(LIBDB52_IPK_DIR) $(BUILD_DIR)/libdb52_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDB52_BUILD_DIR)/build_unix DESTDIR=$(LIBDB52_IPK_DIR) \
-		install_setup install_include install_lib # install_utilities
+		$(INSTALL)_setup install_include install_lib # install_utilities
 	$(STRIP_COMMAND) $(LIBDB52_IPK_DIR)/opt/lib/libdb-5.2.so
 	$(MAKE) $(LIBDB52_IPK_DIR)/CONTROL/control
 	echo $(LIBDB52_CONFFILES) | sed -e 's/ /\n/g' > $(LIBDB52_IPK_DIR)/CONTROL/conffiles

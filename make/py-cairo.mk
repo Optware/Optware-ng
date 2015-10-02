@@ -141,23 +141,23 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 	$(MAKE) cairo-stage python26-stage python27-stage python3-stage \
 		python26-host-stage python27-host-stage python3-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-CAIRO_DIR2) $(BUILD_DIR)/$(PY-CAIRO_DIR3) $(@D)
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	$(PY-CAIRO_UNZIP) $(DL_DIR)/$(PY-CAIRO_SOURCE2) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-CAIRO_PATCHES2)" ; \
 		then cat $(PY-CAIRO2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-CAIRO_DIR2) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-CAIRO_DIR2) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-CAIRO_DIR2) $(@D)/2.6
 	$(PY-CAIRO_UNZIP) $(DL_DIR)/$(PY-CAIRO_SOURCE2) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-CAIRO_PATCHES2)" ; \
 		then cat $(PY-CAIRO2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-CAIRO_DIR2) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-CAIRO_DIR2) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-CAIRO_DIR2) $(@D)/2.7
 	$(PY-CAIRO_UNZIP) $(DL_DIR)/$(PY-CAIRO_SOURCE3) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-CAIRO_PATCHES3)" ; \
 		then cat $(PY-CAIRO_PATCHES3) | \
-		patch -d $(BUILD_DIR)/$(PY-CAIRO_DIR3) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-CAIRO_DIR3) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-CAIRO_DIR3) $(@D)/3
 	touch $(@D)/2.6/ChangeLog
@@ -264,7 +264,7 @@ py-cairo-stage: $(PY-CAIRO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-cairo
 #
 $(PY26-CAIRO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-cairo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -279,7 +279,7 @@ $(PY26-CAIRO_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY26-CAIRO_CONFLICTS)" >>$@
 
 $(PY27-CAIRO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-cairo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -294,7 +294,7 @@ $(PY27-CAIRO_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY27-CAIRO_CONFLICTS)" >>$@
 
 $(PY3-CAIRO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-cairo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -309,7 +309,7 @@ $(PY3-CAIRO_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY3-CAIRO_CONFLICTS)" >>$@
 
 $(PY2-CAIRO_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py2-cairo-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -339,7 +339,7 @@ $(PY26-CAIRO_IPK) $(PY2-CAIRO_DEV_IPK): $(PY-CAIRO_BUILD_DIR)/.built
 	rm -rf $(PY26-CAIRO_IPK_DIR) $(BUILD_DIR)/py26-cairo_*_$(TARGET_ARCH).ipk \
 		$(PY2-CAIRO_DEV_IPK_DIR) $(BUILD_DIR)/py2-cairo-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-CAIRO_BUILD_DIR)/2.6 DESTDIR=$(PY26-CAIRO_IPK_DIR) install-strip
-	install -d $(PY2-CAIRO_DEV_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(PY2-CAIRO_DEV_IPK_DIR)/opt/lib
 	mv -f $(PY26-CAIRO_IPK_DIR)/opt/include $(PY2-CAIRO_DEV_IPK_DIR)/opt/
 	mv -f $(PY26-CAIRO_IPK_DIR)/opt/lib/pkgconfig $(PY2-CAIRO_DEV_IPK_DIR)/opt/lib/
 	$(MAKE) $(PY26-CAIRO_IPK_DIR)/CONTROL/control

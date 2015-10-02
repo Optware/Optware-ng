@@ -61,7 +61,7 @@ XSHMFENCE_IPK=$(BUILD_DIR)/xshmfence_$(XSHMFENCE_FULL_VERSION)-$(XSHMFENCE_IPK_V
 # Automatically create a ipkg control file
 #
 $(XSHMFENCE_IPK_DIR)/CONTROL/control:
-	@install -d $(XSHMFENCE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XSHMFENCE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xshmfence" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(XSHMFENCE_BUILD_DIR)/.configured: $(DL_DIR)/$(XSHMFENCE_SOURCE) $(XSHMFENCE_PA
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XSHMFENCE_SOURCE)
 	if test -n "$(XSHMFENCE_PATCHES)" ; \
 		then cat $(XSHMFENCE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XSHMFENCE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XSHMFENCE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XSHMFENCE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XSHMFENCE_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ $(XSHMFENCE_IPK): $(XSHMFENCE_BUILD_DIR)/.built
 	rm -rf $(XSHMFENCE_IPK_DIR) $(BUILD_DIR)/xshmfence_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XSHMFENCE_BUILD_DIR) DESTDIR=$(XSHMFENCE_IPK_DIR) install-strip
 	$(MAKE) $(XSHMFENCE_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XSHMFENCE_SOURCE_DIR)/postinst $(XSHMFENCE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XSHMFENCE_SOURCE_DIR)/postinst $(XSHMFENCE_IPK_DIR)/CONTROL/postinst
 	rm -f $(XSHMFENCE_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XSHMFENCE_IPK_DIR)
 

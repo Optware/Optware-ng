@@ -17,7 +17,7 @@ this patch 2008-05-24.
  };
  
 +#ifndef PIDFILE
-+#  define PIDFILE "/opt/var/run/portmap.pid"
++#  define PIDFILE "%OPTWARE_TARGET_PREFIX%/var/run/portmap.pid"
 +#endif
 +
 +/*

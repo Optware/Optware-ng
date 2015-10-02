@@ -116,7 +116,7 @@ endif
 	$(TCSH_UNZIP) $(DL_DIR)/$(TCSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TCSH_PATCHES)" ; \
 		then cat $(TCSH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TCSH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TCSH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TCSH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TCSH_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ tcsh: $(TCSH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/tcsh
 #
 $(TCSH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tcsh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

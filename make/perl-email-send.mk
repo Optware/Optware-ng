@@ -35,7 +35,7 @@ perl-email-send-source: $(DL_DIR)/$(PERL-EMAIL-SEND_SOURCE) $(PERL-EMAIL-SEND_PA
 $(PERL-EMAIL-SEND_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-EMAIL-SEND_SOURCE) $(PERL-EMAIL-SEND_PATCHES) make/perl-email-send.mk
 	rm -rf $(BUILD_DIR)/$(PERL-EMAIL-SEND_DIR) $(@D)
 	$(PERL-EMAIL-SEND_UNZIP) $(DL_DIR)/$(PERL-EMAIL-SEND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-EMAIL-SEND_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-EMAIL-SEND_DIR) -p1
+#	cat $(PERL-EMAIL-SEND_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-EMAIL-SEND_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-EMAIL-SEND_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-EMAIL-SEND_BUILD_DIR)/.staged: $(PERL-EMAIL-SEND_BUILD_DIR)/.built
 perl-email-send-stage: $(PERL-EMAIL-SEND_BUILD_DIR)/.staged
 
 $(PERL-EMAIL-SEND_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-email-send" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

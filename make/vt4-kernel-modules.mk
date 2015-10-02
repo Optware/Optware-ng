@@ -70,7 +70,7 @@ $(VT4-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(VT4-KERNEL-MODULES_SOUR
 		tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VT4-KERNEL-MODULES_PATCHES)" ; \
 		then cat $(VT4-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(VT4-KERNEL-MODULES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(VT4-KERNEL-MODULES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(VT4-KERNEL-MODULES_DIR)" != "$(VT4-KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(VT4-KERNEL-MODULES_DIR) $(VT4-KERNEL-MODULES_BUILD_DIR) ; \
@@ -103,7 +103,7 @@ vt4-kernel-modules: $(VT4-KERNEL-MODULES_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/vt4-kernel-modules
 #
 $(VT4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
-	install -d $(VT4-KERNEL-MODULES_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(VT4-KERNEL-MODULES_IPK_DIR)/CONTROL
 	( \
 	  echo "Package: kernel-modules"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
@@ -118,7 +118,7 @@ $(VT4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(VT4-KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
 	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
-	  install -d $(VT4-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
+	  $(INSTALL) -d $(VT4-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
 	  rm -f $(VT4-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL/control; \
           ( \
 	    echo -n ", kernel-module-$$n" >> $(VT4-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
@@ -147,7 +147,7 @@ $(VT4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	echo "" >> $(VT4-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 
 $(VT4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
-	install -d $(VT4-KERNEL-IMAGE_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(VT4-KERNEL-IMAGE_IPK_DIR)/CONTROL
 	rm -f $(VT4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
 	( \
 	  echo "Package: kernel-image"; \
@@ -179,7 +179,7 @@ $(VT4-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(VT4-KERNEL-MODULES_BUILD_DIR)/.built
 	# Package the kernel image first
 	rm -rf $(VT4-KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/vt4-kernel-image_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(VT4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
-	install -m 644 $(VT4-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(VT4-KERNEL-IMAGE_IPK_DIR)
+	$(INSTALL) -m 644 $(VT4-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(VT4-KERNEL-IMAGE_IPK_DIR)
 	( cd $(BUILD_DIR); $(IPKG_BUILD) $(VT4-KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules
 	rm -rf $(VT4-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/vt4-kernel-modules_*_$(TARGET_ARCH).ipk

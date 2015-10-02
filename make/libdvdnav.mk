@@ -110,7 +110,7 @@ $(LIBDVDNAV_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVDNAV_SOURCE) $(LIBDVDNAV_PA
 	$(LIBDVDNAV_UNZIP) $(DL_DIR)/$(LIBDVDNAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDVDNAV_PATCHES)" ; \
 		then cat $(LIBDVDNAV_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBDVDNAV_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBDVDNAV_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBDVDNAV_DIR)" != "$(LIBDVDNAV_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBDVDNAV_DIR) $(LIBDVDNAV_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ libdvdnav-stage: $(LIBDVDNAV_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdvdnav
 #
 $(LIBDVDNAV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libdvdnav" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(LIBDVDNAV_IPK): $(LIBDVDNAV_BUILD_DIR)/.built
 	rm -rf $(LIBDVDNAV_IPK_DIR) $(BUILD_DIR)/libdvdnav_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDVDNAV_BUILD_DIR) DESTDIR=$(LIBDVDNAV_IPK_DIR) transform="" install-strip
 	rm -f $(LIBDVDNAV_IPK_DIR)/opt/lib/libdvdnav.la
-#	install -d $(LIBDVDNAV_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBDVDNAV_SOURCE_DIR)/libdvdnav.conf $(LIBDVDNAV_IPK_DIR)/opt/etc/libdvdnav.conf
-#	install -d $(LIBDVDNAV_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBDVDNAV_SOURCE_DIR)/rc.libdvdnav $(LIBDVDNAV_IPK_DIR)/opt/etc/init.d/SXXlibdvdnav
+#	$(INSTALL) -d $(LIBDVDNAV_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBDVDNAV_SOURCE_DIR)/libdvdnav.conf $(LIBDVDNAV_IPK_DIR)/opt/etc/libdvdnav.conf
+#	$(INSTALL) -d $(LIBDVDNAV_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBDVDNAV_SOURCE_DIR)/rc.libdvdnav $(LIBDVDNAV_IPK_DIR)/opt/etc/init.d/SXXlibdvdnav
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDVDNAV_IPK_DIR)/opt/etc/init.d/SXXlibdvdnav
 	$(MAKE) $(LIBDVDNAV_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBDVDNAV_SOURCE_DIR)/postinst $(LIBDVDNAV_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBDVDNAV_SOURCE_DIR)/postinst $(LIBDVDNAV_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDVDNAV_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBDVDNAV_SOURCE_DIR)/prerm $(LIBDVDNAV_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBDVDNAV_SOURCE_DIR)/prerm $(LIBDVDNAV_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDVDNAV_IPK_DIR)/CONTROL/prerm
 	echo $(LIBDVDNAV_CONFFILES) | sed -e 's/ /\n/g' > $(LIBDVDNAV_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDVDNAV_IPK_DIR)

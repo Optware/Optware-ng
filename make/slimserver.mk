@@ -130,7 +130,7 @@ $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) make/slimser
 	$(SLIMSERVER_UNZIP) $(DL_DIR)/$(SLIMSERVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -	
 	if test -n "$(SLIMSERVER_PATCHES)" ; \
 		then cat $(SLIMSERVER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SLIMSERVER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SLIMSERVER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SLIMSERVER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SLIMSERVER_DIR) $(@D) ; \
@@ -211,7 +211,7 @@ slimserver: $(SLIMSERVER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/slimserver
 #
 $(SLIMSERVER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: slimserver" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -239,9 +239,9 @@ $(SLIMSERVER_IPK_DIR)/CONTROL/control:
 #
 $(SLIMSERVER_IPK): $(SLIMSERVER_BUILD_DIR)/.built
 	rm -rf $(SLIMSERVER_IPK_DIR) $(BUILD_DIR)/slimserver_*_$(TARGET_ARCH).ipk
-	install -d $(SLIMSERVER_IPK_DIR)/opt/etc/
-	install -d $(SLIMSERVER_IPK_DIR)/opt/bin/ $(SLIMSERVER_IPK_DIR)/opt/share/slimserver
-#	install -m 755 $(SLIMSERVER_BUILD_DIR)/slimserver.pl $(SLIMSERVER_IPK_DIR)/opt/bin/slimserver
+	$(INSTALL) -d $(SLIMSERVER_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(SLIMSERVER_IPK_DIR)/opt/bin/ $(SLIMSERVER_IPK_DIR)/opt/share/slimserver
+#	$(INSTALL) -m 755 $(SLIMSERVER_BUILD_DIR)/slimserver.pl $(SLIMSERVER_IPK_DIR)/opt/bin/slimserver
 	cp -r $(SLIMSERVER_BUILD_DIR)/ $(SLIMSERVER_IPK_DIR)/opt/share
 	rm -rf	$(SLIMSERVER_IPK_DIR)/opt/share/slimserver/.configured \
 		$(SLIMSERVER_IPK_DIR)/opt/share/slimserver/.built
@@ -255,19 +255,19 @@ $(SLIMSERVER_IPK): $(SLIMSERVER_BUILD_DIR)/.built
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	install -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.conf $(SLIMSERVER_IPK_DIR)/opt/etc/slimserver.conf
-	install -d $(SLIMSERVER_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.conf $(SLIMSERVER_IPK_DIR)/opt/etc/slimserver.conf
+	$(INSTALL) -d $(SLIMSERVER_IPK_DIR)/opt/etc/init.d
 ifeq ($(OPTWARE_TARGET),fsg3)
-	install -m 755 $(SLIMSERVER_SOURCE_DIR)/rc.slimserver.fsg3 $(SLIMSERVER_IPK_DIR)/opt/etc/init.d/S99slimserver
+	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/rc.slimserver.fsg3 $(SLIMSERVER_IPK_DIR)/opt/etc/init.d/S99slimserver
 else
-	install -m 755 $(SLIMSERVER_SOURCE_DIR)/rc.slimserver $(SLIMSERVER_IPK_DIR)/opt/etc/init.d/S99slimserver
+	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/rc.slimserver $(SLIMSERVER_IPK_DIR)/opt/etc/init.d/S99slimserver
 
 endif
 	ln -sf ../etc/init.d/S99slimserver $(SLIMSERVER_IPK_DIR)/opt/bin/slimserver
 	$(MAKE) $(SLIMSERVER_IPK_DIR)/CONTROL/control
-	install -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.postinst $(SLIMSERVER_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.prerm $(SLIMSERVER_IPK_DIR)/CONTROL/prerm
-	install -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.postrm $(SLIMSERVER_IPK_DIR)/CONTROL/postrm
+	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.postinst $(SLIMSERVER_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.prerm $(SLIMSERVER_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.postrm $(SLIMSERVER_IPK_DIR)/CONTROL/postrm
 	echo $(SLIMSERVER_CONFFILES) | sed -e 's/ /\n/g' > $(SLIMSERVER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SLIMSERVER_IPK_DIR)
 

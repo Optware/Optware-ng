@@ -96,7 +96,7 @@ $(NBENCH_BYTE_BUILD_DIR)/.configured: $(DL_DIR)/$(NBENCH_BYTE_SOURCE) $(NBENCH_B
 	$(NBENCH_BYTE_UNZIP) $(DL_DIR)/$(NBENCH_BYTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NBENCH_BYTE_PATCHES)" ; \
 		then cat $(NBENCH_BYTE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NBENCH_BYTE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NBENCH_BYTE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NBENCH_BYTE_DIR)" != "$(NBENCH_BYTE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NBENCH_BYTE_DIR) $(NBENCH_BYTE_BUILD_DIR) ; \
@@ -150,7 +150,7 @@ nbench-byte-stage: $(NBENCH_BYTE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nbench-byte
 #
 $(NBENCH_BYTE_IPK_DIR)/CONTROL/control:
-	@install -d $(NBENCH_BYTE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(NBENCH_BYTE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: nbench-byte" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,8 +185,8 @@ $(NBENCH_BYTE_IPK): $(NBENCH_BYTE_BUILD_DIR)/.built
 	cp $(NBENCH_BYTE_BUILD_DIR)/NNET.DAT $(NBENCH_BYTE_IPK_DIR)/opt/share/nbench-byte.dat
 
 	$(MAKE) $(NBENCH_BYTE_IPK_DIR)/CONTROL/control
-	# install -m 755 $(NBENCH_BYTE_SOURCE_DIR)/postinst $(NBENCH_BYTE_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(NBENCH_BYTE_SOURCE_DIR)/prerm $(NBENCH_BYTE_IPK_DIR)/CONTROL/prerm
+	# $(INSTALL) -m 755 $(NBENCH_BYTE_SOURCE_DIR)/postinst $(NBENCH_BYTE_IPK_DIR)/CONTROL/postinst
+	# $(INSTALL) -m 755 $(NBENCH_BYTE_SOURCE_DIR)/prerm $(NBENCH_BYTE_IPK_DIR)/CONTROL/prerm
 	# echo $(NBENCH_BYTE_CONFFILES) | sed -e 's/ /\n/g' > $(NBENCH_BYTE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NBENCH_BYTE_IPK_DIR)
 

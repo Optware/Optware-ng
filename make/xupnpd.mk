@@ -134,7 +134,7 @@ $(XUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(XUPNPD_SOURCE) $(XUPNPD_PATCHES) \
 	$(XUPNPD_UNZIP) $(DL_DIR)/$(XUPNPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(XUPNPD_PATCHES)" ; \
 		then cat $(XUPNPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XUPNPD_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XUPNPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XUPNPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XUPNPD_DIR) $(@D) ; \
@@ -186,7 +186,7 @@ xupnpd-stage: $(XUPNPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/xupnpd
 #
 $(XUPNPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xupnpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -215,14 +215,14 @@ $(XUPNPD_IPK_DIR)/CONTROL/control:
 $(XUPNPD_IPK): $(XUPNPD_BUILD_DIR)/.built
 	rm -rf $(XUPNPD_IPK_DIR) $(BUILD_DIR)/xupnpd_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(XUPNPD_BUILD_DIR) DESTDIR=$(XUPNPD_IPK_DIR) install-strip
-	install -d $(XUPNPD_IPK_DIR)/opt/bin $(XUPNPD_IPK_DIR)/opt/etc/init.d \
+	$(INSTALL) -d $(XUPNPD_IPK_DIR)/opt/bin $(XUPNPD_IPK_DIR)/opt/etc/init.d \
 		$(XUPNPD_IPK_DIR)/opt/share/xupnpd/ui $(XUPNPD_IPK_DIR)/opt/share/xupnpd/www \
 		$(XUPNPD_IPK_DIR)/opt/share/xupnpd/plugins $(XUPNPD_IPK_DIR)/opt/share/xupnpd/playlists \
 		$(XUPNPD_IPK_DIR)/opt/share/xupnpd/profiles $(XUPNPD_IPK_DIR)/opt/share/xupnpd/localmedia \
 		$(XUPNPD_IPK_DIR)/opt/share/xupnpd/config
-	install -m 755 $(XUPNPD_BUILD_DIR)/xupnpd $(XUPNPD_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(XUPNPD_BUILD_DIR)/xupnpd $(XUPNPD_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(XUPNPD_IPK_DIR)/opt/bin/xupnpd
-	install -m 755 $(XUPNPD_SOURCE_DIR)/rc.xupnpd $(XUPNPD_IPK_DIR)/opt/etc/init.d/S94xupnpd
+	$(INSTALL) -m 755 $(XUPNPD_SOURCE_DIR)/rc.xupnpd $(XUPNPD_IPK_DIR)/opt/etc/init.d/S94xupnpd
 	cp -f $(XUPNPD_BUILD_DIR)/*.lua $(XUPNPD_IPK_DIR)/opt/share/xupnpd
 	cp -rf $(XUPNPD_BUILD_DIR)/ui/* $(XUPNPD_IPK_DIR)/opt/share/xupnpd/ui
 	cp -rf $(XUPNPD_BUILD_DIR)/www/* $(XUPNPD_IPK_DIR)/opt/share/xupnpd/www
@@ -230,9 +230,9 @@ $(XUPNPD_IPK): $(XUPNPD_BUILD_DIR)/.built
 	cp -rf $(XUPNPD_BUILD_DIR)/playlists/* $(XUPNPD_IPK_DIR)/opt/share/xupnpd/playlists
 	cp -rf $(XUPNPD_BUILD_DIR)/profiles/* $(XUPNPD_IPK_DIR)/opt/share/xupnpd/profiles
 	$(MAKE) $(XUPNPD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(XUPNPD_SOURCE_DIR)/postinst $(XUPNPD_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(XUPNPD_SOURCE_DIR)/postinst $(XUPNPD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XUPNPD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(XUPNPD_SOURCE_DIR)/prerm $(XUPNPD_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(XUPNPD_SOURCE_DIR)/prerm $(XUPNPD_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XUPNPD_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

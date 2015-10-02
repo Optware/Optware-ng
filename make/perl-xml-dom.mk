@@ -36,7 +36,7 @@ $(PERL-XML-DOM_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-XML-DOM_SOURCE) $(PERL-X
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-XML-DOM_DIR) $(@D)
 	$(PERL-XML-DOM_UNZIP) $(DL_DIR)/$(PERL-XML-DOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-XML-DOM_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-XML-DOM_DIR) -p1
+#	cat $(PERL-XML-DOM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-XML-DOM_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-XML-DOM_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -75,7 +75,7 @@ $(PERL-XML-DOM_BUILD_DIR)/.staged: $(PERL-XML-DOM_BUILD_DIR)/.built
 perl-xml-dom-stage: $(PERL-XML-DOM_BUILD_DIR)/.staged
 
 $(PERL-XML-DOM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-xml-dom" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

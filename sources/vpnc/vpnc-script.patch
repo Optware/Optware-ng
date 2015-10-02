@@ -6,16 +6,16 @@
  
 -DEFAULT_ROUTE_FILE=/var/run/vpnc/defaultroute
 -RESOLV_CONF_BACKUP=/var/run/vpnc/resolv.conf-backup
-+DEFAULT_ROUTE_FILE=/opt/var/run/vpnc/defaultroute
-+RESOLV_CONF_BACKUP=/opt/var/run/vpnc/resolv.conf-backup
++DEFAULT_ROUTE_FILE=%OPTWARE_TARGET_PREFIX%/var/run/vpnc/defaultroute
++RESOLV_CONF_BACKUP=%OPTWARE_TARGET_PREFIX%/var/run/vpnc/resolv.conf-backup
  FULL_SCRIPTNAME=/usr/local/sbin/vpnc
  SCRIPTNAME=`basename $FULL_SCRIPTNAME`
  
  # some systems, eg. Darwin & FreeBSD, prune /var/run on boot
 -if ! [ -d "/var/run/vpnc" ]; then
 -	mkdir -p /var/run/vpnc
-+if ! [ -d "/opt/var/run/vpnc" ]; then
-+	mkdir -p /opt/var/run/vpnc
++if ! [ -d "%OPTWARE_TARGET_PREFIX%/var/run/vpnc" ]; then
++	mkdir -p %OPTWARE_TARGET_PREFIX%/var/run/vpnc
  fi
  
  # stupid SunOS: no blubber in /usr/local/bin ... (on stdout)

@@ -111,7 +111,7 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 	$(LIBVORBIS_UNZIP) $(DL_DIR)/$(LIBVORBIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBVORBIS_PATCHES)" ; \
 		then cat $(LIBVORBIS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBVORBIS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBVORBIS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBVORBIS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBVORBIS_DIR) $(@D) ; \
@@ -177,7 +177,7 @@ libvorbis-stage: $(LIBVORBIS_BUILD_DIR)/.staged
 
 
 $(LIBVORBIS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libvorbis" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

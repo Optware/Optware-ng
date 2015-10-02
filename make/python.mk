@@ -31,7 +31,7 @@ python-stage:
 	$(MAKE) python3-stage python3-host-stage
 
 $(PYTHON_IPK_DIR)/CONTROL/control:
-	@install -d $(PYTHON_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PYTHON_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: python" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -48,7 +48,7 @@ $(PYTHON_IPK_DIR)/CONTROL/control:
 $(PYTHON_IPK): make/python.mk
 	rm -rf $(PYTHON_IPK_DIR) $(BUILD_DIR)/python_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
-	install -d $(PYTHON_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(PYTHON_IPK_DIR)/opt/bin
 	(cd $(PYTHON_IPK_DIR)/opt/bin; \
 		ln -s python2.7 python; \
 		ln -s idle2.7 idle; \
@@ -56,11 +56,11 @@ $(PYTHON_IPK): make/python.mk
 		ln -s smtpd2.7.py smtpd.py; \
 	)
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
-	install -d $(PYTHON_IPK_DIR)/usr/bin
+	$(INSTALL) -d $(PYTHON_IPK_DIR)/usr/bin
 	ln -s /opt/bin/python $(PYTHON_IPK_DIR)/usr/bin/python
 endif   
-#	install -m 755 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm
 #	echo $(PYTHON_CONFFILES) | sed -e 's/ /\n/g' > $(PYTHON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON_IPK_DIR)
 

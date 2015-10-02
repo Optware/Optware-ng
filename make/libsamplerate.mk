@@ -110,7 +110,7 @@ $(LIBSAMPLERATE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSAMPLERATE_SOURCE) $(LIBS
 	$(LIBSAMPLERATE_UNZIP) $(DL_DIR)/$(LIBSAMPLERATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBSAMPLERATE_PATCHES)" ; \
 		then cat $(LIBSAMPLERATE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBSAMPLERATE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBSAMPLERATE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBSAMPLERATE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBSAMPLERATE_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ libsamplerate-stage: $(LIBSAMPLERATE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libsamplerate
 #
 $(LIBSAMPLERATE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libsamplerate" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

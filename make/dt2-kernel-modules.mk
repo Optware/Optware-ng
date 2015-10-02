@@ -70,7 +70,7 @@ $(DT2-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(DT2-KERNEL-MODULES_SOUR
 		tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DT2-KERNEL-MODULES_PATCHES)" ; \
 		then cat $(DT2-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DT2-KERNEL-MODULES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DT2-KERNEL-MODULES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DT2-KERNEL-MODULES_DIR)" != "$(DT2-KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DT2-KERNEL-MODULES_DIR) $(DT2-KERNEL-MODULES_BUILD_DIR) ; \
@@ -103,7 +103,7 @@ dt2-kernel-modules: $(DT2-KERNEL-MODULES_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/dt2-kernel-modules
 #
 $(DT2-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
-	install -d $(DT2-KERNEL-MODULES_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(DT2-KERNEL-MODULES_IPK_DIR)/CONTROL
 	( \
 	  echo "Package: kernel-modules"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
@@ -118,7 +118,7 @@ $(DT2-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(DT2-KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
 	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
-	  install -d $(DT2-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
+	  $(INSTALL) -d $(DT2-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
 	  rm -f $(DT2-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL/control; \
           ( \
 	    echo -n ", kernel-module-$$n" >> $(DT2-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
@@ -147,7 +147,7 @@ $(DT2-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	echo "" >> $(DT2-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 
 $(DT2-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
-	install -d $(DT2-KERNEL-IMAGE_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(DT2-KERNEL-IMAGE_IPK_DIR)/CONTROL
 	rm -f $(DT2-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
 	( \
 	  echo "Package: kernel-image"; \
@@ -179,7 +179,7 @@ $(DT2-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DT2-KERNEL-MODULES_BUILD_DIR)/.built
 	# Package the kernel image first
 	rm -rf $(DT2-KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/dt2-kernel-image_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(DT2-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
-	install -m 644 $(DT2-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(DT2-KERNEL-IMAGE_IPK_DIR)
+	$(INSTALL) -m 644 $(DT2-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(DT2-KERNEL-IMAGE_IPK_DIR)
 	( cd $(BUILD_DIR); $(IPKG_BUILD) $(DT2-KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules
 	rm -rf $(DT2-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/dt2-kernel-modules_*_$(TARGET_ARCH).ipk

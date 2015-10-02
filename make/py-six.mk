@@ -127,7 +127,7 @@ $(PY-SIX_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIX_SOURCE) $(DL_DIR)/$(PY-SIX_S
 	rm -rf $(BUILD_DIR)/$(PY-SIX_DIR) $(BUILD_DIR)/$(PY-SIX_DIR_OLD) $(@D)
 	mkdir -p $(PY-SIX_BUILD_DIR)
 	$(PY-SIX_UNZIP) $(DL_DIR)/$(PY-SIX_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SIX_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIX_DIR_OLD) -p1
+#	cat $(PY-SIX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SIX_DIR_OLD) -p1
 	mv $(BUILD_DIR)/$(PY-SIX_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -142,7 +142,7 @@ $(PY-SIX_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIX_SOURCE) $(DL_DIR)/$(PY-SIX_S
 	    ) >> setup.cfg \
 	)
 	$(PY-SIX_UNZIP) $(DL_DIR)/$(PY-SIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SIX_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIX_DIR) -p1
+#	cat $(PY-SIX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SIX_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SIX_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -157,7 +157,7 @@ $(PY-SIX_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIX_SOURCE) $(DL_DIR)/$(PY-SIX_S
 	    ) >> setup.cfg \
 	)
 	$(PY-SIX_UNZIP) $(DL_DIR)/$(PY-SIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SIX_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIX_DIR) -p1
+#	cat $(PY-SIX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SIX_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SIX_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -172,7 +172,7 @@ $(PY-SIX_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIX_SOURCE) $(DL_DIR)/$(PY-SIX_S
 	    ) >> setup.cfg \
 	)
 	$(PY-SIX_UNZIP) $(DL_DIR)/$(PY-SIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SIX_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIX_DIR) -p1
+#	cat $(PY-SIX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SIX_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SIX_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -276,7 +276,7 @@ py-six-host-stage: $(PY-SIX_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-six
 #
 $(PY25-SIX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-six" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -290,7 +290,7 @@ $(PY25-SIX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SIX_CONFLICTS)" >>$@
 
 $(PY26-SIX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-six" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -304,7 +304,7 @@ $(PY26-SIX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SIX_CONFLICTS)" >>$@
 
 $(PY27-SIX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-six" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -318,7 +318,7 @@ $(PY27-SIX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SIX_CONFLICTS)" >>$@
 
 $(PY3-SIX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-six" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

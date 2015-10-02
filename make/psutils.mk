@@ -105,7 +105,7 @@ $(PSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PSUTILS_SOURCE) $(PSUTILS_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PSUTILS_DIR) $(PSUTILS_BUILD_DIR)
 	$(PSUTILS_UNZIP) $(DL_DIR)/$(PSUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PSUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(PSUTILS_DIR) -p1
+	cat $(PSUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PSUTILS_DIR) -p1
 	#mv $(BUILD_DIR)/$(PSUTILS_DIR) $(PSUTILS_BUILD_DIR)
 	(cd $(PSUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -147,7 +147,7 @@ psutils-stage: $(PSUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/psutils
 #
 $(PSUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(PSUTILS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PSUTILS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: psutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,10 +188,10 @@ $(PSUTILS_IPK): $(PSUTILS_BUILD_DIR)/.built
 		$(PSUTILS_IPK_DIR)/opt/bin/psnup \
 		$(PSUTILS_IPK_DIR)/opt/bin/psresize 
 
-	#install -m 755 $(PSUTILS_SOURCE_DIR)/rc.psutils $(PSUTILS_IPK_DIR)/opt/etc/init.d/SXXpsutils
+	#$(INSTALL) -m 755 $(PSUTILS_SOURCE_DIR)/rc.psutils $(PSUTILS_IPK_DIR)/opt/etc/init.d/SXXpsutils
 	$(MAKE) $(PSUTILS_IPK_DIR)/CONTROL/control
-	#install -m 755 $(PSUTILS_SOURCE_DIR)/postinst $(PSUTILS_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(PSUTILS_SOURCE_DIR)/prerm $(PSUTILS_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(PSUTILS_SOURCE_DIR)/postinst $(PSUTILS_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(PSUTILS_SOURCE_DIR)/prerm $(PSUTILS_IPK_DIR)/CONTROL/prerm
 	echo $(PSUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(PSUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PSUTILS_IPK_DIR)
 

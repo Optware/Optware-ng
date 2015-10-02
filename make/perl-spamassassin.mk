@@ -42,7 +42,7 @@ $(PERL-SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-SPAMASSASSIN_SOURCE
 	$(MAKE) perl-digest-sha1-stage perl-html-parser-stage perl-net-dns-stage
 	rm -rf $(BUILD_DIR)/$(PERL-SPAMASSASSIN_DIR) $(PERL-SPAMASSASSIN_BUILD_DIR)
 	$(PERL-SPAMASSASSIN_UNZIP) $(DL_DIR)/$(PERL-SPAMASSASSIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PERL-SPAMASSASSIN_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-SPAMASSASSIN_DIR) -p1
+	cat $(PERL-SPAMASSASSIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-SPAMASSASSIN_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-SPAMASSASSIN_DIR) $(PERL-SPAMASSASSIN_BUILD_DIR)
 	(cd $(PERL-SPAMASSASSIN_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -76,7 +76,7 @@ $(PERL-SPAMASSASSIN_BUILD_DIR)/.staged: $(PERL-SPAMASSASSIN_BUILD_DIR)/.built
 perl-spamassassin-stage: $(PERL-SPAMASSASSIN_BUILD_DIR)/.staged
 
 $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-spamassassin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,18 +99,18 @@ $(PERL-SPAMASSASSIN_IPK): $(PERL-SPAMASSASSIN_BUILD_DIR)/.built
 	)
 	find $(PERL-SPAMASSASSIN_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	chmod go+r $(PERL-SPAMASSASSIN_IPK_DIR)/opt/etc/*
-	install -d $(PERL-SPAMASSASSIN_IPK_DIR)/opt/var/run
-	install -d $(PERL-SPAMASSASSIN_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(PERL-SPAMASSASSIN_SOURCE_DIR)/rc.perl-spamassassin $(PERL-SPAMASSASSIN_IPK_DIR)/opt/etc/init.d/S62spamd
+	$(INSTALL) -d $(PERL-SPAMASSASSIN_IPK_DIR)/opt/var/run
+	$(INSTALL) -d $(PERL-SPAMASSASSIN_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(PERL-SPAMASSASSIN_SOURCE_DIR)/rc.perl-spamassassin $(PERL-SPAMASSASSIN_IPK_DIR)/opt/etc/init.d/S62spamd
 	(cd $(PERL-SPAMASSASSIN_IPK_DIR)/opt/etc/init.d; \
 		ln -s S62spamd K38spamd \
 	)
-	install -d $(PERL-SPAMASSASSIN_IPK_DIR)/opt/doc/perl-spamassassin
-	install -m 644 $(PERL-SPAMASSASSIN_SOURCE_DIR)/README $(PERL-SPAMASSASSIN_IPK_DIR)/opt/doc/perl-spamassassin/README
-	install -m 644 $(PERL-SPAMASSASSIN_SOURCE_DIR)/master.cf.patch $(PERL-SPAMASSASSIN_IPK_DIR)/opt/doc/perl-spamassassin/master.cf.patch
+	$(INSTALL) -d $(PERL-SPAMASSASSIN_IPK_DIR)/opt/doc/perl-spamassassin
+	$(INSTALL) -m 644 $(PERL-SPAMASSASSIN_SOURCE_DIR)/README $(PERL-SPAMASSASSIN_IPK_DIR)/opt/doc/perl-spamassassin/README
+	$(INSTALL) -m 644 $(PERL-SPAMASSASSIN_SOURCE_DIR)/master.cf.patch $(PERL-SPAMASSASSIN_IPK_DIR)/opt/doc/perl-spamassassin/master.cf.patch
 	$(MAKE) $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/control
-	install -m 755 $(PERL-SPAMASSASSIN_SOURCE_DIR)/postinst $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PERL-SPAMASSASSIN_SOURCE_DIR)/prerm $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(PERL-SPAMASSASSIN_SOURCE_DIR)/postinst $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PERL-SPAMASSASSIN_SOURCE_DIR)/prerm $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/prerm
 	echo $(PERL-SPAMASSASSIN_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-SPAMASSASSIN_IPK_DIR)
 

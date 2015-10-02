@@ -109,7 +109,7 @@ $(CTRLPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PA
 	rm -rf $(BUILD_DIR)/$(CTRLPROXY_DIR) $(CTRLPROXY_BUILD_DIR)
 	$(CTRLPROXY_UNZIP) $(DL_DIR)/$(CTRLPROXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test "$(CTRLPROXY_PATCHES)"; \
-		then cat $(CTRLPROXY_PATCHES) | patch -d $(BUILD_DIR)/$(CTRLPROXY_DIR) -p0; \
+		then cat $(CTRLPROXY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CTRLPROXY_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(CTRLPROXY_DIR) $(@D)
 	### don't pick host gssapi ldflags and cflags from host krb5-config if it is present
@@ -164,7 +164,7 @@ ctrlproxy-stage: $(CTRLPROXY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ctrlproxy
 #
 $(CTRLPROXY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ctrlproxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

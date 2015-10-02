@@ -132,7 +132,7 @@ $(LCD4LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(LCD4LINUX_SOURCE) $(LCD4LINUX_PA
 	$(LCD4LINUX_UNZIP) $(DL_DIR)/$(LCD4LINUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LCD4LINUX_PATCHES)" ; \
 		then cat $(LCD4LINUX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LCD4LINUX_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LCD4LINUX_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LCD4LINUX_DIR)" != "$(LCD4LINUX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LCD4LINUX_DIR) $(LCD4LINUX_BUILD_DIR) ; \
@@ -186,7 +186,7 @@ lcd4linux-stage: $(LCD4LINUX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lcd4linux
 #
 $(LCD4LINUX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lcd4linux" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -215,15 +215,15 @@ $(LCD4LINUX_IPK_DIR)/CONTROL/control:
 $(LCD4LINUX_IPK): $(LCD4LINUX_BUILD_DIR)/.built
 	rm -rf $(LCD4LINUX_IPK_DIR) $(BUILD_DIR)/lcd4linux_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LCD4LINUX_BUILD_DIR) DESTDIR=$(LCD4LINUX_IPK_DIR) install-strip
-	install -d $(LCD4LINUX_IPK_DIR)/opt/etc/
-	install -m 644 $(LCD4LINUX_SOURCE_DIR)/lcd4linux.conf $(LCD4LINUX_IPK_DIR)/opt/etc/lcd4linux.conf
-#	install -d $(LCD4LINUX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LCD4LINUX_SOURCE_DIR)/rc.lcd4linux $(LCD4LINUX_IPK_DIR)/opt/etc/init.d/SXXlcd4linux
+	$(INSTALL) -d $(LCD4LINUX_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(LCD4LINUX_SOURCE_DIR)/lcd4linux.conf $(LCD4LINUX_IPK_DIR)/opt/etc/lcd4linux.conf
+#	$(INSTALL) -d $(LCD4LINUX_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LCD4LINUX_SOURCE_DIR)/rc.lcd4linux $(LCD4LINUX_IPK_DIR)/opt/etc/init.d/SXXlcd4linux
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LCD4LINUX_IPK_DIR)/opt/etc/init.d/SXXlcd4linux
 	$(MAKE) $(LCD4LINUX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LCD4LINUX_SOURCE_DIR)/postinst $(LCD4LINUX_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LCD4LINUX_SOURCE_DIR)/postinst $(LCD4LINUX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LCD4LINUX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LCD4LINUX_SOURCE_DIR)/prerm $(LCD4LINUX_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LCD4LINUX_SOURCE_DIR)/prerm $(LCD4LINUX_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LCD4LINUX_IPK_DIR)/CONTROL/prerm
 	echo $(LCD4LINUX_CONFFILES) | sed -e 's/ /\n/g' > $(LCD4LINUX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LCD4LINUX_IPK_DIR)

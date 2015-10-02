@@ -60,7 +60,7 @@ PTHREAD-STUBS_IPK=$(BUILD_DIR)/pthread-stubs_$(PTHREAD-STUBS_VERSION)-$(PTHREAD-
 # Automatically create a ipkg control file
 #
 $(PTHREAD-STUBS_IPK_DIR)/CONTROL/control:
-	@install -d $(PTHREAD-STUBS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PTHREAD-STUBS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: pthread-stubs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -98,7 +98,7 @@ $(PTHREAD-STUBS_BUILD_DIR)/.configured: $(DL_DIR)/$(PTHREAD-STUBS_SOURCE) $(PTHR
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(PTHREAD-STUBS_SOURCE)
 	if test -n "$(PTHREAD-STUBS_PATCHES)" ; \
 		then cat $(PTHREAD-STUBS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PTHREAD-STUBS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PTHREAD-STUBS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PTHREAD-STUBS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PTHREAD-STUBS_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ $(PTHREAD-STUBS_IPK): $(PTHREAD-STUBS_BUILD_DIR)/.built
 	rm -rf $(PTHREAD-STUBS_IPK_DIR) $(BUILD_DIR)/pthread-stubs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PTHREAD-STUBS_BUILD_DIR) DESTDIR=$(PTHREAD-STUBS_IPK_DIR) install-strip
 	$(MAKE) $(PTHREAD-STUBS_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PTHREAD-STUBS_SOURCE_DIR)/postinst $(PTHREAD-STUBS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(PTHREAD-STUBS_SOURCE_DIR)/postinst $(PTHREAD-STUBS_IPK_DIR)/CONTROL/postinst
 	rm -f $(PTHREAD-STUBS_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PTHREAD-STUBS_IPK_DIR)
 

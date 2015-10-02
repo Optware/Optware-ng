@@ -110,7 +110,7 @@ $(MIMMS_BUILD_DIR)/.configured: $(DL_DIR)/$(MIMMS_SOURCE) $(MIMMS_PATCHES) make/
 	$(MIMMS_UNZIP) $(DL_DIR)/$(MIMMS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MIMMS_PATCHES)" ; \
 		then cat $(MIMMS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MIMMS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MIMMS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MIMMS_DIR)" != "$(MIMMS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MIMMS_DIR) $(MIMMS_BUILD_DIR) ; \
@@ -166,7 +166,7 @@ mimms-stage: $(MIMMS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mimms
 #
 $(MIMMS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mimms" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -120,7 +120,7 @@ $(MEMCACHED_BUILD_DIR)/.configured: $(DL_DIR)/$(MEMCACHED_SOURCE) $(MEMCACHED_PA
 	$(MEMCACHED_UNZIP) $(DL_DIR)/$(MEMCACHED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MEMCACHED_PATCHES)" ; \
 		then cat $(MEMCACHED_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MEMCACHED_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MEMCACHED_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MEMCACHED_DIR)" != "$(MEMCACHED_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MEMCACHED_DIR) $(MEMCACHED_BUILD_DIR) ; \
@@ -176,7 +176,7 @@ memcached-stage: $(MEMCACHED_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/memcached
 #
 $(MEMCACHED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: memcached" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

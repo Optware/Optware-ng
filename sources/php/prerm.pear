@@ -1,3 +1,3 @@
 #!/bin/sh
 
-rm -rf /opt/share/pear /opt/etc/pear.conf /opt/bin/pear /opt/bin/peardev
+rm -rf %OPTWARE_TARGET_PREFIX%/share/pear %OPTWARE_TARGET_PREFIX%/etc/pear.conf %OPTWARE_TARGET_PREFIX%/bin/pear %OPTWARE_TARGET_PREFIX%/bin/peardev

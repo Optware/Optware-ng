@@ -5,16 +5,16 @@
  #
  
 -PREFIX		= /usr/local
-+PREFIX		= /opt
++PREFIX		= %OPTWARE_TARGET_PREFIX%
  BINDIR		= $(PREFIX)/bin
  MANDIR		= $(PREFIX)/share/man
 -SYSCONFDIR	= /etc
-+SYSCONFDIR	= /opt/etc
++SYSCONFDIR	= %OPTWARE_TARGET_PREFIX%/etc
  
  MAILRC		= $(SYSCONFDIR)/nail.rc
  MAILSPOOL	= /var/mail
 -SENDMAIL	= /usr/lib/sendmail
-+SENDMAIL	= /opt/sbin/sendmail
++SENDMAIL	= %OPTWARE_TARGET_PREFIX%/sbin/sendmail
  
  DESTDIR		=
  

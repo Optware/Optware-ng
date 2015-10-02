@@ -63,7 +63,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
 
 # iozone - fileop_linux-arm.o: No such file or directory
 # parted - does not work on the slug, even when compiled natively
-# lumikki - does not install to /opt
+# lumikki - does not install to $(TARGET_PREFIX)
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
 # clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
@@ -475,11 +475,11 @@ PACKAGE_DIR=$(BASE_DIR)/packages
 BUILD_DIR=$(BASE_DIR)/builds
 STAGING_DIR=$(BASE_DIR)/staging
 
-STAGING_PREFIX=$(STAGING_DIR)/opt
+STAGING_PREFIX=$(STAGING_DIR)$(TARGET_PREFIX)
 STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
 STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
 STAGING_CPPFLAGS=$(TARGET_CFLAGS) -I$(STAGING_INCLUDE_DIR)
-STAGING_LDFLAGS=$(TARGET_LDFLAGS) -L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(STAGING_LIB_DIR)
+STAGING_LDFLAGS=$(TARGET_LDFLAGS) -L$(STAGING_LIB_DIR) -Wl,-rpath,$(TARGET_PREFIX)/lib -Wl,-rpath-link,$(STAGING_LIB_DIR)
 
 HOST_BUILD_DIR=$(BASE_DIR)/host/builds
 HOST_STAGING_DIR=$(BASE_DIR)/host/staging
@@ -488,7 +488,7 @@ HOST_STAGING_PREFIX=$(HOST_STAGING_DIR)/opt
 HOST_STAGING_INCLUDE_DIR=$(HOST_STAGING_PREFIX)/include
 HOST_STAGING_LIB_DIR=$(HOST_STAGING_PREFIX)/lib
 HOST_STAGING_CPPFLAGS=-I$(HOST_STAGING_INCLUDE_DIR)
-HOST_STAGING_LDFLAGS=-L$(HOST_STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(HOST_STAGING_LIB_DIR)
+HOST_STAGING_LDFLAGS=-L$(HOST_STAGING_LIB_DIR) -Wl,-rpath,$(HOST_STAGING_LIB_DIR) -Wl,-rpath-link,$(HOST_STAGING_LIB_DIR)
 
 WHAT_TO_DO_WITH_IPK_DIR=rm -rf
 # WHAT_TO_DO_WITH_IPK_DIR=: keep
@@ -503,6 +503,13 @@ TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 
 include $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+
+TARGET_PREFIX ?= /opt
+
+INSTALL = TARGET_PREFIX=$(TARGET_PREFIX) sh scripts/install.sh
+
+PATCH = TARGET_PREFIX=$(TARGET_PREFIX) sh scripts/patch.sh
+
 ifndef TARGET_USRLIBDIR
 TARGET_USRLIBDIR = $(TARGET_LIBDIR)
 endif
@@ -538,7 +545,7 @@ PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 
 ifneq (, $(filter ipkg-opt $(OPTWARE_TARGET)-bootstrap $(OPTWARE_TARGET)-optware-bootstrap, $(PACKAGES)))
-UPD-ALT_PREFIX ?= /opt
+UPD-ALT_PREFIX ?= $(TARGET_PREFIX)
 endif
 
 testing:
@@ -588,7 +595,7 @@ TARGET_CONFIGURE_OPTS= \
 	CXX=$(TARGET_CXX) \
 	RANLIB=$(TARGET_RANLIB) \
 	STRIP=$(TARGET_STRIP)
-TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:/opt/bin:/opt/sbin:/bin:/sbin:/usr/bin:/usr/sbin
+TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:$(TARGET_PREFIX)/bin:$(TARGET_PREFIX)/sbin:/bin:/sbin:/usr/bin:/usr/sbin
 
 STRIP_COMMAND ?= $(TARGET_STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded
 

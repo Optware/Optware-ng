@@ -98,7 +98,7 @@ puppy: $(PUPPY_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/puppy
 #
 $(PUPPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: puppy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -125,7 +125,7 @@ $(PUPPY_IPK_DIR)/CONTROL/control:
 #
 $(PUPPY_IPK): $(PUPPY_BUILD_DIR)/.built
 	rm -rf $(PUPPY_IPK_DIR) $(BUILD_DIR)/puppy_*_$(TARGET_ARCH).ipk
-	install -d $(PUPPY_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(PUPPY_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PUPPY_BUILD_DIR)/puppy -o $(PUPPY_IPK_DIR)/opt/bin/puppy
 	$(MAKE) $(PUPPY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PUPPY_IPK_DIR)

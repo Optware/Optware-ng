@@ -35,7 +35,7 @@ perl-www-mechanize-source: $(DL_DIR)/$(PERL-WWW-MECHANIZE_SOURCE) $(PERL-WWW-MEC
 $(PERL-WWW-MECHANIZE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-WWW-MECHANIZE_SOURCE) $(PERL-WWW-MECHANIZE_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERL-WWW-MECHANIZE_DIR) $(PERL-WWW-MECHANIZE_BUILD_DIR)
 	$(PERL-WWW-MECHANIZE_UNZIP) $(DL_DIR)/$(PERL-WWW-MECHANIZE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-WWW-MECHANIZE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-WWW-MECHANIZE_DIR) -p1
+#	cat $(PERL-WWW-MECHANIZE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-WWW-MECHANIZE_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-WWW-MECHANIZE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-WWW-MECHANIZE_BUILD_DIR)/.staged: $(PERL-WWW-MECHANIZE_BUILD_DIR)/.built
 perl-www-mechanize-stage: $(PERL-WWW-MECHANIZE_BUILD_DIR)/.staged
 
 $(PERL-WWW-MECHANIZE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-www-mechanize" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

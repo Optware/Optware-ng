@@ -108,7 +108,7 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(SQLITE_DIR) $(@D)
 	$(SQLITE_UNZIP) $(DL_DIR)/$(SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQLITE_PATCHES)"; \
-		then cat $(SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE_DIR) -p1; \
+		then cat $(SQLITE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SQLITE_DIR) -p1; \
 	fi
 	if test "$(BUILD_DIR)/$(SQLITE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SQLITE_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ sqlite-stage: $(SQLITE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sqlite
 #
 $(SQLITE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sqlite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

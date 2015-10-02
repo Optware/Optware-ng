@@ -5,4 +5,4 @@ if [ -n "`pidof owwnogui`" ] ; then
 fi
 
 sleep 2
-/opt/bin/owwnogui -d
+%OPTWARE_TARGET_PREFIX%/bin/owwnogui -d

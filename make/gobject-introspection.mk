@@ -118,7 +118,7 @@ $(GOBJECT-INTROSPECTION_BUILD_DIR)/.configured: $(DL_DIR)/$(GOBJECT-INTROSPECTIO
 	$(GOBJECT-INTROSPECTION_UNZIP) $(DL_DIR)/$(GOBJECT-INTROSPECTION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GOBJECT-INTROSPECTION_PATCHES)" ; \
 		then cat $(GOBJECT-INTROSPECTION_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GOBJECT-INTROSPECTION_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GOBJECT-INTROSPECTION_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GOBJECT-INTROSPECTION_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GOBJECT-INTROSPECTION_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ $(GOBJECT-INTROSPECTION_BUILD_DIR)/.staged: $(GOBJECT-INTROSPECTION_BUILD_DIR)/.
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-girepoHEADERS install-libLTLIBRARIES
 	rm -f $(STAGING_LIB_DIR)/libgirepository-1.0.la
-	install -d $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
 	sed -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e '/^bindir=/s|=.*|=$(HOST_STAGING_PREFIX)/bin|' \
 		-e '/^datarootdir=/s|=.*|=$(HOST_STAGING_PREFIX)/share|' \
 		-e '/^typelibdir=/s|=.*|=$(HOST_STAGING_LIB_DIR)/girepository-1.0|' $(@D)/gobject-introspection-1.0.pc > \
@@ -208,7 +208,7 @@ gobject-introspection-host-stage: $(GOBJECT-INTROSPECTION_HOST_BUILD_DIR)/.stage
 # necessary to create a seperate control file under sources/gobject-introspection
 #
 $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gobject-introspection" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -237,25 +237,25 @@ $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/control:
 $(GOBJECT-INTROSPECTION_IPK): $(GOBJECT-INTROSPECTION_BUILD_DIR)/.built
 	rm -rf $(GOBJECT-INTROSPECTION_IPK_DIR) $(BUILD_DIR)/gobject-introspection_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GOBJECT-INTROSPECTION_BUILD_DIR) DESTDIR=$(GOBJECT-INTROSPECTION_IPK_DIR) install-girepoHEADERS \
-		install-libLTLIBRARIES install-pkgconfigDATA install-binSCRIPTS install-binPROGRAMS install-m4DATA \
-		install-man1 install-pkgpyexecLTLIBRARIES install-pkgpyexecPYTHON
+		$(INSTALL)-libLTLIBRARIES install-pkgconfigDATA install-binSCRIPTS install-binPROGRAMS install-m4DATA \
+		$(INSTALL)-man1 install-pkgpyexecLTLIBRARIES install-pkgpyexecPYTHON
 	find $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/lib -type f -name *.la -exec rm -f {} \;
 	-$(STRIP_COMMAND) $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(addprefix $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/lib/, libgirepository-1.0.so.1.0.0 \
 		gobject-introspection/giscanner/_giscanner.so)
 	$(MAKE) -C $(GOBJECT-INTROSPECTION_HOST_BUILD_DIR) DESTDIR=$(GOBJECT-INTROSPECTION_IPK_DIR) GIR_DIR=/opt/share/gir-1.0 \
-		install-girDATA
+		$(INSTALL)-girDATA
 	sed -i -e '0,/^#!/s|^#!.*|#!/opt/bin/python2.7|' $(addprefix $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/bin/, g-ir-annotation-tool \
 							g-ir-doc-tool g-ir-scanner)
-#	install -d $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/
-#	install -m 644 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/gobject-introspection.conf $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/gobject-introspection.conf
-#	install -d $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/rc.gobject-introspection $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/init.d/SXXgobject-introspection
+#	$(INSTALL) -d $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/gobject-introspection.conf $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/gobject-introspection.conf
+#	$(INSTALL) -d $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/rc.gobject-introspection $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/init.d/SXXgobject-introspection
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/init.d/SXXgobject-introspection
 	$(MAKE) $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/control
-	install -m 755 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/postinst $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/postinst $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/prerm $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/prerm $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

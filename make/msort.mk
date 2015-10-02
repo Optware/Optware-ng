@@ -119,7 +119,7 @@ endif
 	$(MSORT_UNZIP) $(DL_DIR)/$(MSORT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MSORT_PATCHES)" ; \
 		then cat $(MSORT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MSORT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MSORT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MSORT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MSORT_DIR) $(MSORT_BUILD_DIR) ; \
@@ -169,7 +169,7 @@ msort-stage: $(MSORT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/msort
 #
 $(MSORT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: msort" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(MSORT_IPK_DIR)/CONTROL/control:
 $(MSORT_IPK): $(MSORT_BUILD_DIR)/.built
 	rm -rf $(MSORT_IPK_DIR) $(BUILD_DIR)/msort_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MSORT_BUILD_DIR) DESTDIR=$(MSORT_IPK_DIR) install-strip
-#	install -d $(MSORT_IPK_DIR)/opt/etc/
-#	install -m 644 $(MSORT_SOURCE_DIR)/msort.conf $(MSORT_IPK_DIR)/opt/etc/msort.conf
-#	install -d $(MSORT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MSORT_SOURCE_DIR)/rc.msort $(MSORT_IPK_DIR)/opt/etc/init.d/SXXmsort
+#	$(INSTALL) -d $(MSORT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MSORT_SOURCE_DIR)/msort.conf $(MSORT_IPK_DIR)/opt/etc/msort.conf
+#	$(INSTALL) -d $(MSORT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MSORT_SOURCE_DIR)/rc.msort $(MSORT_IPK_DIR)/opt/etc/init.d/SXXmsort
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSORT_IPK_DIR)/opt/etc/init.d/SXXmsort
 	$(MAKE) $(MSORT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MSORT_SOURCE_DIR)/postinst $(MSORT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MSORT_SOURCE_DIR)/postinst $(MSORT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSORT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MSORT_SOURCE_DIR)/prerm $(MSORT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MSORT_SOURCE_DIR)/prerm $(MSORT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSORT_IPK_DIR)/CONTROL/prerm
 	echo $(MSORT_CONFFILES) | sed -e 's/ /\n/g' > $(MSORT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MSORT_IPK_DIR)

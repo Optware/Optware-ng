@@ -110,7 +110,7 @@ $(LIBDVDCSS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVDCSS_SOURCE) $(LIBDVDCSS_PA
 	$(LIBDVDCSS_UNZIP) $(DL_DIR)/$(LIBDVDCSS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDVDCSS_PATCHES)" ; \
 		then cat $(LIBDVDCSS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBDVDCSS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBDVDCSS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBDVDCSS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBDVDCSS_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ libdvdcss-stage: $(LIBDVDCSS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdvdcss
 #
 $(LIBDVDCSS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libdvdcss" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,15 +189,15 @@ $(LIBDVDCSS_IPK_DIR)/CONTROL/control:
 $(LIBDVDCSS_IPK): $(LIBDVDCSS_BUILD_DIR)/.built
 	rm -rf $(LIBDVDCSS_IPK_DIR) $(BUILD_DIR)/libdvdcss_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDVDCSS_BUILD_DIR) DESTDIR=$(LIBDVDCSS_IPK_DIR) install-strip
-#	install -d $(LIBDVDCSS_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBDVDCSS_SOURCE_DIR)/libdvdcss.conf $(LIBDVDCSS_IPK_DIR)/opt/etc/libdvdcss.conf
-#	install -d $(LIBDVDCSS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBDVDCSS_SOURCE_DIR)/rc.libdvdcss $(LIBDVDCSS_IPK_DIR)/opt/etc/init.d/SXXlibdvdcss
+#	$(INSTALL) -d $(LIBDVDCSS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBDVDCSS_SOURCE_DIR)/libdvdcss.conf $(LIBDVDCSS_IPK_DIR)/opt/etc/libdvdcss.conf
+#	$(INSTALL) -d $(LIBDVDCSS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBDVDCSS_SOURCE_DIR)/rc.libdvdcss $(LIBDVDCSS_IPK_DIR)/opt/etc/init.d/SXXlibdvdcss
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDVDCSS_IPK_DIR)/opt/etc/init.d/SXXlibdvdcss
 	$(MAKE) $(LIBDVDCSS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBDVDCSS_SOURCE_DIR)/postinst $(LIBDVDCSS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBDVDCSS_SOURCE_DIR)/postinst $(LIBDVDCSS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDVDCSS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBDVDCSS_SOURCE_DIR)/prerm $(LIBDVDCSS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBDVDCSS_SOURCE_DIR)/prerm $(LIBDVDCSS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDVDCSS_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

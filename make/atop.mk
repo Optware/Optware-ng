@@ -100,7 +100,7 @@ $(ATOP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATOP_SOURCE) $(ATOP_PATCHES) make/ato
 	$(ATOP_UNZIP) $(DL_DIR)/$(ATOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ATOP_PATCHES)" ; \
 		then cat $(ATOP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ATOP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ATOP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ATOP_DIR)" != "$(ATOP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ATOP_DIR) $(ATOP_BUILD_DIR) ; \
@@ -153,7 +153,7 @@ atop-stage: $(ATOP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/atop
 #
 $(ATOP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: atop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,9 +185,9 @@ $(ATOP_IPK): $(ATOP_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(ATOP_IPK_DIR)/opt/bin/atop
 	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXatop
 	$(MAKE) $(ATOP_IPK_DIR)/CONTROL/control
-	# install -m 755 $(ATOP_SOURCE_DIR)/postinst $(ATOP_IPK_DIR)/CONTROL/postinst
+	# $(INSTALL) -m 755 $(ATOP_SOURCE_DIR)/postinst $(ATOP_IPK_DIR)/CONTROL/postinst
 	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(ATOP_SOURCE_DIR)/prerm $(ATOP_IPK_DIR)/CONTROL/prerm
+	# $(INSTALL) -m 755 $(ATOP_SOURCE_DIR)/prerm $(ATOP_IPK_DIR)/CONTROL/prerm
 	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	# echo $(ATOP_CONFFILES) | sed -e 's/ /\n/g' > $(ATOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ATOP_IPK_DIR)

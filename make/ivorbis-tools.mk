@@ -107,7 +107,7 @@ $(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVOR
 	$(MAKE) libogg-stage libvorbis-stage libao-stage libcurl-stage libvorbisidec-stage
 	rm -rf $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) $(IVORBIS_TOOLS_BUILD_DIR)
 	$(IVORBIS_TOOLS_UNZIP) $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(IVORBIS_TOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) -p1
+	cat $(IVORBIS_TOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -161,7 +161,7 @@ ivorbis-tools: $(IVORBIS_TOOLS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/<foo>
 #
 $(IVORBIS_TOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ivorbis-tools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

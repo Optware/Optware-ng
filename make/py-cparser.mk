@@ -118,7 +118,7 @@ $(PY-CPARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CPARSER_SOURCE) $(PY-CPARSER
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-CPARSER_UNZIP) $(DL_DIR)/$(PY-CPARSER_SOURCE)
 	$(PY-CPARSER_UNZIP) $(DL_DIR)/$(PY-CPARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CPARSER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CPARSER_DIR) -p1
+#	cat $(PY-CPARSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CPARSER_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CPARSER_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -130,7 +130,7 @@ $(PY-CPARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CPARSER_SOURCE) $(PY-CPARSER
 	)
 #	cd $(BUILD_DIR); $(PY-CPARSER_UNZIP) $(DL_DIR)/$(PY-CPARSER_SOURCE)
 	$(PY-CPARSER_UNZIP) $(DL_DIR)/$(PY-CPARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CPARSER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CPARSER_DIR) -p1
+#	cat $(PY-CPARSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CPARSER_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CPARSER_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -142,7 +142,7 @@ $(PY-CPARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CPARSER_SOURCE) $(PY-CPARSER
 	)
 #	cd $(BUILD_DIR); $(PY-CPARSER_UNZIP) $(DL_DIR)/$(PY-CPARSER_SOURCE)
 	$(PY-CPARSER_UNZIP) $(DL_DIR)/$(PY-CPARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CPARSER_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CPARSER_DIR) -p1
+#	cat $(PY-CPARSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CPARSER_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CPARSER_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -217,7 +217,7 @@ py-cparser-host-stage: $(PY-CPARSER_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-cparser
 #
 $(PY26-CPARSER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-cparser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -231,7 +231,7 @@ $(PY26-CPARSER_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CPARSER_CONFLICTS)" >>$@
 
 $(PY27-CPARSER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-cparser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -245,7 +245,7 @@ $(PY27-CPARSER_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CPARSER_CONFLICTS)" >>$@
 
 $(PY3-CPARSER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-cparser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

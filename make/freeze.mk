@@ -68,7 +68,7 @@ $(FREEZE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREEZE_SOURCE) $(FREEZE_PATCHES) ma
 	$(FREEZE_UNZIP) $(DL_DIR)/$(FREEZE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FREEZE_PATCHES)" ; \
 		then cat $(FREEZE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FREEZE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FREEZE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FREEZE_DIR)" != "$(FREEZE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FREEZE_DIR) $(FREEZE_BUILD_DIR) ; \
@@ -107,7 +107,7 @@ freeze: $(FREEZE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/freeze
 #
 $(FREEZE_IPK_DIR)/CONTROL/control:
-	@install -d $(FREEZE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(FREEZE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: freeze" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -135,8 +135,8 @@ $(FREEZE_IPK_DIR)/CONTROL/control:
 #
 $(FREEZE_IPK): $(FREEZE_BUILD_DIR)/.built
 	rm -rf $(FREEZE_IPK_DIR) $(BUILD_DIR)/freeze_*_$(TARGET_ARCH).ipk
-	install -d $(FREEZE_IPK_DIR)/opt/bin
-	install -d $(FREEZE_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(FREEZE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(FREEZE_IPK_DIR)/opt/share/man/man1
 	$(MAKE) -C $(FREEZE_BUILD_DIR) prefix=$(FREEZE_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(FREEZE_IPK_DIR)/opt/bin/freeze
 	$(STRIP_COMMAND) $(FREEZE_IPK_DIR)/opt/bin/statist

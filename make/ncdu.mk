@@ -110,7 +110,7 @@ $(NCDU_BUILD_DIR)/.configured: $(DL_DIR)/$(NCDU_SOURCE) $(NCDU_PATCHES) make/ncd
 	$(NCDU_UNZIP) $(DL_DIR)/$(NCDU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NCDU_PATCHES)" ; \
 		then cat $(NCDU_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NCDU_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NCDU_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NCDU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NCDU_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ ncdu-stage: $(NCDU_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ncdu
 #
 $(NCDU_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ncdu" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

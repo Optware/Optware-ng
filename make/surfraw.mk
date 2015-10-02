@@ -114,7 +114,7 @@ $(SURFRAW_BUILD_DIR)/.configured: $(DL_DIR)/$(SURFRAW_SOURCE) $(SURFRAW_PATCHES)
 	$(SURFRAW_UNZIP) $(DL_DIR)/$(SURFRAW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SURFRAW_PATCHES)" ; \
 		then cat $(SURFRAW_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SURFRAW_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SURFRAW_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SURFRAW_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SURFRAW_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ surfraw-stage: $(SURFRAW_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/surfraw
 #
 $(SURFRAW_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: surfraw" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

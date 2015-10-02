@@ -110,7 +110,7 @@ $(UPDATEDD_BUILD_DIR)/.configured: $(DL_DIR)/$(UPDATEDD_SOURCE) $(UPDATEDD_PATCH
 	$(UPDATEDD_UNZIP) $(DL_DIR)/$(UPDATEDD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UPDATEDD_PATCHES)" ; \
 		then cat $(UPDATEDD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UPDATEDD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UPDATEDD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UPDATEDD_DIR)" != "$(UPDATEDD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(UPDATEDD_DIR) $(UPDATEDD_BUILD_DIR) ; \
@@ -160,7 +160,7 @@ updatedd-stage: $(UPDATEDD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/updatedd
 #
 $(UPDATEDD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: updatedd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

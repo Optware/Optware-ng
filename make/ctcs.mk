@@ -103,7 +103,7 @@ $(CTCS_BUILD_DIR)/.configured: $(DL_DIR)/$(CTCS_SOURCE) $(CTCS_PATCHES) make/ctc
 	$(CTCS_UNZIP) $(DL_DIR)/$(CTCS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CTCS_PATCHES)" ; \
 		then cat $(CTCS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CTCS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CTCS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CTCS_DIR)" != "$(CTCS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CTCS_DIR) $(CTCS_BUILD_DIR) ; \
@@ -131,7 +131,7 @@ ctcs: $(CTCS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ctcs
 #
 $(CTCS_IPK_DIR)/CONTROL/control:
-	@install -d $(CTCS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(CTCS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ctcs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -159,18 +159,18 @@ $(CTCS_IPK_DIR)/CONTROL/control:
 #
 $(CTCS_IPK): $(CTCS_BUILD_DIR)/.built
 	rm -rf $(CTCS_IPK_DIR) $(BUILD_DIR)/ctcs_*_$(TARGET_ARCH).ipk
-	install -d $(CTCS_IPK_DIR)/opt/bin
-	install -m 755 $(CTCS_BUILD_DIR)/ctcs $(CTCS_IPK_DIR)/opt/bin/ctcs
-	install -d $(CTCS_IPK_DIR)/opt/doc/ctcs
-	install -m 755 $(CTCS_SOURCE_DIR)/README.nslu2 $(CTCS_IPK_DIR)/opt/doc/ctcs/README.nslu2
-	install -m 755 $(CTCS_SOURCE_DIR)/readme.txt $(CTCS_IPK_DIR)/opt/doc/ctcs/readme.txt
-	install -d $(CTCS_IPK_DIR)/opt/etc
-	install -m 755 $(CTCS_SOURCE_DIR)/ctcs.conf $(CTCS_IPK_DIR)/opt/etc/ctcs.conf
-	install -d $(CTCS_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(CTCS_SOURCE_DIR)/rc.ctcs $(CTCS_IPK_DIR)/opt/etc/init.d/S90ctcs
+	$(INSTALL) -d $(CTCS_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(CTCS_BUILD_DIR)/ctcs $(CTCS_IPK_DIR)/opt/bin/ctcs
+	$(INSTALL) -d $(CTCS_IPK_DIR)/opt/doc/ctcs
+	$(INSTALL) -m 755 $(CTCS_SOURCE_DIR)/README.nslu2 $(CTCS_IPK_DIR)/opt/doc/ctcs/README.nslu2
+	$(INSTALL) -m 755 $(CTCS_SOURCE_DIR)/readme.txt $(CTCS_IPK_DIR)/opt/doc/ctcs/readme.txt
+	$(INSTALL) -d $(CTCS_IPK_DIR)/opt/etc
+	$(INSTALL) -m 755 $(CTCS_SOURCE_DIR)/ctcs.conf $(CTCS_IPK_DIR)/opt/etc/ctcs.conf
+	$(INSTALL) -d $(CTCS_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(CTCS_SOURCE_DIR)/rc.ctcs $(CTCS_IPK_DIR)/opt/etc/init.d/S90ctcs
 	$(MAKE) $(CTCS_IPK_DIR)/CONTROL/control
-	install -m 755 $(CTCS_SOURCE_DIR)/postinst $(CTCS_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(CTCS_SOURCE_DIR)/prerm $(CTCS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(CTCS_SOURCE_DIR)/postinst $(CTCS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(CTCS_SOURCE_DIR)/prerm $(CTCS_IPK_DIR)/CONTROL/prerm
 	echo $(CTCS_CONFFILES) | sed -e 's/ /\n/g' > $(CTCS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CTCS_IPK_DIR)
 

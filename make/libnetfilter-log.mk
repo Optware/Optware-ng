@@ -110,7 +110,7 @@ $(LIBNETFILTER_LOG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETFILTER_LOG_SOURCE) 
 	$(LIBNETFILTER_LOG_UNZIP) $(DL_DIR)/$(LIBNETFILTER_LOG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNETFILTER_LOG_PATCHES)" ; \
 		then cat $(LIBNETFILTER_LOG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBNETFILTER_LOG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNETFILTER_LOG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNETFILTER_LOG_DIR)" != "$(LIBNETFILTER_LOG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBNETFILTER_LOG_DIR) $(LIBNETFILTER_LOG_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ libnetfilter-log-stage: $(LIBNETFILTER_LOG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libnetfilter-log
 #
 $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libnetfilter-log" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(LIBNETFILTER_LOG_IPK): $(LIBNETFILTER_LOG_BUILD_DIR)/.built
 	rm -rf $(LIBNETFILTER_LOG_IPK_DIR) $(BUILD_DIR)/libnetfilter-log_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNETFILTER_LOG_BUILD_DIR) DESTDIR=$(LIBNETFILTER_LOG_IPK_DIR) install-strip
 	rm -rf $(LIBNETFILTER_LOG_IPK_DIR)/opt/include
-#	install -d $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBNETFILTER_LOG_SOURCE_DIR)/libnetfilter-log.conf $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/libnetfilter-log.conf
-#	install -d $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBNETFILTER_LOG_SOURCE_DIR)/rc.libnetfilter-log $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-log
+#	$(INSTALL) -d $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBNETFILTER_LOG_SOURCE_DIR)/libnetfilter-log.conf $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/libnetfilter-log.conf
+#	$(INSTALL) -d $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNETFILTER_LOG_SOURCE_DIR)/rc.libnetfilter-log $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-log
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-log
 	$(MAKE) $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBNETFILTER_LOG_SOURCE_DIR)/postinst $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBNETFILTER_LOG_SOURCE_DIR)/postinst $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBNETFILTER_LOG_SOURCE_DIR)/prerm $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBNETFILTER_LOG_SOURCE_DIR)/prerm $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBNETFILTER_LOG_CONFFILES) | sed -e 's/ /\n/g' > $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETFILTER_LOG_IPK_DIR)

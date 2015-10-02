@@ -61,7 +61,7 @@ RENDEREXT_IPK=$(BUILD_DIR)/renderext_$(RENDEREXT_VERSION)-$(RENDEREXT_IPK_VERSIO
 # Automatically create a ipkg control file
 #
 $(RENDEREXT_IPK_DIR)/CONTROL/control:
-	@install -d $(RENDEREXT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(RENDEREXT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: renderext" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -103,7 +103,7 @@ $(RENDEREXT_BUILD_DIR)/.configured: $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz
 	if test -n "$(RENDEREXT_PATCHES)" ; \
 		then cat $(RENDEREXT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RENDEREXT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RENDEREXT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RENDEREXT_DIR)" != "$(RENDEREXT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RENDEREXT_DIR) $(RENDEREXT_BUILD_DIR) ; \

@@ -143,7 +143,7 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(GETTEXT_DIR) $(@D)
 	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(GETTEXT_PATCHES) | patch -d $(BUILD_DIR)/$(GETTEXT_DIR) -p1
+	cat $(GETTEXT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GETTEXT_DIR) -p1
 	mv $(BUILD_DIR)/$(GETTEXT_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -205,7 +205,7 @@ gettext-stage: $(GETTEXT_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.
 #
 $(GETTEXT_IPK_DIR)/CONTROL/control:
-	@install -d $(GETTEXT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GETTEXT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: gettext" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -243,13 +243,13 @@ $(GETTEXT_IPK): $(GETTEXT_BUILD_DIR)/.built
 		fi; \
 	fi
 	$(STRIP_COMMAND) $(GETTEXT_IPK_DIR)/opt/lib/*.so*
-#	install -d $(GETTEXT_IPK_DIR)/opt/etc/
-#	install -m 755 $(GETTEXT_SOURCE_DIR)/gettext.conf $(GETTEXT_IPK_DIR)/opt/etc/gettext.conf
-#	install -d $(GETTEXT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GETTEXT_SOURCE_DIR)/rc.gettext $(GETTEXT_IPK_DIR)/opt/etc/init.d/SXXgettext
+#	$(INSTALL) -d $(GETTEXT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 755 $(GETTEXT_SOURCE_DIR)/gettext.conf $(GETTEXT_IPK_DIR)/opt/etc/gettext.conf
+#	$(INSTALL) -d $(GETTEXT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GETTEXT_SOURCE_DIR)/rc.gettext $(GETTEXT_IPK_DIR)/opt/etc/init.d/SXXgettext
 	$(MAKE) $(GETTEXT_IPK_DIR)/CONTROL/control
-#	install -m 644 $(GETTEXT_SOURCE_DIR)/postinst $(GETTEXT_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(GETTEXT_SOURCE_DIR)/prerm $(GETTEXT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(GETTEXT_SOURCE_DIR)/postinst $(GETTEXT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(GETTEXT_SOURCE_DIR)/prerm $(GETTEXT_IPK_DIR)/CONTROL/prerm
 #	echo $(GETTEXT_CONFFILES) | sed -e 's/ /\n/g' > $(GETTEXT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GETTEXT_IPK_DIR)
 

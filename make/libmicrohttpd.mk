@@ -110,7 +110,7 @@ $(LIBMICROHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMICROHTTPD_SOURCE) $(LIBM
 	$(LIBMICROHTTPD_UNZIP) $(DL_DIR)/$(LIBMICROHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMICROHTTPD_PATCHES)" ; \
 		then cat $(LIBMICROHTTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMICROHTTPD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMICROHTTPD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMICROHTTPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMICROHTTPD_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ libmicrohttpd-stage: $(LIBMICROHTTPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmicrohttpd
 #
 $(LIBMICROHTTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmicrohttpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

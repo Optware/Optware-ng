@@ -114,7 +114,7 @@ $(PY-AMARA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-AMARA_SOURCE) $(PY-AMARA_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-AMARA_DIR)
 	$(PY-AMARA_UNZIP) $(DL_DIR)/$(PY-AMARA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-AMARA_PATCHES)"; then \
-	    cat $(PY-AMARA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-AMARA_DIR) -p1; \
+	    cat $(PY-AMARA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-AMARA_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-AMARA_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
@@ -133,7 +133,7 @@ $(PY-AMARA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-AMARA_SOURCE) $(PY-AMARA_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-AMARA_DIR)
 	$(PY-AMARA_UNZIP) $(DL_DIR)/$(PY-AMARA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-AMARA_PATCHES)"; then \
-	    cat $(PY-AMARA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-AMARA_DIR) -p1; \
+	    cat $(PY-AMARA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-AMARA_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-AMARA_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -188,7 +188,7 @@ py-amara-stage: $(PY-AMARA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-amara
 #
 $(PY24-AMARA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-amara" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,7 +202,7 @@ $(PY24-AMARA_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-AMARA_CONFLICTS)" >>$@
 
 $(PY25-AMARA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-amara" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

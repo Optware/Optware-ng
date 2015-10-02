@@ -113,7 +113,7 @@ $(BTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(BTPD_SOURCE) $(BTPD_PATCHES) make/btp
 	$(BTPD_UNZIP) $(DL_DIR)/$(BTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BTPD_PATCHES)" ; \
 		then cat $(BTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BTPD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BTPD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BTPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BTPD_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ btpd-stage: $(BTPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/btpd
 #
 $(BTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: btpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,8 +192,8 @@ $(BTPD_IPK_DIR)/CONTROL/control:
 $(BTPD_IPK): $(BTPD_BUILD_DIR)/.built
 	rm -rf $(BTPD_IPK_DIR) $(BUILD_DIR)/btpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BTPD_BUILD_DIR) DESTDIR=$(BTPD_IPK_DIR) install-strip
-	install -d $(BTPD_IPK_DIR)/opt/share/doc/btpd
-	install $(BTPD_BUILD_DIR)/[CR]* $(BTPD_IPK_DIR)/opt/share/doc/btpd/
+	$(INSTALL) -d $(BTPD_IPK_DIR)/opt/share/doc/btpd
+	$(INSTALL) $(BTPD_BUILD_DIR)/[CR]* $(BTPD_IPK_DIR)/opt/share/doc/btpd/
 	$(MAKE) $(BTPD_IPK_DIR)/CONTROL/control
 	echo $(BTPD_CONFFILES) | sed -e 's/ /\n/g' > $(BTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BTPD_IPK_DIR)

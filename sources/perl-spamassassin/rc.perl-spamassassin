@@ -14,13 +14,13 @@ case "$rc" in
     start)
 	echo "starting service spamd"
 	
-	/opt/bin/spamd -d -c -m 1 -u spamd
+	%OPTWARE_TARGET_PREFIX%/bin/spamd -d -c -m 1 -u spamd
 	;;
     stop)
 	echo "stopping service spamd"
 	
-	if [ -n "`/opt/bin/pidof spamd`" ] ; then
-	    /opt/bin/killall spamd
+	if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof spamd`" ] ; then
+	    %OPTWARE_TARGET_PREFIX%/bin/killall spamd
 	fi
 	;;
     restart)

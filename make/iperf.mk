@@ -108,7 +108,7 @@ $(IPERF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPERF_SOURCE) $(IPERF_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(IPERF_DIR) $(@D)
 	$(IPERF_UNZIP) $(DL_DIR)/$(IPERF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(IPERF_PATCHES) | patch -d $(BUILD_DIR)/$(IPERF_DIR) -p1
+	#cat $(IPERF_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(IPERF_DIR) -p1
 	mv $(BUILD_DIR)/$(IPERF_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -155,7 +155,7 @@ iperf: $(IPERF_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/iperf
 #
 $(IPERF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: iperf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -109,7 +109,7 @@ $(UNISON_BUILD_DIR)/.configured: $(DL_DIR)/$(UNISON_SOURCE) $(UNISON_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(UNISON_DIR) $(@D)
 	$(UNISON_UNZIP) $(DL_DIR)/$(UNISON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(UNISON_PATCHES) | patch -d $(BUILD_DIR)/$(UNISON_DIR) -p1
+	#cat $(UNISON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(UNISON_DIR) -p1
 	mv $(BUILD_DIR)/$(UNISON_DIR) $(@D)
 	sed -i -e 's|-cclib -lutil|& -cclib -Wl,-rpath,/opt/lib|' $(@D)/Makefile.OCaml
 	touch $@
@@ -146,7 +146,7 @@ unison-stage: $(UNISON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/unison
 #
 $(UNISON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: unison" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,8 +174,8 @@ $(UNISON_IPK_DIR)/CONTROL/control:
 #
 $(UNISON_IPK): $(UNISON_BUILD_DIR)/.built
 	rm -rf $(UNISON_IPK_DIR) $(BUILD_DIR)/unison_*_$(TARGET_ARCH).ipk
-	install -d $(UNISON_IPK_DIR)/opt/bin
-	install -m 755 $(UNISON_BUILD_DIR)/unison $(UNISON_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(UNISON_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(UNISON_BUILD_DIR)/unison $(UNISON_IPK_DIR)/opt/bin
 	$(MAKE) $(UNISON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNISON_IPK_DIR)
 

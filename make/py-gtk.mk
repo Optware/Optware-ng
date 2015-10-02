@@ -129,17 +129,17 @@ $(PY-GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GTK_SOURCE) $(PY-GTK_PATCHES) ma
 		python26-host-stage python27-host-stage \
 		py-gobject2-stage
 	rm -rf $(BUILD_DIR)/$(PY-GTK_DIR) $(@D)
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	$(PY-GTK_UNZIP) $(DL_DIR)/$(PY-GTK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-GTK_PATCHES)" ; \
 		then cat $(PY-GTK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-GTK_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-GTK_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-GTK_DIR) $(@D)/2.6
 	$(PY-GTK_UNZIP) $(DL_DIR)/$(PY-GTK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-GTK_PATCHES)" ; \
 		then cat $(PY-GTK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PY-GTK_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-GTK_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-GTK_DIR) $(@D)/2.7
 	(cd $(@D)/2.6; \
@@ -221,7 +221,7 @@ py-gtk-stage: $(PY-GTK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-gtk
 #
 $(PY26-GTK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-gtk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -236,7 +236,7 @@ $(PY26-GTK_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY26-GTK_CONFLICTS)" >>$@
 
 $(PY27-GTK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-gtk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -251,7 +251,7 @@ $(PY27-GTK_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY27-GTK_CONFLICTS)" >>$@
 
 $(PY-GTK_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-gtk-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -281,10 +281,10 @@ $(PY26-GTK_IPK) $(PY-GTK_DEV_IPK): $(PY-GTK_BUILD_DIR)/.built
 	rm -rf $(PY26-GTK_IPK_DIR) $(BUILD_DIR)/py26-gtk_*_$(TARGET_ARCH).ipk \
 		$(PY-GTK_DEV_IPK_DIR) $(BUILD_DIR)/py-gtk-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-GTK_BUILD_DIR)/2.6 DESTDIR=$(PY26-GTK_IPK_DIR) install-strip
-	install -d $(PY-GTK_DEV_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(PY-GTK_DEV_IPK_DIR)/opt/lib
 	mv -f $(PY26-GTK_IPK_DIR)/opt/bin $(PY-GTK_DEV_IPK_DIR)/opt/
 	rm -f $(PY-GTK_DEV_IPK_DIR)/opt/bin/pygtk-demo
-	install -m 755 $(PY-GTK_SOURCE_DIR)/pygtk-demo $(PY-GTK_DEV_IPK_DIR)/opt/bin/pygtk-demo
+	$(INSTALL) -m 755 $(PY-GTK_SOURCE_DIR)/pygtk-demo $(PY-GTK_DEV_IPK_DIR)/opt/bin/pygtk-demo
 	mv -f $(PY26-GTK_IPK_DIR)/opt/include $(PY-GTK_DEV_IPK_DIR)/opt/
 	mv -f $(PY26-GTK_IPK_DIR)/opt/share $(PY-GTK_DEV_IPK_DIR)/opt/
 	mv -f $(PY26-GTK_IPK_DIR)/opt/lib/pkgconfig $(PY26-GTK_IPK_DIR)/opt/lib/pygtk \

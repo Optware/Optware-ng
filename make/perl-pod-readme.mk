@@ -38,7 +38,7 @@ $(PERL-POD-README_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-POD-README_SOURCE) $(
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-POD-README_DIR) $(PERL-POD-README_BUILD_DIR)
 	$(PERL-POD-README_UNZIP) $(DL_DIR)/$(PERL-POD-README_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-POD-README_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-POD-README_DIR) -p1
+#	cat $(PERL-POD-README_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-POD-README_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-POD-README_DIR) $(PERL-POD-README_BUILD_DIR)
 	(cd $(PERL-POD-README_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -68,7 +68,7 @@ $(PERL-POD-README_BUILD_DIR)/.staged: $(PERL-POD-README_BUILD_DIR)/.built
 perl-pod-readme-stage: $(PERL-POD-README_BUILD_DIR)/.staged
 
 $(PERL-POD-README_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-POD-README_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-POD-README_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-pod-readme" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

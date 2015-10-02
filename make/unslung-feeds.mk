@@ -108,7 +108,7 @@ unslung-feeds: $(UNSLUNG-FEEDS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/unslung-feeds
 #
 $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: unslung-feeds" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -136,14 +136,14 @@ $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/control:
 #
 $(UNSLUNG-FEEDS_IPK): $(UNSLUNG-FEEDS_BUILD_DIR)/.built
 	rm -rf $(UNSLUNG-FEEDS_IPK_DIR) $(BUILD_DIR)/unslung-feeds_*_$(TARGET_ARCH).ipk
-	install -d $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg
-	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/unslung-cross.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/unslung-cross.conf
-	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/unslung-native.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/unslung-native.conf
-	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/optware-nslu2-cross-stable.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/optware-nslu2-cross-stable.conf
-	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/optware-nslu2-native-stable.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/optware-nslu2-native-stable.conf
+	$(INSTALL) -d $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg
+	$(INSTALL) -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/unslung-cross.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/unslung-cross.conf
+	$(INSTALL) -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/unslung-native.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/unslung-native.conf
+	$(INSTALL) -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/optware-nslu2-cross-stable.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/optware-nslu2-cross-stable.conf
+	$(INSTALL) -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/optware-nslu2-native-stable.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/optware-nslu2-native-stable.conf
 	$(MAKE) $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/control
-	install -m 644 $(UNSLUNG-FEEDS_SOURCE_DIR)/postinst $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(UNSLUNG-FEEDS_SOURCE_DIR)/prerm $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(UNSLUNG-FEEDS_SOURCE_DIR)/postinst $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(UNSLUNG-FEEDS_SOURCE_DIR)/prerm $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/prerm
 	echo $(UNSLUNG-FEEDS_CONFFILES) | sed -e 's/ /\n/g' > $(UNSLUNG-FEEDS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNSLUNG-FEEDS_IPK_DIR)
 

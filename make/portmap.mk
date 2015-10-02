@@ -104,7 +104,7 @@ $(PORTMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(PORTMAP_SOURCE) $(PORTMAP_PATCHES)
 	$(MAKE) tcpwrappers-stage
 	rm -rf $(BUILD_DIR)/$(PORTMAP_DIR) $(@D)
 	$(PORTMAP_UNZIP) $(DL_DIR)/$(PORTMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PORTMAP_PATCHES) | patch -d $(BUILD_DIR)/$(PORTMAP_DIR) -p1
+	cat $(PORTMAP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PORTMAP_DIR) -p1
 	mv $(BUILD_DIR)/$(PORTMAP_DIR) $(@D)
 	touch $@
 
@@ -132,11 +132,11 @@ portmap: $(PORTMAP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 #$(STAGING_LIB_DIR)/libportmap.so.$(PORTMAP_VERSION): $(PORTMAP_BUILD_DIR)/.built
-#	install -d $(STAGING_INCLUDE_DIR)
-#	install -m 644 $(PORTMAP_BUILD_DIR)/portmap.h $(STAGING_INCLUDE_DIR)
-#	install -d $(STAGING_LIB_DIR)
-#	install -m 644 $(PORTMAP_BUILD_DIR)/libportmap.a $(STAGING_LIB_DIR)
-#	install -m 644 $(PORTMAP_BUILD_DIR)/libportmap.so.$(PORTMAP_VERSION) $(STAGING_LIB_DIR)
+#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -m 644 $(PORTMAP_BUILD_DIR)/portmap.h $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -d $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(PORTMAP_BUILD_DIR)/libportmap.a $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(PORTMAP_BUILD_DIR)/libportmap.so.$(PORTMAP_VERSION) $(STAGING_LIB_DIR)
 #	cd $(STAGING_LIB_DIR) && ln -fs libportmap.so.$(PORTMAP_VERSION) libportmap.so.1
 #	cd $(STAGING_LIB_DIR) && ln -fs libportmap.so.$(PORTMAP_VERSION) libportmap.so
 #
@@ -147,7 +147,7 @@ portmap: $(PORTMAP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/portmap
 # 
 $(PORTMAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: portmap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,13 +174,13 @@ $(PORTMAP_IPK_DIR)/CONTROL/control:
 #
 $(PORTMAP_IPK): $(PORTMAP_BUILD_DIR)/.built
 	rm -rf $(PORTMAP_IPK_DIR) $(BUILD_DIR)/portmap_*_$(TARGET_ARCH).ipk
-	install -d $(PORTMAP_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(PORTMAP_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(PORTMAP_BUILD_DIR)/portmap -o $(PORTMAP_IPK_DIR)/opt/sbin/portmap
-	install -d $(PORTMAP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(PORTMAP_SOURCE_DIR)/rc.portmap $(PORTMAP_IPK_DIR)/opt/etc/init.d/S55portmap
+	$(INSTALL) -d $(PORTMAP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(PORTMAP_SOURCE_DIR)/rc.portmap $(PORTMAP_IPK_DIR)/opt/etc/init.d/S55portmap
 	$(MAKE) $(PORTMAP_IPK_DIR)/CONTROL/control
-	install -m 644 $(PORTMAP_SOURCE_DIR)/postinst $(PORTMAP_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PORTMAP_SOURCE_DIR)/prerm $(PORTMAP_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(PORTMAP_SOURCE_DIR)/postinst $(PORTMAP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(PORTMAP_SOURCE_DIR)/prerm $(PORTMAP_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PORTMAP_IPK_DIR)
 
 #

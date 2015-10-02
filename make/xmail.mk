@@ -121,7 +121,7 @@ endif
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(XMAIL_DIR) $(@D)
 	$(XMAIL_UNZIP) $(DL_DIR)/$(XMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(XMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(XMAIL_DIR) -p1
+	cat $(XMAIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(XMAIL_DIR) -p1
 	mv $(BUILD_DIR)/$(XMAIL_DIR) $(@D)
 	sed -i -e '/^LDFLAGS/s|$$(LDFLAGS) $$(SSLLIBS)|& $(STAGING_LDFLAGS) $(XMAIL_LDFLAGS)|' \
 		-e 's|/usr/include/sys|$(TARGET_INCDIR)/sys|g' $(@D)/Makefile.lnx
@@ -173,7 +173,7 @@ xmail: $(XMAIL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/xmail
 #
 $(XMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,30 +202,30 @@ $(XMAIL_IPK): $(XMAIL_BUILD_DIR)/.built
 	rm -rf $(XMAIL_IPK_DIR) $(BUILD_DIR)/xmail_*_$(TARGET_ARCH).ipk
 	#$(MAKE) -C $(XMAIL_BUILD_DIR) DESTDIR=$(XMAIL_IPK_DIR) install
 	# Main configuration and temporary stores - the MailRoot folder
-	install -d $(XMAIL_IPK_DIR)/opt/var/MailRoot
+	$(INSTALL) -d $(XMAIL_IPK_DIR)/opt/var/MailRoot
 	cp -R $(XMAIL_BUILD_DIR)/MailRoot/* $(XMAIL_IPK_DIR)/opt/var/MailRoot
 	#chown root $(XMAIL_IPK_DIR)/opt/var/MailRoot
 	#chgrp root $(XMAIL_IPK_DIR)/opt/var/MailRoot
-	install -m 755 $(XMAIL_BUILD_DIR)/xmail $(XMAIL_IPK_DIR)/opt/var/MailRoot
+	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/xmail $(XMAIL_IPK_DIR)/opt/var/MailRoot
 	chmod 700 $(XMAIL_IPK_DIR)/opt/var/MailRoot
 	# The binaries (/opt/bin)
-	install -d $(XMAIL_IPK_DIR)/opt/bin
-	install -m 755 $(XMAIL_BUILD_DIR)/bin/CtrlClnt $(XMAIL_IPK_DIR)/opt/bin
-	install -m 700 $(XMAIL_BUILD_DIR)/bin/MkUsers $(XMAIL_IPK_DIR)/opt/bin
-	install -m 700 $(XMAIL_BUILD_DIR)/bin/sendmail $(XMAIL_IPK_DIR)/opt/bin
-	install -m 700 $(XMAIL_BUILD_DIR)/bin/XMail $(XMAIL_IPK_DIR)/opt/bin
-	install -m 700 $(XMAIL_BUILD_DIR)/bin/XMCrypt $(XMAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(XMAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/bin/CtrlClnt $(XMAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/MkUsers $(XMAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/sendmail $(XMAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/XMail $(XMAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/XMCrypt $(XMAIL_IPK_DIR)/opt/bin
 	# The docs (/opt/doc)
-	install -d $(XMAIL_IPK_DIR)/opt/doc/xmail
-	install -m 755 $(XMAIL_BUILD_DIR)/docs/Readme.txt $(XMAIL_IPK_DIR)/opt/doc/xmail
-	install -m 755 $(XMAIL_BUILD_DIR)/docs/Readme.html $(XMAIL_IPK_DIR)/opt/doc/xmail
+	$(INSTALL) -d $(XMAIL_IPK_DIR)/opt/doc/xmail
+	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/docs/Readme.txt $(XMAIL_IPK_DIR)/opt/doc/xmail
+	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/docs/Readme.html $(XMAIL_IPK_DIR)/opt/doc/xmail
 	# rc  (/opt/etc/init.d)
 	# This is handled by the postinst script
 	# Rest of the stuff
 	$(MAKE) $(XMAIL_IPK_DIR)/CONTROL/control
-	install -d $(XMAIL_IPK_DIR)/opt/etc/init.d
-	install -m 644 $(XMAIL_SOURCE_DIR)/postinst $(XMAIL_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(XMAIL_SOURCE_DIR)/prerm $(XMAIL_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -d $(XMAIL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 644 $(XMAIL_SOURCE_DIR)/postinst $(XMAIL_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(XMAIL_SOURCE_DIR)/prerm $(XMAIL_IPK_DIR)/CONTROL/prerm
 	# conf
 	(cd $(XMAIL_BUILD_DIR)/MailRoot && \
 	 find . -type f | \

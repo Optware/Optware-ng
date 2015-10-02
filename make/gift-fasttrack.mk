@@ -100,7 +100,7 @@ $(GIFTFASTTRACK_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) $(GIFT
 	$(MAKE) gift-stage
 	rm -rf $(BUILD_DIR)/$(GIFTFASTTRACK_DIR) $(GIFTFASTTRACK_BUILD_DIR)
 	$(GIFTFASTTRACK_UNZIP) $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GIFTFASTTRACK_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTFASTTRACK_DIR) -p1
+#	cat $(GIFTFASTTRACK_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIFTFASTTRACK_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFTFASTTRACK_DIR_REMOTE) $(GIFTFASTTRACK_BUILD_DIR)
 	(cd $(GIFTFASTTRACK_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
@@ -132,11 +132,11 @@ gift-fasttrack: $(GIFTFASTTRACK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_LIB_DIR)/libgiFT-FastTrack.so.$(GIFTFASTTRACK_VERSION): $(GIFTFASTTRACK_BUILD_DIR)/.built
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/giFT-FastTrack.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/libgiFT-FastTrack.a $(STAGING_LIB_DIR)
-	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/libgiFT-FastTrack.so.$(GIFTFASTTRACK_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/giFT-FastTrack.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/libgiFT-FastTrack.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/libgiFT-FastTrack.so.$(GIFTFASTTRACK_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libgiFT-FastTrack.so.$(GIFTFASTTRACK_VERSION) libgiFT-FastTrack.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libgiFT-FastTrack.so.$(GIFTFASTTRACK_VERSION) libgiFT-FastTrack.so
 
@@ -147,7 +147,7 @@ giFT-FastTrack-stage: $(STAGING_LIB_DIR)/libgiFT-FastTrack.so.$(GIFTFASTTRACK_VE
 # necessary to create a seperate control file under sources/gift-fasttrack
 #
 $(GIFTFASTTRACK_IPK_DIR)/CONTROL/control:
-	@install -d $(GIFTFASTTRACK_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GIFTFASTTRACK_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: gift-fasttrack" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,14 +174,14 @@ $(GIFTFASTTRACK_IPK_DIR)/CONTROL/control:
 #
 $(GIFTFASTTRACK_IPK): $(GIFTFASTTRACK_BUILD_DIR)/.built
 	rm -rf $(GIFTFASTTRACK_IPK_DIR) $(BUILD_DIR)/gift-fasttrack_*_$(TARGET_ARCH).ipk
-	install -d $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT
+	$(INSTALL) -d $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT
 	$(STRIP_COMMAND) $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.so -o $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT/libFastTrack.so
-	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.la $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT/libFastTrack.la
-	install -d $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack
-	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/FastTrack.conf.template $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/FastTrack.conf.template
-	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/banlist $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/banlist
-	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/nodes $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/nodes
-	install -d $(GIFTFASTTRACK_IPK_DIR)/CONTROL
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.la $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT/libFastTrack.la
+	$(INSTALL) -d $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/FastTrack.conf.template $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/FastTrack.conf.template
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/banlist $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/banlist
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/nodes $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/nodes
+	$(INSTALL) -d $(GIFTFASTTRACK_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFTFASTTRACK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTFASTTRACK_IPK_DIR)
 

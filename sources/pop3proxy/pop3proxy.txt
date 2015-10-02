@@ -98,7 +98,7 @@ DESCRIPTION
        of the last succesful server login.  These files can be either used for
        quick debugging or in conjunction with smtp.proxy to grant access to
        the SMTP service.
-	-l /opt/var/pop3proxy
+	-l %OPTWARE_TARGET_PREFIX%/var/pop3proxy
 
    Virus Scanning
        pop3.proxy scans every e-mails using clamav as scan engine  if  the  -z
@@ -182,7 +182,7 @@ DESCRIPTION
        To  enable  status  files  a directory must be given with the -o option
        where the status files should go.  The status  file  are  automatically
        removed when pop3.proxy terminates.
-	-o /opt/var/pop3proxy
+	-o %OPTWARE_TARGET_PREFIX%/var/pop3proxy
 
    Daemon Mode
        pop3.proxy  can  run as standalone daemon (binding and listening on the
@@ -215,14 +215,14 @@ OPTIONS
               Notice  that  dir  must  be  writable  by the userid under which
               pop3.proxy is started.  If pop3.proxy is started by root it will
               change it's uid/gid to 65535/65534.
-		-l /opt/var/pop3proxy
+		-l %OPTWARE_TARGET_PREFIX%/var/pop3proxy
 
        -m     reduce the number of syslog messages.
 
        -o statdir
               defines  the  directory  where  pop3.proxy  writes  it's session
               status files.
-		-o /opt/var/pop3proxy
+		-o %OPTWARE_TARGET_PREFIX%/var/pop3proxy
 
        -q srcip
               sets the source IP-number of the outgoing connection to the POP3
@@ -262,17 +262,17 @@ OPTIONS
 
        -T directory
               sets the directory for pop3.proxy's temporary files.
-		-T /opt/var/pop3proxy
+		-T %OPTWARE_TARGET_PREFIX%/var/pop3proxy
 
 
 EXAMPLES
        To start pop3.proxy from inetd you can add a line like
 
            pop3 stream tcp nowait nobody \
-             /opt/sbin/pop3.proxy pop3.proxy server
+             %OPTWARE_TARGET_PREFIX%/sbin/pop3.proxy pop3.proxy server
 
        to   /etc/inetd.conf.    Notice   that  the  packed  makefile  installs
-       pop3.proxy under /opt/sbin.  In this case you have to put the full path
+       pop3.proxy under %OPTWARE_TARGET_PREFIX%/sbin.  In this case you have to put the full path
        into inetd.conf.
 
        If  you  are running an application gateway firewall and you have local
@@ -287,9 +287,9 @@ EXAMPLES
 
              port 110
                interface 192.168.1.1
-                 exec /opt/sbin/pop3.proxy -e
+                 exec %OPTWARE_TARGET_PREFIX%/sbin/pop3.proxy -e
                interface 140.77.194.1
-                 exec /opt/sbin/pop3.proxy local-pop3
+                 exec %OPTWARE_TARGET_PREFIX%/sbin/pop3.proxy local-pop3
             and configure inetd with
             to do the job.
 

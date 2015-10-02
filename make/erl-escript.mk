@@ -109,7 +109,7 @@ $(ERL-ESCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-ESCRIPT_SOURCE) $(ERL-ESCR
 	$(ERL-ESCRIPT_UNZIP) $(DL_DIR)/$(ERL-ESCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ERL-ESCRIPT_PATCHES)" ; \
 		then cat $(ERL-ESCRIPT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ERL-ESCRIPT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ERL-ESCRIPT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ERL-ESCRIPT_DIR)" != "$(ERL-ESCRIPT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ERL-ESCRIPT_DIR) $(ERL-ESCRIPT_BUILD_DIR) ; \
@@ -152,7 +152,7 @@ erl-escript-stage: $(ERL-ESCRIPT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/erl-escript
 #
 $(ERL-ESCRIPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: erl-escript" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,19 +181,19 @@ $(ERL-ESCRIPT_IPK_DIR)/CONTROL/control:
 $(ERL-ESCRIPT_IPK): $(ERL-ESCRIPT_BUILD_DIR)/.built
 	rm -rf $(ERL-ESCRIPT_IPK_DIR) $(BUILD_DIR)/erl-escript_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(ERL-ESCRIPT_BUILD_DIR) DESTDIR=$(ERL-ESCRIPT_IPK_DIR) install
-	install -d $(ERL-ESCRIPT_IPK_DIR)/opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR)
+	$(INSTALL) -d $(ERL-ESCRIPT_IPK_DIR)/opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR)
 	(cd $(ERL-ESCRIPT_BUILD_DIR); \
-	install -m 755 escript mk_escript.sh factorial fibi fibc \
+	$(INSTALL) -m 755 escript mk_escript.sh factorial fibi fibc \
 		$(ERL-ESCRIPT_IPK_DIR)/opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR); \
-	install -m 644 escript.{erl,beam} \
+	$(INSTALL) -m 644 escript.{erl,beam} \
 		Makefile history escript.html \
 		$(ERL-ESCRIPT_IPK_DIR)/opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR); )
-	install -d $(ERL-ESCRIPT_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ERL-ESCRIPT_IPK_DIR)/opt/bin
 	(cd $(ERL-ESCRIPT_IPK_DIR)/opt/bin; \
 		ln -s /opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR)/escript .; )
 	$(MAKE) $(ERL-ESCRIPT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ERL-ESCRIPT_SOURCE_DIR)/postinst $(ERL-ESCRIPT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ERL-ESCRIPT_SOURCE_DIR)/prerm $(ERL-ESCRIPT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ERL-ESCRIPT_SOURCE_DIR)/postinst $(ERL-ESCRIPT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ERL-ESCRIPT_SOURCE_DIR)/prerm $(ERL-ESCRIPT_IPK_DIR)/CONTROL/prerm
 #	echo $(ERL-ESCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(ERL-ESCRIPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERL-ESCRIPT_IPK_DIR)
 

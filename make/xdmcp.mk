@@ -61,7 +61,7 @@ XDMCP_IPK=$(BUILD_DIR)/xdmcp_$(XDMCP_VERSION)-$(XDMCP_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(XDMCP_IPK_DIR)/CONTROL/control:
-	@install -d $(XDMCP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XDMCP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xdmcp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -103,7 +103,7 @@ $(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz
 	if test -n "$(XDMCP_PATCHES)" ; \
 		then cat $(XDMCP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XDMCP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XDMCP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XDMCP_DIR)" != "$(XDMCP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XDMCP_DIR) $(XDMCP_BUILD_DIR) ; \

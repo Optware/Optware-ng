@@ -98,7 +98,7 @@ $(SENDMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(SENDMAIL_SOURCE) $(SENDMAIL_PATCH
 	$(SENDMAIL_UNZIP) $(DL_DIR)/$(SENDMAIL_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(SENDMAIL_PATCHES)" ; then  \
 		cat $(SENDMAIL_PATCHES) |\
-		patch -d "$(BUILD_DIR)/$(SENDMAIL_DIR)"  -p0 ; \
+		$(PATCH) -d "$(BUILD_DIR)/$(SENDMAIL_DIR)"  -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SENDMAIL_DIR)" != "$(SENDMAIL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SENDMAIL_DIR) $(SENDMAIL_BUILD_DIR) ; \
@@ -140,7 +140,7 @@ sendmail-stage: $(SENDMAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sendmail
 #
 $(SENDMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(SENDMAIL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(SENDMAIL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: sendmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -168,13 +168,13 @@ $(SENDMAIL_IPK_DIR)/CONTROL/control:
 #
 $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 	rm -rf $(SENDMAIL_IPK_DIR) $(BUILD_DIR)/sendmail_*_$(TARGET_ARCH).ipk
-	install -d $(SENDMAIL_IPK_DIR)/opt/etc/mail
-	install -d $(SENDMAIL_IPK_DIR)/opt/bin
-	install -d $(SENDMAIL_IPK_DIR)/opt/sbin
-	install -d $(SENDMAIL_IPK_DIR)/opt/share
-	install -d $(SENDMAIL_IPK_DIR)/opt/man/man1 $(SENDMAIL_IPK_DIR)/opt/man/man5 $(SENDMAIL_IPK_DIR)/opt/man/man8
-	install -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mqueue
-	install -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mail
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/etc/mail
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/share
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/man/man1 $(SENDMAIL_IPK_DIR)/opt/man/man5 $(SENDMAIL_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mqueue
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mail
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR) DESTDIR=$(SENDMAIL_IPK_DIR) \
 		UBINGRP=$(LOGNAME) UBINOWN=$(LOGNAME) \
 		SBINGRP=$(LOGNAME) SBINOWN=$(LOGNAME) \
@@ -184,7 +184,7 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 		CFGRP=$(LOGNAME)   CFOWN=$(LOGNAME) \
 		MSPQOWN=$(LOGNAME) \
 		MAILDIR=/opt/etc/mail \
-		install
+		$(INSTALL)
 	mv -f $(SENDMAIL_IPK_DIR)/opt/man $(SENDMAIL_IPK_DIR)/opt/share/
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR)/cf/cf DESTDIR=$(SENDMAIL_IPK_DIR) \
 		CFGRP=$(LOGNAME)   CFOWN=$(LOGNAME) \
@@ -198,11 +198,11 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 	> $(SENDMAIL_IPK_DIR)/opt/etc/mail/relay-domains ;\
 	echo "# aliases - define mail aliases here." \
 	> $(SENDMAIL_IPK_DIR)/opt/etc/mail/aliases )
-	install -d $(SENDMAIL_IPK_DIR)/opt/etc/
-	install -d $(SENDMAIL_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SENDMAIL_SOURCE_DIR)/rc.sendmail $(SENDMAIL_IPK_DIR)/opt/etc/init.d/S69sendmail
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SENDMAIL_SOURCE_DIR)/rc.sendmail $(SENDMAIL_IPK_DIR)/opt/etc/init.d/S69sendmail
 	$(MAKE) $(SENDMAIL_IPK_DIR)/CONTROL/control
-	install -m 755 $(SENDMAIL_SOURCE_DIR)/postinst $(SENDMAIL_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(SENDMAIL_SOURCE_DIR)/postinst $(SENDMAIL_IPK_DIR)/CONTROL/postinst
 	echo $(SENDMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(SENDMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SENDMAIL_IPK_DIR)
 #	$(WHAT_TO_DO_WITH_IPK_DIR) $(SENDMAIL_IPK_DIR)

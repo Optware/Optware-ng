@@ -104,7 +104,7 @@ $(LIBESMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBESMTP_SOURCE) $(LIBESMTP_PATCH
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(LIBESMTP_DIR) $(@D)
 	$(LIBESMTP_UNZIP) $(DL_DIR)/$(LIBESMTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBESMTP_PATCHES) | patch -d $(BUILD_DIR)/$(LIBESMTP_DIR) -p1
+#	cat $(LIBESMTP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBESMTP_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBESMTP_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -151,7 +151,7 @@ libesmtp-stage: $(LIBESMTP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libesmtp
 #
 $(LIBESMTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libesmtp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,13 +181,13 @@ $(LIBESMTP_IPK): $(LIBESMTP_BUILD_DIR)/.built
 	rm -rf $(LIBESMTP_IPK_DIR) $(BUILD_DIR)/libesmtp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBESMTP_BUILD_DIR) DESTDIR=$(LIBESMTP_IPK_DIR) install-strip
 	rm -f `find $(LIBESMTP_IPK_DIR)/opt/lib -name '*.a'`
-	install -d $(LIBESMTP_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBESMTP_SOURCE_DIR)/libesmtp.conf $(LIBESMTP_IPK_DIR)/opt/etc/libesmtp.conf
-#	install -d $(LIBESMTP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBESMTP_SOURCE_DIR)/rc.libesmtp $(LIBESMTP_IPK_DIR)/opt/etc/init.d/SXXlibesmtp
+	$(INSTALL) -d $(LIBESMTP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBESMTP_SOURCE_DIR)/libesmtp.conf $(LIBESMTP_IPK_DIR)/opt/etc/libesmtp.conf
+#	$(INSTALL) -d $(LIBESMTP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBESMTP_SOURCE_DIR)/rc.libesmtp $(LIBESMTP_IPK_DIR)/opt/etc/init.d/SXXlibesmtp
 	$(MAKE) $(LIBESMTP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBESMTP_SOURCE_DIR)/postinst $(LIBESMTP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBESMTP_SOURCE_DIR)/prerm $(LIBESMTP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBESMTP_SOURCE_DIR)/postinst $(LIBESMTP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBESMTP_SOURCE_DIR)/prerm $(LIBESMTP_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBESMTP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBESMTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBESMTP_IPK_DIR)
 

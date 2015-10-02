@@ -100,7 +100,7 @@ $(MEMTESTER_BUILD_DIR)/.configured: $(DL_DIR)/$(MEMTESTER_SOURCE) $(MEMTESTER_PA
 	$(MEMTESTER_UNZIP) $(DL_DIR)/$(MEMTESTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MEMTESTER_PATCHES)" ; \
 		then cat $(MEMTESTER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MEMTESTER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MEMTESTER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MEMTESTER_DIR)" != "$(MEMTESTER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MEMTESTER_DIR) $(MEMTESTER_BUILD_DIR) ; \
@@ -156,7 +156,7 @@ memtester-stage: $(MEMTESTER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/memtester
 #
 $(MEMTESTER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: memtester" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,15 +185,15 @@ $(MEMTESTER_IPK_DIR)/CONTROL/control:
 $(MEMTESTER_IPK): $(MEMTESTER_BUILD_DIR)/.built
 	rm -rf $(MEMTESTER_IPK_DIR) $(BUILD_DIR)/memtester_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MEMTESTER_BUILD_DIR) INSTALLPATH=$(MEMTESTER_IPK_DIR)/opt install
-	#install -d $(MEMTESTER_IPK_DIR)/opt/etc/
-	#install -m 644 $(MEMTESTER_SOURCE_DIR)/memtester.conf $(MEMTESTER_IPK_DIR)/opt/etc/memtester.conf
-	#install -d $(MEMTESTER_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(MEMTESTER_SOURCE_DIR)/rc.memtester $(MEMTESTER_IPK_DIR)/opt/etc/init.d/SXXmemtester
+	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(MEMTESTER_SOURCE_DIR)/memtester.conf $(MEMTESTER_IPK_DIR)/opt/etc/memtester.conf
+	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(MEMTESTER_SOURCE_DIR)/rc.memtester $(MEMTESTER_IPK_DIR)/opt/etc/init.d/SXXmemtester
 	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEMTESTER_IPK_DIR)/opt/etc/init.d/SXXmemtester
 	$(MAKE) $(MEMTESTER_IPK_DIR)/CONTROL/control
-	#install -m 755 $(MEMTESTER_SOURCE_DIR)/postinst $(MEMTESTER_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(MEMTESTER_SOURCE_DIR)/postinst $(MEMTESTER_IPK_DIR)/CONTROL/postinst
 	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEMTESTER_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(MEMTESTER_SOURCE_DIR)/prerm $(MEMTESTER_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(MEMTESTER_SOURCE_DIR)/prerm $(MEMTESTER_IPK_DIR)/CONTROL/prerm
 	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEMTESTER_IPK_DIR)/CONTROL/prerm
 	#echo $(MEMTESTER_CONFFILES) | sed -e 's/ /\n/g' > $(MEMTESTER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MEMTESTER_IPK_DIR)

@@ -114,7 +114,7 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 	$(BIP_UNZIP) $(DL_DIR)/$(BIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BIP_PATCHES)" ; \
 		then cat $(BIP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BIP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BIP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BIP_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ bip: $(BIP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bip
 #
 $(BIP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,11 +201,11 @@ $(BIP_IPK_DIR)/CONTROL/control:
 $(BIP_IPK): $(BIP_BUILD_DIR)/.built
 	rm -rf $(BIP_IPK_DIR) $(BUILD_DIR)/bip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BIP_BUILD_DIR) DESTDIR=$(BIP_IPK_DIR) install-strip
-	install -d $(BIP_IPK_DIR)/opt/etc/default
-	install -m 644 $(BIP_BUILD_DIR)/samples/bip.conf $(BIP_IPK_DIR)/opt/etc/
-	install -m 644 $(BIP_SOURCE_DIR)/default.bip $(BIP_IPK_DIR)/opt/etc/default/bip
-	install -d $(BIP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(BIP_SOURCE_DIR)/rc.bip $(BIP_IPK_DIR)/opt/etc/init.d/S99bip
+	$(INSTALL) -d $(BIP_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 644 $(BIP_BUILD_DIR)/samples/bip.conf $(BIP_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(BIP_SOURCE_DIR)/default.bip $(BIP_IPK_DIR)/opt/etc/default/bip
+	$(INSTALL) -d $(BIP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(BIP_SOURCE_DIR)/rc.bip $(BIP_IPK_DIR)/opt/etc/init.d/S99bip
 	$(MAKE) $(BIP_IPK_DIR)/CONTROL/control
 	echo $(BIP_CONFFILES) | sed -e 's/ /\n/g' > $(BIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BIP_IPK_DIR)

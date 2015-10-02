@@ -125,7 +125,7 @@ endif
 	$(CACAO_UNZIP) $(DL_DIR)/$(CACAO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CACAO_PATCHES)" ; \
 		then cat $(CACAO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CACAO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CACAO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CACAO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CACAO_DIR) $(@D) ; \
@@ -203,7 +203,7 @@ cacao-stage: $(CACAO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cacao
 #
 $(CACAO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cacao" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

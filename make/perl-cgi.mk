@@ -35,7 +35,7 @@ perl-cgi-source: $(DL_DIR)/$(PERL-CGI_SOURCE) $(PERL-CGI_PATCHES)
 $(PERL-CGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CGI_SOURCE) $(PERL-CGI_PATCHES) make/perl-cgi.mk
 	rm -rf $(BUILD_DIR)/$(PERL-CGI_DIR) $(@D)
 	$(PERL-CGI_UNZIP) $(DL_DIR)/$(PERL-CGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-CGI_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-CGI_DIR) -p1
+#	cat $(PERL-CGI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-CGI_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-CGI_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-CGI_BUILD_DIR)/.staged: $(PERL-CGI_BUILD_DIR)/.built
 perl-cgi-stage: $(PERL-CGI_BUILD_DIR)/.staged
 
 $(PERL-CGI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-cgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

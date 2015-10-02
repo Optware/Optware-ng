@@ -123,7 +123,7 @@ endif
 	$(AVAHI_UNZIP) $(DL_DIR)/$(AVAHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AVAHI_PATCHES)" ; \
 		then cat $(AVAHI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(AVAHI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(AVAHI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AVAHI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AVAHI_DIR) $(@D) ; \
@@ -195,7 +195,7 @@ avahi-stage: $(AVAHI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/avahi
 #
 $(AVAHI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: avahi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -225,15 +225,15 @@ $(AVAHI_IPK): $(AVAHI_BUILD_DIR)/.built
 	rm -rf $(AVAHI_IPK_DIR) $(BUILD_DIR)/avahi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AVAHI_BUILD_DIR) DESTDIR=$(AVAHI_IPK_DIR) install-strip
 	rm -f $(AVAHI_IPK_DIR)/opt/lib/libavahi*.la
-#	install -d $(AVAHI_IPK_DIR)/opt/etc/
-#	install -m 644 $(AVAHI_SOURCE_DIR)/avahi.conf $(AVAHI_IPK_DIR)/opt/etc/avahi.conf
-#	install -d $(AVAHI_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(AVAHI_SOURCE_DIR)/rc.avahi $(AVAHI_IPK_DIR)/opt/etc/init.d/SXXavahi
+#	$(INSTALL) -d $(AVAHI_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(AVAHI_SOURCE_DIR)/avahi.conf $(AVAHI_IPK_DIR)/opt/etc/avahi.conf
+#	$(INSTALL) -d $(AVAHI_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(AVAHI_SOURCE_DIR)/rc.avahi $(AVAHI_IPK_DIR)/opt/etc/init.d/SXXavahi
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AVAHI_IPK_DIR)/opt/etc/init.d/SXXavahi
 	$(MAKE) $(AVAHI_IPK_DIR)/CONTROL/control
-#	install -m 755 $(AVAHI_SOURCE_DIR)/postinst $(AVAHI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(AVAHI_SOURCE_DIR)/postinst $(AVAHI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AVAHI_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(AVAHI_SOURCE_DIR)/prerm $(AVAHI_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(AVAHI_SOURCE_DIR)/prerm $(AVAHI_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AVAHI_IPK_DIR)/CONTROL/prerm
 	echo $(AVAHI_CONFFILES) | sed -e 's/ /\n/g' > $(AVAHI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AVAHI_IPK_DIR)

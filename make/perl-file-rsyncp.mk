@@ -34,7 +34,7 @@ perl-file-rsyncp-source: $(DL_DIR)/$(PERL-FILE-RSYNCP_SOURCE) $(PERL-FILE-RSYNCP
 $(PERL-FILE-RSYNCP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-FILE-RSYNCP_SOURCE) $(PERL-FILE-RSYNCP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERL-FILE-RSYNCP_DIR) $(@D)
 	$(PERL-FILE-RSYNCP_UNZIP) $(DL_DIR)/$(PERL-FILE-RSYNCP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-FILE-RSYNCP_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-FILE-RSYNCP_DIR) -p1
+#	cat $(PERL-FILE-RSYNCP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-FILE-RSYNCP_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-FILE-RSYNCP_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -97,7 +97,7 @@ $(PERL-FILE-RSYNCP_BUILD_DIR)/.staged: $(PERL-FILE-RSYNCP_BUILD_DIR)/.built
 perl-file-rsyncp-stage: $(PERL-FILE-RSYNCP_BUILD_DIR)/.staged
 
 $(PERL-FILE-RSYNCP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-file-rsyncp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

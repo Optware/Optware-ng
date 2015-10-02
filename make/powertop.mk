@@ -108,7 +108,7 @@ endif
 	$(POWERTOP_UNZIP) $(DL_DIR)/$(POWERTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(POWERTOP_PATCHES)" ; \
 		then cat $(POWERTOP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(POWERTOP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(POWERTOP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(POWERTOP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(POWERTOP_DIR) $(@D) ; \
@@ -137,7 +137,7 @@ powertop: $(POWERTOP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/powertop
 #
 $(POWERTOP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: powertop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -166,18 +166,18 @@ $(POWERTOP_IPK_DIR)/CONTROL/control:
 $(POWERTOP_IPK): $(POWERTOP_BUILD_DIR)/.built
 	rm -rf $(POWERTOP_IPK_DIR) $(BUILD_DIR)/powertop_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(POWERTOP_BUILD_DIR) DESTDIR=$(POWERTOP_IPK_DIR) install-strip
-	install -d $(POWERTOP_IPK_DIR)/opt/sbin/
-	install -m 755 $(POWERTOP_BUILD_DIR)/powertop $(POWERTOP_IPK_DIR)/opt/sbin/powertop
+	$(INSTALL) -d $(POWERTOP_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(POWERTOP_BUILD_DIR)/powertop $(POWERTOP_IPK_DIR)/opt/sbin/powertop
 	$(STRIP_COMMAND) $(POWERTOP_IPK_DIR)/opt/sbin/powertop
-#	install -d $(POWERTOP_IPK_DIR)/opt/etc/
-#	install -m 644 $(POWERTOP_SOURCE_DIR)/powertop.conf $(POWERTOP_IPK_DIR)/opt/etc/powertop.conf
-#	install -d $(POWERTOP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(POWERTOP_SOURCE_DIR)/rc.powertop $(POWERTOP_IPK_DIR)/opt/etc/init.d/SXXpowertop
+#	$(INSTALL) -d $(POWERTOP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(POWERTOP_SOURCE_DIR)/powertop.conf $(POWERTOP_IPK_DIR)/opt/etc/powertop.conf
+#	$(INSTALL) -d $(POWERTOP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(POWERTOP_SOURCE_DIR)/rc.powertop $(POWERTOP_IPK_DIR)/opt/etc/init.d/SXXpowertop
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(POWERTOP_IPK_DIR)/opt/etc/init.d/SXXpowertop
 	$(MAKE) $(POWERTOP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(POWERTOP_SOURCE_DIR)/postinst $(POWERTOP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(POWERTOP_SOURCE_DIR)/postinst $(POWERTOP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(POWERTOP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(POWERTOP_SOURCE_DIR)/prerm $(POWERTOP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(POWERTOP_SOURCE_DIR)/prerm $(POWERTOP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(POWERTOP_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

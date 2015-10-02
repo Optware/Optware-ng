@@ -122,7 +122,7 @@ endif
 	$(MICRODC2_UNZIP) $(DL_DIR)/$(MICRODC2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MICRODC2_PATCHES)" ; \
 		then cat $(MICRODC2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MICRODC2_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MICRODC2_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MICRODC2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MICRODC2_DIR) $(@D) ; \
@@ -175,7 +175,7 @@ microdc2-stage: $(MICRODC2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/microdc2
 #
 $(MICRODC2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: microdc2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -204,15 +204,15 @@ $(MICRODC2_IPK_DIR)/CONTROL/control:
 $(MICRODC2_IPK): $(MICRODC2_BUILD_DIR)/.built
 	rm -rf $(MICRODC2_IPK_DIR) $(BUILD_DIR)/microdc2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MICRODC2_BUILD_DIR) DESTDIR=$(MICRODC2_IPK_DIR) install-strip
-#	install -d $(MICRODC2_IPK_DIR)/opt/etc/
-#	install -m 644 $(MICRODC2_SOURCE_DIR)/microdc2.conf $(MICRODC2_IPK_DIR)/opt/etc/microdc2.conf
-#	install -d $(MICRODC2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MICRODC2_SOURCE_DIR)/rc.microdc2 $(MICRODC2_IPK_DIR)/opt/etc/init.d/SXXmicrodc2
+#	$(INSTALL) -d $(MICRODC2_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MICRODC2_SOURCE_DIR)/microdc2.conf $(MICRODC2_IPK_DIR)/opt/etc/microdc2.conf
+#	$(INSTALL) -d $(MICRODC2_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MICRODC2_SOURCE_DIR)/rc.microdc2 $(MICRODC2_IPK_DIR)/opt/etc/init.d/SXXmicrodc2
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MICRODC2_IPK_DIR)/opt/etc/init.d/SXXmicrodc2
 	$(MAKE) $(MICRODC2_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MICRODC2_SOURCE_DIR)/postinst $(MICRODC2_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MICRODC2_SOURCE_DIR)/postinst $(MICRODC2_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MICRODC2_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MICRODC2_SOURCE_DIR)/prerm $(MICRODC2_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MICRODC2_SOURCE_DIR)/prerm $(MICRODC2_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MICRODC2_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

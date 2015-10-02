@@ -110,7 +110,7 @@ $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSQL_CONNECTOR_ODBC_
 	$(MYSQL_CONNECTOR_ODBC_UNZIP) $(DL_DIR)/$(MYSQL_CONNECTOR_ODBC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MYSQL_CONNECTOR_ODBC_PATCHES)" ; \
 		then cat $(MYSQL_CONNECTOR_ODBC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MYSQL_CONNECTOR_ODBC_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ mysql-connector-odbc-stage: $(MYSQL_CONNECTOR_ODBC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mysql-connector-odbc
 #
 $(MYSQL_CONNECTOR_ODBC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mysql-connector-odbc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

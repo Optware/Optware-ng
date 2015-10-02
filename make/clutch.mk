@@ -113,7 +113,7 @@ $(CLUTCH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLUTCH_SOURCE) $(CLUTCH_PATCHES) ma
 	$(CLUTCH_UNZIP) $(DL_DIR)/$(CLUTCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLUTCH_PATCHES)" ; \
 		then cat $(CLUTCH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CLUTCH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CLUTCH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CLUTCH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CLUTCH_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ clutch-stage: $(CLUTCH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/clutch
 #
 $(CLUTCH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: clutch" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,17 +192,17 @@ $(CLUTCH_IPK_DIR)/CONTROL/control:
 $(CLUTCH_IPK): $(CLUTCH_BUILD_DIR)/.built
 	rm -rf $(CLUTCH_IPK_DIR) $(BUILD_DIR)/clutch_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(CLUTCH_BUILD_DIR) DESTDIR=$(CLUTCH_IPK_DIR) install-strip
-	install -d $(CLUTCH_IPK_DIR)/opt/etc/
-	install -d $(CLUTCH_IPK_DIR)/opt/share/www/lighttpd/clutch
+	$(INSTALL) -d $(CLUTCH_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(CLUTCH_IPK_DIR)/opt/share/www/lighttpd/clutch
 	cp -rp $(CLUTCH_BUILD_DIR)/* $(CLUTCH_IPK_DIR)/opt/share/www/lighttpd/clutch/
-	install -m 644 $(CLUTCH_SOURCE_DIR)/clutch.conf $(CLUTCH_IPK_DIR)/opt/etc/clutch.conf
-	install -d $(CLUTCH_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(CLUTCH_SOURCE_DIR)/rc.clutch $(CLUTCH_IPK_DIR)/opt/etc/init.d/S88clutch
+	$(INSTALL) -m 644 $(CLUTCH_SOURCE_DIR)/clutch.conf $(CLUTCH_IPK_DIR)/opt/etc/clutch.conf
+	$(INSTALL) -d $(CLUTCH_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(CLUTCH_SOURCE_DIR)/rc.clutch $(CLUTCH_IPK_DIR)/opt/etc/init.d/S88clutch
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLUTCH_IPK_DIR)/opt/etc/init.d/SXXclutch
 	$(MAKE) $(CLUTCH_IPK_DIR)/CONTROL/control
-	install -m 755 $(CLUTCH_SOURCE_DIR)/postinst $(CLUTCH_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(CLUTCH_SOURCE_DIR)/postinst $(CLUTCH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLUTCH_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CLUTCH_SOURCE_DIR)/prerm $(CLUTCH_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CLUTCH_SOURCE_DIR)/prerm $(CLUTCH_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLUTCH_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

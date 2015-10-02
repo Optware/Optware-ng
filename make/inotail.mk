@@ -110,7 +110,7 @@ $(INOTAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(INOTAIL_SOURCE) $(INOTAIL_PATCHES)
 	$(INOTAIL_UNZIP) $(DL_DIR)/$(INOTAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(INOTAIL_PATCHES)" ; \
 		then cat $(INOTAIL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(INOTAIL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(INOTAIL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(INOTAIL_DIR)" != "$(INOTAIL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(INOTAIL_DIR) $(INOTAIL_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ inotail-stage: $(INOTAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/inotail
 #
 $(INOTAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: inotail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

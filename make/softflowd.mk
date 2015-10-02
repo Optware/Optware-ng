@@ -110,7 +110,7 @@ $(SOFTFLOWD_BUILD_DIR)/.configured: $(DL_DIR)/$(SOFTFLOWD_SOURCE) $(SOFTFLOWD_PA
 	$(SOFTFLOWD_UNZIP) $(DL_DIR)/$(SOFTFLOWD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SOFTFLOWD_PATCHES)" ; \
 		then cat $(SOFTFLOWD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SOFTFLOWD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SOFTFLOWD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SOFTFLOWD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SOFTFLOWD_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ softflowd-stage: $(SOFTFLOWD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/softflowd
 #
 $(SOFTFLOWD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: softflowd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

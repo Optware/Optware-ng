@@ -8,7 +8,7 @@
 +#INCLUDE	= /usr/local/BerkeleyDB/include
  #INCLUDE	= /usr/local/include
  #INCLUDE	= /usr/include
-+INCLUDE	= /opt/include
++INCLUDE	= %OPTWARE_TARGET_PREFIX%/include
  
  # 2. Where is libdb?
  #
@@ -19,7 +19,7 @@
 +#LIB	= /usr/local/BerkeleyDB/lib
  #LIB	= /usr/local/lib
  #LIB	= /usr/lib
-+LIB	= /opt/lib
++LIB	= %OPTWARE_TARGET_PREFIX%/lib
  
  # 3. What version of Berkely DB have you got?
  #

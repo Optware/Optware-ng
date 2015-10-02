@@ -110,7 +110,7 @@ $(DAEMONIZE_BUILD_DIR)/.configured: $(DL_DIR)/$(DAEMONIZE_SOURCE) $(DAEMONIZE_PA
 	$(DAEMONIZE_UNZIP) $(DL_DIR)/$(DAEMONIZE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DAEMONIZE_PATCHES)" ; \
 		then cat $(DAEMONIZE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DAEMONIZE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DAEMONIZE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DAEMONIZE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DAEMONIZE_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ daemonize-stage: $(DAEMONIZE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/daemonize
 #
 $(DAEMONIZE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: daemonize" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,15 @@ $(DAEMONIZE_IPK): $(DAEMONIZE_BUILD_DIR)/.built
 	rm -rf $(DAEMONIZE_IPK_DIR) $(BUILD_DIR)/daemonize_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DAEMONIZE_BUILD_DIR) DESTDIR=$(DAEMONIZE_IPK_DIR) install
 	$(STRIP_COMMAND) $(DAEMONIZE_IPK_DIR)/opt/sbin/daemonize
-#	install -d $(DAEMONIZE_IPK_DIR)/opt/etc/
-#	install -m 644 $(DAEMONIZE_SOURCE_DIR)/daemonize.conf $(DAEMONIZE_IPK_DIR)/opt/etc/daemonize.conf
-#	install -d $(DAEMONIZE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DAEMONIZE_SOURCE_DIR)/rc.daemonize $(DAEMONIZE_IPK_DIR)/opt/etc/init.d/SXXdaemonize
+#	$(INSTALL) -d $(DAEMONIZE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DAEMONIZE_SOURCE_DIR)/daemonize.conf $(DAEMONIZE_IPK_DIR)/opt/etc/daemonize.conf
+#	$(INSTALL) -d $(DAEMONIZE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DAEMONIZE_SOURCE_DIR)/rc.daemonize $(DAEMONIZE_IPK_DIR)/opt/etc/init.d/SXXdaemonize
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAEMONIZE_IPK_DIR)/opt/etc/init.d/SXXdaemonize
 	$(MAKE) $(DAEMONIZE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DAEMONIZE_SOURCE_DIR)/postinst $(DAEMONIZE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DAEMONIZE_SOURCE_DIR)/postinst $(DAEMONIZE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAEMONIZE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DAEMONIZE_SOURCE_DIR)/prerm $(DAEMONIZE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DAEMONIZE_SOURCE_DIR)/prerm $(DAEMONIZE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAEMONIZE_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

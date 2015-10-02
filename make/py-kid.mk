@@ -113,7 +113,7 @@ $(PY-KID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 	# 2.4
 	$(PY-KID_UNZIP) $(DL_DIR)/$(PY-KID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-KID_PATCHES)"; then \
-	    cat $(PY-KID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-KID_DIR) -p1; \
+	    cat $(PY-KID_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-KID_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)/2.4
 	(cd $(PY-KID_BUILD_DIR)/2.4; \
@@ -127,7 +127,7 @@ $(PY-KID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 	# 2.5
 	$(PY-KID_UNZIP) $(DL_DIR)/$(PY-KID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-KID_PATCHES)"; then \
-	    cat $(PY-KID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-KID_DIR) -p1; \
+	    cat $(PY-KID_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-KID_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)/2.5
 	(cd $(PY-KID_BUILD_DIR)/2.5; \
@@ -175,7 +175,7 @@ py-kid-stage: $(PY-KID_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-kid
 #
 $(PY24-KID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-kid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,7 +189,7 @@ $(PY24-KID_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-KID_CONFLICTS)" >>$@
 
 $(PY25-KID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-kid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

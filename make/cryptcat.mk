@@ -110,7 +110,7 @@ $(CRYPTCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTCAT_SOURCE) $(CRYPTCAT_PATCH
 	$(CRYPTCAT_UNZIP) $(DL_DIR)/$(CRYPTCAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CRYPTCAT_PATCHES)" ; \
 		then cat $(CRYPTCAT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CRYPTCAT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CRYPTCAT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CRYPTCAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CRYPTCAT_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ cryptcat: $(CRYPTCAT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/cryptcat
 #
 $(CRYPTCAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cryptcat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,10 +197,10 @@ $(CRYPTCAT_IPK_DIR)/CONTROL/control:
 $(CRYPTCAT_IPK): $(CRYPTCAT_BUILD_DIR)/.built
 	rm -rf $(CRYPTCAT_IPK_DIR) $(BUILD_DIR)/cryptcat_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(CRYPTCAT_BUILD_DIR) DESTDIR=$(CRYPTCAT_IPK_DIR) install-strip
-	install -d $(CRYPTCAT_IPK_DIR)/opt/bin/
-	install -m 755 $(CRYPTCAT_BUILD_DIR)/cryptcat $(CRYPTCAT_IPK_DIR)/opt/bin/
-	install -d $(CRYPTCAT_IPK_DIR)/opt/share/doc/cryptcat
-	install -m 644 $(CRYPTCAT_BUILD_DIR)/[CR]* $(CRYPTCAT_IPK_DIR)/opt/share/doc/cryptcat/
+	$(INSTALL) -d $(CRYPTCAT_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 755 $(CRYPTCAT_BUILD_DIR)/cryptcat $(CRYPTCAT_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(CRYPTCAT_IPK_DIR)/opt/share/doc/cryptcat
+	$(INSTALL) -m 644 $(CRYPTCAT_BUILD_DIR)/[CR]* $(CRYPTCAT_IPK_DIR)/opt/share/doc/cryptcat/
 	$(STRIP_COMMAND) $(CRYPTCAT_IPK_DIR)/opt/bin/cryptcat
 	$(MAKE) $(CRYPTCAT_IPK_DIR)/CONTROL/control
 	echo $(CRYPTCAT_CONFFILES) | sed -e 's/ /\n/g' > $(CRYPTCAT_IPK_DIR)/CONTROL/conffiles

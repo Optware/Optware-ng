@@ -104,7 +104,7 @@ $(ALSA-OSS_BUILD_DIR)/.configured: $(DL_DIR)/$(ALSA-OSS_SOURCE) $(ALSA-OSS_PATCH
 	$(MAKE) alsa-lib-stage
 	rm -rf $(BUILD_DIR)/$(ALSA-OSS_DIR) $(ALSA-OSS_BUILD_DIR)
 	$(ALSA-OSS_UNZIP) $(DL_DIR)/$(ALSA-OSS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(ALSA-OSS_PATCHES) | patch -d $(BUILD_DIR)/$(ALSA-OSS_DIR) -p1
+#	cat $(ALSA-OSS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(ALSA-OSS_DIR) -p1
 	mv $(BUILD_DIR)/$(ALSA-OSS_DIR) $(ALSA-OSS_BUILD_DIR)
 	(cd $(ALSA-OSS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -151,7 +151,7 @@ alsa-oss-stage: $(ALSA-OSS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/alsa-oss
 #
 $(ALSA-OSS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: alsa-oss" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,7 +181,7 @@ $(ALSA-OSS_IPK): $(ALSA-OSS_BUILD_DIR)/.built
 	rm -rf $(ALSA-OSS_IPK_DIR) $(BUILD_DIR)/alsa-oss_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ALSA-OSS_BUILD_DIR) DESTDIR=$(ALSA-OSS_IPK_DIR) install-strip
 	$(MAKE) $(ALSA-OSS_IPK_DIR)/CONTROL/control
-#	install -m 644 $(ALSA-OSS_SOURCE_DIR)/control $(ALSA-OSS_IPK_DIR)/CONTROL/control
+#	$(INSTALL) -m 644 $(ALSA-OSS_SOURCE_DIR)/control $(ALSA-OSS_IPK_DIR)/CONTROL/control
 	echo $(ALSA-OSS_CONFFILES) | sed -e 's/ /\n/g' > $(ALSA-OSS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ALSA-OSS_IPK_DIR)
 

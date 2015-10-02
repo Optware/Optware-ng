@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PROXY_BIN=/opt/sbin/in.imapproxyd
+PROXY_BIN=%OPTWARE_TARGET_PREFIX%/sbin/in.imapproxyd
 
 case $1 in
 

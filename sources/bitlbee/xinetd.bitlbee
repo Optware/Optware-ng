@@ -7,6 +7,6 @@ service ircd
 	log_on_failure	= HOST
 	protocol	= tcp
 	user		= nobody
-	server		= /opt/sbin/bitlbee
+	server		= %OPTWARE_TARGET_PREFIX%/sbin/bitlbee
 	wait		= no
 }

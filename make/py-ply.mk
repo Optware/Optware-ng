@@ -126,7 +126,7 @@ $(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(PY-PLY_DIR)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PLY_PATCHES)"; then \
-	    cat $(PY-PLY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
+	    cat $(PY-PLY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PLY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -141,7 +141,7 @@ $(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(PY-PLY_DIR)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PLY_PATCHES)"; then \
-	    cat $(PY-PLY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
+	    cat $(PY-PLY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PLY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -156,7 +156,7 @@ $(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(PY-PLY_DIR)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PLY_PATCHES)"; then \
-	    cat $(PY-PLY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
+	    cat $(PY-PLY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PLY_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -171,7 +171,7 @@ $(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(PY-PLY_DIR)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PLY_PATCHES)"; then \
-	    cat $(PY-PLY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
+	    cat $(PY-PLY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PLY_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PLY_DIR) $(@D)/3
 	(cd $(@D)/3; \
@@ -220,7 +220,7 @@ $(PY-PLY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PLY_SOURCE) ma
 	mkdir -p $(@D)/
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PY-PLY_PATCHES)"; then \
-	    cat $(PY-PLY_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PY-PLY_DIR) -p1; \
+	    cat $(PY-PLY_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-PLY_DIR) -p1; \
 	fi
 	mv $(HOST_BUILD_DIR)/$(PY-PLY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -233,7 +233,7 @@ $(PY-PLY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PLY_SOURCE) ma
 	)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PY-PLY_PATCHES)"; then \
-	    cat $(PY-PLY_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PY-PLY_DIR) -p1; \
+	    cat $(PY-PLY_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-PLY_DIR) -p1; \
 	fi
 	mv $(HOST_BUILD_DIR)/$(PY-PLY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -246,7 +246,7 @@ $(PY-PLY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PLY_SOURCE) ma
 	)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PY-PLY_PATCHES)"; then \
-	    cat $(PY-PLY_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PY-PLY_DIR) -p1; \
+	    cat $(PY-PLY_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-PLY_DIR) -p1; \
 	fi
 	mv $(HOST_BUILD_DIR)/$(PY-PLY_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -259,7 +259,7 @@ $(PY-PLY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PLY_SOURCE) ma
 	)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PY-PLY_PATCHES)"; then \
-	    cat $(PY-PLY_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PY-PLY_DIR) -p1; \
+	    cat $(PY-PLY_PATCHES) | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-PLY_DIR) -p1; \
 	fi
 	mv $(HOST_BUILD_DIR)/$(PY-PLY_DIR) $(@D)/3
 	(cd $(@D)/3; \
@@ -289,7 +289,7 @@ py-ply-stage: $(PY-PLY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-ply
 #
 $(PY25-PLY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-ply" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -303,7 +303,7 @@ $(PY25-PLY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PLY_CONFLICTS)" >>$@
 
 $(PY26-PLY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-ply" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -317,7 +317,7 @@ $(PY26-PLY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PLY_CONFLICTS)" >>$@
 
 $(PY27-PLY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-ply" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -331,7 +331,7 @@ $(PY27-PLY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PLY_CONFLICTS)" >>$@
 
 $(PY3-PLY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-ply" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

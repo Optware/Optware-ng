@@ -110,7 +110,7 @@ $(ATTR_BUILD_DIR)/.configured: $(DL_DIR)/$(ATTR_SOURCE) $(ATTR_PATCHES) make/att
 	$(ATTR_UNZIP) $(DL_DIR)/$(ATTR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ATTR_PATCHES)" ; \
 		then cat $(ATTR_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ATTR_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ATTR_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(ATTR_DIR) $(@D)
 	(cd $(@D); \
@@ -160,7 +160,7 @@ attr-stage: $(ATTR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/attr
 #
 $(ATTR_IPK_DIR)/CONTROL/control:
-	@install -d $(ATTR_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(ATTR_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: attr" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,13 +190,13 @@ $(ATTR_IPK): $(ATTR_BUILD_DIR)/.built
 	$(MAKE) -C $(ATTR_BUILD_DIR) DIST_ROOT=$(ATTR_IPK_DIR) install-lib install-dev
 	$(STRIP_COMMAND) $(ATTR_IPK_DIR)/opt/lib/*.so $(ATTR_IPK_DIR)/opt/bin/*
 	rm -f $(ATTR_IPK_DIR)/opt/lib/libattr.la
-#	install -d $(ATTR_IPK_DIR)/opt/etc/
-#	install -m 644 $(ATTR_SOURCE_DIR)/attr.conf $(ATTR_IPK_DIR)/opt/etc/attr.conf
-#	install -d $(ATTR_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ATTR_SOURCE_DIR)/rc.attr $(ATTR_IPK_DIR)/opt/etc/init.d/SXXattr
+#	$(INSTALL) -d $(ATTR_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(ATTR_SOURCE_DIR)/attr.conf $(ATTR_IPK_DIR)/opt/etc/attr.conf
+#	$(INSTALL) -d $(ATTR_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ATTR_SOURCE_DIR)/rc.attr $(ATTR_IPK_DIR)/opt/etc/init.d/SXXattr
 	$(MAKE) $(ATTR_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ATTR_SOURCE_DIR)/postinst $(ATTR_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ATTR_SOURCE_DIR)/prerm $(ATTR_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ATTR_SOURCE_DIR)/postinst $(ATTR_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ATTR_SOURCE_DIR)/prerm $(ATTR_IPK_DIR)/CONTROL/prerm
 #	echo $(ATTR_CONFFILES) | sed -e 's/ /\n/g' > $(ATTR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ATTR_IPK_DIR)
 

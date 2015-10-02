@@ -113,7 +113,7 @@ $(LIBRSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBRSYNC_SOURCE) $(LIBRSYNC_PATCH
 	$(LIBRSYNC_UNZIP) $(DL_DIR)/$(LIBRSYNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBRSYNC_PATCHES)" ; \
 		then cat $(LIBRSYNC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBRSYNC_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBRSYNC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBRSYNC_DIR)" != "$(LIBRSYNC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBRSYNC_DIR) $(LIBRSYNC_BUILD_DIR) ; \
@@ -163,7 +163,7 @@ librsync-stage: $(LIBRSYNC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/librsync
 #
 $(LIBRSYNC_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBRSYNC_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBRSYNC_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: librsync" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,13 +193,13 @@ $(LIBRSYNC_IPK): $(LIBRSYNC_BUILD_DIR)/.built
 	rm -rf $(LIBRSYNC_IPK_DIR) $(BUILD_DIR)/librsync_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBRSYNC_BUILD_DIR) DESTDIR=$(LIBRSYNC_IPK_DIR) install-strip
 	rm -f $(LIBRSYNC_IPK_DIR)/opt/lib/*.la
-#	install -d $(LIBRSYNC_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBRSYNC_SOURCE_DIR)/librsync.conf $(LIBRSYNC_IPK_DIR)/opt/etc/librsync.conf
-#	install -d $(LIBRSYNC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBRSYNC_SOURCE_DIR)/rc.librsync $(LIBRSYNC_IPK_DIR)/opt/etc/init.d/SXXlibrsync
+#	$(INSTALL) -d $(LIBRSYNC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBRSYNC_SOURCE_DIR)/librsync.conf $(LIBRSYNC_IPK_DIR)/opt/etc/librsync.conf
+#	$(INSTALL) -d $(LIBRSYNC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBRSYNC_SOURCE_DIR)/rc.librsync $(LIBRSYNC_IPK_DIR)/opt/etc/init.d/SXXlibrsync
 	$(MAKE) $(LIBRSYNC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBRSYNC_SOURCE_DIR)/postinst $(LIBRSYNC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBRSYNC_SOURCE_DIR)/prerm $(LIBRSYNC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBRSYNC_SOURCE_DIR)/postinst $(LIBRSYNC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBRSYNC_SOURCE_DIR)/prerm $(LIBRSYNC_IPK_DIR)/CONTROL/prerm
 	echo $(LIBRSYNC_CONFFILES) | sed -e 's/ /\n/g' > $(LIBRSYNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBRSYNC_IPK_DIR)
 

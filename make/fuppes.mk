@@ -145,7 +145,7 @@ endif
 	$(FUPPES_UNZIP) $(DL_DIR)/$(FUPPES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FUPPES_PATCHES)" ; \
 		then cat $(FUPPES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FUPPES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FUPPES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FUPPES_DIR)" != "$(FUPPES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FUPPES_DIR) $(FUPPES_BUILD_DIR) ; \
@@ -201,7 +201,7 @@ fuppes-stage: $(FUPPES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fuppes
 #
 $(FUPPES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fuppes" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -230,15 +230,15 @@ $(FUPPES_IPK_DIR)/CONTROL/control:
 $(FUPPES_IPK): $(FUPPES_BUILD_DIR)/.built
 	rm -rf $(FUPPES_IPK_DIR) $(BUILD_DIR)/fuppes_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FUPPES_BUILD_DIR) DESTDIR=$(FUPPES_IPK_DIR) install-strip
-#	install -d $(FUPPES_IPK_DIR)/opt/etc/
-#	install -m 644 $(FUPPES_SOURCE_DIR)/fuppes.conf $(FUPPES_IPK_DIR)/opt/etc/fuppes.conf
-#	install -d $(FUPPES_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FUPPES_SOURCE_DIR)/rc.fuppes $(FUPPES_IPK_DIR)/opt/etc/init.d/SXXfuppes
+#	$(INSTALL) -d $(FUPPES_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FUPPES_SOURCE_DIR)/fuppes.conf $(FUPPES_IPK_DIR)/opt/etc/fuppes.conf
+#	$(INSTALL) -d $(FUPPES_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FUPPES_SOURCE_DIR)/rc.fuppes $(FUPPES_IPK_DIR)/opt/etc/init.d/SXXfuppes
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUPPES_IPK_DIR)/opt/etc/init.d/SXXfuppes
 	$(MAKE) $(FUPPES_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FUPPES_SOURCE_DIR)/postinst $(FUPPES_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FUPPES_SOURCE_DIR)/postinst $(FUPPES_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUPPES_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FUPPES_SOURCE_DIR)/prerm $(FUPPES_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FUPPES_SOURCE_DIR)/prerm $(FUPPES_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUPPES_IPK_DIR)/CONTROL/prerm
 	echo $(FUPPES_CONFFILES) | sed -e 's/ /\n/g' > $(FUPPES_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FUPPES_IPK_DIR)

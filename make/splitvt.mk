@@ -110,7 +110,7 @@ $(SPLITVT_BUILD_DIR)/.configured: $(DL_DIR)/$(SPLITVT_SOURCE) $(SPLITVT_PATCHES)
 	$(SPLITVT_UNZIP) $(DL_DIR)/$(SPLITVT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPLITVT_PATCHES)" ; \
 		then cat $(SPLITVT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SPLITVT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SPLITVT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SPLITVT_DIR)" != "$(SPLITVT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SPLITVT_DIR) $(SPLITVT_BUILD_DIR) ; \
@@ -165,7 +165,7 @@ splitvt-stage: $(SPLITVT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/splitvt
 #
 $(SPLITVT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: splitvt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

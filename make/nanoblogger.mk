@@ -110,7 +110,7 @@ $(NANOBLOGGER_BUILD_DIR)/.configured: $(DL_DIR)/$(NANOBLOGGER_SOURCE) $(NANOBLOG
 	$(NANOBLOGGER_UNZIP) $(DL_DIR)/$(NANOBLOGGER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NANOBLOGGER_PATCHES)" ; \
 		then cat $(NANOBLOGGER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NANOBLOGGER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NANOBLOGGER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NANOBLOGGER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NANOBLOGGER_DIR) $(@D) ; \
@@ -152,7 +152,7 @@ nanoblogger: $(NANOBLOGGER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/nanoblogger
 #
 $(NANOBLOGGER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nanoblogger" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,23 +181,23 @@ $(NANOBLOGGER_IPK_DIR)/CONTROL/control:
 $(NANOBLOGGER_IPK): $(NANOBLOGGER_BUILD_DIR)/.built
 	rm -rf $(NANOBLOGGER_IPK_DIR) $(BUILD_DIR)/nanoblogger_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(NANOBLOGGER_BUILD_DIR) DESTDIR=$(NANOBLOGGER_IPK_DIR) install-strip
-	install -d $(NANOBLOGGER_IPK_DIR)/opt/bin/
-	install -d $(NANOBLOGGER_IPK_DIR)/opt/share/
-	install -d $(NANOBLOGGER_IPK_DIR)/opt/etc/ 
+	$(INSTALL) -d $(NANOBLOGGER_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(NANOBLOGGER_IPK_DIR)/opt/share/
+	$(INSTALL) -d $(NANOBLOGGER_IPK_DIR)/opt/etc/ 
 	cp -r $(NANOBLOGGER_BUILD_DIR) $(NANOBLOGGER_IPK_DIR)/opt/share/
 	cd $(NANOBLOGGER_IPK_DIR)/opt/share/nanoblogger; \
 		rm -f .configured .built; \
 		mv nb $(NANOBLOGGER_IPK_DIR)/opt/bin/; \
 		mv nb.conf $(NANOBLOGGER_IPK_DIR)/opt/etc
-	install -d $(NANOBLOGGER_IPK_DIR)/opt/share/www
-#	install -m 644 $(NANOBLOGGER_SOURCE_DIR)/nanoblogger.conf $(NANOBLOGGER_IPK_DIR)/opt/etc/nanoblogger.conf
-#	install -d $(NANOBLOGGER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NANOBLOGGER_SOURCE_DIR)/rc.nanoblogger $(NANOBLOGGER_IPK_DIR)/opt/etc/init.d/SXXnanoblogger
+	$(INSTALL) -d $(NANOBLOGGER_IPK_DIR)/opt/share/www
+#	$(INSTALL) -m 644 $(NANOBLOGGER_SOURCE_DIR)/nanoblogger.conf $(NANOBLOGGER_IPK_DIR)/opt/etc/nanoblogger.conf
+#	$(INSTALL) -d $(NANOBLOGGER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NANOBLOGGER_SOURCE_DIR)/rc.nanoblogger $(NANOBLOGGER_IPK_DIR)/opt/etc/init.d/SXXnanoblogger
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXnanoblogger
 	$(MAKE) $(NANOBLOGGER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NANOBLOGGER_SOURCE_DIR)/postinst $(NANOBLOGGER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NANOBLOGGER_SOURCE_DIR)/postinst $(NANOBLOGGER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NANOBLOGGER_SOURCE_DIR)/prerm $(NANOBLOGGER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NANOBLOGGER_SOURCE_DIR)/prerm $(NANOBLOGGER_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(NANOBLOGGER_CONFFILES) | sed -e 's/ /\n/g' > $(NANOBLOGGER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NANOBLOGGER_IPK_DIR)

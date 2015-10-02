@@ -111,7 +111,7 @@ $(LIBMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMTP_SOURCE) $(LIBMTP_PATCHES) ma
 	$(LIBMTP_UNZIP) $(DL_DIR)/$(LIBMTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMTP_PATCHES)" ; \
 		then cat $(LIBMTP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMTP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMTP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMTP_DIR)" != "$(LIBMTP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBMTP_DIR) $(LIBMTP_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ libmtp-stage: $(LIBMTP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmtp
 #
 $(LIBMTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmtp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,15 +190,15 @@ $(LIBMTP_IPK_DIR)/CONTROL/control:
 $(LIBMTP_IPK): $(LIBMTP_BUILD_DIR)/.built
 	rm -rf $(LIBMTP_IPK_DIR) $(BUILD_DIR)/libmtp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMTP_BUILD_DIR) DESTDIR=$(LIBMTP_IPK_DIR) install-strip
-#	install -d $(LIBMTP_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBMTP_SOURCE_DIR)/libmtp.conf $(LIBMTP_IPK_DIR)/opt/etc/libmtp.conf
-#	install -d $(LIBMTP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBMTP_SOURCE_DIR)/rc.libmtp $(LIBMTP_IPK_DIR)/opt/etc/init.d/SXXlibmtp
+#	$(INSTALL) -d $(LIBMTP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBMTP_SOURCE_DIR)/libmtp.conf $(LIBMTP_IPK_DIR)/opt/etc/libmtp.conf
+#	$(INSTALL) -d $(LIBMTP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMTP_SOURCE_DIR)/rc.libmtp $(LIBMTP_IPK_DIR)/opt/etc/init.d/SXXlibmtp
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMTP_IPK_DIR)/opt/etc/init.d/SXXlibmtp
 	$(MAKE) $(LIBMTP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBMTP_SOURCE_DIR)/postinst $(LIBMTP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBMTP_SOURCE_DIR)/postinst $(LIBMTP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMTP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBMTP_SOURCE_DIR)/prerm $(LIBMTP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBMTP_SOURCE_DIR)/prerm $(LIBMTP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMTP_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBMTP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMTP_IPK_DIR)

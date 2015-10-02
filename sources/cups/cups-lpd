@@ -8,6 +8,6 @@ service printer
         protocol    = tcp
         wait        = no
         user        = lp
-        server      = /opt/lib/cups/daemon/cups-lpd
+        server      = %OPTWARE_TARGET_PREFIX%/lib/cups/daemon/cups-lpd
         disable     = no
 }

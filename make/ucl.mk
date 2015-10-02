@@ -91,7 +91,7 @@ $(UCL_BUILD_DIR)/.unpacked: $(DL_DIR)/$(UCL_SOURCE) $(UCL_PATCHES) make/ucl.mk
 	$(UCL_UNZIP) $(DL_DIR)/$(UCL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UCL_PATCHES)" ; \
 		then cat $(UCL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UCL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UCL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UCL_DIR)" != "$(UCL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(UCL_DIR) $(UCL_BUILD_DIR) ; \
@@ -149,7 +149,7 @@ ucl-stage: $(UCL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ucl
 #
 $(UCL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ucl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,15 +179,15 @@ $(UCL_IPK): $(UCL_BUILD_DIR)/.built
 	rm -rf $(UCL_IPK_DIR) $(BUILD_DIR)/ucl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UCL_BUILD_DIR) DESTDIR=$(UCL_IPK_DIR) install-strip
 	rm -f $(UCL_IPK_DIR)/opt/lib/libucl.la
-#	install -d $(UCL_IPK_DIR)/opt/etc/
-#	install -m 644 $(UCL_SOURCE_DIR)/ucl.conf $(UCL_IPK_DIR)/opt/etc/ucl.conf
-#	install -d $(UCL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UCL_SOURCE_DIR)/rc.ucl $(UCL_IPK_DIR)/opt/etc/init.d/SXXucl
+#	$(INSTALL) -d $(UCL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(UCL_SOURCE_DIR)/ucl.conf $(UCL_IPK_DIR)/opt/etc/ucl.conf
+#	$(INSTALL) -d $(UCL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(UCL_SOURCE_DIR)/rc.ucl $(UCL_IPK_DIR)/opt/etc/init.d/SXXucl
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCL_IPK_DIR)/opt/etc/init.d/SXXucl
 	$(MAKE) $(UCL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UCL_SOURCE_DIR)/postinst $(UCL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UCL_SOURCE_DIR)/postinst $(UCL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UCL_SOURCE_DIR)/prerm $(UCL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UCL_SOURCE_DIR)/prerm $(UCL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCL_IPK_DIR)/CONTROL/prerm
 	echo $(UCL_CONFFILES) | sed -e 's/ /\n/g' > $(UCL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UCL_IPK_DIR)

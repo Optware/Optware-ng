@@ -1,31 +1,31 @@
 #!/bin/sh
 
-INST=/opt/share/pyload
+INST=%OPTWARE_TARGET_PREFIX%/share/pyload
 
 echo ""
 
 # Check for the ssl key
 if [ ! -f $INST/ssl.crt ]; then
     echo "Generating ssl Key..."
-    /opt/bin/openssl genrsa -out $INST/ssl.key 4096
-    /opt/bin/openssl req -new -key $INST/ssl.key -out $INST/ssl.csr
-    /opt/bin/openssl req -days 36500 -x509 -key $INST/ssl.key -in $INST/ssl.csr > $INST/ssl.crt
+    %OPTWARE_TARGET_PREFIX%/bin/openssl genrsa -out $INST/ssl.key 4096
+    %OPTWARE_TARGET_PREFIX%/bin/openssl req -new -key $INST/ssl.key -out $INST/ssl.csr
+    %OPTWARE_TARGET_PREFIX%/bin/openssl req -days 36500 -x509 -key $INST/ssl.key -in $INST/ssl.csr > $INST/ssl.crt
     echo ""
 fi
 
 # Check for previous config
-if [ ! -f /opt/etc/pyload/pyload.conf ]; then
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/pyload/pyload.conf ]; then
     echo "Proceeding to configure pyLoad"
-    (cd $INST; /opt/bin/python2.7 pyLoadCore.py -s --configdir=/opt/etc/pyload)
+    (cd $INST; %OPTWARE_TARGET_PREFIX%/bin/python2.7 pyLoadCore.py -s --configdir=%OPTWARE_TARGET_PREFIX%/etc/pyload)
 else
     echo "Possible previous config found. To re-configure run:"
-    echo "rm -rf /opt/etc/pyload; /opt/bin/ipkg flag unpacked pyload; /opt/bin/ipkg configure pyload"
+    echo "rm -rf %OPTWARE_TARGET_PREFIX%/etc/pyload; %OPTWARE_TARGET_PREFIX%/bin/ipkg flag unpacked pyload; %OPTWARE_TARGET_PREFIX%/bin/ipkg configure pyload"
 fi
 
 echo ""
 
-echo "Use /opt/etc/init.d/S98Pyload to start/stop pyLoad"
-echo 'Usage: /opt/etc/init.d/S98Pyload (start|stop|restart|status)'
+echo "Use %OPTWARE_TARGET_PREFIX%/etc/init.d/S98Pyload to start/stop pyLoad"
+echo 'Usage: %OPTWARE_TARGET_PREFIX%/etc/init.d/S98Pyload (start|stop|restart|status)'
 echo ""
 
-/opt/etc/init.d/S98Pyload start
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S98Pyload start

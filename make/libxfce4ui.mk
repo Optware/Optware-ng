@@ -131,7 +131,7 @@ $(LIBXFCE4UI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXFCE4UI_SOURCE) $(LIBXFCE4UI
 	$(LIBXFCE4UI_UNZIP) $(DL_DIR)/$(LIBXFCE4UI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBXFCE4UI_PATCHES)" ; \
 		then cat $(LIBXFCE4UI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBXFCE4UI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBXFCE4UI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBXFCE4UI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBXFCE4UI_DIR) $(@D) ; \
@@ -189,7 +189,7 @@ libxfce4ui-stage: $(LIBXFCE4UI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libxfce4ui
 #
 $(LIBXFCE4UI-1_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libxfce4ui-1" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -204,7 +204,7 @@ $(LIBXFCE4UI-1_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBXFCE4UI-1_CONFLICTS)" >>$@
 
 $(LIBXFCE4UI-2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libxfce4ui-2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -219,7 +219,7 @@ $(LIBXFCE4UI-2_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBXFCE4UI-2_CONFLICTS)" >>$@
 
 $(LIBXFCE4UI-COMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libxfce4ui-common" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -251,13 +251,13 @@ $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-2_IPK) $(LIBXFCE4UI-COMMON_IPK): $(LIBXFCE4UI_B
 		$(LIBXFCE4UI-COMMON_IPK_DIR) $(BUILD_DIR)/libxfce4ui-common_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBXFCE4UI_BUILD_DIR) DESTDIR=$(LIBXFCE4UI-1_IPK_DIR) install-strip
 	rm -f $(LIBXFCE4UI_IPK_DIR)/opt/lib/*.la
-	install -d $(LIBXFCE4UI-COMMON_IPK_DIR)/opt
+	$(INSTALL) -d $(LIBXFCE4UI-COMMON_IPK_DIR)/opt
 	mv -f $(LIBXFCE4UI-1_IPK_DIR)/opt/share $(LIBXFCE4UI-1_IPK_DIR)/opt/etc $(LIBXFCE4UI-COMMON_IPK_DIR)/opt
 	$(MAKE) $(LIBXFCE4UI-COMMON_IPK_DIR)/CONTROL/control
 	echo $(LIBXFCE4UI_CONFFILES) | sed -e 's/ /\n/g' > $(LIBXFCE4UI-COMMON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBXFCE4UI-COMMON_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBXFCE4UI-COMMON_IPK_DIR)
-	install -d $(LIBXFCE4UI-2_IPK_DIR)/opt/lib/pkgconfig  $(LIBXFCE4UI-2_IPK_DIR)/opt/include/xfce4
+	$(INSTALL) -d $(LIBXFCE4UI-2_IPK_DIR)/opt/lib/pkgconfig  $(LIBXFCE4UI-2_IPK_DIR)/opt/include/xfce4
 	mv -f $(addprefix $(LIBXFCE4UI-1_IPK_DIR)/opt/lib/, libxfce4ui-2.* libxfce4kbd-private-3.*) \
 											$(LIBXFCE4UI-2_IPK_DIR)/opt/lib
 	mv -f $(addprefix $(LIBXFCE4UI-1_IPK_DIR)/opt/lib/pkgconfig/, libxfce4ui-2.pc libxfce4kbd-private-3.pc) \
@@ -267,15 +267,15 @@ $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-2_IPK) $(LIBXFCE4UI-COMMON_IPK): $(LIBXFCE4UI_B
 	$(MAKE) $(LIBXFCE4UI-2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBXFCE4UI-2_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBXFCE4UI-2_IPK_DIR)
-#	install -d $(LIBXFCE4UI_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBXFCE4UI_SOURCE_DIR)/libxfce4ui.conf $(LIBXFCE4UI_IPK_DIR)/opt/etc/libxfce4ui.conf
-#	install -d $(LIBXFCE4UI_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBXFCE4UI_SOURCE_DIR)/rc.libxfce4ui $(LIBXFCE4UI_IPK_DIR)/opt/etc/init.d/SXXlibxfce4ui
+#	$(INSTALL) -d $(LIBXFCE4UI_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBXFCE4UI_SOURCE_DIR)/libxfce4ui.conf $(LIBXFCE4UI_IPK_DIR)/opt/etc/libxfce4ui.conf
+#	$(INSTALL) -d $(LIBXFCE4UI_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBXFCE4UI_SOURCE_DIR)/rc.libxfce4ui $(LIBXFCE4UI_IPK_DIR)/opt/etc/init.d/SXXlibxfce4ui
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXFCE4UI_IPK_DIR)/opt/etc/init.d/SXXlibxfce4ui
 	$(MAKE) $(LIBXFCE4UI-1_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBXFCE4UI_SOURCE_DIR)/postinst $(LIBXFCE4UI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBXFCE4UI_SOURCE_DIR)/postinst $(LIBXFCE4UI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXFCE4UI_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBXFCE4UI_SOURCE_DIR)/prerm $(LIBXFCE4UI_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBXFCE4UI_SOURCE_DIR)/prerm $(LIBXFCE4UI_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXFCE4UI_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

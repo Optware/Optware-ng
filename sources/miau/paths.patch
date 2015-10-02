@@ -6,7 +6,7 @@
  
 -#define MIAURC		"miaurc"
 -#define MIAUDIR		".miau/"
-+#define MIAURC		"/opt/etc/miau.conf"
++#define MIAURC		"%OPTWARE_TARGET_PREFIX%/etc/miau.conf"
 +#define MIAUDIR		"miau/"
  #define LOGDIR		"logs"
 -#define FILE_PID	"pid"
@@ -28,7 +28,7 @@
  			escape();
  		}
 +#endif
-+		s = "/opt/var/spool";
++		s = "%OPTWARE_TARGET_PREFIX%/var/spool";
  		
  		cfg.home = xmalloc(strlen(s) + strlen(MIAUDIR) + 2);
  		xstrcpy(cfg.home, s);

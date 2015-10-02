@@ -104,7 +104,7 @@ $(LIBTIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTIFF_SOURCE) $(LIBTIFF_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBTIFF_DIR) $(@D)
 	$(LIBTIFF_UNZIP) $(DL_DIR)/$(LIBTIFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBTIFF_PATCHES) | patch -d $(BUILD_DIR)/$(LIBTIFF_DIR) -p1
+#	cat $(LIBTIFF_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBTIFF_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBTIFF_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -146,13 +146,13 @@ libtiff: $(LIBTIFF_BUILD_DIR)/.built
 #
 $(LIBTIFF_BUILD_DIR)/.staged: $(LIBTIFF_BUILD_DIR)/.built
 	rm -f $@
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiff.h $(STAGING_INCLUDE_DIR)
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffio.h $(STAGING_INCLUDE_DIR)
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(STAGING_INCLUDE_DIR)
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.so.$(LIBTIFF_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiff.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffio.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.so.$(LIBTIFF_VERSION) $(STAGING_LIB_DIR)
 	rm -f $(STAGING_LIB_DIR)/libtiff*.la
 	cd $(STAGING_LIB_DIR) && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so.3
 	cd $(STAGING_LIB_DIR) && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so
@@ -165,7 +165,7 @@ libtiff-stage: $(LIBTIFF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libtiff
 #
 $(LIBTIFF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libtiff" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,15 +193,15 @@ $(LIBTIFF_IPK_DIR)/CONTROL/control:
 #
 $(LIBTIFF_IPK): $(LIBTIFF_BUILD_DIR)/.built
 	rm -rf $(LIBTIFF_IPK_DIR) $(LIBTIFF_IPK)
-	install -d $(LIBTIFF_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(LIBTIFF_IPK_DIR)/opt/bin
 	$(MAKE) -C $(LIBTIFF_BUILD_DIR) DESTDIR=$(LIBTIFF_IPK_DIR) install-exec transform=''
 	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/*
 
-	install -d $(LIBTIFF_IPK_DIR)/opt/include
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiff.h $(LIBTIFF_IPK_DIR)/opt/include
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffio.h $(LIBTIFF_IPK_DIR)/opt/include
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(LIBTIFF_IPK_DIR)/opt/include
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(LIBTIFF_IPK_DIR)/opt/include
+	$(INSTALL) -d $(LIBTIFF_IPK_DIR)/opt/include
+	$(INSTALL) -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiff.h $(LIBTIFF_IPK_DIR)/opt/include
+	$(INSTALL) -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffio.h $(LIBTIFF_IPK_DIR)/opt/include
+	$(INSTALL) -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(LIBTIFF_IPK_DIR)/opt/include
+	$(INSTALL) -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(LIBTIFF_IPK_DIR)/opt/include
 
 	rm -f $(LIBTIFF_IPK_DIR)/opt/lib/lib*.a
 	rm -f $(LIBTIFF_IPK_DIR)/opt/lib/lib*.la

@@ -119,7 +119,7 @@ $(FISH_BUILD_DIR)/.configured: $(DL_DIR)/$(FISH_SOURCE) $(FISH_PATCHES) make/fis
 	rm -rf $(BUILD_DIR)/$(FISH_DIR) $(@D)
 	$(FISH_UNZIP) $(DL_DIR)/$(FISH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FISH_PATCHES)" ; \
-		then cat $(FISH_PATCHES) | patch -bd $(BUILD_DIR)/$(FISH_DIR) -p0 ; \
+		then cat $(FISH_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(FISH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FISH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FISH_DIR) $(@D) ; \
@@ -175,7 +175,7 @@ fish: $(FISH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/fish
 #
 $(FISH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fish" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

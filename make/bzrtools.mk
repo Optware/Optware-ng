@@ -112,7 +112,7 @@ $(BZRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(BZRTOOLS_SOURCE) $(BZRTOOLS_PATCH
 	mkdir -p $(@D)
 	# 2.5
 	$(BZRTOOLS_UNZIP) $(DL_DIR)/$(BZRTOOLS_SOURCE) | tar -C $(@D) -xvf -
-#	cat $(BZRTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(BZRTOOLS_DIR) -p1
+#	cat $(BZRTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BZRTOOLS_DIR) -p1
 	mv $(@D)/$(BZRTOOLS_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -128,7 +128,7 @@ $(BZRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(BZRTOOLS_SOURCE) $(BZRTOOLS_PATCH
 	)
 	# 2.6
 	$(BZRTOOLS_UNZIP) $(DL_DIR)/$(BZRTOOLS_SOURCE) | tar -C $(@D) -xvf -
-#	cat $(BZRTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(BZRTOOLS_DIR) -p1
+#	cat $(BZRTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BZRTOOLS_DIR) -p1
 	mv $(@D)/$(BZRTOOLS_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -181,7 +181,7 @@ bzrtools: $(BZRTOOLS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bzrtools
 #
 $(PY25-BZRTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-bzrtools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,7 +195,7 @@ $(PY25-BZRTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BZRTOOLS_CONFLICTS)" >>$@
 
 $(PY26-BZRTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-bzrtools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -113,7 +113,7 @@ $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PA
 #	2.5
 	$(PY-GENSHI_UNZIP) $(DL_DIR)/$(PY-GENSHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-GENSHI_PATCHES)"; \
-		then cat $(PY-GENSHI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1; \
+		then cat $(PY-GENSHI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -128,7 +128,7 @@ $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PA
 #	2.6
 	$(PY-GENSHI_UNZIP) $(DL_DIR)/$(PY-GENSHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-GENSHI_PATCHES)"; \
-		then cat $(PY-GENSHI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1; \
+		then cat $(PY-GENSHI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -179,7 +179,7 @@ py-genshi-stage: $(PY-GENSHI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-genshi
 #
 $(PY25-GENSHI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-genshi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,7 +193,7 @@ $(PY25-GENSHI_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-GENSHI_CONFLICTS)" >>$@
 
 $(PY26-GENSHI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-genshi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

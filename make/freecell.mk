@@ -110,7 +110,7 @@ $(FREECELL_BUILD_DIR)/.configured: $(DL_DIR)/$(FREECELL_SOURCE) $(FREECELL_PATCH
 	$(FREECELL_UNZIP) $(DL_DIR)/$(FREECELL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FREECELL_PATCHES)" ; \
 		then cat $(FREECELL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FREECELL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FREECELL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FREECELL_DIR)" != "$(FREECELL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FREECELL_DIR) $(FREECELL_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ freecell-stage: $(FREECELL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/freecell
 #
 $(FREECELL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: freecell" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

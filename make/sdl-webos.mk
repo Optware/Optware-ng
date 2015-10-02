@@ -112,7 +112,7 @@ $(SDL-WEBOS_BUILD_DIR)/.configured: $(DL_DIR)/$(SDL-WEBOS_SOURCE) $(SDL-WEBOS_PA
 #	$(MAKE) xext-stage
 	rm -rf $(BUILD_DIR)/$(SDL-WEBOS_DIR) $(SDL-WEBOS_BUILD_DIR)
 	$(SDL-WEBOS_UNZIP) $(DL_DIR)/$(SDL-WEBOS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SDL-WEBOS_PATCHES) | patch -d $(BUILD_DIR)/$(SDL-WEBOS_DIR) -p1
+	cat $(SDL-WEBOS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SDL-WEBOS_DIR) -p1
 	mv $(BUILD_DIR)/$(SDL-WEBOS_DIR) $(SDL-WEBOS_BUILD_DIR)
 	(cd $(SDL-WEBOS_BUILD_DIR); ./autogen.sh )
 	(cd $(SDL-WEBOS_BUILD_DIR); \
@@ -174,7 +174,7 @@ sdl-webos-stage: $(SDL-WEBOS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sdl
 #
 $(SDL-WEBOS_IPK_DIR)/CONTROL/control:
-	@install -d $(SDL-WEBOS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(SDL-WEBOS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: sdl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,7 +189,7 @@ $(SDL-WEBOS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SDL-WEBOS_CONFLICTS)" >>$@
 
 $(SDL-WEBOS_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(SDL-WEBOS_DEV_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(SDL-WEBOS_DEV_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: sdl-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

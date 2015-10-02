@@ -110,7 +110,7 @@ $(MINI_SENDMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(MINI_SENDMAIL_SOURCE) $(MINI
 	$(MINI_SENDMAIL_UNZIP) $(DL_DIR)/$(MINI_SENDMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINI_SENDMAIL_PATCHES)" ; \
 		then cat $(MINI_SENDMAIL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MINI_SENDMAIL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MINI_SENDMAIL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MINI_SENDMAIL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MINI_SENDMAIL_DIR) $(@D) ; \
@@ -154,7 +154,7 @@ mini-sendmail-stage: $(MINI_SENDMAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mini-sendmail
 #
 $(MINI_SENDMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mini-sendmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,18 +182,18 @@ $(MINI_SENDMAIL_IPK_DIR)/CONTROL/control:
 #
 $(MINI_SENDMAIL_IPK): $(MINI_SENDMAIL_BUILD_DIR)/.built
 	rm -rf $(MINI_SENDMAIL_IPK_DIR) $(BUILD_DIR)/mini-sendmail_*_$(TARGET_ARCH).ipk
-	install -d $(MINI_SENDMAIL_IPK_DIR)/opt/bin
-	install -d $(MINI_SENDMAIL_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(MINI_SENDMAIL_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(MINI_SENDMAIL_IPK_DIR)/opt/man/man8
 	$(MAKE) -C $(MINI_SENDMAIL_BUILD_DIR) DESTDIR=$(MINI_SENDMAIL_IPK_DIR) install
 	$(TARGET_STRIP) $(MINI_SENDMAIL_IPK_DIR)/opt/bin/mini_sendmail
-#	install -m 644 $(MINI_SENDMAIL_SOURCE_DIR)/mini-sendmail.conf $(MINI_SENDMAIL_IPK_DIR)/opt/etc/mini-sendmail.conf
-#	install -d $(MINI_SENDMAIL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MINI_SENDMAIL_SOURCE_DIR)/rc.mini-sendmail $(MINI_SENDMAIL_IPK_DIR)/opt/etc/init.d/SXXmini-sendmail
+#	$(INSTALL) -m 644 $(MINI_SENDMAIL_SOURCE_DIR)/mini-sendmail.conf $(MINI_SENDMAIL_IPK_DIR)/opt/etc/mini-sendmail.conf
+#	$(INSTALL) -d $(MINI_SENDMAIL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MINI_SENDMAIL_SOURCE_DIR)/rc.mini-sendmail $(MINI_SENDMAIL_IPK_DIR)/opt/etc/init.d/SXXmini-sendmail
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MINI_SENDMAIL_IPK_DIR)/opt/etc/init.d/SXXmini-sendmail
 	$(MAKE) $(MINI_SENDMAIL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MINI_SENDMAIL_SOURCE_DIR)/postinst $(MINI_SENDMAIL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MINI_SENDMAIL_SOURCE_DIR)/postinst $(MINI_SENDMAIL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MINI_SENDMAIL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MINI_SENDMAIL_SOURCE_DIR)/prerm $(MINI_SENDMAIL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MINI_SENDMAIL_SOURCE_DIR)/prerm $(MINI_SENDMAIL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MINI_SENDMAIL_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

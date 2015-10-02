@@ -123,7 +123,7 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nge
 	$(NGET_UNZIP) $(DL_DIR)/$(NGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NGET_PATCHES)" ; \
 		then cat $(NGET_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NGET_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NGET_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(NGET_DIR) $(@D)
 	(cd $(@D)/uulib; \
@@ -184,7 +184,7 @@ nget: $(NGET_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/nget
 #
 $(NGET_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nget" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,11 +214,11 @@ $(NGET_IPK): $(NGET_BUILD_DIR)/.built
 	rm -rf $(NGET_IPK_DIR) $(BUILD_DIR)/nget_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NGET_BUILD_DIR) \
 		prefix=$(NGET_IPK_DIR)/opt \
-		install_bin="install -m 0755" \
-		install
+		$(INSTALL)_bin="install -m 0755" \
+		$(INSTALL)
 	$(STRIP_COMMAND) $(NGET_IPK_DIR)/opt/bin/*
-	install -d $(NGET_IPK_DIR)/opt/share/doc/example/nget
-	install -m 644 $(NGET_SOURCE_DIR)/example.ngetrc $(NGET_IPK_DIR)/opt/share/doc/example/nget/
+	$(INSTALL) -d $(NGET_IPK_DIR)/opt/share/doc/example/nget
+	$(INSTALL) -m 644 $(NGET_SOURCE_DIR)/example.ngetrc $(NGET_IPK_DIR)/opt/share/doc/example/nget/
 	$(MAKE) $(NGET_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NGET_IPK_DIR)
 

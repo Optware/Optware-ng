@@ -2,4 +2,4 @@
 
 adduser -S -s /dev/null -H -h /no/dir -D amavis 2>/dev/null
 
-chown -R amavis:amavis /opt/var/spool/amavis
+chown -R amavis:amavis %OPTWARE_TARGET_PREFIX%/var/spool/amavis

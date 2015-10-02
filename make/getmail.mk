@@ -117,7 +117,7 @@ $(PY-GETMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GETMAIL_SOURCE) $(PY-GETMAIL
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-GETMAIL_DIR)
 	$(PY-GETMAIL_UNZIP) $(DL_DIR)/$(PY-GETMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-GETMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GETMAIL_DIR) -p1
+#	cat $(PY-GETMAIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GETMAIL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-GETMAIL_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -129,7 +129,7 @@ $(PY-GETMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GETMAIL_SOURCE) $(PY-GETMAIL
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-GETMAIL_DIR)
 	$(PY-GETMAIL_UNZIP) $(DL_DIR)/$(PY-GETMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-GETMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GETMAIL_DIR) -p1
+#	cat $(PY-GETMAIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-GETMAIL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-GETMAIL_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -175,7 +175,7 @@ getmail-stage: $(PY-GETMAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/getmail
 #
 $(PY-GETMAIL-COMMON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-getmail-common" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,7 +190,7 @@ $(PY-GETMAIL-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-GETMAIL_CONFLICTS)" >>$@
 
 $(PY25-GETMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-getmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,7 +205,7 @@ $(PY25-GETMAIL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-GETMAIL_CONFLICTS)" >>$@
 
 $(PY26-GETMAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-getmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -240,7 +240,7 @@ $(PY-GETMAIL-COMMON_IPK) $(PY25-GETMAIL_IPK) $(PY26-GETMAIL_IPK): $(PY-GETMAIL_B
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-GETMAIL_IPK_DIR) --prefix=/opt; \
 	)
-	install -d $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
+	$(INSTALL) -d $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
 	mv $(PY25-GETMAIL_IPK_DIR)/opt/share $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
 	$(MAKE) $(PY25-GETMAIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GETMAIL_IPK_DIR)

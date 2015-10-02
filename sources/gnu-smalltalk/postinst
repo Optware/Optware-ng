@@ -1,4 +1,4 @@
 #!/bin/sh
 
-echo "Rebuilding /opt/var/lib/smalltalk/gst.im ..."
-echo | /opt/bin/gst --no-user-files -i
+echo "Rebuilding %OPTWARE_TARGET_PREFIX%/var/lib/smalltalk/gst.im ..."
+echo | %OPTWARE_TARGET_PREFIX%/bin/gst --no-user-files -i

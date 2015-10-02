@@ -56,7 +56,7 @@ ufsd:
 # necessary to create a seperate control file under sources/ufsd
 #
 $(UFSD_IPK_DIR)/CONTROL/control:
-	@install -d $(UFSD_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(UFSD_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ufsd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -85,8 +85,8 @@ $(UFSD_IPK_DIR)/CONTROL/control:
 $(UFSD_IPK):
 	rm -rf $(UFSD_IPK_DIR) $(BUILD_DIR)/ufsd_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(UFSD_IPK_DIR)/CONTROL/control
-	install -m 755 $(UFSD_SOURCE_DIR)/postinst $(UFSD_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(UFSD_SOURCE_DIR)/prerm $(UFSD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(UFSD_SOURCE_DIR)/postinst $(UFSD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(UFSD_SOURCE_DIR)/prerm $(UFSD_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UFSD_IPK_DIR)
 
 #

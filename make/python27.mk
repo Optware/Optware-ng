@@ -132,7 +132,7 @@ endif
 	$(MAKE) autoconf-host-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON27_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.7
 	$(PYTHON27_UNZIP) $(DL_DIR)/$(PYTHON27_SOURCE) | tar -C $(BUILD_DIR) -xf -
-	cat $(PYTHON27_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON27_DIR) -p1
+	cat $(PYTHON27_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON27_DIR) -p1
 	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON27_DIR)/configure.ac
 	$(HOST_STAGING_PREFIX)/bin/autoreconf -vif $(BUILD_DIR)/$(PYTHON27_DIR)
 	mkdir -p $(@D)
@@ -191,7 +191,7 @@ python27-stage: $(PYTHON27_BUILD_DIR)/.staged
 $(HOST_STAGING_PREFIX)/bin/python2.7: host/.configured make/python27.mk
 	$(MAKE) $(PYTHON27_BUILD_DIR)/.built
 	$(MAKE) -C $(PYTHON27_BUILD_DIR)/buildpython27 DESTDIR=$(HOST_STAGING_DIR) install
-	cd $(HOST_STAGING_LIB_DIR); patch -b -p0 < $(PYTHON27_SOURCE_DIR)/disable-host-py_include.patch
+	cd $(HOST_STAGING_LIB_DIR); $(PATCH) -b -p0 < $(PYTHON27_SOURCE_DIR)/disable-host-py_include.patch
 	sed -i -e '0,/^#!/s|^#!.*|#!$(HOST_STAGING_PREFIX)/bin/python2.7|' $(HOST_STAGING_PREFIX)/bin/python2.7-config
 	rm -f $(@D)/python
 
@@ -202,7 +202,7 @@ python27-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.7
 # necessary to create a seperate control file under sources/python
 #
 $(PYTHON27_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: python27" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -238,20 +238,20 @@ $(PYTHON27_IPK): $(PYTHON27_BUILD_DIR)/.built
 #	cd $(PYTHON27_IPK_DIR)/opt/bin; ln -s python$(PYTHON27_VERSION_MAJOR) python
 	for f in bin/pydoc bin/idle bin/smtpd.py; \
 	    do mv $(PYTHON27_IPK_DIR)/opt/$$f $(PYTHON27_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-2.7\1/'`; done
-	install -d $(PYTHON27_IPK_DIR)/opt/local/bin
-	install -d $(PYTHON27_IPK_DIR)/opt/local/lib/python$(PYTHON27_VERSION_MAJOR)/site-packages
+	$(INSTALL) -d $(PYTHON27_IPK_DIR)/opt/local/bin
+	$(INSTALL) -d $(PYTHON27_IPK_DIR)/opt/local/lib/python$(PYTHON27_VERSION_MAJOR)/site-packages
 	sed -i -e 's|$(TARGET_CROSS)|/opt/bin/|g' \
 	       -e 's|$(STAGING_INCLUDE_DIR)|/opt/include|g' \
 	       -e 's|$(STAGING_LIB_DIR)|/opt/lib|g' \
 	       -e '/^RUNSHARED=/s|=.*|=|' \
 	       $(PYTHON27_IPK_DIR)/opt/lib/python2.7/config/Makefile
 #ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
-#	install -d $(PYTHON27_IPK_DIR)/usr/bin
+#	$(INSTALL) -d $(PYTHON27_IPK_DIR)/usr/bin
 #	ln -s /opt/bin/python $(PYTHON27_IPK_DIR)/usr/bin/python
 #endif
 	$(MAKE) $(PYTHON27_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PYTHON27_SOURCE_DIR)/postinst $(PYTHON27_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PYTHON27_SOURCE_DIR)/prerm $(PYTHON27_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PYTHON27_SOURCE_DIR)/postinst $(PYTHON27_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PYTHON27_SOURCE_DIR)/prerm $(PYTHON27_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON27_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(PYTHON27_IPK_DIR)
 

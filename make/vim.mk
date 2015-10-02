@@ -120,7 +120,7 @@ $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES) make/vim.mk
 	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(@D)
 	$(VIM_UNZIP) $(DL_DIR)/$(VIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VIM_PATCHES)"; then \
-		cat $(VIM_PATCHES) | patch -N -b -d $(BUILD_DIR)/$(VIM_DIR) -p1; \
+		cat $(VIM_PATCHES) | $(PATCH) -N -b -d $(BUILD_DIR)/$(VIM_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(VIM_DIR) $(@D)
 	(cd $(@D)/src; \
@@ -174,7 +174,7 @@ vim: $(VIM_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/vim
 #
 $(VIM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: vim" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -209,8 +209,8 @@ $(VIM_IPK): $(VIM_BUILD_DIR)/.built
 	mv $(VIM_IPK_DIR)/opt/share/vim-temp/vim* $(VIM_IPK_DIR)/opt/share/vim
 	rm -rf $(VIM_IPK_DIR)/opt/share/vim-temp
 	$(MAKE) $(VIM_IPK_DIR)/CONTROL/control
-#	install -m 644 $(VIM_SOURCE_DIR)/prerm $(VIM_IPK_DIR)/CONTROL/prerm
-#	install -m 644 $(VIM_SOURCE_DIR)/postinst $(VIM_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(VIM_SOURCE_DIR)/prerm $(VIM_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(VIM_SOURCE_DIR)/postinst $(VIM_IPK_DIR)/CONTROL/postinst
 	echo $(VIM_CONFFILES) | sed -e 's/ /\n/g' > $(VIM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VIM_IPK_DIR)
 

@@ -109,7 +109,7 @@ $(RRDCOLLECT_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDCOLLECT_SOURCE) $(RRDCOLLECT
 	$(RRDCOLLECT_UNZIP) $(DL_DIR)/$(RRDCOLLECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RRDCOLLECT_PATCHES)" ; \
 		then cat $(RRDCOLLECT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RRDCOLLECT_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RRDCOLLECT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RRDCOLLECT_DIR)" != "$(RRDCOLLECT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RRDCOLLECT_DIR) $(RRDCOLLECT_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ rrdcollect-stage: $(RRDCOLLECT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rrdcollect
 #
 $(RRDCOLLECT_IPK_DIR)/CONTROL/control:
-	@install -d $(RRDCOLLECT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(RRDCOLLECT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: rrdcollect" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,13 +193,13 @@ $(RRDCOLLECT_IPK_DIR)/CONTROL/control:
 $(RRDCOLLECT_IPK): $(RRDCOLLECT_BUILD_DIR)/.built
 	rm -rf $(RRDCOLLECT_IPK_DIR) $(BUILD_DIR)/rrdcollect_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RRDCOLLECT_BUILD_DIR) DESTDIR=$(RRDCOLLECT_IPK_DIR) install-strip
-	install -d $(RRDCOLLECT_IPK_DIR)/opt/etc/
-	install -m 644  $(RRDCOLLECT_SOURCE_DIR)/rrdcollect.conf  $(RRDCOLLECT_IPK_DIR)/opt/etc
-	install -d $(RRDCOLLECT_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(RRDCOLLECT_SOURCE_DIR)/rc.rrdcollect $(RRDCOLLECT_IPK_DIR)/opt/etc/init.d/S95rrdcollect
+	$(INSTALL) -d $(RRDCOLLECT_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644  $(RRDCOLLECT_SOURCE_DIR)/rrdcollect.conf  $(RRDCOLLECT_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(RRDCOLLECT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(RRDCOLLECT_SOURCE_DIR)/rc.rrdcollect $(RRDCOLLECT_IPK_DIR)/opt/etc/init.d/S95rrdcollect
 	$(MAKE) $(RRDCOLLECT_IPK_DIR)/CONTROL/control
-	install -m 755 $(RRDCOLLECT_SOURCE_DIR)/postinst $(RRDCOLLECT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RRDCOLLECT_SOURCE_DIR)/prerm $(RRDCOLLECT_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(RRDCOLLECT_SOURCE_DIR)/postinst $(RRDCOLLECT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RRDCOLLECT_SOURCE_DIR)/prerm $(RRDCOLLECT_IPK_DIR)/CONTROL/prerm
 	echo $(RRDCOLLECT_CONFFILES) | sed -e 's/ /\n/g' > $(RRDCOLLECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RRDCOLLECT_IPK_DIR)
 

@@ -111,7 +111,7 @@ $(TREE_BUILD_DIR)/.configured: $(DL_DIR)/$(TREE_SOURCE) $(TREE_PATCHES) make/tre
 	$(TREE_UNZIP) $(DL_DIR)/$(TREE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TREE_PATCHES)" ; \
 		then cat $(TREE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TREE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TREE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TREE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TREE_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ tree-stage: $(TREE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tree
 #
 $(TREE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tree" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

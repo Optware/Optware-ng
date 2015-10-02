@@ -116,7 +116,7 @@ $(ETTERCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP_SOURCE) $(ETTERCAP_PATCH
 	$(ETTERCAP_UNZIP) $(DL_DIR)/$(ETTERCAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ETTERCAP_PATCHES)" ; \
 		then cat $(ETTERCAP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ETTERCAP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ETTERCAP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ETTERCAP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ETTERCAP_DIR) $(@D) ; \
@@ -176,7 +176,7 @@ ettercap-stage: $(ETTERCAP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ettercap
 #
 $(ETTERCAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ettercap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

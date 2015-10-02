@@ -112,7 +112,7 @@ $(SABLEVM_BUILD_DIR)/.configured: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES)
 	$(SABLEVM_UNZIP) $(DL_DIR)/$(SABLEVM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SABLEVM_PATCHES)" ; \
 		then cat $(SABLEVM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SABLEVM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SABLEVM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SABLEVM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SABLEVM_DIR) $(@D) ; \
@@ -184,7 +184,7 @@ sablevm-stage: $(SABLEVM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sablevm
 #
 $(SABLEVM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sablevm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,19 +214,19 @@ $(SABLEVM_IPK): $(SABLEVM_BUILD_DIR)/.built
 	rm -rf $(SABLEVM_IPK_DIR) $(BUILD_DIR)/sablevm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SABLEVM_BUILD_DIR)/sablevm \
 	    DESTDIR=$(SABLEVM_IPK_DIR) \
-	    install
+	    $(INSTALL)
 	$(STRIP_COMMAND) $(SABLEVM_IPK_DIR)/opt/bin/sablevm $(SABLEVM_IPK_DIR)/opt/lib/libsablevm*.so
 	$(MAKE) -C $(SABLEVM_BUILD_DIR)/sablevm-classpath \
 	    DESTDIR=$(SABLEVM_IPK_DIR) \
 	    INSTALL_STRIP_PROGRAM="$(STRIP_COMMAND)" \
-	    install-strip
-#	install -d $(SABLEVM_IPK_DIR)/opt/etc/
-#	install -m 644 $(SABLEVM_SOURCE_DIR)/sablevm.conf $(SABLEVM_IPK_DIR)/opt/etc/sablevm.conf
-#	install -d $(SABLEVM_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SABLEVM_SOURCE_DIR)/rc.sablevm $(SABLEVM_IPK_DIR)/opt/etc/init.d/SXXsablevm
+	    $(INSTALL)-strip
+#	$(INSTALL) -d $(SABLEVM_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SABLEVM_SOURCE_DIR)/sablevm.conf $(SABLEVM_IPK_DIR)/opt/etc/sablevm.conf
+#	$(INSTALL) -d $(SABLEVM_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SABLEVM_SOURCE_DIR)/rc.sablevm $(SABLEVM_IPK_DIR)/opt/etc/init.d/SXXsablevm
 	$(MAKE) $(SABLEVM_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SABLEVM_SOURCE_DIR)/postinst $(SABLEVM_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SABLEVM_SOURCE_DIR)/prerm $(SABLEVM_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SABLEVM_SOURCE_DIR)/postinst $(SABLEVM_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SABLEVM_SOURCE_DIR)/prerm $(SABLEVM_IPK_DIR)/CONTROL/prerm
 	echo $(SABLEVM_CONFFILES) | sed -e 's/ /\n/g' > $(SABLEVM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SABLEVM_IPK_DIR)
 

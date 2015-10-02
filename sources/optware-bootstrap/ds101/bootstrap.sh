@@ -28,18 +28,18 @@ rm /tmp/ipkg
 rm -rf /usr/lib/ipkg
 
 echo -n "Installing wget..."
-/opt/bin/ipkg install wget.ipk || exit 1
+%OPTWARE_TARGET_PREFIX%/bin/ipkg install wget.ipk || exit 1
 echo " success"
 
-[ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
-if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
+[ ! -d %OPTWARE_TARGET_PREFIX%/etc/ipkg ] && mkdir -p %OPTWARE_TARGET_PREFIX%/etc/ipkg
+if [ ! -e %OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf ]
 then
-	echo "Creating /opt/etc/ipkg/cross-feed.conf..."
+	echo "Creating %OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf..."
 	ARCH=`uname -m`
 	if [ "$ARCH" = "ppc" ]; then
-		echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/ds101g/cross/stable" >/opt/etc/ipkg/cross-feed.conf
+		echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/ds101g/cross/stable" >%OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf
 	else
-		echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/ds101/cross/stable" >/opt/etc/ipkg/cross-feed.conf
+		echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/ds101/cross/stable" >%OPTWARE_TARGET_PREFIX%/etc/ipkg/cross-feed.conf
 	fi
 fi
 

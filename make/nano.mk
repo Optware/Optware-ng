@@ -43,7 +43,7 @@ $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nan
 	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(@D)
 	$(NANO_UNZIP) $(DL_DIR)/$(NANO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NANO_PATCHES)"; \
-		then cat $(NANO_PATCHES) | patch -d $(BUILD_DIR)/$(NANO_DIR); \
+		then cat $(NANO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NANO_DIR); \
 	fi
 	mv $(BUILD_DIR)/$(NANO_DIR) $(@D)
 	(cd $(@D); \
@@ -80,7 +80,7 @@ $(NANO_BUILD_DIR)/.staged: $(NANO_BUILD_DIR)/.built
 nano-stage: $(NANO_BUILD_DIR)/.staged
 
 $(NANO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nano" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -96,8 +96,8 @@ $(NANO_IPK_DIR)/CONTROL/control:
 $(NANO_IPK): $(NANO_BUILD_DIR)/.built
 	rm -rf $(NANO_IPK_DIR) $(BUILD_DIR)/nano_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NANO_BUILD_DIR) DESTDIR=$(NANO_IPK_DIR) program_transform_name="" install-strip
-	install -d $(NANO_IPK_DIR)/opt/etc/
-	install -m 644 $(NANO_BUILD_DIR)/doc/nanorc.sample $(NANO_IPK_DIR)/opt/etc/nanorc
+	$(INSTALL) -d $(NANO_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(NANO_BUILD_DIR)/doc/nanorc.sample $(NANO_IPK_DIR)/opt/etc/nanorc
 	rm -f $(NANO_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(NANO_IPK_DIR)/CONTROL/control
 	echo $(NANO_CONFFILES) | sed -e 's/ /\n/g' > $(NANO_IPK_DIR)/CONTROL/conffiles

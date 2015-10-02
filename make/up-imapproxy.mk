@@ -118,7 +118,7 @@ $(UP-IMAPPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(UP-IMAPPROXY_SOURCE) $(UP-IMA
 	$(UP-IMAPPROXY_UNZIP) $(DL_DIR)/$(UP-IMAPPROXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UP-IMAPPROXY_PATCHES)" ; \
 		then cat $(UP-IMAPPROXY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UP-IMAPPROXY_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UP-IMAPPROXY_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UP-IMAPPROXY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UP-IMAPPROXY_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ up-imapproxy-stage: $(UP-IMAPPROXY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/up-imapproxy
 #
 $(UP-IMAPPROXY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: up-imapproxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,18 +196,18 @@ $(UP-IMAPPROXY_IPK_DIR)/CONTROL/control:
 #
 $(UP-IMAPPROXY_IPK): $(UP-IMAPPROXY_BUILD_DIR)/.built
 	rm -rf $(UP-IMAPPROXY_IPK_DIR) $(BUILD_DIR)/up-imapproxy_*_$(TARGET_ARCH).ipk
-	install -d $(UP-IMAPPROXY_IPK_DIR)/opt/sbin/
-	install -m 0755 $(UP-IMAPPROXY_BUILD_DIR)/bin/* $(UP-IMAPPROXY_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(UP-IMAPPROXY_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 0755 $(UP-IMAPPROXY_BUILD_DIR)/bin/* $(UP-IMAPPROXY_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(UP-IMAPPROXY_IPK_DIR)/opt/sbin/*
-	install -d $(UP-IMAPPROXY_IPK_DIR)/opt/etc/
-	install -m 644 $(UP-IMAPPROXY_BUILD_DIR)/scripts/imapproxy.conf $(UP-IMAPPROXY_IPK_DIR)/opt/etc/imapproxy.conf
-	install -d $(UP-IMAPPROXY_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(UP-IMAPPROXY_SOURCE_DIR)/imapproxy.init $(UP-IMAPPROXY_IPK_DIR)/opt/etc/init.d/S60imapproxy
+	$(INSTALL) -d $(UP-IMAPPROXY_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(UP-IMAPPROXY_BUILD_DIR)/scripts/imapproxy.conf $(UP-IMAPPROXY_IPK_DIR)/opt/etc/imapproxy.conf
+	$(INSTALL) -d $(UP-IMAPPROXY_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(UP-IMAPPROXY_SOURCE_DIR)/imapproxy.init $(UP-IMAPPROXY_IPK_DIR)/opt/etc/init.d/S60imapproxy
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UP-IMAPPROXY_IPK_DIR)/opt/etc/init.d/S60imapproxy
 	$(MAKE) $(UP-IMAPPROXY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UP-IMAPPROXY_SOURCE_DIR)/postinst $(UP-IMAPPROXY_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UP-IMAPPROXY_SOURCE_DIR)/postinst $(UP-IMAPPROXY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UP-IMAPPROXY_SOURCE_DIR)/prerm $(UP-IMAPPROXY_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UP-IMAPPROXY_SOURCE_DIR)/prerm $(UP-IMAPPROXY_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(UP-IMAPPROXY_CONFFILES) | sed -e 's/ /\n/g' > $(UP-IMAPPROXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UP-IMAPPROXY_IPK_DIR)

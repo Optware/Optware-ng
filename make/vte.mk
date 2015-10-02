@@ -70,7 +70,7 @@ VTE_IPK=$(BUILD_DIR)/vte_$(VTE_VERSION)-$(VTE_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(VTE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: vte" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -118,7 +118,7 @@ $(VTE_BUILD_DIR)/.configured: $(DL_DIR)/$(VTE_SOURCE) $(VTE_PATCHES) make/vte.mk
 	$(VTE_UNZIP) $(DL_DIR)/$(VTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(VTE_DIR) $(@D)
 	if test -n "$(VTE_PATCHES)"; \
-		then cat $(VTE_PATCHES) |patch -p0 -d$(VTE_BUILD_DIR); \
+		then cat $(VTE_PATCHES) |$(PATCH) -p0 -d$(VTE_BUILD_DIR); \
 	fi
 #	for kernels without FS_NOCOW_FL support
 	sed -i -e '/^#include <linux\/fs\.h>/s/$$/\n#ifndef FS_NOCOW_FL\n# define FS_NOCOW_FL 0\n#endif/' \
@@ -189,7 +189,7 @@ $(VTE_IPK): $(VTE_BUILD_DIR)/.built
 	$(MAKE) -C $(VTE_BUILD_DIR) DESTDIR=$(VTE_IPK_DIR) install-strip
 	rm -f $(VTE_IPK_DIR)/opt/lib/*.la
 	rm -rf $(VTE_IPK_DIR)/opt/share/gtk-doc
-	install -d $(VTE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(VTE_IPK_DIR)/opt/etc/init.d
 	$(MAKE) $(VTE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VTE_IPK_DIR)
 

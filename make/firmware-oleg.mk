@@ -127,7 +127,7 @@ endif
 	zcat $(DL_DIR)/$(FIRMWARE_OLEG_GPL) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FIRMWARE_OLEG_PATCHES)" ; \
 		then cat $(FIRMWARE_OLEG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FIRMWARE_OLEG_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FIRMWARE_OLEG_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FIRMWARE_OLEG_DIR)" != "$(FIRMWARE_OLEG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FIRMWARE_OLEG_DIR) $(FIRMWARE_OLEG_BUILD_DIR) ; \
@@ -148,7 +148,7 @@ endif
 	PATH=$(FIRMWARE_OLEG_TOOLPATH) \
 	$(MAKE) -C $(FIRMWARE_OLEG_BUILD_DIR)/src/wl500g-$(FIRMWARE_OLEG_VERSION) \
 		$(FIRMWARE_OLEG_BUILD_DIR)/src/uClibc
-	install -d $(FIRMWARE_OLEG_BUILD_DIR)/toolchain
+	$(INSTALL) -d $(FIRMWARE_OLEG_BUILD_DIR)/toolchain
 	PATH=$(FIRMWARE_OLEG_TOOLPATH) \
 	$(MAKE) -C $(FIRMWARE_OLEG_BUILD_DIR)/src/uClibc all install CROSS=mipsel-linux-
 	PATH=$(FIRMWARE_OLEG_TOOLPATH) \
@@ -192,7 +192,7 @@ firmware-oleg-stage: $(FIRMWARE_OLEG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/firmware-oleg
 #
 $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: firmware-oleg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -220,19 +220,19 @@ $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/control:
 #
 $(FIRMWARE_OLEG_IPK): $(FIRMWARE_OLEG_BUILD_DIR)/.built
 	rm -rf $(FIRMWARE_OLEG_IPK_DIR) $(BUILD_DIR)/firmware-oleg_*_$(TARGET_ARCH).ipk
-	install -d $(FIRMWARE_OLEG_IPK_DIR)/opt/share/firmware
-	install -m 644 $(FIRMWARE_OLEG_BUILD_DIR)/src/gateway/mipsel-uclibc/*.trx \
+	$(INSTALL) -d $(FIRMWARE_OLEG_IPK_DIR)/opt/share/firmware
+	$(INSTALL) -m 644 $(FIRMWARE_OLEG_BUILD_DIR)/src/gateway/mipsel-uclibc/*.trx \
 		$(FIRMWARE_OLEG_IPK_DIR)/opt/share/firmware
 #	$(MAKE) -C $(FIRMWARE_OLEG_BUILD_DIR)/src/gateway DESTDIR=$(FIRMWARE_OLEG_IPK_DIR)
-#	install -d $(FIRMWARE_OLEG_IPK_DIR)/opt/etc/
-#	install -m 644 $(FIRMWARE_OLEG_SOURCE_DIR)/firmware-oleg.conf $(FIRMWARE_OLEG_IPK_DIR)/opt/etc/firmware-oleg.conf
-#	install -d $(FIRMWARE_OLEG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FIRMWARE_OLEG_SOURCE_DIR)/rc.firmware-oleg $(FIRMWARE_OLEG_IPK_DIR)/opt/etc/init.d/SXXfirmware-oleg
+#	$(INSTALL) -d $(FIRMWARE_OLEG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FIRMWARE_OLEG_SOURCE_DIR)/firmware-oleg.conf $(FIRMWARE_OLEG_IPK_DIR)/opt/etc/firmware-oleg.conf
+#	$(INSTALL) -d $(FIRMWARE_OLEG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FIRMWARE_OLEG_SOURCE_DIR)/rc.firmware-oleg $(FIRMWARE_OLEG_IPK_DIR)/opt/etc/init.d/SXXfirmware-oleg
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FIRMWARE_OLEG_IPK_DIR)/opt/etc/init.d/SXXfirmware-oleg
 	$(MAKE) $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FIRMWARE_OLEG_SOURCE_DIR)/postinst $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FIRMWARE_OLEG_SOURCE_DIR)/postinst $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FIRMWARE_OLEG_SOURCE_DIR)/prerm $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FIRMWARE_OLEG_SOURCE_DIR)/prerm $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/prerm
 #	echo $(FIRMWARE_OLEG_CONFFILES) | sed -e 's/ /\n/g' > $(FIRMWARE_OLEG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FIRMWARE_OLEG_IPK_DIR)

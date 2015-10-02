@@ -113,7 +113,7 @@ $(PY-SLIMIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SLIMIT_SOURCE) $(PY-SLIMIT_PA
 	rm -rf $(BUILD_DIR)/$(PY-SLIMIT_DIR)
 	$(PY-SLIMIT_UNZIP) $(DL_DIR)/$(PY-SLIMIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-SLIMIT_PATCHES)"; then \
-	    cat $(PY-SLIMIT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SLIMIT_DIR) -p1; \
+	    cat $(PY-SLIMIT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SLIMIT_DIR) -p1; \
 	fi
 	sed -i -e "s/(__file__)/('__file__')/" $(BUILD_DIR)/$(PY-SLIMIT_DIR)/setup.py
 	mv $(BUILD_DIR)/$(PY-SLIMIT_DIR) $(@D)/2.7
@@ -129,7 +129,7 @@ $(PY-SLIMIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SLIMIT_SOURCE) $(PY-SLIMIT_PA
 	rm -rf $(BUILD_DIR)/$(PY-SLIMIT_DIR)
 	$(PY-SLIMIT_UNZIP) $(DL_DIR)/$(PY-SLIMIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-SLIMIT_PATCHES)"; then \
-	    cat $(PY-SLIMIT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SLIMIT_DIR) -p1; \
+	    cat $(PY-SLIMIT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SLIMIT_DIR) -p1; \
 	fi
 	sed -i -e "s/(__file__)/('__file__')/" $(BUILD_DIR)/$(PY-SLIMIT_DIR)/setup.py
 	mv $(BUILD_DIR)/$(PY-SLIMIT_DIR) $(@D)/3
@@ -210,7 +210,7 @@ py-slimit-stage: $(PY-SLIMIT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-slimit
 #
 $(PY27-SLIMIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-slimit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,7 +224,7 @@ $(PY27-SLIMIT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SLIMIT_CONFLICTS)" >>$@
 
 $(PY3-SLIMIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-slimit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

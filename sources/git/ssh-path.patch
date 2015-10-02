@@ -5,7 +5,7 @@
  		const char *ssh = getenv("GIT_SSH");
  		int putty = ssh && strcasestr(ssh, "plink");
 -		if (!ssh) ssh = "ssh";
-+		if (!ssh) ssh = "/opt/bin/ssh";
++		if (!ssh) ssh = "%OPTWARE_TARGET_PREFIX%/bin/ssh";
  
  		*arg++ = ssh;
  		if (putty && !strcasestr(ssh, "tortoiseplink"))

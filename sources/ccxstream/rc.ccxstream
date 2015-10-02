@@ -1,15 +1,15 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof ccxstream`" ] ; then
-    /opt/bin/killall ccxstream 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof ccxstream`" ] ; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall ccxstream 2>/dev/null
 fi
 
-# see /opt/doc/ccxstream/README for the full summary on
+# see %OPTWARE_TARGET_PREFIX%/doc/ccxstream/README for the full summary on
 # command-line options, but the terse summary is that
 # -r is the directory to "share" using ccxstream, and is
 # probably the option you most want to adjust.
 #
 
 sleep 2
-/opt/sbin/ccxstream -r /share/hdd/data/public -u guest -f -F /var/run/ccxstream.pid
+%OPTWARE_TARGET_PREFIX%/sbin/ccxstream -r /share/hdd/data/public -u guest -f -F /var/run/ccxstream.pid
 

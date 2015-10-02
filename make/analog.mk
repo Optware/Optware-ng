@@ -117,7 +117,7 @@ $(ANALOG_BUILD_DIR)/.configured: $(DL_DIR)/$(ANALOG_SOURCE) $(ANALOG_PATCHES) ma
 	$(ANALOG_UNZIP) $(DL_DIR)/$(ANALOG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ANALOG_PATCHES)" ; \
 		then cat $(ANALOG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ANALOG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ANALOG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ANALOG_DIR)" != "$(ANALOG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ANALOG_DIR) $(ANALOG_BUILD_DIR) ; \
@@ -172,7 +172,7 @@ analog-stage: $(ANALOG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/analog
 #
 $(ANALOG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: analog" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,39 +200,39 @@ $(ANALOG_IPK_DIR)/CONTROL/control:
 #
 $(ANALOG_IPK): $(ANALOG_BUILD_DIR)/.built
 	rm -rf $(ANALOG_IPK_DIR) $(BUILD_DIR)/analog_*_$(TARGET_ARCH).ipk
-	install -d $(ANALOG_IPK_DIR)/opt/etc
-	install -d $(ANALOG_IPK_DIR)/opt/bin
-	install -d $(ANALOG_IPK_DIR)/opt/share/analog/lang
-	install -d $(ANALOG_IPK_DIR)/opt/share/www/images
-	install -m 644 $(ANALOG_BUILD_DIR)/images/* $(ANALOG_IPK_DIR)/opt/share/www/images
-	install -m 644 $(ANALOG_BUILD_DIR)/lang/* $(ANALOG_IPK_DIR)/opt/share/analog/lang
-	install -m 755 $(ANALOG_BUILD_DIR)/analog $(ANALOG_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/share/analog/lang
+	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/share/www/images
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/images/* $(ANALOG_IPK_DIR)/opt/share/www/images
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/lang/* $(ANALOG_IPK_DIR)/opt/share/analog/lang
+	$(INSTALL) -m 755 $(ANALOG_BUILD_DIR)/analog $(ANALOG_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(ANALOG_IPK_DIR)/opt/bin/analog
-	install -m 644 $(ANALOG_BUILD_DIR)/analog.cfg $(ANALOG_IPK_DIR)/opt/etc
-	install -m 644 $(ANALOG_BUILD_DIR)/analog.cfg $(ANALOG_IPK_DIR)/opt/etc/analog.cfg-dist
-	install -d $(ANALOG_IPK_DIR)/opt/share/doc/analog
-	install -m 644 $(ANALOG_BUILD_DIR)/docs/* $(ANALOG_IPK_DIR)/opt/share/doc/analog
-	install -d $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples
-	install -m 644 $(ANALOG_BUILD_DIR)/examples/*.cfg  $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples
-	install -m 644 $(ANALOG_BUILD_DIR)/anlgform.html $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples
-	install -m 644 $(ANALOG_BUILD_DIR)/anlgform.pl $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples
-	install -d $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples/css
-	install -m 644 $(ANALOG_BUILD_DIR)/examples/css/Readme.txt \
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/analog.cfg $(ANALOG_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/analog.cfg $(ANALOG_IPK_DIR)/opt/etc/analog.cfg-dist
+	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/share/doc/analog
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/docs/* $(ANALOG_IPK_DIR)/opt/share/doc/analog
+	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/examples/*.cfg  $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/anlgform.html $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/anlgform.pl $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples
+	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples/css
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/examples/css/Readme.txt \
 		$(ANALOG_IPK_DIR)/opt/share/doc/analog/examples/css/css
-	install -m 644 $(ANALOG_BUILD_DIR)/examples/css/default.css \
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/examples/css/default.css \
 		$(ANALOG_IPK_DIR)/opt/share/doc/analog/examples/css
-	install -d $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples/css/jreeves
-	install -m 644 $(ANALOG_BUILD_DIR)/examples/css/jreeves/* \
+	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/share/doc/analog/examples/css/jreeves
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/examples/css/jreeves/* \
 		$(ANALOG_IPK_DIR)/opt/share/doc/analog/examples/css/jreeves
-	install -d $(ANALOG_IPK_DIR)/opt/man/man1/
-	install -m 644 $(ANALOG_BUILD_DIR)/analog.man $(ANALOG_IPK_DIR)/opt/man/man1/analog.1
-#	install -d $(ANALOG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ANALOG_SOURCE_DIR)/rc.analog $(ANALOG_IPK_DIR)/opt/etc/init.d/SXXanalog
+	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -m 644 $(ANALOG_BUILD_DIR)/analog.man $(ANALOG_IPK_DIR)/opt/man/man1/analog.1
+#	$(INSTALL) -d $(ANALOG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(ANALOG_SOURCE_DIR)/rc.analog $(ANALOG_IPK_DIR)/opt/etc/init.d/SXXanalog
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ANALOG_IPK_DIR)/opt/etc/init.d/SXXanalog
 	$(MAKE) $(ANALOG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ANALOG_SOURCE_DIR)/postinst $(ANALOG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(ANALOG_SOURCE_DIR)/postinst $(ANALOG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ANALOG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ANALOG_SOURCE_DIR)/prerm $(ANALOG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(ANALOG_SOURCE_DIR)/prerm $(ANALOG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ANALOG_IPK_DIR)/CONTROL/prerm
 	echo $(ANALOG_CONFFILES) | sed -e 's/ /\n/g' > $(ANALOG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ANALOG_IPK_DIR)

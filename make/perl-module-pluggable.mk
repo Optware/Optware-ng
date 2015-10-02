@@ -35,7 +35,7 @@ perl-module-pluggable-source: $(DL_DIR)/$(PERL-MODULE-PLUGGABLE_SOURCE) $(PERL-M
 $(PERL-MODULE-PLUGGABLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MODULE-PLUGGABLE_SOURCE) $(PERL-MODULE-PLUGGABLE_PATCHES) make/perl-module-pluggable.mk
 	rm -rf $(BUILD_DIR)/$(PERL-MODULE-PLUGGABLE_DIR) $(@D)
 	$(PERL-MODULE-PLUGGABLE_UNZIP) $(DL_DIR)/$(PERL-MODULE-PLUGGABLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-MODULE-PLUGGABLE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-MODULE-PLUGGABLE_DIR) -p1
+#	cat $(PERL-MODULE-PLUGGABLE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-MODULE-PLUGGABLE_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-MODULE-PLUGGABLE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-MODULE-PLUGGABLE_BUILD_DIR)/.staged: $(PERL-MODULE-PLUGGABLE_BUILD_DIR)/.
 perl-module-pluggable-stage: $(PERL-MODULE-PLUGGABLE_BUILD_DIR)/.staged
 
 $(PERL-MODULE-PLUGGABLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-module-pluggable" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

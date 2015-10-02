@@ -197,7 +197,7 @@ endif
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
 	if test -n "$(OPENSER_PATCHES)" ; \
 		then cat $(OPENSER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENSER_DIR)-tls -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPENSER_DIR)-tls -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENSER_DIR)" != "$(OPENSER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENSER_DIR)-tls $(OPENSER_BUILD_DIR) ; \
@@ -205,7 +205,7 @@ ifeq ($(OPENSER_SOURCE_TYPE), tarball)
 else
 	if test -n "$(OPENSER_PATCHES)" ; \
 		then cat $(OPENSER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENSER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OPENSER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENSER_DIR)" != "$(OPENSER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENSER_DIR) $(OPENSER_BUILD_DIR) ; \
@@ -249,7 +249,7 @@ openser-stage: $(OPENSER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/openser
 #
 $(OPENSER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -307,7 +307,7 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.base
 
 	############################
-	# installing example files #
+	# $(INSTALL)ing example files #
 	############################
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/etc/openser/openser.cfg
 	cp -r $(OPENSER_BUILD_DIR)/examples $(OPENSER_IPK_DIR)/opt/etc/openser/
@@ -316,7 +316,7 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	cp $(OPENSER_IPK_DIR)/opt/etc/openser/openserctlrc $(OPENSER_IPK_DIR)/opt/etc/openser/examples
 
 	############################
-	# installing perl examples #
+	# $(INSTALL)ing perl examples #
 	############################
 	mkdir $(OPENSER_IPK_DIR)/opt/etc/openser/examples/perl
 	cp -r $(OPENSER_BUILD_DIR)/modules/perl/doc/samples/* $(OPENSER_IPK_DIR)/opt/etc/openser/examples/perl

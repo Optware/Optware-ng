@@ -101,7 +101,7 @@ $(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES) ma
 	$(STRACE_UNZIP) $(DL_DIR)/$(STRACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(STRACE_PATCHES)" ; \
                 then cat $(STRACE_PATCHES) | \
-                patch -d $(BUILD_DIR)/$(STRACE_DIR) -p1 ; \
+                $(PATCH) -d $(BUILD_DIR)/$(STRACE_DIR) -p1 ; \
         fi
 	mv $(BUILD_DIR)/$(STRACE_DIR) $(@D)
 	(cd $(@D); \
@@ -144,7 +144,7 @@ strace: $(STRACE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/strace
 #
 $(STRACE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: strace" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -172,9 +172,9 @@ $(STRACE_IPK_DIR)/CONTROL/control:
 #
 $(STRACE_IPK): $(STRACE_BUILD_DIR)/.built
 	rm -rf $(STRACE_IPK_DIR) $(STRACE_IPK)
-	install -d $(STRACE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(STRACE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(STRACE_BUILD_DIR)/strace -o $(STRACE_IPK_DIR)/opt/bin/strace
-#	install -d $(STRACE_IPK_DIR)/CONTROL
+#	$(INSTALL) -d $(STRACE_IPK_DIR)/CONTROL
 	$(MAKE) $(STRACE_IPK_DIR)/CONTROL/control
 #	sed -e "s/@ARCH@/$(TARGET_ARCH)/" \
 #	    -e "s/@VERSION@/$(STRACE_VERSION)/" \

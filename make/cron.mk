@@ -97,7 +97,7 @@ $(CRON_BUILD_DIR)/.configured: $(DL_DIR)/$(CRON_SOURCE) $(CRON_PATCHES)
 	mkdir -p $(BUILD_DIR)/$(CRON_DIR)
 	(cd $(BUILD_DIR)/$(CRON_DIR); \
 		$(CRON_UNZIP) $(DL_DIR)/$(CRON_SOURCE) | sh -x)
-	cat $(CRON_PATCHES) | patch -d $(BUILD_DIR)/$(CRON_DIR) -p1
+	cat $(CRON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CRON_DIR) -p1
 	mv $(BUILD_DIR)/$(CRON_DIR) $(CRON_BUILD_DIR)
 	touch $(CRON_BUILD_DIR)/.configured
 
@@ -133,7 +133,7 @@ cron-stage: $(CRON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cron
 #
 $(CRON_IPK_DIR)/CONTROL/control:
-	@install -d $(CRON_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(CRON_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: cron" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -160,28 +160,28 @@ $(CRON_IPK_DIR)/CONTROL/control:
 $(CRON_IPK): $(CRON_BUILD_DIR)/.built
 	rm -rf $(CRON_IPK_DIR) $(BUILD_DIR)/cron_*_$(TARGET_ARCH).ipk
 # 	Install and strip the two executables
-	install -d $(CRON_IPK_DIR)/opt/bin
-	install -m  755 $(CRON_BUILD_DIR)/crontab $(CRON_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(CRON_IPK_DIR)/opt/bin
+	$(INSTALL) -m  755 $(CRON_BUILD_DIR)/crontab $(CRON_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(CRON_IPK_DIR)/opt/bin/crontab
-	install -d $(CRON_IPK_DIR)/opt/sbin
-	install -m  755 $(CRON_BUILD_DIR)/cron $(CRON_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(CRON_IPK_DIR)/opt/sbin
+	$(INSTALL) -m  755 $(CRON_BUILD_DIR)/cron $(CRON_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(CRON_IPK_DIR)/opt/sbin/cron
 # 	Install manuals
-	install -d $(CRON_IPK_DIR)/opt/man/man1
-	install -d $(CRON_IPK_DIR)/opt/man/man5
-	install -d $(CRON_IPK_DIR)/opt/man/man8
-	install -m 644 $(CRON_BUILD_DIR)/crontab.1 $(CRON_IPK_DIR)/opt/man/man1
-	install -m 644 $(CRON_BUILD_DIR)/crontab.5 $(CRON_IPK_DIR)/opt/man/man5
-	install -m 644 $(CRON_BUILD_DIR)/cron.8    $(CRON_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(CRON_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(CRON_IPK_DIR)/opt/man/man5
+	$(INSTALL) -d $(CRON_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 644 $(CRON_BUILD_DIR)/crontab.1 $(CRON_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(CRON_BUILD_DIR)/crontab.5 $(CRON_IPK_DIR)/opt/man/man5
+	$(INSTALL) -m 644 $(CRON_BUILD_DIR)/cron.8    $(CRON_IPK_DIR)/opt/man/man8
 #	Install default crontab
-	install -d $(CRON_IPK_DIR)/opt/etc
-	install -m 600 $(CRON_SOURCE_DIR)/crontab $(CRON_IPK_DIR)/opt/etc/crontab
+	$(INSTALL) -d $(CRON_IPK_DIR)/opt/etc
+	$(INSTALL) -m 600 $(CRON_SOURCE_DIR)/crontab $(CRON_IPK_DIR)/opt/etc/crontab
 #	Install daemon startup file
-	install -d $(CRON_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(CRON_SOURCE_DIR)/rc.cron $(CRON_IPK_DIR)/opt/etc/init.d/S10cron
+	$(INSTALL) -d $(CRON_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(CRON_SOURCE_DIR)/rc.cron $(CRON_IPK_DIR)/opt/etc/init.d/S10cron
 	$(MAKE) $(CRON_IPK_DIR)/CONTROL/control
-	install -m 755 $(CRON_SOURCE_DIR)/postinst $(CRON_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(CRON_SOURCE_DIR)/prerm $(CRON_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 755 $(CRON_SOURCE_DIR)/postinst $(CRON_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(CRON_SOURCE_DIR)/prerm $(CRON_IPK_DIR)/CONTROL/
 	echo $(CRON_CONFFILES) | sed -e 's/ /\n/g' > $(CRON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CRON_IPK_DIR)
 

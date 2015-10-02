@@ -111,7 +111,7 @@ $(RSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(RSSH_SOURCE) $(RSSH_PATCHES) make/rss
 	$(RSSH_UNZIP) $(DL_DIR)/$(RSSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RSSH_PATCHES)" ; \
 		then cat $(RSSH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RSSH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RSSH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RSSH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RSSH_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ rssh-stage: $(RSSH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rssh
 #
 $(RSSH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rssh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,15 +198,15 @@ $(RSSH_IPK_DIR)/CONTROL/control:
 $(RSSH_IPK): $(RSSH_BUILD_DIR)/.built
 	rm -rf $(RSSH_IPK_DIR) $(BUILD_DIR)/rssh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RSSH_BUILD_DIR) DESTDIR=$(RSSH_IPK_DIR) install-strip
-#	install -d $(RSSH_IPK_DIR)/opt/etc/
-#	install -m 644 $(RSSH_SOURCE_DIR)/rssh.conf $(RSSH_IPK_DIR)/opt/etc/rssh.conf
-#	install -d $(RSSH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(RSSH_SOURCE_DIR)/rc.rssh $(RSSH_IPK_DIR)/opt/etc/init.d/SXXrssh
+#	$(INSTALL) -d $(RSSH_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(RSSH_SOURCE_DIR)/rssh.conf $(RSSH_IPK_DIR)/opt/etc/rssh.conf
+#	$(INSTALL) -d $(RSSH_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(RSSH_SOURCE_DIR)/rc.rssh $(RSSH_IPK_DIR)/opt/etc/init.d/SXXrssh
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RSSH_IPK_DIR)/opt/etc/init.d/SXXrssh
 	$(MAKE) $(RSSH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RSSH_SOURCE_DIR)/postinst $(RSSH_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RSSH_SOURCE_DIR)/postinst $(RSSH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RSSH_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RSSH_SOURCE_DIR)/prerm $(RSSH_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(RSSH_SOURCE_DIR)/prerm $(RSSH_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RSSH_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

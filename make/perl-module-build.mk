@@ -36,7 +36,7 @@ $(PERL-MODULE-BUILD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE
 		perl-pod-readme-stage perl-module-signature-stage
 	rm -rf $(BUILD_DIR)/$(PERL-MODULE-BUILD_DIR) $(PERL-MODULE-BUILD_BUILD_DIR)
 	$(PERL-MODULE-BUILD_UNZIP) $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-MODULE-BUILD_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-MODULE-BUILD_DIR) -p1
+#	cat $(PERL-MODULE-BUILD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-MODULE-BUILD_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-MODULE-BUILD_DIR) $(PERL-MODULE-BUILD_BUILD_DIR)
 	(cd $(PERL-MODULE-BUILD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -69,7 +69,7 @@ $(PERL-MODULE-BUILD_BUILD_DIR)/.staged: $(PERL-MODULE-BUILD_BUILD_DIR)/.built
 perl-module-build-stage: $(PERL-MODULE-BUILD_BUILD_DIR)/.staged
 
 $(PERL-MODULE-BUILD_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-MODULE-BUILD_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-MODULE-BUILD_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-module-build" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

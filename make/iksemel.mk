@@ -111,7 +111,7 @@ $(IKSEMEL_BUILD_DIR)/.configured: $(DL_DIR)/$(IKSEMEL_SOURCE) $(IKSEMEL_PATCHES)
 	$(IKSEMEL_UNZIP) $(DL_DIR)/$(IKSEMEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IKSEMEL_PATCHES)" ; \
 		then cat $(IKSEMEL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IKSEMEL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IKSEMEL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IKSEMEL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IKSEMEL_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ iksemel-stage: $(IKSEMEL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/iksemel
 #
 $(IKSEMEL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: iksemel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

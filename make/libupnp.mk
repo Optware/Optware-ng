@@ -116,7 +116,7 @@ $(LIBUPNP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUPNP_SOURCE) $(LIBUPNP_PATCHES)
 	$(LIBUPNP_UNZIP) $(DL_DIR)/$(LIBUPNP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBUPNP_PATCHES)" ; \
 		then cat $(LIBUPNP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBUPNP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBUPNP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBUPNP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBUPNP_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ libupnp-stage: $(LIBUPNP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libupnp
 #
 $(LIBUPNP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libupnp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,13 +198,13 @@ $(LIBUPNP_IPK): $(LIBUPNP_BUILD_DIR)/.built
 	rm -rf $(LIBUPNP_IPK_DIR) $(BUILD_DIR)/libupnp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBUPNP_BUILD_DIR) DESTDIR=$(LIBUPNP_IPK_DIR) install-strip
 	rm -f $(LIBUPNP_IPK_DIR)/opt/lib/*.la
-	install -d $(LIBUPNP_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBUPNP_SOURCE_DIR)/libupnp.conf $(LIBUPNP_IPK_DIR)/opt/etc/libupnp.conf
-#	install -d $(LIBUPNP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBUPNP_SOURCE_DIR)/rc.libupnp $(LIBUPNP_IPK_DIR)/opt/etc/init.d/SXXlibupnp
+	$(INSTALL) -d $(LIBUPNP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBUPNP_SOURCE_DIR)/libupnp.conf $(LIBUPNP_IPK_DIR)/opt/etc/libupnp.conf
+#	$(INSTALL) -d $(LIBUPNP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBUPNP_SOURCE_DIR)/rc.libupnp $(LIBUPNP_IPK_DIR)/opt/etc/init.d/SXXlibupnp
 	$(MAKE) $(LIBUPNP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBUPNP_SOURCE_DIR)/postinst $(LIBUPNP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBUPNP_SOURCE_DIR)/prerm $(LIBUPNP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBUPNP_SOURCE_DIR)/postinst $(LIBUPNP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBUPNP_SOURCE_DIR)/prerm $(LIBUPNP_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBUPNP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBUPNP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUPNP_IPK_DIR)
 

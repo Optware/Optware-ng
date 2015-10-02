@@ -116,7 +116,7 @@ $(GCAL_BUILD_DIR)/.configured: $(DL_DIR)/$(GCAL_SOURCE) $(GCAL_PATCHES) make/gca
 	$(GCAL_UNZIP) $(DL_DIR)/$(GCAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GCAL_PATCHES)" ; \
 		then cat $(GCAL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GCAL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GCAL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GCAL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GCAL_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ gcal-stage: $(GCAL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gcal
 #
 $(GCAL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gcal" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

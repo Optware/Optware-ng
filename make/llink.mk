@@ -129,7 +129,7 @@ endif
 	$(LLINK_UNZIP) $(DL_DIR)/$(LLINK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LLINK_PATCHES)" ; \
 		then cat $(LLINK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LLINK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LLINK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LLINK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LLINK_DIR) $(@D) ; \
@@ -182,7 +182,7 @@ llink-stage: $(LLINK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/llink
 #
 $(LLINK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: llink" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,7 +197,7 @@ $(LLINK_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LLINK_CONFLICTS)" >>$@
 
 $(LLINK-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: llink-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -227,18 +227,18 @@ $(LLINK_IPK) $(LLINK-DEV_IPK): $(LLINK_BUILD_DIR)/.built
 	rm -rf $(LLINK_IPK_DIR) $(BUILD_DIR)/llink_*_$(TARGET_ARCH).ipk
 	rm -rf $(LLINK-DEV_IPK_DIR) $(BUILD_DIR)/llink-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LLINK_BUILD_DIR) DESTDIR=$(LLINK_IPK_DIR) install-strip
-	install -d $(LLINK_IPK_DIR)/opt/share/llink
+	$(INSTALL) -d $(LLINK_IPK_DIR)/opt/share/llink
 	mv $(LLINK_IPK_DIR)/opt/bin/* $(LLINK_IPK_DIR)/opt/share/llink
 	rm -rf $(LLINK_IPK_DIR)/opt/bin
 	cp -a $(LLINK_BUILD_DIR)/src/skin $(LLINK_IPK_DIR)/opt/share/llink/
 	cp -p $(LLINK_BUILD_DIR)/src/*.conf $(LLINK_IPK_DIR)/opt/share/llink/
-	install -d $(LLINK_IPK_DIR)/opt/share/doc/llink
-	install \
+	$(INSTALL) -d $(LLINK_IPK_DIR)/opt/share/doc/llink
+	$(INSTALL) \
 		$(LLINK_BUILD_DIR)/LICENSE \
 		$(LLINK_BUILD_DIR)/README.txt \
 		$(LLINK_BUILD_DIR)/Example* \
 		$(LLINK_IPK_DIR)/opt/share/doc/llink/
-	install -d $(LLINK-DEV_IPK_DIR)/opt
+	$(INSTALL) -d $(LLINK-DEV_IPK_DIR)/opt
 	mv $(LLINK_IPK_DIR)/opt/include $(LLINK-DEV_IPK_DIR)/opt
 	mv $(LLINK_IPK_DIR)/opt/lib $(LLINK-DEV_IPK_DIR)/opt
 	$(MAKE) $(LLINK_IPK_DIR)/CONTROL/control

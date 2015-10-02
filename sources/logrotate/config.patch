@@ -5,5 +5,5 @@
  
  #ifndef STATEFILE
 -#define STATEFILE "/var/lib/logrotate.status"
-+#define STATEFILE "/opt/var/lib/logrotate.status"
++#define STATEFILE "%OPTWARE_TARGET_PREFIX%/var/lib/logrotate.status"
  #endif

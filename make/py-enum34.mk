@@ -132,7 +132,7 @@ $(PY-ENUM34_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE)
 	$(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ENUM34_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ENUM34_DIR) -p1
+#	cat $(PY-ENUM34_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ENUM34_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ENUM34_DIR_OLD) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    ( \
@@ -144,7 +144,7 @@ $(PY-ENUM34_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY
 	)
 #	cd $(BUILD_DIR); $(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE)
 	$(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ENUM34_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ENUM34_DIR) -p1
+#	cat $(PY-ENUM34_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ENUM34_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ENUM34_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -156,7 +156,7 @@ $(PY-ENUM34_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY
 	)
 #	cd $(BUILD_DIR); $(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE)
 	$(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ENUM34_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ENUM34_DIR) -p1
+#	cat $(PY-ENUM34_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ENUM34_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ENUM34_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -168,7 +168,7 @@ $(PY-ENUM34_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY
 	)
 #	cd $(BUILD_DIR); $(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE)
 	$(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-ENUM34_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ENUM34_DIR) -p1
+#	cat $(PY-ENUM34_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ENUM34_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-ENUM34_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -254,7 +254,7 @@ py-enum34-host-stage: $(PY-ENUM34_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-enum34
 #
 $(PY24-ENUM34_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-enum34" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -268,7 +268,7 @@ $(PY24-ENUM34_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ENUM34_CONFLICTS)" >>$@
 
 $(PY25-ENUM34_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-enum34" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -282,7 +282,7 @@ $(PY25-ENUM34_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ENUM34_CONFLICTS)" >>$@
 
 $(PY26-ENUM34_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-enum34" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -296,7 +296,7 @@ $(PY26-ENUM34_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ENUM34_CONFLICTS)" >>$@
 
 $(PY27-ENUM34_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-enum34" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

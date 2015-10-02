@@ -215,7 +215,7 @@ endif
 	$(MAKE) cups-stage libacl-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(@D)
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
+	cat $(SAMBA_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
 	mv $(BUILD_DIR)/$(SAMBA_DIR) $(@D)
 ifeq (3.0.14a, $(SAMBA_VERSION))
 	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(@D)/source/aclocal.m4
@@ -307,7 +307,7 @@ samba-stage: $(SAMBA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/samba
 #
 $(SAMBA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: samba" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -322,7 +322,7 @@ $(SAMBA_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SAMBA_CONFLICTS)" >>$@
 
 $(SAMBA3-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: samba3-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -337,7 +337,7 @@ $(SAMBA3-DEV_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SAMBA3-DEV_CONFLICTS)" >>$@
 
 $(SAMBA3-SWAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: samba3-swat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -374,25 +374,25 @@ $(SAMBA_IPK) $(SAMBA3-DEV_IPK) $(SAMBA3-SWAT_IPK): $(SAMBA_BUILD_DIR)/.built
 	cd $(SAMBA_BUILD_DIR)/bin/; for f in lib*.so.[01]; \
 		do cp -a $$f $(SAMBA_IPK_DIR)/opt/lib/$$f; done
 	$(STRIP_COMMAND) `find $(SAMBA_IPK_DIR)/opt/lib -name '*.so'`
-	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S08samba
+	$(INSTALL) -d $(SAMBA_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S08samba
 	$(MAKE) $(SAMBA_IPK_DIR)/CONTROL/control
-	install -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
 ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g, $(OPTWARE_TARGET)))
-	install -m 644 $(SAMBA_SOURCE_DIR)/postinst.$(OPTWARE_TARGET) $(SAMBA_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA_SOURCE_DIR)/preinst.$(OPTWARE_TARGET) $(SAMBA_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SAMBA_SOURCE_DIR)/postinst.$(OPTWARE_TARGET) $(SAMBA_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SAMBA_SOURCE_DIR)/preinst.$(OPTWARE_TARGET) $(SAMBA_IPK_DIR)/CONTROL/preinst
 endif
 	echo $(SAMBA_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA_IPK_DIR)/CONTROL/conffiles
 	# samba3-dev
-	install -d $(SAMBA3-DEV_IPK_DIR)/opt
+	$(INSTALL) -d $(SAMBA3-DEV_IPK_DIR)/opt
 	mv $(SAMBA_IPK_DIR)/opt/include $(SAMBA3-DEV_IPK_DIR)/opt/
 	# samba3-swat
-	install -d $(SAMBA3-SWAT_IPK_DIR)/opt/share $(SAMBA3-SWAT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(SAMBA3-SWAT_IPK_DIR)/opt/share $(SAMBA3-SWAT_IPK_DIR)/opt/sbin
 	mv $(SAMBA_IPK_DIR)/opt/share/swat $(SAMBA3-SWAT_IPK_DIR)/opt/share/
 	mv $(SAMBA_IPK_DIR)/opt/sbin/swat $(SAMBA3-SWAT_IPK_DIR)/opt/sbin/
-	install -d $(SAMBA3-SWAT_IPK_DIR)/opt/etc/xinetd.d
-	install -m 755 $(SAMBA_SOURCE_DIR)/swat $(SAMBA3-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
+	$(INSTALL) -d $(SAMBA3-SWAT_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 755 $(SAMBA_SOURCE_DIR)/swat $(SAMBA3-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA_IPK_DIR)
 	$(MAKE) $(SAMBA3-DEV_IPK_DIR)/CONTROL/control

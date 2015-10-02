@@ -104,7 +104,7 @@ $(BLUEZ2-LIBS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) $(BLUEZ2-L
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) $(@D)
 	$(BLUEZ2-LIBS_UNZIP) $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(BLUEZ2-LIBS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) -p1
+	#cat $(BLUEZ2-LIBS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) -p1
 	mv $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -154,7 +154,7 @@ bluez2-libs-stage: $(BLUEZ2-LIBS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bluez2-libs
 #
 $(BLUEZ2-LIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bluez2-libs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

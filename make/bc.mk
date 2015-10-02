@@ -106,7 +106,7 @@ $(BC_BUILD_DIR)/.configured: $(DL_DIR)/$(BC_SOURCE) $(BC_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(BC_DIR) $(BC_BUILD_DIR)
 	$(BC_UNZIP) $(DL_DIR)/$(BC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(BC_PATCHES) | patch -d $(BUILD_DIR)/$(BC_DIR) -p1
+	#cat $(BC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BC_DIR) -p1
 	mv $(BUILD_DIR)/$(BC_DIR) $(BC_BUILD_DIR)
 	(cd $(BC_BUILD_DIR); \
 		sed -i -e 's/program.*save/static &/' bc/load.c; \
@@ -152,7 +152,7 @@ bc-stage: $(BC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bc
 #
 $(BC_IPK_DIR)/CONTROL/control:
-	@install -d $(BC_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(BC_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: bc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

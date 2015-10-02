@@ -123,7 +123,7 @@ endif
 	$(MLOCATE_UNZIP) $(DL_DIR)/$(MLOCATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MLOCATE_PATCHES)" ; \
 		then cat $(MLOCATE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MLOCATE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MLOCATE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MLOCATE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MLOCATE_DIR) $(@D) ; \
@@ -177,7 +177,7 @@ mlocate: $(MLOCATE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mlocate
 #
 $(MLOCATE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mlocate" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,17 +206,17 @@ $(MLOCATE_IPK_DIR)/CONTROL/control:
 $(MLOCATE_IPK): $(MLOCATE_BUILD_DIR)/.built
 	rm -rf $(MLOCATE_IPK_DIR) $(BUILD_DIR)/mlocate_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MLOCATE_BUILD_DIR) DESTDIR=$(MLOCATE_IPK_DIR) install-strip
-	install -d $(MLOCATE_IPK_DIR)/opt/etc/
-#	install -m 644 $(MLOCATE_SOURCE_DIR)/mlocate.conf $(MLOCATE_IPK_DIR)/opt/etc/mlocate.conf
-#	install -d $(MLOCATE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MLOCATE_SOURCE_DIR)/rc.mlocate $(MLOCATE_IPK_DIR)/opt/etc/init.d/SXXmlocate
+	$(INSTALL) -d $(MLOCATE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MLOCATE_SOURCE_DIR)/mlocate.conf $(MLOCATE_IPK_DIR)/opt/etc/mlocate.conf
+#	$(INSTALL) -d $(MLOCATE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MLOCATE_SOURCE_DIR)/rc.mlocate $(MLOCATE_IPK_DIR)/opt/etc/init.d/SXXmlocate
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MLOCATE_IPK_DIR)/opt/etc/init.d/SXXmlocate
-	install -d $(MLOCATE_IPK_DIR)/opt/etc/cron.d
-	install -m 755 $(MLOCATE_SOURCE_DIR)/updatedb-daily $(MLOCATE_IPK_DIR)/opt/etc/cron.d/
+	$(INSTALL) -d $(MLOCATE_IPK_DIR)/opt/etc/cron.d
+	$(INSTALL) -m 755 $(MLOCATE_SOURCE_DIR)/updatedb-daily $(MLOCATE_IPK_DIR)/opt/etc/cron.d/
 	$(MAKE) $(MLOCATE_IPK_DIR)/CONTROL/control
-	install -m 755 $(MLOCATE_SOURCE_DIR)/postinst $(MLOCATE_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(MLOCATE_SOURCE_DIR)/postinst $(MLOCATE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MLOCATE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MLOCATE_SOURCE_DIR)/prerm $(MLOCATE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MLOCATE_SOURCE_DIR)/prerm $(MLOCATE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MLOCATE_IPK_DIR)/CONTROL/prerm
 #	echo $(MLOCATE_CONFFILES) | sed -e 's/ /\n/g' > $(MLOCATE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MLOCATE_IPK_DIR)

@@ -45,9 +45,9 @@ command line options
 .IP \(bu
 config file(s) specified on the command line
 .IP \(bu
-/opt/etc/vpnc/default.conf
+%OPTWARE_TARGET_PREFIX%/etc/vpnc/default.conf
 .IP \(bu
-/opt/etc/vpnc.conf
+%OPTWARE_TARGET_PREFIX%/etc/vpnc.conf
 .IP \(bu
 prompting the user if not found above
 
@@ -60,9 +60,9 @@ place to set an option wins.
 configuration filenames
 which do not contain a /
 will be searched at
-.B /opt/etc/vpnc/<filename>
+.B %OPTWARE_TARGET_PREFIX%/etc/vpnc/<filename>
 and
-.B /opt/etc/vpnc/<filename>.conf.
+.B %OPTWARE_TARGET_PREFIX%/etc/vpnc/<filename>.conf.
 Otherwise
 .B <filename>
 and
@@ -71,9 +71,9 @@ will be used.
 If no configuration file
 is specified on the command-line
 at all, both
-.B /opt/etc/vpnc/default.conf
+.B %OPTWARE_TARGET_PREFIX%/etc/vpnc/default.conf
 and
-.B /opt/etc/vpnc.conf
+.B %OPTWARE_TARGET_PREFIX%/etc/vpnc.conf
 will be loaded.
 
 .SH OPTIONS
@@ -184,7 +184,7 @@ variables, see README. This script is executed right after ISAKMP is
 done, but before tunneling is enabled. It is called when vpnc
 terminates, too
 .IP
-Default: /opt/etc/vpnc/vpnc\-script
+Default: %OPTWARE_TARGET_PREFIX%/etc/vpnc/vpnc\-script
 .P
 conf\-variable:
 .BI "Script" " <command>"
@@ -284,7 +284,7 @@ conf\-variable:
 .BI "\-\-pid\-file"  " <filename>"
 store the pid of background process in <filename>
 .IP
-Default: /opt/var/run/vpnc/pid
+Default: %OPTWARE_TARGET_PREFIX%/var/run/vpnc/pid
 .P
 conf\-variable:
 .BI "Pidfile" " <filename>"
@@ -365,7 +365,7 @@ conf\-variable:
 .BI "\-\-ca\-dir"  " <directory>"
 path of the trusted CA\-Directory
 .IP
-Default: /opt/etc/ssl/certs
+Default: %OPTWARE_TARGET_PREFIX%/etc/ssl/certs
 .P
 conf\-variable:
 .BI "CA\-Dir" " <directory>"
@@ -376,8 +376,8 @@ conf\-variable:
 Prints your configuration; output can be used as vpnc.conf
 
 .SH FILES
-.I /opt/etc/vpnc.conf
-.I /opt/etc/vpnc/default.conf
+.I %OPTWARE_TARGET_PREFIX%/etc/vpnc.conf
+.I %OPTWARE_TARGET_PREFIX%/etc/vpnc/default.conf
 .RS
 The default configuration file. You can specify the same config
 directives as with command line options and additionaly
@@ -395,7 +395,7 @@ See
 for further details.
 .RE
 
-.I /opt/etc/vpnc/*.conf
+.I %OPTWARE_TARGET_PREFIX%/etc/vpnc/*.conf
 .RS
 vpnc will read configuration files in this directory when
 the config filename (with or without .conf) is specified on the command line.
@@ -434,11 +434,11 @@ IKE Authmode hybrid
 .P
 
 .P
-CA-Dir /opt/etc/vpnc
+CA-Dir %OPTWARE_TARGET_PREFIX%/etc/vpnc
 .P
 \fBor\fR
 .P
-CA-File /opt/etc/vpnc/vpn-example-com.pem
+CA-File %OPTWARE_TARGET_PREFIX%/etc/vpnc/vpn-example-com.pem
 .P
 
 .P
@@ -461,7 +461,7 @@ named something like 722d15bd.X, where X is a manually assigned number to
 make sure that files with colliding hashes have different names. The number
 can be derived from the certificate file itself:
 .P
-openssl x509 -subject_hash -noout -in /opt/etc/vpnc/vpn-example-com.pem
+openssl x509 -subject_hash -noout -in %OPTWARE_TARGET_PREFIX%/etc/vpnc/vpn-example-com.pem
 
 See also the
 .B \-\-print\-config

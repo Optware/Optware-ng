@@ -113,7 +113,7 @@ $(PY-TAILOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PA
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-TAILOR_DIR)
 	$(PY-TAILOR_UNZIP) $(DL_DIR)/$(PY-TAILOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-TAILOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TAILOR_DIR) -p1
+#	cat $(PY-TAILOR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TAILOR_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TAILOR_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -130,7 +130,7 @@ $(PY-TAILOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PA
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-TAILOR_DIR)
 	$(PY-TAILOR_UNZIP) $(DL_DIR)/$(PY-TAILOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-TAILOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TAILOR_DIR) -p1
+#	cat $(PY-TAILOR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TAILOR_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TAILOR_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -181,7 +181,7 @@ py-tailor-stage: $(PY-TAILOR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-tailor
 #
 $(PY25-TAILOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-tailor" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,7 +195,7 @@ $(PY25-TAILOR_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-TAILOR_CONFLICTS)" >>$@
 
 $(PY26-TAILOR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-tailor" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

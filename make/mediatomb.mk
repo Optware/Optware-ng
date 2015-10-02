@@ -159,7 +159,7 @@ endif
 	$(MEDIATOMB_UNZIP) $(DL_DIR)/$(MEDIATOMB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MEDIATOMB_PATCHES)" ; \
 		then cat $(MEDIATOMB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MEDIATOMB_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MEDIATOMB_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(@D) ; \
@@ -230,7 +230,7 @@ mediatomb-stage: $(MEDIATOMB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mediatomb
 #
 $(MEDIATOMB_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mediatomb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -259,20 +259,20 @@ $(MEDIATOMB_IPK_DIR)/CONTROL/control:
 $(MEDIATOMB_IPK): $(MEDIATOMB_BUILD_DIR)/.built
 	rm -rf $(MEDIATOMB_IPK_DIR) $(BUILD_DIR)/mediatomb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MEDIATOMB_BUILD_DIR) DESTDIR=$(MEDIATOMB_IPK_DIR) install-strip
-	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/
-	install -d $(MEDIATOMB_IPK_DIR)/opt/var/run/
-	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/init.d
-	install -d $(MEDIATOMB_IPK_DIR)/opt/var/lock
-	install -d $(MEDIATOMB_IPK_DIR)/opt/var/log
-	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/default
-	install -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-conf-optware $(MEDIATOMB_IPK_DIR)/opt/etc/mediatomb.conf
-	install -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-default-optware $(MEDIATOMB_IPK_DIR)/opt/etc/default/mediatomb
-	install -m 755 $(MEDIATOMB_SOURCE_DIR)/mediatomb-service-optware $(MEDIATOMB_IPK_DIR)/opt/etc/init.d/S90mediatomb
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/var/run/
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/var/lock
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-conf-optware $(MEDIATOMB_IPK_DIR)/opt/etc/mediatomb.conf
+	$(INSTALL) -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-default-optware $(MEDIATOMB_IPK_DIR)/opt/etc/default/mediatomb
+	$(INSTALL) -m 755 $(MEDIATOMB_SOURCE_DIR)/mediatomb-service-optware $(MEDIATOMB_IPK_DIR)/opt/etc/init.d/S90mediatomb
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEDIATOMB_IPK_DIR)/opt/etc/init.d/SXXmediatomb
 	$(MAKE) $(MEDIATOMB_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MEDIATOMB_SOURCE_DIR)/postinst $(MEDIATOMB_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MEDIATOMB_SOURCE_DIR)/postinst $(MEDIATOMB_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEDIATOMB_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(MEDIATOMB_SOURCE_DIR)/mediatomb-prerm-optware $(MEDIATOMB_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(MEDIATOMB_SOURCE_DIR)/mediatomb-prerm-optware $(MEDIATOMB_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEDIATOMB_IPK_DIR)/CONTROL/prerm
 	echo $(MEDIATOMB_CONFFILES) | sed -e 's/ /\n/g' > $(MEDIATOMB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MEDIATOMB_IPK_DIR)

@@ -46,7 +46,7 @@ BOGOFILTER_IPK=$(BUILD_DIR)/bogofilter_$(BOGOFILTER_VERSION)-$(BOGOFILTER_IPK_VE
 .PHONY: bogofilter-source bogofilter-unpack bogofilter bogofilter-stage bogofilter-ipk bogofilter-clean bogofilter-dirclean bogofilter-check
 
 $(BOGOFILTER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bogofilter" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -72,7 +72,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(BOGOFILTER_DIR) $(@D)
 	$(BOGOFILTER_UNZIP) $(DL_DIR)/$(BOGOFILTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BOGOFILTER_PATCHES)"; \
-		then cat $(BOGOFILTER_PATCHES) | patch -d $(BUILD_DIR)/$(BOGOFILTER_DIR) -p1; \
+		then cat $(BOGOFILTER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BOGOFILTER_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(BOGOFILTER_DIR) $(@D)
 ifneq ($(HOSTCC), $(TARGET_CC))
@@ -113,12 +113,12 @@ bogofilter: $(BOGOFILTER_BUILD_DIR)/.built
 
 $(BOGOFILTER_IPK): $(BOGOFILTER_BUILD_DIR)/.built
 	rm -rf $(BOGOFILTER_IPK_DIR) $(BUILD_DIR)/bogofilter_*_$(TARGET_ARCH).ipk
-	install -d $(BOGOFILTER_IPK_DIR)/opt/bin/
-	install -d $(BOGOFILTER_IPK_DIR)/opt/sbin/
-	install -d $(BOGOFILTER_IPK_DIR)/opt/doc/bogofilter/
-	install -d $(BOGOFILTER_IPK_DIR)/opt/etc/
-	install -d $(BOGOFILTER_IPK_DIR)/opt/man/man1/
-	install -d $(BOGOFILTER_IPK_DIR)/opt/var/spool/bogofilter
+	$(INSTALL) -d $(BOGOFILTER_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(BOGOFILTER_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(BOGOFILTER_IPK_DIR)/opt/doc/bogofilter/
+	$(INSTALL) -d $(BOGOFILTER_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(BOGOFILTER_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -d $(BOGOFILTER_IPK_DIR)/opt/var/spool/bogofilter
 	$(MAKE) -C $(BOGOFILTER_BUILD_DIR) DESTDIR=$(BOGOFILTER_IPK_DIR) install
 	$(STRIP_COMMAND) $(BOGOFILTER_IPK_DIR)/opt/bin/bogofilter
 	$(STRIP_COMMAND) $(BOGOFILTER_IPK_DIR)/opt/bin/bogolexer
@@ -129,16 +129,16 @@ $(BOGOFILTER_IPK): $(BOGOFILTER_BUILD_DIR)/.built
 		 "bogofilter.html" "bogolexer.html" "bogotune-faq.html" \
 		 "bogotune.html" "bogoupgrade.html" "bogoutil.html" \
 		 "integrating-with-postfix" "integrating-with-qmail" ; do \
-	    install -m 644 $(BOGOFILTER_BUILD_DIR)/doc/$$i $(BOGOFILTER_IPK_DIR)/opt/doc/bogofilter/$$i ; \
+	    $(INSTALL) -m 644 $(BOGOFILTER_BUILD_DIR)/doc/$$i $(BOGOFILTER_IPK_DIR)/opt/doc/bogofilter/$$i ; \
 	done
-	install -m 644 $(BOGOFILTER_SOURCE_DIR)/master.cf.patch $(BOGOFILTER_IPK_DIR)/opt/doc/bogofilter/master.cf.patch
+	$(INSTALL) -m 644 $(BOGOFILTER_SOURCE_DIR)/master.cf.patch $(BOGOFILTER_IPK_DIR)/opt/doc/bogofilter/master.cf.patch
 	mv $(BOGOFILTER_IPK_DIR)/opt/etc/bogofilter.cf.example $(BOGOFILTER_IPK_DIR)/opt/doc/bogofilter/bogofilter.cf.example
-	install -m 644 $(BOGOFILTER_SOURCE_DIR)/bogofilter.conf $(BOGOFILTER_IPK_DIR)/opt/etc/bogofilter.conf
-	install -m 755 $(BOGOFILTER_SOURCE_DIR)/postfix-bogofilter.sh $(BOGOFILTER_IPK_DIR)/opt/sbin/postfix-bogofilter.sh
+	$(INSTALL) -m 644 $(BOGOFILTER_SOURCE_DIR)/bogofilter.conf $(BOGOFILTER_IPK_DIR)/opt/etc/bogofilter.conf
+	$(INSTALL) -m 755 $(BOGOFILTER_SOURCE_DIR)/postfix-bogofilter.sh $(BOGOFILTER_IPK_DIR)/opt/sbin/postfix-bogofilter.sh
 
 	$(MAKE) $(BOGOFILTER_IPK_DIR)/CONTROL/control
-	install -m 755 $(BOGOFILTER_SOURCE_DIR)/postinst $(BOGOFILTER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(BOGOFILTER_SOURCE_DIR)/prerm $(BOGOFILTER_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(BOGOFILTER_SOURCE_DIR)/postinst $(BOGOFILTER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(BOGOFILTER_SOURCE_DIR)/prerm $(BOGOFILTER_IPK_DIR)/CONTROL/prerm
 	echo $(BOGOFILTER_CONFFILES) | sed -e 's/ /\n/g' > $(BOGOFILTER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOGOFILTER_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(BOGOFILTER_IPK_DIR)

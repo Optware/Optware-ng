@@ -61,7 +61,7 @@ SM_IPK=$(BUILD_DIR)/sm_$(SM_FULL_VERSION)-$(SM_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(SM_IPK_DIR)/CONTROL/control:
-	@install -d $(SM_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(SM_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: sm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -100,7 +100,7 @@ $(SM_BUILD_DIR)/.configured: $(DL_DIR)/$(SM_SOURCE) \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(SM_SOURCE)
 	if test -n "$(SM_PATCHES)" ; \
 		then cat $(SM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SM_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SM_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SM_DIR)" != "$(SM_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SM_DIR) $(SM_BUILD_DIR) ; \

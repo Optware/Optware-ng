@@ -91,7 +91,7 @@ PROFTPD_IPK=$(BUILD_DIR)/proftpd_$(PROFTPD_VERSION)-$(PROFTPD_IPK_VERSION)_$(TAR
 # Automatically create a ipkg control file
 #
 $(PROFTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: $(PROFTPD_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -144,7 +144,7 @@ $(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
 	$(PROFTPD_UNZIP) $(DL_DIR)/$(PROFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PROFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(PROFTPD_DIR) -p1
+	cat $(PROFTPD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PROFTPD_DIR) -p1
 	mv $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
 #	zcat $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) | tar -C $(@D) -xvf -
 #	cp $(@D)/mod_shaper/* $(@D)/contrib/
@@ -208,49 +208,49 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	# Clean it all
 	rm -rf $(PROFTPD_IPK_DIR) $(BUILD_DIR)/proftpd_*_$(TARGET_ARCH).ipk
 	# Install sbin files
-	install -d $(PROFTPD_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/proftpd -o $(PROFTPD_IPK_DIR)/opt/sbin/proftpd
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpshut -o $(PROFTPD_IPK_DIR)/opt/sbin/ftpshut
 	# Install bin files
-	install -d $(PROFTPD_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpdctl -o $(PROFTPD_IPK_DIR)/opt/bin/ftpdctl
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftptop -o $(PROFTPD_IPK_DIR)/opt/bin/ftptop
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpcount -o $(PROFTPD_IPK_DIR)/opt/bin/ftpcount
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpwho -o $(PROFTPD_IPK_DIR)/opt/bin/ftpwho
 	# Install man files
-	install -d $(PROFTPD_IPK_DIR)/opt/man/man1
-	install -d $(PROFTPD_IPK_DIR)/opt/man/man5
-	install -d $(PROFTPD_IPK_DIR)/opt/man/man8	
-	install -m 0644 $(PROFTPD_BUILD_DIR)/src/ftpdctl.8 $(PROFTPD_IPK_DIR)/opt/man/man8
-	install -m 0644 $(PROFTPD_BUILD_DIR)/src/proftpd.8 $(PROFTPD_IPK_DIR)/opt/man/man8   
-	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpshut.8 $(PROFTPD_IPK_DIR)/opt/man/man8 
-	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpcount.1 $(PROFTPD_IPK_DIR)/opt/man/man1
-	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftptop.1  $(PROFTPD_IPK_DIR)/opt/man/man1 
-	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpwho.1  $(PROFTPD_IPK_DIR)/opt/man/man1 
-	install -m 0644 $(PROFTPD_BUILD_DIR)/src/xferlog.5   $(PROFTPD_IPK_DIR)/opt/man/man5
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/man/man5
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/man/man8	
+	$(INSTALL) -m 0644 $(PROFTPD_BUILD_DIR)/src/ftpdctl.8 $(PROFTPD_IPK_DIR)/opt/man/man8
+	$(INSTALL) -m 0644 $(PROFTPD_BUILD_DIR)/src/proftpd.8 $(PROFTPD_IPK_DIR)/opt/man/man8   
+	$(INSTALL) -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpshut.8 $(PROFTPD_IPK_DIR)/opt/man/man8 
+	$(INSTALL) -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpcount.1 $(PROFTPD_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftptop.1  $(PROFTPD_IPK_DIR)/opt/man/man1 
+	$(INSTALL) -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpwho.1  $(PROFTPD_IPK_DIR)/opt/man/man1 
+	$(INSTALL) -m 0644 $(PROFTPD_BUILD_DIR)/src/xferlog.5   $(PROFTPD_IPK_DIR)/opt/man/man5
 	# Install folder for storing socket file and scoreboard
-	install -d $(PROFTPD_IPK_DIR)/opt/var/proftpd
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/var/proftpd
 	# Install conf files
-	install -d $(PROFTPD_IPK_DIR)/opt/etc/init.d
-	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.conf $(PROFTPD_IPK_DIR)/opt/etc/proftpd.conf
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.conf $(PROFTPD_IPK_DIR)/opt/etc/proftpd.conf
 	# Install xinetd support
-	install -d $(PROFTPD_IPK_DIR)/opt/etc/xinetd.d
-	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd $(PROFTPD_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 644 $(PROFTPD_SOURCE_DIR)/proftpd $(PROFTPD_IPK_DIR)/opt/etc/xinetd.d
 	# Install doc files
-	install -d $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 755 $(PROFTPD_SOURCE_DIR)/S58proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd-install.doc $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/anonymous.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/basic.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/complex-virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/mod_sql.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	$(INSTALL) -m 755 $(PROFTPD_SOURCE_DIR)/S58proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	$(INSTALL) -m 644 $(PROFTPD_SOURCE_DIR)/proftpd-install.doc $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	$(INSTALL) -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/anonymous.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	$(INSTALL) -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/basic.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	$(INSTALL) -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/complex-virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	$(INSTALL) -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/mod_sql.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	$(INSTALL) -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	# Make directory in which to store keys
-	install -d $(PROFTPD_IPK_DIR)/opt/etc/ftpd
+	$(INSTALL) -d $(PROFTPD_IPK_DIR)/opt/etc/ftpd
 	# Install control file
 	make  $(PROFTPD_IPK_DIR)/CONTROL/control
-	install -m 755 $(PROFTPD_SOURCE_DIR)/postinst $(PROFTPD_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(PROFTPD_SOURCE_DIR)/prerm $(PROFTPD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(PROFTPD_SOURCE_DIR)/postinst $(PROFTPD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(PROFTPD_SOURCE_DIR)/prerm $(PROFTPD_IPK_DIR)/CONTROL/prerm
 	echo $(PROFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(PROFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROFTPD_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(PROFTPD_IPK_DIR)

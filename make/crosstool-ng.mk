@@ -67,7 +67,7 @@ $(DL_DIR)/$(CROSSTOO-NG_SOURCE) $(CROSSTOO-NG_PATCHES) make/crosstool-ng.mk
 	$(CROSSTOO-NG_UNZIP) $(DL_DIR)/$(CROSSTOO-NG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(CROSSTOO-NG_PATCHES)" ; \
 		then cat $(CROSSTOO-NG_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(CROSSTOO-NG_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(CROSSTOO-NG_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(CROSSTOO-NG_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(CROSSTOO-NG_DIR) $(@D) ; \

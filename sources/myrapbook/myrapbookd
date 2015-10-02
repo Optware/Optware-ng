@@ -8,11 +8,11 @@ PASSWORD=pass
 
 case "$1" in
   start)
-    cd /opt/tmp/myrapbook
-    rm -rf /opt/tmp/myrapbook/cookie
-    /opt/bin/curl -k --cookie-jar ./cookie --data "login=${USERNAME}&password=${PASSWORD}" https://ssl.rapidshare.com/cgi-bin/premiumzone.cgi > /dev/null
+    cd %OPTWARE_TARGET_PREFIX%/tmp/myrapbook
+    rm -rf %OPTWARE_TARGET_PREFIX%/tmp/myrapbook/cookie
+    %OPTWARE_TARGET_PREFIX%/bin/curl -k --cookie-jar ./cookie --data "login=${USERNAME}&password=${PASSWORD}" https://ssl.rapidshare.com/cgi-bin/premiumzone.cgi > /dev/null
     echo "Starting $DESC: $NAME."
-    /opt/bin/myrapbook-daemon
+    %OPTWARE_TARGET_PREFIX%/bin/myrapbook-daemon
     echo " "
   ;;
   stop)

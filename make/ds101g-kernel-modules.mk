@@ -70,7 +70,7 @@ $(DS101G-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(DS101G-KERNEL-MODULE
 	$(DS101G-KERNEL-MODULES_UNZIP) $(DL_DIR)/$(DS101G-KERNEL-MODULES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DS101G-KERNEL-MODULES_PATCHES)" ; \
 		then cat $(DS101G-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DS101G-KERNEL-MODULES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DS101G-KERNEL-MODULES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DS101G-KERNEL-MODULES_DIR)" != "$(DS101G-KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DS101G-KERNEL-MODULES_DIR) $(DS101G-KERNEL-MODULES_BUILD_DIR) ; \
@@ -115,7 +115,7 @@ ds101g-kernel-modules-stage: $(DS101G-KERNEL-MODULES_BUILD_DIR)/.staged
 #
 $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(DS101G-KERNEL-MODULES); do \
-	  install -d $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
+	  $(INSTALL) -d $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
 	  rm -f $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
           ( \
 	    echo "Package: kernel-module-`echo $$m|sed -e 's/_/-/g'`"; \
@@ -140,7 +140,7 @@ $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Conflicts: $(DS101G-KERNEL-MODULES_CONFLICTS)"; \
 	  ) >> $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
 	done
-	install -d $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL; \
+	$(INSTALL) -d $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL; \
 	touch $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 #
 # This builds the IPK file.
@@ -160,8 +160,8 @@ $(DS101G-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101G-KERNEL-MODULES_BUILD_DIR)/
 	$(MAKE) -C $(DS101G-KERNEL-MODULES_BUILD_DIR) modules_install
 	rm -rf $(DS101G-KERNEL-MODULES_IPK_DIR)/lib/modules/2.4.22-uc0/kernel/drivers/synobios
 	for m in $(DS101G-KERNEL-MODULES); do \
-	  install -d $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
-	  install -m 644 `find $(DS101G-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -d $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -m 644 `find $(DS101G-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
 	done
 	$(MAKE) $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 	for m in $(DS101G-KERNEL-MODULES); do \

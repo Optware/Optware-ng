@@ -110,7 +110,7 @@ $(LIBMRSS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMRSS_SOURCE) $(LIBMRSS_PATCHES)
 	$(LIBMRSS_UNZIP) $(DL_DIR)/$(LIBMRSS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMRSS_PATCHES)" ; \
 		then cat $(LIBMRSS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBMRSS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMRSS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMRSS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMRSS_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ libmrss-stage: $(LIBMRSS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libmrss
 #
 $(LIBMRSS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libmrss" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

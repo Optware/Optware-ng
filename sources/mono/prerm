@@ -1,4 +1,4 @@
 #!/bin/sh
 
-cd /opt/lib/mono
+cd %OPTWARE_TARGET_PREFIX%/lib/mono
 rm -f `tar -tzf long-symlinks.tar.gz`

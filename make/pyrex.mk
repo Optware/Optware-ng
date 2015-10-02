@@ -113,7 +113,7 @@ $(PYREX_BUILD_DIR)/.configured: $(DL_DIR)/$(PYREX_SOURCE) $(PYREX_PATCHES) make/
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PYREX_DIR)
 	$(PYREX_UNZIP) $(DL_DIR)/$(PYREX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PYREX_PATCHES) | patch -d $(BUILD_DIR)/$(PYREX_DIR) -p1
+#	cat $(PYREX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PYREX_DIR) -p1
 	mv $(BUILD_DIR)/$(PYREX_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -130,7 +130,7 @@ $(PYREX_BUILD_DIR)/.configured: $(DL_DIR)/$(PYREX_SOURCE) $(PYREX_PATCHES) make/
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PYREX_DIR)
 	$(PYREX_UNZIP) $(DL_DIR)/$(PYREX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PYREX_PATCHES) | patch -d $(BUILD_DIR)/$(PYREX_DIR) -p1
+#	cat $(PYREX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PYREX_DIR) -p1
 	mv $(BUILD_DIR)/$(PYREX_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -187,7 +187,7 @@ pyrex-stage: $(PYREX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pyrex
 #
 $(PY25-PYREX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pyrex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,7 +201,7 @@ $(PY25-PYREX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PYREX_CONFLICTS)" >>$@
 
 $(PY26-PYREX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-pyrex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

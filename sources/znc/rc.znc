@@ -3,16 +3,16 @@
 # Startup script for znc as standalone server
 #
 
-. /opt/etc/default/znc
+. %OPTWARE_TARGET_PREFIX%/etc/default/znc
 
-if [ ! -x /opt/bin/su -a ! -x /bin/su ]; then
+if [ ! -x %OPTWARE_TARGET_PREFIX%/bin/su -a ! -x /bin/su ]; then
     echo "su not found.";
     exit 2;
 fi
 
-if [ -n "`/opt/bin/pidof znc`" ]; then
-    /opt/bin/killall znc 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof znc`" ]; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall znc 2>/dev/null
 fi
 
-su - -c "/opt/bin/znc -d ${ZNC_DATADIR}" ${ZNC_USER}
+su - -c "%OPTWARE_TARGET_PREFIX%/bin/znc -d ${ZNC_DATADIR}" ${ZNC_USER}
 

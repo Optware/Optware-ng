@@ -72,7 +72,7 @@ HDPARM_IPK=$(BUILD_DIR)/hdparm_$(HDPARM_VERSION)-$(HDPARM_IPK_VERSION)_$(TARGET_
 # Automatically create a ipkg control file
 #
 $(HDPARM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: hdparm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -110,7 +110,7 @@ $(HDPARM_BUILD_DIR)/.configured: make/hdparm.mk $(DL_DIR)/$(HDPARM_SOURCE) $(HDP
 	$(HDPARM_UNZIP) $(DL_DIR)/$(HDPARM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HDPARM_PATCHES)" ; \
 		then cat $(HDPARM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HDPARM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HDPARM_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(HDPARM_DIR) $(@D)
 	sed -i -e '/^	strip/d' $(@D)/Makefile
@@ -150,7 +150,7 @@ hdparm: $(HDPARM_BUILD_DIR)/.built
 #
 $(HDPARM_IPK): $(HDPARM_BUILD_DIR)/.built
 	rm -rf $(HDPARM_IPK_DIR) $(BUILD_DIR)/hdparm_*_$(TARGET_ARCH).ipk
-	install -d $(HDPARM_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(HDPARM_IPK_DIR)/opt/sbin
 	$(MAKE) -C $(HDPARM_BUILD_DIR) DESTDIR=$(HDPARM_IPK_DIR) install \
 		binprefix=/opt manprefix=/opt \
 		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"

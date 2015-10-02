@@ -2,6 +2,6 @@
 
 echo
 echo "To complete this installation, make any necessary changes"
-echo "to the config file in  /opt/etc/mt-daapd/mt-daapd.conf, and"
-echo "start the daemon by running /opt/etc/init.d/S60mt-daapd"
+echo "to the config file in  %OPTWARE_TARGET_PREFIX%/etc/mt-daapd/mt-daapd.conf, and"
+echo "start the daemon by running %OPTWARE_TARGET_PREFIX%/etc/init.d/S60mt-daapd"
 echo

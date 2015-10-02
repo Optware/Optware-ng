@@ -109,7 +109,7 @@ $(INK_BUILD_DIR)/.configured: $(DL_DIR)/$(INK_SOURCE) $(INK_PATCHES) make/ink.mk
 	$(INK_UNZIP) $(DL_DIR)/$(INK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(INK_PATCHES)" ; \
 		then cat $(INK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(INK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(INK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(INK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(INK_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ ink: $(INK_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ink
 #
 $(INK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ink" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,8 +194,8 @@ $(INK_IPK_DIR)/CONTROL/control:
 $(INK_IPK): $(INK_BUILD_DIR)/.built
 	rm -rf $(INK_IPK_DIR) $(BUILD_DIR)/ink_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(INK_BUILD_DIR) install DESTDIR=$(INK_IPK_DIR)/opt
-	install -d $(INK_IPK_DIR)/opt/bin
-	install -m 755 $(INK_BUILD_DIR)/ink $(INK_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(INK_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(INK_BUILD_DIR)/ink $(INK_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(INK_IPK_DIR)/opt/bin/ink
 	$(MAKE) $(INK_IPK_DIR)/CONTROL/control
 	echo $(INK_CONFFILES) | sed -e 's/ /\n/g' > $(INK_IPK_DIR)/CONTROL/conffiles

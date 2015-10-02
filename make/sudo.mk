@@ -47,7 +47,7 @@ $(SUDO_BUILD_DIR)/.configured: $(DL_DIR)/$(SUDO_SOURCE) $(SUDO_PATCHES) make/sud
 	rm -rf $(BUILD_DIR)/$(SUDO_DIR) $(@D)
 	$(SUDO_UNZIP) $(DL_DIR)/$(SUDO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SUDO_PATCHES)"; then \
-		cat $(SUDO_PATCHES) | patch -d $(BUILD_DIR)/$(SUDO_DIR) -p1; \
+		cat $(SUDO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SUDO_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(SUDO_DIR) $(@D)
 	sed -i -e '/$$(INSTALL) /s| -s||' $(@D)/Makefile.in
@@ -83,7 +83,7 @@ sudo: $(SUDO_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/sudo
 #
 $(SUDO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sudo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -105,15 +105,15 @@ $(SUDO_IPK): $(SUDO_BUILD_DIR)/.built
 	    $(SUDO_IPK_DIR)/opt/bin/sudoreplay \
 	    $(SUDO_IPK_DIR)/opt/libexec/sudo_noexec.so \
 	    $(SUDO_IPK_DIR)/opt/sbin/visudo
-	install -d $(SUDO_IPK_DIR)/opt/share/doc/sudo
+	$(INSTALL) -d $(SUDO_IPK_DIR)/opt/share/doc/sudo
 ifeq ($(SUDO_VERSION),1.7.4.6)
-	install -m 644 $(<D)/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
+	$(INSTALL) -m 644 $(<D)/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
 else
 	$(STRIP_COMMAND) $(SUDO_IPK_DIR)/opt/libexec/sudoers.so
-	install -m 644 $(<D)/doc/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
+	$(INSTALL) -m 644 $(<D)/doc/sample.sudoers $(SUDO_IPK_DIR)/opt/share/doc/sudo/sample.sudoers
 endif
 	$(MAKE) $(SUDO_IPK_DIR)/CONTROL/control
-	install -m 644 $(SUDO_SOURCE_DIR)/postinst $(SUDO_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SUDO_SOURCE_DIR)/postinst $(SUDO_IPK_DIR)/CONTROL/postinst
 	echo $(SUDO_CONFFILES) | sed -e 's/ /\n/g' > $(SUDO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR) && $(IPKG_BUILD) $(SUDO_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(SUDO_IPK_DIR)

@@ -21,11 +21,11 @@ BASE=$HOME/linksys/nslu2/build/unslung/bind
 # Directory containing results of package builds 
 #     -- in particular, DNSSEC needs openssl, found in /lib and /include
 #
-STAGED=$HOME/linksys/nslu2/build/unslung/staging/opt
+STAGED=$HOME/linksys/nslu2/build/unslung/staging%OPTWARE_TARGET_PREFIX%
 #
 # If you put the tools somehere else, point to them here:
 #
-TOOLSBASE=/opt/crosstool/armv5b-softfloat-linux/gcc-3.3.4-glibc-2.2.5/bin
+TOOLSBASE=%OPTWARE_TARGET_PREFIX%/crosstool/armv5b-softfloat-linux/gcc-3.3.4-glibc-2.2.5/bin
 #
 BIND_VERS="9.3.0"
 #
@@ -53,7 +53,7 @@ export READELF=$TOOLSBASE/armv5b-softfloat-linux-readelf
 export SIZE=$TOOLSBASE/armv5b-softfloat-linux-size
 export STRINGS=$TOOLSBASE/armv5b-softfloat-linux-strings
 export LDFLAGS="-s -L$STAGED/lib"
-#-Wl,-nostdlib -Wl,-rpath,/opt/lib:/lib"
+#-Wl,-nostdlib -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib:/lib"
 export CFLAGS=-I$STAGED/include
 #
 # If necessary, get the kit
@@ -96,7 +96,7 @@ echo "Failed to extract kit, aborting" >/dev/stderr
 exit 1
 fi
 #
-mkdir -p $BASE/install/opt
+mkdir -p $BASE/install%OPTWARE_TARGET_PREFIX%
 #
 echo "Configuring BIND $BIND_VERS for the NSLU2" >/dev/stderr
 #
@@ -233,7 +233,7 @@ fi
 rm ./configure_patch
 #
 echo "Running configure.  Expect two warnings." >/dev/stderr
-./configure --prefix=$BASE/install/opt --with-openssl=$STAGED --with-libtool --sysconfdir=/opt/etc/named --localstatedir=/opt/var --with-randomdev=/dev/random --host=arm-linux --disable-getifaddrs
+./configure --prefix=$BASE/install%OPTWARE_TARGET_PREFIX% --with-openssl=$STAGED --with-libtool --sysconfdir=%OPTWARE_TARGET_PREFIX%/etc/named --localstatedir=%OPTWARE_TARGET_PREFIX%/var --with-randomdev=/dev/random --host=arm-linux --disable-getifaddrs
 if test $? ; then
 echo "Configure completed" >/dev/stderr
 else

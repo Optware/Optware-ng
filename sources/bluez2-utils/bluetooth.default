@@ -4,7 +4,7 @@
 HCID_ENABLE=true
 
 # Config file for hcid
-HCID_CONFIG="/opt/etc/bluetooth/hcid.conf"
+HCID_CONFIG="%OPTWARE_TARGET_PREFIX%/etc/bluetooth/hcid.conf"
 
 # Start sdpd (allowed values are "true" and "false")
 SDPD_ENABLE=true
@@ -22,7 +22,7 @@ HID2HCI_ENABLE=true
 RFCOMM_ENABLE=true
 
 # Config file for rfcomm
-RFCOMM_CONFIG="/opt/etc/bluetooth/rfcomm.conf"
+RFCOMM_CONFIG="%OPTWARE_TARGET_PREFIX%/etc/bluetooth/rfcomm.conf"
 
 # Start dund (allowed values are "true" and "false")
 DUND_ENABLE=true

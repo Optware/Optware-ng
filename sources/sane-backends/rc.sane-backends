@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
 if !( grep -q ^saned.*6566 /etc/services ); then
 	echo "saned		6566/tcp	# SANE network scanner daemon" >> /etc/services

@@ -76,7 +76,7 @@ LZO_IPK=$(BUILD_DIR)/lzo_$(LZO_VERSION)-$(LZO_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(LZO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: $(LZO_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -123,7 +123,7 @@ $(LZO_BUILD_DIR)/.configured: $(DL_DIR)/$(LZO_SOURCE) $(LZO_PATCHES) make/lzo.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LZO_DIR) $(@D)
 	$(LZO_UNZIP) $(DL_DIR)/$(LZO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LZO_PATCHES) | patch -d $(BUILD_DIR)/$(LZO_DIR) -p1
+#	cat $(LZO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LZO_DIR) -p1
 	mv $(BUILD_DIR)/$(LZO_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -185,8 +185,8 @@ $(LZO_IPK): $(LZO_BUILD_DIR)/.built
 	rm -f $(LZO_IPK_DIR)/opt/lib/liblzo2.a
 	# Install control file
 	make  $(LZO_IPK_DIR)/CONTROL/control
-#	install -m 644 $(LZO_SOURCE_DIR)/postinst $(LZO_IPK_DIR)/CONTROL
-#	install -m 644 $(LZO_SOURCE_DIR)/prerm $(LZO_IPK_DIR)/CONTROL
+#	$(INSTALL) -m 644 $(LZO_SOURCE_DIR)/postinst $(LZO_IPK_DIR)/CONTROL
+#	$(INSTALL) -m 644 $(LZO_SOURCE_DIR)/prerm $(LZO_IPK_DIR)/CONTROL
 	echo $(LZO_CONFFILES) | sed -e 's/ /\n/g' > $(LZO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LZO_IPK_DIR)
 

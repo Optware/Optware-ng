@@ -110,7 +110,7 @@ $(TIN_BUILD_DIR)/.configured: $(DL_DIR)/$(TIN_SOURCE) $(TIN_PATCHES)
 	make libidn-stage ncurses-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(TIN_DIR) $(@D)
 	$(TIN_UNZIP) $(DL_DIR)/$(TIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(TIN_PATCHES) | patch -d $(BUILD_DIR)/$(TIN_DIR) -p1
+	cat $(TIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TIN_DIR) -p1
 	mv $(BUILD_DIR)/$(TIN_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -157,7 +157,7 @@ tin-stage: $(TIN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tin
 #
 $(TIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,13 +184,13 @@ $(TIN_IPK_DIR)/CONTROL/control:
 $(TIN_IPK): $(TIN_BUILD_DIR)/.built
 	rm -rf $(TIN_IPK_DIR) $(BUILD_DIR)/tin_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TIN_BUILD_DIR) DESTDIR=$(TIN_IPK_DIR) STRIP="$(STRIP_COMMAND)" install
-	install -d $(TIN_IPK_DIR)/opt/etc/
-#	install -m 644 $(TIN_SOURCE_DIR)/tin.conf $(TIN_IPK_DIR)/opt/etc/tin.conf
-#	install -d $(TIN_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TIN_SOURCE_DIR)/rc.tin $(TIN_IPK_DIR)/opt/etc/init.d/SXXtin
+	$(INSTALL) -d $(TIN_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(TIN_SOURCE_DIR)/tin.conf $(TIN_IPK_DIR)/opt/etc/tin.conf
+#	$(INSTALL) -d $(TIN_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(TIN_SOURCE_DIR)/rc.tin $(TIN_IPK_DIR)/opt/etc/init.d/SXXtin
 	$(MAKE) $(TIN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TIN_SOURCE_DIR)/postinst $(TIN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TIN_SOURCE_DIR)/prerm $(TIN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TIN_SOURCE_DIR)/postinst $(TIN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TIN_SOURCE_DIR)/prerm $(TIN_IPK_DIR)/CONTROL/prerm
 #	echo $(TIN_CONFFILES) | sed -e 's/ /\n/g' > $(TIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TIN_IPK_DIR)
 

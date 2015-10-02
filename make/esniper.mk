@@ -128,7 +128,7 @@ $(ESNIPER_BUILD_DIR)/.configured: $(DL_DIR)/$(ESNIPER_SOURCE) $(ESNIPER_PATCHES)
 	$(ESNIPER_UNZIP) $(DL_DIR)/$(ESNIPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ESNIPER_PATCHES)" ; \
 		then cat $(ESNIPER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ESNIPER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ESNIPER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ESNIPER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ESNIPER_DIR) $(@D) ; \
@@ -179,7 +179,7 @@ esniper-stage: $(ESNIPER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/esniper
 #
 $(ESNIPER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: esniper" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -208,7 +208,7 @@ $(ESNIPER_IPK_DIR)/CONTROL/control:
 $(ESNIPER_IPK): $(ESNIPER_BUILD_DIR)/.built
 	rm -rf $(ESNIPER_IPK_DIR) $(BUILD_DIR)/esniper_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ESNIPER_BUILD_DIR) DESTDIR=$(ESNIPER_IPK_DIR) install-strip
-	install -d $(ESNIPER_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(ESNIPER_IPK_DIR)/opt/etc/
 	$(MAKE) $(ESNIPER_IPK_DIR)/CONTROL/control
 #	echo $(ESNIPER_CONFFILES) | sed -e 's/ /\n/g' > $(ESNIPER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESNIPER_IPK_DIR)

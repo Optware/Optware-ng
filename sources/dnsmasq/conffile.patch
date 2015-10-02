@@ -5,7 +5,7 @@
  #      define CONFFILE "/usr/local/etc/dnsmasq.conf"
  #   else
 -#      define CONFFILE "/etc/dnsmasq.conf"
-+#      define CONFFILE "/opt/etc/dnsmasq.conf"
++#      define CONFFILE "%OPTWARE_TARGET_PREFIX%/etc/dnsmasq.conf"
  #   endif
  #endif
  

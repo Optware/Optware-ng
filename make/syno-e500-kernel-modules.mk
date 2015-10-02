@@ -76,7 +76,7 @@ $(KERNEL-MODULES_SOURCE_DIR)/defconfig make/syno-e500-kernel-modules.mk
 	mv $(BUILD_DIR)/$(KERNEL-MODULES_DIR)/source/linux-$(KERNEL_VERSION) $(@D)
 	rm -rf $(BUILD_DIR)/$(KERNEL-MODULES_DIR)
 	if test -n "$(KERNEL-MODULES_PATCHES)" ; \
-		then cat $(KERNEL-MODULES_PATCHES) | patch -d $(@D) -p1 ; \
+		then cat $(KERNEL-MODULES_PATCHES) | $(PATCH) -d $(@D) -p1 ; \
 	fi
 #	if test "$(BUILD_DIR)/$(KERNEL-MODULES_DIR)" != "$(KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(KERNEL-MODULES_BUILD_DIR) ; \
@@ -115,7 +115,7 @@ kernel-modules-stage: $(KERNEL-MODULES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/kernel-modules
 #
 $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	( \
 	  echo "Package: kernel-modules"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
@@ -130,7 +130,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
 	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
-	  install -d $(KERNEL-MODULE_IPKS_DIR)/$$n/CONTROL; \
+	  $(INSTALL) -d $(KERNEL-MODULE_IPKS_DIR)/$$n/CONTROL; \
 	  rm -f $(KERNEL-MODULE_IPKS_DIR)/$$n/CONTROL/control; \
           ( \
 	    echo -n ", kernel-module-$$n" >> $@; \
@@ -157,7 +157,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	echo "" >> $@
 
 $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	rm -f $@
 	( \
 	  echo "Package: kernel-image"; \
@@ -180,8 +180,8 @@ $(KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(KERNEL-MODULES_BUILD_DIR)/.built
 #	# Package the kernel image first
 #	rm -rf $(KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
 #	$(MAKE) $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control
-#	install -d $(KERNEL-IMAGE_IPK_DIR)/boot/
-#	install -m 644 $(KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/uImage \
+#	$(INSTALL) -d $(KERNEL-IMAGE_IPK_DIR)/boot/
+#	$(INSTALL) -m 644 $(KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/uImage \
 		$(KERNEL-IMAGE_IPK_DIR)/boot/uImage-$(KERNEL_VERSION)-optware-build-$(KERNEL-MODULES_IPK_VERSION)
 #	( cd $(BUILD_DIR); $(IPKG_BUILD) $(KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules

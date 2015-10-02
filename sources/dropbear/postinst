@@ -1,7 +1,7 @@
 #!/bin/sh
 
-/opt/bin/update-alternatives --install /opt/bin/scp scp /opt/sbin/dropbearmulti 50
-/opt/bin/update-alternatives --install /opt/bin/ssh ssh /opt/sbin/dropbearmulti 50
+%OPTWARE_TARGET_PREFIX%/bin/update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/scp scp %OPTWARE_TARGET_PREFIX%/sbin/dropbearmulti 50
+%OPTWARE_TARGET_PREFIX%/bin/update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/ssh ssh %OPTWARE_TARGET_PREFIX%/sbin/dropbearmulti 50
 
 echo
 
@@ -20,20 +20,20 @@ if [ ! -e /dev/urandom ]; then
     fi
 fi
 
-mkdir -p /opt/etc/dropbear
+mkdir -p %OPTWARE_TARGET_PREFIX%/etc/dropbear
 
-if [ ! -f /opt/etc/dropbear/dropbear_rsa_host_key ]; then
-    /opt/sbin/dropbearkey -t rsa -f /opt/etc/dropbear/dropbear_rsa_host_key
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_rsa_host_key ]; then
+    %OPTWARE_TARGET_PREFIX%/sbin/dropbearkey -t rsa -f %OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_rsa_host_key
 fi
 
-if [ ! -f /opt/etc/dropbear/dropbear_dss_host_key ]; then
-    /opt/sbin/dropbearkey -t dss -f /opt/etc/dropbear/dropbear_dss_host_key
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_dss_host_key ]; then
+    %OPTWARE_TARGET_PREFIX%/sbin/dropbearkey -t dss -f %OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_dss_host_key
 fi
 
-if [ ! -f /opt/etc/dropbear/dropbear_ecdsa_host_key ]; then
-    /opt/sbin/dropbearkey -t ecdsa -f /opt/etc/dropbear/dropbear_ecdsa_host_key
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_ecdsa_host_key ]; then
+    %OPTWARE_TARGET_PREFIX%/sbin/dropbearkey -t ecdsa -f %OPTWARE_TARGET_PREFIX%/etc/dropbear/dropbear_ecdsa_host_key
 fi
 
 if [ -z `pidof dropbear` ]; then
-        /opt/etc/init.d/S51dropbear
+        %OPTWARE_TARGET_PREFIX%/etc/init.d/S51dropbear
 fi

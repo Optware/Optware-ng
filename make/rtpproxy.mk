@@ -113,7 +113,7 @@ $(RTPPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(RTPPROXY_SOURCE) $(RTPPROXY_PATCH
 	$(RTPPROXY_UNZIP) $(DL_DIR)/$(RTPPROXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RTPPROXY_PATCHES)" ; \
 		then cat $(RTPPROXY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RTPPROXY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RTPPROXY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RTPPROXY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RTPPROXY_DIR) $(@D) ; \
@@ -167,7 +167,7 @@ rtpproxy: $(RTPPROXY_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/rtpproxy
 #
 $(RTPPROXY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rtpproxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

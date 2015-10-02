@@ -2,8 +2,8 @@
 #
 echo "Running bind pre-remove"
 #
-if [ -n "`/opt/bin/pidof named`" ]; then
-    /opt/bin/killall named 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof named`" ]; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall named 2>/dev/null
 fi
 
-rm -f /opt/etc/init.d/K91named 
+rm -f %OPTWARE_TARGET_PREFIX%/etc/init.d/K91named 

@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ -n "`/opt/bin/pidof cupsd`" ]; then
-    /opt/bin/killall cupsd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof cupsd`" ]; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall cupsd 2>/dev/null
 fi
 
 exit 0

@@ -119,7 +119,7 @@ endif
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz
 	if test -n "$(UPSLUG2_PATCHES)" ; \
 		then cat $(UPSLUG2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UPSLUG2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UPSLUG2_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UPSLUG2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UPSLUG2_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ upslug2: $(UPSLUG2_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/upslug2
 #
 $(UPSLUG2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: upslug2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,13 +197,13 @@ $(UPSLUG2_IPK_DIR)/CONTROL/control:
 $(UPSLUG2_IPK): $(UPSLUG2_BUILD_DIR)/.built
 	rm -rf $(UPSLUG2_IPK_DIR) $(BUILD_DIR)/upslug2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UPSLUG2_BUILD_DIR) DESTDIR=$(UPSLUG2_IPK_DIR) install-strip
-#	install -d $(UPSLUG2_IPK_DIR)/opt/etc/
-#	install -m 644 $(UPSLUG2_SOURCE_DIR)/upslug2.conf $(UPSLUG2_IPK_DIR)/opt/etc/upslug2.conf
-#	install -d $(UPSLUG2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UPSLUG2_SOURCE_DIR)/rc.upslug2 $(UPSLUG2_IPK_DIR)/opt/etc/init.d/SXXupslug2
+#	$(INSTALL) -d $(UPSLUG2_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(UPSLUG2_SOURCE_DIR)/upslug2.conf $(UPSLUG2_IPK_DIR)/opt/etc/upslug2.conf
+#	$(INSTALL) -d $(UPSLUG2_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(UPSLUG2_SOURCE_DIR)/rc.upslug2 $(UPSLUG2_IPK_DIR)/opt/etc/init.d/SXXupslug2
 	$(MAKE) $(UPSLUG2_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UPSLUG2_SOURCE_DIR)/postinst $(UPSLUG2_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UPSLUG2_SOURCE_DIR)/prerm $(UPSLUG2_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UPSLUG2_SOURCE_DIR)/postinst $(UPSLUG2_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UPSLUG2_SOURCE_DIR)/prerm $(UPSLUG2_IPK_DIR)/CONTROL/prerm
 #	echo $(UPSLUG2_CONFFILES) | sed -e 's/ /\n/g' > $(UPSLUG2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UPSLUG2_IPK_DIR)
 

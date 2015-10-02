@@ -136,7 +136,7 @@ cdargs-stage: $(CDARGS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cdargs
 #
 $(CDARGS_IPK_DIR)/CONTROL/control:
-	@install -d $(CDARGS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(CDARGS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: cdargs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,16 +161,16 @@ $(CDARGS_IPK_DIR)/CONTROL/control:
 #
 $(CDARGS_IPK): $(CDARGS_BUILD_DIR)/.built
 	rm -rf $(CDARGS_IPK_DIR) $(BUILD_DIR)/cdargs_*_$(TARGET_ARCH).ipk
-	install -d $(CDARGS_IPK_DIR)/opt/var/lib/cdargs
-	install -m 755 $(CDARGS_BUILD_DIR)/contrib/cdargs-bash.sh $(CDARGS_IPK_DIR)/opt/var/lib/cdargs	
-	install -d $(CDARGS_IPK_DIR)/opt/bin
-	install -m 755 $(CDARGS_BUILD_DIR)/src/cdargs $(CDARGS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(CDARGS_IPK_DIR)/opt/var/lib/cdargs
+	$(INSTALL) -m 755 $(CDARGS_BUILD_DIR)/contrib/cdargs-bash.sh $(CDARGS_IPK_DIR)/opt/var/lib/cdargs	
+	$(INSTALL) -d $(CDARGS_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(CDARGS_BUILD_DIR)/src/cdargs $(CDARGS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(CDARGS_IPK_DIR)/opt/bin/*
-	install -d $(CDARGS_IPK_DIR)/opt/man/man1
-	install -m 644 $(CDARGS_BUILD_DIR)/doc/cdargs.1 $(CDARGS_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(CDARGS_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(CDARGS_BUILD_DIR)/doc/cdargs.1 $(CDARGS_IPK_DIR)/opt/man/man1
 	$(MAKE) $(CDARGS_IPK_DIR)/CONTROL/control
 	echo $(CDARGS_CONFFILES) | sed -e 's/ /\n/g' > $(CDARGS_IPK_DIR)/CONTROL/conffiles
-	install -m 644 $(CDARGS_SOURCE_DIR)/postinst $(CDARGS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(CDARGS_SOURCE_DIR)/postinst $(CDARGS_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CDARGS_IPK_DIR)
 
 #

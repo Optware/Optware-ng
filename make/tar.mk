@@ -129,7 +129,7 @@ tar: $(TAR_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/tar
 #
 $(TAR_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tar" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

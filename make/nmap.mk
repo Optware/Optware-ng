@@ -102,7 +102,7 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nma
 	$(NMAP_UNZIP) $(DL_DIR)/$(NMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NMAP_PATCHES)" ; \
 		then cat $(NMAP_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(NMAP_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(NMAP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NMAP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NMAP_DIR) $(@D) ; \
@@ -173,7 +173,7 @@ nmap-stage: $(NMAP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nmap
 #
 $(NMAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nmap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

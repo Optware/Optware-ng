@@ -41,7 +41,7 @@ $(PERL-DBD-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) $(PE
 	rm -rf $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) $(PERL-DBD-MYSQL_BUILD_DIR)
 	$(PERL-DBD-MYSQL_UNZIP) $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL-DBD-MYSQL_PATCHES)"; then \
-		cat $(PERL-DBD-MYSQL_PATCHES) | patch -bd $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) -p0; \
+		cat $(PERL-DBD-MYSQL_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) $(PERL-DBD-MYSQL_BUILD_DIR)
 #	no 'error' field in MYSQL_BIND in mysql-4.1
@@ -89,7 +89,7 @@ $(PERL-DBD-MYSQL_BUILD_DIR)/.staged: $(PERL-DBD-MYSQL_BUILD_DIR)/.built
 perl-dbd-mysql-stage: $(PERL-DBD-MYSQL_BUILD_DIR)/.staged
 
 $(PERL-DBD-MYSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-DBD-MYSQL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-DBD-MYSQL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-dbd-mysql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

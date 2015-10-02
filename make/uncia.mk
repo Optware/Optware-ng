@@ -110,7 +110,7 @@ $(UNCIA_BUILD_DIR)/.configured: $(DL_DIR)/$(UNCIA_SOURCE) $(UNCIA_PATCHES) make/
 	$(UNCIA_UNZIP) $(DL_DIR)/$(UNCIA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNCIA_PATCHES)" ; \
 		then cat $(UNCIA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UNCIA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UNCIA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UNCIA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UNCIA_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ uncia-stage: $(UNCIA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/uncia
 #
 $(UNCIA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: uncia" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

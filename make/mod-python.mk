@@ -109,7 +109,7 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
 	$(MAKE) python27-stage apache-stage
 	rm -rf $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(@D)
 	$(MOD_PYTHON_UNZIP) $(DL_DIR)/$(MOD_PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MOD_PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(MOD_PYTHON_DIR) -p1
+	cat $(MOD_PYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MOD_PYTHON_DIR) -p1
 	mv $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(@D)
 	sed -i -e "s:@APACHE_VERSION@:`sed -n -e 's/^APACHE_VERSION *=//p' make/apache.mk`:" $(@D)/configure.in
 	sed -i -e 's:@CC_AND_LDSHARED@:CC=$(TARGET_CC) LDSHARED="$(TARGET_CC) -shared":' $(@D)/dist/Makefile.in
@@ -172,7 +172,7 @@ mod-python-stage: $(MOD_PYTHON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mod-python
 #
 $(MOD_PYTHON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mod-python" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,12 +200,12 @@ $(MOD_PYTHON_IPK_DIR)/CONTROL/control:
 #
 $(MOD_PYTHON_IPK): $(MOD_PYTHON_BUILD_DIR)/.built
 	rm -rf $(MOD_PYTHON_IPK_DIR) $(BUILD_DIR)/mod-python_*_$(TARGET_ARCH).ipk
-	install -d $(MOD_PYTHON_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(MOD_PYTHON_IPK_DIR)/opt/bin
 	$(MAKE) -C $(MOD_PYTHON_BUILD_DIR) DESTDIR=$(MOD_PYTHON_IPK_DIR) install
 	$(STRIP_COMMAND) $(MOD_PYTHON_IPK_DIR)/opt/libexec/mod_python.so
 	$(STRIP_COMMAND) $(MOD_PYTHON_IPK_DIR)/opt/lib/python2.7/site-packages/mod_python/_psp.so
-	install -d $(MOD_PYTHON_IPK_DIR)/opt/etc/apache2/conf.d/
-	install -m 644 $(MOD_PYTHON_SOURCE_DIR)/mod_python.conf $(MOD_PYTHON_IPK_DIR)/opt/etc/apache2/conf.d/mod_python.conf
+	$(INSTALL) -d $(MOD_PYTHON_IPK_DIR)/opt/etc/apache2/conf.d/
+	$(INSTALL) -m 644 $(MOD_PYTHON_SOURCE_DIR)/mod_python.conf $(MOD_PYTHON_IPK_DIR)/opt/etc/apache2/conf.d/mod_python.conf
 	$(MAKE) $(MOD_PYTHON_IPK_DIR)/CONTROL/control
 	echo $(MOD_PYTHON_CONFFILES) | sed -e 's/ /\n/g' > $(MOD_PYTHON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOD_PYTHON_IPK_DIR)

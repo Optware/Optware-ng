@@ -126,7 +126,7 @@ $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES) make/rub
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RUBY_PATCHES)" ; \
 		then cat $(RUBY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RUBY_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(RUBY_DIR) $(@D)
 # $(RUBY_SOURCE_DIR)/lib-mkmf.rb.patch:
@@ -178,7 +178,7 @@ ruby: $(RUBY_BUILD_DIR)/.built
 $(RUBY_HOST_BUILD_DIR)/.staged: host/.configured make/ruby.mk
 	rm -rf $(HOST_BUILD_DIR)/$(RUBY_DIR) $(@D)
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-#	cat $(RUBY_PATCHES) | patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1
+#	cat $(RUBY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(RUBY_DIR) -p1
 	mv $(HOST_BUILD_DIR)/$(RUBY_DIR) $(@D)
 	(cd $(@D); \
 		./configure \
@@ -217,7 +217,7 @@ ruby-stage: $(RUBY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ruby
 #
 $(RUBY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ruby" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -250,7 +250,7 @@ $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	    `find $(RUBY_IPK_DIR)/opt/lib/ruby/$(RUBY_VERSION)/ -name '*.so'`; \
 	do $(STRIP_COMMAND) $$so; \
 	done
-	install -d $(RUBY_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(RUBY_IPK_DIR)/opt/etc/
 	$(MAKE) $(RUBY_IPK_DIR)/CONTROL/control
 	if [ -f $(RUBY_IPK_DIR)/opt/bin/gem ] ; then \
 		mv -f $(RUBY_IPK_DIR)/opt/bin/gem $(RUBY_IPK_DIR)/opt/bin/ruby-gem; \

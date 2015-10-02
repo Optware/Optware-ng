@@ -15,7 +15,7 @@
 -   "/lib/terminfo",
 -   "/usr/local/share/terminfo",
 -   "/usr/share/terminfo"
-+   "/opt/lib/terminfo",
++   "%OPTWARE_TARGET_PREFIX%/lib/terminfo",
  };
  
  char *SLtt_tigetent (char *term)

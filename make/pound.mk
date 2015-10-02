@@ -110,7 +110,7 @@ $(POUND_BUILD_DIR)/.configured: $(DL_DIR)/$(POUND_SOURCE) $(POUND_PATCHES) make/
 	$(POUND_UNZIP) $(DL_DIR)/$(POUND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(POUND_PATCHES)" ; \
 		then cat $(POUND_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(POUND_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(POUND_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(POUND_DIR)" != "$(POUND_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(POUND_DIR) $(POUND_BUILD_DIR) ; \
@@ -167,7 +167,7 @@ pound: $(POUND_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/pound
 #
 $(POUND_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pound" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,17 +195,17 @@ $(POUND_IPK_DIR)/CONTROL/control:
 #
 $(POUND_IPK): $(POUND_BUILD_DIR)/.built
 	rm -rf $(POUND_IPK_DIR) $(BUILD_DIR)/pound_*_$(TARGET_ARCH).ipk
-	install -d $(POUND_IPK_DIR)/opt/var/run $(POUND_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(POUND_IPK_DIR)/opt/var/run $(POUND_IPK_DIR)/opt/etc/init.d
 	$(MAKE) -C $(POUND_BUILD_DIR) DESTDIR=$(POUND_IPK_DIR) install
 	$(STRIP_COMMAND) $(POUND_IPK_DIR)/opt/sbin/pound*
 	chmod 555 $(POUND_IPK_DIR)/opt/sbin/pound
-#	install -d $(POUND_IPK_DIR)/opt/etc/
-	install -m 644 $(POUND_SOURCE_DIR)/pound.cfg $(POUND_IPK_DIR)/opt/etc/pound.cfg
-#	install -d $(POUND_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(POUND_SOURCE_DIR)/rc.pound $(POUND_IPK_DIR)/opt/etc/init.d/pound
+#	$(INSTALL) -d $(POUND_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(POUND_SOURCE_DIR)/pound.cfg $(POUND_IPK_DIR)/opt/etc/pound.cfg
+#	$(INSTALL) -d $(POUND_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/rc.pound $(POUND_IPK_DIR)/opt/etc/init.d/pound
 	$(MAKE) $(POUND_IPK_DIR)/CONTROL/control
-#	install -m 755 $(POUND_SOURCE_DIR)/postinst $(POUND_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(POUND_SOURCE_DIR)/prerm $(POUND_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/postinst $(POUND_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/prerm $(POUND_IPK_DIR)/CONTROL/prerm
 	echo $(POUND_CONFFILES) | sed -e 's/ /\n/g' > $(POUND_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POUND_IPK_DIR)
 

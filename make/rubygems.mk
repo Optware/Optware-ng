@@ -119,7 +119,7 @@ $(RUBYGEMS_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBYGEMS_SOURCE) $(RUBYGEMS_PATCH
 	$(RUBYGEMS_UNZIP) $(DL_DIR)/$(RUBYGEMS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RUBYGEMS_PATCHES)" ; \
 		then cat $(RUBYGEMS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RUBYGEMS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RUBYGEMS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RUBYGEMS_DIR)" != "$(RUBYGEMS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RUBYGEMS_DIR) $(RUBYGEMS_BUILD_DIR) ; \
@@ -155,7 +155,7 @@ rubygems-stage: $(RUBYGEMS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rubygems
 #
 $(RUBYGEMS_IPK_DIR)/CONTROL/control:
-	@install -d $(RUBYGEMS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(RUBYGEMS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: rubygems" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,7 +192,7 @@ $(RUBYGEMS_IPK): $(RUBYGEMS_BUILD_DIR)/.built
 	sed -i -e '0,/^#!/s|^#!.*|#!/opt/bin/ruby|' $(RUBYGEMS_IPK_DIR)/opt/bin/gem
 	mv -f $(RUBYGEMS_IPK_DIR)/opt/bin/gem $(RUBYGEMS_IPK_DIR)/opt/bin/rubygems-gem
 ifeq (wl500g, $(OPTWARE_TARGET))
-	install -d $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems
+	$(INSTALL) -d $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems
 	cp -R $(RUBYGEMS_BUILD_DIR)/doc/* $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems
 endif
 	$(MAKE) $(RUBYGEMS_IPK_DIR)/CONTROL/control

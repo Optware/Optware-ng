@@ -97,7 +97,7 @@ $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCH
 	rm -rf $(BUILD_DIR)/$(USBUTILS_DIR) $(@D)
 	$(USBUTILS_UNZIP) $(DL_DIR)/$(USBUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(USBUTILS_PATCHES)"; then \
-		cat $(USBUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(USBUTILS_DIR) -p1; \
+		cat $(USBUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(USBUTILS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(USBUTILS_DIR) $(@D)
 #	sed -i 's|DEST=|&/opt/share/misc/|' $(@D)/update-usbids.sh
@@ -136,8 +136,8 @@ usbutils: $(USBUTILS_BUILD_DIR)/.built
 $(USBUTILS_BUILD_DIR)/.staged: $(USBUTILS_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	install -d $(STAGING_LIB_DIR)/pkgconfig
-	install -m 644 $(@D)/usbutils.pc $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -m 644 $(@D)/usbutils.pc $(STAGING_LIB_DIR)/pkgconfig
 	touch $@
 
 usbutils-stage: $(USBUTILS_BUILD_DIR)/.staged
@@ -146,7 +146,7 @@ usbutils-stage: $(USBUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/usbutils
 #
 $(USBUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: usbutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,18 +174,18 @@ $(USBUTILS_IPK_DIR)/CONTROL/control:
 $(USBUTILS_IPK): $(USBUTILS_BUILD_DIR)/.built
 	rm -rf $(USBUTILS_IPK_DIR) $(BUILD_DIR)/usbutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(USBUTILS_BUILD_DIR) DESTDIR=$(USBUTILS_IPK_DIR) install-strip
-	install -m 755 $(USBUTILS_BUILD_DIR)/update-usbids.sh $(USBUTILS_IPK_DIR)/opt/sbin/
-	install -d $(USBUTILS_IPK_DIR)/opt/lib/pkgconfig
-	install -m 644 $(USBUTILS_BUILD_DIR)/usbutils.pc $(USBUTILS_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) -m 755 $(USBUTILS_BUILD_DIR)/update-usbids.sh $(USBUTILS_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(USBUTILS_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) -m 644 $(USBUTILS_BUILD_DIR)/usbutils.pc $(USBUTILS_IPK_DIR)/opt/lib/pkgconfig
 	# don't want these as they conflict with real libusb
 	rm -rf $(USBUTILS_IPK_DIR)/opt/lib $(USBUTILS_IPK_DIR)/opt/include
-#	install -d $(USBUTILS_IPK_DIR)/opt/etc/
-#	install -m 644 $(USBUTILS_SOURCE_DIR)/usbutils.conf $(USBUTILS_IPK_DIR)/opt/etc/usbutils.conf
-#	install -d $(USBUTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(USBUTILS_SOURCE_DIR)/rc.usbutils $(USBUTILS_IPK_DIR)/opt/etc/init.d/SXXusbutils
+#	$(INSTALL) -d $(USBUTILS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(USBUTILS_SOURCE_DIR)/usbutils.conf $(USBUTILS_IPK_DIR)/opt/etc/usbutils.conf
+#	$(INSTALL) -d $(USBUTILS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(USBUTILS_SOURCE_DIR)/rc.usbutils $(USBUTILS_IPK_DIR)/opt/etc/init.d/SXXusbutils
 	$(MAKE) $(USBUTILS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(USBUTILS_SOURCE_DIR)/postinst $(USBUTILS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(USBUTILS_SOURCE_DIR)/prerm $(USBUTILS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(USBUTILS_SOURCE_DIR)/postinst $(USBUTILS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(USBUTILS_SOURCE_DIR)/prerm $(USBUTILS_IPK_DIR)/CONTROL/prerm
 #	echo $(USBUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(USBUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(USBUTILS_IPK_DIR)
 

@@ -179,18 +179,18 @@
   
   ## Updating Detection
   
-! if [ -f $DESTDIR/opt/bin/MySecureShell ] ; then
+! if [ -f $DESTDIR%OPTWARE_TARGET_PREFIX%/bin/MySecureShell ] ; then
   	sftpinst=$sftpinst`MyGetLocale 'upconffile'`"\t\t\t"`MyGetLocale 'ok'`"\t\n"
   else
   	sftpinst=$sftpinst`MyGetLocale 'mkconffile'`"\t\t\t\t"`MyGetLocale 'ok'`"\t\n"
   fi
-! cp -f ./MySecureShell $DESTDIR/opt/bin
-! chmod 755 $DESTDIR/opt/bin/MySecureShell
+! cp -f ./MySecureShell $DESTDIR%OPTWARE_TARGET_PREFIX%/bin
+! chmod 755 $DESTDIR%OPTWARE_TARGET_PREFIX%/bin/MySecureShell
   
   
   ## sftp-server_MSS Installation
   
-! sftpsrv="$DESTDIR/opt/libexec"
+! sftpsrv="$DESTDIR%OPTWARE_TARGET_PREFIX%/libexec"
 ! sftpfunc
 ! sftpservernum="1"
   

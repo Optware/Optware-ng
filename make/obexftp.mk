@@ -122,7 +122,7 @@ endif
 	$(OBEXFTP_UNZIP) $(DL_DIR)/$(OBEXFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OBEXFTP_PATCHES)" ; \
 		then cat $(OBEXFTP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OBEXFTP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(OBEXFTP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OBEXFTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(OBEXFTP_DIR) $(@D) ; \
@@ -179,7 +179,7 @@ obexftp-stage: $(OBEXFTP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/obexftp
 #
 $(OBEXFTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: obexftp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -210,15 +210,15 @@ $(OBEXFTP_IPK): $(OBEXFTP_BUILD_DIR)/.built
 	$(MAKE) -C $(OBEXFTP_BUILD_DIR) DESTDIR=$(OBEXFTP_IPK_DIR) install-strip
 	rm -f $(OBEXFTP_IPK_DIR)/opt/lib/*.la
 	$(STRIP_COMMAND) $(OBEXFTP_IPK_DIR)/opt/lib/lib*.so.[0-9]*.[0-9]*.[0-9]*
-#	install -d $(OBEXFTP_IPK_DIR)/opt/etc/
-#	install -m 644 $(OBEXFTP_SOURCE_DIR)/obexftp.conf $(OBEXFTP_IPK_DIR)/opt/etc/obexftp.conf
-#	install -d $(OBEXFTP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(OBEXFTP_SOURCE_DIR)/rc.obexftp $(OBEXFTP_IPK_DIR)/opt/etc/init.d/SXXobexftp
+#	$(INSTALL) -d $(OBEXFTP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(OBEXFTP_SOURCE_DIR)/obexftp.conf $(OBEXFTP_IPK_DIR)/opt/etc/obexftp.conf
+#	$(INSTALL) -d $(OBEXFTP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(OBEXFTP_SOURCE_DIR)/rc.obexftp $(OBEXFTP_IPK_DIR)/opt/etc/init.d/SXXobexftp
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OBEXFTP_IPK_DIR)/opt/etc/init.d/SXXobexftp
 	$(MAKE) $(OBEXFTP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(OBEXFTP_SOURCE_DIR)/postinst $(OBEXFTP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(OBEXFTP_SOURCE_DIR)/postinst $(OBEXFTP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OBEXFTP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(OBEXFTP_SOURCE_DIR)/prerm $(OBEXFTP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(OBEXFTP_SOURCE_DIR)/prerm $(OBEXFTP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OBEXFTP_IPK_DIR)/CONTROL/prerm
 	echo $(OBEXFTP_CONFFILES) | sed -e 's/ /\n/g' > $(OBEXFTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OBEXFTP_IPK_DIR)

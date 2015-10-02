@@ -112,7 +112,7 @@ $(PY-YENC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-YENC_SOURCE) $(PY-YENC_PATCHES)
 	mkdir -p $(PY-YENC_BUILD_DIR)
 	# 2.4
 	$(PY-YENC_UNZIP) $(DL_DIR)/$(PY-YENC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-YENC_PATCHES) | patch -d $(BUILD_DIR)/$(PY-YENC_DIR) -p1
+#	cat $(PY-YENC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-YENC_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-YENC_DIR) $(PY-YENC_BUILD_DIR)/2.4
 	(cd $(PY-YENC_BUILD_DIR)/2.4; \
 	    ( \
@@ -128,7 +128,7 @@ $(PY-YENC_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-YENC_SOURCE) $(PY-YENC_PATCHES)
 	)
 	# 2.5
 	$(PY-YENC_UNZIP) $(DL_DIR)/$(PY-YENC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-YENC_PATCHES) | patch -d $(BUILD_DIR)/$(PY-YENC_DIR) -p1
+#	cat $(PY-YENC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-YENC_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-YENC_DIR) $(PY-YENC_BUILD_DIR)/2.5
 	(cd $(PY-YENC_BUILD_DIR)/2.5; \
 	    ( \
@@ -179,7 +179,7 @@ py-yenc-stage: $(PY-YENC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-yenc
 #
 $(PY24-YENC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-yenc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,7 +193,7 @@ $(PY24-YENC_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-YENC_CONFLICTS)" >>$@
 
 $(PY25-YENC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-yenc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

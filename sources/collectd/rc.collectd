@@ -3,9 +3,9 @@
 # $Header$
 #
 
-if [ -n "`/opt/bin/pidof collectdmon`" ] ; then
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof collectdmon`" ] ; then
     killall collectdmon 2>/dev/null
 fi
 
 sleep 2
-/opt/sbin/collectdmon -c /opt/sbin/collectd -- -C /opt/etc/collectd.conf
+%OPTWARE_TARGET_PREFIX%/sbin/collectdmon -c %OPTWARE_TARGET_PREFIX%/sbin/collectd -- -C %OPTWARE_TARGET_PREFIX%/etc/collectd.conf

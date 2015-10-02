@@ -109,7 +109,7 @@ $(MRTG_BUILD_DIR)/.configured: $(DL_DIR)/$(MRTG_SOURCE) $(MRTG_PATCHES)
 	$(MRTG_UNZIP) $(DL_DIR)/$(MRTG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MRTG_PATCHES)" ; \
 		then cat $(MRTG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MRTG_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MRTG_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MRTG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MRTG_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ mrtg-stage: $(MRTG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mrtg
 #
 $(MRTG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mrtg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,13 +190,13 @@ $(MRTG_IPK): $(MRTG_BUILD_DIR)/.built
 	rm -rf $(MRTG_IPK_DIR) $(BUILD_DIR)/mrtg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MRTG_BUILD_DIR) TARGET_PERL="/opt/bin/perl" DESTDIR=$(MRTG_IPK_DIR) install
 	$(STRIP_COMMAND) $(MRTG_IPK_DIR)/opt/bin/rateup
-#	install -d $(MRTG_IPK_DIR)/opt/etc/
-#	install -m 644 $(MRTG_SOURCE_DIR)/mrtg.conf $(MRTG_IPK_DIR)/opt/etc/mrtg.conf
-#	install -d $(MRTG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MRTG_SOURCE_DIR)/rc.mrtg $(MRTG_IPK_DIR)/opt/etc/init.d/SXXmrtg
+#	$(INSTALL) -d $(MRTG_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MRTG_SOURCE_DIR)/mrtg.conf $(MRTG_IPK_DIR)/opt/etc/mrtg.conf
+#	$(INSTALL) -d $(MRTG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MRTG_SOURCE_DIR)/rc.mrtg $(MRTG_IPK_DIR)/opt/etc/init.d/SXXmrtg
 	$(MAKE) $(MRTG_IPK_DIR)/CONTROL/control
-	install -m 755 $(MRTG_SOURCE_DIR)/postinst $(MRTG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MRTG_SOURCE_DIR)/prerm $(MRTG_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(MRTG_SOURCE_DIR)/postinst $(MRTG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MRTG_SOURCE_DIR)/prerm $(MRTG_IPK_DIR)/CONTROL/prerm
 	echo $(MRTG_CONFFILES) | sed -e 's/ /\n/g' > $(MRTG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MRTG_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(MRTG_IPK_DIR)

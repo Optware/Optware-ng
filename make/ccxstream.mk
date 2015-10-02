@@ -79,7 +79,7 @@ ccxstream-source: $(DL_DIR)/$(CCXSTREAM_SOURCE) $(CCXSTREAM_PATCHES)
 $(CCXSTREAM_BUILD_DIR)/.configured: $(DL_DIR)/$(CCXSTREAM_SOURCE) $(CCXSTREAM_PATCHES)
 	rm -rf $(BUILD_DIR)/$(CCXSTREAM_DIR) $(CCXSTREAM_BUILD_DIR)
 	$(CCXSTREAM_UNZIP) $(DL_DIR)/$(CCXSTREAM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(CCXSTREAM_PATCHES) | patch -d $(BUILD_DIR)/$(CCXSTREAM_DIR) -p1
+	cat $(CCXSTREAM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CCXSTREAM_DIR) -p1
 	mv $(BUILD_DIR)/$(CCXSTREAM_DIR) $(CCXSTREAM_BUILD_DIR)
 	touch $(CCXSTREAM_BUILD_DIR)/.configured
 
@@ -107,7 +107,7 @@ ccxstream: $(CCXSTREAM_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ccxstream
 #
 $(CCXSTREAM_IPK_DIR)/CONTROL/control:
-	@install -d $(CCXSTREAM_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(CCXSTREAM_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ccxstream" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -135,15 +135,15 @@ $(CCXSTREAM_IPK_DIR)/CONTROL/control:
 #
 $(CCXSTREAM_IPK): $(CCXSTREAM_BUILD_DIR)/.built
 	rm -rf $(CCXSTREAM_IPK_DIR) $(CCXSTREAM_IPK)
-	install -d $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
-	install -m 644 $(CCXSTREAM_BUILD_DIR)/README $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
-	install -d $(CCXSTREAM_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
+	$(INSTALL) -m 644 $(CCXSTREAM_BUILD_DIR)/README $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
+	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(CCXSTREAM_BUILD_DIR)/ccxstream -o $(CCXSTREAM_IPK_DIR)/opt/sbin/ccxstream
-	install -d $(CCXSTREAM_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(CCXSTREAM_SOURCE_DIR)/rc.ccxstream $(CCXSTREAM_IPK_DIR)/opt/etc/init.d/S75ccxstream
+	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(CCXSTREAM_SOURCE_DIR)/rc.ccxstream $(CCXSTREAM_IPK_DIR)/opt/etc/init.d/S75ccxstream
 	$(MAKE) $(CCXSTREAM_IPK_DIR)/CONTROL/control
-	install -m 644 $(CCXSTREAM_SOURCE_DIR)/postinst $(CCXSTREAM_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(CCXSTREAM_SOURCE_DIR)/prerm $(CCXSTREAM_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(CCXSTREAM_SOURCE_DIR)/postinst $(CCXSTREAM_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(CCXSTREAM_SOURCE_DIR)/prerm $(CCXSTREAM_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CCXSTREAM_IPK_DIR)
 
 #

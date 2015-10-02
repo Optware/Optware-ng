@@ -5,62 +5,62 @@
 -/bin/echo "[uname]" > /etc/asterisk/gui_sysinfo.conf
 -UNAME="`/bin/uname -srmpio`"
 -/bin/echo "output =  $UNAME "  >> /etc/asterisk/gui_sysinfo.conf
-+/opt/bin/echo "[uname]" > /opt/etc/asterisk/gui_sysinfo.conf
-+UNAME="`/opt/bin/uname -srmpio`"
-+/opt/bin/echo "output =  $UNAME "  >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "[uname]" > %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
++UNAME="`%OPTWARE_TARGET_PREFIX%/bin/uname -srmpio`"
++%OPTWARE_TARGET_PREFIX%/bin/echo "output =  $UNAME "  >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  
  
 -/bin/echo "[uptime]" >> /etc/asterisk/gui_sysinfo.conf
 -UPTIME="`/usr/bin/uptime`"
 -/bin/echo "output = $UPTIME" >> /etc/asterisk/gui_sysinfo.conf
-+/opt/bin/echo "[uptime]" >> /opt/etc/asterisk/gui_sysinfo.conf
-+UPTIME="`/opt/bin/uptime`"
-+/opt/bin/echo "output = $UPTIME" >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "[uptime]" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
++UPTIME="`%OPTWARE_TARGET_PREFIX%/bin/uptime`"
++%OPTWARE_TARGET_PREFIX%/bin/echo "output = $UPTIME" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  
 -/bin/echo "[asterisk]" >> /etc/asterisk/gui_sysinfo.conf
 -ASTERISK="`/usr/sbin/asterisk -V`"
 -/bin/echo "output = $ASTERISK" >> /etc/asterisk/gui_sysinfo.conf
-+/opt/bin/echo "[asterisk]" >> /opt/etc/asterisk/gui_sysinfo.conf
-+ASTERISK="`/opt/sbin/asterisk -V`"
-+/opt/bin/echo "output = $ASTERISK" >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "[asterisk]" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
++ASTERISK="`%OPTWARE_TARGET_PREFIX%/sbin/asterisk -V`"
++%OPTWARE_TARGET_PREFIX%/bin/echo "output = $ASTERISK" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  
  
 -/bin/echo "[today]" >> /etc/asterisk/gui_sysinfo.conf
 -TODAY="`/bin/date`"
 -/bin/echo "output = $TODAY" >> /etc/asterisk/gui_sysinfo.conf
-+/opt/bin/echo "[today]" >> /opt/etc/asterisk/gui_sysinfo.conf
-+TODAY="`/opt/bin/date`"
-+/opt/bin/echo "output = $TODAY" >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "[today]" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
++TODAY="`%OPTWARE_TARGET_PREFIX%/bin/date`"
++%OPTWARE_TARGET_PREFIX%/bin/echo "output = $TODAY" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  
  
 -/bin/echo "[hostname]" >> /etc/asterisk/gui_sysinfo.conf
-+/opt/bin/echo "[hostname]" >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "[hostname]" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  HOSTNAME="`/bin/hostname -f`"
 -/bin/echo "output = $HOSTNAME" >> /etc/asterisk/gui_sysinfo.conf
-+/opt/bin/echo "output = $HOSTNAME" >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "output = $HOSTNAME" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  
 -/bin/echo "[ifconfig]" >> /etc/asterisk/gui_sysinfo.conf
-+/opt/bin/echo "[ifconfig]" >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "[ifconfig]" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  IFCONFIG=`/sbin/ifconfig | sed -e "s/^/output = /g"`
 -/bin/echo "$IFCONFIG" >> /etc/asterisk/gui_sysinfo.conf 
-+/opt/bin/echo "$IFCONFIG" >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "$IFCONFIG" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  
  
 -/bin/echo "[du]" >> /etc/asterisk/gui_sysinfo.conf
 -DISKUSAGE=`/bin/df -h | sed -e "s/^/output = /g"`
 -/bin/echo "$DISKUSAGE" >> /etc/asterisk/gui_sysinfo.conf 
-+/opt/bin/echo "[du]" >> /opt/etc/asterisk/gui_sysinfo.conf
-+DISKUSAGE=`/opt/bin/df -h | sed -e "s/^/output = /g"`
-+/opt/bin/echo "$DISKUSAGE" >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "[du]" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
++DISKUSAGE=`%OPTWARE_TARGET_PREFIX%/bin/df -h | sed -e "s/^/output = /g"`
++%OPTWARE_TARGET_PREFIX%/bin/echo "$DISKUSAGE" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  
 -/bin/echo "[free]" >> /etc/asterisk/gui_sysinfo.conf
 -MEMORYUSAGE=`/bin/free | sed -e "s/^/output = /g"`
 -/bin/echo "$MEMORYUSAGE" >> /etc/asterisk/gui_sysinfo.conf 
-+/opt/bin/echo "[free]" >> /opt/etc/asterisk/gui_sysinfo.conf
-+MEMORYUSAGE=`/opt/bin/free | sed -e "s/^/output = /g"`
-+/opt/bin/echo "$MEMORYUSAGE" >> /opt/etc/asterisk/gui_sysinfo.conf
++%OPTWARE_TARGET_PREFIX%/bin/echo "[free]" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
++MEMORYUSAGE=`%OPTWARE_TARGET_PREFIX%/bin/free | sed -e "s/^/output = /g"`
++%OPTWARE_TARGET_PREFIX%/bin/echo "$MEMORYUSAGE" >> %OPTWARE_TARGET_PREFIX%/etc/asterisk/gui_sysinfo.conf
  
  THISMONTH=`/bin/date +%b`
  THISDAY=`/bin/date +%d`
 -/bin/grep /var/log/asterisk/messages -e "$THISMONTH $THISDAY" > /var/lib/asterisk/static-http/config/bkps/today_log.html
-+/bin/grep /opt/var/log/asterisk/messages -e "$THISMONTH $THISDAY" > /opt/var/lib/asterisk/static-http/config/bkps/today_log.html
++/bin/grep %OPTWARE_TARGET_PREFIX%/var/log/asterisk/messages -e "$THISMONTH $THISDAY" > %OPTWARE_TARGET_PREFIX%/var/lib/asterisk/static-http/config/bkps/today_log.html

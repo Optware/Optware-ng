@@ -128,7 +128,7 @@ endif
 	$(GSASL_UNZIP) $(DL_DIR)/$(GSASL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GSASL_PATCHES)" ; \
 		then cat $(GSASL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GSASL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GSASL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GSASL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GSASL_DIR) $(@D) ; \
@@ -185,7 +185,7 @@ gsasl-stage: $(GSASL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gsasl
 #
 $(LIBGSASL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libgsasl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,7 +200,7 @@ $(LIBGSASL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(LIBGSASL_CONFLICTS)" >>$@
 
 $(GSASL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gsasl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -113,7 +113,7 @@ $(PY-QUIXOTE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-QUIXOTE_SOURCE) $(PY-QUIXOTE
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-QUIXOTE_DIR)
 	$(PY-QUIXOTE_UNZIP) $(DL_DIR)/$(PY-QUIXOTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-QUIXOTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-QUIXOTE_DIR) -p1
+#	cat $(PY-QUIXOTE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-QUIXOTE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-QUIXOTE_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -130,7 +130,7 @@ $(PY-QUIXOTE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-QUIXOTE_SOURCE) $(PY-QUIXOTE
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-QUIXOTE_DIR)
 	$(PY-QUIXOTE_UNZIP) $(DL_DIR)/$(PY-QUIXOTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-QUIXOTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-QUIXOTE_DIR) -p1
+#	cat $(PY-QUIXOTE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-QUIXOTE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-QUIXOTE_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -183,7 +183,7 @@ py-quixote: $(PY-QUIXOTE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-quixote
 #
 $(PY25-QUIXOTE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-quixote" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,7 +197,7 @@ $(PY25-QUIXOTE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-QUIXOTE_CONFLICTS)" >>$@
 
 $(PY26-QUIXOTE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-quixote" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

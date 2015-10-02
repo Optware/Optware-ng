@@ -97,7 +97,7 @@ $(MAN_PAGES_BUILD_DIR)/.configured: $(DL_DIR)/$(MAN_PAGES_SOURCE) $(MAN_PAGES_PA
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(MAN_PAGES_DIR) $(@D)
 	$(MAN_PAGES_UNZIP) $(DL_DIR)/$(MAN_PAGES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(MAN_PAGES_PATCHES) | patch -d $(BUILD_DIR)/$(MAN_PAGES_DIR) -p1
+#	cat $(MAN_PAGES_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MAN_PAGES_DIR) -p1
 	mv $(BUILD_DIR)/$(MAN_PAGES_DIR) $(@D)
 #	(cd $(MAN_PAGES_BUILD_DIR); \
 #		$(TARGET_CONFIGURE_OPTS) \
@@ -142,7 +142,7 @@ man-pages-stage: $(MAN_PAGES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/man-pages
 # 
 $(MAN_PAGES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: man-pages" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -170,13 +170,13 @@ $(MAN_PAGES_IPK_DIR)/CONTROL/control:
 $(MAN_PAGES_IPK): $(MAN_PAGES_BUILD_DIR)/.built
 	rm -rf $(MAN_PAGES_IPK_DIR) $(BUILD_DIR)/man-pages_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MAN_PAGES_BUILD_DIR) MANDIR=$(MAN_PAGES_IPK_DIR)/opt/man install
-#	install -d $(MAN_PAGES_IPK_DIR)/opt/etc/
-#	install -m 755 $(MAN_PAGES_SOURCE_DIR)/man-pages.conf $(MAN_PAGES_IPK_DIR)/opt/etc/man-pages.conf
-#	install -d $(MAN_PAGES_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MAN_PAGES_SOURCE_DIR)/rc.man-pages $(MAN_PAGES_IPK_DIR)/opt/etc/init.d/SXXman-pages
+#	$(INSTALL) -d $(MAN_PAGES_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 755 $(MAN_PAGES_SOURCE_DIR)/man-pages.conf $(MAN_PAGES_IPK_DIR)/opt/etc/man-pages.conf
+#	$(INSTALL) -d $(MAN_PAGES_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MAN_PAGES_SOURCE_DIR)/rc.man-pages $(MAN_PAGES_IPK_DIR)/opt/etc/init.d/SXXman-pages
 	$(MAKE) $(MAN_PAGES_IPK_DIR)/CONTROL/control
-#	install -m 644 $(MAN_PAGES_SOURCE_DIR)/postinst $(MAN_PAGES_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(MAN_PAGES_SOURCE_DIR)/prerm $(MAN_PAGES_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(MAN_PAGES_SOURCE_DIR)/postinst $(MAN_PAGES_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(MAN_PAGES_SOURCE_DIR)/prerm $(MAN_PAGES_IPK_DIR)/CONTROL/prerm
 #	echo $(MAN_PAGES_CONFFILES) | sed -e 's/ /\n/g' > $(MAN_PAGES_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MAN_PAGES_IPK_DIR)
 

@@ -62,7 +62,7 @@ XDPYINFO_IPK=$(BUILD_DIR)/xdpyinfo_$(XDPYINFO_VERSION)-$(XDPYINFO_IPK_VERSION)_$
 # Automatically create a ipkg control file
 #
 $(XDPYINFO_IPK_DIR)/CONTROL/control:
-	@install -d $(XDPYINFO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XDPYINFO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xdpyinfo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -107,7 +107,7 @@ $(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz
 	if test -n "$(XDPYINFO_PATCHES)" ; \
 		then cat $(XDPYINFO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XDPYINFO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XDPYINFO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XDPYINFO_DIR)" != "$(XDPYINFO_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR) ; \

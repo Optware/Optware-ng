@@ -23,7 +23,7 @@ $(SLUGTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(SLUGTOOL_SOURCE) $(SLUGTOOL_PATCH
 	@rm -rf $(SLUGTOOL_BUILD_DIR)
 	mkdir -p $(SLUGTOOL_BUILD_DIR)
 	$(SLUGTOOL_UNZIP) $(DL_DIR)/$(SLUGTOOL_SOURCE) | tar -C $(SLUGTOOL_BUILD_DIR) -xvf -
-	cat $(SLUGTOOL_PATCH) | patch -d $(SLUGTOOL_BUILD_DIR) -p1
+	cat $(SLUGTOOL_PATCH) | $(PATCH) -d $(SLUGTOOL_BUILD_DIR) -p1
 	touch $(SLUGTOOL_BUILD_DIR)/.configured
 
 slugtool-unpack: $(SLUGTOOL_BUILD_DIR)/.configured
@@ -32,8 +32,8 @@ $(SLUGTOOL_BUILD_DIR)/slugtool: $(SLUGTOOL_BUILD_DIR)/.configured
 	make -C $(SLUGTOOL_BUILD_DIR) slugtool
 
 $(STAGING_DIR)/bin/slugtool: $(SLUGTOOL_BUILD_DIR)/slugtool
-	install -d $(STAGING_DIR)/bin
-	install -m 755 $(SLUGTOOL_BUILD_DIR)/slugtool $(STAGING_DIR)/bin/slugtool
+	$(INSTALL) -d $(STAGING_DIR)/bin
+	$(INSTALL) -m 755 $(SLUGTOOL_BUILD_DIR)/slugtool $(STAGING_DIR)/bin/slugtool
 
 slugtool: $(STAGING_DIR)/bin/slugtool
 

@@ -55,7 +55,7 @@ UCLIBC-OPT_IPK=$(BUILD_DIR)/uclibc-opt_$(UCLIBC-OPT_VERSION)-$(UCLIBC-OPT_IPK_VE
 # necessary to create a seperate control file under sources/buildroot
 #
 $(UCLIBC-OPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: uclibc-opt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -96,7 +96,7 @@ UCLIBC-OPT_LIBS_PATTERN=$(patsubst %,$(UCLIBC-OPT_LIBS_SOURCE_DIR)/%*so*,$(UCLIB
 
 $(UCLIBC-OPT_BUILD_DIR)/.staged: make/uclibc-opt.mk
 	rm -rf $(@D)
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(STAGING_LIB_DIR)
 	touch $@
 
@@ -112,12 +112,12 @@ else
 $(UCLIBC-OPT_IPK): make/uclibc-opt.mk
 endif
 	rm -rf $(UCLIBC-OPT_IPK_DIR) $(BUILD_DIR)/uclibc-opt_*_$(TARGET_ARCH).ipk
-	install -d $(UCLIBC-OPT_IPK_DIR)
+	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(UCLIBC-OPT_IPK_DIR) install-strip
 #	tar -xv -C $(UCLIBC-OPT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
 #		--wildcards $(UCLIBC-OPT_LIBS_PATTERN) ./opt/sbin/ldconfig
-	install -d $(UCLIBC-OPT_IPK_DIR)/opt/etc
-	install -d $(UCLIBC-OPT_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)/opt/lib
 	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)/opt/lib
 	-$(STRIP_COMMAND) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
 	### package non-stripped libpthread and libthread_db
@@ -125,13 +125,13 @@ endif
 							$(UCLIBC-OPT_IPK_DIR)/opt/lib
 	$(MAKE) $(UCLIBC-OPT_IPK_DIR)/CONTROL/control
 ifdef UCLIBC-OPT_FROM_BUILDROOT
-	install -d $(UCLIBC-OPT_IPK_DIR)/opt/usr/lib
-	install -d $(UCLIBC-OPT_IPK_DIR)/opt/sbin
-	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/sbin/ldconfig \
+	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)/opt/usr/lib
+	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/sbin/ldconfig \
 		$(UCLIBC-OPT_IPK_DIR)/opt/sbin
-	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(UCLIBC-OPT_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(UCLIBC-OPT_IPK_DIR)/CONTROL/postinst
 endif
-#	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(UCLIBC-OPT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(UCLIBC-OPT_IPK_DIR)/CONTROL/prerm
 #	echo $(UCLIBC-OPT_CONFFILES) | sed -e 's/ /\n/g' > $(UCLIBC-OPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UCLIBC-OPT_IPK_DIR)
 

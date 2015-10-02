@@ -108,7 +108,7 @@ $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSIL
 	$(CLEARSILVER_UNZIP) $(DL_DIR)/$(CLEARSILVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLEARSILVER_PATCHES)" ; \
 		then cat $(CLEARSILVER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CLEARSILVER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CLEARSILVER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CLEARSILVER_DIR)" != "$(CLEARSILVER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CLEARSILVER_DIR) $(CLEARSILVER_BUILD_DIR) ; \
@@ -197,7 +197,7 @@ clearsilver-stage: $(CLEARSILVER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/clearsilver
 #
 $(CLEARSILVER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: clearsilver" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -230,13 +230,13 @@ $(CLEARSILVER_IPK): $(CLEARSILVER_BUILD_DIR)/.built
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR)/python2.5 DESTDIR=$(CLEARSILVER_IPK_DIR) install \
 		PYTHON_SITE=/opt/lib/python2.5/site-packages
 	$(STRIP_COMMAND) `find $(CLEARSILVER_IPK_DIR)/opt/lib -name '*.so'`
-#	install -d $(CLEARSILVER_IPK_DIR)/opt/etc/
-#	install -m 644 $(CLEARSILVER_SOURCE_DIR)/clearsilver.conf $(CLEARSILVER_IPK_DIR)/opt/etc/clearsilver.conf
-#	install -d $(CLEARSILVER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CLEARSILVER_SOURCE_DIR)/rc.clearsilver $(CLEARSILVER_IPK_DIR)/opt/etc/init.d/SXXclearsilver
+#	$(INSTALL) -d $(CLEARSILVER_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CLEARSILVER_SOURCE_DIR)/clearsilver.conf $(CLEARSILVER_IPK_DIR)/opt/etc/clearsilver.conf
+#	$(INSTALL) -d $(CLEARSILVER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CLEARSILVER_SOURCE_DIR)/rc.clearsilver $(CLEARSILVER_IPK_DIR)/opt/etc/init.d/SXXclearsilver
 	$(MAKE) $(CLEARSILVER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CLEARSILVER_SOURCE_DIR)/postinst $(CLEARSILVER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CLEARSILVER_SOURCE_DIR)/prerm $(CLEARSILVER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CLEARSILVER_SOURCE_DIR)/postinst $(CLEARSILVER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CLEARSILVER_SOURCE_DIR)/prerm $(CLEARSILVER_IPK_DIR)/CONTROL/prerm
 #	echo $(CLEARSILVER_CONFFILES) | sed -e 's/ /\n/g' > $(CLEARSILVER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLEARSILVER_IPK_DIR)
 

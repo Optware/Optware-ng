@@ -5,7 +5,7 @@
  
  $(BOOTLIB): hugsbase/Hugs/*.* $(MAKE_BOOT) $(INCLUDES) $(FP_INCLUDES)
 -	CPPFLAGS='$(CPPFLAGS)' $(MAKE_BOOT)
-+	CPPFLAGS='$(CPPFLAGS)' /opt/bin/bash $(MAKE_BOOT)
++	CPPFLAGS='$(CPPFLAGS)' %OPTWARE_TARGET_PREFIX%/bin/bash $(MAKE_BOOT)
  	echo timestamp for bootlib >$@
  
  $(INCLUDES): $(HEADERS)

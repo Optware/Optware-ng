@@ -83,7 +83,7 @@ $(LIBGSSAPI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGSSAPI_SOURCE) $(LIBGSSAPI_PA
 	rm -rf $(BUILD_DIR)/$(LIBGSSAPI_DIR) $(LIBGSSAPI_BUILD_DIR)
 	$(LIBGSSAPI_UNZIP) $(DL_DIR)/$(LIBGSSAPI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGSSAPI_PATCHES)"; then \
-		cat $(LIBGSSAPI_PATCHES) | patch -d $(BUILD_DIR)/$(LIBGSSAPI_DIR) -p1; \
+		cat $(LIBGSSAPI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBGSSAPI_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LIBGSSAPI_DIR) $(LIBGSSAPI_BUILD_DIR)
 	(cd $(LIBGSSAPI_BUILD_DIR); \
@@ -132,7 +132,7 @@ libgssapi-stage: $(LIBGSSAPI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libgssapi
 #
 $(LIBGSSAPI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libgssapi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -158,7 +158,7 @@ $(LIBGSSAPI_IPK_DIR)/CONTROL/control:
 #
 $(LIBGSSAPI_IPK): $(LIBGSSAPI_BUILD_DIR)/.built
 	rm -rf $(LIBGSSAPI_IPK_DIR) $(BUILD_DIR)/libgssapi_*_$(TARGET_ARCH).ipk
-	install -d $(LIBGSSAPI_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(LIBGSSAPI_IPK_DIR)/opt/bin
 	$(MAKE) -C $(LIBGSSAPI_BUILD_DIR) DESTDIR=$(LIBGSSAPI_IPK_DIR) install-strip
 	$(MAKE) $(LIBGSSAPI_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGSSAPI_IPK_DIR)

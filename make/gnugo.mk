@@ -98,7 +98,7 @@ $(GNUGO_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GNUGO_SOURCE) make/
 	$(GNUGO_UNZIP) $(DL_DIR)/$(GNUGO_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(GNUGO_PATCHES)" ; \
 		then cat $(GNUGO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GNUGO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GNUGO_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(GNUGO_DIR)" != "$(GNUGO_HOST_BUILD_DIR)" ; \
 		then mv $(HOST_BUILD_DIR)/$(GNUGO_DIR) $(GNUGO_HOST_BUILD_DIR) ; \
@@ -140,7 +140,7 @@ endif
 	$(GNUGO_UNZIP) $(DL_DIR)/$(GNUGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNUGO_PATCHES)" ; \
 		then cat $(GNUGO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GNUGO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GNUGO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GNUGO_DIR)" != "$(GNUGO_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(GNUGO_DIR) $(GNUGO_BUILD_DIR) ; \
@@ -193,7 +193,7 @@ gnugo-stage: $(GNUGO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnugo
 #
 $(GNUGO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gnugo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,15 +224,15 @@ $(GNUGO_IPK): $(GNUGO_BUILD_DIR)/.built
 	$(MAKE) -C $(GNUGO_BUILD_DIR) DESTDIR=$(GNUGO_IPK_DIR) install
 	$(STRIP_COMMAND) $(GNUGO_IPK_DIR)/opt/bin/gnugo
 	rm -f $(GNUGO_IPK_DIR)/opt/info/dir $(GNUGO_IPK_DIR)/opt/info/dir.old
-#	install -d $(GNUGO_IPK_DIR)/opt/etc/
-#	install -m 644 $(GNUGO_SOURCE_DIR)/gnugo.conf $(GNUGO_IPK_DIR)/opt/etc/gnugo.conf
-#	install -d $(GNUGO_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GNUGO_SOURCE_DIR)/rc.gnugo $(GNUGO_IPK_DIR)/opt/etc/init.d/SXXgnugo
+#	$(INSTALL) -d $(GNUGO_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GNUGO_SOURCE_DIR)/gnugo.conf $(GNUGO_IPK_DIR)/opt/etc/gnugo.conf
+#	$(INSTALL) -d $(GNUGO_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GNUGO_SOURCE_DIR)/rc.gnugo $(GNUGO_IPK_DIR)/opt/etc/init.d/SXXgnugo
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNUGO_IPK_DIR)/opt/etc/init.d/SXXgnugo
 	$(MAKE) $(GNUGO_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GNUGO_SOURCE_DIR)/postinst $(GNUGO_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GNUGO_SOURCE_DIR)/postinst $(GNUGO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNUGO_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GNUGO_SOURCE_DIR)/prerm $(GNUGO_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GNUGO_SOURCE_DIR)/prerm $(GNUGO_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNUGO_IPK_DIR)/CONTROL/prerm
 	echo $(GNUGO_CONFFILES) | sed -e 's/ /\n/g' > $(GNUGO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNUGO_IPK_DIR)

@@ -1,6 +1,6 @@
 #!/bin/sh 
 
-. /opt/etc/torrent.conf
+. %OPTWARE_TARGET_PREFIX%/etc/torrent.conf
 
 SLEEP=60
 DEBUG=

@@ -113,7 +113,7 @@ $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR)
 	$(PY-RDIFF-BACKUP_UNZIP) $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-RDIFF-BACKUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) -p1
+#	cat $(PY-RDIFF-BACKUP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -130,7 +130,7 @@ $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR)
 	$(PY-RDIFF-BACKUP_UNZIP) $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-RDIFF-BACKUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) -p1
+#	cat $(PY-RDIFF-BACKUP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -183,7 +183,7 @@ py-rdiff-backup: $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-rdiff-backup
 #
 $(PY25-RDIFF-BACKUP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-rdiff-backup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,7 +197,7 @@ $(PY25-RDIFF-BACKUP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-RDIFF-BACKUP_CONFLICTS)" >>$@
 
 $(PY26-RDIFF-BACKUP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-rdiff-backup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

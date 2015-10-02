@@ -117,7 +117,7 @@ $(SABNZBD_BUILD_DIR)/.configured: $(DL_DIR)/$(SABNZBD_SOURCE) $(SABNZBD_PATCHES)
 	mkdir -p $(SABNZBD_BUILD_DIR)
 	# 2.4
 	$(SABNZBD_UNZIP) $(DL_DIR)/$(SABNZBD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SABNZBD_PATCHES) | patch -d $(BUILD_DIR)/$(SABNZBD_DIR) -p1
+	cat $(SABNZBD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SABNZBD_DIR) -p1
 	mv $(BUILD_DIR)/$(SABNZBD_DIR) $(SABNZBD_BUILD_DIR)/2.4
 	(cd $(SABNZBD_BUILD_DIR)/2.4; \
 	( \
@@ -133,7 +133,7 @@ $(SABNZBD_BUILD_DIR)/.configured: $(DL_DIR)/$(SABNZBD_SOURCE) $(SABNZBD_PATCHES)
 	)
 	# 2.5
 	$(SABNZBD_UNZIP) $(DL_DIR)/$(SABNZBD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SABNZBD_PATCHES) | patch -d $(BUILD_DIR)/$(SABNZBD_DIR) -p1
+	cat $(SABNZBD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SABNZBD_DIR) -p1
 	mv $(BUILD_DIR)/$(SABNZBD_DIR) $(SABNZBD_BUILD_DIR)/2.5
 	(cd $(SABNZBD_BUILD_DIR)/2.5; \
 	    ( \
@@ -187,7 +187,7 @@ sabnzbd-stage: $(SABNZBD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sabnzbd
 #
 $(SABNZBD_PY24_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-sabnzbd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,7 +201,7 @@ $(SABNZBD_PY24_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SABNZBD_PY24_CONFLICTS)" >>$@
 
 $(SABNZBD_PY25_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-sabnzbd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -235,18 +235,18 @@ $(SABNZBD_PY24_IPK): $(SABNZBD_BUILD_DIR)/.built
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(SABNZBD_PY24_IPK_DIR) --prefix=/opt
-	install -d $(SABNZBD_PY24_IPK_DIR)/opt/etc
-	install -m 644 $(SABNZBD_SOURCE_DIR)/SABnzbd.ini $(SABNZBD_PY24_IPK_DIR)/opt/etc/SABnzbd.ini
-	install -d $(SABNZBD_PY24_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SABNZBD_SOURCE_DIR)/rc.sabnzbd $(SABNZBD_PY24_IPK_DIR)/opt/etc/init.d/S70sabnzbd
-	install -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/downloads
-	install -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/SABnzbd/cache
-	install -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/SABnzbd/tmp
-	install -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/SABnzbd/nzb
-	install -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/SABnzbd/nzb/backup
-	install -d $(SABNZBD_PY24_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(SABNZBD_PY24_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(SABNZBD_SOURCE_DIR)/SABnzbd.ini $(SABNZBD_PY24_IPK_DIR)/opt/etc/SABnzbd.ini
+	$(INSTALL) -d $(SABNZBD_PY24_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SABNZBD_SOURCE_DIR)/rc.sabnzbd $(SABNZBD_PY24_IPK_DIR)/opt/etc/init.d/S70sabnzbd
+	$(INSTALL) -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/downloads
+	$(INSTALL) -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/SABnzbd/cache
+	$(INSTALL) -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/SABnzbd/tmp
+	$(INSTALL) -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/SABnzbd/nzb
+	$(INSTALL) -d $(SABNZBD_PY24_IPK_DIR)/opt/tmp/SABnzbd/nzb/backup
+	$(INSTALL) -d $(SABNZBD_PY24_IPK_DIR)/opt/var/log
 	$(MAKE) $(SABNZBD_PY24_IPK_DIR)/CONTROL/control
-	install -m 644 $(SABNZBD_SOURCE_DIR)/postinst $(SABNZBD_PY24_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SABNZBD_SOURCE_DIR)/postinst $(SABNZBD_PY24_IPK_DIR)/CONTROL/postinst
 	echo $(SABNZBD_CONFFILES) | sed -e 's/ /\n/g' > $(SABNZBD_PY24_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SABNZBD_PY24_IPK_DIR)
 
@@ -257,18 +257,18 @@ $(SABNZBD_PY25_IPK): $(SABNZBD_BUILD_DIR)/.built
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(SABNZBD_PY25_IPK_DIR) --prefix=/opt
-	install -d $(SABNZBD_PY25_IPK_DIR)/opt/etc
-	install -m 644 $(SABNZBD_SOURCE_DIR)/SABnzbd.ini $(SABNZBD_PY25_IPK_DIR)/opt/etc/SABnzbd.ini
-	install -d $(SABNZBD_PY25_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SABNZBD_SOURCE_DIR)/rc.sabnzbd $(SABNZBD_PY25_IPK_DIR)/opt/etc/init.d/S70sabnzbd
-	install -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/downloads
-	install -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/SABnzbd/cache
-	install -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/SABnzbd/tmp
-	install -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/SABnzbd/nzb
-	install -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/SABnzbd/nzb/backup
-	install -d $(SABNZBD_PY25_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(SABNZBD_PY25_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(SABNZBD_SOURCE_DIR)/SABnzbd.ini $(SABNZBD_PY25_IPK_DIR)/opt/etc/SABnzbd.ini
+	$(INSTALL) -d $(SABNZBD_PY25_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SABNZBD_SOURCE_DIR)/rc.sabnzbd $(SABNZBD_PY25_IPK_DIR)/opt/etc/init.d/S70sabnzbd
+	$(INSTALL) -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/downloads
+	$(INSTALL) -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/SABnzbd/cache
+	$(INSTALL) -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/SABnzbd/tmp
+	$(INSTALL) -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/SABnzbd/nzb
+	$(INSTALL) -d $(SABNZBD_PY25_IPK_DIR)/opt/tmp/SABnzbd/nzb/backup
+	$(INSTALL) -d $(SABNZBD_PY25_IPK_DIR)/opt/var/log
 	$(MAKE) $(SABNZBD_PY25_IPK_DIR)/CONTROL/control
-	install -m 644 $(SABNZBD_SOURCE_DIR)/postinst $(SABNZBD_PY25_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SABNZBD_SOURCE_DIR)/postinst $(SABNZBD_PY25_IPK_DIR)/CONTROL/postinst
 	echo $(SABNZBD_CONFFILES) | sed -e 's/ /\n/g' > $(SABNZBD_PY25_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SABNZBD_PY25_IPK_DIR)
 

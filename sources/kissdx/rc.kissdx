@@ -4,4 +4,4 @@ if [ -n "`pidof kissdx`" ]; then
     killall kissdx 2>/dev/null
 fi
 
-/opt/bin/kissdx -kd >/dev/null 2>&1
+%OPTWARE_TARGET_PREFIX%/bin/kissdx -kd >/dev/null 2>&1

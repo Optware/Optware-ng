@@ -68,27 +68,27 @@ byrequest: $(BYREQUEST_BUILD_DIR)/.built
 $(BYREQUEST_IPK): $(BYREQUEST_BUILD_DIR)/.built
 	rm -rf $(BYREQUEST_IPK_DIR) $(BUILD_DIR)/byrequest_*_$(TARGET_ARCH).ipk
 	# Bin file
-	install -d $(BYREQUEST_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(BYREQUEST_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(BYREQUEST_BUILD_DIR)/byRequest -o $(BYREQUEST_IPK_DIR)/opt/bin/byRequest
 	# Docs file
-	install -d $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
-	install -m 644 $(BYREQUEST_BUILD_DIR)/byRequest.conf $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
-	install -m 644 $(BYREQUEST_BUILD_DIR)/README* $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
-	install -m 644 $(BYREQUEST_BUILD_DIR)/ANNOUNCE $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
+	$(INSTALL) -d $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
+	$(INSTALL) -m 644 $(BYREQUEST_BUILD_DIR)/byRequest.conf $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
+	$(INSTALL) -m 644 $(BYREQUEST_BUILD_DIR)/README* $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
+	$(INSTALL) -m 644 $(BYREQUEST_BUILD_DIR)/ANNOUNCE $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
 	# Init file
-	install -d $(BYREQUEST_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(BYREQUEST_SOURCE_DIR)/S99byRequest $(BYREQUEST_IPK_DIR)/opt/etc/init.d/S99byRequest
+	$(INSTALL) -d $(BYREQUEST_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(BYREQUEST_SOURCE_DIR)/S99byRequest $(BYREQUEST_IPK_DIR)/opt/etc/init.d/S99byRequest
 	# Control files
-	install -d $(BYREQUEST_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(BYREQUEST_IPK_DIR)/CONTROL
 	$(MAKE) $(BYREQUEST_IPK_DIR)/CONTROL/control
-	install -m 644 $(BYREQUEST_SOURCE_DIR)/postinst $(BYREQUEST_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(BYREQUEST_SOURCE_DIR)/postinst $(BYREQUEST_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BYREQUEST_IPK_DIR)
 
 byrequest-ipk: $(BYREQUEST_IPK)
 
 # Make Control file
 $(BYREQUEST_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: byrequest" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

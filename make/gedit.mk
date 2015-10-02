@@ -116,7 +116,7 @@ $(GEDIT_BUILD_DIR)/.configured: $(DL_DIR)/$(GEDIT_SOURCE) $(GEDIT_PATCHES) make/
 	$(GEDIT_UNZIP) $(DL_DIR)/$(GEDIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GEDIT_PATCHES)" ; \
 		then cat $(GEDIT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GEDIT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GEDIT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GEDIT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GEDIT_DIR) $(@D) ; \
@@ -170,7 +170,7 @@ gedit-stage: $(GEDIT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gedit
 #
 $(GEDIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gedit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,15 +199,15 @@ $(GEDIT_IPK_DIR)/CONTROL/control:
 $(GEDIT_IPK): $(GEDIT_BUILD_DIR)/.built
 	rm -rf $(GEDIT_IPK_DIR) $(BUILD_DIR)/gedit_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GEDIT_BUILD_DIR) DESTDIR=$(GEDIT_IPK_DIR) install-strip
-#	install -d $(GEDIT_IPK_DIR)/opt/etc/
-#	install -m 644 $(GEDIT_SOURCE_DIR)/gedit.conf $(GEDIT_IPK_DIR)/opt/etc/gedit.conf
-#	install -d $(GEDIT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GEDIT_SOURCE_DIR)/rc.gedit $(GEDIT_IPK_DIR)/opt/etc/init.d/SXXgedit
+#	$(INSTALL) -d $(GEDIT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GEDIT_SOURCE_DIR)/gedit.conf $(GEDIT_IPK_DIR)/opt/etc/gedit.conf
+#	$(INSTALL) -d $(GEDIT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GEDIT_SOURCE_DIR)/rc.gedit $(GEDIT_IPK_DIR)/opt/etc/init.d/SXXgedit
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GEDIT_IPK_DIR)/opt/etc/init.d/SXXgedit
 	$(MAKE) $(GEDIT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GEDIT_SOURCE_DIR)/postinst $(GEDIT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GEDIT_SOURCE_DIR)/postinst $(GEDIT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GEDIT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GEDIT_SOURCE_DIR)/prerm $(GEDIT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GEDIT_SOURCE_DIR)/prerm $(GEDIT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GEDIT_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

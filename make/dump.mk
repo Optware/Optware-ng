@@ -110,7 +110,7 @@ $(DUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(DUMP_SOURCE) $(DUMP_PATCHES) make/dum
 	$(DUMP_UNZIP) $(DL_DIR)/$(DUMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DUMP_PATCHES)" ; \
 		then cat $(DUMP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DUMP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DUMP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DUMP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DUMP_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ dump: $(DUMP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/dump
 #
 $(DUMP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dump" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

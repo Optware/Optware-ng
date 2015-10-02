@@ -61,7 +61,7 @@ XAW_IPK=$(BUILD_DIR)/xaw_$(XAW_FULL_VERSION)-$(XAW_IPK_VERSION)_$(TARGET_ARCH).i
 # Automatically create a ipkg control file
 #
 $(XAW_IPK_DIR)/CONTROL/control:
-	@install -d $(XAW_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XAW_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xaw" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -100,7 +100,7 @@ $(XAW_BUILD_DIR)/.configured: $(DL_DIR)/$(XAW_SOURCE) \
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XAW_SOURCE)
 	if test -n "$(XAW_PATCHES)" ; \
 		then cat $(XAW_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XAW_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XAW_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XAW_DIR)" != "$(XAW_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XAW_DIR) $(XAW_BUILD_DIR) ; \

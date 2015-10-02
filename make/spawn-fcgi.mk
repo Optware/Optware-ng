@@ -110,7 +110,7 @@ $(SPAWN-FCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(SPAWN-FCGI_SOURCE) $(SPAWN-FCGI
 	$(SPAWN-FCGI_UNZIP) $(DL_DIR)/$(SPAWN-FCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPAWN-FCGI_PATCHES)" ; \
 		then cat $(SPAWN-FCGI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SPAWN-FCGI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SPAWN-FCGI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SPAWN-FCGI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SPAWN-FCGI_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ spawn-fcgi: $(SPAWN-FCGI_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/spawn-fcgi
 #
 $(SPAWN-FCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: spawn-fcgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,15 +190,15 @@ $(SPAWN-FCGI_IPK_DIR)/CONTROL/control:
 $(SPAWN-FCGI_IPK): $(SPAWN-FCGI_BUILD_DIR)/.built
 	rm -rf $(SPAWN-FCGI_IPK_DIR) $(BUILD_DIR)/spawn-fcgi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SPAWN-FCGI_BUILD_DIR) DESTDIR=$(SPAWN-FCGI_IPK_DIR) install-strip
-#	install -d $(SPAWN-FCGI_IPK_DIR)/opt/etc/
-#	install -m 644 $(SPAWN-FCGI_SOURCE_DIR)/spawn-fcgi.conf $(SPAWN-FCGI_IPK_DIR)/opt/etc/spawn-fcgi.conf
-#	install -d $(SPAWN-FCGI_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SPAWN-FCGI_SOURCE_DIR)/rc.spawn-fcgi $(SPAWN-FCGI_IPK_DIR)/opt/etc/init.d/SXXspawn-fcgi
+#	$(INSTALL) -d $(SPAWN-FCGI_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SPAWN-FCGI_SOURCE_DIR)/spawn-fcgi.conf $(SPAWN-FCGI_IPK_DIR)/opt/etc/spawn-fcgi.conf
+#	$(INSTALL) -d $(SPAWN-FCGI_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SPAWN-FCGI_SOURCE_DIR)/rc.spawn-fcgi $(SPAWN-FCGI_IPK_DIR)/opt/etc/init.d/SXXspawn-fcgi
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPAWN-FCGI_IPK_DIR)/opt/etc/init.d/SXXspawn-fcgi
 	$(MAKE) $(SPAWN-FCGI_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SPAWN-FCGI_SOURCE_DIR)/postinst $(SPAWN-FCGI_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SPAWN-FCGI_SOURCE_DIR)/postinst $(SPAWN-FCGI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPAWN-FCGI_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SPAWN-FCGI_SOURCE_DIR)/prerm $(SPAWN-FCGI_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SPAWN-FCGI_SOURCE_DIR)/prerm $(SPAWN-FCGI_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPAWN-FCGI_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

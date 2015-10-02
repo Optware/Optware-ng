@@ -147,7 +147,7 @@ gzip: $(GZIP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/gzip
 #
 $(GZIP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gzip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,10 +174,10 @@ $(GZIP_IPK_DIR)/CONTROL/control:
 #
 $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 	rm -rf $(GZIP_IPK_DIR) $(BUILD_DIR)/gzip_*_$(TARGET_ARCH).ipk
-	install -d $(GZIP_IPK_DIR)/opt/bin
-	install -d $(GZIP_IPK_DIR)/opt/lib
-	install -d $(GZIP_IPK_DIR)/opt/info
-	install -d $(GZIP_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/info
+	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(GZIP_BUILD_DIR) prefix=$(GZIP_IPK_DIR)/opt install
 	rm -f $(GZIP_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(GZIP_IPK_DIR)/CONTROL/control

@@ -98,7 +98,7 @@ sed-source: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES)
 $(SED_BUILD_DIR)/.configured: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES) make/sed.mk
 	rm -rf $(BUILD_DIR)/$(SED_DIR) $(@D)
 	$(SED_UNZIP) $(DL_DIR)/$(SED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SED_PATCHES) | patch -d $(BUILD_DIR)/$(SED_DIR) -p1
+	cat $(SED_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SED_DIR) -p1
 	mv $(BUILD_DIR)/$(SED_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -144,7 +144,7 @@ sed-stage: $(SED_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sed
 #
 $(SED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sed" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

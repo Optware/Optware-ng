@@ -93,7 +93,7 @@ torrent: $(TORRENT_BUILD_DIR)/.configured
 # necessary to create a seperate control file under sources/torrent
 #
 $(TORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(TORRENT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TORRENT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: torrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -122,17 +122,17 @@ $(TORRENT_IPK): $(TORRENT_BUILD_DIR)/.configured
 	rm -rf $(TORRENT_IPK_DIR) $(BUILD_DIR)/torrent_*_$(TARGET_ARCH).ipk
 	mkdir -p $(TORRENT_IPK_DIR)/CONTROL
 	$(MAKE) $(TORRENT_IPK_DIR)/CONTROL/control
-	install -m 644 $(SOURCE_DIR)/torrent/postinst $(TORRENT_IPK_DIR)/CONTROL/postinst
-	install -d $(TORRENT_IPK_DIR)/opt/bin
-	install -d $(TORRENT_IPK_DIR)/opt/sbin
-	install -d $(TORRENT_IPK_DIR)/opt/etc/init.d
-	install -d $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
-	install -m 700 $(SOURCE_DIR)/torrent/torrent_watchdog $(TORRENT_IPK_DIR)/opt/sbin
-	install -m 755 $(SOURCE_DIR)/torrent/torrent_admin $(TORRENT_IPK_DIR)/opt/sbin
-	install -m 755 $(SOURCE_DIR)/torrent/btcheck-target $(TORRENT_IPK_DIR)/opt/bin
-	install -m 755 $(SOURCE_DIR)/torrent/torrent.cgi $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
-	install -m 644 $(SOURCE_DIR)/torrent/torrent.conf $(TORRENT_IPK_DIR)/opt/etc
-	install -m 755 $(SOURCE_DIR)/torrent/S80busybox_httpd $(TORRENT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 644 $(SOURCE_DIR)/torrent/postinst $(TORRENT_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -d $(TORRENT_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(TORRENT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(TORRENT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
+	$(INSTALL) -m 700 $(SOURCE_DIR)/torrent/torrent_watchdog $(TORRENT_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/torrent_admin $(TORRENT_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/btcheck-target $(TORRENT_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/torrent.cgi $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
+	$(INSTALL) -m 644 $(SOURCE_DIR)/torrent/torrent.conf $(TORRENT_IPK_DIR)/opt/etc
+	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/S80busybox_httpd $(TORRENT_IPK_DIR)/opt/etc/init.d
 	echo $(TORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(TORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TORRENT_IPK_DIR)
 

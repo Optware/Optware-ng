@@ -3,7 +3,7 @@
 # full featured web client
 
 echo "For the fully featured web client replace the files"
-echo "contained in  /opt/share/transmission/web  with those of"
+echo "contained in  %OPTWARE_TARGET_PREFIX%/share/transmission/web  with those of"
 echo "https://github.com/cfpp2p/transmission/archive/master.zip"
 echo "The fully featured web client has a mirror at"
 echo "http://sourceforge.net/projects/transmissiondaemon/files/optware-ng-source/"

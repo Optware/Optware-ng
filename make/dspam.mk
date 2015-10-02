@@ -118,7 +118,7 @@ $(DSPAM_BUILD_DIR)/.configured: $(DL_DIR)/$(DSPAM_SOURCE) $(DSPAM_PATCHES) make/
 	$(DSPAM_UNZIP) $(DL_DIR)/$(DSPAM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DSPAM_PATCHES)" ; \
 		then cat $(DSPAM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DSPAM_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DSPAM_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DSPAM_DIR)" != "$(DSPAM_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DSPAM_DIR) $(DSPAM_BUILD_DIR) ; \
@@ -175,7 +175,7 @@ dspam-stage: $(DSPAM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dspam
 #
 $(DSPAM_IPK_DIR)/CONTROL/control:
-	@install -d $(DSPAM_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(DSPAM_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: dspam" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,7 +190,7 @@ $(DSPAM_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DSPAM_CONFLICTS)" >>$@
 
 $(DSPAM_PGSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(DSPAM_PGSQL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(DSPAM_PGSQL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: dspam-pgsql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,7 +205,7 @@ $(DSPAM_PGSQL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DSPAM_CONFLICTS)" >>$@
 
 $(DSPAM_MYSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(DSPAM_MYSQL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(DSPAM_MYSQL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: dspam-mysql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -236,24 +236,24 @@ $(DSPAM_IPK): $(DSPAM_BUILD_DIR)/.built
 	rm -rf $(DSPAM_PGSQL_IPK_DIR) $(BUILD_DIR)/dspam-pgsql_*_$(TARGET_ARCH).ipk
 	rm -rf $(DSPAM_MYSQL_IPK_DIR) $(BUILD_DIR)/dspam-mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DSPAM_BUILD_DIR) DESTDIR=$(DSPAM_IPK_DIR) install-strip
-#	install -d $(DSPAM_IPK_DIR)/opt/etc/
-#	install -m 644 $(DSPAM_SOURCE_DIR)/dspam.conf $(DSPAM_IPK_DIR)/opt/etc/dspam.conf
-#	install -d $(DSPAM_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DSPAM_SOURCE_DIR)/rc.dspam $(DSPAM_IPK_DIR)/opt/etc/init.d/SXXdspam
+#	$(INSTALL) -d $(DSPAM_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DSPAM_SOURCE_DIR)/dspam.conf $(DSPAM_IPK_DIR)/opt/etc/dspam.conf
+#	$(INSTALL) -d $(DSPAM_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DSPAM_SOURCE_DIR)/rc.dspam $(DSPAM_IPK_DIR)/opt/etc/init.d/SXXdspam
 
 	# Split into the different packages
-	install -d $(DSPAM_PGSQL_IPK_DIR)/opt/lib/dspam
+	$(INSTALL) -d $(DSPAM_PGSQL_IPK_DIR)/opt/lib/dspam
 	mv $(DSPAM_IPK_DIR)/opt/lib/dspam/libpgsql* $(DSPAM_PGSQL_IPK_DIR)/opt/lib/dspam
 	$(MAKE) $(DSPAM_PGSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSPAM_PGSQL_IPK_DIR)
-	install -d $(DSPAM_MYSQL_IPK_DIR)/opt/lib/dspam
+	$(INSTALL) -d $(DSPAM_MYSQL_IPK_DIR)/opt/lib/dspam
 	mv $(DSPAM_IPK_DIR)/opt/lib/dspam/libmysql* $(DSPAM_MYSQL_IPK_DIR)/opt/lib/dspam
 	$(MAKE) $(DSPAM_MYSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSPAM_MYSQL_IPK_DIR)
 
 	$(MAKE) $(DSPAM_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DSPAM_SOURCE_DIR)/postinst $(DSPAM_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DSPAM_SOURCE_DIR)/prerm $(DSPAM_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DSPAM_SOURCE_DIR)/postinst $(DSPAM_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DSPAM_SOURCE_DIR)/prerm $(DSPAM_IPK_DIR)/CONTROL/prerm
 #	echo $(DSPAM_CONFFILES) | sed -e 's/ /\n/g' > $(DSPAM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSPAM_IPK_DIR)
 

@@ -1,8 +1,8 @@
 #!/bin/sh
 
-. /opt/etc/torrent.conf
+. %OPTWARE_TARGET_PREFIX%/etc/torrent.conf
 
-PATH=/bin:/sbin:/usr/bin:/opt/sbin:/opt/bin
+PATH=/bin:/sbin:/usr/bin:%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/bin
 export PATH
 
 
@@ -382,8 +382,8 @@ _log ()
     echo -e "${BOLD}${NAME}${NORMAL}"
     tail -10 "${DIR}/current.log"
     SECONDS=`tail -10 "${DIR}/current.log" | tr '\r' '\n' | grep Time | tail -1 | cut -d " " -f 2`
-    if [ -n "${SECONDS}" -a -x /opt/bin/date ]; then
-      DATE=`/opt/bin/date -d "1970-01-01 UTC ${SECONDS} seconds" +"${DATE_FORMAT}"`
+    if [ -n "${SECONDS}" -a -x %OPTWARE_TARGET_PREFIX%/bin/date ]; then
+      DATE=`%OPTWARE_TARGET_PREFIX%/bin/date -d "1970-01-01 UTC ${SECONDS} seconds" +"${DATE_FORMAT}"`
       echo -e "\n${BOLD}Last timestamp seen at ${DATE}${NORMAL}"
     fi
 }
@@ -429,7 +429,7 @@ _root_check
 QUERY_STRING=`echo "$QUERY_STRING" | sed 's/&/;/g'`
 eval ${QUERY_STRING}
 #export ACTION
-#/opt/bin/printenv
+#%OPTWARE_TARGET_PREFIX%/bin/printenv
 ACTION="$1"
 ID="$2"
 case "${ACTION}" in

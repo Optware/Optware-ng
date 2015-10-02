@@ -113,7 +113,7 @@ $(XINETD_BUILD_DIR)/.configured: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES) ma
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(XINETD_DIR) $(@D)
 	$(XINETD_UNZIP) $(DL_DIR)/$(XINETD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(XINETD_PATCHES) | patch -d $(BUILD_DIR)/$(XINETD_DIR) -p1
+	cat $(XINETD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(XINETD_DIR) -p1
 	mv $(BUILD_DIR)/$(XINETD_DIR) $(@D)
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
 	(cd $(@D); \
@@ -162,7 +162,7 @@ xinetd: $(XINETD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/xinetd
 #
 $(XINETD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: $(XINETD_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,23 +194,23 @@ $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 	# Strip executables
 	$(STRIP_COMMAND) $(XINETD_IPK_DIR)/opt/sbin/xinetd $(XINETD_IPK_DIR)/opt/sbin/itox
 	# Install reload utility
-	install -m 700 $(XINETD_SOURCE_DIR)/xinetd.reload  $(XINETD_IPK_DIR)/opt/sbin
+	$(INSTALL) -m 700 $(XINETD_SOURCE_DIR)/xinetd.reload  $(XINETD_IPK_DIR)/opt/sbin
 	# Install config file and create the xinetd.d catalog
-	install -d $(XINETD_IPK_DIR)/opt/etc/xinetd.d
-	install -m 755 $(XINETD_SOURCE_DIR)/xinetd.conf $(XINETD_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(XINETD_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 755 $(XINETD_SOURCE_DIR)/xinetd.conf $(XINETD_IPK_DIR)/opt/etc
 ifeq ($(OPTWARE_TARGET),nslu2)
 	# Drop in the telnet and ftp-sensor config
-	install -m 644 $(XINETD_SOURCE_DIR)/telnetd $(XINETD_IPK_DIR)/opt/etc/xinetd.d
-	install -m 644 $(XINETD_BUILD_DIR)/contrib/xinetd.d/ftp-sensor $(XINETD_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 644 $(XINETD_SOURCE_DIR)/telnetd $(XINETD_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 644 $(XINETD_BUILD_DIR)/contrib/xinetd.d/ftp-sensor $(XINETD_IPK_DIR)/opt/etc/xinetd.d
 endif
 	# Install daemon startup file
-	install -d $(XINETD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/etc/init.d/S10xinetd
+	$(INSTALL) -d $(XINETD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/etc/init.d/S10xinetd
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/S10xinetd
 	$(MAKE) $(XINETD_IPK_DIR)/CONTROL/control
-	install -m 755 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 755 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(XINETD_SOURCE_DIR)/prerm $(XINETD_IPK_DIR)/CONTROL/
+	$(INSTALL) -m 755 $(XINETD_SOURCE_DIR)/prerm $(XINETD_IPK_DIR)/CONTROL/
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(XINETD_CONFFILES) | sed -e 's/ /\n/g' > $(XINETD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XINETD_IPK_DIR)

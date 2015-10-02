@@ -5,7 +5,7 @@
 # NOTE:
 #	This script works with the standard busybox tools.
 #
-PATH=/bin:/usr/bin:/opt/bin
+PATH=/bin:/usr/bin:%OPTWARE_TARGET_PREFIX%/bin
 
 PROG=${0##*/}
 ERROR=""
@@ -164,7 +164,7 @@ then
 	do
 		ID=$((${ID}+1))
 	done
-	echo "${USER}:x:${ID}:100:${USER} (scponly):${HOME}:/opt/sbin/scponlyc" >>/etc/passwd
+	echo "${USER}:x:${ID}:100:${USER} (scponly):${HOME}:%OPTWARE_TARGET_PREFIX%/sbin/scponlyc" >>/etc/passwd
 fi
 
 mkdir -p "${HOME}"
@@ -215,29 +215,29 @@ chmod 777 null
 
 cd "${ROOT}/usr/bin"
 
-if [ -f /opt/bin/scp ]
+if [ -f %OPTWARE_TARGET_PREFIX%/bin/scp ]
 then
-	cp /opt/bin/scp .
+	cp %OPTWARE_TARGET_PREFIX%/bin/scp .
 elif [ -f /usr/bin/scp ]
 then
 	cp /usr/bin/scp .
 fi
 
 cd "${ROOT}/usr/libexec"
-if [ -f /opt/libexec/sftp-server ]
+if [ -f %OPTWARE_TARGET_PREFIX%/libexec/sftp-server ]
 then
-	cp /opt/libexec/sftp-server .
+	cp %OPTWARE_TARGET_PREFIX%/libexec/sftp-server .
 elif [ -f /usr/libexec/sftp-server ]
 then
 	cp /usr/libexec/sftp-server .
 fi
 
 cd "${ROOT}/usr/lib"
-[ -f /opt/lib/libcrypto.so.0.9.7  ] && cp /opt/lib/libcrypto.so.0.9.7 .
+[ -f %OPTWARE_TARGET_PREFIX%/lib/libcrypto.so.0.9.7  ] && cp %OPTWARE_TARGET_PREFIX%/lib/libcrypto.so.0.9.7 .
 
-if [ -f /opt/lib/libz.so.1.2.3 ]
+if [ -f %OPTWARE_TARGET_PREFIX%/lib/libz.so.1.2.3 ]
 then
-	cp /opt/lib/libz.so.1.2.3 .
+	cp %OPTWARE_TARGET_PREFIX%/lib/libz.so.1.2.3 .
 	ln -s libz.so.1.2.3 libz.so
 	ln -s libz.so.1.2.3 libz.so.1
 elif [ -f /usr/lib/libz.so.1.2.3 ]

@@ -3,10 +3,10 @@
 # Startup script for byRequest daemon
 #
 
-if [ -n "`/opt/bin/pidof byRequest`" ]; then
-    /opt/bin/killall byRequest 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof byRequest`" ]; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall byRequest 2>/dev/null
 fi
 
-/opt/bin/byRequest /opt/etc/byRequest.conf
+%OPTWARE_TARGET_PREFIX%/bin/byRequest %OPTWARE_TARGET_PREFIX%/etc/byRequest.conf
 
 

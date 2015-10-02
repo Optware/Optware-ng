@@ -98,7 +98,7 @@ $(NETIO_BUILD_DIR)/.configured: $(DL_DIR)/$(NETIO_SOURCE) $(NETIO_PATCHES)
 	rm -rf $(NETIO_BUILD_DIR)
 	mkdir -p $(NETIO_BUILD_DIR)
 	cd $(NETIO_BUILD_DIR);unzip $(DL_DIR)/$(NETIO_SOURCE)
-#	cat $(NETIO_PATCHES) | patch -d $(BUILD_DIR)/$(NETIO_DIR) -p1
+#	cat $(NETIO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NETIO_DIR) -p1
 	touch $(NETIO_BUILD_DIR)/.configured
 
 netio-unpack: $(NETIO_BUILD_DIR)/.configured
@@ -134,7 +134,7 @@ netio-stage: $(NETIO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/netio
 #
 $(NETIO_IPK_DIR)/CONTROL/control:
-	@install -d $(NETIO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(NETIO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: netio" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -162,8 +162,8 @@ $(NETIO_IPK_DIR)/CONTROL/control:
 #
 $(NETIO_IPK): $(NETIO_BUILD_DIR)/.built
 	rm -rf $(NETIO_IPK_DIR) $(BUILD_DIR)/netio_*_$(TARGET_ARCH).ipk
-	install -d $(NETIO_IPK_DIR)/opt/bin
-	install -m 755 $(NETIO_BUILD_DIR)/netio $(NETIO_IPK_DIR)/opt/bin/netio
+	$(INSTALL) -d $(NETIO_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(NETIO_BUILD_DIR)/netio $(NETIO_IPK_DIR)/opt/bin/netio
 	$(MAKE) $(NETIO_IPK_DIR)/CONTROL/control
 	$(STRIP_COMMAND) $(NETIO_IPK_DIR)/opt/bin/netio
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETIO_IPK_DIR)

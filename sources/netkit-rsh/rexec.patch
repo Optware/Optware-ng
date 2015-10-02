@@ -7,7 +7,7 @@ diff -ruNp rexec.orig/rexec.c rexec/rexec.c
  
 +
 +#ifdef _PATH_DEFPATH
-+#define _PATH_DEFPATH "/opt/bin:/usr/bin:/bin"
++#define _PATH_DEFPATH "%OPTWARE_TARGET_PREFIX%/bin:/usr/bin:/bin"
 +#endif /* _PATH_DEFPATH */
 +
 +

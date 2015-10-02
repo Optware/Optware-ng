@@ -108,7 +108,7 @@ $(SDPARM_BUILD_DIR)/.configured: $(DL_DIR)/$(SDPARM_SOURCE) $(SDPARM_PATCHES) ma
 	$(SDPARM_UNZIP) $(DL_DIR)/$(SDPARM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SDPARM_PATCHES)" ; \
 		then cat $(SDPARM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SDPARM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SDPARM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SDPARM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SDPARM_DIR) $(@D) ; \
@@ -158,7 +158,7 @@ sdparm: $(SDPARM_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/sdparm
 #
 $(SDPARM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sdparm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,13 +187,13 @@ $(SDPARM_IPK_DIR)/CONTROL/control:
 $(SDPARM_IPK): $(SDPARM_BUILD_DIR)/.built
 	rm -rf $(SDPARM_IPK_DIR) $(BUILD_DIR)/sdparm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SDPARM_BUILD_DIR) DESTDIR=$(SDPARM_IPK_DIR) install-strip
-#	install -d $(SDPARM_IPK_DIR)/opt/etc/
-#	install -m 644 $(SDPARM_SOURCE_DIR)/sdparm.conf $(SDPARM_IPK_DIR)/opt/etc/sdparm.conf
-#	install -d $(SDPARM_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SDPARM_SOURCE_DIR)/rc.sdparm $(SDPARM_IPK_DIR)/opt/etc/init.d/SXXsdparm
+#	$(INSTALL) -d $(SDPARM_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SDPARM_SOURCE_DIR)/sdparm.conf $(SDPARM_IPK_DIR)/opt/etc/sdparm.conf
+#	$(INSTALL) -d $(SDPARM_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SDPARM_SOURCE_DIR)/rc.sdparm $(SDPARM_IPK_DIR)/opt/etc/init.d/SXXsdparm
 	$(MAKE) $(SDPARM_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SDPARM_SOURCE_DIR)/postinst $(SDPARM_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SDPARM_SOURCE_DIR)/prerm $(SDPARM_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SDPARM_SOURCE_DIR)/postinst $(SDPARM_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SDPARM_SOURCE_DIR)/prerm $(SDPARM_IPK_DIR)/CONTROL/prerm
 	echo $(SDPARM_CONFFILES) | sed -e 's/ /\n/g' > $(SDPARM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SDPARM_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(SDPARM_IPK_DIR)

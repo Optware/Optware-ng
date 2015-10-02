@@ -110,7 +110,7 @@ $(LIBNETFILTER_QUEUE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETFILTER_QUEUE_SOUR
 	$(LIBNETFILTER_QUEUE_UNZIP) $(DL_DIR)/$(LIBNETFILTER_QUEUE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNETFILTER_QUEUE_PATCHES)" ; \
 		then cat $(LIBNETFILTER_QUEUE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ libnetfilter-queue-stage: $(LIBNETFILTER_QUEUE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libnetfilter-queue
 #
 $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libnetfilter-queue" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(LIBNETFILTER_QUEUE_IPK): $(LIBNETFILTER_QUEUE_BUILD_DIR)/.built
 	rm -rf $(LIBNETFILTER_QUEUE_IPK_DIR) $(BUILD_DIR)/libnetfilter-queue_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNETFILTER_QUEUE_BUILD_DIR) DESTDIR=$(LIBNETFILTER_QUEUE_IPK_DIR) install-strip
 	rm -rf $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/include
-#	install -d $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/libnetfilter-queue.conf $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/libnetfilter-queue.conf
-#	install -d $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/rc.libnetfilter-queue $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-queue
+#	$(INSTALL) -d $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/libnetfilter-queue.conf $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/libnetfilter-queue.conf
+#	$(INSTALL) -d $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/rc.libnetfilter-queue $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-queue
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-queue
 	$(MAKE) $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/postinst $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/postinst $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/prerm $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/prerm $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBNETFILTER_QUEUE_CONFFILES) | sed -e 's/ /\n/g' > $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETFILTER_QUEUE_IPK_DIR)

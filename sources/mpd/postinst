@@ -1,10 +1,10 @@
 #!/bin/sh
 
-mkdir -p /opt/var/mpd
-chown admin /opt/var/mpd
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/mpd
+chown admin %OPTWARE_TARGET_PREFIX%/var/mpd
 
-mkdir -p /opt/var/mpd/playlists
-chown admin /opt/var/mpd/playlists
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/mpd/playlists
+chown admin %OPTWARE_TARGET_PREFIX%/var/mpd/playlists
 
 echo Starting Music Playing Daemon...
-/opt/etc/init.d/S61mpd
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S61mpd

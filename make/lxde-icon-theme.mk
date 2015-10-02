@@ -116,7 +116,7 @@ $(LXDE-ICON-THEME_BUILD_DIR)/.configured: $(DL_DIR)/$(LXDE-ICON-THEME_SOURCE) $(
 	$(LXDE-ICON-THEME_UNZIP) $(DL_DIR)/$(LXDE-ICON-THEME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LXDE-ICON-THEME_PATCHES)" ; \
 		then cat $(LXDE-ICON-THEME_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LXDE-ICON-THEME_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LXDE-ICON-THEME_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LXDE-ICON-THEME_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LXDE-ICON-THEME_DIR) $(@D) ; \
@@ -166,7 +166,7 @@ lxde-icon-theme-stage: $(LXDE-ICON-THEME_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lxde-icon-theme
 #
 $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lxde-icon-theme" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,15 +195,15 @@ $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/control:
 $(LXDE-ICON-THEME_IPK): $(LXDE-ICON-THEME_BUILD_DIR)/.built
 	rm -rf $(LXDE-ICON-THEME_IPK_DIR) $(BUILD_DIR)/lxde-icon-theme_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LXDE-ICON-THEME_BUILD_DIR) DESTDIR=$(LXDE-ICON-THEME_IPK_DIR) install
-#	install -d $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/
-#	install -m 644 $(LXDE-ICON-THEME_SOURCE_DIR)/lxde-icon-theme.conf $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/lxde-icon-theme.conf
-#	install -d $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LXDE-ICON-THEME_SOURCE_DIR)/rc.lxde-icon-theme $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXlxde-icon-theme
+#	$(INSTALL) -d $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LXDE-ICON-THEME_SOURCE_DIR)/lxde-icon-theme.conf $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/lxde-icon-theme.conf
+#	$(INSTALL) -d $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LXDE-ICON-THEME_SOURCE_DIR)/rc.lxde-icon-theme $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXlxde-icon-theme
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXlxde-icon-theme
 	$(MAKE) $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/control
-	install -m 755 $(LXDE-ICON-THEME_SOURCE_DIR)/postinst $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(LXDE-ICON-THEME_SOURCE_DIR)/postinst $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(LXDE-ICON-THEME_SOURCE_DIR)/prerm $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(LXDE-ICON-THEME_SOURCE_DIR)/prerm $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

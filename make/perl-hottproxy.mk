@@ -108,11 +108,11 @@ perl-hottproxy-source: $(DL_DIR)/$(PERL_HOTTPROXY_SOURCE) $(PERL_HOTTPROXY_PATCH
 $(PERL_HOTTPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_HOTTPROXY_SOURCE) $(PERL_HOTTPROXY_PATCHES) make/perl-hottproxy.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PERL_HOTTPROXY_DIR) $(PERL_HOTTPROXY_BUILD_DIR)
-	install -d $(BUILD_DIR)/$(PERL_HOTTPROXY_DIR)
+	$(INSTALL) -d $(BUILD_DIR)/$(PERL_HOTTPROXY_DIR)
 	$(PERL_HOTTPROXY_UNZIP) $(DL_DIR)/$(PERL_HOTTPROXY_SOURCE) | tar -C $(BUILD_DIR)/$(PERL_HOTTPROXY_DIR) -xvf -
 	if test -n "$(PERL_HOTTPROXY_PATCHES)" ; \
 		then cat $(PERL_HOTTPROXY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PERL_HOTTPROXY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PERL_HOTTPROXY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PERL_HOTTPROXY_DIR)" != "$(PERL_HOTTPROXY_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PERL_HOTTPROXY_DIR) $(PERL_HOTTPROXY_BUILD_DIR) ; \
@@ -157,7 +157,7 @@ perl-hottproxy-stage: $(PERL_HOTTPROXY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/perl-hottproxy
 #
 $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-hottproxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,16 +185,16 @@ $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/control:
 #
 $(PERL_HOTTPROXY_IPK): $(PERL_HOTTPROXY_BUILD_DIR)/.built
 	rm -rf $(PERL_HOTTPROXY_IPK_DIR) $(BUILD_DIR)/perl-hottproxy_*_$(TARGET_ARCH).ipk
-	install -d $(PERL_HOTTPROXY_IPK_DIR)/opt/share/hottproxy
+	$(INSTALL) -d $(PERL_HOTTPROXY_IPK_DIR)/opt/share/hottproxy
 	tar -c -C $(PERL_HOTTPROXY_BUILD_DIR) -f - . | tar -xv -C $(PERL_HOTTPROXY_IPK_DIR)/opt/share/hottproxy -f -
-#	install -m 644 $(PERL_HOTTPROXY_SOURCE_DIR)/perl-hottproxy.conf $(PERL_HOTTPROXY_IPK_DIR)/opt/etc/perl-hottproxy.conf
-#	install -d $(PERL_HOTTPROXY_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PERL_HOTTPROXY_SOURCE_DIR)/rc.perl-hottproxy $(PERL_HOTTPROXY_IPK_DIR)/opt/etc/init.d/SXXperl-hottproxy
+#	$(INSTALL) -m 644 $(PERL_HOTTPROXY_SOURCE_DIR)/perl-hottproxy.conf $(PERL_HOTTPROXY_IPK_DIR)/opt/etc/perl-hottproxy.conf
+#	$(INSTALL) -d $(PERL_HOTTPROXY_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PERL_HOTTPROXY_SOURCE_DIR)/rc.perl-hottproxy $(PERL_HOTTPROXY_IPK_DIR)/opt/etc/init.d/SXXperl-hottproxy
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PERL_HOTTPROXY_IPK_DIR)/opt/etc/init.d/SXXperl-hottproxy
 	$(MAKE) $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PERL_HOTTPROXY_SOURCE_DIR)/postinst $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PERL_HOTTPROXY_SOURCE_DIR)/postinst $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PERL_HOTTPROXY_SOURCE_DIR)/prerm $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PERL_HOTTPROXY_SOURCE_DIR)/prerm $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/prerm
 	echo $(PERL_HOTTPROXY_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_HOTTPROXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_HOTTPROXY_IPK_DIR)

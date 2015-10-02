@@ -112,7 +112,7 @@ $(CENTERIM_BUILD_DIR)/.configured: $(DL_DIR)/$(CENTERIM_SOURCE) $(CENTERIM_PATCH
 	$(CENTERIM_UNZIP) $(DL_DIR)/$(CENTERIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CENTERIM_PATCHES)" ; \
 		then cat $(CENTERIM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CENTERIM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CENTERIM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CENTERIM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CENTERIM_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ centerim-stage: $(CENTERIM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/centerim
 #
 $(CENTERIM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: centerim" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(CENTERIM_IPK_DIR)/CONTROL/control:
 $(CENTERIM_IPK): $(CENTERIM_BUILD_DIR)/.built
 	rm -rf $(CENTERIM_IPK_DIR) $(BUILD_DIR)/centerim_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CENTERIM_BUILD_DIR) DESTDIR=$(CENTERIM_IPK_DIR) install-strip
-#	install -d $(CENTERIM_IPK_DIR)/opt/etc/
-#	install -m 644 $(CENTERIM_SOURCE_DIR)/centerim.conf $(CENTERIM_IPK_DIR)/opt/etc/centerim.conf
-#	install -d $(CENTERIM_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CENTERIM_SOURCE_DIR)/rc.centerim $(CENTERIM_IPK_DIR)/opt/etc/init.d/SXXcenterim
+#	$(INSTALL) -d $(CENTERIM_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CENTERIM_SOURCE_DIR)/centerim.conf $(CENTERIM_IPK_DIR)/opt/etc/centerim.conf
+#	$(INSTALL) -d $(CENTERIM_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CENTERIM_SOURCE_DIR)/rc.centerim $(CENTERIM_IPK_DIR)/opt/etc/init.d/SXXcenterim
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CENTERIM_IPK_DIR)/opt/etc/init.d/SXXcenterim
 	$(MAKE) $(CENTERIM_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CENTERIM_SOURCE_DIR)/postinst $(CENTERIM_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CENTERIM_SOURCE_DIR)/postinst $(CENTERIM_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CENTERIM_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CENTERIM_SOURCE_DIR)/prerm $(CENTERIM_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CENTERIM_SOURCE_DIR)/prerm $(CENTERIM_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CENTERIM_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -122,7 +122,7 @@ $(SUBVERTPY_BUILD_DIR)/.configured: $(DL_DIR)/$(SUBVERTPY_SOURCE) $(SUBVERTPY_PA
 	rm -rf $(BUILD_DIR)/$(SUBVERTPY_DIR)
 	$(SUBVERTPY_UNZIP) $(DL_DIR)/$(SUBVERTPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
-	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
+	cat $(SUBVERTPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
 endif
 	mv $(BUILD_DIR)/$(SUBVERTPY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -141,7 +141,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(SUBVERTPY_DIR)
 	$(SUBVERTPY_UNZIP) $(DL_DIR)/$(SUBVERTPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
-	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
+	cat $(SUBVERTPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
 endif
 	mv $(BUILD_DIR)/$(SUBVERTPY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -160,7 +160,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(SUBVERTPY_DIR)
 	$(SUBVERTPY_UNZIP) $(DL_DIR)/$(SUBVERTPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
-	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
+	cat $(SUBVERTPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
 endif
 	mv $(BUILD_DIR)/$(SUBVERTPY_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -179,7 +179,7 @@ endif
 #	rm -rf $(BUILD_DIR)/$(SUBVERTPY_DIR)
 #	$(SUBVERTPY_UNZIP) $(DL_DIR)/$(SUBVERTPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
-#	cat $(SUBVERTPY_PATCHES) | patch -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
+#	cat $(SUBVERTPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SUBVERTPY_DIR) -p0
 endif
 #	mv $(BUILD_DIR)/$(SUBVERTPY_DIR) $(@D)/3
 #	(cd $(@D)/3; \
@@ -253,7 +253,7 @@ subvertpy: $(SUBVERTPY_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/subvertpy
 #
 $(PY25-SUBVERTPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-subvertpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -267,7 +267,7 @@ $(PY25-SUBVERTPY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SUBVERTPY_CONFLICTS)" >>$@
 
 $(PY26-SUBVERTPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-subvertpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -281,7 +281,7 @@ $(PY26-SUBVERTPY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SUBVERTPY_CONFLICTS)" >>$@
 
 $(PY27-SUBVERTPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-subvertpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -295,7 +295,7 @@ $(PY27-SUBVERTPY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SUBVERTPY_CONFLICTS)" >>$@
 
 $(PY3-SUBVERTPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-subvertpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

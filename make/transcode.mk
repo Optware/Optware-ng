@@ -154,7 +154,7 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 	rm -rf $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	$(TRANSCODE_UNZIP) $(DL_DIR)/$(TRANSCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSCODE_PATCHES)"; \
-		then cat $(TRANSCODE_PATCHES) | patch -d $(BUILD_DIR)/$(TRANSCODE_DIR) -p1; \
+		then cat $(TRANSCODE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TRANSCODE_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 #	sed -ie '/extern int verbose/d' $(TRANSCODE_BUILD_DIR)/src/transcode.h
@@ -238,7 +238,7 @@ transcode-stage: $(TRANSCODE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/transcode
 #
 $(TRANSCODE_IPK_DIR)/CONTROL/control:
-	@install -d $(TRANSCODE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(TRANSCODE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: transcode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

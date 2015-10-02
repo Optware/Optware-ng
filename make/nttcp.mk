@@ -109,7 +109,7 @@ $(NTTCP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTTCP_SOURCE) $(NTTCP_PATCHES) make/
 	$(NTTCP_UNZIP) $(DL_DIR)/$(NTTCP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NTTCP_PATCHES)" ; \
 		then cat $(NTTCP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NTTCP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NTTCP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NTTCP_DIR)" != "$(NTTCP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NTTCP_DIR) $(NTTCP_BUILD_DIR) ; \
@@ -146,7 +146,7 @@ nttcp-stage: $(NTTCP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nttcp
 #
 $(NTTCP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nttcp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,11 +174,11 @@ $(NTTCP_IPK_DIR)/CONTROL/control:
 #
 $(NTTCP_IPK): $(NTTCP_BUILD_DIR)/.built
 	rm -rf $(NTTCP_IPK_DIR) $(BUILD_DIR)/nttcp_*_$(TARGET_ARCH).ipk
-	install -d $(NTTCP_IPK_DIR)/opt/bin
-	install $(NTTCP_BUILD_DIR)/nttcp $(NTTCP_IPK_DIR)/opt/bin/nttcp
+	$(INSTALL) -d $(NTTCP_IPK_DIR)/opt/bin
+	$(INSTALL) $(NTTCP_BUILD_DIR)/nttcp $(NTTCP_IPK_DIR)/opt/bin/nttcp
 	$(TARGET_STRIP) $(NTTCP_IPK_DIR)/opt/bin/nttcp
-	install -d $(NTTCP_IPK_DIR)/opt/man/man1
-	install -m 644 $(NTTCP_BUILD_DIR)/nttcp.1 $(NTTCP_IPK_DIR)/opt/man/man1/nttcp.1
+	$(INSTALL) -d $(NTTCP_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m 644 $(NTTCP_BUILD_DIR)/nttcp.1 $(NTTCP_IPK_DIR)/opt/man/man1/nttcp.1
 	$(MAKE) $(NTTCP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTTCP_IPK_DIR)
 

@@ -113,7 +113,7 @@ $(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCH
 	$(MAKE) libdb-stage openssl-stage gdbm-stage cyrus-sasl-stage
 	rm -rf $(BUILD_DIR)/$(OPENLDAP_DIR) $(@D)
 	$(OPENLDAP_UNZIP) $(DL_DIR)/$(OPENLDAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(OPENLDAP_PATCHES) | patch -d $(BUILD_DIR)/$(OPENLDAP_DIR) -p1
+	cat $(OPENLDAP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(OPENLDAP_DIR) -p1
 	mv $(BUILD_DIR)/$(OPENLDAP_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -164,7 +164,7 @@ openldap-stage openldap-libs-stage: $(OPENLDAP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/openldap
 #
 $(OPENLDAP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openldap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -178,7 +178,7 @@ $(OPENLDAP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(OPENLDAP_CONFLICTS)" >>$@
 
 $(OPENLDAP_LIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: openldap-libs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,20 +207,20 @@ $(OPENLDAP_IPK): $(OPENLDAP_BUILD_DIR)/.built
 	rm -rf $(OPENLDAP_IPK_DIR) $(BUILD_DIR)/openldap_*_$(TARGET_ARCH).ipk
 	rm -rf $(OPENLDAP_LIBS_IPK_DIR) $(BUILD_DIR)/openldap-libs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENLDAP_BUILD_DIR) DESTDIR=$(OPENLDAP_IPK_DIR) STRIP="" install
-	install -d $(OPENLDAP_IPK_DIR)/opt/etc/
-#	install -m 755 $(OPENLDAP_SOURCE_DIR)/openldap.conf $(OPENLDAP_IPK_DIR)/opt/etc/openldap.conf
-	install -d $(OPENLDAP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(OPENLDAP_SOURCE_DIR)/rc.openldap $(OPENLDAP_IPK_DIR)/opt/etc/init.d/S58slapd
+	$(INSTALL) -d $(OPENLDAP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 755 $(OPENLDAP_SOURCE_DIR)/openldap.conf $(OPENLDAP_IPK_DIR)/opt/etc/openldap.conf
+	$(INSTALL) -d $(OPENLDAP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(OPENLDAP_SOURCE_DIR)/rc.openldap $(OPENLDAP_IPK_DIR)/opt/etc/init.d/S58slapd
 	$(MAKE)  $(OPENLDAP_IPK_DIR)/CONTROL/control
-	install -m 644 $(OPENLDAP_SOURCE_DIR)/postinst $(OPENLDAP_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(OPENLDAP_SOURCE_DIR)/prerm $(OPENLDAP_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(OPENLDAP_SOURCE_DIR)/postinst $(OPENLDAP_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(OPENLDAP_SOURCE_DIR)/prerm $(OPENLDAP_IPK_DIR)/CONTROL/prerm
 	echo $(OPENLDAP_CONFFILES) | sed -e 's/ /\n/g' > $(OPENLDAP_IPK_DIR)/CONTROL/conffiles
 	rm -f $(OPENLDAP_IPK_DIR)/opt/lib/*.a
 	rm -f $(OPENLDAP_IPK_DIR)/opt/lib/*.la
 	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)/opt/lib/*.so
 	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)/opt/libexec/*
-	install -d $(OPENLDAP_LIBS_IPK_DIR)/opt
+	$(INSTALL) -d $(OPENLDAP_LIBS_IPK_DIR)/opt
 	mv $(OPENLDAP_IPK_DIR)/opt/include  $(OPENLDAP_LIBS_IPK_DIR)/opt
 	mv $(OPENLDAP_IPK_DIR)/opt/lib  $(OPENLDAP_LIBS_IPK_DIR)/opt
 	$(MAKE)  $(OPENLDAP_LIBS_IPK_DIR)/CONTROL/control

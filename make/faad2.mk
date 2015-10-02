@@ -120,7 +120,7 @@ $(FAAD2_BUILD_DIR)/.configured: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES) make/
 	$(FAAD2_UNZIP) $(DL_DIR)/$(FAAD2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FAAD2_PATCHES)" ; \
 		then cat $(FAAD2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FAAD2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FAAD2_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FAAD2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FAAD2_DIR) $(@D) ; \
@@ -175,7 +175,7 @@ faad2-stage: $(FAAD2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/faad2
 #
 $(FAAD2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: faad2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,15 +205,15 @@ $(FAAD2_IPK): $(FAAD2_BUILD_DIR)/.built
 	rm -rf $(FAAD2_IPK_DIR) $(BUILD_DIR)/faad2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FAAD2_BUILD_DIR) DESTDIR=$(FAAD2_IPK_DIR) install-strip
 	$(STRIP_COMMAND) $(FAAD2_IPK_DIR)/opt/lib/libfaad.so.[0-9].[0-9].[0-9]
-#	install -d $(FAAD2_IPK_DIR)/opt/etc/
-#	install -m 644 $(FAAD2_SOURCE_DIR)/faad2.conf $(FAAD2_IPK_DIR)/opt/etc/faad2.conf
-#	install -d $(FAAD2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FAAD2_SOURCE_DIR)/rc.faad2 $(FAAD2_IPK_DIR)/opt/etc/init.d/SXXfaad2
+#	$(INSTALL) -d $(FAAD2_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FAAD2_SOURCE_DIR)/faad2.conf $(FAAD2_IPK_DIR)/opt/etc/faad2.conf
+#	$(INSTALL) -d $(FAAD2_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FAAD2_SOURCE_DIR)/rc.faad2 $(FAAD2_IPK_DIR)/opt/etc/init.d/SXXfaad2
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXfaad2
 	$(MAKE) $(FAAD2_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FAAD2_SOURCE_DIR)/postinst $(FAAD2_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FAAD2_SOURCE_DIR)/postinst $(FAAD2_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FAAD2_SOURCE_DIR)/prerm $(FAAD2_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FAAD2_SOURCE_DIR)/prerm $(FAAD2_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(FAAD2_CONFFILES) | sed -e 's/ /\n/g' > $(FAAD2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FAAD2_IPK_DIR)

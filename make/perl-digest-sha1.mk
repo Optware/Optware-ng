@@ -71,7 +71,7 @@ $(PERL-DIGEST-SHA1_BUILD_DIR)/.staged: $(PERL-DIGEST-SHA1_BUILD_DIR)/.built
 perl-digest-sha1-stage: $(PERL-DIGEST-SHA1_BUILD_DIR)/.staged
 
 $(PERL-DIGEST-SHA1_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-digest-sha1" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

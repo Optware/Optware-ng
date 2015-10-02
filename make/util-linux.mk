@@ -120,7 +120,7 @@ $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX
 	$(UTIL_LINUX_UNZIP) $(DL_DIR)/$(UTIL_LINUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UTIL_LINUX_PATCHES)" ; \
 		then cat $(UTIL_LINUX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UTIL_LINUX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UTIL_LINUX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D) ; \
@@ -201,7 +201,7 @@ util-linux-stage: $(UTIL_LINUX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/util-linux
 #
 $(UTIL_LINUX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: util-linux" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

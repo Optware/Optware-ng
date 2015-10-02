@@ -172,7 +172,7 @@ endif
 	$(SQUID3_UNZIP) $(DL_DIR)/$(SQUID3_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQUID3_PATCHES)" ; \
 		then cat $(SQUID3_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SQUID3_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SQUID3_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SQUID3_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SQUID3_DIR) $(@D) ; \
@@ -235,7 +235,7 @@ $(SQUID3_BUILD_DIR)/.staged: $(SQUID3_BUILD_DIR)/.built
 squid3-stage: $(SQUID3_BUILD_DIR)/.staged
 
 $(SQUID3_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: squid3" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -274,14 +274,14 @@ $(SQUID3_IPK): $(SQUID3_BUILD_DIR)/.built
 		libexec/ntlm_smb_lm_auth \
 		libexec/squid_unix_group \
 		;
-	install -d $(SQUID3_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SQUID3_SOURCE_DIR)/rc.squid $(SQUID3_IPK_DIR)/opt/etc/init.d/S80squid
+	$(INSTALL) -d $(SQUID3_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SQUID3_SOURCE_DIR)/rc.squid $(SQUID3_IPK_DIR)/opt/etc/init.d/S80squid
 	ln -sf /opt/etc/init.d/S80squid $(SQUID3_IPK_DIR)/opt/etc/init.d/K80squid 
-	install -m 755 $(SQUID3_SOURCE_DIR)/squid.delay-start.sh $(SQUID3_IPK_DIR)$(SQUID3_SYSCONF_DIR)/squid.delay-start.sh
-	install -d $(SQUID3_IPK_DIR)/CONTROL
+	$(INSTALL) -m 755 $(SQUID3_SOURCE_DIR)/squid.delay-start.sh $(SQUID3_IPK_DIR)$(SQUID3_SYSCONF_DIR)/squid.delay-start.sh
+	$(INSTALL) -d $(SQUID3_IPK_DIR)/CONTROL
 	$(MAKE) $(SQUID3_IPK_DIR)/CONTROL/control
-	install -m 644 $(SQUID3_SOURCE_DIR)/postinst $(SQUID3_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SQUID3_SOURCE_DIR)/preinst $(SQUID3_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SQUID3_SOURCE_DIR)/postinst $(SQUID3_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SQUID3_SOURCE_DIR)/preinst $(SQUID3_IPK_DIR)/CONTROL/preinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQUID3_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(SQUID3_IPK_DIR)
 

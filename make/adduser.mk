@@ -106,7 +106,7 @@ $(ADDUSER_BUILD_DIR)/.configured: $(ADDUSER_SOURCE_DIR)/defconfig make/adduser.m
 	$(MAKE) $(DL_DIR)/$(BUSYBOX_SOURCE)
 	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ADDUSER_PATCHES) | patch -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1
+	cat $(ADDUSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1
 	mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
 	cp $(ADDUSER_SOURCE_DIR)/defconfig $(ADDUSER_BUILD_DIR)/.config
 ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
@@ -151,7 +151,7 @@ adduser: $(ADDUSER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/adduser
 #
 $(ADDUSER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: adduser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -178,14 +178,14 @@ $(ADDUSER_IPK_DIR)/CONTROL/control:
 #
 $(ADDUSER_IPK): $(ADDUSER_BUILD_DIR)/.built
 	rm -rf $(ADDUSER_IPK_DIR) $(BUILD_DIR)/adduser_*_$(TARGET_ARCH).ipk
-	install -d $(ADDUSER_IPK_DIR)/opt/bin
-	install -m 755 $(ADDUSER_BUILD_DIR)/busybox $(ADDUSER_IPK_DIR)/opt/bin/adduser
+	$(INSTALL) -d $(ADDUSER_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(ADDUSER_BUILD_DIR)/busybox $(ADDUSER_IPK_DIR)/opt/bin/adduser
 	cd $(ADDUSER_IPK_DIR)/opt/bin && ln -fs adduser addgroup
 	cd $(ADDUSER_IPK_DIR)/opt/bin && ln -fs adduser delgroup
 	cd $(ADDUSER_IPK_DIR)/opt/bin && ln -fs adduser deluser
 	$(MAKE) $(ADDUSER_IPK_DIR)/CONTROL/control
-	install -m 644 $(ADDUSER_SOURCE_DIR)/postinst $(ADDUSER_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(ADDUSER_SOURCE_DIR)/prerm $(ADDUSER_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(ADDUSER_SOURCE_DIR)/postinst $(ADDUSER_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(ADDUSER_SOURCE_DIR)/prerm $(ADDUSER_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(ADDUSER_IPK_DIR)/CONTROL/postinst $(ADDUSER_IPK_DIR)/CONTROL/prerm; \

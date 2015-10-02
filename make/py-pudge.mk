@@ -113,7 +113,7 @@ $(PY-PUDGE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PUDGE_SOURCE) $(PY-PUDGE_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-PUDGE_DIR)
 	$(PY-PUDGE_UNZIP) $(DL_DIR)/$(PY-PUDGE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PUDGE_PATCHES)" ; then \
-	    cat $(PY-PUDGE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PUDGE_DIR) -p0 ; \
+	    cat $(PY-PUDGE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PUDGE_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PUDGE_DIR) $(PY-PUDGE_BUILD_DIR)/2.4
 	(cd $(PY-PUDGE_BUILD_DIR)/2.4; \
@@ -123,7 +123,7 @@ $(PY-PUDGE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PUDGE_SOURCE) $(PY-PUDGE_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-PUDGE_DIR)
 	$(PY-PUDGE_UNZIP) $(DL_DIR)/$(PY-PUDGE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PUDGE_PATCHES)" ; then \
-	    cat $(PY-PUDGE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PUDGE_DIR) -p0 ; \
+	    cat $(PY-PUDGE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PUDGE_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PUDGE_DIR) $(PY-PUDGE_BUILD_DIR)/2.5
 	(cd $(PY-PUDGE_BUILD_DIR)/2.5; \
@@ -161,7 +161,7 @@ py-pudge-stage: $(PY-PUDGE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-pudge
 #
 $(PY24-PUDGE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-pudge" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,7 +175,7 @@ $(PY24-PUDGE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PUDGE_CONFLICTS)" >>$@
 
 $(PY25-PUDGE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pudge" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

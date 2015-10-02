@@ -113,7 +113,7 @@ $(PICOCOM_BUILD_DIR)/.configured: $(DL_DIR)/$(PICOCOM_SOURCE) $(PICOCOM_PATCHES)
 	$(PICOCOM_UNZIP) $(DL_DIR)/$(PICOCOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PICOCOM_PATCHES)" ; \
 		then cat $(PICOCOM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PICOCOM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PICOCOM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PICOCOM_DIR)" != "$(PICOCOM_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PICOCOM_DIR) $(PICOCOM_BUILD_DIR) ; \
@@ -166,7 +166,7 @@ picocom-stage: $(PICOCOM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/picocom
 #
 $(PICOCOM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: picocom" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,21 +195,21 @@ $(PICOCOM_IPK_DIR)/CONTROL/control:
 $(PICOCOM_IPK): $(PICOCOM_BUILD_DIR)/.built
 	rm -rf $(PICOCOM_IPK_DIR) $(BUILD_DIR)/picocom_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PICOCOM_BUILD_DIR) DESTDIR=$(PICOCOM_IPK_DIR) install-strip
-	install -d $(PICOCOM_IPK_DIR)/opt/bin $(PICOCOM_IPK_DIR)/opt/share/doc/picocom $(PICOCOM_IPK_DIR)/opt/share/man/man8
-	install -m 755 $(PICOCOM_BUILD_DIR)/picocom $(PICOCOM_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(PICOCOM_IPK_DIR)/opt/bin $(PICOCOM_IPK_DIR)/opt/share/doc/picocom $(PICOCOM_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -m 755 $(PICOCOM_BUILD_DIR)/picocom $(PICOCOM_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(PICOCOM_IPK_DIR)/opt/bin/picocom
-	install -m 755 $(PICOCOM_BUILD_DIR)/pc* $(PICOCOM_IPK_DIR)/opt/bin/
-	install -m 644 $(PICOCOM_BUILD_DIR)/picocom.8 $(PICOCOM_IPK_DIR)/opt/share/man/man8/
-	install -m 644 $(PICOCOM_BUILD_DIR)/picocom.8.html $(PICOCOM_BUILD_DIR)/picocom.8.ps \
+	$(INSTALL) -m 755 $(PICOCOM_BUILD_DIR)/pc* $(PICOCOM_IPK_DIR)/opt/bin/
+	$(INSTALL) -m 644 $(PICOCOM_BUILD_DIR)/picocom.8 $(PICOCOM_IPK_DIR)/opt/share/man/man8/
+	$(INSTALL) -m 644 $(PICOCOM_BUILD_DIR)/picocom.8.html $(PICOCOM_BUILD_DIR)/picocom.8.ps \
 		$(PICOCOM_IPK_DIR)/opt/share/doc/picocom/
-#	install -m 644 $(PICOCOM_SOURCE_DIR)/picocom.conf $(PICOCOM_IPK_DIR)/opt/etc/picocom.conf
-#	install -d $(PICOCOM_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PICOCOM_SOURCE_DIR)/rc.picocom $(PICOCOM_IPK_DIR)/opt/etc/init.d/SXXpicocom
+#	$(INSTALL) -m 644 $(PICOCOM_SOURCE_DIR)/picocom.conf $(PICOCOM_IPK_DIR)/opt/etc/picocom.conf
+#	$(INSTALL) -d $(PICOCOM_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PICOCOM_SOURCE_DIR)/rc.picocom $(PICOCOM_IPK_DIR)/opt/etc/init.d/SXXpicocom
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXpicocom
 	$(MAKE) $(PICOCOM_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PICOCOM_SOURCE_DIR)/postinst $(PICOCOM_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PICOCOM_SOURCE_DIR)/postinst $(PICOCOM_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PICOCOM_SOURCE_DIR)/prerm $(PICOCOM_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PICOCOM_SOURCE_DIR)/prerm $(PICOCOM_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(PICOCOM_CONFFILES) | sed -e 's/ /\n/g' > $(PICOCOM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PICOCOM_IPK_DIR)

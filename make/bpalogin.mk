@@ -108,7 +108,7 @@ $(BPALOGIN_BUILD_DIR)/.configured: $(DL_DIR)/$(BPALOGIN_SOURCE) $(BPALOGIN_PATCH
 	$(BPALOGIN_UNZIP) $(DL_DIR)/$(BPALOGIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BPALOGIN_PATCHES)" ; \
 		then cat $(BPALOGIN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BPALOGIN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BPALOGIN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BPALOGIN_DIR)" != "$(BPALOGIN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(BPALOGIN_DIR) $(BPALOGIN_BUILD_DIR) ; \
@@ -158,7 +158,7 @@ bpalogin-stage: $(BPALOGIN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bpalogin
 #
 $(BPALOGIN_IPK_DIR)/CONTROL/control:
-	@install -d $(BPALOGIN_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(BPALOGIN_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: bpalogin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -186,15 +186,15 @@ $(BPALOGIN_IPK_DIR)/CONTROL/control:
 #
 $(BPALOGIN_IPK): $(BPALOGIN_BUILD_DIR)/.built
 	rm -rf $(BPALOGIN_IPK_DIR) $(BUILD_DIR)/bpalogin_*_$(TARGET_ARCH).ipk
-	install -d $(BPALOGIN_IPK_DIR)/opt/sbin/
-	install -m 755 $(BPALOGIN_BUILD_DIR)/bpalogin $(BPALOGIN_IPK_DIR)/opt/sbin/bpalogin
-	install -d $(BPALOGIN_IPK_DIR)/opt/etc/
-	install -m 644 $(BPALOGIN_SOURCE_DIR)/bpalogin.conf $(BPALOGIN_IPK_DIR)/opt/etc/bpalogin.conf
-	install -d $(BPALOGIN_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(BPALOGIN_SOURCE_DIR)/rc.bpalogin $(BPALOGIN_IPK_DIR)/opt/etc/init.d/S05bpalogin
+	$(INSTALL) -d $(BPALOGIN_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(BPALOGIN_BUILD_DIR)/bpalogin $(BPALOGIN_IPK_DIR)/opt/sbin/bpalogin
+	$(INSTALL) -d $(BPALOGIN_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(BPALOGIN_SOURCE_DIR)/bpalogin.conf $(BPALOGIN_IPK_DIR)/opt/etc/bpalogin.conf
+	$(INSTALL) -d $(BPALOGIN_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(BPALOGIN_SOURCE_DIR)/rc.bpalogin $(BPALOGIN_IPK_DIR)/opt/etc/init.d/S05bpalogin
 	$(MAKE) $(BPALOGIN_IPK_DIR)/CONTROL/control
-	install -m 755 $(BPALOGIN_SOURCE_DIR)/postinst $(BPALOGIN_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(BPALOGIN_SOURCE_DIR)/prerm $(BPALOGIN_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(BPALOGIN_SOURCE_DIR)/postinst $(BPALOGIN_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(BPALOGIN_SOURCE_DIR)/prerm $(BPALOGIN_IPK_DIR)/CONTROL/prerm
 	echo $(BPALOGIN_CONFFILES) | sed -e 's/ /\n/g' > $(BPALOGIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BPALOGIN_IPK_DIR)
 

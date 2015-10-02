@@ -5,7 +5,7 @@
      -e $(BROKEN_PATH_FIX) \
      -e 's|@@GITWEBDIR@@|$(gitwebdir_SQ)|g' \
 -    -e 's|@@PERL@@|$(PERL_PATH_SQ)|g' \
-+    -e 's|@@PERL@@|/opt/bin/perl|g' \
++    -e 's|@@PERL@@|%OPTWARE_TARGET_PREFIX%/bin/perl|g' \
      $@.sh >$@+
  endef
  
@@ -14,7 +14,7 @@
  	INSTLIBDIR=`MAKEFLAGS= $(MAKE) -C perl -s --no-print-directory instlibdir` && \
  	sed -e '1{' \
 -	    -e '	s|#!.*perl|#!$(PERL_PATH_SQ)|' \
-+	    -e '	s|#!.*perl|#!/opt/bin/perl|' \
++	    -e '	s|#!.*perl|#!%OPTWARE_TARGET_PREFIX%/bin/perl|' \
  	    -e '	h' \
  	    -e '	s=.*=use lib (split(/$(pathsep)/, $$ENV{GITPERLLIB} || "'"$$INSTLIBDIR"'"));=' \
  	    -e '	H' \

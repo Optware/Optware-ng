@@ -159,7 +159,7 @@ $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 	$(AMULE_UNZIP) $(DL_DIR)/$(AMULE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AMULE_PATCHES)" ; \
 		then cat $(AMULE_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(AMULE_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(AMULE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AMULE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AMULE_DIR) $(@D) ; \
@@ -208,7 +208,7 @@ $(AMULE_BUILD_DIR)/.staged: $(AMULE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/amule
 #
 $(AMULE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: amule" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -237,13 +237,13 @@ $(AMULE_IPK_DIR)/CONTROL/control:
 $(AMULE_IPK): $(AMULE_BUILD_DIR)/.built
 	rm -rf $(AMULE_IPK_DIR) $(BUILD_DIR)/amule_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AMULE_BUILD_DIR) DESTDIR=$(AMULE_IPK_DIR) program_transform_name=s/^$(GNU_TARGET_NAME)-// install-strip
-#	install -d $(AMULE_IPK_DIR)/opt/etc/
-#	install -m 644 $(AMULE_SOURCE_DIR)/amule.conf $(AMULE_IPK_DIR)/opt/etc/amule.conf
-	install -d $(AMULE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(AMULE_SOURCE_DIR)/rc.amuled $(AMULE_IPK_DIR)/opt/etc/init.d/S57amuled
+#	$(INSTALL) -d $(AMULE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(AMULE_SOURCE_DIR)/amule.conf $(AMULE_IPK_DIR)/opt/etc/amule.conf
+	$(INSTALL) -d $(AMULE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(AMULE_SOURCE_DIR)/rc.amuled $(AMULE_IPK_DIR)/opt/etc/init.d/S57amuled
 	$(MAKE) $(AMULE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(AMULE_SOURCE_DIR)/postinst $(AMULE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(AMULE_SOURCE_DIR)/prerm $(AMULE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(AMULE_SOURCE_DIR)/postinst $(AMULE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(AMULE_SOURCE_DIR)/prerm $(AMULE_IPK_DIR)/CONTROL/prerm
 	echo $(AMULE_CONFFILES) | sed -e 's/ /\n/g' > $(AMULE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AMULE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(AMULE_IPK_DIR)

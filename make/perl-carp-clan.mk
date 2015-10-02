@@ -41,7 +41,7 @@ $(PERL-CARP-CLAN_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CARP-CLAN_SOURCE) $(PE
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-CARP-CLAN_DIR) $(@D)
 	$(PERL-CARP-CLAN_UNZIP) $(DL_DIR)/$(PERL-CARP-CLAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-CARP-CLAN_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-CARP-CLAN_DIR) -p1
+#	cat $(PERL-CARP-CLAN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-CARP-CLAN_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-CARP-CLAN_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -74,7 +74,7 @@ $(PERL-CARP-CLAN_BUILD_DIR)/.staged: $(PERL-CARP-CLAN_BUILD_DIR)/.built
 perl-carp-clan-stage: $(PERL-CARP-CLAN_BUILD_DIR)/.staged
 
 $(PERL-CARP-CLAN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-carp-clan" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -97,8 +97,8 @@ $(PERL-CARP-CLAN_IPK): $(PERL-CARP-CLAN_BUILD_DIR)/.built
 	)
 	find $(PERL-CARP-CLAN_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-CARP-CLAN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PERL-CARP-CLAN_SOURCE_DIR)/postinst $(PERL-CARP-CLAN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PERL-CARP-CLAN_SOURCE_DIR)/prerm $(PERL-CARP-CLAN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PERL-CARP-CLAN_SOURCE_DIR)/postinst $(PERL-CARP-CLAN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PERL-CARP-CLAN_SOURCE_DIR)/prerm $(PERL-CARP-CLAN_IPK_DIR)/CONTROL/prerm
 	echo $(PERL-CARP-CLAN_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-CARP-CLAN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-CARP-CLAN_IPK_DIR)
 

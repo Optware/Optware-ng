@@ -57,7 +57,7 @@ $(FCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(FCGI_SOURCE) $(FCGI_PATCHES) make/fcg
 	$(FCGI_UNZIP) $(DL_DIR)/$(FCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FCGI_PATCHES)" ; \
 		then cat $(FCGI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FCGI_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FCGI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FCGI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FCGI_DIR) $(@D) ; \
@@ -108,7 +108,7 @@ fcgi-stage: $(FCGI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fcgi
 #
 $(FCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(FCGI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(FCGI_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: fcgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -123,7 +123,7 @@ $(FCGI_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(FCGI_CONFLICTS)" >>$@
 
 $(FCGI_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(FCGI_DEV_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(FCGI_DEV_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: fcgi-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

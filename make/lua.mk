@@ -138,7 +138,7 @@ $(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES) make/lua.mk
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LUA_PATCHES)" ; \
 		then cat $(LUA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LUA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LUA_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(LUA_DIR) $(@D)
 	sed -i -e 's|/usr/local|/opt|' $(@D)/src/luaconf.h
@@ -191,7 +191,7 @@ lua-stage: $(LUA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lua
 #
 $(LUA_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lua" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -223,7 +223,7 @@ $(LUA_IPK): $(LUA_BUILD_DIR)/.built
 	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(LUA_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(LUA_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(LUA_IPK_DIR)/opt/lib/liblua.so
-	install -d $(LUA_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) -d $(LUA_IPK_DIR)/opt/lib/pkgconfig
 	sed -e 's|^prefix=.*|prefix=/opt|' $(LUA_BUILD_DIR)/etc/lua.pc > $(LUA_IPK_DIR)/opt/lib/pkgconfig/lua.pc
 	$(MAKE) $(LUA_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUA_IPK_DIR)

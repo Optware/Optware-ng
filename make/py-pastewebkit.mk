@@ -121,7 +121,7 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR)
 	$(PY-PASTEWEBKIT_UNZIP) $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PASTEWEBKIT_PATCHES)"; then \
-	    cat $(PY-PASTEWEBKIT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
+	    cat $(PY-PASTEWEBKIT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)/2.4
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.4; \
@@ -136,7 +136,7 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR)
 	$(PY-PASTEWEBKIT_UNZIP) $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PASTEWEBKIT_PATCHES)"; then \
-	    cat $(PY-PASTEWEBKIT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
+	    cat $(PY-PASTEWEBKIT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)/2.5
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.5; \
@@ -151,7 +151,7 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR)
 	$(PY-PASTEWEBKIT_UNZIP) $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PASTEWEBKIT_PATCHES)"; then \
-	    cat $(PY-PASTEWEBKIT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
+	    cat $(PY-PASTEWEBKIT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)/2.6
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.6; \
@@ -166,7 +166,7 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR)
 	$(PY-PASTEWEBKIT_UNZIP) $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PASTEWEBKIT_PATCHES)"; then \
-	    cat $(PY-PASTEWEBKIT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
+	    cat $(PY-PASTEWEBKIT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)/2.7
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.7; \
@@ -220,7 +220,7 @@ py-pastewebkit-stage: $(PY-PASTEWEBKIT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-pastewebkit
 #
 $(PY24-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-pastewebkit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -234,7 +234,7 @@ $(PY24-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTEWEBKIT_CONFLICTS)" >>$@
 
 $(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pastewebkit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -248,7 +248,7 @@ $(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTEWEBKIT_CONFLICTS)" >>$@
 
 $(PY26-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-pastewebkit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -262,7 +262,7 @@ $(PY26-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTEWEBKIT_CONFLICTS)" >>$@
 
 $(PY27-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-pastewebkit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

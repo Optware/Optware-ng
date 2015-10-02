@@ -71,7 +71,7 @@ $(WEBMIN_BUILD_DIR)/.staged: $(WEBMIN_BUILD_DIR)/.built
 webmin-stage: $(WEBMIN_BUILD_DIR)/.staged
 
 $(WEBMIN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: webmin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -88,10 +88,10 @@ $(WEBMIN_IPK_DIR)/CONTROL/control:
 $(WEBMIN_IPK): $(WEBMIN_BUILD_DIR)/.built
 	rm -rf $(WEBMIN_IPK_DIR) $(BUILD_DIR)/webmin_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(WEBMIN_BUILD_DIR) DESTDIR=$(WEBMIN_IPK_DIR) install
-	install -d $(WEBMIN_IPK_DIR)/opt/etc/webmin
-	install -d $(WEBMIN_IPK_DIR)/opt/etc/init.d
-	install -d $(WEBMIN_IPK_DIR)/opt/etc/pam.d
-	install -d $(WEBMIN_IPK_DIR)/opt/share/webmin
+	$(INSTALL) -d $(WEBMIN_IPK_DIR)/opt/etc/webmin
+	$(INSTALL) -d $(WEBMIN_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(WEBMIN_IPK_DIR)/opt/etc/pam.d
+	$(INSTALL) -d $(WEBMIN_IPK_DIR)/opt/share/webmin
 	#
 	cd $(WEBMIN_IPK_DIR)/opt; \
 	for d in acl servers webmin webminlog Webmin; do \
@@ -105,16 +105,16 @@ $(WEBMIN_IPK): $(WEBMIN_BUILD_DIR)/.built
 	; do \
 		cp -rp $(WEBMIN_BUILD_DIR)/$$d share/webmin/; \
 		for c in share/webmin/$$d/config share/webmin/$$d/'config-*-linux'; do \
-			install -d etc/webmin/$$d/; \
+			$(INSTALL) -d etc/webmin/$$d/; \
 			if test -f $$c; then \
 				mv $$c etc/webmin/$$d/config; touch etc/webmin/$$d/admin.acl; \
 			fi; \
 		done; \
 	done
-#	install $(WEBMIN_SOURCE_DIR)/webmin.rc $(WEBMIN_IPK_DIR)/opt/etc/init.d/webmin
-#	install $(WEBMIN_SOURCE_DIR)/webmin.pam $(WEBMIN_IPK_DIR)/opt/etc/pam.d/webmin
+#	$(INSTALL) $(WEBMIN_SOURCE_DIR)/webmin.rc $(WEBMIN_IPK_DIR)/opt/etc/init.d/webmin
+#	$(INSTALL) $(WEBMIN_SOURCE_DIR)/webmin.pam $(WEBMIN_IPK_DIR)/opt/etc/pam.d/webmin
 	$(MAKE) $(WEBMIN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(WEBMIN_SOURCE_DIR)/postinst $(WEBMIN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(WEBMIN_SOURCE_DIR)/postinst $(WEBMIN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=$(OPTWARE_TARGET)' $(WEBMIN_IPK_DIR)/CONTROL/postinst
 	echo $(WEBMIN_CONFFILES) | sed -e 's/ /\n/g' > $(WEBMIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WEBMIN_IPK_DIR)

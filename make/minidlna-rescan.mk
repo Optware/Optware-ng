@@ -122,17 +122,17 @@ endif
 	$(MAKE) libexif-stage libid3tag-stage libjpeg-stage libvorbis-stage bzip2-stage xz-utils-stage \
 		e2fsprogs-stage ffmpeg-stage flac-stage sqlite-stage ffmpegthumbnailer-stage libpng-stage
 	rm -rf $(BUILD_DIR)/$(MINIDLNA_RESCAN_DIR) $(@D)
-	install -d $(@D)
+	$(INSTALL) -d $(@D)
 	tar -C $(@D) -xzf $(DL_DIR)/minidlna-$(MINIDLNA_RESCAN_VERSION).tar.gz
 	if test -n "$(MINIDLNA_RESCAN_PATCHES)" ; \
 		then cat $(MINIDLNA_RESCAN_PATCHES) | \
-		patch -bd $(@D)/$(MINIDLNA_RESCAN_DIR) -p1 ; \
+		$(PATCH) -bd $(@D)/$(MINIDLNA_RESCAN_DIR) -p1 ; \
 	fi
 	mv $(@D)/$(MINIDLNA_RESCAN_DIR) $(@D)/nothumbs
 	tar -C $(@D) -xzf $(DL_DIR)/minidlna-$(MINIDLNA_RESCAN_VERSION).tar.gz
 	if test -n "$(MINIDLNA_RESCAN_PATCHES)" ; \
 		then cat $(MINIDLNA_RESCAN_PATCHES) | \
-		patch -bd $(@D)/$(MINIDLNA_RESCAN_DIR) -p1 ; \
+		$(PATCH) -bd $(@D)/$(MINIDLNA_RESCAN_DIR) -p1 ; \
 	fi
 	mv $(@D)/$(MINIDLNA_RESCAN_DIR) $(@D)/thumbs
 	### configure version without thumbnails
@@ -227,7 +227,7 @@ minidlna-rescan-stage: $(MINIDLNA_RESCAN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/minidlna-rescan
 #
 $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: minidlna-rescan" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -246,7 +246,7 @@ endif
 	@echo "Conflicts: $(MINIDLNA_RESCAN_CONFLICTS)" >>$@
 
 $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: minidlna-rescan-thumbnail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -285,12 +285,12 @@ $(MINIDLNA_RESCAN_IPK): $(MINIDLNA_RESCAN_BUILD_DIR)/.built
 		ETCINSTALLDIR=$(MINIDLNA_RESCAN_IPK_DIR)/opt/etc \
 		;
 	$(STRIP_COMMAND) $(MINIDLNA_RESCAN_IPK_DIR)/opt/sbin/*
-	install -d $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/init.d $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/minidlna-rescan
-	install -m 644 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna.conf $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/minidlna.conf
-	install -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/rc.minidlna-rescan $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/init.d/S98minidlna
+	$(INSTALL) -d $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/init.d $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/minidlna-rescan
+	$(INSTALL) -m 644 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna.conf $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/minidlna.conf
+	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/rc.minidlna-rescan $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/postinst $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/prerm $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/postinst $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/prerm $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/prerm
 	echo $(MINIDLNA_RESCAN_CONFFILES) | sed -e 's/ /\n/g' > $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIDLNA_RESCAN_IPK_DIR)
 
@@ -303,12 +303,12 @@ $(MINIDLNA_RESCAN_THUMBNAIL_IPK): $(MINIDLNA_RESCAN_BUILD_DIR)/.built
 		ETCINSTALLDIR=$(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc \
 		;
 	$(STRIP_COMMAND) $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/sbin/*
-	install -d $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc/init.d
-	install -m 644 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna.thumbs.conf $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc/minidlna.conf
-	install -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/rc.minidlna-rescan $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc/init.d/S98minidlna
+	$(INSTALL) -d $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 644 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna.thumbs.conf $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc/minidlna.conf
+	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/rc.minidlna-rescan $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/postinst $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/prerm $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/postinst $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/prerm $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/prerm
 	echo $(MINIDLNA_RESCAN_CONFFILES) | sed -e 's/ /\n/g' > $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)
 

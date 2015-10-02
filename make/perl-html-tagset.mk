@@ -64,7 +64,7 @@ $(PERL-HTML-TAGSET_BUILD_DIR)/.staged: $(PERL-HTML-TAGSET_BUILD_DIR)/.built
 perl-html-tagset-stage: $(PERL-HTML-TAGSET_BUILD_DIR)/.staged
 
 $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-html-tagset" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

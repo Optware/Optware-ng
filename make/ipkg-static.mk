@@ -116,7 +116,7 @@ $(IPKG-STATIC_BUILD_DIR)/.configured: make/ipkg-static.mk #$(DL_DIR)/ipkg-static
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-opt-$(IPKG-STATIC_VERSION).tar.gz
 	if test -n "$(IPKG-STATIC_PATCHES)" ; \
 		then cat $(IPKG-STATIC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IPKG-STATIC_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IPKG-STATIC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IPKG-STATIC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IPKG-STATIC_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ ipkg-static: $(IPKG-STATIC_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ipkg-static
 #
 $(IPKG-STATIC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ipkg-static" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,7 +193,7 @@ $(IPKG-STATIC_IPK): $(IPKG-STATIC_BUILD_DIR)/.built
 	rm -rf $(IPKG-STATIC_IPK_DIR) $(BUILD_DIR)/ipkg-static_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG-STATIC_BUILD_DIR) DESTDIR=$(IPKG-STATIC_IPK_DIR) install-strip
-	install -d $(IPKG-STATIC_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(IPKG-STATIC_IPK_DIR)/opt/etc/
 ifneq (, $(filter ddwrt ds101 ds101g fsg3 gumstix1151 mss nas100d nslu2 oleg slugosbe slugosle ts72xx wl500g, $(OPTWARE_TARGET)))
 	echo "#Uncomment the following line for native packages feed (if any)" \
 		> $(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
@@ -204,7 +204,7 @@ ifneq (, $(filter ddwrt ds101 ds101g fsg3 gumstix1151 mss nas100d nslu2 oleg slu
 	echo "dest /opt/ /" >> $(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
 	echo "#option verbose-wget" >> $(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
 else
-	install -m 644 $(IPKG-STATIC_SOURCE_DIR)/ipkg.conf \
+	$(INSTALL) -m 644 $(IPKG-STATIC_SOURCE_DIR)/ipkg.conf \
 		$(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
 endif
 	rm -f $(IPKG-STATIC_IPK_DIR)/opt/lib/*.a $(IPKG-STATIC_IPK_DIR)/opt/lib/*.la

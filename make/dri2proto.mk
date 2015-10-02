@@ -63,7 +63,7 @@ DRI2PROTO_IPK=$(BUILD_DIR)/dri2proto_$(DRI2PROTO_VERSION)-$(DRI2PROTO_IPK_VERSIO
 # Automatically create a ipkg control file
 #
 $(DRI2PROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(DRI2PROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(DRI2PROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: dri2proto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(DRI2PROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(DRI2PROTO_SOURCE) $(DRI2PROTO_PA
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(DRI2PROTO_SOURCE)
 	if test -n "$(DRI2PROTO_PATCHES)" ; \
 		then cat $(DRI2PROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DRI2PROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DRI2PROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DRI2PROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DRI2PROTO_DIR) $(@D) ; \

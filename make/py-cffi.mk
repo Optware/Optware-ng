@@ -120,7 +120,7 @@ $(PY-CFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CFFI_SOURCE) $(PY-CFFI_PATCHES)
 	mkdir -p $(@D)/
 #	cd $(BUILD_DIR); $(PY-CFFI_UNZIP) $(DL_DIR)/$(PY-CFFI_SOURCE)
 	$(PY-CFFI_UNZIP) $(DL_DIR)/$(PY-CFFI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CFFI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CFFI_DIR) -p1
+#	cat $(PY-CFFI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CFFI_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CFFI_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -135,7 +135,7 @@ $(PY-CFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CFFI_SOURCE) $(PY-CFFI_PATCHES)
 	)
 #	cd $(BUILD_DIR); $(PY-CFFI_UNZIP) $(DL_DIR)/$(PY-CFFI_SOURCE)
 	$(PY-CFFI_UNZIP) $(DL_DIR)/$(PY-CFFI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CFFI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CFFI_DIR) -p1
+#	cat $(PY-CFFI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CFFI_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CFFI_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -150,7 +150,7 @@ $(PY-CFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CFFI_SOURCE) $(PY-CFFI_PATCHES)
 	)
 #	cd $(BUILD_DIR); $(PY-CFFI_UNZIP) $(DL_DIR)/$(PY-CFFI_SOURCE)
 	$(PY-CFFI_UNZIP) $(DL_DIR)/$(PY-CFFI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CFFI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CFFI_DIR) -p1
+#	cat $(PY-CFFI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CFFI_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CFFI_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
@@ -282,7 +282,7 @@ py-cffi-host-stage: $(PY-CFFI_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-cffi
 #
 $(PY26-CFFI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-cffi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -296,7 +296,7 @@ $(PY26-CFFI_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CFFI_CONFLICTS)" >>$@
 
 $(PY27-CFFI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-cffi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -310,7 +310,7 @@ $(PY27-CFFI_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CFFI_CONFLICTS)" >>$@
 
 $(PY3-CFFI_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py3-cffi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

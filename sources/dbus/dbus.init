@@ -3,7 +3,7 @@
 # Debian init.d script for D-BUS
 # Copyright © 2003 Colin Walters <walters@debian.org>
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
 if grep -q ^messagebus: /etc/group; then
 	# echo There already is an messagebus group on the system.
@@ -15,16 +15,16 @@ if grep -q ^messagebus: /etc/passwd; then
 	true
 else
 	echo -n "No messagebus user found, creating it... "
-	adduser -h /opt/var/run/dbus -g "messagebus daemon" -s /bin/false -D -H $ADDUSER_OPT messagebus > /dev/null 2>&1
+	adduser -h %OPTWARE_TARGET_PREFIX%/var/run/dbus -g "messagebus daemon" -s /bin/false -D -H $ADDUSER_OPT messagebus > /dev/null 2>&1
 	echo done
 fi
 
 set -e
 
-DAEMON=/opt/bin/dbus-daemon
+DAEMON=%OPTWARE_TARGET_PREFIX%/bin/dbus-daemon
 NAME=dbus
 DAEMONUSER=messagebus
-PIDDIR=/opt/var/run/dbus
+PIDDIR=%OPTWARE_TARGET_PREFIX%/var/run/dbus
 PIDFILE=$PIDDIR/pid
 DESC="system message bus"
 
@@ -33,8 +33,8 @@ test -x $DAEMON || exit 0
 # Source defaults file; edit that file to configure this script.
 ENABLED=1
 PARAMS=""
-if [ -e /opt/etc/default/dbus ]; then
-  . /opt/etc/default/dbus
+if [ -e %OPTWARE_TARGET_PREFIX%/etc/default/dbus ]; then
+  . %OPTWARE_TARGET_PREFIX%/etc/default/dbus
 fi
 
 test "$ENABLED" != "0" || exit 0
@@ -80,7 +80,7 @@ case "$1" in
     start_it_up
   ;;
   *)
-    echo "Usage: /opt/etc/init.d/$NAME {start|stop|restart|force-reload}" >&2
+    echo "Usage: %OPTWARE_TARGET_PREFIX%/etc/init.d/$NAME {start|stop|restart|force-reload}" >&2
     exit 1
   ;;
 esac

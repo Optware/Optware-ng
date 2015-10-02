@@ -110,7 +110,7 @@ $(FSLINT_BUILD_DIR)/.configured: $(DL_DIR)/$(FSLINT_SOURCE) $(FSLINT_PATCHES) ma
 	$(FSLINT_UNZIP) $(DL_DIR)/$(FSLINT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FSLINT_PATCHES)" ; \
 		then cat $(FSLINT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FSLINT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FSLINT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FSLINT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FSLINT_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ fslint: $(FSLINT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/fslint
 #
 $(FSLINT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fslint" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,21 +191,21 @@ $(FSLINT_IPK_DIR)/CONTROL/control:
 $(FSLINT_IPK): $(FSLINT_BUILD_DIR)/.built
 	rm -rf $(FSLINT_IPK_DIR) $(BUILD_DIR)/fslint_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(FSLINT_BUILD_DIR) DESTDIR=$(FSLINT_IPK_DIR) install-strip
-	install -d $(FSLINT_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(FSLINT_IPK_DIR)/opt/bin
 	cp -a $(FSLINT_BUILD_DIR)/fslint/* $(FSLINT_IPK_DIR)/opt/bin
-	install -d $(FSLINT_IPK_DIR)/opt/man/man1
-	install -m644 $(FSLINT_BUILD_DIR)/man/fslint.1 $(FSLINT_IPK_DIR)/opt/man/man1
-	install -d $(FSLINT_IPK_DIR)/opt/share/doc/fslint
-	install -m644 $(FSLINT_BUILD_DIR)/doc/* $(FSLINT_IPK_DIR)/opt/share/doc/fslint/
-#	install -d $(FSLINT_IPK_DIR)/opt/etc/
-#	install -m 644 $(FSLINT_SOURCE_DIR)/fslint.conf $(FSLINT_IPK_DIR)/opt/etc/fslint.conf
-#	install -d $(FSLINT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FSLINT_SOURCE_DIR)/rc.fslint $(FSLINT_IPK_DIR)/opt/etc/init.d/SXXfslint
+	$(INSTALL) -d $(FSLINT_IPK_DIR)/opt/man/man1
+	$(INSTALL) -m644 $(FSLINT_BUILD_DIR)/man/fslint.1 $(FSLINT_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(FSLINT_IPK_DIR)/opt/share/doc/fslint
+	$(INSTALL) -m644 $(FSLINT_BUILD_DIR)/doc/* $(FSLINT_IPK_DIR)/opt/share/doc/fslint/
+#	$(INSTALL) -d $(FSLINT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FSLINT_SOURCE_DIR)/fslint.conf $(FSLINT_IPK_DIR)/opt/etc/fslint.conf
+#	$(INSTALL) -d $(FSLINT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FSLINT_SOURCE_DIR)/rc.fslint $(FSLINT_IPK_DIR)/opt/etc/init.d/SXXfslint
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FSLINT_IPK_DIR)/opt/etc/init.d/SXXfslint
 	$(MAKE) $(FSLINT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FSLINT_SOURCE_DIR)/postinst $(FSLINT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FSLINT_SOURCE_DIR)/postinst $(FSLINT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FSLINT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FSLINT_SOURCE_DIR)/prerm $(FSLINT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FSLINT_SOURCE_DIR)/prerm $(FSLINT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FSLINT_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -110,7 +110,7 @@ $(FICY_BUILD_DIR)/.configured: $(DL_DIR)/$(FICY_SOURCE) $(FICY_PATCHES)
 	$(FICY_UNZIP) $(DL_DIR)/$(FICY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FICY_PATCHES)" ; \
 		then cat $(FICY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FICY_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FICY_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FICY_DIR)" != "$(FICY_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FICY_DIR) $(FICY_BUILD_DIR) ; \
@@ -149,7 +149,7 @@ ficy-stage: $(FICY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ficy
 #
 $(FICY_IPK_DIR)/CONTROL/control:
-	@install -d $(FICY_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(FICY_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ficy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -178,9 +178,9 @@ $(FICY_IPK_DIR)/CONTROL/control:
 $(FICY_IPK): $(FICY_BUILD_DIR)/.built
 	rm -rf $(FICY_IPK_DIR) $(BUILD_DIR)/ficy_*_$(TARGET_ARCH).ipk
 	mkdir -p $(FICY_IPK_DIR)/opt/bin
-	install -m 755 $(FICY_BUILD_DIR)/fIcy $(FICY_IPK_DIR)/opt/bin
-	install -m 755 $(FICY_BUILD_DIR)/fPls $(FICY_IPK_DIR)/opt/bin
-	install -m 755 $(FICY_BUILD_DIR)/fResync $(FICY_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(FICY_BUILD_DIR)/fIcy $(FICY_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(FICY_BUILD_DIR)/fPls $(FICY_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(FICY_BUILD_DIR)/fResync $(FICY_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(FICY_IPK_DIR)/opt/bin/fIcy 
 	$(STRIP_COMMAND) $(FICY_IPK_DIR)/opt/bin/fPls
 	$(STRIP_COMMAND) $(FICY_IPK_DIR)/opt/bin/fResync

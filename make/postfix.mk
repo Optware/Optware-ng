@@ -56,7 +56,7 @@ $(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 	$(MAKE) libdb-stage libnsl-stage pcre-stage cyrus-sasl-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(@D)
 	$(POSTFIX_UNZIP) $(DL_DIR)/$(POSTFIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(POSTFIX_PATCHES) | patch -d $(BUILD_DIR)/$(POSTFIX_DIR) -p1
+	cat $(POSTFIX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(POSTFIX_DIR) -p1
 	mv $(BUILD_DIR)/$(POSTFIX_DIR) $(@D)
 	sed -i -e 's/SYSLIBS="-ldb"/SYSLIBS="-ldb-$(LIBDB_LIB_VERSION)"/' $(@D)/makedefs
 	sed -i -e '/^#if (DB_VERSION_MAJOR == 4/s/$$/ || (DB_VERSION_MAJOR > 4)/' $(@D)/src/util/dict_db.c
@@ -119,7 +119,7 @@ $(POSTFIX_BUILD_DIR)/.staged: $(POSTFIX_BUILD_DIR)/.built
 postfix-stage: $(POSTFIX_BUILD_DIR)/.staged
 
 $(POSTFIX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: postfix" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -134,7 +134,7 @@ $(POSTFIX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(POSTFIX_CONFLICTS)" >>$@
 
 $(POSTFIX_DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: postfix-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -165,16 +165,16 @@ $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 					readme_directory=/opt/share/doc/postfix/readme \
 					upgrade
 	/bin/sed -i 's/\(\bPATH=\)/\1\/opt\/bin:\/opt\/sbin:/g' $(POSTFIX_IPK_DIR)/opt/etc/postfix/post-install
-	install -m 600 $(POSTFIX_SOURCE_DIR)/aliases $(POSTFIX_IPK_DIR)/opt/etc/aliases
-	install -m 644 $(POSTFIX_SOURCE_DIR)/main.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/main.cf
+	$(INSTALL) -m 600 $(POSTFIX_SOURCE_DIR)/aliases $(POSTFIX_IPK_DIR)/opt/etc/aliases
+	$(INSTALL) -m 644 $(POSTFIX_SOURCE_DIR)/main.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/main.cf
 ifeq (${OPTWARE_TARGET}, vt4)
 	sed -i -e 's/mail_owner = mail/mail_owner = admin/' $(POSTFIX_IPK_DIR)/opt/etc/postfix/main.cf
 endif
-	install -m 644 $(POSTFIX_SOURCE_DIR)/master.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/master.cf
-	install -d $(POSTFIX_IPK_DIR)/opt/lib/sasl2
-	install -m 644 $(POSTFIX_SOURCE_DIR)/smtpd.conf $(POSTFIX_IPK_DIR)/opt/lib/sasl2/smtpd.conf
-	install -d $(POSTFIX_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(POSTFIX_SOURCE_DIR)/rc.postfix $(POSTFIX_IPK_DIR)/opt/etc/init.d/S69postfix
+	$(INSTALL) -m 644 $(POSTFIX_SOURCE_DIR)/master.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/master.cf
+	$(INSTALL) -d $(POSTFIX_IPK_DIR)/opt/lib/sasl2
+	$(INSTALL) -m 644 $(POSTFIX_SOURCE_DIR)/smtpd.conf $(POSTFIX_IPK_DIR)/opt/lib/sasl2/smtpd.conf
+	$(INSTALL) -d $(POSTFIX_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(POSTFIX_SOURCE_DIR)/rc.postfix $(POSTFIX_IPK_DIR)/opt/etc/init.d/S69postfix
 	(cd $(POSTFIX_IPK_DIR)/opt/etc/init.d; \
 		ln -s S69postfix K31postfix \
 	)
@@ -183,16 +183,16 @@ endif
 
 	# Split into the different packages
 	rm -rf $(POSTFIX_DOC_IPK_DIR)
-	install -d $(POSTFIX_DOC_IPK_DIR)/opt
+	$(INSTALL) -d $(POSTFIX_DOC_IPK_DIR)/opt
 	mv $(POSTFIX_IPK_DIR)/opt/man $(POSTFIX_DOC_IPK_DIR)/opt
 	mv $(POSTFIX_IPK_DIR)/opt/share $(POSTFIX_DOC_IPK_DIR)/opt
 	$(MAKE) $(POSTFIX_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTFIX_DOC_IPK_DIR)
 
 	$(MAKE) $(POSTFIX_IPK_DIR)/CONTROL/control
-	install -m 644 $(POSTFIX_SOURCE_DIR)/postinst $(POSTFIX_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(POSTFIX_SOURCE_DIR)/postinst $(POSTFIX_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(POSTFIX_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(POSTFIX_SOURCE_DIR)/prerm $(POSTFIX_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(POSTFIX_SOURCE_DIR)/prerm $(POSTFIX_IPK_DIR)/CONTROL/prerm
 	echo $(POSTFIX_CONFFILES) | sed -e 's/ /\n/g' > $(POSTFIX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTFIX_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(POSTFIX_IPK_DIR)

@@ -61,7 +61,7 @@ XDAMAGE_IPK=$(BUILD_DIR)/xdamage_$(XDAMAGE_FULL_VERSION)-$(XDAMAGE_IPK_VERSION)_
 # Automatically create a ipkg control file
 #
 $(XDAMAGE_IPK_DIR)/CONTROL/control:
-	@install -d $(XDAMAGE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XDAMAGE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xdamage" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(XDAMAGE_BUILD_DIR)/.configured: $(DL_DIR)/$(XDAMAGE_SOURCE) $(XDAMAGE_PATCHES)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XDAMAGE_SOURCE)
 	if test -n "$(XDAMAGE_PATCHES)" ; \
 		then cat $(XDAMAGE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XDAMAGE_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XDAMAGE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XDAMAGE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XDAMAGE_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ $(XDAMAGE_IPK): $(XDAMAGE_BUILD_DIR)/.built
 	rm -rf $(XDAMAGE_IPK_DIR) $(BUILD_DIR)/xdamage_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XDAMAGE_BUILD_DIR) DESTDIR=$(XDAMAGE_IPK_DIR) install-strip
 	$(MAKE) $(XDAMAGE_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XDAMAGE_SOURCE_DIR)/postinst $(XDAMAGE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XDAMAGE_SOURCE_DIR)/postinst $(XDAMAGE_IPK_DIR)/CONTROL/postinst
 	rm -f $(XDAMAGE_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XDAMAGE_IPK_DIR)
 

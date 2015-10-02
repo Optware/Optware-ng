@@ -114,7 +114,7 @@ $(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH
 	mkdir -p $(@D)
 	# 2.5
 	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
+#	cat $(PY-CHEETAH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -128,7 +128,7 @@ $(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH
 	)
 	# 2.6
 	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
+#	cat $(PY-CHEETAH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -142,7 +142,7 @@ $(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH
 	)
 	# 2.7
 	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
+#	cat $(PY-CHEETAH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -197,7 +197,7 @@ py-cheetah: $(PY-CHEETAH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-cheetah
 #
 $(PY25-CHEETAH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-cheetah" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,7 +211,7 @@ $(PY25-CHEETAH_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CHEETAH_CONFLICTS)" >>$@
 
 $(PY26-CHEETAH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-cheetah" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -225,7 +225,7 @@ $(PY26-CHEETAH_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CHEETAH_CONFLICTS)" >>$@
 
 $(PY27-CHEETAH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-cheetah" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -257,7 +257,7 @@ $(PY25-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(PY25-CHEETAH_IPK_DIR) --prefix=/opt; \
+	    $(INSTALL) --root=$(PY25-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
 	# ls $(PY25-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.5
 	$(STRIP_COMMAND) `find $(PY25-CHEETAH_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
@@ -270,7 +270,7 @@ $(PY26-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(PY26-CHEETAH_IPK_DIR) --prefix=/opt; \
+	    $(INSTALL) --root=$(PY26-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
 	ls $(PY26-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.6
 	$(STRIP_COMMAND) `find $(PY26-CHEETAH_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
@@ -283,7 +283,7 @@ $(PY27-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(PY27-CHEETAH_IPK_DIR) --prefix=/opt; \
+	    $(INSTALL) --root=$(PY27-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
 	ls $(PY27-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.7
 	$(STRIP_COMMAND) `find $(PY27-CHEETAH_IPK_DIR)/opt/lib/python2.7/site-packages -name '*.so'`

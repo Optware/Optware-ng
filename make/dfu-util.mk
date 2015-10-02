@@ -88,7 +88,7 @@ $(DFU-UTIL_BUILD_DIR)/.configured: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
 	if test -n "$(DFU-UTIL_PATCHES)" ; \
 		then cat $(DFU-UTIL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DFU-UTIL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DFU-UTIL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DFU-UTIL_DIR)" != "$(DFU-UTIL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DFU-UTIL_DIR) $(DFU-UTIL_BUILD_DIR) ; \
@@ -132,7 +132,7 @@ dfu-util-stage:
 # necessary to create a seperate control file under sources/dfu-util
 #
 $(DFU-UTIL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dfu-util" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

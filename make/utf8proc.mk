@@ -110,7 +110,7 @@ $(UTF8PROC_BUILD_DIR)/.configured: $(DL_DIR)/$(UTF8PROC_SOURCE) $(UTF8PROC_PATCH
 	$(UTF8PROC_UNZIP) $(DL_DIR)/$(UTF8PROC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UTF8PROC_PATCHES)" ; \
 		then cat $(UTF8PROC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UTF8PROC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UTF8PROC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UTF8PROC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTF8PROC_DIR) $(@D) ; \
@@ -157,10 +157,10 @@ utf8proc: $(UTF8PROC_BUILD_DIR)/.built
 $(UTF8PROC_BUILD_DIR)/.staged: $(UTF8PROC_BUILD_DIR)/.built
 	rm -f $@
 #	$(MAKE) -C $(UTF8PROC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(@D)/utf8proc.h $(STAGING_INCLUDE_DIR)/
-	install -d $(STAGING_LIB_DIR)
-	install -m 755 $(@D)/libutf8proc.so $(STAGING_LIB_DIR)/
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(@D)/utf8proc.h $(STAGING_INCLUDE_DIR)/
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 755 $(@D)/libutf8proc.so $(STAGING_LIB_DIR)/
 	touch $@
 
 utf8proc-stage: $(UTF8PROC_BUILD_DIR)/.staged
@@ -170,7 +170,7 @@ utf8proc-stage: $(UTF8PROC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/utf8proc
 #
 $(UTF8PROC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: utf8proc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,9 +199,9 @@ $(UTF8PROC_IPK_DIR)/CONTROL/control:
 $(UTF8PROC_IPK): $(UTF8PROC_BUILD_DIR)/.built
 	rm -rf $(UTF8PROC_IPK_DIR) $(BUILD_DIR)/utf8proc_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(UTF8PROC_BUILD_DIR) DESTDIR=$(UTF8PROC_IPK_DIR) install-strip
-	install -d $(UTF8PROC_IPK_DIR)/opt/include $(UTF8PROC_IPK_DIR)/opt/lib
-	install -m 644 $(UTF8PROC_BUILD_DIR)/utf8proc.h $(UTF8PROC_IPK_DIR)/opt/include/
-	install -m 755 $(UTF8PROC_BUILD_DIR)/libutf8proc.so $(UTF8PROC_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(UTF8PROC_IPK_DIR)/opt/include $(UTF8PROC_IPK_DIR)/opt/lib
+	$(INSTALL) -m 644 $(UTF8PROC_BUILD_DIR)/utf8proc.h $(UTF8PROC_IPK_DIR)/opt/include/
+	$(INSTALL) -m 755 $(UTF8PROC_BUILD_DIR)/libutf8proc.so $(UTF8PROC_IPK_DIR)/opt/lib/
 	$(STRIP_COMMAND) $(UTF8PROC_IPK_DIR)/opt/lib/libutf8proc.so
 	$(MAKE) $(UTF8PROC_IPK_DIR)/CONTROL/control
 	echo $(UTF8PROC_CONFFILES) | sed -e 's/ /\n/g' > $(UTF8PROC_IPK_DIR)/CONTROL/conffiles

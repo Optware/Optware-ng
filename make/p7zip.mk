@@ -110,7 +110,7 @@ $(P7ZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(P7ZIP_SOURCE) $(P7ZIP_PATCHES) make/
 	$(P7ZIP_UNZIP) $(DL_DIR)/$(P7ZIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(P7ZIP_PATCHES)" ; \
 		then cat $(P7ZIP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(P7ZIP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(P7ZIP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(P7ZIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(P7ZIP_DIR) $(@D) ; \
@@ -168,7 +168,7 @@ p7zip-stage: $(P7ZIP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/p7zip
 #
 $(P7ZIP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: p7zip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,15 +205,15 @@ $(P7ZIP_IPK): $(P7ZIP_BUILD_DIR)/.built
 		DEST_MAN=/opt/man \
 	;
 	chmod -R +w $(P7ZIP_IPK_DIR)/opt
-#	install -d $(P7ZIP_IPK_DIR)/opt/etc/
-#	install -m 644 $(P7ZIP_SOURCE_DIR)/p7zip.conf $(P7ZIP_IPK_DIR)/opt/etc/p7zip.conf
-#	install -d $(P7ZIP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(P7ZIP_SOURCE_DIR)/rc.p7zip $(P7ZIP_IPK_DIR)/opt/etc/init.d/SXXp7zip
+#	$(INSTALL) -d $(P7ZIP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(P7ZIP_SOURCE_DIR)/p7zip.conf $(P7ZIP_IPK_DIR)/opt/etc/p7zip.conf
+#	$(INSTALL) -d $(P7ZIP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(P7ZIP_SOURCE_DIR)/rc.p7zip $(P7ZIP_IPK_DIR)/opt/etc/init.d/SXXp7zip
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(P7ZIP_IPK_DIR)/opt/etc/init.d/SXXp7zip
 	$(MAKE) $(P7ZIP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(P7ZIP_SOURCE_DIR)/postinst $(P7ZIP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(P7ZIP_SOURCE_DIR)/postinst $(P7ZIP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(P7ZIP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(P7ZIP_SOURCE_DIR)/prerm $(P7ZIP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(P7ZIP_SOURCE_DIR)/prerm $(P7ZIP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(P7ZIP_IPK_DIR)/CONTROL/prerm
 	echo $(P7ZIP_CONFFILES) | sed -e 's/ /\n/g' > $(P7ZIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(P7ZIP_IPK_DIR)

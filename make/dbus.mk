@@ -126,7 +126,7 @@ endif
 	$(DBUS_UNZIP) $(DL_DIR)/$(DBUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DBUS_PATCHES)" ; \
 		then cat $(DBUS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DBUS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DBUS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DBUS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DBUS_DIR) $(@D) ; \
@@ -193,7 +193,7 @@ dbus-stage: $(DBUS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dbus
 #
 $(DBUS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dbus" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -226,17 +226,17 @@ $(DBUS_IPK): $(DBUS_BUILD_DIR)/.built
 		$(DBUS_IPK_DIR)/opt/bin/* \
 		$(DBUS_IPK_DIR)/opt/libexec/dbus-daemon-launch-helper \
 		$(DBUS_IPK_DIR)/opt/lib/libdbus-*.so.*.*.*
-#	install -d $(DBUS_IPK_DIR)/opt/etc/
-#	install -m 644 $(DBUS_SOURCE_DIR)/dbus.conf $(DBUS_IPK_DIR)/opt/etc/dbus.conf
-	install -d $(DBUS_IPK_DIR)/opt/etc/default
-	install -m 644 $(DBUS_SOURCE_DIR)/dbus.default $(DBUS_IPK_DIR)/opt/etc/default/dbus
-	install -d $(DBUS_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(DBUS_SOURCE_DIR)/dbus.init $(DBUS_IPK_DIR)/opt/etc/init.d/S20dbus
+#	$(INSTALL) -d $(DBUS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DBUS_SOURCE_DIR)/dbus.conf $(DBUS_IPK_DIR)/opt/etc/dbus.conf
+	$(INSTALL) -d $(DBUS_IPK_DIR)/opt/etc/default
+	$(INSTALL) -m 644 $(DBUS_SOURCE_DIR)/dbus.default $(DBUS_IPK_DIR)/opt/etc/default/dbus
+	$(INSTALL) -d $(DBUS_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(DBUS_SOURCE_DIR)/dbus.init $(DBUS_IPK_DIR)/opt/etc/init.d/S20dbus
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/opt/etc/init.d/S20dbus
 	$(MAKE) $(DBUS_IPK_DIR)/CONTROL/control
-	install -m 755 $(DBUS_SOURCE_DIR)/postinst $(DBUS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(DBUS_SOURCE_DIR)/postinst $(DBUS_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(DBUS_SOURCE_DIR)/prerm $(DBUS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(DBUS_SOURCE_DIR)/prerm $(DBUS_IPK_DIR)/CONTROL/prerm
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/CONTROL/prerm
 	echo $(DBUS_CONFFILES) | sed -e 's/ /\n/g' > $(DBUS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DBUS_IPK_DIR)

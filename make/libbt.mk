@@ -108,7 +108,7 @@ $(LIBBT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBBT_SOURCE) $(LIBBT_PATCHES)
 	$(MAKE) openssl-stage libcurl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIBBT_DIR) $(LIBBT_BUILD_DIR)
 	$(LIBBT_UNZIP) $(DL_DIR)/$(LIBBT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(LIBBT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBBT_DIR) -p0
+	cat $(LIBBT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBBT_DIR) -p0
 	mv $(BUILD_DIR)/$(LIBBT_DIR) $(LIBBT_BUILD_DIR)
 	(cd $(LIBBT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -145,7 +145,7 @@ libbt: $(LIBBT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/libbt
 #
 $(LIBBT_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBBT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBBT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libbt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,10 +174,10 @@ $(LIBBT_IPK_DIR)/CONTROL/control:
 $(LIBBT_IPK): $(LIBBT_BUILD_DIR)/.built
 	rm -rf $(LIBBT_IPK_DIR) $(BUILD_DIR)/libbt_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(LIBBT_IPK_DIR)/CONTROL/control
-	install -d $(LIBBT_IPK_DIR)/opt/bin
-	install -m 755 $(LIBBT_BUILD_DIR)/src/btget $(LIBBT_IPK_DIR)/opt/bin
-	install -m 755 $(LIBBT_BUILD_DIR)/src/btcheck $(LIBBT_IPK_DIR)/opt/bin
-	install -m 755 $(LIBBT_BUILD_DIR)/src/btlist $(LIBBT_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(LIBBT_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(LIBBT_BUILD_DIR)/src/btget $(LIBBT_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(LIBBT_BUILD_DIR)/src/btcheck $(LIBBT_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(LIBBT_BUILD_DIR)/src/btlist $(LIBBT_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)/opt/bin/btget
 	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)/opt/bin/btcheck
 	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)/opt/bin/btlist

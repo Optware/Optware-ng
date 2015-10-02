@@ -113,7 +113,7 @@ $(PY-ROUTES_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUTES_SOURCE) $(PY-ROUTES_PA
 	rm -rf $(BUILD_DIR)/$(PY-ROUTES_DIR)
 	$(PY-ROUTES_UNZIP) $(DL_DIR)/$(PY-ROUTES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-ROUTES_PATCHES)" ; then \
-	    cat $(PY-ROUTES_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUTES_DIR) -p0 ; \
+	    cat $(PY-ROUTES_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ROUTES_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-ROUTES_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -124,7 +124,7 @@ $(PY-ROUTES_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUTES_SOURCE) $(PY-ROUTES_PA
 	rm -rf $(BUILD_DIR)/$(PY-ROUTES_DIR)
 	$(PY-ROUTES_UNZIP) $(DL_DIR)/$(PY-ROUTES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-ROUTES_PATCHES)" ; then \
-	    cat $(PY-ROUTES_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUTES_DIR) -p0 ; \
+	    cat $(PY-ROUTES_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-ROUTES_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-ROUTES_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -168,7 +168,7 @@ py-routes: $(PY-ROUTES_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-routes
 #
 $(PY25-ROUTES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-routes" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,7 +182,7 @@ $(PY25-ROUTES_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-ROUTES_CONFLICTS)" >>$@
 
 $(PY26-ROUTES_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-routes" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

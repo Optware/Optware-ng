@@ -103,7 +103,7 @@ endif
 	$(FINCH_UNZIP) $(DL_DIR)/$(FINCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FINCH_PATCHES)" ; \
 		then cat $(FINCH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FINCH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FINCH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FINCH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FINCH_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ finch-stage: $(FINCH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/finch
 #
 $(FINCH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: finch" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,15 +202,15 @@ $(FINCH_IPK): $(FINCH_BUILD_DIR)/.built
 	$(MAKE) -C $(FINCH_BUILD_DIR) DESTDIR=$(FINCH_IPK_DIR) install-strip transform=""
 	rm -f $(FINCH_IPK_DIR)/opt/lib/finch/*.la $(FINCH_IPK_DIR)/opt/lib/purple-2/*.la
 	rm -f $(FINCH_IPK_DIR)/opt/lib/libpurple.la $(FINCH_IPK_DIR)/opt/lib/libgnt.la 
-#	install -d $(FINCH_IPK_DIR)/opt/etc/
-#	install -m 644 $(FINCH_SOURCE_DIR)/finch.conf $(FINCH_IPK_DIR)/opt/etc/finch.conf
-#	install -d $(FINCH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FINCH_SOURCE_DIR)/rc.finch $(FINCH_IPK_DIR)/opt/etc/init.d/SXXfinch
+#	$(INSTALL) -d $(FINCH_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(FINCH_SOURCE_DIR)/finch.conf $(FINCH_IPK_DIR)/opt/etc/finch.conf
+#	$(INSTALL) -d $(FINCH_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FINCH_SOURCE_DIR)/rc.finch $(FINCH_IPK_DIR)/opt/etc/init.d/SXXfinch
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FINCH_IPK_DIR)/opt/etc/init.d/SXXfinch
 	$(MAKE) $(FINCH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FINCH_SOURCE_DIR)/postinst $(FINCH_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FINCH_SOURCE_DIR)/postinst $(FINCH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FINCH_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FINCH_SOURCE_DIR)/prerm $(FINCH_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FINCH_SOURCE_DIR)/prerm $(FINCH_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FINCH_IPK_DIR)/CONTROL/prerm
 	echo $(FINCH_CONFFILES) | sed -e 's/ /\n/g' > $(FINCH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINCH_IPK_DIR)

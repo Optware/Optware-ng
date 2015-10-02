@@ -135,7 +135,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTESCRIPT_PATCHES)" ; then \
-	    cat $(PY-PASTESCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
+	    cat $(PY-PASTESCRIPT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
@@ -151,7 +151,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTESCRIPT_PATCHES)" ; then \
-	    cat $(PY-PASTESCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
+	    cat $(PY-PASTESCRIPT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -167,7 +167,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTESCRIPT_PATCHES)" ; then \
-	    cat $(PY-PASTESCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
+	    cat $(PY-PASTESCRIPT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -183,7 +183,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTESCRIPT_PATCHES)" ; then \
-	    cat $(PY-PASTESCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
+	    cat $(PY-PASTESCRIPT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -232,7 +232,7 @@ py-pastescript-stage: $(PY-PASTESCRIPT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-pastescript
 #
 $(PY24-PASTESCRIPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-pastescript" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -246,7 +246,7 @@ $(PY24-PASTESCRIPT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTESCRIPT_CONFLICTS)" >>$@
 
 $(PY25-PASTESCRIPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-pastescript" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -260,7 +260,7 @@ $(PY25-PASTESCRIPT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTESCRIPT_CONFLICTS)" >>$@
 
 $(PY26-PASTESCRIPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-pastescript" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -274,7 +274,7 @@ $(PY26-PASTESCRIPT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTESCRIPT_CONFLICTS)" >>$@
 
 $(PY27-PASTESCRIPT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-pastescript" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

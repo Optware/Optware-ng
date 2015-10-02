@@ -40,7 +40,7 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE) make/mt-daapd.mk
 	$(MAKE) zlib-stage gdbm-stage libid3tag-stage
 	rm -rf $(BUILD_DIR)/$(MT_DAAPD_DIR) $(@D)
 	$(MT_DAAPD_UNZIP) $(DL_DIR)/$(MT_DAAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(MT_DAAPD_PATCHES) | patch -d $(BUILD_DIR)/$(MT_DAAPD_DIR) -p1
+#	cat $(MT_DAAPD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MT_DAAPD_DIR) -p1
 	mv $(BUILD_DIR)/$(MT_DAAPD_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -78,7 +78,7 @@ mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 # necessary to create a seperate control file under sources/mt-daapd
 #
 $(MT_DAAPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mt-daapd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -93,27 +93,27 @@ $(MT_DAAPD_IPK_DIR)/CONTROL/control:
 
 $(MT_DAAPD_IPK): $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 	rm -rf $(MT_DAAPD_IPK_DIR) $(BUILD_DIR)/mt-daapd_*_$(TARGET_ARCH).ipk
-	install -d $(MT_DAAPD_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(MT_DAAPD_BUILD_DIR)/src/mt-daapd -o $(MT_DAAPD_IPK_DIR)/opt/sbin/mt-daapd
-	install -d $(MT_DAAPD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(MT_DAAPD_SOURCE_DIR)/rc.mt-daapd $(MT_DAAPD_IPK_DIR)/opt/etc/init.d/S60mt-daapd
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(MT_DAAPD_SOURCE_DIR)/rc.mt-daapd $(MT_DAAPD_IPK_DIR)/opt/etc/init.d/S60mt-daapd
 	$(MAKE) $(MT_DAAPD_IPK_DIR)/CONTROL/control
-	install -m 644 $(MT_DAAPD_SOURCE_DIR)/postinst $(MT_DAAPD_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(MT_DAAPD_SOURCE_DIR)/prerm $(MT_DAAPD_IPK_DIR)/CONTROL/prerm
-	install -m 644 $(MT_DAAPD_SOURCE_DIR)/conffiles $(MT_DAAPD_IPK_DIR)/CONTROL/conffiles
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/postinst $(MT_DAAPD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/prerm $(MT_DAAPD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/conffiles $(MT_DAAPD_IPK_DIR)/CONTROL/conffiles
 
-	install -d $(MT_DAAPD_IPK_DIR)/opt/etc/mt-daapd
-	install -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.conf $(MT_DAAPD_IPK_DIR)/opt/etc/mt-daapd
-	install -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.playlist $(MT_DAAPD_IPK_DIR)/opt/etc/mt-daapd
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/etc/mt-daapd
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.conf $(MT_DAAPD_IPK_DIR)/opt/etc/mt-daapd
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.playlist $(MT_DAAPD_IPK_DIR)/opt/etc/mt-daapd
 
-	install -d $(MT_DAAPD_IPK_DIR)/opt/doc/mt-daapd
-	install -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.conf $(MT_DAAPD_IPK_DIR)/opt/doc/mt-daapd
-	install -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.playlist $(MT_DAAPD_IPK_DIR)/opt/doc/mt-daapd
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/doc/mt-daapd
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.conf $(MT_DAAPD_IPK_DIR)/opt/doc/mt-daapd
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.playlist $(MT_DAAPD_IPK_DIR)/opt/doc/mt-daapd
 
-	install -d $(MT_DAAPD_IPK_DIR)/opt/share/mt-daapd/admin-root
-	install -m 644 $(MT_DAAPD_BUILD_DIR)/admin-root/* $(MT_DAAPD_IPK_DIR)/opt/share/mt-daapd/admin-root
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/share/mt-daapd/admin-root
+	$(INSTALL) -m 644 $(MT_DAAPD_BUILD_DIR)/admin-root/* $(MT_DAAPD_IPK_DIR)/opt/share/mt-daapd/admin-root
 	rm -f $(MT_DAAPD_IPK_DIR)/opt/share/mt-daapd/admin-root/Makefile*
-	install -d $(MT_DAAPD_IPK_DIR)/opt/var/mt-daapd
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/var/mt-daapd
 
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MT_DAAPD_IPK_DIR)
 

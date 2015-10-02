@@ -123,7 +123,7 @@ $(CALC_BUILD_DIR)/.configured: $(DL_DIR)/$(CALC_SOURCE) $(CALC_PATCHES) make/cal
 	$(CALC_UNZIP) $(DL_DIR)/$(CALC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CALC_PATCHES)" ; \
 		then cat $(CALC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CALC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CALC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CALC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CALC_DIR) $(@D) ; \
@@ -185,7 +185,7 @@ calc-stage: $(CALC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/calc
 #
 $(CALC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: calc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,15 +224,15 @@ $(CALC_IPK): $(CALC_BUILD_DIR)/.built
 		$(STRIP_COMMAND) $(CALC_IPK_DIR)/opt/bin/calc && \
 	chmod -w $(CALC_IPK_DIR)/opt/bin/calc
 	$(STRIP_COMMAND) $(CALC_IPK_DIR)/opt/lib/lib*calc*so.$(CALC_VERSION)
-#	install -d $(CALC_IPK_DIR)/opt/etc/
-#	install -m 644 $(CALC_SOURCE_DIR)/calc.conf $(CALC_IPK_DIR)/opt/etc/calc.conf
-#	install -d $(CALC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CALC_SOURCE_DIR)/rc.calc $(CALC_IPK_DIR)/opt/etc/init.d/SXXcalc
+#	$(INSTALL) -d $(CALC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CALC_SOURCE_DIR)/calc.conf $(CALC_IPK_DIR)/opt/etc/calc.conf
+#	$(INSTALL) -d $(CALC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CALC_SOURCE_DIR)/rc.calc $(CALC_IPK_DIR)/opt/etc/init.d/SXXcalc
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CALC_IPK_DIR)/opt/etc/init.d/SXXcalc
 	$(MAKE) $(CALC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CALC_SOURCE_DIR)/postinst $(CALC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CALC_SOURCE_DIR)/postinst $(CALC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CALC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CALC_SOURCE_DIR)/prerm $(CALC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CALC_SOURCE_DIR)/prerm $(CALC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CALC_IPK_DIR)/CONTROL/prerm
 	echo $(CALC_CONFFILES) | sed -e 's/ /\n/g' > $(CALC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CALC_IPK_DIR)

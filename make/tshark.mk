@@ -118,7 +118,7 @@ $(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES) ma
 	$(TSHARK_UNZIP) $(DL_DIR)/$(TSHARK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TSHARK_PATCHES)" ; \
 		then cat $(TSHARK_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(TSHARK_DIR) -p1 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(TSHARK_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TSHARK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TSHARK_DIR) $(@D) ; \
@@ -179,7 +179,7 @@ tshark-stage: $(TSHARK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tshark
 #
 $(TSHARK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: tshark" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -210,7 +210,7 @@ $(TSHARK_IPK): $(TSHARK_BUILD_DIR)/.built
 	$(MAKE) -C $(TSHARK_BUILD_DIR) \
 		DESTDIR=$(TSHARK_IPK_DIR) \
 		program_transform_name="" \
-		install
+		$(INSTALL)
 	rm -rf $(TSHARK_IPK_DIR)/opt/share/man/man4
 	rm -f $(TSHARK_IPK_DIR)/opt/share/wireshark/wireshark-filter.html
 	rm -f $(TSHARK_IPK_DIR)/opt/lib/*.la
@@ -219,13 +219,13 @@ $(TSHARK_IPK): $(TSHARK_BUILD_DIR)/.built
 		$(TSHARK_IPK_DIR)/opt/bin/[a-em-z]* \
 		$(TSHARK_IPK_DIR)/opt/lib/lib* \
 		$(TSHARK_IPK_DIR)/opt/lib/wireshark/plugins/*/*.so
-	install -d $(TSHARK_IPK_DIR)/opt/etc/
-#	install -m 644 $(TSHARK_SOURCE_DIR)/tshark.conf $(TSHARK_IPK_DIR)/opt/etc/tshark.conf
-#	install -d $(TSHARK_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TSHARK_SOURCE_DIR)/rc.tshark $(TSHARK_IPK_DIR)/opt/etc/init.d/SXXtshark
+	$(INSTALL) -d $(TSHARK_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(TSHARK_SOURCE_DIR)/tshark.conf $(TSHARK_IPK_DIR)/opt/etc/tshark.conf
+#	$(INSTALL) -d $(TSHARK_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(TSHARK_SOURCE_DIR)/rc.tshark $(TSHARK_IPK_DIR)/opt/etc/init.d/SXXtshark
 	$(MAKE) $(TSHARK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TSHARK_SOURCE_DIR)/postinst $(TSHARK_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TSHARK_SOURCE_DIR)/prerm $(TSHARK_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(TSHARK_SOURCE_DIR)/postinst $(TSHARK_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(TSHARK_SOURCE_DIR)/prerm $(TSHARK_IPK_DIR)/CONTROL/prerm
 	echo $(TSHARK_CONFFILES) | sed -e 's/ /\n/g' > $(TSHARK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TSHARK_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(TSHARK_IPK_DIR)

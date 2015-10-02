@@ -117,7 +117,7 @@ endif
 	$(CLIMM_UNZIP) $(DL_DIR)/$(CLIMM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLIMM_PATCHES)" ; \
 		then cat $(CLIMM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CLIMM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CLIMM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CLIMM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CLIMM_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ climm-stage: $(CLIMM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/climm
 #
 $(CLIMM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: climm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(CLIMM_IPK_DIR)/CONTROL/control:
 $(CLIMM_IPK): $(CLIMM_BUILD_DIR)/.built
 	rm -rf $(CLIMM_IPK_DIR) $(BUILD_DIR)/climm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLIMM_BUILD_DIR) DESTDIR=$(CLIMM_IPK_DIR) install-strip
-#	install -d $(CLIMM_IPK_DIR)/opt/etc/
-#	install -m 644 $(CLIMM_SOURCE_DIR)/climm.conf $(CLIMM_IPK_DIR)/opt/etc/climm.conf
-#	install -d $(CLIMM_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CLIMM_SOURCE_DIR)/rc.climm $(CLIMM_IPK_DIR)/opt/etc/init.d/SXXclimm
+#	$(INSTALL) -d $(CLIMM_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CLIMM_SOURCE_DIR)/climm.conf $(CLIMM_IPK_DIR)/opt/etc/climm.conf
+#	$(INSTALL) -d $(CLIMM_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CLIMM_SOURCE_DIR)/rc.climm $(CLIMM_IPK_DIR)/opt/etc/init.d/SXXclimm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLIMM_IPK_DIR)/opt/etc/init.d/SXXclimm
 	$(MAKE) $(CLIMM_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CLIMM_SOURCE_DIR)/postinst $(CLIMM_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CLIMM_SOURCE_DIR)/postinst $(CLIMM_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLIMM_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CLIMM_SOURCE_DIR)/prerm $(CLIMM_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CLIMM_SOURCE_DIR)/prerm $(CLIMM_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLIMM_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

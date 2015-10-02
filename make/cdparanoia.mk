@@ -106,7 +106,7 @@ $(CDPARANOIA_BUILD_DIR)/.configured: $(DL_DIR)/$(CDPARANOIA_SOURCE) $(CDPARANOIA
 	$(CDPARANOIA_UNZIP) $(DL_DIR)/$(CDPARANOIA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CDPARANOIA_PATCHES)" ; \
 		then cat $(CDPARANOIA_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CDPARANOIA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CDPARANOIA_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CDPARANOIA_DIR)" != "$(CDPARANOIA_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CDPARANOIA_DIR) $(CDPARANOIA_BUILD_DIR) ; \
@@ -167,7 +167,7 @@ cdparanoia-stage: $(CDPARANOIA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cdparanoia
 #
 $(CDPARANOIA_IPK_DIR)/CONTROL/control:
-	@install -d $(CDPARANOIA_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(CDPARANOIA_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: cdparanoia" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,13 +196,13 @@ $(CDPARANOIA_IPK_DIR)/CONTROL/control:
 $(CDPARANOIA_IPK): $(CDPARANOIA_BUILD_DIR)/.built
 	rm -rf $(CDPARANOIA_IPK_DIR) $(BUILD_DIR)/cdparanoia_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CDPARANOIA_BUILD_DIR) DESTDIR=$(CDPARANOIA_IPK_DIR) install-strip
-	install -d $(CDPARANOIA_IPK_DIR)/opt/etc/
-	install -m 644 $(CDPARANOIA_SOURCE_DIR)/cdparanoia.conf $(CDPARANOIA_IPK_DIR)/opt/etc/cdparanoia.conf
-	install -d $(CDPARANOIA_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(CDPARANOIA_SOURCE_DIR)/rc.cdparanoia $(CDPARANOIA_IPK_DIR)/opt/etc/init.d/SXXcdparanoia
+	$(INSTALL) -d $(CDPARANOIA_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 644 $(CDPARANOIA_SOURCE_DIR)/cdparanoia.conf $(CDPARANOIA_IPK_DIR)/opt/etc/cdparanoia.conf
+	$(INSTALL) -d $(CDPARANOIA_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(CDPARANOIA_SOURCE_DIR)/rc.cdparanoia $(CDPARANOIA_IPK_DIR)/opt/etc/init.d/SXXcdparanoia
 	$(MAKE) $(CDPARANOIA_IPK_DIR)/CONTROL/control
-	install -m 755 $(CDPARANOIA_SOURCE_DIR)/postinst $(CDPARANOIA_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(CDPARANOIA_SOURCE_DIR)/prerm $(CDPARANOIA_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(CDPARANOIA_SOURCE_DIR)/postinst $(CDPARANOIA_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(CDPARANOIA_SOURCE_DIR)/prerm $(CDPARANOIA_IPK_DIR)/CONTROL/prerm
 	echo $(CDPARANOIA_CONFFILES) | sed -e 's/ /\n/g' > $(CDPARANOIA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CDPARANOIA_IPK_DIR)
 

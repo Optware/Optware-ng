@@ -110,7 +110,7 @@ $(BASH_COMPLETION_BUILD_DIR)/.configured: $(DL_DIR)/$(BASH_COMPLETION_SOURCE) $(
 	$(BASH_COMPLETION_UNZIP) $(DL_DIR)/$(BASH_COMPLETION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BASH_COMPLETION_PATCHES)" ; \
 		then cat $(BASH_COMPLETION_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BASH_COMPLETION_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BASH_COMPLETION_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BASH_COMPLETION_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BASH_COMPLETION_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ bash-completion: $(BASH_COMPLETION_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bash-completion
 #
 $(BASH_COMPLETION_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bash-completion" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,10 +190,10 @@ $(BASH_COMPLETION_IPK_DIR)/CONTROL/control:
 $(BASH_COMPLETION_IPK): $(BASH_COMPLETION_BUILD_DIR)/.built
 	rm -rf $(BASH_COMPLETION_IPK_DIR) $(BUILD_DIR)/bash-completion_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<D) DESTDIR=$(BASH_COMPLETION_IPK_DIR) install-strip
-	install -d $(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/contrib
+	$(INSTALL) -d $(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/contrib
 	mv $(BASH_COMPLETION_IPK_DIR)/opt/etc/bash_completion.d/* \
 		$(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/contrib/
-	install -m644 $(<D)/[CRT]* $(<D)/bash_completion \
+	$(INSTALL) -m644 $(<D)/[CRT]* $(<D)/bash_completion \
 		$(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/
 	$(MAKE) $(BASH_COMPLETION_IPK_DIR)/CONTROL/control
 	echo $(BASH_COMPLETION_CONFFILES) | sed -e 's/ /\n/g' > $(BASH_COMPLETION_IPK_DIR)/CONTROL/conffiles

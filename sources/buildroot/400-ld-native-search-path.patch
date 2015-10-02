@@ -5,7 +5,7 @@
  esac
  
 -NATIVE_LIB_DIRS='/usr/local/lib /lib /usr/lib'
-+NATIVE_LIB_DIRS='/opt/lib /opt/usr/lib'
++NATIVE_LIB_DIRS='%OPTWARE_TARGET_PREFIX%/lib %OPTWARE_TARGET_PREFIX%/usr/lib'
  case "${target}" in
  
  *-*-freebsd*)

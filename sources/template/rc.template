@@ -8,4 +8,4 @@ fi
 
 rm -f /var/run/templated.pid
 
-/opt/sbin/templated
+%OPTWARE_TARGET_PREFIX%/sbin/templated

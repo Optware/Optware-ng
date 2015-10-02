@@ -100,7 +100,7 @@ $(COWSAY_BUILD_DIR)/.configured: $(DL_DIR)/$(COWSAY_SOURCE) $(COWSAY_PATCHES) ma
 	$(COWSAY_UNZIP) $(DL_DIR)/$(COWSAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(COWSAY_PATCHES)" ; \
 		then cat $(COWSAY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(COWSAY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(COWSAY_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(COWSAY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(COWSAY_DIR) $(@D) ; \
@@ -137,7 +137,7 @@ cowsay-stage: $(COWSAY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cowsay
 #
 $(COWSAY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cowsay" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -165,7 +165,7 @@ $(COWSAY_IPK_DIR)/CONTROL/control:
 #
 $(COWSAY_IPK): $(COWSAY_BUILD_DIR)/.built
 	rm -rf $(COWSAY_IPK_DIR) $(BUILD_DIR)/cowsay_*_$(TARGET_ARCH).ipk
-	install -m 644 $(COWSAY_SOURCE_DIR)/nslu2.cow $(COWSAY_BUILD_DIR)/cows/nslu2.cow
+	$(INSTALL) -m 644 $(COWSAY_SOURCE_DIR)/nslu2.cow $(COWSAY_BUILD_DIR)/cows/nslu2.cow
 	cd $(COWSAY_BUILD_DIR); sh ./install.sh $(COWSAY_IPK_DIR)/opt
 	$(MAKE) $(COWSAY_IPK_DIR)/CONTROL/control
 	echo $(COWSAY_CONFFILES) | sed -e 's/ /\n/g' > $(COWSAY_IPK_DIR)/CONTROL/conffiles

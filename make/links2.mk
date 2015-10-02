@@ -110,7 +110,7 @@ $(LINKS2_BUILD_DIR)/.configured: $(DL_DIR)/$(LINKS2_SOURCE) $(LINKS2_PATCHES) ma
 	$(LINKS2_UNZIP) $(DL_DIR)/$(LINKS2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LINKS2_PATCHES)" ; \
 		then cat $(LINKS2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LINKS2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LINKS2_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LINKS2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LINKS2_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ links2-stage: $(LINKS2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/links2
 #
 $(LINKS2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: links2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,15 @@ $(LINKS2_IPK): $(LINKS2_BUILD_DIR)/.built
 	rm -rf $(LINKS2_IPK_DIR) $(BUILD_DIR)/links2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LINKS2_BUILD_DIR) DESTDIR=$(LINKS2_IPK_DIR) install
 	$(STRIP_COMMAND) $(LINKS2_IPK_DIR)/opt/bin/links
-#	install -d $(LINKS2_IPK_DIR)/opt/etc/
-#	install -m 644 $(LINKS2_SOURCE_DIR)/links2.conf $(LINKS2_IPK_DIR)/opt/etc/links2.conf
-#	install -d $(LINKS2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LINKS2_SOURCE_DIR)/rc.links2 $(LINKS2_IPK_DIR)/opt/etc/init.d/SXXlinks2
+#	$(INSTALL) -d $(LINKS2_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LINKS2_SOURCE_DIR)/links2.conf $(LINKS2_IPK_DIR)/opt/etc/links2.conf
+#	$(INSTALL) -d $(LINKS2_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LINKS2_SOURCE_DIR)/rc.links2 $(LINKS2_IPK_DIR)/opt/etc/init.d/SXXlinks2
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LINKS2_IPK_DIR)/opt/etc/init.d/SXXlinks2
 	$(MAKE) $(LINKS2_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LINKS2_SOURCE_DIR)/postinst $(LINKS2_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LINKS2_SOURCE_DIR)/postinst $(LINKS2_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LINKS2_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LINKS2_SOURCE_DIR)/prerm $(LINKS2_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LINKS2_SOURCE_DIR)/prerm $(LINKS2_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LINKS2_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

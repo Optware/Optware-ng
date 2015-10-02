@@ -98,7 +98,7 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBXSLT_DIR) $(@D)
 	$(LIBXSLT_UNZIP) $(DL_DIR)/$(LIBXSLT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBXSLT_PATCHES)"; \
-		then cat $(LIBXSLT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBXSLT_DIR) -p1; \
+		then cat $(LIBXSLT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBXSLT_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LIBXSLT_DIR) $(@D)
 	(cd $(@D); \
@@ -160,7 +160,7 @@ libxslt-stage: $(LIBXSLT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libxslt
 #
 $(LIBXSLT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libxslt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

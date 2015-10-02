@@ -12,13 +12,13 @@ fi
 
 # Make sure the printer driver is running
 if ( !(lsmod | grep "^printer" -q) ); then
-        insmod /opt/lib/modules/printer.o
+        insmod %OPTWARE_TARGET_PREFIX%/lib/modules/printer.o
 fi
 
-if [ -n "`/opt/bin/pidof cupsd`" ]; then
-    /opt/bin/killall cupsd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof cupsd`" ]; then
+    %OPTWARE_TARGET_PREFIX%/bin/killall cupsd 2>/dev/null
 fi
 
-/opt/sbin/cupsd
+%OPTWARE_TARGET_PREFIX%/sbin/cupsd
 
 

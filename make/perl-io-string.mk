@@ -35,7 +35,7 @@ $(PERL-IO-STRING_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-STRING_SOURCE) $(PE
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-IO-STRING_DIR) $(PERL-IO-STRING_BUILD_DIR)
 	$(PERL-IO-STRING_UNZIP) $(DL_DIR)/$(PERL-IO-STRING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-IO-STRING_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-IO-STRING_DIR) -p1
+#	cat $(PERL-IO-STRING_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-IO-STRING_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-IO-STRING_DIR) $(PERL-IO-STRING_BUILD_DIR)
 	(cd $(PERL-IO-STRING_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -68,7 +68,7 @@ $(PERL-IO-STRING_BUILD_DIR)/.staged: $(PERL-IO-STRING_BUILD_DIR)/.built
 perl-io-string-stage: $(PERL-IO-STRING_BUILD_DIR)/.staged
 
 $(PERL-IO-STRING_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-IO-STRING_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-IO-STRING_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-io-string" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

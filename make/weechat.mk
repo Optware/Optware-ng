@@ -119,7 +119,7 @@ endif
 	$(WEECHAT_UNZIP) $(DL_DIR)/$(WEECHAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(WEECHAT_PATCHES)" ; \
 		then cat $(WEECHAT_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(WEECHAT_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(WEECHAT_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(WEECHAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WEECHAT_DIR) $(@D) ; \
@@ -195,7 +195,7 @@ weechat: $(WEECHAT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/weechat
 #
 $(WEECHAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: weechat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -224,15 +224,15 @@ $(WEECHAT_IPK_DIR)/CONTROL/control:
 $(WEECHAT_IPK): $(WEECHAT_BUILD_DIR)/.built
 	rm -rf $(WEECHAT_IPK_DIR) $(BUILD_DIR)/weechat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WEECHAT_BUILD_DIR) DESTDIR=$(WEECHAT_IPK_DIR) install-strip
-#	install -d $(WEECHAT_IPK_DIR)/opt/etc/
-#	install -m 644 $(WEECHAT_SOURCE_DIR)/weechat.conf $(WEECHAT_IPK_DIR)/opt/etc/weechat.conf
-#	install -d $(WEECHAT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(WEECHAT_SOURCE_DIR)/rc.weechat $(WEECHAT_IPK_DIR)/opt/etc/init.d/SXXweechat
+#	$(INSTALL) -d $(WEECHAT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(WEECHAT_SOURCE_DIR)/weechat.conf $(WEECHAT_IPK_DIR)/opt/etc/weechat.conf
+#	$(INSTALL) -d $(WEECHAT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(WEECHAT_SOURCE_DIR)/rc.weechat $(WEECHAT_IPK_DIR)/opt/etc/init.d/SXXweechat
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WEECHAT_IPK_DIR)/opt/etc/init.d/SXXweechat
 	$(MAKE) $(WEECHAT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(WEECHAT_SOURCE_DIR)/postinst $(WEECHAT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(WEECHAT_SOURCE_DIR)/postinst $(WEECHAT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WEECHAT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(WEECHAT_SOURCE_DIR)/prerm $(WEECHAT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(WEECHAT_SOURCE_DIR)/prerm $(WEECHAT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WEECHAT_IPK_DIR)/CONTROL/prerm
 	echo $(WEECHAT_CONFFILES) | sed -e 's/ /\n/g' > $(WEECHAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WEECHAT_IPK_DIR)

@@ -135,7 +135,7 @@ endif
 	$(LFTP_UNZIP) $(DL_DIR)/$(LFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LFTP_PATCHES)" ; \
 		then cat $(LFTP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LFTP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LFTP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LFTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LFTP_DIR) $(@D) ; \
@@ -208,7 +208,7 @@ lftp-stage: $(LFTP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lftp
 #
 $(LFTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lftp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

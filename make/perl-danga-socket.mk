@@ -69,7 +69,7 @@ $(PERL-DANGA-SOCKET_BUILD_DIR)/.staged: $(PERL-DANGA-SOCKET_BUILD_DIR)/.built
 perl-danga-socket-stage: $(PERL-DANGA-SOCKET_BUILD_DIR)/.staged
 
 $(PERL-DANGA-SOCKET_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-DANGA-SOCKET_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-DANGA-SOCKET_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-danga-socket" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

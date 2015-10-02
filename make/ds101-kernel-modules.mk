@@ -94,7 +94,7 @@ $(DS101-KERNEL-MODULES_BUILD_DIR)/.unpacked: $(DL_DIR)/$(DS101-KERNEL-MODULES_SO
 	$(DS101-KERNEL-MODULES_UNZIP) $(DL_DIR)/$(DS101-KERNEL-MODULES_SOURCE) | tar -C $(BUILD_DIR) -xvf - source/uclinux2422
 	if test -n "$(DS101-KERNEL-MODULES_PATCHES)" ; \
 		then cat $(DS101-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR)" != "$(DS101-KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR) $(DS101-KERNEL-MODULES_BUILD_DIR) ; \
@@ -136,7 +136,7 @@ ds101-kernel-modules-stage: $(DS101-KERNEL-MODULES_BUILD_DIR)/.staged
 #
 $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(DS101-KERNEL-MODULES); do \
-	  install -d $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
+	  $(INSTALL) -d $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
 	  rm -f $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
           ( \
 	    echo "Package: kernel-module-`echo $$m|sed -e 's/_/-/g'`"; \
@@ -168,7 +168,7 @@ $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  echo "rmmod $$m" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
 	  echo "exit 0" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
 	done
-	install -d $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL; \
+	$(INSTALL) -d $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL; \
 	touch $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 #
 # This builds the IPK file.
@@ -190,11 +190,11 @@ $(DS101-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101-KERNEL-MODULES_BUILD_DIR)/.b
 	)
 	rm -rf $(DS101-KERNEL-MODULES_IPK_DIR)/lib/modules/2.4.22-uc0/kernel/drivers/synobios
 	for m in $(DS101-KERNEL-MODULES); do \
-	  install -d $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
-	  install -m 644 `find $(DS101-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
-	  install -d $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/etc/init.d; \
+	  $(INSTALL) -d $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -m 644 `find $(DS101-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -d $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/etc/init.d; \
 	  if [ -f $(DS101-KERNEL-MODULES_SOURCE_DIR)/S01mod_$$m ] ; then \
-		install -m 755  $(DS101-KERNEL-MODULES_SOURCE_DIR)/S01mod_$$m $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/etc/init.d; \
+		$(INSTALL) -m 755  $(DS101-KERNEL-MODULES_SOURCE_DIR)/S01mod_$$m $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/etc/init.d; \
 	  else 	install -m 755  $(DS101-KERNEL-MODULES_SOURCE_DIR)/S01mod_generic $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/etc/init.d/S01mod_$$m; \
 	  fi;\
 	done

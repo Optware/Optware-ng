@@ -109,14 +109,14 @@ $(PY-CHERRYPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHERRYPY_SOURCE) $(PY-CHERR
 	rm -rf $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(PY-CHERRYPY_BUILD_DIR)
 	mkdir -p $(PY-CHERRYPY_BUILD_DIR)
 	$(PY-CHERRYPY_UNZIP) $(DL_DIR)/$(PY-CHERRYPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHERRYPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHERRYPY_DIR) -p1
+#	cat $(PY-CHERRYPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHERRYPY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") > setup.cfg \
 	)
 	$(PY-CHERRYPY_UNZIP) $(DL_DIR)/$(PY-CHERRYPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CHERRYPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHERRYPY_DIR) -p1
+#	cat $(PY-CHERRYPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHERRYPY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -152,11 +152,11 @@ $(PY-CHERRYPY_BUILD_DIR)/.staged: $(PY-CHERRYPY_BUILD_DIR)/.built
 	(cd $(@D)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(STAGING_DIR) --prefix=/opt)
+	    $(INSTALL) --root=$(STAGING_DIR) --prefix=/opt)
 	(cd $(@D)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(STAGING_DIR) --prefix=/opt)
+	    $(INSTALL) --root=$(STAGING_DIR) --prefix=/opt)
 	touch $@
 
 py-cherrypy-stage: $(PY-CHERRYPY_BUILD_DIR)/.staged
@@ -166,7 +166,7 @@ py-cherrypy-stage: $(PY-CHERRYPY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-cherrypy
 #
 $(PY24-CHERRYPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-cherrypy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +180,7 @@ $(PY24-CHERRYPY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CHERRYPY_CONFLICTS)" >>$@
 
 $(PY25-CHERRYPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-cherrypy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,7 +211,7 @@ $(PY24-CHERRYPY_IPK): $(PY-CHERRYPY_BUILD_DIR)/.built
 	(cd $(PY-CHERRYPY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY24-CHERRYPY_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY24-CHERRYPY_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY24-CHERRYPY_IPK_DIR)/CONTROL/control
 	echo $(PY-CHERRYPY_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-CHERRYPY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CHERRYPY_IPK_DIR)
@@ -221,7 +221,7 @@ $(PY25-CHERRYPY_IPK): $(PY-CHERRYPY_BUILD_DIR)/.built
 	(cd $(PY-CHERRYPY_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY25-CHERRYPY_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY25-CHERRYPY_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY25-CHERRYPY_IPK_DIR)/CONTROL/control
 	echo $(PY-CHERRYPY_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CHERRYPY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CHERRYPY_IPK_DIR)

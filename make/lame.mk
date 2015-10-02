@@ -111,7 +111,7 @@ $(LAME_BUILD_DIR)/.configured: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES) make/lam
 	rm -rf $(BUILD_DIR)/$(LAME_DIR) $(@D)
 	$(LAME_UNZIP) $(DL_DIR)/$(LAME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LAME_PATCHES)"; \
-		then cat $(LAME_PATCHES) | patch -d $(BUILD_DIR)/$(LAME_DIR) -p1; \
+		then cat $(LAME_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LAME_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LAME_DIR) $(@D)
 ifeq ($(LAME_VERSION), 3.99.5)
@@ -162,7 +162,7 @@ lame-stage: $(LAME_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lame
 #
 $(LAME_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lame" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

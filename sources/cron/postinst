@@ -1,10 +1,10 @@
 #!/bin/sh
 
-mkdir -p /opt/etc/cron.d
-mkdir -p /opt/var/cron/crontabs
-mkdir -p /opt/var/run
+mkdir -p %OPTWARE_TARGET_PREFIX%/etc/cron.d
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/cron/crontabs
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/run
 
-echo "Remember that the system crontab file is \"/opt/etc/crontab\"."
+echo "Remember that the system crontab file is \"%OPTWARE_TARGET_PREFIX%/etc/crontab\"."
 
-/opt/etc/init.d/S10cron
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S10cron
 

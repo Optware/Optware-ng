@@ -37,7 +37,7 @@ gdbm-source: $(DL_DIR)/$(GDBM_SOURCE) $(GDBM_PATCHES)
 $(GDBM_BUILD_DIR)/.configured: $(DL_DIR)/$(GDBM_SOURCE) $(GDBM_PATCHES) make/gdbm.mk
 	rm -rf $(BUILD_DIR)/$(GDBM_DIR) $(GDBM_BUILD_DIR)
 	$(GDBM_UNZIP) $(DL_DIR)/$(GDBM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(GDBM_PATCHES) | patch -d $(BUILD_DIR)/$(GDBM_DIR) -p1
+	cat $(GDBM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GDBM_DIR) -p1
 	mv $(BUILD_DIR)/$(GDBM_DIR) $(GDBM_BUILD_DIR)
 	(cd $(GDBM_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -70,7 +70,7 @@ $(GDBM_BUILD_DIR)/.staged: $(GDBM_BUILD_DIR)/.built
 gdbm-stage: $(GDBM_BUILD_DIR)/.staged
 
 $(GDBM_IPK_DIR)/CONTROL/control:
-	@install -d $(GDBM_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GDBM_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: gdbm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -116,7 +116,7 @@ $(LIBDRM_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDRM_SOURCE) $(LIBDRM_PATCHES) ma
 	$(LIBDRM_UNZIP) $(DL_DIR)/$(LIBDRM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDRM_PATCHES)" ; \
 		then cat $(LIBDRM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBDRM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBDRM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBDRM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBDRM_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ libdrm-stage: $(LIBDRM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libdrm
 #
 $(LIBDRM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libdrm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,15 +202,15 @@ $(LIBDRM_IPK): $(LIBDRM_BUILD_DIR)/.built
 	rm -rf $(LIBDRM_IPK_DIR) $(BUILD_DIR)/libdrm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDRM_BUILD_DIR) DESTDIR=$(LIBDRM_IPK_DIR) install-strip
 	rm -f $(LIBDRM_IPK_DIR)/opt/lib/*.la
-#	install -d $(LIBDRM_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBDRM_SOURCE_DIR)/libdrm.conf $(LIBDRM_IPK_DIR)/opt/etc/libdrm.conf
-#	install -d $(LIBDRM_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBDRM_SOURCE_DIR)/rc.libdrm $(LIBDRM_IPK_DIR)/opt/etc/init.d/SXXlibdrm
+#	$(INSTALL) -d $(LIBDRM_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBDRM_SOURCE_DIR)/libdrm.conf $(LIBDRM_IPK_DIR)/opt/etc/libdrm.conf
+#	$(INSTALL) -d $(LIBDRM_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBDRM_SOURCE_DIR)/rc.libdrm $(LIBDRM_IPK_DIR)/opt/etc/init.d/SXXlibdrm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDRM_IPK_DIR)/opt/etc/init.d/SXXlibdrm
 	$(MAKE) $(LIBDRM_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBDRM_SOURCE_DIR)/postinst $(LIBDRM_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBDRM_SOURCE_DIR)/postinst $(LIBDRM_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDRM_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBDRM_SOURCE_DIR)/prerm $(LIBDRM_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBDRM_SOURCE_DIR)/prerm $(LIBDRM_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDRM_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

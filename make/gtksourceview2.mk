@@ -116,7 +116,7 @@ $(GTKSOURCEVIEW2_BUILD_DIR)/.configured: $(DL_DIR)/$(GTKSOURCEVIEW2_SOURCE) $(GT
 	$(GTKSOURCEVIEW2_UNZIP) $(DL_DIR)/$(GTKSOURCEVIEW2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GTKSOURCEVIEW2_PATCHES)" ; \
 		then cat $(GTKSOURCEVIEW2_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GTKSOURCEVIEW2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GTKSOURCEVIEW2_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GTKSOURCEVIEW2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GTKSOURCEVIEW2_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ gtksourceview2-stage: $(GTKSOURCEVIEW2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gtksourceview2
 #
 $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gtksourceview2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -201,15 +201,15 @@ $(GTKSOURCEVIEW2_IPK): $(GTKSOURCEVIEW2_BUILD_DIR)/.built
 	rm -rf $(GTKSOURCEVIEW2_IPK_DIR) $(BUILD_DIR)/gtksourceview2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTKSOURCEVIEW2_BUILD_DIR) DESTDIR=$(GTKSOURCEVIEW2_IPK_DIR) install-strip
 	rm -f $(GTKSOURCEVIEW2_IPK_DIR)/opt/lib/*.la
-#	install -d $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/
-#	install -m 644 $(GTKSOURCEVIEW2_SOURCE_DIR)/gtksourceview2.conf $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/gtksourceview2.conf
-#	install -d $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GTKSOURCEVIEW2_SOURCE_DIR)/rc.gtksourceview2 $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/init.d/SXXgtksourceview2
+#	$(INSTALL) -d $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GTKSOURCEVIEW2_SOURCE_DIR)/gtksourceview2.conf $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/gtksourceview2.conf
+#	$(INSTALL) -d $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GTKSOURCEVIEW2_SOURCE_DIR)/rc.gtksourceview2 $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/init.d/SXXgtksourceview2
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/init.d/SXXgtksourceview2
 	$(MAKE) $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GTKSOURCEVIEW2_SOURCE_DIR)/postinst $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GTKSOURCEVIEW2_SOURCE_DIR)/postinst $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GTKSOURCEVIEW2_SOURCE_DIR)/prerm $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GTKSOURCEVIEW2_SOURCE_DIR)/prerm $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

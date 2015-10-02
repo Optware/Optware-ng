@@ -102,7 +102,7 @@ $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES) make/mut
 	$(MAKE) libidn-stage
 	rm -rf $(BUILD_DIR)/$(MUTT_DIR) $(@D)
 	$(MUTT_UNZIP) $(DL_DIR)/$(MUTT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(MUTT_PATCHES) | patch -d $(BUILD_DIR)/$(MUTT_DIR) -p1
+#	cat $(MUTT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MUTT_DIR) -p1
 	mv $(BUILD_DIR)/$(MUTT_DIR) $(@D)
 	# change mutt.h and lib.h to find posix1_lim.h in <bits/...>
 	sed -i -e 's:posix1_lim.h:bits/posix1_lim.h:g' $(@D)/mutt.h
@@ -158,7 +158,7 @@ mutt: $(MUTT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mutt
 #
 $(MUTT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mutt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,15 +187,15 @@ $(MUTT_IPK_DIR)/CONTROL/control:
 $(MUTT_IPK): $(MUTT_BUILD_DIR)/.built
 	rm -rf $(MUTT_IPK_DIR) $(BUILD_DIR)/mutt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MUTT_BUILD_DIR) DESTDIR=$(MUTT_IPK_DIR) install
-	# install-strip doesn't work for some reason
+	# $(INSTALL)-strip doesn't work for some reason
 	$(STRIP_COMMAND) $(MUTT_IPK_DIR)/opt/bin/mutt $(MUTT_IPK_DIR)/opt/bin/pgpewrap $(MUTT_IPK_DIR)/opt/bin/pgpring
-#	install -d $(MUTT_IPK_DIR)/opt/etc/
-#	install -m 755 $(MUTT_SOURCE_DIR)/mutt.conf $(MUTT_IPK_DIR)/opt/etc/mutt.conf
-#	install -d $(MUTT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MUTT_SOURCE_DIR)/rc.mutt $(MUTT_IPK_DIR)/opt/etc/init.d/SXXmutt
+#	$(INSTALL) -d $(MUTT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 755 $(MUTT_SOURCE_DIR)/mutt.conf $(MUTT_IPK_DIR)/opt/etc/mutt.conf
+#	$(INSTALL) -d $(MUTT_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MUTT_SOURCE_DIR)/rc.mutt $(MUTT_IPK_DIR)/opt/etc/init.d/SXXmutt
 	$(MAKE) $(MUTT_IPK_DIR)/CONTROL/control
-#	install -m 644 $(MUTT_SOURCE_DIR)/postinst $(MUTT_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(MUTT_SOURCE_DIR)/prerm $(MUTT_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(MUTT_SOURCE_DIR)/postinst $(MUTT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(MUTT_SOURCE_DIR)/prerm $(MUTT_IPK_DIR)/CONTROL/prerm
 #	echo $(MUTT_CONFFILES) | sed -e 's/ /\n/g' > $(MUTT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MUTT_IPK_DIR)
 

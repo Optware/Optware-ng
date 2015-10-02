@@ -1,4 +1,4 @@
 #!/bin/sh
 
 echo -n "Setting default deluge ui to console ... "
-/opt/bin/deluge -s console
+%OPTWARE_TARGET_PREFIX%/bin/deluge -s console

@@ -94,7 +94,7 @@ $(NFS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PA
 	$(NFS-UTILS_UNZIP) $(DL_DIR)/$(NFS-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	chmod u+w $(BUILD_DIR)/$(NFS-UTILS_DIR)/*
 	if test -n "$(NFS-UTILS_PATCHES)"; then \
-		cat $(NFS-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(NFS-UTILS_DIR) -p1; \
+		cat $(NFS-UTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NFS-UTILS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(NFS-UTILS_DIR) $(NFS-UTILS_BUILD_DIR)
 	(cd $(NFS-UTILS_BUILD_DIR); \
@@ -136,7 +136,7 @@ nfs-utils: $(NFS-UTILS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/nfs-utils
 #
 $(NFS-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nfs-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -164,7 +164,7 @@ $(NFS-UTILS_IPK_DIR)/CONTROL/control:
 #
 $(NFS-UTILS_IPK): $(NFS-UTILS_BUILD_DIR)/.built
 	rm -rf $(NFS-UTILS_IPK_DIR) $(BUILD_DIR)/nfs-utils_*_$(TARGET_ARCH).ipk
-	install -d $(NFS-UTILS_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(NFS-UTILS_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/nfsd/nfsd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/nfsd
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/mountd/mountd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/mountd
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/mount/mount.nfs -o $(NFS-UTILS_IPK_DIR)/opt/sbin/mount.nfs
@@ -172,13 +172,13 @@ $(NFS-UTILS_IPK): $(NFS-UTILS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/exportfs/exportfs -o $(NFS-UTILS_IPK_DIR)/opt/sbin/exportfs
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/showmount/showmount -o $(NFS-UTILS_IPK_DIR)/opt/sbin/showmount
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/nfsstat/nfsstat -o $(NFS-UTILS_IPK_DIR)/opt/sbin/nfsstat
-	install -d $(NFS-UTILS_IPK_DIR)/opt/doc/nfs-utils
-	install -m 644 $(NFS-UTILS_SOURCE_DIR)/exports $(NFS-UTILS_IPK_DIR)/opt/doc/nfs-utils/exports
-	install -d $(NFS-UTILS_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NFS-UTILS_SOURCE_DIR)/rc.nfs-utils $(NFS-UTILS_IPK_DIR)/opt/etc/init.d/S56nfs-utils
+	$(INSTALL) -d $(NFS-UTILS_IPK_DIR)/opt/doc/nfs-utils
+	$(INSTALL) -m 644 $(NFS-UTILS_SOURCE_DIR)/exports $(NFS-UTILS_IPK_DIR)/opt/doc/nfs-utils/exports
+	$(INSTALL) -d $(NFS-UTILS_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NFS-UTILS_SOURCE_DIR)/rc.nfs-utils $(NFS-UTILS_IPK_DIR)/opt/etc/init.d/S56nfs-utils
 	$(MAKE) $(NFS-UTILS_IPK_DIR)/CONTROL/control
-	install -m 644 $(NFS-UTILS_SOURCE_DIR)/postinst $(NFS-UTILS_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(NFS-UTILS_SOURCE_DIR)/prerm $(NFS-UTILS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(NFS-UTILS_SOURCE_DIR)/postinst $(NFS-UTILS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(NFS-UTILS_SOURCE_DIR)/prerm $(NFS-UTILS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NFS-UTILS_IPK_DIR)
 
 #

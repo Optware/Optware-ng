@@ -109,7 +109,7 @@ $(DASH_BUILD_DIR)/.configured: $(DL_DIR)/$(DASH_SOURCE) $(DASH_PATCHES) make/das
 	$(DASH_UNZIP) $(DL_DIR)/$(DASH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DASH_PATCHES)" ; \
 		then cat $(DASH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DASH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DASH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DASH_DIR)" != "$(DASH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DASH_DIR) $(DASH_BUILD_DIR) ; \
@@ -159,7 +159,7 @@ dash-stage: $(DASH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dash
 #
 $(DASH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dash" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,15 +188,15 @@ $(DASH_IPK_DIR)/CONTROL/control:
 $(DASH_IPK): $(DASH_BUILD_DIR)/.built
 	rm -rf $(DASH_IPK_DIR) $(BUILD_DIR)/dash_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DASH_BUILD_DIR) DESTDIR=$(DASH_IPK_DIR) install-strip
-#	install -d $(DASH_IPK_DIR)/opt/etc/
-#	install -m 644 $(DASH_SOURCE_DIR)/dash.conf $(DASH_IPK_DIR)/opt/etc/dash.conf
-#	install -d $(DASH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DASH_SOURCE_DIR)/rc.dash $(DASH_IPK_DIR)/opt/etc/init.d/SXXdash
+#	$(INSTALL) -d $(DASH_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DASH_SOURCE_DIR)/dash.conf $(DASH_IPK_DIR)/opt/etc/dash.conf
+#	$(INSTALL) -d $(DASH_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DASH_SOURCE_DIR)/rc.dash $(DASH_IPK_DIR)/opt/etc/init.d/SXXdash
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXdash
 	$(MAKE) $(DASH_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DASH_SOURCE_DIR)/postinst $(DASH_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DASH_SOURCE_DIR)/postinst $(DASH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DASH_SOURCE_DIR)/prerm $(DASH_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DASH_SOURCE_DIR)/prerm $(DASH_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(DASH_CONFFILES) | sed -e 's/ /\n/g' > $(DASH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DASH_IPK_DIR)

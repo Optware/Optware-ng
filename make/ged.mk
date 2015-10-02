@@ -119,7 +119,7 @@ $(GED_BUILD_DIR)/.configured: $(DL_DIR)/$(GED_SOURCE) $(GED_PATCHES) make/ged.mk
 	$(GED_UNZIP) $(DL_DIR)/$(GED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GED_PATCHES)" ; \
 		then cat $(GED_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GED_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GED_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GED_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GED_DIR) $(@D) ; \
@@ -172,7 +172,7 @@ ged: $(GED_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ged
 #
 $(GED_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ged" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,18 +200,18 @@ $(GED_IPK_DIR)/CONTROL/control:
 #
 $(GED_IPK): $(GED_BUILD_DIR)/.built
 	rm -rf $(GED_IPK_DIR) $(BUILD_DIR)/ged_*_$(TARGET_ARCH).ipk
-	install -d $(GED_IPK_DIR)/opt/bin
-	install -m 755 $(GED_BUILD_DIR)/ged $(GED_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(GED_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(GED_BUILD_DIR)/ged $(GED_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GED_IPK_DIR)/opt/bin/ged
-#	install -d $(GED_IPK_DIR)/opt/etc/
-#	install -m 644 $(GED_SOURCE_DIR)/ged.conf $(GED_IPK_DIR)/opt/etc/ged.conf
-#	install -d $(GED_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GED_SOURCE_DIR)/rc.ged $(GED_IPK_DIR)/opt/etc/init.d/SXXged
+#	$(INSTALL) -d $(GED_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(GED_SOURCE_DIR)/ged.conf $(GED_IPK_DIR)/opt/etc/ged.conf
+#	$(INSTALL) -d $(GED_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(GED_SOURCE_DIR)/rc.ged $(GED_IPK_DIR)/opt/etc/init.d/SXXged
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GED_IPK_DIR)/opt/etc/init.d/SXXged
 	$(MAKE) $(GED_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GED_SOURCE_DIR)/postinst $(GED_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(GED_SOURCE_DIR)/postinst $(GED_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GED_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GED_SOURCE_DIR)/prerm $(GED_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(GED_SOURCE_DIR)/prerm $(GED_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GED_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

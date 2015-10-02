@@ -100,7 +100,7 @@ $(DIGITEMP_BUILD_DIR)/.configured: $(DL_DIR)/$(DIGITEMP_SOURCE) $(DIGITEMP_PATCH
 	$(DIGITEMP_UNZIP) $(DL_DIR)/$(DIGITEMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DIGITEMP_PATCHES)" ; \
 		then cat $(DIGITEMP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DIGITEMP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DIGITEMP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DIGITEMP_DIR)" != "$(DIGITEMP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DIGITEMP_DIR) $(DIGITEMP_BUILD_DIR) ; \
@@ -144,7 +144,7 @@ digitemp: $(DIGITEMP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/digitemp
 #
 $(DIGITEMP_IPK_DIR)/CONTROL/control:
-	@install -d $(DIGITEMP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(DIGITEMP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: digitemp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -172,10 +172,10 @@ $(DIGITEMP_IPK_DIR)/CONTROL/control:
 #
 $(DIGITEMP_IPK): $(DIGITEMP_BUILD_DIR)/.built
 	rm -rf $(DIGITEMP_IPK_DIR) $(BUILD_DIR)/digitemp_*_$(TARGET_ARCH).ipk
-	install -d $(DIGITEMP_IPK_DIR)/opt/bin
-	install -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097 $(DIGITEMP_IPK_DIR)/opt/bin
-	install -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097U $(DIGITEMP_IPK_DIR)/opt/bin
-	install -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS2490 $(DIGITEMP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(DIGITEMP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097 $(DIGITEMP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097U $(DIGITEMP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS2490 $(DIGITEMP_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp_DS9097
 	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp_DS9097U
 	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp_DS2490

@@ -110,7 +110,7 @@ $(CUETOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUETOOLS_SOURCE) $(CUETOOLS_PATCH
 	$(CUETOOLS_UNZIP) $(DL_DIR)/$(CUETOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CUETOOLS_PATCHES)" ; \
 		then cat $(CUETOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CUETOOLS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CUETOOLS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CUETOOLS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CUETOOLS_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ cuetools: $(CUETOOLS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/cuetools
 #
 $(CUETOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cuetools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

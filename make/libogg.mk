@@ -101,7 +101,7 @@ libogg-source: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES)
 $(LIBOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES) make/libogg.mk
 	rm -rf $(BUILD_DIR)/$(LIBOGG_DIR) $(@D)
 	$(LIBOGG_UNZIP) $(DL_DIR)/$(LIBOGG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBOGG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBOGG_DIR) -p1
+#	cat $(LIBOGG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBOGG_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBOGG_DIR) $(@D)
 	rm -f $(@D)/config.cache
 	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW)  autoreconf -vif $(@D)
@@ -150,7 +150,7 @@ libogg-stage: $(LIBOGG_BUILD_DIR)/.staged
 
 
 $(LIBOGG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libogg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

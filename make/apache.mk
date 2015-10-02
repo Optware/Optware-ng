@@ -106,7 +106,7 @@ APACHE_MANUAL_IPK=$(BUILD_DIR)/apache-manual_$(APACHE_VERSION)-$(APACHE_IPK_VERS
 # Automatically create a ipkg control file
 #
 $(APACHE_IPK_DIR)/CONTROL/control:
-	@install -d $(APACHE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(APACHE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: apache" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -119,7 +119,7 @@ $(APACHE_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(APACHE_DEPENDS)" >>$@
 
 $(APACHE_MANUAL_IPK_DIR)/CONTROL/control:
-	@install -d $(APACHE_MANUAL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(APACHE_MANUAL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: apache-manual" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -169,7 +169,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(@D)
 	$(APACHE_UNZIP) $(DL_DIR)/$(APACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APACHE_DIR) $(@D)
-	cat $(APACHE_PATCHES) |patch -p0 -d $(@D)
+	cat $(APACHE_PATCHES) |$(PATCH) -p0 -d $(@D)
 	sed -i -e "s% *installbuilddir: .*% installbuilddir: $(STAGING_PREFIX)/share/apache2/build%" \
 		-e 's%[ \t]\{1,\}prefix: .*%    prefix: /opt%' \
 		-e "s% *htdocsdir: .*% htdocsdir: /opt/share/www%" \
@@ -275,12 +275,12 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	sed -i -e "s%$(STAGING_DIR)%%" $(APACHE_IPK_DIR)/opt/sbin/apxs
 	sed -i -e "s%^#!.*perl%#!/opt/bin/perl%" $(APACHE_IPK_DIR)/opt/sbin/apxs
 	sed -i -e "s%^#!.*perl%#!/opt/bin/perl%" $(APACHE_IPK_DIR)/opt/sbin/dbmmanage
-	install -d $(APACHE_IPK_DIR)/opt/etc/apache2/conf.d
-	install -d $(APACHE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(APACHE_SOURCE_DIR)/rc.apache $(APACHE_IPK_DIR)/opt/etc/init.d/S80apache
+	$(INSTALL) -d $(APACHE_IPK_DIR)/opt/etc/apache2/conf.d
+	$(INSTALL) -d $(APACHE_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(APACHE_SOURCE_DIR)/rc.apache $(APACHE_IPK_DIR)/opt/etc/init.d/S80apache
 	$(MAKE) $(APACHE_IPK_DIR)/CONTROL/control
-	install -m 755 $(APACHE_SOURCE_DIR)/prerm $(APACHE_IPK_DIR)/CONTROL/prerm
-	install -m 755 $(APACHE_SOURCE_DIR)/postinst $(APACHE_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(APACHE_SOURCE_DIR)/prerm $(APACHE_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(APACHE_SOURCE_DIR)/postinst $(APACHE_IPK_DIR)/CONTROL/postinst
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(APACHE_IPK_DIR)/CONTROL/postinst $(APACHE_IPK_DIR)/CONTROL/prerm; \

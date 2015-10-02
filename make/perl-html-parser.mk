@@ -36,7 +36,7 @@ $(PERL-HTML-PARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) 
 	$(MAKE) perl-html-tagset-stage
 	rm -rf $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) $(@D)
 	$(PERL-HTML-PARSER_UNZIP) $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-HTML-PARSER_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) -p1
+#	cat $(PERL-HTML-PARSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -72,7 +72,7 @@ $(PERL-HTML-PARSER_BUILD_DIR)/.staged: $(PERL-HTML-PARSER_BUILD_DIR)/.built
 perl-html-parser-stage: $(PERL-HTML-PARSER_BUILD_DIR)/.staged
 
 $(PERL-HTML-PARSER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-html-parser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

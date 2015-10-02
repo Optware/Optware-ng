@@ -110,7 +110,7 @@ $(CSCOPE_BUILD_DIR)/.configured: $(DL_DIR)/$(CSCOPE_SOURCE) $(CSCOPE_PATCHES) ma
 	$(CSCOPE_UNZIP) $(DL_DIR)/$(CSCOPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CSCOPE_PATCHES)" ; \
 		then cat $(CSCOPE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CSCOPE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CSCOPE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CSCOPE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CSCOPE_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ cscope-stage: $(CSCOPE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cscope
 #
 $(CSCOPE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cscope" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,15 +190,15 @@ $(CSCOPE_IPK_DIR)/CONTROL/control:
 $(CSCOPE_IPK): $(CSCOPE_BUILD_DIR)/.built
 	rm -rf $(CSCOPE_IPK_DIR) $(BUILD_DIR)/cscope_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CSCOPE_BUILD_DIR) DESTDIR=$(CSCOPE_IPK_DIR) install-strip
-#	install -d $(CSCOPE_IPK_DIR)/opt/etc/
-#	install -m 644 $(CSCOPE_SOURCE_DIR)/cscope.conf $(CSCOPE_IPK_DIR)/opt/etc/cscope.conf
-#	install -d $(CSCOPE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CSCOPE_SOURCE_DIR)/rc.cscope $(CSCOPE_IPK_DIR)/opt/etc/init.d/SXXcscope
+#	$(INSTALL) -d $(CSCOPE_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(CSCOPE_SOURCE_DIR)/cscope.conf $(CSCOPE_IPK_DIR)/opt/etc/cscope.conf
+#	$(INSTALL) -d $(CSCOPE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(CSCOPE_SOURCE_DIR)/rc.cscope $(CSCOPE_IPK_DIR)/opt/etc/init.d/SXXcscope
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXcscope
 	$(MAKE) $(CSCOPE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CSCOPE_SOURCE_DIR)/postinst $(CSCOPE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(CSCOPE_SOURCE_DIR)/postinst $(CSCOPE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CSCOPE_SOURCE_DIR)/prerm $(CSCOPE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(CSCOPE_SOURCE_DIR)/prerm $(CSCOPE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(CSCOPE_CONFFILES) | sed -e 's/ /\n/g' > $(CSCOPE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CSCOPE_IPK_DIR)

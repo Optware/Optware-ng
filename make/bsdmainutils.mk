@@ -120,7 +120,7 @@ endif
 	$(BSDMAINUTILS_UNZIP) $(DL_DIR)/$(BSDMAINUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BSDMAINUTILS_PATCHES)" ; \
 		then cat $(BSDMAINUTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BSDMAINUTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BSDMAINUTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BSDMAINUTILS_DIR)" != "$(BSDMAINUTILS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(BSDMAINUTILS_DIR) $(BSDMAINUTILS_BUILD_DIR) ; \
@@ -181,7 +181,7 @@ bsdmainutils-stage: $(BSDMAINUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bsdmainutils
 #
 $(BSDMAINUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bsdmainutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

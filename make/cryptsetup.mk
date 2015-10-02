@@ -116,7 +116,7 @@ $(CRYPTSETUP_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTSETUP_SOURCE) $(CRYPTSETUP
 	$(CRYPTSETUP_UNZIP) $(DL_DIR)/$(CRYPTSETUP_SOURCE) | tar -C $(BUILD_DIR) -xvf - 
 	if test -n "$(CRYPTSETUP_PATCHES)" ; \
 		then cat $(CRYPTSETUP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CRYPTSETUP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CRYPTSETUP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CRYPTSETUP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CRYPTSETUP_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ cryptsetup-stage: $(CRYPTSETUP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cryptsetup
 #
 $(CRYPTSETUP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cryptsetup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

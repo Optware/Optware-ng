@@ -69,7 +69,7 @@ $(CVS_BUILD_DIR)/.configured: $(DL_DIR)/$(CVS_SOURCE) $(CVS_PATCHES) make/cvs.mk
 	$(CVS_UNZIP) $(DL_DIR)/$(CVS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CVS_PATCHES)" ; \
 		then cat $(CVS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(CVS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CVS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CVS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CVS_DIR) $(@D) ; \
@@ -120,7 +120,7 @@ cvs-stage: $(CVS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cvs
 #
 $(CVS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: cvs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -151,7 +151,7 @@ $(CVS_IPK): $(CVS_BUILD_DIR)/.built
 	$(MAKE) -C $(CVS_BUILD_DIR) DESTDIR=$(CVS_IPK_DIR) install-strip
 	rm -f $(CVS_IPK_DIR)/opt/share/info/dir
 #	$(STRIP_COMMAND) $(CVS_BUILD_DIR)/src/cvs -o $(CVS_IPK_DIR)/opt/bin/cvs
-	install -d $(CVS_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(CVS_IPK_DIR)/opt/bin/
 	$(MAKE) $(CVS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CVS_IPK_DIR)
 

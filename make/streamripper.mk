@@ -114,7 +114,7 @@ $(STREAMRIPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAM
 	$(MAKE) libvorbis-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(STREAMRIPPER_DIR) $(@D)
 	$(STREAMRIPPER_UNZIP) $(DL_DIR)/$(STREAMRIPPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(STREAMRIPPER_PATCHES) | patch -d $(BUILD_DIR)/$(STREAMRIPPER_DIR) -p1
+#	cat $(STREAMRIPPER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(STREAMRIPPER_DIR) -p1
 	mv $(BUILD_DIR)/$(STREAMRIPPER_DIR) $(@D)
 	sed -i -e '/^DEFAULT_INCLUDES *=/s|$$| $(STAGING_CPPFLAGS)|' $(@D)/lib/Makefile.in
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
@@ -166,7 +166,7 @@ streamripper: $(STREAMRIPPER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/streamripper
 #
 $(STREAMRIPPER_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: $(STREAMRIPPER_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,13 +195,13 @@ $(STREAMRIPPER_IPK): $(STREAMRIPPER_BUILD_DIR)/.built
 	rm -rf $(STREAMRIPPER_IPK_DIR) $(BUILD_DIR)/streamripper_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(STREAMRIPPER_BUILD_DIR) DESTDIR=$(STREAMRIPPER_IPK_DIR) install
 	$(STRIP_COMMAND) $(STREAMRIPPER_IPK_DIR)/opt/bin/streamripper
-#	install -d $(STREAMRIPPER_IPK_DIR)/opt/etc/
-#	install -m 644 $(STREAMRIPPER_SOURCE_DIR)/streamripper.conf $(STREAMRIPPER_IPK_DIR)/opt/etc/streamripper.conf
-#	install -d $(STREAMRIPPER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(STREAMRIPPER_SOURCE_DIR)/rc.streamripper $(STREAMRIPPER_IPK_DIR)/opt/etc/init.d/SXXstreamripper
+#	$(INSTALL) -d $(STREAMRIPPER_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(STREAMRIPPER_SOURCE_DIR)/streamripper.conf $(STREAMRIPPER_IPK_DIR)/opt/etc/streamripper.conf
+#	$(INSTALL) -d $(STREAMRIPPER_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(STREAMRIPPER_SOURCE_DIR)/rc.streamripper $(STREAMRIPPER_IPK_DIR)/opt/etc/init.d/SXXstreamripper
 	$(MAKE) $(STREAMRIPPER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(STREAMRIPPER_SOURCE_DIR)/postinst $(STREAMRIPPER_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(STREAMRIPPER_SOURCE_DIR)/prerm $(STREAMRIPPER_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(STREAMRIPPER_SOURCE_DIR)/postinst $(STREAMRIPPER_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(STREAMRIPPER_SOURCE_DIR)/prerm $(STREAMRIPPER_IPK_DIR)/CONTROL/prerm
 	echo $(STREAMRIPPER_CONFFILES) | sed -e 's/ /\n/g' > $(STREAMRIPPER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STREAMRIPPER_IPK_DIR)
 

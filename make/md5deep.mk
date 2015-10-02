@@ -110,7 +110,7 @@ $(MD5DEEP_BUILD_DIR)/.configured: $(DL_DIR)/$(MD5DEEP_SOURCE) $(MD5DEEP_PATCHES)
 	$(MD5DEEP_UNZIP) $(DL_DIR)/$(MD5DEEP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MD5DEEP_PATCHES)" ; \
 		then cat $(MD5DEEP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MD5DEEP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MD5DEEP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MD5DEEP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MD5DEEP_DIR) $(@D) ; \
@@ -163,7 +163,7 @@ md5deep-stage: $(MD5DEEP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/md5deep
 #
 $(MD5DEEP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: md5deep" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -220,7 +220,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	$(BUILDROOT_UNZIP) $(DL_DIR)/$(BUILDROOT_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
 	if test -n "$(BUILDROOT_PATCHES)" ; \
 		then cat $(BUILDROOT_PATCHES) | \
-		patch -d $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) -p1 ; \
+		$(PATCH) -d $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) -p1 ; \
 	fi
 	if test "$(TOOL_BUILD_DIR)/$(BUILDROOT_DIR)" != "$(BUILDROOT_BUILD_DIR)" ; \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
@@ -308,7 +308,7 @@ buildroot-stage buildroot-toolchain: $(BUILDROOT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/buildroot
 #
 $(BUILDROOT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: buildroot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -337,17 +337,17 @@ $(BUILDROOT_IPK_DIR)/CONTROL/control:
 $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	rm -rf $(BUILDROOT_IPK_DIR) $(BUILD_DIR)/buildroot_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(BUILDROOT_IPK_DIR) install-strip
-	install -d $(BUILDROOT_IPK_DIR)
+	$(INSTALL) -d $(BUILDROOT_IPK_DIR)
 #	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
 	cp -fa $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/ $(BUILDROOT_IPK_DIR)
 #	Remove files provided by uclibc-opt
 	rm -f $(patsubst %, $(BUILDROOT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
 	rm -f $(BUILDROOT_IPK_DIR)/opt/sbin/ldconfig
-#	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
-	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)/opt/bin
+#	$(INSTALL) -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)/opt/bin
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
-	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
 #	echo $(BUILDROOT_CONFFILES) | sed -e 's/ /\n/g' > $(BUILDROOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILDROOT_IPK_DIR)
 

@@ -112,7 +112,7 @@ $(EZ-IPUPDATE_BUILD_DIR)/.configured: $(DL_DIR)/$(EZ-IPUPDATE_SOURCE) $(EZ-IPUPD
 	$(EZ-IPUPDATE_UNZIP) $(DL_DIR)/$(EZ-IPUPDATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EZ-IPUPDATE_PATCHES)" ; \
 		then cat $(EZ-IPUPDATE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(EZ-IPUPDATE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(EZ-IPUPDATE_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(EZ-IPUPDATE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(EZ-IPUPDATE_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ ez-ipupdate-stage: $(EZ-IPUPDATE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ez-ipupdate
 #
 $(EZ-IPUPDATE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ez-ipupdate" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,10 +192,10 @@ $(EZ-IPUPDATE_IPK): $(EZ-IPUPDATE_BUILD_DIR)/.built
 	rm -rf $(EZ-IPUPDATE_IPK_DIR) $(BUILD_DIR)/ez-ipupdate_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(EZ-IPUPDATE_BUILD_DIR) DESTDIR=$(EZ-IPUPDATE_IPK_DIR) install
 	$(STRIP_COMMAND) $(EZ-IPUPDATE_IPK_DIR)/opt/bin/ez-ipupdate
-	install -d $(EZ-IPUPDATE_IPK_DIR)/opt/share/doc/ez-ipupdate
-	install -m 644 $(EZ-IPUPDATE_BUILD_DIR)/[CR]* $(EZ-IPUPDATE_IPK_DIR)/opt/share/doc/ez-ipupdate
-#	install -d $(EZ-IPUPDATE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(EZ-IPUPDATE_SOURCE_DIR)/rc.ez-ipupdate $(EZ-IPUPDATE_IPK_DIR)/opt/etc/init.d/SXXez-ipupdate
+	$(INSTALL) -d $(EZ-IPUPDATE_IPK_DIR)/opt/share/doc/ez-ipupdate
+	$(INSTALL) -m 644 $(EZ-IPUPDATE_BUILD_DIR)/[CR]* $(EZ-IPUPDATE_IPK_DIR)/opt/share/doc/ez-ipupdate
+#	$(INSTALL) -d $(EZ-IPUPDATE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(EZ-IPUPDATE_SOURCE_DIR)/rc.ez-ipupdate $(EZ-IPUPDATE_IPK_DIR)/opt/etc/init.d/SXXez-ipupdate
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EZ-IPUPDATE_IPK_DIR)/opt/etc/init.d/SXXez-ipupdate
 	$(MAKE) $(EZ-IPUPDATE_IPK_DIR)/CONTROL/control
 	echo $(EZ-IPUPDATE_CONFFILES) | sed -e 's/ /\n/g' > $(EZ-IPUPDATE_IPK_DIR)/CONTROL/conffiles

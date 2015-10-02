@@ -147,10 +147,10 @@ libghttp: $(LIBGHTTP_BUILD_DIR)/.built
 $(LIBGHTTP_BUILD_DIR)/.staged: $(LIBGHTTP_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBGHTTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-#	install -d $(STAGING_INCLUDE_DIR)
-#	install -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(STAGING_INCLUDE_DIR)
-#	install -d $(STAGING_LIB_DIR)
-#	install -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(STAGING_LIB_DIR)
+#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -d $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(STAGING_LIB_DIR)
 	touch $@
 
 libghttp-stage: $(LIBGHTTP_BUILD_DIR)/.staged
@@ -160,7 +160,7 @@ libghttp-stage: $(LIBGHTTP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libghttp
 #
 $(LIBGHTTP_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBGHTTP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBGHTTP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libghttp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,10 +189,10 @@ $(LIBGHTTP_IPK_DIR)/CONTROL/control:
 $(LIBGHTTP_IPK): $(LIBGHTTP_BUILD_DIR)/.built
 	rm -rf $(LIBGHTTP_IPK_DIR) $(BUILD_DIR)/LIBGHTTP_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGHTTP_BUILD_DIR) DESTDIR=$(LIBGHTTP_IPK_DIR) install-strip
-#	install -d $(LIBGHTTP_IPK_DIR)/opt/include
-#	install -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(LIBGHTTP_IPK_DIR)/opt/include
-#	install -d $(LIBGHTTP_IPK_DIR)/opt/lib
-#	install -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(LIBGHTTP_IPK_DIR)/opt/lib
+#	$(INSTALL) -d $(LIBGHTTP_IPK_DIR)/opt/include
+#	$(INSTALL) -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(LIBGHTTP_IPK_DIR)/opt/include
+#	$(INSTALL) -d $(LIBGHTTP_IPK_DIR)/opt/lib
+#	$(INSTALL) -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(LIBGHTTP_IPK_DIR)/opt/lib
 	$(MAKE) $(LIBGHTTP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGHTTP_IPK_DIR)
 

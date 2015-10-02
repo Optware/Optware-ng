@@ -1,4 +1,4 @@
-/opt/var/spool/miau/logs/*.txt {
+%OPTWARE_TARGET_PREFIX%/var/spool/miau/logs/*.txt {
 	rotate 7
 	daily
 	mailfirst

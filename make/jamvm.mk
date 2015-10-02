@@ -101,7 +101,7 @@ $(JAMVM_BUILD_DIR)/.configured: $(DL_DIR)/$(JAMVM_SOURCE) $(JAMVM_PATCHES)
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(JAMVM_DIR) $(JAMVM_BUILD_DIR)
 	$(JAMVM_UNZIP) $(DL_DIR)/$(JAMVM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(JAMVM_PATCHES) | patch -d $(BUILD_DIR)/$(JAMVM_DIR) -p1
+#	cat $(JAMVM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(JAMVM_DIR) -p1
 	mv $(BUILD_DIR)/$(JAMVM_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -136,11 +136,11 @@ jamvm: $(JAMVM_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_LIB_DIR)/libjamvm.so.$(JAMVM_VERSION): $(JAMVM_BUILD_DIR)/.built
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(JAMVM_BUILD_DIR)/jamvm.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(JAMVM_BUILD_DIR)/libjamvm.a $(STAGING_LIB_DIR)
-	install -m 644 $(JAMVM_BUILD_DIR)/libjamvm.so.$(JAMVM_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(JAMVM_BUILD_DIR)/jamvm.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(JAMVM_BUILD_DIR)/libjamvm.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(JAMVM_BUILD_DIR)/libjamvm.so.$(JAMVM_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libjamvm.so.$(JAMVM_VERSION) libjamvm.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libjamvm.so.$(JAMVM_VERSION) libjamvm.so
 
@@ -151,7 +151,7 @@ jamvm-stage: $(STAGING_LIB_DIR)/libjamvm.so.$(JAMVM_VERSION)
 # necessary to create a seperate control file under sources/jamvm
 #
 $(JAMVM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: jamvm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +180,7 @@ $(JAMVM_IPK_DIR)/CONTROL/control:
 $(JAMVM_IPK): $(JAMVM_BUILD_DIR)/.built
 	rm -rf $(JAMVM_IPK_DIR) $(BUILD_DIR)/jamvm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JAMVM_BUILD_DIR) install-strip prefix=$(JAMVM_IPK_DIR)/opt
-	install -d $(JAMVM_IPK_DIR)/opt/include/jamvm/
+	$(INSTALL) -d $(JAMVM_IPK_DIR)/opt/include/jamvm/
 	mv $(JAMVM_IPK_DIR)/opt/include/jni.h $(JAMVM_IPK_DIR)/opt/include/jamvm/jni.h
 	$(MAKE) $(JAMVM_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JAMVM_IPK_DIR)

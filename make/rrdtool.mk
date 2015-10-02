@@ -127,7 +127,7 @@ endif
 	$(RRDTOOL_UNZIP) $(DL_DIR)/$(RRDTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RRDTOOL_PATCHES)" ; \
 		then cat $(RRDTOOL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RRDTOOL_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(RRDTOOL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RRDTOOL_DIR)" != "$(RRDTOOL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR) ; \
@@ -211,7 +211,7 @@ rrdtool-stage: $(RRDTOOL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rrdtool
 #
 $(RRDTOOL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: rrdtool" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -248,13 +248,13 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \;
 endif
-#	install -d $(RRDTOOL_IPK_DIR)/opt/etc/
-#	install -m 644 $(RRDTOOL_SOURCE_DIR)/rrdtool.conf $(RRDTOOL_IPK_DIR)/opt/etc/rrdtool.conf
-#	install -d $(RRDTOOL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(RRDTOOL_SOURCE_DIR)/rc.rrdtool $(RRDTOOL_IPK_DIR)/opt/etc/init.d/SXXrrdtool
+#	$(INSTALL) -d $(RRDTOOL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(RRDTOOL_SOURCE_DIR)/rrdtool.conf $(RRDTOOL_IPK_DIR)/opt/etc/rrdtool.conf
+#	$(INSTALL) -d $(RRDTOOL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(RRDTOOL_SOURCE_DIR)/rc.rrdtool $(RRDTOOL_IPK_DIR)/opt/etc/init.d/SXXrrdtool
 	$(MAKE) $(RRDTOOL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RRDTOOL_SOURCE_DIR)/postinst $(RRDTOOL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RRDTOOL_SOURCE_DIR)/prerm $(RRDTOOL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(RRDTOOL_SOURCE_DIR)/postinst $(RRDTOOL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(RRDTOOL_SOURCE_DIR)/prerm $(RRDTOOL_IPK_DIR)/CONTROL/prerm
 	echo $(RRDTOOL_CONFFILES) | sed -e 's/ /\n/g' > $(RRDTOOL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RRDTOOL_IPK_DIR)
 

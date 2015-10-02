@@ -1,2 +1,2 @@
 ZNC_USER="znc"
-ZNC_DATADIR="/opt/var/lib/znc"
+ZNC_DATADIR="%OPTWARE_TARGET_PREFIX%/var/lib/znc"

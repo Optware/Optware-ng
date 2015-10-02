@@ -110,7 +110,7 @@ $(LIBIEEE1284_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIEEE1284_SOURCE) $(LIBIEEE1
 	$(LIBIEEE1284_UNZIP) $(DL_DIR)/$(LIBIEEE1284_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBIEEE1284_PATCHES)" ; \
 		then cat $(LIBIEEE1284_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBIEEE1284_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBIEEE1284_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBIEEE1284_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBIEEE1284_DIR) $(@D) ; \
@@ -162,7 +162,7 @@ libieee1284-stage: $(LIBIEEE1284_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libieee1284
 #
 $(LIBIEEE1284_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libieee1284" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,15 +191,15 @@ $(LIBIEEE1284_IPK_DIR)/CONTROL/control:
 $(LIBIEEE1284_IPK): $(LIBIEEE1284_BUILD_DIR)/.built
 	rm -rf $(LIBIEEE1284_IPK_DIR) $(BUILD_DIR)/libieee1284_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBIEEE1284_BUILD_DIR) DESTDIR=$(LIBIEEE1284_IPK_DIR) install-strip
-#	install -d $(LIBIEEE1284_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBIEEE1284_SOURCE_DIR)/libieee1284.conf $(LIBIEEE1284_IPK_DIR)/opt/etc/libieee1284.conf
-#	install -d $(LIBIEEE1284_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBIEEE1284_SOURCE_DIR)/rc.libieee1284 $(LIBIEEE1284_IPK_DIR)/opt/etc/init.d/SXXlibieee1284
+#	$(INSTALL) -d $(LIBIEEE1284_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBIEEE1284_SOURCE_DIR)/libieee1284.conf $(LIBIEEE1284_IPK_DIR)/opt/etc/libieee1284.conf
+#	$(INSTALL) -d $(LIBIEEE1284_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBIEEE1284_SOURCE_DIR)/rc.libieee1284 $(LIBIEEE1284_IPK_DIR)/opt/etc/init.d/SXXlibieee1284
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBIEEE1284_IPK_DIR)/opt/etc/init.d/SXXlibieee1284
 	$(MAKE) $(LIBIEEE1284_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBIEEE1284_SOURCE_DIR)/postinst $(LIBIEEE1284_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBIEEE1284_SOURCE_DIR)/postinst $(LIBIEEE1284_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBIEEE1284_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBIEEE1284_SOURCE_DIR)/prerm $(LIBIEEE1284_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBIEEE1284_SOURCE_DIR)/prerm $(LIBIEEE1284_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBIEEE1284_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

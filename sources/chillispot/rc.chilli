@@ -19,8 +19,8 @@
 # Check that networking is up.
 #[ ${NETWORKING} = "no" ] && exit 0
 
-[ -f /opt/sbin/chilli ] || exit 0
-[ -f /opt/etc/chilli.conf ] || exit 0
+[ -f %OPTWARE_TARGET_PREFIX%/sbin/chilli ] || exit 0
+[ -f %OPTWARE_TARGET_PREFIX%/etc/chilli.conf ] || exit 0
 
 RETVAL=0
 prog="chilli"
@@ -36,8 +36,8 @@ start() {
 	# Users should enable this explicitly
 	# echo 1 > /proc/sys/net/ipv4/ip_forward
 
-	#daemon /opt/sbin/chilli 
-	/opt/sbin/chilli 
+	#daemon %OPTWARE_TARGET_PREFIX%/sbin/chilli 
+	%OPTWARE_TARGET_PREFIX%/sbin/chilli 
 	RETVAL=$?
 	echo
 	[ $RETVAL -eq 0 ] && touch /var/lock/chilli

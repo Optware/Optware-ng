@@ -108,7 +108,7 @@ $(LIBART_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBART_SOURCE) $(LIBART_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBART_DIR) $(LIBART_BUILD_DIR)
 	$(LIBART_UNZIP) $(DL_DIR)/$(LIBART_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBART_PATCHES) | patch -d $(BUILD_DIR)/$(LIBART_DIR) -p1
+#	cat $(LIBART_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBART_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBART_DIR) $(LIBART_BUILD_DIR)
 	(cd $(LIBART_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -161,7 +161,7 @@ libart-stage: $(LIBART_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libart
 #
 $(LIBART_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBART_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(LIBART_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libart" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,13 +191,13 @@ $(LIBART_IPK): $(LIBART_BUILD_DIR)/.built
 	rm -rf $(LIBART_IPK_DIR) $(BUILD_DIR)/libart_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBART_BUILD_DIR) DESTDIR=$(LIBART_IPK_DIR) install-strip
 	$(STRIP_COMMAND) $(LIBART_IPK_DIR)/opt/lib/*.so
-#	install -d $(LIBART_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBART_SOURCE_DIR)/libart.conf $(LIBART_IPK_DIR)/opt/etc/libart.conf
-#	install -d $(LIBART_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBART_SOURCE_DIR)/rc.libart $(LIBART_IPK_DIR)/opt/etc/init.d/SXXlibart
+#	$(INSTALL) -d $(LIBART_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBART_SOURCE_DIR)/libart.conf $(LIBART_IPK_DIR)/opt/etc/libart.conf
+#	$(INSTALL) -d $(LIBART_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBART_SOURCE_DIR)/rc.libart $(LIBART_IPK_DIR)/opt/etc/init.d/SXXlibart
 	$(MAKE) $(LIBART_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBART_SOURCE_DIR)/postinst $(LIBART_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBART_SOURCE_DIR)/prerm $(LIBART_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBART_SOURCE_DIR)/postinst $(LIBART_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBART_SOURCE_DIR)/prerm $(LIBART_IPK_DIR)/CONTROL/prerm
 	echo $(LIBART_CONFFILES) | sed -e 's/ /\n/g' > $(LIBART_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBART_IPK_DIR)
 

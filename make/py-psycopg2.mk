@@ -113,7 +113,7 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG2_DIR)
 	$(PY-PSYCOPG2_UNZIP) $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-PSYCOPG2_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) -p1
+#	cat $(PY-PSYCOPG2_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -135,7 +135,7 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG2_DIR)
 	$(PY-PSYCOPG2_UNZIP) $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-PSYCOPG2_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) -p1
+#	cat $(PY-PSYCOPG2_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -193,7 +193,7 @@ py-psycopg2-stage: $(PY-PSYCOPG2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-psycopg2
 #
 $(PY25-PSYCOPG2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-psycopg2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,7 +207,7 @@ $(PY25-PSYCOPG2_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PSYCOPG2_CONFLICTS)" >>$@
 
 $(PY26-PSYCOPG2_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-psycopg2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

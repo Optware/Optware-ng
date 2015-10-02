@@ -73,6 +73,6 @@
     "umask": 0, 
     "upload-slots-per-torrent": 10, 
     "utp-enabled": false, 
-    "watch-dir": "/opt/etc/transmission/watchdir", 
+    "watch-dir": "%OPTWARE_TARGET_PREFIX%/etc/transmission/watchdir", 
     "watch-dir-enabled": true
 }

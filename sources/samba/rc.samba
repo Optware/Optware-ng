@@ -18,6 +18,6 @@ fi
 sleep 2
 
 echo "Starting nmbd:"
-/opt/sbin/nmbd -D
+%OPTWARE_TARGET_PREFIX%/sbin/nmbd -D
 echo "Starting smbd:"
-/opt/sbin/smbd -D
+%OPTWARE_TARGET_PREFIX%/sbin/smbd -D

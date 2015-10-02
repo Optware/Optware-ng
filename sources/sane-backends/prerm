@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
 if grep -q ^sane-port /etc/services; then
 	echo
@@ -9,17 +9,17 @@ if grep -q ^sane-port /etc/services; then
 	echo "done."
 fi
 
-if [ -f /opt/etc/inetd.conf ]; then
-	if grep -q ^sane-port /opt/etc/inetd.conf; then
-		sed -i -e "/^sane-port/d" /opt/etc/inetd.conf
+if [ -f %OPTWARE_TARGET_PREFIX%/etc/inetd.conf ]; then
+	if grep -q ^sane-port %OPTWARE_TARGET_PREFIX%/etc/inetd.conf; then
+		sed -i -e "/^sane-port/d" %OPTWARE_TARGET_PREFIX%/etc/inetd.conf
 		echo
-		echo "/opt/etc/inetd.conf has been updated to remove saned"
+		echo "%OPTWARE_TARGET_PREFIX%/etc/inetd.conf has been updated to remove saned"
 		echo "Please restart inetd."
 	fi
 fi
 
-if [ -f /opt/etc/xinet.d/saned ]; then
-	rm -f /opt/etc/xinet.d/saned
+if [ -f %OPTWARE_TARGET_PREFIX%/etc/xinet.d/saned ]; then
+	rm -f %OPTWARE_TARGET_PREFIX%/etc/xinet.d/saned
 	echo
 	echo "xinetd has been updated to remove saned"
 	echo "Please restart xinetd."

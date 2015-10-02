@@ -110,7 +110,7 @@ $(SLSC_BUILD_DIR)/.configured: $(DL_DIR)/$(SLSC_SOURCE) $(SLSC_PATCHES) make/sls
 	$(SLSC_UNZIP) $(DL_DIR)/$(SLSC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SLSC_PATCHES)" ; \
 		then cat $(SLSC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SLSC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SLSC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SLSC_DIR)" != "$(SLSC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SLSC_DIR) $(SLSC_BUILD_DIR) ; \
@@ -169,7 +169,7 @@ slsc-stage: $(SLSC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/slsc
 #
 $(SLSC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: slsc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,7 +197,7 @@ $(SLSC_IPK_DIR)/CONTROL/control:
 #
 $(SLSC_IPK): $(SLSC_BUILD_DIR)/.built
 	rm -rf $(SLSC_IPK_DIR) $(BUILD_DIR)/slsc_*_$(TARGET_ARCH).ipk
-	install -d $(SLSC_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(SLSC_IPK_DIR)/opt/lib
 	$(MAKE) -C $(SLSC_BUILD_DIR) DESTDIR=$(SLSC_IPK_DIR) install \
 		SLSC_ROOT=$(SLSC_IPK_DIR)/opt/lib/slsc \
 		SLSC_BIN=$(SLSC_IPK_DIR)/opt/bin \

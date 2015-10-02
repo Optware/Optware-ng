@@ -35,7 +35,7 @@ $(PERL-GD-BARCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-GD-BARCODE_SOURCE) $(
 	$(MAKE) perl-gd-stage
 	rm -rf $(BUILD_DIR)/$(PERL-GD-BARCODE_DIR) $(PERL-GD-BARCODE_BUILD_DIR)
 	$(PERL-GD-BARCODE_UNZIP) $(DL_DIR)/$(PERL-GD-BARCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-GD-BARCODE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-GD-BARCODE_DIR) -p1
+#	cat $(PERL-GD-BARCODE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-GD-BARCODE_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-GD-BARCODE_DIR) $(PERL-GD-BARCODE_BUILD_DIR)
 	(cd $(PERL-GD-BARCODE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-GD-BARCODE_BUILD_DIR)/.staged: $(PERL-GD-BARCODE_BUILD_DIR)/.built
 perl-gd-barcode-stage: $(PERL-GD-BARCODE_BUILD_DIR)/.staged
 
 $(PERL-GD-BARCODE_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-GD-BARCODE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-GD-BARCODE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-gd-barcode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

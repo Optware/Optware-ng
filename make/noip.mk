@@ -120,7 +120,7 @@ $(NOIP_BUILD_DIR)/.configured: $(DL_DIR)/$(NOIP_SOURCE) $(NOIP_PATCHES) make/noi
 	$(NOIP_UNZIP) $(DL_DIR)/$(NOIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NOIP_PATCHES)" ; \
 		then cat $(NOIP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NOIP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NOIP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NOIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NOIP_DIR) $(@D) ; \
@@ -147,7 +147,7 @@ noip: $(NOIP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/noip
 #
 $(NOIP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: noip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,14 +175,14 @@ $(NOIP_IPK_DIR)/CONTROL/control:
 #
 $(NOIP_IPK): $(NOIP_BUILD_DIR)/.built
 	rm -rf $(NOIP_IPK_DIR) $(BUILD_DIR)/noip_*_$(TARGET_ARCH).ipk
-	install -d $(NOIP_IPK_DIR)/opt/bin
-	install -m 755 $(NOIP_BUILD_DIR)/noip2 $(NOIP_IPK_DIR)/opt/bin
-	install -d $(NOIP_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(NOIP_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(NOIP_BUILD_DIR)/noip2 $(NOIP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(NOIP_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(NOIP_IPK_DIR)/opt/bin/noip2
-#	install -m 755 $(NOIP_SOURCE_DIR)/rc.noip $(NOIP_IPK_DIR)/opt/etc/init.d/SXXnoip
+#	$(INSTALL) -m 755 $(NOIP_SOURCE_DIR)/rc.noip $(NOIP_IPK_DIR)/opt/etc/init.d/SXXnoip
 	$(MAKE) $(NOIP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NOIP_SOURCE_DIR)/postinst $(NOIP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NOIP_SOURCE_DIR)/prerm $(NOIP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NOIP_SOURCE_DIR)/postinst $(NOIP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NOIP_SOURCE_DIR)/prerm $(NOIP_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NOIP_IPK_DIR)
 
 #

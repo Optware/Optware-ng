@@ -110,7 +110,7 @@ $(DTACH_BUILD_DIR)/.configured: $(DL_DIR)/$(DTACH_SOURCE) $(DTACH_PATCHES) make/
 	$(DTACH_UNZIP) $(DL_DIR)/$(DTACH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DTACH_PATCHES)" ; \
 		then cat $(DTACH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DTACH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DTACH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DTACH_DIR)" != "$(DTACH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DTACH_DIR) $(DTACH_BUILD_DIR) ; \
@@ -160,7 +160,7 @@ dtach-stage: $(DTACH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dtach
 #
 $(DTACH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dtach" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -189,11 +189,11 @@ $(DTACH_IPK_DIR)/CONTROL/control:
 $(DTACH_IPK): $(DTACH_BUILD_DIR)/.built
 	rm -rf $(DTACH_IPK_DIR) $(BUILD_DIR)/dtach_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(DTACH_BUILD_DIR) DESTDIR=$(DTACH_IPK_DIR) install-strip
-	install -d $(DTACH_IPK_DIR)/opt/bin
-	install $(DTACH_BUILD_DIR)/dtach $(DTACH_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(DTACH_IPK_DIR)/opt/bin
+	$(INSTALL) $(DTACH_BUILD_DIR)/dtach $(DTACH_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(DTACH_IPK_DIR)/opt/bin/dtach
-	install -d $(DTACH_IPK_DIR)/opt/share/man/man1
-	install $(DTACH_BUILD_DIR)/dtach.1 $(DTACH_IPK_DIR)/opt/share/man/man1/
+	$(INSTALL) -d $(DTACH_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) $(DTACH_BUILD_DIR)/dtach.1 $(DTACH_IPK_DIR)/opt/share/man/man1/
 	$(MAKE) $(DTACH_IPK_DIR)/CONTROL/control
 #	echo $(DTACH_CONFFILES) | sed -e 's/ /\n/g' > $(DTACH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DTACH_IPK_DIR)

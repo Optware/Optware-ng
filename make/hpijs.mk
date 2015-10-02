@@ -109,7 +109,7 @@ $(HPIJS_BUILD_DIR)/.configured: $(DL_DIR)/$(HPIJS_SOURCE) $(HPIJS_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(HPIJS_DIR) $(HPIJS_BUILD_DIR)
 	$(HPIJS_UNZIP) $(DL_DIR)/$(HPIJS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(HPIJS_PATCHES) | patch -d $(BUILD_DIR)/$(HPIJS_DIR) -p1
+	cat $(HPIJS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(HPIJS_DIR) -p1
 	mv $(BUILD_DIR)/$(HPIJS_DIR) $(HPIJS_BUILD_DIR)
 	(cd $(HPIJS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -154,7 +154,7 @@ $(HPIJS_BUILD_DIR)/.staged: $(HPIJS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/hpijs
 #
 $(HPIJS_IPK_DIR)/CONTROL/control:
-	@install -d $(HPIJS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(HPIJS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: hpijs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -183,13 +183,13 @@ $(HPIJS_IPK): $(HPIJS_BUILD_DIR)/.built
 	rm -rf $(HPIJS_IPK_DIR) $(BUILD_DIR)/hpijs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HPIJS_BUILD_DIR) DESTDIR=$(HPIJS_IPK_DIR) install
 	$(STRIP_COMMAND) $(HPIJS_IPK_DIR)/opt/bin/hpijs
-	install -d $(HPIJS_IPK_DIR)/opt/etc/
-	#install -m 644 $(HPIJS_SOURCE_DIR)/hpijs.conf $(HPIJS_IPK_DIR)/opt/etc/hpijs.conf
-	install -d $(HPIJS_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(HPIJS_SOURCE_DIR)/rc.hpijs $(HPIJS_IPK_DIR)/opt/etc/init.d/SXXhpijs
+	$(INSTALL) -d $(HPIJS_IPK_DIR)/opt/etc/
+	#$(INSTALL) -m 644 $(HPIJS_SOURCE_DIR)/hpijs.conf $(HPIJS_IPK_DIR)/opt/etc/hpijs.conf
+	$(INSTALL) -d $(HPIJS_IPK_DIR)/opt/etc/init.d
+	#$(INSTALL) -m 755 $(HPIJS_SOURCE_DIR)/rc.hpijs $(HPIJS_IPK_DIR)/opt/etc/init.d/SXXhpijs
 	$(MAKE) $(HPIJS_IPK_DIR)/CONTROL/control
-	#install -m 755 $(HPIJS_SOURCE_DIR)/postinst $(HPIJS_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(HPIJS_SOURCE_DIR)/prerm $(HPIJS_IPK_DIR)/CONTROL/prerm
+	#$(INSTALL) -m 755 $(HPIJS_SOURCE_DIR)/postinst $(HPIJS_IPK_DIR)/CONTROL/postinst
+	#$(INSTALL) -m 755 $(HPIJS_SOURCE_DIR)/prerm $(HPIJS_IPK_DIR)/CONTROL/prerm
 	#echo $(HPIJS_CONFFILES) | sed -e 's/ /\n/g' > $(HPIJS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HPIJS_IPK_DIR)
 

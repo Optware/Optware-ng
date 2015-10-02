@@ -115,7 +115,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
 	$(VSFTPD_UNZIP) $(DL_DIR)/$(VSFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VSFPD_PATCHES)"; then \
-		cat $(VSFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(VSFTPD_DIR) -p1; \
+		cat $(VSFTPD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(VSFTPD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
 	sed -i -e '/VSFTP_DEFAULT_CONFIG/s|/etc/vsftpd.conf|/opt&|' $(@D)/defs.h
@@ -163,18 +163,18 @@ vsftpd: $(VSFTPD_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 #$(VSFTPD_BUILD_DIR)/.staged: $(VSFTPD_BUILD_DIR)/.built
-#	install -d $(STAGING_INCLUDE_DIR)
-#	install -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.h $(STAGING_INCLUDE_DIR)
-#	install -d $(STAGING_LIB_DIR)
-#	install -m 644 $(VSFTPD_BUILD_DIR)/libvsftpd.a $(STAGING_LIB_DIR)
-#	install -m 644 $(VSFTPD_BUILD_DIR)/libvsftpd.so.$(VSFTPD_VERSION) $(STAGING_LIB_DIR)
+#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.h $(STAGING_INCLUDE_DIR)
+#	$(INSTALL) -d $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(VSFTPD_BUILD_DIR)/libvsftpd.a $(STAGING_LIB_DIR)
+#	$(INSTALL) -m 644 $(VSFTPD_BUILD_DIR)/libvsftpd.so.$(VSFTPD_VERSION) $(STAGING_LIB_DIR)
 #	cd $(STAGING_LIB_DIR) && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so.1
 #	cd $(STAGING_LIB_DIR) && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so
 #
 #vsftpd-stage: $(VSFTPD_BUILD_DIR)/.staged
 
 $(VSFTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: vsftpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,16 +202,16 @@ $(VSFTPD_IPK_DIR)/CONTROL/control:
 #
 $(VSFTPD_IPK): $(VSFTPD_BUILD_DIR)/.built
 	rm -rf $(VSFTPD_IPK_DIR) $(BUILD_DIR)/vsftpd_*_$(TARGET_ARCH).ipk
-	install -d $(VSFTPD_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(VSFTPD_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(VSFTPD_BUILD_DIR)/vsftpd -o $(VSFTPD_IPK_DIR)/opt/sbin/vsftpd
-	install -d $(VSFTPD_IPK_DIR)/opt/etc
-	install -m 644 $(VSFTPD_SOURCE_DIR)/vsftpd.conf $(VSFTPD_IPK_DIR)/opt/etc/vsftpd.conf
-	install -d $(VSFTPD_IPK_DIR)/opt/share/man/man5
-	install -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.conf.5 $(VSFTPD_IPK_DIR)/opt/share/man/man5
-	install -d $(VSFTPD_IPK_DIR)/opt/share/man/man8
-	install -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.8 $(VSFTPD_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -d $(VSFTPD_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(VSFTPD_SOURCE_DIR)/vsftpd.conf $(VSFTPD_IPK_DIR)/opt/etc/vsftpd.conf
+	$(INSTALL) -d $(VSFTPD_IPK_DIR)/opt/share/man/man5
+	$(INSTALL) -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.conf.5 $(VSFTPD_IPK_DIR)/opt/share/man/man5
+	$(INSTALL) -d $(VSFTPD_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.8 $(VSFTPD_IPK_DIR)/opt/share/man/man8
 	$(MAKE) $(VSFTPD_IPK_DIR)/CONTROL/control
-	install -m 644 $(VSFTPD_SOURCE_DIR)/postinst $(VSFTPD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(VSFTPD_SOURCE_DIR)/postinst $(VSFTPD_IPK_DIR)/CONTROL/postinst
 	echo $(VSFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(VSFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VSFTPD_IPK_DIR)
 

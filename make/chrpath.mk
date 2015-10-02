@@ -104,7 +104,7 @@ $(CHRPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CHRPATH_SOURCE) $(CHRPATH_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(CHRPATH_DIR) $(CHRPATH_BUILD_DIR)
 	$(CHRPATH_UNZIP) $(DL_DIR)/$(CHRPATH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(CHRPATH_PATCHES) | patch -d $(BUILD_DIR)/$(CHRPATH_DIR) -p1
+	#cat $(CHRPATH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CHRPATH_DIR) -p1
 	mv $(BUILD_DIR)/$(CHRPATH_DIR) $(CHRPATH_BUILD_DIR)
 	cp -f $(SOURCE_DIR)/common/config.* $(CHRPATH_BUILD_DIR)/
 	(cd $(CHRPATH_BUILD_DIR); \
@@ -150,7 +150,7 @@ chrpath-stage: $(CHRPATH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/chrpath
 #
 $(CHRPATH_IPK_DIR)/CONTROL/control:
-	@install -d $(CHRPATH_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(CHRPATH_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: chrpath" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

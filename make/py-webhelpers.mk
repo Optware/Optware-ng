@@ -114,7 +114,7 @@ $(PY-WEBHELPERS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-W
 	rm -rf $(BUILD_DIR)/$(PY-WEBHELPERS_DIR)
 	$(PY-WEBHELPERS_UNZIP) $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-WEBHELPERS_PATCHES)" ; then \
-	    cat $(PY-WEBHELPERS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) -p0 ; \
+	    cat $(PY-WEBHELPERS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -124,7 +124,7 @@ $(PY-WEBHELPERS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) $(PY-W
 	rm -rf $(BUILD_DIR)/$(PY-WEBHELPERS_DIR)
 	$(PY-WEBHELPERS_UNZIP) $(DL_DIR)/$(PY-WEBHELPERS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-WEBHELPERS_PATCHES)" ; then \
-	    cat $(PY-WEBHELPERS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) -p0 ; \
+	    cat $(PY-WEBHELPERS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-WEBHELPERS_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -162,7 +162,7 @@ py-webhelpers-stage: $(PY-WEBHELPERS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-webhelpers
 #
 $(PY25-WEBHELPERS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-webhelpers" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -176,7 +176,7 @@ $(PY25-WEBHELPERS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-WEBHELPERS_CONFLICTS)" >>$@
 
 $(PY26-WEBHELPERS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-webhelpers" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -114,7 +114,7 @@ $(PCIUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PCIUTILS_SOURCE) $(PCIUTILS_PATCH
 	$(PCIUTILS_UNZIP) $(DL_DIR)/$(PCIUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PCIUTILS_PATCHES)" ; \
 		then cat $(PCIUTILS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PCIUTILS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PCIUTILS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PCIUTILS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PCIUTILS_DIR) $(@D) ; \
@@ -171,7 +171,7 @@ pciutils-stage: $(PCIUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pciutils
 #
 $(PCIUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: pciutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,15 +205,15 @@ $(PCIUTILS_IPK): $(PCIUTILS_BUILD_DIR)/.built
 		STRIP="" \
 	;
 	$(STRIP_COMMAND) $(PCIUTILS_IPK_DIR)/opt/sbin/lspci $(PCIUTILS_IPK_DIR)/opt/sbin/setpci
-#	install -d $(PCIUTILS_IPK_DIR)/opt/etc/
-#	install -m 644 $(PCIUTILS_SOURCE_DIR)/pciutils.conf $(PCIUTILS_IPK_DIR)/opt/etc/pciutils.conf
-#	install -d $(PCIUTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PCIUTILS_SOURCE_DIR)/rc.pciutils $(PCIUTILS_IPK_DIR)/opt/etc/init.d/SXXpciutils
+#	$(INSTALL) -d $(PCIUTILS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(PCIUTILS_SOURCE_DIR)/pciutils.conf $(PCIUTILS_IPK_DIR)/opt/etc/pciutils.conf
+#	$(INSTALL) -d $(PCIUTILS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(PCIUTILS_SOURCE_DIR)/rc.pciutils $(PCIUTILS_IPK_DIR)/opt/etc/init.d/SXXpciutils
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PCIUTILS_IPK_DIR)/opt/etc/init.d/SXXpciutils
 	$(MAKE) $(PCIUTILS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PCIUTILS_SOURCE_DIR)/postinst $(PCIUTILS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(PCIUTILS_SOURCE_DIR)/postinst $(PCIUTILS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PCIUTILS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PCIUTILS_SOURCE_DIR)/prerm $(PCIUTILS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(PCIUTILS_SOURCE_DIR)/prerm $(PCIUTILS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PCIUTILS_IPK_DIR)/CONTROL/prerm
 	echo $(PCIUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(PCIUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCIUTILS_IPK_DIR)

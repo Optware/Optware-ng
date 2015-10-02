@@ -35,7 +35,7 @@ $(PERL-IO-ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-ZLIB_SOURCE) $(PERL-I
 	$(MAKE) perl-compress-zlib-stage
 	rm -rf $(BUILD_DIR)/$(PERL-IO-ZLIB_DIR) $(PERL-IO-ZLIB_BUILD_DIR)
 	$(PERL-IO-ZLIB_UNZIP) $(DL_DIR)/$(PERL-IO-ZLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-IO-ZLIB_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-IO-ZLIB_DIR) -p1
+#	cat $(PERL-IO-ZLIB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-IO-ZLIB_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-IO-ZLIB_DIR) $(PERL-IO-ZLIB_BUILD_DIR)
 	(cd $(PERL-IO-ZLIB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -69,7 +69,7 @@ $(PERL-IO-ZLIB_BUILD_DIR)/.staged: $(PERL-IO-ZLIB_BUILD_DIR)/.built
 perl-io-zlib-stage: $(PERL-IO-ZLIB_BUILD_DIR)/.staged
 
 $(PERL-IO-ZLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-IO-ZLIB_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(PERL-IO-ZLIB_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: perl-io-zlib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

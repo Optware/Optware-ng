@@ -67,7 +67,7 @@ optware-devel-unpack:
 optware-devel:
 
 $(OPTWARE-DEVEL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: optware-devel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -84,8 +84,8 @@ $(OPTWARE-DEVEL_IPK_DIR)/CONTROL/control:
 $(OPTWARE-DEVEL_IPK):
 	rm -rf $(OPTWARE-DEVEL_IPK_DIR) $(BUILD_DIR)/optware-devel_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(OPTWARE-DEVEL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(OPTWARE-DEVEL_SOURCE_DIR)/postinst $(OPTWARE-DEVEL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(OPTWARE-DEVEL_SOURCE_DIR)/prerm $(OPTWARE-DEVEL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(OPTWARE-DEVEL_SOURCE_DIR)/postinst $(OPTWARE-DEVEL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(OPTWARE-DEVEL_SOURCE_DIR)/prerm $(OPTWARE-DEVEL_IPK_DIR)/CONTROL/prerm
 #	echo $(OPTWARE-DEVEL_CONFFILES) | sed -e 's/ /\n/g' > $(OPTWARE-DEVEL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPTWARE-DEVEL_IPK_DIR)
 

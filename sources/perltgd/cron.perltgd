@@ -1,1 +1,1 @@
-00 03 * * * root /opt/bin/perltgd -a
+00 03 * * * root %OPTWARE_TARGET_PREFIX%/bin/perltgd -a

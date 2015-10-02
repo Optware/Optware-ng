@@ -108,7 +108,7 @@ $(MONOTONE_BUILD_DIR)/.configured: $(DL_DIR)/$(MONOTONE_SOURCE) $(MONOTONE_PATCH
 	$(MAKE) libboost-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(MONOTONE_DIR) $(MONOTONE_BUILD_DIR)
 	$(MONOTONE_UNZIP) $(DL_DIR)/$(MONOTONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MONOTONE_PATCHES) | patch -d $(BUILD_DIR)/$(MONOTONE_DIR) -p1
+	cat $(MONOTONE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MONOTONE_DIR) -p1
 	mv $(BUILD_DIR)/$(MONOTONE_DIR) $(MONOTONE_BUILD_DIR)
 	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		autoreconf --verbose $(MONOTONE_BUILD_DIR)
@@ -164,7 +164,7 @@ monotone-stage: $(MONOTONE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/monotone
 #
 $(MONOTONE_IPK_DIR)/CONTROL/control:
-	@install -d $(MONOTONE_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(MONOTONE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: monotone" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -110,7 +110,7 @@ $(FANN_BUILD_DIR)/.configured: $(DL_DIR)/$(FANN_SOURCE) $(FANN_PATCHES) make/fan
 	$(FANN_UNZIP) $(DL_DIR)/$(FANN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FANN_PATCHES)" ; \
 		then cat $(FANN_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FANN_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FANN_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FANN_DIR)" != "$(FANN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FANN_DIR) $(FANN_BUILD_DIR) ; \
@@ -161,7 +161,7 @@ fann-stage: $(FANN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fann
 #
 $(FANN_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fann" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

@@ -112,7 +112,7 @@ $(SYSSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSSTAT_SOURCE) $(SYSSTAT_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(SYSSTAT_DIR) $(@D)
 	$(SYSSTAT_UNZIP) $(DL_DIR)/$(SYSSTAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(SYSSTAT_PATCHES) | patch -d $(BUILD_DIR)/$(SYSSTAT_DIR) -p1
+#	cat $(SYSSTAT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SYSSTAT_DIR) -p1
 	mv $(BUILD_DIR)/$(SYSSTAT_DIR) $(@D)
 #	cp $(SYSSTAT_SOURCE_DIR)/CONFIG $(@D)/build
 	(cd $(@D); \
@@ -166,7 +166,7 @@ sysstat: $(SYSSTAT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/sysstat
 #
 $(SYSSTAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sysstat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,14 +202,14 @@ $(SYSSTAT_IPK): $(SYSSTAT_BUILD_DIR)/.built
 		INIT_DIR=/opt/etc/init.d \
 		SA_DIR=/opt/var/log/sa \
 		;
-#	install -d $(SYSSTAT_IPK_DIR)/opt/etc/
-#	install -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.conf $(SYSSTAT_IPK_DIR)/opt/etc/sysstat.conf
-	install -d $(SYSSTAT_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SYSSTAT_SOURCE_DIR)/rc.sysstat $(SYSSTAT_IPK_DIR)/opt/etc/init.d/S99sysstat
-	install -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.crond $(SYSSTAT_IPK_DIR)/opt/share/doc/sysstat-$(SYSSTAT_VERSION)/sysstat.crond
+#	$(INSTALL) -d $(SYSSTAT_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.conf $(SYSSTAT_IPK_DIR)/opt/etc/sysstat.conf
+	$(INSTALL) -d $(SYSSTAT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SYSSTAT_SOURCE_DIR)/rc.sysstat $(SYSSTAT_IPK_DIR)/opt/etc/init.d/S99sysstat
+	$(INSTALL) -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.crond $(SYSSTAT_IPK_DIR)/opt/share/doc/sysstat-$(SYSSTAT_VERSION)/sysstat.crond
 	$(MAKE) $(SYSSTAT_IPK_DIR)/CONTROL/control
-	install -m 755 $(SYSSTAT_SOURCE_DIR)/postinst $(SYSSTAT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SYSSTAT_SOURCE_DIR)/prerm $(SYSSTAT_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(SYSSTAT_SOURCE_DIR)/postinst $(SYSSTAT_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SYSSTAT_SOURCE_DIR)/prerm $(SYSSTAT_IPK_DIR)/CONTROL/prerm
 	echo $(SYSSTAT_CONFFILES) | sed -e 's/ /\n/g' > $(SYSSTAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SYSSTAT_IPK_DIR)
 

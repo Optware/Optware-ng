@@ -115,12 +115,12 @@ $(PY-CONSTRAINT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CONSTRAINT_SOURCE) $(PY-C
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-CONSTRAINT_DIR)
 	$(PY-CONSTRAINT_UNZIP) $(DL_DIR)/$(PY-CONSTRAINT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CONSTRAINT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CONSTRAINT_DIR) -p1
+#	cat $(PY-CONSTRAINT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CONSTRAINT_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CONSTRAINT_DIR) $(PY-CONSTRAINT_BUILD_DIR)/2.4
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-CONSTRAINT_DIR)
 	$(PY-CONSTRAINT_UNZIP) $(DL_DIR)/$(PY-CONSTRAINT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-CONSTRAINT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CONSTRAINT_DIR) -p1
+#	cat $(PY-CONSTRAINT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CONSTRAINT_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CONSTRAINT_DIR) $(PY-CONSTRAINT_BUILD_DIR)/2.5
 	touch $(PY-CONSTRAINT_BUILD_DIR)/.configured
 
@@ -157,7 +157,7 @@ py-constraint-stage: $(PY-CONSTRAINT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-constraint
 #
 $(PY24-CONSTRAINT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-constraint" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -171,7 +171,7 @@ $(PY24-CONSTRAINT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CONSTRAINT_CONFLICTS)" >>$@
 
 $(PY25-CONSTRAINT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-constraint" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,7 +185,7 @@ $(PY25-CONSTRAINT_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-CONSTRAINT_CONFLICTS)" >>$@
 
 $(PY-CONSTRAINT-DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-constraint-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -215,7 +215,7 @@ $(PY24-CONSTRAINT_IPK): $(PY-CONSTRAINT_BUILD_DIR)/.built
 	(cd $(PY-CONSTRAINT_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-		install --root=$(PY24-CONSTRAINT_IPK_DIR) --prefix=/opt)
+		$(INSTALL) --root=$(PY24-CONSTRAINT_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY24-CONSTRAINT_IPK_DIR)/CONTROL/control
 #	echo $(PY-CONSTRAINT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-CONSTRAINT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CONSTRAINT_IPK_DIR)
@@ -225,13 +225,13 @@ $(PY25-CONSTRAINT_IPK) $(PY-CONSTRAINT-DOC_IPK): $(PY-CONSTRAINT_BUILD_DIR)/.bui
 	(cd $(PY-CONSTRAINT_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-		install --root=$(PY25-CONSTRAINT_IPK_DIR) --prefix=/opt)
+		$(INSTALL) --root=$(PY25-CONSTRAINT_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY25-CONSTRAINT_IPK_DIR)/CONTROL/control
 #	echo $(PY-CONSTRAINT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CONSTRAINT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CONSTRAINT_IPK_DIR)
 	# py-constraint-doc
-	install -d $(PY-CONSTRAINT-DOC_IPK_DIR)/opt/share/doc/py-constraint/
-	install $(PY-CONSTRAINT_BUILD_DIR)/2.5/README $(PY-CONSTRAINT-DOC_IPK_DIR)/opt/share/doc/py-constraint/
+	$(INSTALL) -d $(PY-CONSTRAINT-DOC_IPK_DIR)/opt/share/doc/py-constraint/
+	$(INSTALL) $(PY-CONSTRAINT_BUILD_DIR)/2.5/README $(PY-CONSTRAINT-DOC_IPK_DIR)/opt/share/doc/py-constraint/
 	cp -a $(PY-CONSTRAINT_BUILD_DIR)/2.5/examples $(PY-CONSTRAINT-DOC_IPK_DIR)/opt/share/doc/py-constraint/
 	$(MAKE) $(PY-CONSTRAINT-DOC_IPK_DIR)/CONTROL/control
 #	echo $(PY-CONSTRAINT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CONSTRAINT-DOC_IPK_DIR)/CONTROL/conffiles

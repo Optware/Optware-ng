@@ -93,7 +93,7 @@ $(SWIG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SWIG_SOURCE) $(SWIG_
 	$(SWIG_UNZIP) $(DL_DIR)/$(SWIG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(SWIG_PATCHES)" ; \
 		then cat $(SWIG_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(SWIG_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(SWIG_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(SWIG_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(SWIG_DIR) $(@D) ; \
@@ -141,7 +141,7 @@ $(SWIG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWIG_SOURCE) $(SWIG_PATCHES) make/swi
 	$(SWIG_UNZIP) $(DL_DIR)/$(SWIG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SWIG_PATCHES)" ; \
 		then cat $(SWIG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SWIG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SWIG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SWIG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SWIG_DIR) $(@D) ; \
@@ -194,7 +194,7 @@ swig-stage: $(SWIG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/swig
 #
 $(SWIG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: swig" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

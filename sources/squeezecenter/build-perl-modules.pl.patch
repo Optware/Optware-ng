@@ -131,8 +131,8 @@
 +			`cp ../../Time-HiRes-Makefile.PL Makefile.PL`;
 +		}
 +
-+		print "$env $targetconfigureopts $perlBinary Makefile.PL $options PREFIX=/opt\n";
-+		`$env $targetconfigureopts $perlBinary Makefile.PL $options PREFIX=/opt`;
++		print "$env $targetconfigureopts $perlBinary Makefile.PL $options PREFIX=%OPTWARE_TARGET_PREFIX%\n";
++		`$env $targetconfigureopts $perlBinary Makefile.PL $options PREFIX=%OPTWARE_TARGET_PREFIX%`;
  
  		unless (-f 'Makefile') {
  			die "There was a problem creating Makefile - exiting!\n";
@@ -156,9 +156,9 @@
 +			$ldopts .= " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS}\"";
 +		}
 +		elsif ($package eq "DBD-mysql-3.0002.tar.gz") {
-+			$ldopts .= " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS} -Wl,-rpath,/opt/lib/mysql\"";
++			$ldopts .= " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS} -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib/mysql\"";
 +		}
-+		$ldopts .= " LD_RUN_PATH=/opt/lib";
++		$ldopts .= " LD_RUN_PATH=%OPTWARE_TARGET_PREFIX%/lib";
 +		if (defined($ENV{PERL_INC}) && $ENV{PERL_INC} ne "") { $ldopts .= " PERL_INC=$ENV{PERL_INC}"; }
 +
  		print "Building..\n";

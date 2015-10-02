@@ -110,7 +110,7 @@ $(NEMESIS_BUILD_DIR)/.configured: $(DL_DIR)/$(NEMESIS_SOURCE) $(NEMESIS_PATCHES)
 	$(NEMESIS_UNZIP) $(DL_DIR)/$(NEMESIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NEMESIS_PATCHES)" ; \
 		then cat $(NEMESIS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NEMESIS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NEMESIS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NEMESIS_DIR)" != "$(NEMESIS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NEMESIS_DIR) $(NEMESIS_BUILD_DIR) ; \
@@ -165,7 +165,7 @@ nemesis-stage: $(NEMESIS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nemesis
 #
 $(NEMESIS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nemesis" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,15 +194,15 @@ $(NEMESIS_IPK_DIR)/CONTROL/control:
 $(NEMESIS_IPK): $(NEMESIS_BUILD_DIR)/.built
 	rm -rf $(NEMESIS_IPK_DIR) $(BUILD_DIR)/nemesis_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NEMESIS_BUILD_DIR) DESTDIR=$(NEMESIS_IPK_DIR) install-strip
-#	install -d $(NEMESIS_IPK_DIR)/opt/etc/
-#	install -m 644 $(NEMESIS_SOURCE_DIR)/nemesis.conf $(NEMESIS_IPK_DIR)/opt/etc/nemesis.conf
-#	install -d $(NEMESIS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NEMESIS_SOURCE_DIR)/rc.nemesis $(NEMESIS_IPK_DIR)/opt/etc/init.d/SXXnemesis
+#	$(INSTALL) -d $(NEMESIS_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(NEMESIS_SOURCE_DIR)/nemesis.conf $(NEMESIS_IPK_DIR)/opt/etc/nemesis.conf
+#	$(INSTALL) -d $(NEMESIS_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(NEMESIS_SOURCE_DIR)/rc.nemesis $(NEMESIS_IPK_DIR)/opt/etc/init.d/SXXnemesis
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NEMESIS_IPK_DIR)/opt/etc/init.d/SXXnemesis
 	$(MAKE) $(NEMESIS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NEMESIS_SOURCE_DIR)/postinst $(NEMESIS_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(NEMESIS_SOURCE_DIR)/postinst $(NEMESIS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NEMESIS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NEMESIS_SOURCE_DIR)/prerm $(NEMESIS_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(NEMESIS_SOURCE_DIR)/prerm $(NEMESIS_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NEMESIS_IPK_DIR)/CONTROL/prerm
 	echo $(NEMESIS_CONFFILES) | sed -e 's/ /\n/g' > $(NEMESIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NEMESIS_IPK_DIR)

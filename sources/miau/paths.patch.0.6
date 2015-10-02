@@ -6,7 +6,7 @@
  
 -#define MIAURC		"miaurc"
 -#define MIAUDIR		".miau/"
-+#define MIAURC		"/opt/etc/miau.conf"
++#define MIAURC		"%OPTWARE_TARGET_PREFIX%/etc/miau.conf"
 +#define MIAUDIR		"miau/"
  #define LOGDIR		"logs"
 -#define FILE_PID	"pid"
@@ -24,7 +24,7 @@
  		if (s == NULL) {
 -			error(MIAU_ERRNOHOME);
 -			exit(ERR_CODE_HOME);
-+		    s = "/opt/var/spool";
++		    s = "%OPTWARE_TARGET_PREFIX%/var/spool";
  		}
  
  		hsize = strlen(s) + strlen(MIAUDIR) + 2;

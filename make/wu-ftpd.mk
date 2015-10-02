@@ -25,7 +25,7 @@ wu-ftpd-source: $(DL_DIR)/$(WU_FTPD_SOURCE) $(WU_FTPD_PATCHES)
 $(WU_FTPD_DIR)/.configured: $(DL_DIR)/$(WU_FTPD_SOURCE) $(WU_FTPD_PATCHES)
 	@rm -rf $(BUILD_DIR)/$(WU_FTPD) $(WU_FTPD_DIR)
 	$(WU_FTPD_UNZIP) $(DL_DIR)/$(WU_FTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(WU_FTPD_PATCHES) | patch -d $(BUILD_DIR)/$(WU_FTPD) -p0
+	cat $(WU_FTPD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WU_FTPD) -p0
 	mv $(BUILD_DIR)/$(WU_FTPD) $(WU_FTPD_DIR)
 	cd $(WU_FTPD_DIR) && \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -46,13 +46,13 @@ $(WU_FTPD_DIR)/wu-ftpd: $(WU_FTPD_DIR)/.configured
 wu-ftpd: $(WU_FTPD_DIR)/wu-ftpd
 
 $(WU_FTPD_IPK): $(WU_FTPD_DIR)/wu-ftpd
-	install -d $(WU_FTPD_IPK_DIR)/CONTROL
-	install -d $(WU_FTPD_IPK_DIR)/opt/sbin $(WU_FTPD_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(WU_FTPD_IPK_DIR)/CONTROL
+	$(INSTALL) -d $(WU_FTPD_IPK_DIR)/opt/sbin $(WU_FTPD_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(WU_FTPD_DIR)/wu-ftpd -o $(WU_FTPD_IPK_DIR)/opt/sbin/wu-ftpd
-	install -m 755 $(SOURCE_DIR)/wu-ftpd.rc $(WU_FTPD_IPK_DIR)/opt/etc/init.d/S51wu-ftpd
-	install -m 644 $(SOURCE_DIR)/wu-ftpd.control  $(WU_FTPD_IPK_DIR)/CONTROL/control
-	install -m 644 $(SOURCE_DIR)/wu-ftpd.postinst $(WU_FTPD_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SOURCE_DIR)/wu-ftpd.prerm    $(WU_FTPD_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(SOURCE_DIR)/wu-ftpd.rc $(WU_FTPD_IPK_DIR)/opt/etc/init.d/S51wu-ftpd
+	$(INSTALL) -m 644 $(SOURCE_DIR)/wu-ftpd.control  $(WU_FTPD_IPK_DIR)/CONTROL/control
+	$(INSTALL) -m 644 $(SOURCE_DIR)/wu-ftpd.postinst $(WU_FTPD_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SOURCE_DIR)/wu-ftpd.prerm    $(WU_FTPD_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WU_FTPD_IPK_DIR)
 
 wu-ftpd-ipk: $(WU_FTPD_IPK)

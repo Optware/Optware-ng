@@ -73,7 +73,7 @@ LIBGD_IPK=$(BUILD_DIR)/libgd_$(LIBGD_VERSION)-$(LIBGD_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(LIBGD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libgd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

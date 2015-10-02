@@ -109,7 +109,7 @@ $(LIBA52_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBA52_SOURCE) $(LIBA52_PATCHES) ma
 	$(LIBA52_UNZIP) $(DL_DIR)/$(LIBA52_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBA52_PATCHES)" ; \
 		then cat $(LIBA52_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBA52_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBA52_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBA52_DIR)" != "$(LIBA52_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBA52_DIR) $(LIBA52_BUILD_DIR) ; \
@@ -160,7 +160,7 @@ liba52-stage: $(LIBA52_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/liba52
 #
 $(LIBA52_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: liba52" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

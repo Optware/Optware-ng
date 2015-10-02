@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mkdir -p /opt/tftpboot
+mkdir -p %OPTWARE_TARGET_PREFIX%/tftpboot
 
 if [ -n "`pidof xinetd`" ]; then
     killall -HUP xinetd 2>/dev/null

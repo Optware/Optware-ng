@@ -36,7 +36,7 @@ $(PERL-B-KEYWORDS_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-B-KEYWORDS_SOURCE) $(
 	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-B-KEYWORDS_DIR) $(@D)
 	$(PERL-B-KEYWORDS_UNZIP) $(DL_DIR)/$(PERL-B-KEYWORDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-B-KEYWORDS_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-B-KEYWORDS_DIR) -p1
+#	cat $(PERL-B-KEYWORDS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-B-KEYWORDS_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-B-KEYWORDS_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -66,7 +66,7 @@ $(PERL-B-KEYWORDS_BUILD_DIR)/.staged: $(PERL-B-KEYWORDS_BUILD_DIR)/.built
 perl-b-keywords-stage: $(PERL-B-KEYWORDS_BUILD_DIR)/.staged
 
 $(PERL-B-KEYWORDS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-b-keywords" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

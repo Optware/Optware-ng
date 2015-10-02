@@ -117,7 +117,7 @@ $(SHARED-MIME-INFO_BUILD_DIR)/.configured: $(DL_DIR)/$(SHARED-MIME-INFO_SOURCE) 
 	$(SHARED-MIME-INFO_UNZIP) $(DL_DIR)/$(SHARED-MIME-INFO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SHARED-MIME-INFO_PATCHES)" ; \
 		then cat $(SHARED-MIME-INFO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SHARED-MIME-INFO_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SHARED-MIME-INFO_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SHARED-MIME-INFO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SHARED-MIME-INFO_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ $(SHARED-MIME-INFO_BUILD_DIR)/.staged: $(SHARED-MIME-INFO_BUILD_DIR)/.built
 #	there's no real need to stage except for dependent packages
 #	to varify that it's available when configuring,
 #	so we just stage the .pc file
-	install -d $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
 	cp -f $(@D)/shared-mime-info.pc $(STAGING_LIB_DIR)/pkgconfig
 	touch $@
 
@@ -176,7 +176,7 @@ shared-mime-info-stage: $(SHARED-MIME-INFO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/shared-mime-info
 #
 $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: shared-mime-info" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,19 +206,19 @@ $(SHARED-MIME-INFO_IPK): $(SHARED-MIME-INFO_BUILD_DIR)/.built
 	rm -rf $(SHARED-MIME-INFO_IPK_DIR) $(BUILD_DIR)/shared-mime-info_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SHARED-MIME-INFO_BUILD_DIR) DESTDIR=$(SHARED-MIME-INFO_IPK_DIR) install-strip
 	rm -f $(SHARED-MIME-INFO_IPK_DIR)/opt/share/mime/mime.cache
-	install -d $(SHARED-MIME-INFO_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(SHARED-MIME-INFO_IPK_DIR)/opt/lib
 	mv -f $(SHARED-MIME-INFO_IPK_DIR)/opt/share/pkgconfig $(SHARED-MIME-INFO_IPK_DIR)/opt/lib
-#	install -d $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/
-#	install -m 644 $(SHARED-MIME-INFO_SOURCE_DIR)/shared-mime-info.conf $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/shared-mime-info.conf
-#	install -d $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/rc.shared-mime-info $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d/SXXshared-mime-info
+#	$(INSTALL) -d $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SHARED-MIME-INFO_SOURCE_DIR)/shared-mime-info.conf $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/shared-mime-info.conf
+#	$(INSTALL) -d $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/rc.shared-mime-info $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d/SXXshared-mime-info
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d/SXXshared-mime-info
 	$(MAKE) $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/control
-	install -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/postinst $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/prerm $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/prerm
-#	install -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/postinst $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/postinst $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/prerm $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/postinst $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/prerm $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/prerm $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

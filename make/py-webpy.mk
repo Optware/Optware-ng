@@ -116,7 +116,7 @@ $(PY-WEBPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBPY_SOURCE) $(PY-WEBPY_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-WEBPY_DIR)
 	$(PY-WEBPY_UNZIP) $(DL_DIR)/$(PY-WEBPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-WEBPY_PATCHES)"; \
-		then cat $(PY-WEBPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEBPY_DIR) -p1; \
+		then cat $(PY-WEBPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-WEBPY_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-WEBPY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -133,7 +133,7 @@ $(PY-WEBPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WEBPY_SOURCE) $(PY-WEBPY_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-WEBPY_DIR)
 	$(PY-WEBPY_UNZIP) $(DL_DIR)/$(PY-WEBPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-WEBPY_PATCHES)"; \
-		then cat $(PY-WEBPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-WEBPY_DIR) -p1; \
+		then cat $(PY-WEBPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-WEBPY_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(PY-WEBPY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -185,7 +185,7 @@ py-webpy: $(PY-WEBPY_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/py-webpy
 #
 $(PY26-WEBPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-webpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -200,7 +200,7 @@ $(PY26-WEBPY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-WEBPY_CONFLICTS)" >>$@
 
 $(PY25-WEBPY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-webpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -233,7 +233,7 @@ $(PY26-WEBPY_IPK): $(PY-WEBPY_BUILD_DIR)/.built
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(PY26-WEBPY_IPK_DIR) --prefix=/opt; \
+	    $(INSTALL) --root=$(PY26-WEBPY_IPK_DIR) --prefix=/opt; \
 	)
 #	$(STRIP_COMMAND) `find $(PY26-WEBPY_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
 	$(MAKE) $(PY26-WEBPY_IPK_DIR)/CONTROL/control
@@ -245,7 +245,7 @@ $(PY25-WEBPY_IPK): $(PY-WEBPY_BUILD_DIR)/.built
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(PY25-WEBPY_IPK_DIR) --prefix=/opt; \
+	    $(INSTALL) --root=$(PY25-WEBPY_IPK_DIR) --prefix=/opt; \
 	)
 #	$(STRIP_COMMAND) `find $(PY25-WEBPY_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
 	$(MAKE) $(PY25-WEBPY_IPK_DIR)/CONTROL/control

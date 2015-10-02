@@ -170,7 +170,7 @@ endif
 	$(SQUID_UNZIP) $(DL_DIR)/$(SQUID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQUID_PATCHES)" ; \
 		then cat $(SQUID_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SQUID_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SQUID_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SQUID_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SQUID_DIR) $(@D) ; \
@@ -232,7 +232,7 @@ $(SQUID_BUILD_DIR)/.staged: $(SQUID_BUILD_DIR)/.built
 squid-stage: $(SQUID_BUILD_DIR)/.staged
 
 $(SQUID_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: squid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -264,14 +264,14 @@ $(SQUID_IPK): $(SQUID_BUILD_DIR)/.built
 	cd $(SQUID_IPK_DIR)/opt; \
 	$(STRIP_COMMAND) bin/squidclient sbin/squid \
 		libexec/cachemgr.cgi libexec/ncsa_auth libexec/unlinkd
-	install -d $(SQUID_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SQUID_SOURCE_DIR)/rc.squid $(SQUID_IPK_DIR)/opt/etc/init.d/S80squid
+	$(INSTALL) -d $(SQUID_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SQUID_SOURCE_DIR)/rc.squid $(SQUID_IPK_DIR)/opt/etc/init.d/S80squid
 	ln -sf /opt/etc/init.d/S80squid $(SQUID_IPK_DIR)/opt/etc/init.d/K80squid 
-	install -m 755 $(SQUID_SOURCE_DIR)/squid.delay-start.sh $(SQUID_IPK_DIR)$(SQUID_SYSCONF_DIR)/squid.delay-start.sh
-	install -d $(SQUID_IPK_DIR)/CONTROL
+	$(INSTALL) -m 755 $(SQUID_SOURCE_DIR)/squid.delay-start.sh $(SQUID_IPK_DIR)$(SQUID_SYSCONF_DIR)/squid.delay-start.sh
+	$(INSTALL) -d $(SQUID_IPK_DIR)/CONTROL
 	$(MAKE) $(SQUID_IPK_DIR)/CONTROL/control
-	install -m 644 $(SQUID_SOURCE_DIR)/postinst $(SQUID_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SQUID_SOURCE_DIR)/preinst $(SQUID_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SQUID_SOURCE_DIR)/postinst $(SQUID_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SQUID_SOURCE_DIR)/preinst $(SQUID_IPK_DIR)/CONTROL/preinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQUID_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(SQUID_IPK_DIR)
 

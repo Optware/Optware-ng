@@ -131,7 +131,7 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 	rm -rf $(BUILD_DIR)/$(SQUEAK_DIR) $(SQUEAK_BUILD_DIR)
 	$(SQUEAK_UNZIP) $(DL_DIR)/$(SQUEAK_VM_SRC) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQUEAK_PATCHES)" ; then \
-		cat $(SQUEAK_PATCHES) | patch -bd $(BUILD_DIR)/$(SQUEAK_DIR) -p1 ; \
+		cat $(SQUEAK_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(SQUEAK_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SQUEAK_DIR)" != "$(SQUEAK_BUILD_DIR)" ; then \
 		mv $(BUILD_DIR)/$(SQUEAK_DIR) $(SQUEAK_BUILD_DIR) ; \
@@ -204,7 +204,7 @@ squeak-stage: $(SQUEAK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/squeak
 #
 $(SQUEAK_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: squeak" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -234,15 +234,15 @@ $(SQUEAK_IPK): $(SQUEAK_BUILD_DIR)/.built
 	rm -rf $(SQUEAK_IPK_DIR) $(BUILD_DIR)/squeak_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQUEAK_BUILD_DIR)/bld ROOT=$(SQUEAK_IPK_DIR) install
 	$(STRIP_COMMAND) $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_VERSION_MAJOR_MINOR)-$(SQUEAK_VERSION_PATCH)/*
-#	install -m 755 $(SQUEAK_BUILD_DIR)/bld/inisqueak  $(SQUEAK_IPK_DIR)/opt/bin/
+#	$(INSTALL) -m 755 $(SQUEAK_BUILD_DIR)/bld/inisqueak  $(SQUEAK_IPK_DIR)/opt/bin/
 	$(SQUEAK_UNZIP) $(DL_DIR)/$(SQUEAK_IMG_SRC).gz > $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_IMG_SRC)
-#	install -d $(SQUEAK_IPK_DIR)/opt/etc/
-#	install -m 644 $(SQUEAK_SOURCE_DIR)/squeak.conf $(SQUEAK_IPK_DIR)/opt/etc/squeak.conf
-#	install -d $(SQUEAK_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SQUEAK_SOURCE_DIR)/rc.squeak $(SQUEAK_IPK_DIR)/opt/etc/init.d/SXXsqueak
+#	$(INSTALL) -d $(SQUEAK_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SQUEAK_SOURCE_DIR)/squeak.conf $(SQUEAK_IPK_DIR)/opt/etc/squeak.conf
+#	$(INSTALL) -d $(SQUEAK_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SQUEAK_SOURCE_DIR)/rc.squeak $(SQUEAK_IPK_DIR)/opt/etc/init.d/SXXsqueak
 	$(MAKE) $(SQUEAK_IPK_DIR)/CONTROL/control
-	install -m 755 $(SQUEAK_SOURCE_DIR)/postinst $(SQUEAK_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SQUEAK_SOURCE_DIR)/prerm $(SQUEAK_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(SQUEAK_SOURCE_DIR)/postinst $(SQUEAK_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SQUEAK_SOURCE_DIR)/prerm $(SQUEAK_IPK_DIR)/CONTROL/prerm
 	echo $(SQUEAK_CONFFILES) | sed -e 's/ /\n/g' > $(SQUEAK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQUEAK_IPK_DIR)
 

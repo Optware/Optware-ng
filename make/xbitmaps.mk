@@ -63,7 +63,7 @@ XBITMAPS_IPK=$(BUILD_DIR)/xbitmaps_$(XBITMAPS_VERSION)-$(XBITMAPS_IPK_VERSION)_$
 # Automatically create a ipkg control file
 #
 $(XBITMAPS_IPK_DIR)/CONTROL/control:
-	@install -d $(XBITMAPS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XBITMAPS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xbitmaps" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -100,7 +100,7 @@ $(XBITMAPS_BUILD_DIR)/.configured: $(DL_DIR)/$(XBITMAPS_SOURCE) $(XBITMAPS_PATCH
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XBITMAPS_SOURCE)
 	if test -n "$(XBITMAPS_PATCHES)" ; \
 		then cat $(XBITMAPS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XBITMAPS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XBITMAPS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XBITMAPS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XBITMAPS_DIR) $(@D) ; \

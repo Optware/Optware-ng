@@ -108,7 +108,7 @@ $(GDCHART_BUILD_DIR)/.configured: $(DL_DIR)/$(GDCHART_SOURCE) $(GDCHART_PATCHES)
 	$(MAKE) libgd-stage zlib-stage libpng-stage freetype-stage libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(GDCHART_DIR) $(GDCHART_BUILD_DIR)
 	$(GDCHART_UNZIP) $(DL_DIR)/$(GDCHART_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(GDCHART_PATCHES) | patch -d $(BUILD_DIR)/$(GDCHART_DIR) -p1
+	cat $(GDCHART_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GDCHART_DIR) -p1
 	mv $(BUILD_DIR)/$(GDCHART_DIR) $(GDCHART_BUILD_DIR)
 	touch $(GDCHART_BUILD_DIR)/.configured
 
@@ -146,7 +146,7 @@ $(GDCHART_BUILD_DIR)/.staged: $(GDCHART_BUILD_DIR)/.built
 		PREFIX_LIB=$(STAGING_LIB_DIR) \
 		GD_INCL=$(STAGING_INCLUDE_DIR)/ \
 		GD_LD=$(STAGING_LIB_DIR)/ \
-		install
+		$(INSTALL)
 	touch $(GDCHART_BUILD_DIR)/.staged
 
 gdchart-stage: $(GDCHART_BUILD_DIR)/.staged
@@ -156,7 +156,7 @@ gdchart-stage: $(GDCHART_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gdchart
 #
 $(GDCHART_IPK_DIR)/CONTROL/control:
-	@install -d $(GDCHART_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(GDCHART_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: gdchart" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,13 +184,13 @@ $(GDCHART_IPK_DIR)/CONTROL/control:
 #
 $(GDCHART_IPK): $(GDCHART_BUILD_DIR)/.built
 	rm -rf $(GDCHART_IPK_DIR) $(BUILD_DIR)/gdchart_*_$(TARGET_ARCH).ipk
-	install -d $(GDCHART_IPK_DIR)/opt/include $(GDCHART_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(GDCHART_IPK_DIR)/opt/include $(GDCHART_IPK_DIR)/opt/lib
 	$(MAKE) -C $(GDCHART_BUILD_DIR) \
 		PREFIX_INC=$(GDCHART_IPK_DIR)/opt/include \
 		PREFIX_LIB=$(GDCHART_IPK_DIR)/opt/lib \
 		GD_INCL=$(STAGING_INCLUDE_DIR)/ \
 		GD_LD=$(STAGING_LIB_DIR)/ \
-		install
+		$(INSTALL)
 	$(MAKE) $(GDCHART_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GDCHART_IPK_DIR)
 

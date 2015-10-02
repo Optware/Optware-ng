@@ -114,7 +114,7 @@ $(IPTRAF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPTRAF_SOURCE) $(IPTRAF_PATCHES) ma
 	$(IPTRAF_UNZIP) $(DL_DIR)/$(IPTRAF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IPTRAF_PATCHES)" ; \
 		then cat $(IPTRAF_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(IPTRAF_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(IPTRAF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IPTRAF_DIR)" != "$(IPTRAF_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(IPTRAF_DIR) $(IPTRAF_BUILD_DIR) ; \
@@ -175,7 +175,7 @@ iptraf-stage: $(IPTRAF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/iptraf
 #
 $(IPTRAF_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: iptraf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,7 +203,7 @@ $(IPTRAF_IPK_DIR)/CONTROL/control:
 #
 $(IPTRAF_IPK): $(IPTRAF_BUILD_DIR)/.built
 	rm -rf $(IPTRAF_IPK_DIR) $(BUILD_DIR)/iptraf_*_$(TARGET_ARCH).ipk
-	install -d $(IPTRAF_IPK_DIR)/opt/bin $(IPTRAF_IPK_DIR)/opt/share/doc/iptraf
+	$(INSTALL) -d $(IPTRAF_IPK_DIR)/opt/bin $(IPTRAF_IPK_DIR)/opt/share/doc/iptraf
 	$(MAKE) -C $(IPTRAF_BUILD_DIR)/src install \
 		TARGET=$(IPTRAF_IPK_DIR)/opt/bin \
 		WORKDIR=$(IPTRAF_IPK_DIR)/opt/var/iptraf \
@@ -211,7 +211,7 @@ $(IPTRAF_IPK): $(IPTRAF_BUILD_DIR)/.built
 		LOCKDIR=$(IPTRAF_IPK_DIR)/opt/var/run/iptraf \
 		;
 	$(STRIP_COMMAND) $(IPTRAF_IPK_DIR)/opt/bin/*
-	install \
+	$(INSTALL) \
 		$(IPTRAF_BUILD_DIR)/CHANGES \
 		$(IPTRAF_BUILD_DIR)/LICENSE \
 		$(IPTRAF_BUILD_DIR)/FAQ \
@@ -221,8 +221,8 @@ $(IPTRAF_IPK): $(IPTRAF_BUILD_DIR)/.built
 		$(IPTRAF_BUILD_DIR)/Setup \
 		$(IPTRAF_IPK_DIR)/opt/share/doc/iptraf/
 #	cp -pR $(IPTRAF_BUILD_DIR)/Documentation $(IPTRAF_IPK_DIR)/opt/share/doc/iptraf/
-	install -d $(IPTRAF_IPK_DIR)/opt/share/man/man8
-	install $(IPTRAF_BUILD_DIR)/Documentation/*.8 $(IPTRAF_IPK_DIR)/opt/share/man/man8/
+	$(INSTALL) -d $(IPTRAF_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) $(IPTRAF_BUILD_DIR)/Documentation/*.8 $(IPTRAF_IPK_DIR)/opt/share/man/man8/
 	$(MAKE) $(IPTRAF_IPK_DIR)/CONTROL/control
 	echo $(IPTRAF_CONFFILES) | sed -e 's/ /\n/g' > $(IPTRAF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPTRAF_IPK_DIR)

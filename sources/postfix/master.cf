@@ -108,22 +108,22 @@ anvil     unix  -       -       n       -       1       anvil
 # maildrop. See the Postfix MAILDROP_README file for details.
 #
 maildrop  unix  -       n       n       -       -       pipe
-  flags=DRhu user=vmail argv=/opt/bin/maildrop -d ${recipient}
+  flags=DRhu user=vmail argv=%OPTWARE_TARGET_PREFIX%/bin/maildrop -d ${recipient}
 #
 # The Cyrus deliver program has changed incompatibly, multiple times.
 #
 old-cyrus unix  -       n       n       -       -       pipe
-  flags=R user=cyrus argv=/opt/libexec/cyrus/bin/deliver -e -m ${extension} ${user}
+  flags=R user=cyrus argv=%OPTWARE_TARGET_PREFIX%/libexec/cyrus/bin/deliver -e -m ${extension} ${user}
 # Cyrus 2.1.5 (Amos Gouaux)
 # Also specify in main.cf: cyrus_destination_recipient_limit=1
 cyrus     unix  -       n       n       -       -       pipe
-  user=cyrus argv=/opt/libexec/cyrus/bin/deliver -e -r ${sender} -m ${extension} ${user}
+  user=cyrus argv=%OPTWARE_TARGET_PREFIX%/libexec/cyrus/bin/deliver -e -r ${sender} -m ${extension} ${user}
 uucp      unix  -       n       n       -       -       pipe
   flags=Fqhu user=uucp argv=uux -r -n -z -a$sender - $nexthop!rmail ($recipient)
 ifmail    unix  -       n       n       -       -       pipe
-  flags=F user=ftn argv=/opt/lib/ifmail/ifmail -r $nexthop ($recipient)
+  flags=F user=ftn argv=%OPTWARE_TARGET_PREFIX%/lib/ifmail/ifmail -r $nexthop ($recipient)
 bsmtp     unix  -       n       n       -       -       pipe
-  flags=Fq. user=foo argv=/opt/sbin/bsmtp -f $sender $nexthop $recipient
+  flags=Fq. user=foo argv=%OPTWARE_TARGET_PREFIX%/sbin/bsmtp -f $sender $nexthop $recipient
 scache    unix  -       -       n       -       1       scache      
 discard   unix  -       -       n       -       -       discard
 tlsmgr    unix  -       -       n       1000?   1       tlsmgr

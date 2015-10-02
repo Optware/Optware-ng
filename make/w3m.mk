@@ -116,7 +116,7 @@ $(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES) make/w3m.mk
 	$(MAKE) libgc-stage openssl-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(W3M_DIR) $(@D)
 	$(W3M_UNZIP) $(DL_DIR)/$(W3M_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(W3M_PATCHES) | patch -b -d $(BUILD_DIR)/$(W3M_DIR) -p1
+	cat $(W3M_PATCHES) | $(PATCH) -b -d $(BUILD_DIR)/$(W3M_DIR) -p1
 	mv $(BUILD_DIR)/$(W3M_DIR) $(@D)
 	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/file_handle/_&_/g' {} \;
 #	GC_set_warn_proc in newer libgc returns void
@@ -226,7 +226,7 @@ w3m-stage: $(W3M_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/w3m
 #
 $(W3M_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: w3m" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -257,13 +257,13 @@ $(W3M_IPK): $(W3M_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/bin/w3m
 	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/inflate
 	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/cgi-bin/w3mbookmark $(W3M_IPK_DIR)/opt/libexec/w3m/cgi-bin/w3mhelperpanel
-#	install -d $(W3M_IPK_DIR)/opt/etc/
-#	install -m 644 $(W3M_SOURCE_DIR)/w3m.conf $(W3M_IPK_DIR)/opt/etc/w3m.conf
-#	install -d $(W3M_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(W3M_SOURCE_DIR)/rc.w3m $(W3M_IPK_DIR)/opt/etc/init.d/SXXw3m
+#	$(INSTALL) -d $(W3M_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(W3M_SOURCE_DIR)/w3m.conf $(W3M_IPK_DIR)/opt/etc/w3m.conf
+#	$(INSTALL) -d $(W3M_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(W3M_SOURCE_DIR)/rc.w3m $(W3M_IPK_DIR)/opt/etc/init.d/SXXw3m
 	$(MAKE) $(W3M_IPK_DIR)/CONTROL/control
-#	install -m 755 $(W3M_SOURCE_DIR)/postinst $(W3M_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(W3M_SOURCE_DIR)/prerm $(W3M_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(W3M_SOURCE_DIR)/postinst $(W3M_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(W3M_SOURCE_DIR)/prerm $(W3M_IPK_DIR)/CONTROL/prerm
 #	echo $(W3M_CONFFILES) | sed -e 's/ /\n/g' > $(W3M_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(W3M_IPK_DIR)
 

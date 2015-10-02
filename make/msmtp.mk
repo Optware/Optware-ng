@@ -122,7 +122,7 @@ endif
 	$(MSMTP_UNZIP) $(DL_DIR)/$(MSMTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MSMTP_PATCHES)" ; \
 		then cat $(MSMTP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MSMTP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MSMTP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MSMTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MSMTP_DIR) $(@D) ; \
@@ -174,7 +174,7 @@ msmtp: $(MSMTP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/msmtp
 #
 $(MSMTP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: msmtp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -204,15 +204,15 @@ $(MSMTP_IPK): $(MSMTP_BUILD_DIR)/.built
 	rm -rf $(MSMTP_IPK_DIR) $(BUILD_DIR)/msmtp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MSMTP_BUILD_DIR) install-strip transform='' DESTDIR=$(MSMTP_IPK_DIR)
 	rm -f $(MSMTP_IPK_DIR)/opt/share/info/dir
-#	install -d $(MSMTP_IPK_DIR)/opt/etc/
-#	install -m 644 $(MSMTP_SOURCE_DIR)/msmtp.conf $(MSMTP_IPK_DIR)/opt/etc/msmtp.conf
-#	install -d $(MSMTP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MSMTP_SOURCE_DIR)/rc.msmtp $(MSMTP_IPK_DIR)/opt/etc/init.d/SXXmsmtp
+#	$(INSTALL) -d $(MSMTP_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(MSMTP_SOURCE_DIR)/msmtp.conf $(MSMTP_IPK_DIR)/opt/etc/msmtp.conf
+#	$(INSTALL) -d $(MSMTP_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(MSMTP_SOURCE_DIR)/rc.msmtp $(MSMTP_IPK_DIR)/opt/etc/init.d/SXXmsmtp
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSMTP_IPK_DIR)/opt/etc/init.d/SXXmsmtp
 	$(MAKE) $(MSMTP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MSMTP_SOURCE_DIR)/postinst $(MSMTP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(MSMTP_SOURCE_DIR)/postinst $(MSMTP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSMTP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MSMTP_SOURCE_DIR)/prerm $(MSMTP_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(MSMTP_SOURCE_DIR)/prerm $(MSMTP_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSMTP_IPK_DIR)/CONTROL/prerm
 	echo $(MSMTP_CONFFILES) | sed -e 's/ /\n/g' > $(MSMTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MSMTP_IPK_DIR)

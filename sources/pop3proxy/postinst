@@ -1,15 +1,15 @@
 #!/bin/sh
 
 echo ; echo
-echo "To complete the installation, you must edit /opt/etc/xinetd.d/pop3proxy"
+echo "To complete the installation, you must edit %OPTWARE_TARGET_PREFIX%/etc/xinetd.d/pop3proxy"
 echo ""
 echo "Configuration instructions are located in the text file"
 echo ""
-echo "/opt/share/doc/pop3proxy/pop3proxy.txt"
+echo "%OPTWARE_TARGET_PREFIX%/share/doc/pop3proxy/pop3proxy.txt"
 echo ""
 echo "and also in the Groff type file"
 echo ""
-echo "/opt/man/man1/pop3.proxy.1"
+echo "%OPTWARE_TARGET_PREFIX%/man/man1/pop3.proxy.1"
 echo ""
 echo
 

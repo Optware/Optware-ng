@@ -104,7 +104,7 @@ $(COGITO_BUILD_DIR)/.configured: $(DL_DIR)/$(COGITO_SOURCE) $(COGITO_PATCHES)
 #	$(MAKE) libcurl-stage openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(COGITO_DIR) $(COGITO_BUILD_DIR)
 	$(COGITO_UNZIP) $(DL_DIR)/$(COGITO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(COGITO_PATCHES) | patch -d $(BUILD_DIR)/$(COGITO_DIR) -p1
+#	cat $(COGITO_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(COGITO_DIR) -p1
 	mv $(BUILD_DIR)/$(COGITO_DIR) $(COGITO_BUILD_DIR)
 	touch $(COGITO_BUILD_DIR)/.configured
 
@@ -140,7 +140,7 @@ cogito-stage: $(COGITO_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cogito
 #
 $(COGITO_IPK_DIR)/CONTROL/control:
-	@install -d $(COGITO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(COGITO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: cogito" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -167,7 +167,7 @@ $(COGITO_IPK_DIR)/CONTROL/control:
 #
 $(COGITO_IPK): $(COGITO_BUILD_DIR)/.built
 	rm -rf $(COGITO_IPK_DIR) $(BUILD_DIR)/cogito_*_$(TARGET_ARCH).ipk
-	install -d $(COGITO_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(COGITO_IPK_DIR)/opt/bin
 	$(MAKE) -C $(COGITO_BUILD_DIR) DESTDIR=$(COGITO_IPK_DIR) prefix=/opt install
 	$(MAKE) $(COGITO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COGITO_IPK_DIR)

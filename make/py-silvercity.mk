@@ -111,7 +111,7 @@ $(PY-SILVERCITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SILVERCITY_SOURCE) $(PY-S
 	mkdir -p $(PY-SILVERCITY_BUILD_DIR)
 	# 2.4
 	$(PY-SILVERCITY_UNZIP) $(DL_DIR)/$(PY-SILVERCITY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SILVERCITY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SILVERCITY_DIR) -p1
+#	cat $(PY-SILVERCITY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SILVERCITY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SILVERCITY_DIR) $(PY-SILVERCITY_BUILD_DIR)/2.4
 	(cd $(PY-SILVERCITY_BUILD_DIR)/2.4; \
 	    ( \
@@ -127,7 +127,7 @@ $(PY-SILVERCITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SILVERCITY_SOURCE) $(PY-S
 	)
 	# 2.5
 	$(PY-SILVERCITY_UNZIP) $(DL_DIR)/$(PY-SILVERCITY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SILVERCITY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SILVERCITY_DIR) -p1
+#	cat $(PY-SILVERCITY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SILVERCITY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SILVERCITY_DIR) $(PY-SILVERCITY_BUILD_DIR)/2.5
 	(cd $(PY-SILVERCITY_BUILD_DIR)/2.5; \
 	    ( \
@@ -178,7 +178,7 @@ py-silvercity-stage: $(PY-SILVERCITY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-silvercity
 #
 $(PY24-SILVERCITY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py-silvercity" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,7 +192,7 @@ $(PY24-SILVERCITY_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SILVERCITY_CONFLICTS)" >>$@
 
 $(PY25-SILVERCITY_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-silvercity" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

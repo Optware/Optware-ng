@@ -70,7 +70,7 @@ $(TS101-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(TS101-KERNEL-MODULES_
 	$(TS101-KERNEL-MODULES_UNZIP) $(DL_DIR)/$(TS101-KERNEL-MODULES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TS101-KERNEL-MODULES_PATCHES)" ; \
 		then cat $(TS101-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TS101-KERNEL-MODULES_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(TS101-KERNEL-MODULES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TS101-KERNEL-MODULES_DIR)" != "$(TS101-KERNEL-MODULES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TS101-KERNEL-MODULES_DIR) $(TS101-KERNEL-MODULES_BUILD_DIR) ; \
@@ -113,7 +113,7 @@ ts101-kernel-modules-stage: $(TS101-KERNEL-MODULES_BUILD_DIR)/.staged
 #
 $(TS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	for m in $(TS101-KERNEL-MODULES); do \
-	  install -d $(TS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
+	  $(INSTALL) -d $(TS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
 	  rm -f $(TS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
           ( \
 	    echo "Package: kernel-module-`echo $$m|sed -e 's/_/-/g'`"; \
@@ -138,7 +138,7 @@ $(TS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Conflicts: $(TS101-KERNEL-MODULES_CONFLICTS)"; \
 	  ) >> $(TS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
 	done
-	install -d $(TS101-KERNEL-MODULES_IPK_DIR)/CONTROL; \
+	$(INSTALL) -d $(TS101-KERNEL-MODULES_IPK_DIR)/CONTROL; \
 	touch $(TS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 #
 # This builds the IPK file.
@@ -157,8 +157,8 @@ $(TS101-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(TS101-KERNEL-MODULES_BUILD_DIR)/.b
 	INSTALL_MOD_PATH=$(TS101-KERNEL-MODULES_IPK_DIR)/opt \
 	$(MAKE) -C $(TS101-KERNEL-MODULES_BUILD_DIR) modules_install
 	for m in $(TS101-KERNEL-MODULES); do \
-	  install -d $(TS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
-	  install -m 644 `find $(TS101-KERNEL-MODULES_IPK_DIR) -name $$m.ko` $(TS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -d $(TS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -m 644 `find $(TS101-KERNEL-MODULES_IPK_DIR) -name $$m.ko` $(TS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
 	done
 	$(MAKE) $(TS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 	for m in $(TS101-KERNEL-MODULES); do \

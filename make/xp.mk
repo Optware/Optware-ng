@@ -61,7 +61,7 @@ XP_IPK=$(BUILD_DIR)/xp_$(XP_FULL_VERSION)-$(XP_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XP_IPK_DIR)/CONTROL/control:
-	@install -d $(XP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -100,7 +100,7 @@ $(XP_BUILD_DIR)/.configured: $(DL_DIR)/$(XP_SOURCE) $(XP_PATCHES) make/xp.mk
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XP_SOURCE)
 	if test -n "$(XP_PATCHES)" ; \
 		then cat $(XP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XP_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XP_DIR) $(@D) ; \
@@ -164,7 +164,7 @@ $(XP_IPK): $(XP_BUILD_DIR)/.built
 	rm -rf $(XP_IPK_DIR) $(BUILD_DIR)/xp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XP_BUILD_DIR) DESTDIR=$(XP_IPK_DIR) install-strip
 	$(MAKE) $(XP_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XP_SOURCE_DIR)/postinst $(XP_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(XP_SOURCE_DIR)/postinst $(XP_IPK_DIR)/CONTROL/postinst
 	rm -f $(XP_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XP_IPK_DIR)
 

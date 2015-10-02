@@ -128,7 +128,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(SNOWNEWS_DIR) $(@D)
 	$(SNOWNEWS_UNZIP) $(DL_DIR)/$(SNOWNEWS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SNOWNEWS_PATCHES)"; then \
-		cat $(SNOWNEWS_PATCHES) | patch -d $(BUILD_DIR)/$(SNOWNEWS_DIR) -p1; \
+		cat $(SNOWNEWS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SNOWNEWS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(SNOWNEWS_DIR) $(@D)
 	(cd $(@D); \
@@ -178,7 +178,7 @@ snownews-stage: $(SNOWNEWS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/snownews
 #
 $(SNOWNEWS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: snownews" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

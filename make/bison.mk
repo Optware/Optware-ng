@@ -142,7 +142,7 @@ bison: $(BISON_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/bison
 #
 $(BISON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: bison" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -168,12 +168,12 @@ $(BISON_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-	install -d $(BISON_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(BISON_IPK_DIR)/opt/bin/
 
 
 $(BISON_IPK): $(BISON_BUILD_DIR)/.built
 	rm -rf $(BISON_IPK_DIR) $(BUILD_DIR)/bison_*_$(TARGET_ARCH).ipk
-	install -d $(BISON_IPK_DIR)/opt/bin $(BISON_IPK_DIR)/opt/share/bison
+	$(INSTALL) -d $(BISON_IPK_DIR)/opt/bin $(BISON_IPK_DIR)/opt/share/bison
 	$(MAKE) -C $(BISON_BUILD_DIR) DESTDIR=$(BISON_IPK_DIR) install-strip
 	rm -f $(BISON_IPK_DIR)/opt/share/info/dir
 # for now ignore the locale files
@@ -184,7 +184,7 @@ $(BISON_IPK): $(BISON_BUILD_DIR)/.built
 	cp $(BISON_BUILD_DIR)/data/glr.c    $(BISON_IPK_DIR)/opt/share/bison
 	cp $(BISON_BUILD_DIR)/data/lalr1.cc $(BISON_IPK_DIR)/opt/share/bison
 	cp $(BISON_BUILD_DIR)/data/yacc.c   $(BISON_IPK_DIR)/opt/share/bison
-	install -d $(BISON_IPK_DIR)/opt/share/bison/m4
+	$(INSTALL) -d $(BISON_IPK_DIR)/opt/share/bison/m4
 	cp -a $(BISON_BUILD_DIR)/m4 $(BISON_IPK_DIR)/opt/share/bison/m4
 	$(MAKE) $(BISON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BISON_IPK_DIR)

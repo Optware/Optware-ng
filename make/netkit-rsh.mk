@@ -120,7 +120,7 @@ $(NETKIT-RSH_BUILD_DIR)/.configured: $(DL_DIR)/$(NETKIT-RSH_SOURCE) $(NETKIT-RSH
 	$(NETKIT-RSH_UNZIP) $(DL_DIR)/$(NETKIT-RSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETKIT-RSH_PATCHES)" ; \
 		then cat $(NETKIT-RSH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NETKIT-RSH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NETKIT-RSH_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NETKIT-RSH_DIR)" != "$(NETKIT-RSH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NETKIT-RSH_DIR) $(NETKIT-RSH_BUILD_DIR) ; \
@@ -138,7 +138,7 @@ endif
 		CFLAGS="$(STAGING_CPPFLAGS) $(NETKIT-RSH_CPPFLAGS) $(STAGING_LDFLAGS) $(NETKIT_RSH_LDFLAGS)" \
 		./configure \
 		--prefix=/opt \
-		--installroot=$(NETKIT-RSH_IPK_DIR) \
+		--$(INSTALL)root=$(NETKIT-RSH_IPK_DIR) \
 		--with-c-compiler="$(TARGET_CC)" \
 		; \
 	)
@@ -177,7 +177,7 @@ netkit-rsh-stage: $(NETKIT-RSH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/netkit-rsh
 #
 $(NETKIT-RSH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: netkit-rsh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,11 +206,11 @@ $(NETKIT-RSH_IPK_DIR)/CONTROL/control:
 $(NETKIT-RSH_IPK): $(NETKIT-RSH_BUILD_DIR)/.built
 	rm -rf $(NETKIT-RSH_IPK_DIR) $(BUILD_DIR)/netkit-rsh_*_$(TARGET_ARCH).ipk
 	
-	install -d $(NETKIT-RSH_IPK_DIR)
-	install -d $(NETKIT-RSH_IPK_DIR)/opt/bin/
-	install -d $(NETKIT-RSH_IPK_DIR)/opt/sbin/
-	install -d $(NETKIT-RSH_IPK_DIR)/opt/man/man1/
-	install -d $(NETKIT-RSH_IPK_DIR)/opt/man/man8/
+	$(INSTALL) -d $(NETKIT-RSH_IPK_DIR)
+	$(INSTALL) -d $(NETKIT-RSH_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(NETKIT-RSH_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(NETKIT-RSH_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -d $(NETKIT-RSH_IPK_DIR)/opt/man/man8/
 	$(MAKE) -C $(NETKIT-RSH_BUILD_DIR) DESTDIR=$(NETKIT-RSH_IPK_DIR) install
 	for i in bin/rcp bin/rexec bin/rlogin bin/rsh sbin/in.rexecd sbin/in.rlogind sbin/in.rshd; do \
 		$(STRIP_COMMAND) $(NETKIT-RSH_IPK_DIR)/opt/$${i}; \

@@ -5,7 +5,7 @@
        cp bin_file, bin_tmp_file
        bin = File.readlines bin_tmp_file
 -      bin[0] = "#!#{Gem.ruby}\n"
-+      bin[0] = "#!/opt/bin/ruby\n"
++      bin[0] = "#!%OPTWARE_TARGET_PREFIX%/bin/ruby\n"
  
        File.open bin_tmp_file, 'w' do |fp|
          fp.puts bin.join

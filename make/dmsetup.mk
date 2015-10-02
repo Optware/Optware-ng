@@ -110,7 +110,7 @@ $(DMSETUP_BUILD_DIR)/.configured: $(DL_DIR)/$(DMSETUP_SOURCE) $(DMSETUP_PATCHES)
 	$(DMSETUP_UNZIP) $(DL_DIR)/$(DMSETUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DMSETUP_PATCHES)" ; \
 		then cat $(DMSETUP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DMSETUP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DMSETUP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DMSETUP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DMSETUP_DIR) $(@D) ; \
@@ -161,7 +161,7 @@ dmsetup-stage: $(DMSETUP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dmsetup
 #
 $(DMSETUP_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dmsetup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

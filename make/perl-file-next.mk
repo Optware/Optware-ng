@@ -35,7 +35,7 @@ perl-file-next-source: $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE) $(PERL-FILE-NEXT_PATCH
 $(PERL-FILE-NEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE) $(PERL-FILE-NEXT_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERL-FILE-NEXT_DIR) $(PERL-FILE-NEXT_BUILD_DIR)
 	$(PERL-FILE-NEXT_UNZIP) $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-FILE-NEXT_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-FILE-NEXT_DIR) -p1
+#	cat $(PERL-FILE-NEXT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-FILE-NEXT_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-FILE-NEXT_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -65,7 +65,7 @@ $(PERL-FILE-NEXT_BUILD_DIR)/.staged: $(PERL-FILE-NEXT_BUILD_DIR)/.built
 perl-file-next-stage: $(PERL-FILE-NEXT_BUILD_DIR)/.staged
 
 $(PERL-FILE-NEXT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-file-next" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

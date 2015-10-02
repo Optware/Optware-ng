@@ -4,7 +4,7 @@
      exit 1
  esac
  
-+PATH=/opt/bin:/opt/sbin:$PATH
++PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:$PATH
  LOGGER="$command_directory/postlog -t $MAIL_LOGTAG/postfix-script"
  INFO="$LOGGER -p info"
  WARN="$LOGGER -p warn"

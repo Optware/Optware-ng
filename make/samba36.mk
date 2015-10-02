@@ -213,7 +213,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(SAMBA36_DIR) $(@D)
 	$(SAMBA36_UNZIP) $(DL_DIR)/$(SAMBA36_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(SAMBA36_DIR) $(@D)
-	cat $(SAMBA36_PATCHES) | patch -d $(@D) -p1
+	cat $(SAMBA36_PATCHES) | $(PATCH) -d $(@D) -p1
 	sed -i -e '/AC_PATH_PROG(CUPS_CONFIG, cups-config)/s|.*|CUPS_CONFIG=$(STAGING_PREFIX)/bin/cups-config|' $(@D)/source3/configure.in
 #	resolve linux/xattr.h and sys/xattr.h incompatibility leading to an error similar to this:
 #	.../sys/xattr.h:32:3: error: expected identifier before numeric constant
@@ -299,7 +299,7 @@ samba36-stage: $(SAMBA36_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/samba
 #
 $(SAMBA36_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)/
+	@$(INSTALL) -d $(@D)/
 	@rm -f $@
 	@echo "Package: samba36" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -314,7 +314,7 @@ $(SAMBA36_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SAMBA36_CONFLICTS)" >>$@
 
 $(SAMBA36-DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)/
+	@$(INSTALL) -d $(@D)/
 	@rm -f $@
 	@echo "Package: samba36-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -329,7 +329,7 @@ $(SAMBA36-DEV_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SAMBA36-DEV_CONFLICTS)" >>$@
 
 $(SAMBA36-SWAT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)/
+	@$(INSTALL) -d $(@D)/
 	@rm -f $@
 	@echo "Package: samba36-swat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -366,21 +366,21 @@ $(SAMBA36_IPK) $(SAMBA36-DEV_IPK) $(SAMBA36-SWAT_IPK): $(SAMBA36_BUILD_DIR)/.bui
 	cd $(SAMBA36_BUILD_DIR)/source3/bin/; for f in lib*.so.[01]; \
 		do cp -a $$f $(SAMBA36_IPK_DIR)/opt/lib/$$f; done
 	$(STRIP_COMMAND) `find $(SAMBA36_IPK_DIR)/opt/lib -name '*.so'`
-	install -d $(SAMBA36_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SAMBA36_SOURCE_DIR)/rc.samba $(SAMBA36_IPK_DIR)/opt/etc/init.d/S08samba
+	$(INSTALL) -d $(SAMBA36_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA36_SOURCE_DIR)/rc.samba $(SAMBA36_IPK_DIR)/opt/etc/init.d/S08samba
 	$(MAKE) $(SAMBA36_IPK_DIR)/CONTROL/control
-	install -m 644 $(SAMBA36_SOURCE_DIR)/postinst $(SAMBA36_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA36_SOURCE_DIR)/preinst $(SAMBA36_IPK_DIR)/CONTROL/preinst
+	$(INSTALL) -m 644 $(SAMBA36_SOURCE_DIR)/postinst $(SAMBA36_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(SAMBA36_SOURCE_DIR)/preinst $(SAMBA36_IPK_DIR)/CONTROL/preinst
 	echo $(SAMBA36_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA36_IPK_DIR)/CONTROL/conffiles
 	# samba3-dev
-	install -d $(SAMBA36-DEV_IPK_DIR)/opt
+	$(INSTALL) -d $(SAMBA36-DEV_IPK_DIR)/opt
 	mv $(SAMBA36_IPK_DIR)/opt/include $(SAMBA36-DEV_IPK_DIR)/opt/
 	# samba3-swat
-	install -d $(SAMBA36-SWAT_IPK_DIR)/opt/share $(SAMBA36-SWAT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(SAMBA36-SWAT_IPK_DIR)/opt/share $(SAMBA36-SWAT_IPK_DIR)/opt/sbin
 	mv $(SAMBA36_IPK_DIR)/opt/share/swat $(SAMBA36-SWAT_IPK_DIR)/opt/share/
 	mv $(SAMBA36_IPK_DIR)/opt/sbin/swat $(SAMBA36-SWAT_IPK_DIR)/opt/sbin/
-	install -d $(SAMBA36-SWAT_IPK_DIR)/opt/etc/xinetd.d
-	install -m 755 $(SAMBA36_SOURCE_DIR)/swat $(SAMBA36-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
+	$(INSTALL) -d $(SAMBA36-SWAT_IPK_DIR)/opt/etc/xinetd.d
+	$(INSTALL) -m 755 $(SAMBA36_SOURCE_DIR)/swat $(SAMBA36-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA36_IPK_DIR)
 	$(MAKE) $(SAMBA36-DEV_IPK_DIR)/CONTROL/control

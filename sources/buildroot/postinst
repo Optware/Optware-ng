@@ -1,6 +1,6 @@
 #!/bin/sh
 
-touch /opt/etc/ld.so.conf
+touch %OPTWARE_TARGET_PREFIX%/etc/ld.so.conf
 
-echo "Updating /opt/etc/ld.so.cache"
-/opt/sbin/ldconfig
+echo "Updating %OPTWARE_TARGET_PREFIX%/etc/ld.so.cache"
+%OPTWARE_TARGET_PREFIX%/sbin/ldconfig

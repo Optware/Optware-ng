@@ -36,7 +36,7 @@ $(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(MICROPERL_SOURCE) $(MICROPERL_PA
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MICROPERL_PATCHES)"; then \
 		cat $(MICROPERL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MICROPERL_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MICROPERL_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	touch $@
@@ -66,7 +66,7 @@ endif
 microperl: $(MICROPERL_BUILD_DIR)/.built
 
 $(MICROPERL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: microperl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -81,8 +81,8 @@ $(MICROPERL_IPK_DIR)/CONTROL/control:
 
 $(MICROPERL_IPK): $(MICROPERL_BUILD_DIR)/.built
 	rm -rf $(MICROPERL_IPK_DIR) $(BUILD_DIR)/microperl_*_$(TARGET_ARCH).ipk
-	install -d $(MICROPERL_IPK_DIR)/opt/bin
-	install -m 755 $(MICROPERL_BUILD_DIR)/microperl $(MICROPERL_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(MICROPERL_IPK_DIR)/opt/bin
+	$(INSTALL) -m 755 $(MICROPERL_BUILD_DIR)/microperl $(MICROPERL_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(MICROPERL_IPK_DIR)/opt/bin/*
 	$(MAKE) $(MICROPERL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MICROPERL_IPK_DIR)

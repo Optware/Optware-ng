@@ -105,7 +105,7 @@ $(SMARTMONTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMAR
 	$(SMARTMONTOOLS_UNZIP) $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SMARTMONTOOLS_PATCHES)" ; \
 		then cat $(SMARTMONTOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SMARTMONTOOLS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(@D) ; \
@@ -149,7 +149,7 @@ smartmontools: $(SMARTMONTOOLS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/smartmontools
 #
 $(SMARTMONTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: smartmontools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -169,14 +169,14 @@ $(SMARTMONTOOLS_IPK_DIR)/CONTROL/control:
 $(SMARTMONTOOLS_IPK): $(SMARTMONTOOLS_BUILD_DIR)/.built
 	rm -rf $(SMARTMONTOOLS_IPK_DIR) $(BUILD_DIR)/smartmontools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SMARTMONTOOLS_BUILD_DIR) DESTDIR=$(SMARTMONTOOLS_IPK_DIR) install-strip
-	install -d $(SMARTMONTOOLS_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(SMARTMONTOOLS_IPK_DIR)/opt/etc/init.d
 	rm -rf $(SMARTMONTOOLS_IPK_DIR)/opt/etc/rc.d
 	rm -rf $(SMARTMONTOOLS_IPK_DIR)/opt/man
 	rm -rf $(SMARTMONTOOLS_IPK_DIR)/opt/share
-	install -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/rc.smartmontools $(SMARTMONTOOLS_IPK_DIR)/opt/etc/init.d/S20smartmontools
+	$(INSTALL) -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/rc.smartmontools $(SMARTMONTOOLS_IPK_DIR)/opt/etc/init.d/S20smartmontools
 	$(MAKE) $(SMARTMONTOOLS_IPK_DIR)/CONTROL/control
-	install -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/postinst $(SMARTMONTOOLS_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/prerm $(SMARTMONTOOLS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/postinst $(SMARTMONTOOLS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/prerm $(SMARTMONTOOLS_IPK_DIR)/CONTROL/prerm
 	echo $(SMARTMONTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(SMARTMONTOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SMARTMONTOOLS_IPK_DIR)
 

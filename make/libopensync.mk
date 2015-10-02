@@ -116,7 +116,7 @@ endif
 	$(LIBOPENSYNC_UNZIP) $(DL_DIR)/$(LIBOPENSYNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBOPENSYNC_PATCHES)" ; \
 		then cat $(LIBOPENSYNC_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBOPENSYNC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBOPENSYNC_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBOPENSYNC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBOPENSYNC_DIR) $(@D) ; \
@@ -176,7 +176,7 @@ libopensync-stage: $(LIBOPENSYNC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libopensync
 #
 $(LIBOPENSYNC_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libopensync" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,15 +206,15 @@ $(LIBOPENSYNC_IPK): $(LIBOPENSYNC_BUILD_DIR)/.built
 	rm -rf $(LIBOPENSYNC_IPK_DIR) $(BUILD_DIR)/libopensync_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBOPENSYNC_BUILD_DIR) DESTDIR=$(LIBOPENSYNC_IPK_DIR) install-strip
 	rm -f $(LIBOPENSYNC_IPK_DIR)/opt/lib/*.la
-#	install -d $(LIBOPENSYNC_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBOPENSYNC_SOURCE_DIR)/libopensync.conf $(LIBOPENSYNC_IPK_DIR)/opt/etc/libopensync.conf
-#	install -d $(LIBOPENSYNC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBOPENSYNC_SOURCE_DIR)/rc.libopensync $(LIBOPENSYNC_IPK_DIR)/opt/etc/init.d/SXXlibopensync
+#	$(INSTALL) -d $(LIBOPENSYNC_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBOPENSYNC_SOURCE_DIR)/libopensync.conf $(LIBOPENSYNC_IPK_DIR)/opt/etc/libopensync.conf
+#	$(INSTALL) -d $(LIBOPENSYNC_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBOPENSYNC_SOURCE_DIR)/rc.libopensync $(LIBOPENSYNC_IPK_DIR)/opt/etc/init.d/SXXlibopensync
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBOPENSYNC_IPK_DIR)/opt/etc/init.d/SXXlibopensync
 	$(MAKE) $(LIBOPENSYNC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBOPENSYNC_SOURCE_DIR)/postinst $(LIBOPENSYNC_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBOPENSYNC_SOURCE_DIR)/postinst $(LIBOPENSYNC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBOPENSYNC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBOPENSYNC_SOURCE_DIR)/prerm $(LIBOPENSYNC_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBOPENSYNC_SOURCE_DIR)/prerm $(LIBOPENSYNC_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBOPENSYNC_IPK_DIR)/CONTROL/prerm
 	echo $(LIBOPENSYNC_CONFFILES) | sed -e 's/ /\n/g' > $(LIBOPENSYNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBOPENSYNC_IPK_DIR)

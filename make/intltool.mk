@@ -103,7 +103,7 @@ $(INTLTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(INTLTOOL_SOURCE) $(INTLTOOL_PATCH
 	rm -rf $(BUILD_DIR)/$(INTLTOOL_DIR) $(@D)
 	$(INTLTOOL_UNZIP) $(DL_DIR)/$(INTLTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(INTLTOOL_PATCHES)" ; then \
-		cat $(INTLTOOL_PATCHES) | patch -d $(BUILD_DIR)/$(INTLTOOL_DIR) -p1 ; \
+		cat $(INTLTOOL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(INTLTOOL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(INTLTOOL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(INTLTOOL_DIR) $(@D) ; \
@@ -156,7 +156,7 @@ intltool-stage: $(INTLTOOL_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.
 #
 $(INTLTOOL_IPK_DIR)/CONTROL/control:
-	@install -d $(INTLTOOL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(INTLTOOL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: intltool" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -187,13 +187,13 @@ $(INTLTOOL_IPK): $(INTLTOOL_BUILD_DIR)/.built
 	rm -rf $(INTLTOOL_IPK_DIR) $(BUILD_DIR)/intltool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(INTLTOOL_BUILD_DIR) DESTDIR=$(INTLTOOL_IPK_DIR) install
 #	$(STRIP_COMMAND) $(INTLTOOL_IPK_DIR)/opt/lib/*.so*
-#	install -d $(INTLTOOL_IPK_DIR)/opt/etc/
-#	install -m 755 $(INTLTOOL_SOURCE_DIR)/intltool.conf $(INTLTOOL_IPK_DIR)/opt/etc/intltool.conf
-#	install -d $(INTLTOOL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(INTLTOOL_SOURCE_DIR)/rc.intltool $(INTLTOOL_IPK_DIR)/opt/etc/init.d/SXXintltool
+#	$(INSTALL) -d $(INTLTOOL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 755 $(INTLTOOL_SOURCE_DIR)/intltool.conf $(INTLTOOL_IPK_DIR)/opt/etc/intltool.conf
+#	$(INSTALL) -d $(INTLTOOL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(INTLTOOL_SOURCE_DIR)/rc.intltool $(INTLTOOL_IPK_DIR)/opt/etc/init.d/SXXintltool
 	$(MAKE) $(INTLTOOL_IPK_DIR)/CONTROL/control
-#	install -m 644 $(INTLTOOL_SOURCE_DIR)/postinst $(INTLTOOL_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(INTLTOOL_SOURCE_DIR)/prerm $(INTLTOOL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(INTLTOOL_SOURCE_DIR)/postinst $(INTLTOOL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(INTLTOOL_SOURCE_DIR)/prerm $(INTLTOOL_IPK_DIR)/CONTROL/prerm
 #	echo $(INTLTOOL_CONFFILES) | sed -e 's/ /\n/g' > $(INTLTOOL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INTLTOOL_IPK_DIR)
 

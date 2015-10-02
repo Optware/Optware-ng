@@ -63,7 +63,7 @@ XFIXESPROTO_IPK=$(BUILD_DIR)/xfixesproto_$(XFIXESPROTO_VERSION)-$(XFIXESPROTO_IP
 # Automatically create a ipkg control file
 #
 $(XFIXESPROTO_IPK_DIR)/CONTROL/control:
-	@install -d $(XFIXESPROTO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(XFIXESPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xfixesproto" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,7 @@ $(XFIXESPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(XFIXESPROTO_SOURCE) $(XFIXESPR
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XFIXESPROTO_SOURCE)
 	if test -n "$(XFIXESPROTO_PATCHES)" ; \
 		then cat $(XFIXESPROTO_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XFIXESPROTO_DIR) -p1 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(XFIXESPROTO_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XFIXESPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XFIXESPROTO_DIR) $(@D) ; \

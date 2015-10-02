@@ -119,7 +119,7 @@ endif
 	$(XMLRPC-C_UNZIP) $(DL_DIR)/$(XMLRPC-C_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(XMLRPC-C_PATCHES)" ; \
 		then cat $(XMLRPC-C_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(XMLRPC-C_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(XMLRPC-C_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(XMLRPC-C_DIR)" != "$(XMLRPC-C_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XMLRPC-C_DIR) $(XMLRPC-C_BUILD_DIR) ; \
@@ -186,7 +186,7 @@ xmlrpc-c-stage: $(XMLRPC-C_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/xmlrpc-c
 #
 $(XMLRPC-C_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xmlrpc-c" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

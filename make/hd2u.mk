@@ -110,7 +110,7 @@ $(HD2U_BUILD_DIR)/.configured: $(DL_DIR)/$(HD2U_SOURCE) $(HD2U_PATCHES) make/hd2
 	$(HD2U_UNZIP) $(DL_DIR)/$(HD2U_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HD2U_PATCHES)" ; \
 		then cat $(HD2U_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HD2U_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HD2U_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HD2U_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HD2U_DIR) $(@D) ; \
@@ -169,7 +169,7 @@ hd2u: $(HD2U_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/hd2u
 #
 $(HD2U_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: hd2u" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,8 +203,8 @@ $(HD2U_IPK): $(HD2U_BUILD_DIR)/.built
 		;
 	$(STRIP_COMMAND) $(HD2U_IPK_DIR)/opt/bin/*
 	mv $(HD2U_IPK_DIR)/opt/bin/dos2unix $(HD2U_IPK_DIR)/opt/bin/hd2u-dos2unix
-	install -d $(HD2U_IPK_DIR)/opt/share/doc/hd2u
-	install $(HD2U_BUILD_DIR)/AUTHORS \
+	$(INSTALL) -d $(HD2U_IPK_DIR)/opt/share/doc/hd2u
+	$(INSTALL) $(HD2U_BUILD_DIR)/AUTHORS \
 		$(HD2U_BUILD_DIR)/ChangeLog \
 		$(HD2U_BUILD_DIR)/COPYING \
 		$(HD2U_BUILD_DIR)/CREDITS \

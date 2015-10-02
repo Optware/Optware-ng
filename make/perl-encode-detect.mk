@@ -41,7 +41,7 @@ $(PERL-ENCODE-DETECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-ENCODE-DETECT_SOUR
 	rm -rf $(BUILD_DIR)/$(PERL-ENCODE-DETECT_DIR) $(@D)
 	$(PERL-ENCODE-DETECT_UNZIP) $(DL_DIR)/$(PERL-ENCODE-DETECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL-ENCODE-DETECT_PATCHES)"; then \
-		cat $(PERL-ENCODE-DETECT_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-ENCODE-DETECT_DIR) -p0; \
+		cat $(PERL-ENCODE-DETECT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-ENCODE-DETECT_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(PERL-ENCODE-DETECT_DIR) $(@D)
 	(cd $(@D); \
@@ -75,7 +75,7 @@ $(PERL-ENCODE-DETECT_BUILD_DIR)/.staged: $(PERL-ENCODE-DETECT_BUILD_DIR)/.built
 perl-encode-detect-stage: $(PERL-ENCODE-DETECT_BUILD_DIR)/.staged
 
 $(PERL-ENCODE-DETECT_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-encode-detect" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

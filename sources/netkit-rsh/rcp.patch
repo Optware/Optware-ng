@@ -6,4 +6,4 @@ diff -ruNp rcp.orig/pathnames.h rcp/pathnames.h
  
  #define	_PATH_CP	"/bin/cp"
 -#define	_PATH_RSH	"/usr/bin/rsh"
-+#define	_PATH_RSH	"/opt/bin/rsh"
++#define	_PATH_RSH	"%OPTWARE_TARGET_PREFIX%/bin/rsh"

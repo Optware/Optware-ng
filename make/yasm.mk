@@ -93,7 +93,7 @@ $(YASM_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(YASM_SOURCE) $(YASM
 	$(YASM_UNZIP) $(DL_DIR)/$(YASM_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(YASM_PATCHES)" ; \
 		then cat $(YASM_PATCHES) | \
-		patch -d $(HOST_BUILD_DIR)/$(YASM_DIR) -p0 ; \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(YASM_DIR) -p0 ; \
 	fi
 	if test "$(HOST_BUILD_DIR)/$(YASM_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(YASM_DIR) $(@D) ; \
@@ -137,7 +137,7 @@ $(YASM_BUILD_DIR)/.configured: $(DL_DIR)/$(YASM_SOURCE) $(YASM_PATCHES) make/yas
 	$(YASM_UNZIP) $(DL_DIR)/$(YASM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(YASM_PATCHES)" ; \
 		then cat $(YASM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(YASM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(YASM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(YASM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(YASM_DIR) $(@D) ; \
@@ -177,7 +177,7 @@ yasm: $(YASM_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/yasm
 #
 $(YASM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: yasm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -206,15 +206,15 @@ $(YASM_IPK_DIR)/CONTROL/control:
 $(YASM_IPK): $(YASM_BUILD_DIR)/.built
 	rm -rf $(YASM_IPK_DIR) $(BUILD_DIR)/yasm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(YASM_BUILD_DIR) DESTDIR=$(YASM_IPK_DIR) install-strip
-#	install -d $(YASM_IPK_DIR)/opt/etc/
-#	install -m 644 $(YASM_SOURCE_DIR)/yasm.conf $(YASM_IPK_DIR)/opt/etc/yasm.conf
-#	install -d $(YASM_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(YASM_SOURCE_DIR)/rc.yasm $(YASM_IPK_DIR)/opt/etc/init.d/SXXyasm
+#	$(INSTALL) -d $(YASM_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(YASM_SOURCE_DIR)/yasm.conf $(YASM_IPK_DIR)/opt/etc/yasm.conf
+#	$(INSTALL) -d $(YASM_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(YASM_SOURCE_DIR)/rc.yasm $(YASM_IPK_DIR)/opt/etc/init.d/SXXyasm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YASM_IPK_DIR)/opt/etc/init.d/SXXyasm
 	$(MAKE) $(YASM_IPK_DIR)/CONTROL/control
-#	install -m 755 $(YASM_SOURCE_DIR)/postinst $(YASM_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(YASM_SOURCE_DIR)/postinst $(YASM_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YASM_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(YASM_SOURCE_DIR)/prerm $(YASM_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(YASM_SOURCE_DIR)/prerm $(YASM_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YASM_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

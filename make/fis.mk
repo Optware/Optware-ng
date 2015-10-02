@@ -109,7 +109,7 @@ $(FIS_BUILD_DIR)/.configured: $(DL_DIR)/fis-$(FIS_VERSION).tar.gz make/fis.mk
 	tar -C $(BUILD_DIR) -xzvf $(DL_DIR)/fis-$(FIS_VERSION).tar.gz
 	if test -n "$(FIS_PATCHES)" ; \
 		then cat $(FIS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FIS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FIS_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FIS_DIR)" != "$(FIS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FIS_DIR) $(FIS_BUILD_DIR) ; \
@@ -138,7 +138,7 @@ fis-stage:
 # necessary to create a seperate control file under sources/fis
 #
 $(FIS_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fis" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -166,8 +166,8 @@ $(FIS_IPK_DIR)/CONTROL/control:
 #
 $(FIS_IPK): $(FIS_BUILD_DIR)/.built
 	rm -rf $(FIS_IPK_DIR) $(BUILD_DIR)/fis_*_$(TARGET_ARCH).ipk
-	install -d $(FIS_IPK_DIR)/opt/sbin/
-	install -m 755 $(FIS_BUILD_DIR)/fis $(FIS_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(FIS_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(FIS_BUILD_DIR)/fis $(FIS_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(FIS_IPK_DIR)/opt/sbin/fis
 	$(MAKE) $(FIS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FIS_IPK_DIR)

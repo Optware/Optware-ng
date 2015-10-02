@@ -34,7 +34,7 @@ perlconsole-source: $(DL_DIR)/$(PERLCONSOLE_SOURCE) $(PERLCONSOLE_PATCHES)
 $(PERLCONSOLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLCONSOLE_SOURCE) $(PERLCONSOLE_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERLCONSOLE_DIR) $(PERLCONSOLE_BUILD_DIR)
 	$(PERLCONSOLE_UNZIP) $(DL_DIR)/$(PERLCONSOLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERLCONSOLE_PATCHES) | patch -d $(BUILD_DIR)/$(PERLCONSOLE_DIR) -p1
+#	cat $(PERLCONSOLE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERLCONSOLE_DIR) -p1
 	mv $(BUILD_DIR)/$(PERLCONSOLE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -64,7 +64,7 @@ $(PERLCONSOLE_BUILD_DIR)/.staged: $(PERLCONSOLE_BUILD_DIR)/.built
 perlconsole-stage: $(PERLCONSOLE_BUILD_DIR)/.staged
 
 $(PERLCONSOLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: perlconsole" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

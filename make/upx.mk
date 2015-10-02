@@ -117,7 +117,7 @@ endif
 	$(UPX_UNZIP) $(DL_DIR)/$(UPX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UPX_PATCHES)" ; \
 		then cat $(UPX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(UPX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UPX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UPX_DIR)" != "$(UPX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(UPX_DIR) $(UPX_BUILD_DIR) ; \
@@ -173,7 +173,7 @@ upx-stage: $(UPX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/upx
 #
 $(UPX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: upx" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,19 +202,19 @@ $(UPX_IPK_DIR)/CONTROL/control:
 $(UPX_IPK): $(UPX_BUILD_DIR)/.built
 	rm -rf $(UPX_IPK_DIR) $(BUILD_DIR)/upx_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(UPX_BUILD_DIR) DESTDIR=$(UPX_IPK_DIR) install-strip
-	install -d $(UPX_IPK_DIR)/opt/bin $(UPX_IPK_DIR)/opt/man/man1
-	install $(UPX_BUILD_DIR)/src/upx.out $(UPX_IPK_DIR)/opt/bin/upx
+	$(INSTALL) -d $(UPX_IPK_DIR)/opt/bin $(UPX_IPK_DIR)/opt/man/man1
+	$(INSTALL) $(UPX_BUILD_DIR)/src/upx.out $(UPX_IPK_DIR)/opt/bin/upx
 	$(STRIP_COMMAND) $(UPX_IPK_DIR)/opt/bin/upx
-	install $(UPX_BUILD_DIR)/doc/upx.1 $(UPX_IPK_DIR)/opt/man/man1
-#	install -d $(UPX_IPK_DIR)/opt/etc/
-#	install -m 644 $(UPX_SOURCE_DIR)/upx.conf $(UPX_IPK_DIR)/opt/etc/upx.conf
-#	install -d $(UPX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UPX_SOURCE_DIR)/rc.upx $(UPX_IPK_DIR)/opt/etc/init.d/SXXupx
+	$(INSTALL) $(UPX_BUILD_DIR)/doc/upx.1 $(UPX_IPK_DIR)/opt/man/man1
+#	$(INSTALL) -d $(UPX_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(UPX_SOURCE_DIR)/upx.conf $(UPX_IPK_DIR)/opt/etc/upx.conf
+#	$(INSTALL) -d $(UPX_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(UPX_SOURCE_DIR)/rc.upx $(UPX_IPK_DIR)/opt/etc/init.d/SXXupx
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UPX_IPK_DIR)/opt/etc/init.d/SXXupx
 	$(MAKE) $(UPX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UPX_SOURCE_DIR)/postinst $(UPX_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(UPX_SOURCE_DIR)/postinst $(UPX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UPX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UPX_SOURCE_DIR)/prerm $(UPX_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(UPX_SOURCE_DIR)/prerm $(UPX_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UPX_IPK_DIR)/CONTROL/prerm
 	echo $(UPX_CONFFILES) | sed -e 's/ /\n/g' > $(UPX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UPX_IPK_DIR)

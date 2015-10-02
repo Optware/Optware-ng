@@ -71,7 +71,7 @@ FREETYPE_IPK=$(BUILD_DIR)/freetype_$(FREETYPE_VERSION)-$(FREETYPE_IPK_VERSION)_$
 # Automatically create a ipkg control file
 #
 $(FREETYPE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: freetype" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -158,7 +158,7 @@ $(FREETYPE_BUILD_DIR)/.staged: $(FREETYPE_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' $(STAGING_PREFIX)/bin/freetype-config
-	install -d $(STAGING_DIR)/bin
+	$(INSTALL) -d $(STAGING_DIR)/bin
 	cp $(STAGING_PREFIX)/bin/freetype-config $(STAGING_DIR)/bin/freetype-config
 	rm -f $(STAGING_LIB_DIR)/libfreetype.la
 	sed -i -e '/^libdir=/s|=.*|=$(STAGING_LIB_DIR)|' -e '/^includedir=/s|=.*|=$(STAGING_INCLUDE_DIR)/freetype2|' \

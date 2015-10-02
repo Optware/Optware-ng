@@ -103,7 +103,7 @@ $(METALOG_BUILD_DIR)/.configured: $(DL_DIR)/$(METALOG_SOURCE) $(METALOG_PATCHES)
 	$(MAKE) pcre-stage 
 	rm -rf $(BUILD_DIR)/$(METALOG_DIR) $(METALOG_BUILD_DIR)
 	$(METALOG_UNZIP) $(DL_DIR)/$(METALOG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(METALOG_PATCHES) | patch -d $(BUILD_DIR)/$(METALOG_DIR) -p1
+	cat $(METALOG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(METALOG_DIR) -p1
 	mv $(BUILD_DIR)/$(METALOG_DIR) $(METALOG_BUILD_DIR)
 	(cd $(METALOG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -148,7 +148,7 @@ metalog-stage: $(METALOG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/metalog
 #
 $(METALOG_IPK_DIR)/CONTROL/control:
-	@install -d $(METALOG_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(METALOG_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: metalog" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,15 +179,15 @@ $(METALOG_IPK): $(METALOG_BUILD_DIR)/.built
 	$(MAKE) -C $(METALOG_BUILD_DIR) DESTDIR=$(METALOG_IPK_DIR) install
 	$(STRIP_COMMAND) $(METALOG_IPK_DIR)/opt/sbin/metalog
 	$(MAKE) -C $(METALOG_BUILD_DIR) DESTDIR=$(METALOG_IPK_DIR) install-man
-	install -d $(METALOG_IPK_DIR)/opt/etc/
-	install -m 755 $(METALOG_SOURCE_DIR)/metalog.conf $(METALOG_IPK_DIR)/opt/etc/metalog.conf
-	install -d $(METALOG_IPK_DIR)/opt/doc/metalog
-	install -m 755 $(METALOG_SOURCE_DIR)/rc.sysinit $(METALOG_IPK_DIR)/opt/doc/metalog
+	$(INSTALL) -d $(METALOG_IPK_DIR)/opt/etc/
+	$(INSTALL) -m 755 $(METALOG_SOURCE_DIR)/metalog.conf $(METALOG_IPK_DIR)/opt/etc/metalog.conf
+	$(INSTALL) -d $(METALOG_IPK_DIR)/opt/doc/metalog
+	$(INSTALL) -m 755 $(METALOG_SOURCE_DIR)/rc.sysinit $(METALOG_IPK_DIR)/opt/doc/metalog
 	# Make log directory on HD
-	install -d $(METALOG_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(METALOG_IPK_DIR)/opt/var/log
 	$(MAKE) $(METALOG_IPK_DIR)/CONTROL/control
-	install -m 644 $(METALOG_SOURCE_DIR)/postinst $(METALOG_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(METALOG_SOURCE_DIR)/prerm $(METALOG_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 644 $(METALOG_SOURCE_DIR)/postinst $(METALOG_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 644 $(METALOG_SOURCE_DIR)/prerm $(METALOG_IPK_DIR)/CONTROL/prerm
 	echo $(METALOG_CONFFILES) | sed -e 's/ /\n/g' > $(METALOG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(METALOG_IPK_DIR)
 

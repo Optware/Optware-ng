@@ -9,13 +9,13 @@ start() {
 	echo "Already running"
 	return
     fi
-    /opt/sbin/pptpd -b `nvram get lan_ifname` -c /opt/etc/pptpd.conf -o /opt/etc/ppp/options.pptpd -p /opt/var/run/pptpd.pid
+    %OPTWARE_TARGET_PREFIX%/sbin/pptpd -b `nvram get lan_ifname` -c %OPTWARE_TARGET_PREFIX%/etc/pptpd.conf -o %OPTWARE_TARGET_PREFIX%/etc/ppp/options.pptpd -p %OPTWARE_TARGET_PREFIX%/var/run/pptpd.pid
     echo "Done!"
     return
 }
 stop() {
     echo -n "Shutting down PoPToP server: "
-    /bin/kill `cat /opt/var/run/pptpd.pid` 2>/dev/null
+    /bin/kill `cat %OPTWARE_TARGET_PREFIX%/var/run/pptpd.pid` 2>/dev/null
     sleep 1
     if [ -n "`pidof pptpd`" ]; then
         echo "Failed to stop pptpd"
@@ -39,7 +39,7 @@ case "$1" in
 	restart
 	;;
   condrestart)
-	[ -r /opt/var/run/pptpd.pid ] && restart
+	[ -r %OPTWARE_TARGET_PREFIX%/var/run/pptpd.pid ] && restart
 	;;
   *)
 	echo "Usage: $0 {start|stop|restart|condrestart}"

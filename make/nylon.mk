@@ -110,7 +110,7 @@ $(NYLON_BUILD_DIR)/.configured: $(DL_DIR)/$(NYLON_SOURCE)
 	$(MAKE) libevent-stage
 	rm -rf $(BUILD_DIR)/$(NYLON_DIR) $(@D)
 	$(NYLON_UNZIP) $(DL_DIR)/$(NYLON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(NYLON_PATCHES) | patch -d $(BUILD_DIR)/$(NYLON_DIR) -p1
+#	cat $(NYLON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NYLON_DIR) -p1
 	mv $(BUILD_DIR)/$(NYLON_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -155,7 +155,7 @@ nylon: $(NYLON_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/nylon
 #
 $(NYLON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: nylon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,14 +184,14 @@ $(NYLON_IPK): $(NYLON_BUILD_DIR)/.built
 	rm -rf $(NYLON_IPK_DIR) $(BUILD_DIR)/nylon_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NYLON_BUILD_DIR) DESTDIR=$(NYLON_IPK_DIR) install
 	$(STRIP_COMMAND) $(NYLON_IPK_DIR)/opt/bin/nylon
-	install -d $(NYLON_IPK_DIR)/opt/var/run
-	install -d $(NYLON_IPK_DIR)/opt/etc
-	install -m 644 $(NYLON_SOURCE_DIR)/nylon.conf $(NYLON_IPK_DIR)/opt/etc/nylon.conf
-	install -d $(NYLON_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NYLON_SOURCE_DIR)/rc.nylon $(NYLON_IPK_DIR)/opt/etc/init.d/S10nylon
+	$(INSTALL) -d $(NYLON_IPK_DIR)/opt/var/run
+	$(INSTALL) -d $(NYLON_IPK_DIR)/opt/etc
+	$(INSTALL) -m 644 $(NYLON_SOURCE_DIR)/nylon.conf $(NYLON_IPK_DIR)/opt/etc/nylon.conf
+	$(INSTALL) -d $(NYLON_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(NYLON_SOURCE_DIR)/rc.nylon $(NYLON_IPK_DIR)/opt/etc/init.d/S10nylon
 	$(MAKE) $(NYLON_IPK_DIR)/CONTROL/control
-	install -m 755 $(NYLON_SOURCE_DIR)/postinst $(NYLON_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(NYLON_SOURCE_DIR)/prerm $(NYLON_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(NYLON_SOURCE_DIR)/postinst $(NYLON_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(NYLON_SOURCE_DIR)/prerm $(NYLON_IPK_DIR)/CONTROL/prerm
 	echo $(NYLON_CONFFILES) | sed -e 's/ /\n/g' > $(NYLON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NYLON_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(NYLON_IPK_DIR)

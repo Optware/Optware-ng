@@ -2,4 +2,4 @@
 #
 # $Header$
 
-/opt/etc/init.d/S70collectd
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S70collectd

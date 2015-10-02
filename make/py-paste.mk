@@ -133,7 +133,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTE_PATCHES)" ; then \
-	    cat $(PY-PASTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
+	    cat $(PY-PASTE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
@@ -149,7 +149,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTE_PATCHES)" ; then \
-	    cat $(PY-PASTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
+	    cat $(PY-PASTE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
@@ -165,7 +165,7 @@ else
 	)
 endif
 	if test -n "$(PY-PASTE_PATCHES)" ; then \
-	    cat $(PY-PASTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
+	    cat $(PY-PASTE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
         fi
 	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
@@ -250,7 +250,7 @@ py-paste-host-stage: $(PY-PASTE_HOST_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-paste
 #
 $(PY25-PASTE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-paste" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -264,7 +264,7 @@ $(PY25-PASTE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTE_CONFLICTS)" >>$@
 
 $(PY26-PASTE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py26-paste" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -278,7 +278,7 @@ $(PY26-PASTE_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-PASTE_CONFLICTS)" >>$@
 
 $(PY27-PASTE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py27-paste" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

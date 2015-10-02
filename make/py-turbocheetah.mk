@@ -122,7 +122,7 @@ else
 	    svn co -q $(PY-TURBOCHEETAH_REPOSITORY) $(PY-TURBOCHEETAH_DIR); \
 	)
 endif
-#	cat $(PY-TURBOCHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -p1
+#	cat $(PY-TURBOCHEETAH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
@@ -137,7 +137,7 @@ else
 	    svn co -q $(PY-TURBOCHEETAH_REPOSITORY) $(PY-TURBOCHEETAH_DIR); \
 	)
 endif
-#	cat $(PY-TURBOCHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -p1
+#	cat $(PY-TURBOCHEETAH_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -180,7 +180,7 @@ py-turbocheetah-stage: $(PY-TURBOCHEETAH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-turbocheetah
 #
 $(PY24-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-turbocheetah" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,7 +194,7 @@ $(PY24-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-TURBOCHEETAH_CONFLICTS)" >>$@
 
 $(PY25-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-turbocheetah" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

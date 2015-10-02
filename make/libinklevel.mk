@@ -110,7 +110,7 @@ $(LIBINKLEVEL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBINKLEVEL_SOURCE) $(LIBINKLE
 	$(LIBINKLEVEL_UNZIP) $(DL_DIR)/$(LIBINKLEVEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBINKLEVEL_PATCHES)" ; \
 		then cat $(LIBINKLEVEL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBINKLEVEL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBINKLEVEL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBINKLEVEL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBINKLEVEL_DIR) $(@D) ; \
@@ -165,7 +165,7 @@ libinklevel-stage: $(LIBINKLEVEL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libinklevel
 #
 $(LIBINKLEVEL_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: libinklevel" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,15 +196,15 @@ $(LIBINKLEVEL_IPK): $(LIBINKLEVEL_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBINKLEVEL_BUILD_DIR) install \
 		DESTDIR=$(LIBINKLEVEL_IPK_DIR) PREFIX=/opt
 	$(STRIP_COMMAND) $(LIBINKLEVEL_IPK_DIR)/opt/lib/libinklevel.so
-#	install -d $(LIBINKLEVEL_IPK_DIR)/opt/etc/
-#	install -m 644 $(LIBINKLEVEL_SOURCE_DIR)/libinklevel.conf $(LIBINKLEVEL_IPK_DIR)/opt/etc/libinklevel.conf
-#	install -d $(LIBINKLEVEL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBINKLEVEL_SOURCE_DIR)/rc.libinklevel $(LIBINKLEVEL_IPK_DIR)/opt/etc/init.d/SXXlibinklevel
+#	$(INSTALL) -d $(LIBINKLEVEL_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(LIBINKLEVEL_SOURCE_DIR)/libinklevel.conf $(LIBINKLEVEL_IPK_DIR)/opt/etc/libinklevel.conf
+#	$(INSTALL) -d $(LIBINKLEVEL_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(LIBINKLEVEL_SOURCE_DIR)/rc.libinklevel $(LIBINKLEVEL_IPK_DIR)/opt/etc/init.d/SXXlibinklevel
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBINKLEVEL_IPK_DIR)/opt/etc/init.d/SXXlibinklevel
 	$(MAKE) $(LIBINKLEVEL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIBINKLEVEL_SOURCE_DIR)/postinst $(LIBINKLEVEL_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(LIBINKLEVEL_SOURCE_DIR)/postinst $(LIBINKLEVEL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBINKLEVEL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIBINKLEVEL_SOURCE_DIR)/prerm $(LIBINKLEVEL_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(LIBINKLEVEL_SOURCE_DIR)/prerm $(LIBINKLEVEL_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBINKLEVEL_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -131,7 +131,7 @@ else
 	    svn co -q $(PY-TURBOJSON_REPOSITORY) $(PY-TURBOJSON_DIR); \
 	)
 endif
-#	cat $(PY-TURBOJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -p1
+#	cat $(PY-TURBOJSON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
@@ -146,7 +146,7 @@ else
 	    svn co -q $(PY-TURBOJSON_REPOSITORY) $(PY-TURBOJSON_DIR); \
 	)
 endif
-#	cat $(PY-TURBOJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -p1
+#	cat $(PY-TURBOJSON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -189,7 +189,7 @@ py-turbojson-stage: $(PY-TURBOJSON_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-turbojson
 #
 $(PY24-TURBOJSON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py24-turbojson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -203,7 +203,7 @@ $(PY24-TURBOJSON_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-TURBOJSON_CONFLICTS)" >>$@
 
 $(PY25-TURBOJSON_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-turbojson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

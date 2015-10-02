@@ -111,7 +111,7 @@ $(SPLIX_BUILD_DIR)/.configured: $(DL_DIR)/$(SPLIX_SOURCE) $(SPLIX_PATCHES) make/
 	$(SPLIX_UNZIP) $(DL_DIR)/$(SPLIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPLIX_PATCHES)" ; \
 		then cat $(SPLIX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SPLIX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SPLIX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SPLIX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SPLIX_DIR) $(@D) ; \
@@ -160,7 +160,7 @@ splix-stage: $(SPLIX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/splix
 #
 $(SPLIX_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: splix" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,15 +191,15 @@ $(SPLIX_IPK): $(SPLIX_BUILD_DIR)/.built
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
 	$(MAKE) -C $(SPLIX_BUILD_DIR) DESTDIR=$(SPLIX_IPK_DIR) install
 	$(STRIP_COMMAND) $(SPLIX_IPK_DIR)/opt/lib/cups/filter/*
-#	install -d $(SPLIX_IPK_DIR)/opt/etc/
-#	install -m 644 $(SPLIX_SOURCE_DIR)/splix.conf $(SPLIX_IPK_DIR)/opt/etc/splix.conf
-#	install -d $(SPLIX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SPLIX_SOURCE_DIR)/rc.splix $(SPLIX_IPK_DIR)/opt/etc/init.d/SXXsplix
+#	$(INSTALL) -d $(SPLIX_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(SPLIX_SOURCE_DIR)/splix.conf $(SPLIX_IPK_DIR)/opt/etc/splix.conf
+#	$(INSTALL) -d $(SPLIX_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(SPLIX_SOURCE_DIR)/rc.splix $(SPLIX_IPK_DIR)/opt/etc/init.d/SXXsplix
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPLIX_IPK_DIR)/opt/etc/init.d/SXXsplix
 	$(MAKE) $(SPLIX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SPLIX_SOURCE_DIR)/postinst $(SPLIX_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(SPLIX_SOURCE_DIR)/postinst $(SPLIX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPLIX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SPLIX_SOURCE_DIR)/prerm $(SPLIX_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(SPLIX_SOURCE_DIR)/prerm $(SPLIX_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPLIX_IPK_DIR)/CONTROL/prerm
 #	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -5,7 +5,7 @@
      # docs = False  # do not serve static files at all (will not work except
      #               # you serve them in some other working way)
 -    docs = True
-+    docs = '/opt/share/moin/htdocs'
++    docs = '%OPTWARE_TARGET_PREFIX%/share/moin/htdocs'
  
      # tuning options:
      #serverClass = 'ThreadPoolServer'

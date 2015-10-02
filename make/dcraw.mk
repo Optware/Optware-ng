@@ -115,7 +115,7 @@ $(DCRAW_BUILD_DIR)/.configured: $(DL_DIR)/$(DCRAW_SOURCE) $(DCRAW_PATCHES) make/
 	cd $(BUILD_DIR)/$(DCRAW_DIR) && co -r$(DCRAW_VERSION) $(DL_DIR)/$(DCRAW_SOURCE)
 	if test -n "$(DCRAW_PATCHES)" ; \
 		then cat $(DCRAW_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DCRAW_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(DCRAW_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DCRAW_DIR)" != "$(DCRAW_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DCRAW_DIR) $(DCRAW_BUILD_DIR) ; \
@@ -156,7 +156,7 @@ dcraw-stage: $(DCRAW_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dcraw
 #
 $(DCRAW_IPK_DIR)/CONTROL/control:
-	@install -d $(DCRAW_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(DCRAW_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: dcraw" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,19 +184,19 @@ $(DCRAW_IPK_DIR)/CONTROL/control:
 #
 $(DCRAW_IPK): $(DCRAW_BUILD_DIR)/.built
 	rm -rf $(DCRAW_IPK_DIR) $(BUILD_DIR)/dcraw_*_$(TARGET_ARCH).ipk
-	install -d $(DCRAW_IPK_DIR)/opt/bin/
-	install $(DCRAW_BUILD_DIR)/dcraw $(DCRAW_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(DCRAW_IPK_DIR)/opt/bin/
+	$(INSTALL) $(DCRAW_BUILD_DIR)/dcraw $(DCRAW_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(DCRAW_IPK_DIR)/opt/bin/dcraw
-	install -d $(DCRAW_IPK_DIR)/opt/share/man/man1
-	install $(DL_DIR)/dcraw.1 $(DCRAW_IPK_DIR)/opt/share/man/man1/
+	$(INSTALL) -d $(DCRAW_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) $(DL_DIR)/dcraw.1 $(DCRAW_IPK_DIR)/opt/share/man/man1/
 #	$(MAKE) -C $(DCRAW_BUILD_DIR) DESTDIR=$(DCRAW_IPK_DIR) install-strip
-#	install -d $(DCRAW_IPK_DIR)/opt/etc/
-#	install -m 644 $(DCRAW_SOURCE_DIR)/dcraw.conf $(DCRAW_IPK_DIR)/opt/etc/dcraw.conf
-#	install -d $(DCRAW_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DCRAW_SOURCE_DIR)/rc.dcraw $(DCRAW_IPK_DIR)/opt/etc/init.d/SXXdcraw
+#	$(INSTALL) -d $(DCRAW_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(DCRAW_SOURCE_DIR)/dcraw.conf $(DCRAW_IPK_DIR)/opt/etc/dcraw.conf
+#	$(INSTALL) -d $(DCRAW_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(DCRAW_SOURCE_DIR)/rc.dcraw $(DCRAW_IPK_DIR)/opt/etc/init.d/SXXdcraw
 	$(MAKE) $(DCRAW_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DCRAW_SOURCE_DIR)/postinst $(DCRAW_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DCRAW_SOURCE_DIR)/prerm $(DCRAW_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(DCRAW_SOURCE_DIR)/postinst $(DCRAW_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(DCRAW_SOURCE_DIR)/prerm $(DCRAW_IPK_DIR)/CONTROL/prerm
 	echo $(DCRAW_CONFFILES) | sed -e 's/ /\n/g' > $(DCRAW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DCRAW_IPK_DIR)
 

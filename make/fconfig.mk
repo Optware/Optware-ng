@@ -110,7 +110,7 @@ $(FCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(FCONFIG_SOURCE) $(FCONFIG_PATCHES)
 	$(FCONFIG_UNZIP) $(DL_DIR)/$(FCONFIG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FCONFIG_PATCHES)" ; \
 		then cat $(FCONFIG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FCONFIG_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FCONFIG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FCONFIG_DIR)" != "$(FCONFIG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FCONFIG_DIR) $(FCONFIG_BUILD_DIR) ; \
@@ -164,7 +164,7 @@ fconfig-stage: $(FCONFIG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/fconfig
 #
 $(FCONFIG_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fconfig" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,17 +193,17 @@ $(FCONFIG_IPK_DIR)/CONTROL/control:
 $(FCONFIG_IPK): $(FCONFIG_BUILD_DIR)/.built
 	rm -rf $(FCONFIG_IPK_DIR) $(BUILD_DIR)/fconfig_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(FCONFIG_BUILD_DIR) DESTDIR=$(FCONFIG_IPK_DIR) install-strip
-	install -d $(FCONFIG_IPK_DIR)/opt/sbin/
-	install -m 755 $(FCONFIG_BUILD_DIR)/fconfig $(FCONFIG_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(FCONFIG_IPK_DIR)/opt/sbin/
+	$(INSTALL) -m 755 $(FCONFIG_BUILD_DIR)/fconfig $(FCONFIG_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(FCONFIG_IPK_DIR)/opt/sbin/fconfig
-#	install -m 644 $(FCONFIG_SOURCE_DIR)/fconfig.conf $(FCONFIG_IPK_DIR)/opt/etc/fconfig.conf
-#	install -d $(FCONFIG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FCONFIG_SOURCE_DIR)/rc.fconfig $(FCONFIG_IPK_DIR)/opt/etc/init.d/SXXfconfig
+#	$(INSTALL) -m 644 $(FCONFIG_SOURCE_DIR)/fconfig.conf $(FCONFIG_IPK_DIR)/opt/etc/fconfig.conf
+#	$(INSTALL) -d $(FCONFIG_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(FCONFIG_SOURCE_DIR)/rc.fconfig $(FCONFIG_IPK_DIR)/opt/etc/init.d/SXXfconfig
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCONFIG_IPK_DIR)/opt/etc/init.d/SXXfconfig
 	$(MAKE) $(FCONFIG_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FCONFIG_SOURCE_DIR)/postinst $(FCONFIG_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(FCONFIG_SOURCE_DIR)/postinst $(FCONFIG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCONFIG_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FCONFIG_SOURCE_DIR)/prerm $(FCONFIG_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(FCONFIG_SOURCE_DIR)/prerm $(FCONFIG_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCONFIG_IPK_DIR)/CONTROL/prerm
 	echo $(FCONFIG_CONFFILES) | sed -e 's/ /\n/g' > $(FCONFIG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FCONFIG_IPK_DIR)

@@ -1,8 +1,8 @@
 #!/bin/sh
 
-update-alternatives --remove free /opt/bin/procps-free
-update-alternatives --remove kill /opt/bin/procps-kill
-update-alternatives --remove ps /opt/bin/procps-ps
-update-alternatives --remove top /opt/bin/procps-top
-update-alternatives --remove uptime /opt/bin/procps-uptime
-update-alternatives --remove watch /opt/bin/procps-watch
+update-alternatives --remove free %OPTWARE_TARGET_PREFIX%/bin/procps-free
+update-alternatives --remove kill %OPTWARE_TARGET_PREFIX%/bin/procps-kill
+update-alternatives --remove ps %OPTWARE_TARGET_PREFIX%/bin/procps-ps
+update-alternatives --remove top %OPTWARE_TARGET_PREFIX%/bin/procps-top
+update-alternatives --remove uptime %OPTWARE_TARGET_PREFIX%/bin/procps-uptime
+update-alternatives --remove watch %OPTWARE_TARGET_PREFIX%/bin/procps-watch

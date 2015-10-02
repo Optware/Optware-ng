@@ -112,7 +112,7 @@ $(HPING_BUILD_DIR)/.configured: $(DL_DIR)/$(HPING_SOURCE) $(HPING_PATCHES) make/
 	$(HPING_UNZIP) $(DL_DIR)/$(HPING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HPING_PATCHES)" ; \
 		then cat $(HPING_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(HPING_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HPING_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HPING_DIR)" != "$(HPING_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(HPING_DIR) $(HPING_BUILD_DIR) ; \
@@ -184,7 +184,7 @@ hping-stage: $(HPING_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/hping
 #
 $(HPING_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: hping" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -212,25 +212,25 @@ $(HPING_IPK_DIR)/CONTROL/control:
 #
 $(HPING_IPK): $(HPING_BUILD_DIR)/.built
 	rm -rf $(HPING_IPK_DIR) $(BUILD_DIR)/hping_*_$(TARGET_ARCH).ipk
-	install -d $(HPING_IPK_DIR)/opt/share/man/man8
-	install -d $(HPING_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(HPING_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -d $(HPING_IPK_DIR)/opt/sbin
 	$(MAKE) -C $(HPING_BUILD_DIR) \
         	DESTDIR=$(HPING_IPK_DIR) \
         	INSTALL_MANPATH=$(HPING_IPK_DIR)/opt/share/man \
-        	install
+        	$(INSTALL)
 	$(STRIP_COMMAND) $(HPING_IPK_DIR)/opt/sbin/hping3
 	cd $(HPING_IPK_DIR)/opt/sbin; \
         	ln -s hping3 hping; \
         	ln -s hping3 hping2;
-#	install -d $(HPING_IPK_DIR)/opt/etc/
-#	install -m 644 $(HPING_SOURCE_DIR)/hping.conf $(HPING_IPK_DIR)/opt/etc/hping.conf
-#	install -d $(HPING_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(HPING_SOURCE_DIR)/rc.hping $(HPING_IPK_DIR)/opt/etc/init.d/SXXhping
+#	$(INSTALL) -d $(HPING_IPK_DIR)/opt/etc/
+#	$(INSTALL) -m 644 $(HPING_SOURCE_DIR)/hping.conf $(HPING_IPK_DIR)/opt/etc/hping.conf
+#	$(INSTALL) -d $(HPING_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(HPING_SOURCE_DIR)/rc.hping $(HPING_IPK_DIR)/opt/etc/init.d/SXXhping
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXhping
 	$(MAKE) $(HPING_IPK_DIR)/CONTROL/control
-#	install -m 755 $(HPING_SOURCE_DIR)/postinst $(HPING_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 755 $(HPING_SOURCE_DIR)/postinst $(HPING_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(HPING_SOURCE_DIR)/prerm $(HPING_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 755 $(HPING_SOURCE_DIR)/prerm $(HPING_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(HPING_CONFFILES) | sed -e 's/ /\n/g' > $(HPING_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HPING_IPK_DIR)

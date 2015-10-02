@@ -84,7 +84,7 @@ $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 	$(MAKE) libevent-stage
 	rm -rf $(BUILD_DIR)/$(TRICKLE_DIR) $(TRICKLE_BUILD_DIR)
 	$(TRICKLE_UNZIP) $(DL_DIR)/$(TRICKLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(TRICKLE_PATCHES) | patch -bd $(BUILD_DIR)/$(TRICKLE_DIR) -p0
+	cat $(TRICKLE_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(TRICKLE_DIR) -p0
 	mv $(BUILD_DIR)/$(TRICKLE_DIR) $(@D)
 	sed -i -e '/^AM_CFLAGS/s/+=/=/' $(@D)/Makefile.am
 	autoreconf -vif $(@D)
@@ -127,11 +127,11 @@ trickle: $(TRICKLE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_LIB_DIR)/libtrickle.so.$(TRICKLE_VERSION): $(TRICKLE_BUILD_DIR)/.built
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(TRICKLE_BUILD_DIR)/trickle.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(TRICKLE_BUILD_DIR)/libtrickle.a $(STAGING_LIB_DIR)
-	install -m 644 $(TRICKLE_BUILD_DIR)/libtrickle.so.$(TRICKLE_VERSION) $(STAGING_LIB_DIR)
+	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -m 644 $(TRICKLE_BUILD_DIR)/trickle.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(TRICKLE_BUILD_DIR)/libtrickle.a $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(TRICKLE_BUILD_DIR)/libtrickle.so.$(TRICKLE_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_LIB_DIR) && ln -fs libtrickle.so.$(TRICKLE_VERSION) libtrickle.so.1
 	cd $(STAGING_LIB_DIR) && ln -fs libtrickle.so.$(TRICKLE_VERSION) libtrickle.so
 
@@ -142,7 +142,7 @@ trickle-stage: $(STAGING_LIB_DIR)/libtrickle.so.$(TRICKLE_VERSION)
 # necessary to create a seperate control file under sources/<foo>
 #
 $(TRICKLE_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: trickle" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -171,14 +171,14 @@ $(TRICKLE_IPK_DIR)/CONTROL/control:
 $(TRICKLE_IPK): $(TRICKLE_BUILD_DIR)/.built
 	rm -rf $(TRICKLE_IPK_DIR) $(BUILD_DIR)/trickle_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TRICKLE_BUILD_DIR) DESTDIR=$(TRICKLE_IPK_DIR) transform='' \
-		install-binPROGRAMS install-trickleoverloadDATA install-man
-#	install -d $(TRICKLE_IPK_DIR)/opt/bin
+		$(INSTALL)-binPROGRAMS install-trickleoverloadDATA install-man
+#	$(INSTALL) -d $(TRICKLE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TRICKLE_IPK_DIR)/opt/bin/trickle* $(TRICKLE_IPK_DIR)/opt/lib/trickle/*
-#	install -d $(TRICKLE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TRICKLE_SOURCE_DIR)/rc.trickle $(TRICKLE_IPK_DIR)/opt/etc/init.d/SXXtrickle
+#	$(INSTALL) -d $(TRICKLE_IPK_DIR)/opt/etc/init.d
+#	$(INSTALL) -m 755 $(TRICKLE_SOURCE_DIR)/rc.trickle $(TRICKLE_IPK_DIR)/opt/etc/init.d/SXXtrickle
 	$(MAKE) $(TRICKLE_IPK_DIR)/CONTROL/control
-#	install -m 644 $(TRICKLE_SOURCE_DIR)/postinst $(TRICKLE_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(TRICKLE_SOURCE_DIR)/prerm $(TRICKLE_IPK_DIR)/CONTROL/prerm
+#	$(INSTALL) -m 644 $(TRICKLE_SOURCE_DIR)/postinst $(TRICKLE_IPK_DIR)/CONTROL/postinst
+#	$(INSTALL) -m 644 $(TRICKLE_SOURCE_DIR)/prerm $(TRICKLE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRICKLE_IPK_DIR)
 
 #

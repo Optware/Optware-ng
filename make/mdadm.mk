@@ -100,7 +100,7 @@ $(MDADM_BUILD_DIR)/.configured: $(DL_DIR)/$(MDADM_SOURCE) $(MDADM_PATCHES) make/
 	$(MDADM_UNZIP) $(DL_DIR)/$(MDADM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MDADM_PATCHES)" ; \
 		then cat $(MDADM_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MDADM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MDADM_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MDADM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MDADM_DIR) $(@D) ; \
@@ -135,7 +135,7 @@ mdadm: $(MDADM_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/mdadm
 #
 $(MDADM_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mdadm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -163,15 +163,15 @@ $(MDADM_IPK_DIR)/CONTROL/control:
 #
 $(MDADM_IPK): $(MDADM_BUILD_DIR)/.built
 	rm -rf $(MDADM_IPK_DIR) $(MDADM_IPK)
-	install -d $(MDADM_IPK_DIR)/opt/sbin
-	install -d $(MDADM_IPK_DIR)/opt/share/man/man8
-	install -d $(MDADM_IPK_DIR)/opt/share/man/man4
-	install -d $(MDADM_IPK_DIR)/opt/share/man/man5
+	$(INSTALL) -d $(MDADM_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(MDADM_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -d $(MDADM_IPK_DIR)/opt/share/man/man4
+	$(INSTALL) -d $(MDADM_IPK_DIR)/opt/share/man/man5
 	$(STRIP_COMMAND) $(MDADM_BUILD_DIR)/mdadm -o $(MDADM_IPK_DIR)/opt/sbin/mdadm
 	$(MAKE) $(MDADM_IPK_DIR)/CONTROL/control
-	install -m 644 $(MDADM_BUILD_DIR)/mdadm.8 $(MDADM_IPK_DIR)/opt/share/man/man8
-	install -m 644 $(MDADM_BUILD_DIR)/md.4 $(MDADM_IPK_DIR)/opt/share/man/man4
-	install -m 644 $(MDADM_BUILD_DIR)/mdadm.conf.5 $(MDADM_IPK_DIR)/opt/share/man/man5
+	$(INSTALL) -m 644 $(MDADM_BUILD_DIR)/mdadm.8 $(MDADM_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -m 644 $(MDADM_BUILD_DIR)/md.4 $(MDADM_IPK_DIR)/opt/share/man/man4
+	$(INSTALL) -m 644 $(MDADM_BUILD_DIR)/mdadm.conf.5 $(MDADM_IPK_DIR)/opt/share/man/man5
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MDADM_IPK_DIR)
 
 #
