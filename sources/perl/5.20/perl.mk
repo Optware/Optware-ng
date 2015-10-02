@@ -154,9 +154,9 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 else
 	(cd $(@D); \
 		( [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) ] && \
-		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) config.sh-$(PERL_TARGET_NAME) ) || \
+		sed -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) > config.sh-$(PERL_TARGET_NAME) ) || \
 		( [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(PERL_TARGET_NAME) ] && \
-		cp -f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(PERL_TARGET_NAME) . ) ; \
+		sed -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(PERL_TARGET_NAME) > config.sh-$(PERL_TARGET_NAME) ) ; \
 	)
 	sed -i -e 's|-ldb |-ldb-$(LIBDB_LIB_VERSION) |' $(@D)/config.sh-$(PERL_TARGET_NAME)
 #	sed -i -e "s|^cc=.*|cc='$(TARGET_CC)'|" -e "s|^cpp=.*|cpp='$(TARGET_CC) -E'|" -e \
