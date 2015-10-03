@@ -20,13 +20,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PSUTILS_SITE=ftp://ftp.gwdg.de/pub/dante/support/psutils/
+PSUTILS_SITE=http://pkgs.fedoraproject.org/repo/pkgs/psutils/psutils-p17.tar.gz/b161522f3bd1507655326afa7db4a0ad
 PSUTILS_VERSION=p17
 PSUTILS_SOURCE=psutils-$(PSUTILS_VERSION).tar.gz
 PSUTILS_DIR=psutils
 PSUTILS_UNZIP=zcat
 PSUTILS_MAINTAINER=Bernhard Walle <bernhard.walle@gmx.de>
-PSUTILS_DESCRIPTION=Describe psutils here.
+PSUTILS_DESCRIPTION=PSUtils is a set of utilities to manipulate PostScript files. 
 PSUTILS_SECTION=tool
 PSUTILS_PRIORITY=optional
 PSUTILS_DEPENDS=
@@ -101,7 +101,7 @@ psutils-source: $(DL_DIR)/$(PSUTILS_SOURCE) $(PSUTILS_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(PSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PSUTILS_SOURCE) $(PSUTILS_PATCHES)
+$(PSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PSUTILS_SOURCE) $(PSUTILS_PATCHES) make/psutils.mk
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PSUTILS_DIR) $(PSUTILS_BUILD_DIR)
 	$(PSUTILS_UNZIP) $(DL_DIR)/$(PSUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
