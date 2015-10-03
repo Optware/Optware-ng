@@ -91,7 +91,8 @@ MINIDLNA_RESCAN_THUMBNAIL_IPK=$(BUILD_DIR)/minidlna-rescan-thumbnail_$(MINIDLNA_
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-#minidlna-rescan-source: $(DL_DIR)/$(MINIDLNA_RESCAN_SOURCE) $(MINIDLNA_RESCAN_PATCHES)
+minidlna-rescan-source: $(MINIDLNA_RESCAN_PATCHES)
+	$(MAKE) minidlna-source
 
 #
 # This target unpacks the source code in the build directory.
