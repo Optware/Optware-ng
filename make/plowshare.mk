@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PLOWSHARE_GIT_REPOSITORY=https://code.google.com/p/plowshare
+PLOWSHARE_GIT_REPOSITORY=https://github.com/mcrapet/plowshare.git
 PLOWSHARE_SITE=http://plowshare.googlecode.com/files
 #PLOWSHARE_VERSION=0.9.1
-PLOWSHARE_VERSION=4.1.0.git20150205
-PLOWSHARE_TREEISH=`git rev-list --max-count=1 --until=2015-02-05 HEAD`
+PLOWSHARE_VERSION=2.1.2.git20150827
+PLOWSHARE_TREEISH=`git rev-list --max-count=1 --until=2015-08-27 HEAD`
 PLOWSHARE_SOURCE=plowshare-$(PLOWSHARE_VERSION).tgz
 PLOWSHARE_DIR=plowshare-$(PLOWSHARE_VERSION)
 PLOWSHARE_UNZIP=zcat
