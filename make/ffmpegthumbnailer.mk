@@ -85,7 +85,7 @@ $(DL_DIR)/$(FFMPEGTHUMBNAILER_SOURCE_SAVE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-ffmpegthumbnailer-source: $(DL_DIR)/$(FFMPEGTHUMBNAILER_SOURCE) $(FFMPEGTHUMBNAILER_PATCHES)
+ffmpegthumbnailer-source: $(DL_DIR)/$(FFMPEGTHUMBNAILER_SOURCE_SAVE) $(FFMPEGTHUMBNAILER_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
