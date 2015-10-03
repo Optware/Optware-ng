@@ -19,13 +19,13 @@
 #
 # You should change all these variables to suit your package.
 #
-IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
+IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick/releases
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VER=6.9.0
-IMAGEMAGICK_REV=4
+IMAGEMAGICK_VER=6.9.2
+IMAGEMAGICK_REV=3
 IMAGEMAGICK_IPK_VERSION=1
-IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.bz2
-IMAGEMAGICK_UNZIP=bzcat
+IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.xz
+IMAGEMAGICK_UNZIP=xzcat
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV)
 else
 IMAGEMAGICK_VER=6.3.1
