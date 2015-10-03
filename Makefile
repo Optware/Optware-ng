@@ -762,26 +762,16 @@ host/.configured:
 	[ -e $@ ] || touch $@
 
 ifeq ($(DEFAULT_TARGET_PREFIX), $(TARGET_PREFIX))
-%-target %/.configured:
+DIRNAME_SUFFIX=
 else
-%-target %$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g')/.configured:
+DIRNAME_SUFFIX=$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g')
 endif
+
+%-target %$(DIRNAME_SUFFIX)/.configured:
 	[ -e ${DL_DIR} ] || mkdir -p ${DL_DIR}
-ifeq ($(DEFAULT_TARGET_PREFIX), $(TARGET_PREFIX))
-	[ -e $*/Makefile ] || ( \
-		mkdir -p $* ; \
-		echo "OPTWARE_TARGET=$*" > $*/Makefile ; \
-		echo "include ../Makefile" >> $*/Makefile ; \
-		ln -s ../downloads $*/downloads ; \
-		ln -s ../make $*/make ; \
-		ln -s ../scripts $*/scripts ; \
-		ln -s ../sources $*/sources ; \
-	)
-	touch $*/.configured
-else
-	[ -e $*$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g')/Makefile ] || ( \
-		mkdir -p $*$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g') ; \
-		cd $*$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g') ; \
+	[ -e $*$(DIRNAME_SUFFIX)/Makefile ] || ( \
+		mkdir -p $*$(DIRNAME_SUFFIX) ; \
+		cd $*$(DIRNAME_SUFFIX) ; \
 		echo "OPTWARE_TARGET=$*" > Makefile ; \
 		echo "TARGET_PREFIX=$(TARGET_PREFIX)" >> Makefile ; \
 		echo "include ../Makefile" >> Makefile ; \
@@ -790,8 +780,7 @@ else
 		ln -s ../scripts scripts ; \
 		ln -s ../sources sources ; \
 	)
-	touch $*$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g')/.configured
-endif
+	touch $*$(DIRNAME_SUFFIX)/.configured
 
 
 make/%.mk:
