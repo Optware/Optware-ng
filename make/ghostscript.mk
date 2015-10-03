@@ -176,7 +176,7 @@ $(GHOSTSCRIPT_BUILD_DIR)/.built: $(GHOSTSCRIPT_BUILD_DIR)/.configured
 	$(MAKE) -C $(@D) obj/arch.h \
 		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genarch
 	[ -e $(GHOSTSCRIPT_SOURCE_DIR)/arch-$(TARGET_ARCH).h ] && \
-	cp $(GHOSTSCRIPT_SOURCE_DIR)/arch-$(TARGET_ARCH).h $(@D)/obj/arch.h || \
+	$(INSTALL) -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/arch-$(TARGET_ARCH).h $(@D)/obj/arch.h || \
 	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
 	then sed -e '/ARCH_IS_BIG_ENDIAN/s/[01]/1/' $(GHOSTSCRIPT_SOURCE_DIR)/arch-unknown.h \
 		> $(@D)/obj/arch.h; \

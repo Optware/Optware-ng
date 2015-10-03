@@ -413,10 +413,10 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/$$d/*; \
 	done
 # Copy the configuration file
-	cp $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
-	cp $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
-	cp $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
-	cp $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
 # Copy the init.d startup file
 	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/S88cups $(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
 # Copy lpd startup files

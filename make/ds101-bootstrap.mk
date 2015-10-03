@@ -51,7 +51,7 @@ else
 	cp $(TARGET_LIBDIR)/libgcc_s.so.1 $(DS101_BOOTSTRAP_BUILD_DIR)/
 endif
 	cp $(TARGET_LIBDIR)/../sbin/ldconfig $(DS101_BOOTSTRAP_BUILD_DIR)/
-	cp $(IPKG-OPT_SOURCE_DIR)/rc.optware $(DS101_BOOTSTRAP_BUILD_DIR)/
+	$(INSTALL) -m 644 $(IPKG-OPT_SOURCE_DIR)/rc.optware $(DS101_BOOTSTRAP_BUILD_DIR)/
 	touch $@
 
 ds101-bootstrap: $(DS101_BOOTSTRAP_BUILD_DIR)/.built
@@ -135,8 +135,8 @@ $(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) \
 	cp $(OPENSSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
 	cp $(WGET-SSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	# bootstrap scripts
-	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
-	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
+	$(INSTALL) -m 644 $(DS101_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
+	$(INSTALL) -m 644 $(DS101_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 
 	# If you should ever change the archive header (echo lines below), 
 	# make sure to recalculate dd's bs= argument, otherwise the self-

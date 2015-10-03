@@ -114,10 +114,10 @@ $(WPA_SUPPLICANT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WP
 	if test -n "$(WPA_SUPPLICANT_PATCHES)" ; \
 		then cat $(WPA_SUPPLICANT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) -p1 ; \
 	fi
-	cp $(WPA_SUPPLICANT_SOURCE_DIR)/defconfig $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/.config
-	cp $(WPA_SUPPLICANT_SOURCE_DIR)/typedefs.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/typedefs.h
-	cp $(WPA_SUPPLICANT_SOURCE_DIR)/wlioctl.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/wlioctl.h
-	cp -a $(WPA_SUPPLICANT_SOURCE_DIR)/proto $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)
+	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/defconfig $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/.config
+	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/typedefs.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/typedefs.h
+	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/wlioctl.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/wlioctl.h
+	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/proto/*.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)
 	mv $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(@D)
 	touch $@
 

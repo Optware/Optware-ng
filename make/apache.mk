@@ -174,7 +174,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		-e 's%[ \t]\{1,\}prefix: .*%    prefix: $(TARGET_PREFIX)%' \
 		-e "s% *htdocsdir: .*% htdocsdir: $(TARGET_PREFIX)/share/www%" \
 		$(@D)/config.layout
-	#cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(@D)/docs/conf
+	#$(INSTALL) -m 644 $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(@D)/docs/conf
 	autoreconf -vif $(@D)
 	sed -i -e '/if (TEST_CHAR(c, T_ESCAPE_URLENCODED)) {/s/^/#ifndef T_ESCAPE_URLENCODED\n#define T_ESCAPE_URLENCODED   (0x40)\n#endif\n/' $(@D)/server/util.c
 	(cd $(@D); \

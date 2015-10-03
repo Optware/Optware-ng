@@ -210,7 +210,7 @@ gtk-unpack: $(GTK_BUILD_DIR)/.configured
 #
 $(GTK_BUILD_DIR)/.built: $(GTK_BUILD_DIR)/.configured
 	rm -f $@
-	cp $(GTK_SOURCE_DIR)/test-inline-pixbufs.h $(@D)/demos
+	$(INSTALL) -m 644 $(GTK_SOURCE_DIR)/test-inline-pixbufs.h $(@D)/demos
 	$(MAKE) -C $(@D)
 	touch $@
 

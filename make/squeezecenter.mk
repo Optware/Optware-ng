@@ -67,11 +67,11 @@ $(SQUEEZECENTER_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEEZECENTER_SOURCE) $(SQUE
 	if test "$(BUILD_DIR)/$(SQUEEZECENTER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SQUEEZECENTER_DIR) $(@D) ; \
 	fi
-#	cp $(SQUEEZECENTER_SOURCE_DIR)/DBD-mysql-Makefile.PL $(@D)/
+#	$(INSTALL) -m 644 $(SQUEEZECENTER_SOURCE_DIR)/DBD-mysql-Makefile.PL $(@D)/
 #	sed -i  -e "s|^DBI_INSTARCH_DIR=.*|DBI_INSTARCH_DIR=$(@D)/temp/DBI-1.50/blib/arch/auto/DBI|" \
 		-e "s|^DBI_DRIVER_XST=.*|DBI_DRIVER_XST=$(@D)/temp/DBI-1.50/blib/arch/auto/DBI/Driver.xst|" \
 		$(@D)/DBD-mysql-Makefile.PL
-#	cp $(SQUEEZECENTER_SOURCE_DIR)/Time-HiRes-Makefile.PL $(@D)/
+#	$(INSTALL) -m 644 $(SQUEEZECENTER_SOURCE_DIR)/Time-HiRes-Makefile.PL $(@D)/
 #	sed -i -e "s|\$$Config{'ccflags'}|'$(STAGING_CPPFLAGS)'|" \
 		-e "s|\$$Config{'cc'}|$(TARGET_CC)|" \
 		$(@D)/Time-HiRes-Makefile.PL

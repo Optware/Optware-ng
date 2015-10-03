@@ -116,7 +116,7 @@ $(PURE-FTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PURE-FTPD_SOURCE) $(PURE-FTPD_PA
 		then mv $(BUILD_DIR)/$(PURE-FTPD_DIR) $(@D) ; \
 	fi
 ifeq ($(LIBC_STYLE), uclibc)
-	cp $(PURE-FTPD_SOURCE_DIR)/config-uclibc.cache $(@D)/config.cache
+	$(INSTALL) -m 644 $(PURE-FTPD_SOURCE_DIR)/config-uclibc.cache $(@D)/config.cache
 	sed -i -e '/^ac_cv_path/d;/^ac_cv_env/d;/^ac_cv_prog/d;' $(@D)/config.cache
 endif
 	autoreconf -vif $(@D)

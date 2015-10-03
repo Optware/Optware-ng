@@ -122,7 +122,7 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 
 	#need to update the configure script for 2.0.3
 	#wget http://www.appwebserver.org/software/configure $(BUILD_DIR)/$(APPWEB_DIR)/configure
-	cp $(APPWEB_SOURCE_DIR)/configure $(BUILD_DIR)/$(APPWEB_DIR)/
+	$(INSTALL) -m 644 $(APPWEB_SOURCE_DIR)/configure $(BUILD_DIR)/$(APPWEB_DIR)/
 
 	mv $(BUILD_DIR)/$(APPWEB_DIR) $(APPWEB_BUILD_DIR)
 	(cd $(APPWEB_BUILD_DIR); \

@@ -225,7 +225,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	if test "$(TOOL_BUILD_DIR)/$(BUILDROOT_DIR)" != "$(BUILDROOT_BUILD_DIR)" ; \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
 	fi
-	cp $(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE) $(BUILDROOT_BUILD_DIR)/.config
+	$(INSTALL) -m 644 $(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE) $(BUILDROOT_BUILD_DIR)/.config
 ifneq ($(OPTWARE_TARGET), ts101)
 	sed  -i -e 's|^# BR2_PACKAGE_GDB is not set|BR2_PACKAGE_GDB=yes|' $(BUILDROOT_BUILD_DIR)/.config
 #	change TARGET_ARCH in .config
@@ -259,13 +259,13 @@ ifneq ($(OPTWARE_TARGET), ts101)
 	sed -i.orig.0 -e 's|(TARGET_DIR)/lib|(TARGET_DIR)$(TARGET_PREFIX)/lib|g' $(BUILDROOT_TOOLS_MK)
 	sed -i.orig.1 -e 's|(TARGET_DIR)/usr|(TARGET_DIR)$(TARGET_PREFIX)|g' $(BUILDROOT_TOOLS_MK)
 	sed -i.orig.2 -e 's|=/usr|=$(TARGET_PREFIX)|g;s|=\\"/lib|=\\"$(TARGET_PREFIX)/lib|g;s|=\\"/usr|=\\"$(TARGET_PREFIX)|g' $(BUILDROOT_TOOLS_MK)
-	cp $(BUILDROOT_SOURCE_DIR)/400-ld-native-search-path.patch \
+	$(INSTALL) -m 644 $(BUILDROOT_SOURCE_DIR)/400-ld-native-search-path.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/
-	cp $(BUILDROOT_SOURCE_DIR)/410-bfd-elfxx-mips-opt.patch \
+	$(INSTALL) -m 644 $(BUILDROOT_SOURCE_DIR)/410-bfd-elfxx-mips-opt.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/
-	cp $(BUILDROOT_SOURCE_DIR)/410-bfd-elfxx-mips-opt.patch \
+	$(INSTALL) -m 644 $(BUILDROOT_SOURCE_DIR)/410-bfd-elfxx-mips-opt.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/gdb/6.5/
-	cp $(BUILDROOT_SOURCE_DIR)/900-gcc-$(BUILDROOT_GCC)-opt.patch \
+	$(INSTALL) -m 644 $(BUILDROOT_SOURCE_DIR)/900-gcc-$(BUILDROOT_GCC)-opt.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/
 else
 	sed -i.orig -e '/^GCC_SITE/s|=.*|=http://ftp.gnu.org/gnu/gcc/gcc-$$(GCC_VERSION)|' $(@D)/toolchain/gcc/gcc-uclibc-3.x.mk

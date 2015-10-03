@@ -76,9 +76,9 @@ $(DS101G-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(DS101G-KERNEL-MODULE
 		then mv $(BUILD_DIR)/$(DS101G-KERNEL-MODULES_DIR) $(DS101G-KERNEL-MODULES_BUILD_DIR) ; \
 	fi
 	(cd $(DS101G-KERNEL-MODULES_BUILD_DIR); \
-	  cp  $(DS101G-KERNEL-MODULES_SOURCE_DIR)/Makefile.powerpc .; \
+	  $(INSTALL) -m 644  $(DS101G-KERNEL-MODULES_SOURCE_DIR)/Makefile.powerpc .; \
 	  sed -e 's|@TARGET_CROSS@|$(TARGET_CROSS)|' Makefile.powerpc >Makefile; \
-	  cp  $(DS101G-KERNEL-MODULES_SOURCE_DIR)/powerpc-config .config; \
+	  $(INSTALL) -m 644  $(DS101G-KERNEL-MODULES_SOURCE_DIR)/powerpc-config .config; \
 	  $(MAKE) oldconfig; $(MAKE) dep \
 	)
 	touch $(DS101G-KERNEL-MODULES_BUILD_DIR)/.configured

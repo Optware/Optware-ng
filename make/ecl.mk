@@ -142,9 +142,9 @@ $(ECL_BUILD_DIR)/.configured: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES) $(ECL_HOST_
 		then mv $(BUILD_DIR)/$(ECL_DIR) $(ECL_BUILD_DIR) ; \
 	fi
 ifeq ($(OPTWARE_TARGET),nslu2)
-	cp $(ECL_SOURCE_DIR)/cross_config_$(OPTWARE_TARGET) $(ECL_BUILD_DIR)/cross_config
+	$(INSTALL) -m 644 $(ECL_SOURCE_DIR)/cross_config_$(OPTWARE_TARGET) $(ECL_BUILD_DIR)/cross_config
 else
-	cp $(ECL_SOURCE_DIR)/cross_config $(ECL_BUILD_DIR)/
+	$(INSTALL) -m 644 $(ECL_SOURCE_DIR)/cross_config $(ECL_BUILD_DIR)/
 endif
 	echo ECL_TO_RUN=$(ECL_HOST_BUILD_DIR)/install/bin/ecl >> $(ECL_BUILD_DIR)/cross_config
 	(cd $(@D); \

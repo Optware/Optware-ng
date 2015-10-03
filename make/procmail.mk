@@ -108,7 +108,7 @@ $(PROCMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PROCMAIL_SOURCE) $(PROCMAIL_PATCH
 	cat $(PROCMAIL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PROCMAIL_DIR) -p1
 	mv $(BUILD_DIR)/$(PROCMAIL_DIR) $(PROCMAIL_BUILD_DIR)
 	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/getline/&_local/g' {} \;
-	cp $(PROCMAIL_SOURCE_DIR)/autoconf.h $(PROCMAIL_BUILD_DIR)
+	$(INSTALL) -m 644 $(PROCMAIL_SOURCE_DIR)/autoconf.h $(PROCMAIL_BUILD_DIR)
 	touch $(PROCMAIL_BUILD_DIR)/.configured
 
 procmail-unpack: $(PROCMAIL_BUILD_DIR)/.configured

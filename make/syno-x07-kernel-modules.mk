@@ -81,7 +81,7 @@ $(KERNEL-MODULES_SOURCE_DIR)/defconfig make/syno-x07-kernel-modules.mk
 		then mv $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(KERNEL-MODULES_BUILD_DIR) ; \
 	fi
 #	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) clean
-	cp $(KERNEL-MODULES_SOURCE_DIR)/defconfig $(@D)/.config
+	$(INSTALL) -m 644 $(KERNEL-MODULES_SOURCE_DIR)/defconfig $(@D)/.config
 	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) $(KERNEL-MODULES_CONFIG_METHOD)
 	touch $@
 

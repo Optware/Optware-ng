@@ -130,7 +130,7 @@ $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) make/zsh.mk
 		--disable-static \
 	)
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cp $(ZSH_SOURCE_DIR)/native-config.h $(@D)
+	$(INSTALL) -m 644 $(ZSH_SOURCE_DIR)/native-config.h $(@D)
 endif
 #	$(PATCH_LIBTOOL) $(ZSH_BUILD_DIR)/libtool
 	touch $@

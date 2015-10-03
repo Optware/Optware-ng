@@ -88,9 +88,9 @@ $(CROSSTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PA
 	$(CROSSTOOL_UNZIP) $(DL_DIR)/$(CROSSTOOL_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
 #	cat $(CROSSTOOL_PATCHES) | $(PATCH) -d $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) -p1
 	mv $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) $(@D)
-	cp $(CROSSTOOL_SOURCE_DIR)/$(CROSSTOOL_SCRIPT) $(@D)/$(CROSSTOOL_SCRIPT)
-	cp $(CROSSTOOL_SOURCE_DIR)/*.dat $(@D)
-	cp $(CROSSTOOL_SOURCE_DIR)/powerpc-603e.config $(@D)
+	$(INSTALL) -m 644 $(CROSSTOOL_SOURCE_DIR)/$(CROSSTOOL_SCRIPT) $(@D)/$(CROSSTOOL_SCRIPT)
+	$(INSTALL) -m 644 $(CROSSTOOL_SOURCE_DIR)/*.dat $(@D)
+	$(INSTALL) -m 644 $(CROSSTOOL_SOURCE_DIR)/powerpc-603e.config $(@D)
 	mkdir -p $(@D)/patches/$(CROSS_CONFIGURATION_GCC)
 	# gcc 4.1.1 patch: https://trac.nslu2-linux.org/optware/ticket/1
 	sed -i -e 's/|4\.[^\*]*\*/|4.[0-9]\*/' \

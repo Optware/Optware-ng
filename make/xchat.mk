@@ -150,7 +150,7 @@ xchat-unpack: $(XCHAT_BUILD_DIR)/.configured
 #
 $(XCHAT_BUILD_DIR)/.built: $(XCHAT_BUILD_DIR)/.configured
 	rm -f $@
-	cp $(XCHAT_SOURCE_DIR)/inline_pngs.h $(XCHAT_BUILD_DIR)/src/pixmaps
+	$(INSTALL) -m 644 $(XCHAT_SOURCE_DIR)/inline_pngs.h $(XCHAT_BUILD_DIR)/src/pixmaps
 	$(MAKE) -C $(XCHAT_BUILD_DIR)
 	touch $@
 

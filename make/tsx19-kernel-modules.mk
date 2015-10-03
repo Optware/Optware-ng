@@ -88,7 +88,7 @@ $(TSX19_KERNEL_SOURCE_DIR)/defconfig make/tsx19-kernel-modules.mk
 	if test "$(BUILD_DIR)/$(KERNEL-MODULES_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(@D) ; \
 	fi
-	cp $(TSX19_KERNEL_SOURCE_DIR)/defconfig $(@D)/.config
+	$(INSTALL) -m 644 $(TSX19_KERNEL_SOURCE_DIR)/defconfig $(@D)/.config
 	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) $(KERNEL-MODULES_CONFIG_METHOD)
 	touch $@
 

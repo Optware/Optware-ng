@@ -108,7 +108,7 @@ $(ADDUSER_BUILD_DIR)/.configured: $(ADDUSER_SOURCE_DIR)/defconfig make/adduser.m
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ADDUSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1
 	mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
-	cp $(ADDUSER_SOURCE_DIR)/defconfig $(ADDUSER_BUILD_DIR)/.config
+	$(INSTALL) -m 644 $(ADDUSER_SOURCE_DIR)/defconfig $(ADDUSER_BUILD_DIR)/.config
 ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
 ifneq ($(OPTWARE_TARGET), $(filter fsg3v4 syno-x07, $(OPTWARE_TARGET)))
 # default off, turn on if linux 2.6

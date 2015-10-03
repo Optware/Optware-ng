@@ -103,9 +103,9 @@ $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 		then mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D) ; \
 	fi
 	if test -f $(BUSYBOX_SOURCE_DIR)/defconfig.$(OPTWARE_TARGET); then \
-		cp $(BUSYBOX_SOURCE_DIR)/defconfig.$(OPTWARE_TARGET) $(@D)/.config; \
+		$(INSTALL) -m 644 $(BUSYBOX_SOURCE_DIR)/defconfig.$(OPTWARE_TARGET) $(@D)/.config; \
 	else \
-		cp $(BUSYBOX_SOURCE_DIR)/defconfig $(@D)/.config; \
+		$(INSTALL) -m 644 $(BUSYBOX_SOURCE_DIR)/defconfig $(@D)/.config; \
 	fi
 ifeq ($(LIBC_STYLE),uclibc)
 # default on, turn off if uclibc

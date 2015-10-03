@@ -201,7 +201,7 @@ gtk2-unpack: $(GTK2_BUILD_DIR)/.configured
 #
 $(GTK2_BUILD_DIR)/.built: $(GTK2_BUILD_DIR)/.configured
 	rm -f $@
-	cp $(GTK2_SOURCE_DIR)/test-inline-pixbufs.h $(@D)/demos
+	$(INSTALL) -m 644 $(GTK2_SOURCE_DIR)/test-inline-pixbufs.h $(@D)/demos
 	$(MAKE) -C $(@D)
 	touch $@
 

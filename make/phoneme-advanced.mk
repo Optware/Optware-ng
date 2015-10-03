@@ -157,10 +157,10 @@ ifneq (, $(filter cs08q1armel slugosbe slugosle slugos5be slugos5le, $(OPTWARE_T
 	tar -C $(PHONEME_ADVANCED_BUILD_DIR)/cdc/src/linux-arm -xvzf $(PHONEME_ADVANCED_SOURCE_DIR)/missing-asm-ucontext-h.tar.gz
 endif
 	( [ -e $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(OPTWARE_TARGET) ] && \
-	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(OPTWARE_TARGET) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile ) || \
+	$(INSTALL) -m 644 $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(OPTWARE_TARGET) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile ) || \
 	( [ -e $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) ] && \
-	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile ) || \
-	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile $(PHONEME_ADVANCED_CDC_BUILD_DIR)
+	$(INSTALL) -m 644 $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile ) || \
+	$(INSTALL) -m 644 $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile $(PHONEME_ADVANCED_CDC_BUILD_DIR)
 ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-armeabi-ng buildroot-armeabihf buildroot-mipsel, $(OPTWARE_TARGET)))
 	sed -i -e 's|<asm/ucontext\.h>|<asm-generic/ucontext.h>|' $(@D)/cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c
 endif

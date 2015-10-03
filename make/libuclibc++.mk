@@ -148,7 +148,7 @@ $(LIBUCLIBC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(LIBUCLIB
 	if test "$(BUILD_DIR)/$(LIBUCLIBC++_DIR)" != "$(LIBUCLIBC++_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBUCLIBC++_DIR) $(LIBUCLIBC++_BUILD_DIR) ; \
 	fi
-	cp $(LIBUCLIBC++_SOURCE_DIR)/.config $(LIBUCLIBC++_BUILD_DIR)
+	$(INSTALL) -m 644 $(LIBUCLIBC++_SOURCE_DIR)/.config $(LIBUCLIBC++_BUILD_DIR)
 ifneq ($(OPTWARE_TARGET),wl500g)
 	sed -i -e 's|mipsel-uclibc|$(TARGET_ARCH)-$(TARGET_OS)|g' \
 		$(LIBUCLIBC++_BUILD_DIR)/bin/Makefile

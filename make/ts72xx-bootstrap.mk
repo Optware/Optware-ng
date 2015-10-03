@@ -38,7 +38,7 @@ $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.configured
 	find $(TS72XX_BOOTSTRAP_BUILD_DIR)/ -type l |xargs rm
 	rm $(TS72XX_BOOTSTRAP_BUILD_DIR)/libc.so
 	cp $(TARGET_LIBDIR)/../sbin/ldconfig $(TS72XX_BOOTSTRAP_BUILD_DIR)/
-	cp $(IPKG-OPT_SOURCE_DIR)/rc.optware $(TS72XX_BOOTSTRAP_BUILD_DIR)/
+	$(INSTALL) -m 644 $(IPKG-OPT_SOURCE_DIR)/rc.optware $(TS72XX_BOOTSTRAP_BUILD_DIR)/
 	touch $@
 
 ts72xx-bootstrap: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
@@ -109,8 +109,8 @@ $(TS72XX_BOOTSTRAP_XSH): $(TS72XX_BOOTSTRAP_IPK) \
 	cp $(OPENSSL_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
 	cp $(WGET-SSL_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	# bootstrap scripts
-	cp $(TS72XX_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
-	cp $(TS72XX_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
+	$(INSTALL) -m 644 $(TS72XX_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
+	$(INSTALL) -m 644 $(TS72XX_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
 
 	# If you should ever change the archive header (echo lines below), 
 	# make sure to recalculate dd's bs= argument, otherwise the self-

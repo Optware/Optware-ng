@@ -158,7 +158,7 @@ $(CDRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCH
 	    -e '/^__gmake_warn:=/s!$$(shell .*)$$!!' \
 	    $(@D)/RULES/mk-*.id
 	sed -i \
-	    -e 's|$$(PTARGETC) > |cp $(CDRTOOLS_SOURCE_DIR)/`basename $$@` |' \
+	    -e 's|$$(PTARGETC) > |$(INSTALL) -m 644 $(CDRTOOLS_SOURCE_DIR)/`basename $$@` |' \
 	    $(@D)/RULES/rules.inc
 	sed -i \
 	    -e 's|; gcc|; $(TARGET_CC)|' \
@@ -168,10 +168,10 @@ $(CDRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCH
 	mkdir -p $(@D)/incs/arch-linux-gcc/
 ifneq ($(HOSTCC), $(TARGET_CC))
 	[ -e "$(CDRTOOLS_SOURCE_DIR)/optware-$(OPTWARE_TARGET)-config.cache" ] && \
-		cp $(CDRTOOLS_SOURCE_DIR)/optware-$(OPTWARE_TARGET)-config.cache \
+		$(INSTALL) -m 644 $(CDRTOOLS_SOURCE_DIR)/optware-$(OPTWARE_TARGET)-config.cache \
 			$(@D)/incs/arch-linux-gcc/config.cache || \
 	[ -e "$(CDRTOOLS_SOURCE_DIR)/$(TARGET_ARCH)-config.cache" ] && \
-		cp $(CDRTOOLS_SOURCE_DIR)/$(TARGET_ARCH)-config.cache \
+		$(INSTALL) -m 644 $(CDRTOOLS_SOURCE_DIR)/$(TARGET_ARCH)-config.cache \
 			$(@D)/incs/arch-linux-gcc/config.cache || \
 	true
 endif

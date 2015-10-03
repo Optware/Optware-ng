@@ -128,7 +128,7 @@ $(OSSP_JS_BUILD_DIR)/.configured: $(DL_DIR)/$(OSSP_JS_SOURCE) $(OSSP_JS_PATCHES)
 		--disable-static \
 	)
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cp $(OSSP_JS_SOURCE_DIR)/prtypes.h $(OSSP_JS_BUILD_DIR)/
+	$(INSTALL) -m 644 $(OSSP_JS_SOURCE_DIR)/prtypes.h $(OSSP_JS_BUILD_DIR)/
 endif
 	$(PATCH_LIBTOOL) $(OSSP_JS_BUILD_DIR)/libtool
 	touch $@

@@ -194,7 +194,7 @@ endif
 	)
 ifneq ($(HOSTCC), $(TARGET_CC))
 	if test -r "$(SWI-PROLOG_SOURCE_DIR)/config.h-$(OPTWARE_TARGET)" ; then \
-		cp "$(SWI-PROLOG_SOURCE_DIR)/config.h-$(OPTWARE_TARGET)" $(@D)/src/config.h; \
+		$(INSTALL) -m 644 "$(SWI-PROLOG_SOURCE_DIR)/config.h-$(OPTWARE_TARGET)" $(@D)/src/config.h; \
 	fi
 	cp $(@D)/hostbuild/$(SWI-PROLOG_DIR)/src/pl.sh $(@D)/src
 	cp $(@D)/hostbuild/$(SWI-PROLOG_DIR)/packages/pl*.sh $(@D)/packages

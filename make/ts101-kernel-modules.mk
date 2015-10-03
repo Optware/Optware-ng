@@ -76,7 +76,7 @@ $(TS101-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(TS101-KERNEL-MODULES_
 		then mv $(BUILD_DIR)/$(TS101-KERNEL-MODULES_DIR) $(TS101-KERNEL-MODULES_BUILD_DIR) ; \
 	fi
 	(cd $(TS101-KERNEL-MODULES_BUILD_DIR); \
-	  cp  $(TS101-KERNEL-MODULES_SOURCE_DIR)/kernel.defconfig .config; \
+	  $(INSTALL) -m 644  $(TS101-KERNEL-MODULES_SOURCE_DIR)/kernel.defconfig .config; \
 	  ARCH=ppc $(MAKE) oldconfig \
 	)
 	touch $(TS101-KERNEL-MODULES_BUILD_DIR)/.configured

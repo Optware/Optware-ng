@@ -165,7 +165,7 @@ haserl-unpack: $(HASERL_BUILD_DIR)/.configured
 $(HASERL_BUILD_DIR)/.built: $(HASERL_BUILD_DIR)/.configured
 	rm -f $@
 	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; then \
-		cp $(HASERL_SOURCE_DIR)/haserl_lualib.inc.bigendian $(@D)/with-lua/src/haserl_lualib.inc; \
+		$(INSTALL) -m 644 $(HASERL_SOURCE_DIR)/haserl_lualib.inc.bigendian $(@D)/with-lua/src/haserl_lualib.inc; \
 	fi
 	$(MAKE) -C $(@D)/with-lua
 	$(MAKE) -C $(@D)/without-lua

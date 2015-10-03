@@ -113,7 +113,7 @@ $(NFS_SERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS_SERVER_SOURCE) $(NFS_SERVER
 	@if [ -a /usr/bin/hdiutil ]; \
 	then \
 	rm $(NFS_SERVER_BUILD_DIR)/config.h; \
-	cp $(NFS_SERVER_SOURCE_DIR)/nfs-server-darwin.config $(NFS_SERVER_BUILD_DIR)/config.h; \
+	$(INSTALL) -m 644 $(NFS_SERVER_SOURCE_DIR)/nfs-server-darwin.config $(NFS_SERVER_BUILD_DIR)/config.h; \
 	fi;
 	touch $(NFS_SERVER_BUILD_DIR)/.configured
 

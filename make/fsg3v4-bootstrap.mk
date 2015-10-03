@@ -92,7 +92,7 @@ $(FSG3V4_BOOTSTRAP_XSH): $(FSG3V4_BOOTSTRAP_IPK) $(BUILD_DIR)/diffutils/.ipk
 	# Additional ipk's we require
 	cp $(DIFFUTILS_IPK) $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap/diffutils.ipk
 	# bootstrap script
-	cp $(FSG3V4_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap
+	$(INSTALL) -m 644 $(FSG3V4_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap
 
 	# If you should ever change the archive header (echo lines below), 
 	# make sure to recalculate dd's bs= argument, otherwise the self-

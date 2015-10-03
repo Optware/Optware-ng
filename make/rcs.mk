@@ -118,9 +118,9 @@ $(RCS_BUILD_DIR)/.configured: $(DL_DIR)/$(RCS_SOURCE) $(RCS_PATCHES)
 	)
 ifneq ($(HOSTCC),$(TARGET_CC))
 ifeq ($(OPTWARE_TARGET),wl500g)
-	cp $(RCS_SOURCE_DIR)/wiley-src-conf.h $(RCS_BUILD_DIR)/src/conf.h
+	$(INSTALL) -m 644 $(RCS_SOURCE_DIR)/wiley-src-conf.h $(RCS_BUILD_DIR)/src/conf.h
 else
-	cp $(RCS_SOURCE_DIR)/slug-src-conf.h $(RCS_BUILD_DIR)/src/conf.h
+	$(INSTALL) -m 644 $(RCS_SOURCE_DIR)/slug-src-conf.h $(RCS_BUILD_DIR)/src/conf.h
 endif
 endif
 	touch $(RCS_BUILD_DIR)/.configured

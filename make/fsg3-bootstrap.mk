@@ -92,8 +92,8 @@ $(FSG3_BOOTSTRAP_XSH): $(FSG3_BOOTSTRAP_IPK) \
 	cp $(OPENSSL_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
 	cp $(WGET-SSL_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	# bootstrap scripts
-	cp $(FSG3_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
-	cp $(FSG3_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
+	$(INSTALL) -m 644 $(FSG3_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
+	$(INSTALL) -m 644 $(FSG3_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
 
 	# If you should ever change the archive header (echo lines below), 
 	# make sure to recalculate dd's bs= argument, otherwise the self-

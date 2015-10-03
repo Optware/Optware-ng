@@ -137,7 +137,7 @@ $(XMAIL_BUILD_DIR)/.built: $(XMAIL_BUILD_DIR)/.configured
 ifneq ($(HOSTCC), $(TARGET_CC))
 	$(MAKE) -C $(@D) -f Makefile.lnx CC=g++ LDFLAGS="" \
 		bin bin/MkMachDep SysMachine.h
-	cp $(XMAIL_SOURCE_DIR)/SysMachine.h $(@D)/
+	$(INSTALL) -m 644 $(XMAIL_SOURCE_DIR)/SysMachine.h $(@D)/
 	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
 	then sed -i -e 's/.*MACH_BIG_ENDIAN/#define MACH_BIG_ENDIAN/' $(@D)/SysMachine.h; \
 	else sed -i -e 's/.*MACH_BIG_ENDIAN/#undef MACH_BIG_ENDIAN/' $(@D)/SysMachine.h; \

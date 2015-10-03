@@ -143,7 +143,7 @@ $(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES) make/sqs
 		--with-readline \
 		--without-x \
 	)
-#	cp $(SQSH_SOURCE_DIR)/config.h $(@D)/src
+#	$(INSTALL) -m 644 $(SQSH_SOURCE_DIR)/config.h $(@D)/src
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 

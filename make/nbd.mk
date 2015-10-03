@@ -120,7 +120,7 @@ $(NBD_BUILD_DIR)/.configured: $(DL_DIR)/$(NBD_SOURCE) $(NBD_PATCHES) make/nbd.mk
 		then mv $(BUILD_DIR)/$(NBD_DIR) $(NBD_BUILD_DIR) ; \
 	fi
 	(cd $(NBD_BUILD_DIR); \
-		cp $(NBD_SOURCE_DIR)/linux-2.6.18-nbd.h nbd.h; \
+		$(INSTALL) -m 644 $(NBD_SOURCE_DIR)/linux-2.6.18-nbd.h nbd.h; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NBD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NBD_LDFLAGS)" \

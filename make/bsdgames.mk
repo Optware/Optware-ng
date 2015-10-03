@@ -126,7 +126,7 @@ $(BSDGAMES_BUILD_DIR)/.configured: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCH
 	fi
 	sed -i -e 's|strfile -rs|strfile.host -rs|g' \
 		$(@D)/fortune/datfiles/Makefrag
-	sed -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $(BSDGAMES_SOURCE_DIR)/config.params > $(@D)/config.params
+	$(INSTALL) -m 644 $(BSDGAMES_SOURCE_DIR)/config.params $(@D)/config.params
 ifeq (uclibc, $(LIBC_STYLE))
 	sed -i -e "/bsd_games_cfg_no_build_dirs/s/='/='dm /" $(@D)/config.params
 endif

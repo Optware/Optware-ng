@@ -150,9 +150,9 @@ $(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PA
 	autoreconf -I. -vif $(@D)/glib
 	autoreconf -I. -vif $(@D)
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cp $(PKGCONFIG_SOURCE_DIR)/pkgconfig.cache $(PKGCONFIG_BUILD_DIR)/crossconfig.cache
+	$(INSTALL) -m 644 $(PKGCONFIG_SOURCE_DIR)/pkgconfig.cache $(PKGCONFIG_BUILD_DIR)/crossconfig.cache
 endif
-	cp $(PKGCONFIG_SOURCE_DIR)/glibconfig-sysdefs.h $(PKGCONFIG_BUILD_DIR)/glib
+	$(INSTALL) -m 644 $(PKGCONFIG_SOURCE_DIR)/glibconfig-sysdefs.h $(PKGCONFIG_BUILD_DIR)/glib
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS=`echo $(STAGING_CPPFLAGS) $(PKGCONFIG_CPPFLAGS)` \

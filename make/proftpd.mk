@@ -149,7 +149,7 @@ $(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
 #	zcat $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) | tar -C $(@D) -xvf -
 #	cp $(@D)/mod_shaper/* $(@D)/contrib/
 	# Copy required config.cache file
-	cp $(PROFTPD_SOURCE_DIR)/config.cache $(@D)/config.cache
+	$(INSTALL) -m 644 $(PROFTPD_SOURCE_DIR)/config.cache $(@D)/config.cache
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PROFTPD_CPPFLAGS)" \

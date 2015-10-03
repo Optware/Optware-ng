@@ -155,7 +155,7 @@ $(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built $(INFERNO_PAT
 	if test "$(BUILD_DIR)/$(INFERNO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(INFERNO_DIR) $(@D) ; \
 	fi
-	cp -p $(INFERNO_SOURCE_DIR)/audio-oss.c $(@D)/emu/Linux/
+	$(INSTALL) -m 644 $(INFERNO_SOURCE_DIR)/audio-oss.c $(@D)/emu/Linux/
 ifeq (uclibc, $(LIBC_STYLE))
 	sed -i -e "/#include <fenv\.h>/s|^|//|" $(@D)/Linux/$(INFERNO_ARCH)/include/fpuctl.h
 endif

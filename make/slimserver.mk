@@ -135,11 +135,11 @@ $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) make/slimser
 	if test "$(BUILD_DIR)/$(SLIMSERVER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SLIMSERVER_DIR) $(@D) ; \
 	fi
-	cp $(SLIMSERVER_SOURCE_DIR)/DBD-mysql-Makefile.PL $(@D)/
+	$(INSTALL) -m 644 $(SLIMSERVER_SOURCE_DIR)/DBD-mysql-Makefile.PL $(@D)/
 	sed -i  -e "s|^DBI_INSTARCH_DIR=.*|DBI_INSTARCH_DIR=$(@D)/temp/$(PERL-DBI_DIR)/blib/arch/auto/DBI|" \
 		-e "s|^DBI_DRIVER_XST=.*|DBI_DRIVER_XST=$(@D)/temp/$(PERL-DBI_DIR)/blib/arch/auto/DBI/Driver.xst|" \
 		$(@D)/DBD-mysql-Makefile.PL
-	cp $(SLIMSERVER_SOURCE_DIR)/Time-HiRes-Makefile.PL $(@D)/
+	$(INSTALL) -m 644 $(SLIMSERVER_SOURCE_DIR)/Time-HiRes-Makefile.PL $(@D)/
 	sed -i -e "s|\$$Config{'ccflags'}|'$(STAGING_CPPFLAGS)'|" \
 		-e "s|\$$Config{'cc'}|$(TARGET_CC)|" \
 		$(@D)/Time-HiRes-Makefile.PL

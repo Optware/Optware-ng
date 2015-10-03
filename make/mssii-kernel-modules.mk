@@ -100,7 +100,7 @@ KERNEL-MODULES-FLAGS = ARCH=arm EXTRAVERSION=.6-arm1 ROOTDIR=$(KERNEL_BUILD_DIR)
 $(KERNEL_BUILD_DIR)/.built: $(KERNEL_BUILD_DIR)/.configured
 	rm -f $@
 #	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) clean
-	cp  $(MSSII_GPL_SOURCE_DIR)/defconfig $(@D)/.config
+	$(INSTALL) -m 644  $(MSSII_GPL_SOURCE_DIR)/defconfig $(@D)/.config
 	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) oldconfig
 	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
 	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) uImage modules

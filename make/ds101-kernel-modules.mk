@@ -84,7 +84,7 @@ $(DS101-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(DS101-KERNEL-MODULES_
 	  mv Makefile.tmp Makefile; \
 	  cd ../../linux-2.4.x; \
 	  sed -e 's|CROSS_COMPILE =.*$$|CROSS_COMPILE=$(TARGET_CROSS)|' Makefile.ixpj >Makefile; \
-	  cp  $(DS101-KERNEL-MODULES_SOURCE_DIR)/armeb-config .config; \
+	  $(INSTALL) -m 644  $(DS101-KERNEL-MODULES_SOURCE_DIR)/armeb-config .config; \
 	  $(MAKE) oldconfig; $(MAKE) dep \
 	)
 	touch $(DS101-KERNEL-MODULES_BUILD_DIR)/.configured

@@ -145,7 +145,7 @@ $(ESPGS_BUILD_DIR)/.built: $(ESPGS_BUILD_DIR)/.configured
 	$(MAKE) -C $(@D) obj/arch.h \
 		GENARCH_XE=$(@D)/obj/genarch.build
 	cp $(@D)/obj/arch.h $(@D)/obj/arch.h.orig
-	cp $(ESPGS_SOURCE_DIR)/arch.h $(@D)/obj/arch.h
+	$(INSTALL) -m 644 $(ESPGS_SOURCE_DIR)/arch.h $(@D)/obj/arch.h
 	#
 	$(MAKE) -C $(@D) \
 		ECHOGS_XE=$(@D)/obj/echogs.build \
