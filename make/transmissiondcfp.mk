@@ -24,7 +24,7 @@
 #
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
-TRANSMISSIONDCFP_SITE=http://master.dl.sourceforge.net/project/transmissiondaemon/optware-ng-source
+TRANSMISSIONDCFP_SITE=http://$(SOURCEFORGE_MIRROR)/project/transmissiondaemon/optware-ng-source
 TRANSMISSIONDCFP_VERSION=2.77+
 TRANSMISSIONDCFP_ALT_VERSION=2.77plus
 TRANSMISSIONDCFP_ALT2_VERSION=2.77plus
