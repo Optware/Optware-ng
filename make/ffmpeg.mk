@@ -134,7 +134,7 @@ endif
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-ffmpeg-source: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES)
+ffmpeg-source: $(DL_DIR)/$(FFMPEG_SOURCE) $(DL_DIR)/$(FFMPEG_SOURCE_OLD) $(FFMPEG_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.

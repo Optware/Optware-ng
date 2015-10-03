@@ -104,7 +104,7 @@ endif
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-ordereddict-source: $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE) $(PY-ORDEREDDICT_PATCHES)
+py-ordereddict-source: $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE) $(DL_DIR)/$(PY-ORDEREDDICT_SOURCE_OLD) $(PY-ORDEREDDICT_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.

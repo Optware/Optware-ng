@@ -106,7 +106,7 @@ endif
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-django-source: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(PY-DJANGO_PATCHES)
+py-django-source: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(DL_DIR)/$(PY-DJANGO_SOURCE_OLD) $(PY-DJANGO_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.

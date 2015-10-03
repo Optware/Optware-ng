@@ -108,7 +108,7 @@ endif
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-curl-source: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
+py-curl-source: $(DL_DIR)/$(PY-CURL_SOURCE) $(DL_DIR)/$(PY-CURL_SOURCE_OLD) $(PY-CURL_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.

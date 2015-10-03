@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CONSTRAINT_SITE=http://labix.org/download/python-constraint
+PY-CONSTRAINT_SITE=ftp://ftp.gwdg.de/pub/linux/openmoko/developer/sources
 PY-CONSTRAINT_VERSION=1.1
 PY-CONSTRAINT_SOURCE=python-constraint-$(PY-CONSTRAINT_VERSION).tar.bz2
 PY-CONSTRAINT_DIR=python-constraint-$(PY-CONSTRAINT_VERSION)

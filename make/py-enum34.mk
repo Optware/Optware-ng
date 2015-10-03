@@ -108,7 +108,7 @@ endif
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-enum34-source: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(PY-ENUM34_PATCHES)
+py-enum34-source: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY-ENUM34_SOURCE_OLD) $(PY-ENUM34_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.

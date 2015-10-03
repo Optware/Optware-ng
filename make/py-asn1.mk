@@ -112,7 +112,7 @@ endif
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-asn1-source: $(DL_DIR)/$(PY-ASN1_SOURCE) $(PY-ASN1_PATCHES)
+py-asn1-source: $(DL_DIR)/$(PY-ASN1_SOURCE) $(DL_DIR)/$(PY-ASN1_SOURCE_OLD) $(PY-ASN1_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.

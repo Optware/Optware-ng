@@ -110,7 +110,7 @@ $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-setuptools-source: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES)
+py-setuptools-source: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) $(PY-SETUPTOOLS_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.

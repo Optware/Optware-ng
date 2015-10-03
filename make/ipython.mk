@@ -120,7 +120,7 @@ endif
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-ipython-source: $(DL_DIR)/$(IPYTHON_SOURCE) $(IPYTHON_PATCHES)
+ipython-source: $(DL_DIR)/$(IPYTHON_SOURCE) $(DL_DIR)/$(IPYTHON_SOURCE_OLD) $(IPYTHON_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
