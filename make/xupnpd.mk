@@ -141,7 +141,7 @@ $(XUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(XUPNPD_SOURCE) $(XUPNPD_PATCHES) \
 	fi
 	mv -f $(@D)/src/* $(@D)
 	sed -i -e 's|/usr/share|$(TARGET_PREFIX)/share|g' $(@D)/main.cpp
-	cp -f $(XUPNPD_SOURCE_DIR)/xupnpd_youtube.lua -f $(@D)/plugins
+	cp -f $(XUPNPD_SOURCE_DIR)/xupnpd_youtube.lua $(@D)/plugins
 	touch $@
 
 xupnpd-unpack: $(XUPNPD_BUILD_DIR)/.configured
