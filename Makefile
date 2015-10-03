@@ -557,7 +557,7 @@ testing:
 # Common tools which may need overriding
 CVS=cvs
 SUDO=sudo
-WGET=wget --passive-ftp
+WGET=wget --passive-ftp --tries=1 --no-check-certificate
 PERL=perl
 
 # Required host-tools, which will build if they missing

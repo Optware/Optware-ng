@@ -79,7 +79,7 @@ BTPD_IPK=$(BUILD_DIR)/btpd_$(BTPD_VERSION)-$(BTPD_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BTPD_SOURCE):
-	$(WGET) --no-check-certificate -P $(@D) $(BTPD_SITE)/$(@F) || \
+	$(WGET)  -P $(@D) $(BTPD_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #

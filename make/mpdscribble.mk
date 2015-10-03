@@ -76,7 +76,7 @@ MPDSCRIBBLE_IPK=$(BUILD_DIR)/mpdscribble_$(MPDSCRIBBLE_VERSION)-$(MPDSCRIBBLE_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MPDSCRIBBLE_SOURCE):
-	$(WGET) --no-check-certificate -P $(DL_DIR) $(MPDSCRIBBLE_SITE)/$(MPDSCRIBBLE_SOURCE) || \
+	$(WGET)  -P $(DL_DIR) $(MPDSCRIBBLE_SITE)/$(MPDSCRIBBLE_SOURCE) || \
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MPDSCRIBBLE_SOURCE)
 
 #

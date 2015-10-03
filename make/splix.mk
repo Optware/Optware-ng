@@ -77,7 +77,7 @@ SPLIX_IPK=$(BUILD_DIR)/splix_$(SPLIX_VERSION)-$(SPLIX_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SPLIX_SOURCE):
-	$(WGET) -P $(@D) --no-check-certificate $(SPLIX_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SPLIX_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #

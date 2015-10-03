@@ -80,7 +80,7 @@ LIBHID_IPK=$(BUILD_DIR)/libhid_$(LIBHID_VERSION)-$(LIBHID_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBHID_SOURCE):
-	$(WGET) --no-check-certificate -P $(@D) $(LIBHID_SITE)/$(@F) || \
+	$(WGET)  -P $(@D) $(LIBHID_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
