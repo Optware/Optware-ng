@@ -82,6 +82,16 @@ PHP_THTTPD_IPK=$(BUILD_DIR)/php-thttpd_$(PHP_THTTPD_VERSION)-$(PHP_THTTPD_LIBPHP
 PHP_THTTPD_LIBPHP_BUILD_DIR=$(PHP_THTTPD_BUILD_DIR)/_libphp
 
 #
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+ifneq ($(PHP_THTTPD_VERSION), $(THTTPD_VERSION))
+$(DL_DIR)/$(PHP_THTTPD_SOURCE):
+	$(WGET) -P $(@D) $(PHP_THTTPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
+
+#
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)

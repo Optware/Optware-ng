@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ICU54_SITE=http://download.icu54-project.org/files/icu4c/54.1/
+ICU54_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/icu
 ICU54_VERSION=54.1
 ICU54_SOURCE=icu4c-54_1-src.tgz
 ICU54_DIR=icu54

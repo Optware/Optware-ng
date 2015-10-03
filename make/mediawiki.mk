@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MEDIAWIKI_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wikipedia
+MEDIAWIKI_SITE=$(SOURCES_NLO_SITE)
 MEDIAWIKI_VERSION=1.4.0
 MEDIAWIKI_SOURCE=mediawiki-$(MEDIAWIKI_VERSION).tar.gz
 MEDIAWIKI_DIR=mediawiki-$(MEDIAWIKI_VERSION)
@@ -101,7 +101,7 @@ mediawiki-source: $(DL_DIR)/$(MEDIAWIKI_SOURCE) $(MEDIAWIKI_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MEDIAWIKI_BUILD_DIR)/.configured: $(DL_DIR)/$(MEDIAWIKI_SOURCE) $(MEDIAWIKI_PATCHES)
+$(MEDIAWIKI_BUILD_DIR)/.configured: $(DL_DIR)/$(MEDIAWIKI_SOURCE) $(MEDIAWIKI_PATCHES) make/mediawiki.mk
 	rm -rf $(BUILD_DIR)/$(MEDIAWIKI_DIR) $(MEDIAWIKI_BUILD_DIR)
 	$(MEDIAWIKI_UNZIP) $(DL_DIR)/$(MEDIAWIKI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(MEDIAWIKI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MEDIAWIKI_DIR) -p1

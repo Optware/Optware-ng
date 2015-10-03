@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-LYNX_SITE=http://lynx.isc.org/lynx$(LYNX_VERSION)
+LYNX_SITE=http://invisible-mirror.net/archives/lynx/tarballs
 LYNX_VERSION=2.8.6
 LYNX_SOURCE=lynx$(LYNX_VERSION).tar.bz2
 LYNX_DIR=lynx2-8-6
@@ -34,11 +34,12 @@ LYNX_IPK=$(BUILD_DIR)/lynx_$(LYNX_VERSION)-$(LYNX_IPK_VERSION)_$(TARGET_ARCH).ip
 LYNX_PATCHES=$(LYNX_SOURCE_DIR)/LYCurses.h.patch
 
 $(DL_DIR)/$(LYNX_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LYNX_SITE)/$(LYNX_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LYNX_SITE)/$(LYNX_SOURCE) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 lynx-source: $(DL_DIR)/$(LYNX_SOURCE) $(LYNX_PATCHES)
 
-$(LYNX_BUILD_DIR)/.configured: $(DL_DIR)/$(LYNX_SOURCE) $(LYNX_PATCHES)
+$(LYNX_BUILD_DIR)/.configured: $(DL_DIR)/$(LYNX_SOURCE) $(LYNX_PATCHES) make/lynx.mk
 	$(MAKE) ncurses-stage openssl-stage bzip2-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(LYNX_DIR) $(LYNX_BUILD_DIR)
 	$(LYNX_UNZIP) $(DL_DIR)/$(LYNX_SOURCE) | tar -C $(BUILD_DIR) -xvf -

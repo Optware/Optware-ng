@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBESMTP_SITE=http://www.stafford.uklinux.net/libesmtp
+LIBESMTP_SITE=http://pkgs.fedoraproject.org/repo/pkgs/libesmtp/$(LIBESMTP_SOURCE)/bf3915e627fd8f35524a8fdfeed979c8
 LIBESMTP_VERSION=1.0.6
 LIBESMTP_SOURCE=libesmtp-$(LIBESMTP_VERSION).tar.bz2
 LIBESMTP_DIR=libesmtp-$(LIBESMTP_VERSION)

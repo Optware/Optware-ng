@@ -11,6 +11,8 @@
 #
 
 NEWT_REPOSITORY=:pserver:anonymous@elvis.redhat.com:/usr/local/CVS
+NEWT_SITE=$(SOURCES_NLO_SITE)
+NEWT_VERSION=0.52.7
 NEWT_DIR=newt-$(NEWT_VERSION)
 NEWT_SOURCE=newt-$(NEWT_VERSION).tar.gz
 NEWT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -43,9 +45,9 @@ NEWT_CONFLICTS=
 # NEWT_CVS_TAG and NEWT_CVS_VERSION
 #
 
-NEWT_CVS_TAG=r0-52-7
-NEWT_VERSION=0.52.7
-NEWT_CVS_OPTS=-r $(NEWT_CVS_TAG)
+#NEWT_CVS_TAG=r0-52-7
+#NEWT_VERSION=0.52.7
+#NEWT_CVS_OPTS=-r $(NEWT_CVS_TAG)
 
 #
 # NEWT_IPK_VERSION should be incremented when the ipk changes.
@@ -92,13 +94,20 @@ NEWT_IPK=$(BUILD_DIR)/newt_$(NEWT_VERSION)-$(NEWT_IPK_VERSION)_$(TARGET_ARCH).ip
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
+#$(DL_DIR)/$(NEWT_SOURCE):
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(NEWT_DIR) && \
+#		cvs -d $(NEWT_REPOSITORY) -z3 co $(NEWT_CVS_OPTS) -d $(NEWT_DIR) newt && \
+#		tar -czf $@ $(NEWT_DIR) && \
+#		rm -rf $(NEWT_DIR) \
+#	)
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
 $(DL_DIR)/$(NEWT_SOURCE):
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(NEWT_DIR) && \
-		cvs -d $(NEWT_REPOSITORY) -z3 co $(NEWT_CVS_OPTS) -d $(NEWT_DIR) newt && \
-		tar -czf $@ $(NEWT_DIR) && \
-		rm -rf $(NEWT_DIR) \
-	)
+	$(WGET) -P $(@D) $(NEWT_SITE)/$(@F)
 
 newt-source: $(DL_DIR)/$(NEWT_SOURCE)
 
@@ -112,7 +121,7 @@ newt-source: $(DL_DIR)/$(NEWT_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
-$(NEWT_BUILD_DIR)/.configured: $(DL_DIR)/$(NEWT_SOURCE)
+$(NEWT_BUILD_DIR)/.configured: $(DL_DIR)/$(NEWT_SOURCE) make/newt.mk
 	$(MAKE) popt-stage
 	$(MAKE) python-stage
 	$(MAKE) slang-stage
@@ -184,7 +193,7 @@ $(NEWT_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(NEWT_SECTION)" >>$@
 	@echo "Version: $(NEWT_VERSION)-$(NEWT_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(NEWT_MAINTAINER)" >>$@
-	@echo "Source: $(NEWT_REPOSITORY)" >>$@
+	@echo "Source: $(SOURCES_NLO_SITE)/$(NEWT_SOURCE)" >>$@
 	@echo "Description: $(NEWT_DESCRIPTION)" >>$@
 	@echo "Depends: $(NEWT_DEPENDS)" >>$@
 	@echo "Suggests: $(NEWT_SUGGESTS)" >>$@

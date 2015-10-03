@@ -12,6 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
+LIBTORRENT_SITE_GITHUB=https://github.com/rakshasa/libtorrent/archive
 LIBTORRENT_VERSION?=0.12.6
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
 #LIBTORRENT_SVN_REV=1037
@@ -122,6 +123,7 @@ ifdef LIBTORRENT_SVN_REV
 		)
 else
 	$(WGET) -P $(@D) $(LIBTORRENT_SITE)/$(@F) || \
+	$(WGET) -O $@ $(LIBTORRENT_SITE_GITHUB)/$(LIBTORRENT_VERSION).tar.gz || (rm -f $@; exit 1) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
