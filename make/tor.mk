@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TOR_SITE=http://www.torproject.org/dist
-TOR_VERSION=0.2.3.25
+TOR_SITE=https://archive.torproject.org/tor-package-archive
+TOR_VERSION=0.2.7.3-rc
 TOR_SOURCE=tor-$(TOR_VERSION).tar.gz
 TOR_DIR=tor-$(TOR_VERSION)
 TOR_UNZIP=zcat
@@ -134,6 +134,7 @@ $(TOR_BUILD_DIR)/.configured: $(DL_DIR)/$(TOR_SOURCE) $(TOR_PATCHES) make/tor.mk
 		--disable-static \
 		--with-libevent-dir=$(STAGING_PREFIX) \
 		--with-openssl-dir=$(STAGING_PREFIX) \
+		--disable-tool-name-check \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
