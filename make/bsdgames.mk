@@ -114,26 +114,23 @@ bsdgames-source: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCHES)
 # shown below to make various patches to it.
 #
 $(BSDGAMES_BUILD_DIR)/.configured: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCHES) make/bsdgames.mk
-	$(MAKE) flex-stage
-	$(MAKE) ncurses-stage
-	$(MAKE) openssl-host-stage
-	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(BSDGAMES_DIR) $(BSDGAMES_BUILD_DIR)
+	$(MAKE) flex-stage ncurses-stage openssl-host-stage openssl-stage
+	rm -rf $(BUILD_DIR)/$(BSDGAMES_DIR) $(@D)
 	$(BSDGAMES_UNZIP) $(DL_DIR)/$(BSDGAMES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BSDGAMES_PATCHES)" ; \
 		then cat $(BSDGAMES_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(BSDGAMES_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(BSDGAMES_DIR)" != "$(BSDGAMES_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(BSDGAMES_DIR) $(BSDGAMES_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(BSDGAMES_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(BSDGAMES_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|strfile -rs|strfile.host -rs|g' \
-		$(BSDGAMES_BUILD_DIR)/fortune/datfiles/Makefrag
-	cp $(BSDGAMES_SOURCE_DIR)/config.params $(BSDGAMES_BUILD_DIR)/
+		$(@D)/fortune/datfiles/Makefrag
+	sed -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $(BSDGAMES_SOURCE_DIR)/config.params > $(@D)/config.params
 ifeq (uclibc, $(LIBC_STYLE))
-	sed -i -e "/bsd_games_cfg_no_build_dirs/s/='/='dm /" $(BSDGAMES_BUILD_DIR)/config.params
+	sed -i -e "/bsd_games_cfg_no_build_dirs/s/='/='dm /" $(@D)/config.params
 endif
-	(cd $(BSDGAMES_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BSDGAMES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BSDGAMES_LDFLAGS)" \
@@ -159,7 +156,7 @@ $(BSDGAMES_BUILD_DIR)/.built: $(BSDGAMES_BUILD_DIR)/.configured
 		boggle/mkdict/mkdict \
 		boggle/mkindex/mkindex \
 		;
-	$(MAKE) -C $(BSDGAMES_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		CC=$(HOSTCC) \
 		OPTIMIZE="-O2 -I$(HOST_STAGING_INCLUDE_DIR)" \
 		hack/makedefs \
@@ -167,8 +164,8 @@ $(BSDGAMES_BUILD_DIR)/.built: $(BSDGAMES_BUILD_DIR)/.configured
 		monop/initdeck \
 		;
 	mv $(@D)/fortune/strfile/strfile $(@D)/fortune/strfile/strfile.host
-	$(MAKE) -C $(BSDGAMES_BUILD_DIR) fortune_strfile_clean
-	$(MAKE) -C $(BSDGAMES_BUILD_DIR) \
+	$(MAKE) -C $(@D) fortune_strfile_clean
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		OPTIMIZE="$(STAGING_CPPFLAGS) $(BSDGAMES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BSDGAMES_LDFLAGS)" \
@@ -185,7 +182,7 @@ bsdgames: $(BSDGAMES_BUILD_DIR)/.built
 #
 $(BSDGAMES_BUILD_DIR)/.staged: $(BSDGAMES_BUILD_DIR)/.built
 	rm -f $@
-#	$(MAKE) -C $(BSDGAMES_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 bsdgames-stage: $(BSDGAMES_BUILD_DIR)/.staged
